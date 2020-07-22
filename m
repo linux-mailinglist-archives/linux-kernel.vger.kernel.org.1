@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568B122A0C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F359C22A0C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732904AbgGVUcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 16:32:20 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:34812 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732815AbgGVUcT (ORCPT
+        id S1732956AbgGVUdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 16:33:01 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:33499 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732944AbgGVUdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:32:19 -0400
-Received: by mail-il1-f199.google.com with SMTP id y3so1942484ily.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:32:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7imZ4Va5q5kCA+NPHlvvdTkyX0X2t9Lf27NR58K8+rs=;
-        b=NeBJ2V9MZsq0wKf2nUf6krt04G9EtX+g+86wkVHPVUWycSa4mlFcF6dQcKWYKzDrhH
-         2i6RzupB4kSnl4Q6783RxsO4RT9opj6OHILolaXUXoC3W/vXn8F4Tdh8hyJJvSBb8g1b
-         vZ81ZcrBvA+Boy1pvsbq+UHPQ1VccouPvPNZS38umgQZ/HsHKHe6au5WYhVI+RvfYz9o
-         bZiZZEAv1QtEmXpaIZEm05mPgz+0mRl+HMRxdP5jtyrjiu2Gf8JYVLzsgIkcEwN8t84z
-         hZge1yxebaoqdDmWfJDtv1ZrZSn12fNhJrNrJ7fvBA/9SQt/QGXDmXwzqSqWgSlt16fk
-         fIqg==
-X-Gm-Message-State: AOAM533mhBpNebRx4pxouu1ak8sSM2rgFeLltcPOkAuSEBjx9gcdhl9W
-        fbumC2rvDHhMvuAeIaY02UZZps8DmLK0rfa+6hAy/d7Mex3b
-X-Google-Smtp-Source: ABdhPJwmJ8eTmIZSagdPyWqMOzb+vlzW9sZ69rQeAKnlfwtsmTG9VL61AtBMI3IVVugjv9qSHv55VhavHB0yX+MqWCZITNiaZBNu
+        Wed, 22 Jul 2020 16:33:00 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MdwRi-1kZ3cK3f42-00b24j; Wed, 22 Jul 2020 22:32:59 +0200
+Received: by mail-qt1-f179.google.com with SMTP id s16so2855067qtn.7;
+        Wed, 22 Jul 2020 13:32:58 -0700 (PDT)
+X-Gm-Message-State: AOAM530Z+bxJV/3VTX0l/CELmsIow/mdXCM0L+mWpelLtVD0z5O0SM4P
+        wSHm0MD5FfejRnIP06vE0+B2/5/vBF2S7h5I9So=
+X-Google-Smtp-Source: ABdhPJz7qCwl199ceVBeakAKIXlC2KGHzaN4T30wS+r6H8SRwHBhlTecZSvjjgYXYoEJpQAkag6kBfpffToe30BE4FU=
+X-Received: by 2002:ac8:7587:: with SMTP id s7mr1188116qtq.304.1595449977474;
+ Wed, 22 Jul 2020 13:32:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:494e:: with SMTP id w75mr1669514ila.115.1595449937975;
- Wed, 22 Jul 2020 13:32:17 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 13:32:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf606405ab0da28a@google.com>
-Subject: memory leak in sctp_packet_transmit
-From:   syzbot <syzbot+8bb053b5d63595ab47db@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sctp@vger.kernel.org, marcelo.leitner@gmail.com,
-        netdev@vger.kernel.org, nhorman@tuxdriver.com,
-        syzkaller-bugs@googlegroups.com, vyasevich@gmail.com
+References: <20200615133242.24911-1-lars.povlsen@microchip.com>
+In-Reply-To: <20200615133242.24911-1-lars.povlsen@microchip.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 22 Jul 2020 22:32:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1VGsMFfqaMXA2n49F84MYR5eYWvPT-sMHK1XYGGnNB0A@mail.gmail.com>
+Message-ID: <CAK8P3a1VGsMFfqaMXA2n49F84MYR5eYWvPT-sMHK1XYGGnNB0A@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] Adding support for Microchip Sparx5 SoC
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     SoC Team <soc@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Olof Johansson <olof@lixom.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:dANfnZAZBysQ3Ar2MBWgKmGQ/lPpdgAnCAwDK3+uSV+wr14L3yO
+ ME8yR+Z6cbnP/PFBkdLfzBZ+IFWny0R3r8GmnKY8w1qxrS2q0hS8d5mVyAg31TnCJuUKUcS
+ S2T3164pY99tDMktdtHUl6P+HJ/jDLTjRZ3iL8Se/pAlhIhzfzHX8hcopd9DrKTlQVGLU8q
+ YUL7wo1PzJyCHmL5Vx7Iw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F0Y9TxNRR84=:y+uhsoMlotktFVRF1glGlq
+ fpHGg0WhMjqGtItTeERkAYydjlDvI3n2M0BJLSazTqF0KlS4V+MhqdXTYFTgUzhELCPcVJHLJ
+ iYWcJEV6IfsFv0xiVJVO+AFI6naijtEFsyb94W3aRqh70Ycpu63tiLNl+qYSDIskhK49Mzwac
+ H6/TX6jQ9uW8tDek0Uw4BwH8Mcj6uA5dXFWe3fNLdVmM0jLQwRKJa10e0p/dVemrN/3mgay+p
+ QV35WYTOMz1NDln7ye6YRsDdDhZoHeQ6vULMQMHXMLdMAVeizhd83S09D/2esa2KCJ/zRkFYJ
+ /z0+IdhOLUtRUlZ2swYMkYZ6REbK3GopXilkf7IFmeLyzUdHHuz/oUup+wYUt7AFd9zEx3zwv
+ MnqMDoy3EE7gOSVDCBtrp3ye9qM6psbtzHMADfrma9Gh0MnyskoTIc1MI2UvzDJb4FFV3y7Qg
+ xF2Aghlv4gnWhJ3YMvCsRqIbUgYwwjVCErg5IqM2HtqmT+GPt9CBBunWoPxeglio/zMrmlUog
+ LPynMcJqPGOX79Xt4lr5/XXTp8IBzb6+5b1BGV/8z+dkEvN8/Uowm6O2BxMSGxYVoffDi77m3
+ WII1xJPw66hN/LHLSSdaQvh/XKECFZowmx9BEPJ0D/lAhMwTeXeVG5ryPeLsQv69vmTSCgpDn
+ hJFAteDlmsf4XojPdTm/ol38k94SGkTUK9kQ9mPnlF8+fh6HUAjvkB8G1+s7vFhe2esOsz4Rs
+ Kqlop7hxgBOH6uU62ADD1Iar3snlDoULcYtsM+2SNfX79WWJFNcq613jHVxSxSF4poMEt3wUC
+ OMvU4U+ykKkRdlh2RPwd6xbdXfhXAKfSqEzXbtgXRIn7f/RzBHWbTHAO33yvEU9RjTC8AUsbR
+ dnRnno6q5U2EQxGkSf4npkYrzhqkgFIzC6uLksNK7qD69ncPxwPEOqVp1Tnn5oLC8z2qQX8Nb
+ SI4L7iUYB2Ah9s5KF3sIqzVXC4Lm/w7i2l2tRc6ZfVeQ65ieif8Km
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Jun 15, 2020 at 3:33 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
+>
+> This patch series adds support for Microchip Sparx5 SoC, the CPU
+> system of a advanced, TSN capable gigabit switch. The CPU is an armv8
+> x 2 CPU core (A53).
+>
+> Although this is an ARM core, it shares some peripherals with the
+> Microsemi Ocelot MIPS SoC.
 
-syzbot found the following issue on:
+I've picked up this version of the series into an arm/newsoc branch in
+the soc tree,
+except for the pinctrl patch that Linus Walleij already merged.
 
-HEAD commit:    4fa640dc Merge tag 'vfio-v5.8-rc7' of git://github.com/awi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=149e5e27100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=61340c48ef4aedfb
-dashboard link: https://syzkaller.appspot.com/bug?extid=8bb053b5d63595ab47db
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118d1793100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14805758900000
+I see you still have a few pending patches for other subsystems (spi, mmc)
+and I'm not sure what the status is for those and am dropping them for the
+moment.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8bb053b5d63595ab47db@syzkaller.appspotmail.com
+Once the bindings are accepted by the respective subsystem maintainers,
+please send any remaining DT patches as a follow-up to what I've already
+merged.
 
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff888118cb6f00 (size 224):
-  comm "syz-executor698", pid 6423, jiffies 4294945994 (age 12.350s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 a2 2a 81 88 ff ff 40 e0 d0 24 81 88 ff ff  ...*....@..$....
-  backtrace:
-    [<00000000dbd8d389>] __alloc_skb+0x5e/0x250 net/core/skbuff.c:198
-    [<000000002ecd4b45>] alloc_skb include/linux/skbuff.h:1083 [inline]
-    [<000000002ecd4b45>] sctp_packet_transmit+0xdc/0xb30 net/sctp/output.c:572
-    [<0000000005eef223>] sctp_outq_flush_transports net/sctp/outqueue.c:1147 [inline]
-    [<0000000005eef223>] sctp_outq_flush+0xf6/0xa30 net/sctp/outqueue.c:1195
-    [<000000007ad403b8>] sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1770 [inline]
-    [<000000007ad403b8>] sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
-    [<000000007ad403b8>] sctp_do_sm+0x197b/0x1f00 net/sctp/sm_sideeffect.c:1156
-    [<00000000696e5800>] sctp_assoc_bh_rcv+0x167/0x250 net/sctp/associola.c:1044
-    [<00000000bad89a41>] sctp_inq_push+0x76/0xa0 net/sctp/inqueue.c:80
-    [<0000000066ea2304>] sctp_backlog_rcv+0x83/0x370 net/sctp/input.c:344
-    [<000000004f4c84bd>] sk_backlog_rcv include/net/sock.h:997 [inline]
-    [<000000004f4c84bd>] __release_sock+0xa5/0x110 net/core/sock.c:2550
-    [<000000001cfa318a>] release_sock+0x32/0xc0 net/core/sock.c:3066
-    [<00000000538f7502>] sctp_wait_for_connect+0x11d/0x1e0 net/sctp/socket.c:9302
-    [<00000000a983945d>] sctp_sendmsg_to_asoc+0xa95/0xab0 net/sctp/socket.c:1892
-    [<00000000136d87b5>] sctp_sendmsg+0x704/0xbd0 net/sctp/socket.c:2038
-    [<000000003d35bb02>] inet_sendmsg+0x39/0x60 net/ipv4/af_inet.c:814
-    [<00000000109a76b3>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<00000000109a76b3>] sock_sendmsg+0x4c/0x60 net/socket.c:672
-    [<00000000c68f9835>] __sys_sendto+0x11d/0x1c0 net/socket.c:1995
-    [<00000000b6e006ac>] __do_sys_sendto net/socket.c:2007 [inline]
-    [<00000000b6e006ac>] __se_sys_sendto net/socket.c:2003 [inline]
-    [<00000000b6e006ac>] __x64_sys_sendto+0x26/0x30 net/socket.c:2003
-
-BUG: memory leak
-unreferenced object 0xffff888119797f00 (size 224):
-  comm "syz-executor698", pid 6424, jiffies 4294946510 (age 7.190s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 a2 2a 81 88 ff ff 40 e0 d0 24 81 88 ff ff  ...*....@..$....
-  backtrace:
-    [<00000000dbd8d389>] __alloc_skb+0x5e/0x250 net/core/skbuff.c:198
-    [<000000002ecd4b45>] alloc_skb include/linux/skbuff.h:1083 [inline]
-    [<000000002ecd4b45>] sctp_packet_transmit+0xdc/0xb30 net/sctp/output.c:572
-    [<0000000005eef223>] sctp_outq_flush_transports net/sctp/outqueue.c:1147 [inline]
-    [<0000000005eef223>] sctp_outq_flush+0xf6/0xa30 net/sctp/outqueue.c:1195
-    [<000000007ad403b8>] sctp_cmd_interpreter net/sctp/sm_sideeffect.c:1770 [inline]
-    [<000000007ad403b8>] sctp_side_effects net/sctp/sm_sideeffect.c:1185 [inline]
-    [<000000007ad403b8>] sctp_do_sm+0x197b/0x1f00 net/sctp/sm_sideeffect.c:1156
-    [<00000000696e5800>] sctp_assoc_bh_rcv+0x167/0x250 net/sctp/associola.c:1044
-    [<00000000bad89a41>] sctp_inq_push+0x76/0xa0 net/sctp/inqueue.c:80
-    [<0000000066ea2304>] sctp_backlog_rcv+0x83/0x370 net/sctp/input.c:344
-    [<000000004f4c84bd>] sk_backlog_rcv include/net/sock.h:997 [inline]
-    [<000000004f4c84bd>] __release_sock+0xa5/0x110 net/core/sock.c:2550
-    [<000000001cfa318a>] release_sock+0x32/0xc0 net/core/sock.c:3066
-    [<00000000538f7502>] sctp_wait_for_connect+0x11d/0x1e0 net/sctp/socket.c:9302
-    [<00000000a983945d>] sctp_sendmsg_to_asoc+0xa95/0xab0 net/sctp/socket.c:1892
-    [<00000000136d87b5>] sctp_sendmsg+0x704/0xbd0 net/sctp/socket.c:2038
-    [<000000003d35bb02>] inet_sendmsg+0x39/0x60 net/ipv4/af_inet.c:814
-    [<00000000109a76b3>] sock_sendmsg_nosec net/socket.c:652 [inline]
-    [<00000000109a76b3>] sock_sendmsg+0x4c/0x60 net/socket.c:672
-    [<00000000c68f9835>] __sys_sendto+0x11d/0x1c0 net/socket.c:1995
-    [<00000000b6e006ac>] __do_sys_sendto net/socket.c:2007 [inline]
-    [<00000000b6e006ac>] __se_sys_sendto net/socket.c:2003 [inline]
-    [<00000000b6e006ac>] __x64_sys_sendto+0x26/0x30 net/socket.c:2003
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+      Arnd
