@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6C7229709
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9CE22971C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732256AbgGVLEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 07:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729064AbgGVLEX (ORCPT
+        id S1730460AbgGVLFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 07:05:37 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:45347 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbgGVLFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:04:23 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0664DC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 04:04:23 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id a15so1460740wrh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 04:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=OCy4M+IerAUwrGq+R10RYFBywYGUc8/udZhkNLn8gcA=;
-        b=blnhOXIRlgBIHslJnR+DyX3qRw0egROpKwj7Y0Zkk0MMdUtpreXtgx75Kq1wPrfpcw
-         YT0xqBP0X9bvfkLrjDAjTmnTxzFZrZQIvAqUg6rrrRMpE1+2Am8fg/BMXJTPLpUCrRHG
-         WG4KDPcO+AnnCn+WJph8oQSDcEQOtFVBnYkClbRvOg2bqXfvK2yeOn1d/J2s59wzpd0b
-         VTw1CPE1C6poESLQsUVR+9mx8lbuqnKWymfrOoz608Ea4C1gFhgHQ1OA0EBcrOP2hpnE
-         2Z07LwLiO83BYhupbyWqS0g8hcUHHqXlNFYa0FOnBXmju5sMmeNIWSPap5YxzMnH1UeX
-         n0Ig==
+        Wed, 22 Jul 2020 07:05:36 -0400
+Received: by mail-lj1-f194.google.com with SMTP id r19so1983098ljn.12;
+        Wed, 22 Jul 2020 04:05:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=OCy4M+IerAUwrGq+R10RYFBywYGUc8/udZhkNLn8gcA=;
-        b=Mc9dCG7d+wS0lzUm7bVrMVmSvoordyyrxIn+slHaG6921MIcSvpgYcEbaoHpKK3DEO
-         wdGWducVgsFi3a3QsrWPBrs16bkRtQdHyIhA8r7MVKGCuCcrv6YGKyy5iHHF4ymcBLrl
-         MdtGzwz7zjTOKkDPnMHdBj5DwIsvctTk6brwszWBkKyCRoSSnyfm+umPpRv25jCyvdFv
-         0zkz5OGqhaP30I5n4P+VaeIqPmN/6gdZCx7n2mKxudoKkibT/6O2ioVeE0Nnjtwc5DOR
-         3bIhxJE/3X7jwnf+BdjIaFFJCU6cDfcmpBomBf11c8Jz/2CxkfkWWp68KuAXpKvpsTPO
-         mV/g==
-X-Gm-Message-State: AOAM530FgtPxffUNg0y9gVUWOKkjPYjOuxuSnaocyCrG7Np8s7xGolEe
-        HpgUV2Lh/z7lPx2SQAMDrcTFTS1ybIQ=
-X-Google-Smtp-Source: ABdhPJyen9XQxbMOmxYyIRo9xkcOiFhcP/BsUcVILGQr7xM0UXW3SkKzFeItTtT4WGFXCvo6Y3Wceg==
-X-Received: by 2002:adf:ea06:: with SMTP id q6mr29366083wrm.69.1595415861662;
-        Wed, 22 Jul 2020 04:04:21 -0700 (PDT)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id t2sm6735027wma.43.2020.07.22.04.04.19
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iq6Vo6z/msbmEzHVNxTFhtS1vmtzmjZS4VrDHaSBsI8=;
+        b=VGNwks4Q5LLUgY5NSbq/oUgps7plKGtK9PWKdZkMblpP/gopqNIUJgy664G/gUQGs1
+         i6+gS1Fgfxk+9jpjUX4s5uqMnpuhfYT0AhS1T73z+HXjHTkJeS9DrT9tSINt8PHEzQJL
+         TOAcjb+K8xMCirD1wqrD9UVtbmHO9H4hirWv+WB0VcV2bRXzplD08ykBF0pkeuJ1hZE+
+         unrO4zG9gnHlql9lOvB8IvRnMK3b9HOW4LnRKwFvMZSGfhUGdBF2GjakyWI9jzAozoju
+         /Efh1JMx1e6ubhoaCSKQ8FtoYGgpNO/NccbUxE9JrnIF3vySURUjZGszJ7cYA4t4Aep6
+         u5yA==
+X-Gm-Message-State: AOAM5339if3dNF1SX3EZPLgVNhhkycmZwXDU85cMWabtriRXL776vNFG
+        HnBuHhecM/9458ap7rA1TYtsqiVs
+X-Google-Smtp-Source: ABdhPJwMEu36zrem3wuSdeeZGqlZLf4Zh/Yl/jxyjW70gHv4UmxoNS0fUrbsPqbfZ9OvAbe+MCNDQw==
+X-Received: by 2002:a2e:8043:: with SMTP id p3mr15580077ljg.469.1595415934020;
+        Wed, 22 Jul 2020 04:05:34 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id m1sm7928782lfa.22.2020.07.22.04.05.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 04:04:21 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 08:04:11 -0300
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-usp@googlegroups.com, twoerner@gmail.com
-Subject: [PATCH] drm/vkms: add missing drm_crtc_vblank_put to the get/put
- pair on flush
-Message-ID: <20200722110411.ebkv6knvc6mzw5uf@smtp.gmail.com>
+        Wed, 22 Jul 2020 04:05:33 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jyCYy-0004Jt-NZ; Wed, 22 Jul 2020 13:05:28 +0200
+Date:   Wed, 22 Jul 2020 13:05:28 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 094/133] USB: serial: iuu_phoenix: fix memory
+ corruption
+Message-ID: <20200722110528.GK3634@localhost>
+References: <20200720152803.732195882@linuxfoundation.org>
+ <20200720152808.264804020@linuxfoundation.org>
+ <20200721113259.GB17778@duo.ucw.cz>
+ <20200721115449.GE3634@localhost>
+ <20200722105247.GA19938@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ieNMXl1Fr3cevapt"
 Content-Disposition: inline
+In-Reply-To: <20200722105247.GA19938@duo.ucw.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a missing drm_crtc_vblank_put op to the pair
-drm_crtc_vblank_get/put (inc/decrement counter to guarantee vblanks).
 
-It clears the execution of the following kms_cursor_crc subtests:
-1. pipe-A-cursor-[size,alpha-opaque, NxN-(on-screen, off-screen, sliding,
-   random, fast-moving])] - successful when running individually.
-2. pipe-A-cursor-dpms passes again
-3. pipe-A-cursor-suspend also passes
+--ieNMXl1Fr3cevapt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The issue was initially tracked in the sequential execution of IGT
-kms_cursor_crc subtest: when running the test sequence or one of its
-subtests twice, the odd execs complete and the pairs get stuck in an
-endless wait. In the IGT code, calling a wait_for_vblank before the start
-of CRC capture prevented the busy-wait. But the problem persisted in the
-pipe-A-cursor-dpms and -suspend subtests.
+On Wed, Jul 22, 2020 at 12:52:47PM +0200, Pavel Machek wrote:
 
-Checking the history, the pipe-A-cursor-dpms subtest was successful when,
-in vkms_atomic_commit_tail, instead of using the flip_done op, it used
-wait_for_vblanks. Another way to prevent blocking was wait_one_vblank when
-enabling crtc. However, in both cases, pipe-A-cursor-suspend persisted
-blocking in the 2nd start of CRC capture, which may indicate that
-something got stuck in the step of CRC setup. Indeed, wait_one_vblank in
-the crc setup was able to sync things and free all kms_cursor_crc
-subtests.
+> > > Ok, so... goto and label is unneccessary, memcpy will do the right
+> > > thing with count =3D=3D 0.
+> >=20
+> > That's generally too subtle. Better to clearly mark the error/exception
+> > path.
+>=20
+> We usually avoid subtle code by introducing comments, not by
+> introducing extra (and confusing) code that can not be optimized out.
 
-Tracing and comparing a clean run with a blocked one:
-- in a clean one, vkms_crtc_atomic_flush enables vblanks;
-- when blocked, only in next op, vkms_crtc_atomic_enable, the vblanks
-started. Moreover, a series of vkms_vblank_simulate flow out until
-disabling vblanks.
-Also watching the steps of vkms_crtc_atomic_flush, when the very first
-drm_crtc_vblank_get returned an error, the subtest crashed. On the other
-hand, when vblank_get succeeded, the subtest completed. Finally, checking
-the flush steps: it increases counter to hold a vblank reference (get),
-but there isn't a op to decreased it and release vblanks (put).
+It's not confusing at all. Just drop it.
 
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
-Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
----
- drivers/gpu/drm/vkms/vkms_crtc.c | 1 +
- 1 file changed, 1 insertion(+)
+Johan
 
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index ac85e17428f8..a99d6b4a92dd 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -246,6 +246,7 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
- 
- 		spin_unlock(&crtc->dev->event_lock);
- 
-+		drm_crtc_vblank_put(crtc);
- 		crtc->state->event = NULL;
- 	}
- 
--- 
-2.27.0
+--ieNMXl1Fr3cevapt
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQQHbPq+cpGvN/peuzMLxc3C7H1lCAUCXxgddQAKCRALxc3C7H1l
+CNa3AQC+tA4tIat9SaMvrMWsbczEVWEDPq8NTqDXoQ+Uvy8mFQEAl6BAfr9JiEgC
+JsK3h09zUKBjvsUX7scnVWou48p3NQM=
+=uEXj
+-----END PGP SIGNATURE-----
+
+--ieNMXl1Fr3cevapt--
