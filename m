@@ -2,63 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6DE2298FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5132822990A
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732147AbgGVNKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:10:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgGVNKM (ORCPT
+        id S1730018AbgGVNO0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Jul 2020 09:14:26 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:53483 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726003AbgGVNO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:10:12 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98589C0619DC;
-        Wed, 22 Jul 2020 06:10:12 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 44C622C8; Wed, 22 Jul 2020 15:10:11 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 15:10:10 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, iommu@lists.linux-foundation.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH] iommu/qcom: Use domain rather than dev as tlb cookie
-Message-ID: <20200722131009.GD27672@8bytes.org>
-References: <20200720155217.274994-1-robdclark@gmail.com>
- <CA+G9fYtj1RBYcPhXZRm-qm5ygtdLj1jD8vFZSqQvwi_DNJLBwQ@mail.gmail.com>
+        Wed, 22 Jul 2020 09:14:26 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-116-sW_rWl1MOCeWFYsGvVYncg-1; Wed, 22 Jul 2020 14:14:22 +0100
+X-MC-Unique: sW_rWl1MOCeWFYsGvVYncg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 22 Jul 2020 14:14:22 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 22 Jul 2020 14:14:22 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Catalin Marinas' <catalin.marinas@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] raw_copy_from_user() semantics
+Thread-Topic: [RFC] raw_copy_from_user() semantics
+Thread-Index: AQHWYBxygAO6HUS840aFW/LsMa1rTakTksjw
+Date:   Wed, 22 Jul 2020 13:14:21 +0000
+Message-ID: <8fde1b9044a34ff59eb5ff3dafbf2b97@AcuMS.aculab.com>
+References: <20200719031733.GI2786714@ZenIV.linux.org.uk>
+ <CAHk-=wi7f5vG+s=aFsskzcTRs+f7MVHK9yJFZtUEfndy6ScKRQ@mail.gmail.com>
+ <CAHk-=wirA7zJJB17KJPCE-V9pKwn8VKxXTeiaM+F+Sa1Xd2SWA@mail.gmail.com>
+ <20200722113707.GC27540@gaia>
+In-Reply-To: <20200722113707.GC27540@gaia>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYtj1RBYcPhXZRm-qm5ygtdLj1jD8vFZSqQvwi_DNJLBwQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 12:45:17AM +0530, Naresh Kamboju wrote:
-> On Mon, 20 Jul 2020 at 21:21, Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > The device may be torn down, but the domain should still be valid.  Lets
-> > use that as the tlb flush ops cookie.
-> >
-> > Fixes a problem reported in [1]
+From: Catalin Marinas
+> Sent: 22 July 2020 12:37
 > 
-> This proposed fix patch applied on top of linux mainline master
-> and boot test PASS on db410c.
+> On Sun, Jul 19, 2020 at 12:34:11PM -0700, Linus Torvalds wrote:
+> > On Sun, Jul 19, 2020 at 12:28 PM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > > I think we should try to get rid of the exact semantics.
+> >
+> > Side note: I think one of the historical reasons for the exact
+> > semantics was that we used to do things like the mount option copying
+> > with a "copy_from_user()" iirc.
+> >
+> > And that could take a fault at the end of the stack etc, because
+> > "copy_mount_options()" is nasty and doesn't get a size, and just
+> > copies "up to 4kB" of data.
+> >
+> > It's a mistake in the interface, but it is what it is. But we've
+> > always handled the inexact count there anyway by originally doing byte
+> > accesses, and at some point you optimized it to just look at where
+> > page boundaries might be..
 > 
-> The reported problem got fixed.
+> And we may have to change this again since, with arm64 MTE, the page
+> boundary check is insufficient:
+> 
+> https://lore.kernel.org/linux-fsdevel/20200715170844.30064-25-catalin.marinas@arm.com/
+> 
+> While currently the fault path is unlikely to trigger, with MTE in user
+> space it's a lot more likely since the buffer (e.g. a string) is
+> normally less than 4K and the adjacent addresses would have a different
+> colour.
+> 
+> I looked (though briefly) into passing the copy_from_user() problem to
+> filesystems that would presumably know better how much to copy. In most
+> cases the options are string, so something like strncpy_from_user()
+> would work. For mount options as binary blobs (IIUC btrfs) maybe the fs
+> has a better way to figure out how much to copy.
 
-Is this needed for v5.8/stable? A fixes tag would be great too.
+What about changing the mount code to loop calling get_user()
+to read aligned words until failure?
+Mount is fairly uncommon and the extra cost is probably small compared
+to the rest of doing a mount.
 
-Regards,
+	David
 
-	Joerg
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
