@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBF122950B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5BC2294F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731520AbgGVJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:36:03 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:58748 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgGVJgC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:36:02 -0400
-X-Greylist: delayed 1652 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Jul 2020 05:36:02 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=wX1Eu/u/kjAZ3efLZ2Y25RplLLxRiLVlINm0rbq4U98=; b=6D2J+hGtF1HieE1ujaUHTZTQKX
-        0uqZCfxIEafhkFu/2+tPlCCIQh74oBBdRFhDZAKdYAKi9ZRrhEodcK0n5QuMZ8nQPdHF6MJXkCxUR
-        PQwIjoJj5gT95SKVKt+68ABn3KlLeURHFXRUw6T4IMIKT1d9g4yuGxKJjIi+WonW2tiI=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1jyAjS-0001t0-P2; Wed, 22 Jul 2020 09:08:10 +0000
-Received: from 54-240-197-231.amazon.com ([54.240.197.231] helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1jyAjS-0001i7-E0; Wed, 22 Jul 2020 09:08:10 +0000
-Subject: Re: [PATCH v2 04/11] x86/xen: add system core suspend and resume
- callbacks
-To:     Anchal Agarwal <anchalag@amazon.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        linux-pm@vger.kernel.org, linux-mm@kvack.org, kamatam@amazon.com,
-        sstabellini@kernel.org, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
-        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
-        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dwmw@amazon.co.uk, benh@kernel.crashing.org
-References: <cover.1593665947.git.anchalag@amazon.com>
- <20200702182205.GA3531@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <b8445e93-deed-1a28-cd3b-993d42c78251@xen.org>
-Date:   Wed, 22 Jul 2020 10:08:05 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1730422AbgGVJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:31:06 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45216 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726147AbgGVJbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 05:31:06 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jyB5X-0000cS-00; Wed, 22 Jul 2020 11:30:59 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 09649C0873; Wed, 22 Jul 2020 11:30:24 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 11:30:23 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] MIPS: Loongson64: Enlarge IO_SPACE_LIMIT
+Message-ID: <20200722093023.GA8813@alpha.franken.de>
+References: <20200721141742.996350-1-jiaxun.yang@flygoat.com>
+ <20200721141742.996350-4-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200702182205.GA3531@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721141742.996350-4-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jul 21, 2020 at 10:17:31PM +0800, Jiaxun Yang wrote:
+> It can be very big on LS7A PCH systems.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/include/asm/io.h                     | 3 ++-
+>  arch/mips/include/asm/mach-loongson64/spaces.h | 3 +--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+> index 346fffd9e972..0072489325fa 100644
+> --- a/arch/mips/include/asm/io.h
+> +++ b/arch/mips/include/asm/io.h
+> @@ -50,8 +50,9 @@
+>  # define __relaxed_ioswabq ioswabq
+>  
+>  /* ioswab[bwlq], __mem_ioswab[bwlq] are defined in mangle-port.h */
+> -
+> +#ifndef IO_SPACE_LIMIT
+>  #define IO_SPACE_LIMIT 0xffff
+> +#endif
 
-On 02/07/2020 19:22, Anchal Agarwal wrote:
-> diff --git a/include/xen/xen-ops.h b/include/xen/xen-ops.h
-> index 2521d6a306cd..9fa8a4082d68 100644
-> --- a/include/xen/xen-ops.h
-> +++ b/include/xen/xen-ops.h
-> @@ -41,6 +41,8 @@ u64 xen_steal_clock(int cpu);
->   int xen_setup_shutdown_event(void);
->   
->   bool xen_is_xen_suspend(void);
-> +void xen_setup_syscore_ops(void);
+please move this to include/asm/mach-generic/spaces.h
 
-The function is only implemented and used by x86. So shouldn't this be 
-declared in an x86 header?
-
-Cheers,
+Thomas.
 
 -- 
-Julien Grall
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
