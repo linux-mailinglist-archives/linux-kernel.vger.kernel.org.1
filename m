@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38EE229B87
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A306229B81
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732991AbgGVPdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732941AbgGVPdW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732938AbgGVPdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 22 Jul 2020 11:33:22 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7186AC0619DF
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:33:22 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732687AbgGVPdS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 11:33:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89262C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=cPtIt79cO+vEy8blfqLRr3/op8c1wR5WOmTjOqKQcuQ=; b=qrfQWa46RNs2V7Yc67xhAJqPNj
-        9M6iND9QkjP3hJM0PS7cwvMQ6hpV4N00fDTd09FptHIuC9uCxzTXum0B54Gv24qPSfPHu+Vo+TSnQ
-        7jk5EfuZgfbo1WMag5EhoiE98VvJp9B4eJIj91G4lVqjQUEdOA+Uez8juTl5tjcAaRiw5fEISMhQr
-        /qGKLLdBtUUyzoaivr95IuIfr1lTrZjepj25LZjz8FSwHWNJ5ite7jDZs+43sdg8iQHopZtx0YP3x
-        S620YltE9IJbVhGuQo6E81bQ50IIo2gxZ2+/6oLFJ62Akdo02osUWocPXvAr0uAPw21BqT+4pldYV
-        cincR1OA==;
+        bh=zEyQaZl+BH4Ca7RHWpVGJSeXguzr0RPSrKA3yktCFqU=; b=YNWvMubcgTPpJC5aO3EbIuK9pp
+        u3y7TYIdKpLkPiHESJ3qeVzl3lGaW1tBbRjJwleCPm+ONe9T9JxfghTQjmpHq7nwLL2jSy2wf019b
+        mrbF7jpUCn2b+kNUfEMhPqFL1aRMlu0qH4FtHwKt7Ad+xv/ncmW9a0lTbdRhZi0pf+xA744i9oqPk
+        wTpTMwRjnmke6Wg/tcX255tQDQJ1BtkpwoHUx8n3Umy2qKCJwv5xbe0kIReLGntcZPWOl95OyreAp
+        0JOjYoBu/3yf6ITKCSlWqqZRB3QHqlfSHD2DJ0lz7j1/AsW+fX89zm2/ULJVTecwaDqvsAam56Id5
+        qySjaDOA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyGjy-0007t6-J6; Wed, 22 Jul 2020 15:33:06 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyGjv-000119-Sn; Wed, 22 Jul 2020 15:33:04 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 63490303A02;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE68830782A;
         Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 565CA200D4176; Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
-Message-ID: <20200722153017.521229636@infradead.org>
+        id 5B7A6200D4179; Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
+Message-ID: <20200722153017.591300045@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 22 Jul 2020 17:01:57 +0200
+Date:   Wed, 22 Jul 2020 17:01:58 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, torvalds@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
         hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
         davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
         oleg@redhat.com, peterz@infradead.org
-Subject: [RFC][PATCH 8/9] smp: Make smp_call_function_single_async() safer
+Subject: [RFC][PATCH 9/9] irq_work: Add a few comments
 References: <20200722150149.525408253@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,75 +53,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make smp_call_function_single_async() a safer and more convenient
-interface by using an atomic op for setting CSD_FLAG_LOCK. This allows
-safe concurrent use of this function as would be expected by the
--EBUSY return value.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/smp.c |   28 ++++++++++++++++++++--------
- 1 file changed, 20 insertions(+), 8 deletions(-)
+ include/linux/irq_work.h |   80 +++++++++++++++++++++++++++++++++++++++++------
+ kernel/irq_work.c        |   10 +++++
+ 2 files changed, 80 insertions(+), 10 deletions(-)
 
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -297,6 +297,13 @@ static void flush_smp_call_function_queu
- 				void *info = csd->info;
+--- a/include/linux/irq_work.h
++++ b/include/linux/irq_work.h
+@@ -4,15 +4,6 @@
  
- 				csd_unlock(csd);
-+				/*
-+				 * Ensures any LOAD of func() will be after
-+				 * the above UNLOCK, this guarantees that
-+				 * func() will observe any state prior
-+				 * to _async() returning -EBUSY.
-+				 */
-+				smp_mb();
- 				func(info);
- 			} else if (type == CSD_TYPE_IRQ_WORK) {
- 				irq_work_single(csd);
-@@ -397,16 +404,18 @@ EXPORT_SYMBOL(smp_call_function_single);
-  * can thus be done from contexts with disabled interrupts.
-  *
-  * The caller passes his own pre-allocated data structure
-- * (ie: embedded in an object) and is responsible for synchronizing it
-- * such that the IPIs performed on the @csd are strictly serialized.
-+ * and is responsible for it's life-time, it must not be re-used
-+ * until csd->node.u_flags == 0.
-  *
-  * If the function is called with one csd which has not yet been
-  * processed by previous call to smp_call_function_single_async(), the
-  * function will return immediately with -EBUSY showing that the csd
-  * object is still in progress.
-  *
-- * NOTE: Be careful, there is unfortunately no current debugging facility to
-- * validate the correctness of this serialization.
-+ * When -EBUSY is returned, any invocation of csd->func() is guaranteed to see
-+ * the state prior to this call.
-+ *
-+ * Also, consider using irq_work_queue_remote() if at all possible.
-  */
- int smp_call_function_single_async(int cpu, call_single_data_t *csd)
- {
-@@ -414,13 +423,16 @@ int smp_call_function_single_async(int c
+ #include <linux/smp_types.h>
  
- 	preempt_disable();
- 
--	if (csd->node.u_flags & CSD_FLAG_LOCK) {
-+	/*
-+	 * We still need RELEASE like semantics, even when the cmpxchg() fails.
-+	 * Pairs with the smp_mb() in flush_smp_call_function_queue().
-+	 */
-+	smp_mb__before_atomic();
-+	if (cmpxchg_relaxed(&csd->node.u_flags, 0, CSD_FLAG_LOCK) != 0) {
- 		err = -EBUSY;
- 		goto out;
- 	}
+-/*
+- * An entry can be in one of four states:
+- *
+- * free	     NULL, 0 -> {claimed}       : free to be used
+- * claimed   NULL, 3 -> {pending}       : claimed to be enqueued
+- * pending   next, 3 -> {busy}          : queued, pending callback
+- * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
+- */
 -
--	csd->node.u_flags = CSD_FLAG_LOCK;
--	smp_wmb();
-+	/* ctrl-dep orders later stores */
+ struct irq_work {
+ 	struct __call_single_node node;
+ 	void (*func)(struct irq_work *);
+@@ -36,11 +27,19 @@ void init_irq_work(struct irq_work *work
+ 	*work = IRQ_WORK_INIT(func);
+ }
  
- 	err = generic_exec_single(cpu, csd);
++/*
++ * irq_work_is_pending(): if @work is already queued
++ */
+ static inline bool irq_work_is_pending(struct irq_work *work)
+ {
+ 	return atomic_read(&work->node.a_flags) & IRQ_WORK_PENDING;
+ }
+ 
++/*
++ * irq_work_is_busy(): true until after func() has run
++ *
++ * Does not work with irq_work_queue_remote_static().
++ */
+ static inline bool irq_work_is_busy(struct irq_work *work)
+ {
+ 	return atomic_read(&work->node.a_flags) & IRQ_WORK_BUSY;
+@@ -48,12 +47,45 @@ static inline bool irq_work_is_busy(stru
+ 
+ #ifdef CONFIG_IRQ_WORK
+ 
++/*
++ * irq_work_queue(): run @work in IRQ context on this CPU
++ * @work: work to run
++ *
++ * Self-IPI, NMI-safe
++ *
++ * When the function returns false; @work is already queued and
++ * any eventual execution of it's func() is guaranteed to see
++ * any state before the failing enqueue.
++ */
+ bool irq_work_queue(struct irq_work *work);
++
++/*
++ * irq_work_queue_on(): run @work in IRQ context on @cpu
++ * @work: work to run
++ * @cpu: cpu to run @work on
++ *
++ * *NOT* NMI-safe
++ *
++ * When the function returns false; @work is already queued and
++ * any eventual execution of it's func() is guaranteed to see
++ * any state before the failing enqueue.
++ */
+ bool irq_work_queue_on(struct irq_work *work, int cpu);
+ 
+-void irq_work_tick(void);
++/*
++ * irq_work_sync(): wait for completion of @work
++ * @work:
++ *
++ * Expects no concurrent irq_work_queue()
++ *
++ * Will return once @work is no longer 'busy'.
++ *
++ * Does not work with irq_work_queue_remote_static().
++ */
+ void irq_work_sync(struct irq_work *work);
+ 
++void irq_work_tick(void);
++
+ #include <asm/irq_work.h>
+ 
+ void irq_work_run(void);
+@@ -67,8 +99,36 @@ static inline bool irq_work_needs_cpu(vo
+ #endif /* CONFIG_IRQ_WORK */
+ 
+ #ifdef CONFIG_SMP
++
++/*
++ * irq_work_queue_remote(): run @work in IRQ context on @cpu
++ * @cpu:
++ * @work:
++ *
++ * like irq_work_queue_on(), except it requires @cpu != smp_processor_id() and
++ * is available for any SMP build.
++ *
++ * Return -EBUSY when already queued, 0 on success.
++ */
+ extern int irq_work_queue_remote(int cpu, struct irq_work *work);
++
++/*
++ * irq_work_queue_remote_state(): like irq_work_queue_remote() except dangerous
++ * @cpu:
++ * @work:
++ *
++ * DO NOT USE, this function is horrible/dangerous.
++ *
++ * The test-and-set-PENDING is not atomic, it also doesn't set
++ * the BUSY bit and with that breaks irq_work_sync().
++ *
++ * This means that the caller needs external serialization; life-time,
++ * where relevant, also needs to be externally orchestated.
++ *
++ * There is no validation/debugging to help you if you get it wrong.
++ */
+ extern int irq_work_queue_remote_static(int cpu, struct irq_work *work);
++
+ extern void irq_work_single(void *arg);
+ #endif
+ 
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -23,6 +23,15 @@
+ #if defined(CONFIG_IRQ_WORK) || defined(CONFIG_SMP)
+ 
+ /*
++ * An entry can be in one of four states:
++ *
++ * free	     NULL, 0 -> {claimed}       : free to be used
++ * claimed   NULL, 3 -> {pending}       : claimed to be enqueued
++ * pending   next, 3 -> {busy}          : queued, pending callback
++ * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
++ */
++
++/*
+  * Claim the entry so that no one else will poke at it.
+  */
+ static bool irq_work_claim(struct irq_work *work)
+@@ -37,6 +46,7 @@ static bool irq_work_claim(struct irq_wo
+ 	 */
+ 	if (oflags & IRQ_WORK_PENDING)
+ 		return false;
++
+ 	return true;
+ }
  
 
 
