@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBA3229840
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C56F22984F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732311AbgGVMdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:33:06 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:38416 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732273AbgGVMdD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:33:03 -0400
-X-UUID: 54e7afc4a054468a9eace13d3faedb77-20200722
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=aGkYfrj1ymY1oTj9o1StOhudKqvPOEHF8zRKMQWiYh4=;
-        b=AH0CXyL1Ft52UeNcnWNRy5uEy85ZqIK5yQK64PUS3RBa74bumEZaOyjJBhZQTWGjFuQo0olatjc1cDzGdjJEff/Xzker47z2hn0w8S1aMgGsnlYcvQeoeqFMue5RdmbEdWRKjCZRmMqP4A9/0fAbm08ufwpK5s8gabBalFwrPiM=;
-X-UUID: 54e7afc4a054468a9eace13d3faedb77-20200722
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 651403332; Wed, 22 Jul 2020 20:33:00 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 22 Jul 2020 20:32:57 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Jul 2020 20:32:56 +0800
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>
-Subject: [PATCH 4/4] i2c: mediatek: Add i2c compatible for MediaTek MT8192
-Date:   Wed, 22 Jul 2020 20:31:46 +0800
-Message-ID: <1595421106-10017-5-git-send-email-qii.wang@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
-References: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
+        id S1732346AbgGVMe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:34:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731857AbgGVMe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:34:26 -0400
+Received: from quaco.ghostprotocols.net (unknown [177.17.3.185])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8D2A2065E;
+        Wed, 22 Jul 2020 12:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595421266;
+        bh=0QEFoJLeBfGzFAv1ye3oNErTb7Vj/OYnW7+WOE6tzdg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0tT+yW2ZgKBXhXrn8dztXfSrgS3VSxvDqUzFBdOfqK9TDw2dpUlRozq3Beg0ze+Vv
+         FLgss7QxPlQHh6n0FflJFDzdPx+194b7x01BPHdJiCmqdXRTNAXShARbiVL0zGHTgk
+         5n5JkTT0iD+jnfL75uJ7oNO3d/7lANzOITz+LJbY=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E0923404B1; Wed, 22 Jul 2020 09:34:23 -0300 (-03)
+Date:   Wed, 22 Jul 2020 09:34:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v12 05/15] perf evlist: implement control command
+ handling functions
+Message-ID: <20200722123423.GK77866@kernel.org>
+References: <8d91c3a0-3db4-0a7a-ae13-299adb444bd6@linux.intel.com>
+ <62518ceb-1cc9-2aba-593b-55408d07c1bf@linux.intel.com>
+ <20200722122734.GJ77866@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722122734.GJ77866@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIGkyYyBjb21wYXRpYmxlIGZvciBNVDgxOTIuIENvbXBhcmUgdG8gTVQ4MTgzIGkyYyBjb250
-cm9sbGVyLA0KTVQ4MTkyIHN1cHBvcnQgbW9yZSB0aGVuIDhHQiBETUEgbW9kZS4NCg0KU2lnbmVk
-LW9mZi1ieTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMv
-aTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMgfCAxNSArKysrKysrKysrKysrKysNCiAxIGZpbGUgY2hh
-bmdlZCwgMTUgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9pMmMvYnVzc2Vz
-L2kyYy1tdDY1eHguYyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMNCmluZGV4IGU0
-NzU4NzcuLjQ3ZjNlZWYgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4
-eC5jDQorKysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQpAQCAtMzg4LDYgKzM4
-OCwyMCBAQCBzdHJ1Y3QgaTJjX3NwZWNfdmFsdWVzIHsNCiAJLm1heF9kbWFfc3VwcG9ydCA9IDMz
-LA0KIH07DQogDQorc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfaTJjX2NvbXBhdGlibGUgbXQ4MTky
-X2NvbXBhdCA9IHsNCisJLnF1aXJrcyA9ICZtdDgxODNfaTJjX3F1aXJrcywNCisJLnJlZ3MgPSBt
-dF9pMmNfcmVnc192MiwNCisJLnBtaWNfaTJjID0gMCwNCisJLmRjbSA9IDAsDQorCS5hdXRvX3Jl
-c3RhcnQgPSAxLA0KKwkuYXV4X2xlbl9yZWcgPSAxLA0KKwkudGltaW5nX2FkanVzdCA9IDEsDQor
-CS5kbWFfc3luYyA9IDEsDQorCS5sdGltaW5nX2FkanVzdCA9IDEsDQorCS5hcGRtYV9zeW5jID0g
-MSwNCisJLm1heF9kbWFfc3VwcG9ydCA9IDM2LA0KK307DQorDQogc3RhdGljIGNvbnN0IHN0cnVj
-dCBvZl9kZXZpY2VfaWQgbXRrX2kyY19vZl9tYXRjaFtdID0gew0KIAl7IC5jb21wYXRpYmxlID0g
-Im1lZGlhdGVrLG10MjcxMi1pMmMiLCAuZGF0YSA9ICZtdDI3MTJfY29tcGF0IH0sDQogCXsgLmNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2NTc3LWkyYyIsIC5kYXRhID0gJm10NjU3N19jb21wYXQg
-fSwNCkBAIC0zOTUsNiArNDA5LDcgQEAgc3RydWN0IGkyY19zcGVjX3ZhbHVlcyB7DQogCXsgLmNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ3NjIyLWkyYyIsIC5kYXRhID0gJm10NzYyMl9jb21wYXQg
-fSwNCiAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtaTJjIiwgLmRhdGEgPSAmbXQ4
-MTczX2NvbXBhdCB9LA0KIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1pMmMiLCAu
-ZGF0YSA9ICZtdDgxODNfY29tcGF0IH0sDQorCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4
-MTkyLWkyYyIsIC5kYXRhID0gJm10ODE5Ml9jb21wYXQgfSwNCiAJe30NCiB9Ow0KIE1PRFVMRV9E
-RVZJQ0VfVEFCTEUob2YsIG10a19pMmNfb2ZfbWF0Y2gpOw0KLS0gDQoxLjkuMQ0K
+Em Wed, Jul 22, 2020 at 09:27:34AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Jul 17, 2020 at 10:01:33AM +0300, Alexey Budankov escreveu:
+> > 
+> > Implement functions of initialization, finalization and processing
+> > of control command messages coming from control file descriptors.
+> > Allocate control file descriptor as descriptor at struct pollfd
+> > object of evsel_list for atomic poll() operation.
+> > 
+> > Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > Acked-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> I'm applying locally for testing, but can you answer what is the reason
+> for that newline in the CMD_ACK_TAG? I tried looking at previous
+> discussion but couldn't quickly find any reasoning for that
+> 
+> - Arnaldo
+> 
+> > +++ b/tools/perf/util/evlist.h
+> > @@ -359,4 +359,22 @@ void perf_evlist__force_leader(struct evlist *evlist);
+> >  struct evsel *perf_evlist__reset_weak_group(struct evlist *evlist,
+> >  						 struct evsel *evsel,
+> >  						bool close);
+> > +#define EVLIST_CTL_CMD_ENABLE_TAG  "enable"
+> > +#define EVLIST_CTL_CMD_DISABLE_TAG "disable"
+> > +#define EVLIST_CTL_CMD_ACK_TAG     "ack\n"
+> 
+> What for? That '\n'?
 
+Oh, I see, this is not a _command_, it is a _response_, and the sender
+expects a newline, right?
+
+So I think this needs to be marked clearly as:
+
+// Commands accepted by 'perf record'
+
+#define EVLIST_CTL_CMD_ENABLE_TAG  "enable"
+#define EVLIST_CTL_CMD_DISABLE_TAG "disable"
+
+
+// Responses sent by 'perf record'
+
+#define EVLIST_CTL_RSP_ACK     "ack"
+
+And then make the response add the newline, as conceivably we could have
+something like "nack", "invalid", "enoperm", etc, no?
+
+Anyway, this can be done on top of this series, so I'm continuing
+processing it locally.
+
+- Arnaldo
