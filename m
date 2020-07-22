@@ -2,128 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CD6228D39
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 02:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA742228D3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 02:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731496AbgGVAxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 20:53:25 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:27157 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726468AbgGVAxZ (ORCPT
+        id S1731550AbgGVAxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 20:53:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49060 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726468AbgGVAxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 20:53:25 -0400
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 06M0qpba008736
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:52:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 06M0qpba008736
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1595379172;
-        bh=Rmd1MC2JpL/qsW+KJXGi9dvkbRqpp67uHrZvlZPqnnQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fCuRqEo5R7tsBimcwvosMA5r7zoLn83XhCF9ewj70bkCQZBAFUtqrMHXymUzdkY4C
-         sADO9gy+Kb+fylP06zV5KB40k47skKqunCe6Q+qMhwGhAt0jUefZzOPe4CfoAnj07q
-         HiyNY9od0hNuVoYOuy33uo9GXO5SMqk0VBtdDi+6dR4NSv1Q9fcoCv6RqFwD3zimuk
-         +rsYlUwpNvPMy/NABxgXh+mETbiAkpSfhaPgzXaTTteHMkts/ALYis51vqfz7oei3y
-         lSk586KJ4N4dG0Qcbvih+fNd8BVO2BaXGFJQnHBQxHs9b4G+MLEBSKOBSRBW/YLu3u
-         Vcq2JUC4F5VHg==
-X-Nifty-SrcIP: [209.85.217.53]
-Received: by mail-vs1-f53.google.com with SMTP id s20so257989vsq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 17:52:51 -0700 (PDT)
-X-Gm-Message-State: AOAM533trHN1d/YLRFdYkW6ZJHEyArMLaHNGf5CJE2piuwwZbjqK2YSG
-        idcWtn6NsFPW992JlzButa0pLrO20/zRNiqO8FI=
-X-Google-Smtp-Source: ABdhPJw4GP6sLIaLF4KWGv+V0XOy1HGvyPU1VIDRU3+GhEDAciWu7TXSOoiC1ziqZi74sSCd2CFUMjsvZFNrsxdI3cY=
-X-Received: by 2002:a67:694d:: with SMTP id e74mr23382636vsc.155.1595379170484;
- Tue, 21 Jul 2020 17:52:50 -0700 (PDT)
+        Tue, 21 Jul 2020 20:53:33 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06M0VdrU023222;
+        Tue, 21 Jul 2020 20:52:57 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1wkfphv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 20:52:57 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06M0WM7V025442;
+        Tue, 21 Jul 2020 20:52:56 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32e1wkfphm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 21 Jul 2020 20:52:56 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06M0p2gV000691;
+        Wed, 22 Jul 2020 00:52:56 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02wdc.us.ibm.com with ESMTP id 32brq97rdd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 00:52:56 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06M0qt7o35193214
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 00:52:55 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AB3E7112064;
+        Wed, 22 Jul 2020 00:52:55 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B25BB112061;
+        Wed, 22 Jul 2020 00:52:54 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.65.219.47])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Jul 2020 00:52:54 +0000 (GMT)
+Subject: Re: [PATCH v4 5/7] powerpc/iommu: Move iommu_table cleaning routine
+ to iommu_table_clean
+To:     Leonardo Bras <leobras.c@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20200716071658.467820-1-leobras.c@gmail.com>
+ <20200716071658.467820-6-leobras.c@gmail.com>
+ <51235292-a571-8792-c693-d0dc6faeb21c@ozlabs.ru>
+ <0f4c2d84d0958e98e7ada53c25750fe548cadf0b.camel@gmail.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <d6078fce-bb5f-f829-5de2-5bce3cee2bd5@linux.vnet.ibm.com>
+Date:   Tue, 21 Jul 2020 19:52:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200721093748.26627-1-jcmvbkbc@gmail.com>
-In-Reply-To: <20200721093748.26627-1-jcmvbkbc@gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 22 Jul 2020 09:52:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARtTZD5x3CYLVj48dwC9n7Z4kMx1gCLq3aD2_OfQKuXnA@mail.gmail.com>
-Message-ID: <CAK7LNARtTZD5x3CYLVj48dwC9n7Z4kMx1gCLq3aD2_OfQKuXnA@mail.gmail.com>
-Subject: Re: [PATCH v2] xtensa: add boot subdirectories targets to extra-y
-To:     Max Filippov <jcmvbkbc@gmail.com>
-Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0f4c2d84d0958e98e7ada53c25750fe548cadf0b.camel@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-21_15:2020-07-21,2020-07-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 impostorscore=0 mlxscore=0 suspectscore=25 bulkscore=0
+ clxscore=1011 spamscore=0 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007210152
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 6:37 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
->
-> The commit 8fe87a92f262 ("kbuild: always create directories of targets")
-> exposed an issue in the xtensa makefiles that results in the following
-> build error in a clean directory:
->   scripts/Makefile.build:374: arch/xtensa/boot/boot-elf/boot.lds] Error 1
->     arch/xtensa/boot/boot-elf/bootstrap.S:21: fatal error:
->     opening dependency file arch/xtensa/boot/boot-elf/.bootstrap.o.d:
->     No such file or directory
->
-> Intermediate targets in arch/xtensa/boot/boot-elf don't get into
-> 'targets' and build directory is not created for them.
-> Add boot.lds and bootstrap.o to extra-y in subdirectories of
-> arch/xtensa/boot.
->
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-> ---
-> Changes v1->v2:
-> - update boot-redboot/Makefile in the same manner as boot-elf/Makefile.
+On 7/21/20 5:13 PM, Leonardo Bras wrote:
+> On Tue, 2020-07-21 at 14:59 +1000, Alexey Kardashevskiy wrote:
+>>
+>> On 16/07/2020 17:16, Leonardo Bras wrote:
+>>> Move the part of iommu_table_free() that does struct iommu_table cleaning
+>>> into iommu_table_clean, so we can invoke it separately.
+>>>
+>>> This new function is useful for cleaning struct iommu_table before
+>>> initializing it again with a new DMA window, without having it freed and
+>>> allocated again.
+>>>
+>>> Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+>>> ---
+>>>  arch/powerpc/kernel/iommu.c | 30 ++++++++++++++++++------------
+>>>  1 file changed, 18 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
+>>> index 9704f3f76e63..c3242253a4e7 100644
+>>> --- a/arch/powerpc/kernel/iommu.c
+>>> +++ b/arch/powerpc/kernel/iommu.c
+>>> @@ -735,21 +735,10 @@ struct iommu_table *iommu_init_table(struct iommu_table *tbl, int nid,
+>>>  	return tbl;
+>>>  }
+>>>  
+>>> -static void iommu_table_free(struct kref *kref)
+>>> +static void iommu_table_clean(struct iommu_table *tbl)
+>>
+>> iommu_table_free() + iommu_init_table() + set_iommu_table_base() should
+>> work too, why new helper?
+> 
+> iommu_table_free() also frees the tbl, which would need allocate it
+> again (new address) and to fill it up again, unnecessarily. 
+> I think it's a better approach to only change what is needed.
+> 
+>> There is also iommu_table_clear() which does a different thing so you
+>> need a better name.
+> 
+> I agree.
+> I had not noticed this other function before sending the patchset. What
+> would be a better name though? __iommu_table_free()? 
+> 
+>> Second, iommu_table_free
+>> use and it would be ok as we would only see this when hot-unplugging a
+>> PE because we always kept the default window.
+>> Btw you must be seeing these warnings now every time you create DDW with
+>> these patches as at least the first page is reserved, do not you?
+> 
+> It does not print a warning.
+> I noticed other warnings, but not this one from iommu_table_free():
+> /* verify that table contains no entries */
+> if (!bitmap_empty(tbl->it_ma
+> p, tbl->it_size))
+> 	pr_warn("%s: Unexpected TCEs\n", __func__);
+> 
+> Before that, iommu_table_release_pages(tbl) is supposed to clear the 
+> bitmap, so this only tests for a tce that is created in this short period.
+> 
+>> Since we are replacing a table for a device which is still in the
+>> system, we should not try messing with its DMA if it already has
+>> mappings so the warning should become an error preventing DDW. It is
+>> rather hard to trigger in practice but I could hack a driver to ask for
+>> 32bit DMA mask first, map few pages and then ask for 64bit DMA mask, it
+>> is not illegal, I think. So this needs a new helper - "bool
+>> iommu_table_in_use(tbl)" - to use in enable_ddw(). Or I am overthinking
+>> this?... Thanks,
+> 
+> As of today, there seems to be nothing like that happening in the
+> driver I am testing. 
+> I spoke to Brian King on slack, and he mentioned that at the point DDW
+> is created there should be no allocations in place.
+
+I think there are a couple of scenarios here. One is where there is a DMA
+allocation prior to a call to set the DMA mask. Second scenario is if the
+driver makes multiple calls to set the DMA mask. I would argue that a properly
+written driver should tell the IOMMU subsystem what DMA mask it supports prior
+to allocating DMA memroy. Documentation/core-api/dma-api-howto.rst should
+describe what is legal and what is not.
+
+It might be reasonable to declare its not allowed to allocate DMA memory
+and then later change the DMA mask and clearly call this out in the documentation
+if its not already.
+
+-Brian
 
 
-Oops, sorry and thanks.
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
-But, we need to fix this in the kbuild tree
-to retain the bisectability.
-
-
-I will insert the following before the offending commit.
-https://patchwork.kernel.org/patch/11676883/
-
-
-I used 'targets' instead of 'extra-y'
-because they are built on demand
-while building the final boot image.
-
-
-
-
->  arch/xtensa/boot/boot-elf/Makefile     | 1 +
->  arch/xtensa/boot/boot-redboot/Makefile | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
-> index 12ae1e91cb75..ad341c0fff15 100644
-> --- a/arch/xtensa/boot/boot-elf/Makefile
-> +++ b/arch/xtensa/boot/boot-elf/Makefile
-> @@ -15,6 +15,7 @@ export CPPFLAGS_boot.lds += -P -C
->  export KBUILD_AFLAGS += -mtext-section-literals
->
->  boot-y         := bootstrap.o
-> +extra-y                := boot.lds $(boot-y)
->
->  OBJS           := $(addprefix $(obj)/,$(boot-y))
->
-> diff --git a/arch/xtensa/boot/boot-redboot/Makefile b/arch/xtensa/boot/boot-redboot/Makefile
-> index 8632473ad319..022a76a2282a 100644
-> --- a/arch/xtensa/boot/boot-redboot/Makefile
-> +++ b/arch/xtensa/boot/boot-redboot/Makefile
-> @@ -13,6 +13,7 @@ endif
->  LD_ARGS        = -T $(srctree)/$(obj)/boot.ld
->
->  boot-y := bootstrap.o
-> +extra-y        := $(boot-y)
->
->  OBJS   := $(addprefix $(obj)/,$(boot-y))
->  LIBS   := arch/xtensa/boot/lib/lib.a arch/xtensa/lib/lib.a
-> --
-> 2.20.1
->
-
-
---
-Best Regards
-Masahiro Yamada
