@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CB7228E34
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B82228E3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 04:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731808AbgGVCab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 22:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731595AbgGVCaa (ORCPT
+        id S1731830AbgGVCkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 22:40:03 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:42974 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731614AbgGVCkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 22:30:30 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458A4C061794;
-        Tue, 21 Jul 2020 19:30:30 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x9so234463plr.2;
-        Tue, 21 Jul 2020 19:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=bZoAGO9UqMb9k2aaOxBapyIOFUbeVrqhQVyeMVxo/y4=;
-        b=bnQdt9ATSyUz5zZQXojiCtoKBhvzXBgHsCIH9YPlNsXvOyQrsb9ItQrhig+MOj+jRk
-         /aAZqNu++8a5NwgKC3uZPLBkeCvrlMX+/17F0twjfaH42ncxcMEZa0IJKYIbsRpEXPnY
-         OmUl+j8hCP5Xvg0xExlAV4rNLiOqTj37sV2d1qIE+j7e9RxF3EbbHpFyN6aqOOSIKCSS
-         +PPbQn8g5uWcbYebKGrxPlSx5znMhmwnSPeeDzf8bGF8gvAIiWeO2K3KIUHdmi8b1HaV
-         /6X4MAAvN2qssDqtSRlWGx7SI9wuzvNi/WsdNlBy1K/+i1jS6WBiiBEJsx0tVtHIcBH+
-         hWIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=bZoAGO9UqMb9k2aaOxBapyIOFUbeVrqhQVyeMVxo/y4=;
-        b=sBH7Pd4mskXoiz67B+5JNT4NPPpDg/8UW5R7f4vkfkKyIyR3S+0XrYelphnB+ttUV8
-         UnjyIEvy6Y0hwg8nIuOpu1NUUdrPubXl1wWC9C8jvTRnKbGqt/uzNf8cCfU1ZCnLPp/J
-         PRC4RsSl5v7z42Nc9468W9PZS+HKDt0kDBspH0JbUGoCU2Qeu3hHf2Wri0LSP1iF5G9K
-         Xi0hEvAT+cneP/f1JkfJo1JTBqtdyFxzy4ymDa23g1aibwpQVsjN4cdSQFNThhvaC/EH
-         rtElZhf9ckouMi7/Tm6Vqu+EkNtIy1ooxGT5TcWOuXcbY29Gv6ZrAvBOaAxMy0rf2tYE
-         jwyQ==
-X-Gm-Message-State: AOAM533FcUGveB9qpG6Vq2jV5q67BU/TmgvjolHpsYTsaH868yiN6qtc
-        As4NjkfJsAdl6M4NFM4swAA=
-X-Google-Smtp-Source: ABdhPJxdK2VUwuHMvp/Evo2Q/AsH/cbwz8vMbbEvYgZ8PkK3LXjNHTM+w46TivUSTnMCFqBjTw3LdA==
-X-Received: by 2002:a17:90a:72c7:: with SMTP id l7mr8213239pjk.34.1595385029794;
-        Tue, 21 Jul 2020 19:30:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p187sm20053969pfb.22.2020.07.21.19.30.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 21 Jul 2020 19:30:28 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>
-Subject: [PATCH -next] scsi: lpfc: Add dependency on CPU_FREQ
-Date:   Tue, 21 Jul 2020 19:30:27 -0700
-Message-Id: <20200722023027.36866-1-linux@roeck-us.net>
+        Tue, 21 Jul 2020 22:40:03 -0400
+X-Greylist: delayed 442 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 Jul 2020 22:40:02 EDT
+Received: from localhost (unknown [192.168.167.13])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 184F0B01D2;
+        Wed, 22 Jul 2020 10:32:35 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P17843T139821074855680S1595385153515891_;
+        Wed, 22 Jul 2020 10:32:35 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <0e840a0189b44ddac21ac488ab1df301>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     heiko@sntech.de
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, xxx@rock-chips.com,
+        xf@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v1] clk: Export __clk_lookup()
+Date:   Wed, 22 Jul 2020 10:32:30 +0800
+Message-Id: <20200722023230.10826-1-zhangqing@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 317aeb83c92b ("scsi: lpfc: Add blk_io_poll support for
-latency improvment"), the lpfc driver depends on CPUFREQ. Without it,
-builds fail with
+Export __clk_lookup() to support user built as module.
 
-drivers/scsi/lpfc/lpfc_sli.c: In function 'lpfc_init_idle_stat_hb':
-drivers/scsi/lpfc/lpfc_sli.c:7329:26: error:
-	implicit declaration of function 'get_cpu_idle_time'
+ERROR:
+drivers/clk/rockchip/clk.ko: In function
+`rockchip_clk_protect_critical':
+drivers/clk/rockchip/clk.c:741:
+undefined reference to `__clk_lookup'
 
-Add the missing dependency.
-
-Fixes: 317aeb83c92b ("scsi: lpfc: Add blk_io_poll support for latency improvment")
-Cc: Dick Kennedy <dick.kennedy@broadcom.com>
-Cc: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 ---
- drivers/scsi/Kconfig | 1 +
+ drivers/clk/clk.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
-index 571473a58f98..701b61ec76ee 100644
---- a/drivers/scsi/Kconfig
-+++ b/drivers/scsi/Kconfig
-@@ -1154,6 +1154,7 @@ source "drivers/scsi/qedf/Kconfig"
- config SCSI_LPFC
- 	tristate "Emulex LightPulse Fibre Channel Support"
- 	depends on PCI && SCSI
-+	depends on CPU_FREQ
- 	depends on SCSI_FC_ATTRS
- 	depends on NVME_TARGET_FC || NVME_TARGET_FC=n
- 	depends on NVME_FC || NVME_FC=n
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 3f588ed06ce3..600284fbb257 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -618,6 +618,7 @@ struct clk *__clk_lookup(const char *name)
+ 
+ 	return !core ? NULL : core->hw->clk;
+ }
++EXPORT_SYMBOL_GPL(__clk_lookup);
+ 
+ static void clk_core_get_boundaries(struct clk_core *core,
+ 				    unsigned long *min_rate,
 -- 
 2.17.1
+
+
 
