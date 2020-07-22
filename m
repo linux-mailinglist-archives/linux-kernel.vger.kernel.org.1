@@ -2,169 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7262295AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080642295AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731922AbgGVKIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39392 "EHLO
+        id S1731970AbgGVKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726153AbgGVKIQ (ORCPT
+        with ESMTP id S1731827AbgGVKIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:16 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB57C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id s10so1288581wrw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
+        Wed, 22 Jul 2020 06:08:17 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80790C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id q5so1311562wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tqJGHcqnXllhT3i9mtu0Lc+0SV7sbcx3SOZYG1XkKfA=;
-        b=p9PDOYZQBZFwInhDslg9WZYyix7m2mpmo8VPUoS4fP+oZL443IxmyIIyf8xSpK5H8K
-         goHRonE5J8yxyVzO2gJ5BXCGOSYZYPhnUhlqcZHkZLBJkDzXceAur9kOUe2NFkSLNAGR
-         soVnih22Rn8gbnCSRorLphgewQqtnwJZwEfBckmuzS/XL3/qoyBPk2yA0s0nOUxrHTPW
-         4uX82uZ1mzbXMn1GPjgh8Py8RyV3jE2ucb2932Yl2DkQCwD/pW7WHBKugp8ZM3yuWw/o
-         8fJhuK6k2W6jEHbuxTfpgLWhqItKYIk7qrX3FMlePfyKNdQ4cvRXfQsKvm57WN+NOokG
-         rh0A==
+        bh=b7MHzZy3dLUbUKgFsuoCa2haBWbgdsFC/rkxBf0pOCE=;
+        b=tylk89Y9R/WsK1vHSa15PqrZHOFhBR0CRu9KY18pz/omNvuM2CHoEE6LWu36LoUuT1
+         mej7PLQjvWB8T/yZ9bObTIBHJAGiBHufiKUFgqCekidPKOju7n951eHQKn1CjVLcufPs
+         Xr46TRJox8AFb0hEWTjbeVi7JUbC5s+1OdnLJN8NE9Nqun1cEVsB+rHKsa0bdrFjssgj
+         UHcQrc0E5GLjGAO2N0GPwshyYWFtybG9t68qTayXB9B6GLB63lyYvOx8tX/sqLGsXGLQ
+         DvBgNKOm6We3GUXKMm1eRYxu1A9mPSspxNb0MVAA5jnkuU/swCdfeX3w29dalDId6LpS
+         RlHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tqJGHcqnXllhT3i9mtu0Lc+0SV7sbcx3SOZYG1XkKfA=;
-        b=onnfd+Avn1ilRp1FcfZrqJ/Y4ve7yW9vcHsZ0zxBLXHKX2CRpgkYKVOLTHG3lLD1Fh
-         gGejlXa8MnRgpAFpn4d+/rCiJH9mw4AXGFhrTmRfsWl6IEwg8jwMOZU+sJAfkY+y7v7U
-         /rCGc8xZLhUmbwER4J4MChrbaCw368GTVEsLnGutxWhi+kruHSWjus8alUbDejAASZs+
-         s647n/XreItkFhFqu9WPx4fUVTR6IPC96u3j64/8E3ZDVY/oW5E5cFrCEtZMYj5TKP/X
-         AJ+crD1jcawe5wTD+/p4z8mNrVKAqLzBjpeVh32At2yBysUWbYHdenOR5h7r3yU4WdXN
-         HinA==
-X-Gm-Message-State: AOAM532PD9aR59GFIo43bZzqRp3yeaidrAuLXH3JD6UJiJLsHcbKr4dn
-        t7s8LmA9e+VwaHabB3rJRcnuRw==
-X-Google-Smtp-Source: ABdhPJyJF+IsSOwm01NqNnxjh+zl+l/Teu3+D5MO9+5TOTJgwB4WUDz6RUA3GHhCZeDUMWX9Wget5A==
-X-Received: by 2002:adf:9bdd:: with SMTP id e29mr17170709wrc.394.1595412495100;
-        Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
+        bh=b7MHzZy3dLUbUKgFsuoCa2haBWbgdsFC/rkxBf0pOCE=;
+        b=BrSvTw24OjGutp12rufvwWUgiJ/DD6qEt6+K3K6kJ5J7hraoKwPeIg7iYrlh7pcSYP
+         ncVMYEpu6yvq8YOZq5vh2/a9Qz6vJ1UJpxZossGHQLYZL+uwCyO1mL0KhBlZDGYbcUJ4
+         /iakK1tLL4ANss6tac3j6V1ME/p/1HrfFGYrsb+v+kkx7FoPLTt9dvcNXbzO4VgjNGcJ
+         VyezQIi1CE82eZea3AZWMI/mYysTXQNwWulxnEe1EHVSFIQTQa5qP7Devvvx2skQjwmT
+         v+ri/TWHaGAYNUC/MYK1ey6C5UuxH4ktmKQrZ48GmEj1j+p9WsPEHMjsKdlfobMkUuOq
+         tO3Q==
+X-Gm-Message-State: AOAM533w5cyvV/+uuKkG73QfqZtOwj9YUBjcLM8/udOeAaCk9+gWXpzF
+        /FwimuR+7dIhkX/dzQI+6Ynegw==
+X-Google-Smtp-Source: ABdhPJw5NX+3YS7bKnYW1y7+mhlDsZpx2T5bYmvlBREVySZL13To636OIvpkomV+FXJBeQHF+KYejA==
+X-Received: by 2002:adf:82f6:: with SMTP id 109mr9487741wrc.25.1595412496224;
+        Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.13
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:14 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Freeman Liu <freeman.liu@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 04/14] nvmem: sc27xx: add sc2730 efuse support
-Date:   Wed, 22 Jul 2020 11:06:55 +0100
-Message-Id: <20200722100705.7772-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 05/14] nvmem: core: Grammar fixes for help text
+Date:   Wed, 22 Jul 2020 11:06:56 +0100
+Message-Id: <20200722100705.7772-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Freeman Liu <freeman.liu@unisoc.com>
+From: Andreas Färber <afaerber@suse.de>
 
-Add support to the new efuse IP which is integrated in the SC2730
-which includes multiple blocks in a single chip.
+It's "an unsigned" but "a U".
+Similarly, "an entry" but "a binary entry".
 
-Signed-off-by: Freeman Liu <freeman.liu@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
+While at it, also drop superfluous articles for negative and zero.
+
+Signed-off-by: Andreas Färber <afaerber@suse.de>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/sc27xx-efuse.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ drivers/nvmem/core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
-index ab5e7e0bc3d8..c825fc902d10 100644
---- a/drivers/nvmem/sc27xx-efuse.c
-+++ b/drivers/nvmem/sc27xx-efuse.c
-@@ -4,12 +4,14 @@
- #include <linux/hwspinlock.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/nvmem-provider.h>
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index fc480d636be2..95bed31391cd 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -573,7 +573,7 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
  
- /* PMIC global registers definition */
- #define SC27XX_MODULE_EN		0xc08
-+#define SC2730_MODULE_EN		0x1808
- #define SC27XX_EFUSE_EN			BIT(6)
- 
- /* Efuse controller registers definition */
-@@ -49,12 +51,29 @@
- #define SC27XX_EFUSE_POLL_TIMEOUT	3000000
- #define SC27XX_EFUSE_POLL_DELAY_US	10000
- 
-+/*
-+ * Since different PMICs of SC27xx series can have different
-+ * address , we should save address in the device data structure.
-+ */
-+struct sc27xx_efuse_variant_data {
-+	u32 module_en;
-+};
-+
- struct sc27xx_efuse {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	struct hwspinlock *hwlock;
- 	struct mutex mutex;
- 	u32 base;
-+	const struct sc27xx_efuse_variant_data *var_data;
-+};
-+
-+static const struct sc27xx_efuse_variant_data sc2731_edata = {
-+	.module_en = SC27XX_MODULE_EN,
-+};
-+
-+static const struct sc27xx_efuse_variant_data sc2730_edata = {
-+	.module_en = SC2730_MODULE_EN,
- };
- 
- /*
-@@ -119,7 +138,7 @@ static int sc27xx_efuse_read(void *context, u32 offset, void *val, size_t bytes)
- 		return ret;
- 
- 	/* Enable the efuse controller. */
--	ret = regmap_update_bits(efuse->regmap, SC27XX_MODULE_EN,
-+	ret = regmap_update_bits(efuse->regmap, efuse->var_data->module_en,
- 				 SC27XX_EFUSE_EN, SC27XX_EFUSE_EN);
- 	if (ret)
- 		goto unlock_efuse;
-@@ -169,7 +188,7 @@ static int sc27xx_efuse_read(void *context, u32 offset, void *val, size_t bytes)
- 
- disable_efuse:
- 	/* Disable the efuse controller after reading. */
--	regmap_update_bits(efuse->regmap, SC27XX_MODULE_EN, SC27XX_EFUSE_EN, 0);
-+	regmap_update_bits(efuse->regmap, efuse->var_data->module_en, SC27XX_EFUSE_EN, 0);
- unlock_efuse:
- 	sc27xx_efuse_unlock(efuse);
- 
-@@ -219,6 +238,7 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
- 
- 	mutex_init(&efuse->mutex);
- 	efuse->dev = &pdev->dev;
-+	efuse->var_data = of_device_get_match_data(&pdev->dev);
- 
- 	econfig.stride = 1;
- 	econfig.word_size = 1;
-@@ -238,7 +258,8 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
+ /**
+  * nvmem_register() - Register a nvmem device for given nvmem_config.
+- * Also creates an binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
++ * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
+  *
+  * @config: nvmem device configuration with which nvmem device is created.
+  *
+@@ -728,7 +728,7 @@ static void devm_nvmem_release(struct device *dev, void *res)
+ /**
+  * devm_nvmem_register() - Register a managed nvmem device for given
+  * nvmem_config.
+- * Also creates an binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
++ * Also creates a binary entry in /sys/bus/nvmem/devices/dev-name/nvmem
+  *
+  * @dev: Device that uses the nvmem device.
+  * @config: nvmem device configuration with which nvmem device is created.
+@@ -772,7 +772,7 @@ static int devm_nvmem_match(struct device *dev, void *res, void *data)
+  * @dev: Device that uses the nvmem device.
+  * @nvmem: Pointer to previously registered nvmem device.
+  *
+- * Return: Will be an negative on error or a zero on success.
++ * Return: Will be negative on error or zero on success.
+  */
+ int devm_nvmem_unregister(struct device *dev, struct nvmem_device *nvmem)
+ {
+@@ -1375,7 +1375,7 @@ static int nvmem_cell_read_common(struct device *dev, const char *cell_id,
  }
  
- static const struct of_device_id sc27xx_efuse_of_match[] = {
--	{ .compatible = "sprd,sc2731-efuse" },
-+	{ .compatible = "sprd,sc2731-efuse", .data = &sc2731_edata},
-+	{ .compatible = "sprd,sc2730-efuse", .data = &sc2730_edata},
- 	{ }
- };
+ /**
+- * nvmem_cell_read_u16() - Read a cell value as an u16
++ * nvmem_cell_read_u16() - Read a cell value as a u16
+  *
+  * @dev: Device that requests the nvmem cell.
+  * @cell_id: Name of nvmem cell to read.
+@@ -1390,7 +1390,7 @@ int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val)
+ EXPORT_SYMBOL_GPL(nvmem_cell_read_u16);
  
+ /**
+- * nvmem_cell_read_u32() - Read a cell value as an u32
++ * nvmem_cell_read_u32() - Read a cell value as a u32
+  *
+  * @dev: Device that requests the nvmem cell.
+  * @cell_id: Name of nvmem cell to read.
+@@ -1405,7 +1405,7 @@ int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val)
+ EXPORT_SYMBOL_GPL(nvmem_cell_read_u32);
+ 
+ /**
+- * nvmem_cell_read_u64() - Read a cell value as an u64
++ * nvmem_cell_read_u64() - Read a cell value as a u64
+  *
+  * @dev: Device that requests the nvmem cell.
+  * @cell_id: Name of nvmem cell to read.
 -- 
 2.21.0
 
