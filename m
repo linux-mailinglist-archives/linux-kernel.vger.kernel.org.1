@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA409229E8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C24229E9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731802AbgGVRbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:31:34 -0400
-Received: from mga18.intel.com ([134.134.136.126]:45430 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729618AbgGVRbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:31:33 -0400
-IronPort-SDR: vsaViCIFWaWzsV1duEf+UJ9Rnzz6l6YJnK7Gs0sH8iJpaSBYttcLuAf44alFEChfm9BGO9yc4s
- F6yirzPU9Ryg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="137889673"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="137889673"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 10:31:32 -0700
-IronPort-SDR: 9KA8tOFeClihsbSPmzFnxHNBb7amvNxBdKPpI+73QEWWZiafkvXhH0hGecEubMDJ10KNheNc3Y
- pzkmRoucKjbA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="284294668"
-Received: from orsmsx101.amr.corp.intel.com ([10.22.225.128])
-  by orsmga003.jf.intel.com with ESMTP; 22 Jul 2020 10:31:32 -0700
-Received: from [10.254.181.38] (10.254.181.38) by ORSMSX101.amr.corp.intel.com
- (10.22.225.128) with Microsoft SMTP Server (TLS) id 14.3.439.0; Wed, 22 Jul
- 2020 10:31:31 -0700
-Subject: Re: [PATCH RFC v2 00/18] Add VFIO mediated device support and DEV-MSI
- support for the idxd driver
-To:     Dave Jiang <dave.jiang@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-CC:     <vkoul@kernel.org>, <maz@kernel.org>, <bhelgaas@google.com>,
-        <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
-        <tglx@linutronix.de>, <hpa@zytor.com>,
-        <alex.williamson@redhat.com>, <jacob.jun.pan@intel.com>,
-        <ashok.raj@intel.com>, <yi.l.liu@intel.com>, <baolu.lu@intel.com>,
-        <kevin.tian@intel.com>, <sanjay.k.kumar@intel.com>,
-        <tony.luck@intel.com>, <jing.lin@intel.com>,
-        <dan.j.williams@intel.com>, <kwankhede@nvidia.com>,
-        <eric.auger@redhat.com>, <parav@mellanox.com>,
-        <dave.hansen@intel.com>, <netanelg@mellanox.com>,
-        <shahafs@mellanox.com>, <yan.y.zhao@linux.intel.com>,
-        <pbonzini@redhat.com>, <samuel.ortiz@intel.com>,
-        <mona.hossain@intel.com>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        <linux-pci@vger.kernel.org>, <kvm@vger.kernel.org>
-References: <159534667974.28840.2045034360240786644.stgit@djiang5-desk3.ch.intel.com>
- <20200721164527.GD2021248@mellanox.com>
- <d0ab496e-8eb1-3365-8b2c-533cf95d6556@intel.com>
-From:   "Dey, Megha" <megha.dey@intel.com>
-Message-ID: <8655dcee-58e2-73fe-a2fd-ca8d770103d9@intel.com>
-Date:   Wed, 22 Jul 2020 10:31:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1729064AbgGVRem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:34:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17782 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726157AbgGVRem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 13:34:42 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MHVZgp184421;
+        Wed, 22 Jul 2020 13:33:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1x8b71f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 13:33:10 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06MHX9sL188302;
+        Wed, 22 Jul 2020 13:33:09 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1x8b70v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 13:33:09 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06MHLpNn018393;
+        Wed, 22 Jul 2020 17:33:07 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 32brbh56as-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 22 Jul 2020 17:33:07 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06MHX4Zi52494452
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 17:33:04 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB864A4057;
+        Wed, 22 Jul 2020 17:33:04 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27D58A4040;
+        Wed, 22 Jul 2020 17:33:01 +0000 (GMT)
+Received: from [9.85.73.85] (unknown [9.85.73.85])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 22 Jul 2020 17:33:00 +0000 (GMT)
+Subject: Re: [PATCH v4 07/12] ppc64/kexec_file: add support to relocate
+ purgatory
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kernel test robot <lkp@intel.com>, Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+References: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+ <159524956457.20855.12480643681198700190.stgit@hbathini.in.ibm.com>
+ <871rl4rxao.fsf@mpe.ellerman.id.au>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <2037fa32-28be-5995-1c22-c8b01cafe088@linux.ibm.com>
+Date:   Wed, 22 Jul 2020 23:03:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <d0ab496e-8eb1-3365-8b2c-533cf95d6556@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <871rl4rxao.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.254.181.38]
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_10:2020-07-22,2020-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ impostorscore=0 spamscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 suspectscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007220112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -70,78 +90,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/21/2020 11:00 AM, Dave Jiang wrote:
+On 22/07/20 9:55 am, Michael Ellerman wrote:
+> Hari Bathini <hbathini@linux.ibm.com> writes:
+>> Right now purgatory implementation is only minimal. But if purgatory
+>> code is to be enhanced to copy memory to the backup region and verify
+>> sha256 digest, relocations may have to be applied to the purgatory.
+>> So, add support to relocate purgatory in kexec_file_load system call
+>> by setting up TOC pointer and applying RELA relocations as needed.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> [lkp: In v1, 'struct mem_sym' was declared in parameter list]
+>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>> ---
+>>
+>> * Michael, can you share your opinion on the below:
+>>     - https://lore.kernel.org/patchwork/patch/1272027/
+>>     - My intention in cover note.
 > 
+> It seems like a lot of complexity for little benefit.
 > 
-> On 7/21/2020 9:45 AM, Jason Gunthorpe wrote:
->> On Tue, Jul 21, 2020 at 09:02:15AM -0700, Dave Jiang wrote:
->>> v2:
->>> IMS (now dev-msi):
->>> With recommendations from Jason/Thomas/Dan on making IMS more generic:
->>> Pass a non-pci generic device(struct device) for IMS management 
->>> instead of mdev
->>> Remove all references to mdev and symbol_get/put
->>> Remove all references to IMS in common code and replace with dev-msi
->>> remove dynamic allocation of platform-msi interrupts: no groups,no 
->>> new msi list or list helpers
->>> Create a generic dev-msi domain with and without interrupt remapping 
->>> enabled.
->>> Introduce dev_msi_domain_alloc_irqs and dev_msi_domain_free_irqs apis
->>
->> I didn't dig into the details of irq handling to really check this,
->> but the big picture of this is much more in line with what I would
->> expect for this kind of ability.
->>
->>> Link to previous discussions with Jason:
->>> https://lore.kernel.org/lkml/57296ad1-20fe-caf2-b83f-46d823ca0b5f@intel.com/ 
->>>
->>> The emulation part that can be moved to user space is very small due 
->>> to the majority of the
->>> emulations being control bits and need to reside in the kernel. We 
->>> can revisit the necessity of
->>> moving the small emulation part to userspace and required 
->>> architectural changes at a later time.
->>
->> The point here is that you already have a user space interface for
->> these queues that already has kernel support to twiddle the control
->> bits. Generally I'd expect extending that existing kernel code to do
->> the small bit more needed for mapping the queue through to PCI
->> emulation to be smaller than the 2kloc of new code here to put all the
->> emulation and support framework in the kernel, and exposes a lower
->> attack surface of kernel code to the guest.
->>
->>> The kernel can specify the requirements for these callback functions
->>> (e.g., the driver is not expected to block, or not expected to take
->>> a lock in the callback function).
->>
->> I didn't notice any of this in the patch series? What is the calling
->> context for the platform_msi_ops ? I think I already mentioned that
->> ideally we'd need blocking/sleeping. The big selling point is that IMS
->> allows this data to move off-chip, which means accessing it is no
->> longer just an atomic write to some on-chip memory.
->>
->> These details should be documented in the comment on top of
->> platform_msi_ops
+> AFAICS your final purgatory_64.c is only 36 lines, and all it does is a
+> single (open coded) memcpy().
+> 
+> It seems like we could write that in not many more lines of assembler
+> and avoid all this code.
 
-so the platform_msi_ops care called from the same context as the 
-existing msi_ops for instance, we are not adding anything new. I think 
-the above comment is a little misleading I will remove it next time around.
+Hi Michael,
 
-Also, I thought even the current write to on-chip memory is not atomic.. 
-could you let me know which piece of code you are referring to?
-Since the driver gets to write to the off chip memory, shouldn't it be 
-the drivers responsibility to call it from a sleeping/blocking context?
+I am not sure if you would agree with me on this, but I am looking at the
+purgatory code as work in progress. As mentioned in the cover note, I intend
+to add log messaging, sha256 verification into purgatory. And also change it
+to position independent executable after moving common purgatory code (sha256
+verification) to arch-independent code.
 
->>
->> I'm actually a little confused how idxd_ims_irq_mask() manages this -
->> I thought IRQ masking should be synchronous, shouldn't there at least 
->> be a
->> flushing read to ensure that new MSI's are stopped and any in flight
->> are flushed to the APIC?
-> 
-> You are right Jason. It's missing a flushing read.
-> 
->>
->> Jason
->>
-> .
+When I initially took this up, I wanted to add all the above changes too, but
+cut down on it, in the interest of time, first to get kdump (kexec -s -p)
+working in v5.9 merge window.
+
+But as the logic in patches 07/12 & 08/12 has been tested in kexec-tools code
+a lot of times and there are unlikely to be any changes to them except for
+__kexec_do_relocs() function (afaics), when -PIE would be used, I submitted them.
+With patch 09/12, I tried for a change that uses relocations while is minimal
+for now.
+
+Would you prefer it to be absolutely minimal by dropping patches 7 & 8 for
+now and writing the backup data copy code in assembler?
+
+Thanks
+Hari
