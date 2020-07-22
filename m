@@ -2,150 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B6A228ECE
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B436228ED5
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 05:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731974AbgGVDzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 23:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
+        id S1731999AbgGVD5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 23:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731856AbgGVDzp (ORCPT
+        with ESMTP id S1731886AbgGVD5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 23:55:45 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CEAC0619DB
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 20:55:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id y3so480830wrl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 20:55:44 -0700 (PDT)
+        Tue, 21 Jul 2020 23:57:04 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE054C061794;
+        Tue, 21 Jul 2020 20:57:03 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id k5so470043pjg.3;
+        Tue, 21 Jul 2020 20:57:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AFC4e1lyE7ts6QLvqBb4PFiSTT9NQBcFvnLiz1+hr48=;
-        b=srkmkvhDKIkC7xQ+Erl9q+ptkCX3zSzRoCdUCdYWrtYxQgtdnbMIebHVIlnrXMuECG
-         SlRnahF0UnWTSTGwaOSTKHTlLgKzRoMS0IW5PLwk/089WiaVhC7HDzMEs3HeK6eRkrE0
-         ATmz2QKDy/y/DlIo+2cwk3NtTspyqAwzk7fP+H1sKOpzTaKI5x/kdGVgh0GHGQ9wZTdU
-         wAp87P7cDy9vH2Dz8YnBjmaA4+fff3ouquN8cIASp9+HDaaGgv1Xv2Bb5Mm16InXgdJ+
-         qMObXjMx+gTN/PngzgaIdoYF6LTreTu6hcGLIuU97b5KBh8+HWF/4R3FztO8TKb+hE0H
-         SKow==
+        bh=Ejoo3rO99IZBQPRKW1OTgn8zf/3hAJuMMg27TmWfP+Q=;
+        b=VXVhWK8MlscmTy1bvIXvmKuFGU44qSqaAtvdMosv9fuyjE2YXLfjBezi75DjdgNsI6
+         WetaYfdjiLVp+vV7tL135FtWDYArPWzyoRuYPS44KnuP8JCwAwZ8nJx6mKdsGcmjFN4O
+         UdkHFqQ74wK3M6V2WZi7iKlzKXXXBmyBR8MujScSCmAuBO4CTBw6eJ0+KGgZCpmT/5Eb
+         mFzXvIR/so+VjJbj5nVz+DoxYKffQKoBmq/MSu9pHRzD3o3y9BBC4ZmEJy5Lvp1U9l8z
+         Q+ShxUIx22H7nCkH3yCHWO8EU+hta5wyCOcUImjBbvx5+r+PSnNMPkk+pwiNClDgM5u6
+         Zwpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AFC4e1lyE7ts6QLvqBb4PFiSTT9NQBcFvnLiz1+hr48=;
-        b=CXWTWZS0GrSvCuVMmrfmp/NkxBSQKE6puZRGt3pUfSBDVzQ6bSiJwRv5dgWM9qiy5l
-         IqlPP3P6QQ+WBweoBfOoQg8a9BdhB+dusqjBpVboeg08ueAoywLvGDrSoCafaeEPJ9Ej
-         kqE0t0XnCvLOMBGasqQpRtc98Gik+fuh4M9cYkbuEcsAcPvrZG0DaKNPF2ZaUfvINNJo
-         1zVQsFZMEYFOXya5S4qmxmhuZNaXcajyuW5CX4JMS0xR1HPK8aGwSnOBL1mrK+iLkDNY
-         yHWY/yd7shS29ZN6J4jt3RBLdQVQFMGfQuLOL/RaoRWnvTLz6jHcBG/9qlrnvqdrK0iS
-         Qwag==
-X-Gm-Message-State: AOAM530xmb97FkuwEbSdL7NpPCxa02WGJsYRZIK9B/WlGKWylM8BlkKZ
-        CC24MgDUOGDwOgxdsYUrgKPwWxcVS5np9A792Y8dig==
-X-Google-Smtp-Source: ABdhPJwviiRhh8Ew5FwFPWSNY3nE65EKkh19UnrCdWqhsEpXCx9HCf/vqo6H6vcfqlvdohr7KotRJueK95xx91UgOUU=
-X-Received: by 2002:adf:f247:: with SMTP id b7mr13963465wrp.128.1595390143363;
- Tue, 21 Jul 2020 20:55:43 -0700 (PDT)
+        bh=Ejoo3rO99IZBQPRKW1OTgn8zf/3hAJuMMg27TmWfP+Q=;
+        b=IYi7eIDcoLAAFmRuUl2GWIkkbXS5tkN3Pd/9AyKbe8bqed58miNghYAjtaRvInZ2TK
+         jvBWiLqbMtN6o0aBgLPc3Jd388AfNLFIdiUZiFGJIW4yCnOzZbQ+YKfWfn6fV9sK1cP6
+         x77za2B8yg59nVG/OfjAW7m89UDEbndzDjvELWpjpaYzl7uOkSddUAWkfpY5L7br1Hzt
+         cwVppYwcb1i1b8zKD7ROkcHxLrY/lPUxVBM1mlCbM6qgY/UqWp7kWavdYdt5plSES1iW
+         MrIZbjV+Tmyldaoe6nanA4NfcDDeEKxl6+81jqBh2mEexf0shHN6cS+T+bPpbvRJVLtp
+         wREA==
+X-Gm-Message-State: AOAM532G3fbOEw6kET9eRvfzbWOdrA56qIc3GImDIO39EZ/9krXaw+U9
+        ze54LJCwApJfFr7aDNbEpsONwkAMKFo4wTB++L2auw==
+X-Google-Smtp-Source: ABdhPJzsrWI6yfXZXfqTDdc6Eemz6SwGqaWtrigchgHMM/oN4Qj11ro+26f0+OFV8IV1aztKYu4E5wJ36htkctlhZ90=
+X-Received: by 2002:a17:902:8ecb:: with SMTP id x11mr19444104plo.123.1595390223558;
+ Tue, 21 Jul 2020 20:57:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200717075101.263332-1-anup.patel@wdc.com> <20200717075101.263332-5-anup.patel@wdc.com>
- <CAOnJCULcffij3-d-TsQixj5TZdatBdUcC-y73L=W-+5h41ytKQ@mail.gmail.com>
- <CAAhSdy1cbKA9iwBPYMX5xaYFe_BxnB2Sm_ftHPPDq+96SeKbnA@mail.gmail.com> <b2d7b1d6-db33-7b40-9511-95de991e9ad6@gmail.com>
-In-Reply-To: <b2d7b1d6-db33-7b40-9511-95de991e9ad6@gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 22 Jul 2020 09:25:31 +0530
-Message-ID: <CAAhSdy1Dx+oP0guRGvCFa61gL93R+pcQDYLdMpo+LaOjA5tvBQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] dt-bindings: timer: Add CLINT bindings
-To:     Sean Anderson <seanga2@gmail.com>
-Cc:     Atish Patra <atishp@atishpatra.org>, devicetree@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Emil Renner Berhing <kernel@esmil.dk>,
-        Anup Patel <anup.patel@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Albert Ou <aou@eecs.berkeley.edu>
+References: <20200722004707.779601-1-masahiroy@kernel.org>
+In-Reply-To: <20200722004707.779601-1-masahiroy@kernel.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Tue, 21 Jul 2020 20:56:52 -0700
+Message-ID: <CAMo8BfJv38cPOAOOMGn8R7-CtBy2BCbMRkMAeXNZ=A4YbtTPbw@mail.gmail.com>
+Subject: Re: [PATCH] xtensa: add boot subdirectories build artifacts to 'targets'
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 5:48 PM Sean Anderson <seanga2@gmail.com> wrote:
+On Tue, Jul 21, 2020 at 5:47 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On 7/20/20 9:15 PM, Atish Patra wrote:
-> > On Fri, Jul 17, 2020 at 12:52 AM Anup Patel <anup.patel@wdc.com> wrote:
-> >>
-> >> We add DT bindings documentation for CLINT device.
-> >>
-> >> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> >> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> >> Tested-by: Emil Renner Berhing <kernel@esmil.dk>
-> >> ---
-> >>  .../bindings/timer/sifive,clint.yaml          | 58 +++++++++++++++++++
-> >>  1 file changed, 58 insertions(+)
-> >>  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >> new file mode 100644
-> >> index 000000000000..8ad115611860
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> >> @@ -0,0 +1,58 @@
-> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >> +%YAML 1.2
-> >> +---
-> >> +$id: http://devicetree.org/schemas/timer/sifive,clint.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: SiFive Core Local Interruptor
-> >> +
-> >> +maintainers:
-> >> +  - Palmer Dabbelt <palmer@dabbelt.com>
-> >> +  - Anup Patel <anup.patel@wdc.com>
-> >> +
-> >> +description:
-> >> +  SiFive (and other RISC-V) SOCs include an implementation of the SiFive
-> >> +  Core Local Interruptor (CLINT) for M-mode timer and M-mode inter-processor
-> >> +  interrupts. It directly connects to the timer and inter-processor interrupt
-> >> +  lines of various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local
-> >> +  interrupt controller is the parent interrupt controller for CLINT device.
-> >> +  The clock frequency of CLINT is specified via "timebase-frequency" DT
-> >> +  property of "/cpus" DT node. The "timebase-frequency" DT property is
-> >> +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    items:
-> >> +      - const: sifive,clint0
-> >> +      - const: sifive,fu540-c000-clint
-> >> +
-> >> +    description:
-> >> +      Should be "sifive,<chip>-clint" and "sifive,clint<version>".
-> >> +      Supported compatible strings are -
-> >> +      "sifive,fu540-c000-clint" for the SiFive CLINT v0 as integrated
-> >> +      onto the SiFive FU540 chip, and "sifive,clint0" for the SiFive
-> >> +      CLINT v0 IP block with no chip integration tweaks.
-> >> +      Please refer to sifive-blocks-ip-versioning.txt for details
-> >> +
-> >
-> > As the DT binding suggests that the clint device should be named as "sifive,**",
-> > I think we should change the DT property in kendryte dts as well.
+> Xtensa always rebuilds the following even if nothing in the source code
+> has been changed. Passing V=2 shows the reason.
 >
-> The kendryte device is based on Rocket Chip, not any SiFive IP/device.
-> If anything, the general binding should be "chipsalliance,clint" and the
-> specific bindings should be "sifive,clint" and "kendryte,clint" (or
-> "canaan,clint").
+>   AS      arch/xtensa/boot/boot-elf/bootstrap.o - due to bootstrap.o not in $(targets)
+>   LDS     arch/xtensa/boot/boot-elf/boot.lds - due to boot.lds not in $(targets)
+>
+> They are built by if_changed(_dep). Add them to 'targets' so .*.cmd files
+> are included.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+>  arch/xtensa/boot/boot-elf/Makefile     | 1 +
+>  arch/xtensa/boot/boot-redboot/Makefile | 1 +
+>  2 files changed, 2 insertions(+)
 
-AFAIK, Palmer clearly mentioned in previous discussion that CLINT
-spec is still owned by SiFive. No matter who implements CLINT device
-in their SOC, we will need one compatible string to represent the
-spec version (i.e. "sifive,clint0") and another compatible representing
-specific implementation (for kendryte this can be "kendryte,k210-clint").
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-Regards,
-Anup
+-- 
+Thanks.
+-- Max
