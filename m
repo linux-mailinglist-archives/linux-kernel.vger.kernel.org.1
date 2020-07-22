@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8955229E5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D61F229E63
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732163AbgGVRVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:21:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:60068 "EHLO foss.arm.com"
+        id S1732259AbgGVRVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:21:23 -0400
+Received: from mga09.intel.com ([134.134.136.24]:63218 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728315AbgGVRVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:21:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7478ED6E;
-        Wed, 22 Jul 2020 10:21:11 -0700 (PDT)
-Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 50F6F3F66F;
-        Wed, 22 Jul 2020 10:21:10 -0700 (PDT)
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mike.leach@linaro.org,
-        mathieu.poirier@linaro.org, coresight@lists.linaro.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [RFC PATCH 14/14] dts: bindings: coresight: ETMv4.4 system register access only units
-Date:   Wed, 22 Jul 2020 18:20:40 +0100
-Message-Id: <20200722172040.1299289-15-suzuki.poulose@arm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200722172040.1299289-1-suzuki.poulose@arm.com>
-References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
+        id S1729000AbgGVRVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 13:21:22 -0400
+IronPort-SDR: WNw6q0DtBPk5ZKtpzA7k8fAc1GELZY3kHKkAb87S53EQsbIwmAieSOcp92ovEstTyDkDsKsXqm
+ IRc9cwnvQTtg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="151704344"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="151704344"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 10:21:22 -0700
+IronPort-SDR: kb3GPD/NL04hNIlvuFoMEq6vktJwtVn5I98YLypdhtdocLwHYlHIfAQpsnNi7Nsj6nL9eefSeM
+ GSIytoBMR73g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="270809306"
+Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Jul 2020 10:21:21 -0700
+Date:   Wed, 22 Jul 2020 10:21:21 -0700
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Bruce Schlobohm <bruce.schlobohm@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        amd-gfx <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH v6 01/12] iommu: Change type of pasid to u32
+Message-ID: <20200722172120.GA75908@romley-ivt3.sc.intel.com>
+References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
+ <1594684087-61184-2-git-send-email-fenghua.yu@intel.com>
+ <20200722140340.GJ27672@8bytes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722140340.GJ27672@8bytes.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bindings for ETMv4.4 and later with only system register
-access.
+Hi, Joerg,
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
----
- Documentation/devicetree/bindings/arm/coresight.txt | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Wed, Jul 22, 2020 at 04:03:40PM +0200, Joerg Roedel wrote:
+> On Mon, Jul 13, 2020 at 04:47:56PM -0700, Fenghua Yu wrote:
+> > PASID is defined as a few different types in iommu including "int",
+> > "u32", and "unsigned int". To be consistent and to match with uapi
+> > definitions, define PASID and its variations (e.g. max PASID) as "u32".
+> > "u32" is also shorter and a little more explicit than "unsigned int".
+> > 
+> > No PASID type change in uapi although it defines PASID as __u64 in
+> > some places.
+> > 
+> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> > Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> > Reviewed-by: Tony Luck <tony.luck@intel.com>
+> > Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> > Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> 
+> For the IOMMU parts:
+> 
+> Acked-by: Joerg Roedel <jroedel@suse.de>
 
-diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
-index d711676b4a51..cfe47bdda728 100644
---- a/Documentation/devicetree/bindings/arm/coresight.txt
-+++ b/Documentation/devicetree/bindings/arm/coresight.txt
-@@ -34,9 +34,13 @@ its hardware characteristcs.
- 					Program Flow Trace Macrocell:
- 			"arm,coresight-etm3x", "arm,primecell";
- 
--		- Embedded Trace Macrocell (version 4.x):
-+		- Embedded Trace Macrocell (version 4.x), with memory mapped access.
- 			"arm,coresight-etm4x", "arm,primecell";
- 
-+		- Embedded Trace Macrocell (version 4.4 and later) with system
-+		  register access only.
-+			"arm,coresight-etm-v4.4";
-+
- 		- Coresight programmable Replicator :
- 			"arm,coresight-dynamic-replicator", "arm,primecell";
- 
--- 
-2.24.1
+Thank you!
 
+-Fenghua 
