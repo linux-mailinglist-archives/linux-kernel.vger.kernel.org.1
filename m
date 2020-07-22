@@ -2,111 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BFD22A084
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615A922A095
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731927AbgGVULD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 16:11:03 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59227 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbgGVULD (ORCPT
+        id S1732892AbgGVUMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 16:12:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732359AbgGVUML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:11:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595448661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+z8Sjy8ZptOYQPBj+H820e2EKukutEsqDOT5iiJ3PDM=;
-        b=YFI/F6onfTPy859uWiW4y+mYExQ6TcfQmCBeorkF4J6L6xqj70gQxQGv9n0DtlZVxTSuHp
-        r1auikkcfi1FnatLezCbA2zDZZ299eGayp3hbuqTloxS11NQeqLJLFpsiWX5cfHMR75R8z
-        +gaY6Ol1gx640keM/pPKpat4KZnG8C0=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-DATXNlbRMde62i8CrBzfFA-1; Wed, 22 Jul 2020 16:11:00 -0400
-X-MC-Unique: DATXNlbRMde62i8CrBzfFA-1
-Received: by mail-qk1-f199.google.com with SMTP id h4so2202968qkl.23
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:11:00 -0700 (PDT)
+        Wed, 22 Jul 2020 16:12:11 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ACA9C0619DC;
+        Wed, 22 Jul 2020 13:12:11 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id by13so2616575edb.11;
+        Wed, 22 Jul 2020 13:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yLTkTEgt4xUndPHOWAIycnFkBJ6E45HfBo7NtTWjQFQ=;
+        b=alnd3LC7bZF88GYjqDHdUOdzWFQohQLO9Zvh+1FMMZ/ID4cWZFhRotTy+TXlkoXEcf
+         /R/ehmAb7jpmit194UXGc9oHqec/B+O6xg0Xi4GOVYWeopAdz+GgbJH4mtBQ3L/F/m/7
+         6nuEk1jyoebnggTXW43/6lCtVcqTkYhJqL9NfUvfcg4Y3Zkp/E7L6EyLalgH29DAEicz
+         2QuLDQthO5ZatNjafPEkj3YXlG8nab81KYeYJ8FrgNaJNJTNOCjhCCUfRCUI3LM5jZRr
+         eQSYhuGhZTnw9eyUG6mJd6PFKgfPsTZBfG6nZJh+blW6cQC6zcwQVNjVtrQtUgKEYDh8
+         /E1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=+z8Sjy8ZptOYQPBj+H820e2EKukutEsqDOT5iiJ3PDM=;
-        b=FE3usbBMpGDn0huTpwgRj+/+zNqj5OnMlVfHFbF+7+kBV2SglfSFxSngO7lh8VeZQW
-         GYVulmYP6NPXqqWzAKaqggfJim8Bw6ELP73VYE9e1p+lzDrz5j7+uNwEzio8DQWxUXQD
-         IATSO1pXgL06fB9sMVuVt4jVXD7EO7o5B0kV1ymOtXKYRiUJk82tVpvRBaPhqCS8/j76
-         oH8nKEKnNcZm6rfQD/+VNlgL/80ER35Xx+h4R1PX2Ly2bZDnFUTw5PDTXLK5A/yJ7p9O
-         6iwC+I8jvFiSPQO0gUpV4nNYSmgnrqBrAyXRMi5D2YO166svmDePqFxan4QlYAAH1CpF
-         nXiA==
-X-Gm-Message-State: AOAM5301ECUu6ntGbDmjw9OKL0HrmupWuGJrOE+Wls4BECTnv/0C9ZuI
-        YSNuTiZEFLfNVbm7rtCTSCWF2UoMgtaGj56d7Dn/9cIAh5fleGSjNTaOA3UneaJqYlsgrRorVW1
-        OfQBUQqm3fH59SVvytmpoW0iR
-X-Received: by 2002:a05:620a:230:: with SMTP id u16mr1636733qkm.387.1595448659274;
-        Wed, 22 Jul 2020 13:10:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzh0P/cdl6d05hqmcebLmXrq3sWiqikrcPUldQ6BQFsWF/cpmfObT/Kf16aCA1SldNDaH+SmQ==
-X-Received: by 2002:a05:620a:230:: with SMTP id u16mr1636711qkm.387.1595448659017;
-        Wed, 22 Jul 2020 13:10:59 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o2sm743539qkh.102.2020.07.22.13.10.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 13:10:58 -0700 (PDT)
-Subject: Re: [PATCH v2] KEYS: remove redundant memset
-To:     Joe Perches <joe@perches.com>, dhowells@redhat.com,
-        jarkko.sakkinen@linux.intel.com, jmorris@namei.org,
-        serge@hallyn.com, denkenz@gmail.com, marcel@holtmann.org
-Cc:     keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200722134610.31947-1-trix@redhat.com>
- <2bdd6b8ec731d180023d593b679afc66def19b4f.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <e36c364e-22f4-c520-04da-ca1196fec049@redhat.com>
-Date:   Wed, 22 Jul 2020 13:10:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yLTkTEgt4xUndPHOWAIycnFkBJ6E45HfBo7NtTWjQFQ=;
+        b=soLDqKv7qXux48AyLsDhwsm25+tvt8r+dxM/DAU0BgHFt45HEhcmaGvzN9/AS7U/ji
+         CbtrQkrbqa8Rq1T/UGl3ZGxjn9Wd+4pPMdM6+e02HA+9ajfTCthTuJlkMn642fR16OZ7
+         XiJlwa0Knac9HNgPhl66zDBb71BtzVdT7htYzaLjevCYZeGP5YTvHsvkTLnJ/CwbCFvx
+         ipuYzxE9aTdXi3b3cF9oqrfGrg4N+q6SpAyQVsx0qH8rD35+tT9nt4QhnaFVLrUuoiY1
+         bcIJYpWuWw3D7TFGjsVgO9N9IIh9/ebtpA1hM2xAasJOBqRq0BiYIVzLnc81kUMACqfe
+         yOuA==
+X-Gm-Message-State: AOAM531VtVWZe+hLnsVmBZ9iLAkg+YwscEkG+GBXCzjxJ18q5CXMsoaT
+        Uepj8wQKYNNd7CT8PpbxAn9K/YcTzJEdCa9btNI=
+X-Google-Smtp-Source: ABdhPJwD6t4bQXAbY3FRXxsABN08L0GguqxGCWf0AiDRNWyt939YcTYR9qUzVbF6BmoonWaoJpBlCZjucX05l9KQJZ4=
+X-Received: by 2002:a05:6402:1ade:: with SMTP id ba30mr1031198edb.231.1595448729790;
+ Wed, 22 Jul 2020 13:12:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2bdd6b8ec731d180023d593b679afc66def19b4f.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200704122809.73794-1-konradybcio@gmail.com> <20200704130922.GB21333@willie-the-truck>
+ <20200705033511.GR388985@builder.lan> <CAMS8qEWO-1mNd12Zs-2WogCrgNF5=6RkF=Z1pTeOZxSuKjx+qg@mail.gmail.com>
+ <20200721154415.GA5758@jcrouse1-lnx.qualcomm.com> <CAMS8qEXNh6n9SpMkPAr8cPneasPvJPELD2TZ4gxUf0byxNePbg@mail.gmail.com>
+ <20200721235650.GN388985@builder.lan>
+In-Reply-To: <20200721235650.GN388985@builder.lan>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Wed, 22 Jul 2020 22:11:34 +0200
+Message-ID: <CAMS8qEVXGddTdbrPwK3NJMx71HH0hoVyqiJG6-g9tiBRMRYZ8w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] iommu/arm-smmu: Implement qcom,skip-init
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Will Deacon <will@kernel.org>, skrzynka@konradybcio.pl,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>Is the problem on SDM630 that when you write to SMR/S2CR the device
+>reboots? Or that when you start writing out the context bank
+>configuration that trips the display and the device reboots?
 
-On 7/22/20 1:02 PM, Joe Perches wrote:
-> On Wed, 2020-07-22 at 06:46 -0700, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> Reviewing use of memset in keyctrl_pkey.c
->>
->> keyctl_pkey_params_get prologue code to set params up
->>
->> 	memset(params, 0, sizeof(*params));
->> 	params->encoding = "raw";
->>
->> keyctl_pkey_query has the same prologue
->> and calls keyctl_pkey_params_get.
->>
->> So remove the prologue.
->>
->> Fixes: 00d60fd3b932 ("KEYS: Provide keyctls to drive the new key type ops for asymmetric keys [ver #2]")
-> At best, this is a micro optimization.
-Yes
-> How is this appropriate for a Fixes: line?
-Removing unneeded code is not a fix?
->
->> diff --git a/security/keys/keyctl_pkey.c b/security/keys/keyctl_pkey.c
-> []
->> @@ -166,8 +166,6 @@ long keyctl_pkey_query(key_serial_t id,
->>  	struct kernel_pkey_query res;
->>  	long ret;
->>  
->> -	memset(&params, 0, sizeof(params));
->> -
->>  	ret = keyctl_pkey_params_get(id, _info, &params);
->>  	if (ret < 0)
->>  		goto error;
+I added some debug prints and the phone hangs after reaching the
+seventh CB (with i=6) at
 
+arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_FSR, ARM_SMMU_FSR_FAULT);
+
+line in arm_smmu_device_reset.
+
+Konrad
