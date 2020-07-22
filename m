@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08560229433
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 10:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A248E229436
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731015AbgGVI7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 04:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S1731069AbgGVJAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbgGVI7y (ORCPT
+        with ESMTP id S1726870AbgGVJAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 04:59:54 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766B5C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 01:59:54 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id b6so1088821wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 01:59:54 -0700 (PDT)
+        Wed, 22 Jul 2020 05:00:03 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB218C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:00:02 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id y3so1111744wrl.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 02:00:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F5fdDXlwfjwIinCr8su6jkG9d0SAhaK9tLXOO3l7hIE=;
-        b=F8CTMULFLzaFjIJ7+GwGlU2MUkJ1AUy0wyKX5EjDTQRi0H7mDwjpZdhr2w7fl993fA
-         gPQEqFDtN8Md7QihaN/WgOiTyR4PUX7IK8UMiBa4BIQATy1996tbDMDaQoTj7gTsp6yr
-         ka0cb7nMcIHpxihoPxxO4JjzjsRqnjTK8Ao2yOckwYFGzKOLLOJP3dgJ+J5tgT7noQ2z
-         MIC9Ns2MIs3bRqR+Ul6yfnvgfZopdO/N95oioHCMbj3nm/S5qn3GRx1TAl5ZoD9pr6KL
-         jDx1IFyJ3P6S1ggft6hDordP2BgEn/YnTIzL2vw6e0DY5Kl6XX/6zU9HUpLMCskUeL/E
-         PUTQ==
+        bh=vEurh4VLUZ8RQchp/nZukq9HgvAFG/riRsef7JlAm2g=;
+        b=M4C+ZODBdCX7zNkJ/IbfXpaaNE2kidJCTZUSur0UicCWZAkzLX1G06l9y+CKC5eVvR
+         rsgIuelUOYK2MQkfN8g3TX7hXt7EYdc7UGzFKYL9P0uw8j4UnVJaupRah9W3Zu0lW2s8
+         lG6JTPuc2B/j9eM33DuEXX1eiK85Q6wh07wDLhFRga8Sleg/RMNUbRJDhzYfdoxjejWA
+         C806h4znm9hB1t1QSWRqX093eMydW44pFwwnbD5+TybK3V86JDrP/ZX+HwsqhxQUXqKy
+         11SGBDcoYQn66zdF6U0T+G66WAiW98e1IUOuK8S/y9edFAJoXUFAiKfJ/SmfWYE/0JGG
+         Cnzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=F5fdDXlwfjwIinCr8su6jkG9d0SAhaK9tLXOO3l7hIE=;
-        b=ogPzz65efq+QjjT6W0ZKNEhlS8d9lwz7uS5eHOhL9zXaKi24bgf9Pz8Rtrxpp0sNSP
-         cOak/Zyw4C8rH81rQAwNSPsdF0IggZmVB77rjyuOxhFEBkhEPVqu7rcT1pyZN14xbtuC
-         +iFZ5kf2V983UznonMBiY6xMXb9h94GkbZPmYQ49BZuu2Kwn4pmiywgiN9JygVBWbJ+k
-         T1B2dBJiCZ5DIQMSr+ACEusxxGbJy/8McNTulPJR75VSvUWBBNtdy2UQE6SqaAIkoRZi
-         y3jmnp1CHMZNT0CA4jwB1oXOgpOR6OmUmvhGls+zDp4mTFZwil/AIUUKUU+CSXm8WzFz
-         gDpg==
-X-Gm-Message-State: AOAM533WK42S0uHcCP/0ANENQGA8g/Oj0laWxJ4LmT7NoFwJisodyXsD
-        K7m+AYbsJz0giN4468cBskEdFm5ZeqI=
-X-Google-Smtp-Source: ABdhPJz5pnDLlqGufOGNaHfWViUPSnadwn3IJj6U3cxvEwG4ZWCyJKVpmL3uCTm09bH2LYUGThMBjw==
-X-Received: by 2002:a05:6000:1cf:: with SMTP id t15mr32364208wrx.180.1595408393160;
-        Wed, 22 Jul 2020 01:59:53 -0700 (PDT)
+        bh=vEurh4VLUZ8RQchp/nZukq9HgvAFG/riRsef7JlAm2g=;
+        b=t3LYiEULJa7UOENhIbBSCBJg+PkPphrf/cstGwqSgynfDjRNW0CYDMp40sNzjFx8pF
+         cA8OZ4RHMLsnj/JIxVwVJXjiGuJBbdrWNGGh82iqeoxNjpSsm+/2q3ihejB9ydYJDenO
+         SRqw9sLvRZzmSOhlJ01H69JS/YW+K8VRJ9VV6pX3Ou/ScnqN1hw9tiT18VxE5bBL/ER+
+         KiuFJnIj4k44A7J0AFYAQY8pKXw6jXbU+4pZGRvmwkNdy0YPM/AowQAbnAp47RPsXki/
+         cdepzXMIb40AaoeGrXJRDKWzBTkrAiVbRKzagQg0ARA5ci3LW5IIpxm8uxY8jjxwvmvY
+         hJuQ==
+X-Gm-Message-State: AOAM532/PvxjYSl16LIXnOLg1fJcGYMaZU22D4O54WPnUCwcq7R95uB5
+        JNaP6FaHpQ4zHo5NddakJ/21fA==
+X-Google-Smtp-Source: ABdhPJzcngyS0WMyfwBqxzzteoncRL6n3m7nbTadp0pXZyIDMhEKrztRiYPDtfC+9R8Fg3A+bYA6xg==
+X-Received: by 2002:a5d:4283:: with SMTP id k3mr29734493wrq.322.1595408400486;
+        Wed, 22 Jul 2020 02:00:00 -0700 (PDT)
 Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id 1sm6402337wmf.0.2020.07.22.01.59.52
+        by smtp.googlemail.com with ESMTPSA id f9sm40793497wru.47.2020.07.22.01.59.59
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Jul 2020 01:59:52 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 6/6] ASoC: q6asm-dai: add support to
- set_codec_params
+        Wed, 22 Jul 2020 01:59:59 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 2/6] ALSA: compress: add new ioctl for setting
+ codec parameters
 To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         broonie@kernel.org
 Cc:     alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
         tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
         vkoul@kernel.org
 References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
- <20200721170007.4554-7-srinivas.kandagatla@linaro.org>
- <970e7065-4731-e553-f07f-896aaa57c5dc@linux.intel.com>
+ <20200721170007.4554-3-srinivas.kandagatla@linaro.org>
+ <ee2dc239-c1a7-f48f-c6f0-ec6e61ccdda6@linux.intel.com>
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <13cb597d-996a-1772-e3db-ffece4a70fb8@linaro.org>
-Date:   Wed, 22 Jul 2020 09:59:51 +0100
+Message-ID: <9bbfebf9-9a70-46e3-1808-413d04aa6b2c@linaro.org>
+Date:   Wed, 22 Jul 2020 09:59:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <970e7065-4731-e553-f07f-896aaa57c5dc@linux.intel.com>
+In-Reply-To: <ee2dc239-c1a7-f48f-c6f0-ec6e61ccdda6@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -76,66 +76,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Thanks Pierre for quick review.
-
-On 21/07/2020 21:09, Pierre-Louis Bossart wrote:
+On 21/07/2020 21:05, Pierre-Louis Bossart wrote:
 > 
 > 
 > On 7/21/20 12:00 PM, Srinivas Kandagatla wrote:
->> Make use of new set_codec_params callback to allow decoder switching
->> during gapless playback.
+>> For gapless playback it is possible that each track can have different
+>> codec profile with same decoder, for example we have WMA album,
+>> we may have different tracks as WMA v9, WMA v10 and so on
+>>
+>> Or if DSP's like QDSP have abililty to switch decoders on single stream
+> 
+> ability
+> 
+>> for each track, then this call could be used to set new codec parameters.
+>>
+>> Existing code does not allow to change this profile while doing gapless
+>> playback.
+>>
+>> This patch adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL to allow
+>> userspace to set this new parameters required for new codec profile.
 >>
 >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >> ---
->>   sound/soc/qcom/qdsp6/q6asm-dai.c | 33 ++++++++++++++++++++++++++++++++
->>   1 file changed, 33 insertions(+)
+>>   .../sound/designs/compress-offload.rst        |  6 ++++
+>>   include/sound/compress_driver.h               |  5 +++
+>>   include/uapi/sound/compress_offload.h         |  1 +
+>>   sound/core/compress_offload.c                 | 34 +++++++++++++++++++
+>>   4 files changed, 46 insertions(+)
 >>
->> diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c 
->> b/sound/soc/qcom/qdsp6/q6asm-dai.c
->> index b5c719682919..a8cfb1996614 100644
->> --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
->> +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
->> @@ -876,6 +876,37 @@ static int 
->> __q6asm_dai_compr_set_codec_params(struct snd_soc_component *componen
->>       return 0;
->>   }
->> +static int q6asm_dai_compr_set_codec_params(struct snd_soc_component 
->> *component,
->> +                        struct snd_compr_stream *stream,
->> +                        struct snd_codec *codec)
->> +{
->> +    struct snd_compr_runtime *runtime = stream->runtime;
->> +    struct q6asm_dai_rtd *prtd = runtime->private_data;
->> +    int ret;
->> +
->> +    ret = q6asm_open_write(prtd->audio_client, 
->> prtd->next_track_stream_id,
->> +                   codec->id, codec->profile, prtd->bits_per_sample,
->> +                   true);
->> +    if (ret < 0) {
->> +        pr_err("q6asm_open_write failed\n");
->> +        return ret;
->> +    }
->> +
->> +    ret = __q6asm_dai_compr_set_codec_params(component, stream, codec,
->> +                         prtd->next_track_stream_id);
->> +    if (ret < 0) {
->> +        pr_err("q6asm_open_write failed\n");
->> +        return ret;
->> +    }
->> +
->> +    ret = q6asm_stream_remove_initial_silence(prtd->audio_client,
->> +                           prtd->next_track_stream_id,
->> +                           prtd->initial_samples_drop);
->> +    prtd->next_track_stream_id = 0;
+>> diff --git a/Documentation/sound/designs/compress-offload.rst 
+>> b/Documentation/sound/designs/compress-offload.rst
+>> index 935f325dbc77..305ccc7bfdd9 100644
+>> --- a/Documentation/sound/designs/compress-offload.rst
+>> +++ b/Documentation/sound/designs/compress-offload.rst
+>> @@ -128,6 +128,12 @@ set_params
+>>     cases decoders will ignore other fields, while encoders will strictly
+>>     comply to the settings
+>> +set_codec_params
+>> +  This routine is very much simillar to set_params but exculding stream
 > 
-> same comment as in the other patchset, the stream_id toggles between 1 
-> and 2, it's not clear to me what 0 means.
+> typos: similar, excluding
+> 
+>> +  information. Only codec related information is set as part of this.
+>> +  It is used in gapless playback where its required to change decoder
+>> +  or its parameters for next track. This is optional.
+>> +
+>>   get_params
+>>     This routines returns the actual settings used by the DSP. Changes to
+>>     the settings should remain the exception.
+>> diff --git a/include/sound/compress_driver.h 
+>> b/include/sound/compress_driver.h
+>> index 70cbc5095e72..d9c00bcfce9b 100644
+>> --- a/include/sound/compress_driver.h
+>> +++ b/include/sound/compress_driver.h
+>> @@ -93,6 +93,9 @@ struct snd_compr_stream {
+>>    * @set_params: Sets the compressed stream parameters, mandatory
+>>    * This can be called in during stream creation only to set codec 
+>> params
+>>    * and the stream properties
+>> + * @set_codec_params: Sets the compressed stream codec parameters, 
+>> Optional
+>> + * This can be called in during gapless next track codec change only 
+>> to set
+>> + * codec params
+> 
+> Would it be clearer if this was called set_next_codec_params()? or 
+> set_next_track_codec_params()?
+> 
+> Having set_params() and set_codec_params() is a bit confusing since the 
+> semantic difference is not captured in the callback name.
 
-Valid stream ids start from 1. to achieve gapless we toggle between 1 and 2.
+set_next_track_codec_params seems more sensible as its next track params.
+Will change this in next version!
 
 --srini
 
-
 > 
-> off-by-one bug or feature?
