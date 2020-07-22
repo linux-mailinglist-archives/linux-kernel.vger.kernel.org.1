@@ -2,48 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0163F22905D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 08:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E862C229062
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 08:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgGVGKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 02:10:47 -0400
-Received: from verein.lst.de ([213.95.11.211]:54915 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgGVGKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 02:10:47 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D151E68AFE; Wed, 22 Jul 2020 08:10:44 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 08:10:44 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, mcgrof@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH] kernel: add a kernel_wait helper
-Message-ID: <20200722061044.GA24678@lst.de>
-References: <20200721130449.5008-1-hch@lst.de> <20200721141838.12d19fce025c842138140324@linux-foundation.org>
+        id S1728254AbgGVGRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 02:17:05 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:51057 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726147AbgGVGRF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 02:17:05 -0400
+Received: by mail-io1-f71.google.com with SMTP id a6so263002ioh.17
+        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 23:17:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=YTJNkn3K0lAu0WfnfaHPX3yGOM5dq4p5kCQOwP1l3BA=;
+        b=NneFn5qj5T7kVcDW9UrLjkPW/Oj/LsVL1EJv/lTEARoZJ4yWFWrUmYs0xGpC2ogQZ/
+         Jqu+8JMGs/JmyqjS1YEc5IpEnLWN2pU756W6hCT0VMVePbRsoWnwmwgoHcNUaiNga+xY
+         EBsSaOsN5dfybF2T+5BcbmI+IdzeikMaNVHIKagz/DbMlzJmMmS3Otxohdo/VbX2E8mC
+         PGq2XVC6+YqS5CJn6hUQ1mIF36xvfBjlkFK9pta5mlkMRSZ3KG6MLRKYoXWwSE7dxH5w
+         0Ry6nWePO0IdUjHD2cVxYeOzniEPDSpxsigvc7/7lbZPylxsjcp7ufNeuRXOJ7L0N7BE
+         0pyg==
+X-Gm-Message-State: AOAM531QGs6tSlCTKPaplsqPuyfhyy7Up2uNyYGbvKft8Dcr5DXiXTc0
+        x0Jffo4t7Znu3lqjbfN5Wq57PJeXp0eCUJt6iiC+zIHVz4tk
+X-Google-Smtp-Source: ABdhPJxk0Y02K0zpjpX1xDkj+BoB+WbLeh05UfRV4WWg+C/g//EG61rZD9A7SbhdSh2JwvW0cZwyEkXlBwPgpj+TPPEySnEIJzHJ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721141838.12d19fce025c842138140324@linux-foundation.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a05:6e02:961:: with SMTP id q1mr29247314ilt.94.1595398624111;
+ Tue, 21 Jul 2020 23:17:04 -0700 (PDT)
+Date:   Tue, 21 Jul 2020 23:17:04 -0700
+In-Reply-To: <000000000000588c2c05aa156b2b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000043f09405ab01b0b8@google.com>
+Subject: Re: kernel BUG at mm/vmalloc.c:LINE! (2)
+From:   syzbot <syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 02:18:38PM -0700, Andrew Morton wrote:
-> On Tue, 21 Jul 2020 15:04:49 +0200 Christoph Hellwig <hch@lst.de> wrote:
-> 
-> > Add a helper that waits for a pid and stores the status in the passed
-> > in kernel pointer.  Use it to fix the usage of kernel_wait4 in
-> > call_usermodehelper_exec_sync that only happens to work due to the
-> > implicit set_fs(KERNEL_DS) for kernel threads.
-> 
-> I guess it's cleaner, although it's a bit sad to be adding code to
-> address a non-problem.
-> 
-> Did you consider a simpler kernel_wait() which just wraps a
-> set_fs(KERNEL_DS) around a call to kernel_wait4()?
+syzbot has bisected this issue to:
 
-I'm about to kill set_fs and this one of the last users in linux-next..
+commit bdbfb1d52d5e576c1d275fd8ab59b677011229e8
+Author: Ingo Molnar <mingo@kernel.org>
+Date:   Sun Jun 7 19:12:51 2020 +0000
+
+    Revert "mm/vmalloc: modify struct vmap_area to reduce its size"
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=166e6b7f100000
+start commit:   ab8be66e Add linux-next specific files for 20200720
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=156e6b7f100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=116e6b7f100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c4bf77d63d0cf88c
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f326d255ca648131f87
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=151192bb100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12d7a873100000
+
+Reported-by: syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com
+Fixes: bdbfb1d52d5e ("Revert "mm/vmalloc: modify struct vmap_area to reduce its size"")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
