@@ -2,305 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BF6229E33
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFDAD229E41
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732157AbgGVROg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
+        id S1732294AbgGVRPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732066AbgGVROZ (ORCPT
+        with ESMTP id S1730381AbgGVRPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:14:25 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C40C0619E3
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 10:14:23 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id p14so2215234wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 10:14:23 -0700 (PDT)
+        Wed, 22 Jul 2020 13:15:02 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC91C0619DC;
+        Wed, 22 Jul 2020 10:15:01 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id q4so3337969lji.2;
+        Wed, 22 Jul 2020 10:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rCdePlC5Qk4ANnxojSlJVNKfMf8cx3/y+Fhw96oUEdo=;
-        b=Lpzk/LZpuMFBBqxiJ+MslRE+UT4EP9xpRK+Si5GLc8FNgD86Dp1uelRN3rqN+fVTJb
-         /wD0UxfKFVUcGPM5cN19phZEbBQGdSlEezXZM1MMRnMupVmN7xmmgf0FydJ2AO9YUmDz
-         ioXc4/Xcuamlb1NVzMxxbJxX3BcT5NB6sqbV8=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cVcoEfFppL+7K43qaXbza9Qghk86OOJSk60UN9FStZU=;
+        b=SQkF3b3jIXyEuSdG2/DVhNXbqJD1L6aLcInHXLchBVGeLN8o0aT/XdXCvj7AjKNyzS
+         8U3YXYriHgkBXL16qQRpnh+p/6vsBMKKas5Gl+DYvDILmaQYgwb3rz0lp/MIxceLeOp3
+         frjBpDxFFFldSvoJvejNtE3rtuPCRuG7izSQRYdb2JxsdfHWStwOyp5ake3WgRQBD+c7
+         Ojfzdlbc/RaoMtzEE3O7kmfF1vyi//9bTi+fsuHy8Bek+MYr7ROjWZ/DxK6xm42Rf440
+         0kZmy6snDSzMgfl7ScjTx+7sDJRB1hjeNKMn+RPPR3vd2E9ajtqSxz8dASyhPkyggsK4
+         jH7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rCdePlC5Qk4ANnxojSlJVNKfMf8cx3/y+Fhw96oUEdo=;
-        b=moGlOAjx/wXqK97lVWF5Mbwf27BlaQMuv6YJncDa81WjaAVxd/SSYQslW7B3M/ej8h
-         TYiqNdWJNR90B1p6056IVJQCRojqUWwqZop2Biwr2nUT15sw6m9Fj/GiarS58lNuGgzO
-         A9AAMxn2T27JVk0/bxgJSLr7Wx3E46mo82cOiDQwLzFk+eLeHZ7bZN8zRh2QGDZoHifo
-         /5SquC74hldVL+COj1IFvn3CUCbt0Q0ztpN45UAUIXP6d1q27WqzuCF3OwkjfznwYOS8
-         6exRpEuzTn73qV8dLmI2YVUDEK3gOfLsAA4B7bAU21iMxA/kgsLonmdfLZemXYFViHPq
-         Hz2w==
-X-Gm-Message-State: AOAM530MjUWWj9lcLYKuAWgICK+Gn3RKHrYntKqJotlJo/xaHhqOwoH1
-        vZhUIHXmk/pwxxesL/Eh4JqabwX+6G1OaQ==
-X-Google-Smtp-Source: ABdhPJw8aBFGErWoOk2p8ofSgpTWagk7En4QGLgqivJCvDnBID2klzP1VjvRtRS3uSO5Ni1XvApgbA==
-X-Received: by 2002:a05:600c:2219:: with SMTP id z25mr625368wml.154.1595438061851;
-        Wed, 22 Jul 2020 10:14:21 -0700 (PDT)
-Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
-        by smtp.gmail.com with ESMTPSA id 26sm349214wmj.25.2020.07.22.10.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 10:14:21 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cVcoEfFppL+7K43qaXbza9Qghk86OOJSk60UN9FStZU=;
+        b=GWf2efrPz9hMRtqzMEONzffTPbMhINfrjhFlUeGHj/cBBbX2BTGw6GIXg6F7Uugmy6
+         nWVVvrE5SCWXgHU/5ujTIUOx2hZmHO2q3QXz7S4ExbcJo7bQrtT4pudnF4HQRdQOICqa
+         LZyEC1V41CT9YVRh3Pe8SSRFR0LJi55xGFB6n6HJpcuHcGEV30bGFm5tq5D+NSxV8ZjS
+         e5uWi8FaORX2uxYe1UYmye5NXujkm9ggPX7DtgEwZTFZrPJnhE8I1PzIBkxTPjjLjieH
+         QcTF+6netriyUinYXAUCy8rvsO/15yC4aJvzLKnNidf6NVTUco3N7WF3Ak6fTaVmUX3Q
+         mLYQ==
+X-Gm-Message-State: AOAM532CHm6AlHBKBCb4/E1cuSW6AY4EdTHDvDvbSj90LhhBGZtBt+v/
+        WZCoRK6CqvoPnBfcLea8yvC0l0mko4jMiRoCJmE=
+X-Google-Smtp-Source: ABdhPJzM/e9tpN7Q9g2GlOjSqpxZZ/hREMDgbpsRDa+VhB57mZA5pvxtSis1AJ9LRNd/53/Kzzht5w79IT6tjpzb/9s=
+X-Received: by 2002:a2e:8ec8:: with SMTP id e8mr97196ljl.51.1595438100443;
+ Wed, 22 Jul 2020 10:15:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <87wo2vwxq6.fsf@cloudflare.com> <20200722144212.27106-1-kuniyu@amazon.co.jp>
+ <87v9ifwq2p.fsf@cloudflare.com> <CA+FuTScto+Z_qgFxJBzhPUNEruAvKLSTL7-0AnyP-M6Gon_e5Q@mail.gmail.com>
+ <87tuxzwp0v.fsf@cloudflare.com> <CA+FuTSdQWKFam0KwCg_REZdhNB6+BOwAHL00eRgrJ2FwPDRjcA@mail.gmail.com>
+In-Reply-To: <CA+FuTSdQWKFam0KwCg_REZdhNB6+BOwAHL00eRgrJ2FwPDRjcA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Jul 2020 10:14:49 -0700
+Message-ID: <CAADnVQKmOLkd1oJHCxfqQnSbJFfp0NRd1C9i9mZy_3rNRc4a1A@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v5 7/7] bpf: Add selftests for local_storage
-Date:   Wed, 22 Jul 2020 19:14:09 +0200
-Message-Id: <20200722171409.102949-8-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-In-Reply-To: <20200722171409.102949-1-kpsingh@chromium.org>
-References: <20200722171409.102949-1-kpsingh@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        David Miller <davem@davemloft.net>,
+        kernel-team <kernel-team@cloudflare.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Wed, Jul 22, 2020 at 8:50 AM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+> > TBH, I don't what is the preferred way to handle it. Perhaps DaveM or
+> > Alexei/Daniel can say what would make their life easiest?
+>
+> Good point.
+>
+> With the above, there still remains a merge conflict, of course. But
+> then we can take bpf-next as is, so I think it would save a separate
+> patch to net. But not sure whether that helps anything. It does add an
+> unnecessary variable.
 
-inode_local_storage:
-
-* Hook to the file_open and inode_unlink LSM hooks.
-* Create and unlink a temporary file.
-* Store some information in the inode's bpf_local_storage during
-  file_open.
-* Verify that this information exists when the file is unlinked.
-
-sk_local_storage:
-
-* Hook to the socket_post_create and socket_bind LSM hooks.
-* Open and bind a socket and set the sk_storage in the
-  socket_post_create hook using the start_server helper.
-* Verify if the information is set in the socket_bind hook.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- .../bpf/prog_tests/test_local_storage.c       |  60 ++++++++
- .../selftests/bpf/progs/local_storage.c       | 136 ++++++++++++++++++
- 2 files changed, 196 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
- create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-new file mode 100644
-index 000000000000..d4ba89195c43
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -0,0 +1,60 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright (C) 2020 Google LLC.
-+ */
-+
-+#include <test_progs.h>
-+#include <linux/limits.h>
-+
-+#include "local_storage.skel.h"
-+#include "network_helpers.h"
-+
-+int create_and_unlink_file(void)
-+{
-+	char fname[PATH_MAX] = "/tmp/fileXXXXXX";
-+	int fd;
-+
-+	fd = mkstemp(fname);
-+	if (fd < 0)
-+		return fd;
-+
-+	close(fd);
-+	unlink(fname);
-+	return 0;
-+}
-+
-+void test_test_local_storage(void)
-+{
-+	struct local_storage *skel = NULL;
-+	int err, duration = 0, serv_sk = -1;
-+
-+	skel = local_storage__open_and_load();
-+	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
-+		goto close_prog;
-+
-+	err = local_storage__attach(skel);
-+	if (CHECK(err, "attach", "lsm attach failed: %d\n", err))
-+		goto close_prog;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	err = create_and_unlink_file();
-+	if (CHECK(err < 0, "exec_cmd", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->inode_storage_result, "inode_storage_result",
-+	      "inode_local_storage not set");
-+
-+	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-+	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
-+		goto close_prog;
-+
-+	CHECK(!skel->bss->sk_storage_result, "sk_storage_result",
-+	      "sk_local_storage not set");
-+
-+	close(serv_sk);
-+
-+close_prog:
-+	local_storage__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-new file mode 100644
-index 000000000000..cb608b7b90f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+#include <errno.h>
-+#include <linux/bpf.h>
-+#include <stdbool.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define DUMMY_STORAGE_VALUE 0xdeadbeef
-+
-+int monitored_pid = 0;
-+bool inode_storage_result = false;
-+bool sk_storage_result = false;
-+
-+struct dummy_storage {
-+	__u32 value;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_INODE_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} inode_storage_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_CLONE);
-+	__type(key, int);
-+	__type(value, struct dummy_storage);
-+} sk_storage_map SEC(".maps");
-+
-+/* TODO Use vmlinux.h once BTF pruning for embedded types is fixed.
-+ */
-+struct sock {} __attribute__((preserve_access_index));
-+struct sockaddr {} __attribute__((preserve_access_index));
-+struct socket {
-+	struct sock *sk;
-+} __attribute__((preserve_access_index));
-+
-+struct inode {} __attribute__((preserve_access_index));
-+struct dentry {
-+	struct inode *d_inode;
-+} __attribute__((preserve_access_index));
-+struct file {
-+	struct inode *f_inode;
-+} __attribute__((preserve_access_index));
-+
-+
-+SEC("lsm/inode_unlink")
-+int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		inode_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_bind")
-+int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
-+	     int addrlen)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	if (storage->value == DUMMY_STORAGE_VALUE)
-+		sk_storage_result = true;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/socket_post_create")
-+int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
-+	     int protocol, int kern)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	storage = bpf_sk_storage_get(&sk_storage_map, sock->sk, 0,
-+				     BPF_SK_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+
-+	return 0;
-+}
-+
-+SEC("lsm/file_open")
-+int BPF_PROG(test_int_hook, struct file *file)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct dummy_storage *storage;
-+
-+	if (pid != monitored_pid)
-+		return 0;
-+
-+	if (!file->f_inode)
-+		return 0;
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
-+				     BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return 0;
-+
-+	storage->value = DUMMY_STORAGE_VALUE;
-+	return 0;
-+}
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
-
+whichever way is easier to deal with merge conflict....
+currently bpf-next PR is pending.
+but we can drop it and merge one more patch into bpf-next?
+But reading through the read it doesn't sound that it will help the
+merge conflict..
+An alternative could be to drop PR and rebase the whole bpf-next to net-next
+and deal with conflicts there...
+Or I can rebase bpf-next and drop Jakub's series and he can resubmit them
+without conflicts? I guess that's the easiest for me and for Dave.
