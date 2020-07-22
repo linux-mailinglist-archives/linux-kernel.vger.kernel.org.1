@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6A9229020
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2632B229032
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 07:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgGVFxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 01:53:30 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:46687 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728313AbgGVFxV (ORCPT
+        id S1727950AbgGVF5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 01:57:51 -0400
+Received: from relay3.mymailcheap.com ([217.182.119.157]:57325 "EHLO
+        relay3.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726696AbgGVF5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 01:53:21 -0400
-Received: by mail-il1-f200.google.com with SMTP id o4so300727ilo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 22:53:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ceHAZ8fGtIOXmoQZi1GN0tX61tjs26U0Fk+wKnXOpRo=;
-        b=iPGnfbf3SqejOvAAAHzuouOlREcU/cu0t+V9s9z9SiejnjyCzSFHK7LrftMc6wMAuJ
-         uDD7ckMnjxE6QiSmbVyEnPob0LML8ii41RXNk2miyiK2hF0Xmwvu4qYv0SNKILA1dA6X
-         ugOQquHUAR81lpOYutYLxyPg/7tZkXBAw0HqDiCWM9dd1Kp2qImVO+kNNSvTrT15nCvh
-         RTV/qFY2rxMPHjTKwALqku9wPJUhSvRq1YkaPkM9T43aNcxqDhYQJhYs0RaYHtjtDgUZ
-         ee66hckfAxbAC0p4CxSQB4sUe9JgDQG9M1rnkrznD9reAaQrLqYaFbFHQTRPGIkSv7MV
-         Fzag==
-X-Gm-Message-State: AOAM531DU9kG0VyahNJfp65ZXhl+4GrZNeN5I2COGLpvT4ai4YfwbS5Y
-        hpthAwWTLjS7vhcH3AjdolgxtgaIAmiYpeDSpjx++DWdnhFv
-X-Google-Smtp-Source: ABdhPJw1gZlt3PeSpaXF6147x/nyTTUyGOCs5tXCi+GZ/KY+fW2xTNTIYZrrOBKXhPtNLGkYsoFW4Cck1xqNM3erTWni5t2rf7uZ
+        Wed, 22 Jul 2020 01:57:50 -0400
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 73DB23ECDF;
+        Wed, 22 Jul 2020 07:57:47 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 9EDF42A3B7;
+        Wed, 22 Jul 2020 01:57:46 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1595397466;
+        bh=GJoB7Hu1HHYwLx+18m5vh2TqCsCvOamF2pFuHKFNT7Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=SG5Xm6VchAkjw/SYaCkgiNtbs0tuZAdlfUhLTud/L4U6vi1LIOfqqmgzlqEmaPEwc
+         UX3FRXLO7FC37co1kMHNECHLJG/U9DocJJ3Vmsr1/h681Dide6GYcrJtRx0OL6KeYc
+         QtrZYozDNR0dY0idaLEjSPjXVpSFBm9cCzL0Zqss=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hcoPqqim3Gns; Wed, 22 Jul 2020 01:57:44 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Wed, 22 Jul 2020 01:57:44 -0400 (EDT)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id E68044083C;
+        Wed, 22 Jul 2020 05:57:40 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="hl2XJLBL";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (unknown [210.140.199.71])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 6D24F4083C;
+        Wed, 22 Jul 2020 05:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1595397456;
+        bh=GJoB7Hu1HHYwLx+18m5vh2TqCsCvOamF2pFuHKFNT7Q=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hl2XJLBLMvj8A0Wa+uCdDHB6Tpfp9pkthBN2FcPis0CQT5TU++MevcZzo9mOx5JfI
+         kbancRKEkJDtDxtOVt8wHLZzWquf/iPJZcI1LJc9RERmZ+PII7u2i4o1xtjB+sTp04
+         9vz8vnUhe7nMQQ6q9MHGysLlQk06saH6LYygj1Rs=
+Subject: Re: [PATCH v2 3/5] MIPS: Loongson64: Enlarge IO_SPACE_LIMIT
+To:     linux-mips@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200721141742.996350-1-jiaxun.yang@flygoat.com>
+ <20200721141742.996350-4-jiaxun.yang@flygoat.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <004c3248-95f6-03ef-1d39-956794a844a7@flygoat.com>
+Date:   Wed, 22 Jul 2020 13:57:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:58d6:: with SMTP id z83mr31177380ilf.186.1595397200184;
- Tue, 21 Jul 2020 22:53:20 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 22:53:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000648aca05ab015bd3@google.com>
-Subject: KMSAN: uninit-value in ucma_connect
-From:   syzbot <syzbot+7446526858b83c8828b2@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, glider@google.com, jgg@ziepe.ca,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200721141742.996350-4-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Rspamd-Queue-Id: E68044083C
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         FREEMAIL_CC(0.00)[kernel.org,alpha.franken.de,lemote.com,gmail.com,arndb.de,google.com,vger.kernel.org];
+         SUSPICIOUS_RECIPS(1.50)[];
+         RCVD_COUNT_TWO(0.00)[2]
+X-Rspamd-Server: mail20.mymailcheap.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    14525656 compiler.h: reinstate missing KMSAN_INIT
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=124a0817100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c534a9fad6323722
-dashboard link: https://syzkaller.appspot.com/bug?extid=7446526858b83c8828b2
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13db936f100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16c18d7d100000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7446526858b83c8828b2@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ucma_connect+0x2aa/0xab0 drivers/infiniband/core/ucma.c:1091
-CPU: 0 PID: 8457 Comm: syz-executor069 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1df/0x240 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- ucma_connect+0x2aa/0xab0 drivers/infiniband/core/ucma.c:1091
- ucma_write+0x5c5/0x630 drivers/infiniband/core/ucma.c:1764
- do_loop_readv_writev fs/read_write.c:737 [inline]
- do_iter_write+0x710/0xdc0 fs/read_write.c:1020
- vfs_writev fs/read_write.c:1091 [inline]
- do_writev+0x42d/0x8f0 fs/read_write.c:1134
- __do_sys_writev fs/read_write.c:1207 [inline]
- __se_sys_writev+0x9b/0xb0 fs/read_write.c:1204
- __x64_sys_writev+0x4a/0x70 fs/read_write.c:1204
- do_syscall_64+0xb0/0x150 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4402a9
-Code: Bad RIP value.
-RSP: 002b:00007ffd6e4541e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402a9
-RDX: 0000000000000001 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401ab0
-R13: 0000000000401b40 R14: 0000000000000000 R15: 0000000000000000
-
-Local variable ----cmd@ucma_connect created at:
- ucma_connect+0xe1/0xab0 drivers/infiniband/core/ucma.c:1082
- ucma_connect+0xe1/0xab0 drivers/infiniband/core/ucma.c:1082
-=====================================================
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ÔÚ 2020/7/21 ÏÂÎç10:17, Jiaxun Yang Ð´µÀ:
+> It can be very big on LS7A PCH systems.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>   arch/mips/include/asm/io.h                     | 3 ++-
+>   arch/mips/include/asm/mach-loongson64/spaces.h | 3 +--
+>   2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+> index 346fffd9e972..0072489325fa 100644
+> --- a/arch/mips/include/asm/io.h
+> +++ b/arch/mips/include/asm/io.h
+> @@ -50,8 +50,9 @@
+>   # define __relaxed_ioswabq ioswabq
+>   
+>   /* ioswab[bwlq], __mem_ioswab[bwlq] are defined in mangle-port.h */
+> -
+> +#ifndef IO_SPACE_LIMIT
+>   #define IO_SPACE_LIMIT 0xffff
+> +#endif
+>   
+>   /*
+>    * On MIPS I/O ports are memory mapped, so we access them using normal
+> diff --git a/arch/mips/include/asm/mach-loongson64/spaces.h b/arch/mips/include/asm/mach-loongson64/spaces.h
+> index 3de0ac9d8829..fa5ea4ee8b6c 100644
+> --- a/arch/mips/include/asm/mach-loongson64/spaces.h
+> +++ b/arch/mips/include/asm/mach-loongson64/spaces.h
+> @@ -11,8 +11,7 @@
+>   #define PCI_IOSIZE	SZ_16M
+>   #define MAP_BASE	(PCI_IOBASE + PCI_IOSIZE)
+>   
+> -/* Reserved at the start of PCI_IOBASE for legacy drivers */
+> -#define MMIO_LOWER_RESERVED	0x10000
+> +#define IO_SPACE_LIMIT  PCI_IOSIZE
+Oops, it should be (PCI_IOSIZE - 1), will fix in next revision.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Sorry for the noise.
+
+Thanks.
+
+- Jiaxun
+
+>   
+>   #include <asm/mach-generic/spaces.h>
+>   #endif
