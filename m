@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78AC229CE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653E9229CEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgGVQQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 12:16:53 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:52263 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgGVQQw (ORCPT
+        id S1730574AbgGVQRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 12:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730049AbgGVQRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:16:52 -0400
-X-Originating-IP: 90.63.246.187
-Received: from gandi.net (laubervilliers-658-1-215-187.w90-63.abo.wanadoo.fr [90.63.246.187])
-        (Authenticated sender: thibaut.sautereau@clip-os.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id BF6C5E0002;
-        Wed, 22 Jul 2020 16:16:39 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 18:16:39 +0200
-From:   Thibaut Sautereau <thibaut.sautereau@clip-os.org>
-To:     Kees Cook <keescook@chromium.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?utf-8?Q?Tr=C3=A9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v6 5/7] fs,doc: Enable to enforce noexec mounts or file
- exec through O_MAYEXEC
-Message-ID: <20200722161639.GA24129@gandi.net>
-References: <20200714181638.45751-1-mic@digikod.net>
- <20200714181638.45751-6-mic@digikod.net>
- <202007151312.C28D112013@keescook>
- <35ea0914-7360-43ab-e381-9614d18cceba@digikod.net>
+        Wed, 22 Jul 2020 12:17:10 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14D80C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:17:10 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id t27so1774325ill.9
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 09:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tcL+fVRHFbwjcT2YoeEyW0ovDsmOpco9f4REaf4pOLw=;
+        b=Yubxcjwtpc7YJGf0Tziz+sT7J49N0W4XOpcuP6qz+/oiMJmZWQU/Kd8bRbKoKhkvRZ
+         RnULiCwqMICOqU1HdOr0DGkfNUWsljA27n+XJ+U5D4l98CuiRYbkSXMPr4+W0DyFNtb+
+         AY+GHqK5P2TwUgTqNVgFJTxJoi0sTaFqqe+6N0p/LenOodA1YiaVIgE+e2BMkKkM402X
+         R4n2L8/Xi3rrf4jYh3bII4QM3zJZ2tIZWJ5l8SbQpLT5zkqRCfn06WbbJYUNLuUFZK79
+         2WjQU9hbziDqo4arXlFdwyZ0UC8MY80G8CFPHzWB/TsG+e4NxODiBVUvc4xDIlT2n9fa
+         B76A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tcL+fVRHFbwjcT2YoeEyW0ovDsmOpco9f4REaf4pOLw=;
+        b=NebSxQ+UVzMj5uiPCrbC4yykg3bOp1BpXT8AcpNVt2XKlTGPtlGS+k4TwM48OYqzvx
+         fmSgsjuzqYeGXqol/Bn6IWkpnwaLtZl6FPdUjp/HD8Zm+KoAAzUv5ohtlhTBtSFZq1oE
+         4cg/sRqZfHFm9lmkK3EWhE8SF5T5dFxJHAAAdFZSpgnwhBvXuGGlrymLGuGzKweGpfUJ
+         5nXx6Sh2Hp95w86Gzf3APpSMmNz+P8PZfcHm0VI05v4as5OQhi0xRCisqkelDdT8L+tz
+         PmUP7VeZkuemy1NccO9fEmK9hKBD8KcEQpJeSCsmUxvVcRI3bck79EoR4HqVDZnaviU2
+         bYDA==
+X-Gm-Message-State: AOAM5300T053RdzlZO0Q0VgrXCDdnSBJU3doUuZ4jb3sDasH766RwZVo
+        CQGnX3l1EY+MiSFiC9+9hU8mEI8slGwG/vuCAKKCPQ==
+X-Google-Smtp-Source: ABdhPJzRjVSHUdq95L4uwyL/QiKe4BnlIZ7BNNuAXtthqySJmpzNdrp3+RktG+FL20eMYaBBJOPnsGSirp9tKRuuYbA=
+X-Received: by 2002:a92:404e:: with SMTP id n75mr615859ila.203.1595434629062;
+ Wed, 22 Jul 2020 09:17:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <35ea0914-7360-43ab-e381-9614d18cceba@digikod.net>
+References: <CA+G9fYuj3bHUMz8XQztbmTgF0c5+rZ5-FkUjFyvEftej2jLT+Q@mail.gmail.com>
+ <CAK8P3a3br1bDc8C6UjRWzdmwzVV26YYe3ixHV7LH5Z0-OiqPQQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3br1bDc8C6UjRWzdmwzVV26YYe3ixHV7LH5Z0-OiqPQQ@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 22 Jul 2020 09:16:57 -0700
+Message-ID: <CALvZod5cBTsytQz5=EbqT_s1_ZJ8YpkBe+CLEAU+25FP4kHSAg@mail.gmail.com>
+Subject: Re: BUG at mm/vmalloc.c:3089! - invalid opcode: 0000 [#1] SMP KASAN PTI
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        LTP List <ltp@lists.linux.it>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Joerg Roedel <jroedel@suse.de>, Roman Gushchin <guro@fb.com>,
+        Dennis Zhou <dennis@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 04:39:14PM +0200, Mickaël Salaün wrote:
-> 
-> On 15/07/2020 22:37, Kees Cook wrote:
-> > On Tue, Jul 14, 2020 at 08:16:36PM +0200, Mickaël Salaün wrote:
-> >> @@ -2849,7 +2855,7 @@ static int may_open(const struct path *path, int acc_mode, int flag)
-> >>  	case S_IFLNK:
-> >>  		return -ELOOP;
-> >>  	case S_IFDIR:
-> >> -		if (acc_mode & (MAY_WRITE | MAY_EXEC))
-> >> +		if (acc_mode & (MAY_WRITE | MAY_EXEC | MAY_OPENEXEC))
-> >>  			return -EISDIR;
-> >>  		break;
-> > 
-> > (I need to figure out where "open for reading" rejects S_IFDIR, since
-> > it's clearly not here...)
+On Wed, Jul 22, 2020 at 1:55 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> Adding Roman Gushchin to Cc, he touched that code recently.
+>
+> Naresh, if nobody has any immediate ideas, you could double-check by
+> reverting these commits:
+>
+> e0b8d00b7561 mm: memcg/percpu: per-memcg percpu memory statistics
+> 99411af13595 mm/percpu: fix 'defined but not used' warning
+> 9398ce6306b6 mm-memcg-percpu-account-percpu-memory-to-memory-cgroups-fix-fix
+> 54116d471779 mm-memcg-percpu-account-percpu-memory-to-memory-cgroups-fix
+> ec518e090843 mm: memcg/percpu: account percpu memory to memory cgroups
+> 9bc897d18dc3 percpu: return number of released bytes from pcpu_free_area()
+>
+>        Arnd
+>
 
-Doesn't it come from generic_read_dir() in fs/libfs.c?
+I think syzbot has bisected this issue to the suspect patch.
 
-> > 
-> >>  	case S_IFBLK:
-> >> @@ -2859,13 +2865,26 @@ static int may_open(const struct path *path, int acc_mode, int flag)
-> >>  		fallthrough;
-> >>  	case S_IFIFO:
-> >>  	case S_IFSOCK:
-> >> -		if (acc_mode & MAY_EXEC)
-> >> +		if (acc_mode & (MAY_EXEC | MAY_OPENEXEC))
-> >>  			return -EACCES;
-> >>  		flag &= ~O_TRUNC;
-> >>  		break;
-> > 
-> > This will immediately break a system that runs code with MAY_OPENEXEC
-> > set but reads from a block, char, fifo, or socket, even in the case of
-> > a sysadmin leaving the "file" sysctl disabled.
-> 
-> As documented, O_MAYEXEC is for regular files. The only legitimate use
-> case seems to be with pipes, which should probably be allowed when
-> enforcement is disabled.
-
-By the way Kees, while we fix that for the next series, do you think it
-would be relevant, at least for the sake of clarity, to add a
-WARN_ON_ONCE(acc_mode & MAY_OPENEXEC) for the S_IFSOCK case, since a
-socket cannot be open anyway?
-
--- 
-Thibaut Sautereau
-CLIP OS developer
+https://lore.kernel.org/lkml/00000000000043f09405ab01b0b8@google.com/
