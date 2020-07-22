@@ -2,186 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD005229200
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1796229202
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732018AbgGVHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:20:19 -0400
-Received: from mail4.tencent.com ([183.57.53.109]:34838 "EHLO
-        mail4.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728338AbgGVHUR (ORCPT
+        id S1732034AbgGVHUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:20:24 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:60015 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728338AbgGVHUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:20:17 -0400
-Received: from EX-SZ020.tencent.com (unknown [10.28.6.40])
-        by mail4.tencent.com (Postfix) with ESMTP id B5702724D6;
-        Wed, 22 Jul 2020 15:20:13 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
-        s=s202002; t=1595402413;
-        bh=AsYlnjFF2hYKj+7FKYMNeD7e5NE3fdzhp7oH/PzpvYU=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=GPpx9vughH3O4VqknGZLt6yFJ5PC1HUDD6Mwg4VvOD6LT5kSo0kKzO4qGRWdrrfZ4
-         8R5Gqkx35QNqeht4VBkGakJ+DYb7FUhxCkT91+Ae5raq1dsqX/44bWVwUHK0YNYwv6
-         1CUkb6/sudfv0EsVeLOIzV35OmQtChgA5H/LapWU=
-Received: from EX-SZ004.tencent.com (10.28.6.25) by EX-SZ020.tencent.com
- (10.28.6.40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Wed, 22 Jul
- 2020 15:20:13 +0800
-Received: from EX-SZ012.tencent.com (10.28.6.36) by EX-SZ004.tencent.com
- (10.28.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Wed, 22 Jul
- 2020 15:20:13 +0800
-Received: from EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b]) by
- EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b%3]) with mapi id
- 15.01.1847.007; Wed, 22 Jul 2020 15:20:13 +0800
-From:   =?iso-2022-jp?B?YmVuYmppYW5nKBskQj5VSTcbKEIp?= 
-        <benbjiang@tencent.com>
-To:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Tim Chen" <tim.c.chen@linux.intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pjt@google.com" <pjt@google.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Wed, 22 Jul 2020 03:20:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595402421; x=1626938421;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=U27WCAy9zaAs2WpMTz5Jje4K6BBxzqY/xNd71Rc+jMSz84eYh2hEL6G1
+   CdbLjgMfCYBzHGhEqOpJ9fs2wiVJv7oFF5VqG83SxSUvc50gznb0Y3pgh
+   z8QjQR//V9sF92vWniIZp3Zrg8BPBlwkCYgVo8CT6kCuff8ROz3GxTaQb
+   SRVwIpavnYh45iM5vQE0El771nB1T2Y+mryW2gMGp8vvfKKSLYCn6awBN
+   LJbAksFUUVyq4m/bpcZMl6anWBweXDBxCrdztz+xNXJjHbX32iYrwfpxP
+   9U2GPcaHWASzR6kDHsC+q+5UQaX+JEZtp2hQiWwbysmG0N903c3LxNPPn
+   Q==;
+IronPort-SDR: X/QBfi9oXs2oNzvdjBDNnaSbKu0sKJMDEpkSBxQVvuYugvRnjkwZVLriexDuoP7hdfcgOZzSx6
+ txe7hy4mHx9YSrwl2kAPb07/v+9geyDn/pNZf7shrCEuIGM/NL2emjUtFgY/hfMCJQ6XhajPXJ
+ qOb/LQD9hdvirZPXBg0RR1474sazrVi8jPNDbmByv7o/ET+dr4R2qoyeptIy7gYvmx2R1Ip3Px
+ MczbKlcxio2bcqllKzCJYjZ7HQkImZBDEjgVVxUuDpidSB4Ji4moRagA4NMnWpdSBOaeXtHRTT
+ TDc=
+X-IronPort-AV: E=Sophos;i="5.75,381,1589212800"; 
+   d="scan'208";a="143089024"
+Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Jul 2020 15:20:19 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nv9C4sayWAuZTuUghXVjwdLu4Alqd68t5gOIJQ6CUeAsB8S85dhstxG+MuOSQWsLgK6QF3F/vHg3vOrkL6IvNi6QjyN18VvdvLuJT/846t2hxs0jDRYhGddGs2VOF2srbbIw4Kb+qPGn42t4AyoaulHZhfKnETO3S7iLAqFJispGSaBnZsiWvPKSzbsBCq13OeNbQCK7BSKKxFy+im+ZK7LkWHqf/imKrRc0Ig4RECBHxgQhiYWMlG4NhVyGU8RV1zYOvi+lU89mPCJxZNHIWN3R4e0GokuZt+NtAkGxtCXs7keobtEZPX4GF6rEODBwpHMGJrWCDdyO34VtMU4nYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=SS0pJoMtT2x8NEka5VKwqdHdWaySwaxYsqpUrjUdY6UFPA8rK9TbCQmeRFbqU4ywp/KSiAkCDD3bxwvh2sRo3hFbf4uclOHkgjOOnV797TLvlquPCdT+lYfgzacrg2EBIqE0jFPIWlLishSvu691wZC5tpsnB6bhmocpgYnyCPb1uDmTqW7BgW0HMSb30YuzYsgjVrWsMeEnqSkLM6IZhGSPLjPk7u5w6+jcWwj1pBUFTABjW8cEfON3H2D+wTMfjCIBJeK1tHxvQD19/yILgsNAXU2nl6M+eOg7OhiLZ1/UbZ6yg26HyBdiNwXwuUxjoTRw0Ticns6v1xg4ffvvbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=w79m+DE0Oyhzvqtk/pHHEEuIOG0gT8Xc6tBM1l9FGRNCARQmr6Ckn3qPabYQnlmHJz5hlYWvkMprtfBvRmbws8BsL1mCcVdjZWHth1PH7bARfQtBjLR8JjsRPiwKz2eJWfy6EoP2jIDDR1DYFPQAt5DP8Te9Wz8SUyWchlV3QVM=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB5328.namprd04.prod.outlook.com
+ (2603:10b6:805:fe::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22; Wed, 22 Jul
+ 2020 07:20:18 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3195.026; Wed, 22 Jul 2020
+ 07:20:18 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kerrnel@google.com" <kerrnel@google.com>,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "vineethrp@gmail.com" <vineethrp@gmail.com>,
-        "Chen Yu" <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation
- corner case(Internet mail)
-Thread-Topic: [RFC PATCH 07/16] sched/fair: Fix forced idle sibling starvation
- corner case(Internet mail)
-Thread-Index: AQHWTyYlpLP1bK1w0UWTtI+YyeyPMKkSzKoA
-Date:   Wed, 22 Jul 2020 07:20:13 +0000
-Message-ID: <8C431BBC-154C-4AAC-8876-FFFF173AE2B9@tencent.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
-In-Reply-To: <d8ff57c098623e701cc3a8b37f667542f9b8d218.1593530334.git.vpillai@digitalocean.com>
-Accept-Language: zh-CN, en-US
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 08/14] block: add helper macros for queue sysfs entries
+Thread-Topic: [PATCH 08/14] block: add helper macros for queue sysfs entries
+Thread-Index: AQHWX/E6SMPB6kgBPUaskZWzXZRPyw==
+Date:   Wed, 22 Jul 2020 07:20:18 +0000
+Message-ID: <SN4PR0401MB3598294D373946F23B521D0E9B790@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200722062552.212200-1-hch@lst.de>
+ <20200722062552.212200-9-hch@lst.de>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [9.19.161.93]
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-ID: <BBBF2514D607514095EA89A79DFF2015@tencent.com>
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bb0b06ec-45be-4edd-6605-08d82e0fb017
+x-ms-traffictypediagnostic: SN6PR04MB5328:
+x-microsoft-antispam-prvs: <SN6PR04MB5328B9E9862809E1DA6C145C9B790@SN6PR04MB5328.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: TX4ij0rdNFb7KSO6vRl1tFUjA9Dg0oQNIaD3K6RkI0euOniyvdiiiSutx1IVwB1oxtjXpiMrqbCQG2+o1eQYyhCUHsCmFJEu6XftayBTfSryHtmUUzGjvaPsfEPZXfRDvGomfY6ipjcTvQrJrNiV2vhF7wGd2BaZwik3p4N/kHA/gpwPJjC58IW45YAlva/YAyPbvBNkavyoXWsG0fnYgqzdFqYdneHJBOBX7eIqq4Q/CD2BGmPU/F6KANpWbw3JXzc7pjywDVv52acDGvY3LGFlVJG+64D9lPwjQKG79vUPHJQyI/FC44SGtY3JY0ouxz9z5a6ESELqYOA13HSegQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(136003)(346002)(396003)(478600001)(64756008)(91956017)(7416002)(66946007)(76116006)(66476007)(66556008)(66446008)(33656002)(2906002)(19618925003)(7696005)(6506007)(4270600006)(55016002)(558084003)(4326008)(26005)(186003)(9686003)(8676002)(52536014)(86362001)(5660300002)(110136005)(54906003)(316002)(71200400001)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: uxkebodhmSxir3MbaHc4mgxd3LNWJq49AlIYKwNQ7w4Xz8FnWPi/9Yp1akLDh3pK+CoaqYLxJaZrMdL3uQo7PjbxvdZTuybC3vz/wCtZ76RLMPXTuxBNRegvaztz/na51K57xXELrcdzUAp6TI6LUDlRpPgnUUV9qaJ5hevPQAH2H4VPnJBZkgPmhigWxqcJRJfVAdynXRO8WTzl99sWaLrC7QJ3H2GAiucK+UJlx7GcwLgCTTRgQOLluHtm9SoJ+RMIxHfBDICXRPxDQjM/xZgjZV4wYDFCVTXwT8vHUY8r1IYrjq2gp2H/4o8UqF2d2nQ1QdbZLxI2xZWl4OLQH31tXedCe320SEh0XZKr5/tds3zT7VF+55UHIkiHHlHd5nuf755bLMPdVhfXT6MWzj3Q7vizgs+MZFcWiONo5GMa6a/xZ/oM+NFMOryXyIxRl//q7eRsTmLjGFalmunYw5Br87eOyspaxyf4AZVDtPL2NPCBAbxUoVx5O6hVKEAV
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb0b06ec-45be-4edd-6605-08d82e0fb017
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 07:20:18.5206
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JYhn7lcWKLN+WIysS/xbEyEK9O0zI2quM3KrmzBuTvmyr0V4ebcNx0bGoyEr7IrI2UqHlIRKNXc/sP5k3AN5At1FdXccLUzEU9JvbWk0J+A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5328
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Jul 1, 2020, at 5:32 AM, Vineeth Remanan Pillai <vpillai@digitalocean.=
-com> wrote:
->=20
-> From: vpillai <vpillai@digitalocean.com>
->=20
-> If there is only one long running local task and the sibling is
-> forced idle, it  might not get a chance to run until a schedule
-> event happens on any cpu in the core.
->=20
-> So we check for this condition during a tick to see if a sibling
-> is starved and then give it a chance to schedule.
-Hi,
-
-There may be other similar starvation cases this patch can not cover.=20
-Such as, If there is one long running RT task and sibling is forced idle, t=
-hen all tasks with different cookies on all siblings could be starving fore=
-ver.
-Current load-balances seems not able to pull the starved tasks away.=20
-Would load-balance be more aware of core-scheduling to make things better? =
-:)
-
-Thx.
-Regards,
-Jiang=20
-
->=20
-> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
-> Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
-> ---
-> kernel/sched/fair.c | 39 +++++++++++++++++++++++++++++++++++++++
-> 1 file changed, 39 insertions(+)
->=20
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ae17507533a0..49fb93296e35 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10613,6 +10613,40 @@ static void rq_offline_fair(struct rq *rq)
->=20
-> #endif /* CONFIG_SMP */
->=20
-> +#ifdef CONFIG_SCHED_CORE
-> +static inline bool
-> +__entity_slice_used(struct sched_entity *se)
-> +{
-> +	return (se->sum_exec_runtime - se->prev_sum_exec_runtime) >
-> +		sched_slice(cfs_rq_of(se), se);
-> +}
-> +
-> +/*
-> + * If runqueue has only one task which used up its slice and if the sibl=
-ing
-> + * is forced idle, then trigger schedule to give forced idle task a chan=
-ce.
-> + */
-> +static void resched_forceidle_sibling(struct rq *rq, struct sched_entity=
- *se)
-> +{
-> +	int cpu =3D cpu_of(rq), sibling_cpu;
-> +
-> +	if (rq->cfs.nr_running > 1 || !__entity_slice_used(se))
-> +		return;
-> +
-> +	for_each_cpu(sibling_cpu, cpu_smt_mask(cpu)) {
-> +		struct rq *sibling_rq;
-> +		if (sibling_cpu =3D=3D cpu)
-> +			continue;
-> +		if (cpu_is_offline(sibling_cpu))
-> +			continue;
-> +
-> +		sibling_rq =3D cpu_rq(sibling_cpu);
-> +		if (sibling_rq->core_forceidle) {
-> +			resched_curr(sibling_rq);
-> +		}
-> +	}
-> +}
-> +#endif
-> +
-> /*
->  * scheduler tick hitting a task of our scheduling class.
->  *
-> @@ -10636,6 +10670,11 @@ static void task_tick_fair(struct rq *rq, struct=
- task_struct *curr, int queued)
->=20
-> 	update_misfit_status(curr, rq);
-> 	update_overutilized_status(task_rq(curr));
-> +
-> +#ifdef CONFIG_SCHED_CORE
-> +	if (sched_core_enabled(rq))
-> +		resched_forceidle_sibling(rq, &curr->se);
-> +#endif
-> }
->=20
-> /*
-> --=20
-> 2.17.1
->=20
->=20
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
