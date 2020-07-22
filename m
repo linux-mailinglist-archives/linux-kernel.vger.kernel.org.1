@@ -2,376 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5189D22A342
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC9222A34C
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733183AbgGVXpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 19:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733074AbgGVXpt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 19:45:49 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E562EC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 16:45:48 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id e4so3448853oib.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 16:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=plZ68TFXef6m6CoOpaTg2seB4bXtkEoQJV753zYWEmI=;
-        b=C8tsXJgrQfZ2/nLPbJN3wtRBN7esacSlO7nb+Akx6pvG2JR+sHSOU6CkV6eicGMk48
-         aZHSetMuR51UbSIpQ5zjIFZyBSAknsZV8LeFA88VQF5sNiHbrvH4IYZ9vByP6m5rG4xO
-         4trHROz7z4SaG5++gVvqXkg5rA7+Nky+ynYFT202Ky3Fqw2pl9UibssRh4tIbPLG87GF
-         HxsOSb/kw2uMCrO7/umbRaX1vHtcB0n843DQLOLXn/SUn9d88MDremAzSBt3BEruLsZF
-         28acFH/lXpKCK3MeOjc95y47TBh09HlaJsdoT4BdnsZtEmC0Fgpe49e6TC1ftfaFtAl/
-         fA3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=plZ68TFXef6m6CoOpaTg2seB4bXtkEoQJV753zYWEmI=;
-        b=uZHYnMwP3sZ8RtBmzS79Hqw2zODL93iCpG3yccoy4kkcIRaDs2UPqQFx7M7uJVLPlu
-         5qGfHep6IQ7sEGOTt6uIKl+/MVkejFzYR2uSiQmgGn7W17g53AaHuQiLDP7wZHygV1P/
-         jdh2rvKmdsfcr3lpscU++VRa395NlN/BsOnvsN2bCnKiXmZphhb8hTs7rhaZSVShwI2/
-         s61pZW+y2YVOLXmGpiVax5/dDiUQJrIbWIrpj14jF/YfKPk5IjaZgusOkRKb8D9W1EJz
-         lP/kR/6BPs0E8KiZG+vyKGEWxCzFsgCxM4z2bD+AAft7zApUvNff/oab1StsZ5i4Tt93
-         4ycg==
-X-Gm-Message-State: AOAM532TLHlN0R3N4w13OTiyqXjNRjofdV+R2sx8e6Zn+/NeyN83k5eX
-        e45US61ed4JSZkJ358aOd7NEOOLFTAM=
-X-Google-Smtp-Source: ABdhPJwDTxU53KMYycJl8qetnq/mINfXaNc76Hgit1A9AyCx3BaQy7fJov2GdHkbCakzxubNfREVxA==
-X-Received: by 2002:aca:75d1:: with SMTP id q200mr1685881oic.61.1595461547920;
-        Wed, 22 Jul 2020 16:45:47 -0700 (PDT)
-Received: from posk-x1c.lan (23-118-52-46.lightspeed.sntcca.sbcglobal.net. [23.118.52.46])
-        by smtp.gmail.com with ESMTPSA id x9sm294804ota.9.2020.07.22.16.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 16:45:47 -0700 (PDT)
-From:   Peter Oskolkov <posk@posk.io>
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Oskolkov <posk@google.com>, Andrei Vagin <avagin@google.com>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Aaron Lu <aaron.lwe@gmail.com>
-Subject: [PATCH for 5.9 3/3] selftests/futex: add futex_swap selftest
-Date:   Wed, 22 Jul 2020 16:45:38 -0700
-Message-Id: <20200722234538.166697-4-posk@posk.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200722234538.166697-1-posk@posk.io>
-References: <20200722234538.166697-1-posk@posk.io>
+        id S1733207AbgGVXtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 19:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728607AbgGVXtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 19:49:18 -0400
+Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99E9320825;
+        Wed, 22 Jul 2020 23:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595461757;
+        bh=1IS+O/7YryqIBEkm5nkaKs05nC51c/pf8nsRFWQ6LdE=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=FrgmIjvmA70VVMfZFUF0EKllD6JAd0T3wuzJkEXkBHd9mk68R94zOTAVb1VshR80o
+         VoedozueZTQ79QnhYsBQuIWbKhzLCmG3xMwCZYv104TVVJWpntgJlkPZ9kXSd1yIxs
+         xBrz8+QmXgyh1brARc/h9Lq6CDqDU8ZD0/QxaBss=
+Date:   Wed, 22 Jul 2020 16:49:16 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Anchal Agarwal <anchalag@amazon.com>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        x86@kernel.org, jgross@suse.com, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org, kamatam@amazon.com, konrad.wilk@oracle.com,
+        roger.pau@citrix.com, axboe@kernel.dk, davem@davemloft.net,
+        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        peterz@infradead.org, eduval@amazon.com, sblbir@amazon.com,
+        xen-devel@lists.xenproject.org, vkuznets@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dwmw@amazon.co.uk, benh@kernel.crashing.org
+Subject: Re: [PATCH v2 01/11] xen/manage: keep track of the on-going suspend
+ mode
+In-Reply-To: <20200722180229.GA32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+Message-ID: <alpine.DEB.2.21.2007221645430.17562@sstabellini-ThinkPad-T480s>
+References: <cover.1593665947.git.anchalag@amazon.com> <20200702182136.GA3511@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com> <50298859-0d0e-6eb0-029b-30df2a4ecd63@oracle.com> <20200715204943.GB17938@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <0ca3c501-e69a-d2c9-a24c-f83afd4bdb8c@oracle.com> <20200717191009.GA3387@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com> <5464f384-d4b4-73f0-d39e-60ba9800d804@oracle.com> <20200721000348.GA19610@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <408d3ce9-2510-2950-d28d-fdfe8ee41a54@oracle.com> <alpine.DEB.2.21.2007211640500.17562@sstabellini-ThinkPad-T480s> <20200722180229.GA32316@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323329-1520963972-1595461757=:17562"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Oskolkov <posk@google.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This is the final patch in FUTEX_SWAP patchset. It
-adds a test/benchmark to validate behavior and
-compare performance of a new FUTEX_SWAP futex operation.
+--8323329-1520963972-1595461757=:17562
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Detailed API design and behavior considerations are provided
-in the commit messages of the previous two patches.
+On Wed, 22 Jul 2020, Anchal Agarwal wrote:
+> On Tue, Jul 21, 2020 at 05:18:34PM -0700, Stefano Stabellini wrote:
+> > On Tue, 21 Jul 2020, Boris Ostrovsky wrote:
+> > > >>>>>> +static int xen_setup_pm_notifier(void)
+> > > >>>>>> +{
+> > > >>>>>> +     if (!xen_hvm_domain())
+> > > >>>>>> +             return -ENODEV;
+> > > >>>>>>
+> > > >>>>>> I forgot --- what did we decide about non-x86 (i.e. ARM)?
+> > > >>>>> It would be great to support that however, its  out of
+> > > >>>>> scope for this patch set.
+> > > >>>>> I’ll be happy to discuss it separately.
+> > > >>>>
+> > > >>>> I wasn't implying that this *should* work on ARM but rather whether this
+> > > >>>> will break ARM somehow (because xen_hvm_domain() is true there).
+> > > >>>>
+> > > >>>>
+> > > >>> Ok makes sense. TBH, I haven't tested this part of code on ARM and the series
+> > > >>> was only support x86 guests hibernation.
+> > > >>> Moreover, this notifier is there to distinguish between 2 PM
+> > > >>> events PM SUSPEND and PM hibernation. Now since we only care about PM
+> > > >>> HIBERNATION I may just remove this code and rely on "SHUTDOWN_SUSPEND" state.
+> > > >>> However, I may have to fix other patches in the series where this check may
+> > > >>> appear and cater it only for x86 right?
+> > > >>
+> > > >>
+> > > >> I don't know what would happen if ARM guest tries to handle hibernation
+> > > >> callbacks. The only ones that you are introducing are in block and net
+> > > >> fronts and that's arch-independent.
+> > > >>
+> > > >>
+> > > >> You do add a bunch of x86-specific code though (syscore ops), would
+> > > >> something similar be needed for ARM?
+> > > >>
+> > > >>
+> > > > I don't expect this to work out of the box on ARM. To start with something
+> > > > similar will be needed for ARM too.
+> > > > We may still want to keep the driver code as-is.
+> > > >
+> > > > I understand the concern here wrt ARM, however, currently the support is only
+> > > > proposed for x86 guests here and similar work could be carried out for ARM.
+> > > > Also, if regular hibernation works correctly on arm, then all is needed is to
+> > > > fix Xen side of things.
+> > > >
+> > > > I am not sure what could be done to achieve any assurances on arm side as far as
+> > > > this series is concerned.
+> > 
+> > Just to clarify: new features don't need to work on ARM or cause any
+> > addition efforts to you to make them work on ARM. The patch series only
+> > needs not to break existing code paths (on ARM and any other platforms).
+> > It should also not make it overly difficult to implement the ARM side of
+> > things (if there is one) at some point in the future.
+> > 
+> > FYI drivers/xen/manage.c is compiled and working on ARM today, however
+> > Xen suspend/resume is not supported. I don't know for sure if
+> > guest-initiated hibernation works because I have not tested it.
+> > 
+> > 
+> > 
+> > > If you are not sure what the effects are (or sure that it won't work) on
+> > > ARM then I'd add IS_ENABLED(CONFIG_X86) check, i.e.
+> > >
+> > >
+> > > if (!IS_ENABLED(CONFIG_X86) || !xen_hvm_domain())
+> > >       return -ENODEV;
+> > 
+> > That is a good principle to have and thanks for suggesting it. However,
+> > in this specific case there is nothing in this patch that doesn't work
+> > on ARM. From an ARM perspective I think we should enable it and
+> > &xen_pm_notifier_block should be registered.
+> > 
+> This question is for Boris, I think you we decided to get rid of the notifier
+> in V3 as all we need  to check is SHUTDOWN_SUSPEND state which sounds plausible
+> to me. So this check may go away. It may still be needed for sycore_ops
+> callbacks registration.
+> > Given that all guests are HVM guests on ARM, it should work fine as is.
+> > 
+> > 
+> > I gave a quick look at the rest of the series and everything looks fine
+> > to me from an ARM perspective. I cannot imaging that the new freeze,
+> > thaw, and restore callbacks for net and block are going to cause any
+> > trouble on ARM. The two main x86-specific functions are
+> > xen_syscore_suspend/resume and they look trivial to implement on ARM (in
+> > the sense that they are likely going to look exactly the same.)
+> > 
+> Yes but for now since things are not tested I will put this
+> !IS_ENABLED(CONFIG_X86) on syscore_ops calls registration part just to be safe
+> and not break anything.
+> > 
+> > One question for Anchal: what's going to happen if you trigger a
+> > hibernation, you have the new callbacks, but you are missing
+> > xen_syscore_suspend/resume?
+> > 
+> > Is it any worse than not having the new freeze, thaw and restore
+> > callbacks at all and try to do a hibernation?
+> If callbacks are not there, I don't expect hibernation to work correctly.
+> These callbacks takes care of xen primitives like shared_info_page,
+> grant table, sched clock, runstate time which are important to save the correct
+> state of the guest and bring it back up. Other patches in the series, adds all
+> the logic to these syscore callbacks. Freeze/thaw/restore are just there for at driver
+> level.
 
-Signed-off-by: Peter Oskolkov <posk@google.com>
----
- .../selftests/futex/functional/.gitignore     |   1 +
- .../selftests/futex/functional/Makefile       |   1 +
- .../selftests/futex/functional/futex_swap.c   | 209 ++++++++++++++++++
- .../selftests/futex/include/futextest.h       |  19 ++
- 4 files changed, 230 insertions(+)
- create mode 100644 tools/testing/selftests/futex/functional/futex_swap.c
+I meant the other way around :-)  Let me rephrase the question.
 
-diff --git a/tools/testing/selftests/futex/functional/.gitignore b/tools/testing/selftests/futex/functional/.gitignore
-index 0efcd494daab..d661ef0946cc 100644
---- a/tools/testing/selftests/futex/functional/.gitignore
-+++ b/tools/testing/selftests/futex/functional/.gitignore
-@@ -2,6 +2,7 @@
- futex_requeue_pi
- futex_requeue_pi_mismatched_ops
- futex_requeue_pi_signal_restart
-+futex_swap
- futex_wait_private_mapped_file
- futex_wait_timeout
- futex_wait_uninitialized_heap
-diff --git a/tools/testing/selftests/futex/functional/Makefile b/tools/testing/selftests/futex/functional/Makefile
-index 23207829ec75..6992fac38b15 100644
---- a/tools/testing/selftests/futex/functional/Makefile
-+++ b/tools/testing/selftests/futex/functional/Makefile
-@@ -13,6 +13,7 @@ TEST_GEN_FILES := \
- 	futex_requeue_pi \
- 	futex_requeue_pi_signal_restart \
- 	futex_requeue_pi_mismatched_ops \
-+	futex_swap \
- 	futex_wait_uninitialized_heap \
- 	futex_wait_private_mapped_file
- 
-diff --git a/tools/testing/selftests/futex/functional/futex_swap.c b/tools/testing/selftests/futex/functional/futex_swap.c
-new file mode 100644
-index 000000000000..9034d04372d3
---- /dev/null
-+++ b/tools/testing/selftests/futex/functional/futex_swap.c
-@@ -0,0 +1,209 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <errno.h>
-+#include <getopt.h>
-+#include <pthread.h>
-+#include <stdint.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <time.h>
-+#include "atomic.h"
-+#include "futextest.h"
-+
-+/* The futex the main thread waits on. */
-+futex_t futex_main = FUTEX_INITIALIZER;
-+/* The futex the other thread wats on. */
-+futex_t futex_other = FUTEX_INITIALIZER;
-+
-+/* The number of iterations to run (>1 => run benchmarks. */
-+static int cfg_iterations = 1;
-+
-+/* If != 0, print diagnostic messages. */
-+static int cfg_verbose;
-+
-+/* If == 0, do not use validation_counter. Useful for benchmarking. */
-+static int cfg_validate = 1;
-+
-+/* How to swap threads. */
-+#define SWAP_WAKE_WAIT 1
-+#define SWAP_SWAP 2
-+
-+/* Futex values. */
-+#define FUTEX_WAITING 0
-+#define FUTEX_WAKEUP 1
-+
-+/* An atomic counter used to validate proper swapping. */
-+static atomic_t validation_counter;
-+
-+void futex_swap_op(int mode, futex_t *futex_this, futex_t *futex_that)
-+{
-+	int ret;
-+
-+	switch (mode) {
-+	case SWAP_WAKE_WAIT:
-+		futex_set(futex_this, FUTEX_WAITING);
-+		futex_set(futex_that, FUTEX_WAKEUP);
-+		futex_wake(futex_that, 1, FUTEX_PRIVATE_FLAG);
-+		futex_wait(futex_this, FUTEX_WAITING, NULL, FUTEX_PRIVATE_FLAG);
-+		if (*futex_this != FUTEX_WAKEUP) {
-+			fprintf(stderr, "unexpected futex_this value on wakeup\n");
-+			exit(1);
-+		}
-+		break;
-+
-+	case SWAP_SWAP:
-+		futex_set(futex_this, FUTEX_WAITING);
-+		futex_set(futex_that, FUTEX_WAKEUP);
-+		ret = futex_swap(futex_this, FUTEX_WAITING, NULL,
-+				 futex_that, FUTEX_PRIVATE_FLAG);
-+		if (ret < 0 && errno == ENOSYS) {
-+			/* futex_swap not implemented */
-+			perror("futex_swap");
-+			exit(1);
-+		}
-+		if (*futex_this != FUTEX_WAKEUP) {
-+			fprintf(stderr, "unexpected futex_this value on wakeup\n");
-+			exit(1);
-+		}
-+		break;
-+
-+	default:
-+		fprintf(stderr, "unknown mode in %s\n", __func__);
-+		exit(1);
-+	}
-+}
-+
-+void *other_thread(void *arg)
-+{
-+	int mode = *((int *)arg);
-+	int counter;
-+
-+	if (cfg_verbose)
-+		printf("%s started\n", __func__);
-+
-+	futex_wait(&futex_other, 0, NULL, FUTEX_PRIVATE_FLAG);
-+
-+	for (counter = 0; counter < cfg_iterations; ++counter) {
-+		if (cfg_validate) {
-+			int prev = 2 * counter + 1;
-+
-+			if (prev != atomic_cmpxchg(&validation_counter, prev,
-+						   prev + 1)) {
-+				fprintf(stderr, "swap validation failed\n");
-+				exit(1);
-+			}
-+		}
-+		futex_swap_op(mode, &futex_other, &futex_main);
-+	}
-+
-+	if (cfg_verbose)
-+		printf("%s finished: %d iteration(s)\n", __func__, counter);
-+
-+	return NULL;
-+}
-+
-+void run_test(int mode)
-+{
-+	struct timespec start, stop;
-+	int ret, counter;
-+	pthread_t thread;
-+	uint64_t duration;
-+
-+	futex_set(&futex_other, FUTEX_WAITING);
-+	atomic_set(&validation_counter, 0);
-+	ret = pthread_create(&thread, NULL, &other_thread, &mode);
-+	if (ret) {
-+		perror("pthread_create");
-+		exit(1);
-+	}
-+
-+	ret = clock_gettime(CLOCK_MONOTONIC, &start);
-+	if (ret) {
-+		perror("clock_gettime");
-+		exit(1);
-+	}
-+
-+	for (counter = 0; counter < cfg_iterations; ++counter) {
-+		if (cfg_validate) {
-+			int prev = 2 * counter;
-+
-+			if (prev != atomic_cmpxchg(&validation_counter, prev,
-+						   prev + 1)) {
-+				fprintf(stderr, "swap validation failed\n");
-+				exit(1);
-+			}
-+		}
-+		futex_swap_op(mode, &futex_main, &futex_other);
-+	}
-+	if (cfg_validate && validation_counter.val != 2 * cfg_iterations) {
-+		fprintf(stderr, "final swap validation failed\n");
-+		exit(1);
-+	}
-+
-+	ret = clock_gettime(CLOCK_MONOTONIC, &stop);
-+	if (ret) {
-+		perror("clock_gettime");
-+		exit(1);
-+	}
-+
-+	duration = (stop.tv_sec - start.tv_sec) * 1000000000LL +
-+	stop.tv_nsec - start.tv_nsec;
-+	if (cfg_verbose || cfg_iterations > 1) {
-+		printf("completed %d swap and back iterations in %lu ns: %lu ns per swap\n",
-+			cfg_iterations, duration,
-+			duration / (cfg_iterations * 2));
-+	}
-+
-+	/* The remote thread is blocked; send it the final wake. */
-+	futex_set(&futex_other, FUTEX_WAKEUP);
-+	futex_wake(&futex_other, 1, FUTEX_PRIVATE_FLAG);
-+	if (pthread_join(thread, NULL)) {
-+		perror("pthread_join");
-+		exit(1);
-+	}
-+}
-+
-+void usage(char *prog)
-+{
-+	printf("Usage: %s\n", prog);
-+	printf("  -h    Display this help message\n");
-+	printf("  -i N  Use N iterations to benchmark\n");
-+	printf("  -n    Do not validate swapping correctness\n");
-+	printf("  -v    Print diagnostic messages\n");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int c;
-+
-+	while ((c = getopt(argc, argv, "hi:nv")) != -1) {
-+		switch (c) {
-+		case 'h':
-+			usage(basename(argv[0]));
-+			exit(0);
-+		case 'i':
-+			cfg_iterations = atoi(optarg);
-+			break;
-+		case 'n':
-+			cfg_validate = 0;
-+			break;
-+		case 'v':
-+			cfg_verbose = 1;
-+			break;
-+		default:
-+			usage(basename(argv[0]));
-+			exit(1);
-+		}
-+	}
-+
-+	printf("\n\n------- running SWAP_WAKE_WAIT -----------\n\n");
-+	run_test(SWAP_WAKE_WAIT);
-+	printf("PASS\n");
-+
-+	printf("\n\n------- running SWAP_SWAP -----------\n\n");
-+	run_test(SWAP_SWAP);
-+	printf("PASS\n");
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/futex/include/futextest.h b/tools/testing/selftests/futex/include/futextest.h
-index ddbcfc9b7bac..4d6a0a18445a 100644
---- a/tools/testing/selftests/futex/include/futextest.h
-+++ b/tools/testing/selftests/futex/include/futextest.h
-@@ -38,6 +38,9 @@ typedef volatile u_int32_t futex_t;
- #ifndef FUTEX_CMP_REQUEUE_PI
- #define FUTEX_CMP_REQUEUE_PI		12
- #endif
-+#ifndef FUTEX_SWAP
-+#define FUTEX_SWAP			13
-+#endif
- #ifndef FUTEX_WAIT_REQUEUE_PI_PRIVATE
- #define FUTEX_WAIT_REQUEUE_PI_PRIVATE	(FUTEX_WAIT_REQUEUE_PI | \
- 					 FUTEX_PRIVATE_FLAG)
-@@ -46,6 +49,9 @@ typedef volatile u_int32_t futex_t;
- #define FUTEX_CMP_REQUEUE_PI_PRIVATE	(FUTEX_CMP_REQUEUE_PI | \
- 					 FUTEX_PRIVATE_FLAG)
- #endif
-+#ifndef FUTEX_SWAP_PRIVATE
-+#define FUTEX_SWAP_PRIVATE		(FUTEX_WAIT_WAKE | FUTEX_PRIVATE_FLAG)
-+#endif
- 
- /**
-  * futex() - SYS_futex syscall wrapper
-@@ -204,6 +210,19 @@ futex_cmp_requeue_pi(futex_t *uaddr, futex_t val, futex_t *uaddr2, int nr_wake,
- 		     val, opflags);
- }
- 
-+/**
-+ * futex_swap() - block on uaddr and wake one task blocked on uaddr2.
-+ * @uaddr:	futex to block the current task on
-+ * @timeout:	relative timeout for the current task block
-+ * @uaddr2:	futex to wake tasks at (can be the same as uaddr)
-+ */
-+static inline int
-+futex_swap(futex_t *uaddr, futex_t val, struct timespec *timeout,
-+	   futex_t *uaddr2, int opflags)
-+{
-+	return futex(uaddr, FUTEX_SWAP, val, timeout, uaddr2, 0, opflags);
-+}
-+
- /**
-  * futex_cmpxchg() - atomic compare and exchange
-  * @uaddr:	The address of the futex to be modified
--- 
-2.25.1
-
+Do you think that implementing freeze/thaw/restore at the driver level
+without having xen_syscore_suspend/resume can potentially make things
+worse compared to not having freeze/thaw/restore at the driver level at
+all?
+--8323329-1520963972-1595461757=:17562--
