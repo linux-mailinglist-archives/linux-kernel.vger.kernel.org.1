@@ -2,211 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A306229B81
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1695229B69
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732938AbgGVPdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732687AbgGVPdS (ORCPT
+        id S1732784AbgGVPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:32:09 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:44564 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727985AbgGVPcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:33:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89262C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:33:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=zEyQaZl+BH4Ca7RHWpVGJSeXguzr0RPSrKA3yktCFqU=; b=YNWvMubcgTPpJC5aO3EbIuK9pp
-        u3y7TYIdKpLkPiHESJ3qeVzl3lGaW1tBbRjJwleCPm+ONe9T9JxfghTQjmpHq7nwLL2jSy2wf019b
-        mrbF7jpUCn2b+kNUfEMhPqFL1aRMlu0qH4FtHwKt7Ad+xv/ncmW9a0lTbdRhZi0pf+xA744i9oqPk
-        wTpTMwRjnmke6Wg/tcX255tQDQJ1BtkpwoHUx8n3Umy2qKCJwv5xbe0kIReLGntcZPWOl95OyreAp
-        0JOjYoBu/3yf6ITKCSlWqqZRB3QHqlfSHD2DJ0lz7j1/AsW+fX89zm2/ULJVTecwaDqvsAam56Id5
-        qySjaDOA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyGjv-000119-Sn; Wed, 22 Jul 2020 15:33:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE68830782A;
-        Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5B7A6200D4179; Wed, 22 Jul 2020 17:33:01 +0200 (CEST)
-Message-ID: <20200722153017.591300045@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 22 Jul 2020 17:01:58 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org, paulmck@kernel.org,
-        hch@lst.de, axboe@kernel.dk, chris@chris-wilson.co.uk,
-        davem@davemloft.net, kuba@kernel.org, fweisbec@gmail.com,
-        oleg@redhat.com, peterz@infradead.org
-Subject: [RFC][PATCH 9/9] irq_work: Add a few comments
-References: <20200722150149.525408253@infradead.org>
+        Wed, 22 Jul 2020 11:32:08 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MFVquY011789;
+        Wed, 22 Jul 2020 10:31:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595431912;
+        bh=R7Oa65f2HhKPSlBuczqXsfDjkDfALVHkd5h98zrQVsU=;
+        h=From:To:CC:Subject:Date;
+        b=qCiF/viGmpafrY1AvL3rojzLq/hXbnEjxyGQR6F2VlerEECn3/+Sqwhb1dEq9D1GM
+         vcJvkvCGO/L78xLWtiS1K4k5tM+5iZLvJpvYYrjG77JPF7QxZv0Yv3cjeGPfa6XSOW
+         Em9QhYK2/+jrqbbWPATA7QvfgIW8MBkeV/fDGR5s=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MFVqZk065232
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Jul 2020 10:31:52 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
+ Jul 2020 10:31:52 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 22 Jul 2020 10:31:52 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MFVq7r115650;
+        Wed, 22 Jul 2020 10:31:52 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>,
+        <marek.behun@nic.cz>
+CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v32 0/6] Multicolor Framework v32
+Date:   Wed, 22 Jul 2020 10:31:40 -0500
+Message-ID: <20200722153146.8767-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/irq_work.h |   80 +++++++++++++++++++++++++++++++++++++++++------
- kernel/irq_work.c        |   10 +++++
- 2 files changed, 80 insertions(+), 10 deletions(-)
+This is the remaining patches in the multicolor framework series.  Only the
+LP50xx driver has been updated per the review comment here
 
---- a/include/linux/irq_work.h
-+++ b/include/linux/irq_work.h
-@@ -4,15 +4,6 @@
- 
- #include <linux/smp_types.h>
- 
--/*
-- * An entry can be in one of four states:
-- *
-- * free	     NULL, 0 -> {claimed}       : free to be used
-- * claimed   NULL, 3 -> {pending}       : claimed to be enqueued
-- * pending   next, 3 -> {busy}          : queued, pending callback
-- * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
-- */
--
- struct irq_work {
- 	struct __call_single_node node;
- 	void (*func)(struct irq_work *);
-@@ -36,11 +27,19 @@ void init_irq_work(struct irq_work *work
- 	*work = IRQ_WORK_INIT(func);
- }
- 
-+/*
-+ * irq_work_is_pending(): if @work is already queued
-+ */
- static inline bool irq_work_is_pending(struct irq_work *work)
- {
- 	return atomic_read(&work->node.a_flags) & IRQ_WORK_PENDING;
- }
- 
-+/*
-+ * irq_work_is_busy(): true until after func() has run
-+ *
-+ * Does not work with irq_work_queue_remote_static().
-+ */
- static inline bool irq_work_is_busy(struct irq_work *work)
- {
- 	return atomic_read(&work->node.a_flags) & IRQ_WORK_BUSY;
-@@ -48,12 +47,45 @@ static inline bool irq_work_is_busy(stru
- 
- #ifdef CONFIG_IRQ_WORK
- 
-+/*
-+ * irq_work_queue(): run @work in IRQ context on this CPU
-+ * @work: work to run
-+ *
-+ * Self-IPI, NMI-safe
-+ *
-+ * When the function returns false; @work is already queued and
-+ * any eventual execution of it's func() is guaranteed to see
-+ * any state before the failing enqueue.
-+ */
- bool irq_work_queue(struct irq_work *work);
-+
-+/*
-+ * irq_work_queue_on(): run @work in IRQ context on @cpu
-+ * @work: work to run
-+ * @cpu: cpu to run @work on
-+ *
-+ * *NOT* NMI-safe
-+ *
-+ * When the function returns false; @work is already queued and
-+ * any eventual execution of it's func() is guaranteed to see
-+ * any state before the failing enqueue.
-+ */
- bool irq_work_queue_on(struct irq_work *work, int cpu);
- 
--void irq_work_tick(void);
-+/*
-+ * irq_work_sync(): wait for completion of @work
-+ * @work:
-+ *
-+ * Expects no concurrent irq_work_queue()
-+ *
-+ * Will return once @work is no longer 'busy'.
-+ *
-+ * Does not work with irq_work_queue_remote_static().
-+ */
- void irq_work_sync(struct irq_work *work);
- 
-+void irq_work_tick(void);
-+
- #include <asm/irq_work.h>
- 
- void irq_work_run(void);
-@@ -67,8 +99,36 @@ static inline bool irq_work_needs_cpu(vo
- #endif /* CONFIG_IRQ_WORK */
- 
- #ifdef CONFIG_SMP
-+
-+/*
-+ * irq_work_queue_remote(): run @work in IRQ context on @cpu
-+ * @cpu:
-+ * @work:
-+ *
-+ * like irq_work_queue_on(), except it requires @cpu != smp_processor_id() and
-+ * is available for any SMP build.
-+ *
-+ * Return -EBUSY when already queued, 0 on success.
-+ */
- extern int irq_work_queue_remote(int cpu, struct irq_work *work);
-+
-+/*
-+ * irq_work_queue_remote_state(): like irq_work_queue_remote() except dangerous
-+ * @cpu:
-+ * @work:
-+ *
-+ * DO NOT USE, this function is horrible/dangerous.
-+ *
-+ * The test-and-set-PENDING is not atomic, it also doesn't set
-+ * the BUSY bit and with that breaks irq_work_sync().
-+ *
-+ * This means that the caller needs external serialization; life-time,
-+ * where relevant, also needs to be externally orchestated.
-+ *
-+ * There is no validation/debugging to help you if you get it wrong.
-+ */
- extern int irq_work_queue_remote_static(int cpu, struct irq_work *work);
-+
- extern void irq_work_single(void *arg);
- #endif
- 
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -23,6 +23,15 @@
- #if defined(CONFIG_IRQ_WORK) || defined(CONFIG_SMP)
- 
- /*
-+ * An entry can be in one of four states:
-+ *
-+ * free	     NULL, 0 -> {claimed}       : free to be used
-+ * claimed   NULL, 3 -> {pending}       : claimed to be enqueued
-+ * pending   next, 3 -> {busy}          : queued, pending callback
-+ * busy      NULL, 2 -> {free, claimed} : callback in progress, can be claimed
-+ */
-+
-+/*
-  * Claim the entry so that no one else will poke at it.
-  */
- static bool irq_work_claim(struct irq_work *work)
-@@ -37,6 +46,7 @@ static bool irq_work_claim(struct irq_wo
- 	 */
- 	if (oflags & IRQ_WORK_PENDING)
- 		return false;
-+
- 	return true;
- }
- 
+https://lore.kernel.org/patchwork/patch/1274070/
 
+In addition to these fixes fixes for the enable/disable and reset functions have
+also been updated.
+
+Summary:
+Converted links from http->https
+Fixed comment style
+Fixed enable/disable function
+Refactored probe_dt code
+Fixed checkpatch style issues
+Fixed issues when building with W=1 C=1
+
+
+Dan Murphy (6):
+  dt: bindings: lp50xx: Introduce the lp50xx family of RGB drivers
+  leds: lp50xx: Add the LP50XX family of the RGB LED driver
+  ARM: defconfig: u8500: Add LP55XX_COMMON config flag
+  ARM: dts: n900: Add reg property to the LP5523 channel node
+  ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node
+  ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
+
+ .../devicetree/bindings/leds/leds-lp50xx.yaml | 130 +++
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi    |  14 +-
+ arch/arm/boot/dts/omap3-n900.dts              |  29 +-
+ arch/arm/boot/dts/ste-href.dtsi               |  22 +-
+ arch/arm/configs/u8500_defconfig              |   1 +
+ drivers/leds/Kconfig                          |  11 +
+ drivers/leds/Makefile                         |   1 +
+ drivers/leds/leds-lp50xx.c                    | 791 ++++++++++++++++++
+ 8 files changed, 980 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+ create mode 100644 drivers/leds/leds-lp50xx.c
+
+-- 
+2.27.0
 
