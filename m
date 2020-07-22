@@ -2,125 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B831229F69
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE558229F54
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732349AbgGVSnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:43:37 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35024 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727060AbgGVSng (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:43:36 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 11so3035916qkn.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:43:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RZMnAY2w7Gsu1RJzqgpSuPL6qVRoQpQhZZvqs4rgs2Q=;
-        b=TTwSlw5jTkbU53PqRn1vDcGw2FqezkmcQxUSWwDVmP40ERvNl9L3BgV6P7+WiiPfrF
-         yT3Pk0eLVe5o9ZatJrnXpZTETf5ChW8plGQzOEzsAgAhsJXfUYlPcoABhUw1U4J+foJX
-         Xb9k1Itcgj8vLhCaKCHq9CXDCe7qoSC+colhTOCyA2JF9w2Gk/IY5NMHkRfZV/Xon/sM
-         Z7YlGMcxvVdmiM7rHdUEcXO4K3sT2nldcRqSLdyjlDNVf+3XHjLphjp/4yo351aLeD1t
-         iiVTHuTeZLrLPU7QPoUOsOgVQrCPr0bLfuNj+Nb4ItASoT8X5Zo7uAjy1mlaOpTUk3wc
-         cPZg==
-X-Gm-Message-State: AOAM532U+44sb8hn6VGa6MCCkzQoLilEyBd+hdjNAA28FbTYpwkH0BA9
-        SV5gE8Urtn/QJUOWczEwGw5YLzfM
-X-Google-Smtp-Source: ABdhPJzRUy/X3SaFV5EFn6YWvEy9RBAmXeflzoksCOu90tF4XY0cwCsVJSerfna6N59ZebO3dsxEyA==
-X-Received: by 2002:a37:a746:: with SMTP id q67mr1425580qke.93.1595443415651;
-        Wed, 22 Jul 2020 11:43:35 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id b2sm547488qkf.122.2020.07.22.11.43.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 11:43:35 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/build: Move max-page-size option to LDFLAGS_vmlinux
-Date:   Wed, 22 Jul 2020 14:43:34 -0400
-Message-Id: <20200722184334.3785418-1-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
+        id S1732277AbgGVSiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:38:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726535AbgGVSiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 14:38:21 -0400
+Received: from embeddedor (unknown [201.166.157.14])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEAEB20781;
+        Wed, 22 Jul 2020 18:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595443101;
+        bh=C41NSdvixYNpy8FAlvuQ8aWZEgzephgAUoyXiR9BvKM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=N4yhV4EF87gDubIEadGRCHul8bJEx5mNHqryX/eg1UN4qiZwL9eNPb6hXHYc+IqIY
+         ry2SUoDQqAVLGiOuhIMgtBv5AmUBHyhaHG/RJLC7AFQKt6/WScEDkpl2BGb9MqejHm
+         d4RUMlU17QAu1VyCz1+33X8gDMewdgIslTXho8DQ=
+Date:   Wed, 22 Jul 2020 13:43:58 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Siva Reddy Kallam <siva.kallam@broadcom.com>,
+        Prashant Sreedharan <prashant@broadcom.com>,
+        Michael Chan <mchan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] tg3: Avoid the use of one-element array
+Message-ID: <20200722184358.GA15694@embeddedor>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This option is only required for vmlinux on 64-bit, to enforce 2MiB
-alignment, so set it in LDFLAGS_vmlinux instead of KBUILD_LDFLAGS. Also
-drop the ld-option check: this option was added in binutils-2.18 and all
-the other places that use it already don't have the check.
+One-element arrays are being deprecated[1]. Replace the one-element
+array with a simple value type 'u32 reserved2'[2], once it seems
+this is just a placeholder for alignment.
 
-This reduces the size of the intermediate ELF files
-arch/x86/boot/setup.elf and arch/x86/realmode/rm/realmode.elf by about
-2MiB each. The binary versions are unchanged.
+[1] https://github.com/KSPP/linux/issues/79
+[2] https://github.com/KSPP/linux/issues/86
 
-Move the LDFLAGS settings to all be together and just after CFLAGS
-settings are done.
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Tested-by: kernel test robot <lkp@intel.com>
+Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/0-day/tg3-20200718.md
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- arch/x86/Makefile | 32 +++++++++++++++++---------------
- 1 file changed, 17 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/broadcom/tg3.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 00e378de8bc0..1e634d7ee6eb 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -47,10 +47,6 @@ export REALMODE_CFLAGS
- # e.g.: obj-y += foo_$(BITS).o
- export BITS
+diff --git a/drivers/net/ethernet/broadcom/tg3.h b/drivers/net/ethernet/broadcom/tg3.h
+index 6953d0546acb..1000c894064f 100644
+--- a/drivers/net/ethernet/broadcom/tg3.h
++++ b/drivers/net/ethernet/broadcom/tg3.h
+@@ -2847,7 +2847,7 @@ struct tg3_ocir {
+ 	u32				port1_flags;
+ 	u32				port2_flags;
+ 	u32				port3_flags;
+-	u32				reserved2[1];
++	u32				reserved2;
+ };
  
--ifdef CONFIG_X86_NEED_RELOCS
--        LDFLAGS_vmlinux := --emit-relocs --discard-none
--endif
--
- #
- # Prevent GCC from generating any FP code by mistake.
- #
-@@ -177,17 +173,6 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
- 	KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args,)
- endif
- 
--KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
--
--#
--# The 64-bit kernel must be aligned to 2MB.  Pass -z max-page-size=0x200000 to
--# the linker to force 2MB page size regardless of the default page size used
--# by the linker.
--#
--ifdef CONFIG_X86_64
--KBUILD_LDFLAGS += $(call ld-option, -z max-page-size=0x200000)
--endif
--
- # Workaround for a gcc prelease that unfortunately was shipped in a suse release
- KBUILD_CFLAGS += -Wno-sign-compare
- #
-@@ -207,6 +192,23 @@ ifdef CONFIG_RETPOLINE
-   endif
- endif
- 
-+KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
-+
-+ifdef CONFIG_X86_NEED_RELOCS
-+LDFLAGS_vmlinux := --emit-relocs --discard-none
-+else
-+LDFLAGS_vmlinux :=
-+endif
-+
-+#
-+# The 64-bit kernel must be aligned to 2MB.  Pass -z max-page-size=0x200000 to
-+# the linker to force 2MB page size regardless of the default page size used
-+# by the linker.
-+#
-+ifdef CONFIG_X86_64
-+LDFLAGS_vmlinux += -z max-page-size=0x200000
-+endif
-+
- archscripts: scripts_basic
- 	$(Q)$(MAKE) $(build)=arch/x86/tools relocs
  
 -- 
-2.26.2
+2.27.0
 
