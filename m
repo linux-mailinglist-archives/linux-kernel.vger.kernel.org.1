@@ -2,70 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B1D229B2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085B4229B32
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732700AbgGVPTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:19:06 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53118 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728046AbgGVPTG (ORCPT
+        id S1732787AbgGVPTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgGVPTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:19:06 -0400
-Received: by mail-io1-f72.google.com with SMTP id k12so2007295iom.19
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:05 -0700 (PDT)
+        Wed, 22 Jul 2020 11:19:36 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E53DC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:36 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id o8so2276123wmh.4
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+UCvHRw9cSV1ire+wDJVVQA4haGd1GB0XoiKtbgnmTo=;
+        b=mPWd+SgyIoM4lyYru9jltmu9xCLYTsfHwP43ZhqSTI3HRTjtBVPedMh8cO5+wfljZV
+         Lxf8H6NT28UcH94uOz8FUO607ECu/zMFF/MPHa8vrnE8y+FANxATLTHXGsAo+2bA5GJI
+         cNMGYH4iiHh3SM6/WdmeRgWdXbviPJlZXdBWNDTq7kD1YGxqEZnCuL5rIt4hSHLdaJhk
+         4qChsu+0TuRImEAJ38wFhHF9zH9+OXOqNL7agZKc8njCEfIi1Q2qEJVdMQt/bpiNZNyJ
+         +WJ5UGOG+bSeyuor+0i9DY+OTy+2kXU5EdPO8R5SQuOMOTN+D4hMhFlYXzMS/vMK+mib
+         6Thg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=8O+hcy9D+3uP1r6XjHEoJrtrZg3bcURkhZ7Tw7GCuco=;
-        b=r32Kp8P6UAUf6JRJIH3rSe1ghOW5Nwd+D8Nu1Q73HsxgVj2P9BUhtg9B948xFe4Uk3
-         TvU19rt0FAZt1BRGh4bFpIed8cMv9m6EzFa2rBoNCRzIo+g/ATAPkUjmu7Ziqj+/mFPO
-         2VLQSUgBK99fFACAuvhek6SJHvt8DZjFWIQlEvdy2XKu8kDGa6D9N4s2mUCzmrOMpmRj
-         WVg2yM3qG22jI4tCIXYXZRM9ltNfISXg8MD2iIS3AXocAn891sf5Wx0LeGXnlLYvtg/o
-         B5dnyWnG2V1NEIzfZQo887al6pgrL92qEWpHRc0lmyDq0sgbk5krrvnx+PK/n9e/jUBc
-         dS2A==
-X-Gm-Message-State: AOAM530y073ekzyrFPvrzbIghH1QlbIdUVmJo5pwSwnlbvYcwFE2m7lr
-        sHkwMqsbZ0dBuQfLf9RaN8hPHINSy1ljIiwMDdXkRW/YMbLL
-X-Google-Smtp-Source: ABdhPJxrRwotvwsFMlv3C7Kix89/6yIaucCdCzBMJYqcV+TZWkdMEarhp/fVTNBpGxms54f0K8O0NlRmZla/4oD6CdGmmcZ6R3gT
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+UCvHRw9cSV1ire+wDJVVQA4haGd1GB0XoiKtbgnmTo=;
+        b=ri5JaKrLQ8+ASbX3rWYZKecaX5GVpRCAvl+FTJ0SIoBMqIzw4hVR6zU7qeQWXU7a/I
+         mdv3MnmUJlVzhikauWvWz6K372S5mJXTjPeBJOGgTMFFUtJ1Ws6ouC5HV2TvWW3o2q2q
+         eY1Y0XOkRTG2L5Ej8xv89JPmsSA/KHBh4sm1ID84ofKaZMatQxYxaswEwE5qZ0ccCvSi
+         JiqlNX/X2J7QeLvc4f2X9rcCwFZrCYsSNwa6sORC3KQEKTGNagUW4f8Opvb7GqAm1I/n
+         QgrsIFrFUp4DUByXQm5ivkaWAhwHEfh17uhWYkJSynkyz/ZH4WKyrYgQxUs9AkLkCQpd
+         LJRQ==
+X-Gm-Message-State: AOAM53135Y9beYfrdB9tYyrRRbVU6fhT0R4VQs4vuBq4g5McloIQqvjF
+        cNHuNeccX/4P9ytwIFDuYH8=
+X-Google-Smtp-Source: ABdhPJx4/91ssZDs9aLL0SlkfQcoKpepKepjDLz8KCMepuSrTFan2YjNbDmCoVfqBl8wRK0twYrstg==
+X-Received: by 2002:a7b:cf10:: with SMTP id l16mr140355wmg.93.1595431174874;
+        Wed, 22 Jul 2020 08:19:34 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.122.158])
+        by smtp.gmail.com with ESMTPSA id u20sm13204wmc.42.2020.07.22.08.19.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 08:19:34 -0700 (PDT)
+Subject: Re: [PATCH v3] iommu/mediatek: check 4GB mode by reading infracfg
+To:     Miles Chen <miles.chen@mediatek.com>,
+        Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com, Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20200722141925.14861-1-miles.chen@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <eb36fb32-9a90-2b63-bdc2-506c02a5cb07@gmail.com>
+Date:   Wed, 22 Jul 2020 17:19:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c011:: with SMTP id q17mr398957ild.290.1595431145264;
- Wed, 22 Jul 2020 08:19:05 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 08:19:05 -0700
-In-Reply-To: <00000000000079a77705a8ce6da7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ad5afa05ab09427f@google.com>
-Subject: Re: general protection fault in qrtr_endpoint_post
-From:   syzbot <syzbot+03e343dbccf82a5242a2@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200722141925.14861-1-miles.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit e42671084361302141a09284fde9bbc14fdd16bf
-Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date:   Thu May 7 12:53:06 2020 +0000
 
-    net: qrtr: Do not depend on ARCH_QCOM
+On 22/07/2020 16:19, Miles Chen wrote:
+> In previous discussion [1] and [2], we found that it is risky to
+> use max_pfn or totalram_pages to tell if 4GB mode is enabled.
+> 
+> Check 4GB mode by reading infracfg register, remove the usage
+> of the un-exported symbol max_pfn.
+> 
+> This is a step towards building mtk_iommu as a kernel module.
+> 
+> ---
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f50e27100000
-start commit:   1590a2e1 Merge tag 'acpi-5.8-rc3' of git://git.kernel.org/..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=140d0e27100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=100d0e27100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20c907630cbdbe5
-dashboard link: https://syzkaller.appspot.com/bug?extid=03e343dbccf82a5242a2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1496f9f9100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1692523d100000
+That's wrong. The commit message would be cut after this '---' so we would loose 
+the Cc and Signed-of-by tags.
 
-Reported-by: syzbot+03e343dbccf82a5242a2@syzkaller.appspotmail.com
-Fixes: e42671084361 ("net: qrtr: Do not depend on ARCH_QCOM")
+> 
+> Change since v2:
+> - determine compatible string by m4u_plat
+> - rebase to next-20200720
+> - add "---"
+> 
+> Change since v1:
+> - remove the phandle usage, search for infracfg instead [3]
+> - use infracfg instead of infracfg_regmap
+> - move infracfg definitaions to linux/soc/mediatek/infracfg.h
+> - update enable_4GB only when has_4gb_mode
+> 
+> [1] https://lkml.org/lkml/2020/6/3/733
+> [2] https://lkml.org/lkml/2020/6/4/136
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I think using links to lore.kernel.org would make sure that the URL does not 
+change over time. As the commit log will stay there for ever, but who konws what 
+happens with lkml.org
+
+> [3] https://lkml.org/lkml/2020/7/15/1147
+> 
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Yong Wu <yong.wu@mediatek.com>
+> Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+
+The formating should look like this:
+In previous discussion [1] and [2], we found that it is risky to
+use max_pfn or totalram_pages to tell if 4GB mode is enabled.
+
+Check 4GB mode by reading infracfg register, remove the usage
+of the un-exported symbol max_pfn.
+
+This is a step towards building mtk_iommu as a kernel module.
+
+[1] https://lkml.org/lkml/2020/6/3/733
+[2] https://lkml.org/lkml/2020/6/4/136
+
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yong Wu <yong.wu@mediatek.com>
+Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+---
+
+Change since v2:
+- determine compatible string by m4u_plat
+- rebase to next-20200720
+- add "---"
+
+Change since v1:
+- remove the phandle usage, search for infracfg instead 
+https://lkml.org/lkml/2020/7/15/1147
+- use infracfg instead of infracfg_regmap
+- move infracfg definitaions to linux/soc/mediatek/infracfg.h
+- update enable_4GB only when has_4gb_mode
+
+
+
+> ---
+>   drivers/iommu/mtk_iommu.c             | 34 +++++++++++++++++++++++----
+>   include/linux/soc/mediatek/infracfg.h |  3 +++
+>   2 files changed, 32 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index 59e5a62a34db..9ec666168822 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -3,7 +3,6 @@
+>    * Copyright (c) 2015-2016 MediaTek Inc.
+>    * Author: Yong Wu <yong.wu@mediatek.com>
+>    */
+> -#include <linux/memblock.h>
+>   #include <linux/bug.h>
+>   #include <linux/clk.h>
+>   #include <linux/component.h>
+> @@ -15,13 +14,16 @@
+>   #include <linux/iommu.h>
+>   #include <linux/iopoll.h>
+>   #include <linux/list.h>
+> +#include <linux/mfd/syscon.h>
+>   #include <linux/of_address.h>
+>   #include <linux/of_iommu.h>
+>   #include <linux/of_irq.h>
+>   #include <linux/of_platform.h>
+>   #include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+>   #include <linux/slab.h>
+>   #include <linux/spinlock.h>
+> +#include <linux/soc/mediatek/infracfg.h>
+>   #include <asm/barrier.h>
+>   #include <soc/mediatek/smi.h>
+>   
+> @@ -640,8 +642,11 @@ static int mtk_iommu_probe(struct platform_device *pdev)
+>   	struct resource         *res;
+>   	resource_size_t		ioaddr;
+>   	struct component_match  *match = NULL;
+> +	struct regmap		*infracfg;
+>   	void                    *protect;
+>   	int                     i, larb_nr, ret;
+> +	u32			val;
+> +	char                    *p;
+>   
+>   	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
+>   	if (!data)
+> @@ -655,10 +660,29 @@ static int mtk_iommu_probe(struct platform_device *pdev)
+>   		return -ENOMEM;
+>   	data->protect_base = ALIGN(virt_to_phys(protect), MTK_PROTECT_PA_ALIGN);
+>   
+> -	/* Whether the current dram is over 4GB */
+> -	data->enable_4GB = !!(max_pfn > (BIT_ULL(32) >> PAGE_SHIFT));
+> -	if (!MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE))
+> -		data->enable_4GB = false;
+> +	data->enable_4GB = false;
+> +	if (MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE)) {
+> +		switch (data->plat_data->m4u_plat) {
+> +		case M4U_MT2712:
+> +			p = "mediatek,mt2712-infracfg";
+> +			break;
+> +		case M4U_MT8173:
+> +			p = "mediatek,mt8173-infracfg";
+> +			break;
+> +		default:
+> +			p = NULL;
+> +		}
+> +
+> +		infracfg = syscon_regmap_lookup_by_compatible(p);
+
+	if (MTK_IOMMU_HAS_FLAG(data->plat_data, HAS_4GB_MODE)) {
+		switch (data->plat_data->m4u_plat) {
+		case M4U_MT2712:
+			infracfg = syscon_regmap_lookup_by_compatible("mediatek,mt2712-infracfg");
+			break;
+		case M4U_MT8173:
+			infracfg = syscon_regmap_lookup_by_compatible("mediatek,mt8173-infracfg");
+			break;
+		default:
+			infracfg = -ENODEV;
+		}
+> +
+> +		if (IS_ERR(infracfg))
+> +			return PTR_ERR(infracfg);
+> +
+> +		ret = regmap_read(infracfg, REG_INFRA_MISC, &val);
+> +		if (ret)
+> +			return ret;
+> +		data->enable_4GB = !!(val & F_DDR_4GB_SUPPORT_EN);
+> +	}
+>   
+>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>   	data->base = devm_ioremap_resource(dev, res);
+> diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
+> index fd25f0148566..233463d789c6 100644
+> --- a/include/linux/soc/mediatek/infracfg.h
+> +++ b/include/linux/soc/mediatek/infracfg.h
+> @@ -32,6 +32,9 @@
+>   #define MT7622_TOP_AXI_PROT_EN_WB		(BIT(2) | BIT(6) | \
+>   						 BIT(7) | BIT(8))
+>   
+> +#define REG_INFRA_MISC				0xf00
+> +#define F_DDR_4GB_SUPPORT_EN			BIT(13)
+> +
+>   int mtk_infracfg_set_bus_protection(struct regmap *infracfg, u32 mask,
+>   		bool reg_update);
+>   int mtk_infracfg_clear_bus_protection(struct regmap *infracfg, u32 mask,
+> 
