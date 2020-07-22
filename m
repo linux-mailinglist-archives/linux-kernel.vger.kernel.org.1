@@ -2,124 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA38228DCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053F7228DD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731746AbgGVB5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 21:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731614AbgGVB5v (ORCPT
+        id S1731771AbgGVB7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 21:59:35 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:29639 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731621AbgGVB7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 21 Jul 2020 21:57:51 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF781C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:57:50 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a24so351627pfc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 18:57:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=su1XkeyRnzMEHK9Yn/D1y3WRDB7LvpOU7Y4o6l5KStw=;
-        b=MmepaoUCiDHsOdlsts0QjlFqbQdU0BbhFm4FK/Ima/IkA6DkQ+yY7kShOxmA9KZPU0
-         ldiyGqYLLufEvYLkiIRRxf52AOdEKR7+NMrGsZ1tXJooC+xPibcSJw8tDxkPskwS2daH
-         3/3azAb+DnRLnP08f/yMsxrXGiic/sdMkXV84=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=su1XkeyRnzMEHK9Yn/D1y3WRDB7LvpOU7Y4o6l5KStw=;
-        b=GN3ysoYI1BGJb1EmpHb6Gw6T+Wus1b81C3LnPWtcNfUMUw6u6Vhy2BHX+8VImMWZlD
-         Qnm2+nYr8DyeJheYJE2M8KWkf58SnqovHLDiJ1tkoeyK8zAVFgfvFz9k6/UX2nHSUEyz
-         h5vXibIvQCNHEmgFnidGBDAsmBa5bfxvonBYQIfFrEbpZm/tN7zSlS5Xw94OsVQoyWd2
-         wjEbfSrY8ojycCyEq4vsjA0RJYzjNGAjP/ir2kQ0mfMwwYTP09SEH29MFeQHWeueVynh
-         8GPfI5v7LOa2lP8Vuz5eE43qi5bVYhRPzZnAwpUqF1OZ/XrZgvhu+j+cfdGfpXMOwf+O
-         KVDg==
-X-Gm-Message-State: AOAM53333VTwoOcD893rp7OcQRTDw78yKEatiNJOnZ7Q+E6WJprZHjQl
-        9sGDRE/I468oLTcUH+ic8FSnVJZKHoU=
-X-Google-Smtp-Source: ABdhPJzgTf103+oIhWLzD5Ntc06p7/NH90abxrYrt8ldY8jos0KdvPpz3TMYKxkkO5DqziUZaGsY5Q==
-X-Received: by 2002:a65:6799:: with SMTP id e25mr26124415pgr.364.1595383070340;
-        Tue, 21 Jul 2020 18:57:50 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:8edc:d4ff:fe53:350d])
-        by smtp.gmail.com with ESMTPSA id c1sm19408729pgi.52.2020.07.21.18.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 18:57:49 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Brian Norris <briannorris@chromium.org>
-Subject: [PATCH 2/2] platform/chrome: cros_ec_proto: check for missing EC_CMD_HOST_EVENT_GET_WAKE_MASK
-Date:   Tue, 21 Jul 2020 18:57:32 -0700
-Message-Id: <20200722015732.1720840-2-briannorris@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-In-Reply-To: <20200722015732.1720840-1-briannorris@chromium.org>
-References: <20200722015732.1720840-1-briannorris@chromium.org>
+        Tue, 21 Jul 2020 21:59:35 -0400
+X-UUID: 507314be90494080be33d838767b4236-20200722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HBs3aJUcIVxX1irCDgPsr1t6Sr5uliFctbO3YQ/k1Z0=;
+        b=hCj36RiEwIWbCdUWFFXm6ZVLELzbf7n6NNUclkHRzM6SZFmO5xaTMdJxTgH3hLLiYPHydUdkMURVM7mxcweXJ15cclEAPYZB8931jNp9Zk48q37kGzSza8GfXZyGpQfmbYCkcZP9UpBjAu9KHYv7wuKnOT8LQ+5yOmWozy6OoB0=;
+X-UUID: 507314be90494080be33d838767b4236-20200722
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1814161564; Wed, 22 Jul 2020 09:59:31 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Jul 2020 09:59:29 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 09:59:29 +0800
+Message-ID: <1595383170.14937.2.camel@mtkswgap22>
+Subject: Re: [PATCH v2] usb: gadget: configfs: Fix use-after-free issue with
+ udc_name
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Eddie Hung <eddie.hung@mediatek.com>, <stable@vger.kernel.org>,
+        "Mediatek WSD Upstream" <wsd_upstream@mediatek.com>,
+        Macpaul Lin <macpaul.lin@gmail.com>
+Date:   Wed, 22 Jul 2020 09:59:30 +0800
+In-Reply-To: <20200721113353.GA1686460@kroah.com>
+References: <1594881666-8843-1-git-send-email-macpaul.lin@mediatek.com>
+         <1595040303-23046-1-git-send-email-macpaul.lin@mediatek.com>
+         <1595041133.23887.4.camel@mtkswgap22> <20200721113353.GA1686460@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As with cros_ec_cmd_xfer_status(), etc., it's not enough to simply check
-for the return status of send_command() -- that only covers transport or
-other similarly-fatal errors. One must also check the ->result field, to
-see whether the command really succeeded. If not, we can't use the data
-it returns.
-
-The caller of cros_ec_get_host_event_wake_mask() ignores this, and so
-for example, on EC's where the command is not implemented, we're using
-junk (or in practice, all zeros) for our wake-mask. We should be using a
-non-zero default (currently, it's supposed to be all-1's).
-
-Fix this by checking the ->result field and returning -EPROTO for
-errors.
-
-I might label this as fixing commit 29d99b966d60 ("cros_ec: Don't signal
-wake event for non-wake host events"), except that this fix alone
-actually may make things worse, as it now allows for a lot more spurious
-wakeups. The patch "platform/chrome: cros_ec_proto: ignore battery/AC
-wakeups on old ECs" helps to mitigate this.
-
-Signed-off-by: Brian Norris <briannorris@chromium.org>
----
- drivers/platform/chrome/cros_ec_proto.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index e93024b55ce8..01a74abe4191 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -208,6 +208,12 @@ static int cros_ec_get_host_event_wake_mask(struct cros_ec_device *ec_dev,
- 	msg->insize = sizeof(*r);
- 
- 	ret = send_command(ec_dev, msg);
-+	if (ret >= 0) {
-+		if (msg->result == EC_RES_INVALID_COMMAND)
-+			return -ENOTSUPP;
-+		if (msg->result != EC_RES_SUCCESS)
-+			return -EPROTO;
-+	}
- 	if (ret > 0) {
- 		r = (struct ec_response_host_event_mask *)msg->data;
- 		*mask = r->mask;
-@@ -488,6 +494,13 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
- 			  BIT(EC_HOST_EVENT_BATTERY_CRITICAL) |
- 			  BIT(EC_HOST_EVENT_PD_MCU) |
- 			  BIT(EC_HOST_EVENT_BATTERY_STATUS));
-+		/*
-+		 * Old ECs may not support this command. Complain about all
-+		 * other errors.
-+		 */
-+		if (ret != -ENOTSUPP)
-+			dev_err(ec_dev->dev,
-+				"failed to retrieve wake mask: %d\n", ret);
- 	}
- 
- 	ret = 0;
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
+T24gVHVlLCAyMDIwLTA3LTIxIGF0IDEzOjMzICswMjAwLCBHcmVnIEtyb2FoLUhhcnRtYW4gd3Jv
+dGU6DQo+IE9uIFNhdCwgSnVsIDE4LCAyMDIwIGF0IDEwOjU4OjUzQU0gKzA4MDAsIE1hY3BhdWwg
+TGluIHdyb3RlOg0KPiA+IE9uIFNhdCwgMjAyMC0wNy0xOCBhdCAxMDo0NSArMDgwMCwgTWFjcGF1
+bCBMaW4gd3JvdGU6DQo+ID4gPiBGcm9tOiBFZGRpZSBIdW5nIDxlZGRpZS5odW5nQG1lZGlhdGVr
+LmNvbT4NCj4gPiA+IA0KPiA+IA0KPiA+IFdlbGwsIGl0J3Mgc3RyYW5nZSwgSSBzaW1wbHkgcmVw
+bGFjZWQgdGhlIHVwbG9hZGVyJ3MgbmFtZSB0byBteQ0KPiA+IGNvbGxlYWd1ZSwgZ2l0IHNlbmQt
+ZW1haWwgcG9wIHVwIHRoaXMgbGluZSBhdXRvbWF0aWNhbGx5Lg0KPiA+IA0KPiA+IFNob3VsZG4n
+dCBJIGRvIHRoYXQga2luZCBvZiBjaGFuZ2UuIEl0IGRpZCBub3QgaGFwcGVuZWQgYmVmb3JlLg0K
+PiA+IERvIEkgbmVlZCB0byBjaGFuZ2UgaXQgYmFjayBhbmQgdXBkYXRlIHBhdGNoIHYzPw0KPiAN
+Cj4gV2hvIGlzIHRoZSByZWFsIGF1dGhvciBvZiB0aGlzLCBFZGRpZSBvciB5b3U/ICBJZiBFZGRp
+ZSwgdGhpcyBpcw0KPiBjb3JyZWN0LCBpZiB5b3UsIGl0IGlzIG5vdC4NCj4gDQo+IHRoYW5rcywN
+Cj4gDQo+IGdyZWcgay1oDQoNCkl0IGlzIEVkZGllISBJIGp1c3QgY2hhbmdlZCB0aGUgdXBsb2Fk
+ZXIgdG8gdGhlIGNvcnJlY3QgYXV0aG9yIGZyb20gbXkNCndvcmtpbmcgdHJlZSENClRoYW5rcyEN
+Cg0KUmVnYXJkcywNCk1hY3BhdWwgTGluDQoNCg==
 
