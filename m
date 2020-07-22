@@ -2,53 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C45229B9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E259229BA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 17:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732897AbgGVPjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 11:39:14 -0400
-Received: from 8bytes.org ([81.169.241.247]:58750 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727985AbgGVPjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 11:39:13 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id D1DC941A; Wed, 22 Jul 2020 17:39:11 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 17:39:10 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH] iommu/qcom: Use domain rather than dev as tlb cookie
-Message-ID: <20200722153910.GM27672@8bytes.org>
-References: <20200720155217.274994-1-robdclark@gmail.com>
- <CA+G9fYtj1RBYcPhXZRm-qm5ygtdLj1jD8vFZSqQvwi_DNJLBwQ@mail.gmail.com>
- <20200722131009.GD27672@8bytes.org>
- <CAF6AEGteY6Mwy+jQaj6Vo0e4bMW6P1q19PMmdOqQrxr-RQxkQg@mail.gmail.com>
+        id S1732941AbgGVPkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 11:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727985AbgGVPkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 11:40:00 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4DCC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:39:59 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a15so2342212wrh.10
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 08:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=RnJUfvdhHEXCtn6kTDVL1C13ap2rftP42dOu9oQ/bio=;
+        b=U8tGaHMw3sVHJOhPvWUGfPQCTMd+v4FqzJoqbZOZvGebiwLOJzxV/y7SlbUZ7KqqsT
+         ui+rmggO7FzpGhD0LBjMmU2FBe/pXNoInQcorXS8zGnN1DbZjOb/+kTv/zH2WMpv4Tkp
+         VBTQVzpyp1Nr1RahFRIWqQnhHrdaRG+otqWfln3odJ6PKrs6lfLcyvLbiBkog0SBK+Y3
+         HobOtzjuyPivVD0GYsBbn3KwlsiF9liuAVVQafQaJT+AQeFDfvUyG78S6WedSFGFM36F
+         K88R2pNnHx/qkxwkRu9lPlCWaIx5WGZqE5mXvTMnYtEPqlrZUqbOBUzqzdjGl40PTp0E
+         /3+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=RnJUfvdhHEXCtn6kTDVL1C13ap2rftP42dOu9oQ/bio=;
+        b=kyK6R0T2GYW+D9Jz3dAh6dxMJxhUV2+/BcK5IO6bZIdNw5VDh1kQzVFr8aXZE36Nrn
+         IdUZYFVwdQL/d8dlkbvzlzWhL+mIZvsPHOMG7G7bnF6ihZb3jDH1ZGCma2lfammQZtCh
+         HmZw+1cxzN7OD2nqBnq/hMhilgHg3fLg+AU3SfppOKxIwZeaP10jjIdtPrGuax9gDAjN
+         PESZL2l3fQ289dd46o55EHsTDqm5v2EJnYi4remr3fI5g1itZ/6hasPP3WGYVxB8S936
+         k6S+u6lt6P+I+w12qQrPj2LrnmhfXj0Oylrd5UZtTPw3ir+vSRrNx1+McdFMyTjOtDvJ
+         4oEg==
+X-Gm-Message-State: AOAM532uWb8Xd8p29ISrWrdkIXmTIfn0dUPn8TFTvGbv//sCMluZp3qW
+        zikpqZTL6vrQamCWpKezZyJKI4K2/2I=
+X-Google-Smtp-Source: ABdhPJwkfzSUd2XNGj/U2C/eIFBS5lLSgW43ml7nh/uCSidVClcpc8NCaPXetMuDL4FVco272+wNRQ==
+X-Received: by 2002:adf:bb14:: with SMTP id r20mr156893wrg.366.1595432398746;
+        Wed, 22 Jul 2020 08:39:58 -0700 (PDT)
+Received: from PKL-UANJUM-LT.pkl.mentorg.com ([103.150.154.211])
+        by smtp.gmail.com with ESMTPSA id u20sm70453wmc.42.2020.07.22.08.39.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 Jul 2020 08:39:58 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 20:39:53 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: octeon: Add the license identifier
+Message-ID: <20200722153953.GA8148@PKL-UANJUM-LT.pkl.mentorg.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAF6AEGteY6Mwy+jQaj6Vo0e4bMW6P1q19PMmdOqQrxr-RQxkQg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 07:54:40AM -0700, Rob Clark wrote:
-> On Wed, Jul 22, 2020 at 6:10 AM Joerg Roedel <joro@8bytes.org> wrote:
-> > Is this needed for v5.8/stable? A fixes tag would be great too.
-> 
-> looks like, yes:
-> 
-> Fixes: 09b5dfff9ad6 ("iommu/qcom: Use accessor functions for iommu
-> private data")
+This patch fixes the checkpatch.pl warning:
+WARNING: Missing or malformed SPDX-License-Identifier tag
 
-Thanks, applied to fixes branch.
+Add a the SPDX-License-Identifier tag on line 1
+
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/staging/octeon/octeon-stubs.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/staging/octeon/octeon-stubs.h b/drivers/staging/octeon/octeon-stubs.h
+index d06743504f2b..889b7c80666d 100644
+--- a/drivers/staging/octeon/octeon-stubs.h
++++ b/drivers/staging/octeon/octeon-stubs.h
+@@ -1,3 +1,5 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
+ #define CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE	512
+ 
+ #ifndef XKPHYS_TO_PHYS
+-- 
+2.17.1
+
