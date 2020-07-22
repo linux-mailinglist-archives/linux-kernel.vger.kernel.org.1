@@ -2,106 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E489C22A311
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE11B22A314
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 01:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733117AbgGVXZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 19:25:32 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:41801 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbgGVXZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 19:25:31 -0400
-Received: by mail-ua1-f65.google.com with SMTP id u6so1213802uau.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 16:25:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u16+n9WUBgulDsvWWrvJlcH01cdO9g6pus/V2E/LhAg=;
-        b=fq6lOH97yCzuzTsaYXarxZcnj5SElSaF1BkOcjcMbU24dYM5fSrEdHhIKagBOMjn/u
-         G/VYGn4tG5nW9Bfsd0+0Hh1julm1ZtKwd4Zqtvl66JJXNyZBm1j4J/KVLJFAlr6u7AzZ
-         5nd+zvfjps5/VlLHTuN0jmHTT3zSnDRguXMfqR1jCf25SSwAfXuQ+nf7ooEgtItSDjn1
-         g4M10hmYlMLyJQ62FVs2j4/Ev2CLvR3kEnSnQ7gz2v0rKE2/yMnI3M4IZPIxK8Ix2l36
-         ziUfQlFNaMgtDYlJ4i5Nsx91qXOwYCZ9HSHLm7XdMv6Xufbd+lGXVPCtPFLzaTEhVqqq
-         78+g==
-X-Gm-Message-State: AOAM53056FiWb1ur8mY4gZmVGUX1/HCQUMZ+wTJPq1SkVqOx0j6uC800
-        kSldDdZOmnB0WXxH9AMpPNg=
-X-Google-Smtp-Source: ABdhPJx3mn6PghznvnUicOsiOgC9gFhfrzrSafwZ5co810gAMiLWKEnqgtngZefxJUyHNt9CpQqGuA==
-X-Received: by 2002:ab0:7551:: with SMTP id k17mr2018238uaq.102.1595460330003;
-        Wed, 22 Jul 2020 16:25:30 -0700 (PDT)
-Received: from google.com (239.145.196.35.bc.googleusercontent.com. [35.196.145.239])
-        by smtp.gmail.com with ESMTPSA id n2sm164181vsa.11.2020.07.22.16.25.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 16:25:28 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 23:25:27 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Dennis Zhou <dennis@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v3 00/11] i386 Clang support
-Message-ID: <20200722232527.GA1156429@google.com>
-References: <20200720204925.3654302-1-ndesaulniers@google.com>
- <20200721222754.GA820494@google.com>
- <87blk7ywp1.fsf@nanos.tec.linutronix.de>
+        id S1733168AbgGVX0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 19:26:17 -0400
+Received: from mail-eopbgr770042.outbound.protection.outlook.com ([40.107.77.42]:22925
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726447AbgGVX0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 19:26:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W293ufAuZSJg9+kKbMpeKdgWb+Eg02bknTLf5jtfxxybeA5OUbfmoLd4R0C1s8L2AtMSa5dRdkWP9GOJQwwKTu/qq1aV89ru9tFwU6ZzAMmbnOULiHvGHxEYoC1hyKBFWdSZRlHO1BaNAa7jMjPOXgRTMFdvijWb0/ewiu870j+ELmduIHjHy5Rxv7hJtAu61K9OjsWF1KIaXizLCaBpWs0m+00+nYUem0kz/DmYBzqGAAPbTBA9zpNZ78xb2KWV0US5i1UqRrKHmjOxsKyoQ5OG3XZHEFxRTjXIln1rtGqAQY1LA1pCqXllQkielJwEd5gyOpVyirSXGkNDC8Zpqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o88HONAvYczZcYSNTG60tYJIGieR9ZY/CEg/UWL1ePs=;
+ b=EOj/Vb/np7eyy3/UvcOqwNGDDKc+YnlzGZ3tSS1dOVgHpW4KLNeW/XFqqNgr4lRonOzZPTvcGdgsieopCQFHWrSGRqRQWL36JPJCZerjK42eIFHZsW4IFqwjEVdwUjuHOuAUizjmCASVn5KkFHhIhgi7906YBl4yEFPP9peZCstZczGm3TWh9KB4QYBeoijV9fjwIGudomfldr89pceIDM1E/f7wZSTuWRRviWH+6ZV1K32OqBoNeCFQDy0P7hGXMDjMcskwk+x5GCtbVzIXjjTCDezRKqka29WawHUrDECl//CguwxGWKTh6v0MwSzVwkMIc+uUe1IthEc7L/bHag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o88HONAvYczZcYSNTG60tYJIGieR9ZY/CEg/UWL1ePs=;
+ b=Zh4ahZeLiIvMtYOj8EWQJbIXqhH5oGjUa48+gHhxGdQJWoE0jFaxelDJF8HFc/tC/dmXAn9XpvLDtR8OE7OtOoZkkuwgw+vZ1YkOAVgJ2jcihQCnYGATWdH6yumotIKnuX3L6Mh+wlFLx6NpmY+hJ6ZCVixgMvJpZBhKEB9rXSc=
+Received: from MN2PR18CA0025.namprd18.prod.outlook.com (2603:10b6:208:23c::30)
+ by CY4PR02MB2279.namprd02.prod.outlook.com (2603:10b6:903:a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21; Wed, 22 Jul
+ 2020 23:26:13 +0000
+Received: from BL2NAM02FT024.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:208:23c:cafe::61) by MN2PR18CA0025.outlook.office365.com
+ (2603:10b6:208:23c::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21 via Frontend
+ Transport; Wed, 22 Jul 2020 23:26:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ BL2NAM02FT024.mail.protection.outlook.com (10.152.77.62) with Microsoft SMTP
+ Server id 15.20.3216.10 via Frontend Transport; Wed, 22 Jul 2020 23:26:13
+ +0000
+Received: from [149.199.38.66] (port=33167 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <amit.sunil.dhamne@xilinx.com>)
+        id 1jyO5z-0005t0-Q7; Wed, 22 Jul 2020 16:24:19 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by xsj-pvapsmtp01 with smtp (Exim 4.63)
+        (envelope-from <amit.sunil.dhamne@xilinx.com>)
+        id 1jyO7o-0005fc-VN; Wed, 22 Jul 2020 16:26:13 -0700
+Received: from [10.18.5.8] (helo=xsjamitsuni51.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <amit.sunil.dhamne@xilinx.com>)
+        id 1jyO7k-0005e7-Mh; Wed, 22 Jul 2020 16:26:08 -0700
+From:   Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+To:     ard.biesheuvel@linaro.org, mingo@kernel.org,
+        gregkh@linuxfoundation.org, matt@codeblueprint.co.uk,
+        sudeep.holla@arm.com, hkallweit1@gmail.com, keescook@chromium.org,
+        dmitry.torokhov@gmail.com, michal.simek@xilinx.com
+Cc:     rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tejasp@xilinx.com, jollys@xilinx.com,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+Subject: [PATCH] drivers: soc: xilinx: Call InitFinalize from late_initcall_sync instead of probe
+Date:   Wed, 22 Jul 2020 16:25:51 -0700
+Message-Id: <20200722232551.29549-1-amit.sunil.dhamne@xilinx.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87blk7ywp1.fsf@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: ff19ef54-f700-4dfa-0ec9-08d82e969fc8
+X-MS-TrafficTypeDiagnostic: CY4PR02MB2279:
+X-Microsoft-Antispam-PRVS: <CY4PR02MB2279B5871838C59322F627CCA7790@CY4PR02MB2279.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: viiACrkmksHhrJVvU/VeEvwWEfDyzHJ4PPiPIeOTU4ZKOOKhH1nCs4AXU+uuY3E4krFaFTBsy4abrUxbuMfEw2qch4EEbqkq2+mCEgEAwGC/b4OzDh+WRdpZCM7XOJMyEjIAZ88xOqYv/fteKLKyQUekTVfhISwcBFdkwOK4iTocG5LUhIduRDQP/z7aTc/MBhLd5DUQiIHzpBdVvDfRiEHviiAS/2xMs0RKiui2R5jfD8UhBAvtmS36bsmMx3nMw0kVyb6tDIt0Hj6VZaa7FGY1lSYAzTsiHoa5oli6wam/x0uXyyHsh9eirdhk+RaCTY9WFQbUcJ+t2X5G+CJCIAaGOTP0fEbaBZlI1EhVYIIad63YtwFDdWsZmyxgpkPxoo21iS6ViaI9Sf5l8UdTGw==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(396003)(346002)(39860400002)(136003)(376002)(46966005)(82740400003)(47076004)(336012)(36756003)(478600001)(6636002)(7696005)(426003)(107886003)(81166007)(7416002)(316002)(2616005)(6666004)(54906003)(1076003)(4326008)(82310400002)(83380400001)(26005)(5660300002)(70206006)(70586007)(186003)(103116003)(9786002)(2906002)(8676002)(356005)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2020 23:26:13.3455
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff19ef54-f700-4dfa-0ec9-08d82e969fc8
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT024.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB2279
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 01:08:42AM +0200, Thomas Gleixner wrote:
-> Dennis Zhou <dennis@kernel.org> writes:
-> > On Mon, Jul 20, 2020 at 01:49:14PM -0700, Nick Desaulniers wrote:
-> >> Resend of Brian's v2 with Acks from Peter and Linus collected, as well
-> >> as the final patch (mine) added. The commit of the final patch discusses
-> >> some of the architectural differences between GCC and Clang, and the
-> >> kernels tickling of this difference for i386, which necessitated these
-> >> patches.
-> >> 
-> >> Brian Gerst (10):
-> >>   x86/percpu: Introduce size abstraction macros
-> >>   x86/percpu: Clean up percpu_to_op()
-> >>   x86/percpu: Clean up percpu_from_op()
-> >>   x86/percpu: Clean up percpu_add_op()
-> >>   x86/percpu: Remove "e" constraint from XADD
-> >>   x86/percpu: Clean up percpu_add_return_op()
-> >>   x86/percpu: Clean up percpu_xchg_op()
-> >>   x86/percpu: Clean up percpu_cmpxchg_op()
-> >>   x86/percpu: Clean up percpu_stable_op()
-> >>   x86/percpu: Remove unused PER_CPU() macro
-> >> 
-> >> Nick Desaulniers (1):
-> >>   x86: support i386 with Clang
-> >> 
-> >>  arch/x86/include/asm/percpu.h  | 510 +++++++++++----------------------
-> >>  arch/x86/include/asm/uaccess.h |   4 +-
-> >>  2 files changed, 175 insertions(+), 339 deletions(-)
-> >> 
-> >> -- 
-> >> 2.28.0.rc0.105.gf9edc3c819-goog
-> >> 
-> >
-> > This looks great to me! I applied it to for-5.9.
-> 
-> You applied it? I'm not aware that you're maintaining x86 nowadays.
-> 
-> Thanks,
-> 
->         tglx
+From: Rajan Vaja <rajan.vaja@xilinx.com>
 
-I'm sorry I overstepped. I've dropped them. Please take them with my
-ack.
+Initially all devices are in power up state. Firmware expect that
+processor should call InitFinalize API once it have requested devices
+which are required so that it can turn off all unused devices and
+save power. From Linux, PM driver calls InitFinalize to inform the
+firmware that it can power down the unused devices. Upon
+InitFinalize() call firmware power downs all unused devices.
 
-Thanks,
-Dennis
+There are chances that PM driver is probed along with or before other
+device drivers. So in that case some of the devices may not be
+requested from firmware which is done by genpd driver. Due to that
+firmware will consider those devices as unused and firmware will power
+down those devices. Later when any device driver is probed, genpd
+driver will ask firmware to power up that device using request node
+API. So for those devices, power transition will be like on->off->on
+which creates unnecessary power glitch to those devices.
+
+To avoid such unnecessary power transitions and as ideal behavior
+InitFinalize should be called after all drivers are probed. So call
+InitFinalize from late_initcall_sync.
+
+Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
+---
+ drivers/soc/xilinx/zynqmp_power.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_=
+power.c
+index 31ff49fcd078..fa05cf12d5f3 100644
+--- a/drivers/soc/xilinx/zynqmp_power.c
++++ b/drivers/soc/xilinx/zynqmp_power.c
+@@ -178,7 +178,6 @@ static int zynqmp_pm_probe(struct platform_device *pdev=
+)
+        u32 pm_api_version;
+        struct mbox_client *client;
+
+-       zynqmp_pm_init_finalize();
+        zynqmp_pm_get_api_version(&pm_api_version);
+
+        /* Check PM API version number */
+@@ -246,6 +245,13 @@ static int zynqmp_pm_remove(struct platform_device *pd=
+ev)
+        return 0;
+ }
+
++static int __init do_init_finalize(void)
++{
++       return zynqmp_pm_init_finalize();
++}
++
++late_initcall_sync(do_init_finalize);
++
+ static const struct of_device_id pm_of_match[] =3D {
+        { .compatible =3D "xlnx,zynqmp-power", },
+        { /* end of table */ },
+--
+2.23.0
+
+This email and any attachments are intended for the sole use of the named r=
+ecipient(s) and contain(s) confidential information that may be proprietary=
+, privileged or copyrighted under applicable law. If you are not the intend=
+ed recipient, do not read, copy, or forward this email message or any attac=
+hments. Delete this email message and any attachments immediately.
