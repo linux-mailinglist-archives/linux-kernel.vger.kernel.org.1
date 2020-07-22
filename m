@@ -2,114 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351E6229940
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D161229937
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732421AbgGVNcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:32:36 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45358 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgGVNcf (ORCPT
+        id S1731961AbgGVNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:30:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58692 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726146AbgGVNaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:32:35 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MDBLs6026245;
-        Wed, 22 Jul 2020 13:27:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : mime-version :
- content-type; s=corp-2020-01-29;
- bh=SGDxiMkv+K/gRs79Axes9Aq4nm/uxe/9Z6BhER1gB0Q=;
- b=M17jaN2xoPQjyzcbNIh3EyAt4L6vYmmCoIqfNEMXNxXt0vzVBRus39mqoBEim2QS4gl0
- ZEADhZS2JBt2F7fKfyR+8i2sOHwxVi7BaCCMheuAGRRXQqWB1nWcDgM5X14uo35sG05r
- zlijQgQbwaef/JC4O3F/g7yEqPNfaQNKx2aCWkHFu1gDe7esOn1Gkr3dq25D71GBzEPQ
- 6KS+bJgLAQJnq85Fp3AC5Jeo7nvKeGNeWXiAf1kbeFGXNrLprBeiotYq1hiftxnJR1QC
- wkrlIGy9zAxq9hiRWdKeuXUijIaHYeH2b6QaPXkn5408mQU4LsrY4KDUVXU+jmFwIFfa Ug== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 32bs1mk8c3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 22 Jul 2020 13:27:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MDPlCB151849;
-        Wed, 22 Jul 2020 13:27:16 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 32epb584vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Jul 2020 13:27:16 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06MDRBYJ029023;
-        Wed, 22 Jul 2020 13:27:11 GMT
-Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 22 Jul 2020 13:27:11 +0000
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: Re: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1blk7g1jd.fsf@ca-mkp.ca.oracle.com>
-References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
-        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
-        <20200722063937.GA21117@infradead.org>
-Date:   Wed, 22 Jul 2020 09:27:07 -0400
-In-Reply-To: <20200722063937.GA21117@infradead.org> (Christoph Hellwig's
-        message of "Wed, 22 Jul 2020 07:39:37 +0100")
+        Wed, 22 Jul 2020 09:30:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595424653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9ofOzODpqrXeni3qzPmGfxeXQBhGsdvE7fY2XJkHMpE=;
+        b=coZOwqsCV8W2diGFLpdk6Y5tcGJ8ycf5OW+1wo1gzS7EZxsUi/2ur0/skBGLgrPkxVBm8K
+        /AJXrVAgX4N+b8qls4jrfGqWUtgYi4h6vAWxxqKi4At/7Y/MJc4KPhfPvosYJS4wMaO2rg
+        Lavjt4QpPAMeI4UACRgoBn1zZm2x5w0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-KmQnGAk2Peqhv79_YZCT2w-1; Wed, 22 Jul 2020 09:30:50 -0400
+X-MC-Unique: KmQnGAk2Peqhv79_YZCT2w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E44219200C1;
+        Wed, 22 Jul 2020 13:30:49 +0000 (UTC)
+Received: from [10.36.113.254] (ovpn-113-254.ams2.redhat.com [10.36.113.254])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3049D5D9D5;
+        Wed, 22 Jul 2020 13:30:47 +0000 (UTC)
+Subject: Re: [PATCH] khugepaged: Fix null-pointer dereference due to race
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        syzbot+ed318e8b790ca72c5ad0@syzkaller.appspotmail.com
+References: <20200722121439.44328-1-kirill.shutemov@linux.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <c97addfd-6536-7611-d00e-323688234555@redhat.com>
+Date:   Wed, 22 Jul 2020 15:30:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- suspectscore=1 spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007220097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
- spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007220097
+In-Reply-To: <20200722121439.44328-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22.07.20 14:14, Kirill A. Shutemov wrote:
+> khugepaged has to drop mmap lock several times while collapsing a page.
+> The situation can change while the lock is dropped and we need to
+> re-validate that the VMA is still in place and the PMD is still subject
+> for collapse.
+> 
+> But we miss one corner case: while collapsing an anonymous pages the VMA
+> could be replaced with file VMA. If the file VMA doesn't have any
+> private pages we get NULL pointer dereference:
+> 
+> 	general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+> 	KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> 	anon_vma_lock_write include/linux/rmap.h:120 [inline]
+> 	collapse_huge_page mm/khugepaged.c:1110 [inline]
+> 	khugepaged_scan_pmd mm/khugepaged.c:1349 [inline]
+> 	khugepaged_scan_mm_slot mm/khugepaged.c:2110 [inline]
+> 	khugepaged_do_scan mm/khugepaged.c:2193 [inline]
+> 	khugepaged+0x3bba/0x5a10 mm/khugepaged.c:2238
+> 
+> The fix is to make sure that the VMA is anonymous in
+> hugepage_vma_revalidate(). The helper is only used for collapsing
+> anonymous pages.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+> Reported-by: syzbot+ed318e8b790ca72c5ad0@syzkaller.appspotmail.com
+> ---
+>  mm/khugepaged.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index b043c40a21d4..700f5160f3e4 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -958,6 +958,9 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
+>  		return SCAN_ADDRESS_RANGE;
+>  	if (!hugepage_vma_check(vma, vma->vm_flags))
+>  		return SCAN_VMA_CHECK;
+> +	/* Anon VMA expected */
+> +	if (!vma->anon_vma || vma->vm_ops)
+> +		return SCAN_VMA_CHECK;
+>  	return 0;
+>  }
+>  
+> 
 
-Christoph,
+LGTM
 
-> As this monster seesm to come back again and again let me re-iterate
-> my statement:
->
-> I do not think Linux should support a broken standards extensions that
-> creates a huge share state between the Linux initator and the target
-> device like this with all its associated problems.
-
-I spent a couple of hours looking at this series again last night. And
-while the code has improved, I do remain concerned about the general
-concept.
-
-I understand how caching the FTL in host memory can improve performance
-from a theoretical perspective. However, I am not sure how much a
-difference this is going to make outside of synthetic benchmarks. What
-are the workloads that keep reading the same blocks from media? Or does
-the performance improvement exclusively come from the second order
-pre-fetching effect for larger I/Os? If so, why is the device's internal
-L2P SRAM cache ineffective at handling that case?
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks,
+
+David / dhildenb
+
