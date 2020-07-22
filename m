@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5773229240
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A87A229241
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730582AbgGVHjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:39:13 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:23413 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbgGVHjL (ORCPT
+        id S1730636AbgGVHjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:39:16 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:35885 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730062AbgGVHjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:39:11 -0400
+        Wed, 22 Jul 2020 03:39:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595403551; x=1626939551;
+  t=1595403552; x=1626939552;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=BGrluRL9eVSzvJorGbmFTVBhikAio3RdBUKVk7O0GUI=;
-  b=lSMFvOC1pcl0lZP/bGMr8JvOiiKuwI5jjUfYN1cnIoN75ENX8aHsCoeO
-   QFrM7K5IW6C5QlMVKp0o08zGy+gUvEjOBSi6efZzFxJhJzzElJpbNgu7+
-   eDw4cjGhw9+7IpWXPxWBvok3tXqAPXuuELvM+0EmSAZE7IwjT7wgD1meB
-   ujzwPdkTaJFsIOSn13lLjgUH6B41wPTi5BzCDWWpWyIrrg3lrjBTbEyNp
-   6HOlMN8X0v+Sfuu8AGIoi4zDIbQU+nQEpxUt0v/Wjeq6v4UFFGkn2Nwib
-   VPzmTdg8Ex6AuEEojgxzroJO+Jqj+RDUcsYsO7Y07/5ddTB7zsRuxwEyP
-   A==;
-IronPort-SDR: JEEpu2yIBD9dnHpIWK+2g6Efe+7oATch6Rsq+F54Bqugwzd/g7m+bSGw+EfdhTnTkE6Awe1luH
- dJ6EfBxWYx1VadnTd3bS8Wxc9G3Kmi/hxw1J68IS0hS/44j0DJ7e8vZWCAM5YvHwI4139HaK00
- uo0EeAlCXyetEa6Eaq6K25m+a/UOWUYW0CB7JsF9pUD0pyD+e0nBfpvU7eJzxcHwEnoBx9XPPx
- LvE+GjrXMU1WMUNl8tzcLS7vzVoIsBpmLhOaXGnDIBupV0E/37DOPoKdtFlksLCAwjpGjYhIwZ
- 4z8=
+  bh=eF0q0JFTXO3fXXnMUO4I2tCnNMv7GZu0sKvedYlGPkI=;
+  b=aLmebJr85Af0HCEke8K3REUc293f49BnvW1Njoe3jvaI9DKGKLmWJ0Ur
+   fVhjbHhNkjC4A+Cf5/AclSnvHMp4wOYshweTTZ8ks3M1URIxKg4pt1K2j
+   wLILl/Pi4e9+SGw3W1vxLQK9lp4t0N1THUxRYf2mwE32REh39LAZhamQr
+   J5Vqotjq3QeiiX7P2e7Zb80DDNV0Yvog3qKoq1nMD6Llaqn1XaGMeC8Rv
+   h4u1fqxPHE66FLnL2I7yKlSO9hbu2o1D25DDi+E+LsFtTV+92MLxn+lQ4
+   5OEYRlh+S89u8hYdmlVv/KevMoV/VEiS0j/eQld/jY9NFGpRnjlNHbWUB
+   g==;
+IronPort-SDR: GCe3zXZ7zBKoAA8H7Oc4BQbTT18u7I5pYHkEtogUXGyJHTKoaGlwWmSWXhYU0FqcBppUJaa53V
+ m2Fvgq53wQHezFWfyscSCqXrJ2++IdTxoNfWwskjfttrBSLuNRt8Cq3NKhMI9/E0Wgas1gMZxQ
+ A+RmXj/FQUbL2hIspP6JgZ8XH65v/qhxpC01VvmEhUURtJEkpm8CCKKdG0CAw7nDbrRMUMiZ2/
+ S3Rg3XfnopeIZb8GMmjvIBUdP+v/uVgFafyV/P2GhqK4Y+3dLumevhAA85VyTKvEDfC6WnR7na
+ Bv4=
 X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
-   d="scan'208";a="82772089"
+   d="scan'208";a="84153176"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:09 -0700
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Jul 2020 00:39:12 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 00:39:07 -0700
+ 15.1.1979.3; Wed, 22 Jul 2020 00:38:32 -0700
 Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:39:04 -0700
+ 15.1.1979.3 via Frontend Transport; Wed, 22 Jul 2020 00:39:07 -0700
 From:   Claudiu Beznea <claudiu.beznea@microchip.com>
 To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -49,9 +49,9 @@ CC:     <bbrezillon@kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         "Claudiu Beznea" <claudiu.beznea@microchip.com>
-Subject: [PATCH v2 10/18] clk: at91: clk-generated: pass the id of changeable parent at registration
-Date:   Wed, 22 Jul 2020 10:38:18 +0300
-Message-ID: <1595403506-8209-11-git-send-email-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 11/18] clk: at91: clk-generated: add mux_table option
+Date:   Wed, 22 Jul 2020 10:38:19 +0300
+Message-ID: <1595403506-8209-12-git-send-email-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
 References: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com>
@@ -62,229 +62,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the ID of changeable parent at registration. This will allow
-the scalability of this clock driver with regards to the changeable
-parent ID for versions of this IP where changeable parent is not the
-last one in the parents list (e.g. SAMA7G5). With this the clock flags
-are set to zero in case we have no changeable parent. Also in
-clk_generated_best_diff() the *best_diff variable is check against
-tmp_diff variable using ">=" operator instead of ">" so that in case
-the requested frequency could be obtained using fix parents + gck
-dividers but the clock also supports changeable parent to be able
-to force the usage of the changeable parent.
+Add mux table option. This is necessary for IP versions that has
+gaps in the range of available clock sources (e.g. SAMA7G5).
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- drivers/clk/at91/clk-generated.c | 26 ++++++++++++++------------
- drivers/clk/at91/dt-compat.c     |  8 +++++---
- drivers/clk/at91/pmc.h           |  4 ++--
- drivers/clk/at91/sam9x60.c       |  3 +--
- drivers/clk/at91/sama5d2.c       | 31 +++++++++++++++----------------
- 5 files changed, 37 insertions(+), 35 deletions(-)
+ drivers/clk/at91/clk-generated.c | 13 ++++++++++---
+ drivers/clk/at91/dt-compat.c     |  5 +++--
+ drivers/clk/at91/pmc.h           |  2 +-
+ drivers/clk/at91/sam9x60.c       |  2 +-
+ drivers/clk/at91/sama5d2.c       |  2 +-
+ 5 files changed, 16 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
-index 2448bdc63425..f9ca04c97128 100644
+index f9ca04c97128..b4fc8d71daf2 100644
 --- a/drivers/clk/at91/clk-generated.c
 +++ b/drivers/clk/at91/clk-generated.c
-@@ -18,8 +18,6 @@
- 
- #define GENERATED_MAX_DIV	255
- 
--#define GCK_INDEX_DT_AUDIO_PLL	5
--
- struct clk_generated {
- 	struct clk_hw hw;
+@@ -23,6 +23,7 @@ struct clk_generated {
  	struct regmap *regmap;
-@@ -29,7 +27,7 @@ struct clk_generated {
+ 	struct clk_range range;
+ 	spinlock_t *lock;
++	u32 *mux_table;
+ 	u32 id;
  	u32 gckdiv;
  	const struct clk_pcr_layout *layout;
- 	u8 parent_id;
--	bool audio_pll_allowed;
-+	int chg_pid;
- };
+@@ -201,7 +202,11 @@ static int clk_generated_set_parent(struct clk_hw *hw, u8 index)
+ 	if (index >= clk_hw_get_num_parents(hw))
+ 		return -EINVAL;
  
- #define to_clk_generated(hw) \
-@@ -109,7 +107,7 @@ static void clk_generated_best_diff(struct clk_rate_request *req,
- 		tmp_rate = parent_rate / div;
- 	tmp_diff = abs(req->rate - tmp_rate);
- 
--	if (*best_diff < 0 || *best_diff > tmp_diff) {
-+	if (*best_diff < 0 || *best_diff >= tmp_diff) {
- 		*best_rate = tmp_rate;
- 		*best_diff = tmp_diff;
- 		req->best_parent_rate = parent_rate;
-@@ -129,7 +127,10 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
- 	int i;
- 	u32 div;
- 
--	for (i = 0; i < clk_hw_get_num_parents(hw) - 1; i++) {
-+	for (i = 0; i < clk_hw_get_num_parents(hw); i++) {
-+		if (gck->chg_pid == i)
-+			continue;
+-	gck->parent_id = index;
++	if (gck->mux_table)
++		gck->parent_id = clk_mux_index_to_val(gck->mux_table, 0, index);
++	else
++		gck->parent_id = index;
 +
- 		parent = clk_hw_get_parent_by_index(hw, i);
- 		if (!parent)
- 			continue;
-@@ -161,10 +162,10 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
- 	 * that the only clks able to modify gck rate are those of audio IPs.
- 	 */
+ 	return 0;
+ }
  
--	if (!gck->audio_pll_allowed)
-+	if (gck->chg_pid < 0)
- 		goto end;
- 
--	parent = clk_hw_get_parent_by_index(hw, GCK_INDEX_DT_AUDIO_PLL);
-+	parent = clk_hw_get_parent_by_index(hw, gck->chg_pid);
- 	if (!parent)
- 		goto end;
- 
-@@ -272,8 +273,8 @@ struct clk_hw * __init
+@@ -273,8 +278,9 @@ struct clk_hw * __init
  at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
  			    const struct clk_pcr_layout *layout,
  			    const char *name, const char **parent_names,
--			    u8 num_parents, u8 id, bool pll_audio,
--			    const struct clk_range *range)
-+			    u8 num_parents, u8 id,
-+			    const struct clk_range *range, int chg_pid)
+-			    u8 num_parents, u8 id,
+-			    const struct clk_range *range, int chg_pid)
++			    u32 *mux_table, u8 num_parents, u8 id,
++			    const struct clk_range *range,
++			    int chg_pid)
  {
  	struct clk_generated *gck;
  	struct clk_init_data init;
-@@ -288,15 +289,16 @@ at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
- 	init.ops = &generated_ops;
- 	init.parent_names = parent_names;
- 	init.num_parents = num_parents;
--	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE |
--		CLK_SET_RATE_PARENT;
-+	init.flags = CLK_SET_RATE_GATE | CLK_SET_PARENT_GATE;
-+	if (chg_pid >= 0)
-+		init.flags |= CLK_SET_RATE_PARENT;
- 
- 	gck->id = id;
- 	gck->hw.init = &init;
- 	gck->regmap = regmap;
- 	gck->lock = lock;
+@@ -300,6 +306,7 @@ at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
  	gck->range = *range;
--	gck->audio_pll_allowed = pll_audio;
-+	gck->chg_pid = chg_pid;
+ 	gck->chg_pid = chg_pid;
  	gck->layout = layout;
++	gck->mux_table = mux_table;
  
  	clk_generated_startup(gck);
+ 	hw = &gck->hw;
 diff --git a/drivers/clk/at91/dt-compat.c b/drivers/clk/at91/dt-compat.c
-index aa1754eac59f..8a652c44c25a 100644
+index 8a652c44c25a..cc95d42f4d53 100644
 --- a/drivers/clk/at91/dt-compat.c
 +++ b/drivers/clk/at91/dt-compat.c
-@@ -22,6 +22,8 @@
- 
- #define SYSTEM_MAX_ID		31
- 
-+#define GCK_INDEX_DT_AUDIO_PLL	5
-+
- #ifdef CONFIG_HAVE_AT91_AUDIO_PLL
- static void __init of_sama5d2_clk_audio_pll_frac_setup(struct device_node *np)
- {
-@@ -135,7 +137,7 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
- 		return;
- 
- 	for_each_child_of_node(np, gcknp) {
--		bool pll_audio = false;
-+		int chg_pid = INT_MIN;
- 
- 		if (of_property_read_u32(gcknp, "reg", &id))
- 			continue;
-@@ -152,12 +154,12 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
- 		if (of_device_is_compatible(np, "atmel,sama5d2-clk-generated") &&
- 		    (id == GCK_ID_I2S0 || id == GCK_ID_I2S1 ||
- 		     id == GCK_ID_CLASSD))
--			pll_audio = true;
-+			chg_pid = GCK_INDEX_DT_AUDIO_PLL;
+@@ -158,8 +158,9 @@ static void __init of_sama5d2_clk_generated_setup(struct device_node *np)
  
  		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock,
  						 &dt_pcr_layout, name,
- 						 parent_names, num_parents,
--						 id, pll_audio, &range);
-+						 id, &range, chg_pid);
+-						 parent_names, num_parents,
+-						 id, &range, chg_pid);
++						 parent_names, NULL,
++						 num_parents, id, &range,
++						 chg_pid);
  		if (IS_ERR(hw))
  			continue;
  
 diff --git a/drivers/clk/at91/pmc.h b/drivers/clk/at91/pmc.h
-index df616f2937e7..949b1a7b91e5 100644
+index 949b1a7b91e5..2bfe1405f9f8 100644
 --- a/drivers/clk/at91/pmc.h
 +++ b/drivers/clk/at91/pmc.h
-@@ -122,8 +122,8 @@ struct clk_hw * __init
+@@ -122,7 +122,7 @@ struct clk_hw * __init
  at91_clk_register_generated(struct regmap *regmap, spinlock_t *lock,
  			    const struct clk_pcr_layout *layout,
  			    const char *name, const char **parent_names,
--			    u8 num_parents, u8 id, bool pll_audio,
--			    const struct clk_range *range);
-+			    u8 num_parents, u8 id,
-+			    const struct clk_range *range, int chg_pid);
+-			    u8 num_parents, u8 id,
++			    u32 *mux_table, u8 num_parents, u8 id,
+ 			    const struct clk_range *range, int chg_pid);
  
  struct clk_hw * __init
- at91_clk_register_h32mx(struct regmap *regmap, const char *name,
 diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
-index c8703d2a0886..c4e34c0909e3 100644
+index c4e34c0909e3..3ad16d74577e 100644
 --- a/drivers/clk/at91/sam9x60.c
 +++ b/drivers/clk/at91/sam9x60.c
-@@ -290,8 +290,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+@@ -288,7 +288,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock,
+ 						 &sam9x60_pcr_layout,
  						 sam9x60_gck[i].n,
- 						 parent_names, 6,
+-						 parent_names, 6,
++						 parent_names, NULL, 6,
  						 sam9x60_gck[i].id,
--						 false,
--						 &sam9x60_gck[i].r);
-+						 &sam9x60_gck[i].r, INT_MIN);
+ 						 &sam9x60_gck[i].r, INT_MIN);
  		if (IS_ERR(hw))
- 			goto err_free;
- 
 diff --git a/drivers/clk/at91/sama5d2.c b/drivers/clk/at91/sama5d2.c
-index d69421d71daf..42637d9531d3 100644
+index 42637d9531d3..6a685d00f16d 100644
 --- a/drivers/clk/at91/sama5d2.c
 +++ b/drivers/clk/at91/sama5d2.c
-@@ -116,21 +116,20 @@ static const struct {
- 	char *n;
- 	u8 id;
- 	struct clk_range r;
--	bool pll;
-+	int chg_pid;
- } sama5d2_gck[] = {
--	{ .n = "sdmmc0_gclk", .id = 31, },
--	{ .n = "sdmmc1_gclk", .id = 32, },
--	{ .n = "tcb0_gclk",   .id = 35, .r = { .min = 0, .max = 83000000 }, },
--	{ .n = "tcb1_gclk",   .id = 36, .r = { .min = 0, .max = 83000000 }, },
--	{ .n = "pwm_gclk",    .id = 38, .r = { .min = 0, .max = 83000000 }, },
--	{ .n = "isc_gclk",    .id = 46, },
--	{ .n = "pdmic_gclk",  .id = 48, },
--	{ .n = "i2s0_gclk",   .id = 54, .pll = true },
--	{ .n = "i2s1_gclk",   .id = 55, .pll = true },
--	{ .n = "can0_gclk",   .id = 56, .r = { .min = 0, .max = 80000000 }, },
--	{ .n = "can1_gclk",   .id = 57, .r = { .min = 0, .max = 80000000 }, },
--	{ .n = "classd_gclk", .id = 59, .r = { .min = 0, .max = 100000000 },
--	  .pll = true },
-+	{ .n = "sdmmc0_gclk", .id = 31, .chg_pid = INT_MIN, },
-+	{ .n = "sdmmc1_gclk", .id = 32, .chg_pid = INT_MIN, },
-+	{ .n = "tcb0_gclk",   .id = 35, .chg_pid = INT_MIN, .r = { .min = 0, .max = 83000000 }, },
-+	{ .n = "tcb1_gclk",   .id = 36, .chg_pid = INT_MIN, .r = { .min = 0, .max = 83000000 }, },
-+	{ .n = "pwm_gclk",    .id = 38, .chg_pid = INT_MIN, .r = { .min = 0, .max = 83000000 }, },
-+	{ .n = "isc_gclk",    .id = 46, .chg_pid = INT_MIN, },
-+	{ .n = "pdmic_gclk",  .id = 48, .chg_pid = INT_MIN, },
-+	{ .n = "i2s0_gclk",   .id = 54, .chg_pid = 5, },
-+	{ .n = "i2s1_gclk",   .id = 55, .chg_pid = 5, },
-+	{ .n = "can0_gclk",   .id = 56, .chg_pid = INT_MIN, .r = { .min = 0, .max = 80000000 }, },
-+	{ .n = "can1_gclk",   .id = 57, .chg_pid = INT_MIN, .r = { .min = 0, .max = 80000000 }, },
-+	{ .n = "classd_gclk", .id = 59, .chg_pid = 5, .r = { .min = 0, .max = 100000000 }, },
- };
- 
- static const struct clk_programmable_layout sama5d2_programmable_layout = {
-@@ -324,8 +323,8 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+@@ -321,7 +321,7 @@ static void __init sama5d2_pmc_setup(struct device_node *np)
+ 		hw = at91_clk_register_generated(regmap, &pmc_pcr_lock,
+ 						 &sama5d2_pcr_layout,
  						 sama5d2_gck[i].n,
- 						 parent_names, 6,
+-						 parent_names, 6,
++						 parent_names, NULL, 6,
  						 sama5d2_gck[i].id,
--						 sama5d2_gck[i].pll,
--						 &sama5d2_gck[i].r);
-+						 &sama5d2_gck[i].r,
-+						 sama5d2_gck[i].chg_pid);
- 		if (IS_ERR(hw))
- 			goto err_free;
- 
+ 						 &sama5d2_gck[i].r,
+ 						 sama5d2_gck[i].chg_pid);
 -- 
 2.7.4
 
