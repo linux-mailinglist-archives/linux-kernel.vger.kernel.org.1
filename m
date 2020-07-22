@@ -2,151 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1FF229558
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CF5229586
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbgGVJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:46:37 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60242 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731680AbgGVJqe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:46:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595411192;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uaZOR7KXaGa092uT6zCD4t6hx23vbPweqPLGG3hy9U8=;
-        b=SfDxQmOtT33mopxcPNIRS0Jk1SqdDTZQ3QHXP5CX2Vb0Gdx43ocbo1AxXZMoY+HDZ8UW2H
-        hwpzIyi5bzfoWEukBwz1pnsbh+DWJ0BLS2gNHKnnoeT174Vb6wzioh/Y9o3cfMr3OkKk58
-        33yhda8XdkeDI2/GUaJowBywmhl7JbU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-292-PqtGEzxtN8i8xNs5IYVoSw-1; Wed, 22 Jul 2020 05:46:30 -0400
-X-MC-Unique: PqtGEzxtN8i8xNs5IYVoSw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7935918C63C5;
-        Wed, 22 Jul 2020 09:46:29 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-254.ams2.redhat.com [10.36.113.254])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6C965D9CA;
-        Wed, 22 Jul 2020 09:46:27 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Subject: [PATCH v2 9/9] s390/vmemmap: avoid memset(PAGE_UNUSED) when adding consecutive sections
-Date:   Wed, 22 Jul 2020 11:45:58 +0200
-Message-Id: <20200722094558.9828-10-david@redhat.com>
-In-Reply-To: <20200722094558.9828-1-david@redhat.com>
-References: <20200722094558.9828-1-david@redhat.com>
+        id S1731838AbgGVJzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:55:33 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8352 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727819AbgGVJzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 05:55:33 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 760F26FDE627CFC50EAB;
+        Wed, 22 Jul 2020 17:55:28 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 22 Jul 2020 17:55:17 +0800
+From:   Hanjun Guo <guohanjun@huawei.com>
+To:     Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <linux-kernel@vger.kernel.org>, Hanjun Guo <guohanjun@huawei.com>
+Subject: [PATCH] drm/amdkfd: Put ACPI table after using it
+Date:   Wed, 22 Jul 2020 17:48:28 +0800
+Message-ID: <1595411308-15654-1-git-send-email-guohanjun@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's avoid memset(PAGE_UNUSED) when adding consecutive sections,
-whereby the vmemmap of a single section does not span full PMDs.
+The acpi_get_table() should be coupled with acpi_put_table() if
+the mapped table is not used at runtime to release the table
+mapping.
 
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
+In kfd_create_crat_image_acpi(), crat_table is copied to pcrat_image,
+and in kfd_create_vcrat_image_cpu(), the acpi_table is only used to
+get the OEM info, so those table mappings need to be release after
+using it.
+
+Signed-off-by: Hanjun Guo <guohanjun@huawei.com>
 ---
- arch/s390/mm/vmem.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-index df361bbacda1b..70ebfc7958a68 100644
---- a/arch/s390/mm/vmem.c
-+++ b/arch/s390/mm/vmem.c
-@@ -74,7 +74,22 @@ static void vmem_pte_free(unsigned long *table)
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+index 1009a3b..d378e61 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+@@ -756,6 +756,7 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
+ 	struct acpi_table_header *crat_table;
+ 	acpi_status status;
+ 	void *pcrat_image;
++	int rc = 0;
  
- #define PAGE_UNUSED 0xFD
+ 	if (!crat_image)
+ 		return -EINVAL;
+@@ -776,17 +777,21 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
  
--static void vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
-+/*
-+ * The unused vmemmap range, which was not yet memset(PAGE_UNUSED) ranges
-+ * from unused_pmd_start to next PMD_SIZE boundary.
-+ */
-+static unsigned long unused_pmd_start;
-+
-+static void vmemmap_flush_unused_pmd(void)
-+{
-+	if (!unused_pmd_start)
-+		return;
-+	memset(__va(unused_pmd_start), PAGE_UNUSED,
-+	       ALIGN(unused_pmd_start, PMD_SIZE) - unused_pmd_start);
-+	unused_pmd_start = 0;
-+}
-+
-+static void __vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
- {
- 	/*
- 	 * As we expect to add in the same granularity as we remove, it's
-@@ -85,18 +100,41 @@ static void vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
- 	memset(__va(start), 0, sizeof(struct page));
- }
+ 	if (ignore_crat) {
+ 		pr_info("CRAT table disabled by module option\n");
+-		return -ENODATA;
++		rc = -ENODATA;
++		goto out;
+ 	}
  
-+static void vmemmap_use_sub_pmd(unsigned long start, unsigned long end)
-+{
-+	/*
-+	 * We only optimize if the new used range directly follows the
-+	 * previously unused range (esp., when populating consecutive sections).
-+	 */
-+	if (unused_pmd_start == start) {
-+		unused_pmd_start = end;
-+		if (likely(IS_ALIGNED(unused_pmd_start, PMD_SIZE)))
-+			unused_pmd_start = 0;
-+		return;
+ 	pcrat_image = kmemdup(crat_table, crat_table->length, GFP_KERNEL);
+-	if (!pcrat_image)
+-		return -ENOMEM;
++	if (!pcrat_image) {
++		rc = -ENOMEM;
++		goto out;
 +	}
-+	vmemmap_flush_unused_pmd();
-+	__vmemmap_use_sub_pmd(start, end);
-+}
-+
- static void vmemmap_use_new_sub_pmd(unsigned long start, unsigned long end)
- {
- 	void *page = __va(ALIGN_DOWN(start, PMD_SIZE));
  
-+	vmemmap_flush_unused_pmd();
-+
- 	/* Could be our memmap page is filled with PAGE_UNUSED already ... */
--	vmemmap_use_sub_pmd(start, end);
-+	__vmemmap_use_sub_pmd(start, end);
- 
- 	/* Mark the unused parts of the new memmap page PAGE_UNUSED. */
- 	if (!IS_ALIGNED(start, PMD_SIZE))
- 		memset(page, PAGE_UNUSED, start - __pa(page));
-+	/*
-+	 * We want to avoid memset(PAGE_UNUSED) when populating the vmemmap of
-+	 * consecutive sections. Remember for the last added PMD the last
-+	 * unused range in the populated PMD.
-+	 */
- 	if (!IS_ALIGNED(end, PMD_SIZE))
--		memset(__va(end), PAGE_UNUSED, __pa(page) + PMD_SIZE - end);
-+		unused_pmd_start = end;
+ 	*crat_image = pcrat_image;
+ 	*size = crat_table->length;
+-
+-	return 0;
++out:
++	acpi_put_table(crat_table);
++	return rc;
  }
  
- /* Returns true if the PMD is completely unused and can be freed. */
-@@ -104,6 +142,7 @@ static bool vmemmap_unuse_sub_pmd(unsigned long start, unsigned long end)
- {
- 	void *page = __va(ALIGN_DOWN(start, PMD_SIZE));
- 
-+	vmemmap_flush_unused_pmd();
- 	memset(__va(start), PAGE_UNUSED, end - start);
- 	return !memchr_inv(page, PAGE_UNUSED, PMD_SIZE);
- }
+ /* Memory required to create Virtual CRAT.
+@@ -970,6 +975,7 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
+ 				CRAT_OEMID_LENGTH);
+ 		memcpy(crat_table->oem_table_id, acpi_table->oem_table_id,
+ 				CRAT_OEMTABLEID_LENGTH);
++		acpi_put_table(acpi_table);
+ 	}
+ 	crat_table->total_entries = 0;
+ 	crat_table->num_domains = 0;
 -- 
-2.26.2
+1.7.12.4
 
