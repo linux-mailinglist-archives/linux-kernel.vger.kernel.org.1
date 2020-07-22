@@ -2,98 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AD3229F62
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8557B229F6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732463AbgGVSmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgGVSmG (ORCPT
+        id S1732476AbgGVSo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:44:57 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15688 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726666AbgGVSo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:42:06 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66197C0619DC;
-        Wed, 22 Jul 2020 11:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DqMZf+NKxev5DHoTyVPRSIfA19GkA4kV6jf4PNYb+Nw=; b=f2QZ2qtibGlJEp42Nw1cOpOp54
-        xbjG6CyuAnifkHhoaLv3ELLYaPI+boJBEqUHwPU8IRo3DgqZB0dDkl95wHJ3Axyeoto9wfj7/AslF
-        9aPPV/YLLSrMT4llswvO23XJiYK29HD1OetvJXWSZcPxxR+MdkO8QvG++Vlqc/nBAoJhsojJbIiHo
-        SI/70lKuy3BslY5UiNJn0bADWU41eswtFmSrIoBoLcUK+SyrYfBMQ5U6RrsOJxJAMH0reIgx8ltdR
-        3ypKp2jtlWDYKldYYGBc79YEfFgyCydN57+ohspjNE9DQ9wgkd6pv9IRLS98rE9bYGad90A2JdWZ2
-        ZzlpB7wg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyJgU-0002Lw-27; Wed, 22 Jul 2020 18:41:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD0533006D0;
-        Wed, 22 Jul 2020 20:41:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 96CE828B5B17B; Wed, 22 Jul 2020 20:41:37 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 20:41:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        mhelsley@vmware.com
-Subject: Re: [RFC][PATCH] objtool,x86_64: Replace recordmcount with objtool
-Message-ID: <20200722184137.GP10769@hirez.programming.kicks-ass.net>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200624203200.78870-5-samitolvanen@google.com>
- <20200624212737.GV4817@hirez.programming.kicks-ass.net>
- <20200624214530.GA120457@google.com>
- <20200625074530.GW4817@hirez.programming.kicks-ass.net>
- <20200625161503.GB173089@google.com>
- <20200625200235.GQ4781@hirez.programming.kicks-ass.net>
- <20200625224042.GA169781@google.com>
- <20200626112931.GF4817@hirez.programming.kicks-ass.net>
- <20200722135542.41127cc4@oasis.local.home>
+        Wed, 22 Jul 2020 14:44:56 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06MIZKTe000862
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:44:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=091r98mpbHHVZrheekCNJu9nc9xPl3jkMv48nBFufDg=;
+ b=PmbHpiOPUv+2z+Kcgt2LK7K+Fb9nrIJXnOvVucsHtnVg+JUXXpwWCtNisrmjb4FxJhQJ
+ nlcOqJZc5l0oGIfw1ehJaRRAQR2zXt3cRRQ05J43GS+69lTxu9yodKc4ga0NK11SD06r
+ je5laM+BH1Aa4h+UM2Rbu1d8RSuI5W2m9RI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32esyurd4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:44:55 -0700
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 22 Jul 2020 11:44:54 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 5B50262E4CDB; Wed, 22 Jul 2020 11:42:12 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v4 bpf-next 0/4] bpf: fix stackmap on perf_events with PEBS
+Date:   Wed, 22 Jul 2020 11:42:06 -0700
+Message-ID: <20200722184210.4078256-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722135542.41127cc4@oasis.local.home>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-22_10:2020-07-22,2020-07-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ suspectscore=0 impostorscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007220119
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 01:55:42PM -0400, Steven Rostedt wrote:
+Calling get_perf_callchain() on perf_events from PEBS entries may cause
+unwinder errors. To fix this issue, perf subsystem fetches callchain earl=
+y,
+and marks perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
+Similar issue exists when BPF program calls get_perf_callchain() via
+helper functions. For more information about this issue, please refer to
+discussions in [1].
 
-> > Ha! it is trying to convert the "CALL __fentry__" into a NOP and not
-> > finding the CALL -- because objtool already made it a NOP...
-> > 
-> > Weird, I thought recordmcount would also write NOPs, it certainly has
-> > code for that. I suppose we can use CC_USING_NOP_MCOUNT to avoid those,
-> > but I'd rather Steve explain this before I wreck things further.
-> 
-> The reason for not having recordmcount insert all the nops, is because
-> x86 has more than one optimal nop which is determined by the machine it
-> runs on, and not at compile time. So we figured just updated it then.
-> 
-> We can change it to be a nop on boot, and just modify it if it's not
-> the optimal nop already. 
+This set fixes this issue with helper proto bpf_get_stackid_pe and
+bpf_get_stack_pe.
 
-Right, I throught that's what we'd be doing already, anyway:
+[1] https://lore.kernel.org/lkml/ED7B9430-6489-4260-B3C5-9CFA2E3AA87A@fb.=
+com/
 
-> That said, Andi Kleen added an option to gcc called -mnop-mcount which
-> will have gcc do both create the mcount section and convert the calls
-> into nops. When doing so, it defines CC_USING_NOP_MCOUNT which will
-> tell ftrace to expect the calls to already be converted.
+Changes v3 =3D> v4:
+1. Fix error check logic in bpf_get_stackid_pe and bpf_get_stack_pe.
+   (Alexei)
+2. Do not allow attaching BPF programs with bpf_get_stack|stackid to
+   perf_event with precise_ip > 0, but not proper callchain. (Alexei)
+3. Add selftest get_stackid_cannot_attach.
 
-That seems like the much easier solution, then we can forget about
-recordmcount / objtool entirely for this.
+Changes v2 =3D> v3:
+1. Fix handling of stackmap skip field. (Andrii)
+2. Simplify the code in a few places. (Andrii)
+
+Changes v1 =3D> v2:
+1. Simplify the design and avoid introducing new helper function. (Andrii=
+)
+
+Song Liu (4):
+  bpf: separate bpf_get_[stack|stackid] for perf events BPF
+  bpf: fail PERF_EVENT_IOC_SET_BPF when bpf_get_[stack|stackid] cannot
+    work
+  selftests/bpf: add callchain_stackid
+  selftests/bpf: add get_stackid_cannot_attach
+
+ include/linux/bpf.h                           |   2 +
+ include/linux/filter.h                        |   3 +-
+ kernel/bpf/stackmap.c                         | 184 ++++++++++++++++--
+ kernel/bpf/verifier.c                         |   3 +
+ kernel/events/core.c                          |  18 ++
+ kernel/trace/bpf_trace.c                      |   4 +-
+ .../prog_tests/get_stackid_cannot_attach.c    |  91 +++++++++
+ .../bpf/prog_tests/perf_event_stackmap.c      | 116 +++++++++++
+ .../selftests/bpf/progs/perf_event_stackmap.c |  59 ++++++
+ 9 files changed, 459 insertions(+), 21 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_stackid_ca=
+nnot_attach.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
+ckmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
+.c
+
+--
+2.24.1
