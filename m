@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180E422991D
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6455422991E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728301AbgGVNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:19:06 -0400
-Received: from mga09.intel.com ([134.134.136.24]:35853 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726146AbgGVNTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:19:06 -0400
-IronPort-SDR: oSyA1SIRynK1KaoawLzHMyokwcvTHTxTpjOeIAKL10QYq0wwi6+6iPwXjg60ARHpwFOta3eqO+
- /ljUP1dUOFag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9689"; a="151647978"
-X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
-   d="scan'208";a="151647978"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 06:19:05 -0700
-IronPort-SDR: ACgWfQ4BZfoggtLmdHtSbbnDIdYMzBpHlpVk1auW2DlzEBCuGRW+I9qbjpipeipPLxQ7jrO2td
- dmw1eDD40mWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,381,1589266800"; 
-   d="scan'208";a="462450536"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 22 Jul 2020 06:19:05 -0700
-Received: from [10.249.230.82] (abudanko-mobl.ccr.corp.intel.com [10.249.230.82])
-        by linux.intel.com (Postfix) with ESMTP id B08015802E4;
-        Wed, 22 Jul 2020 06:19:01 -0700 (PDT)
-Subject: Re: [PATCH v12 11/15] perf stat: implement control commands handling
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <8d91c3a0-3db4-0a7a-ae13-299adb444bd6@linux.intel.com>
- <3cb8a826-145f-81f4-fcb2-fa20045c6957@linux.intel.com>
- <20200722125624.GM77866@kernel.org>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <2529e951-3ef9-763b-f3d8-ca36038503d5@linux.intel.com>
-Date:   Wed, 22 Jul 2020 16:18:59 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1732164AbgGVNTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731961AbgGVNTI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 09:19:08 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC581C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 06:19:07 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id e13so1876741qkg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 06:19:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=byEVFSP4CT7W7MtcKspNSe1RgWMqN+t1NFIfNH6NJm0=;
+        b=cGBEQdDHCfXw1h4nBaqzmkLEcoq2zpGg1Kl3yorKAbZDw75xpcH55jnkaUtI4cKHWU
+         u+1xefBv+y6mDKeCnppHzQw5MFKdX+wNHdBS6Z9HRCBKQDV5/bRL/xmHVcbtWyRTyN6s
+         fBMPHv4w+Pxta8ziJxp46rJ8il8vbtnftyP2euj+JwXdh9T5CTNZobwAtVKfeM0stHy9
+         hVOdToEUDjbO0Ka+8mv9n0jdBtngD5Y9quOWxqXSWQosmYMjeL1IyS5Y1HQLnHB8mIGC
+         k7riWpUTWr1dsMFziqCiZGBO4N5LFaFV6ICQl7j0OOfjVG+Apbv8TbnBtmIWWvUzWpKY
+         IqsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=byEVFSP4CT7W7MtcKspNSe1RgWMqN+t1NFIfNH6NJm0=;
+        b=r/6UOa5boN2jh48p/HL/UcG8Q/nrkI+oUh9OghFo5P5gjzsjYksI9njPv9aol0nUjD
+         hpqTBBgvqDOM5+08H9Y4oslPLZ+1gXQFIOev7EUBapQzgxGE7hXin8krX74J+AxOq5Ff
+         cI+oAatj9WLQ4blJDpX2UllOGS/w3OBeRNqv8wIBQdSVFXhQFy2fWxRlUb5KyxCExU1L
+         vAha8mYE7cHkusM5N3WUmezFkR6luVfwosTgcSbvavAGkH5ONZUsCRiKtrNZEHpkEbD3
+         gNsfKqSj2vM4G5LuJXMiJNiTbNqIou8b5XA9cJADBkNQEKiAo0iYVe7IMGvkl8togVaq
+         nlpw==
+X-Gm-Message-State: AOAM530FqeRVaGY0P9TEz4dyv7nXAlhszTCrL/aecksotUpLyL3G25vO
+        j57cMK/EeUag924CfmFWtM2pZzBok3cpDA==
+X-Google-Smtp-Source: ABdhPJy2Nv4Ey4vc5wBEtJqo/c+9GXzngRiPdzyEACMIWxlf2n14RsdenMCvvWzshYJl7acEgXLM3g==
+X-Received: by 2002:a37:91c1:: with SMTP id t184mr29713737qkd.241.1595423947004;
+        Wed, 22 Jul 2020 06:19:07 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id m203sm1096575qke.114.2020.07.22.06.19.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 06:19:06 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 09:19:00 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     peterz@infradead.org
+Cc:     mark.rutland@arm.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] fork: silence a false postive warning in __mmdrop
+Message-ID: <20200722131900.GA4041@lca.pw>
+References: <20200604150344.1796-1-cai@lca.pw>
+ <20200722100637.GR119549@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200722125624.GM77866@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722100637.GR119549@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 22.07.2020 15:56, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Jul 17, 2020 at 10:05:06AM +0300, Alexey Budankov escreveu:
->>
->> Implement handling of 'enable' and 'disable' control commands coming
->> from control file descriptor. If poll event splits initiated timeout
->> interval then the reminder is calculated and still waited in the
->> following evlist__poll() call.
+On Wed, Jul 22, 2020 at 12:06:37PM +0200, peterz@infradead.org wrote:
+> On Thu, Jun 04, 2020 at 11:03:44AM -0400, Qian Cai wrote:
+> > The linux-next commit bf2c59fce407 ("sched/core: Fix illegal RCU from
+> > offline CPUs") delayed,
+> > 
+> > idle->active_mm = &init_mm;
+> > 
+> > into finish_cpu() instead of idle_task_exit() which results in a false
+> > positive warning that was originally designed in the commit 3eda69c92d47
+> > ("kernel/fork.c: detect early free of a live mm").
+> > 
+> >  WARNING: CPU: 127 PID: 72976 at kernel/fork.c:697
+> >  __mmdrop+0x230/0x2c0
+> >  do_exit+0x424/0xfa0
+> >  Call Trace:
+> >  do_exit+0x424/0xfa0
+> >  do_group_exit+0x64/0xd0
+> >  sys_exit_group+0x24/0x30
+> >  system_call_exception+0x108/0x1d0
+> >  system_call_common+0xf0/0x278
 > 
-> So the cover letter is not preserved in the git history, only going from
-> the Link tag to the patch series to then lookup the cover letter and
-> then find examples of each feature, I'll now have to do that and collect
-> the parts that are needed to test this specific feature implemented in
-> this specific patch, add the command here so that we can test patch by
-> patch, please next time try to have the testing steps in each patch.
+> Please explain; because afaict this is a use-after-free.
+> 
+> The thing is __mmdrop() is going to actually free the mm, so then what
+> is finish_cpu()'s mmdrop() going to do?
+> 
+> ->active_mm() should have a refcount on the mm.
 
-Accepted. Will be providing possible test steps as a part of description
-for relevant patches.
+Well, the refcount issue you mentioned then happens all before bf2c59fce407 was
+introduced as well, but then it looks harmless because mmdrop() in finish_cpu()
+will do,
 
-Thanks,
-Alexei
+	if (unlikely(atomic_dec_and_test(&mm->mm_count)))
+		__mmdrop(mm);
+
+where that atomic_dec_and_test() see the negative refcount and will not involve
+__mmdrop() again. It is not clear to me that once the CPU is offline if it
+needs to care about its idle thread mm_count at all. Even if this refcount
+issue is finally addressed, it could hit this warning in finish_cpu() without
+this patch.
+
+On the other hand, if you look at the commit 3eda69c92d47, it is clearly that
+the assumption of,
+
+   WARN_ON_ONCE(mm == current->active_mm);
+
+is totally gone due to bf2c59fce407. Thus, the patch is to fix that discrepancy
+first and then I'll look at that the imbalance mmdrop()/mmgrab() elsewhere.
+
+> 
+> > Fixes: bf2c59fce407 ("sched/core: Fix illegal RCU from offline CPUs")
+> > Signed-off-by: Qian Cai <cai@lca.pw>
+> > ---
+> >  kernel/fork.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 142b23645d82..5334efd2a680 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -694,7 +694,6 @@ void __mmdrop(struct mm_struct *mm)
+> >  {
+> >  	BUG_ON(mm == &init_mm);
+> >  	WARN_ON_ONCE(mm == current->mm);
+> > -	WARN_ON_ONCE(mm == current->active_mm);
+> >  	mm_free_pgd(mm);
+> >  	destroy_context(mm);
+> >  	mmu_notifier_subscriptions_destroy(mm);
+> > -- 
+> > 2.21.0 (Apple Git-122.2)
+> > 
