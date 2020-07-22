@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EAD2295B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7262295AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730120AbgGVKIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        id S1731922AbgGVKIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731763AbgGVKIP (ORCPT
+        with ESMTP id S1726153AbgGVKIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:08:15 -0400
+        Wed, 22 Jul 2020 06:08:16 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B61C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f7so1330476wrw.1
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB57C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s10so1288581wrw.12
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Cu4LuhlpDSlOofMxjxPFDlq0CYY7PcSEJrvgG99XiXI=;
-        b=LbAzfFVwG/XsAHQVg8oeOO4psiqnVJNvkQHUAgJEXWxkIpgsE/xDov9QiJVRqjYaxF
-         ufJFFMOWxrDOq4w5m5HIMyCuWBvO3WAfJ/shYa8ntf6AcFMRZnkJrdYlcZpm+Fkagxz/
-         3hW9Sx1r74abqiW7IO3OwEHpFGWCyi6t4wDzWxOug1cisMpXEa+0aq48FjD7Wsi6tcbQ
-         42POuqiLwtKsO3NySJl6lN80KnYr3eKr1EynkoBvwTIoBGR0UF3eQgxr6kNY1ZzzbrhC
-         lfUUGTKazDwfuA7SHl4PeDwT9xSYljzqE+/otNVj35ytFTz08kiKIwtpD+pUhtNBeh/K
-         wShQ==
+        bh=tqJGHcqnXllhT3i9mtu0Lc+0SV7sbcx3SOZYG1XkKfA=;
+        b=p9PDOYZQBZFwInhDslg9WZYyix7m2mpmo8VPUoS4fP+oZL443IxmyIIyf8xSpK5H8K
+         goHRonE5J8yxyVzO2gJ5BXCGOSYZYPhnUhlqcZHkZLBJkDzXceAur9kOUe2NFkSLNAGR
+         soVnih22Rn8gbnCSRorLphgewQqtnwJZwEfBckmuzS/XL3/qoyBPk2yA0s0nOUxrHTPW
+         4uX82uZ1mzbXMn1GPjgh8Py8RyV3jE2ucb2932Yl2DkQCwD/pW7WHBKugp8ZM3yuWw/o
+         8fJhuK6k2W6jEHbuxTfpgLWhqItKYIk7qrX3FMlePfyKNdQ4cvRXfQsKvm57WN+NOokG
+         rh0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Cu4LuhlpDSlOofMxjxPFDlq0CYY7PcSEJrvgG99XiXI=;
-        b=j36ZOe6DIixcMEc2Fni8CIGK1MdTwhTa/BqP6gLGmLie7+cXqGrSIBANAZ7yxTEBGP
-         RodQCAfcc2oEAd1/ZzNHsFUDOp1af6yKWyZBAaru/Qb2yPBb48vg5qDEkWQZ3Q/XidtK
-         ZwIKI2NYYfPcPqtBlxLv35NpKURY8ET4aVr6ofebc0HcD7b1pgehA/4ft1EQVZAn+wcn
-         HiapyV/+pwV1DYc7CySB8GXQtYx1qYsY5CQlEp2AejcgsQZBdOIjikE36uGWbSqjyeMA
-         Ybrj+8QYGM76PeIqB5Wx76RAUDOChzPsItnubQ9yjJECqSfmBQ6OYkgrhf+fTHvQP/gQ
-         nzqw==
-X-Gm-Message-State: AOAM532ekzC/Q1QLYpXx/A1i5f7RmqXz1JKSGN6Qa4EafVgZ3TEK9Mgz
-        7H95ZYj+0PmrIpwUqhuXE2i9EQ==
-X-Google-Smtp-Source: ABdhPJxvTlEfPd/pLtSnllPeSFiUbCsUIeP+kIhePDLcvtH7uxUJ7uII40gwpw8PiVo9izQJq3j02A==
-X-Received: by 2002:adf:94c3:: with SMTP id 61mr19611860wrr.289.1595412493892;
-        Wed, 22 Jul 2020 03:08:13 -0700 (PDT)
+        bh=tqJGHcqnXllhT3i9mtu0Lc+0SV7sbcx3SOZYG1XkKfA=;
+        b=onnfd+Avn1ilRp1FcfZrqJ/Y4ve7yW9vcHsZ0zxBLXHKX2CRpgkYKVOLTHG3lLD1Fh
+         gGejlXa8MnRgpAFpn4d+/rCiJH9mw4AXGFhrTmRfsWl6IEwg8jwMOZU+sJAfkY+y7v7U
+         /rCGc8xZLhUmbwER4J4MChrbaCw368GTVEsLnGutxWhi+kruHSWjus8alUbDejAASZs+
+         s647n/XreItkFhFqu9WPx4fUVTR6IPC96u3j64/8E3ZDVY/oW5E5cFrCEtZMYj5TKP/X
+         AJ+crD1jcawe5wTD+/p4z8mNrVKAqLzBjpeVh32At2yBysUWbYHdenOR5h7r3yU4WdXN
+         HinA==
+X-Gm-Message-State: AOAM532PD9aR59GFIo43bZzqRp3yeaidrAuLXH3JD6UJiJLsHcbKr4dn
+        t7s8LmA9e+VwaHabB3rJRcnuRw==
+X-Google-Smtp-Source: ABdhPJyJF+IsSOwm01NqNnxjh+zl+l/Teu3+D5MO9+5TOTJgwB4WUDz6RUA3GHhCZeDUMWX9Wget5A==
+X-Received: by 2002:adf:9bdd:: with SMTP id e29mr17170709wrc.394.1595412495100;
+        Wed, 22 Jul 2020 03:08:15 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.12
+        by smtp.gmail.com with ESMTPSA id t13sm17098623wru.65.2020.07.22.03.08.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 03:08:13 -0700 (PDT)
+        Wed, 22 Jul 2020 03:08:14 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Ravi Kumar Bokka <rbokka@codeaurora.org>,
+Cc:     linux-kernel@vger.kernel.org, Freeman Liu <freeman.liu@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 03/14] nvmem: Enforce nvmem stride in the sysfs interface
-Date:   Wed, 22 Jul 2020 11:06:54 +0100
-Message-Id: <20200722100705.7772-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 04/14] nvmem: sc27xx: add sc2730 efuse support
+Date:   Wed, 22 Jul 2020 11:06:55 +0100
+Message-Id: <20200722100705.7772-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
 References: <20200722100705.7772-1-srinivas.kandagatla@linaro.org>
@@ -67,53 +67,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Freeman Liu <freeman.liu@unisoc.com>
 
-The 'struct nvmem_config' has a stride attribute that specifies the
-needed alignment for accesses into the nvmem.  This is used in
-nvmem_cell_info_to_nvmem_cell() but not in the sysfs read/write
-functions.  If the alignment is important in one place it's important
-everywhere, so let's add enforcement.
+Add support to the new efuse IP which is integrated in the SC2730
+which includes multiple blocks in a single chip.
 
-For now we'll consider it totally invalid to access with the wrong
-alignment.  We could relax this in the read case where we could just
-read some extra bytes and throw them away.  Relaxing it in the write
-case seems harder (and less safe?) since we'd have to read some data
-first and then write it back.  To keep it symmetric we'll just
-disallow it in both cases.
-
-Reported-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
-Tested-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
+Signed-off-by: Freeman Liu <freeman.liu@unisoc.com>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/nvmem/core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/nvmem/sc27xx-efuse.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 927eb5f6003f..fc480d636be2 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -135,6 +135,9 @@ static ssize_t bin_attr_nvmem_read(struct file *filp, struct kobject *kobj,
- 	if (pos >= nvmem->size)
- 		return 0;
+diff --git a/drivers/nvmem/sc27xx-efuse.c b/drivers/nvmem/sc27xx-efuse.c
+index ab5e7e0bc3d8..c825fc902d10 100644
+--- a/drivers/nvmem/sc27xx-efuse.c
++++ b/drivers/nvmem/sc27xx-efuse.c
+@@ -4,12 +4,14 @@
+ #include <linux/hwspinlock.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ #include <linux/nvmem-provider.h>
  
-+	if (!IS_ALIGNED(pos, nvmem->stride))
-+		return -EINVAL;
+ /* PMIC global registers definition */
+ #define SC27XX_MODULE_EN		0xc08
++#define SC2730_MODULE_EN		0x1808
+ #define SC27XX_EFUSE_EN			BIT(6)
+ 
+ /* Efuse controller registers definition */
+@@ -49,12 +51,29 @@
+ #define SC27XX_EFUSE_POLL_TIMEOUT	3000000
+ #define SC27XX_EFUSE_POLL_DELAY_US	10000
+ 
++/*
++ * Since different PMICs of SC27xx series can have different
++ * address , we should save address in the device data structure.
++ */
++struct sc27xx_efuse_variant_data {
++	u32 module_en;
++};
 +
- 	if (count < nvmem->word_size)
- 		return -EINVAL;
- 
-@@ -172,6 +175,9 @@ static ssize_t bin_attr_nvmem_write(struct file *filp, struct kobject *kobj,
- 	if (pos >= nvmem->size)
- 		return -EFBIG;
- 
-+	if (!IS_ALIGNED(pos, nvmem->stride))
-+		return -EINVAL;
+ struct sc27xx_efuse {
+ 	struct device *dev;
+ 	struct regmap *regmap;
+ 	struct hwspinlock *hwlock;
+ 	struct mutex mutex;
+ 	u32 base;
++	const struct sc27xx_efuse_variant_data *var_data;
++};
 +
- 	if (count < nvmem->word_size)
- 		return -EINVAL;
++static const struct sc27xx_efuse_variant_data sc2731_edata = {
++	.module_en = SC27XX_MODULE_EN,
++};
++
++static const struct sc27xx_efuse_variant_data sc2730_edata = {
++	.module_en = SC2730_MODULE_EN,
+ };
+ 
+ /*
+@@ -119,7 +138,7 @@ static int sc27xx_efuse_read(void *context, u32 offset, void *val, size_t bytes)
+ 		return ret;
+ 
+ 	/* Enable the efuse controller. */
+-	ret = regmap_update_bits(efuse->regmap, SC27XX_MODULE_EN,
++	ret = regmap_update_bits(efuse->regmap, efuse->var_data->module_en,
+ 				 SC27XX_EFUSE_EN, SC27XX_EFUSE_EN);
+ 	if (ret)
+ 		goto unlock_efuse;
+@@ -169,7 +188,7 @@ static int sc27xx_efuse_read(void *context, u32 offset, void *val, size_t bytes)
+ 
+ disable_efuse:
+ 	/* Disable the efuse controller after reading. */
+-	regmap_update_bits(efuse->regmap, SC27XX_MODULE_EN, SC27XX_EFUSE_EN, 0);
++	regmap_update_bits(efuse->regmap, efuse->var_data->module_en, SC27XX_EFUSE_EN, 0);
+ unlock_efuse:
+ 	sc27xx_efuse_unlock(efuse);
+ 
+@@ -219,6 +238,7 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
+ 
+ 	mutex_init(&efuse->mutex);
+ 	efuse->dev = &pdev->dev;
++	efuse->var_data = of_device_get_match_data(&pdev->dev);
+ 
+ 	econfig.stride = 1;
+ 	econfig.word_size = 1;
+@@ -238,7 +258,8 @@ static int sc27xx_efuse_probe(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id sc27xx_efuse_of_match[] = {
+-	{ .compatible = "sprd,sc2731-efuse" },
++	{ .compatible = "sprd,sc2731-efuse", .data = &sc2731_edata},
++	{ .compatible = "sprd,sc2730-efuse", .data = &sc2730_edata},
+ 	{ }
+ };
  
 -- 
 2.21.0
