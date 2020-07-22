@@ -2,82 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A464322945F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CFF229482
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 11:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731039AbgGVJEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 05:04:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57108 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728360AbgGVJEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 05:04:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 75BEDAF16;
-        Wed, 22 Jul 2020 09:04:52 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 11:04:42 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Erdem Aktas <erdemaktas@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 00/75] x86: SEV-ES Guest Support
-Message-ID: <20200722090442.GI6132@suse.de>
-References: <20200714120917.11253-1-joro@8bytes.org>
- <20200715092456.GE10769@hirez.programming.kicks-ass.net>
- <20200715093426.GK16200@suse.de>
- <20200715095556.GI10769@hirez.programming.kicks-ass.net>
- <20200715101034.GM16200@suse.de>
- <CAAYXXYxJf8sr6fvbZK=t6o_to4Ov_yvZ91Hf6ZqQ-_i-HKO2VA@mail.gmail.com>
- <20200721124957.GD6132@suse.de>
- <CAAYXXYwVV_g8pGL52W9vxkgdNxg1dNKq_OBsXKZ_QizdXiTx2g@mail.gmail.com>
+        id S1728852AbgGVJLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 05:11:43 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31015 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726147AbgGVJLm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 05:11:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595409100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NzcEIWaSLdd63tVnMlQ4l8CfKkfEyUhff3HORkpk1pw=;
+        b=b8dBzOj024FywY5Penqxp9mkStAXHSUSvE0NXHrAhTSsV6PWTD8143jgEO36fVYNYozMUl
+        0+u20vnIhrZUqhVffNNVe8BMhW/mu8GqGpNzjqujDPDflU+8UdT6Xnh3mPwUmQoQwb0rch
+        W1HFKDXUNYtlRxvdwMabiI8Vu9wtORQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-318-W9xiyZCdNjaZWfNh6eB9Eg-1; Wed, 22 Jul 2020 05:11:36 -0400
+X-MC-Unique: W9xiyZCdNjaZWfNh6eB9Eg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1173C746E;
+        Wed, 22 Jul 2020 09:11:33 +0000 (UTC)
+Received: from fedora-32-enviroment (unknown [10.35.206.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 477AC5C1C3;
+        Wed, 22 Jul 2020 09:11:18 +0000 (UTC)
+Message-ID: <f16aba1020019530564f0869a67951282104a5d2.camel@redhat.com>
+Subject: Re: [PATCH 02/10] block: virtio-blk: check logical block size
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ajay Joshi <ajay.joshi@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
+        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Alex Dubov <oakad@yahoo.com>
+Date:   Wed, 22 Jul 2020 12:11:17 +0300
+In-Reply-To: <yq1zh7sfedj.fsf@ca-mkp.ca.oracle.com>
+References: <20200721105239.8270-1-mlevitsk@redhat.com>
+         <20200721105239.8270-3-mlevitsk@redhat.com> <20200721151437.GB10620@lst.de>
+         <yq1zh7sfedj.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2 (3.36.2-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAYXXYwVV_g8pGL52W9vxkgdNxg1dNKq_OBsXKZ_QizdXiTx2g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Erdem,
+On Tue, 2020-07-21 at 22:55 -0400, Martin K. Petersen wrote:
+> Christoph,
+> 
+> > Hmm, I wonder if we should simply add the check and warning to
+> > blk_queue_logical_block_size and add an error in that case.  Then
+> > drivers only have to check the error return, which might add a lot
+> > less boiler plate code.
+> 
+> Yep, I agree.
+> 
 
-On Tue, Jul 21, 2020 at 09:48:51AM -0700, Erdem Aktas wrote:
-> Yes, I am using OVMF with SEV-ES (sev-es-v12 patches applied). I am
-> running Ubuntu 18.04 distro. My grub target is x86_64-efi. I also
-> tried installing the grub-efi-amd64 package. In all cases, the grub is
-> running in 64bit but enters the startup_32 in 32 bit mode. I think
-> there should be a 32bit #VC handler just something very similar in the
-> OVMF patches to handle the cpuid when the CPU is still in 32bit mode.
-> As it is now, it will be a huge problem to support different distro images.
-> I wonder if I am the only one having this problem.
+I also agree that this would be cleaner (I actually tried to implement
+this the way you suggest), but let me explain my reasoning for doing it
+this way.
 
-I havn't heard from anyone else that the startup_32 boot-path is being
-used for SEV-ES. What OVMF binary do you use for your guest?
+The problem is that most current users of blk_queue_logical_block_size
+(43 uses in the tree, out of which only 9 use constant block size) check
+for the block size relatively early, often store it in some internal
+struct etc, prior to calling blk_queue_logical_block_size thus making
+them only to rely on blk_queue_logical_block_size as the check for 
+block size validity will need non-trivial changes in their code.
 
-In general it is not that difficult to support that boot-path too, but
-I'd like to keep that as a future addition, as the patch-set is already
-quite large. In the startup_32 path there is already a GDT set up, so
-whats needed is an IDT and a 32-bit #VC handler using the MRS-based
-protocol (and hoping that there will only be CPUID intercepts until it
-reaches long-mode).
+Instead of this adding blk_is_valid_logical_block_size allowed me
+to trivially convert most of the uses.
 
-Regards,
+For RFC I converted only some drivers that I am more familiar with
+and/or can test but I can remove the driver's own checks in most other
+drivers with low chance of introducing a bug, even if I can't test the
+driver.
 
-	Joerg
+What do you think?
+
+I can also both make blk_queue_logical_block_size return an error value,
+and have blk_is_valid_logical_block_size and use either of these checks,
+depending on the driver with eventual goal of un-exporting
+blk_is_valid_logical_block_size.
+
+Also note that I did add WARN_ON to blk_queue_logical_block_size.
+
+Best regards,
+	Maxim Levitsky
 
