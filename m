@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF9722973A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A12322973C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 13:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgGVLPr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 22 Jul 2020 07:15:47 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:39752 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726028AbgGVLPq (ORCPT
+        id S1728227AbgGVLQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 07:16:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:51630 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726028AbgGVLQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 07:15:46 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 319D462D8C69;
-        Wed, 22 Jul 2020 13:15:44 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Zc9TNu-wkYTl; Wed, 22 Jul 2020 13:15:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 9006B62D8C68;
-        Wed, 22 Jul 2020 13:15:43 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Ze2yEkGTJ1nH; Wed, 22 Jul 2020 13:15:43 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 5BAE56071A74;
-        Wed, 22 Jul 2020 13:15:43 +0200 (CEST)
-Date:   Wed, 22 Jul 2020 13:15:43 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     hch <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, cgroups@vger.kernel.org
-Message-ID: <1212963412.160863.1595416543195.JavaMail.zimbra@nod.at>
-In-Reply-To: <20200722062552.212200-5-hch@lst.de>
-References: <20200722062552.212200-1-hch@lst.de> <20200722062552.212200-5-hch@lst.de>
-Subject: Re: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
+        Wed, 22 Jul 2020 07:16:25 -0400
+X-UUID: f9812e6cfc094f8ea830413cadeda40d-20200722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=kUGN4eod9+73obp1QXaVgA/WjQAmxsxhBRuAz9P0fHI=;
+        b=U3FXwPQtliIYH3zOvzWBlPYGdl3P2bV8WM2jNW4aMu7zzIg45fjxVe454gZTPUkn1z7/E3ajOrnb6i61QOarGRJdWkcjuy85O4ouXV6ymOBUgqIMsJE/wOqJILLc3Jrju25f6Rl2m4ZTIPIsf0qxp4m7fgji7MHhrFrMZn1wZFE=;
+X-UUID: f9812e6cfc094f8ea830413cadeda40d-20200722
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1690839541; Wed, 22 Jul 2020 19:16:22 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Jul 2020 19:16:19 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 19:16:20 +0800
+Message-ID: <1595416581.5511.6.camel@mtkswgap22>
+Subject: Re: [PATCH v2 0/2] Remove MT6779 UART3 clock support
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        mtk01761 <wendell.lin@mediatek.com>,
+        CC Hwang <cc.hwang@mediatek.com>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Wed, 22 Jul 2020 19:16:21 +0800
+In-Reply-To: <54e4d0b9-e62c-a3cb-7f74-af2891664cf1@gmail.com>
+References: <1595387397-13110-1-git-send-email-hanks.chen@mediatek.com>
+         <54e4d0b9-e62c-a3cb-7f74-af2891664cf1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: initialize ->ra_pages in bdi_init
-Thread-Index: SEPLczWq50DYtFrGpPhckNZ8Awj6bw==
+X-TM-SNTS-SMTP: 8678F406109F856D891B379E590361900A402883DC336283B2FDBEFAF9C867542000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Set up a readahead size by default, as very few users have a good
-> reason to change it.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
-> block/blk-core.c      | 1 -
-> drivers/mtd/mtdcore.c | 1 +
-> fs/9p/vfs_super.c     | 4 ++--
-> fs/afs/super.c        | 1 -
-> fs/btrfs/disk-io.c    | 1 -
-> fs/fuse/inode.c       | 1 -
-> fs/nfs/super.c        | 9 +--------
-> fs/ubifs/super.c      | 1 +
+T24gV2VkLCAyMDIwLTA3LTIyIGF0IDEwOjQzICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMjIvMDcvMjAyMCAwNTowOSwgSGFua3MgQ2hlbiB3cm90ZToNCj4gPiByZW1v
+dmUgdGhlIHJlZHVuZGFudCBjbGsgaW50ZXJmYWNlIG9mIHVhcnQuDQo+ID4gQ0xLX0lORlJBX1VB
+UlQzIGlzIGEgZHVtbXkgY2xrIGludGVyZmFjZSwNCj4gPiBpdCBoYXMgbm8gZWZmZWN0IG9uIHRo
+ZSBvcGVyYXRpb24gb2YgdGhlIHJlYWQvd3JpdGUgaW5zdHJ1Y3Rpb24uDQo+ID4gDQo+ID4gQ2hh
+bmdlIHNpbmNlIHYyOg0KPiA+IENvbW1pdCAiZHQtYmluZGluZ3M6IGNsb2NrOiByZW1vdmUgVUFS
+VDMgY2xvY2sgc3VwcG9ydCINCj4gDQo+IFNvcnJ5IGp1c3QgYW5vdGhlciBjb21tZW50LiBJIHRo
+aW5rIHdlIGNhbiBtYWtlIHRoaXMgb25lIHBhdGNoIGRlbGV0aW5nIGV2ZXJ5dGhpbmcuDQo+IA0K
+U29ycnksIEkgZG9uJ3QgdW5kZXJzdGFuZCB0aGUgY29tbWVudC4gRG8gSSBuZWVkIHRvIG1lcmdl
+IHRoZW0gaW50byBvbmUNCmJpZyBwYXRjaD8NCkJ0dywgaWYgSSB1c2Ugb25lIHBhdGNoLCBJIHdv
+dWxkIGdldCBjaGVjayBwYXRjaCBmYWlsLg0KLS0tDQpbMjAyMC0wNy0yMiAxOToxMjo0OSwwNDYg
+RVJST1JdIFJ1biBjaGVjayBwYXRjaCByZXN1bHRzOg0KV0FSTklORzpEVF9TUExJVF9CSU5ESU5H
+X1BBVENIOiBEVCBiaW5kaW5nIGRvY3MgYW5kIGluY2x1ZGVzIHNob3VsZCBiZSBhDQpzZXBhcmF0
+ZSBwYXRjaC4gU2VlOg0KRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3N1Ym1pdHRp
+bmctcGF0Y2hlcy5yc3QNCi0tLQ0KDQpIYW5rcw0KDQo+ID4gLS0gcmVtb3ZlIEZpeGVzIHRhZw0K
+PiA+IENvbW1pdCAiY2xrOiBtZWRpYXRlazogcmVtb3ZlIFVBUlQzIGNsb2NrIHN1cHBvcnQiDQo+
+ID4gLS0gcmVtb3ZlIEZpeGVzIHRhZw0KPiA+IA0KPiA+IEhhbmtzIENoZW4gKDIpOg0KPiA+ICAg
+IGR0LWJpbmRpbmdzOiBjbG9jazogcmVtb3ZlIFVBUlQzIGNsb2NrIHN1cHBvcnQNCj4gPiAgICBj
+bGs6IG1lZGlhdGVrOiByZW1vdmUgVUFSVDMgY2xvY2sgc3VwcG9ydA0KPiA+IA0KPiA+ICAgZHJp
+dmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10Njc3OS5jICAgICAgfCAyIC0tDQo+ID4gICBpbmNsdWRl
+L2R0LWJpbmRpbmdzL2Nsb2NrL210Njc3OS1jbGsuaCB8IDEgLQ0KPiA+ICAgMiBmaWxlcyBjaGFu
+Z2VkLCAzIGRlbGV0aW9ucygtKQ0KPiA+IA0KDQo=
 
-For ubifs and mtd:
-
-Acked-by: Richard Weinberger <richard@nod.at>
-
-Thanks,
-//richard
