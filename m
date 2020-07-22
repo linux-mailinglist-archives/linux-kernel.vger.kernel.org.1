@@ -2,159 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3D322A1AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F95F22A1D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 00:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731665AbgGVWAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 18:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
+        id S1733102AbgGVWLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 18:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729684AbgGVWAa (ORCPT
+        with ESMTP id S1733043AbgGVWL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 18:00:30 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D88C0619E2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 15:00:29 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id f16so2096181pjt.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 15:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N8+S2bs/z4ong2YrfE5GwRztsvmrOV1x6iJptONruQ0=;
-        b=J8nGwE8Z6AcRTaG73HoFvoUiIYSNEt7re2zANYCmw5IQOU7tN6t8rgdNm/mCE7mulD
-         2DqGU0X4O5Fxqm6nc1MusIKF/IPRHB1DME6QXlO0DxV6HdW+kjuX7WZ8rTD28AR1YBDb
-         XwFB/CcyJ65OruUfOL8Dv8PHJcs54lVFMKPH4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N8+S2bs/z4ong2YrfE5GwRztsvmrOV1x6iJptONruQ0=;
-        b=LTmqeKT+rw3P+k27OPl0PqnpbqAONTorIgamk/3yJcvE3IGyskalx+nkCMRUP55X3D
-         CwZZFbgTR8qyRIeqadrZEaeHV+JU1Pf1AQg+Vqkl9zm42kC+vma/IC9H+yinLRGagJtF
-         hQJyymM3xVh0aS0fKy9eZcvkEq8Ol6PKzozFD/Rb1ybjy48F3HtFA6PJQQ+5tfAzWJy+
-         p4f1GfTzn72zb704Ce6vGv5q0+9SVAY7KV6xTxx8m/2kcyPox9G954MTlNzhWVdVNE5O
-         TfD80LS7UzrZ3+KOLt/wynAZ51YGZuHoj4zHKPBDQaLha8A2flEK0ypkniCVdcif+dIW
-         sing==
-X-Gm-Message-State: AOAM532PEV+p3XBkczBXn3pUbNZrifzwMxWibJP6kJ6xjUkf547c7cG3
-        pT5SDUpgoPyEpikZXQhNVpXlZA==
-X-Google-Smtp-Source: ABdhPJy2c6o/MRrkKFm8aPWmkth//QhJMrLmzY21twfgd+iLnkoZPn9A4WSB+3YAdPMnaGK6BeC/mQ==
-X-Received: by 2002:a17:90b:f16:: with SMTP id br22mr1417424pjb.170.1595455228985;
-        Wed, 22 Jul 2020 15:00:28 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id kx3sm641235pjb.32.2020.07.22.15.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 15:00:28 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     swboyd@chromium.org, msavaliy@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
-        Sagar Dharia <sdharia@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] i2c: i2c-qcom-geni: Fix DMA transfer race
-Date:   Wed, 22 Jul 2020 15:00:21 -0700
-Message-Id: <20200722145948.v2.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 22 Jul 2020 18:11:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80ACC0619DC;
+        Wed, 22 Jul 2020 15:11:24 -0700 (PDT)
+Message-Id: <20200722215954.464281930@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595455882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=ahlK79PK5YUaQAhd7lygE8UJdfTKv0Vu+HW5xnc5ELM=;
+        b=G7gFd1y4nAOmB1fa4bznNO6Hn3Xz5vGns+k1b2AAzgB3r8aFNsAxK66jM7k+woJjeVIGPk
+        98ntp/LIG2+BVCPqkuHjXZQI75CRxyf81EpjyYchX1/id1bgwygapu4zV6NpZj5iV+34lN
+        5jupVlM/5oMJUto46ob0x4SNkXVFEdZ/4vVsJBiX7zlSsHAjQy9gxt5C0toWs91Bpe/RZs
+        L185WibgR0N4V4qXYAj4nyjC7PSyi9i1q0vQ+1ut7dpat2CwoFRTkp6RJ+x9moWliHMRCE
+        h3QD1iopZgNwAdQKa8R+EDTF0w281Ry2bTenti8lF/lPd6GforcDq/MMnNnnZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595455882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-transfer-encoding:content-transfer-encoding;
+        bh=ahlK79PK5YUaQAhd7lygE8UJdfTKv0Vu+HW5xnc5ELM=;
+        b=miICDflKl+rPTMgRosTGj5rJ8+uSXdXfY8WUsObaLLnl8ki5Ojwpope+EfNnupX4TEtU3L
+        iAM7h9QaqHryhDDQ==
+Date:   Wed, 22 Jul 2020 23:59:54 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, linux-arch@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [patch V5 00/15] entry, x86, kvm: Generic entry/exit functionality
+ for host and guest
+Content-transfer-encoding: 8-bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I have KASAN enabled on my kernel and I start stressing the
-touchscreen my system tends to hang.  The touchscreen is one of the
-only things that does a lot of big i2c transfers and ends up hitting
-the DMA paths in the geni i2c driver.  It appears that KASAN adds
-enough delay in my system to tickle a race condition in the DMA setup
-code.
+This is the 5th version of generic entry/exit functionality for host and
+guest.
 
-When the system hangs, I found that it was running the geni_i2c_irq()
-over and over again.  It had these:
+The 4th version is available here:
 
-m_stat   = 0x04000080
-rx_st    = 0x30000011
-dm_tx_st = 0x00000000
-dm_rx_st = 0x00000000
-dma      = 0x00000001
+    https://lore.kernel.org/r/20200721105706.030914876@linutronix.de
 
-Notably we're in DMA mode but are getting M_RX_IRQ_EN and
-M_RX_FIFO_WATERMARK_EN over and over again.
+Changes vs. V4:
 
-Putting some traces in geni_i2c_rx_one_msg() showed that when we
-failed we were getting to the start of geni_i2c_rx_one_msg() but were
-never executing geni_se_rx_dma_prep().
+  - Add the missing instrumentation prevetions to the entry Makefile (Kees)
+  - Rename exit_to_guest to xfer_to_guest (Sean)
 
-I believe that the problem here is that we are starting the geni
-command before we run geni_se_rx_dma_prep().  If a transfer makes it
-far enough before we do that then we get into the state I have
-observed.  Let's change the order, which seems to work fine.
+The patches depend on:
 
-Although problems were seen on the RX path, code inspection suggests
-that the TX should be changed too.  Change it as well.
+    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
 
-Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
----
-Even though this patch is slightly different than v1 I have kept tags.
-Hopefully this is OK.
+The lot is also available from git:
 
-Changes in v2:
-- Fix both TX and RX.
-- Only move the setting up of the command, not the set of the length.
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/entry
 
- drivers/i2c/busses/i2c-qcom-geni.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index 18d1e4fd4cf3..7f130829bf01 100644
---- a/drivers/i2c/busses/i2c-qcom-geni.c
-+++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -367,7 +367,6 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 		geni_se_select_mode(se, GENI_SE_FIFO);
- 
- 	writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
--	geni_se_setup_m_cmd(se, I2C_READ, m_param);
- 
- 	if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
- 		geni_se_select_mode(se, GENI_SE_FIFO);
-@@ -375,6 +374,8 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 		dma_buf = NULL;
- 	}
- 
-+	geni_se_setup_m_cmd(se, I2C_READ, m_param);
-+
- 	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
- 	if (!time_left)
- 		geni_i2c_abort_xfer(gi2c);
-@@ -408,7 +409,6 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 		geni_se_select_mode(se, GENI_SE_FIFO);
- 
- 	writel_relaxed(len, se->base + SE_I2C_TX_TRANS_LEN);
--	geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
- 
- 	if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &tx_dma)) {
- 		geni_se_select_mode(se, GENI_SE_FIFO);
-@@ -416,6 +416,8 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 		dma_buf = NULL;
- 	}
- 
-+	geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
-+
- 	if (!dma_buf) /* Get FIFO IRQ */
- 		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
- 
--- 
-2.28.0.rc0.142.g3c755180ce-goog
+	tglx
+
 
