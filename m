@@ -2,259 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CF3229D47
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 587BD229D3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 18:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730813AbgGVQlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 12:41:37 -0400
-Received: from out28-99.mail.aliyun.com ([115.124.28.99]:49793 "EHLO
-        out28-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgGVQlg (ORCPT
+        id S1729642AbgGVQkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 12:40:32 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:42748 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgGVQkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 12:41:36 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436638|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0284586-0.000932928-0.970609;FP=0|0|0|0|0|-1|-1|-1;HT=e01l10434;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=22;RT=22;SR=0;TI=SMTPD_---.I6-OcxX_1595436029;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I6-OcxX_1595436029)
-          by smtp.aliyun-inc.com(10.147.40.200);
-          Thu, 23 Jul 2020 00:41:28 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, robh+dt@kernel.org
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, hadar.gat@arm.com,
-        prasannatsmkumar@gmail.com, krzk@kernel.org, masahiroy@kernel.org,
-        rdunlap@infradead.org, xuzaibo@huawei.com,
-        daniel.thompson@linaro.org, tmaimon77@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH 2/2] crypto: Ingenic: Add hardware RNG for Ingenic JZ4780 and X1000.
-Date:   Thu, 23 Jul 2020 00:40:07 +0800
-Message-Id: <20200722164007.77655-3-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200722164007.77655-1-zhouyanjie@wanyeetech.com>
-References: <20200722164007.77655-1-zhouyanjie@wanyeetech.com>
+        Wed, 22 Jul 2020 12:40:31 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06MGeJe7034005;
+        Wed, 22 Jul 2020 11:40:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595436019;
+        bh=a29bGufVvXPvtLlgK5gj/gkb3/Q+mlX4p6BFo+XBga8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=SHGMwgcisV5ug8hmXyKqD4ZzQDV2i2xYz9GXz31IdyNYM0W9/M32qi3mfIu0Gyq0C
+         +dp6pPD3uOLbUfBDCL8mIGh7vjaTQ+tVTjqkt098hOkOr1kYL/r4vKq8fIonhGWArU
+         fbmTgcyGW98SOglddI5HISQ4yDjYh+9dUom5kXI0=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06MGeJcd126568
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Jul 2020 11:40:19 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
+ Jul 2020 11:40:09 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 22 Jul 2020 11:40:09 -0500
+Received: from [10.250.35.192] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06MGe8q2107574;
+        Wed, 22 Jul 2020 11:40:09 -0500
+Subject: Re: [PATCH v31 06/12] leds: lp55xx: Add multicolor framework support
+ to lp55xx
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     <jacek.anaszewski@gmail.com>, <robh@kernel.org>,
+        <marek.behun@nic.cz>, <devicetree@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200716182007.18389-1-dmurphy@ti.com>
+ <20200716182007.18389-7-dmurphy@ti.com> <20200721211135.GE5966@amd>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <a92226e0-4388-722b-7447-c9d3d3222e0f@ti.com>
+Date:   Wed, 22 Jul 2020 11:40:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20200721211135.GE5966@amd>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add JZ4780 SoC and X1000 SoC random number generator driver,
-based on PrasannaKumar Muralidharan's JZ4780 RNG driver.
+Pavel
 
-Tested-by: Âë®Ê≠£ (Zhou Zheng) <sernia.zhou@foxmail.com>
-Tested-by: Mathieu Malaterre <malat@debian.org>
-Suggested-by: Jeffrey Walton <noloader@gmail.com>
-Signed-off-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Signed-off-by: Âë®Áê∞Êù∞ (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- drivers/char/hw_random/Kconfig       |  15 ++++
- drivers/char/hw_random/Makefile      |   1 +
- drivers/char/hw_random/ingenic-rng.c | 154 +++++++++++++++++++++++++++++++++++
- 3 files changed, 170 insertions(+)
- create mode 100644 drivers/char/hw_random/ingenic-rng.c
+On 7/21/20 4:11 PM, Pavel Machek wrote:
+> Hi!
+>
+>> Add multicolor framework support for the lp55xx family.
+>>
+>> Acked-by: Pavel Machek <pavel@ucw.cz>
+>> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> Applied 4,5,6 and 8,9.
+>
+>>   config LEDS_LP55XX_COMMON
+>>   	tristate "Common Driver for TI/National LP5521/5523/55231/5562/8501"
+>> -	depends on LEDS_LP5521 || LEDS_LP5523 || LEDS_LP5562 || LEDS_LP8501
+>> +	depends on LEDS_CLASS_MULTICOLOR || !LEDS_CLASS_MULTICOLOR
+>> +	depends on OF
+>>   	select FW_LOADER
+>>   	select FW_LOADER_USER_HELPER
+> But I have to ask: what does this do to userland interface once
+> LEDS_CLASS_MULTICOLOR is enabled?
+If the DT is instrumented with MC FW properties there will be a change 
+to the user land interface.† If the properties follow the LED properties 
+then there should be no change to the userland interface.† See the DT 
+and user interface examples below.† So the n900 should see no delta in 
+the lighting since it has the LED properties and not the MC FW 
+properties.† I hope this answers your question.
+> Will users see some changes? Will they see some changes after dts
+> parts are applied?
 
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 0ad17efc96df..fcb06027cd88 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -257,6 +257,21 @@ config HW_RANDOM_IMX_RNGC
- 
- 	  If unsure, say Y.
- 
-+config HW_RANDOM_INGENIC_RNG
-+	tristate "Ingenic Random Number Generator support"
-+	depends on HW_RANDOM
-+	depends on MACH_JZ4780 || MACH_X1000
-+	default HW_RANDOM
-+	---help---
-+	  This driver provides kernel-side support for the Random Number Generator
-+	  hardware found in ingenic JZ4780 and X1000 SoC. MIPS Creator CI20 uses
-+	  JZ4780 SoC, YSH & ATIL CU1000-Neo uses X1000 SoC.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called ingenic-rng.
-+
-+	  If unsure, say Y.
-+
- config HW_RANDOM_NOMADIK
- 	tristate "ST-Ericsson Nomadik Random Number Generator support"
- 	depends on ARCH_NOMADIK
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 2c6724735345..acb1a1978d23 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -22,6 +22,7 @@ obj-$(CONFIG_HW_RANDOM_VIRTIO) += virtio-rng.o
- obj-$(CONFIG_HW_RANDOM_TX4939) += tx4939-rng.o
- obj-$(CONFIG_HW_RANDOM_MXC_RNGA) += mxc-rnga.o
- obj-$(CONFIG_HW_RANDOM_IMX_RNGC) += imx-rngc.o
-+obj-$(CONFIG_HW_RANDOM_INGENIC_RNG) += ingenic-rng.o
- obj-$(CONFIG_HW_RANDOM_OCTEON) += octeon-rng.o
- obj-$(CONFIG_HW_RANDOM_NOMADIK) += nomadik-rng.o
- obj-$(CONFIG_HW_RANDOM_PSERIES) += pseries-rng.o
-diff --git a/drivers/char/hw_random/ingenic-rng.c b/drivers/char/hw_random/ingenic-rng.c
-new file mode 100644
-index 000000000000..d704cef64b64
---- /dev/null
-+++ b/drivers/char/hw_random/ingenic-rng.c
-@@ -0,0 +1,154 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Ingenic Random Number Generator driver
-+ * Copyright (c) 2017 PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-+ * Copyright (c) 2020 Âë®Áê∞Êù∞ (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/kernel.h>
-+#include <linux/hw_random.h>
-+#include <linux/io.h>
-+#include <linux/iopoll.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+
-+/* RNG register offsets */
-+#define RNG_REG_ERNG_OFFSET		0x0
-+#define RNG_REG_RNG_OFFSET		0x4
-+
-+/* bits within the ERND register */
-+#define ERNG_READY				BIT(31)
-+#define ERNG_ENABLE				BIT(0)
-+
-+enum ingenic_rng_version {
-+	ID_JZ4780,
-+	ID_X1000,
-+};
-+
-+/* Device associated memory */
-+struct ingenic_rng {
-+	enum ingenic_rng_version version;
-+
-+	void __iomem *base;
-+	struct hwrng rng;
-+};
-+
-+static int ingenic_rng_init(struct hwrng *rng)
-+{
-+	struct ingenic_rng *priv = container_of(rng, struct ingenic_rng, rng);
-+
-+	writel(ERNG_ENABLE, priv->base + RNG_REG_ERNG_OFFSET);
-+
-+	return 0;
-+}
-+
-+static void ingenic_rng_cleanup(struct hwrng *rng)
-+{
-+	struct ingenic_rng *priv = container_of(rng, struct ingenic_rng, rng);
-+
-+	writel(0, priv->base + RNG_REG_ERNG_OFFSET);
-+}
-+
-+static int ingenic_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-+{
-+	struct ingenic_rng *priv = container_of(rng, struct ingenic_rng, rng);
-+	u32 *data = buf;
-+	u32 status;
-+	int ret;
-+
-+	if (priv->version >= ID_X1000) {
-+		ret = readl_poll_timeout(priv->base + RNG_REG_ERNG_OFFSET, status,
-+					 status & ERNG_READY, 10, 1000);
-+		if (ret == -ETIMEDOUT) {
-+			pr_err("%s: Wait for RNG data ready timeout\n", __func__);
-+			return ret;
-+		}
-+	} else {
-+		/*
-+		 * A delay is required so that the current RNG data is not bit shifted
-+		 * version of previous RNG data which could happen if random data is
-+		 * read continuously from this device.
-+		 */
-+		udelay(20);
-+	}
-+
-+	*data = readl(priv->base + RNG_REG_RNG_OFFSET);
-+
-+	return 4;
-+}
-+
-+static int ingenic_rng_probe(struct platform_device *pdev)
-+{
-+	struct ingenic_rng *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base)) {
-+		pr_err("%s: Failed to map RNG registers\n", __func__);
-+		ret = PTR_ERR(priv->base);
-+		goto err_free_rng;
-+	}
-+
-+	priv->version = (enum ingenic_rng_version)of_device_get_match_data(&pdev->dev);
-+
-+	priv->rng.name = pdev->name;
-+	priv->rng.init = ingenic_rng_init;
-+	priv->rng.cleanup = ingenic_rng_cleanup;
-+	priv->rng.read = ingenic_rng_read;
-+
-+	ret = hwrng_register(&priv->rng);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to register hwrng\n");
-+		goto err_free_rng;
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	dev_info(&pdev->dev, "Ingenic RNG driver registered\n");
-+	return 0;
-+
-+err_free_rng:
-+	kfree(priv);
-+	return ret;
-+}
-+
-+static int ingenic_rng_remove(struct platform_device *pdev)
-+{
-+	struct ingenic_rng *priv = platform_get_drvdata(pdev);
-+
-+	hwrng_unregister(&priv->rng);
-+
-+	writel(0, priv->base + RNG_REG_ERNG_OFFSET);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id ingenic_rng_of_match[] = {
-+	{ .compatible = "ingenic,jz4780-rng", .data = (void *) ID_JZ4780 },
-+	{ .compatible = "ingenic,x1000-rng", .data = (void *) ID_X1000 },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, ingenic_rng_of_match);
-+
-+static struct platform_driver ingenic_rng_driver = {
-+	.probe		= ingenic_rng_probe,
-+	.remove		= ingenic_rng_remove,
-+	.driver		= {
-+		.name	= "ingenic-rng",
-+		.of_match_table = ingenic_rng_of_match,
-+	},
-+};
-+
-+module_platform_driver(ingenic_rng_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>");
-+MODULE_AUTHOR("Âë®Áê∞Êù∞ (Zhou Yanjie) <zhouyanjie@wanyeetech.com>");
-+MODULE_DESCRIPTION("Ingenic Random Number Generator driver");
--- 
-2.11.0
+In my testing I did not see any delta in the user interface.† I tested 
+with both MC FW and non-MC FW properties on the LP5523 evm.
+
+So the legacy DT's should not be affected and should work as is. The DT 
+patches were to make the DT's compliant with the updated bindings.
+
+Only the u8500 defconfig patch needs to be added or the u8500_defconfig 
+will break in compilation so we need that patch as well.
+
+DTS changes not applied
+
+With multicolor framework properties in the DT
+
+ls
+beaglebone:green:heartbeat† beaglebone:green:usr2 lp5523:channel1
+beaglebone:green:mmc0†††††† beaglebone:green:usr3 lp5523:channel5
+
+ ††† ††† chan5 {
+ ††† ††† ††† color = <LED_COLOR_ID_WHITE>;
+ ††† ††† ††† chan-name = "lp5523:channel5";
+ ††† ††† ††† reg = <0x5>;
+ ††† ††† ††† led-cur = /bits/ 8 <50>;
+ ††† ††† ††† max-cur = /bits/ 8 <100>;
+ ††† ††† };
+
+ ††† ††† multi-led@0 {
+ ††† ††† ††† #address-cells = <1>;
+ ††† ††† ††† #size-cells = <0>;
+ ††† ††† ††† reg = <0>;
+ ††† ††† ††† color = <LED_COLOR_ID_MULTI>;
+ ††† ††† ††† function = LED_FUNCTION_STANDBY;
+ ††† ††† ††† linux,default-trigger = "heartbeat";
+
+ ††† ††† ††† led@0 {
+ ††† ††† ††† ††† led-cur = /bits/ 8 <50>;
+ ††† ††† ††† ††† max-cur = /bits/ 8 <100>;
+ ††† ††† ††† ††† reg = <0x0>;
+ ††† ††† ††† ††† color = <LED_COLOR_ID_GREEN>;
+ ††† ††† ††† };
+
+ ††† ††† ††† led@1 {
+ ††† ††† ††† ††† led-cur = /bits/ 8 <50>;
+ ††† ††† ††† ††† max-cur = /bits/ 8 <100>;
+ ††† ††† ††† ††† reg = <0x1>;
+ ††† ††† ††† ††† color = <LED_COLOR_ID_BLUE>;
+ ††† ††† ††† };
+
+ ††† ††† ††† led@6 {
+ ††† ††† ††† ††† led-cur = /bits/ 8 <50>;
+ ††† ††† ††† ††† max-cur = /bits/ 8 <100>;
+ ††† ††† ††† ††† reg = <0x6>;
+ ††† ††† ††† ††† color = <LED_COLOR_ID_RED>;
+ ††† ††† ††† };
+ ††† ††† };
+
+
+lp5523:channel5# ls
+
+brightness††††† device††††††††† led_current†††† max_brightness 
+max_current†††† power†††††††††† subsystem†††††† trigger uevent
+
+ls lp5523\:channel1
+brightness†††††† device†††††††††† max_brightness multi_index††††† 
+multi_intensity† power subsystem††††††† trigger††††††††† uevent
+
+Without MC FW DT properties
+
+And as individual LEDs as the DTs are populated today.
+
+ls
+beaglebone:green:heartbeat† beaglebone:green:usr2 lp5523:channel0 
+lp5523:channel5
+beaglebone:green:mmc0†††††† beaglebone:green:usr3 
+lp5523:channel2†††††††††††† lp5523:channel6
+
+ †† †††† chan0 {
+ †† ††† ††† †color = <LED_COLOR_ID_GREEN>;
+ †† ††† ††† †chan-name = "lp5523:channel0";
+ †† ††† ††† †reg = <0x0>;
+ †† ††† ††† †led-cur = /bits/ 8 <50>;
+ †† ††† ††† †max-cur = /bits/ 8 <100>;
+ †† ††† †};
+ †† ††† †chan7 {
+ †† ††† ††† †color = <LED_COLOR_ID_RED>;
+ †† ††† ††† †chan-name = "lp5523:channel6";
+ †† ††† ††† †reg = <0x6>;
+ †† ††† ††† †led-cur = /bits/ 8 <50>;
+ †† ††† ††† †max-cur = /bits/ 8 <100>;
+ †† ††† †};
+ †† ††† †chan2 {
+ †† ††† ††† †color = <LED_COLOR_ID_BLUE>;
+ †† ††† ††† †chan-name = "lp5523:channel2";
+ †† ††† ††† †reg = <0x1>;
+ †† ††† ††† †led-cur = /bits/ 8 <50>;
+ †† ††† ††† †max-cur = /bits/ 8 <100>;
+ †† ††† †};
+
+ †† †††† chan5 {
+ †† ††† ††† †color = <LED_COLOR_ID_WHITE>;
+ †† ††† ††† †chan-name = "lp5523:channel5";
+ †† ††† ††† †reg = <0x5>;
+ †† ††† ††† †led-cur = /bits/ 8 <50>;
+ †† ††† ††† †max-cur = /bits/ 8 <100>;
+ †† ††† †};
+
+
+Dan
 
