@@ -2,358 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A39A229818
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5197F229830
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732328AbgGVMRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732196AbgGVMRJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:17:09 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720DCC0619DF
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:17:09 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id q4so2264270lji.2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=KDQ7v8Cm4abDVKMKnlWuLlGXPImMSg6jDl7cdiUj9Es=;
-        b=oE8lvE0uOlHhdoKbqZt4B/mSaexsfTZjIGuTTMKkKvn5vup8rXuK4c7zueH8pe3JeR
-         jUYubcAqubDo8qb9ovRyFu3c4O/KkA7eZoY6HMIAL1YkepkMcPW0O3ZSRxVaSXVTTCHF
-         z5EWOQKgREPDKF79pmpPL8jzchj2DL6xnE5kk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=KDQ7v8Cm4abDVKMKnlWuLlGXPImMSg6jDl7cdiUj9Es=;
-        b=E9f9B20p1JrtEh5ZE+2Xr4u2rJi4q49/AW5uBuFKqPXw1ycenNxUfU+GHUKL7Pe9Bl
-         8GZzKc27fb4KfFU0b7/zQbvpphLHZlkrOhI5igy6IoD3lUbY+LDx2taaP38vHQKryaJo
-         CvTngN5oRulNQR8m/kFuzpML+3Nzy6xZVQJQIvsoV/Ma+EefOdA4aD35jhUnMQc1UUxd
-         pyP/rmiqgkgPQQVxKckmGgUNmPPcSvzLKlwq1x1i++QYfT9VKAnRnMejF5NTimGidND2
-         479iTzEjphgCRUbHB0LjpdnSi+T3bgRRSjzT8cVf2kaeAAYnadAnBHrXIfIUzsemsIXW
-         W6tg==
-X-Gm-Message-State: AOAM530bcCeWOu/3gCmn3mocWueOD6nCDcAzQIyCSooOXDp8aEqzQViw
-        gaYqUj9ntJ6FH/dvi75FO9kcYg==
-X-Google-Smtp-Source: ABdhPJxGQlT+m2wmcUpDcQT+EirYFTNer4xuc5FN0GY49qhvhgWmJpcFl1SyCfUKE0RHTxHsIrahbA==
-X-Received: by 2002:a2e:5cc6:: with SMTP id q189mr13982642ljb.251.1595420226553;
-        Wed, 22 Jul 2020 05:17:06 -0700 (PDT)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id y1sm4945185lfb.45.2020.07.22.05.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 05:17:05 -0700 (PDT)
-References: <20200722132143.700a5ccc@canb.auug.org.au>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        kernel-team@cloudflare.com, Willem de Bruijn <willemb@google.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
-In-reply-to: <20200722132143.700a5ccc@canb.auug.org.au>
-Date:   Wed, 22 Jul 2020 14:17:05 +0200
-Message-ID: <87wo2vwxq6.fsf@cloudflare.com>
+        id S1732105AbgGVMZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:25:19 -0400
+Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:57696
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726161AbgGVMZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:25:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cz5xJQjXvMJCwLyORdNMPiQ6EDu9fNR5h6IQbikoomcWnCC/BDq1RZJGYZ4+phuVIPNPM+cGKwP/vzITN8ulp9bT6KS5cVGGeRa9IS1eI7C7FmJBk8zpMKSAdD76YFL26+f+57R5z0EoCzEVtnmofKLSZFkt+j3UTCJ1OY4yVohnkJ33swRc6wFDFPQCoU9iMXCrp+QfFXoZs5YPr24kSZkR1sThzgfiQOrbbHSqpzZlTjazRXu341OPKNGnHKqsKaBu0QDCjio8dQeUzaMPWA6L63LcP1F5O1bo6EkgQVAwaAV+ha785+6tqZaaPCSoYRLFoB4I0BZOLMTK/Xf6Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ArLTneIU/Zh7+7PbOXOU92k0OACXzFDQLfv7Z0Y5r3k=;
+ b=DooXnVIZCWoll3r8Mter6ad4uSzm/SpfRMMfaL0CC2FPimqwZdgmCvcJ1MWaCwmq/QeISTD4wpGlJo3ACJROKX2GYbPuRjjiBmWvHdNhTGlGOhuliI+HCSthLeras3dDRTtVGRpS9dXqEc8pS/afNQ0iBpsVHs20DxdC7O7HosxSvvuHlmPzbhQhcHR1ujY0VE98le363JsRNNQ6iG0FLVguwABV6ZWe5r38S7s6kDso6XdJhr5MZdOU2YzUFyCSVDefsxjkLl+M4mmiV7sBVm7zgIdQVcWq9ZR/LO6zmsCpbmMVvHyNv3Ny9p29MDPDcEGReUDrEECca9CHPV6P6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ArLTneIU/Zh7+7PbOXOU92k0OACXzFDQLfv7Z0Y5r3k=;
+ b=AsyhqL49tmRT1+kqV0nBi8qcn1lazQe67nc67P1KaYcZwJnxNkUp8NQKzyjmQwgnduWrA9lUuFHO5LIHUOVlH0+IgCPq9tEsYjpQJO1suFqnMzpDZwCYc442/vKz9x+4M8dnLvZAp5pMzPIs2XynUB/eA6pJFAXNJB9MpfcVV90=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4038.eurprd04.prod.outlook.com (2603:10a6:209:44::24)
+ by AM6PR04MB6648.eurprd04.prod.outlook.com (2603:10a6:20b:f9::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Wed, 22 Jul
+ 2020 12:25:14 +0000
+Received: from AM6PR04MB4038.eurprd04.prod.outlook.com
+ ([fe80::3880:77f6:c5ed:6ee2]) by AM6PR04MB4038.eurprd04.prod.outlook.com
+ ([fe80::3880:77f6:c5ed:6ee2%7]) with mapi id 15.20.3195.028; Wed, 22 Jul 2020
+ 12:25:14 +0000
+Subject: Re: [PATCH 6/7] crypto: caam - add more RNG hw error codes
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        Dan Douglass <dan.douglass@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+References: <20200722121458.8478-1-horia.geanta@nxp.com>
+ <20200722121458.8478-7-horia.geanta@nxp.com>
+Message-ID: <146822fe-5436-a0cb-c78a-7ecd2f8b7b16@nxp.com>
+Date:   Wed, 22 Jul 2020 15:25:12 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200722121458.8478-7-horia.geanta@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM0PR03CA0067.eurprd03.prod.outlook.com (2603:10a6:208::44)
+ To AM6PR04MB4038.eurprd04.prod.outlook.com (2603:10a6:209:44::24)
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (84.117.251.185) by AM0PR03CA0067.eurprd03.prod.outlook.com (2603:10a6:208::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23 via Frontend Transport; Wed, 22 Jul 2020 12:25:13 +0000
+X-Originating-IP: [84.117.251.185]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 27d1831e-21a3-403e-9b39-08d82e3a4904
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6648:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB6648341337DB2FCDAC03C6B898790@AM6PR04MB6648.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wrStce0mGfqUp6vpqNv5i6TdS62EunHr6klMRCHYXXbJY+KyE/KCcVJffd2ZH2ShyxuW+GWM+Wz5i4W1OVdrsokOYw0oFyKq+IFk0ZjgPPIZ1JlEruUWEtalf5NAYpas1FNKdE88QEdJhNGv2MnQtwbEDM5+V4CeESp6PN1vTf5LSQVdAzx6zVyzvcz8SVY1UgwSdhEhBC36oyN4+mWN3POr2BBAvlWpY3G2llggSqiyiJ9JGHVwRtLum2dBqvw/abDnVT+UKEC198TvBDM20YK73TqbXg6A9EUtBReSGIQVzOnQqlSAjE3yWWvSM731eXIsyiPCBXqj6t/uC99lDmEco+AJTN9wCWRYTmLugm67HE5Ilzv2thJnaOPihb/8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4038.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(39860400002)(136003)(366004)(346002)(36756003)(2616005)(956004)(478600001)(16526019)(5660300002)(31696002)(186003)(4326008)(4744005)(53546011)(86362001)(6916009)(8936002)(26005)(52116002)(2906002)(316002)(8676002)(66556008)(66476007)(16576012)(66946007)(6486002)(31686004)(54906003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: f+gzu79v9taoSvfiDXywu1d5TKIxZQt5noSO8Z6JVsbNYa4vpdVzx0sMWm3a8NxaFcKaaThJt+v2bgWM76ooU49zilOr6Fagi8YKmRKjKZTNuspdOAw9LpRx0tFvUp0Wj0VT+kbLIYgl1Z3PfSRxyO+SIRrwbC4LZuXiynrvNqLRe84aAJsFghs0iNG2mpD7GFmpNJ7l5KaA9fQKQTuTBrJoVUOk7i86pN/cKR8u4tJI9O49L4p6ZQ/v/FQ6fsxlTDVr/fqIlxWdAjlXbSqkwaDpRjB4hIU7sxh2bGE2wxaJLK3A1mz2pLaMVWzLSlewMwLVkVG0X+gY0YZV9/KBjUUQe68r1BH/RvRuNYAvDjnfsgMLNBvISN0t0l+EUdUhQ6rPQwiN0jdPcpC4x7+WA9pyqloL70EBYcyhV/EaYfMe1yn2z5E6i6MmKZJtZqBvXOcxthzX9tbheI4s1I5D01yRmDfX8Pl9wDpSC/TA9J2+UbOEtwGI90uoZLP5AASe
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27d1831e-21a3-403e-9b39-08d82e3a4904
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4038.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2020 12:25:14.3013
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aH9RA1MLfNgMotR8UchXyWhrgEdUbaEs93OUAMtpNBKYB8oslTrTZF9wkC90HbwNLem9B+vDRp1sa3OYH0wKmA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6648
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 05:21 AM CEST, Stephen Rothwell wrote:
-> Hi all,
->
-> Today's linux-next merge of the bpf-next tree got conflicts in:
->
->   net/ipv4/udp.c
->   net/ipv6/udp.c
->
-> between commit:
->
->   efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.")
->
-> from the net tree and commits:
->
->   7629c73a1466 ("udp: Extract helper for selecting socket from reuseport group")
->   2a08748cd384 ("udp6: Extract helper for selecting socket from reuseport group")
->
-> from the bpf-next tree.
->
-> I fixed it up (I wasn't sure how to proceed, so I used the latter
-> version) and can carry the fix as necessary. This is now fixed as far
-> as linux-next is concerned, but any non trivial conflicts should be
-> mentioned to your upstream maintainer when your tree is submitted for
-> merging.  You may also want to consider cooperating with the maintainer
-> of the conflicting tree to minimise any particularly complex conflicts.
+On 7/22/2020 3:15 PM, Horia Geantă wrote:
+> In some cases, e.g. when TRNG is not properly configured,
+> the RNG module could issue a "Hardware error" at runtime.
+> 
+> "Continuos check" error is emitted when some of the BISTs fail.
+> 
+> Signed-off-by: Horia Geantă <horia.geanta@freescale.com>
+> Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
+Oops, somehow the deprecated freescale address made its way through.
 
-This one is a bit tricky.
-
-Looking at how code in udp[46]_lib_lookup2 evolved, first:
-
-  acdcecc61285 ("udp: correct reuseport selection with connected sockets")
-
-1) exluded connected UDP sockets from reuseport group during lookup, and
-2) limited fast reuseport return to groups with no connected sockets,
-
-The second change had an uninteded side-effect of discarding reuseport
-socket selection when reuseport group contained connected sockets.
-
-Then, recent
-
-  efc6b6f6c311 ("udp: Improve load balancing for SO_REUSEPORT.")
-
-rectified it by recording reuseport socket selection as lookup result
-candidate, in case fast reuseport return did not happen because
-reuseport group had connected sockets.
-
-I belive that changes in commit efc6b6f6c311 can be rewritten as below
-to the same effect, by realizing that we are always setting the 'result'
-if 'score > badness'. Either to what reuseport_select_sock() returned or
-to 'sk' that scored higher than current 'badness' threshold.
-
----8<---
-static struct sock *udp4_lib_lookup2(struct net *net,
-				     __be32 saddr, __be16 sport,
-				     __be32 daddr, unsigned int hnum,
-				     int dif, int sdif,
-				     struct udp_hslot *hslot2,
-				     struct sk_buff *skb)
-{
-	struct sock *sk, *result;
-	int score, badness;
-	u32 hash = 0;
-
-	result = NULL;
-	badness = 0;
-	udp_portaddr_for_each_entry_rcu(sk, &hslot2->head) {
-		score = compute_score(sk, net, saddr, sport,
-				      daddr, hnum, dif, sdif);
-		if (score > badness) {
-			result = NULL;
-			if (sk->sk_reuseport &&
-			    sk->sk_state != TCP_ESTABLISHED) {
-				hash = udp_ehashfn(net, daddr, hnum,
-						   saddr, sport);
-				result = reuseport_select_sock(sk, hash, skb,
-							       sizeof(struct udphdr));
-				if (result && !reuseport_has_conns(sk, false))
-					return result;
-			}
-			if (!result)
-				result = sk;
-			badness = score;
-		}
-	}
-	return result;
-}
----8<---
-
-From there, it is now easier to resolve the conflict with
-
-  7629c73a1466 ("udp: Extract helper for selecting socket from reuseport group")
-  2a08748cd384 ("udp6: Extract helper for selecting socket from reuseport group")
-
-which extract the 'if (sk->sk_reuseport && sk->sk_state !=
-TCP_ESTABLISHED)' block into a helper called lookup_reuseport().
-
-To merge the two, we need to pull the reuseport_has_conns() check up
-from lookup_reuseport() and back into udp[46]_lib_lookup2(), because now
-we want to record reuseport socket selection even if reuseport group has
-connections.
-
-The only other call site of lookup_reuseport() is in
-udp[46]_lookup_run_bpf(). We don't want to discard the reuseport
-selected socket if group has connections there either, so no changes are
-needed. And, now that I think about it, the current behavior in
-udp[46]_lookup_run_bpf() is not right.
-
-The end result for udp4 will look like:
-
----8<---
-static inline struct sock *lookup_reuseport(struct net *net, struct sock *sk,
-					    struct sk_buff *skb,
-					    __be32 saddr, __be16 sport,
-					    __be32 daddr, unsigned short hnum)
-{
-	struct sock *reuse_sk = NULL;
-	u32 hash;
-
-	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
-		hash = udp_ehashfn(net, daddr, hnum, saddr, sport);
-		reuse_sk = reuseport_select_sock(sk, hash, skb,
-						 sizeof(struct udphdr));
-	}
-	return reuse_sk;
-}
-
-/* called with rcu_read_lock() */
-static struct sock *udp4_lib_lookup2(struct net *net,
-				     __be32 saddr, __be16 sport,
-				     __be32 daddr, unsigned int hnum,
-				     int dif, int sdif,
-				     struct udp_hslot *hslot2,
-				     struct sk_buff *skb)
-{
-	struct sock *sk, *result;
-	int score, badness;
-
-	result = NULL;
-	badness = 0;
-	udp_portaddr_for_each_entry_rcu(sk, &hslot2->head) {
-		score = compute_score(sk, net, saddr, sport,
-				      daddr, hnum, dif, sdif);
-		if (score > badness) {
-			result = lookup_reuseport(net, sk, skb,
-						  saddr, sport, daddr, hnum);
-			if (result && !reuseport_has_conns(sk, false))
-				return result;
-			if (!result)
-				result = sk;
-			badness = score;
-		}
-	}
-	return result;
-}
----8<---
-
-I will submit a patch that pulls the reuseport_has_conns() check from
-lookup_reuseport() to bpf-next. That should bring the two sides of the
-merge closer. Please let me know if I can help in any other way.
-
-Also, please take a look at the 3-way diff below from my attempt to
-merge net tree into bpf-next tree taking the described approach.
+If there won't be other objections to the patch set, maybe you could fix this
+so that a v2 is not needed.
 
 Thanks,
--jkbs
-
---
-diff --cc net/ipv4/udp.c
-index b738c63d7a77,4077d589b72e..f5297ea376de
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@@ -408,25 -408,6 +408,22 @@@ static u32 udp_ehashfn(const struct ne
-  			      udp_ehash_secret + net_hash_mix(net));
-  }
-
- +static inline struct sock *lookup_reuseport(struct net *net, struct sock *sk,
- +					    struct sk_buff *skb,
- +					    __be32 saddr, __be16 sport,
- +					    __be32 daddr, unsigned short hnum)
- +{
- +	struct sock *reuse_sk = NULL;
- +	u32 hash;
- +
- +	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
- +		hash = udp_ehashfn(net, daddr, hnum, saddr, sport);
- +		reuse_sk = reuseport_select_sock(sk, hash, skb,
- +						 sizeof(struct udphdr));
-- 		/* Fall back to scoring if group has connections */
-- 		if (reuseport_has_conns(sk, false))
-- 			return NULL;
- +	}
- +	return reuse_sk;
- +}
- +
-  /* called with rcu_read_lock() */
-  static struct sock *udp4_lib_lookup2(struct net *net,
-  				     __be32 saddr, __be16 sport,
-@@@ -444,13 -426,20 +441,13 @@@
-  		score = compute_score(sk, net, saddr, sport,
-  				      daddr, hnum, dif, sdif);
-  		if (score > badness) {
- -			reuseport_result = NULL;
- -
- -			if (sk->sk_reuseport &&
- -			    sk->sk_state != TCP_ESTABLISHED) {
- -				hash = udp_ehashfn(net, daddr, hnum,
- -						   saddr, sport);
- -				reuseport_result = reuseport_select_sock(sk, hash, skb,
- -									 sizeof(struct udphdr));
- -				if (reuseport_result && !reuseport_has_conns(sk, false))
- -					return reuseport_result;
- -			}
- -
- -			result = reuseport_result ? : sk;
- +			result = lookup_reuseport(net, sk, skb,
- +						  saddr, sport, daddr, hnum);
-- 			if (result)
-++			if (result && !reuseport_has_conns(sk, false))
- +				return result;
--
-++			if (!result)
-++				result = sk;
-  			badness = score;
-- 			result = sk;
-  		}
-  	}
-  	return result;
-diff --cc net/ipv6/udp.c
-index ff8be202726a,a8d74f44056a..ca50fcdf0776
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@@ -141,27 -141,6 +141,24 @@@ static int compute_score(struct sock *s
-  	return score;
-  }
-
- +static inline struct sock *lookup_reuseport(struct net *net, struct sock *sk,
- +					    struct sk_buff *skb,
- +					    const struct in6_addr *saddr,
- +					    __be16 sport,
- +					    const struct in6_addr *daddr,
- +					    unsigned int hnum)
- +{
- +	struct sock *reuse_sk = NULL;
- +	u32 hash;
- +
- +	if (sk->sk_reuseport && sk->sk_state != TCP_ESTABLISHED) {
- +		hash = udp6_ehashfn(net, daddr, hnum, saddr, sport);
- +		reuse_sk = reuseport_select_sock(sk, hash, skb,
- +						 sizeof(struct udphdr));
-- 		/* Fall back to scoring if group has connections */
-- 		if (reuseport_has_conns(sk, false))
-- 			return NULL;
- +	}
- +	return reuse_sk;
- +}
- +
-  /* called with rcu_read_lock() */
-  static struct sock *udp6_lib_lookup2(struct net *net,
-  		const struct in6_addr *saddr, __be16 sport,
-@@@ -178,12 -158,20 +175,12 @@@
-  		score = compute_score(sk, net, saddr, sport,
-  				      daddr, hnum, dif, sdif);
-  		if (score > badness) {
- -			reuseport_result = NULL;
- -
- -			if (sk->sk_reuseport &&
- -			    sk->sk_state != TCP_ESTABLISHED) {
- -				hash = udp6_ehashfn(net, daddr, hnum,
- -						    saddr, sport);
- -
- -				reuseport_result = reuseport_select_sock(sk, hash, skb,
- -									 sizeof(struct udphdr));
- -				if (reuseport_result && !reuseport_has_conns(sk, false))
- -					return reuseport_result;
- -			}
- -
- -			result = reuseport_result ? : sk;
- +			result = lookup_reuseport(net, sk, skb,
- +						  saddr, sport, daddr, hnum);
-- 			if (result)
-++			if (result && !reuseport_has_conns(sk, false))
- +				return result;
--
-- 			result = sk;
-++			if (!result)
-++				result = sk;
-  			badness = score;
-  		}
-  	}
+Horia
