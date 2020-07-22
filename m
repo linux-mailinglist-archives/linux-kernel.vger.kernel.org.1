@@ -2,49 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9132722A016
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147AD22A019
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 21:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732872AbgGVTVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 15:21:33 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:47732 "EHLO gloria.sntech.de"
+        id S1732635AbgGVTV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 15:21:57 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:47772 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732488AbgGVTVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 15:21:25 -0400
-Received: from x2f7fa19.dyn.telefonica.de ([2.247.250.25] helo=phil.sntech)
+        id S1728635AbgGVTV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 15:21:57 -0400
+Received: from x2f7fa19.dyn.telefonica.de ([2.247.250.25] helo=phil.localnet)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1jyKIs-0005Ud-Cy; Wed, 22 Jul 2020 21:21:22 +0200
+        id 1jyKJN-0005VY-W2; Wed, 22 Jul 2020 21:21:54 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Alex Bee <knaerzche@gmail.com>, linux-rockchip@lists.infradead.org
-Cc:     Heiko Stuebner <heiko@sntech.de>, Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>
-Subject: Re: [PATCH v2] clk: rockchip: add sclk_mac_lbtest to rk3188_critical_clocks
-Date:   Wed, 22 Jul 2020 21:21:07 +0200
-Message-Id: <159544564767.763387.12839655099512768766.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200722161820.5316-1-knaerzche@gmail.com>
-References: <20200722161820.5316-1-knaerzche@gmail.com>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: Add PCIe for RockPI N10
+Date:   Wed, 22 Jul 2020 21:21:52 +0200
+Message-ID: <3418931.F1eFr0XNtI@phil>
+In-Reply-To: <CAMty3ZDkvRGn6a54ryVFNJOwm+X6YXW-TxSjO+kC9o2kshRxtg@mail.gmail.com>
+References: <20200720110230.367985-1-jagan@amarulasolutions.com> <20200720110230.367985-3-jagan@amarulasolutions.com> <CAMty3ZDkvRGn6a54ryVFNJOwm+X6YXW-TxSjO+kC9o2kshRxtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Jul 2020 18:18:20 +0200, Alex Bee wrote:
-> Since the loopbacktest clock is not exported and is not touched in the
-> driver, it has to be added to rk3188_critical_clocks to be protected from
-> being disabled and in order to get the emac working.
+Am Mittwoch, 22. Juli 2020, 20:51:07 CEST schrieb Jagan Teki:
+> Hi Heiko,
+> 
+> On Mon, Jul 20, 2020 at 4:33 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
+> >
+> > This patch adds support to enable PCIe for RockPI N10.
+> >
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > ---
+> >  .../dts/rockchip/rk3399pro-vmarc-som.dtsi     | 41 ++++++++++++++++++-
+> >  1 file changed, 39 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
+> > index ebccc4a153a2..b415b8a16c78 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
+> > @@ -11,6 +11,19 @@
+> >
+> >  / {
+> >         compatible = "vamrs,rk3399pro-vmarc-som", "rockchip,rk3399pro";
+> > +
+> > +
+> 
+> Sorry for this extra space, let me know so that I can resend next version.
 
-Applied, thanks!
+I fixed that up when applying the series.
 
-[1/1] clk: rockchip: add sclk_mac_lbtest to rk3188_critical_clocks
-      commit: ef990bcad58cf1d13c5a49191a2c2342eb8d6709
+Heiko
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+
