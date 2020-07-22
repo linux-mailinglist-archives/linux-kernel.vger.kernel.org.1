@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6F0229F09
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E76229F0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731850AbgGVSMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:12:10 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:32208 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726462AbgGVSMK (ORCPT
+        id S1731710AbgGVSNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726157AbgGVSNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:12:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595441528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eSfhYjO+Al5YeGylBh2w7iH5hO4RJt7NlaU6vhWV88Y=;
-        b=OglFDve9sVcWCNDPTzQ1u/L9o2Nd5/h0sXXCpL1nzQSnpaH1sA6e9v2PYRajTpK86JNvT0
-        z15JIHO67OZ267WVRelsFxEDGoWKYMeZGjpwqCODB0HKZLVLNKcY2B5G3MZWjOm83g8yfO
-        Iokv3v7ZrMNnN5/+K/Qv9qA0ytVaDBg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-zW-uzWMFO36WB8UhDOAYFA-1; Wed, 22 Jul 2020 14:12:04 -0400
-X-MC-Unique: zW-uzWMFO36WB8UhDOAYFA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD77E100A614;
-        Wed, 22 Jul 2020 18:12:01 +0000 (UTC)
-Received: from krava (unknown [10.40.194.40])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 13AAF1009978;
-        Wed, 22 Jul 2020 18:11:58 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 20:11:58 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Paul A. Clarke" <pc@us.ibm.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
-Message-ID: <20200722181158.GF981884@krava>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <20200721143702.GA15990@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721143702.GA15990@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Wed, 22 Jul 2020 14:13:46 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F3BC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:13:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ga4so3220431ejb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4+5ISOyb7tM5s6mEPwXPVcwm6EctmoSKPA8kmLF4uKI=;
+        b=dTlq/KdGP1L+HQ163BMoFKaZzkW1o0bImAoZppaIGDaNTzP3zxFSz6uSq5wXoAFpwF
+         EL0Q+NQ9IHYNsDuGOQU6kz02Iy+WrcfFlwWdP5BSCyaOzRrjDOxX73DFE+B7Z1ehZ2C/
+         V2zKXSX2fgIBxImbV1zVW0Cqz76fHwI7Zwl5WhJyse0E8FlGQIzGt7peaXuI2GFqokEP
+         yn9Qjppak9nXO26xpLmyFUyK7F5BxZ2/A9HMGqWoMIjRCMJn0JTVMdPz88rLb79Hjh/+
+         jesWVlweehg+eyT0M73fJOId8f8npsd4estpoZgPSIugIGFreFAuOVlw/kcYtjw6j4Av
+         nYMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4+5ISOyb7tM5s6mEPwXPVcwm6EctmoSKPA8kmLF4uKI=;
+        b=Oodvmv+gD4ha5UzsKT3bLGcORZ+Gng8dcryu+zAOszFm0+EibbFmQNcMK/v/RadgLz
+         lue5pqmWbtk4QxEnLd9vP9s+oaZXZYbQ5DJJ0KnSS/SF8acaulHvUfi4+vE1AJTPZ+jz
+         nPrOI/ZyGiK5QX299FY6ph5q30F3Yt6JYo4MVitR7ORFIG+r+2IQMdqDUrtqwmL0JeVh
+         IPPYytpShUeBVNUYyp21ReD9W0baVJDRwr61ijtfUsXGTwK7Fyjorx8AkOj+3cyS/IqT
+         +RBhL8FcQSa3eIdkQSNklSuLJT06IQ/0aXXF+N4bdLoLDEhLEescAfAVbo869hFkqs9I
+         QTFg==
+X-Gm-Message-State: AOAM532syT14co4q9QOq4D6a02OZozsdreOmz6THSWtK9WcL3ttDP2lB
+        vJgvnulHu8nsCHl+xa5BCg==
+X-Google-Smtp-Source: ABdhPJxH3ykklNW90CXxFH3WCY8jAJvtLfyYFceNbp5BHs4YaXxdf5D02pAOLtVlNj7b+JXICAZrbA==
+X-Received: by 2002:a17:906:eb93:: with SMTP id mh19mr767276ejb.552.1595441625318;
+        Wed, 22 Jul 2020 11:13:45 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:810b:f40:e00:922b:34ff:fe38:6455])
+        by smtp.googlemail.com with ESMTPSA id x64sm372954edc.95.2020.07.22.11.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 11:13:44 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner=20?= <heiko@sntech.de>
+Cc:     Alex Bee <knaerzche@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] drm: rockchip: various ports for older VOPs
+Date:   Wed, 22 Jul 2020 20:13:27 +0200
+Message-Id: <20200722181332.26995-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 09:48:48AM -0500, Paul A. Clarke wrote:
-> On Sun, Jul 19, 2020 at 08:13:01PM +0200, Jiri Olsa wrote:
-> > hi,
-> > this patchset is adding the support to reused metric in
-> > another metric.
-> > 
-> > For example, to define IPC by using CPI with change like:
-> > 
-> >      {
-> >          "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
-> > -        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
-> > +        "MetricExpr": "1/CPI",
-> >          "MetricGroup": "TopDownL1",
-> >          "MetricName": "IPC"
-> >      },
-> > 
-> > I won't be able to find all the possible places we could
-> > use this at, so I wonder you guys (who was asking for this)
-> > would try it and come up with comments if there's something
-> > missing or we could already use it at some places.
-> > 
-> > It's based on Arnaldo's tmp.perf/core.
-> > 
-> > v3 changes:
-> >   - added some acks
-> >   - some patches got merged
-> >   - added missing zalloc include [John Garry]
-> >   - added ids array outside the egroup object [Ian]
-> >   - removed wrong m->has_constraint assignment [Ian]
-> >   - renamed 'list' to 'metric_list' [Ian]
-> >   - fixed group metric and added test for it [Paul A. Clarke]
-> >   - fixed memory leak [Arnaldo]
-> >   - using lowercase keys for metrics in hashmap, because jevents
-> >     converts metric_expr to lowercase
-> > 
-> > Also available in here:
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> >   perf/metric
-> 
-> These changes seem to be mostly working for me.
-> 
-> I attempted to exploit the new capability in the metrics definitions in
-> tools/perf/pmu-events/arch/powerpc/power9/metrics.json.  Those changes
-> are included below.
-> 
-> The one problem I found is with the "cpi_breakdown" metric group, as it
-> no longer works:
-> ```
-> # perf stat --metrics cpi_breakdown ./command
-> Cannot find metric or group `cpi_breakdown'
-> ```
-> 
-> "cpi_breakdown" does show up in `perf list --metricgroup`, and all of the
-> (95!) metrics listed in that group are usable, so it's not obvious whether
-> my changes have a problem, or merely provoke one.
+Hi,
 
-I underestimated the recursion depth setup for groups,
-your change is working for me with following change:
+this series mainly ports existining functionality to older SoCs - most
+importantly enables alpha blending for RK3036, RK3066, RK3126 and
+RK3188.
+Besides that, it also changes the window type from DRM_PLANE_TYPE_CURSOR
+to DRM_PLANE_TYPE_OVERLAY for VOPs that have only one (1) overlay window.
 
--#define RECURSION_ID_MAX 100
-+#define RECURSION_ID_MAX 1000
+Regards,
+Alex
 
-jirka
+Changes in v2:
+- drop not yet upstreamed dsp_data_swap from RK3188 regs
+- rephrase most commit messages
+
+Alex Bee (5):
+  drm: rockchip: add scaling for RK3036 win1
+  drm: rockchip: add missing registers for RK3188
+  drm: rockchip: add alpha support for RK3036, RK3066, RK3126 and RK3188
+  drm: rockchip: set alpha_en to 0 if it is not used
+  drm: rockchip: use overlay windows as such
+
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c |  1 +
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 42 ++++++++++++++++++---
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.h |  1 +
+ 3 files changed, 38 insertions(+), 6 deletions(-)
+
+-- 
+2.17.1
 
