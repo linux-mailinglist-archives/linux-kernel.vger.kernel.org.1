@@ -2,204 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B59229676
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C3922966E
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgGVKn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:43:57 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2507 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726012AbgGVKnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:43:52 -0400
-Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id C5AF0BB68C7D29FA93E2;
-        Wed, 22 Jul 2020 11:43:50 +0100 (IST)
-Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.80.253) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 22 Jul 2020 11:43:49 +0100
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
-        <helgaas@kernel.org>, <bp@alien8.de>, <james.morse@arm.com>,
-        <lenb@kernel.org>, <tony.luck@intel.com>,
-        <dan.carpenter@oracle.com>, <zhangliguang@linux.alibaba.com>,
-        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
-        <jroedel@suse.de>
-CC:     <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
-        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>
-Subject: [PATCH v13 1/2] ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records
-Date:   Wed, 22 Jul 2020 11:39:51 +0100
-Message-ID: <20200722103952.1009-2-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200722103952.1009-1-shiju.jose@huawei.com>
-References: <20200722103952.1009-1-shiju.jose@huawei.com>
+        id S1726455AbgGVKlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726012AbgGVKlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 06:41:31 -0400
+Received: from localhost (p54b33083.dip0.t-ipconnect.de [84.179.48.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37C8B2065E;
+        Wed, 22 Jul 2020 10:41:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595414490;
+        bh=ALDy45uCdZe3Ayi9GNp5dgiErhBW4lkKC52BVf5tDXY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cQ4AmN8uaWfnEgeWwL2absr7V4VQ2TdebuVBocFbptouvLILfg+7HIN1IR6AA9t1B
+         yDRUcNmKpM3vP9KQkui6NnL3rhZ0s+FmnQMz/zxHw/Hc1PqDUCs6EtYhNU2hVpVx6L
+         qtCWLbkSZ1J4S+N7EhvE8AJQ1XFPZFkMl5SFez9U=
+Date:   Wed, 22 Jul 2020 12:41:28 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Ray Jui <ray.jui@broadcom.com>
+Cc:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: Re: [PATCH] i2c: iproc: fix race between client unreg and isr
+Message-ID: <20200722104128.GK1030@ninjato>
+References: <1595115599-100054-1-git-send-email-dphadke@linux.microsoft.com>
+ <116ac90c-8b49-ca89-90a4-9a28f43a7c50@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.47.80.253]
-X-ClientProxiedBy: lhreml737-chm.china.huawei.com (10.201.108.187) To
- lhreml715-chm.china.huawei.com (10.201.108.66)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LHvWgpbS7VDUdu2f"
+Content-Disposition: inline
+In-Reply-To: <116ac90c-8b49-ca89-90a4-9a28f43a7c50@broadcom.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CPER records describing a firmware-first error are identified by GUID.
-The ghes driver currently logs, but ignores any unknown CPER records.
-This prevents describing errors that can't be represented by a standard
-entry, that would otherwise allow a driver to recover from an error.
-The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of
-version 2.8).
 
-Add a notifier chain for these non-standard/vendor-records. Callers
-must identify their type of records by GUID.
-
-Record data is copied to memory from the ghes_estatus_pool to allow
-us to keep it until after the notifier has run.
-
-Co-developed-by: James Morse <james.morse@arm.com>
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
----
- drivers/acpi/apei/ghes.c | 63 ++++++++++++++++++++++++++++++++++++++++
- include/acpi/ghes.h      | 27 +++++++++++++++++
- 2 files changed, 90 insertions(+)
-
-diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-index 81bf71b10d44..99df00f64306 100644
---- a/drivers/acpi/apei/ghes.c
-+++ b/drivers/acpi/apei/ghes.c
-@@ -79,6 +79,12 @@
- 	((struct acpi_hest_generic_status *)				\
- 	 ((struct ghes_estatus_node *)(estatus_node) + 1))
- 
-+#define GHES_VENDOR_ENTRY_LEN(gdata_len)                               \
-+	(sizeof(struct ghes_vendor_record_entry) + (gdata_len))
-+#define GHES_GDATA_FROM_VENDOR_ENTRY(vendor_entry)                     \
-+	((struct acpi_hest_generic_data *)                              \
-+	((struct ghes_vendor_record_entry *)(vendor_entry) + 1))
-+
- /*
-  *  NMI-like notifications vary by architecture, before the compiler can prune
-  *  unused static functions it needs a value for these enums.
-@@ -123,6 +129,12 @@ static DEFINE_MUTEX(ghes_list_mutex);
-  */
- static DEFINE_SPINLOCK(ghes_notify_lock_irq);
- 
-+struct ghes_vendor_record_entry {
-+	struct work_struct work;
-+	int error_severity;
-+	char vendor_record[];
-+};
-+
- static struct gen_pool *ghes_estatus_pool;
- static unsigned long ghes_estatus_pool_size_request;
- 
-@@ -511,6 +523,56 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
- #endif
- }
- 
-+static BLOCKING_NOTIFIER_HEAD(vendor_record_notify_list);
-+
-+int ghes_register_vendor_record_notifier(struct notifier_block *nb)
-+{
-+	return blocking_notifier_chain_register(&vendor_record_notify_list, nb);
-+}
-+EXPORT_SYMBOL_GPL(ghes_register_vendor_record_notifier);
-+
-+void ghes_unregister_vendor_record_notifier(struct notifier_block *nb)
-+{
-+	blocking_notifier_chain_unregister(&vendor_record_notify_list, nb);
-+}
-+EXPORT_SYMBOL_GPL(ghes_unregister_vendor_record_notifier);
-+
-+static void ghes_vendor_record_work_func(struct work_struct *work)
-+{
-+	struct ghes_vendor_record_entry *entry;
-+	struct acpi_hest_generic_data *gdata;
-+	u32 len;
-+
-+	entry = container_of(work, struct ghes_vendor_record_entry, work);
-+	gdata = GHES_GDATA_FROM_VENDOR_ENTRY(entry);
-+
-+	blocking_notifier_call_chain(&vendor_record_notify_list,
-+				     entry->error_severity, gdata);
-+
-+	len = GHES_VENDOR_ENTRY_LEN(acpi_hest_get_record_size(gdata));
-+	gen_pool_free(ghes_estatus_pool, (unsigned long)entry, len);
-+}
-+
-+static void ghes_defer_non_standard_event(struct acpi_hest_generic_data *gdata,
-+					  int sev)
-+{
-+	struct acpi_hest_generic_data *copied_gdata;
-+	struct ghes_vendor_record_entry *entry;
-+	u32 len;
-+
-+	len = GHES_VENDOR_ENTRY_LEN(acpi_hest_get_record_size(gdata));
-+	entry = (void *)gen_pool_alloc(ghes_estatus_pool, len);
-+	if (!entry)
-+		return;
-+
-+	copied_gdata = GHES_GDATA_FROM_VENDOR_ENTRY(entry);
-+	memcpy(copied_gdata, gdata, acpi_hest_get_record_size(gdata));
-+	entry->error_severity = sev;
-+
-+	INIT_WORK(&entry->work, ghes_vendor_record_work_func);
-+	schedule_work(&entry->work);
-+}
-+
- static bool ghes_do_proc(struct ghes *ghes,
- 			 const struct acpi_hest_generic_status *estatus)
- {
-@@ -549,6 +611,7 @@ static bool ghes_do_proc(struct ghes *ghes,
- 		} else {
- 			void *err = acpi_hest_get_payload(gdata);
- 
-+			ghes_defer_non_standard_event(gdata, sev);
- 			log_non_standard_event(sec_type, fru_id, fru_text,
- 					       sec_sev, err,
- 					       gdata->error_data_length);
-diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
-index 517a5231cc1b..491bd8c6d600 100644
---- a/include/acpi/ghes.h
-+++ b/include/acpi/ghes.h
-@@ -53,6 +53,33 @@ enum {
- 	GHES_SEV_PANIC = 0x3,
- };
- 
-+#ifdef CONFIG_ACPI_APEI_GHES
-+/**
-+ * ghes_register_vendor_record_notifier - register a notifier for vendor
-+ * records that the kernel would otherwise ignore.
-+ * @nb: pointer to the notifier_block structure of the event handler.
-+ *
-+ * return 0 : SUCCESS, non-zero : FAIL
-+ */
-+int ghes_register_vendor_record_notifier(struct notifier_block *nb);
-+
-+/**
-+ * ghes_unregister_vendor_record_notifier - unregister the previously
-+ * registered vendor record notifier.
-+ * @nb: pointer to the notifier_block structure of the vendor record handler.
-+ */
-+void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
-+#else
-+static inline int ghes_register_vendor_record_notifier(struct notifier_block *nb)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline void ghes_unregister_vendor_record_notifier(struct notifier_block *nb)
-+{
-+}
-+#endif
-+
- int ghes_estatus_pool_init(int num_ghes);
- 
- /* From drivers/edac/ghes_edac.c */
--- 
-2.17.1
+--LHvWgpbS7VDUdu2f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 
+> > +	synchronize_irq(iproc_i2c->irq);
+>=20
+> If one takes a look at the I2C slave ISR routine, there are places where
+> IRQ can be re-enabled in the ISR itself. What happens after we mask all
+> slave interrupt and when 'synchronize_irq' is called, which I suppose is
+> meant to wait for inflight interrupt to finish where there's a chance
+> the interrupt can be re-enable again? How is one supposed to deal with th=
+at?
+
+I encountered the same problem with the i2c-rcar driver before I left
+for my holidays.
+
+> > +	iproc_i2c->slave =3D NULL;
+> > +
+> >  	/* Erase the slave address programmed */
+> >  	tmp =3D iproc_i2c_rd_reg(iproc_i2c, S_CFG_SMBUS_ADDR_OFFSET);
+> >  	tmp &=3D ~BIT(S_CFG_EN_NIC_SMB_ADDR3_SHIFT);
+> >=20
+
+--LHvWgpbS7VDUdu2f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8YF9cACgkQFA3kzBSg
+Kba6cQ//fw45mvFWfHa/AsTWYtBZPnPvi5JJhzzrCqP+3q3bs6ewwzjoCrqGZXyI
+KhIJKqbPFhwQOA2mjEbbioPcCJ4Z71mtq0s1IblmUlSL6NzMb0hgMBgdVYKmuEBE
+27AwTz6oUzulBfejYPPo9LxVsmY+ZiNA6m6uOhhqkp/SKNbye9Tdy1ZnxwTLmwFV
+dXGqEyQoxQK+LBtuzpSCsg/Z1/PYJAM41Ya+F+PZhy616Hkn8f3iW2rYez+oejpc
+HjLRER6TLNRewsytxMKGae4AsjA04JQ6PtHfMMrfGdq5WNPY12otZKDx1w6jYC3e
+WljQUBdNiD7G3EquvDGyG4KOWub1NhNXMk/RrMsgAqOhH6ErbqwJJYRZpy/7UCao
+MYI9cXa93Qfq1LHNGZcrRFaw5pIja8VAD0MKhJG+vtooi5ZTiFdcsUqece2CzoMZ
+Dz3WzvDlJOi7CLQEBDng5YmrHO+GrAZNbkcf6SApjss8FGy+qhjx9vasHXkKG6ca
+blgY9qHThn5vWYwJ/xe1n6lJywKnSek7EkhkjGqWf8tmww766gQ2fcowSmoGJcdD
+gQhq2EZYqhNKeLnL0U2D3t+szaunbbOISNHeyw/E2XI5BtC+knliWe6kaOu3tBKG
+xYypzgHmeNzQisBDx3nQV7tnMGkQKrGt0hBAdAGM21lHJmgDtb4=
+=5q5r
+-----END PGP SIGNATURE-----
+
+--LHvWgpbS7VDUdu2f--
