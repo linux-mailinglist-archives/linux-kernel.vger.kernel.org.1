@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1400B22A074
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5FD22A087
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 22:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732823AbgGVUD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 16:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732775AbgGVUDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 16:03:25 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7997C0619E2
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:03:24 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id w9so3596700ejc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:03:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q5uho8c111Sif1rjA6es7LKqax+bTf/baHAxUzEgiBs=;
-        b=PPTfc7ofS2HU2+xEOjMWN0IYf6fcp270Om5s7QJSfrzzNXmADk8v71ZGdMdkkRTAax
-         NVRK3DHJsdFwMwSaAys3u2BAf0La4VMtXlTOgADR6wEvMjklDRaoFIIB6Xum7WpF7uMQ
-         ypktKp91IyG4RD00YrogGN1sYM6Y8KY9L91rR0XwVxsd0mRtoQ39Rx8npPbZlXihy3El
-         gQYTvwonVqPerONvAG74ahVIgSQWcPvCwjduf5+9xHV+7YMEbE4BqNZBDUUsFY0g/lAi
-         Fhhu/daQvEaSVXc8eCAcO9yxTSxiStt0pOyIX7T+9RbyWTUKOKqDIxXbNEB2Xr4GLpHV
-         BD7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q5uho8c111Sif1rjA6es7LKqax+bTf/baHAxUzEgiBs=;
-        b=FXWfoYnP3GCfDDgCJ+wTehTNFwaFaS3TpjAq/QztvFZTyxZha5Tsh0q6qwBf+pI2BU
-         Q9O0KOTgCAmLpPkQzp7S2IubLI7MU3+hhfFkyEUVS7RxpBvbaU/B7VDYW9TqTPZ9ziSf
-         z480wSYQ/XiPPrZR9bXZNIrb0UmuLsU95r8Yx5W9CEp1jxhVHfwGKbzTrC4LmpBM3qVv
-         E27vUeJ0ISkJnwPeh3GeYDV29IlJ8++Tv/avl+uQXn6QEgu+hDxsn1hWAKs24gZnn2nc
-         d587KpLnl6OYyWe4cbeyonpjCGOkzqDh7g2YNAuw8Mak3h6SnnnzSHzSkGeQbwUrE1Sj
-         xPwA==
-X-Gm-Message-State: AOAM532BpgCKKM8zKA5GXMQRR5vO11yuo/6jq/C8O5g+eGCtx+7/G83A
-        XQDR4yHM61pXVgbiPJO3FcWbmzffMWvQHVsFJQzBWw==
-X-Google-Smtp-Source: ABdhPJyF1/TvRtGDiGqtJCE9/ZaqS8MWqJmh/44/JnQk8HhLwq5VDQLuH1PjTPWAuAmpVNS/nDZZEqrEYVoucPXQbvA=
-X-Received: by 2002:a17:906:6959:: with SMTP id c25mr1128516ejs.375.1595448203126;
- Wed, 22 Jul 2020 13:03:23 -0700 (PDT)
+        id S1732650AbgGVULI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 16:11:08 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58693 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732348AbgGVULH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 16:11:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595448665; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=KZi1ETE3on/bhyAJfeRa2juKIYErBeITDTsM9mbpJA0=; b=Mx/VbPSVn2naKXbAbylOuDYc9Lno3Xnd/ztG90XfC/7aXdEdli9npVcVdO4wtPsJCOaDu9dF
+ kInP8Al3IcQLH5VmCpes5N3xicQiwIMz3xiGPaErDnmgW0wfu1Gzw7t94JgxoUdCi/Av5Ji4
+ qjg1pPzevUZAfbMaTueF86s9dMI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n18.prod.us-east-1.postgun.com with SMTP id
+ 5f189d5765270fa5953ad2a6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 22 Jul 2020 20:11:03
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A6A5C4339C; Wed, 22 Jul 2020 20:11:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1736BC433C9;
+        Wed, 22 Jul 2020 20:10:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1736BC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v3 0/3] Add modem debug features
+Date:   Thu, 23 Jul 2020 01:40:44 +0530
+Message-Id: <20200722201047.12975-1-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200624203200.78870-5-samitolvanen@google.com> <20200624212737.GV4817@hirez.programming.kicks-ass.net>
- <20200624214530.GA120457@google.com> <20200625074530.GW4817@hirez.programming.kicks-ass.net>
- <20200625161503.GB173089@google.com> <20200625200235.GQ4781@hirez.programming.kicks-ass.net>
- <20200625224042.GA169781@google.com> <20200626112931.GF4817@hirez.programming.kicks-ass.net>
- <20200722135542.41127cc4@oasis.local.home> <20200722184137.GP10769@hirez.programming.kicks-ass.net>
- <20200722150943.53046592@oasis.local.home>
-In-Reply-To: <20200722150943.53046592@oasis.local.home>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 22 Jul 2020 13:03:12 -0700
-Message-ID: <CABCJKufW8rYG-R7b=ad8E5oRd+1xrVknWcTd2VFuvE7=SPtoTA@mail.gmail.com>
-Subject: Re: [RFC][PATCH] objtool,x86_64: Replace recordmcount with objtool
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 12:09 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 22 Jul 2020 20:41:37 +0200
-> Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > > That said, Andi Kleen added an option to gcc called -mnop-mcount which
-> > > will have gcc do both create the mcount section and convert the calls
-> > > into nops. When doing so, it defines CC_USING_NOP_MCOUNT which will
-> > > tell ftrace to expect the calls to already be converted.
-> >
-> > That seems like the much easier solution, then we can forget about
-> > recordmcount / objtool entirely for this.
->
-> Of course that was only for some gcc compilers, and I'm not sure if
-> clang can do this.
->
-> Or do you just see all compilers doing this in the future, and not
-> worrying about record-mcount at all, and bothering with objtool?
+The series adds support for the following modem debug features:
+ * Modem debug policy which enables coredumps/live debug on secure devices
+ * MBA text logs extraction on SC7180 SoCs
 
-Clang appears to only support -mrecord-mcount and -mnop-mcount for
-s390, so we still need recordmcount / objtool for x86.
+The series also includes fixes for a couple of mem aborts seen when
+mba/modem blob size exceeds mba/mpss regions respectively.
 
-Sami
+V3:
+ * Drop mba text log extraction support since its already
+   picked up by Bjorn
+ * Fix dp_fw leak and create a separate func for dp load [Bjorn]
+ * Reset dp_size on mba_reclaim
+ * 2 new patches are included and they validate mba/modem blob size
+   before load
+
+V2:
+ * Use request_firmware_direct [Bjorn]
+ * Use Bjorn's template to show if debug policy is present
+ * Add size check to prevent memcpy out of bounds [Bjorn]
+ * Don't dump logs in mba_reclaim path [Bjorn]
+ * Move has_mba_logs check to q6v5_dump_mba_logs [Bjorn]
+ * SDM845 mss was incorrectly marked to support mba logs
+ * Drop patch 3 where mba text logs are added to imem
+
+Sibi Sankar (3):
+  remoteproc: qcom_q6v5_mss: Validate MBA firmware size before load
+  remoteproc: qcom_q6v5_mss: Validate modem blob firmware size before
+    load
+  remoteproc: qcom_q6v5_mss: Add modem debug policy support
+
+ drivers/remoteproc/qcom_q6v5_mss.c | 36 ++++++++++++++++++++++++++----
+ 1 file changed, 32 insertions(+), 4 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
