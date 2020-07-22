@@ -2,59 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DB222987F
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B0E22987B
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732342AbgGVMtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:49:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726161AbgGVMs7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:48:59 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB65C0619DC;
-        Wed, 22 Jul 2020 05:48:59 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 682032C8; Wed, 22 Jul 2020 14:48:56 +0200 (CEST)
+        id S1732326AbgGVMsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:48:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732154AbgGVMst (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:48:49 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 069B3206C1;
+        Wed, 22 Jul 2020 12:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595422129;
+        bh=E4QKQcz5E2jeceZ6ITI1hvBgZYFa+z7lTVwNAGLsmSU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DHBQi/1HQpbk0YU58yglL91aOFcbXQRCehT62uNviuWIvp2Kdcezvv2RdKZ/PHtux
+         uy/wpzSwSBVpcoM2mluOmfkuJHsszKyqu9JZKur+m1QKqh444Ir3NnnUdYgeGJv5fv
+         vzGzaMsid68JGYJnxoJFlCsn1K2QZjW+2SM9zSzQ=
 Date:   Wed, 22 Jul 2020 14:48:55 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     hch@lst.de, iommu@lists.linux-foundation.org,
-        jonathan.lemon@gmail.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] iommu/dma: Avoid SAC address trick for PCIe devices
-Message-ID: <20200722124854.GZ27672@8bytes.org>
-References: <e583fc6dd1fb4ffc90310ff4372ee776f9cc7a3c.1594207679.git.robin.murphy@arm.com>
- <d412c292d222eb36469effd338e985f9d9e24cd6.1594207679.git.robin.murphy@arm.com>
- <20200713131426.GQ27672@8bytes.org>
- <ad3f66c8-7772-731d-cd0a-c5d6d46297cb@arm.com>
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/133] 4.19.134-rc1 review
+Message-ID: <20200722124855.GC3155653@kroah.com>
+References: <20200720152803.732195882@linuxfoundation.org>
+ <20200721115633.GA26436@amd>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ad3f66c8-7772-731d-cd0a-c5d6d46297cb@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200721115633.GA26436@amd>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 12:42:36PM +0100, Robin Murphy wrote:
-> Oh bother - yes, this could have been masking all manner of bugs. That
-> system will presumably also break if you managed to exhaust the 32-bit IOVA
-> space such that the allocator moved up to the higher range anyway, or if you
-> passed the XHCI through to a VM with a sufficiently wacky GPA layout, but I
-> guess those are cases that simply nobody's run into yet.
+On Tue, Jul 21, 2020 at 01:56:33PM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> Does the firmware actually report any upper address constraint such that
-> Sebastian's IVRS aperture patches might help?
+> > This is the start of the stable review cycle for the 4.19.134 release.
+> > There are 133 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 22 Jul 2020 15:27:31 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.134-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > and the diffstat can be found below.
+> 
+> Seems to pass basic testing from CIP project:
+> 
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-4.19.y
 
-No, it doesn't. I am not sure what the best way is to get these issues
-found and fixed. I doubt they will be getting fixed when the allocation
-pattern isn't changed, maybe we can put your changes behind a config
-variable and start testing/reporting bugs/etc.
+Thanks for testing 2 of these,
 
-Regards,
-
-	Joerg
+greg k-h
