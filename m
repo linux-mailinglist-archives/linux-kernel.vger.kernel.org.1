@@ -2,101 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C67229664
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6641229673
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgGVKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726012AbgGVKjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:39:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC204C0619DC;
-        Wed, 22 Jul 2020 03:39:36 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a14so1406724wra.5;
-        Wed, 22 Jul 2020 03:39:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TV4ergjkftjaZomx8AqjCOlT/l5mho+qoW7fAiO7DwA=;
-        b=MZ8x8EX7EI5Gki/n02pEYgl/ub5LEHKa8Kws1JGFicYu6gEKCb48xFnQso4xw5WDi0
-         4vZ/2dgM4g907i/tzKZ0xo0hx8P5UsH46ib2vUDwpXBrO49OiKoBjlSvt6AzLFeDst3c
-         CTMARSgJMmxdrMkBfdL3GKnO/UZ3MLqyu2rF55tJ1+8eJgfd3uI1cAKoAM7+lcc8CBHQ
-         qPN2Plu/Hf89BTllLBuF9IS/Mw6g2oscSLlAymf8C2NFheG9oLneYJdoHD9yytjJbVGz
-         LPLXxDft/uf7v4H05+THcmyNsAwohkImDEntoRi7PVAhKdk95Xj4xBV53WHhiRWFQcfr
-         lkUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TV4ergjkftjaZomx8AqjCOlT/l5mho+qoW7fAiO7DwA=;
-        b=eczrUHlZOGpQw8q0gR0m8ZuLRgnoytmJ5NQILdTt8IutADYGDGR2Ii4ydg+La44Hn4
-         K1ISBbR7Kt3iF3ZfCXTXKcz45XmU1U9mdwh+LL6Hj5RD0GhML/H0naOanQxH+XFm/PiI
-         fc3RPGYI2bUvx0ReuAIgjBhdp3cn4vQPoXI32ET3WF0YUCYWvPR6nJxNujG7m+IAMCiB
-         e7kCfyyhkfgX9iUkvs89KIFw2/loSSaJIInpXPguRuU9RPgeOaegGWtxBn2RAkCaLcFk
-         iRCCf9SdXYZdzhoYkvyHLbxw607tiBTGSGD+zfxbRuLkVbSFni2CIiUTaqdlNQFFP7d9
-         LB4w==
-X-Gm-Message-State: AOAM533Cj9UqStd0Pj8EHDCWRWDMKdeoKCyIZnpp3KbOeVG3Ix9FUXEv
-        rQZMIZMi8rEyhKdUofR2ipU=
-X-Google-Smtp-Source: ABdhPJzccNJ8vHlvkA5XruDkm8csHTXrgtgDkPe3q+BBmvVK0PQT9d6D36+7jU8Cpg/rLDybhlBmjg==
-X-Received: by 2002:adf:ded0:: with SMTP id i16mr15608967wrn.389.1595414375595;
-        Wed, 22 Jul 2020 03:39:35 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.122.158])
-        by smtp.gmail.com with ESMTPSA id p8sm29564205wrq.9.2020.07.22.03.39.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 03:39:35 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] dt-bindings: spi: update bindings for MT8192 SoC
-To:     Leilk Liu <leilk.liu@mediatek.com>, Mark Brown <broonie@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20200721122436.31544-1-leilk.liu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <97bcb048-81f2-0147-4c62-9172c27fff71@gmail.com>
-Date:   Wed, 22 Jul 2020 12:39:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1726653AbgGVKnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:43:53 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2506 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725878AbgGVKnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 06:43:52 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id BAE55E9CEA3A9EC41344;
+        Wed, 22 Jul 2020 11:43:49 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.80.253) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Wed, 22 Jul 2020 11:43:49 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <helgaas@kernel.org>, <bp@alien8.de>, <james.morse@arm.com>,
+        <lenb@kernel.org>, <tony.luck@intel.com>,
+        <dan.carpenter@oracle.com>, <zhangliguang@linux.alibaba.com>,
+        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
+        <jroedel@suse.de>
+CC:     <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
+        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>
+Subject: [PATCH v13 0/2] ACPI / APEI: Add support to notify the vendor specific HW errors
+Date:   Wed, 22 Jul 2020 11:39:50 +0100
+Message-ID: <20200722103952.1009-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200721122436.31544-1-leilk.liu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.80.253]
+X-ClientProxiedBy: lhreml737-chm.china.huawei.com (10.201.108.187) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+CPER records describing a firmware-first error are identified by GUID.
+The ghes driver currently logs, but ignores any unknown CPER records.
+This prevents describing errors that can't be represented by a standard
+entry, that would otherwise allow a driver to recover from an error.
+The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of
+version 2.8).
+
+patch set
+1. add a notifier chain for these non-standard/vendor-records
+   in the ghes driver.
+
+2. add a driver to handle HiSilicon HIP PCIe controller's errors.
+   
+Changes:
+
+V13:
+1. Following changes in the HIP PCIe error handling driver.
+1.1 Add Bjorn's acked-by.
+1.2. Address the comments and macros order Bjorn mentioned.
+     Fix the words in the commit.
+
+V12:
+1. Changed the Signed-off-by tag to Co-developed-by tag in the patch
+   "ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records"
+
+V11:
+1. Following modifications made by James Morse in the APEI patch
+   for the vendor error record.
+   - Removed kfifo and ghes_gdata_pool. Expanded commit message.
+   
+2. Changes in the HIP PCIe error handling driver
+   for the comments by Andy Shevchenko.
+
+V10:
+1. Changes for Bjorn's comments on HIP PCIe error handler driver
+   and APEI patch.
+   
+2. Changes in the HIP PCIe error handler driver
+   for the feedbacks by Andy Shevchenko.
+   
+V9:
+1. Fixed 2 improvements suggested by the kbuild test robot. 
+1.1 Change ghes_gdata_pool_init() as static function.
+1.2. Removed using buffer to store the error data for
+     logging in the hisi_pcie_handle_error()
+
+V8:
+1. Removed reporting the standard errors through the interface
+   because of the conflict with the recent patches in the
+   memory error handling path.
+2. Fix comments by Dan Carpenter.
+   
+V7:
+1. Add changes in the APEI driver suggested by Borislav Petkov, for
+   queuing up all the non-fatal HW errors to the work queue and
+   notify the registered kernel drivers from the bottom half using
+   blocking notifier, common interface for both standard and
+   vendor-spcific errors.
+2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+   by Bjorn Helgaas.
+
+V6:
+1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+
+V5:
+1. Fix comments from James Morse.
+1.1 Changed the notification method to use the atomic_notifier_chain.
+1.2 Add the error handled status for the user space.  
+
+V4:
+1. Fix for the following smatch warning in the PCIe error driver,
+   reported by kbuild test robot<lkp@intel.com>:
+   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+
+V3:
+1. Fix the comments from Bjorn Helgaas.
+
+V2:
+1. Changes in the HiSilicon PCIe controller's error handling driver
+   for the comments from Bjorn Helgaas.
+   
+2. Changes in the APEI interface to support reporting the vendor error
+   for module with multiple devices, but use the same section type.
+   In the error handler will use socket id/sub module id etc to distinguish
+   the device.
+
+V1:  
+1. Fix comments from James Morse.
+
+2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+   which is an application of the above interface.
+
+Shiju Jose (1):
+  ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records
+
+Yicong Yang (1):
+  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+
+ drivers/acpi/apei/ghes.c                 |  63 +++++
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
+ include/acpi/ghes.h                      |  27 ++
+ 5 files changed, 426 insertions(+)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+
+-- 
+2.17.1
 
 
-On 21/07/2020 14:24, Leilk Liu wrote:
-> From: "leilk.liu" <leilk.liu@mediatek.com>
-> 
-> Add a DT binding documentation for the MT8192 soc.
-> 
-> Signed-off-by: leilk.liu <leilk.liu@mediatek.com>
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> ---
->   Documentation/devicetree/bindings/spi/spi-mt65xx.txt | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
-> index 3a8079eb18c8..9e43721fa7d6 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
-> +++ b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
-> @@ -11,6 +11,7 @@ Required properties:
->       - mediatek,mt8135-spi: for mt8135 platforms
->       - mediatek,mt8173-spi: for mt8173 platforms
->       - mediatek,mt8183-spi: for mt8183 platforms
-> +    - "mediatek,mt8192-spi", "mediatek,mt6765-spi": for mt8192 platforms
->       - "mediatek,mt8516-spi", "mediatek,mt2712-spi": for mt8516 platforms
->   
->   - #address-cells: should be 1.
-> 
