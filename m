@@ -2,105 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86762295DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9C42295E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731960AbgGVKVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgGVKVB (ORCPT
+        id S1731500AbgGVKWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:22:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28283 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726153AbgGVKWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:21:01 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA2CC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:21:01 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id r12so817748ilh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PkgNjuH0re4Q7qPeSybNSLCmblxEadw0kOBtvVg3X1I=;
-        b=oyw4eWd+Fb2mw9IxPseZ32QSlljL3Ww2mivGyJdH0RTmv4IVSRCkQ20tsZY504IGGg
-         z0x0Bfn13NyfcR7nEZZaPFFCaqB/1jYE+CUEx1rZGOVh/7Z8c3eqM7Bap4mHvyg3kTLz
-         llI7vmSIIR1gJux2u4qZ93GLnndLdBQ3xZIAR0jFR3QxAXBrq8Jd8yc6Uik559N9J216
-         jKPJVLXReOynXPnbSSmBnLKZv9y+yFOqdFt7aJux4iIbdQSdIsgBZ2N7eLim/yBedltT
-         nJl0WuGf8xAyIWFZBG0atg3q38cF79S5xBf9BBNrapUm38B6NRuCBRZbdBaozQHNIsFM
-         lCaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PkgNjuH0re4Q7qPeSybNSLCmblxEadw0kOBtvVg3X1I=;
-        b=OYOUKpEzhzxY9YxqEvXsBKgoqhHT10s55G1rqnB0Z2bK6PhgkNpu9pN5zlmvUoJG+w
-         z+NIcfAT4qr7TMbZggcYmYTXXK32YpiVQtDxB7vKZluE0+NgVDIwZBBixK0kVT6l2cKH
-         ikByO6kXJAVL80yag5I9ERqOO5sNhspm1Q+Nx4sDNIEwy/6UMafGiN5mOCzelkMAsZ4D
-         mC0lHhirfVqY9S0zrhfPuwFx1LhbiurxtF0eXmlnYOGHMtMZqOeqShgs8nquKC9cM6+8
-         BUnPkN6NHRdkNQCOwg9pVaHrX5q5jVzFt6Q7d+LB+fX2q6KD9dhROqehyUSomQQ61WEA
-         BBRw==
-X-Gm-Message-State: AOAM533xHZ+kwwgs+cp2B2TcFAWDAxXmCxVOMOhJGHPC3u2ig7pbB2bi
-        EtwqCXkDjbYnUeVEUxcOmf9B6LnSFPE=
-X-Google-Smtp-Source: ABdhPJx3gcQCFnXkbqf9RYJ79qKVem/VXm4+g5TjUOPMGb0VCOTAMwkwmX8poBZgDaKWgUu1s8Yqcw==
-X-Received: by 2002:a92:8451:: with SMTP id l78mr32782711ild.234.1595413260592;
-        Wed, 22 Jul 2020 03:21:00 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com ([2620:15c:211:0:4a0f:cfff:fe35:d61b])
-        by smtp.googlemail.com with ESMTPSA id z4sm2685899ilq.25.2020.07.22.03.20.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 03:21:00 -0700 (PDT)
-Subject: Re: af_key: pfkey_dump needs parameter validation
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        netdev@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20200721132358.966099-1-salyzyn@android.com>
- <20200722093318.GO20687@gauss3.secunet.de>
-From:   Mark Salyzyn <salyzyn@android.com>
-Message-ID: <2ae16588-2972-a797-9310-4f9d56b7348b@android.com>
-Date:   Wed, 22 Jul 2020 03:20:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 22 Jul 2020 06:22:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595413369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GxCgvuoK8NuxbGBXVCCusTbGlNPSfTrnO2P7BCm4FhQ=;
+        b=XD0eZDpmXcfIfAehSLZoRtxAToBdS7mvnkGemvrrR316qtRrSRRwAY7XcEYYyoc0DiQjDe
+        r4P0XcjSbo1h4/XgSIn3rm9H47PccTsELtLOKgTdc0H5O7dlTn2+dBf1JygOzWGuk3jboG
+        vpJ16/cUZdpnVCp/B+fPn5LoryXkJpI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-196-spEUJSSAPy2OXuvs2fPvJQ-1; Wed, 22 Jul 2020 06:22:44 -0400
+X-MC-Unique: spEUJSSAPy2OXuvs2fPvJQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F246758;
+        Wed, 22 Jul 2020 10:22:43 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-113-242.ams2.redhat.com [10.36.113.242])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A0CDB5D9D3;
+        Wed, 22 Jul 2020 10:22:41 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Subject: [PATCH] scripts/gdb: fix lx-symbols 'gdb.error' while loading modules
+Date:   Wed, 22 Jul 2020 12:22:39 +0200
+Message-Id: <20200722102239.313231-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200722093318.GO20687@gauss3.secunet.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/20 2:33 AM, Steffen Klassert wrote:
-> On Tue, Jul 21, 2020 at 06:23:54AM -0700, Mark Salyzyn wrote:
->> In pfkey_dump() dplen and splen can both be specified to access the
->> xfrm_address_t structure out of bounds in__xfrm_state_filter_match()
->> when it calls addr_match() with the indexes.  Return EINVAL if either
->> are out of range.
->>
->> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
->> Cc: netdev@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: kernel-team@android.com
->> ---
->> Should be back ported to the stable queues because this is a out of
->> bounds access.
-> Please do a v2 and add a proper 'Fixes' tag if this is a fix that
-> needs to be backported.
->
-> Thanks!
+Commit ed66f991bb19 ("module: Refactor section attr into bin
+attribute") removed the 'name' field from 'struct module_sect_attr'
+triggering the following error when invoking lx-symbols:
 
-Confused because this code was never right? From 2008 there was a 
-rewrite that instantiated this fragment of code so that it could handle 
-continuations for overloaded receive queues, but it was not right before 
-the adjustment.
+  (gdb) lx-symbols
+  loading vmlinux
+  scanning for modules in linux/build
+  loading @0xffffffffc014f000: linux/build/drivers/net/tun.ko
+  Python Exception <class 'gdb.error'> There is no member named name.:
+  Error occurred in Python: There is no member named name.
 
-Fixes: 83321d6b9872b94604e481a79dc2c8acbe4ece31 ("[AF_KEY]: Dump SA/SP 
-entries non-atomically")
+This patch fixes the issue taking the module name from the 'struct
+attribute'.
 
-that is reaching back more than 12 years and the blame is poorly aimed 
-AFAIK.
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ scripts/gdb/linux/symbols.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sincerely -- Mark Salyzyn
+diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
+index be984aa29b75..1be9763cf8bb 100644
+--- a/scripts/gdb/linux/symbols.py
++++ b/scripts/gdb/linux/symbols.py
+@@ -96,7 +96,7 @@ lx-symbols command."""
+             return ""
+         attrs = sect_attrs['attrs']
+         section_name_to_address = {
+-            attrs[n]['name'].string(): attrs[n]['address']
++            attrs[n]['battr']['attr']['name'].string(): attrs[n]['address']
+             for n in range(int(sect_attrs['nsections']))}
+         args = []
+         for section_name in [".data", ".data..read_mostly", ".rodata", ".bss",
+-- 
+2.26.2
 
