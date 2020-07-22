@@ -2,93 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDAD229E41
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D0E229E49
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732294AbgGVRPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730381AbgGVRPC (ORCPT
+        id S1728605AbgGVRS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:18:57 -0400
+Received: from out28-98.mail.aliyun.com ([115.124.28.98]:50175 "EHLO
+        out28-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728059AbgGVRS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:15:02 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC91C0619DC;
-        Wed, 22 Jul 2020 10:15:01 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id q4so3337969lji.2;
-        Wed, 22 Jul 2020 10:15:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cVcoEfFppL+7K43qaXbza9Qghk86OOJSk60UN9FStZU=;
-        b=SQkF3b3jIXyEuSdG2/DVhNXbqJD1L6aLcInHXLchBVGeLN8o0aT/XdXCvj7AjKNyzS
-         8U3YXYriHgkBXL16qQRpnh+p/6vsBMKKas5Gl+DYvDILmaQYgwb3rz0lp/MIxceLeOp3
-         frjBpDxFFFldSvoJvejNtE3rtuPCRuG7izSQRYdb2JxsdfHWStwOyp5ake3WgRQBD+c7
-         Ojfzdlbc/RaoMtzEE3O7kmfF1vyi//9bTi+fsuHy8Bek+MYr7ROjWZ/DxK6xm42Rf440
-         0kZmy6snDSzMgfl7ScjTx+7sDJRB1hjeNKMn+RPPR3vd2E9ajtqSxz8dASyhPkyggsK4
-         jH7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cVcoEfFppL+7K43qaXbza9Qghk86OOJSk60UN9FStZU=;
-        b=GWf2efrPz9hMRtqzMEONzffTPbMhINfrjhFlUeGHj/cBBbX2BTGw6GIXg6F7Uugmy6
-         nWVVvrE5SCWXgHU/5ujTIUOx2hZmHO2q3QXz7S4ExbcJo7bQrtT4pudnF4HQRdQOICqa
-         LZyEC1V41CT9YVRh3Pe8SSRFR0LJi55xGFB6n6HJpcuHcGEV30bGFm5tq5D+NSxV8ZjS
-         e5uWi8FaORX2uxYe1UYmye5NXujkm9ggPX7DtgEwZTFZrPJnhE8I1PzIBkxTPjjLjieH
-         QcTF+6netriyUinYXAUCy8rvsO/15yC4aJvzLKnNidf6NVTUco3N7WF3Ak6fTaVmUX3Q
-         mLYQ==
-X-Gm-Message-State: AOAM532CHm6AlHBKBCb4/E1cuSW6AY4EdTHDvDvbSj90LhhBGZtBt+v/
-        WZCoRK6CqvoPnBfcLea8yvC0l0mko4jMiRoCJmE=
-X-Google-Smtp-Source: ABdhPJzM/e9tpN7Q9g2GlOjSqpxZZ/hREMDgbpsRDa+VhB57mZA5pvxtSis1AJ9LRNd/53/Kzzht5w79IT6tjpzb/9s=
-X-Received: by 2002:a2e:8ec8:: with SMTP id e8mr97196ljl.51.1595438100443;
- Wed, 22 Jul 2020 10:15:00 -0700 (PDT)
+        Wed, 22 Jul 2020 13:18:57 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2956703|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.054435-0.000271357-0.945294;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03307;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.I6.3qla_1595438306;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I6.3qla_1595438306)
+          by smtp.aliyun-inc.com(10.147.41.138);
+          Thu, 23 Jul 2020 01:18:53 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     daniel.lezcano@linaro.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        tglx@linutronix.de, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com, paul@crapouillou.net
+Subject: [PATCH v11 0/2] Add support for the OST in Ingenic X1000.
+Date:   Thu, 23 Jul 2020 01:18:02 +0800
+Message-Id: <20200722171804.97559-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-References: <87wo2vwxq6.fsf@cloudflare.com> <20200722144212.27106-1-kuniyu@amazon.co.jp>
- <87v9ifwq2p.fsf@cloudflare.com> <CA+FuTScto+Z_qgFxJBzhPUNEruAvKLSTL7-0AnyP-M6Gon_e5Q@mail.gmail.com>
- <87tuxzwp0v.fsf@cloudflare.com> <CA+FuTSdQWKFam0KwCg_REZdhNB6+BOwAHL00eRgrJ2FwPDRjcA@mail.gmail.com>
-In-Reply-To: <CA+FuTSdQWKFam0KwCg_REZdhNB6+BOwAHL00eRgrJ2FwPDRjcA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Jul 2020 10:14:49 -0700
-Message-ID: <CAADnVQKmOLkd1oJHCxfqQnSbJFfp0NRd1C9i9mZy_3rNRc4a1A@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the bpf-next tree with the net tree
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        kernel-team <kernel-team@cloudflare.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 8:50 AM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> > TBH, I don't what is the preferred way to handle it. Perhaps DaveM or
-> > Alexei/Daniel can say what would make their life easiest?
->
-> Good point.
->
-> With the above, there still remains a merge conflict, of course. But
-> then we can take bpf-next as is, so I think it would save a separate
-> patch to net. But not sure whether that helps anything. It does add an
-> unnecessary variable.
+v10->v11:
+Fix typos.
 
-whichever way is easier to deal with merge conflict....
-currently bpf-next PR is pending.
-but we can drop it and merge one more patch into bpf-next?
-But reading through the read it doesn't sound that it will help the
-merge conflict..
-An alternative could be to drop PR and rebase the whole bpf-next to net-next
-and deal with conflicts there...
-Or I can rebase bpf-next and drop Jakub's series and he can resubmit them
-without conflicts? I guess that's the easiest for me and for Dave.
+周琰杰 (Zhou Yanjie) (2):
+  dt-bindings: timer: Add Ingenic X1000 OST bindings.
+  clocksource: Ingenic: Add support for the Ingenic X1000 OST.
+
+ .../devicetree/bindings/timer/ingenic,sysost.yaml  |  63 +++
+ drivers/clocksource/Kconfig                        |  12 +-
+ drivers/clocksource/Makefile                       |   1 +
+ drivers/clocksource/ingenic-sysost.c               | 539 +++++++++++++++++++++
+ include/dt-bindings/clock/ingenic,sysost.h         |  12 +
+ 5 files changed, 626 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+ create mode 100644 drivers/clocksource/ingenic-sysost.c
+ create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
+
+-- 
+2.11.0
+
