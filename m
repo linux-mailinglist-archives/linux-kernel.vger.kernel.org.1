@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0459E229888
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67ED22988D
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732379AbgGVMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:49:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726161AbgGVMts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:49:48 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E0CB206C1;
-        Wed, 22 Jul 2020 12:49:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595422187;
-        bh=9bO/CzlUBTjOYs2zyy1HJs8h4p36huP1Q1qYFobCpFE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R017QB32BaN0BRff70sDEikYHqmQ4xHZjQF0RpE552UGWlfJwzcxTozos7SDhsCqS
-         rGd9v4+sI0Pq/PzqzTI9UM3dH++mUbPzU/YeTRaOQftlGhI6eQze+RtLHuzN+5Na31
-         xTUN9qBJBvh1PFeNdGOxcGjKKe+WNOFDJlAG+4UE=
-Date:   Wed, 22 Jul 2020 14:49:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        jolsa@redhat.com, Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>
-Subject: Re: [PATCH 5.7 000/243] 5.7.10-rc2 review
-Message-ID: <20200722124953.GE3155653@kroah.com>
-References: <20200720191523.845282610@linuxfoundation.org>
- <CA+G9fYuVJAHyXqPhhqtcdDstKrjb-TLu=d7DZTuQX3YuCsypHA@mail.gmail.com>
+        id S1732400AbgGVMug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:50:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54122 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732241AbgGVMuf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 08:50:35 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0A5721C0BD8; Wed, 22 Jul 2020 14:50:33 +0200 (CEST)
+Date:   Wed, 22 Jul 2020 14:50:32 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        Andreas Herrmann <herrmann.der.user@googlemail.com>,
+        Dominik Brodowski <linux@brodo.de>,
+        Paul Devriendt <paul.devriendt@amd.com>,
+        Mark Langsdorf <mark.langsdorf@amd.com>
+Subject: Re: [PATCH v2 10/13] cpufreq: powernow-k8: Mark 'hi' and 'lo' dummy
+ variables as __always_unused
+Message-ID: <20200722125032.25hui2f5bp7ydkp2@duo.ucw.cz>
+References: <20200715082634.3024816-1-lee.jones@linaro.org>
+ <20200715082634.3024816-11-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="l3djg72ps5umgd4c"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYuVJAHyXqPhhqtcdDstKrjb-TLu=d7DZTuQX3YuCsypHA@mail.gmail.com>
+In-Reply-To: <20200715082634.3024816-11-lee.jones@linaro.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 02:59:22PM +0530, Naresh Kamboju wrote:
-> On Tue, 21 Jul 2020 at 00:46, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.7.10 release.
-> > There are 243 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 22 Jul 2020 19:14:36 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.10-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> Regressions detected on arm and arm64 (Juno-r2)
-> We are bisecting this problem and get back to you soon.
-> 
-> perf test cases failed
->   perf:
->     * Track-with-sched_switch
->     * perf_record_test
->     * perf_report_test
-> 
-> Bad case:
-> [ perf record: Woken up 1 times to write data ]
-> [ perf record: Captured and wrote 0.002 MB perf-lava-test.data ]
-> 
-> when it was pass it prints number of samples like below,
-> Good case:
-> [ perf record: Woken up 1 times to write data ]
-> [ perf record: Captured and wrote 0.004 MB perf-lava-test.data (46 samples) ]
-> 
-> steps to reproduce:
-> # perf record -e cycles -o perf-lava-test.data ls -a  2>&1 | tee perf-record.log
-> 
-> Link to full test:
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-5.7-oe/build/v5.7.9-244-g7d2e5723ce4a/testrun/2969482/suite/perf/test/perf_record_test/log
-> 
-> test case:
-> https://github.com/Linaro/test-definitions/blob/master/automated/linux/perf/perf.sh
 
-Any hint by bisection as to what this problem is caused by?
+--l3djg72ps5umgd4c
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+On Wed 2020-07-15 09:26:31, Lee Jones wrote:
+> if we fail to use a variable, even a dummy ones, then the compiler
+> complains that it is set but not used.  We know this is fine, so we
+> set them as __always_unused here to let the compiler know.
+>=20
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/cpufreq/powernow-k8.c: In function =E2=80=98pending_bit_stuck=E2=
+=80=99:
+>  drivers/cpufreq/powernow-k8.c:89:10: warning: variable =E2=80=98hi=E2=80=
+=99 set but not used [-Wunused-but-set-variable]
+>  89 | u32 lo, hi;
+>  | ^~
+>  drivers/cpufreq/powernow-k8.c: In function =E2=80=98core_voltage_pre_tra=
+nsition=E2=80=99:
+>  drivers/cpufreq/powernow-k8.c:285:14: warning: variable =E2=80=98lo=E2=
+=80=99 set but not used [-Wunused-but-set-variable]
+>  285 | u32 maxvid, lo, rvomult =3D 1;
+>  | ^~
+>=20
+> Cc: Andreas Herrmann <herrmann.der.user@googlemail.com>
+> Cc: Dominik Brodowski <linux@brodo.de>
 
-greg k-h
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--l3djg72ps5umgd4c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxg2GAAKCRAw5/Bqldv6
+8r3jAKCAiOohMGojGKtPXWetfecCZlnSYQCfYAbGyyj7xOzM/bU3TGEFCnoEpyE=
+=J9cR
+-----END PGP SIGNATURE-----
+
+--l3djg72ps5umgd4c--
