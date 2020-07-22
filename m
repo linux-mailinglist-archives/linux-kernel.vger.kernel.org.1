@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E43ED229DF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F100229DEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 19:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732130AbgGVRIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 13:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
+        id S1731012AbgGVRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 13:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728780AbgGVRIN (ORCPT
+        with ESMTP id S1732062AbgGVRIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 13:08:13 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8D4C0619DC;
-        Wed, 22 Jul 2020 10:08:12 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id y3so2626675wrl.4;
-        Wed, 22 Jul 2020 10:08:12 -0700 (PDT)
+        Wed, 22 Jul 2020 13:08:15 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F07C0619DC;
+        Wed, 22 Jul 2020 10:08:14 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id 88so2630013wrh.3;
+        Wed, 22 Jul 2020 10:08:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=KBryyAOXlIEM72mjj0Ie/wtlsW0303YjImjOaYxqFM8=;
-        b=U4T9yBfN/KiRrtZOD5RskdJoL/IGZtn1OvZEOq3koDtpOobOycG1IXWQaDfZXdi6su
-         QOuiucxfmK0PYDZLlgaNXlhJpZ783tRGRGNhPKgffGw0srR6uaLOeCUbnqJx+3mgkDhK
-         jcxpFYtEjJoSMKQDISeVOLEsL56sSTmEZqEjcCSfo22kLtc4KjksPc3jzoG2cA3UEfhh
-         p0bdNWTS//HDqst/j3vnbS86idF3NiI9uN63czNaOpk8Fi4qp2ZsZlctRKT5/m3RkYFy
-         bAlWTf3zwjhXJix7VRvvi68WHYUuZEbtmVeD64uHRkLPVPm0mXj96GFm1tZoVYB1nwUb
-         a6eQ==
+        bh=/f+3CAnVUu/WjuKg7piRBh88qTkT5e7hVX0fEyS5bwY=;
+        b=LPjQ1rMW3KUqOFtgB3vrPVE9Sn6xRahSMWV9fihcIJqpX7NsQq2hm8zVigCnCAP40y
+         AIJa9NhAf5pnxIAqytIJZQSu1nCx02XXgjXFnKulbqk8vx/U8+ru7I53HpkKFBrX58jw
+         HzdTjIL2ZDUg6zl1Eqx7eBYUpkspH7P9a5Srvxhlz+1mGMEIG/cWk067IVjLSbXrVbiZ
+         Au9vrrv8Ha5SIX4q4R46LXdfheE2fjxA+dewBZ2/6oJqkZNwj06QnErpATE8MAnu/1bE
+         vqPR++e24Ub0RkhjNxZdWE1grDGLgoeccbhLSe8kaUqrpHznZMtoRDJfHOYKrwvcWnI/
+         T1Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=KBryyAOXlIEM72mjj0Ie/wtlsW0303YjImjOaYxqFM8=;
-        b=t0RZwTHRpNLQK5D4vqRTAF6ntF3C9SG9D2GA7lbup68VZTafE/LKgf9YXLRq951swG
-         b9sUzWSlmEUH9tFSkG+h86e2r2S5jEW1Fhi8x+wS/vjl/rr1lVWgB3QMVCA8U6VFdcNX
-         yb7AC6phApzaO3/LmUL1UbbzwutOc8kyaH6J8fZRw0ucZFdL5Z3ilFqvZCKjanvJH0j3
-         SNPKBCcgxmw4Co0ImF+0Qj9TqmqjWEOl8MXVCxKqjGY7ZCCyUdk3yGKdNa6iBd6Fv9Xb
-         PV0jzoVxgc48O2cXlilZ6fN9Oq781PFZfDFILO9TYzr+jYyz8qIOTLi61vR9JOjgRPlW
-         NmIA==
-X-Gm-Message-State: AOAM533MXZPz5/t9Vb+GAgYfQ+tfihurHxDfFr59y8oNm53WARbroZSA
-        9wF/Gr5JjCW/vqvPlYTrEaoI/6CC
-X-Google-Smtp-Source: ABdhPJza494HfVbClB6Vrv/wo9nx4caRRfzl3QhiCCUkTA+6OJCw83nMMaBdr46d3fLnoqaIkKrX0g==
-X-Received: by 2002:a5d:4a45:: with SMTP id v5mr497954wrs.228.1595437691173;
-        Wed, 22 Jul 2020 10:08:11 -0700 (PDT)
+        bh=/f+3CAnVUu/WjuKg7piRBh88qTkT5e7hVX0fEyS5bwY=;
+        b=D97jnLz2K8kOUQnCOqazLFvdllgTL9UuvaFwBpFX7TiituB6MgNgBAIynFR/CsRf/b
+         aFT65lZYYsjBFHX3846WjH3pJRPLMODHO3jjR4TSuLpL1zFvlXsRrJ5c3SaGMjdS9Fpi
+         q3Oo1kbYdjeMI06Gns9NDRRo1LXAlWorviaQ6KLYqVTpfJcI6+weIjfRMf3wCsRf43LP
+         FxPHrCUlXyQ3OuHPTFC/AYk5UsrjGhBXw0p5zA3M0eZn1z3KmG3MZAbhwJoWEOTPb5ha
+         r82P/uST2zBt75+wjoJRq9Jggt7Mu88wqrWju5ju0zUEVwzgAFLG61vTqdPQc3gAk8+C
+         AxBg==
+X-Gm-Message-State: AOAM532euvTshNe6q57k1IhG2n2e3C6Rdl5UZMs0tsnyGCKOl8ricYiy
+        Y2T3GlVv9Oj14UTgxBGmqMSZTQhR
+X-Google-Smtp-Source: ABdhPJx3dWTAnp+oEPCdkWSM21p/Re1l+8HQDMp+BzYjHY48DxTeiqtREbtrDMDERZuUV3imK4fwfg==
+X-Received: by 2002:a5d:610a:: with SMTP id v10mr417496wrt.8.1595437693205;
+        Wed, 22 Jul 2020 10:08:13 -0700 (PDT)
 Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id 133sm392960wme.5.2020.07.22.10.08.09
+        by smtp.gmail.com with ESMTPSA id 133sm392960wme.5.2020.07.22.10.08.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 10:08:10 -0700 (PDT)
+        Wed, 22 Jul 2020 10:08:12 -0700 (PDT)
 From:   Al Cooper <alcooperx@gmail.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Danesh Petigara <danesh.petigara@broadcom.com>,
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
         Felipe Balbi <balbi@kernel.org>,
         Florian Fainelli <florian.fainelli@broadcom.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-usb@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Sasi Kumar <sasi.kumar@broadcom.com>
-Subject: [PATCH v3 6/7] usb: bdc: Halt controller on suspend
-Date:   Wed, 22 Jul 2020 13:07:45 -0400
-Message-Id: <20200722170746.5222-7-alcooperx@gmail.com>
+Subject: [PATCH v3 7/7] usb: bdc: Use devm_clk_get_optional()
+Date:   Wed, 22 Jul 2020 13:07:46 -0400
+Message-Id: <20200722170746.5222-8-alcooperx@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200722170746.5222-1-alcooperx@gmail.com>
 References: <20200722170746.5222-1-alcooperx@gmail.com>
@@ -67,45 +67,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Danesh Petigara <danesh.petigara@broadcom.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-GISB bus error kernel panics have been observed during S2 transition
-tests on the 7271t platform. The errors are a result of the BDC
-interrupt handler trying to access BDC register space after the
-system's suspend callbacks have completed.
+The BDC clock is optional and we may get an -EPROBE_DEFER error code
+which would not be propagated correctly, fix this by using
+devm_clk_get_optional().
 
-Adding a suspend hook to the BDC driver that halts the controller before
-S2 entry thus preventing unwanted access to the BDC register space during
-this transition.
-
-Signed-off-by: Danesh Petigara <danesh.petigara@broadcom.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Al Cooper <alcooperx@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/usb/gadget/udc/bdc/bdc_core.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/bdc/bdc_core.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/bdc/bdc_core.c b/drivers/usb/gadget/udc/bdc/bdc_core.c
-index 2c2f7aef7ba7..c1650247ea39 100644
+index c1650247ea39..f6e4026618e8 100644
 --- a/drivers/usb/gadget/udc/bdc/bdc_core.c
 +++ b/drivers/usb/gadget/udc/bdc/bdc_core.c
-@@ -607,9 +607,14 @@ static int bdc_remove(struct platform_device *pdev)
- static int bdc_suspend(struct device *dev)
- {
- 	struct bdc *bdc = dev_get_drvdata(dev);
-+	int ret;
+@@ -497,11 +497,9 @@ static int bdc_probe(struct platform_device *pdev)
  
--	clk_disable_unprepare(bdc->clk);
--	return 0;
-+	/* Halt the controller */
-+	ret = bdc_stop(bdc);
-+	if (!ret)
-+		clk_disable_unprepare(bdc->clk);
-+
-+	return ret;
- }
+ 	dev_dbg(dev, "%s()\n", __func__);
  
- static int bdc_resume(struct device *dev)
+-	clk = devm_clk_get(dev, "sw_usbd");
+-	if (IS_ERR(clk)) {
+-		dev_info(dev, "Clock not found in Device Tree\n");
+-		clk = NULL;
+-	}
++	clk = devm_clk_get_optional(dev, "sw_usbd");
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
+ 
+ 	ret = clk_prepare_enable(clk);
+ 	if (ret) {
 -- 
 2.17.1
 
