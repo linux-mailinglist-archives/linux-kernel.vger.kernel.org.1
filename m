@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DB7229931
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351E6229940
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 15:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732410AbgGVN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 09:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgGVN2p (ORCPT
+        id S1732421AbgGVNcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 09:32:36 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45358 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgGVNcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 09:28:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0AFC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 06:28:45 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1jyEnX-0002az-JQ; Wed, 22 Jul 2020 15:28:39 +0200
-Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1jyEnW-0005IW-On; Wed, 22 Jul 2020 15:28:38 +0200
-Date:   Wed, 22 Jul 2020 15:28:38 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-Cc:     mturquette@baylibre.com, sboyd@codeaurora.org, sboyd@kernel.org,
-        michal.simek@xilinx.com, mark.rutland@arm.com,
-        linux-clk@vger.kernel.org, rajanv@xilinx.com, jollys@xilinx.com,
-        tejasp@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>,
-        Tejas Patel <tejas.patel@xilinx.com>
-Subject: Re: [PATCH v2 3/3] clk: zynqmp: Use firmware specific mux clock flags
-Message-ID: <20200722132838.GE21264@pengutronix.de>
-References: <1595400932-303612-1-git-send-email-amit.sunil.dhamne@xilinx.com>
- <1595400932-303612-4-git-send-email-amit.sunil.dhamne@xilinx.com>
+        Wed, 22 Jul 2020 09:32:35 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MDBLs6026245;
+        Wed, 22 Jul 2020 13:27:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=SGDxiMkv+K/gRs79Axes9Aq4nm/uxe/9Z6BhER1gB0Q=;
+ b=M17jaN2xoPQjyzcbNIh3EyAt4L6vYmmCoIqfNEMXNxXt0vzVBRus39mqoBEim2QS4gl0
+ ZEADhZS2JBt2F7fKfyR+8i2sOHwxVi7BaCCMheuAGRRXQqWB1nWcDgM5X14uo35sG05r
+ zlijQgQbwaef/JC4O3F/g7yEqPNfaQNKx2aCWkHFu1gDe7esOn1Gkr3dq25D71GBzEPQ
+ 6KS+bJgLAQJnq85Fp3AC5Jeo7nvKeGNeWXiAf1kbeFGXNrLprBeiotYq1hiftxnJR1QC
+ wkrlIGy9zAxq9hiRWdKeuXUijIaHYeH2b6QaPXkn5408mQU4LsrY4KDUVXU+jmFwIFfa Ug== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 32bs1mk8c3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 22 Jul 2020 13:27:16 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06MDPlCB151849;
+        Wed, 22 Jul 2020 13:27:16 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 32epb584vv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 22 Jul 2020 13:27:16 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06MDRBYJ029023;
+        Wed, 22 Jul 2020 13:27:11 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 22 Jul 2020 13:27:11 +0000
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Subject: Re: [PATCH v6 0/5] scsi: ufs: Add Host Performance Booster Support
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1blk7g1jd.fsf@ca-mkp.ca.oracle.com>
+References: <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p8>
+        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+        <20200722063937.GA21117@infradead.org>
+Date:   Wed, 22 Jul 2020 09:27:07 -0400
+In-Reply-To: <20200722063937.GA21117@infradead.org> (Christoph Hellwig's
+        message of "Wed, 22 Jul 2020 07:39:37 +0100")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1595400932-303612-4-git-send-email-amit.sunil.dhamne@xilinx.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:28:18 up 153 days, 20:58, 130 users,  load average: 0.04, 0.11,
- 0.13
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ suspectscore=1 spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007220097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9689 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 bulkscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007220097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 23:55:32 -0700, Amit Sunil Dhamne wrote:
-> From: Rajan Vaja <rajan.vaja@xilinx.com>
-> 
-> Use ZynqMP specific mux clock flags instead of using CCF flags.
-> 
-> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
-> Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
-> Signed-off-by: Amit Sunil Dhamne <amit.sunil.dhamne@xilinx.com>
-> ---
->  drivers/clk/zynqmp/clk-mux-zynqmp.c | 14 +++++++++++++-
->  drivers/clk/zynqmp/clk-zynqmp.h     |  8 ++++++++
->  2 files changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-> index 1dc17a0..10cf021 100644
-> --- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-> +++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-> @@ -125,7 +125,19 @@ struct clk_hw *zynqmp_clk_register_mux(const char *name, u32 clk_id,
-> 
->         init.parent_names = parents;
->         init.num_parents = num_parents;
-> -       mux->flags = nodes->type_flag;
-> +       mux->flags = 0;
-> +       mux->flags |= (nodes->type_flag & ZYNQMP_CLK_MUX_INDEX_ONE) ?
-> +                     CLK_MUX_INDEX_ONE : 0;
-> +       mux->flags |= (nodes->type_flag & ZYNQMP_CLK_MUX_INDEX_BIT) ?
-> +                     CLK_MUX_INDEX_BIT : 0;
-> +       mux->flags |= (nodes->type_flag & ZYNQMP_CLK_MUX_HIWORD_MASK) ?
-> +                     CLK_MUX_HIWORD_MASK : 0;
-> +       mux->flags |= (nodes->type_flag & ZYNQMP_CLK_MUX_READ_ONLY) ?
-> +                     CLK_MUX_READ_ONLY : 0;
-> +       mux->flags |= (nodes->type_flag & ZYNQMP_CLK_MUX_ROUND_CLOSEST) ?
-> +                     CLK_MUX_ROUND_CLOSEST : 0;
-> +       mux->flags |= (nodes->type_flag & ZYNQMP_CLK_MUX_BIG_ENDIAN) ?
-> +                     CLK_MUX_BIG_ENDIAN : 0;
 
-Add a helper function for converting the flags.
+Christoph,
 
-Michael
+> As this monster seesm to come back again and again let me re-iterate
+> my statement:
+>
+> I do not think Linux should support a broken standards extensions that
+> creates a huge share state between the Linux initator and the target
+> device like this with all its associated problems.
 
->         mux->hw.init = &init;
->         mux->clk_id = clk_id;
-> 
-> diff --git a/drivers/clk/zynqmp/clk-zynqmp.h b/drivers/clk/zynqmp/clk-zynqmp.h
-> index ec33525..b1ac7e8 100644
-> --- a/drivers/clk/zynqmp/clk-zynqmp.h
-> +++ b/drivers/clk/zynqmp/clk-zynqmp.h
-> @@ -41,6 +41,14 @@
->  #define ZYNQMP_CLK_DIVIDER_READ_ONLY           BIT(5)
->  #define ZYNQMP_CLK_DIVIDER_MAX_AT_ZERO         BIT(6)
-> 
-> +/* Type Flags for mux clock */
-> +#define ZYNQMP_CLK_MUX_INDEX_ONE               BIT(0)
-> +#define ZYNQMP_CLK_MUX_INDEX_BIT               BIT(1)
-> +#define ZYNQMP_CLK_MUX_HIWORD_MASK             BIT(2)
-> +#define ZYNQMP_CLK_MUX_READ_ONLY               BIT(3)
-> +#define ZYNQMP_CLK_MUX_ROUND_CLOSEST           BIT(4)
-> +#define ZYNQMP_CLK_MUX_BIG_ENDIAN              BIT(5)
-> +
->  enum topology_type {
->         TYPE_INVALID,
->         TYPE_MUX,
-> --
-> 2.7.4
-> 
-> This email and any attachments are intended for the sole use of the named recipient(s) and contain(s) confidential information that may be proprietary, privileged or copyrighted under applicable law. If you are not the intended recipient, do not read, copy, or forward this email message or any attachments. Delete this email message and any attachments immediately.
-> 
+I spent a couple of hours looking at this series again last night. And
+while the code has improved, I do remain concerned about the general
+concept.
+
+I understand how caching the FTL in host memory can improve performance
+from a theoretical perspective. However, I am not sure how much a
+difference this is going to make outside of synthetic benchmarks. What
+are the workloads that keep reading the same blocks from media? Or does
+the performance improvement exclusively come from the second order
+pre-fetching effect for larger I/Os? If so, why is the device's internal
+L2P SRAM cache ineffective at handling that case?
 
 -- 
-Pengutronix e.K.                           | Michael Tretter             |
-Steuerwalder Str. 21                       | https://www.pengutronix.de/ |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Martin K. Petersen	Oracle Linux Engineering
