@@ -2,158 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6224C22983A
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2914022983F
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 14:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732266AbgGVM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 08:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727825AbgGVM3X (ORCPT
+        id S1732271AbgGVMdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 08:33:02 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:2726 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728171AbgGVMdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 08:29:23 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BE8C0619DE
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:29:22 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 184so1834581wmb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 05:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W91rvFokifCVPR+o198v06eVGGt939fjm12mG9mSyHI=;
-        b=zC/nKfBrLXsHpRuQ+z39G/DxnJ20Yqs3ARHl1smLLddGrYhyVPM+tVH/F8sCbehehy
-         NeEBI58h3Xfba84vb/G+9dE5iq71Gnujv/m8UQqkMiHLxzBp4MKirflIDr112hSHTETp
-         Vmob1UjeZ7Gkn/OQUVmjW9Y38c4fwJD3STIz2bxxt7N6BxSgBv6HBn68j1VE8DhbUfbG
-         rzWEkTEb0OWVATuL/3E5XiXv/bJ475I0BU4estyhRlYhXTaC5AL2eP7xRDI9wBk8qSK8
-         315/yM5zg96U/mQJ4MbGWTR2IDlM/eSIFXk8zgshjkPRzu1tHCDZNygJboH6VLVQtJU6
-         tFnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W91rvFokifCVPR+o198v06eVGGt939fjm12mG9mSyHI=;
-        b=XkRjmdQiiziJvyAVTsHLUsXa4P79HlM1B8EWPB/+Imnb758BQ+rBE7bCozDSf13tfQ
-         Af6Dgkxb+2c4WPP29x5/4lg6jDW3coKMQdsoI4FYpIXlvOokgTu/B4ZybuCl6OhzH6Oo
-         Varl/JP+nBzVoJmNJxUkoCYzvFJTdmzXrczQwoQEb96kjuSNIR1fKYkFu1JgAD8nWcbQ
-         BJpKIsaDtPCqWMNoXdwvXs+uAZATRDpJsAX9ne8iQvg+Ge9MAGeeTmAVT3SyPCY4ziVY
-         MKZE2i6BigOm+kWOl5QOYK0u7l1UTvb+gWBZxhqE4ob+yDEKWmrCN2vsArIl4Qm+BawP
-         3U9w==
-X-Gm-Message-State: AOAM530g0YDJO1lktNmABl9WAiNrpFw8Rw8l941FbYvz4KkW58ARD0N+
-        MmC8S6oCE6x6fIQZO4j6NLCUog==
-X-Google-Smtp-Source: ABdhPJza2fPEqYYKevpudtxYAEP4TkXuRkD+NMrK9DYbGa9mewMaSnuJMSk2BAeUfX481vQhspXfaw==
-X-Received: by 2002:a1c:a181:: with SMTP id k123mr8514433wme.172.1595420961581;
-        Wed, 22 Jul 2020 05:29:21 -0700 (PDT)
-Received: from localhost.localdomain (172.red-80-27-177.dynamicip.rima-tde.net. [80.27.177.172])
-        by smtp.gmail.com with ESMTPSA id k131sm7728855wmb.36.2020.07.22.05.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 05:29:19 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>, linux-omap@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v5] pinctrl: core: print gpio in pins debugfs file
-Date:   Wed, 22 Jul 2020 14:27:52 +0200
-Message-Id: <20200722122751.266440-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 22 Jul 2020 08:33:01 -0400
+X-UUID: c3d79c3ac96645f2b34415978695cefb-20200722
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Y0cZt+gBSz7nBT4q4aJcK/JUpj5K4kPkSTxyRBuk+84=;
+        b=JAxcXppL3ceJmbacPTlcw8bcjFWX9PUJjxdZxJpOrk4P0Zhp9wro4DZyE819vt4ulIyqzJLJMOELiscXyMMJn6ihbn9s79LdK7f+6Hbp34sjb5O3ESXk2WrAa+olLOi7klgv7DceNBb1lIzUbNzh9oiuqsqeqoqhHtwEXmUnhgo=;
+X-UUID: c3d79c3ac96645f2b34415978695cefb-20200722
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2084351255; Wed, 22 Jul 2020 20:32:57 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 22 Jul 2020 20:32:53 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 22 Jul 2020 20:32:53 +0800
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <qiangming.xia@mediatek.com>
+Subject: [PATCH 0/4] add i2c support for mt8192
+Date:   Wed, 22 Jul 2020 20:31:42 +0800
+Message-ID: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there is a gpio range mapping for the pin, then print out the gpio
-chip and line index for the pin in the debugfs 'pins' file with the
-format: "[line-index]:[gpio-label]"
-
-Here is example output on the BeagleBoard.org PocketBeagle (AM3358):
-/sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pins
-
-pin 25 (PIN25) 25:gpio-32-63 44e10864 00000037 pinctrl-single
-pin 26 (PIN26) 26:gpio-32-63 44e10868 00000037 pinctrl-single
-pin 27 (PIN27) 27:gpio-32-63 44e1086c 00000037 pinctrl-single
-pin 28 (PIN28) 0:? 44e10870 00000036 pinctrl-single
-pin 29 (PIN29) 0:? 44e10874 00000006 pinctrl-single
-pin 30 (PIN30) 28:gpio-32-63 44e10878 00000027 pinctrl-single
-pin 31 (PIN31) 29:gpio-32-63 44e1087c 00000037 pinctrl-single
-pin 32 (PIN32) 30:gpio-32-63 44e10880 00000037 pinctrl-single
-pin 33 (PIN33) 31:gpio-32-63 44e10884 00000037 pinctrl-single
-pin 34 (PIN34) 0:gpio-64-95 44e10888 00000037 pinctrl-single
-pin 35 (PIN35) 1:gpio-64-95 44e1088c 00000037 pinctrl-single
-
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Tony Lindgren <tony@atomide.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- drivers/pinctrl/core.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-v4 changes:
-- Andy suggested '0:?' would be better because GPIO library uses '?' in
-  cases of unknown labels 
-
-v3 changes:
-- gpio column is now gpiochip label and line index
-
-v2 changes:
-- print 'NA' if pin does not have a GPIO number
-- change gpio_num from unsigned to unsigned int per checkpatch
-
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 821242bb4b16..02a4cc3b60c8 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -27,6 +27,7 @@
- #include <linux/pinctrl/machine.h>
- 
- #ifdef CONFIG_GPIOLIB
-+#include "../gpio/gpiolib.h"
- #include <asm-generic/gpio.h>
- #endif
- 
-@@ -1601,6 +1602,9 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 	struct pinctrl_dev *pctldev = s->private;
- 	const struct pinctrl_ops *ops = pctldev->desc->pctlops;
- 	unsigned i, pin;
-+	struct pinctrl_gpio_range *range;
-+	unsigned int gpio_num;
-+	struct gpio_chip *chip;
- 
- 	seq_printf(s, "registered pins: %d\n", pctldev->desc->npins);
- 
-@@ -1618,6 +1622,23 @@ static int pinctrl_pins_show(struct seq_file *s, void *what)
- 
- 		seq_printf(s, "pin %d (%s) ", pin, desc->name);
- 
-+#ifdef CONFIG_GPIOLIB
-+		gpio_num = 0;
-+		list_for_each_entry(range, &pctldev->gpio_ranges, node) {
-+			if ((pin >= range->pin_base) &&
-+			    (pin < (range->pin_base + range->npins))) {
-+				gpio_num = range->base + (pin - range->pin_base);
-+				break;
-+			}
-+		}
-+		chip = gpio_to_chip(gpio_num);
-+		if (chip && chip->gpiodev && chip->gpiodev->base)
-+			seq_printf(s, "%u:%s ", gpio_num -
-+				chip->gpiodev->base, chip->label);
-+		else
-+			seq_puts(s, "0:? ");
-+#endif
-+
- 		/* Driver-specific info per pin */
- 		if (ops->pin_dbg_show)
- 			ops->pin_dbg_show(pctldev, s, pin);
--- 
-2.25.1
+VGhpcyBzZXJpZXMgYXJlIGJhc2VkIG9uIDUuOC1yYzEgYW5kIHdlIHByb3ZpZGUgZm91ciBpMmMg
+cGF0Y2hlcw0KdG8gc3VwcG9ydCBtdDgxOTIgU29DLg0KDQpRaWkgV2FuZyAoNCk6DQogIGkyYzog
+bWVkaWF0ZWs6IEFkZCBhcGRtYSBzeW5jIGluIGkyYyBkcml2ZXINCiAgaTJjOiBtZWRpYXRlazog
+U3VwcG9ydCBETUEgbWFzayByYW5nZSBvdmVyIDMzLWJpdHMNCiAgZHQtYmluZGluZ3M6IGkyYzog
+dXBkYXRlIGJpbmRpbmdzIGZvciBNVDgxOTIgU29DDQogIGkyYzogbWVkaWF0ZWs6IEFkZCBpMmMg
+Y29tcGF0aWJsZSBmb3IgTWVkaWFUZWsgTVQ4MTkyDQoNCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5n
+cy9pMmMvaTJjLW10NjV4eC50eHQgICAgICAgICB8ICAxICsNCiBkcml2ZXJzL2kyYy9idXNzZXMv
+aTJjLW10NjV4eC5jICAgICAgICAgICAgICAgICAgICB8IDc1ICsrKysrKysrKysrKysrKy0tLS0t
+LS0NCiAyIGZpbGVzIGNoYW5nZWQsIDUzIGluc2VydGlvbnMoKyksIDIzIGRlbGV0aW9ucygtKQ0K
+DQotLQ0KMS45LjENCg0K
 
