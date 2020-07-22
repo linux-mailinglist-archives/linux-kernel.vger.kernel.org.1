@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A96228D7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB92228D67
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 03:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731870AbgGVBTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 21 Jul 2020 21:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36678 "EHLO mail.kernel.org"
+        id S1731624AbgGVBRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 21 Jul 2020 21:17:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727953AbgGVBRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731570AbgGVBRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 21 Jul 2020 21:17:54 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B03E207BB;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B6542176B;
         Wed, 22 Jul 2020 01:17:53 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.93)
         (envelope-from <rostedt@goodmis.org>)
-        id 1jy3OK-005s7E-CW; Tue, 21 Jul 2020 21:17:52 -0400
-Message-ID: <20200722011628.925541477@goodmis.org>
+        id 1jy3OK-005s7n-HR; Tue, 21 Jul 2020 21:17:52 -0400
+Message-ID: <20200722011752.413388509@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Tue, 21 Jul 2020 21:16:28 -0400
+Date:   Tue, 21 Jul 2020 21:16:29 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 00/23 v3] tools lib traceevent: Synchronizing trace-cmd with tools
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>
+Subject: [PATCH 01/23 v3] tools lib traceevent: Add API to read time information from kbuffer
+References: <20200722011628.925541477@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v2:
+From: "Steven Rostedt (Red Hat)" <rostedt@goodmis.org>
 
-The last 8 patches are added to address Namhyung's comments.
+Add the functions kbuffer_subbuf_timestamp() and kbuffer_ptr_delta() to get
+the timing data stored in the ring buffer that is used to produced the time
+stamps of the records.
 
--- Steve
+This is useful for tools like trace-cmd to be able to display the content of
+the read data to understand why the records show the time stamps that they
+do.
+
+Link: http://lore.kernel.org/linux-trace-devel/20200625100516.365338-2-tz.stoyanov@gmail.com
+
+Signed-off-by: Steven Rostedt <rostedt@goodmis.org>
+[ Ported from trace-cmd.git ]
+Signed-off-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ tools/lib/traceevent/kbuffer-parse.c | 28 ++++++++++++++++++++++++++++
+ tools/lib/traceevent/kbuffer.h       |  2 ++
+ 2 files changed, 30 insertions(+)
+
+diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
+index 27f3b07fdae8..583db99aee94 100644
+--- a/tools/lib/traceevent/kbuffer-parse.c
++++ b/tools/lib/traceevent/kbuffer-parse.c
+@@ -546,6 +546,34 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer)
+ 	return 0;
+ }
+ 
++/**
++ * kbuffer_subbuf_timestamp - read the timestamp from a sub buffer
++ * @kbuf:      The kbuffer to load
++ * @subbuf:    The subbuffer to read from.
++ *
++ * Return the timestamp from a subbuffer.
++ */
++unsigned long long kbuffer_subbuf_timestamp(struct kbuffer *kbuf, void *subbuf)
++{
++	return kbuf->read_8(subbuf);
++}
++
++/**
++ * kbuffer_ptr_delta - read the delta field from a record
++ * @kbuf:      The kbuffer to load
++ * @ptr:       The record in the buffe.
++ *
++ * Return the timestamp delta from a record
++ */
++unsigned int kbuffer_ptr_delta(struct kbuffer *kbuf, void *ptr)
++{
++	unsigned int type_len_ts;
++
++	type_len_ts = read_4(kbuf, ptr);
++	return ts4host(kbuf, type_len_ts);
++}
++
++
+ /**
+  * kbuffer_read_event - read the next event in the kbuffer subbuffer
+  * @kbuf:	The kbuffer to read from
+diff --git a/tools/lib/traceevent/kbuffer.h b/tools/lib/traceevent/kbuffer.h
+index ed4d697fc137..5fa8292e341b 100644
+--- a/tools/lib/traceevent/kbuffer.h
++++ b/tools/lib/traceevent/kbuffer.h
+@@ -49,6 +49,8 @@ int kbuffer_load_subbuffer(struct kbuffer *kbuf, void *subbuffer);
+ void *kbuffer_read_event(struct kbuffer *kbuf, unsigned long long *ts);
+ void *kbuffer_next_event(struct kbuffer *kbuf, unsigned long long *ts);
+ unsigned long long kbuffer_timestamp(struct kbuffer *kbuf);
++unsigned long long kbuffer_subbuf_timestamp(struct kbuffer *kbuf, void *subbuf);
++unsigned int kbuffer_ptr_delta(struct kbuffer *kbuf, void *ptr);
+ 
+ void *kbuffer_translate_data(int swap, void *data, unsigned int *size);
+ 
+-- 
+2.26.2
 
 
-
-Jan Kiszka (2):
-      tools lib traceevent: Add more SVM exit reasons
-      tools lib traceevent: Fix reporting of unknown SVM exit reasons
-
-Julia Cartwright (1):
-      tools lib traceevent: Add plugin for decoding syscalls/sys_enter_futex
-
-Steven Rostedt (Red Hat) (2):
-      tools lib traceevent: Add API to read time information from kbuffer
-      tools lib traceevent: Add plugin for tlb_flush
-
-Steven Rostedt (VMware) (3):
-      tools lib traceevent: Add offset option for function plugin
-      tools lib traceevent: Add builtin handler for trace_marker_raw
-      tools lib traceevent: Change to SPDX License format
-
-Tom Zanussi (1):
-      tools lib traceevent: Add proper KBUFFER_TYPE_TIME_STAMP handling
-
-Tzvetomir Stoyanov (VMware) (14):
-      tools lib traceevent: Add tep_load_plugins_hook() API
-      tools lib traceevent: Add interface for options to plugins
-      tools lib traceevent: Introduced new traceevent API, for adding new plugins directories.
-      tools lib traceevent: Add support for more printk format specifiers
-      tools lib traceevent: Optimize pretty_print() function
-      tools lib traceevent: Move kernel_stack event handler to "function" plugin.
-      tools lib traceevent: Document tep_load_plugins_hook()
-      tools lib traceevent: Handle strdup() error in parse_option_name()
-      tools lib traceevent: Fix typo in tep_plugin_add_option() description
-      tools lib traceevent: Improve error handling of tep_plugin_add_option() API
-      tools lib traceevent: Fixed broken indentation in parse_ip4_print_args()
-      tools lib traceevent: Fixed type in PRINT_FMT_STING
-      tools lib traceevent: Fixed description of tep_add_plugin_path() API
-      tools lib traceevent: Handle possible strdup() error in tep_add_plugin_path() API
-
-----
- .../Documentation/libtraceevent-plugins.txt        |   25 +-
- tools/lib/traceevent/event-parse-local.h           |   22 +-
- tools/lib/traceevent/event-parse.c                 | 1004 +++++++++++++++-----
- tools/lib/traceevent/event-parse.h                 |   34 +-
- tools/lib/traceevent/event-plugin.c                |  285 +++++-
- tools/lib/traceevent/kbuffer-parse.c               |   43 +-
- tools/lib/traceevent/kbuffer.h                     |   19 +-
- tools/lib/traceevent/plugins/Build                 |    2 +
- tools/lib/traceevent/plugins/Makefile              |    2 +
- tools/lib/traceevent/plugins/plugin_function.c     |  123 ++-
- tools/lib/traceevent/plugins/plugin_futex.c        |  123 +++
- tools/lib/traceevent/plugins/plugin_hrtimer.c      |   17 +-
- tools/lib/traceevent/plugins/plugin_jbd2.c         |   17 +-
- tools/lib/traceevent/plugins/plugin_kmem.c         |   17 +-
- tools/lib/traceevent/plugins/plugin_kvm.c          |   42 +-
- tools/lib/traceevent/plugins/plugin_mac80211.c     |   17 +-
- tools/lib/traceevent/plugins/plugin_sched_switch.c |   17 +-
- tools/lib/traceevent/plugins/plugin_tlb.c          |   66 ++
- 18 files changed, 1454 insertions(+), 421 deletions(-)
- create mode 100644 tools/lib/traceevent/plugins/plugin_futex.c
- create mode 100644 tools/lib/traceevent/plugins/plugin_tlb.c
