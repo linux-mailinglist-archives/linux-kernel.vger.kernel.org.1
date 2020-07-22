@@ -2,159 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AF7229F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8D6229F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 20:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732184AbgGVSWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 14:22:48 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.221]:34461 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729816AbgGVSWo (ORCPT
+        id S1731855AbgGVS3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 14:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgGVS3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 14:22:44 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id C0DC414472A
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 13:22:01 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id yJNRjz4bcwgQAyJNRj0z4j; Wed, 22 Jul 2020 13:22:01 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=M+MTFjItVYn5UUzFiz+lCPyYWBp1BfGnxiJ0Tf+VoJo=; b=m2jMMNXauRO4tOZfMdfUX5gkNr
-        e4kPwVmHXgmkQqLqYhQ+CzOCbGJdRNUPBdK8SMuHYAxV/3RqZLxUcExEl8JElVtZUL7vb1/ffkAzQ
-        mkKzhMS+eCM6m2KBQenQ7X6P5jO32zMudmkcJdgCLYMFLXKR3rO0AHNp3jy0zUJ3JXOzbMKyXVHxh
-        Z2oQMzKxsltt06mvZQvgpjcJvB+THVYPqvzXv8YWQ2Cdia5dSnHovl2tgmO4qp6XSqT21fI2uwN+3
-        DlHT52Rz7bkb9Fi1HMeZ0WO9l7TzwPToSQt+5QQ3MVgRXnH/g/NCc9OtkW2Nyw0qdt9JwSbpSb2Yx
-        uTVTBLMA==;
-Received: from [201.162.161.253] (port=39420 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jyJNQ-000X1c-I9; Wed, 22 Jul 2020 13:22:00 -0500
-Subject: Re: [PATCH][next] wil6210: Avoid the use of one-element array
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Maya Erez <merez@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200715215755.GA21716@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <80fe7b75-a324-9af1-38a9-ee259b886d7e@embeddedor.com>
-Date:   Wed, 22 Jul 2020 13:27:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 22 Jul 2020 14:29:40 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08F9C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:29:39 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id m15so1205164lfp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MfwVArCwT7ZvorIJCn6XJE1kGXlXCCBt7JStKiemrDc=;
+        b=Y9Grku/LEnGv2LHPufhT1fzjPgYUvb0x+f63akNlgbkoKFxp4b3ixHQ05s2Yig5vKy
+         1Y1eRLuHzf8zeKZcLkDNgasiT05atEtXVZnl04tHaqbUP5o1Am8KOoLRm08IYOGMEFHM
+         FBc21ltlpIXX8MggmcTkSzNb7oTZcMifypARw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MfwVArCwT7ZvorIJCn6XJE1kGXlXCCBt7JStKiemrDc=;
+        b=R0VNZQM3q6p2Hv3SqZalfRFgbM7RbNk0203sN8oXJ1uWNvfoF34v+OJDjiVTmLIDW7
+         InQXh6trpLrLlsV+EfzHJ/mbYz4BxI1aqvtJOcbJnrTAyArvlfJnQaqjC5vIcgVaWNkZ
+         IsgjCbGHtVTrAJo/7gvtWUyyOkzjIq4oEibZ4E1q6Pj8enPW7t6unW64eBd2N1ECrpXp
+         iogaAMKGaDcNbc0jHwnQ/UmPBpUoEvjD6vVFul27ItZlCvaSENyoIdqre+WvwKibu4sV
+         VlY950yhbee30Y+tCzfJyt9eKY48Sn+lIdOcJoR0V7ex4uwe4eUt80Vcvj3AGZEo23kZ
+         cV3Q==
+X-Gm-Message-State: AOAM531nTvBOtY2nc4b3YdupLSHi0p7lwC6ESzp40O/kCAyTswrGZxmm
+        ANBMNlql4jOLKOWIAv92Wu0u6cb0334=
+X-Google-Smtp-Source: ABdhPJy9uwClMiu38AGiGakbWztz9YEye2oqp//MokFnRIdBRY+j8OXSAcvQ/vMMFWG8q8eFkoLrnA==
+X-Received: by 2002:ac2:5338:: with SMTP id f24mr317474lfh.5.1595442577995;
+        Wed, 22 Jul 2020 11:29:37 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id l13sm432250lfk.18.2020.07.22.11.29.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 11:29:37 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id h19so3517204ljg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 11:29:36 -0700 (PDT)
+X-Received: by 2002:a2e:86c4:: with SMTP id n4mr244946ljj.312.1595442576423;
+ Wed, 22 Jul 2020 11:29:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200715215755.GA21716@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.161.253
-X-Source-L: No
-X-Exim-ID: 1jyJNQ-000X1c-I9
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.161.253]:39420
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 18
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20200721063258.17140-1-mhocko@kernel.org> <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+In-Reply-To: <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 22 Jul 2020 11:29:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whb0=rjc1WR+F_r_syw5Ld4=ebuNJmmpaPEzfjZRD5Y-w@mail.gmail.com>
+Message-ID: <CAHk-=whb0=rjc1WR+F_r_syw5Ld4=ebuNJmmpaPEzfjZRD5Y-w@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Jul 21, 2020 at 8:33 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> More likely, it's actually *caused* by that commit 11a19c7b099f, and
+> what might be happening is that other CPU's are just adding new
+> waiters to the list *while* we're waking things up, because somebody
+> else already got the page lock again.
+>
+> Humor me.. Does something like this work instead?
 
-Friendly ping: who can take this? :)
+I went back and looked at this, because it bothered me.
 
-Thanks
---
-Gustavo
+And I'm no longer convinced it can possibly make a difference.
 
-On 7/15/20 16:57, Gustavo A. R. Silva wrote:
-> One-element arrays are being deprecated[1]. Replace the one-element
-> array with a simple value type 'u8 reserved'[2], once this is just
-> a placeholder for alignment.
-> 
-> [1] https://github.com/KSPP/linux/issues/79
-> [2] https://github.com/KSPP/linux/issues/86
-> 
-> Tested-by: kernel test robot <lkp@intel.com>
-> Link: https://github.com/GustavoARSilva/linux-hardening/blob/master/cii/0-day/wil6210-20200715.md
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/net/wireless/ath/wil6210/wmi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/ath/wil6210/wmi.h b/drivers/net/wireless/ath/wil6210/wmi.h
-> index 9affa4525609..beb53cac329b 100644
-> --- a/drivers/net/wireless/ath/wil6210/wmi.h
-> +++ b/drivers/net/wireless/ath/wil6210/wmi.h
-> @@ -3086,7 +3086,7 @@ struct wmi_scheduling_scheme_event {
->  	/* wmi_sched_scheme_failure_type */
->  	u8 failure_type;
->  	/* alignment to 32b */
-> -	u8 reserved[1];
-> +	u8 reserved;
->  } __packed;
->  
->  /* WMI_RS_CFG_CMDID - deprecated */
-> 
+Why?
+
+Because __wake_up_locked_key_bookmark() just calls __wake_up_common(),
+and that one checks the return value of the wakeup function:
+
+                ret = curr->func(curr, mode, wake_flags, key);
+                if (ret < 0)
+                        break;
+
+and will not add the bookmark back to the list if this triggers.
+
+And the wakeup function does that same "stop walking" thing:
+
+        if (test_bit(key->bit_nr, &key->page->flags))
+                return -1;
+
+So if somebody else took the page lock, I think we should already have
+stopped walking the list.
+
+Of course, the page table lock hash table is very small. It's only 256
+entries. So maybe the list is basically all aliases for another page
+entirely that is being hammered by that load, and we're just unlucky.
+
+Because the wakeup function only does that "stop walking" if the page
+key matched. So wait queue entries for another page that just hashes
+to the same bucket (or even the same page, but a different bit in the
+page) will confuse that logic.
+
+Hmm.
+
+I still can't see how you'd get so many entries (without re-adding
+them) that you'd hit the softlockup timer.
+
+So I wonder if maybe we really do hit the "aliasing with a really hot
+page that gets re-added in the page wait table" case, but it seems a
+bit contrived.
+
+So I think that patch is still worth testing, but I'm not quite as
+hopeful about it as I was originally.
+
+I do wonder if we should make that PAGE_WAIT_TABLE_SIZE be larger. 256
+entries seems potentially ridiculously small, and aliasing not only
+increases the waitqueue length, it also potentially causes more
+contention on the waitqueue spinlock (which is already likely seeing
+some false sharing on a cacheline basis due to the fairly dense array
+of waitqueue entries: wait_queue_head is intentionally fairly small
+and dense unless you have lots of spinlock debugging options enabled).
+
+That hashed wait-queue size is an independent issue, though. But it
+might be part of "some loads can get into some really nasty behavior
+in corner cases"
+
+               Linus
