@@ -2,71 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7F7229292
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BD7229299
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 09:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgGVHw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 03:52:58 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:60097 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726918AbgGVHw5 (ORCPT
+        id S1728413AbgGVHyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 03:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726161AbgGVHyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 03:52:57 -0400
-X-UUID: 8075ba6e7aeb4c5faff5964f498a3cfa-20200722
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=99UZb4f7F+/4F/IFBc3ZFmkJ8KG1G0s+LgXmC0/xZDg=;
-        b=DCmOCDSjq2w8OLtsGABcwVDT3MABAVYCT8N+iAX2VzjwpvA3XhhQikFf7xBhRFhRUeAXOtY+OIKf8de/rQ5l9Fd3CBG5v8M+yJn1JGLekP3kT7wk9dz4oN4bXHjkSoLoQ7pRC0hDuJgRB9UekOtcWRBMgejLFWX2kcu2wuhVlAI=;
-X-UUID: 8075ba6e7aeb4c5faff5964f498a3cfa-20200722
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1626172078; Wed, 22 Jul 2020 15:52:43 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 22 Jul 2020 15:52:41 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 22 Jul 2020 15:52:41 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, Bin Liu <b-liu@ti.com>
-Subject: [PATCH 7/7] usb: musb: convert to devm_platform_ioremap_resource_byname
-Date:   Wed, 22 Jul 2020 15:51:15 +0800
-Message-ID: <1595404275-8449-7-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1595404275-8449-1-git-send-email-chunfeng.yun@mediatek.com>
+        Wed, 22 Jul 2020 03:54:17 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC111C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 00:54:17 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id h190so356833vkh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 00:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=wp7cLzalHd7kyU2cYcp7xvtQkBGEmVbye1wtB/k/l3Y=;
+        b=S8luBJgFvit1zlJAsvYPv7f4ldEkJxzK4yZgF7GfFM/4xtumiUsYejg+P0RIR9DhzM
+         E1qS0MG45c/nt05/BhOxdDQBOd1TxDqyormzXUBTLmnWGjcwQDVNG2G6tVwnsdiZuMwt
+         aYdd17W2oDqlJpO91CX0F/ahwuFwop1WBJo9CIvjUVn+ep+q1VpisrVR0zTcsYXB8KPf
+         N925FbxN/tIezpMA1LDKX7myH0ukvNCKsYDrKKGKx6jR4HrojU3hYnwI7/rC2Gu3XeWM
+         02iPK2J0C7L3JtN3CdZkmZDIE1ECee4DMsrv0he+z2gBNLOJjB7UflrzQTNQTMicLjnQ
+         OdAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=wp7cLzalHd7kyU2cYcp7xvtQkBGEmVbye1wtB/k/l3Y=;
+        b=REsj7cicC49YMy9jUDFlZIKcH9iaOlfCJcvJfijKP60bVoUmBpkzUTuXLSdG3QRxl0
+         e38OdzBHAkZh3irxv2kIKcUHpqQ9bx7Fr5ytUcgh/FPIgOnIxkF9XfCHw7gmcejnpo/t
+         /yRFofYBmJSip/9/h4I4dCWYkGrcBVh01/zGbfvqI7yR07+wKK5aDJrEjlODg6bAtCGq
+         KO9GqnGg9DOJj9N1xJFFAJVyZz+ps9sQkMPzUIBIXG/sjmiynggeyjT25/00pi2CCvKR
+         iqlf4GZ93WEMm6kNWsf3Vw5EUIHavEym6giJ9YxJr0S3JTZqUYitb1Fix4UCVuceQPI0
+         nrMg==
+X-Gm-Message-State: AOAM532M4QiQUXWbteXe4nffE7sVkXJp2ddL4Xz778HBvZuosVkbwp+5
+        Gq3s/Bklk5h0NR45IZqhXmHZPD+wEtqoTAdi0aQHO2pXsyp0Kz+u
+X-Google-Smtp-Source: ABdhPJwpJE6nZ/4uqieQIpxG0DaJE1P7Dq3awxlUKdO1z6CLKIW3zUuJaPsYiyFK6Av4UUwsn3sIaI+KyweJiz6gKUE=
+X-Received: by 2002:a1f:5e14:: with SMTP id s20mr17461433vkb.63.1595404456374;
+ Wed, 22 Jul 2020 00:54:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 7F14E68EA99D6182322EA789696377A2F1E81611215BB0820AC42407E7C14E2C2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 22 Jul 2020 13:24:05 +0530
+Message-ID: <CA+G9fYvUOTWJdPpUM=_ciPbZ+roQBBnjH6aJffWwUfeFG2OGwg@mail.gmail.com>
+Subject: WARNING: fs/kernfs/dir.c:1508 kernfs_remove_by_name_ns
+To:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>, walter-zh.wu@mediatek.com,
+        neeraju@codeaurora.org, Vinod Koul <vinod.koul@linaro.org>,
+        Mateusz Nosek <mateusznosek0@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VXNlIGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZV9ieW5hbWUoKSB0byBzaW1wbGlmeSBj
-b2RlDQoNCkNjOiBCaW4gTGl1IDxiLWxpdUB0aS5jb20+DQpTaWduZWQtb2ZmLWJ5OiBDaHVuZmVu
-ZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL3VzYi9tdXNi
-L211c2JfZHNwcy5jIHwgNCArLS0tDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAz
-IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvbXVzYi9tdXNiX2RzcHMu
-YyBiL2RyaXZlcnMvdXNiL211c2IvbXVzYl9kc3BzLmMNCmluZGV4IDg4OTIzMTcuLjlkYmY5Nzcg
-MTAwNjQ0DQotLS0gYS9kcml2ZXJzL3VzYi9tdXNiL211c2JfZHNwcy5jDQorKysgYi9kcml2ZXJz
-L3VzYi9tdXNiL211c2JfZHNwcy5jDQpAQCAtNDI5LDEyICs0MjksMTAgQEAgc3RhdGljIGludCBk
-c3BzX211c2JfaW5pdChzdHJ1Y3QgbXVzYiAqbXVzYikNCiAJc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqcGFyZW50ID0gdG9fcGxhdGZvcm1fZGV2aWNlKGRldi0+cGFyZW50KTsNCiAJY29uc3Qgc3Ry
-dWN0IGRzcHNfbXVzYl93cmFwcGVyICp3cnAgPSBnbHVlLT53cnA7DQogCXZvaWQgX19pb21lbSAq
-cmVnX2Jhc2U7DQotCXN0cnVjdCByZXNvdXJjZSAqcjsNCiAJdTMyIHJldiwgdmFsOw0KIAlpbnQg
-cmV0Ow0KIA0KLQlyID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlX2J5bmFtZShwYXJlbnQsIElPUkVT
-T1VSQ0VfTUVNLCAiY29udHJvbCIpOw0KLQlyZWdfYmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJj
-ZShkZXYsIHIpOw0KKwlyZWdfYmFzZSA9IGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZV9i
-eW5hbWUocGFyZW50LCAiY29udHJvbCIpOw0KIAlpZiAoSVNfRVJSKHJlZ19iYXNlKSkNCiAJCXJl
-dHVybiBQVFJfRVJSKHJlZ19iYXNlKTsNCiAJbXVzYi0+Y3RybF9iYXNlID0gcmVnX2Jhc2U7DQot
-LSANCjEuOS4xDQo=
+Kernel WARNING noticed on arm64 db410c device while booting linux next
+20200721 tag.
+Kernel BUGs followed by kernel WARNINGS noticed on this db410c device.
 
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: de2e69cfe54a8f2ed4b75f09d3110c514f45d38e
+  git describe: next-20200721
+  kernel-config:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/818/config
+  build-location:
+http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/dragonboard-410c/lkft/linux-next/818
+
+Crash log:
+[    5.802135] ------------[ cut here ]------------
+[    5.802509] l12: supplied by regulator-dummy
+[    5.805901] kernfs: can not remove 'supplier:regulator.14', no directory
+[    5.810782] l12: Bringing 0uV into 1750000-1750000uV
+[    5.814789] WARNING: CPU: 3 PID: 164 at
+/usr/src/kernel/fs/kernfs/dir.c:1508
+kernfs_remove_by_name_ns+0xb0/0xc0
+[    5.823085] l13: supplied by regulator-dummy
+[    5.826334] Modules linked in:
+[    5.826354] CPU: 3 PID: 164 Comm: kworker/3:2 Tainted: G        W
+      5.8.0-rc6-next-20200721 #1
+[    5.826363] Hardware name: Qualcomm Technologies, Inc. APQ 8016 SBC (DT)
+[    5.826378] Workqueue: rcu_gp srcu_invoke_callbacks
+[    5.826396] pstate: 80000005 (Nzcv daif -PAN -UAO BTYPE=--)
+[    5.826409] pc : kernfs_remove_by_name_ns+0xb0/0xc0
+[    5.836530] l13: Bringing 0uV into 1750000-1750000uV
+[    5.840651] lr : kernfs_remove_by_name_ns+0xb0/0xc0
+[    5.840659] sp : ffff800014093be0
+[    5.840667] x29: ffff800014093be0 x28: 0000000000000000
+[    5.840688] x27: ffff8000101c42cc x26: ffff8000101c42cc
+[    5.840708] x25: ffff8000129fee68 x24: ffff00003fcb7640
+[    5.845080] l14: supplied by regulator-dummy
+[    5.852811] x23: ffff00003fcb76c0 x22: 0000000000000000
+[    5.852831] x21: ffff00003a5cb400 x20: 0000000000000000
+[    5.852851] x19: ffff00003a604018 x18: ffffffffffffffff
+[    5.852875] x17: 0000000000000000
+[    5.859830] l14: Bringing 0uV into 1750000-1750000uV
+[    5.864089] x16: 0000000000000000
+[    5.864102] x15: ffff800012720a88 x14: ffff800094093877
+[    5.864123] x13: ffff800014093885 x12: 0000000000000003
+[    5.864143] x11: 0000000005f5e0ff x10: 0000000000000000
+[    5.871315] l15: supplied by regulator-dummy
+[    5.874505] x9 : ffff800012720a88 x8 : 0000000018bc90a0
+[    5.874526] x7 : 00000000b9433f15 x6 : ffff800014093820
+[    5.874546] x5 : ffff800012721000 x4 : 0000000000000003
+[    5.874566] x3 : 0000000000000004 x2 : 0000000000000201
+[    5.880082] l15: Bringing 0uV into 1750000-1750000uV
+[    5.884311] x1 : b2684f8263e0e600 x0 : 0000000000000000
+[    5.884333] Call trace:
+[    5.884346]  kernfs_remove_by_name_ns+0xb0/0xc0
+[    5.884358]  sysfs_remove_link+0x30/0x60
+[    5.884371]  devlink_remove_symlinks+0xa8/0x138
+[    5.884382]  device_del+0xf4/0x3c0
+[    5.890179] l16: supplied by regulator-dummy
+[    5.893172]  device_unregister+0x24/0x78
+[    5.893182]  __device_link_free_srcu+0x64/0x70
+[    5.898780] l16: Bringing 0uV into 1750000-1750000uV
+[    5.903762]  srcu_invoke_callbacks+0x10c/0x1a0
+[    5.903773]  process_one_work+0x2b0/0x768
+[    5.903783]  worker_thread+0x48/0x498
+[    5.903795]  kthread+0x158/0x168
+[    5.903806]  ret_from_fork+0x10/0x1c
+[    5.903815] irq event stamp: 18695
+[    5.909658] l17: supplied by regulator-dummy
+[    5.913312] hardirqs last  enabled at (18694): [<ffff800010083318>]
+el1_irq+0xd8/0x180
+[    5.913325] hardirqs last disabled at (18695): [<ffff8000100aaebc>]
+debug_exception_enter+0xac/0xe8
+[    5.913337] softirqs last  enabled at (18614): [<ffff8000101c42cc>]
+srcu_invoke_callbacks+0xf4/0x1a0
+[    5.913349] softirqs last disabled at (18652): [<ffff8000101c42cc>]
+srcu_invoke_callbacks+0xf4/0x1a0
+[    5.913358] ---[ end trace 8fa12bb0128735e5 ]---
+
+full test log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200721/testrun/2972385/suite/linux-log-parser/test/check-kernel-warning-1595062/log
+
+--
+Linaro LKFT
+https://lkft.linaro.org
