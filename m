@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E60228F5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B30228F65
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 06:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgGVEqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 00:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46224 "EHLO
+        id S1726933AbgGVEtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 00:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgGVEqb (ORCPT
+        with ESMTP id S1726147AbgGVEtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 00:46:31 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50071C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:46:31 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id t15so516886pjq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 21 Jul 2020 21:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p+1Zg+rcxW9W9uDo4bgbPd44JqLnl98/h6B7hdCMtAk=;
-        b=gCf//hqrs62GJkXJuGGad1rarIOGvqn3r37DEoNV/vZtFeyKNDeLfQk70kHP3nTyro
-         38KQBw4dK2Y/BWKSpLg1xYhnDPnUZtUjd7a2Ha37fC2bD6tzeRjv+LPApWyZGM/kMwkd
-         gh3TsqQTgXrqJN1AaPSIWgunV8vIKH6OXSQJWhSbqLEpxDa+1RNtwDogGUYWBLK5T0/1
-         k1JeyZDWt3f0Bo7qokEE1wDW/CLMPv/pFOm9V1V3b1/q1IsAX4WPu75JBd+2rbccpajn
-         r5DE4EF/PgI3FZkyiqH48N0BZhS8MnxTlxWu26zEiKIS3uX11Db0Ta26Itli29LCvuix
-         XF/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=p+1Zg+rcxW9W9uDo4bgbPd44JqLnl98/h6B7hdCMtAk=;
-        b=tC65e1CCiiNaB1RTIE+fDHp6lkN5IaAYz8zrmz9e+ljVfO1PcOLTLLLvxj5IwhWGMn
-         3FyLP1o0RGxQnraw7CA1SSR1+WOLkLNPIMmlK3rEerIy7aEGoR3Gocd0KUjfSojLdzHp
-         NdHqkGi9CE1lN+Le8a7z6l4hJj3PtZzTyJ2qBs77EiVo/TsJ5XNzgPSBSCXBGCxOHAFJ
-         CqwjX3pIV5mGO3Rnd6zkyLgAuIK8CsoPkoI47L2D9g1AyKBkTx2IxEkwHsvZCT1hV1kU
-         cW/zmUVaSuL2h6mMbeXav0Q5eCr3rljp3hno41pBj9AlCIWuuUm/HuHYtLKSxU2emG+j
-         qGOQ==
-X-Gm-Message-State: AOAM531i79riDLZ7bdk/WSa3PfVI54ueAQocmK149L9xREmauhnAfR2c
-        n8zH67a7BbkS6dauYr28VkFutQ==
-X-Google-Smtp-Source: ABdhPJx9RXCa2cd2bkgXO7d6w24bQWdI88P7ZrINXX0REFMfx/nbF2LCD4l4X2VAacAmHXbe+VusPg==
-X-Received: by 2002:a17:90a:1342:: with SMTP id y2mr8133192pjf.98.1595393189642;
-        Tue, 21 Jul 2020 21:46:29 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 9sm21710120pfx.131.2020.07.21.21.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jul 2020 21:46:28 -0700 (PDT)
-Date:   Tue, 21 Jul 2020 21:46:28 -0700 (PDT)
-X-Google-Original-Date: Tue, 21 Jul 2020 21:46:22 PDT (-0700)
-Subject:     Re: [PATCH] riscv: Select ARCH_HAS_DEBUG_VM_PGTABLE
-In-Reply-To: <20200714212611.19692-1-kernel@esmil.dk>
-CC:     linux-riscv@lists.infradead.org, kernel@esmil.dk,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     kernel@esmil.dk
-Message-ID: <mhng-23ad157f-d2c5-4948-88dd-176b8be99cf1@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Wed, 22 Jul 2020 00:49:55 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E7DC061794;
+        Tue, 21 Jul 2020 21:49:54 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BBNL73gDQz9sPf;
+        Wed, 22 Jul 2020 14:49:51 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595393393;
+        bh=KtYiC6cb1/nWjvWk5MwcjnpTN7SZ1LgyLW40FdeZs8A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Zto6XPkNAKZJ7fw1giNAPs7SGcBtHmNSvBXrrbq/FaXCUjKvMcP9uyr5Zc6G5hFMB
+         SEFRLy06SSO5kaWRgh1Hjxos4M3dp+DOp4iRfhyqBUYzX2ak1UV/+QhjAGlMKSqoDc
+         iKV7yDgHWQ+w3rPE1duOWXjs6Ec1YlxaXftFxJ5ZhF1VNbEqm9f999uaBli1bdD9l/
+         IqRfKgcsru80laty+6oaw71TEoDgoD2rt9TOmw1korcnN9yOvCtGJLT6zt/PfNsW5D
+         mLjf7o9+4k1YHShQvsGepFpsWiLzfAMX1X+j1dUMURTnedF8xaikQHkxUnyH9l8WWi
+         bDdC5StvulWyw==
+Date:   Wed, 22 Jul 2020 14:49:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Jingle Wu <jingle.wu@emc.com.tw>
+Subject: linux-next: manual merge of the input tree with Linus' tree
+Message-ID: <20200722144950.220b44ec@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/IdEgtprhHnijhSJwrL=X7ZF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Jul 2020 14:26:11 PDT (-0700), kernel@esmil.dk wrote:
-> This allows the pgtable tests to be built.
->
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> ---
->
-> The tests seem to succeed both in Qemu and on the HiFive Unleashed
->
-> Both with and without the recent additions in
-> https://lore.kernel.org/linux-riscv/1594610587-4172-1-git-send-email-anshuman.khandual@arm.com/
->
->  Documentation/features/debug/debug-vm-pgtable/arch-support.txt | 2 +-
->  arch/riscv/Kconfig                                             | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/features/debug/debug-vm-pgtable/arch-support.txt b/Documentation/features/debug/debug-vm-pgtable/arch-support.txt
-> index c527d05c0459..c9a764c3c795 100644
-> --- a/Documentation/features/debug/debug-vm-pgtable/arch-support.txt
-> +++ b/Documentation/features/debug/debug-vm-pgtable/arch-support.txt
-> @@ -23,7 +23,7 @@
->      |    openrisc: | TODO |
->      |      parisc: | TODO |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: | TODO |
->      |       sparc: | TODO |
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 3230c1d48562..b4e674b1e857 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -15,6 +15,7 @@ config RISCV
->  	select ARCH_CLOCKSOURCE_INIT
->  	select ARCH_HAS_BINFMT_FLAT
->  	select ARCH_HAS_DEBUG_VIRTUAL if MMU
-> +	select ARCH_HAS_DEBUG_VM_PGTABLE
->  	select ARCH_HAS_DEBUG_WX
->  	select ARCH_HAS_GCOV_PROFILE_ALL
->  	select ARCH_HAS_GIGANTIC_PAGE
+--Sig_/IdEgtprhHnijhSJwrL=X7ZF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This is on for-next.  Thanks!
+Hi all,
+
+Today's linux-next merge of the input tree got a conflict in:
+
+  drivers/input/mouse/elan_i2c_core.c
+
+between commit:
+
+  966334dfc472 ("Input: elan_i2c - only increment wakeup count on touch")
+
+from Linus' tree and commit:
+
+  04d5ce620f79 ("Input: elan_i2c - add support for high resolution reports")
+
+from the input tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/input/mouse/elan_i2c_core.c
+index 6291fb5fa015,4b6e2dffc0ea..000000000000
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@@ -951,13 -997,12 +997,14 @@@ static void elan_report_absolute(struc
+  	u8 hover_info =3D packet[ETP_HOVER_INFO_OFFSET];
+  	bool contact_valid, hover_event;
+ =20
+ +	pm_wakeup_event(&data->client->dev, 0);
+ +
+- 	hover_event =3D hover_info & 0x40;
+- 	for (i =3D 0; i < ETP_MAX_FINGERS; i++) {
+- 		contact_valid =3D tp_info & (1U << (3 + i));
+- 		elan_report_contact(data, i, contact_valid, finger_data);
++ 	hover_event =3D hover_info & BIT(6);
+ =20
++ 	for (i =3D 0; i < ETP_MAX_FINGERS; i++) {
++ 		contact_valid =3D tp_info & BIT(3 + i);
++ 		elan_report_contact(data, i, contact_valid, high_precision,
++ 				    packet, finger_data);
+  		if (contact_valid)
+  			finger_data +=3D ETP_FINGER_DATA_LEN;
+  	}
+@@@ -1019,9 -1063,14 +1066,12 @@@ static irqreturn_t elan_isr(int irq, vo
+  	if (error)
+  		goto out;
+ =20
+ -	pm_wakeup_event(dev, 0);
+ -
+  	switch (report[ETP_REPORT_ID_OFFSET]) {
+  	case ETP_REPORT_ID:
+- 		elan_report_absolute(data, report);
++ 		elan_report_absolute(data, report, false);
++ 		break;
++ 	case ETP_REPORT_ID2:
++ 		elan_report_absolute(data, report, true);
+  		break;
+  	case ETP_TP_REPORT_ID:
+  		elan_report_trackpoint(data, report);
+
+--Sig_/IdEgtprhHnijhSJwrL=X7ZF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8XxW4ACgkQAVBC80lX
+0GxnaQf/TwesPieTBCj7wlbkGDAbfxseJTjpbun+8/qAM0QA8EygGVFMEmZ40HEJ
+9TT6zgLu+CfR9/1E4Y42kPcprsRo/W3fyxCWmKI2O0nGkFlDkcT9wS8GF1AZaKP1
+p/tOL18iRtjxpE8M+muhBxXGJTtzEhlidR0ZiL3v/tKHgqjK4emd0/GpgYwuQ4QX
+9JmMd28/BVVhMO+vLFHztPyRC4GjSZFDDR/XDm0x1hl4w4T/6hoiTRHkE1/5zhg6
+ljM0C8e2YyAKRwTd6WEPlscH9wGBE2wYGSUyv5rJA+4iDzzaXeLX3DD7zbCkxql8
+IWyc3VyNztgwjsAF/TsRqEIs3zKGgw==
+=shGj
+-----END PGP SIGNATURE-----
+
+--Sig_/IdEgtprhHnijhSJwrL=X7ZF--
