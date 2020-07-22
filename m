@@ -2,148 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D932295BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FD82295CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 22 Jul 2020 12:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731341AbgGVKLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 06:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
+        id S1730565AbgGVKQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 06:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727819AbgGVKLa (ORCPT
+        with ESMTP id S1726821AbgGVKQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 06:11:30 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F4EC0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:11:30 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id k6so1355705oij.11
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:11:30 -0700 (PDT)
+        Wed, 22 Jul 2020 06:16:42 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7587CC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:16:42 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id q5so1336878wru.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 03:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aEtrJgbpsOebCukpCmfFytmRqvmav58R9V8W1bUHwwA=;
-        b=s6BRFBxB6DMiogxI/Xm2pmaN/Ai2kw9dZQmuaL402WhVg97GWRniEH9T/OQcofUWeN
-         DPVpgsvqUKyivc/NuczZMbgFas+2CTGG+umQFUgc9s46bY9B+GLXj4AaP4Dbfd/TeO3j
-         w0EVj0odResMyiLFJ9blfrrlCZ//Wgg1KoJXeb2QprWdL7RLaxj/zHM7WKeLnFtQeEGM
-         sGQGPqWYk5qfUWgbeAjHwX/DWhMwkrBLkr9LZKIpId6cfSXvEJQxi+5/Tmdw5NjOrA4A
-         XpU65JnZSSOtJ4AxsxPz+I3x5G1lajtjeBNja3findd8APFrTf4YbdNbLPOKdM0QdTto
-         ik2w==
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=HBWwmeA/IVVyfDAoIWzsV0dODZtdyPNAP8hglAomxG8=;
+        b=0KIRi2DlDEyrMEf6ILG7Ierl0wKbynb6oiBADDAlgcBfOOgWrbieQzbK+nV+RtPC57
+         PtRANAhTkFyK7yrInEj3pOrMUQkPTokTMABsw+Xw5GQcMhEVDEmEA0CKBM/nzxwB8gze
+         uRVCSr/0nK0CmqKMGNwPewuNkT3VGjLz5oBSXp8JIaRIIFA1s8dicdHr2NbF95Q52TaM
+         N8aJH6xBnm4AI5HnjFvU6VYhxpZkqkYxXr33w+gURIr88KO9+y/gdQrkqaul3/tcI5X5
+         5tfi7S9zW9mAy//S1BR8bng/z90eIa+p/cRJbmtVXMIJ0S5T01TLdW0TrmG0HIJLL/Fj
+         OhKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aEtrJgbpsOebCukpCmfFytmRqvmav58R9V8W1bUHwwA=;
-        b=NwxBIEWTYtgRHSYBwf/ttPGWhW8UC85KMfOvsAKLkuSgKcSLTq6+6wdPj3cbl7rdsG
-         6aHjMVwHANSIBNVwArPxkKRXyvks/SSUidujkyDeSkmNTweCbpMFfAh/ReYJul+JSd7O
-         NoAxx/0+pRdj9XJDBkHf8zUS4pquG7uKEjLVKjB54Bnj63p2U+yGux7D4EnE+6BPGMvh
-         SF9L8sZ7uunvz8MGIAtKMFiwflCHCBjrSepyAMDt7GJb8pmA8SwIWpBndURGBno28LAc
-         t97Bc64ql+t5kQr57MIsUfMqPqOLSuVCh4ffYIyVPeHDwxUex1Y3ZTS/jkKy7Sc1w16C
-         7zTg==
-X-Gm-Message-State: AOAM533bFB742wtCtsdTHdeoKSu7Cj8dl81miNhn8/y38H4fVUkwsBzN
-        p7WlY+3dzL9KyCgkryYu7w2Pwxw4LKpXGKfeUSdo5A==
-X-Google-Smtp-Source: ABdhPJwUqgafZYtIGD4XYNh7yhysyeNlbnF3emANCKXh6lm6Wu/8rmOwf9BQuFcLLNZPp0ReZ2c3pNUO+g92ocqxRIo=
-X-Received: by 2002:aca:cf4f:: with SMTP id f76mr6563659oig.172.1595412689438;
- Wed, 22 Jul 2020 03:11:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200721103016.3287832-1-elver@google.com> <20200721103016.3287832-9-elver@google.com>
- <20200721141859.GC10769@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200721141859.GC10769@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 22 Jul 2020 12:11:18 +0200
-Message-ID: <CANpmjNM6C6QtrtLhRkbmfc3jLqYaQOvvM_vKA6UyrkWadkdzNQ@mail.gmail.com>
-Subject: Re: [PATCH 8/8] locking/atomics: Use read-write instrumentation for
- atomic RMWs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HBWwmeA/IVVyfDAoIWzsV0dODZtdyPNAP8hglAomxG8=;
+        b=ielWfq/gGTaNskW+3hoqKjXTTP0JhtBpExFXVZdpYjYqPFMHe7KNgzDCQZSSgYWvJ5
+         ABMh90SZgmq9qq1NCpgHiHnABeZ2CmYYFAa7WsYUOuegsTUc/SwkPgOR8fYDeq4P5iJA
+         uuvCVWX+urUSKHDnCdle59v46+FEEYkOYBhXsjqsWmdmrZg+8qa5zh2IV0gPgyY6WJea
+         VPEar2pC0PBJOhlPjPcO9Zd92SJdGKchdhvftAM4LJiwO+jKqxSz1MNnguk58wVd1hwA
+         aUg9IUVGWm/3h/WPcWgdG/p7P2Zem4hiaOTbEbKbEICFwi1os1HRsrT9hoYgnsEcdaD0
+         HtFA==
+X-Gm-Message-State: AOAM531g0PgMPHHwxkE9Em21bd96WPqQ/CjJbBQCyRQKN24le8IhLPk0
+        pN704FakH9EbtqwkoL9lj15md5oDkPQ=
+X-Google-Smtp-Source: ABdhPJxDkbiqW+G5vmsTqAZvmuPETPeziZ2xXtLuHTVAqEUmFgDDH4n/7WKqBAS/faSMxBNfsG3/Pw==
+X-Received: by 2002:adf:b1ca:: with SMTP id r10mr32661549wra.150.1595413001116;
+        Wed, 22 Jul 2020 03:16:41 -0700 (PDT)
+Received: from localhost.localdomain (126.red-83-36-179.dynamicip.rima-tde.net. [83.36.179.126])
+        by smtp.gmail.com with ESMTPSA id x204sm3911759wmg.2.2020.07.22.03.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jul 2020 03:16:40 -0700 (PDT)
+From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
+To:     jorge@foundries.io, jens.wiklander@linaro.org,
+        sumit.garg@linaro.org
+Cc:     tee-dev@lists.linaro.org, ricardo@foundries.io, mike@foundries.io,
+        linux-kernel@vger.kernel.org
+Subject: [PATCHv3] drivers: optee: allow op-tee to access devices on the i2c bus
+Date:   Wed, 22 Jul 2020 12:16:37 +0200
+Message-Id: <20200722101637.8173-1-jorge@foundries.io>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 at 16:19, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Jul 21, 2020 at 12:30:16PM +0200, Marco Elver wrote:
->
-> > diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
-> > index 6afadf73da17..5cdcce703660 100755
-> > --- a/scripts/atomic/gen-atomic-instrumented.sh
-> > +++ b/scripts/atomic/gen-atomic-instrumented.sh
-> > @@ -5,9 +5,10 @@ ATOMICDIR=$(dirname $0)
-> >
-> >  . ${ATOMICDIR}/atomic-tbl.sh
-> >
-> > -#gen_param_check(arg)
-> > +#gen_param_check(meta, arg)
-> >  gen_param_check()
-> >  {
-> > +     local meta="$1"; shift
-> >       local arg="$1"; shift
-> >       local type="${arg%%:*}"
-> >       local name="$(gen_param_name "${arg}")"
-> > @@ -17,17 +18,24 @@ gen_param_check()
-> >       i) return;;
-> >       esac
-> >
-> > -     # We don't write to constant parameters
-> > -     [ ${type#c} != ${type} ] && rw="read"
-> > +     if [ ${type#c} != ${type} ]; then
-> > +             # We don't write to constant parameters
-> > +             rw="read"
-> > +     elif [ "${meta}" != "s" ]; then
-> > +             # Atomic RMW
-> > +             rw="read_write"
-> > +     fi
->
-> If we have meta, should we then not be consistent and use it for read
-> too? Mark?
+Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+control this type of cryptographic devices it needs coordinated access
+to the bus, so collisions and RUNTIME_PM dont get in the way.
 
-gen_param_check seems to want to generate an 'instrument_' check per
-pointer argument. So if we have 1 argument that is a constant pointer,
-and one that isn't, it should generate different instrumentation for
-each. By checking the argument type, we get that behaviour. Although
-we are making the assumption that if meta indicates it's not a 's'tore
-(with void return), it's always a read-write access on all non-const
-pointers.
+This trampoline driver allow OP-TEE to access them.
 
-Switching over to checking only meta would always generate the same
-'instrument_' call for each argument. Although right now that would
-seem to work because we don't yet have an atomic that accepts a
-constant pointer and a non-const one.
+Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+---
 
-Preferences?
+v3: use from/to msg param to support all types of memory
+    modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER id
 
-> >       printf "\tinstrument_atomic_${rw}(${name}, sizeof(*${name}));\n"
-> >  }
-> >
-> > -#gen_param_check(arg...)
-> > +#gen_params_checks(meta, arg...)
-> >  gen_params_checks()
-> >  {
-> > +     local meta="$1"; shift
-> > +
-> >       while [ "$#" -gt 0 ]; do
-> > -             gen_param_check "$1"
-> > +             gen_param_check "$meta" "$1"
-> >               shift;
-> >       done
-> >  }
-> > @@ -77,7 +85,7 @@ gen_proto_order_variant()
-> >
-> >       local ret="$(gen_ret_type "${meta}" "${int}")"
-> >       local params="$(gen_params "${int}" "${atomic}" "$@")"
-> > -     local checks="$(gen_params_checks "$@")"
-> > +     local checks="$(gen_params_checks "${meta}" "$@")"
-> >       local args="$(gen_args "$@")"
-> >       local retstmt="$(gen_ret_stmt "${meta}")"
-> >
-> > --
-> > 2.28.0.rc0.105.gf9edc3c819-goog
-> >
+ drivers/tee/optee/optee_msg.h | 17 ++++++++
+ drivers/tee/optee/rpc.c       | 80 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 97 insertions(+)
+
+diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+index 795bc19ae17a..aa7cb19942b9 100644
+--- a/drivers/tee/optee/optee_msg.h
++++ b/drivers/tee/optee/optee_msg.h
+@@ -419,4 +419,21 @@ struct optee_msg_arg {
+  */
+ #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+ 
++/*
++ * Access a device on an i2c bus
++ *
++ * [in]  param[0].u.value.a		mode: RD(0), WR(1)
++ * [in]  param[0].u.value.b		i2c adapter
++ * [in]  param[0].u.value.c		i2c chip
++ *
++ * [in/out] memref[1]			buffer to exchange the transfer data
++ *					with the secure world
++ *
++ * [out]  param[0].u.value.a		bytes transferred by the driver
++ */
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
++#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
++
++
+ #endif /* _OPTEE_MSG_H */
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index b4ade54d1f28..2b2939c538f0 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -9,6 +9,7 @@
+ #include <linux/device.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
++#include <linux/i2c.h>
+ #include "optee_private.h"
+ #include "optee_smc.h"
+ 
+@@ -49,6 +50,82 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+ 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+ }
+ 
++static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
++					     struct optee_msg_arg *arg)
++{
++	struct i2c_client client;
++	struct tee_param *params;
++	uint32_t type;
++	int i, ret;
++	size_t len;
++	char *buf;
++	uint32_t attr[] = {
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
++		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
++	};
++
++	if (arg->num_params != ARRAY_SIZE(attr)) {
++		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++		return;
++	}
++
++	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
++			       GFP_KERNEL);
++	if (!params) {
++		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
++		return;
++	}
++
++	if (optee_from_msg_param(params, arg->num_params, arg->params))
++		goto bad;
++
++	for (i = 0; i < arg->num_params; i++) {
++		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
++		if (type != attr[i])
++			goto bad;
++	}
++
++	client.addr = params[0].u.value.c;
++	client.adapter = i2c_get_adapter(params[0].u.value.b);
++	if (!client.adapter)
++		goto bad;
++
++	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
++
++	buf = params[1].u.memref.shm->kaddr;
++	len = params[1].u.memref.size;
++
++	switch (params[0].u.value.a) {
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
++		ret = i2c_master_recv(&client, buf, len);
++		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
++		ret = i2c_master_send(&client, buf, len);
++		break;
++	default:
++		i2c_put_adapter(client.adapter);
++		goto bad;
++	}
++
++	if (ret >= 0) {
++		params[2].u.value.a = ret;
++		arg->ret = TEEC_SUCCESS;
++	} else {
++		arg->ret = TEEC_ERROR_COMMUNICATION;
++	}
++
++	if (optee_to_msg_param(arg->params, arg->num_params, params))
++		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++
++	i2c_put_adapter(client.adapter);
++	kfree(params);
++	return;
++bad:
++	kfree(params);
++	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
++}
++
+ static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+ {
+ 	struct wq_entry *w;
+@@ -382,6 +459,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+ 	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+ 		handle_rpc_func_cmd_shm_free(ctx, arg);
+ 		break;
++	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
++		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
++		break;
+ 	default:
+ 		handle_rpc_supp_cmd(ctx, arg);
+ 	}
+-- 
+2.17.1
+
