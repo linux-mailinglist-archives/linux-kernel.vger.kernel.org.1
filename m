@@ -2,73 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC39E22A4F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 04:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533C022A4FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 04:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387673AbgGWCB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 22:01:29 -0400
-Received: from mga04.intel.com ([192.55.52.120]:54427 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731394AbgGWCB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 22:01:29 -0400
-IronPort-SDR: LYcSWz3SZYTsF4Sr4G/3h0ZWIKFGpanO4CHUwymgoqbFFTGBZ7F9baRliJYkM/VHlQ+wQg0hAC
- CEsVD4EvSDNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="147945576"
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="147945576"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 19:01:20 -0700
-IronPort-SDR: AfB3QoR8dOeXKSTFIzakQUxAEHUMujQi3jKGF0iQjYTddGezShJDyqb54qhIKW8Cu1dgipZN71
- HnoUpqS2iNjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="302149612"
-Received: from schwings-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.132])
-  by orsmga002.jf.intel.com with ESMTP; 22 Jul 2020 19:01:16 -0700
-Date:   Thu, 23 Jul 2020 05:01:14 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     zohar@linux.ibm.com, dhowells@redhat.com,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] encrypted-keys: Replace HTTP links with HTTPS ones
-Message-ID: <20200723020114.GG45081@linux.intel.com>
-References: <20200716195227.65839-1-grandmaster@al2klimov.de>
+        id S2387680AbgGWCEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 22:04:45 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:25158 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1733288AbgGWCEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 22:04:45 -0400
+X-UUID: 6d44cec7ecd54cb5b98e8b01c0b0980a-20200723
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=qFRLx/+6VxdIz+jDbGtfOLe8xjP4LdN/gpj4rcMmUbQ=;
+        b=U4GnLzzBYuGpVTTf5/wG2PFZ/0d/W0V305H+5hbnJWDoWbbtFP4I86ds7fSgZFGMMU2OoDti4snB0+hKFk0g/CGUSAPZHttPMb7FfJUssY3oz55DLFcmagQVe/8B6BaSBqVp/pG6YVDGf3YEOBW+HqwzjSTnUOJbjeYYK8+GLhI=;
+X-UUID: 6d44cec7ecd54cb5b98e8b01c0b0980a-20200723
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 76920452; Thu, 23 Jul 2020 10:04:41 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Jul 2020 10:04:40 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Jul 2020 10:04:36 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [v7, PATCH 0/7] add drm support for MT8183
+Date:   Thu, 23 Jul 2020 10:03:11 +0800
+Message-ID: <1595469798-3824-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716195227.65839-1-grandmaster@al2klimov.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 09:52:27PM +0200, Alexander A. Klimov wrote:
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+VGhpcyBzZXJpZXMgYXJlIGJhc2VkIG9uIDUuOC1yYzEgYW5kIHByb3ZpZGUgNyBwYXRjaA0KdG8g
+c3VwcG9ydCBtZWRpYXRlayBTT0MgTVQ4MTgzDQoNCkNoYW5nZSBzaW5jZSB2Ng0KLSBtb3ZlIGRk
+cCBjb21wb25lbnQgZGVmaW5lIGludG8gbXRrX21tc3lzLmgNCi0gYWRkIG1tc3lzIHByaXZhdGUg
+ZGF0YSB0byBzdXBwb3J0IGRpZmZlcmVudCBpYyBwYXRoIGNvbm5lY3Rpb24NCi0gYWRkIG10ODE4
+My1tbXN5cy5jIHRvIHN1cHBvcnQgODE4MyBwYXRoIGNvbm5lY3Rpb24NCi0gZml4IHJldmlld2Vk
+IGlzc3VlIGluIHY2DQoNCkNoYW5nZSBzaW5jZSB2NQ0KLSBmaXggcmV2aWV3ZWQgaXNzdWUgaW4g
+djUNCmJhc2UgaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlh
+dGVrL2xpc3QvP3Nlcmllcz0yMTMyMTkNCg0KQ2hhbmdlIHNpbmNlIHY0DQotIGZpeCByZXZpZXdl
+ZCBpc3N1ZSBpbiB2NA0KDQpDaGFuZ2Ugc2luY2UgdjMNCi0gZml4IHJldmlld2VkIGlzc3VlIGlu
+IHYzDQotIGZpeCB0eXBlIGVycm9yIGluIHYzDQotIGZpeCBjb25mbGljdCB3aXRoIGlvbW11IHBh
+dGNoDQoNCkNoYW5nZSBzaW5jZSB2Mg0KLSBmaXggcmV2aWV3ZWQgaXNzdWUgaW4gdjINCi0gYWRk
+IG11dGV4IG5vZGUgaW50byBkdHMgZmlsZQ0KDQpDaGFuZ2VzIHNpbmNlIHYxOg0KLSBmaXggcmV2
+aWV3ZWQgaXNzdWUgaW4gdjENCi0gYWRkIGR0cyBmb3IgbXQ4MTgzIGRpc3BsYXkgbm9kZXMNCi0g
+YWRqdXN0IGRpc3BsYXkgY2xvY2sgY29udHJvbCBmbG93IGluIHBhdGNoIDIyDQotIGFkZCB2bWFw
+IHN1cHBvcnQgZm9yIG1lZGlhdGVrIGRybSBpbiBwYXRjaCAyMw0KLSBmaXggcGFnZSBvZmZzZXQg
+aXNzdWUgZm9yIG1tYXAgZnVuY3Rpb24gaW4gcGF0Y2ggMjQNCi0gZW5hYmxlIGFsbG93X2ZiX21v
+ZGlmaWVycyBmb3IgbWVkaWF0ZWsgZHJtIGluIHBhdGNoIDI1DQoNCg0KWW9uZ3FpYW5nIE5pdSAo
+Nyk6DQogIGRybS9tZWRpYXRlazogbW92ZSBkZHAgY29tcG9uZW50IGRlZmluZSBpbnRvIG10a19t
+bXN5cy5oDQogIG10ay1tbXN5czogYWRkIG1tc3lzIHByaXZhdGUgZGF0YQ0KICBtdGstbW1zeXM6
+IGFkZCBtdDgxODMgbW1zeXMgc3VwcG9ydA0KICBkdC1iaW5kaW5nczogbWVkaWF0ZWs6IGFkZCBy
+ZG1hX2ZpZm9fc2l6ZSBkZXNjcmlwdGlvbiBmb3IgbXQ4MTgzDQogICAgZGlzcGxheQ0KICBhcm02
+NDogZHRzOiBhZGQgZGlzcGxheSBub2RlcyBmb3IgbXQ4MTgzDQogIGRybS9tZWRpYXRlazogYWRk
+IGZpZm9fc2l6ZSBpbnRvIHJkbWEgcHJpdmF0ZSBkYXRhDQogIGRybS9tZWRpYXRlazogYWRkIHN1
+cHBvcnQgZm9yIG1lZGlhdGVrIFNPQyBNVDgxODMNCg0KIC4uLi9iaW5kaW5ncy9kaXNwbGF5L21l
+ZGlhdGVrL21lZGlhdGVrLGRpc3AudHh0ICAgIHwgIDE0ICsrDQogYXJjaC9hcm02NC9ib290L2R0
+cy9tZWRpYXRlay9tdDgxODMuZHRzaSAgICAgICAgICAgfCAgOTggKysrKysrKysNCiBkcml2ZXJz
+L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMgICAgICAgICAgICB8ICAxOCArKw0KIGRy
+aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9yZG1hLmMgICAgICAgICAgIHwgIDI1ICst
+DQogZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwLmMgICAgICAgICAgICAgfCAg
+NDcgKysrKw0KIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmggICAg
+ICAgIHwgIDM0ICstLQ0KIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jICAg
+ICAgICAgICAgIHwgIDQzICsrKysNCiBkcml2ZXJzL3NvYy9tZWRpYXRlay9NYWtlZmlsZSAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMvTWFr
+ZWZpbGUgICAgICAgICAgICAgICAgfCAgIDMgKw0KIGRyaXZlcnMvc29jL21lZGlhdGVrL21tc3lz
+L210MjcwMS1tbXN5cy5jICAgICAgICAgIHwgMjUwICsrKysrKysrKysrKysrKysrKysNCiBkcml2
+ZXJzL3NvYy9tZWRpYXRlay9tbXN5cy9tdDgxODMtbW1zeXMuYyAgICAgICAgICB8IDE2MSArKysr
+KysrKysrKysNCiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbW1zeXMuYyAgICAgICAgICAgICAg
+ICAgICB8IDI3NiArKysrLS0tLS0tLS0tLS0tLS0tLS0NCiBpbmNsdWRlL2xpbnV4L3NvYy9tZWRp
+YXRlay9tdGstbW1zeXMuaCAgICAgICAgICAgICB8ICA0OCArKysrDQogMTMgZmlsZXMgY2hhbmdl
+ZCwgNzU2IGluc2VydGlvbnMoKyksIDI2MiBkZWxldGlvbnMoLSkNCiBjcmVhdGUgbW9kZSAxMDA2
+NDQgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMvTWFrZWZpbGUNCiBjcmVhdGUgbW9kZSAxMDA2
+NDQgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMvbXQyNzAxLW1tc3lzLmMNCiBjcmVhdGUgbW9k
+ZSAxMDA2NDQgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbW1zeXMvbXQ4MTgzLW1tc3lzLmMNCg0KLS0g
+DQoxLjguMS4xLmRpcnR5DQo=
 
-A commit message should describe action e.g. "Replace HTTP URL with
-HTTPS URL given the security concerns and the slow deprecation of HTTP."
-
-> Deterministic algorithm:
-> For each file:
->   If not .svg:
->     For each line:
->       If doesn't contain `\bxmlns\b`:
->         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
->             If both the HTTP and HTTPS versions
->             return 200 OK and serve the same content:
->               Replace HTTP with HTTPS.
-
-Please remove this. We don't care about it. Git log should only contain
-information either for studying or maintaining the kernel source code.
-
-> 
-> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-
-/Jarkko
