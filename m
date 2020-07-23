@@ -2,75 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60AAC22A729
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EAF22A811
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726127AbgGWGEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 02:04:40 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:23623 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725536AbgGWGEk (ORCPT
+        id S1726775AbgGWGJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 02:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgGWGJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:04:40 -0400
-X-UUID: 04843e8a70dc46968d560848381cdb10-20200723
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=iZ9yK+S9kB96ZqeDW7h02ziiSCDTyDczQRrti5SX7zw=;
-        b=c0Fsw8o9Y0LitexrQ6u+NAbfciXPCIQX5XkggI8FYKFGoHi8AbUUdIwAOxjySwXhw5FrTgv3bakJNJ2kChDblIOfiz37jVs4j1he+7eUf8Uogwlj5w7Z0BtwC2Ai5AhM2BUPYbyoGw89cPZgeAoXD5UJd8YdHEP58Hx9WhJEb0s=;
-X-UUID: 04843e8a70dc46968d560848381cdb10-20200723
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 760264497; Thu, 23 Jul 2020 14:04:34 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
- (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 23 Jul
- 2020 14:04:34 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Jul 2020 14:04:33 +0800
-Message-ID: <1595484205.16079.28.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/4] i2c: mediatek: Support DMA mask range over 33-bits
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Yingjoe Chen <yingjoe.chen@mediatek.com>
-CC:     <wsa@the-dreams.de>, <qiangming.xia@mediatek.com>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <leilk.liu@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 23 Jul 2020 14:03:25 +0800
-In-Reply-To: <1595467461.7332.3.camel@mtksdaap41>
-References: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
-         <1595421106-10017-3-git-send-email-qii.wang@mediatek.com>
-         <1595467461.7332.3.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 23 Jul 2020 02:09:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12214C0619DC;
+        Wed, 22 Jul 2020 23:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=gIo3u97zH0JSQ3GhoDfa3dDtIgYeQtsIRo6GTGYyy+8=; b=mnzygY2xIJOplQLdTA5DuEH0ik
+        I+dSofdIWj5h6Q6sJXrxRQQH9lr8q8RznRktaWQgsjSk6tKhswT8dDrOuAKoDyVoNvpwziRMDygs5
+        V4f5W2mIHJSUYcOuW1p5Ir6U67Prk8VRUBRy8hjQ53gk5FH2pKOrOAD/RP/H1dTADr2OmbTj+6npM
+        7vG9oWid8LWVlZMGnM3G1KLxrq+C33rTvftxBYoCfkRRZmUpij+cYvZefhDKfixG8mJiKhqsX7AnE
+        al8lhKCsReWSNohktTvtZM7aCBVtmd7q9BjtTavU2c+SGMWI34+tsLChaRrBdfoinRvNTW8QTALA1
+        h8FbOCKA==;
+Received: from [2001:4bb8:18c:2acc:91df:aae8:fa3b:de9c] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyUPl-0003jb-F1; Thu, 23 Jul 2020 06:09:09 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Subject: get rid of the address_space override in setsockopt v2
+Date:   Thu, 23 Jul 2020 08:08:42 +0200
+Message-Id: <20200723060908.50081-1-hch@lst.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 0187662DA839AB3AB988161E5738441024327E1EEDC636DD4CFA77ABBB887D0E2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA3LTIzIGF0IDA5OjI0ICswODAwLCBZaW5nam9lIENoZW4gd3JvdGU6DQo+
-IE9uIFdlZCwgMjAyMC0wNy0yMiBhdCAyMDozMSArMDgwMCwgUWlpIFdhbmcgd3JvdGU6DQo+ID4g
-UmVwbGFjZSAnc3VwcG9ydF8zM2JpdHMgd2l0aCAnZG1hX21heF9zdXBwb3J0JyBmb3IgRE1BIG1h
-c2sNCj4gPiBvcGVyYXRpb24sIGFuZCByZXBsYWNlICdtdGtfaTJjX3NldF80Z19tb2RlJyB3aXRo
-ICd1cHBlcl8zMl9iaXRzJy4NCj4gDQo+IFRoaXMgZG9lc24ndCBleHBsYWluIHdoeSB3ZSBuZWVk
-IHRoaXMgcGF0Y2guIEhvdyBhYm91dDoNCj4gDQo+IE5ld2VyIE1USyBjaGlwIHN1cHBvcnQgbW9y
-ZSB0aGFuIDhHQiBvZiBkcmFtLiBSZXBsYWNlIHN1cHBvcnRfMzNiaXRzDQo+IHdpdGggbW9yZSBn
-ZW5lcmFsIGRtYV9tYXhfc3VwcG9ydC4NCj4gDQoNCm9rLCBUaGFua3MgZm9yIHlvdXIgY29tbWVu
-dHMuDQoNCj4gDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogUWlpIFdhbmcgPHFpaS53YW5nQG1l
-ZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHgu
-YyB8IDM3ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxl
-IGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDIwIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10NjV4eC5jIGIvZHJpdmVycy9pMmMv
-YnVzc2VzL2kyYy1tdDY1eHguYw0KPiA+IGluZGV4IGU2Yjk4NGEuLmU0NzU4NzcgMTAwNjQ0DQo+
-ID4gLS0tIGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiA+ICsrKyBiL2RyaXZl
-cnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMNCj4gPiBAQCAtMjA5LDYgKzIwOSw3IEBAIHN0cnVj
-dCBtdGtfaTJjX2NvbXBhdGlibGUgew0KPiA+ICAJdW5zaWduZWQgY2hhciBkbWFfc3luYzogMTsN
-Cj4gPiAgCXVuc2lnbmVkIGNoYXIgbHRpbWluZ19hZGp1c3Q6IDE7DQo+ID4gIAl1bnNpZ25lZCBj
-aGFyIGFwZG1hX3N5bmM6IDE7DQo+ID4gKwl1bnNpZ25lZCBjaGFyIG1heF9kbWFfc3VwcG9ydDsN
-Cj4gDQo+IHN1cHBvcnRfMzNiaXRzIGlzIG5vIGxvbmdlciB1c2VkLiBQbGVhc2UgcmVtb3ZlIGl0
-Lg0KPiANCj4gSm9lLkMNCj4gDQoNCm9rLg0KDQo+IA0KDQo=
+Hi Dave,
 
+setsockopt is the last place in architecture-independ code that still
+uses set_fs to force the uaccess routines to operate on kernel pointers.
+
+This series adds a new sockptr_t type that can contained either a kernel
+or user pointer, and which has accessors that do the right thing, and
+then uses it for setsockopt, starting by refactoring some low-level
+helpers and moving them over to it before finally doing the main
+setsockopt method.
+
+Note that apparently the eBPF selftests do not even cover this path, so
+the series has been tested with a testing patch that always copies the
+data first and passes a kernel pointer.  This is something that works for
+most common sockopts (and is something that the ePBF support relies on),
+but unfortunately in various corner cases we either don't use the passed
+in length, or in one case actually copy data back from setsockopt, or in
+case of bpfilter straight out do not work with kernel pointers at all.
+
+Against net-next/master.
+
+Changes since v1:
+ - check that users don't pass in kernel addresses
+ - more bpfilter cleanups
+ - cosmetic mptcp tweak
+
+Diffstat:
+ crypto/af_alg.c                           |    7 
+ drivers/crypto/chelsio/chtls/chtls_main.c |   18 -
+ drivers/isdn/mISDN/socket.c               |    4 
+ include/linux/bpfilter.h                  |    6 
+ include/linux/filter.h                    |    3 
+ include/linux/mroute.h                    |    5 
+ include/linux/mroute6.h                   |    8 
+ include/linux/net.h                       |    4 
+ include/linux/netfilter.h                 |    6 
+ include/linux/netfilter/x_tables.h        |    4 
+ include/linux/sockptr.h                   |  132 ++++++++++++
+ include/net/inet_connection_sock.h        |    3 
+ include/net/ip.h                          |    7 
+ include/net/ipv6.h                        |    6 
+ include/net/sctp/structs.h                |    2 
+ include/net/sock.h                        |    7 
+ include/net/tcp.h                         |    6 
+ include/net/udp.h                         |    2 
+ include/net/xfrm.h                        |    8 
+ net/atm/common.c                          |    6 
+ net/atm/common.h                          |    2 
+ net/atm/pvc.c                             |    2 
+ net/atm/svc.c                             |    6 
+ net/ax25/af_ax25.c                        |    6 
+ net/bluetooth/hci_sock.c                  |    8 
+ net/bluetooth/l2cap_sock.c                |   22 +-
+ net/bluetooth/rfcomm/sock.c               |   12 -
+ net/bluetooth/sco.c                       |    6 
+ net/bpfilter/bpfilter_kern.c              |   55 ++---
+ net/bridge/netfilter/ebtables.c           |   46 +---
+ net/caif/caif_socket.c                    |    8 
+ net/can/j1939/socket.c                    |   12 -
+ net/can/raw.c                             |   16 -
+ net/core/filter.c                         |    6 
+ net/core/sock.c                           |   36 +--
+ net/dccp/dccp.h                           |    2 
+ net/dccp/proto.c                          |   20 -
+ net/decnet/af_decnet.c                    |   13 -
+ net/ieee802154/socket.c                   |    6 
+ net/ipv4/bpfilter/sockopt.c               |   16 -
+ net/ipv4/ip_options.c                     |   43 +---
+ net/ipv4/ip_sockglue.c                    |   66 +++---
+ net/ipv4/ipmr.c                           |   14 -
+ net/ipv4/netfilter/arp_tables.c           |   33 +--
+ net/ipv4/netfilter/ip_tables.c            |   29 +-
+ net/ipv4/raw.c                            |    8 
+ net/ipv4/tcp.c                            |   30 +-
+ net/ipv4/tcp_ipv4.c                       |    4 
+ net/ipv4/udp.c                            |   11 -
+ net/ipv4/udp_impl.h                       |    4 
+ net/ipv6/ip6_flowlabel.c                  |  317 ++++++++++++++++--------------
+ net/ipv6/ip6mr.c                          |   17 -
+ net/ipv6/ipv6_sockglue.c                  |  203 +++++++++----------
+ net/ipv6/netfilter/ip6_tables.c           |   28 +-
+ net/ipv6/raw.c                            |   10 
+ net/ipv6/tcp_ipv6.c                       |    4 
+ net/ipv6/udp.c                            |    7 
+ net/ipv6/udp_impl.h                       |    4 
+ net/iucv/af_iucv.c                        |    4 
+ net/kcm/kcmsock.c                         |    6 
+ net/l2tp/l2tp_ppp.c                       |    4 
+ net/llc/af_llc.c                          |    4 
+ net/mptcp/protocol.c                      |    6 
+ net/netfilter/ipvs/ip_vs_ctl.c            |    4 
+ net/netfilter/nf_sockopt.c                |    2 
+ net/netfilter/x_tables.c                  |   20 -
+ net/netlink/af_netlink.c                  |    4 
+ net/netrom/af_netrom.c                    |    4 
+ net/nfc/llcp_sock.c                       |    6 
+ net/packet/af_packet.c                    |   39 +--
+ net/phonet/pep.c                          |    4 
+ net/rds/af_rds.c                          |   30 +-
+ net/rds/rdma.c                            |   14 -
+ net/rds/rds.h                             |    6 
+ net/rose/af_rose.c                        |    4 
+ net/rxrpc/af_rxrpc.c                      |    8 
+ net/rxrpc/ar-internal.h                   |    4 
+ net/rxrpc/key.c                           |    9 
+ net/sctp/socket.c                         |    4 
+ net/smc/af_smc.c                          |    4 
+ net/socket.c                              |   24 --
+ net/tipc/socket.c                         |    8 
+ net/tls/tls_main.c                        |   17 -
+ net/vmw_vsock/af_vsock.c                  |    4 
+ net/x25/af_x25.c                          |    4 
+ net/xdp/xsk.c                             |    8 
+ net/xfrm/xfrm_state.c                     |    6 
+ 87 files changed, 894 insertions(+), 743 deletions(-)
