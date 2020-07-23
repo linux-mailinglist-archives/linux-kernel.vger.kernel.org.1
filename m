@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8689F22B728
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937C622B735
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgGWUHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:07:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgGWUHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:07:07 -0400
-Received: from localhost (p5486cde4.dip0.t-ipconnect.de [84.134.205.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7EAA206F4;
-        Thu, 23 Jul 2020 20:07:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595534827;
-        bh=ENoIYBug+g53Ale1DfY97zU4FBYnGOgaNeHqmT6v+8c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NsAQI3dRb358P+uJJEhBaBGz9ZTfpjluRTp5g2Hn4XDwLzdSwlXQX3HNTuwaODv+7
-         S0a5kiFM1SAF6AAqdQx0dEn+T8SrQmf+zHFXETWN+DCtyl2wGhcjzSliSJW0kWbamj
-         p0Vza4Qnk6tnUUVF+EW0Nvo2ivak4wpniRMqjaNU=
-Date:   Thu, 23 Jul 2020 22:07:04 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH][next] i2c: designware: Use fallthrough pseudo-keyword
-Message-ID: <20200723200704.GB908@ninjato>
-References: <20200721233814.GA3058@embeddedor>
- <CAHp75VcinO2QrQfk-GqfFic=Ktah5s-ndLigmVNdfvfo5cS_Pw@mail.gmail.com>
- <20200722143713.GB22267@embeddedor>
- <20200722143814.GS1030@ninjato>
- <20200722144848.GC22267@embeddedor>
+        id S1726972AbgGWUIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:08:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60920 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgGWUIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 16:08:31 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595534908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wcJAgsOSpTUEgvY6TWictE7IGPlqieS/49LNHUp//Yw=;
+        b=CRCgIJGJxugLOeTOjkAKqyyWua6AvCfsKSCzuzfk55e8lISsF4ESPLNp3f9NWlaiKxBUzv
+        AlYD1UiYT071te14Adxvg5Ukcn9eRsw0LkEawZU0jXCPPCrf80QNqTQEa/OkzHi+y57iCn
+        f50E6YAnfuVo87toqIOCGVSXDZHG/SNtytOlbaeIjXI/theIMXRW8OjXXiRSgf0OpW0qEi
+        agbaK6t00ae+2XwJ5Ygm6/OhjUgrMa9vzDQHM2y4QCTvh1N2c/72aEzQcsjyOQv8+a1Zko
+        KLMEvzza4qp0QTwTbN+0w+TU02cXZ+KkRidBVwnzrBgrsRVWp2ZMbE8oCYwmQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595534908;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wcJAgsOSpTUEgvY6TWictE7IGPlqieS/49LNHUp//Yw=;
+        b=v2BAJcOjy+PMvyzn34HicDvcq5vL36f83YwtzQiduKbxChpsust4smos5IhggWXITd1iLU
+        tCWUu0G6ipkNHUAA==
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across exceptions
+In-Reply-To: <20200722052709.GB478587@iweiny-DESK2.sc.intel.com>
+References: <20200717072056.73134-1-ira.weiny@intel.com> <20200717072056.73134-18-ira.weiny@intel.com> <20200717100610.GH10769@hirez.programming.kicks-ass.net> <20200722052709.GB478587@iweiny-DESK2.sc.intel.com>
+Date:   Thu, 23 Jul 2020 22:08:27 +0200
+Message-ID: <87o8o6vvt0.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
-Content-Disposition: inline
-In-Reply-To: <20200722144848.GC22267@embeddedor>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ira Weiny <ira.weiny@intel.com> writes:
+> On Fri, Jul 17, 2020 at 12:06:10PM +0200, Peter Zijlstra wrote:
+>> On Fri, Jul 17, 2020 at 12:20:56AM -0700, ira.weiny@intel.com wrote:
+> I've been really digging into this today and I'm very concerned that I'm
+> completely missing something WRT idtentry_enter() and idtentry_exit().
+>
+> I've instrumented idt_{save,restore}_pkrs(), and __dev_access_{en,dis}able()
+> with trace_printk()'s.
+>
+> With this debug code, I have found an instance where it seems like
+> idtentry_enter() is called without a corresponding idtentry_exit().  This has
+> left the thread ref counter at 0 which results in very bad things happening
+> when __dev_access_disable() is called and the ref count goes negative.
+>
+> Effectively this seems to be happening:
+>
+> ...
+> 	// ref == 0
+> 	dev_access_enable()  // ref += 1 ==> disable protection
+> 		// exception  (which one I don't know)
+> 			idtentry_enter()
+> 				// ref = 0
+> 				_handler() // or whatever code...
+> 			// *_exit() not called [at least there is no trace_printk() output]...
+> 			// Regardless of trace output, the ref is left at 0
+> 	dev_access_disable() // ref -= 1 ==> -1 ==> does not enable protection
+> 	(Bad stuff is bound to happen now...)
 
---nVMJ2NtxeReIH9PS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, if any exception which calls idtentry_enter() would return without
+going through idtentry_exit() then lots of bad stuff would happen even
+without your patches.
+
+> Also is there any chance that the process could be getting scheduled and that
+> is causing an issue?
+
+Only from #PF, but after the fault has been resolved and the tasks is
+scheduled in again then the task returns through idtentry_exit() to the
+place where it took the fault. That's not guaranteed to be on the same
+CPU. If schedule is not aware of the fact that the exception turned off
+stuff then you surely get into trouble. So you really want to store it
+in the task itself then the context switch code can actually see the
+state and act accordingly.
+
+Thanks,
+
+        tglx
 
 
-> > If you want to resend, please only one patch for all I2C drivers. The
-> > change is "cosmetic" enough to do that IMO.
-> >=20
->=20
-> The reason why I'm sending separate patches for this is because
-> the drivers have different maintainers.
-
-I see. Still, people can ack parts of a patch they are responsible for.
-I ack this way every now and then for cleanup patches, too.
-
-That being said. All v2 and newer patches squashed into one and applied
-to for-next.
-
-
---nVMJ2NtxeReIH9PS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8Z7egACgkQFA3kzBSg
-KbbBpQ/9FnepYAS89xiZarcBJQAWcb+Qn1NfNqRlKkWSJCBVVOXmFLuzzD5bVXvu
-OdvLxblLiJh+N/cxuKZPmyifCfmwWcTwyA4ybSKdKaOxfYb9xO2bpbPkFqGgEaHf
-O0/bid7pQ1fkZBtwe3gUuvT5t09keufVbI2bRnWavV03tVVqzS2xCZVSMUx/5ZLA
-6xM9yaBX2CXLT6aE3zyjQE6SmftaTW5vkJRm/fGJxZD3FREGM7E/REpDf8Te5Tm/
-KUm0sqaj7dtTCscJRXSNd0qeQ0lbUl8yUT2N14q+GKBreU/xw20oKgKoUfqA7DCd
-GOV7lv4B/G2QL/PAVCJ5MD/gyXKmYJ0tr8thG2ap+ZacLhnfSldZjHjOfY2NBLBe
-2LzDh2kWharLwZDG4A7u5cpMG/83ljvA5WL103hBj9HgE8qQFtc94s+C0braWsWx
-ez6D7SGH/PcJ43E5htmvLYofydn3xt6sJp3g/io1P18Z3TtT5+fVDaWZaiNhS8c+
-fc1WVlStQ1iaGzTo0zffWHQlGzC2eyugG52pphOEWnLBdImz/q0BPqo0od9ArogE
-NVbWNl6lrEGUz+0xVEQILMaKZdSc9NSaGrdqWRqr8oTxBfNN1w5/Pfi/jEH9wUVa
-nmjsw4DWsmvyI5kmYvd6kGMkgj9t2+ex9tZJXQL4mSCHJjdmevc=
-=1f8G
------END PGP SIGNATURE-----
-
---nVMJ2NtxeReIH9PS--
