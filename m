@@ -2,120 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB67822AAC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B7622AAC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgGWIhc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Jul 2020 04:37:32 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60334 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725846AbgGWIhc (ORCPT
+        id S1727794AbgGWIhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727045AbgGWIhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:37:32 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-80-5MUK7J35NxGiTT6rTbxaSA-1; Thu, 23 Jul 2020 09:37:27 +0100
-X-MC-Unique: 5MUK7J35NxGiTT6rTbxaSA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 09:37:27 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 23 Jul 2020 09:37:27 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Catalin Marinas' <catalin.marinas@arm.com>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] raw_copy_from_user() semantics
-Thread-Topic: [RFC] raw_copy_from_user() semantics
-Thread-Index: AQHWYBxygAO6HUS840aFW/LsMa1rTakTksjwgAAtkICAARbBwA==
-Date:   Thu, 23 Jul 2020 08:37:27 +0000
-Message-ID: <9c22700a16db4a4f8ae9203efcaed27b@AcuMS.aculab.com>
-References: <20200719031733.GI2786714@ZenIV.linux.org.uk>
- <CAHk-=wi7f5vG+s=aFsskzcTRs+f7MVHK9yJFZtUEfndy6ScKRQ@mail.gmail.com>
- <CAHk-=wirA7zJJB17KJPCE-V9pKwn8VKxXTeiaM+F+Sa1Xd2SWA@mail.gmail.com>
- <20200722113707.GC27540@gaia>
- <8fde1b9044a34ff59eb5ff3dafbf2b97@AcuMS.aculab.com>
- <20200722165346.GB4069@gaia>
-In-Reply-To: <20200722165346.GB4069@gaia>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 23 Jul 2020 04:37:38 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7717C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 01:37:37 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id 88so4320978wrh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 01:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0Da0sXf4knrzxwq9B1S2PcUH+pe63k6N/+odsq7CE4Q=;
+        b=mPMAq3VMk4qcqqR+w/kC5fyrh8FUvFAscpk+3PTX14hWcsTPnyps/CJ9E66HdDnxh8
+         sOdAgBrEzmr7gIxZs3TxVQIS0UZkvUhpkGFPNnFaC4vVU2imF3jYbtifdkuX0Mzt2P84
+         pyHMfTI6K9hfZw2pKKgBICeZ+MXNNE0pUjgM/hfz8p7KzCmE6hekFXlKEZ9fF7NqqhVD
+         mO97EVZFhtLO4Rbp6+fjwlVs4taWi2WNxsw76syqhr+d02dG/4itawq4aZZI2df0CA4Z
+         7nWtKjQIk5AVegAxAIxhNe/tEweVHvpR1Ssh/1X+81mP/PyoVs85wJ0DSvq48HTDUXeY
+         IWRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0Da0sXf4knrzxwq9B1S2PcUH+pe63k6N/+odsq7CE4Q=;
+        b=kElslxYFnRVarLPTv2sx5CcdmClOvvrjdcnZkiiVzYP7gsKbGdwF8/d8DTfSwTYD7g
+         etiDxiwHikifbHb5U/aa5GITVnn45y21ZE8RXWmckLvRGiNca5tb7ZLslsr+a7f/mMC9
+         SVywCuAszPoQvjaZii4opP3wBvOLYQkse8quhNCGP4qdYG73lXSJqoGhEBXWr/3P21Yq
+         HPgUiKCgYJN+LJno42jSuEfnUowtdS0KrXrZWKcOvYl/cHxdwT/CFyPm3vNgth8b75Vq
+         DaobmhmENBBpgTrlGHPnVBd7UQRQmp9LeG+WPESzTqYInGvYKMUQyWpYuzAGGOiqeZK1
+         p9wQ==
+X-Gm-Message-State: AOAM5320RdV4/twecAcKvHloZ/F3S0vHUOqq2tVgxyRMgyRb/FCEbUlW
+        ZgFE1BFKZQJHo+NZvuzKK+y2Wg==
+X-Google-Smtp-Source: ABdhPJx6myFezyrm6PhKVULen8LMKsY5Syjsjnip37vaPOrsLNJ+WrA4SmXAhJHS3d7EILe/vQLGxw==
+X-Received: by 2002:adf:f48d:: with SMTP id l13mr2925353wro.43.1595493456513;
+        Thu, 23 Jul 2020 01:37:36 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id h11sm3105039wrb.68.2020.07.23.01.37.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 Jul 2020 01:37:35 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH 0/2] interconnect fixes for 5.8-rc
+Date:   Thu, 23 Jul 2020 11:37:33 +0300
+Message-Id: <20200723083735.5616-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catalin Marinas
-> Sent: 22 July 2020 17:54
-> 
-> On Wed, Jul 22, 2020 at 01:14:21PM +0000, David Laight wrote:
-> > From: Catalin Marinas
-> > > Sent: 22 July 2020 12:37
-> > > On Sun, Jul 19, 2020 at 12:34:11PM -0700, Linus Torvalds wrote:
-> > > > On Sun, Jul 19, 2020 at 12:28 PM Linus Torvalds
-> > > > <torvalds@linux-foundation.org> wrote:
-> > > > > I think we should try to get rid of the exact semantics.
-> > > >
-> > > > Side note: I think one of the historical reasons for the exact
-> > > > semantics was that we used to do things like the mount option copying
-> > > > with a "copy_from_user()" iirc.
-> > > >
-> > > > And that could take a fault at the end of the stack etc, because
-> > > > "copy_mount_options()" is nasty and doesn't get a size, and just
-> > > > copies "up to 4kB" of data.
-> > > >
-> > > > It's a mistake in the interface, but it is what it is. But we've
-> > > > always handled the inexact count there anyway by originally doing byte
-> > > > accesses, and at some point you optimized it to just look at where
-> > > > page boundaries might be..
-> > >
-> > > And we may have to change this again since, with arm64 MTE, the page
-> > > boundary check is insufficient:
-> > >
-> > > https://lore.kernel.org/linux-fsdevel/20200715170844.30064-25-catalin.marinas@arm.com/
-> > >
-> > > While currently the fault path is unlikely to trigger, with MTE in user
-> > > space it's a lot more likely since the buffer (e.g. a string) is
-> > > normally less than 4K and the adjacent addresses would have a different
-> > > colour.
-> > >
-> > > I looked (though briefly) into passing the copy_from_user() problem to
-> > > filesystems that would presumably know better how much to copy. In most
-> > > cases the options are string, so something like strncpy_from_user()
-> > > would work. For mount options as binary blobs (IIUC btrfs) maybe the fs
-> > > has a better way to figure out how much to copy.
-> >
-> > What about changing the mount code to loop calling get_user()
-> > to read aligned words until failure?
-> > Mount is fairly uncommon and the extra cost is probably small compared
-> > to the rest of doing a mount.
-> 
-> Before commit 12efec560274 ("saner copy_mount_options()"), it was using
-> single-byte get_user(). That could have been optimised for aligned words
-> reading but I don't really think it's worth the hassle. Since the source
-> and destination don't have the same alignment and some architecture
-> don't support unaligned accesses (for storing to the kernel buffer), it
-> would just make this function unnecessarily complicated.
+Hi Greg,
 
-It could do aligned words if the user buffer is aligned (it will be
-most of the time) and bytes otherwise.
+Here are two late fixes for the current release. One of them is a fix
+related to the icc_disable() function, which was introduced during the
+last merge window and the other one is a minor driver fix. Both patches
+have been reviewed and tested and also got into linux-next recently.
+Please apply to char-misc-linus when possible.
 
-Or just fallback to a byte loop if the full 4k read fails.
+Thanks,
+Georgi
 
-	David
+Georgi Djakov (2):
+  interconnect: Do not skip aggregation for disabled paths
+  interconnect: msm8916: Fix buswidth of pcnoc_s nodes
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ drivers/interconnect/core.c         | 12 +++++++++---
+ drivers/interconnect/qcom/msm8916.c | 14 +++++++-------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
 
