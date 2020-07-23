@@ -2,66 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEB222B0E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D7822B0EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgGWOA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGWOA0 (ORCPT
+        id S1729379AbgGWOB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:01:58 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30912 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727111AbgGWOB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:00:26 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313FBC0619DC;
-        Thu, 23 Jul 2020 07:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KJdNCW9/AeNTwbi0vonPFAdv6yCODfnRKfbwoV1pAmc=; b=aHknsQattCTLqx9Xifdf0U4KjV
-        ys1rkNEy5yd9BDfxLIPuAhP1o15Re38t9kHAfy53kiCMHm1rrZeULc5Ls6Joh20xna6uoQOrfjAvK
-        xEStBYKjqwu0NspaoQEqh+7FkHDyMdn6aMP4qqpgEgSC085tYzi8O4VJa5cEHx3MvJ+EdWAFyRWde
-        V20QvR719AoWFdEgRqlYfSPdG5BSPlvbty+fnF/w+RFjvsrRDcgNmbdpaZvfz3vhEh5qsusNkgZPd
-        A/zTIwQ73gWoLzUWA7V/MMEOXoE3O2/FmIF1CjP2MqLnR6z1+cJK8LV00dfdvfHJugTPz7EHVir2q
-        q88kG/ng==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jybld-0003bC-Nr; Thu, 23 Jul 2020 14:00:13 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DAFF0983422; Thu, 23 Jul 2020 16:00:11 +0200 (CEST)
-Date:   Thu, 23 Jul 2020 16:00:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] powerpc/pseries: implement paravirt qspinlocks
- for SPLPAR
-Message-ID: <20200723140011.GR5523@worktop.programming.kicks-ass.net>
-References: <20200706043540.1563616-1-npiggin@gmail.com>
- <20200706043540.1563616-6-npiggin@gmail.com>
- <874kqhvu1v.fsf@mpe.ellerman.id.au>
- <8265d782-4e50-a9b2-a908-0cb588ffa09c@redhat.com>
+        Thu, 23 Jul 2020 10:01:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595512916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FNrI3J22ipRhrW25TFVKILW4WyC6tvsphPA0SNAITiY=;
+        b=MiHCcM4ZVvUk+UUjUHNSuD4P+u7JvEATKnvVF0Uku7YNrxuTv3tQCObvnQ+aZeRtsY9jGR
+        87/i6cdM/evo3z6Qs4gPTv+NKOmIRNzFZF7pbDCg6bDliPW1xyMUY09EqS4JDOXMVLkxfQ
+        UzXTU8JxclhEIrnecp6B306zZ2bYhDQ=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-1VNfiPdAMV-o6p2huMOdxQ-1; Thu, 23 Jul 2020 10:01:55 -0400
+X-MC-Unique: 1VNfiPdAMV-o6p2huMOdxQ-1
+Received: by mail-qv1-f72.google.com with SMTP id w18so3607087qvd.16
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 07:01:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FNrI3J22ipRhrW25TFVKILW4WyC6tvsphPA0SNAITiY=;
+        b=tJIb2Fq4kGb/4OYXO5CxjhKNnjIKM4GrtfpoIbQbD3FPI5VHWuGop/r+08epkkoooL
+         QrDOyMH7XP78ru9QLXcx/do9LXMzzT2rnhVPmTIygqh2HU/ykNNxrh5o6zo0RYAwdQBW
+         nx4j7BW0MfuEVIBPMKTHi09XlKtLvDomoAjGoxQWyp7Gy9NsqKtc2yIJmeBVBD9g6rqC
+         zyPE9IK546H5Nv1EgN8ZARuYCLCK8yomqPi6GovmE2SQxP3ozVydluBqx9Ed9LWJVj6w
+         1AXmpTffvkUsIaJOZrTiVkNmd/w6qA0VBI/px8gcOrYLCePXVvuhgoBUHRf8FQyA7+7i
+         Ydhw==
+X-Gm-Message-State: AOAM530bnhUnxgGu5EKDqtWgR1CrwKP9GPdwlHNDkbHP6lU9JcFIXm4X
+        fGe1BLpo36gDS8nroExy2XIcz5KPlbT9fll4PYIhPltFaE0o1VhY+ov1c+juOhGsH75RTp8+gTd
+        Y6itcvYiT/FsBS3IVaajhuyZi
+X-Received: by 2002:a0c:8583:: with SMTP id o3mr5013027qva.108.1595512914217;
+        Thu, 23 Jul 2020 07:01:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4KIDq8nFjc8M+Ayc6oKKZhshXVGfh68xoXhfmaMHK6Mfi6bMcdpiPnoy+C+NIwEpmBPfoig==
+X-Received: by 2002:a0c:8583:: with SMTP id o3mr5013000qva.108.1595512913943;
+        Thu, 23 Jul 2020 07:01:53 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z60sm2534085qtc.30.2020.07.23.07.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 07:01:53 -0700 (PDT)
+From:   trix@redhat.com
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] scsi: lpfc: add depends CPU_FREQ to SCSI_LPFC configury
+Date:   Thu, 23 Jul 2020 07:01:36 -0700
+Message-Id: <20200723140136.18367-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8265d782-4e50-a9b2-a908-0cb588ffa09c@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 09, 2020 at 12:06:13PM -0400, Waiman Long wrote:
-> We don't really need to do a pv_spinlocks_init() if pv_kick() isn't
-> supported.
+From: Tom Rix <trix@redhat.com>
 
-Waiman, if you cannot explain how not having kick is a sane thing, what
-are you saying here?
+A compile error
+
+drivers/scsi/lpfc/lpfc_sli.c:7329:26: error: implicit
+  declaration of function ‘get_cpu_idle_time’; did you
+  mean ‘set_cpu_active’? [-Werror=implicit-function-declaration]
+   idle_stat->prev_idle = get_cpu_idle_time(i, &wall, 1);
+
+lpfc_init_idle_stat_hb depends on CPU_FREQ
+
+So add depends CPU_FREQ to the configury.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/scsi/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index 571473a58f98..004dcda07d49 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -1157,6 +1157,7 @@ config SCSI_LPFC
+ 	depends on SCSI_FC_ATTRS
+ 	depends on NVME_TARGET_FC || NVME_TARGET_FC=n
+ 	depends on NVME_FC || NVME_FC=n
++	depends on CPU_FREQ
+ 	select CRC_T10DIF
+ 	help
+           This lpfc driver supports the Emulex LightPulse
+-- 
+2.18.1
+
