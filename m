@@ -2,82 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2875E22B148
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2D622B14B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgGWO0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGWO0g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:26:36 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2D3C0619DC;
-        Thu, 23 Jul 2020 07:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wwAZ4+QkYVfMEHOVd3BXrZYoQyQVya/EkyI6lTMJuEc=; b=PMLkNsZxkfipkQdx59Ts5gbSgy
-        ODJbDs/oG8tcz8/eohMUTIz+JBG8PYDPFQKWJMwDegGQl83DK2H4STe5I0pz7ZqX8KdZzt/EiC9Os
-        dzdb+OE63JAGbPDhIco+b5j1Yy3qEnFWRiNqz1O3tImnIJ3Pkcar23kbnxKbQKOS+OPuXYKMniIGR
-        pP5J4QQFMcVKpENacLV0k/slNjU1uyWx4kIShROCXfnBpF6JKLJ+mScEmbPN9YtO6oDhGnSmeAuVr
-        91tN4f4u0hpzoB0inLOFLV0Na6vJeadwIpqLOlss8qCFFij3lla63yca6jWqOzYWlPEGrdBDYYnlN
-        rQouaYzw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jycAz-0006IN-CG; Thu, 23 Jul 2020 14:26:25 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5BE1A983422; Thu, 23 Jul 2020 16:26:23 +0200 (CEST)
-Date:   Thu, 23 Jul 2020 16:26:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alex Belits <abelits@marvell.com>,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Prasun Kapoor <pkapoor@marvell.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 00/13] "Task_isolation" mode
-Message-ID: <20200723142623.GS5523@worktop.programming.kicks-ass.net>
-References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
- <87imeextf3.fsf@nanos.tec.linutronix.de>
+        id S1729434AbgGWO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:27:39 -0400
+Received: from verein.lst.de ([213.95.11.211]:60460 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726089AbgGWO1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 10:27:38 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 146E468AFE; Thu, 23 Jul 2020 16:27:35 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 16:27:34 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: Re: [PATCH 16/23] initramfs: simplify clean_rootfs
+Message-ID: <20200723142734.GA11080@lst.de>
+References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-17-hch@lst.de> <CGME20200717205549eucas1p13fca9a8496836faa71df515524743648@eucas1p1.samsung.com> <7f37802c-d8d9-18cd-7394-df51fa785988@samsung.com> <20200718100035.GA8856@lst.de> <20200723092200.GA19922@lst.de> <dleftjblk6b95t.fsf%l.stelmach@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87imeextf3.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <dleftjblk6b95t.fsf%l.stelmach@samsung.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 03:17:04PM +0200, Thomas Gleixner wrote:
-
->   2) Instruction synchronization
+On Thu, Jul 23, 2020 at 04:25:34PM +0200, Lukasz Stelmach wrote:
+> >> Can you comment out the call to d_genocide?  It seems like for your
+> >> the fact that clean_rootfs didn't actually clean up was a feature and
+> >> not a bug.
+> >> 
+> >> I guess the old, pre-2008 code also wouldn't have worked for you in
+> >> that case.
+> >
+> > Did you get a chance to try this?
 > 
->      Trying to do instruction synchronization delayed is a clear recipe
->      for hard to diagnose failures. Just because it blew not up in your
->      face does not make it correct in any way. It's broken by design and
->      violates _all_ rules of safe instruction patching and introduces a
->      complete trainwreck in x86 NMI processing.
-> 
->      If you really think that this is correct, then please have at least
->      the courtesy to come up with a detailed and precise argumentation
->      why this is a valid approach.
-> 
->      While writing that up you surely will find out why it is not.
+> Indeed, commenting out d_genocide() helps.
 
-So delaying the sync_core() IPIs for kernel text patching _might_ be
-possible, but it very much wants to be a separate patchset and not
-something hidden inside a 'gem' like this.
+So given that people have relied on at least the basic device nodes
+like /dev/console to not go away since 2008, I wonder if we should just
+remove clean_rootfs entirely
 
+Linus, Al?
