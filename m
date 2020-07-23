@@ -2,122 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE09922A70D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F5E22A714
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgGWFqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 01:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgGWFql (ORCPT
+        id S1726503AbgGWFtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 01:49:02 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:19783 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725536AbgGWFtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:46:41 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8889C0619DC;
-        Wed, 22 Jul 2020 22:46:41 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x9so2063398plr.2;
-        Wed, 22 Jul 2020 22:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=4Bsv9nIgqKmSYSIOMPedKdrcSWXd/PYFSO2aIq/191g=;
-        b=h1NFcx22ZnIuEzuWbSbkC3x7IEN9Y2dN6+57CJu8RbnCZqVp91BCoOWxD1R6Zx93Sb
-         lo4nx9IxNGFCzW2Vz6QX3Plltlj4h16/LmJ0YIpIuapYsFxfeqrNXg9VDLvCy2d2UU/J
-         haOQ4c/cYL4G2Y4SES+dw1eVWHBr7SQGOS22NA2U1bvjwxKAggTPT31ZqEZ3WTNy+Z7d
-         PMLE8ufxcP4Y16XHvH3S/qkr0LjvrGNndguO5t1XbH1XujDd0rCNUBn2mcdMWQrhslMf
-         sTP8OF/bVRL/XHpQt9lGLV6hdQRH5BtFSe/3/rFD60TtGwM6GvYDM2P8XIPmb+ZLPh6Y
-         afdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=4Bsv9nIgqKmSYSIOMPedKdrcSWXd/PYFSO2aIq/191g=;
-        b=Yp7JQ578EWkYzFUIa2gCG8TGI/oqUNRUYdWg0sf8a6jJazdl9m+oA6fqodEs+VGOd9
-         w9BgLbBfYNNw+ON391ULd+hJBQWvMDWY4gArPGK95ejaKhJ45yDewa1AfpqOubgH2mXx
-         a+/55VSIVSCEqfZCDXnemzqgYZhB6QXM81ow4Dku6xhtnmgH5/m7AjWgb6ZXj6lga+FK
-         I+bPM7A6KfHZ5FN0im20SfVo3GkWoqke3HRcp3TaYfibTF/EXlnNTsGdxWFjTu7E6tIU
-         hrCf59Fj89ocs9pvbtRkJHfcqfeg+otGJi/Hx4puOowwv1Pd3v/IJvJm4TqPFyy7bf2u
-         /4Pw==
-X-Gm-Message-State: AOAM532CgZSQRtcdITWo8FBuyXs7UgA6pblEmrMSBkQDwzwyDCN7LxEJ
-        7xIc0v6UcyvCTQmi+WZrM7I=
-X-Google-Smtp-Source: ABdhPJyIls34k7x9JFSOkkgOqf1QQEkFiI5YZQPlp/pPPicar1BpkkeJw1obLQi4kxe5E1ASY31oLg==
-X-Received: by 2002:a17:90a:1a02:: with SMTP id 2mr2574014pjk.150.1595483201112;
-        Wed, 22 Jul 2020 22:46:41 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id u16sm1295001pfn.52.2020.07.22.22.46.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Jul 2020 22:46:40 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 22:46:07 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Cc:     kernel@collabora.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 0/4] ASoC: fsl_asrc: allow selecting arbitrary clocks
-Message-ID: <20200723054604.GC5476@Asurada-Nvidia>
-References: <20200702142235.235869-1-arnaud.ferraris@collabora.com>
- <20200702184226.GA23935@Asurada-Nvidia>
- <abdd7265-43d2-49b5-6afd-70d65baac30e@collabora.com>
+        Thu, 23 Jul 2020 01:49:01 -0400
+X-UUID: fea772324bcd439fa3a48d7dbf3e985c-20200723
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=avHxu0dEvObqmrR0tNdjaTp0S0v4rEX5l1fG2CDw6nw=;
+        b=A0jU3ejFug07WiLPB3VsLWud19SVmLpO+GfcGdYmkKFS+ctHYlq5suTP3kgrZUiOFJYq4Up4DMwbbAxpEg0CMwKUUoWO82DUFMSYo6Fmi0iaueRmSddgAt/39mggb8z3u6Ywj4aim6JfP0DkOR9x1KDqcG6Z1SIuJT8poJATodY=;
+X-UUID: fea772324bcd439fa3a48d7dbf3e985c-20200723
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 22546170; Thu, 23 Jul 2020 13:48:54 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 23 Jul
+ 2020 13:48:53 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Jul 2020 13:48:52 +0800
+Message-ID: <1595483265.16079.18.camel@mhfsdcap03>
+Subject: Re: [PATCH 2/4] i2c: mediatek: Support DMA mask range over 33-bits
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <wsa@the-dreams.de>, <qiangming.xia@mediatek.com>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <leilk.liu@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 23 Jul 2020 13:47:45 +0800
+In-Reply-To: <87429327-5d2e-e3f3-db22-04e225a31055@gmail.com>
+References: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
+         <1595421106-10017-3-git-send-email-qii.wang@mediatek.com>
+         <87429327-5d2e-e3f3-db22-04e225a31055@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <abdd7265-43d2-49b5-6afd-70d65baac30e@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-TM-SNTS-SMTP: 5486F58D41C29B12797C4E71C6DEAC8B90AB18EC292FCB909DA017C6AD5D7D242000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 01:16:42PM +0200, Arnaud Ferraris wrote:
-> Hi Nic,
-> 
-> Le 02/07/2020 à 20:42, Nicolin Chen a écrit :
-> > Hi Arnaud,
-> > 
-> > On Thu, Jul 02, 2020 at 04:22:31PM +0200, Arnaud Ferraris wrote:
-> >> The current ASRC driver hardcodes the input and output clocks used for
-> >> sample rate conversions. In order to allow greater flexibility and to
-> >> cover more use cases, it would be preferable to select the clocks using
-> >> device-tree properties.
-> > 
-> > We recent just merged a new change that auto-selecting internal
-> > clocks based on sample rates as the first option -- ideal ratio
-> > mode is the fallback mode now. Please refer to:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20200702&id=d0250cf4f2abfbea64ed247230f08f5ae23979f0
-> 
-> While working on fixing the automatic clock selection (see my v3), I
-> came across another potential issue, which would be better explained
-> with an example:
->   - Input has sample rate 8kHz and uses clock SSI1 with rate 512kHz
->   - Output has sample rate 16kHz and uses clock SSI2 with rate 1024kHz
-> 
-> Let's say my v3 patch is merged, then the selected input clock will be
-> SSI1, while the selected output clock will be SSI2. In that case, it's
-> all good, as the driver will calculate the dividers right.
-> 
-> Now, suppose a similar board has the input wired to SSI2 and output to
-> SSI1, meaning we're now in the following case:
->   - Input has sample rate 8kHz and uses clock SSI2 with rate 512kHz
->   - Output has sample rate 16kHz and uses clock SSI1 with rate 1024kHz
-> (the same result is achieved during capture with the initial example
-> setup, as input and output properties are then swapped)
-> 
-> In that case, the selected clocks will still be SSI1 for input (just
-> because it appears first in the clock table), and SSI2 for output,
-> meaning the calculated dividers will be:
->   - input: 512 / 16 => 32 (should be 64)
->   - output: 1024 / 8 => 128 (should be 64 here too)
+T24gV2VkLCAyMDIwLTA3LTIyIGF0IDE3OjM4ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMjIvMDcvMjAyMCAxNDozMSwgUWlpIFdhbmcgd3JvdGU6DQo+ID4gUmVwbGFj
+ZSAnc3VwcG9ydF8zM2JpdHMgd2l0aCAnZG1hX21heF9zdXBwb3J0JyBmb3IgRE1BIG1hc2sNCj4g
+PiBvcGVyYXRpb24sIGFuZCByZXBsYWNlICdtdGtfaTJjX3NldF80Z19tb2RlJyB3aXRoICd1cHBl
+cl8zMl9iaXRzJy4NCj4gDQo+IFBsZWFzZSBleHBsYWluIG1vcmUgaW4gZGV0YWlsIHdoYXQgeW91
+IGFyZSBkb2luZyBhbmQgaG93IHRoaXMgZml0cyB0byB0aGUgd2F5IA0KPiB0aGUgSFcgd29ya3Mu
+DQo+IA0KDQpBcyBZaW5nam9lIHNpciBzYWlkLCBOZXdlciBNVEsgY2hpcCBzdXBwb3J0IG1vcmUg
+dGhhbiA4R0Igb2YgZHJhbSwgYW5kDQp0aGUgcmVnaXN0ZXIgVFgvUlhfNEdfTU9ERSBvZiBBUERN
+QSBoYXMgYWRkZWQgY29ycmVzcG9uZGluZyBiaXQgdG8NCnN1cHBvcnQuU28gd2UgUmVwbGFjZSBz
+dXBwb3J0XzMzYml0cyB3aXRoIG1vcmUgZ2VuZXJhbCBkbWFfbWF4X3N1cHBvcnQuSQ0Kd2lsbCBt
+b2RpZnkgdGhlIHRpdGxlIGFuZCBjb21taXQgYXMgOg0KaTJjOiBtZWRpYXRlazogQWRkIGFjY2Vz
+cyB0byBtb3JlIHRoYW4gOEdCIGRyYW0gaW4gaTJjIGRyaXZlcg0KTmV3ZXIgTVRLIGNoaXAgc3Vw
+cG9ydCBtb3JlIHRoYW4gOEdCIG9mIGRyYW0uIFJlcGxhY2Ugc3VwcG9ydF8zM2JpdHMNCndpdGgg
+bW9yZSBnZW5lcmFsIGRtYV9tYXhfc3VwcG9ydCBhbmQgcmVtb3ZlIG10a19pMmNfc2V0XzRnX21v
+ZGUuDQoNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0
+ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyB8
+IDM3ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgIDEgZmlsZSBj
+aGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAyMCBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyBiL2RyaXZlcnMvaTJjL2J1
+c3Nlcy9pMmMtbXQ2NXh4LmMNCj4gPiBpbmRleCBlNmI5ODRhLi5lNDc1ODc3IDEwMDY0NA0KPiA+
+IC0tLSBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMNCj4gPiArKysgYi9kcml2ZXJz
+L2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+ID4gQEAgLTIwOSw2ICsyMDksNyBAQCBzdHJ1Y3Qg
+bXRrX2kyY19jb21wYXRpYmxlIHsNCj4gPiAgIAl1bnNpZ25lZCBjaGFyIGRtYV9zeW5jOiAxOw0K
+PiA+ICAgCXVuc2lnbmVkIGNoYXIgbHRpbWluZ19hZGp1c3Q6IDE7DQo+ID4gICAJdW5zaWduZWQg
+Y2hhciBhcGRtYV9zeW5jOiAxOw0KPiA+ICsJdW5zaWduZWQgY2hhciBtYXhfZG1hX3N1cHBvcnQ7
+DQo+ID4gICB9Ow0KPiA+ICAgDQo+ID4gICBzdHJ1Y3QgbXRrX2kyY19hY190aW1pbmcgew0KPiA+
+IEBAIC0zMTEsMTEgKzMxMiwxMSBAQCBzdHJ1Y3QgaTJjX3NwZWNfdmFsdWVzIHsNCj4gPiAgIAku
+ZGNtID0gMSwNCj4gPiAgIAkuYXV0b19yZXN0YXJ0ID0gMSwNCj4gPiAgIAkuYXV4X2xlbl9yZWcg
+PSAxLA0KPiA+IC0JLnN1cHBvcnRfMzNiaXRzID0gMSwNCj4gPiAgIAkudGltaW5nX2FkanVzdCA9
+IDEsDQo+ID4gICAJLmRtYV9zeW5jID0gMCwNCj4gPiAgIAkubHRpbWluZ19hZGp1c3QgPSAwLA0K
+PiA+ICAgCS5hcGRtYV9zeW5jID0gMCwNCj4gPiArCS5tYXhfZG1hX3N1cHBvcnQgPSAzMywNCj4g
+PiAgIH07DQo+ID4gICANCj4gPiAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2kyY19jb21wYXRp
+YmxlIG10NjU3N19jb21wYXQgPSB7DQo+ID4gQEAgLTMyNSwxMSArMzI2LDExIEBAIHN0cnVjdCBp
+MmNfc3BlY192YWx1ZXMgew0KPiA+ICAgCS5kY20gPSAxLA0KPiA+ICAgCS5hdXRvX3Jlc3RhcnQg
+PSAwLA0KPiA+ICAgCS5hdXhfbGVuX3JlZyA9IDAsDQo+ID4gLQkuc3VwcG9ydF8zM2JpdHMgPSAw
+LA0KPiA+ICAgCS50aW1pbmdfYWRqdXN0ID0gMCwNCj4gPiAgIAkuZG1hX3N5bmMgPSAwLA0KPiA+
+ICAgCS5sdGltaW5nX2FkanVzdCA9IDAsDQo+ID4gICAJLmFwZG1hX3N5bmMgPSAwLA0KPiA+ICsJ
+Lm1heF9kbWFfc3VwcG9ydCA9IDMyLA0KPiA+ICAgfTsNCj4gPiAgIA0KPiA+ICAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBtdGtfaTJjX2NvbXBhdGlibGUgbXQ2NTg5X2NvbXBhdCA9IHsNCj4gPiBAQCAt
+MzM5LDExICszNDAsMTEgQEAgc3RydWN0IGkyY19zcGVjX3ZhbHVlcyB7DQo+ID4gICAJLmRjbSA9
+IDAsDQo+ID4gICAJLmF1dG9fcmVzdGFydCA9IDAsDQo+ID4gICAJLmF1eF9sZW5fcmVnID0gMCwN
+Cj4gPiAtCS5zdXBwb3J0XzMzYml0cyA9IDAsDQo+ID4gICAJLnRpbWluZ19hZGp1c3QgPSAwLA0K
+PiA+ICAgCS5kbWFfc3luYyA9IDAsDQo+ID4gICAJLmx0aW1pbmdfYWRqdXN0ID0gMCwNCj4gPiAg
+IAkuYXBkbWFfc3luYyA9IDAsDQo+ID4gKwkubWF4X2RtYV9zdXBwb3J0ID0gMzIsDQo+ID4gICB9
+Ow0KPiA+ICAgDQo+ID4gICBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19pMmNfY29tcGF0aWJsZSBt
+dDc2MjJfY29tcGF0ID0gew0KPiA+IEBAIC0zNTMsMTEgKzM1NCwxMSBAQCBzdHJ1Y3QgaTJjX3Nw
+ZWNfdmFsdWVzIHsNCj4gPiAgIAkuZGNtID0gMSwNCj4gPiAgIAkuYXV0b19yZXN0YXJ0ID0gMSwN
+Cj4gPiAgIAkuYXV4X2xlbl9yZWcgPSAxLA0KPiA+IC0JLnN1cHBvcnRfMzNiaXRzID0gMCwNCj4g
+PiAgIAkudGltaW5nX2FkanVzdCA9IDAsDQo+ID4gICAJLmRtYV9zeW5jID0gMCwNCj4gPiAgIAku
+bHRpbWluZ19hZGp1c3QgPSAwLA0KPiA+ICAgCS5hcGRtYV9zeW5jID0gMCwNCj4gPiArCS5tYXhf
+ZG1hX3N1cHBvcnQgPSAzMiwNCj4gPiAgIH07DQo+ID4gICANCj4gPiAgIHN0YXRpYyBjb25zdCBz
+dHJ1Y3QgbXRrX2kyY19jb21wYXRpYmxlIG10ODE3M19jb21wYXQgPSB7DQo+ID4gQEAgLTM2Niwx
+MSArMzY3LDExIEBAIHN0cnVjdCBpMmNfc3BlY192YWx1ZXMgew0KPiA+ICAgCS5kY20gPSAxLA0K
+PiA+ICAgCS5hdXRvX3Jlc3RhcnQgPSAxLA0KPiA+ICAgCS5hdXhfbGVuX3JlZyA9IDEsDQo+ID4g
+LQkuc3VwcG9ydF8zM2JpdHMgPSAxLA0KPiA+ICAgCS50aW1pbmdfYWRqdXN0ID0gMCwNCj4gPiAg
+IAkuZG1hX3N5bmMgPSAwLA0KPiA+ICAgCS5sdGltaW5nX2FkanVzdCA9IDAsDQo+ID4gICAJLmFw
+ZG1hX3N5bmMgPSAwLA0KPiA+ICsJLm1heF9kbWFfc3VwcG9ydCA9IDMzLA0KPiA+ICAgfTsNCj4g
+PiAgIA0KPiA+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfaTJjX2NvbXBhdGlibGUgbXQ4MTgz
+X2NvbXBhdCA9IHsNCj4gPiBAQCAtMzgwLDExICszODEsMTEgQEAgc3RydWN0IGkyY19zcGVjX3Zh
+bHVlcyB7DQo+ID4gICAJLmRjbSA9IDAsDQo+ID4gICAJLmF1dG9fcmVzdGFydCA9IDEsDQo+ID4g
+ICAJLmF1eF9sZW5fcmVnID0gMSwNCj4gPiAtCS5zdXBwb3J0XzMzYml0cyA9IDEsDQo+ID4gICAJ
+LnRpbWluZ19hZGp1c3QgPSAxLA0KPiA+ICAgCS5kbWFfc3luYyA9IDEsDQo+ID4gICAJLmx0aW1p
+bmdfYWRqdXN0ID0gMSwNCj4gPiAgIAkuYXBkbWFfc3luYyA9IDAsDQo+ID4gKwkubWF4X2RtYV9z
+dXBwb3J0ID0gMzMsDQo+ID4gICB9Ow0KPiA+ICAgDQo+ID4gICBzdGF0aWMgY29uc3Qgc3RydWN0
+IG9mX2RldmljZV9pZCBtdGtfaTJjX29mX21hdGNoW10gPSB7DQo+ID4gQEAgLTc5NiwxMSArNzk3
+LDYgQEAgc3RhdGljIGludCBtdGtfaTJjX3NldF9zcGVlZChzdHJ1Y3QgbXRrX2kyYyAqaTJjLCB1
+bnNpZ25lZCBpbnQgcGFyZW50X2NsaykNCj4gPiAgIAlyZXR1cm4gMDsNCj4gPiAgIH0NCj4gPiAg
+IA0KPiA+IC1zdGF0aWMgaW5saW5lIHUzMiBtdGtfaTJjX3NldF80Z19tb2RlKGRtYV9hZGRyX3Qg
+YWRkcikNCj4gPiAtew0KPiA+IC0JcmV0dXJuIChhZGRyICYgQklUX1VMTCgzMikpID8gSTJDX0RN
+QV80R19NT0RFIDogSTJDX0RNQV9DTFJfRkxBRzsNCj4gDQo+IEkyQ19ETUFfNEdfTU9ERSBkZWZp
+bmUgY291bGQgbm93IGJlIGRlbGV0ZWQgYXMgd2VsbC4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRo
+aWFzDQo+IA0KPiA+IC19DQo+ID4gLQ0KPiA+ICAgc3RhdGljIGludCBtdGtfaTJjX2RvX3RyYW5z
+ZmVyKHN0cnVjdCBtdGtfaTJjICppMmMsIHN0cnVjdCBpMmNfbXNnICptc2dzLA0KPiA+ICAgCQkJ
+ICAgICAgIGludCBudW0sIGludCBsZWZ0X251bSkNCj4gPiAgIHsNCj4gPiBAQCAtODg1LDggKzg4
+MSw4IEBAIHN0YXRpYyBpbnQgbXRrX2kyY19kb190cmFuc2ZlcihzdHJ1Y3QgbXRrX2kyYyAqaTJj
+LCBzdHJ1Y3QgaTJjX21zZyAqbXNncywNCj4gPiAgIAkJCXJldHVybiAtRU5PTUVNOw0KPiA+ICAg
+CQl9DQo+ID4gICANCj4gPiAtCQlpZiAoaTJjLT5kZXZfY29tcC0+c3VwcG9ydF8zM2JpdHMpIHsN
+Cj4gPiAtCQkJcmVnXzRnX21vZGUgPSBtdGtfaTJjX3NldF80Z19tb2RlKHJwYWRkcik7DQo+ID4g
+KwkJaWYgKGkyYy0+ZGV2X2NvbXAtPm1heF9kbWFfc3VwcG9ydCA+IDMyKSB7DQo+ID4gKwkJCXJl
+Z180Z19tb2RlID0gdXBwZXJfMzJfYml0cyhycGFkZHIpOw0KPiA+ICAgCQkJd3JpdGVsKHJlZ180
+Z19tb2RlLCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1JYXzRHX01PREUpOw0KPiA+ICAgCQl9DQo+
+ID4gICANCj4gPiBAQCAtOTA4LDggKzkwNCw4IEBAIHN0YXRpYyBpbnQgbXRrX2kyY19kb190cmFu
+c2ZlcihzdHJ1Y3QgbXRrX2kyYyAqaTJjLCBzdHJ1Y3QgaTJjX21zZyAqbXNncywNCj4gPiAgIAkJ
+CXJldHVybiAtRU5PTUVNOw0KPiA+ICAgCQl9DQo+ID4gICANCj4gPiAtCQlpZiAoaTJjLT5kZXZf
+Y29tcC0+c3VwcG9ydF8zM2JpdHMpIHsNCj4gPiAtCQkJcmVnXzRnX21vZGUgPSBtdGtfaTJjX3Nl
+dF80Z19tb2RlKHdwYWRkcik7DQo+ID4gKwkJaWYgKGkyYy0+ZGV2X2NvbXAtPm1heF9kbWFfc3Vw
+cG9ydCA+IDMyKSB7DQo+ID4gKwkJCXJlZ180Z19tb2RlID0gdXBwZXJfMzJfYml0cyh3cGFkZHIp
+Ow0KPiA+ICAgCQkJd3JpdGVsKHJlZ180Z19tb2RlLCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1RY
+XzRHX01PREUpOw0KPiA+ICAgCQl9DQo+ID4gICANCj4gPiBAQCAtOTU0LDExICs5NTAsMTEgQEAg
+c3RhdGljIGludCBtdGtfaTJjX2RvX3RyYW5zZmVyKHN0cnVjdCBtdGtfaTJjICppMmMsIHN0cnVj
+dCBpMmNfbXNnICptc2dzLA0KPiA+ICAgCQkJcmV0dXJuIC1FTk9NRU07DQo+ID4gICAJCX0NCj4g
+PiAgIA0KPiA+IC0JCWlmIChpMmMtPmRldl9jb21wLT5zdXBwb3J0XzMzYml0cykgew0KPiA+IC0J
+CQlyZWdfNGdfbW9kZSA9IG10a19pMmNfc2V0XzRnX21vZGUod3BhZGRyKTsNCj4gPiArCQlpZiAo
+aTJjLT5kZXZfY29tcC0+bWF4X2RtYV9zdXBwb3J0ID4gMzIpIHsNCj4gPiArCQkJcmVnXzRnX21v
+ZGUgPSB1cHBlcl8zMl9iaXRzKHdwYWRkcik7DQo+ID4gICAJCQl3cml0ZWwocmVnXzRnX21vZGUs
+IGkyYy0+cGRtYWJhc2UgKyBPRkZTRVRfVFhfNEdfTU9ERSk7DQo+ID4gICANCj4gPiAtCQkJcmVn
+XzRnX21vZGUgPSBtdGtfaTJjX3NldF80Z19tb2RlKHJwYWRkcik7DQo+ID4gKwkJCXJlZ180Z19t
+b2RlID0gdXBwZXJfMzJfYml0cyhycGFkZHIpOw0KPiA+ICAgCQkJd3JpdGVsKHJlZ180Z19tb2Rl
+LCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1JYXzRHX01PREUpOw0KPiA+ICAgCQl9DQo+ID4gICAN
+Cj4gPiBAQCAtMTIzMiw4ICsxMjI4LDkgQEAgc3RhdGljIGludCBtdGtfaTJjX3Byb2JlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gICAJCXJldHVybiAtRUlOVkFMOw0KPiA+ICAg
+CX0NCj4gPiAgIA0KPiA+IC0JaWYgKGkyYy0+ZGV2X2NvbXAtPnN1cHBvcnRfMzNiaXRzKSB7DQo+
+ID4gLQkJcmV0ID0gZG1hX3NldF9tYXNrKCZwZGV2LT5kZXYsIERNQV9CSVRfTUFTSygzMykpOw0K
+PiA+ICsJaWYgKGkyYy0+ZGV2X2NvbXAtPm1heF9kbWFfc3VwcG9ydCA+IDMyKSB7DQo+ID4gKwkJ
+cmV0ID0gZG1hX3NldF9tYXNrKCZwZGV2LT5kZXYsDQo+ID4gKwkJCQlETUFfQklUX01BU0soaTJj
+LT5kZXZfY29tcC0+bWF4X2RtYV9zdXBwb3J0KSk7DQo+ID4gICAJCWlmIChyZXQpIHsNCj4gPiAg
+IAkJCWRldl9lcnIoJnBkZXYtPmRldiwgImRtYV9zZXRfbWFzayByZXR1cm4gZXJyb3IuXG4iKTsN
+Cj4gPiAgIAkJCXJldHVybiByZXQ7DQo+ID4gDQoNCg==
 
-I don't get the 32, 128 and 64 parts. Would you please to elaborate
-a bit? What you said sounds to me like the driver calculates wrong
-dividers?
