@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9830922B439
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6908422B43F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729980AbgGWRL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726254AbgGWRL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:11:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A2FA208E4;
-        Thu, 23 Jul 2020 17:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595524286;
-        bh=iB/F1b5c+X/36Vs+nTnucwPGaMsJaU4s+syuS6lbxts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hPTBiJMhu5ImSYJNW8LP2Wa1fUpxncRShVXTFqE0CV6MsVfWH7lroBIcEkzJyHptH
-         TxxbCxUgO3f7jZvJ+3dwpcsNTKQoDWET0Sbf2Z0MBnB19ihcoQ3TKXKt4lk3zFCnqT
-         Tn4E72d6oMCu+fUIgfGwy1HDRG1ltEP49G9denz4=
-Date:   Thu, 23 Jul 2020 19:11:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yannick Schinko <y.schinko@connectingmedia.de>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Interact with a serial device over USB
-Message-ID: <20200723171130.GC2835510@kroah.com>
-References: <AM4PR0301MB22282740FE8D06D8BB573F0583760@AM4PR0301MB2228.eurprd03.prod.outlook.com>
+        id S1730020AbgGWRLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:11:38 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:46829 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729811AbgGWRLd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:11:33 -0400
+Received: by mail-il1-f195.google.com with SMTP id p15so4913962ilh.13;
+        Thu, 23 Jul 2020 10:11:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W10uFRF9PNlMYJayv5R1Pm2HIaj5J/vliPwEy5KAVAA=;
+        b=rRHWKfCM14cJp9kTXs+pyyvjGC9gvCyf5FzwsTi31Efai/Q7fW8x/urQxippMcmUp2
+         vSjzpPCRUWud486R976/UQcjtSGlUA+3KbaNxz/60fYNCN0sHRF7Leh39mOrjIFa33hg
+         t81o8l9xq2A8i9NbT2Mc1lHWIDWoy6Ectt8SbLEY7VOd4BMEtHlBtMHHnuSZu3kzYeWt
+         M73OmTYymfG8zDU0/actWbZI+bUqfQOORRFrqvKMlQpDhm0qPqWN3FFGJDSmvoX2i9Dd
+         tOjmVI4KYXKKb4TcZvI31aTbjw+QAYLQqXcRP4cqhNb5Ize+xxDVzzR4GtKyeALU9Kfw
+         uQrQ==
+X-Gm-Message-State: AOAM530owS3DiUyYTf89+SGDjQ4r2upBVxJHLvTeQkTLwyjGIBlBOH1y
+        H0/Ub7f4zNgIW7hiAjGjiA==
+X-Google-Smtp-Source: ABdhPJwBOwWbNgntw6RkaJvSYZqmju6uJjrnsDHD6EwiLBFu8XLvtd0BZCUpcGvP1P6XjnZITh2bPQ==
+X-Received: by 2002:a92:c011:: with SMTP id q17mr5990026ild.290.1595524291809;
+        Thu, 23 Jul 2020 10:11:31 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id f18sm1733238ilj.15.2020.07.23.10.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 10:11:31 -0700 (PDT)
+Received: (nullmailer pid 547620 invoked by uid 1000);
+        Thu, 23 Jul 2020 17:11:30 -0000
+Date:   Thu, 23 Jul 2020 11:11:30 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Rohit kumar <rohitkr@codeaurora.org>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, perex@perex.cz, robh+dt@kernel.org,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com,
+        bgoswami@codeaurora.org, srinivas.kandagatla@linaro.org,
+        plai@codeaurora.org, tiwai@suse.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 08/12] include: dt-bindings: sound: Add sc7180-lpass
+ bindings header
+Message-ID: <20200723171130.GA547571@bogus>
+References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
+ <1595413915-17867-9-git-send-email-rohitkr@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AM4PR0301MB22282740FE8D06D8BB573F0583760@AM4PR0301MB2228.eurprd03.prod.outlook.com>
+In-Reply-To: <1595413915-17867-9-git-send-email-rohitkr@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 03:06:51PM +0000, Yannick Schinko wrote:
-> Hello,
+On Wed, 22 Jul 2020 16:01:51 +0530, Rohit kumar wrote:
+> From: Ajit Pandey <ajitp@codeaurora.org>
 > 
-> so before I get into any detail I'd like to make clear that I am not at all familiar with the Linux kernel itself. However I'm not an inexperienced programmer.
-> Additionally the driver I'm describing here (and that I ultimately plan to create) is not intended to merged into the kernel itself. It's made for a specific piece of hardware that will only be produced in miniscule numbers. In turn that means removing existing modules to replace them with my own is a possibility.
-
-We take kernel drivers into the tree for only one piece of hardware in
-the world, and one user.  So don't think that we would not take such a
-thing, if it were actually needed (see below...)
-
+> Add header defining dai-id and mclk id for SC7180 lpass soc.
 > 
-> Now, why I am writing here in the first place:
-> Currently the company I work for is designing an inline UPS for a very specific board (the APU2 series from PC engines). On that UPS there's a microcontroller that communicates over USB with the help of a CH341 chip.
-> I have already successfully implemented an userland program that communicates with the microcontroller. This works great! However there's two issues that led me to the conclusion that I need to implement this as a kernel module:
-> - Startup and shutdown times/timings: I noticed early on that the program starts too late on boot and stops too early on shutdown, no matter what I did (excluding very very dirty and impractical solutions that should never be used in any kind of production machine) I could not get it to start early enough and survive the shut down sequence long enough. The only way I can think of to circumvent this is by turning the program into a kernel module as that will allow it to start before the OS and to shutdown after the OS, which would be acceptable.
+> Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
+> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+> ---
+>  include/dt-bindings/sound/sc7180-lpass.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>  create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
+> 
 
-Just fix your system to do this better.  You can start your program
-_REALLY_ early at boot, and just never stop running it until you power
-down.  That control is up to you, you do not have to be a kernel module
-to do that at all.
-
-In fact, you could run your code _before_ kernel modules are loaded, by
-putting it into the initramfs, if you really need it.
-
-This isn't a kernel issue, but a userspace configuration issue, that you
-have control over fixing.
-
-> - Providing sensor data: The microcontroller has voltage sensors and temperature sensors that I would like to make available to userspace through the normal hwmon interfaces. According to my research that is only possible using a kernel module. Funnily enough that part is already implemented and works provided I feed it mocked data.
-
-Why not use a userspace USB driver to talk to the device and do it that
-way?  Why does it have to be a kernel driver?
-
-> In consequence I need to create a kernel module (or at least I think
-> so) that listens to data sent by the microcontroller over USB and then
-> sends back some other information in response.
-
-Userspace USB code works just fine for this too.
-
-> As a secondary functionality it would be amazing if I somehow could still forward that device as a tty (as it currently is) so I can flash firmware using avrdude. I was thinking that as long as nothing is using that tty in userspace, the kernel module listens to the device and sends responses but stops doing that as soon as the tty is in use and also continues listening again as soon as it's no longer in use. While this would be amazing to have it's not required for our use case.
-
-I don't understand what you mean by this.
-
-In short, I think you should be able to do everything you want/need from
-userspace today, no kernel programming needed.
-
-good luck!
-
-greg k-h
+Acked-by: Rob Herring <robh@kernel.org>
