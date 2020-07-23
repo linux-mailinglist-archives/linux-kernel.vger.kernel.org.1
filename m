@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 446DF22B26E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FE222B274
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729580AbgGWPWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:22:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52560 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728711AbgGWPWn (ORCPT
+        id S1729415AbgGWPZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:25:54 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54170 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbgGWPZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:22:43 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jyd3Q-0006cG-CA; Thu, 23 Jul 2020 15:22:40 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ceph: remove redundant initialization of variable mds
-Date:   Thu, 23 Jul 2020 16:22:40 +0100
-Message-Id: <20200723152240.992946-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 23 Jul 2020 11:25:54 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06NFMs2N080032;
+        Thu, 23 Jul 2020 15:25:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=ih7aDDHndvJgRh9w5b+olJvrbDWUkyFxJDMc04b3AcE=;
+ b=Us6llAZPwqKXRXoeLVi15UBQwyZu62gUGDF8yz+IhYoYjCJAo9df4dw52U4kwHg5KNyc
+ nkWqL5sRX8LfAUTo/OczU/BJLh9T8MsDS2XKUFc3YEnxJ/XkknjhIvg7brUXWMFE4PUv
+ XYhL6nY8L/DCwxlXSOHBR9u6diXU+BmYSlowasnIqQFhbIAxyG+rvLueSTLWZxgcU1xT
+ z9y/1YLlKdeyGm7nPhV/KSkgIRYD8WTUx+pOnJuYO4DkrhjQDrCTRN1sn66vyVkQi6qs
+ XDFnb1cAGcjtL58euLOZzKv6Z51jGq0KOQfL2cECGXvIwFRj60YEu+Qb0mVtxyJjsd/D Zw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32brgrt3ab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 23 Jul 2020 15:25:47 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06NFNh2O000842;
+        Thu, 23 Jul 2020 15:23:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 32fb8gysps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Jul 2020 15:23:46 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06NFNC5a004638;
+        Thu, 23 Jul 2020 15:23:12 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 23 Jul 2020 08:23:11 -0700
+Date:   Thu, 23 Jul 2020 18:23:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: [PATCH 2/2] Smack: prevent underflow in smk_set_cipso()
+Message-ID: <20200723152305.GB302005@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000d282bd05ab0bf532@google.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9691 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=968
+ bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007230115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9691 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015 mlxlogscore=975
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007230115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+We have an upper bound on "maplevel" but forgot to check for negative
+values.
 
-The variable mds is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
-
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: e114e473771c ("Smack: Simplified Mandatory Access Control Kernel")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 ---
- fs/ceph/debugfs.c | 2 +-
+ security/smack/smackfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-index 070ed8481340..48f5afb56c91 100644
---- a/fs/ceph/debugfs.c
-+++ b/fs/ceph/debugfs.c
-@@ -272,7 +272,7 @@ static int mds_sessions_show(struct seq_file *s, void *ptr)
- 	struct ceph_mds_client *mdsc = fsc->mdsc;
- 	struct ceph_auth_client *ac = fsc->client->monc.auth;
- 	struct ceph_options *opt = fsc->client->options;
--	int mds = -1;
-+	int mds;
+diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+index 81c6ceeaa4f9..7675305511ef 100644
+--- a/security/smack/smackfs.c
++++ b/security/smack/smackfs.c
+@@ -884,7 +884,7 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+ 	}
  
- 	mutex_lock(&mdsc->mutex);
+ 	ret = sscanf(rule, "%d", &maplevel);
+-	if (ret != 1 || maplevel > SMACK_CIPSO_MAXLEVEL)
++	if (ret != 1 || maplevel < 0 || maplevel > SMACK_CIPSO_MAXLEVEL)
+ 		goto out;
  
+ 	rule += SMK_DIGITLEN;
 -- 
 2.27.0
 
