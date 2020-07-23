@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF72122A9C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:41:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC06322A9D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgGWHlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 03:41:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgGWHlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:41:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727107AbgGWHme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 03:42:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33482 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725911AbgGWHme (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 03:42:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595490153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=//Yfojb2+5l/9c7yxk/wQkjqrs7GK4h6tRXxyXSn7Co=;
+        b=SkYdK+up4ljAmRNISHwhmyI/C+4LupHkN4e+j01e6uy9syzsUTUJQENXk6dBqw6qk1imM7
+        hQHq3S85Z7ojMMY97//4tb5xgyu+5vqpYrJyi6/xOio1CH7wwhJD+xLVeOpFRrCDxDUbSE
+        lfZl6d3jNzGS8BFp8/TN/c9ps1MtJZE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-6kTqSsMROdmuFJgLBoZ4mA-1; Thu, 23 Jul 2020 03:42:29 -0400
+X-MC-Unique: 6kTqSsMROdmuFJgLBoZ4mA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D02B206F5;
-        Thu, 23 Jul 2020 07:41:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595490071;
-        bh=6fcTs/2LDWfmI70/tl+N49wQ3Vgw3XenmCWJWsRmc54=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cQpDiLqBA7pJ5dP4+8jDGE9eg0Sh7IGyVsX9UzyQgj574e3SGBtGCB7OrFir1bUrc
-         RsZQ3lWQk9IZEQrNtvltiju9Kh5lHPAxUpbxe2RFQzxkiI79ElrxTZZ3mJjhJGPO0W
-         jF1AtqngFsVY7T++bYC6ElhcKCRsj4ndUAiyCwp4=
-Date:   Thu, 23 Jul 2020 09:41:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Rodolfo Giometti <giometti@enneenne.com>,
-        "Eurotech S.p.A" <info@eurotech.it>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/1] misc: c2port: core: Make copying name from userspace
- more secure
-Message-ID: <20200723074115.GA1289884@kroah.com>
-References: <20200714083259.1313267-1-lee.jones@linaro.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BFB96100CCC0;
+        Thu, 23 Jul 2020 07:42:27 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 614E610013C0;
+        Thu, 23 Jul 2020 07:42:26 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200723013223.GA45081@linux.intel.com>
+References: <20200723013223.GA45081@linux.intel.com> <159485211858.2340757.9890754969922775496.stgit@warthog.procyon.org.uk>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+        Wei Yongjun <weiyongjun1@huawei.com>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] keys: asymmetric: fix error return code in software_key_query()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200714083259.1313267-1-lee.jones@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1269136.1595490145.1@warthog.procyon.org.uk>
+Date:   Thu, 23 Jul 2020 08:42:25 +0100
+Message-ID: <1269137.1595490145@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 14, 2020 at 09:32:59AM +0100, Lee Jones wrote:
-> Currently the 'c2dev' device data is not zeroed when its allocated.
-> Coupled with the fact strncpy() *may not* provide a NUL terminator
-> means that a 1-byte leak would be possible *if* this was ever copied
-> to userspace.
+Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
 
-c2dev is a kernel internal structure, it is never copied to userspace,
-so why even mention such a thing?
-
-> To prevent such a failing, let's first ensure the 'c2dev' device data
-> area is fully zeroed out and ensure the buffer will always be NUL
-> terminated by using the kernel's strscpy() which a) uses the
-> destination (instead of the source) size as the bytes to copy and b)
-> is *always* NUL terminated.
+> Why f1774cb8956a lacked any possible testing? It extends ABI anyway.
 > 
-> Cc: Rodolfo Giometti <giometti@enneenne.com>
-> Cc: "Eurotech S.p.A" <info@eurotech.it>
-> Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/misc/c2port/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/misc/c2port/core.c b/drivers/misc/c2port/core.c
-> index 80d87e8a0bea9..0de538a1cc1c6 100644
-> --- a/drivers/misc/c2port/core.c
-> +++ b/drivers/misc/c2port/core.c
-> @@ -899,7 +899,7 @@ struct c2port_device *c2port_device_register(char *name,
->  		unlikely(!ops->c2d_get) || unlikely(!ops->c2d_set))
->  		return ERR_PTR(-EINVAL);
->  
-> -	c2dev = kmalloc(sizeof(struct c2port_device), GFP_KERNEL);
-> +	c2dev = kzalloc(sizeof(struct c2port_device), GFP_KERNEL);
+> I think it is a kind of change that would require more screening before
+> getting applied.
 
-All fields seem to be properly initialized so this really isn't needed
-from what I can tell.
+Yeah.  It went in via a round-about route.  I left off development of it when
+the tpm stuff I wrote broke because the tpm2 stuff went in upstream.  I then
+handed the patches off to Denis who did the tpm support, but I never got my
+stuff finished enough to work out how to do the testsuite (since it would
+involve using a tpm).  However, since I did the PKCS#8 testing module as well,
+I guess I don't need that to at least test the API.  I'll look at using that
+to add some tests.  Any suggestions as to how to do testing via the tpm?
 
->  	if (unlikely(!c2dev))
->  		return ERR_PTR(-ENOMEM);
->  
-> @@ -923,7 +923,7 @@ struct c2port_device *c2port_device_register(char *name,
->  	}
->  	dev_set_drvdata(c2dev->dev, c2dev);
->  
-> -	strncpy(c2dev->name, name, C2PORT_NAME_LEN - 1);
-> +	strscpy(c2dev->name, name, sizeof(c2dev->name));
+David
 
-Given there is only 1 user of this function, and it passes in "uc", this
-isn't a big deal :)
-
-But, I can take this as a separate patch, if you want to redo this, just
-to be safe in the future.
-
-thanks,
-
-greg k-h
