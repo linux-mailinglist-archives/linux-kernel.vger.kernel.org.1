@@ -2,151 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B7622B6A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5B122B6B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgGWT0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 15:26:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49272 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726666AbgGWT0w (ORCPT
+        id S1726454AbgGWTaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 15:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgGWTaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 15:26:52 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NJGGOk047201;
-        Thu, 23 Jul 2020 15:26:50 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32fadfc2cc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 15:26:50 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06NJQmA5001297;
-        Thu, 23 Jul 2020 19:26:48 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 32brq7wrgj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 19:26:48 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06NJPLca64225548
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Jul 2020 19:25:21 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A24CEAE051;
-        Thu, 23 Jul 2020 19:26:45 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 53C44AE04D;
-        Thu, 23 Jul 2020 19:26:45 +0000 (GMT)
-Received: from osiris (unknown [9.171.43.182])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 23 Jul 2020 19:26:45 +0000 (GMT)
-Date:   Thu, 23 Jul 2020 21:26:43 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.8-rc7
-Message-ID: <20200723192643.GA7038@osiris>
+        Thu, 23 Jul 2020 15:30:22 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F369C0619DC;
+        Thu, 23 Jul 2020 12:30:22 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d4so3673403pgk.4;
+        Thu, 23 Jul 2020 12:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TXTdsNrfCfieysYpq34E9JAy/A+hI8H1p/zUhrFwIwE=;
+        b=rWqAdotEu1WqPA8oAwtOp5Ax/9imHq2pvWR8vxSxJB4J6LD8c1aP2EQhhvOnyiOfJ5
+         THQMUsOhlJI86RD8hVKX9DHq7J+2Scmtrh6rwSyuSyt2C1/qE1rg6teJTcOmV3dojIZS
+         08d60L+JShRqtRMgtQZA2B1/XEAWX5gBsqqpNZq7as0KYcRPF0FT7Mm+vrzvvalj+esR
+         CTcqZmQ1IvOmao3oRdyCqioMJ4AJs8V3BlrTTWBLD/+1yYkmAl1rLcZNgWOQ0YB8etwl
+         +HOa7ARuFJFtgqwWAvwQQEYhLk1JDYqe9GmkDoBIBcBj2695D2Ksro1A/2lHKPpdwIW4
+         ggxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TXTdsNrfCfieysYpq34E9JAy/A+hI8H1p/zUhrFwIwE=;
+        b=GMa7KUrg78u2sKDElhgHi46o4Vzz+wLrBhIIB7SXBU1W/IgATMy7nI+OoHaFzYuI7i
+         eggIh5uPIYzO29YIsUfl+WjYtnyHxatTTqW5sDMm7L3I3otJQhTHJLDVhMtaPMk4RaiD
+         WJ8P4ELCSvqK/twmwf1OiSYOakKExB8o5JDhKloZ3lY53XhtmseHMw5nNQpHqkBzcuWu
+         D0q8mu8emmrE3YwKrj6q3PBdKLqWCmvON6xBm8yOwckSsOji7zb0k0BowcPvbfyeuiTf
+         P/twETXogehdCEtaMJoQ4SdMPygWEVC3tsWokDRRXI8qdDF4fV4nHx8VbamYZOvHKYX+
+         WMLg==
+X-Gm-Message-State: AOAM531/04moSSRmji7/LRosj85HxBEfI5eftEr8HsMKTfwAUBuR2fB5
+        Vwl2MBIWH01gxX0KdpRiUtI=
+X-Google-Smtp-Source: ABdhPJwIs68oPfXC/h5VXP5DEIulgsY3/Q18kdAkLYS2QDt7Av0MIcCCl3sPCCzDwsZa7LIHMDrDHA==
+X-Received: by 2002:a63:fd44:: with SMTP id m4mr5474044pgj.160.1595532621819;
+        Thu, 23 Jul 2020 12:30:21 -0700 (PDT)
+Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
+        by smtp.gmail.com with ESMTPSA id y18sm3794332pff.10.2020.07.23.12.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 12:30:21 -0700 (PDT)
+From:   Nick Terrell <nickrterrell@gmail.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Nick Terrell <nickrterrell@gmail.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Terrell <terrelln@fb.com>
+Subject: [GIT PULL][PATCH v8 0/7] Add support for ZSTD-compressed kernel and initramfs
+Date:   Thu, 23 Jul 2020 12:27:54 -0700
+Message-Id: <20200723192801.351114-1-nickrterrell@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_09:2020-07-23,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 spamscore=0 suspectscore=2 mlxscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0 clxscore=1015
- mlxlogscore=999 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007230133
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+From: Nick Terrell <terrelln@fb.com>
 
-please pull s390 updates for 5.8-rc7.
+Please pull from
 
-Thanks,
-Heiko
+  git@github.com:terrelln/linux.git tags/v8-zstd
 
-The following changes since commit ba47d845d715a010f7b51f6f89bae32845e6acb7:
+to get these changes. Alternatively the patchset is included.
 
-  Linux 5.8-rc6 (2020-07-19 15:41:18 -0700)
+Hi all,
 
-are available in the Git repository at:
+This patch set adds support for a ZSTD-compressed kernel, ramdisk, and
+initramfs in the kernel boot process. ZSTD-compressed ramdisk and initramfs
+are supported on all architectures. The ZSTD-compressed kernel is only
+hooked up to x86 in this patch set.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.8-6
+Zstandard requires slightly more memory during the kernel decompression
+on x86 (192 KB vs 64 KB), and the memory usage is independent of the
+window size.
 
-for you to fetch changes up to 0cfa112b33aba4473b00151c75b87818a835702a:
+Zstandard requires memory proprortional to the window size used during
+compression for decompressing the ramdisk image, since streaming mode is
+used. Newer versions of zstd (1.3.2+) list the window size of a file
+with `zstd -lv <file>'. The absolute maximum amount of memory required
+is just over 8 MB, but it can be controlled at compression time.
 
-  MAINTAINERS: add Matthew for s390 IOMMU (2020-07-22 17:01:23 +0200)
+This patch set has been boot tested with buildroot and QEMU based off
+of linux-5.6-rc6.
 
-----------------------------------------------------------------
-- Change cpum_cf/perf counter name from DFLT_CCERROR to DFLT_CCFINISH
-  to reflect reality and avoid further confusion. This is a user space
-  visible change therefore the commit has also a stable tag for 5.7,
-  where this counter was introduced.
+On i386 and x86_64 I have tested the following configurations:
+* zstd compressed kernel and a separate zstd compressed initramfs
+* zstd compressed kernel and a built-in zstd compressed initramfs
+* gzip compressed kernel and a separate gzip compressed initramfs
+* gzip compressed kernel and a built-in gzip compressed initramfs
 
-- Add Matthew Rosato as s390 IOMMU maintainer.
+On arm and aarch64 I tested the same configurations, except that the kernel is
+always gzip compressed.
 
-----------------------------------------------------------------
-Gerald Schaefer (1):
-      MAINTAINERS: add Matthew for s390 IOMMU
+Facebook has been using v1 of these patches on x86_64 devices for more than 6
+months. When we switched from a xz compressed initramfs to a zstd compressed
+initramfs decompression time shrunk from 12 seconds to 3 seconds. When we
+switched from a xz compressed kernel to a zstd compressed kernel we saved 2
+seconds of boot time.
 
-Thomas Richter (1):
-      s390/cpum_cf,perf: change DFLT_CCERROR counter name
+Facebook has been using v2 of these patches on aarch64 devices for a few weeks.
+When we switched from an lzma compressed initramfs to a zstd compressed initramfs
+decompression time shrunk from 27 seconds to 8 seconds.
 
- MAINTAINERS                                          | 1 +
- arch/s390/kernel/perf_cpum_cf_events.c               | 4 ++--
- tools/perf/pmu-events/arch/s390/cf_z15/extended.json | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+The zstd compressed kernel is smaller than the gzip compressed kernel but larger
+than the xz or lzma compressed kernels, and it decompresses faster than
+everything except lz4. See the table below for the measurement of an x86_64
+kernel ordered by compressed size:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d53db30d1365..df5fc5625ec8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -14862,6 +14862,7 @@ F:	drivers/s390/block/dasd*
- F:	include/linux/dasd_mod.h
- 
- S390 IOMMU (PCI)
-+M:	Matthew Rosato <mjrosato@linux.ibm.com>
- M:	Gerald Schaefer <gerald.schaefer@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
- S:	Supported
-diff --git a/arch/s390/kernel/perf_cpum_cf_events.c b/arch/s390/kernel/perf_cpum_cf_events.c
-index 1e3df52b2b65..37265f551a11 100644
---- a/arch/s390/kernel/perf_cpum_cf_events.c
-+++ b/arch/s390/kernel/perf_cpum_cf_events.c
-@@ -292,7 +292,7 @@ CPUMF_EVENT_ATTR(cf_z15, TX_C_TABORT_SPECIAL, 0x00f5);
- CPUMF_EVENT_ATTR(cf_z15, DFLT_ACCESS, 0x00f7);
- CPUMF_EVENT_ATTR(cf_z15, DFLT_CYCLES, 0x00fc);
- CPUMF_EVENT_ATTR(cf_z15, DFLT_CC, 0x00108);
--CPUMF_EVENT_ATTR(cf_z15, DFLT_CCERROR, 0x00109);
-+CPUMF_EVENT_ATTR(cf_z15, DFLT_CCFINISH, 0x00109);
- CPUMF_EVENT_ATTR(cf_z15, MT_DIAG_CYCLES_ONE_THR_ACTIVE, 0x01c0);
- CPUMF_EVENT_ATTR(cf_z15, MT_DIAG_CYCLES_TWO_THR_ACTIVE, 0x01c1);
- 
-@@ -629,7 +629,7 @@ static struct attribute *cpumcf_z15_pmu_event_attr[] __initdata = {
- 	CPUMF_EVENT_PTR(cf_z15, DFLT_ACCESS),
- 	CPUMF_EVENT_PTR(cf_z15, DFLT_CYCLES),
- 	CPUMF_EVENT_PTR(cf_z15, DFLT_CC),
--	CPUMF_EVENT_PTR(cf_z15, DFLT_CCERROR),
-+	CPUMF_EVENT_PTR(cf_z15, DFLT_CCFINISH),
- 	CPUMF_EVENT_PTR(cf_z15, MT_DIAG_CYCLES_ONE_THR_ACTIVE),
- 	CPUMF_EVENT_PTR(cf_z15, MT_DIAG_CYCLES_TWO_THR_ACTIVE),
- 	NULL,
-diff --git a/tools/perf/pmu-events/arch/s390/cf_z15/extended.json b/tools/perf/pmu-events/arch/s390/cf_z15/extended.json
-index 2df2e231e9ee..24c4ba2a9ae5 100644
---- a/tools/perf/pmu-events/arch/s390/cf_z15/extended.json
-+++ b/tools/perf/pmu-events/arch/s390/cf_z15/extended.json
-@@ -380,7 +380,7 @@
- 	{
- 		"Unit": "CPU-M-CF",
- 		"EventCode": "265",
--		"EventName": "DFLT_CCERROR",
-+		"EventName": "DFLT_CCFINISH",
- 		"BriefDescription": "Increments by one for every DEFLATE CONVERSION CALL instruction executed that ended in Condition Codes 0, 1 or 2",
- 		"PublicDescription": "Increments by one for every DEFLATE CONVERSION CALL instruction executed that ended in Condition Codes 0, 1 or 2"
- 	},
+algo	size
+xz  	 6,509,792
+lzma	 6,856,576
+zstd	 7,399,157
+gzip	 8,522,527
+bzip	 8,629,603
+lzo 	 9,808,035
+lz4 	10,705,570
+none	32,565,672
+
+Alex Xu ran benchmarks in https://lkml.org/lkml/2020/7/1/722.
+
+v1 -> v2:
+- Rebase
+  - usr/Makefile and init/Kconfig were changed so the patches were updated
+- No functional changes except to rebase
+- Split the patches up into smaller chunks
+
+v2 -> v3:
+- Add *.zst to the .gitignore in patch 8
+- Style nits in patch 3
+- Rename the PREBOOT macro to ZSTD_PREBOOT and XXH_PREBOOT in patches
+  1 through 3
+
+v3 -> v4:
+- Increase the ZSTD_IOBUF_SIZE from 4KB to 128KB to improve performance.
+  With this change I switch from malloc() to large_malloc() for the
+  buffers.
+- Increase the maximum allowed window size from 8 MB to 128 MB, which is
+  the max that zstd in the kernel supports.
+
+v4 -> v5:
+- Update commit message for patch 6 in response to comments
+- Rebase onto next-20200408
+
+v5 -> v6:
+- Rebase onto v5.8-rc4
+
+v6 -> v7:
+- (1/7) Don't define or use 'ZSTD_PREBOOT' to hide exports
+- (2/8) Drop 'lib: prepare xxhash for preboot environment'
+- (2/7) Use '__DISABLE_EXPORTS' in unzstd to hide exports
+- (3/7) Update zstd compression cmd to follow other compressors
+- (3/7) Add zstd22 cmd
+- (6/7) Use zstd -22 --ultra (zstd22) for x86 kernel compression
+
+v7 -> v8:
+- (2/7) Don't define '__DISABLE_EXPORTS'
+- (6/7) Define '__DISABLE_EXPORTS' in misc.c
+
+Best,
+Nick Terrell
+
+
+Adam Borowski (1):
+  .gitignore: add ZSTD-compressed files
+
+Nick Terrell (6):
+  lib: prepare zstd for preboot environment
+  lib: add zstd support to decompress
+  init: add support for zstd compressed kernel
+  usr: add support for zstd compressed initramfs
+  x86: bump ZO_z_extra_bytes margin for zstd
+  x86: Add support for ZSTD compressed kernel
+
+ .gitignore                        |   1 +
+ Documentation/x86/boot.rst        |   6 +-
+ Makefile                          |   3 +-
+ arch/x86/Kconfig                  |   1 +
+ arch/x86/boot/compressed/Makefile |   5 +-
+ arch/x86/boot/compressed/misc.c   |   9 +
+ arch/x86/boot/header.S            |   8 +-
+ arch/x86/include/asm/boot.h       |   6 +-
+ include/linux/decompress/unzstd.h |  11 +
+ init/Kconfig                      |  15 +-
+ lib/Kconfig                       |   4 +
+ lib/Makefile                      |   1 +
+ lib/decompress.c                  |   5 +
+ lib/decompress_unzstd.c           | 344 ++++++++++++++++++++++++++++++
+ lib/zstd/fse_decompress.c         |   9 +-
+ lib/zstd/zstd_internal.h          |  14 +-
+ scripts/Makefile.lib              |  22 ++
+ usr/Kconfig                       |  20 ++
+ usr/Makefile                      |   1 +
+ 19 files changed, 466 insertions(+), 19 deletions(-)
+ create mode 100644 include/linux/decompress/unzstd.h
+ create mode 100644 lib/decompress_unzstd.c
+
+-- 
+2.27.0
+
