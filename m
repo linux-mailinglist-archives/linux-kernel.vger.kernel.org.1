@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2A022AF4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DB022AF06
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbgGWM1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        id S1728956AbgGWMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728910AbgGWMZE (ORCPT
+        with ESMTP id S1728918AbgGWMZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:25:04 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FDCC0619E2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:04 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a6so6396186wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:04 -0700 (PDT)
+        Thu, 23 Jul 2020 08:25:05 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1CFC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:05 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id f139so4998047wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7GXuG63I+zXiW2iHeDq1l75A8cqfuCvVf5oH88+KFWQ=;
-        b=WJkfBBhhXpIiweagpu7YHnZJQkDUqh5Kgxr7h0JfR09J0THKrxTwLrDPG3qNeBF5+H
-         IaYyNQ+m00fhuxZF5R+FcPBCB3ZWObUSnW1x2IULVBmAVFECIsnDSGhXgbhmeFicpqtj
-         98A2/p6zqBusuPVpMN9EC4INcbiKmdJ47v2tSIcD5J6CG6zypzMfufnW5GyLfasRvmD7
-         NTUHAV7TswgxUNokIWKvumdbieEcOx+3b2DVzGxhsFaVzu4l3ZSBqzJeKjnVcAl6Spjc
-         JRaSp8E7RRxrEfLZYQ71AYXu6ZDcZNGloGlVcQI85RQ36CByWCmWbnBjZZ6obrfSJZK6
-         6Ang==
+        bh=EAO/H9oPsrENV00s3vT32VulXIxpsxrN3aKk7i47ICU=;
+        b=xLaMH7UFnDh2rj+PFQo4eI/Sb/L7kbhOi+ek9Z/VDwxFR7R4iy2NCT8Wwa+Gmz47k3
+         bYXR1Gbvv5/hRs1WHXAlWP2LtOx+qsMUm4Okzb/+JTLGqSRnyiOJgKVn9nfOcb+n9F1q
+         Jl6B/C3sktRHUiEfWDwmrwsF7SHg7QxovyroDW5iJsjc4mqe5RbaCh7HVnvtCkuPOEfM
+         +B6TpEH8bcJOk/vDivsxIC1bBRRjTLjsgtinK5oYTclgu0vtCWvkb2vw20FlKXNvxZQb
+         kSFqZnq2VNLgrjuX4FQw+sAnqODtWJ0KxJfJNdOLhu01aHmhOdU7hMQMpLpuBxMnj1k6
+         FkNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7GXuG63I+zXiW2iHeDq1l75A8cqfuCvVf5oH88+KFWQ=;
-        b=ulY9dzCYfttTykbvcU+vfhIrFo9MUCuO/ZEuw65FNvyerOvc9dpU7t3wl7ZqypsTeQ
-         7shXxUopOLhymV3m3g1WiLVrpNMRbMKV/OatE8Osed9fc8FbeuZoQzYtOuUKf/lY8lSd
-         lUS9cZPEIlZCTm0NKnIcKvgThq4312h+iQ4fc5hiPojNSkjA8lg/FYsIPYd6LiVI4Ie8
-         7bnw3zQaUdb7iLMS+tB87I6MlRqML4jGNXaU9CXjLap50UvZi/9cjcz8WOSteDGj3qRL
-         7bKDqjPFdgjaItk+JYmMxKbP2oSWVNnl+XaPdzB3QQ+1xlkpH/8jxeO/nC18bMnmAhIK
-         4fuw==
-X-Gm-Message-State: AOAM530Gwm8iQNddC6e4I8GhdX52n9cH6eJFAxDEI3Sx4KrZ1q27hyFr
-        h8RcIQdT9MU50Go9jnCjtNtiHA==
-X-Google-Smtp-Source: ABdhPJxU96+k6AAXNc4TzOnx/0IOTErBWda93TNlxgsOHGe2FcOFrrlYZvW48DUn0NkMAUlVtbl3AQ==
-X-Received: by 2002:a1c:2041:: with SMTP id g62mr3919099wmg.172.1595507102891;
-        Thu, 23 Jul 2020 05:25:02 -0700 (PDT)
+        bh=EAO/H9oPsrENV00s3vT32VulXIxpsxrN3aKk7i47ICU=;
+        b=hjop41qdXlvzaml5VitkV6ZkvSdoOPiE6zqtf2EF3yHwv0oOzCF9Onp4i3C46HEDhi
+         wd5ue77STRygbipUXTJLsgdbAhO6pnTRyztn1hyFCYumEqRAdDkqBmhBQSe/OSYBfSDD
+         EekgE6JxHRmGlsMXzpLHL3dOb3nkVGBVpV0vRjQxGHwVl9VF2WwE+OBlFXYGlC07jLjO
+         4thp0Rvwq6ZZWF3vafeEogLXlVirOggtTBx4+fjVu2GdeWh3Mqj0PIdaNC87K4I3I5Ug
+         sbtEecF32r+vuW1hA82gl2xGN++ajLa6CVThxMSX1mLqUxZ8nJPIRJLYgmWlmPQO7OO4
+         h+bA==
+X-Gm-Message-State: AOAM533EYtirF4zdEdoRzCkzTLy1i8GnHiLU/68laevHH/py94z/K4W3
+        Ki5knhHhdkLZuMtbzJNec2eTwA==
+X-Google-Smtp-Source: ABdhPJyT54qRwLWqt3v4hcD2iJ0I4ZhmsVGVv/ehJlWHfF0om4aY1yvS5M1xFh3lIoQf0jzqOOsJSQ==
+X-Received: by 2002:a7b:cd90:: with SMTP id y16mr3953271wmj.20.1595507104079;
+        Thu, 23 Jul 2020 05:25:04 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id j5sm3510651wma.45.2020.07.23.05.25.01
+        by smtp.gmail.com with ESMTPSA id j5sm3510651wma.45.2020.07.23.05.25.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 05:25:02 -0700 (PDT)
+        Thu, 23 Jul 2020 05:25:03 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
-        QLogic-Storage-Upstream@cavium.com
-Subject: [PATCH 11/40] scsi: qedi: qedi_main: Remove 2 set but unused variables
-Date:   Thu, 23 Jul 2020 13:24:17 +0100
-Message-Id: <20200723122446.1329773-12-lee.jones@linaro.org>
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        ipslinux@adaptec.com, Christoph Hellwig <hch@infradead.org>
+Subject: [PATCH 12/40] scsi: ips: Remove some set but unused variables
+Date:   Thu, 23 Jul 2020 13:24:18 +0100
+Message-Id: <20200723122446.1329773-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723122446.1329773-1-lee.jones@linaro.org>
 References: <20200723122446.1329773-1-lee.jones@linaro.org>
@@ -67,63 +68,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Intentionally keeping all register reads/writes.
+
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/qedi/qedi_main.c: In function ‘qedi_queue_cqe’:
- drivers/scsi/qedi/qedi_main.c:1158:21: warning: variable ‘conn’ set but not used [-Wunused-but-set-variable]
- 1158 | struct iscsi_conn *conn;
+ drivers/scsi/ips.c: In function ‘ips_init_copperhead’:
+ drivers/scsi/ips.c:4700:10: warning: variable ‘ConfigByte’ set but not used [-Wunused-but-set-variable]
+ 4700 | uint8_t ConfigByte[IPS_MAX_CONFIG_BYTES];
+ | ^~~~~~~~~~
+ drivers/scsi/ips.c: In function ‘ips_init_copperhead_memio’:
+ drivers/scsi/ips.c:4794:10: warning: variable ‘ConfigByte’ set but not used [-Wunused-but-set-variable]
+ 4794 | uint8_t ConfigByte[IPS_MAX_CONFIG_BYTES];
+ | ^~~~~~~~~~
+ drivers/scsi/ips.c: In function ‘ips_init_phase1’:
+ drivers/scsi/ips.c:6839:10: warning: variable ‘func’ set but not used [-Wunused-but-set-variable]
+ 6839 | uint8_t func;
  | ^~~~
- drivers/scsi/qedi/qedi_main.c: In function ‘__qedi_probe’:
- drivers/scsi/qedi/qedi_main.c:2432:6: warning: variable ‘tmp’ set but not used [-Wunused-but-set-variable]
- 2432 | u16 tmp;
+ drivers/scsi/ips.c:6838:10: warning: variable ‘bus’ set but not used [-Wunused-but-set-variable]
+ 6838 | uint8_t bus;
  | ^~~
 
-Cc: QLogic-Storage-Upstream@cavium.com
+Cc: Adaptec OEM Raid Solutions <aacraid@microsemi.com>
+Cc: ipslinux@adaptec.com
+Cc: Christoph Hellwig <hch@infradead.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/scsi/ips.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index 81a307695cc91..1a7791164de8c 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1155,7 +1155,6 @@ static int qedi_queue_cqe(struct qedi_ctx *qedi, union iscsi_cqe *cqe,
- {
- 	struct qedi_work *qedi_work;
- 	struct qedi_conn *q_conn;
--	struct iscsi_conn *conn;
- 	struct qedi_cmd *qedi_cmd;
- 	u32 iscsi_cid;
- 	int rc = 0;
-@@ -1168,7 +1167,6 @@ static int qedi_queue_cqe(struct qedi_ctx *qedi, union iscsi_cqe *cqe,
- 			  iscsi_cid);
- 		return -1;
+diff --git a/drivers/scsi/ips.c b/drivers/scsi/ips.c
+index f25672982c5f3..ec85ccce96647 100644
+--- a/drivers/scsi/ips.c
++++ b/drivers/scsi/ips.c
+@@ -4697,7 +4697,6 @@ ips_init_copperhead(ips_ha_t * ha)
+ 	uint8_t Isr;
+ 	uint8_t Cbsp;
+ 	uint8_t PostByte[IPS_MAX_POST_BYTES];
+-	uint8_t ConfigByte[IPS_MAX_CONFIG_BYTES];
+ 	int i, j;
+ 
+ 	METHOD_TRACE("ips_init_copperhead", 1);
+@@ -4742,7 +4741,7 @@ ips_init_copperhead(ips_ha_t * ha)
+ 			/* error occurred */
+ 			return (0);
+ 
+-		ConfigByte[i] = inb(ha->io_addr + IPS_REG_ISPR);
++		inb(ha->io_addr + IPS_REG_ISPR);
+ 		outb(Isr, ha->io_addr + IPS_REG_HISR);
  	}
--	conn = q_conn->cls_conn->dd_data;
  
- 	switch (cqe->cqe_common.cqe_type) {
- 	case ISCSI_CQE_TYPE_SOLICITED:
-@@ -2429,7 +2427,6 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 	struct qed_probe_params qed_params;
- 	void *task_start, *task_end;
- 	int rc;
--	u16 tmp;
+@@ -4791,7 +4790,6 @@ ips_init_copperhead_memio(ips_ha_t * ha)
+ 	uint8_t Isr = 0;
+ 	uint8_t Cbsp;
+ 	uint8_t PostByte[IPS_MAX_POST_BYTES];
+-	uint8_t ConfigByte[IPS_MAX_CONFIG_BYTES];
+ 	int i, j;
  
- 	if (mode != QEDI_MODE_RECOVERY) {
- 		qedi = qedi_host_alloc(pdev);
-@@ -2528,9 +2525,9 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 		  "Writing %d to primary and secondary BDQ doorbell registers.\n",
- 		  qedi->bdq_prod_idx);
- 	writew(qedi->bdq_prod_idx, qedi->bdq_primary_prod);
--	tmp = readw(qedi->bdq_primary_prod);
-+	readw(qedi->bdq_primary_prod);
- 	writew(qedi->bdq_prod_idx, qedi->bdq_secondary_prod);
--	tmp = readw(qedi->bdq_secondary_prod);
-+	readw(qedi->bdq_secondary_prod);
+ 	METHOD_TRACE("ips_init_copperhead_memio", 1);
+@@ -4836,7 +4834,7 @@ ips_init_copperhead_memio(ips_ha_t * ha)
+ 			/* error occurred */
+ 			return (0);
  
- 	ether_addr_copy(qedi->mac, qedi->dev_info.common.hw_mac);
- 	QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_DISC, "MAC address is %pM.\n",
+-		ConfigByte[i] = readb(ha->mem_ptr + IPS_REG_ISPR);
++		readb(ha->mem_ptr + IPS_REG_ISPR);
+ 		writeb(Isr, ha->mem_ptr + IPS_REG_HISR);
+ 	}
+ 
+@@ -6835,8 +6833,6 @@ ips_init_phase1(struct pci_dev *pci_dev, int *indexPtr)
+ 	uint32_t mem_addr;
+ 	uint32_t io_len;
+ 	uint32_t mem_len;
+-	uint8_t bus;
+-	uint8_t func;
+ 	int j;
+ 	int index;
+ 	dma_addr_t dma_address;
+@@ -6856,10 +6852,6 @@ ips_init_phase1(struct pci_dev *pci_dev, int *indexPtr)
+ 	if (index >= IPS_MAX_ADAPTERS)
+ 		return -1;
+ 
+-	/* stuff that we get in dev */
+-	bus = pci_dev->bus->number;
+-	func = pci_dev->devfn;
+-
+ 	/* Init MEM/IO addresses to 0 */
+ 	mem_addr = 0;
+ 	io_addr = 0;
 -- 
 2.25.1
 
