@@ -2,103 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06ED22AD44
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:08:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BF922AD4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbgGWLIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 07:08:00 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:49370 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728515AbgGWLH6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 07:07:58 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NB7eMT021070;
-        Thu, 23 Jul 2020 13:07:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=0vmigRJKSKCaaUgNfAUdO/lMA3zem7APyAy+GcZjtNk=;
- b=OfxOU1nXwxafRPK1I1CeoWexuLiwfeVd0E6lEUHtqXjpA/WAq0IPWDNIFOKEkuMac8jm
- X3LkXRG3jY2Ic55tKOuqnQbvpMX67iF/Yi0sGkdk+X+qpkqR12tqoy5pksMn7yWQ46ph
- gwChLb/p0ogDsDZe/p4nFa8OH/YNH/aYFwWTU34D2LmbcB1bxqDku7wWHAMRFh5z5Igk
- mtP0g03VdKtQhfWd87IQ7i4gFuAcnaXYUqrU+AOQiTwTuFlDgtYEVvvIa3ONv3rnG60G
- dRJSZsRJUIksnUWqOqoCvPWaSUI9o0kK7vmYIARwbUae3F3PYQnIaobldQJB7VmEEGsf /A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32bsfpt7rf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 13:07:40 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5BCDD100038;
-        Thu, 23 Jul 2020 13:07:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4D9F32AD9F6;
-        Thu, 23 Jul 2020 13:07:34 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 13:07:34
- +0200
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 3/3] usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15 SoCs
-Date:   Thu, 23 Jul 2020 13:07:17 +0200
-Message-ID: <20200723110717.18699-4-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200723110717.18699-1-amelie.delaunay@st.com>
-References: <20200723110717.18699-1-amelie.delaunay@st.com>
+        id S1728379AbgGWLNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 07:13:30 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19896 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgGWLNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 07:13:30 -0400
+IronPort-SDR: GfNxsMdTIzhfBjl82cK4EJVZYffWBLXqC1Z5IGDpch+0xwsnUPAjlGquokMsrfxH9mVMtlW+v5
+ /V1zgtJwSPXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="130066428"
+X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
+   d="scan'208";a="130066428"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 04:13:29 -0700
+IronPort-SDR: T0EJN5lymGPqXrV2fLtbQV2nNaM5MFsQsSVnEjsjzw8QakPk9cZvHltu+ylvpmC4ufKPgH7Mct
+ STyzE7bj/+Cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
+   d="scan'208";a="488334692"
+Received: from lkp-server01.sh.intel.com (HELO bd1a4a62506a) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 23 Jul 2020 04:13:28 -0700
+Received: from kbuild by bd1a4a62506a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jyZAG-0000G2-2w; Thu, 23 Jul 2020 11:13:28 +0000
+Date:   Thu, 23 Jul 2020 19:12:00 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 83d0111cc01cd5ba7ee0a04af9ea7a1c801f13de
+Message-ID: <5f197080.d3eVoZxTSxiGb7Uj%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_03:2020-07-23,2020-07-23 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If usb-role-switch is present in the device tree, it means that ID and Vbus
-signals are not connected to the OTG controller but to an external
-component (GPIOs, Type-C controller). In this configuration, usb role
-switch is used to force valid sessions on STM32MP15 SoCs.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: 83d0111cc01cd5ba7ee0a04af9ea7a1c801f13de  refperf: Avoid null pointer dereference when buf fails to allocate
 
-Acked-by: Minas Harutyunyan <hminas@synopsys.com>
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+elapsed time: 3849m
+
+configs tested: 99
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+sh                          rsk7264_defconfig
+c6x                                 defconfig
+c6x                        evmc6474_defconfig
+arm                         shannon_defconfig
+powerpc                       ppc64_defconfig
+arm                      footbridge_defconfig
+s390                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20200719
+i386                 randconfig-a006-20200719
+i386                 randconfig-a002-20200719
+i386                 randconfig-a005-20200719
+i386                 randconfig-a003-20200719
+i386                 randconfig-a004-20200719
+x86_64               randconfig-a005-20200719
+x86_64               randconfig-a002-20200719
+x86_64               randconfig-a006-20200719
+x86_64               randconfig-a001-20200719
+x86_64               randconfig-a003-20200719
+x86_64               randconfig-a004-20200719
+i386                 randconfig-a016-20200723
+i386                 randconfig-a013-20200723
+i386                 randconfig-a012-20200723
+i386                 randconfig-a015-20200723
+i386                 randconfig-a011-20200723
+i386                 randconfig-a014-20200723
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+
 ---
-No changes in v2.
----
- drivers/usb/dwc2/params.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index ce736d67c7c3..d6690ee7af01 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -183,9 +183,11 @@ static void dwc2_set_stm32mp15_fsotg_params(struct dwc2_hsotg *hsotg)
- static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
- {
- 	struct dwc2_core_params *p = &hsotg->params;
-+	struct device_node *np = hsotg->dev->of_node;
- 
- 	p->otg_cap = DWC2_CAP_PARAM_NO_HNP_SRP_CAPABLE;
--	p->activate_stm_id_vb_detection = true;
-+	p->activate_stm_id_vb_detection =
-+		!of_property_read_bool(np, "usb-role-switch");
- 	p->host_rx_fifo_size = 440;
- 	p->host_nperio_tx_fifo_size = 256;
- 	p->host_perio_tx_fifo_size = 256;
--- 
-2.17.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
