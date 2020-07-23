@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116C822B022
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F5822B025
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgGWNOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:14:07 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:34553 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726521AbgGWNOG (ORCPT
+        id S1729317AbgGWNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbgGWNO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:14:06 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1jyb2y-000fwy-Jw; Thu, 23 Jul 2020 15:14:04 +0200
-Received: from p57bd9e19.dip0.t-ipconnect.de ([87.189.158.25] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1jyb2y-000JMe-D5; Thu, 23 Jul 2020 15:14:04 +0200
-Subject: Re: [PATCH] sh: clk: Fix assignment from incompatible pointer type
- for ioreadX()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-References: <20200723082017.24053-1-krzk@kernel.org>
- <c77eb720-1ded-f9d4-fbe4-92429e81857f@physik.fu-berlin.de>
- <20200723125732.GA9795@kozik-lap>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <ca946348-f878-46c5-cf69-1c160eb12b88@physik.fu-berlin.de>
-Date:   Thu, 23 Jul 2020 15:14:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Jul 2020 09:14:26 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9152C0619DC;
+        Thu, 23 Jul 2020 06:14:25 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 140so3244359lfi.5;
+        Thu, 23 Jul 2020 06:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=3Ek23uqFHJxEEeEwue+hrOY5RICC7zNWW630xY1/rb4=;
+        b=V7bQtxEvBfDa1epPg8MKSyuSb8htz+XWa/LX6g3d/Un/JL8tTyiOFxIkG7PGRto5xB
+         ClZaSCb/hVxwFgIVzPwosS5OGKeAzVWoeVsS2PAQM4KK3AbWNmeXWnKmOXHQnzlG3J1S
+         WvanNEGPTL+8UYKG4GrOCNh6oLT4HDp+g23SGGUvFaJAfRRRF3bPobup7KB7iK2ZSbcT
+         24Je8NAP+Ywmzl+AAOqnrIY+lcjJr7r1+tkGRj9Ij8dFZlV9wxmKbAltli3rSiTHKwY3
+         cFnYZ3LbMpbZmUMlXY4j8Lg0t6nkw97707IjotndM5OhaJtZIqQF+bAIABXRVfxoymNN
+         muaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :date:message-id:mime-version;
+        bh=3Ek23uqFHJxEEeEwue+hrOY5RICC7zNWW630xY1/rb4=;
+        b=aj3xgX7RzorTN3HaPcVA2nbqT1yRSDaukXvq2ELMpOKic3XmiA2bAppGjkcdaJ6nhK
+         7jqznOHYDn1lEKIRAAN73ckgOhpLEG79llRDxpyWxq7ndEwtOeOvIfzTtMsozzD2xG9c
+         DkbH0Xx0JZB6h2VPxtqfnrXg5huk3EkFqVQn50+qdVG7ko1vj2Yk/s0E57vtUTDOd2fD
+         CCKdYAWRr1gNJhG2I66HA/KodwVnjvQrSTN53KWLc8OISHJW3tNVyHEWeHuS7DwDvzNp
+         ngw3uheggwjcJf1uAZrFe/t30gKN4plxm5hhMYQ1a17koFWM2bxPqz0uYfDa+Kc+lV6K
+         r/AA==
+X-Gm-Message-State: AOAM530cypMYGkSlKMucBdO1dn566XI3UsiKSdUFL3c8NCTz6seHbTlD
+        TcfLhD/JP8qOQ1d6eOGZeYcYV66I7UASrA==
+X-Google-Smtp-Source: ABdhPJzBPdux8+PQZy/lEPbmV5N4w1mTUpDRV1tsFSy51kdPYqJiPU7Sszpu04kX7FE4NkzVgZppJQ==
+X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr2205650lfb.196.1595510064107;
+        Thu, 23 Jul 2020 06:14:24 -0700 (PDT)
+Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
+        by smtp.gmail.com with ESMTPSA id h27sm2757613ljl.71.2020.07.23.06.14.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Jul 2020 06:14:23 -0700 (PDT)
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: epautoconf: claim smallest endpoints first
+In-Reply-To: <20200629200551.27040-1-ruslan.bilovol@gmail.com>
+References: <20200629200551.27040-1-ruslan.bilovol@gmail.com>
+Date:   Thu, 23 Jul 2020 16:14:18 +0300
+Message-ID: <87blk6nzkl.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200723125732.GA9795@kozik-lap>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.158.25
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 7/23/20 2:57 PM, Krzysztof Kozlowski wrote:
-> The patch is for Andrew Morton's tree which contain two commits:
-> 1. sh: clkfwk: remove r8/r16/r32
-> 2. iomap: constify ioreadX() iomem argument (as in generic implementation)
-> 
-> This patch here was actually part of #2 because of being based on
-> linux-next. However it disappeared when applying to Andrew's tree
-> because patch #1 came later.
+Ruslan Bilovol <ruslan.bilovol@gmail.com> writes:
 
-Okay. I'll try to look at the other two patches later.
+> UDC hardware may have endpoints with different maxpacket
+> size. Current endpoint matching code takes first matching
+> endpoint from the list.
+>
+> It's always possible that gadget allocates endpoints for
+> small transfers (maxpacket size) first, then larger ones.
+> That works fine if all matching UDC endpoints have same
+> maxpacket size or are big enough to serve that allocation.
+>
+> However, some UDCs have first endpoints in the list with
+> bigger maxpacket size, whereas last endpoints are much
+> smaller. In this case endpoint allocation will fail for
+> the gadget (which allocates smaller endpoints first) on
+> final endpoint allocations.
+>
+> To make endpoint allocation fair, pick up smallest
+> matching endpoints first, leaving bigger ones for
+> heavier applications.
+>
+> Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 
-Adrian
+checking file drivers/usb/gadget/epautoconf.c
+Hunk #1 succeeded at 151 with fuzz 1 (offset 85 lines).
+Hunk #2 FAILED at 77.
+1 out of 2 hunks FAILED
+=2D-=20
+balbi
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl8ZjSoACgkQzL64meEa
+mQadJhAAqrhVSDptr4TCjjlcBNkGVzrkHDybXlvZSailDiKW/q70ZrxmNxTi6ens
+0XphNLAeqG/Hsftc2dczeTzFNZ1tDhGoQ6tUZYnWpkVNT2I4WxSqE0WQlpKL1VmO
+b58aBkOpF01ssMNJUk2w+jWN71PggQSqTtRJ9bybtoJK67b0H3eUZZb+oGhpcL+M
+ggs6rzqN1/j+VFR9wdosFN1U4xYOkyyMCaY6y34nVoSuy730U7IPaYzifgXRmcVz
+Cewi+N0nQOSNfDh2UBsrdIkrRteh6w+0KpOIiJro+2h+V/St7rDmgrDFv6E1lv4c
++9fZ223Lcm/pzkKidOvxxtt4Lnfzx2DFjH0eY+Pg5OaJQtTkEnir/MF6WG9YUn3w
+LxcpVb967HCmj69PGG71uh7jtrohJThUZznBldJAjArLtVsQ7S7cN52UAIpRkFxU
+8dc71HWo41Zyk8sIsQ7B7i4Nf8MXqSYDsSLzng3rdYecsjzI//aVx4qiTgh65yL5
+FqQQQlCtb6+5CP7VGq/LbYCYIzidM+G3+dI/uHyzvkz9C9ZzIyKJcCj6pdPyCAlV
+b5Ii/8qfQK2cNobQF5Uuvkj0TYsb9MlTXKtEc97WdtuW6JMIYWJNumQXO0TcU3PL
+OvpwviQus8HsX1J86uCpyZvMu2EUqbxBUYSoPWrBVM1/0Z+Zjd8=
+=2tO6
+-----END PGP SIGNATURE-----
+--=-=-=--
