@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CB822AF30
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF7522AF0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgGWM02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
+        id S1729034AbgGWMZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729003AbgGWMZV (ORCPT
+        with ESMTP id S1729007AbgGWMZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:25:21 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E934C0619E6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:21 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z18so1406559wrm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:21 -0700 (PDT)
+        Thu, 23 Jul 2020 08:25:22 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736F6C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id o2so5020387wmh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3pqGsbWZalxf7KD6RyeDaCfLDso/eIrkBstcO2+vgts=;
-        b=K/pgA01jiliZZhOHrTKN8/Zxz79yXSGEiM6AmI+DmQHdjzWTJVTI6ok71y2wKeRqwa
-         CxjUa/HChksPObKRNeCFic2v5Nby3SkIwvVOUNAtbwnpK0Nn6TjFEWeAFkTW5NYKRYQ4
-         9kng0uv0+/p3q4PPKqBneNXfvbmkYugMlhxqfqPM3PUOGwZuRQ6D2CG8mw0QB8cmx7nr
-         TywdbyleGx5DHbaEBZJdD2FZ8gbxqxS7BjMuVpWMbvXb2t9OWFiTa17DBiX7jDOJkAUm
-         0iN/hQ2M5eT/CPWfy7XK/UX3W03y8Zg9jfMD3O0mA554r5EeeTVETiIXUjOOUSaqbxor
-         v6ww==
+        bh=BqthC3CkjpgCokdg5o2ILnbULpGQcoT03/Lw3SH2/KA=;
+        b=n5oWnYYLwx2Uu3i0alq76U1+jMa5X1KgGKPO/TNSL8K0wCitWVNvpCZmEgRyCTF22e
+         h+QUo9VHUERd2wQnBkOJ3k6VTgAw5A2dFbwJABl/FuRVTBPxCjlNnAA+f2o+1E+fJsJT
+         NC+b82QbEKW/d8kVIilYYP2tOz6oE4BZzcrxrb9ar0oreWLlsrB6EFmwCO/Fm7fQanQg
+         hTwY6y7bKzzKEWT2XgLSxGCHtR0VfB0Vbm4iESRb8sygG+CI2sQDIM7oA3GzMhJL6Q5l
+         fzIoPpLdiKP1oXZL87RCDcfxpDeeWn0legNEtDCSSEItKTHt+FzTlh5iOYSlrv9YJuTC
+         K1YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3pqGsbWZalxf7KD6RyeDaCfLDso/eIrkBstcO2+vgts=;
-        b=ifyuii5etF1N2tdHtH8sD7WNIoE/BHmWbt2o89IcRcf/xFqEbBsXBhyreWyKHomkFr
-         YgFjNvlzOHBwvO8r7E/pJdGrberIVCSXet+nha3X09cN6dqV3195kPkd4Yf71fg+WxT9
-         /wT6Z/THA+nIBImojfxuuAF8m3+Ol71chzo1ya7kEMTwqeBCLeeBZWkX4WGhmNIlCtDX
-         XXSuGe9Imb9lIc5QJv8bPa6/DzuAQj++lULI6rCNww0cOWXxToqML1MPtm5s/eFwl8P+
-         dpvT38zr57iuyjFlBEgYtmrFMQv06S0CyH14otjm8Hwngm3Mt/8AKdLTm+RTuDqveBtr
-         idYQ==
-X-Gm-Message-State: AOAM533jP7qVlKpqWFszAdzFJAKwORNEqIUc8EhIRJjJJx08xONBBwqy
-        6bq+pfNlkFUY+vyVTwKP5cA3XQ==
-X-Google-Smtp-Source: ABdhPJzsoSMrqlqygUNaU5qbgYVAr1Wofya/CH5bMUGwoO5FJdONJmyvmo/qMhP/CfRfi1y2LNMtmg==
-X-Received: by 2002:adf:e98c:: with SMTP id h12mr3774551wrm.3.1595507119836;
-        Thu, 23 Jul 2020 05:25:19 -0700 (PDT)
+        bh=BqthC3CkjpgCokdg5o2ILnbULpGQcoT03/Lw3SH2/KA=;
+        b=GnUwubLBEpmU0O7lKM6x4r9rklZZIGm6MzW2fLTsJL1Ey/+fTAIJUKhM+qAfIxXt8m
+         dwL2xIjm/qTuc9e15Ah72yzrYU6F1TXkVvSTSCLklmAMLp+E8VSghbJolBfaI8x1FQL8
+         y5xa3g0nOyO8fUUznoVcTy78sawiT7p/WcTQg9zsRMHU6Y5jqjBVWkzzH2onQsgC2Ymr
+         0Dy8zcfzSNrUFYmBLHb86Rj4PKiLEcerE1EwhSJZoccYv0zFqugroCfk+X2c476qqNK8
+         9iOU6j/auKY53nY3ZPqkrG19Ibb6a5evaRRLr3m4CjQAqpzEDx+G1qYrn4r0a/QCDhys
+         Tc8w==
+X-Gm-Message-State: AOAM532fu1FpbGV87YCoonWbfJ+itidOIJCCUabOqDNPKHTgEKvIx08p
+        /ESQOv4BYcMq4LPU7XFuCfy6yg==
+X-Google-Smtp-Source: ABdhPJzZGFpzQjekGSiOCnQqa+8ff+FTdUMkmof33vvNKFnGPSmFf+6Fzjt+89if1+VbwoFioQwP+g==
+X-Received: by 2002:a1c:f407:: with SMTP id z7mr3953367wma.8.1595507121244;
+        Thu, 23 Jul 2020 05:25:21 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id j5sm3510651wma.45.2020.07.23.05.25.18
+        by smtp.gmail.com with ESMTPSA id j5sm3510651wma.45.2020.07.23.05.25.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 05:25:19 -0700 (PDT)
+        Thu, 23 Jul 2020 05:25:20 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
-Subject: [PATCH 25/40] scsi: bfa: bfa_ioc_ct: Demote non-compliant kerneldoc headers to standard comments
-Date:   Thu, 23 Jul 2020 13:24:31 +0100
-Message-Id: <20200723122446.1329773-26-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 26/40] scsi: mvsas: mv_init: Place 'core_nr' inside correct clause
+Date:   Thu, 23 Jul 2020 13:24:32 +0100
+Message-Id: <20200723122446.1329773-27-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723122446.1329773-1-lee.jones@linaro.org>
 References: <20200723122446.1329773-1-lee.jones@linaro.org>
@@ -67,51 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+'core_nr' should be inside the 'ifndef' "if *not* defined", as it is
+utilised inside the 'else' of the following 'ifdef' "if *is* defined"
+clause.
 
- drivers/scsi/bfa/bfa_ioc_ct.c:504: warning: Function parameter or member 'ioc' not described in 'bfa_ioc_set_ctx_hwif'
- drivers/scsi/bfa/bfa_ioc_ct.c:504: warning: Function parameter or member 'hwif' not described in 'bfa_ioc_set_ctx_hwif'
- drivers/scsi/bfa/bfa_ioc_ct.c:525: warning: Function parameter or member 'ioc' not described in 'bfa_ioc_set_ct_hwif'
- drivers/scsi/bfa/bfa_ioc_ct.c:540: warning: Function parameter or member 'ioc' not described in 'bfa_ioc_set_ct2_hwif'
-
-Cc: Anil Gurumurthy <anil.gurumurthy@qlogic.com>
-Cc: Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/bfa/bfa_ioc_ct.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/mvsas/mv_init.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/scsi/bfa/bfa_ioc_ct.c b/drivers/scsi/bfa/bfa_ioc_ct.c
-index 6fd3383ee5381..fb748291676b6 100644
---- a/drivers/scsi/bfa/bfa_ioc_ct.c
-+++ b/drivers/scsi/bfa/bfa_ioc_ct.c
-@@ -496,7 +496,7 @@ bfa_ioc_ct_sync_complete(struct bfa_ioc_s *ioc)
- 	return BFA_FALSE;
- }
+diff --git a/drivers/scsi/mvsas/mv_init.c b/drivers/scsi/mvsas/mv_init.c
+index 3b450319cc11e..978f5283c8835 100644
+--- a/drivers/scsi/mvsas/mv_init.c
++++ b/drivers/scsi/mvsas/mv_init.c
+@@ -182,7 +182,6 @@ static irqreturn_t mvs_interrupt(int irq, void *opaque)
+ 	struct sas_ha_struct *sha = opaque;
+ #ifndef CONFIG_SCSI_MVSAS_TASKLET
+ 	u32 i;
+-#else
+ 	u32 core_nr;
  
--/**
-+/*
-  * Called from bfa_ioc_attach() to map asic specific calls.
-  */
- static void
-@@ -517,7 +517,7 @@ bfa_ioc_set_ctx_hwif(struct bfa_ioc_s *ioc, struct bfa_ioc_hwif_s *hwif)
- 	hwif->ioc_get_alt_fwstate = bfa_ioc_ct_get_alt_ioc_fwstate;
- }
- 
--/**
-+/*
-  * Called from bfa_ioc_attach() to map asic specific calls.
-  */
- void
-@@ -532,7 +532,7 @@ bfa_ioc_set_ct_hwif(struct bfa_ioc_s *ioc)
- 	ioc->ioc_hwif = &hwif_ct;
- }
- 
--/**
-+/*
-  * Called from bfa_ioc_attach() to map asic specific calls.
-  */
- void
+ 	core_nr = ((struct mvs_prv_info *)sha->lldd_ha)->n_host;
 -- 
 2.25.1
 
