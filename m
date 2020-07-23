@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB87D22AAE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDF922AAEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgGWIm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:42:57 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2513 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725858AbgGWIm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:42:57 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id CAA78D7CF743FE7D3470;
-        Thu, 23 Jul 2020 09:42:55 +0100 (IST)
-Received: from localhost (10.52.125.229) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 23 Jul
- 2020 09:42:55 +0100
-Date:   Thu, 23 Jul 2020 09:41:34 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     David Gow <davidgow@google.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeff Dike <jdike@addtoit.com>, <rafael@kernel.org>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Richard Weinberger <richard@nod.at>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        <kunit-dev@googlegroups.com>,
-        linux-um <linux-um@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] platform: ioremap: Build iomap functions even
- without HAS_IOMEM
-Message-ID: <20200723094134.0000432d@Huawei.com>
-In-Reply-To: <20200721054528.2556267-1-davidgow@google.com>
-References: <20200721054528.2556267-1-davidgow@google.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727847AbgGWIoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgGWIoI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:44:08 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41DB5C0619E3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 01:44:08 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id d17so5479541ljl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 01:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CkH2cH1tSHkiWUdx4NYvU3H/EJsQDUARMZQ26FKEGq4=;
+        b=kxz381FsxyT6cNf9sYuimdhuIrl8nxWcoY7uM46nPmZffugo6no1qzJr5aIXrKo7h2
+         5/8PKpg8A61z+wAa44SJdBgFVJmKEebebfWSTexkPuGPVtDBC+M8W2EETKfrxS/ajZbu
+         jrLJqSTpXgSXiW+U+t9OKLEoilfVGq/LOzePAnPruqfi0mbPianEerwMGFitwc7Zj1Ix
+         jwx6dUtf//RZoU+1i1gpp60/9sLPr1XTolu2Q1iQAAuEoUllIQ192rjwvvpx08okrahQ
+         YV0s8XPRp2ObxIqNjdJ3SXyRjL2Ip5CA52ocGM7KqHgdPd90tsqQTO0UAmjRMnGvGkwb
+         Q1Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CkH2cH1tSHkiWUdx4NYvU3H/EJsQDUARMZQ26FKEGq4=;
+        b=CnWC8pQ1ALK12EtyZOcgFjOgO1Jk4sV22z/3pSIkzAqg6Lf6PeO8fpYyJvuCVAFfqK
+         /STkh77vDJin/dnQG4koKx617S4OWQgcBvImgCaGe32Y++P8I3NTnz49+c9/YObU061y
+         N3J/POmXJcI8c1OkMeEfLQYbXOcxK1zdsaXir6AYr5KyEYT83YJv6KitUk4i+y0E1HNI
+         y+FsrlU5QC7spUH7C6if2uLMHnWxfIyL8WqbQ5z/Mk/TCUn9BF5akYAghxRH+AMd053R
+         IuCMhao4YzYjo3soDqA3mQ6yd+c9Iz6pX2tnB79KXw3xHvmXe72kULsnRMwkewwYfpXR
+         MDcg==
+X-Gm-Message-State: AOAM5319TgsQxl0rtBRTtCNoJ2KcvzbCp3lbnYGYfkbHiV/KA9Nv1/4i
+        Nv1NrOIgKf6P8VflJFnuTcrGS5gyj2+IkAlqTB4BXg==
+X-Google-Smtp-Source: ABdhPJy9FYQzEz5+a+xAYCl+rAh2wms4y8ztY1F8hFb6jAnV1ZJBUBI6y73dlz37/bChnljh88y3BVK9wCTiobiTO6M=
+X-Received: by 2002:a05:651c:1291:: with SMTP id 17mr1628930ljc.286.1595493846705;
+ Thu, 23 Jul 2020 01:44:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.229]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-7-lee.jones@linaro.org> <20200720142714.GA6747@kozik-lap>
+ <20200720144955.GD3368211@dell> <20200720145219.GA23990@kozik-lap>
+In-Reply-To: <20200720145219.GA23990@kozik-lap>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Jul 2020 10:43:55 +0200
+Message-ID: <CACRpkdaYQ3PEh838Qoxig4n1iNFp8AOj_Wk9jdvB-qMy0PBRKw@mail.gmail.com>
+Subject: Re: [PATCH 06/25] pinctrl: samsung: pinctrl-samsung: Demote obvious
+ misuse of kerneldoc to standard comment blocks
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Thomas Abraham <thomas.ab@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 22:45:28 -0700
-David Gow <davidgow@google.com> wrote:
+On Mon, Jul 20, 2020 at 4:52 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> On Mon, Jul 20, 2020 at 03:49:55PM +0100, Lee Jones wrote:
 
-> A number of drivers use devm_platform_ioremap_resource(), but do not (or
-> did not) explicitly depend on IOMEM[1,2]. Given that the only platform
-> without HAS_IOMEM seems to be UML, and it has sufficient stubs for
-> devm_platform_ioremap_resource() and its dependencies to build, we can
-> remove the HAS_IOMEM requirement here, rather than playing whack-a-mole
-> with different drivers which don't try to build against ARCH=um.
-> 
-> The reason this works at the moment is that stub ioremap and iounmap
-> functions were added to UML to support this sort-of thing[3]. This
-> particular change doesn't require adding any additional stubs, but there
-> is possibly room in the future to stub out the remaining iomem functions
-> (or to provide mock implementations for testing), and get rid of
-> HAS_IOMEM entirely.
-> 
-> [1]: https://lkml.org/lkml/2020/6/30/176
-> [2]:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1e7468bd9d30a21e059af477106dc5588ae52dff
-> [3]:
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1405627.html
+> > > Thanks, applied.
+> >
+> > Same as the others.  Already in -next.
+>
+> Thanks for letting me know. I dropped all of them.
 
-Hi David,
+It's a bit tricky at times with clean-up topics, I want submaintainers to pick
+it up if possible so sorry about this, it's just too much to coordinate
+sometimes.
 
-I don't quite follow why we change when iomap_copy.c is built.
-Was this just a case of there not seeming to be any reason to protect it
-or is there a direct dependency on something in there that I'm missing?
-
-Otherwise looks good to me.
-
-Jonathan
-
-> 
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->  drivers/base/platform.c | 2 --
->  lib/Makefile            | 2 +-
->  2 files changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index c0d0a5490ac6..628dde6675cf 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -61,7 +61,6 @@ struct resource *platform_get_resource(struct platform_device *dev,
->  }
->  EXPORT_SYMBOL_GPL(platform_get_resource);
->  
-> -#ifdef CONFIG_HAS_IOMEM
->  /**
->   * devm_platform_get_and_ioremap_resource - call devm_ioremap_resource() for a
->   *					    platform device and get resource
-> @@ -135,7 +134,6 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
->  	return devm_ioremap_resource(&pdev->dev, res);
->  }
->  EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
-> -#endif /* CONFIG_HAS_IOMEM */
->  
->  /**
->   * platform_get_irq_optional - get an optional IRQ for a device
-> diff --git a/lib/Makefile b/lib/Makefile
-> index b1c42c10073b..35c21af33b93 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -115,7 +115,7 @@ obj-y += math/ crypto/
->  
->  obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
->  obj-$(CONFIG_GENERIC_PCI_IOMAP) += pci_iomap.o
-> -obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
-> +obj-y += iomap_copy.o devres.o
->  obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
->  obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
->  
-
-
+Yours,
+Linus Walleij
