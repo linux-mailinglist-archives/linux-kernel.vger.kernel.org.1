@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E688922AB25
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B734822AB2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbgGWIzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:55:39 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:40938 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgGWIzj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:55:39 -0400
-Received: by mail-ej1-f67.google.com with SMTP id o18so5514928eje.7;
-        Thu, 23 Jul 2020 01:55:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Xt5+vxpGC9nM/ZHsj3r5gI/nmTDmk9F2oBeOZtyGPQM=;
-        b=ddpnUlIUIV5C0ItojdvfTtAPdsnBCDQMXoF/G1SjnTGBKiFG8k3OVikaOxUm19odph
-         VEFVVmtP/eIlYfyKZmTPAMxK9gW1O/MLXDxdtie4Q9+xMGEieYxirNthaFgrIhC41sig
-         ubX6nkZiF2qCHGc0ghQf6rJdLPIrWWynuYsGef8ztTi8ThASG+r8jGuR7cCldme+GXSd
-         aZxhSnecXiH0HZn6FbRiqKkg6XY3xG7O/E96nXsPeMHMedVxtPw58TcwbnrYuzxNXjQE
-         TNPpHsVKkUXNC5ACLxjnGyCj8ITPMN/EdiMiJH5odImulHMyx3GFuDhKBiVjA/2LpGsZ
-         JhBQ==
-X-Gm-Message-State: AOAM533luptVUqF4R1RVBDBQVtqaDwYwrkDBiLqqUMQVULSFzffhYXjC
-        bjZX9BMt0RRZ8nnDHBFhrEvrC641jr0=
-X-Google-Smtp-Source: ABdhPJwRP+wjzC0Ys2mHygLb4mxZAtf0iTg0JkShIGi/qXx7US6BV7vrg2I5N8csKyuByvVrRm5SwQ==
-X-Received: by 2002:a17:906:414c:: with SMTP id l12mr3469617ejk.417.1595494536809;
-        Thu, 23 Jul 2020 01:55:36 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id jo25sm1541668ejb.116.2020.07.23.01.55.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Jul 2020 01:55:36 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 10:55:33 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Olof Johansson <olof@lixom.net>, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>, Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 18/23] memory: mtk-smi: Add argument to function
- definition
-Message-ID: <20200723085533.GA25935@kozik-lap>
-References: <20200723073744.13400-1-krzk@kernel.org>
- <20200723073744.13400-19-krzk@kernel.org>
- <CAK8P3a1TSTX9ATUuyWyqJ1xtd6GP13JM-RQkhGCi1BSTiM9X9A@mail.gmail.com>
+        id S1727769AbgGWI5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:57:49 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30907 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725984AbgGWI5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:57:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595494668; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=uMsXblhmzZzd8eLTAl6l9gS/3WdMrBZGhkBeFqbIlWs=; b=BRankmmJbYW+rKO+7az1eAFuWdItT/GqvaL9sfkgpMIansMasYhfRWP2XGdp5fs9w0DuQomf
+ p6COjumNdKZICCOsj98HKRvL/wkB1k6ZlKZQAlwX393HLzPvrI9EHYetdQtWAdIjFxF1NUPn
+ xIU4gDF3jIiNl742igbRhloj5TA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f1950fb1e603dbb447eb6a3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 23 Jul 2020 08:57:31
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 91BA2C433CB; Thu, 23 Jul 2020 08:57:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.7 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.104] (unknown [123.201.159.88])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: msavaliy)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5997AC433C9;
+        Thu, 23 Jul 2020 08:57:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5997AC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=msavaliy@codeaurora.org
+Subject: Re: [PATCH] soc: qcom-geni-se: Don't use relaxed writes when writing
+ commands
+To:     Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-kernel@vger.kernel.org
+References: <20200722150113.1.Ia50ab5cb8a6d3a73d302e6bdc25542d48ffd27f4@changeid>
+From:   "Mukesh, Savaliya" <msavaliy@codeaurora.org>
+Message-ID: <c41ccd0e-e18b-02eb-79b7-2cad604b5090@codeaurora.org>
+Date:   Thu, 23 Jul 2020 14:27:20 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1TSTX9ATUuyWyqJ1xtd6GP13JM-RQkhGCi1BSTiM9X9A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200722150113.1.Ia50ab5cb8a6d3a73d302e6bdc25542d48ffd27f4@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 10:50:08AM +0200, Arnd Bergmann wrote:
-> On Thu, Jul 23, 2020 at 9:39 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > Fix checkpatch warning:
-> >     WARNING: function definition argument 'struct device *' should also have an identifier name
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> Is this a bug in checkpatch? I don't see why it should warn about this,
-> as there is no function definition here.
-> 
-> Your change is clearly harmless, but I wonder if we should fix
-> checkpatch instead.
 
-Good point. If this were not a warning, I would ignore it. However still
-the common practice is to add arguments to such type definitions as it
-helps to describe the type.
-
-Best regards,
-Krzysztof
+On 7/23/2020 3:31 AM, Douglas Anderson wrote:
+> Writing the command is the final step in kicking off a transfer.
+> Let's use writel() to ensure that any other memory accesses are done
+> before the command kicks off.  It's expected that this is mostly
+> relevant if we're in DMA mode but since it doesn't appear to regress
+> performance in a measurable way [1] even in PIO mode and it's easier
+> to reason about then let's just always use it.
+>
+> NOTE: this patch came about due to code inspection.  No actual
+> problems were observed that this patch fixes.
+>
+> [1] Tested by timing "flashrom -p ec" on a Chromebook which stresses
+> GENI SPI a lot.
+>
+> Suggested-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
+> ---
+>
+>   include/linux/qcom-geni-se.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index dd464943f717..f50c73be1428 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -262,7 +262,7 @@ static inline void geni_se_setup_m_cmd(struct geni_se *se, u32 cmd, u32 params)
+>   	u32 m_cmd;
+>   
+>   	m_cmd = (cmd << M_OPCODE_SHFT) | (params & M_PARAMS_MSK);
+> -	writel_relaxed(m_cmd, se->base + SE_GENI_M_CMD0);
+> +	writel(m_cmd, se->base + SE_GENI_M_CMD0);
+>   }
+>   
+>   /**
+> @@ -282,7 +282,7 @@ static inline void geni_se_setup_s_cmd(struct geni_se *se, u32 cmd, u32 params)
+>   	s_cmd &= ~(S_OPCODE_MSK | S_PARAMS_MSK);
+>   	s_cmd |= (cmd << S_OPCODE_SHFT);
+>   	s_cmd |= (params & S_PARAMS_MSK);
+> -	writel_relaxed(s_cmd, se->base + SE_GENI_S_CMD0);
+> +	writel(s_cmd, se->base + SE_GENI_S_CMD0);
+>   }
+>   
+>   /**
