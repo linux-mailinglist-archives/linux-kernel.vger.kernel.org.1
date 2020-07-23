@@ -2,122 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C5022A566
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 04:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D1F22A56B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 04:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733293AbgGWCsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 22:48:06 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48699 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728914AbgGWCsG (ORCPT
+        id S1733276AbgGWC5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 22:57:20 -0400
+Received: from out28-74.mail.aliyun.com ([115.124.28.74]:34269 "EHLO
+        out28-74.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729401AbgGWC5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 22:48:06 -0400
-X-UUID: f1b92779c5f243aaa205778aeed6cbf9-20200723
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=o5Pnaz5PzLl00kO7UGNUdo3DX9rzOLiF6hNu8QVIo/Y=;
-        b=jw9YaF1gpolTRR6kmJctp0538ekNI6ytMdVJATBkIzebqHAGpKAumpdRWQO9hqzP8WACwf/RoGa9jeCWf7wKvi/SCwRiPUYlWg41SgIXaNgZ1W2pIuQPEzhzlHk7n9sABajwUAkjdcAhwC8u6WkFN4LE6PK236p8ArMBRZTC3yg=;
-X-UUID: f1b92779c5f243aaa205778aeed6cbf9-20200723
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <frankie.chang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1709787636; Thu, 23 Jul 2020 10:48:02 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 23 Jul 2020 10:47:58 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Jul 2020 10:47:56 +0800
-Message-ID: <1595472479.5899.8.camel@mtkswgap22>
-Subject: Re: [PATCH v5 2/3] binder: add trace at free transaction.
-From:   Frankie Chang <Frankie.Chang@mediatek.com>
-To:     Todd Kjos <tkjos@google.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Martijn Coenen <maco@android.com>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Christian Brauner <christian@brauner.io>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Jian-Min Liu <Jian-Min.Liu@mediatek.com>
-Date:   Thu, 23 Jul 2020 10:47:59 +0800
-In-Reply-To: <CAHRSSEydixN=4JQW3PGsTVaYZG+1aVZA6JOE9c9GufiWrkDycQ@mail.gmail.com>
-References: <20200507085544.GB1097552@kroah.com>
-         <1591791827-23871-1-git-send-email-Frankie.Chang@mediatek.com>
-         <1591791827-23871-3-git-send-email-Frankie.Chang@mediatek.com>
-         <CAHRSSEydixN=4JQW3PGsTVaYZG+1aVZA6JOE9c9GufiWrkDycQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Wed, 22 Jul 2020 22:57:20 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0557885-0.00283795-0.941374;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03300;MF=maochenxi@eswin.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.I6C1eeK_1595473033;
+Received: from 10.1.56.44(mailfrom:maochenxi@eswin.com fp:SMTPD_---.I6C1eeK_1595473033)
+          by smtp.aliyun-inc.com(10.194.98.253);
+          Thu, 23 Jul 2020 10:57:14 +0800
+Subject: Re: [PATCH 1/1] riscv: Enable ARCH_HAS_FAST_MULTIPLIER for RV64I
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     kernel@esmil.dk, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, chenxi.mao2013@gmail.com,
+        wangqiang1@eswin.com
+References: <mhng-f0599c86-b976-4116-9228-7da783085905@palmerdabbelt-glaptop1>
+From:   Chenxi Mao <maochenxi@eswin.com>
+Message-ID: <0c14ac71-86b5-be3a-3d48-b051a288e573@eswin.com>
+Date:   Thu, 23 Jul 2020 10:57:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <mhng-f0599c86-b976-4116-9228-7da783085905@palmerdabbelt-glaptop1>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTA3LTIwIGF0IDExOjIzIC0wNzAwLCBUb2RkIEtqb3Mgd3JvdGU6DQo+IE9u
-IFdlZCwgSnVuIDEwLCAyMDIwIGF0IDU6MjQgQU0gRnJhbmtpZSBDaGFuZw0KPiA8RnJhbmtpZS5D
-aGFuZ0BtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gRnJvbTogIkZyYW5raWUuQ2hhbmci
-IDxGcmFua2llLkNoYW5nQG1lZGlhdGVrLmNvbT4NCj4gPg0KPiA+IFNpbmNlIHRoZSBvcmlnaW5h
-bCB0cmFjZV9iaW5kZXJfdHJhbnNhY3Rpb25fcmVjZWl2ZWQgY2Fubm90DQo+ID4gcHJlY2lzZWx5
-IHByZXNlbnQgdGhlIHJlYWwgZmluaXNoZWQgdGltZSBvZiB0cmFuc2FjdGlvbiwgYWRkaW5nIGEN
-Cj4gPiB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfZnJlZSBhdCB0aGUgcG9pbnQgb2YgZnJlZSB0
-cmFuc2FjdGlvbg0KPiA+IG1heSBiZSBtb3JlIGNsb3NlIHRvIGl0Lg0KPiA+DQo+ID4gU2lnbmVk
-LW9mZi1ieTogRnJhbmtpZS5DaGFuZyA8RnJhbmtpZS5DaGFuZ0BtZWRpYXRlay5jb20+DQo+ID4g
-LS0tDQo+ID4gIGRyaXZlcnMvYW5kcm9pZC9iaW5kZXIuYyAgICAgICB8ICAgIDIgKysNCj4gPiAg
-ZHJpdmVycy9hbmRyb2lkL2JpbmRlcl90cmFjZS5oIHwgICAyNyArKysrKysrKysrKysrKysrKysr
-KysrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspDQo+ID4NCj4g
-PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9hbmRyb2lkL2JpbmRlci5jIGIvZHJpdmVycy9hbmRyb2lk
-L2JpbmRlci5jDQo+ID4gaW5kZXggMTU5MjM5Ni4uNWVjOWFmOCAxMDA2NDQNCj4gPiAtLS0gYS9k
-cml2ZXJzL2FuZHJvaWQvYmluZGVyLmMNCj4gPiArKysgYi9kcml2ZXJzL2FuZHJvaWQvYmluZGVy
-LmMNCj4gPiBAQCAtMTUyMyw2ICsxNTIzLDcgQEAgc3RhdGljIHZvaWQgYmluZGVyX2ZyZWVfdHJh
-bnNhY3Rpb24oc3RydWN0IGJpbmRlcl90cmFuc2FjdGlvbiAqdCkNCj4gPiAgICAgICAgICAqIElm
-IHRoZSB0cmFuc2FjdGlvbiBoYXMgbm8gdGFyZ2V0X3Byb2MsIHRoZW4NCj4gPiAgICAgICAgICAq
-IHQtPmJ1ZmZlci0+dHJhbnNhY3Rpb24gaGFzIGFscmVhZHkgYmVlbiBjbGVhcmVkLg0KPiA+ICAg
-ICAgICAgICovDQo+ID4gKyAgICAgICB0cmFjZV9iaW5kZXJfdHhuX2xhdGVuY3lfZnJlZSh0KTsN
-Cj4gPiAgICAgICAgIGJpbmRlcl9mcmVlX3R4bl9maXh1cHModCk7DQo+ID4gICAgICAgICBrZnJl
-ZSh0KTsNCj4gPiAgICAgICAgIGJpbmRlcl9zdGF0c19kZWxldGVkKEJJTkRFUl9TVEFUX1RSQU5T
-QUNUSU9OKTsNCj4gPiBAQCAtMzA5NCw2ICszMDk1LDcgQEAgc3RhdGljIHZvaWQgYmluZGVyX3Ry
-YW5zYWN0aW9uKHN0cnVjdCBiaW5kZXJfcHJvYyAqcHJvYywNCj4gPiAgICAgICAgIGtmcmVlKHRj
-b21wbGV0ZSk7DQo+ID4gICAgICAgICBiaW5kZXJfc3RhdHNfZGVsZXRlZChCSU5ERVJfU1RBVF9U
-UkFOU0FDVElPTl9DT01QTEVURSk7DQo+ID4gIGVycl9hbGxvY190Y29tcGxldGVfZmFpbGVkOg0K
-PiA+ICsgICAgICAgdHJhY2VfYmluZGVyX3R4bl9sYXRlbmN5X2ZyZWUodCk7DQo+ID4gICAgICAg
-ICBrZnJlZSh0KTsNCj4gPiAgICAgICAgIGJpbmRlcl9zdGF0c19kZWxldGVkKEJJTkRFUl9TVEFU
-X1RSQU5TQUNUSU9OKTsNCj4gPiAgZXJyX2FsbG9jX3RfZmFpbGVkOg0KPiA+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL2FuZHJvaWQvYmluZGVyX3RyYWNlLmggYi9kcml2ZXJzL2FuZHJvaWQvYmluZGVy
-X3RyYWNlLmgNCj4gPiBpbmRleCA2NzMxYzNjLi44YWM4N2QxIDEwMDY0NA0KPiA+IC0tLSBhL2Ry
-aXZlcnMvYW5kcm9pZC9iaW5kZXJfdHJhY2UuaA0KPiA+ICsrKyBiL2RyaXZlcnMvYW5kcm9pZC9i
-aW5kZXJfdHJhY2UuaA0KPiA+IEBAIC05NSw2ICs5NSwzMyBAQA0KPiA+ICAgICAgICAgICAgICAg
-ICAgIF9fZW50cnktPnRocmVhZF90b2RvKQ0KPiA+ICApOw0KPiA+DQo+ID4gK1RSQUNFX0VWRU5U
-KGJpbmRlcl90eG5fbGF0ZW5jeV9mcmVlLA0KPiA+ICsgICAgICAgVFBfUFJPVE8oc3RydWN0IGJp
-bmRlcl90cmFuc2FjdGlvbiAqdCksDQo+ID4gKyAgICAgICBUUF9BUkdTKHQpLA0KPiA+ICsgICAg
-ICAgVFBfU1RSVUNUX19lbnRyeSgNCj4gPiArICAgICAgICAgICAgICAgX19maWVsZChpbnQsIGRl
-YnVnX2lkKQ0KPiA+ICsgICAgICAgICAgICAgICBfX2ZpZWxkKGludCwgZnJvbV9wcm9jKQ0KPiA+
-ICsgICAgICAgICAgICAgICBfX2ZpZWxkKGludCwgZnJvbV90aHJlYWQpDQo+ID4gKyAgICAgICAg
-ICAgICAgIF9fZmllbGQoaW50LCB0b19wcm9jKQ0KPiA+ICsgICAgICAgICAgICAgICBfX2ZpZWxk
-KGludCwgdG9fdGhyZWFkKQ0KPiA+ICsgICAgICAgICAgICAgICBfX2ZpZWxkKHVuc2lnbmVkIGlu
-dCwgY29kZSkNCj4gPiArICAgICAgICAgICAgICAgX19maWVsZCh1bnNpZ25lZCBpbnQsIGZsYWdz
-KQ0KPiA+ICsgICAgICAgKSwNCj4gPiArICAgICAgIFRQX2Zhc3RfYXNzaWduKA0KPiA+ICsgICAg
-ICAgICAgICAgICBfX2VudHJ5LT5kZWJ1Z19pZCA9IHQtPmRlYnVnX2lkOw0KPiA+ICsgICAgICAg
-ICAgICAgICBfX2VudHJ5LT5mcm9tX3Byb2MgPSB0LT5mcm9tID8gdC0+ZnJvbS0+cHJvYy0+cGlk
-IDogMDsNCj4gPiArICAgICAgICAgICAgICAgX19lbnRyeS0+ZnJvbV90aHJlYWQgPSB0LT5mcm9t
-ID8gdC0+ZnJvbS0+cGlkIDogMDsNCj4gPiArICAgICAgICAgICAgICAgX19lbnRyeS0+dG9fcHJv
-YyA9IHQtPnRvX3Byb2MgPyB0LT50b19wcm9jLT5waWQgOiAwOw0KPiA+ICsgICAgICAgICAgICAg
-ICBfX2VudHJ5LT50b190aHJlYWQgPSB0LT50b190aHJlYWQgPyB0LT50b190aHJlYWQtPnBpZCA6
-IDA7DQo+IA0KPiB0LT50b19wcm9jIGFuZCB0LT50b190aHJlYWQgYXJlIG5vdCBzYWZlIHRvIGRl
-cmVmZXJlbmNlIHdpdGhvdXQNCj4gaG9sZGluZyB0LT5sb2NrLiBJZiB0aGUgdGFyZ2V0IHByb2Nl
-c3MgZGllcywgdGhlc2UgZmllbGRzIGNhbiBiZSBzZXQNCj4gdG8gTlVMTA0KPiANClRoYW5rcyBm
-b3IgcmVtaW5kLiBJIHdpbGwgYWRkIGxvY2sgcHJvdGVjdGlvbiBmb3IgdGhlc2UgdC0+dG9fcHJv
-YyAmDQp0LT50b190aHJlYWQgaW4gdjcuDQoNCj4gPiArICAgICAgICAgICAgICAgX19lbnRyeS0+
-Y29kZSA9IHQtPmNvZGU7DQo+ID4gKyAgICAgICAgICAgICAgIF9fZW50cnktPmZsYWdzID0gdC0+
-ZmxhZ3M7DQo+ID4gKyAgICAgICApLA0KPiA+ICsgICAgICAgVFBfcHJpbnRrKCJ0cmFuc2FjdGlv
-bj0lZCBmcm9tICVkOiVkIHRvICVkOiVkIGZsYWdzPTB4JXggY29kZT0weCV4IiwNCj4gPiArICAg
-ICAgICAgICAgICAgICBfX2VudHJ5LT5kZWJ1Z19pZCwgX19lbnRyeS0+ZnJvbV9wcm9jLCBfX2Vu
-dHJ5LT5mcm9tX3RocmVhZCwNCj4gPiArICAgICAgICAgICAgICAgICBfX2VudHJ5LT50b19wcm9j
-LCBfX2VudHJ5LT50b190aHJlYWQsIF9fZW50cnktPmNvZGUsDQo+ID4gKyAgICAgICAgICAgICAg
-ICAgX19lbnRyeS0+ZmxhZ3MpDQo+ID4gKyk7DQo+ID4gKw0KPiA+ICBUUkFDRV9FVkVOVChiaW5k
-ZXJfdHJhbnNhY3Rpb24sDQo+ID4gICAgICAgICBUUF9QUk9UTyhib29sIHJlcGx5LCBzdHJ1Y3Qg
-YmluZGVyX3RyYW5zYWN0aW9uICp0LA0KPiA+ICAgICAgICAgICAgICAgICAgc3RydWN0IGJpbmRl
-cl9ub2RlICp0YXJnZXRfbm9kZSksDQo+ID4gLS0NCj4gPiAxLjcuOS41DQoNCg==
+Hi Palmer:
 
+
+Did you mean we drop this totally or drop this for __sw_hweight32 only?
+
+
+Chenxi
+
+On 2020/7/23 上午10:13, Palmer Dabbelt wrote:
+> On Wed, 22 Jul 2020 18:59:12 PDT (-0700), maochenxi@eswin.com wrote:
+>> Hi Palmer and Emil:
+>>
+>> As Emil mentioned in previous E-mail loop, I did the same test on my kernel as well.
+>
+> Sorry, I guess I crossed up my emails.  I think it's best to just drop this for
+> now, as it doesn't actually seem to generate better code for our current
+> target.
+>
+>>
+>> My kernel is based on Linux 5.8-RC6 with GCC-10.1. (ISA C extension enabled)
+>>
+>> The disassembly code as below:
+>>
+>> CONFIG_ARCH_HAS_FAST_MULTIPLIER enabled:
+>>
+>> 0000000000000000 <__sw_hweight32>:
+>>    0:    555557b7              lui    a5,0x55555
+>>    4:    0015571b              srliw    a4,a0,0x1
+>>    8:    55578793              addi    a5,a5,1365 # 55555555 <.LASF5+0x5555509d>
+>>    c:    8ff9                    and    a5,a5,a4
+>>    e:    9d1d                    subw    a0,a0,a5
+>>
+>> 0000000000000010 <.LVL1>:
+>>   10:    333337b7              lui    a5,0x33333
+>>   14:    33378793              addi    a5,a5,819 # 33333333 <.LASF5+0x33332e7b>
+>>   18:    0025571b              srliw    a4,a0,0x2
+>>   1c:    8d7d                    and    a0,a0,a5
+>>   1e:    8ff9                    and    a5,a5,a4
+>>   20:    9fa9                    addw    a5,a5,a0
+>>   22:    0047d51b              srliw    a0,a5,0x4
+>>   26:    9fa9                    addw    a5,a5,a0
+>>   28:    0f0f1537              lui    a0,0xf0f1
+>>   2c:    1141                    addi    sp,sp,-16
+>>   2e:    f0f50513              addi    a0,a0,-241 # f0f0f0f <.LASF5+0xf0f0a57>
+>>   32:    e422                    sd    s0,8(sp)
+>>   34:    8fe9                    and    a5,a5,a0
+>>   36:    0800                    addi    s0,sp,16
+>>   38:    0087951b              slliw    a0,a5,0x8
+>>   3c:    6422                    ld    s0,8(sp)
+>>   3e:    9d3d                    addw    a0,a0,a5
+>>   40:    0105179b              slliw    a5,a0,0x10
+>>   44:    9d3d                    addw    a0,a0,a5
+>>   46:    0185551b              srliw    a0,a0,0x18
+>>   4a:    0141                    addi    sp,sp,16
+>>   4c:    8082                    ret
+>>
+>> CONFIG_ARCH_HAS_FAST_MULTIPLIER disabled:
+>>
+>> 000000000000004e <__sw_hweight32_default>:
+>>   4e:    55555737              lui    a4,0x55555
+>>   52:    0015579b              srliw    a5,a0,0x1
+>>   56:    55570713              addi    a4,a4,1365 # 55555555 <.LASF5+0x5555509d>
+>>   5a:    8ff9                    and    a5,a5,a4
+>>   5c:    9d1d                    subw    a0,a0,a5
+>>
+>> 000000000000005e <.LVL3>:
+>>   5e:    333337b7              lui    a5,0x33333
+>>   62:    33378793              addi    a5,a5,819 # 33333333 <.LASF5+0x33332e7b>
+>>   66:    0025571b              srliw    a4,a0,0x2
+>>   6a:    8d7d                    and    a0,a0,a5
+>>   6c:    8ff9                    and    a5,a5,a4
+>>   6e:    9fa9                    addw    a5,a5,a0
+>>   70:    0047d51b              srliw    a0,a5,0x4
+>>   74:    9d3d                    addw    a0,a0,a5
+>>   76:    0f0f17b7              lui    a5,0xf0f1
+>>   7a:    1141                    addi    sp,sp,-16
+>>   7c:    f0f78793              addi    a5,a5,-241 # f0f0f0f <.LASF5+0xf0f0a57>
+>>   80:    e422                    sd    s0,8(sp)
+>>   82:    8fe9                    and    a5,a5,a0
+>>   84:    0800                    addi    s0,sp,16
+>>   86:    0087d51b              srliw    a0,a5,0x8
+>>   8a:    6422                    ld    s0,8(sp)
+>>   8c:    9fa9                    addw    a5,a5,a0
+>>   8e:    0107d51b              srliw    a0,a5,0x10
+>>   92:    9d3d                    addw    a0,a0,a5
+>>   94:    0ff57513              andi    a0,a0,255
+>>   98:    0141                    addi    sp,sp,16
+>>   9a:    8082                    ret
+>>
+>> This 2 implementations is almost same but small differences.
+>>
+>> Especially in CONFIG_ARCH_HAS_FAST_MULTIPLIER condition,  below code didn't use "mul" instructions.
+>>
+>>     " return (w * 0x01010101) >> 24; "
+>>
+>> So I am trying to translate this code with inline assembly as below:
+>>
+>> //return (w * 0x01010101) >> 24;
+>> __asm__ (
+>> " mul %0, %0, %1\n"
+>> : "+r" (w)
+>> : "r" (w), "r"(0x01010101)
+>> :);
+>> return w >> 24;
+>>
+>> After above change, the disassambly as below:
+>> 0000000000000000 <__sw_hweight32>:
+>>    0:    555557b7              lui    a5,0x55555
+>>    4:    0015571b              srliw    a4,a0,0x1
+>>    8:    55578793              addi    a5,a5,1365 # 55555555 <.LASF5+0x55555119>
+>>    c:    8ff9                    and    a5,a5,a4
+>>    e:    9d1d                    subw    a0,a0,a5
+>>
+>> 0000000000000010 <.LVL1>:
+>>   10:    333337b7              lui    a5,0x33333
+>>   14:    0025571b              srliw    a4,a0,0x2
+>>   18:    33378793              addi    a5,a5,819 # 33333333 <.LASF5+0x33332ef7>
+>>   1c:    8d7d                    and    a0,a0,a5
+>>   1e:    8ff9                    and    a5,a5,a4
+>>   20:    9fa9                    addw    a5,a5,a0
+>>   22:    0047d71b              srliw    a4,a5,0x4
+>>   26:    9f3d                    addw    a4,a4,a5
+>>   28:    0f0f17b7              lui    a5,0xf0f1
+>>   2c:    1141                    addi    sp,sp,-16
+>>   2e:    f0f78793              addi    a5,a5,-241 # f0f0f0f <.LASF5+0xf0f0ad3>
+>>   32:    e422                    sd    s0,8(sp)
+>>   34:    8ff9                    and    a5,a5,a4
+>>   36:    0800                    addi    s0,sp,16
+>>   38:    01010737              lui    a4,0x1010
+>>   3c:    853e                    mv    a0,a5
+>>
+>> 000000000000003e <.LVL2>:
+>>   3e:    1017071b              addiw    a4,a4,257
+>>   42:    02f50533              mul    a0,a0,a5
+>>   46:    6422                    ld    s0,8(sp)
+>>   48:    0185551b              srliw    a0,a0,0x18
+>>
+>> "mul" instruction is leveraged as expectation, but 0x01010101 load waste several instructions.
+>>
+>> Based on this test, force to leverage "mul" instruction might be not faster than current compiler implementations.
+>>
+>> I am not sure above assembly is the best way to load 0x01010101? I checked the ISA manual, "lui" only
+>>
+>> load 20 bits per time, is this the best way to load instants?
+>>
+>>
+>> On the other hand, I try to compare ARM64 disassembly code:
+>>
+>> .....
+>>
+>>    4:    3200c3e2     mov    w2, #0x1010101                 // #16843009
+>>
+>> ......
+>>
+>>    w =  (w + (w >> 4)) & 0x0f0f0f0f;
+>>   20:    0b401000     add    w0, w0, w0, lsr #4
+>>   24:    1200cc00     and    w0, w0, #0xf0f0f0f
+>>     return (w * 0x01010101) >> 24;
+>>   28:    1b027c00     mul    w0, w0, w2
+>>
+>> Only one "mov" instructions to load 0x1010101 and one "mul" instruction for multiply.
+>>
+>>
+>> Let me summary as below:
+>>
+>> 1.  GCC 10.1 cannot generate "mul" instruction when CONFIG_ARCH_HAS_FAST_MULTIPLIER enabled.
+>>
+>> 2. force to generate "mul" didn't get better because instants load waste instructions.
+>>
+>> 3. If GCC compiler behavior is best solution for this case, we could have below work around on Riscv.
+>>
+>>  unsigned int __sw_hweight32(unsigned int w)
+>>  {
+>> -#ifdef CONFIG_ARCH_HAS_FAST_MULTIPLIER
+>> +/*
+>> + * Risc-V could not generate mul(w) instruction in this case
+>> + */
+>> +#if defined(CONFIG_ARCH_HAS_FAST_MULTIPLIER) && !defined(CONFIG_RISCV)
+>>         w -= (w >> 1) & 0x55555555;
+>>         w =  (w & 0x33333333) + ((w >> 2) & 0x33333333);
+>>         w =  (w + (w >> 4)) & 0x0f0f0f0f;
+>>
+>>
+>> Chenxi
+>>
+>>
+>> On 2020/7/21 上午9:17, Palmer Dabbelt wrote:
+>>> On Wed, 08 Jul 2020 22:19:22 PDT (-0700), maochenxi@eswin.com wrote:
+>>>> Enable ARCH_HAS_FAST_MULTIPLIER on RV64I
+>>>> which works fine on GCC-9.3 and GCC-10.1
+>>>>
+>>>> PS2: remove ARCH_SUPPORTS_INT128 because of RV64I already enabled.
+>>>>
+>>>> Signed-off-by: Chenxi Mao <maochenxi@eswin.com>
+>>>> ---
+>>>>  arch/riscv/Kconfig | 1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>>>> index 128192e14ff2..84e6777fecad 100644
+>>>> --- a/arch/riscv/Kconfig
+>>>> +++ b/arch/riscv/Kconfig
+>>>> @@ -202,6 +202,7 @@ config ARCH_RV64I
+>>>>      bool "RV64I"
+>>>>      select 64BIT
+>>>>      select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
+>>>> +    select ARCH_HAS_FAST_MULTIPLIER
+>>>>      select HAVE_DYNAMIC_FTRACE if MMU
+>>>>      select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
+>>>>      select HAVE_FTRACE_MCOUNT_RECORD
+>>>
+>>> Ah, thanks -- this one didn't show up when I was looking at the last one.  I
+>>> think we can put the fast multiplier on rv32 and rv64, there shouldn't be any
+>>> difference there.  I guess in theory we should be sticking this all in some
+>>> sort of "platform type" optimization flags, but that's probably bit much for
+>>> now.
