@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC9A22B214
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3597022B217
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgGWPA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:00:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728723AbgGWPA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:00:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2324920709;
-        Thu, 23 Jul 2020 15:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595516426;
-        bh=4R4rFlQ9S7IYpPvd2WbOvsP7WGTiScpv5SiKG/TqEqM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IWKFSwsuuHedWFV8296RhqiXfCSflXGX0Mn4uTu2UdfcsBjoobW2Wk5OKHlxHFCoX
-         G4UjFgSV5B5Auc5KuE7Z/zq/r0ncUwVV1RvMi4lqvQpSKDOJWVu+oiM6SW2T7WPA0+
-         ulmfBIJpknRApArlcjRuXrW5kwO3d2jWmbHNAZpg=
-Date:   Thu, 23 Jul 2020 17:00:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marc Gonzalez <marc.w.gonzalez@free.fr>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/2] Small devm helper for devm implementations
-Message-ID: <20200723150030.GA2515799@kroah.com>
-References: <e8221bff-3e2a-7607-c5c8-abcf9cebb1b5@free.fr>
- <69f6f7fc-4fb6-248a-684a-b853ee0836bc@free.fr>
- <3fea884b-05d3-ff67-b9fe-41c9b46cf478@free.fr>
- <20200706195758.GA100842@kroah.com>
- <23a476f9-8ea3-566e-be5e-5237fb14bb91@free.fr>
+        id S1728581AbgGWPDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:03:36 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:33418 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727108AbgGWPDf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 11:03:35 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06NF2ZNi044266;
+        Thu, 23 Jul 2020 15:03:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=L6YMu5hMIyONs163kBUsQtc+IsC5DQJqhzfU8lanX1o=;
+ b=OxdHgVkuuWhyf2dp06bQtEnEQBWqhg40pozko6piztSlwsH3ACxJqrKpDvkJUwNY9fZm
+ osupjqKm50GdqLJZ+ltP1Jhvn+U4Kp8ZQFITy981+Eh4CERhmUZdShlhTCCsnt2Z7iVh
+ 1B03PaTT88GWiGlEijqaWWiXNwrDH8lfZu0Ig+qqqPSwgR0HCjUlbtR9evDYS+1iLpud
+ 4v2CH6YsTyE6poW75ar3iGXYevSze3Rj/iXiPxLoR+r2F60WF46bwsfj2nACSWFpCwyN
+ H1XGa2+cNEZLAFeaSexkOgYd+emZp8CVZlQZmIOc5WP9q9JgRFdZ3kI8py3aXZggOGNP rA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 32brgrsx57-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 23 Jul 2020 15:03:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06NEx8aR112243;
+        Thu, 23 Jul 2020 15:01:18 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 32fb8gxn5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Jul 2020 15:01:18 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06NF1FB0011054;
+        Thu, 23 Jul 2020 15:01:17 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 23 Jul 2020 08:01:15 -0700
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1mu3qe0wm.fsf@ca-mkp.ca.oracle.com>
+References: <20200721163045.50c205a5@canb.auug.org.au>
+        <20200723155452.6dccd510@canb.auug.org.au>
+Date:   Thu, 23 Jul 2020 11:01:10 -0400
+In-Reply-To: <20200723155452.6dccd510@canb.auug.org.au> (Stephen Rothwell's
+        message of "Thu, 23 Jul 2020 15:54:52 +1000")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23a476f9-8ea3-566e-be5e-5237fb14bb91@free.fr>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9691 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 mlxscore=0 spamscore=0 phishscore=0
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007230112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9691 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
+ impostorscore=0 suspectscore=1 adultscore=0 clxscore=1011 mlxlogscore=999
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007230112
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 09:10:23AM +0200, Marc Gonzalez wrote:
-> On 06/07/2020 21:57, Greg Kroah-Hartman wrote:
-> 
-> > Given the lack of testing of the patch, it doesn't seem wise to add
-> > this, right?
-> 
-> You're probably not wrong :)
-> 
-> > Please get some testing, and some more users, and I'll be glad to
-> > consider it.
-> 
-> "Users" == files modified to use the new helper?
 
-Yes.
+Stephen,
 
-> How many files would you suggest? 3? 5? 10?
+>> ERROR: modpost: "exynos_ufs_dump_info" [drivers/scsi/ufs/ufs-exynos.ko] undefined!
+>> ERROR: modpost: "exynos_ufs_init_dbg" [drivers/scsi/ufs/ufs-exynos.ko] undefined!
+>> ERROR: modpost: "exynos_ufs_cmd_log_start" [drivers/scsi/ufs/ufs-exynos.ko] undefined!
 
-How many do you see that can use it?  I would suggest "all" :)
+*sigh* sorry about that. I did verify yesterday's exynos build fix with
+COMPILE_TEST but it looks like I didn't have the new driver debugging
+option enabled.
 
-thanks,
+Kiwoong/Alim: Please fix!
 
-greg k-h
+-- 
+Martin K. Petersen	Oracle Linux Engineering
