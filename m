@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A20D22A4D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F88A22A4C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387573AbgGWBnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:43:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:35136 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729198AbgGWBnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:43:20 -0400
-IronPort-SDR: vGmSKqUiAwiT79TdRlYfUEzhn+QRTigIexKiuE57WYP+IshVvcWoYnVTzDgoGbgKjQO/xC2qOB
- qeV1kVAWmHJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="211994130"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="211994130"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 18:43:20 -0700
-IronPort-SDR: qzEgg29TJShS4o3Yp4JnojIJki6kfZSSgbAjaUh16Ol/Mp5LoUetM0bF3whgosZFuwAEP/+n5K
- rYuL/eygxALg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="392853121"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Jul 2020 18:43:17 -0700
-Cc:     baolu.lu@linux.intel.com, Ashok Raj <ashok.raj@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Koba Ko <koba.ko@canonical.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Christian Kellner <ckellner@redhat.com>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Skip TE disabling on quirky gfx dedicated
- iommu
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200721001713.24282-1-baolu.lu@linux.intel.com>
- <DM6PR19MB2636D1CC549743E2113C0EAFFA780@DM6PR19MB2636.namprd19.prod.outlook.com>
- <d8548318-ee2e-ca3f-cb0a-e219ce23d471@linux.intel.com>
- <DM6PR19MB263622CA8CAA7CDA3973E0DBFA780@DM6PR19MB2636.namprd19.prod.outlook.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <2695916e-0dfd-6c8a-d4e7-1f4da372e123@linux.intel.com>
-Date:   Thu, 23 Jul 2020 09:38:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387722AbgGWBji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:39:38 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:32902 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387460AbgGWBjH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:39:07 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 866BA803202F;
+        Thu, 23 Jul 2020 01:39:05 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7NZcB0gu1dAP; Thu, 23 Jul 2020 04:39:04 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/7] gpio: dwapb: Refactor GPIO resources initialization
+Date:   Thu, 23 Jul 2020 04:38:51 +0300
+Message-ID: <20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <DM6PR19MB263622CA8CAA7CDA3973E0DBFA780@DM6PR19MB2636.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/20 7:45 AM, Limonciello, Mario wrote:
-> 
-> 
->> -----Original Message-----
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Tuesday, July 21, 2020 6:07 PM
->> To: Limonciello, Mario; Joerg Roedel
->> Cc: baolu.lu@linux.intel.com; Ashok Raj; linux-kernel@vger.kernel.org;
->> stable@vger.kernel.org; Koba Ko; iommu@lists.linux-foundation.org
->> Subject: Re: [PATCH 1/1] iommu/vt-d: Skip TE disabling on quirky gfx dedicated
->> iommu
->>
->>
->> [EXTERNAL EMAIL]
->>
->> Hi Limonciello,
->>
->> On 7/21/20 10:44 PM, Limonciello, Mario wrote:
->>>> -----Original Message-----
->>>> From: iommu<iommu-bounces@lists.linux-foundation.org>  On Behalf Of Lu
->>>> Baolu
->>>> Sent: Monday, July 20, 2020 7:17 PM
->>>> To: Joerg Roedel
->>>> Cc: Ashok Raj;linux-kernel@vger.kernel.org;stable@vger.kernel.org; Koba
->>>> Ko;iommu@lists.linux-foundation.org
->>>> Subject: [PATCH 1/1] iommu/vt-d: Skip TE disabling on quirky gfx dedicated
->>>> iommu
->>>>
->>>> The VT-d spec requires (10.4.4 Global Command Register, TE field) that:
->>>>
->>>> Hardware implementations supporting DMA draining must drain any in-flight
->>>> DMA read/write requests queued within the Root-Complex before completing
->>>> the translation enable command and reflecting the status of the command
->>>> through the TES field in the Global Status register.
->>>>
->>>> Unfortunately, some integrated graphic devices fail to do so after some
->>>> kind of power state transition. As the result, the system might stuck in
->>>> iommu_disable_translation(), waiting for the completion of TE transition.
->>>>
->>>> This provides a quirk list for those devices and skips TE disabling if
->>>> the qurik hits.
->>>>
->>>> Fixes:https://bugzilla.kernel.org/show_bug.cgi?id=208363
->>> That one is for TGL.
->>>
->>> I think you also want to add this one for ICL:
->>> Fixes:https://bugzilla.kernel.org/show_bug.cgi?id=206571
->>>
->>
->> Do you mean someone have tested that this patch also fixes the problem
->> described in 206571?
->>
-> 
-> Yes, confusingly https://bugzilla.kernel.org/show_bug.cgi?id=208363#c31 actually
-> is the XPS 9300 ICL system and issue.
-> 
-> I also have a private confirmation from another person that it resolves it for
-> them on another ICL platform.
-> 
+This series is about the DW APB GPIO device initialization procedure
+cleaning up. First of all it has been discovered that having a
+vendor-specific "snps,nr-gpios" property isn't only redundant but also
+might be dangerous (see the commit log for details). Instead we suggest to
+use the generic "ngpios" property to define a number of GPIOs each DW APB
+GPIO controller port supports. Secondly seeing a tendency of the other
+GPIO drivers getting converted to using the GPIO-lib-based IRQ-chip
+interface this series provides a patch, which replaces the DW APB GPIO
+driver Generic IRQ-chip implementation with the GPIO-lib IRQ-chip one.
+Finally the DW APB GPIO device probe procedure is simplified by
+converting the code to be using the device managed resources for the
+reference clocks initialization, reset control assertion/de-assertion
+and GPIO-chip registration.
 
-Okay! Thank you very much! I just posted v2 with this tag added.
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-gpio@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-Best regards,
-baolu
+Serge Semin (7):
+  dt-bindings: gpio: dwapb: Add ngpios property support
+  gpio: dwapb: Add ngpios DT-property support
+  gpio: dwapb: Move MFD-specific IRQ handler
+  gpio: dwapb: Convert driver to using the GPIO-lib-based IRQ-chip
+  gpio: dwapb: Get reset control by means of resource managed interface
+  gpio: dwapb: Get clocks by means of resource managed interface
+  gpio: dwapb: Use resource managed GPIO-chip add data method
+
+ .../bindings/gpio/snps,dw-apb-gpio.yaml       |   6 +
+ drivers/gpio/Kconfig                          |   2 +-
+ drivers/gpio/gpio-dwapb.c                     | 324 +++++++++---------
+ 3 files changed, 161 insertions(+), 171 deletions(-)
+
+-- 
+2.26.2
+
