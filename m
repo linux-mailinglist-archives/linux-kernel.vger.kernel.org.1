@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A19B22B394
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B34C22B397
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbgGWQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:33:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:47545 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729861AbgGWQdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:33:47 -0400
-IronPort-SDR: SPLolfwaW0pMePHFimKVbg68ckSN4X/Ln2o13EOYCroEEs6BSGaF8nxXKmtR+TO9OsaBgxlA2W
- dbJtKYRkYv5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="215174077"
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="215174077"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 09:33:47 -0700
-IronPort-SDR: uxbbcmOH8X6UoRMwUM2pCJBbvc29r6y1UNtzbJh7tJMnjPBu6igJrwKusApscKuKWGDc4/b+H0
- Bt+N/ONNiU5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="432795769"
-Received: from tthayer-hp-z620.an.intel.com (HELO [10.122.105.146]) ([10.122.105.146])
-  by orsmga004.jf.intel.com with ESMTP; 23 Jul 2020 09:33:45 -0700
-Reply-To: thor.thayer@linux.intel.com
-Subject: Re: [PATCH v4 03/10] net: eth: altera: fix altera_dmaops declaration
-To:     "Ooi, Joyce" <joyce.ooi@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dalon Westergreen <dalon.westergreen@linux.intel.com>,
-        Tan Ley Foon <ley.foon.tan@intel.com>,
-        See Chin Liang <chin.liang.see@intel.com>,
-        Dinh Nguyen <dinh.nguyen@intel.com>,
-        Dalon Westergreen <dalon.westergreen@intel.com>
-References: <20200708072401.169150-1-joyce.ooi@intel.com>
- <20200708072401.169150-4-joyce.ooi@intel.com>
-From:   Thor Thayer <thor.thayer@linux.intel.com>
-Message-ID: <6804ff2a-7322-4c77-cae0-9ed7837b7afb@linux.intel.com>
-Date:   Thu, 23 Jul 2020 11:33:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729760AbgGWQeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:34:44 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:37984 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgGWQen (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 12:34:43 -0400
+Received: by mail-io1-f66.google.com with SMTP id l1so6872464ioh.5;
+        Thu, 23 Jul 2020 09:34:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=stpb1fSJwGt8vShAdT7DxsGVBCe34IXza9CEfFYmfoY=;
+        b=PnhCBfLFMIHOrWdakSTbRmVuiaVeL813Yo37edYQDRkvK2HX969Bke0To7DwABAwVU
+         kANHjGS3Ljxxq2DHute8EJQUPefgiVRmScDFdDgZas/882HekLxjrqkEeGQJAKtv7S4P
+         IO5D/k/eMcoQwFJkAqWdUTg/N6l4uGZXhS/s1CAoqskVSXJ5mfVeTCyUqpcrvbciUyM/
+         /muvPrF/iTnxXDSi8ocpm/8rqILUjoL2CaCtZapxldYHElzZFUn2JuffQAw5urKPxcRp
+         wjdzBXRlOtw02UA5QrwIlFUbvRTtcKk35b9WoxDxDO13fs36GOdJGo5OR5Dzs0vHFBHJ
+         MI8A==
+X-Gm-Message-State: AOAM530iFkVPAz6xO7JettH/dIW8pZ89FmQ51Qbu1LpBL9tWrLslyzek
+        6i1ABDUxg8DvmpusfY4J0A==
+X-Google-Smtp-Source: ABdhPJylynKK+P2vHGCl3vu0jg/pAYFuvr7Pp1TO6idqHUxs9Ss5Reg+TCVFos/IOyis72LiIiSyjw==
+X-Received: by 2002:a05:6602:2c4d:: with SMTP id x13mr5775659iov.117.1595522082470;
+        Thu, 23 Jul 2020 09:34:42 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id u9sm1724668iom.14.2020.07.23.09.34.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 09:34:41 -0700 (PDT)
+Received: (nullmailer pid 497723 invoked by uid 1000);
+        Thu, 23 Jul 2020 16:34:39 -0000
+Date:   Thu, 23 Jul 2020 10:34:39 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     lee.jones@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tony@atomide.com
+Subject: Re: [PATCH] mfd: Replace HTTP links with HTTPS ones
+Message-ID: <20200723163439.GA497543@bogus>
+References: <20200722184711.GI3533@dell>
+ <20200722192454.69591-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-In-Reply-To: <20200708072401.169150-4-joyce.ooi@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722192454.69591-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/20 2:23 AM, Ooi, Joyce wrote:
-> From: Dalon Westergreen <dalon.westergreen@intel.com>
+On Wed, 22 Jul 2020 21:24:54 +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 > 
-> The declaration of struct altera_dmaops does not have
-> identifier names.  Add identifier names to confrom with
-> required coding styles.
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
 > 
-> Signed-off-by: Dalon Westergreen <dalon.westergreen@intel.com>
-> Signed-off-by: Joyce Ooi <joyce.ooi@intel.com>
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 > ---
-> v2: no change
-> v3: no change
-> v4: no change
-> ---
->   drivers/net/ethernet/altera/altera_tse.h | 30 ++++++++++++++++--------------
->   1 file changed, 16 insertions(+), 14 deletions(-)
+>  Documentation/devicetree/bindings/mfd/twl-family.txt | 2 +-
+>  drivers/mfd/hi6421-pmic-core.c                       | 2 +-
+>  drivers/mfd/lp873x.c                                 | 2 +-
+>  drivers/mfd/lp87565.c                                | 2 +-
+>  drivers/mfd/omap-usb-host.c                          | 2 +-
+>  drivers/mfd/omap-usb-tll.c                           | 2 +-
+>  drivers/mfd/smsc-ece1099.c                           | 2 +-
+>  drivers/mfd/ti_am335x_tscadc.c                       | 2 +-
+>  drivers/mfd/tps65086.c                               | 2 +-
+>  drivers/mfd/tps65217.c                               | 2 +-
+>  drivers/mfd/tps65218.c                               | 2 +-
+>  drivers/mfd/tps65912-core.c                          | 2 +-
+>  drivers/mfd/tps65912-i2c.c                           | 2 +-
+>  drivers/mfd/tps65912-spi.c                           | 2 +-
+>  include/linux/mfd/hi6421-pmic.h                      | 2 +-
+>  include/linux/mfd/lp873x.h                           | 2 +-
+>  include/linux/mfd/lp87565.h                          | 2 +-
+>  include/linux/mfd/ti_am335x_tscadc.h                 | 2 +-
+>  include/linux/mfd/tps65086.h                         | 2 +-
+>  include/linux/mfd/tps65217.h                         | 2 +-
+>  include/linux/mfd/tps65218.h                         | 2 +-
+>  include/linux/mfd/tps65912.h                         | 2 +-
+>  22 files changed, 22 insertions(+), 22 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/altera/altera_tse.h b/drivers/net/ethernet/altera/altera_tse.h
-> index f17acfb579a0..7d0c98fc103e 100644
-> --- a/drivers/net/ethernet/altera/altera_tse.h
-> +++ b/drivers/net/ethernet/altera/altera_tse.h
-> @@ -385,20 +385,22 @@ struct altera_tse_private;
->   struct altera_dmaops {
->   	int altera_dtype;
->   	int dmamask;
-> -	void (*reset_dma)(struct altera_tse_private *);
-> -	void (*enable_txirq)(struct altera_tse_private *);
-> -	void (*enable_rxirq)(struct altera_tse_private *);
-> -	void (*disable_txirq)(struct altera_tse_private *);
-> -	void (*disable_rxirq)(struct altera_tse_private *);
-> -	void (*clear_txirq)(struct altera_tse_private *);
-> -	void (*clear_rxirq)(struct altera_tse_private *);
-> -	int (*tx_buffer)(struct altera_tse_private *, struct tse_buffer *);
-> -	u32 (*tx_completions)(struct altera_tse_private *);
-> -	void (*add_rx_desc)(struct altera_tse_private *, struct tse_buffer *);
-> -	u32 (*get_rx_status)(struct altera_tse_private *);
-> -	int (*init_dma)(struct altera_tse_private *);
-> -	void (*uninit_dma)(struct altera_tse_private *);
-> -	void (*start_rxdma)(struct altera_tse_private *);
-> +	void (*reset_dma)(struct altera_tse_private *priv);
-> +	void (*enable_txirq)(struct altera_tse_private *priv);
-> +	void (*enable_rxirq)(struct altera_tse_private *priv);
-> +	void (*disable_txirq)(struct altera_tse_private *priv);
-> +	void (*disable_rxirq)(struct altera_tse_private *priv);
-> +	void (*clear_txirq)(struct altera_tse_private *priv);
-> +	void (*clear_rxirq)(struct altera_tse_private *priv);
-> +	int (*tx_buffer)(struct altera_tse_private *priv,
-> +			 struct tse_buffer *buffer);
-> +	u32 (*tx_completions)(struct altera_tse_private *priv);
-> +	void (*add_rx_desc)(struct altera_tse_private *priv,
-> +			    struct tse_buffer *buffer);
-> +	u32 (*get_rx_status)(struct altera_tse_private *priv);
-> +	int (*init_dma)(struct altera_tse_private *priv);
-> +	void (*uninit_dma)(struct altera_tse_private *priv);
-> +	void (*start_rxdma)(struct altera_tse_private *priv);
->   };
->   
->   /* This structure is private to each device.
-> 
-Reviewed-by: Thor Thayer <thor.thayer@linux.intel.com>
+
+Acked-by: Rob Herring <robh@kernel.org>
