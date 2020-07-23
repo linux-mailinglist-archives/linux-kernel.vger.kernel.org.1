@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B191222B796
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F6A22B79B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgGWUWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:22:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38746 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726686AbgGWUWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:22:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8326AAB55;
-        Thu, 23 Jul 2020 20:22:59 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 1D40A604C9; Thu, 23 Jul 2020 22:22:51 +0200 (CEST)
-Date:   Thu, 23 Jul 2020 22:22:51 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     Chi Song <Song.Chi@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 net-next] net: hyperv: dump TX indirection table to
- ethtool regs
-Message-ID: <20200723202251.vwh4xr7ogp72gcsg@lion.mk-sys.cz>
-References: <alpine.LRH.2.23.451.2007222356070.2641@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.inter>
- <20200723193542.6vwu4cbokbihw3nh@lion.mk-sys.cz>
- <BL0PR2101MB09308AB4F78EA5B1B27B1CCBCA760@BL0PR2101MB0930.namprd21.prod.outlook.com>
+        id S1727845AbgGWUX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:23:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726033AbgGWUX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 16:23:26 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD45C0619DC;
+        Thu, 23 Jul 2020 13:23:26 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f139so6339482wmf.5;
+        Thu, 23 Jul 2020 13:23:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ic3jTqBcuk4A2YnKQnoJUoi8ZVAuMeAUsxIP8au8VqE=;
+        b=ieT93CdakDSdYVpLpHmyLQvPa9yuKZSLL6sCJMJiabdIduu39BfQVsyevEzx4NrHuv
+         zpYfdrMOFqKetrD2mjQXWl7EEGY/3j/T8uM2M5qeMfDlSbYFpXTSb+zwZ9X+B1Abi4vF
+         s2t9KD3qnbzlt9gQ0DI2YlEX2c5LKImAQ5eCMcBs0mxk19IPUso7yVQq31LkaRsd4xH/
+         pAAQ4e6vXFZM1IxTSQfTs5Q98a7yEUN4jW9sQzKcIFsyc3PgkthOGxArOO0s6/UBqgEM
+         7RwM4vmbb23BM7A4aNW2kdyo/6YIydu/ZNXdKY1FioSuNqdiaeev9qYRebUXJ3PPAlhu
+         h1PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ic3jTqBcuk4A2YnKQnoJUoi8ZVAuMeAUsxIP8au8VqE=;
+        b=Gw6Hvq23rPdul1uq5ijMijnMOSlp9OTnfNj2hollF/GI6qPWpWXczpH+6pTOVY/NqE
+         wjMRVyXzkThXSAekmGAPfOQIwGWjzcih301Sa4qRHArvo2PS0idDTbd3lPXQGM/2tbhQ
+         Niwqe4aWA4Ve0QZaM5Pa/MxSXe4bMNhLl3OirbVELlxvOmhcQ/hZGvySDU6XWVD+xFcM
+         VXaiFkQlLiunstApA7HdZzemWznxO6ZNb1Fpw3apsqIH6JmXv2lPb4Kof/dj+y2dhygT
+         6Wt1LfMFIZnI8ZzEpEUaYH15qiL7E/qIXJUXLbaxdIODgGiCLb9o0NW6QK6IcvRmyA8v
+         RVtA==
+X-Gm-Message-State: AOAM531d4GYk774QF6O27yVolSwgx7GpWc9dalFTXfeoYPDvY1pse8q9
+        mOLce3gCsUFdnMVq0tb6brVPPzrQZCPWo1ctMdMnLg==
+X-Google-Smtp-Source: ABdhPJy1tsbBRn7UN6iAjHTn7BzaU6FZXUYje9C8iI+iChyo2GYaMNOzXLHpF+2C2xvdYtvzOURwGwbq/RlvI/UVP30=
+X-Received: by 2002:a05:600c:252:: with SMTP id 18mr2311976wmj.56.1595535804824;
+ Thu, 23 Jul 2020 13:23:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BL0PR2101MB09308AB4F78EA5B1B27B1CCBCA760@BL0PR2101MB0930.namprd21.prod.outlook.com>
+References: <20200723143637.991988-1-colin.king@canonical.com>
+In-Reply-To: <20200723143637.991988-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 23 Jul 2020 16:23:13 -0400
+Message-ID: <CADnq5_NicLnGDbk6XsT4Ux1nPNNgDu84kAPJfGJANQ9YWrcFuw@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: remove redundant initialization of
+ variable result
+To:     Colin King <colin.king@canonical.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 07:55:20PM +0000, Haiyang Zhang wrote:
-> > -----Original Message-----
-> > From: Michal Kubecek <mkubecek@suse.cz>
-> > Sent: Thursday, July 23, 2020 3:36 PM
-> > To: Chi Song <Song.Chi@microsoft.com>
-> > Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> > <haiyangz@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>;
-> > Wei Liu <wei.liu@kernel.org>; David S. Miller <davem@davemloft.net>; Jakub
-> > Kicinski <kuba@kernel.org>; linux-hyperv@vger.kernel.org;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH v7 net-next] net: hyperv: dump TX indirection table to
-> > ethtool regs
-> > 
-> > On Wed, Jul 22, 2020 at 11:59:09PM -0700, Chi Song wrote:
-> > > An imbalanced TX indirection table causes netvsc to have low
-> > > performance. This table is created and managed during runtime. To help
-> > > better diagnose performance issues caused by imbalanced tables, it needs
-> > > make TX indirection tables visible.
-> > >
-> > > Because TX indirection table is driver specified information, so
-> > > display it via ethtool register dump.
-> > 
-> > Is the Tx indirection table really unique to netvsc or can we expect
-> > other drivers to support similar feature? Also, would it make sense to
-> > allow also setting the table with ethtool? (AFAICS it can be only set
-> > from hypervisor at the moment.)
-> 
-> Currently, TX indirection table is only used by the Hyper-V synthetic NIC. I'm 
-> not aware of any other NIC planning to use this.
-> This table is created by host dynamically based on host side CPU usage, 
-> and provided to the VM periodically. Our protocol doesn't let the guest side 
-> to change it.
+Applied.  Thanks!
 
-If host is expected to rewrite the table periodically, it would indeed
-be of little use to set it on guest side. OK, let's do it as register
-dump and see if someone else comes with similar feature.
+Alex
 
-Michal
+On Thu, Jul 23, 2020 at 10:36 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable result is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> index 5d83e8174005..0853bc9917c7 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> @@ -1017,7 +1017,7 @@ enum dc_status dce112_add_stream_to_ctx(
+>                 struct dc_state *new_ctx,
+>                 struct dc_stream_state *dc_stream)
+>  {
+> -       enum dc_status result = DC_ERROR_UNEXPECTED;
+> +       enum dc_status result;
+>
+>         result = resource_map_pool_resources(dc, new_ctx, dc_stream);
+>
+> --
+> 2.27.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
