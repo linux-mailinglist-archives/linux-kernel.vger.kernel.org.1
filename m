@@ -2,57 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E08122AA97
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E11B22AA99
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgGWI1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:27:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60968 "EHLO mail.kernel.org"
+        id S1726884AbgGWI1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:27:22 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:52126 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbgGWI1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:27:07 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21CB420768;
-        Thu, 23 Jul 2020 08:27:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595492826;
-        bh=gszaEQS10t6JkQ0Jsx7tJbVQwQCESSJWDC2XvNsVy2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a1HHGDoA2IzuKghSG8cRZwymzGHfSeQlMoWlIG43Fzyg73uBt5s+PzgMigiw12tqA
-         NRmj9fuyhK83+SqdkMjJuUWlCwdFDpDjSDEL5dH1OsC3CrxwC1nvzoswFpMIQGcWy/
-         LVbzh09uNY0BIsLSOJ15kr/hqRvBrvZfuBkmiyys=
-Date:   Thu, 23 Jul 2020 10:26:25 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] phy updates for 5.9-rc1
-Message-ID: <20200723082625.GA1503700@kroah.com>
-References: <20200723072455.GW12965@vkoul-mobl>
+        id S1725846AbgGWI1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:27:21 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1jyWZP-0000Xo-ET; Thu, 23 Jul 2020 10:27:15 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Subject: Re: [PATCH v2 3/6] dt-bindings: arm: rockchip: Add ROCKPi 4B binding
+Date:   Thu, 23 Jul 2020 10:27:14 +0200
+Message-ID: <6968987.cG2su2sgyb@diego>
+In-Reply-To: <CAMty3ZDk28-wg_=wdf_Ps-5RaHK1T-+h0Jn43aK5ReWAz+GTGw@mail.gmail.com>
+References: <20200722190949.215656-1-jagan@amarulasolutions.com> <3893924.cuH9TW0V3R@phil> <CAMty3ZDk28-wg_=wdf_Ps-5RaHK1T-+h0Jn43aK5ReWAz+GTGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723072455.GW12965@vkoul-mobl>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 12:54:55PM +0530, Vinod Koul wrote:
-> Hello Greg,
+Am Donnerstag, 23. Juli 2020, 08:34:12 CEST schrieb Jagan Teki:
+> Hi Heiko,
 > 
-> Here are the updates for phy subsystem for 5.9. Please pull.
+> On Thu, Jul 23, 2020 at 4:43 AM Heiko Stuebner <heiko@sntech.de> wrote:
+> >
+> > Hi Jagan,
+> >
+> > Am Mittwoch, 22. Juli 2020, 21:09:46 CEST schrieb Jagan Teki:
+> > > Add dt-bindings for ROCKPi 4B which is similar to 4A with
+> > > additional AP6256 Wifi/BT, PoE.
+> > >
+> > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > ---
+> > > Changes for v2:
+> > > - new patch
+> > >
+> > >  Documentation/devicetree/bindings/arm/rockchip.yaml | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+> > > index 36057c9e4b83..7250adb43d24 100644
+> > > --- a/Documentation/devicetree/bindings/arm/rockchip.yaml
+> > > +++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+> > > @@ -448,6 +448,12 @@ properties:
+> > >            - const: radxa,rockpi4a
+> > >            - const: rockchip,rk3399
+> > >
+> > > +      - description: Radxa ROCK Pi 4B
+> > > +        items:
+> > > +          - const: radxa,rockpi4
+> > > +          - const: radxa,rockpi4b
+> > > +          - const: rockchip,rk3399
+> > > +
+> >
+> > Please do all RockPi4 variants into one entry, so we want something like:
+> >
+> >       - description: Radxa ROCK Pi 4
 > 
-> The following changes since commit 38b1927e5bf9bcad4a2e33189ef1c5569f9599ba:
+> What if the description has something like below.
 > 
->   phy: sun4i-usb: fix dereference of pointer phy0 before it is null checked (2020-06-25 18:25:37 +0530)
-> 
-> are available in the Git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-5.9
+>           - description: Radxa ROCK Pi 4A/B/C
 
-Pulled and pushed out, thanks.
+That's also ok :-)
 
-greg k-h
+
