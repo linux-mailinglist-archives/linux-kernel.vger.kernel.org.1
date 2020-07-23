@@ -2,140 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C5722B286
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE2222B288
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729660AbgGWP1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        id S1729671AbgGWP1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729650AbgGWP1M (ORCPT
+        with ESMTP id S1729662AbgGWP1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:27:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AFCC0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:11 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f2so5561803wrp.7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:11 -0700 (PDT)
+        Thu, 23 Jul 2020 11:27:15 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8298C0619E2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:14 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id z18so2004173wrm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kHJ+XeVbi6Fqf64rZGsvMfPCwEnJl/mkyREvWYHyzSs=;
-        b=P+0A1dF9XopiITzqpUXhrqYmXagxXC05lz3m9je4nXa09TlHs3Wgl5NkZ0dwKPljj2
-         bNncZ1E7bxQNsrC/daqJTPVx6+DR9vV0FUpip0Mlr9OBTSfLqwdtXzIm58MPKJKFzObE
-         cIjpP033bIrzzrX3Y5KuGgYSb440xS3POfuAAbN4D9qJw40M15PMKTTvT0RlBOA/xah7
-         jrNBC+cdGHmi2ZD68Vrkz0Wgn+QR+TJfdasmgUd1YS7DHC9ysFNoMs5dSOGQoi10EXha
-         9tJWIgJ5ofi5CyoYnQwfoDlc3GN27Gk9rFaq8B6bJGI1x8Qj3Jr3Q8FgFoBPYjO6rAWf
-         deDg==
+        bh=tsnEVgbRFSFGMlt+VQiCkCrNIR6sMOUDqSqxuXgPGHg=;
+        b=Cr23JDMpVp3xyxtyoT+EoLiJ9Pa1wlSmvjZoMuyWr9grSVVH2eZ8d6Mz9RYQx3dShE
+         FHRuLq1FokYw5DbMWd0gLYqroq82g3o1a2nw7ZBv0+Toro7nJeRhCcSdUjJRKjEK3Nuo
+         sE/WpQrHKgPqtneCrf3NglngiWQ+xxbA/KlSDIuZaUvHbm0YFJPCjGNhWFo+2nMZwxtS
+         Vhd/GT2Mh+IAePtp1ISbMY2GJFY9QX9C2VMejryXYo2FtJpoU+MOsJC+ZG/mERxZOLpS
+         LSKt2dgXAvZa6Hdb88QTB9ynX+VwY7394akSmAmrKsTwgfeAGg42iqO2dH4OexUO0vt8
+         QRCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kHJ+XeVbi6Fqf64rZGsvMfPCwEnJl/mkyREvWYHyzSs=;
-        b=AobLoDVG2Mj83nxiwYbPYwlrxaj6TMOL/NZxNzVoWgOOQ5Hl0U2pYGkc2HKLAMjd8J
-         tamqrZUz3DPWb6Z4wuczgZShM+xcTZkT6Y9huDprX0GHFNbiS2eyDQkskmDTWr4p8rjc
-         e8WfTlVQc9eHdZRTlpKf810Vcbo27tXmv3xrz3vEcbSheLayb4vkzgFMkpkab+xK5vhC
-         QC6BeVxFiyf+SyWtKKseaW37hawbb33WtDr4W4EBDi+zo+uVIOHYJXqb4ghThs9Z7qIL
-         chSAijExPaE9XwMbLut5lkf6PD5tzeEfnBYO46O6MVhV14LoL36/ckKIn+P1oe4DOyEC
-         6LrQ==
-X-Gm-Message-State: AOAM530Zl6DDZzv6x4N8JdAV1nRgquXqq57qkKIOC2dmlmaUUdi9Rkgf
-        OvKrycDL8ZraFhiBx6gB/yhl8g==
-X-Google-Smtp-Source: ABdhPJxto3SkmLheNic/ExNkEwYZALuchouPqArggo5mcpv1XGq50mFFFcZ22obJHZIjt6mM3FIe5A==
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr4471366wrq.401.1595518030564;
-        Thu, 23 Jul 2020 08:27:10 -0700 (PDT)
+        bh=tsnEVgbRFSFGMlt+VQiCkCrNIR6sMOUDqSqxuXgPGHg=;
+        b=srvNlQZFzIcGe5sC16CKGsiITAh05XOlP8a4F39hN9xaXEe109ls5oYVptAhQqLXSm
+         deQGv5x9HCQ8zkNEs21+ZmjG6HwuiJ7VYsA9qnKGVDJF2kC8yughY3b4yLK/mC0ruNSf
+         c2Lct+LDD4iv3t8pGRHJVk0cg/kR8DjEG4rfcG4B/ncciH+hzdwRmuyLPbaBAwqz1d35
+         6uSRUjS1T5SZleY3MiWTiIAoi7WHI69SeI0bkq5vNM9huneX8YTjDh3qyCcsHlVLV3bV
+         h5o34+M+/MyBe+AH7STRGenKIwp0Nu6pupb9PtQZja942wu6O9qpHP9Tb6/ahNpPw/1O
+         dDLA==
+X-Gm-Message-State: AOAM531wepW3DwIldFPn+jybaaEhC3rAaMmyl02UJyRJ17Fa2L/g16nf
+        PgmZar1OSFj/MgfrwJrXTRfdrg==
+X-Google-Smtp-Source: ABdhPJxTxi5wEUPax+nvchhQqfH9dZ0LqOFlf1wlEmxL8HSkf6xNbCKQPqa1nbQ2fKzP+DuBMy/0+Q==
+X-Received: by 2002:adf:a351:: with SMTP id d17mr4469464wrb.111.1595518033248;
+        Thu, 23 Jul 2020 08:27:13 -0700 (PDT)
 Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:dca7:8d30:33fa:daac])
-        by smtp.gmail.com with ESMTPSA id g145sm5963491wmg.23.2020.07.23.08.27.09
+        by smtp.gmail.com with ESMTPSA id g145sm5963491wmg.23.2020.07.23.08.27.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 08:27:10 -0700 (PDT)
+        Thu, 23 Jul 2020 08:27:12 -0700 (PDT)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     tglx@linutronix.de
-Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+Cc:     =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>,
+        =?UTF-8?q?=E5=91=A8=E6=AD=A3?= <sernia.zhou@foxmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org (open list:CLOCKSOURCE, CLOCKEVENT DRIVERS),
         devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
         DEVICE TREE BINDINGS)
-Subject: [PATCH 14/16] clocksource/drivers: Replace HTTP links with HTTPS ones
-Date:   Thu, 23 Jul 2020 17:26:34 +0200
-Message-Id: <20200723152639.639771-14-daniel.lezcano@linaro.org>
+Subject: [PATCH 15/16] dt-bindings: timer: Add Ingenic X1000 OST bindings.
+Date:   Thu, 23 Jul 2020 17:26:35 +0200
+Message-Id: <20200723152639.639771-15-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723152639.639771-1-daniel.lezcano@linaro.org>
 References: <1b1122f4-bce9-f349-e602-ed8e14cbb501@linaro.org>
  <20200723152639.639771-1-daniel.lezcano@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+From: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+Add the OST bindings for the X1000 SoC from Ingenic.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
-            If both the HTTP and HTTPS versions
-            return 200 OK and serve the same content:
-              Replace HTTP with HTTPS.
-
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-Acked-by: Rob Herring <robh@kernel.org>
+Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200708165856.15322-1-grandmaster@al2klimov.de
+Link: https://lore.kernel.org/r/20200722171804.97559-2-zhouyanjie@wanyeetech.com
 ---
- Documentation/devicetree/bindings/timer/ti,keystone-timer.txt | 2 +-
- drivers/clocksource/timer-ti-32k.c                            | 2 +-
- drivers/clocksource/timer-ti-dm.c                             | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ .../bindings/timer/ingenic,sysost.yaml        | 63 +++++++++++++++++++
+ include/dt-bindings/clock/ingenic,sysost.h    | 12 ++++
+ 2 files changed, 75 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+ create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
 
-diff --git a/Documentation/devicetree/bindings/timer/ti,keystone-timer.txt b/Documentation/devicetree/bindings/timer/ti,keystone-timer.txt
-index 5fbe361252b4..d3905a5412b8 100644
---- a/Documentation/devicetree/bindings/timer/ti,keystone-timer.txt
-+++ b/Documentation/devicetree/bindings/timer/ti,keystone-timer.txt
-@@ -10,7 +10,7 @@ It is global timer is a free running up-counter and can generate interrupt
- when the counter reaches preset counter values.
- 
- Documentation:
--http://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
-+https://www.ti.com/lit/ug/sprugv5a/sprugv5a.pdf
- 
- Required properties:
- 
-diff --git a/drivers/clocksource/timer-ti-32k.c b/drivers/clocksource/timer-ti-32k.c
-index ae12bbf3d68c..59b0be482f32 100644
---- a/drivers/clocksource/timer-ti-32k.c
-+++ b/drivers/clocksource/timer-ti-32k.c
-@@ -21,7 +21,7 @@
-  * Roughly modelled after the OMAP1 MPU timer code.
-  * Added OMAP4 support - Santosh Shilimkar <santosh.shilimkar@ti.com>
-  *
-- * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com
-+ * Copyright (C) 2015 Texas Instruments Incorporated - https://www.ti.com
-  */
- 
- #include <linux/clk.h>
-diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
-index 60aff087947a..33eeabf9c3d1 100644
---- a/drivers/clocksource/timer-ti-dm.c
-+++ b/drivers/clocksource/timer-ti-dm.c
-@@ -4,7 +4,7 @@
-  *
-  * OMAP Dual-Mode Timers
-  *
-- * Copyright (C) 2010 Texas Instruments Incorporated - http://www.ti.com/
-+ * Copyright (C) 2010 Texas Instruments Incorporated - https://www.ti.com/
-  * Tarun Kanti DebBarma <tarun.kanti@ti.com>
-  * Thara Gopinath <thara@ti.com>
-  *
+diff --git a/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml b/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+new file mode 100644
+index 000000000000..df3eb76045e0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/ingenic,sysost.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bindings for SYSOST in Ingenic XBurst family SoCs
++
++maintainers:
++  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
++
++description:
++  The SYSOST in an Ingenic SoC provides one 64bit timer for clocksource
++  and one or more 32bit timers for clockevent.
++
++properties:
++  "#clock-cells":
++    const: 1
++
++  compatible:
++    enum:
++      - ingenic,x1000-ost
++      - ingenic,x2000-ost
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: ost
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - "#clock-cells"
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/x1000-cgu.h>
++
++    ost: timer@12000000 {
++        compatible = "ingenic,x1000-ost";
++        reg = <0x12000000 0x3c>;
++
++        #clock-cells = <1>;
++
++        clocks = <&cgu X1000_CLK_OST>;
++        clock-names = "ost";
++
++        interrupt-parent = <&cpuintc>;
++        interrupts = <3>;
++    };
++...
+diff --git a/include/dt-bindings/clock/ingenic,sysost.h b/include/dt-bindings/clock/ingenic,sysost.h
+new file mode 100644
+index 000000000000..9ac88e90babf
+--- /dev/null
++++ b/include/dt-bindings/clock/ingenic,sysost.h
+@@ -0,0 +1,12 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * This header provides clock numbers for the ingenic,tcu DT binding.
++ */
++
++#ifndef __DT_BINDINGS_CLOCK_INGENIC_OST_H__
++#define __DT_BINDINGS_CLOCK_INGENIC_OST_H__
++
++#define OST_CLK_PERCPU_TIMER	0
++#define OST_CLK_GLOBAL_TIMER	1
++
++#endif /* __DT_BINDINGS_CLOCK_INGENIC_OST_H__ */
 -- 
 2.25.1
 
