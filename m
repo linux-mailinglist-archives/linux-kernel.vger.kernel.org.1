@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0887422B422
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059D922B428
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgGWRIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:08:10 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:43602 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgGWRIJ (ORCPT
+        id S1729926AbgGWRIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgGWRIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:08:09 -0400
-Received: by mail-io1-f66.google.com with SMTP id k23so6962190iom.10;
-        Thu, 23 Jul 2020 10:08:08 -0700 (PDT)
+        Thu, 23 Jul 2020 13:08:46 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 541D7C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:08:46 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t6so2836580plo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=NPbssqK1INtrFyjAUzj5mlbSJgxK4WzDaPmXZHhkVOg=;
+        b=yoXd9uVkO2vV1qapKWvg6gqU+YlOechgMeu61k1dp7CN9clp8UmaHRbquyhgRG0EEc
+         qzNe84TrLIXIyjqC0IiE0n1EHX+P8HvoY7yvHrCHdph8GNfNnaBIpslpqlns5gX8TQ4q
+         Bjc8eIcn2XxbBGMyr4IOZe4gzlsbUnxZEddFJMD7FKjlftnULb8az0udybrX2ZdDEO6x
+         +Zy+/yT5PdnRQvQeYA0xF4eJxdQH8BXXKKGfX9TFsapCl/a4p9//S4304AlD7ypcAdCx
+         lgtOkhY7tTnU+9KXye1d1QzYZAXqKP44YDuwrRT/s98xYKGWvdcqCEQ8yQLWxSOQlrvX
+         Yn2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2PWZkJpZ4ipb8P8p+Pg9LEmAeqADVPvG7RRrCZ//S+E=;
-        b=qD0xTsqkPQUJrr/7dbMgo0CxBgTIw5RnBAT+Cox7K+bvWBN71BM4GlfWdngtsqGFSu
-         BC/aE7iQyBNet0JTKLhQ4IF6Ffb2QimWaabuvklKo0aHelc/IHHYRxZR3sNx77+S88bl
-         QB8hDoYXGnmtRJkjiiZ4RzVZa2/RL++xPV8MbCba72Lsy1gCnJx30dNZGRbwA0WxzfcO
-         hLjEA7oKp5Wiae8YlLuNndNS0ZL/gh1AcvrNW2fLGOc1AUbwu6gDGDdMBMJK9BodxaBo
-         b79qjeQ2KE3vAlBwnZTnWvH9oEjdiCRYI81z1/EsdR+Sw8NU7zgmwCxaOhfYU3rB2Anz
-         9Nsg==
-X-Gm-Message-State: AOAM530dq+k/dofK83dVs6ai5/RUQBmM3o2EPN+4LWml8mivsUlyjZK8
-        e2ej7knRuEbj8BHXfabVyA==
-X-Google-Smtp-Source: ABdhPJy+mKukhzCYRjhxLsHsBZnW1R9/7jgyhS48f5gwxsaDSYQ5vRd5zhVrQuLqdvM6icVj9WOxxA==
-X-Received: by 2002:a6b:7c08:: with SMTP id m8mr2363635iok.200.1595524087764;
-        Thu, 23 Jul 2020 10:08:07 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id n15sm1524181ioc.15.2020.07.23.10.08.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 10:08:07 -0700 (PDT)
-Received: (nullmailer pid 542912 invoked by uid 1000);
-        Thu, 23 Jul 2020 17:08:06 -0000
-Date:   Thu, 23 Jul 2020 11:08:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=NPbssqK1INtrFyjAUzj5mlbSJgxK4WzDaPmXZHhkVOg=;
+        b=hPjOb36/boY29wzq+ZCuiQz3hj65xsNlTEOFxyF653MKvLYSe5FbUmHqWvEoFa/4nn
+         xe0JpCIZx18NH0hfqmSjTZVmxkpMOQIdqKS4stBOqY59PopIV97ekQQN6P56p+HAbABD
+         83MsAP4PPVGITXDoTtAwcCJAj4DD3hYnkJ6JDpiawnzZ1CnoAsABSXrtbXQYQs2ZzwTS
+         buv2Sf2fK1w9Ze9tH7/Zge/FOHMoKFRwu+4FKkp3lXerBGgQRcmG0COguneoidmA+nuX
+         34bcDig3YtH2UEL/ToLzu+AI3d3RLXXjRIO3d4d1WQVUO7RZfkL9Ex9gIwg1lXlVWGtA
+         WtnQ==
+X-Gm-Message-State: AOAM532i2csxyLaEYDioBVBuqc6bS68CAjnxdA6Pu+YH3MUbENDy8p3B
+        6syVt0FjM4HrZSzb+lO3JkhegbVf8HZZ3g==
+X-Google-Smtp-Source: ABdhPJzhEVeWE+MsYhg97fGrJZMWD4MyQ/tPFCjeaW/T/ed2wa91gkVSb8XcX/EmBjVpwheP/E/Q+w==
+X-Received: by 2002:a17:90a:ff0c:: with SMTP id ce12mr1353809pjb.100.1595524125805;
+        Thu, 23 Jul 2020 10:08:45 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:ecdf:69cc:bc40:aa6d? ([2601:646:c200:1ef2:ecdf:69cc:bc40:aa6d])
+        by smtp.gmail.com with ESMTPSA id v197sm3695465pfc.35.2020.07.23.10.08.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jul 2020 10:08:45 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across exceptions
+Date:   Thu, 23 Jul 2020 10:08:42 -0700
+Message-Id: <C03DA782-BD1A-42E3-B118-ABB34BC5F2AF@amacapital.net>
+References: <20200723165204.GB77434@romley-ivt3.sc.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Weiny Ira <ira.weiny@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Emil Renner Berhing <kernel@esmil.dk>
-Subject: Re: [PATCH v5 4/4] dt-bindings: timer: Add CLINT bindings
-Message-ID: <20200723170806.GA535824@bogus>
-References: <20200723142409.47057-1-anup.patel@wdc.com>
- <20200723142409.47057-5-anup.patel@wdc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723142409.47057-5-anup.patel@wdc.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+In-Reply-To: <20200723165204.GB77434@romley-ivt3.sc.intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+X-Mailer: iPhone Mail (17F80)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 07:54:09PM +0530, Anup Patel wrote:
-> We add DT bindings documentation for CLINT device.
-> 
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Tested-by: Emil Renner Berhing <kernel@esmil.dk>
-> ---
->  .../bindings/timer/sifive,clint.yaml          | 58 +++++++++++++++++++
->  1 file changed, 58 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> new file mode 100644
-> index 000000000000..8ad115611860
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/sifive,clint.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SiFive Core Local Interruptor
-> +
-> +maintainers:
-> +  - Palmer Dabbelt <palmer@dabbelt.com>
-> +  - Anup Patel <anup.patel@wdc.com>
-> +
-> +description:
-> +  SiFive (and other RISC-V) SOCs include an implementation of the SiFive
-> +  Core Local Interruptor (CLINT) for M-mode timer and M-mode inter-processor
-> +  interrupts. It directly connects to the timer and inter-processor interrupt
-> +  lines of various HARTs (or CPUs) so RISC-V per-HART (or per-CPU) local
-> +  interrupt controller is the parent interrupt controller for CLINT device.
-> +  The clock frequency of CLINT is specified via "timebase-frequency" DT
-> +  property of "/cpus" DT node. The "timebase-frequency" DT property is
-> +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: sifive,clint0
-> +      - const: sifive,fu540-c000-clint
 
-Wrong order. Most specific goes first.
+> On Jul 23, 2020, at 9:52 AM, Fenghua Yu <fenghua.yu@intel.com> wrote:
+>=20
+> =EF=BB=BFHi, Dave,
+>=20
+>> On Thu, Jul 23, 2020 at 09:23:13AM -0700, Dave Hansen wrote:
+>>> On 7/23/20 9:18 AM, Fenghua Yu wrote:
+>>> The PKRS MSR has been preserved in thread_info during kernel entry. We
+>>> don't need to preserve it in another place (i.e. idtentry_state).
+>>=20
+>> I'm missing how the PKRS MSR gets preserved in thread_info.  Could you
+>> explain the mechanism by which this happens and point to the code
+>> implementing it, please?
+>=20
+> [Sorry, my mistake: I mean "thread_struct" instead of "thread_info".
+> Hopefully the typo doesn't change the essential part in my last email.]
+>=20
+> The "saved_pkrs" is defined in thread_struct and context switched in
+> patch 04/17:
+> https://lore.kernel.org/lkml/20200717072056.73134-5-ira.weiny@intel.com/
+>=20
+> Because there is no XSAVE support the PKRS MSR, we preserve it in
+> "saved_pkrs" in thread_struct. It's initialized as 0 (init state, no
+> protection key) in fork() or exec(). It's updated to a right protection
+> value when a driver calls the updating API. The PKRS MSR is context
+> switched by "saved_pkrs" when switching to a task (unless optimized if the=
 
-> +
-> +    description:
-> +      Should be "sifive,<chip>-clint" and "sifive,clint<version>".
-> +      Supported compatible strings are -
-> +      "sifive,fu540-c000-clint" for the SiFive CLINT v0 as integrated
-> +      onto the SiFive FU540 chip, and "sifive,clint0" for the SiFive
-> +      CLINT v0 IP block with no chip integration tweaks.
-> +      Please refer to sifive-blocks-ip-versioning.txt for details
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts-extended:
-> +    minItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts-extended
+> cached MSR is the same as the saved one).
+>=20
+>=20
 
-Add:
+Suppose some kernel code (a syscall or
+kernel thread) changes PKRS then takes a page fault. The page fault handler n=
+eeds a fresh PKRS. Then the page fault handler (say a VMA=E2=80=99s .fault h=
+andler) changes PKRS.  The we get an interrupt. The interrupt *also* needs a=
+ fresh PKRS and the page fault value needs to be saved somewhere.
 
-additionalProperties: false
+So we have more than one saved value per thread, and thread_struct isn=E2=80=
+=99t going to solve this problem.
 
-> +
-> +examples:
-> +  - |
-> +    clint@2000000 {
+But idtentry_state is also not great for a couple reasons.  Not all entries h=
+ave idtentry_state, and the unwinder can=E2=80=99t find it for debugging. Fo=
+r that matter, the page fault logic probably wants to know the previous PKRS=
+, so it should either be stashed somewhere findable or it should be explicit=
+ly passed around.
 
-timer@...
+My suggestion is to enlarge pt_regs.  The save and restore logic can probabl=
+y be in C, but pt_regs is the logical place to put a register that is saved a=
+nd restored across all entries.
 
-> +      compatible = "sifive,clint0", "sifive,fu540-c000-clint";
-> +      interrupts-extended = <&cpu1intc 3 &cpu1intc 7
-> +                             &cpu2intc 3 &cpu2intc 7
-> +                             &cpu3intc 3 &cpu3intc 7
-> +                             &cpu4intc 3 &cpu4intc 7>;
-> +       reg = <0x2000000 0x4000000>;
+Whoever does this work will have the delightful job of figuring out whether B=
+PF thinks that the layout of pt_regs is ABI and, if so, fixing the resulting=
+ mess.
 
-64MB of register space? Doesn't matter much for 64-bit, but would waste 
-lots of virtual space (low mem) on 32-bit.
-
-> +    };
-> +...
-> -- 
-> 2.25.1
-> 
+The fact the new fields will go at the beginning of pt_regs will make this a=
+n entertaining prospect.=
