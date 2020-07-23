@@ -2,54 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2D622B14B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C7B22B14E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729434AbgGWO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:27:39 -0400
-Received: from verein.lst.de ([213.95.11.211]:60460 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726089AbgGWO1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:27:38 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 146E468AFE; Thu, 23 Jul 2020 16:27:35 +0200 (CEST)
-Date:   Thu, 23 Jul 2020 16:27:34 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Lukasz Stelmach <l.stelmach@samsung.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 16/23] initramfs: simplify clean_rootfs
-Message-ID: <20200723142734.GA11080@lst.de>
-References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-17-hch@lst.de> <CGME20200717205549eucas1p13fca9a8496836faa71df515524743648@eucas1p1.samsung.com> <7f37802c-d8d9-18cd-7394-df51fa785988@samsung.com> <20200718100035.GA8856@lst.de> <20200723092200.GA19922@lst.de> <dleftjblk6b95t.fsf%l.stelmach@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dleftjblk6b95t.fsf%l.stelmach@samsung.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1729285AbgGWO1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgGWO1q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 10:27:46 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEC8C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 07:27:46 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id b9so2629721plx.6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 07:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=GD12Q74OR6GJeN3xWOb2zFUMALqyHWcaZFsUpKnWDSQ=;
+        b=qfSf18Yx1kk7vH3YZAyYDde0KB7jmDp7S5IdTBDNXsAzqvJMFY0US9NwhHYg0wkWRZ
+         wbCc3rbrI6wDT7nBcQpZJWTRcFM0WJLQsi+fJjYb4qYjQUA5sqTZGqqjpAufKMItJckW
+         Z2fSbkO+G5UFKty3NsfayEMIMMzerq/6msVolUVsU4pk8AaKEvsKy8S2geM6f0yJAtuZ
+         wo8oLY7TYkarjMLrGn534Wj993VjmMytB4WZ1taa05hNZhLwltH9kHkdwEktSY4HVELx
+         5ERXbNec3O8xft2vttfRHejM5Ry21VVmTUy46PYPRvcqMJUF7cd4VPkrWhyLDsd3oBB2
+         Lqng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=GD12Q74OR6GJeN3xWOb2zFUMALqyHWcaZFsUpKnWDSQ=;
+        b=Iv6yJA+CRMIfPyIvLN4QMf8utueSHLirydArCGe3xlvDigmQuQr4wcLn3eA+yA7Grd
+         vciDxxRgiyPNRCaX3JoVV6yGfdL2uZMw6xHmcZ46FmLlF4eArodYVaba14LtNqXcriRX
+         8p5VjYpLzAgA2w1JUafu5MmTYDaN+n0niBXc/7ZATmZ77O8GhVIb5KQ6uvuIfomgwSqw
+         KaIeiFXysKHooP9QE41MZhXYsgkcFG+q6v1HE4wJ1abwk5loSK/RP22h13I7yNRMISBc
+         3bdOdhcpC0Rr1AveZ6bzbobA/Uys7m2U7tkXTTA5kQLLJ5phmo/2HyGS4jrqmQsYLw6K
+         I7wg==
+X-Gm-Message-State: AOAM533yJXBLDO9ES0jZyPPxTrN1KQ2ZzonYJxblOjSMrB5zYErC0It8
+        XKUOS8rDi1Q/HBMQZ2jf5rco
+X-Google-Smtp-Source: ABdhPJy6/zrDKK2Gjisdl0VDYpcxJSZ2oH4T0/Y6XUQblucC3h42j5j17W/9lvR6wW2S8vJTeS+jGg==
+X-Received: by 2002:a17:902:aa4c:: with SMTP id c12mr4110467plr.237.1595514466093;
+        Thu, 23 Jul 2020 07:27:46 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:6219:d937:e4bc:bef6:c190:2693])
+        by smtp.gmail.com with ESMTPSA id a2sm3131977pgf.53.2020.07.23.07.27.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 07:27:45 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/1] MHI stuff for v5.9
+Date:   Thu, 23 Jul 2020 19:57:37 +0530
+Message-Id: <20200723142738.27159-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 04:25:34PM +0200, Lukasz Stelmach wrote:
-> >> Can you comment out the call to d_genocide?  It seems like for your
-> >> the fact that clean_rootfs didn't actually clean up was a feature and
-> >> not a bug.
-> >> 
-> >> I guess the old, pre-2008 code also wouldn't have worked for you in
-> >> that case.
-> >
-> > Did you get a chance to try this?
-> 
-> Indeed, commenting out d_genocide() helps.
+Hi Greg,
 
-So given that people have relied on at least the basic device nodes
-like /dev/console to not go away since 2008, I wonder if we should just
-remove clean_rootfs entirely
+Here is a single MHI bus patch for the coming v5.9 release which fixes
+the kdoc comments.
 
-Linus, Al?
+Please apply!
+
+Thanks,
+Mani
+
+Randy Dunlap (1):
+  bus: mhi: fix doubled words and struct image_info kernel-doc
+
+ include/linux/mhi.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
