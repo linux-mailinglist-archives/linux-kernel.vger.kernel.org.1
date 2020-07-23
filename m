@@ -2,45 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF87422AAEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0D122AAF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgGWIpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:45:39 -0400
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:61471 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGWIpj (ORCPT
+        id S1727871AbgGWIpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:45:50 -0400
+Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:61712 "EHLO
+        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgGWIpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:45:39 -0400
+        Thu, 23 Jul 2020 04:45:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1595493939;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=72O9Vq2KCcfxQZ+2XMr33XBH+Ul/LT1ze0PUb6UVYmA=;
-  b=ReF/knYEnrbbuatmtTEBzsIkLrqomi1Uj8Bqx874nl9OJSOhsS2xSnFc
-   HS40vKh3dQL5vDkH3i9SatKZL3IGoaiyn1K1gYqTS1O6hV1bNtKcrOo9+
-   ptNlT4wksDtXRitCZ6YoyjNAcLRS4SkkJu70vJVOiP+RIzbdFAX4jOU0Q
-   M=;
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: f7/VECJkUrZI6D9AU9fZyXFnzqE7fxOOJW8CSc/x4arrsRiDYsnH7BAo3Xdo92ixKIqxZ2NwCg
- it28KI7hnbx7sNR/Sziev+cmHmfTTr0wwtMz25hUj1rgU6ODGWnX3fOhYmVitmvcgd3SQ2XS7H
- pfekBXi7utIwA3ue+p7Uc/0oSkMmBm/WSnOk0/kYIWzlXgWUNqY9bXXJj+58LIlc8qskCis/+N
- LhNTFkVkCnPNGlLUottO+4pJX2Uw5TF/j27GkvDiLyA1vEehq8K15OB0EiFrlvD6bMpwUybw4Y
- 0cI=
+  d=citrix.com; s=securemail; t=1595493948;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=aDtTphrzz9VOwTJvjWtl31/5xlDEnj/EJHimWB6gA4o=;
+  b=b6wZQEGmZWStkfKyti4GBbz0WWwaFToj3oXH50Dc5Ty2wHGwQGPzS+w3
+   KC7yI0fp36BEaFMjsOFncsCdyTKFEHla5ezcBiZR2YIf9nmrqUmBwYILq
+   9+POO+HsJYvudui6q4858IbiXTDWKo6sHazy48WtWaREb4HBBBmnyxNQ8
+   I=;
+Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: FWgaZAI6RoWQ6RqerM/hehVavtzAH7kBf/6J3Itw9DAyS7asko2A0WA2QUDT8/3hNJsqelSZhx
+ aGmvB+UAcjhoS8QAFOir6owrVHYiklIGssIJbF2bknAmpy3xPWKLguU8S9RRbMH3bf0+cva/3N
+ uWbogJ0Gm1FH42uL71Ft0fG/1RAiD2Rw7MHlwe8wv+Cn7R/dGiTSxubqWMgwlXk5nExHTGmjb4
+ pCwIbJGW/hdprKdJesLAO/DCcfjT/aOM9VhVGAf07YUdfu+XW0GCx/J8nODk0DNNXrGa4pMW2b
+ 11g=
 X-SBRS: 2.7
-X-MesageID: 23016163
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
+X-MesageID: 23212752
+X-Ironport-Server: esa5.hc3370-68.iphmx.com
 X-Remote-IP: 162.221.158.21
 X-Policy: $RELAYED
 X-IronPort-AV: E=Sophos;i="5.75,386,1589256000"; 
-   d="scan'208";a="23016163"
+   d="scan'208";a="23212752"
 From:   Roger Pau Monne <roger.pau@citrix.com>
 To:     <linux-kernel@vger.kernel.org>
-CC:     Roger Pau Monne <roger.pau@citrix.com>
-Subject: [PATCH 0/3] xen/balloon: fixes for memory hotplug
-Date:   Thu, 23 Jul 2020 10:45:20 +0200
-Message-ID: <20200723084523.42109-1-roger.pau@citrix.com>
+CC:     Roger Pau Monne <roger.pau@citrix.com>, <stable@vger.kernel.org>,
+        "Boris Ostrovsky" <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        <xen-devel@lists.xenproject.org>
+Subject: [PATCH 1/3] xen/balloon: fix accounting in alloc_xenballooned_pages error path
+Date:   Thu, 23 Jul 2020 10:45:21 +0200
+Message-ID: <20200723084523.42109-2-roger.pau@citrix.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200723084523.42109-1-roger.pau@citrix.com>
+References: <20200723084523.42109-1-roger.pau@citrix.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
@@ -49,26 +55,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+target_unpopulated is incremented with nr_pages at the start of the
+function, but the call to free_xenballooned_pages will only subtract
+pgno number of pages, and thus the rest need to be subtracted before
+returning or else accounting will be skewed.
 
-The following series contain some fixes in order to make Xen balloon
-memory hotplug function properly. Fix two patches are bugfixes that IMO
-should be backported to stable branches, last patch might be more
-controversial (to backport) since it includes a small change to the
-generic memory hotplug interface.
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Cc: stable@vger.kernel.org
+---
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: xen-devel@lists.xenproject.org
+---
+ drivers/xen/balloon.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Thanks, Roger.
-
-Roger Pau Monne (3):
-  xen/balloon: fix accounting in alloc_xenballooned_pages error path
-  xen/balloon: make the balloon wait interruptible
-  memory: introduce an option to force onlining of hotplug memory
-
- drivers/xen/balloon.c          | 14 +++++++++++---
- include/linux/memory_hotplug.h |  3 ++-
- mm/memory_hotplug.c            | 16 ++++++++++------
- 3 files changed, 23 insertions(+), 10 deletions(-)
-
+diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
+index 77c57568e5d7..3cb10ed32557 100644
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -630,6 +630,12 @@ int alloc_xenballooned_pages(int nr_pages, struct page **pages)
+  out_undo:
+ 	mutex_unlock(&balloon_mutex);
+ 	free_xenballooned_pages(pgno, pages);
++	/*
++	 * NB: free_xenballooned_pages will only subtract pgno pages, but since
++	 * target_unpopulated is incremented with nr_pages at the start we need
++	 * to remove the remaining ones also, or accounting will be screwed.
++	 */
++	balloon_stats.target_unpopulated -= nr_pages - pgno;
+ 	return ret;
+ }
+ EXPORT_SYMBOL(alloc_xenballooned_pages);
 -- 
 2.27.0
 
