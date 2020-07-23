@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670FB22B139
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1A222B13B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729445AbgGWOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:24:46 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:36978 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgGWOYp (ORCPT
+        id S1729460AbgGWOYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:24:53 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:11328 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgGWOYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:24:45 -0400
+        Thu, 23 Jul 2020 10:24:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595514286; x=1627050286;
+  t=1595514318; x=1627050318;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:content-transfer-encoding:mime-version;
-  bh=6T/7hY07o22Q0syrS8BdMcfzg9rtHPy9RCJAhrJx1/k=;
-  b=Ulmnau0DMEp9emEQoU4uwhbrrrTfAX72qOZZJMuspAp7vn3auZUB9sh7
-   Hp9t3dvzkFY9zNa/i4hpGwGLtno79yVBQwpMF5CjxSs5Y4OBe8PJ8rJJx
-   zVYEfKbRaljsHwHHJ3t63hWx7WPACESQ/iK4+Gar6n+47ycb2whcxT9gA
-   8+/TxIY7nrHjQv3TDfW5snZuAxz7Uw0kLfLGnvgLtI+LrxyCubhEkT0/s
-   VVk+UMYGgEysS4EwQgoQqHivWrxElh3OTiUolKe/JmCRMVrv2UOYiedph
-   oAdflk4woXkABiRDf+XkjebHhMHnFmBuW7zG9jz/g4YPe9Aws5ogpQBPF
-   A==;
-IronPort-SDR: YBoVCFSsgx/guyd7zeppUvW0lJBL7r5mHWsavAk6V43JHv9VNdWF26pbkI7nU+96UgDGKxYLtc
- +KTx/loVnUXovlxaymmKBnhdJAQvdOJaSY1ko6LJqTsEJ2vMNioSfPRfZ+nMxvbkZb4jN2kh/b
- Qop8A2rVaz6GsxE3awNHAf3fToqq/LUETPqfNmqGZFWL+/F7y5W2ve5EIv2OpEyYZXrthxTrcb
- xw6ID66EKvFLFb/n/Rr9TayaXDn7TOCq1URqQVkhHFfnaayLy63S+f9250TCqNoYZGblg2WhwO
- 8rA=
+  bh=sXIPgUI0rGpZLMQZeNYq2dx2oESq5mwU+HQjk2Hau0Q=;
+  b=Wdes56/3pBF5yjmiaDXDKn32D1ygDxEgmtGEhCOc6Ej97L7X4Schx000
+   5OOeMHRn/f6H/5hYzLN5iPkxCeIiHEVdOzY/sLXYPOxCslZR8SJpkZIjo
+   nJouOb8tiX8KY3c94GQY6WkCa1fGQFzz28XliahiJepBogV0qfUUctybF
+   FyAe4JXmb6eYuyO2DbQW6HPNfE6n3ZM2uTEYuy5cDy3Dovj5P7FJuiFoh
+   Jcc6g+qFGdA88PmfCbqimFVExrRyh+HVXnECNoQoO68mefPojZJgzizt/
+   fDhEGIyl/vlfmoNAXhdAnWNbrJzUcBnv4/DgueP+c7qqpC0MZQdvOSPX6
+   g==;
+IronPort-SDR: /EVTmbqwzp9Qb90HpOyEZkobVca/iNKYm82UPaPfLrlTHB2T3DEeBoN7V9ef+7Ry76FdO1YLhD
+ wlWJ+OeIPyofgsnfMcfpAFwuz0lJ7pZYHA5wWxnAXnbA7lqSnIrIJGniXgbn5yhoxdzXrzcd+0
+ jIk0i1W38iRFwUI4SDdDVJOQtmGsnETVJRtWLEQjMzPols1akBbRaQNMpbefLaN/Okb0Is2Y76
+ SeYBgGYgogfyYxwbw85UXobQT08orrUOjb5JG65uPoAWShWS1p9eDXHVwFFAQVZJU9dYhx1Xvp
+ /+Y=
 X-IronPort-AV: E=Sophos;i="5.75,386,1589212800"; 
-   d="scan'208";a="143302660"
-Received: from mail-dm6nam10lp2106.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.106])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Jul 2020 22:24:45 +0800
+   d="scan'208";a="246265175"
+Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jul 2020 22:25:17 +0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FdvQHtqCpHQvpasOcQNLLMD/lLVRvxOWziEn/Kh8R0tL0yQlL3a9aoURl/c4+m8orecq+CSmbgcIfPfTWUhBoIkU8YRLXS+Xl+jUa0fnpVsSXYP+faqowNGxIXHP9vwC2/HHcXsKHmCJ3PA7FBabIXgyITWoFZs2Y3CiJ2BeSAYooFZZgblsY024kitBroUNAUXraDYsAjVzlf/qruaZLCUC/Urs5oq+c62wlKWY0CIpGdhU7Fo9k8SkyEhHWLnBN5k2qGKGvmi7tRYQbgArC4OqQxdVPiBAUPDMBnFy3nichaR+WV7Kt85OIbc/8DEwYC8DvEoseGVjuc+on/b2eQ==
+ b=O+HpzFcZPJWy56I7gyPpgBCiPkbBrshF4b2ejONMnOJDCrd+XEpLSr7jAT2cphD4QDEBdkYa8zyDM6aHrqCR9g6s3PiwH3m+W7kWlSjF3ldzLAJRggmUWq96eTU3EHVuHIrwWPS4xGABrO9PYTMnlBlb0FPltumYf2iufAsJ57Sh6K2HwfpJIzYP5eHOnRsf/W8cAQoqgvVaC9ZRyxaiR11Cj4siO6EETkZeq8FBHbn6X5ZNl5ZMB11J55/6IhJp3rLpJA+GSzkGy2vZd6KNzcQ4MrqwMkF9MHxdojt7EbiDOPDJsptqiFoFdRXL01LLk/MI5HxsK4Dfq4xbEdxxpg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bmXMm/nYWer0/e9YTk9xwJKxvcgW8xzlVA2YtFotjDk=;
- b=iFjF6x6WsXFC5bCSFJaYZx4pXWnlhFUgPzpBOBYxVg0AkP5D90eHury4fgZE53RCGsDQu33L6b2YDRW5dN/WbV6hjRCZFqhMrGAAxOyoAAF4jWH3L13oytBxxBQRdRDl4olNgohFNtVMlAzJ/QGWVj1txFZ2FF9WcuuwuDETgpOjjTDMAfgVlal7pd40Ecu6mtg2ZH8LWa2JRV0OLPiIYRnvb4bdb+Jad3fgs3a9KWwlkscU3rCIsnvkKhbugCQcTh+fybCLIx5QQei1cVX/D2snT3ErjRUvWsXxvhBX7sxuszyxvsP+fPBqW3o66lY0OnD7dsMequLFblU2axummA==
+ bh=O4ZlLT2dsVfvaaOju4LYfSRARqGQYKiIgxKwfKNi6W4=;
+ b=gpiGh8HuPiIAM840sTZ0WHYgIGSOlyHc11TfhERzHHhEuOKniEZjkwVUiuYjHL3apXIU0eD8FYJuFzm2KCDZSCB0M3a45hcw0TSb/RFkxkI92K/rk4dQpiilC0V0FFAv5sfQvPPfqmEQvdW37K7uUclueSYc0AuvRBYSeVi6j7T2yGJ/5oSSCCNnXFaIXk9TsUQNNEIK/3e4RnxZw5uon0T91MqB50M6YXRYI1ZCCC1zQfrKQmnWnpQE1rrnJsUqCQUAQDUaIRIsPTV8RbdT3z1s0mZokXKTrTTAkYKL2Ey0h8toq1LoqxZQeOl+w4N5/mpiVLqE/2nyGCl+FUW+7w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
  header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bmXMm/nYWer0/e9YTk9xwJKxvcgW8xzlVA2YtFotjDk=;
- b=idGVOOCgZA5FdUharrJiESLc34DDWO8qGIEKQogsV+aQnMN5lOwm7EAt5PIOZSoc1ibSeRuULtXkBXhxFhwMFTeUZFBwUuoV/dqEp0WpZvPhOSiEFHFHLXjtgZOP/q549jVQVS4vFQW6ITol4yOB21cJo7xyLy6Xm7RCADfrybI=
+ bh=O4ZlLT2dsVfvaaOju4LYfSRARqGQYKiIgxKwfKNi6W4=;
+ b=LrTkHck1aGllaNofpofGS/ZWyfTrd3sIkFtma0yHBIBpckcoW5SRRKDjByAx+SnLbeBpspvNOaypgPE9lWGciGnSm7PJqI3IptcWjBd5jHGlO6jjzhf31R9ZqY5lPiFmpV86qj8v97j4DKLzRYhDjYvLAgsK/RVRvnQa8YhS9T4=
 Authentication-Results: dabbelt.com; dkim=none (message not signed)
  header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
 Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
  by DM6PR04MB6682.namprd04.prod.outlook.com (2603:10b6:5:247::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Thu, 23 Jul
- 2020 14:24:43 +0000
+ 2020 14:24:49 +0000
 Received: from DM6PR04MB6201.namprd04.prod.outlook.com
  ([fe80::e0a4:aa82:1847:dea5]) by DM6PR04MB6201.namprd04.prod.outlook.com
  ([fe80::e0a4:aa82:1847:dea5%7]) with mapi id 15.20.3216.023; Thu, 23 Jul 2020
- 14:24:43 +0000
+ 14:24:49 +0000
 From:   Anup Patel <anup.patel@wdc.com>
 To:     Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -74,9 +74,9 @@ Cc:     Damien Le Moal <damien.lemoal@wdc.com>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Anup Patel <anup.patel@wdc.com>,
         Emil Renner Berhing <kernel@esmil.dk>
-Subject: [PATCH v5 1/4] RISC-V: Add mechanism to provide custom IPI operations
-Date:   Thu, 23 Jul 2020 19:54:06 +0530
-Message-Id: <20200723142409.47057-2-anup.patel@wdc.com>
+Subject: [PATCH v5 2/4] clocksource/drivers: Add CLINT timer driver
+Date:   Thu, 23 Jul 2020 19:54:07 +0530
+Message-Id: <20200723142409.47057-3-anup.patel@wdc.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723142409.47057-1-anup.patel@wdc.com>
 References: <20200723142409.47057-1-anup.patel@wdc.com>
@@ -87,157 +87,131 @@ X-ClientProxiedBy: BMXPR01CA0068.INDPRD01.PROD.OUTLOOK.COM
  (2603:10b6:5:127::32)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (103.56.183.159) by BMXPR01CA0068.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:2c::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend Transport; Thu, 23 Jul 2020 14:24:38 +0000
+Received: from wdc.com (103.56.183.159) by BMXPR01CA0068.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:2c::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend Transport; Thu, 23 Jul 2020 14:24:44 +0000
 X-Mailer: git-send-email 2.25.1
 X-Originating-IP: [103.56.183.159]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fd44ca07-656c-44d4-d4ba-08d82f1424b1
+X-MS-Office365-Filtering-Correlation-Id: fde459c8-8f36-42ec-e400-08d82f14285a
 X-MS-TrafficTypeDiagnostic: DM6PR04MB6682:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR04MB66829D01902CB2BBB199F46D8D760@DM6PR04MB6682.namprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <DM6PR04MB6682D65F3FD973B75E3CBD308D760@DM6PR04MB6682.namprd04.prod.outlook.com>
 WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6pTpEbpJQHLOSsVMfyH1IAixTPrmexsoYeC8Wyq1Jh8PIBv4EQtExuhf8MfxQWvCCWK2rog3ivtEeyc1itlFr6PFywWG4HIWw6VRcaeT2zUYeBlXUTgmWI8UXLhQFrF53WBp+xdEBxsM0DrHdce2vBdoVt18d357M1I+FyhdLcc7Pd0uPtdUzRFQm0nXxtHYyfCD6lEyfcb9qnQHOaTxg+5fGepioQ+1m0svkV8psNMtdPMeXmc3Lhc7Ff0nKKoywAyddJqFefW0+PxD2RdHsJ/4vBSPweYiNDZz2XPUvKRgp8K7bZcprejjcO2V4fzBX6GLFijiI9w/dJjk5DyuCw==
+X-Microsoft-Antispam-Message-Info: rSzUVABaIYWR5SniF2zmbei4GWmDgm4gr4ClZLOyMqQl8sKOrnneSp2lGIFso9qiXmLerfBG/svPawFERI90/xr30YODIHBySwDyqj1jVO9/+ip+/Mf2XZgYtONG88NEt0Yl4Icx9bnQ20n97HAymvnO9r7gCus+0t5bJacH6opm9SP+jMTEfU/yMUC0YtRv37kYFi4j6awoBq2ha+GcFS7/Ua7FjGoRqcqOOb34ahUwxrJ8eRrdYy6K6//XswHE8BcaKKTm7jl11pRzHSDB+qttMF4olJYms7jRThhdgKFzZ4V5MtuSebQEHiGxMDZWLPk/xlhOT3bMODFg5qLpMQ==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(4326008)(5660300002)(36756003)(478600001)(7416002)(83380400001)(44832011)(55016002)(956004)(2616005)(2906002)(316002)(16526019)(8886007)(6666004)(52116002)(7696005)(66556008)(66946007)(66476007)(26005)(8676002)(54906003)(86362001)(186003)(8936002)(1076003)(110136005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 8YUlIsOINZOmfB+KnGda4TusOlKCpm34KcEqDp8LKOmAJy9yM0xWCIG136oeFu8AMyA6oI+b+DOLp0OjmfgkkO/y20xAvmCEE4LNF5Kcu6Gc0NXfhBLDfHndbO38HMIot6lsqNfbSQ/+0KKfuHgrYK6xvwogODzckzUOtx6OzXMX3jNVnFrICSrT/ghHzJm6VCIP6Sh4ouSr4FLKiCQgaU0tHyTDkTQT92e9hGmbEeQzV3LprPORELiyUfVxGpFztqBv+WrpNp0XVSVJOs7CIlPXrdRoNpmXBNshMAz6HLLTb9Ro+Mqif8DJki9AdcoiU0+KiArJzlWYLMRqRBM7WbwB4KGWYP0fV198hLEsKkhgFW/1ILypeV8vuUFSgIj94pSi7ugX4Z48YGs4TfSDrRto3n7FZ+sOsrIZ9vPhmy2U+sa3a7TG9pBqHiJMIQnQ2umKtFly+bl/0Uk25+WTJNEi/iW+THPGFdXziNnlJdc=
+X-MS-Exchange-AntiSpam-MessageData: s3REmqDhegyCqTOndfAiWG3uX27KuOID0EYtb1l/CjrvzS5mPaEKPKVmquC5CAT+07Kw4R7BUOtD13MWhm/aakkQ2l99+gehqsAV2Th2BZVZfQeF28OM6cz8DlB/uR/l5s94TIhWULubWiZxUWqKPqHBTOx0YHfB1/lG4TIL+kgt0kDNgZrETrLhary9JR9amGTzMoRQObxTEpa4VBk55j/bgUHosHN1zYmCbnRTE9jgRL+iDXOZutyW9Crz+E8mRoUNqQ5BBR12qDxtJiTeqqzi5mD8Jn8ncmkh1QhhO+hHRhWdZiIWBrM8sdDtUing7riV8i0nRnSgnimFXy09+cQyxRLP653bMMCyVuZ5SF9lHahL9PRwuHTVeMk0J1C1JchZ8wxt7jv5CjnhqxH6a5UBcnSFXKsP1xCvVLPoiqOU53/qwv2VPZTRUvAkrADuElPKsjH9v1LpNF+Qnnl5GwSBLr4opVcDiSNoTyD/Wdk=
 X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd44ca07-656c-44d4-d4ba-08d82f1424b1
+X-MS-Exchange-CrossTenant-Network-Message-Id: fde459c8-8f36-42ec-e400-08d82f14285a
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6201.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2020 14:24:43.6039
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2020 14:24:49.7580
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EpoWumJwk16SYba7+l+gRrpXa/2UtnRlNYsOcII8EWNhvI5oM8/i3OtxBcs8T/JoCpvHNc46UvcZtyIlnQ2Yrw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: xt7miCPi98B/ql6cyWz+Aby6bQT8UCYDmiHvFvrN++2Lg2moctyPzGgvPc1Lce+Yy0M9rykjUT0SFL9oLl28ig==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6682
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We add mechanism to set custom IPI operations so that CLINT driver
-from drivers directory can provide custom IPI operations.
+We add a separate CLINT timer driver for Linux RISC-V M-mode (i.e.
+RISC-V NoMMU kernel).
+
+The CLINT MMIO device provides three things:
+1. 64bit free running counter register
+2. 64bit per-CPU time compare registers
+3. 32bit per-CPU inter-processor interrupt registers
+
+Unlike other timer devices, CLINT provides IPI registers along with
+timer registers. To use CLINT IPI registers, the CLINT timer driver
+provides IPI related callbacks to arch/riscv.
 
 Signed-off-by: Anup Patel <anup.patel@wdc.com>
 Tested-by: Emil Renner Berhing <kernel@esmil.dk>
-Reviewed-by: Atish Patra <atish.patra@wdc.com>
 ---
- arch/riscv/include/asm/clint.h | 25 --------------------
- arch/riscv/include/asm/smp.h   | 19 +++++++++++++++
- arch/riscv/kernel/clint.c      | 23 ++++++++++++++++--
- arch/riscv/kernel/sbi.c        | 14 +++++++++++
- arch/riscv/kernel/smp.c        | 43 +++++++++++++++++++---------------
- arch/riscv/kernel/smpboot.c    |  3 +--
- 6 files changed, 79 insertions(+), 48 deletions(-)
+ drivers/clocksource/Kconfig       |   9 ++
+ drivers/clocksource/Makefile      |   1 +
+ drivers/clocksource/timer-clint.c | 226 ++++++++++++++++++++++++++++++
+ include/linux/cpuhotplug.h        |   1 +
+ 4 files changed, 237 insertions(+)
+ create mode 100644 drivers/clocksource/timer-clint.c
 
-diff --git a/arch/riscv/include/asm/clint.h b/arch/riscv/include/asm/clint.h
-index a279b17a6aad..adaba98a7d6c 100644
---- a/arch/riscv/include/asm/clint.h
-+++ b/arch/riscv/include/asm/clint.h
-@@ -6,34 +6,9 @@
- #include <linux/smp.h>
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 91418381fcd4..41f1c147c178 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -658,6 +658,15 @@ config RISCV_TIMER
+ 	  is accessed via both the SBI and the rdcycle instruction.  This is
+ 	  required for all RISC-V systems.
  
- #ifdef CONFIG_RISCV_M_MODE
--extern u32 __iomem *clint_ipi_base;
--
- void clint_init_boot_cpu(void);
--
--static inline void clint_send_ipi_single(unsigned long hartid)
--{
--	writel(1, clint_ipi_base + hartid);
--}
--
--static inline void clint_send_ipi_mask(const struct cpumask *mask)
--{
--	int cpu;
--
--	for_each_cpu(cpu, mask)
--		clint_send_ipi_single(cpuid_to_hartid_map(cpu));
--}
--
--static inline void clint_clear_ipi(unsigned long hartid)
--{
--	writel(0, clint_ipi_base + hartid);
--}
- #else /* CONFIG_RISCV_M_MODE */
- #define clint_init_boot_cpu()	do { } while (0)
--
--/* stubs to for code is only reachable under IS_ENABLED(CONFIG_RISCV_M_MODE): */
--void clint_send_ipi_single(unsigned long hartid);
--void clint_send_ipi_mask(const struct cpumask *hartid_mask);
--void clint_clear_ipi(unsigned long hartid);
- #endif /* CONFIG_RISCV_M_MODE */
- 
- #endif /* _ASM_RISCV_CLINT_H */
-diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/smp.h
-index 40bb1c15a731..68de78a8eba6 100644
---- a/arch/riscv/include/asm/smp.h
-+++ b/arch/riscv/include/asm/smp.h
-@@ -15,6 +15,11 @@
- struct seq_file;
- extern unsigned long boot_cpu_hartid;
- 
-+struct riscv_ipi_ops {
-+	void (*ipi_inject)(const struct cpumask *target);
-+	void (*ipi_clear)(void);
-+};
++config CLINT_TIMER
++	bool "CLINT Timer for the RISC-V platform" if COMPILE_TEST
++	depends on GENERIC_SCHED_CLOCK && RISCV
++	select TIMER_PROBE
++	select TIMER_OF
++	help
++	  This option enables the CLINT timer for RISC-V systems.  The CLINT
++	  driver is usually used for NoMMU RISC-V systems.
 +
- #ifdef CONFIG_SMP
- /*
-  * Mapping between linux logical cpu index and hartid.
-@@ -40,6 +45,12 @@ void arch_send_call_function_single_ipi(int cpu);
- int riscv_hartid_to_cpuid(int hartid);
- void riscv_cpuid_to_hartid_mask(const struct cpumask *in, struct cpumask *out);
- 
-+/* Set custom IPI operations */
-+void riscv_set_ipi_ops(struct riscv_ipi_ops *ops);
+ config CSKY_MP_TIMER
+ 	bool "SMP Timer for the C-SKY platform" if COMPILE_TEST
+ 	depends on CSKY
+diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
+index bdda1a2e4097..18e700e703a0 100644
+--- a/drivers/clocksource/Makefile
++++ b/drivers/clocksource/Makefile
+@@ -87,6 +87,7 @@ obj-$(CONFIG_CLKSRC_ST_LPC)		+= clksrc_st_lpc.o
+ obj-$(CONFIG_X86_NUMACHIP)		+= numachip.o
+ obj-$(CONFIG_ATCPIT100_TIMER)		+= timer-atcpit100.o
+ obj-$(CONFIG_RISCV_TIMER)		+= timer-riscv.o
++obj-$(CONFIG_CLINT_TIMER)		+= timer-clint.o
+ obj-$(CONFIG_CSKY_MP_TIMER)		+= timer-mp-csky.o
+ obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
+ obj-$(CONFIG_HYPERV_TIMER)		+= hyperv_timer.o
+diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+new file mode 100644
+index 000000000000..8eeafa82c03d
+--- /dev/null
++++ b/drivers/clocksource/timer-clint.c
+@@ -0,0 +1,226 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 Western Digital Corporation or its affiliates.
++ *
++ * Most of the M-mode (i.e. NoMMU) RISC-V systems usually have a
++ * CLINT MMIO timer device.
++ */
 +
-+/* Clear IPI for current CPU */
-+void riscv_clear_ipi(void);
-+
- /*
-  * Obtains the hart ID of the currently executing task.  This relies on
-  * THREAD_INFO_IN_TASK, but we define that unconditionally.
-@@ -78,6 +89,14 @@ static inline void riscv_cpuid_to_hartid_mask(const struct cpumask *in,
- 	cpumask_set_cpu(boot_cpu_hartid, out);
- }
- 
-+static inline void riscv_set_ipi_ops(struct riscv_ipi_ops *ops)
-+{
-+}
-+
-+static inline void riscv_clear_ipi(void)
-+{
-+}
-+
- #endif /* CONFIG_SMP */
- 
- #if defined(CONFIG_HOTPLUG_CPU) && (CONFIG_SMP)
-diff --git a/arch/riscv/kernel/clint.c b/arch/riscv/kernel/clint.c
-index 3647980d14c3..a9845ee023e2 100644
---- a/arch/riscv/kernel/clint.c
-+++ b/arch/riscv/kernel/clint.c
-@@ -5,11 +5,11 @@
- 
- #include <linux/io.h>
- #include <linux/of_address.h>
++#define pr_fmt(fmt) "clint: " fmt
++#include <linux/bitops.h>
++#include <linux/clocksource.h>
++#include <linux/clockchips.h>
++#include <linux/cpu.h>
++#include <linux/delay.h>
++#include <linux/module.h>
++#include <linux/of_address.h>
++#include <linux/sched_clock.h>
++#include <linux/io-64-nonatomic-lo-hi.h>
++#include <linux/interrupt.h>
++#include <linux/of_irq.h>
 +#include <linux/smp.h>
- #include <linux/types.h>
- #include <asm/clint.h>
- #include <asm/csr.h>
- #include <asm/timex.h>
--#include <asm/smp.h>
- 
- /*
-  * This is the layout used by the SiFive clint, which is also shared by the qemu
-@@ -21,6 +21,24 @@
- 
- u32 __iomem *clint_ipi_base;
- 
++
++#define CLINT_IPI_OFF		0
++#define CLINT_TIMER_CMP_OFF	0x4000
++#define CLINT_TIMER_VAL_OFF	0xbff8
++
++/* CLINT manages IPI and Timer for RISC-V M-mode  */
++static u32 __iomem *clint_ipi_base;
++static u64 __iomem *clint_timer_cmp;
++static u64 __iomem *clint_timer_val;
++static unsigned long clint_timer_freq;
++static unsigned int clint_timer_irq;
++
 +static void clint_send_ipi(const struct cpumask *target)
 +{
 +	unsigned int cpu;
@@ -256,142 +230,193 @@ index 3647980d14c3..a9845ee023e2 100644
 +	.ipi_clear = clint_clear_ipi,
 +};
 +
- void clint_init_boot_cpu(void)
- {
- 	struct device_node *np;
-@@ -40,5 +58,6 @@ void clint_init_boot_cpu(void)
- 	riscv_time_cmp = base + CLINT_TIME_CMP_OFF;
- 	riscv_time_val = base + CLINT_TIME_VAL_OFF;
- 
--	clint_clear_ipi(boot_cpu_hartid);
-+	clint_clear_ipi();
-+	riscv_set_ipi_ops(&clint_ipi_ops);
- }
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index f383ef5672b2..226ccce0f9e0 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -547,6 +547,18 @@ static inline long sbi_get_firmware_version(void)
- 	return __sbi_base_ecall(SBI_EXT_BASE_GET_IMP_VERSION);
- }
- 
-+static void sbi_send_cpumask_ipi(const struct cpumask *target)
++#ifdef CONFIG_64BIT
++#define clint_get_cycles()	readq_relaxed(clint_timer_val)
++#else
++#define clint_get_cycles()	readl_relaxed(clint_timer_val)
++#define clint_get_cycles_hi()	readl_relaxed(((u32 *)clint_timer_val) + 1)
++#endif
++
++#ifdef CONFIG_64BIT
++static u64 notrace clint_get_cycles64(void)
 +{
-+	struct cpumask hartid_mask;
++	return clint_get_cycles();
++}
++#else /* CONFIG_64BIT */
++static u64 notrace clint_get_cycles64(void)
++{
++	u32 hi, lo;
 +
-+	riscv_cpuid_to_hartid_mask(target, &hartid_mask);
++	do {
++		hi = clint_get_cycles_hi();
++		lo = clint_get_cycles();
++	} while (hi != clint_get_cycles_hi());
 +
-+	sbi_send_ipi(cpumask_bits(&hartid_mask));
++	return ((u64)hi << 32) | lo;
++}
++#endif /* CONFIG_64BIT */
++
++static u64 clint_rdtime(struct clocksource *cs)
++{
++	return clint_get_cycles64();
 +}
 +
-+static struct riscv_ipi_ops sbi_ipi_ops = {
-+	.ipi_inject = sbi_send_cpumask_ipi
++static struct clocksource clint_clocksource = {
++	.name		= "clint_clocksource",
++	.rating		= 300,
++	.mask		= CLOCKSOURCE_MASK(64),
++	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
++	.read		= clint_rdtime,
 +};
- 
- int __init sbi_init(void)
- {
-@@ -587,5 +599,7 @@ int __init sbi_init(void)
- 		__sbi_rfence	= __sbi_rfence_v01;
- 	}
- 
-+	riscv_set_ipi_ops(&sbi_ipi_ops);
 +
- 	return 0;
- }
-diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
-index b1d4f452f843..8b85683ce203 100644
---- a/arch/riscv/kernel/smp.c
-+++ b/arch/riscv/kernel/smp.c
-@@ -84,9 +84,25 @@ static void ipi_stop(void)
- 		wait_for_interrupt();
- }
- 
-+static struct riscv_ipi_ops *ipi_ops;
-+
-+void riscv_set_ipi_ops(struct riscv_ipi_ops *ops)
++static int clint_clock_next_event(unsigned long delta,
++				   struct clock_event_device *ce)
 +{
-+	ipi_ops = ops;
-+}
-+EXPORT_SYMBOL_GPL(riscv_set_ipi_ops);
++	void __iomem *r = clint_timer_cmp +
++			  cpuid_to_hartid_map(smp_processor_id());
 +
-+void riscv_clear_ipi(void)
++	csr_set(CSR_IE, IE_TIE);
++	writeq_relaxed(clint_get_cycles64() + delta, r);
++	return 0;
++}
++
++static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
++	.name		= "clint_clockevent",
++	.features	= CLOCK_EVT_FEAT_ONESHOT,
++	.rating		= 100,
++	.set_next_event	= clint_clock_next_event,
++};
++
++static int clint_timer_starting_cpu(unsigned int cpu)
 +{
-+	if (ipi_ops && ipi_ops->ipi_clear)
-+		ipi_ops->ipi_clear();
++	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
 +
-+	csr_clear(CSR_IP, IE_SIE);
++	ce->cpumask = cpumask_of(cpu);
++	clockevents_config_and_register(ce, clint_timer_freq, 100, 0x7fffffff);
++
++	enable_percpu_irq(clint_timer_irq,
++			  irq_get_trigger_type(clint_timer_irq));
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(riscv_clear_ipi);
 +
- static void send_ipi_mask(const struct cpumask *mask, enum ipi_message_type op)
- {
--	struct cpumask hartid_mask;
- 	int cpu;
- 
- 	smp_mb__before_atomic();
-@@ -94,33 +110,22 @@ static void send_ipi_mask(const struct cpumask *mask, enum ipi_message_type op)
- 		set_bit(op, &ipi_data[cpu].bits);
- 	smp_mb__after_atomic();
- 
--	riscv_cpuid_to_hartid_mask(mask, &hartid_mask);
--	if (IS_ENABLED(CONFIG_RISCV_SBI))
--		sbi_send_ipi(cpumask_bits(&hartid_mask));
-+	if (ipi_ops && ipi_ops->ipi_inject)
-+		ipi_ops->ipi_inject(mask);
- 	else
--		clint_send_ipi_mask(mask);
-+		pr_warn("SMP: IPI inject method not available\n");
- }
- 
- static void send_ipi_single(int cpu, enum ipi_message_type op)
- {
--	int hartid = cpuid_to_hartid_map(cpu);
--
- 	smp_mb__before_atomic();
- 	set_bit(op, &ipi_data[cpu].bits);
- 	smp_mb__after_atomic();
- 
--	if (IS_ENABLED(CONFIG_RISCV_SBI))
--		sbi_send_ipi(cpumask_bits(cpumask_of(hartid)));
--	else
--		clint_send_ipi_single(hartid);
--}
--
--static inline void clear_ipi(void)
--{
--	if (IS_ENABLED(CONFIG_RISCV_SBI))
--		csr_clear(CSR_IP, IE_SIE);
-+	if (ipi_ops && ipi_ops->ipi_inject)
-+		ipi_ops->ipi_inject(cpumask_of(cpu));
- 	else
--		clint_clear_ipi(cpuid_to_hartid_map(smp_processor_id()));
-+		pr_warn("SMP: IPI inject method not available\n");
- }
- 
- void handle_IPI(struct pt_regs *regs)
-@@ -131,7 +136,7 @@ void handle_IPI(struct pt_regs *regs)
- 
- 	irq_enter();
- 
--	clear_ipi();
-+	riscv_clear_ipi();
- 
- 	while (true) {
- 		unsigned long ops;
-diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-index 4e9922790f6e..5fe849791bf0 100644
---- a/arch/riscv/kernel/smpboot.c
-+++ b/arch/riscv/kernel/smpboot.c
-@@ -147,8 +147,7 @@ asmlinkage __visible void smp_callin(void)
- {
- 	struct mm_struct *mm = &init_mm;
- 
--	if (!IS_ENABLED(CONFIG_RISCV_SBI))
--		clint_clear_ipi(cpuid_to_hartid_map(smp_processor_id()));
-+	riscv_clear_ipi();
- 
- 	/* All kernel threads share the same mm context.  */
- 	mmgrab(mm);
++static int clint_timer_dying_cpu(unsigned int cpu)
++{
++	disable_percpu_irq(clint_timer_irq);
++	return 0;
++}
++
++static irqreturn_t clint_timer_interrupt(int irq, void *dev_id)
++{
++	struct clock_event_device *evdev = this_cpu_ptr(&clint_clock_event);
++
++	csr_clear(CSR_IE, IE_TIE);
++	evdev->event_handler(evdev);
++
++	return IRQ_HANDLED;
++}
++
++static int __init clint_timer_init_dt(struct device_node *np)
++{
++	int rc;
++	u32 i, nr_irqs;
++	void __iomem *base;
++	struct of_phandle_args oirq;
++
++	/*
++	 * Ensure that CLINT device interrupts are either RV_IRQ_TIMER or
++	 * RV_IRQ_SOFT. If it's anything else then we ignore the device.
++	 */
++	nr_irqs = of_irq_count(np);
++	for (i = 0; i < nr_irqs; i++) {
++		if (of_irq_parse_one(np, i, &oirq)) {
++			pr_err("%pOFP: failed to parse irq %d.\n", np, i);
++			continue;
++		}
++
++		if ((oirq.args_count != 1) ||
++		    (oirq.args[0] != RV_IRQ_TIMER &&
++		     oirq.args[0] != RV_IRQ_SOFT)) {
++			pr_err("%pOFP: invalid irq %d (hwirq %d)\n",
++			       np, i, oirq.args[0]);
++			return -ENODEV;
++		}
++
++		/* Find parent irq domain and map timer irq */
++		if (!clint_timer_irq &&
++		    oirq.args[0] == RV_IRQ_TIMER &&
++		    irq_find_host(oirq.np))
++			clint_timer_irq = irq_of_parse_and_map(np, i);
++	}
++
++	/* If CLINT timer irq not found then fail */
++	if (!clint_timer_irq) {
++		pr_err("%pOFP: timer irq not found\n", np);
++		return -ENODEV;
++	}
++
++	base = of_iomap(np, 0);
++	if (!base) {
++		pr_err("%pOFP: could not map registers\n", np);
++		return -ENODEV;
++	}
++
++	clint_ipi_base = base + CLINT_IPI_OFF;
++	clint_timer_cmp = base + CLINT_TIMER_CMP_OFF;
++	clint_timer_val = base + CLINT_TIMER_VAL_OFF;
++	clint_timer_freq = riscv_timebase;
++
++	pr_info("%pOFP: timer running at %ld Hz\n", np, clint_timer_freq);
++
++	rc = clocksource_register_hz(&clint_clocksource, clint_timer_freq);
++	if (rc) {
++		pr_err("%pOFP: clocksource register failed [%d]\n", np, rc);
++		goto fail_iounmap;
++	}
++
++	sched_clock_register(clint_get_cycles64, 64, clint_timer_freq);
++
++	rc = request_percpu_irq(clint_timer_irq, clint_timer_interrupt,
++				 "clint-timer", &clint_clock_event);
++	if (rc) {
++		pr_err("registering percpu irq failed [%d]\n", rc);
++		goto fail_iounmap;
++	}
++
++	rc = cpuhp_setup_state(CPUHP_AP_CLINT_TIMER_STARTING,
++				"clockevents/clint/timer:starting",
++				clint_timer_starting_cpu,
++				clint_timer_dying_cpu);
++	if (rc) {
++		pr_err("%pOFP: cpuhp setup state failed [%d]\n", np, rc);
++		goto fail_free_irq;
++	}
++
++	riscv_set_ipi_ops(&clint_ipi_ops);
++	clint_clear_ipi();
++
++	return 0;
++
++fail_free_irq:
++	free_irq(clint_timer_irq, &clint_clock_event);
++fail_iounmap:
++	iounmap(base);
++	return rc;
++}
++
++TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
++TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 191772d4a4d7..1451f4625833 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -132,6 +132,7 @@ enum cpuhp_state {
+ 	CPUHP_AP_MIPS_GIC_TIMER_STARTING,
+ 	CPUHP_AP_ARC_TIMER_STARTING,
+ 	CPUHP_AP_RISCV_TIMER_STARTING,
++	CPUHP_AP_CLINT_TIMER_STARTING,
+ 	CPUHP_AP_CSKY_TIMER_STARTING,
+ 	CPUHP_AP_HYPERV_TIMER_STARTING,
+ 	CPUHP_AP_KVM_STARTING,
 -- 
 2.25.1
 
