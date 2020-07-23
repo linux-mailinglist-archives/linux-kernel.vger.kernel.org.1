@@ -2,384 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8072822B567
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0CC22B574
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgGWSJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:09:07 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56470 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgGWSJH (ORCPT
+        id S1726769AbgGWSMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:12:25 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53966 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbgGWSMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:09:07 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C326920B4908;
-        Thu, 23 Jul 2020 11:09:04 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C326920B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595527745;
-        bh=uHrnXOZikJH8DshH8Cb6szZjihDhComUUIzQpEmZSwM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BnvTYMpVe765C2JcC5rEdC+x2pVTiwcftFN2NwG46XCv2pXToEjPSBe4+DyThhWIp
-         C+3OhI4W71do3Rgc/DeRCmTDfYAgw+zqeyMmhKb1y/8C0Rl1ONQmlz+T173m0A9UIA
-         MtMuiJp6cuASErKXqHnvIEBFKJ9EK2ScLzB0diP0=
-Date:   Thu, 23 Jul 2020 13:09:02 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] loop: scale loop device by introducing per device
- lock
-Message-ID: <20200723180902.GV3673@sequoia>
-References: <20200717205322.127694-1-pasha.tatashin@soleen.com>
- <20200717205322.127694-2-pasha.tatashin@soleen.com>
+        Thu, 23 Jul 2020 14:12:24 -0400
+Received: by mail-il1-f199.google.com with SMTP id r4so4015493ilq.20
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:12:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gzxIG7ZgJvfHDwVFPiFV5LnmLx9pYYgVFI622Payd70=;
+        b=ViT//7//rW8QJ8S9RBwFBAwgV72Ny+fOPlh4aA/zXGw+iqykDt2lFJHgUj6h5yY94g
+         9E/Bv/H6aH9ogZ3KZf34eUmDEOgg8B+OibxPcu9iBg5mg6Rh17qaIpdzwVl+PICupwMU
+         +lfL3emujD0pfcQr18aWoyVFE8cAxYumsasF7pTbIMBohzdPye98mfgOIcUaukgH374f
+         vJQNzRUa4F9namcBqRt0Ohher8ahvkNtDQgocKTnPBV3ugAvH1UCfNux/5fka9aQuN/H
+         xWe4ijMiM+QNxKeuFrCsr/s6ldIMfFmAToQMzaLalwocGNeeY9b/VXmQoX1GkX9VrspU
+         nlWQ==
+X-Gm-Message-State: AOAM5300VM50FHlKtNjN1P03kFhNZI98UVvPIMtTETWPkRifU0Leag34
+        G0a2MZxye406G1lL15reXm9xLT7iAT3o1VPfTFD9SXnzPHcr
+X-Google-Smtp-Source: ABdhPJxcQqKWrZcaqpV5eK9Iw2oJX7eiNt6JQuTAmHMXAo2oYtCW/DAWjuyyjQ3L/HNwm1mhgk4WfMNwrraH1Ys9rjFC5s6NEiPB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200717205322.127694-2-pasha.tatashin@soleen.com>
+X-Received: by 2002:a05:6e02:dc4:: with SMTP id l4mr6425361ilj.134.1595527943146;
+ Thu, 23 Jul 2020 11:12:23 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 11:12:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000047d80905ab1fccdb@google.com>
+Subject: KASAN: use-after-free Read in vlan_dev_get_iflink
+From:   syzbot <syzbot+d702fd2351989927037c@syzkaller.appspotmail.com>
+To:     ap420073@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-17 16:53:22, Pavel Tatashin wrote:
-> Currently, loop device has only one global lock:
-> loop_ctl_mutex.
-> 
-> This becomes hot in scenarios where many loop devices are used.
-> 
-> Scale it by introducing per-device lock: lo_mutex that proctests
-> field in struct loop_device. Keep loop_ctl_mutex to protect global
+Hello,
 
-s/proctests field/protects the fields/
+syzbot found the following issue on:
 
-> data such as loop_index_idr, loop_lookup, loop_add.
-> 
-> Lock ordering: loop_ctl_mutex > lo_mutex.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> ---
->  drivers/block/loop.c | 86 ++++++++++++++++++++++++--------------------
->  drivers/block/loop.h |  1 +
->  2 files changed, 48 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index 475e1a738560..056af3bca6c2 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -706,7 +706,7 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
->  	int		error;
->  	bool		partscan;
->  
-> -	error = mutex_lock_killable(&loop_ctl_mutex);
-> +	error = mutex_lock_killable(&lo->lo_mutex);
->  	if (error)
->  		return error;
->  	error = -ENXIO;
-> @@ -745,9 +745,9 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
->  	loop_update_dio(lo);
->  	blk_mq_unfreeze_queue(lo->lo_queue);
->  	partscan = lo->lo_flags & LO_FLAGS_PARTSCAN;
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	/*
-> -	 * We must drop file reference outside of loop_ctl_mutex as dropping
-> +	 * We must drop file reference outside of lo_mutex as dropping
->  	 * the file ref can take bd_mutex which creates circular locking
->  	 * dependency.
->  	 */
-> @@ -757,7 +757,7 @@ static int loop_change_fd(struct loop_device *lo, struct block_device *bdev,
->  	return 0;
->  
->  out_err:
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	if (file)
->  		fput(file);
->  	return error;
-> @@ -1096,7 +1096,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
->  		}
->  	}
->  
-> -	error = mutex_lock_killable(&loop_ctl_mutex);
-> +	error = mutex_lock_killable(&lo->lo_mutex);
->  	if (error)
->  		goto out_bdev;
->  
-> @@ -1176,7 +1176,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
->  	 * put /dev/loopXX inode. Later in __loop_clr_fd() we bdput(bdev).
->  	 */
->  	bdgrab(bdev);
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	if (partscan)
->  		loop_reread_partitions(lo, bdev);
->  	if (claimed_bdev)
-> @@ -1184,7 +1184,7 @@ static int loop_configure(struct loop_device *lo, fmode_t mode,
->  	return 0;
->  
->  out_unlock:
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  out_bdev:
->  	if (claimed_bdev)
->  		bd_abort_claiming(bdev, claimed_bdev, loop_configure);
-> @@ -1205,7 +1205,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
->  	bool partscan = false;
->  	int lo_number;
->  
-> -	mutex_lock(&loop_ctl_mutex);
-> +	mutex_lock(&lo->lo_mutex);
->  	if (WARN_ON_ONCE(lo->lo_state != Lo_rundown)) {
->  		err = -ENXIO;
->  		goto out_unlock;
-> @@ -1259,7 +1259,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
->  	lo_number = lo->lo_number;
->  	loop_unprepare_queue(lo);
->  out_unlock:
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	if (partscan) {
->  		/*
->  		 * bd_mutex has been held already in release path, so don't
-> @@ -1290,18 +1290,18 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
->  	 * protects us from all the other places trying to change the 'lo'
->  	 * device.
->  	 */
-> -	mutex_lock(&loop_ctl_mutex);
-> +	mutex_lock(&lo->lo_mutex);
->  	lo->lo_flags = 0;
->  	if (!part_shift)
->  		lo->lo_disk->flags |= GENHD_FL_NO_PART_SCAN;
->  	lo->lo_state = Lo_unbound;
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  
->  	/*
-> -	 * Need not hold loop_ctl_mutex to fput backing file.
-> -	 * Calling fput holding loop_ctl_mutex triggers a circular
-> +	 * Need not hold lo_mutex to fput backing file.
-> +	 * Calling fput holding lo_mutex triggers a circular
->  	 * lock dependency possibility warning as fput can take
-> -	 * bd_mutex which is usually taken before loop_ctl_mutex.
-> +	 * bd_mutex which is usually taken before lo_mutex.
->  	 */
->  	if (filp)
->  		fput(filp);
-> @@ -1312,11 +1312,11 @@ static int loop_clr_fd(struct loop_device *lo)
->  {
->  	int err;
->  
-> -	err = mutex_lock_killable(&loop_ctl_mutex);
-> +	err = mutex_lock_killable(&lo->lo_mutex);
->  	if (err)
->  		return err;
->  	if (lo->lo_state != Lo_bound) {
-> -		mutex_unlock(&loop_ctl_mutex);
-> +		mutex_unlock(&lo->lo_mutex);
->  		return -ENXIO;
->  	}
->  	/*
-> @@ -1331,11 +1331,11 @@ static int loop_clr_fd(struct loop_device *lo)
->  	 */
->  	if (atomic_read(&lo->lo_refcnt) > 1) {
->  		lo->lo_flags |= LO_FLAGS_AUTOCLEAR;
-> -		mutex_unlock(&loop_ctl_mutex);
-> +		mutex_unlock(&lo->lo_mutex);
->  		return 0;
->  	}
->  	lo->lo_state = Lo_rundown;
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  
->  	return __loop_clr_fd(lo, false);
->  }
-> @@ -1350,7 +1350,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
->  	bool partscan = false;
->  	bool size_changed = false;
->  
-> -	err = mutex_lock_killable(&loop_ctl_mutex);
-> +	err = mutex_lock_killable(&lo->lo_mutex);
->  	if (err)
->  		return err;
->  	if (lo->lo_encrypt_key_size &&
-> @@ -1417,7 +1417,7 @@ loop_set_status(struct loop_device *lo, const struct loop_info64 *info)
->  		partscan = true;
->  	}
->  out_unlock:
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	if (partscan)
->  		loop_reread_partitions(lo, bdev);
->  
-> @@ -1431,11 +1431,11 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
->  	struct kstat stat;
->  	int ret;
->  
-> -	ret = mutex_lock_killable(&loop_ctl_mutex);
-> +	ret = mutex_lock_killable(&lo->lo_mutex);
->  	if (ret)
->  		return ret;
->  	if (lo->lo_state != Lo_bound) {
-> -		mutex_unlock(&loop_ctl_mutex);
-> +		mutex_unlock(&lo->lo_mutex);
->  		return -ENXIO;
->  	}
->  
-> @@ -1454,10 +1454,10 @@ loop_get_status(struct loop_device *lo, struct loop_info64 *info)
->  		       lo->lo_encrypt_key_size);
->  	}
->  
-> -	/* Drop loop_ctl_mutex while we call into the filesystem. */
-> +	/* Drop lo_mutex while we call into the filesystem. */
->  	path = lo->lo_backing_file->f_path;
->  	path_get(&path);
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	ret = vfs_getattr(&path, &stat, STATX_INO, AT_STATX_SYNC_AS_STAT);
->  	if (!ret) {
->  		info->lo_device = huge_encode_dev(stat.dev);
-> @@ -1643,7 +1643,7 @@ static int lo_simple_ioctl(struct loop_device *lo, unsigned int cmd,
->  {
->  	int err;
->  
-> -	err = mutex_lock_killable(&loop_ctl_mutex);
-> +	err = mutex_lock_killable(&lo->lo_mutex);
->  	if (err)
->  		return err;
->  	switch (cmd) {
-> @@ -1659,7 +1659,7 @@ static int lo_simple_ioctl(struct loop_device *lo, unsigned int cmd,
->  	default:
->  		err = lo->ioctl ? lo->ioctl(lo, cmd, arg) : -EINVAL;
->  	}
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	return err;
->  }
->  
-> @@ -1890,22 +1890,23 @@ static int lo_open(struct block_device *bdev, fmode_t mode)
->  		return err;
->  	lo = bdev->bd_disk->private_data;
->  	if (!lo) {
-> -		err = -ENXIO;
-> -		goto out;
-> +		mutex_unlock(&loop_ctl_mutex);
-> +		return -ENXIO;
->  	}
-> -
-> -	atomic_inc(&lo->lo_refcnt);
-> -out:
-> +	err = mutex_lock_killable(&lo->lo_mutex);
->  	mutex_unlock(&loop_ctl_mutex);
+HEAD commit:    8c26c87b Merge tag 'sound-5.8-rc7' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=128af5ef100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
+dashboard link: https://syzkaller.appspot.com/bug?extid=d702fd2351989927037c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1567cae8900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150631b4900000
 
-I don't see a possibility for deadlock but it bothers me a little that
-we're not unlocking in the reverse locking order here, as we do in
-loop_control_ioctl(). There should be no perf impact if we move the
-mutex_unlock(&loop_ctl_mutex) after mutex_unlock(&lo->lo_mutex).
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d702fd2351989927037c@syzkaller.appspotmail.com
 
-> -	return err;
-> +	if (err)
-> +		return err;
-> +	atomic_inc(&lo->lo_refcnt);
-> +	mutex_unlock(&lo->lo_mutex);
-> +	return 0;
->  }
->  
->  static void lo_release(struct gendisk *disk, fmode_t mode)
->  {
-> -	struct loop_device *lo;
-> +	struct loop_device *lo = disk->private_data;
->  
-> -	mutex_lock(&loop_ctl_mutex);
-> -	lo = disk->private_data;
-> +	mutex_lock(&lo->lo_mutex);
->  	if (atomic_dec_return(&lo->lo_refcnt))
->  		goto out_unlock;
->  
-> @@ -1913,7 +1914,7 @@ static void lo_release(struct gendisk *disk, fmode_t mode)
->  		if (lo->lo_state != Lo_bound)
->  			goto out_unlock;
->  		lo->lo_state = Lo_rundown;
-> -		mutex_unlock(&loop_ctl_mutex);
-> +		mutex_unlock(&lo->lo_mutex);
->  		/*
->  		 * In autoclear mode, stop the loop thread
->  		 * and remove configuration after last close.
-> @@ -1930,7 +1931,7 @@ static void lo_release(struct gendisk *disk, fmode_t mode)
->  	}
->  
->  out_unlock:
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  }
->  
->  static const struct block_device_operations lo_fops = {
-> @@ -1969,10 +1970,10 @@ static int unregister_transfer_cb(int id, void *ptr, void *data)
->  	struct loop_device *lo = ptr;
->  	struct loop_func_table *xfer = data;
->  
-> -	mutex_lock(&loop_ctl_mutex);
-> +	mutex_lock(&lo->lo_mutex);
->  	if (lo->lo_encryption == xfer)
->  		loop_release_xfer(lo);
-> -	mutex_unlock(&loop_ctl_mutex);
-> +	mutex_unlock(&lo->lo_mutex);
->  	return 0;
->  }
->  
-> @@ -2157,6 +2158,7 @@ static int loop_add(struct loop_device **l, int i)
->  		disk->flags |= GENHD_FL_NO_PART_SCAN;
->  	disk->flags |= GENHD_FL_EXT_DEVT;
->  	atomic_set(&lo->lo_refcnt, 0);
-> +	mutex_init(&lo->lo_mutex);
+==================================================================
+BUG: KASAN: use-after-free in vlan_dev_get_iflink+0x5f/0x70 net/8021q/vlan_dev.c:767
+Read of size 4 at addr ffff888094a76100 by task syz-executor015/9454
 
-We need a corresponding call to mutex_destroy() in loop_remove().
+CPU: 1 PID: 9454 Comm: syz-executor015 Not tainted 5.8.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ vlan_dev_get_iflink+0x5f/0x70 net/8021q/vlan_dev.c:767
+ dev_get_iflink+0x73/0xe0 net/core/dev.c:814
+ rfc2863_policy+0x243/0x2e0 net/core/link_watch.c:41
+ linkwatch_do_dev+0x2a/0x180 net/core/link_watch.c:160
+ linkwatch_forget_dev+0x16a/0x200 net/core/link_watch.c:237
+ netdev_wait_allrefs net/core/dev.c:9678 [inline]
+ netdev_run_todo+0x258/0xac0 net/core/dev.c:9774
+ rtnl_unlock net/core/rtnetlink.c:112 [inline]
+ rtnetlink_rcv_msg+0x45b/0xad0 net/core/rtnetlink.c:5461
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x446cf9
+Code: Bad RIP value.
+RSP: 002b:00007f4a27e29d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000006dbc78 RCX: 0000000000446cf9
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000006
+RBP: 00000000006dbc70 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc7c
+R13: 0000000040000000 R14: 0000001000000000 R15: 0705001000000048
 
->  	lo->lo_number		= i;
->  	spin_lock_init(&lo->lo_lock);
->  	disk->major		= LOOP_MAJOR;
-> @@ -2272,15 +2274,21 @@ static long loop_control_ioctl(struct file *file, unsigned int cmd,
->  		ret = loop_lookup(&lo, parm);
->  		if (ret < 0)
->  			break;
-> +		ret = mutex_lock_killable(&lo->lo_mutex);
-> +		if (ret)
-> +			break;
->  		if (lo->lo_state != Lo_unbound) {
->  			ret = -EBUSY;
-> +			mutex_unlock(&lo->lo_mutex);
->  			break;
->  		}
->  		if (atomic_read(&lo->lo_refcnt) > 0) {
->  			ret = -EBUSY;
-> +			mutex_unlock(&lo->lo_mutex);
->  			break;
->  		}
->  		lo->lo_disk->private_data = NULL;
-> +		mutex_unlock(&lo->lo_mutex);
->  		idr_remove(&loop_index_idr, lo->lo_number);
->  		loop_remove(lo);
->  		break;
-> diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-> index af75a5ee4094..a3c04f310672 100644
-> --- a/drivers/block/loop.h
-> +++ b/drivers/block/loop.h
-> @@ -62,6 +62,7 @@ struct loop_device {
->  	struct request_queue	*lo_queue;
->  	struct blk_mq_tag_set	tag_set;
->  	struct gendisk		*lo_disk;
+Allocated by task 9440:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
+ kmalloc_node include/linux/slab.h:578 [inline]
+ kvmalloc_node+0x61/0xf0 mm/util.c:574
+ kvmalloc include/linux/mm.h:753 [inline]
+ kvzalloc include/linux/mm.h:761 [inline]
+ alloc_netdev_mqs+0x97/0xdc0 net/core/dev.c:9938
+ rtnl_create_link+0x219/0xad0 net/core/rtnetlink.c:3067
+ __rtnl_newlink+0xfa0/0x1730 net/core/rtnetlink.c:3329
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3397
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5460
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-There's an instance, which is not in this patch's context, of accessing
-lo_disk that needs lo_mutex protection. In loop_probe(), we call
-get_disk_and_module(lo->lo_disk) and we need to lock and unlock lo_mutex
-around that call.
+Freed by task 9461:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x103/0x2c0 mm/slab.c:3757
+ kvfree+0x42/0x50 mm/util.c:603
+ device_release+0x71/0x200 drivers/base/core.c:1579
+ kobject_cleanup lib/kobject.c:693 [inline]
+ kobject_release lib/kobject.c:722 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c0/0x270 lib/kobject.c:739
+ netdev_run_todo+0x765/0xac0 net/core/dev.c:9797
+ rtnl_unlock net/core/rtnetlink.c:112 [inline]
+ rtnetlink_rcv_msg+0x45b/0xad0 net/core/rtnetlink.c:5461
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Tyler
+The buggy address belongs to the object at ffff888094a76000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 256 bytes inside of
+ 4096-byte region [ffff888094a76000, ffff888094a77000)
+The buggy address belongs to the page:
+page:ffffea0002529d80 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 head:ffffea0002529d80 order:1 compound_mapcount:0
+flags: 0xfffe0000010200(slab|head)
+raw: 00fffe0000010200 ffffea000251fe88 ffffea0002375c88 ffff8880aa002000
+raw: 0000000000000000 ffff888094a76000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
 
-> +	struct mutex		lo_mutex;
->  };
->  
->  struct loop_cmd {
-> -- 
-> 2.25.1
-> 
+Memory state around the buggy address:
+ ffff888094a76000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888094a76080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888094a76100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888094a76180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888094a76200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
