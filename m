@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A241522BA10
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A398C22BA16
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgGWXPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 19:15:48 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]:40982 "EHLO
-        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgGWXPr (ORCPT
+        id S1728074AbgGWXPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 19:15:52 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:45566 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726657AbgGWXPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 19:15:47 -0400
-Received: by mail-qk1-f175.google.com with SMTP id l64so293797qkb.8;
-        Thu, 23 Jul 2020 16:15:47 -0700 (PDT)
+        Thu, 23 Jul 2020 19:15:49 -0400
+Received: by mail-qk1-f194.google.com with SMTP id u64so7060630qka.12;
+        Thu, 23 Jul 2020 16:15:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HCK5IhOfeHrsKWvFWWJWPxRK1T7/lPw/Gt6N/NVxpu0=;
-        b=PgmIm9Svm2BYGOnCuvYaWzp/R/JXQKQIUR5/dvI/GLsT/0iQgHylozKaY7i0klgdjC
-         9coawWyhd0qnjZV/UBH37yZ/FH8X1YlA6eTqvDOafpn+o5DUFl1dD3WURQUC1ZslR6EE
-         i9j00+zhEYdC0cVt7gRpLcrS6zSuQiOZ8/g+S0qvExE81dNhF7rxayWXePx8zfpEbbP1
-         E36PHZvLvOGRuI/24BGfTyZwH4RJ1MfOK90JRc8Pkji4DNbNdH2l+S3Ap9HetaahCEtx
-         yUwmVe59/8pBeLsXIjGviQihUlLfyfCnrI/Ou9IV3fiDbKLSjxy1XsIFfQa1fmJ1pPY2
-         famQ==
-X-Gm-Message-State: AOAM5301icxmh5cNnrOInGjTN/urlYqxLRnit9QT/eQJC7zTy9f9O3ns
-        w3mwK9JRsojwXi8yIOrYXDKYnVIy
-X-Google-Smtp-Source: ABdhPJxGjhsHQ6lCTM9N6P84KeI8k5panpNx/IPPwLe6F0Umvuiw61o3taxh3m4DMff3eT2Ts8Npuw==
-X-Received: by 2002:a37:4289:: with SMTP id p131mr7802401qka.28.1595546146808;
-        Thu, 23 Jul 2020 16:15:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=x8IZbd4Fczf92kh5M3HwuHrI1z58wZWyf5U7NUnPhRY=;
+        b=Q6DX6i2YSUNMEGGIhtAtrqF92uvtKHoxgWAkl6ije5OFCXrE0jN/n20676DhpQxGny
+         c0Piq0YVe6w+fv18O1qdcauv8JoqwRsXMrVFE8D9E+WDecxSTWteF9RBF4mjknPKY2Cq
+         CTMfn0gITMZU/E/ueL44Cg/QTB8ZNhJ28BAo71HpwlVJS6Ohf/DiJ6/B+WFZ1nYKSLAs
+         2D6UUyRIxEKHLKmTUGYy98SOa3CzS+62UOHneVDI5vklrzVFVLXdEhi+GkKhmtjy4itQ
+         mjqtAsOjfP5dEYugvzxDRt9VgPfLNFPYGjbx3FmgC6Q5MvC7+TtQZz+J9tkLr3W5quoN
+         C5QQ==
+X-Gm-Message-State: AOAM532MeK/F4a4W7/VSYJPRq0SbIt7LK1AZTv5Qm1S4wvwwnj14VFls
+        BJSc8Lh8qai/XzY1BIsBFes=
+X-Google-Smtp-Source: ABdhPJwvgEjMKThPAs1a84yJgSsd+Py7vrCBvLV00/GpEFdmmEqp1wOoieVANE+LZeo7pqmMyDOwhQ==
+X-Received: by 2002:a37:7dc3:: with SMTP id y186mr6797518qkc.160.1595546147786;
+        Thu, 23 Jul 2020 16:15:47 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id u58sm4196610qth.77.2020.07.23.16.15.45
+        by smtp.gmail.com with ESMTPSA id u58sm4196610qth.77.2020.07.23.16.15.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 16:15:46 -0700 (PDT)
+        Thu, 23 Jul 2020 16:15:47 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
@@ -44,10 +44,12 @@ To:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
         "David S. Miller" <davem@davemloft.net>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] Drop unused MAX_PHYSADDR_BITS
-Date:   Thu, 23 Jul 2020 19:15:41 -0400
-Message-Id: <20200723231544.17274-1-nivedita@alum.mit.edu>
+Subject: [PATCH 1/3] x86/mm: Drop unused MAX_PHYSADDR_BITS
+Date:   Thu, 23 Jul 2020 19:15:42 -0400
+Message-Id: <20200723231544.17274-2-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200723231544.17274-1-nivedita@alum.mit.edu>
+References: <20200723231544.17274-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -55,22 +57,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This #define is not used anywhere, and has the wrong value on x86_64.
+The macro is not used anywhere, and has an incorrect value (going by the
+comment) on x86_64 since commit
+  c898faf91b3e ("x86: 46 bit physical address support on 64 bits")
 
-I tried digging into the history a bit, but it seems to have been unused
-even in the initial merge of sparsemem in v2.6.13, when it was first
-defined.
+To avoid confusion, just remove the definition.
 
-Arvind Sankar (3):
-  x86/mm: Drop unused MAX_PHYSADDR_BITS
-  sh/mm: Drop unused MAX_PHYSADDR_BITS
-  sparc: Drop unused MAX_PHYSADDR_BITS
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+---
+ arch/x86/include/asm/sparsemem.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
- arch/sh/include/asm/sparsemem.h    | 4 +---
- arch/sparc/include/asm/sparsemem.h | 1 -
- arch/x86/include/asm/sparsemem.h   | 6 +-----
- 3 files changed, 2 insertions(+), 9 deletions(-)
-
+diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
+index 199218719a86..6bfc878f6771 100644
+--- a/arch/x86/include/asm/sparsemem.h
++++ b/arch/x86/include/asm/sparsemem.h
+@@ -10,24 +10,20 @@
+  *    field of the struct page
+  *
+  * SECTION_SIZE_BITS		2^n: size of each section
+- * MAX_PHYSADDR_BITS		2^n: max size of physical address space
+- * MAX_PHYSMEM_BITS		2^n: how much memory we can have in that space
++ * MAX_PHYSMEM_BITS		2^n: max size of physical address space
+  *
+  */
+ 
+ #ifdef CONFIG_X86_32
+ # ifdef CONFIG_X86_PAE
+ #  define SECTION_SIZE_BITS	29
+-#  define MAX_PHYSADDR_BITS	36
+ #  define MAX_PHYSMEM_BITS	36
+ # else
+ #  define SECTION_SIZE_BITS	26
+-#  define MAX_PHYSADDR_BITS	32
+ #  define MAX_PHYSMEM_BITS	32
+ # endif
+ #else /* CONFIG_X86_32 */
+ # define SECTION_SIZE_BITS	27 /* matt - 128 is convenient right now */
+-# define MAX_PHYSADDR_BITS	(pgtable_l5_enabled() ? 52 : 44)
+ # define MAX_PHYSMEM_BITS	(pgtable_l5_enabled() ? 52 : 46)
+ #endif
+ 
 -- 
 2.26.2
 
