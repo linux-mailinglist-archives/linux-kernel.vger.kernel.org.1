@@ -2,150 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A0322B513
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93F422B518
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgGWRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726852AbgGWRlo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:41:44 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2263EC0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:41:44 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id o22so3401130pjw.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:41:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+RJZw0EUjRyZGrBL+JOJ2S5jetRR1oKhR6Zvd1RgJh8=;
-        b=g8CE5vqbzx8+q8gvwPCQVVlTu/4DoCklRjtBzfdi3iZDNiYEAw5sE9gpie8nmZ3+cP
-         NCxicK2Ve2qHMNwrV7A3g5V8ZuBwUT1zGg6+a4OzxescH3EfZreFvywl4Nl2hLIFyiB7
-         tTbEk/HhGativgJefsiLNJXQW/tcS6QBJgFsKyAG22KPmh/GswkNrIZPHLVsBDOkocLq
-         9WkIlAdXcjlzDROyl+n+H+gmKyXruyfu4joQJ+GiprjYCXZ4t50jY/4qyvMkaj1z4gxl
-         9AviwBse/t1C7/1KG54XxoijhcC1AwFlI0QhTxITwqg7eFTO2hUY0EOpKtMFU8NvLvei
-         aYPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+RJZw0EUjRyZGrBL+JOJ2S5jetRR1oKhR6Zvd1RgJh8=;
-        b=D00CNuDoIrICFedMFEkQFMZTtr3wrKGc5kyYnkmTs1Hzh+tfhXHr9giXH+NL3BzZz5
-         WYgK7+3B61wGHkzmn5iZLFxdwUD1yqfb7hjvc786cda9iM08K82+oeBxDvsDuNXUFcVb
-         bqYDcqlkodvI7FJi+Dnvf9xczYVzNV5gddvLbFE3IhqB4YWznA888wdEAhRd05YoBCEs
-         rpZP6aJAmu1qlM4qfS6d0TR215awXt9r5ykwJ4X0/zdGV6woNcAiNNNZfE1Yc2L/xYgL
-         HS/uj7E/lGLgOLLIcWvR1eJEUJ1C7LMurr/24t/lzMbLIpJMS0GMHKbMd+ixpemTIlfh
-         D5lA==
-X-Gm-Message-State: AOAM531adXP8P0ZodWwNT6KjShLcGCyqa/KO6lrBrgV75OV1Ca35WNpf
-        PYV9RnjG+JHPvBu/EFanXSN78PTxuh0=
-X-Google-Smtp-Source: ABdhPJxoBkIy9VJSu6/9RLSZ5Nl/QUfE4CzVFNPVZsaPQiEv1+cvwyDb5XSdajla+/0XQPb2x8jfUg==
-X-Received: by 2002:a17:902:654e:: with SMTP id d14mr4913612pln.60.1595526103417;
-        Thu, 23 Jul 2020 10:41:43 -0700 (PDT)
-Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id n25sm3757021pff.51.2020.07.23.10.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 10:41:42 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 10:41:40 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v5 0/6] arm64: add the time namespace support
-Message-ID: <20200723174140.GA3991167@gmail.com>
-References: <20200624083321.144975-1-avagin@gmail.com>
- <20200705064055.GA28894@gmail.com>
- <20200714015743.GA843937@gmail.com>
- <20200722181506.GA4517@gaia>
+        id S1730187AbgGWRnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:43:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36081 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726650AbgGWRnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:43:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595526187; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=0kMEmXK3s9WAXn9Oo5JXf+tpYAov4SIj74pHnkssqZQ=; b=AAMKsIV9ks8Wh+2Y05ZxpTv0sgKjq7h25tO+IuSVhJxlyQVM0Yvb9g7widcTSrvcFOoLGo2H
+ q3wuRmaRvwiAE83bXsQsZx9LqgUjtLeKDK3n+zATVA96SytnmtSgxAv20/9fNA3FHH4a4ude
+ 3z+BdOrKc/A7OWpA69+l6x5T9Pw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f19cc215912b3a405739025 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 23 Jul 2020 17:42:57
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CCE86C433CB; Thu, 23 Jul 2020 17:42:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: ilina)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D7ECC433CA;
+        Thu, 23 Jul 2020 17:42:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9D7ECC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=ilina@codeaurora.org
+Date:   Thu, 23 Jul 2020 11:42:54 -0600
+From:   Lina Iyer <ilina@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Sleep waiting for tcs slots to be
+ free
+Message-ID: <20200723174254.GF9185@codeaurora.org>
+References: <20200723010137.3127584-1-swboyd@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200722181506.GA4517@gaia>
+In-Reply-To: <20200723010137.3127584-1-swboyd@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 07:15:06PM +0100, Catalin Marinas wrote:
-> On Mon, Jul 13, 2020 at 06:57:43PM -0700, Andrei Vagin wrote:
-> > On Sat, Jul 04, 2020 at 11:40:55PM -0700, Andrei Vagin wrote:
-> > > On Wed, Jun 24, 2020 at 01:33:15AM -0700, Andrei Vagin wrote:
-> > > > Allocate the time namespace page among VVAR pages and add the logic
-> > > > to handle faults on VVAR properly.
-> > > > 
-> > > > If a task belongs to a time namespace then the VVAR page which contains
-> > > > the system wide VDSO data is replaced with a namespace specific page
-> > > > which has the same layout as the VVAR page. That page has vdso_data->seq
-> > > > set to 1 to enforce the slow path and vdso_data->clock_mode set to
-> > > > VCLOCK_TIMENS to enforce the time namespace handling path.
-> > > > 
-> > > > The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
-> > > > update of the VDSO data is in progress, is not really affecting regular
-> > > > tasks which are not part of a time namespace as the task is spin waiting
-> > > > for the update to finish and vdso_data->seq to become even again.
-> > > > 
-> > > > If a time namespace task hits that code path, it invokes the corresponding
-> > > > time getter function which retrieves the real VVAR page, reads host time
-> > > > and then adds the offset for the requested clock which is stored in the
-> > > > special VVAR page.
-> > > > 
-> > > 
-> > > > v2: Code cleanups suggested by Vincenzo.
-> > > > v3: add a comment in __arch_get_timens_vdso_data.
-> > > > v4: - fix an issue reported by the lkp robot.
-> > > >     - vvar has the same size with/without CONFIG_TIME_NAMESPACE, but the
-> > > >       timens page isn't allocated on !CONFIG_TIME_NAMESPACE. This
-> > > >       simplifies criu/vdso migration between different kernel configs.
-> > > > v5: - Code cleanups suggested by Mark Rutland.
-> > > >     - In vdso_join_timens, mmap_write_lock is downgraded to
-> > > >       mmap_read_lock. The VMA list isn't changed there, zap_page_range
-> > > >       doesn't require mmap_write_lock.
-> > > > 
-> > > > Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > > Reviewed-by: Dmitry Safonov <dima@arista.com>
-> > > 
-> > > Hello Will and Catalin,
-> > > 
-> > > Have you had a chance to look at this patch set? I think it is ready to be
-> > > merged. Let me know if you have any questions.
-> > 
-> > *friendly ping*
-> > 
-> > If I am doing something wrong, let me know.
-> 
-> Not really, just haven't got around to looking into it. Mark Rutland
-> raised a concern (in private) about the safety of multithreaded apps
-> but I think you already replied that timens_install() checks for this
-> already [1].
-> 
-> Maybe a similar atomicity issue to the one raised by Mark but for
-> single-threaded processes: the thread is executing vdso code, gets
-> interrupted and a signal handler invokes setns(). Would resuming the
-> execution in the vdso code on sigreturn cause any issues?
+On Wed, Jul 22 2020 at 19:01 -0600, Stephen Boyd wrote:
+>The busy loop in rpmh_rsc_send_data() is written with the assumption
+>that the udelay will be preempted by the tcs_tx_done() irq handler when
+>the TCS slots are all full. This doesn't hold true when the calling
+>thread is an irqthread and the tcs_tx_done() irq is also an irqthread.
+>That's because kernel irqthreads are SCHED_FIFO and thus need to
+>voluntarily give up priority by calling into the scheduler so that other
+>threads can run.
+>
+>I see RCU stalls when I boot with irqthreads on the kernel commandline
+>because the modem remoteproc driver is trying to send an rpmh async
+>message from an irqthread that needs to give up the CPU for the rpmh
+>irqthread to run and clear out tcs slots.
+>
+Would this be not better, if we we use a threaded IRQ handler or offload
+tx_done to another waitqueue instead of handling it in IRQ handler?
 
-It will not cause any issues in the kernel. In the userspace,
-clock_gettime() can return a clock value with an inconsistent offset, if
-a process switches between two non-root namespaces. And it can triggers
-SIGSEGV if it switches from a non-root to the root time namespace,
-because a time namespace isn't mapped in the root time namespace.
+-- Lina
 
-I don't think that we need to handle this case in the kernel. Users
-must understand what they are doing and have to write code so that avoid
-these sort of situations. In general, I would say that in most cases it
-is a bad idea to call setns from a signal handler.
-
-Thanks,
-Andrei
-
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/d16b5cd1-bdb1-5667-fbda-c622cc795389@arista.com/
-> 
-> -- 
-> Catalin
+> rcu: INFO: rcu_preempt self-detected stall on CPU
+> rcu:     0-....: (1 GPs behind) idle=402/1/0x4000000000000002 softirq=2108/2109 fqs=4920
+>  (t=21016 jiffies g=2933 q=590)
+> Task dump for CPU 0:
+> irq/11-smp2p    R  running task        0   148      2 0x00000028
+> Call trace:
+>  dump_backtrace+0x0/0x154
+>  show_stack+0x20/0x2c
+>  sched_show_task+0xfc/0x108
+>  dump_cpu_task+0x44/0x50
+>  rcu_dump_cpu_stacks+0xa4/0xf8
+>  rcu_sched_clock_irq+0x7dc/0xaa8
+>  update_process_times+0x30/0x54
+>  tick_sched_handle+0x50/0x64
+>  tick_sched_timer+0x4c/0x8c
+>  __hrtimer_run_queues+0x21c/0x36c
+>  hrtimer_interrupt+0xf0/0x22c
+>  arch_timer_handler_phys+0x40/0x50
+>  handle_percpu_devid_irq+0x114/0x25c
+>  __handle_domain_irq+0x84/0xc4
+>  gic_handle_irq+0xd0/0x178
+>  el1_irq+0xbc/0x180
+>  save_return_addr+0x18/0x28
+>  return_address+0x54/0x88
+>  preempt_count_sub+0x40/0x88
+>  _raw_spin_unlock_irqrestore+0x4c/0x6c
+>  ___ratelimit+0xd0/0x128
+>  rpmh_rsc_send_data+0x24c/0x378
+>  __rpmh_write+0x1b0/0x208
+>  rpmh_write_async+0x90/0xbc
+>  rpmhpd_send_corner+0x60/0x8c
+>  rpmhpd_aggregate_corner+0x8c/0x124
+>  rpmhpd_set_performance_state+0x8c/0xbc
+>  _genpd_set_performance_state+0xdc/0x1b8
+>  dev_pm_genpd_set_performance_state+0xb8/0xf8
+>  q6v5_pds_disable+0x34/0x60 [qcom_q6v5_mss]
+>  qcom_msa_handover+0x38/0x44 [qcom_q6v5_mss]
+>  q6v5_handover_interrupt+0x24/0x3c [qcom_q6v5]
+>  handle_nested_irq+0xd0/0x138
+>  qcom_smp2p_intr+0x188/0x200
+>  irq_thread_fn+0x2c/0x70
+>  irq_thread+0xfc/0x14c
+>  kthread+0x11c/0x12c
+>  ret_from_fork+0x10/0x18
+>
+>This busy loop naturally lends itself to using a wait queue so that each
+>thread that tries to send a message will sleep waiting on the waitqueue
+>and only be woken up when a free slot is available. This should make
+>things more predictable too because the scheduler will be able to sleep
+>tasks that are waiting on a free tcs instead of the busy loop we
+>currently have today.
+>
+>Cc: Douglas Anderson <dianders@chromium.org>
+>Cc: Maulik Shah <mkshah@codeaurora.org>
+>Cc: Lina Iyer <ilina@codeaurora.org>
+>Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>---
+> drivers/soc/qcom/rpmh-internal.h |   2 +
+> drivers/soc/qcom/rpmh-rsc.c      | 101 ++++++++++++-------------------
+> 2 files changed, 41 insertions(+), 62 deletions(-)
+>
+>diff --git a/drivers/soc/qcom/rpmh-internal.h b/drivers/soc/qcom/rpmh-internal.h
+>index ef60e790a750..9a325bac58fe 100644
+>--- a/drivers/soc/qcom/rpmh-internal.h
+>+++ b/drivers/soc/qcom/rpmh-internal.h
+>@@ -8,6 +8,7 @@
+> #define __RPM_INTERNAL_H__
+>
+> #include <linux/bitmap.h>
+>+#include <linux/wait.h>
+> #include <soc/qcom/tcs.h>
+>
+> #define TCS_TYPE_NR			4
+>@@ -118,6 +119,7 @@ struct rsc_drv {
+> 	struct tcs_group tcs[TCS_TYPE_NR];
+> 	DECLARE_BITMAP(tcs_in_use, MAX_TCS_NR);
+> 	spinlock_t lock;
+>+	wait_queue_head_t tcs_wait;
+> 	struct rpmh_ctrlr client;
+> };
+>
+>diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+>index 076fd27f3081..6c758b052c95 100644
+>--- a/drivers/soc/qcom/rpmh-rsc.c
+>+++ b/drivers/soc/qcom/rpmh-rsc.c
+>@@ -19,6 +19,7 @@
+> #include <linux/platform_device.h>
+> #include <linux/slab.h>
+> #include <linux/spinlock.h>
+>+#include <linux/wait.h>
+>
+> #include <soc/qcom/cmd-db.h>
+> #include <soc/qcom/tcs.h>
+>@@ -444,6 +445,7 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
+> 		 */
+> 		if (!drv->tcs[ACTIVE_TCS].num_tcs)
+> 			enable_tcs_irq(drv, i, false);
+>+		wake_up(&drv->tcs_wait);
+> 		spin_unlock(&drv->lock);
+> 		if (req)
+> 			rpmh_tx_done(req, err);
+>@@ -562,44 +564,59 @@ static int find_free_tcs(struct tcs_group *tcs)
+> 	return -EBUSY;
+> }
+>
+>+static int claim_tcs_for_req(struct rsc_drv *drv, struct tcs_group *tcs,
+>+			     const struct tcs_request *msg)
+>+{
+>+	int ret;
+>+
+>+	/*
+>+	 * The h/w does not like if we send a request to the same address,
+>+	 * when one is already in-flight or being processed.
+>+	 */
+>+	ret = check_for_req_inflight(drv, tcs, msg);
+>+	if (ret)
+>+		return ret;
+>+
+>+	return find_free_tcs(tcs);
+>+}
+>+
+> /**
+>- * tcs_write() - Store messages into a TCS right now, or return -EBUSY.
+>+ * rpmh_rsc_send_data() - Write / trigger active-only message.
+>  * @drv: The controller.
+>  * @msg: The data to be sent.
+>  *
+>- * Grabs a TCS for ACTIVE_ONLY transfers and writes the messages to it.
+>- *
+>- * If there are no free TCSes for ACTIVE_ONLY transfers or if a command for
+>- * the same address is already transferring returns -EBUSY which means the
+>- * client should retry shortly.
+>+ * NOTES:
+>+ * - This is only used for "ACTIVE_ONLY" since the limitations of this
+>+ *   function don't make sense for sleep/wake cases.
+>+ * - To do the transfer, we will grab a whole TCS for ourselves--we don't
+>+ *   try to share. If there are none available we'll wait indefinitely
+>+ *   for a free one.
+>+ * - This function will not wait for the commands to be finished, only for
+>+ *   data to be programmed into the RPMh. See rpmh_tx_done() which will
+>+ *   be called when the transfer is fully complete.
+>+ * - This function must be called with interrupts enabled. If the hardware
+>+ *   is busy doing someone else's transfer we need that transfer to fully
+>+ *   finish so that we can have the hardware, and to fully finish it needs
+>+ *   the interrupt handler to run. If the interrupts is set to run on the
+>+ *   active CPU this can never happen if interrupts are disabled.
+>  *
+>- * Return: 0 on success, -EBUSY if client should retry, or an error.
+>- *         Client should have interrupts enabled for a bit before retrying.
+>+ * Return: 0 on success, -EINVAL on error.
+>  */
+>-static int tcs_write(struct rsc_drv *drv, const struct tcs_request *msg)
+>+int rpmh_rsc_send_data(struct rsc_drv *drv, const struct tcs_request *msg)
+> {
+> 	struct tcs_group *tcs;
+> 	int tcs_id;
+> 	unsigned long flags;
+>-	int ret;
+>
+> 	tcs = get_tcs_for_msg(drv, msg);
+> 	if (IS_ERR(tcs))
+> 		return PTR_ERR(tcs);
+>
+> 	spin_lock_irqsave(&drv->lock, flags);
+>-	/*
+>-	 * The h/w does not like if we send a request to the same address,
+>-	 * when one is already in-flight or being processed.
+>-	 */
+>-	ret = check_for_req_inflight(drv, tcs, msg);
+>-	if (ret)
+>-		goto unlock;
+>
+>-	ret = find_free_tcs(tcs);
+>-	if (ret < 0)
+>-		goto unlock;
+>-	tcs_id = ret;
+>+	wait_event_lock_irq(drv->tcs_wait,
+>+			    (tcs_id = claim_tcs_for_req(drv, tcs, msg)) >= 0,
+>+			    drv->lock);
+>
+> 	tcs->req[tcs_id - tcs->offset] = msg;
+> 	set_bit(tcs_id, drv->tcs_in_use);
+>@@ -627,47 +644,6 @@ static int tcs_write(struct rsc_drv *drv, const struct tcs_request *msg)
+> 	__tcs_set_trigger(drv, tcs_id, true);
+>
+> 	return 0;
+>-unlock:
+>-	spin_unlock_irqrestore(&drv->lock, flags);
+>-	return ret;
+>-}
+>-
+>-/**
+>- * rpmh_rsc_send_data() - Write / trigger active-only message.
+>- * @drv: The controller.
+>- * @msg: The data to be sent.
+>- *
+>- * NOTES:
+>- * - This is only used for "ACTIVE_ONLY" since the limitations of this
+>- *   function don't make sense for sleep/wake cases.
+>- * - To do the transfer, we will grab a whole TCS for ourselves--we don't
+>- *   try to share. If there are none available we'll wait indefinitely
+>- *   for a free one.
+>- * - This function will not wait for the commands to be finished, only for
+>- *   data to be programmed into the RPMh. See rpmh_tx_done() which will
+>- *   be called when the transfer is fully complete.
+>- * - This function must be called with interrupts enabled. If the hardware
+>- *   is busy doing someone else's transfer we need that transfer to fully
+>- *   finish so that we can have the hardware, and to fully finish it needs
+>- *   the interrupt handler to run. If the interrupts is set to run on the
+>- *   active CPU this can never happen if interrupts are disabled.
+>- *
+>- * Return: 0 on success, -EINVAL on error.
+>- */
+>-int rpmh_rsc_send_data(struct rsc_drv *drv, const struct tcs_request *msg)
+>-{
+>-	int ret;
+>-
+>-	do {
+>-		ret = tcs_write(drv, msg);
+>-		if (ret == -EBUSY) {
+>-			pr_info_ratelimited("TCS Busy, retrying RPMH message send: addr=%#x\n",
+>-					    msg->cmds[0].addr);
+>-			udelay(10);
+>-		}
+>-	} while (ret == -EBUSY);
+>-
+>-	return ret;
+> }
+>
+> /**
+>@@ -975,6 +951,7 @@ static int rpmh_rsc_probe(struct platform_device *pdev)
+> 		return ret;
+>
+> 	spin_lock_init(&drv->lock);
+>+	init_waitqueue_head(&drv->tcs_wait);
+> 	bitmap_zero(drv->tcs_in_use, MAX_TCS_NR);
+>
+> 	irq = platform_get_irq(pdev, drv->id);
+>
+>base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
+>-- 
+>Sent by a computer, using git, on the internet
+>
