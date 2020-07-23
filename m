@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9072422A409
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F9C22A41D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387524AbgGWA7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 20:59:04 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:60954 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387494AbgGWA7A (ORCPT
+        id S2387596AbgGWA74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 20:59:56 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:42458 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728607AbgGWA74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 20:59:00 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 6513C8040A68;
-        Thu, 23 Jul 2020 00:58:58 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TVVPrDv645SK; Thu, 23 Jul 2020 03:58:57 +0300 (MSK)
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, <dmaengine@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 10/10] dmaengine: dw: Initialize max_sg_burst capability
-Date:   Thu, 23 Jul 2020 03:58:48 +0300
-Message-ID: <20200723005848.31907-11-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200723005848.31907-1-Sergey.Semin@baikalelectronics.ru>
-References: <20200723005848.31907-1-Sergey.Semin@baikalelectronics.ru>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+        Wed, 22 Jul 2020 20:59:56 -0400
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 06N0x954029225
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 22 Jul 2020 19:59:14 -0500
+Message-ID: <35a367f7d71014cf9a6890abc248e18a3d07bc35.camel@kernel.crashing.org>
+Subject: Re: [PATCH] usb: gadget: net2280: fix memory leak on probe error
+ handling paths
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Evgeny Novikov <novikov@ispras.ru>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ldv-project@linuxtesting.org" <ldv-project@linuxtesting.org>
+Date:   Thu, 23 Jul 2020 10:59:06 +1000
+In-Reply-To: <2097231595446720@mail.yandex.ru>
+References: <20200721201558.20069-1-novikov@ispras.ru>
+         <20200722141741.GA1310843@rowland.harvard.edu>
+         <2097231595446720@mail.yandex.ru>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multi-block support provides a way to map the kernel-specific SG-table so
-the DW DMA device would handle it as a whole instead of handling the
-SG-list items or so called LLP block items one by one. So if true LLP
-list isn't supported by the DW DMA engine, then soft-LLP mode will be
-utilized to load and execute each LLP-block one by one. The soft-LLP mode
-of the DMA transactions execution might not work well for some DMA
-consumers like SPI due to its Tx and Rx buffers inter-dependency. Let's
-initialize the max_sg_burst DMA channels capability based on the nollp
-flag state. If it's true, no hardware accelerated LLP is available and
-max_sg_burst should be set with 1, which means that the DMA engine
-can handle only a single SG list entry at a time. If noLLP is set to
-false, then hardware accelerated LLP is supported and the DMA engine
-can handle infinite number of SG entries in a single DMA transaction.
+On Wed, 2020-07-22 at 22:56 +0300, Evgeny Novikov wrote:
+> Hi Alan,
+> 
+> I have neither an appropriate hardware nor an experience to deal with
+> issues that you mentioned. Our framework does not allow to detect
+> them as well at the moment. At last, it seems that rather many
+> drivers can suffer from these issues. So, it would be much better if
+> somebody else will suggest necessary fixes and test them carefully.
+> 
+> BTW, you have already discussed the race within net2280_remove() with
+> my colleague about 3 years ago. But you did not achieve a consensus
+> at that time and no fixes were made after all.
+> 
+> Anyway, one can consider both issues independently on the one fixed
+> by the patch.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+FYI. It looks like I'm likely to resume my work on that driver in the
+next few weeks in which case I could probably look into these Alan.
 
----
+Cheers,
+Ben.
 
-Changelog v3:
-- This is a new patch created as a result of the discussion with Vinud and
-  Andy in the framework of DW DMA burst and LLP capabilities.
 
-Changelog v4:
-- Use explicit if-else statement when assigning the max_sg_burst field.
-
-Changelog v8:
-- Replace max_sg_nents with max_sg_burst.
----
- drivers/dma/dw/core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/dma/dw/core.c b/drivers/dma/dw/core.c
-index 588b9bae827c..eb9175133034 100644
---- a/drivers/dma/dw/core.c
-+++ b/drivers/dma/dw/core.c
-@@ -1059,6 +1059,18 @@ static void dwc_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
- 	struct dw_dma_chan *dwc = to_dw_dma_chan(chan);
- 
- 	caps->max_burst = dwc->max_burst;
-+
-+	/*
-+	 * It might be crucial for some devices to have the hardware
-+	 * accelerated multi-block transfers supported, aka LLPs in DW DMAC
-+	 * notation. So if LLPs are supported then max_sg_burst is set to
-+	 * zero which means unlimited number of SG entries can be handled in a
-+	 * single DMA transaction, otherwise it's just one SG entry.
-+	 */
-+	if (dwc->nollp)
-+		caps->max_sg_burst = 1;
-+	else
-+		caps->max_sg_burst = 0;
- }
- 
- int do_dma_probe(struct dw_dma_chip *chip)
--- 
-2.26.2
+> -- 
+> Evgeny Novikov
+> Linux Verification Center, ISP RAS
+> http://linuxtesting.org
+> 
+> 22.07.2020, 17:17, "Alan Stern" <stern@rowland.harvard.edu>:
+> > On Tue, Jul 21, 2020 at 11:15:58PM +0300, Evgeny Novikov wrote:
+> > >  Driver does not release memory for device on error handling
+> > > paths in
+> > >  net2280_probe() when gadget_release() is not registered yet.
+> > > 
+> > >  The patch fixes the bug like in other similar drivers.
+> > > 
+> > >  Found by Linux Driver Verification project (linuxtesting.org).
+> > > 
+> > >  Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+> > >  ---
+> > >   drivers/usb/gadget/udc/net2280.c | 4 +++-
+> > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > >  diff --git a/drivers/usb/gadget/udc/net2280.c
+> > > b/drivers/usb/gadget/udc/net2280.c
+> > >  index 5eff85eeaa5a..d5fe071b2db2 100644
+> > >  --- a/drivers/usb/gadget/udc/net2280.c
+> > >  +++ b/drivers/usb/gadget/udc/net2280.c
+> > >  @@ -3781,8 +3781,10 @@ static int net2280_probe(struct pci_dev
+> > > *pdev, const struct pci_device_id *id)
+> > >           return 0;
+> > > 
+> > >   done:
+> > >  - if (dev)
+> > >  + if (dev) {
+> > >                   net2280_remove(pdev);
+> > >  + kfree(dev);
+> > >  + }
+> > >           return retval;
+> > >   }
+> > 
+> > This patch seems to be the tip of an iceberg. Following through its
+> > implications led to a couple of discoveries.
+> > 
+> > usb_del_gadget_udc() calls device_unregister(&gadget->dev). Once
+> > this
+> > call returns, gadget has to be regarded as a stale pointer. But the
+> > very next line of code does:
+> > 
+> >         memset(&gadget->dev, 0x00, sizeof(gadget->dev));
+> > 
+> > for no apparent reason. I'm amazed this hasn't caused problems
+> > already.
+> > Is there any justification for keeping this memset? It's hard to
+> > imagine that it does any good.
+> > 
+> > Similarly, net2280_remove() calls usb_del_gadget_udc(&dev->gadget)
+> > at
+> > its start, and so dev must be a stale pointer for the entire
+> > remainder
+> > of the routine. But it gets used repeatedly. Surely we ought to
+> > have
+> > a device_get() and device_put() in there.
+> > 
+> > Alan Stern
 
