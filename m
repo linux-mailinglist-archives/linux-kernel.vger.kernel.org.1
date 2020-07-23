@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC56222B743
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF12122B745
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgGWULA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:11:00 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:43046 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgGWULA (ORCPT
+        id S1726834AbgGWULx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725979AbgGWULx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:11:00 -0400
+        Thu, 23 Jul 2020 16:11:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5511AC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 13:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=v1ayK2JNh09cbcXMchXBkeJUQfzVRgEw+NVUe/9qPvM=; b=F15X1O9wGoAqnElKkbPU/X/h7P
-        0QrI67MnbBQtdFQ06AWBIGKgDvDuXhUWVxuFLEcaI9M8N5cKBVaUIUJYfH2pBLYQSdgebxw/GcSJD
-        twcHe8RmiW7EF923JFIMQZhgKYkv21HvAd1feR5/W6AaC5qM/uyhKzzhJIBh42Ew8WuQldAJWRLta
-        rm7ZCNBtUQcz5FQH80GfIpCxvkJVh21oqcVhNNVoV2tz7V4tpVte9p/dqrIbALLW2FPrwsaIQtKwv
-        /qwlXyK1WuAEQCBuUioWRt2bppy2e6n8qCBtfQD3PGudulEZnZUfv/vHX1VlPQ8lsfTH2PoQgGgq2
-        GS9x3Lpg==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1jyhYM-0002SK-JP; Thu, 23 Jul 2020 14:10:55 -0600
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Alex Deucher <alexdeucher@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Andrew Maier <andrew.maier@eideticom.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20200723195742.GA1447143@bjorn-Precision-5520>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <89d853d1-9e45-1ba5-5be7-4bbce79c7fb8@deltatee.com>
-Date:   Thu, 23 Jul 2020 14:10:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/rj5UU6tGdG+2asVe5JXVTkUwXIGY3WdZ5un4JY8Vf4=; b=j/CHcoXSsZZ0Um3pDllJCl9MsR
+        GGrruV7XTpUCFhljY3hAACYerSw70BI1nrteXRuzYmY63g3OYylzPw2vhagDSjgwzbHBbm4qyXuPD
+        F8QmY5mQoV+aZh7mQkCWm541BLB0CT7VwDLGhRqLngnzvO6cY1E4aetu8DL8iPtYAd+cGtucnMQWj
+        7HvgVtoIuiOkTrMoMYbnyeQdBxp+bVOyJoSPCjYFCuer22i4PBCx6j2qDmIzJO8gLZgF4kaLkvaMy
+        +nnmu7Zoye+MzV4vxpR9lY8TShCypEK+hkDnUoAp9th09bkhYGQaHAKipKmYVQ4ddZ47as9sFqMkL
+        VEctz0HQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyhYv-0000pD-Ou; Thu, 23 Jul 2020 20:11:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DE673301A7A;
+        Thu, 23 Jul 2020 22:11:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C4D49200F77CC; Thu, 23 Jul 2020 22:11:28 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 22:11:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, paulmck@kernel.org, frederic@kernel.org,
+        torvalds@linux-foundation.org, hch@lst.de
+Subject: Re: [PATCH -v2 1/5] sched: Fix ttwu() race
+Message-ID: <20200723201128.GT10769@hirez.programming.kicks-ass.net>
+References: <20200622100122.477087977@infradead.org>
+ <20200622100825.726200103@infradead.org>
+ <159532854586.15672.5123219635720172265@build.alporthouse.com>
+ <20200721113719.GI119549@hirez.programming.kicks-ass.net>
+ <159541187604.15672.2433896906671712337@build.alporthouse.com>
+ <20200723182841.GS10769@hirez.programming.kicks-ass.net>
+ <159553326368.21069.3167204000119437062@build.alporthouse.com>
 MIME-Version: 1.0
-In-Reply-To: <20200723195742.GA1447143@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: hpa@zytor.com, andrew.maier@eideticom.com, ray.huang@amd.com, christian.koenig@amd.com, bhelgaas@google.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, alexdeucher@gmail.com, helgaas@kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.2 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH] PCI/P2PDMA: Add AMD Zen 2 root complex to the list of
- allowed bridges
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159553326368.21069.3167204000119437062@build.alporthouse.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 23, 2020 at 08:41:03PM +0100, Chris Wilson wrote:
+
+> I am very sorry for the wild goose chase.
+
+*phew*... all good then. I was starting to go a little ga-ga trying to
+make sense of things.
+
+Arguably we should probably do something like:
 
 
-On 2020-07-23 1:57 p.m., Bjorn Helgaas wrote:
-> [+cc Andrew, Armen, hpa]
-> 
-> On Thu, Jul 23, 2020 at 02:01:17PM -0400, Alex Deucher wrote:
->> On Thu, Jul 23, 2020 at 1:43 PM Logan Gunthorpe <logang@deltatee.com> wrote:
->>>
->>> The AMD Zen 2 root complex (Starship/Matisse) was tested for P2PDMA
->>> transactions between root ports and found to work. Therefore add it
->>> to the list.
->>>
->>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
->>> Cc: Bjorn Helgaas <bhelgaas@google.com>
->>> Cc: Christian König <christian.koenig@amd.com>
->>> Cc: Huang Rui <ray.huang@amd.com>
->>> Cc: Alex Deucher <alexdeucher@gmail.com>
->>
->> Starting with Zen, all AMD platforms support P2P for reads and writes.
-> 
-> What's the plan for getting out of the cycle of "update this list for
-> every new chip"?  Any new _DSMs planned, for instance?
+@@ -4555,7 +4572,7 @@ asmlinkage __visible void __sched preempt_schedule_irq(void)
+ int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flags,
+ 			  void *key)
+ {
+-	return try_to_wake_up(curr->private, mode, wake_flags);
++	return try_to_wake_up(curr->private, mode, wake_flags & WF_SYNC);
+ }
+ EXPORT_SYMBOL(default_wake_function);
 
-Well there was an effort to add capabilities in the PCI spec to describe
-this but, as far as I know, they never got anywhere, and hardware still
-doesn't self describe with this.
 
-> A continuous trickle of updates like this is not really appealing.  So
-> far we have:
-> 
->   7d5b10fcb81e ("PCI/P2PDMA: Add AMD Zen Raven and Renoir Root Ports to whitelist")
->   7b94b53db34f ("PCI/P2PDMA: Add Intel Sky Lake-E Root Ports B, C, D to the whitelist")
->   bc123a515cb7 ("PCI/P2PDMA: Add Intel SkyLake-E to the whitelist")
->   494d63b0d5d0 ("PCI/P2PDMA: Whitelist some Intel host bridges")
->   0f97da831026 ("PCI/P2PDMA: Allow P2P DMA between any devices under AMD ZEN Root Complex")
-> 
-> And that's just from the last year, not including this patch.
+Since I don't think anybody uses anything other than WF_SYNC, ever. And
+the rest of the WF_flags are used internally.
 
-Yes, it's not ideal. But most of these are adding old devices as people
-test and care about running on those platforms -- a lot of this is
-bootstrapping the list. I'd expect this to slow down a bit as by now we
-have hopefully got a lot of the existing platforms people care about.
-But we'd still probably expect to be adding a new Intel and AMD devices
-about once a year as they produce new hardware designs.
-
-Unless, the Intel and AMD folks know of a way to detect this, or even to
-query if a root complex is newer than a certain generation, I'm not sure
-what else we can do here.
-
-Logan
+Thanks Chris!
