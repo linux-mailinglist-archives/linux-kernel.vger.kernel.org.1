@@ -2,66 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7011022A6E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E8C22A6E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgGWFZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 01:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgGWFZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:25:04 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1600B20768;
-        Thu, 23 Jul 2020 05:25:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595481903;
-        bh=po5+Z46HNZ22g6I6H/FxU75BvqaqDGGFkQvPXBB/drI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CFKiDE2WzHIUG0cgm4xcvLClcmPYg9/s5hnwPsBNEjYeILs5fDx8nSD/L6VrUdgoM
-         J+6oFaoZWEPN7sZ+F0Ha6QGwoHZAIg0ACnfvG3fgNpzaJ38aj0RFbrKEytqFkVcxPy
-         Xg77/+lo34+iv0Xe2t4RbAiAhmq8vHAw79K1oQtY=
-Date:   Thu, 23 Jul 2020 07:25:06 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Weitao Wang(BJ-RD)" <WeitaoWang@zhaoxin.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>,
-        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "hslester96@gmail.com" <hslester96@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
-        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
-        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
-        "wwt8723@163.com" <wwt8723@163.com>
-Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= USB:Fix kernel
- NULL pointer when unbind UHCI form vfio-pci
-Message-ID: <20200723052506.GA645747@kroah.com>
-References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
- <20200722124414.GA3153105@kroah.com>
- <20200722145913.GB1310843@rowland.harvard.edu>
- <1bf449377e3448bc9c8bc7b64d7b7990@zhaoxin.com>
+        id S1726025AbgGWFc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 01:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbgGWFc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 01:32:26 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447D8C0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 22:32:26 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a9so2615531pjd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 22:32:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Azbmlb+o4Fr+IIKuyAGgLbUxH3riL3SrFDqan1+Q4+M=;
+        b=YWSfNpBy8DiSuE3KFCrrd51VFavpYZSf4IehxS6pt8vfV3qMCkCsreyShiAT+R6fLD
+         6qcazoBPEvtCcEetZPDLBMsmAkp/v04ZW2cFFN/fKnHjv5h5IrzMocedHYgsxY0o/h1B
+         uPSIU/Hf/OjdnrB+uczzCWgglf1A18DgHCT2oE2nzSi0LbZfLC+RYMLZWZnHPXRkklNE
+         Z4lYNPZPXOTM5HoPTmTowANjCDl5E8vWiEVQkrN2qXyWmD5lNLX6pdb9HBxeuqsKshjL
+         Ap/eOsPLMJZ5hTQECt33KdoA71jPCi+qMVdRx97wTmDFnSSjPPqn8LGMYYaU17giriRU
+         Q8LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Azbmlb+o4Fr+IIKuyAGgLbUxH3riL3SrFDqan1+Q4+M=;
+        b=pXS96qZM9csF+iwE4lF0uoVOpPHimwepz8RN4Jr6dDyWzLm/8KI3J88KzgNDuD6O0i
+         EYuAnLYMgBJ1ZJLiuXKa+MIp8kS/NqGOLuU1T6Pn6kbsPUjhMenuBWsflQ/8bblGSlGF
+         Sx/sWb0mEQm81p0PVoZsWY3mCnoxl6NLW625xoYllJeCKkPNt9pv2tCUt1anbRtYsXoS
+         TD2n0lWcD5zC1MvshXzFx4HZKJwWd48LBFtpekl8e2IPOtK7yfOutuTT0a7+61MPVfhQ
+         UYiPz1DWMadalCGZnwOBkUlZu88y+M7D3sb0Uy1MBFOqTTLz6SzhXER0qHj0Dp/jYoNw
+         Fr7w==
+X-Gm-Message-State: AOAM532YtLvhsw+JbD0Ybxb5Cbn3ZwQW7MOgqB0AgHu7MK7h4ToHcxkJ
+        9umZ8YP+QVq/Zc0z/XZHJBY=
+X-Google-Smtp-Source: ABdhPJy3Ixe5NDssWl2gkYZjneUuDd6lti+TH8cvo414EnOoMUuOEVvaFkXJt4jj5434vavQPR0Wcg==
+X-Received: by 2002:a17:90b:3715:: with SMTP id mg21mr2603075pjb.113.1595482345592;
+        Wed, 22 Jul 2020 22:32:25 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id y65sm1438245pfb.75.2020.07.22.22.32.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 Jul 2020 22:32:25 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 22:31:50 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_esai: add IRQF_SHARED for devm_request_irq
+Message-ID: <20200723053150.GA5476@Asurada-Nvidia>
+References: <1595476808-28927-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1bf449377e3448bc9c8bc7b64d7b7990@zhaoxin.com>
+In-Reply-To: <1595476808-28927-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 02:59:55AM +0000, Weitao Wang(BJ-RD) wrote:
-> CONFIDENTIAL NOTE:
-> This email contains confidential or legally privileged information and is for the sole use of its intended recipient. Any unauthorized review, use, copying or forwarding of this email or the content of this email is strictly prohibited.
+On Thu, Jul 23, 2020 at 12:00:08PM +0800, Shengjiu Wang wrote:
+> ESAI interfaces may share same interrupt line with EDMA on
+> some platforms (e.g. i.MX8QXP, i.MX8QM).
+> Add IRQF_SHARED flag to allow sharing the irq among several
+> devices
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 
-
-This footer is not compatible with Linux mailing lists, sorry, I am not
-allowed to respond to it.
-
-greg k-h
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
