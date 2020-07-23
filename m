@@ -2,70 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD5622B4EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65B122B4F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730073AbgGWRcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:32:33 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:39194 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbgGWRcc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:32:32 -0400
-Received: by mail-il1-f193.google.com with SMTP id k6so5017187ili.6;
-        Thu, 23 Jul 2020 10:32:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6flyhC4ycfiZJcGIIv1sGGK8Z2R9l9tVntRkY9zO51c=;
-        b=Hbg1CP0gCK6Hw9VygsGJNfowrSnzrtM/8coYthchAYvtyTneCyssKuTpZIpgAGnQqk
-         ZOmp5easlMVF8ciLHMJBrWjLn7qdf8XEI0bgwfnRSq5IU9vCfYlzKPWJMM/F12xzUMY+
-         T8uvjGNTmLst/03tW2lmBDHMSFHvN94HiBV8tiNDiI7lmgPXT6LeQITZNR0AKy2JH7G/
-         jxezFTgK2c6UQGEp0ramZabSWMo8Z2hqqk1n8m2uWZmrjoT1gYuAQrVSPJiNroEsGEmt
-         TkEgYLElzZ/ZKbDsX/xuPDOEpy6w5iffo8CtXdbW4D391o7qdpTjRzmkYmGfFSLWS7Su
-         X7rg==
-X-Gm-Message-State: AOAM5307qASqxkmH36tdJbUKs2gARf8AJ98yzmOCvXg2kCZhMZWndL3O
-        WYNWrIwZeJN+gNfFnFxCqGMCaCkatg==
-X-Google-Smtp-Source: ABdhPJynOYkAzsitaDa24xfZd7L2XOvkozCFT9pk4AwwE6EFaSNOryw3lOL18JE32MV1qyGXXkHFSg==
-X-Received: by 2002:a92:8451:: with SMTP id l78mr6054828ild.234.1595525551966;
-        Thu, 23 Jul 2020 10:32:31 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id w15sm1854130ila.65.2020.07.23.10.32.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 10:32:31 -0700 (PDT)
-Received: (nullmailer pid 575965 invoked by uid 1000);
-        Thu, 23 Jul 2020 17:32:29 -0000
-Date:   Thu, 23 Jul 2020 11:32:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sasi Kumar <sasi.kumar@broadcom.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>
-Subject: Re: [PATCH v3 1/7] dt-bindings: usb: bdc: Update compatible strings
-Message-ID: <20200723173229.GA575916@bogus>
-References: <20200722170746.5222-1-alcooperx@gmail.com>
- <20200722170746.5222-2-alcooperx@gmail.com>
+        id S1729961AbgGWRe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726650AbgGWRe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:34:26 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A64520714;
+        Thu, 23 Jul 2020 17:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595525666;
+        bh=Qhrjw7uyDWdXXIAvmKfEK6zrtiSur7oYHENRu1OnN3Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mPXjgtQfYvIUJ9CMdLnwxLE0QAOiL5hC7Q56P+XKldQdMheN6WLKo3IJtnaWlRm5h
+         VrMruFbX9BCXuA9phurly9B34jULxl604wuZB13+rCleqogq1TvWwYw1Yb+dRr8Kr2
+         vdIEEDAFwTgqFt3xMxpqtqyEZ9V2tKcGX5beBHsM=
+Date:   Thu, 23 Jul 2020 19:34:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: octeon: Add the license identifier
+Message-ID: <20200723173429.GA2907237@kroah.com>
+References: <20200723163150.GA10505@musamaanjum>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200722170746.5222-2-alcooperx@gmail.com>
+In-Reply-To: <20200723163150.GA10505@musamaanjum>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Jul 2020 13:07:40 -0400, Al Cooper wrote:
-> Remove "brcm,bdc-v0.16" because it was never used on any system.
-> Add "brcm,bdc-udc-v2" which exists for any STB system with BDC.
+On Thu, Jul 23, 2020 at 09:31:50PM +0500, Muhammad Usama Anjum wrote:
+> This patch fixes the checkpatch.pl warning:
+> WARNING: Missing or malformed SPDX-License-Identifier tag
 > 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> Add a the SPDX-License-Identifier tag on line 1
+> 
+> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
 > ---
->  Documentation/devicetree/bindings/usb/brcm,bdc.txt | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+> Other files in this folder have GPL-2.0 license. So this file should
+> have the same license which was missing before and checkpatch.pl was
+> giving the warning.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Why is this information not up in the changelog area?
+
+And what changeds from v1?  ALways put that below the --- line.
+
+v3?
+
+thanks,
+
+greg k-h
