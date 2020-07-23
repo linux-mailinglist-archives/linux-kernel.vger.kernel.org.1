@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A368622AFE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DD122AFEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgGWNF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgGWNF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:05:26 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BCA752064C;
-        Thu, 23 Jul 2020 13:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595509526;
-        bh=D93rNzAL3USHhE9CiOsmWZA4GSaCfM1HHTv9GxgV/TQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OzkjyiaWEP47zA/ArSXhwj8fLX4f+WunUlSeYwjiPe/ckQr0mmOcvq1LRK6nJqXtu
-         DbKe/qBCHhSjtSwCH/baM6gChe+fAftSzYxX22ms5Ayh3VNCURT7gZ5rpiU5sxhCuJ
-         36CAOZH6TKlC9u4hTeGeCwvTrtzy6qwXShSDQMXY=
-Date:   Thu, 23 Jul 2020 18:35:22 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com
-Subject: Re: [RFC PATCH v2 0/6] ALSA: compress: add support to change codec
- profile in gapless playback
-Message-ID: <20200723130522.GB12965@vkoul-mobl>
-References: <20200721170007.4554-1-srinivas.kandagatla@linaro.org>
- <s5hpn8mqudq.wl-tiwai@suse.de>
+        id S1728946AbgGWNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726493AbgGWNF5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 09:05:57 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01A5C0619E2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:05:55 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id h22so6237885lji.9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/FpACHDz7a5nGjx+ioBPQb3KC4um/vnAQ0sQ8picRFg=;
+        b=jNJoSElRtW6TRlUUAFLNiJvnE4zx/7OVBF8askmtfvQai1P2CRuqKVL3nnvucgi+5H
+         HFVnsBZ/G6+iTn37mqkSI0eMY6EdEbdMLlapOTRqEIS6Of3vUMx/DDQV8yFX+sdTrRTF
+         pd5MdqyhstCYcD12CgoaEIYQqe4uvK3pdUeJ3SG8SjKiS8mm/Vwip41YPCPzU/VBaQJA
+         IFDNqD4Hidhu1QyWhwZVUXvW3v46OWczFvre3KRVyMM424JwG/kuzXg7BOjwHaG9cANk
+         fFGsKPUjcEiE2w/FBMPE8awwpczCqy2L9obZ7CVgOKEKMA+jBmrJIkwNmgRwyQAQtZYE
+         oCpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/FpACHDz7a5nGjx+ioBPQb3KC4um/vnAQ0sQ8picRFg=;
+        b=h/mAM7YH9N3JXkdFhrh6ZLhYJDEKjs6tqRdwmqULnWMgKHAjm7dwRhD11hT2bRvDLL
+         286BWNvfvjbk9PHXB8IatOr2rznCbwBep4F9wYxEz8yZWvs5IBkZY2qi/U4FsNpx5E6R
+         F4OH6oUz/ZvFRjhtUeZbYntCWlwTESv4s78ZELpkLlsqYg7L/342YIEFCkoEOBamGO6+
+         gHJoyWAEtVMojtSBQntqk7Wo6DIavdnrUHSn7J7RwKlWMWgk8LtJJlWO/iaMy9sOedFu
+         vV1dBaxhhJUDY62VXIGcNNQ53EMTUcnHXkhFsCLkslPPE2yDQmhLKdIXUHJgkvguXUYw
+         7yiA==
+X-Gm-Message-State: AOAM532BuSFAOipHSXcHILe3nbhFubz2sNV44d6JeOXZFIShlBoEqMrg
+        VP/Qu6z6xbXz2rHcRsUl010+hoSglGf+tc1PxNhi5A==
+X-Google-Smtp-Source: ABdhPJxfHkQizZ37pEG7DjUxGsmLG10G2QP4JxXEoZC9O52R1JG/5dcJH9zenEjR2Bk7BSxv3j8ALDBTNQ4lV7d6Kf0=
+X-Received: by 2002:a2e:8597:: with SMTP id b23mr1802676lji.338.1595509553155;
+ Thu, 23 Jul 2020 06:05:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hpn8mqudq.wl-tiwai@suse.de>
+References: <20200722120755.230741-1-drew@beagleboard.org>
+In-Reply-To: <20200722120755.230741-1-drew@beagleboard.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Jul 2020 15:05:42 +0200
+Message-ID: <CACRpkdbqW4FkHx0sBrYEyvpUwrDnyEaMHT7hBbKzSa6URKhA8w@mail.gmail.com>
+Subject: Re: [PATCH] gpio: omap: improve coding style for pin config flags
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-07-20, 14:38, Takashi Iwai wrote:
-> On Tue, 21 Jul 2020 19:00:01 +0200,
-> Srinivas Kandagatla wrote:
-> > 
-> > For gapless playback it is possible that each track can have different
-> > codec profile with same decoder, for example we have WMA album,
-> > we may have different tracks as WMA v9, WMA v10 and so on
-> > Or if DSP's like QDSP have abililty to switch decoders on single stream
-> > for each track, then this call could be used to set new codec parameters.
-> > 
-> > Existing code does not allow to change this profile while doing gapless
-> > playback.
-> > 
-> > This patchset adds new SNDRV_COMPRESS_SET_CODEC_PARAMS IOCTL along with
-> > flags in capablity structure to allow userspace to set this new
-> > parameters required which switching codec profile, either for gapless
-> > or cross fade usecase.
-> 
-> One idea that came up at the previous audio conference regarding this
-> implementation was to just allow SET_PARAMS during the stream is
-> running (only if the driver sets the capability) instead of
-> introducing yet a new ioctl and an ops.
-> Would it make sense?
+On Wed, Jul 22, 2020 at 2:09 PM Drew Fustini <drew@beagleboard.org> wrote:
 
-That does sound good but only issue would be that we need to somehow
-mark/document that buffer info is useless and would be discarded, how do
-we do that?
+> Change the handling of pin config flags from if/else to switch
+> statement to make the code more readable and cleaner.
+>
+> Suggested-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 
-> I have no big objection to add a new ioctl if other people agree,
-> though.
-> 
-> 
-> thanks,
-> 
-> Takashi
+Patch applied!
 
--- 
-~Vinod
+Yours,
+Linus Walleij
