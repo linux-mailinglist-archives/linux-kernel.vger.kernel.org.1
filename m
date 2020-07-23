@@ -2,91 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7183222B384
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACE622B382
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgGWQb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgGWQb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:31:58 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128E4C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 09:31:58 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y24so1599990wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 09:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=AOR9CWeJuwlfcC0ivw1l00zq41D7Ws4IJqmIaQTlIjE=;
-        b=aZTM8s034VEPV3IZTwcmgbP+Hfo6KRWNFN2fNY5wOilJpaIpIZZVBXNt5974xhVK5w
-         xkAuP1Sj59ZlJWXrg7D4ABuINLuIlZGf2RISF++y6l6hOVFmcKZlO4mLIwLc1IhoUjQN
-         nJTJuVVIzLXQlcuqEyvPRPlF5Y9PCHNWO6JJ1ZGFCY6BsSsoRPICtlAWBnIXDqTI+dc8
-         N+xbO3a2Rn62SvTHL2/EjePjZReOc1wHCiqeb/8yGHk+OrKj3POEE+93k1oaXj427wNs
-         C6Nriv6kwYGeZAX4TlhKCOG0B6djIswDl6tEkuqF9q0fRNFW+DuA/Ad5y+tCnrNeUaHE
-         v3dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=AOR9CWeJuwlfcC0ivw1l00zq41D7Ws4IJqmIaQTlIjE=;
-        b=hAMOq8zo4sFfEucGUH7TccucqOg9HaNyb444wfSJ/DLqtmQz/3bU5Ol3VkFCJgnsMq
-         TPM7R86GEFADQeTixmfTangJbTxQkENvobdX66HYfX36/W1M4djZM5QxeQ3xsg+iJDpE
-         Kss6B2pnBFBK3G+CVbXv7uvbS+F2GKO7fgYcS652vVgpEPBTvHizFIuF83SIdFyowhWC
-         cTTSGJnT+ye0OehJ71+vGyEVAK7ZdzXGeqq5nThRkuYvjHHwDK5lQfazMBuC+76HJ5Ci
-         dnAwcXA6DoFnA1yvqtTTnIjBO+1w8dqG8LPQGu75i6L/dV4TWJvolJ7AtbSiFeA91C1Q
-         vOFw==
-X-Gm-Message-State: AOAM532j6+C+KLeC2ZRf/uTY7mSOTSSd1avpc91g/pW0C82vQCOfNVMN
-        U5IaTElgmwxbiNSueSLIqs8=
-X-Google-Smtp-Source: ABdhPJw9jobW8joAQpGFg2mEwGlf+Nou+0YtHulyia4rcCKeaQHc+ebdoHrw1Obs1Un/nUEKUPg7xg==
-X-Received: by 2002:a1c:dcd5:: with SMTP id t204mr4712375wmg.17.1595521916786;
-        Thu, 23 Jul 2020 09:31:56 -0700 (PDT)
-Received: from musamaanjum ([103.150.154.211])
-        by smtp.gmail.com with ESMTPSA id t15sm4051221wmj.14.2020.07.23.09.31.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Jul 2020 09:31:56 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 21:31:50 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH v2] staging: octeon: Add the license identifier
-Message-ID: <20200723163150.GA10505@musamaanjum>
+        id S1729746AbgGWQbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:31:52 -0400
+Received: from mga07.intel.com ([134.134.136.100]:47343 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726621AbgGWQbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 12:31:52 -0400
+IronPort-SDR: OyJnp7R4Oj/MtP5FAZvSaDbqDDkYdBHb9sFEX4IAWeqWG8IvGyr7hC1PbGQd6E5u44u6neadHC
+ Yo1RuyhFNRRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="215173567"
+X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
+   d="scan'208";a="215173567"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 09:31:50 -0700
+IronPort-SDR: +zGLCgGektfnH0My/RC1Y5Iu7oXQ5ecB1FDkNpz27jZvp+qBs0+9G6uKKNHmCM4h9+LW/ZdUxL
+ 1VvOkW4GJrfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
+   d="scan'208";a="432795160"
+Received: from tthayer-hp-z620.an.intel.com (HELO [10.122.105.146]) ([10.122.105.146])
+  by orsmga004.jf.intel.com with ESMTP; 23 Jul 2020 09:31:48 -0700
+Reply-To: thor.thayer@linux.intel.com
+Subject: Re: [PATCH v4 01/10] net: eth: altera: tse_start_xmit ignores
+ tx_buffer call response
+To:     "Ooi, Joyce" <joyce.ooi@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dalon Westergreen <dalon.westergreen@linux.intel.com>,
+        Tan Ley Foon <ley.foon.tan@intel.com>,
+        See Chin Liang <chin.liang.see@intel.com>,
+        Dinh Nguyen <dinh.nguyen@intel.com>,
+        Dalon Westergreen <dalon.westergreen@intel.com>
+References: <20200708072401.169150-1-joyce.ooi@intel.com>
+ <20200708072401.169150-2-joyce.ooi@intel.com>
+From:   Thor Thayer <thor.thayer@linux.intel.com>
+Message-ID: <7601144f-a176-524f-57db-d428d7473a03@linux.intel.com>
+Date:   Thu, 23 Jul 2020 11:32:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200708072401.169150-2-joyce.ooi@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the checkpatch.pl warning:
-WARNING: Missing or malformed SPDX-License-Identifier tag
-
-Add a the SPDX-License-Identifier tag on line 1
-
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
-Other files in this folder have GPL-2.0 license. So this file should
-have the same license which was missing before and checkpatch.pl was
-giving the warning.
-
- drivers/staging/octeon/octeon-stubs.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/staging/octeon/octeon-stubs.h b/drivers/staging/octeon/octeon-stubs.h
-index d06743504f2b..3f8e5713b8a8 100644
---- a/drivers/staging/octeon/octeon-stubs.h
-+++ b/drivers/staging/octeon/octeon-stubs.h
-@@ -1,3 +1,4 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- #define CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE	512
- 
- #ifndef XKPHYS_TO_PHYS
--- 
-2.17.1
-
+On 7/8/20 2:23 AM, Ooi, Joyce wrote:
+> From: Dalon Westergreen <dalon.westergreen@intel.com>
+> 
+> The return from tx_buffer call in tse_start_xmit is
+> inapropriately ignored.  tse_buffer calls should return
+> 0 for success or NETDEV_TX_BUSY.  tse_start_xmit should
+> return not report a successful transmit when the tse_buffer
+> call returns an error condition.
+> 
+> In addition to the above, the msgdma and sgdma do not return
+> the same value on success or failure.  The sgdma_tx_buffer
+> returned 0 on failure and a positive number of transmitted
+> packets on success.  Given that it only ever sends 1 packet,
+> this made no sense.  The msgdma implementation msgdma_tx_buffer
+> returns 0 on success.
+> 
+>    -> Don't ignore the return from tse_buffer calls
+>    -> Fix sgdma tse_buffer call to return 0 on success
+>       and NETDEV_TX_BUSY on failure.
+> 
+> Signed-off-by: Dalon Westergreen <dalon.westergreen@intel.com>
+> Signed-off-by: Joyce Ooi <joyce.ooi@intel.com>
+> ---
+> v2: no change
+> v3: queue is stopped before returning NETDEV_TX_BUSY
+> v4: no change
+> ---
+>   drivers/net/ethernet/altera/altera_sgdma.c    | 19 ++++++++++++-------
+>   drivers/net/ethernet/altera/altera_tse_main.c |  4 +++-
+>   2 files changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/altera/altera_sgdma.c b/drivers/net/ethernet/altera/altera_sgdma.c
+> index db97170da8c7..fe6276c7e4a3 100644
+> --- a/drivers/net/ethernet/altera/altera_sgdma.c
+> +++ b/drivers/net/ethernet/altera/altera_sgdma.c
+> @@ -4,6 +4,7 @@
+>    */
+>   
+>   #include <linux/list.h>
+> +#include <linux/netdevice.h>
+>   #include "altera_utils.h"
+>   #include "altera_tse.h"
+>   #include "altera_sgdmahw.h"
+> @@ -159,10 +160,11 @@ void sgdma_clear_txirq(struct altera_tse_private *priv)
+>   		    SGDMA_CTRLREG_CLRINT);
+>   }
+>   
+> -/* transmits buffer through SGDMA. Returns number of buffers
+> - * transmitted, 0 if not possible.
+> - *
+> - * tx_lock is held by the caller
+> +/* transmits buffer through SGDMA.
+> + *   original behavior returned the number of transmitted packets (always 1) &
+> + *   returned 0 on error.  This differs from the msgdma.  the calling function
+> + *   will now actually look at the code, so from now, 0 is good and return
+> + *   NETDEV_TX_BUSY when busy.
+>    */
+>   int sgdma_tx_buffer(struct altera_tse_private *priv, struct tse_buffer *buffer)
+>   {
+> @@ -173,8 +175,11 @@ int sgdma_tx_buffer(struct altera_tse_private *priv, struct tse_buffer *buffer)
+>   	struct sgdma_descrip __iomem *ndesc = &descbase[1];
+>   
+>   	/* wait 'til the tx sgdma is ready for the next transmit request */
+> -	if (sgdma_txbusy(priv))
+> -		return 0;
+> +	if (sgdma_txbusy(priv)) {
+> +		if (!netif_queue_stopped(priv->dev))
+> +			netif_stop_queue(priv->dev);
+> +		return NETDEV_TX_BUSY;
+> +	}
+>   
+>   	sgdma_setup_descrip(cdesc,			/* current descriptor */
+>   			    ndesc,			/* next descriptor */
+> @@ -191,7 +196,7 @@ int sgdma_tx_buffer(struct altera_tse_private *priv, struct tse_buffer *buffer)
+>   	/* enqueue the request to the pending transmit queue */
+>   	queue_tx(priv, buffer);
+>   
+> -	return 1;
+> +	return 0;
+>   }
+>   
+>   
+> diff --git a/drivers/net/ethernet/altera/altera_tse_main.c b/drivers/net/ethernet/altera/altera_tse_main.c
+> index 907125abef2c..ec2b36e05c3f 100644
+> --- a/drivers/net/ethernet/altera/altera_tse_main.c
+> +++ b/drivers/net/ethernet/altera/altera_tse_main.c
+> @@ -595,7 +595,9 @@ static netdev_tx_t tse_start_xmit(struct sk_buff *skb, struct net_device *dev)
+>   	buffer->dma_addr = dma_addr;
+>   	buffer->len = nopaged_len;
+>   
+> -	priv->dmaops->tx_buffer(priv, buffer);
+> +	ret = priv->dmaops->tx_buffer(priv, buffer);
+> +	if (ret)
+> +		goto out;
+>   
+>   	skb_tx_timestamp(skb);
+>   
+> 
+Reviewed-by: Thor Thayer <thor.thayer@linux.intel.com>
