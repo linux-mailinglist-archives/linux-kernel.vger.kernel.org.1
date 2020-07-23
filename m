@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1DD22AA61
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F102C22AA6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgGWIKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:10:42 -0400
-Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:47743 "EHLO
-        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725858AbgGWIKm (ORCPT
+        id S1726815AbgGWIOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:14:03 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12757 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgGWIOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:10:42 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id yWJHjzu6MuuXOyWJIj8xiI; Thu, 23 Jul 2020 10:10:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1595491839; bh=S4EgoCbBmTgeGbV3FNpEwzrs8Seq7SlB0q88PTB/Mg4=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=RcM+VRiD8st0V/BJSf2L9MvhUo0T8OyRhqfznuVlPCajuoUlCnjB+2Z4FDo/qPraQ
-         Jc9L1m3XOA7bSxoFe3VUP9FRh130sr07z79w51IRnUlgXp8elE7boYyu0R9NDRC6ty
-         VD2fZx4HimeIgxOnL1lC0SuWfIf5b47hpaHqi2Cs7tFWCXN3DybD8XpGXosfoNhZOU
-         TUTvJS3k7LTRKjElL9LC8h7RFTFo/V7nh1geXg1mhaZ4Ik0uKt1xGk9iPIIU9wXuwT
-         4Sw+HeFsvhs7ozb2AQWCp0u94SpMvLNXm6fZJ1dtC4+NICYAyGsE95rG6T424CZgcW
-         g1P2h4N2m3l1A==
-Subject: Re: [PATCH v3,1/2] media: v4l UAPI: add
- V4L2_BUF_CAP_SUPPORTS_RO_REQUESTS
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Tomasz Figa <tfiga@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>
-References: <20200701093522.8521-1-yunfei.dong@mediatek.com>
- <20200701093522.8521-2-yunfei.dong@mediatek.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <047b49b0-53d4-3ddf-e629-1686a6d4eb31@xs4all.nl>
-Date:   Thu, 23 Jul 2020 10:10:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Jul 2020 04:14:03 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f1946be0000>; Thu, 23 Jul 2020 01:13:50 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 23 Jul 2020 01:14:02 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 23 Jul 2020 01:14:02 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Jul
+ 2020 08:14:02 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Thu, 23 Jul 2020 08:14:02 +0000
+Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f1946c70001>; Thu, 23 Jul 2020 01:14:02 -0700
+From:   Sameer Pujar <spujar@nvidia.com>
+To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <geert@linux-m68k.org>, <rdunlap@infradead.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
+Subject: [PATCH] ASoC: tegra: Fix build error due to 64-by-32 division
+Date:   Thu, 23 Jul 2020 13:43:31 +0530
+Message-ID: <1595492011-2411-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-In-Reply-To: <20200701093522.8521-2-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfFQN2IYlI+0IepjRuZ70GgrkpY9Ngx0UU6k7lKmM0epEF1LWTvJfQyRbUzdemzReVKMEfVECkSDwUvHCFqmC6WMTFU9/qdfF+EpUapAgHTBNveCH/J6N
- nK0IDmGmDsoRpHl7xhiH/Bz4mofLIkVPScuqHc2kMFhfE2eoYNdtXbnpfgwfrZDVVA/IGWIN5z8i2lAWY7qBwzETEzVoWtMgxjM1vplYXWvv3lXbKi7ETxm6
- 6QHvYAKqYhVStAtKkFeyFDOBHDLXEf8gpuDdsnNbbIQ02HC9zjz/W7ihTVdV2RaQ19lAZboxNUh7wdGr6m9+N5gGE+5wbpVw0cRz+4SZxUogco0tbkvwB4ZN
- EzW4ZDP5oQmwg+fA7nU68gleNtparGKVRvI1PmpqV1JualWfAvMAoFbJFgRSvs9Ws3WGMr+mqZGQB4/7Q6onnvwZay9aQ1wsK25IJOuvebncPdHgicn6oSbw
- LavBgbF6lhFEZ247AQerScfwAdjxvQ5YiRP6zp9cYbwAp1dCvhq1HPHHB7lNUQCVif9uX5aJCg/SWAW//v7OEapSGpa+uIKQ1gJR1rpZuUtDENL+1Dx3Jz/S
- oaPd6qO95uTtcPmmGS936jCgdoUSuD0iloZ2cKGp1yLzKQrI/3pvMsXXB1aFqzTTUxM0ABDsw7SdO+I9EE6azUpGamhAe8wMD3ud3hrShZc3jxyExKk2OoHE
- W6UVMGaaACw=
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595492030; bh=KlXp5Z8io6593lkYe651OoFDsSM02BKTkfmssD6nCRU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=p2tBy+Agm5pBGRTnZ4+mwBepgTYGpgVQI/lY4R9q4nAqrtu6Qi0EjLiqz36PTtSJ/
+         PUubrApLsVOW99+H8Ob38pgwND9ARSnKD1olmkV+9Gztw8IVyb6a3kFvW+nzof3YVm
+         rsiFJNWFp9HryUA3OTSlWE4fu09PHJ2Ri5x1geGgxC2YtXbiBFFnMx7OVYE/xxNhvK
+         GBW6MVJ44edD5AzIeIspC/65P4BsJ+gx4is49DIdpgS9SFcglwv5Vka/vAd+oUP1XW
+         pByXnEIyJfzRGuqLErt1YWaIMvx0j+agmrDMmpY2b4MHP1pC02+fqNFpebImCL1nSo
+         Oxc2Y8CXTQypA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07/2020 11:35, Yunfei Dong wrote:
-> This patch adds support for the V4L2_BUF_CAP_SUPPORTS_RO_REQUESTS
-> flag. This flag is used for Read-only(Ro) Request.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> index b6d52083707b..7c7451773b8e 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
-> @@ -126,6 +126,7 @@ aborting or finishing any DMA in progress, an implicit
->  .. _V4L2-BUF-CAP-SUPPORTS-REQUESTS:
->  .. _V4L2-BUF-CAP-SUPPORTS-ORPHANED-BUFS:
->  .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
-> +.. _V4L2-BUF-CAP-SUPPORTS-RO-REQUESTS:
->  
->  .. cssclass:: longtable
->  
-> @@ -156,6 +157,9 @@ aborting or finishing any DMA in progress, an implicit
->        - Only valid for stateless decoders. If set, then userspace can set the
->          ``V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF`` flag to hold off on returning the
->  	capture buffer until the OUTPUT timestamp changes.
-> +    * - ``V4L2_BUF_CAP_SUPPORTS_RO_REQUESTS``
-> +      - 0x00000040
-> +      - This buffer type supports :ref:`requests <media-request-api>`.
+Build errors are seen on 32-bit platforms because of a plain 64-by-32
+division. For example, following build erros were reported.
 
-This is wrong, it supports *read-only* requests.
+"ERROR: modpost: "__udivdi3" [sound/soc/tegra/snd-soc-tegra210-dmic.ko]
+ undefined!"
+"ERROR: modpost: "__divdi3" [sound/soc/tegra/snd-soc-tegra210-dmic.ko]
+ undefined!"
 
-Also, Documentation/userspace-api/media/mediactl/request-api.rst should mention
-read-only requests: I think a new section "Read-Only Requests" explaining the
-purpose and use of such requests would be best. It can be inserted just before
-the "Example for a Codec Device" at the end.
+This can be fixed by using div_u64() helper from 'math64.h' header.
 
-Regards,
+Fixes: 8c8ff982e9e2 ("ASoC: tegra: Add Tegra210 based DMIC driver")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+---
+ sound/soc/tegra/tegra210_dmic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-	Hans
-
->  
->  Return Value
->  ============
-> 
+diff --git a/sound/soc/tegra/tegra210_dmic.c b/sound/soc/tegra/tegra210_dmic.c
+index ff6fd65..d682414 100644
+--- a/sound/soc/tegra/tegra210_dmic.c
++++ b/sound/soc/tegra/tegra210_dmic.c
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/clk.h>
+ #include <linux/device.h>
++#include <linux/math64.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+@@ -129,7 +130,7 @@ static int tegra210_dmic_hw_params(struct snd_pcm_substream *substream,
+ 	 * Boost Gain Volume control has 100x factor.
+ 	 */
+ 	if (dmic->boost_gain)
+-		gain_q23 = (gain_q23 * dmic->boost_gain) / 100;
++		gain_q23 = div_u64(gain_q23 * dmic->boost_gain, 100);
+ 
+ 	regmap_write(dmic->regmap, TEGRA210_DMIC_LP_FILTER_GAIN,
+ 		     (unsigned int)gain_q23);
+-- 
+2.7.4
 
