@@ -2,55 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1AF22B837
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07B222B844
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbgGWUzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:55:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgGWUzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:55:04 -0400
-Subject: Re: [GIT PULL] s390 updates for 5.8-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595537703;
-        bh=l+Tzk2koYg96Wo1mDSQbKykcCnYS8KhqJ6Ypx5XvssY=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=WAy146blJHHWb4XeWaokbIGHGOuD6sVHoq1YnHYmYgvoc374IfP+G0bZvb+IiqA0s
-         rdliXvF8DaIRpQzVBd/1zo3lD2J2uyJkFSGj4QLRzUsadj3TZgmbEKWGcTVfHNLAy1
-         cr2hCxBN8eY2c9Q7wisjEdqaXwlcVMAE8H4hdm5M=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200723192643.GA7038@osiris>
-References: <20200723192643.GA7038@osiris>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200723192643.GA7038@osiris>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.8-6
-X-PR-Tracked-Commit-Id: 0cfa112b33aba4473b00151c75b87818a835702a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f37e99aca03f63aa3f2bd13ceaf769455d12c4b0
-Message-Id: <159553770371.17202.7792268161901478887.pr-tracker-bot@kernel.org>
-Date:   Thu, 23 Jul 2020 20:55:03 +0000
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        id S1726503AbgGWU6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgGWU6Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 16:58:16 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95255C0619D3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 13:58:16 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i62so7847405ybc.15
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 13:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7FtAxHooqgZ8bYbSQNU2/0E4qw3ahA+xHDnMOW5hjTM=;
+        b=FH9HqSCGivFhNIBkaRYcLc/3uaAPzqk1yMojTdojvaGnh9+p1xm2CHWAYknAXVf8bT
+         VJ/LaPFh/gCl2KLRNNVPPm/700eNndvLPHu2pNEfBjV082Nc/HKBYRYQTdgpN3zsF5O6
+         Ph0ItPH4iiuqYObz9i1ie38edk2UFOuQ+bkubv6Jzu30271cSd47PlxS5NOO9TnN9RX6
+         9xfV6coq04yu/HpO9NdvV8rm0+yZu+zUU76rTWXlYW2QH+LTYL5ieM7IkOs591kcDGmk
+         Zh9INjfGnsTgB1Jpfq8Ve5TtqWLhBGeahZBmHQdVE5MIfzKHF0fZYn6OJ21NR8LI3vcW
+         Z4pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7FtAxHooqgZ8bYbSQNU2/0E4qw3ahA+xHDnMOW5hjTM=;
+        b=nV96YQdg8fJjcIoYe8YCkn0NAPOqqX0jiPSAwgnMrSJ9OYR3BCH5zJaVrw8UJQaE26
+         lY+73DoObGbrpMMReYIETd9YuW0KvsMB1DpveJ6aeOhwBahbwnVxvucbCkZN5UA8x89H
+         yIEpsxrUwzbR7uqavNTGs95M7oFcXvy5Qm0t2sqYkBRN8LT/NsBu7cVWhciT8kMxHJdG
+         bgSzhWqZE2XGMekRmn8qPWUr/D3F+oEiheporIcgovwcd3UWV6uglJfgQMaohpwRDzxe
+         Jbm6uW7kcMrwbvukBj6XQFH28yk73xBCHuw8Nt826ojFP5IJeKEvWqtmE3EauhiH3ect
+         eDvw==
+X-Gm-Message-State: AOAM531ghFlcmMf6Ynlnct+FumwUSKZlcF13wo1ghqncHhNtNjZDrKFD
+        vV2V0zLUc99A7mGfP+2jr5gua2pEnkFIUyNxNk4=
+X-Google-Smtp-Source: ABdhPJxpM9sqMDDRi78NValLg0D9pOqPRoDdTPKRwwJ0nsj8SxgFsCg6p6BYYZx/zHf/CkOD+cnjuXmrXh2EQgBZg64=
+X-Received: by 2002:a25:b68d:: with SMTP id s13mr10666339ybj.330.1595537895811;
+ Thu, 23 Jul 2020 13:58:15 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 13:58:11 -0700
+Message-Id: <20200723205811.1104520-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
+Subject: [PATCH 0/2] tracepoint bugfix and cleanup
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 23 Jul 2020 21:26:43 +0200:
+The first patch fixes a reported bug in iterating the
+tracing/printk_formats sysfs node, and is tagged for stable.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.8-6
+The second patch is a small cleanup and is less important than the
+first.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f37e99aca03f63aa3f2bd13ceaf769455d12c4b0
+Nick Desaulniers (2):
+  tracepoint: mark __tracepoint_string's __used
+  tracepoint: used attribute definitions from compiler_attributes.h
 
-Thank you!
+ include/linux/tracepoint.h | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.28.0.rc0.105.gf9edc3c819-goog
+
