@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CAC22B4BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4540E22B4C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730101AbgGWRVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729991AbgGWRVp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:21:45 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B56DC0619E2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:21:45 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y24so1738562wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:21:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6NzrDM0ds5Yq5Je7cF0j6pK/Nn47qBuFSLY+rgHwqcM=;
-        b=O87D55zOerszxleRneUW3MsL3Zcd/jynvRl4ZJp2B9KRGsqryhhzayQiv8NTtDZpP4
-         qZdrNrHTVRay+czuHzrs2CZcwVK/M87/PfEqZ/7/R3ITkIjH1NDgIIOgjPkz5CEAvh8p
-         Hc9RP/pNzBGnSpgurklYAWeixQYDOi3HFUJ+OGaW4azU8OVv08rUxYFNbJbl6Tm+iBdt
-         2Ln/c+ZUxnroc64F6RakcttGTMeFnzRfatLcHEsrKvwtnfFn/yRdAPLT8a+WBhSF1f6+
-         3fLvJl2HIkK2TJNPssEUsyFM5RuNLqccpqlfkJcVH+GrquDvwzJGhUrUq0M4SQPRMAtH
-         h7HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6NzrDM0ds5Yq5Je7cF0j6pK/Nn47qBuFSLY+rgHwqcM=;
-        b=dc4WkbvSCdoRlbjM85bSsI1KXca6ylVAgEFdwzH6GDrOZ0PEcEKbPZwBUVbyKxDixq
-         GW7d7/bs+9TmeyZVI49VzST6BuNXGO925ZtsWEUfb3Amw6O2/1UlhHPfXyXz+R6XO1Mx
-         u7sKoAOMlam/mQMuicmwFUk5SBgpyhNBgk35/IH3X52cebocF5Qgw3N4bi82IN12dqli
-         +qQLF+dAke+uD1bIyV0aGCW0qNUxYPZBRRt/yV8mWN6Nao9lBe37/B74ws5cBGXg4psn
-         iO49F0xli4nZDm5cBm2/vJ2D1RUh/VljpApYSIv8D67WQkuIY57+GeDHPekj6968AiE+
-         aGrA==
-X-Gm-Message-State: AOAM530ZYqIbRcxyzQC8Ihx0+Wx/aAdWSKIYEUTkdGLbK5861FTsbVie
-        n8YWSPGkN3hhIstUFufpwdCaoQ==
-X-Google-Smtp-Source: ABdhPJwQCI0nkTlQ5dq9lK678xybKH15GLIY+72H7Gu/eRtHbRJyKIU6hxiqf2dlcWvEAZztEcQ6oQ==
-X-Received: by 2002:a1c:2045:: with SMTP id g66mr4785936wmg.184.1595524904039;
-        Thu, 23 Jul 2020 10:21:44 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id s19sm4982242wrb.54.2020.07.23.10.21.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 10:21:43 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 18:21:41 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mfd: max14577: remove redundant initialization of
- variable current_bits
-Message-ID: <20200723172141.GB1126023@dell>
-References: <20200723161541.994669-1-colin.king@canonical.com>
+        id S1730070AbgGWRW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:22:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726814AbgGWRW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:22:59 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4870920714;
+        Thu, 23 Jul 2020 17:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595524978;
+        bh=MoAmf1Myeg0db8BaCfPvVMD6xZai1l4bFIFtixP9k7o=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=C8K5jUGN4lm5puEmLaAeeiHc5RpxPtdHKGGgJ8tUzDsH8FWfhloAW8B24CjslBlQS
+         LA8CC5WmFEvL+O/HIjVyvpoqV84OumIpPzWKGD9Z1vQGCg5fFdtztdW8aN3cAguDa1
+         RMVqhpX08FKVRdRx74SyAbSlZ81lLw8qTiO8oDiQ=
+Message-ID: <cba36614f44285feca178f1936fec8d1eef4b8ac.camel@kernel.org>
+Subject: Re: [PATCH] ceph: super.h: delete a duplicated word
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org
+Date:   Thu, 23 Jul 2020 13:22:56 -0400
+In-Reply-To: <20200720001259.21668-1-rdunlap@infradead.org>
+References: <20200720001259.21668-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200723161541.994669-1-colin.king@canonical.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Jul 2020, Colin King wrote:
-
-> From: Colin Ian King <colin.king@canonical.com>
+On Sun, 2020-07-19 at 17:12 -0700, Randy Dunlap wrote:
+> Drop the repeated word "the" in a comment.
 > 
-> The variable current_bits is being initialized with a value that is
-> never read and it is being updated later with a new value. The
-> initialization is redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: Ilya Dryomov <idryomov@gmail.com>
+> Cc: ceph-devel@vger.kernel.org
 > ---
->  drivers/mfd/max14577.c | 2 +-
+>  fs/ceph/super.h |    2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20200717.orig/fs/ceph/super.h
+> +++ linux-next-20200717/fs/ceph/super.h
+> @@ -353,7 +353,7 @@ struct ceph_inode_info {
+>  	unsigned i_dirty_caps, i_flushing_caps;     /* mask of dirtied fields */
+>  
+>  	/*
+> -	 * Link to the the auth cap's session's s_cap_dirty list. s_cap_dirty
+> +	 * Link to the auth cap's session's s_cap_dirty list. s_cap_dirty
+>  	 * is protected by the mdsc->cap_dirty_lock, but each individual item
+>  	 * is also protected by the inode's i_ceph_lock. Walking s_cap_dirty
+>  	 * requires the mdsc->cap_dirty_lock. List presence for an item can
 
-Applied, thanks.
-
+Thanks, merged into testing branch. If you have more of these, then it
+might be good to bundle them up into a fs/ceph-wide patch. There is no
+shortage of grammatical errors in fs/ceph so there could be a lot of
+these.
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jeff Layton <jlayton@kernel.org>
+
