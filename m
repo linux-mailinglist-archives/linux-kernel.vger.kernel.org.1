@@ -2,76 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49B522B87A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1798A22B85E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgGWVSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 17:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgGWVSj (ORCPT
+        id S1726824AbgGWVKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 17:10:21 -0400
+Received: from mail-40132.protonmail.ch ([185.70.40.132]:12645 "EHLO
+        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgGWVKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 17:18:39 -0400
-X-Greylist: delayed 492 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 23 Jul 2020 14:18:39 PDT
-Received: from hera.iit.uni-miskolc.hu (hera.iit.uni-miskolc.hu [IPv6:2001:738:6001:500::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FFEC0619D3;
-        Thu, 23 Jul 2020 14:18:39 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.iit.uni-miskolc.hu (Postfix) with ESMTP id C3F27A10;
-        Thu, 23 Jul 2020 23:10:35 +0200 (CEST)
-X-Virus-Scanned: Kamavis at iit.uni-miskolc.hu
-Received: from hera.iit.uni-miskolc.hu ([127.0.0.1])
-        by localhost (hera.iit.uni-miskolc.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Y1COzVsCAt1j; Thu, 23 Jul 2020 23:10:29 +0200 (CEST)
-Received: from titan.hitronhub.home (unknown [IPv6:2a02:8109:a180:908:226:9eff:fe30:2af8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: szucst@iit.uni-miskolc.hu)
-        by hera.iit.uni-miskolc.hu (Postfix) with ESMTPSA id 9F1A7A11;
-        Thu, 23 Jul 2020 23:10:21 +0200 (CEST)
-From:   =?UTF-8?q?Tam=C3=A1s=20Sz=C5=B1cs?= <tszucs@protonmail.ch>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        JC Kuo <jckuo@nvidia.com>, Sameer Pujar <spujar@nvidia.com>,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Tam=C3=A1s=20Sz=C5=B1cs?= <tszucs@protonmail.ch>
-Subject: [PATCH v2 4/4] arm64: tegra: Enable HS400 on Tegra194 SDMMC4
-Date:   Thu, 23 Jul 2020 23:09:32 +0200
-Message-Id: <20200723210932.8076-5-tszucs@protonmail.ch>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200723210932.8076-1-tszucs@protonmail.ch>
-References: <20200723210932.8076-1-tszucs@protonmail.ch>
+        Thu, 23 Jul 2020 17:10:20 -0400
+Date:   Thu, 23 Jul 2020 21:10:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1595538618;
+        bh=/v8hsn4vji93LSAwL+yRiHgNCReHoDDH4axY/SRPmKE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=PqRfO9+GqZTufIG+oR4srHLcqDGsQQCoyux3C8Vt6Xz6kwNRHtX9CeN989yIimZ9w
+         A0+avVpS6Bn8ubJZ1TRxVT39JUxZbt5WngqQXKh1gn25FutDexD3jsLiaYILD0BGsd
+         4Tz6V6YIpKZZi6+ZvJ9EqR5blmY+mVmbPEEk6D6s=
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+From:   Mazin Rezk <mnrzk@protonmail.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "harry.wentland@amd.com" <harry.wentland@amd.com>,
+        "mnrzk@protonmail.com" <mnrzk@protonmail.com>,
+        "nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
+        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "alexander.deucher@amd.com" <alexander.deucher@amd.com>,
+        "1i5t5.duncan@cox.net" <1i5t5.duncan@cox.net>,
+        "mphantomx@yahoo.com.br" <mphantomx@yahoo.com.br>,
+        "regressions@leemhuis.info" <regressions@leemhuis.info>,
+        "anthony.ruhier@gmail.com" <anthony.ruhier@gmail.com>,
+        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
+Reply-To: Mazin Rezk <mnrzk@protonmail.com>
+Subject: [PATCH] amdgpu_dm: fix nonblocking atomic commit use-after-free
+Message-ID: <YIGsJ9LlFquvBI2iWPKhJwjKBwDUr_C-38oVpLJJHJ5rDCY_Zrrv392o6UPNxHoeQrcpLYC9U4fZdpD9ilz6Amg2IxkSexGLQMCQIBek8rc=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.5 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_REPLYTO
+        shortcircuit=no autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable HS400 signaling on Tegra194 SDMMC4 controller.
+When amdgpu_dm_atomic_commit_tail is running in the workqueue,
+drm_atomic_state_put will get called while amdgpu_dm_atomic_commit_tail is
+running, causing a race condition where state (and then dm_state) is
+sometimes freed while amdgpu_dm_atomic_commit_tail is running. This bug has
+occurred since 5.7-rc1 and is well documented among polaris11 users [1].
 
-Signed-off-by: Tamás Szűcs <tszucs@protonmail.ch>
+Prior to 5.7, this was not a noticeable issue since the freelist pointer
+was stored at the beginning of dm_state (base), which was unused. After
+changing the freelist pointer to be stored in the middle of the struct, the
+freelist pointer overwrote the context, causing dc_state to become garbage
+data and made the call to dm_enable_per_frame_crtc_master_sync dereference
+a freelist pointer.
+
+This patch fixes the aforementioned issue by calling drm_atomic_state_get
+in amdgpu_dm_atomic_commit before drm_atomic_helper_commit is called and
+drm_atomic_state_put after amdgpu_dm_atomic_commit_tail is complete.
+
+According to my testing on 5.8.0-rc6, this should fix bug 207383 on
+Bugzilla [1].
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D207383
+
+Fixes: 3202fa62f ("slub: relocate freelist pointer to middle of object")
+Reported-by: Duncan <1i5t5.duncan@cox.net>
+Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index 8351035bb6a7..e26f35b6279b 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -558,6 +558,7 @@
- 			nvidia,default-tap = <0x8>;
- 			nvidia,default-trim = <0x14>;
- 			nvidia,dqs-trim = <40>;
-+			mmc-hs400-1_8v;
- 			supports-cqe;
- 			status = "disabled";
- 		};
--- 
-2.20.1
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gp=
+u/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 86ffa0c2880f..86d6652872f2 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -7303,6 +7303,7 @@ static int amdgpu_dm_atomic_commit(struct drm_device =
+*dev,
+ =09 * unset legacy_cursor_update
+ =09 */
+
++=09drm_atomic_state_get(state);
+ =09return drm_atomic_helper_commit(dev, state, nonblock);
+
+ =09/*TODO Handle EINTR, reenable IRQ*/
+@@ -7628,6 +7629,8 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_a=
+tomic_state *state)
+
+ =09if (dc_state_temp)
+ =09=09dc_release_state(dc_state_temp);
++
++=09drm_atomic_state_put(state);
+ }
+
+
+--
+2.27.0
 
