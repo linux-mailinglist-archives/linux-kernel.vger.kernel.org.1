@@ -2,26 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD6322A9B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BD922A9AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbgGWHbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1726850AbgGWHbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 23 Jul 2020 03:31:07 -0400
-Received: from n7.nabble.com ([162.253.133.57]:54309 "EHLO n7.nabble.com"
+Received: from n7.nabble.com ([162.253.133.57]:54312 "EHLO n7.nabble.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgGWHbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726141AbgGWHbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Jul 2020 03:31:07 -0400
-X-Greylist: delayed 390 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Jul 2020 03:31:07 EDT
 Received: from n7.nabble.com (localhost [127.0.0.1])
-        by n7.nabble.com (Postfix) with ESMTP id 39A0E1870CF22
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:24:32 -0700 (MST)
-Date:   Thu, 23 Jul 2020 00:24:32 -0700 (MST)
+        by n7.nabble.com (Postfix) with ESMTP id D00FA1870D073
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:25:24 -0700 (MST)
+Date:   Thu, 23 Jul 2020 00:25:24 -0700 (MST)
 From:   jollyzula <sd9932946@gmail.com>
 To:     linux-kernel@vger.kernel.org
-Message-ID: <1595489072233-0.post@n7.nabble.com>
-In-Reply-To: <81129033.NXiOLTg1so@wasted.cogentembedded.com>
-References: <81129033.NXiOLTg1so@wasted.cogentembedded.com>
-Subject: Technical Help
+Message-ID: <1595489124850-0.post@n7.nabble.com>
+In-Reply-To: <4151C0F9B9C25C47B3328922A6297A3286CF98@post.arx.com>
+References: <4151C0F9B9C25C47B3328922A6297A3286CF98@post.arx.com>
+Subject: technical support
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -30,18 +29,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the title suggests, this text documents the small print of the highest
-three free antivirus software. If you're trying to find free antivirus
-software, there are many of them available within the market today. However,
-not all of them are good. Here may be a list of the three best free software
-for virus removal. Although there are many other good ones within the
-market, these three are the foremost highly recommended ones. need more
-information than visit this side. Rand McNally GPS Update
-<http://rand-mcnally-gps-update.com/>   |  Norton.com/nu16
-<http://norton-comnu16.com/>   |  my.avast.com <http://avastlogin.ch/>   | 
-Garmin.com/Express <https://garminexpress.global/>   |  Download Garmin
-Express <https://garminexpress.global/garmin-download/>   |  Garmin Nuvi
-Update <https://garminexpress.global/garmin-nuvi-update/>  
+Home Antivirus may be a software tool that tries to resemble a legitimate
+security software package which will help your PC... but actually , it's not
+very effective and may cause problems together with your PC. It's referred
+to as a 'rogue antivirus' tool because it preys on people's reliance on
+Antivirus software, only to not have the capabilities to seek out any
+problems on your PC. this is often an enormous issue which may be resolved
+by removing this software. Here's what you would like to try to to . need
+more information than visit this side.  www.office.com/setup
+<https://officecom-setupp.com/>   |  Office 365 Download
+<https://officecom-setupp.com/office-365-download/>   |   office login
+<https://officecom-setupp.com/office-login/>   |  garmin.com/express
+<http://garmincomexpressx.com/>   |   Garmin Express Download
+<http://garmincomexpressx.com/garmin-express-download/>   |  Garmin Map
+Update <http://garmincomexpressx.com/garmin-map-update/>  
 
 
 
