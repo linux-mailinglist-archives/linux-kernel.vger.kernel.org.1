@@ -2,162 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F5E22A714
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0767422A719
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgGWFtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 01:49:02 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:19783 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725536AbgGWFtB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:49:01 -0400
-X-UUID: fea772324bcd439fa3a48d7dbf3e985c-20200723
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=avHxu0dEvObqmrR0tNdjaTp0S0v4rEX5l1fG2CDw6nw=;
-        b=A0jU3ejFug07WiLPB3VsLWud19SVmLpO+GfcGdYmkKFS+ctHYlq5suTP3kgrZUiOFJYq4Up4DMwbbAxpEg0CMwKUUoWO82DUFMSYo6Fmi0iaueRmSddgAt/39mggb8z3u6Ywj4aim6JfP0DkOR9x1KDqcG6Z1SIuJT8poJATodY=;
-X-UUID: fea772324bcd439fa3a48d7dbf3e985c-20200723
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 22546170; Thu, 23 Jul 2020 13:48:54 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 23 Jul
- 2020 13:48:53 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 23 Jul 2020 13:48:52 +0800
-Message-ID: <1595483265.16079.18.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/4] i2c: mediatek: Support DMA mask range over 33-bits
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <wsa@the-dreams.de>, <qiangming.xia@mediatek.com>,
-        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <leilk.liu@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 23 Jul 2020 13:47:45 +0800
-In-Reply-To: <87429327-5d2e-e3f3-db22-04e225a31055@gmail.com>
-References: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
-         <1595421106-10017-3-git-send-email-qii.wang@mediatek.com>
-         <87429327-5d2e-e3f3-db22-04e225a31055@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1726032AbgGWFzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 01:55:03 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57731 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725773AbgGWFzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 01:55:03 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BC1kr02xhz9sRR;
+        Thu, 23 Jul 2020 15:54:59 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595483701;
+        bh=/IB0vpapVOUYRDz1z+4C3rGvjCp6zj3WxW3V6jqUXHs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eyCP1Cl8fn2LeBCl3gin+7L/L5fKA33I6UZXWkTbZI4WcyUB+enp07hBEqe0fnT6F
+         yCs75LJhIvWAywXU2kDLcnQZ5iv0VfduN8PUQ/s8Di8/XQD6Eczs2E4mpB380epdt3
+         eKmLg5fo8hKgBEtVcyYpWnqgsGHpwpW8MFxlrBkqEXv8mwqpXGZNoBGqxPbhDrE/ac
+         DXW0Q07uHHsIEFTgUzN4/6aEsp1V6uut9jCBxkZ4MkmtL0sO7hj9DNBodjggz9vpCk
+         Q6V9+YZLDGNlHV7yPbrsToSQaxSXe/DTwEKjE8l2nrMjBp2UL5QSRDdcnkM9rXfYBu
+         wTvk6XBBjjDLA==
+Date:   Thu, 23 Jul 2020 15:54:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>
+Subject: Re: linux-next: build failure after merge of the scsi-mkp tree
+Message-ID: <20200723155452.6dccd510@canb.auug.org.au>
+In-Reply-To: <20200721163045.50c205a5@canb.auug.org.au>
+References: <20200721163045.50c205a5@canb.auug.org.au>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 5486F58D41C29B12797C4E71C6DEAC8B90AB18EC292FCB909DA017C6AD5D7D242000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/a7I6O8Wp6phy6UFTMCqEdjk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA3LTIyIGF0IDE3OjM4ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMjIvMDcvMjAyMCAxNDozMSwgUWlpIFdhbmcgd3JvdGU6DQo+ID4gUmVwbGFj
-ZSAnc3VwcG9ydF8zM2JpdHMgd2l0aCAnZG1hX21heF9zdXBwb3J0JyBmb3IgRE1BIG1hc2sNCj4g
-PiBvcGVyYXRpb24sIGFuZCByZXBsYWNlICdtdGtfaTJjX3NldF80Z19tb2RlJyB3aXRoICd1cHBl
-cl8zMl9iaXRzJy4NCj4gDQo+IFBsZWFzZSBleHBsYWluIG1vcmUgaW4gZGV0YWlsIHdoYXQgeW91
-IGFyZSBkb2luZyBhbmQgaG93IHRoaXMgZml0cyB0byB0aGUgd2F5IA0KPiB0aGUgSFcgd29ya3Mu
-DQo+IA0KDQpBcyBZaW5nam9lIHNpciBzYWlkLCBOZXdlciBNVEsgY2hpcCBzdXBwb3J0IG1vcmUg
-dGhhbiA4R0Igb2YgZHJhbSwgYW5kDQp0aGUgcmVnaXN0ZXIgVFgvUlhfNEdfTU9ERSBvZiBBUERN
-QSBoYXMgYWRkZWQgY29ycmVzcG9uZGluZyBiaXQgdG8NCnN1cHBvcnQuU28gd2UgUmVwbGFjZSBz
-dXBwb3J0XzMzYml0cyB3aXRoIG1vcmUgZ2VuZXJhbCBkbWFfbWF4X3N1cHBvcnQuSQ0Kd2lsbCBt
-b2RpZnkgdGhlIHRpdGxlIGFuZCBjb21taXQgYXMgOg0KaTJjOiBtZWRpYXRlazogQWRkIGFjY2Vz
-cyB0byBtb3JlIHRoYW4gOEdCIGRyYW0gaW4gaTJjIGRyaXZlcg0KTmV3ZXIgTVRLIGNoaXAgc3Vw
-cG9ydCBtb3JlIHRoYW4gOEdCIG9mIGRyYW0uIFJlcGxhY2Ugc3VwcG9ydF8zM2JpdHMNCndpdGgg
-bW9yZSBnZW5lcmFsIGRtYV9tYXhfc3VwcG9ydCBhbmQgcmVtb3ZlIG10a19pMmNfc2V0XzRnX21v
-ZGUuDQoNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVkaWF0
-ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyB8
-IDM3ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gPiAgIDEgZmlsZSBj
-aGFuZ2VkLCAxNyBpbnNlcnRpb25zKCspLCAyMCBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyBiL2RyaXZlcnMvaTJjL2J1
-c3Nlcy9pMmMtbXQ2NXh4LmMNCj4gPiBpbmRleCBlNmI5ODRhLi5lNDc1ODc3IDEwMDY0NA0KPiA+
-IC0tLSBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMNCj4gPiArKysgYi9kcml2ZXJz
-L2kyYy9idXNzZXMvaTJjLW10NjV4eC5jDQo+ID4gQEAgLTIwOSw2ICsyMDksNyBAQCBzdHJ1Y3Qg
-bXRrX2kyY19jb21wYXRpYmxlIHsNCj4gPiAgIAl1bnNpZ25lZCBjaGFyIGRtYV9zeW5jOiAxOw0K
-PiA+ICAgCXVuc2lnbmVkIGNoYXIgbHRpbWluZ19hZGp1c3Q6IDE7DQo+ID4gICAJdW5zaWduZWQg
-Y2hhciBhcGRtYV9zeW5jOiAxOw0KPiA+ICsJdW5zaWduZWQgY2hhciBtYXhfZG1hX3N1cHBvcnQ7
-DQo+ID4gICB9Ow0KPiA+ICAgDQo+ID4gICBzdHJ1Y3QgbXRrX2kyY19hY190aW1pbmcgew0KPiA+
-IEBAIC0zMTEsMTEgKzMxMiwxMSBAQCBzdHJ1Y3QgaTJjX3NwZWNfdmFsdWVzIHsNCj4gPiAgIAku
-ZGNtID0gMSwNCj4gPiAgIAkuYXV0b19yZXN0YXJ0ID0gMSwNCj4gPiAgIAkuYXV4X2xlbl9yZWcg
-PSAxLA0KPiA+IC0JLnN1cHBvcnRfMzNiaXRzID0gMSwNCj4gPiAgIAkudGltaW5nX2FkanVzdCA9
-IDEsDQo+ID4gICAJLmRtYV9zeW5jID0gMCwNCj4gPiAgIAkubHRpbWluZ19hZGp1c3QgPSAwLA0K
-PiA+ICAgCS5hcGRtYV9zeW5jID0gMCwNCj4gPiArCS5tYXhfZG1hX3N1cHBvcnQgPSAzMywNCj4g
-PiAgIH07DQo+ID4gICANCj4gPiAgIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2kyY19jb21wYXRp
-YmxlIG10NjU3N19jb21wYXQgPSB7DQo+ID4gQEAgLTMyNSwxMSArMzI2LDExIEBAIHN0cnVjdCBp
-MmNfc3BlY192YWx1ZXMgew0KPiA+ICAgCS5kY20gPSAxLA0KPiA+ICAgCS5hdXRvX3Jlc3RhcnQg
-PSAwLA0KPiA+ICAgCS5hdXhfbGVuX3JlZyA9IDAsDQo+ID4gLQkuc3VwcG9ydF8zM2JpdHMgPSAw
-LA0KPiA+ICAgCS50aW1pbmdfYWRqdXN0ID0gMCwNCj4gPiAgIAkuZG1hX3N5bmMgPSAwLA0KPiA+
-ICAgCS5sdGltaW5nX2FkanVzdCA9IDAsDQo+ID4gICAJLmFwZG1hX3N5bmMgPSAwLA0KPiA+ICsJ
-Lm1heF9kbWFfc3VwcG9ydCA9IDMyLA0KPiA+ICAgfTsNCj4gPiAgIA0KPiA+ICAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBtdGtfaTJjX2NvbXBhdGlibGUgbXQ2NTg5X2NvbXBhdCA9IHsNCj4gPiBAQCAt
-MzM5LDExICszNDAsMTEgQEAgc3RydWN0IGkyY19zcGVjX3ZhbHVlcyB7DQo+ID4gICAJLmRjbSA9
-IDAsDQo+ID4gICAJLmF1dG9fcmVzdGFydCA9IDAsDQo+ID4gICAJLmF1eF9sZW5fcmVnID0gMCwN
-Cj4gPiAtCS5zdXBwb3J0XzMzYml0cyA9IDAsDQo+ID4gICAJLnRpbWluZ19hZGp1c3QgPSAwLA0K
-PiA+ICAgCS5kbWFfc3luYyA9IDAsDQo+ID4gICAJLmx0aW1pbmdfYWRqdXN0ID0gMCwNCj4gPiAg
-IAkuYXBkbWFfc3luYyA9IDAsDQo+ID4gKwkubWF4X2RtYV9zdXBwb3J0ID0gMzIsDQo+ID4gICB9
-Ow0KPiA+ICAgDQo+ID4gICBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19pMmNfY29tcGF0aWJsZSBt
-dDc2MjJfY29tcGF0ID0gew0KPiA+IEBAIC0zNTMsMTEgKzM1NCwxMSBAQCBzdHJ1Y3QgaTJjX3Nw
-ZWNfdmFsdWVzIHsNCj4gPiAgIAkuZGNtID0gMSwNCj4gPiAgIAkuYXV0b19yZXN0YXJ0ID0gMSwN
-Cj4gPiAgIAkuYXV4X2xlbl9yZWcgPSAxLA0KPiA+IC0JLnN1cHBvcnRfMzNiaXRzID0gMCwNCj4g
-PiAgIAkudGltaW5nX2FkanVzdCA9IDAsDQo+ID4gICAJLmRtYV9zeW5jID0gMCwNCj4gPiAgIAku
-bHRpbWluZ19hZGp1c3QgPSAwLA0KPiA+ICAgCS5hcGRtYV9zeW5jID0gMCwNCj4gPiArCS5tYXhf
-ZG1hX3N1cHBvcnQgPSAzMiwNCj4gPiAgIH07DQo+ID4gICANCj4gPiAgIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgbXRrX2kyY19jb21wYXRpYmxlIG10ODE3M19jb21wYXQgPSB7DQo+ID4gQEAgLTM2Niwx
-MSArMzY3LDExIEBAIHN0cnVjdCBpMmNfc3BlY192YWx1ZXMgew0KPiA+ICAgCS5kY20gPSAxLA0K
-PiA+ICAgCS5hdXRvX3Jlc3RhcnQgPSAxLA0KPiA+ICAgCS5hdXhfbGVuX3JlZyA9IDEsDQo+ID4g
-LQkuc3VwcG9ydF8zM2JpdHMgPSAxLA0KPiA+ICAgCS50aW1pbmdfYWRqdXN0ID0gMCwNCj4gPiAg
-IAkuZG1hX3N5bmMgPSAwLA0KPiA+ICAgCS5sdGltaW5nX2FkanVzdCA9IDAsDQo+ID4gICAJLmFw
-ZG1hX3N5bmMgPSAwLA0KPiA+ICsJLm1heF9kbWFfc3VwcG9ydCA9IDMzLA0KPiA+ICAgfTsNCj4g
-PiAgIA0KPiA+ICAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfaTJjX2NvbXBhdGlibGUgbXQ4MTgz
-X2NvbXBhdCA9IHsNCj4gPiBAQCAtMzgwLDExICszODEsMTEgQEAgc3RydWN0IGkyY19zcGVjX3Zh
-bHVlcyB7DQo+ID4gICAJLmRjbSA9IDAsDQo+ID4gICAJLmF1dG9fcmVzdGFydCA9IDEsDQo+ID4g
-ICAJLmF1eF9sZW5fcmVnID0gMSwNCj4gPiAtCS5zdXBwb3J0XzMzYml0cyA9IDEsDQo+ID4gICAJ
-LnRpbWluZ19hZGp1c3QgPSAxLA0KPiA+ICAgCS5kbWFfc3luYyA9IDEsDQo+ID4gICAJLmx0aW1p
-bmdfYWRqdXN0ID0gMSwNCj4gPiAgIAkuYXBkbWFfc3luYyA9IDAsDQo+ID4gKwkubWF4X2RtYV9z
-dXBwb3J0ID0gMzMsDQo+ID4gICB9Ow0KPiA+ICAgDQo+ID4gICBzdGF0aWMgY29uc3Qgc3RydWN0
-IG9mX2RldmljZV9pZCBtdGtfaTJjX29mX21hdGNoW10gPSB7DQo+ID4gQEAgLTc5NiwxMSArNzk3
-LDYgQEAgc3RhdGljIGludCBtdGtfaTJjX3NldF9zcGVlZChzdHJ1Y3QgbXRrX2kyYyAqaTJjLCB1
-bnNpZ25lZCBpbnQgcGFyZW50X2NsaykNCj4gPiAgIAlyZXR1cm4gMDsNCj4gPiAgIH0NCj4gPiAg
-IA0KPiA+IC1zdGF0aWMgaW5saW5lIHUzMiBtdGtfaTJjX3NldF80Z19tb2RlKGRtYV9hZGRyX3Qg
-YWRkcikNCj4gPiAtew0KPiA+IC0JcmV0dXJuIChhZGRyICYgQklUX1VMTCgzMikpID8gSTJDX0RN
-QV80R19NT0RFIDogSTJDX0RNQV9DTFJfRkxBRzsNCj4gDQo+IEkyQ19ETUFfNEdfTU9ERSBkZWZp
-bmUgY291bGQgbm93IGJlIGRlbGV0ZWQgYXMgd2VsbC4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRo
-aWFzDQo+IA0KPiA+IC19DQo+ID4gLQ0KPiA+ICAgc3RhdGljIGludCBtdGtfaTJjX2RvX3RyYW5z
-ZmVyKHN0cnVjdCBtdGtfaTJjICppMmMsIHN0cnVjdCBpMmNfbXNnICptc2dzLA0KPiA+ICAgCQkJ
-ICAgICAgIGludCBudW0sIGludCBsZWZ0X251bSkNCj4gPiAgIHsNCj4gPiBAQCAtODg1LDggKzg4
-MSw4IEBAIHN0YXRpYyBpbnQgbXRrX2kyY19kb190cmFuc2ZlcihzdHJ1Y3QgbXRrX2kyYyAqaTJj
-LCBzdHJ1Y3QgaTJjX21zZyAqbXNncywNCj4gPiAgIAkJCXJldHVybiAtRU5PTUVNOw0KPiA+ICAg
-CQl9DQo+ID4gICANCj4gPiAtCQlpZiAoaTJjLT5kZXZfY29tcC0+c3VwcG9ydF8zM2JpdHMpIHsN
-Cj4gPiAtCQkJcmVnXzRnX21vZGUgPSBtdGtfaTJjX3NldF80Z19tb2RlKHJwYWRkcik7DQo+ID4g
-KwkJaWYgKGkyYy0+ZGV2X2NvbXAtPm1heF9kbWFfc3VwcG9ydCA+IDMyKSB7DQo+ID4gKwkJCXJl
-Z180Z19tb2RlID0gdXBwZXJfMzJfYml0cyhycGFkZHIpOw0KPiA+ICAgCQkJd3JpdGVsKHJlZ180
-Z19tb2RlLCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1JYXzRHX01PREUpOw0KPiA+ICAgCQl9DQo+
-ID4gICANCj4gPiBAQCAtOTA4LDggKzkwNCw4IEBAIHN0YXRpYyBpbnQgbXRrX2kyY19kb190cmFu
-c2ZlcihzdHJ1Y3QgbXRrX2kyYyAqaTJjLCBzdHJ1Y3QgaTJjX21zZyAqbXNncywNCj4gPiAgIAkJ
-CXJldHVybiAtRU5PTUVNOw0KPiA+ICAgCQl9DQo+ID4gICANCj4gPiAtCQlpZiAoaTJjLT5kZXZf
-Y29tcC0+c3VwcG9ydF8zM2JpdHMpIHsNCj4gPiAtCQkJcmVnXzRnX21vZGUgPSBtdGtfaTJjX3Nl
-dF80Z19tb2RlKHdwYWRkcik7DQo+ID4gKwkJaWYgKGkyYy0+ZGV2X2NvbXAtPm1heF9kbWFfc3Vw
-cG9ydCA+IDMyKSB7DQo+ID4gKwkJCXJlZ180Z19tb2RlID0gdXBwZXJfMzJfYml0cyh3cGFkZHIp
-Ow0KPiA+ICAgCQkJd3JpdGVsKHJlZ180Z19tb2RlLCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1RY
-XzRHX01PREUpOw0KPiA+ICAgCQl9DQo+ID4gICANCj4gPiBAQCAtOTU0LDExICs5NTAsMTEgQEAg
-c3RhdGljIGludCBtdGtfaTJjX2RvX3RyYW5zZmVyKHN0cnVjdCBtdGtfaTJjICppMmMsIHN0cnVj
-dCBpMmNfbXNnICptc2dzLA0KPiA+ICAgCQkJcmV0dXJuIC1FTk9NRU07DQo+ID4gICAJCX0NCj4g
-PiAgIA0KPiA+IC0JCWlmIChpMmMtPmRldl9jb21wLT5zdXBwb3J0XzMzYml0cykgew0KPiA+IC0J
-CQlyZWdfNGdfbW9kZSA9IG10a19pMmNfc2V0XzRnX21vZGUod3BhZGRyKTsNCj4gPiArCQlpZiAo
-aTJjLT5kZXZfY29tcC0+bWF4X2RtYV9zdXBwb3J0ID4gMzIpIHsNCj4gPiArCQkJcmVnXzRnX21v
-ZGUgPSB1cHBlcl8zMl9iaXRzKHdwYWRkcik7DQo+ID4gICAJCQl3cml0ZWwocmVnXzRnX21vZGUs
-IGkyYy0+cGRtYWJhc2UgKyBPRkZTRVRfVFhfNEdfTU9ERSk7DQo+ID4gICANCj4gPiAtCQkJcmVn
-XzRnX21vZGUgPSBtdGtfaTJjX3NldF80Z19tb2RlKHJwYWRkcik7DQo+ID4gKwkJCXJlZ180Z19t
-b2RlID0gdXBwZXJfMzJfYml0cyhycGFkZHIpOw0KPiA+ICAgCQkJd3JpdGVsKHJlZ180Z19tb2Rl
-LCBpMmMtPnBkbWFiYXNlICsgT0ZGU0VUX1JYXzRHX01PREUpOw0KPiA+ICAgCQl9DQo+ID4gICAN
-Cj4gPiBAQCAtMTIzMiw4ICsxMjI4LDkgQEAgc3RhdGljIGludCBtdGtfaTJjX3Byb2JlKHN0cnVj
-dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ID4gICAJCXJldHVybiAtRUlOVkFMOw0KPiA+ICAg
-CX0NCj4gPiAgIA0KPiA+IC0JaWYgKGkyYy0+ZGV2X2NvbXAtPnN1cHBvcnRfMzNiaXRzKSB7DQo+
-ID4gLQkJcmV0ID0gZG1hX3NldF9tYXNrKCZwZGV2LT5kZXYsIERNQV9CSVRfTUFTSygzMykpOw0K
-PiA+ICsJaWYgKGkyYy0+ZGV2X2NvbXAtPm1heF9kbWFfc3VwcG9ydCA+IDMyKSB7DQo+ID4gKwkJ
-cmV0ID0gZG1hX3NldF9tYXNrKCZwZGV2LT5kZXYsDQo+ID4gKwkJCQlETUFfQklUX01BU0soaTJj
-LT5kZXZfY29tcC0+bWF4X2RtYV9zdXBwb3J0KSk7DQo+ID4gICAJCWlmIChyZXQpIHsNCj4gPiAg
-IAkJCWRldl9lcnIoJnBkZXYtPmRldiwgImRtYV9zZXRfbWFzayByZXR1cm4gZXJyb3IuXG4iKTsN
-Cj4gPiAgIAkJCXJldHVybiByZXQ7DQo+ID4gDQoNCg==
+--Sig_/a7I6O8Wp6phy6UFTMCqEdjk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+On Tue, 21 Jul 2020 16:30:45 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the scsi-mkp tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> ERROR: modpost: "exynos_ufs_dump_info" [drivers/scsi/ufs/ufs-exynos.ko] u=
+ndefined!
+> ERROR: modpost: "exynos_ufs_init_dbg" [drivers/scsi/ufs/ufs-exynos.ko] un=
+defined!
+> ERROR: modpost: "exynos_ufs_cmd_log_start" [drivers/scsi/ufs/ufs-exynos.k=
+o] undefined!
+>=20
+> Caused by commits
+>=20
+>   c3b5e96ef515 ("scsi: ufs: exynos: Introduce command history")
+>   957ee40d413b ("scsi: ufs: exynos: Implement dbg_register_dump")
+>=20
+> I applied the following patch for now.
+>=20
+> From 6535b25fb253c7f25bf924655edb2b22fdaeb545 Mon Sep 17 00:00:00 2001
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 21 Jul 2020 16:26:05 +1000
+> Subject: [PATCH] scsi: ufs: exynos: mark debugging as broken
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/scsi/ufs/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
+> index 2c31b33f0adc..925f8de62f6d 100644
+> --- a/drivers/scsi/ufs/Kconfig
+> +++ b/drivers/scsi/ufs/Kconfig
+> @@ -178,6 +178,7 @@ config SCSI_UFS_EXYNOS_DBG
+>  	bool "EXYNOS specific debug functions"
+>  	default n
+>  	depends on SCSI_UFS_EXYNOS
+> +	depends on BROKEN
+>  	help
+>  	  This selects EXYNOS specific functions to get and even print
+>  	  debug information to see what's happening at both command
+> --=20
+> 2.27.0
+
+This build failure now applies to the scsi tree.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/a7I6O8Wp6phy6UFTMCqEdjk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8ZJiwACgkQAVBC80lX
+0Gx+vAf/TCAqCRaVWdH5doygJYRr3aY8Ll7xw1RsYLAKe4wzUyz6TY6Yx/wRpDMV
+uLe/5EvRGe7sIFMj0xebQI8W2ajCylUT1CvEXfb5lLd0KVaV7w3Y/9GTFJmxfCUD
+hyBRYXXYYCsCwydUnn7il1XbMM7p0AiaCldz2w+vLbHwrqnxjhXtAT/cM0hsOsBZ
+Qf3SfYQhoXs3Gj4KNjb+0J7EJgua3TFl+NtfKuXXZ9MCr7VY43F/kB44vH8Dhaqs
+gSzzJLQfbBu2gD+B5c78arryMbK5pzHsMTTu5g35VV5JyIcLzbwpnpUyKSubSy/Q
+9UzZyqu80lvCAwNED8CmTQ72YuKtvg==
+=G46E
+-----END PGP SIGNATURE-----
+
+--Sig_/a7I6O8Wp6phy6UFTMCqEdjk--
