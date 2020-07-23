@@ -2,236 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5F322A8F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F7022A8F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgGWG1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 02:27:24 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50629 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgGWG1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:27:21 -0400
-Received: by mail-il1-f198.google.com with SMTP id l17so2796374ilj.17
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 23:27:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qsxan2GHbh5Yt6TauSl3DTt9Ex/YOf+2LUY4AkusbFA=;
-        b=lUiWuADmwNmb59mWT/NvdtbK6fPivfec/sWlZp4zTlRcwdld9YDX2zUCzJA+mtUqa4
-         yaHpoesa0elsInzDhN3DXbiTFJBugOgcSMIXY2PLMDdD/gZJ43Y5dF+i01xYiwgr91TQ
-         FR6K0TEZ2wBAvwQ2FKhVFGJNqhOPy5CmZeh7P7QGbcyucixz7o8SI6lN+twn9zcn3Wq4
-         5F4m1K7K5YKTgxsJGMQs3pb81z70NPcnj2npPcRdNjVsecgUXYnYJ8RbPX6au7hi0e6e
-         5NQFKXY8z7y/iK93CF+HuQFVja00x02xyH/kvLb8FaTLcv6bdEl3mnvjcFDcwQpzPx8O
-         x3sg==
-X-Gm-Message-State: AOAM530IQS7KGJCsPe0ylnpl0QsrunsecInzaaYsON0vVRCthEl3obPr
-        uTrSeCyoWpkz7q1bbPHFJoymZsQLGnbQCkvZp6QCuMR81/AV
-X-Google-Smtp-Source: ABdhPJzZaTVmHoa345chVU84noFvR8WhAV9DV1Xl1RV8bl81eic6mqvPhU+o4QB7LKL78uyk15PsVbBjxsSVftOC6g81Zp04/1jM
+        id S1726759AbgGWG2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 02:28:42 -0400
+Received: from mout.web.de ([212.227.17.12]:57667 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725984AbgGWG2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 02:28:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1595485707;
+        bh=1hBN9tUEwHZsp75aFn4bQ6JIGaKpS5aggvBr37cGLDw=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=SgIHvSNXEVLP1YV2x7E8cn4GGBxFqIYz2e0zJHHUlktp5vNDO275pTTVlbXkD9Z0M
+         WFMjFo8DFazMnV/GcNDrpw1a5c7dj4268JKIeqY4eg38QQa4FHgKQAUBQzuMfoQGtX
+         mH9Qy/SW/hy6Xqi1QdkwGwSDG3GPsRUQvP9BqOtc=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.133.132.31]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LqDUa-1kTRox2ua8-00doEZ; Thu, 23
+ Jul 2020 08:28:27 +0200
+To:     Li Heng <liheng40@huawei.com>, linux-efi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Rui Xiang <rui.xiang@huawei.com>
+Subject: Re: [PATCH] efi: add missed destroy_workqueue when efisubsys_init
+ fails
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <9255e38a-e5fb-0a41-1b6d-5fe4226e3b42@web.de>
+Date:   Thu, 23 Jul 2020 08:28:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:dc4:: with SMTP id l4mr3710287ilj.134.1595485639187;
- Wed, 22 Jul 2020 23:27:19 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 23:27:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c4a77205ab15f238@google.com>
-Subject: INFO: task hung in ovs_exit_net
-From:   syzbot <syzbot+2c4ff3614695f75ce26c@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pshelar@ovn.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+cIvmW+B4FEKJmlRaUsn3P6wwZXOZBSo++wjam41Os7s/c8euNP
+ SkvLdaNfwjEAG+QMwmIca39uOHG0ODw3lZpFSEdGZdH7bns/yufsNIJG5Kw4HKvPQ127PA4
+ FVof1wL0RRh0Uhg3clshBzt3JnpwiqwQCTLWPW4UI8d742kS5ctOMUzQmeHvqJ+esJix2XS
+ 00lXuwEGHYOm7u4Z1vwOw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L/021+LXaa4=:Or5roG2IFS8LvDlPWgTW+i
+ PN/jhuE+Gae9QdBPml7nb89H4lVxRZpQSI+Eg+GgTEzyMNYPBVRmJmAzq1kFQjJOiqA21yYj8
+ H9ZPyiB7LyuYn284N/JsrvteAj23f4DM5BAkQZPwLGQPOm6R7yeRmjGlc1wDmEdgBh6Pe34dk
+ 6uxNRz72qTtC+tJg+g2FMO8DjordtRsPrA5sJOIrbwhxPR8WBGATS5wuqknUK3A04Q8C+bWlE
+ rytZ0mFAyXgYe/DTXmkGHSDe/UKY2g6hXqi4M09Tb/V6IXwp3p5Nw/9v4DFiV5syPcWtAGMYd
+ 0Ixburob0qE/QPT4//44bWT8mqxsynBOgP8bJeiFCu9ycQJ7cl+lxH/Myvhi5RSq6waPetsL1
+ 9jcvYHBwUFKoeGqz1EyNTW7ON4iaIJpOWXZvDRvtbWZ8bLrfvfUdUgSbjypnM3qSFzauKFLTw
+ KXuq1ZNcR3LmeDrXtOJ1MTBmcc1CoZZxbfRDuzX1YZYz9I3SVsqZQxFl7yPg2n+O6jLa5V++9
+ GdAFMo8mxVyQ0qpKtuB7bVvOtkLubhuzTUHKmzTypG3Tw3kzC4ImIL3a2E8LF5WMbJUx9M4oC
+ oMkAVt4DutxtSaWodz9AUSKycXcsbyzs9Jklvk6GpRdhx73uKuQJ4jccu61wMUnUIRJPmwH6a
+ QhyoQdOe782jyJudId0LPzCw/3wMX+9l/oCPwczXxrlZSwseaEKSMIEJSo+a4aFBSErXB97G1
+ vckUOShRqMtWsPe+f1S9+ygbA9ucfxBHKJ5LNX+bdR2EgOK8K/GaY/EYvq6NJbG+QQGZHdbCc
+ IW2aGYUXL5giv4VzGPFJjTQk1r20fMBwskpq4/+k5mkfybpA/TAm2xKgL3CiJKwNlJi44uPro
+ U8u6+6PoDllaAPA6y/8A81dbkSavKoCJl4FNjWcEHCJarxKh6HUczLYfV+P8ycIaEm1ZZ5Qc/
+ 3elANUSfI7L/67SNJyPKiV3YyZ7zgfhHA1Nc3UCmnI7Xr2DL1xnUF28c6R66Kr2bnSXiMrXQX
+ ZR314qy5OpaNfgxPg1ootGZ4SjKzYof55WSpYrTjpVoqzaCVCmM4/zOYtNWIz8SEtskU7QHqR
+ WRRzYOBCl+UD5TsAleatAoXyae0NTvCvXkCcKQPhKuUUhLXcsfDveAHGch4eJe8JO5Sowx9lN
+ VgF4tcJG6O/uVAEK81m5Bs4XfWczvTqX4ETz5ch3RELqBh2Mt/KsdrUA8woxLSpel01C7hkgK
+ IgHIv0BcqowWE3pjsZ2rcYlTjD8LmNwZnJemp1w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> destroy_workqueue() should be called to destroy efi_rts_wq
+> when efisubsys_init() init resources fails.
 
-syzbot found the following issue on:
+* Can such exception handling depend on the data structure member =E2=80=
+=9Cefi.runtime_supported_mask=E2=80=9D?
 
-HEAD commit:    a6c0d093 net: explicitly include <linux/compat.h> in net/c..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=179ee640900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b7b67c0c1819c87
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c4ff3614695f75ce26c
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+* An imperative wording would be preferred for the change description
+  (besides another bit of fine-tuning), wouldn't it?
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c4ff3614695f75ce26c@syzkaller.appspotmail.com
-
-INFO: task kworker/u4:3:235 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kworker/u4:3    D24856   235      2 0x00004000
-Workqueue: netns cleanup_net
-Call Trace:
- context_switch kernel/sched/core.c:3453 [inline]
- __schedule+0x8e1/0x1eb0 kernel/sched/core.c:4178
- schedule+0xd0/0x2a0 kernel/sched/core.c:4253
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4312
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
- ovs_lock net/openvswitch/datapath.c:105 [inline]
- ovs_exit_net+0x1de/0xba0 net/openvswitch/datapath.c:2491
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:186
- cleanup_net+0x4ea/0xa00 net/core/net_namespace.c:603
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-INFO: task kworker/0:5:9052 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-kworker/0:5     D27408  9052      2 0x00004000
-Workqueue: events ovs_dp_masks_rebalance
-Call Trace:
- context_switch kernel/sched/core.c:3453 [inline]
- __schedule+0x8e1/0x1eb0 kernel/sched/core.c:4178
- schedule+0xd0/0x2a0 kernel/sched/core.c:4253
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4312
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
- ovs_lock net/openvswitch/datapath.c:105 [inline]
- ovs_dp_masks_rebalance+0x18/0x80 net/openvswitch/datapath.c:2355
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-INFO: task syz-executor.3:21286 blocked for more than 143 seconds.
-      Not tainted 5.8.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.3  D26160 21286   7072 0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3453 [inline]
- __schedule+0x8e1/0x1eb0 kernel/sched/core.c:4178
- schedule+0xd0/0x2a0 kernel/sched/core.c:4253
- schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1873
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
- __flush_work+0x51f/0xab0 kernel/workqueue.c:3046
- __cancel_work_timer+0x5de/0x700 kernel/workqueue.c:3133
- ovs_dp_cmd_del+0x18c/0x270 net/openvswitch/datapath.c:1790
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2363
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2417
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45c1f9
-Code: Bad RIP value.
-RSP: 002b:00007f75a409cc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000002b3c0 RCX: 000000000045c1f9
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 000000000078bf40 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078bf0c
-R13: 00007ffed0e2724f R14: 00007f75a409d9c0 R15: 000000000078bf0c
-INFO: task syz-executor.3:21355 blocked for more than 144 seconds.
-      Not tainted 5.8.0-rc4-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-syz-executor.3  D27400 21355   7072 0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:3453 [inline]
- __schedule+0x8e1/0x1eb0 kernel/sched/core.c:4178
- schedule+0xd0/0x2a0 kernel/sched/core.c:4253
- schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4312
- __mutex_lock_common kernel/locking/mutex.c:1033 [inline]
- __mutex_lock+0x3e2/0x10d0 kernel/locking/mutex.c:1103
- ovs_lock net/openvswitch/datapath.c:105 [inline]
- ovs_dp_cmd_del+0x4a/0x270 net/openvswitch/datapath.c:1780
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0x61d/0x980 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2363
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2417
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45c1f9
-Code: Bad RIP value.
-RSP: 002b:00007f75a405ac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000002b3c0 RCX: 000000000045c1f9
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 000000000078c080 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c04c
-R13: 00007ffed0e2724f R14: 00007f75a405b9c0 R15: 000000000078c04c
-
-Showing all locks held in the system:
-4 locks held by kworker/u4:3/235:
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880a97ad138 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90001847da8 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8a7ad4b0 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x9b/0xa00 net/core/net_namespace.c:565
- #3: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_lock net/openvswitch/datapath.c:105 [inline]
- #3: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_exit_net+0x1de/0xba0 net/openvswitch/datapath.c:2491
-1 lock held by khungtaskd/1150:
- #0: ffffffff89bc0ec0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5779
-1 lock held by in:imklog/6505:
-3 locks held by kworker/0:5/9052:
- #0: ffff8880aa026d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff8880aa026d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff8880aa026d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff8880aa026d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff8880aa026d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff8880aa026d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x82b/0x1670 kernel/workqueue.c:2240
- #1: ffffc90001b17da8 ((work_completion)(&(&dp->masks_rebalance)->work)){+.+.}-{0:0}, at: process_one_work+0x85f/0x1670 kernel/workqueue.c:2244
- #2: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_lock net/openvswitch/datapath.c:105 [inline]
- #2: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_dp_masks_rebalance+0x18/0x80 net/openvswitch/datapath.c:2355
-2 locks held by syz-executor.3/21286:
- #0: ffffffff8a817cf0 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:741
- #1: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_lock net/openvswitch/datapath.c:105 [inline]
- #1: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_dp_cmd_del+0x4a/0x270 net/openvswitch/datapath.c:1780
-2 locks held by syz-executor.3/21355:
- #0: ffffffff8a817cf0 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:741
- #1: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_lock net/openvswitch/datapath.c:105 [inline]
- #1: ffffffff8aa5dfe8 (ovs_mutex){+.+.}-{3:3}, at: ovs_dp_cmd_del+0x4a/0x270 net/openvswitch/datapath.c:1780
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 1150 Comm: khungtaskd Not tainted 5.8.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- nmi_cpu_backtrace.cold+0x70/0xb1 lib/nmi_backtrace.c:101
- nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:209 [inline]
- watchdog+0xd7d/0x1000 kernel/hung_task.c:295
- kthread+0x3b5/0x4a0 kernel/kthread.c:291
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0xe/0x10 arch/x86/include/asm/irqflags.h:60
+* Will the tag =E2=80=9CFixes=E2=80=9D become helpful for the commit messa=
+ge?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+=E2=80=A6
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -379,6 +379,7 @@ static int __init efisubsys_init(void)
+>  	efi_kobj =3D kobject_create_and_add("efi", firmware_kobj);
+>  	if (!efi_kobj) {
+>  		pr_err("efi: Firmware registration failed.\n");
+> +		destroy_workqueue(efi_rts_wq);
+>  		return -ENOMEM;
+>  	}
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+How do you think about to use the following statements instead
+in the if branch?
+
+-		return -ENOMEM;
++		error =3D -ENOMEM;
++		goto destroy_workqueue;
+
+
+Regards,
+Markus
