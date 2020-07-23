@@ -2,156 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225E622AF47
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9D822AF48
 	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgGWM1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:27:05 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:36636 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729324AbgGWM1B (ORCPT
+        id S1728780AbgGWM1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:27:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728789AbgGWM1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:27:01 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06NCQwB6077169;
-        Thu, 23 Jul 2020 07:26:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595507218;
-        bh=k4XT/ag3y89G2xERAKuPRDve/n7of+kXftcTCTVuRQM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=xDOBOrtNyxiwy/MAhZU60wMm5daqZEoGrGoZ5F6zh7rrLRaXJBZC6Q1qOczQlR39V
-         3iA6WKnxPn6GS6tSy9wmZEZzBXOxlvw5h8azGbGexA6fx9QpqLQZqfd+Sv9iHrines
-         h0z2wL3NH5CERlWjaTVeUWo7GrFudGyG/11uV/f4=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06NCQwmN126597;
-        Thu, 23 Jul 2020 07:26:58 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
- Jul 2020 07:26:57 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 23 Jul 2020 07:26:57 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06NCQooX024814;
-        Thu, 23 Jul 2020 07:26:55 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe instances
-Date:   Thu, 23 Jul 2020 17:56:49 +0530
-Message-ID: <20200723122649.24676-3-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200723122649.24676-1-kishon@ti.com>
-References: <20200723122649.24676-1-kishon@ti.com>
+        Thu, 23 Jul 2020 08:27:09 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5F2C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:27:09 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id s26so2933520pfm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lieebjtDdlU4fQmXZR5p7nEaYKK/7RzpZddWMXNez6s=;
+        b=Xvq/2AkVeAoreBTplwDbHA6TE9XTz9Hvj6kvDSLdTdrZ40ZsLQP8gTJda1duBq+BVE
+         L5QGm+BpnYstK/J3kAegn5QN5lB+4Oad5iVPy2ZO5cSawTFECQAsWAPYtiFDa2YXJ5kP
+         /1IEm76imNIr1IVh3SLzTKVZ8XvlspCXPFjXaB5o6vF4OAWvbg8MjCRU1zh1PrwWhKEq
+         k8IZn0kqdeQoIref7mi/YV0hMWtE98x5ZHAkAcJSSdse7jZAEOV54UQAN48gBcM4/opq
+         cfU5NNKRvW3kAWAdNUhobnwwmwU/j2acFH1Earg4JH3gHfrgPygmP1q/Wa9Ub8Ge0xrX
+         uLYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lieebjtDdlU4fQmXZR5p7nEaYKK/7RzpZddWMXNez6s=;
+        b=QhQd+16KM+p+3fUx/HBasSrZWKF4dD+T1248g9AzhhpVAGNuVPefl3+XQCJiCZqmcI
+         FmCqaEnVAuB1ehCYCHNrh55CEVnPXagdbcDylu/+smaMG3BsHIvh/u6sM+/73SoXmZ8U
+         ssUd3FOlfUVyubf5ko8wIRHX2nh/yHE/SORIpYV3AsUXa6PXs9qRlbRoBodKYS6meewC
+         TDlZ6hltI0qEpaqUs8sFDxZrJEkfaKZStIbudprsfdv2sj4Bm6Na7DzbYKFt3stuxrIj
+         oHInq/9UBF92mW1juBz2gJ33SP2XhbThMWmBde+Ao0loc0yfWpZvPetVd2Gm2xd50Nda
+         Zfww==
+X-Gm-Message-State: AOAM531t3Z+jq9DA+k/c02qhIlu9r/E/Bmzu2k0KpPIPIDlyGz8iToRK
+        LRQZFSdLlyseqiqPD/oI5FU4TsyM/VTv8tU1EOmPe/is
+X-Google-Smtp-Source: ABdhPJxvx67nipqokrX921pbgYRvniV3tyBDvTu65YFq8A7iywwhOw5ApPvL4+vz6erQzqdAISgoO+AATgdoiXrMwuA=
+X-Received: by 2002:aa7:8bcb:: with SMTP id s11mr3819505pfd.170.1595507228551;
+ Thu, 23 Jul 2020 05:27:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <202007231701.CV9tyb31%lkp@intel.com> <20200723121617.GM3634@localhost>
+In-Reply-To: <20200723121617.GM3634@localhost>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 23 Jul 2020 15:26:54 +0300
+Message-ID: <CAHp75VeXh0vsydRay1a3uBP2kSsr6bNV7bT=vgCS7CSSRYT1mw@mail.gmail.com>
+Subject: Re: drivers/tty/serial/pmac_zilog.c:255:36: sparse: sparse: context
+ imbalance in 'pmz_receive_chars' - unexpected unlock
+To:     Johan Hovold <johan@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J721E Common Processor Board has PCIe connectors for the 1st three PCIe
-instances. Configure the three PCIe instances in RC mode and disable the
-4th PCIe instance.
+On Thu, Jul 23, 2020 at 3:19 PM Johan Hovold <johan@kernel.org> wrote:
+>
+> On Thu, Jul 23, 2020 at 05:29:14PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   d15be546031cf65a0fc34879beca02fd90fe7ac7
+> > commit: 08d5470308ac3598e7709d08b8979ce6e9de8da2 serial: core: fix sysrq overhead regression
+> > date:   4 weeks ago
+> > config: m68k-randconfig-s032-20200723 (attached as .config)
+> > compiler: m68k-linux-gcc (GCC) 9.3.0
+> > reproduce:
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # apt-get install sparse
+> >         # sparse version: v0.6.2-93-g4c6cbe55-dirty
+> >         git checkout 08d5470308ac3598e7709d08b8979ce6e9de8da2
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=m68k
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> >
+> > sparse warnings: (new ones prefixed by >>)
+> >
+> > >> drivers/tty/serial/pmac_zilog.c:255:36: sparse: sparse: context imbalance in 'pmz_receive_chars' - unexpected unlock
+>
+> This warning is far from new,
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../dts/ti/k3-j721e-common-proc-board.dts     | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
+I suspect it's a new sparse and kbuildbot that decided to unveil old sins.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index 8bc1e6ecc50e..29be88811132 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -651,3 +651,83 @@
- 
- 	status = "okay";
- };
-+
-+&serdes0 {
-+	serdes0_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <1>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz0 1>;
-+	};
-+};
-+
-+&serdes1 {
-+	serdes1_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz1 1>, <&serdes_wiz1 2>;
-+	};
-+};
-+
-+&serdes2 {
-+	serdes2_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz2 1>, <&serdes_wiz2 2>;
-+	};
-+};
-+
-+&pcie0_rc {
-+	reset-gpios = <&exp1 6 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+};
-+
-+&pcie1_rc {
-+	reset-gpios = <&exp1 2 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes1_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie2_rc {
-+	reset-gpios = <&exp2 20 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes2_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie0_ep {
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+	status = "disabled";
-+};
-+
-+&pcie1_ep {
-+	phys = <&serdes1_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
-+
-+&pcie2_ep {
-+	phys = <&serdes2_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
-+
-+&pcie3_rc {
-+	status = "disabled";
-+};
-+
-+&pcie3_ep {
-+	status = "disabled";
-+};
+> but let's add the missing annotation
+> nonetheless:
+>
+>         https://lore.kernel.org/r/20200723121423.24217-1-johan@kernel.org
+
+Feel free to add Reviewed-by: Andy Shevchenko
+<andy.shevchenko@gmail.com> to them.
+
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
