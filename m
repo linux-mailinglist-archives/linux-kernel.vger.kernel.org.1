@@ -2,140 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CD222B0FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAA322B0FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729413AbgGWOGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:06:33 -0400
-Received: from mail-dm6nam10on2088.outbound.protection.outlook.com ([40.107.93.88]:22432
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727111AbgGWOGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:06:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iwh3BcFlFOKeJhKiXlg8X/vQuWr65i5oNLPQajYn0C0/OgAqQB1o7vc+F6bYAK65Vzpkj1oYxHNManIndFH9HbQJ0lpAWVbZ73vmzsQULNbBiFc6HdIkR+Nr4poGE0pMMY29YW6nU8SF3cqkJ5EXiTviL0LNb+EvqKs6FlvUCms1b0t+K+Bwa1Ho4gB9bm7qYLMlwnh5aMbM6qntD9lluXcRF3O6tdgfcq6UEGn0ojf6bHVaEvMVyAg6qSFll4viGmQPS9AzZom9TmE1oQohuhSf6kJBnk1N9Apv9usCNRIZu4pMAai0SAcuXFdV91qPynFYcauZRO2xSr4+2HG2qw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ywkMrig5SSgN6/sqmk4HzYAND1AgcJ2iPorIfTQ34iw=;
- b=Zjn4EnWt/nG8LGM5YLnHSR/ccy2zjTh3FQvPYvPAT1SjHMnBctxb24fvonidkf8KVvS1e9lHs12OH4cmtIiYLNNws1Z5rkVKbmuMDzB0IEZltZ8K7QC6z97IV1P/TbvpMMTIoIHLw/jjM5SNogJ6giol00N/KG3n71pelnLqfuAUh+bg+fah9ovot3UBs0YsR6iPKSw8O75LHMs52WCDd6CFXXE/8rGWMB40EFByJCREGwfYHLuJ/hXPafvmkPiK+DE6CyrBsf5dh5/QnKDgamVJgVpSDHr80NTOy7Ok/ySOXpY/WC3tY7z+aFzBmtq1SFPon2p4crUd3v112AyCag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ywkMrig5SSgN6/sqmk4HzYAND1AgcJ2iPorIfTQ34iw=;
- b=lDfeis9+UZVRtxXibhX32gczqEqCJf9RTN5BYcGbYoiibGRlei3W/kGcVIKJNjSgYvn/hX0DlASA7MJeS3+gmzpDlZU5+Ep6yId06jf6USw+gYWNpgSOsOSnYYKm4x6HuaOboJLdiNs+ORLssxJUiUV1ZtXw8+X6kMiAC5yXHSQ=
-Received: from MN2PR05CA0039.namprd05.prod.outlook.com (2603:10b6:208:236::8)
- by SN4PR0201MB3616.namprd02.prod.outlook.com (2603:10b6:803:4e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22; Thu, 23 Jul
- 2020 14:06:29 +0000
-Received: from BL2NAM02FT055.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:236:cafe::4c) by MN2PR05CA0039.outlook.office365.com
- (2603:10b6:208:236::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend
- Transport; Thu, 23 Jul 2020 14:06:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT055.mail.protection.outlook.com (10.152.77.126) with Microsoft SMTP
- Server id 15.20.3216.10 via Frontend Transport; Thu, 23 Jul 2020 14:06:29
- +0000
-Received: from [149.199.38.66] (port=56968 helo=smtp.xilinx.com)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <srinivas.neeli@xilinx.com>)
-        id 1jybpr-0004HR-0H; Thu, 23 Jul 2020 07:04:35 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <srinivas.neeli@xilinx.com>)
-        id 1jybrh-0005To-0Q; Thu, 23 Jul 2020 07:06:29 -0700
-Received: from xsj-pvapsmtp01 (smtp3.xilinx.com [149.199.38.66])
-        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 06NE6K0B004486;
-        Thu, 23 Jul 2020 07:06:20 -0700
-Received: from [10.140.6.6] (helo=xhdappanad40.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <srinivas.neeli@xilinx.com>)
-        id 1jybrX-0005Q2-PL; Thu, 23 Jul 2020 07:06:20 -0700
-From:   Srinivas Neeli <srinivas.neeli@xilinx.com>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        michal.simek@xilinx.com, shubhrajyoti.datta@xilinx.com,
-        sgoud@xilinx.com
-Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, git@xilinx.com
-Subject: [PATCH V2 3/3] MAINTAINERS: add fragment for xilinx GPIO drivers
-Date:   Thu, 23 Jul 2020 19:36:08 +0530
-Message-Id: <1595513168-11965-4-git-send-email-srinivas.neeli@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595513168-11965-1-git-send-email-srinivas.neeli@xilinx.com>
-References: <1595513168-11965-1-git-send-email-srinivas.neeli@xilinx.com>
-X-RCIS-Action: ALLOW
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
+        id S1729418AbgGWOHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:07:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12540 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727111AbgGWOHD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 10:07:03 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NE3QnP061533;
+        Thu, 23 Jul 2020 10:06:50 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32f23g9dtm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Jul 2020 10:06:49 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06NE0Ltc010223;
+        Thu, 23 Jul 2020 14:06:47 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 32brq83ch9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Jul 2020 14:06:46 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06NE6heE59834608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Jul 2020 14:06:44 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF6B411C04C;
+        Thu, 23 Jul 2020 14:06:43 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 64F5711C04A;
+        Thu, 23 Jul 2020 14:06:43 +0000 (GMT)
+Received: from pomme.local (unknown [9.145.31.161])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 23 Jul 2020 14:06:43 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] KVM: PPC: Book3S HV: rework secure mem slot
+ dropping
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     bharata@linux.ibm.com, linuxram@us.ibm.com
+Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        paulus@samba.org, sukadev@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, bauerman@linux.ibm.com
+References: <20200721104202.15727-1-ldufour@linux.ibm.com>
+ <20200721104202.15727-3-ldufour@linux.ibm.com>
+ <20200723033600.GS7902@in.ibm.com>
+ <4a3caeaf-cd0c-fcd7-0a97-f367a5f78dac@linux.ibm.com>
+Message-ID: <0631397b-44af-ea3b-b70b-e4a0dc2c0366@linux.ibm.com>
+Date:   Thu, 23 Jul 2020 16:06:43 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: d5f9b105-95e8-40b3-d227-08d82f11988d
-X-MS-TrafficTypeDiagnostic: SN4PR0201MB3616:
-X-Microsoft-Antispam-PRVS: <SN4PR0201MB3616680E08C50B0483627455AF760@SN4PR0201MB3616.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:1227;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Jqv9787RC4TI3u7wi3TlNfXgoThYZ/W12FYCsFWDTA9vFYOWoaFlmVNm6QvGzmHKCIZCsLtd79MpXcXXQq8ibN+H80d4zFShF8YUGl0WCFoV7dzRfM95wKp/41Pqqx9zHze7l0U/iqPtCzMPilG/Ls+KW31CPlNBP8HrRre7JbZv5VnBvZx0WpuN2s5t7CPkM1rzcwVsd8oGtvc6fQmTjPMDWqyUBIZyKqkdf0o7eQXEXg8vUr7nnqOE4YS/zA3yNCBjtgocQ5fHC2buMFjkfaLyQT7UorJ9tztDAfPXBbBMyF7Te2ZiUZM/WDq01THgXHQuLb2dKZVrjsZ9KM2aVXX/nP2a/5OuO4Edb19RL35Lwjp2mqHC7ww3TegHBIRSf4rAmGE3rnDgax/44AiiIA==
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(136003)(376002)(346002)(396003)(39860400002)(46966005)(107886003)(336012)(81166007)(2616005)(70206006)(82740400003)(47076004)(44832011)(70586007)(186003)(26005)(9786002)(4744005)(6666004)(8936002)(356005)(6636002)(7696005)(478600001)(2906002)(82310400002)(426003)(5660300002)(36756003)(8676002)(4326008)(316002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2020 14:06:29.3235
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5f9b105-95e8-40b3-d227-08d82f11988d
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT055.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB3616
+In-Reply-To: <4a3caeaf-cd0c-fcd7-0a97-f367a5f78dac@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-23_06:2020-07-23,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 spamscore=0 clxscore=1015 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007230105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added entry for xilinx GPIO drivers.
+Le 23/07/2020 à 14:32, Laurent Dufour a écrit :
+> Le 23/07/2020 à 05:36, Bharata B Rao a écrit :
+>> On Tue, Jul 21, 2020 at 12:42:02PM +0200, Laurent Dufour wrote:
+>>> When a secure memslot is dropped, all the pages backed in the secure device
+>>> (aka really backed by secure memory by the Ultravisor) should be paged out
+>>> to a normal page. Previously, this was achieved by triggering the page
+>>> fault mechanism which is calling kvmppc_svm_page_out() on each pages.
+>>>
+>>> This can't work when hot unplugging a memory slot because the memory slot
+>>> is flagged as invalid and gfn_to_pfn() is then not trying to access the
+>>> page, so the page fault mechanism is not triggered.
+>>>
+>>> Since the final goal is to make a call to kvmppc_svm_page_out() it seems
+>>> simpler to directly calling it instead of triggering such a mechanism. This
+>>> way kvmppc_uvmem_drop_pages() can be called even when hot unplugging a
+>>> memslot.
+>>>
+>>> Since kvmppc_uvmem_drop_pages() is already holding kvm->arch.uvmem_lock,
+>>> the call to __kvmppc_svm_page_out() is made.
+>>> As __kvmppc_svm_page_out needs the vma pointer to migrate the pages, the
+>>> VMA is fetched in a lazy way, to not trigger find_vma() all the time. In
+>>> addition, the mmap_sem is help in read mode during that time, not in write
+>>> mode since the virual memory layout is not impacted, and
+>>> kvm->arch.uvmem_lock prevents concurrent operation on the secure device.
+>>>
+>>> Cc: Ram Pai <linuxram@us.ibm.com>
+>>> Cc: Bharata B Rao <bharata@linux.ibm.com>
+>>> Cc: Paul Mackerras <paulus@ozlabs.org>
+>>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+>>> ---
+>>>   arch/powerpc/kvm/book3s_hv_uvmem.c | 54 ++++++++++++++++++++----------
+>>>   1 file changed, 37 insertions(+), 17 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c 
+>>> b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>>> index 5a4b02d3f651..ba5c7c77cc3a 100644
+>>> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
+>>> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
+>>> @@ -624,35 +624,55 @@ static inline int kvmppc_svm_page_out(struct 
+>>> vm_area_struct *vma,
+>>>    * fault on them, do fault time migration to replace the device PTEs in
+>>>    * QEMU page table with normal PTEs from newly allocated pages.
+>>>    */
+>>> -void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *free,
+>>> +void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *slot,
+>>>                    struct kvm *kvm, bool skip_page_out)
+>>>   {
+>>>       int i;
+>>>       struct kvmppc_uvmem_page_pvt *pvt;
+>>> -    unsigned long pfn, uvmem_pfn;
+>>> -    unsigned long gfn = free->base_gfn;
+>>> +    struct page *uvmem_page;
+>>> +    struct vm_area_struct *vma = NULL;
+>>> +    unsigned long uvmem_pfn, gfn;
+>>> +    unsigned long addr, end;
+>>> +
+>>> +    mmap_read_lock(kvm->mm);
+>>> +
+>>> +    addr = slot->userspace_addr;
+>>
+>> We typically use gfn_to_hva() for that, but that won't work for a
+>> memslot that is already marked INVALID which is the case here.
+>> I think it is ok to access slot->userspace_addr here of an INVALID
+>> memslot, but just thought of explictly bringing this up.
+> 
+> Which explicitly mentioned above in the patch's description:
+> 
+> This can't work when hot unplugging a memory slot because the memory slot
+> is flagged as invalid and gfn_to_pfn() is then not trying to access the
+> page, so the page fault mechanism is not triggered.
+> 
+>>
+>>> +    end = addr + (slot->npages * PAGE_SIZE);
+>>> -    for (i = free->npages; i; --i, ++gfn) {
+>>> -        struct page *uvmem_page;
+>>> +    gfn = slot->base_gfn;
+>>> +    for (i = slot->npages; i; --i, ++gfn, addr += PAGE_SIZE) {
+>>> +
+>>> +        /* Fetch the VMA if addr is not in the latest fetched one */
+>>> +        if (!vma || (addr < vma->vm_start || addr >= vma->vm_end)) {
+>>> +            vma = find_vma_intersection(kvm->mm, addr, end);
+>>> +            if (!vma ||
+>>> +                vma->vm_start > addr || vma->vm_end < end) {
+>>> +                pr_err("Can't find VMA for gfn:0x%lx\n", gfn);
+>>> +                break;
+>>> +            }
+>>> +        }
+>>
+>> In Ram's series, kvmppc_memslot_page_merge() also walks the VMAs spanning
+>> the memslot, but it uses a different logic for the same. Why can't these
+>> two cases use the same method to walk the VMAs? Is there anything subtly
+>> different between the two cases?
+> 
+> This is probably doable. At the time I wrote that patch, the 
+> kvmppc_memslot_page_merge() was not yet introduced AFAIR.
+> 
+> This being said, I'd help a lot to factorize that code... I let Ram dealing with 
+> that ;)
 
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
----
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Indeed I don't think this is relevant, the loop in kvmppc_memslot_page_merge() 
+deals with one call (to ksm_advise) per VMA, while this code is dealing with one 
+call per page of the VMA, which completely different.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ea296f213e45..71c40b0ddef6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18900,6 +18900,16 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/net/can/xilinx_can.txt
- F:	drivers/net/can/xilinx_can.c
- 
-+XILINX GPIO DRIVER
-+M:	Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
-+R:	Srinivas Neeli <srinivas.neeli@xilinx.com>
-+R:	Michal Simek <michal.simek@xilinx.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/gpio/gpio-xilinx.txt
-+F:	Documentation/devicetree/bindings/gpio/gpio-zynq.txt
-+F:	drivers/gpio/gpio-xilinx.c
-+F:	drivers/gpio/gpio-zynq.c
-+
- XILINX SD-FEC IP CORES
- M:	Derek Kiernan <derek.kiernan@xilinx.com>
- M:	Dragan Cvetic <dragan.cvetic@xilinx.com>
--- 
-2.7.4
+I don't think merging the both will be a good idea.
 
+Cheers,
+Laurent.
