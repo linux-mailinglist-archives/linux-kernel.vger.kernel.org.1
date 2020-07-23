@@ -2,127 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5346022B52E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B8922B535
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730153AbgGWRtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:49:08 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:34263 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgGWRtH (ORCPT
+        id S1728139AbgGWRv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbgGWRv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:49:07 -0400
-Received: by mail-io1-f66.google.com with SMTP id q74so7181067iod.1;
-        Thu, 23 Jul 2020 10:49:07 -0700 (PDT)
+        Thu, 23 Jul 2020 13:51:26 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE30AC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:51:25 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id e64so7140561iof.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Dp8barP5vzlP5XS3FVcWPILo1gscVYMo/mw0MIKvTYE=;
+        b=fI9Cze+V4UJp94tcq4eh9j+pb8cf3YCt91Qw83uqhHiZrd7+3+4u3wnzCWTN3a6GJO
+         +edT5kjdytpPP+oeEFJaoUSHid8sa2hhM8ip+tsamp3IwvRQCweh/PAYqVzAVL6ffGrH
+         pjDQSM0M4+NwYirIkslyC/c0pR8aUkM4KHu0tLJtLw6CVNf4CqtOKr/mYlNvgIQMHeLe
+         uVoU6v5EEyTGNmOKeLCfgtkhgpM5V799e5AYbFi0owID02q/buKLrAxKiooqvLMtY936
+         0jJT2oujH+ndwm8jvwRcrqjrrjr3ExmU1tx67wnR2TREyQiclUBGwoZJ/eodFguJvrhy
+         W4qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2YqHLx33D3lKQvsVIeu4fr2sY1tMGjPB3BoYpQvDkyk=;
-        b=VcOXQGj8cS4Hu1inEHWtMPIDB9k7pUYZacGscPw3jELZxt33U2XFuPpQ4OkkG4bA9J
-         C+sfM9+bFa1kJcAayLq8wS5+rgrcVUz84s/whdM4LzujO97d5GN2WHs+m7btQI0R4UOU
-         DvoewFAJBy9RVyyapuW2pPjM8PFdQB3Ibjv1mHWZtPu/I6Aze8qv5LL19NusqNt3uKRn
-         DBYiSCc3izmKCwM0l9JzChiKMv7F7RQdtq1PSOndxx2lObmVqMlpT4/nRWP1Usc3sJfm
-         4Cv0ZbtUkMdtvOAp3/xFjwgUlseZ1mt1Cr2ywuBMngVXN/mvVUagm4GiyJS2HUQodBrK
-         tylQ==
-X-Gm-Message-State: AOAM531e2OZNW09HhsrbBHe31zzCKYbKfSsu8HZN4UAI/F5PnzH52NU5
-        J9QgTcrA1tsQpcnbVeGsprA8tO7LyA==
-X-Google-Smtp-Source: ABdhPJzMt9kdwyy1jgkZzCBgVSV/BYhakcwYiid0IQjxc9Xt7Tc5qUdDCRcJRJ0xVc1wcAH/BlPJGg==
-X-Received: by 2002:a02:cb97:: with SMTP id u23mr6003181jap.113.1595526546930;
-        Thu, 23 Jul 2020 10:49:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id v10sm1797167ilj.40.2020.07.23.10.49.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 10:49:06 -0700 (PDT)
-Received: (nullmailer pid 598211 invoked by uid 1000);
-        Thu, 23 Jul 2020 17:49:05 -0000
-Date:   Thu, 23 Jul 2020 11:49:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     miguelborgesdefreitas@gmail.com
-Cc:     a.zummo@towertech.it, baruch@tkos.co.il, linux@armlinux.org.uk,
-        alexandre.belloni@bootlin.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: pcf8523: add DSM pm option for
- battery switch-over
-Message-ID: <20200723174905.GA596242@bogus>
-References: <20200719145028.3370-3-miguelborgesdefreitas@gmail.com>
- <20200720112401.4620-1-miguelborgesdefreitas@gmail.com>
- <20200720112401.4620-2-miguelborgesdefreitas@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=Dp8barP5vzlP5XS3FVcWPILo1gscVYMo/mw0MIKvTYE=;
+        b=hhAm8b9S27YZGdCG84dsedmr0ahv2abF2lwACnKSfgaU5rw5WsL3Gdgxy932FKEJ5B
+         0WIWTx4hY8AuCesSBbmBnYX0tz9Y762ixBM05AMZFHe5enVnDTaJlPUGfKikyBdMEk1N
+         nW6kO5kaG8E+W4IRV90Pnbmo/3mZwx2nHdBoOqbv/dU2tdfT0oG2/KPhSWuAsbymscyU
+         GPV4IESGNazCp15LqL+iZJcs0pG9S+Dablg5WO+9yko7MjDtDYomNAEpgTgOxvO9onQl
+         klLEQfjW+KhdaeWbgmPwflqY2jcspta8mh0+wr21Ib7/00xgDg4nhq1Y4CARYrt0Mw5R
+         VrvA==
+X-Gm-Message-State: AOAM530XsNRZNNO7qxnK/f3B+0LPplqX80enfMtrPJwI9QQqcjtXtYBo
+        SDNQcneTJlEMWVyoTYPNTDk+e04AlP02+2P7aA4=
+X-Google-Smtp-Source: ABdhPJx8g1BHb8SisEPpCfbThq2IBbUifErGVu7IAmKP8PNxOWrWOhNR8o7ggZIGvq6u/xgzxyNyodGG4JiHaiyRY5E=
+X-Received: by 2002:a02:9469:: with SMTP id a96mr3273340jai.121.1595526685075;
+ Thu, 23 Jul 2020 10:51:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720112401.4620-2-miguelborgesdefreitas@gmail.com>
+References: <20200723171119.9881-1-sedat.dilek@gmail.com> <6730f39e-120c-9fec-6bee-f210833d91f2@infradead.org>
+In-Reply-To: <6730f39e-120c-9fec-6bee-f210833d91f2@infradead.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 23 Jul 2020 19:51:13 +0200
+Message-ID: <CA+icZUUsTRyX4yJU1JAu9-Nfc-MeXvw_gbz3_G52ytUpUv0umg@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/configs: Remove CONFIG_CRYPTO_AES_586 from i386_defconfig
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        =?UTF-8?Q?Diego_Elio_Petten=C3=B2?= <flameeyes@flameeyes.com>,
+        "Maciej W. Rozycki" <macro@linux-mips.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 12:23:59PM +0100, miguelborgesdefreitas@gmail.com wrote:
-> From: Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>
-> 
-> This adds direct-switching mode as a configurable DT flag for
-> RTC modules supporting it (e.g. nxp pcf8523).
-> DSM switches the power source to the battery supply whenever the
-> VDD drops below VBAT. The option is recommended for hw designs
-> where VDD is always expected to be higher than VBAT.
-> 
-> Signed-off-by: Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>
-> ---
-> Changes in v2:
-> - Added extended commit message for git history
-> - Separate dt bindings documentation into a single patch
-> 
->  Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt | 7 ++++++-
->  Documentation/devicetree/bindings/rtc/rtc.yaml        | 7 +++++++
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
-> index 0b1080c..f715a8f 100644
-> --- a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
-> +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
-> @@ -4,10 +4,14 @@ Required properties:
->  - compatible: Should contain "nxp,pcf8523".
->  - reg: I2C address for chip.
->  
-> -Optional property:
-> +Optional properties:
->  - quartz-load-femtofarads: The capacitive load of the quartz(x-tal),
->    expressed in femto Farad (fF). Valid values are 7000 and 12500.
->    Default value (if no value is specified) is 12500fF.
-> +- pm-enable-dsm: battery switch-over function is enabled in direct
-> +  switching mode. The power failure condition happens when VDD < VBAT,
-> +  without requiring VDD to drop below Vth(sw)bat.
-> +  Default value (if not provided) is the standard mode.
->  
->  Example:
->  
-> @@ -15,4 +19,5 @@ pcf8523: rtc@68 {
->  	compatible = "nxp,pcf8523";
->  	reg = <0x68>;
->  	quartz-load-femtofarads = <7000>;
-> +	pm-enable-dsm;
->  };
-> diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
-> index ee237b2..a0048f4 100644
-> --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
-> @@ -47,4 +47,11 @@ properties:
->      description:
->        Enables wake up of host system on alarm.
->  
-> +  pm-enable-dsm:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Enables the battery switch-over function in direct switching
-> +      mode. Should be set in systems where VDD is higher than VBAT
-> +      at all times.
+On Thu, Jul 23, 2020 at 7:29 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 7/23/20 10:11 AM, Sedat Dilek wrote:
+> > Initially CONFIG_CRYPTO_AES_586=y was added to i386_defconfig file
+> > with commit c1b362e3b4d3 ("x86: update defconfigs").
+> >
+> > The code and Kconfig for CONFIG_CRYPTO_AES_586 was removed in:
+> >
+> > commit 1d2c3279311e4f03fcf164e1366f2fda9f4bfccf
+> > ("crypto: x86/aes - drop scalar assembler implementations")
+> >
+> > Remove the Kconfig relict from i386_defconfig file.
+>
+>                      relic
+>
 
-I'm all for common properties, but is this common across vendors?
+leftover :-)
 
-> +
->  ...
-> -- 
-> 1.8.3.1
-> 
+https://dict.leo.org/englisch-deutsch/Relikt
+
+> >
+> > Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> > Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+>
+
+Thanks for the review.
+
+- Sedat -
+
+> Thanks.
+>
+> > ---
+> > Changes v1 -> v2:
+> > - Add CC to Ard and Herbert (see commit 1d2c3279311e)
+> >
+> >  arch/x86/configs/i386_defconfig | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+> > index 550904591e94..3a2a89882350 100644
+> > --- a/arch/x86/configs/i386_defconfig
+> > +++ b/arch/x86/configs/i386_defconfig
+> > @@ -290,7 +290,6 @@ CONFIG_SECURITY_NETWORK=y
+> >  CONFIG_SECURITY_SELINUX=y
+> >  CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+> >  CONFIG_SECURITY_SELINUX_DISABLE=y
+> > -CONFIG_CRYPTO_AES_586=y
+> >  # CONFIG_CRYPTO_ANSI_CPRNG is not set
+> >  CONFIG_EFI_STUB=y
+> >  CONFIG_ACPI_BGRT=y
+> >
+>
+>
+> --
+> ~Randy
