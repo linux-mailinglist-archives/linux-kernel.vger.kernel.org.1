@@ -2,215 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F8122B559
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C819D22B56F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726737AbgGWSDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgGWSDb (ORCPT
+        id S1726989AbgGWSKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:10:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38064 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726650AbgGWSJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:03:31 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961E7C0619DC;
-        Thu, 23 Jul 2020 11:03:31 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 207so3401916pfu.3;
-        Thu, 23 Jul 2020 11:03:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fSWqd+1t1aywwPKD6hDR7ow9jwG8TxUL+vMCO6q/A/o=;
-        b=e8kA7OJ/T0glh1ZZb9YUQCZ59M/Kv9TQbXie4fLka2yZL1Aj3gFKLKRKsHFi/k3V+C
-         O2wohsCNwbO6Pt8fF9xrfDpaXDmf+y5qxe5n4eaUM+gvkcu5oZlHkSashAIftRMss33w
-         Von0bqZEciqiAdisSb0FrSqOcTf/NpY1ACvJGVMdJu7l78C0Fcquj6GWbZE2CvazfnGW
-         Umnjyg2QE3pnsGEL03uuKUM5h3MXyRzhkH5tUTa3eaR4DO3BVQFIFk6URzgrXVd7zVXI
-         /Sf4Zl9oyWAOnrKVVaWnzaC+SatU0H/Kex6tiBBC1xFpovnczDlFW3B/zErvDJIpIyRl
-         f/FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fSWqd+1t1aywwPKD6hDR7ow9jwG8TxUL+vMCO6q/A/o=;
-        b=sYxaPpkBD/pk7hsuncRiakupV/WL4i4n73fOyMyYvtXr1eCJ0A0Hbwr0gw3R4sOuWf
-         /99ow9MvcNeCxDsIDxgQXvqQLcDHrMN12RZZwmARYC9kN5Ka4cmbKty/wPr+lUU8Hu1n
-         DBTgSxplBykH4n8FJZqv2ipspV2N1Iv9v4CIhrqihbg8QK5IzIymzW9s0YVl+B8eNoVx
-         fb7jiakQpbxIQqBR0SUXtc9BClg9KBgZskdaq8HaZIDmam1HQnnUPLlf54LT+KfUp00p
-         OnPzeaHMJrSRTzyfIQvD+UAz8Ep1clNB0oC+z/kTkaT2PtxOCZs0F8S8gLm1GS+B54sJ
-         JciA==
-X-Gm-Message-State: AOAM531rL8on8I1eDmDwP67Ray9cBDfDY8K4nwqdLLEV8a8SL2Eq0GAW
-        suxaOXlVMrXNJYCQDTzFjQB/Zld7eX5Zn5KOYJk=
-X-Google-Smtp-Source: ABdhPJxDmzIjp+pEkh0cBihTwhDqEdiNr4ESCD12BttS+XhGQ8EKmjNCgCcy2gUy64aWkqBKqnMFb5XRNYv92294aSE=
-X-Received: by 2002:a63:a05f:: with SMTP id u31mr5096290pgn.4.1595527410914;
- Thu, 23 Jul 2020 11:03:30 -0700 (PDT)
+        Thu, 23 Jul 2020 14:09:56 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NHreei021921
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:09:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=NX5kMTGxH2ARxXaqOShX31iFg0SLbaYQiKKy3n4O+ro=;
+ b=JPdhZ6pQzRrSPdGpwRkKoGNZ3sC6JJ+TxKpizYdt3GWkZ43sSphCmxK+UZViSzuAClSC
+ /8EW3O0KTD8i3oCQdkKl3oYH4usULBEv1+dWgz8ND82RfeKF6zdd8YwQhF98Ysl0mgbw
+ kg4EuIiSZrAx/MQbvIb0TQjgl0BxNMcCM2w= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32et5kwmx2-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:09:56 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 23 Jul 2020 11:09:55 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id E613F62E4F5A; Thu, 23 Jul 2020 11:06:54 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v5 bpf-next 0/5] bpf: fix stackmap on perf_events with PEBS
+Date:   Thu, 23 Jul 2020 11:06:43 -0700
+Message-ID: <20200723180648.1429892-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <1595513168-11965-1-git-send-email-srinivas.neeli@xilinx.com> <1595513168-11965-3-git-send-email-srinivas.neeli@xilinx.com>
-In-Reply-To: <1595513168-11965-3-git-send-email-srinivas.neeli@xilinx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 23 Jul 2020 21:03:14 +0300
-Message-ID: <CAHp75Vd7BU5DYqyQFGfBtKrb6jWFEQjMCu2MOa_7M8XYkt6BFA@mail.gmail.com>
-Subject: Re: [PATCH V2 2/3] gpio: xilinx: Add interrupt support
-To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        shubhrajyoti.datta@xilinx.com, sgoud@xilinx.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-23_09:2020-07-23,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007230132
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 5:08 PM Srinivas Neeli
-<srinivas.neeli@xilinx.com> wrote:
->
-> Adds interrupt support to the Xilinx GPIO driver so that rising and
-> falling edge line events can be supported. Since interrupt support is
-> an optional feature in the Xilinx IP, the driver continues to support
-> devices which have no interrupt provided.
+Calling get_perf_callchain() on perf_events from PEBS entries may cause
+unwinder errors. To fix this issue, perf subsystem fetches callchain earl=
+y,
+and marks perf_events are marked with __PERF_SAMPLE_CALLCHAIN_EARLY.
+Similar issue exists when BPF program calls get_perf_callchain() via
+helper functions. For more information about this issue, please refer to
+discussions in [1].
 
-...
+This set fixes this issue with helper proto bpf_get_stackid_pe and
+bpf_get_stack_pe.
 
-> +#include <linux/irqchip/chained_irq.h>
+[1] https://lore.kernel.org/lkml/ED7B9430-6489-4260-B3C5-9CFA2E3AA87A@fb.=
+com/
 
-Not sure I see a user of it.
+Changes v4 =3D> v5:
+1. Return -EPROTO instead of -EINVAL on PERF_EVENT_IOC_SET_BPF errors.
+   (Alexei)
+2. Let libbpf print a hint message when PERF_EVENT_IOC_SET_BPF returns
+   -EPROTO. (Alexei)
 
-...
+Changes v3 =3D> v4:
+1. Fix error check logic in bpf_get_stackid_pe and bpf_get_stack_pe.
+   (Alexei)
+2. Do not allow attaching BPF programs with bpf_get_stack|stackid to
+   perf_event with precise_ip > 0, but not proper callchain. (Alexei)
+3. Add selftest get_stackid_cannot_attach.
 
-> +/**
-> + * xgpio_xlate - Translate gpio_spec to the GPIO number and flags
-> + * @gc: Pointer to gpio_chip device structure.
-> + * @gpiospec:  gpio specifier as found in the device tree
-> + * @flags: A flags pointer based on binding
-> + *
-> + * Return:
-> + * irq number otherwise -EINVAL
-> + */
-> +static int xgpio_xlate(struct gpio_chip *gc,
-> +                      const struct of_phandle_args *gpiospec, u32 *flags)
-> +{
-> +       if (gc->of_gpio_n_cells < 2) {
-> +               WARN_ON(1);
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (WARN_ON(gpiospec->args_count < gc->of_gpio_n_cells))
-> +               return -EINVAL;
-> +
-> +       if (gpiospec->args[0] >= gc->ngpio)
-> +               return -EINVAL;
-> +
-> +       if (flags)
-> +               *flags = gpiospec->args[1];
-> +
-> +       return gpiospec->args[0];
-> +}
+Changes v2 =3D> v3:
+1. Fix handling of stackmap skip field. (Andrii)
+2. Simplify the code in a few places. (Andrii)
 
-This looks like a very standart xlate function for GPIO. Why do you
-need to open-code it?
+Changes v1 =3D> v2:
+1. Simplify the design and avoid introducing new helper function. (Andrii=
+)
 
-...
+Song Liu (5):
+  bpf: separate bpf_get_[stack|stackid] for perf events BPF
+  bpf: fail PERF_EVENT_IOC_SET_BPF when bpf_get_[stack|stackid] cannot
+    work
+  libbpf: print hint when PERF_EVENT_IOC_SET_BPF returns -EPROTO
+  selftests/bpf: add callchain_stackid
+  selftests/bpf: add get_stackid_cannot_attach
 
-> +/**
-> + * xgpio_irq_ack - Acknowledge a child GPIO interrupt.
+ include/linux/bpf.h                           |   2 +
+ include/linux/filter.h                        |   3 +-
+ kernel/bpf/stackmap.c                         | 184 ++++++++++++++++--
+ kernel/bpf/verifier.c                         |   3 +
+ kernel/events/core.c                          |  18 ++
+ kernel/trace/bpf_trace.c                      |   4 +-
+ tools/lib/bpf/libbpf.c                        |   3 +
+ .../prog_tests/get_stackid_cannot_attach.c    |  91 +++++++++
+ .../bpf/prog_tests/perf_event_stackmap.c      | 116 +++++++++++
+ .../selftests/bpf/progs/perf_event_stackmap.c |  59 ++++++
+ 10 files changed, 462 insertions(+), 21 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_stackid_ca=
+nnot_attach.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_event_sta=
+ckmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/perf_event_stackmap=
+.c
 
-> + * This currently does nothing, but irq_ack is unconditionally called by
-> + * handle_edge_irq and therefore must be defined.
-
-This should go after parameter description(s).
-
-> + * @irq_data: per irq and chip data passed down to chip functions
-> + */
-
-...
-
->  /**
-> + * xgpio_irq_mask - Write the specified signal of the GPIO device.
-> + * @irq_data: per irq and chip data passed down to chip functions
-
-In all comments irq -> IRQ.
-
-> + */
-> +static void xgpio_irq_mask(struct irq_data *irq_data)
-> +{
-> +       unsigned long flags;
-> +       struct xgpio_instance *chip = irq_data_get_irq_chip_data(irq_data);
-> +       int irq_offset = irqd_to_hwirq(irq_data);
-> +       int index = xgpio_index(chip, irq_offset);
-> +       int offset = xgpio_offset(chip, irq_offset);
-> +
-> +       spin_lock_irqsave(&chip->gpio_lock, flags);
-> +
-
-> +       chip->irq_enable[index] &= ~BIT(offset);
-
-If you convert your data structure to use bitmaps (and respective API) like
-
-#define XILINX_NGPIOS  64
-...
-  DECLARE_BITMAP(irq_enable, XILINX_NGPIOS);
-...
-
-it will make code better to read and understand. For example, here it
-will be just
-__clear_bit(offset, chip->irq_enable);
-
-> +       dev_dbg(chip->gc.parent, "Disable %d irq, irq_enable_mask 0x%x\n",
-> +               irq_offset, chip->irq_enable[index]);
-
-Under spin lock?! Hmm...
-
-> +       if (!chip->irq_enable[index]) {
-> +               /* Disable per channel interrupt */
-> +               u32 temp = xgpio_readreg(chip->regs + XGPIO_IPIER_OFFSET);
-> +
-> +               temp &= ~BIT(index);
-> +               xgpio_writereg(chip->regs + XGPIO_IPIER_OFFSET, temp);
-> +       }
-> +       spin_unlock_irqrestore(&chip->gpio_lock, flags);
-> +}
-
-...
-
-> +       for (index = 0; index < num_channels; index++) {
-> +               if ((status & BIT(index))) {
-
-If gpio_width is the same among banks, you can use for_each_set_bit()
-here as well.
-
-...
-
-> +                       for_each_set_bit(bit, &all_events, 32) {
-> +                               generic_handle_irq(irq_find_mapping
-> +                                       (chip->gc.irq.domain, offset + bit));
-
-Strange indentation. Maybe a temporary variable helps?
-
-...
-
-> +       chip->irq = platform_get_irq_optional(pdev, 0);
-> +       if (chip->irq <= 0) {
-> +               dev_info(&pdev->dev, "GPIO IRQ not set\n");
-
-Why do you need an optional variant if you print an error anyway?
-
-> +       } else {
-
-
-...
-
-> +               chip->gc.irq.parents = (unsigned int *)&chip->irq;
-> +               chip->gc.irq.num_parents = 1;
-
-Current pattern is to use devm_kcalloc() for it (Linus has plans to
-simplify this in the future and this will help him to find what
-patterns are being used)
-
--- 
-With Best Regards,
-Andy Shevchenko
+--
+2.24.1
