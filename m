@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0ADC22AB7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F73F22AB89
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgGWJLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 05:11:54 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:29973 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726330AbgGWJLx (ORCPT
+        id S1728295AbgGWJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 05:13:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20997 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725984AbgGWJNK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:11:53 -0400
+        Thu, 23 Jul 2020 05:13:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595495512;
+        s=mimecast20190719; t=1595495589;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jOegfAFD7KmRGII6oc4i/sR1c5ZZZGyGt2xHdWoeR1E=;
-        b=iWRjUi5oPgg2ybHq2AFlAinSbwmrHhcO8DAGLpdiH5PRbQPSroSZCRbmBU2y2V3oSL+8YB
-        zUjePOS8guoJL/IN3DBYBaeoujTiK6n1iuHtLh0R7PhlIpqnCIUW7HQmno6BqyKY9HOtQg
-        d5mU1jkB1YiMkD7AnN4zj3h/SbjtBKE=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RSy4LtbaD8levFOBIayUOWSmIYzMSd7fCPXVTaSTU+s=;
+        b=GmQUEr4+dQja6pz2mgqL8Ngh079n357xDRIRI2dIEeP8aysYjaMcZDQ093LOyPeL9ur5w9
+        eNd4DErXvaj4qua6MQI4xKrO7aViGQLUl5H7dJ06i1CkjAkjrxAc4XgTTWW/kOavIKBBan
+        mONcz9PQUaOk+93Xppx3ucVn9sYfzWM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-uDp4JBGwN8CN6cCd1mJACw-1; Thu, 23 Jul 2020 05:11:50 -0400
-X-MC-Unique: uDp4JBGwN8CN6cCd1mJACw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-149-2gLebz6nP6-9gOiGYakW6w-1; Thu, 23 Jul 2020 05:13:04 -0400
+X-MC-Unique: 2gLebz6nP6-9gOiGYakW6w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C11241005504;
-        Thu, 23 Jul 2020 09:11:48 +0000 (UTC)
-Received: from localhost (ovpn-13-53.pek2.redhat.com [10.72.13.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 78D2F2DE68;
-        Thu, 23 Jul 2020 09:11:45 +0000 (UTC)
-Date:   Thu, 23 Jul 2020 17:11:42 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mike.kravetz@oracle.com, david@redhat.com,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH v2 4/4] mm/hugetl.c: warn out if expected count of huge
- pages adjustment is not achieved
-Message-ID: <20200723091142.GR32539@MiWiFi-R3L-srv>
-References: <20200723032248.24772-1-bhe@redhat.com>
- <20200723032248.24772-5-bhe@redhat.com>
- <62c8ce6c-fe98-f371-99b6-cfdb96d1c2fd@arm.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6809691271;
+        Thu, 23 Jul 2020 09:13:03 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-141.pek2.redhat.com [10.72.13.141])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D44870596;
+        Thu, 23 Jul 2020 09:12:58 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: [PATCH 1/2] vdpa: ifcvf: return err when fail to request config irq
+Date:   Thu, 23 Jul 2020 17:12:53 +0800
+Message-Id: <20200723091254.20617-1-jasowang@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62c8ce6c-fe98-f371-99b6-cfdb96d1c2fd@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/23/20 at 11:46am, Anshuman Khandual wrote:
-> 
-> 
-> On 07/23/2020 08:52 AM, Baoquan He wrote:
-> > A customer complained that no message is logged wh	en the number of
-> > persistent huge pages is not changed to the exact value written to
-> > the sysfs or proc nr_hugepages file.
-> > 
-> > In the current code, a best effort is made to satisfy requests made
-> > via the nr_hugepages file.  However, requests may be only partially
-> > satisfied.
-> > 
-> > Log a message if the code was unsuccessful in fully satisfying a
-> > request. This includes both increasing and decreasing the number
-> > of persistent huge pages.
-> 
-> But is kernel expected to warn for all such situations where the user
-> requested resources could not be allocated completely ? Otherwise, it
-> does not make sense to add an warning for just one such situation.
+We ignore the err of requesting config interrupt, fix this.
 
-It's not for just one such situation, we have already had one to warn
-out in mm/hugetlb.c, please check hugetlb_hstate_alloc_pages().
+Fixes: e7991f376a4d ("ifcvf: implement config interrupt in IFCVF")
+Cc: Zhu Lingshan <lingshan.zhu@intel.com>
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/vdpa/ifcvf/ifcvf_main.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-As Mike said, in one time of persistent huge page number setting,
-comparing the old value with the new vlaue is good enough for customer
-to get the information. However, if customer want to detect and analyze
-previous setting failure, logging message will be helpful. So I think
-logging the failure or partial success makes sense.
-
-Thanks
-Baoquan
+diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+index f5a60c14b979..ae7110955a44 100644
+--- a/drivers/vdpa/ifcvf/ifcvf_main.c
++++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+@@ -76,6 +76,10 @@ static int ifcvf_request_irq(struct ifcvf_adapter *adapter)
+ 	ret = devm_request_irq(&pdev->dev, irq,
+ 			       ifcvf_config_changed, 0,
+ 			       vf->config_msix_name, vf);
++	if (ret) {
++		IFCVF_ERR(pdev, "Failed to request config irq\n");
++		return ret;
++	}
+ 
+ 	for (i = 0; i < IFCVF_MAX_QUEUE_PAIRS * 2; i++) {
+ 		snprintf(vf->vring[i].msix_name, 256, "ifcvf[%s]-%d\n",
+-- 
+2.20.1
 
