@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA32822A42F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D158B22A445
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387461AbgGWBDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50516 "EHLO mail.kernel.org"
+        id S2387561AbgGWBEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:04:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729401AbgGWBDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:03:18 -0400
-Received: from localhost (lfbn-ncy-1-317-216.w83-196.abo.wanadoo.fr [83.196.152.216])
+        id S1733221AbgGWBEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:04:38 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0CB620888;
-        Thu, 23 Jul 2020 01:03:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2304A2086A;
+        Thu, 23 Jul 2020 01:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595466198;
-        bh=hXwgOBRjwb6BauXj6qmh6y/MrRxjelEw1obb/ALt/rE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r52q+CULBRQ1RtJQSEAtFwJaVMS0IYIj5BGW0Q+RNRXpVt3u2PMmW7EqCMXeOvSmV
-         xfBB9aRiZk1Oc7SqX9aGHIxSlzr26nFKi3RzXp1fWedYLE+2243pX5cH0hS9vV3mlV
-         mJVdjrQkbjALQar3n4urt0K2qyqX8gjVrc3inHOU=
-Date:   Thu, 23 Jul 2020 03:03:15 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer
- timer handling to task_work
-Message-ID: <20200723010314.GA28401@lenoir>
-References: <20200716201923.228696399@linutronix.de>
- <20200716202044.734067877@linutronix.de>
- <20200716225034.GK5523@worktop.programming.kicks-ass.net>
+        s=default; t=1595466277;
+        bh=vuI1DM19pqZiO1W8ggE5LH1WTZ2Zpcgqkw+bo5G96Ck=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MpOL3ZEwKycICyUmrC1pWvUtYaPqBRrm/poJm+Ttw+ilyCs2OunPnbiK0/+5wn6GA
+         iSX9250ee4qncolPYrWXRTazw378B+mZOYLVwC6ST85WE6hdohzUUcDhbCzYnSjxVD
+         7+Q7zIhhuaxjOKax49rs2eFqF0bQfD3akrbJvs1o=
+Date:   Wed, 22 Jul 2020 20:04:35 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Robert Hancock <hancockrwd@gmail.com>
+Cc:     linux-pci@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+        Puranjay Mohan <puranjay12@gmail.com>
+Subject: Re: [PATCH] PCI: Disallow ASPM on ASMedia ASM1083/1085 PCIe-PCI
+ bridge
+Message-ID: <20200723010435.GA1334095@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200716225034.GK5523@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CADLC3L0b8zqJoHt7aA6z6hb3cYC2z-32vmQsQ3tR0gGduC8+-Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 12:50:34AM +0200, Peter Zijlstra wrote:
-> On Thu, Jul 16, 2020 at 10:19:26PM +0200, Thomas Gleixner wrote:
-> > +static void __run_posix_cpu_timers(struct task_struct *tsk)
-> > +{
-> > +	struct posix_cputimers *pct = &tsk->posix_cputimers;
-> > +
-> > +	if (!test_and_set_bit(CPUTIMERS_WORK_SCHEDULED, &pct->flags))
-> > +		task_work_add(tsk, &pct->task_work, true);
-> > +}
-> > +
-> > +static inline void posix_cpu_timers_enable_work(struct task_struct *tsk)
-> > +{
-> > +	clear_bit(CPUTIMERS_WORK_SCHEDULED, &tsk->posix_cputimers.flags);
-> 	/*
-> 	 * Ensure we observe everything before a failing test_and_set()
-> 	 * in __run_posix_cpu_timers().
-> 	 */
-> 	smp_mb__after_atomic();
-> > +}
+On Wed, Jul 22, 2020 at 06:46:06PM -0600, Robert Hancock wrote:
+> On Wed, Jul 22, 2020 at 11:40 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Tue, Jul 21, 2020 at 08:18:03PM -0600, Robert Hancock wrote:
+> > > Recently ASPM handling was changed to no longer disable ASPM on all
+> > > PCIe to PCI bridges. Unfortunately these ASMedia PCIe to PCI bridge
+> > > devices don't seem to function properly with ASPM enabled, as they
+> > > cause the parent PCIe root port to cause repeated AER timeout errors.
+> > > In addition to flooding the kernel log, this also causes the machine
+> > > to wake up immediately after suspend is initiated.
+> >
+> > Hi Robert, thanks a lot for the report of this problem
+> > (https://lore.kernel.org/r/CADLC3L1R2hssRjxHJv9yhdN_7-hGw58rXSfNp-FraZh0Tw+gRw@mail.gmail.com
+> > and https://bugzilla.redhat.com/show_bug.cgi?id=1853960).
+> >
+> > I'm pretty sure Linux ASPM support is missing some things.  This
+> > problem might be a hardware problem where a quirk is the right
+> > solution, but it could also be that it's a result of a Linux defect
+> > that we should fix.
+> >
+> > Could you collect the dmesg log and "sudo lspci -vvxxxx" output
+> > somewhere (maybe a bugzilla.kernel.org issue)?  I want to figure out
+> > whether this L1 PM substates are enabled on this link, and whether
+> > that's configured correctly.
 > 
-> Such that when another timer interrupt happens while we run this, we're
-> guaranteed to either see it, or get re-queued and thus re-run the
-> function.
+> Created a Bugzilla entry and added dmesg and lspci output:
+> https://bugzilla.kernel.org/show_bug.cgi?id=208667
+> 
+> As I noted in that report, I subsequently found this page on ASMedia's
+> site: https://www.asmedia.com.tw/eng/e_show_products.php?cate_index=169&item=114
+> which indicates this ASM1083 device has "No PCIe ASPM support".
 
-But each thread in the process enqueues its own task work and flips its
-own flags. So if task A runs the task work and task B runs __run_posix_cpu_timers(),
-they wouldn't be ordering against the same flags.
+How nice.  According to your lspci, the device itself claims to
+support ASPM:
+
+  02:00.0 ... ASMedia Technology Inc. ASM1083/1085 PCIe to PCI Bridge
+    LnkCap: ... ASPM L0s L1 ...
+
+but the web page claims otherwise.  That would mean the device is
+defective for claiming something that's not true.  Or possibly those
+capability bits can be set by BIOS.
+
+> It's not clear why this problem isn't occurring on Windows however -
+> either it is not enabling ASPM, somehow it doesn't cause issues with
+> the PCIe link, or it is causing issues and just doesn't notify the
+> user in any way. I can try and check if this bridge device is ending
+> up with ASPM enabled under Windows 10 or not..
+
+If Windows *does* manage to enable ASPM, that would be interesting.  I
+don't know whether Windows has a similar quirk mechanism.  I suppose
+they must have *some* way to work around defective devices.
+
+Bjorn
