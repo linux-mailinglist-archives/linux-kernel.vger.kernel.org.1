@@ -2,107 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C553D22A391
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C7022A399
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731300AbgGWAXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 20:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgGWAXX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 20:23:23 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AC7C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 17:23:22 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id i19so2338196lfj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 17:23:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MLLzW+27c7XskPvxXHpuyTEdYRgvVTLDhxahIBegs8U=;
-        b=faikLq+G0vsoBxFYA9T/K3S7QiQTxZoo+WHfXFKRntEclWn6SyFd0s8e5ihC2YGfEC
-         xwEvgtLDOzsUvG+mLwzkpkw5BWy4EaMb85BSL5WQahdJG+1+X8n95u66NxFu9yT0IBOw
-         4tNBH4IclDxdU2pXAz9akDwoOAVeAIioMO1QA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MLLzW+27c7XskPvxXHpuyTEdYRgvVTLDhxahIBegs8U=;
-        b=ETBQP9TZ0ZrrDCOC8AC+RLRQDlRARhsWWcGGUhK75RDcUW0Zh8qFkuq3TH5DaRfs7Q
-         nQTXdJXT5bdIYedBEYoeC9pg1DctP2735aC1VRVfM3lWO4O1xeBYx6tujvxZhanNzfvK
-         YT7UfonvCcxQvCCWTEKqs/ADHoI5IbxQz2dQ+nJkwOnNevUkV8flDAsuIthMJPsbgSA3
-         uWzbTk6FaFVSNBu+dQmCa7Up8vR4sA6bID7F4NuOEZCl0pDFY8Ynm1irJKSLx18iBrwj
-         R5R2EO0t32XyaUqy6bajfi18IsMGv+yZXrhcquxAo6vEzJc2fvuuftfhvQWfQXIohS4y
-         0jeA==
-X-Gm-Message-State: AOAM5339C6m2ITVnaM7wac/li4brvQh0cZ0zFlbL50hvzVnZwSWA8+e+
-        8HFWJNh284mqc87M8m7ZAUxgXh77g38=
-X-Google-Smtp-Source: ABdhPJyF0JaN4VGKkCtDJrW0wVee3hC+NytPRFHHVxoZl07YnVC1QAIwBpE0GjhR6BDnyfX22W0cwg==
-X-Received: by 2002:ac2:5991:: with SMTP id w17mr873525lfn.153.1595463800460;
-        Wed, 22 Jul 2020 17:23:20 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id g19sm294270lfd.28.2020.07.22.17.23.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Jul 2020 17:23:19 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id e8so4505399ljb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 17:23:19 -0700 (PDT)
-X-Received: by 2002:a2e:9c92:: with SMTP id x18mr706723lji.70.1595463798932;
- Wed, 22 Jul 2020 17:23:18 -0700 (PDT)
+        id S1733139AbgGWA1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 20:27:36 -0400
+Received: from mga04.intel.com ([192.55.52.120]:45594 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726685AbgGWA1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 20:27:36 -0400
+IronPort-SDR: +AlG84Y8voED0Gn0hwWY699/T3MqzESI5cYMcuTlNMY/ulGfoOMwJlyEEgCMeZ8K5Vl15buyfP
+ luIdnLsynWsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="147937368"
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="147937368"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 17:27:35 -0700
+IronPort-SDR: mUsxL8sQNCI2nqU9PjsugOEtvJJ/JuZvfRlVQNTW2AN+P5CJict0Mn8mE17aHsrlhaevk8GK7n
+ ItHJI9nAl0hA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
+   d="scan'208";a="328382238"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga007.jf.intel.com with ESMTP; 22 Jul 2020 17:27:35 -0700
+Date:   Wed, 22 Jul 2020 17:27:35 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v11 01/13] KVM: Cache as_id in kvm_memory_slot
+Message-ID: <20200723002735.GN9114@linux.intel.com>
+References: <20200708193408.242909-1-peterx@redhat.com>
+ <20200708193408.242909-2-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20200721063258.17140-1-mhocko@kernel.org> <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
- <CAHk-=whb0=rjc1WR+F_r_syw5Ld4=ebuNJmmpaPEzfjZRD5Y-w@mail.gmail.com>
- <alpine.LSU.2.11.2007221359450.1017@eggly.anvils> <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
- <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
-In-Reply-To: <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 22 Jul 2020 17:23:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiqzsK_c_jUXFnSXeumsRQpYEwv0Xbi3MiGKLcVxS2_kg@mail.gmail.com>
-Message-ID: <CAHk-=wiqzsK_c_jUXFnSXeumsRQpYEwv0Xbi3MiGKLcVxS2_kg@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-To:     Hugh Dickins <hughd@google.com>, Oleg Nesterov <oleg@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200708193408.242909-2-peterx@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 4:42 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> NOTE NOTE NOTE! This is both somewhat subtle code, and ENTIRELY
-> UNTESTED.
+On Wed, Jul 08, 2020 at 03:33:56PM -0400, Peter Xu wrote:
+> Cache the address space ID just like the slot ID.  It will be used in
+> order to fill in the dirty ring entries.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
 
-It seems to boot.
-
-It adds more lines than it removes, but a lot of it is comments, and
-while it's somewhat subtle, I think it's actually conceptually simpler
-than what we had before.
-
-The actual waiting loop itself, for example, is now entirely and
-utterly trivial.
-
-The DROP behavior is also a lot more straightforward and logical, imnsho.
-
-The biggest annoyance I have with it is how it open-codes
-"finish_wait()", and honestly, the "proper" fix for that would likely
-be to simply instead make "finish_wait()" return the "did I need to
-remove it from the list or not" value. That's the only reason that
-patch open-codes it right now.
-
-It _feels_ like the right solution to this thing.
-
-But maybe that's just the "pee in the snow" effect, where I like it
-only because I've put my mark on it.
-
-So it would be good to get more opinions, and perhaps more testing
-than my limited "it boots and works for me, and I can still build
-kernels and run a browser".
-
-                Linus
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
