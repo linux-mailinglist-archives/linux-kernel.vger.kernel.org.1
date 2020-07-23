@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232BC22AD17
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5404622AD31
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728461AbgGWK6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 06:58:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57330 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728287AbgGWK6t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 06:58:49 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595501927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SAkg0hRUGM84cfj7xyLPVMU8cCtxGEg+z0smkN7cgHU=;
-        b=NR1oEuUINtF6tOvwtLyh4bvSzJsGz5MPWJU2dUvtBPIfSE+V5+mUwV1MpQhf+rRriHEVE4
-        1HzyLXDrdrM5UonRnPcwTEjFnF32auN7qb9xSqoBk49QnNjdOaYpHO1Q4+FPI2RtDbX4ah
-        qVgFeeCiTECHP+1SjsBO6PZBjhNZseTzHw9Yx1W9vRsfbtHTZT3GAAjN36o5dLznye3q5Q
-        yFyLMZfS6J9bYADwVB6y84Rvf0FAGsk3M5oXQpVRyN7u7lWXParP6rgxwCNovfdCHNL+DG
-        ZusVSQrH3aP40wq6mcUCUSx5KcKvluJ+vmZSEU/SS/j5BsKkoTbCkIDydMU1vQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595501927;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SAkg0hRUGM84cfj7xyLPVMU8cCtxGEg+z0smkN7cgHU=;
-        b=X2m722nOUT0Rsd4CwSIYHdqyN0BvEZd3F45Cx+6cTbEcGHehMw2LybUdb+zxxRbS0kbaAX
-        +SCPqDx/ZGR4RbDQ==
-To:     kernel test robot <lkp@intel.com>, qianjun.kernel@gmail.com
-Cc:     peterz@infradead.org, will@kernel.org, luto@kernel.org,
-        linux-kernel@vger.kernel.org, urezki@gmail.com,
-        laoar.shao@gmail.com, jun qian <qianjun.kernel@gmail.com>,
-        0day robot <lkp@intel.com>, lkp@lists.01.org
-Subject: Re: [Softirq] a76eadba0d: WARNING:at_net/mac80211/rx.c:#ieee80211_rx_napi[mac80211]
-In-Reply-To: <20200723091715.GL19262@shao2-debian>
-References: <20200723091715.GL19262@shao2-debian>
-Date:   Thu, 23 Jul 2020 12:58:46 +0200
-Message-ID: <87v9iexztl.fsf@nanos.tec.linutronix.de>
+        id S1728460AbgGWLEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 07:04:49 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:27683 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727769AbgGWLEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 07:04:48 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Jul 2020 07:04:47 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=1440; q=dns/txt; s=axis-central1;
+  t=1595502288; x=1627038288;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oQK1kdpUpuXo4gTgNIO2CBHLpqsKEGJmibRBMJIDPFs=;
+  b=XSJZhWfTdw0By26/hWhbd/BhDqzycrxKi5uIp7co4O6TsnpCIktyOgFl
+   qzMgp8XX/5oJO/OvkmIuO+v77MzBStaKxkKvmL23W6SR2gzB745lfOvA3
+   3EpUqWBk/xPdrX4mRpltRXypTA7Ovu81+Ns77LURX1usgn3iatkVWaQgB
+   //4No+CnNipFTHg+x7vIFmWrrVYqBvyVrX1uZZvdcdRrVdhQ/ebV7BXfO
+   i6Z0NPRZBWYwWtmLXnboVrErEyed2r4O7d6aFMD2I/ngFabUqFs+Vh4AD
+   xZUTvs8IooKJU+sdKcJ0vmFawz4Z3VuabC/4YAWL25zwKpb9yFAMnX+5+
+   g==;
+IronPort-SDR: 8w+4+M/QNSnOyVfaTn5eXV7ay9eFeN6MldZVb7DNZXNOO03+CNRr84npzdcOFzTX1iYLbxTRjZ
+ v246GEz9OVu3aGBtELz9oxUPPVUoUUhkM5++FH0wHA7BR4lmLPoDQGo5gKU3qdxFk1v4nMO0tc
+ XbD8SkekSMW+m8ih5GRuvfGAWmWLCS7Nvutv65sjy96JsgilBch0lti7IwTMmISFqz21YP6wfo
+ xyX4eWRqTRmpTow6qdw5/ji/TtXDT+dUOE8L0+f711gWXdGFUPBebU/W53NzRst9KPIdf7hpUt
+ JPY=
+X-IronPort-AV: E=Sophos;i="5.75,386,1589234400"; 
+   d="scan'208";a="10822194"
+Date:   Thu, 23 Jul 2020 12:57:35 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     John Ogness <john.ogness@linutronix.de>,
+        "jbaron@akamai.com" <jbaron@akamai.com>,
+        "mingo@redhat.com" <mingo@redhat.com>, kernel <kernel@axis.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH] dynamic debug: allow printing to trace event
+Message-ID: <20200723105735.mqfkfbljjda7qz7n@axis.com>
+References: <20200721141105.16034-1-vincent.whitchurch@axis.com>
+ <20200721173045.540ae500@oasis.local.home>
+ <87eep3zmg9.fsf@jogness.linutronix.de>
+ <20200722144952.2mewrgebgkyr2zyf@axis.com>
+ <20200722112823.3ba72d31@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200722112823.3ba72d31@oasis.local.home>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
-> [  106.856151] WARNING: CPU: 5 PID: 4569 at net/mac80211/rx.c:4708 ieee80211_rx_napi+0x44d/0x560 [mac80211]
+On Wed, Jul 22, 2020 at 05:28:23PM +0200, Steven Rostedt wrote:
+> For you, I made this quick patch. If this works for you, I can make it
+> into a formal patch. It includes a test use case in do_sys_openat2() to
+> show the file name and file descriptor. Obviously, that wont be part of
+> the final patch.
 
-Bah. I clearly should have noticed when looking at the patch.
+Thank you.  I had to replace the inline with an __attribute__((unused))
+because otherwise my GCC errors out with "error: function
+'find_vprintk_len' can never be inlined because it uses variable
+argument lists".
 
-     pending = softirq_pending();
+Apart from that it works fine, but the several calls to vsnprintf() take
+their toll and this method is twice as slow as the buffer-on-stack
+implementation (and ftrace_vprintk()).  If I pass in a fixed size for
+the __dynamic_array I get the same performance as the buffer-on-stack
+method, but that's probably not surprising.
 
-     set_softirq_pending(0);
+I know a dedicated trace event or a binary trace_printk() at the call
+site of pr_debug() is always going to be more performant, but it would
+be nice to avoid the extra slowdown if possible.
 
-     while (pending) {
-           ....
+It's hard to guarantee that 256 bytes on the stack is safe on all
+systems since these functions are called from lots of places.  
 
-           if (timeout)
-           	break;
-     }
-
-That drops everything which has not yet been processed and the above
-warning is due to this.
-
-Thanks,
-
-        tglx
-
+Would it be acceptable to just use a fixed size for the event?  At least
+for my own debugging use cases it's preferable to just have to increase
+the trace buffer size in case it's insufficient, rather than to have to
+restort to one-off debugging code.
