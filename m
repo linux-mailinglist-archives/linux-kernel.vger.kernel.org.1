@@ -2,180 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAA322B0FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7434122B101
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbgGWOHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:07:03 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12540 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727111AbgGWOHD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:07:03 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NE3QnP061533;
-        Thu, 23 Jul 2020 10:06:50 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32f23g9dtm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 10:06:49 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06NE0Ltc010223;
-        Thu, 23 Jul 2020 14:06:47 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 32brq83ch9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 14:06:46 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06NE6heE59834608
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Jul 2020 14:06:44 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF6B411C04C;
-        Thu, 23 Jul 2020 14:06:43 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64F5711C04A;
-        Thu, 23 Jul 2020 14:06:43 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.31.161])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 23 Jul 2020 14:06:43 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] KVM: PPC: Book3S HV: rework secure mem slot
- dropping
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-To:     bharata@linux.ibm.com, linuxram@us.ibm.com
-Cc:     linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        paulus@samba.org, sukadev@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, bauerman@linux.ibm.com
-References: <20200721104202.15727-1-ldufour@linux.ibm.com>
- <20200721104202.15727-3-ldufour@linux.ibm.com>
- <20200723033600.GS7902@in.ibm.com>
- <4a3caeaf-cd0c-fcd7-0a97-f367a5f78dac@linux.ibm.com>
-Message-ID: <0631397b-44af-ea3b-b70b-e4a0dc2c0366@linux.ibm.com>
-Date:   Thu, 23 Jul 2020 16:06:43 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1729011AbgGWOIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:08:19 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8749 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727111AbgGWOIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 10:08:19 -0400
+IronPort-SDR: M/aslXAApwUpwgdoHKc9vyij7axE+SLa664p5OxOcCMdsdGI5Gk0Wvzxi9Y8tG2sCABZnTpxR5
+ FIVddEo2V/DQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="148461355"
+X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
+   d="scan'208";a="148461355"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 07:08:18 -0700
+IronPort-SDR: FYrQsWQR3SEQbICT+WzUfTzZAhpWuLC2eRTff33nOFUtBjNFdFYyA4RBWvh8v9Aw7VZ4cnSBMI
+ v7nFmJuF6LCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
+   d="scan'208";a="302318604"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002.jf.intel.com with ESMTP; 23 Jul 2020 07:08:15 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1jybtP-003eVU-JI; Thu, 23 Jul 2020 17:08:15 +0300
+Date:   Thu, 23 Jul 2020 17:08:15 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] gpio: dwapb: Convert driver to using the
+ GPIO-lib-based IRQ-chip
+Message-ID: <20200723140815.GL3703480@smile.fi.intel.com>
+References: <20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru>
+ <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <4a3caeaf-cd0c-fcd7-0a97-f367a5f78dac@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_06:2020-07-23,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- adultscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 clxscore=1015 suspectscore=2
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007230105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 23/07/2020 à 14:32, Laurent Dufour a écrit :
-> Le 23/07/2020 à 05:36, Bharata B Rao a écrit :
->> On Tue, Jul 21, 2020 at 12:42:02PM +0200, Laurent Dufour wrote:
->>> When a secure memslot is dropped, all the pages backed in the secure device
->>> (aka really backed by secure memory by the Ultravisor) should be paged out
->>> to a normal page. Previously, this was achieved by triggering the page
->>> fault mechanism which is calling kvmppc_svm_page_out() on each pages.
->>>
->>> This can't work when hot unplugging a memory slot because the memory slot
->>> is flagged as invalid and gfn_to_pfn() is then not trying to access the
->>> page, so the page fault mechanism is not triggered.
->>>
->>> Since the final goal is to make a call to kvmppc_svm_page_out() it seems
->>> simpler to directly calling it instead of triggering such a mechanism. This
->>> way kvmppc_uvmem_drop_pages() can be called even when hot unplugging a
->>> memslot.
->>>
->>> Since kvmppc_uvmem_drop_pages() is already holding kvm->arch.uvmem_lock,
->>> the call to __kvmppc_svm_page_out() is made.
->>> As __kvmppc_svm_page_out needs the vma pointer to migrate the pages, the
->>> VMA is fetched in a lazy way, to not trigger find_vma() all the time. In
->>> addition, the mmap_sem is help in read mode during that time, not in write
->>> mode since the virual memory layout is not impacted, and
->>> kvm->arch.uvmem_lock prevents concurrent operation on the secure device.
->>>
->>> Cc: Ram Pai <linuxram@us.ibm.com>
->>> Cc: Bharata B Rao <bharata@linux.ibm.com>
->>> Cc: Paul Mackerras <paulus@ozlabs.org>
->>> Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
->>> ---
->>>   arch/powerpc/kvm/book3s_hv_uvmem.c | 54 ++++++++++++++++++++----------
->>>   1 file changed, 37 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c 
->>> b/arch/powerpc/kvm/book3s_hv_uvmem.c
->>> index 5a4b02d3f651..ba5c7c77cc3a 100644
->>> --- a/arch/powerpc/kvm/book3s_hv_uvmem.c
->>> +++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
->>> @@ -624,35 +624,55 @@ static inline int kvmppc_svm_page_out(struct 
->>> vm_area_struct *vma,
->>>    * fault on them, do fault time migration to replace the device PTEs in
->>>    * QEMU page table with normal PTEs from newly allocated pages.
->>>    */
->>> -void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *free,
->>> +void kvmppc_uvmem_drop_pages(const struct kvm_memory_slot *slot,
->>>                    struct kvm *kvm, bool skip_page_out)
->>>   {
->>>       int i;
->>>       struct kvmppc_uvmem_page_pvt *pvt;
->>> -    unsigned long pfn, uvmem_pfn;
->>> -    unsigned long gfn = free->base_gfn;
->>> +    struct page *uvmem_page;
->>> +    struct vm_area_struct *vma = NULL;
->>> +    unsigned long uvmem_pfn, gfn;
->>> +    unsigned long addr, end;
->>> +
->>> +    mmap_read_lock(kvm->mm);
->>> +
->>> +    addr = slot->userspace_addr;
->>
->> We typically use gfn_to_hva() for that, but that won't work for a
->> memslot that is already marked INVALID which is the case here.
->> I think it is ok to access slot->userspace_addr here of an INVALID
->> memslot, but just thought of explictly bringing this up.
+On Thu, Jul 23, 2020 at 04:38:55AM +0300, Serge Semin wrote:
+> GPIO-lib provides a ready-to-use interface to initialize an IRQ-chip on
+> top of a GPIO chip. It's better from maintainability and readability
+> point of view to use one instead of supporting a hand-written Generic
+> IRQ-chip-based implementation. Moreover the new implementation won't
+> cause much functional overhead but will provide a cleaner driver code.
+> All of that makes the DW APB GPIO driver conversion pretty much justified
+> especially seeing a tendency of the other GPIO drivers getting converted
+> too.
 > 
-> Which explicitly mentioned above in the patch's description:
-> 
-> This can't work when hot unplugging a memory slot because the memory slot
-> is flagged as invalid and gfn_to_pfn() is then not trying to access the
-> page, so the page fault mechanism is not triggered.
-> 
->>
->>> +    end = addr + (slot->npages * PAGE_SIZE);
->>> -    for (i = free->npages; i; --i, ++gfn) {
->>> -        struct page *uvmem_page;
->>> +    gfn = slot->base_gfn;
->>> +    for (i = slot->npages; i; --i, ++gfn, addr += PAGE_SIZE) {
->>> +
->>> +        /* Fetch the VMA if addr is not in the latest fetched one */
->>> +        if (!vma || (addr < vma->vm_start || addr >= vma->vm_end)) {
->>> +            vma = find_vma_intersection(kvm->mm, addr, end);
->>> +            if (!vma ||
->>> +                vma->vm_start > addr || vma->vm_end < end) {
->>> +                pr_err("Can't find VMA for gfn:0x%lx\n", gfn);
->>> +                break;
->>> +            }
->>> +        }
->>
->> In Ram's series, kvmppc_memslot_page_merge() also walks the VMAs spanning
->> the memslot, but it uses a different logic for the same. Why can't these
->> two cases use the same method to walk the VMAs? Is there anything subtly
->> different between the two cases?
-> 
-> This is probably doable. At the time I wrote that patch, the 
-> kvmppc_memslot_page_merge() was not yet introduced AFAIR.
-> 
-> This being said, I'd help a lot to factorize that code... I let Ram dealing with 
-> that ;)
+> Here is what we do in the framework of this commit to convert the driver
+> to using the GPIO-lib-based IRQ-chip interface:
+> 1) IRQ ack, mask and unmask callbacks are locally defined instead of
+> using the Generic IRQ-chip ones.
+> 2) An irq_chip structure instance is embedded into the dwapb_gpio
+> private data. Note we can't have a static instance of that structure since
+> GPIO-lib will add some hooks into it by calling gpiochip_set_irq_hooks().
+> A warning about that would have been printed by the GPIO-lib code if we
+> used a single irq_chip structure instance for multiple DW APB GPIO
+> controllers.
+> 3) Initialize the gpio_irq_chip structure embedded into the gpio_chip
+> descriptor. By default there is no IRQ enabled so any event raised will be
+> handled by the handle_bad_irq() IRQ flow handler. If DW APB GPIO IP-core
+> is synthesized to have non-shared reference IRQ-lines, then as before the
+> hierarchical and cascaded cases are distinguished by checking how many
+> parental IRQs are defined. (Note irq_set_chained_handler_and_data() won't
+> initialize IRQs, which descriptors couldn't be found.) If DW APB GPIO IP
+> is used on a platform with shared IRQ line, then we simply won't let the
+> GPIO-lib to initialize the parental IRQs, but will handle them locally in
+> the driver.
+> 4) Discard linear IRQ-domain and Generic IRQ-chip initialization, since
+> GPIO-lib IRQ-chip interface will create a new domain and accept a standard
+> IRQ-chip structure pointer based on the setting we provided in the
+> gpio_irq_chip structure.
+> 5) Manually select a proper IRQ flow handler directly in the
+> irq_set_type() callback by calling irq_set_handler_locked() method, since
+> an ordinary (not Generic) irq_chip descriptor is now utilized.
+> 6) Discard the custom GPIO-to-IRQ mapping function since GPIO-lib defines
+> the standard method gpiochip_to_irq(), which will be used anyway no matter
+> whether the custom to_irq callback is specified or not.
+> 7) Discard the acpi_gpiochip_{request,free}_interrupts()
+> invocations, since they will be called from
+> gpiochip_add_irqchip()/gpiochip_irqchip_remove() anyway.
+> 8) Alter CONFIG_GPIO_DWAPB kernel config to select
+> CONFIG_GPIOLIB_IRQCHIP instead of CONFIG_GENERIC_IRQ_CHIP.
 
-Indeed I don't think this is relevant, the loop in kvmppc_memslot_page_merge() 
-deals with one call (to ksm_advise) per VMA, while this code is dealing with one 
-call per page of the VMA, which completely different.
 
-I don't think merging the both will be a good idea.
+...
 
-Cheers,
-Laurent.
+One more thing...
+
+>  static u32 dwapb_do_irq(struct dwapb_gpio *gpio)
+>  {
+> +	struct gpio_chip *gc = &gpio->ports[0].gc;
+>  	unsigned long irq_status;
+>  	irq_hw_number_t hwirq;
+>  
+>  	irq_status = dwapb_read(gpio, GPIO_INTSTATUS);
+>  	for_each_set_bit(hwirq, &irq_status, 32) {
+> -		int gpio_irq = irq_find_mapping(gpio->domain, hwirq);
+> +		int gpio_irq = gc->to_irq(gc, hwirq);
+
+Very, very few do this.
+Can we stick with the original one?
+(See plenty of other examples in the GPIO / pin control subsystems.
+
+>  		u32 irq_type = irq_get_trigger_type(gpio_irq);
+>  
+>  		generic_handle_irq(gpio_irq);
+
+
+>  }
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
