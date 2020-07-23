@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713E122AB2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9BA22AB34
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgGWI7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:59:53 -0400
-Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:31288 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgGWI7x (ORCPT
+        id S1727948AbgGWJCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 05:02:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41665 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgGWJCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:59:53 -0400
-Received: from [192.168.43.110] ([93.23.16.85])
-        by mwinf5d15 with ME
-        id 6Yzp2300S1q71ed03Yzqlf; Thu, 23 Jul 2020 10:59:51 +0200
-X-ME-Helo: [192.168.43.110]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 23 Jul 2020 10:59:51 +0200
-X-ME-IP: 93.23.16.85
-Subject: Re: [PATCH 1/2] misc: hpilo: switch from 'pci_' to 'dma_' API
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20200718070224.337964-1-christophe.jaillet@wanadoo.fr>
- <20200723073433.GA1273491@kroah.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <15e5f2e4-a623-3fc2-36b6-4132ee316220@wanadoo.fr>
-Date:   Thu, 23 Jul 2020 10:59:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Jul 2020 05:02:04 -0400
+Received: from mail-lf1-f69.google.com ([209.85.167.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1jyX73-0001S0-IY
+        for linux-kernel@vger.kernel.org; Thu, 23 Jul 2020 09:02:01 +0000
+Received: by mail-lf1-f69.google.com with SMTP id j5so1282755lfc.15
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:02:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U+wT4uWfBoeVxuv9M2M1SsHXGOIE2eDw5GOYNjnOws0=;
+        b=KQI7abAsu+HRnDIAEQQotJaHfFsbijjKtFbOIgD+xv1B4h40j2GHtLSGeLmQRW8flh
+         dEe6U9xPz+EkZ4+DdgbtV4xxI31yoWfOv7a1p9BBuIzv3DjA0yqLqkBURS6B+J9BwePl
+         A3bJcNo09AWg4DhwAwqBMh9ERQZU+6oVOTnThx/QdFI+VQiXuNqFRAz5uXcp0hjtS7Iu
+         y9AWOemZXQJeaIa7zFaacyf/4nhgRGfU8LcbJjZcsbpQO/YNRqe6ld1kimTrUJr4oMac
+         0+T02rvheaE6X981BPFI7frQxQ2TrVJeUIE7TKwW15jfNwK/rDnOT7KjOCmT/1WQtnCz
+         CF7A==
+X-Gm-Message-State: AOAM532PkudQcJA1bXibznXzyRt6ATTWEysm8dJwhWOXVXrBZb+480tB
+        RJFemo6yh03nDZbVKAKUN0QkCG+ruKUAOzUZ1IGF8QsvRV/7GNeZ8YAsKUXSIWTLKHUBYMUMoc0
+        CKthTjlTh+KvNXF+/yNWa9m4gLuMMid4jyBoTHFGoclxEgKoK3AVuCK2G
+X-Received: by 2002:a2e:9d86:: with SMTP id c6mr1497765ljj.418.1595494920939;
+        Thu, 23 Jul 2020 02:02:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJd3/VfgnjFYGCdo/JmUiXjd56BUIkYcecDQxaWSkFheEj5HUm6LObhj/XQNcciCiYaWu+tCWJIVdHgz99xd0=
+X-Received: by 2002:a2e:9d86:: with SMTP id c6mr1497750ljj.418.1595494920649;
+ Thu, 23 Jul 2020 02:02:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200723073433.GA1273491@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200318024215.5270-1-po-hsu.lin@canonical.com>
+In-Reply-To: <20200318024215.5270-1-po-hsu.lin@canonical.com>
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date:   Thu, 23 Jul 2020 17:01:49 +0800
+Message-ID: <CAMy_GT9g48Xf=U==FeFd-8CaFM97u4WMkDBT013uzfjeqKMcfw@mail.gmail.com>
+Subject: Re: [PATCHv3] selftests/timers: Turn off timeout setting
+To:     linux-kselftest@vger.kernel.org
+Cc:     shuah <shuah@kernel.org>, sboyd@kernel.org, tglx@linutronix.de,
+        John Stultz <john.stultz@linaro.org>, joe.lawrence@redhat.com,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 23/07/2020 à 09:34, Greg KH a écrit :
-> On Sat, Jul 18, 2020 at 09:02:24AM +0200, Christophe JAILLET wrote:
->> The wrappers in include/linux/pci-dma-compat.h should go away.
->>
->> The patch has been generated with the coccinelle script below and has been
->> hand modified to replace GFP_ with a correct flag.
->> It has been compile tested.
->>
->> When memory is allocated in 'ilo_ccb_setup()' GFP_ATOMIC must be used
->> because a spin_lock is hold in 'ilo_open()' before calling
->> 'ilo_ccb_setup()'
+(Adding Shuah's linuxfoundation mail)
+Hello,
+do you need more changes / tests for this test?
 
-        ^
-        |
+Thanks!
+Po-Hsu
 
->> [...]
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
->>     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
->> ---
->>   drivers/misc/hpilo.c | 7 ++++---
->>   1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
->> index 10c975662f8b..c9539c89a925 100644
->> --- a/drivers/misc/hpilo.c
->> +++ b/drivers/misc/hpilo.c
->> @@ -256,7 +256,8 @@ static void ilo_ccb_close(struct pci_dev *pdev, struct ccb_data *data)
->>   	memset_io(device_ccb, 0, sizeof(struct ccb));
->>   
->>   	/* free resources used to back send/recv queues */
->> -	pci_free_consistent(pdev, data->dma_size, data->dma_va, data->dma_pa);
->> +	dma_free_coherent(&pdev->dev, data->dma_size, data->dma_va,
->> +			  data->dma_pa);
->>   }
->>   
->>   static int ilo_ccb_setup(struct ilo_hwinfo *hw, struct ccb_data *data, int slot)
->> @@ -272,8 +273,8 @@ static int ilo_ccb_setup(struct ilo_hwinfo *hw, struct ccb_data *data, int slot)
->>   			 2 * desc_mem_sz(NR_QENTRY) +
->>   			 ILO_START_ALIGN + ILO_CACHE_SZ;
->>   
->> -	data->dma_va = pci_alloc_consistent(hw->ilo_dev, data->dma_size,
->> -					    &data->dma_pa);
->> +	data->dma_va = dma_alloc_coherent(&hw->ilo_dev->dev, data->dma_size,
->> +					  &data->dma_pa, GFP_ATOMIC);
-> 
-> This is being called from open() so it can be GFP_KERNEL.  Can you fix
-> that up and resend a new version?
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-The call chain is:
-    .open	                       (file_operations)
-       --> ilo_open
-	  spin_lock(&hw->open_lock);   (around line 782)
-          --> ilo_ccb_setup	       (hw->open_lock is still hold)
-
-So I think that GFP_ATOMIC is needed here, or the code should be 
-reworked to avoid holding the spin_lock when ilo_ccb_setup is called.
-
-CJ
+On Wed, Mar 18, 2020 at 10:42 AM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+>
+> The following 4 tests in timers can take longer than the default 45
+> seconds that added in commit 852c8cbf34d3 ("selftests/kselftest/runner.sh:
+> Add 45 second timeout per test") to run:
+>   * nsleep-lat - 2m7.350s
+>   * set-timer-lat - 2m0.66s
+>   * inconsistency-check - 1m45.074s
+>   * raw_skew - 2m0.013s
+>
+> Thus they will be marked as failed with the current 45s setting:
+>   not ok 3 selftests: timers: nsleep-lat # TIMEOUT
+>   not ok 4 selftests: timers: set-timer-lat # TIMEOUT
+>   not ok 6 selftests: timers: inconsistency-check # TIMEOUT
+>   not ok 7 selftests: timers: raw_skew # TIMEOUT
+>
+> Disable the timeout setting for timers can make these tests finish
+> properly:
+>   ok 3 selftests: timers: nsleep-lat
+>   ok 4 selftests: timers: set-timer-lat
+>   ok 6 selftests: timers: inconsistency-check
+>   ok 7 selftests: timers: raw_skew
+>
+> https://bugs.launchpad.net/bugs/1864626
+> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> ---
+>  tools/testing/selftests/timers/Makefile | 1 +
+>  tools/testing/selftests/timers/settings | 1 +
+>  2 files changed, 2 insertions(+)
+>  create mode 100644 tools/testing/selftests/timers/settings
+>
+> diff --git a/tools/testing/selftests/timers/Makefile b/tools/testing/selftests/timers/Makefile
+> index 7656c7c..0e73a16 100644
+> --- a/tools/testing/selftests/timers/Makefile
+> +++ b/tools/testing/selftests/timers/Makefile
+> @@ -13,6 +13,7 @@ DESTRUCTIVE_TESTS = alarmtimer-suspend valid-adjtimex adjtick change_skew \
+>
+>  TEST_GEN_PROGS_EXTENDED = $(DESTRUCTIVE_TESTS)
+>
+> +TEST_FILES := settings
+>
+>  include ../lib.mk
+>
+> diff --git a/tools/testing/selftests/timers/settings b/tools/testing/selftests/timers/settings
+> new file mode 100644
+> index 0000000..e7b9417
+> --- /dev/null
+> +++ b/tools/testing/selftests/timers/settings
+> @@ -0,0 +1 @@
+> +timeout=0
+> --
+> 2.7.4
+>
