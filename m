@@ -2,101 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DFC22B0CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57C722B0CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgGWNw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGWNw4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:52:56 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9AAC0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:52:55 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id a15so5237650wrh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p3pTNZMs0Co8HSRLuxgx+ra6lY54Ifu742adT9Ty5xY=;
-        b=YOuWGFzGLdaS8sm/4P693z/q9JjhWvmhyhFplKGUqSRHHyBRTgEA59O7Z47QFiQvpU
-         UzStdAD1j6xaxcTfNTvyBXxChNNnPcM6jJUG8HVtyTzyBq4ELzoQzMdZxy34SlfLEzHW
-         dHohAAM0reRYYgZQmFS1bNrCNr3wNah2/OqE7fO9rjNbJkbmwWGHoDKjvz4Ujn/gzgVh
-         qjpIxoNbckBJ5iPIJyP4ABG5NK/Dc5/8u9AZxdlzl4rP2pSl3q8Y9fTH4l2cyb9Vf/Bf
-         SOWeR7V/+N5dXtEJidhNYOjw3geeykDGZRwPxeFxaHPvKDLk5/QL14t41L7KbMa2W5Kc
-         PD8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p3pTNZMs0Co8HSRLuxgx+ra6lY54Ifu742adT9Ty5xY=;
-        b=f2Bc1EzYzfp1FgMhJLxkzQlLvh54rNZSJkUqy1MDijLwfiFhvLy0cGE3j7AoljY1dW
-         zQFfYRBd490S5gaErEsgLwo/I90VkodDT+H+oo62y8ZtxgsgnPf3jiL0h0mv3Z16Y6L7
-         dXbofS9eCDMQslGJ+wtdEbNnxBwybWasHOjx+UeOmuosYyp51AvbKSeza+58n5Nem7Fp
-         hzk22lq5oe1g+e/jBvhBRVn8w/g0FLi6J2KfJmoVjR0F+h51EGxteKJbQitPvlFuCFt9
-         djhCwh7koodxFBTuikbbl5G0guWxm83nZL8bak1DsLqszv1lqGd7Wmx6bZAnrDiO3wGK
-         Z39A==
-X-Gm-Message-State: AOAM530vAqqor8Rl4TSSfCg3k5IcVa209qqsyHVHngTq4cvSpBNgsbdR
-        5LdvHjImvJbqdCggnqoh0vqLABKMMNE0NJxOppKLRw==
-X-Google-Smtp-Source: ABdhPJw7F4eKclGD+IAsLEwgabBkwXiJmgMEVwJzwCYsa73+YKGp6CGgLTDL/65UmlqOrvOFwmGjZAY84PaJ4RKlgTI=
-X-Received: by 2002:adf:a351:: with SMTP id d17mr4116950wrb.111.1595512374316;
- Thu, 23 Jul 2020 06:52:54 -0700 (PDT)
+        id S1728991AbgGWNxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:53:03 -0400
+Received: from smtp.asem.it ([151.1.184.197]:61446 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728862AbgGWNxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 09:53:01 -0400
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000400764.MSG 
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 15:52:56 +0200S
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 23
+ Jul 2020 15:52:55 +0200
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 23 Jul 2020 15:52:55 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH v2 7/9] intersil: fix wiki website url
+Date:   Thu, 23 Jul 2020 15:52:54 +0200
+Message-ID: <20200723135254.594984-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1595474863-33112-1-git-send-email-liheng40@huawei.com> <1595474863-33112-2-git-send-email-liheng40@huawei.com>
-In-Reply-To: <1595474863-33112-2-git-send-email-liheng40@huawei.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 23 Jul 2020 09:52:43 -0400
-Message-ID: <CADnq5_PgjxWHxzemDPh1kmfT7twPrend5a5uewMTqVdvf_wkjg@mail.gmail.com>
-Subject: Re: [PATCH -next 2/2] drm: Remove redundant NULL check
-To:     Li Heng <liheng40@huawei.com>
-Cc:     Dave Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A090210.5F199638.0028,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 12:11 AM Li Heng <liheng40@huawei.com> wrote:
->
-> Fix below warnings reported by coccicheck:
-> ./drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c:557:2-7: WARNING: NULL check before some freeing functions is not needed.
->
-> Fixes: 4d55b0dd1cdd ("drm/amd/display: Add DCN3 CLK_MGR")
-> Signed-off-by: Li Heng <liheng40@huawei.com>
+In some Intersil files, the wiki url is still the old
+"wireless.kernel.org" instead of the new
+"wireless.wiki.kernel.org"
 
-Applied.  Thanks!
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
 
-Alex
+v2: the previous version failed to apply:
+    "fatal: corrupt patch at line 97
+     error: could not build fake ancestor"
 
-> ---
->  drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c
-> index d94fdc5..d8af56a 100644
-> --- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c
-> +++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn30/dcn30_clk_mgr.c
-> @@ -553,8 +553,7 @@ void dcn3_clk_mgr_construct(
->
->  void dcn3_clk_mgr_destroy(struct clk_mgr_internal *clk_mgr)
->  {
-> -       if (clk_mgr->base.bw_params)
-> -               kfree(clk_mgr->base.bw_params);
-> +       kfree(clk_mgr->base.bw_params);
->
->         if (clk_mgr->wm_range_table)
->                 dm_helpers_free_gpu_mem(clk_mgr->base.ctx, DC_MEM_ALLOC_TYPE_GART,
-> --
-> 2.7.4
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+ drivers/net/wireless/intersil/Kconfig                  | 2 +-
+ drivers/net/wireless/intersil/p54/Kconfig              | 6 +++---
+ drivers/net/wireless/intersil/p54/fwio.c               | 2 +-
+ drivers/net/wireless/intersil/p54/p54usb.c             | 2 +-
+ drivers/net/wireless/intersil/prism54/islpci_hotplug.c | 3 ++-
+ 5 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/wireless/intersil/Kconfig b/drivers/net/wireless/intersil/Kconfig
+index 6a6ce9d4aeee..c52d9b535623 100644
+--- a/drivers/net/wireless/intersil/Kconfig
++++ b/drivers/net/wireless/intersil/Kconfig
+@@ -30,7 +30,7 @@ config PRISM54
+ 
+ 	  For more information refer to the p54 wiki:
+ 
+-	  http://wireless.kernel.org/en/users/Drivers/p54
++	  http://wireless.wiki.kernel.org/en/users/Drivers/p54
+ 
+ 	  Note: You need a motherboard with DMA support to use any of these cards
+ 
+diff --git a/drivers/net/wireless/intersil/p54/Kconfig b/drivers/net/wireless/intersil/p54/Kconfig
+index 024be5507daf..003c378ed131 100644
+--- a/drivers/net/wireless/intersil/p54/Kconfig
++++ b/drivers/net/wireless/intersil/p54/Kconfig
+@@ -10,7 +10,7 @@ config P54_COMMON
+ 	  also need to be enabled in order to support any devices.
+ 
+ 	  These devices require softmac firmware which can be found at
+-	  <http://wireless.kernel.org/en/users/Drivers/p54>
++	  <http://wireless.wiki.kernel.org/en/users/Drivers/p54>
+ 
+ 	  If you choose to build a module, it'll be called p54common.
+ 
+@@ -22,7 +22,7 @@ config P54_USB
+ 	  This driver is for USB isl38xx based wireless cards.
+ 
+ 	  These devices require softmac firmware which can be found at
+-	  <http://wireless.kernel.org/en/users/Drivers/p54>
++	  <http://wireless.wiki.kernel.org/en/users/Drivers/p54>
+ 
+ 	  If you choose to build a module, it'll be called p54usb.
+ 
+@@ -36,7 +36,7 @@ config P54_PCI
+ 	  supported by the fullmac driver/firmware.
+ 
+ 	  This driver requires softmac firmware which can be found at
+-	  <http://wireless.kernel.org/en/users/Drivers/p54>
++	  <http://wireless.wiki.kernel.org/en/users/Drivers/p54>
+ 
+ 	  If you choose to build a module, it'll be called p54pci.
+ 
+diff --git a/drivers/net/wireless/intersil/p54/fwio.c b/drivers/net/wireless/intersil/p54/fwio.c
+index a5afcc865196..bece14e4ff0d 100644
+--- a/drivers/net/wireless/intersil/p54/fwio.c
++++ b/drivers/net/wireless/intersil/p54/fwio.c
+@@ -132,7 +132,7 @@ int p54_parse_firmware(struct ieee80211_hw *dev, const struct firmware *fw)
+ 	if (priv->fw_var < 0x500)
+ 		wiphy_info(priv->hw->wiphy,
+ 			   "you are using an obsolete firmware. "
+-			   "visit http://wireless.kernel.org/en/users/Drivers/p54 "
++			   "visit http://wireless.wiki.kernel.org/en/users/Drivers/p54 "
+ 			   "and grab one for \"kernel >= 2.6.28\"!\n");
+ 
+ 	if (priv->fw_var >= 0x300) {
+diff --git a/drivers/net/wireless/intersil/p54/p54usb.c b/drivers/net/wireless/intersil/p54/p54usb.c
+index ff0e30c0c14c..cae47663b17b 100644
+--- a/drivers/net/wireless/intersil/p54/p54usb.c
++++ b/drivers/net/wireless/intersil/p54/p54usb.c
+@@ -36,7 +36,7 @@ static struct usb_driver p54u_driver;
+  * Note:
+  *
+  * Always update our wiki's device list (located at:
+- * http://wireless.kernel.org/en/users/Drivers/p54/devices ),
++ * http://wireless.wiki.kernel.org/en/users/Drivers/p54/devices ),
+  * whenever you add a new device.
+  */
+ 
+diff --git a/drivers/net/wireless/intersil/prism54/islpci_hotplug.c b/drivers/net/wireless/intersil/prism54/islpci_hotplug.c
+index 20291c0d962d..34912267ff63 100644
+--- a/drivers/net/wireless/intersil/prism54/islpci_hotplug.c
++++ b/drivers/net/wireless/intersil/prism54/islpci_hotplug.c
+@@ -26,7 +26,8 @@ module_param(init_pcitm, int, 0);
+ /* In this order: vendor, device, subvendor, subdevice, class, class_mask,
+  * driver_data
+  * If you have an update for this please contact prism54-devel@prism54.org
+- * The latest list can be found at http://wireless.kernel.org/en/users/Drivers/p54 */
++ * The latest list can be found at http://wireless.wiki.kernel.org/en/users/Drivers/p54
++ */
+ static const struct pci_device_id prism54_id_tbl[] = {
+ 	/* Intersil PRISM Duette/Prism GT Wireless LAN adapter */
+ 	{
+-- 
+2.25.1
+
