@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2558122AF26
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1898422AF11
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgGWM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58284 "EHLO
+        id S1729097AbgGWMZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728828AbgGWMZb (ORCPT
+        with ESMTP id S1729083AbgGWMZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:25:31 -0400
+        Thu, 23 Jul 2020 08:25:32 -0400
 Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582E0C0619E4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:31 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id p14so4412439wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B9BC0619E3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:32 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x5so4225554wmi.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B2RqnTIG0uteLiyJB2KJla0FyHDSlH3XX5iZpJkogwU=;
-        b=kyiVKBqFHyRIZ1JMpgAVtFSaEM23aouz0l5QQ49XYc2VCwG+/kgIftAS8DqXDBL5AU
-         qd6V5yeI3N5++kJJJmHDEXW5XzlDzOX1DHnPr7NLQAktoJDF3hM1dro0LkJNM9WeVNva
-         +BcwpmB1t2NLLGafuFKHrCF2cHKxiyC6AncSTxHOQrASL25IkuYpPuQzAdRtZ6zpWvGt
-         zCxZ9yOUH9ZUCLSt7qrc2IwPEYpxxUeg703CkVjjWjGEkw90tzfXLIM1lLsgmskzaGwL
-         uEruf6nUfzvy42sacxgrTTJ0r7+6fu39ReYjNpmtC5OYJcgypdXM5lHeAYropnacPtvs
-         VRWg==
+        bh=zeBAm1L7XVJ6IVI2TzsfeuXstruzEbtoUmoVsIn2ru8=;
+        b=EnCu+Wb38b4dsqdsV/NDDN7jk4P11BTBfwFzIGhJwSa5HDLOreoGHFr+sZSji+0tgd
+         +NcBdAvxWhDLzfVnrObozeGKSeU7mTKiRnnJx6DsiHNXmPxrR2yhvd86qUAPaio5LN+e
+         R+Ug97vVFL4qvD8LKtWxN0JBVCS6yOl9exg04OsMljHZzlVq53mrlQRDuvffpYagfurV
+         9a6Ydcr1LePnkVSPYyAmqWQ0sSzGXxKkhOfL4Smnlbeif+OrtsW64tk+1WO1YaB60ec9
+         Vj7I/M0od+PGt3AUpVR+97u9fyO45j2/qXByvA0nfOepgtcgBBMM65/YXMh5iQ6VVpRU
+         HLvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B2RqnTIG0uteLiyJB2KJla0FyHDSlH3XX5iZpJkogwU=;
-        b=jkZx0YKJP8escd9d/2SQv+zpIk+XhTmvEb6FpV4vLYW5IFr9CzvDcD+Pr8M3MmxOKO
-         8NeuTqlzjDkyzb7s6OPhA9wYS18f/erKz/XFJOQKVK7tQwrp3cuTuFZ4/3NS1bN+xHDe
-         r1YRTaIRHZfo6e2EdDdkvOw6xUn2RpnKdWvRd5y8MsA/prEFOPmyfWikrCSk2WEUFOx9
-         V0hHsaksMaFBzJ+YgPCdB3CQ2ZpdLKb6pffI50lgEaquKFyCR58nAXgK4EBp7kccltPn
-         4Wp4mct28/KHRX5i2SWtOgc8lU3ypjWutcF2IG7avSM9hI3WuSjOEV5sLglmO2wM94vW
-         tVCw==
-X-Gm-Message-State: AOAM532MUT9wx294Gj1olYwoCKypVLUwMRKstEmlqv0pn6etglZqIYKp
-        lS4+oivQ2rjUdb2tnGUOY0ecaQ==
-X-Google-Smtp-Source: ABdhPJy/2FZPI2tqrty53VNSn9/ithCZuQ+O91QiKWyLh6bBIfkjYia8sXFXtYA1gT9kiyO+t+M/qQ==
-X-Received: by 2002:a1c:7719:: with SMTP id t25mr4166425wmi.144.1595507130048;
-        Thu, 23 Jul 2020 05:25:30 -0700 (PDT)
+        bh=zeBAm1L7XVJ6IVI2TzsfeuXstruzEbtoUmoVsIn2ru8=;
+        b=lr65DXj1uC9Vwr+s3RCZ8t3Zm89TKMnF0nxVDfmUHqOei5vezGFwDShmqccBye3lrq
+         s25a0HxeUiR+0WyxuI+44y8PgBgB0+wZvmqxrMCA4r5Sg9nj/qTUX28Fr/KYcgsrEj0K
+         MofJxmf50S7aNsqDGTQmovfgxk/pyiKl/oXKVVOXb5altUALAlVximakTyT334yzNnxv
+         aFaTcoxRNZrauFJA14SIwIA3pNB2pWVwpRW3i1I5qWoyo2pms2+2Q68FV2ydnIZxhZhF
+         f8TgBJsP3F9+iYaYrJgAYI/kqnP96iq7qjN6TO5QAfvcbzYKPAxoLgFYUeZ+v6jWtsyU
+         NbXQ==
+X-Gm-Message-State: AOAM533YVpz19NVIkK5xPfQdxxb1WBpAS4fY7kavkWZCq1B8loKEruwW
+        AVfa6G/gmBwLoWkcb0Ge8UjN4A==
+X-Google-Smtp-Source: ABdhPJzLU3UY01dM0brcV0HKbf0KdBIOoTZNeWuxveErkT/5gB9xuWssPL6fEMHzlDUDTgRNjN48zA==
+X-Received: by 2002:a1c:68c2:: with SMTP id d185mr3847154wmc.24.1595507131102;
+        Thu, 23 Jul 2020 05:25:31 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id j5sm3510651wma.45.2020.07.23.05.25.29
+        by smtp.gmail.com with ESMTPSA id j5sm3510651wma.45.2020.07.23.05.25.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 05:25:29 -0700 (PDT)
+        Thu, 23 Jul 2020 05:25:30 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     jejb@linux.ibm.com, martin.petersen@oracle.com
 Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
         Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
-Subject: [PATCH 33/40] scsi: bfa: bfa_ioc: Demote non-kerneldoc headers down to standard comment blocks
-Date:   Thu, 23 Jul 2020 13:24:39 +0100
-Message-Id: <20200723122446.1329773-34-lee.jones@linaro.org>
+Subject: [PATCH 34/40] scsi: bfa: bfa_core: Demote seemingly unintentional kerneldoc header
+Date:   Thu, 23 Jul 2020 13:24:40 +0100
+Message-Id: <20200723122446.1329773-35-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723122446.1329773-1-lee.jones@linaro.org>
 References: <20200723122446.1329773-1-lee.jones@linaro.org>
@@ -67,144 +67,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is probably historical (Doxygen?).
+This is the only use of kerneldoc in the source file and no
+descriptions are provided.
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/scsi/bfa/bfa_ioc.c:6646: warning: Cannot understand  * @brief hardware error definition
- drivers/scsi/bfa/bfa_ioc.c:6661: warning: Cannot understand  * @brief flash command register data structure
- drivers/scsi/bfa/bfa_ioc.c:6685: warning: Cannot understand  * @brief flash device status register data structure
- drivers/scsi/bfa/bfa_ioc.c:6711: warning: Cannot understand  * @brief flash address register data structure
- drivers/scsi/bfa/bfa_ioc.c:6732: warning: Function parameter or member 'pci_bar' not described in 'bfa_flash_set_cmd'
- drivers/scsi/bfa/bfa_ioc.c:6732: warning: Function parameter or member 'wr_cnt' not described in 'bfa_flash_set_cmd'
- drivers/scsi/bfa/bfa_ioc.c:6732: warning: Function parameter or member 'rd_cnt' not described in 'bfa_flash_set_cmd'
- drivers/scsi/bfa/bfa_ioc.c:6732: warning: Function parameter or member 'ad_cnt' not described in 'bfa_flash_set_cmd'
- drivers/scsi/bfa/bfa_ioc.c:6732: warning: Function parameter or member 'op' not described in 'bfa_flash_set_cmd'
- drivers/scsi/bfa/bfa_ioc.c:6768: warning: Cannot understand  * @brief
- drivers/scsi/bfa/bfa_ioc.c:6807: warning: Cannot understand  * @brief
- drivers/scsi/bfa/bfa_ioc.c:6852: warning: Cannot understand  * @brief
- drivers/scsi/bfa/bfa_ioc.c:6898: warning: Cannot understand  * @brief
- drivers/scsi/bfa/bfa_ioc.c:6914: warning: Cannot understand  * @brief
- drivers/scsi/bfa/bfa_ioc.c:6940: warning: Cannot understand  * @brief
+ drivers/scsi/bfa/bfa_core.c:1245: warning: Function parameter or member 'bfa' not described in 'bfa_iocfc_qreg'
+ drivers/scsi/bfa/bfa_core.c:1245: warning: Function parameter or member 'qreg' not described in 'bfa_iocfc_qreg'
 
 Cc: Anil Gurumurthy <anil.gurumurthy@qlogic.com>
 Cc: Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/scsi/bfa/bfa_ioc.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ drivers/scsi/bfa/bfa_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/bfa/bfa_ioc.c b/drivers/scsi/bfa/bfa_ioc.c
-index 10c12b5a36b84..be48a7e31e803 100644
---- a/drivers/scsi/bfa/bfa_ioc.c
-+++ b/drivers/scsi/bfa/bfa_ioc.c
-@@ -6642,8 +6642,8 @@ enum bfa_flash_cmd {
- 	BFA_FLASH_READ_STATUS	= 0x05,	/* read status */
- };
- 
--/**
-- * @brief hardware error definition
-+/*
-+ * Hardware error definition
-  */
- enum bfa_flash_err {
- 	BFA_FLASH_NOT_PRESENT	= -1,	/*!< flash not present */
-@@ -6657,8 +6657,8 @@ enum bfa_flash_err {
- 	BFA_FLASH_ERR_LEN	= -9,	/*!< invalid length */
- };
- 
--/**
-- * @brief flash command register data structure
-+/*
-+ * Flash command register data structure
-  */
- union bfa_flash_cmd_reg_u {
- 	struct {
-@@ -6681,8 +6681,8 @@ union bfa_flash_cmd_reg_u {
- 	u32	i;
- };
- 
--/**
-- * @brief flash device status register data structure
-+/*
-+ * Flash device status register data structure
-  */
- union bfa_flash_dev_status_reg_u {
- 	struct {
-@@ -6707,8 +6707,8 @@ union bfa_flash_dev_status_reg_u {
- 	u32	i;
- };
- 
--/**
-- * @brief flash address register data structure
-+/*
-+ * Flash address register data structure
-  */
- union bfa_flash_addr_reg_u {
- 	struct {
-@@ -6723,7 +6723,7 @@ union bfa_flash_addr_reg_u {
- 	u32	i;
- };
+diff --git a/drivers/scsi/bfa/bfa_core.c b/drivers/scsi/bfa/bfa_core.c
+index fb4c469bd89fc..6846ca8f7313c 100644
+--- a/drivers/scsi/bfa/bfa_core.c
++++ b/drivers/scsi/bfa/bfa_core.c
+@@ -1237,7 +1237,7 @@ bfa_iocfc_disable_cb(void *bfa_arg, bfa_boolean_t compl)
+ 		complete(&bfad->disable_comp);
+ }
  
 -/**
 +/*
-  * dg flash_raw_private Flash raw private functions
+  * configure queue registers from firmware response
   */
  static void
-@@ -6764,7 +6764,7 @@ bfa_flash_cmd_act_check(void __iomem *pci_bar)
- 	return 0;
- }
- 
--/**
-+/*
-  * @brief
-  * Flush FLI data fifo.
-  *
-@@ -6803,7 +6803,7 @@ bfa_flash_fifo_flush(void __iomem *pci_bar)
- 	return 0;
- }
- 
--/**
-+/*
-  * @brief
-  * Read flash status.
-  *
-@@ -6848,7 +6848,7 @@ bfa_flash_status_read(void __iomem *pci_bar)
- 	return ret_status;
- }
- 
--/**
-+/*
-  * @brief
-  * Start flash read operation.
-  *
-@@ -6894,7 +6894,7 @@ bfa_flash_read_start(void __iomem *pci_bar, u32 offset, u32 len,
- 	return 0;
- }
- 
--/**
-+/*
-  * @brief
-  * Check flash read operation.
-  *
-@@ -6910,7 +6910,7 @@ bfa_flash_read_check(void __iomem *pci_bar)
- 
- 	return 0;
- }
--/**
-+/*
-  * @brief
-  * End flash read operation.
-  *
-@@ -6936,7 +6936,7 @@ bfa_flash_read_end(void __iomem *pci_bar, u32 len, char *buf)
- 	bfa_flash_fifo_flush(pci_bar);
- }
- 
--/**
-+/*
-  * @brief
-  * Perform flash raw read.
-  *
 -- 
 2.25.1
 
