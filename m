@@ -2,45 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ECB22A9AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0803C22A9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgGWHbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 03:31:08 -0400
-Received: from n7.nabble.com ([162.253.133.57]:54310 "EHLO n7.nabble.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726304AbgGWHbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:31:07 -0400
-Received: from n7.nabble.com (localhost [127.0.0.1])
-        by n7.nabble.com (Postfix) with ESMTP id 692201870D0A4
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:25:35 -0700 (MST)
-Date:   Thu, 23 Jul 2020 00:25:35 -0700 (MST)
-From:   jollyzula <sd9932946@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Message-ID: <1595489135428-0.post@n7.nabble.com>
-In-Reply-To: <4151C0F9B9C25C47B3328922A6297A3286CF98@post.arx.com>
-References: <4151C0F9B9C25C47B3328922A6297A3286CF98@post.arx.com>
-Subject: Canon.com/ijsetup
+        id S1727013AbgGWHbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 03:31:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39555 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726941AbgGWHbd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 03:31:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595489493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jQHRUT5gixVlpLT/vMX5zI5kpeZwUfmxkJZjL4H/0xo=;
+        b=RwH8P6N/chxJglaYQov6QaZMxT1HirNbA2zNVIqGG/IX9B9BHj0qvfCY4BiMv1GQHOE4rj
+        gzSJCrEaQ2N9RYtVv1Y/Bmy6jJmvZcf/igDX65w7DyxeiDsyv1psCPPnpu+DsbiTiCpdVP
+        LcfkWddiPjq4EVqIIWjnXMhqABeN45Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-425-IvtNbOVbOpabky9s9I6Xow-1; Thu, 23 Jul 2020 03:31:27 -0400
+X-MC-Unique: IvtNbOVbOpabky9s9I6Xow-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91A3657;
+        Thu, 23 Jul 2020 07:31:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A4BC61176;
+        Thu, 23 Jul 2020 07:31:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200723013223.GA45081@linux.intel.com>
+References: <20200723013223.GA45081@linux.intel.com> <159485211858.2340757.9890754969922775496.stgit@warthog.procyon.org.uk>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+        Wei Yongjun <weiyongjun1@huawei.com>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] keys: asymmetric: fix error return code in software_key_query()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1267852.1595489483.1@warthog.procyon.org.uk>
+Date:   Thu, 23 Jul 2020 08:31:23 +0100
+Message-ID: <1267853.1595489483@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you've got recently purchased a PC or getting to buy an equivalent , one
-among the foremost important considerations should be quality Antivirus
-software. Many hardware vendors will bundle an anti software package along
-side a fresh PC as a part of the deal. However, if it's not the case, it's
-an absolute must that you simply have a top quality antivirus software
-package installed onto your laptop or desktop. need more information than
-visit this side.   Canon.com/ijsetup <http://canon.com-ijsetup.com>   | 
-Ij.Start.Canon <https://canon.com-ijsetup.com/ij-start-cannon/>   | 
-Norton.com/nu16 <http://norton-com-nu16.com/>   |   Norton.com/nu16
-<http://norton-com-nu16.com/>  
+Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
 
+> >  	if (IS_ERR(tfm))
+> >  		return PTR_ERR(tfm);
+> >  
+> > +	ret = -ENOMEM;
+> 
+> This is extremely confusing to read way to handle 'ret'.
+> 
+> Would be way more cleaner to be just simple and stupid:
+> 
+> 	if (!key) {
+> 		ret = -ENOMEM;
+> 		goto error_free_tfm;
+> 	}
 
+I agree, but we have some people who will (or who used to) moan at you for
+doing in four lines what you could've done in three.  I don't know if this is
+still the standard.
 
---
-Sent from: http://linux-kernel.2935.n7.nabble.com/
+David
+
