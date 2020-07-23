@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D5022B60E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6447A22B611
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgGWStM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:49:12 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:57893 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726349AbgGWStM (ORCPT
+        id S1728185AbgGWStR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:49:17 -0400
+Received: from esa6.microchip.iphmx.com ([216.71.154.253]:10065 "EHLO
+        esa6.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbgGWStQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:49:12 -0400
+        Thu, 23 Jul 2020 14:49:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595530152; x=1627066152;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rOfZiTKlOiTMXtkPiJ4sia8QYSro0nSiFyXXBuqWpiw=;
-  b=YeTlFGlK8aBPghK80iqx2SqGujBmoANPjVf1SKUbg2mxcD4upAlcyYyr
-   UdmWcmFI83ZeJCzb14vR6uLcCbuG2reit2wC8c+F7mvoTuKFsogOi17Uw
-   2lb/3vvwVZJFHNWWMZYx2GMmbzZ2xa07mzQfmWt70akg22xoURywLbZ3h
-   oDtjDp5c0Ygs1SlIoJO9bPJW4ZsoGo947kz1WPXSbEf1Y4/4JWm5lVbgH
-   2gkgr7O1l963khV75+61XNVqSISK7HNNpqzNLf9BPh23IycoIsuLwp/IX
-   SBVsewBxkGsZBY54wWmSa6uhkktMkkmmvSNv+Qg20EtG4ANa91XmNB5jM
-   A==;
-IronPort-SDR: rPmmgBacQNRffjywLrPLQpxZHMs8POFBcGKcT+um8sd8DqPF7pHK1eJa9fM98VTW4f916KGlwB
- TudAaM+LYxgTXVOD2Mh6yr9rU3q1PTYj+hb9tMy6LsnlFua0vfG9oQMkePpAOXDfoi9MHhpIzt
- BQ6Xr1iBjpvMiWP/RNI/ZJVHCNgxioWyCIw+6nhhtKEdTToDR/qY24OtWo5Q1OJJ26+kmsL52G
- ++m4FfAmmHnp2qjQCnIWHX8c6WgXkKdJzxoSXYGGHH0lviDCwAA9IsUI8SKdogZslolvmQ2XNL
- p7E=
+  t=1595530155; x=1627066155;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=OP/6x1FWBOWYFD0Vizy3q/OtdHKjms+2XnvxpxgJNsU=;
+  b=JZOtQsNwOr302K4pVrdRALCpGruzDTw5bPLTwp2wnE/lf4qc5EzQUR2G
+   mRQbBSbXPb4YeDn3vREG6sZssgmiM/Q3vvqQrSvMWkdotG0Bi36gSxYsr
+   qeT9fb5OF4boAA22Ey/CT1s21lN7fOVZtLCzHMLVBWxYsEtHC+nnn9PLO
+   1EI/oW61SxulnhaR1tFenYLVTdmEaUTgtlU22RqFisxBMtRf2nPyVhnar
+   NDIgXcrx2C00fsLxn1gnj89toODJbC/E7POCzqGs03nARfBa04ub00Cvw
+   mcTh4RYRZBwAaTF2jo5PIN/FdiqPVkFC3MXw8HT1PyTjeodlXCeFP/Ux3
+   Q==;
+IronPort-SDR: sapuqCwlsZIVzl004MwFqSN4O56pfFH31ChOcjpIggQrPyfV+d2c9nkyaNlp3kYvggHpVRuIHu
+ 4mIAUUnt2NJUWCgYvmyU3ibOiN+na9VLgnLWkeLIPSh2YfFyZYFcQ3mpgdfLCYFBDZWx+4zdCf
+ WBJnohVFfP8J2QgWK57owwaqCoHnkaXPDJF9BTqCWbRRucYv2tValNG0KmMiWckxG3zvlmMytK
+ dn9zF0GeUDxN4CFh5bpP9Dyd6cZC24DzFhV7XKwOWQ848RtlqT8GY0uLxM+wXZvuZTq0aNX8qU
+ vjo=
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="85153632"
+   d="scan'208";a="20343895"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 11:49:11 -0700
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 11:49:14 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 23 Jul 2020 11:48:29 -0700
+ 15.1.1979.3; Thu, 23 Jul 2020 11:49:15 -0700
 Received: from cristi-P53.lan (10.10.115.15) by chn-vm-ex01.mchp-main.com
  (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 23 Jul 2020 11:48:28 -0700
+ Transport; Thu, 23 Jul 2020 11:48:32 -0700
 From:   <cristian.birsan@microchip.com>
 To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -48,11 +48,13 @@ To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-CC:     Cristian Birsan <cristian.birsan@microchip.com>
-Subject: [PATCH v4 0/6] usb: gadget: udc: atmel: add usb device support for SAM9x60 SoC
-Date:   Thu, 23 Jul 2020 21:48:56 +0300
-Message-ID: <20200723184902.416705-1-cristian.birsan@microchip.com>
+CC:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v4 1/6] usb: gadget: udc: atmel: use of_find_matching_node_and_match
+Date:   Thu, 23 Jul 2020 21:48:57 +0300
+Message-ID: <20200723184902.416705-2-cristian.birsan@microchip.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200723184902.416705-1-cristian.birsan@microchip.com>
+References: <20200723184902.416705-1-cristian.birsan@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -61,46 +63,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-This patch set adds usb device support for SAM9x60 SoC.
-The DPRAM memory for the USB High Speed Device Port (UDPHS) hardware
-block was increased and the allocation method is changed. This patch
-series simplifies the endpoint allocation scheme to acomodate this SoC
-and the old ones.
+Instead of trying to match every possible compatible use
+of_find_matching_node_and_match() and pass the compatible array.
 
-Changes in v4:
-- rebase on top of testing/next
-- add pp variable to access pmc
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+---
+ drivers/usb/gadget/udc/atmel_usba_udc.c | 26 ++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-Changes in v3:
-- rebase on top of testing/next
-- depends on https://lore.kernel.org/linux-arm-kernel/cover.1594231056.git.mirq-linux@rere.qmqm.pl/
-- extend usba_udc_config structure with endpoint preallocaion flag
-- collect acked-by tags
-
-Changes in v2:
-- drop the patch that adds reference to pmc for sam9x60
-- use dt-bindings: usb prefix
-- enable usb device in device tree
-
-Claudiu Beznea (1):
-  usb: gadget: udc: atmel: use of_find_matching_node_and_match
-
-Cristian Birsan (5):
-  dt-bindings: usb: atmel: Update DT bindings documentation for sam9x60
-  usb: gadget: udc: atmel: simplify endpoint allocation
-  usb: gadget: udc: atmel: use 1 bank endpoints for control transfers
-  usb: gadget: udc: atmel: update endpoint allocation for sam9x60
-  ARM: dts: at91: sam9x60ek: enable usb device
-
- .../devicetree/bindings/usb/atmel-usb.txt     |  1 +
- arch/arm/boot/dts/at91-sam9x60ek.dts          | 13 ++++
- arch/arm/boot/dts/sam9x60.dtsi                | 14 ++++
- drivers/usb/gadget/udc/atmel_usba_udc.c       | 68 ++++++++++++-------
- drivers/usb/gadget/udc/atmel_usba_udc.h       |  3 +-
- 5 files changed, 75 insertions(+), 24 deletions(-)
-
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+index fa6793065c7c..4281242b5f9a 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -2112,11 +2112,19 @@ static const struct of_device_id atmel_udc_dt_ids[] = {
+ 
+ MODULE_DEVICE_TABLE(of, atmel_udc_dt_ids);
+ 
++static const struct of_device_id atmel_pmc_dt_ids[] = {
++	{ .compatible = "atmel,at91sam9g45-pmc" },
++	{ .compatible = "atmel,at91sam9rl-pmc" },
++	{ .compatible = "atmel,at91sam9x5-pmc" },
++	{ /* sentinel */ }
++};
++
+ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+ 						    struct usba_udc *udc)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	const struct of_device_id *match;
++	struct device_node *pp;
+ 	int i, ret;
+ 	struct usba_ep *eps, *ep;
+ 	const struct usba_udc_config *udc_config;
+@@ -2127,13 +2135,17 @@ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+ 
+ 	udc_config = match->data;
+ 	udc->errata = udc_config->errata;
+-	udc->pmc = syscon_regmap_lookup_by_compatible("atmel,at91sam9g45-pmc");
+-	if (IS_ERR(udc->pmc))
+-		udc->pmc = syscon_regmap_lookup_by_compatible("atmel,at91sam9rl-pmc");
+-	if (IS_ERR(udc->pmc))
+-		udc->pmc = syscon_regmap_lookup_by_compatible("atmel,at91sam9x5-pmc");
+-	if (udc->errata && IS_ERR(udc->pmc))
+-		return ERR_CAST(udc->pmc);
++	if (udc->errata) {
++		pp = of_find_matching_node_and_match(NULL, atmel_pmc_dt_ids,
++						     NULL);
++		if (!pp)
++			return ERR_PTR(-ENODEV);
++
++		udc->pmc = syscon_node_to_regmap(pp);
++		of_node_put(pp);
++		if (IS_ERR(udc->pmc))
++			return ERR_CAST(udc->pmc);
++	}
+ 
+ 	udc->num_ep = 0;
+ 
 -- 
 2.25.1
 
