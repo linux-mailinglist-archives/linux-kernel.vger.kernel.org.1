@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCBA22BA17
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6782622BA23
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgGWXPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 19:15:52 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:36511 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgGWXPu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 19:15:50 -0400
-Received: by mail-qk1-f193.google.com with SMTP id g26so7114779qka.3;
-        Thu, 23 Jul 2020 16:15:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6814H9LNFm7mNAgAbdABMO015b6dWxo/CiMH4s9kGpU=;
-        b=JIX6uIL1/yV0sTfrYqjrpHtriKWRXGPZChAEX0U3erebMQprreFGFfW1+SVPCFVDlV
-         fU4wyWTta2De6K4GbppXF6JkWTEatwuOlp33VC+sdU7KXV43/zP7mwKXGtWKRAGiRft+
-         weWZTPOIeNOolzjGseODrPN/pu/j+9EePFsLtbGqeDr9VpoSllRgVYPckdOFLld4Ox1r
-         h2+C0T68/hXtdTb6DzKLxw793RPiSha7Ymf12B1m4f2X9vdJuL5qY25b3q3ZCUCbMkJq
-         oMH73vJBs6/Mpy7PNO5mlifCmBCra8ZfK0GgShUf/uPGHfbKr6unXrEt4EjB7l74WAn8
-         GeIg==
-X-Gm-Message-State: AOAM532Ds8E6JCK3FNh9YN5RhuFrECOfrAiLrW8PcFh9ku0KrAnn5mad
-        VCTuX0s6bpi6bGQp3fyrEkg=
-X-Google-Smtp-Source: ABdhPJy5MXBWH5s3/fFypWtBdB8VuP3zU2BNO8/KzwtRWG7b7u/p/FSVMT5e4B3abtwckXpaKD/qgA==
-X-Received: by 2002:a37:b48:: with SMTP id 69mr6950053qkl.407.1595546149397;
-        Thu, 23 Jul 2020 16:15:49 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id u58sm4196610qth.77.2020.07.23.16.15.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 16:15:49 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-sh@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] sparc: Drop unused MAX_PHYSADDR_BITS
-Date:   Thu, 23 Jul 2020 19:15:44 -0400
-Message-Id: <20200723231544.17274-4-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200723231544.17274-1-nivedita@alum.mit.edu>
-References: <20200723231544.17274-1-nivedita@alum.mit.edu>
+        id S1726957AbgGWXUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 19:20:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726657AbgGWXUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 19:20:49 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A13F206E3;
+        Thu, 23 Jul 2020 23:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595546448;
+        bh=i+Ceq41gViZl1zByQdcr9xsP75TCnNB51e/Bimh3Pr0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=EUcPK8R06MB++pnG74f+WhK4FLoWCqF2rEiQLgNYL6JcGZD/G19DSnX331wUy8Qt6
+         N9OBWObPxdpH6xfO/UyAsdwJwaERNeXFdian/Vl7i5UotFzUK6JbN1kYjXmpRD7NIP
+         1OxYe9M0ym7P3o3cjtxrd8hEvHPW6wIJK3byTYqU=
+Date:   Thu, 23 Jul 2020 18:20:46 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shiju Jose <shiju.jose@huawei.com>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rjw@rjwysocki.net, bp@alien8.de,
+        james.morse@arm.com, lenb@kernel.org, tony.luck@intel.com,
+        dan.carpenter@oracle.com, zhangliguang@linux.alibaba.com,
+        andriy.shevchenko@linux.intel.com, wangkefeng.wang@huawei.com,
+        jroedel@suse.de, linuxarm@huawei.com, yangyicong@hisilicon.com,
+        jonathan.cameron@huawei.com, tanxiaofei@huawei.com
+Subject: Re: [PATCH v13 1/2] ACPI / APEI: Add a notifier chain for unknown
+ (vendor) CPER records
+Message-ID: <20200723232046.GA1468652@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722103952.1009-2-shiju.jose@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro is not used anywhere, so remove the definition.
+On Wed, Jul 22, 2020 at 11:39:51AM +0100, Shiju Jose wrote:
+> CPER records describing a firmware-first error are identified by GUID.
+> The ghes driver currently logs, but ignores any unknown CPER records.
+> This prevents describing errors that can't be represented by a standard
+> entry, that would otherwise allow a driver to recover from an error.
+> The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of
+> version 2.8).
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
----
- arch/sparc/include/asm/sparsemem.h | 1 -
- 1 file changed, 1 deletion(-)
+> +#ifdef CONFIG_ACPI_APEI_GHES
+> +/**
+> + * ghes_register_vendor_record_notifier - register a notifier for vendor
+> + * records that the kernel would otherwise ignore.
+> + * @nb: pointer to the notifier_block structure of the event handler.
+> + *
+> + * return 0 : SUCCESS, non-zero : FAIL
+> + */
+> +int ghes_register_vendor_record_notifier(struct notifier_block *nb);
+> +
+> +/**
+> + * ghes_unregister_vendor_record_notifier - unregister the previously
+> + * registered vendor record notifier.
+> + * @nb: pointer to the notifier_block structure of the vendor record handler.
+> + */
+> +void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+> +#else
+> +static inline int ghes_register_vendor_record_notifier(struct notifier_block *nb)
+> +{
+> +	return -ENODEV;
+> +}
+> +
+> +static inline void ghes_unregister_vendor_record_notifier(struct notifier_block *nb)
+> +{
+> +}
 
-diff --git a/arch/sparc/include/asm/sparsemem.h b/arch/sparc/include/asm/sparsemem.h
-index 1dd1b61432db..aa9a676bc341 100644
---- a/arch/sparc/include/asm/sparsemem.h
-+++ b/arch/sparc/include/asm/sparsemem.h
-@@ -7,7 +7,6 @@
- #include <asm/page.h>
- 
- #define SECTION_SIZE_BITS       30
--#define MAX_PHYSADDR_BITS       MAX_PHYS_ADDRESS_BITS
- #define MAX_PHYSMEM_BITS        MAX_PHYS_ADDRESS_BITS
- 
- #endif /* !(__KERNEL__) */
--- 
-2.26.2
+If you made CONFIG_PCIE_HISI_ERR depend on CONFIG_ACPI_APEI_GHES,
+you'd be able to get rid of these stubs, wouldn't you?  It doesn't
+look like there's any point in building pcie-hisi-error.c at all
+unless CONFIG_ACPI_APEI_GHES is enabled.
 
+> +#endif
+> +
+>  int ghes_estatus_pool_init(int num_ghes);
+>  
+>  /* From drivers/edac/ghes_edac.c */
+> -- 
+> 2.17.1
+> 
+> 
