@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367B522AA1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92EB22AA2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgGWHzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 03:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725911AbgGWHzp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:55:45 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A37C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:55:45 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a15so4185263wrh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YYiA3UwEeiLQemkL/9iQjByUGIB29wIzr9SE8ieESv4=;
-        b=U/HoggJKdye7uH+NKT/KmgJSF3B2iQN794CjYp4NyV5DAUziAOxxXKE3wQktPqsfw5
-         eYE0rXP3eJGVYU9hAHH/4YdcatzZgHDzR4s/XDdXBHZ9cU3IyLo0gjViev8kLUjfc5oM
-         OC/+q3as2EyfLmzKCImYm8yPA1rDdW2TEc642SNg5X6gvG2Zjw2t0nL+p2VugG5HaLBu
-         yyXNPUWmKuxRgNoRSIfRDu8ihdiMKWgZ6rRODswvIoTN9Zvg9ZEGePxI3cKHH92mNrOa
-         ZPGBZZ9w0rGf/FvxpT6LIp0btCcpr6zmlHuRqR1+SNN5SqB48MS5PibSl6FSWNIuygan
-         rd1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YYiA3UwEeiLQemkL/9iQjByUGIB29wIzr9SE8ieESv4=;
-        b=ozX0wSjurHn+U4gyO8CeAuIsa0lQzaFj3ZT3+2nWkpznRJXKjER7lWB4LxM0PkDvRj
-         z7EYwg7TsVC6mx9emGiYsiY0QmW5nrp40sMyfjb9CCKoebrd9yqqwDra9SKyheApDrTq
-         LY0148u4qsxKI+xOH0YrYOVsq1DK3IDpLcmJisK1ftUCcqQxUjHWd5O/+gUWr6qEANGP
-         SibnawNGgPKR6ufp5F0L0zq1Z7qjiEr5GSrurfr02j0Npe5v0dD8w2TEvJzbv6rGJsKP
-         jle+K8rr1xKHnvwZ2Ud9HpyzPb0Qbf+PBwHMOFc4JQ/hPUNp76v2SEEEUWKAI4i5IM+z
-         H54w==
-X-Gm-Message-State: AOAM5323go7uqD2NdQujTLIke7N2tTxg8iLIPkUlCYeEdNgMf0QXudyD
-        ueWIlDoFP5fAuWfwKkH5I00=
-X-Google-Smtp-Source: ABdhPJyjQBWlA2gbvgFi8dz+i79hfadBVdFwhnb4BvE2LNDd/0B2rXIy1O+EdqgEYBzBk5tIc1+4GA==
-X-Received: by 2002:a5d:4a0b:: with SMTP id m11mr2766059wrq.407.1595490944446;
-        Thu, 23 Jul 2020 00:55:44 -0700 (PDT)
-Received: from localhost.localdomain (dslb-178-006-252-164.178.006.pools.vodafone-ip.de. [178.6.252.164])
-        by smtp.gmail.com with ESMTPSA id j75sm2816691wrj.22.2020.07.23.00.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 00:55:43 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 2/2] staging: rtl8188eu: cleanup whitespace in declarations
-Date:   Thu, 23 Jul 2020 09:52:43 +0200
-Message-Id: <20200723075243.21924-2-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200723075243.21924-1-straube.linux@gmail.com>
-References: <20200723075243.21924-1-straube.linux@gmail.com>
+        id S1727912AbgGWH5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 03:57:19 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:34718 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727845AbgGWH5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 03:57:17 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1jyW5M-0005ta-TO; Thu, 23 Jul 2020 17:56:14 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 23 Jul 2020 17:56:12 +1000
+Date:   Thu, 23 Jul 2020 17:56:12 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Tim Chen <tim.c.chen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] x86: crypto: fix building crc32c with clang ias
+Message-ID: <20200723075612.GA14212@gondor.apana.org.au>
+References: <20200527141754.1850968-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200527141754.1850968-1-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace tabs with spaces in declarations to cleanup whitespace
-in rtl8188eu_recv.c.
+On Wed, May 27, 2020 at 04:17:40PM +0200, Arnd Bergmann wrote:
+> The clang integrated assembler complains about movzxw:
+> 
+> arch/x86/crypto/crc32c-pcl-intel-asm_64.S:173:2: error: invalid instruction mnemonic 'movzxw'
+> 
+> It seems that movzwq is the mnemonic that it expects instead,
+> and this is what objdump prints when disassembling the file.
+> 
+> Fixes: 6a8ce1ef3940 ("crypto: crc32c - Optimize CRC32C calculation with PCLMULQDQ instruction")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/x86/crypto/crc32c-pcl-intel-asm_64.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8188eu/hal/rtl8188eu_recv.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/hal/rtl8188eu_recv.c b/drivers/staging/rtl8188eu/hal/rtl8188eu_recv.c
-index ab8313cf5bf0..7badfc2e45df 100644
---- a/drivers/staging/rtl8188eu/hal/rtl8188eu_recv.c
-+++ b/drivers/staging/rtl8188eu/hal/rtl8188eu_recv.c
-@@ -16,10 +16,10 @@
- 
- #include <rtl8188e_hal.h>
- 
--int	rtw_hal_init_recv_priv(struct adapter *padapter)
-+int rtw_hal_init_recv_priv(struct adapter *padapter)
- {
--	struct recv_priv	*precvpriv = &padapter->recvpriv;
--	int	i, res = _SUCCESS;
-+	struct recv_priv *precvpriv = &padapter->recvpriv;
-+	int i, res = _SUCCESS;
- 	struct recv_buf *precvbuf;
- 
- 	tasklet_init(&precvpriv->recv_tasklet, rtl8188eu_recv_tasklet,
-@@ -69,9 +69,9 @@ int	rtw_hal_init_recv_priv(struct adapter *padapter)
- 
- void rtw_hal_free_recv_priv(struct adapter *padapter)
- {
--	int	i;
--	struct recv_buf	*precvbuf;
--	struct recv_priv	*precvpriv = &padapter->recvpriv;
-+	int i;
-+	struct recv_buf *precvbuf;
-+	struct recv_priv *precvpriv = &padapter->recvpriv;
- 
- 	precvbuf = precvpriv->precv_buf;
- 
+Patch applied.  Thanks.
 -- 
-2.27.0
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
