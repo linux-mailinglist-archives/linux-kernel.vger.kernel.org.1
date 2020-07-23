@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8470722B0AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E098E22B087
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729398AbgGWNkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728709AbgGWNkL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:40:11 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69573C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:40:10 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id z24so6363517ljn.8
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0eegOArgjvO8rP9syB7xmG1tp8kx/F1yrwr3UNCLFEo=;
-        b=YmkS7Vh4mwIp+nMV18OSIk4pf7op1uBA2TkP/ke9aZMe7v2Bo7c53f8FLIkodKBdkZ
-         3tcKEQi0+gDlUUl6vIQfXe03avSwX4r0Z1Ho/SNeJNDr1nD0OrRzHWUx+4BhS+I6jcdg
-         PkIxlP6R205v6/wCBRBgA1UQXA+bfQNPfyTHXkoXZdJMDZndAQuu9LozLyTLHGrkOoSM
-         hLP3AYgQ28AzXbEjtCVD2jjKbdtrN15cBQPjVqD2FsThQgoX97pHT/KgLCCR8DY+hKF4
-         3UhsPZi4/CGdI+2Sif+O3/1rXFoDXnFmZXbwW+b2GUh/JSOY/T92UI03ODBXOAU4kJEI
-         5yFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0eegOArgjvO8rP9syB7xmG1tp8kx/F1yrwr3UNCLFEo=;
-        b=dyujz80FUiRGOP1/ryTmCHfiRN2xsB4vPkoKD9KjyXTegkChyDD+fT7eG49XmoAJhN
-         Vl19Hgvo3bbov50FGt8rZo5EIEYHLbcHolBR/zZIPgLeAfypF1kU/Txw/JEosZDhrD+N
-         ObjVauzv4d77MLwnOYt09/hTR865vpuAtfptewQLfKq95j84q6dX5qvkv5WaW5ny4Sqw
-         TpDyQfwt0HreW4+HB/qNZIG98+BQOoNjWyXicyd5h240RYVfbqrV5zMOlP6Fosn2V7iK
-         swbu+YPrx/3UTkiokqySz0rLNxE/QvPr/aF8n90fzIP+6PbDTfCDBlkb/HqEepwqa+Zn
-         8RwQ==
-X-Gm-Message-State: AOAM532PWJ3n5Aoz+FMo0+t+TBABNC3Q+ie5xXldkEPZweO8SQM2MpJr
-        F7Z09sylrwf/J2Jgv8dP/dnPqIT075kGlOQYJo6dEA==
-X-Google-Smtp-Source: ABdhPJzkhTQiz4v4EweObFS3VjvRBHaK+7cqyFcfiqMUdnGJXvj0jmfVgVQamNi7423328Gef8C+2ZKNdMl7Uo351Ro=
-X-Received: by 2002:a2e:8597:: with SMTP id b23mr1865085lji.338.1595511608925;
- Thu, 23 Jul 2020 06:40:08 -0700 (PDT)
+        id S1729133AbgGWNbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:31:39 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51378 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727123AbgGWNbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 09:31:39 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jybJi-006WDr-88; Thu, 23 Jul 2020 15:31:22 +0200
+Date:   Thu, 23 Jul 2020 15:31:22 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] net: dsa: mv88e6xxx: Implement
+ .port_change_mtu/.port_max_mtu
+Message-ID: <20200723133122.GB1553578@lunn.ch>
+References: <20200723035942.23988-1-chris.packham@alliedtelesis.co.nz>
+ <20200723035942.23988-4-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru> <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 23 Jul 2020 15:17:08 +0200
-Message-ID: <CACRpkdZO242FC=O8nAXjKX=9VRpkkQdMA6S0L2ZWNX9D1hmcYw@mail.gmail.com>
-Subject: Re: [PATCH 4/7] gpio: dwapb: Convert driver to using the
- GPIO-lib-based IRQ-chip
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723035942.23988-4-chris.packham@alliedtelesis.co.nz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge,
+On Thu, Jul 23, 2020 at 03:59:41PM +1200, Chris Packham wrote:
+> Add implementations for the mv88e6xxx switches to connect with the
+> generic dsa operations for configuring the port MTU.
 
-On Thu, Jul 23, 2020 at 3:39 AM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
+Hi Chris
 
-> GPIO-lib provides a ready-to-use interface to initialize an IRQ-chip on
-> top of a GPIO chip. It's better from maintainability and readability
-> point of view to use one instead of supporting a hand-written Generic
-> IRQ-chip-based implementation. Moreover the new implementation won't
-> cause much functional overhead but will provide a cleaner driver code.
-> All of that makes the DW APB GPIO driver conversion pretty much justified
-> especially seeing a tendency of the other GPIO drivers getting converted
-> too.
+What tree is this against?
 
-Needless to say I am a big fan of this patch. It's what I wanted to
-do with the driver but was afraid to dry-code.
+commit 2a550aec36543b20f087e4b3063882e9465f7175
+Author: Andrew Lunn <andrew@lunn.ch>
+Date:   Sat Jul 11 22:32:05 2020 +0200
 
-Please look into the minor nits pointed out by Andy and respin,
-I really want to apply this patch set.
+    net: dsa: mv88e6xxx: Implement MTU change
+    
+    The Marvell Switches support jumbo packages. So implement the
+    callbacks needed for changing the MTU.
+    
+    Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
 
-Thanks,
-Linus Walleij
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index d995f5bf0d40..6f019955ae42 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -2693,6 +2693,31 @@ static int mv88e6xxx_setup_port(struct mv88e6xxx_chip *chip, int port)
+        return mv88e6xxx_port_write(chip, port, MV88E6XXX_PORT_DEFAULT_VLAN, 0);
+ }
+ 
++static int mv88e6xxx_get_max_mtu(struct dsa_switch *ds, int port)
++{
++       struct mv88e6xxx_chip *chip = ds->priv;
++
++       if (chip->info->ops->port_set_jumbo_size)
++               return 10240;
++       return 1522;
++}
++
++static int mv88e6xxx_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
++{
+...
+	Andrew
