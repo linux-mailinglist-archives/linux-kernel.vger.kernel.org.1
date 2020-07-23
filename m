@@ -2,151 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46B722B594
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FACD22B599
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgGWSXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726304AbgGWSXF (ORCPT
+        id S1727118AbgGWSZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:25:15 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:60145 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726617AbgGWSZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:23:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949B6C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:23:05 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id j11so7376381ljo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8jbqAu4MTtKZYfsDRzg9oxuVgmZXrDgAOWgETbdmt3I=;
-        b=TpC1L9yeqU8VAOIGIaabNRD2URVdeVJkJUvan/PdnVoywn5ewbqyDjsAOR2s/j/716
-         6qzVRkeThyuPOPLm0TzlXk/CAB2wM0XXQkHKrpkXglrPHKkEtftSwCjuVRP3t7TqqESK
-         mwqoKZRybu74iu0fz+q3OrSQs3NydidhrfzPo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8jbqAu4MTtKZYfsDRzg9oxuVgmZXrDgAOWgETbdmt3I=;
-        b=OWh/NLUzlGXzyUZrB3xCzpcWTM9XCuVlM7aXa3sdHDm0LtVmCrF0QK9f9MC+nt3j0c
-         AEn6fE5EN6lohs1B3U+eea7FUmqfDMq+yS7SjbUapMGZqMfeX8JbtqTiLc5VcgrVABu9
-         j8fgBFdpmQvTMC9c817O9fxJW+pTTBbi7BrOeAHXFSITI6Gt6jO30zW3QA5put/TXDtB
-         P9boGbZDH0vsjDiUEBpCEFrNGhwZrY0oXiGgZcJt6vxfiLvOBQJwDnNrerwhdwG74KyV
-         St83sYwa+L1MhSrAhCpVOkrtTOraDzWWUX5IC4Kg9H8YCtBwZFN5VbeYdXJzf0ewpsno
-         XTxA==
-X-Gm-Message-State: AOAM530dKc8ipdm51KsN7rUbF7BpytMmRO5cypDbG3zPfFzEQA9jWqau
-        RtOwwbPO8qJ2gJBM5UqdBPVB3eXaSWo=
-X-Google-Smtp-Source: ABdhPJwaNZAGnAKShw3Tx0ZNg0yT9Lq/nPvmhff5YmKPaCDV76LqnAF4wrDeueDL1Vr8ahHhcvbDMw==
-X-Received: by 2002:a2e:964d:: with SMTP id z13mr2521557ljh.98.1595528583240;
-        Thu, 23 Jul 2020 11:23:03 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id 186sm3250414lfn.66.2020.07.23.11.23.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Jul 2020 11:23:02 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id b11so3790216lfe.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:23:01 -0700 (PDT)
-X-Received: by 2002:ac2:58d5:: with SMTP id u21mr2835310lfo.31.1595528581489;
- Thu, 23 Jul 2020 11:23:01 -0700 (PDT)
+        Thu, 23 Jul 2020 14:25:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595528714; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=yAfJG1ZM4LmfNVZaxnZ0GMv0GxwURX4mJ3TXKqKYdGE=; b=PzYRT6x2lZzXLyeFyAwES4URvImeRjGt9Rq7kSmVcfV3ctxYWmZEmE0+1H1fNr8iHZTevodm
+ IhRy6kszKTEV8HTA6pztZUGOW5wujxX0lb0d7/vvashB+q87Um7hNlXMcJW6NVLAFdgHNstY
+ jnjIwOYvLD2JyiHJXibTjy2UD/E=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f19d60a5b75bcda60cbde68 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 23 Jul 2020 18:25:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EFAAC433CA; Thu, 23 Jul 2020 18:25:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [183.83.71.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B12BFC433C6;
+        Thu, 23 Jul 2020 18:25:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B12BFC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Rajkumar Manoharan'" <rmanohar@codeaurora.org>
+Cc:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kvalo@codeaurora.org>,
+        <johannes@sipsolutions.net>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <dianders@chromium.org>, <evgreen@chromium.org>,
+        <linux-wireless-owner@vger.kernel.org>
+References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org> <1595351666-28193-3-git-send-email-pillair@codeaurora.org> <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
+In-Reply-To: <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
+Subject: RE: [RFC 2/7] ath10k: Add support to process rx packet in thread
+Date:   Thu, 23 Jul 2020 23:55:06 +0530
+Message-ID: <003001d6611e$9afa0cc0$d0ee2640$@codeaurora.org>
 MIME-Version: 1.0
-References: <20200721063258.17140-1-mhocko@kernel.org> <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
- <CAHk-=whb0=rjc1WR+F_r_syw5Ld4=ebuNJmmpaPEzfjZRD5Y-w@mail.gmail.com>
- <alpine.LSU.2.11.2007221359450.1017@eggly.anvils> <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
- <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
- <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
- <20200723180100.GA21755@redhat.com>
-In-Reply-To: <20200723180100.GA21755@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 23 Jul 2020 11:22:44 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj9KWfs799xU5eW0J_hkee52C5kvFFmBV-A+vN7qNWnjA@mail.gmail.com>
-Message-ID: <CAHk-=wj9KWfs799xU5eW0J_hkee52C5kvFFmBV-A+vN7qNWnjA@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQG1Bu1FBYi7G1oVhHY/01uT1gSslwH2O/GCAtCmWRqpMfdhsA==
+Content-Language: en-us
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 11:01 AM Oleg Nesterov <oleg@redhat.com> wrote:
->
-> > +      *
-> > +      * We _really_ should have a "list_del_init_careful()" to
-> > +      * properly pair with the unlocked "list_empty_careful()"
-> > +      * in finish_wait().
-> > +      */
-> > +     smp_mb();
-> > +     list_del_init(&wait->entry);
->
-> I think smp_wmb() would be enough, but this is minor.
 
-Well, what we _really_ want (and what that comment is about) would be
-got that list_del_init_careful() to use a "smp_store_release()" for
-the last store, and then "list_empty_careful()" would use a
-"smp_load_acquire()" for the corresponding first load.
 
-On x86, that's free. On most other architectures, it's the minimal
-ordering requirement.
+> -----Original Message-----
+> From: Rajkumar Manoharan <rmanohar@codeaurora.org>
+> Sent: Wednesday, July 22, 2020 3:23 AM
+> To: Rakesh Pillai <pillair@codeaurora.org>
+> Cc: ath10k@lists.infradead.org; linux-wireless@vger.kernel.org; linux-
+> kernel@vger.kernel.org; kvalo@codeaurora.org; johannes@sipsolutions.net;
+> davem@davemloft.net; kuba@kernel.org; netdev@vger.kernel.org;
+> dianders@chromium.org; evgreen@chromium.org; linux-wireless-
+> owner@vger.kernel.org
+> Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
+> 
+> On 2020-07-21 10:14, Rakesh Pillai wrote:
+> > NAPI instance gets scheduled on a CPU core on which
+> > the IRQ was triggered. The processing of rx packets
+> > can be CPU intensive and since NAPI cannot be moved
+> > to a different CPU core, to get better performance,
+> > its better to move the gist of rx packet processing
+> > in a high priority thread.
+> >
+> > Add the init/deinit part for a thread to process the
+> > receive packets.
+> >
+> IMHO this defeat the whole purpose of NAPI. Originally in ath10k
+> irq processing happened in tasklet (high priority) context which in
+> turn push more data to net core even though net is unable to process
+> driver data as both happen in different context (fast producer - slow
+> consumer)
+> issue. Why can't CPU governor schedule the interrupts in less loaded CPU
+> core?
+> Otherwise you can play with different RPS and affinity settings to meet
+> your
+> requirement.
+> 
+> IMO introducing high priority tasklets/threads is not viable solution.
 
-And no, I don't think "smp_wmb()" is technically enough.
+Hi Rajkumar,
+In linux, the IRQs are directed to the first core which is booted.
+I see that all the IRQs are getting routed to CORE0 even if its heavily
+loaded.
 
-With crazy memory ordering, one of the earlier *reads* (eg loading
-"wait->private" when waking things up) could have been delayed until
-after the stores that initialize the list - and thus read stack
-contents from another process after it's been released and re-used.
+IRQ and NAPI are not under the scheduler's control, since it cannot be
+moved.
+NAPI is scheduled only on the same core as IRQ. But a thread can be moved
+around by the scheduler based on the CPU load.
+This is the reason I went ahead with using thread.
 
-Does that happen in reality? No. There are various conditionals in
-there which means that the stores end up being gated on the loads and
-cannot actually be re-ordered, but it's the kind of subtley
+Affinity settings are static, and cannot be done runtime without any
+downstream userspace entity.
 
-So we actually do want to constrain all earlier reads and writes wrt
-the final write. Which is exactly what "smp_store_release()" does.
 
-But with our current list_empty_careful(), the smp_mb() is I think
-technically sufficient.
+> 
+> -Rajkumar
 
-> We need a barrier between "wait->flags |= WQ_FLAG_WOKEN" and list_del_init(),
-
-See above: we need more than just that write barrier, although in
-_practice_ you're right, and the other barriers actually all already
-exist and are part of wake_up_state().
-
-So the smp_mb() is unnecessary, and in fact your smp_wmb() would be
-too. But I left it there basically as "documentation".
-
-> But afaics we need another barrier, rmb(), in wait_on_page_bit_common() fo
-> the case when wait->private was not blocked; we need to ensure that if
-> finish_wait() sees list_empty_careful() == T then we can't miss WQ_FLAG_WOKEN.
-
-Again, this is what a proper list_empty_careful() with a
-smp_load_acquire() would have automatically gotten for us.
-
-But yes, I think that without that, and with the explicit barriers, we
-need an smp_rmb() after the list_empty_careful().
-
-I really think it should be _in_ list_empty_careful(), though. Or
-maybe finish_wait(). Hmm.
-
-Because looking at all the other finish_wait() uses, the fact that the
-waitqueue _list_ is properly ordered isn't really a guarantee of the
-rest of the stack space is.
-
-In practice, it will be, but I think this lack of serialization is a
-potential real bug elsewhere too.
-
-(Obviously none of this would show on x86, where we already *get* that
-smp_store_release/smp_load_acquire behavior for the existing
-list_del_init()/list_empty_careful(), since all stores are releases,
-and all loads are acquires)
-
-So I think that is a separate issue, generic to our finish_wait() uses.
-
-             Linus
