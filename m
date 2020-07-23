@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2DD22A6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 06:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DB722A6BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 06:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726063AbgGWEy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 00:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgGWEy1 (ORCPT
+        id S1726417AbgGWEzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 00:55:22 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:33554 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725774AbgGWEzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 00:54:27 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C816C0619DC
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 21:54:27 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l23so4301144qkk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 21:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=P14GbACJ+OjyBXfMSzdOi6HSYggpVvnS8D4dSW8o1fI=;
-        b=eMcx2+SiGg9HS6w7NvoqKzadh3LYe+4OTX3sLOByMdX5sDRQcSLKsqYPgnG/pYqG1x
-         bh681HS4zgqFaXTyD2Y2y+es1BeFoDeMoYW+TVrfsPC9UkOEDhCeGwRfP1rOzbkfNyi4
-         6g/puAQTjTzZJXP6Qs63zBAAIhxQrdKKl9LfZZS89QEivxvAtuTpi8EIn1kzvE8F6STP
-         jvEnsqvz8dDYl43rWLbNyAT+WrKHg5ESxtJC3XsHhcIp8V7Xz42NxlIB4dtvsJ1T/vzY
-         L3W+IIpRPdO8V6KeUUdwurwgKxpMlojRmFNOgSmuUvNxMVJvoVSxY56cjQty1puVTvIR
-         d5DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=P14GbACJ+OjyBXfMSzdOi6HSYggpVvnS8D4dSW8o1fI=;
-        b=axqAxDdMn196PxrEZFGFFaIU6e2xHVqWdcp0Fem3gNHQFkBAecYUZlP8m8I+3m/Fvx
-         fJtm3bX02iRosRz0X3ig6XO2cUOt9hFLf6VUa20Up6+ImQHoCqZsv+qgMptcsgjQslwX
-         LnJEAzewa2srtrpoA0tOnc088nx9M0T6oZYUVDZ5GRy1tNS6FihtZVhYBWbBqTCtsIGr
-         mdhskjaTlyICxUWz6y323oTzyOfGj7cGuRJggKUv4zdJgqNjRHlL+6U0rgC7SiWw4iPY
-         O8inOZWlK7WMsaas1cOc4ZjgG05iwD84yb3bnjVCG9sJdE4BMiV1JGvQjNC16LXXlSwC
-         fi3A==
-X-Gm-Message-State: AOAM532Fj3pGGKZeFdqYtprM88/7rToLfptzb+uxAqAOcktUuiTWFIey
-        GhWwlyjIbQb82lbpzwnkYyE=
-X-Google-Smtp-Source: ABdhPJxd/BPaWdg8hcGwaltkoCMk9/DKblV2svbvFdMaHYDl2OViM0U40BbIPBHlpH492OKOy2wiPQ==
-X-Received: by 2002:a37:9987:: with SMTP id b129mr3337996qke.315.1595480066725;
-        Wed, 22 Jul 2020 21:54:26 -0700 (PDT)
-Received: from dev.localdomain ([183.134.211.52])
-        by smtp.gmail.com with ESMTPSA id p186sm1819858qkf.33.2020.07.22.21.54.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Jul 2020 21:54:26 -0700 (PDT)
-From:   qianjun.kernel@gmail.com
-To:     tglx@linutronix.de, peterz@infradead.org, will@kernel.org,
-        luto@kernel.org, urezki@gmail.com, linux-kernel@vger.kernel.org
-Cc:     laoar.shao@gmail.com, jun qian <qianjun.kernel@gmail.com>
-Subject: [PATCH V3] Softirq:avoid large sched delay from the pending softirqs
-Date:   Thu, 23 Jul 2020 00:54:01 -0400
-Message-Id: <1595480041-10597-1-git-send-email-qianjun.kernel@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 23 Jul 2020 00:55:22 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06N4tGFF100708;
+        Wed, 22 Jul 2020 23:55:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595480116;
+        bh=rpNwQq9lC3T1Dre9HoiV7i/DThnnJKNPj+RZsO8vmyI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=RnuIM8ybVrR5TUDTUyRDzJk2GAjx4LvKVEVS0yNjUCtk5WA1Ftn8poFMGS+sgRJp4
+         odrlyuauuYf8ix2xjK2CPilSOcA3CvJNOqZssYCA6WxlcI4bNGTDQfrSua5Wetc91j
+         9gWZ6ZCo8y4EtgMqy8kz0dRoSMtUxlafw1UmN+Gw=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06N4tGi2001938;
+        Wed, 22 Jul 2020 23:55:16 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 22
+ Jul 2020 23:55:15 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 22 Jul 2020 23:55:15 -0500
+Received: from [10.250.233.85] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06N4tCDa101766;
+        Wed, 22 Jul 2020 23:55:13 -0500
+Subject: Re: [PATCH v4 2/2] phy: cadence-torrent: Use kernel PHY API to set
+ PHY attributes
+To:     Swapnil Jakhade <sjakhade@cadence.com>, <vkoul@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <maxime@cerno.tech>
+CC:     <mparab@cadence.com>, <yamonkar@cadence.com>, <nsekhar@ti.com>,
+        <tomi.valkeinen@ti.com>, <jsarha@ti.com>, <praneeth@ti.com>
+References: <1594968633-12535-1-git-send-email-sjakhade@cadence.com>
+ <1594968633-12535-3-git-send-email-sjakhade@cadence.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <de1f7ebe-ce34-c5a3-a911-acd9e27280fc@ti.com>
+Date:   Thu, 23 Jul 2020 10:25:12 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1594968633-12535-3-git-send-email-sjakhade@cadence.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jun qian <qianjun.kernel@gmail.com>
 
-When get the pending softirqs, it need to process all the pending
-softirqs in the while loop. If the processing time of each pending
-softirq is need more than 2 msec in this loop, or one of the softirq
-will running a long time, according to the original code logic, it
-will process all the pending softirqs without wakeuping ksoftirqd,
-which will cause a relatively large scheduling delay on the
-corresponding CPU, which we do not wish to see. The patch will check
-the total time to process pending softirq, if the time exceeds 2 ms
-we need to wakeup the ksofirqd to aviod large sched delay.
 
-Signed-off-by: jun qian <qianjun.kernel@gmail.com>
----
- kernel/softirq.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+On 7/17/2020 12:20 PM, Swapnil Jakhade wrote:
+> Use generic PHY framework function phy_set_attrs() to set number
+> of lanes and maximum link rate supported by PHY.
+> 
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index c4201b7f..8f47554 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -200,17 +200,15 @@ void __local_bh_enable_ip(unsigned long ip, unsigned int cnt)
- /*
-  * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
-  * but break the loop if need_resched() is set or after 2 ms.
-- * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
-- * certain cases, such as stop_machine(), jiffies may cease to
-- * increment and so we need the MAX_SOFTIRQ_RESTART limit as
-- * well to make sure we eventually return from this method.
-+ * In the loop, if the processing time of the softirq has exceeded 2
-+ * milliseconds, we also need to break the loop to wakeup the ksofirqd.
-  *
-  * These limits have been established via experimentation.
-  * The two things to balance is latency against fairness -
-  * we want to handle softirqs as soon as possible, but they
-  * should not be able to lock up the box.
-  */
--#define MAX_SOFTIRQ_TIME  msecs_to_jiffies(2)
-+#define MAX_SOFTIRQ_TIME_NS 2000000
- #define MAX_SOFTIRQ_RESTART 10
- 
- #ifdef CONFIG_TRACE_IRQFLAGS
-@@ -248,7 +246,7 @@ static inline void lockdep_softirq_end(bool in_hardirq) { }
- 
- asmlinkage __visible void __softirq_entry __do_softirq(void)
- {
--	unsigned long end = jiffies + MAX_SOFTIRQ_TIME;
-+	ktime_t end = ktime_get() + MAX_SOFTIRQ_TIME_NS;
- 	unsigned long old_flags = current->flags;
- 	int max_restart = MAX_SOFTIRQ_RESTART;
- 	struct softirq_action *h;
-@@ -299,6 +297,13 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 		}
- 		h++;
- 		pending >>= softirq_bit;
-+
-+		/*
-+		 * the softirq's action has been running for too much time
-+		 * so it may need to wakeup the ksoftirqd
-+		 */
-+		if (need_resched() && ktime_get() > end)
-+			break;
- 	}
- 
- 	if (__this_cpu_read(ksoftirqd) == current)
-@@ -307,8 +312,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
- 
- 	pending = local_softirq_pending();
- 	if (pending) {
--		if (time_before(jiffies, end) && !need_resched() &&
--		    --max_restart)
-+		if (!need_resched() && --max_restart &&
-+		    ktime_get() <= end)
- 			goto restart;
- 
- 		wakeup_softirqd();
--- 
-1.8.3.1
+Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
 
+> ---
+>  drivers/phy/cadence/phy-cadence-torrent.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
+> index 7116127358ee..af81707ff0c6 100644
+> --- a/drivers/phy/cadence/phy-cadence-torrent.c
+> +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+> @@ -1710,6 +1710,7 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+>  	struct cdns_torrent_phy *cdns_phy;
+>  	struct device *dev = &pdev->dev;
+>  	struct phy_provider *phy_provider;
+> +	struct phy_attrs torrent_attr;
+>  	const struct of_device_id *match;
+>  	struct cdns_torrent_data *data;
+>  	struct device_node *child;
+> @@ -1852,6 +1853,12 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+>  				 cdns_phy->phys[node].num_lanes,
+>  				 cdns_phy->max_bit_rate / 1000,
+>  				 cdns_phy->max_bit_rate % 1000);
+> +
+> +			torrent_attr.bus_width = cdns_phy->phys[node].num_lanes;
+> +			torrent_attr.max_link_rate = cdns_phy->max_bit_rate;
+> +			torrent_attr.mode = PHY_MODE_DP;
+> +
+> +			phy_set_attrs(gphy, torrent_attr);
+>  		} else {
+>  			dev_err(dev, "Driver supports only PHY_TYPE_DP\n");
+>  			ret = -ENOTSUPP;
+> 
