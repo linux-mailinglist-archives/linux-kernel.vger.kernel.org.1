@@ -2,299 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B0022B458
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670B022B43D
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730134AbgGWRMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:12:07 -0400
-Received: from mga05.intel.com ([192.55.52.43]:6620 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgGWRMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:12:02 -0400
-IronPort-SDR: ZaFfFh+6fly4fTqAkv45b7ht/q9khARnHDk5khAasRtPJUER/brMUC8u0pqbWLEXf/3Oh4Rt4w
- VWGC0+1aV12w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456894"
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="235456894"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:57 -0700
-IronPort-SDR: Ua9NyVQ8X0+aBvE7o6cGI2cxFweHqfjKFAtlCmbUYx41ugjrG5wc/BrqQgl60CWdxUV5n0jW7x
- fmyBdy4O78pA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="488904334"
-Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:56 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
-        like.xu@linux.intel.com
-Subject: [PATCH V7 14/14] perf, tools: Add documentation for topdown metrics
-Date:   Thu, 23 Jul 2020 10:11:17 -0700
-Message-Id: <20200723171117.9918-15-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200723171117.9918-1-kan.liang@linux.intel.com>
-References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+        id S1730010AbgGWRLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbgGWRL3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:11:29 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F366C0619DC;
+        Thu, 23 Jul 2020 10:11:29 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y24so1711083wma.1;
+        Thu, 23 Jul 2020 10:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7SjoJTYXQvTojo9vvc7snzILBAZP0a2/wyluR86x7BA=;
+        b=p23w/jtOq2WqKP3tV9WunD56cJ1Dw/VjCEGtr7+SlzbT64IQGs0s1jCuyg/Dbd7Kgt
+         OgMEepGbRghJk+y9rc/xj2DiSCSRBnz0LNXgpxckBexnptIiy79HEZvqx1s0ISWROaTX
+         QgaBs1lnxfiWNY0C3V3NXhg+ggdRb/OhwpP7dyKCGeyzGNGTzRBcZ5owRRTt5ZNBbBLl
+         wFPNuw0Xi3boRCs0xAEeUQuQQzG6Yc8uqPbBuN3FuWGQn+3kOmiaP1r7Ul9KuR8fnSLX
+         WJWOGZVSIFqDoqTOPLIUVZHNfnKOkPpNXWveQmy88/lJCKoFn6vhwTRy29sCvQwPoP+f
+         eB2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=7SjoJTYXQvTojo9vvc7snzILBAZP0a2/wyluR86x7BA=;
+        b=IVU9wEYD3pHOpxsoRVvbDp+f2k9l4MUO9mfW90VzL/qa7/ZQslBWwNxTegsNInkma1
+         BA8Zy6SCA2Bqvr072IkxUOfZNtIRqS9S3wrNvEU4zPWT2CWZv/ThthmIM5WzWInfbE2N
+         w4z3SppFBZj4Uz/eNTYyog/kGXlgwjPCLuqPgScRbyFQIwfAyH/C0QdLLlRenFygxJDx
+         u5r+ci/wXosMqBEkKnGC0Z9xY7hlHpEGutssC4vr8QC9c1id2tSwFyF2yWGHJy1HSINS
+         5XLZ+IeG0yqmg+2c4Hbu/VIJhRQKYNyaTi5MZkkK5QvRcbbaMWvsAt/hHhZjVLCc5/au
+         l3rw==
+X-Gm-Message-State: AOAM532+N4wf65F8utUk+v6eXDViZ67y5U1HFPn2KiLx7ayCUQA5s5kd
+        0ZnuczZBm8RRPJ/ey00YMjI=
+X-Google-Smtp-Source: ABdhPJz3yLd9OnsuWyOlP//CgtBDcAyMfwkYwXowysKC0s4GBJ63E5fqUYtaEmkcMy7imX4twi6dIQ==
+X-Received: by 2002:a1c:ab06:: with SMTP id u6mr5272630wme.55.1595524287042;
+        Thu, 23 Jul 2020 10:11:27 -0700 (PDT)
+Received: from [10.67.50.75] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j5sm4374070wma.45.2020.07.23.10.11.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jul 2020 10:11:26 -0700 (PDT)
+Subject: Re: [PATCH 17/23] memory: brcmstb_dpfe: Remove unneeded braces
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, soc@kernel.org, Markus Mayer <mmayer@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20200723073744.13400-1-krzk@kernel.org>
+ <20200723073744.13400-18-krzk@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <e65d4ed3-3c01-acb7-f324-be99201815df@gmail.com>
+Date:   Thu, 23 Jul 2020 10:11:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200723073744.13400-18-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+On 7/23/20 12:37 AM, Krzysztof Kozlowski wrote:
+> Single statement blocks don't need braces.  Fixes checkpatch warning:
+> 
+>     WARNING: braces {} are not necessary for single statement blocks
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Add some documentation how to use the topdown metrics in ring 3.
-
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/topdown.txt | 235 +++++++++++++++++++++++++++
- 1 file changed, 235 insertions(+)
- create mode 100644 tools/perf/Documentation/topdown.txt
-
-diff --git a/tools/perf/Documentation/topdown.txt b/tools/perf/Documentation/topdown.txt
-new file mode 100644
-index 000000000000..e724d2af3b8d
---- /dev/null
-+++ b/tools/perf/Documentation/topdown.txt
-@@ -0,0 +1,235 @@
-+Using TopDown metrics in user space
-+-----------------------------------
-+
-+Intel CPUs (since Sandy Bridge and Silvermont) support a TopDown
-+methology to break down CPU pipeline execution into 4 bottlenecks:
-+frontend bound, backend bound, bad speculation, retiring.
-+
-+For more details on Topdown see [1][5]
-+
-+Traditionally this was implemented by events in generic counters
-+and specific formulas to compute the bottlenecks.
-+
-+perf stat --topdown implements this.
-+
-+Full Top Down includes more levels that can break down the
-+bottlenecks further. This is not directly implemented in perf,
-+but available in other tools that can run on top of perf,
-+such as toplev[2] or vtune[3]
-+
-+New Topdown features in Ice Lake
-+===============================
-+
-+With Ice Lake CPUs the TopDown metrics are directly available as
-+fixed counters and do not require generic counters. This allows
-+to collect TopDown always in addition to other events.
-+
-+% perf stat -a --topdown -I1000
-+#           time             counts unit events
-+     1.000854735     20,097,158,100      slots
-+     1.000854735         79,327,616      topdown-retiring          #      0.4% retiring
-+     1.000854735        157,932,715      topdown-bad-spec          #      0.8% bad speculation
-+     1.000854735         81,610,855      topdown-fe-bound          #      0.4% frontend bound
-+     1.000854735     19,778,286,903      topdown-be-bound          #     98.4% backend bound
-+     2.003623823     20,010,908,365      slots
-+     2.003623823         79,905,340      topdown-retiring          #      0.4% retiring
-+     2.003623823        158,405,024      topdown-bad-spec          #      0.8% bad speculation
-+     2.003623823         87,980,097      topdown-fe-bound          #      0.4% frontend bound
-+     2.003623823     19,684,617,888      topdown-be-bound          #     98.4% backend bound
-+     3.005828889     20,062,101,220      slots
-+     3.005828889         80,077,032      topdown-retiring          #      0.4% retiring
-+     3.005828889        158,682,921      topdown-bad-spec          #      0.8% bad speculation
-+     3.005828889         86,579,604      topdown-fe-bound          #      0.4% frontend bound
-+     3.005828889     19,736,761,649      topdown-be-bound          #     98.4% backend bound
-+...
-+
-+This also enables measuring TopDown per thread/process instead
-+of only per core.
-+
-+Using TopDown through RDPMC in applications on Ice Lake
-+======================================================
-+
-+For more fine grained measurements it can be useful to
-+access the new  directly from user space. This is more complicated,
-+but drastically lowers overhead.
-+
-+On Ice Lake, there is a new fixed counter 3: SLOTS, which reports
-+"pipeline SLOTS" (cycles multiplied by core issue width) and a
-+metric register that reports slots ratios for the different bottleneck
-+categories.
-+
-+The metrics counter is CPU model specific and is not be available
-+on older CPUs.
-+
-+Example code
-+============
-+
-+Library functions to do the functionality described below
-+is also available in libjevents [4]
-+
-+The application opens a perf_event file descriptor
-+and sets up fixed counter 3 (SLOTS) to start and
-+allow user programs to read the performance counters.
-+
-+Fixed counter 3 is mapped to a pseudo event event=0x00, umask=04,
-+so the perf_event_attr structure should be initialized with
-+{ .config = 0x0400, .type = PERF_TYPE_RAW }
-+
-+#include <linux/perf_event.h>
-+#include <sys/syscall.h>
-+#include <unistd.h>
-+
-+/* Provide own perf_event_open stub because glibc doesn't */
-+__attribute__((weak))
-+int perf_event_open(struct perf_event_attr *attr, pid_t pid,
-+		    int cpu, int group_fd, unsigned long flags)
-+{
-+	return syscall(__NR_perf_event_open, attr, pid, cpu, group_fd, flags);
-+}
-+
-+/* open slots counter file descriptor for current task */
-+struct perf_event_attr slots = {
-+	.type = PERF_TYPE_RAW,
-+	.size = sizeof(struct perf_event_attr),
-+	.config = 0x400,
-+	.exclude_kernel = 1,
-+};
-+
-+int fd = perf_event_open(&slots, 0, -1, -1, 0);
-+if (fd < 0)
-+	... error ...
-+
-+The RDPMC instruction (or _rdpmc compiler intrinsic) can now be used
-+to read slots and the topdown metrics at different points of the program:
-+
-+#include <stdint.h>
-+#include <x86intrin.h>
-+
-+#define RDPMC_FIXED	(1 << 30)	/* return fixed counters */
-+#define RDPMC_METRIC	(1 << 29)	/* return metric counters */
-+
-+#define FIXED_COUNTER_SLOTS		3
-+#define METRIC_COUNTER_TOPDOWN_L1	0
-+
-+static inline uint64_t read_slots(void)
-+{
-+	return _rdpmc(RDPMC_FIXED | FIXED_COUNTER_SLOTS);
-+}
-+
-+static inline uint64_t read_metrics(void)
-+{
-+	return _rdpmc(RDPMC_METRIC | METRIC_COUNTER_TOPDOWN_L1);
-+}
-+
-+Then the program can be instrumented to read these metrics at different
-+points.
-+
-+It's not a good idea to do this with too short code regions,
-+as the parallelism and overlap in the CPU program execution will
-+cause too much measurement inaccuracy. For example instrumenting
-+individual basic blocks is definitely too fine grained.
-+
-+Decoding metrics values
-+=======================
-+
-+The value reported by read_metrics() contains four 8 bit fields
-+that represent a scaled ratio that represent the Level 1 bottleneck.
-+All four fields add up to 0xff (= 100%)
-+
-+The binary ratios in the metric value can be converted to float ratios:
-+
-+#define GET_METRIC(m, i) (((m) >> (i*8)) & 0xff)
-+
-+#define TOPDOWN_RETIRING(val)	((float)GET_METRIC(val, 0) / 0xff)
-+#define TOPDOWN_BAD_SPEC(val)	((float)GET_METRIC(val, 1) / 0xff)
-+#define TOPDOWN_FE_BOUND(val)	((float)GET_METRIC(val, 2) / 0xff)
-+#define TOPDOWN_BE_BOUND(val)	((float)GET_METRIC(val, 3) / 0xff)
-+
-+and then converted to percent for printing.
-+
-+The ratios in the metric accumulate for the time when the counter
-+is enabled. For measuring programs it is often useful to measure
-+specific sections. For this it is needed to deltas on metrics.
-+
-+This can be done by scaling the metrics with the slots counter
-+read at the same time.
-+
-+Then it's possible to take deltas of these slots counts
-+measured at different points, and determine the metrics
-+for that time period.
-+
-+	slots_a = read_slots();
-+	metric_a = read_metrics();
-+
-+	... larger code region ...
-+
-+	slots_b = read_slots()
-+	metric_b = read_metrics()
-+
-+	# compute scaled metrics for measurement a
-+	retiring_slots_a = GET_METRIC(metric_a, 0) * slots_a
-+	bad_spec_slots_a = GET_METRIC(metric_a, 1) * slots_a
-+	fe_bound_slots_a = GET_METRIC(metric_a, 2) * slots_a
-+	be_bound_slots_a = GET_METRIC(metric_a, 3) * slots_a
-+
-+	# compute delta scaled metrics between b and a
-+	retiring_slots = GET_METRIC(metric_b, 0) * slots_b - retiring_slots_a
-+	bad_spec_slots = GET_METRIC(metric_b, 1) * slots_b - bad_spec_slots_a
-+	fe_bound_slots = GET_METRIC(metric_b, 2) * slots_b - fe_bound_slots_a
-+	be_bound_slots = GET_METRIC(metric_b, 3) * slots_b - be_bound_slots_a
-+
-+Later the individual ratios for the measurement period can be recreated
-+from these counts.
-+
-+	slots_delta = slots_b - slots_a
-+	retiring_ratio = (float)retiring_slots / slots_delta
-+	bad_spec_ratio = (float)bad_spec_slots / slots_delta
-+	fe_bound_ratio = (float)fe_bound_slots / slots_delta
-+	be_bound_ratio = (float)be_bound_slots / slota_delta
-+
-+	printf("Retiring %.2f%% Bad Speculation %.2f%% FE Bound %.2f%% BE Bound %.2f%%\n",
-+		retiring_ratio * 100.,
-+		bad_spec_ratio * 100.,
-+		fe_bound_ratio * 100.,
-+		be_bound_ratio * 100.);
-+
-+Resetting metrics counters
-+==========================
-+
-+Since the individual metrics are only 8bit they lose precision for
-+short regions over time because the number of cycles covered by each
-+fraction bit shrinks. So the counters need to be reset regularly.
-+
-+When using the kernel perf API the kernel resets on every read.
-+So as long as the reading is at reasonable intervals (every few
-+seconds) the precision is good.
-+
-+When using perf stat it is recommended to always use the -I option,
-+with no longer interval than a few seconds
-+
-+	perf stat -I 1000 --topdown ...
-+
-+For user programs using RDPMC directly the counter can
-+be reset explicitly using ioctl:
-+
-+	ioctl(perf_fd, PERF_EVENT_IOC_RESET, 0);
-+
-+This "opens" a new measurement period.
-+
-+A program using RDPMC for TopDown should schedule such a reset
-+regularly, as in every few seconds.
-+
-+Limits on Ice Lake
-+==================
-+
-+All the TopDown events must be in a group with SLOTS events.
-+
-+There is no sampling support for TopDown events.
-+Sampling read SLOTS and TopDown events is forbidden.
-+For example, perf record -e '{slots, topdown-retiring}:S'
-+
-+[1] https://software.intel.com/en-us/top-down-microarchitecture-analysis-method-win
-+[2] https://github.com/andikleen/pmu-tools/wiki/toplev-manual
-+[3] https://software.intel.com/en-us/intel-vtune-amplifier-xe
-+[4] https://github.com/andikleen/pmu-tools/tree/master/jevents
-+[5] https://sites.google.com/site/analysismethods/yasin-pubs
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.17.1
-
+Florian
