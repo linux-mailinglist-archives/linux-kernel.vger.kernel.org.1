@@ -2,89 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1468422B2C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F9922B2CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729678AbgGWPmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:42:12 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:45590 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728063AbgGWPmM (ORCPT
+        id S1729689AbgGWPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728063AbgGWPm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:42:12 -0400
-Received: by mail-io1-f65.google.com with SMTP id e64so6680576iof.12;
-        Thu, 23 Jul 2020 08:42:11 -0700 (PDT)
+        Thu, 23 Jul 2020 11:42:27 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901F7C0619DC;
+        Thu, 23 Jul 2020 08:42:27 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c80so5391417wme.0;
+        Thu, 23 Jul 2020 08:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WmpEF3wAK9MyQIycfqRtOyPcqi5ldyWuyIoAHJsmiPk=;
+        b=ocSI4ZH0PyYIM68bnC8T89tdDC4qku8Q6bns0IbSeRi1ZgVm3N/GxGxVS9OvbcFBTz
+         oN7uSgt2lKmq43lzIsDXJYDBJAwxxzPHxYg2X68/7Y4M6QFcG5OpgmJQJcIwmCwq8Pbn
+         X4yNeIg2evOKg9vwfUFM8w8zPvrBzqIsA/CLeb0RYbFvC5tedw0VnpZ+y5W8cdkQvVQB
+         B4qW9aI40iuWv9mIQka7e5M7rF5xN9BydSf+BcZtfkZ1XkUzYMg7gRBGOk5N+mR+G7fn
+         Tvq7pFmLlgjBzYZ7VZb3Jn4W762go9m09GdcVOeNhbmfyH3c/Bf1FddziFKl6cFlCC8U
+         bv2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4/r//SGeOvyYqdm3KFCJEPRLwChEzcw9P3j+tQ9l1GM=;
-        b=krSqcU7bZtXWedvVrbKlFTG2CvLEgbj66hpBwn36kgq0iXczVaWAkp+sgmZTSeYX2k
-         Z1C7fi+tCOzlWUm8woA5Xl8j4bkSvB48SnAp+uVEibQT9IN8VIDMAi50eBrLlApRhiif
-         LptkYEBCLIBYmk01+hO4NwQV3r5EYyHGpn6eiRVYHKXsCKNf1LWZJvVRII9HFGNc85Fk
-         TMCgd7XGV6cBxOyS44Cqpaz88N07vv+5eduCzZAtZPi4sL+5mm8f9/27rUoMEtQRvlHz
-         LaIhQSBMipHXozYfGTUaf9HTFpYPyl9SZpJ1uvA01jq/CXvR4AL5C/Et4udVv9c7hjfb
-         5heA==
-X-Gm-Message-State: AOAM530cu0DQNXeXqClNff0vktMI9LDLZ0uMsBR/xAtLKJTHR8QNXbfF
-        cIqVPAj6fbzCEhM7hzGRHA==
-X-Google-Smtp-Source: ABdhPJyu7dCC40pS3m3VGtulYcPWj9w5pZwdD/pIp2nf+CHvZH/74gGY6dIlYDld1KB4rGo2fLuU8Q==
-X-Received: by 2002:a02:c903:: with SMTP id t3mr5494425jao.30.1595518930907;
-        Thu, 23 Jul 2020 08:42:10 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id d9sm1602131ios.33.2020.07.23.08.42.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 08:42:10 -0700 (PDT)
-Received: (nullmailer pid 424433 invoked by uid 1000);
-        Thu, 23 Jul 2020 15:42:09 -0000
-Date:   Thu, 23 Jul 2020 09:42:09 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
-        rahul.tanwar.linux@gmail.com, songjun.Wu@intel.com,
-        linux-pwm@vger.kernel.org, thierry.reding@gmail.com,
-        robh+dt@kernel.org, u.kleine-koenig@pengutronix.de,
-        cheol.yong.kim@intel.com, devicetree@vger.kernel.org,
-        qi-ming.wu@intel.com, p.zabel@pengutronix.de
-Subject: Re: [PATCH v5 1/2] Add DT bindings YAML schema for PWM fan
- controller of LGM SoC
-Message-ID: <20200723154209.GA423699@bogus>
-References: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
- <4e975206fcbddedc746e8d39b620336d5fab8b14.1595489518.git.rahul.tanwar@linux.intel.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WmpEF3wAK9MyQIycfqRtOyPcqi5ldyWuyIoAHJsmiPk=;
+        b=B118zAt6ee3ByheGglFCQFbj2Xt4fxe5R39ch0iEdosW+o9uQKamvBEzRMOdzxkCD4
+         mmNqhz9O+rN2cDIaImPrYjZHi60E10nBS70JYHStNzBVmUPyeq2841qmcFuo2IxafQOL
+         0ZpghNhPn5xc+6BQeYsA5HBbJnFWgniLKSxD1DLItUxRw8Aser2VmbpFp78ZdVsYSz31
+         o0QzU+4cEZ+ReAmYyzE0Tj+pbqbNmT87uX8279OH5TDovnW2GACsE6li2WbeCvhYihuw
+         ycOe5igpGddAUzTk4/pBq0dyt9CdyyeJMzAc2xD4Q9RLbgX/cnitXmdtmUctnY8FcR/R
+         bl4g==
+X-Gm-Message-State: AOAM531vHAB0CwI96Ct62axw3bgjBUqS+AohNR3ZbBOwynDNtfapAkht
+        0QX8bHC16N5FSMQQACMWnWY=
+X-Google-Smtp-Source: ABdhPJyX2JfGZsL+cpAXob0aVplIVs631ETGzU1KEWsj2v12UjMXeteDcjRnFvXcYr5gn4WVKyOiOQ==
+X-Received: by 2002:a1c:49c6:: with SMTP id w189mr2301255wma.97.1595518946327;
+        Thu, 23 Jul 2020 08:42:26 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.122.158])
+        by smtp.gmail.com with ESMTPSA id d18sm4238353wrj.8.2020.07.23.08.42.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jul 2020 08:42:25 -0700 (PDT)
+Subject: Re: [v7, PATCH 5/7] arm64: dts: add display nodes for mt8183
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <1595469798-3824-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1595469798-3824-6-git-send-email-yongqiang.niu@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <a8a7232c-6c2b-b606-2091-da540e5cb79e@gmail.com>
+Date:   Thu, 23 Jul 2020 17:42:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e975206fcbddedc746e8d39b620336d5fab8b14.1595489518.git.rahul.tanwar@linux.intel.com>
+In-Reply-To: <1595469798-3824-6-git-send-email-yongqiang.niu@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Jul 2020 15:44:17 +0800, Rahul Tanwar wrote:
-> Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
-> which is only used to control the fan attached to the system. This
-> PWM controller does not have any other consumer other than fan.
-> Add DT bindings documentation for this PWM fan controller.
+
+
+On 23/07/2020 04:03, Yongqiang Niu wrote:
+> This patch add display nodes for mt8183
 > 
-> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+
+In comparison, DTS patches should go last in a series as you will need the 
+driver patches to make it work.
+
+Regards,
+Matthias
+
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 > ---
->  .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 40 ++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+>   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 98 ++++++++++++++++++++++++++++++++
+>   1 file changed, 98 insertions(+)
 > 
-
-
-My bot found errors running 'make dt_binding_check' on your patch:
-
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/reset/intel,rcu-gw.example.dt.yaml: pwm@e0d00000: '#pwm-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.example.dt.yaml: pwm@e0d00000: '#pwm-cells' is a required property
-
-
-See https://patchwork.ozlabs.org/patch/1334579
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 7b781eb..440cf22 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -31,6 +31,11 @@
+>   		i2c9 = &i2c9;
+>   		i2c10 = &i2c10;
+>   		i2c11 = &i2c11;
+> +		ovl0 = &ovl0;
+> +		ovl_2l0 = &ovl_2l0;
+> +		ovl_2l1 = &ovl_2l1;
+> +		rdma0 = &rdma0;
+> +		rdma1 = &rdma1;
+>   	};
+>   
+>   	cpus {
+> @@ -707,9 +712,102 @@
+>   		mmsys: syscon@14000000 {
+>   			compatible = "mediatek,mt8183-mmsys", "syscon";
+>   			reg = <0 0x14000000 0 0x1000>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+>   			#clock-cells = <1>;
+>   		};
+>   
+> +		ovl0: ovl@14008000 {
+> +			compatible = "mediatek,mt8183-disp-ovl";
+> +			reg = <0 0x14008000 0 0x1000>;
+> +			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_OVL0>;
+> +		};
+> +
+> +		ovl_2l0: ovl@14009000 {
+> +			compatible = "mediatek,mt8183-disp-ovl-2l";
+> +			reg = <0 0x14009000 0 0x1000>;
+> +			interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_OVL0_2L>;
+> +		};
+> +
+> +		ovl_2l1: ovl@1400a000 {
+> +			compatible = "mediatek,mt8183-disp-ovl-2l";
+> +			reg = <0 0x1400a000 0 0x1000>;
+> +			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_OVL1_2L>;
+> +		};
+> +
+> +		rdma0: rdma@1400b000 {
+> +			compatible = "mediatek,mt8183-disp-rdma";
+> +			reg = <0 0x1400b000 0 0x1000>;
+> +			interrupts = <GIC_SPI 228 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_RDMA0>;
+> +			mediatek,rdma_fifo_size = <5120>;
+> +		};
+> +
+> +		rdma1: rdma@1400c000 {
+> +			compatible = "mediatek,mt8183-disp-rdma";
+> +			reg = <0 0x1400c000 0 0x1000>;
+> +			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+> +			mediatek,rdma_fifo_size = <2048>;
+> +		};
+> +
+> +		color0: color@1400e000 {
+> +			compatible = "mediatek,mt8183-disp-color",
+> +				     "mediatek,mt8173-disp-color";
+> +			reg = <0 0x1400e000 0 0x1000>;
+> +			interrupts = <GIC_SPI 231 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_COLOR0>;
+> +		};
+> +
+> +		ccorr0: ccorr@1400f000 {
+> +			compatible = "mediatek,mt8183-disp-ccorr";
+> +			reg = <0 0x1400f000 0 0x1000>;
+> +			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_CCORR0>;
+> +		};
+> +
+> +		aal0: aal@14010000 {
+> +			compatible = "mediatek,mt8183-disp-aal",
+> +				     "mediatek,mt8173-disp-aal";
+> +			reg = <0 0x14010000 0 0x1000>;
+> +			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_AAL0>;
+> +		};
+> +
+> +		gamma0: gamma@14011000 {
+> +			compatible = "mediatek,mt8183-disp-gamma",
+> +				     "mediatek,mt8173-disp-gamma";
+> +			reg = <0 0x14011000 0 0x1000>;
+> +			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_GAMMA0>;
+> +		};
+> +
+> +		dither0: dither@14012000 {
+> +			compatible = "mediatek,mt8183-disp-dither";
+> +			reg = <0 0x14012000 0 0x1000>;
+> +			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +			clocks = <&mmsys CLK_MM_DISP_DITHER0>;
+> +		};
+> +
+> +		mutex: mutex@14016000 {
+> +			compatible = "mediatek,mt8183-disp-mutex";
+> +			reg = <0 0x14016000 0 0x1000>;
+> +			interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
+> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +		};
+> +
+>   		smi_common: smi@14019000 {
+>   			compatible = "mediatek,mt8183-smi-common", "syscon";
+>   			reg = <0 0x14019000 0 0x1000>;
+> 
