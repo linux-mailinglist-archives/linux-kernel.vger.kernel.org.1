@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D4022B67D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2318B22B67E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728452AbgGWTJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 15:09:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60504 "EHLO
+        id S1728471AbgGWTJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 15:09:51 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60556 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728375AbgGWTJq (ORCPT
+        with ESMTP id S1728397AbgGWTJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 15:09:46 -0400
-Date:   Thu, 23 Jul 2020 19:09:44 -0000
+        Thu, 23 Jul 2020 15:09:47 -0400
+Date:   Thu, 23 Jul 2020 19:09:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1595531385;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6Mwt9NZqiGCWc/y/PwDNXa+V9bdnR9Bcgv963eoI4WQ=;
-        b=oldN3uSz3oj86BmkOiqqgH+4+fPiI1S9w3U6lpfNrAPEmMRdNkbQa6t3ANY5a6Nd51yRoc
-        KIcPKN5MEtDZNh5vBVd6SWdlomCCL6SEE06hezcob3pIfON134Hw7iU4067Q4WngtdjzV2
-        AXX05vpPhQ3XzUN4QJMUDdW2nvJbqIlUTsxerr0Owb7GuJP/wsHYikzALobdAYNdZ2FyUh
-        B2TjuN3HI4iCSlVq6wNYx2hRlVXbgZ/lTHlGQiksV2mKLTnQWbcQZ1TYKVJ/WF30UaVwkm
-        iLg0ZfLtvz1/tiBqga6Od833CR2cec0LzIl2/cz2giWZO0m0Sxm2U22fijzpWQ==
+        bh=oSc07fS9Ne+RWv/klpUpFgdFQ8Ko/InkZRuDM+nirFE=;
+        b=3kY6blopT53zSQek5C2qjzejUW+tDTpQ8Q7dkQTgNiq3M1LCMeXAd6TaGpmG9Y2zi7gl+4
+        9LlVVVd1G+E+GqHiuoYhBXd7VqDTkTjJ0UAqUCNpZf0mPezM9j2pavgh4kdNKPz8+QPFWc
+        VDkXSFcNxq4oaYkISrgEyk307v7ORYh6tXJKtXXN/KigJ+2oNL9kigPYFr/6sgzkPSSVIY
+        HjNhmTgvtbjy+3pMqkdvMdmfRtG6IgeTDShKxS57M1cNaNVmsJLqiH53TLMyJSgKgxTa7j
+        nTEm7psYR+j87cPfmSXJIpEzUuOsc1XDJRL8A5ivvSIwIvfT30q1LnCL7SGQsA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1595531385;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,21 +33,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6Mwt9NZqiGCWc/y/PwDNXa+V9bdnR9Bcgv963eoI4WQ=;
-        b=mMVGCP0qIpIlSZ66jkfUoHKJ+wQ+eKQ3S0cZgeg7/xiYfR+H9fDxOszIwIVPYrWwkWSBX7
-        GrDXyuLuka+wZ/Dg==
-From:   "tip-bot2 for Alexandre Belloni" <tip-bot2@linutronix.de>
+        bh=oSc07fS9Ne+RWv/klpUpFgdFQ8Ko/InkZRuDM+nirFE=;
+        b=u1FkQZyy24dg3PyaCsVkJDkZLuEcqtebQ815MaiuNm66g3bvFtB0ojK8JYGvr4EkEHaX90
+        fwbgwy8VOxlLVbAA==
+From:   "tip-bot2 for Kamel Bouhara" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/timer-atmel-tcb: Rework 32khz
- clock selection
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+Subject: [tip: timers/core] ARM: at91: add atmel tcb capabilities
+Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200710230813.1005150-6-alexandre.belloni@bootlin.com>
-References: <20200710230813.1005150-6-alexandre.belloni@bootlin.com>
+In-Reply-To: <20200710230813.1005150-5-alexandre.belloni@bootlin.com>
+References: <20200710230813.1005150-5-alexandre.belloni@bootlin.com>
 MIME-Version: 1.0
-Message-ID: <159553138460.4006.12847358392559063922.tip-bot2@tip-bot2>
+Message-ID: <159553138526.4006.6977454971655283035.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,65 +59,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     228e21848623e0ce54a1a3d7857b444813e49b2e
-Gitweb:        https://git.kernel.org/tip/228e21848623e0ce54a1a3d7857b444813e49b2e
-Author:        Alexandre Belloni <alexandre.belloni@bootlin.com>
-AuthorDate:    Sat, 11 Jul 2020 01:08:09 +02:00
+Commit-ID:     738c58ccac386bb068cba2446bd9dbabeae09b62
+Gitweb:        https://git.kernel.org/tip/738c58ccac386bb068cba2446bd9dbabeae09b62
+Author:        Kamel Bouhara <kamel.bouhara@bootlin.com>
+AuthorDate:    Sat, 11 Jul 2020 01:08:08 +02:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Sat, 11 Jul 2020 18:57:58 +02:00
+CommitterDate: Sat, 11 Jul 2020 18:57:03 +02:00
 
-clocksource/drivers/timer-atmel-tcb: Rework 32khz clock selection
+ARM: at91: add atmel tcb capabilities
 
-On all the supported SoCs, the slow clock is always ATMEL_TC_TIMER_CLOCK5,
-avoid looking it up and pass it directly to setup_clkevents.
+Some atmel socs have extra tcb capabilities that allow using a generic
+clock source or enabling a quadrature decoder.
 
+Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200710230813.1005150-6-alexandre.belloni@bootlin.com
+Link: https://lore.kernel.org/r/20200710230813.1005150-5-alexandre.belloni@bootlin.com
 ---
- drivers/clocksource/timer-atmel-tcb.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ include/soc/at91/atmel_tcb.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
-index 7427b07..b255a4a 100644
---- a/drivers/clocksource/timer-atmel-tcb.c
-+++ b/drivers/clocksource/timer-atmel-tcb.c
-@@ -346,7 +346,7 @@ static void __init tcb_setup_single_chan(struct atmel_tc *tc, int mck_divisor_id
- 	writel(ATMEL_TC_SYNC, tcaddr + ATMEL_TC_BCR);
- }
+diff --git a/include/soc/at91/atmel_tcb.h b/include/soc/at91/atmel_tcb.h
+index c3c7200..1d7071d 100644
+--- a/include/soc/at91/atmel_tcb.h
++++ b/include/soc/at91/atmel_tcb.h
+@@ -36,9 +36,14 @@ struct clk;
+ /**
+  * struct atmel_tcb_config - SoC data for a Timer/Counter Block
+  * @counter_width: size in bits of a timer counter register
++ * @has_gclk: boolean indicating if a timer counter has a generic clock
++ * @has_qdec: boolean indicating if a timer counter has a quadrature
++ * decoder.
+  */
+ struct atmel_tcb_config {
+ 	size_t	counter_width;
++	bool    has_gclk;
++	bool    has_qdec;
+ };
  
--static const u8 atmel_tcb_divisors[5] = { 2, 8, 32, 128, 0, };
-+static const u8 atmel_tcb_divisors[] = { 2, 8, 32, 128 };
- 
- static const struct of_device_id atmel_tcb_of_match[] = {
- 	{ .compatible = "atmel,at91rm9200-tcb", .data = (void *)16, },
-@@ -362,7 +362,6 @@ static int __init tcb_clksrc_init(struct device_node *node)
- 	u64 (*tc_sched_clock)(void);
- 	u32 rate, divided_rate = 0;
- 	int best_divisor_idx = -1;
--	int clk32k_divisor_idx = -1;
- 	int bits;
- 	int i;
- 	int ret;
-@@ -416,12 +415,6 @@ static int __init tcb_clksrc_init(struct device_node *node)
- 		unsigned divisor = atmel_tcb_divisors[i];
- 		unsigned tmp;
- 
--		/* remember 32 KiHz clock for later */
--		if (!divisor) {
--			clk32k_divisor_idx = i;
--			continue;
--		}
--
- 		tmp = rate / divisor;
- 		pr_debug("TC: %u / %-3u [%d] --> %u\n", rate, divisor, i, tmp);
- 		if (best_divisor_idx > 0) {
-@@ -467,7 +460,7 @@ static int __init tcb_clksrc_init(struct device_node *node)
- 		goto err_disable_t1;
- 
- 	/* channel 2:  periodic and oneshot timer support */
--	ret = setup_clkevents(&tc, clk32k_divisor_idx);
-+	ret = setup_clkevents(&tc, ATMEL_TC_TIMER_CLOCK5);
- 	if (ret)
- 		goto err_unregister_clksrc;
- 
+ /**
