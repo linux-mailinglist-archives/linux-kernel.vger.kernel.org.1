@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB1D22A4A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2CE22A4A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387482AbgGWBg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:36:29 -0400
-Received: from mga09.intel.com ([134.134.136.24]:43875 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728914AbgGWBg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:36:28 -0400
-IronPort-SDR: hM2SfAXARxKwbMxSk6JaOHkSl/70rntNggy4kLVTWpRYjv4Oou8Q4MsN0IQX8LJ+6Xjzq9PbD5
- 3tCZ6iWZFBYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="151761096"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="151761096"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 18:36:27 -0700
-IronPort-SDR: OCxofJAfgBSRpuQqcUhQpDfslXUhmaxClJafopr1zuUTivfh3c0/hmltsjqykrtxffYelxX4xJ
- z9sGg/9Dc+MQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="310842811"
-Received: from schwings-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.132])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Jul 2020 18:36:23 -0700
-Date:   Thu, 23 Jul 2020 04:36:22 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     torvalds@linux-foundation.org,
-        Wei Yongjun <weiyongjun1@huawei.com>, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] keys: asymmetric: fix error return code in
- software_key_query()
-Message-ID: <20200723013622.GB45081@linux.intel.com>
-References: <159485211858.2340757.9890754969922775496.stgit@warthog.procyon.org.uk>
- <20200723013223.GA45081@linux.intel.com>
+        id S2387516AbgGWBi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728914AbgGWBi2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:38:28 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5338C0619DC;
+        Wed, 22 Jul 2020 18:38:28 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id j187so3949592qke.11;
+        Wed, 22 Jul 2020 18:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YZZc8tkRzFODbKr19PJHEkff/Ao3Y0B9UKvSStxkk20=;
+        b=WUAK93PyKvCgFkmf5Q+ixIMgxah07B/C0uAthIE/DzScCc+w8IR30LCq1mYDz6LfpH
+         1kOMw5ip73ylC2ovfZfd+IorBh3E0ezinrSrm4wUS7en6CApNbl5AAAuwlRjCNprNYjY
+         a2j+nVQyF8A7JHdd8vW4FkB7zykVjT7KL8/maqPetPanjWHbr4DnbEYBgGz3P4nmxTqh
+         L8dFReXq+kVNsAs1inGVG+sRoGzsbJ52VC0WXJzDum3MCFbF8XCYvBvXwtuNyG1BGlv7
+         PpFz9jK9CS75DEL9XdEfB64fm2wws0swbFGwiWoK0HFQvKV8GyQMrNFbb/ueYvmIKt+b
+         M3JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YZZc8tkRzFODbKr19PJHEkff/Ao3Y0B9UKvSStxkk20=;
+        b=LLX+lvlSYy5bWaXoUlCSXzGKXRSucOcesvL19Tw8aN/dP64zI21lAUCIyDIgCP2v89
+         NLwtBruHw7cobbIExNPMPPMENfN8WxSX1RQIdx6lgoyKFLBbCyEvq3AR5tT0/2aZ0rHg
+         u8KJJpSenYVeTxdKHbfe5Qww91RzIE61VlZ1ehsKL7HDIqG+fGdD2gUFFPxh43aa0S00
+         mLdgrk1yx5o+744BvRBHEB+mWuP/T1UDRP5llaQ7OieYnjQtJM4YmnuUeTLiF2WOdxu4
+         YsNAeWvJuQn/Vbg3F12o3gnJpxOn2Q75kcMZIjX9F2yntwsXNzHeePs7cZKPijvvowgZ
+         9Mbg==
+X-Gm-Message-State: AOAM530hYpKL3n0hsXOIlPX01NS+1SCZ2A8UgEDwpZs7Ws1Qh/3kGi9k
+        2zV/OTJyDuJEsAB3WUf9oZ2N2rU3IzCITl4k1sQ=
+X-Google-Smtp-Source: ABdhPJzEPNS6XZft4HQw4J9+FY04X6wifZJcaeJ9gK+GPmo4Kkrtg1rJ0VNFEiFCXwfeMMXPSn2gWbM+MF4x+PinGKE=
+X-Received: by 2002:a37:6d2:: with SMTP id 201mr2771283qkg.187.1595468307797;
+ Wed, 22 Jul 2020 18:38:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723013223.GA45081@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1595302129-23895-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <20200721120533.GD15516@casper.infradead.org> <4c484ce0-cfed-0c50-7a20-d1474ce9afee@suse.cz>
+In-Reply-To: <4c484ce0-cfed-0c50-7a20-d1474ce9afee@suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Thu, 23 Jul 2020 10:38:16 +0900
+Message-ID: <CAAmzW4NZ3aG6ZOJ1oFxHrB9AK01=5Kt0LsAw3HT14g9L3yyxzQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/page_alloc: fix memalloc_nocma_{save/restore} APIs
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 04:32:38AM +0300, Jarkko Sakkinen wrote:
-> On Wed, Jul 15, 2020 at 11:28:38PM +0100, David Howells wrote:
-> > From: Wei Yongjun <weiyongjun1@huawei.com>
-> > 
-> > Fix to return negative error code -ENOMEM from kmalloc() error handling
-> > case instead of 0, as done elsewhere in this function.
-> > 
-> > Fixes: f1774cb8956a ("X.509: parse public key parameters from x509 for akcipher")
-> > Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> > Signed-off-by: David Howells <dhowells@redhat.com>
-> 
-> Why f1774cb8956a lacked any possible testing? It extends ABI anyway.
-> 
-> I think it is a kind of change that would require more screening before
-> getting applied.
-> 
-> > ---
-> > 
-> >  crypto/asymmetric_keys/public_key.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/crypto/asymmetric_keys/public_key.c b/crypto/asymmetric_keys/public_key.c
-> > index d7f43d4ea925..e5fae4e838c0 100644
-> > --- a/crypto/asymmetric_keys/public_key.c
-> > +++ b/crypto/asymmetric_keys/public_key.c
-> > @@ -119,6 +119,7 @@ static int software_key_query(const struct kernel_pkey_params *params,
-> >  	if (IS_ERR(tfm))
-> >  		return PTR_ERR(tfm);
-> >  
-> > +	ret = -ENOMEM;
-> 
-> This is extremely confusing to read way to handle 'ret'.
-> 
-> Would be way more cleaner to be just simple and stupid:
-> 
-> 	if (!key) {
-> 		ret = -ENOMEM;
-> 		goto error_free_tfm;
-> 	}
+2020=EB=85=84 7=EC=9B=94 21=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 9:39, V=
+lastimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 7/21/20 2:05 PM, Matthew Wilcox wrote:
+> > On Tue, Jul 21, 2020 at 12:28:49PM +0900, js1304@gmail.com wrote:
+> >> +static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+> >> +                                    unsigned int alloc_flags)
+> >> +{
+> >> +#ifdef CONFIG_CMA
+> >> +    unsigned int pflags =3D current->flags;
+> >> +
+> >> +    if (!(pflags & PF_MEMALLOC_NOCMA) &&
+> >> +            gfp_migratetype(gfp_mask) =3D=3D MIGRATE_MOVABLE)
+> >> +            alloc_flags |=3D ALLOC_CMA;
+> >
+> > Please don't indent by one tab when splitting a line because it looks l=
+ike
+> > the second line and third line are part of the same block.  Either do
+> > this:
+> >
+> >       if (!(pflags & PF_MEMALLOC_NOCMA) &&
+> >           gfp_migratetype(gfp_mask) =3D=3D MIGRATE_MOVABLE)
+> >               alloc_flags |=3D ALLOC_CMA;
+> >
+> > or this:
+> >       if (!(pflags & PF_MEMALLOC_NOCMA) &&
+> >                       gfp_migratetype(gfp_mask) =3D=3D MIGRATE_MOVABLE)
+> >               alloc_flags |=3D ALLOC_CMA;
+>
+> Ah, good point.
 
-To rationalize why the 2nd way is better: the diff would tell the
-whole story. Now this commit requires to check *both* the diff and
-the source file to get the full understanding what is going on.
+Will change it.
 
-/Jarkko
+Thanks.
