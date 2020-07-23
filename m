@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E7322B4D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0D422B4D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730012AbgGWR26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:28:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgGWR26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:28:58 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2835A20714;
-        Thu, 23 Jul 2020 17:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595525337;
-        bh=VkdDKS0wN9LZ9uHZh7M2Y+USkmugM8r/87cp7BNkqhQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UwCI8+k1hDpdbuZUG5lr/L4L8Udn9SrtdS6b+mPP3r0OqMl7mhQcdycrgMaBSrquz
-         CB9HnfsRx0WsnmEnLFc9pBYcKxB2s0VNqQPCBnPUtMxRpnFODnVMZPja7zh0X2KwLw
-         C9SjMRMyrB5WSdAVfnlLt4T7ry22VP1bYEyAPUCw=
-Date:   Thu, 23 Jul 2020 19:29:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Tomas Winkler <tomas.winkler@intel.com>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [char-misc-next 1/6] mei: hbm: use sizeof of variable instead of
- struct type
-Message-ID: <20200723172901.GA2840395@kroah.com>
-References: <20200723145927.882743-1-tomas.winkler@intel.com>
- <20200723145927.882743-2-tomas.winkler@intel.com>
- <20200723151310.GA2809544@kroah.com>
- <a59b37f7-db9b-02f1-98c3-3207db213e3b@embeddedor.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a59b37f7-db9b-02f1-98c3-3207db213e3b@embeddedor.com>
+        id S1730108AbgGWR3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:29:40 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56394 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730025AbgGWR3i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:29:38 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1jyf1z-0001YW-VR; Thu, 23 Jul 2020 17:29:20 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        kyounghwan sohn <kyounghwan.sohn@sk.com>,
+        linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] nvme/pci: Prevent SK hynix PC400 from using Write Zeroes command
+Date:   Fri, 24 Jul 2020 01:29:10 +0800
+Message-Id: <20200723172910.28350-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200723155731.22313-1-kai.heng.feng@canonical.com>
+References: <20200723155731.22313-1-kai.heng.feng@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 12:04:06PM -0500, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 7/23/20 10:13, Greg Kroah-Hartman wrote:
-> > On Thu, Jul 23, 2020 at 05:59:22PM +0300, Tomas Winkler wrote:
-> >> There is a possibility of bug when variable type has changed but
-> >> corresponding struct passed to the sizeof has not.
-> >>
-> >> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> >> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> >> ---
-> >>  drivers/misc/mei/hbm.c | 74 ++++++++++++++++++------------------------
-> >>  1 file changed, 32 insertions(+), 42 deletions(-)
-> > 
-> > This doesn't apply to my tree as I've applied Gustavo's patch.  Should I
-> > revert that first?
-> > 
-> 
-> Yep; this series doesn't take into account my patch. I'm OK with
-> reverting it, so we can apply this series.
+After commit 6e02318eaea5 ("nvme: add support for the Write Zeroes
+command"), SK hynix PC400 becomes very slow with the following error
+message:
+[  224.567695] blk_update_request: operation not supported error, dev nvme1n1, sector 499384320 op 0x9:(WRITE_ZEROES) flags 0x1000000 phys_seg 0 prio class 0]
 
-Ok, will do, thanks!
+SK Hynix PC400 has a buggy firmware that treats NLB as max value instead
+of a range, so the NLB passed isn't a valid value to the firmware.
 
-greg k-h
+According to SK hynix there are three commands are affected:
+- Write Zeroes
+- Compare
+- Write Uncorrectable
+
+Right now only Write Zeroes is implemented, so disable it completely on
+SK hynix PC400.
+
+BugLink: https://bugs.launchpad.net/bugs/1872383
+Cc: kyounghwan sohn <kyounghwan.sohn@sk.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v3:
+- Simply disable Write Zeroes command.
+
+v2:
+- SK hynix found the root cause so change the approach accordingly.
+- lspci is wrong, the device is PC400 instead of SC300.
+
+ drivers/nvme/host/pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index b1d18f0633c7..25a187e43dbe 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3122,6 +3122,8 @@ static const struct pci_device_id nvme_id_table[] = {
+ 	{ PCI_DEVICE(0x1cc1, 0x8201),   /* ADATA SX8200PNP 512GB */
+ 		.driver_data = NVME_QUIRK_NO_DEEPEST_PS |
+ 				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
++	{ PCI_DEVICE(0x1c5c, 0x1504),   /* SK Hynix PC400 */
++		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE_CLASS(PCI_CLASS_STORAGE_EXPRESS, 0xffffff) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
+ 		.driver_data = NVME_QUIRK_SINGLE_VECTOR },
+-- 
+2.17.1
+
