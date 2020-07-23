@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F1F22AF70
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDCF22AF84
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728770AbgGWMdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:33:46 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:45542 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728618AbgGWMdm (ORCPT
+        id S1728579AbgGWMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:37:33 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:40289 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbgGWMhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:33:42 -0400
-Received: by mail-lj1-f194.google.com with SMTP id r19so6098685ljn.12;
-        Thu, 23 Jul 2020 05:33:40 -0700 (PDT)
+        Thu, 23 Jul 2020 08:37:33 -0400
+Received: by mail-lj1-f196.google.com with SMTP id j11so6149633ljo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 05:37:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bvFvMUgB8630ef2EirnBQztrZ72fZD4OOkgLMUGoJE8=;
-        b=V3KLv8xn9CmKZz8gmsINSi1XhxBb+BiNIyRqjmVl7IyeAH+IY8k44t1qsxCwH2/+XH
-         v/7q4ynoL8nwGs0mMkNDnhUx995g6X+DPWg3teuLuo8uyOB4Xx8DGEMPFht4JfppYy0F
-         vTohmMfDZOq+8oS8/nqdj3nDudlj6InsOry091n5ne4BRRUhPuaQQBZwoJXjDqVsEAqI
-         LXw9Oxt6ptyI8v1eydR1O7ZAwrsnvy67DXbE7caPLYM9iHGz4/kVCTx1o+fx/zogJSgE
-         1HretlomONSf7lH3JmDau/pWXsYis4FPwaOCPm7c/RBH9Kle1UJyYhDW/NGu/8P7kw5U
-         a1Tg==
-X-Gm-Message-State: AOAM533JSrsf8zWktZakPowVX01nixJQPRQFQLbxShyZEyihAlmLpAC3
-        DKGh1IrboNH7WW1Lj4zdqq9ZL7pu
-X-Google-Smtp-Source: ABdhPJzTjBbqQ7Pyt4zsnbVF08/mGFXFA4DmFPZwXEuRF7DZ5yW/OQVW+C2E1c5yq3xjwLIfM4QKFg==
-X-Received: by 2002:a2e:9f4c:: with SMTP id v12mr1821603ljk.327.1595507619899;
-        Thu, 23 Jul 2020 05:33:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TbdqUjGoPs4mHIRTk4dFCt8/crXquSHYgZzaX/f+u2c=;
+        b=m5qUryj9CuBt1afOA6sS18Km83K+5zgJKtOKdWErq1zAUSKAqfLgYCjQ4bJyqQqx7u
+         kcjugS+1d3+E6xOcrCAt8UZ0t88wi7q3n/A5lieRYz+bgIinMaEMIFUXz09YTTLQ8DPo
+         vq4T5M0sF5XAlw4GozwENHNH9T2IH67Nss+wz2xZot3VdBw9VBo8oLY60gT7m5+dF4h/
+         yqlmBOUlRLV/i6IUrqXhML9KH4ttELyincLHv+WPp+Aj8E/FE1itIXYyyT7F7TINirzL
+         C1l1TDwGzidCNd9j3f6kh63/ILy/qH767jGAnDndUJeMjopbnQLhCBWzlzNvJMJCA6yq
+         YXRg==
+X-Gm-Message-State: AOAM532vWZnbk2zyUrMe/Rqze67L4c3TltJzx68aw60UyLPVhY2V6xqZ
+        2mFkKPX0acT4m+BPhQOFUwU=
+X-Google-Smtp-Source: ABdhPJyNDFL7vCZUil6J39elv3735RWn6rd4BszPfg5NmqP4oM4ed3sOJ0cRTN4fXG5Q0KIG7iS8ww==
+X-Received: by 2002:a2e:9810:: with SMTP id a16mr1755491ljj.157.1595507850412;
+        Thu, 23 Jul 2020 05:37:30 -0700 (PDT)
 Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id k12sm2700069lfe.68.2020.07.23.05.33.38
+        by smtp.gmail.com with ESMTPSA id v5sm2633942lji.75.2020.07.23.05.37.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 05:33:38 -0700 (PDT)
+        Thu, 23 Jul 2020 05:37:29 -0700 (PDT)
 Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@xi.terra>)
-        id 1jyaPk-0001X8-PS; Thu, 23 Jul 2020 14:33:32 +0200
+        (envelope-from <johan@kernel.org>)
+        id 1jyaTU-0001pi-29; Thu, 23 Jul 2020 14:37:24 +0200
+Date:   Thu, 23 Jul 2020 14:37:24 +0200
 From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 2/2] serial: msm_serial: add sparse context annotation
-Date:   Thu, 23 Jul 2020 14:33:27 +0200
-Message-Id: <20200723123327.5843-3-johan@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200723123327.5843-1-johan@kernel.org>
-References: <20200723123327.5843-1-johan@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>, kernel test robot <lkp@intel.com>,
+        kbuild-all@lists.01.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>
+Subject: Re: drivers/tty/serial/pmac_zilog.c:255:36: sparse: sparse: context
+ imbalance in 'pmz_receive_chars' - unexpected unlock
+Message-ID: <20200723123724.GN3634@localhost>
+References: <202007231701.CV9tyb31%lkp@intel.com>
+ <20200723121617.GM3634@localhost>
+ <CAHp75VeXh0vsydRay1a3uBP2kSsr6bNV7bT=vgCS7CSSRYT1mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeXh0vsydRay1a3uBP2kSsr6bNV7bT=vgCS7CSSRYT1mw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sparse context annotation to the receive handlers, which release and
-reacquire the port lock, to silence sparse warnings:
+On Thu, Jul 23, 2020 at 03:26:54PM +0300, Andy Shevchenko wrote:
+> On Thu, Jul 23, 2020 at 3:19 PM Johan Hovold <johan@kernel.org> wrote:
+> >
+> > On Thu, Jul 23, 2020 at 05:29:14PM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > head:   d15be546031cf65a0fc34879beca02fd90fe7ac7
+> > > commit: 08d5470308ac3598e7709d08b8979ce6e9de8da2 serial: core: fix sysrq overhead regression
+> > > date:   4 weeks ago
+> > > config: m68k-randconfig-s032-20200723 (attached as .config)
+> > > compiler: m68k-linux-gcc (GCC) 9.3.0
+> > > reproduce:
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # apt-get install sparse
+> > >         # sparse version: v0.6.2-93-g4c6cbe55-dirty
+> > >         git checkout 08d5470308ac3598e7709d08b8979ce6e9de8da2
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=m68k
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > >
+> > > sparse warnings: (new ones prefixed by >>)
+> > >
+> > > >> drivers/tty/serial/pmac_zilog.c:255:36: sparse: sparse: context imbalance in 'pmz_receive_chars' - unexpected unlock
+> >
+> > This warning is far from new,
+> 
+> I suspect it's a new sparse and kbuildbot that decided to unveil old sins.
 
-	drivers/tty/serial/msm_serial.c:748:25: warning: context imbalance in 'msm_handle_rx_dm' - unexpected unlock
-	drivers/tty/serial/msm_serial.c:814:28: warning: context imbalance in 'msm_handle_rx' - unexpected unlock
+Possibly.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/tty/serial/msm_serial.c | 2 ++
- 1 file changed, 2 insertions(+)
+> > but let's add the missing annotation
+> > nonetheless:
+> >
+> >         https://lore.kernel.org/r/20200723121423.24217-1-johan@kernel.org
+> 
+> Feel free to add Reviewed-by: Andy Shevchenko
+> <andy.shevchenko@gmail.com> to them.
 
-diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
-index 60a9c53fa7cb..87f005e5d2af 100644
---- a/drivers/tty/serial/msm_serial.c
-+++ b/drivers/tty/serial/msm_serial.c
-@@ -696,6 +696,7 @@ static void msm_enable_ms(struct uart_port *port)
- }
- 
- static void msm_handle_rx_dm(struct uart_port *port, unsigned int misr)
-+	__must_hold(&port->lock)
- {
- 	struct tty_port *tport = &port->state->port;
- 	unsigned int sr;
-@@ -771,6 +772,7 @@ static void msm_handle_rx_dm(struct uart_port *port, unsigned int misr)
- }
- 
- static void msm_handle_rx(struct uart_port *port)
-+	__must_hold(&port->lock)
- {
- 	struct tty_port *tport = &port->state->port;
- 	unsigned int sr;
--- 
-2.26.2
+Thanks, and sorry I missed this before sending a v2 with the missing
+ampersands added. It's better if you reply to the cover letter so Greg's
+tooling will pick it up:
 
+	https://lore.kernel.org/r/20200723123327.5843-1-johan@kernel.org
+
+Johan
