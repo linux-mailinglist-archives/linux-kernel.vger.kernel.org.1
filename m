@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F9D22AAC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB67822AAC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGWIga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:36:30 -0400
-Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:9145 "EHLO
-        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725858AbgGWIga (ORCPT
+        id S1727023AbgGWIhc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Jul 2020 04:37:32 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60334 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725846AbgGWIhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:36:30 -0400
-Received: from zxbjmbx3.zhaoxin.com (10.29.252.165) by ZXSHCAS1.zhaoxin.com
- (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 23 Jul
- 2020 16:36:26 +0800
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by zxbjmbx3.zhaoxin.com
- (10.29.252.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 23 Jul
- 2020 16:36:25 +0800
-Received: from zxbjmbx1.zhaoxin.com ([fe80::290a:f538:51e7:1416]) by
- zxbjmbx1.zhaoxin.com ([fe80::290a:f538:51e7:1416%16]) with mapi id
- 15.01.1979.003; Thu, 23 Jul 2020 16:36:25 +0800
-From:   WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "hslester96@gmail.com" <hslester96@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
-        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
-        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
-        "wwt8723@163.com" <wwt8723@163.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIFVTQjpGaXgga2VybmVsIE5VTEwgcG9pbnRlciB3?=
- =?utf-8?Q?hen_unbind_UHCI_form_vfio-pci?=
-Thread-Topic: [PATCH] USB:Fix kernel NULL pointer when unbind UHCI form
- vfio-pci
-Thread-Index: AQHWYB9U257QN8g5QkeL/njIDTUWtqkUAziAgABPH2A=
-Date:   Thu, 23 Jul 2020 08:36:25 +0000
-Message-ID: <371b3697614e4034aed8e9f340a7dbf1@zhaoxin.com>
-References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
- <20200722215313.5a842b93@x1.home>
-In-Reply-To: <20200722215313.5a842b93@x1.home>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
+        Thu, 23 Jul 2020 04:37:32 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-80-5MUK7J35NxGiTT6rTbxaSA-1; Thu, 23 Jul 2020 09:37:27 +0100
+X-MC-Unique: 5MUK7J35NxGiTT6rTbxaSA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 09:37:27 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 23 Jul 2020 09:37:27 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Catalin Marinas' <catalin.marinas@arm.com>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC] raw_copy_from_user() semantics
+Thread-Topic: [RFC] raw_copy_from_user() semantics
+Thread-Index: AQHWYBxygAO6HUS840aFW/LsMa1rTakTksjwgAAtkICAARbBwA==
+Date:   Thu, 23 Jul 2020 08:37:27 +0000
+Message-ID: <9c22700a16db4a4f8ae9203efcaed27b@AcuMS.aculab.com>
+References: <20200719031733.GI2786714@ZenIV.linux.org.uk>
+ <CAHk-=wi7f5vG+s=aFsskzcTRs+f7MVHK9yJFZtUEfndy6ScKRQ@mail.gmail.com>
+ <CAHk-=wirA7zJJB17KJPCE-V9pKwn8VKxXTeiaM+F+Sa1Xd2SWA@mail.gmail.com>
+ <20200722113707.GC27540@gaia>
+ <8fde1b9044a34ff59eb5ff3dafbf2b97@AcuMS.aculab.com>
+ <20200722165346.GB4069@gaia>
+In-Reply-To: <20200722165346.GB4069@gaia>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.29.8.32]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBUaHUsMjMgSnVseSAyMDIwIDA0OjE4OjAwICswMDAwIEFsZXggd3JvdGU6DQo+IE9uIFdl
-ZCwgMjIgSnVsIDIwMjAgMTk6NTc6NDggKzA4MDANCj4gV2VpdGFvV2FuZ29jIDxXZWl0YW9XYW5n
-LW9jQHpoYW94aW4uY29tPiB3cm90ZToNCj4gDQo+ID4gIGRyaXZlcnMvdXNiL2NvcmUvaGNkLXBj
-aS5jIHwgNSArKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspDQo+ID4N
-Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvY29yZS9oY2QtcGNpLmMgYi9kcml2ZXJzL3Vz
-Yi9jb3JlL2hjZC1wY2kuYw0KPiA+IGluZGV4IDE1NDdhYTYuLjQ4NGYyYTAgMTAwNjQ0DQo+ID4g
-LS0tIGEvZHJpdmVycy91c2IvY29yZS9oY2QtcGNpLmMNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9j
-b3JlL2hjZC1wY2kuYw0KPiA+IEBAIC0zNCw2ICszNCw3IEBAIHN0YXRpYyBERUNMQVJFX1JXU0VN
-KGNvbXBhbmlvbnNfcndzZW0pOw0KPiA+ICAjZGVmaW5lIENMX09IQ0kgICAgICAgICAgICAgICAg
-UENJX0NMQVNTX1NFUklBTF9VU0JfT0hDSQ0KPiA+ICAjZGVmaW5lIENMX0VIQ0kgICAgICAgICAg
-ICAgICAgUENJX0NMQVNTX1NFUklBTF9VU0JfRUhDSQ0KPiA+DQo+ID4gKyNkZWZpbmUgUENJX0RF
-Vl9EUlZfRkxBRyAgICAgICAyDQo+ID4gIHN0YXRpYyBpbmxpbmUgaW50IGlzX29oY2lfb3JfdWhj
-aShzdHJ1Y3QgcGNpX2RldiAqcGRldikgIHsNCj4gPiAgICAgICAgIHJldHVybiBwZGV2LT5jbGFz
-cyA9PSBDTF9PSENJIHx8IHBkZXYtPmNsYXNzID09IENMX1VIQ0k7IEBADQo+ID4gLTY4LDYgKzY5
-LDggQEAgc3RhdGljIHZvaWQgZm9yX2VhY2hfY29tcGFuaW9uKHN0cnVjdCBwY2lfZGV2ICpwZGV2
-LCBzdHJ1Y3QNCj4gdXNiX2hjZCAqaGNkLA0KPiA+ICAgICAgICAgICAgICAgICBpZiAoY29tcGFu
-aW9uLT5jbGFzcyAhPSBDTF9VSENJICYmIGNvbXBhbmlvbi0+Y2xhc3MgIT0NCj4gQ0xfT0hDSSAm
-Jg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGFuaW9uLT5jbGFzcyAh
-PSBDTF9FSENJKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlOw0KPiA+ICsg
-ICAgICAgICAgICAgICBpZiAoIShjb21wYW5pb24tPnByaXZfZmxhZ3MgJiBQQ0lfREVWX0RSVl9G
-TEFHKSkNCj4gDQo+IEJ1dCBwY2lfZGV2LnByaXZfZmxhZ3MgaXMgcHJpdmF0ZSBkYXRhIGZvciB0
-aGUgZHJpdmVyIHRoYXQgY3VycmVudGx5DQo+IG93bnMgdGhlIGRldmljZSwgd2hpY2ggY291bGQg
-YmUgdmZpby1wY2kuICBUaGlzIGlzIHJlYWxseSBubyBkaWZmZXJlbnQNCj4gdGhhbiBhc3N1bWlu
-ZyB0aGUgc3RydWN0dXJlIGF0IGRldmljZS5kcml2ZXJfZGF0YS4gIElmIHZmaW8tcGNpIHdlcmUg
-dG8NCj4gbWFrZSBsZWdpdGltYXRlIHVzZSBvZiBwY2lfZGV2LnByaXZfZmxhZ3MsIHRoaXMgY291
-bGQgc2ltcGx5IGJsb3cgdXANCj4gYWdhaW4uICBTaG91bGQgdGhlcmUgaW5zdGVhZCBiZSBzb21l
-IHNvcnQgb2YgcmVnaXN0cmF0aW9uIGludGVyZmFjZQ0KPiB3aGVyZSBoY2QgY29tcGxhaW50IGRy
-aXZlcnMgcmVnaXN0ZXIgdGhlaXIgZGV2aWNlcyBhbmQgb25seSB0aG9zZQ0KPiByZWdpc3RlcmVk
-IGRldmljZXMgY2FuIGhhdmUgdGhlaXIgZHJpdmVyIHByaXZhdGUgZGF0YSBhcmJpdHJhcmlseSBw
-b2tlZA0KPiBieSBhbm90aGVyIGRyaXZlcj8gIFRoYW5rcywNCg0KVGhhbmtzIGZvciB5b3VyIGV4
-cGxhbmF0aW9uLiBTZXQgcGNpX2Rldi5wcml2X2ZsYWdzIGlzIHJlYWxseSBub3QgYSANCnJlYXNv
-bmFibGUgYXBwcm9hY2guIEFyZSB0aGVyZSBhbnkgbW9yZSBkZXRhaWxlZCBzdWdnZXN0aW9ucyAN
-CnRvIHBhdGNoIHRoaXMgaXNzdWU/DQoNClRoYW5rcw0KV2VpdGFvd2FuZw0K
+From: Catalin Marinas
+> Sent: 22 July 2020 17:54
+> 
+> On Wed, Jul 22, 2020 at 01:14:21PM +0000, David Laight wrote:
+> > From: Catalin Marinas
+> > > Sent: 22 July 2020 12:37
+> > > On Sun, Jul 19, 2020 at 12:34:11PM -0700, Linus Torvalds wrote:
+> > > > On Sun, Jul 19, 2020 at 12:28 PM Linus Torvalds
+> > > > <torvalds@linux-foundation.org> wrote:
+> > > > > I think we should try to get rid of the exact semantics.
+> > > >
+> > > > Side note: I think one of the historical reasons for the exact
+> > > > semantics was that we used to do things like the mount option copying
+> > > > with a "copy_from_user()" iirc.
+> > > >
+> > > > And that could take a fault at the end of the stack etc, because
+> > > > "copy_mount_options()" is nasty and doesn't get a size, and just
+> > > > copies "up to 4kB" of data.
+> > > >
+> > > > It's a mistake in the interface, but it is what it is. But we've
+> > > > always handled the inexact count there anyway by originally doing byte
+> > > > accesses, and at some point you optimized it to just look at where
+> > > > page boundaries might be..
+> > >
+> > > And we may have to change this again since, with arm64 MTE, the page
+> > > boundary check is insufficient:
+> > >
+> > > https://lore.kernel.org/linux-fsdevel/20200715170844.30064-25-catalin.marinas@arm.com/
+> > >
+> > > While currently the fault path is unlikely to trigger, with MTE in user
+> > > space it's a lot more likely since the buffer (e.g. a string) is
+> > > normally less than 4K and the adjacent addresses would have a different
+> > > colour.
+> > >
+> > > I looked (though briefly) into passing the copy_from_user() problem to
+> > > filesystems that would presumably know better how much to copy. In most
+> > > cases the options are string, so something like strncpy_from_user()
+> > > would work. For mount options as binary blobs (IIUC btrfs) maybe the fs
+> > > has a better way to figure out how much to copy.
+> >
+> > What about changing the mount code to loop calling get_user()
+> > to read aligned words until failure?
+> > Mount is fairly uncommon and the extra cost is probably small compared
+> > to the rest of doing a mount.
+> 
+> Before commit 12efec560274 ("saner copy_mount_options()"), it was using
+> single-byte get_user(). That could have been optimised for aligned words
+> reading but I don't really think it's worth the hassle. Since the source
+> and destination don't have the same alignment and some architecture
+> don't support unaligned accesses (for storing to the kernel buffer), it
+> would just make this function unnecessarily complicated.
+
+It could do aligned words if the user buffer is aligned (it will be
+most of the time) and bytes otherwise.
+
+Or just fallback to a byte loop if the full 4k read fails.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
