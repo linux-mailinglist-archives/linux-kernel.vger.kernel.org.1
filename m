@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A3D22B85A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C28722B884
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgGWVIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 17:08:51 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:45561 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbgGWVIv (ORCPT
+        id S1728052AbgGWVSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 17:18:54 -0400
+Received: from hera.iit.uni-miskolc.hu ([193.6.5.4]:57804 "EHLO
+        hera.iit.uni-miskolc.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgGWVSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 17:08:51 -0400
-Received: by mail-il1-f193.google.com with SMTP id b18so359983ilo.12;
-        Thu, 23 Jul 2020 14:08:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2VZH35DZAxRu1oS4+i4xalpCsqsecoySSiZlMELJnnM=;
-        b=P/fXSffMV1K3XObAUuAJJgfX2n7eWW8ZU+zPLwigkg6z3V/frB75DJK2A+AgxyMWu3
-         1n+UtQFMJJOyRJZnm5hBGTxwuSqCVarZ97fPdfhtK5nPd+feDN74My8YzTkuoB9Yf6Tm
-         rtHcqyGlcbS3XuoRCmxr0sSceF+rrau1+eot6owUZzskSi1KpYceofl23fOd1emj2P/4
-         xFAricn99ZPuHCA2Y+/JgFgv6Tij+vcp0TEP5NySWMHs6ePdN0DdB0GGwDOmZwx0eUcm
-         2dlJb+RtFB13aB1nfLFbuTza6IhIPo85NRxDnpsPiHL6hjQ71/o1Ko3qFpKYBnGVuMVu
-         acfQ==
-X-Gm-Message-State: AOAM530CkXpipQwEVNxJes4W65j7qIrA10DlDgFySSkT4iA5uvy4zzsm
-        0zKBCEZEQNlFauFG5NQMC7EsIg6eHw==
-X-Google-Smtp-Source: ABdhPJxZpIl6pBTL4WHNxrGxU8jZXWQ7Qf3Cvu5wBnHX10cKpBPsvdeQ/EcD+6EbXUrJP4UxylInSA==
-X-Received: by 2002:a92:d186:: with SMTP id z6mr7241487ilz.227.1595538530445;
-        Thu, 23 Jul 2020 14:08:50 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id v15sm2146214ili.28.2020.07.23.14.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 14:08:49 -0700 (PDT)
-Received: (nullmailer pid 862353 invoked by uid 1000);
-        Thu, 23 Jul 2020 21:08:48 -0000
-Date:   Thu, 23 Jul 2020 15:08:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, Peter Rosin <peda@axentia.se>
-Subject: Re: [PATCH] dt-bindings: mux: mux.h: drop a duplicated word
-Message-ID: <20200723210848.GA862323@bogus>
-References: <20200719002816.20263-1-rdunlap@infradead.org>
+        Thu, 23 Jul 2020 17:18:40 -0400
+X-Greylist: delayed 497 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Jul 2020 17:18:39 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by hera.iit.uni-miskolc.hu (Postfix) with ESMTP id 2A340A0D;
+        Thu, 23 Jul 2020 23:10:19 +0200 (CEST)
+X-Virus-Scanned: Kamavis at iit.uni-miskolc.hu
+Received: from hera.iit.uni-miskolc.hu ([127.0.0.1])
+        by localhost (hera.iit.uni-miskolc.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zQyqtF7SqN2D; Thu, 23 Jul 2020 23:10:12 +0200 (CEST)
+Received: from titan.hitronhub.home (unknown [IPv6:2a02:8109:a180:908:226:9eff:fe30:2af8])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: szucst@iit.uni-miskolc.hu)
+        by hera.iit.uni-miskolc.hu (Postfix) with ESMTPSA id 635A1A0B;
+        Thu, 23 Jul 2020 23:10:11 +0200 (CEST)
+From:   =?UTF-8?q?Tam=C3=A1s=20Sz=C5=B1cs?= <tszucs@protonmail.ch>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        JC Kuo <jckuo@nvidia.com>, Sameer Pujar <spujar@nvidia.com>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Tam=C3=A1s=20Sz=C5=B1cs?= <tszucs@protonmail.ch>
+Subject: [PATCH v2 0/4] arm64: tegra: Xavier SDMMC changes
+Date:   Thu, 23 Jul 2020 23:09:28 +0200
+Message-Id: <20200723210932.8076-1-tszucs@protonmail.ch>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200719002816.20263-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Jul 2020 17:28:16 -0700, Randy Dunlap wrote:
-> Drop the repeated word "the" in a comment.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Peter Rosin <peda@axentia.se>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> ---
->  include/dt-bindings/mux/mux.h |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- linux-next-20200717.orig/include/dt-bindings/mux/mux.h
-> +++ linux-next-20200717/include/dt-bindings/mux/mux.h
-> @@ -3,7 +3,7 @@
->   * This header provides constants for most Multiplexer bindings.
->   *
->   * Most Multiplexer bindings specify an idle state. In most cases, the
-> - * the multiplexer can be left as is when idle, and in some cases it can
-> + * multiplexer can be left as is when idle, and in some cases it can
->   * disconnect the input/output and leave the multiplexer in a high
->   * impedance state.
->   */
-> 
-> 
+It turns out uSD card detection on the Jetson AGX Xavier is not working and
+I/Os are limited to 3.3 V. SDIO is supported but not enabled. Also, the
+on-board eMMC module is using HS200 only.
 
-Applied, thanks!
+Changes in v2:
+- fix board name in commit messages
+- rebase on for-next
+
+Kind regards,
+Tamas
+
+
+Tamás Szűcs (4):
+  arm64: tegra: Enable signal voltage switching on Tegra194 SDMMC1 and
+    SDMMC3
+  arm64: tegra: Fix CD on Jetson AGX Xavier SDMMC1
+  arm64: tegra: Configure SDIO cards on Jetson AGX Xavier SDMMC1
+  arm64: tegra: Enable HS400 on Tegra194 SDMMC4
+
+ .../arm64/boot/dts/nvidia/tegra194-p2888.dtsi |  4 +-
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi      | 46 +++++++++++++++++++
+ 2 files changed, 49 insertions(+), 1 deletion(-)
+
+-- 
+2.20.1
+
