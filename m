@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C73422B820
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C759022B823
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgGWUur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgGWUur (ORCPT
+        id S1728133AbgGWUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:51:03 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:42743 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726046AbgGWUvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:50:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54483C0619D3;
-        Thu, 23 Jul 2020 13:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=hcFSk1zoqynrqfpyHJjn5KFl4stE+TWu+6kpqiKw4a8=; b=RMdgF5LZBJN+Q2JKXhCdwoq6MI
-        lHC2E3mTeJpYN2Rfp8vqlq3CcjjTW9w9Lqa+Mex9mY+cL4F/NDFHzeEhHeJXM53PAmFrJhRDT+B2Z
-        ZAV1n5cL9QhDIDkhTF3bs5a2lqKwOaNF51TGkgwc+S+f6B3lpqafkpoelpakn/LyMiovcEe1s8DF3
-        vSLSnsO6oEbN/O0K2TTKBRPrQiWrNevficXi1Wu+Lny4ZAyKHDpBJCugQFc6DicufZU6gQ9/xRADX
-        FutwXcbei2/Os6/NIExZMVOZ1Dm8BxC6wZ81ZTXfjme13xhewn6hIOZjqXXbAwwAIY2oFu7bw343r
-        DbwQaxyA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyiAs-0003r8-ML; Thu, 23 Jul 2020 20:50:43 +0000
-Subject: Re: [PATCH V17 3/3] Input: new da7280 haptic driver
-To:     Roy Im <roy.im.opensource@diasemi.com>,
-        Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Brian Masney <masneyb@onstation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Pascal PAILLET-LME <p.paillet@st.com>,
-        Rob Herring <robh@kernel.org>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Support Opensource <support.opensource@diasemi.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-References: <cover.1595516501.git.Roy.Im@diasemi.com>
- <c13d812871b7f09205c1f04e95f5bdf07f307eaf.1595516501.git.Roy.Im@diasemi.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <71818ab8-0020-77db-c412-8d35a541ead3@infradead.org>
-Date:   Thu, 23 Jul 2020 13:50:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Jul 2020 16:51:03 -0400
+Received: by mail-io1-f67.google.com with SMTP id c16so7715642ioi.9;
+        Thu, 23 Jul 2020 13:51:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=leqXvpOP3XepUFYui6d61Ti4jjLPI4rlG5fVef2PTfg=;
+        b=gMBHjWFaygzAoOtOTSJAb74oVe6leQsIPOAjXqVYoLeDsYzSkNoCZhFHYzsqOejdAw
+         GXC1SuXMEykz7lwvvkjRkh0C3LlzIyKiBGsc0cD+kjv5p5tZovMOIs89LSvEInBRxmWD
+         j61DiDf0Co4ZOsGQCYRVNsQPpAgR3qgi7+a1sSlH3B4Z6fyWduc89pHDBZz+pR10966x
+         o+7TohLyj6KjIPgfvLnXc5Q8gsKm6ujhQSlIR0YJTmrW4gk5c7OaYH0MGFQInWhX2gDQ
+         bg9n5k8hrpCVNsNTqT2NfhsW2zeNSkIba7AOL5ea3y2SfyyfgZ+5jfTS0mdy999FW0en
+         0KYg==
+X-Gm-Message-State: AOAM533iHgsnpEJxHpzdMvh1ZFV2Z9MryZiO653eDDbTk0H2gbPbAfu4
+        7lBAxjmWbENpjzG5ZarQBw==
+X-Google-Smtp-Source: ABdhPJymQDB2nB1jG1HWBJy8nYZ8UjCyxIJtkZoOiBR/OCyELkd1TQwRe8rX+Jrj3GhsktMnaMXUlw==
+X-Received: by 2002:a05:6638:164a:: with SMTP id a10mr7201921jat.126.1595537462187;
+        Thu, 23 Jul 2020 13:51:02 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id n1sm2033939ilo.68.2020.07.23.13.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 13:51:01 -0700 (PDT)
+Received: (nullmailer pid 837909 invoked by uid 1000);
+        Thu, 23 Jul 2020 20:51:00 -0000
+Date:   Thu, 23 Jul 2020 14:51:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Santiago Hormazabal <santiagohssl@gmail.com>
+Cc:     linux-media@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        devicetree@vger.kernel.org,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: vendor-prefixes: Add KT Micro
+Message-ID: <20200723205100.GA837861@bogus>
+References: <20200717004441.116248-1-santiagohssl@gmail.com>
+ <20200717004441.116248-2-santiagohssl@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c13d812871b7f09205c1f04e95f5bdf07f307eaf.1595516501.git.Roy.Im@diasemi.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717004441.116248-2-santiagohssl@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/20 8:01 AM, Roy Im wrote:
-> diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
-> index 362e8a0..06dc5a3 100644
-> --- a/drivers/input/misc/Kconfig
-> +++ b/drivers/input/misc/Kconfig
-> @@ -869,4 +869,17 @@ config INPUT_STPMIC1_ONKEY
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called stpmic1_onkey.
->  
-> +config INPUT_DA7280_HAPTICS
-> +	tristate "Dialog Semiconductor DA7280 haptics support"
-> +	depends on INPUT && I2C
-> +	select INPUT_FF_MEMLESS
-> +	select REGMAP_I2C
-> +	help
-> +	  Say Y to enable support for the Dialog DA7280 haptics driver.
-> +	  The haptics can be controlled by I2C communication,
-> +	  or by PWM input, or by GPI.
+On Thu, 16 Jul 2020 21:44:39 -0300, Santiago Hormazabal wrote:
+> Adds ktm as the prefix of KT Micro, Inc.
+> 
+> Signed-off-by: Santiago Hormazabal <santiagohssl@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-	  Is that                GPIO.
-?
-
-Can the haptics be controlled only by PWM or only by GPI(O)?
-
-Just curious: why is I2C required to build the driver if a user is
-only controlling the device by PWM or GPI?
-
-
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called da7280.
-> +
->  endif
-
-thanks.
--- 
-~Randy
-
+Acked-by: Rob Herring <robh@kernel.org>
