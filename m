@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AD622A3CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B7722A3D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733258AbgGWAoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 20:44:08 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:58990 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgGWAoH (ORCPT
+        id S1733306AbgGWAqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 20:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733075AbgGWAqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 20:44:07 -0400
-Received: from localhost (unknown [192.168.167.209])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 20FE2C5767;
-        Thu, 23 Jul 2020 08:44:03 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P17009T140099499042560S1595465038112439_;
-        Thu, 23 Jul 2020 08:44:02 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <41dae99cf031fc69e412229f78683b26>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     heiko@sntech.de, linux-spi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@esmil.dk, Jon Lin <jon.lin@rock-chips.com>
-Subject: [PATCH v3 3/3] spi: rockchip: Fix error in SPI slave pio read
-Date:   Thu, 23 Jul 2020 08:43:56 +0800
-Message-Id: <20200723004356.6390-3-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200723004356.6390-1-jon.lin@rock-chips.com>
-References: <20200723004356.6390-1-jon.lin@rock-chips.com>
+        Wed, 22 Jul 2020 20:46:18 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1242C0619DC;
+        Wed, 22 Jul 2020 17:46:17 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 72so3212943otc.3;
+        Wed, 22 Jul 2020 17:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1tc0sllhtY7w34bXcpMVY0Netptnusq1Em3V/sqHWI0=;
+        b=Nlh1gZFqOje/wjQsqdXngrNxRXr5/jM+CCGVx6vQgKOJTZM+IIme1CORg+EAE0xqik
+         nQ74StMEiW15q7uL5gjsfhHuqvM8RWH+GkMOaJeGQfO+IBSJJ6UkJ2wXnJgO7saLm9DT
+         s2T96qbkRqEJttlsAJMdC6xIBC7R5ip0FiyKddFFn8mc85kuldHRaEaVi+8P27hkoo5J
+         sBoMAFOvPh4PkNAf4Zm7KPiGEAMQ/RCHzz3pwJGbNdp8EiajsyR94WKtMLxV5YN45tDa
+         9Q14/O+Xb5QZKTF5VtG2S7Osb2ZCqLDHTEjkpRG33RYss9PQ/HfrrbJg31AznsLFOTPQ
+         qsFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1tc0sllhtY7w34bXcpMVY0Netptnusq1Em3V/sqHWI0=;
+        b=oc8pCocdgJV/yXXHXZ2LEVbbWMQg1eS/JFPBluNbCwYaVTM3gkEJkr9RANoF5nuKkH
+         emwMUH0Bm0IC9YBg6z/W26/v3peOxg1gMGvinckS3N/ty52UjuLZcBq41TTWOj78v3uy
+         5TjT0gfPoKUsjSW7OL7d9fQ2uu0Hoz4zwdyvde7aNM56t8fsOwoQ2jJtl62VzVPYfucK
+         Naj4KPBYQSg1mlE+YfGq/pn12RVffzER/5qx1KHo7vxO3RkqAa3/rtxVQs7w9w0aqkpv
+         ZWzygMPWGCCsrsW0Bh1QhwEU9MiF2gsdbXXWbaynS6sB6LMxWEu9bH8wkX/LKyi2582e
+         3ECA==
+X-Gm-Message-State: AOAM532hLq22vapxnA9B3aTrlvArDEe2Pa04at6R1iODVrZF2BudDMMQ
+        dhsW54DElh0ElyVLiTo4m831o2+hZJmuVkD3tzA=
+X-Google-Smtp-Source: ABdhPJzqJOiYGRTIoq6oVthPZ4ese3vK8VW1DCnwjbIxJ84GTIETtTPTrzymv2zTBRjQETvttoKPI8msy2SfjIeQNIw=
+X-Received: by 2002:a9d:6410:: with SMTP id h16mr2184938otl.168.1595465177143;
+ Wed, 22 Jul 2020 17:46:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200722021803.17958-1-hancockrwd@gmail.com> <20200722174009.GA1291928@bjorn-Precision-5520>
+In-Reply-To: <20200722174009.GA1291928@bjorn-Precision-5520>
+From:   Robert Hancock <hancockrwd@gmail.com>
+Date:   Wed, 22 Jul 2020 18:46:06 -0600
+Message-ID: <CADLC3L0b8zqJoHt7aA6z6hb3cYC2z-32vmQsQ3tR0gGduC8+-Q@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Disallow ASPM on ASMedia ASM1083/1085 PCIe-PCI bridge
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+        Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RXFLR is possible larger than rx_left in Rockchip SPI, fix it.
+On Wed, Jul 22, 2020 at 11:40 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Puranjay]
+>
+> On Tue, Jul 21, 2020 at 08:18:03PM -0600, Robert Hancock wrote:
+> > Recently ASPM handling was changed to no longer disable ASPM on all
+> > PCIe to PCI bridges. Unfortunately these ASMedia PCIe to PCI bridge
+> > devices don't seem to function properly with ASPM enabled, as they
+> > cause the parent PCIe root port to cause repeated AER timeout errors.
+> > In addition to flooding the kernel log, this also causes the machine
+> > to wake up immediately after suspend is initiated.
+>
+> Hi Robert, thanks a lot for the report of this problem
+> (https://lore.kernel.org/r/CADLC3L1R2hssRjxHJv9yhdN_7-hGw58rXSfNp-FraZh0Tw+gRw@mail.gmail.com
+> and https://bugzilla.redhat.com/show_bug.cgi?id=1853960).
+>
+> I'm pretty sure Linux ASPM support is missing some things.  This
+> problem might be a hardware problem where a quirk is the right
+> solution, but it could also be that it's a result of a Linux defect
+> that we should fix.
+>
+> Could you collect the dmesg log and "sudo lspci -vvxxxx" output
+> somewhere (maybe a bugzilla.kernel.org issue)?  I want to figure out
+> whether this L1 PM substates are enabled on this link, and whether
+> that's configured correctly.
 
-Fixes: 01b59ce5dac8 ("spi: rockchip: use irq rather than polling")
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-Reviewed-by: Emil Renner Berthing <kernel@esmil.dk>
-Tested-by: Emil Renner Berthing <kernel@esmil.dk>
----
- drivers/spi/spi-rockchip.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Created a Bugzilla entry and added dmesg and lspci output:
+https://bugzilla.kernel.org/show_bug.cgi?id=208667
 
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index a451dacab5cf..75a8a9428ff8 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -291,7 +291,7 @@ static void rockchip_spi_pio_writer(struct rockchip_spi *rs)
- static void rockchip_spi_pio_reader(struct rockchip_spi *rs)
- {
- 	u32 words = readl_relaxed(rs->regs + ROCKCHIP_SPI_RXFLR);
--	u32 rx_left = rs->rx_left - words;
-+	u32 rx_left = (rs->rx_left > words) ? rs->rx_left - words : 0;
- 
- 	/* the hardware doesn't allow us to change fifo threshold
- 	 * level while spi is enabled, so instead make sure to leave
--- 
-2.17.1
-
-
-
+As I noted in that report, I subsequently found this page on ASMedia's
+site: https://www.asmedia.com.tw/eng/e_show_products.php?cate_index=169&item=114
+which indicates this ASM1083 device has "No PCIe ASPM support". It's
+not clear why this problem isn't occurring on Windows however - either
+it is not enabling ASPM, somehow it doesn't cause issues with the PCIe
+link, or it is causing issues and just doesn't notify the user in any
+way. I can try and check if this bridge device is ending up with ASPM
+enabled under Windows 10 or not..
