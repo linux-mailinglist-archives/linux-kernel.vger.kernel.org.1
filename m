@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E589A22B6C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B46C722B6C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgGWTa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 15:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgGWTa4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 15:30:56 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F48C0619DC;
-        Thu, 23 Jul 2020 12:30:56 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p3so3666632pgh.3;
-        Thu, 23 Jul 2020 12:30:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=033/koxi8tBQP0JLIdsncSOzrcGFA+WfwhEA16y7708=;
-        b=PLamQXWeKF3HJi1PXDCtJy6A79iRX+Ip1qtHibkqeaZY123FqV5BTXB4PMMKTyE6b6
-         WZTcJXOsJK3Dnt5mHWp4HSrbHvx/mnvYMMPSmCtV+Io1RKQhVjKsXr15icFI8Yjfgyrl
-         C5b6PDZDB9Rjyx92IEPhtPga93oz933lGCWerAzy5fM05nqSDc9cGd5e7+i7wcIa44p9
-         fpkCxUxYxrDtrSoZ+SIki43obfwFU4IEHSI5iuwqTEtaXJpzUcXHn7l4U5iND41EgxRM
-         Tre2qNjhm+DIqUNeSp+C4vgLjttVGVJm0JZqxOC3LZpGmyWa08frjnkFa+BussN9YWHU
-         cJUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=033/koxi8tBQP0JLIdsncSOzrcGFA+WfwhEA16y7708=;
-        b=MQLPkvhci3FrPs+TU8s60RWMVTMsC7CCUSs5EPd5Ga/Q802fZb8iyQhWxHhncfKink
-         frzw666cL+9owMdk2achgh65e8dqDjWPYn+tEcswSlsqlzvOSKB+mvUcoYDzmXf//Zz1
-         GPRhza38ml8Pp1qcO6IT4Iw6tbCa3trl8Gavm/h3LYtHSkVFmAMtC19pwb8Km/KGQQL/
-         0FoSBey/2i37I/KLcmojpZNkkWeJyGHt1ikgsgB37Z0j1rLT8thYdAS9/f5U36c/j4dk
-         3N5K1kwWQ3Ulmi0AVnPNM0a6s1MJJcQVEDDYBxyU5KlPOPvvwjz79rYVdMStON1yar5X
-         /xLw==
-X-Gm-Message-State: AOAM530mInlvbKkItvrZOBTwXgUdI/Vpm9L36V4mqe6g8k9S7gODFGNh
-        rRHiOuxfUCRP1dkm47auJlM=
-X-Google-Smtp-Source: ABdhPJzKJfA4dhK77dO73I/iuAhFXaSHyAPIdTCST0mBi74TsxmznFdf57kz/W4DG0JMb6LVZQ6g9g==
-X-Received: by 2002:a63:e018:: with SMTP id e24mr5387011pgh.175.1595532656288;
-        Thu, 23 Jul 2020 12:30:56 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id y18sm3794332pff.10.2020.07.23.12.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 12:30:55 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        linux-kbuild@vger.kernel.org, x86@kernel.org,
-        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Norbert Lange <nolange79@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Xu <alex_y_xu@yahoo.ca>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Terrell <terrelln@fb.com>
-Subject: [PATCH v8 7/7] .gitignore: add ZSTD-compressed files
-Date:   Thu, 23 Jul 2020 12:28:01 -0700
-Message-Id: <20200723192801.351114-8-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200723192801.351114-1-nickrterrell@gmail.com>
-References: <20200723192801.351114-1-nickrterrell@gmail.com>
+        id S1726754AbgGWTaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 15:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726689AbgGWTao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 15:30:44 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33B2B2067D;
+        Thu, 23 Jul 2020 19:30:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595532643;
+        bh=7InW/I38muM+u0qDvAzcUWvmPajbXN7K+EHKB8+aI98=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VoGkpg7/H/Gv5IFWFsnv3YGd9Frr08vHEFmbXvHV17HbCRv5l1QxuOEeN+84FkX9M
+         TiN0omh+WS5rh/FCKxAypSKymdubnrxE3f/EiI+4VGLZxy0A4lBLQBqFTt2r8ylvVJ
+         RVPy/b29uNx5A8yMwdwYNa6gxhM5VF+H99Mm6Bmg=
+Date:   Thu, 23 Jul 2020 14:30:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Lu Baolu <baolu.lu@intel.com>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH] PCI/ATS: PASID and PRI are only enumerated in PF devices.
+Message-ID: <20200723193041.GA1446817@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723173819.GA345408@otc-nc-03>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Borowski <kilobyte@angband.pl>
+On Thu, Jul 23, 2020 at 10:38:19AM -0700, Raj, Ashok wrote:
+> Hi Bjorn
+> 
+> On Tue, Jul 21, 2020 at 09:54:01AM -0500, Bjorn Helgaas wrote:
+> > On Mon, Jul 20, 2020 at 09:43:00AM -0700, Ashok Raj wrote:
+> > > PASID and PRI capabilities are only enumerated in PF devices. VF devices
+> > > do not enumerate these capabilites. IOMMU drivers also need to enumerate
+> > > them before enabling features in the IOMMU. Extending the same support as
+> > > PASID feature discovery (pci_pasid_features) for PRI.
+> > > 
+> > > Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+> > 
+> > Hi Ashok,
+> > 
+> > When you update this for the 0-day implicit declaration thing, can you
+> > update the subject to say what the patch *does*, as opposed to what it
+> > is solving?  Also, no need for a period at the end.
+> 
+> Yes, will update and resend. Goofed up a couple things, i'll update those
+> as well.
+> 
+> > Does this fix a regression?  Is it associated with a commit that we
+> > could add as a "Fixes:" tag so we know how far back to try to apply
+> > to stable kernels?
+> 
+> Yes, 
 
-For now, that's arch/x86/boot/compressed/vmlinux.bin.zst but probably more
-will come, thus let's be consistent with all other compressors.
+Does that mean "yes, this fixes a regression"?
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nick Terrell <terrelln@fb.com>
-Signed-off-by: Adam Borowski <kilobyte@angband.pl>
----
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
+> but the iommu files moved location and git fixes tags only generates
+> for a few handful of commits and doesn't show the old ones. 
 
-diff --git a/.gitignore b/.gitignore
-index d5f4804ed07c..162bd2b67bdf 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -44,6 +44,7 @@
- *.tab.[ch]
- *.tar
- *.xz
-+*.zst
- Module.symvers
- modules.builtin
- modules.order
--- 
-2.27.0
+Not sure how to interpret the rest of this.  I'm happy to include the
+SHA1 of the original commit that added the regression, even if the
+file has moved since then.
 
+Bjorn
