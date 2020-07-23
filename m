@@ -2,68 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3864A22B876
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5AE22B888
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgGWVSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 17:18:07 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:45619 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgGWVSG (ORCPT
+        id S1726728AbgGWVUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 17:20:07 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:36287 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgGWVUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 17:18:06 -0400
-Received: by mail-io1-f66.google.com with SMTP id e64so7763579iof.12;
-        Thu, 23 Jul 2020 14:18:06 -0700 (PDT)
+        Thu, 23 Jul 2020 17:20:06 -0400
+Received: by mail-io1-f72.google.com with SMTP id h205so4962563iof.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 14:20:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hx09CFzFEK3rFI8A30xOHAnNXgPfvKjfqFgA/SCg1s4=;
-        b=cDGBlyJ/oPvBAF8l8jpS/xTS17YlXIVKkyxn9brRELeDmHQU9s4daExQDwKpdMNAp9
-         hQVapPICgbvHru/ZC2F1OUUkcYFXJsS3AcJL7AO1eOf6Uqu+5S47iVl4e4q02was3BcA
-         1fMf5f7sF00n2ca10/LOH6z7H4JlwAQ/frfFDsvvuw2KdFE7AzHPKdYNoEwwT/85Zhn8
-         kWR4vbtmum/pObKnAI0AEFN5NvQ7/YURGWuTuk6opqq2Q6Tt1uy/Iua0h7lGRd6OLrO9
-         tceT1I2Wh8sEyLMucu+dl/Avm2FcLm6n1qvqrB7p1EKVcjGvRKp4X+jnmf1cSrvXaLH6
-         ENgA==
-X-Gm-Message-State: AOAM531dzTTXBH4WdkCCjTw5rtkN2Z2H5ocI5ErKE2tIaALmcr7h0agX
-        MQNtqL6hOYZHmtAvkPjwow==
-X-Google-Smtp-Source: ABdhPJzIrbGkisYa8iZy5IAqxlxr48Sy8HcbDiPVQc/+SP8E4CfSPaTNyFUPOeLZfDlyP9BAFCp0HQ==
-X-Received: by 2002:a5e:d90a:: with SMTP id n10mr7039546iop.50.1595539086180;
-        Thu, 23 Jul 2020 14:18:06 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id d9sm2016925iod.55.2020.07.23.14.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 14:18:05 -0700 (PDT)
-Received: (nullmailer pid 875357 invoked by uid 1000);
-        Thu, 23 Jul 2020 21:18:04 -0000
-Date:   Thu, 23 Jul 2020 15:18:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Qii Wang <qii.wang@mediatek.com>
-Cc:     qiangming.xia@mediatek.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, wsa@the-dreams.de,
-        linux-arm-kernel@lists.infradead.org, leilk.liu@mediatek.com,
-        linux-i2c@vger.kernel.org, robh+dt@kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH 3/4] dt-bindings: i2c: update bindings for MT8192 SoC
-Message-ID: <20200723211804.GA875327@bogus>
-References: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
- <1595421106-10017-4-git-send-email-qii.wang@mediatek.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=8OsQi/rtngRly2aes5OHJCr6XU7KTICHzhKX0xPzoq4=;
+        b=Q2oKClLz++02i+AiDB/LxWcgeTsIiKi1gZL2dkMH4SRO/Pm03MsTyLFyTBVl3kXTAh
+         q2/Efi9eiqyDwezwGQa0YBiLUzXHWbZpWDjwGzO0zTxXvzLP28NIine/cUo1ly1O3AIG
+         WK+ir3s1SGAkrZd+jWoGBm0Emt1yjngvzftKccddR6RVjoFR7xnKN7zHivB2TLJNC4S4
+         Wiq9D4GL8/GDcgF/LPjd1dY2Ycm5VfnIUNYDZ7D0yGJZRpBdBRD+7XCxunfpuVweGXbi
+         ORA1sW6z3E6+7R+WXXYw+hq4hNMPh9OHy927OLr7c3FMObR99bLAR8WMevgr9Tik1oW0
+         f4RQ==
+X-Gm-Message-State: AOAM533SoUUvqNX66g7gFnNHO5oQx7twKGYmFJ8CU0aFLlaqwkRQZGlv
+        Qyr64WbD6fFpcmU9y0LPdL2EyoTm+j8+s+0jKPj5+Fdb+/y1
+X-Google-Smtp-Source: ABdhPJySXYoykumIrlUktwKjkmXgW7KFAwAJVGuQHGNXzGRgHXRiekNfL/HLAh/yfSaCAJV29uQD4tvuHcS03PqthES9It126o4f
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595421106-10017-4-git-send-email-qii.wang@mediatek.com>
+X-Received: by 2002:a92:150d:: with SMTP id v13mr6690732ilk.297.1595539205575;
+ Thu, 23 Jul 2020 14:20:05 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 14:20:05 -0700
+In-Reply-To: <CAM_iQpXTe-DCr2MozGTik-SxOt8wiTehe6YkNhZGtDWfbHNPTA@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000092da5105ab226b64@google.com>
+Subject: Re: KASAN: use-after-free Read in macvlan_dev_get_iflink
+From:   syzbot <syzbot+95eec132c4bd9b1d8430@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Jul 2020 20:31:45 +0800, Qii Wang wrote:
-> Add a DT binding documentation for the MT8192 soc.
-> 
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Hello,
 
-Acked-by: Rob Herring <robh@kernel.org>
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in macvlan_get_link_net
+
+general protection fault, probably for non-canonical address 0xdffffc00000000b3: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000598-0x000000000000059f]
+CPU: 0 PID: 8229 Comm: syz-executor.0 Not tainted 5.8.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:read_pnet include/net/net_namespace.h:330 [inline]
+RIP: 0010:dev_net include/linux/netdevice.h:2261 [inline]
+RIP: 0010:macvlan_get_link_net+0x43/0x60 drivers/net/macvlan.c:1667
+Code: c6 f0 0b 00 00 4c 89 f0 48 c1 e8 03 42 80 3c 38 00 74 08 4c 89 f7 e8 dc cb d6 fc bb 98 05 00 00 49 03 1e 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 be cb d6 fc 48 8b 03 5b 41 5e 41
+RSP: 0018:ffffc90004e47110 EFLAGS: 00010202
+RAX: 00000000000000b3 RBX: 0000000000000598 RCX: ffff88808f57c040
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888089dc8000
+RBP: ffffc90004e47228 R08: ffffffff866c14ae R09: fffffbfff12b7531
+R10: fffffbfff12b7531 R11: 0000000000000000 R12: 1ffff110113b904b
+R13: ffff888089dc825f R14: ffff888089dc8bf0 R15: dffffc0000000000
+FS:  00007f40720ea700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005623955cb160 CR3: 000000009dc8e000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ rtnl_fill_link_netnsid net/core/rtnetlink.c:1569 [inline]
+ rtnl_fill_ifinfo+0x3355/0x4650 net/core/rtnetlink.c:1758
+ rtmsg_ifinfo_build_skb+0xe2/0x180 net/core/rtnetlink.c:3706
+ rollback_registered_many+0xc9b/0x14a0 net/core/dev.c:8972
+ unregister_netdevice_many+0x46/0x260 net/core/dev.c:10113
+ __rtnl_newlink net/core/rtnetlink.c:3381 [inline]
+ rtnl_newlink+0x1876/0x1c10 net/core/rtnetlink.c:3398
+ rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5461
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2469
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2352
+ ___sys_sendmsg net/socket.c:2406 [inline]
+ __sys_sendmsg+0x2b1/0x360 net/socket.c:2439
+ do_syscall_64+0x73/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45cb99
+Code: Bad RIP value.
+RSP: 002b:00007f40720e9c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000502680 RCX: 000000000045cb99
+RDX: 0000000000000000 RSI: 0000000020000080 RDI: 0000000000000006
+RBP: 000000000078bfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 0000000000000a40 R14: 00000000004cd2f6 R15: 00007f40720ea6d4
+Modules linked in:
+---[ end trace 45c7e0a1442252cb ]---
+RIP: 0010:read_pnet include/net/net_namespace.h:330 [inline]
+RIP: 0010:dev_net include/linux/netdevice.h:2261 [inline]
+RIP: 0010:macvlan_get_link_net+0x43/0x60 drivers/net/macvlan.c:1667
+Code: c6 f0 0b 00 00 4c 89 f0 48 c1 e8 03 42 80 3c 38 00 74 08 4c 89 f7 e8 dc cb d6 fc bb 98 05 00 00 49 03 1e 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 be cb d6 fc 48 8b 03 5b 41 5e 41
+RSP: 0018:ffffc90004e47110 EFLAGS: 00010202
+RAX: 00000000000000b3 RBX: 0000000000000598 RCX: ffff88808f57c040
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888089dc8000
+RBP: ffffc90004e47228 R08: ffffffff866c14ae R09: fffffbfff12b7531
+R10: fffffbfff12b7531 R11: 0000000000000000 R12: 1ffff110113b904b
+R13: ffff888089dc825f R14: ffff888089dc8bf0 R15: dffffc0000000000
+FS:  00007f40720ea700(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005623955cb160 CR3: 000000009dc8e000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+Tested on:
+
+commit:         9506a941 net: fix a race condition in dev_get_iflink()
+git tree:       https://github.com/congwang/linux.git net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1569d430900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b1a5a263f7a540cb
+dashboard link: https://syzkaller.appspot.com/bug?extid=95eec132c4bd9b1d8430
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
