@@ -2,98 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F102C22AA6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2005C22AA68
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgGWIOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:14:03 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12757 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbgGWIOD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:14:03 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f1946be0000>; Thu, 23 Jul 2020 01:13:50 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 23 Jul 2020 01:14:02 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 23 Jul 2020 01:14:02 -0700
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 23 Jul
- 2020 08:14:02 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Thu, 23 Jul 2020 08:14:02 +0000
-Received: from audio.nvidia.com (Not Verified[10.24.34.185]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f1946c70001>; Thu, 23 Jul 2020 01:14:02 -0700
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <broonie@kernel.org>, <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <tiwai@suse.com>, <geert@linux-m68k.org>, <rdunlap@infradead.org>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <alsa-devel@alsa-project.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Sameer Pujar <spujar@nvidia.com>
-Subject: [PATCH] ASoC: tegra: Fix build error due to 64-by-32 division
-Date:   Thu, 23 Jul 2020 13:43:31 +0530
-Message-ID: <1595492011-2411-1-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-X-NVConfidentiality: public
+        id S1726558AbgGWIN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:13:57 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:31749 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgGWIN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:13:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=1138; q=dns/txt; s=axis-central1;
+  t=1595492036; x=1627028036;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=50pjpICS47njee1/tY5fnV1hkALwFSNd0R5epRzTCR0=;
+  b=SDPzTQOxHV/YddBtBm6wpKdgujWIucifoDoc1PhffUc9MtBYErezabX4
+   dYyfS6U2F/9H9zl2+9dhDsfflCQ0825waGQeOFacQyuJEasv2PfcqonJ4
+   jYLxaS0uF1u/QsKYKXb9NZdMkNTOsaWdhrM8TddUCrcKFF1+ls1o8VH0z
+   kSbMp5hRCYyf7NEvknG3Yz5p0rl5tAMKt/6f+cOniMFM66pPeZelcOdCN
+   B0t0vTIgf6yKGnyogXMvYyP7EtbKAvG1NHkxVvX1WomMHWkHh0oun0+/5
+   lzDNHDJ6JrX6eTB1ARGabNSpA62eVFBNbTOtkI/4CBKiTlkLUJO1cIRju
+   w==;
+IronPort-SDR: sm/amTH7eKrS2VnpopBdgkqbHYKu9lvNtBLFc2Y83eWfxs8xxQ36GVgkWrP4gxZHUxjoYSUpf5
+ 1uyEIKzGqeX/zb0RquOlczAGI4/tSO/XWjC7PKIbsfc09dFKCWTGu2IrsuCfisqFbXN7qk3RLW
+ KhuEgvsiA4bUFPyjH9f/OfB1Q2vdqJ2ROuJ23rHNrI0gY4yzwOSez3b5uGkUc4Um+1eoZrSFwC
+ qYw7KeaI7tx00clQQ0nox6aK4nlE0vVOEpl3eBwHeX0s8xq+0/H+U8YviachNjcSVk4huaLgaX
+ ayc=
+X-IronPort-AV: E=Sophos;i="5.75,386,1589234400"; 
+   d="scan'208";a="11135659"
+Date:   Thu, 23 Jul 2020 10:13:54 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+CC:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bjorn.andersson@linaro.org>,
+        <jackp@codeaurora.org>, <robh@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <mike.looijmans@topic.nl>
+Subject: Re: [PATCH 6/7] usb: dwc3: Add support for a role-switch notifier
+Message-ID: <20200723081352.hrg6rdpz5zxpp2so@axis.com>
+References: <20200311191501.8165-1-bryan.odonoghue@linaro.org>
+ <20200311191501.8165-7-bryan.odonoghue@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595492030; bh=KlXp5Z8io6593lkYe651OoFDsSM02BKTkfmssD6nCRU=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         X-NVConfidentiality:MIME-Version:Content-Type;
-        b=p2tBy+Agm5pBGRTnZ4+mwBepgTYGpgVQI/lY4R9q4nAqrtu6Qi0EjLiqz36PTtSJ/
-         PUubrApLsVOW99+H8Ob38pgwND9ARSnKD1olmkV+9Gztw8IVyb6a3kFvW+nzof3YVm
-         rsiFJNWFp9HryUA3OTSlWE4fu09PHJ2Ri5x1geGgxC2YtXbiBFFnMx7OVYE/xxNhvK
-         GBW6MVJ44edD5AzIeIspC/65P4BsJ+gx4is49DIdpgS9SFcglwv5Vka/vAd+oUP1XW
-         pByXnEIyJfzRGuqLErt1YWaIMvx0j+agmrDMmpY2b4MHP1pC02+fqNFpebImCL1nSo
-         Oxc2Y8CXTQypA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200311191501.8165-7-bryan.odonoghue@linaro.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Build errors are seen on 32-bit platforms because of a plain 64-by-32
-division. For example, following build erros were reported.
+On Wed, Mar 11, 2020 at 07:15:00PM +0000, Bryan O'Donoghue wrote:
+> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
+> index 2705871ec95e..789e93dd93b4 100644
+> --- a/drivers/usb/dwc3/drd.c
+> +++ b/drivers/usb/dwc3/drd.c
+> @@ -497,6 +497,8 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw, enum usb_role ro
+>  	}
+>  
+>  	dwc3_set_mode(dwc, mode);
+> +	raw_notifier_call_chain(&dwc->role_sw_nl, mode, NULL);
+> +
+>  	return 0;
+>  }
 
-"ERROR: modpost: "__udivdi3" [sound/soc/tegra/snd-soc-tegra210-dmic.ko]
- undefined!"
-"ERROR: modpost: "__divdi3" [sound/soc/tegra/snd-soc-tegra210-dmic.ko]
- undefined!"
+dwc3_set_mode() is called from a bunch of other places too, is it
+sufficient to call the notifier only from here?  Also, dwc3_set_mode()
+performs the mode set asynchronously so the mode switch can race with
+this notifier call, is that OK?
 
-This can be fixed by using div_u64() helper from 'math64.h' header.
+Mike Looijmans proposed the control of a vbus regulator from
+__dwc3_set_mode(), and that would take care of both the points above.
+Perhaps this notifier call can be moved to the same place or perhaps
+Mike's patch could even work for you?  The only problem is that your
+switching code in dwc3-qcom.c would have to be modelled as a reulator:
 
-Fixes: 8c8ff982e9e2 ("ASoC: tegra: Add Tegra210 based DMIC driver")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- sound/soc/tegra/tegra210_dmic.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/tegra/tegra210_dmic.c b/sound/soc/tegra/tegra210_dmic.c
-index ff6fd65..d682414 100644
---- a/sound/soc/tegra/tegra210_dmic.c
-+++ b/sound/soc/tegra/tegra210_dmic.c
-@@ -6,6 +6,7 @@
- 
- #include <linux/clk.h>
- #include <linux/device.h>
-+#include <linux/math64.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
- #include <linux/platform_device.h>
-@@ -129,7 +130,7 @@ static int tegra210_dmic_hw_params(struct snd_pcm_substream *substream,
- 	 * Boost Gain Volume control has 100x factor.
- 	 */
- 	if (dmic->boost_gain)
--		gain_q23 = (gain_q23 * dmic->boost_gain) / 100;
-+		gain_q23 = div_u64(gain_q23 * dmic->boost_gain, 100);
- 
- 	regmap_write(dmic->regmap, TEGRA210_DMIC_LP_FILTER_GAIN,
- 		     (unsigned int)gain_q23);
--- 
-2.7.4
-
+ https://lore.kernel.org/linux-usb/20200619142512.19824-1-mike.looijmans@topic.nl/
