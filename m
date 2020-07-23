@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553DC22A475
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCB322A481
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387526AbgGWBUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:20:49 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:39278 "EHLO mxhk.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728914AbgGWBUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:20:48 -0400
-Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
-        by Forcepoint Email with ESMTPS id 7199DB71BF8CE8DB887D;
-        Thu, 23 Jul 2020 09:20:46 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl1.zte.com.cn with ESMTP id 06N1KcUm028418;
-        Thu, 23 Jul 2020 09:20:38 +0800 (GMT-8)
-        (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020072309210422-4367468 ;
-          Thu, 23 Jul 2020 09:21:04 +0800 
-From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     linux@armlinux.org.uk
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
-        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
-Subject: [PATCH] ARM: milbeaut: Add missing of_node_put()
-Date:   Thu, 23 Jul 2020 09:24:10 +0800
-Message-Id: <1595467450-13488-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-07-23 09:21:04,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-07-23 09:20:42,
-        Serialize complete at 2020-07-23 09:20:42
-X-MAIL: mse-fl1.zte.com.cn 06N1KcUm028418
+        id S2387441AbgGWBY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:24:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:47999 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728607AbgGWBYZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:24:25 -0400
+X-UUID: fb6f332359f340ae8025c27774f9e1a7-20200723
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bbgQJNRcgmdZNRjAfyTf3xC6QTg1bKjqlo6CpIRT/nU=;
+        b=Tst37tB1yF+kEBSzXJq7Xt8nlzX0veU2Auiqo7v1e5I+hPuMR+AytQ7+Cn52kwvwyfDqSTU0dIlQNlMsKoGkzAHhn9U2GJ/ajbzBEZAh2mleOQl2ZNGayh5HQb+D9mkbvC5aK4k7wp4fU6zSw2VVb/MdUSYwBTeOK/kzarpzxHY=;
+X-UUID: fb6f332359f340ae8025c27774f9e1a7-20200723
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <yingjoe.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1599116157; Thu, 23 Jul 2020 09:24:22 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Jul 2020 09:24:21 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Jul 2020 09:24:17 +0800
+Message-ID: <1595467461.7332.3.camel@mtksdaap41>
+Subject: Re: [PATCH 2/4] i2c: mediatek: Support DMA mask range over 33-bits
+From:   Yingjoe Chen <yingjoe.chen@mediatek.com>
+To:     Qii Wang <qii.wang@mediatek.com>
+CC:     <wsa@the-dreams.de>, <qiangming.xia@mediatek.com>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <leilk.liu@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 23 Jul 2020 09:24:21 +0800
+In-Reply-To: <1595421106-10017-3-git-send-email-qii.wang@mediatek.com>
+References: <1595421106-10017-1-git-send-email-qii.wang@mediatek.com>
+         <1595421106-10017-3-git-send-email-qii.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liao Pingfang <liao.pingfang@zte.com.cn>
-
-After finishing using device node got from of_find_compatible_node(),
-of_node_put() needs to be called.
-
-Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
----
- arch/arm/mach-milbeaut/platsmp.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/mach-milbeaut/platsmp.c b/arch/arm/mach-milbeaut/platsmp.c
-index 3ea880f..1f1ff21 100644
---- a/arch/arm/mach-milbeaut/platsmp.c
-+++ b/arch/arm/mach-milbeaut/platsmp.c
-@@ -53,6 +53,7 @@ static void m10v_smp_init(unsigned int max_cpus)
- 		return;
- 
- 	m10v_smp_base = of_iomap(np, 0);
-+	of_node_put(np);
- 	if (!m10v_smp_base)
- 		return;
- 
--- 
-2.9.5
+T24gV2VkLCAyMDIwLTA3LTIyIGF0IDIwOjMxICswODAwLCBRaWkgV2FuZyB3cm90ZToNCj4gUmVw
+bGFjZSAnc3VwcG9ydF8zM2JpdHMgd2l0aCAnZG1hX21heF9zdXBwb3J0JyBmb3IgRE1BIG1hc2sN
+Cj4gb3BlcmF0aW9uLCBhbmQgcmVwbGFjZSAnbXRrX2kyY19zZXRfNGdfbW9kZScgd2l0aCAndXBw
+ZXJfMzJfYml0cycuDQoNClRoaXMgZG9lc24ndCBleHBsYWluIHdoeSB3ZSBuZWVkIHRoaXMgcGF0
+Y2guIEhvdyBhYm91dDoNCg0KTmV3ZXIgTVRLIGNoaXAgc3VwcG9ydCBtb3JlIHRoYW4gOEdCIG9m
+IGRyYW0uIFJlcGxhY2Ugc3VwcG9ydF8zM2JpdHMNCndpdGggbW9yZSBnZW5lcmFsIGRtYV9tYXhf
+c3VwcG9ydC4NCg0KDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBRaWkgV2FuZyA8cWlpLndhbmdAbWVk
+aWF0ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtbXQ2NXh4LmMgfCAz
+NyArKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMTcgaW5zZXJ0aW9ucygrKSwgMjAgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMt
+bXQ2NXh4LmMNCj4gaW5kZXggZTZiOTg0YS4uZTQ3NTg3NyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
+cy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiArKysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJj
+LW10NjV4eC5jDQo+IEBAIC0yMDksNiArMjA5LDcgQEAgc3RydWN0IG10a19pMmNfY29tcGF0aWJs
+ZSB7DQo+ICAJdW5zaWduZWQgY2hhciBkbWFfc3luYzogMTsNCj4gIAl1bnNpZ25lZCBjaGFyIGx0
+aW1pbmdfYWRqdXN0OiAxOw0KPiAgCXVuc2lnbmVkIGNoYXIgYXBkbWFfc3luYzogMTsNCj4gKwl1
+bnNpZ25lZCBjaGFyIG1heF9kbWFfc3VwcG9ydDsNCg0Kc3VwcG9ydF8zM2JpdHMgaXMgbm8gbG9u
+Z2VyIHVzZWQuIFBsZWFzZSByZW1vdmUgaXQuDQoNCkpvZS5DDQoNCg==
 
