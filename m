@@ -2,75 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B111C22B2D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E8622B298
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729728AbgGWPmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:42:44 -0400
-Received: from m1355.mail.163.com ([220.181.13.55]:26949 "EHLO
-        m1355.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728306AbgGWPmn (ORCPT
+        id S1728723AbgGWPdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:33:32 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:46159 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgGWPdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:42:43 -0400
-X-Greylist: delayed 935 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Jul 2020 11:42:42 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=xMGRC
-        He842IB2MjNA/wba5wNMl7OGehLFqufBXZfZMU=; b=PG7dIotM/a/AhCfZdZ9Uo
-        CHxmGc4ztcnr1y4VtZECAvK1SvWZtCo9e6K4ZG50HQEmQldOWUupa0xbNHIPIRge
-        ZP9P2TxfsshbCLZehorUfUGrCGWaTXJo9Dnl0H5jInk3LA0ajqrjVByMst8zK1+t
-        lQG5aX2/jJOqXgGKX580A8=
-Received: from songfengcn$163.com ( [114.222.189.160] ) by
- ajax-webmail-wmsvr55 (Coremail) ; Thu, 23 Jul 2020 23:26:01 +0800 (CST)
-X-Originating-IP: [114.222.189.160]
-Date:   Thu, 23 Jul 2020 23:26:01 +0800 (CST)
-From:   "Song Feng" <songfengcn@163.com>
-To:     "Chao Yu" <yuchao0@huawei.com>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re:[f2fs-dev] [PATCH] f2fs: fix use-after-free issue
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190724(ac680a23)
- Copyright (c) 2002-2020 www.mailtech.cn 163com
-In-Reply-To: <20200723102806.9662-1-yuchao0@huawei.com>
-References: <20200723102806.9662-1-yuchao0@huawei.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Thu, 23 Jul 2020 11:33:31 -0400
+Received: by mail-il1-f196.google.com with SMTP id p15so4629557ilh.13;
+        Thu, 23 Jul 2020 08:33:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LM6+liSSw+7zYWXhgHdp4eA8X4EaVz+GpXnsgH9vTZo=;
+        b=bxlDAdqMteW4gGBMJ4aZ66nCrDKreTizhZsggh2ResBX2PP/+eQ/0tZBdVwGCF57TN
+         rcqvtI8G1gZQW7NRItBRt+qV8IuQi6wh3hhZMaJ8++VYfe2MCj/TXpcwQK7UdPN92Nzz
+         X9RMjIPHmSjUgpAM/yI01TYay2Q+4GiAuomgNmuqUBrdSKsk92AyCRmCBQcB/RRjxwLS
+         PxY+A9dPyXFrJ800PQSrmUhvbZuI17Nz+bcwA9Pgh5mHG2WDMIus+TQM5he0+E+Zj57Z
+         bGi4xg+0u3lqQai6e8u4Jcqo+m3wH33baUq47j50l3w5b+zEnq2Z8k8Qk+RiYZH5ik2a
+         6Aug==
+X-Gm-Message-State: AOAM531FBBWQ1uaUmwhrXcciioT785YgOKEC3vxRPMYySFsh1rLbMMwf
+        X5SjS2zn8uynqnwfW1SB8b2zwlHB1w==
+X-Google-Smtp-Source: ABdhPJzOFystWAMI9/98m5QBC9Z743ueo9tJi9nCRp7nGLYtCeMGte3aiYMh2AA43yi48RLZXie/fg==
+X-Received: by 2002:a05:6e02:1253:: with SMTP id j19mr5586422ilq.145.1595518410158;
+        Thu, 23 Jul 2020 08:33:30 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id j17sm1593887ilq.7.2020.07.23.08.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 08:33:29 -0700 (PDT)
+Received: (nullmailer pid 412465 invoked by uid 1000);
+        Thu, 23 Jul 2020 15:33:26 -0000
+Date:   Thu, 23 Jul 2020 09:33:26 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Swapnil Jakhade <sjakhade@cadence.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch,
+        Laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
+        narmstrong@baylibre.com, jonas@kwiboo.se, jernej.skrabec@siol.net,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mparab@cadence.com,
+        yamonkar@cadence.com, tomi.valkeinen@ti.com, jsarha@ti.com,
+        nsekhar@ti.com, praneeth@ti.com
+Subject: Re: [PATCH v7 1/3] dt-bindings: drm/bridge: Document Cadence MHDP
+ bridge bindings
+Message-ID: <20200723153326.GA407329@bogus>
+References: <1595403640-12816-1-git-send-email-sjakhade@cadence.com>
+ <1595403640-12816-2-git-send-email-sjakhade@cadence.com>
 MIME-Version: 1.0
-Message-ID: <666af139.9663.1737c480519.Coremail.songfengcn@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: N8GowACndMwJrBlfwDhgAA--.59311W
-X-CM-SenderInfo: pvrqwwphqju0i6rwjhhfrp/1tbiRAlqW1SIgShn7QAAsD
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595403640-12816-2-git-send-email-sjakhade@cadence.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QXQgMjAyMC0wNy0yMyAxNzoyODowNiwgIkNoYW8gWXUiIDx5dWNoYW8wQGh1YXdlaS5jb20+IHdy
-b3RlOgoKPkZyb206IExpIEd1aWZ1IDxibHVjZS5saWd1aWZ1QGh1YXdlaS5jb20+Cj4KPkR1cmlu
-ZyB1bW91bnQsIGYyZnNfcHV0X3N1cGVyKCkgdW5yZWdpc3RlcnMgcHJvY2ZzIGVudHJpZXMgYWZ0
-ZXIKPmYyZnNfZGVzdHJveV9zZWdtZW50X21hbmFnZXIoKSwgaXQgbWF5IGNhdXNlIHVzZS1hZnRl
-ci1mcmVlCj5pc3N1ZSB3aGVuIHVtb3VudCByYWNlcyB3aXRoIHByb2NmcyBhY2Nlc3NpbmcsIGZp
-eCBpdCBieSByZWxjYXRpbmcKdHlwbyBpc3N1ZTogcmVsY2F0aW5nIC0+IHJlbG9jYXRpbmc/Cj5m
-MmZzX3VucmVnaXN0ZXJfc3lzZnMoKS4KPgo+W0NoYW8gWXU6IGNoYW5nZSBjb21taXQgdGl0bGUv
-bWVzc2FnZSBhIGJpdF0KPgo+U2lnbmVkLW9mZi1ieTogTGkgR3VpZnUgPGJsdWNlLmxpZ3VpZnVA
-aHVhd2VpLmNvbT4KPlJldmlld2VkLWJ5OiBDaGFvIFl1IDx5dWNoYW8wQGh1YXdlaS5jb20+Cj5T
-aWduZWQtb2ZmLWJ5OiBDaGFvIFl1IDx5dWNoYW8wQGh1YXdlaS5jb20+Cj4tLS0KPiBmcy9mMmZz
-L3N1cGVyLmMgfCA1ICsrKy0tCj4gMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMiBk
-ZWxldGlvbnMoLSkKPgo+ZGlmZiAtLWdpdCBhL2ZzL2YyZnMvc3VwZXIuYyBiL2ZzL2YyZnMvc3Vw
-ZXIuYwo+aW5kZXggODBjYjdjZDM1OGY4Li5iZjhiZDY0YzgzODAgMTAwNjQ0Cj4tLS0gYS9mcy9m
-MmZzL3N1cGVyLmMKPisrKyBiL2ZzL2YyZnMvc3VwZXIuYwo+QEAgLTExNzUsNiArMTE3NSw5IEBA
-IHN0YXRpYyB2b2lkIGYyZnNfcHV0X3N1cGVyKHN0cnVjdCBzdXBlcl9ibG9jayAqc2IpCj4gCWlu
-dCBpOwo+IAlib29sIGRyb3BwZWQ7Cj4gCj4rCS8qIHVucmVnaXN0ZXIgcHJvY2ZzL3N5c2ZzIGVu
-dHJpZXMgdG8gYXZvaWQgcmFjZSBjYXNlICovCj4rCWYyZnNfdW5yZWdpc3Rlcl9zeXNmcyhzYmkp
-Owo+Kwo+IAlmMmZzX3F1b3RhX29mZl91bW91bnQoc2IpOwo+IAo+IAkvKiBwcmV2ZW50IHJlbWFp
-bmluZyBzaHJpbmtlciBqb2JzICovCj5AQCAtMTI0MCw4ICsxMjQzLDYgQEAgc3RhdGljIHZvaWQg
-ZjJmc19wdXRfc3VwZXIoc3RydWN0IHN1cGVyX2Jsb2NrICpzYikKPiAKPiAJa3ZmcmVlKHNiaS0+
-Y2twdCk7Cj4gCj4tCWYyZnNfdW5yZWdpc3Rlcl9zeXNmcyhzYmkpOwo+LQo+IAlzYi0+c19mc19p
-bmZvID0gTlVMTDsKPiAJaWYgKHNiaS0+c19jaGtzdW1fZHJpdmVyKQo+IAkJY3J5cHRvX2ZyZWVf
-c2hhc2goc2JpLT5zX2Noa3N1bV9kcml2ZXIpOwo+LS0gCj4yLjI2LjIKPgo+Cj4KPl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj5MaW51eC1mMmZzLWRldmVs
-IG1haWxpbmcgbGlzdAo+TGludXgtZjJmcy1kZXZlbEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPmh0
-dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2xpbnV4LWYyZnMtZGV2
-ZWwKcGxlYXNlIGNoZWNrIHR5cG8gaXNzdWUgZm9yIGNvbW1lbnQ6IHJlbGNhdGluZy0+cmVsb2Nh
-dGluZz8=
+On Wed, Jul 22, 2020 at 09:40:38AM +0200, Swapnil Jakhade wrote:
+> From: Yuti Amonkar <yamonkar@cadence.com>
+> 
+> Document the bindings used for the Cadence MHDP DPI/DP bridge in
+> yaml format.
+> 
+> Signed-off-by: Yuti Amonkar <yamonkar@cadence.com>
+> Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> ---
+>  .../bindings/display/bridge/cdns,mhdp.yaml    | 127 ++++++++++++++++++
+>  1 file changed, 127 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
+> new file mode 100644
+> index 000000000000..cdf5760d4ec5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/bridge/cdns,mhdp.yaml
+> @@ -0,0 +1,127 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/display/bridge/cdns,mhdp.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Cadence MHDP bridge
+> +
+> +maintainers:
+> +  - Swapnil Jakhade <sjakhade@cadence.com>
+> +  - Yuti Amonkar <yamonkar@cadence.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - cdns,mhdp8546
+> +      - ti,j721e-mhdp8546
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description:
+> +          Register block of mhdptx apb registers up to PHY mapped area (AUX_CONFIG_P).
+> +          The AUX and PMA registers are not part of this range, they are instead
+> +          included in the associated PHY.
+> +      - description:
+> +          Register block for DSS_EDP0_INTG_CFG_VP registers in case of TI J7 SoCs.
+> +
+> +  reg-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - const: mhdptx
+> +      - const: j721e-intg
+> +
+> +  clocks:
+> +    maxItems: 1
+> +    description:
+> +      DP bridge clock, used by the IP to know how to translate a number of
+> +      clock cycles into a time (which is used to comply with DP standard timings
+> +      and delays).
+> +
+> +  phys:
+
+maxItems: 1
+
+> +    description:
+> +      phandle to the DisplayPort PHY.
+> +
+> +  ports:
+> +    type: object
+> +    description:
+> +      Ports as described in Documentation/devicetree/bindings/graph.txt.
+> +
+> +    properties:
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 0
+> +
+> +      port@0:
+> +        type: object
+> +        description:
+> +          Input port representing the DP bridge input.
+> +
+> +      port@1:
+> +        type: object
+> +        description:
+> +          Output port representing the DP bridge output.
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +      - '#address-cells'
+> +      - '#size-cells'
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: ti,j721e-mhdp8546
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 2
+> +        reg-names:
+> +          minItems: 2
+
+else:
+  properties:
+    reg:
+      maxItems: 1
+    reg-names:
+      maxItems: 1
+
+> +
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - reg
+> +  - reg-names
+> +  - phys
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    mhdp: dp-bridge@f0fb000000 {
+> +        compatible = "cdns,mhdp8546";
+> +        reg = <0xf0 0xfb000000 0x0 0x1000000>;
+> +        reg-names = "mhdptx";
+> +        clocks = <&mhdp_clock>;
+> +        phys = <&dp_phy>;
+> +
+> +        ports {
+> +              #address-cells = <1>;
+> +              #size-cells = <0>;
+> +
+> +              port@0 {
+> +                     reg = <0>;
+> +                     dp_bridge_input: endpoint {
+> +                        remote-endpoint = <&xxx_dpi_output>;
+> +                     };
+> +              };
+> +
+> +              port@1 {
+> +                     reg = <1>;
+> +                     dp_bridge_output: endpoint {
+> +                        remote-endpoint = <&xxx_dp_connector_input>;
+> +                     };
+> +              };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.26.1
+> 
