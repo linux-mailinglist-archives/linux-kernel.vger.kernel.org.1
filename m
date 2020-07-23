@@ -2,214 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F9922B2CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABDD22B2D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729689AbgGWPm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728063AbgGWPm1 (ORCPT
+        id S1729588AbgGWPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:44:30 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:34683 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727108AbgGWPoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:42:27 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901F7C0619DC;
-        Thu, 23 Jul 2020 08:42:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c80so5391417wme.0;
-        Thu, 23 Jul 2020 08:42:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WmpEF3wAK9MyQIycfqRtOyPcqi5ldyWuyIoAHJsmiPk=;
-        b=ocSI4ZH0PyYIM68bnC8T89tdDC4qku8Q6bns0IbSeRi1ZgVm3N/GxGxVS9OvbcFBTz
-         oN7uSgt2lKmq43lzIsDXJYDBJAwxxzPHxYg2X68/7Y4M6QFcG5OpgmJQJcIwmCwq8Pbn
-         X4yNeIg2evOKg9vwfUFM8w8zPvrBzqIsA/CLeb0RYbFvC5tedw0VnpZ+y5W8cdkQvVQB
-         B4qW9aI40iuWv9mIQka7e5M7rF5xN9BydSf+BcZtfkZ1XkUzYMg7gRBGOk5N+mR+G7fn
-         Tvq7pFmLlgjBzYZ7VZb3Jn4W762go9m09GdcVOeNhbmfyH3c/Bf1FddziFKl6cFlCC8U
-         bv2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WmpEF3wAK9MyQIycfqRtOyPcqi5ldyWuyIoAHJsmiPk=;
-        b=B118zAt6ee3ByheGglFCQFbj2Xt4fxe5R39ch0iEdosW+o9uQKamvBEzRMOdzxkCD4
-         mmNqhz9O+rN2cDIaImPrYjZHi60E10nBS70JYHStNzBVmUPyeq2841qmcFuo2IxafQOL
-         0ZpghNhPn5xc+6BQeYsA5HBbJnFWgniLKSxD1DLItUxRw8Aser2VmbpFp78ZdVsYSz31
-         o0QzU+4cEZ+ReAmYyzE0Tj+pbqbNmT87uX8279OH5TDovnW2GACsE6li2WbeCvhYihuw
-         ycOe5igpGddAUzTk4/pBq0dyt9CdyyeJMzAc2xD4Q9RLbgX/cnitXmdtmUctnY8FcR/R
-         bl4g==
-X-Gm-Message-State: AOAM531vHAB0CwI96Ct62axw3bgjBUqS+AohNR3ZbBOwynDNtfapAkht
-        0QX8bHC16N5FSMQQACMWnWY=
-X-Google-Smtp-Source: ABdhPJyX2JfGZsL+cpAXob0aVplIVs631ETGzU1KEWsj2v12UjMXeteDcjRnFvXcYr5gn4WVKyOiOQ==
-X-Received: by 2002:a1c:49c6:: with SMTP id w189mr2301255wma.97.1595518946327;
-        Thu, 23 Jul 2020 08:42:26 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.122.158])
-        by smtp.gmail.com with ESMTPSA id d18sm4238353wrj.8.2020.07.23.08.42.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Jul 2020 08:42:25 -0700 (PDT)
-Subject: Re: [v7, PATCH 5/7] arm64: dts: add display nodes for mt8183
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <1595469798-3824-1-git-send-email-yongqiang.niu@mediatek.com>
- <1595469798-3824-6-git-send-email-yongqiang.niu@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <a8a7232c-6c2b-b606-2091-da540e5cb79e@gmail.com>
-Date:   Thu, 23 Jul 2020 17:42:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 23 Jul 2020 11:44:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595519068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=BkBtUhmwfYQ1105zjfG6oXxQ3Lr6xBv5QKA0bUwDU1s=;
+        b=FQx0BKIa3uc19Inr/nrDo7PlQBTNi2GqfBRxFrX4+I6PpSacN9GoAS2Xs30ZE+Dqq/8ub1
+        AXjjJ/Zm0YiE0HG5/tDFmcw1OoPlknAqJ6O3oFm0/lJoAjdLISjexYKS4cmauFU6Kg7+qh
+        BkhZzZxRhZBGZrKRnk5nwoVVTWdpr3M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-211-fMTt5sBmMy2_WxbLBXHRrg-1; Thu, 23 Jul 2020 11:44:24 -0400
+X-MC-Unique: fMTt5sBmMy2_WxbLBXHRrg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48BD9100A8C1;
+        Thu, 23 Jul 2020 15:44:23 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.249])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 84FC675563;
+        Thu, 23 Jul 2020 15:44:21 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 23 Jul 2020 17:44:22 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 17:44:20 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Aaron Merey <amerey@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] uprobes: change handle_swbp() to send SIGTRAP with
+ si_code=SI_KERNEL
+Message-ID: <20200723154420.GA32043@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1595469798-3824-6-git-send-email-yongqiang.niu@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If a tracee is uprobed and it hits int3 inserted by debugger, handle_swbp()
+does send_sig(SIGTRAP, current, 0) which means si_code == SI_USER. This used
+to work when this code was written, but then GDB started to validate si_code
+and now it simply can't use breakpoints if the tracee has an active uprobe:
+
+	# cat test.c
+	void unused_func(void)
+	{
+	}
+	int main(void)
+	{
+		return 0;
+	}
+
+	# gcc -g test.c -o test
+	# perf probe -x ./test -a unused_func
+	# perf record -e probe_test:unused_func gdb ./test -ex run
+	GNU gdb (GDB) 10.0.50.20200714-git
+	...
+	Program received signal SIGTRAP, Trace/breakpoint trap.
+	0x00007ffff7ddf909 in dl_main () from /lib64/ld-linux-x86-64.so.2
+	(gdb)
+
+The tracee hits the internal breakpoint inserted by GDB to monitor shared
+library events but GDB misinterprets this SIGTRAP and reports a signal.
+
+Change handle_swbp() to use force_sig(SIGTRAP), this matches do_int3_user()
+and fixes the problem.
+
+This is the minimal fix for -stable, arch/x86/kernel/uprobes.c is equally
+wrong; it should use send_sigtrap(TRAP_TRACE) instead of send_sig(SIGTRAP),
+but this doesn't confuse GDB and needs another x86-specific patch.
+
+Reported-by: Aaron Merey <amerey@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/events/uprobes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index bb0862873dba..5f8b0c52fd2e 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -2199,7 +2199,7 @@ static void handle_swbp(struct pt_regs *regs)
+ 	if (!uprobe) {
+ 		if (is_swbp > 0) {
+ 			/* No matching uprobe; signal SIGTRAP. */
+-			send_sig(SIGTRAP, current, 0);
++			force_sig(SIGTRAP);
+ 		} else {
+ 			/*
+ 			 * Either we raced with uprobe_unregister() or we can't
+-- 
+2.25.1.362.g51ebf55
 
 
-On 23/07/2020 04:03, Yongqiang Niu wrote:
-> This patch add display nodes for mt8183
-> 
-
-In comparison, DTS patches should go last in a series as you will need the 
-driver patches to make it work.
-
-Regards,
-Matthias
-
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->   arch/arm64/boot/dts/mediatek/mt8183.dtsi | 98 ++++++++++++++++++++++++++++++++
->   1 file changed, 98 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 7b781eb..440cf22 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -31,6 +31,11 @@
->   		i2c9 = &i2c9;
->   		i2c10 = &i2c10;
->   		i2c11 = &i2c11;
-> +		ovl0 = &ovl0;
-> +		ovl_2l0 = &ovl_2l0;
-> +		ovl_2l1 = &ovl_2l1;
-> +		rdma0 = &rdma0;
-> +		rdma1 = &rdma1;
->   	};
->   
->   	cpus {
-> @@ -707,9 +712,102 @@
->   		mmsys: syscon@14000000 {
->   			compatible = "mediatek,mt8183-mmsys", "syscon";
->   			reg = <0 0x14000000 0 0x1000>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
->   			#clock-cells = <1>;
->   		};
->   
-> +		ovl0: ovl@14008000 {
-> +			compatible = "mediatek,mt8183-disp-ovl";
-> +			reg = <0 0x14008000 0 0x1000>;
-> +			interrupts = <GIC_SPI 225 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_OVL0>;
-> +		};
-> +
-> +		ovl_2l0: ovl@14009000 {
-> +			compatible = "mediatek,mt8183-disp-ovl-2l";
-> +			reg = <0 0x14009000 0 0x1000>;
-> +			interrupts = <GIC_SPI 226 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_OVL0_2L>;
-> +		};
-> +
-> +		ovl_2l1: ovl@1400a000 {
-> +			compatible = "mediatek,mt8183-disp-ovl-2l";
-> +			reg = <0 0x1400a000 0 0x1000>;
-> +			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_OVL1_2L>;
-> +		};
-> +
-> +		rdma0: rdma@1400b000 {
-> +			compatible = "mediatek,mt8183-disp-rdma";
-> +			reg = <0 0x1400b000 0 0x1000>;
-> +			interrupts = <GIC_SPI 228 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_RDMA0>;
-> +			mediatek,rdma_fifo_size = <5120>;
-> +		};
-> +
-> +		rdma1: rdma@1400c000 {
-> +			compatible = "mediatek,mt8183-disp-rdma";
-> +			reg = <0 0x1400c000 0 0x1000>;
-> +			interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
-> +			mediatek,rdma_fifo_size = <2048>;
-> +		};
-> +
-> +		color0: color@1400e000 {
-> +			compatible = "mediatek,mt8183-disp-color",
-> +				     "mediatek,mt8173-disp-color";
-> +			reg = <0 0x1400e000 0 0x1000>;
-> +			interrupts = <GIC_SPI 231 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_COLOR0>;
-> +		};
-> +
-> +		ccorr0: ccorr@1400f000 {
-> +			compatible = "mediatek,mt8183-disp-ccorr";
-> +			reg = <0 0x1400f000 0 0x1000>;
-> +			interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_CCORR0>;
-> +		};
-> +
-> +		aal0: aal@14010000 {
-> +			compatible = "mediatek,mt8183-disp-aal",
-> +				     "mediatek,mt8173-disp-aal";
-> +			reg = <0 0x14010000 0 0x1000>;
-> +			interrupts = <GIC_SPI 233 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_AAL0>;
-> +		};
-> +
-> +		gamma0: gamma@14011000 {
-> +			compatible = "mediatek,mt8183-disp-gamma",
-> +				     "mediatek,mt8173-disp-gamma";
-> +			reg = <0 0x14011000 0 0x1000>;
-> +			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_GAMMA0>;
-> +		};
-> +
-> +		dither0: dither@14012000 {
-> +			compatible = "mediatek,mt8183-disp-dither";
-> +			reg = <0 0x14012000 0 0x1000>;
-> +			interrupts = <GIC_SPI 235 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +			clocks = <&mmsys CLK_MM_DISP_DITHER0>;
-> +		};
-> +
-> +		mutex: mutex@14016000 {
-> +			compatible = "mediatek,mt8183-disp-mutex";
-> +			reg = <0 0x14016000 0 0x1000>;
-> +			interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
-> +			power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
-> +		};
-> +
->   		smi_common: smi@14019000 {
->   			compatible = "mediatek,mt8183-smi-common", "syscon";
->   			reg = <0 0x14019000 0 0x1000>;
-> 
