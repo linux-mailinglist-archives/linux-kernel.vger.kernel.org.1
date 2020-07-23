@@ -2,137 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CFA22A66D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 06:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F12C22A677
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 06:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgGWES0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 00:18:26 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37007 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726115AbgGWES0 (ORCPT
+        id S1726127AbgGWEYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 00:24:02 -0400
+Received: from mail4.tencent.com ([183.57.53.109]:51745 "EHLO
+        mail4.tencent.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbgGWEYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 00:18:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595477905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wwl4F50oKkswHT9apgjy+aI/48kVRlBCaDpskw3i4WE=;
-        b=MQGIGFIav5djzroqLzt1XT+1rRoYcbfwn1fCytFcbXOjgiy5STlZdZAkMKNZTvG8DNC81h
-        rQf72zuW5nWCdX1cOGMKCw6zoSnZPFZB0C2MmpV/x9CzMpHjB7zGc8vRy1aYIt+HbXqFxC
-        bLSFlEpHDvJo3bvf0sElZaCuR44DdcQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-dBpKknZyOf2oV-LpXVbrVg-1; Thu, 23 Jul 2020 00:18:21 -0400
-X-MC-Unique: dBpKknZyOf2oV-LpXVbrVg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5706106B245;
-        Thu, 23 Jul 2020 04:18:18 +0000 (UTC)
-Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 918D888D41;
-        Thu, 23 Jul 2020 04:18:17 +0000 (UTC)
-Date:   Wed, 22 Jul 2020 22:18:17 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Weitao Wang(BJ-RD)" <WeitaoWang@zhaoxin.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>,
-        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "hslester96@gmail.com" <hslester96@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Thu, 23 Jul 2020 00:24:01 -0400
+Received: from EX-SZ018.tencent.com (unknown [10.28.6.39])
+        by mail4.tencent.com (Postfix) with ESMTP id 38FF8724AF;
+        Thu, 23 Jul 2020 12:23:56 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1595478236;
+        bh=beF4uDCsUn8VAWBlxvMz29uabazmIL+ejFQYBdpbvhY=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=YWb2Ug22fsFklZhKlgGX4zl1ct20xmuBBm3iLoUnNTKG3iJr/VdfxXzNxoSTeks9J
+         92Lwqn038qS9pzvKB6h2ijbhrgOXSNTnMy+j1P5pzF/FhWFrYULqXOnf+z8E+J0hQw
+         mJEdPbg8ReJisvD1b5kzG9vKMfHzAdgL+TiwC0r0=
+Received: from EX-SZ003.tencent.com (10.28.6.15) by EX-SZ018.tencent.com
+ (10.28.6.39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Thu, 23 Jul
+ 2020 12:23:56 +0800
+Received: from EX-SZ012.tencent.com (10.28.6.36) by EX-SZ003.tencent.com
+ (10.28.6.15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Thu, 23 Jul
+ 2020 12:23:55 +0800
+Received: from EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b]) by
+ EX-SZ012.tencent.com ([fe80::f57b:8971:e6d4:fe6b%3]) with mapi id
+ 15.01.1847.007; Thu, 23 Jul 2020 12:23:52 +0800
+From:   =?utf-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+CC:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Tim Chen" <tim.c.chen@linux.intel.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "pjt@google.com" <pjt@google.com>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Aubrey Li <aubrey.li@intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
-        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
-        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
-        "wwt8723@163.com" <wwt8723@163.com>
-Subject: Re: [PATCH] USB:Fix kernel NULL pointer when unbind UHCI form
- vfio-pci
-Message-ID: <20200722221817.542971a2@x1.home>
-In-Reply-To: <1bf449377e3448bc9c8bc7b64d7b7990@zhaoxin.com>
-References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
-        <20200722124414.GA3153105@kroah.com>
-        <20200722145913.GB1310843@rowland.harvard.edu>
-        <1bf449377e3448bc9c8bc7b64d7b7990@zhaoxin.com>
-Organization: Red Hat
+        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
+        "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "kerrnel@google.com" <kerrnel@google.com>,
+        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joel Fernandes <joelaf@google.com>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "vineethrp@gmail.com" <vineethrp@gmail.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [RFC PATCH 11/16] sched: migration changes for core
+ scheduling(Internet mail)
+Thread-Topic: [RFC PATCH 11/16] sched: migration changes for core
+ scheduling(Internet mail)
+Thread-Index: AQHWTzVqBGu6Ndoz306mL65QHjIl9akS5uOAgAA3egCAACb+AIAAv1UAgAAMuwCAAA7NAIAADWQA
+Date:   Thu, 23 Jul 2020 04:23:52 +0000
+Message-ID: <96A765D7-7FD3-40EB-873B-0F9365569490@tencent.com>
+References: <cover.1593530334.git.vpillai@digitalocean.com>
+ <9044a2ebde089483d45c091752d208a878c604ac.1593530334.git.vpillai@digitalocean.com>
+ <72869477-AA03-47D4-96C5-D3CDBDBC12E7@tencent.com>
+ <459dbf33-02f6-d4e0-52e4-919e1e33be13@linux.intel.com>
+ <5C71B460-8DC3-44AF-A75E-68BB2E33686B@tencent.com>
+ <589382b3-709e-17a6-d693-05ebd3998336@linux.intel.com>
+ <897E5117-8A78-4CE3-8514-3577C4474775@tencent.com>
+ <6ab8a001-ae5e-e484-c571-90d6931004e7@linux.intel.com>
+In-Reply-To: <6ab8a001-ae5e-e484-c571-90d6931004e7@linux.intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.28.2.34]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BB1029841D3EDB47B4EB847B4232EAEC@tencent.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Jul 2020 02:59:55 +0000
-"Weitao Wang(BJ-RD)" <WeitaoWang@zhaoxin.com> wrote:
-
-> On , Jul 22, 2020 at 02:44:14PM +0200, Alan wrote:
-> > On Wed, Jul 22, 2020 at 02:44:14PM +0200, Greg KH wrote: =20
-> > > On Wed, Jul 22, 2020 at 07:57:48PM +0800, WeitaoWangoc wrote: =20
-> > > > This bug is found in Zhaoxin platform, but it's a commom code bug.
-> > > > Fail sequence:
-> > > > step1: Unbind UHCI controller from native driver;
-> > > > step2: Bind UHCI controller to vfio-pci, which will put UHCI contro=
-ller in one =20
-> > vfio =20
-> > > >        group's device list and set UHCI's dev->driver_data to struc=
-t =20
-> > vfio-pci(for UHCI) =20
-> > >
-> > > Hah, that works?  How do you do that properly?  What code does that? =
-=20
-> >
-> > Yeah, that can't possibly work.  The USB core expects that any host
-> > controller device (or at least, any PCI host controller device) has its
-> > driver_data set to point to a struct usb_hcd.  It doesn't expect a host
-> > controller to be bound to anything other than a host controller driver.
-> >
-> > Things could easily go very wrong here.  For example, suppose at this
-> > point the ehci-hcd driver just happens to bind to the EHCI controller.
-> > When this happens, the EHCI controller hardware takes over all the USB
-> > connections that were routed to the UHCI controller.  How will vfio-pci
-> > deal with that?  Pretty ungracefully, I imagine.
-
-The issue I believe we're seeing here is not with vfio-pci trying to do
-anything with the device, the IOMMU grouping would prevent a user from
-opening any device within the group while other devices within the
-group are bound to host drivers.  So it should be fine if the EHCI
-device takes over the other ports, but it's not ok that ehci-hcd
-assumes the driver private data for any other UHCI/OHCI/EHCI device in
-the same slot is something that it's free to modify.  It really seems
-there should be some sort of companion device registration/opt-in
-rather than modifying unvalidated data.
-
-> > The only way to make this work at all is to unbind both uhci-hcd and
-> > ehci-hcd first.  Then after both are finished you can safely bind
-> > vfio-pci to the EHCI controller and the UHCI controllers (in that
-> > order).
-> > =20
-> I'm agree with you, unbind both uhci-hcd and ehci-hcd first then bind to
-> vfio-pci is a more reasonable sequence. Our experiments prove that this
-> sequence is indeed good as expected.
-> However, I did not find a formal document to prescribe this order.
-> Unfortunately, some application software such as virt-manager/qemu assign
-> UHCI/EHCI to guest OS has the same bind/unbind sequence as test =E2=80=9C=
-by hand=E2=80=9D.
-> Do we need to consider compatibility with this application scenario?
-
-Unbinding all functions first, before binding any to vfio-pci should
-indeed work, thanks to the for_each_companion() function at least
-testing for null private data before going further.  I'd still argue
-though that these hcd drivers are overstepping their authority by
-walking the PCI bus and assuming any device in the same slot, matching
-a set of class codes, is making use of a driver with a known data
-structure that they're allowed to modify.  Even if we claim that the
-user needs to know what they're doing when they change driver binding,
-that's a pretty subtle interaction with no validation.  Thanks,
-
-Alex
-
+SGksDQo+IE9uIEp1bCAyMywgMjAyMCwgYXQgMTE6MzUgQU0sIExpLCBBdWJyZXkgPGF1YnJleS5s
+aUBsaW51eC5pbnRlbC5jb20+IHdyb3RlOg0KPiANCj4gT24gMjAyMC83LzIzIDEwOjQyLCBiZW5i
+amlhbmco6JKL5b2qKSB3cm90ZToNCj4+IEhpLA0KPj4gDQo+Pj4gT24gSnVsIDIzLCAyMDIwLCBh
+dCA5OjU3IEFNLCBMaSwgQXVicmV5IDxhdWJyZXkubGlAbGludXguaW50ZWwuY29tPiB3cm90ZToN
+Cj4+PiANCj4+PiBPbiAyMDIwLzcvMjIgMjI6MzIsIGJlbmJqaWFuZyjokovlvaopIHdyb3RlOg0K
+Pj4+PiBIaSwNCj4+Pj4gDQo+Pj4+PiBPbiBKdWwgMjIsIDIwMjAsIGF0IDg6MTMgUE0sIExpLCBB
+dWJyZXkgPGF1YnJleS5saUBsaW51eC5pbnRlbC5jb20+IHdyb3RlOg0KPj4+Pj4gDQo+Pj4+PiBP
+biAyMDIwLzcvMjIgMTY6NTQsIGJlbmJqaWFuZyjokovlvaopIHdyb3RlOg0KPj4+Pj4+IEhpLCBB
+dWJyZXksDQo+Pj4+Pj4gDQo+Pj4+Pj4+IE9uIEp1bCAxLCAyMDIwLCBhdCA1OjMyIEFNLCBWaW5l
+ZXRoIFJlbWFuYW4gUGlsbGFpIDx2cGlsbGFpQGRpZ2l0YWxvY2Vhbi5jb20+IHdyb3RlOg0KPj4+
+Pj4+PiANCj4+Pj4+Pj4gRnJvbTogQXVicmV5IExpIDxhdWJyZXkubGlAaW50ZWwuY29tPg0KPj4+
+Pj4+PiANCj4+Pj4+Pj4gLSBEb24ndCBtaWdyYXRlIGlmIHRoZXJlIGlzIGEgY29va2llIG1pc21h
+dGNoDQo+Pj4+Pj4+ICBMb2FkIGJhbGFuY2UgdHJpZXMgdG8gbW92ZSB0YXNrIGZyb20gYnVzaWVz
+dCBDUFUgdG8gdGhlDQo+Pj4+Pj4+ICBkZXN0aW5hdGlvbiBDUFUuIFdoZW4gY29yZSBzY2hlZHVs
+aW5nIGlzIGVuYWJsZWQsIGlmIHRoZQ0KPj4+Pj4+PiAgdGFzaydzIGNvb2tpZSBkb2VzIG5vdCBt
+YXRjaCB3aXRoIHRoZSBkZXN0aW5hdGlvbiBDUFUncw0KPj4+Pj4+PiAgY29yZSBjb29raWUsIHRo
+aXMgdGFzayB3aWxsIGJlIHNraXBwZWQgYnkgdGhpcyBDUFUuIFRoaXMNCj4+Pj4+Pj4gIG1pdGln
+YXRlcyB0aGUgZm9yY2VkIGlkbGUgdGltZSBvbiB0aGUgZGVzdGluYXRpb24gQ1BVLg0KPj4+Pj4+
+PiANCj4+Pj4+Pj4gLSBTZWxlY3QgY29va2llIG1hdGNoZWQgaWRsZSBDUFUNCj4+Pj4+Pj4gIElu
+IHRoZSBmYXN0IHBhdGggb2YgdGFzayB3YWtldXAsIHNlbGVjdCB0aGUgZmlyc3QgY29va2llIG1h
+dGNoZWQNCj4+Pj4+Pj4gIGlkbGUgQ1BVIGluc3RlYWQgb2YgdGhlIGZpcnN0IGlkbGUgQ1BVLg0K
+Pj4+Pj4+PiANCj4+Pj4+Pj4gLSBGaW5kIGNvb2tpZSBtYXRjaGVkIGlkbGVzdCBDUFUNCj4+Pj4+
+Pj4gIEluIHRoZSBzbG93IHBhdGggb2YgdGFzayB3YWtldXAsIGZpbmQgdGhlIGlkbGVzdCBDUFUg
+d2hvc2UgY29yZQ0KPj4+Pj4+PiAgY29va2llIG1hdGNoZXMgd2l0aCB0YXNrJ3MgY29va2llDQo+
+Pj4+Pj4+IA0KPj4+Pj4+PiAtIERvbid0IG1pZ3JhdGUgdGFzayBpZiBjb29raWUgbm90IG1hdGNo
+DQo+Pj4+Pj4+ICBGb3IgdGhlIE5VTUEgbG9hZCBiYWxhbmNlLCBkb24ndCBtaWdyYXRlIHRhc2sg
+dG8gdGhlIENQVSB3aG9zZQ0KPj4+Pj4+PiAgY29yZSBjb29raWUgZG9lcyBub3QgbWF0Y2ggd2l0
+aCB0YXNrJ3MgY29va2llDQo+Pj4+Pj4+IA0KPj4+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBBdWJyZXkg
+TGkgPGF1YnJleS5saUBsaW51eC5pbnRlbC5jb20+DQo+Pj4+Pj4+IFNpZ25lZC1vZmYtYnk6IFRp
+bSBDaGVuIDx0aW0uYy5jaGVuQGxpbnV4LmludGVsLmNvbT4NCj4+Pj4+Pj4gU2lnbmVkLW9mZi1i
+eTogVmluZWV0aCBSZW1hbmFuIFBpbGxhaSA8dnBpbGxhaUBkaWdpdGFsb2NlYW4uY29tPg0KPj4+
+Pj4+PiAtLS0NCj4+Pj4+Pj4ga2VybmVsL3NjaGVkL2ZhaXIuYyAgfCA2NCArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPj4+Pj4+PiBrZXJuZWwvc2NoZWQvc2No
+ZWQuaCB8IDI5ICsrKysrKysrKysrKysrKysrKysrDQo+Pj4+Pj4+IDIgZmlsZXMgY2hhbmdlZCwg
+ODggaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4+Pj4+Pj4gDQo+Pj4+Pj4+IGRpZmYg
+LS1naXQgYS9rZXJuZWwvc2NoZWQvZmFpci5jIGIva2VybmVsL3NjaGVkL2ZhaXIuYw0KPj4+Pj4+
+PiBpbmRleCBkMTY5Mzk3NjYzNjEuLjMzZGM0YmYwMTgxNyAxMDA2NDQNCj4+Pj4+Pj4gLS0tIGEv
+a2VybmVsL3NjaGVkL2ZhaXIuYw0KPj4+Pj4+PiArKysgYi9rZXJuZWwvc2NoZWQvZmFpci5jDQo+
+Pj4+Pj4+IEBAIC0yMDUxLDYgKzIwNTEsMTUgQEAgc3RhdGljIHZvaWQgdGFza19udW1hX2ZpbmRf
+Y3B1KHN0cnVjdCB0YXNrX251bWFfZW52ICplbnYsDQo+Pj4+Pj4+IAkJaWYgKCFjcHVtYXNrX3Rl
+c3RfY3B1KGNwdSwgZW52LT5wLT5jcHVzX3B0cikpDQo+Pj4+Pj4+IAkJCWNvbnRpbnVlOw0KPj4+
+Pj4+PiANCj4+Pj4+Pj4gKyNpZmRlZiBDT05GSUdfU0NIRURfQ09SRQ0KPj4+Pj4+PiArCQkvKg0K
+Pj4+Pj4+PiArCQkgKiBTa2lwIHRoaXMgY3B1IGlmIHNvdXJjZSB0YXNrJ3MgY29va2llIGRvZXMg
+bm90IG1hdGNoDQo+Pj4+Pj4+ICsJCSAqIHdpdGggQ1BVJ3MgY29yZSBjb29raWUuDQo+Pj4+Pj4+
+ICsJCSAqLw0KPj4+Pj4+PiArCQlpZiAoIXNjaGVkX2NvcmVfY29va2llX21hdGNoKGNwdV9ycShj
+cHUpLCBlbnYtPnApKQ0KPj4+Pj4+PiArCQkJY29udGludWU7DQo+Pj4+Pj4+ICsjZW5kaWYNCj4+
+Pj4+Pj4gKw0KPj4+Pj4+PiAJCWVudi0+ZHN0X2NwdSA9IGNwdTsNCj4+Pj4+Pj4gCQlpZiAodGFz
+a19udW1hX2NvbXBhcmUoZW52LCB0YXNraW1wLCBncm91cGltcCwgbWF5bW92ZSkpDQo+Pj4+Pj4+
+IAkJCWJyZWFrOw0KPj4+Pj4+PiBAQCAtNTk2MywxMSArNTk3MiwxNyBAQCBmaW5kX2lkbGVzdF9n
+cm91cF9jcHUoc3RydWN0IHNjaGVkX2dyb3VwICpncm91cCwgc3RydWN0IHRhc2tfc3RydWN0ICpw
+LCBpbnQgdGhpcw0KPj4+Pj4+PiANCj4+Pj4+Pj4gCS8qIFRyYXZlcnNlIG9ubHkgdGhlIGFsbG93
+ZWQgQ1BVcyAqLw0KPj4+Pj4+PiAJZm9yX2VhY2hfY3B1X2FuZChpLCBzY2hlZF9ncm91cF9zcGFu
+KGdyb3VwKSwgcC0+Y3B1c19wdHIpIHsNCj4+Pj4+Pj4gKwkJc3RydWN0IHJxICpycSA9IGNwdV9y
+cShpKTsNCj4+Pj4+Pj4gKw0KPj4+Pj4+PiArI2lmZGVmIENPTkZJR19TQ0hFRF9DT1JFDQo+Pj4+
+Pj4+ICsJCWlmICghc2NoZWRfY29yZV9jb29raWVfbWF0Y2gocnEsIHApKQ0KPj4+Pj4+PiArCQkJ
+Y29udGludWU7DQo+Pj4+Pj4+ICsjZW5kaWYNCj4+Pj4+Pj4gKw0KPj4+Pj4+PiAJCWlmIChzY2hl
+ZF9pZGxlX2NwdShpKSkNCj4+Pj4+Pj4gCQkJcmV0dXJuIGk7DQo+Pj4+Pj4+IA0KPj4+Pj4+PiAJ
+CWlmIChhdmFpbGFibGVfaWRsZV9jcHUoaSkpIHsNCj4+Pj4+Pj4gLQkJCXN0cnVjdCBycSAqcnEg
+PSBjcHVfcnEoaSk7DQo+Pj4+Pj4+IAkJCXN0cnVjdCBjcHVpZGxlX3N0YXRlICppZGxlID0gaWRs
+ZV9nZXRfc3RhdGUocnEpOw0KPj4+Pj4+PiAJCQlpZiAoaWRsZSAmJiBpZGxlLT5leGl0X2xhdGVu
+Y3kgPCBtaW5fZXhpdF9sYXRlbmN5KSB7DQo+Pj4+Pj4+IAkJCQkvKg0KPj4+Pj4+PiBAQCAtNjIy
+NCw4ICs2MjM5LDE4IEBAIHN0YXRpYyBpbnQgc2VsZWN0X2lkbGVfY3B1KHN0cnVjdCB0YXNrX3N0
+cnVjdCAqcCwgc3RydWN0IHNjaGVkX2RvbWFpbiAqc2QsIGludCB0DQo+Pj4+Pj4+IAlmb3JfZWFj
+aF9jcHVfd3JhcChjcHUsIGNwdXMsIHRhcmdldCkgew0KPj4+Pj4+PiAJCWlmICghLS1ucikNCj4+
+Pj4+Pj4gCQkJcmV0dXJuIC0xOw0KPj4+Pj4+PiAtCQlpZiAoYXZhaWxhYmxlX2lkbGVfY3B1KGNw
+dSkgfHwgc2NoZWRfaWRsZV9jcHUoY3B1KSkNCj4+Pj4+Pj4gLQkJCWJyZWFrOw0KPj4+Pj4+PiAr
+DQo+Pj4+Pj4+ICsJCWlmIChhdmFpbGFibGVfaWRsZV9jcHUoY3B1KSB8fCBzY2hlZF9pZGxlX2Nw
+dShjcHUpKSB7DQo+Pj4+Pj4+ICsjaWZkZWYgQ09ORklHX1NDSEVEX0NPUkUNCj4+Pj4+Pj4gKwkJ
+CS8qDQo+Pj4+Pj4+ICsJCQkgKiBJZiBDb3JlIFNjaGVkdWxpbmcgaXMgZW5hYmxlZCwgc2VsZWN0
+IHRoaXMgY3B1DQo+Pj4+Pj4+ICsJCQkgKiBvbmx5IGlmIHRoZSBwcm9jZXNzIGNvb2tpZSBtYXRj
+aGVzIGNvcmUgY29va2llLg0KPj4+Pj4+PiArCQkJICovDQo+Pj4+Pj4+ICsJCQlpZiAoc2NoZWRf
+Y29yZV9lbmFibGVkKGNwdV9ycShjcHUpKSAmJg0KPj4+Pj4+PiArCQkJICAgIHAtPmNvcmVfY29v
+a2llID09IGNwdV9ycShjcHUpLT5jb3JlLT5jb3JlX2Nvb2tpZSkNCj4+Pj4+PiBXaHkgbm90IGFs
+c28gYWRkIHNpbWlsYXIgbG9naWMgaW4gc2VsZWN0X2lkbGVfc210IHRvIHJlZHVjZSBmb3JjZWQt
+aWRsZT8gOikNCj4+Pj4+IFdlIGhpdCBzZWxlY3RfaWRsZV9zbXQgYWZ0ZXIgd2Ugc2NhbmVkIHRo
+ZSBlbnRpcmUgTExDIGRvbWFpbiBmb3IgaWRsZSBjb3Jlcw0KPj4+Pj4gYW5kIGlkbGUgY3B1cyBh
+bmQgZmFpbGVkLHNvIElNSE8sIGFuIGlkbGUgc210IGlzIHByb2JhYmx5IGEgZ29vZCBjaG9pY2Ug
+dW5kZXINCj4+Pj4+IHRoaXMgc2NlbmFyaW8uDQo+Pj4+IA0KPj4+PiBBRkFJQywgc2VsZWN0aW5n
+IGlkbGUgc2libGluZyB3aXRoIHVubWF0Y2hlZCBjb29raWUgd2lsbCBjYXVzZSB1bm5lY2Vzc2Fy
+eSBmb3JlZC1pZGxlLCB1bmZhaXJuZXNzIGFuZCBsYXRlbmN5LCBjb21wYXJlZCB0byBjaG9vc2lu
+ZyAqdGFyZ2V0KiBjcHUuDQo+Pj4gQ2hvb3NpbmcgdGFyZ2V0IGNwdSBjb3VsZCBpbmNyZWFzZSB0
+aGUgcnVubmFibGUgdGFzayBudW1iZXIgb24gdGhlIHRhcmdldCBydW5xdWV1ZSwgdGhpcw0KPj4+
+IGNvdWxkIHRyaWdnZXIgYnVzaWVzdC0+bnJfcnVubmluZyA+IDEgbG9naWMgYW5kIG1ha2VzIHRo
+ZSBpZGxlIHNpYmxpbmcgdHJ5aW5nIHRvIHB1bGwgYnV0DQo+Pj4gbm90IHN1Y2Nlc3MoZHVlIHRv
+IGNvb2tpZSBub3QgbWF0Y2gpLiBQdXR0aW5nIHRhc2sgdG8gdGhlIGlkbGUgc2libGluZyBpcyBy
+ZWxhdGl2ZWx5IHN0YWJsZSBJTUhPLg0KPj4gDQo+PiBJ4oCZbSBhZnJhaWQgdGhhdCAqdW5zdWNj
+ZXNzZnVsKiBwdWxsaW5ncyBiZXR3ZWVuIHNtdHMgd291bGQgbm90IHJlc3VsdCBpbiB1bnN0YWJs
+ZW5lc3MsIGJlY2F1c2UNCj4+IHRoZSBsb2FkLWJhbGFuY2UgYWx3YXlzIGRvIHBlcmlvZGljbHkg
+LCBhbmQgdW5zdWNjZXNzIG1lYW5zIG5vdGhpbmcgaGFwcGVuLg0KPiB1bnN1Y2Nlc3MgcHVsbGlu
+ZyBtZWFucyBtb3JlIHVubmVjZXNzYXJ5IG92ZXJoZWFkIGluIGxvYWQgYmFsYW5jZS4NCj4gDQo+
+PiBPbiB0aGUgY29udHJhcnksIHVubWF0Y2hlZCBzaWJsaW5nIHRhc2tzIHJ1bm5pbmcgY29uY3Vy
+cmVudGx5IGNvdWxkIGJyaW5nIGZvcmNlZC1pZGxlIHRvIGVhY2ggb3RoZXIgcmVwZWF0ZWRseSwN
+Cj4+IFdoaWNoIGlzIG1vcmUgdW5zdGFibGUsIGFuZCBtb3JlIGNvc3RseSB3aGVuIHBpY2tfbmV4
+dF90YXNrIGZvciBhbGwgc2libGluZ3MuDQo+IE5vdCB3b3JzZSB0aGFuIHR3byB0YXNrcyBwaW5n
+LXBvbmcgb24gdGhlIHNhbWUgdGFyZ2V0IHJ1biBxdWV1ZSBJIGd1ZXNzLCBhbmQgYmV0dGVyIGlm
+DQo+IC0gdGFzazEoY29va2llIEEpIGlzIHJ1bm5pbmcgb24gdGhlIHRhcmdldCwgYW5kIHRhc2sy
+KGNvb2tpZSBCKSBpbiB0aGUgcnVucXVldWUsDQo+IC0gdGFzazMoY29va2llIEIpIGNvbWluZw0K
+PiANCj4gSWYgdGFzazMgY2hvb3NlcyB0YXJnZXQncyBzaWJsaW5nLCBpdCBjb3VsZCBoYXZlIGEg
+Y2hhbmNlIHRvIHJ1biBjb25jdXJyZW50bHkgd2l0aCB0YXNrMi4NCj4gQnV0IGlmIHRhc2szIGNo
+b29zZXMgdGFyZ2V0LCBpdCB3aWxsIHdhaXQgZm9yIG5leHQgcHVsbGluZyBsdWNrIG9mIGxvYWQg
+YmFsYW5jZXINClRoYXTigJlzIG1vcmUgaW50ZXJlc3RpbmcuIDopDQpEaXN0cmlidXRpbmcgZGlm
+ZmVyZW50IGNvb2tpZSB0YXNrcyBvbnRvIGRpZmZlcmVudCBjcHVzKG9yIGNwdXNldHMpIGNvdWxk
+IGJlIHRoZSAqaWRlYWwgc3RhYmxlIHN0YXR1cyogd2Ugd2FudCwgYXMgSSB1bmRlcnN0b29kLg0K
+RGlmZmVyZW50IGNvb2tpZSB0YXNrcyBydW5uaW5nIG9uIHNpYmxpbmcgc210cyBjb3VsZCBodXJ0
+IHBlcmZvcm1hbmNlLCBhbmQgdGhhdCBzaG91bGQgYmUgYXZvaWRlZCB3aXRoIGJlc3QgZWZmb3J0
+Lg0KRm9yIGFib3ZlIGNhc2UsIHNlbGVjdGluZyBpZGxlIHNpYmxpbmcgY3B1IGNhbiBpbXByb3Zl
+IHRoZSBjb25jdXJyZW5jeSBpbmRlZWQsIGJ1dCBpdCBkZWNyZWFzZSB0aGUgaW1iYWxhbmNlIGZv
+ciBsb2FkLWJhbGFuY2VyLg0KSW4gdGhhdCBjYXNlLCBsb2FkLWJhbGFuY2VyIGNvdWxkIG5vdCBu
+b3RpY2UgdGhlIGltYmFsYW5jZSwgYW5kIHdvdWxkIGRvIG5vdGhpbmcgdG8gaW1wcm92ZSB0aGUg
+dW5tYXRjaGVkIHNpdHVhdGlvbi4NCk9uIHRoZSBjb250cmFyeSwgY2hvb3NpbmcgdGhlICp0YXJn
+ZXQqIGNwdSBjb3VsZCBlbmhhbmNlIHRoZSBpbWJhbGFuY2UsIGFuZCBsb2FkLWJhbGFuY2VyIGNv
+dWxkIHRyeSB0byBwdWxsIHVubWF0Y2hlZCB0YXNrIGF3YXksDQp3aGljaCBjb3VsZCBpbXByb3Zl
+IHRoZSB1bm1hdGNoZWQgc2l0dWF0aW9uIGFuZCBiZSBoZWxwZnVsIHRvIHJlYWNoIHRoZSAqaWRl
+YWwgc3RhYmxlIHN0YXR1cyouIE1heWJlIHRoYXTigJlzIHdoYXQgd2UgZXhwZWN0LiA6KQ0KDQpU
+aHguDQpSZWdhcmRzLA0KSmlhbmcNCg0KPiANCj4gVGhhbmtzLA0KPiAtQXVicmV5DQo+IA0KPj4g
+SW4gY29uc2lkZXJhdGlvbiBvZiBjdXJyZW50bHkgbG9hZC1iYWxhbmNlIGJlaW5nIG5vdCBmdWxs
+eSBhd2FyZSBvZiBjb3JlLXNjaGVkdWxpbmcsIGFuZCBjYW4gbm90IGltcHJvdmUNCj4+IHRoZSAq
+dW5tYXRjaGVkIHNpYmxpbmcqIGNhc2UsIHRoZSAqZmluZF9pZGxlc3RfKiogZW50cnkgc2hvdWxk
+IHRyeSBpdHMgYmVzdCB0byBhdm9pZCB0aGUgY2FzZSwgSU1ITy4NCj4gDQo+PiBBbHNvLCBqdXN0
+IGFuIGFkdmljZSBhbmQgIGFuIG9wdGlvbi4gOikNCj4+IA0KPj4gVGh4Lg0KPj4gUmVnYXJkcywN
+Cj4+IEppYW5nICANCj4+IA0KPj4+IA0KPj4+PiBCZXNpZGVzLCBjaG9vc2luZyAqdGFyZ2V0KiBj
+cHUgbWF5IGJlIG1vcmUgY2FjaGUgZnJpZW5kbHkuIFNvIElNSE8sICp0YXJnZXQqIGNwdSBtYXkg
+YmUgYSBiZXR0ZXIgY2hvaWNlIGlmIGNvb2tpZSBub3QgbWF0Y2gsIGluc3RlYWQgb2YgaWRsZSBz
+aWJsaW5nLg0KPj4+IEknbSBub3Qgc3VyZSBpZiBpdCdzIG1vcmUgY2FjaGUgZnJpZW5kbHkgYXMg
+dGhlIHRhcmdldCBpcyBidXN5LCBhbmQgdGhlIGNvbWluZyB0YXNrDQo+Pj4gaXMgYSBjb29raWUg
+dW5tYXRjaGVkIHRhc2suDQoNCg==
