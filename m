@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F8A22B442
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C804522B446
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730063AbgGWRLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:11:46 -0400
+        id S1730103AbgGWRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:11:56 -0400
 Received: from mga05.intel.com ([192.55.52.43]:6574 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730026AbgGWRLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:11:43 -0400
-IronPort-SDR: eSjrtCnLYs3vXStYAiUy94h9Ji+D/YNcnlXdlD/vhVG+KocfgD4skiz+bGYMOfrvXF+OCpJ4DP
- VZ9n/xzQTbrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456703"
+        id S1730050AbgGWRLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:11:44 -0400
+IronPort-SDR: F1kQxuNhtp3go6R02yWdhdxdcX3sVoMsErAMIkrkljacqT98w5/ZOFOaePAZ72Z0ooL9whqP7H
+ 9gA6Mtr6G9eg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456724"
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="235456703"
+   d="scan'208";a="235456724"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:42 -0700
-IronPort-SDR: DdeuHP9R2xys/LK3Opt+DuxuXEjAFS5Hx5ZCwkufOVv/MP53SyebAKsLoAqSoIk+CvgD6nC+2L
- x7nD7O1kPphg==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:43 -0700
+IronPort-SDR: IV4ZqdwLeoS3rJd18OTVjYEn3oOIlJ9Jg9iUifeU1xsKH+lk5Lg+HZ7D5s7p3b3irICIuGWJch
+ ZbI5vVmaDpqQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="488904251"
+   d="scan'208";a="488904260"
 Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:42 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:43 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     jolsa@kernel.org, eranian@google.com,
         alexander.shishkin@linux.intel.com, ak@linux.intel.com,
         like.xu@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V7 03/14] perf/x86/intel: Introduce the fourth fixed counter
-Date:   Thu, 23 Jul 2020 10:11:06 -0700
-Message-Id: <20200723171117.9918-4-kan.liang@linux.intel.com>
+Subject: [PATCH V7 04/14] perf/x86/intel: Move BTS index to 47
+Date:   Thu, 23 Jul 2020 10:11:07 -0700
+Message-Id: <20200723171117.9918-5-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200723171117.9918-1-kan.liang@linux.intel.com>
 References: <20200723171117.9918-1-kan.liang@linux.intel.com>
@@ -46,68 +46,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The fourth fixed counter, TOPDOWN.SLOTS, is introduced in Ice Lake to
-measure the level 1 TopDown events.
+The bit 48 in the PERF_GLOBAL_STATUS is used to indicate the overflow
+status of the PERF_METRICS counters.
 
-Add MSR address and macros for the new fixed counter, which will be used
-in a later patch.
-
-Add comments to explain the event encoding rules for the fixed counters.
+Move the BTS index to the bit 47.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/include/asm/perf_event.h | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/perf_event.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index fd3eba65337f..fe8110a8c75b 100644
+index fe8110a8c75b..58419e50ff98 100644
 --- a/arch/x86/include/asm/perf_event.h
 +++ b/arch/x86/include/asm/perf_event.h
-@@ -197,12 +197,24 @@ struct x86_pmu_capability {
-  */
- 
- /*
-- * All 3 fixed-mode PMCs are configured via this single MSR:
-+ * All the fixed-mode PMCs are configured via this single MSR:
-  */
- #define MSR_ARCH_PERFMON_FIXED_CTR_CTRL	0x38d
- 
- /*
-- * The counts are available in three separate MSRs:
-+ * There is no event-code assigned to the fixed-mode PMCs.
-+ *
-+ * For a fixed-mode PMC, which has an equivalent event on a general-purpose
-+ * PMC, the event-code of the equivalent event is used for the fixed-mode PMC,
-+ * e.g., Instr_Retired.Any and CPU_CLK_Unhalted.Core.
-+ *
-+ * For a fixed-mode PMC, which doesn't have an equivalent event, a
-+ * pseudo-encoding is used, e.g., CPU_CLK_Unhalted.Ref and TOPDOWN.SLOTS.
-+ * The pseudo event-code for a fixed-mode PMC must be 0x00.
-+ * The pseudo umask-code is 0xX. The X equals the index of the fixed
-+ * counter + 1, e.g., the fixed counter 2 has the pseudo-encoding 0x0300.
-+ *
-+ * The counts are available in separate MSRs:
-  */
- 
- /* Instr_Retired.Any: */
-@@ -213,11 +225,16 @@ struct x86_pmu_capability {
- #define MSR_ARCH_PERFMON_FIXED_CTR1	0x30a
- #define INTEL_PMC_IDX_FIXED_CPU_CYCLES	(INTEL_PMC_IDX_FIXED + 1)
- 
--/* CPU_CLK_Unhalted.Ref: */
-+/* CPU_CLK_Unhalted.Ref: event=0x00,umask=0x3 (pseudo-encoding) */
- #define MSR_ARCH_PERFMON_FIXED_CTR2	0x30b
- #define INTEL_PMC_IDX_FIXED_REF_CYCLES	(INTEL_PMC_IDX_FIXED + 2)
- #define INTEL_PMC_MSK_FIXED_REF_CYCLES	(1ULL << INTEL_PMC_IDX_FIXED_REF_CYCLES)
- 
-+/* TOPDOWN.SLOTS: event=0x00,umask=0x4 (pseudo-encoding) */
-+#define MSR_ARCH_PERFMON_FIXED_CTR3	0x30c
-+#define INTEL_PMC_IDX_FIXED_SLOTS	(INTEL_PMC_IDX_FIXED + 3)
-+#define INTEL_PMC_MSK_FIXED_SLOTS	(1ULL << INTEL_PMC_IDX_FIXED_SLOTS)
-+
+@@ -238,11 +238,11 @@ struct x86_pmu_capability {
  /*
   * We model BTS tracing as another fixed-mode PMC.
   *
+- * We choose a value in the middle of the fixed event range, since lower
++ * We choose the value 47 for the fixed index of BTS, since lower
+  * values are used by actual fixed events and higher values are used
+  * to indicate other overflow conditions in the PERF_GLOBAL_STATUS msr.
+  */
+-#define INTEL_PMC_IDX_FIXED_BTS			(INTEL_PMC_IDX_FIXED + 16)
++#define INTEL_PMC_IDX_FIXED_BTS			(INTEL_PMC_IDX_FIXED + 15)
+ 
+ #define GLOBAL_STATUS_COND_CHG			BIT_ULL(63)
+ #define GLOBAL_STATUS_BUFFER_OVF_BIT		62
 -- 
 2.17.1
 
