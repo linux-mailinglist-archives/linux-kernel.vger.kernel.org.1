@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CBA22B292
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1144E22B27F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729531AbgGWP1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        id S1729609AbgGWP1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbgGWP1A (ORCPT
+        with ESMTP id S1729594AbgGWP1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:27:00 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D04C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:00 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g10so6726935wmc.1
+        Thu, 23 Jul 2020 11:27:01 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A5C2C0619E3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:01 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id p14so4965427wmg.1
         for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:27:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kcr8FiQcF4dcjc+1sT9fDo6gYVNY2HcPFMXM5v83NF4=;
-        b=fUdXAo34sJI9Nocd1bdBlfYHHPYfMTox6oVwVJiBjL6FoYVn6+p/mCZ3LyKIodqTf9
-         uCaOe21npf+1dWHx/wNkJiAR+cyXU0R1hhdpC4r7Lviv+GaibqIav+EGNBIgnmT/ETpy
-         7DmAfGB84zaOoErEI9zavQTrGl4FKkac4oV+qdofgXuVNcMKtrOWPyL+ZTbkNgmT71sb
-         9zgb4HRiGFbBnqjr8q8bB86ZQce37gtpT5u6Zp9y/j1mYGukdhnujbHZBTABvjTJ97tp
-         9NPFY9DZ5SQtx6EPlDNfH+Lw8ZZ4jMPROnUccZ5uJxuvJ4CE44EhEj5DQNpTseI1J7JR
-         ZpCA==
+        bh=gEfaBqT/0CoLB9mlKqYWw9OwFPm9et7GWv9HdjL+20Q=;
+        b=qLNp4nQHmBcL9wwPcTVh1KdyojCC+Ng1h0PSBagRtQe/13DibONXpQ/OK1hYytNNyB
+         oIN9Ptyndv/Mdo9ftVGZGb8jmZv9mBo2JX2mhV/GoJR0eJPnlepcmPCQrMS03klCj/Ls
+         idzzWjFAhcItNP0G7hHezWVLTTLW7KvYCyQtdYFHjfPjitCHAQmeGMcVSldgCYpOTDJT
+         C24PkFeoRuHRkm65GPydAWLnOnCU0v5MJKZssXF58zH/bkoRrGpMAEaYVjYBt2TmmOu9
+         QSfDL52VJVbM/N6YhjSl24VOEWL2ETfHOyHe0/Gn3himhdQox/4Q0OkYhWHIYcnUZlmx
+         vs+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kcr8FiQcF4dcjc+1sT9fDo6gYVNY2HcPFMXM5v83NF4=;
-        b=VxMYh/de2d2Pzduc9keFT5LLMGjV4weg0vIZUl0Q2D8I/rNXB20HgsGE1tsE2KcZqs
-         v5X+rBzQHT6wAzGTo/fnC2Ab9ZOSZj940/rID/r3r5ap+wVkXCEkL2kAMXFfXyp7QnaV
-         iV9AqvjEWX6tYhGX8jP/pRrKhNrl0yNLDx+eEF0xBtij+ui0tpFx5//8PfJmr3zdsWi1
-         CLQpvU/mkQSh0n4AznU8OCVwzmJiJiXilCwpzXIKNMJH+EUrE4VJCukFxzxrbmYiCyPA
-         5IMpMAsB+Kfh1NwbafsIGMXxdVMzlIh74zyZOdOtx5Fd08f7bw0oPOqJQNjH5145f3Pn
-         ckgA==
-X-Gm-Message-State: AOAM530S2cQAqJn0eb4XXBWLkJSoWWKtG6fXo0iLMu1aSMDybAOCDPAw
-        iz/3VwEx1uuQnEaREXJvxpB6+Q==
-X-Google-Smtp-Source: ABdhPJwDhCN3AoJJvUyS+OvPDjrPC0R/KjZhd8zi2hvwwI6iTAJHUgFySZUsPoM6/EqmPNx/Y/jfig==
-X-Received: by 2002:a7b:c054:: with SMTP id u20mr4538366wmc.2.1595518018374;
-        Thu, 23 Jul 2020 08:26:58 -0700 (PDT)
+        bh=gEfaBqT/0CoLB9mlKqYWw9OwFPm9et7GWv9HdjL+20Q=;
+        b=VOBw1RkVDgEtd8pK6vsSX2ehzYbMYa4N2U6PgfRkMzr3AWIbay2q6PUcll9+IIaXDS
+         ehYKH+zoU3rKZ/1rpEXcpdgT4MKuedQWjJ/gSxMuUGVTO+bZ4F9b42P4CxWUBKY7GG8r
+         0H9kKflaUNJQ4i4pYyJqvPr764gHn+0yJqVWmb3uRRH6/x0CguDDE/TlGVnzfYj4updz
+         HR86NsJtF36PT5kGwCamB7D19WMdbbrEy0dcZOKwJAzGPtxXcDFnv46wbAZxNGMXD+LY
+         YIqZEMIdTkXBWXO6c+KjHSZYcJP91Cx4EHPjiq98qvKOoohf/tUtVS1nDCu2ky2UaAQx
+         ThFA==
+X-Gm-Message-State: AOAM531R8sJ2G/NwHPyaOwSj7MmgL/FRnvxk+frcn9dAtD9kaoRcRnHQ
+        e990HxNnDncSndrTfmCUj2DlwA==
+X-Google-Smtp-Source: ABdhPJzKZTThxX/bozgKe2UbCkR0civZnFkJIRvbd/AnyAaR20RyQH92o7sYad6XySCakbUDgu3WMg==
+X-Received: by 2002:a7b:c3da:: with SMTP id t26mr2125925wmj.13.1595518019623;
+        Thu, 23 Jul 2020 08:26:59 -0700 (PDT)
 Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:dca7:8d30:33fa:daac])
-        by smtp.gmail.com with ESMTPSA id g145sm5963491wmg.23.2020.07.23.08.26.57
+        by smtp.gmail.com with ESMTPSA id g145sm5963491wmg.23.2020.07.23.08.26.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 08:26:57 -0700 (PDT)
+        Thu, 23 Jul 2020 08:26:58 -0700 (PDT)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
 To:     tglx@linutronix.de
-Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Nicolas Ferre <nicolas.ferre@microchip.com>,
         Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-kernel@vger.kernel.org (open list:CLOCKSOURCE, CLOCKEVENT DRIVERS),
         linux-arm-kernel@lists.infradead.org (moderated list:ARM/Microchip
-        (AT91) SoC support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 04/16] ARM: at91: add atmel tcb capabilities
-Date:   Thu, 23 Jul 2020 17:26:24 +0200
-Message-Id: <20200723152639.639771-4-daniel.lezcano@linaro.org>
+        (AT91) SoC support)
+Subject: [PATCH 05/16] clocksource/drivers/timer-atmel-tcb: Rework 32khz clock selection
+Date:   Thu, 23 Jul 2020 17:26:25 +0200
+Message-Id: <20200723152639.639771-5-daniel.lezcano@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723152639.639771-1-daniel.lezcano@linaro.org>
 References: <1b1122f4-bce9-f349-e602-ed8e14cbb501@linaro.org>
@@ -70,38 +70,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamel Bouhara <kamel.bouhara@bootlin.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Some atmel socs have extra tcb capabilities that allow using a generic
-clock source or enabling a quadrature decoder.
+On all the supported SoCs, the slow clock is always ATMEL_TC_TIMER_CLOCK5,
+avoid looking it up and pass it directly to setup_clkevents.
 
-Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200710230813.1005150-5-alexandre.belloni@bootlin.com
+Link: https://lore.kernel.org/r/20200710230813.1005150-6-alexandre.belloni@bootlin.com
 ---
- include/soc/at91/atmel_tcb.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/clocksource/timer-atmel-tcb.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/include/soc/at91/atmel_tcb.h b/include/soc/at91/atmel_tcb.h
-index c3c7200ce151..1d7071dc0bca 100644
---- a/include/soc/at91/atmel_tcb.h
-+++ b/include/soc/at91/atmel_tcb.h
-@@ -36,9 +36,14 @@ struct clk;
- /**
-  * struct atmel_tcb_config - SoC data for a Timer/Counter Block
-  * @counter_width: size in bits of a timer counter register
-+ * @has_gclk: boolean indicating if a timer counter has a generic clock
-+ * @has_qdec: boolean indicating if a timer counter has a quadrature
-+ * decoder.
-  */
- struct atmel_tcb_config {
- 	size_t	counter_width;
-+	bool    has_gclk;
-+	bool    has_qdec;
- };
+diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
+index 7427b07495a8..b255a4a1a36b 100644
+--- a/drivers/clocksource/timer-atmel-tcb.c
++++ b/drivers/clocksource/timer-atmel-tcb.c
+@@ -346,7 +346,7 @@ static void __init tcb_setup_single_chan(struct atmel_tc *tc, int mck_divisor_id
+ 	writel(ATMEL_TC_SYNC, tcaddr + ATMEL_TC_BCR);
+ }
  
- /**
+-static const u8 atmel_tcb_divisors[5] = { 2, 8, 32, 128, 0, };
++static const u8 atmel_tcb_divisors[] = { 2, 8, 32, 128 };
+ 
+ static const struct of_device_id atmel_tcb_of_match[] = {
+ 	{ .compatible = "atmel,at91rm9200-tcb", .data = (void *)16, },
+@@ -362,7 +362,6 @@ static int __init tcb_clksrc_init(struct device_node *node)
+ 	u64 (*tc_sched_clock)(void);
+ 	u32 rate, divided_rate = 0;
+ 	int best_divisor_idx = -1;
+-	int clk32k_divisor_idx = -1;
+ 	int bits;
+ 	int i;
+ 	int ret;
+@@ -416,12 +415,6 @@ static int __init tcb_clksrc_init(struct device_node *node)
+ 		unsigned divisor = atmel_tcb_divisors[i];
+ 		unsigned tmp;
+ 
+-		/* remember 32 KiHz clock for later */
+-		if (!divisor) {
+-			clk32k_divisor_idx = i;
+-			continue;
+-		}
+-
+ 		tmp = rate / divisor;
+ 		pr_debug("TC: %u / %-3u [%d] --> %u\n", rate, divisor, i, tmp);
+ 		if (best_divisor_idx > 0) {
+@@ -467,7 +460,7 @@ static int __init tcb_clksrc_init(struct device_node *node)
+ 		goto err_disable_t1;
+ 
+ 	/* channel 2:  periodic and oneshot timer support */
+-	ret = setup_clkevents(&tc, clk32k_divisor_idx);
++	ret = setup_clkevents(&tc, ATMEL_TC_TIMER_CLOCK5);
+ 	if (ret)
+ 		goto err_unregister_clksrc;
+ 
 -- 
 2.25.1
 
