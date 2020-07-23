@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A398C22BA16
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EFB22BA14
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728074AbgGWXPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 19:15:52 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45566 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgGWXPt (ORCPT
+        id S1728124AbgGWXPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 19:15:53 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:34609 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727901AbgGWXPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 23 Jul 2020 19:15:49 -0400
-Received: by mail-qk1-f194.google.com with SMTP id u64so7060630qka.12;
-        Thu, 23 Jul 2020 16:15:48 -0700 (PDT)
+Received: by mail-qk1-f195.google.com with SMTP id x69so7118152qkb.1;
+        Thu, 23 Jul 2020 16:15:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=x8IZbd4Fczf92kh5M3HwuHrI1z58wZWyf5U7NUnPhRY=;
-        b=Q6DX6i2YSUNMEGGIhtAtrqF92uvtKHoxgWAkl6ije5OFCXrE0jN/n20676DhpQxGny
-         c0Piq0YVe6w+fv18O1qdcauv8JoqwRsXMrVFE8D9E+WDecxSTWteF9RBF4mjknPKY2Cq
-         CTMfn0gITMZU/E/ueL44Cg/QTB8ZNhJ28BAo71HpwlVJS6Ohf/DiJ6/B+WFZ1nYKSLAs
-         2D6UUyRIxEKHLKmTUGYy98SOa3CzS+62UOHneVDI5vklrzVFVLXdEhi+GkKhmtjy4itQ
-         mjqtAsOjfP5dEYugvzxDRt9VgPfLNFPYGjbx3FmgC6Q5MvC7+TtQZz+J9tkLr3W5quoN
-         C5QQ==
-X-Gm-Message-State: AOAM532MeK/F4a4W7/VSYJPRq0SbIt7LK1AZTv5Qm1S4wvwwnj14VFls
-        BJSc8Lh8qai/XzY1BIsBFes=
-X-Google-Smtp-Source: ABdhPJwvgEjMKThPAs1a84yJgSsd+Py7vrCBvLV00/GpEFdmmEqp1wOoieVANE+LZeo7pqmMyDOwhQ==
-X-Received: by 2002:a37:7dc3:: with SMTP id y186mr6797518qkc.160.1595546147786;
-        Thu, 23 Jul 2020 16:15:47 -0700 (PDT)
+        bh=0p3sWjwoIaPmRFGxZVHxaWE9xgeZNDe6TS9EQLQfiVk=;
+        b=hyfop1Nq9qhUbrhitGMJeKfJ4dnuX6dBM0QHrhxtqwouEXoJ8XGHmRXPqnH3pxm/iA
+         YFwn18x4+4PMufCb/nL0AKfXLXZ6EHTtCKgp5MFksUzQJ5GKkWhO7KT+pKm7yHb1w26o
+         grcj/5/z036BrPhd11/s9myEhgCkwFD84PezAuU/qUc2+2+pSvgLoKpnlC1JxZj8zk42
+         p6C60NeMkfon+DpHwXS1+mbFi9zw4JznzV9CqSWq935ycKb/++4Kh1NDq684w+moWppV
+         RNY1HzE0NnS1p+ZbKKKtS14Rkkm3mL9tOebRaYf0CQPhte/GmG/ferKFYDCDI3+qVRr6
+         Q8Eg==
+X-Gm-Message-State: AOAM530HxjcDTJmDW35KSr3LBQwg5nIrIqZkgTTwGkXJp4SlfZfLwN1z
+        4a46tepfi56Y6cTn8I98q8A=
+X-Google-Smtp-Source: ABdhPJxRhrWyFuZm76eJyagUPBPagdoNvBL7r+lFd2f/JrZVqYCD5XYr6+Kk+vyZcZTbD12AbwR/Ug==
+X-Received: by 2002:a37:4d90:: with SMTP id a138mr7128415qkb.363.1595546148576;
+        Thu, 23 Jul 2020 16:15:48 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id u58sm4196610qth.77.2020.07.23.16.15.46
+        by smtp.gmail.com with ESMTPSA id u58sm4196610qth.77.2020.07.23.16.15.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 16:15:47 -0700 (PDT)
+        Thu, 23 Jul 2020 16:15:48 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
         Andy Lutomirski <luto@kernel.org>,
@@ -44,9 +44,9 @@ To:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
         "David S. Miller" <davem@davemloft.net>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] x86/mm: Drop unused MAX_PHYSADDR_BITS
-Date:   Thu, 23 Jul 2020 19:15:42 -0400
-Message-Id: <20200723231544.17274-2-nivedita@alum.mit.edu>
+Subject: [PATCH 2/3] sh/mm: Drop unused MAX_PHYSADDR_BITS
+Date:   Thu, 23 Jul 2020 19:15:43 -0400
+Message-Id: <20200723231544.17274-3-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200723231544.17274-1-nivedita@alum.mit.edu>
 References: <20200723231544.17274-1-nivedita@alum.mit.edu>
@@ -57,47 +57,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro is not used anywhere, and has an incorrect value (going by the
-comment) on x86_64 since commit
-  c898faf91b3e ("x86: 46 bit physical address support on 64 bits")
-
-To avoid confusion, just remove the definition.
+The macro is not used anywhere, so remove the definition.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/include/asm/sparsemem.h | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ arch/sh/include/asm/sparsemem.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
-index 199218719a86..6bfc878f6771 100644
---- a/arch/x86/include/asm/sparsemem.h
-+++ b/arch/x86/include/asm/sparsemem.h
-@@ -10,24 +10,20 @@
-  *    field of the struct page
-  *
-  * SECTION_SIZE_BITS		2^n: size of each section
-- * MAX_PHYSADDR_BITS		2^n: max size of physical address space
-- * MAX_PHYSMEM_BITS		2^n: how much memory we can have in that space
-+ * MAX_PHYSMEM_BITS		2^n: max size of physical address space
-  *
+diff --git a/arch/sh/include/asm/sparsemem.h b/arch/sh/include/asm/sparsemem.h
+index 4eb899751e45..084706bb8cca 100644
+--- a/arch/sh/include/asm/sparsemem.h
++++ b/arch/sh/include/asm/sparsemem.h
+@@ -5,11 +5,9 @@
+ #ifdef __KERNEL__
+ /*
+  * SECTION_SIZE_BITS		2^N: how big each section will be
+- * MAX_PHYSADDR_BITS		2^N: how much physical address space we have
+- * MAX_PHYSMEM_BITS		2^N: how much memory we can have in that space
++ * MAX_PHYSMEM_BITS		2^N: how much physical address space we have
   */
+ #define SECTION_SIZE_BITS	26
+-#define MAX_PHYSADDR_BITS	32
+ #define MAX_PHYSMEM_BITS	32
  
- #ifdef CONFIG_X86_32
- # ifdef CONFIG_X86_PAE
- #  define SECTION_SIZE_BITS	29
--#  define MAX_PHYSADDR_BITS	36
- #  define MAX_PHYSMEM_BITS	36
- # else
- #  define SECTION_SIZE_BITS	26
--#  define MAX_PHYSADDR_BITS	32
- #  define MAX_PHYSMEM_BITS	32
- # endif
- #else /* CONFIG_X86_32 */
- # define SECTION_SIZE_BITS	27 /* matt - 128 is convenient right now */
--# define MAX_PHYSADDR_BITS	(pgtable_l5_enabled() ? 52 : 44)
- # define MAX_PHYSMEM_BITS	(pgtable_l5_enabled() ? 52 : 46)
  #endif
- 
 -- 
 2.26.2
 
