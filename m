@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BB322ABEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:48:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D5322ABF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgGWJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 05:48:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11995 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726127AbgGWJsL (ORCPT
+        id S1727996AbgGWJv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 05:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbgGWJv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:48:11 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06N9XWE8045943;
-        Thu, 23 Jul 2020 05:47:55 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1yc0v15-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 05:47:55 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06N9XwQK047495;
-        Thu, 23 Jul 2020 05:47:55 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32e1yc0v0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 05:47:55 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06N9fL8G013581;
-        Thu, 23 Jul 2020 09:47:52 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 32brbgu5q0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 09:47:52 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06N9loTk29360560
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Jul 2020 09:47:50 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0E8FF52052;
-        Thu, 23 Jul 2020 09:47:50 +0000 (GMT)
-Received: from [9.145.184.33] (unknown [9.145.184.33])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A543052057;
-        Thu, 23 Jul 2020 09:47:49 +0000 (GMT)
-Subject: Re: [PATCH V6] GCOV: Add config to check the preqequisites situation
-To:     Cixi Geng <gengcixi@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jslaby@suse.com,
-        linux-serial@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Cixi Geng1 <cixi.geng1@unisoc.com>,
-        Orson Zhai <orsonzhai@gmail.com>, zhang.lyra@gmail.com
-References: <20200618100852.13715-1-gengcixi@gmail.com>
- <2fae67c7637f4e978cb54c3b96090788@BJMBX01.spreadtrum.com>
- <CAF12kFseC4MMbEUk6CgW=Hpz_Hg-+fjwbLZKFdPu0K_EGtcPDw@mail.gmail.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <a5c4018c-a0fd-7855-1ee9-dc0c4e7251e7@linux.ibm.com>
-Date:   Thu, 23 Jul 2020 11:47:51 +0200
+        Thu, 23 Jul 2020 05:51:56 -0400
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA9CC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:51:56 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id AF329300011A0;
+        Thu, 23 Jul 2020 11:51:52 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 68E6B36272; Thu, 23 Jul 2020 11:51:52 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 11:51:52 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Michael Haeuptle <michael.haeuptle@hpe.com>,
+        Ian May <ian.may@canonical.com>,
+        Keith Busch <kbusch@kernel.org>, linux-pci@vger.kernel.org,
+        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        Rick Farrington <ricardo.farrington@cavium.com>,
+        Derek Chickles <dchickles@marvell.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        Govinda Tatti <govinda.tatti@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [PCI] 3233e41d3e:
+ WARNING:at_drivers/pci/pci.c:#pci_reset_hotplug_slot
+Message-ID: <20200723095152.nf3fmfzrjlpoi35h@wunner.de>
+References: <908047f7699d9de9ec2efd6b79aa752d73dab4b6.1595329748.git.lukas@wunner.de>
+ <20200723091305.GJ19262@shao2-debian>
 MIME-Version: 1.0
-In-Reply-To: <CAF12kFseC4MMbEUk6CgW=Hpz_Hg-+fjwbLZKFdPu0K_EGtcPDw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_03:2020-07-22,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 suspectscore=1 bulkscore=0 adultscore=0 clxscore=1011
- priorityscore=1501 mlxscore=0 mlxlogscore=999 phishscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007230072
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723091305.GJ19262@shao2-debian>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.07.2020 14:38, Cixi Geng wrote:
-> Hi All:
-> Does this patch need more modification?
-
-Yes. As it is now there's still a prompt for the prereq symbol. There
-should be no prompt for this symbol in the config dialog.
-
+On Thu, Jul 23, 2020 at 05:13:06PM +0800, kernel test robot wrote:
+> FYI, we noticed the following commit (built with gcc-9):
 [...]
+> commit: 3233e41d3e8ebcd44e92da47ffed97fd49b84278 ("[PATCH] PCI: pciehp: Fix AB-BA deadlock between reset_lock and device_lock")
+[...]
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> [    0.971752] WARNING: CPU: 0 PID: 1 at drivers/pci/pci.c:4905 pci_reset_hotplug_slot+0x70/0x80
 
+Thank you, trusty robot.
 
->> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
->> index 3941a9c48f83..f415c4aaf0ab 100644
->> --- a/kernel/gcov/Kconfig
->> +++ b/kernel/gcov/Kconfig
->> @@ -51,6 +51,16 @@ config GCOV_PROFILE_ALL
->>         larger and run slower. Also be sure to exclude files from profiling
->>         which are not linked to the kernel image to prevent linker errors.
->>
->> +config GCOV_PROFILE_PREREQS
->> +       bool "Profile Kernel for prereqs"
->> +       default y if GCOV_KERNEL && !COMPILE_TEST
->> +       help
->> +         This options activates profiling for the specified kernel modules.
->> +
->> +         When some modules need Gcov data, enable this config, then configure
->> +         with gcov on the corresponding modules,The directories or files of
->> +         these modules will be added profiling flags after kernel compile.
->> +
+I botched the call to lockdep_assert_held_write(), it should have been
+conditional on "if (probe)".
 
-Replace the portion above with these lines:
+Happy to respin the patch, but I'd like to hear opinions on the locking
+issues surrounding xen and octeon (and the patch in general).
 
-config GCOV_PROFILE_PREREQS
-        def_bool y if GCOV_KERNEL && !COMPILE_TEST
+In particular, would a solution be entertained wherein the pci_dev is
+reset by the PCI core after driver unbinding, contingent on a flag which
+is set by a PCI driver to indicate that the pci_dev is returned to the
+core in an unclean state?
 
+Also, why does xen require a device reset on bind?
 
+Thanks!
 
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+Lukas
