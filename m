@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC54222AC2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72FB22AC31
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgGWKJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 06:09:06 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:19593 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgGWKJF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 06:09:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595498945; x=1627034945;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=Ke9E7JJ3zQ2XCPvF/ZiJvhJqLTFeRFCsv/7IuKKbagQ=;
-  b=V7NOUmd9VpHnjDvoasUeywKtXuDf4kzyNVEsZxoXFFjbkJcF94vmgjhX
-   db/Nn0tMurhj679SmlyPoi8BSluHZP3azKLfUHeTkGFVY055h/d/xD/j4
-   3N5FRvpIokdUycmzZnJFHiszWdEBQN6777cM6sUEYDM5jO/fG6bCgDs93
-   JG06E76+SOyPLuEEagEvkzRcPafnnqpBDOZqFL2FsEvnvfhAN1bafI2XU
-   5z3/v2BH45QD2WqpWzsIIOIKVQi6tv9oj8wNvPCupqGMkOiTGUx464dxa
-   jbylbgF8taTBhIdGPxV53DIItXj7Pj5N1bb4cD3mUe4/5O+iwZA/IpoLz
-   Q==;
-IronPort-SDR: ILYu3poOG836t6YdFhhy7gRwahSmw/PjhZTTy1y+ww68TrIdV3l/q3YZ1OYi6dpKEY6kFS3qYS
- HR+d2nKC7+zdK4+OpGOh/rBjwf947+pHLSxvKcD87AN7UTz3Yt8tO4irhrCCMLZAUFEnzq/oIE
- Ng+bTkCoXaB2d6sxUGWepoGjGiK56pCDVK81Vo8D341+ZwHLyfPpHeBpgDeizgHgxiMnvk3Aan
- Ql41m9S/EAtBNNAL7wrD8JXbdjMMH6SwpHZsKo2xJetKCYf6q+3eY/VD1mhGWobY/Pvm2uS5mj
- Vf8=
-X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
-   d="scan'208";a="85093580"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 03:09:04 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 23 Jul 2020 03:08:22 -0700
-Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
- via Frontend Transport; Thu, 23 Jul 2020 03:09:01 -0700
-References: <20200615133242.24911-1-lars.povlsen@microchip.com> <CAK8P3a1VGsMFfqaMXA2n49F84MYR5eYWvPT-sMHK1XYGGnNB0A@mail.gmail.com>
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        SoC Team <soc@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Olof Johansson <olof@lixom.net>,
-        "Michael Turquette" <mturquette@baylibre.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH v3 00/10] Adding support for Microchip Sparx5 SoC
-In-Reply-To: <CAK8P3a1VGsMFfqaMXA2n49F84MYR5eYWvPT-sMHK1XYGGnNB0A@mail.gmail.com>
-Date:   Thu, 23 Jul 2020 12:09:00 +0200
-Message-ID: <87v9iek0g3.fsf@soft-dev15.microsemi.net>
+        id S1728254AbgGWKKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 06:10:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727859AbgGWKKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 06:10:39 -0400
+Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CA7F2065F;
+        Thu, 23 Jul 2020 10:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595499039;
+        bh=a1WzAHo+biXl5w0NzqYWMIoRKb3m/CzdIfGSUqtwS4g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LYQ1TlTy2848u2ByB+eOiTJCsGRtnrKiUhSRnTK2xDcxH/9SxffbLXLVxn33hsY+T
+         qOKEk9rKsZJ3Kk51Hr/L5xopzCnkS7tW/EYWwNBqbeGOJ0qKU+EfdbCIO2p8Y5NfLb
+         1Ex5KAiIvy3lNBbuppwt4SR7H21PUpZUWsjgBXIc=
+From:   Will Deacon <will@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] arm64: vdso32: Fix '--prefix=' value for newer versions of clang
+Date:   Thu, 23 Jul 2020 11:10:31 +0100
+Message-Id: <159549825312.3524506.8970900568207744647.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200723041509.400450-1-natechancellor@gmail.com>
+References: <20200723041509.400450-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 22 Jul 2020 21:15:10 -0700, Nathan Chancellor wrote:
+> Newer versions of clang only look for $(COMPAT_GCC_TOOLCHAIN_DIR)as [1],
+> rather than $(COMPAT_GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE_COMPAT)as,
+> resulting in the following build error:
+> 
+> $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+> CROSS_COMPILE_COMPAT=arm-linux-gnueabi- LLVM=1 O=out/aarch64 distclean \
+> defconfig arch/arm64/kernel/vdso32/
+> ...
+> /home/nathan/cbl/toolchains/llvm-binutils/bin/as: unrecognized option '-EL'
+> clang-12: error: assembler command failed with exit code 1 (use -v to see invocation)
+> make[3]: *** [arch/arm64/kernel/vdso32/Makefile:181: arch/arm64/kernel/vdso32/note.o] Error 1
+> ...
+> 
+> [...]
 
-Arnd Bergmann writes:
+Applied to arm64 (for-next/fixes), thanks!
 
-> On Mon, Jun 15, 2020 at 3:33 PM Lars Povlsen <lars.povlsen@microchip.com> wrote:
->>
->> This patch series adds support for Microchip Sparx5 SoC, the CPU
->> system of a advanced, TSN capable gigabit switch. The CPU is an armv8
->> x 2 CPU core (A53).
->>
->> Although this is an ARM core, it shares some peripherals with the
->> Microsemi Ocelot MIPS SoC.
->
-> I've picked up this version of the series into an arm/newsoc branch in
-> the soc tree,
-> except for the pinctrl patch that Linus Walleij already merged.
->
+[1/1] arm64: vdso32: Fix '--prefix=' value for newer versions of clang
+      https://git.kernel.org/arm64/c/7b7891c7bdfd
 
-Great! Thanks a lot for following up!
-
-> I see you still have a few pending patches for other subsystems (spi, mmc)
-> and I'm not sure what the status is for those and am dropping them for the
-> moment.
->
-
-Yes, I had a question out for the SPI maintainer but did not get any
-feedback, so I was thinking just doing my own assumptions and refreshing
-the series - probably tomorrow.
-
-I also just bumped the MMC maintainer (Adrian) yesterday, as he did send
-a me an 'Acked-by', but it hasn't been merged it seems.
-
-> Once the bindings are accepted by the respective subsystem maintainers,
-> please send any remaining DT patches as a follow-up to what I've already
-> merged.
->
-
-I'll try to work out the puzzle, might need to reach out directly to to
-determine whats missing.
-
-Later,
-
----Lars
-
->       Arnd
-
+Cheers,
 -- 
-Lars Povlsen,
-Microchip
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
