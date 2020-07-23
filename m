@@ -2,222 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C6B22A6FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08C522A6FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgGWFjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 01:39:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:63733 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbgGWFjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:39:23 -0400
-IronPort-SDR: 1EfFiuzgLP37RXnFl/NcASzOP+3TY8v2WkGLg8fk4G/Y92wvVFnWfJcxIBoNRTtmxv/fl2zSMS
- ieJ3/OIB06kQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="151777367"
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="151777367"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 22:39:21 -0700
-IronPort-SDR: uHhKZJY0aqXAOJQf3gR+mo4qPQVeKTQlODJndzEOaiigaP05NuheJXntfrqi0ynDFf3R1fTEzp
- QUzh6k1/kWFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="362941268"
-Received: from unknown (HELO [10.239.161.135]) ([10.239.161.135])
-  by orsmga001.jf.intel.com with ESMTP; 22 Jul 2020 22:39:14 -0700
-Subject: Re: [RFC PATCH 11/16] sched: migration changes for core
- scheduling(Internet mail)
-To:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>
-Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pjt@google.com" <pjt@google.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Aubrey Li <aubrey.li@intel.com>,
+        id S1726554AbgGWFkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 01:40:53 -0400
+Received: from mail-eopbgr20074.outbound.protection.outlook.com ([40.107.2.74]:43119
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725536AbgGWFkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 01:40:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jSmH1szUoLQ4zeuZTaUqMHFI53nELhNVmgERYr3mEuDT52TH8tYnsjnCMP0502IslY/NacXFcx+h+3VA/f17qsOkLoarIAZ190mpl4NeYSz3pKlF/zucEkZK/MHiuzRucoP9q/EsTot2Ty98FQP78KOcONo7YUlBW6GV44qj846lIUBxkwRJnY4FUYceBx+ZQDZM3fqVcOhRqSwI9qFuP9e9xxi/5S4MSoWVecYHCsyeo/R/INAmZHsI38dCTHwh03x2IdgG/KoZRPrGmeJrcPeqx6S6lQGgeEzIRjj9yMsEBE1mM1/Jv3CiLT8Xym7JtZ3yRCNA3aujJokgSGvOIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eaS/TlDo7cqi4FbDalwnmowouBaF73RbMKLUTJpPgcM=;
+ b=RHZyHb8yQTJWZyWE/++6Q/79KwGyostRlDsTFZBXBkLhkPDZtGyMAZX1oIN3uUJ+fSxVHW2xVXhrLgxwl6HaLBW7l73HrRKK1w8HzEQf668r0sbBMJ0hdOXZUkYxBigitA01QQYpfgJm6h6weKbI3zV1OhB8fliejd2Cjhvz9keXpCquNYy/IpICKwyaV1uvQypR4eyQtavuHoTXp5kBlrqRQbftnjjO7lXrQGhisTinHXm8T2t2Uk2Zt+ApydXnXmV5xT4iX4+CTGAZ5ihrLQSJFY1NtCEJ7StbMEgtr7c9g1G6rR5szjyZ84osYo+eG/0dAumDCJYuYc6jzKLA+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eaS/TlDo7cqi4FbDalwnmowouBaF73RbMKLUTJpPgcM=;
+ b=bImpdVRp/VzcFN4ysZDyAbWMJoYyYtBqk8JvB1X5V26CBHAeo9hKHbkbJTyY1pNrMa9vO6O0FcQqOH5e0G13q3rE97iTZpWzyvfNg2E6FH88q2L4OANMik1ademJaeXgRAWGoIbJX5Sq1M+CA7VhSvLarLtqzulh7TcaJcOb9O8=
+Received: from AM6PR04MB3976.eurprd04.prod.outlook.com (2603:10a6:209:3f::17)
+ by AM6PR04MB5079.eurprd04.prod.outlook.com (2603:10a6:20b:4::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Thu, 23 Jul
+ 2020 05:40:48 +0000
+Received: from AM6PR04MB3976.eurprd04.prod.outlook.com
+ ([fe80::51e7:c810:fec7:6943]) by AM6PR04MB3976.eurprd04.prod.outlook.com
+ ([fe80::51e7:c810:fec7:6943%3]) with mapi id 15.20.3174.030; Thu, 23 Jul 2020
+ 05:40:48 +0000
+From:   "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC:     "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kerrnel@google.com" <kerrnel@google.com>,
-        Phil Auld <pauld@redhat.com>, Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "vineethrp@gmail.com" <vineethrp@gmail.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <9044a2ebde089483d45c091752d208a878c604ac.1593530334.git.vpillai@digitalocean.com>
- <72869477-AA03-47D4-96C5-D3CDBDBC12E7@tencent.com>
- <459dbf33-02f6-d4e0-52e4-919e1e33be13@linux.intel.com>
- <5C71B460-8DC3-44AF-A75E-68BB2E33686B@tencent.com>
- <589382b3-709e-17a6-d693-05ebd3998336@linux.intel.com>
- <897E5117-8A78-4CE3-8514-3577C4474775@tencent.com>
- <6ab8a001-ae5e-e484-c571-90d6931004e7@linux.intel.com>
- <96A765D7-7FD3-40EB-873B-0F9365569490@tencent.com>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <a4533d7f-41b0-3477-0316-0e2df55cbe9c@linux.intel.com>
-Date:   Thu, 23 Jul 2020 13:39:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <96A765D7-7FD3-40EB-873B-0F9365569490@tencent.com>
-Content-Type: text/plain; charset=utf-8
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>,
+        Radu-andrei Bulie <radu-andrei.bulie@nxp.com>,
+        "fido_max@inbox.ru" <fido_max@inbox.ru>
+Subject: RE: [PATCH devicetree 3/4] powerpc: dts: t1040rdb: put SGMII PHY
+ under &mdio0 label
+Thread-Topic: [PATCH devicetree 3/4] powerpc: dts: t1040rdb: put SGMII PHY
+ under &mdio0 label
+Thread-Index: AQHWYEz+LgZibInI10i2/O6ewv0daakUplWQ
+Date:   Thu, 23 Jul 2020 05:40:48 +0000
+Message-ID: <AM6PR04MB39763CA66048BD4F221D0DE4EC760@AM6PR04MB3976.eurprd04.prod.outlook.com>
+References: <20200722172422.2590489-1-olteanv@gmail.com>
+ <20200722172422.2590489-4-olteanv@gmail.com>
+In-Reply-To: <20200722172422.2590489-4-olteanv@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [5.14.204.117]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 30811635-b75a-46a0-1b37-08d82ecaf405
+x-ms-traffictypediagnostic: AM6PR04MB5079:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM6PR04MB5079AD348F569C950C4E48B8AD760@AM6PR04MB5079.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /Bv17ujXPqbg74Cv8yFInypvDL1dKa09B0vWwYrgJNpBwuDc14pPIeWHnURs+korboP21mBrOgjuxrFxZyiqqMz12riMx/m1/jp1gdUhb4JL7lRw/PQAzcsqPwRINAgUMamZGpeEaZeQW3ifQ/TB7zczvZexmi7o+z0TQeoNKhbdOWeai6FFcTeUOgH9n7VS3hHRhy4FcDyWZ2473qVQnrnyHPR8OA2goMYjJpntLgd/aB/d9mCFuVBliJ2egIm0OIibWkjaKJ80LCDLxAxJHbEQnoOrgZgmSDhiUVBPxfJnzx9UraWv1RCI2bYAH54+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3976.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(186003)(8936002)(64756008)(66476007)(478600001)(83380400001)(66556008)(2906002)(5660300002)(66446008)(7696005)(7416002)(316002)(33656002)(76116006)(52536014)(8676002)(26005)(110136005)(54906003)(9686003)(86362001)(71200400001)(53546011)(4326008)(6506007)(66946007)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: JYal8yjGjhmUpyCL23LXjXcejFQTZ8ako1F/2UL7OOQg/n/HQ2Ew+kIZrKc0/MVxlaw5RSFcDC9XKfxDaCzl4rs6U/2bRo404kTjj+HoXI2r5Oj4++WH94xQdtyH3WnNtUbjS7G99jDnDNHbW6742skjsSM2MfI1kBw9/uFqOCEMH9RdX40JW60hEBY2H0lgkxJisxllhhQxGUneAK7mofLwqPDnz2Oe4gz/NF4KoR+ifqUAysSbbMREgRKQg9sNMGUOmw+kWKak1bL4JtMoxAY7Isi2xrVYj8ohi58kojpQmB4pCK7TQ1UtpQAus3pLSwvnkfCy3ndiP7V9rJg5uvhn10pVtb8gZqT6ttMOseixs+tJDr8YDlExMR2SFCkdbPLRoIuLEKUUskV2oUUHY9kph8L6mQogLDCK3ZrYgZl+D9VTA9m8IauTqDNMyxcgi6uGZM5ox09AWHeCFoQEWOJfa7kPKv5kg1/5EriKLsQ=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3976.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30811635-b75a-46a0-1b37-08d82ecaf405
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jul 2020 05:40:48.3732
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /Ov+hqQMBgJgE5yGTDeKqx9QweO+ZPr4vLyDMnKPW9WCiT5K6cPcI7WqIxksXVo8v49Y3q7v1RAyLmj3FhzUlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5079
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/23 12:23, benbjiang(蒋彪) wrote:
-> Hi,
->> On Jul 23, 2020, at 11:35 AM, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->>
->> On 2020/7/23 10:42, benbjiang(蒋彪) wrote:
->>> Hi,
->>>
->>>> On Jul 23, 2020, at 9:57 AM, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->>>>
->>>> On 2020/7/22 22:32, benbjiang(蒋彪) wrote:
->>>>> Hi,
->>>>>
->>>>>> On Jul 22, 2020, at 8:13 PM, Li, Aubrey <aubrey.li@linux.intel.com> wrote:
->>>>>>
->>>>>> On 2020/7/22 16:54, benbjiang(蒋彪) wrote:
->>>>>>> Hi, Aubrey,
->>>>>>>
->>>>>>>> On Jul 1, 2020, at 5:32 AM, Vineeth Remanan Pillai <vpillai@digitalocean.com> wrote:
->>>>>>>>
->>>>>>>> From: Aubrey Li <aubrey.li@intel.com>
->>>>>>>>
->>>>>>>> - Don't migrate if there is a cookie mismatch
->>>>>>>>  Load balance tries to move task from busiest CPU to the
->>>>>>>>  destination CPU. When core scheduling is enabled, if the
->>>>>>>>  task's cookie does not match with the destination CPU's
->>>>>>>>  core cookie, this task will be skipped by this CPU. This
->>>>>>>>  mitigates the forced idle time on the destination CPU.
->>>>>>>>
->>>>>>>> - Select cookie matched idle CPU
->>>>>>>>  In the fast path of task wakeup, select the first cookie matched
->>>>>>>>  idle CPU instead of the first idle CPU.
->>>>>>>>
->>>>>>>> - Find cookie matched idlest CPU
->>>>>>>>  In the slow path of task wakeup, find the idlest CPU whose core
->>>>>>>>  cookie matches with task's cookie
->>>>>>>>
->>>>>>>> - Don't migrate task if cookie not match
->>>>>>>>  For the NUMA load balance, don't migrate task to the CPU whose
->>>>>>>>  core cookie does not match with task's cookie
->>>>>>>>
->>>>>>>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
->>>>>>>> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
->>>>>>>> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
->>>>>>>> ---
->>>>>>>> kernel/sched/fair.c  | 64 ++++++++++++++++++++++++++++++++++++++++----
->>>>>>>> kernel/sched/sched.h | 29 ++++++++++++++++++++
->>>>>>>> 2 files changed, 88 insertions(+), 5 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->>>>>>>> index d16939766361..33dc4bf01817 100644
->>>>>>>> --- a/kernel/sched/fair.c
->>>>>>>> +++ b/kernel/sched/fair.c
->>>>>>>> @@ -2051,6 +2051,15 @@ static void task_numa_find_cpu(struct task_numa_env *env,
->>>>>>>> 		if (!cpumask_test_cpu(cpu, env->p->cpus_ptr))
->>>>>>>> 			continue;
->>>>>>>>
->>>>>>>> +#ifdef CONFIG_SCHED_CORE
->>>>>>>> +		/*
->>>>>>>> +		 * Skip this cpu if source task's cookie does not match
->>>>>>>> +		 * with CPU's core cookie.
->>>>>>>> +		 */
->>>>>>>> +		if (!sched_core_cookie_match(cpu_rq(cpu), env->p))
->>>>>>>> +			continue;
->>>>>>>> +#endif
->>>>>>>> +
->>>>>>>> 		env->dst_cpu = cpu;
->>>>>>>> 		if (task_numa_compare(env, taskimp, groupimp, maymove))
->>>>>>>> 			break;
->>>>>>>> @@ -5963,11 +5972,17 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
->>>>>>>>
->>>>>>>> 	/* Traverse only the allowed CPUs */
->>>>>>>> 	for_each_cpu_and(i, sched_group_span(group), p->cpus_ptr) {
->>>>>>>> +		struct rq *rq = cpu_rq(i);
->>>>>>>> +
->>>>>>>> +#ifdef CONFIG_SCHED_CORE
->>>>>>>> +		if (!sched_core_cookie_match(rq, p))
->>>>>>>> +			continue;
->>>>>>>> +#endif
->>>>>>>> +
->>>>>>>> 		if (sched_idle_cpu(i))
->>>>>>>> 			return i;
->>>>>>>>
->>>>>>>> 		if (available_idle_cpu(i)) {
->>>>>>>> -			struct rq *rq = cpu_rq(i);
->>>>>>>> 			struct cpuidle_state *idle = idle_get_state(rq);
->>>>>>>> 			if (idle && idle->exit_latency < min_exit_latency) {
->>>>>>>> 				/*
->>>>>>>> @@ -6224,8 +6239,18 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->>>>>>>> 	for_each_cpu_wrap(cpu, cpus, target) {
->>>>>>>> 		if (!--nr)
->>>>>>>> 			return -1;
->>>>>>>> -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
->>>>>>>> -			break;
->>>>>>>> +
->>>>>>>> +		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
->>>>>>>> +#ifdef CONFIG_SCHED_CORE
->>>>>>>> +			/*
->>>>>>>> +			 * If Core Scheduling is enabled, select this cpu
->>>>>>>> +			 * only if the process cookie matches core cookie.
->>>>>>>> +			 */
->>>>>>>> +			if (sched_core_enabled(cpu_rq(cpu)) &&
->>>>>>>> +			    p->core_cookie == cpu_rq(cpu)->core->core_cookie)
->>>>>>> Why not also add similar logic in select_idle_smt to reduce forced-idle? :)
->>>>>> We hit select_idle_smt after we scaned the entire LLC domain for idle cores
->>>>>> and idle cpus and failed,so IMHO, an idle smt is probably a good choice under
->>>>>> this scenario.
->>>>>
->>>>> AFAIC, selecting idle sibling with unmatched cookie will cause unnecessary fored-idle, unfairness and latency, compared to choosing *target* cpu.
->>>> Choosing target cpu could increase the runnable task number on the target runqueue, this
->>>> could trigger busiest->nr_running > 1 logic and makes the idle sibling trying to pull but
->>>> not success(due to cookie not match). Putting task to the idle sibling is relatively stable IMHO.
->>>
->>> I’m afraid that *unsuccessful* pullings between smts would not result in unstableness, because
->>> the load-balance always do periodicly , and unsuccess means nothing happen.
->> unsuccess pulling means more unnecessary overhead in load balance.
->>
->>> On the contrary, unmatched sibling tasks running concurrently could bring forced-idle to each other repeatedly,
->>> Which is more unstable, and more costly when pick_next_task for all siblings.
->> Not worse than two tasks ping-pong on the same target run queue I guess, and better if
->> - task1(cookie A) is running on the target, and task2(cookie B) in the runqueue,
->> - task3(cookie B) coming
->>
->> If task3 chooses target's sibling, it could have a chance to run concurrently with task2.
->> But if task3 chooses target, it will wait for next pulling luck of load balancer
-> That’s more interesting. :)
-> Distributing different cookie tasks onto different cpus(or cpusets) could be the *ideal stable status* we want, as I understood.
-> Different cookie tasks running on sibling smts could hurt performance, and that should be avoided with best effort.
-We already tried to avoid when we scan idle cores and idle cpus in llc domain.
+> -----Original Message-----
+> From: Vladimir Oltean <olteanv@gmail.com>
+> Sent: Wednesday, July 22, 2020 8:24 PM
+> To: robh+dt@kernel.org; shawnguo@kernel.org; mpe@ellerman.id.au;
+> devicetree@vger.kernel.org
+> Cc: benh@kernel.crashing.org; paulus@samba.org; linuxppc-
+> dev@lists.ozlabs.org; linux-kernel@vger.kernel.org;
+> netdev@vger.kernel.org; Madalin Bucur (OSS) <madalin.bucur@oss.nxp.com>;
+> Radu-andrei Bulie <radu-andrei.bulie@nxp.com>; fido_max@inbox.ru
+> Subject: [PATCH devicetree 3/4] powerpc: dts: t1040rdb: put SGMII PHY
+> under &mdio0 label
+>=20
+> We're going to add 8 more PHYs in a future patch. It is easier to follow
+> the hardware description if we don't need to fish for the path of the
+> MDIO controllers inside the SoC and just use the labels.
+>=20
 
-> For above case, selecting idle sibling cpu can improve the concurrency indeed, but it decrease the imbalance for load-balancer.
-> In that case, load-balancer could not notice the imbalance, and would do nothing to improve the unmatched situation.
-> On the contrary, choosing the *target* cpu could enhance the imbalance, and load-balancer could try to pull unmatched task away,
-Pulling away to where needs another bunch of elaboration.
+Please align to the existing structure, it may be easier to add something
+without paying attention to that but it's better to keep things organized.
+This structure is used across all the device trees of the platforms using
+DPAA, let's not start diverging now.
 
-> which could improve the unmatched situation and be helpful to reach the *ideal stable status*. Maybe that’s what we expect. :)
-> 
-If we limit to this one-core two-sibling three-tasks case, choosing the idle sibling is the ideal stable
-status, as it saves one lucky load balancer pulling and task migration.
+> Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
+> ---
+>  arch/powerpc/boot/dts/fsl/t1040rdb.dts | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/arch/powerpc/boot/dts/fsl/t1040rdb.dts
+> b/arch/powerpc/boot/dts/fsl/t1040rdb.dts
+> index 65ff34c49025..40d7126dbe90 100644
+> --- a/arch/powerpc/boot/dts/fsl/t1040rdb.dts
+> +++ b/arch/powerpc/boot/dts/fsl/t1040rdb.dts
+> @@ -59,12 +59,6 @@ ethernet@e4000 {
+>  				phy-handle =3D <&phy_sgmii_2>;
+>  				phy-connection-type =3D "sgmii";
+>  			};
+> -
+> -			mdio@fc000 {
+> -				phy_sgmii_2: ethernet-phy@3 {
+> -					reg =3D <0x03>;
+> -				};
+> -			};
+>  		};
+>  	};
+>=20
+> @@ -76,3 +70,9 @@ cpld@3,0 {
+>  };
+>=20
+>  #include "t1040si-post.dtsi"
+> +
+> +&mdio0 {
+> +	phy_sgmii_2: ethernet-phy@3 {
+> +		reg =3D <0x3>;
+> +	};
+> +};
+> --
+> 2.25.1
 
-Thanks,
--Aubrey
