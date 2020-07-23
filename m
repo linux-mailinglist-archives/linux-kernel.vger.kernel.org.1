@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2005C22AA68
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36DAA22AA70
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgGWIN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:13:57 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:31749 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbgGWIN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:13:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1138; q=dns/txt; s=axis-central1;
-  t=1595492036; x=1627028036;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=50pjpICS47njee1/tY5fnV1hkALwFSNd0R5epRzTCR0=;
-  b=SDPzTQOxHV/YddBtBm6wpKdgujWIucifoDoc1PhffUc9MtBYErezabX4
-   dYyfS6U2F/9H9zl2+9dhDsfflCQ0825waGQeOFacQyuJEasv2PfcqonJ4
-   jYLxaS0uF1u/QsKYKXb9NZdMkNTOsaWdhrM8TddUCrcKFF1+ls1o8VH0z
-   kSbMp5hRCYyf7NEvknG3Yz5p0rl5tAMKt/6f+cOniMFM66pPeZelcOdCN
-   B0t0vTIgf6yKGnyogXMvYyP7EtbKAvG1NHkxVvX1WomMHWkHh0oun0+/5
-   lzDNHDJ6JrX6eTB1ARGabNSpA62eVFBNbTOtkI/4CBKiTlkLUJO1cIRju
-   w==;
-IronPort-SDR: sm/amTH7eKrS2VnpopBdgkqbHYKu9lvNtBLFc2Y83eWfxs8xxQ36GVgkWrP4gxZHUxjoYSUpf5
- 1uyEIKzGqeX/zb0RquOlczAGI4/tSO/XWjC7PKIbsfc09dFKCWTGu2IrsuCfisqFbXN7qk3RLW
- KhuEgvsiA4bUFPyjH9f/OfB1Q2vdqJ2ROuJ23rHNrI0gY4yzwOSez3b5uGkUc4Um+1eoZrSFwC
- qYw7KeaI7tx00clQQ0nox6aK4nlE0vVOEpl3eBwHeX0s8xq+0/H+U8YviachNjcSVk4huaLgaX
- ayc=
-X-IronPort-AV: E=Sophos;i="5.75,386,1589234400"; 
-   d="scan'208";a="11135659"
-Date:   Thu, 23 Jul 2020 10:13:54 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-CC:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bjorn.andersson@linaro.org>,
-        <jackp@codeaurora.org>, <robh@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <mike.looijmans@topic.nl>
-Subject: Re: [PATCH 6/7] usb: dwc3: Add support for a role-switch notifier
-Message-ID: <20200723081352.hrg6rdpz5zxpp2so@axis.com>
-References: <20200311191501.8165-1-bryan.odonoghue@linaro.org>
- <20200311191501.8165-7-bryan.odonoghue@linaro.org>
+        id S1726425AbgGWIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:16:36 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:43096 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbgGWIQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:16:36 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06N8GA0A0015679, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06N8GA0A0015679
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 Jul 2020 16:16:10 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 23 Jul 2020 16:16:10 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 23 Jul 2020 16:16:10 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
+ RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
+ 15.01.1779.005; Thu, 23 Jul 2020 16:16:10 +0800
+From:   =?utf-8?B?5ZCz5piK5r6EIFJpY2t5?= <ricky_wu@realtek.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Bjorn Helgaas <helgaas@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rui Feng <rui_feng@realsil.com.cn>, Klaus Doth <kdlnx@doth.eu>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: RE: [PATCH 0/5] minor rtsx cleanups
+Thread-Topic: [PATCH 0/5] minor rtsx cleanups
+Thread-Index: AQHWX6U7/EnDl+omQUONkIrG0NSvaKkSBlyAgALLY3A=
+Date:   Thu, 23 Jul 2020 08:16:10 +0000
+Message-ID: <9f42cc48087a447a8ff295a86d439039@realtek.com>
+References: <20200721212336.1159079-1-helgaas@kernel.org>
+ <CAK8P3a0aqus-7Z-qSc9J+gOsSCX5Ad570F-3a_HB1MHfJor7Bg@mail.gmail.com>
+In-Reply-To: <CAK8P3a0aqus-7Z-qSc9J+gOsSCX5Ad570F-3a_HB1MHfJor7Bg@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200311191501.8165-7-bryan.odonoghue@linaro.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 07:15:00PM +0000, Bryan O'Donoghue wrote:
-> diff --git a/drivers/usb/dwc3/drd.c b/drivers/usb/dwc3/drd.c
-> index 2705871ec95e..789e93dd93b4 100644
-> --- a/drivers/usb/dwc3/drd.c
-> +++ b/drivers/usb/dwc3/drd.c
-> @@ -497,6 +497,8 @@ static int dwc3_usb_role_switch_set(struct usb_role_switch *sw, enum usb_role ro
->  	}
->  
->  	dwc3_set_mode(dwc, mode);
-> +	raw_notifier_call_chain(&dwc->role_sw_nl, mode, NULL);
-> +
->  	return 0;
->  }
-
-dwc3_set_mode() is called from a bunch of other places too, is it
-sufficient to call the notifier only from here?  Also, dwc3_set_mode()
-performs the mode set asynchronously so the mode switch can race with
-this notifier call, is that OK?
-
-Mike Looijmans proposed the control of a vbus regulator from
-__dwc3_set_mode(), and that would take care of both the points above.
-Perhaps this notifier call can be moved to the same place or perhaps
-Mike's patch could even work for you?  The only problem is that your
-switching code in dwc3-qcom.c would have to be modelled as a reulator:
-
- https://lore.kernel.org/linux-usb/20200619142512.19824-1-mike.looijmans@topic.nl/
+SGkgQXJuZCwgQmpvcm4sDQoNClNvIEhvdyBjYW4gSSBkbyBmb3Igbm93Pw0KSSBuZWVkIHRvIHdh
+aXQgQmpvcm4ncyBwYXRjaCBhcHBsaWVkIGFuZCByZXN1Ym1pdCBwYXRjaCBmb3Igb3VyIG5ldyBj
+aGlwIFJUUzUyMjggYmFzZSBvbiBCam9ybidzIHBhdGNoIG9yID8NCg0KUmlja3kNCg0KDQo+IC0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFybmQgQmVyZ21hbm4gW21haWx0bzph
+cm5kQGFybmRiLmRlXQ0KPiBTZW50OiBXZWRuZXNkYXksIEp1bHkgMjIsIDIwMjAgNToyOSBBTQ0K
+PiBUbzogQmpvcm4gSGVsZ2Fhcw0KPiBDYzog5ZCz5piK5r6EIFJpY2t5OyBHcmVnIEtyb2FoLUhh
+cnRtYW47IFVsZiBIYW5zc29uOyBSdWkgRmVuZzsgS2xhdXMgRG90aDsNCj4gTGludXMgV2FsbGVp
+ajsgUnVpIE1pZ3VlbCBTaWx2YTsgUHVyYW5qYXkgTW9oYW47IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
+cm5lbC5vcmc7DQo+IGxpbnV4LW1tYzsgQmpvcm4gSGVsZ2Fhcw0KPiBTdWJqZWN0OiBSZTogW1BB
+VENIIDAvNV0gbWlub3IgcnRzeCBjbGVhbnVwcw0KPiANCj4gT24gVHVlLCBKdWwgMjEsIDIwMjAg
+YXQgMTE6MjMgUE0gQmpvcm4gSGVsZ2FhcyA8aGVsZ2Fhc0BrZXJuZWwub3JnPiB3cm90ZToNCj4g
+Pg0KPiA+IEZyb206IEJqb3JuIEhlbGdhYXMgPGJoZWxnYWFzQGdvb2dsZS5jb20+DQo+ID4NCj4g
+PiBDbGVhbiB1cCBzb21lIG5lZWRsZXNzbHkgZGV2aWNlLXNwZWNpZmljIHN0dWZmIGluIHRoZSBS
+ZWFsdGVrIGNhcmQgcmVhZGVyDQo+ID4gZHJpdmVycy4NCj4gPg0KPiA+IFRoaXMgaW1wbGVtZW50
+cyBzb21lIG9mIG15IHN1Z2dlc3Rpb25zIGZyb20NCj4gPiBodHRwczovL2xvcmUua2VybmVsLm9y
+Zy9yLzIwMjAwNzIwMjIwNjUxLkdBMTAzNTg1N0Biam9ybi1QcmVjaXNpb24tNTUyMA0KPiA+DQo+
+ID4gVGhpcyB3aWxsIGNvbmZsaWN0IHdpdGggUmlja3kncyBwb3N0IGhlcmU6DQo+ID4gaHR0cHM6
+Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIwMDcwNjA3MDI1OS4zMjU2NS0xLXJpY2t5X3d1QHJlYWx0
+ZWsuY29tDQo+ID4NCj4gPiBJJ2xsIGJlIGhhcHB5IHRvIHVwZGF0ZSB0aGlzIG9uIHRvcCBvZiBS
+aWNreSdzIHBhdGNoIGFmdGVyIGl0J3MgYXBwbGllZCwgb3INCj4gPiBSaWNreSBjb3VsZCBwaWNr
+IHVwIHRoZXNlIHBhdGNoZXMgYW5kIGJhc2UgaGlzIG9uIHRvcC4NCj4gDQo+IA0KPiBMb29rcyBh
+bGwgZ29vZCB0byBtZSwNCj4gDQo+IEFja2VkLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRi
+LmRlPg0KPiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUg
+cHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
