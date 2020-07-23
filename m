@@ -2,60 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8FB22B5BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F25E22B5C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgGWSdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgGWSdI (ORCPT
+        id S1727884AbgGWSe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:34:56 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:58578 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726761AbgGWSez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:33:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFDCC0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:33:07 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 9so5822683wmj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=NQiDBk8f+9QOEvJ3Lb/Kcbnhu6GHb5LziW9A1gzvNCU=;
-        b=q+BdTrLiMdalWQe5W8CMQbouYJgDMC3EMgIh+nHwKt0LO/fzIkrNTEzhc5KyR3Czmv
-         dtSyIDn7LlPJyeYk0jvzssxyHnTlt3LoLlcxoCf2TSquZ4IY2HKWZtLsMc4JaNNtmmFO
-         bxsNAjBf3wns3eoNWbwb3JYeSWn/O3WXOKdK8G8/OyaOLEn+6JVn6+Ak36bf3F4I8sEm
-         hnGbIqo1SV8BGzufqJWSwidn9x2XcnwYgg8Gq0JE7YOz9O/9uqlGTHoLFvQEZeRXnbq0
-         fXpUF103xj+VoSec3H5gcbzY0EC6776p1H8A2ILZWVQW0pmNfV1hbmuYV9R7WtKwQ9DA
-         65GA==
+        Thu, 23 Jul 2020 14:34:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595529294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=olbIwyK8DRt1gFVVe5q9trGHC9PIx/LTdvtHrFCIQy0=;
+        b=RMRI2hMogpBWCqtgnrMfBZMIoYhRoiz4DwvAkt6wse1FkxET2mzAhAHez417EgF6zISVQB
+        tO7mIr6aTSLpCgDCh23N2Qz1JIQ1qs9/aIY/dmzxU+FstFBd346iFW5y8ZPbPDA4drf3Bj
+        aEtp3PBZgrpTveu/KpAtfqm2a4uX/q0=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-m1toUeaUNca242OZQFiupQ-1; Thu, 23 Jul 2020 14:34:51 -0400
+X-MC-Unique: m1toUeaUNca242OZQFiupQ-1
+Received: by mail-il1-f199.google.com with SMTP id c1so4035644ilk.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:34:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=NQiDBk8f+9QOEvJ3Lb/Kcbnhu6GHb5LziW9A1gzvNCU=;
-        b=HnftPbd21FOYWQEGX3TL2bEuGwQw7+5uzTyRg+uLV7PDS4qr2+pe+hVviy6SEiRxTp
-         QcgPlB1QQ8YSODYCt8fq3SMz8mCj0qppRA81etF/MFiNjd6FgM/UTiDPszF+EQ7DCiNn
-         Y+khkCuiqDOEFFTRENI9PvJb56LyEWWaul9P7IWY8Q5VnrwvWAixt8qqsqnXnN2pDoow
-         OGP4wHa64j1BP+ry68Ai6IkCogJfxYOQA8kPrZhbqhOZt4jXEeh8wqwFzH+wVxckw6xE
-         NE1h4uhjHm8+x0FJk9cI2Va3FCPqdq05sky+yceG+U2XWje+jGss436YWvoBh14esT7Z
-         RbdA==
-X-Gm-Message-State: AOAM532+TLxPkOCu6uL+VmxngrLfR4FQX3pNEZAODZ0TCOxWUtdPNB7R
-        5utz+7BZ+0pVcR7c/Uyp22u25PPNxYbiUQ0lZss=
-X-Google-Smtp-Source: ABdhPJxUlv6Gw/HOKWsdISvBBv9gSEPVFtrIzsknrldorKaHN/oeh55jHyBS1qzxBI63Ngi9+qyQGNIJG+UUpweJmjA=
-X-Received: by 2002:a1c:3504:: with SMTP id c4mr5240699wma.177.1595529186479;
- Thu, 23 Jul 2020 11:33:06 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=olbIwyK8DRt1gFVVe5q9trGHC9PIx/LTdvtHrFCIQy0=;
+        b=YMJyJJ84uhVcSH9r95hUeOCiYtt6W36gsyI0LUjWD3ClB2cGMS2gDzUxIbWiLOtLo+
+         MgOU6I3mzDQcaQNEQH859LCYw9ruYIc2Qvc5qD8eRO6kPBd60Zlq7Jc7Ws+a99ixnl9o
+         vXk4hiXTg/zVCvdhuvs1RzmVxGZmT19RakBTbYWZ9SqQTZGMEe2f4I3duBnJhcizuDzy
+         uO/+XF+8VXd3b/fOhZzqdFD3D0fB+5gQ2s63gGvvZC6jMwNl4W3SWaF4OrycRySb/Q76
+         lhrKTwOQio5N+rsB4c2npMeIETC0feBoiQoaqajUsTCeq1tY605Ozxqm2tc4zEgtf2tA
+         BtSw==
+X-Gm-Message-State: AOAM532hFwBY3dr8HcNqjMumLH2VVnyNI3GVBPLYtI+CS0FyvhO9tTTu
+        PbD5iArukYoIOniIN4zWX+dRsEhzrmOfAkfu9bkXFEytxWgf7RJxDKYPOnZdX+70kxMiwwyVK2L
+        h60w/73Yeux0/LErrgyjuVVFZylIoXS9Ly2tw3UcO
+X-Received: by 2002:a6b:bc41:: with SMTP id m62mr6012380iof.95.1595529290805;
+        Thu, 23 Jul 2020 11:34:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxdMTY617GsTq+0lxD6oRmrpHOfTbKSGk06sg0cdo+bSbyjp/MbnZQe9aM6Zhenuq8vZ9tx5TSoByCMImxrw60=
+X-Received: by 2002:a6b:bc41:: with SMTP id m62mr6012345iof.95.1595529290486;
+ Thu, 23 Jul 2020 11:34:50 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a1c:9d57:0:0:0:0:0 with HTTP; Thu, 23 Jul 2020 11:33:05
- -0700 (PDT)
-From:   harinadurazi <harinadurazi3@gmail.com>
-Date:   Thu, 23 Jul 2020 19:33:05 +0100
-X-Google-Sender-Auth: irMm_9q7Ttze7QlXSmojHaPCINg
-Message-ID: <CACh9y8qkVg2OAL-GD-wCoovrR4H10roeF95-i+qeV3SwwuS5hw@mail.gmail.com>
-Subject: Hello ,how are you, i hope you are doing well, please can we talk?
-To:     undisclosed-recipients:;
+References: <20200722215048.GL220876@anatevka.americas.hpqcorp.net> <20200723000012.GA1325359@bjorn-Precision-5520>
+In-Reply-To: <20200723000012.GA1325359@bjorn-Precision-5520>
+From:   Kairui Song <kasong@redhat.com>
+Date:   Fri, 24 Jul 2020 02:34:39 +0800
+Message-ID: <CACPcB9f_cD4RFA_H002LPVaAqrDh_81fjEkM2HGekdWVa+V_BQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] PCI, kdump: Clear bus master bit upon shutdown in
+ kdump kernel
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Jerry Hoemann <jerry.hoemann@hpe.com>, Baoquan He <bhe@redhat.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>, jroedel@suse.de,
+        Myron Stowe <myron.stowe@redhat.com>,
+        linux-pci@vger.kernel.org, kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Randy Wright <rwright@hpe.com>, Dave Young <dyoung@redhat.com>,
+        Khalid Aziz <khalid@gonehiking.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello ,how are you, i hope you are doing well, please can we talk?
+On Thu, Jul 23, 2020 at 8:00 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Wed, Jul 22, 2020 at 03:50:48PM -0600, Jerry Hoemann wrote:
+> > On Wed, Jul 22, 2020 at 10:21:23AM -0500, Bjorn Helgaas wrote:
+> > > On Wed, Jul 22, 2020 at 10:52:26PM +0800, Kairui Song wrote:
+>
+> > > > I think I didn't make one thing clear, The PCI UR error never arrives
+> > > > in kernel, it's the iLo BMC on that HPE machine caught the error, and
+> > > > send kernel an NMI. kernel is panicked by NMI, I'm still trying to
+> > > > figure out why the NMI hanged kernel, even with panic=-1,
+> > > > panic_on_io_nmi, panic_on_unknown_nmi all set. But if we can avoid the
+> > > > NMI by shutdown the devices in right order, that's also a solution.
+>
+> ACPI v6.3, chapter 18, does mention NMIs several times, e.g., Table
+> 18-394 and sec 18.4.  I'm not familiar enough with APEI to know
+> whether Linux correctly supports all those cases.  Maybe this is a
+> symptom that we don't?
+>
+> > > I'm not sure how much sympathy to have for this situation.  A PCIe UR
+> > > is fatal for the transaction and maybe even the device, but from the
+> > > overall system point of view, it *should* be a recoverable error and
+> > > we shouldn't panic.
+> > >
+> > > Errors like that should be reported via the normal AER or ACPI/APEI
+> > > mechanisms.  It sounds like in this case, the platform has decided
+> > > these aren't enough and it is trying to force a reboot?  If this is
+> > > "special" platform behavior, I'm not sure how much we need to cater
+> > > for it.
+> >
+> > Are these AER errors the type processed by the GHES code?
+>
+> My understanding from ACPI v6.3, sec 18.3.2, is that the Hardware
+> Error Source Table may contain Error Source Descriptors of types like:
+>
+>   IA-32 Machine Check Exception
+>   IA-32 Corrected Machine Check
+>   IA-32 Non-Maskable Interrupt
+>   PCIe Root Port AER
+>   PCIe Device AER
+>   Generic Hardware Error Source (GHES)
+>   Hardware Error Notification
+>   IA-32 Deferred Machine Check
+>
+> I would naively expect PCIe UR errors to be reported via one of the
+> PCIe Error Sources, not GHES, but maybe there's some reason to use
+> GHES.
+>
+> The kernel should already know how to deal with the PCIe AER errors,
+> but we'd have to add new device-specific code to handle things
+> reported via GHES, along the lines of what Shiju is doing here:
+>
+>   https://lore.kernel.org/r/20200722104245.1060-1-shiju.jose@huawei.com
+>
+> > I'll note that RedHat runs their crash kernel with:  hest_disable.
+> > So, the ghes code is disabled in the crash kernel.
+>
+> That would disable all the HEST error sources, including the PCIe AER
+> ones as well as GHES ones.  If we turn off some of the normal error
+> handling mechanisms, I guess we have to expect that some errors won't
+> be handled correctly.
+
+
+Hi, that's true, hest_disable is added by default to reduce memory
+usage in special cases.
+But even if I remove hest_disable and have GHES enabled, but the
+hanging issue still exists, from the iLO console log, it's still
+sending an NMI to kernel, and kernel hanged.
+
+The NMI won't hang the kernel for 100 percent, sometime it will just
+panic and reboot and sometimes it hangs. This behavior didn't change
+after/before enabled the GHES.
+
+Maybe this is a "special platform behavior". I'm also not 100 percent
+sure if/how we can cover this in a good way for now.
+I'll try to figure how the NMI actually hanged the kernel and see if
+it could be fixed in other ways.
+
+-- 
+Best Regards,
+Kairui Song
+
