@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F5822B025
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E0C22B02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729317AbgGWNO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37658 "EHLO
+        id S1729056AbgGWNQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGWNO0 (ORCPT
+        with ESMTP id S1728709AbgGWNQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:14:26 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9152C0619DC;
-        Thu, 23 Jul 2020 06:14:25 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 140so3244359lfi.5;
-        Thu, 23 Jul 2020 06:14:25 -0700 (PDT)
+        Thu, 23 Jul 2020 09:16:18 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA91C0619E2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:16:18 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id k71so3160965pje.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=3Ek23uqFHJxEEeEwue+hrOY5RICC7zNWW630xY1/rb4=;
-        b=V7bQtxEvBfDa1epPg8MKSyuSb8htz+XWa/LX6g3d/Un/JL8tTyiOFxIkG7PGRto5xB
-         ClZaSCb/hVxwFgIVzPwosS5OGKeAzVWoeVsS2PAQM4KK3AbWNmeXWnKmOXHQnzlG3J1S
-         WvanNEGPTL+8UYKG4GrOCNh6oLT4HDp+g23SGGUvFaJAfRRRF3bPobup7KB7iK2ZSbcT
-         24Je8NAP+Ywmzl+AAOqnrIY+lcjJr7r1+tkGRj9Ij8dFZlV9wxmKbAltli3rSiTHKwY3
-         cFnYZ3LbMpbZmUMlXY4j8Lg0t6nkw97707IjotndM5OhaJtZIqQF+bAIABXRVfxoymNN
-         muaQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ePu2DQifrSypcKw3c6HDysOl6wZIG3mL9ysnlkjPzpE=;
+        b=Ewi7Gb4wAt29Y1el687HjMUlmBNi0VZIMdhklA/O/vcmU3tD45R50AO9Q80T+OTOm9
+         c+4LstGwg00MY4C6qBcinL9fAPsI3RxCxikAbXfC8G2uZtdQQ1GrXyIaf6SDtmhN3yR3
+         j7v2zgArlooh2K3TaXEuD5+4MvI7fZIZ4n1deAYC/51SO6x5IQklaYy2slaIbFUkczU9
+         cTs8W6qTDds4v0A+wz17iitfv3XQV1g0kbUrLKndLFywDkXdoCx6Lfg97Bra24RZsR1P
+         expVFr7rLA4lpnnZlD0FJrok+I19gx3LHgdoo0PGXBdFSOrbB7DbaC3pEO7aznatwWR3
+         UvaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=3Ek23uqFHJxEEeEwue+hrOY5RICC7zNWW630xY1/rb4=;
-        b=aj3xgX7RzorTN3HaPcVA2nbqT1yRSDaukXvq2ELMpOKic3XmiA2bAppGjkcdaJ6nhK
-         7jqznOHYDn1lEKIRAAN73ckgOhpLEG79llRDxpyWxq7ndEwtOeOvIfzTtMsozzD2xG9c
-         DkbH0Xx0JZB6h2VPxtqfnrXg5huk3EkFqVQn50+qdVG7ko1vj2Yk/s0E57vtUTDOd2fD
-         CCKdYAWRr1gNJhG2I66HA/KodwVnjvQrSTN53KWLc8OISHJW3tNVyHEWeHuS7DwDvzNp
-         ngw3uheggwjcJf1uAZrFe/t30gKN4plxm5hhMYQ1a17koFWM2bxPqz0uYfDa+Kc+lV6K
-         r/AA==
-X-Gm-Message-State: AOAM530cypMYGkSlKMucBdO1dn566XI3UsiKSdUFL3c8NCTz6seHbTlD
-        TcfLhD/JP8qOQ1d6eOGZeYcYV66I7UASrA==
-X-Google-Smtp-Source: ABdhPJzBPdux8+PQZy/lEPbmV5N4w1mTUpDRV1tsFSy51kdPYqJiPU7Sszpu04kX7FE4NkzVgZppJQ==
-X-Received: by 2002:a05:6512:2010:: with SMTP id a16mr2205650lfb.196.1595510064107;
-        Thu, 23 Jul 2020 06:14:24 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id h27sm2757613ljl.71.2020.07.23.06.14.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Jul 2020 06:14:23 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: epautoconf: claim smallest endpoints first
-In-Reply-To: <20200629200551.27040-1-ruslan.bilovol@gmail.com>
-References: <20200629200551.27040-1-ruslan.bilovol@gmail.com>
-Date:   Thu, 23 Jul 2020 16:14:18 +0300
-Message-ID: <87blk6nzkl.fsf@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ePu2DQifrSypcKw3c6HDysOl6wZIG3mL9ysnlkjPzpE=;
+        b=hsp+4WbOy9LSysG6du7OCZLBq+cycIbM07qvdagGvOPZidCgQkPP6ZpwGJTn9fuj47
+         HOjDxQdpTXgeTizES04b+TPPCo4E5AjI1wA8kBCPcyXs8kCDBeVqCD4kI1Lr2+xQ30D/
+         lPGzlv91YlAGfnA8oAB4gAH381zYhTDVJAK3nGE7kFXksVj+YWpvaecyG8BACOKf1A0M
+         Cn3GpTQygKGd9V4tsY8rimZ6IYAAdVMkIa8lVPl/YHf24IDq1pMGbljEJftuBAc3e2xM
+         yN17VrB1zmIKRAEMFrWjOWmeWCPKmaPeTvCr9S8uSGPLqDnqoEEe9EbGtKlj3rMqeGwf
+         Fybg==
+X-Gm-Message-State: AOAM532WYzeBHq8iKk/hx/b6VNVtZHptFG0qyWxehH/djbCPXp9V9Xig
+        kr0rJgeIgS4+YpA5Mlij4zkCKw==
+X-Google-Smtp-Source: ABdhPJxJpfqGOnbg0xA8HsHA154EtCmp9G7TiNwpsst4qATzbOdPWrKM3zxg4Lw4KSO6gB0TVCTDZw==
+X-Received: by 2002:a17:90a:d684:: with SMTP id x4mr377489pju.62.1595510177991;
+        Thu, 23 Jul 2020 06:16:17 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id 129sm3085243pfv.161.2020.07.23.06.16.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 06:16:17 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 06:14:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Kathiravan T <kathirav@codeaurora.org>
+Cc:     agross@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        sivaprak@codeaurora.org, sricharan@codeaurora.org
+Subject: Re: [PATCH V3 0/4] Add frequency / voltage scaling support for
+ IPQ6018 SoC
+Message-ID: <20200723131426.GK1218486@builder.lan>
+References: <1595225543-12127-1-git-send-email-kathirav@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595225543-12127-1-git-send-email-kathirav@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Sun 19 Jul 23:12 PDT 2020, Kathiravan T wrote:
 
-Ruslan Bilovol <ruslan.bilovol@gmail.com> writes:
+> IPQ6018 SoC uses the PMIC MP5496. SMPA2 and LDOA2 regulator of MP5496
+> controls the APSS and SDCC voltage scaling respectively. Add support
+> for the same.
+> 
 
-> UDC hardware may have endpoints with different maxpacket
-> size. Current endpoint matching code takes first matching
-> endpoint from the list.
->
-> It's always possible that gadget allocates endpoints for
-> small transfers (maxpacket size) first, then larger ones.
-> That works fine if all matching UDC endpoints have same
-> maxpacket size or are big enough to serve that allocation.
->
-> However, some UDCs have first endpoints in the list with
-> bigger maxpacket size, whereas last endpoints are much
-> smaller. In this case endpoint allocation will fail for
-> the gadget (which allocates smaller endpoints first) on
-> final endpoint allocations.
->
-> To make endpoint allocation fair, pick up smallest
-> matching endpoints first, leaving bigger ones for
-> heavier applications.
->
-> Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Picked up patch 1-3 for v5.10
 
-checking file drivers/usb/gadget/epautoconf.c
-Hunk #1 succeeded at 151 with fuzz 1 (offset 85 lines).
-Hunk #2 FAILED at 77.
-1 out of 2 hunks FAILED
-=2D-=20
-balbi
+Thanks,
+Bjorn
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl8ZjSoACgkQzL64meEa
-mQadJhAAqrhVSDptr4TCjjlcBNkGVzrkHDybXlvZSailDiKW/q70ZrxmNxTi6ens
-0XphNLAeqG/Hsftc2dczeTzFNZ1tDhGoQ6tUZYnWpkVNT2I4WxSqE0WQlpKL1VmO
-b58aBkOpF01ssMNJUk2w+jWN71PggQSqTtRJ9bybtoJK67b0H3eUZZb+oGhpcL+M
-ggs6rzqN1/j+VFR9wdosFN1U4xYOkyyMCaY6y34nVoSuy730U7IPaYzifgXRmcVz
-Cewi+N0nQOSNfDh2UBsrdIkrRteh6w+0KpOIiJro+2h+V/St7rDmgrDFv6E1lv4c
-+9fZ223Lcm/pzkKidOvxxtt4Lnfzx2DFjH0eY+Pg5OaJQtTkEnir/MF6WG9YUn3w
-LxcpVb967HCmj69PGG71uh7jtrohJThUZznBldJAjArLtVsQ7S7cN52UAIpRkFxU
-8dc71HWo41Zyk8sIsQ7B7i4Nf8MXqSYDsSLzng3rdYecsjzI//aVx4qiTgh65yL5
-FqQQQlCtb6+5CP7VGq/LbYCYIzidM+G3+dI/uHyzvkz9C9ZzIyKJcCj6pdPyCAlV
-b5Ii/8qfQK2cNobQF5Uuvkj0TYsb9MlTXKtEc97WdtuW6JMIYWJNumQXO0TcU3PL
-OvpwviQus8HsX1J86uCpyZvMu2EUqbxBUYSoPWrBVM1/0Z+Zjd8=
-=2tO6
------END PGP SIGNATURE-----
---=-=-=--
+> changes since V2:
+> 	- Rebased on top of linux-next 20200717 tag
+> 	- Addressed Rob's comment to drop the 'syscon' node in qcom,smd-rpm.yaml
+> 	- Picked up the Reviewed-by tag for qcom,smd-rpm-regulator.yaml
+> 	- Regulator patches part of V2 was picked up by Mark and it's available in linux-next tree
+> 
+> changes since V1:
+> 	- Moved YAML conversion to the last as per Mark's comments
+> 
+> Kathiravan T (4):
+>   dt-bindings: soc: qcom: Add IPQ6018 compatible
+>   soc: qcom: smd-rpm: Add IPQ6018 compatible
+>   dt-bindings: soc: qcom: convert the SMD-RPM document to YAML schema
+>   dt-bindings: regulator: convert QCOM SMD-RPM regulator document to
+>     YAML schema
+> 
+>  .../bindings/regulator/qcom,smd-rpm-regulator.txt  | 321 ---------------------
+>  .../bindings/regulator/qcom,smd-rpm-regulator.yaml | 106 +++++++
+>  .../devicetree/bindings/soc/qcom/qcom,smd-rpm.txt  |  64 ----
+>  .../devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml |  87 ++++++
+>  drivers/soc/qcom/smd-rpm.c                         |   1 +
+>  5 files changed, 194 insertions(+), 385 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt
+>  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+> 
