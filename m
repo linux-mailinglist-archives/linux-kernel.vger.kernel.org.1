@@ -2,147 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B551222B407
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DDB22B4B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgGWQ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:58:35 -0400
-Received: from gateway30.websitewelcome.com ([192.185.168.15]:18993 "EHLO
-        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726984AbgGWQ6f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:58:35 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway30.websitewelcome.com (Postfix) with ESMTP id 57A6C4E1331
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:58:22 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id yeY2jCK9V4KQcyeY2jPRu7; Thu, 23 Jul 2020 11:58:22 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=pcDflsRbhFxnLvAFJk8oqJIsUM+KNUF/0lC1zlyLEDU=; b=ZPWYYuEb5NrGblv1nisuLs6+PI
-        H6YtU5x8cv2WKvGUDwgdaIie1snVPJmYqr3ZFF49Y9Q3OBTxStrswB2VFQ1Le870ncHNLbgIeuu1p
-        Q+/J2+IKzUnydyYfiDDTsiFZHeIIGztNitLsJch/kkpzbI60VMJZStMnEIS/yP8bgbqJ63Ng2bkGz
-        ErYtpRXlqmVTDLw9r01a+2fO777JWp6ptnvOWTTWcbvRNcdTIvaRiEIDWjzQRDSXMdDIuPsW5SOLB
-        g6LSvzeHi0FYc8Fmokdx6PimAdyE6qw8Smi87QBtffZwLQ+37vrf7rfiTTvbagDIHIY8voBDOYWvA
-        vf7W95ug==;
-Received: from [201.162.245.27] (port=42612 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jyeY1-0045Ga-RN; Thu, 23 Jul 2020 11:58:21 -0500
-Subject: Re: [char-misc-next 1/6] mei: hbm: use sizeof of variable instead of
- struct type
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tomas Winkler <tomas.winkler@intel.com>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20200723145927.882743-1-tomas.winkler@intel.com>
- <20200723145927.882743-2-tomas.winkler@intel.com>
- <20200723151310.GA2809544@kroah.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <a59b37f7-db9b-02f1-98c3-3207db213e3b@embeddedor.com>
-Date:   Thu, 23 Jul 2020 12:04:06 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730084AbgGWRVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:21:01 -0400
+Received: from mail-eopbgr130078.outbound.protection.outlook.com ([40.107.13.78]:56489
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727044AbgGWRU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:20:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WjDQWZ0y4lh6QCsEyRfF3+mHRggRCfUKlE0r5VZ8ygPgH8xQSHqPIldTyXEozYOYjuEBgyKCa69NFruPB/VBVIleFQ2l1EqjvRy5eUksBlbFpyAcBdmhUK3limyMhbvhPgOeU0nPQeQNXvS1J7/daL8ii10CrfEgY0o6GAoOiTszevqznZ90DRvG0cJG6ww4j+MYrkmV4rxiv1NZDVi/4NodXgj0X5xRFnWvxor5d6D3AE0mH+wgXjG/XVpg9EmMr59djCC23B4TAxsA678e07TgtX75M4mez0FDZGBcNFUyYAZv+/S7uXGz8OMp9dTGRRAlzl8DHXuSXzMSyaTVIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QNynuv2TqiXsvAp7re8SmgcONuqIQREa5rXwjNJVBA4=;
+ b=izinrTuumzAx4CIaNLAzriQunYFzK5g8qbE+5ziNtnSm92WaF656pdX0Wfeq3pgux2PrFfiwvmE++JESdSTrvkfYgmMwrNey5p4NsIReP+OYIR6iUa6jY4SfDeWxl1jdpk7jMIH9rFyacc2i2Lr1Md8tHd6dgSJHzvDQIPFy/G5ZkL0/75Ao3Wz/CxUuwlTDJxEEO7LkHUmSnzpeA/y+aB9g0KuSTz8MkmWQz6gPZOrqP2EN5OKqe1BjnmAau3Y1yacACerGcwfHOqO5QHAxTEX8h0HGpgVjMfvMZBeX2A6+Vr2P2X2gTBN7Y2wGWKHxoVDUoFmtaneS/BVptH0cfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=kernel.org smtp.mailfrom=diasemi.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QNynuv2TqiXsvAp7re8SmgcONuqIQREa5rXwjNJVBA4=;
+ b=jy5+FIov84JoqM2znIT6uIQaMccbanMi6m5UCJp65+lmhuQG1+3wPvknKoOAnzzoEhJtw4S8vRFPQn5Lj1djipbAw/uHVW7QaqSfM06r9hv6teq24D/Akip77PibGoV5vwRkR5Y5reAgUF4iZG2JRdAVhuXG4q4XbYEwLcUf7c8=
+Received: from AM5PR0701CA0010.eurprd07.prod.outlook.com
+ (2603:10a6:203:51::20) by VI1PR10MB2336.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:803:89::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Thu, 23 Jul
+ 2020 17:20:53 +0000
+Received: from HE1EUR02FT049.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:203:51:cafe::9b) by AM5PR0701CA0010.outlook.office365.com
+ (2603:10a6:203:51::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend
+ Transport; Thu, 23 Jul 2020 17:20:53 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; kernel.org; dkim=none (message not
+ signed) header.d=none;kernel.org; dmarc=fail action=none
+ header.from=diasemi.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ HE1EUR02FT049.mail.protection.outlook.com (10.152.11.8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3216.10 via Frontend Transport; Thu, 23 Jul 2020 17:20:53 +0000
+Received: from krsrvapps-03.diasemi.com (10.95.17.51) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Thu, 23 Jul 2020 19:20:49 +0200
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ A1F7413F670; Fri, 24 Jul 2020 02:20:47 +0900 (KST)
+Message-ID: <c43c56f6e7b6427880b42ad98079c5085e0b1026.1595516501.git.Roy.Im@diasemi.com>
+In-Reply-To: <cover.1595516501.git.Roy.Im@diasemi.com>
+References: <cover.1595516501.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Fri, 24 Jul 2020 00:01:40 +0900
+Subject: [PATCH v17 1/3] MAINTAINERS: da7280 updates to the Dialog
+ Semiconductor search terms
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Support Opensource <support.opensource@diasemi.com>
 MIME-Version: 1.0
-In-Reply-To: <20200723151310.GA2809544@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.245.27
-X-Source-L: No
-X-Exim-ID: 1jyeY1-0045Ga-RN
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.245.27]:42612
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 40
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 305be171-c711-4357-3d64-08d82f2cc0ec
+X-MS-TrafficTypeDiagnostic: VI1PR10MB2336:
+X-Microsoft-Antispam-PRVS: <VI1PR10MB23366674D048AF413AFDF448A2760@VI1PR10MB2336.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: z8O4mabDq6F5dK2vpPO8EztDc6aPy0F/skypPA9cnHA1T1fXK6SCAnco2nujOD9JOX6sqLsYsHzcu2Wxc7jJ9vOtwaBRJm4jhhdS3bu+18/UZ/h5KlUbmYv6pn5CJrRMhdK5qZL/os/UJUeBKqvbPN1TNJcz0U8uSDNP2tKh+O67If6sVuTRmBZX6dBPUGYfuNEc0Y/dslOPQ/tiUd6cFDnAeqCxKQzZL7Bexdvl0g+PjgRlIrTVNfXFBsFkKTHg1M7IeBGwbiAzajMXLTmGpBIHnP07Sma5JcYDnJ37mzWmanmVGlQMA8roPXqt/r+eobwAKX2xijXhqfq7SPlLOtfY7rqeEROXjzLyxCS3AvbjkXl0gBH1BVNKuGfRHgULFVDLY/LxplCADfAlxnJC/NJkeBcleZ9B+jwPwTlAkzJ3eqgCX+YX8+H0hnINRODsJCxwaDcNUpO4YRfMyl+Tf8Wsw6qrWfHKFP8whuYtMNTyo0bJAXIF6HOLXgJyEmI4
+X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(376002)(346002)(396003)(136003)(39860400002)(46966005)(356005)(336012)(81166007)(478600001)(82740400003)(8936002)(8676002)(4326008)(86362001)(47076004)(83380400001)(2906002)(82310400002)(36756003)(966005)(33310700002)(107886003)(6266002)(316002)(54906003)(70206006)(5660300002)(70586007)(26005)(426003)(110136005)(6666004)(42186006)(36906005)(186003)(2616005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2020 17:20:53.1610
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 305be171-c711-4357-3d64-08d82f2cc0ec
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT049.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB2336
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds the da7280 bindings doc and driver to the Dialog
+Semiconductor support list.
+
+Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
+
+---
+v17: No changes.
+v16: No changes.
+v15: No changes.
+v14: No changes.
+v13: No changes.
+v12: Corrected file list order.
+v11: No changes.
+v10: No changes.
+v9: No changes.
+v8: No changes.
+v7: No changes.
+v6: No changes.
+v5: No changes.
+v4: No changes.
+v3: No changes.
+v2: No changes.
 
 
-On 7/23/20 10:13, Greg Kroah-Hartman wrote:
-> On Thu, Jul 23, 2020 at 05:59:22PM +0300, Tomas Winkler wrote:
->> There is a possibility of bug when variable type has changed but
->> corresponding struct passed to the sizeof has not.
->>
->> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
->> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
->> ---
->>  drivers/misc/mei/hbm.c | 74 ++++++++++++++++++------------------------
->>  1 file changed, 32 insertions(+), 42 deletions(-)
-> 
-> This doesn't apply to my tree as I've applied Gustavo's patch.  Should I
-> revert that first?
-> 
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Yep; this series doesn't take into account my patch. I'm OK with
-reverting it, so we can apply this series.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d53db30..8e6f364 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5003,6 +5003,7 @@ M:	Support Opensource <support.opensource@diasemi.com>
+ S:	Supported
+ W:	http://www.dialog-semiconductor.com/products
+ F:	Documentation/devicetree/bindings/input/da90??-onkey.txt
++F:	Documentation/devicetree/bindings/input/dlg,da72??.txt
+ F:	Documentation/devicetree/bindings/mfd/da90*.txt
+ F:	Documentation/devicetree/bindings/regulator/da92*.txt
+ F:	Documentation/devicetree/bindings/regulator/slg51000.txt
+@@ -5013,6 +5014,7 @@ F:	Documentation/hwmon/da90??.rst
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
++F:	drivers/input/misc/da72??.[ch]
+ F:	drivers/input/misc/da90??_onkey.c
+ F:	drivers/input/touchscreen/da9052_tsi.c
+ F:	drivers/leds/leds-da90??.c
+-- 
+end-of-patch for PATCH v17
 
-Thanks
---
-Gustavo
