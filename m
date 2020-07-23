@@ -2,92 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F73622B0D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7D122B0D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729403AbgGWN4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:56:16 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:33963 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729134AbgGWN4Q (ORCPT
+        id S1728935AbgGWN4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbgGWN4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:56:16 -0400
-Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MLhsE-1kGH533iF6-00HiXo for <linux-kernel@vger.kernel.org>; Thu, 23 Jul
- 2020 15:56:14 +0200
-Received: by mail-qk1-f169.google.com with SMTP id l23so5404326qkk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:56:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533uzl1stOURGdWgrZ0h744lNTx5ZJdTFr+OPMn0IY4asqFSHvCG
-        boj9eamTMAe2VtGFv1HF6aKmdeNuDGrZWmRsVpE=
-X-Google-Smtp-Source: ABdhPJzZGTNJvW/D+pt2/+h0e7++KgU9TyH0Q1pJ2dvoN4jbBRN2PYLlVnONsRE9Ec1i1kB+bqO/UQt0wXPMaOi1ZCg=
-X-Received: by 2002:a37:9004:: with SMTP id s4mr5176965qkd.286.1595512572758;
- Thu, 23 Jul 2020 06:56:12 -0700 (PDT)
+        Thu, 23 Jul 2020 09:56:04 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E89BC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:56:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=OKnWPXhKK/ImykNQZOuXNTzT4NqgyVCCOABx7DsyXC8=; b=jEsDtFvxDm0K4KpYEOX6fXKHoD
+        DOrCE2HqGVpCxJcsA7Bxz10Ic03ZMGEkw7SH0aONp7KFh5d+EYWJ5zeS/H8Kn64C411+vB1wlT0D1
+        Ia+BLkl3X3sOkaOCHFCATCeu7SsMF1yALaJWzQXgXD2d1VFymOnJLjZJVdGASyzcN+V7Nr9HOTL8A
+        QKoglTfUwtpxPF/U0L1VjBn/F+xQoQ20W9A5KnPt45l/Td3hJujYygUgFsu1PZYNzf3sH2GZE/Z2D
+        LbQ1qm0BmuaDooGcRfpFOj8BQgPDnIVy4OyBBF6jQ/WFSRf155Y4xeFiQDTcXsfbN/qOaXpzxG7oS
+        LXC68A0w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jybhZ-0003QH-3q; Thu, 23 Jul 2020 13:56:01 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 80116983422; Thu, 23 Jul 2020 15:55:56 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 15:55:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, tglx@linutronix.de,
+        bigeasy@linutronix.de, frederic@kernel.org
+Subject: Re: [PATCH smp 2/2] kernel/smp: Provide CSD lock timeout diagnostics
+Message-ID: <20200723135556.GQ5523@worktop.programming.kicks-ass.net>
+References: <20200709235436.GA20922@paulmck-ThinkPad-P72>
+ <20200709235557.21080-2-paulmck@kernel.org>
+ <20200710103227.GD4800@hirez.programming.kicks-ass.net>
+ <20200710212834.GL9247@paulmck-ThinkPad-P72>
+ <20200710225849.GA6004@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20200720204925.3654302-1-ndesaulniers@google.com>
- <20200720204925.3654302-12-ndesaulniers@google.com> <87365izj7i.fsf@nanos.tec.linutronix.de>
- <87zh7qy4i4.fsf@nanos.tec.linutronix.de> <CA+icZUVz0opOb0LihLvPvKM-t0Y=pcUWDyb+u-L_UVnnbPh1rQ@mail.gmail.com>
- <CAK8P3a3Ms1uvLcbhmbsU+-u11BCrXPaU5Dro=P9LjAG7CYm8ww@mail.gmail.com> <CA+icZUXzjcQ7ekTg8LvwcaBZFn_HeDjif+rKaFAKy=0gUrx=Xg@mail.gmail.com>
-In-Reply-To: <CA+icZUXzjcQ7ekTg8LvwcaBZFn_HeDjif+rKaFAKy=0gUrx=Xg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 23 Jul 2020 15:55:55 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0gFG8z_qdY2gPm5p7kjpj8xq-APyazk390FpHUJiZ7Hw@mail.gmail.com>
-Message-ID: <CAK8P3a0gFG8z_qdY2gPm5p7kjpj8xq-APyazk390FpHUJiZ7Hw@mail.gmail.com>
-Subject: Re: [PATCH v3 11/11] x86: support i386 with Clang
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dmitry Golovin <dima@golovin.in>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VHGxVsp49KImS4oIXoeddkMq1omTd8LisxdOxonGpXQwixTHgjB
- 2DwqG0rHFy/FfXjIaG8rN6TzROgOHYzWD67fIjXNamE+UMrlNa16jk8dbF5+cbUgM38QWy0
- gRLMW6/PkBvXNyLqSNoHixU4aJ6d8DOHybYQjFF+3YM8nBPNADu6khV6fitQcB34uobX9Ma
- 71pqg2Ml6aRdckGaAXnKg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:S/nrZhp5nrc=:JAI//IXL+69i5Z1SRHlN6e
- H7vI+ZBlkdYUHaJLXHPj9inLs9wMp/i3NdHxiJH5FHwFUioW/vPa4PWJdfvZYGofRkVKqsGPx
- T86s32aXaUnrrNxP2HPIbc8Cagp9+dx5YBGJrrQcJmT6vn+DtIHRmMEpXqgrX3/gDi2j5Zhq5
- n6ySIzi0vIyoDrWsvYUrQ64XZN0feWJ7tayeyAPDFZeyGSGRQ5ZDiejS/EmsNsRTF8imjKs8d
- pFQHv4lYXTMNlPDULTq6HAfTUAMWMc6/oYM7P/TT5QLUZ7AwHLiKZsyH6nBgseihrf+r0QPHT
- RYE1/gTsNhxmxRppNXejixh0KjDY1Gd7dQdilJ9tJokGpCvEDHYN1QUY7x3EM7jQNL88FXoMf
- LnUcJ3lktC4iMC6hPek8M78HJXagWH60jqFRCXUDEpffXXnrh+uHCZYOT2twLVWwhkpyueBMd
- ZqN+4I2Tjzi4wRVYOWLUP62gefusnOUoVKqDq3IZbtbts356PAn3swZ+MaaBbbkMeFWVbitFA
- jb2DJ1XZv9veWYXXVoSDAkRYgjt4FSZ4QdUjwmQNiKJoAUySzEDEVlTx6+fQis8EWmmW4nEuF
- fWybknsn2Cwm0/yjXNa5tXIV1GEgC7mg7MzpetSoe1fGjEj6z752VWVQ+xUr8VSvlXR68y1bA
- XomVUspZjQqli8b70atNe6LZ/Y/kZ3x4Yeofqd9MBRs58cQwkIyPqJv3A1j41jODQXOCZiWz8
- wP053n1llPoGSkppB/bnUakG0IvBg9VCfl44my0mwgebFXUl/jwPF7eYXCY5afxFa4B3BDmxM
- 5e13or0WLQL+xJt9SDwei349gWUsBxtgnB9KjhcTIEMtZRftmNt6nTaE2mx/UZfcdI28dPcDL
- XSLENht8AzOWQC0KpRg9gjnjkRWSPyZ9FCfyQMVJq3E9dwwPfMrYZXe9Xe5Zh4UXNInLRV7jG
- HDBCBKTJ40yhvFY91ZyjwdDMzDybERP4cS9BTDlL++2px29rvN+/F
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200710225849.GA6004@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 3:14 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> What happens when there is no CONFIG_64BIT line?
-> There exist explicit checks for (and "inverse") of CONFIG_64BIT like
-> "ifdef" and "ifndef" or any "defined(...)" and its opposite?
-> I remember I have seen checks for it in x86 tree.
+On Fri, Jul 10, 2020 at 03:58:49PM -0700, Paul E. McKenney wrote:
+> Sadly, the code creating the 32-bit VDSO became unhappy:
+> 
+> ------------------------------------------------------------------------
+> 
+> In file included from ././include/linux/compiler_types.h:59:0,
+>                  from <command-line>:0:
+> ./include/linux/smp.h:40:26: error: requested alignment is not a positive power of 2
+>   __aligned(sizeof(struct __call_single_data));
+>                           ^
+> ./include/linux/compiler_attributes.h:57:68: note: in definition of macro ‘__aligned’
+>  #define __aligned(x)                    __attribute__((__aligned__(x)))
+>                                                                     ^
+> scripts/Makefile.build:280: recipe for target 'arch/x86/entry/vdso/vdso32/vclock_gettime.o' failed
+> make[3]: *** [arch/x86/entry/vdso/vdso32/vclock_gettime.o] Error 1
+> 
 
-As long as you consistently pass ARCH=i386 when running 'make',
-nothing bad happens, as ARCH=i386 just hides that option.
+*groan*, we have BUILD_VDSO* for that, but yeah, not pretty.
 
-If you run "make ARCH=i386 defconfig" followed by "make olddefconfig"
-(without ARCH=i386) on a non-i386 machine, the absence of that
-CONFIG_64BIT line will lead to the kernel going back to a 64-bit
-configuration.
+>  Thoughts?
 
-    Arnd
+The biggest one is C++ comments and excessively long lines but let me go
+stare at more detail :-)
+
+> ------------------------------------------------------------------------
+> 
+> commit aba04e2ce05fbc6bb90e6fa238c22e491f6b95e3
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Tue Jun 30 13:22:54 2020 -0700
+> 
+>     kernel/smp: Provide CSD lock timeout diagnostics
+>     
+>     This commit causes csd_lock_wait() to emit diagnostics when a CPU
+>     fails to respond quickly enough to one of the smp_call_function()
+>     family of function calls.  These diagnostics are enabled by a new
+>     CSD_LOCK_WAIT_DEBUG Kconfig option that depends on DEBUG_KERNEL.
+>     
+>     This commit was inspired by an earlier patch by Josef Bacik.
+>     
+>     [ paulmck: Fix for syzbot+0f719294463916a3fc0e@syzkaller.appspotmail.com ]
+>     [ paulmck: Fix KASAN use-after-free issue reported by Qian Cai. ]
+>     [ paulmck: Fix botched nr_cpu_ids comparison per Dan Carpenter. ]
+>     [ paulmck: More #ifdef per Peter Zijlstra. ]
+>     [ paulmck: Print delays in ns rather than ms per Peter Zijlstra. ]
+>     [ paulmck: Use more CONFIG_CSD_LOCK_WAIT_DEBUG per Peter Zijlstra. ]
+>     Link: https://lore.kernel.org/lkml/00000000000042f21905a991ecea@google.com
+>     Link: https://lore.kernel.org/lkml/0000000000002ef21705a9933cf3@google.com
+>     Cc: Peter Zijlstra <peterz@infradead.org>
+>     Cc: Ingo Molnar <mingo@kernel.org>
+>     Cc: Thomas Gleixner <tglx@linutronix.de>
+>     Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/smp.c b/kernel/smp.c
+> index 148d991..e1d8e52 100644
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -20,6 +20,9 @@
+>  #include <linux/sched.h>
+>  #include <linux/sched/idle.h>
+>  #include <linux/hypervisor.h>
+> +#include <linux/sched/clock.h>
+> +#include <linux/nmi.h>
+> +#include <linux/sched/debug.h>
+>  
+>  #include "smpboot.h"
+>  #include "sched/smp.h"
+> @@ -34,6 +37,12 @@ struct call_function_data {
+>  
+>  static DEFINE_PER_CPU_ALIGNED(struct call_function_data, cfd_data);
+>  
+> +#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
+> +static DEFINE_PER_CPU(call_single_data_t *, cur_csd);
+> +static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
+> +static DEFINE_PER_CPU(void *, cur_csd_info);
+> +#endif
+
+None of these are used before the other #ifdef block below, perhaps
+merge them into one?
+
+>  static DEFINE_PER_CPU_SHARED_ALIGNED(struct llist_head, call_single_queue);
+>  
+>  static void flush_smp_call_function_queue(bool warn_cpu_offline);
+> @@ -96,6 +105,103 @@ void __init call_function_init(void)
+>  	smpcfd_prepare_cpu(smp_processor_id());
+>  }
+>  
+> +#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
+> +
+> +#define CSD_LOCK_TIMEOUT (5 * 1000ULL * 1000ULL * 1000ULL) /* Nanoseconds. */
+
+NSEC_PER_SEC, that also instantly obviates the comment
+
+> +atomic_t csd_bug_count = ATOMIC_INIT(0);
+> +
+> +/* Record current CSD work for current CPU, NULL to erase. */
+> +static void csd_lock_record(call_single_data_t *csd)
+> +{
+> +	if (!csd) {
+> +		smp_mb(); // NULL cur_csd after unlock.
+> +		__this_cpu_write(cur_csd, NULL);
+> +		return;
+> +	}
+> +	__this_cpu_write(cur_csd, csd);
+> +	__this_cpu_write(cur_csd_func, csd->func);
+> +	__this_cpu_write(cur_csd_info, csd->info);
+> +	smp_mb(); // Update cur_csd before function call.
+> +		  // Or before unlock, as the case may be.
+> +}
+> +
+> +static __always_inline int csd_lock_wait_getcpu(call_single_data_t *csd)
+> +{
+> +	unsigned int csd_type;
+> +
+> +	csd_type = CSD_TYPE(csd);
+> +	if (csd_type == CSD_TYPE_ASYNC || csd_type == CSD_TYPE_SYNC)
+> +		return csd->dst; // Other CSD_TYPE_ values might not have ->dst.
+> +	return -1;
+> +}
+> +
+> +/*
+> + * Complain if too much time spent waiting.  Note that only
+> + * the CSD_TYPE_SYNC/ASYNC types provide the destination CPU,
+> + * so waiting on other types gets much less information.
+> + */
+> +static __always_inline bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
+> +{
+> +	int cpu = -1;
+> +	call_single_data_t *cpu_cur_csd;
+> +	bool firsttime;
+> +	unsigned int flags = READ_ONCE(csd->flags);
+> +	u64 ts2, ts_delta;
+
+x-mas tree ?
+
+> +
+> +	if (!(flags & CSD_FLAG_LOCK)) {
+> +		if (!unlikely(*bug_id))
+> +			return true;
+> +		cpu = csd_lock_wait_getcpu(csd);
+> +		if (cpu >= 0)
+> +			pr_alert("csd: CSD lock (#%d) got unstuck on CPU#%02d, CPU#%02d released the lock after all. Phew!\n", *bug_id, raw_smp_processor_id(), cpu);
+> +		else
+> +			pr_alert("csd: CSD lock (#%d) got unstuck on CPU#%02d, the lock was released after all. Phew!\n", *bug_id, raw_smp_processor_id());
+
+Excessively long line.
+
+Why not a single:
+		pr_alert("csd: CSD lock (%d) got unstuck on CPU%d, CPU%d released the lock.\n",
+			 *bug_id, raw_smp_processor_id(), cpu);
+
+Yes, it'll print CPU-1, but given you have to more or less know this
+code intimately to make sense of this stuff, that seems like a fair
+trade-off.
+
+> +		return true;
+> +	}
+> +
+> +	ts2 = sched_clock();
+> +	ts_delta = ts2 - *ts1;
+> +	if (likely(ts_delta <= CSD_LOCK_TIMEOUT)) {
+> +		cpu_relax();
+> +		return false;
+> +	}
+> +
+> +	firsttime = !*bug_id;
+> +	if (firsttime)
+> +		*bug_id = atomic_inc_return(&csd_bug_count);
+> +	cpu = csd_lock_wait_getcpu(csd);
+> +	smp_mb(); // No stale cur_csd values!
+
+> +	if (WARN_ONCE(cpu < 0 || cpu >= nr_cpu_ids, "%s: cpu = %d\n", __func__, cpu))
+> +		cpu_cur_csd = READ_ONCE(per_cpu(cur_csd, 0));
+> +	else
+> +		cpu_cur_csd = READ_ONCE(per_cpu(cur_csd, cpu));
+
+This is a potential user-after-free, func() may free the csd when async.
+Although I don't believe anybody does so.
+
+> +	smp_mb(); // No refetching cur_csd values!
+
+The READ_ONCE() already ensures things aren't re-fetched, don't see why
+we'd need smp_mb() for that.
+
+The below is unreadable... espescially when smashed together without
+whitespace, also due to the stupid long lines it wraps and becomes a
+mangled mess of letters.
+
+> +#define CSD_FORMAT_PREFIX "csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps), currently"
+> +#define CSD_ARGS_PREFIX firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), \
+> +	ts2 - ts0, cpu, csd->func, csd->info
+> +	if (cpu_cur_csd && csd != cpu_cur_csd)
+> +		pr_alert(CSD_FORMAT_PREFIX " handling prior %pS(%ps) request.\n",
+> +			 CSD_ARGS_PREFIX, cpu_cur_csd->func, cpu_cur_csd->info);
+> +	else
+> +		pr_alert(CSD_FORMAT_PREFIX " %s.\n", CSD_ARGS_PREFIX,
+> +			 !cpu_cur_csd ? "unresponsive" : "handling this request");
+
+definitely missing {}
+
+> +#undef CSD_FORMAT_PREFIX
+> +#undef CSD_ARGS_PREFIX
+
+Aside from it being unreadable, I've also completely lost the plot on
+what it's doing.
+
+> +	if (cpu >= 0) {
+> +		if (!trigger_single_cpu_backtrace(cpu))
+> +			dump_cpu_task(cpu);
+> +		if (!cpu_cur_csd) {
+> +			pr_alert("csd: Re-sending CSD lock (#%d) IPI from CPU#%02d to CPU#%02d\n", *bug_id, raw_smp_processor_id(), cpu);
+> +			arch_send_call_function_single_ipi(cpu);
+> +		}
+> +	}
+> +	dump_stack();
+> +	*ts1 = ts2;
+
+I was expecting:
+
+	*ts1 += CSD_LOCK_TIMEOUT;
+
+Not that it matters a great deal..
+
+> +	cpu_relax();
+> +
+> +	return false;
+> +}
+> +
+>  /*
+>   * csd_lock/csd_unlock used to serialize access to per-cpu csd resources
+>   *
+> @@ -105,8 +211,26 @@ void __init call_function_init(void)
+>   */
+>  static __always_inline void csd_lock_wait(call_single_data_t *csd)
+>  {
+> +	int bug_id = 0;
+> +	u64 ts0, ts1;
+> +
+> +	ts1 = ts0 = sched_clock();
+> +	for (;;)
+> +		if (csd_lock_wait_toolong(csd, ts0, &ts1, &bug_id))
+> +			break;
+
+This is lacking {}, also I think you can stick (at least) the
+cpu_relax() in this loop.
+
+	for (;;) {
+		if (csd_lock_wait_toolong(csd, ts0, &ts1, &bug_id))
+			break;
+
+		cpu_relax();
+	}
+
+And possible even the wait loop itself:
+
+	for (;;) {
+		if (csd_got_unlocked(csd, ...))
+			break;
+
+		now = sched_clock();
+		if (now - ts1 > CSD_LOCK_TIMEOUT) {
+			csd_held_too_long(csd, ts0, ts1, now, ...);
+			ts1 += CSD_LOCK_TIMEOUT;
+		}
+
+		cpu_relax();
+	}
+
+that also allows breaking up that unreadable monster a bit.
+
+> +	smp_acquire__after_ctrl_dep();
+> +}
