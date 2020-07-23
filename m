@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B802D22B617
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A993B22B619
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgGWStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:49:23 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:36026 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726349AbgGWStT (ORCPT
+        id S1728274AbgGWStZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:49:25 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:57925 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728245AbgGWStW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:49:19 -0400
+        Thu, 23 Jul 2020 14:49:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595530159; x=1627066159;
+  t=1595530162; x=1627066162;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=JFzmp3IpT2/vSAdFB2tkC7kXSDjHPZkrYg58Jnu3Ns4=;
-  b=WMSgCIq036XwXGdubS78r4Djvzsc1VLODDST9l68cPBgU6y9nKfcSY/8
-   AS6PghcqhEMX2nQxnBnS8RXSP3m7x7Gw5B13sRIpoQcNlNrf1P6Z2ZHx6
-   Z7oKR1BoDEy0pbsGSXgiIgvrNDpt8lP4pWs6Acfiop3QW5BkoKGAE/k4r
-   bqhUcsPQt9hzEMmHlw0FD0apdAJVdhq2iacyicxc+Tt4SCV6qMjOHM47M
-   kPewJN0tj3NkOxdiolFsoOmwFBZqwOG3aQmdr9A/Bb1OQBbK0BnhpLVSa
-   13VOenuAN2cRGRSgBEQ+oVvkod9qN8xSS6w2JCT+TYUjdnruYRTiUDpyL
-   w==;
-IronPort-SDR: A+az9Wx44VjLI17HbHOrlcPhNWLu6gYHg9TdM5dwHpEc2DVyWnovX+RWQ92p3DHISlm6T/vm0g
- 5SObzmxXxew6cyoG+F9XIGumAj+lYuMfVJl2f3NawD5288htptFlX8+UT3y6pWdgCsNJ9j5sbw
- DnJYXCW01SlHvJxcXgYCD/I5+Awb87UjaTYU2wDj097rWOfLXgZ0n30WuKApurXMmM7coqHEYZ
- TK2a5HUz4LpqD2uBIeiPYrkLoMTDvqT3swCWwiA+52b1OhL1SVIsScMQjeB2mSIDL3qO1SkClE
- dpk=
+  bh=SFBqPVx3z2oefl/XszBXa42k1QB4gR4AFJGweDDyRZ0=;
+  b=PNgaix/sqTetFu2PMYWHEr/ktHbwKu3bJChBG9jmwPy9X+VZDhO75b/I
+   zqoNrHixlEApL8ACnH7H9SGtb0FQ7N1b2sUwBB/pUnk3CqJUtnyvDtT65
+   0tP2xaibisO5ue7Hkoeo+kq3Hj6RNPgyD1SCxBJ7gDif22rCnMF+QcnCH
+   zwaHReu2E1eXLH2q5oSePl6RXRs8bIkf3C3n7raE1V7qTuYzSHqnNjq6W
+   PkDisoh69Q9OxGfvv5+coWiNs9WJBDDm6aJg2Ch92uH8fvleL1hZNMss/
+   SMSG/WuJbFHn5YqCtdl6+WvZvNrLo5Z71r0YRiU2HI57xXXLoatZEFamU
+   g==;
+IronPort-SDR: W3j+fOlYux1bqqgrwfYwhz1kYn2Sd2JfkKlwG5KMDpof5RbRS6EhGImHAbTeUWXccO/l+cTdYk
+ XGuWJw0FVGfczDgX372ZzMnN9yiENJL4qdr/XpfsfAisTfpwIde2aObMJbTzFIf9mwyuAehDrI
+ +Wpj3xXLUsswBL1coCCIh+f8Y2c3FAEyhk5WFY37ziqhJsYd6Y9jweUhhglpA0C4CbIQVjlOE5
+ 8Nzx6VwyNN8QotfEaKc2ffHSwjBAJpNA+F21oY1JAbz6L5XdAIafCyRnfYsNs5QqAvxqdUQFlR
+ lSA=
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="83047904"
+   d="scan'208";a="85153682"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 11:49:18 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 11:49:21 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 23 Jul 2020 11:49:18 -0700
+ 15.1.1979.3; Thu, 23 Jul 2020 11:48:41 -0700
 Received: from cristi-P53.lan (10.10.115.15) by chn-vm-ex01.mchp-main.com
  (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 23 Jul 2020 11:48:35 -0700
+ Transport; Thu, 23 Jul 2020 11:48:38 -0700
 From:   <cristian.birsan@microchip.com>
 To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
@@ -48,11 +48,10 @@ To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
         <mark.rutland@arm.com>, <linux-arm-kernel@lists.infradead.org>,
         <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-CC:     Cristian Birsan <cristian.birsan@microchip.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 2/6] dt-bindings: usb: atmel: Update DT bindings documentation for sam9x60
-Date:   Thu, 23 Jul 2020 21:48:58 +0300
-Message-ID: <20200723184902.416705-3-cristian.birsan@microchip.com>
+CC:     Cristian Birsan <cristian.birsan@microchip.com>
+Subject: [PATCH v4 3/6] usb: gadget: udc: atmel: simplify endpoint allocation
+Date:   Thu, 23 Jul 2020 21:48:59 +0300
+Message-ID: <20200723184902.416705-4-cristian.birsan@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723184902.416705-1-cristian.birsan@microchip.com>
 References: <20200723184902.416705-1-cristian.birsan@microchip.com>
@@ -66,26 +65,87 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Cristian Birsan <cristian.birsan@microchip.com>
 
-Add sam9x60 binding.
+Simplify the endpoint allocation and cleanup the code.
 
 Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/usb/atmel-usb.txt | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/udc/atmel_usba_udc.c | 21 ++++++++-------------
+ drivers/usb/gadget/udc/atmel_usba_udc.h |  1 -
+ 2 files changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/atmel-usb.txt b/Documentation/devicetree/bindings/usb/atmel-usb.txt
-index 423b99a8fd97..a4002624ba14 100644
---- a/Documentation/devicetree/bindings/usb/atmel-usb.txt
-+++ b/Documentation/devicetree/bindings/usb/atmel-usb.txt
-@@ -82,6 +82,7 @@ Required properties:
- 	       "atmel,at91sam9rl-udc"
- 	       "atmel,at91sam9g45-udc"
- 	       "atmel,sama5d3-udc"
-+	       "microchip,sam9x60-udc"
-  - reg: Address and length of the register set for the device
-  - interrupts: Should contain usba interrupt
-  - clocks: Should reference the peripheral and host clocks
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+index 4281242b5f9a..10fa72ec8b79 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -1091,8 +1091,6 @@ static struct usb_ep *atmel_usba_match_ep(struct usb_gadget *gadget,
+ 				USBA_BF(EPT_SIZE, fls(ep->fifo_size - 1) - 3);
+ 
+ 		ep->ept_cfg |= USBA_BF(BK_NUMBER, ep->nr_banks);
+-
+-		ep->udc->configured_ep++;
+ 	}
+ 
+ 	return _ep;
+@@ -1786,7 +1784,7 @@ static irqreturn_t usba_udc_irq(int irq, void *devid)
+ 
+ 	if (status & USBA_END_OF_RESET) {
+ 		struct usba_ep *ep0, *ep;
+-		int i, n;
++		int i;
+ 
+ 		usba_writel(udc, INT_CLR,
+ 			USBA_END_OF_RESET|USBA_END_OF_RESUME
+@@ -1834,13 +1832,14 @@ static irqreturn_t usba_udc_irq(int irq, void *devid)
+ 				"ODD: EP0 configuration is invalid!\n");
+ 
+ 		/* Preallocate other endpoints */
+-		n = fifo_mode ? udc->num_ep : udc->configured_ep;
+-		for (i = 1; i < n; i++) {
++		for (i = 1; i < udc->num_ep; i++) {
+ 			ep = &udc->usba_ep[i];
+-			usba_ep_writel(ep, CFG, ep->ept_cfg);
+-			if (!(usba_ep_readl(ep, CFG) & USBA_EPT_MAPPED))
+-				dev_err(&udc->pdev->dev,
+-					"ODD: EP%d configuration is invalid!\n", i);
++			if (ep->ep.claimed) {
++				usba_ep_writel(ep, CFG, ep->ept_cfg);
++				if (!(usba_ep_readl(ep, CFG) & USBA_EPT_MAPPED))
++					dev_err(&udc->pdev->dev,
++						"ODD: EP%d configuration is invalid!\n", i);
++			}
+ 		}
+ 	}
+ 
+@@ -2025,9 +2024,6 @@ static int atmel_usba_stop(struct usb_gadget *gadget)
+ 	if (udc->vbus_pin)
+ 		disable_irq(gpiod_to_irq(udc->vbus_pin));
+ 
+-	if (fifo_mode == 0)
+-		udc->configured_ep = 1;
+-
+ 	udc->suspended = false;
+ 	usba_stop(udc);
+ 
+@@ -2154,7 +2150,6 @@ static struct usba_ep * atmel_udc_of_init(struct platform_device *pdev,
+ 
+ 	if (fifo_mode == 0) {
+ 		udc->num_ep = udc_config->num_ep;
+-		udc->configured_ep = 1;
+ 	} else {
+ 		udc->num_ep = usba_config_fifo_table(udc);
+ 	}
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.h b/drivers/usb/gadget/udc/atmel_usba_udc.h
+index 48e332439ed5..a9bf655eb513 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.h
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.h
+@@ -336,7 +336,6 @@ struct usba_udc {
+ 	int irq;
+ 	struct gpio_desc *vbus_pin;
+ 	int num_ep;
+-	int configured_ep;
+ 	struct usba_fifo_cfg *fifo_cfg;
+ 	struct clk *pclk;
+ 	struct clk *hclk;
 -- 
 2.25.1
 
