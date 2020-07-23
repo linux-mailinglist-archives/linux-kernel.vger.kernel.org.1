@@ -2,117 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD95522AD0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5C022AD0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgGWK4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 06:56:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbgGWKz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 06:55:59 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3459F2080D;
-        Thu, 23 Jul 2020 10:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595501758;
-        bh=rOif2suP7KxnL8T+L3PWl9WY4FaYmE1dtO5JYOiUmc8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K91lnDrZZp3AiLjDTMTTBnfi0BSRzgndD9D6oQ1kbiyUiR4M7OgM0pAdFSIzA7p4r
-         oL47+MeDKrNo4dX/tSdgCNJKntkI+CwM5X9x0FdoG8YKuf6akV/QVTFkKV1LxCeZRI
-         /eOsKnnNRJrzMNcudnpi0wTqJQXKlxKgcPNGboHk=
-Date:   Thu, 23 Jul 2020 12:56:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH 1/2] misc: hpilo: switch from 'pci_' to 'dma_' API
-Message-ID: <20200723105602.GD1949236@kroah.com>
-References: <20200718070224.337964-1-christophe.jaillet@wanadoo.fr>
- <20200723073433.GA1273491@kroah.com>
- <15e5f2e4-a623-3fc2-36b6-4132ee316220@wanadoo.fr>
+        id S1728533AbgGWK41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 06:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726675AbgGWK40 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 06:56:26 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894A6C0619DC;
+        Thu, 23 Jul 2020 03:56:26 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id a9so2996109pjd.3;
+        Thu, 23 Jul 2020 03:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B+mLXieEAfXnO/747XGSjyHkJWweuJW45UcNIGomDRA=;
+        b=c6FyYWFei/GJd4W55hsLdi161Ij5iiz7XoxIgjk8uWEyUHjj+HzhiwHI9g/9lzjL9J
+         8JwVe3kqr/y5qBDb0HaNVOemR+LFDw7OHJVDnej1EW+fUA91rBUAvZcdivH2wG9HyrMA
+         3AAZN+m7GRTB8I7TT5YxXOwSvQiUwHnuEDwFGdU/KE5iIQR5Q1gdo2OvaDbfm65T0lE+
+         rsA+aUfoJ3VeW58rSNvW1MOQYbzFEC1qnVTjqZi473T5DG0Scw0qWT1x7keIapAeDtLG
+         b5GZT7JXPChb3Rx5F+XvVny5702h5KhkLCOO/1hUo32rBmHGDcI3qxfKzfi3AoP0TfnW
+         MB7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B+mLXieEAfXnO/747XGSjyHkJWweuJW45UcNIGomDRA=;
+        b=LKqH+aJAj3wvXwXlW+aPLeJljY6iIq7aysBSF6/RB4RZJZG4CViVGkZb94HY0GVmP0
+         5A2+0MI9fkE+9NPtH2ZNFCYxlrEdcCqslYPLCpa9bFTHMbykSFyeCxAeTJPuK8nqGmUz
+         OVu2uSNoRGnRJiebMphvdFrfa1n8oNeRns+DwFmRyLDQCZG5JUnJiHoknYdp6fn/EBUH
+         S7IAk0l/n7yIxi7rKtgwveFeMjVBScmb1XU4xiBVjz246ksgIdlDCbIvy96Hn8YC7w5N
+         LxdJ/TDhIjtuHzeOnjYheBY3m/jaZL5uj/mNgd7AFpw8d1vcxVVrtww+3fIhX/GyYVA2
+         trxg==
+X-Gm-Message-State: AOAM5306xXprrellYtjJkX1Cfo4QRxweArVxW8DBZ8CcshjtAugSBErZ
+        azgNym8JkY9hVsJjfJbt5xtLt5dI
+X-Google-Smtp-Source: ABdhPJzn2+x7F7ArPwBbfRDcLnhlqdLSyy4lZ9Qn+NY5m6fLUb48Uxpzopafbl3UM+x1jlxLVUSumg==
+X-Received: by 2002:a17:902:b20a:: with SMTP id t10mr3176863plr.185.1595501785905;
+        Thu, 23 Jul 2020 03:56:25 -0700 (PDT)
+Received: from bobo.ozlabs.ibm.com (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id 204sm2598009pfx.3.2020.07.23.03.56.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 03:56:25 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: [PATCH 1/2] lockdep: improve current->(hard|soft)irqs_enabled synchronisation with actual irq state
+Date:   Thu, 23 Jul 2020 20:56:14 +1000
+Message-Id: <20200723105615.1268126-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <15e5f2e4-a623-3fc2-36b6-4132ee316220@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 10:59:49AM +0200, Christophe JAILLET wrote:
-> Le 23/07/2020 à 09:34, Greg KH a écrit :
-> > On Sat, Jul 18, 2020 at 09:02:24AM +0200, Christophe JAILLET wrote:
-> > > The wrappers in include/linux/pci-dma-compat.h should go away.
-> > > 
-> > > The patch has been generated with the coccinelle script below and has been
-> > > hand modified to replace GFP_ with a correct flag.
-> > > It has been compile tested.
-> > > 
-> > > When memory is allocated in 'ilo_ccb_setup()' GFP_ATOMIC must be used
-> > > because a spin_lock is hold in 'ilo_open()' before calling
-> > > 'ilo_ccb_setup()'
-> 
->        ^
->        |
+If an interrupt is not masked by local_irq_disable (e.g., a powerpc perf
+interrupt), then it can hit in local_irq_enable() after trace_hardirqs_on()
+and before raw_local_irq_enable().
 
-{sigh} see how well I read changelog text...
+If that interrupt handler calls local_irq_save(), it will call
+trace_hardirqs_off() but the local_irq_restore() will not call
+trace_hardirqs_on() again because raw_irqs_disabled_flags(flags) is true.
 
-> 
-> > > [...]
-> > > 
-> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > > ---
-> > > If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-> > >     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-> > > ---
-> > >   drivers/misc/hpilo.c | 7 ++++---
-> > >   1 file changed, 4 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
-> > > index 10c975662f8b..c9539c89a925 100644
-> > > --- a/drivers/misc/hpilo.c
-> > > +++ b/drivers/misc/hpilo.c
-> > > @@ -256,7 +256,8 @@ static void ilo_ccb_close(struct pci_dev *pdev, struct ccb_data *data)
-> > >   	memset_io(device_ccb, 0, sizeof(struct ccb));
-> > >   	/* free resources used to back send/recv queues */
-> > > -	pci_free_consistent(pdev, data->dma_size, data->dma_va, data->dma_pa);
-> > > +	dma_free_coherent(&pdev->dev, data->dma_size, data->dma_va,
-> > > +			  data->dma_pa);
-> > >   }
-> > >   static int ilo_ccb_setup(struct ilo_hwinfo *hw, struct ccb_data *data, int slot)
-> > > @@ -272,8 +273,8 @@ static int ilo_ccb_setup(struct ilo_hwinfo *hw, struct ccb_data *data, int slot)
-> > >   			 2 * desc_mem_sz(NR_QENTRY) +
-> > >   			 ILO_START_ALIGN + ILO_CACHE_SZ;
-> > > -	data->dma_va = pci_alloc_consistent(hw->ilo_dev, data->dma_size,
-> > > -					    &data->dma_pa);
-> > > +	data->dma_va = dma_alloc_coherent(&hw->ilo_dev->dev, data->dma_size,
-> > > +					  &data->dma_pa, GFP_ATOMIC);
-> > 
-> > This is being called from open() so it can be GFP_KERNEL.  Can you fix
-> > that up and resend a new version?
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> The call chain is:
->    .open	                       (file_operations)
->       --> ilo_open
-> 	  spin_lock(&hw->open_lock);   (around line 782)
->          --> ilo_ccb_setup	       (hw->open_lock is still hold)
-> 
-> So I think that GFP_ATOMIC is needed here, or the code should be reworked to
-> avoid holding the spin_lock when ilo_ccb_setup is called.
+This can lead lockdep_assert_irqs_enabled() to trigger false positive
+warnings.
 
-Ok, fair enough, this patch is ok as-is, I'll go queue it up.  Further
-fixes for this to move the spinlock out from this is probably a good
-idea, if anyone cares about this driver anymore.
+Fix this by being careful to only enable and disable trace_hardirqs with
+the outer-most irq enable/disable.
 
-thanks,
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+---
 
-greg k-h
+I haven't tested on other architectures but I imagine NMIs in general
+might cause a similar problem.
+
+Other architectures might have to be updated for patch 2, but there's
+a lot of asm around interrupt/return, so I didn't have a very good
+lock. The warnings should be harmless enough and uncover most places
+that need updating.
+
+ arch/powerpc/include/asm/hw_irq.h | 11 ++++-------
+ include/linux/irqflags.h          | 29 ++++++++++++++++++-----------
+ 2 files changed, 22 insertions(+), 18 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
+index 3a0db7b0b46e..35060be09073 100644
+--- a/arch/powerpc/include/asm/hw_irq.h
++++ b/arch/powerpc/include/asm/hw_irq.h
+@@ -200,17 +200,14 @@ static inline bool arch_irqs_disabled(void)
+ #define powerpc_local_irq_pmu_save(flags)			\
+ 	 do {							\
+ 		raw_local_irq_pmu_save(flags);			\
+-		trace_hardirqs_off();				\
++		if (!raw_irqs_disabled_flags(flags))		\
++			trace_hardirqs_off();			\
+ 	} while(0)
+ #define powerpc_local_irq_pmu_restore(flags)			\
+ 	do {							\
+-		if (raw_irqs_disabled_flags(flags)) {		\
+-			raw_local_irq_pmu_restore(flags);	\
+-			trace_hardirqs_off();			\
+-		} else {					\
++		if (!raw_irqs_disabled_flags(flags))		\
+ 			trace_hardirqs_on();			\
+-			raw_local_irq_pmu_restore(flags);	\
+-		}						\
++		raw_local_irq_pmu_restore(flags);		\
+ 	} while(0)
+ #else
+ #define powerpc_local_irq_pmu_save(flags)			\
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 6384d2813ded..571ee29ecefc 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -163,26 +163,33 @@ do {						\
+  * if !TRACE_IRQFLAGS.
+  */
+ #ifdef CONFIG_TRACE_IRQFLAGS
+-#define local_irq_enable() \
+-	do { trace_hardirqs_on(); raw_local_irq_enable(); } while (0)
+-#define local_irq_disable() \
+-	do { raw_local_irq_disable(); trace_hardirqs_off(); } while (0)
++#define local_irq_enable()				\
++	do {						\
++		trace_hardirqs_on();			\
++		raw_local_irq_enable();			\
++	} while (0)
++
++#define local_irq_disable()				\
++	do {						\
++		bool was_disabled = raw_irqs_disabled(); \
++		raw_local_irq_disable();		\
++		if (!was_disabled)			\
++			trace_hardirqs_off();		\
++	} while (0)
++
+ #define local_irq_save(flags)				\
+ 	do {						\
+ 		raw_local_irq_save(flags);		\
+-		trace_hardirqs_off();			\
++		if (!raw_irqs_disabled_flags(flags))	\
++			trace_hardirqs_off();		\
+ 	} while (0)
+ 
+ 
+ #define local_irq_restore(flags)			\
+ 	do {						\
+-		if (raw_irqs_disabled_flags(flags)) {	\
+-			raw_local_irq_restore(flags);	\
+-			trace_hardirqs_off();		\
+-		} else {				\
++		if (!raw_irqs_disabled_flags(flags))	\
+ 			trace_hardirqs_on();		\
+-			raw_local_irq_restore(flags);	\
+-		}					\
++		raw_local_irq_restore(flags);		\
+ 	} while (0)
+ 
+ #define safe_halt()				\
+-- 
+2.23.0
+
