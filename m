@@ -2,101 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173EE22A8C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E55422A8CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgGWGQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 02:16:59 -0400
-Received: from out28-145.mail.aliyun.com ([115.124.28.145]:60821 "EHLO
-        out28-145.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbgGWGQ6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:16:58 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1183656|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0542861-0.0440707-0.901643;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03308;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=22;RT=22;SR=0;TI=SMTPD_---.I6H4xer_1595484991;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I6H4xer_1595484991)
-          by smtp.aliyun-inc.com(10.147.42.16);
-          Thu, 23 Jul 2020 14:16:32 +0800
-Subject: Re: [PATCH 2/2] crypto: Ingenic: Add hardware RNG for Ingenic JZ4780
- and X1000.
-To:     Randy Dunlap <rdunlap@infradead.org>, arnd@arndb.de,
-        gregkh@linuxfoundation.org, mpm@selenic.com,
-        herbert@gondor.apana.org.au, robh+dt@kernel.org
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, hadar.gat@arm.com,
-        prasannatsmkumar@gmail.com, krzk@kernel.org, masahiroy@kernel.org,
-        xuzaibo@huawei.com, daniel.thompson@linaro.org,
-        tmaimon77@gmail.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-References: <20200722164007.77655-1-zhouyanjie@wanyeetech.com>
- <20200722164007.77655-3-zhouyanjie@wanyeetech.com>
- <779949c8-8b1a-52ed-f695-7006f0045d7e@infradead.org>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <cb9d9d4d-4f85-5e41-8597-946698649c5e@wanyeetech.com>
-Date:   Thu, 23 Jul 2020 14:16:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
+        id S1726653AbgGWGSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 02:18:10 -0400
+Received: from mail-am6eur05on2136.outbound.protection.outlook.com ([40.107.22.136]:10337
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725536AbgGWGSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 02:18:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J7tM9kM2Ebzs0jx8cCbXXKKT/bZq24hwpSaFP1DqPB2dUpO/zEajBmrEem3BgZZs4d4u2vvlj0U1lYnd1I8WIcP5nHXxjXc6CuRZyGoXvlXKBqtA8adDPzJvv8ZOMzTCiBqEtkvYrL3NNsuLbwuQoTr4E2FqhiixFStSItEMrliEBnVWaQQwf0Knzd98lBtGQp7mPtKlyHKHOOcNwej+vg1tjiU63FdipwD9gTNH0by0ljt3qlLYZURfFq7mtRINDxaflW8XRkyK4JycMHVwlGwI8nGQmCwWEqAZYK3ac7nN0wqA8rOX5b5SPtK3IssckVGAYA/CVSzR+T2hms0S9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KAYzWfbFvxnce6TWsJ8eKgE613lRZZGQApr+HX5A2ig=;
+ b=ib2jhf75+GcQ8F4m6Mn6jtRu4lktkVTv2m4S5mmhvSDY0vntSrKMDfeM2+lBFfbICm2zOmbzkj41tC7ueGoXxAB+FLX9wXumnQ5llix2lc5sIjfnn6WdF9kFh/2WLxa6PmzkUUFr6a5q7BvAUaOkzaF6KGeBZ5AE5VY5Zz/3lmFczPdjHRSAELZ83HSmNXktwfZ3VZFGNQePWrAq3CPYljJju1oWMwlsL65FZtXDNjZI5PY1fJWeslUvN6MwG3TpMtmeBZRvUpWAUo5Lcutb6rjL9ZUpSyPzK2yF1+qzLRRjvvQxWSTYi+owHN8wPs+EXkM9lJnR126BZ4+Xap7DNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
+ dkim=pass header.d=habana.ai; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KAYzWfbFvxnce6TWsJ8eKgE613lRZZGQApr+HX5A2ig=;
+ b=KPoB8Ki2MGoDQ6tpe0hnQL/d/norNeK1TZCcu7MYTVKxyl426ySVymNhU0K18+Siwd3ghyQ38lPKgr8jRVeEdh0wHl4fQUWjfIvsg8JRY0VJOAAyaQ3AQo/QKmNk2IzgkpqWSCLlAA5XpLlovdYMpfWICRgf9mmfHo4VUZiWVzM=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=habana.ai;
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com (2603:10a6:10:ef::22)
+ by DB3PR0202MB3548.eurprd02.prod.outlook.com (2603:10a6:8:8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Thu, 23 Jul
+ 2020 06:18:04 +0000
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::68d4:6b:d077:19a9]) by DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::68d4:6b:d077:19a9%4]) with mapi id 15.20.3216.020; Thu, 23 Jul 2020
+ 06:18:04 +0000
+From:   Tomer Tayar <ttayar@habana.ai>
+To:     oded.gabbay@gmail.com
+Cc:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Subject: [PATCH] habanalabs: Fix memory leak in error flow of context init
+Date:   Thu, 23 Jul 2020 09:17:57 +0300
+Message-Id: <20200723061757.12906-1-ttayar@habana.ai>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM3PR07CA0082.eurprd07.prod.outlook.com
+ (2603:10a6:207:6::16) To DB8PR02MB5468.eurprd02.prod.outlook.com
+ (2603:10a6:10:ef::22)
 MIME-Version: 1.0
-In-Reply-To: <779949c8-8b1a-52ed-f695-7006f0045d7e@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ttayar-VM.habana-labs.com (213.57.90.10) by AM3PR07CA0082.eurprd07.prod.outlook.com (2603:10a6:207:6::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend Transport; Thu, 23 Jul 2020 06:18:03 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [213.57.90.10]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 57478071-b7b7-4e90-d680-08d82ed0287a
+X-MS-TrafficTypeDiagnostic: DB3PR0202MB3548:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB3PR0202MB3548516714B14CAA0FD0340ED2760@DB3PR0202MB3548.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DzC2JAHFIFvRURbTZhO8trbScpwCkoj/LpkNmNXHW7pKMilIOA8s7yLMHGoG9lkpw/m/E2Gtn8ktFbJ8PK2nTwol5E0ewOzZ4e0fa0iKjQRIyUekIFzBhi2aN6ipQdPJOkxqZSqC8v+DS4CqzvNqMi049oxMZEcK1XtJkLJ3EF00gY8MomtDQbajhvIET/g1WWftRYxfiAMQl79IMBSy8CaLkDp9oG0cOapXDDi9iDU17/xou8fD3wAahhg2x1JarHlF8JyH2JPFYmUG8G9vNNno4qI+LRSELcZmci4ZTMO0MmLmIMWkw/bhJPHN3EvzYhDLGhIAB778bbe1VClK8g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5468.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(136003)(39850400004)(396003)(366004)(107886003)(186003)(2906002)(6916009)(26005)(6512007)(16526019)(6486002)(8676002)(478600001)(6666004)(36756003)(83380400001)(52116002)(316002)(8936002)(1076003)(66476007)(2616005)(956004)(86362001)(55236004)(66946007)(6506007)(4326008)(5660300002)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: /hWMGiNwOQxubcBcCkJBzI+9FyOWL0/s8BUWm8Aagt55s0vrVt42kgEAK3hWV5uYI46VCa1VORfLe7J06thvybV9IxGhdrFQKxSuxpxspLh/rRsnqfOqhiT6I2Bg5x75InhmCJ0+vcqsyU8rb6sXkcmdfSV0FJu/eQePSGwtBB6m9CJX2IQDmp2FuBJruCfqtJAQb1HPn/bYMsuXBusI4v9zHY9BzjtbNC3p6wsxypXRbeYY1T1HzGRthcGW3ZxEcHz6BSInIEi7997Lm+qEGWkUQr+5HkSwdemDlnZ9q8fX2KR5koHgHHfRF3DcA+c7HE7hpUgVQXMsIyATb4JIkZsHUptr4IbX1uNwobyaKAjtrcN7bwlfVfXsKn4Iddy4zKqphd2dzT9bURQHrfaQrC4NCC9KDcxPviz51+xoEXlIxDB3/op6bzyr/MzUZRd98z5Qd0DG4KHzvlq1+Joodx94jL3vNosjPIh2fsVXN9A=
+X-OriginatorOrg: habana.ai
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57478071-b7b7-4e90-d680-08d82ed0287a
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5468.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2020 06:18:04.2667
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YfB7O3IA48NkCS6pyUdyF0RSXnVfmQYld2iJ9VWdzEZlKu/gVEB91mPxys71bCuRijFVes3dRZQlJzwT+0K/gQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0202MB3548
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Randy,
+Add a missing free of the cs_pending array in the error flow of context
+init.
 
-在 2020/7/23 上午2:27, Randy Dunlap 写道:
-> On 7/22/20 9:40 AM, 周琰杰 (Zhou Yanjie) wrote:
->> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
->> index 0ad17efc96df..fcb06027cd88 100644
->> --- a/drivers/char/hw_random/Kconfig
->> +++ b/drivers/char/hw_random/Kconfig
->> @@ -257,6 +257,21 @@ config HW_RANDOM_IMX_RNGC
->>   
->>   	  If unsure, say Y.
->>   
->> +config HW_RANDOM_INGENIC_RNG
->> +	tristate "Ingenic Random Number Generator support"
->> +	depends on HW_RANDOM
->> +	depends on MACH_JZ4780 || MACH_X1000
->> +	default HW_RANDOM
->> +	---help---
-> Just use:
-> 	help
-> here. See this for why:
->
-> commit 8f268881d7d278047b00eed54bbb9288dbd6ab23
-> Author: Masahiro Yamada <masahiroy@kernel.org>
-> Date:   Tue Dec 17 20:51:51 2019 +0900
->
->      kconfig: remove ---help--- from documentation
->      
->      Since commit 84af7a6194e4 ("checkpatch: kconfig: prefer 'help' over
->      '---help---'"), scripts/checkpatch.pl warns the use of ---help---.
->      
->      Kconfig still supports ---help---, but new code should avoid using it.
->      Let's stop advertising it in documentation.
->
+Fixes: 4b49c5b118b9 ("habanalabs: Use pending cs amount per asic")
 
-Sure, I will change it in v2.
+Signed-off-by: Tomer Tayar <ttayar@habana.ai>
+---
+ drivers/misc/habanalabs/common/context.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-Thanks and best regards!
+diff --git a/drivers/misc/habanalabs/common/context.c b/drivers/misc/habanalabs/common/context.c
+index b75a20364fad..3e375958e73b 100644
+--- a/drivers/misc/habanalabs/common/context.c
++++ b/drivers/misc/habanalabs/common/context.c
+@@ -138,36 +138,38 @@ int hl_ctx_init(struct hl_device *hdev, struct hl_ctx *ctx, bool is_kernel_ctx)
+ 		rc = hl_mmu_ctx_init(ctx);
+ 		if (rc) {
+ 			dev_err(hdev->dev, "Failed to init mmu ctx module\n");
+-			goto mem_ctx_err;
++			goto err_free_cs_pending;
+ 		}
+ 	} else {
+ 		ctx->asid = hl_asid_alloc(hdev);
+ 		if (!ctx->asid) {
+ 			dev_err(hdev->dev, "No free ASID, failed to create context\n");
+-			return -ENOMEM;
++			rc = -ENOMEM;
++			goto err_free_cs_pending;
+ 		}
+ 
+ 		rc = hl_vm_ctx_init(ctx);
+ 		if (rc) {
+ 			dev_err(hdev->dev, "Failed to init mem ctx module\n");
+ 			rc = -ENOMEM;
+-			goto mem_ctx_err;
++			goto err_asid_free;
+ 		}
+ 
+ 		rc = hdev->asic_funcs->ctx_init(ctx);
+ 		if (rc) {
+ 			dev_err(hdev->dev, "ctx_init failed\n");
+-			goto ctx_init_err;
++			goto err_vm_ctx_fini;
+ 		}
+ 	}
+ 
+ 	return 0;
+ 
+-ctx_init_err:
++err_vm_ctx_fini:
+ 	hl_vm_ctx_fini(ctx);
+-mem_ctx_err:
+-	if (ctx->asid != HL_KERNEL_ASID_ID)
+-		hl_asid_free(hdev, ctx->asid);
++err_asid_free:
++	hl_asid_free(hdev, ctx->asid);
++err_free_cs_pending:
++	kfree(ctx->cs_pending);
+ 
+ 	return rc;
+ }
+-- 
+2.17.1
 
-
->> +	  This driver provides kernel-side support for the Random Number Generator
->> +	  hardware found in ingenic JZ4780 and X1000 SoC. MIPS Creator CI20 uses
->> +	  JZ4780 SoC, YSH & ATIL CU1000-Neo uses X1000 SoC.
->> +
->> +	  To compile this driver as a module, choose M here: the
->> +	  module will be called ingenic-rng.
->> +
->> +	  If unsure, say Y.
->> +
->>   config HW_RANDOM_NOMADIK
->>   	tristate "ST-Ericsson Nomadik Random Number Generator support"
->>   	depends on ARCH_NOMADIK
-> thanks.
