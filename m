@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E6122A3B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BB722A3B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733285AbgGWAfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 20:35:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:22138 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729198AbgGWAfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 20:35:02 -0400
-IronPort-SDR: 2Npd3pLB2nlZAVZMs9G2rsfCF3Goadu1dGCd43nNhYC2Tp+PUlrS0Wr9ai18YzN4J6WzUhKTJW
- 85FUKDcHpTkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="150430717"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="150430717"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 17:35:01 -0700
-IronPort-SDR: 5vXl87XkKg3yA6y0MCZeRK9JBL9vu4lNnWF29JJqkbvRh7kcDYVJxckXeBUvOAqChJ0FG3u+Gy
- LdtLVeVbMuQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="392842096"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Jul 2020 17:34:59 -0700
-Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>
-Subject: Re: [PATCH v5 3/7] iommu/vt-d: Fix PASID devTLB invalidation
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-References: <1595445987-40095-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1595445987-40095-4-git-send-email-jacob.jun.pan@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <21f0c923-0e74-68d8-1fb3-67279b3fbd29@linux.intel.com>
-Date:   Thu, 23 Jul 2020 08:30:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1733273AbgGWAeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 20:34:13 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:60720 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729423AbgGWAeJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 20:34:09 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 521218040A6A;
+        Thu, 23 Jul 2020 00:34:01 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dmfSIOayfHoF; Thu, 23 Jul 2020 03:34:00 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v9 0/4] serial: 8250_dw: Fix ref clock usage
+Date:   Thu, 23 Jul 2020 03:33:53 +0300
+Message-ID: <20200723003357.26897-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <1595445987-40095-4-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/20 3:26 AM, Jacob Pan wrote:
-> DevTLB flush can be used for both DMA request with and without PASIDs.
-> The former uses PASID#0 (RID2PASID), latter uses non-zero PASID for SVA
-> usage.
-> 
-> This patch adds a check for PASID value such that devTLB flush with
-> PASID is used for SVA case. This is more efficient in that multiple
-> PASIDs can be used by a single device, when tearing down a PASID entry
-> we shall flush only the devTLB specific to a PASID.
-> 
-> Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table")
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Greg, Jiri, Andy. We've missed the last merge window. It would be pity to
+miss the next one. Please review/merge in the series.
 
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+Regarding the patchset. It might be dangerous if an UART port reference
+clock rate is suddenly changed. In particular the 8250 port drivers
+(and AFAICS most of the tty drivers using common clock framework clocks)
+rely either on the exclusive reference clock utilization or on the ref
+clock rate being always constant. Needless to say that it turns out not
+true and if some other service suddenly changes the clock rate behind an
+UART port driver back no good can happen. So the port might not only end
+up with an invalid uartclk value saved, but may also experience a
+distorted output/input data since such action will effectively update the
+programmed baud-clock. We discovered such problem on Baikal-T1 SoC where
+two DW 8250 ports have got a shared reference clock. Allwinner SoC is
+equipped with an UART, which clock is derived from the CPU PLL clock
+source, so the CPU frequency change might be propagated down up to the
+serial port reference clock. This patchset provides a way to fix the
+problem to the 8250 serial port controllers and mostly fixes it for the
+DW 8250-compatible UART. I say mostly because due to not having a facility
+to pause/stop and resume/restart on-going transfers we implemented the
+UART clock rate update procedure executed post factum of the actual
+reference clock rate change.
 
-Best regards,
-baolu
+In addition the patchset includes a small optimization patch. It
+simplifies the DW APB UART ref clock rate setting procedure a bit.
 
-> ---
->   drivers/iommu/intel/pasid.c | 11 ++++++++++-
->   1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-> index c81f0f17c6ba..fa0154cce537 100644
-> --- a/drivers/iommu/intel/pasid.c
-> +++ b/drivers/iommu/intel/pasid.c
-> @@ -486,7 +486,16 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->   	qdep = info->ats_qdep;
->   	pfsid = info->pfsid;
->   
-> -	qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-> +	/*
-> +	 * When PASID 0 is used, it indicates RID2PASID(DMA request w/o PASID),
-> +	 * devTLB flush w/o PASID should be used. For non-zero PASID under
-> +	 * SVA usage, device could do DMA with multiple PASIDs. It is more
-> +	 * efficient to flush devTLB specific to the PASID.
-> +	 */
-> +	if (pasid == PASID_RID2PASID)
-> +		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
-> +	else
-> +		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 64 - VTD_PAGE_SHIFT);
->   }
->   
->   void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
-> 
+This patchset is rebased and tested on the mainline Linux kernel 5.8-rc5:
+base-commit: 11ba468877bb ("Linux 5.8-rc5")
+tag: v5.8-rc5
+
+Changelog v3:
+- Refactor the original patch to adjust the UART port divisor instead of
+  requesting an exclusive ref clock utilization.
+
+Changelog v4:
+- Discard commit b426bf0fb085 ("serial: 8250: Fix max baud limit in generic
+  8250 port") since Greg has already merged it into the tty-next branch.
+- Use EXPORT_SYMBOL_GPL() for the serial8250_update_uartclk() method.
+
+Changelog v5:
+- Refactor dw8250_clk_work_cb() function cheking the clk_get_rate()
+  return value for being erroneous and exit if it is.
+- Don't update p->uartclk in the port startup. It will be updated later in
+  the same procedure at the set_termios() function being invoked by the
+  serial_core anyway.
+
+Changelog v6:
+- Resend
+
+Link: https://lore.kernel.org/linux-serial/20200617224813.23853-1-Sergey.Semin@baikalelectronics.ru
+Changelog v7:
+- Wake the device up on the serial port divider update.
+
+Link: https://lore.kernel.org/linux-serial/20200619200251.9066-1-Sergey.Semin@baikalelectronics.ru
+Changelog v8:
+- Add a new patch:
+  "serial: 8250_dw: Pass the same rate to the clk round and set rate methods"
+
+Link: https://lore.kernel.org/linux-serial/20200714124808.21493-1-Sergey.Semin@baikalelectronics.ru
+Changelog v9:
+- Resend
+
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (4):
+  serial: 8250: Add 8250 port clock update method
+  serial: 8250_dw: Simplify the ref clock rate setting procedure
+  serial: 8250_dw: Pass the same rate to the clk round and set rate
+    methods
+  serial: 8250_dw: Fix common clocks usage race condition
+
+ drivers/tty/serial/8250/8250_dw.c   | 120 ++++++++++++++++++++++++----
+ drivers/tty/serial/8250/8250_port.c |  40 ++++++++++
+ include/linux/serial_8250.h         |   2 +
+ 3 files changed, 148 insertions(+), 14 deletions(-)
+
+-- 
+2.26.2
+
