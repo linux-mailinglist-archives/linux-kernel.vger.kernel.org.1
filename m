@@ -2,100 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6414F22B4A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D9822B4CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730032AbgGWRTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:19:03 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65333 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729961AbgGWRS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:18:58 -0400
-IronPort-SDR: 16JImrQc7mGbIdkOqNs8bAPH+eJiKfpvhu4OkUcW+AWsFJtB2VhuZrvxC3aoj7NP4zM3ZxL7YC
- mndpjWPtqteA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="151880967"
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="151880967"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:18:55 -0700
-IronPort-SDR: q8dpssTiqwAPPJ0U4CziR2PrtQjugPcEdFXlBT8unoNln0pttkGTux8poyOxlXuGx7/PHEGHEO
- pF/JjS5pM7fA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="462933860"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 23 Jul 2020 10:18:55 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v6 6/6] iommu/vt-d: Check UAPI data processed by IOMMU core
-Date:   Thu, 23 Jul 2020 10:25:40 -0700
-Message-Id: <1595525140-23899-7-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595525140-23899-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1595525140-23899-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1728978AbgGWR1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:27:40 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:35909 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgGWR1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:27:39 -0400
+Received: by mail-il1-f193.google.com with SMTP id x9so5013189ila.3;
+        Thu, 23 Jul 2020 10:27:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RMUWSqKkNZM2zMbqqSpDRd9pc9Jy3A9V3GllvmqHBXE=;
+        b=Df9yHeK/BvXWnM9/F4kk6AGLduuHVGRqzEUF2snVlC07vdcMohPfimrkXAru/lAkEQ
+         mYTKxcmn7u+gm5w0oxEsTJSwUSWlMkD/gblN1QhvK5o6SPnQHnwJUed6J9xo63mm6E8q
+         QioAew88D9nyz7ojPulzCL+Etx99C+jlO/hkHHYv8ruPgZDzCGwnpcX+NT5jUKr3+Z+H
+         fN6upFofwsR8mmtmTOiswd8ybDifdIXfdU5e5uuEnDr5gtGVe4EOEk91cUlexkNFSXlh
+         nCFyi2aq/mlc1thS6UoCOn/xK0IukytKTSwDkhzNyYqvGs93Pyz7s+LCjICGywrh+bJn
+         8XcQ==
+X-Gm-Message-State: AOAM5338Z/x71HYw6j0YylNTMFVhnNXdSv6U/VRlKh7M5XOs320Rjt4C
+        izTYY2iqL3zT/1U9k+9mEw==
+X-Google-Smtp-Source: ABdhPJytNaxsTBikx+XWpS4VyjyHdBBo4ztlkHSqH079wFE4n+9bobuugvvz76Q8GfEPhrXTFvIB4A==
+X-Received: by 2002:a92:d648:: with SMTP id x8mr5540065ilp.190.1595525259095;
+        Thu, 23 Jul 2020 10:27:39 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id v10sm1768585ilj.40.2020.07.23.10.27.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 10:27:38 -0700 (PDT)
+Received: (nullmailer pid 569085 invoked by uid 1000);
+        Thu, 23 Jul 2020 17:27:37 -0000
+Date:   Thu, 23 Jul 2020 11:27:37 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, Rob Herring <robh+dt@kernel.org>,
+        mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 14/14] dts: bindings: coresight: ETMv4.4 system
+ register access only units
+Message-ID: <20200723172737.GA569038@bogus>
+References: <20200722172040.1299289-1-suzuki.poulose@arm.com>
+ <20200722172040.1299289-15-suzuki.poulose@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722172040.1299289-15-suzuki.poulose@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMU generic layer already does sanity checks UAPI data for version
-match and argsz range under generic information.
-Remove the redundant version check from VT-d driver and check for vendor
-specific data size.
+On Wed, 22 Jul 2020 18:20:40 +0100, Suzuki K Poulose wrote:
+> Document the bindings for ETMv4.4 and later with only system register
+> access.
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: devicetree@vger.kernel.org
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  Documentation/devicetree/bindings/arm/coresight.txt | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 3 +--
- drivers/iommu/intel/svm.c   | 7 +++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 021f62078f52..7e03cca31a0e 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -5391,8 +5391,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
- 	int ret = 0;
- 	u64 size = 0;
- 
--	if (!inv_info || !dmar_domain ||
--	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-+	if (!inv_info || !dmar_domain)
- 		return -EINVAL;
- 
- 	if (!dev || !dev_is_pci(dev))
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 713b3a218483..55ea11e9c0f5 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -240,8 +240,11 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 	if (WARN_ON(!iommu) || !data)
- 		return -EINVAL;
- 
--	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
--	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-+		return -EINVAL;
-+
-+	/* IOMMU core ensures argsz is more than the start of the union */
-+	if (data->argsz < offsetofend(struct iommu_gpasid_bind_data, vendor.vtd))
- 		return -EINVAL;
- 
- 	if (!dev_is_pci(dev))
--- 
-2.7.4
-
+Reviewed-by: Rob Herring <robh@kernel.org>
