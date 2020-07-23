@@ -2,243 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D1822B082
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8470722B0AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729144AbgGWNaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        id S1729398AbgGWNkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGWNaQ (ORCPT
+        with ESMTP id S1728709AbgGWNkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:30:16 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD51C0619DC;
-        Thu, 23 Jul 2020 06:30:16 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a23so2999953pfk.13;
-        Thu, 23 Jul 2020 06:30:16 -0700 (PDT)
+        Thu, 23 Jul 2020 09:40:11 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69573C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:40:10 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id z24so6363517ljn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 06:40:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=Td5n8VLQM5VzC3/ySr0x0FkE92YfVlucA4U3oDMBrpc=;
-        b=nJOThBN3e0u2wPmuKSDicZ+MnhpMP1D4iUV1NevDGUNLVV/pnTf9+zsjxy0Qbbio20
-         0MiiX36MZ0ZC4E71DLYgt/cADBAmI3H4MzayuAZG7DzEI7kaA9e9QwPC8lL1JqZQP+NL
-         9MGVBFha1s2QXAWnx1C1AGhlwjqS8hcx22i1c5WfIxY0DFbIb6mc4Y32KjmVk6PiLbeG
-         GoPigoJt0ecu9QSJzK2R1EDHjtsTbmfloVX4mn/0GnuomG5yEie0b35EjQ2/6Q5Wp5I4
-         n22LyNjNL9sMD5ZFQyhsBEiiaJmT4JxbN546p048mlxo3r6w7CQPF4aegWwn/eZpecgd
-         nubg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0eegOArgjvO8rP9syB7xmG1tp8kx/F1yrwr3UNCLFEo=;
+        b=YmkS7Vh4mwIp+nMV18OSIk4pf7op1uBA2TkP/ke9aZMe7v2Bo7c53f8FLIkodKBdkZ
+         3tcKEQi0+gDlUUl6vIQfXe03avSwX4r0Z1Ho/SNeJNDr1nD0OrRzHWUx+4BhS+I6jcdg
+         PkIxlP6R205v6/wCBRBgA1UQXA+bfQNPfyTHXkoXZdJMDZndAQuu9LozLyTLHGrkOoSM
+         hLP3AYgQ28AzXbEjtCVD2jjKbdtrN15cBQPjVqD2FsThQgoX97pHT/KgLCCR8DY+hKF4
+         3UhsPZi4/CGdI+2Sif+O3/1rXFoDXnFmZXbwW+b2GUh/JSOY/T92UI03ODBXOAU4kJEI
+         5yFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=Td5n8VLQM5VzC3/ySr0x0FkE92YfVlucA4U3oDMBrpc=;
-        b=U68f/gtFbtKvxUV4sgZu50k/fSeTm4DtrirRpfbUyK4su/4G5G1A3SNpQoHpSvyGVP
-         Rck4bvwmFQu0Nr4oJ4eWoprP1coRx4V4UiWGQWZCrzbNge2U8VwwIDRS6rP3sDjJFbxq
-         WtjrJ59/F3KwsklIx53SFAT9e8/Jj0iFyrnpOVc5d6XnGkcseyO4Ih25dP2AfzEeB6Hy
-         CwISqokUaL7Tz6h4pFAkKaujX/Iy5cfn+hAtHxDH6+wUccT4Bh3JELejirwfAeLB4DOy
-         bJBoCg0Kezux068UVQ4ATVF2YX5fFEeneRXxizBqhhGkQlSf+C0wl2VHCKHSpElk5Zrn
-         Nlcw==
-X-Gm-Message-State: AOAM533F0BAA4DNKQ5IgW/j+pZS8GXD8niPAepCJ3VrSjUncyO7cmP4G
-        gATIZPUhVTIAD5IDzPuio7I=
-X-Google-Smtp-Source: ABdhPJzDRciPPyx06p/TELG6ZbrzJ5oreW4i8vpZMSYQR38q69s9sCgkLuLjxZA90YTp1MLQk8mQMQ==
-X-Received: by 2002:a65:644d:: with SMTP id s13mr4226469pgv.103.1595511015960;
-        Thu, 23 Jul 2020 06:30:15 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id u26sm3148320pfn.54.2020.07.23.06.30.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 06:30:15 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 23:30:09 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v3 0/6] powerpc: queued spinlocks and rwlocks
-To:     Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>,
-        Boqun Feng <boqun.feng@gmail.com>, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Ingo Molnar <mingo@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Will Deacon <will@kernel.org>
-References: <20200706043540.1563616-1-npiggin@gmail.com>
-        <24f75d2c-60cd-2766-4aab-1a3b1c80646e@redhat.com>
-        <1594101082.hfq9x5yact.astroid@bobo.none>
-        <20200708084106.GE597537@hirez.programming.kicks-ass.net>
-        <1595327263.lk78cqolxm.astroid@bobo.none>
-        <eaabf501-80fe-dd15-c03c-f75ce4f75877@redhat.com>
-In-Reply-To: <eaabf501-80fe-dd15-c03c-f75ce4f75877@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0eegOArgjvO8rP9syB7xmG1tp8kx/F1yrwr3UNCLFEo=;
+        b=dyujz80FUiRGOP1/ryTmCHfiRN2xsB4vPkoKD9KjyXTegkChyDD+fT7eG49XmoAJhN
+         Vl19Hgvo3bbov50FGt8rZo5EIEYHLbcHolBR/zZIPgLeAfypF1kU/Txw/JEosZDhrD+N
+         ObjVauzv4d77MLwnOYt09/hTR865vpuAtfptewQLfKq95j84q6dX5qvkv5WaW5ny4Sqw
+         TpDyQfwt0HreW4+HB/qNZIG98+BQOoNjWyXicyd5h240RYVfbqrV5zMOlP6Fosn2V7iK
+         swbu+YPrx/3UTkiokqySz0rLNxE/QvPr/aF8n90fzIP+6PbDTfCDBlkb/HqEepwqa+Zn
+         8RwQ==
+X-Gm-Message-State: AOAM532PWJ3n5Aoz+FMo0+t+TBABNC3Q+ie5xXldkEPZweO8SQM2MpJr
+        F7Z09sylrwf/J2Jgv8dP/dnPqIT075kGlOQYJo6dEA==
+X-Google-Smtp-Source: ABdhPJzkhTQiz4v4EweObFS3VjvRBHaK+7cqyFcfiqMUdnGJXvj0jmfVgVQamNi7423328Gef8C+2ZKNdMl7Uo351Ro=
+X-Received: by 2002:a2e:8597:: with SMTP id b23mr1865085lji.338.1595511608925;
+ Thu, 23 Jul 2020 06:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1595510571.u39qfc8d1o.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru> <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 23 Jul 2020 15:17:08 +0200
+Message-ID: <CACRpkdZO242FC=O8nAXjKX=9VRpkkQdMA6S0L2ZWNX9D1hmcYw@mail.gmail.com>
+Subject: Re: [PATCH 4/7] gpio: dwapb: Convert driver to using the
+ GPIO-lib-based IRQ-chip
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Waiman Long's message of July 22, 2020 12:36 am:
-> On 7/21/20 7:08 AM, Nicholas Piggin wrote:
->> diff --git a/arch/powerpc/include/asm/qspinlock.h b/arch/powerpc/include=
-/asm/qspinlock.h
->> index b752d34517b3..26d8766a1106 100644
->> --- a/arch/powerpc/include/asm/qspinlock.h
->> +++ b/arch/powerpc/include/asm/qspinlock.h
->> @@ -31,16 +31,57 @@ static inline void queued_spin_unlock(struct qspinlo=
-ck *lock)
->>  =20
->>   #else
->>   extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)=
-;
->> +extern void queued_spin_lock_slowpath_queue(struct qspinlock *lock);
->>   #endif
->>  =20
->>   static __always_inline void queued_spin_lock(struct qspinlock *lock)
->>   {
->> -	u32 val =3D 0;
->> -
->> -	if (likely(atomic_try_cmpxchg_lock(&lock->val, &val, _Q_LOCKED_VAL)))
->> +	atomic_t *a =3D &lock->val;
->> +	u32 val;
->> +
->> +again:
->> +	asm volatile(
->> +"1:\t"	PPC_LWARX(%0,0,%1,1) "	# queued_spin_lock			\n"
->> +	: "=3D&r" (val)
->> +	: "r" (&a->counter)
->> +	: "memory");
->> +
->> +	if (likely(val =3D=3D 0)) {
->> +		asm_volatile_goto(
->> +	"	stwcx.	%0,0,%1							\n"
->> +	"	bne-	%l[again]						\n"
->> +	"\t"	PPC_ACQUIRE_BARRIER "						\n"
->> +		:
->> +		: "r"(_Q_LOCKED_VAL), "r" (&a->counter)
->> +		: "cr0", "memory"
->> +		: again );
->>   		return;
->> -
->> -	queued_spin_lock_slowpath(lock, val);
->> +	}
->> +
->> +	if (likely(val =3D=3D _Q_LOCKED_VAL)) {
->> +		asm_volatile_goto(
->> +	"	stwcx.	%0,0,%1							\n"
->> +	"	bne-	%l[again]						\n"
->> +		:
->> +		: "r"(_Q_LOCKED_VAL | _Q_PENDING_VAL), "r" (&a->counter)
->> +		: "cr0", "memory"
->> +		: again );
->> +
->> +		atomic_cond_read_acquire(a, !(VAL & _Q_LOCKED_MASK));
->> +//		clear_pending_set_locked(lock);
->> +		WRITE_ONCE(lock->locked_pending, _Q_LOCKED_VAL);
->> +//		lockevent_inc(lock_pending);
->> +		return;
->> +	}
->> +
->> +	if (val =3D=3D _Q_PENDING_VAL) {
->> +		int cnt =3D _Q_PENDING_LOOPS;
->> +		val =3D atomic_cond_read_relaxed(a,
->> +					       (VAL !=3D _Q_PENDING_VAL) || !cnt--);
->> +		if (!(val & ~_Q_LOCKED_MASK))
->> +			goto again;
->> +        }
->> +	queued_spin_lock_slowpath_queue(lock);
->>   }
->>   #define queued_spin_lock queued_spin_lock
->>  =20
->=20
-> I am fine with the arch code override some part of the generic code.
+Hi Serge,
 
-Cool.
+On Thu, Jul 23, 2020 at 3:39 AM Serge Semin
+<Sergey.Semin@baikalelectronics.ru> wrote:
 
->> diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
->> index b9515fcc9b29..ebcc6f5d99d5 100644
->> --- a/kernel/locking/qspinlock.c
->> +++ b/kernel/locking/qspinlock.c
->> @@ -287,10 +287,14 @@ static __always_inline u32  __pv_wait_head_or_lock=
-(struct qspinlock *lock,
->>  =20
->>   #ifdef CONFIG_PARAVIRT_SPINLOCKS
->>   #define queued_spin_lock_slowpath	native_queued_spin_lock_slowpath
->> +#define queued_spin_lock_slowpath_queue	native_queued_spin_lock_slowpat=
-h_queue
->>   #endif
->>  =20
->>   #endif /* _GEN_PV_LOCK_SLOWPATH */
->>  =20
->> +void queued_spin_lock_slowpath_queue(struct qspinlock *lock);
->> +static void __queued_spin_lock_slowpath_queue(struct qspinlock *lock);
->> +
->>   /**
->>    * queued_spin_lock_slowpath - acquire the queued spinlock
->>    * @lock: Pointer to queued spinlock structure
->> @@ -314,12 +318,6 @@ static __always_inline u32  __pv_wait_head_or_lock(=
-struct qspinlock *lock,
->>    */
->>   void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val)
->>   {
->> -	struct mcs_spinlock *prev, *next, *node;
->> -	u32 old, tail;
->> -	int idx;
->> -
->> -	BUILD_BUG_ON(CONFIG_NR_CPUS >=3D (1U << _Q_TAIL_CPU_BITS));
->> -
->>   	if (pv_enabled())
->>   		goto pv_queue;
->>  =20
->> @@ -397,6 +395,26 @@ void queued_spin_lock_slowpath(struct qspinlock *lo=
-ck, u32 val)
->>   queue:
->>   	lockevent_inc(lock_slowpath);
->>   pv_queue:
->> +	__queued_spin_lock_slowpath_queue(lock);
->> +}
->> +EXPORT_SYMBOL(queued_spin_lock_slowpath);
->> +
->> +void queued_spin_lock_slowpath_queue(struct qspinlock *lock)
->> +{
->> +	lockevent_inc(lock_slowpath);
->> +	__queued_spin_lock_slowpath_queue(lock);
->> +}
->> +EXPORT_SYMBOL(queued_spin_lock_slowpath_queue);
->> +
->> +static void __queued_spin_lock_slowpath_queue(struct qspinlock *lock)
->> +{
->> +	struct mcs_spinlock *prev, *next, *node;
->> +	u32 old, tail;
->> +	u32 val;
->> +	int idx;
->> +
->> +	BUILD_BUG_ON(CONFIG_NR_CPUS >=3D (1U << _Q_TAIL_CPU_BITS));
->> +
->>   	node =3D this_cpu_ptr(&qnodes[0].mcs);
->>   	idx =3D node->count++;
->>   	tail =3D encode_tail(smp_processor_id(), idx);
->> @@ -559,7 +577,6 @@ void queued_spin_lock_slowpath(struct qspinlock *loc=
-k, u32 val)
->>   	 */
->>   	__this_cpu_dec(qnodes[0].mcs.count);
->>   }
->> -EXPORT_SYMBOL(queued_spin_lock_slowpath);
->>  =20
->>   /*
->>    * Generate the paravirt code for queued_spin_unlock_slowpath().
->>
-> I would prefer to extract out the pending bit handling code out into a=20
-> separate helper function which can be overridden by the arch code=20
-> instead of breaking the slowpath into 2 pieces.
+> GPIO-lib provides a ready-to-use interface to initialize an IRQ-chip on
+> top of a GPIO chip. It's better from maintainability and readability
+> point of view to use one instead of supporting a hand-written Generic
+> IRQ-chip-based implementation. Moreover the new implementation won't
+> cause much functional overhead but will provide a cleaner driver code.
+> All of that makes the DW APB GPIO driver conversion pretty much justified
+> especially seeing a tendency of the other GPIO drivers getting converted
+> too.
 
-You mean have the arch provide a queued_spin_lock_slowpath_pending=20
-function that the slow path calls?
+Needless to say I am a big fan of this patch. It's what I wanted to
+do with the driver but was afraid to dry-code.
 
-I would actually prefer the pending handling can be made inline in
-the queued_spin_lock function, especially with out-of-line locks it=20
-makes sense to put it there.
-
-We could ifdef out queued_spin_lock_slowpath_queue if it's not used,
-then __queued_spin_lock_slowpath_queue would be inlined into the
-caller so there would be no split?
+Please look into the minor nits pointed out by Andy and respin,
+I really want to apply this patch set.
 
 Thanks,
-Nick
+Linus Walleij
