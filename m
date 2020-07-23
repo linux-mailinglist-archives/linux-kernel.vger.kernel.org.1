@@ -2,213 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A196D22B9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18BE22B9E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 01:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgGWXGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 19:06:55 -0400
-Received: from mail-40130.protonmail.ch ([185.70.40.130]:51446 "EHLO
-        mail-40130.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbgGWXGz (ORCPT
+        id S1727087AbgGWXDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 19:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726697AbgGWXDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 19:06:55 -0400
-Date:   Thu, 23 Jul 2020 22:57:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1595545043;
-        bh=IABwxqdCkkyTX2FsPRq3CfvvI2V2JvrQN6xMWEn3Gqk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=cY3fCz08bQWMC0o839WkTCbTakJcgyG6Xh1y41VGLjk2CzbFXp/8ffHda8rI975IM
-         T9g+Cs9lHlwDosw51K1BeYcVm8UzDmuHgrdBYy7ru6KSaqwN5un2xUrL6XORzT20qW
-         IVMFM63KgBXnyrNHRPS9tNT6Yjum+vN3UYYZMaEI=
-To:     "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
-From:   Mazin Rezk <mnrzk@protonmail.com>
-Cc:     Mazin Rezk <mnrzk@protonmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "harry.wentland@amd.com" <harry.wentland@amd.com>,
-        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "alexander.deucher@amd.com" <alexander.deucher@amd.com>,
-        "1i5t5.duncan@cox.net" <1i5t5.duncan@cox.net>,
-        "mphantomx@yahoo.com.br" <mphantomx@yahoo.com.br>,
-        "regressions@leemhuis.info" <regressions@leemhuis.info>,
-        "anthony.ruhier@gmail.com" <anthony.ruhier@gmail.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
-Reply-To: Mazin Rezk <mnrzk@protonmail.com>
-Subject: Re: [PATCH] amdgpu_dm: fix nonblocking atomic commit use-after-free
-Message-ID: <3iDgskt5iP3y77MHUJ2_5uSThyUteHxPvVqoL5SpnpTIpz5cdkifyDOynpiVukS_peaYGOkn9bHSpvRYa-vFOCjUYH68taIuKyZqhOByAVI=@protonmail.com>
-In-Reply-To: <ccd5d51b-b018-a3db-169b-ba6278a7be9f@amd.com>
-References: <YIGsJ9LlFquvBI2iWPKhJwjKBwDUr_C-38oVpLJJHJ5rDCY_Zrrv392o6UPNxHoeQrcpLYC9U4fZdpD9ilz6Amg2IxkSexGLQMCQIBek8rc=@protonmail.com> <ccd5d51b-b018-a3db-169b-ba6278a7be9f@amd.com>
+        Thu, 23 Jul 2020 19:03:47 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22711C0619E2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 16:03:47 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id gc9so4069652pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 16:03:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qw4QtLf9h0dWLD1tLtdlpFNq04wjyH0zPYPXjM/kNIY=;
+        b=QR5ItLor0G1ODYiyoFtXeR0oP5/b1Ng0XOrIZ67H5PQ65lNBqm7ziVSp4jeuDAhF1w
+         XVwtBEizARYrTc4q1TZXcyo7kM7Jzzr0aenLJ8DQapULqgomEt1uBfaf67sm+PpYCgQd
+         eJMPzArtkXGhsiHMAZ6YhrlIjKzrrhrhm+h64=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qw4QtLf9h0dWLD1tLtdlpFNq04wjyH0zPYPXjM/kNIY=;
+        b=DJJQdHHQx3BxPzqCNhQZ0YTHwuTysNlDipVucVjY37Ajv3aJL17kxtPxDr16lXVJgV
+         0GkBoZ0XqRSHEoBKhfUtnwHi4HuvFEkfad2yHalxJeVG4/xmE8n1/8gHLaRYy+MumpdT
+         FILKoumL+iAN8FVDcoCmnp+AFs65/v4m1yat0zV97QLhHCUqKjCG9z8oSW4QV2zc4W4U
+         ad9Mb7gBzdKlEe/Hy2/QgYW4PG/C15lCsPnIz7ELUrPv0rBbC27DPm+669kJpgvB23QR
+         XxDWDmxNr8ys9fbUKSS87miUiaTmaVf+Nz1nwyTtcZb9/xQ4Sh3rhtKeXog7MmQSgEIe
+         UsFQ==
+X-Gm-Message-State: AOAM531fUXez3RPkkczwzR9vAAnk89sBDXZ+ggX0MTPPWULTm+Ngo/ZR
+        LCsy0tANVopw17iHT1n/FOrOLg==
+X-Google-Smtp-Source: ABdhPJxnr7q4Kieh9u6L2nh1D98Gdl4HPX9AzDRpPhjGvo8uPCnIV38Eg6hloV6Fm1l2ExDQKMC9qA==
+X-Received: by 2002:a17:902:9683:: with SMTP id n3mr5631358plp.65.1595545426415;
+        Thu, 23 Jul 2020 16:03:46 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id k98sm3816070pjb.42.2020.07.23.16.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 16:03:45 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Campello <campello@chromium.org>
+Subject: [PATCH 0/3] Some sx9310 iio driver updates
+Date:   Thu, 23 Jul 2020 16:03:41 -0700
+Message-Id: <20200723230344.1422750-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_REPLYTO
-        shortcircuit=no autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that I spoke too soon. I ran the system for another hour after
-submitting the patch and the bug just occurred. :/
+These three patches are only related because I'm looking at this driver.
+The first one resend the DT binding for the driver that was merged in 
+v5.8-rc1 with a small change to update for proper regulators. The second
+patch fixes a few printks that are missing newlines and should
+be totally non-trivial to apply. The final patch adds support to enable
+the svdd supply so that this driver can work on a board I have where the
+svdd supply isn't enabled at boot and needs to be turned on before this
+driver starts to communicate with the chip.
 
-Sadly, that means the bug isn't really fixed and that I have to go
-investigate further.
+Daniel Campello (1):
+  dt-bindings: iio: Add bindings for sx9310 sensor
 
-At the very least, this patch seems to delay the occurrence of the bug
-significantly which may help in further discovering the cause.
+Stephen Boyd (2):
+  iio: sx9310: Add newlines to printks
+  iio: sx9310: Enable regulator for svdd supply
 
-On Thursday, July 23, 2020 6:16 PM, Kazlauskas, Nicholas <nicholas.kazlausk=
-as@amd.com> wrote:
+ .../iio/proximity/semtech,sx9310.yaml         | 60 +++++++++++++++++++
+ drivers/iio/proximity/sx9310.c                | 59 ++++++++++++++----
+ 2 files changed, 106 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
 
-> On 2020-07-23 5:10 p.m., Mazin Rezk wrote:
->
-> > When amdgpu_dm_atomic_commit_tail is running in the workqueue,
-> > drm_atomic_state_put will get called while amdgpu_dm_atomic_commit_tail=
- is
-> > running, causing a race condition where state (and then dm_state) is
-> > sometimes freed while amdgpu_dm_atomic_commit_tail is running. This bug=
- has
-> > occurred since 5.7-rc1 and is well documented among polaris11 users [1]=
-.
-> > Prior to 5.7, this was not a noticeable issue since the freelist pointe=
-r
-> > was stored at the beginning of dm_state (base), which was unused. After
-> > changing the freelist pointer to be stored in the middle of the struct,=
- the
-> > freelist pointer overwrote the context, causing dc_state to become garb=
-age
-> > data and made the call to dm_enable_per_frame_crtc_master_sync derefere=
-nce
-> > a freelist pointer.
-> > This patch fixes the aforementioned issue by calling drm_atomic_state_g=
-et
-> > in amdgpu_dm_atomic_commit before drm_atomic_helper_commit is called an=
-d
-> > drm_atomic_state_put after amdgpu_dm_atomic_commit_tail is complete.
-> > According to my testing on 5.8.0-rc6, this should fix bug 207383 on
-> > Bugzilla [1].
-> > [1] https://bugzilla.kernel.org/show_bug.cgi?id=3D207383
-> > Fixes: 3202fa62f ("slub: relocate freelist pointer to middle of object"=
-)
-> > Reported-by: Duncan 1i5t5.duncan@cox.net
-> > Signed-off-by: Mazin Rezk mnrzk@protonmail.com
->
-> Thanks for the investigation and your patch. I appreciate the help in
-> trying to narrow down the root cause as this issue has been difficult to
-> reproduce on my setups.
->
-> Though I'm not sure this really resolves the issue - we make use of the
-> drm_atomic_helper_commit helper function from DRM which internally does
-> what you're doing with this patch:
->
-> drm_atomic_state_get(state);
-> if (nonblock)
-> queue_work(system_unbound_wq, &state->commit_work);
->
->     else
->     =09commit_tail(state);
->
->
-> So even when it gets queued off to the unbound workqueue we still have a
-> reference on the state.
->
-> That reference gets dropped as part of commit tail helper in DRM as well:
->
-> if (funcs && funcs->atomic_commit_tail)
->
->     =09funcs->atomic_commit_tail(old_state);
->
->     else
->     =09drm_atomic_helper_commit_tail(old_state);
->
->
-> commit_time_ms =3D ktime_ms_delta(ktime_get(), start);
-> if (commit_time_ms > 0)
->
->     =09drm_self_refresh_helper_update_avg_times(old_state,
->     =09=09=09=09=09 (unsigned long)commit_time_ms,
->     =09=09=09=09=09 new_self_refresh_mask);
->
->
-> drm_atomic_helper_commit_cleanup_done(old_state);
->
-> drm_atomic_state_put(old_state);
->
+Cc: Hartmut Knaack <knaack.h@gmx.de>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Daniel Campello <campello@chromium.org>
 
-I initially noticed that right after I wrote this patch so I was expecting
-the patch to fail. However, after several hours of testing, the crash just
-didn't occur so I believed the bug was fixed.
+base-commit: b3a9e3b9622ae10064826dccb4f7a52bd88c7407
+-- 
+Sent by a computer, using git, on the internet
 
-> So instead of a use after free happening when we access the state we get
-> a double-free happening later at the end of commit tail in DRM.
->
-> What I think would be the right next step here is to actually determine
-> what sequence of IOCTLs and atomic commits are happening under your
-> setup with a very verbose dmesg log. You can set a debug level for DRM
-> in your kernel parameters with something like:
->
-> drm.debug=3D0x54
->
-> I don't see anything in amdgpu_dm.c that looks like it would be freeing
-> the state so I suspect something in the core is this doing this.
-
-Going through the KASAN use-after-free bug report in the Bugzilla
-attachments, it appears that the state is being freed at the end of
-commit_tail. Perhaps amdgpu_dm_atomic_commit_tail is being called on the
-the same old state twice? I can't quite think of any other possible
-explanation as to why that happens.
-
->
-> > drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +++
-> > 1 file changed, 3 insertions(+)
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/driver=
-s/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > index 86ffa0c2880f..86d6652872f2 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > @@ -7303,6 +7303,7 @@ static int amdgpu_dm_atomic_commit(struct drm_dev=
-ice *dev,
-> > * unset legacy_cursor_update
-> > */
-> >
-> > -   drm_atomic_state_get(state);
->
-> Also note that if the drm_atomic_helper_commit() call fails here then
-> we're going to never free this structure. So we should really be
-> checking the return code here below before trying to do this, if at all.
-
-Oh right, that's true. I looked at amdgpu_dm_atomic_commit_tail and didn't
-see any return statements in there, so I thought it was safe.
-
->
-> Regards,
-> Nicholas Kazlauskas
->
-> >       return drm_atomic_helper_commit(dev, state, nonblock);
-> >
-> >       /*TODO Handle EINTR, reenable IRQ*/
-> >
-> >
-> > @@ -7628,6 +7629,8 @@ static void amdgpu_dm_atomic_commit_tail(struct d=
-rm_atomic_state *state)
-> >
-> >       if (dc_state_temp)
-> >       =09dc_release_state(dc_state_temp);
-> >
-> >
-> > -
-> > -   drm_atomic_state_put(state);
-> >     }
-> >
-> >
-> > --
-> > 2.27.0
-
-Thanks,
-Mazin Rezk
