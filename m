@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8549922AE9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4D822AE9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728407AbgGWMGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:06:52 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47680 "EHLO
+        id S1728632AbgGWMG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:06:57 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47690 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728134AbgGWMGv (ORCPT
+        by vger.kernel.org with ESMTP id S1728147AbgGWMGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:06:51 -0400
+        Thu, 23 Jul 2020 08:06:53 -0400
 Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NC3EOc006531;
-        Thu, 23 Jul 2020 14:06:36 +0200
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NC3Ev0006535;
+        Thu, 23 Jul 2020 14:06:37 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=E0OlX12Uh1E9X9WriKudw2kH7GGPXD0HUts6bxpjA8Y=;
- b=lcMpuMp0g3YP3uyvIOlMWW/JBxGV0lAwLKnWBEj5xIDiH8SBBlF+PUFSTOjOwLREIymx
- IrjlTTClaq1SOtZ12Sa+giNvMAQ7N9bkDAEviYkAxDrk13ixj9x2m7rn0FXSBBjW1NZc
- O+teh5j0wYk9qY2ywSCyQjqvj5IdTDmfdkR2GOf7M8rHwXADI9eeqEW4IInbW5cQSBJq
- Po1fvMruewISoCCnRC67pieJLRxGkgrXfejK/H9zmZahQkTkuXLId8OzhmNKcu0UMHpk
- +pXAenl/Y2BakNRrM0zueeMGzJLpVhAc1kBayjc1Ukx4ngIUCKCH8TvZVG2fmsWCz+OM vQ== 
+ bh=8C43QyHOLftUsfDVTeWAc7KU52Huh5OjUoVIJgaRBEI=;
+ b=wbR1S5LfSkgiOfYQDjKgBZC7NocJglbCA92aqaA1hQW95m3wmZt31vXECkUUOw323AYi
+ v7KCfVuNp7K+NH8TCkLfSitSC3TBWrVyBluQHK4w47vslSFSgUZ5F/dKZxFZt43ebFKQ
+ WHVBclgzDCoB5o7oeFQf0EJWjE7xNF/1mXdM4O6PH95fwAlm6H1JIltLjXVGOyW/osDH
+ VEcH2n/XdMXgNtc75zr8cOvGmAQoOUTvt/CwXSmjg27QCEhZ7havQdFJPmVpoqJ+Pxux
+ wpoJhG28C3X+6kWSA2uHsddronlihTJ61TR/7r6bJr5MGBq80GvCdW9Hqz79Z9R4tnGX 5g== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32bsahakd0-1
+        by mx07-00178001.pphosted.com with ESMTP id 32bsahakd2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Jul 2020 14:06:36 +0200
+        Thu, 23 Jul 2020 14:06:37 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E9ACA100034;
-        Thu, 23 Jul 2020 14:06:35 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 812FC10002A;
+        Thu, 23 Jul 2020 14:06:36 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D216B2AF314;
-        Thu, 23 Jul 2020 14:06:35 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 14:06:35
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 705A42AF314;
+        Thu, 23 Jul 2020 14:06:36 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 23 Jul 2020 14:06:36
  +0200
 From:   Amelie Delaunay <amelie.delaunay@st.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -50,16 +50,16 @@ CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         Amelie Delaunay <amelie.delaunay@st.com>,
         Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [PATCH v2 1/6] dt-bindings: connector: add power-opmode optional property to usb-connector
-Date:   Thu, 23 Jul 2020 14:06:19 +0200
-Message-ID: <20200723120624.26291-2-amelie.delaunay@st.com>
+Subject: [PATCH v2 2/6] usb: typec: add typec_find_pwr_opmode
+Date:   Thu, 23 Jul 2020 14:06:20 +0200
+Message-ID: <20200723120624.26291-3-amelie.delaunay@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200723120624.26291-1-amelie.delaunay@st.com>
 References: <20200723120624.26291-1-amelie.delaunay@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE2.st.com
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG3NODE2.st.com
  (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-23_05:2020-07-23,2020-07-23 signatures=0
@@ -68,49 +68,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Power operation mode may depends on hardware design, so, add the optional
-property power-opmode for usb-c connector to select the power operation
-mode capability.
+This patch adds a function that converts power operation mode string into
+power operation mode value.
 
+It is useful to configure power operation mode through device tree
+property, as power capabilities may be linked to hardware design.
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 ---
-Changes in v2:
-- Add description for possible operation current values
+No changes in v2.
 ---
- .../bindings/connector/usb-connector.yaml     | 20 +++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/usb/typec/class.c | 15 +++++++++++++++
+ include/linux/usb/typec.h |  1 +
+ 2 files changed, 16 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-index 9bd52e63c935..2fd85b9a7e1a 100644
---- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-+++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-@@ -88,6 +88,26 @@ properties:
-       - device
-       - dual
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 02655694f200..35eec707cb51 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -1448,6 +1448,21 @@ void typec_set_pwr_opmode(struct typec_port *port,
+ }
+ EXPORT_SYMBOL_GPL(typec_set_pwr_opmode);
  
-+  power-opmode:
-+    description: Determines the power operation mode that the Type C connector
-+      will support and will advertise through CC pins.
-+      - "default" corresponds to default USB voltage and current defined by the
-+        USB 2.0 and USB 3.2 specifications, 5V 500mA for USB 2.0 ports and
-+        5V 900mA or 1500mA for USB 3.2 ports in single-lane or dual-lane
-+        operation respectively.
-+      - "1.5A" and "3.0A", 5V 1.5A and 5V 3.0A respectively, as defined in USB
-+        Type-C Cable and Connector specification, when Power Delivery is not
-+        supported.
-+      - "usb_power_delivery" when Power Delivery is supported, as defined in
-+        USB Power Delivery specification.
-+    allOf:
-+      - $ref: /schemas/types.yaml#definitions/string
-+    enum:
-+      - default
-+      - 1.5A
-+      - 3.0A
-+      - usb_power_delivery
++/**
++ * typec_find_pwr_opmode - Get the typec power operation mode capability
++ * @name: power operation mode string
++ *
++ * This routine is used to find the typec_pwr_opmode by its string @name.
++ *
++ * Returns typec_pwr_opmode if success, otherwise negative error code.
++ */
++int typec_find_pwr_opmode(const char *name)
++{
++	return match_string(typec_pwr_opmodes,
++			    ARRAY_SIZE(typec_pwr_opmodes), name);
++}
++EXPORT_SYMBOL_GPL(typec_find_pwr_opmode);
 +
-   # The following are optional properties for "usb-c-connector" with power
-   # delivery support.
-   source-pdos:
+ /**
+  * typec_find_orientation - Convert orientation string to enum typec_orientation
+  * @name: Orientation string
+diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+index 9cb1bec94b71..6be558045942 100644
+--- a/include/linux/usb/typec.h
++++ b/include/linux/usb/typec.h
+@@ -268,6 +268,7 @@ int typec_set_mode(struct typec_port *port, int mode);
+ 
+ void *typec_get_drvdata(struct typec_port *port);
+ 
++int typec_find_pwr_opmode(const char *name);
+ int typec_find_orientation(const char *name);
+ int typec_find_port_power_role(const char *name);
+ int typec_find_power_role(const char *name);
 -- 
 2.17.1
 
