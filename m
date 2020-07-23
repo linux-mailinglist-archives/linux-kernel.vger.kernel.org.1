@@ -2,127 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AA022AC34
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFE522AC38
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728368AbgGWKKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 06:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgGWKKu (ORCPT
+        id S1728376AbgGWKLP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Jul 2020 06:11:15 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:51939 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgGWKLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 06:10:50 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEA85C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 03:10:49 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id g4so1614120uaq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 03:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4yoJQz6lc93ZFuC1vSh5aTw5SRyF7ZD50XPwFhu/krQ=;
-        b=XCKk9hOqO0p5OWBU7kP/quBONyMD7A9N/NDx4dZesyLHCwi2Ujzv1+piwUlOI64CyA
-         NCUIU6xdnEDK0mKCCEPOLd7ehUPoq1Q0e2udZf/ZTrXxNOL0BQj5UnmvhPom8yiANGaV
-         kAMRAdu4YzM9tt1D2WRPKTpGCbjNTwTWEdLkok9I2O2mk/Ytx30jI1Y+UwQNEaIxcAJM
-         AZzWRLvS0J/nTOQc2co0+wkWhXLzjWZZ+NpgbgVZGFqcnbBpIecpenwYZMfmLjt7FSdP
-         c8h3VGbqmmoWIL54h1rS/XqozcfJljW7oM6ODqpZ90nsm16tGf6C9t/912+nio0BWIBH
-         PA4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4yoJQz6lc93ZFuC1vSh5aTw5SRyF7ZD50XPwFhu/krQ=;
-        b=MRjIZV1y9jN7EBZU8MhqMjW+9a4I64w8xehhleodU4B0jRVY18mItPUQm1X8VhBg0I
-         iapuC6bSx3l9Ol3msFi77cRQtvxUOFPT2onQcxDBaeC0iSG3DX9zkm2ZMOHM+em7eOU3
-         lK9KYUj89FEeIEQsx4gESAwE5Lsf8b1I8ZKBqzT0bsZ7DRn310L4NhPxmF9jIqrtlF1J
-         DFFLu0AILgOwqjLKagv0EuVc32cTdGCd6HTJ7KlF0dwkdyVBZhIUvEvnKrB+qItGETtX
-         1uoWfBun0DKhmlVduy4fpdIcWsYSz2yJCU9MAaoTA87WsYATD/LJlyTy3MCQHt14gaMr
-         Wzyg==
-X-Gm-Message-State: AOAM532LhUrjZDr1hG9lNJkyh81z0uwo4IeXdXuHe5iCeQYry9n74C10
-        DT4T37+YbtA0FgPvzqtWL4GOKbDrdmjl6weUSwSr0w==
-X-Google-Smtp-Source: ABdhPJxxlPWeM9mTT10PFLdHevZKA9RcowuhyqKZiYf5pxjOTON0R9TbU9qezUZcD9P6HDAOYt8ORXwcxVMOt6xhnjU=
-X-Received: by 2002:a9f:236c:: with SMTP id 99mr3553006uae.14.1595499048751;
- Thu, 23 Jul 2020 03:10:48 -0700 (PDT)
+        Thu, 23 Jul 2020 06:11:14 -0400
+Received: from mail-qk1-f177.google.com ([209.85.222.177]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MhCq4-1kU3Fl1Ht4-00eO2b; Thu, 23 Jul 2020 12:11:11 +0200
+Received: by mail-qk1-f177.google.com with SMTP id 2so679556qkf.10;
+        Thu, 23 Jul 2020 03:11:11 -0700 (PDT)
+X-Gm-Message-State: AOAM532kyoMDnZ1Ms2H/OnY+vQT6odNHvrXVNraM4kcJDrpSBKNQCxER
+        Fw63q/vOgq17zw7YKvnEzyVoxp0VCh8t98fGEmc=
+X-Google-Smtp-Source: ABdhPJyRBZh+Jnh8z1ps+hnBPrP8rDjvPm7uyIy6hqZTMrzSNVY+O9ozgvN2kAt4bsn8pb7YiQI/Bo1v4oLc+w7G1AU=
+X-Received: by 2002:a37:9004:: with SMTP id s4mr4252271qkd.286.1595499070036;
+ Thu, 23 Jul 2020 03:11:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYvGXOcsF=70FVwOxqVYOeGTUuzhUzh5od1cKV1hshsW_g@mail.gmail.com>
- <CAK8P3a1ReCDR8REM7AWMisiEJ_D45pC8dXaoYFFVG3aZj91e7Q@mail.gmail.com> <159549159798.3847286.18202724980881020289@swboyd.mtv.corp.google.com>
-In-Reply-To: <159549159798.3847286.18202724980881020289@swboyd.mtv.corp.google.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 23 Jul 2020 15:40:37 +0530
-Message-ID: <CA+G9fYte5U-D7fqps2qJga_LSuGrb6t9Y1rOvPCPzz46BwchyA@mail.gmail.com>
-Subject: Re: stable-rc 4.14: arm64: Internal error: Oops: clk_reparent
- __clk_set_parent_before on db410c
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        linux- stable <stable@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        samuel@sholland.org
+References: <20200324104918.29578-1-hhhawa@amazon.com> <158946977180.3480.12435085393834819053@kwain>
+In-Reply-To: <158946977180.3480.12435085393834819053@kwain>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 23 Jul 2020 12:10:53 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3ndL0U=Q1HAxd3oTPfO6WwQZM3yQvr-TQEnA3ZzhQNYQ@mail.gmail.com>
+Message-ID: <CAK8P3a3ndL0U=Q1HAxd3oTPfO6WwQZM3yQvr-TQEnA3ZzhQNYQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Amazon's Annapurna Labs Alpine v3 device-tree
+To:     Antoine Tenart <antoine.tenart@bootlin.com>
+Cc:     hhhawa@amazon.com, Rob Herring <robh+dt@kernel.org>,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+        arm-soc <arm@kernel.org>, DTML <devicetree@vger.kernel.org>,
+        benh@amazon.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        hanochu@amazon.com, David Woodhouse <dwmw@amazon.co.uk>,
+        jonnyc@amazon.com, ronenk@amazon.com,
+        Talel Shenhar <talel@amazon.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:jmjQgQgR1kfpNwBKzXOjGaIt7P5xvz6Uq0aaEtr6Bf0DQwMhboH
+ gXvM0j2x2oNNS/2AqBL9uYf+rCm5jTNSMgZ0HP/44QEYWM2VnAm6Fvfx5l6efZG7lw38mpk
+ VLyhuXbvtJrY5AREcqJ6a8S3klnUqqW9nOAjogIg7mtsjijXlBzxovIvo7BhHhTmxmNa5sG
+ YdiMlfm4MZThljCdWRdQQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:s1PXoWdnRAk=:1CwqWG6FjcV4SYaJHsv8DX
+ mWq6MT1kJsQOC0o+Pn1DURac20De7ds0woW817skooUFIAcN1O8MFgGhbJyzpnyBAg2Y4/bY3
+ +hXP7QqSkzw+pGIgSjkC2/R3k4RyfOOrp2CeaM9ttY2YFUJUncgn/p9MBUiIdzqbuKzQYh6U6
+ dfLPY1phW5GOKrTfA3cZa8yjfnmUFCeMZThDp1ZoCliN9q5AJbc/LLnP69ytRzK1lW4fmUNjn
+ hdFtKdAZguz5jiVBB1L0ekeRhXPUenSTGYDuqBdDwe8nTkSOw16PtMloeRl9pIFRnreO4yBgx
+ 3j2iAuN81P7WAXqG9bHeESeBm0RPZHA7jOkVigMlm3pmy+otRvlIUZpn8onRBJ5095eHinzVW
+ 63bWS20pdLmStDngxKnsSaOdLeM3EW4x/AA9nves2PqlVx+Z6HhpxPG0/oTGd/NRSDUSODcGg
+ O7mITucxlPUdRCWFUx65u95JFCHbb1NJNNYk9VJzTOomK0MXbh9yzzSqjaTkd3fKR7Y00or42
+ S3R+pWk3X8203g0Wc3p2KF94cLGoGgsYG/keF/MX7w+x9/PAOPgf5bDD3r6P/fwT40AJmLhe7
+ +y1tkzDiy8uVAtJODG5VDGQvxnIij0dSxbTZo4WTmcPYyNBPuO7EF/k+ObwyQ328s6lkScMCM
+ jkNrsJ/xang/9aESMPk7SZrCGnqD/00e+37z/ojP6UEneTbNf++aWPVU3c0WIpzUCL77e9e/r
+ DwtaOYNFswgbmGAmPblV/fPbmiMNRuX3QyoiaoqBq5tOSxOQMb9MDrh54F7uiK7bPTnvRBRvM
+ HB2/hP5E8CwsUiD0uyQCBOjeegIG59Q6lg8vn011Ch5SARMGLxkvnXvmR7qDb5ulpdrtpi1Oc
+ rkv5bBUL0Uax3j4ZIMsK1EB1qE0TbsImGWWct6bNUbNNAjEklAVwL/ElQsRRF65S64XrR0nSt
+ cn4tyXBbrvA+mY8/mBosOhWsigjQqsNaf5UGmcCyugTbf4EmfXCPC
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Jul 2020 at 13:36, Stephen Boyd <sboyd@kernel.org> wrote:
+On Thu, May 14, 2020 at 5:22 PM Antoine Tenart
+<antoine.tenart@bootlin.com> wrote:
 >
-> Quoting Arnd Bergmann (2020-07-21 02:51:32)
-> >                         __clk_set_parent_before(orphan, parent);
-> >
-> > None of the above have changed in stable kernels.
-> >
-> > > [    5.633668]  pll_28nm_register+0xa4/0x340 [msm]
-> > > [    5.637492]  msm_dsi_pll_28nm_init+0xc8/0x1d8 [msm]
-> > > [    5.642007]  msm_dsi_pll_init+0x34/0xe0 [msm]
-> > > [    5.646870]  dsi_phy_driver_probe+0x1cc/0x310 [msm]
-> >
-> > The only changes to the dsi driver in v4.14-stable were:
-> >
-> > 89e30bb46074 drm/msm/dsi: save pll state before dsi host is powered off
-> > 892afde0f4a1 drm: msm: Fix return type of dsi_mgr_connector_mode_valid for kCFI
-> > 35ff594b0da2 drm/msm/dsi: Implement reset correctly
-> > 5151a0c8d730 drm/msm/dsi: use correct enum in dsi_get_cmd_fmt
-> > e6bc3a4b0c23 clk: divider: fix incorrect usage of container_of
-> >
-> > None of these look suspicious to me.
-> >
+> [Adding arm-soc]
 >
-> It sounds like maybe you need this patch?
+> Hi Hanna,
 >
-> bdcf1dc25324 ("clk: Evict unregistered clks from parent caches")
-
-Cherry-pick did not work on stable-rc 4.14
-this patch might need backporting.
-I am not sure.
-
+> Sorry for the delay, the series was buried in my mails...
 >
-> or
+> Acked-by: Antoine Tenart <antoine.tenart@bootlin.com>
 >
-> 4368a1539c6b ("drm/msm: Depopulate platform on probe failure")
+> Arnd, Olof, could you take this series directly as this will be the only
+> Alpine patches for this release (and for a long time)?
 
-This commit already is in stable-rc 4.14 branch.
-    drm/msm: Depopulate platform on probe failure
+Hi Hanna and Antoine,
 
-    [ Upstream commit 4368a1539c6b41ac3cddc06f5a5117952998804c ]
+I just came across this old series and noticed we had never merged it.
 
-> I vaguelly recall that the display driver wasn't removing clks becaues
-> it wasn't removing devices when probe defer happened and then we had
-> dangling clks in the parent cache confusing things.
+I don't know if the patches all still apply. Could you check and perhaps
+resend to soc@kernel.org if they are still good to go into the coming
+merge window?
 
-Thanks for your email.
-
-- Naresh
+> Quoting Hanna Hawa (2020-03-24 11:49:12)
+> > This series organize the Amazon's Annapurna Labs Alpine device tree
+> > bindings, device tree folder and adds new device tree for Alpine v3.
+> >
+> > Changes since v4:
+> > -----------------
+> > - Re-order nodes in increasing order.
+> > - Add disable to UART nodes.
+> > - Add missing UART nodes (1,2,3)
+> > - Add comments for GIC/UART
+> > - Add io-fabric bus, and move uart nodes into it.
+> > - Fix MSIx range according Alpine function spec
+> >
+> > Changes since v3:
+> > -----------------
+> > - rebased and retested for tag Linux 5.6-rc2
+> >
+> > Changes since v2:
+> > -----------------
+> > - Move up a level for DT node without mmio regs.
+> > - Drop device_type from serial@fd883000 node.
+> > - Minor change name of PCIe node to: pcie@fbd00000
+> >
+> > Changes since v1:
+> > -----------------
+> > - Rename al,alpine DT binding to amazon,alpine
+> > - Rename al folder to be amazon
+> > - Update maintainers of amazon,alpine DT
+> > - Add missing alpine-v2 DT binding
+> > - Fix yaml schemas for alpine-v3-evp.dts:
+> >         - #size-cells:0:0: 0 is not one of [1, 2]
+> >         - arch-timer: interrupts: [[1, 13, 8, 1, 14, 8, 1, 11, 8, 1, 10,
+> >         8]] is too short
+> > - Change compatible string of alpine-v3-evp to amazon,al
+> >
+> > Hanna Hawa (5):
+> >   dt-bindings: arm: amazon: rename al,alpine DT binding to amazon,al
+> >   arm64: dts: amazon: rename al folder to be amazon
+> >   dt-bindings: arm: amazon: update maintainers of amazon,al DT bindings
+> >   dt-bindings: arm: amazon: add missing alpine-v2 DT binding
+> >   dt-bindings: arm: amazon: add Amazon Annapurna Labs Alpine V3
+> >
+> > Ronen Krupnik (1):
+> >   arm64: dts: amazon: add Amazon's Annapurna Labs Alpine v3 support
+> >
+> >  .../devicetree/bindings/arm/al,alpine.yaml    |  21 -
+> >  .../devicetree/bindings/arm/amazon,al.yaml    |  33 ++
+> >  MAINTAINERS                                   |   2 +-
+> >  arch/arm64/boot/dts/Makefile                  |   2 +-
+> >  arch/arm64/boot/dts/{al => amazon}/Makefile   |   1 +
+> >  .../boot/dts/{al => amazon}/alpine-v2-evp.dts |   0
+> >  .../boot/dts/{al => amazon}/alpine-v2.dtsi    |   0
+> >  arch/arm64/boot/dts/amazon/alpine-v3-evp.dts  |  24 ++
+> >  arch/arm64/boot/dts/amazon/alpine-v3.dtsi     | 408 ++++++++++++++++++
+> >  9 files changed, 468 insertions(+), 23 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/arm/al,alpine.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/arm/amazon,al.yaml
+> >  rename arch/arm64/boot/dts/{al => amazon}/Makefile (64%)
+> >  rename arch/arm64/boot/dts/{al => amazon}/alpine-v2-evp.dts (100%)
+> >  rename arch/arm64/boot/dts/{al => amazon}/alpine-v2.dtsi (100%)
+> >  create mode 100644 arch/arm64/boot/dts/amazon/alpine-v3-evp.dts
+> >  create mode 100644 arch/arm64/boot/dts/amazon/alpine-v3.dtsi
+> >
+> > --
+> > 2.17.1
+> >
+> >
+> > _______________________________________________
+> > linux-arm-kernel mailing list
+> > linux-arm-kernel@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
+> --
+> Antoine Ténart, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
