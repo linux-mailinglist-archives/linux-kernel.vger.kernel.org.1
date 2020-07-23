@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9BA22AB34
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A2222AB37
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgGWJCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 05:02:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41665 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgGWJCE (ORCPT
+        id S1727996AbgGWJCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 05:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgGWJCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:02:04 -0400
-Received: from mail-lf1-f69.google.com ([209.85.167.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1jyX73-0001S0-IY
-        for linux-kernel@vger.kernel.org; Thu, 23 Jul 2020 09:02:01 +0000
-Received: by mail-lf1-f69.google.com with SMTP id j5so1282755lfc.15
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:02:01 -0700 (PDT)
+        Thu, 23 Jul 2020 05:02:23 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344E3C0619E2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:02:23 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t6so2778846pgq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:02:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4tPRnuMo6P2al0fa5yE86no6k6kmiCiMMqx340iPK/0=;
+        b=ZozH9q0AwXVGn3wkmqQHhZCwekCwR6I+uVErphLFpN+NWAvlyaIKoICXW+W41CU7QF
+         /G+IUtU45EIyqHJqBK/4SMRtTHc6rHpWqgc0V1qQ1M+ximzLCT+O47XJxuWyddeWWb4z
+         KDcTJO6ebuX0VT3JKFqhDTcXqpHh4PbERD3wk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U+wT4uWfBoeVxuv9M2M1SsHXGOIE2eDw5GOYNjnOws0=;
-        b=KQI7abAsu+HRnDIAEQQotJaHfFsbijjKtFbOIgD+xv1B4h40j2GHtLSGeLmQRW8flh
-         dEe6U9xPz+EkZ4+DdgbtV4xxI31yoWfOv7a1p9BBuIzv3DjA0yqLqkBURS6B+J9BwePl
-         A3bJcNo09AWg4DhwAwqBMh9ERQZU+6oVOTnThx/QdFI+VQiXuNqFRAz5uXcp0hjtS7Iu
-         y9AWOemZXQJeaIa7zFaacyf/4nhgRGfU8LcbJjZcsbpQO/YNRqe6ld1kimTrUJr4oMac
-         0+T02rvheaE6X981BPFI7frQxQ2TrVJeUIE7TKwW15jfNwK/rDnOT7KjOCmT/1WQtnCz
-         CF7A==
-X-Gm-Message-State: AOAM532PkudQcJA1bXibznXzyRt6ATTWEysm8dJwhWOXVXrBZb+480tB
-        RJFemo6yh03nDZbVKAKUN0QkCG+ruKUAOzUZ1IGF8QsvRV/7GNeZ8YAsKUXSIWTLKHUBYMUMoc0
-        CKthTjlTh+KvNXF+/yNWa9m4gLuMMid4jyBoTHFGoclxEgKoK3AVuCK2G
-X-Received: by 2002:a2e:9d86:: with SMTP id c6mr1497765ljj.418.1595494920939;
-        Thu, 23 Jul 2020 02:02:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJd3/VfgnjFYGCdo/JmUiXjd56BUIkYcecDQxaWSkFheEj5HUm6LObhj/XQNcciCiYaWu+tCWJIVdHgz99xd0=
-X-Received: by 2002:a2e:9d86:: with SMTP id c6mr1497750ljj.418.1595494920649;
- Thu, 23 Jul 2020 02:02:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200318024215.5270-1-po-hsu.lin@canonical.com>
-In-Reply-To: <20200318024215.5270-1-po-hsu.lin@canonical.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Thu, 23 Jul 2020 17:01:49 +0800
-Message-ID: <CAMy_GT9g48Xf=U==FeFd-8CaFM97u4WMkDBT013uzfjeqKMcfw@mail.gmail.com>
-Subject: Re: [PATCHv3] selftests/timers: Turn off timeout setting
-To:     linux-kselftest@vger.kernel.org
-Cc:     shuah <shuah@kernel.org>, sboyd@kernel.org, tglx@linutronix.de,
-        John Stultz <john.stultz@linaro.org>, joe.lawrence@redhat.com,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4tPRnuMo6P2al0fa5yE86no6k6kmiCiMMqx340iPK/0=;
+        b=fgtAx2Y+lm67yzND+puyxz/lt+ddiS1ovQtqwwJnb4lp1DByaSuKX7gSfyZLoyAXZ9
+         KinNz0Oa78h6o6OUzshZ90rJ6jOuK/uKGPNtibaYjktFuGO3dcxgqIKtpy+IsXknHHsG
+         SZwkqGsbV4Ad9btogJZgMDCXcwaAOxK5Tu7B0+62cCM/AzizDumGDyxI9EtfKfzyJS0a
+         q0uyU4axS66YrELEFHA/JKynY6e34XQAI5DI+LLzuA2PHeoGs3oigWpjdgCSukUbJuUU
+         syq/IEuDLjxWs2Jg2IQ6UHyUwoJFmVAXDMameaH/ZHw7/PdBzz4NfO0v/dK7z5oDw8Xb
+         77YA==
+X-Gm-Message-State: AOAM531zp5v9li5yI8a+EWBQgB1rCDrtMn8IOu1qBpryIAhp4GdGwe0u
+        BWEp5KKl4OJLt20HlVld7v8QK7115FpApA==
+X-Google-Smtp-Source: ABdhPJxGn9ZwTP2/G+qxUTJRMewuabrHt25C09m3AN4C7sxuJWyualP1023fExiG5DNu7ZDmXGtCOw==
+X-Received: by 2002:a65:6650:: with SMTP id z16mr3505091pgv.161.1595494942657;
+        Thu, 23 Jul 2020 02:02:22 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c809:c7d5:cbf:ea0:8a30:a3af])
+        by smtp.gmail.com with ESMTPSA id k23sm2319383pgb.92.2020.07.23.02.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 02:02:21 -0700 (PDT)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 1/4] dt-bindings: arm: rockchip: Update ROCKPi 4 binding
+Date:   Thu, 23 Jul 2020 14:32:07 +0530
+Message-Id: <20200723090210.41201-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Adding Shuah's linuxfoundation mail)
-Hello,
-do you need more changes / tests for this test?
+ROCKPi 4 has 3 variants of hardware platforms called
+ROCKPi 4A, 4B, and 4C.
 
-Thanks!
-Po-Hsu
+- ROCKPi 4A has no Wif/BT.
+- ROCKPi 4B has AP6256 Wifi/BT, PoE.
+- ROCKPi 4C has AP6256 Wifi/BT, PoE, miniDP, USB Host enabled
+  GPIO pin change compared to 4B, 4C
 
-On Wed, Mar 18, 2020 at 10:42 AM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
->
-> The following 4 tests in timers can take longer than the default 45
-> seconds that added in commit 852c8cbf34d3 ("selftests/kselftest/runner.sh:
-> Add 45 second timeout per test") to run:
->   * nsleep-lat - 2m7.350s
->   * set-timer-lat - 2m0.66s
->   * inconsistency-check - 1m45.074s
->   * raw_skew - 2m0.013s
->
-> Thus they will be marked as failed with the current 45s setting:
->   not ok 3 selftests: timers: nsleep-lat # TIMEOUT
->   not ok 4 selftests: timers: set-timer-lat # TIMEOUT
->   not ok 6 selftests: timers: inconsistency-check # TIMEOUT
->   not ok 7 selftests: timers: raw_skew # TIMEOUT
->
-> Disable the timeout setting for timers can make these tests finish
-> properly:
->   ok 3 selftests: timers: nsleep-lat
->   ok 4 selftests: timers: set-timer-lat
->   ok 6 selftests: timers: inconsistency-check
->   ok 7 selftests: timers: raw_skew
->
-> https://bugs.launchpad.net/bugs/1864626
-> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> ---
->  tools/testing/selftests/timers/Makefile | 1 +
->  tools/testing/selftests/timers/settings | 1 +
->  2 files changed, 2 insertions(+)
->  create mode 100644 tools/testing/selftests/timers/settings
->
-> diff --git a/tools/testing/selftests/timers/Makefile b/tools/testing/selftests/timers/Makefile
-> index 7656c7c..0e73a16 100644
-> --- a/tools/testing/selftests/timers/Makefile
-> +++ b/tools/testing/selftests/timers/Makefile
-> @@ -13,6 +13,7 @@ DESTRUCTIVE_TESTS = alarmtimer-suspend valid-adjtimex adjtick change_skew \
->
->  TEST_GEN_PROGS_EXTENDED = $(DESTRUCTIVE_TESTS)
->
-> +TEST_FILES := settings
->
->  include ../lib.mk
->
-> diff --git a/tools/testing/selftests/timers/settings b/tools/testing/selftests/timers/settings
-> new file mode 100644
-> index 0000000..e7b9417
-> --- /dev/null
-> +++ b/tools/testing/selftests/timers/settings
-> @@ -0,0 +1 @@
-> +timeout=0
-> --
-> 2.7.4
->
+So, update the existing ROCKPi 4 binding to support
+ROCKPi 4A/B/C hardware platforms.
+
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+Changes for v3:
+- new patch
+
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index db2e35796795..e6f656b0bd56 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -430,8 +430,12 @@ properties:
+           - const: radxa,rock
+           - const: rockchip,rk3188
+ 
+-      - description: Radxa ROCK Pi 4
++      - description: Radxa ROCK Pi 4A/B/C
+         items:
++          - enum:
++              - const: radxa,rockpi4a
++              - const: radxa,rockpi4b
++              - const: radxa,rockpi4c
+           - const: radxa,rockpi4
+           - const: rockchip,rk3399
+ 
+-- 
+2.25.1
+
