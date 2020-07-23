@@ -2,109 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1798A22B85E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2F122B860
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 23:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgGWVKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 17:10:21 -0400
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:12645 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbgGWVKU (ORCPT
+        id S1726890AbgGWVKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 17:10:43 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:33455 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726115AbgGWVKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 17:10:20 -0400
-Date:   Thu, 23 Jul 2020 21:10:15 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1595538618;
-        bh=/v8hsn4vji93LSAwL+yRiHgNCReHoDDH4axY/SRPmKE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=PqRfO9+GqZTufIG+oR4srHLcqDGsQQCoyux3C8Vt6Xz6kwNRHtX9CeN989yIimZ9w
-         A0+avVpS6Bn8ubJZ1TRxVT39JUxZbt5WngqQXKh1gn25FutDexD3jsLiaYILD0BGsd
-         4Tz6V6YIpKZZi6+ZvJ9EqR5blmY+mVmbPEEk6D6s=
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-From:   Mazin Rezk <mnrzk@protonmail.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "harry.wentland@amd.com" <harry.wentland@amd.com>,
-        "mnrzk@protonmail.com" <mnrzk@protonmail.com>,
-        "nicholas.kazlauskas@amd.com" <nicholas.kazlauskas@amd.com>,
-        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "alexander.deucher@amd.com" <alexander.deucher@amd.com>,
-        "1i5t5.duncan@cox.net" <1i5t5.duncan@cox.net>,
-        "mphantomx@yahoo.com.br" <mphantomx@yahoo.com.br>,
-        "regressions@leemhuis.info" <regressions@leemhuis.info>,
-        "anthony.ruhier@gmail.com" <anthony.ruhier@gmail.com>,
-        "pmenzel@molgen.mpg.de" <pmenzel@molgen.mpg.de>
-Reply-To: Mazin Rezk <mnrzk@protonmail.com>
-Subject: [PATCH] amdgpu_dm: fix nonblocking atomic commit use-after-free
-Message-ID: <YIGsJ9LlFquvBI2iWPKhJwjKBwDUr_C-38oVpLJJHJ5rDCY_Zrrv392o6UPNxHoeQrcpLYC9U4fZdpD9ilz6Amg2IxkSexGLQMCQIBek8rc=@protonmail.com>
+        Thu, 23 Jul 2020 17:10:43 -0400
+Received: by mail-io1-f68.google.com with SMTP id d18so7788321ion.0;
+        Thu, 23 Jul 2020 14:10:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rFnG6OjqqnnpckoLrF3IZeXaDva71gf7e2ghfJANXJg=;
+        b=WnjFgiT3oZtrQsSP6M056gk2UDj8nnuD6qbS27XY820YGwaHFEwdufHGZeyM6/vUMs
+         jn0bysi21w1wPSqKVe4+QqPbshxVIHl+xvoHXRpkMQrecIWNq0qFndPWtLJnJfvIqk51
+         o6obecMnJfdfwxIz8KWhoWSmpLbHjJ7H3/uO8CuZ9usUB+BSnPMlVY0WHzvRS182rt5e
+         FWXKBopBUWPw/Ccs3nGGtNM4qp1tCLKA/OWaPbs/mjjqAVoeDUdGOX+eJO3yQsCXsAC8
+         jN20w6MKH/3L8QYbEPbI6MCmMEmxDWFOx3ob5s3M3W+Rp8hL5oD0cYjz+sAGMUfX77AC
+         2TVw==
+X-Gm-Message-State: AOAM531I/DRXqRoKHnALtnwC904u+9Vj9pyenx2j/0HSbBBvxLMj6yv9
+        tB11Gw2C+dS1/2kQOm5TaA==
+X-Google-Smtp-Source: ABdhPJzPkVpagcW3ivBb3LUe2ly7ZSWK85Q3R+Kf30ArUVlbxiQmo8M85lxbkm/bp9JvXSVnb1L/Jw==
+X-Received: by 2002:a6b:4f19:: with SMTP id d25mr233891iob.190.1595538642326;
+        Thu, 23 Jul 2020 14:10:42 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id d6sm2086764ioo.9.2020.07.23.14.10.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 14:10:41 -0700 (PDT)
+Received: (nullmailer pid 864810 invoked by uid 1000);
+        Thu, 23 Jul 2020 21:10:40 -0000
+Date:   Thu, 23 Jul 2020 15:10:40 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Christian Hewitt <christianshewitt@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+        Dongjin Kim <tobetter@hardkernel.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-amlogic@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] dt-bindings: arm: amlogic: add support for the
+ ODROID-N2+
+Message-ID: <20200723211040.GA864520@bogus>
+References: <20200719141034.8403-1-christianshewitt@gmail.com>
+ <20200719141034.8403-3-christianshewitt@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.5 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_REPLYTO
-        shortcircuit=no autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200719141034.8403-3-christianshewitt@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When amdgpu_dm_atomic_commit_tail is running in the workqueue,
-drm_atomic_state_put will get called while amdgpu_dm_atomic_commit_tail is
-running, causing a race condition where state (and then dm_state) is
-sometimes freed while amdgpu_dm_atomic_commit_tail is running. This bug has
-occurred since 5.7-rc1 and is well documented among polaris11 users [1].
+On Sun, 19 Jul 2020 14:10:33 +0000, Christian Hewitt wrote:
+> HardKernel ODROID-N2+ uses a revised Amlogic S922X v2 chip that supports
+> higher cpu clock speeds than the original ODROID-N2.
+> 
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/arm/amlogic.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Prior to 5.7, this was not a noticeable issue since the freelist pointer
-was stored at the beginning of dm_state (base), which was unused. After
-changing the freelist pointer to be stored in the middle of the struct, the
-freelist pointer overwrote the context, causing dc_state to become garbage
-data and made the call to dm_enable_per_frame_crtc_master_sync dereference
-a freelist pointer.
-
-This patch fixes the aforementioned issue by calling drm_atomic_state_get
-in amdgpu_dm_atomic_commit before drm_atomic_helper_commit is called and
-drm_atomic_state_put after amdgpu_dm_atomic_commit_tail is complete.
-
-According to my testing on 5.8.0-rc6, this should fix bug 207383 on
-Bugzilla [1].
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D207383
-
-Fixes: 3202fa62f ("slub: relocate freelist pointer to middle of object")
-Reported-by: Duncan <1i5t5.duncan@cox.net>
-Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gp=
-u/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 86ffa0c2880f..86d6652872f2 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -7303,6 +7303,7 @@ static int amdgpu_dm_atomic_commit(struct drm_device =
-*dev,
- =09 * unset legacy_cursor_update
- =09 */
-
-+=09drm_atomic_state_get(state);
- =09return drm_atomic_helper_commit(dev, state, nonblock);
-
- =09/*TODO Handle EINTR, reenable IRQ*/
-@@ -7628,6 +7629,8 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_a=
-tomic_state *state)
-
- =09if (dc_state_temp)
- =09=09dc_release_state(dc_state_temp);
-+
-+=09drm_atomic_state_put(state);
- }
-
-
---
-2.27.0
-
+Acked-by: Rob Herring <robh@kernel.org>
