@@ -2,119 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE5822A4E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EE922A4E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387657AbgGWBte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:49:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:35650 "EHLO mga06.intel.com"
+        id S2387639AbgGWBtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:49:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729198AbgGWBte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:49:34 -0400
-IronPort-SDR: YlR3QaPbj5FXFizj8d1UwsMb8q3DyyccbG/crMscL69aj4nxolIxplDt7kRdSUw7wbbxrGssAo
- cVeUI6O78h6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="211994602"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="211994602"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 18:49:33 -0700
-IronPort-SDR: QNP5KVt6QKgtWmoKOqeRoCIe45AqIHZRKo7xbNWyj+G+DYPdMKxxIdxZ6DQosE8B7coErHBY0h
- jolHgiunVirA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="270910468"
-Received: from schwings-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.132])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Jul 2020 18:49:17 -0700
-Date:   Thu, 23 Jul 2020 04:49:16 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, x86@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Marco Elver <elver@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v3 1/3] kprobes: Add text_alloc() and text_free()
-Message-ID: <20200723014916.GD45081@linux.intel.com>
-References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
- <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
- <20200716090253.GP10769@hirez.programming.kicks-ass.net>
+        id S1729198AbgGWBtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:49:25 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A85E22071A;
+        Thu, 23 Jul 2020 01:49:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595468964;
+        bh=Nmqte8bweK+QD9+SwQumY88j2R8RrE+EWxABzrIMfT4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=cAbgm0XyX3ZFNdD75o/5JmOlsjYFGJKKE3YuR9/7MaqajEH6igfAOGsNaBeotsbMS
+         Qd/Q6I8QoRrNmQKE43WCk3JEsl8lFfNfcM3xVfDLEeEZGhsPAcbDD+GfilLJVAG/qv
+         vqEhWc6UpUaVVH4shxERWFyWU+sReO54YYFArSC4=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716090253.GP10769@hirez.programming.kicks-ass.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200721164655.422-1-luca@lucaceresoli.net>
+References: <20200721164655.422-1-luca@lucaceresoli.net>
+Subject: Re: [PATCH v3 1/4] dt-bindings: clk: versaclock5: fix 'idt' prefix typos
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+        Adam Ford <aford173@gmail.com>, Rob Herring <robh@kernel.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-clk@vger.kernel.org
+Date:   Wed, 22 Jul 2020 18:49:24 -0700
+Message-ID: <159546896402.3847286.10939445139729414539@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 11:02:53AM +0200, Peter Zijlstra wrote:
-> On Wed, Jul 15, 2020 at 01:32:27AM +0300, Jarkko Sakkinen wrote:
-> > +void *text_alloc(unsigned long size)
-> > +{
-> > +	void *p;
-> > +
-> > +	if (PAGE_ALIGN(size) > MODULES_LEN)
-> > +		return NULL;
-> > +
-> > +	p = __vmalloc_node_range(size, MODULE_ALIGN,
-> > +				    MODULES_VADDR + get_module_load_offset(),
-> > +				    MODULES_END, GFP_KERNEL,
-> > +				    PAGE_KERNEL, 0, NUMA_NO_NODE,
-> > +				    __builtin_return_address(0));
-> > +	if (p && (kasan_module_alloc(p, size) < 0)) {
-> > +		vfree(p);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	return p;
-> > +}
-> > +
-> > +void text_free(void *region)
-> > +{
-> > +	/*
-> > +	 * This memory may be RO, and freeing RO memory in an interrupt is not
-> > +	 * supported by vmalloc.
-> > +	 */
-> > +	WARN_ON(in_interrupt());
-> 
-> I think that wants to be:
-> 
-> 	lockdep_assert_irqs_enabled();
-> 
-> in_interrupt() isn't sufficient, interrupts must also not be disabled
-> when issuesing TLB invalidations.
+Quoting Luca Ceresoli (2020-07-21 09:46:52)
+> 'idt' is misspelled 'itd' in a few places, fix it.
+>=20
+> Fixes: 34662f6e3084 ("dt: Add additional option bindings for IDT VersaClo=
+ck")
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+>=20
+> ---
 
-Shouldn't it be then also fixed in the module_memfree() fallback
-implementation (kernel/module.c)?
-
-/Jarkko
+Please use a cover-letter for multi-patch series.
