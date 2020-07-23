@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6B222B834
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D8622B830
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728160AbgGWUyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgGWUyH (ORCPT
+        id S1728071AbgGWUxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:53:47 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:45367 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgGWUxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:54:07 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37C7C0619D3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 13:54:07 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 7so5678326ybl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 13:54:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=kdI8VUHfhgihOmQy3Iyr0hZYwpxzmdhJFeUTHTnZFGA=;
-        b=nfKcDMyPVy6NhFDMWTrUuajEjaivWMTHnhcCslK0roB8C/wpec1UXvKA8nvv5E/g2I
-         Ik52Is34VC3xAIW94icyp0k1pP7F6+0P2OM0YV7shMnYAxZoXpjspjteyNJUsMfCjG9E
-         rRPLBUMOeWUkBIt+EGUOeuIfMmZU0vJpvRckH5UjnoRjR2Fmq6/sOhBpNc7gF9ajXqg5
-         gIGmeZknjvxOY20tTtMclA22ysTEPGwbNJj+oIllnH0+fI4qBYHM17bVfjww/SjkerM8
-         3Yc+27PwSUy03KTNEAfsBngMdZjz3RDAmOYqVi+N2qAAengHadOy/te6Y69tyNhgPvvT
-         rVdQ==
+        Thu, 23 Jul 2020 16:53:47 -0400
+Received: by mail-io1-f67.google.com with SMTP id e64so7696417iof.12;
+        Thu, 23 Jul 2020 13:53:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=kdI8VUHfhgihOmQy3Iyr0hZYwpxzmdhJFeUTHTnZFGA=;
-        b=W3/urMiSdOQpnk/vSzIt4aAMtplPlBPVpWHD8s2Ie6hAWsSGpsdcuaFUHtwloTPNY4
-         0g19mD7MfmsswH+Yy+hSt6YtaOddXro3kbO8OkuIBQTm/ihFc9BCf3i/J963d7AAwQup
-         +80AN62kTXcKJrMoEGQ9EmDIem0X+hqxFwVmJCrhvZQuKB1MGks3duzGNP775rsdcBf3
-         XSNFrrGZJ/+gXo27V3//vwx52TpOlQHZEjsaRFSrfls608s/PuYgXocvPUlBdhOUaKPR
-         YSS+pbff+7fQ97M/lhYsCQkWrxdRdoUANosAIuv3mUMlEGurvk3+ajidBbF+HKoMGBZq
-         2CcQ==
-X-Gm-Message-State: AOAM531+3gXnUGQE4/n4JAjlzGN7mLT/rToOHSSUKG4YnIbj1fEg6coz
-        OxVivPck/IUAKMVSLuL7o1VkvKAaz8B94PNcKwc=
-X-Google-Smtp-Source: ABdhPJzTomNZmxQkDKDUaOgi6iM6xnjutxLFdDnNFS0z2K8+f1arYg36P6fZg+r/T6x0QA8VvBHLCOUnJXhbuCSovlE=
-X-Received: by 2002:a25:4c45:: with SMTP id z66mr9855584yba.175.1595537646880;
- Thu, 23 Jul 2020 13:54:06 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 13:53:41 -0700
-In-Reply-To: <20200723205341.1099742-1-ndesaulniers@google.com>
-Message-Id: <20200723205341.1099742-3-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20200723205341.1099742-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
-Subject: [PATCH 2/2] tracepoint: used attribute definitions from compiler_attributes.h
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ITHgt7Rp1pUPvPasYbFEExd3q0/gLF5DZdscQLiQgEw=;
+        b=OUNkVzCSN9oe61GvhoaIMNGOMxVK+Q3M9E2jcoR3LEWe2Hx/wZPVuF/zbGewE5VRa6
+         /YY2Wq6oomPndl2gb71rR5/uubobILK/rZjy2MEb1C1GAGKnXWtZBWRNHwFTbgHY2QG7
+         Dz4HIl4LFD4lpt4ctOvet+++QfvTgMVJwCknwNPdPPn+d/smbjNapVnbcBFsuLKc/aVD
+         6Hd/dw76mpuoslKu7vx1pitoRk0ErSXq4GDnupoxclwuro8rqDL9OqjuGtAzU2uUATsr
+         qvi6WDS4Oq0eDeSJAaBiImkXm3OQrS+F/oMJ7XTjPIgsxf4RlJk25/c+MnPigcbtCbum
+         vYQg==
+X-Gm-Message-State: AOAM530cvrTsVISjGDQ+votVeWrV+5m07u8tb3cswx6eU6TrkCBODo2M
+        R9IWZBVLpe9OjmpTFJYK2g==
+X-Google-Smtp-Source: ABdhPJwu8e69Y0kSTAIspRpvODB+BldtXHqBKiEe/jpBPO0AO31cywRDT52VomisXuK/kACvFQX/aw==
+X-Received: by 2002:a05:6602:2f88:: with SMTP id u8mr6878032iow.120.1595537626501;
+        Thu, 23 Jul 2020 13:53:46 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id d9sm2004036ios.33.2020.07.23.13.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 13:53:45 -0700 (PDT)
+Received: (nullmailer pid 841658 invoked by uid 1000);
+        Thu, 23 Jul 2020 20:53:43 -0000
+Date:   Thu, 23 Jul 2020 14:53:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Huihui Wang <huihui.wang@mediatek.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>, Vinod Koul <vkoul@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH v1 1/2] dt-bindings: dma: mediatek: mark useless items as
+ decrepted
+Message-ID: <20200723205343.GA839415@bogus>
+References: <20200717030203.14872-1-huihui.wang@mediatek.com>
+ <20200717030203.14872-2-huihui.wang@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200717030203.14872-2-huihui.wang@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a small cleanup while I was touching this header.
-compiler_attributes.h does feature detection of these __attributes__(())
-and provides more concise ways to invoke them.
+On Fri, Jul 17, 2020 at 11:02:03AM +0800, Huihui Wang wrote:
+> From: huihui wang <huihui.wang@mediatek.com>
+> 
+> Because we move dma address bits config to mtk-uart-apdma.c,
+> it is unnecessary to be configured in device tree.
+> Update the document at the same time.
+> 
+> Signed-off-by: huihui wang <huihui.wang@mediatek.com>
+> ---
+>  .../devicetree/bindings/dma/mtk-uart-apdma.txt        | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt b/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
+> index 2117db0ce4f2..926c86b21e8c 100644
+> --- a/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
+> +++ b/Documentation/devicetree/bindings/dma/mtk-uart-apdma.txt
+> @@ -2,8 +2,9 @@
+>  
+>  Required properties:
+>  - compatible should contain:
+> -  * "mediatek,mt2712-uart-dma" for MT2712 compatible APDMA
+> -  * "mediatek,mt6577-uart-dma" for MT6577 and all of the above
+> +  * "mediatek,mt2712-uart-dma" for MediaTek MT2712
+> +  * "mediatek,mt6577-uart-dma" for MediaTek MT6577
+> +  * "mediatek,mt6779-uart-dma" for MediaTek MT6779
 
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- include/linux/tracepoint.h | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+This looks like an unrelated change.
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 3a5b717d92e8..598fec9f9dbf 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -116,8 +116,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 
- #define __TRACEPOINT_ENTRY(name)					 \
- 	static tracepoint_ptr_t __tracepoint_ptr_##name __used		 \
--	__attribute__((section("__tracepoints_ptrs"))) =		 \
--		&__tracepoint_##name
-+	__section(__tracepoints_ptrs) = &__tracepoint_##name
- #endif
- 
- #endif /* _LINUX_TRACEPOINT_H */
-@@ -280,9 +279,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-  */
- #define DEFINE_TRACE_FN(name, reg, unreg)				 \
- 	static const char __tpstrtab_##name[]				 \
--	__attribute__((section("__tracepoints_strings"))) = #name;	 \
--	struct tracepoint __tracepoint_##name				 \
--	__attribute__((section("__tracepoints"), used)) =		 \
-+	__section(__tracepoints_strings) = #name;			 \
-+	struct tracepoint __tracepoint_##name __used			 \
-+	__section(__tracepoints) =					 \
- 		{ __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
- 	__TRACEPOINT_ENTRY(name);
- 
-@@ -361,7 +360,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
- 		static const char *___tp_str __tracepoint_string = str; \
- 		___tp_str;						\
- 	})
--#define __tracepoint_string	__attribute__((section("__tracepoint_str"), used))
-+#define __tracepoint_string	__used __section(__tracepoint_str)
- #else
- /*
-  * tracepoint_string() is used to save the string address for userspace
--- 
-2.28.0.rc0.105.gf9edc3c819-goog
-
+>  
+>  - reg: The base address of the APDMA register bank.
+>  
+> @@ -16,13 +17,12 @@ Required properties:
+>    See ../clocks/clock-bindings.txt for details.
+>  - clock-names: The APDMA clock for register accesses
+>  
+> -- mediatek,dma-33bits: Present if the DMA requires support
+> +- mediatek,dma-33bits: Present if the DMA requires support (deprecated)
+>  
+>  Examples:
+>  
+>  	apdma: dma-controller@11000400 {
+> -		compatible = "mediatek,mt2712-uart-dma",
+> -			     "mediatek,mt6577-uart-dma";
+> +		compatible = "mediatek,mt6779-uart-dma";
+>  		reg = <0 0x11000400 0 0x80>,
+>  		      <0 0x11000480 0 0x80>,
+>  		      <0 0x11000500 0 0x80>,
+> @@ -50,6 +50,5 @@ Examples:
+>  		dma-requests = <12>;
+>  		clocks = <&pericfg CLK_PERI_AP_DMA>;
+>  		clock-names = "apdma";
+> -		mediatek,dma-33bits;
+>  		#dma-cells = <1>;
+>  	};
+> -- 
+> 2.18.0
