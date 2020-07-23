@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C022522B81E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C73422B820
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgGWUuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
+        id S1728109AbgGWUur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726046AbgGWUud (ORCPT
+        with ESMTP id S1726046AbgGWUur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:50:33 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7B7C0619D3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 13:50:33 -0700 (PDT)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 4212B891B2;
-        Fri, 24 Jul 2020 08:50:28 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1595537428;
-        bh=bFGhv4awXiWM6YUSOqX3rx29Y8lX1g9yRojTsB4tHLQ=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=g1iOIuI9jJ5oxyauQwNSJFEDpXKtdCzlxi5wi88Ygj63ecN00xHOITrLzBlgqlFle
-         fq4DCxB5Gt6Y5FGPKMH4nnS+ogj17hgx7rpQmIHE2QngmLbrR1QFYpkBx3IAVPkX9G
-         6agTOCGEqDmi9uT91/rOhjX5XTd0GHEhq31uNGPaVtPCMZ2IsphwfGUo3LpogSac5/
-         jced6rFzOy0troDmcluWQZWwGqafvXUX4cdMUoCz9cGNbv+SsYn/fi/tZMC9mxiLRR
-         GW6W2I2yzZII8d7h83tvloH8lw9+pyhHXeqsqx1Xf6bkdXaaJCMWWxmGq4Ifn/Nsh2
-         d6CqqoC0gwtkg==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f19f8130000>; Fri, 24 Jul 2020 08:50:27 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 24 Jul 2020 08:50:27 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Fri, 24 Jul 2020 08:50:27 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] net: dsa: mv88e6xxx: Implement
- .port_change_mtu/.port_max_mtu
-Thread-Topic: [PATCH 3/4] net: dsa: mv88e6xxx: Implement
- .port_change_mtu/.port_max_mtu
-Thread-Index: AQHWYKW3b1TNxAifGUKdmWah9S8H2akUYKYAgAB6rYA=
-Date:   Thu, 23 Jul 2020 20:50:27 +0000
-Message-ID: <e10da452-c04a-b519-6c30-c94e60101f92@alliedtelesis.co.nz>
-References: <20200723035942.23988-1-chris.packham@alliedtelesis.co.nz>
- <20200723035942.23988-4-chris.packham@alliedtelesis.co.nz>
- <20200723133122.GB1553578@lunn.ch>
-In-Reply-To: <20200723133122.GB1553578@lunn.ch>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <FF49CCFB6891BE45BA8634A70F270D19@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Thu, 23 Jul 2020 16:50:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54483C0619D3;
+        Thu, 23 Jul 2020 13:50:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=hcFSk1zoqynrqfpyHJjn5KFl4stE+TWu+6kpqiKw4a8=; b=RMdgF5LZBJN+Q2JKXhCdwoq6MI
+        lHC2E3mTeJpYN2Rfp8vqlq3CcjjTW9w9Lqa+Mex9mY+cL4F/NDFHzeEhHeJXM53PAmFrJhRDT+B2Z
+        ZAV1n5cL9QhDIDkhTF3bs5a2lqKwOaNF51TGkgwc+S+f6B3lpqafkpoelpakn/LyMiovcEe1s8DF3
+        vSLSnsO6oEbN/O0K2TTKBRPrQiWrNevficXi1Wu+Lny4ZAyKHDpBJCugQFc6DicufZU6gQ9/xRADX
+        FutwXcbei2/Os6/NIExZMVOZ1Dm8BxC6wZ81ZTXfjme13xhewn6hIOZjqXXbAwwAIY2oFu7bw343r
+        DbwQaxyA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyiAs-0003r8-ML; Thu, 23 Jul 2020 20:50:43 +0000
+Subject: Re: [PATCH V17 3/3] Input: new da7280 haptic driver
+To:     Roy Im <roy.im.opensource@diasemi.com>,
+        Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Brian Masney <masneyb@onstation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Pascal PAILLET-LME <p.paillet@st.com>,
+        Rob Herring <robh@kernel.org>,
+        Samuel Ortiz <sameo@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Support Opensource <support.opensource@diasemi.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+References: <cover.1595516501.git.Roy.Im@diasemi.com>
+ <c13d812871b7f09205c1f04e95f5bdf07f307eaf.1595516501.git.Roy.Im@diasemi.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <71818ab8-0020-77db-c412-8d35a541ead3@infradead.org>
+Date:   Thu, 23 Jul 2020 13:50:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <c13d812871b7f09205c1f04e95f5bdf07f307eaf.1595516501.git.Roy.Im@diasemi.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyNC8wNy8yMCAxOjMxIGFtLCBBbmRyZXcgTHVubiB3cm90ZToNCj4gT24gVGh1LCBKdWwg
-MjMsIDIwMjAgYXQgMDM6NTk6NDFQTSArMTIwMCwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4+IEFk
-ZCBpbXBsZW1lbnRhdGlvbnMgZm9yIHRoZSBtdjg4ZTZ4eHggc3dpdGNoZXMgdG8gY29ubmVjdCB3
-aXRoIHRoZQ0KPj4gZ2VuZXJpYyBkc2Egb3BlcmF0aW9ucyBmb3IgY29uZmlndXJpbmcgdGhlIHBv
-cnQgTVRVLg0KPiBIaSBDaHJpcw0KPg0KPiBXaGF0IHRyZWUgaXMgdGhpcyBhZ2FpbnN0Pw0KJCBn
-aXQgY29uZmlnIHJlbW90ZS5vcmlnaW4udXJsDQpnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2Nt
-L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0DQokIGdpdCBkZXNjcmliZSBgZ2l0
-IG1lcmdlLWJhc2UgSEVBRCBvcmlnaW4vbWFzdGVyYA0KdjUuOC1yYzYtMy1nNGZhNjQwZGM1MjMw
-DQoNCj4gY29tbWl0IDJhNTUwYWVjMzY1NDNiMjBmMDg3ZTRiMzA2Mzg4MmU5NDY1ZjcxNzUNCj4g
-QXV0aG9yOiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4uY2g+DQo+IERhdGU6ICAgU2F0IEp1bCAx
-MSAyMjozMjowNSAyMDIwICswMjAwDQo+DQo+ICAgICAgbmV0OiBkc2E6IG12ODhlNnh4eDogSW1w
-bGVtZW50IE1UVSBjaGFuZ2UNCj4gICAgICANCj4gICAgICBUaGUgTWFydmVsbCBTd2l0Y2hlcyBz
-dXBwb3J0IGp1bWJvIHBhY2thZ2VzLiBTbyBpbXBsZW1lbnQgdGhlDQo+ICAgICAgY2FsbGJhY2tz
-IG5lZWRlZCBmb3IgY2hhbmdpbmcgdGhlIE1UVS4NCj4gICAgICANCj4gICAgICBTaWduZWQtb2Zm
-LWJ5OiBBbmRyZXcgTHVubiA8YW5kcmV3QGx1bm4uY2g+DQo+ICAgICAgU2lnbmVkLW9mZi1ieTog
-RGF2aWQgUy4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0Pg0KPg0KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvZHNhL212ODhlNnh4eC9jaGlwLmMgYi9kcml2ZXJzL25ldC9kc2EvbXY4OGU2
-eHh4L2NoaXAuYw0KPiBpbmRleCBkOTk1ZjViZjBkNDAuLjZmMDE5OTU1YWU0MiAxMDA2NDQNCj4g
-LS0tIGEvZHJpdmVycy9uZXQvZHNhL212ODhlNnh4eC9jaGlwLmMNCj4gKysrIGIvZHJpdmVycy9u
-ZXQvZHNhL212ODhlNnh4eC9jaGlwLmMNCj4gQEAgLTI2OTMsNiArMjY5MywzMSBAQCBzdGF0aWMg
-aW50IG12ODhlNnh4eF9zZXR1cF9wb3J0KHN0cnVjdCBtdjg4ZTZ4eHhfY2hpcCAqY2hpcCwgaW50
-IHBvcnQpDQo+ICAgICAgICAgIHJldHVybiBtdjg4ZTZ4eHhfcG9ydF93cml0ZShjaGlwLCBwb3J0
-LCBNVjg4RTZYWFhfUE9SVF9ERUZBVUxUX1ZMQU4sIDApOw0KPiAgIH0NCj4gICANCj4gK3N0YXRp
-YyBpbnQgbXY4OGU2eHh4X2dldF9tYXhfbXR1KHN0cnVjdCBkc2Ffc3dpdGNoICpkcywgaW50IHBv
-cnQpDQo+ICt7DQo+ICsgICAgICAgc3RydWN0IG12ODhlNnh4eF9jaGlwICpjaGlwID0gZHMtPnBy
-aXY7DQo+ICsNCj4gKyAgICAgICBpZiAoY2hpcC0+aW5mby0+b3BzLT5wb3J0X3NldF9qdW1ib19z
-aXplKQ0KPiArICAgICAgICAgICAgICAgcmV0dXJuIDEwMjQwOw0KPiArICAgICAgIHJldHVybiAx
-NTIyOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IG12ODhlNnh4eF9jaGFuZ2VfbXR1KHN0cnVj
-dCBkc2Ffc3dpdGNoICpkcywgaW50IHBvcnQsIGludCBuZXdfbXR1KQ0KPiArew0KPiAuLi4NClNu
-YXAuIEkgY3JlYXRlZCBteSBzZXJpZXMgYmVjYXVzZSBJIG5lZWQgaXQgb24gYW4gaW50ZXJuYWwg
-NS43IGJhc2VkIA0Ka2VybmVsLiBTbyBJJ20gaGFwcHkgdG8gZHJvcCBtaW5lIGFuZCBiYWNrLXBv
-cnQgeW91ciBpbXBsZW1lbnRhdGlvbi4=
+On 7/23/20 8:01 AM, Roy Im wrote:
+> diff --git a/drivers/input/misc/Kconfig b/drivers/input/misc/Kconfig
+> index 362e8a0..06dc5a3 100644
+> --- a/drivers/input/misc/Kconfig
+> +++ b/drivers/input/misc/Kconfig
+> @@ -869,4 +869,17 @@ config INPUT_STPMIC1_ONKEY
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called stpmic1_onkey.
+>  
+> +config INPUT_DA7280_HAPTICS
+> +	tristate "Dialog Semiconductor DA7280 haptics support"
+> +	depends on INPUT && I2C
+> +	select INPUT_FF_MEMLESS
+> +	select REGMAP_I2C
+> +	help
+> +	  Say Y to enable support for the Dialog DA7280 haptics driver.
+> +	  The haptics can be controlled by I2C communication,
+> +	  or by PWM input, or by GPI.
+
+	  Is that                GPIO.
+?
+
+Can the haptics be controlled only by PWM or only by GPI(O)?
+
+Just curious: why is I2C required to build the driver if a user is
+only controlling the device by PWM or GPI?
+
+
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called da7280.
+> +
+>  endif
+
+thanks.
+-- 
+~Randy
+
