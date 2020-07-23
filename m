@@ -2,93 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0B122B3F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E395822B3E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgGWQwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:52:06 -0400
-Received: from mga14.intel.com ([192.55.52.115]:61707 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726621AbgGWQwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:52:06 -0400
-IronPort-SDR: eCpyblb3JAmn3MY34CfejmwRB9+PzBIrn8b1CDJcbBYQD0+8KJyFZZooXQG75tywt3x9pNah9e
- nHh2xletJfIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="149757227"
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="149757227"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 09:52:05 -0700
-IronPort-SDR: mAmrUitOfiAg5CS/tsz6tCarSLviqTRzcFRleZL+GG/v8x+OPGmFN8FiKB+3GU/TO5dndgquAI
- CuGW8cd61NtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="311100155"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Jul 2020 09:52:05 -0700
-Date:   Thu, 23 Jul 2020 09:52:04 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Weiny Ira <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across
- exceptions
-Message-ID: <20200723165204.GB77434@romley-ivt3.sc.intel.com>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-18-ira.weiny@intel.com>
- <CALCETrVe1i5JdyzD_BcctxQJn+ZE3T38EFPgjxN1F577M36g+w@mail.gmail.com>
- <20200723161818.GA77434@romley-ivt3.sc.intel.com>
- <1cdb358b-861a-5f74-8cd0-84ee5265035c@intel.com>
+        id S1729838AbgGWQsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:48:13 -0400
+Received: from gateway20.websitewelcome.com ([192.185.52.45]:17872 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726621AbgGWQsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 12:48:12 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id E7C54400E0253
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 10:25:55 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id yeNsjNwHGwgQAyeNsjOZXW; Thu, 23 Jul 2020 11:47:52 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6AWZIibxr7YfSHGUsrhBZ16GS4ho7qtbLDrL7MZ8LPE=; b=H07yZtRe+AklMPIUWXZ2gfV8xU
+        uUdYeAuhccp+bu+KKppGW3snCHpZm2ujejRALV/tFkS9zvoo6FK3Rb476scmnuimr918rpMpwphzS
+        JCIO0snDztLNFWuMCgqjWqSJeoV5j7PvaiAK8sS/MCzJHVfVWc6tQyEOr3xvD+T1iOX40WkTCaWSd
+        oAjgdxvxD+9wCUYkgGXItOGYQVayAPFUTDr6dgmuhQdRVlqVhBomD4xEtAtgbeaUjB6UH2oA4mJFO
+        ua8hcCBP5kM3StA0gUTLAbK8EWVEwoq0c4JzKQ+hkAxWisPR+NfHTRLRQmXwFOwJjxg6osqkgO9dx
+        F75mRuNg==;
+Received: from [201.162.245.27] (port=42552 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jyeNs-003zoU-Eq; Thu, 23 Jul 2020 11:47:52 -0500
+Subject: Re: [char-misc-next 5/6] mei: hw: use sizeof of variable instead of
+ struct type
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20200723145927.882743-1-tomas.winkler@intel.com>
+ <20200723145927.882743-6-tomas.winkler@intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <3fa1faf1-40a8-7506-ea93-f266b0e45c86@embeddedor.com>
+Date:   Thu, 23 Jul 2020 11:53:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1cdb358b-861a-5f74-8cd0-84ee5265035c@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200723145927.882743-6-tomas.winkler@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.245.27
+X-Source-L: No
+X-Exim-ID: 1jyeNs-003zoU-Eq
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [201.162.245.27]:42552
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 10
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Dave,
 
-On Thu, Jul 23, 2020 at 09:23:13AM -0700, Dave Hansen wrote:
-> On 7/23/20 9:18 AM, Fenghua Yu wrote:
-> > The PKRS MSR has been preserved in thread_info during kernel entry. We
-> > don't need to preserve it in another place (i.e. idtentry_state).
+
+On 7/23/20 09:59, Tomas Winkler wrote:
+> Use sizeof(*dev) + sizeof(*hw) instead of
+> sizeof(struct mei_device) + sizeof(struct mei_me_hw)
 > 
-> I'm missing how the PKRS MSR gets preserved in thread_info.  Could you
-> explain the mechanism by which this happens and point to the code
-> implementing it, please?
+> There is a possibility of bug when variable type has changed but
+> corresponding struct passed to the sizeof has not.
+> 
+> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 
-[Sorry, my mistake: I mean "thread_struct" instead of "thread_info".
-Hopefully the typo doesn't change the essential part in my last email.]
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-The "saved_pkrs" is defined in thread_struct and context switched in
-patch 04/17:
-https://lore.kernel.org/lkml/20200717072056.73134-5-ira.weiny@intel.com/
+Thanks
+--
+Gustavo
 
-Because there is no XSAVE support the PKRS MSR, we preserve it in
-"saved_pkrs" in thread_struct. It's initialized as 0 (init state, no
-protection key) in fork() or exec(). It's updated to a right protection
-value when a driver calls the updating API. The PKRS MSR is context
-switched by "saved_pkrs" when switching to a task (unless optimized if the
-cached MSR is the same as the saved one).
-
-Thanks.
-
--Fenghua
+> ---
+>  drivers/misc/mei/hw-me.c  | 5 ++---
+>  drivers/misc/mei/hw-txe.c | 5 ++---
+>  2 files changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/misc/mei/hw-me.c b/drivers/misc/mei/hw-me.c
+> index c51d3da8f333..7692b69abcb5 100644
+> --- a/drivers/misc/mei/hw-me.c
+> +++ b/drivers/misc/mei/hw-me.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (c) 2003-2019, Intel Corporation. All rights reserved.
+> + * Copyright (c) 2003-2020, Intel Corporation. All rights reserved.
+>   * Intel Management Engine Interface (Intel MEI) Linux driver
+>   */
+>  
+> @@ -1600,8 +1600,7 @@ struct mei_device *mei_me_dev_init(struct device *parent,
+>  	struct mei_me_hw *hw;
+>  	int i;
+>  
+> -	dev = devm_kzalloc(parent, sizeof(struct mei_device) +
+> -			   sizeof(struct mei_me_hw), GFP_KERNEL);
+> +	dev = devm_kzalloc(parent, sizeof(*dev) + sizeof(*hw), GFP_KERNEL);
+>  	if (!dev)
+>  		return NULL;
+>  
+> diff --git a/drivers/misc/mei/hw-txe.c b/drivers/misc/mei/hw-txe.c
+> index 785b260b3ae9..a4e854b9b9e6 100644
+> --- a/drivers/misc/mei/hw-txe.c
+> +++ b/drivers/misc/mei/hw-txe.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - * Copyright (c) 2013-2019, Intel Corporation. All rights reserved.
+> + * Copyright (c) 2013-2020, Intel Corporation. All rights reserved.
+>   * Intel Management Engine Interface (Intel MEI) Linux driver
+>   */
+>  
+> @@ -1201,8 +1201,7 @@ struct mei_device *mei_txe_dev_init(struct pci_dev *pdev)
+>  	struct mei_device *dev;
+>  	struct mei_txe_hw *hw;
+>  
+> -	dev = devm_kzalloc(&pdev->dev, sizeof(struct mei_device) +
+> -			   sizeof(struct mei_txe_hw), GFP_KERNEL);
+> +	dev = devm_kzalloc(&pdev->dev, sizeof(*dev) + sizeof(*hw), GFP_KERNEL);
+>  	if (!dev)
+>  		return NULL;
+>  
+> 
