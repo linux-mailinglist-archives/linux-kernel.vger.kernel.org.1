@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B3222B20F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1E022B211
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgGWO7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:59:50 -0400
+        id S1729552AbgGWO75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:59:57 -0400
 Received: from mga09.intel.com ([134.134.136.24]:50088 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729471AbgGWO7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:59:47 -0400
-IronPort-SDR: kmbRv2b1ApX5x6PWsy+YORO6zoI1nfNpbcW8d9twlfY3ar1auo5X4ElfBypkDuo0sVPTcybw4M
- 4qP1BGq48SYQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="151839035"
+        id S1729516AbgGWO7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 10:59:50 -0400
+IronPort-SDR: 7vzeljEVqcEpeGUds1RIMls+elW+Q3XCZtI2QbNIkVCNglwM+xrVpxigK0af9OmJzHUCodPGrK
+ P2RvJSi8tPRg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="151839039"
 X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
-   d="scan'208";a="151839035"
+   d="scan'208";a="151839039"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 07:59:47 -0700
-IronPort-SDR: gwpzmg9c53jfxnnX6yQrdjYo1MydZpLxCQ96VsUjluu4n7XeLRknM7J/jfvewWqyL19bprePu7
- ds++qHE2MgcQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 07:59:49 -0700
+IronPort-SDR: LgnjdUVQexeR+PkGRmSkul40LHMRb1AI4AlvfpZuNfKRslOSybQtINI8gmlF7Gpin2bpEQe6WX
+ pRv6rHHDz6WQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,386,1589266800"; 
-   d="scan'208";a="311051210"
+   d="scan'208";a="311051223"
 Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Jul 2020 07:59:45 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 23 Jul 2020 07:59:47 -0700
 From:   Tomas Winkler <tomas.winkler@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
@@ -34,9 +34,9 @@ Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
         Tomas Winkler <tomas.winkler@intel.com>,
         "Gustavo A . R . Silva" <gustavoars@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [char-misc-next 4/6] mei: client: use sizeof of variable instead of struct type
-Date:   Thu, 23 Jul 2020 17:59:25 +0300
-Message-Id: <20200723145927.882743-5-tomas.winkler@intel.com>
+Subject: [char-misc-next 5/6] mei: hw: use sizeof of variable instead of struct type
+Date:   Thu, 23 Jul 2020 17:59:26 +0300
+Message-Id: <20200723145927.882743-6-tomas.winkler@intel.com>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200723145927.882743-1-tomas.winkler@intel.com>
 References: <20200723145927.882743-1-tomas.winkler@intel.com>
@@ -47,19 +47,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use sizeof(*dev) + sizeof(*hw) instead of
+sizeof(struct mei_device) + sizeof(struct mei_me_hw)
+
 There is a possibility of bug when variable type has changed but
 corresponding struct passed to the sizeof has not.
 
 Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
 Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 ---
- drivers/misc/mei/client.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/misc/mei/hw-me.c  | 5 ++---
+ drivers/misc/mei/hw-txe.c | 5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
-index b32c825a0945..2572887d99b6 100644
---- a/drivers/misc/mei/client.c
-+++ b/drivers/misc/mei/client.c
+diff --git a/drivers/misc/mei/hw-me.c b/drivers/misc/mei/hw-me.c
+index c51d3da8f333..7692b69abcb5 100644
+--- a/drivers/misc/mei/hw-me.c
++++ b/drivers/misc/mei/hw-me.c
 @@ -1,6 +1,6 @@
  // SPDX-License-Identifier: GPL-2.0
  /*
@@ -68,31 +72,36 @@ index b32c825a0945..2572887d99b6 100644
   * Intel Management Engine Interface (Intel MEI) Linux driver
   */
  
-@@ -369,7 +369,7 @@ static struct mei_cl_cb *mei_io_cb_init(struct mei_cl *cl,
- {
- 	struct mei_cl_cb *cb;
+@@ -1600,8 +1600,7 @@ struct mei_device *mei_me_dev_init(struct device *parent,
+ 	struct mei_me_hw *hw;
+ 	int i;
  
--	cb = kzalloc(sizeof(struct mei_cl_cb), GFP_KERNEL);
-+	cb = kzalloc(sizeof(*cb), GFP_KERNEL);
- 	if (!cb)
+-	dev = devm_kzalloc(parent, sizeof(struct mei_device) +
+-			   sizeof(struct mei_me_hw), GFP_KERNEL);
++	dev = devm_kzalloc(parent, sizeof(*dev) + sizeof(*hw), GFP_KERNEL);
+ 	if (!dev)
  		return NULL;
  
-@@ -552,7 +552,7 @@ int mei_cl_flush_queues(struct mei_cl *cl, const struct file *fp)
+diff --git a/drivers/misc/mei/hw-txe.c b/drivers/misc/mei/hw-txe.c
+index 785b260b3ae9..a4e854b9b9e6 100644
+--- a/drivers/misc/mei/hw-txe.c
++++ b/drivers/misc/mei/hw-txe.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Copyright (c) 2013-2019, Intel Corporation. All rights reserved.
++ * Copyright (c) 2013-2020, Intel Corporation. All rights reserved.
+  * Intel Management Engine Interface (Intel MEI) Linux driver
   */
- static void mei_cl_init(struct mei_cl *cl, struct mei_device *dev)
- {
--	memset(cl, 0, sizeof(struct mei_cl));
-+	memset(cl, 0, sizeof(*cl));
- 	init_waitqueue_head(&cl->wait);
- 	init_waitqueue_head(&cl->rx_wait);
- 	init_waitqueue_head(&cl->tx_wait);
-@@ -575,7 +575,7 @@ struct mei_cl *mei_cl_allocate(struct mei_device *dev)
- {
- 	struct mei_cl *cl;
  
--	cl = kmalloc(sizeof(struct mei_cl), GFP_KERNEL);
-+	cl = kmalloc(sizeof(*cl), GFP_KERNEL);
- 	if (!cl)
+@@ -1201,8 +1201,7 @@ struct mei_device *mei_txe_dev_init(struct pci_dev *pdev)
+ 	struct mei_device *dev;
+ 	struct mei_txe_hw *hw;
+ 
+-	dev = devm_kzalloc(&pdev->dev, sizeof(struct mei_device) +
+-			   sizeof(struct mei_txe_hw), GFP_KERNEL);
++	dev = devm_kzalloc(&pdev->dev, sizeof(*dev) + sizeof(*hw), GFP_KERNEL);
+ 	if (!dev)
  		return NULL;
  
 -- 
