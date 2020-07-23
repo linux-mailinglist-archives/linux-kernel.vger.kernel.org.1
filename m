@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E027722B012
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A5022B013
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729006AbgGWNMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 09:12:33 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:45905 "EHLO
+        id S1729041AbgGWNMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 09:12:38 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:39287 "EHLO
         relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgGWNMc (ORCPT
+        with ESMTP id S1726521AbgGWNMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 09:12:32 -0400
+        Thu, 23 Jul 2020 09:12:35 -0400
 X-Originating-IP: 42.109.196.68
 Received: from localhost.localdomain (unknown [42.109.196.68])
         (Authenticated sender: me@yadavpratyush.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 986591C0014;
-        Thu, 23 Jul 2020 13:12:26 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id DA5A41C0002;
+        Thu, 23 Jul 2020 13:12:30 +0000 (UTC)
 From:   Pratyush Yadav <me@yadavpratyush.com>
 To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -27,9 +27,9 @@ Cc:     Sekhar Nori <nsekhar@ti.com>,
         Boris Brezillon <boris.brezillon@collabora.com>,
         Pratyush Yadav <p.yadav@ti.com>,
         Pratyush Yadav <me@yadavpratyush.com>
-Subject: [PATCH v11 01/14] mtd: spi-nor: core: add spi_nor_{read,write}_reg() helpers
-Date:   Thu, 23 Jul 2020 18:41:50 +0530
-Message-Id: <20200723131203.40916-2-me@yadavpratyush.com>
+Subject: [PATCH v11 02/14] mtd: spi-nor: core: add spi_nor_controller_ops_erase helper
+Date:   Thu, 23 Jul 2020 18:41:51 +0530
+Message-Id: <20200723131203.40916-3-me@yadavpratyush.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200723131203.40916-1-me@yadavpratyush.com>
 References: <20200723131203.40916-1-me@yadavpratyush.com>
@@ -42,249 +42,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pratyush Yadav <p.yadav@ti.com>
 
-They are thin wrappers around nor->controller_ops->{read,write}_reg().
-In a future commit DTR support will be added. These ops can not be
-supported by the {read,write}_reg() hooks and these helpers will make it
-easier to reject those calls.
+It is a thin wrapper around nor->controller_ops->erase(). In a future
+commit DTR support will be added. These ops can not be supported by the
+erase() hook and this helper will make it easier to reject those calls.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 ---
- drivers/mtd/spi-nor/core.c | 110 ++++++++++++++++---------------------
- 1 file changed, 47 insertions(+), 63 deletions(-)
+ drivers/mtd/spi-nor/core.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 65eff4ce6ab1..2ccf2c154779 100644
+index 2ccf2c154779..4a7443e00602 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -82,6 +82,18 @@ static int spi_nor_spimem_exec_op(struct spi_nor *nor, struct spi_mem_op *op)
- 	return spi_mem_exec_op(nor->spimem, op);
+@@ -94,6 +94,11 @@ static int spi_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
+ 	return nor->controller_ops->write_reg(nor, opcode, buf, len);
  }
  
-+static int spi_nor_read_reg(struct spi_nor *nor, u8 opcode, u8 *buf,
-+			    size_t len)
++static int spi_nor_controller_ops_erase(struct spi_nor *nor, loff_t offs)
 +{
-+	return nor->controller_ops->read_reg(nor, opcode, buf, len);
-+}
-+
-+static int spi_nor_write_reg(struct spi_nor *nor, u8 opcode, const u8 *buf,
-+			     size_t len)
-+{
-+	return nor->controller_ops->write_reg(nor, opcode, buf, len);
++	return nor->controller_ops->erase(nor, offs);
 +}
 +
  /**
   * spi_nor_spimem_read_data() - read data from flash's memory region via
   *                              spi-mem
-@@ -228,10 +240,8 @@ int spi_nor_write_enable(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
+@@ -1130,7 +1135,7 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
  
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREN,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WREN, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d on Write Enable\n", ret);
-@@ -257,10 +267,8 @@ int spi_nor_write_disable(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRDI,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WRDI, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d on Write Disable\n", ret);
-@@ -288,10 +296,8 @@ static int spi_nor_read_sr(struct spi_nor *nor, u8 *sr)
- 				   SPI_MEM_OP_DATA_IN(1, sr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR,
--						    sr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDSR, sr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading SR\n", ret);
-@@ -319,10 +325,8 @@ static int spi_nor_read_fsr(struct spi_nor *nor, u8 *fsr)
- 				   SPI_MEM_OP_DATA_IN(1, fsr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDFSR,
--						    fsr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDFSR, fsr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading FSR\n", ret);
-@@ -351,9 +355,8 @@ static int spi_nor_read_cr(struct spi_nor *nor, u8 *cr)
- 				   SPI_MEM_OP_DATA_IN(1, cr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDCR, cr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDCR, cr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading CR\n", ret);
-@@ -384,12 +387,11 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 				  SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor,
--						     enable ? SPINOR_OP_EN4B :
--							      SPINOR_OP_EX4B,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor,
-+					enable ? SPINOR_OP_EN4B :
-+						 SPINOR_OP_EX4B,
-+					NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-@@ -420,10 +422,8 @@ static int spansion_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
- 				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_BRWR,
--						     nor->bouncebuf, 1);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_BRWR, nor->bouncebuf, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d setting 4-byte mode\n", ret);
-@@ -452,10 +452,8 @@ int spi_nor_write_ear(struct spi_nor *nor, u8 ear)
- 				   SPI_MEM_OP_DATA_OUT(1, nor->bouncebuf, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WREAR,
--						     nor->bouncebuf, 1);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WREAR, nor->bouncebuf, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d writing EAR\n", ret);
-@@ -483,10 +481,8 @@ int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr)
- 				   SPI_MEM_OP_DATA_IN(1, sr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_XRDSR,
--						    sr, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_XRDSR, sr, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading XRDSR\n", ret);
-@@ -528,10 +524,8 @@ static void spi_nor_clear_sr(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLSR,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_CLSR, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d clearing SR\n", ret);
-@@ -592,10 +586,8 @@ static void spi_nor_clear_fsr(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CLFSR,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_CLFSR, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d clearing FSR\n", ret);
-@@ -736,10 +728,8 @@ static int spi_nor_write_sr(struct spi_nor *nor, const u8 *sr, size_t len)
- 				   SPI_MEM_OP_DATA_OUT(len, sr, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR,
--						     sr, len);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WRSR, sr, len);
- 
- 	if (ret) {
- 		dev_dbg(nor->dev, "error %d writing SR\n", ret);
-@@ -938,10 +928,8 @@ static int spi_nor_write_sr2(struct spi_nor *nor, const u8 *sr2)
- 				   SPI_MEM_OP_DATA_OUT(1, sr2, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_WRSR2,
--						     sr2, 1);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_WRSR2, sr2, 1);
- 
- 	if (ret) {
- 		dev_dbg(nor->dev, "error %d writing SR2\n", ret);
-@@ -972,10 +960,8 @@ static int spi_nor_read_sr2(struct spi_nor *nor, u8 *sr2)
- 				   SPI_MEM_OP_DATA_IN(1, sr2, 1));
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->read_reg(nor, SPINOR_OP_RDSR2,
--						    sr2, 1);
--	}
-+	} else
-+		ret = spi_nor_read_reg(nor, SPINOR_OP_RDSR2, sr2, 1);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d reading SR2\n", ret);
-@@ -1003,10 +989,8 @@ static int spi_nor_erase_chip(struct spi_nor *nor)
- 				   SPI_MEM_OP_NO_DATA);
- 
- 		ret = spi_mem_exec_op(nor->spimem, &op);
--	} else {
--		ret = nor->controller_ops->write_reg(nor, SPINOR_OP_CHIP_ERASE,
--						     NULL, 0);
--	}
-+	} else
-+		ret = spi_nor_write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0);
- 
- 	if (ret)
- 		dev_dbg(nor->dev, "error %d erasing chip\n", ret);
-@@ -1158,8 +1142,8 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 		addr >>= 8;
+ 		return spi_mem_exec_op(nor->spimem, &op);
+ 	} else if (nor->controller_ops->erase) {
+-		return nor->controller_ops->erase(nor, addr);
++		return spi_nor_controller_ops_erase(nor, addr);
  	}
  
--	return nor->controller_ops->write_reg(nor, nor->erase_opcode,
--					      nor->bouncebuf, nor->addr_width);
-+	return spi_nor_write_reg(nor, nor->erase_opcode, nor->bouncebuf,
-+				 nor->addr_width);
- }
- 
- /**
+ 	/*
 -- 
 2.27.0
 
