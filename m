@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE9722B120
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7017122B124
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728918AbgGWOT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:19:28 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44614 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727123AbgGWOT1 (ORCPT
+        id S1729269AbgGWOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727111AbgGWOUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:19:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595513966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=TPxJ6ecRZcUkmgqLd9QvSwuf9V9UOaIvEHGPITh1SwI=;
-        b=VWAuYbDKvbf6ismsN/4I9KJXw8OFLzhVTaP+YI59Y3yI9T565CHszyxmnyIj5WOjwsWtZn
-        eEakjIUtfHIy6MVMv/Xy9dmPkcSQUkkhX6jguCnqujLfE1iRM/e0bGSMR1dZFEeYyVztMu
-        YDQRYsf684E3rNoU8rj39V3drjMYYLk=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-266-THjrZACpPh2jNwxSa_CXDA-1; Thu, 23 Jul 2020 10:19:24 -0400
-X-MC-Unique: THjrZACpPh2jNwxSa_CXDA-1
-Received: by mail-qv1-f70.google.com with SMTP id g17so3690179qvw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 07:19:24 -0700 (PDT)
+        Thu, 23 Jul 2020 10:20:40 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB21C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 07:20:38 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id y3so5350200wrl.4
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 07:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ntQu/VIUE9Ak1XWr+tVal7WWTvSlvV5WCmELVlSDg/A=;
+        b=wkpo7qVfmRQMPMxDfZe4UMyUKZbbfKfNEbl/ATyQ+ZamsFKEYkAJMnnsF70gm8MOJT
+         tIeMGGPN/oAeSvdffe4TFe9/EYgHs94i2eaGJHJCQYh0XOo512GHFUdIlei/g7RliGDx
+         D5O96c3ZwG2Bzr3+W5nwShYdzfOK89O4fKPNtmdk87x3U7ngJrYSSjHvTbZyfjO7Zf6H
+         Zxisg/HN2v9MGvbqicfa8OINsM2xCR3Vb98qLOSCA0bmAQIvu0YRJw2e8NO/+af+e4iw
+         fyjNMe4l21vet1zGIgwezkr5OkgUswi3wP/pJLcRDxHYQZkWCXdnNLYbhwozC9Ore0Tl
+         GAnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TPxJ6ecRZcUkmgqLd9QvSwuf9V9UOaIvEHGPITh1SwI=;
-        b=toRu/EMe6o1BHa3yfXHF/jvlJ15Wcpptzdl4frX1dBuESVpi6UwHkGLi3UfKH21pW+
-         QLwZUzQT4qetjatru7/hEwIO1XAfPfI7qNI1oooObTnfMUnmPAgcYRc7tkxOEIgQZn9y
-         wvofzin8h4OOA/J3Zz6yHKITT8xn6WQztP/EGMBrE+3yQP2juJDsquOkjfzzr+TSumDg
-         w6xJPVFDzjJairka3rFPbGRSV517NdGTNff9TasRkwWOK3LKJLlkei5QLo856T6UI6/p
-         FAukaz07xn2xxK/q6lTxKaB2bvhScu0Fr7566SoPnfvmT1Iwc5TDaPTJ1lRHKNKGMqIl
-         wCEA==
-X-Gm-Message-State: AOAM530Gajc0i18uxcjrsQC9jwrZ4KfbcDzOCiwqRkpya0wpnDa6b+8G
-        jR9LZsXReZjrjlqi2J/XP6PWHHN5nR0j9stnx62rYb5BoYkiU0bsxMII8MLZ7QXYeaig6foiuHw
-        AjoDDLoMIsOhruM30vL3pxCgI
-X-Received: by 2002:ae9:dd41:: with SMTP id r62mr5425025qkf.327.1595513964241;
-        Thu, 23 Jul 2020 07:19:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyor/sEuJ1ILiUvnXH2q/LutcM92n90ckKA+iXLKs3Ks/I7zdfJPzXs5YbSaHWhsPNDMTwjrA==
-X-Received: by 2002:ae9:dd41:: with SMTP id r62mr5424974qkf.327.1595513963870;
-        Thu, 23 Jul 2020 07:19:23 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id j9sm2626609qtr.60.2020.07.23.07.19.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ntQu/VIUE9Ak1XWr+tVal7WWTvSlvV5WCmELVlSDg/A=;
+        b=HMXRv5dzFD9Pw+QGKM+WJRZ4i2Tbc+xDSgBk0yI88gwnM3gMy8zbrrKgpTxqtFzw5y
+         rvmqIyeWSheifCf3AF1aCI9pbbnaikPqkHdG4N7pHA/3y5Uo28ghGAHVP3AQLDCbicfb
+         Iaa8HKlQeRvqRQxloiXDSdYtU6aaPQ8JuhQUKgnopmt/Qo7qwh8JSTud+8TSEBzL3PED
+         cKNe6wJnCdZ6PNmfsD+CPtrid0qlyaB33miEcNxrhE1ryGJh2MUxZDiRtkiTt7QYIs3V
+         xXl4J7offQIV8ZBhopMpDhT1dQ2n4dxbcKsT3pOgop0woYqnw22+Z6B8sVvW4VgAdylC
+         D+Gw==
+X-Gm-Message-State: AOAM533rO+nz7J0vatPbDC7XN7jpVtAF2sChyS/bvXhfi2Y4mLQ7Uetx
+        8sQ/XbYEgQGkELEe1Yrd/v3WTg==
+X-Google-Smtp-Source: ABdhPJwPVH7gpTvD/ipnOWJvIHkx8CO3yNE7ijv4WaUQj7B8PPGPf7PeZuVShnyjBwPah/vGz1YMDg==
+X-Received: by 2002:a5d:4751:: with SMTP id o17mr4352832wrs.345.1595514036969;
+        Thu, 23 Jul 2020 07:20:36 -0700 (PDT)
+Received: from starbuck.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id w2sm235204wre.5.2020.07.23.07.20.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 07:19:23 -0700 (PDT)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        masahiroy@kernel.org, mhiramat@kernel.org, rostedt@goodmis.org,
-        akpm@linux-foundation.org, will@kernel.org, krzk@kernel.org,
-        patrick.bellasi@arm.com, dhowells@redhat.com,
-        ebiederm@xmission.com, hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] bpf: BPF_SYSCALL depends INET
-Date:   Thu, 23 Jul 2020 07:19:14 -0700
-Message-Id: <20200723141914.20722-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        Thu, 23 Jul 2020 07:20:36 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH] ASoC: soc-component: don't report of_xlate_dai_name failures
+Date:   Thu, 23 Jul 2020 16:20:20 +0200
+Message-Id: <20200723142020.1338740-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+With commit e2329eeba45f ("ASoC: soc-component: add soc_component_err()")
+every error different for ENOTSUPP or EPROBE_DEFER will log an error.
 
-A link error
+However, as explained in snd_soc_get_dai_name(), this callback may error
+to indicate that the DAI is not matched by the component tested. If the
+device provides other components, those may still match. Logging an error
+in this case is misleading.
 
-kernel/bpf/net_namespace.o: In function `bpf_netns_link_release':
-net_namespace.c: undefined reference to `bpf_sk_lookup_enabled'
+Don't use soc_component_ret() in snd_soc_component_of_xlate_dai_name()
+to avoid spamming the log.
 
-bpf_sk_lookup_enabled is defined with INET
-net_namespace is controlled by BPF_SYSCALL
-
-So add a depends on INET to BPF_SYSCALL
-
-Signed-off-by: Tom Rix <trix@redhat.com>
+Fixes: e2329eeba45f ("ASoC: soc-component: add soc_component_err()")
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- init/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 7b8ef43e7fb4..817f70e6023c 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1663,6 +1663,7 @@ config BPF_SYSCALL
- 	bool "Enable bpf() system call"
- 	select BPF
- 	select IRQ_WORK
-+	depends on INET
- 	default n
- 	help
- 	  Enable the bpf() system call that allows to manipulate eBPF
+ If we wish to report an error when no name is found for dai phandle,
+ I think it would be more approriate to it with with "struct device *"
+ of the card, which is the one actually failing to get what it needs.
+
+ These user of snd_soc_get_dai_name() are already reporting the error:
+ * sound/soc/samsung/tm2_wm5110.c
+ * sound/soc/rockchip/rk3288_hdmi_analog.c
+
+ These could be silently failing:
+ * Simple cards
+ * Amlogic's cards
+ * Samsumg odroid card
+
+ sound/soc/soc-component.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 9565a0dd7cb6..fb6479b22d26 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -344,13 +344,15 @@ int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
+ 					struct of_phandle_args *args,
+ 					const char **dai_name)
+ {
+-	int ret = -ENOTSUPP;
+-
+ 	if (component->driver->of_xlate_dai_name)
+-		ret = component->driver->of_xlate_dai_name(component,
+-							   args, dai_name);
+-
+-	return soc_component_ret(component, ret);
++		return component->driver->of_xlate_dai_name(component,
++							    args, dai_name);
++	/*
++	 * Don't use soc_component_ret here because we may not want to report
++	 * the error just yet. If a device has more than one component, the
++	 * first may not match and we don't want spam the log with this.
++	 */
++	return -ENOTSUPP;
+ }
+ 
+ void snd_soc_component_setup_regmap(struct snd_soc_component *component)
 -- 
-2.18.1
+2.25.4
 
