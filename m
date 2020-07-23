@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E0722A71C
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20D822A71F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 07:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgGWFzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 01:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbgGWFzW (ORCPT
+        id S1726558AbgGWF5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 01:57:42 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:30886 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725773AbgGWF5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 01:55:22 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901B1C0619DC;
-        Wed, 22 Jul 2020 22:55:22 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id w2so2507084pgg.10;
-        Wed, 22 Jul 2020 22:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=etSFHncgg7r4mzGjmHt/9kGqiemZafuATTVFbIBTcFY=;
-        b=Q4IHV0nXh9SbmnWEKPn83HGJ1Z4tgKqIyB/e2fCbJqe3M22dTGrWizItChLKQaj/P5
-         NVxm9g2XljfQY+LsWzKZPwEN0Xg9fXOoCPPOEkWOcolrMKGvQBibRdGpzPcVUHNEUIiP
-         4gZMqcju8OsyljV40eJg0WGlJa3BcPi5LVe+pPWymrtrCUSWor2H6gethkDVX80dFxTP
-         0vNU6T1z6JnV+JpJ9j/SFGB7xXS50JBLnBDxJHMe9nS6mVBERTXx7UD4GausIlaxA+hQ
-         97ARxLycfWwT7biqyxeKLaAUpDS1V8xvQuBE8QMYZv3xOGnQvhfSUB+k5oPdJJ1JPgBy
-         s+4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=etSFHncgg7r4mzGjmHt/9kGqiemZafuATTVFbIBTcFY=;
-        b=B8rFYzY7I7fJGz8K8mX4fG7pUux8YK+fE+pX/UO/xfbtRhZyOaDhKx6Hac0TyQgZ59
-         qaOhXz/WX/46wDoCOYRiZrqaf0K1gLrniHorVcINjho3fKuli7zHcGf+Ht2DkoQDO2mH
-         gwEaaCfCkWQ9OE6kBPXs7JDwZNwyJkx1U4Z2f6q0Avn37p80A5XvKf+AinyPMQpZ2Ozz
-         nWg2gdcaLBA1g0BzaQQFGYpVR5pmkOl+waH65pVjEoLmoy4dKD/7RK2lIS93DeVXLD7N
-         hascjU31BxXPg3G1LtWuzRuqxV5P7efB5tBQuh1iZkqMUEK1CnPXjsV5rgv3umxDNl8I
-         yNSA==
-X-Gm-Message-State: AOAM533KezotoHysmG+JP2LBnw3G+ZjTpYQnj7j7/j7WoPXlo8CZjYfI
-        Q7czwW9lV/zf45X2eeVXztk=
-X-Google-Smtp-Source: ABdhPJwchaE7ldo73CSHbrS4ei8c2gGAwybeV4GQ0H5YOtWzMzh1pidGnm9KWKEvRQpvZoOMkJ410Q==
-X-Received: by 2002:a63:df56:: with SMTP id h22mr2815814pgj.140.1595483722008;
-        Wed, 22 Jul 2020 22:55:22 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6cd6])
-        by smtp.gmail.com with ESMTPSA id a3sm1540743pgd.73.2020.07.22.22.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 22:55:20 -0700 (PDT)
-Date:   Wed, 22 Jul 2020 22:55:18 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        brouer@redhat.com, peterz@infradead.org
-Subject: Re: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when
- bpf_get_[stack|stackid] cannot work
-Message-ID: <20200723055518.onydx7uhmzomt7ud@ast-mbp.dhcp.thefacebook.com>
-References: <20200722184210.4078256-1-songliubraving@fb.com>
- <20200722184210.4078256-3-songliubraving@fb.com>
+        Thu, 23 Jul 2020 01:57:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595483860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fAqp5ib2PZP/lFXYC06EwZltjuh1DbpFYhRZzc7f8qI=;
+        b=BOBQS8sAUq3D39pl5Rzh+Ew3AgpwRO/2199eXz+8z9ihiRbvTRnQn9yKtE3qm4EBCEubyR
+        DVIT5AHbV0Ve0YSTPH6KQJT+MADoZTVkNxkEjCwgJAUOzsmyjYBwlcppZUOvykaglPIAtM
+        tXUsl+g6sKTr2LgnHeHCPyP9M/0CoEw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-y1KKTRwlPpWc1T8yLVzkQQ-1; Thu, 23 Jul 2020 01:57:39 -0400
+X-MC-Unique: y1KKTRwlPpWc1T8yLVzkQQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A00D1800C64;
+        Thu, 23 Jul 2020 05:57:37 +0000 (UTC)
+Received: from localhost (ovpn-13-53.pek2.redhat.com [10.72.13.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52D7A60C05;
+        Thu, 23 Jul 2020 05:57:33 +0000 (UTC)
+Date:   Thu, 23 Jul 2020 13:57:31 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mike.kravetz@oracle.com, david@redhat.com,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v2 3/4] doc/vm: fix typo in the hugetlb admin
+ documentation
+Message-ID: <20200723055731.GP32539@MiWiFi-R3L-srv>
+References: <20200723032248.24772-1-bhe@redhat.com>
+ <20200723032248.24772-4-bhe@redhat.com>
+ <da5d1d65-32ff-dd27-af4b-159e48eaa763@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200722184210.4078256-3-songliubraving@fb.com>
+In-Reply-To: <da5d1d65-32ff-dd27-af4b-159e48eaa763@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 11:42:08AM -0700, Song Liu wrote:
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 856d98c36f562..f77d009fcce95 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9544,6 +9544,24 @@ static int perf_event_set_bpf_handler(struct perf_event *event, u32 prog_fd)
->  	if (IS_ERR(prog))
->  		return PTR_ERR(prog);
->  
-> +	if (event->attr.precise_ip &&
-> +	    prog->call_get_stack &&
-> +	    (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY) ||
-> +	     event->attr.exclude_callchain_kernel ||
-> +	     event->attr.exclude_callchain_user)) {
-> +		/*
-> +		 * On perf_event with precise_ip, calling bpf_get_stack()
-> +		 * may trigger unwinder warnings and occasional crashes.
-> +		 * bpf_get_[stack|stackid] works around this issue by using
-> +		 * callchain attached to perf_sample_data. If the
-> +		 * perf_event does not full (kernel and user) callchain
-> +		 * attached to perf_sample_data, do not allow attaching BPF
-> +		 * program that calls bpf_get_[stack|stackid].
-> +		 */
-> +		bpf_prog_put(prog);
-> +		return -EINVAL;
+On 07/23/20 at 10:47am, Anshuman Khandual wrote:
+> 
+> 
+> On 07/23/2020 08:52 AM, Baoquan He wrote:
+> > Change 'pecify' to 'Specify'.
+> > 
+> > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> > Reviewed-by: David Hildenbrand <david@redhat.com>
+> > ---
+> >  Documentation/admin-guide/mm/hugetlbpage.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > index 015a5f7d7854..f7b1c7462991 100644
+> > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > @@ -131,7 +131,7 @@ hugepages
+> >  	parameter is preceded by an invalid hugepagesz parameter, it will
+> >  	be ignored.
+> >  default_hugepagesz
+> > -	pecify the default huge page size.  This parameter can
+> > +	Specify the default huge page size.  This parameter can
+> >  	only be specified once on the command line.  default_hugepagesz can
+> >  	optionally be followed by the hugepages parameter to preallocate a
+> >  	specific number of huge pages of default size.  The number of default
+> > 
+> 
+> This does not apply on 5.8-rc6 and the original typo seems to be missing
+> there as well. This section was introduced recently with following commit.
+> 
+>  282f4214384e ("hugetlbfs: clean up command line processing")
 
-I suspect this will be a common error. bpftrace and others will be hitting
-this issue and would need to fix how they do perf_event_open.
-But EINVAL is too ambiguous and sys_perf_event_open has no ability to
-return a string.
-So how about we pick some different errno here to make future debugging
-a bit less painful?
-May be EBADFD or EPROTO or EPROTOTYPE ?
-I think anything would be better than EINVAL.
+Thanks a lot for reviewing. This patchset is based on the latest
+next/master branch, seems below commit introduced the typo which is
+later than commit 282f4214384e, it haven't been merged into mainline
+tree.
+
+commit 72a3e3e25a5142284c6bc76ecf170c2a18dcdf6e
+Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date:   Tue Jun 23 09:09:06 2020 +0200
+
+    docs: hugetlbpage.rst: fix some warnings
+
