@@ -2,146 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6365A22A9F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB59122A9EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbgGWHpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 03:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgGWHpH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:45:07 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1EDC0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:45:07 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id w17so2180949ply.11
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 00:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlrEuOnc8m9qfFKEmGd35c8KAaqdG3oG7G+fWZk2PVw=;
-        b=k2QQsu/oPzg9h9QS226YCvxxGTqjMuGzTSIL9OemCJtcKgtr9y6fHZwRO3mA1Njiym
-         rrPygf6i1qZhelPIDyNsKq8n/4FLglc0Laf0Bqwa1Cb7h2l0h/ov++9bfLrAA9vt2rr4
-         QI04xlSoXpNO/Zy3X59z7dEdTz8Cr3KfRIaJ4/Ua+Z1jJqWJulgQsAGrlThol6DcuHXx
-         G1IGmSOBt/IAYEp+LlEwOvCveMliiIK//w5r0NhygI1uNoeGpmLwBbjtmxzDZIrVUHTW
-         UFqG5oEQS81yjJNXsXmogre95nI8lsWdgmBYVqanG/XAc2i/8TSlZgYgNmHlY9I8BAzU
-         J3aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlrEuOnc8m9qfFKEmGd35c8KAaqdG3oG7G+fWZk2PVw=;
-        b=lHOKk33hLoXSNAJNpteUlDOUWdG6DEBdMVxL3Mg7gU9wUC9Z+kXxQVOqxhAXn97F4U
-         FaCQWBofjcbwIJ004dEf8CzsfRSFyo6ZdvHulk9UTCbBIkZdHes1vAX/x9F7EXN7WzAE
-         C2CDqlpFetRgTxWdFW4uz2/ITG2NWL3D+HXR2ql2JkHyn3AOtybW+7Qva6EcWhd/Gc/1
-         Dfo3lVABE+VdIwMY/F9awGZpV2Oc+auJwvN8//R+NZ3RmK0arL9QUzzBQcDJ9bINgwTy
-         +IFgoq0JbYm5wlVxYFUuOCC/ObeC0i0NPclNb1VzWQHMhFgklu4U+P4jdk8osAYxNxdS
-         RSVw==
-X-Gm-Message-State: AOAM530J5wROD9Dlu3LO32gw4DWREfNxr0vPhmCwiIsd1k72AGwRkr/G
-        jU6hlC3Ko2OyGvZBN8h6sfRnfg==
-X-Google-Smtp-Source: ABdhPJzrTrP1vmoeo8u6usfXOm0nqCvSjUfCxJNhmcLL3AoexdxLEKQYKZHRjnbd2vt3RjE6v9ejMw==
-X-Received: by 2002:a17:90a:362e:: with SMTP id s43mr3076100pjb.217.1595490307281;
-        Thu, 23 Jul 2020 00:45:07 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.69])
-        by smtp.gmail.com with ESMTPSA id 7sm1908904pgw.85.2020.07.23.00.45.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Jul 2020 00:45:06 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Jianchao Guo <guojianchao@bytedance.com>
-Subject: [PATCH] mm/hugetlb: add mempolicy check in the reservation routine
+        id S1727834AbgGWHoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 03:44:30 -0400
+Received: from mga04.intel.com ([192.55.52.120]:20836 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727075AbgGWHoa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 03:44:30 -0400
+IronPort-SDR: Ymea8dzdLTrE5mhxogfs4W0v7193/coyhSoOjdDBO8sood0kAAAODzag1xQOsL6svz5m9ypfc/
+ LFBThBdwpQBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="147972728"
+X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
+   d="scan'208";a="147972728"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 00:44:29 -0700
+IronPort-SDR: 1926ICqp1GvFwOqFAx1zwC0zvd52mPobZKvYY8hvfuIHIT7Hjwl/NoYupDFaiUpzTLWIdGWuhb
+ SdmGz91brnZQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
+   d="scan'208";a="272230470"
+Received: from sgsxdev001.isng.intel.com (HELO localhost) ([10.226.88.11])
+  by fmsmga008.fm.intel.com with ESMTP; 23 Jul 2020 00:44:26 -0700
+From:   Rahul Tanwar <rahul.tanwar@linux.intel.com>
+To:     u.kleine-koenig@pengutronix.de, linux-pwm@vger.kernel.org
+Cc:     thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Subject: [PATCH v5 1/2] Add DT bindings YAML schema for PWM fan controller of LGM SoC
 Date:   Thu, 23 Jul 2020 15:44:17 +0800
-Message-Id: <20200723074417.89467-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <4e975206fcbddedc746e8d39b620336d5fab8b14.1595489518.git.rahul.tanwar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
+References: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
+In-Reply-To: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
+References: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the reservation routine, we only check whether the cpuset meets
-the memory allocation requirements. But we ignore the mempolicy of
-MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
-memory allocation may fail due to mempolicy restrictions and receives
-the SIGBUS signal. This can be reproduced by the follow steps.
+Intel's LGM(Lightning Mountain) SoC contains a PWM fan controller
+which is only used to control the fan attached to the system. This
+PWM controller does not have any other consumer other than fan.
+Add DT bindings documentation for this PWM fan controller.
 
- 1) Compile the test case.
-    cd tools/testing/selftests/vm/
-    gcc map_hugetlb.c -o map_hugetlb
-
- 2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
-    system. Each node will pre-allocate one huge page.
-    echo 2 > /proc/sys/vm/nr_hugepages
-
- 3) Run test case(mmap 4MB). We receive the SIGBUS signal.
-    numactl --membind=0 ./map_hugetlb 4
-
-With this patch applied, the mmap will fail in the step 3) and throw
-"mmap: Cannot allocate memory".
-
-Reported-by: Jianchao Guo <guojianchao@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
 ---
- mm/hugetlb.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/pwm/intel,lgm-pwm.yaml     | 40 ++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 589c330df4db..e946f41b4dcb 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3463,12 +3463,36 @@ static int __init default_hugepagesz_setup(char *s)
- }
- __setup("default_hugepagesz=", default_hugepagesz_setup);
- 
--static unsigned int cpuset_mems_nr(unsigned int *array)
-+static nodemask_t *mempolicy_current_bind_nodemask(void)
-+{
-+	struct mempolicy *mpol;
-+	nodemask_t *nodemask;
+diff --git a/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+new file mode 100644
+index 000000000000..0211a0dc79ed
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pwm/intel,lgm-pwm.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pwm/intel,lgm-pwm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	mpol = get_task_policy(current);
-+	if (mpol->mode == MPOL_BIND)
-+		nodemask = &mpol->v.nodes;
-+	else
-+		nodemask = NULL;
++title: LGM SoC PWM fan controller
 +
-+	return nodemask;
-+}
++maintainers:
++  - Rahul Tanwar <rahul.tanwar@intel.com>
 +
-+static unsigned int allowed_mems_nr(unsigned int *array)
- {
- 	int node;
- 	unsigned int nr = 0;
-+	nodemask_t *mempolicy_allowed, *mems_allowed, nodemask;
++properties:
++  compatible:
++    const: intel,lgm-pwm
 +
-+	mempolicy_allowed = mempolicy_current_bind_nodemask();
-+	if (mempolicy_allowed) {
-+		nodes_and(nodemask, cpuset_current_mems_allowed,
-+			  *mempolicy_allowed);
-+		mems_allowed = &nodemask;
-+	} else {
-+		mems_allowed = &cpuset_current_mems_allowed;
-+	}
- 
--	for_each_node_mask(node, cpuset_current_mems_allowed)
-+	for_each_node_mask(node, *mems_allowed)
- 		nr += array[node];
- 
- 	return nr;
-@@ -3653,7 +3677,7 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
- 		if (gather_surplus_pages(h, delta) < 0)
- 			goto out;
- 
--		if (delta > cpuset_mems_nr(h->free_huge_pages_node)) {
-+		if (delta > allowed_mems_nr(h->free_huge_pages_node)) {
- 			return_unused_surplus_pages(h, delta);
- 			goto out;
- 		}
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    pwm: pwm@e0d00000 {
++        compatible = "intel,lgm-pwm";
++        reg = <0xe0d00000 0x30>;
++        clocks = <&cgu0 126>;
++        resets = <&rcu0 0x30 21>;
++    };
 -- 
 2.11.0
 
