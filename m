@@ -2,176 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCCFE22A8D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F80722A8DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgGWGUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 02:20:54 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35200 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725984AbgGWGUx (ORCPT
+        id S1727121AbgGWGV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 02:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726390AbgGWGV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:20:53 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06N6AlNh006540;
-        Wed, 22 Jul 2020 23:20:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=UhwR0T2vMUNqABzRoeZrzbAvRhkDEuRcZILTsvvlwLQ=;
- b=la6rYz1rpkVcSmo6EnPBlDyuQM2ak/LTaSZPW3Zu3Bp0hR6PIBVX8g8gyyxQLdWrmCUq
- 9hUxSdJnO/asIAgMlbZ3nDFgAyv1MGMsQRcFXHyiYza/L/KjqEE7j/ygVQcRtH17c/24
- PnbxkZFzC1pcVx11zo2t7MnuGqS6lZzQp1A= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32etmwajhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 22 Jul 2020 23:20:33 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 22 Jul 2020 23:20:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TOaIimL2vUNvgfz7C/6id2c8GU7yyc+v17W4IFuW11UE17MP1S3AQa9o7/d5pza3QauV1AFvzjOwTgJqmmu7DizPj6Lb6ZsePj28dWVb7sRsqnQxmre2ELkQFiqFVU/enXMVOxhk2xYZycBF+mX6jAbuTyyM2KYMooz0OTyOup2ZWsGIZnfSkbxie8MOqPQLkPTZaXP4Gh2kvEnIG6gmCcrC/A5ekZldPbddOTJKVTslzszxTbJSrBDkG+SO8pbh//MpN0V0DprRKFyrQfd2cfo5dMpgfBkilea7k37MbppM3K4aNtVPbELYv2Kh8dQdgnxkL37iwjqousrScvttQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhwR0T2vMUNqABzRoeZrzbAvRhkDEuRcZILTsvvlwLQ=;
- b=a1fg9LyZ4fcIDKpAgwy6uDOLRK4CttEF0pG1eGq62WbZ83M7VE4BFvdBD6hITmFezSpnvEQSjDWWjyeSmJlkkUTPEjsjPzCeEQv6TfY+Nnd6gHdgztX/g61hjpQ07qJmH4+3FsmZ2mxBuqqFY065vQQD4vt/bIEZr3bErhA0gSfJr+x78fGQIGSCFzOK6MlN/sIV0WzkzU+J+SrH9JjE3uBlE0rSA21ZHSAREIpqfVrJFBCzhhhAoGsnmzXpPqMUhNKDcCpeirxSh3UCxilutyKUfO8jWOaewqjRZ5BGVAI7vV/5ReUctloL79LFdJCr0BboKsUp6CC0dWBkPRTXaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UhwR0T2vMUNqABzRoeZrzbAvRhkDEuRcZILTsvvlwLQ=;
- b=FdfHArwFStdsgsHFvCURQ5jfki2o5DZWZqOuySos+AALmRuzGmjhObxAxegvLZS4N5C3fqI/JlRA1dhscMuDjeo8lNG+Em6dUTvTMAtUjbtnOb/cfir4cMrIDfawy+qXL2oAvJjfzZ1v7gADeDpKUhVex1AKuFjuEpLzS79uiTQ=
-Received: from BN8PR15MB2995.namprd15.prod.outlook.com (2603:10b6:408:8a::16)
- by BN7PR15MB2483.namprd15.prod.outlook.com (2603:10b6:406:87::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Thu, 23 Jul
- 2020 06:20:29 +0000
-Received: from BN8PR15MB2995.namprd15.prod.outlook.com
- ([fe80::a89e:b0f9:d0b9:51a2]) by BN8PR15MB2995.namprd15.prod.outlook.com
- ([fe80::a89e:b0f9:d0b9:51a2%5]) with mapi id 15.20.3195.028; Thu, 23 Jul 2020
- 06:20:29 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>
-Subject: Re: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when
- bpf_get_[stack|stackid] cannot work
-Thread-Topic: [PATCH v4 bpf-next 2/4] bpf: fail PERF_EVENT_IOC_SET_BPF when
- bpf_get_[stack|stackid] cannot work
-Thread-Index: AQHWYFg8vuUCJ74xFUm7fXSqHe+MGakUqv8AgAAHCAA=
-Date:   Thu, 23 Jul 2020 06:20:29 +0000
-Message-ID: <684DA506-6780-4CB5-B99C-24D939CDE6DF@fb.com>
-References: <20200722184210.4078256-1-songliubraving@fb.com>
- <20200722184210.4078256-3-songliubraving@fb.com>
- <20200723055518.onydx7uhmzomt7ud@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200723055518.onydx7uhmzomt7ud@ast-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:b2a1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 473dd7a5-9ff3-497c-e88e-08d82ed07f1f
-x-ms-traffictypediagnostic: BN7PR15MB2483:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN7PR15MB248366052172F7D06FBC90E8B3760@BN7PR15MB2483.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: p+tvIytnJycn7Bg/I4y9nevEPQtgss/9fDneOk+zQ72OEzwImLDvzy28k/0Mb5O9bTnxzSO8S7k5ApDq3+7PmMt6+qSvSe1Z3XLu8lxacyD7yr6X9YCSxsAKk5M0UzO3eJ0AL63vZ+yh0yXBeN+xwoCXHEBX9awvaTgoaCbpWzVy3vueomObZAhTCzRL3N0Bb6rGGyPhNxWJ+bK3F2xZ/ZjfK1RUc21w5gcYkGGdz79kIa+6fsiTHE0GDqEwneO4MIaY08jvWaXBNeC8W/b+X3pYmiaE5FCaTDesU3DpRsOn/0fgtTDQFVEABixnquFSC3GSYQIkEnPGGm9Qcs9Esw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB2995.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(136003)(396003)(346002)(366004)(8936002)(33656002)(316002)(2906002)(86362001)(6486002)(8676002)(71200400001)(186003)(83380400001)(66446008)(66946007)(66556008)(66476007)(7416002)(478600001)(4326008)(5660300002)(6506007)(6916009)(54906003)(53546011)(91956017)(6512007)(76116006)(64756008)(2616005)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: AwP9K7xihoJAdFhvQ5FCbiudCXXCDISZzzCfrMeTlGNB8e55fvqx3ybdwhRGWK0SlTVlc4zv60BI5mksYxhSSowd6/7L7Cj/RD7LV0EU9lG4HXFkHXcIAyhI6S+N9BiRJyBLOCapKJltQA8SMx5t4c5QdVrKQtOnopa+rVbbB8mkPmLJw7NHJWpsBELTKSD4dkCM6QV+HLtl2R7c2+5686DMsVQCFf/v+GFV6I9AmzYEaKfU0mdtX7Wy5f7ba7fiVEsUdT8gyAICqf+/CdCRf1Smrz2KUqdOPmIO8S6ZCYnldTJWL6MYgC1/yx+ur9Ewb9gQGTbjdi+AHlV31JqP1Me3xfrWGFRaGGKJgo0Cqejum3oVavdgstTnQaCQPS2R0RuxmT2zR3GteTDuRvkA4jhecKL+y2Cf2HFeWMZ1m0yNExYY2YPQw38+knFlen93MM8nK2pnnUJJJEjlB+4uxxHOyyIWfle5wG27d3FsP5ThwNgWCYUQ3Cxr3Lrv1pyb4DELFoovg+saI1ph22agXg==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4C7094C581011D4E9F3722B2F188D225@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 23 Jul 2020 02:21:26 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61BEC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 23:21:25 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id n4so1440667uae.5
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 23:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NmccGowISiofEIh34tVNSq1T6x9AX5ZUAzxKCJSNHX0=;
+        b=b2uWM5w0BWXHy9/wyNBLvHGrr96J9rx1+GnWbJXRWy1ssaBMyCjUB2RZJtFZdZcZmT
+         v15QIv2IYLtzO1qqrXRk+hrP933/BXm8f87aWfBemViSB03s9U+Q1KkUzwMLK7h72b3c
+         9WOZMVJplHAkok9IyXhhz5GzW/QRsbWfNuaQj7416eMhKfq7/zgCHM+dKWqhFLVkkj8y
+         CSp7uwOiSwGmrZnKSKQgXG0P/eITv6H64Lsk2CT28zrUS5AcCpx7DBx7wVoQ/3euNPRv
+         y1rXH2a9z8CIlXczstjpCRJOGD3OAFpl/HJ7b/U9Jtd+BnEFBe22lhe1hZF8q3srWmUJ
+         qCjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NmccGowISiofEIh34tVNSq1T6x9AX5ZUAzxKCJSNHX0=;
+        b=VlweDLIFrwBEsEjIBEeBsx4hrcobX8vtosx+/LbEY8Ynkz6pXUXPrLgLwhSJ4n1ybf
+         tYBd2BjU16cA3fQONBS1EP9m3WxqGFibfb5It364Yy8uUs8fXb7AJrW14RkQNBLvEApC
+         Y8ynW4jIySJ4f8aNN2iqvzhbk6E7Xd3G9Z+gTIESGDq9GomyYnp2yzc6i7T8Upgs3w5u
+         ED29W26pYknmgnOe7u23iDwD57SEXRO4D0UEYPTWlKJDsZHleLhsBRJXnYUU29QGFKf1
+         rXrx59SE//Q7FkhtXEphpHqpxAEDhtdJsHkNz/yVfmCrCDEcyO2tuCRpezCXrWoTEomV
+         ApHA==
+X-Gm-Message-State: AOAM530b9IBqFsKwPHm3cZslWBQYawGuZVJxfXOuUVdMXdB4UUcveFas
+        ZT1esb2axNszcu4qm0kwPzKBR+WvSFqx1B1PBVthtQ==
+X-Google-Smtp-Source: ABdhPJwK8GHsQwdp9vyTZWpwEqdZo+WJwfQ/RzI8dqwEldOdwfGlen4uSOJYU/jBl5wlXkUdnFu/Zf7creSN7XEKAm4=
+X-Received: by 2002:ab0:6353:: with SMTP id f19mr2793756uap.69.1595485284749;
+ Wed, 22 Jul 2020 23:21:24 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB2995.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 473dd7a5-9ff3-497c-e88e-08d82ed07f1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jul 2020 06:20:29.2638
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vAU2WF8NegWfn6WGcbfOaf7helyzLdqdctl7Nieuml9VmelVWgbj9K51oAuUC9I8RcJQf32yLwalpuY/13HbYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2483
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-23_02:2020-07-22,2020-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 spamscore=0 clxscore=1015 phishscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007230050
-X-FB-Internal: deliver
+References: <20200713204300.345975-1-badhri@google.com> <20200714060520.GB657428@kroah.com>
+ <040b4cde-91d4-7776-60b5-8f55b6e75831@roeck-us.net> <CAPTae5JHSrp5H47Dr9mrkS_PF_W8MH1TFMzNCc4Geva0-b-B0A@mail.gmail.com>
+In-Reply-To: <CAPTae5JHSrp5H47Dr9mrkS_PF_W8MH1TFMzNCc4Geva0-b-B0A@mail.gmail.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Wed, 22 Jul 2020 23:20:48 -0700
+Message-ID: <CAPTae5KZKKFhgovg1jGwyWhSQ-gfdXDsKUL+yFNxqkq27VK49g@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Move to high priority workqueue for
+ processing events
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     reg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Guenter,
 
-
-> On Jul 22, 2020, at 10:55 PM, Alexei Starovoitov <alexei.starovoitov@gmai=
-l.com> wrote:
->=20
-> On Wed, Jul 22, 2020 at 11:42:08AM -0700, Song Liu wrote:
->> diff --git a/kernel/events/core.c b/kernel/events/core.c
->> index 856d98c36f562..f77d009fcce95 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -9544,6 +9544,24 @@ static int perf_event_set_bpf_handler(struct perf=
-_event *event, u32 prog_fd)
->> 	if (IS_ERR(prog))
->> 		return PTR_ERR(prog);
->>=20
->> +	if (event->attr.precise_ip &&
->> +	    prog->call_get_stack &&
->> +	    (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY) ||
->> +	     event->attr.exclude_callchain_kernel ||
->> +	     event->attr.exclude_callchain_user)) {
->> +		/*
->> +		 * On perf_event with precise_ip, calling bpf_get_stack()
->> +		 * may trigger unwinder warnings and occasional crashes.
->> +		 * bpf_get_[stack|stackid] works around this issue by using
->> +		 * callchain attached to perf_sample_data. If the
->> +		 * perf_event does not full (kernel and user) callchain
->> +		 * attached to perf_sample_data, do not allow attaching BPF
->> +		 * program that calls bpf_get_[stack|stackid].
->> +		 */
->> +		bpf_prog_put(prog);
->> +		return -EINVAL;
->=20
-> I suspect this will be a common error. bpftrace and others will be hittin=
-g
-> this issue and would need to fix how they do perf_event_open.
-> But EINVAL is too ambiguous and sys_perf_event_open has no ability to
-> return a string.
-> So how about we pick some different errno here to make future debugging
-> a bit less painful?
-> May be EBADFD or EPROTO or EPROTOTYPE ?
-> I think anything would be better than EINVAL.
-
-I like EPROTO most. I will change it to EPROTO if we don't have better idea=
-s.
-
-Btw, this is not the error code on sys_perf_event_open(). It is the ioctl()
-on the perf_event fd. So debugging this error will be less painful than=20
-debugging sys_perf_event_open() errors.=20
+Just sent out the patch "usb: typec: tcpm: Migrate workqueue to RT
+priority for processing events" which uses kthread_create_worker and
+hrtimer.nAppreciate your guidance !! The commits 38a1222ae4f3 and
+1ff688209e2e were spot on as they were trying solve the same problem
+in a different subsystem.
 
 Thanks,
-Song=
+Badhri
+
+On Tue, Jul 14, 2020 at 10:16 AM Badhri Jagan Sridharan
+<badhri@google.com> wrote:
+>
+> On Mon, Jul 13, 2020 at 11:58 PM Guenter Roeck <linux@roeck-us.net> wrote=
+:
+> >
+> > On 7/13/20 11:05 PM, reg Kroah-Hartman wrote:
+> > > On Mon, Jul 13, 2020 at 01:43:00PM -0700, Badhri Jagan Sridharan wrot=
+e:
+> > >> "tReceiverResponse 15 ms Section 6.6.2
+> > >> The receiver of a Message requiring a response Shall respond
+> > >> within tReceiverResponse in order to ensure that the
+> > >> sender=E2=80=99s SenderResponseTimer does not expire."
+> > >>
+> > >> When the cpu complex is busy running other lower priority
+> > >> work items, TCPM's work queue sometimes does not get scheduled
+> > >> on time to meet the above requirement from the spec.
+> > >> Elevating the TCPM's work queue to higher priority allows
+> > >> TCPM to meet tReceiverResponse in a busy system.
+> > >>
+> > >> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > >> ---
+> > >>  drivers/usb/typec/tcpm/tcpm.c | 2 +-
+> > >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/=
+tcpm.c
+> > >> index 82b19ebd7838e0..088b6f1fa1ff89 100644
+> > >> --- a/drivers/usb/typec/tcpm/tcpm.c
+> > >> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > >> @@ -4747,7 +4747,7 @@ struct tcpm_port *tcpm_register_port(struct de=
+vice *dev, struct tcpc_dev *tcpc)
+> > >>      mutex_init(&port->lock);
+> > >>      mutex_init(&port->swap_lock);
+> > >>
+> > >> -    port->wq =3D create_singlethread_workqueue(dev_name(dev));
+> > >> +    port->wq =3D alloc_ordered_workqueue("%s", WQ_HIGHPRI, dev_name=
+(dev));
+> > >
+> > > How are you "guaranteeing" that this is really going to change anythi=
+ng
+> > > on a highly loaded machine?
+> > >
+> > > Yes, it might make things better, but if you have a hard deadline lik=
+e
+> > > this, you need to do things a bit differently to always ensure that y=
+ou
+> > > meet it.  I do not think this change is that fix, do you?
+> > >
+> Yes Greg I agree with you, moving to HIGHPRI was making it better but
+> is not going to
+> solve the problem always. I was wondering whether are there better
+> ways of doing this.
+>
+> >
+> > Good point. The worker in drivers/watchdog/ !watchdog_dev.c might be
+> > useful as a starting point. There may be better examples - this is
+> > just one I know of which had a similar problem. See commits
+> > 38a1222ae4f3 and 1ff688209e2e.
+> >
+> > Guenter
+>
+> Thanks a lot Guenter !! Very useful pointers, will review the
+> approaches in both the
+> commits !
