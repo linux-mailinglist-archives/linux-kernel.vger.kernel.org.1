@@ -2,133 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6449B22AE4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBFA22AE4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728358AbgGWLtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 07:49:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:37171 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727828AbgGWLtJ (ORCPT
+        id S1728461AbgGWLuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 07:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727769AbgGWLug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 07:49:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595504948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kMLp2I5AZsxuR1NLK4/4GFJLvuNxJmG+poCU1eMdup4=;
-        b=WSQzUz/dGIQPBXiMgpqpvEnbnLPUM9i7CdkSJELGFy+dHYrNslxcDWv8yUUjkWsmbaOOpo
-        eR+8X+pvpdvTjSCPLzYBYxOnkl65ojSGB0RdFlthJ2eNKZZTRonPNMEOetlVWVoBMr0YHB
-        Pg+1tKlbGWZJSpnLlzKcN9PlIEeLuvA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-zTuSXR6pO2-EVAOEXrMJjw-1; Thu, 23 Jul 2020 07:49:05 -0400
-X-MC-Unique: zTuSXR6pO2-EVAOEXrMJjw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC39F80183C;
-        Thu, 23 Jul 2020 11:49:03 +0000 (UTC)
-Received: from [10.36.112.205] (ovpn-112-205.ams2.redhat.com [10.36.112.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B78B819C4F;
-        Thu, 23 Jul 2020 11:49:01 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Hillf Danton" <hdanton@sina.com>
-Cc:     syzbot <syzbot+2c4ff3614695f75ce26c@syzkaller.appspotmail.com>,
-        davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "Paolo Abeni" <pabeni@redhat.com>, pshelar@ovn.org,
-        syzkaller-bugs@googlegroups.com,
-        "Markus Elfring" <Markus.Elfring@web.de>
-Subject: Re: INFO: task hung in ovs_exit_net
-Date:   Thu, 23 Jul 2020 13:48:59 +0200
-Message-ID: <35ADBFE5-87FF-4E9E-A8FD-BB586E9F663F@redhat.com>
-In-Reply-To: <20200723110655.12856-1-hdanton@sina.com>
-References: <20200723110655.12856-1-hdanton@sina.com>
+        Thu, 23 Jul 2020 07:50:36 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0842C0619E3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 04:50:36 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a21so6044491ejj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 04:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2JtEGBDm+iKw++wU28XBfceBTCHSqTBOynCQW7Tda3A=;
+        b=FV4EvxfYcWtp+vU59BwX1HkdZc39jmNWz1a+yEQwgVnK5Jm0iRHPbu/f+/Ky73SIF7
+         Nljrl4b5Z6mSr2b1fpooYEfLGTFyNkkbLvkB1sHLTVXwwmlEck8Lqn5BKEbEvObqHetd
+         Gv+n3R4brWKwiOu+BbQ10AWFwJ6jSkLUVB0Q8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2JtEGBDm+iKw++wU28XBfceBTCHSqTBOynCQW7Tda3A=;
+        b=tmOVsNRAXhPlulwiZXSErQ8pyU1dzLbgtpxHMfatKRxANpfdgh8Qhl5N6PU5KtN4DK
+         4+cVDkSKKDork+lyzyC/8Rs3DfFZZNS/PcRTe1EHU9AaMrBmeXNxkvGteEFqCqC9uitl
+         T1OUOeNNIsCb1S4eyZgnR4OYNj2HJZ+mGtHOnIJZIN8pZc9OjggxZFaVROvHLLMe2DqU
+         x4x6cBEIackub5M/TA/KM+bfxx23vJb2PKw5r8xpZqkXkYuFfWvaXJaJ2m+289+QAK/h
+         1V/54tI5YeWbJZ1LyIrNjAL3H9Xz5XWXrVlUeKq2uKWnkho45ugGzt0UAezJbcPHEDYU
+         bhaA==
+X-Gm-Message-State: AOAM532DWlA8hHSGdOBq6VqUXbOrkCcN5x/mfO8k/I5xWcf87iWzPpar
+        gqMMgdLzSKSKky+dIEx1hn6kNXKgQQLx0w==
+X-Google-Smtp-Source: ABdhPJwwSaZxNBzVE2odHsUjDpO2ElBxPO2JxeQeoqmLiWKhalBb2sWJZVthwSPMNUpeE1BJwjX8Aw==
+X-Received: by 2002:a17:906:1d1b:: with SMTP id n27mr4167437ejh.272.1595505034958;
+        Thu, 23 Jul 2020 04:50:34 -0700 (PDT)
+Received: from kpsingh.zrh.corp.google.com ([81.6.44.51])
+        by smtp.gmail.com with ESMTPSA id h27sm579302eje.23.2020.07.23.04.50.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 04:50:34 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Paul Turner <pjt@google.com>, Jann Horn <jannh@google.com>,
+        Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v6 0/7] Generalizing bpf_local_storage
+Date:   Thu, 23 Jul 2020 13:50:25 +0200
+Message-Id: <20200723115032.460770-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.28.0.rc0.105.gf9edc3c819-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: KP Singh <kpsingh@google.com>
 
+# v5 -> v6
 
-On 23 Jul 2020, at 13:06, Hillf Danton wrote:
+- Fixed a build warning.
+- Rebase.
 
-> Wed, 22 Jul 2020 23:27:19 -0700
->> syzbot found the following issue on:
-  <SNIP>
->
-> Fixes: eac87c413bf9 ("net: openvswitch: reorder masks array based on 
-> usage")
-> by moving cancel_delayed_work_sync() in to the rcu cb, therefore out 
-> of ovs
-> lock. To facilitate that, add a flag in datapath to inform the kworker 
-> that
-> there is no more work needed.
+# v4 -> v5
 
-I was thinking of re-working the patch and move the handling to the 
-“struct ovs_net” instead of the datapath. This way the rebalance 
-worker can rebalance all datapaths in the netns. Than I can move 
-cancel_delayed_work_sync() from __dp_destroy()
-to ovs_exit_net(), i.e. outside the ovs lock scope.
+- Split non-functional changes into separate commits.
+- Updated the cache macros to be simpler.
+- Fixed some bugs noticed by Martin.
+- Updated the userspace map functions to use an fd for lookups, updates
+  and deletes.
+- Rebase.
 
-However, your fix would be way less intrusive. Are you planning on 
-sending it as a patch? If so, maybe add a comment around the called_rcu 
-variable to be more clear where it’s used for, or maybe rename it to 
-something like called_destory_rcu?
+# v3 -> v4
 
-If you think my approach would be better let me know, and I work on a 
-patch.
+- Fixed a missing include to bpf_sk_storage.h in bpf_sk_storage.c
+- Fixed some functions that were not marked as static which led to
+  W=1 compilation warnings.
 
-Feedback anyone?
+# v2 -> v3
 
-> --- a/net/openvswitch/datapath.h
-> +++ b/net/openvswitch/datapath.h
-> @@ -82,6 +82,7 @@ struct datapath {
->
->  	u32 max_headroom;
->
-> +	int called_rcu;
->  	/* Switch meters. */
->  	struct dp_meter_table meter_tbl;
->
-> --- a/net/openvswitch/datapath.c
-> +++ b/net/openvswitch/datapath.c
-> @@ -161,6 +161,7 @@ static void destroy_dp_rcu(struct rcu_he
->  {
->  	struct datapath *dp = container_of(rcu, struct datapath, rcu);
->
-> +	cancel_delayed_work_sync(&dp->masks_rebalance);
->  	ovs_flow_tbl_destroy(&dp->table);
->  	free_percpu(dp->stats_percpu);
->  	kfree(dp->ports);
-> @@ -1760,11 +1761,9 @@ static void __dp_destroy(struct datapath
->  	 */
->  	ovs_dp_detach_port(ovs_vport_ovsl(dp, OVSP_LOCAL));
->
-> +	dp->called_rcu = true;
->  	/* RCU destroy the flow table */
->  	call_rcu(&dp->rcu, destroy_dp_rcu);
-> -
-> -	/* Cancel remaining work. */
-> -	cancel_delayed_work_sync(&dp->masks_rebalance);
->  }
->
->  static int ovs_dp_cmd_del(struct sk_buff *skb, struct genl_info 
-> *info)
-> @@ -2356,6 +2355,8 @@ static void ovs_dp_masks_rebalance(struc
->  	ovs_flow_masks_rebalance(&dp->table);
->  	ovs_unlock();
->
-> +	if (dp->called_rcu)
-> +		return;
->  	schedule_delayed_work(&dp->masks_rebalance,
->  			      msecs_to_jiffies(DP_MASKS_REBALANCE_INTERVAL));
->  }
+* Restructured the code as per Martin's suggestions:
+  - Common functionality in bpf_local_storage.c
+  - bpf_sk_storage functionality remains in net/bpf_sk_storage.
+  - bpf_inode_storage is kept separate as it is enabled only with
+    CONFIG_BPF_LSM.
+* A separate cache for inode and sk storage with macros to define it.
+* Use the ops style approach as suggested by Martin instead of the
+  enum + switch style.
+* Added the inode map to bpftool bash completion and docs.
+* Rebase and indentation fixes.
+
+# v1 -> v2
+
+* Use the security blob pointer instead of dedicated member in
+  struct inode.
+* Better code re-use as suggested by Alexei.
+* Dropped the inode count arithmetic as pointed out by Alexei.
+* Minor bug fixes and rebase.
+
+bpf_sk_storage can already be used by some BPF program types to annotate
+socket objects. These annotations are managed with the life-cycle of the
+object (i.e. freed when the object is freed) which makes BPF programs
+much simpler and less prone to errors and leaks.
+
+This patch series:
+
+* Generalizes the bpf_sk_storage infrastructure to allow easy
+  implementation of local storage for other objects
+* Implements local storage for inodes
+* Makes both bpf_{sk, inode}_storage available to LSM programs.
+
+Local storage is safe to use in LSM programs as the attachment sites are
+limited and the owning object won't be freed, however, this is not the
+case for tracing. Usage in tracing is expected to follow a white-list
+based approach similar to the d_path helper
+(https://lore.kernel.org/bpf/20200506132946.2164578-1-jolsa@kernel.org).
+
+Access to local storage would allow LSM programs to implement stateful
+detections like detecting the unlink of a running executable from the
+examples shared as a part of the KRSI series
+https://lore.kernel.org/bpf/20200329004356.27286-1-kpsingh@chromium.org/
+and
+https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
+
+KP Singh (7):
+  bpf: Renames to prepare for generalizing sk_storage.
+  bpf: Generalize caching for sk_storage.
+  bpf: Generalize bpf_sk_storage
+  bpf: Split bpf_local_storage to bpf_sk_storage
+  bpf: Implement bpf_local_storage for inodes
+  bpf: Allow local storage to be used from LSM programs
+  bpf: Add selftests for local_storage
+
+ include/linux/bpf.h                           |  13 +
+ include/linux/bpf_local_storage.h             | 175 ++++
+ include/linux/bpf_lsm.h                       |  21 +
+ include/linux/bpf_types.h                     |   3 +
+ include/net/bpf_sk_storage.h                  |  12 +
+ include/net/sock.h                            |   4 +-
+ include/uapi/linux/bpf.h                      |  54 +-
+ kernel/bpf/Makefile                           |   2 +
+ kernel/bpf/bpf_inode_storage.c                | 353 ++++++++
+ kernel/bpf/bpf_local_storage.c                | 519 ++++++++++++
+ kernel/bpf/bpf_lsm.c                          |  21 +-
+ kernel/bpf/syscall.c                          |   3 +-
+ kernel/bpf/verifier.c                         |  10 +
+ net/core/bpf_sk_storage.c                     | 759 ++++--------------
+ security/bpf/hooks.c                          |   7 +
+ .../bpf/bpftool/Documentation/bpftool-map.rst |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   3 +-
+ tools/bpf/bpftool/map.c                       |   3 +-
+ tools/include/uapi/linux/bpf.h                |  54 +-
+ tools/lib/bpf/libbpf_probes.c                 |   5 +-
+ .../bpf/prog_tests/test_local_storage.c       |  60 ++
+ .../selftests/bpf/progs/local_storage.c       | 136 ++++
+ 22 files changed, 1593 insertions(+), 626 deletions(-)
+ create mode 100644 include/linux/bpf_local_storage.h
+ create mode 100644 kernel/bpf/bpf_inode_storage.c
+ create mode 100644 kernel/bpf/bpf_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_local_storage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/local_storage.c
+
+-- 
+2.28.0.rc0.105.gf9edc3c819-goog
 
