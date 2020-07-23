@@ -2,103 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B73222B3E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3259422B3D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729778AbgGWQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgGWQsA (ORCPT
+        id S1729895AbgGWQnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:43:42 -0400
+Received: from gateway24.websitewelcome.com ([192.185.51.202]:32622 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgGWQnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:48:00 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE88C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 09:48:00 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y24so1645440wma.1
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 09:48:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wfF1MOO1eIe212zlvHoNqhCTnx4F2/9hLEtAwwz0Jk4=;
-        b=e9xG05XMIbCd3yoNECxx58RWPFDwsGN78vxHpnefdBYd5BGTeTwmgrAtJSigMwenju
-         PYC+zVYNr+chV2LlWA5K9eS09v6MfSWOnxAhZhtccnWACBCx1DnhzNqRQi52JVJI+GtP
-         WaX7ZmVHAD0pUD7HR0roWWbbBHkiVaWw0UHIUYqkWB02pmSzDxqUOY3GT7qHCtyUUadW
-         w6oat+cGbkuejcLAz4hEwrQbpD39ByM0xzsGWXJnoJeXk8ZIUNU7Lo0+rYzr4+Lzfu2O
-         Elq5ncJC9M4jZLjf4iUVlm1Cxb/utNoi29G9lvag49Skl/y6qWhA1fj4o4MbLFXBtdqm
-         N7/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wfF1MOO1eIe212zlvHoNqhCTnx4F2/9hLEtAwwz0Jk4=;
-        b=d8lMA/g6LvCFN/knSUum90oti/W6LJicAz+s79t1MG4Zws7BA1fA+JXbLlYdQDyw15
-         Kej2t9BypRxjpYpCjnPxdMKs4aH9fozr15okEJKJXUwePY6i+Jbg1xf9SCy72vW/KbvY
-         KrAL/SJQx6T/uGCFtfOn4sXusJbt20fS3N3yLPsadnIHw+t+sLnJlmTT/Z9Einaj12Cu
-         yB2HCGf4Z4FgmTcxowxU/GrII7KMRDXgRrZps8xDwQRqf/Vqv35XcwCyf2BeJQXAF6X3
-         FRoD/1ffTaGLb1dbNisAp7OBX5uBDF0CrrZBWLWMLG4MwkY/EAaUR8pqhSD1MbNbQNJO
-         zSlQ==
-X-Gm-Message-State: AOAM5327txcYOt96W9Uwnk5OS7OsWHyunN5Yi+ct+G6E0M960ZBbn8DK
-        eKl9Tm10NZk3yRG2QdUEeHg=
-X-Google-Smtp-Source: ABdhPJxyNhYCGgNuLaTjqFv0yH8uoWTe1e/G2xMuFIbC+gm5yNZ+XH/lyuSKYNcgsuGooadr0WVveA==
-X-Received: by 2002:a1c:6804:: with SMTP id d4mr2028048wmc.175.1595522878997;
-        Thu, 23 Jul 2020 09:47:58 -0700 (PDT)
-Received: from localhost.localdomain ([46.114.110.108])
-        by smtp.gmail.com with ESMTPSA id b139sm4409523wmd.19.2020.07.23.09.47.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 09:47:58 -0700 (PDT)
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Maciej W. Rozycki" <macro@linux-mips.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        =?UTF-8?q?Diego=20Elio=20Petten=C3=B2?= <flameeyes@flameeyes.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/configs: Remove CONFIG_CRYPTO_AES_586 from i386_defconfig
-Date:   Thu, 23 Jul 2020 18:47:43 +0200
-Message-Id: <20200723164746.5580-1-sedat.dilek@gmail.com>
-X-Mailer: git-send-email 2.28.0.rc2
+        Thu, 23 Jul 2020 12:43:41 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id 1ECB0141A3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:43:39 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id yeJnjdLYjzOauyeJnjQJNz; Thu, 23 Jul 2020 11:43:39 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=5+KeKfEQuqn5RNJi3+VXKijE8q3xjOFimxFIDM5pcjA=; b=UBzGZaubjXJuswOXu7vq5bOjrS
+        V+vuysPy6vCjSfgs5cfXKLQoqzBaNeFA1sYVDJQL+0CpKjeWXJeHpA1bfBrgBk4dhkv2Zlj7o3sKT
+        QRWltRaiSgfmrIc6LF46W+LgHyFIVBM/yKjznq2aR6P+faaj2Mr3fgL6gILbB4DEhaXMxlT13+ily
+        YaoRx6usPMnjnSPLqdOtFbRS2abUBzPUrmNmbGa6cBKy+UtApQcBaa2gIvzhb7Qe/CX17/192U679
+        Wz4jbzv+MWJqcK2XhrNSxwUMhSpooAWaM1BJ43zPFTAO1HrOZt51g/38CcX0hQFU7nOCBFLwps5Xt
+        gWOMit6w==;
+Received: from [201.162.245.27] (port=42526 helo=[192.168.43.132])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jyeJm-003xFC-L0; Thu, 23 Jul 2020 11:43:38 -0500
+Subject: Re: [char-misc-next 6/6] mei: hw: don't use one element arrays
+To:     Tomas Winkler <tomas.winkler@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20200723145927.882743-1-tomas.winkler@intel.com>
+ <20200723145927.882743-7-tomas.winkler@intel.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <cfaf83de-2471-9224-ba6b-f1c162b334d6@embeddedor.com>
+Date:   Thu, 23 Jul 2020 11:49:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200723145927.882743-7-tomas.winkler@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.245.27
+X-Source-L: No
+X-Exim-ID: 1jyeJm-003xFC-L0
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.43.132]) [201.162.245.27]:42526
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initially CONFIG_CRYPTO_AES_586=y was added to i386_defconfig file by
-commit c1b362e3b4d3 ("x86: update defconfigs").
 
-The code and Kconfig for CONFIG_CRYPTO_AES_586 was removed in:
 
-commit 1d2c3279311e4f03fcf164e1366f2fda9f4bfccf
-("crypto: x86/aes - drop scalar assembler implementations")
+On 7/23/20 09:59, Tomas Winkler wrote:
+> Replace the single element arrays with a simple value type u8 reserved,
+> even thought is is not used for dynamically sized trailing elements
+> it confuses the effort of replacing one-element arrays with
+> flexible arrays for that purpose.
+> 
+> Link: https://github.com/KSPP/linux/issues/79
+> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
 
-Remove the Kconfig relict from i386_defconfig file.
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
----
- arch/x86/configs/i386_defconfig | 1 -
- 1 file changed, 1 deletion(-)
+Thanks
+--
+Gustavo
 
-diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
-index 550904591e94..3a2a89882350 100644
---- a/arch/x86/configs/i386_defconfig
-+++ b/arch/x86/configs/i386_defconfig
-@@ -290,7 +290,6 @@ CONFIG_SECURITY_NETWORK=y
- CONFIG_SECURITY_SELINUX=y
- CONFIG_SECURITY_SELINUX_BOOTPARAM=y
- CONFIG_SECURITY_SELINUX_DISABLE=y
--CONFIG_CRYPTO_AES_586=y
- # CONFIG_CRYPTO_ANSI_CPRNG is not set
- CONFIG_EFI_STUB=y
- CONFIG_ACPI_BGRT=y
--- 
-2.28.0.rc2
-
+> ---
+>  drivers/misc/mei/hw.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
+> index b1a8d5ec88b3..26fa92cb7f7a 100644
+> --- a/drivers/misc/mei/hw.h
+> +++ b/drivers/misc/mei/hw.h
+> @@ -1,6 +1,6 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * Copyright (c) 2003-2018, Intel Corporation. All rights reserved
+> + * Copyright (c) 2003-2020, Intel Corporation. All rights reserved
+>   * Intel Management Engine Interface (Intel MEI) Linux driver
+>   */
+>  
+> @@ -319,7 +319,7 @@ struct hbm_props_response {
+>  	u8 hbm_cmd;
+>  	u8 me_addr;
+>  	u8 status;
+> -	u8 reserved[1];
+> +	u8 reserved;
+>  	struct mei_client_properties client_properties;
+>  } __packed;
+>  
+> @@ -352,7 +352,7 @@ struct hbm_add_client_response {
+>  	u8 hbm_cmd;
+>  	u8 me_addr;
+>  	u8 status;
+> -	u8 reserved[1];
+> +	u8 reserved;
+>  } __packed;
+>  
+>  /**
+> @@ -461,7 +461,7 @@ struct hbm_notification {
+>  	u8 hbm_cmd;
+>  	u8 me_addr;
+>  	u8 host_addr;
+> -	u8 reserved[1];
+> +	u8 reserved;
+>  } __packed;
+>  
+>  /**
+> 
