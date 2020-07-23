@@ -2,284 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E818C22B683
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451DD22B698
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbgGWTJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 15:09:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60504 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728427AbgGWTJu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 15:09:50 -0400
-Date:   Thu, 23 Jul 2020 19:09:47 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595531387;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QwU4vXoPimkfCGJ/tULJY9PczcvLGkj2BGbca0p16TA=;
-        b=QUnGvZx4x+huc0MfCq+b9BvHIRiAi78xL5V+w2ZynVKXvAVMK8RDxN8G+0Mfgkgt/V6xkm
-        FG0Xjrudvr73jOzeWUJWvgrnwfgDqOVzAm6dG2+a3nttR+r+u+7ygvqHl/f4BGbdEDY8XF
-        Sv8BFPrUjii494HaF32KlPdwV2V7g2PrPo1vqFiKRsIiMxbkMvG/9o5L7nNEPv8dosRHLS
-        9fUVNXiNSx/JQIqROB/g+OnXFO0WKTJirx9tt/CX/4B9PipDbYjyeJzfCfzONPihiCBkiL
-        PeSLAusbGNmVZ/iF+w37EOm5ucDHUIOJXF0RX5I4pdjlH7bWgiyvN36mCCg3XQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595531387;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QwU4vXoPimkfCGJ/tULJY9PczcvLGkj2BGbca0p16TA=;
-        b=7+aLKRxGzJPz677G5N1KldNhIlUMcmr6Q04oqDeq/tVEGLkEmcZxdwmvoBO68BL2FdjgRy
-        lOfvD0VGdxgplhBQ==
-From:   "tip-bot2 for Alexandre Belloni" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] dt-bindings: atmel-tcb: convert bindings to json-schema
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200710230813.1005150-2-alexandre.belloni@bootlin.com>
-References: <20200710230813.1005150-2-alexandre.belloni@bootlin.com>
+        id S1728042AbgGWTO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 15:14:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:19593 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726617AbgGWTO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 15:14:29 -0400
+IronPort-SDR: rtr4c5tez99QxgyvNMiwLKTCFjDB3QH/4sAYPJB6+9KR9dGtFJc8yZoe9ViIB/7Mwo5Ls3UD/M
+ 34RQQ1CVa7sA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235485726"
+X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
+   d="scan'208";a="235485726"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 12:14:26 -0700
+IronPort-SDR: v5OQJ8hWSfhKj/TxAIH+p/8ZeaeYkNC3Kjdvcd34relzP09M2EbTOSz2If77qiYZxqwT2irZZJ
+ YCTiXQV0glDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
+   d="scan'208";a="272384811"
+Received: from lkp-server01.sh.intel.com (HELO bd1a4a62506a) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 23 Jul 2020 12:14:25 -0700
+Received: from kbuild by bd1a4a62506a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jygfg-0000aJ-Og; Thu, 23 Jul 2020 19:14:24 +0000
+Date:   Fri, 24 Jul 2020 03:14:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:efi/urgent] BUILD SUCCESS
+ 74f85551666fe40bd739e95b5ecb20f53f8ad4df
+Message-ID: <5f19e17d.oswg5qqa0C+zsA7M%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Message-ID: <159553138717.4006.17315732968766226240.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  efi/urgent
+branch HEAD: 74f85551666fe40bd739e95b5ecb20f53f8ad4df  Merge tag 'efi-urgent-for-v5.8-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/urgent
 
-Commit-ID:     8be8e7de604f8e51cf5d02afdcd28e1e49d3646b
-Gitweb:        https://git.kernel.org/tip/8be8e7de604f8e51cf5d02afdcd28e1e49d3646b
-Author:        Alexandre Belloni <alexandre.belloni@bootlin.com>
-AuthorDate:    Sat, 11 Jul 2020 01:08:05 +02:00
-Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Sat, 11 Jul 2020 18:57:02 +02:00
+elapsed time: 1222m
 
-dt-bindings: atmel-tcb: convert bindings to json-schema
+configs tested: 74
+configs skipped: 1
 
-Convert Atmel Timer Counter Blocks bindings to DT schema format using
-json-schema.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Also move it out of mfd as it is not and has never been related to mfd.
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+i386                             allyesconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+nios2                               defconfig
+nios2                            allyesconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200710230813.1005150-2-alexandre.belloni@bootlin.com
 ---
- Documentation/devicetree/bindings/mfd/atmel-tcb.txt                       |  56 +------------------------------
- Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 131 insertions(+), 56 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-tcb.txt
- create mode 100644 Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-
-diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-deleted file mode 100644
-index c4a83e3..0000000
---- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
-+++ /dev/null
-@@ -1,56 +0,0 @@
--* Device tree bindings for Atmel Timer Counter Blocks
--- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
--  <chip> can be "at91rm9200" or "at91sam9x5"
--- reg: Should contain registers location and length
--- #address-cells: has to be 1
--- #size-cells: has to be 0
--- interrupts: Should contain all interrupts for the TC block
--  Note that you can specify several interrupt cells if the TC
--  block has one interrupt per channel.
--- clock-names: tuple listing input clock names.
--	Required elements: "t0_clk", "slow_clk"
--	Optional elements: "t1_clk", "t2_clk"
--- clocks: phandles to input clocks.
--
--The TCB can expose multiple subdevices:
-- * a timer
--   - compatible: Should be "atmel,tcb-timer"
--   - reg: Should contain the TCB channels to be used. If the
--     counter width is 16 bits (at91rm9200-tcb), two consecutive
--     channels are needed. Else, only one channel will be used.
--
--Examples:
--
--One interrupt per TC block:
--	tcb0: timer@fff7c000 {
--		compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0xfff7c000 0x100>;
--		interrupts = <18 4>;
--		clocks = <&tcb0_clk>, <&clk32k>;
--		clock-names = "t0_clk", "slow_clk";
--
--		timer@0 {
--			compatible = "atmel,tcb-timer";
--			reg = <0>, <1>;
--		};
--
--		timer@2 {
--			compatible = "atmel,tcb-timer";
--			reg = <2>;
--		};
--	};
--
--One interrupt per TC channel in a TC block:
--	tcb1: timer@fffdc000 {
--		compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		reg = <0xfffdc000 0x100>;
--		interrupts = <26 4>, <27 4>, <28 4>;
--		clocks = <&tcb1_clk>, <&clk32k>;
--		clock-names = "t0_clk", "slow_clk";
--	};
--
--
-diff --git a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-new file mode 100644
-index 0000000..9d680e0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
-@@ -0,0 +1,131 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/soc/microchip/atmel,at91rm9200-tcb.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Atmel Timer Counter Block
-+
-+maintainers:
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+
-+description: |
-+  The Atmel (now Microchip) SoCs have timers named Timer Counter Block. Each
-+  timer has three channels with two counters each.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - atmel,at91rm9200-tcb
-+          - atmel,at91sam9x5-tcb
-+      - const: simple-mfd
-+      - const: syscon
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    description:
-+      List of interrupts. One interrupt per TCB channel if available or one
-+      interrupt for the TC block
-+    minItems: 1
-+    maxItems: 3
-+
-+  clock-names:
-+    description:
-+      List of clock names. Always includes t0_clk and slow clk. Also includes
-+      t1_clk and t2_clk if a clock per channel is available.
-+    oneOf:
-+      - items:
-+        - const: t0_clk
-+        - const: slow_clk
-+      - items:
-+        - const: t0_clk
-+        - const: t1_clk
-+        - const: t2_clk
-+        - const: slow_clk
-+    minItems: 2
-+    maxItems: 4
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 4
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+patternProperties:
-+  "^timer@[0-2]$":
-+    description: The timer block channels that are used as timers.
-+    type: object
-+    properties:
-+      compatible:
-+        const: atmel,tcb-timer
-+      reg:
-+        description:
-+          List of channels to use for this particular timer.
-+        minItems: 1
-+        maxItems: 3
-+
-+    required:
-+      - compatible
-+      - reg
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - '#address-cells'
-+  - '#size-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    /* One interrupt per TC block: */
-+        tcb0: timer@fff7c000 {
-+                compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                reg = <0xfff7c000 0x100>;
-+                interrupts = <18 4>;
-+                clocks = <&tcb0_clk>, <&clk32k>;
-+                clock-names = "t0_clk", "slow_clk";
-+
-+                timer@0 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <0>, <1>;
-+                };
-+
-+                timer@2 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <2>;
-+                };
-+        };
-+
-+    /* One interrupt per TC channel in a TC block: */
-+        tcb1: timer@fffdc000 {
-+                compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                reg = <0xfffdc000 0x100>;
-+                interrupts = <26 4>, <27 4>, <28 4>;
-+                clocks = <&tcb1_clk>, <&clk32k>;
-+                clock-names = "t0_clk", "slow_clk";
-+
-+                timer@0 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <0>;
-+                };
-+
-+                timer@1 {
-+                        compatible = "atmel,tcb-timer";
-+                        reg = <1>;
-+                };
-+        };
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
