@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B3722AFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 14:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CEC22AFCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 15:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728545AbgGWM5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 08:57:45 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:38893 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbgGWM5p (ORCPT
+        id S1728909AbgGWM7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 08:59:13 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:6419 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728820AbgGWM7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 08:57:45 -0400
-Received: by mail-ej1-f66.google.com with SMTP id br7so6281150ejb.5;
-        Thu, 23 Jul 2020 05:57:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e9LofUs8gAfR6XrMny4GZ85gpBoKqLeNU4Y7+2YVIZA=;
-        b=X3DAUyGb+ou9it2EVVsbLjXPEGZ5Ksy+EKFLbKnYXrQ/SQlujemsNc02B+jkzqvskG
-         bmrUiC4mPN4EyIhf4kAuJR3FFO2b/7AxvuVA+S+zU1ecJn2yeRlZ5T1Nhs2r4EfffIRX
-         gTJZdrPJB9QOdI5EjniuBL91Kc53PII0+uM+gX1H8wFeSdXV3yhAklLWoAk6GpRnleRF
-         ABR2elNeoMxCvSwaDScutqqqwrZT1MovVIt4IuID2MFwmnhooJNaevFHjMu6ZQ9oPg9Y
-         hucHSMQqt441xPUOifyDt0c1LeT4kiudZYdJJV0IgNB1Zbzd6cRNOoFbV7YARxQnWMld
-         vKMA==
-X-Gm-Message-State: AOAM531vIf8//Q25X0Kjp/cFSisbTp3Zv5AQjtyUEssgJ0dxRAyRzuVz
-        Pg5VqIVS8cUoglRwsFqEw2E=
-X-Google-Smtp-Source: ABdhPJyQQG+1vJWyFqmWfy7zG77XSzSOGLUh7E7RkFOEh/412ICpjHYCDA57DaHlSBEXOrjZotrDKQ==
-X-Received: by 2002:a17:906:abd5:: with SMTP id kq21mr2406890ejb.291.1595509062854;
-        Thu, 23 Jul 2020 05:57:42 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id q21sm2000004ejr.75.2020.07.23.05.57.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 23 Jul 2020 05:57:42 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 14:57:32 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH] sh: clk: Fix assignment from incompatible pointer type
- for ioreadX()
-Message-ID: <20200723125732.GA9795@kozik-lap>
-References: <20200723082017.24053-1-krzk@kernel.org>
- <c77eb720-1ded-f9d4-fbe4-92429e81857f@physik.fu-berlin.de>
+        Thu, 23 Jul 2020 08:59:11 -0400
+X-UUID: 9a8b0d2efcf3493992e37b8774c41135-20200723
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=/rExF285VSbk1mjvljQ5FLR36AFJHuvXyBHgEJEnBpU=;
+        b=KftOPWyOqj/G7abGXcy5754zHifOID0/b51oLzVZJSu5Rp+fcwgUt+D55RQTvWj+GW0Fu6W74yHLOHssZ5vho8r2JK+tSQn4o3taNPtptUhRbyRrAcd12XV0bxzcvxvkjoSJahI30oC3JzMDbIqRKJT6A7bgl8aeKGlALmP9+cU=;
+X-UUID: 9a8b0d2efcf3493992e37b8774c41135-20200723
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 970600036; Thu, 23 Jul 2020 20:59:07 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Jul 2020 20:59:04 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Jul 2020 20:59:05 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Josef Friedl <josef.friedl@speed.at>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Subject: [PATCH 0/8] Add Support for MediaTek PMIC MT6359
+Date:   Thu, 23 Jul 2020 20:58:45 +0800
+Message-ID: <1595509133-5358-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c77eb720-1ded-f9d4-fbe4-92429e81857f@physik.fu-berlin.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 02:49:46PM +0200, John Paul Adrian Glaubitz wrote:
-> Hi Krzysztof!
-> 
-> On 7/23/20 10:20 AM, Krzysztof Kozlowski wrote:
-> > Maybe because it depends on commit 58c4d8659186 ("sh: clkfwk: remove
-> > r8/r16/r32") which landed later?  Anyway it should go through your tree,
-> > I think.
-> > ---
-> >  drivers/sh/clk/cpg.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/sh/clk/cpg.c b/drivers/sh/clk/cpg.c
-> > index a5cacfe24a42..fd72d9088bdc 100644
-> > --- a/drivers/sh/clk/cpg.c
-> > +++ b/drivers/sh/clk/cpg.c
-> > @@ -40,7 +40,7 @@ static int sh_clk_mstp_enable(struct clk *clk)
-> >  {
-> >  	sh_clk_write(sh_clk_read(clk) & ~(1 << clk->enable_bit), clk);
-> >  	if (clk->status_reg) {
-> > -		unsigned int (*read)(void __iomem *addr);
-> > +		unsigned int (*read)(const void __iomem *addr);
-> >  		int i;
-> >  		void __iomem *mapped_status = (phys_addr_t)clk->status_reg -
-> >  			(phys_addr_t)clk->enable_reg + clk->mapped_reg;
-> 
-> Is that a reverted patch, by any chance? The patch does not apply for me and looking at
-> the sources, the qualifier is already "const" [1].
-
-The patch is for Andrew Morton's tree which contain two commits:
-1. sh: clkfwk: remove r8/r16/r32
-2. iomap: constify ioreadX() iomem argument (as in generic implementation)
-
-This patch here was actually part of #2 because of being based on
-linux-next. However it disappeared when applying to Andrew's tree
-because patch #1 came later.
-
-Best regards,
-Krzysztof
+VGhpcyBwYXRjaHNldCBpbmNsdWRlcyByZWZhY3RvcmluZyBpbnRlcnJ1cHQgYW5kIGFkZGluZyBz
+dXBwb3J0IHRvIE1UNjM1OSBQTUlDLg0KTVQ2MzU5IGlzIHRoZSBwcmltYXJ5IFBNSUMgZm9yIE1U
+Njc3OSBhbmQgcHJvYmFibHkgb3RoZXIgU09Dcy4NClRoZSBzZXJpZXNbMV0gc2VudCBieSBXZW4g
+d2lsbCBjb250aW51ZSB0byB1cHN0cmVhbSBpbiB0aGlzIHBhdGNoc2V0IGFmdGVyd2FyZHMuDQoN
+ClsxXSBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtbWVkaWF0ZWsv
+bGlzdC8/c2VyaWVzPTMwNjU3OQ0KDQpIc2luLUhzaXVuZyBXYW5nICg1KToNCiAgbWZkOiBtdDYz
+NTg6IHJlZmluZSBpbnRlcnJ1cHQgY29kZQ0KICBkdC1iaW5kaW5nczogbWZkOiBBZGQgY29tcGF0
+aWJsZSBmb3IgdGhlIE1lZGlhVGVrIE1UNjM1OSBQTUlDDQogIG1mZDogQWRkIHN1cHBvcnQgZm9y
+IHRoZSBNZWRpYVRlayBNVDYzNTkgUE1JQw0KICByZWd1bGF0b3I6IG10NjM1OTogU2V0IHRoZSBl
+bmFibGUgdGltZSBmb3IgTERPcw0KICByZWd1bGF0b3I6IG10NjM1OTogQWRkIHN1cHBvcnQgZm9y
+IE1UNjM1OVAgcmVndWxhdG9yDQoNCldlbiBTdSAoMyk6DQogIGR0LWJpbmRpbmdzOiByZWd1bGF0
+b3I6IEFkZCBkb2N1bWVudCBmb3IgTVQ2MzU5IHJlZ3VsYXRvcg0KICByZWd1bGF0b3I6IG10NjM1
+OTogQWRkIHN1cHBvcnQgZm9yIE1UNjM1OSByZWd1bGF0b3INCiAgYXJtNjQ6IGR0czogbXQ2MzU5
+OiBhZGQgUE1JQyBNVDYzNTkgcmVsYXRlZCBub2Rlcw0KDQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL21mZC9tdDYzOTcudHh0ICAgfCAgICA4ICstDQogLi4uL2JpbmRpbmdzL3Jl
+Z3VsYXRvci9tdDYzNTktcmVndWxhdG9yLnR4dCAgICAgICAgfCAgIDU4ICsNCiBhcmNoL2FybTY0
+L2Jvb3QvZHRzL21lZGlhdGVrL210NjM1OS5kdHNpICAgICAgICAgICB8ICAyOTYgKysrKysNCiBk
+cml2ZXJzL21mZC9tdDYzNTgtaXJxLmMgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgODkg
+Ky0NCiBkcml2ZXJzL21mZC9tdDYzOTctY29yZS5jICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgMjMgKw0KIGRyaXZlcnMvcmVndWxhdG9yL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAgOSArDQogZHJpdmVycy9yZWd1bGF0b3IvTWFrZWZpbGUgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgICAxICsNCiBkcml2ZXJzL3JlZ3VsYXRvci9tdDYzNTktcmVndWxhdG9yLmMg
+ICAgICAgICAgICAgICB8IDExMzYgKysrKysrKysrKysrKysrKysrKysNCiBpbmNsdWRlL2xpbnV4
+L21mZC9tdDYzNTgvY29yZS5oICAgICAgICAgICAgICAgICAgICB8ICAgIDggKy0NCiBpbmNsdWRl
+L2xpbnV4L21mZC9tdDYzNTkvY29yZS5oICAgICAgICAgICAgICAgICAgICB8ICAxMzMgKysrDQog
+aW5jbHVkZS9saW51eC9tZmQvbXQ2MzU5L3JlZ2lzdGVycy5oICAgICAgICAgICAgICAgfCAgNTI5
+ICsrKysrKysrKw0KIGluY2x1ZGUvbGludXgvbWZkL210NjM1OXAvcmVnaXN0ZXJzLmggICAgICAg
+ICAgICAgIHwgIDI0NiArKysrKw0KIGluY2x1ZGUvbGludXgvbWZkL210NjM5Ny9jb3JlLmggICAg
+ICAgICAgICAgICAgICAgIHwgICAgMSArDQogaW5jbHVkZS9saW51eC9yZWd1bGF0b3IvbXQ2MzU5
+LXJlZ3VsYXRvci5oICAgICAgICAgfCAgIDU5ICsNCiAxNCBmaWxlcyBjaGFuZ2VkLCAyNTYzIGlu
+c2VydGlvbnMoKyksIDMzIGRlbGV0aW9ucygtKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVndWxhdG9yL210NjM1OS1yZWd1bGF0b3IudHh0
+DQogY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2MzU5
+LmR0c2kNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3Vs
+YXRvci5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbWZkL210NjM1OS9jb3Jl
+LmgNCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tZmQvbXQ2MzU5L3JlZ2lzdGVy
+cy5oDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbWZkL210NjM1OXAvcmVnaXN0
+ZXJzLmgNCiBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9yZWd1bGF0b3IvbXQ2MzU5
+LXJlZ3VsYXRvci5oDQoNCi0tIA0KMi42LjQNCg==
 
