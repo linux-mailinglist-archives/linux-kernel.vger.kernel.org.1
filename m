@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD80C22B3AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5715522B3B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729835AbgGWQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:36:48 -0400
-Received: from foss.arm.com ([217.140.110.172]:48546 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726621AbgGWQgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:36:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B7791FB;
-        Thu, 23 Jul 2020 09:36:47 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA2C63F66F;
-        Thu, 23 Jul 2020 09:36:45 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 17:36:43 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Wei Hu <weh@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH v3] PCI: hv: Fix a timing issue which causes kdump to
- fail occasionally
-Message-ID: <20200723163643.GB11749@e121166-lin.cambridge.arm.com>
-References: <20200718034752.4843-1-weh@microsoft.com>
- <20200723111402.GA8120@e121166-lin.cambridge.arm.com>
- <SG2P153MB03774814C5D6450238CC4471BB760@SG2P153MB0377.APCP153.PROD.OUTLOOK.COM>
+        id S1729826AbgGWQib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:38:31 -0400
+Received: from sonic301-38.consmr.mail.ne1.yahoo.com ([66.163.184.207]:45843
+        "EHLO sonic301-38.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgGWQia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 12:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595522309; bh=SYRrS6XgmvY8Ktcfk2etLG+BtX95xd9rhH7uXZLR1zM=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=pt3KMdpd/AEOs16zlL4F/p+iXomqcM7JAhtKrP1SDdJ2WGIrYBzo5W/vgN5yepLP0Ii4FAKq1djnR1QBjHHBm1o0QFP9AVLZlbfnjlAm5JmHeH5ucYw1AFBRUiZWrCkCRD48m7foAvEoUNv1GNyy5428nRi5vEIY6INbr/KiMjN0Zvi86QrFIM+rVHj0BnQIuNXpG72jgH1QbQuxWg0RvS6jiO/pawnd8GZ7BtLmVjxKBEQiEEEJha4nBvbtIeJBzHwiBYVgXv3lNzEuHYtEJkTKLm/+mn4ITZrkSmRuR/WNMv4SLMtuh86WnFfNsvskPrcnPp+XPcbcb2Nk9wIqNw==
+X-YMail-OSG: 8rhPpb4VM1m6wUX4LAHJS2qe8lFkMcillQM9P3nVueMb_jQnecbX98JLvNOddx_
+ UaQqhFr80q0MlvGj331AgLedr9YZtRMxm1xkiX7TUbhQ9VoupT1CUr5iES1ZjxDPUdZdN_.be3tf
+ oqFonn1rKHse2Vtdaehu_rb8eOQh2FaSTauTzdD6qaAQe9n4q4pSHQJEpYMbUjYMKF.bYxmJGXL2
+ KQ0YRza3n23cbtkN1P2l9sH.tFrw0RfAOUYSH7DXAqx50NHDWSc6ircYjt2SinZLU25fqLTR002N
+ 209zeCzkLE6eU2FsHdWECMKHfE7m5SN_phRG7_44zsY8g.poVnQ0KfoNlgrc4dqkbR70dMx.8yJR
+ ZxvG.zSimCNXWp5LK_X0G1pNgWWm55lPwDk2wZKnTxYnQWyKCR8ZhiHeCK_nVUZbnz8rb92KetP5
+ UMt1sDVgGwVHA1Dip4OCWm0upI8l1G.6.v5Q2j5vBsqyHErVuwmx.oBGZgoDKVRPsEyKXC6ghLeY
+ iNjsCDwOn0Q0peozYbpIrOO1xiR6x090zHbq8BMTPfi8oIOjVGlyEminDZomWeTvKJ3VwkZz1JKs
+ ZsFqC9qtf_T0Vk3jfbKeWBeFDJ0hGMsGlvoO2QH24XiRki7tv3p7LAjkYo8SKWul3tsqPdpjqPNT
+ OjCLdRnB6Qp4HIWt_B8HylrdWfyAOi.qJ9su972mvm81DuQOa24zceCs.Qt_Bp6fhA6wr4Lrh_Q7
+ LqEh9sp2Ovhuzm3p7FkLvmuqA5tvHqmFplQ_FE7fA78vsxpDMThIYB_S7fBa9yFgZEE5zu9tncjV
+ EXAe.yIrIaIxOzZvW2kftT55kDGjZ9ajUbnM0r5Ab7uVpS5kWnfp.iP..i58NuZljY35JXJLOiqk
+ 74F4iuUXgUowTEezgeXJeWSD14KsZIQKouA52_Q1HVwQ5GhX5oQgbs7VLSAhSslDkz8iPG9hZ0qi
+ ZXWUiXXjddvcPK8wL9PW.2i4nmlDYimd7.Q9fShM2KgrUAuMt6ChJz21oqzbJTnLthLoRyTax1f5
+ 5Wfhl.VEJNRIwoZj.KC8GLGc865MPwKojm7zKbZv_HGGFn_L4nMlnraxE2tLYRp24wzIpqE6owQv
+ .G_wSFpgE1ZdEB8mGkTiVQJHTWDC1Eoce7rL5G0Ai8Nt9EIjHre0msPmXoCLamtzOtfxY4BwMmYF
+ B5NPRCBW5l99.iHaQB4Y9QbIHQoB62BozwK27KnEhmwVKF4TbXKI9m6UIEDO8UYjxPwrUn_wwbyo
+ 1_1hBf.R8YIR7chQLZLgHUXF8iKhLSXstGWOMxOG2G5O4Bk5es5aszsw_FFxTVEh6B2mN59ePp16
+ qWdPBQlqByP__JevGapL3EImjvQWtskwKI7vR3xXroSeP.elMB07x0N0zORHy_d_4YLEBkylj7qD
+ J0FhoImMjCPYc
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.ne1.yahoo.com with HTTP; Thu, 23 Jul 2020 16:38:29 +0000
+Received: by smtp419.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID d5534348c85e4e46cdb46855cd18d38f;
+          Thu, 23 Jul 2020 16:38:29 +0000 (UTC)
+Subject: Re: [PATCH 1/2] Smack: fix another vsscanf out of bounds
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20200723152219.GA302005@mwanda>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <a59e6bb4-91ef-db75-f91b-1329b073307d@schaufler-ca.com>
+Date:   Thu, 23 Jul 2020 09:38:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SG2P153MB03774814C5D6450238CC4471BB760@SG2P153MB0377.APCP153.PROD.OUTLOOK.COM>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200723152219.GA302005@mwanda>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.16271 hermes_yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 03:52:39PM +0000, Wei Hu wrote:
-> > -----Original Message-----
-> > From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> > > Kdump could fail sometime on Hyper-V guest over Accelerated Network
-> > > interface. This is because the retry in hv_pci_enter_d0() relies on an
-> > > asynchronous host event arriving before the guest calls
-> > > hv_send_resources_allocated(). Fix the problem by moving retry to
-> > > hv_pci_probe(), removing this dependency and making the calling
-> > > sequence synchronous.
-> > 
-> > You have to explain why this code move fixes the problem
-> 
-> How about following commit message:
-> 
-> Kdump could fail sometime on Hyper-V guest over Accelerated Network
-> nterface.
+On 7/23/2020 8:22 AM, Dan Carpenter wrote:
+> This is similar to commit 84e99e58e8d1 ("Smack: slab-out-of-bounds in
+> vsscanf") where we added a bounds check on "rule".
+>
+> Reported-by: syzbot+a22c6092d003d6fe1122@syzkaller.appspotmail.com
+> Fixes: f7112e6c9abf ("Smack: allow for significantly longer Smack labels v4")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-"Interface" and this is irrelevant if you don't explain why the
-failure is caused by it and not any other piece of software,
-ie why the failure happens explicitly on the Accelerated Network
-Interface only.
+Thanks. I'll be testing these and take them assuming they pass.
 
-> This is because the retry in hv_pci_enter_d0() relies on an
-> asynchronous host event arriving before the guest calls
-> hv_send_resources_allocated(). Fix the problem by moving retry to
-> hv_pci_probe() and start the retry from hv_pci_query_relations() call. 
-> This causes the host to generate an synchronous event, hence removing 
-> this unreliable dependency.
-
-It is a bit better but I am pretty sure it can be improved, for instance
-by describing the failure path in relation to the asynchronous
-notification, in other words what happens when things go wrong.
-
-> > and you also have to
-> > add a comment to the code so that anyone who has to fix it in the future can
-> > understand why the code is where you are moving it to and why that's a
-> > solution.
-> 
-> It already has the comment in the code as:
-> +	 * The retry should start from hv_pci_query_relations() call.
-
-Explain *why* it should restart from there, it is not that complicated.
-
-> It would be a bug if the retry does not start from this according to the host
-> Behaviour. So I think no further explanation would be needed.
-
-It is needed, add it please.
-
-> > > Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid
-> > > device state")
-> > > Signed-off-by: Wei Hu <weh@microsoft.com>
-> > 
-> > Please carry tags and send patches -in-reply-to the previous version to allow
-> > threading.
-> > 
-> 
-> Do you mean to add review-by tags? If not would you please elaborate
-> what 'carry tags' means? Sorry I am not familiar to this term.
-
-It should not be me who applies Reviewed-by tags added on previous patch
-versions, it should be you who add it to newer versions.
-
-AKA Michael already reviewed it and I need to see his reviewed-by tag
-to apply it.
-
-Thanks,
-Lorenzo
+> ---
+> This check is very straight forward and should fix the bug.  But if you
+> look at the fixes tag we used to rely on the check:
+>
+> 	if (count != (SMK_CIPSOMIN + catlen * SMK_DIGITLEN))
+>
+> and now that has been changed to:
+>
+> 	if (format == SMK_FIXED24_FMT &&
+> 	    count != (SMK_CIPSOMIN + catlen * SMK_DIGITLEN))
+>                 goto out;
+>
+> so it doesn't apply for every format.
+>
+>  security/smack/smackfs.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/security/smack/smackfs.c b/security/smack/smackfs.c
+> index c21b656b3263..81c6ceeaa4f9 100644
+> --- a/security/smack/smackfs.c
+> +++ b/security/smack/smackfs.c
+> @@ -905,6 +905,10 @@ static ssize_t smk_set_cipso(struct file *file, const char __user *buf,
+>  
+>  	for (i = 0; i < catlen; i++) {
+>  		rule += SMK_DIGITLEN;
+> +		if (rule > data + count) {
+> +			rc = -EOVERFLOW;
+> +			goto out;
+> +		}
+>  		ret = sscanf(rule, "%u", &cat);
+>  		if (ret != 1 || cat > SMACK_CIPSO_MAXCATNUM)
+>  			goto out;
