@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EC622B39E
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE99B22B3AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgGWQe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:34:56 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1834 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726761AbgGWQez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:34:55 -0400
-IronPort-SDR: vyL+NYt2ZliHRJRxL72e/ahPc7G4EE9VaxJ+UuM8hBgJ2hmx8gy+XrUo3YgeLRskcAHNr1pHsm
- b5y1V1mcwhgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235445608"
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="235445608"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 09:34:53 -0700
-IronPort-SDR: hFYas6QKNxTOrvEjECjOw3UCjMCf0bwK7XQddFbktkt1InLwc36SCtegqV7XT10e6Occd/2a3J
- fvubPKBrLB2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="432795981"
-Received: from tthayer-hp-z620.an.intel.com (HELO [10.122.105.146]) ([10.122.105.146])
-  by orsmga004.jf.intel.com with ESMTP; 23 Jul 2020 09:34:52 -0700
-Reply-To: thor.thayer@linux.intel.com
-Subject: Re: [PATCH v4 04/10] net: eth: altera: add optional function to start
- tx dma
-To:     "Ooi, Joyce" <joyce.ooi@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dalon Westergreen <dalon.westergreen@linux.intel.com>,
-        Tan Ley Foon <ley.foon.tan@intel.com>,
-        See Chin Liang <chin.liang.see@intel.com>,
-        Dinh Nguyen <dinh.nguyen@intel.com>,
-        Dalon Westergreen <dalon.westergreen@intel.com>
-References: <20200708072401.169150-1-joyce.ooi@intel.com>
- <20200708072401.169150-5-joyce.ooi@intel.com>
-From:   Thor Thayer <thor.thayer@linux.intel.com>
-Message-ID: <8d16280c-af08-ac70-dcee-2646ccefc820@linux.intel.com>
-Date:   Thu, 23 Jul 2020 11:35:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1729851AbgGWQg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgGWQg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 12:36:57 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92088C0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 09:36:56 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x5so4985115wmi.2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 09:36:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+bQZoXIFqfGEwjMaiaB7VWns9AxgAgz8MsvENSHF3qY=;
+        b=cTICzKj0aMs/8vGqHK/g2hIbInMQECfRZuUvt4UmcNWYRqk4xjATkzw4Md7VTesbK9
+         0kXACOaYojQvUMt8hJJT+8DqTHfA17ryD0glQDk8JH2nVSP0Q4uBUYu/BAlzRAHmYA8o
+         y0kYtGciTUeol5L1fqlgNU5tvMXEEVhxrZ8JxZwzJ/f3M2PfP0/hJYt23ZKfrBJ0Cy3g
+         sf+5xxkkh9aFDlpfsJCo9y7d7Rci8zdg8zDIDIEXRlzdECbjUvgZWo5brVCHoGxKlSkt
+         ATq44f9IehaGrRpVQdy6xcH9zPONKCfD5Jiro1QmN0+EwIVSmPKq9p/ixYDoRczjnuBV
+         o65Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+bQZoXIFqfGEwjMaiaB7VWns9AxgAgz8MsvENSHF3qY=;
+        b=iBkm5cH4G+1nhDovJR1dOpXULQijVXswAbTGhMRnOOl2x7nMJO58u2bd760WPEFvnR
+         n5/2mmSDe688HDgSUdCuKT7uUK+GS9Ps91GNAuwKUdmvTKp5sf43fsungcllt6rSq4P6
+         /IROoz5T52KTHJkUSF3nSGvUs2ZlmI9y3kjnBAKw5M4WWNNaFwSmfImfsVY9YCM519lc
+         Gm8NbMevourDZm43U4FXIcPpRdaEJ7L2rO4IyKW3k/5EntQIArQnzpK9d0R8StMZG/Km
+         MMtPkhNnxXF1dHHFssERFLm2nYL9qkDhbQMGazRbN8Y7GQQa6vntFeqT046YUjIJ/30o
+         E3LA==
+X-Gm-Message-State: AOAM53255bksMrrDLCSvkvbRPulsoByDPAVpWtkg2cKeYo6cAA2Ez8N1
+        5pr5DHcIBNE4EYBViOhLQ/4=
+X-Google-Smtp-Source: ABdhPJxO2ZsaLoOuyAebtlU69uOv3Tan2WxXsMV5Hevfj+jGM2uqH8o0ZrvtBxYO0qK/WRelOHHOvQ==
+X-Received: by 2002:a7b:c08b:: with SMTP id r11mr4810194wmh.130.1595522215302;
+        Thu, 23 Jul 2020 09:36:55 -0700 (PDT)
+Received: from localhost.localdomain ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id f9sm4274342wru.47.2020.07.23.09.36.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 09:36:54 -0700 (PDT)
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: Grab text_mutex before patching jump-labels
+Date:   Thu, 23 Jul 2020 18:36:28 +0200
+Message-Id: <20200723163628.82794-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200708072401.169150-5-joyce.ooi@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/8/20 2:23 AM, Ooi, Joyce wrote:
-> From: Dalon Westergreen <dalon.westergreen@intel.com>
-> 
-> Allow for optional start up of tx dma if the start_txdma
-> function is defined in altera_dmaops.
-> 
-> Signed-off-by: Dalon Westergreen <dalon.westergreen@intel.com>
-> Signed-off-by: Joyce Ooi <joyce.ooi@intel.com>
-> ---
-> v2: no change
-> v3: no change
-> v4: no change
-> ---
->   drivers/net/ethernet/altera/altera_tse.h      | 1 +
->   drivers/net/ethernet/altera/altera_tse_main.c | 5 +++++
->   2 files changed, 6 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/altera/altera_tse.h b/drivers/net/ethernet/altera/altera_tse.h
-> index 7d0c98fc103e..26c5541fda27 100644
-> --- a/drivers/net/ethernet/altera/altera_tse.h
-> +++ b/drivers/net/ethernet/altera/altera_tse.h
-> @@ -401,6 +401,7 @@ struct altera_dmaops {
->   	int (*init_dma)(struct altera_tse_private *priv);
->   	void (*uninit_dma)(struct altera_tse_private *priv);
->   	void (*start_rxdma)(struct altera_tse_private *priv);
-> +	void (*start_txdma)(struct altera_tse_private *priv);
->   };
->   
->   /* This structure is private to each device.
-> diff --git a/drivers/net/ethernet/altera/altera_tse_main.c b/drivers/net/ethernet/altera/altera_tse_main.c
-> index a3749ffdcac9..0a724e4d2c8c 100644
-> --- a/drivers/net/ethernet/altera/altera_tse_main.c
-> +++ b/drivers/net/ethernet/altera/altera_tse_main.c
-> @@ -1244,6 +1244,9 @@ static int tse_open(struct net_device *dev)
->   
->   	priv->dmaops->start_rxdma(priv);
->   
-> +	if (priv->dmaops->start_txdma)
-> +		priv->dmaops->start_txdma(priv);
-> +
->   	/* Start MAC Rx/Tx */
->   	spin_lock(&priv->mac_cfg_lock);
->   	tse_set_mac(priv, true);
-> @@ -1646,6 +1649,7 @@ static const struct altera_dmaops altera_dtype_sgdma = {
->   	.init_dma = sgdma_initialize,
->   	.uninit_dma = sgdma_uninitialize,
->   	.start_rxdma = sgdma_start_rxdma,
-> +	.start_txdma = NULL,
->   };
->   
->   static const struct altera_dmaops altera_dtype_msgdma = {
-> @@ -1665,6 +1669,7 @@ static const struct altera_dmaops altera_dtype_msgdma = {
->   	.init_dma = msgdma_initialize,
->   	.uninit_dma = msgdma_uninitialize,
->   	.start_rxdma = msgdma_start_rxdma,
-> +	.start_txdma = NULL,
->   };
->   
->   static const struct of_device_id altera_tse_ids[] = {
-> 
-Reviewed-by: Thor Thayer <thor.thayer@linux.intel.com>
+Like other arch's we use patch_text_nosync or equivalent
+to patch the jump-labels, but also like other arch's we
+need to hold the text_mutex before calling that.
+
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+---
+
+Fixes: b6e0878a4ec8 ("riscv: Add jump-label implementation")
+..that is already in riscv/for-next.
+
+Palmer: Sorry, I didn't notice this before. Feel free to
+squash this into the commit above if you like.
+---
+ arch/riscv/kernel/jump_label.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/jump_label.c b/arch/riscv/kernel/jump_label.c
+index 1bab1abc1aa5..20e09056d141 100644
+--- a/arch/riscv/kernel/jump_label.c
++++ b/arch/riscv/kernel/jump_label.c
+@@ -4,8 +4,10 @@
+  *
+  * Based on arch/arm64/kernel/jump_label.c
+  */
+-#include <linux/kernel.h>
+ #include <linux/jump_label.h>
++#include <linux/kernel.h>
++#include <linux/memory.h>
++#include <linux/mutex.h>
+ #include <asm/bug.h>
+ #include <asm/patch.h>
+ 
+@@ -33,7 +35,9 @@ void arch_jump_label_transform(struct jump_entry *entry,
+ 		insn = RISCV_INSN_NOP;
+ 	}
+ 
++	mutex_lock(&text_mutex);
+ 	patch_text_nosync(addr, &insn, sizeof(insn));
++	mutex_unlock(&text_mutex);
+ }
+ 
+ void arch_jump_label_transform_static(struct jump_entry *entry,
+-- 
+2.27.0
+
