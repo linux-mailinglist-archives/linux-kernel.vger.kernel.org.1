@@ -2,158 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADD622A4C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 408A622A4CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387730AbgGWBjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:39:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:59630 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387460AbgGWBjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:39:51 -0400
-IronPort-SDR: YagH8AHVp1QrPpeL06Q04iBwjU35RaZVf4Dy1JiHLf5N1sCNe9rih5CSiQxW55VUmYNSIlLlLi
- XP81clHh5hmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="168586203"
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="168586203"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 18:39:51 -0700
-IronPort-SDR: U3BLgg8jTpLnq+r5fBR6CHDgFDv0LSr+n+3WtfjemhiHOy/cTLPx/6r6zZiVJ44FvorSjt5bza
- 9z5Lp5iJ6zjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="310844028"
-Received: from schwings-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.132])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Jul 2020 18:39:36 -0700
-Date:   Thu, 23 Jul 2020 04:39:34 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, x86@vger.kernel.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexandre Ghiti <alex@ghiti.fr>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Babu Moger <Babu.Moger@amd.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Marco Elver <elver@google.com>,
-        Brian Gerst <brgerst@gmail.com>, Jiri Kosina <jkosina@suse.cz>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [PATCH v3 1/3] kprobes: Add text_alloc() and text_free()
-Message-ID: <20200723013934.GC45081@linux.intel.com>
-References: <20200714223239.1543716-1-jarkko.sakkinen@linux.intel.com>
- <20200714223239.1543716-2-jarkko.sakkinen@linux.intel.com>
- <202007151232.0DA220B2@keescook>
+        id S2387479AbgGWBmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729198AbgGWBmC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:42:02 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD487C0619DC;
+        Wed, 22 Jul 2020 18:42:01 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id a21so3261684otq.8;
+        Wed, 22 Jul 2020 18:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8M4Xkkh6oONnSId9T7Db7jDYkgAvaARFQjrwk9Nrj6Y=;
+        b=Q5Ii6hPyJ2G0aEmGCO00OiA5rSM5q1/oqcCcR4WKeTegYbf9rHBDDvJPG5XEsBsIHA
+         QfYycgqaOmYulO53hzYMlRp0wjNb0HdwmogsVWTj50kB+vnyd7clAEEpjUo99AubWaoP
+         PXVeSSO2BCQt6RDtEUDG664m/5VjTRMxraKSvhub0f1Z4f34d/F2H60qb9jPsRwabndc
+         kz9Ajtbba/Yf1R3YLtE/rJt4lUgcjFcjqPSK1nSXl5IaB5gWWsUeFY2kRW4yhKlhGPN1
+         H8TleEGj856nuHfBpcT4ChusnbLMAyaEb0GcZyqbhh9luIoqnc2qHyHB77G3r5PBqNAi
+         ZZyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8M4Xkkh6oONnSId9T7Db7jDYkgAvaARFQjrwk9Nrj6Y=;
+        b=d7yjgcWjc/xmzkQJ9CmB5RJRdgyDSLaPwQxEAPJHFcGnXPsTlejL1fZ9YAoISp5gAb
+         o4lNFkguKHBVyjp/LbO5cEAqtt5iLgoL/vjADdnbY3GcljnMWeClJ7hXENjKyDC66IEf
+         MFTyyI7mh9PCbgUfHvXNzAjoUT6Mal486DOoxVhNSZikvxcNNXBrD2P1gfBeoOon2bAC
+         dyBbWjSPguPAHhq0ewUriVXlml1uqKyL7y02UzT7AdCYh2kjc9thSeRNUMIGuGcKzg2S
+         XAJ6ttKBbQOorIMVx1txIBVsaShgT5f9ieKuyipVqWGoBG73xfaZoZj6Mt/8mEiEYqMZ
+         VE2g==
+X-Gm-Message-State: AOAM532CmN4MHCzHD4wKwuUxrxk1sA6VZ+ypDeVJzRbwCnDajjkKmBVv
+        G+j+Lya1OjGQosRKfAq9nqdUawfNgTeO1aAe9s4=
+X-Google-Smtp-Source: ABdhPJy4b+57zr/ei4gtWpjlioxvHvFFbfZJy9/UeAw4TppwPaZkiKmaXCPX0TB50LLhw8Dnut6Bbg7mk0MQ2PWYcYo=
+X-Received: by 2002:a05:6830:1301:: with SMTP id p1mr2108063otq.357.1595468521163;
+ Wed, 22 Jul 2020 18:42:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202007151232.0DA220B2@keescook>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <CADLC3L0b8zqJoHt7aA6z6hb3cYC2z-32vmQsQ3tR0gGduC8+-Q@mail.gmail.com>
+ <20200723010435.GA1334095@bjorn-Precision-5520>
+In-Reply-To: <20200723010435.GA1334095@bjorn-Precision-5520>
+From:   Robert Hancock <hancockrwd@gmail.com>
+Date:   Wed, 22 Jul 2020 19:41:50 -0600
+Message-ID: <CADLC3L1BRToNyqPV51++JOySgfaEs1YAWM5vCjSTZctuvqNyug@mail.gmail.com>
+Subject: Re: [PATCH] PCI: Disallow ASPM on ASMedia ASM1083/1085 PCIe-PCI bridge
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org,
+        Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 15, 2020 at 12:36:02PM -0700, Kees Cook wrote:
-> On Wed, Jul 15, 2020 at 01:32:27AM +0300, Jarkko Sakkinen wrote:
-> > Introduce new API for allocating space for code generaed at run-time
-> > leveraging from module_alloc() and module_memfree() code. Use this to
-> > perform memory allocations in the kprobes code in order to loose the
-> > bound between kprobes and modules subsystem.
-> > 
-> > Initially, use this API only with arch/x86 and define a new config
-> > flag CONFIG_ARCH_HAS_TEXT_ALLOC to promote the availability of the
-> > new API.
-> > [...]
-> > diff --git a/include/linux/text.h b/include/linux/text.h
-> > new file mode 100644
-> > index 000000000000..a27d4a42ecda
-> > --- /dev/null
-> > +++ b/include/linux/text.h
-> > @@ -0,0 +1,17 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +
-> > +#ifndef _LINUX_TEXT_H
-> > +#define _LINUX_TEXT_H
-> > +
-> > +/*
-> > + * An allocator used for allocating modules, core sections and init sections.
-> > + * Returns NULL on failure.
-> > + */
-> > +void *text_alloc(unsigned long size);
-> > +
-> > +/*
-> > + * Free memory returned from text_alloc().
-> > + */
-> > +void text_free(void *region);
-> > +
-> > +#endif /* _LINUX_TEXT_H */
-> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > index 2e97febeef77..fa7687eb0c0e 100644
-> > --- a/kernel/kprobes.c
-> > +++ b/kernel/kprobes.c
-> > @@ -35,6 +35,7 @@
-> >  #include <linux/ftrace.h>
-> >  #include <linux/cpu.h>
-> >  #include <linux/jump_label.h>
-> > +#include <linux/text.h>
-> >  
-> >  #include <asm/sections.h>
-> >  #include <asm/cacheflush.h>
-> > @@ -111,12 +112,20 @@ enum kprobe_slot_state {
-> >  
-> >  void __weak *alloc_insn_page(void)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +	return text_alloc(PAGE_SIZE);
-> > +#else
-> >  	return module_alloc(PAGE_SIZE);
-> > +#endif
-> 
-> This seems like it shouldn't be needed. I think text_alloc() should
-> always be visible. In the ARCH_HAS... case it will call the arch
-> implementation, and without it should just call module_alloc():
-> 
-> For example:
-> void *text_alloc(unsigned long size)
-> {
-> #ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> 	return arch_text_alloc(size);
-> #else
-> 	return module_alloc(size);
-> #endif
-> }
-> 
-> -- 
-> Kees Cook
+On Wed, Jul 22, 2020 at 7:04 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Wed, Jul 22, 2020 at 06:46:06PM -0600, Robert Hancock wrote:
+> > On Wed, Jul 22, 2020 at 11:40 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > On Tue, Jul 21, 2020 at 08:18:03PM -0600, Robert Hancock wrote:
+> > > > Recently ASPM handling was changed to no longer disable ASPM on all
+> > > > PCIe to PCI bridges. Unfortunately these ASMedia PCIe to PCI bridge
+> > > > devices don't seem to function properly with ASPM enabled, as they
+> > > > cause the parent PCIe root port to cause repeated AER timeout errors.
+> > > > In addition to flooding the kernel log, this also causes the machine
+> > > > to wake up immediately after suspend is initiated.
+> > >
+> > > Hi Robert, thanks a lot for the report of this problem
+> > > (https://lore.kernel.org/r/CADLC3L1R2hssRjxHJv9yhdN_7-hGw58rXSfNp-FraZh0Tw+gRw@mail.gmail.com
+> > > and https://bugzilla.redhat.com/show_bug.cgi?id=1853960).
+> > >
+> > > I'm pretty sure Linux ASPM support is missing some things.  This
+> > > problem might be a hardware problem where a quirk is the right
+> > > solution, but it could also be that it's a result of a Linux defect
+> > > that we should fix.
+> > >
+> > > Could you collect the dmesg log and "sudo lspci -vvxxxx" output
+> > > somewhere (maybe a bugzilla.kernel.org issue)?  I want to figure out
+> > > whether this L1 PM substates are enabled on this link, and whether
+> > > that's configured correctly.
+> >
+> > Created a Bugzilla entry and added dmesg and lspci output:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=208667
+> >
+> > As I noted in that report, I subsequently found this page on ASMedia's
+> > site: https://www.asmedia.com.tw/eng/e_show_products.php?cate_index=169&item=114
+> > which indicates this ASM1083 device has "No PCIe ASPM support".
+>
+> How nice.  According to your lspci, the device itself claims to
+> support ASPM:
+>
+>   02:00.0 ... ASMedia Technology Inc. ASM1083/1085 PCIe to PCI Bridge
+>     LnkCap: ... ASPM L0s L1 ...
+>
+> but the web page claims otherwise.  That would mean the device is
+> defective for claiming something that's not true.  Or possibly those
+> capability bits can be set by BIOS.
+>
+> > It's not clear why this problem isn't occurring on Windows however -
+> > either it is not enabling ASPM, somehow it doesn't cause issues with
+> > the PCIe link, or it is causing issues and just doesn't notify the
+> > user in any way. I can try and check if this bridge device is ending
+> > up with ASPM enabled under Windows 10 or not..
+>
+> If Windows *does* manage to enable ASPM, that would be interesting.  I
+> don't know whether Windows has a similar quirk mechanism.  I suppose
+> they must have *some* way to work around defective devices.
 
-I fully agree with your comments and I posted a follow-up series where I
-think these should be resolved. Please check it because before I got
-this review, It was already posted.
-
-Thank you.
-
-/Jarkko
+As I posted on the Bugzilla report, based on lspci output it appears
+Windows does have ASPM L0s enabled for this bridge. However, it
+appears to have the exact same problem: there are correctable PCIe
+error entries showing up in the Windows system event log against the
+root port the bridge is connected to. So I am thinking this hardware
+is just broken with ASPM enabled.
