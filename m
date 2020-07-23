@@ -2,90 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C7B22A9A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0D422A97B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 09:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbgGWH0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 03:26:15 -0400
-Received: from [191.98.176.98] ([191.98.176.98]:48082 "EHLO
-        smtp.regiontacna.gob.pe" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S1725857AbgGWH0O (ORCPT
+        id S1726564AbgGWHU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 03:20:29 -0400
+Received: from out28-172.mail.aliyun.com ([115.124.28.172]:54199 "EHLO
+        out28-172.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgGWHU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 03:26:14 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Thu, 23 Jul 2020 03:26:13 EDT
-Received: from localhost (localhost.localhost [127.0.0.1])
-        by smtp.regiontacna.gob.pe (Postfix) with ESMTP id 06BBFDFFB9;
-        Thu, 23 Jul 2020 02:18:15 -0500 (PET)
-X-Virus-Scanned: by Endian Firewall
-X-Spam-CTCH-RefID: 
-Authentication-Results: smtp.regiontacna.gob.pe (amavisd-new); dkim=softfail
-        (invalid, public key: not available) header.i=@regiontacna.gob.pe
-Received: from mail.regiontacna.gob.pe (unknown [192.168.1.205])
-        by smtp.regiontacna.gob.pe (Postfix) with ESMTPS id 8261DE019F;
-        Thu, 23 Jul 2020 02:17:44 -0500 (PET)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.regiontacna.gob.pe (Postfix) with ESMTP id 964359B4F50A3;
-        Thu, 23 Jul 2020 02:17:49 -0500 (PET)
-Received: from mail.regiontacna.gob.pe ([127.0.0.1])
-        by localhost (mail.regiontacna.gob.pe [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HEA6ibwaWqpk; Thu, 23 Jul 2020 02:17:49 -0500 (PET)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.regiontacna.gob.pe (Postfix) with ESMTP id 2DC119B4F50B1;
-        Thu, 23 Jul 2020 02:17:48 -0500 (PET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.regiontacna.gob.pe 2DC119B4F50B1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=regiontacna.gob.pe;
-        s=E28CBE36-56BD-11EA-AE60-E2D7F7337EDD; t=1595488668;
-        bh=8N2tQ+CSIE4FfxtB8bXV5SSmeaMbCQnjTrFUwm5AOks=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=X6b6B8qcnlvMb2EWDzQf/+Qxw5NGECwn72SAu+RCC4ZJ0jwlI09UI0+BQSbr+n/mu
-         mxI/dBnl312BVRLi0p/KPf2xE26/V1ccBR7IgK8xHeLWEoZIVr/e89SmKFswGXnAYZ
-         hyXe8DkIwpE99QEcoKsjCQrLbCshWy7OPDWyhimE0Kc9dHmJJQRdtthkcd6s/15YCI
-         qRvA7OM8t4spfP6M61+F6TuJIgRiCEhMLHotN5S51BgPokvasnOYKk/TJPV5JhNVw3
-         ZCoDuuCTjZpfhIfDO+JJqzLd8pkjbpJt5rTxB8T+uJKkNsany4+ks1/HkxHKDiP7qb
-         j9LYNPTxUhaiA==
-X-Virus-Scanned: amavisd-new at regiontacna.gob.pe
-Received: from mail.regiontacna.gob.pe ([127.0.0.1])
-        by localhost (mail.regiontacna.gob.pe [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Jz9dPnPCPTIr; Thu, 23 Jul 2020 02:17:47 -0500 (PET)
-Received: from mail.regiontacna.gob.pe (mail.regiontacna.gob.pe [192.168.1.205])
-        by mail.regiontacna.gob.pe (Postfix) with ESMTP id 648B99B4F6683;
-        Thu, 23 Jul 2020 02:17:44 -0500 (PET)
-Date:   Thu, 23 Jul 2020 02:17:44 -0500 (PET)
-From:   Frances Patrick Connolly <hchique@regiontacna.gob.pe>
-Reply-To: francespatrickconnolly0@gmail.com
-Message-ID: <396606797.268262.1595488664305.JavaMail.zimbra@regiontacna.gob.pe>
-Subject: Donation
+        Thu, 23 Jul 2020 03:20:28 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2752589|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.037033-0.00306303-0.959904;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03299;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.I6IjCRk_1595488814;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I6IjCRk_1595488814)
+          by smtp.aliyun-inc.com(10.147.42.253);
+          Thu, 23 Jul 2020 15:20:24 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        keescook@chromium.org, hns@goldelico.com, ebiederm@xmission.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com, paul@crapouillou.net
+Subject: MIPS: CI20: Update defconfig for EFUSE.
+Date:   Thu, 23 Jul 2020 15:19:49 +0800
+Message-Id: <20200723071950.130007-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [192.168.1.205]
-X-Mailer: Zimbra 8.8.15_GA_3899 (zclient/8.8.15_GA_3899)
-Thread-Index: kGSV/snuLulHOBRSYcKN+FFTitBCpg==
-Thread-Topic: Donation
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+周琰杰 (Zhou Yanjie) (1):
+  MIPS: CI20: Update defconfig for EFUSE.
 
- We are Frances and Patrick Connolly the mega winner of =C2=A3115m EuroMill=
-ions
-lottery, if you get this email then your email was selected after a spin ba=
-ll.
-We have spread most of our wealth over several charities
-and organizations. We have voluntarily decided to donate the sum
-of =C2=A31 Million to you, to verify our winnings please see our YouTube
-page below.
+ arch/mips/configs/ci20_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-WATCH HERE: https://www.youtube.com/watch?v=3DNdAfkA8QPpg
+-- 
+2.11.0
 
-THIS IS YOUR DONATION CODE: [ 0034219 ]
-Reply with the DONATION CODE to this email: francespatrickconnolly0@gmail.c=
-om
-
-Hope to make you and your family happy.
-
-Regards
-Frances and Patrick Connolly.
