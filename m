@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360CF22AD06
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD95522AD0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728467AbgGWKzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 06:55:04 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:59394 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728426AbgGWKzE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 06:55:04 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NAiI98003765;
-        Thu, 23 Jul 2020 05:55:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=PODMain02222019;
- bh=U17bNxoNWi8qqSnjSrUhsMn9nJE+sQOjHBXNeVMYZKc=;
- b=bNYYrZ5TJ/mMZnuhoHUq6AYvWVGMFrL/u1EO9PFW+cVqlCkE3X4OrqVm/BYjokyEwxDK
- f825RVmuWkdzirrBa69KCPJj+vGKmt2mOP7KRt1sEZm3ALJScQvZvzT1tmf2RlARJQBb
- DgpJGmFw6Y8EQBNaSxVobQDRt3wWKfahYztqWllaWXtCrZPsumTz02WOKr1x11C0Ol+L
- vv9AVCEcztKR4FT/BmdKybNfTLb6//J/8h4d5pORviXza5talV0+w9DrdcupqubtxSfY
- hQpjPxsHv+bTzk6ZhKEcRo7ga66JoJNT+r14ix4KIjQHHBMKBGMTyjxtQYYRUx6CUdg2 kA== 
-Authentication-Results: ppops.net;
-        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 32bxg1fd81-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 23 Jul 2020 05:55:03 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 23 Jul
- 2020 11:55:00 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Thu, 23 Jul 2020 11:55:00 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2425B2C3;
-        Thu, 23 Jul 2020 10:55:00 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: [RESEND PATCH v3 2/2] mfd: madera: Improve handling of regulator unbinding
-Date:   Thu, 23 Jul 2020 11:54:59 +0100
-Message-ID: <20200723105459.5530-2-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200723105459.5530-1-ckeepax@opensource.cirrus.com>
-References: <20200723105459.5530-1-ckeepax@opensource.cirrus.com>
+        id S1728521AbgGWK4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 06:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgGWKz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 06:55:59 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3459F2080D;
+        Thu, 23 Jul 2020 10:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595501758;
+        bh=rOif2suP7KxnL8T+L3PWl9WY4FaYmE1dtO5JYOiUmc8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K91lnDrZZp3AiLjDTMTTBnfi0BSRzgndD9D6oQ1kbiyUiR4M7OgM0pAdFSIzA7p4r
+         oL47+MeDKrNo4dX/tSdgCNJKntkI+CwM5X9x0FdoG8YKuf6akV/QVTFkKV1LxCeZRI
+         /eOsKnnNRJrzMNcudnpi0wTqJQXKlxKgcPNGboHk=
+Date:   Thu, 23 Jul 2020 12:56:02 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] misc: hpilo: switch from 'pci_' to 'dma_' API
+Message-ID: <20200723105602.GD1949236@kroah.com>
+References: <20200718070224.337964-1-christophe.jaillet@wanadoo.fr>
+ <20200723073433.GA1273491@kroah.com>
+ <15e5f2e4-a623-3fc2-36b6-4132ee316220@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-SPF-Result: fail
-X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
- ip4:5.172.152.52 -all
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 clxscore=1015
- adultscore=0 bulkscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- spamscore=0 mlxlogscore=844 lowpriorityscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007230082
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <15e5f2e4-a623-3fc2-36b6-4132ee316220@wanadoo.fr>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current unbinding process for Madera has some issues. The trouble
-is runtime PM is disabled as the first step of the process, but
-some of the drivers release IRQs causing regmap IRQ to issue a
-runtime get which fails. To allow runtime PM to remain enabled during
-mfd_remove_devices, the DCVDD regulator must remain available. In
-the case of external DCVDD's this is simple, the regulator can simply
-be disabled/put after the call to mfd_remove_devices. However, in
-the case of an internally supplied DCVDD the regulator needs to be
-released after the other MFD children depending on it.
+On Thu, Jul 23, 2020 at 10:59:49AM +0200, Christophe JAILLET wrote:
+> Le 23/07/2020 à 09:34, Greg KH a écrit :
+> > On Sat, Jul 18, 2020 at 09:02:24AM +0200, Christophe JAILLET wrote:
+> > > The wrappers in include/linux/pci-dma-compat.h should go away.
+> > > 
+> > > The patch has been generated with the coccinelle script below and has been
+> > > hand modified to replace GFP_ with a correct flag.
+> > > It has been compile tested.
+> > > 
+> > > When memory is allocated in 'ilo_ccb_setup()' GFP_ATOMIC must be used
+> > > because a spin_lock is hold in 'ilo_open()' before calling
+> > > 'ilo_ccb_setup()'
+> 
+>        ^
+>        |
 
-Use the new MFD mfd_remove_devices_late functionality to split
-the DCVDD regulator off from the other drivers.
+{sigh} see how well I read changelog text...
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/mfd/madera-core.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> > > [...]
+> > > 
+> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > ---
+> > > If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+> > >     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+> > > ---
+> > >   drivers/misc/hpilo.c | 7 ++++---
+> > >   1 file changed, 4 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
+> > > index 10c975662f8b..c9539c89a925 100644
+> > > --- a/drivers/misc/hpilo.c
+> > > +++ b/drivers/misc/hpilo.c
+> > > @@ -256,7 +256,8 @@ static void ilo_ccb_close(struct pci_dev *pdev, struct ccb_data *data)
+> > >   	memset_io(device_ccb, 0, sizeof(struct ccb));
+> > >   	/* free resources used to back send/recv queues */
+> > > -	pci_free_consistent(pdev, data->dma_size, data->dma_va, data->dma_pa);
+> > > +	dma_free_coherent(&pdev->dev, data->dma_size, data->dma_va,
+> > > +			  data->dma_pa);
+> > >   }
+> > >   static int ilo_ccb_setup(struct ilo_hwinfo *hw, struct ccb_data *data, int slot)
+> > > @@ -272,8 +273,8 @@ static int ilo_ccb_setup(struct ilo_hwinfo *hw, struct ccb_data *data, int slot)
+> > >   			 2 * desc_mem_sz(NR_QENTRY) +
+> > >   			 ILO_START_ALIGN + ILO_CACHE_SZ;
+> > > -	data->dma_va = pci_alloc_consistent(hw->ilo_dev, data->dma_size,
+> > > -					    &data->dma_pa);
+> > > +	data->dma_va = dma_alloc_coherent(&hw->ilo_dev->dev, data->dma_size,
+> > > +					  &data->dma_pa, GFP_ATOMIC);
+> > 
+> > This is being called from open() so it can be GFP_KERNEL.  Can you fix
+> > that up and resend a new version?
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> The call chain is:
+>    .open	                       (file_operations)
+>       --> ilo_open
+> 	  spin_lock(&hw->open_lock);   (around line 782)
+>          --> ilo_ccb_setup	       (hw->open_lock is still hold)
+> 
+> So I think that GFP_ATOMIC is needed here, or the code should be reworked to
+> avoid holding the spin_lock when ilo_ccb_setup is called.
 
-diff --git a/drivers/mfd/madera-core.c b/drivers/mfd/madera-core.c
-index 4724c1a01a39f..8a8d733fdce5b 100644
---- a/drivers/mfd/madera-core.c
-+++ b/drivers/mfd/madera-core.c
-@@ -44,7 +44,10 @@ static const char * const madera_core_supplies[] = {
- };
- 
- static const struct mfd_cell madera_ldo1_devs[] = {
--	{ .name = "madera-ldo1", },
-+	{
-+		.name = "madera-ldo1",
-+		.level = MFD_DEP_LEVEL_HIGH,
-+	},
- };
- 
- static const char * const cs47l15_supplies[] = {
-@@ -743,18 +746,22 @@ int madera_dev_exit(struct madera *madera)
- 	/* Prevent any IRQs being serviced while we clean up */
- 	disable_irq(madera->irq);
- 
--	/*
--	 * DCVDD could be supplied by a child node, we must disable it before
--	 * removing the children, and prevent PM runtime from turning it back on
--	 */
--	pm_runtime_disable(madera->dev);
-+	pm_runtime_get_sync(madera->dev);
- 
--	clk_disable_unprepare(madera->mclk[MADERA_MCLK2].clk);
-+	mfd_remove_devices(madera->dev);
-+
-+	pm_runtime_disable(madera->dev);
- 
- 	regulator_disable(madera->dcvdd);
- 	regulator_put(madera->dcvdd);
- 
--	mfd_remove_devices(madera->dev);
-+	mfd_remove_devices_late(madera->dev);
-+
-+	pm_runtime_set_suspended(madera->dev);
-+	pm_runtime_put_noidle(madera->dev);
-+
-+	clk_disable_unprepare(madera->mclk[MADERA_MCLK2].clk);
-+
- 	madera_enable_hard_reset(madera);
- 
- 	regulator_bulk_disable(madera->num_core_supplies,
--- 
-2.11.0
+Ok, fair enough, this patch is ok as-is, I'll go queue it up.  Further
+fixes for this to move the spinlock out from this is probably a good
+idea, if anyone cares about this driver anymore.
 
+thanks,
+
+greg k-h
