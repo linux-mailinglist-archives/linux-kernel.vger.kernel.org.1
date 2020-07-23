@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4369C22A5FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 05:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1449522A601
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 05:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387739AbgGWDXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 23:23:24 -0400
-Received: from mga04.intel.com ([192.55.52.120]:61441 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728902AbgGWDXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 23:23:24 -0400
-IronPort-SDR: vcKrXicXSXcjbEJPYLpWcTua71NTWMMFMBm/BO21zuyYZ0X3FNAb6aO/77l7KQ1t0I3JKsuxHE
- QZHjt2QPnLxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="147953208"
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="147953208"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 20:23:24 -0700
-IronPort-SDR: 3kKotiZApIQY8Zk2u+X+59Xne0H1eXvgGZL4/h8gyTCHEB7kIbgJ7uUNKQti+CwJy3nbKNfrMa
- GhvbK1jmMoOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="270924049"
-Received: from aghafar1-mobl1.amr.corp.intel.com (HELO localhost) ([10.252.58.209])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Jul 2020 20:23:18 -0700
-Date:   Thu, 23 Jul 2020 06:23:17 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Don Porter <porter@cs.unc.edu>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        bp@alien8.de, luto@kernel.org, hpa@zytor.com,
-        dave.hansen@intel.com, tony.luck@intel.com,
-        ravi.v.shankar@intel.com, chang.seok.bae@intel.com
-Subject: Re: [PATCH v12 00/18] Enable FSGSBASE instructions
-Message-ID: <20200723032317.GA50398@linux.intel.com>
-References: <e9a0a521-104b-5c3a-a689-78f878e73d31@cs.unc.edu>
- <7A3EBAB0-B3B3-4CB7-AA6A-FDF29D03E30D@amacapital.net>
- <20200529152756.GA7452@invisiblethingslab.com>
- <ef8bbdff-e891-bee3-677d-3606474ecc10@cs.unc.edu>
- <20200625213705.GF20341@linux.intel.com>
- <a6e45675-a7f0-7708-6cc6-318a947e2e57@cs.unc.edu>
+        id S2387629AbgGWDZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 23:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733203AbgGWDZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 23:25:11 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C33C0619E2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 20:25:10 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id x72so2299336pfc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 20:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9MVfx3nOR6UuOciR/xo7cXZ/th4WV5eo7kpG1rG3ysA=;
+        b=sYGg/2srzRVqnhZoUg5o1/8tbs+uw5e5GRk9Prg191UfP1xoMwvH723Ge9XxV8UQ+Y
+         4CEWot9lS0SqzGP8KRgPxAJxpC/eEprKLS3vIBqZ5aANULGw14jQP2A7earpJeHPMRIR
+         h03gCHjIS00DOdkrfY88+LkPeWA803BH19mIOcX825pt//wFRoKWgLX/4GQxUeM57uDp
+         WyjOxQQ4rtE7lDBcbhS6m9tuIqe5ezBXIEwPrhUrtefYV324MprVw5BfPaQGw3Ip0u/v
+         Aa//OtUahu1SxHH+0XFEgauJFf2i+AujXdahv7KDbKSx8tvSGdZciHACQveIiHGHIFa7
+         5V6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9MVfx3nOR6UuOciR/xo7cXZ/th4WV5eo7kpG1rG3ysA=;
+        b=UiTOFro9zMc5A27h09iVZYpKjUPtYAgYlWWa8xug5Fy0DcWZFAgJloYT3AjjLH+Gvq
+         6HsmnsvOOIxoiIKCmJVdgaG6/rpLfx/37ksQHGkI50hSxfdRFS6oLeHDk1HREdqK+CBt
+         lfni2NUvZdTxYevgKPlb/5tvz6fbHIQCUUbc9w0RNdR3UfDEVt6d/8XDJW3tlzFzWyv3
+         0W4OKK+DgWqpx8oQlvffTIZF37ky8Gds5TXtCrkwcYXFvjIXNSK3Kbr9dO5T3Pucv+cy
+         iMsM56epAHrNO24prE0Jv+hhuppNLg5vy8xSkLIigCcw6mWGEMkvpPLSamo71c+x8n7R
+         J1VA==
+X-Gm-Message-State: AOAM531GdluxMtCw1LkSV0tj4CRtERNx7FXhghKA7ywH+4jffoYZUCQJ
+        oyhCfiTAfm2s+SGtCN68xj5glQgdrJ1NoA==
+X-Google-Smtp-Source: ABdhPJyG7BgknGC9wMaKL2Q7w46TNfVt44bgRZhyUF0TneCCHjumSEJ/mUDzmmYzIcEUfulF3SLN8A==
+X-Received: by 2002:aa7:9685:: with SMTP id f5mr2422134pfk.223.1595474710040;
+        Wed, 22 Jul 2020 20:25:10 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id b128sm1001418pfg.114.2020.07.22.20.25.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 Jul 2020 20:25:09 -0700 (PDT)
+Subject: Re: [PATCH -next] io_uring: Remove redundant NULL check
+To:     Li Heng <liheng40@huawei.com>, viro@zeniv.linux.org.uk
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1595474350-10039-1-git-send-email-liheng40@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c05036b0-49c0-411c-6051-27dee4a0f2b4@kernel.dk>
+Date:   Wed, 22 Jul 2020 21:25:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6e45675-a7f0-7708-6cc6-318a947e2e57@cs.unc.edu>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1595474350-10039-1-git-send-email-liheng40@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 18, 2020 at 02:19:52PM -0400, Don Porter wrote:
-> On 6/25/20 5:37 PM, Jarkko Sakkinen wrote:
-> > 
-> > Can unmodified Graphene-SGX used with these changes?
-> > 
-> 
-> Yes.  I just double-checked that all of the needed changes have made it to
-> master branch.
-> 
-> I also re-tested on 5.8-rc1 with v13 of the patch, and it looks good.
+On 7/22/20 9:19 PM, Li Heng wrote:
+> Fix below warnings reported by coccicheck:
+> ./fs/io_uring.c:1544:2-7: WARNING: NULL check before some freeing functions is not needed.
+> ./fs/io_uring.c:3095:2-7: WARNING: NULL check before some freeing functions is not needed.
+> ./fs/io_uring.c:3195:2-7: WARNING: NULL check before some freeing functions is not needed.
 
-OK, cool, have to play with this once I'm back from vacation (away
-WW31-WW32). Thanks for the info.
+Not needed, but it's faster that way. See recent discussions on the
+io-uring list. Hence they are very much on purpose, and it'd be great if
+someone would ensure that kfree() was an inline that checks for non-NULL
+before calling __kfree() or whatever the real function would then be.
 
-/Jarkko
+-- 
+Jens Axboe
+
