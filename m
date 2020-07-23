@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071B322AB50
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A7C22AB55
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgGWJGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 05:06:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgGWJF6 (ORCPT
+        id S1727925AbgGWJIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 05:08:00 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:62859 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725846AbgGWJIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:05:58 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E599C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:05:58 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id 88so4404440wrh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 02:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LreLnnZrmwYYHqpYhGckfxJZdjPdivebpamaHVtnHss=;
-        b=dp4NOUJqQL/scm6GUYDjAXuLDt4cgSIbswqtZ6cIJfZCxfzC1NpMAwaIZ+2dvElcj9
-         SDC0T7IQ44exhyDpzJ9m7bbXA8SelqJO/TmmnZPQfFDK63km9fcYn7YvPWQPd4zttNZm
-         DgWrxRl6zwWKV+SF2Dezay6uB7J+zAzzIPC7iRSeLSi9hP4VzjDj2CYgg7Y9mSk1PDhz
-         A52xl0Ki7OzQ5at/zyyUJtmVloPz8Vqhq2ZgYD6xs3fo1wUAWRJNN6adh8xK05051VJA
-         f8qrpe2alI3fnTVS4Nrfn641a/3JssxJhg5jEeT8FUwJs2HZAvWCnrUvgjhoOUId9/CY
-         j47A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LreLnnZrmwYYHqpYhGckfxJZdjPdivebpamaHVtnHss=;
-        b=OcC+fMLBllQehGC9Y3bAJCxK6zYBLpcihgM+Nzfq2qPaWceW/JIgWYxSBtwAdYvK/t
-         /SuQPlCvEmLkgYnD6VVyJRdZoYxM3Pl9P7XTnuWzJc/sRTLOaAj5xpbYz2c012m4XsAN
-         V4xtez0QhR3ns/mJzR1kD7ZDJOyzqOIo8y1Y5frXNbquVysWCtqct7w5ah/tM510YXiN
-         /VjdTYuDjvvJXYhwiRd/NNSdjjco0uRvi2N115DOTaq47fDrR3H7LkHVzGfanwC1zXPu
-         BNd6u6pQfnj0BuJ2TV0/YMZI0cvDecxObJTWBLjgvriJJgqwYaDkHj1Kmy1X1smlX+fe
-         JhfA==
-X-Gm-Message-State: AOAM5330rXrXnx0PfcA4b5KJSwc84e8CRGeCnXskLXnW9XVEePYypSdR
-        fLI4wSawYo1ReVJQagWyjE14ug==
-X-Google-Smtp-Source: ABdhPJzqffe9YMOSst9S78aI/iVWmungmYo/9CY48wTFHegSvIqIB1PAqtLGwVADRl5r9zYcZipJCA==
-X-Received: by 2002:adf:ec8b:: with SMTP id z11mr3032026wrn.51.1595495156669;
-        Thu, 23 Jul 2020 02:05:56 -0700 (PDT)
-Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5ce9:901f:7444:d44d])
-        by smtp.gmail.com with ESMTPSA id 62sm2947397wrq.31.2020.07.23.02.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 02:05:56 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     daniel@ffwll.ch
-Cc:     khilman@baylibre.com, linux-amlogic@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 2/2] drm/meson: overlay: fix Amlogic Compressed Framebuffer modifier layout extract
-Date:   Thu, 23 Jul 2020 11:05:51 +0200
-Message-Id: <20200723090551.27529-2-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20200723090551.27529-1-narmstrong@baylibre.com>
-References: <20200723090551.27529-1-narmstrong@baylibre.com>
+        Thu, 23 Jul 2020 05:08:00 -0400
+X-UUID: 609ee1b2215c485ab6481c4575604080-20200723
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=fQAlYTu7jimnOiNSbIQbC1bv/gLKYWyftON61ys5CAk=;
+        b=Lk9rxwToEFLLsTkehhDeBHCo0H0jZUGXf0jbhFpJldHRQI8qrBLvNBH0Xy5rpLVyACJxlHz+XahoaimFd//B/8+W42p7chWSbgoOf1nFlwtTNl6bujE1p4QVn5xxqNXMUXvKvLjqpsJL9E5WClRSquxSQKdCn3fHPI+gKjGhwVM=;
+X-UUID: 609ee1b2215c485ab6481c4575604080-20200723
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <seiya.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1782811880; Thu, 23 Jul 2020 17:07:54 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Jul 2020 17:07:51 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Jul 2020 17:07:46 +0800
+From:   Seiya Wang <seiya.wang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>
+Subject: [PATCH 0/4] Add basic node support for Mediatek MT8192 SoC 
+Date:   Thu, 23 Jul 2020 17:07:27 +0800
+Message-ID: <20200723090731.4482-1-seiya.wang@mediatek.com>
+X-Mailer: git-send-email 2.14.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bitwise operation worked because the result is casted in a lower bits
-integer, and was not changed after the modifier defines rework.
-
-Use the correct operation as already used in meson_overlay_atomic_update().
-
-Fixes: e860785d5730 ("drm/meson: overlay: setup overlay for Amlogic FBC")
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/gpu/drm/meson/meson_overlay.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/meson/meson_overlay.c b/drivers/gpu/drm/meson/meson_overlay.c
-index a8bcc70644df..83ec613bbfb6 100644
---- a/drivers/gpu/drm/meson/meson_overlay.c
-+++ b/drivers/gpu/drm/meson/meson_overlay.c
-@@ -756,8 +756,7 @@ static bool meson_overlay_format_mod_supported(struct drm_plane *plane,
- 	if ((modifier & DRM_FORMAT_MOD_AMLOGIC_FBC(0, 0)) ==
- 			DRM_FORMAT_MOD_AMLOGIC_FBC(0, 0)) {
- 		unsigned int layout = modifier &
--			DRM_FORMAT_MOD_AMLOGIC_FBC(
--				__fourcc_mod_amlogic_layout_mask, 0);
-+			__fourcc_mod_amlogic_layout_mask;
- 		unsigned int options =
- 			(modifier >> __fourcc_mod_amlogic_options_shift) &
- 			__fourcc_mod_amlogic_options_mask;
--- 
-2.22.0
+DQpNVDgxOTIgaXMgYSBTb0MgYmFzZWQgb24gNjRiaXQgQVJNdjggYXJjaGl0ZWN0dXJlLg0KSXQg
+Y29udGFpbnMgNCBDQTU1IGFuZCA0IENBNzYgY29yZXMuDQpNVDgxOTIgc2hhcmUgbWFueSBIVyBJ
+UCB3aXRoIE1UNjV4eCBzZXJpZXMuDQpUaGlzIHBhdGNoc2V0IHdhcyB0ZXN0ZWQgb24gTVQ4MTky
+IGV2YWx1YXRpb24gYm9hcmQgYW5kIHVzZSBjb3JyZWN0IGNsb2NrIHRvIHNoZQ0KbGwuDQoNCkJh
+c2VkIG9uIHY1LjgtcmMxDQoNCkNyeXN0YWwgR3VvICgyKToNCiAgd2F0Y2hkb2c6IG10ODE5Mjog
+YWRkIHdkdCBzdXBwb3J0DQogIGR0LWJpbmRpbmc6IG1lZGlhdGVrOiBtdDgxOTI6IHVwZGF0ZSBt
+dGstd2R0IGRvY3VtZW50DQoNClNlaXlhIFdhbmcgKDIpOg0KICBhcm02NDogZHRzOiBBZGQgTWVk
+aWF0ZWsgU29DIE1UODE5MiBhbmQgZXZhbHVhdGlvbiBib2FyZCBkdHMgYW5kDQogICAgTWFrZWZp
+bGUNCiAgZHQtYmluZGluZ3M6IHNlcmlhbDogQWRkIGNvbXBhdGlibGUgZm9yIE1lZGlhdGVrIE1U
+ODE5Mg0KLS0tDQpUaGlzIHBhdGNoIGRlcGVuZHMgb24NCltQQVRDSCAxLzNdIGR0LWJpbmRpbmdz
+OiBwaW5jdHJsOiBtdDgxOTI6IGFkZCBwaW5jdHJsIGZpbGUNCltQQVRDSCAyLzNdIGR0LWJpbmRp
+bmdzOiBwaW5jdHJsOiBtdDgxOTI6IGFkZCBiaW5kaW5nIGRvY3VtZW50DQpbUEFUQ0ggdjIgMy80
+XSBkdC1iaW5kaW5nczogbWVkaWF0ZWs6IGFkZCBjb21wYXRpYmxlIGZvciBNVDY4NzMvODE5MiBw
+d3JhcA0KW1BBVENIIHYyIDEvMl0gZHQtYmluZGluZ3M6IHNwaTogdXBkYXRlIGJpbmRpbmdzIGZv
+ciBNVDgxOTIgU29DDQpbUEFUQ0ggMi80XSBjbGs6IG1lZGlhdGVrOiBBZGQgZHQtYmluZGluZ3Mg
+Zm9yIE1UODE5MiBjbG9ja3MNCltQQVRDSCAxLzRdIGR0LWJpbmRpbmdzOiBBUk06IE1lZGlhdGVr
+OiBEb2N1bWVudCBiaW5kaW5ncyBmb3IgTVQ4MTkyDQoNClBsZWFzZSBhbHNvIGFjY2VwdCB0aGlz
+IHBhdGNoIHRvZ2V0aGVyIHdpdGggWzFdWzJdWzNdWzRdWzVdWzZdDQp0byBhdm9pZCBidWlsZCBh
+bmQgZHQgYmluZGluZyBjaGVjayBlcnJvci4NCg0KWzFdIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL3BpcGVybWFpbC9saW51eC1tZWRpYXRlay8yMDIwLUp1bHkvMDE0MDQyLmh0bWwNClsyXSBo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbWVkaWF0ZWsvMjAyMC1K
+dWx5LzAxNDA0My5odG1sDQpbM10gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWls
+L2xpbnV4LW1lZGlhdGVrLzIwMjAtSnVseS8wMTQ1NDYuaHRtbA0KWzRdIGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tZWRpYXRlay8yMDIwLUp1bHkvMDE0NDA2Lmh0
+bWwNCls1XSBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbWVkaWF0
+ZWsvMjAyMC1KdWx5LzAxNDQ1MC5odG1sDQpbNl0gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+cGlwZXJtYWlsL2xpbnV4LW1lZGlhdGVrLzIwMjAtSnVseS8wMTQ0NTEuaHRtbA0KLS0tDQogLi4u
+L2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL210ay11YXJ0LnR4dCAgICAgICAgfCAgIDEgKw0K
+IC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3dhdGNoZG9nL210ay13ZHQudHh0ICAgICAgIHwgICAy
+ICsNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgICB8
+ICAgMSArDQogYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTItZXZiLmR0cyAgICAg
+ICAgfCAgMjkgKw0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgICAg
+ICAgICAgIHwgNjYzICsrKysrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvd2F0Y2hkb2cvbXRr
+X3dkdC5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA1ICsNCiA2IGZpbGVzIGNoYW5nZWQs
+IDcwMSBpbnNlcnRpb25zKCspDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvYXJtNjQvYm9vdC9k
+dHMvbWVkaWF0ZWsvbXQ4MTkyLWV2Yi5kdHMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJjaC9hcm02
+NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaQ0KDQotLQ0KMi4xNC4xDQo=
 
