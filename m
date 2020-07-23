@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B2A22B720
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A3822B729
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgGWUEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
+        id S1726899AbgGWUHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725894AbgGWUEy (ORCPT
+        with ESMTP id S1725894AbgGWUHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:04:54 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFCBC0619DC;
-        Thu, 23 Jul 2020 13:04:54 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A19562CD;
-        Thu, 23 Jul 2020 20:04:53 +0000 (UTC)
-Date:   Thu, 23 Jul 2020 14:04:52 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: Replace HTTP links with HTTPS ones
-Message-ID: <20200723140452.59c51a7a@lwn.net>
-In-Reply-To: <20200720211231.63831-1-grandmaster@al2klimov.de>
-References: <CAMj1kXEzaa3BtNF9kgB=UGMx-uvosGwcUbdT3O2qZ1K0XhyUiQ@mail.gmail.com>
-        <20200720211231.63831-1-grandmaster@al2klimov.de>
-Organization: LWN.net
+        Thu, 23 Jul 2020 16:07:18 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D096EC0619DC;
+        Thu, 23 Jul 2020 13:07:17 -0700 (PDT)
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1jyhUc-009mYg-5X; Thu, 23 Jul 2020 22:07:02 +0200
+Message-ID: <ce380ea1fd1f5db40a92f67673f070a1f88eee50.camel@sipsolutions.net>
+Subject: Re: [RFC 1/7] mac80211: Add check for napi handle before WARN_ON
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Rakesh Pillai <pillair@codeaurora.org>, ath10k@lists.infradead.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, dianders@chromium.org, evgreen@chromium.org
+Date:   Thu, 23 Jul 2020 22:06:46 +0200
+In-Reply-To: <003201d6611e$c54a1c90$4fde55b0$@codeaurora.org>
+References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
+                 <1595351666-28193-2-git-send-email-pillair@codeaurora.org>
+         <0dbdef912f9d61521011f638200fd451a3530568.camel@sipsolutions.net>
+         <003201d6611e$c54a1c90$4fde55b0$@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 23:12:31 +0200
-"Alexander A. Klimov" <grandmaster@al2klimov.de> wrote:
+On Thu, 2020-07-23 at 23:56 +0530, Rakesh Pillai wrote:
 
->  Documentation/arm64/arm-acpi.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > -	WARN_ON_ONCE(softirq_count() == 0);
+> > > +	WARN_ON_ONCE(napi && softirq_count() == 0);
+> > 
+> > FWIW, I'm pretty sure this is incorrect - we make assumptions on
+> > softirqs being disabled in mac80211 for serialization and in place of
+> > some locking, I believe.
+> > 
 > 
-> diff --git a/Documentation/arm64/arm-acpi.rst b/Documentation/arm64/arm-acpi.rst
-> index 872dbbc73d4a..8f675c38c244 100644
-> --- a/Documentation/arm64/arm-acpi.rst
-> +++ b/Documentation/arm64/arm-acpi.rst
-> @@ -273,7 +273,7 @@ only use the _DSD Device Properties UUID [5]:
->  
->     - UUID: daffd814-6eba-4d8c-8a91-bc9bbf4aa301
->  
-> -   - http://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-> +   - https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
->  
->  The UEFI Forum provides a mechanism for registering device properties [4]
->  so that they may be used across all operating systems supporting ACPI.
+> I checked this, but let me double confirm.
+> But after this change, no packet is submitted from driver in a softirq context.
+> So ideally this should take care of serialization.
 
-Applied, thanks.
+I'd guess that we have some reliance on BHs already being disabled, for
+things like u64 sync updates, or whatnot. I mean, we did "rx_ni()" for a
+reason ... Maybe lockdep can help catch some of the issues.
 
-jon
+But couldn't you be in a thread and have BHs disabled too?
+
+johannes
+
