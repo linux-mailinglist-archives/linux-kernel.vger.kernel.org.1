@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D22522B371
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B85322B372
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729784AbgGWQZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:25:17 -0400
+        id S1729801AbgGWQZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:25:21 -0400
 Received: from esa2.microchip.iphmx.com ([68.232.149.84]:50440 "EHLO
         esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgGWQZQ (ORCPT
+        with ESMTP id S1726632AbgGWQZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:25:16 -0400
+        Thu, 23 Jul 2020 12:25:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595521516; x=1627057516;
+  t=1595521519; x=1627057519;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=No7CI6pZaYc/VN/VbA4B7W3JcVHomQRk3i46YyNuSLI=;
-  b=L1DK8nWKWnekSEGNxTdpmXij2zGFqujtDNs89swSupfRuPAhgm3RHiqj
-   SFaxlwysIB8hN77fH0hh11kgBXEKo2UkkbSGpbv/qPaB7EZc5Ja+Z+Eu0
-   /z6XN2pTOzlcQg0Wi2SFZCE5aOhot7As+DPet6F2954LdwY6zZxQhVbmm
-   7KFq13FAUIr1OoPDUVi4nAOZtD94SJUv3/NxyJS3tGKlhPXa6StUBdufs
-   b2altK7iDA3Y2LTPrO5PAR8bJOaFzzvs/O708DY1gdJp6EPxafadJLNOt
-   KX8BVxceYqN677S+n6REZKNcv1WDtSyZY8FcHWq6W78xcZtfWgDbOYVkO
-   Q==;
-IronPort-SDR: Jmxlj7H6QquT5HS+ujnJk6HRY79Z/+f2seawOShA4oc3nsFZByH55fxbaZky3F2dm2BzGiK04k
- nOR5QeU2X2P53H/Hsbx9dDTRyxbBNtdbGG/Dun6DcVvSiJuwX1R/qg/dRcftVcviFsNGAWbW0S
- NQssW5P57/jZ9azPGLiFcMV2RqyDK85FEx/iDsvLn9xRj7a/jQy9QTB2N9UIk2TW7vBMxAhYGY
- 9gUx/8qKXZKVSfedPtjLLKfRt6JcgTkKd+Yo49zkCsN1kUcZmdfyONGhXxzAZ+G6h/XOoYaeDB
- iC4=
+  bh=zHen7frI1NyzHCq/SsDVhF8PjNZaPlhUG3M1JdHxd60=;
+  b=hpK3UmhdeJTHyPLSGQTjfbyrFhtMu0A7Xj7ypwnlqt5+AH7t/+GK4xZP
+   5UErekA20R3pWJ5v8qgf8UtOx91jt27RbJBUvscbosL8A3XekTZ5ZNgYw
+   qyVM2gmPTMR36p+AdA+DcoWRbM+htdfBiKauY2RBYhN+1WAO1rq3xijti
+   B5I9JLy6iFYFqVPSfxeM9UXb4tk7oGl2J0oZeRmR6E9MtJqxQxndBc5a0
+   pO92/1gDoo2nly5EGK05S9dnrhcAuNaODitHnu9wuu427+9p/dk6sJcDK
+   Ejg1g4EGqZDUS75NvDwVANgA3dP/O9uE0bIJxko9V+Wx5UEKE7eJ8Dbrm
+   w==;
+IronPort-SDR: dKvzLny7P9FO9AursgRqvTwIH8d4UqnE4Q7nTWxKpIToCBFLM1jkJrbIs9jGr3CyAQjgO+0ZSA
+ HSgwJOFywNlnd9RTu+JUow5fmyKGm/FfkLBWS8CshOtIQVMvFVxhlri5QlNZknDYLlt+N0zt6o
+ kbpZmi/MEEMQ3Gru6/zcSQ/mainmIz4TOhQ9NQnLTz74w78f+hz97FXCrMQ2Ax8AJkWYrl17Jn
+ kRqgPBM1D8IY0l5Guq1zJa2PHv+RozsGWK9gObMLPFHncU2lenwRv74stffE7KldhbQqGZ/TVW
+ 5MI=
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="83016658"
+   d="scan'208";a="83016692"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 09:25:15 -0700
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2020 09:25:19 -0700
 Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 23 Jul 2020 09:25:16 -0700
+ 15.1.1979.3; Thu, 23 Jul 2020 09:25:19 -0700
 Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 23 Jul 2020 09:25:12 -0700
+ 15.1.1979.3 via Frontend Transport; Thu, 23 Jul 2020 09:25:16 -0700
 From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <alexandre.belloni@bootlin.com>, <cristian.birsan@microchip.com>,
         <nicolas.ferre@microchip.com>, <arnd@arndb.de>,
         <ludovic.desroches@microchip.com>,
-        Razvan Stefanescu <razvan.stefanescu@microchip.com>,
         Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 2/3] ARM: configs: at91: sama5: enable bridge and VLAN filtering
-Date:   Thu, 23 Jul 2020 19:24:33 +0300
-Message-ID: <20200723162434.1983643-2-codrin.ciubotariu@microchip.com>
+Subject: [PATCH 3/3] ARM: configs: at91: sama5: enable CAN PLATFORM driver
+Date:   Thu, 23 Jul 2020 19:24:34 +0300
+Message-ID: <20200723162434.1983643-3-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200723162434.1983643-1-codrin.ciubotariu@microchip.com>
 References: <20200723162434.1983643-1-codrin.ciubotariu@microchip.com>
@@ -63,32 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Razvan Stefanescu <razvan.stefanescu@microchip.com>
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-These modules are needed to configure bridges in Linux, to take full
-advantage of the KSZ switch capabilities.
+CAN_M_CAN_PLATFORM is needed to probe the driver on sama5 platforms
+after the driver was split into multiple files.
 
-Signed-off-by: Razvan Stefanescu <razvan.stefanescu@microchip.com>
+Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- arch/arm/configs/sama5_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm/configs/sama5_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-index 123b95c1447a..f4d71ffcb6e9 100644
+index f4d71ffcb6e9..7b7e333157fe 100644
 --- a/arch/arm/configs/sama5_defconfig
 +++ b/arch/arm/configs/sama5_defconfig
-@@ -49,7 +49,10 @@ CONFIG_IP_PNP_RARP=y
- # CONFIG_INET6_XFRM_MODE_TUNNEL is not set
- # CONFIG_INET6_XFRM_MODE_BEET is not set
- CONFIG_IPV6_SIT_6RD=y
-+CONFIG_BRIDGE=m
-+CONFIG_BRIDGE_VLAN_FILTERING=y
- CONFIG_NET_DSA=m
-+CONFIG_VLAN_8021Q=m
+@@ -56,6 +56,7 @@ CONFIG_VLAN_8021Q=m
  CONFIG_CAN=y
  CONFIG_CAN_AT91=y
  CONFIG_CAN_M_CAN=y
++CONFIG_CAN_M_CAN_PLATFORM=y
+ CONFIG_CFG80211=y
+ CONFIG_MAC80211=y
+ CONFIG_MAC80211_LEDS=y
 -- 
 2.25.1
 
