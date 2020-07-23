@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EB522AAA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152B322AAAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgGWIaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:30:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725911AbgGWIae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:30:34 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C59F120768;
-        Thu, 23 Jul 2020 08:30:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595493034;
-        bh=mPYqTowX5vor6nLpyE1VROCULLbUPdSd3qfv92B4MpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CA3E/h62M0dkPEcInzOMtb9f2PDv/UzMr12wB/dHq48x/h3qjbmGRXoIFahFOAJtE
-         XkKfo2Jpa5pKk0QvFGOjB6POf4IsE88jB6pOiVzXHJSx6E6YS+JE8RqaUxVlbZHRFL
-         MY9/Jz7gLNlyQnUlyE/Lm5L4+mP0a5GrYTYVhccs=
-Date:   Thu, 23 Jul 2020 10:30:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: octeon: Add the license identifier
-Message-ID: <20200723083038.GA1525929@kroah.com>
-References: <20200722153953.GA8148@PKL-UANJUM-LT.pkl.mentorg.com>
+        id S1727881AbgGWIcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:32:41 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2512 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725846AbgGWIcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:32:41 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 55E98549604A8695FF83;
+        Thu, 23 Jul 2020 09:32:39 +0100 (IST)
+Received: from localhost (10.52.125.229) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 23 Jul
+ 2020 09:32:38 +0100
+Date:   Thu, 23 Jul 2020 09:31:18 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Pavel Machek <pavel@denx.de>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Subject: Re: [PATCH 4.19 034/133] iio:humidity:hts221 Fix alignment and data
+ leak issues
+Message-ID: <20200723093118.00005572@Huawei.com>
+In-Reply-To: <20200722112835.GB22052@duo.ucw.cz>
+References: <20200720152803.732195882@linuxfoundation.org>
+        <20200720152805.365344523@linuxfoundation.org>
+        <20200722112835.GB22052@duo.ucw.cz>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722153953.GA8148@PKL-UANJUM-LT.pkl.mentorg.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.229]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 08:39:53PM +0500, Muhammad Usama Anjum wrote:
-> This patch fixes the checkpatch.pl warning:
-> WARNING: Missing or malformed SPDX-License-Identifier tag
+On Wed, 22 Jul 2020 13:28:35 +0200
+Pavel Machek <pavel@denx.de> wrote:
+
+> Hi!
 > 
-> Add a the SPDX-License-Identifier tag on line 1
+> > From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> > 
+> > commit 5c49056ad9f3c786f7716da2dd47e4488fc6bd25 upstream.
+> > 
+> > One of a class of bugs pointed out by Lars in a recent review.
+> > iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
+> > to the size of the timestamp (8 bytes).  This is not guaranteed in
+> > this driver which uses an array of smaller elements on the stack.  
 > 
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
->  drivers/staging/octeon/octeon-stubs.h | 2 ++
->  1 file changed, 2 insertions(+)
+> I don't see documentation explaining alignment issues with
+> iio_push_to_buffers_with_timestamp(). Perhaps comment near that
+> function should explain that?
+
+Hi Pavel,
+
+Agreed.  It's a subtle corner case (hence we missed it for years)
+so absolutely needs documenting.  The nasty part is that we don't
+control the expectations of the consumers who get the data from
+that interface.  They may make the reasonable assumption
+that they aren't getting unaligned data,  particularly given the
+effort we go to in ensuring natural alignment of elements within
+the buffer.  It's a moderately fast path so any tricks with realigning
+the data aren't sensible either.
+
 > 
-> diff --git a/drivers/staging/octeon/octeon-stubs.h b/drivers/staging/octeon/octeon-stubs.h
-> index d06743504f2b..889b7c80666d 100644
-> --- a/drivers/staging/octeon/octeon-stubs.h
-> +++ b/drivers/staging/octeon/octeon-stubs.h
-> @@ -1,3 +1,5 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
+> And as it seems to be common problem, perhaps
+> iio_push_to_buffers_with_timestamp should check alignment of its
+> arguments?
 
-How do you know this is the correct license for this file?
+It should indeed check this.  But... The reality is that lots
+of platforms are fine with the alignment not being enforced.
+So far we have precisely one confirmed report of the issue.
 
-Please include how you came to this decision in the changelog text when
-you resend it.
+Until we have fixed all the users I'm not keen to add a check
+that will be seen to 'break' existing working systems.
+It's taking a while to get all these reviewed so I'm picking them
+up as they get sufficient eyes on them.  A few drivers are more
+fiddly to do so we don't yet have patches on the list.
 
-thanks,
+I was thinking to do the documentation update and a check enforcing
+it in one go, but perhaps given the slow nature of getting all the
+users fixed we should look to document now and enforce later?
 
-greg k-h
+Jonathan
+
+
+> 
+> Thanks,
+> 								Pavel
+
+
