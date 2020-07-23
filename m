@@ -2,161 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0585B22B560
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F0322B569
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgGWSGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgGWSGx (ORCPT
+        id S1726852AbgGWSJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:09:56 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5804 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726455AbgGWSJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:06:53 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF1FC0619E3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:06:53 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a6so6994626wmm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mD0gVXE2wPUJlx9RjmBmtExy8T7ZH1sd1QlDXUC5IPE=;
-        b=i9jDZylBCkYI4PX0pdm+Sx5r9rpNQztebTzzJ2kVJ1CwiWFsRTWxuiqKLU82ckP/5O
-         wm1GXTuLRUo5xznse+hNcjWLSiqZEEk/EsqBdPgKDXZV7G488oTrZts+KjJ4wp0ynNoK
-         xnthrqYDhVtPJnC8VwxeoknxgRu/6ZCDxEteqO17nMpNqxlaB8fTpNaoYk57XxkPkoty
-         w/bqAXHYunqu4VIa3KP9J0BnNL5aVqEZvCNIX5BhAsftylOcY3UdBfzlYgoDDWcfQHkb
-         R+BEjxirEqdVRBrNJTyNc0sPJX42zuKYkvXtcxh8oQH7/JPU/8pc1R3QD1cmCFc64i1x
-         103w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mD0gVXE2wPUJlx9RjmBmtExy8T7ZH1sd1QlDXUC5IPE=;
-        b=J2OjQeTnvHEsg09/TEgSS1aOxNYFpnsbQTvDtD/QdNPBxnNigM4qYe/dVfmF4GottR
-         501XIXpU7XhCpmjFmz8Q8D56LJLbT0zCmstcE6HeI+HE7ppla5qZpzkx/XNFBcqXx6Er
-         rfljVo2JWg8er0o/nbhdECvyv3XK2RYU+a22xdfHFDIqrH1yxVBKYggX75nR3PoUXPsE
-         HumfSAdj+OzquY9sdYOIZLgcgdG8h6FMBFFLhgJ+x7v2+TBhJ2RxRCThj/YfFicLGvM2
-         uwgjaBDiuIELS3jsPnIosUPr1LEjS430HECU9ADXNtWpxScgbrY1aUoy8bI6u59MKr1G
-         RqHQ==
-X-Gm-Message-State: AOAM531cSqjzU0/LcCiVjm0e7+uhlOH8HepTUzmuGehUfkJplcYakIIc
-        NSRVEx8teoeiMb4AtD74CG5hvA==
-X-Google-Smtp-Source: ABdhPJwF9PGbliwSW3zKmJVzF1dom2pw4cIfvHUzAVudkZu5XXD9qQ12APwQBRSpaMyPmQ6WomZO/g==
-X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr5107823wmg.88.1595527612034;
-        Thu, 23 Jul 2020 11:06:52 -0700 (PDT)
-Received: from [192.168.1.12] ([195.24.90.54])
-        by smtp.googlemail.com with ESMTPSA id g126sm4377697wme.16.2020.07.23.11.06.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Jul 2020 11:06:51 -0700 (PDT)
-Subject: Re: [PATCH v4 4/5] arm64: dts: sdm845: Add OPP tables and
- power-domains for venus
-To:     Rajendra Nayak <rnayak@codeaurora.org>,
-        stanimir.varbanov@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mka@chromium.org
-References: <1595503612-2901-1-git-send-email-rnayak@codeaurora.org>
- <1595503612-2901-5-git-send-email-rnayak@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <e68ff810-362a-5b99-206b-f676b204101d@linaro.org>
-Date:   Thu, 23 Jul 2020 21:06:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Jul 2020 14:09:56 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06NHrfdG021948
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:09:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=OSYQXum1ZUSOus2pzbijxGAz08dWSHRpUo7YeYxklVA=;
+ b=RwS3AWQXEJlHx2XI9jFPh1C6P4Hwbm6u1YU+MSDU7J9FCmzM49Cd119lj2LI7IB9UxDa
+ IICvdJvrmfc/hx9Uo+BFChHSVPX+xid6vJgDcKEHVdrcyDMeGNCn2ynoUCfb9tClHk0h
+ jWQ3NVOVUs5UNNa9r8HdDY90Gp8JAxzWZF8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 32et5kwmwy-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:09:55 -0700
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 23 Jul 2020 11:09:54 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 765E962E5064; Thu, 23 Jul 2020 11:07:00 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v5 bpf-next 3/5] libbpf: print hint when PERF_EVENT_IOC_SET_BPF returns -EPROTO
+Date:   Thu, 23 Jul 2020 11:06:46 -0700
+Message-ID: <20200723180648.1429892-4-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200723180648.1429892-1-songliubraving@fb.com>
+References: <20200723180648.1429892-1-songliubraving@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <1595503612-2901-5-git-send-email-rnayak@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-23_09:2020-07-23,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007230132
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajendra,
+The kernel prevents potential unwinder warnings and crashes by blocking
+BPF program with bpf_get_[stack|stackid] on perf_event without
+PERF_SAMPLE_CALLCHAIN, or with exclude_callchain_[kernel|user]. Print a
+hint message in libbpf to help the user debug such issues.
 
-After applying 2,3 and 4/5 patches on linaro-integration v5.8-rc2 I see
-below messages on db845:
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-qcom-venus aa00000.video-codec: dev_pm_opp_set_rate: failed to find
-current OPP for freq 533000097 (-34)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 846164c79df1c..484e50d49a4cf 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -7833,6 +7833,9 @@ struct bpf_link *bpf_program__attach_perf_event(str=
+uct bpf_program *prog,
+ 		pr_warn("program '%s': failed to attach to pfd %d: %s\n",
+ 			bpf_program__title(prog, false), pfd,
+ 			   libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		if (err =3D=3D -EPROTO)
++			pr_warn("program '%s': try add PERF_SAMPLE_CALLCHAIN to or remove exc=
+lude_callchain_[kernel|user] from pfd %d\n",
++				bpf_program__title(prog, false), pfd);
+ 		return ERR_PTR(err);
+ 	}
+ 	if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
+--=20
+2.24.1
 
-^^^ This one is new.
-
-qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x30000
-
-^^^ and this message is annoying, can we make it pr_debug in rpmh?
-
-On 7/23/20 2:26 PM, Rajendra Nayak wrote:
-> Add the OPP tables in order to be able to vote on the performance state of
-> a power-domain.
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 40 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 38 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index e506793..5ca2265 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -3631,8 +3631,10 @@
->  			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
->  			power-domains = <&videocc VENUS_GDSC>,
->  					<&videocc VCODEC0_GDSC>,
-> -					<&videocc VCODEC1_GDSC>;
-> -			power-domain-names = "venus", "vcodec0", "vcodec1";
-> +					<&videocc VCODEC1_GDSC>,
-> +					<&rpmhpd SDM845_CX>;
-> +			power-domain-names = "venus", "vcodec0", "vcodec1", "cx";
-> +			operating-points-v2 = <&venus_opp_table>;
->  			clocks = <&videocc VIDEO_CC_VENUS_CTL_CORE_CLK>,
->  				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
->  				 <&videocc VIDEO_CC_VENUS_CTL_AXI_CLK>,
-> @@ -3654,6 +3656,40 @@
->  			video-core1 {
->  				compatible = "venus-encoder";
->  			};
-> +
-> +			venus_opp_table: venus-opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-100000000 {
-> +					opp-hz = /bits/ 64 <100000000>;
-> +					required-opps = <&rpmhpd_opp_min_svs>;
-> +				};
-> +
-> +				opp-200000000 {
-> +					opp-hz = /bits/ 64 <200000000>;
-> +					required-opps = <&rpmhpd_opp_low_svs>;
-> +				};
-> +
-> +				opp-320000000 {
-> +					opp-hz = /bits/ 64 <320000000>;
-> +					required-opps = <&rpmhpd_opp_svs>;
-> +				};
-> +
-> +				opp-380000000 {
-> +					opp-hz = /bits/ 64 <380000000>;
-> +					required-opps = <&rpmhpd_opp_svs_l1>;
-> +				};
-> +
-> +				opp-444000000 {
-> +					opp-hz = /bits/ 64 <444000000>;
-> +					required-opps = <&rpmhpd_opp_nom>;
-> +				};
-> +
-> +				opp-533000000 {
-> +					opp-hz = /bits/ 64 <533000000>;
-> +					required-opps = <&rpmhpd_opp_turbo>;
-> +				};
-> +			};
->  		};
->  
->  		videocc: clock-controller@ab00000 {
-> 
-
--- 
-regards,
-Stan
