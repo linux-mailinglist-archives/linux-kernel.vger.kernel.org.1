@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A56322AAB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F9D22AAC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgGWIc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgGWIc5 (ORCPT
+        id S1726945AbgGWIga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:36:30 -0400
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:9145 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725858AbgGWIga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:32:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA75C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 01:32:57 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595493175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qZCjUytfdljZjKQoTLLThKMyonbpmcJ1ogC2T/UoXv4=;
-        b=mcLArYGxD/scevathgu5sl4mvgSYKHp/kOjZqDVIArTdFuut6z+JkK/LQec4+4TCR7YKVb
-        8RLuSDPJXSgdDbCFZIN/f2NwkM2x6aK5dqIzPnTPzK3KTDRCB4ryTEtvhZXoDFI6YjYP3M
-        cRdi2ffy+4o1QhIdUMCV+J4BB8nySLxP9nOgVsRuMqoTn690IH58u9InWcWR4AJ1NW9zm2
-        tWajUPCMoJXElI83AAbNBCj2zePCHxeUxw1/onuP6RsuhJZv/6Ahqs5VnQ7mGz0rxj0gau
-        Fd8Dij0OpHNXyH4I14YUczOMvq3y/COa2+kD2QvfvQYLyGhX3gAQlvhWXdtQxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595493175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qZCjUytfdljZjKQoTLLThKMyonbpmcJ1ogC2T/UoXv4=;
-        b=m10+pFDSCPNAl02+tA+LOdV8GevqwXHYpGQVp4J4hsoj/Kh0JuRYAJo/zNIWjJxuBE3GOX
-        buRdv8/2M+QNskAg==
-To:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [patch V2 3/5] posix-cpu-timers: Provide mechanisms to defer timer handling to task_work
-In-Reply-To: <20200723010314.GA28401@lenoir>
-References: <20200716201923.228696399@linutronix.de> <20200716202044.734067877@linutronix.de> <20200716225034.GK5523@worktop.programming.kicks-ass.net> <20200723010314.GA28401@lenoir>
-Date:   Thu, 23 Jul 2020 10:32:54 +0200
-Message-ID: <875zaezl55.fsf@nanos.tec.linutronix.de>
+        Thu, 23 Jul 2020 04:36:30 -0400
+Received: from zxbjmbx3.zhaoxin.com (10.29.252.165) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 23 Jul
+ 2020 16:36:26 +0800
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by zxbjmbx3.zhaoxin.com
+ (10.29.252.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 23 Jul
+ 2020 16:36:25 +0800
+Received: from zxbjmbx1.zhaoxin.com ([fe80::290a:f538:51e7:1416]) by
+ zxbjmbx1.zhaoxin.com ([fe80::290a:f538:51e7:1416%16]) with mapi id
+ 15.01.1979.003; Thu, 23 Jul 2020 16:36:25 +0800
+From:   WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "hslester96@gmail.com" <hslester96@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
+        "efremov@linux.com" <efremov@linux.com>,
+        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
+        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
+        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
+        "wwt8723@163.com" <wwt8723@163.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIFVTQjpGaXgga2VybmVsIE5VTEwgcG9pbnRlciB3?=
+ =?utf-8?Q?hen_unbind_UHCI_form_vfio-pci?=
+Thread-Topic: [PATCH] USB:Fix kernel NULL pointer when unbind UHCI form
+ vfio-pci
+Thread-Index: AQHWYB9U257QN8g5QkeL/njIDTUWtqkUAziAgABPH2A=
+Date:   Thu, 23 Jul 2020 08:36:25 +0000
+Message-ID: <371b3697614e4034aed8e9f340a7dbf1@zhaoxin.com>
+References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
+ <20200722215313.5a842b93@x1.home>
+In-Reply-To: <20200722215313.5a842b93@x1.home>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.29.8.32]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Frederic Weisbecker <frederic@kernel.org> writes:
-> On Fri, Jul 17, 2020 at 12:50:34AM +0200, Peter Zijlstra wrote:
->> On Thu, Jul 16, 2020 at 10:19:26PM +0200, Thomas Gleixner wrote:
->> > +static void __run_posix_cpu_timers(struct task_struct *tsk)
->> > +{
->> > +	struct posix_cputimers *pct = &tsk->posix_cputimers;
->> > +
->> > +	if (!test_and_set_bit(CPUTIMERS_WORK_SCHEDULED, &pct->flags))
->> > +		task_work_add(tsk, &pct->task_work, true);
->> > +}
->> > +
->> > +static inline void posix_cpu_timers_enable_work(struct task_struct *tsk)
->> > +{
->> > +	clear_bit(CPUTIMERS_WORK_SCHEDULED, &tsk->posix_cputimers.flags);
->> 	/*
->> 	 * Ensure we observe everything before a failing test_and_set()
->> 	 * in __run_posix_cpu_timers().
->> 	 */
->> 	smp_mb__after_atomic();
->> > +}
->> 
->> Such that when another timer interrupt happens while we run this, we're
->> guaranteed to either see it, or get re-queued and thus re-run the
->> function.
->
-> But each thread in the process enqueues its own task work and flips its
-> own flags. So if task A runs the task work and task B runs __run_posix_cpu_timers(),
-> they wouldn't be ordering against the same flags.
-
-If two tasks queue work independent of each other then one of them will
-find it done already, which is the same as if two tasks of the same
-process execute run_posix_cpu_timers() in parallel.
-
-I really don't want to go into the rathole of making the work or the
-synchronization process wide. That's a guarantee for disaster.
-
-Handling task work strictly per task is straight forward and simple. The
-eventually resulting contention on sighand lock in task work is
-unavoidable, but that's a reasonable tradeoff vs. the complexity you
-need to handle task work process wide.
-
-Thanks,
-
-        tglx
+DQpPbiBUaHUsMjMgSnVseSAyMDIwIDA0OjE4OjAwICswMDAwIEFsZXggd3JvdGU6DQo+IE9uIFdl
+ZCwgMjIgSnVsIDIwMjAgMTk6NTc6NDggKzA4MDANCj4gV2VpdGFvV2FuZ29jIDxXZWl0YW9XYW5n
+LW9jQHpoYW94aW4uY29tPiB3cm90ZToNCj4gDQo+ID4gIGRyaXZlcnMvdXNiL2NvcmUvaGNkLXBj
+aS5jIHwgNSArKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspDQo+ID4N
+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvY29yZS9oY2QtcGNpLmMgYi9kcml2ZXJzL3Vz
+Yi9jb3JlL2hjZC1wY2kuYw0KPiA+IGluZGV4IDE1NDdhYTYuLjQ4NGYyYTAgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy91c2IvY29yZS9oY2QtcGNpLmMNCj4gPiArKysgYi9kcml2ZXJzL3VzYi9j
+b3JlL2hjZC1wY2kuYw0KPiA+IEBAIC0zNCw2ICszNCw3IEBAIHN0YXRpYyBERUNMQVJFX1JXU0VN
+KGNvbXBhbmlvbnNfcndzZW0pOw0KPiA+ICAjZGVmaW5lIENMX09IQ0kgICAgICAgICAgICAgICAg
+UENJX0NMQVNTX1NFUklBTF9VU0JfT0hDSQ0KPiA+ICAjZGVmaW5lIENMX0VIQ0kgICAgICAgICAg
+ICAgICAgUENJX0NMQVNTX1NFUklBTF9VU0JfRUhDSQ0KPiA+DQo+ID4gKyNkZWZpbmUgUENJX0RF
+Vl9EUlZfRkxBRyAgICAgICAyDQo+ID4gIHN0YXRpYyBpbmxpbmUgaW50IGlzX29oY2lfb3JfdWhj
+aShzdHJ1Y3QgcGNpX2RldiAqcGRldikgIHsNCj4gPiAgICAgICAgIHJldHVybiBwZGV2LT5jbGFz
+cyA9PSBDTF9PSENJIHx8IHBkZXYtPmNsYXNzID09IENMX1VIQ0k7IEBADQo+ID4gLTY4LDYgKzY5
+LDggQEAgc3RhdGljIHZvaWQgZm9yX2VhY2hfY29tcGFuaW9uKHN0cnVjdCBwY2lfZGV2ICpwZGV2
+LCBzdHJ1Y3QNCj4gdXNiX2hjZCAqaGNkLA0KPiA+ICAgICAgICAgICAgICAgICBpZiAoY29tcGFu
+aW9uLT5jbGFzcyAhPSBDTF9VSENJICYmIGNvbXBhbmlvbi0+Y2xhc3MgIT0NCj4gQ0xfT0hDSSAm
+Jg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcGFuaW9uLT5jbGFzcyAh
+PSBDTF9FSENJKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlOw0KPiA+ICsg
+ICAgICAgICAgICAgICBpZiAoIShjb21wYW5pb24tPnByaXZfZmxhZ3MgJiBQQ0lfREVWX0RSVl9G
+TEFHKSkNCj4gDQo+IEJ1dCBwY2lfZGV2LnByaXZfZmxhZ3MgaXMgcHJpdmF0ZSBkYXRhIGZvciB0
+aGUgZHJpdmVyIHRoYXQgY3VycmVudGx5DQo+IG93bnMgdGhlIGRldmljZSwgd2hpY2ggY291bGQg
+YmUgdmZpby1wY2kuICBUaGlzIGlzIHJlYWxseSBubyBkaWZmZXJlbnQNCj4gdGhhbiBhc3N1bWlu
+ZyB0aGUgc3RydWN0dXJlIGF0IGRldmljZS5kcml2ZXJfZGF0YS4gIElmIHZmaW8tcGNpIHdlcmUg
+dG8NCj4gbWFrZSBsZWdpdGltYXRlIHVzZSBvZiBwY2lfZGV2LnByaXZfZmxhZ3MsIHRoaXMgY291
+bGQgc2ltcGx5IGJsb3cgdXANCj4gYWdhaW4uICBTaG91bGQgdGhlcmUgaW5zdGVhZCBiZSBzb21l
+IHNvcnQgb2YgcmVnaXN0cmF0aW9uIGludGVyZmFjZQ0KPiB3aGVyZSBoY2QgY29tcGxhaW50IGRy
+aXZlcnMgcmVnaXN0ZXIgdGhlaXIgZGV2aWNlcyBhbmQgb25seSB0aG9zZQ0KPiByZWdpc3RlcmVk
+IGRldmljZXMgY2FuIGhhdmUgdGhlaXIgZHJpdmVyIHByaXZhdGUgZGF0YSBhcmJpdHJhcmlseSBw
+b2tlZA0KPiBieSBhbm90aGVyIGRyaXZlcj8gIFRoYW5rcywNCg0KVGhhbmtzIGZvciB5b3VyIGV4
+cGxhbmF0aW9uLiBTZXQgcGNpX2Rldi5wcml2X2ZsYWdzIGlzIHJlYWxseSBub3QgYSANCnJlYXNv
+bmFibGUgYXBwcm9hY2guIEFyZSB0aGVyZSBhbnkgbW9yZSBkZXRhaWxlZCBzdWdnZXN0aW9ucyAN
+CnRvIHBhdGNoIHRoaXMgaXNzdWU/DQoNClRoYW5rcw0KV2VpdGFvd2FuZw0K
