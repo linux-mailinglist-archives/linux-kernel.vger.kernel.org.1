@@ -2,99 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A868922A3F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C959522A405
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387455AbgGWA6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 20:58:46 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58652 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgGWA6p (ORCPT
+        id S2387504AbgGWA67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 20:58:59 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:60914 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387462AbgGWA65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 20:58:45 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1046)
-        id D288C20B4908; Wed, 22 Jul 2020 17:58:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D288C20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595465924;
-        bh=COad48i7F7Ppim6j74aTQgCPv4ntgv9CarhdXkZqMSI=;
-        h=Date:To:Subject:Cc:References:In-Reply-To:From:From;
-        b=niMgtu2U1MhpmWIEO3cGbPKV10cWPPsqIFr07inBG1vKDl0zmHzqzlc8qrAmggp2N
-         5mGg9NdqEaGD+eIpTEWZ0ouRM1eH5z9gQbJNjRSwV9FBMxtwI2d29qezbxuw6rvMwg
-         +KIyK7esmDdlGvp/2oHrdVwlXhUvjNel8nOaNzEg=
-Date:   Wed, 22 Jul 2020 17:58:43 -0700
-To:     wsa@kernel.org, ray.jui@broadcom.com
-Subject: Re: [PATCH] i2c: iproc: fix race between client unreg and isr
-Cc:     rjui@broadcom.com, rayagonda.kokatanur@broadcom.com,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        dphadke@linux.microsoft.com, bcm-kernel-feedback-list@broadcom.com
-References: <1595115599-100054-1-git-send-email-dphadke@linux.microsoft.com>
- <116ac90c-8b49-ca89-90a4-9a28f43a7c50@broadcom.com>
- <20200722104128.GK1030@ninjato>
- <5048cf44-e2c2-ee31-a9fb-b823f16c2c7d@broadcom.com>
-In-Reply-To: <5048cf44-e2c2-ee31-a9fb-b823f16c2c7d@broadcom.com>
-User-Agent: Heirloom mailx 12.5 7/5/10
+        Wed, 22 Jul 2020 20:58:57 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 7DC3E8030807;
+        Thu, 23 Jul 2020 00:58:54 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jwYvZ_mpQCHZ; Thu, 23 Jul 2020 03:58:53 +0300 (MSK)
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Vinod Koul <vkoul@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <dmaengine@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v8 05/10] dmaengine: Introduce DMA-device device_caps callback
+Date:   Thu, 23 Jul 2020 03:58:43 +0300
+Message-ID: <20200723005848.31907-6-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20200723005848.31907-1-Sergey.Semin@baikalelectronics.ru>
+References: <20200723005848.31907-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-Id: <20200723005844.D288C20B4908@linux.microsoft.com>
-From:   dphadke@linux.microsoft.com (Dhananjay Phadke)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ray Jui <ray.jui@broadcom.com> wrote:
+There are DMA devices (like ours version of Synopsys DW DMAC) which have
+DMA capabilities non-uniformly redistributed between the device channels.
+In order to provide a way of exposing the channel-specific parameters to
+the DMA engine consumers, we introduce a new DMA-device callback. In case
+if provided it gets called from the dma_get_slave_caps() method and is
+able to override the generic DMA-device capabilities.
 
->
-> On 7/22/2020 3:41 AM, Wolfram Sang wrote:
-> > 
-> >>> +	synchronize_irq(iproc_i2c->irq);
-> >>
-> >> If one takes a look at the I2C slave ISR routine, there are places where
-> >> IRQ can be re-enabled in the ISR itself. What happens after we mask all
-> >> slave interrupt and when 'synchronize_irq' is called, which I suppose is
-> >> meant to wait for inflight interrupt to finish where there's a chance
-> >> the interrupt can be re-enable again? How is one supposed to deal with that?
-> > 
-> > I encountered the same problem with the i2c-rcar driver before I left
-> > for my holidays.
-> > 
->
-> I think the following sequence needs to be implemented to make this
-> safe, i.e., after 'synchronize_irq', no further slave interrupt will be
-> fired.
->
-> In 'bcm_iproc_i2c_unreg_slave':
->
-> 1. Set an atomic variable 'unreg_slave' (I'm bad in names so please come
-> up with a better name than this)
->
-> 2. Disable all slave interrupts
->
-> 3. synchronize_irq
->
-> 4. Set slave to NULL
->
-> 5. Erase slave addresses
->
-> In the ISR routine, it should always check against 'unreg_slave' before
-> enabling any slave interrupt. If 'unreg_slave' is set, no slave
-> interrupt should be re-enabled from within the ISR.
->
-> I think the above sequence can ensure no further slave interrupt after
-> 'synchronize_irq'. I suggested using an atomic variable instead of
-> variable + spinlock due to the way how sync irq works, i.e., "If you use
-> this function while holding a resource the IRQ handler may need you will
-> deadlock.".
->
-> Thanks,
->
-> Ray
->
-> >>> +	iproc_i2c->slave = NULL;
-> >>> +
-> >>>  	/* Erase the slave address programmed */
-> >>>  	tmp = iproc_i2c_rd_reg(iproc_i2c, S_CFG_SMBUS_ADDR_OFFSET);
-> >>>  	tmp &= ~BIT(S_CFG_EN_NIC_SMB_ADDR3_SHIFT);
-> >>>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+---
+
+Changelog v3:
+- This is a new patch created as a result of the discussion with Vinod and
+  Andy in the framework of DW DMA burst and LLP capabilities.
+
+Changelog v5:
+- Add in-line comment at the point of the device_caps callback invocation.
+- Add doc-comment for the device_caps member of struct dma_device.
+---
+ drivers/dma/dmaengine.c   | 10 ++++++++++
+ include/linux/dmaengine.h |  4 ++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+index 8177f78faeda..a53e71d2bbd4 100644
+--- a/drivers/dma/dmaengine.c
++++ b/drivers/dma/dmaengine.c
+@@ -601,6 +601,16 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
+ 	caps->cmd_resume = !!device->device_resume;
+ 	caps->cmd_terminate = !!device->device_terminate_all;
+ 
++	/*
++	 * DMA engine device might be configured with non-uniformly
++	 * distributed slave capabilities per device channels. In this
++	 * case the corresponding driver may provide the device_caps
++	 * callback to override the generic capabilities with
++	 * channel-specific ones.
++	 */
++	if (device->device_caps)
++		device->device_caps(chan, caps);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(dma_get_slave_caps);
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index c7e76e0ab7e1..c8d06e166371 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -799,6 +799,8 @@ struct dma_filter {
+  *	be called after period_len bytes have been transferred.
+  * @device_prep_interleaved_dma: Transfer expression in a generic way.
+  * @device_prep_dma_imm_data: DMA's 8 byte immediate data to the dst address
++ * @device_caps: May be used to override the generic DMA slave capabilities
++ *	with per-channel specific ones
+  * @device_config: Pushes a new configuration to a channel, return 0 or an error
+  *	code
+  * @device_pause: Pauses any transfer happening on a channel. Returns
+@@ -899,6 +901,8 @@ struct dma_device {
+ 		struct dma_chan *chan, dma_addr_t dst, u64 data,
+ 		unsigned long flags);
+ 
++	void (*device_caps)(struct dma_chan *chan,
++			    struct dma_slave_caps *caps);
+ 	int (*device_config)(struct dma_chan *chan,
+ 			     struct dma_slave_config *config);
+ 	int (*device_pause)(struct dma_chan *chan);
+-- 
+2.26.2
+
