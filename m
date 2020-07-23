@@ -2,76 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E1522A3A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E6122A3B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 02:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733247AbgGWA3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 20:29:42 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28662 "EHLO mga14.intel.com"
+        id S1733285AbgGWAfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 20:35:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:22138 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729486AbgGWA3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 20:29:41 -0400
-IronPort-SDR: mQzAGlKCCuvKcm4vAyXPHgq61e5tIOzTfGMyNmsPqwwgsRMmSGoFu7ZpuarhEF5VrPewKV7ZgA
- TM5uLyLhpiRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="149620646"
+        id S1729198AbgGWAfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 20:35:02 -0400
+IronPort-SDR: 2Npd3pLB2nlZAVZMs9G2rsfCF3Goadu1dGCd43nNhYC2Tp+PUlrS0Wr9ai18YzN4J6WzUhKTJW
+ 85FUKDcHpTkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="150430717"
 X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="149620646"
+   d="scan'208";a="150430717"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 17:29:41 -0700
-IronPort-SDR: dnI/EJGSOOebbW4BpM3U1cRyeFIY8G0LSZwYJ1J3OzLS4f724Ci4kCG0joZmj1jMOMpTa0xWBh
- 8p9rhiNwK9Cw==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 17:35:01 -0700
+IronPort-SDR: 5vXl87XkKg3yA6y0MCZeRK9JBL9vu4lNnWF29JJqkbvRh7kcDYVJxckXeBUvOAqChJ0FG3u+Gy
+ LdtLVeVbMuQw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,383,1589266800"; 
-   d="scan'208";a="288464413"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga006.jf.intel.com with ESMTP; 22 Jul 2020 17:29:40 -0700
-Date:   Wed, 22 Jul 2020 17:29:40 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v11 02/13] KVM: X86: Don't track dirty for
- KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]
-Message-ID: <20200723002940.GO9114@linux.intel.com>
-References: <20200708193408.242909-1-peterx@redhat.com>
- <20200708193408.242909-3-peterx@redhat.com>
+   d="scan'208";a="392842096"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Jul 2020 17:34:59 -0700
+Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>
+Subject: Re: [PATCH v5 3/7] iommu/vt-d: Fix PASID devTLB invalidation
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+References: <1595445987-40095-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1595445987-40095-4-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <21f0c923-0e74-68d8-1fb3-67279b3fbd29@linux.intel.com>
+Date:   Thu, 23 Jul 2020 08:30:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200708193408.242909-3-peterx@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1595445987-40095-4-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 08, 2020 at 03:33:57PM -0400, Peter Xu wrote:
-> Originally, we have three code paths that can dirty a page without
-> vcpu context for X86:
+On 7/23/20 3:26 AM, Jacob Pan wrote:
+> DevTLB flush can be used for both DMA request with and without PASIDs.
+> The former uses PASID#0 (RID2PASID), latter uses non-zero PASID for SVA
+> usage.
 > 
->   - init_rmode_identity_map
->   - init_rmode_tss
->   - kvmgt_rw_gpa
+> This patch adds a check for PASID value such that devTLB flush with
+> PASID is used for SVA case. This is more efficient in that multiple
+> PASIDs can be used by a single device, when tearing down a PASID entry
+> we shall flush only the devTLB specific to a PASID.
 > 
-> init_rmode_identity_map and init_rmode_tss will be setup on
-> destination VM no matter what (and the guest cannot even see them), so
-> it does not make sense to track them at all.
-> 
-> To do this, allow __x86_set_memory_region() to return the userspace
-> address that just allocated to the caller.  Then in both of the
-> functions we directly write to the userspace address instead of
-> calling kvm_write_*() APIs.
-> 
-> Another trivial change is that we don't need to explicitly clear the
-> identity page table root in init_rmode_identity_map() because no
-> matter what we'll write to the whole page with 4M huge page entries.
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
+> Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table")
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
+
+Best regards,
+baolu
+
+> ---
+>   drivers/iommu/intel/pasid.c | 11 ++++++++++-
+>   1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> index c81f0f17c6ba..fa0154cce537 100644
+> --- a/drivers/iommu/intel/pasid.c
+> +++ b/drivers/iommu/intel/pasid.c
+> @@ -486,7 +486,16 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
+>   	qdep = info->ats_qdep;
+>   	pfsid = info->pfsid;
+>   
+> -	qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
+> +	/*
+> +	 * When PASID 0 is used, it indicates RID2PASID(DMA request w/o PASID),
+> +	 * devTLB flush w/o PASID should be used. For non-zero PASID under
+> +	 * SVA usage, device could do DMA with multiple PASIDs. It is more
+> +	 * efficient to flush devTLB specific to the PASID.
+> +	 */
+> +	if (pasid == PASID_RID2PASID)
+> +		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
+> +	else
+> +		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 64 - VTD_PAGE_SHIFT);
+>   }
+>   
+>   void intel_pasid_tear_down_entry(struct intel_iommu *iommu, struct device *dev,
+> 
