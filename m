@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C804522B446
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A7B22B456
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730103AbgGWRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:11:56 -0400
+        id S1730080AbgGWRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:11:52 -0400
 Received: from mga05.intel.com ([192.55.52.43]:6574 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730050AbgGWRLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:11:44 -0400
-IronPort-SDR: F1kQxuNhtp3go6R02yWdhdxdcX3sVoMsErAMIkrkljacqT98w5/ZOFOaePAZ72Z0ooL9whqP7H
- 9gA6Mtr6G9eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456724"
+        id S1730052AbgGWRLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:11:45 -0400
+IronPort-SDR: NA2K+W0/qGF/KVXrrqozrsvzBFV4jIB4UP8HZQQMZHRmDWFdxf5KhsRu4in6ksz8VUQ41sSGfb
+ XViiMLeOxQgg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456742"
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="235456724"
+   d="scan'208";a="235456742"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:43 -0700
-IronPort-SDR: IV4ZqdwLeoS3rJd18OTVjYEn3oOIlJ9Jg9iUifeU1xsKH+lk5Lg+HZ7D5s7p3b3irICIuGWJch
- ZbI5vVmaDpqQ==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:44 -0700
+IronPort-SDR: Rv/ctLY06Inpal65cnPr+PIGki198ioPi3/XgRTjYw0MviPoZqaJUhaFVZ34rvDvVZ4yGvXt1c
+ bkV7Ur65hZaA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="488904260"
+   d="scan'208";a="488904267"
 Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:43 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:44 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     jolsa@kernel.org, eranian@google.com,
         alexander.shishkin@linux.intel.com, ak@linux.intel.com,
         like.xu@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V7 04/14] perf/x86/intel: Move BTS index to 47
-Date:   Thu, 23 Jul 2020 10:11:07 -0700
-Message-Id: <20200723171117.9918-5-kan.liang@linux.intel.com>
+Subject: [PATCH V7 05/14] perf/x86/intel: Fix the name of perf METRICS
+Date:   Thu, 23 Jul 2020 10:11:08 -0700
+Message-Id: <20200723171117.9918-6-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200723171117.9918-1-kan.liang@linux.intel.com>
 References: <20200723171117.9918-1-kan.liang@linux.intel.com>
@@ -46,34 +46,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The bit 48 in the PERF_GLOBAL_STATUS is used to indicate the overflow
-status of the PERF_METRICS counters.
+Bit 15 of the PERF_CAPABILITIES MSR indicates that the perf METRICS
+feature is supported. The perf METRICS is not a PEBS feature.
 
-Move the BTS index to the bit 47.
+Rename pebs_metrics_available perf_metrics.
+
+The bit is not used in the current code. It will be used in a later
+patch.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/include/asm/perf_event.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/events/perf_event.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index fe8110a8c75b..58419e50ff98 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -238,11 +238,11 @@ struct x86_pmu_capability {
- /*
-  * We model BTS tracing as another fixed-mode PMC.
-  *
-- * We choose a value in the middle of the fixed event range, since lower
-+ * We choose the value 47 for the fixed index of BTS, since lower
-  * values are used by actual fixed events and higher values are used
-  * to indicate other overflow conditions in the PERF_GLOBAL_STATUS msr.
-  */
--#define INTEL_PMC_IDX_FIXED_BTS			(INTEL_PMC_IDX_FIXED + 16)
-+#define INTEL_PMC_IDX_FIXED_BTS			(INTEL_PMC_IDX_FIXED + 15)
- 
- #define GLOBAL_STATUS_COND_CHG			BIT_ULL(63)
- #define GLOBAL_STATUS_BUFFER_OVF_BIT		62
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 7b68ab5f19e7..5d453da8cfa6 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -537,7 +537,7 @@ union perf_capabilities {
+ 		 */
+ 		u64	full_width_write:1;
+ 		u64     pebs_baseline:1;
+-		u64	pebs_metrics_available:1;
++		u64	perf_metrics:1;
+ 		u64	pebs_output_pt_available:1;
+ 	};
+ 	u64	capabilities;
 -- 
 2.17.1
 
