@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471AA22AAE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB87D22AAE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgGWIl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:41:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgGWIl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:41:27 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 308BD2080D;
-        Thu, 23 Jul 2020 08:41:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595493686;
-        bh=PheGDG4I+Sd5okWGMSuo1JWd9HXAe6/fNMBPEQNHz2w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iTaq7h7RwfYMBoNmsxw1lVCjbC3pvPOFNRcvog+sxixmTbZKs668cWaGmUeAwTj7t
-         7HdJG9gPG8VPyMEAxwFOw7BYL4mliAKBHHxh1ylQodA/qmVRsqfS5KcKVXcuti5z7T
-         oGu9/+ZqLoJd0r6FnOohTSmOKYzaS5uPJ6uzEHfc=
-Date:   Thu, 23 Jul 2020 10:41:31 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "hslester96@gmail.com" <hslester96@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
-        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
-        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
-        "wwt8723@163.com" <wwt8723@163.com>
-Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= USB:Fix kernel
- NULL pointer when unbind UHCI form vfio-pci
-Message-ID: <20200723084131.GA1753458@kroah.com>
-References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
- <20200722215313.5a842b93@x1.home>
- <371b3697614e4034aed8e9f340a7dbf1@zhaoxin.com>
+        id S1727120AbgGWIm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:42:57 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2513 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725858AbgGWIm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:42:57 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id CAA78D7CF743FE7D3470;
+        Thu, 23 Jul 2020 09:42:55 +0100 (IST)
+Received: from localhost (10.52.125.229) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 23 Jul
+ 2020 09:42:55 +0100
+Date:   Thu, 23 Jul 2020 09:41:34 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     David Gow <davidgow@google.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeff Dike <jdike@addtoit.com>, <rafael@kernel.org>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Richard Weinberger <richard@nod.at>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        <kunit-dev@googlegroups.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] platform: ioremap: Build iomap functions even
+ without HAS_IOMEM
+Message-ID: <20200723094134.0000432d@Huawei.com>
+In-Reply-To: <20200721054528.2556267-1-davidgow@google.com>
+References: <20200721054528.2556267-1-davidgow@google.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <371b3697614e4034aed8e9f340a7dbf1@zhaoxin.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.229]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 08:36:25AM +0000, WeitaoWang-oc wrote:
+On Mon, 20 Jul 2020 22:45:28 -0700
+David Gow <davidgow@google.com> wrote:
+
+> A number of drivers use devm_platform_ioremap_resource(), but do not (or
+> did not) explicitly depend on IOMEM[1,2]. Given that the only platform
+> without HAS_IOMEM seems to be UML, and it has sufficient stubs for
+> devm_platform_ioremap_resource() and its dependencies to build, we can
+> remove the HAS_IOMEM requirement here, rather than playing whack-a-mole
+> with different drivers which don't try to build against ARCH=um.
 > 
-> On Thu,23 July 2020 04:18:00 +0000 Alex wrote:
-> > On Wed, 22 Jul 2020 19:57:48 +0800
-> > WeitaoWangoc <WeitaoWang-oc@zhaoxin.com> wrote:
-> > 
-> > >  drivers/usb/core/hcd-pci.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
-> > > index 1547aa6..484f2a0 100644
-> > > --- a/drivers/usb/core/hcd-pci.c
-> > > +++ b/drivers/usb/core/hcd-pci.c
-> > > @@ -34,6 +34,7 @@ static DECLARE_RWSEM(companions_rwsem);
-> > >  #define CL_OHCI                PCI_CLASS_SERIAL_USB_OHCI
-> > >  #define CL_EHCI                PCI_CLASS_SERIAL_USB_EHCI
-> > >
-> > > +#define PCI_DEV_DRV_FLAG       2
-> > >  static inline int is_ohci_or_uhci(struct pci_dev *pdev)  {
-> > >         return pdev->class == CL_OHCI || pdev->class == CL_UHCI; @@
-> > > -68,6 +69,8 @@ static void for_each_companion(struct pci_dev *pdev, struct
-> > usb_hcd *hcd,
-> > >                 if (companion->class != CL_UHCI && companion->class !=
-> > CL_OHCI &&
-> > >                                 companion->class != CL_EHCI)
-> > >                         continue;
-> > > +               if (!(companion->priv_flags & PCI_DEV_DRV_FLAG))
-> > 
-> > But pci_dev.priv_flags is private data for the driver that currently
-> > owns the device, which could be vfio-pci.  This is really no different
-> > than assuming the structure at device.driver_data.  If vfio-pci were to
-> > make legitimate use of pci_dev.priv_flags, this could simply blow up
-> > again.  Should there instead be some sort of registration interface
-> > where hcd complaint drivers register their devices and only those
-> > registered devices can have their driver private data arbitrarily poked
-> > by another driver?  Thanks,
+> The reason this works at the moment is that stub ioremap and iounmap
+> functions were added to UML to support this sort-of thing[3]. This
+> particular change doesn't require adding any additional stubs, but there
+> is possibly room in the future to stub out the remaining iomem functions
+> (or to provide mock implementations for testing), and get rid of
+> HAS_IOMEM entirely.
 > 
-> Thanks for your explanation. Set pci_dev.priv_flags is really not a 
-> reasonable approach. Are there any more detailed suggestions 
-> to patch this issue?
+> [1]: https://lkml.org/lkml/2020/6/30/176
+> [2]:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1e7468bd9d30a21e059af477106dc5588ae52dff
+> [3]:
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1405627.html
 
-This is not a kernel issue, it is a "do not do this in this way from
-userspace" issue :)
+Hi David,
 
-thanks,
+I don't quite follow why we change when iomap_copy.c is built.
+Was this just a case of there not seeming to be any reason to protect it
+or is there a direct dependency on something in there that I'm missing?
 
-greg k-h
+Otherwise looks good to me.
+
+Jonathan
+
+> 
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>  drivers/base/platform.c | 2 --
+>  lib/Makefile            | 2 +-
+>  2 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index c0d0a5490ac6..628dde6675cf 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -61,7 +61,6 @@ struct resource *platform_get_resource(struct platform_device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(platform_get_resource);
+>  
+> -#ifdef CONFIG_HAS_IOMEM
+>  /**
+>   * devm_platform_get_and_ioremap_resource - call devm_ioremap_resource() for a
+>   *					    platform device and get resource
+> @@ -135,7 +134,6 @@ devm_platform_ioremap_resource_byname(struct platform_device *pdev,
+>  	return devm_ioremap_resource(&pdev->dev, res);
+>  }
+>  EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource_byname);
+> -#endif /* CONFIG_HAS_IOMEM */
+>  
+>  /**
+>   * platform_get_irq_optional - get an optional IRQ for a device
+> diff --git a/lib/Makefile b/lib/Makefile
+> index b1c42c10073b..35c21af33b93 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -115,7 +115,7 @@ obj-y += math/ crypto/
+>  
+>  obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
+>  obj-$(CONFIG_GENERIC_PCI_IOMAP) += pci_iomap.o
+> -obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
+> +obj-y += iomap_copy.o devres.o
+>  obj-$(CONFIG_CHECK_SIGNATURE) += check_signature.o
+>  obj-$(CONFIG_DEBUG_LOCKING_API_SELFTESTS) += locking-selftest.o
+>  
+
+
