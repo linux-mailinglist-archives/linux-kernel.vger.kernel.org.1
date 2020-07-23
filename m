@@ -2,56 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EE922A4E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2722222A4E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 03:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387639AbgGWBtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 21:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729198AbgGWBtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 21:49:25 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A85E22071A;
-        Thu, 23 Jul 2020 01:49:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595468964;
-        bh=Nmqte8bweK+QD9+SwQumY88j2R8RrE+EWxABzrIMfT4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=cAbgm0XyX3ZFNdD75o/5JmOlsjYFGJKKE3YuR9/7MaqajEH6igfAOGsNaBeotsbMS
-         Qd/Q6I8QoRrNmQKE43WCk3JEsl8lFfNfcM3xVfDLEeEZGhsPAcbDD+GfilLJVAG/qv
-         vqEhWc6UpUaVVH4shxERWFyWU+sReO54YYFArSC4=
-Content-Type: text/plain; charset="utf-8"
+        id S2387675AbgGWBtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 21:49:39 -0400
+Received: from regular1.263xmail.com ([211.150.70.201]:39588 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729198AbgGWBtj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 22 Jul 2020 21:49:39 -0400
+Received: from localhost (unknown [192.168.167.225])
+        by regular1.263xmail.com (Postfix) with ESMTP id D7FF0A54;
+        Thu, 23 Jul 2020 09:49:36 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.236] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P17824T139851630368512S1595468975533575_;
+        Thu, 23 Jul 2020 09:49:36 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <556b12a816981c0b51110575844fb20a>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: kever.yang@rock-chips.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v1] clk: Export __clk_lookup()
+From:   "elaine.zhang" <zhangqing@rock-chips.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     mturquette@baylibre.com, linux-clk@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xxx@rock-chips.com, xf@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com
+References: <20200722023230.10826-1-zhangqing@rock-chips.com>
+ <14639646.VOZsFJ8Tpa@phil>
+ <159546549321.3847286.4678382117195983280@swboyd.mtv.corp.google.com>
+ <f3e7b8f3-e4d4-9965-703d-aa4b96f50f6d@rock-chips.com>
+Organization: rockchip
+Message-ID: <99eebfa5-e775-37a8-6c76-90ae2444b253@rock-chips.com>
+Date:   Thu, 23 Jul 2020 09:49:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200721164655.422-1-luca@lucaceresoli.net>
-References: <20200721164655.422-1-luca@lucaceresoli.net>
-Subject: Re: [PATCH v3 1/4] dt-bindings: clk: versaclock5: fix 'idt' prefix typos
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
-        Adam Ford <aford173@gmail.com>, Rob Herring <robh@kernel.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>, linux-clk@vger.kernel.org
-Date:   Wed, 22 Jul 2020 18:49:24 -0700
-Message-ID: <159546896402.3847286.10939445139729414539@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <f3e7b8f3-e4d4-9965-703d-aa4b96f50f6d@rock-chips.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Luca Ceresoli (2020-07-21 09:46:52)
-> 'idt' is misspelled 'itd' in a few places, fix it.
->=20
-> Fixes: 34662f6e3084 ("dt: Add additional option bindings for IDT VersaClo=
-ck")
-> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-> Reviewed-by: Rob Herring <robh@kernel.org>
->=20
-> ---
 
-Please use a cover-letter for multi-patch series.
+在 2020/7/23 上午9:42, elaine.zhang 写道:
+>
+> 在 2020/7/23 上午8:51, Stephen Boyd 写道:
+>> Quoting Heiko Stuebner (2020-07-22 11:26:50)
+>>> Hi Elaine,
+>>>
+>>> Am Mittwoch, 22. Juli 2020, 04:32:30 CEST schrieb Elaine Zhang:
+>>>> Export __clk_lookup() to support user built as module.
+>>>>
+>>>> ERROR:
+>>>> drivers/clk/rockchip/clk.ko: In function
+>>>> `rockchip_clk_protect_critical':
+>>>> drivers/clk/rockchip/clk.c:741:
+>>>> undefined reference to `__clk_lookup'
+>>> can you elaborate a bit more on why this would be needed?
+>>>
+>>> Because right now the Rockchip clocks are of course built into
+>>> the main kernel image (especially due to them being needed during early
+>>> boot) and __clk_lookup actually is a pretty deep part of the clock-
+>>> framework itself, as probably also denoted by the "__" in the function
+>>> name.
+>>>
+>> Can you stop using __clk_lookup()? The plan is to remove it.
+>
+> Rk use  __clk_lookup() as:
+>
+> drivers/clk/rockchip/clk.c
+>
+> void __init rockchip_clk_protect_critical(const char *const clocks[],
+>                                           int nclocks)
+> {
+>         int i;
+>
+>         /* Protect the clocks that needs to stay on */
+>         for (i = 0; i < nclocks; i++) {
+>                 struct clk *clk = __clk_lookup(clocks[i]);
+>
+>                 if (clk)
+>                         clk_prepare_enable(clk);
+>         }
+> }
+> e.g:
+>
+> drivers/clk/rockchip/clk-rk3328.c
+>
+> static const char *const rk3328_critical_clocks[] __initconst = {
+>         "aclk_bus",
+>         "aclk_bus_niu",
+>         "pclk_bus",
+>         "pclk_bus_niu",
+>         "hclk_bus",
+>         "hclk_bus_niu",
+>         "aclk_peri",
+> ............
+>
+> };
+>
+> If have plan to remove the __clk_lookup, I need to replace the 
+> rockchip_clk_protect_critical, and use the flag CLK_IS_CRITICAL.(but 
+> use flag CLK_IS_CRITICAL, the enable count is always "0")
+Use the CLK_IS_CRITICAL, there is no guarantee that the parent clk is 
+enabled, So the flag CLK_IS_CRITICAL need to be added to all special 
+clks according to the clk tree.
+>
+>>
+>>
+
+
