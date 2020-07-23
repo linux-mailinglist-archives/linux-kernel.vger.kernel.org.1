@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B9222B73F
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEFD22B741
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgGWUJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:09:40 -0400
-Received: from ms.lwn.net ([45.79.88.28]:42346 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgGWUJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:09:40 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5CF682CD;
-        Thu, 23 Jul 2020 20:09:40 +0000 (UTC)
-Date:   Thu, 23 Jul 2020 14:09:39 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH RESEND] docs/core-api: memory-allocation: describe
- reclaim behaviour
-Message-ID: <20200723140939.34cf8116@lwn.net>
-In-Reply-To: <20200719153641.231131-1-rppt@kernel.org>
-References: <20200719153641.231131-1-rppt@kernel.org>
-Organization: LWN.net
+        id S1727020AbgGWUKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:10:16 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36719 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgGWUKQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 16:10:16 -0400
+Received: by mail-io1-f68.google.com with SMTP id t131so7605916iod.3;
+        Thu, 23 Jul 2020 13:10:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6qKebxTelJllWzX+vBkDTjUwXCky31GlyoLB/Us13RU=;
+        b=m1KZXjXETbceHodYwrOXIHlhGjcabQvxNMPpbhG4AKQoamlCNiCBOBvNyyZaklX3ae
+         jiA9R1M0KJo0A8IShcK8PKYQASEThHOXg6BReGMn0tmJvr5/n5buuq7dbouRav8g17lL
+         zlDlZ7QgUd/NiHGGZuzR8iYNx3QUzkJuUg/SsfNJKrMRBlPgGTT2JBl+/1zb6RuUEllQ
+         VJmjupLDalFl4IaZ9kWlvI9fqd541wzVakPmrWZYC0mrbgiOajq7n1WysUHJx6ALcq3q
+         OVQyRQpKpdkBARQRYNJRqE3/gLjUI2/8ydO4E3AV4XkINJ874Jk5nwobFWUxdwwrovzh
+         +ExQ==
+X-Gm-Message-State: AOAM532evdEofb3v68iq1JnLpI0fxYl0MX5uvw4xSuLeruByEISelU8m
+        k3+KC1V2VX6daQpH1UbzGg==
+X-Google-Smtp-Source: ABdhPJxGEX8Ak0s03CYs/Oeyc9EzvHmJLaxCDLLXIMq2atxOMK1p55BpCBZEw/SWFXye1D4dLGknwA==
+X-Received: by 2002:a05:6602:2184:: with SMTP id b4mr6883379iob.156.1595535015110;
+        Thu, 23 Jul 2020 13:10:15 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id k7sm1963383iot.20.2020.07.23.13.10.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 13:10:14 -0700 (PDT)
+Received: (nullmailer pid 783482 invoked by uid 1000);
+        Thu, 23 Jul 2020 20:10:13 -0000
+Date:   Thu, 23 Jul 2020 14:10:13 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, git@xilinx.com,
+        saikrishna12468@gmail.com
+Subject: Re: [PATCH v2 1/2] dt-bindings: reset: Updated binding for Versal
+ reset driver
+Message-ID: <20200723201013.GA783435@bogus>
+References: <1595402165-8282-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1595402165-8282-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595402165-8282-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Jul 2020 18:36:41 +0300
-Mike Rapoport <rppt@kernel.org> wrote:
-
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Wed, 22 Jul 2020 12:46:04 +0530, Sai Krishna Potthuri wrote:
+> Added documentation and Versal reset indices to describe
+> about Versal reset driver bindings.
+> In Versal all reset indices includes Class, SubClass, Type, Index
+> information whereas class refers to clock, reset, power etc.,
+> Underlying firmware in Versal have such classification and expects
+> the ID to be this way.
+> [13:0] - Index bits
+> [19:14] - Type bits
+> [25:20] - SubClass bits
+> [31:26] - Class bits.
 > 
-> Changelog of commit dcda9b04713c ("mm, tree wide: replace __GFP_REPEAT by
-> __GFP_RETRY_MAYFAIL with more useful semantic") has very nice description
-> of GFP flags that affect reclaim behaviour of the page allocator.
-> 
-> It would be pity to keep this description buried in the log so let's expose
-> it in the Documentation/ as well.
-> 
-> Cc: Michal Hocko <mhocko@suse.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
 > ---
->  Documentation/core-api/memory-allocation.rst | 44 ++++++++++++++++++++
->  1 file changed, 44 insertions(+)
+>  .../bindings/reset/xlnx,zynqmp-reset.txt      |  11 +-
+>  .../dt-bindings/reset/xlnx-versal-resets.h    | 105 ++++++++++++++++++
+>  2 files changed, 112 insertions(+), 4 deletions(-)
+>  create mode 100644 include/dt-bindings/reset/xlnx-versal-resets.h
+> 
 
-Applied, thanks.
-
-I'm not quite sure how this fell through the cracks before, sorry about
-that.
-
-jon
+Reviewed-by: Rob Herring <robh@kernel.org>
