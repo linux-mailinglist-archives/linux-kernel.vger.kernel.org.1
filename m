@@ -2,212 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A1822A558
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 04:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DBB22A544
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 04:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387679AbgGWCey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 22 Jul 2020 22:34:54 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:1953 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731405AbgGWCey (ORCPT
+        id S1733309AbgGWCeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 22 Jul 2020 22:34:15 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:24787 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728914AbgGWCeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 22 Jul 2020 22:34:54 -0400
-IronPort-SDR: 4YMtuW61e2WoCBKgqyINgBtiI4yCbohLK63H0C/kmrEdBdrAPmBAbYVuTHVdxEamCPOJyDRjMt
- A1HX/6UspjFgPpm68KIly3g5J4U3IBY0fH2LesAJCT4FKPb8OaR/fptkzwdjhONYHDyUKQxk/d
- M2qdReeJWxfnXz8DAJVov96SkN+2VWVfKAJv6uxTqbcWQkZUqiJnIXY/HhX9odJ2+6LP48w25w
- jJcAy9tzOyBEClJhtkOQnlv4jlm3EVYYLNl29Bms34GEPvx4g/NqWsDirlAaSe2cNwLTkuPWM+
- 6xo=
-X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
-   d="scan'208";a="29047798"
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by labrats.qualcomm.com with ESMTP; 22 Jul 2020 19:34:53 -0700
-Received: from pacamara-linux.qualcomm.com ([192.168.140.135])
-  by ironmsg04-sd.qualcomm.com with ESMTP; 22 Jul 2020 19:34:52 -0700
-Received: by pacamara-linux.qualcomm.com (Postfix, from userid 359480)
-        id 6101C22A4D; Wed, 22 Jul 2020 19:34:52 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        sh425.lee@samsung.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v5 9/9] scsi: ufs: Fix a racing problem btw error handler and runtime PM ops
-Date:   Wed, 22 Jul 2020 19:34:08 -0700
-Message-Id: <1595471649-25675-10-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595471649-25675-1-git-send-email-cang@codeaurora.org>
-References: <1595471649-25675-1-git-send-email-cang@codeaurora.org>
+        Wed, 22 Jul 2020 22:34:14 -0400
+X-UUID: c259162778874c56bb613c025876b752-20200723
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=9hTIinPJ/86OaOzsDAjqdA+TQ7VtOw4pAcixEozya7A=;
+        b=arU8Ru/yuG0TpypuMhw6gbzfQiwEpS2Xq1YELHCSXKxHg//a1tsTOMYL9l1knqpJgtOP+vfOvScdQ8CaypLJmo7poMls//PwavUwLbCNVRIQoI0L6Q+8BFccV9/AAdCf6NBCfVnauxXoCTReJmAGdWnPxEL3D93nZblyBPsklwE=;
+X-UUID: c259162778874c56bb613c025876b752-20200723
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <eastl.lee@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1258688521; Thu, 23 Jul 2020 10:34:11 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 23 Jul 2020 10:34:10 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 23 Jul 2020 10:34:07 +0800
+Message-ID: <1595471650.22392.12.camel@mtkswgap22>
+Subject: Re: [PATCH v6 2/4] dmaengine: mediatek-cqdma: remove redundant
+ queue structure
+From:   EastL <EastL.Lee@mediatek.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Sean Wang <sean.wang@mediatek.com>, <robh+dt@kernel.org>,
+        <mark.rutland@arm.com>, <matthias.bgg@gmail.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>, <cc.hwang@mediatek.com>
+Date:   Thu, 23 Jul 2020 10:34:10 +0800
+In-Reply-To: <20200715061957.GA34333@vkoul-mobl>
+References: <1593673564-4425-1-git-send-email-EastL.Lee@mediatek.com>
+         <1593673564-4425-3-git-send-email-EastL.Lee@mediatek.com>
+         <20200715061957.GA34333@vkoul-mobl>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current IRQ handler blocks scsi requests before scheduling eh_work, when
-error handler calls pm_runtime_get_sync, if ufshcd_suspend/resume sends a
-scsi cmd, most likely the SSU cmd, since scsi requests are blocked,
-pm_runtime_get_sync() will never return because ufshcd_suspend/reusme is
-blocked by the scsi cmd. Some changes and code re-arrangement can be made
-to resolve it.
-
-o In queuecommand path, hba->ufshcd_state check and ufshcd_send_command
-  should stay into the same spin lock. This is to make sure that no more
-  commands leak into doorbell after hba->ufshcd_state is changed.
-o Don't block scsi requests before scheduling eh_work, let error handler
-  block scsi requests when it is ready to start error recovery.
-o Don't let scsi layer keep requeuing the scsi cmds sent from hba runtime
-  PM ops, let them pass or fail them. Let them pass if eh_work is scheduled
-  due to non-fatal errors. Fail them fail if eh_work is scheduled due to
-  fatal errors, otherwise the cmds may eventually time out since UFS is in
-  bad state, which gets error handler blocked for too long. If we fail the
-  scsi cmds sent from hba runtime PM ops, hba runtime PM ops fails too, but
-  it does not hurt since error handler can recover hba runtime PM error.
-
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 84 +++++++++++++++++++++++++++--------------------
- 1 file changed, 49 insertions(+), 35 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index ae78d5d..e9d8c4f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -126,7 +126,8 @@ enum {
- 	UFSHCD_STATE_RESET,
- 	UFSHCD_STATE_ERROR,
- 	UFSHCD_STATE_OPERATIONAL,
--	UFSHCD_STATE_EH_SCHEDULED,
-+	UFSHCD_STATE_EH_SCHEDULED_FATAL,
-+	UFSHCD_STATE_EH_SCHEDULED_NON_FATAL,
- };
- 
- /* UFSHCD error handling flags */
-@@ -2515,34 +2516,6 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 	if (!down_read_trylock(&hba->clk_scaling_lock))
- 		return SCSI_MLQUEUE_HOST_BUSY;
- 
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	switch (hba->ufshcd_state) {
--	case UFSHCD_STATE_OPERATIONAL:
--		break;
--	case UFSHCD_STATE_EH_SCHEDULED:
--	case UFSHCD_STATE_RESET:
--		err = SCSI_MLQUEUE_HOST_BUSY;
--		goto out_unlock;
--	case UFSHCD_STATE_ERROR:
--		set_host_byte(cmd, DID_ERROR);
--		cmd->scsi_done(cmd);
--		goto out_unlock;
--	default:
--		dev_WARN_ONCE(hba->dev, 1, "%s: invalid state %d\n",
--				__func__, hba->ufshcd_state);
--		set_host_byte(cmd, DID_BAD_TARGET);
--		cmd->scsi_done(cmd);
--		goto out_unlock;
--	}
--
--	/* if error handling is in progress, don't issue commands */
--	if (ufshcd_eh_in_progress(hba)) {
--		set_host_byte(cmd, DID_ERROR);
--		cmd->scsi_done(cmd);
--		goto out_unlock;
--	}
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
--
- 	hba->req_abort_count = 0;
- 
- 	err = ufshcd_hold(hba, true);
-@@ -2578,11 +2551,50 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 	/* Make sure descriptors are ready before ringing the doorbell */
- 	wmb();
- 
--	/* issue command to the controller */
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-+	switch (hba->ufshcd_state) {
-+	case UFSHCD_STATE_OPERATIONAL:
-+	case UFSHCD_STATE_EH_SCHEDULED_NON_FATAL:
-+		break;
-+	case UFSHCD_STATE_EH_SCHEDULED_FATAL:
-+		/*
-+		 * If we are here, eh_work is either scheduled or running.
-+		 * Before eh_work sets ufshcd_state to STATE_RESET, it flushes
-+		 * runtime PM ops by calling pm_runtime_get_sync(). If a scsi
-+		 * cmd, e.g. the SSU cmd, is sent by PM ops, it can never be
-+		 * finished if we let SCSI layer keep retrying it, which gets
-+		 * eh_work stuck forever. Neither can we let it pass, because
-+		 * ufs now is not in good status, so the SSU cmd may eventually
-+		 * time out, blocking eh_work for too long. So just let it fail.
-+		 */
-+		if (hba->pm_op_in_progress) {
-+			hba->force_reset = true;
-+			set_host_byte(cmd, DID_BAD_TARGET);
-+			goto out_compl_cmd;
-+		}
-+	case UFSHCD_STATE_RESET:
-+		err = SCSI_MLQUEUE_HOST_BUSY;
-+		goto out_compl_cmd;
-+	case UFSHCD_STATE_ERROR:
-+		set_host_byte(cmd, DID_ERROR);
-+		goto out_compl_cmd;
-+	default:
-+		dev_WARN_ONCE(hba->dev, 1, "%s: invalid state %d\n",
-+				__func__, hba->ufshcd_state);
-+		set_host_byte(cmd, DID_BAD_TARGET);
-+		goto out_compl_cmd;
-+	}
- 	ufshcd_send_command(hba, tag);
--out_unlock:
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	goto out;
-+
-+out_compl_cmd:
-+	scsi_dma_unmap(lrbp->cmd);
-+	lrbp->cmd = NULL;
-+	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	ufshcd_release(hba);
-+	if (!err)
-+		cmd->scsi_done(cmd);
- out:
- 	up_read(&hba->clk_scaling_lock);
- 	return err;
-@@ -5553,7 +5565,11 @@ static inline void ufshcd_schedule_eh_work(struct ufs_hba *hba)
- {
- 	/* handle fatal errors only when link is not in error state */
- 	if (hba->ufshcd_state != UFSHCD_STATE_ERROR) {
--		hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED;
-+		if (hba->force_reset || ufshcd_is_link_broken(hba) ||
-+		    ufshcd_is_saved_err_fatal(hba))
-+			hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED_FATAL;
-+		else
-+			hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED_NON_FATAL;
- 		queue_work(hba->eh_wq, &hba->eh_work);
- 	}
- }
-@@ -5658,6 +5674,7 @@ static void ufshcd_err_handler(struct work_struct *work)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 	ufshcd_err_handler_prepare(hba);
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-+	ufshcd_scsi_block_requests(hba);
- 	hba->ufshcd_state = UFSHCD_STATE_RESET;
- 
- 	/* Complete requests that have door-bell cleared by h/w */
-@@ -5911,9 +5928,6 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
- 		 */
- 		hba->saved_err |= hba->errors;
- 		hba->saved_uic_err |= hba->uic_error;
--
--		/* block commands from scsi mid-layer */
--		ufshcd_scsi_block_requests(hba);
- 		ufshcd_schedule_eh_work(hba);
- 		retval |= IRQ_HANDLED;
- 	}
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+T24gV2VkLCAyMDIwLTA3LTE1IGF0IDExOjQ5ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBP
+biAwMi0wNy0yMCwgMTU6MDYsIEVhc3RMIExlZSB3cm90ZToNCj4gDQo+ID4gIHN0YXRpYyBlbnVt
+IGRtYV9zdGF0dXMgbXRrX2NxZG1hX3R4X3N0YXR1cyhzdHJ1Y3QgZG1hX2NoYW4gKmMsDQo+ID4g
+IAkJCQkJICAgZG1hX2Nvb2tpZV90IGNvb2tpZSwNCj4gPiAgCQkJCQkgICBzdHJ1Y3QgZG1hX3R4
+X3N0YXRlICp0eHN0YXRlKQ0KPiA+ICB7DQo+ID4gLQlzdHJ1Y3QgbXRrX2NxZG1hX3ZjaGFuICpj
+dmMgPSB0b19jcWRtYV92Y2hhbihjKTsNCj4gPiAtCXN0cnVjdCBtdGtfY3FkbWFfdmRlc2MgKmN2
+ZDsNCj4gPiAtCXN0cnVjdCB2aXJ0X2RtYV9kZXNjICp2ZDsNCj4gPiAtCWVudW0gZG1hX3N0YXR1
+cyByZXQ7DQo+ID4gLQl1bnNpZ25lZCBsb25nIGZsYWdzOw0KPiA+IC0Jc2l6ZV90IGJ5dGVzID0g
+MDsNCj4gPiAtDQo+ID4gLQlyZXQgPSBkbWFfY29va2llX3N0YXR1cyhjLCBjb29raWUsIHR4c3Rh
+dGUpOw0KPiA+IC0JaWYgKHJldCA9PSBETUFfQ09NUExFVEUgfHwgIXR4c3RhdGUpDQo+ID4gLQkJ
+cmV0dXJuIHJldDsNCj4gPiAtDQo+ID4gLQlzcGluX2xvY2tfaXJxc2F2ZSgmY3ZjLT52Yy5sb2Nr
+LCBmbGFncyk7DQo+ID4gLQl2ZCA9IG10a19jcWRtYV9maW5kX2FjdGl2ZV9kZXNjKGMsIGNvb2tp
+ZSk7DQo+ID4gLQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjdmMtPnZjLmxvY2ssIGZsYWdzKTsN
+Cj4gPiAtDQo+ID4gLQlpZiAodmQpIHsNCj4gPiAtCQljdmQgPSB0b19jcWRtYV92ZGVzYyh2ZCk7
+DQo+ID4gLQkJYnl0ZXMgPSBjdmQtPnJlc2lkdWU7DQo+ID4gLQl9DQo+ID4gLQ0KPiA+IC0JZG1h
+X3NldF9yZXNpZHVlKHR4c3RhdGUsIGJ5dGVzKTsNCj4gDQo+IGFueSByZWFzb24gd2h5IHlvdSB3
+YW50IHRvIHJlbW92ZSBzZXR0aW5nIHJlc2lkdWU/DQpCZWNhdXNlIE1lZGlhdGVrIENRRE1BIEhX
+IGNhbid0IHN1cHBvcnQgcmVzaWR1ZS4NCj4gDQo+ID4gLXN0YXRpYyB2b2lkIG10a19jcWRtYV9m
+cmVlX2FjdGl2ZV9kZXNjKHN0cnVjdCBkbWFfY2hhbiAqYykNCj4gPiArc3RhdGljIGludCBtdGtf
+Y3FkbWFfdGVybWluYXRlX2FsbChzdHJ1Y3QgZG1hX2NoYW4gKmMpDQo+ID4gIHsNCj4gPiAgCXN0
+cnVjdCBtdGtfY3FkbWFfdmNoYW4gKmN2YyA9IHRvX2NxZG1hX3ZjaGFuKGMpOw0KPiA+IC0JYm9v
+bCBzeW5jX25lZWRlZCA9IGZhbHNlOw0KPiA+ICsJc3RydWN0IHZpcnRfZG1hX2NoYW4gKnZjID0g
+dG9fdmlydF9jaGFuKGMpOw0KPiA+ICAJdW5zaWduZWQgbG9uZyBwY19mbGFnczsNCj4gPiAgCXVu
+c2lnbmVkIGxvbmcgdmNfZmxhZ3M7DQo+ID4gKwlMSVNUX0hFQUQoaGVhZCk7DQo+ID4gKw0KPiA+
+ICsJLyogd2FpdCBmb3IgdGhlIFZDIHRvIGJlIGluYWN0aXZlICAqLw0KPiA+ICsJaWYgKCF3YWl0
+X2Zvcl9jb21wbGV0aW9uX3RpbWVvdXQoJmN2Yy0+Y21wLCBtc2Vjc190b19qaWZmaWVzKDMwMDAp
+KSkNCj4gPiArCQlyZXR1cm4gLUVBR0FJTjsNCj4gPiAgDQo+ID4gIAkvKiBhY3F1aXJlIFBDJ3Mg
+bG9jayBmaXJzdCBkdWUgdG8gbG9jayBkZXBlbmRlbmN5IGluIGRtYSBJU1IgKi8NCj4gPiAgCXNw
+aW5fbG9ja19pcnFzYXZlKCZjdmMtPnBjLT5sb2NrLCBwY19mbGFncyk7DQo+ID4gIAlzcGluX2xv
+Y2tfaXJxc2F2ZSgmY3ZjLT52Yy5sb2NrLCB2Y19mbGFncyk7DQo+ID4gIA0KPiA+IC0JLyogc3lu
+Y2hyb25pemF0aW9uIGlzIHJlcXVpcmVkIGlmIHRoaXMgVkMgaXMgYWN0aXZlICovDQo+ID4gLQlp
+ZiAobXRrX2NxZG1hX2lzX3ZjaGFuX2FjdGl2ZShjdmMpKSB7DQo+ID4gLQkJY3ZjLT5pc3N1ZV9z
+eW5jaHJvbml6ZSA9IHRydWU7DQo+ID4gLQkJc3luY19uZWVkZWQgPSB0cnVlOw0KPiA+IC0JfQ0K
+PiA+ICsJLyogZ2V0IFZEcyBmcm9tIGxpc3RzICovDQo+ID4gKwl2Y2hhbl9nZXRfYWxsX2Rlc2Ny
+aXB0b3JzKHZjLCAmaGVhZCk7DQo+ID4gKw0KPiA+ICsJLyogZnJlZSBhbGwgdGhlIFZEcyAqLw0K
+PiA+ICsJdmNoYW5fZG1hX2Rlc2NfZnJlZV9saXN0KHZjLCAmaGVhZCk7DQo+ID4gIA0KPiA+ICAJ
+c3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmY3ZjLT52Yy5sb2NrLCB2Y19mbGFncyk7DQo+ID4gIAlz
+cGluX3VubG9ja19pcnFyZXN0b3JlKCZjdmMtPnBjLT5sb2NrLCBwY19mbGFncyk7DQo+IA0KPiBH
+b29kIGNsZWFudXAsIGRvIHlvdSBuZWVkIGJvdGggdGhlc2UgbG9ja3M/DQpZZXMsIGJlY2F1c2Ug
+d2Ugd2lsbCBoYXZlIG11bHRpcGxlIHZjIHRvIHBjLCBpdCB3aWxsIG5lZWQgYm90aCBsb2NrLg0K
+DQo=
 
