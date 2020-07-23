@@ -2,89 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8CB22A8E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5ED22A8F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgGWGZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 02:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgGWGZE (ORCPT
+        id S1726330AbgGWG1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 02:27:22 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54878 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgGWG1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:25:04 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A6AC0619DC;
-        Wed, 22 Jul 2020 23:25:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=pjr5iP/6E7OeZxRztKUO1s2/ZLCAyytKnlW4zOJ8uI4=; b=iDYVlM2ZhdXKhXn0ZvMLEHaUJw
-        laOWedbmPiFJHZTC0btCQKGCljV6+OT+V9tEG07dZfQIxGoUt6xEO6H+TIv7+aCZeAljHRJG/S3rr
-        4nwz8MZV+M7YFBXMDnacBGBCKfcHNGghJ+9OlcxBwEfgWfrRHridy/Ly5uYn459gazYqHAmpWba+8
-        5kCNpwDiTPOHNdH0gy/6FF5Om9RgjXAqowauFNQqUB/QoSAuasEc7zxiv5w7A3LyvlsdunQFYmCIX
-        769JTlvalr2v1PGKHBfobKSH0RC8/ySucxDcpA232H6ec9B+kqHzAuNOfAQv4kg8tHL2P7BoV54zh
-        byFp+//A==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jyUf3-00065W-Dr; Thu, 23 Jul 2020 06:24:57 +0000
-Subject: Re: [RFC] cpuidle : Add support for pseudo-cpuidle driver
-To:     Abhishek Goel <huntbag@linux.vnet.ibm.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rjw@rjwysocki.net, daniel.lezcano@linaro.org, mpe@ellerman.id.au,
-        ego@linux.vnet.ibm.com
-References: <20200723061339.9747-1-huntbag@linux.vnet.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1be8a3d4-52cc-c91c-2560-25e0af41dd5c@infradead.org>
-Date:   Wed, 22 Jul 2020 23:24:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 23 Jul 2020 02:27:20 -0400
+Received: by mail-io1-f72.google.com with SMTP id q207so3401594iod.21
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 23:27:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5S/81hsecrU3K+bhmVLmmLLHbSsTXsRoeQzbcVaqmy4=;
+        b=Qhl7d5gH28KGG3vdLAc/+qkhPBTA6viE/K2DvMGfvqA/AlW1YJb8zaeDEAl38JbnyW
+         Jw5mokB+pWJfuQpLAzzyFbxMwkfIKdk6vU+QhzwoQsRcmQM/zhLzyEMauQibmLsmQPNW
+         mbONbL6qbTHlLcWUNuRZmtcdpTR/cpQRxjOeEDF2CmRSefHM9GaFC+uFimSVWXBfOTnW
+         Q5QiGzOc0eYPBfgg4Fo4b5eVrZYHuGuVI2HLxJkP7hi2BWajg7kRiiZdSzW5w2WBQy2L
+         Mf5kSqw+8nGgv1yM/mMfWAWlQBfjNrBQyRxwaDcSEIVJ8vCXZmGOwfR5Z899S2BJ1LP5
+         ax6A==
+X-Gm-Message-State: AOAM533dv4JGuvXPpmEE2VmqdM2yf/qzysk2OfyaLCKSn4AsvpIXBFc+
+        LeAMkzGYah3YjpbyL9T7NJd6S2XiSCcrX6/4NknVr0f4qfhA
+X-Google-Smtp-Source: ABdhPJz7+sq71viipFnrK5clBmYXYSwzIk+JgW4gZYB3Ro+zPp+LQjjpZq4hRxJfQAfK+TtaC1optjMnrrX+C6oDMPLEEZHNkceh
 MIME-Version: 1.0
-In-Reply-To: <20200723061339.9747-1-huntbag@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:d51:: with SMTP id h17mr3636243ilj.131.1595485639492;
+ Wed, 22 Jul 2020 23:27:19 -0700 (PDT)
+Date:   Wed, 22 Jul 2020 23:27:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c94b1a05ab15f2ea@google.com>
+Subject: KASAN: use-after-free Read in ceph_mdsc_destroy
+From:   syzbot <syzbot+b57f46d8d6ea51960b8c@syzkaller.appspotmail.com>
+To:     ceph-devel@vger.kernel.org, idryomov@gmail.com, jlayton@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/20 11:13 PM, Abhishek Goel wrote:
-> diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
-> index c0aeedd66f02..1d73153a0e35 100644
-> --- a/drivers/cpuidle/Kconfig
-> +++ b/drivers/cpuidle/Kconfig
-> @@ -71,6 +71,15 @@ config HALTPOLL_CPUIDLE
->  	 before halting in the guest (more efficient than polling in the
->  	 host via halt_poll_ns for some scenarios).
->  
-> +config TEST_CPUIDLE
-> +	tristate "cpuidle test driver"
-> +	default m
+Hello,
 
-No default, please.
-We don't enable unneeded drivers for the fun of it.
+syzbot found the following issue on:
 
-> +	help
+HEAD commit:    f932d58a Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=152c6a80900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a160d1053fc89af5
+dashboard link: https://syzkaller.appspot.com/bug?extid=b57f46d8d6ea51960b8c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Indent the following help text with one tab + 2 spaces.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> +	 This option enables a testing cpuidle driver, which allows to user
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b57f46d8d6ea51960b8c@syzkaller.appspotmail.com
 
-	                                                     allows the user  [or a user]
+==================================================================
+BUG: KASAN: use-after-free in timer_is_static_object+0x7a/0x90 kernel/time/timer.c:611
+Read of size 8 at addr ffff88809e482380 by task syz-executor.3/15653
 
-> +	 to define custom idle states with their respective latencies and residencies.
-> +	 This is useful for testing the behaviour of governors on different
-> +	 set of idle states.
+CPU: 0 PID: 15653 Comm: syz-executor.3 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ timer_is_static_object+0x7a/0x90 kernel/time/timer.c:611
+ debug_object_assert_init lib/debugobjects.c:866 [inline]
+ debug_object_assert_init+0x1df/0x2e0 lib/debugobjects.c:841
+ debug_timer_assert_init kernel/time/timer.c:728 [inline]
+ debug_assert_init kernel/time/timer.c:773 [inline]
+ del_timer+0x6d/0x110 kernel/time/timer.c:1196
+ try_to_grab_pending kernel/workqueue.c:1249 [inline]
+ __cancel_work_timer+0x12d/0x700 kernel/workqueue.c:3092
+ ceph_mdsc_stop fs/ceph/mds_client.c:4660 [inline]
+ ceph_mdsc_destroy+0x50/0x140 fs/ceph/mds_client.c:4679
+ destroy_fs_client+0x13/0x200 fs/ceph/super.c:720
+ ceph_get_tree+0x9e5/0x1660 fs/ceph/super.c:1110
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ do_mount+0x1592/0x1fe0 fs/namespace.c:3200
+ __do_sys_mount fs/namespace.c:3410 [inline]
+ __se_sys_mount fs/namespace.c:3387 [inline]
+ __x64_sys_mount+0x18f/0x230 fs/namespace.c:3387
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45c1d9
+Code: Bad RIP value.
+RSP: 002b:00007f33d2bc0c78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 000000000001f400 RCX: 000000000045c1d9
+RDX: 0000000020000140 RSI: 00000000200000c0 RDI: 00000000200005c0
+RBP: 000000000078bf50 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078bf0c
+R13: 00007fffaad3cc8f R14: 00007f33d2bc19c0 R15: 000000000078bf0c
 
-	 sets
+Allocated by task 15653:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xc2/0xd0 mm/kasan/common.c:494
+ kmem_cache_alloc_trace+0x14f/0x2d0 mm/slab.c:3551
+ kmalloc include/linux/slab.h:555 [inline]
+ kzalloc include/linux/slab.h:669 [inline]
+ ceph_mdsc_init+0x47/0xf10 fs/ceph/mds_client.c:4351
+ ceph_get_tree+0x4fe/0x1660 fs/ceph/super.c:1063
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ do_mount+0x1592/0x1fe0 fs/namespace.c:3200
+ __do_sys_mount fs/namespace.c:3410 [inline]
+ __se_sys_mount fs/namespace.c:3387 [inline]
+ __x64_sys_mount+0x18f/0x230 fs/namespace.c:3387
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> +
->  endif
->  
->  config ARCH_NEEDS_CPU_IDLE_COUPLED
+Freed by task 15653:
+ save_stack+0x1b/0x40 mm/kasan/common.c:48
+ set_track mm/kasan/common.c:56 [inline]
+ kasan_set_free_info mm/kasan/common.c:316 [inline]
+ __kasan_slab_free+0xf5/0x140 mm/kasan/common.c:455
+ __cache_free mm/slab.c:3426 [inline]
+ kfree+0x103/0x2c0 mm/slab.c:3757
+ ceph_mdsc_init+0xc64/0xf10 fs/ceph/mds_client.c:4422
+ ceph_get_tree+0x4fe/0x1660 fs/ceph/super.c:1063
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ do_mount+0x1592/0x1fe0 fs/namespace.c:3200
+ __do_sys_mount fs/namespace.c:3410 [inline]
+ __se_sys_mount fs/namespace.c:3387 [inline]
+ __x64_sys_mount+0x18f/0x230 fs/namespace.c:3387
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-thanks.
--- 
-~Randy
+The buggy address belongs to the object at ffff88809e482000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 896 bytes inside of
+ 4096-byte region [ffff88809e482000, ffff88809e483000)
+The buggy address belongs to the page:
+page:ffffea0002792080 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 head:ffffea0002792080 order:1 compound_mapcount:0
+flags: 0xfffe0000010200(slab|head)
+raw: 00fffe0000010200 ffffea0002792008 ffffea000241dc08 ffff8880aa002000
+raw: 0000000000000000 ffff88809e482000 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
 
+Memory state around the buggy address:
+ ffff88809e482280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88809e482300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88809e482380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff88809e482400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88809e482480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
