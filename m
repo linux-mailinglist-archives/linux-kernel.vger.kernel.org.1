@@ -2,113 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6643422A667
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 06:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881BC22A669
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 06:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgGWEPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 00:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgGWEP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 00:15:29 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBEC9C0619DC;
-        Wed, 22 Jul 2020 21:15:27 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l23so4251985qkk.0;
-        Wed, 22 Jul 2020 21:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KW20rhBVBSG/GA3kSdVk0F7HWn+qvQaEdDjsOp4a1J0=;
-        b=P5Atn+Wlu/TuNhxO3NMCdukgTqLt+JBrLbqJAtk2KYnqs9KyGtbPX646lYVH7fspi7
-         f0KpFIwn0rHQnu1mewOb6pKEc7NSspm4wBCKsnTQ/l+ODPGQA7I9NjXJM7nOQ4jJ0I+B
-         YBHU+Q0Ir7g55cMVZeHfwA1pbI7vQAKJ5M0Iqkq9o2S+wlKjTqzCPLeNiQV0PaXe7oEN
-         4ERQDnPwprD681Z1Hyj3T1e25koJjUT46i4uCT+6rVd0oyzLskCuq0g/PXM2qh6shnND
-         EPK/ICcCcj7Aux3EMk3GK+P9AQR4RiYdmAwVBJPuo4WDuVK7YS1vgHmnC1CTxWTj6ahP
-         W6SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KW20rhBVBSG/GA3kSdVk0F7HWn+qvQaEdDjsOp4a1J0=;
-        b=sPVqKNAVwaj5SidEqQFJbcQiLk8RlAlqz8zwh5tbscuuNOaYD+0TEJLv+h7+KAz6la
-         F0a4RRnXW5Fxv9XuqmEFBmRHKLMV3uyx8xVZe4pGmJi8fKKGOuE6dFX87j6zQlnOJr8A
-         4G8ldiy3aH8gMLWJLbbp9tdEy/WI9kKZ4wcBqxGZzoucmG5WwlBtDTufOQZzGgg5/ckG
-         3+3hqxg+53deA1bOpnfGjbPjUoEKPndanghRpNjnm0ottS86POJzXoweem1rPS0zobgq
-         ny8xSctDwGlWHQh3ibsx51mlsIO/zJPukvTbFB1sbIyBQatQQd+4gAyxyWa4/08lZFOj
-         n3pQ==
-X-Gm-Message-State: AOAM531qXLPFRCRLQzTbr5vjL8l/kT53L/6t5oTnR7lvv+0JCTQkRm97
-        FCeRYtqwf3oG7nYFNJAdDkw=
-X-Google-Smtp-Source: ABdhPJwelgVlZJ/230DMQrEfRCs8dSIaYYAz3DZZHRMyEoiTKhOYK9d9T2s0OmCmd1bPQ06S/l1VHw==
-X-Received: by 2002:a05:620a:1315:: with SMTP id o21mr3400085qkj.227.1595477727009;
-        Wed, 22 Jul 2020 21:15:27 -0700 (PDT)
-Received: from localhost.localdomain ([2604:1380:45d1:2600::1])
-        by smtp.gmail.com with ESMTPSA id o4sm1662852qkm.25.2020.07.22.21.15.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jul 2020 21:15:26 -0700 (PDT)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] arm64: vdso32: Fix '--prefix=' value for newer versions of clang
-Date:   Wed, 22 Jul 2020 21:15:10 -0700
-Message-Id: <20200723041509.400450-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.28.0.rc1
+        id S1726349AbgGWEQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 00:16:25 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44677 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgGWEQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 00:16:24 -0400
+IronPort-SDR: 9GOXqDrua+V07IoOz1oMITzw90rxZP5GDtO6pjusCC1cm116jh36SsT4jRY0Np7k2dlZAz96Ez
+ 9AOdGy3+wjhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9690"; a="212005799"
+X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
+   d="scan'208";a="212005799"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2020 21:16:22 -0700
+IronPort-SDR: rpHIBZB6bPuv3oNaM50bZUknBDy+sYwfmQRnelBJL17bUfJOpOoX8J3DFyk6Szu4intgGr9/2i
+ DVGSuZxFmu8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,385,1589266800"; 
+   d="scan'208";a="288509462"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 22 Jul 2020 21:16:22 -0700
+Received: from [10.226.38.18] (unknown [10.226.38.18])
+        by linux.intel.com (Postfix) with ESMTP id AEE69580299;
+        Wed, 22 Jul 2020 21:16:19 -0700 (PDT)
+Subject: Re: [PATCH v4 2/2] Add PWM fan controller driver for LGM SoC
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+References: <cover.1593503228.git.rahul.tanwar@linux.intel.com>
+ <a74b18b68f26bf902c30a017050cc4ea070da887.1593503228.git.rahul.tanwar@linux.intel.com>
+ <20200713191059.zsokzvv3k2hyaxcl@pengutronix.de>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <409ee148-a6a6-327f-e4d7-455f98ef4c66@linux.intel.com>
+Date:   Thu, 23 Jul 2020 12:16:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+In-Reply-To: <20200713191059.zsokzvv3k2hyaxcl@pengutronix.de>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Newer versions of clang only look for $(COMPAT_GCC_TOOLCHAIN_DIR)as [1],
-rather than $(COMPAT_GCC_TOOLCHAIN_DIR)$(CROSS_COMPILE_COMPAT)as,
-resulting in the following build error:
 
-$ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
-CROSS_COMPILE_COMPAT=arm-linux-gnueabi- LLVM=1 O=out/aarch64 distclean \
-defconfig arch/arm64/kernel/vdso32/
-...
-/home/nathan/cbl/toolchains/llvm-binutils/bin/as: unrecognized option '-EL'
-clang-12: error: assembler command failed with exit code 1 (use -v to see invocation)
-make[3]: *** [arch/arm64/kernel/vdso32/Makefile:181: arch/arm64/kernel/vdso32/note.o] Error 1
-...
+Hi Uwe,
 
-Adding the value of CROSS_COMPILE_COMPAT (adding notdir to account for a
-full path for CROSS_COMPILE_COMPAT) fixes this issue, which matches the
-solution done for the main Makefile [2].
+Thanks for the feedback.
 
-[1]: https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90
-[2]: https://lore.kernel.org/lkml/20200721173125.1273884-1-maskray@google.com/
+On 14/7/2020 3:10 am, Uwe Kleine-König wrote:
+> Hello,
+>
+> On Tue, Jun 30, 2020 at 03:55:32PM +0800, Rahul Tanwar wrote:
+>> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+>> This PWM controller does not have any other consumer, it is a
+>> dedicated PWM controller for fan attached to the system. Add
+>> driver for this PWM fan controller.
+>>
+>> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+>> ---
+>>  drivers/pwm/Kconfig         |  11 ++
+>>  drivers/pwm/Makefile        |   1 +
+>>  drivers/pwm/pwm-intel-lgm.c | 266 ++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 278 insertions(+)
+>>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
 
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1099
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- arch/arm64/kernel/vdso32/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[...]
 
-diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-index d88148bef6b0..5139a5f19256 100644
---- a/arch/arm64/kernel/vdso32/Makefile
-+++ b/arch/arm64/kernel/vdso32/Makefile
-@@ -14,7 +14,7 @@ COMPAT_GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE_COMPAT)elfedit))
- COMPAT_GCC_TOOLCHAIN := $(realpath $(COMPAT_GCC_TOOLCHAIN_DIR)/..)
- 
- CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
--CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)
-+CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE_COMPAT))
- CC_COMPAT_CLANG_FLAGS += -no-integrated-as -Qunused-arguments
- ifneq ($(COMPAT_GCC_TOOLCHAIN),)
- CC_COMPAT_CLANG_FLAGS += --gcc-toolchain=$(COMPAT_GCC_TOOLCHAIN)
+>> +
+>> +static int lgm_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>> +			 const struct pwm_state *state)
+>> +{
+>> +	struct lgm_pwm_chip *pc = to_lgm_pwm_chip(chip);
+>> +	u32 duty_cycle, val;
+>> +	unsigned int period;
+>> +
+>> +	if (!state->enabled) {
+>> +		lgm_pwm_enable(chip, 0);
+>> +		return 0;
+>> +	}
+>> +
+>> +	period = min_t(u64, state->period, pc->period);
+>> +
+>> +	if (state->polarity != PWM_POLARITY_NORMAL ||
+>> +	    period < pc->period)
+>> +		return -EINVAL;
+> This check looks wrong. If you refuse period < pc->period there isn't
+> much configuration possible.
 
-base-commit: d15be546031cf65a0fc34879beca02fd90fe7ac7
--- 
-2.28.0.rc1
+I am kind of stuck here. I made this change of adding a check
+period < pc->period based on your feedback on v2 patch.
+In fact, you had specified this code in v2 review feedback
+and i used the same exact code.
 
+How should we handle it when the hardware supports fixed period.
+We don't want user to change period and allow just changing
+duty_cycle. With that intention, i had first added a strict check
+which refused configuration if period != pc->period. Period is
+intended to be a read only value.
+
+How do you suggest we handle the fixed period hardware support?
+Would you have any reference example of other drivers which also
+supports fixed period? Thanks.
+
+[...]
+>> +static int lgm_pwm_remove(struct platform_device *pdev)
+>> +{
+>> +	struct lgm_pwm_chip *pc = platform_get_drvdata(pdev);
+>> +	int ret;
+>> +
+>> +	ret = pwmchip_remove(&pc->chip);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	clk_disable_unprepare(pc->clk);
+>> +	reset_control_assert(pc->rst);
+> Please swap the two previous lines to match the error patch of .probe.
+
+Again, i had made this change based on your below review feedback
+for v1. IMO, reverse of probe makes more sense.
+
+"In .probe() you first release reset and then enable the clock. It's good
+style to do it the other way round in .remove()."
+
+Regards,
+Rahul
