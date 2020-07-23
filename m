@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CB622B144
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2875E22B148
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 16:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729495AbgGWO0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 10:26:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50818 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgGWO0T (ORCPT
+        id S1729507AbgGWO0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 10:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgGWO0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 10:26:19 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1jycAo-0000y3-Ez; Thu, 23 Jul 2020 14:26:14 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Intel SCU Linux support <intel-linux-scu@intel.com>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: isci: remove redundant initialization of variable status
-Date:   Thu, 23 Jul 2020 15:26:14 +0100
-Message-Id: <20200723142614.991416-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Thu, 23 Jul 2020 10:26:36 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2D3C0619DC;
+        Thu, 23 Jul 2020 07:26:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wwAZ4+QkYVfMEHOVd3BXrZYoQyQVya/EkyI6lTMJuEc=; b=PMLkNsZxkfipkQdx59Ts5gbSgy
+        ODJbDs/oG8tcz8/eohMUTIz+JBG8PYDPFQKWJMwDegGQl83DK2H4STe5I0pz7ZqX8KdZzt/EiC9Os
+        dzdb+OE63JAGbPDhIco+b5j1Yy3qEnFWRiNqz1O3tImnIJ3Pkcar23kbnxKbQKOS+OPuXYKMniIGR
+        pP5J4QQFMcVKpENacLV0k/slNjU1uyWx4kIShROCXfnBpF6JKLJ+mScEmbPN9YtO6oDhGnSmeAuVr
+        91tN4f4u0hpzoB0inLOFLV0Na6vJeadwIpqLOlss8qCFFij3lla63yca6jWqOzYWlPEGrdBDYYnlN
+        rQouaYzw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jycAz-0006IN-CG; Thu, 23 Jul 2020 14:26:25 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5BE1A983422; Thu, 23 Jul 2020 16:26:23 +0200 (CEST)
+Date:   Thu, 23 Jul 2020 16:26:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Alex Belits <abelits@marvell.com>,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        Prasun Kapoor <pkapoor@marvell.com>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 00/13] "Task_isolation" mode
+Message-ID: <20200723142623.GS5523@worktop.programming.kicks-ass.net>
+References: <04be044c1bcd76b7438b7563edc35383417f12c8.camel@marvell.com>
+ <87imeextf3.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87imeextf3.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Jul 23, 2020 at 03:17:04PM +0200, Thomas Gleixner wrote:
 
-The variable status is being initialized with a value that is never read
-and it is being updated later with a new value.  The initialization is
-redundant and can be removed.
+>   2) Instruction synchronization
+> 
+>      Trying to do instruction synchronization delayed is a clear recipe
+>      for hard to diagnose failures. Just because it blew not up in your
+>      face does not make it correct in any way. It's broken by design and
+>      violates _all_ rules of safe instruction patching and introduces a
+>      complete trainwreck in x86 NMI processing.
+> 
+>      If you really think that this is correct, then please have at least
+>      the courtesy to come up with a detailed and precise argumentation
+>      why this is a valid approach.
+> 
+>      While writing that up you surely will find out why it is not.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/isci/request.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/isci/request.c b/drivers/scsi/isci/request.c
-index 343d24c7e788..6561a07db189 100644
---- a/drivers/scsi/isci/request.c
-+++ b/drivers/scsi/isci/request.c
-@@ -3444,7 +3444,7 @@ struct isci_request *isci_tmf_request_from_tag(struct isci_host *ihost,
- int isci_request_execute(struct isci_host *ihost, struct isci_remote_device *idev,
- 			 struct sas_task *task, u16 tag)
- {
--	enum sci_status status = SCI_FAILURE_UNSUPPORTED_PROTOCOL;
-+	enum sci_status status;
- 	struct isci_request *ireq;
- 	unsigned long flags;
- 	int ret = 0;
--- 
-2.27.0
+So delaying the sync_core() IPIs for kernel text patching _might_ be
+possible, but it very much wants to be a separate patchset and not
+something hidden inside a 'gem' like this.
 
