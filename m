@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAC122B773
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D98422B774
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 22:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgGWUTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 16:19:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35164 "EHLO mail.kernel.org"
+        id S1727782AbgGWUUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 16:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgGWUTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 16:19:54 -0400
+        id S1725894AbgGWUUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 16:20:04 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3BE720792;
-        Thu, 23 Jul 2020 20:19:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C120B207BB;
+        Thu, 23 Jul 2020 20:20:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595535594;
-        bh=Y7nw8Vj09mHRDx3rm4JyQd5kgvD3ZNpz+G6aAJc4te0=;
+        s=default; t=1595535604;
+        bh=vCjA4xAHthSGepbuGA6kdiCjzE3kR6rTvpa8c9jbL9U=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Sr85O+3yxJUO8fWXvZDwDrg8K1cyNWE7lAskp1wdT4mHhoGLrLmHZNdOTjHA2qb70
-         Bmr4bN3gKnZ+mTEQomX12S2gdeAHORaIpsJHw9FOC1b1XTnWVb4aq+udfnNCGVXOVV
-         RX0wjNh34aSfg7xtVa6mPbGHgNjtv/trfEmXRoQ8=
-Date:   Thu, 23 Jul 2020 21:19:39 +0100
+        b=c4fbNaJIGSCpqPBYzahcz+q7OorgPf3XhLcT9Cf3ysLkbI/UkuixZWdP94r2NxfJ8
+         AiGV9IST2KNScmeLrkuz4/g1HmvfRaknpW5rooZXF4iRII7URZfnkBXL1t0xbazEzT
+         Yp4NhqPFz5180ezkGShvyX2xNhHX6gWVmyAF6krk=
+Date:   Thu, 23 Jul 2020 21:19:49 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     perex@perex.cz, nicoleotsuka@gmail.com,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        festevam@gmail.com, Xiubo.Lee@gmail.com, kernel@pengutronix.de,
-        shawnguo@kernel.org, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        lgirdwood@gmail.com, s.hauer@pengutronix.de, timur@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20200718111209.11760-1-grandmaster@al2klimov.de>
-References: <20200718111209.11760-1-grandmaster@al2klimov.de>
-Subject: Re: [PATCH] ASoC: fsl: Replace HTTP links with HTTPS ones
-Message-Id: <159553557415.41908.3982034267221660398.b4-ty@kernel.org>
+To:     perex@perex.cz, "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        alsa-devel@alsa-project.org, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        peter.ujfalusi@ti.com
+In-Reply-To: <20200718110857.11520-1-grandmaster@al2klimov.de>
+References: <20200718110857.11520-1-grandmaster@al2klimov.de>
+Subject: Re: [PATCH] ASoC: ti: Replace HTTP links with HTTPS ones
+Message-Id: <159553557415.41908.3344593909115840356.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Jul 2020 13:12:09 +0200, Alexander A. Klimov wrote:
+On Sat, 18 Jul 2020 13:08:57 +0200, Alexander A. Klimov wrote:
 > Rationale:
 > Reduces attack surface on kernel devs opening the links for MITM
 > as HTTPS traffic is much harder to manipulate.
@@ -63,8 +60,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: Replace HTTP links with HTTPS ones
-      commit: 1ce8f643ed875d754ff09bf2096dfac3b905ab80
+[1/1] ASoC: ti: Replace HTTP links with HTTPS ones
+      commit: f68440508deac56a715a0b48c375f557e10692ac
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
