@@ -2,323 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A997B22B6B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3883522B6AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 21:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgGWT3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 15:29:48 -0400
-Received: from mailout05.rmx.de ([94.199.90.90]:59670 "EHLO mailout05.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbgGWT3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 15:29:48 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout05.rmx.de (Postfix) with ESMTPS id 4BCMps1PPfzB04W;
-        Thu, 23 Jul 2020 21:29:41 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4BCMpQ38kQz2TSDJ;
-        Thu, 23 Jul 2020 21:29:18 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.10) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 23 Jul
- 2020 21:29:18 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Rob Hering <robh@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Richard Leitner <richard.leitner@skidata.com>,
-        <devicetree@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Christian Eggers <ceggers@arri.de>
-Subject: [PATCH v2 3/4] dt-bindings: usb: Add Microchip USB47xx/USB49xx support
-Date:   Thu, 23 Jul 2020 21:29:01 +0200
-Message-ID: <20200723192901.26661-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200723153508.GA413741@bogus>
-References: <20200723153508.GA413741@bogus>
+        id S1726052AbgGWT3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 15:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbgGWT3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 15:29:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CAAC0619E2
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 12:29:35 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z3so3516885pfn.12
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 12:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=K/x2tOMHGvw/i83L77yt0mj2n5UBoDKQeUt3On2GUd4=;
+        b=gjZSD2aVJt8KcTJCKakJp6DrtQOApap9cF9iHFVrvOrrEw0QRXx03CQBbwXQHx54uT
+         NFg23hfGx0s1WUwhxJtK9P1CthK49t5QsPzXHaKkzri7vtgwnzKu6+FlAAhT/5ZLeGjg
+         l0RG+ahYtiYxkwdvLROyBjK9wk4sTbZuIHRX0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=K/x2tOMHGvw/i83L77yt0mj2n5UBoDKQeUt3On2GUd4=;
+        b=MAO+eHNCftky/zjtETPR32vNvcU2CZVENmh3MNwLtL9fv7nzUnxgjEeKOjuNLR7KyR
+         letyq0pDC8QrWDphxuj92Pjs74wBavSo4cvQPrpVveRyyXmIIk3jdhrb7WX8LQoafWeB
+         RThy0assutOFuG9hgk+cfXdzuHXc5h1nXIXyYLXDPjnWUGECfzYd/nooBsDEtul5Ee0q
+         ToshF2Bdkg/uWT8OvweAN5PK8FumUZWgeYjRde5mXnx3iXstMwCJj1dts/pqWPuj93CL
+         9xzmKMMWuOibkRlmO0EEEu2IfmTP6CMRdaSLTgRyDQbEFu3DqIOaEJ3FRo4GzShQquGb
+         EQSA==
+X-Gm-Message-State: AOAM530r9c/ZrMZymopo2ZSPszKsh/BPBpwU1uSd6forNKxOJAmXq8pi
+        P5VrK3kN9qiBdSXi2y0cgZ9q6g==
+X-Google-Smtp-Source: ABdhPJx0H6UfXHELhN9FOg1zfdumImKJnOs6681TwMRzBjmHidxeuFNbFoBWBYY0BxdEqhcGHRVd0A==
+X-Received: by 2002:a63:e04c:: with SMTP id n12mr5257110pgj.388.1595532574358;
+        Thu, 23 Jul 2020 12:29:34 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id b4sm3181271pjn.38.2020.07.23.12.29.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 12:29:33 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.10]
-X-RMX-ID: 20200723-212918-4BCMpQ38kQz2TSDJ-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200414143536.v10.1.I30e2a8ff8cc4ad1ffb65df09ad933e5b4d9f16f8@changeid>
+References: <20200414143536.v10.1.I30e2a8ff8cc4ad1ffb65df09ad933e5b4d9f16f8@changeid>
+Subject: Re: [PATCH v10 1/2] dt-bindings: iio: Add bindings for sx9310 sensor
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Daniel Campello <campello@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org
+To:     Daniel Campello <campello@chromium.org>,
+        LKML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Thu, 23 Jul 2020 12:29:33 -0700
+Message-ID: <159553257307.3847286.4297914412173341085@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT bindings for Microchip USB47xx/USB49xx driver.
+Quoting Daniel Campello (2020-04-14 13:36:07)
+> Adds device tree bandings for sx9310 sensor.
+>=20
+> Signed-off-by: Daniel Campello <campello@chromium.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
-> My bot found errors running 'make dt_binding_check' on your patch:
+I don't see this picked up anywhere in linux-next. Can we squash in this
+change? Typically the voltage regulator names match the data sheet, and
+in this case the datasheet names them vdd and svdd. Also, they're not
+strictly necessary to be in the binding if they're always on supplies so
+we can remove them from the required section and DT files can omit them
+if they don't care to actively power manage them.
 
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/usb/usb49xx.example.dt.yaml: usb4916i@2d: 'ocs-min-width-ms' does not match any of the regexes: 'pinctrl-[0-9]+'
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure dt-schema is up to date:
-The mistake was sitting in front of the computer. I simply overlooked this message.
-
-Changes in v2:
-- added property description for ocs-min-width-ms
-- fixed property description for oc-delay-ns
-
- .../devicetree/bindings/usb/usb49xx.yaml      | 238 ++++++++++++++++++
- 1 file changed, 238 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/usb49xx.yaml
-
-diff --git a/Documentation/devicetree/bindings/usb/usb49xx.yaml b/Documentation/devicetree/bindings/usb/usb49xx.yaml
-new file mode 100644
-index 000000000000..a4843f2cbefa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/usb49xx.yaml
-@@ -0,0 +1,238 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/usb49xx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip USB47xx/USB49xx USB 2.0 Hi-Speed Hub Controller
-+
-+maintainers:
-+  - Christian Eggers <ceggers@arri.de>
-+
-+description: |
-+  http://ww1.microchip.com/downloads/en/Appnotes/AN2651-Configuration-of-Microchip-USB47xx-USB49xx-Application-Note-00002651B.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - microchip,usb4712
-+      - microchip,usb4712i
-+      - microchip,usb4715
-+      - microchip,usb4715i
-+      - microchip,usb4912
-+      - microchip,usb4912i
-+      - microchip,usb4914
-+      - microchip,usb4914i
-+      - microchip,usb4916
-+      - microchip,usb4916i
-+      - microchip,usb4925
-+      - microchip,usb4925i
-+      - microchip,usb4927
-+      - microchip,usb4927i
-+
-+  reg:
-+    maxItems: 1
-+    description:
-+      I2C address on the selected bus (usually <0x2D>).
-+
-+  reset-gpios:
-+    maxItems: 1
-+    description:
-+      Specify the gpio for hub reset.
-+
+---8<---
+diff --git a/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310=
+.yaml b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
+index b52ffdac678b..ba734ee868c7 100644
+--- a/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
++++ b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
+@@ -31,12 +31,15 @@ properties:
+       available or that a close/far proximity event has happened.
+     maxItems: 1
+=20
+-  power-supply: true
 +  vdd-supply:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Specify the regulator supplying vdd.
++    description: Main power supply
 +
-+  skip-config:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Skip Hub configuration, but only send the USB-Attach command.
-+
-+  vendor-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 65535
-+    description:
-+      Set USB Vendor ID of the hub.
-+
-+  product-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 65535
-+    description:
-+      Set USB Product ID of the hub.
-+
-+  device-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 65535
-+    description:
-+      Set USB Device ID of the hub.
-+
-+  language-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maximum: 65535
-+    description:
-+      Set USB Language ID.
-+
-+  manufacturer:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description:
-+      Set USB Manufacturer string (max. 62 characters long).
-+
-+  product:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description:
-+      Set USB Product string (max. 62 characters long).
-+
-+  bus-powered:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Selects bus powered operation.
-+
-+  self-powered:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Selects self powered operation (default).
-+
-+  disable-hi-speed:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Disable USB Hi-Speed support.
-+
-+  multi-tt:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Selects multi-transaction-translator (default).
-+
-+  single-tt:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Selects single-transaction-translator.
-+
-+  disable-eop:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Disable End of Packet generation in full-speed mode.
-+
-+  ganged-sensing:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Select ganged over-current sense type in self-powered mode.
-+
-+  individual-sensing:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Select individual over-current sense type in self-powered mode (default).
-+
-+  ganged-port-switching:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Select ganged port power switching mode.
-+
-+  individual-port-switching:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Select individual port power switching mode (default).
-+
-+  dynamic-power-switching:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Enable auto-switching from self- to bus-powered operation if the local
-+      power source is removed or unavailable.
-+
-+  oc-delay-ns:
-+    enum:
-+      - 50
-+      - 100
-+      - 200
-+      - 400
-+    default: 200
-+    description:
-+      Delay time (in nanoseconds) for filtering the over-current sense inputs.
-+      If an invalid value is given, the default is used instead.
-+
-+  compound-device:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Indicate the hub is part of a compound device.
-+
-+  port-mapping-mode:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Enable port mapping mode.
-+
-+  non-removable-ports:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Should specify the ports which have a non-removable device connected.
-+
-+  sp-disabled-ports:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Specifies the ports which will be self-power disabled.
-+
-+  bp-disabled-ports:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Specifies the ports which will be bus-power disabled.
-+
-+  power-on-time-ms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 100
-+    minimum: 0
-+    maximum: 510
-+    description:
-+      Specifies the time (in milliseconds) it takes from the time the host
-+      initiates the power-on sequence to a port until the port has adequate
-+      power.
-+
-+  ocs-min-width-ms:
-+    default: 5
-+    minimum: 0
-+    maximum: 5
-+    description:
-+      Minimum OCS pulse width (in milliseconds) required to detect an OCS
-+      event.
-+
-+  hub-controller-port:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Hub port where the internal hub controller shall be connected. Usually
-+      <number of ports>+1.
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      usb4916i@2d {
-+        compatible = "microchip,usb4916i";
-+        reg = <0x2d>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_usb_hub>;
-+        /* usb49xx.c already assumes low-active, don't negate twice */
-+        reset-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+        //skip-config;
-+        //self-powered;         /* power on default */
-+        //individual-sensing;   /* power on default */
-+        //multi-tt;             /* power on default */
-+        //disable-eop;          /* power on default */
-+        //individual-port-switching;  /* power on default */
-+        //oc-delay-ns = <200>;  /* power on default */
-+        power-on-time-ms = <4>; /* T_ON,max = 4 ms for NCP380 */
-+        ocs-min-width-ms = <0>; /* MIC2005 only outputs 2us FAULT pulses */
-+        manufacturer = "Foo";
-+        product = "Foo-Bar";
-+        /* port 5 is connected to an internal SD-Card reader */
-+        non-removable-ports = <5>;
-+      };
-+    };
-+
-+...
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
++  svdd-supply:
++    description: Host interface power supply
+=20
+ required:
+   - compatible
+   - reg
+-  - power-supply
+=20
+ additionalProperties: false
+=20
+@@ -51,6 +54,7 @@ examples:
+         reg =3D <0x28>;
+         interrupt-parent =3D <&pio>;
+         interrupts =3D <5 IRQ_TYPE_LEVEL_LOW 5>;
+-        power-supply =3D <...>;
++        vdd-supply =3D <&pp3300_a>;
++        svdd-supply =3D <&pp1800_prox>;
+       };
+     };
