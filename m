@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A7B22B456
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD2022B444
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730080AbgGWRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:11:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:6574 "EHLO mga05.intel.com"
+        id S1730090AbgGWRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:11:53 -0400
+Received: from mga05.intel.com ([192.55.52.43]:6599 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730052AbgGWRLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:11:45 -0400
-IronPort-SDR: NA2K+W0/qGF/KVXrrqozrsvzBFV4jIB4UP8HZQQMZHRmDWFdxf5KhsRu4in6ksz8VUQ41sSGfb
- XViiMLeOxQgg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456742"
+        id S1730057AbgGWRLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:11:46 -0400
+IronPort-SDR: f7jsEArrrDrRCJJycYjX/wCQLxrkPqKOv+0wMHOxfipTHyi5rdIGdSOg4B3NHU00Lub8bkhs3j
+ 0+tEEwfQdIZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456754"
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="235456742"
+   d="scan'208";a="235456754"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:44 -0700
-IronPort-SDR: Rv/ctLY06Inpal65cnPr+PIGki198ioPi3/XgRTjYw0MviPoZqaJUhaFVZ34rvDvVZ4yGvXt1c
- bkV7Ur65hZaA==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:45 -0700
+IronPort-SDR: SjmMeKoVuiRdJtnv7FKtDH3R0eCiInT47v96kCXic08kQ7UWZliX7OLkeIsW6uaRX/9DRD8m5S
+ GDaWIQWtLNVQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
-   d="scan'208";a="488904267"
+   d="scan'208";a="488904271"
 Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
-  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:44 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:45 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     jolsa@kernel.org, eranian@google.com,
         alexander.shishkin@linux.intel.com, ak@linux.intel.com,
         like.xu@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V7 05/14] perf/x86/intel: Fix the name of perf METRICS
-Date:   Thu, 23 Jul 2020 10:11:08 -0700
-Message-Id: <20200723171117.9918-6-kan.liang@linux.intel.com>
+Subject: [PATCH V7 06/14] perf/x86/intel: Use switch in intel_pmu_disable/enable_event
+Date:   Thu, 23 Jul 2020 10:11:09 -0700
+Message-Id: <20200723171117.9918-7-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200723171117.9918-1-kan.liang@linux.intel.com>
 References: <20200723171117.9918-1-kan.liang@linux.intel.com>
@@ -46,32 +46,99 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Bit 15 of the PERF_CAPABILITIES MSR indicates that the perf METRICS
-feature is supported. The perf METRICS is not a PEBS feature.
+Currently, the if-else is used in the intel_pmu_disable/enable_event to
+check the type of an event. It works well, but with more and more types
+added later, e.g., perf metrics, compared to the switch statement, the
+if-else may impair the readability of the code.
 
-Rename pebs_metrics_available perf_metrics.
+There is no harm to use the switch statement to replace the if-else
+here. Also, some optimizing compilers may compile a switch statement
+into a jump-table which is more efficient than if-else for a large
+number of cases. The performance gain may not be observed for now,
+because the number of cases is only 5, but the benefits may be observed
+with more and more types added in the future.
 
-The bit is not used in the current code. It will be used in a later
-patch.
+Use switch to replace the if-else in the intel_pmu_disable/enable_event.
+
+If the idx is invalid, print a warning.
+
+For the case INTEL_PMC_IDX_FIXED_BTS in intel_pmu_disable_event, don't
+need to check the event->attr.precise_ip. Use return for the case.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/perf_event.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/events/intel/core.c | 36 ++++++++++++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 7b68ab5f19e7..5d453da8cfa6 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -537,7 +537,7 @@ union perf_capabilities {
- 		 */
- 		u64	full_width_write:1;
- 		u64     pebs_baseline:1;
--		u64	pebs_metrics_available:1;
-+		u64	perf_metrics:1;
- 		u64	pebs_output_pt_available:1;
- 	};
- 	u64	capabilities;
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index ac1408fe1aee..76eab8178047 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -2180,17 +2180,28 @@ static void intel_pmu_disable_event(struct perf_event *event)
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	int idx = hwc->idx;
+ 
+-	if (idx < INTEL_PMC_IDX_FIXED) {
++	switch (idx) {
++	case 0 ... INTEL_PMC_IDX_FIXED - 1:
+ 		intel_clear_masks(event, idx);
+ 		x86_pmu_disable_event(event);
+-	} else if (idx < INTEL_PMC_IDX_FIXED_BTS) {
++		break;
++	case INTEL_PMC_IDX_FIXED ... INTEL_PMC_IDX_FIXED_BTS - 1:
+ 		intel_clear_masks(event, idx);
+ 		intel_pmu_disable_fixed(event);
+-	} else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
++		break;
++	case INTEL_PMC_IDX_FIXED_BTS:
+ 		intel_pmu_disable_bts();
+ 		intel_pmu_drain_bts_buffer();
+-	} else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
++		return;
++	case INTEL_PMC_IDX_FIXED_VLBR:
+ 		intel_clear_masks(event, idx);
++		break;
++	default:
++		intel_clear_masks(event, idx);
++		pr_warn("Failed to disable the event with invalid index %d\n",
++			idx);
++		return;
++	}
+ 
+ 	/*
+ 	 * Needs to be called after x86_pmu_disable_event,
+@@ -2262,18 +2273,27 @@ static void intel_pmu_enable_event(struct perf_event *event)
+ 	if (unlikely(event->attr.precise_ip))
+ 		intel_pmu_pebs_enable(event);
+ 
+-	if (idx < INTEL_PMC_IDX_FIXED) {
++	switch (idx) {
++	case 0 ... INTEL_PMC_IDX_FIXED - 1:
+ 		intel_set_masks(event, idx);
+ 		__x86_pmu_enable_event(hwc, ARCH_PERFMON_EVENTSEL_ENABLE);
+-	} else if (idx < INTEL_PMC_IDX_FIXED_BTS) {
++		break;
++	case INTEL_PMC_IDX_FIXED ... INTEL_PMC_IDX_FIXED_BTS - 1:
+ 		intel_set_masks(event, idx);
+ 		intel_pmu_enable_fixed(event);
+-	} else if (idx == INTEL_PMC_IDX_FIXED_BTS) {
++		break;
++	case INTEL_PMC_IDX_FIXED_BTS:
+ 		if (!__this_cpu_read(cpu_hw_events.enabled))
+ 			return;
+ 		intel_pmu_enable_bts(hwc->config);
+-	} else if (idx == INTEL_PMC_IDX_FIXED_VLBR)
++		break;
++	case INTEL_PMC_IDX_FIXED_VLBR:
+ 		intel_set_masks(event, idx);
++		break;
++	default:
++		pr_warn("Failed to enable the event with invalid index %d\n",
++			idx);
++	}
+ }
+ 
+ static void intel_pmu_add_event(struct perf_event *event)
 -- 
 2.17.1
 
