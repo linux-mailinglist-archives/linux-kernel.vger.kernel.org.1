@@ -2,90 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4F522B28D
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F9922B293
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729696AbgGWP1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
+        id S1728861AbgGWP3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:29:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729668AbgGWP1W (ORCPT
+        with ESMTP id S1726761AbgGWP3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:27:22 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E711DC0619DC;
-        Thu, 23 Jul 2020 08:27:21 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e8so6811607ljb.0;
-        Thu, 23 Jul 2020 08:27:21 -0700 (PDT)
+        Thu, 23 Jul 2020 11:29:43 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DCBC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:29:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r4so2616676wrx.9
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:29:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=icDrOEVC/8epZOak8kb0H/2e+mCU2SCzkHlrnG8TscA=;
-        b=X/ZmKmF04YhdoJNrfvi5V/RM9Nu870qnC3kLeTrtfFp73YnwrxcajumDhvPTNNAeyc
-         XM6hIDpuoGyKCTYQ1gKKMllEzrGoXXAKCWYI+I8ruapSC2O5zvT5nc/AyevI1yGqQdso
-         M0U0MOVYqoI/nrnIvkCeuJ+/qnpqER4ep0I0ZyZt/yt486bdv5POJFm9DbUBiK6RLxOE
-         cKwYojbAoANHV4l/+I4koCRrxgOVVCpgBhHgUrBBKhg9JTQLEi/CVXkREgIjiEEpRUCT
-         a5Q/xR2Yp4pK5BXYIp7x20LFymQ7XdSdZlzdTEkebQ5UjgyPI4nJHrznW0MYTt0w3/9s
-         dDQg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=cWp0ezUJCKhYjep5+sHpqn8UaD3b0iMb4hdwOueK5tQ=;
+        b=c7GHWMtPak5fJs1ipUGrknzQTJ7z2NsJdDxKJ6FLlq2K7dsenPF9oeO5tFh8XtrIEF
+         gjv7N+KkOl8GJJzt11ssiecvCqpgflgmms0yHEdjWMd1S3D+DVvQoiOaq6AJhvrHr//s
+         uAks2D3DQ6YsxrJeJ6UVX0CTHpbM4tqDh4qxGDXzlhmP0oMCbE6yRBcaWJR15AXL85wD
+         +vwF0d7Xb1OozTKL7anqL7WWY2wL2U6mzAp1ERWWBge8Tt1ZAt6T5hRx5OXQQFzPVBcI
+         WbO9k1md0TJ1s5tL/VxOELHYD/rxUoUkDQy4GppRrBDt0rbZ3HRN3yt4Y9DkJMilvZ9V
+         7WsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=icDrOEVC/8epZOak8kb0H/2e+mCU2SCzkHlrnG8TscA=;
-        b=pVdqfDqKaZeAwp3gmkQTELfsJ8Ed4Wul+4nsoFYTJfzQP2WGzoi2/KLPZSfCmuMh7w
-         RKLp2AZekV660wNmW1uUNCW7C0NOBZbhoDl0mQGJJO0AuuLqMTIIntSc3cOYqe96Xj69
-         Ar8KkJixz4wDf5uhyx+lHeQ9uu1MerVPAXMZNkOvQV/y8K6RSMEPXlCCv5g6sz6dUKkO
-         XdKB2j5Muo6AyZFFVDleV0Wx52XqWnuruBqYPsUVIXtDUoCjrgAgsTytTRFoFrdF+42j
-         NND/CRhKMT4dnmSckU6n0bydV3sNpDHvQsJ7th+wA71lXKqe5MWXbJi3zldJdiL6TweG
-         6EtA==
-X-Gm-Message-State: AOAM5314D7no0ccKUAvwcfmJVhyb2YRXBOSyQo+vbFbs4c0mc+CXDMDr
-        61h5fJPgBfqFvtm9UJ9SNPnEvD7wIBIR8Iv+mQQ=
-X-Google-Smtp-Source: ABdhPJys2Y8KPPvvS8hAEOfeBh/cxXaslg/nRGG2CqfBBypTJG5NaYZw4bBCSPovLsojGPswX04aNzT3bZ73DvdQXCw=
-X-Received: by 2002:a2e:90da:: with SMTP id o26mr2313514ljg.91.1595518040467;
- Thu, 23 Jul 2020 08:27:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=cWp0ezUJCKhYjep5+sHpqn8UaD3b0iMb4hdwOueK5tQ=;
+        b=Gb7WUhrAcaSmrJ5YoUYh5GKcnrks/Qo1ePcR3nYBGmMRCQlU6bBebIH+h4VMeMPynn
+         GJGDa9wTT3gBex4nTiVv2wpvEZ1uGuYmu729vIr/mbrwCALmxfBNuRJLOvpOPrPI6qWO
+         OU+ATpUVQrqG3LXbiGgZc18DLOEk06l8oVnCLb5yiC805c8anf4tLHVhwalENeAf/E9Z
+         BsE+CB4GJjfRD3jruNEI9MJbN/mG1vnf1M2NUHba4OhMUMZge5xhZCXCdm+XV7w/cpu9
+         P22m4dVvDj4rkXvl0W3bV8ae83MjbU8TRyj5KQpbGTN18w8M/FZht4LkcSsFIrouvMvo
+         txOQ==
+X-Gm-Message-State: AOAM532zf+Nh4QJHXpFqCiUUYIj3D3rD6Kf4enH1B/hdF7XMhTQW5q4P
+        DNWVnFpYhcsBx4v+jvsHBqKsFof8
+X-Google-Smtp-Source: ABdhPJx5tNKi30GHLkoukm+9n8C+ybf8PnT5+iYaSR9z47MsLanmZmobH+gtl6WIjF5+cDrTwwzniA==
+X-Received: by 2002:a5d:4ad1:: with SMTP id y17mr4854602wrs.132.1595518181528;
+        Thu, 23 Jul 2020 08:29:41 -0700 (PDT)
+Received: from ogabbay-VM ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id t141sm3933477wmt.26.2020.07.23.08.29.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 23 Jul 2020 08:29:40 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 18:29:38 +0300
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs pull request for kernel 5.9-rc1
+Message-ID: <20200723152938.GA17799@ogabbay-VM>
 MIME-Version: 1.0
-References: <20200723141914.20722-1-trix@redhat.com>
-In-Reply-To: <20200723141914.20722-1-trix@redhat.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 23 Jul 2020 08:27:08 -0700
-Message-ID: <CAADnVQJYsqosZ804geM1Urrz73+z1fMZu1w76KN-847S3CL+nQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: BPF_SYSCALL depends INET
-To:     trix@redhat.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, krzk@kernel.org,
-        patrick.bellasi@arm.com, David Howells <dhowells@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 7:19 AM <trix@redhat.com> wrote:
->
-> From: Tom Rix <trix@redhat.com>
->
-> A link error
->
-> kernel/bpf/net_namespace.o: In function `bpf_netns_link_release':
-> net_namespace.c: undefined reference to `bpf_sk_lookup_enabled'
->
-> bpf_sk_lookup_enabled is defined with INET
-> net_namespace is controlled by BPF_SYSCALL
+Hello Greg,
 
-pls rebase. it was fixed already.
+This is habanalabs pull request for the merge window of kernel 5.9. It
+contains many small improvements to common and GAUDI code. Details are in
+the tag.
+
+Thanks,
+Oded
+
+The following changes since commit 7a4462a96777b64b22412f782de226c90290bf75:
+
+  misc: rtsx: Use standard PCI definitions (2020-07-22 13:39:31 +0200)
+
+are available in the Git repository at:
+
+  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-next-2020-07-23
+
+for you to fetch changes up to fc83dc9787ceb0f0146dd2e53705c8666694e4b7:
+
+  habanalabs: Fix memory leak in error flow of context init (2020-07-23 17:20:29 +0300)
+
+----------------------------------------------------------------
+This tag contains the following changes for kernel 5.9-rc1:
+
+- Remove rate limiters from GAUDI configuration (no longer needed).
+- Set maximum amount of in-flight CS per ASIC type and increase
+  the maximum amount for GAUDI.
+- Refactor signal/wait command submissions code
+- Calculate trace frequency from PLLs to show accurate profiling data
+- Rephrase error messages to make them more clear to the common user
+- Add statistics of dropped CS (counter per possible reason for drop)
+- Get ECC information from firmware
+- Remove support for partial SoC reset in Gaudi
+- Halt device CPU only when reset is certain to happen. Sometimes we abort
+  the reset procedure and in that case we can't leave device CPU in halt
+  mode.
+- set each CQ to its own work queue to prevent a race between completions
+  on different CQs.
+- Use queue pi/ci in order to determine queue occupancy. This is done to
+  make the code reusable between current and future ASICs.
+- Add more validations for user inputs.
+- Refactor PCIe controller configuration to make the code reusable between
+  current and future ASICs.
+- Update firmware interface headers to latest version
+- Move all common code to a dedicated common sub-folder
+
+----------------------------------------------------------------
+Adam Aharon (1):
+      habanalabs: calculate trace frequency from PLL
+
+Christine Gharzuzi (1):
+      habanalabs: extract cpu boot status lookup
+
+Moti Haimovski (1):
+      habanalabs: check for DMA errors when clearing memory
+
+Oded Gabbay (10):
+      habanalabs: remove rate limiters from GAUDI
+      uapi/habanalabs: fix some comments
+      habanalabs: align armcp_packet structure to 8 bytes
+      habanalabs: rephrase error messages
+      habanalabs: Extract ECC information from FW
+      habanalabs: remove soft-reset support from GAUDI
+      habanalabs: halt device CPU only upon certain reset
+      habanalabs: create common folder
+      habanalabs: update hl_boot_if.h from firmware
+      habanalabs: enable device before hw_init()
+
+Ofir Bitton (11):
+      habanalabs: Use pending CS amount per ASIC
+      habanalabs: sync stream generic functionality
+      habanalabs: Use mask instead of shift in sync stream registers
+      habanalabs: Increase queues depth
+      habanalabs: Add dropped cs statistics info struct
+      habanalabs: PCIe iATU refactoring
+      habanalabs: configure maximum queues per asic
+      habanalabs: use queue pi/ci in order to determine queue occupancy
+      habanalabs: Assign each CQ with its own work queue
+      habanalabs: verify queue can contain all cs jobs
+      habanalabs: create internal CB pool
+
+Omer Shpigelman (2):
+      habanalabs: rephrase error message
+      habanalabs: remove unused hash
+
+Tomer Tayar (2):
+      habanalabs: use no flags on MMU cache invalidation
+      habanalabs: Fix memory leak in error flow of context init
+
+ drivers/misc/habanalabs/Makefile                   |  11 +-
+ drivers/misc/habanalabs/common/Makefile            |   9 +
+ drivers/misc/habanalabs/{ => common}/asid.c        |   0
+ .../misc/habanalabs/{ => common}/command_buffer.c  |  82 +-
+ .../habanalabs/{ => common}/command_submission.c   |  97 ++-
+ drivers/misc/habanalabs/{ => common}/context.c     |  39 +-
+ drivers/misc/habanalabs/{ => common}/debugfs.c     |   0
+ drivers/misc/habanalabs/{ => common}/device.c      |  88 +-
+ drivers/misc/habanalabs/{ => common}/firmware_if.c | 101 +--
+ drivers/misc/habanalabs/{ => common}/habanalabs.h  | 172 ++--
+ .../misc/habanalabs/{ => common}/habanalabs_drv.c  |   1 -
+ .../habanalabs/{ => common}/habanalabs_ioctl.c     |  24 +
+ drivers/misc/habanalabs/{ => common}/hw_queue.c    | 165 ++--
+ drivers/misc/habanalabs/{ => common}/hwmon.c       |   0
+ drivers/misc/habanalabs/{ => common}/irq.c         |  13 +-
+ drivers/misc/habanalabs/{ => common}/memory.c      |   3 +-
+ drivers/misc/habanalabs/{ => common}/mmu.c         |   1 -
+ drivers/misc/habanalabs/{ => common}/pci.c         | 136 ++--
+ drivers/misc/habanalabs/{ => common}/sysfs.c       |   3 +
+ drivers/misc/habanalabs/gaudi/Makefile             |   2 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 894 ++++++++-------------
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |  16 +-
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |   6 +-
+ drivers/misc/habanalabs/goya/goya.c                | 172 ++--
+ drivers/misc/habanalabs/goya/goyaP.h               |  14 +-
+ drivers/misc/habanalabs/goya/goya_coresight.c      |   6 +-
+ .../habanalabs/include/{ => common}/armcp_if.h     |  14 +-
+ .../habanalabs/include/{ => common}/hl_boot_if.h   |  14 +
+ .../misc/habanalabs/include/{ => common}/qman_if.h |   0
+ .../habanalabs/include/gaudi/asic_reg/gaudi_regs.h |  21 +-
+ .../include/gaudi/asic_reg/psoc_cpu_pll_regs.h     | 114 +++
+ .../misc/habanalabs/include/gaudi/gaudi_masks.h    |   3 +
+ .../misc/habanalabs/include/gaudi/gaudi_packets.h  |   4 +-
+ include/uapi/misc/habanalabs.h                     |  27 +-
+ 34 files changed, 1260 insertions(+), 992 deletions(-)
+ create mode 100644 drivers/misc/habanalabs/common/Makefile
+ rename drivers/misc/habanalabs/{ => common}/asid.c (100%)
+ rename drivers/misc/habanalabs/{ => common}/command_buffer.c (85%)
+ rename drivers/misc/habanalabs/{ => common}/command_submission.c (92%)
+ rename drivers/misc/habanalabs/{ => common}/context.c (84%)
+ rename drivers/misc/habanalabs/{ => common}/debugfs.c (100%)
+ rename drivers/misc/habanalabs/{ => common}/device.c (94%)
+ rename drivers/misc/habanalabs/{ => common}/firmware_if.c (89%)
+ rename drivers/misc/habanalabs/{ => common}/habanalabs.h (94%)
+ rename drivers/misc/habanalabs/{ => common}/habanalabs_drv.c (99%)
+ rename drivers/misc/habanalabs/{ => common}/habanalabs_ioctl.c (95%)
+ rename drivers/misc/habanalabs/{ => common}/hw_queue.c (86%)
+ rename drivers/misc/habanalabs/{ => common}/hwmon.c (100%)
+ rename drivers/misc/habanalabs/{ => common}/irq.c (95%)
+ rename drivers/misc/habanalabs/{ => common}/memory.c (99%)
+ rename drivers/misc/habanalabs/{ => common}/mmu.c (99%)
+ rename drivers/misc/habanalabs/{ => common}/pci.c (73%)
+ rename drivers/misc/habanalabs/{ => common}/sysfs.c (99%)
+ rename drivers/misc/habanalabs/include/{ => common}/armcp_if.h (98%)
+ rename drivers/misc/habanalabs/include/{ => common}/hl_boot_if.h (84%)
+ rename drivers/misc/habanalabs/include/{ => common}/qman_if.h (100%)
+ create mode 100644 drivers/misc/habanalabs/include/gaudi/asic_reg/psoc_cpu_pll_regs.h
