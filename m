@@ -2,105 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1FA22AB8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:13:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEC622ABA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 11:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgGWJNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 05:13:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51278 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726558AbgGWJNK (ORCPT
+        id S1728199AbgGWJVm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Jul 2020 05:21:42 -0400
+Received: from proxy.egarmatic.com ([195.77.164.94]:45724 "EHLO
+        proxy2.egarmatic.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725984AbgGWJVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 05:13:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595495589;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DV/00EyCP590tmCFq6jIThJcEZgsODjna9x+BTGXHYM=;
-        b=Avs4LYyfxc4OS7R86rEz+rJpw6E5t0aeVRaOr3zxBhbSb2wXFPCFj62IY/QTtVOyIRnD6D
-        l3FF7qox0B2O8J8Yt3bgT8lIdTkEEybhT8+HHaBzm4RnDcQlJpcRbN0SrdnIkkJhTSDZrp
-        1899U0MSATmT/JvsHpwWkVZ2Hw3KPeI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-N4SglXDZNtOGwyhkG2emPw-1; Thu, 23 Jul 2020 05:13:07 -0400
-X-MC-Unique: N4SglXDZNtOGwyhkG2emPw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B25A6800597;
-        Thu, 23 Jul 2020 09:13:06 +0000 (UTC)
-Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-141.pek2.redhat.com [10.72.13.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B2658619B5;
-        Thu, 23 Jul 2020 09:13:03 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH 2/2] vdpa: ifcvf: free config irq in ifcvf_free_irq()
-Date:   Thu, 23 Jul 2020 17:12:54 +0800
-Message-Id: <20200723091254.20617-2-jasowang@redhat.com>
-In-Reply-To: <20200723091254.20617-1-jasowang@redhat.com>
-References: <20200723091254.20617-1-jasowang@redhat.com>
+        Thu, 23 Jul 2020 05:21:41 -0400
+Received: from MTEXCH04.ofimat.int ([10.200.0.109])
+        by proxy2.egarmatic.com (8.13.4/8.13.4) with ESMTP id 06N9DA9A003342;
+        Thu, 23 Jul 2020 11:13:17 +0200
+Received: from MTEXCH02.ofimat.int ([::1]) by MTEXCH04.ofimat.int ([::1]) with
+ mapi id 14.03.0279.002; Thu, 23 Jul 2020 11:13:13 +0200
+From:   "Novellas Canosa, Marga" <mnovellas@mutuaterrassa.es>
+To:     "no-reply@microsoft.net" <no-reply@MICROSOFT.NET>
+Subject: 10 of your new incoming messages has been suspended
+Thread-Topic: 10 of your new incoming messages has been suspended
+Thread-Index: AdZg0U/sZnZoGe1IQt6JQ4JuxoKLag==
+Date:   Thu, 23 Jul 2020 09:13:12 +0000
+Message-ID: <FA0F6F260331CB478DEA7143668F196506B5E33F1F@MTEXCH02.ofimat.int>
+Accept-Language: es-ES, en-US
+Content-Language: es-ES
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [80.248.74.211]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Spam-Score: 1.276 (*) HELO_NO_DOMAIN,RDNS_NONE,URIBL_BLOCKED
+X-Spam-Level: *
+X-Spam-Status: No, score=1.276 required=10 tests=HELO_NO_DOMAIN,RDNS_NONE,URIBL_BLOCKED
+X-Scanned-By: MIMEDefang 2.65 on 10.200.0.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't free config irq in ifcvf_free_irq() which will trigger a
-BUG() in pci core since we try to free the vectors that has an
-action. Fixing this by recording the config irq in ifcvf_hw structure
-and free it in ifcvf_free_irq().
+MICROSOFT URGENT NOTIFICATION MEMO
 
-Fixes: e7991f376a4d ("ifcvf: implement config interrupt in IFCVF")
-Cc: Zhu Lingshan <lingshan.zhu@intel.com>
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/ifcvf/ifcvf_base.h | 2 +-
- drivers/vdpa/ifcvf/ifcvf_main.c | 5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+10 of your new incoming messages has been suspended from entry into your email box account because your email box account has not been verify for some months now. Do therefore verify<https://alicedolan.wixsite.com/mysite> immediately so that all your new incoming messages can be release to you now.
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
-index f4554412e607..29efa75cdfce 100644
---- a/drivers/vdpa/ifcvf/ifcvf_base.h
-+++ b/drivers/vdpa/ifcvf/ifcvf_base.h
-@@ -84,7 +84,7 @@ struct ifcvf_hw {
- 	void __iomem * const *base;
- 	char config_msix_name[256];
- 	struct vdpa_callback config_cb;
--
-+	unsigned int config_irq;
- };
- 
- struct ifcvf_adapter {
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index ae7110955a44..7a6d899e541d 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -53,6 +53,7 @@ static void ifcvf_free_irq(struct ifcvf_adapter *adapter, int queues)
- 	for (i = 0; i < queues; i++)
- 		devm_free_irq(&pdev->dev, vf->vring[i].irq, &vf->vring[i]);
- 
-+	devm_free_irq(&pdev->dev, vf->config_irq, vf);
- 	ifcvf_free_irq_vectors(pdev);
- }
- 
-@@ -72,8 +73,8 @@ static int ifcvf_request_irq(struct ifcvf_adapter *adapter)
- 	snprintf(vf->config_msix_name, 256, "ifcvf[%s]-config\n",
- 		 pci_name(pdev));
- 	vector = 0;
--	irq = pci_irq_vector(pdev, vector);
--	ret = devm_request_irq(&pdev->dev, irq,
-+	vf->config_irq = pci_irq_vector(pdev, vector);
-+	ret = devm_request_irq(&pdev->dev, vf->config_irq,
- 			       ifcvf_config_changed, 0,
- 			       vf->config_msix_name, vf);
- 	if (ret) {
--- 
-2.20.1
 
+Thank you for your understanding.
+
+
+Microsoft Verification Team
+
+
+Copyright © 2020 Webmail.Inc. All rights reserved.
