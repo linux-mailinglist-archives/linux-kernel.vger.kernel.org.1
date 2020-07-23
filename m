@@ -2,173 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F312122AAF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516E522AAF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 10:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbgGWIpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 04:45:49 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:23208 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgGWIps (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 04:45:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1595493947;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HV5BAB3Ru+vHQcQzkwyNhWTtfNyeOXATqykTtgvMic0=;
-  b=FJa9WUs8X32R49Gny9LcDfi+OAAzS8rkILr5MSX2CHs6KNAJ1R/WLpQd
-   hJ36omV7R8YdktvCBiVbEDfI8fNtgonGZtby1k/pzULG7qrtyljmUlNDz
-   MB+f0qhwHclrZyI+eB/Mmya3IEflQY3Vmn04QIT1oeUwt62ab0GeI3eUq
-   Q=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: /mIOgJ6nw15sfd0b279IBlNRDY5Nc/NmPHLXeuRpP2hUXdEHF/oClU3qjsdqiiOLB/BuhRSbNl
- nbjw/gt+W3wDj2jF6DT0XSktpe4Zqmlt2xmpB7AG4FyTFqXbTd2NY9fPEyULGuSGVDm1gFktgP
- oWYZD4McskbIE3NygSE93KjKBlC3y/FF1T0eCUAmq/8EKHHJkx05LMCudAbEgXxGSkpuyxJ3tc
- 6R7bGAAfT8lxXca6nDVQi926JeyOCRMiPU56n91TlftuXTsC8Itt0sWuiP6ZibQ8knT3xBPR6Y
- e3c=
-X-SBRS: 2.7
-X-MesageID: 23346344
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.75,386,1589256000"; 
-   d="scan'208";a="23346344"
-From:   Roger Pau Monne <roger.pau@citrix.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Roger Pau Monne <roger.pau@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <xen-devel@lists.xenproject.org>, <linux-mm@kvack.org>
-Subject: [PATCH 3/3] memory: introduce an option to force onlining of hotplug memory
-Date:   Thu, 23 Jul 2020 10:45:23 +0200
-Message-ID: <20200723084523.42109-4-roger.pau@citrix.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200723084523.42109-1-roger.pau@citrix.com>
-References: <20200723084523.42109-1-roger.pau@citrix.com>
+        id S1727940AbgGWIqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 04:46:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbgGWIqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 04:46:03 -0400
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C7C2080D;
+        Thu, 23 Jul 2020 08:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595493962;
+        bh=AAiUgOHYkF4OY8C6u9wcRgK0SkjrjcT7mFquV/ZkHu0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=H5hGkMUvREZ+iwFO8+i+SMcFqmmp+BgQjRUFBJrapf03C6UEjOgNXbFryaTNgUscY
+         Zbi2nll/Xxe+hY84F8zM0kqcU9jYpAQnK8DhnnwXcAMOvxrR4YOwKcanTCOyMms7Pe
+         T2g+n4wkRygjCR7qIpYjy7tHYUBh5Zk+/2Mph7U0=
+Received: by mail-lf1-f48.google.com with SMTP id i80so2822963lfi.13;
+        Thu, 23 Jul 2020 01:46:02 -0700 (PDT)
+X-Gm-Message-State: AOAM532+LdDsZqfhNr0xqOVdtS67SF/wkYJM/Os27lPJTHOEm6QnPfhh
+        92kspo5OXq0karlcpVJUPtq+keGGv/IjWosjQdE=
+X-Google-Smtp-Source: ABdhPJx/xNBqL8xTZq1HPeSBfk0iFlOL0yeDMtBtfDUNemHPw2W6G2d6snW23uvP0RNxqZmdOY1npu/21VDSfjgonzU=
+X-Received: by 2002:ac2:4144:: with SMTP id c4mr1722866lfi.118.1595493960868;
+ Thu, 23 Jul 2020 01:46:00 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200713144930.1034632-1-lee.jones@linaro.org>
+ <20200713144930.1034632-7-lee.jones@linaro.org> <20200720142714.GA6747@kozik-lap>
+ <20200720144955.GD3368211@dell> <20200720145219.GA23990@kozik-lap> <CACRpkdaYQ3PEh838Qoxig4n1iNFp8AOj_Wk9jdvB-qMy0PBRKw@mail.gmail.com>
+In-Reply-To: <CACRpkdaYQ3PEh838Qoxig4n1iNFp8AOj_Wk9jdvB-qMy0PBRKw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 23 Jul 2020 10:45:49 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeaQvSnCtUhcDxYRxNM=fxWgsasBccPJEtHUPaek9HQjQ@mail.gmail.com>
+Message-ID: <CAJKOXPeaQvSnCtUhcDxYRxNM=fxWgsasBccPJEtHUPaek9HQjQ@mail.gmail.com>
+Subject: Re: [PATCH 06/25] pinctrl: samsung: pinctrl-samsung: Demote obvious
+ misuse of kerneldoc to standard comment blocks
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Thomas Abraham <thomas.ab@samsung.com>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an extra option to add_memory_resource that overrides the memory
-hotplug online behavior in order to force onlining of memory from
-add_memory_resource unconditionally.
+On Thu, 23 Jul 2020 at 10:44, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Mon, Jul 20, 2020 at 4:52 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > On Mon, Jul 20, 2020 at 03:49:55PM +0100, Lee Jones wrote:
+>
+> > > > Thanks, applied.
+> > >
+> > > Same as the others.  Already in -next.
+> >
+> > Thanks for letting me know. I dropped all of them.
+>
+> It's a bit tricky at times with clean-up topics, I want submaintainers to pick
+> it up if possible so sorry about this, it's just too much to coordinate
+> sometimes.
 
-This is required for the Xen balloon driver, that must run the
-online page callback in order to correctly process the newly added
-memory region, note this is an unpopulated region that is used by Linux
-to either hotplug RAM or to map foreign pages from other domains, and
-hence memory hotplug when running on Xen can be used even without the
-user explicitly requesting it, as part of the normal operations of the
-OS when attempting to map memory from a different domain.
+No worries. Recently Samsung pinctrl driver is not that active so I
+could just provide you only a review. Maybe there is too much hustle
+to apply to sub-maintainer tree.
 
-Setting a different default value of memhp_default_online_type when
-attaching the balloon driver is not a robust solution, as the user (or
-distro init scripts) could still change it and thus break the Xen
-balloon driver.
-
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
----
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: xen-devel@lists.xenproject.org
-Cc: linux-mm@kvack.org
----
- drivers/xen/balloon.c          |  2 +-
- include/linux/memory_hotplug.h |  3 ++-
- mm/memory_hotplug.c            | 16 ++++++++++------
- 3 files changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-index 292413b27575..fe0e0c76834b 100644
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -346,7 +346,7 @@ static enum bp_state reserve_additional_memory(void)
- 	mutex_unlock(&balloon_mutex);
- 	/* add_memory_resource() requires the device_hotplug lock */
- 	lock_device_hotplug();
--	rc = add_memory_resource(nid, resource);
-+	rc = add_memory_resource(nid, resource, true);
- 	unlock_device_hotplug();
- 	mutex_lock(&balloon_mutex);
- 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 375515803cd8..1793619fe4a6 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -342,7 +342,8 @@ extern void clear_zone_contiguous(struct zone *zone);
- extern void __ref free_area_init_core_hotplug(int nid);
- extern int __add_memory(int nid, u64 start, u64 size);
- extern int add_memory(int nid, u64 start, u64 size);
--extern int add_memory_resource(int nid, struct resource *resource);
-+extern int add_memory_resource(int nid, struct resource *resource,
-+			       bool force_online);
- extern int add_memory_driver_managed(int nid, u64 start, u64 size,
- 				     const char *resource_name);
- extern void move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index da374cd3d45b..2491588d3f86 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1002,7 +1002,10 @@ static int check_hotplug_memory_range(u64 start, u64 size)
- 
- static int online_memory_block(struct memory_block *mem, void *arg)
- {
--	mem->online_type = memhp_default_online_type;
-+	bool force_online = arg;
-+
-+	mem->online_type = force_online ? MMOP_ONLINE
-+					: memhp_default_online_type;
- 	return device_online(&mem->dev);
- }
- 
-@@ -1012,7 +1015,7 @@ static int online_memory_block(struct memory_block *mem, void *arg)
-  *
-  * we are OK calling __meminit stuff here - we have CONFIG_MEMORY_HOTPLUG
-  */
--int __ref add_memory_resource(int nid, struct resource *res)
-+int __ref add_memory_resource(int nid, struct resource *res, bool force_online)
- {
- 	struct mhp_params params = { .pgprot = PAGE_KERNEL };
- 	u64 start, size;
-@@ -1076,8 +1079,9 @@ int __ref add_memory_resource(int nid, struct resource *res)
- 	mem_hotplug_done();
- 
- 	/* online pages if requested */
--	if (memhp_default_online_type != MMOP_OFFLINE)
--		walk_memory_blocks(start, size, NULL, online_memory_block);
-+	if (memhp_default_online_type != MMOP_OFFLINE || force_online)
-+		walk_memory_blocks(start, size, (void *)force_online,
-+				   online_memory_block);
- 
- 	return ret;
- error:
-@@ -1100,7 +1104,7 @@ int __ref __add_memory(int nid, u64 start, u64 size)
- 	if (IS_ERR(res))
- 		return PTR_ERR(res);
- 
--	ret = add_memory_resource(nid, res);
-+	ret = add_memory_resource(nid, res, false);
- 	if (ret < 0)
- 		release_memory_resource(res);
- 	return ret;
-@@ -1158,7 +1162,7 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
- 		goto out_unlock;
- 	}
- 
--	rc = add_memory_resource(nid, res);
-+	rc = add_memory_resource(nid, res, false);
- 	if (rc < 0)
- 		release_memory_resource(res);
- 
--- 
-2.27.0
-
+Best regards,
+Krzysztof
