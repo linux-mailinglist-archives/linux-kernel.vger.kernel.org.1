@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285FE22A8D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9175822A8CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 08:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgGWGVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 02:21:21 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:53217 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726390AbgGWGVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 02:21:20 -0400
-Received: by ozlabs.org (Postfix, from userid 1003)
-        id 4BC2KB5s0qz9sSJ; Thu, 23 Jul 2020 16:21:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1595485278; bh=IFTCm6zcqf516abhJ4Sn7meDBWdJj/FMmew567e6yPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QHrs12kseRVGEX+ozdM7Bk6vM8hN0rntxzjRAXDLPJB5+D4I5trx8JLVKEGr+HWlW
-         Mj63kCsmYQo/uJVxEQyo6xy71+qys9EPiyUnLS0wybJYnvAxhe3k+ZSJ+U2csi6dEv
-         m4p3ywW83Fc4+QdjQ8081sBvInO0dflWfc+rdmby+iEWn07BdpvNwnJNhl+BoXRUko
-         PGFpiYQvGK+7m6HjKWHrkG4zVYjQaSTJZBb90cqJYr+EdFmgz1kCMJiQLPN4BTwuys
-         wW2IRygLknjUHpNpoWgw1D7M2qtPhMQU14/2XHHACcZE0i5VV9A13lZCYY5BQd0UY8
-         9ybHPfknMp5Lg==
-Date:   Thu, 23 Jul 2020 16:19:04 +1000
-From:   Paul Mackerras <paulus@ozlabs.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, borntraeger@de.ibm.com,
-        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
-        chenhuacai@gmail.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/5] KVM: PPC: clean up redundant kvm_run parameters
- in assembly
-Message-ID: <20200723061904.GC213782@thinks.paulus.ozlabs.org>
-References: <20200623131418.31473-1-tianjia.zhang@linux.alibaba.com>
- <20200623131418.31473-4-tianjia.zhang@linux.alibaba.com>
+        id S1726617AbgGWGTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 02:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgGWGTi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 02:19:38 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA1DC0619DC
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 23:19:38 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id v26so1131400vkn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 22 Jul 2020 23:19:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=TYihaxUfqNahve9hvEfgq3rvZd50RYFRy2Tu90H/uEQ=;
+        b=rFhfD+AFIRAEKMiDXX04Q79/yE0LZCV07y352OtEDh8b50g17H3Z9F3hXqDyRDnpFn
+         BehSfra6d4mCexIAc5DZjuBHv8SjIRz68SxXDiIYZ8+Ryr2Bs4Wtt/gMbQYVubcwnJCM
+         fxR9swKtsyrr/MEbidOMdvC2O2WzivuaMR0aM+kkQnwwtsoxu1vSq5/UXq2qyqT0SmM8
+         DRtAyX/Ad5Kx4MB6dHuBdZhvWUldjqvnK/jrfuJc7Qw3sytrCkUersUe/o5rf/zH10J8
+         RIscoLx/bXDRg73YLikIsrRGFZZ0OmcElsHhsW20JOQmjcwlD41lMV8SM4V27ffK9Cnc
+         SGUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=TYihaxUfqNahve9hvEfgq3rvZd50RYFRy2Tu90H/uEQ=;
+        b=uRO9q+lnSykMwvjPmpWjElRSxH43dsbWt0LHvgUEJ7Pk70feoy/VrEng8L2zlEjn5r
+         D8grn+jZcba6P14cvQ4Dku/vWdc0+Kymmn3pNuTfGLB2cLYhhqK0jN3FDsEAC4YIWYfq
+         LlVT+vUSB+5V7SY043D4dM1TLvgDNp9ftScMFuHDesqwdM80wrGAkMTcNVaeOho+W3bC
+         yAjNbi98IsglNtsLw/uBJ1rUoT+RKVnI7hoqP7wPVrBsC3NjBQwEmBTW0qpsGwDuI5Vn
+         ebAN1pFNYEprEM6NSn4iolmar0oDHvJvWxYcnibXG2RPY4JykKonmHrpIybr0ikV8IlS
+         xAKg==
+X-Gm-Message-State: AOAM533x9VqqLx89MTuwyPpcgdenOCqo7I+ykAtiWcS2CNY4hg52S3NE
+        k0ayogZDA3mx38eng7rOGI7QfmckUiNPMMDcwH8=
+X-Google-Smtp-Source: ABdhPJxBoXjia7xW5WemJjnlDy+z7hKPUjUyBwiQDU/RXCdDE5sGBV3Spo/zB8VtJ6gDuIIip/MpGvPLLf2MitK18zU=
+X-Received: by 2002:a1f:418f:: with SMTP id o137mr2457892vka.25.1595485177286;
+ Wed, 22 Jul 2020 23:19:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623131418.31473-4-tianjia.zhang@linux.alibaba.com>
+Received: by 2002:ab0:45e3:0:0:0:0:0 with HTTP; Wed, 22 Jul 2020 23:19:36
+ -0700 (PDT)
+Reply-To: reverendmichael00@gmail.com
+From:   "Mr.Michael Abraham" <david.kekeli00@gmail.com>
+Date:   Thu, 23 Jul 2020 06:19:36 +0000
+Message-ID: <CANO+u7U_wGE_vDOjmfXzH67oAbgRgOwdt0XByJJRDiupSx+P4Q@mail.gmail.com>
+Subject: i wait to hear from you
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 09:14:16PM +0800, Tianjia Zhang wrote:
-> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
-> structure. For historical reasons, many kvm-related function parameters
-> retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time. This
-> patch does a unified cleanup of these remaining redundant parameters.
-
-Thanks, patch applied to my kvm-ppc-next branch, with fixes.
-
-Paul.
+Hello, Please what is going on, I sent you an urgent letter days ago
+without any response from you yet, I need to know and get back to me,
+Best Regard, Mr.Michael Abraham.
