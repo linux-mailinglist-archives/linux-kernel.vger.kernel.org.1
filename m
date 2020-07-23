@@ -2,158 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D72C22B433
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA30122B455
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 19:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728541AbgGWRK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 13:10:57 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:38612 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgGWRK4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 13:10:56 -0400
-Received: by mail-io1-f68.google.com with SMTP id l1so7000520ioh.5;
-        Thu, 23 Jul 2020 10:10:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFQA7x0bDHTcOu8RlJmkDybvEkhTzOMXAr85IhgE6JY=;
-        b=WcyjkMmRLoc1Fc3HxTC0qtLs//P67zrSfKIljeOmfkDdULPiM8kr+dXCXStFjijpwx
-         w5pyh6B5YRY/DPA/W+IsiUYzinH/zBG6wivSDCArXboswgz41WNmsMhiRtQ/yPA2+q/S
-         OvMkQTS0kimVXEirxhVOoUWztm67/57/QMnMl6XGAWZQGMZ24XaCTdnKzluW+vn+QW3o
-         rEy2FXHgWZWRJUv5RZ9IJE2sXj6XtWZcGAXN4+OXuGIB+7MmCyx/PnXevLgWilJuze0E
-         lWz3MNDWfaoNHGEPRNTKN/bP4mJNxxibQvG8ZrebNeLLw9FfDWSsifqmpsVoKKEuVD/8
-         F3gA==
-X-Gm-Message-State: AOAM533NfvN+KAsx0pzdt1w9VmwLqNk5J9yl6C+Oo0UJcSZaUI3j0LxV
-        qEJ+knRHI8Rd8gjkMqcTlw==
-X-Google-Smtp-Source: ABdhPJyxpyI1N+AvgADJ1IcQCxekVn4/AHZTGDaGy92skQR/1/y1qtBhzZcAxyirTjh4HWPn7k/e1g==
-X-Received: by 2002:a02:2401:: with SMTP id f1mr5923789jaa.66.1595524255623;
-        Thu, 23 Jul 2020 10:10:55 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id l17sm1708226ilm.70.2020.07.23.10.10.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 10:10:55 -0700 (PDT)
-Received: (nullmailer pid 546734 invoked by uid 1000);
-        Thu, 23 Jul 2020 17:10:53 -0000
-Date:   Thu, 23 Jul 2020 11:10:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rohit kumar <rohitkr@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 07/12] dt-bindings: sound: lpass-cpu: Add sc7180 lpass
- cpu node
-Message-ID: <20200723171053.GA544557@bogus>
-References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
- <1595413915-17867-8-git-send-email-rohitkr@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1595413915-17867-8-git-send-email-rohitkr@codeaurora.org>
+        id S1730029AbgGWRLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 13:11:41 -0400
+Received: from mga05.intel.com ([192.55.52.43]:6574 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730023AbgGWRLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 13:11:38 -0400
+IronPort-SDR: 5YfwfSlV3C5Z5JFnxJJS8V+zYetfhmdySlXcbhFta/hX/uKUUkRDbIyjClFM5szhuPVPtpoOLu
+ s80sFWLxUtYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235456628"
+X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
+   d="scan'208";a="235456628"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 10:11:38 -0700
+IronPort-SDR: cISsyzf4v2jxtnImZzCtrcDEBk9HKAoXpakaBzimwnJR/k0StCRkZXJ/+L5NYMk/YPKnUBDEZI
+ BUY0Phr3u8+g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,387,1589266800"; 
+   d="scan'208";a="488904216"
+Received: from labuser-ice-lake-client-platform.jf.intel.com ([10.54.55.65])
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jul 2020 10:11:37 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        like.xu@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V7 00/14] TopDown metrics support for Icelake
+Date:   Thu, 23 Jul 2020 10:11:03 -0700
+Message-Id: <20200723171117.9918-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 04:01:50PM +0530, Rohit kumar wrote:
-> Add dt-bindings to support "qcom,lpass-cpu-sc7180" node.
-> 
-> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.txt   | 55 +++++++++++++++++++++-
->  1 file changed, 53 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> index 32c2cdb..c21392e 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> +++ b/Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
-> @@ -4,7 +4,8 @@ This node models the Qualcomm Technologies Low-Power Audio SubSystem (LPASS).
->  
->  Required properties:
->  
-> -- compatible		: "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu"
-> +- compatible		: "qcom,lpass-cpu" or "qcom,apq8016-lpass-cpu" or
-> +			  "qcom,lpass-cpu-sc7180"
+From: Kan Liang <kan.liang@linux.intel.com>
 
-qcom,sc7180-lpass-cpu
+Changes since V6:
+- Correct the comments regarding to the pseudo umask-code of the fixed
+  counter.
+- Add a new PERF_EV_CAP_COEXIST event capability
+- Update the code regarding to the nr_metric check
+- Check the TopDown group in hw_config
+  Drop the patch for x86_pmu.validate_group
+- The pseudo umask-code of metrics event starts from the middle of the
+  pseudo event space, 0x80.
 
->  - clocks		: Must contain an entry for each entry in clock-names.
->  - clock-names		: A list which must include the following entries:
->  				* "ahbix-clk"
-> @@ -18,6 +19,13 @@ Required properties:
->  				* "mi2s-bit-clk3"
->  				* "pcnoc-mport-clk"
->  				* "pcnoc-sway-clk"
-> +			: required clocks for "qcom,lpass-cpu-sc7180"
-> +				* "audio-core"
-> +				* "mclk0"
-> +				* "mi2s-bit-clk0"
-> +				* "mi2s-bit-clk1"
-> +				* "pcnoc-sway-clk"
-> +				* "pcnoc-mport-clk"
->  
->  - interrupts		: Must contain an entry for each entry in
->  			  interrupt-names.
-> @@ -53,7 +61,8 @@ Required properties for each DAI (represented by a subnode):
->  Note that adding a subnode changes the default to "no lines configured",
->  so both playback and capture lines should be configured when a subnode is added.
->  
-> -Example:
-> +Examples:
-> +1)
->  
->  lpass@28100000 {
->  	compatible = "qcom,lpass-cpu";
-> @@ -77,3 +86,45 @@ lpass@28100000 {
->  		qcom,playback-sd-lines = <0 1>;
->  	};
->  };
-> +
-> +2)
-> +
-> +#include <dt-bindings/sound/sc7180-lpass.h>
-> +
-> +lpass_cpu: lpass {
-> +	compatible = "qcom,lpass-cpu-sc7180";
-> +
-> +	reg = <0 0x62F00000 0 0x29000>;
-> +
-> +	iommus = <&apps_smmu 0x1020 0>;
-> +
-> +	power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
-> +	clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
-> +		<&lpasscorecc LPASS_AUDIO_CORE_CORE_CLK>,
-> +		<&lpasscorecc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
-> +		<&lpasscorecc LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK>,
-> +		<&lpasscorecc LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK>,
-> +		<&lpasscorecc LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK>;
-> +	clock-names = "pcnoc-sway-clk", "audio-core",
-> +			"mclk0", "pcnoc-mport-clk",
-> +			"mi2s-bit-clk0", "mi2s-bit-clk1";
-> +	interrupts = <0 160 IRQ_TYPE_LEVEL_HIGH>;
-> +	interrupt-names = "lpass-irq-lpaif";
-> +
-> +
-> +	#sound-dai-cells = <1>;
-> +
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	mi2s-primary@0 {
-> +		reg = <MI2S_PRIMARY>;
-> +		qcom,playback-sd-lines = <1>;
-> +		qcom,capture-sd-lines = <0>;
-> +	};
-> +
-> +	mi2s-secondary@1 {
-> +		reg = <MI2S_SECONDARY>;
-> +		qcom,playback-sd-lines = <0>;
-> +	};
-> +};
-> -- 
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> 
+Changes since V5:
+- Rebase on top of tip perf/core branch
+  commit c085fb877467 ("perf/x86/intel/lbr: Support XSAVES for arch LBR
+  read")
+- Add more cleanup codes, e.g. ("perf/x86/intel: Use switch in
+  intel_pmu_disable/enable_event"). Use more macros to replace the magic
+  number.
+- Reorganize the patch set:
+  - Move all cleanup related patches to the beginning of the patch set.
+  - Split the TopDown metrics patch into a generic patch and a Icelake
+    specific patch.
+- Drop extra_reg. The TopDown metrics events and slots event don't
+  support any filters.
+
+Changes since V4:
+- Add description regarding to event-code naming for fixed counters
+- Fix add_nr_metric_event().
+  For leader event, we have to take the accepted metrics events into
+  account.
+  For sibling event, it doesn't need to count accepted metrics events
+  again.
+- Remove is_first_topdown_event_in_group().
+  Force slots in topdown group. Only update topdown events with slots
+  event.
+- Re-use last_period and period_left for saved_metric and saved_slots.
+
+Changes since V3:
+- Separate fixed counter3 definition patch
+- Separate BTS index patch
+- Apply Peter's cleanup patch
+- Fix the name of perf capabilities for perf METRICS
+- Apply patch for mul_u64_u32_div() x86_64 implementation
+- Fix unconditionally allows collecting 4 extra events
+- Add patch to clean up NMI handler by naming global status bit
+- Add patch to reuse event_base_rdpmc for RDPMC userspace support
+
+Changes since V2:
+- Rebase on top of v5.3-rc1
+
+Key changes since V1:
+- Remove variables for reg_idx and enabled_events[] array.
+  The reg_idx can be calculated by idx in runtime.
+  Using existing active_mask to replace enabled_events.
+- Choose value 47 for the fixed index of BTS.
+- Support OVF_PERF_METRICS overflow bit in PMI handler
+- Drops the caching mechanism and related variables
+  New mechanism is to update all active slots/metrics events for the
+  first slots/metrics events in a group. For each group reading, it
+  still only read the slots/perf_metrics MSR once
+- Disable PMU for read of topdown events to avoid the NMI issue
+- Move RDPMC support to a separate patch
+- Using event=0x00,umask=0x1X for topdown metrics events
+- Drop the patch which add REMOVE transaction
+  We can indicate x86_pmu_stop() by checking
+  (event && !test_bit(event->hw.idx, cpuc->active_mask)),
+  which is a good place to save the slots/metrics MSR value
+
+Icelake has support for measuring the level 1 TopDown metrics
+directly in hardware. This is implemented by an additional METRICS
+register, and a new Fixed Counter 3 that measures pipeline SLOTS.
+
+New in Icelake
+- Do not require generic counters. This allows to collect TopDown always
+  in addition to other events.
+- Measuring TopDown per thread/process instead of only per core
+
+For the Ice Lake implementation of performance metrics, the values in
+PERF_METRICS MSR are derived from fixed counter 3. Software should start
+both registers, PERF_METRICS and fixed counter 3, from zero.
+Additionally, software is recommended to periodically clear both
+registers in order to maintain accurate measurements. The latter is
+required for certain scenarios that involve sampling metrics at high
+rates. Software should always write fixed counter 3 before write to
+PERF_METRICS.
+
+IA32_PERF_GLOBAL_STATUS. OVF_PERF_METRICS[48]: If this bit is set,
+it indicates that some PERF_METRICS-related counter has overflowed and
+a PMI is triggered. Software has to synchronize, e.g. re-start,
+PERF_METRICS as well as fixed counter 3. Otherwise, PERF_METRICS may
+return invalid values.
+
+Limitation
+- To get accurate result and avoid reading the METRICS register multiple
+  times, the TopDown metrics events and SLOTS event have to be in the
+  same group.
+- METRICS and SLOTS registers have to be cleared after each read by SW.
+  That is to prevent the lose of precision.
+- Cannot do sampling read SLOTS and TopDown metric events
+
+Please refer SDM Vol3, 18.3.9.3 Performance Metrics for the details of
+TopDown metrics.
+
+Andi Kleen (2):
+  perf, tools, stat: Support new per thread TopDown metrics
+  perf, tools: Add documentation for topdown metrics
+
+Kan Liang (12):
+  perf/x86: Use event_base_rdpmc for the RDPMC userspace support
+  perf/x86/intel: Name the global status bit in NMI handler
+  perf/x86/intel: Introduce the fourth fixed counter
+  perf/x86/intel: Move BTS index to 47
+  perf/x86/intel: Fix the name of perf METRICS
+  perf/x86/intel: Use switch in intel_pmu_disable/enable_event
+  perf/core: Add a new PERF_EV_CAP_COEXIST event capability
+  perf/x86/intel: Generic support for hardware TopDown  metrics
+  perf/x86: Add a macro for RDPMC offset of fixed counters
+  perf/x86/intel: Support TopDown metrics on Ice Lake
+  perf/x86/intel: Support per-thread RDPMC TopDown metrics
+  perf, tools, stat: Check Topdown Metric group
+
+ arch/x86/events/core.c                 |  80 ++++--
+ arch/x86/events/intel/core.c           | 363 ++++++++++++++++++++++++-
+ arch/x86/events/perf_event.h           |  52 +++-
+ arch/x86/include/asm/msr-index.h       |   3 +
+ arch/x86/include/asm/perf_event.h      |  97 ++++++-
+ include/linux/perf_event.h             |  34 ++-
+ kernel/events/core.c                   |  52 +++-
+ tools/perf/Documentation/perf-stat.txt |   9 +-
+ tools/perf/Documentation/topdown.txt   | 235 ++++++++++++++++
+ tools/perf/builtin-stat.c              |  97 +++++++
+ tools/perf/util/stat-shadow.c          |  89 ++++++
+ tools/perf/util/stat.c                 |   4 +
+ tools/perf/util/stat.h                 |   8 +
+ 13 files changed, 1059 insertions(+), 64 deletions(-)
+ create mode 100644 tools/perf/Documentation/topdown.txt
+
+-- 
+2.17.1
+
