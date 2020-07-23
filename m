@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CAA22B406
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A350322B409
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 18:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729994AbgGWQ6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 12:58:03 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:35700 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726984AbgGWQ6D (ORCPT
+        id S1729928AbgGWQ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 12:59:53 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:46031 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726984AbgGWQ7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 12:58:03 -0400
-Received: by mail-il1-f195.google.com with SMTP id t18so4938731ilh.2;
-        Thu, 23 Jul 2020 09:58:02 -0700 (PDT)
+        Thu, 23 Jul 2020 12:59:52 -0400
+Received: by mail-il1-f193.google.com with SMTP id o3so4884542ilo.12;
+        Thu, 23 Jul 2020 09:59:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0LnwlI1S5EQWUCFb6m87YysKGHLu9NoBXK/tn34ZRrc=;
-        b=eRSWrrSl3XScYNTiROJ8uywP9IQiZjHz/3Lite4UMmJd/04k07wn0stuJfnUvl10Ld
-         9a9I/kn2qHQtREW4FZjoIXbNOJ7TWjAd8Wr7KgKVvsXI/9zP40KiKgB0NZ8+Pzuu/9hC
-         gfy8OS8c2udHFOxOVWad5JQg8AWDbQccPVaujyKJeYFrTl2VHKv8OWcfh8jvczwintH+
-         kmS0Qe3OsbGOcfUJvEc7qRb47iDSYKBf5Dhy1/Jx8JuFHSgjRQsUxtUhv2KNW4d1EpgV
-         qCjkXrFP/ohPEzGr8p3OS2foyD3hzXdySqlMDvfoisY0bvnRLb/mr7sD7MyPAyBQz+oI
-         mzqw==
-X-Gm-Message-State: AOAM532pBIRvtm7KDP98lelBVBNnQBvx9z66p5OgxUlOcgPQ7ACUFO4+
-        AVZC98AsRj2iFsmCYkRdlQ==
-X-Google-Smtp-Source: ABdhPJwQCiVULLsxm4VGGqM8O9N7yWxVLbkgy3IfVHRROofBGtaoCFRjZH3xwx9PT3bCh81k8FzNUA==
-X-Received: by 2002:a92:cd48:: with SMTP id v8mr6202422ilq.114.1595523482443;
-        Thu, 23 Jul 2020 09:58:02 -0700 (PDT)
+        bh=a9J1QalhPnPlUfL8dEkhcJXOcummbHS6rnTdET71bMs=;
+        b=pbtZSPOAR6mNc2Mx/tzXPF0XG3fnPjSJfNtNP1SQ6Prpm0puexmp/G12kMYMiXcp+2
+         0qaa78Og7pL5I3wSvJ6mk+jFC3OtCZVIjy5KYHlDd7Y6E3jjXGoxAhN0/xtWKnWGKRAN
+         YdOSmfwmflVLnR2nyp8TkRjcAZGbilQmgVOG0Sit0pQpidRsk8bqkLPqbD+EBLefWAqW
+         mZLr8OovOJzjSbENrvpECsn2dV1dobrnrHZp9at4VoIoJSH644C14fNprsvre6svvc1Y
+         LZqk2rus0QmFoiecvzUMYEnnDPxUcyvedc9hf0X7zS+1ShHKkX/xw801ipzyJpcxhH/m
+         PEMw==
+X-Gm-Message-State: AOAM533bqqrs3gwGU+B9SL0aHvIO9gaElgFMlA3V8JYguai047Q26Imq
+        0IDNimT1d+a57Sqi3iunXw==
+X-Google-Smtp-Source: ABdhPJyuR1S22aBp3Or2PleYDBAuKLxt9dS8HqZMwzT1XYskFKMphzrrK4Z7oxsJJzEUbVcdkKz2pw==
+X-Received: by 2002:a05:6e02:1253:: with SMTP id j19mr5960074ilq.145.1595523591815;
+        Thu, 23 Jul 2020 09:59:51 -0700 (PDT)
 Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id d18sm1710697ils.34.2020.07.23.09.58.01
+        by smtp.gmail.com with ESMTPSA id 5sm1721954ion.7.2020.07.23.09.59.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 09:58:01 -0700 (PDT)
-Received: (nullmailer pid 529139 invoked by uid 1000);
-        Thu, 23 Jul 2020 16:58:00 -0000
-Date:   Thu, 23 Jul 2020 10:58:00 -0600
+        Thu, 23 Jul 2020 09:59:51 -0700 (PDT)
+Received: (nullmailer pid 531537 invoked by uid 1000);
+        Thu, 23 Jul 2020 16:59:50 -0000
+Date:   Thu, 23 Jul 2020 10:59:50 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Hanks Chen <hanks.chen@mediatek.com>
-Cc:     linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org,
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Loda Chou <loda.chou@mediatek.com>,
-        Mars Cheng <mars.cheng@mediatek.com>,
-        Andy Teng <andy.teng@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Sean Wang <sean.wang@kernel.org>,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mtk01761 <wendell.lin@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, wsd_upstream@mediatek.com,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v9 1/7] pinctrl: mediatek: update pinmux definitions for
- mt6779
-Message-ID: <20200723165800.GA529090@bogus>
-References: <1595503197-15246-1-git-send-email-hanks.chen@mediatek.com>
- <1595503197-15246-2-git-send-email-hanks.chen@mediatek.com>
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [v7, PATCH 4/7] dt-bindings: mediatek: add rdma_fifo_size
+ description for mt8183 display
+Message-ID: <20200723165950.GA529262@bogus>
+References: <1595469798-3824-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1595469798-3824-5-git-send-email-yongqiang.niu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1595503197-15246-2-git-send-email-hanks.chen@mediatek.com>
+In-Reply-To: <1595469798-3824-5-git-send-email-yongqiang.niu@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Jul 2020 19:19:51 +0800, Hanks Chen wrote:
-> Add devicetree bindings for Mediatek mt6779 SoC Pin Controller.
+On Thu, Jul 23, 2020 at 10:03:15AM +0800, Yongqiang Niu wrote:
+> Update device tree binding document for rdma_fifo_size
 > 
-> Acked-by: Sean Wang <sean.wang@kernel.org>
-> Signed-off-by: Mars Cheng <mars.cheng@mediatek.com>
-> Signed-off-by: Andy Teng <andy.teng@mediatek.com>
-> Signed-off-by: Hanks Chen <hanks.chen@mediatek.com>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 > ---
->  include/dt-bindings/pinctrl/mt6779-pinfunc.h | 1242 ++++++++++++++++++
->  1 file changed, 1242 insertions(+)
->  create mode 100644 include/dt-bindings/pinctrl/mt6779-pinfunc.h
+>  .../devicetree/bindings/display/mediatek/mediatek,disp.txt | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> index b91e709..e6bbe32 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
+> @@ -66,6 +66,11 @@ Required properties (DMA function blocks):
+>    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+>    for details.
+>  
+> +Optional properties (RDMA function blocks):
+> +- mediatek,rdma_fifo_size: rdma fifo size may be different even in same SOC, add this
 
-Acked-by: Rob Herring <robh@kernel.org>
+s/_/-/
+
+> +  property to the corresponding rdma
+> +  the value is the Max value which defined in hardware data sheet.
+> +
+>  Examples:
+>  
+>  mmsys: clock-controller@14000000 {
+> @@ -207,3 +212,12 @@ od@14023000 {
+>  	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>  	clocks = <&mmsys CLK_MM_DISP_OD>;
+>  };
+> +
+> +rdma1: rdma@1400c000 {
+> +	compatible = "mediatek,mt8183-disp-rdma";
+> +	reg = <0 0x1400c000 0 0x1000>;
+> +	interrupts = <GIC_SPI 229 IRQ_TYPE_LEVEL_LOW>;
+> +	power-domains = <&scpsys MT8183_POWER_DOMAIN_DISP>;
+> +	clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+> +	mediatek,rdma_fifo_size = <2048>;
+> +};
+> -- 
+> 1.8.1.1.dirty
