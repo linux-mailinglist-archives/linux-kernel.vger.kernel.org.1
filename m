@@ -2,170 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11A922B272
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A843C22B27A
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 17:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729169AbgGWPYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 11:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
+        id S1729558AbgGWP0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 11:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727108AbgGWPYw (ORCPT
+        with ESMTP id S1725843AbgGWP0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 11:24:52 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F63C0619DC
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:24:52 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f18so5589093wrs.0
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:24:52 -0700 (PDT)
+        Thu, 23 Jul 2020 11:26:54 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF36CC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:26:53 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id q5so5567792wru.6
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 08:26:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=ECUeWXBnH6Ls28u3v/vFokxJ6Lu+MnV78i4ugGzpyXg=;
-        b=mBSWTnQ0+ij26HSOgetG7KoPPONHCmzcu36q3QRa+gK7mf4lCVdG+9bNA+RRC8QEOi
-         sMH4eA41PxJramrpIT2VBGltHP2N24Fhte5hLnfK9rQsZI/UC0a27PvdhD0Fj7nuZa7X
-         UiIp8DTZxaCv2V98TLIxN4Omo7CR76KxfS3PVcTn73GjFzQTNe4e3UZa1U3IRQ6rtEqP
-         VS2Oc+ECzN6Cf9qa/pgrBaExdAx6ba7crtzDpV23jCAVQ7wVRGUprmIdJhDjDJ35w+YT
-         t2qPNNdUOEMyCXcqATt+meabstLIEdwexo3CQvE4CGFna3Czg06EkD4n+enVRAxcNUfl
-         D/Pg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zeGJhn4QDCv7nHVcfBN1kEkOyeVk60ndJ+Wwf4G4XD8=;
+        b=ithbTwaAxz5gEQyqNKS5Bgr8alt7QgnzfxZxjJOD22GNv7bw/z7+Mv9FziFhf2osFN
+         M7l4Ta1TEBAqu5jbhVnArS15n2TW9DfPcJG4y5J/4Gx5ghIPSpbqVFIx0r+T4OJd4DLy
+         AhKe6M5iim0KX1Ogub076YX1Y1RBT3a1rc4rNrX8dQ8rm6nZgDnUmxCx6On/Y/dSPdfc
+         ZP12IT21nm+RRXaXPglA/+vvVtGAsnAJCLg5LXgTKNtsnadDiuWfWw9ge81/zORa+knG
+         h+CrlR0F363lJ2GWrNQ+b82imr5aRHehlunZtZK8ywPVRKwR86/YDHmlQzkiVBLw11MG
+         vEEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=ECUeWXBnH6Ls28u3v/vFokxJ6Lu+MnV78i4ugGzpyXg=;
-        b=bPHWG9uopZDqacS7++ZFSd4/YemCoUdKR/4n2YjpCZm7Q+zuJL/kToJoxqu8iEY+q7
-         LlWpQNxH42+JoIxD8EBgVA3Ah/X106rNztqM/kWflnvHXk2CQh9Ek0fEAmHfv/xBjUNa
-         DToWL8Jqzr1BRKNyFaVTFCC8OOASdop8wl9cFy7BXAhCQFH+BBQy8kHu1WQ5mjXlZf9u
-         DlqexEdsW/Yjde+/AYCGPFDn2CK7Bozo8G7t5fMeVYriNZpZxDMgQQxjpi2BJDd1Dlea
-         4idHbGjOfLC6fN4juKLKaqNCVlRcUj339fd5dJHya3kBOJnNW22uDwMnetur6IGWVoRJ
-         mdpg==
-X-Gm-Message-State: AOAM533+f8APMwPJ5ctdFL4bY0up0AezXmggCPub60Aqijy0i8yaWGcE
-        3OHanYRzuE1UrnZbIFdWaOB9MQ==
-X-Google-Smtp-Source: ABdhPJwKRVlltMvJgs8RzbIAXNM8uDIewInYaBXqPcxnHJQLCeeCGXcVMfmBay137X8LDBTFMGsPjw==
-X-Received: by 2002:adf:df91:: with SMTP id z17mr4954984wrl.149.1595517890903;
-        Thu, 23 Jul 2020 08:24:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:dca7:8d30:33fa:daac? ([2a01:e34:ed2f:f020:dca7:8d30:33fa:daac])
-        by smtp.googlemail.com with ESMTPSA id g3sm4689193wrb.59.2020.07.23.08.24.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Jul 2020 08:24:50 -0700 (PDT)
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Zhou Yanjie <zhouyanjie@wanyeetech.com>,
-        Anson Huang <anson.huang@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zeGJhn4QDCv7nHVcfBN1kEkOyeVk60ndJ+Wwf4G4XD8=;
+        b=BIgrEBblhIGMmjsDSV/iXWgOHQFeezq+ASduIQwiELV6TXiVebdGEB7gsrGyctLE6k
+         /BHJnltQ3tw4UQz9xp2m2U1keO3+ocFBXvyUuSet09ZTHFVLxn8t9i76pRTAi9H9vMwm
+         LBMixwuB+zJ3LyJUvehdiWx07DyffAsh9mc2VHnJSHtJJX/C/Md6xb8q9/fr1UpZEZ+B
+         hkwWRw7p7eWQP8PeWjcnsui33UZbBRQsgXKjPkD6CbVV6J9x+7swO/ynKlQX5/Vo4WlM
+         K6wcUAfCasnMH5laTLu9N0JepyTrX04R9JoDeUt8EmzDUouLo1oC6x5d5M6w+hnSkQMp
+         CzjQ==
+X-Gm-Message-State: AOAM5329j8IAwEMK+YxUQDzNrZPc0mjph63p2FZDIK2UL+dTeKnhFOtS
+        yfzi83eTeAlC8vQo17Nv4Ki6TQ==
+X-Google-Smtp-Source: ABdhPJwQ7LHnyhS68zfPqiGMd5i53UtPOC/V7VxMNv2t0Y9efpOkBGLpTCqQlKTJsnUnFf321+vVaQ==
+X-Received: by 2002:adf:d084:: with SMTP id y4mr4383828wrh.161.1595518012378;
+        Thu, 23 Jul 2020 08:26:52 -0700 (PDT)
+Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:dca7:8d30:33fa:daac])
+        by smtp.gmail.com with ESMTPSA id g145sm5963491wmg.23.2020.07.23.08.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 08:26:51 -0700 (PDT)
 From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL] timer drives for v5.9
-Message-ID: <1b1122f4-bce9-f349-e602-ed8e14cbb501@linaro.org>
-Date:   Thu, 23 Jul 2020 17:24:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+To:     tglx@linutronix.de
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Microchip
+        (AT91) SoC support), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 01/16] dt-bindings: atmel-tcb: convert bindings to json-schema
+Date:   Thu, 23 Jul 2020 17:26:21 +0200
+Message-Id: <20200723152639.639771-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <1b1122f4-bce9-f349-e602-ed8e14cbb501@linaro.org>
+References: <1b1122f4-bce9-f349-e602-ed8e14cbb501@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 809eb4e9bf9d84eb5b703358afd0d564d514f6d2:
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-  dt-bindings: timer: Add renesas,em-sti bindings (2020-05-23 00:03:37
-+0200)
+Convert Atmel Timer Counter Blocks bindings to DT schema format using
+json-schema.
 
-are available in the Git repository at:
+Also move it out of mfd as it is not and has never been related to mfd.
 
-  https://git.linaro.org/people/daniel.lezcano/linux.git tags/timers-v5.9
-
-for you to fetch changes up to 5ecafc120bbea614c9d29d0ee2cbb77bbb786059:
-
-  clocksource/drivers/ingenic: Add support for the Ingenic X1000 OST.
-(2020-07-23 16:58:09 +0200)
-
-----------------------------------------------------------------
-- Add sama5d2 support and rework the 32kHz clock handling (Alexandre
-Belloni)
-
-- Add the high resolution support for SMP/SMT on the Ingenic timer (Zhou
-Yanjie)
-
-- Add support for i.MX TPM driver with ARM64 (Anson Huang)
-
-- Fix typo by replacing KHz to kHz (Geert Uytterhoeven)
-
-- Add 32kHz support by setting the minimum ticks to 5 on Nomadik MTU
-(Linus Walleij)
-
-- Replace HTTP links with HTTPS ones for security reasons (Alexander A.
-Klimov)
-
-- Add support for the Ingenic X1000 OST (Zhou Yanjie)
-
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-      clocksource/drivers: Replace HTTP links with HTTPS ones
-
-Alexandre Belloni (8):
-      dt-bindings: atmel-tcb: convert bindings to json-schema
-      dt-bindings: microchip: atmel,at91rm9200-tcb: add sama5d2 compatible
-      ARM: dts: at91: sama5d2: add TCB GCLK
-      clocksource/drivers/timer-atmel-tcb: Rework 32khz clock selection
-      clocksource/drivers/timer-atmel-tcb: Fill tcb_config
-      clocksource/drivers/timer-atmel-tcb: Stop using the 32kHz for
-clockevents
-      clocksource/drivers/timer-atmel-tcb: Allow selecting first divider
-      clocksource/drivers/timer-atmel-tcb: Add sama5d2 support
-
-Anson Huang (1):
-      clocksource/drivers/imx: Add support for i.MX TPM driver with ARM64
-
-Geert Uytterhoeven (1):
-      clocksource/drivers/sh_cmt: Use "kHz" for kilohertz
-
-Kamel Bouhara (1):
-      ARM: at91: add atmel tcb capabilities
-
-Linus Walleij (1):
-      clocksource/drivers/nomadik-mtu: Handle 32kHz clock
-
-周琰杰 (Zhou Yanjie) (3):
-      clocksource/drivers/ingenic: Add high resolution timer support for
-SMP/SMT.
-      dt-bindings: timer: Add Ingenic X1000 OST bindings.
-      clocksource/drivers/ingenic: Add support for the Ingenic X1000 OST.
-
- .../devicetree/bindings/mfd/atmel-tcb.txt          |  56 ---
- .../soc/microchip/atmel,at91rm9200-tcb.yaml        | 155 ++++++
- .../devicetree/bindings/timer/ingenic,sysost.yaml  |  63 +++
- .../bindings/timer/ti,keystone-timer.txt           |   2 +-
- arch/arm/boot/dts/sama5d2.dtsi                     |  12 +-
- drivers/clocksource/Kconfig                        |  15 +-
- drivers/clocksource/Makefile                       |   1 +
- drivers/clocksource/ingenic-sysost.c               | 539
-+++++++++++++++++++++
- drivers/clocksource/ingenic-timer.c                | 182 ++++---
- drivers/clocksource/nomadik-mtu.c                  |  11 +-
- drivers/clocksource/sh_cmt.c                       |   2 +-
- drivers/clocksource/timer-atmel-tcb.c              | 103 ++--
- drivers/clocksource/timer-ti-32k.c                 |   2 +-
- drivers/clocksource/timer-ti-dm.c                  |   2 +-
- include/dt-bindings/clock/ingenic,sysost.h         |  12 +
- include/soc/at91/atmel_tcb.h                       |   5 +
- 16 files changed, 990 insertions(+), 172 deletions(-)
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200710230813.1005150-2-alexandre.belloni@bootlin.com
+---
+ .../devicetree/bindings/mfd/atmel-tcb.txt     |  56 --------
+ .../soc/microchip/atmel,at91rm9200-tcb.yaml   | 131 ++++++++++++++++++
+ 2 files changed, 131 insertions(+), 56 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/mfd/atmel-tcb.txt
- create mode 100644
-Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
- create mode 100644
-Documentation/devicetree/bindings/timer/ingenic,sysost.yaml
- create mode 100644 drivers/clocksource/ingenic-sysost.c
- create mode 100644 include/dt-bindings/clock/ingenic,sysost.h
+ create mode 100644 Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
 
+diff --git a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt b/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
+deleted file mode 100644
+index c4a83e364cb6..000000000000
+--- a/Documentation/devicetree/bindings/mfd/atmel-tcb.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-* Device tree bindings for Atmel Timer Counter Blocks
+-- compatible: Should be "atmel,<chip>-tcb", "simple-mfd", "syscon".
+-  <chip> can be "at91rm9200" or "at91sam9x5"
+-- reg: Should contain registers location and length
+-- #address-cells: has to be 1
+-- #size-cells: has to be 0
+-- interrupts: Should contain all interrupts for the TC block
+-  Note that you can specify several interrupt cells if the TC
+-  block has one interrupt per channel.
+-- clock-names: tuple listing input clock names.
+-	Required elements: "t0_clk", "slow_clk"
+-	Optional elements: "t1_clk", "t2_clk"
+-- clocks: phandles to input clocks.
+-
+-The TCB can expose multiple subdevices:
+- * a timer
+-   - compatible: Should be "atmel,tcb-timer"
+-   - reg: Should contain the TCB channels to be used. If the
+-     counter width is 16 bits (at91rm9200-tcb), two consecutive
+-     channels are needed. Else, only one channel will be used.
+-
+-Examples:
+-
+-One interrupt per TC block:
+-	tcb0: timer@fff7c000 {
+-		compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0xfff7c000 0x100>;
+-		interrupts = <18 4>;
+-		clocks = <&tcb0_clk>, <&clk32k>;
+-		clock-names = "t0_clk", "slow_clk";
+-
+-		timer@0 {
+-			compatible = "atmel,tcb-timer";
+-			reg = <0>, <1>;
+-		};
+-
+-		timer@2 {
+-			compatible = "atmel,tcb-timer";
+-			reg = <2>;
+-		};
+-	};
+-
+-One interrupt per TC channel in a TC block:
+-	tcb1: timer@fffdc000 {
+-		compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0xfffdc000 0x100>;
+-		interrupts = <26 4>, <27 4>, <28 4>;
+-		clocks = <&tcb1_clk>, <&clk32k>;
+-		clock-names = "t0_clk", "slow_clk";
+-	};
+-
+-
+diff --git a/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+new file mode 100644
+index 000000000000..9d680e0b9109
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/microchip/atmel,at91rm9200-tcb.yaml
+@@ -0,0 +1,131 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/soc/microchip/atmel,at91rm9200-tcb.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Atmel Timer Counter Block
++
++maintainers:
++  - Alexandre Belloni <alexandre.belloni@bootlin.com>
++
++description: |
++  The Atmel (now Microchip) SoCs have timers named Timer Counter Block. Each
++  timer has three channels with two counters each.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - atmel,at91rm9200-tcb
++          - atmel,at91sam9x5-tcb
++      - const: simple-mfd
++      - const: syscon
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description:
++      List of interrupts. One interrupt per TCB channel if available or one
++      interrupt for the TC block
++    minItems: 1
++    maxItems: 3
++
++  clock-names:
++    description:
++      List of clock names. Always includes t0_clk and slow clk. Also includes
++      t1_clk and t2_clk if a clock per channel is available.
++    oneOf:
++      - items:
++        - const: t0_clk
++        - const: slow_clk
++      - items:
++        - const: t0_clk
++        - const: t1_clk
++        - const: t2_clk
++        - const: slow_clk
++    minItems: 2
++    maxItems: 4
++
++  clocks:
++    minItems: 2
++    maxItems: 4
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++patternProperties:
++  "^timer@[0-2]$":
++    description: The timer block channels that are used as timers.
++    type: object
++    properties:
++      compatible:
++        const: atmel,tcb-timer
++      reg:
++        description:
++          List of channels to use for this particular timer.
++        minItems: 1
++        maxItems: 3
++
++    required:
++      - compatible
++      - reg
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - '#address-cells'
++  - '#size-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    /* One interrupt per TC block: */
++        tcb0: timer@fff7c000 {
++                compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
++                #address-cells = <1>;
++                #size-cells = <0>;
++                reg = <0xfff7c000 0x100>;
++                interrupts = <18 4>;
++                clocks = <&tcb0_clk>, <&clk32k>;
++                clock-names = "t0_clk", "slow_clk";
++
++                timer@0 {
++                        compatible = "atmel,tcb-timer";
++                        reg = <0>, <1>;
++                };
++
++                timer@2 {
++                        compatible = "atmel,tcb-timer";
++                        reg = <2>;
++                };
++        };
++
++    /* One interrupt per TC channel in a TC block: */
++        tcb1: timer@fffdc000 {
++                compatible = "atmel,at91rm9200-tcb", "simple-mfd", "syscon";
++                #address-cells = <1>;
++                #size-cells = <0>;
++                reg = <0xfffdc000 0x100>;
++                interrupts = <26 4>, <27 4>, <28 4>;
++                clocks = <&tcb1_clk>, <&clk32k>;
++                clock-names = "t0_clk", "slow_clk";
++
++                timer@0 {
++                        compatible = "atmel,tcb-timer";
++                        reg = <0>;
++                };
++
++                timer@1 {
++                        compatible = "atmel,tcb-timer";
++                        reg = <1>;
++                };
++        };
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.25.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
