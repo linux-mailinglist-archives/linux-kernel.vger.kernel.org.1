@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB3822ACEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F024C22ACEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 12:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgGWKqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 06:46:47 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34168 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725911AbgGWKqq (ORCPT
+        id S1728454AbgGWKsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 06:48:12 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:58667 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725911AbgGWKsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 06:46:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595501205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIGRu3pWmIoZ+Nju0ceqixWGAqRIjOJir+KRyyVKDd0=;
-        b=jBirwTuddkudXbutQgB0h9rQnKeEzeioMYAtYrXC2l2WWImWpZP4Acu0ns0TJf1+2apKCJ
-        atZFaZCsEiOW9tf78u+TbR6Y+Cbla3k3M0Jt0Y59frGdV2f1axWzleSpOie2TACM/ymT7S
-        n5gqNgOCnCyGGsk1JN45RI/tMb4AGyY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-cAo-hXbjN5qL7KcBsCJy_A-1; Thu, 23 Jul 2020 06:46:43 -0400
-X-MC-Unique: cAo-hXbjN5qL7KcBsCJy_A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88703189CEF3;
-        Thu, 23 Jul 2020 10:46:42 +0000 (UTC)
-Received: from localhost (ovpn-13-53.pek2.redhat.com [10.72.13.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 32FBC1A8F7;
-        Thu, 23 Jul 2020 10:46:38 +0000 (UTC)
-Date:   Thu, 23 Jul 2020 18:46:36 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, mike.kravetz@oracle.com, david@redhat.com,
-        anshuman.khandual@arm.com, akpm@linux-foundation.org
-Subject: [PATCH v3 2/4] mm/hugetlb.c: Remove the unnecessary non_swap_entry()
-Message-ID: <20200723104636.GS32539@MiWiFi-R3L-srv>
-References: <20200723032248.24772-1-bhe@redhat.com>
- <20200723032248.24772-3-bhe@redhat.com>
+        Thu, 23 Jul 2020 06:48:11 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06NAlmzJ7027604, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06NAlmzJ7027604
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 Jul 2020 18:47:48 +0800
+Received: from RTEXMB03.realtek.com.tw (172.21.6.96) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 23 Jul 2020 18:47:47 +0800
+Received: from localhost.localdomain (172.21.83.110) by
+ RTEXMB03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 23 Jul 2020 18:47:47 +0800
+From:   <max.chou@realtek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alex_lu@realsil.com.cn>,
+        <hildawu@realtek.com>, <max.chou@realtek.com>
+Subject: [PATCH] Bluetooth: Return NOTIFY_DONE for hci_suspend_notifier
+Date:   Thu, 23 Jul 2020 18:47:42 +0800
+Message-ID: <20200723104742.19780-1-max.chou@realtek.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723032248.24772-3-bhe@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-Originating-IP: [172.21.83.110]
+X-ClientProxiedBy: RTEXMB03.realtek.com.tw (172.21.6.96) To
+ RTEXMB03.realtek.com.tw (172.21.6.96)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a swap entry tests positive for either is_[migration|hwpoison]_entry(),
-then its swap_type() is among SWP_MIGRATION_READ, SWP_MIGRATION_WRITE and
-SWP_HWPOISON. All these types >= MAX_SWAPFILES, exactly what is asserted
-with non_swap_entry().
+From: Max Chou <max.chou@realtek.com>
 
-So the checking non_swap_entry() in is_hugetlb_entry_migration() and
-is_hugetlb_entry_hwpoisoned() is redundant.
+The original return is NOTIFY_STOP, but notifier_call_chain would stop
+the future call for register_pm_notifier even registered on other Kernel
+modules with the same priority which value is zero.
 
-Let's remove it to optimize code.
-
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Max Chou <max.chou@realtek.com>
 ---
-v2->v3:
-  Updated patch log according to Anshuman's comment.
+ net/bluetooth/hci_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- mm/hugetlb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3569e731e66b..c14837854392 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3748,7 +3748,7 @@ bool is_hugetlb_entry_migration(pte_t pte)
- 	if (huge_pte_none(pte) || pte_present(pte))
- 		return false;
- 	swp = pte_to_swp_entry(pte);
--	if (non_swap_entry(swp) && is_migration_entry(swp))
-+	if (is_migration_entry(swp))
- 		return true;
- 	else
- 		return false;
-@@ -3761,7 +3761,7 @@ static bool is_hugetlb_entry_hwpoisoned(pte_t pte)
- 	if (huge_pte_none(pte) || pte_present(pte))
- 		return false;
- 	swp = pte_to_swp_entry(pte);
--	if (non_swap_entry(swp) && is_hwpoison_entry(swp))
-+	if (is_hwpoison_entry(swp))
- 		return true;
- 	else
- 		return false;
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 6509f785dd14..3ce06347216a 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3513,7 +3513,7 @@ static int hci_suspend_notifier(struct notifier_block *nb, unsigned long action,
+ 		bt_dev_err(hdev, "Suspend notifier action (%lu) failed: %d",
+ 			   action, ret);
+ 
+-	return NOTIFY_STOP;
++	return NOTIFY_DONE;
+ }
+ 
+ /* Alloc HCI device */
 -- 
-2.17.2
+2.17.1
 
