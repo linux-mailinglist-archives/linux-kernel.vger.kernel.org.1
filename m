@@ -2,93 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAFC22B5BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8FB22B5BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 20:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgGWSco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 14:32:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51243 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727843AbgGWSco (ORCPT
+        id S1727933AbgGWSdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 14:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgGWSdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 14:32:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595529162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sKozQ0KnMZ6/jFMcku3oZ38jLyvLbmaFhh4u3SNBWFc=;
-        b=gZHQd8X1mQag8LfClpQ5wYmJ3wkB5LmbOpA4wcdC/tj+Qw2O9Wkpj1sAuUIXXuyGoAQIiF
-        DPbyU9a2H6J3zoaMwpgSWbtGH4HUI6XruGUHEv02q2lObPiVSE4KGyLjY7SUdJYqcaults
-        qBKc59ai/lUDhBtgyOEeaBIz2juw6+M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-a7YRzGORP6i5sZOBhCiJ6Q-1; Thu, 23 Jul 2020 14:32:40 -0400
-X-MC-Unique: a7YRzGORP6i5sZOBhCiJ6Q-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A8A501005510;
-        Thu, 23 Jul 2020 18:32:38 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-119-128.rdu2.redhat.com [10.10.119.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 209FA19D7E;
-        Thu, 23 Jul 2020 18:32:37 +0000 (UTC)
-Subject: Re: [PATCH v3 5/6] powerpc/pseries: implement paravirt qspinlocks for
- SPLPAR
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org
-References: <20200706043540.1563616-1-npiggin@gmail.com>
- <20200706043540.1563616-6-npiggin@gmail.com>
- <874kqhvu1v.fsf@mpe.ellerman.id.au>
- <8265d782-4e50-a9b2-a908-0cb588ffa09c@redhat.com>
- <20200723140011.GR5523@worktop.programming.kicks-ass.net>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <845de183-56f5-2958-3159-faa131d46401@redhat.com>
-Date:   Thu, 23 Jul 2020 14:32:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 23 Jul 2020 14:33:08 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFDCC0619DC
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:33:07 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 9so5822683wmj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 11:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=NQiDBk8f+9QOEvJ3Lb/Kcbnhu6GHb5LziW9A1gzvNCU=;
+        b=q+BdTrLiMdalWQe5W8CMQbouYJgDMC3EMgIh+nHwKt0LO/fzIkrNTEzhc5KyR3Czmv
+         dtSyIDn7LlPJyeYk0jvzssxyHnTlt3LoLlcxoCf2TSquZ4IY2HKWZtLsMc4JaNNtmmFO
+         bxsNAjBf3wns3eoNWbwb3JYeSWn/O3WXOKdK8G8/OyaOLEn+6JVn6+Ak36bf3F4I8sEm
+         hnGbIqo1SV8BGzufqJWSwidn9x2XcnwYgg8Gq0JE7YOz9O/9uqlGTHoLFvQEZeRXnbq0
+         fXpUF103xj+VoSec3H5gcbzY0EC6776p1H8A2ILZWVQW0pmNfV1hbmuYV9R7WtKwQ9DA
+         65GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=NQiDBk8f+9QOEvJ3Lb/Kcbnhu6GHb5LziW9A1gzvNCU=;
+        b=HnftPbd21FOYWQEGX3TL2bEuGwQw7+5uzTyRg+uLV7PDS4qr2+pe+hVviy6SEiRxTp
+         QcgPlB1QQ8YSODYCt8fq3SMz8mCj0qppRA81etF/MFiNjd6FgM/UTiDPszF+EQ7DCiNn
+         Y+khkCuiqDOEFFTRENI9PvJb56LyEWWaul9P7IWY8Q5VnrwvWAixt8qqsqnXnN2pDoow
+         OGP4wHa64j1BP+ry68Ai6IkCogJfxYOQA8kPrZhbqhOZt4jXEeh8wqwFzH+wVxckw6xE
+         NE1h4uhjHm8+x0FJk9cI2Va3FCPqdq05sky+yceG+U2XWje+jGss436YWvoBh14esT7Z
+         RbdA==
+X-Gm-Message-State: AOAM532+TLxPkOCu6uL+VmxngrLfR4FQX3pNEZAODZ0TCOxWUtdPNB7R
+        5utz+7BZ+0pVcR7c/Uyp22u25PPNxYbiUQ0lZss=
+X-Google-Smtp-Source: ABdhPJxUlv6Gw/HOKWsdISvBBv9gSEPVFtrIzsknrldorKaHN/oeh55jHyBS1qzxBI63Ngi9+qyQGNIJG+UUpweJmjA=
+X-Received: by 2002:a1c:3504:: with SMTP id c4mr5240699wma.177.1595529186479;
+ Thu, 23 Jul 2020 11:33:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200723140011.GR5523@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: by 2002:a1c:9d57:0:0:0:0:0 with HTTP; Thu, 23 Jul 2020 11:33:05
+ -0700 (PDT)
+From:   harinadurazi <harinadurazi3@gmail.com>
+Date:   Thu, 23 Jul 2020 19:33:05 +0100
+X-Google-Sender-Auth: irMm_9q7Ttze7QlXSmojHaPCINg
+Message-ID: <CACh9y8qkVg2OAL-GD-wCoovrR4H10roeF95-i+qeV3SwwuS5hw@mail.gmail.com>
+Subject: Hello ,how are you, i hope you are doing well, please can we talk?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/20 10:00 AM, Peter Zijlstra wrote:
-> On Thu, Jul 09, 2020 at 12:06:13PM -0400, Waiman Long wrote:
->> We don't really need to do a pv_spinlocks_init() if pv_kick() isn't
->> supported.
-> Waiman, if you cannot explain how not having kick is a sane thing, what
-> are you saying here?
->
-The current PPC paravirt spinlock code doesn't do any cpu kick. It does 
-an equivalence of pv_wait by yielding the cpu to the lock holder only. 
-The pv_spinlocks_init() is for setting up the hash table for doing 
-pv_kick. If we don't need to do pv_kick, we don't need the hash table.
-
-I am not saying that pv_kick is not needed for the PPC environment. I 
-was just trying to adapt the pvqspinlock code to such an environment 
-first. Further investigation on how to implement some kind of pv_kick 
-will be something that we may want to do as a follow on.
-
-BTW, do you have any comment on my v2 lock holder cpu info qspinlock 
-patch? I will have to update the patch to fix the reported 0-day test 
-problem, but I want to collect other feedback before sending out v3.
-
-Cheers,
-Longman
-
+Hello ,how are you, i hope you are doing well, please can we talk?
