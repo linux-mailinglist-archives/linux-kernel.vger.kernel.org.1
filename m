@@ -2,60 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798C922AD47
-	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419F322AD51
+	for <lists+linux-kernel@lfdr.de>; Thu, 23 Jul 2020 13:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728353AbgGWLLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 07:11:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8367 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727769AbgGWLLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 07:11:14 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A5ED7CC41F5894503DA3;
-        Thu, 23 Jul 2020 19:11:08 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 23 Jul 2020
- 19:10:58 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     <sam@mendozajonas.com>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] net/ncsi: use eth_zero_addr() to clear mac address
-Date:   Thu, 23 Jul 2020 19:13:43 +0800
-Message-ID: <1595502823-9672-1-git-send-email-linmiaohe@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728499AbgGWLON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 07:14:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:44004 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgGWLON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 07:14:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 413A1D6E;
+        Thu, 23 Jul 2020 04:14:12 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE4663F718;
+        Thu, 23 Jul 2020 04:14:10 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 12:14:02 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Wei Hu <weh@microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, robh@kernel.org, bhelgaas@google.com,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, decui@microsoft.com,
+        mikelley@microsoft.com
+Subject: Re: [PATCH v3] PCI: hv: Fix a timing issue which causes kdump to
+ fail occasionally
+Message-ID: <20200723111402.GA8120@e121166-lin.cambridge.arm.com>
+References: <20200718034752.4843-1-weh@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200718034752.4843-1-weh@microsoft.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+On Sat, Jul 18, 2020 at 11:47:52AM +0800, Wei Hu wrote:
+> Kdump could fail sometime on Hyper-V guest over Accelerated Network
+> interface. This is because the retry in hv_pci_enter_d0() relies on
+> an asynchronous host event arriving before the guest calls
+> hv_send_resources_allocated(). Fix the problem by moving retry
+> to hv_pci_probe(), removing this dependency and making the calling
+> sequence synchronous.
 
-Use eth_zero_addr() to clear mac address insetad of memset().
+You have to explain why this code move fixes the problem and you
+also have to add a comment to the code so that anyone who has to
+fix it in the future can understand why the code is where you
+are moving it to and why that's a solution.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- net/ncsi/ncsi-rsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Fixes: c81992e7f4aa ("PCI: hv: Retry PCI bus D0 entry on invalid device state")
+> Signed-off-by: Wei Hu <weh@microsoft.com>
 
-diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
-index a94bb59793f0..5b1f4ec66dd9 100644
---- a/net/ncsi/ncsi-rsp.c
-+++ b/net/ncsi/ncsi-rsp.c
-@@ -471,7 +471,7 @@ static int ncsi_rsp_handler_sma(struct ncsi_request *nr)
- 		memcpy(&ncf->addrs[index], cmd->mac, ETH_ALEN);
- 	} else {
- 		clear_bit(cmd->index - 1, bitmap);
--		memset(&ncf->addrs[index], 0, ETH_ALEN);
-+		eth_zero_addr(&ncf->addrs[index]);
- 	}
- 	spin_unlock_irqrestore(&nc->lock, flags);
- 
--- 
-2.19.1
+Please carry tags and send patches -in-reply-to the previous version
+to allow threading.
 
+Thanks,
+Lorenzo
+
+> ---
+>     v2: Adding Fixes tag according to Michael Kelley's review comment.
+>     v3: Fix couple typos and reword commit message to make it clearer.
+>     Thanks the comments from Bjorn Helgaas.
+> 
+>  drivers/pci/controller/pci-hyperv.c | 66 ++++++++++++++---------------
+>  1 file changed, 32 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index bf40ff09c99d..738ee30f3334 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -2759,10 +2759,8 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
+>  	struct pci_bus_d0_entry *d0_entry;
+>  	struct hv_pci_compl comp_pkt;
+>  	struct pci_packet *pkt;
+> -	bool retry = true;
+>  	int ret;
+>  
+> -enter_d0_retry:
+>  	/*
+>  	 * Tell the host that the bus is ready to use, and moved into the
+>  	 * powered-on state.  This includes telling the host which region
+> @@ -2789,38 +2787,6 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
+>  	if (ret)
+>  		goto exit;
+>  
+> -	/*
+> -	 * In certain case (Kdump) the pci device of interest was
+> -	 * not cleanly shut down and resource is still held on host
+> -	 * side, the host could return invalid device status.
+> -	 * We need to explicitly request host to release the resource
+> -	 * and try to enter D0 again.
+> -	 */
+> -	if (comp_pkt.completion_status < 0 && retry) {
+> -		retry = false;
+> -
+> -		dev_err(&hdev->device, "Retrying D0 Entry\n");
+> -
+> -		/*
+> -		 * Hv_pci_bus_exit() calls hv_send_resource_released()
+> -		 * to free up resources of its child devices.
+> -		 * In the kdump kernel we need to set the
+> -		 * wslot_res_allocated to 255 so it scans all child
+> -		 * devices to release resources allocated in the
+> -		 * normal kernel before panic happened.
+> -		 */
+> -		hbus->wslot_res_allocated = 255;
+> -
+> -		ret = hv_pci_bus_exit(hdev, true);
+> -
+> -		if (ret == 0) {
+> -			kfree(pkt);
+> -			goto enter_d0_retry;
+> -		}
+> -		dev_err(&hdev->device,
+> -			"Retrying D0 failed with ret %d\n", ret);
+> -	}
+> -
+>  	if (comp_pkt.completion_status < 0) {
+>  		dev_err(&hdev->device,
+>  			"PCI Pass-through VSP failed D0 Entry with status %x\n",
+> @@ -3058,6 +3024,7 @@ static int hv_pci_probe(struct hv_device *hdev,
+>  	struct hv_pcibus_device *hbus;
+>  	u16 dom_req, dom;
+>  	char *name;
+> +	bool enter_d0_retry = true;
+>  	int ret;
+>  
+>  	/*
+> @@ -3178,11 +3145,42 @@ static int hv_pci_probe(struct hv_device *hdev,
+>  	if (ret)
+>  		goto free_fwnode;
+>  
+> +retry:
+>  	ret = hv_pci_query_relations(hdev);
+>  	if (ret)
+>  		goto free_irq_domain;
+>  
+>  	ret = hv_pci_enter_d0(hdev);
+> +	/*
+> +	 * In certain case (Kdump) the pci device of interest was
+> +	 * not cleanly shut down and resource is still held on host
+> +	 * side, the host could return invalid device status.
+> +	 * We need to explicitly request host to release the resource
+> +	 * and try to enter D0 again.
+> +	 * The retry should start from hv_pci_query_relations() call.
+> +	 */
+> +	if (ret == -EPROTO && enter_d0_retry) {
+> +		enter_d0_retry = false;
+> +
+> +		dev_err(&hdev->device, "Retrying D0 Entry\n");
+> +
+> +		/*
+> +		 * Hv_pci_bus_exit() calls hv_send_resources_released()
+> +		 * to free up resources of its child devices.
+> +		 * In the kdump kernel we need to set the
+> +		 * wslot_res_allocated to 255 so it scans all child
+> +		 * devices to release resources allocated in the
+> +		 * normal kernel before panic happened.
+> +		 */
+> +		hbus->wslot_res_allocated = 255;
+> +		ret = hv_pci_bus_exit(hdev, true);
+> +
+> +		if (ret == 0)
+> +			goto retry;
+> +
+> +		dev_err(&hdev->device,
+> +			"Retrying D0 failed with ret %d\n", ret);
+> +	}
+>  	if (ret)
+>  		goto free_irq_domain;
+>  
+> -- 
+> 2.20.1
+> 
