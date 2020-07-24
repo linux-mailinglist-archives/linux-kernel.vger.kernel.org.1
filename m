@@ -2,177 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D695A22BB1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C2122BB21
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgGXArS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 20:47:18 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:39608 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728385AbgGXArQ (ORCPT
+        id S1728445AbgGXAtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 20:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728131AbgGXAtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 20:47:16 -0400
-Received: by mail-io1-f72.google.com with SMTP id m26so4051392ioc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:47:15 -0700 (PDT)
+        Thu, 23 Jul 2020 20:49:19 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FCC3C0619D3;
+        Thu, 23 Jul 2020 17:49:19 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id d18so8241837ion.0;
+        Thu, 23 Jul 2020 17:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=0YxoCeDqJs02B84WCrpwbrG/eJ2jA4Hj8Q3Ee+a5ncc=;
+        b=pNbdkZ2rPZYrSE2vEgNNzRo2cr7huzlqVZG0yaKdUSPAq15ltVvxA8ooETrrUihPtx
+         boT4hqDJe8Jk4e9Nr9vXIHNjR64yGPXihqHvphd8MqnKjhzmJLiV9WF3MN1BqR9qrz5/
+         TFVWmLnVrV4JW0KNSlV6qxEB7fdg6CefPCEQntZ8pQ+ldDG0XVnrERtsvL//g9DZa/Qw
+         aOIOCxyleo5GNhLwReMQu/G3Oe+uCZ+HcjojwkpycSJrWvsLsjhYivfxHOZg4DUvx9pG
+         LFdJc6vd2SmPYigIYrfgMSUDjUZm9wy3Mm5ppxBkJjHG9bQzkuZNkPNirkkyu9rsjFoU
+         F2OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=BNZWFIG+mhHqzyvESfY+ZRyDftcwSaoYvJcMAf54kFo=;
-        b=Akzn8wX4pjwrI8vE4goABi4Sn6zE08g0ymIowa6KaqOyrtvDRYZzLspaGcSRvUbQeM
-         Kd8E2jAth2nWtjHSWfMCj6v6tGVV80WJrJflW2vr3zki3oEN5spl6diN9Kejwt7hZsQI
-         Yc+IMB7F4AMuYn3/nhz4WTSbshqzQRyj1e0KnsbVLetl7cFdGlVluWLBws2cr9EssMt7
-         RfAvlYI3SY0KoKJ9NOkdYhfth4DjUQjHTTXiJmxnQduxStMVcEz4Sm7fLioZskhJOM5Z
-         erhMAzGgA6FSy1At9BhiXIduHXZWLY4MMsr4DKrWGpGAe0verKZciMOK9ux0FRpzmkbW
-         pJiQ==
-X-Gm-Message-State: AOAM530R46ik5MkLMcPwiJb8+mjdgiFm8ki58wfn9Ji9A/JrsZlYCJvD
-        bWLxF1SBRrY1Ew02SbXPE+J7hT8R+c4JWsQyR2v11PjRhRjD
-X-Google-Smtp-Source: ABdhPJzWyLJSNW/Mt0wdgB2csu8hpv3eWZ6rnnpIntP4GG4OBM/43v4fRJm25pHgfTasHfNEJp+KC9KJCMRdCbRiuhSfGj18e4nR
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=0YxoCeDqJs02B84WCrpwbrG/eJ2jA4Hj8Q3Ee+a5ncc=;
+        b=hUkmLUnuxQ3dSH5bL/ikHYBmaYmg18yJVut6pjgDLWUWAYTVG0Nl1JMkiQ9KRT0nXu
+         /srTsXkczfHFf7jwIA3hj4rWjMPifk4fTrcmQuTcRE09DAxpiIJ0uZkhyOQFSklz+DMX
+         XxK59HG0kT4M1/zXnq5JUYNY1VKvfTInIvKclWCY0OXc/wkt0RwE78KwMOuI0NfsuimM
+         xxzFi1rpJARxrk0wnoyIJknNG+/Gy8E448cG0uTaightQypqwwGt/kX/i//HZDLgB0lL
+         f5FcmnHNpp8ATtgJuf5o2L0zos/PeG0ODMs/GOUUw7YF1hnHyypFQfcb0h1i9p30wzw8
+         nVAg==
+X-Gm-Message-State: AOAM531BPQV40QxeLqXNEabhODjER276gW94C20ujEhLcEcgV403Ab+A
+        8QCJKWMScrm20bdESa6pBTTy6m09qe4dz0F+p2E=
+X-Google-Smtp-Source: ABdhPJwIH/npkVdClHXcPMHOQ1wTdqQ+u/xtBUCN9+Z1E87nUtVjvd0VIWRK5vJZGAhTT2OrJfZ4Kxwc+slPh6o9fbI=
+X-Received: by 2002:a05:6602:1555:: with SMTP id h21mr1029212iow.163.1595551758230;
+ Thu, 23 Jul 2020 17:49:18 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8d15:: with SMTP id m21mr7894473ioj.60.1595551634488;
- Thu, 23 Jul 2020 17:47:14 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 17:47:14 -0700
-In-Reply-To: <0000000000003df98d05ab06aac6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065017c05ab255072@google.com>
-Subject: Re: KASAN: use-after-free Read in linkwatch_fire_event
-From:   syzbot <syzbot+987da0fff3a594532ce1@syzkaller.appspotmail.com>
-To:     andrew@lunn.ch, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20200723192801.351114-1-nickrterrell@gmail.com>
+In-Reply-To: <20200723192801.351114-1-nickrterrell@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 24 Jul 2020 02:49:06 +0200
+Message-ID: <CA+icZUX--O_vmNJq_n-uO75FLE+FPtx-hvNP9HPSN+h6X9en9g@mail.gmail.com>
+Subject: Re: [GIT PULL][PATCH v8 0/7] Add support for ZSTD-compressed kernel
+ and initramfs
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Terrell <terrelln@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Jul 23, 2020 at 9:30 PM Nick Terrell <nickrterrell@gmail.com> wrote:
+>
+> From: Nick Terrell <terrelln@fb.com>
+>
+> Please pull from
+>
+>   git@github.com:terrelln/linux.git tags/v8-zstd
+>
+> to get these changes. Alternatively the patchset is included.
+>
+> Hi all,
+>
+> This patch set adds support for a ZSTD-compressed kernel, ramdisk, and
+> initramfs in the kernel boot process. ZSTD-compressed ramdisk and initramfs
+> are supported on all architectures. The ZSTD-compressed kernel is only
+> hooked up to x86 in this patch set.
+>
+> Zstandard requires slightly more memory during the kernel decompression
+> on x86 (192 KB vs 64 KB), and the memory usage is independent of the
+> window size.
+>
+> Zstandard requires memory proprortional to the window size used during
+> compression for decompressing the ramdisk image, since streaming mode is
+> used. Newer versions of zstd (1.3.2+) list the window size of a file
+> with `zstd -lv <file>'. The absolute maximum amount of memory required
+> is just over 8 MB, but it can be controlled at compression time.
+>
+> This patch set has been boot tested with buildroot and QEMU based off
+> of linux-5.6-rc6.
+>
+> On i386 and x86_64 I have tested the following configurations:
+> * zstd compressed kernel and a separate zstd compressed initramfs
+> * zstd compressed kernel and a built-in zstd compressed initramfs
+> * gzip compressed kernel and a separate gzip compressed initramfs
+> * gzip compressed kernel and a built-in gzip compressed initramfs
+>
+> On arm and aarch64 I tested the same configurations, except that the kernel is
+> always gzip compressed.
+>
+> Facebook has been using v1 of these patches on x86_64 devices for more than 6
+> months. When we switched from a xz compressed initramfs to a zstd compressed
+> initramfs decompression time shrunk from 12 seconds to 3 seconds. When we
+> switched from a xz compressed kernel to a zstd compressed kernel we saved 2
+> seconds of boot time.
+>
+> Facebook has been using v2 of these patches on aarch64 devices for a few weeks.
+> When we switched from an lzma compressed initramfs to a zstd compressed initramfs
+> decompression time shrunk from 27 seconds to 8 seconds.
+>
+> The zstd compressed kernel is smaller than the gzip compressed kernel but larger
+> than the xz or lzma compressed kernels, and it decompresses faster than
+> everything except lz4. See the table below for the measurement of an x86_64
+> kernel ordered by compressed size:
+>
+> algo    size
+> xz       6,509,792
+> lzma     6,856,576
+> zstd     7,399,157
+> gzip     8,522,527
+> bzip     8,629,603
+> lzo      9,808,035
+> lz4     10,705,570
+> none    32,565,672
+>
+> Alex Xu ran benchmarks in https://lkml.org/lkml/2020/7/1/722.
+>
+> v1 -> v2:
+> - Rebase
+>   - usr/Makefile and init/Kconfig were changed so the patches were updated
+> - No functional changes except to rebase
+> - Split the patches up into smaller chunks
+>
+> v2 -> v3:
+> - Add *.zst to the .gitignore in patch 8
+> - Style nits in patch 3
+> - Rename the PREBOOT macro to ZSTD_PREBOOT and XXH_PREBOOT in patches
+>   1 through 3
+>
+> v3 -> v4:
+> - Increase the ZSTD_IOBUF_SIZE from 4KB to 128KB to improve performance.
+>   With this change I switch from malloc() to large_malloc() for the
+>   buffers.
+> - Increase the maximum allowed window size from 8 MB to 128 MB, which is
+>   the max that zstd in the kernel supports.
+>
+> v4 -> v5:
+> - Update commit message for patch 6 in response to comments
+> - Rebase onto next-20200408
+>
+> v5 -> v6:
+> - Rebase onto v5.8-rc4
+>
+> v6 -> v7:
+> - (1/7) Don't define or use 'ZSTD_PREBOOT' to hide exports
+> - (2/8) Drop 'lib: prepare xxhash for preboot environment'
+> - (2/7) Use '__DISABLE_EXPORTS' in unzstd to hide exports
+> - (3/7) Update zstd compression cmd to follow other compressors
+> - (3/7) Add zstd22 cmd
+> - (6/7) Use zstd -22 --ultra (zstd22) for x86 kernel compression
+>
+> v7 -> v8:
+> - (2/7) Don't define '__DISABLE_EXPORTS'
+> - (6/7) Define '__DISABLE_EXPORTS' in misc.c
+>
 
-HEAD commit:    4f5baedd Add linux-next specific files for 20200723
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e497b4900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=785eb1cc9c75f625
-dashboard link: https://syzkaller.appspot.com/bug?extid=987da0fff3a594532ce1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11043454900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16579f78900000
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+987da0fff3a594532ce1@syzkaller.appspotmail.com
+- Sedat -
 
-==================================================================
-BUG: KASAN: use-after-free in __list_add_valid+0x93/0xa0 lib/list_debug.c:26
-Read of size 8 at addr ffff888065294570 by task syz-executor076/31793
-CPU: 1 PID: 31793 Comm: syz-executor076 Not tainted 5.8.0-rc6-next-20200723-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- __list_add_valid+0x93/0xa0 lib/list_debug.c:26
- __list_add include/linux/list.h:67 [inline]
- list_add_tail include/linux/list.h:100 [inline]
- linkwatch_add_event net/core/link_watch.c:111 [inline]
- linkwatch_fire_event+0xea/0x1d0 net/core/link_watch.c:261
- netif_carrier_off net/sched/sch_generic.c:513 [inline]
- netif_carrier_off+0x96/0xb0 net/sched/sch_generic.c:507
- bond_newlink drivers/net/bonding/bond_netlink.c:460 [inline]
- bond_newlink+0x52/0xa0 drivers/net/bonding/bond_netlink.c:448
- __rtnl_newlink+0x1090/0x1750 net/core/rtnetlink.c:3339
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3398
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5461
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2363
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2417
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x44a979
-Code: Bad RIP value.
-RSP: 002b:00007f1740ffbd98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006e69e8 RCX: 000000000044a979
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000004
-RBP: 00000000006e69e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e69ec
-R13: 0000000000000000 R14: 0000000000000000 R15: 068500100000003c
-Allocated by task 31587:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track mm/kasan/common.c:56 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
- kmalloc_node include/linux/slab.h:577 [inline]
- kvmalloc_node+0xb4/0xf0 mm/util.c:574
- kvmalloc include/linux/mm.h:760 [inline]
- kvzalloc include/linux/mm.h:768 [inline]
- alloc_netdev_mqs+0x97/0xdc0 net/core/dev.c:9961
- rtnl_create_link+0x219/0xad0 net/core/rtnetlink.c:3067
- __rtnl_newlink+0xfa0/0x1750 net/core/rtnetlink.c:3329
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3398
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5461
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2363
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2417
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-Freed by task 31587:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
- kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
- __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
- __cache_free mm/slab.c:3418 [inline]
- kfree+0x103/0x2c0 mm/slab.c:3756
- kvfree+0x42/0x50 mm/util.c:603
- device_release+0x71/0x200 drivers/base/core.c:1791
- kobject_cleanup lib/kobject.c:704 [inline]
- kobject_release lib/kobject.c:735 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x171/0x270 lib/kobject.c:752
- put_device+0x1b/0x30 drivers/base/core.c:3020
- free_netdev+0x35d/0x480 net/core/dev.c:10077
- __rtnl_newlink+0x14d8/0x1750 net/core/rtnetlink.c:3354
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3398
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5461
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2470
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2363
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2417
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2450
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:384
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-The buggy address belongs to the object at ffff888065294000
- which belongs to the cache kmalloc-8k of size 8192
-The buggy address is located 1392 bytes inside of
- 8192-byte region [ffff888065294000, ffff888065296000)
-The buggy address belongs to the page:
-page:00000000d305b100 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x65294
-head:00000000d305b100 order:2 compound_mapcount:0 compound_pincount:0
-flags: 0xfffe0000010200(slab|head)
-raw: 00fffe0000010200 ffffea000194b708 ffffea00019eb908 ffff8880aa000a00
-raw: 0000000000000000 ffff888065294000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-Memory state around the buggy address:
- ffff888065294400: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888065294480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888065294500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                             ^
- ffff888065294580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888065294600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
+> Best,
+> Nick Terrell
+>
+>
+> Adam Borowski (1):
+>   .gitignore: add ZSTD-compressed files
+>
+> Nick Terrell (6):
+>   lib: prepare zstd for preboot environment
+>   lib: add zstd support to decompress
+>   init: add support for zstd compressed kernel
+>   usr: add support for zstd compressed initramfs
+>   x86: bump ZO_z_extra_bytes margin for zstd
+>   x86: Add support for ZSTD compressed kernel
+>
+>  .gitignore                        |   1 +
+>  Documentation/x86/boot.rst        |   6 +-
+>  Makefile                          |   3 +-
+>  arch/x86/Kconfig                  |   1 +
+>  arch/x86/boot/compressed/Makefile |   5 +-
+>  arch/x86/boot/compressed/misc.c   |   9 +
+>  arch/x86/boot/header.S            |   8 +-
+>  arch/x86/include/asm/boot.h       |   6 +-
+>  include/linux/decompress/unzstd.h |  11 +
+>  init/Kconfig                      |  15 +-
+>  lib/Kconfig                       |   4 +
+>  lib/Makefile                      |   1 +
+>  lib/decompress.c                  |   5 +
+>  lib/decompress_unzstd.c           | 344 ++++++++++++++++++++++++++++++
+>  lib/zstd/fse_decompress.c         |   9 +-
+>  lib/zstd/zstd_internal.h          |  14 +-
+>  scripts/Makefile.lib              |  22 ++
+>  usr/Kconfig                       |  20 ++
+>  usr/Makefile                      |   1 +
+>  19 files changed, 466 insertions(+), 19 deletions(-)
+>  create mode 100644 include/linux/decompress/unzstd.h
+>  create mode 100644 lib/decompress_unzstd.c
+>
+> --
+> 2.27.0
+>
