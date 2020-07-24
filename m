@@ -2,130 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0B722C87D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC1522C84D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgGXOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:52:46 -0400
-Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net ([209.97.182.222]:54570
-        "HELO zg8tmja5ljk3lje4mi4ymjia.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1726170AbgGXOwp (ORCPT
+        id S1726739AbgGXOpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:45:47 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42951 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgGXOpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:52:45 -0400
-X-Greylist: delayed 392 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Jul 2020 10:52:43 EDT
-Received: from [166.111.139.116] (unknown [166.111.139.116])
-        by app-5 (Coremail) with SMTP id EwQGZQAn2UkG9BpfubdyAw--.49696S2;
-        Fri, 24 Jul 2020 22:45:26 +0800 (CST)
-From:   Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
-Subject: Rule about streaming DMA mapping
-To:     3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        doshir@vmware.com, pv-drivers@vmware.com, davem@davemloft.net,
-        kuba@kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <73f8f864-058a-c899-b07d-5dc1e4f3e9e6@tsinghua.edu.cn>
-Date:   Fri, 24 Jul 2020 22:45:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 24 Jul 2020 10:45:47 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h8so5318149lfp.9;
+        Fri, 24 Jul 2020 07:45:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dzkx8gigl6y/De7kKuc0wZrJ0/8/lN60gfKkzmdYUI0=;
+        b=dyhHWZM6Xgw4Ajl8H1CUqnUIkRVUc4RPb+xaHqfH5zcXUFE5RYdNu5Xw8cAoNAiTnu
+         x5LEs8VOgk6h8ksaxEnWNeO5mkrw2qT0qZu3di1scTi5m5pyQnmpfzczPlr/eoocOyPF
+         GPpoOYpPC/+Dcd+tEoZEohn4NqQyGp2afH+m1E30BNtBoXaqrK8N5fU3MggBGvsoiTX6
+         Uhu43Fe+lydXOlaLE2lTxUrCEQzSabnniV12VfSbbl/qIAODmu9qevVj9K3JPfShstgd
+         HbftaXgS2BynbbP0mSr5Lr4JcBT0awjUIaAw4ev8yXh+B11ZWoMEwVMClS9m4be9SjQW
+         AtXg==
+X-Gm-Message-State: AOAM53232PaXdJHGzBg1D6lybcSHOFg0gaReYA3Ui7c7Bv68FgkAFXPP
+        0x7B2N+z11YouhK6AD1Btfo=
+X-Google-Smtp-Source: ABdhPJxuDUKtDBKeqpYEsnpicDu6cv82dbR4O6uIC8LLHmnCf4mma1fQefnoPsAv972lWmW/J6c3kg==
+X-Received: by 2002:a19:ae0a:: with SMTP id f10mr5218572lfc.100.1595601944019;
+        Fri, 24 Jul 2020 07:45:44 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id m5sm287761ljb.98.2020.07.24.07.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 07:45:42 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jyyx6-00031S-Np; Fri, 24 Jul 2020 16:45:37 +0200
+Date:   Fri, 24 Jul 2020 16:45:36 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     johan@kernel.org, gregkh@linuxfoundation.org, corbet@lwn.net,
+        linux-usb@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for v5.9] USB: serial: Replace HTTP links with HTTPS ones
+Message-ID: <20200724144536.GP3634@localhost>
+References: <20200719161920.60087-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID: EwQGZQAn2UkG9BpfubdyAw--.49696S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF4UuFW5tFyDZr1fKrW3Jrb_yoW5WrWkpF
-        4kXF15trWYqr1ktryUGr1rXryUJw1kt34UGr1UJ3Z5u3y5Jr1jqry0qr10gr1UCw4kZr4U
-        Jr1UXw4kZr1UtwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU5gL07UUUUU==
-X-CM-SenderInfo: xedlyxhdmxq3pvlqwxlxdovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200719161920.60087-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Jul 19, 2020 at 06:19:20PM +0200, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+> ---
+>  Continuing my work started at 93431e0607e5.
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely
+>  or at least not (just) HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+>  Sorry again to all maintainers who complained about subject lines.
+>  Now I realized that you want an actually perfect prefixes,
+>  not just subsystem ones.
+>  I tried my best...
+>  And yes, *I could* (at least half-)automate it.
+>  Impossible is nothing! :)
+> 
+> 
+>  Documentation/usb/usb-serial.rst  |  2 +-
+>  drivers/usb/serial/cyberjack.c    |  2 +-
+>  drivers/usb/serial/ftdi_sio.h     |  4 ++--
+>  drivers/usb/serial/ftdi_sio_ids.h | 34 +++++++++++++++----------------
+>  drivers/usb/serial/kobil_sct.c    |  2 +-
+>  drivers/usb/serial/metro-usb.c    |  2 +-
+>  6 files changed, 23 insertions(+), 23 deletions(-)
+> 
+> diff --git a/Documentation/usb/usb-serial.rst b/Documentation/usb/usb-serial.rst
+> index 8fa7dbd3da9a..0a2071953691 100644
+> --- a/Documentation/usb/usb-serial.rst
+> +++ b/Documentation/usb/usb-serial.rst
+> @@ -202,7 +202,7 @@ Keyspan USA-series Serial Adapters
+>  
+>    More information is available at:
+>  
+> -        http://www.carnationsoftware.com/carnation/Keyspan.html
+> +        https://www.carnationsoftware.com/carnation/Keyspan.html
+>  
+>    For any questions or problems with this driver, please contact Hugh
+>    Blemings at hugh@misc.nu
 
- From the book "Linux device drivers" (3rd edition), I find an 
-interesting rule for streaming DMA mapping:
+Looks like your script is buggy; there are many more URLs than this one
+is this document.
 
-Once a buffer has been mapped, it belongs to the device, not the 
-processor. Until
-the buffer has been unmapped, the driver should not touch its contents 
-in any
-way. Only after dma_unmap_single has been called is it safe for the 
-driver to
-access the contents of the buffer (with one exception that we see shortly).
-Among other things, this rule implies that a buffer being written to a 
-device cannot
-be mapped until it contains all the data to write.
+> diff --git a/drivers/usb/serial/ftdi_sio_ids.h b/drivers/usb/serial/ftdi_sio_ids.h
+> index e8373528264c..a5bf2b974813 100644
+> --- a/drivers/usb/serial/ftdi_sio_ids.h
+> +++ b/drivers/usb/serial/ftdi_sio_ids.h
+> @@ -60,14 +60,14 @@
+>  /*
+>   * Texas Instruments XDS100v2 JTAG / BeagleBone A3
+>   * http://processors.wiki.ti.com/index.php/XDS100
+> - * http://beagleboard.org/bone
+> + * https://beagleboard.org/bone
+>   */
 
-I find some violations about this rule, and there are two examples in 
-Linux-5.6:
+And here's another indication of that.
 
-=== EXAMPLE 1 ===
-In vmxnet3_probe_device() in drivers/net/vmxnet3/vmxnet3_drv.c:
-     adapter->adapter_pa = dma_map_single(&adapter->pdev->dev, adapter,
-                          sizeof(struct vmxnet3_adapter),
-                          PCI_DMA_TODEVICE);
-     if (dma_mapping_error(&adapter->pdev->dev, adapter->adapter_pa)) {
-         dev_err(&pdev->dev, "Failed to map dma\n");
-         err = -EFAULT;
-         goto err_set_mask;
-     }
-     adapter->shared = dma_alloc_coherent(
-                 &adapter->pdev->dev,
-                 sizeof(struct Vmxnet3_DriverShared),
-                 &adapter->shared_pa, GFP_KERNEL);
-     if (!adapter->shared) {
-         dev_err(&pdev->dev, "Failed to allocate memory\n");
-         err = -ENOMEM;
-         goto err_alloc_shared;
-     }
-
-     adapter->num_rx_queues = num_rx_queues;
-     adapter->num_tx_queues = num_tx_queues;
-     adapter->rx_buf_per_pkt = 1;
-
-The variable "adapter" is mapped to streaming DMA, but its fields are 
-used before this variable is unmapped.
-
-=== EXAMPLE 2 ===
-In queue_skb() in drivers/atm/idt77252.c:
-     IDT77252_PRV_PADDR(skb) = dma_map_single(&card->pcidev->dev, skb->data,
-                          skb->len, DMA_TO_DEVICE);
-
-     error = -EINVAL;
-
-     if (oam) {
-         if (skb->len != 52)
-             goto errout;
-
-         tbd->word_1 = SAR_TBD_OAM | ATM_CELL_PAYLOAD | SAR_TBD_EPDU;
-         tbd->word_2 = IDT77252_PRV_PADDR(skb) + 4;
-         tbd->word_3 = 0x00000000;
-         tbd->word_4 = (skb->data[0] << 24) | (skb->data[1] << 16) |
-                   (skb->data[2] <<  8) | (skb->data[3] <<  0);
-
-The array "skb->data" is mapped to streaming DMA, but its elements are 
-used before this array is unmapped.
-
-Because I am not familiar with streaming DMA mapping, I wonder whether 
-these violations are real?
-If they are real, what problems can they cause?
-
-Thanks a lot :)
-
-
-Best wishes,
-Jia-Ju Bai
-
+Johan
