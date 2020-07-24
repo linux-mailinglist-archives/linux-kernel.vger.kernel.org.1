@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D024222C469
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCD222C46C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgGXLfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:35:34 -0400
-Received: from mail-ed1-f50.google.com ([209.85.208.50]:41232 "EHLO
-        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgGXLfe (ORCPT
+        id S1726985AbgGXLgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:36:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27262 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726820AbgGXLgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:35:34 -0400
-Received: by mail-ed1-f50.google.com with SMTP id c2so951990edx.8;
-        Fri, 24 Jul 2020 04:35:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vQEzWbMpqfBFFfZHk6MrbUvuK+Pg0nDtdn7/73b59ek=;
-        b=ULMgnHJCc9ndYrczgcWu7HjaK1D2z6n0a0uNhxY0e/ujxrbw2dVLCiKyQPAHrnZLKz
-         sFr4Fg7E3KcTdVYDmCHMmG+4x5cCeFQG9bYc89mLAFfSjtTzPqWJpTjXUhK7ZvMmKV11
-         VHIZIZ3Tv121JUq2xLU1cY5oFul4LbCQajzelPnSgI/KOftQIfaE91SZssdqE4jonu7q
-         3ME0GCJlzrDpl96FCaKp+vn0WqNTt4pNJVPvFE+d0XyiDqvrP17V+YAh4kvDC8rJUMMY
-         7/uyaYxA0griyV8PGw5w+Sxw23SlD77+oiCwK26fDeE19ZPR2C0wYjITIDfUUTxsgkiL
-         pp4w==
-X-Gm-Message-State: AOAM530r6AdGulB9YfhCxeVAqES1MPvxFVxQY4pk9UofipsECXTlO7Yy
-        j5ktalLhouJXTVIl26CqI5c=
-X-Google-Smtp-Source: ABdhPJxZeRaF8wBVp/96IA7pcovFXsVEdMc8azrBIuC+gEhhLihno21Zmwh3HzkLSdPLz8P7ONNtPA==
-X-Received: by 2002:aa7:d90f:: with SMTP id a15mr8235565edr.86.1595590532568;
-        Fri, 24 Jul 2020 04:35:32 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id by20sm499447ejc.119.2020.07.24.04.35.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 04:35:31 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 13:35:30 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     jingrui <jingrui@huawei.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>, Lizefan <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        caihaomin <caihaomin@huawei.com>,
-        "Weiwei (N)" <wick.wei@huawei.com>
-Subject: Re: =?utf-8?B?562U5aSNOiBQUk9CTEVNOiBjZ3Jv?= =?utf-8?Q?up?= cost too
- much memory when transfer small files to tmpfs
-Message-ID: <20200724113530.GH4061@dhcp22.suse.cz>
-References: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
- <20200724075508.GF4061@dhcp22.suse.cz>
- <2E04DD7753BE0E4ABABF0B664610AD6F2620D4F6@dggeml528-mbx.china.huawei.com>
+        Fri, 24 Jul 2020 07:36:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595590571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I68fbRd6bZ95LK9+jolwOQBVPAxfW2jV01rcWnCSNp0=;
+        b=NJbnzZKzhV/h+pPjDJVM2yV2WuCD9IN1DwsZXIfKemcWPpP0DfJe12hGE8+vB2ruJboxDF
+        OhdqEcwByJ+vMeM7vm3vOJUCs3TBlVH6pxSeQ7xCws4403Vu/jdn4xeiEpagtnm8dyLY9a
+        pqA53eU4PSfx3aO6xAe7hTM9Kqna64w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-PexwN0WVOwWbFOVy0tM0dg-1; Fri, 24 Jul 2020 07:36:10 -0400
+X-MC-Unique: PexwN0WVOwWbFOVy0tM0dg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 507C6107ACCA;
+        Fri, 24 Jul 2020 11:36:07 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EDB2919723;
+        Fri, 24 Jul 2020 11:36:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net>
+References: <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net> <1293241.1595501326@warthog.procyon.org.uk> <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com> <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk> <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk> <2003787.1595585999@warthog.procyon.org.uk>
+To:     Ian Kent <raven@themaw.net>
+Cc:     dhowells@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>, nicolas.dichtel@6wind.com,
+        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
+        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and attribute change notifications [ver #5]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2E04DD7753BE0E4ABABF0B664610AD6F2620D4F6@dggeml528-mbx.china.huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2023285.1595590563.1@warthog.procyon.org.uk>
+Date:   Fri, 24 Jul 2020 12:36:03 +0100
+Message-ID: <2023286.1595590563@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 24-07-20 09:35:26, jingrui wrote:
-> 
-> On Friday, July 24, 2020 3:55 PM, Michal Hocko wrote:
-> 
-> > What is the reason to run under !root cgroup in those sessions if you do not care about accounting anyway? 
-> 
-> The systemd not support run those sessions under root cgroup, disable
-> pam-systemd will not create session/cgroup, but this is not safe and make
-> systemd-logind not work.
+Ian Kent <raven@themaw.net> wrote:
 
-Could you be more specific please?
--- 
-Michal Hocko
-SUSE Labs
+> I was wondering about id re-use.
+> 
+> Assuming that ids that are returned to the idr db are re-used
+> what would the chance that a recently used id would end up
+> being used?
+> 
+> Would that chance increase as ids are consumed and freed over
+> time?
+
+I've added something to deal with that in the fsinfo branch.  I've given each
+mount object and superblock a supplementary 64-bit unique ID that's not likely
+to repeat before we're no longer around to have to worry about it.
+
+fsinfo() then allows you to retrieve them by path or by mount ID.
+
+So, yes, mnt_id and s_dev are not unique and may be reused very quickly, but
+I'm also providing uniquifiers that you can check.
+
+David
+
