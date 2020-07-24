@@ -2,101 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A291D22CB53
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128AA22CB68
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgGXQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 12:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
+        id S1726845AbgGXQrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 12:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726455AbgGXQqO (ORCPT
+        with ESMTP id S1726572AbgGXQrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:46:14 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4A9C0619D3;
-        Fri, 24 Jul 2020 09:46:14 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id n5so5550959pgf.7;
-        Fri, 24 Jul 2020 09:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tx5YX2IOPcV4RJbsivodmqYOOqUKOFaQmDzrxOXFXCY=;
-        b=EodzYYagBDt5iwRKdDssPxz/3J9e6QclydtGwFuZ1WCfyv+7cJifUgZetYyZ+K8YQP
-         Q7M4Ka3evjRn+yTb3d562wChMBrQnLb/RQG7KVWDWx0L8JcJdwTCmXTBQf+KS5xFAl14
-         5ES60RkY8tdjBRMIX2jhenXTXMalpUUgEKeBEj/6jKXsNk3Sa5OSlVcG2SGivZWr4smR
-         ahoFB526nNw1XBGexjwdgvFOjCR8VIK8pclJm8MqwNiWq9JZm24/g+hLGYFQxr/aM37s
-         cgbZQCRHoN0AjSbVqGaOB7Khvd0kGuDOQ03RQmOSnRDQ2Vr74auIdqqGcc2DApdJv07O
-         ZvzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tx5YX2IOPcV4RJbsivodmqYOOqUKOFaQmDzrxOXFXCY=;
-        b=WbBfiry/CNfvuuFTHkYXnBAoMo1dMrhQtqFG4/hv2knAsknoeTAdE8CGqUeyvu+1fq
-         T/DlksRBTzD0JiWz8rMHb/VIt46Jc+zss/ahbuLQlYFqrFF8/EHfcxeVTbErZ7lC/Nma
-         IEW9poQJM0ro+CN2EUspLM9tm/4yLMGXxpqifvj1dgBQeTuoRX/Rit9lykZ4ZycyLM/Q
-         KNCbZ7hLAdn2Wwg7MaUB5L5m9S6P8agqX/txuxAdsrSc8dnGGd067OlhpbJa0WmWyjz8
-         j3bv3FmfFKlYN4NA97SrFuNgRgNH7WPvgne002c7c1YXLS33oMYckhBwJMdpOeBWshC+
-         rqSg==
-X-Gm-Message-State: AOAM530v7MBQJnE6ZeEImQv8PICw2uCWnt1lVqMA9tEy4FYDh/4IoESE
-        SYOFDfV8olD40PrudPuWR64=
-X-Google-Smtp-Source: ABdhPJzSkzdvzW43LGvtO5zkWGvKc86Thv3nh35W1vcfnETJG+JZz/6QXcDWyJnsJ/5/27wrIo0Evw==
-X-Received: by 2002:a63:1a0c:: with SMTP id a12mr9169217pga.24.1595609173638;
-        Fri, 24 Jul 2020 09:46:13 -0700 (PDT)
-Received: from localhost.localdomain ([131.107.159.194])
-        by smtp.gmail.com with ESMTPSA id y27sm7161734pgc.56.2020.07.24.09.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 09:46:13 -0700 (PDT)
-From:   Andres Beltran <lkmlabelt@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikelley@microsoft.com, parri.andrea@gmail.com,
-        skarade@microsoft.com, Andres Beltran <lkmlabelt@gmail.com>
-Subject: [PATCH] Drivers: hv: vmbus: Fix variable assignments in hv_ringbuffer_read()
-Date:   Fri, 24 Jul 2020 12:46:06 -0400
-Message-Id: <20200724164606.43699-1-lkmlabelt@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 24 Jul 2020 12:47:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6EAC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 09:47:36 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jz0r8-00060c-6a; Fri, 24 Jul 2020 18:47:34 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jz0r7-0004Uo-1X; Fri, 24 Jul 2020 18:47:33 +0200
+Date:   Fri, 24 Jul 2020 18:47:32 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Subject: Re: [PATCH v4] pwm: bcm-iproc: handle clk_get_rate() return
+Message-ID: <20200724164732.dlzykskoyicvudxm@pengutronix.de>
+References: <20200718044606.18739-1-scott.branden@broadcom.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zpkmtaie53wffwdm"
+Content-Disposition: inline
+In-Reply-To: <20200718044606.18739-1-scott.branden@broadcom.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Assignments to buffer_actual_len and requestid happen before packetlen
-is checked to be within buflen. If this condition is true,
-hv_ringbuffer_read() returns with these variables already set to some
-value even though no data is actually read. This might create
-inconsistencies in any routine calling hv_ringbuffer_read(). Assign values
-to such pointers after the packetlen check.
 
-Signed-off-by: Andres Beltran <lkmlabelt@gmail.com>
----
- drivers/hv/ring_buffer.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+--zpkmtaie53wffwdm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
-index 356e22159e83..e277ce7372a4 100644
---- a/drivers/hv/ring_buffer.c
-+++ b/drivers/hv/ring_buffer.c
-@@ -350,12 +350,13 @@ int hv_ringbuffer_read(struct vmbus_channel *channel,
- 
- 	offset = raw ? 0 : (desc->offset8 << 3);
- 	packetlen = (desc->len8 << 3) - offset;
--	*buffer_actual_len = packetlen;
--	*requestid = desc->trans_id;
- 
- 	if (unlikely(packetlen > buflen))
- 		return -ENOBUFS;
- 
-+	*buffer_actual_len = packetlen;
-+	*requestid = desc->trans_id;
-+
- 	/* since ring is double mapped, only one copy is necessary */
- 	memcpy(buffer, (const char *)desc + offset, packetlen);
- 
--- 
-2.25.1
+On Fri, Jul 17, 2020 at 09:46:06PM -0700, Scott Branden wrote:
+> From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+>=20
+> Handle clk_get_rate() returning 0 to avoid possible division by zero.
+>=20
+> Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
+> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> Reviewed-by: Ray Jui <ray.jui@broadcom.com>
 
+LGTM
+
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--zpkmtaie53wffwdm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8bEKIACgkQwfwUeK3K
+7AmqhAf/VecpBhLCwuweFqfOdiYiJozKCjXZTiczR/q/hBwUPmyGhrk5tkKgSc5C
+AkWRKXk2ZPhP+utJJesUg5gqs9CpNpEGrd1SeUkynnq8S1+1uVeqgBnZsFrU6uZP
+xir/EBUvjPtDBiB5n+B34YEEN2ookofE7Sd0dh8zJOMtXEpSXYVJZqJ9woR4tdMP
+TYyRIo9iN3EX4SA30yoSirxxcJzosEOzCbNthYUS5cum4warJ9VzqKg6BeV2HVBD
+EesjyjrxvEZEVh48XYqXimSEWuQTRDN7iHBLI5WlkSJ6Kz/T8GXZZxBSFSFZIrfR
+x8S6hu/VQUloNLsvvYwPKikoNgb7Vg==
+=b6Vh
+-----END PGP SIGNATURE-----
+
+--zpkmtaie53wffwdm--
