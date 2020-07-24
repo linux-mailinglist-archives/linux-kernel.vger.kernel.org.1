@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D4122C5FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:14:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D38D22C603
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgGXNOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        id S1727029AbgGXNOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgGXNOL (ORCPT
+        with ESMTP id S1726753AbgGXNOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:14:11 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D01AC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:14:11 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 207so5088034pfu.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:14:11 -0700 (PDT)
+        Fri, 24 Jul 2020 09:14:36 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA1FC0619D3;
+        Fri, 24 Jul 2020 06:14:36 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id t11so5062726pfq.11;
+        Fri, 24 Jul 2020 06:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=43P66Fc2aAnp4qTC6waFnOvWVRLlCg4Ewg4/5+qAaPc=;
-        b=iesrQsY5ydwDmsTY2kTV8vuXCi2id+5XuBiuQzA7aNjAoiWDHlSg40vlCUO7dSUxTw
-         0lPCJMsfPp1SULd/Byqd1MsVimdrS56zDGNAJCh22QjJdtNvObQf+DTa96cG0tnjy0K/
-         luMX5rrKZ6yyN5c+9wfBgR3eE5QZBONaYqiqUPpGRRP/G+AgEj0APfIqObCOZ1ZKRAY7
-         qzzX9QO+62y7UpIvT3WD3/E0B5/xLQwKZYvzV1WJaBpPpnDUxIgF5f3KJFMbIinyueLq
-         jrycY2qU0iWYx67L5+t9AtCsWuCOio/L1iRCcMGJLAIhAmiS/UxJS6NkBRAq06+rHseA
-         koeg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pNbiY4rCOWfn291u6DvF/2Ahe4KMxxHPAD/LG/AtX8A=;
+        b=pXLqcyKcwadFpxMawcde5uKWsmYRkcG8MkmB7OazkUR1B9BxLPOTtomS0atxp0wsl0
+         3K/nBNDtdLM3XMKp/+Q2KWPhTzNaLsUfCbkpvUQYl6EOzkHNK4vD7ZfKDhoLzWCd2/se
+         fgoI8WC64Tprw9SX7RVYFGJVh3Fr+l1v+e5gbAofaNSm7BpQNZBwaJXh4KnnE/c7ATBL
+         JP1X36gJgrQMWq1w5fNtffUVAvZelPJ7TC9Q/xuCVhzxxomWZcH5/i0edBgmsWZ5thXx
+         Ig3Akrdt8zubCyDuzbipimtLx+lMYUOnS0mpNIrbb3vf4jg7KTVvtMzq2Quh777Evv+Z
+         RCAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=43P66Fc2aAnp4qTC6waFnOvWVRLlCg4Ewg4/5+qAaPc=;
-        b=P24d8+KquIOefBvuGnxVZ1LOnIqnKap4r1Ig4ozgAGjPeGL8DrBs3wvyHSqZClHi9f
-         ZY6tLOTN3y+jICIIyzfxEi/MGT/fVMsi6LvNkOa7h5FSabLcQ9tbefGKGFuxuQNl2OLR
-         m9JpWnysJXSqQVpZkaO8ZRmDe5h5iilWDlNA1W4S/1PZQ7+7Rnhl2Q9xOCSzN57Hywyu
-         nhQSfbHRen4jU0xxZ55UbCWFiIzaHgVIwmjH8DrZ8We7mb6yETNh3OlG/prUNyIW8SWm
-         WMGNkHZk1pgbJX25e2hy7H4fy2a6s1yXSJbQ0RxlLM93c9ChzgnuHpXzRvOc3UPXlyTe
-         biPA==
-X-Gm-Message-State: AOAM533H0HouqLBo7bKmOpxQTyUlA7UGn7KTSFYuS+dPtka/LQlxjwWX
-        ggicn4CovJUd/cUics8htDY=
-X-Google-Smtp-Source: ABdhPJxCX+WwMMOkaTap07DisAkCFoIimynX/6s/HS7vcD7LJ9fTsEUx54AZMGw7nCb9YUGc+VyEYA==
-X-Received: by 2002:a65:43c1:: with SMTP id n1mr8271003pgp.67.1595596450534;
-        Fri, 24 Jul 2020 06:14:10 -0700 (PDT)
-Received: from localhost ([1.22.41.181])
-        by smtp.gmail.com with ESMTPSA id x9sm6192051pgr.57.2020.07.24.06.14.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pNbiY4rCOWfn291u6DvF/2Ahe4KMxxHPAD/LG/AtX8A=;
+        b=fOhw1y0pJZVgXHfJ82/XVH4Qx+EbPI0sqKmKcQPkY56N98j/dBwBOMBhJIoqKSHFr6
+         h/DFi6v7n+uk1D5iUk45GNveIhyREa7COJsAXG9vVNyU6XpAQ8HAvTX5mzX2/BBp3crW
+         kNb5TF3d0+RFK8Etug1IgSt5AQj9VsbGWQ2/lw02xO0vs0dQyEwoLn+5wJwy6psNegrl
+         y7MrWyLr9gDGkbH2XzJGHNBm3WJZpWhMjGLE2uwkDehLGuu1nHXruKF1J+z2c6mrLei5
+         r0KopvgUJSuqAeTdGn7YkX2DAyF3g/iVhm1nGQMAKbrGHHgv8ppwRNiNZaRRExIxhxSH
+         mm/w==
+X-Gm-Message-State: AOAM530iJk9lXCOY+R+kyb07YU0Ezu7hsveHDc/gPZoqM06XutRfVliM
+        VcWJFVWtL8u2AHkpNsZwYh8=
+X-Google-Smtp-Source: ABdhPJxTM0xNsmofbW6cID6lTwKMAYAg9GWepJp2u9OgGyKYII7bL4WnhIOmRKega9Bzh5DogPa2Zg==
+X-Received: by 2002:a05:6a00:1586:: with SMTP id u6mr8714565pfk.147.1595596476262;
+        Fri, 24 Jul 2020 06:14:36 -0700 (PDT)
+Received: from bobo.ibm.com (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id az16sm5871998pjb.7.2020.07.24.06.14.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 06:14:09 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 18:44:03 +0530
-From:   Mrinal Pandey <mrinalmni@gmail.com>
-To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
-        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        mrinalmni@gmail.com
-Subject: [PATCH 3/6] drivers: android: Remove braces for a single statement
- if-else block
-Message-ID: <20200724131403.dahfhdwa3wirzkxj@mrinalpandey>
+        Fri, 24 Jul 2020 06:14:35 -0700 (PDT)
+From:   Nicholas Piggin <npiggin@gmail.com>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v4 0/6] powerpc: queued spinlocks and rwlocks
+Date:   Fri, 24 Jul 2020 23:14:17 +1000
+Message-Id: <20200724131423.1362108-1-npiggin@gmail.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3bvf6kql47vqrvnj"
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Updated with everybody's feedback (thanks all), and more performance
+results.
 
---3bvf6kql47vqrvnj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What I've found is I might have been measuring the worst load point for
+the paravirt case, and by looking at a range of loads it's clear that
+queued spinlocks are overall better even on PV, doubly so when you look
+at the generally much improved worst case latencies.
 
-Remove braces for both if and else block as suggested by checkpatch.
+I have defaulted it to N even though I'm less concerned about the PV
+numbers now, just because I think it needs more stress testing. But
+it's very nicely selectable so should be low risk to include.
 
-Signed-off-by: Mrinal Pandey <mrinalmni@gmail.com>
----
- drivers/android/binder.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+All in all this is a very cool technology and great results especially
+on the big systems but even on smaller ones there are nice gains. Thanks
+Waiman and everyone who developed it.
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 5fdf982ec83b..3cf13ff16934 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -2759,11 +2759,10 @@ static bool binder_proc_transaction(struct binder_t=
-ransaction *t,
- 	binder_node_lock(node);
- 	if (oneway) {
- 		BUG_ON(thread);
--		if (node->has_async_transaction) {
-+		if (node->has_async_transaction)
- 			pending_async =3D true;
--		} else {
-+		else
- 			node->has_async_transaction =3D true;
--		}
- 	}
-=20
- 	binder_inner_proc_lock(proc);
---=20
-2.25.1
+Thanks,
+Nick
 
+Nicholas Piggin (6):
+  powerpc/pseries: move some PAPR paravirt functions to their own file
+  powerpc: move spinlock implementation to simple_spinlock
+  powerpc/64s: implement queued spinlocks and rwlocks
+  powerpc/pseries: implement paravirt qspinlocks for SPLPAR
+  powerpc/qspinlock: optimised atomic_try_cmpxchg_lock that adds the
+    lock hint
+  powerpc: implement smp_cond_load_relaxed
 
---3bvf6kql47vqrvnj
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/powerpc/Kconfig                          |  15 +
+ arch/powerpc/include/asm/Kbuild               |   1 +
+ arch/powerpc/include/asm/atomic.h             |  28 ++
+ arch/powerpc/include/asm/barrier.h            |  14 +
+ arch/powerpc/include/asm/paravirt.h           |  87 +++++
+ arch/powerpc/include/asm/qspinlock.h          |  91 ++++++
+ arch/powerpc/include/asm/qspinlock_paravirt.h |   7 +
+ arch/powerpc/include/asm/simple_spinlock.h    | 288 ++++++++++++++++
+ .../include/asm/simple_spinlock_types.h       |  21 ++
+ arch/powerpc/include/asm/spinlock.h           | 308 +-----------------
+ arch/powerpc/include/asm/spinlock_types.h     |  17 +-
+ arch/powerpc/lib/Makefile                     |   3 +
+ arch/powerpc/lib/locks.c                      |  12 +-
+ arch/powerpc/platforms/pseries/Kconfig        |   9 +-
+ arch/powerpc/platforms/pseries/setup.c        |   4 +-
+ include/asm-generic/qspinlock.h               |   4 +
+ 16 files changed, 588 insertions(+), 321 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/paravirt.h
+ create mode 100644 arch/powerpc/include/asm/qspinlock.h
+ create mode 100644 arch/powerpc/include/asm/qspinlock_paravirt.h
+ create mode 100644 arch/powerpc/include/asm/simple_spinlock.h
+ create mode 100644 arch/powerpc/include/asm/simple_spinlock_types.h
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.23.0
 
-iQIzBAEBCgAdFiEE8DwCG1PwaC2uTI99xIwpEWwxhGQFAl8a3poACgkQxIwpEWwx
-hGSkHA//RighMrxFGk+BTWAwUxsE+wTGy1Vvn0Nc1RSyxD0A6YPqaRCg4B9nGqhk
-PCyg07NT2hGY2k/V2EDplmVu5oHpQREtED06uAEZY3efi1gdFsw4fEhd08x1kpu4
-jDXzJuG2fJvfDLd49iVnfV2z5gtt8KQXyiZXZ2T/BP0w11JLJA9RcyRzAOkJUH4f
-8PtiaN1EiMsXw/wPaYRWLc+RuojZl8AfSA3dsLtT8Pb7oCgn20QUDFDFPB4MMoaZ
-ULVRGjcj81Oa4jWCTStSzzz01iywx+T+HV6nPwaV/QvZT2ga+l8c/b1H79TW4hcv
-IFex7ns9CS9t1U59DOaPHnVtapyfrkg6kONfc1++StUvuxrXaTag/2EYmc9xpoFb
-tVtlsoM/FtO+3tVC5UixIiVEGdQRdLElxvdMgnX+2I/HtT7IRyKeVjH8/J+7Akd5
-n5CaMBTHqQxbyO0J7P+gF4MF9w8EF8BlLwYTdcmM/E9ktQJOGDnH3tGifMO4b+5U
-bWOZ45mo5kN5ynkEPEdo0aPGoA2SWk1fgCZZKml5lyuKlxjsy+TpLcs9olpqx/HU
-qryOd+4lLY/mF6j+vWZ7gnVwwIe04RQYATLIXl6xBOuRUnXUVjESdtKpBHLtBv7N
-EDmO5dmBONAcpoYSE8qVyH8Y7Dh5FK+cVjwRqyuRt5I538BCuks=
-=wUz9
------END PGP SIGNATURE-----
-
---3bvf6kql47vqrvnj--
