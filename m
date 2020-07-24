@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8566422BC60
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7468622BC62
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgGXDME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 23:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgGXDMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 23:12:03 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AEAC0619D3;
-        Thu, 23 Jul 2020 20:12:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726760AbgGXDOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 23:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgGXDOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 23:14:06 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BCZ4G4bQPz9sR4;
-        Fri, 24 Jul 2020 13:11:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595560322;
-        bh=CVN2/OeTuVHSV+bI6yvZoLyVhI53xwEE0w8uWXYe1/U=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DDF220792;
+        Fri, 24 Jul 2020 03:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595560445;
+        bh=7Nn2vijdOpJYv5RRp0kMLo2D//KQ22IaqcB8VQUTtz4=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DKbqYLo3ROBsDOBPWHfMirA1rYm/lN4qZhYd87VI0N+HUpsJBWJ31h+TQ7YBx1rYn
-         LfgBLf1MGnZ+PK1lTOCDiX3XtiBxaOpf/inqr2J5O+AWCKg3IoPkKJLbCp1sC7j+qy
-         eiJyz5OLXnbiUtkRfWSx2WUf18gXetqscmB/WeNtnsWmmKXMvAIJNZK+dVXDbhbzUt
-         8u4W4IhSb6DLCY83wFQJv5fuL0T8+AEmGZMPPbD30f2b/6HIf3RruQd8SEIXcpgZ0q
-         I32urIvtE0O2Zp1zOybrxCQiz7zoA8Wp7Yu5iK1QjKUbDfdiT8kENjJkJ33vQtFIvh
-         tPptaBSo69ITA==
-Date:   Fri, 24 Jul 2020 13:11:57 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, Qian Cai <cai@lca.pw>,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        mingo@redhat.com, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, linux-next@vger.kernel.org, lpf.vector@gmail.com,
-        Shakeel Butt <shakeelb@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joerg Roedel <jroedel@suse.de>, Roman Gushchin <guro@fb.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: kernel BUG at mm/vmalloc.c:LINE! (2)
-Message-ID: <20200724131157.0967019a@canb.auug.org.au>
-In-Reply-To: <20200723195029.60933e30f5d3dd64d6a861b3@linux-foundation.org>
-References: <000000000000588c2c05aa156b2b@google.com>
-        <0000000000003cdc6c05aae24652@google.com>
-        <20200720200618.GA9501@pc636>
-        <20200722142759.GB4041@lca.pw>
-        <20200722144650.GA19628@pc636>
-        <20200723195029.60933e30f5d3dd64d6a861b3@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sj3ujE1eBml=WsX12wN3D+r";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        b=HlRbJgYKPEVZSsXegUjp/2v7/SwgSpMQYylFMhoicS2JzBa03usl8BoFyGcmB0z7B
+         n1RyZpC+bJY2hnWvW8bJMa6OVOAmq5NvlrrjyOpBEEthdHyI0RlDSmPeTj65hZZO8B
+         AcF2dBRPplDmW6/IEOxvQzpgoKWBdUIrGGEFs5xo=
+Date:   Thu, 23 Jul 2020 20:14:04 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Joonsoo Kim <js1304@gmail.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Hellwig <hch@infradead.org>,
+        Roman Gushchin <guro@fb.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] mm/page_alloc: fix memalloc_nocma_{save/restore}
+ APIs
+Message-Id: <20200723201404.f76ccd792c9e74f3ae8ec9f5@linux-foundation.org>
+In-Reply-To: <CAAmzW4NhY0iaE02vwf+2O+aeK66CoKG_-BvsgqpfwZv3Q-w8dA@mail.gmail.com>
+References: <1595468942-29687-1-git-send-email-iamjoonsoo.kim@lge.com>
+        <20200723180814.acde28b92ce6adc785a79120@linux-foundation.org>
+        <CAAmzW4N9Y4W7CHenWA=TYu9tttgpYR=ZN+ky1vmXPgUJcjitAw@mail.gmail.com>
+        <20200723193600.28e3eedd00925b22f7ca9780@linux-foundation.org>
+        <CAAmzW4NhY0iaE02vwf+2O+aeK66CoKG_-BvsgqpfwZv3Q-w8dA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sj3ujE1eBml=WsX12wN3D+r
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 24 Jul 2020 12:04:02 +0900 Joonsoo Kim <js1304@gmail.com> wrote:
 
-Hi Andrew,
+> 2020년 7월 24일 (금) 오전 11:36, Andrew Morton <akpm@linux-foundation.org>님이 작성:
+> >
+> > On Fri, 24 Jul 2020 11:23:52 +0900 Joonsoo Kim <js1304@gmail.com> wrote:
+> >
+> > > > > Second, clearing __GFP_MOVABLE in current_gfp_context() has a side effect
+> > > > > to exclude the memory on the ZONE_MOVABLE for allocation target.
+> > > >
+> > > > More whoops.
+> > > >
+> > > > Could we please have a description of the end-user-visible effects of
+> > > > this change?  Very much needed when proposing a -stable backport, I think.
+> > >
+> > > In fact, there is no noticeable end-user-visible effect since the fallback would
+> > > cover the problematic case. It's mentioned in the commit description. Perhap,
+> > > performance would be improved due to reduced retry and more available memory
+> > > (we can use ZONE_MOVABLE with this patch) but it would be neglectable.
+> > >
+> > > > d7fefcc8de9147c is over a year old.  Why did we only just discover
+> > > > this?  This makes one wonder how serious those end-user-visible effects
+> > > > are?
+> > >
+> > > As mentioned above, there is no visible problem to the end-user.
+> >
+> > OK, thanks.  In that case, I don't believe that a stable backport is
+> > appropriate?
+> >
+> > (Documentation/process/stable-kernel-rules.rst)
+> 
+> Thanks for the pointer!
+> 
+> Hmm... I'm not sure the correct way to handle this patch. I thought that
+> memalloc_nocma_{save,restore} is an API that is callable from the module.
+> If it is true, it's better to regard this patch as the stable candidate since
+> out-of-tree modules could use it without the fallback and it would cause
+> a problem. But, yes, there is no visible problem to the end-user, at least,
+> within the mainline so it is possibly not a stable candidate.
+> 
+> Please share your opinion about this situation.
 
-On Thu, 23 Jul 2020 19:50:29 -0700 Andrew Morton <akpm@linux-foundation.org=
-> wrote:
->
-> All a bit mysterious.  I think it's best that we revert this from
-> linux-next until we hear from Ingo.  I queued a patch - I expect
-> Stephen will see and grab it, thanks.
+We tend not to care much about out-of-tree modules.  I don't think a
+theoretical concern for out-of-tree code justifies risking the
+stability of -stable kernels.
 
-Wiil do.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sj3ujE1eBml=WsX12wN3D+r
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8aUX0ACgkQAVBC80lX
-0Gzj/gf+OGUKW6dZSX9hBZfSUes4QaG1Oa7VSrpDXJ5gS1e8weyVnvH4D3MV3nde
-LWB9/DYsXJhHOww5HaiWlXP8VwbrRvp5soaJmGbDMS9+/9L6IYGA1gy2Z/bNz7TB
-jg/Skz7TTLqCMjILGZBJRgkvPyUHrWLrPcidrRXkVYPhNBPg+XoecNJ2YceSVeTh
-NvDO5EnHNCP/plBr3icVV535yu6uQXT+s4fnWXBsSiokkUzBNF6SS5gyh9U8IPRa
-ZQaG4hGBt03A95RhuhcSnlcMCxrI/JgWbJjp4atWN0gRdPRmEGiz6cpqtMzpn5+r
-mk6EEIgTu94GZ33XVBYYX87UQ0Uzaw==
-=CFUz
------END PGP SIGNATURE-----
-
---Sig_/sj3ujE1eBml=WsX12wN3D+r--
