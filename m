@@ -2,155 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6726622C854
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C93D22C853
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgGXOqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:46:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59800 "EHLO mail.kernel.org"
+        id S1726810AbgGXOqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:46:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:13307 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726696AbgGXOqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:46:37 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C9BD2065E;
-        Fri, 24 Jul 2020 14:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595601996;
-        bh=xAHnG2Hy+DQIFym5s+rANLi7W4SNe3rVMEhADkf1cgg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ia0fI2bU+Tpmd81+fVmhsa+CaE2enWOGw6tvkEcB1EdcmscoL0F+Ge0qAiM6z7wdF
-         jQ5d02eSQ2lIlAi8gQono/ETw36XJWmdtEnOE7iaJIKsPTDNGj14KBbgrhUxr7WwV7
-         EWa3ZNAk6q+KznVKGQoXMimXaugXxjt0KaWmGTgo=
-Date:   Fri, 24 Jul 2020 23:46:31 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH v5 1/6] kprobes: Remove dependency to the module_mutex
-Message-Id: <20200724234631.40f4ffec6adae57ac3df8ea3@kernel.org>
-In-Reply-To: <20200724050553.1724168-2-jarkko.sakkinen@linux.intel.com>
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
-        <20200724050553.1724168-2-jarkko.sakkinen@linux.intel.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726742AbgGXOqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 10:46:33 -0400
+IronPort-SDR: lTqf57rx6xxNOd0lTPhvw0TM7yXo3R96CdrKaUMZQrSH8ziH1UPJAXtK1zGpd7qwbQ3tS6HK/n
+ RC49HYrlSOFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="138781009"
+X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
+   d="scan'208";a="138781009"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 07:46:32 -0700
+IronPort-SDR: inne2HZTHM7FNS7USJHHh82vmPPMo1Ua6W8m7mWQW9EbAOdCxT4RUZJgtJAvLWwwreWdNtX1ih
+ JxfI5lUkIBzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
+   d="scan'208";a="363385926"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga001.jf.intel.com with ESMTP; 24 Jul 2020 07:46:32 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id B496E301BF9; Fri, 24 Jul 2020 07:46:32 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 07:46:32 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>, acme@redhat.com,
+        mingo@kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
+        eranian@google.com, alexander.shishkin@linux.intel.com,
+        like.xu@linux.intel.com
+Subject: Re: [PATCH V7 07/14] perf/core: Add a new PERF_EV_CAP_COEXIST event
+ capability
+Message-ID: <20200724144632.GE1180481@tassilo.jf.intel.com>
+References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+ <20200723171117.9918-8-kan.liang@linux.intel.com>
+ <20200724105543.GV119549@hirez.programming.kicks-ass.net>
+ <20200724114628.GJ43129@hirez.programming.kicks-ass.net>
+ <0d33a25c-cfe4-af7f-c915-a98dba17b53b@linux.intel.com>
+ <20200724135412.GA10769@hirez.programming.kicks-ass.net>
+ <e04f1708-e8c0-3787-1572-443f03ab73ca@linux.intel.com>
+ <20200724143258.GB10769@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724143258.GB10769@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 08:05:48 +0300
-Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-
-> Add lock_modules() and unlock_modules() wrappers for acquiring module_mutex
-> in order to remove the compile time dependency to it.
-
-This subject is a bit confusing. This is just wrapping modules_mutex in
-kpprobes. We still have compile time dependency, e.g. module_state, right?
-
-Thank you,
-
+> Something that seems to 'work' is:
+> '{cycles,cpu/instructions,period=50000/}', so maybe you can make the
+> group modifier :S use any sampling event if there is one, and otherwise
+> designate the leader.
 > 
-> Cc: linux-mm@kvack.org
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->  include/linux/module.h      | 18 ++++++++++++++++++
->  kernel/kprobes.c            |  4 ++--
->  kernel/trace/trace_kprobe.c |  4 ++--
->  3 files changed, 22 insertions(+), 4 deletions(-)
+> Then you can write things like:
 > 
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index 2e6670860d27..8850b9692b8f 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -705,6 +705,16 @@ static inline bool is_livepatch_module(struct module *mod)
->  bool is_module_sig_enforced(void);
->  void set_module_sig_enforced(void);
->  
-> +static inline void lock_modules(void)
-> +{
-> +	mutex_lock(&module_mutex);
-> +}
-> +
-> +static inline void unlock_modules(void)
-> +{
-> +	mutex_unlock(&module_mutex);
-> +}
-> +
->  #else /* !CONFIG_MODULES... */
->  
->  static inline struct module *__module_address(unsigned long addr)
-> @@ -852,6 +862,14 @@ void *dereference_module_function_descriptor(struct module *mod, void *ptr)
->  	return ptr;
->  }
->  
-> +static inline void lock_modules(void)
-> +{
-> +}
-> +
-> +static inline void unlock_modules(void)
-> +{
-> +}
-> +
->  #endif /* CONFIG_MODULES */
->  
->  #ifdef CONFIG_SYSFS
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 2e97febeef77..4e46d96d4e16 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -564,7 +564,7 @@ static void kprobe_optimizer(struct work_struct *work)
->  	cpus_read_lock();
->  	mutex_lock(&text_mutex);
->  	/* Lock modules while optimizing kprobes */
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  
->  	/*
->  	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
-> @@ -589,7 +589,7 @@ static void kprobe_optimizer(struct work_struct *work)
->  	/* Step 4: Free cleaned kprobes after quiesence period */
->  	do_free_cleaned_kprobes();
->  
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	mutex_unlock(&text_mutex);
->  	cpus_read_unlock();
->  
-> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> index aefb6065b508..710ec6a6aa8f 100644
-> --- a/kernel/trace/trace_kprobe.c
-> +++ b/kernel/trace/trace_kprobe.c
-> @@ -122,9 +122,9 @@ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
->  	if (!p)
->  		return true;
->  	*p = '\0';
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  	ret = !!find_module(tk->symbol);
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	*p = ':';
->  
->  	return ret;
-> -- 
-> 2.25.1
+>   '{slots, metric1, metric2, cpu/cycles,freq=50000/}:S'
 > 
+> and then since cycles is specified as a sampling event, it will use
+> that.
 
+Okay possible, but it makes things more complicated
+for the user to understand and requires special documentation.
+Hopefully it's worth it the internal simplification.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+-andi
