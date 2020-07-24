@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA8022D145
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2274022D14A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgGXVkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 17:40:11 -0400
+        id S1727982AbgGXVkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 17:40:19 -0400
 Received: from mail.kernel.org ([198.145.29.99]:48916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726982AbgGXVkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 17:40:06 -0400
-Subject: Re: [GIT PULL] io_uring fixes for 5.8-rc7
+        id S1727047AbgGXVkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 17:40:07 -0400
+Subject: Re: [git pull] xtensa csum regression fix
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595626806;
-        bh=0+600BdVgHoptk4/RtcfOxs3DdcwnpXeQwal0/gJBcI=;
+        s=default; t=1595626807;
+        bh=slEEdAte+3RZRNr6CPInbQkt4P3t0mEJsH/8BkMkXRE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=eJYDmW1t3qOqGR5HkPSvYn2MJqvhkjo80sOevbwJ2MGybM2g1OH3WmvOsZ+t3Iawn
-         z+gg+Gzj5od6l5WoLsnhmBAb68pTnOFrTe6CZXXKDez5iFCEViu2YO4JmjXWcSxOvI
-         RaT4OTV64w3EgSJwX2xTdeotbQgasLBv7hqRob/4=
+        b=x3Jv0rrcqkU7zzLGTblSSYeeMlbDDdaaSdYSSwbsxWTY2WMjew+k3/rc9rgv5y1sg
+         VFPPQJVL9lnCBaw6burOOPZ+HfQUgksshdIxrybNjlv74/HbK9KWlD/Z/xWTxh+IgD
+         0kWVvQQ7iuRBXlXwpD6OM4+8b7YSIryjuHLsY6+E=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <c07ebe12-2b16-3811-9abc-d3e8d99b54db@kernel.dk>
-References: <c07ebe12-2b16-3811-9abc-d3e8d99b54db@kernel.dk>
+In-Reply-To: <20200724181644.GN2786714@ZenIV.linux.org.uk>
+References: <20200724181644.GN2786714@ZenIV.linux.org.uk>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <c07ebe12-2b16-3811-9abc-d3e8d99b54db@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git
- tags/io_uring-5.8-2020-07-24
-X-PR-Tracked-Commit-Id: 3e863ea3bb1a2203ae648eb272db0ce6a1a2072c
+X-PR-Tracked-Message-Id: <20200724181644.GN2786714@ZenIV.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
+X-PR-Tracked-Commit-Id: 5fff09bc141570cd15c118b097b17dec832b517f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1f68f31b51507e1ad647aa3a43c295eb024490ad
-Message-Id: <159562680626.3064.10524082755470255037.pr-tracker-bot@kernel.org>
-Date:   Fri, 24 Jul 2020 21:40:06 +0000
-To:     Jens Axboe <axboe@kernel.dk>
+X-PR-Merge-Commit-Id: c953d60b1180c4a59a55b72fecd278d264d60f5b
+Message-Id: <159562680706.3064.5349217479253905359.pr-tracker-bot@kernel.org>
+Date:   Fri, 24 Jul 2020 21:40:07 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 24 Jul 2020 10:49:14 -0600:
+The pull request you sent on Fri, 24 Jul 2020 19:16:44 +0100:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.8-2020-07-24
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1f68f31b51507e1ad647aa3a43c295eb024490ad
+https://git.kernel.org/torvalds/c/c953d60b1180c4a59a55b72fecd278d264d60f5b
 
 Thank you!
 
