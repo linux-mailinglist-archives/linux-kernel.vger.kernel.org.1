@@ -2,104 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E254022CC28
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF0C22CC29
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbgGXRZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:25:51 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:58606 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727779AbgGXRZb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9t8ChRbXN1OVDkyC3IRxGbWR7S5dFVtwk8MI6eaiLG0=; b=rrkCWecPS9ayj762CdT2JJ2fZl
-        ZKDSfv0fwdzi+6YdlFRsaiGe3PuKO3E1d4Mf3+Ea/Y4Z8HE9Xr+eTcC53Tv4UQ7kdtJvlV75J4/zk
-        6xYpxwxH5hUy7+8nm1AI9n7wkLwQxo/35GTPBvJimYeG07iGWOTc+D65hr8d1sSgvwJqIFJFU04CB
-        iCYGvsxCdwj55/OC2jrXUzew16x/8T0/Q0IqsOh+3GfYEIsyUN3Up8YFe3sWExGg+Rvprfn+3n0SD
-        J+gjXhBA49JvoJYFMX6NYlf8sZ4N8f7pVa09GIjIT/bnPBCsywYAgGDD+z+BaMUTvzcAO/GkQMEMt
-        UeLfi1YA==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1jz1Rn-0006yp-9q; Fri, 24 Jul 2020 11:25:30 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1jz1Ri-0004GU-W5; Fri, 24 Jul 2020 11:25:23 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
-Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Logan Gunthorpe <logang@deltatee.com>
-Date:   Fri, 24 Jul 2020 11:25:20 -0600
-Message-Id: <20200724172520.16318-10-logang@deltatee.com>
+        id S1727818AbgGXR01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:26:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726686AbgGXR01 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 13:26:27 -0400
+Received: from localhost.localdomain (unknown [95.146.230.158])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 355E320674;
+        Fri, 24 Jul 2020 17:26:25 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrei Vagin <avagin@gmail.com>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [PATCH 1/6] arm64/vdso: use the fault callback to map vvar pages
+Date:   Fri, 24 Jul 2020 18:26:23 +0100
+Message-Id: <159561069973.19270.10637845392621633755.b4-ty@arm.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200724172520.16318-1-logang@deltatee.com>
-References: <20200724172520.16318-1-logang@deltatee.com>
+In-Reply-To: <20200624083321.144975-2-avagin@gmail.com>
+References: <20200624083321.144975-1-avagin@gmail.com> <20200624083321.144975-2-avagin@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, maxg@mellanox.com, sbates@raithlin.com, Chaitanya.Kulkarni@wdc.com, chaitanya.kulkarni@wdc.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_NO_TEXT,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: [PATCH v16 9/9] nvmet-passthru: Introduce NVMet passthru Kconfig option
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+On Wed, 24 Jun 2020 01:33:16 -0700, Andrei Vagin wrote:
+> Currently the vdso has no awareness of time namespaces, which may
+> apply distinct offsets to processes in different namespaces. To handle
+> this within the vdso, we'll need to expose a per-namespace data page.
+> 
+> As a preparatory step, this patch separates the vdso data page from
+> the code pages, and has it faulted in via its own fault callback.
+> Subsquent patches will extend this to support distinct pages per time
+> namespace.
+> 
+> [...]
 
-This patch updates KConfig file for the NVMeOF target where we add new
-option so that user can selectively enable/disable passthru code.
+Applied to arm64 (for-next/timens), provisionally.
 
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-[logang@deltatee.com: fixed some of the wording in the help message]
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
----
- drivers/nvme/target/Kconfig | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+One potential issue I did not check is the compat vDSO. The arm32 port
+does not support timens currently. IIUC, with these patches and
+COMPAT_VDSO enabled, it will allow timens for compat processes. Normally
+I'd like the arm32 support first before updating compat but I don't
+think there would be any interface incompatibility here.
 
-diff --git a/drivers/nvme/target/Kconfig b/drivers/nvme/target/Kconfig
-index 4474952d64c6..8056955e652c 100644
---- a/drivers/nvme/target/Kconfig
-+++ b/drivers/nvme/target/Kconfig
-@@ -16,6 +16,18 @@ config NVME_TARGET
- 	  To configure the NVMe target you probably want to use the nvmetcli
- 	  tool from http://git.infradead.org/users/hch/nvmetcli.git.
- 
-+config NVME_TARGET_PASSTHRU
-+	bool "NVMe Target Passthrough support"
-+	depends on NVME_TARGET
-+	depends on NVME_CORE=y || NVME_CORE=NVME_TARGET
-+	help
-+	  This enables target side NVMe passthru controller support for the
-+	  NVMe Over Fabrics protocol. It allows for hosts to manage and
-+	  directly access an actual NVMe controller residing on the target
-+	  side, incuding executing Vendor Unique Commands.
-+
-+	  If unsure, say N.
-+
- config NVME_TARGET_LOOP
- 	tristate "NVMe loopback device support"
- 	depends on NVME_TARGET
+However, does this still work for arm32 processes if COMPAT_VDSO is
+disabled in the arm64 kernel?
+
+[1/6] arm64/vdso: use the fault callback to map vvar pages
+      https://git.kernel.org/arm64/c/d53b5c013e1e
+[2/6] arm64/vdso: Zap vvar pages when switching to a time namespace
+      https://git.kernel.org/arm64/c/1b6867d2916b
+[3/6] arm64/vdso: Add time namespace page
+      https://git.kernel.org/arm64/c/3503d56cc723
+[4/6] arm64/vdso: Handle faults on timens page
+      https://git.kernel.org/arm64/c/ee3cda8e4606
+[5/6] arm64/vdso: Restrict splitting VVAR VMA
+      https://git.kernel.org/arm64/c/bcf996434240
+[6/6] arm64: enable time namespace support
+      https://git.kernel.org/arm64/c/9614cc576d76
+
+Thanks!
+
 -- 
-2.20.1
+Catalin
 
