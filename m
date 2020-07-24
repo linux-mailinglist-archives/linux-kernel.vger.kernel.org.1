@@ -2,184 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD4622CA35
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B89B22CA4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728468AbgGXQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 12:07:45 -0400
-Received: from mga11.intel.com ([192.55.52.93]:29460 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728039AbgGXQHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:07:44 -0400
-IronPort-SDR: 2LZSb+pHBH4e0hsToUChW+STfm3t2sa+P/MU+3fuDxxvBkLgKOmzCKYNwOIgI5U5hvsnHyqudL
- qV4fMIqfgw6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="148647110"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="148647110"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 09:07:42 -0700
-IronPort-SDR: F8rEoAEGq1fN4gk0Q14cjgMCsVHsaBylkk6sPID/0kXCPqyCJsarDM/BvHHzboPXcM87GFtgrB
- u4IioW+MOr2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="433124626"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga004.jf.intel.com with ESMTP; 24 Jul 2020 09:07:42 -0700
-Received: from [10.252.140.222] (kliang2-mobl.ccr.corp.intel.com [10.252.140.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1728490AbgGXQIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 12:08:35 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:62326 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728197AbgGXQI1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 12:08:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595606907; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=OuK+fHmOdnHq6Gy5CQQ7gf9CS4eAtdGE5l/i2Hmgl8A=; b=SJxKlTLwXE1VPSAYZBHTje8zUDdhVYJpV4JBj0CxdaSREYr6DHcukpCqiDuQcnPURmjF645G
+ 4rTkckgA45Y5xaI4pn5Hh7hgHsEdWrTg97o2YXgRtmBoo7zgF8TO4UohCQ2hzxbMYVLyG1VQ
+ qj9LiaRZf823tkJuszSqKwNcGDw=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f1b076d35f3e3d3160dd609 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Jul 2020 16:08:13
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8DC5AC433A0; Fri, 24 Jul 2020 16:08:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id AC3F2580638;
-        Fri, 24 Jul 2020 09:07:41 -0700 (PDT)
-Subject: Re: [PATCH V7 08/14] perf/x86/intel: Generic support for hardware
- TopDown metrics
-To:     peterz@infradead.org
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
-        like.xu@linux.intel.com
-References: <20200723171117.9918-1-kan.liang@linux.intel.com>
- <20200723171117.9918-9-kan.liang@linux.intel.com>
- <20200724131906.GW119549@hirez.programming.kicks-ass.net>
- <20200724152755.GK43129@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <d7ae2272-52ea-c5a9-2937-9a51c544ade8@linux.intel.com>
-Date:   Fri, 24 Jul 2020 12:07:40 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200724152755.GK43129@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4A8D0C433CA;
+        Fri, 24 Jul 2020 16:08:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4A8D0C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v5 0/4] clk: qcom: Support for Low Power Audio Clocks on SC7180
+Date:   Fri, 24 Jul 2020 21:37:54 +0530
+Message-Id: <1595606878-2664-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[v5]
+  * Replace tabs with space in the documentation binding.
+  * Remove .name from parent_data.
 
+[v4]
+ * Fix minor comments in the documentation binding.
 
-On 7/24/2020 11:27 AM, peterz@infradead.org wrote:
-> On Fri, Jul 24, 2020 at 03:19:06PM +0200, peterz@infradead.org wrote:
->> On Thu, Jul 23, 2020 at 10:11:11AM -0700, kan.liang@linux.intel.com wrote:
->>> @@ -3375,6 +3428,72 @@ static int intel_pmu_hw_config(struct perf_event *event)
->>>   	if (event->attr.type != PERF_TYPE_RAW)
->>>   		return 0;
->>>   
->>> +	/*
->>> +	 * Config Topdown slots and metric events
->>> +	 *
->>> +	 * The slots event on Fixed Counter 3 can support sampling,
->>> +	 * which will be handled normally in x86_perf_event_update().
->>> +	 *
->>> +	 * The metric events don't support sampling.
->>> +	 *
->>> +	 * For counting, topdown slots and metric events will be
->>> +	 * handled specially for event update.
->>> +	 * A flag PERF_X86_EVENT_TOPDOWN is applied for the case.
->>> +	 */
->>> +	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
->>> +		if (is_metric_event(event)) {
->>> +			struct perf_event *leader = event->group_leader;
->>> +			struct perf_event *sibling;
->>> +
->>> +			/* The metric events don't support sampling. */
->>> +			if (is_sampling_event(event))
->>> +				return -EINVAL;
->>> +
->>> +			/* The metric events cannot be a group leader. */
->>> +			if (leader == event)
->>> +				return -EINVAL;
->>> +
->>> +			/*
->>> +			 * The slots event cannot be the leader of a topdown
->>> +			 * sample-read group, e.g., {slots, topdown-retiring}:S
->>> +			 */
->>> +			if (is_slots_event(leader) && is_sampling_event(leader))
->>> +				return -EINVAL;
->>
->> This has nothing to do with sample-read; SLOTS cannot be sampling when
->> coupled with the METRIC stuff because hardware is daft.
->>
->> And you can have SAMPLE_READ on non-leader events just fine.
->>
->>> +
->>> +			/*
->>> +			 * The slots event must be before the metric events,
->>> +			 * because we only update the values of a topdown
->>> +			 * group once with the slots event.
->>> +			 */
->>> +			if (!is_slots_event(leader)) {
->>> +				for_each_sibling_event(sibling, leader) {
->>> +					if (is_slots_event(sibling))
->>> +						break;
->>> +					if (is_metric_event(sibling))
->>> +						return -EINVAL;
->>> +				}
->>> +			}
->>
->> Per the SIBLING patch this then wants to be:
->>
->> 			if (!is_slots_event(leader))
->> 				return -EINVAL;
->>
->> 			event->event_caps |= PERF_EV_CAP_SIBLING.
->> 			/*
->> 			 * Only once we have a METRICs sibling to we
->> 			 * need TopDown magic.
->> 			 */
->> 			leader->hw.flags |= PERF_X86_EVENT_TOPDOWN;
->>> +		}
->>> +
->>> +		if (!is_sampling_event(event)) {
->>> +			if (event->attr.config1 != 0)
->>> +				return -EINVAL;
->>
->> How does this depend on sampling?
->>
->>> +			/*
->>> +			 * The TopDown metrics events and slots event don't
->>> +			 * support any filters.
->>> +			 */
->>> +			if (event->attr.config & X86_ALL_EVENT_FLAGS)
->>> +				return -EINVAL;
->>
->> That seems independent of sampling too. Even a sampling SLOTS shouldn't
->> be having any of those afaict.
->>
->>> +
->>> +			event->hw.flags |= PERF_X86_EVENT_TOPDOWN;
->>
->> This is confusing too, a !sampling SLOTS event without METRIC siblings
->> shouldn't have this set, right? So arguably, this should be like above.
->>
->>> +
->>> +			event->event_caps |= PERF_EV_CAP_COEXIST;
->>> +
->>> +			if (is_metric_event(event))
->>> +				event->hw.flags &= ~PERF_X86_EVENT_RDPMC_ALLOWED;
->>
->> This too seems like something that should be in the is_metric_event()
->> branch above.
->>
->>> +		}
->>> +	}
->>> +
->>>   	if (!(event->attr.config & ARCH_PERFMON_EVENTSEL_ANY))
->>>   		return 0;
->>>   
-> 
-> FWIW, I pushed out a branch with all these changes in:
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/metric
-> 
-> Just to get it some build love, if you want it differently, I'm happy to
-> throw it all out again.
+[v3]
+ * Update the clock-name to iface instead of gcc_lpass_sway.
+ * Update the documentation with the reg descriptions and use maxItems.
 
-Thanks Peter.
+[v2]
+ * Update retention macro name.
+ * Update the register description in the documentation.
 
-I will pull the branch and do more tests.
+[v1]
+ * Add support for Retention of GDSCR.
+ * Add YAML schema for LPASS clocks and clock IDs for LPASS.
+ * Add clock driver for LPASS core clocks and GCC LPASS clock.
 
-Thanks,
-Kan
+Taniya Das (4):
+  clk: qcom: gdsc: Add support to enable retention of GSDCR
+  dt-bindings: clock: Add YAML schemas for LPASS clocks on SC7180
+  clk: qcom: gcc: Add support for GCC LPASS clock for SC7180
+  clk: qcom: lpass: Add support for LPASS clock controller for SC7180
+
+Taniya Das (4):
+  clk: qcom: gdsc: Add support to enable retention of GSDCR
+  dt-bindings: clock: Add YAML schemas for LPASS clocks on SC7180
+  clk: qcom: gcc: Add support for GCC LPASS clock for SC7180
+  clk: qcom: lpass: Add support for LPASS clock controller for SC7180
+
+ .../bindings/clock/qcom,sc7180-lpasscorecc.yaml    | 102 +++++
+ drivers/clk/qcom/Kconfig                           |   9 +
+ drivers/clk/qcom/Makefile                          |   1 +
+ drivers/clk/qcom/gcc-sc7180.c                      |  14 +
+ drivers/clk/qcom/gdsc.c                            |  12 +
+ drivers/clk/qcom/gdsc.h                            |   1 +
+ drivers/clk/qcom/lpasscorecc-sc7180.c              | 477 +++++++++++++++++++++
+ include/dt-bindings/clock/qcom,gcc-sc7180.h        |   1 +
+ .../dt-bindings/clock/qcom,lpasscorecc-sc7180.h    |  29 ++
+ 9 files changed, 646 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-lpasscorecc.yaml
+ create mode 100644 drivers/clk/qcom/lpasscorecc-sc7180.c
+ create mode 100644 include/dt-bindings/clock/qcom,lpasscorecc-sc7180.h
+
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
+
