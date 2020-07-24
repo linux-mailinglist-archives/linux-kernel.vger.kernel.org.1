@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBCC22C2FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9992322C2FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgGXKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 06:21:50 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48130 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726271AbgGXKVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:21:49 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1ADC89BEDA3108C50F5C;
-        Fri, 24 Jul 2020 18:21:48 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 24 Jul 2020 18:21:42 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH 2/2] f2fs: compress: delay temp page allocation
-Date:   Fri, 24 Jul 2020 18:21:37 +0800
-Message-ID: <20200724102137.78696-2-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200724102137.78696-1-yuchao0@huawei.com>
-References: <20200724102137.78696-1-yuchao0@huawei.com>
+        id S1726814AbgGXKWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 06:22:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgGXKWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 06:22:50 -0400
+Received: from kernel.org (unknown [87.71.40.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 85B212065C;
+        Fri, 24 Jul 2020 10:22:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595586170;
+        bh=UvxGq6yX6XuuylfuSDP/iXKMmYlEzY1kzhP4GwXlgVg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZKLPTe70/iq4UW4IJk8j7elpMr31458tZGyatUwi1KDyMq2meB2t/me1S8bgupPHD
+         zSTgOW6xXP8dh6/A9Tgqec3jI5YC7LzyzItuia0ouAcePbAYivmWFBuBhVvv4tvpqI
+         STctW7cGEeq3u2sl+5kvCVPV0OubAxwP1WquJ00Y=
+Date:   Fri, 24 Jul 2020 13:22:43 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v5 2/6] vmalloc: Add text_alloc() and text_free()
+Message-ID: <20200724102243.GA2831654@kernel.org>
+References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
+ <20200724050553.1724168-3-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724050553.1724168-3-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we allocate temp pages which is used to pad hole in
-cluster during read IO submission, it may take long time before
-releasing them in f2fs_decompress_pages(), since they are only
-used as temp output buffer in decompression context, so let's
-just do the allocation in that context to reduce time of memory
-pool resource occupation.
+On Fri, Jul 24, 2020 at 08:05:49AM +0300, Jarkko Sakkinen wrote:
+> Introduce functions for allocating memory for dynamic trampolines, such
+> as kprobes. An arch can promote the availability of these functions with
+> CONFIG_ARCH_HAS_TEXT_ALLOC.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/compress.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+As it was pointed out at the discussion on the previous version [1],
+text_alloc() alone won't necessarily suit other architectures.
+ 
+I don't see a point in defining a "generic" interface that apriory could
+not be imeplemented by several architectures.
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index a20c9f3272af..337a272d7112 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -670,6 +670,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 	const struct f2fs_compress_ops *cops =
- 			f2fs_cops[fi->i_compress_algorithm];
- 	int ret;
-+	int i;
- 
- 	dec_page_count(sbi, F2FS_RD_DATA);
- 
-@@ -688,6 +689,22 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 		goto out_free_dic;
- 	}
- 
-+	dic->tpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
-+					dic->cluster_size, GFP_NOFS);
-+	if (!dic->tpages)
-+		goto out_free_dic;
-+
-+	for (i = 0; i < dic->cluster_size; i++) {
-+		if (dic->rpages[i]) {
-+			dic->tpages[i] = dic->rpages[i];
-+			continue;
-+		}
-+
-+		dic->tpages[i] = f2fs_compress_alloc_page();
-+		if (!dic->tpages[i])
-+			goto out_free_dic;
-+	}
-+
- 	if (cops->init_decompress_ctx) {
- 		ret = cops->init_decompress_ctx(dic);
- 		if (ret)
-@@ -1449,22 +1466,6 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
- 		dic->cpages[i] = page;
- 	}
- 
--	dic->tpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
--					dic->cluster_size, GFP_NOFS);
--	if (!dic->tpages)
--		goto out_free;
--
--	for (i = 0; i < dic->cluster_size; i++) {
--		if (cc->rpages[i]) {
--			dic->tpages[i] = cc->rpages[i];
--			continue;
--		}
--
--		dic->tpages[i] = f2fs_compress_alloc_page();
--		if (!dic->tpages[i])
--			goto out_free;
--	}
--
- 	return dic;
- 
- out_free:
+[1] https://lore.kernel.org/lkml/20200714094625.1443261-1-jarkko.sakkinen@linux.intel.com/
+
+> Cc: linux-mm@kvack.org
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  include/linux/vmalloc.h | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> index 0221f852a7e1..6c151a0ac02a 100644
+> --- a/include/linux/vmalloc.h
+> +++ b/include/linux/vmalloc.h
+> @@ -249,4 +249,21 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+>  int register_vmap_purge_notifier(struct notifier_block *nb);
+>  int unregister_vmap_purge_notifier(struct notifier_block *nb);
+>  
+> +/*
+> + * These functions can be optionally implemented by an arch in order to
+> + * provide specialized functions for allocating trampoline code.
+> + */
+> +
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +/*
+> + * Allocate memory to be used for trampoline code.
+> + */
+> +void *text_alloc(unsigned long size);
+> +
+> +/*
+> + * Free memory returned from text_alloc().
+> + */
+> +void text_free(void *region);
+> +#endif /* CONFIG_ARCH_HAS_TEXT_ALLOC */
+> +
+>  #endif /* _LINUX_VMALLOC_H */
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.26.2
-
+Sincerely yours,
+Mike.
