@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008B322CA1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6B022CA2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728501AbgGXQGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 12:06:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgGXQGp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:06:45 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6E1C0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 09:06:45 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f1so8243899wro.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 09:06:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qZJfAhP5RcYiO5VJpoh1/POga8l2SOHIu6lplyiVFBE=;
-        b=aqBrJCQFa5B/aBq6qeyTr9fuyyBnA11Wl65/X50Q59SPxPvtajc3QcT3FN60PsABHA
-         rt33VA1ynxONlttakPqkagTFx2H/rTB0Xa7GETBkZLm8XcLjHuLFI9vExLBIDA73FGML
-         xTJXDudUbujENDQ+jJG0bWhnPoA5Wh8r7GbFAnIGxQXPeDjvlt29JfPpwRiWwi9JZM5P
-         H7SQ7Z6+gHhYk+tUXSJnBTtu5FoTG125HjJBPdRRfPiwsQhwdROW+ecDzUAYKP3krH3m
-         bdzMeFUS54BAFWV7I/UnKi5t5FBr3EA2WSnvfTmHGsIaHG/8HICHWuQHuWulcl00dRVB
-         KcTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qZJfAhP5RcYiO5VJpoh1/POga8l2SOHIu6lplyiVFBE=;
-        b=G7GVVHha3wp4VP05QKiBto0Je+MM3jzwyH/W/erRZqK258AapDmwEiR9qQXpmlr4Xp
-         /Le3zprkFadpMI32Av2HDAzXHqgrdqqMymeWJcCeyE6WUcX4bsa0XAbWb1Sj8VCmofLG
-         /2aqsO4HKV8NZ1YhSIlK44t2ECDV4o4Aq/mPbgNEidM0N4y4O2WLbjO18f+rbZhKWNqR
-         +JLcs3SQ0MNrjqb/O6hyUpBB4+e9dRIpdQQ9Lba8vglkRdrD4RM6onxEdTi9pEJzGVWl
-         UundKtX2HefwLk2EBluWlFmkwqrgwwhQM6iKpbATfMYEof8ElBEZJte5AOgnbaY2Zyx4
-         uQoQ==
-X-Gm-Message-State: AOAM531ZK/ReRAkRAyAZwb1mzeGbjFJhzhNOhGbGY7xgZLqsoGJPZ20V
-        UkX8Hti1Cne9PUgQnDrItG0CLQ==
-X-Google-Smtp-Source: ABdhPJwm5w0NWI4nXGrF8b8IQJU/6d1yMLwWHQGb8NE9xQmPETxAvZPDq6tlRTseQWlLgJruMEi8wg==
-X-Received: by 2002:adf:e486:: with SMTP id i6mr9068152wrm.258.1595606804047;
-        Fri, 24 Jul 2020 09:06:44 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id p8sm1927886wrq.9.2020.07.24.09.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 09:06:43 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 17:06:41 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        David Lechner <david@lechnology.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Roger Quadros <rogerq@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v2] mfd: syscon: Use a unique name with regmap_config
-Message-ID: <20200724160641.GB1850026@dell>
-References: <20200127231208.1443-1-s-anna@ti.com>
- <20200224100037.GK3494@dell>
+        id S1728471AbgGXQHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 12:07:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30488 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727972AbgGXQHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 12:07:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595606841; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=BDjCdzox03R+E0WebnMzaH3e+8GkUl2oaYOMtWhsAZY=; b=OODIOowYR0/ko6NfJy/QnHruF3jkDxnwl0WRh3B8bkx/VqkdwFrpSkZ5qVDlIL6TnYZhH+sb
+ VtdjCJzfcIbClmohdbDNB/EtD+sATJfczumPXF9NbmhqZatlNBJW6Se40i3WWicbrr0vRIxy
+ +4CuIsxShUtsvRzoMuJIPPz0AI0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
+ 5f1b07268db7256a955ba010 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Jul 2020 16:07:02
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03AB9C433C9; Fri, 24 Jul 2020 16:07:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.3 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.105] (unknown [183.82.136.194])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4CD91C43391;
+        Fri, 24 Jul 2020 16:06:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4CD91C43391
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tdas@codeaurora.org
+Subject: Re: [PATCH v4 4/4] clk: qcom: lpass: Add support for LPASS clock
+ controller for SC7180
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     David Brown <david.brown@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
+        robh@kernel.org, robh+dt@kernel.org
+References: <1594795010-9074-1-git-send-email-tdas@codeaurora.org>
+ <1594795010-9074-5-git-send-email-tdas@codeaurora.org>
+ <159531768310.3847286.13203525525881212775@swboyd.mtv.corp.google.com>
+From:   Taniya Das <tdas@codeaurora.org>
+Message-ID: <893b1221-6e35-a903-77d4-a60a3ce0cbdc@codeaurora.org>
+Date:   Fri, 24 Jul 2020 21:36:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200224100037.GK3494@dell>
+In-Reply-To: <159531768310.3847286.13203525525881212775@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Feb 2020, Lee Jones wrote:
+Hi Stephen,
 
-> On Mon, 27 Jan 2020, Suman Anna wrote:
+Thanks for the review.
+
+On 7/21/2020 1:18 PM, Stephen Boyd wrote:
+> Quoting Taniya Das (2020-07-14 23:36:50)
+>> diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+
+>> +static struct clk_alpha_pll lpass_lpaaudio_dig_pll = {
+>> +       .offset = 0x1000,
+>> +       .vco_table = fabia_vco,
+>> +       .num_vco = ARRAY_SIZE(fabia_vco),
+>> +       .regs = clk_alpha_pll_regs_offset[CLK_ALPHA_PLL_TYPE_FABIA],
+>> +       .clkr = {
+>> +               .hw.init = &(struct clk_init_data){
+>> +                       .name = "lpass_lpaaudio_dig_pll",
+>> +                       .parent_data = &(const struct clk_parent_data){
+>> +                               .fw_name = "bi_tcxo",
+>> +                               .name = "bi_tcxo",
 > 
-> > The DT node full name is currently being used in regmap_config
-> > which in turn is used to create the regmap debugfs directories.
-> > This name however is not guaranteed to be unique and the regmap
-> > debugfs registration can fail in the cases where the syscon nodes
-> > have the same unit-address but are present in different DT node
-> > hierarchies. Replace this logic using the syscon reg resource
-> > address instead (inspired from logic used while creating platform
-> > devices) to ensure a unique name is given for each syscon.
-> > 
-> > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > ---
-> > v2: Fix build warning reported by kbuild test bot
-> > v1: https://patchwork.kernel.org/patch/11346363/
-> > 
-> >  drivers/mfd/syscon.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> We don't need .name if we have .fw_name and this is a new binding/device.
 > 
-> Waiting for Arnd to review.
 
-Still waiting for some input from Arnd.
+My bad, will cleanup in the next patch.
 
-Might be worth submitting a [RESEND].
+>> +                       },
+>> +                       .num_parents = 1,
+>> +                       .ops = &clk_alpha_pll_fabia_ops,
+>> +               },
+>> +       },
+>> +};
+>> +
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
+
+--
