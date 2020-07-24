@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0922C394
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A3422C387
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgGXKrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 06:47:35 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:59560 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgGXKrf (ORCPT
+        id S1726989AbgGXKpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 06:45:41 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42919 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725889AbgGXKpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:47:35 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06OAlVP0035225;
-        Fri, 24 Jul 2020 10:47:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=V7UTj6pGG4terJJFtG5oz1kiiwdHooz6JHEg0pNxRUA=;
- b=Nl3t6cYnYWP4Kq47QXM2ueSYx80KTMZlb3CIaZIzRxyVZEeY1wSt7C5NdiN48YwH34PH
- Zjqx7+LpBedvfrKxboy52mpRRzf6YGJdaKLD41SRgyxOX0byiM0z4TsDpnWhVVlg8ky9
- CzHnftHKUF9MzjoIz1g+B42UR0ZBVZubK4NeEa5V0F/I69zxuew5q0bTy/y3SFzVnpBq
- zW4uTznQHxJZ5VqXGGoUZbzRC5LJcVOEKgmyTZtYaKyxy9FNQagw9Bp4LbdOLC6WuryZ
- zqpL87PNTFY9nrpNg4RtRaiOcEM5r4YOHLjrHggm6s0xpamGSSaA5X16OGx4J2WugmVT 9A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 32bs1mxf8t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 24 Jul 2020 10:47:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06OAgROR014698;
-        Fri, 24 Jul 2020 10:45:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 32fsr74pn7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Jul 2020 10:45:31 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06OAjUjr030696;
-        Fri, 24 Jul 2020 10:45:30 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 24 Jul 2020 10:45:29 +0000
-Date:   Fri, 24 Jul 2020 13:45:24 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: octeon: Indent with tabs instead of spaces
-Message-ID: <20200724104524.GT2549@kadam>
-References: <20200722171950.GA6176@PKL-UANJUM-LT.pkl.mentorg.com>
+        Fri, 24 Jul 2020 06:45:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595587539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dP5qwmAy0dGXBb00hD2b2i9QHk2HM2volq4yxKaXFGc=;
+        b=LaYKZqXQ0rauFMy1hH05iTC+u242Noj90Qj95Wa9MIDscahEreew9tESrauZ7vmdAYeFm8
+        69ZbmSGxBPlTPk3QspeaWrHVp6cS2/moJSM7nKWX/D/IVc1OISPh4e95dO63SoTKjKsZ6b
+        DhBp5yTYqRrUpj+NBasKzBxrb6G4jBI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-0QXk46cJP8CQv4Knyv0-Ww-1; Fri, 24 Jul 2020 06:45:37 -0400
+X-MC-Unique: 0QXk46cJP8CQv4Knyv0-Ww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8ED028014D7;
+        Fri, 24 Jul 2020 10:45:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 083FF5D9E2;
+        Fri, 24 Jul 2020 10:45:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAKgNAkjyXcXZkEczRz2yvJRFBy2zAwTaNfyiSmskAFWN_3uY1g@mail.gmail.com>
+References: <CAKgNAkjyXcXZkEczRz2yvJRFBy2zAwTaNfyiSmskAFWN_3uY1g@mail.gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     dhowells@redhat.com, Petr Vorel <pvorel@suse.cz>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: Mount API manual pages
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722171950.GA6176@PKL-UANJUM-LT.pkl.mentorg.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9691 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- bulkscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007240081
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9691 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
- spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007240082
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2007334.1595587534.1@warthog.procyon.org.uk>
+Date:   Fri, 24 Jul 2020 11:45:34 +0100
+Message-ID: <2007335.1595587534@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 22, 2020 at 10:19:50PM +0500, Muhammad Usama Anjum wrote:
-> Remove a coding style error. It makes code more readable.
+Michael Kerrisk (man-pages) <mtk.manpages@gmail.com> wrote:
+
+> Would you be willing to do the following please:
 > 
-> Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-> ---
+> 1. Review the pages that you already wrote to see what needs to be
+> updated. (I did take a look at some of those pages a while back, and
+> some pieces--I don't recall the details--were out of sync with the
+> implementation.)
+> 
+> 2. Resend the pages, one patch per page.
+> 
+> 3. Please CC linux-man@, linux-api@, linux-kernel@, and the folk in CC
+> on this message.
 
-This isn't a part of the official style guide so the original is fine.
+For this week and next, I have an online language course taking up 8-10 hours
+a day.  I'll pick it up in August, if that's okay with you.
 
-regards,
-dan carpenter
+David
 
