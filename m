@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AB322C4EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E4122C4EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgGXMQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 08:16:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgGXMQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 08:16:21 -0400
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EF162073E
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:16:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595592980;
-        bh=WdKBttJSrUprqS6V7PDxTgYqLUaZfmvXP2DkIOtu0so=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VFB+q4ntLqL2Ctbo5MgHkPItgam47VQK06Pl1wqcpJGLX3T+w3386RUBz+2EpNySK
-         6e+zBJSOnsYMp+UAN8UaF6g9qY7oaCIMxUPAPcg3G3O6RdbTlfmDVvbbL0CzNrghCh
-         kl33diwLiJ14k+lGLNFeolqDXVRL54593INbIlKQ=
-Received: by mail-oi1-f182.google.com with SMTP id e4so7851082oib.1
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:16:20 -0700 (PDT)
-X-Gm-Message-State: AOAM532s6+DSrNQ2ye3hOjowe3nnzQ/Es564+Xf5aebmyi3DY+bER7qz
-        COQJjm/1KK2+UH98m8ng7xpQWGV+eX9xYW9vZ/4=
-X-Google-Smtp-Source: ABdhPJzazvz+YVH4yMcXQ4eOnvDzE85XNeiZD+dIinUZRfsQnYXvvBcJr9fd1mpDed/CD8C2NxVD5gOjumZYvAaYlKs=
-X-Received: by 2002:aca:5516:: with SMTP id j22mr7411445oib.47.1595592979858;
- Fri, 24 Jul 2020 05:16:19 -0700 (PDT)
+        id S1726863AbgGXMRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 08:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgGXMRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 08:17:20 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55473C0619D3;
+        Fri, 24 Jul 2020 05:17:20 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o18so9739725eje.7;
+        Fri, 24 Jul 2020 05:17:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oefsCcIVVC08IrofmdPx+ClRioaDoUfxCbQJCnq9X00=;
+        b=NKeRgkjzwebhEdvaagnz02z9Gbq4+7iop3cEpMwqHtM/LhCwRhRIqvho9HrG24s31c
+         R+JPr2ZDOPzo1yoeDjdsUCixB+H+tFfza1Smtvm9rk0gQvNDmjuNoCJFriOuZgmJRapK
+         YrcfsPnQ8r13I1TbTjX4d33mCzMHRC0hvndXlN9QhxX/wxVZmoIxrdiaxAF465yuJkAR
+         dXdMJ7YHjosB4hY3Py4Tn0EutvRu2IdHQfbpURnC0Z7GYeCcfGbPa7ZzqjpGQ32UCRYn
+         01PRaADlKEtCbFCo6EyDlaiJZwWS6L3lM+J7lLZNZCqQT//eUBoMJp0lXXnsB2+ZkXqB
+         pboA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=oefsCcIVVC08IrofmdPx+ClRioaDoUfxCbQJCnq9X00=;
+        b=Gea54zsxTtA6n5amJy9Qwuz6162T6Gzfp2eLPnaXOoMGTmDjegcVkEJc8Cfw1r0fQs
+         Qo8v3sIngNJ23vOybI+LH8ffs28wbyal+BAO4WIxz5Y4Ve4YuTUbMOCwSg2JjjwVnaPn
+         gVVfo8kDHJfKd59KY5GyMeJbIJA+xC4lQI9S+TmG37CcFf+PBAk6RpvQX3pRJ6/HHMwH
+         CiL2VA326JUAfdfmKbfQH3gIrTqr2TMxQUSIygKoqUAclDwr4uAEDod5CwHb1k5uA+Fe
+         oIg0rvd9nmBs+JnnpwHTbQSxIqgwzUi9hWYKkb9J0R60tZcVaIFREPTNC8nUiEw8HEUt
+         ev1g==
+X-Gm-Message-State: AOAM530tQvq63fUI+hwsMtY5r8O5DrR76UUGvDmASUFmfAcAaQ5XzjOV
+        bDd/W/+k8wSIuZMztsyTsww=
+X-Google-Smtp-Source: ABdhPJwp7IkMvGoHQoVYEg7dT3QpDnvecUh+FJ/wqOUSWekmU6eqd6UysOwYDO1LD+uAwfacpE79bg==
+X-Received: by 2002:a17:907:aad:: with SMTP id bz13mr9307767ejc.276.1595593039130;
+        Fri, 24 Jul 2020 05:17:19 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id i7sm599533eds.91.2020.07.24.05.17.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 05:17:18 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 14:17:16 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Nick Terrell <nickrterrell@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        Patrick Williams <patrick@stwcx.xyz>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Terrell <terrelln@fb.com>
+Subject: Re: [PATCH v8 3/7] init: add support for zstd compressed kernel
+Message-ID: <20200724121716.GB632343@gmail.com>
+References: <20200723192801.351114-1-nickrterrell@gmail.com>
+ <20200723192801.351114-4-nickrterrell@gmail.com>
+ <9ff49261-f5fd-b8dd-949a-0b8eab75369b@infradead.org>
 MIME-Version: 1.0
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
- <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com> <20200724092746.GD517988@gmail.com>
-In-Reply-To: <20200724092746.GD517988@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 24 Jul 2020 15:16:08 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHeSVn7W-Awq2Z57w4OevaLLLX7QrPgnzceiaQ2PooQXg@mail.gmail.com>
-Message-ID: <CAMj1kXHeSVn7W-Awq2Z57w4OevaLLLX7QrPgnzceiaQ2PooQXg@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ff49261-f5fd-b8dd-949a-0b8eab75369b@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 at 12:27, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
->
-> > Use text_alloc() and text_free() instead of module_alloc() and
-> > module_memfree() when an arch provides them.
-> >
-> > Cc: linux-mm@kvack.org
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> >  kernel/kprobes.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > index 4e46d96d4e16..611fcda9f6bf 100644
-> > --- a/kernel/kprobes.c
-> > +++ b/kernel/kprobes.c
-> > @@ -40,6 +40,7 @@
-> >  #include <asm/cacheflush.h>
-> >  #include <asm/errno.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/vmalloc.h>
-> >
-> >  #define KPROBE_HASH_BITS 6
-> >  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
-> > @@ -111,12 +112,20 @@ enum kprobe_slot_state {
-> >
-> >  void __weak *alloc_insn_page(void)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +     return text_alloc(PAGE_SIZE);
-> > +#else
-> >       return module_alloc(PAGE_SIZE);
-> > +#endif
-> >  }
-> >
-> >  void __weak free_insn_page(void *page)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +     text_free(page);
-> > +#else
-> >       module_memfree(page);
-> > +#endif
-> >  }
->
-> I've read the observations in the other threads, but this #ifdef
-> jungle is silly, it's a de-facto open coded text_alloc() with a
-> module_alloc() fallback...
->
 
-Also, as I attempted to explain before, there is no reason to allocate
-kasan shadow for any of these use cases, so cloning module_alloc() to
-implement text_alloc() is not the correct approach even on x86.
+* Randy Dunlap <rdunlap@infradead.org> wrote:
 
-I suppose module_alloc() could be reimplemented in terms of
-text_alloc() in this case, but simply relabelling it like this seems
-inappropriate on all architectures.
+> On 7/23/20 12:27 PM, Nick Terrell wrote:
+> > +config KERNEL_ZSTD
+> > +	bool "ZSTD"
+> > +	depends on HAVE_KERNEL_ZSTD
+> > +	help
+> > +	  ZSTD is a compression algorithm targeting intermediate compression
+> > +	  with fast decompression speed. It will compress better than GZIP and
+> > +	  decompress around the same speed as LZO, but slower than LZ4. You
+> > +	  will need at least 192 KB RAM or more for booting. The zstd command
+> > +	  line tools is required for compression.
+> 
+> 	       tools are required
+
+Since 'zstd' is the singular tool required for compression AFAICS:
+
+   LZ4            = lz4c
+   XZ             = xz
+  +ZSTD           = zstd
+
+"The zstd command line tool is required for compression" is the 
+intended wording I'd say?
+
+Thanks,
+
+	Ingo
