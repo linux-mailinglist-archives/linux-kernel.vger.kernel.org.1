@@ -2,242 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D10E22CC17
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD1522CC23
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgGXRYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgGXRYa (ORCPT
+        id S1727883AbgGXRZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:25:36 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:58602 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727119AbgGXRZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:24:30 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6F8C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:24:30 -0700 (PDT)
+        Fri, 24 Jul 2020 13:25:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Content-Type:
-        References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID
-        :Content-Description; bh=ZirEMoqFChKVP997rHvVKSuAF3dK0iS+WiW9fGpcVZQ=; b=jZAy
-        b0fHk5lUfr3iaep4NHYBlvy/1pOM7SLSOGdJaCYPtdx2tmIYGjSVLsqkBoBMToeid0YSyFtErfE+k
-        XjsOe/+x9wxVJbu01SQq2XjYHJBL9gii3O7pJN8f5tfzp5ajmNHY9OrbJjBCJOXVDethzgr2SzRwr
-        kIrJWM3aqpODr8Z1qtquUEn4kWC2px61RoNA8ZRN9Jr4wwuwnPaACKtW0y+t6uIztOfmFdKmLz7go
-        aJ/JMvgYeBoFO8cLHJgEKOr4B3g3Wo26xcLntA5431o3GctO2rdKKaLk5LEUVMACxgfenoHVaKzJ1
-        7H2aWT4gq1hoYLkt9mRC8G12+5jk3g==;
-Received: from [81.174.171.191] (helo=donbot)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1jz1Qp-0000oh-OD; Fri, 24 Jul 2020 18:24:28 +0100
-Date:   Fri, 24 Jul 2020 18:24:22 +0100
-From:   John Keeping <john@metanate.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Ben Herrenschmidt <benh@amazon.com>,
-        Ali Saidi <alisaidi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH V2] genirq/affinity: Handle affinity setting on inactive
- interrupts correctly
-Message-ID: <20200724182422.27ddced6.john@metanate.com>
-In-Reply-To: <877dv2rv25.fsf@nanos.tec.linutronix.de>
-References: <87k0z2s2q3.fsf@nanos.tec.linutronix.de>
-        <877dv2rv25.fsf@nanos.tec.linutronix.de>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8gkNZXoTlzUPEKROHQD1gxmyNRa+Oc9Rw362hIhKRzg=; b=bNd0qMgdfPt7pzoJHDZfygy1C0
+        rG4xOirX1/o+I/R0fCvI3VdxSpx1SjMCJ4x3JQupJ0rLjZ4lOPer3s4Ub0tnHPxgtJkXLoUwlXzQk
+        c3bIqYUoSVZMAFmy2VrGQW6RG+j2NGTGFm3EeD6HzZCJurz50IgVVDcocnMDsxuO5OJJXL41tIZle
+        V7k4F045gWCxaMhp0pXOPJOptcUhKdIuJnij4ZhUJQOm0txjR2uCb8Z3cNK+gJz7BINFB49offeT8
+        0iHWka5zZ/sSWSy3fTxtMENHCRxiiiuncqqvnbKoB9zCBw2YwARRPztQe1+bAZleHKa5kL8QjnW02
+        boDM8Gkw==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1jz1Rk-0006ym-5m; Fri, 24 Jul 2020 11:25:30 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1jz1Rh-0004G4-S3; Fri, 24 Jul 2020 11:25:21 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org
+Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Fri, 24 Jul 2020 11:25:11 -0600
+Message-Id: <20200724172520.16318-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Authenticated: YES
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org, hch@lst.de, sagi@grimberg.me, kbusch@kernel.org, axboe@fb.com, Chaitanya.Kulkarni@wdc.com, maxg@mellanox.com, sbates@raithlin.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: [PATCH v16 0/9] nvmet: add target passthru commands support
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is v16 of the passthru patchset which make a bunch of cleanup as
+suggested by Christoph.
 
-On Fri, 17 Jul 2020 18:00:02 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
+I attempted to change the connect_q to a passthru_q (one of the
+suggestions) but doing so did not allow for the removal of the need
+for the namespace structure. The ns structure is needed to obtain
+command effects (and call nvme_passthru_start()), it's also needed to
+obtain the disk for proper block accounting statistics.
 
-> Setting interrupt affinity on inactive interrupts is inconsistent when
-> hierarchical irq domains are enabled. The core code should just store the
-> affinity and not call into the irq chip driver for inactive interrupts
-> because the chip drivers may not be in a state to handle such requests.
-> 
-> X86 has a hacky workaround for that but all other irq chips have not which
-> causes problems e.g. on GIC V3 ITS.
-> 
-> Instead of adding more ugly hacks all over the place, solve the problem in
-> the core code. If the affinity is set on an inactive interrupt then:
-> 
->     - Store it in the irq descriptors affinity mask
->     - Update the effective affinity to reflect that so user space has
->       a consistent view
->     - Don't call into the irq chip driver
-> 
-> This is the core equivalent of the X86 workaround and works correctly
-> because the affinity setting is established in the irq chip when the
-> interrupt is activated later on.
-> 
-> Note, that this is only effective when hierarchical irq domains are enabled
-> by the architecture. Doing it unconditionally would break legacy irq chip
-> implementations.
-> 
-> For hierarchial irq domains this works correctly as none of the drivers can
-> have a dependency on affinity setting in inactive state by design.
-> 
-> Remove the X86 workaround as it is not longer required.
-> 
-> Fixes: 02edee152d6e ("x86/apic/vector: Ignore set_affinity call for inactive interrupts")
-> Reported-by: Ali Saidi <alisaidi@amazon.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> Link: https://lore.kernel.org/r/20200529015501.15771-1-alisaidi@amazon.com
-> ---
-> V2: Fix the fallout for CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK=n (0day)
+A git branch is available here and is based on nvme-5.9 on Jul 23th:
 
-It seems that this patch breaks perf events on RK3288 because the PMU
-interrupts that should be per-cpu are now all on CPU0 so no events are
-collected from CPUs 1-3 and those interrupts are killed as spurious
-after a few seconds.
+https://github.com/sbates130272/linux-p2pmem nvmet_passthru_v16
 
-I'm seeing this on 4.19.134 and 5.4.53 but as far as I can tell the
-relevant code hasn't changed through to next-20200723.  Reverting the
-backport of this change fixes the problem.
+--
 
-It looks like what happens is that because the interrupts are not
-per-CPU in the hardware, armpmu_request_irq() calls irq_force_affinity()
-while the interrupt is deactivated and then request_irq() with
-IRQF_PERCPU | IRQF_NOBALANCING.
+v16 Changes (all based on feedback from Christoph):
+  1. Rebased onto latest nvme-5.9, no merge necessary
+  2. Restored the nvme_known_admin_effects() helper
+  3. Reworked when the passthru_start/end functions are moved
+  4. Moved the patch that adds the kconfig to be last
+  5. Use EXPORT_SYMBOL_GPL_NS() with the new NVME_TARGET_PASSTHRU
+     namespace, instead of the #ifdef around the exports.
+  6. Removed the end_rq callback and just hardcoded the two uses.
+  7. Added Eideticom copyright to the passthru.c file
+  8. Use bio_add_pc_page() instead of bio_add_page()
+  9. Couple other minor nits
 
-Now when irq_startup() runs with IRQ_STARTUP_NORMAL, it calls
-irq_setup_affinity() which returns early because IRQF_PERCPU and
-IRQF_NOBALANCING are set, leaving the interrupt on its original CPU.
+v15 Changes:
+  1. Rebased onto nvme-5.9, required minor merge.
+  2. Ensure NVME_CORE is not a module if NVME_TARGET is builtin when
+     selecting NVME_TARGET_PASSTHRU (per kernel test robot)
 
-At this point /proc/interrupts clearly shows the interrupts occurring on
-CPU0 despite /proc/irq/N/effective_affinity and /proc/irq/N/smp_affinity
-showing them spread across the cores as expected.
+v14 Changes:
+  1. Rebased onto nvme-5.9 (per Chaitanya's suggestion), required minor
+     merge.
+  2. Dropped the #ifdef around the prototypes in nvme.h because kbuild
+     started complaining about non-staic functions that don't have
+     prototypes.
+  3. Removed an unecessary if/else in nvmet_passthru_execute_cmd()
+     as spotted by Chaitanya.
+  4. Removed unecessary casts in a pr_warn(), per Chaitanya
 
-I don't think I understand what's meant to happen well enough to propose
-a patch, but hopefully the above explanation explains the problem.
+v13 Changes:
+  1. Rebased onto v5.7-rc5
+  2. Collected Sagi's Reviewed-by tags
+
+v12 Changes:
+  1. Rebased onto v5.7-rc1
+  2. Collected Sagi's Reviewed-by tags
+  3. Per Sagi's feedback implement an whitelist for set/get features and
+     audit the features for whether they are suitable to be passed-through
+
+v11 Changes:
+  1. Rebased onto v5.6-rc2
+  2. Collected Max's Reviewed-By tag
+
+v10 Changes:
+  1. Rebased onto v5.5-rc1
+  2. Disable all exports in core nvme if CONFIG_NVME_TARGET_PASSTHRU is
+     not set and put them near the end of the file with a big fat
+     comment (per Christoph)
+  3. Don't fake up the vs field: pass it through as is and bump
+     it to 1.2.1 if it is below that (per Christoph)
+  4. Rework how passthru requests are submitted into the core
+     with proper nvme_passthru_start/end handling (per Christoph)
+  5. Rework how commands are parsed with passthru hooks in
+     parse_admin_cmd() and nvmet_parse_io_cmd() (per Christoph)
+  6. Rework commands are handled so they are only done in a work
+     item if absolutely necessary (per Christoph)
+  7. The data_len hack was dropped as a patchset was introduced to
+     remove data_len altogether (per Christoph)
+  8. The passthru accounting changes are now in v5.5-rc1
+  9. A large number of other minor cleanups that were pointed out by
+     Christoph
+
+v9 Changes:
+  1. Rebased onto v5.4-rc2 (required adjusting nvme_identify_ns() usage)
+  2. Collected Sagi's Reviewed-By Tags
+  3. Squashed seperate Kconfig patch into passthru patch (Per Sagi)
+  4. Set REQ_FUA for flush requests and remove special casing
+     on RQF_IO_STAT (Per Sagi)
+
+v8 Changes:
+  1. Rebased onto v5.3-rc6
+  2. Collected Max's Reviewed-By tags
+  3. Converted admin command black-list to a white-list, but
+     allow all vendor specific commands. With this, we feel
+     it's safe to allow multiple connections from hosts.
+     (As per Sagi's feedback)
+
+v7 Changes:
+  1. Rebased onto v5.3-rc2
+  2. Rework nvme_ctrl_get_by_path() to use filp_open() instead of
+     the cdev changes that were in v6. (Per Al)
+  3. Override the cmic bit to allow multipath and allow
+     multiple connections from the same hostnqn. (At the same
+     time I cleaned up the method of rejecting multiple connections.)
+     See Patch 8)
+  4. Found a bug when used with the tcp transport (See Patch 10)
+
+v6 Changes:
+  1. Rebased onto v5.3-rc1
+  2. Rework configfs interface to simply be a passthru directory
+     within the existing subsystem. The directory is similar to
+     and consistent with a namespace directory.
+  3. Have the configfs take a path instead of a bare controller name
+  4. Renamed the main passthru file to io-cmd-passthru.c for consistency
+     with the file and block-dev methods.
+  5. Cleaned up all the CONFIG_NVME_TARGET_PASSTHRU usage to remove
+     all the inline #ifdefs
+  6. Restructured nvmet_passthru_make_request() a bit for clearer code
+  7. Moved nvme_find_get_ns() call into nvmet_passthru_execute_cmd()
+     seeing calling it in nvmet_req_init() causes a lockdep warning
+     due to nvme_find_get_ns() being able to sleep.
+  8. Added a check in nvmet_passthru_execute_cmd() to ensure we don't
+     violate queue_max_segments or queue_max_hw_sectors and overrode
+     mdts to ensure hosts don't intentionally submit commands
+     that will exceed these limits.
+  9. Reworked the code which ensures there's only one subsystem per
+     passthru controller to use an xarray instead of a list as this is
+     simpler and more easily fixed some bugs triggered by disabling
+     subsystems that weren't enabled.
+ 10. Removed the overide of the target cntlid with the passthru cntlid;
+     this seemed like a really bad idea especially in the presence of
+     mixed systems as you could end up with two ctrlrs with the same
+     cntlid. For now, commands that depend on cntlid are black listed.
+ 11. Implement block accounting for passthru so the target can track
+     usage using /proc/diskstats
+ 12. A number of other minor bug fixes and cleanups
+
+v5 Changes (not sent to list, from Chaitanya):
+  1. Added workqueue for admin commands.
+  2. Added kconfig option for the pass-thru feature.
+  3. Restructure the parsing code according to your suggestion,
+     call nvmet_xxx_parse_cmd() from nvmet_passthru_parse_cmd().
+  4. Use pass-thru instead of pt.
+  5. Several cleanups and add comments at the appropriate locations.
+  6. Minimize the code for checking pass-thru ns across all the subsystems.
+  7. Removed the delays in the ns related admin commands since I was
+     not able to reproduce the previous bug.
+
+v4 Changes:
+  1. Add request polling interface to the block layer.
+  2. Use request polling interface in the NVMEoF target passthru code
+     path.
+  3. Add checks suggested by Sagi for creating one target ctrl per
+     passthru ctrl.
+  4. Don't enable the namespace if it belongs to the configured passthru
+     ctrl.
+  5. Adjust the code latest kernel.
+
+v3 Changes:
+  1. Split the addition of passthru command handlers and integration
+     into two different patches since we add guards to create one target
+     controller per passthru controller. This way it will be easier to
+     review the code.
+  2. Adjust the code for 4.18.
+
+v2 Changes:
+  1. Update the new nvme core controller find API naming and
+     changed the string comparison of the ctrl.
+  2. Get rid of the newly added #defines for target ctrl values.
+  3. Use the newly added structure members in the same patch where
+     they are used. Aggregate the passthru command handling support
+     and integration with nvmet-core into one patch.
+  4. Introduce global NVMe Target subsystem list for connected and
+     not connected subsystems on the target side.
+  5. Add check when configuring the target ns and target
+     passthru ctrl to allow only one target controller to be created
+     for one passthru subsystem.
+  6. Use the passthru ctrl cntlid when creating the
+     target controller.
 
 
-Regards,
-John
+Chaitanya Kulkarni (1):
+  nvmet-passthru: Introduce NVMet passthru Kconfig option
 
-> ---
->  arch/x86/kernel/apic/vector.c |   22 +++++-----------------
->  kernel/irq/manage.c           |   37 +++++++++++++++++++++++++++++++++++--
->  2 files changed, 40 insertions(+), 19 deletions(-)
-> 
-> --- a/arch/x86/kernel/apic/vector.c
-> +++ b/arch/x86/kernel/apic/vector.c
-> @@ -446,12 +446,10 @@ static int x86_vector_activate(struct ir
->  	trace_vector_activate(irqd->irq, apicd->is_managed,
->  			      apicd->can_reserve, reserve);
->  
-> -	/* Nothing to do for fixed assigned vectors */
-> -	if (!apicd->can_reserve && !apicd->is_managed)
-> -		return 0;
-> -
->  	raw_spin_lock_irqsave(&vector_lock, flags);
-> -	if (reserve || irqd_is_managed_and_shutdown(irqd))
-> +	if (!apicd->can_reserve && !apicd->is_managed)
-> +		assign_irq_vector_any_locked(irqd);
-> +	else if (reserve || irqd_is_managed_and_shutdown(irqd))
->  		vector_assign_managed_shutdown(irqd);
->  	else if (apicd->is_managed)
->  		ret = activate_managed(irqd);
-> @@ -775,20 +773,10 @@ void lapic_offline(void)
->  static int apic_set_affinity(struct irq_data *irqd,
->  			     const struct cpumask *dest, bool force)
->  {
-> -	struct apic_chip_data *apicd = apic_chip_data(irqd);
->  	int err;
->  
-> -	/*
-> -	 * Core code can call here for inactive interrupts. For inactive
-> -	 * interrupts which use managed or reservation mode there is no
-> -	 * point in going through the vector assignment right now as the
-> -	 * activation will assign a vector which fits the destination
-> -	 * cpumask. Let the core code store the destination mask and be
-> -	 * done with it.
-> -	 */
-> -	if (!irqd_is_activated(irqd) &&
-> -	    (apicd->is_managed || apicd->can_reserve))
-> -		return IRQ_SET_MASK_OK;
-> +	if (WARN_ON_ONCE(!irqd_is_activated(irqd)))
-> +		return -EIO;
->  
->  	raw_spin_lock(&vector_lock);
->  	cpumask_and(vector_searchmask, dest, cpu_online_mask);
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -195,9 +195,9 @@ void irq_set_thread_affinity(struct irq_
->  			set_bit(IRQTF_AFFINITY, &action->thread_flags);
->  }
->  
-> +#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
->  static void irq_validate_effective_affinity(struct irq_data *data)
->  {
-> -#ifdef CONFIG_GENERIC_IRQ_EFFECTIVE_AFF_MASK
->  	const struct cpumask *m = irq_data_get_effective_affinity_mask(data);
->  	struct irq_chip *chip = irq_data_get_irq_chip(data);
->  
-> @@ -205,9 +205,19 @@ static void irq_validate_effective_affin
->  		return;
->  	pr_warn_once("irq_chip %s did not update eff. affinity mask of irq %u\n",
->  		     chip->name, data->irq);
-> -#endif
->  }
->  
-> +static inline void irq_init_effective_affinity(struct irq_data *data,
-> +					       const struct cpumask *mask)
-> +{
-> +	cpumask_copy(irq_data_get_effective_affinity_mask(data), mask);
-> +}
-> +#else
-> +static inline void irq_validate_effective_affinity(struct irq_data *data) { }
-> +static inline void irq_init_effective_affinity(struct irq_data *data,
-> +					       const struct cpumask *mask) { }
-> +#endif
-> +
->  int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
->  			bool force)
->  {
-> @@ -304,6 +314,26 @@ static int irq_try_set_affinity(struct i
->  	return ret;
->  }
->  
-> +static bool irq_set_affinity_deactivated(struct irq_data *data,
-> +					 const struct cpumask *mask, bool force)
-> +{
-> +	struct irq_desc *desc = irq_data_to_desc(data);
-> +
-> +	/*
-> +	 * If the interrupt is not yet activated, just store the affinity
-> +	 * mask and do not call the chip driver at all. On activation the
-> +	 * driver has to make sure anyway that the interrupt is in a
-> +	 * useable state so startup works.
-> +	 */
-> +	if (!IS_ENABLED(CONFIG_IRQ_DOMAIN_HIERARCHY) || irqd_is_activated(data))
-> +		return false;
-> +
-> +	cpumask_copy(desc->irq_common_data.affinity, mask);
-> +	irq_init_effective_affinity(data, mask);
-> +	irqd_set(data, IRQD_AFFINITY_SET);
-> +	return true;
-> +}
-> +
->  int irq_set_affinity_locked(struct irq_data *data, const struct cpumask *mask,
->  			    bool force)
->  {
-> @@ -314,6 +344,9 @@ int irq_set_affinity_locked(struct irq_d
->  	if (!chip || !chip->irq_set_affinity)
->  		return -EINVAL;
->  
-> +	if (irq_set_affinity_deactivated(data, mask, force))
-> +		return 0;
-> +
->  	if (irq_can_move_pcntxt(data) && !irqd_is_setaffinity_pending(data)) {
->  		ret = irq_try_set_affinity(data, mask, force);
->  	} else {
+Logan Gunthorpe (8):
+  nvme-core: Clear any SGL flags in passthru commands
+  nvme: Create helper function to obtain command effects
+  nvme: Introduce nvme_execute_passthru_rq to call
+    nvme_passthru_[start|end]()
+  nvme-core: Introduce nvme_ctrl_get_by_path()
+  nvme: Export nvme_find_get_ns() and nvme_put_ns()
+  nvmet-passthru: Add passthru code to process commands
+  nvmet-passthru: Add enable/disable helpers
+  nvmet-configfs: Introduce passthru configfs interface
 
+ drivers/nvme/host/core.c        | 253 +++++++++------
+ drivers/nvme/host/nvme.h        |   7 +
+ drivers/nvme/target/Kconfig     |  12 +
+ drivers/nvme/target/Makefile    |   1 +
+ drivers/nvme/target/admin-cmd.c |   7 +-
+ drivers/nvme/target/configfs.c  | 103 ++++++
+ drivers/nvme/target/core.c      |  13 +-
+ drivers/nvme/target/nvmet.h     |  52 +++
+ drivers/nvme/target/passthru.c  | 545 ++++++++++++++++++++++++++++++++
+ include/linux/nvme.h            |   4 +
+ 10 files changed, 892 insertions(+), 105 deletions(-)
+ create mode 100644 drivers/nvme/target/passthru.c
+
+
+base-commit: 6d415389cd779a97d801218cc8b431d90092fae1
+--
+2.20.1
