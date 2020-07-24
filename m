@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB37022CECC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 864BA22CED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726639AbgGXTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:43:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28554 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726085AbgGXTn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:43:57 -0400
-IronPort-SDR: EfyhiW3llWlszXI3GBFqhly+qsP2rPDJX12B1ZCW1e0fDLHBKP+784TFknVpFI6TXo/vf9mqp7
- UoYWvt582+sA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="138282996"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="138282996"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 12:43:56 -0700
-IronPort-SDR: xw35vgWVMvuh2FxBDPdLOZ98hPNSo7kyjZ00bcaGwKX/k2DG8gIcu2MZetY8wt/D3BJ5XnscaB
- FrmYkinokGDA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="272667289"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2020 12:43:56 -0700
-Date:   Fri, 24 Jul 2020 12:43:56 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
+        id S1726696AbgGXToZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:44:25 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:35644 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbgGXToZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:44:25 -0400
+Date:   Fri, 24 Jul 2020 15:44:23 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across
- exceptions
-Message-ID: <20200724194355.GA844234@iweiny-DESK2.sc.intel.com>
-References: <20200724172344.GO844235@iweiny-DESK2.sc.intel.com>
- <D866BD75-42A2-43B2-B07A-55BCC3781FEC@amacapital.net>
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sh: add missing EXPORT_SYMBOL() for __delay
+Message-ID: <20200724194423.GJ6949@brightrain.aerifal.cx>
+References: <87wob2clos.wl-kuninori.morimoto.gx@renesas.com>
+ <20200722023840.GA55317@roeck-us.net>
+ <20200722225239.GX14669@brightrain.aerifal.cx>
+ <fa0456c9-cef0-45e7-59d7-ad652734b1d5@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D866BD75-42A2-43B2-B07A-55BCC3781FEC@amacapital.net>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <fa0456c9-cef0-45e7-59d7-ad652734b1d5@roeck-us.net>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 10:29:23AM -0700, Andy Lutomirski wrote:
+On Wed, Jul 22, 2020 at 04:52:56PM -0700, Guenter Roeck wrote:
+> Rich,
 > 
-> > On Jul 24, 2020, at 10:23 AM, Ira Weiny <ira.weiny@intel.com> wrote:
+> On 7/22/20 3:52 PM, Rich Felker wrote:
+> > On Tue, Jul 21, 2020 at 07:38:40PM -0700, Guenter Roeck wrote:
+> >> On Thu, Dec 12, 2019 at 11:38:43AM +0900, Kuninori Morimoto wrote:
+> >>> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> >>>
+> >>> __delay() is used from kernel module.
+> >>> We need EXPORT_SYMBOL(), otherwise we will get compile error.
+> >>>
+> >>> ERROR: "__delay" [drivers/net/phy/mdio-cavium.ko] undefined!
+> >>>
+> >>> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> >>
+> >> I must admit that this patch completely baffles me. __delay was
+> >> already exported, only elsewhere in the file. With this patch
+> >> in place, it is exported twice, and all sh builds in -next fail
+> >> with
+> >>
+> >> In file included from include/linux/linkage.h:7,
+> >>                  from arch/sh/include/asm/bug.h:5,
+> >>                  from include/linux/bug.h:5,
+> >>                  from include/linux/thread_info.h:12,
+> >>                  from include/asm-generic/current.h:5,
+> >>                  from ./arch/sh/include/generated/asm/current.h:1,
+> >>                  from include/linux/sched.h:12,
+> >>                  from arch/sh/lib/delay.c:8:
+> >> include/linux/export.h:67:36: error: redefinition of '__ksymtab___delay'
+> >>
+> >> Guenter
+> >>
+> >>> ---
+> >>>  arch/sh/lib/delay.c | 1 +
+> >>>  1 file changed, 1 insertion(+)
+> >>>
+> >>> diff --git a/arch/sh/lib/delay.c b/arch/sh/lib/delay.c
+> >>> index dad8e6a..540e670 100644
+> >>> --- a/arch/sh/lib/delay.c
+> >>> +++ b/arch/sh/lib/delay.c
+> >>> @@ -29,6 +29,7 @@ void __delay(unsigned long loops)
+> >>>  		: "0" (loops)
+> >>>  		: "t");
+> >>>  }
+> >>> +EXPORT_SYMBOL(__delay);
+> >>>  
+> >>>  inline void __const_udelay(unsigned long xloops)
+> >>>  {
 > > 
-> > ﻿On Thu, Jul 23, 2020 at 10:15:17PM +0200, Thomas Gleixner wrote:
-> >> Thomas Gleixner <tglx@linutronix.de> writes:
-> >> 
-> >>> Ira Weiny <ira.weiny@intel.com> writes:
-> >>>> On Fri, Jul 17, 2020 at 12:06:10PM +0200, Peter Zijlstra wrote:
-> >>>>>> On Fri, Jul 17, 2020 at 12:20:56AM -0700, ira.weiny@intel.com wrote:
-> >>>>> I've been really digging into this today and I'm very concerned that I'm
-> >>>>> completely missing something WRT idtentry_enter() and idtentry_exit().
-> >>>>> 
-> >>>>> I've instrumented idt_{save,restore}_pkrs(), and __dev_access_{en,dis}able()
-> >>>>> with trace_printk()'s.
-> >>>>> 
-> >>>>> With this debug code, I have found an instance where it seems like
-> >>>>> idtentry_enter() is called without a corresponding idtentry_exit().  This has
-> >>>>> left the thread ref counter at 0 which results in very bad things happening
-> >>>>> when __dev_access_disable() is called and the ref count goes negative.
-> >>>>> 
-> >>>>> Effectively this seems to be happening:
-> >>>>> 
-> >>>>> ...
-> >>>>>    // ref == 0
-> >>>>>    dev_access_enable()  // ref += 1 ==> disable protection
-> >>>>>        // exception  (which one I don't know)
-> >>>>>            idtentry_enter()
-> >>>>>                // ref = 0
-> >>>>>                _handler() // or whatever code...
-> >>>>>            // *_exit() not called [at least there is no trace_printk() output]...
-> >>>>>            // Regardless of trace output, the ref is left at 0
-> >>>>>    dev_access_disable() // ref -= 1 ==> -1 ==> does not enable protection
-> >>>>>    (Bad stuff is bound to happen now...)
-> >>> 
-> >>> Well, if any exception which calls idtentry_enter() would return without
-> >>> going through idtentry_exit() then lots of bad stuff would happen even
-> >>> without your patches.
-> >>> 
-> >>>> Also is there any chance that the process could be getting scheduled and that
-> >>>> is causing an issue?
-> >>> 
-> >>> Only from #PF, but after the fault has been resolved and the tasks is
-> >>> scheduled in again then the task returns through idtentry_exit() to the
-> >>> place where it took the fault. That's not guaranteed to be on the same
-> >>> CPU. If schedule is not aware of the fact that the exception turned off
-> >>> stuff then you surely get into trouble. So you really want to store it
-> >>> in the task itself then the context switch code can actually see the
-> >>> state and act accordingly.
-> >> 
-> >> Actually thats nasty as well as you need a stack of PKRS values to
-> >> handle nested exceptions. But it might be still the most reasonable
-> >> thing to do. 7 PKRS values plus an index should be really sufficient,
-> >> that's 32bytes total, not that bad.
+> > I presently have a revert of this commit in queue for next. If it's
+> > sufficiently breaking (and especially if there are other regressions
+> > that need to be fixed, see the pmd_free thing) I could try to get it
+> > in for 5.8 still but that's getting a bit late.
 > > 
-> > I've thought about this a bit more and unless I'm wrong I think the
-> > idtentry_state provides for that because each nested exception has it's own
-> > idtentry_state doesn't it?
 > 
-> Only the ones that use idtentry_enter() instead of, say, nmi_enter().
+> The patch in mainline is ok. It appears that it has been applied
+> again in -next.
+> 
+> "git log --oneline v5.7.. arch/sh/lib/delay.c" on top of next-20200721
+> reports:
+> 
+> ee0e4f15dfd4 (origin/akpm) sh: add missing EXPORT_SYMBOL() for __delay
+> d1f56f318d23 sh: add missing EXPORT_SYMBOL() for __delay
+> 
+> Maybe it just needs to be dropped from the akpm tree in -next ?
 
-Oh agreed...
+Could it be a bad merge or patch applied twice or something? I don't
+see how the symbol is being exported twice. The argument to revert the
+patch still seems correct.
 
-But with this patch we are still better off than just preserving during context
-switch.
+Looking at current linux-next, ba722ca780 from akpm is re-adding the
+patch after it gets reverted. Andrew, could you drop your copy of this
+patch? It's already upstream as of 5.8-rc1 and now just needs to be
+reverted upstream.
 
-I need to update the commit message here to make this clear though.
-
-Thanks,
-Ira
+Rich
