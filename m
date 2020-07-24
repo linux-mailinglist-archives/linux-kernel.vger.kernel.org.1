@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB8622C895
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D39C22C89A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgGXO5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:57:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbgGXO5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:57:24 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FF1B206D8;
-        Fri, 24 Jul 2020 14:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595602643;
-        bh=UAvrshxQEJ0Ykt7yvu37iIenplAoYeh9Ny04iEuSMGc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=crC5S/FGJPAWRBT9ywxQN/+7BmOHwIP6uS8JJxRhcF24ZZFiW7/n6ooDey+u2lHjL
-         +Z9LNEz5VWQTMMlZj1QTz5KdYzPnqSv2afZS3EfbTpgwlcwuhYfMhXRAFfWIaJO64+
-         9jnMvXCY8vIBQoQCZnMZtHvWrU031I+B42EQBeu0=
-Date:   Fri, 24 Jul 2020 23:57:19 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-Message-Id: <20200724235719.a64952a8a92a42db9ea0cd94@kernel.org>
-In-Reply-To: <20200724102748.GD2831654@kernel.org>
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
-        <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
-        <20200724102748.GD2831654@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726983AbgGXO6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbgGXO6n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 10:58:43 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB36C0619D3;
+        Fri, 24 Jul 2020 07:58:43 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id a14so5266741pfi.2;
+        Fri, 24 Jul 2020 07:58:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QkqqWSeWUuD3HygOIUorTjyLc3b0L3sITA+lUb4cF40=;
+        b=sVuj4ZUs9ormiALXE8mSBXmPwBAZjN1g/gp/PGZJo+xnCtLCXc+ib65AVMQsm2b2f+
+         X69daFQHIUotiKVt9msWSze3AjHsDu3r9q7xLGsJi93ZX8hRd6/np10qymypSAPx63eh
+         +7qVhcaJFsVVlSQnMGCmXYKOKI8QxRFYXjyeJ6JIVEevtRTmfJEjUKuY6ro6L/yjgzu4
+         Q8wB1CzaU7y86U3LIlqQ+ErVW/1OfumnjceWFoc03YQAwiluXPEecSTNSvUpLR96mUIB
+         Y65HDvIJeaKs/geZBTMDMmEZvvWiA9M6VeFNwPrFoDwBjSkNgl3/TmlJz2C2N07YAemh
+         OEXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QkqqWSeWUuD3HygOIUorTjyLc3b0L3sITA+lUb4cF40=;
+        b=AmlVDCSIGeKxK2XmOSGJkWW699n10twcF1BZ266Hf/40RTeZst9W928+yqOnqgERD7
+         ob5CRZt74I2fiMCuKW2j2Z9J4ollzU5r8fWbs10aYPdTSh1FVoS73SlBK3jAmr8UrTZx
+         gyVRB4QM1cxPvEJ68dRtFJBCZa45POEJiwIDTFp6kz3hlv5ALmIe4aVt6sFHx4t8q9im
+         /Wq1MN0jsOn4m+ZkcxsbfOhG40IJEpf/0i9ZMOsDXWgrLiGYSgQ8KdJjS/7njNrF5/Po
+         7X/4cktb7BFuGhprFRDv80Wjx8Qv/JIEhR+U9U/qMH9grCdc9voF5Zx+f2R8tDjMIVy5
+         EGWg==
+X-Gm-Message-State: AOAM533128Ra/b/geTuZdq/wCdvQQ42wRGSooWFbjB//EaNPsdlnNwtN
+        W/tspGtXEOsSl/ja3F/j1A==
+X-Google-Smtp-Source: ABdhPJwyRpFJ4lQro4xWnibbtnjkVlbhkniCoPRqc53gNDf50tJkPSvISJXW2o44oSxG+s+ujaQLLg==
+X-Received: by 2002:a63:c404:: with SMTP id h4mr8756035pgd.336.1595602722446;
+        Fri, 24 Jul 2020 07:58:42 -0700 (PDT)
+Received: from madhuparna-HP-Notebook ([2402:3a80:d0b:42f6:80c3:156e:164d:54c2])
+        by smtp.gmail.com with ESMTPSA id a13sm6828930pfn.171.2020.07.24.07.58.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Jul 2020 07:58:41 -0700 (PDT)
+From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
+Date:   Fri, 24 Jul 2020 20:28:35 +0530
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        David Miller <davem@davemloft.net>, isdn@linux-pingi.de,
+        arnd@arndb.de, edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrianov@ispras.ru,
+        ldv-project@linuxtesting.org
+Subject: Re: [PATCH] drivers: isdn: capi: Fix data-race bug
+Message-ID: <20200724145835.GA30994@madhuparna-HP-Notebook>
+References: <20200722172329.16727-1-madhuparnabhowmik10@gmail.com>
+ <20200723.151158.2190104866687627036.davem@davemloft.net>
+ <20200724044807.GA474@madhuparna-HP-Notebook>
+ <20200724065747.GF3880088@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724065747.GF3880088@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 13:27:48 +0300
-Mike Rapoport <rppt@kernel.org> wrote:
-
-> On Fri, Jul 24, 2020 at 08:05:52AM +0300, Jarkko Sakkinen wrote:
-> > Use text_alloc() and text_free() instead of module_alloc() and
-> > module_memfree() when an arch provides them.
+On Fri, Jul 24, 2020 at 08:57:47AM +0200, Greg KH wrote:
+> On Fri, Jul 24, 2020 at 10:18:07AM +0530, Madhuparna Bhowmik wrote:
+> > On Thu, Jul 23, 2020 at 03:11:58PM -0700, David Miller wrote:
+> > > From: madhuparnabhowmik10@gmail.com
+> > > Date: Wed, 22 Jul 2020 22:53:29 +0530
+> > > 
+> > > > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > > > 
+> > > > In capi_init(), after register_chrdev() the file operation callbacks
+> > > > can be called. However capinc_tty_init() is called later.
+> > > > Since capiminors and capinc_tty_driver are initialized in
+> > > > capinc_tty_init(), their initialization can race with their usage
+> > > > in various callbacks like in capi_release().
+> > > > 
+> > > > Therefore, call capinc_tty_init() before register_chrdev to avoid
+> > > > such race conditions.
+> > > > 
+> > > > Found by Linux Driver Verification project (linuxtesting.org).
+> > > > 
+> > > > Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> > > 
+> > > I agree with Arnd that this just exchanges one set of problems for
+> > > another.
 > > 
-> > Cc: linux-mm@kvack.org
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> >  kernel/kprobes.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > index 4e46d96d4e16..611fcda9f6bf 100644
-> > --- a/kernel/kprobes.c
-> > +++ b/kernel/kprobes.c
-> > @@ -40,6 +40,7 @@
-> >  #include <asm/cacheflush.h>
-> >  #include <asm/errno.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/vmalloc.h>
-> >  
-> >  #define KPROBE_HASH_BITS 6
-> >  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
-> > @@ -111,12 +112,20 @@ enum kprobe_slot_state {
-> >  
-> >  void __weak *alloc_insn_page(void)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +	return text_alloc(PAGE_SIZE);
-> > +#else
-> >  	return module_alloc(PAGE_SIZE);
-> > +#endif
-> >  }
-> >  
-> >  void __weak free_insn_page(void *page)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +	text_free(page);
-> > +#else
-> >  	module_memfree(page);
-> > +#endif
-> >  }
+> > Thanks Arnd and David, for reviewing the patch.
+> > Do you have any suggestions on how to fix this correctly?
 > 
-> Both alloc_insn_page() and free_insn_page() are __weak and can be simple
-> overriden in arch/x86 code.
+> Based on the installed base of ISDN systems, and the fact that no one
+> has ever actually hit this race and reported it ever, I wouldn't worry
+> about it :)
+>
+Fair enough! Thanks for having a look.
 
-No, we can't use module_alloc/memfree() without CONFIG_MODULES, so
-we can not escape from this #ifdefs. (and I think this is not so bad.)
+Regards,
+Madhuparna
 
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> thanks,
+> 
+> greg k-h
