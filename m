@@ -2,117 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6109E22CC13
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527EE22CC1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgGXRXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:23:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:37270 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgGXRXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:23:45 -0400
-IronPort-SDR: 9gFTjqXOuyPvcfytVO5ev51AbIBPrNR8FuEKpKk2orj2VQQP1t6d/JOb0WAaMHq/ZpPLNhvSUH
- +aISKKy95zYA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="148664560"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="148664560"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 10:23:45 -0700
-IronPort-SDR: X1JW4FggRo3qDiJx0NWoLol6p1tsq6DYf4Mj7qGG/ohJuRs2TnDCp10u9BuuIVBIeURlyoIeXD
- g8wFtHdotI8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="311467245"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga004.fm.intel.com with ESMTP; 24 Jul 2020 10:23:45 -0700
-Date:   Fri, 24 Jul 2020 10:23:44 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across
- exceptions
-Message-ID: <20200724172344.GO844235@iweiny-DESK2.sc.intel.com>
-References: <20200717072056.73134-1-ira.weiny@intel.com>
- <20200717072056.73134-18-ira.weiny@intel.com>
- <20200717100610.GH10769@hirez.programming.kicks-ass.net>
- <20200722052709.GB478587@iweiny-DESK2.sc.intel.com>
- <87o8o6vvt0.fsf@nanos.tec.linutronix.de>
- <87lfjavvhm.fsf@nanos.tec.linutronix.de>
+        id S1727834AbgGXRYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:24:54 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:29184 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbgGXRYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 13:24:53 -0400
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 06OHOW59016668;
+        Sat, 25 Jul 2020 02:24:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 06OHOW59016668
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1595611473;
+        bh=bIixnEMAR0jpu0bkdEKJIWnyzdVnCrMQLsfoauhy0fQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=W2EWm1cc14fkW4PNArDHqu1LBD4fe2IusZG6QPFRbSfzz7M0LtWyFqUKPCXA341TG
+         il+FgP81GniPKySpqsmlALQ7tF3ymvtkKp+irMGUwWBDFz8uBtu1c2lYf8L5yiXEen
+         djEjwIfRNocZm8GrbY6Nj6FL0WOtqvtBkfPGnH0tgw3AjXU71wlpkW04v38l1h1f/a
+         4+k+uf95HOXf82wFxseyb+v6qUqX1saNnGkDK5p9/XrNdjYF9BZsezQoY9n1bSXBOX
+         n5qUk2ZCeIkSzfkVA/060ujOfd1xyDDx/XPTxrNA1OVcrQ/UMYMnCtjCg/Z8GSoYBY
+         5w5N0qbxCu2TQ==
+X-Nifty-SrcIP: [209.85.221.181]
+Received: by mail-vk1-f181.google.com with SMTP id t187so2380024vke.5;
+        Fri, 24 Jul 2020 10:24:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533yb3THXWA3i5czVZBw1Z7zqc9nwzEAps1a27/SGJJZ+10+KPpX
+        /CqKpNb49QDlPKzYA8fcYyb1+LAdDA3QVAEpN1M=
+X-Google-Smtp-Source: ABdhPJzGY41nFJFYVQa7SB+bfB7R68BKKKKuv/lpK6zpHu7T7ky83qZV94n9m68mlcZz5TCDSXepblY5pu3C5TEWURw=
+X-Received: by 2002:ac5:c74b:: with SMTP id b11mr8651746vkn.73.1595611471380;
+ Fri, 24 Jul 2020 10:24:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfjavvhm.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200718063847.919599-1-masahiroy@kernel.org>
+In-Reply-To: <20200718063847.919599-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 25 Jul 2020 02:23:52 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASqquXzfcd8KWE7HDZepLu9Y8t0G77OgZTEVM4DL=JuNw@mail.gmail.com>
+Message-ID: <CAK7LNASqquXzfcd8KWE7HDZepLu9Y8t0G77OgZTEVM4DL=JuNw@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: constify XPM data
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 10:15:17PM +0200, Thomas Gleixner wrote:
-> Thomas Gleixner <tglx@linutronix.de> writes:
-> 
-> > Ira Weiny <ira.weiny@intel.com> writes:
-> >> On Fri, Jul 17, 2020 at 12:06:10PM +0200, Peter Zijlstra wrote:
-> >>> On Fri, Jul 17, 2020 at 12:20:56AM -0700, ira.weiny@intel.com wrote:
-> >> I've been really digging into this today and I'm very concerned that I'm
-> >> completely missing something WRT idtentry_enter() and idtentry_exit().
-> >>
-> >> I've instrumented idt_{save,restore}_pkrs(), and __dev_access_{en,dis}able()
-> >> with trace_printk()'s.
-> >>
-> >> With this debug code, I have found an instance where it seems like
-> >> idtentry_enter() is called without a corresponding idtentry_exit().  This has
-> >> left the thread ref counter at 0 which results in very bad things happening
-> >> when __dev_access_disable() is called and the ref count goes negative.
-> >>
-> >> Effectively this seems to be happening:
-> >>
-> >> ...
-> >> 	// ref == 0
-> >> 	dev_access_enable()  // ref += 1 ==> disable protection
-> >> 		// exception  (which one I don't know)
-> >> 			idtentry_enter()
-> >> 				// ref = 0
-> >> 				_handler() // or whatever code...
-> >> 			// *_exit() not called [at least there is no trace_printk() output]...
-> >> 			// Regardless of trace output, the ref is left at 0
-> >> 	dev_access_disable() // ref -= 1 ==> -1 ==> does not enable protection
-> >> 	(Bad stuff is bound to happen now...)
-> >
-> > Well, if any exception which calls idtentry_enter() would return without
-> > going through idtentry_exit() then lots of bad stuff would happen even
-> > without your patches.
-> >
-> >> Also is there any chance that the process could be getting scheduled and that
-> >> is causing an issue?
-> >
-> > Only from #PF, but after the fault has been resolved and the tasks is
-> > scheduled in again then the task returns through idtentry_exit() to the
-> > place where it took the fault. That's not guaranteed to be on the same
-> > CPU. If schedule is not aware of the fact that the exception turned off
-> > stuff then you surely get into trouble. So you really want to store it
-> > in the task itself then the context switch code can actually see the
-> > state and act accordingly.
-> 
-> Actually thats nasty as well as you need a stack of PKRS values to
-> handle nested exceptions. But it might be still the most reasonable
-> thing to do. 7 PKRS values plus an index should be really sufficient,
-> that's 32bytes total, not that bad.
+On Sat, Jul 18, 2020 at 3:39 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Constify arrays as well as strings.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
 
-I've thought about this a bit more and unless I'm wrong I think the
-idtentry_state provides for that because each nested exception has it's own
-idtentry_state doesn't it?
+Applied to linux-kbuild.
 
-Ira
+
+>  scripts/kconfig/images.c | 30 +++++++++++++++---------------
+>  scripts/kconfig/images.h | 30 +++++++++++++++---------------
+>  2 files changed, 30 insertions(+), 30 deletions(-)
+>
+> diff --git a/scripts/kconfig/images.c b/scripts/kconfig/images.c
+> index b4fa0e4a63a5..2f9afffa5d79 100644
+> --- a/scripts/kconfig/images.c
+> +++ b/scripts/kconfig/images.c
+> @@ -5,7 +5,7 @@
+>
+>  #include "images.h"
+>
+> -const char *xpm_load[] = {
+> +const char * const xpm_load[] = {
+>  "22 22 5 1",
+>  ". c None",
+>  "# c #000000",
+> @@ -35,7 +35,7 @@ const char *xpm_load[] = {
+>  "###############.......",
+>  "......................"};
+>
+> -const char *xpm_save[] = {
+> +const char * const xpm_save[] = {
+>  "22 22 5 1",
+>  ". c None",
+>  "# c #000000",
+> @@ -65,7 +65,7 @@ const char *xpm_save[] = {
+>  "..##################..",
+>  "......................"};
+>
+> -const char *xpm_back[] = {
+> +const char * const xpm_back[] = {
+>  "22 22 3 1",
+>  ". c None",
+>  "# c #000083",
+> @@ -93,7 +93,7 @@ const char *xpm_back[] = {
+>  "......................",
+>  "......................"};
+>
+> -const char *xpm_tree_view[] = {
+> +const char * const xpm_tree_view[] = {
+>  "22 22 2 1",
+>  ". c None",
+>  "# c #000000",
+> @@ -120,7 +120,7 @@ const char *xpm_tree_view[] = {
+>  "......................",
+>  "......................"};
+>
+> -const char *xpm_single_view[] = {
+> +const char * const xpm_single_view[] = {
+>  "22 22 2 1",
+>  ". c None",
+>  "# c #000000",
+> @@ -147,7 +147,7 @@ const char *xpm_single_view[] = {
+>  "......................",
+>  "......................"};
+>
+> -const char *xpm_split_view[] = {
+> +const char * const xpm_split_view[] = {
+>  "22 22 2 1",
+>  ". c None",
+>  "# c #000000",
+> @@ -174,7 +174,7 @@ const char *xpm_split_view[] = {
+>  "......................",
+>  "......................"};
+>
+> -const char *xpm_symbol_no[] = {
+> +const char * const xpm_symbol_no[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -191,7 +191,7 @@ const char *xpm_symbol_no[] = {
+>  " .......... ",
+>  "            "};
+>
+> -const char *xpm_symbol_mod[] = {
+> +const char * const xpm_symbol_mod[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -208,7 +208,7 @@ const char *xpm_symbol_mod[] = {
+>  " .......... ",
+>  "            "};
+>
+> -const char *xpm_symbol_yes[] = {
+> +const char * const xpm_symbol_yes[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -225,7 +225,7 @@ const char *xpm_symbol_yes[] = {
+>  " .......... ",
+>  "            "};
+>
+> -const char *xpm_choice_no[] = {
+> +const char * const xpm_choice_no[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -242,7 +242,7 @@ const char *xpm_choice_no[] = {
+>  "    ....    ",
+>  "            "};
+>
+> -const char *xpm_choice_yes[] = {
+> +const char * const xpm_choice_yes[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -259,7 +259,7 @@ const char *xpm_choice_yes[] = {
+>  "    ....    ",
+>  "            "};
+>
+> -const char *xpm_menu[] = {
+> +const char * const xpm_menu[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -276,7 +276,7 @@ const char *xpm_menu[] = {
+>  " .......... ",
+>  "            "};
+>
+> -const char *xpm_menu_inv[] = {
+> +const char * const xpm_menu_inv[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -293,7 +293,7 @@ const char *xpm_menu_inv[] = {
+>  " .......... ",
+>  "            "};
+>
+> -const char *xpm_menuback[] = {
+> +const char * const xpm_menuback[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> @@ -310,7 +310,7 @@ const char *xpm_menuback[] = {
+>  " .......... ",
+>  "            "};
+>
+> -const char *xpm_void[] = {
+> +const char * const xpm_void[] = {
+>  "12 12 2 1",
+>  "  c white",
+>  ". c black",
+> diff --git a/scripts/kconfig/images.h b/scripts/kconfig/images.h
+> index d8ff614bd087..7212dec2006c 100644
+> --- a/scripts/kconfig/images.h
+> +++ b/scripts/kconfig/images.h
+> @@ -10,21 +10,21 @@
+>  extern "C" {
+>  #endif
+>
+> -extern const char *xpm_load[];
+> -extern const char *xpm_save[];
+> -extern const char *xpm_back[];
+> -extern const char *xpm_tree_view[];
+> -extern const char *xpm_single_view[];
+> -extern const char *xpm_split_view[];
+> -extern const char *xpm_symbol_no[];
+> -extern const char *xpm_symbol_mod[];
+> -extern const char *xpm_symbol_yes[];
+> -extern const char *xpm_choice_no[];
+> -extern const char *xpm_choice_yes[];
+> -extern const char *xpm_menu[];
+> -extern const char *xpm_menu_inv[];
+> -extern const char *xpm_menuback[];
+> -extern const char *xpm_void[];
+> +extern const char * const xpm_load[];
+> +extern const char * const xpm_save[];
+> +extern const char * const xpm_back[];
+> +extern const char * const xpm_tree_view[];
+> +extern const char * const xpm_single_view[];
+> +extern const char * const xpm_split_view[];
+> +extern const char * const xpm_symbol_no[];
+> +extern const char * const xpm_symbol_mod[];
+> +extern const char * const xpm_symbol_yes[];
+> +extern const char * const xpm_choice_no[];
+> +extern const char * const xpm_choice_yes[];
+> +extern const char * const xpm_menu[];
+> +extern const char * const xpm_menu_inv[];
+> +extern const char * const xpm_menuback[];
+> +extern const char * const xpm_void[];
+>
+>  #ifdef __cplusplus
+>  }
+> --
+> 2.25.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
