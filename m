@@ -2,119 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B89122BEC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2076422BEC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726870AbgGXHOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:14:35 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:46294 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726543AbgGXHOe (ORCPT
+        id S1726957AbgGXHPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:15:33 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:47861 "EHLO
+        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726567AbgGXHPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:14:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595574873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/5K07WFbnYzpw23Eyz/mfTqQbQ4feMmgm06DmRfK4gw=;
-        b=G7YuvgTihJLznHzZ5EQaUb9gI9nZPc7pRVAoseO9F0FHsZT4inYtn0UVQTvxDqh15weJ2T
-        fUA/9ImAPfAmnMztY0rASZOp0Ib0HQi43cVYWnyizFBbOUKTGfGUz+S1NMEevB79Ox/co7
-        ZWBkjEI5fhOn8dTSnj/QIoIfolqnEAk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-Yn_UAiYjOcOEgoBr_whdEQ-1; Fri, 24 Jul 2020 03:14:31 -0400
-X-MC-Unique: Yn_UAiYjOcOEgoBr_whdEQ-1
-Received: by mail-wm1-f69.google.com with SMTP id v8so2930242wma.6
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 00:14:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/5K07WFbnYzpw23Eyz/mfTqQbQ4feMmgm06DmRfK4gw=;
-        b=jXp5J+Cv7jhCXrC0cxx9JG41JMjcU+EA48Rx3NrvCAuZCD1MGZ4dBnIZOqEnuC+3YA
-         K/iNH8q1rwIBhZmWoinrAKe0/zbmP7fpvhocIevIJb9H5zaMnnMzOS5vOYs9OdhCdTnO
-         ZxqjHscnY8c4EyFVM04fRppRlYl14nmxqLTWhmsBqgUazUl+og+1gN9T49cUMUAYkZki
-         OG8Sm4+pakdgN8QCMXI5EcW8Ji6kFjN/fBJh6fzltjvIEhiB7TtnQ3AZI+c5zs19Q8Vj
-         mb99Dr2nmYsW+Yj+rgbQwACdaPllPogGQBNcYf+3owQVspJzl08uzIWOwIQiDZusiOma
-         1Rvg==
-X-Gm-Message-State: AOAM530B6qmWkudfT7QaJRdhUBAoC3pkRzVw73zDBNoULVWfzQwHlC83
-        X5n0M/gP07ugN1Whd+PdWimhmRytSGYuoVUPovvKSHGscbf6taZS7TYdCdUT6dBlJHb2Y9id4cJ
-        dT6fy5yOGZi2MjBQYOCC5y8Fs
-X-Received: by 2002:a1c:988a:: with SMTP id a132mr7196230wme.14.1595574870050;
-        Fri, 24 Jul 2020 00:14:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwn4RnXakBtQEe/CdhK6+XDT3nF8XxcMdpkIbJsMpsIbqcJ3aKdpKNcDmpvmn7fNPLD+hAtyQ==
-X-Received: by 2002:a1c:988a:: with SMTP id a132mr7196208wme.14.1595574869790;
-        Fri, 24 Jul 2020 00:14:29 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.94.4])
-        by smtp.gmail.com with ESMTPSA id e5sm221437wrc.37.2020.07.24.00.14.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 00:14:28 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 09:14:26 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peng Liu <iwtbavbm@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH] sched/deadline: dome some cleanup for push_dl_task()
-Message-ID: <20200724071426.GD14912@localhost.localdomain>
-References: <20200706160442.GA19741@iZj6chx1xj0e0buvshuecpZ>
+        Fri, 24 Jul 2020 03:15:33 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3982695|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00610941-0.000377616-0.993513;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03303;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.I6qDKqW_1595574924;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I6qDKqW_1595574924)
+          by smtp.aliyun-inc.com(10.147.42.135);
+          Fri, 24 Jul 2020 15:15:29 +0800
+From:   Frank Lee <frank@allwinnertech.com>
+To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        robh+dt@kernel.org, mripard@kernel.org, wens@csie.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     tiny.windzz@gmail.com, huangshuosheng@allwinnertech.com,
+        liyong@allwinnertech.com, Yangtao Li <frank@allwinnertech.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 11/16] dt-bindings: irq: sun7i-nmi: fix dt-binding for a80 nmi
+Date:   Fri, 24 Jul 2020 15:14:48 +0800
+Message-Id: <fb081585c4fedcb9b8b95e5f16879dff482c9717.1595572867.git.frank@allwinnertech.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <cover.1595572867.git.frank@allwinnertech.com>
+References: <cover.1595572867.git.frank@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200706160442.GA19741@iZj6chx1xj0e0buvshuecpZ>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Yangtao Li <frank@allwinnertech.com>
 
-On 07/07/20 00:04, Peng Liu wrote:
-> 'commit 840d719604b0 ("sched/deadline: Update rq_clock of later_rq when pushing a task")'
-> introduced the update_rq_clock() to fix the "used-before-update" bug.
-> 
-> 'commit f4904815f97a ("sched/deadline: Fix double accounting of rq/running bw in push & pull")'
-> took away the bug source(add_running_bw()).
-> 
-> We no longer need to update rq_clock in advance, let activate_task()
-> worry about that.
-> 
-> Signed-off-by: Peng Liu <iwtbavbm@gmail.com>
-> ---
->  kernel/sched/deadline.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 504d2f51b0d6..c3fa11f84d93 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -2104,13 +2104,7 @@ static int push_dl_task(struct rq *rq)
->  
->  	deactivate_task(rq, next_task, 0);
->  	set_task_cpu(next_task, later_rq->cpu);
-> -
-> -	/*
-> -	 * Update the later_rq clock here, because the clock is used
-> -	 * by the cpufreq_update_util() inside __add_running_bw().
-> -	 */
-> -	update_rq_clock(later_rq);
-> -	activate_task(later_rq, next_task, ENQUEUE_NOCLOCK);
-> +	activate_task(later_rq, next_task, 0);
->  	ret = 1;
+There is no one use "allwinner,sun9i-a80-sc-nmi". The A80 uses
+"allwinner,sun9i-a80-nmi".
 
-The change looks good to me, since now add_running_bw() is called later
-by enqueue_task_dl(), but rq_clock has already been updated by core's
-enqueue_task().
+Let's fix it.
 
-Daniel, Dietmar, a second pair of eyes (since you authored the commits
-above)?
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ .../interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml        | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'd chage subject to something like "sched/deadline: Stop updating
-rq_clock before pushing a task".
-
-Thanks,
-
-Juri
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
+index 7cd6b8bacfa0..d8fe2d9a307b 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
+@@ -29,7 +29,7 @@ properties:
+       - items:
+           - const: allwinner,sun8i-a83t-r-intc
+           - const: allwinner,sun6i-a31-r-intc
+-      - const: allwinner,sun9i-a80-sc-nmi
++      - const: allwinner,sun9i-a80-nmi
+       - items:
+           - const: allwinner,sun50i-a64-r-intc
+           - const: allwinner,sun6i-a31-r-intc
+-- 
+2.24.0
 
