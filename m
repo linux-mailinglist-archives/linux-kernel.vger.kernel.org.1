@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C6C22BB2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917E622BB30
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgGXA61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 20:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727783AbgGXA61 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 20:58:27 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE785C0619D3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:58:26 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id t131so8243344iod.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=/hwv8aeqxQFc770ydGll5SHnDNU+mIuRLVZfjHpDppo=;
-        b=bsZog7S2uysndCYTS9xU78SThmFHV2CSeD4zHXCLHovasdnKb8u3qK3v+6EtCW20bH
-         9l608OBF/dlVCJlXKBBWnvHCzEAHK/OjKEI2ZvGZGC9+VavITM6HqtZBFKlSv1xG6hdB
-         TCB4ZmEZ4VmkVaYJuRy0fx1I1X8ugF/Rccv9tz3XvqytDzumE8eIdCNn0BaelrGKCGCj
-         hxuhO0FVXYhnRKFTe+CbVZjbaSEZ9NAE3B95kyGyrI9QsjPVthVqi0cn0/cC+VZ/MP3i
-         H2JbYkLhmJu5YiCqqmrv/LaOOt75F3NeYl3o0Azduiy6PmZz1/LR3i+Mk+BpKU8I7lJq
-         K62w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=/hwv8aeqxQFc770ydGll5SHnDNU+mIuRLVZfjHpDppo=;
-        b=INcxi88qcIfkFg0N5FsNxVgDMMyo9udWo1AJEzbgXLufLpjjmQ0A0O6G95ZSHXqOez
-         jaGX+FRSeNYk9KLyBFWuQ4+R5vcTbTQaqV7l+unL9fxKAVCh9akDdJmoy4OsA494uRlN
-         dgPKSf6DNygl6aeMp+pGGNVQa5M9rcz9YjbF4T+vjJfUZ8KPA9+3dbsuS0FfxCTFn7fj
-         U3kMiyZZldoBOd5VMPZCyuuHlAk/tNfD8grMooZtcfKCxKhcIOjeZdVj4cCembDzjU0H
-         TUHZ/rEDe7oV+p1/5HKpduwwp+4M+wIPxSynnoq8ay/b85DHfKzY6O3H4PYPZc6rGMlj
-         WOzg==
-X-Gm-Message-State: AOAM532CnBwAEA7L19R3puQ0jjDMeYNmBe5v9bBTK5fvhGyVgz91wcvA
-        ASEfVJ3nEtD4xZsLO3TwJKrMrdDJa9Ksq9z4nn8=
-X-Google-Smtp-Source: ABdhPJybKuecvvTfI1D+tt2La8TEvNnz33oTLTz2XwvoV6KBpR10uLyg+gK49AQxUsPUYk9R6OFs5Ujxdc87E1G8ZSo=
-X-Received: by 2002:a02:a909:: with SMTP id n9mr7893683jam.70.1595552306254;
- Thu, 23 Jul 2020 17:58:26 -0700 (PDT)
+        id S1728446AbgGXA6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 20:58:46 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:52358 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728394AbgGXA6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 20:58:46 -0400
+Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 027A69CF4C2AC7613C9E;
+        Fri, 24 Jul 2020 08:58:44 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 24 Jul 2020 08:58:43 +0800
+Received: from [10.174.61.242] (10.174.61.242) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Fri, 24 Jul 2020 08:58:43 +0800
+Subject: Re: [PATCH net-next v3 1/2] hinic: add support to handle hw abnormal
+ event
+To:     David Miller <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
+References: <20200723144038.10430-1-luobin9@huawei.com>
+ <20200723144038.10430-2-luobin9@huawei.com>
+ <20200723.120852.1882569285026023193.davem@davemloft.net>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <7c97e18d-fd4a-280c-343f-6338d069d40b@huawei.com>
+Date:   Fri, 24 Jul 2020 08:58:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-References: <20200723205811.1104520-1-ndesaulniers@google.com>
-In-Reply-To: <20200723205811.1104520-1-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 24 Jul 2020 02:58:15 +0200
-Message-ID: <CA+icZUX0jMSmE1ruCKxEyMN2-qWgPLcGHmUJ8XUz3XD6G6CT2w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] tracepoint bugfix and cleanup
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200723.120852.1882569285026023193.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.61.242]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 10:58 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
->
-> The first patch fixes a reported bug in iterating the
-> tracing/printk_formats sysfs node, and is tagged for stable.
->
-> The second patch is a small cleanup and is less important than the
-> first.
->
-> Nick Desaulniers (2):
->   tracepoint: mark __tracepoint_string's __used
->   tracepoint: used attribute definitions from compiler_attributes.h
->
-
-Forgot to CC CBL-ML on...?
-
-2/2 tracepoint: used attribute definitions from compiler_attributes.h
-
-I didn't see it in my inbox.
-
-- Sedat -
-
->  include/linux/tracepoint.h | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->
-> --
-> 2.28.0.rc0.105.gf9edc3c819-goog
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200723205811.1104520-1-ndesaulniers%40google.com.
+On 2020/7/24 3:08, David Miller wrote:
+> From: Luo bin <luobin9@huawei.com>
+> Date: Thu, 23 Jul 2020 22:40:37 +0800
+> 
+>> +static int hinic_fw_reporter_dump(struct devlink_health_reporter *reporter,
+>> +				  struct devlink_fmsg *fmsg, void *priv_ctx,
+>> +				  struct netlink_ext_ack *extack)
+>> +{
+>> +	struct hinic_mgmt_watchdog_info *watchdog_info;
+>> +	int err;
+>> +
+>> +	if (priv_ctx) {
+>> +		watchdog_info = priv_ctx;
+>> +		err = mgmt_watchdog_report_show(fmsg, watchdog_info);
+>> +		if (err)
+>> +			return err;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+> 
+> This 'watchdog_info' variable is completely unnecessary, just pass
+> 'priv_ctx' as-is into mgmt_watchdog_report_show().
+> .
+> 
+Will fix. Thanks for your review.
