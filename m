@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510F622C3C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4BA22C3C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgGXKvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 06:51:21 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:21329 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728222AbgGXKvR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:51:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1595587877; x=1627123877;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=jetXb1L6fLqY5EPX3I8ct9K8ZfusnMFMrVfT80KlChM=;
-  b=yp4bhniKIzAKVrSICWkUxPqN9C2HieEtCNXzUyZaEQc4sjoE9LbzM+9v
-   fwkBFn/ynva13u9ixXsFP044CMxJBrDBb0eEH5q/YMbxZwc+E+9+fi4gZ
-   eAcahy5QMS78lNVssoVawixY46O9kmKOfJFKpTNUwFDG1Xl+DxyClssUc
-   b832cEsHp5QamEuddXuD9lCkPwKhfzYw3BjddNF0ocSB/dvCuuTPOI30Z
-   ZjMjtsJguQThpZC5WQVFEDLnVtT9vDwBKzkSrfaLGWGjqEGmGRLz3g+gv
-   o8DkdOZljh8bWwRhLSu+JXPGL7t8dNq1TrzUG9JztafwyK81vLyOCxfVs
-   Q==;
-IronPort-SDR: lQaUv3GuPcpn9wqPTQPNY5I+P0KI30PcbwRSVMJS8dB52UJmfZ61GaxtoKnzIt5yjxpgUL2iYf
- ABFtzYYHQ6d0y91tkj9c7Kw2M5QwaA5zxWWSH5+6d9u7azEICqShsRadMrSX1S89TfW2UyEZpx
- Npu/rQHs5vqIZb0ag/fQsmCdQdBoAZTLNQbmQkxKCkNu9R0eMh9iMb9e+pGVTuAWiYrkU+v+GR
- /YFSjLoOm3plQAoMlUosdDiZhRpDYlMIQ6ugdWkk7kiOBd1kXy86GKMePDZwWGU1FClUAMsyNI
- jOA=
-X-IronPort-AV: E=Sophos;i="5.75,390,1589266800"; 
-   d="scan'208";a="85237040"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jul 2020 03:51:16 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 24 Jul 2020 03:51:16 -0700
-Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 24 Jul 2020 03:50:31 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <claudiu.beznea@microchip.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <andrew@lunn.ch>,
-        <f.fainelli@gmail.com>, <robh+dt@kernel.org>,
-        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
-Subject: [PATCH net-next v3 7/7] ARM: dts: at91: sam9x60: add an mdio sub-node to macb
-Date:   Fri, 24 Jul 2020 13:50:33 +0300
-Message-ID: <20200724105033.2124881-8-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200724105033.2124881-1-codrin.ciubotariu@microchip.com>
-References: <20200724105033.2124881-1-codrin.ciubotariu@microchip.com>
+        id S1728225AbgGXKvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 06:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbgGXKvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 06:51:14 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE4D92073E;
+        Fri, 24 Jul 2020 10:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595587874;
+        bh=PWG32YcOeMhH2GemOphH4Q5kn3Lnq8/kK3Cn2vynBns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F13CfL8g3nuEJDlJLOJWXoQxuiGsmhcbLkqR3TjHfE+4YtoZbpNAOvoKtkd2cESJO
+         Dflwy+cwmJdExBiwXmtYEDNj1QWcDUekKwgWndHKUXiotd3FTxwjukBYHZA/7fY9E0
+         HKqx+IFR1ua1y60dDC0WoFg5wGByT2ZHtSDCuMX8=
+Date:   Fri, 24 Jul 2020 11:50:59 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Steve Lee <steves.lee@maximintegrated.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        ckeepax@opensource.cirrus.com, geert@linux-m68k.org,
+        rf@opensource.wolfsonmicro.com, shumingf@realtek.com,
+        srinivas.kandagatla@linaro.org, krzk@kernel.org, dmurphy@ti.com,
+        jack.yu@realtek.com, nuno.sa@analog.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com,
+        steves.lee.maxim@gmail.com
+Subject: Re: [PATCH 3/3] ASoC: max98390: update dsm param bin max size
+Message-ID: <20200724105059.GA5664@sirena.org.uk>
+References: <20200724085644.9837-1-steves.lee@maximintegrated.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
+In-Reply-To: <20200724085644.9837-1-steves.lee@maximintegrated.com>
+X-Cookie: You will wish you hadn't.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new macb bindings and add an mdio sub-node to contain all the
-phy nodes.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Changes in v3:
- - added tag from Florian
+On Fri, Jul 24, 2020 at 05:56:44PM +0900, Steve Lee wrote:
+>  MAX98390_DSM_PARAM_MAX_SIZE is changed to support extended
+>  register update.
 
-Changes in v2:
- - none
+I'm missing patches 1-2 and have no cover letter - what's the story
+with dependencies?
 
- arch/arm/boot/dts/at91-sam9x60ek.dts | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
-index a5f5718c711a..ba871ebe10d4 100644
---- a/arch/arm/boot/dts/at91-sam9x60ek.dts
-+++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
-@@ -324,8 +324,12 @@ &macb0 {
- 	pinctrl-0 = <&pinctrl_macb0_rmii>;
- 	status = "okay";
- 
--	ethernet-phy@0 {
--		reg = <0x0>;
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		ethernet-phy@0 {
-+			reg = <0x0>;
-+		};
- 	};
- };
- 
--- 
-2.25.1
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8avQ8ACgkQJNaLcl1U
+h9Aj3gf/YVzWgBS3oyh3vmgjlIEpdZ48zKwfNrdP3AjsgdDI/wZsm/firZQBHg7G
+6AituA5MsDLLEH8KG4S6HZ30QY3mC4BB0v8ILr9OeOGc/+M1OugxQQPMgK5RqZ8e
+o8PGXWFmZdTnE2Uitl70g7Kb0aHiWY3aiB3M8EKVY5+z3OShdaVfcrOJBmssd9Uj
+kWF0WxHZzYpkC1xny5352uirIwuv4tVkupZeP4A9Tg6A/LgRlKpqVG/GVZJMjjdY
+9d5lewHYM/UTje7Fk+21hvKnGScwlPt9iMejfI0A85Fm0So9WPVGqimIKLn8mu61
+ChWNE4Zr+67zERK/T8B8aktKc+gVxw==
+=TNpF
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
