@@ -2,123 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B433722C678
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C8C22C680
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbgGXNas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:30:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36601 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgGXNas (ORCPT
+        id S1726811AbgGXNdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726424AbgGXNc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:30:48 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jyxmb-0006lR-9n; Fri, 24 Jul 2020 13:30:41 +0000
-Date:   Fri, 24 Jul 2020 15:30:39 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Safonov <dima@arista.com>
-Subject: Re: [PATCH v5 0/6] arm64: add the time namespace support
-Message-ID: <20200724133039.hginkpnv7bkyz764@wittgenstein>
-References: <20200624083321.144975-1-avagin@gmail.com>
- <20200705064055.GA28894@gmail.com>
- <20200714015743.GA843937@gmail.com>
- <20200722181506.GA4517@gaia>
- <20200723174140.GA3991167@gmail.com>
+        Fri, 24 Jul 2020 09:32:58 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C54C0619D3;
+        Fri, 24 Jul 2020 06:32:58 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id h13so7003933otr.0;
+        Fri, 24 Jul 2020 06:32:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Bww+MwS7WFdPyo5nQxQojl2bZYcgBq0GLMCk//cMKg0=;
+        b=ttonpQaVQ8wKenxkYFBNRTBKnc5v77ZAtJB7ssctMILDFY0HBxmhB5UASdnXIZY7MO
+         7Ewxtj0KFj5djUNty/mwa9SGLF+lU4N+mQnU35pBtqXM8E/RCFWTib5DFrHDrkPHbEQp
+         nOZNMXFl/XqSDAKV7yxbVz1FsTqClAsOi9A3c3iwX/RUi4rdRuUOCzs4L0qUZX+pcQk6
+         ecJSO6KIN5t/eSfUFNN5+cETbINsrGnlPEObKkkMhtDgI87Sz4ThjHOCwsyr3JKmkk2Q
+         wVRSbOzJWeKl3cpQpgjDCQ8Y+B/ilcGLQquSNVUOUaN1TewCly/rieLgpeUtA7QmYR3i
+         +/pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Bww+MwS7WFdPyo5nQxQojl2bZYcgBq0GLMCk//cMKg0=;
+        b=avmE+2SavmmZCV6EgNjPPSD18Qa0aG0gPegoe+3qEvrQLCFczWMwr8J0QRyY/goYAX
+         W1D2c0T6vlKCam5tGfDXdJySxpfTlH0jFmz76j76v0ZqQS9A7k5G3Ln/dcZ0AmGJCY5R
+         nuDz/wi0qsJsIIPnY89NL8OmSw3k9fy8x3URV7mVwRx46rFH22A5XYcHGyw3NJ6vW8ST
+         AOJ1EuP3v9JUgZ781otSYrT3BDmB4xweJjvyCMJD812dnRde/lky5zUDqpgcF7NfP9WM
+         p4G5HsZRbS60g4YtibNMZ3/PSiBHGZvgjoHsVLIzYGUjhT7Qto62RXQN1gK0wUdHFNsq
+         oNLA==
+X-Gm-Message-State: AOAM532rwbWIsZWVIZ/pjPU6AzFt4fIeKYlgf0FyvcH1W3ubR3jBEumz
+        Dnmpru/eZJ1w/dVTNFBfmyjbO/Yl/zoZreK2x7bAwg==
+X-Google-Smtp-Source: ABdhPJzPu54cUA91+k3fvU77BW4juirj9eoyapZd89zI1PXw9ZOz21FKQWUPLR86MgCPCfmzyoxRD6bqcro0r2XBkbk=
+X-Received: by 2002:a9d:6e14:: with SMTP id e20mr8450619otr.89.1595597577624;
+ Fri, 24 Jul 2020 06:32:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200723174140.GA3991167@gmail.com>
+References: <20200724091520.880211-1-tweek@google.com>
+In-Reply-To: <20200724091520.880211-1-tweek@google.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Fri, 24 Jul 2020 09:32:46 -0400
+Message-ID: <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
+Subject: Re: [PATCH] selinux: add tracepoint on denials
+To:     =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
+Cc:     Paul Moore <paul@paul-moore.com>, Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 10:41:40AM -0700, Andrei Vagin wrote:
-> On Wed, Jul 22, 2020 at 07:15:06PM +0100, Catalin Marinas wrote:
-> > On Mon, Jul 13, 2020 at 06:57:43PM -0700, Andrei Vagin wrote:
-> > > On Sat, Jul 04, 2020 at 11:40:55PM -0700, Andrei Vagin wrote:
-> > > > On Wed, Jun 24, 2020 at 01:33:15AM -0700, Andrei Vagin wrote:
-> > > > > Allocate the time namespace page among VVAR pages and add the logic
-> > > > > to handle faults on VVAR properly.
-> > > > > 
-> > > > > If a task belongs to a time namespace then the VVAR page which contains
-> > > > > the system wide VDSO data is replaced with a namespace specific page
-> > > > > which has the same layout as the VVAR page. That page has vdso_data->seq
-> > > > > set to 1 to enforce the slow path and vdso_data->clock_mode set to
-> > > > > VCLOCK_TIMENS to enforce the time namespace handling path.
-> > > > > 
-> > > > > The extra check in the case that vdso_data->seq is odd, e.g. a concurrent
-> > > > > update of the VDSO data is in progress, is not really affecting regular
-> > > > > tasks which are not part of a time namespace as the task is spin waiting
-> > > > > for the update to finish and vdso_data->seq to become even again.
-> > > > > 
-> > > > > If a time namespace task hits that code path, it invokes the corresponding
-> > > > > time getter function which retrieves the real VVAR page, reads host time
-> > > > > and then adds the offset for the requested clock which is stored in the
-> > > > > special VVAR page.
-> > > > > 
-> > > > 
-> > > > > v2: Code cleanups suggested by Vincenzo.
-> > > > > v3: add a comment in __arch_get_timens_vdso_data.
-> > > > > v4: - fix an issue reported by the lkp robot.
-> > > > >     - vvar has the same size with/without CONFIG_TIME_NAMESPACE, but the
-> > > > >       timens page isn't allocated on !CONFIG_TIME_NAMESPACE. This
-> > > > >       simplifies criu/vdso migration between different kernel configs.
-> > > > > v5: - Code cleanups suggested by Mark Rutland.
-> > > > >     - In vdso_join_timens, mmap_write_lock is downgraded to
-> > > > >       mmap_read_lock. The VMA list isn't changed there, zap_page_range
-> > > > >       doesn't require mmap_write_lock.
-> > > > > 
-> > > > > Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> > > > > Reviewed-by: Dmitry Safonov <dima@arista.com>
-> > > > 
-> > > > Hello Will and Catalin,
-> > > > 
-> > > > Have you had a chance to look at this patch set? I think it is ready to be
-> > > > merged. Let me know if you have any questions.
-> > > 
-> > > *friendly ping*
-> > > 
-> > > If I am doing something wrong, let me know.
-> > 
-> > Not really, just haven't got around to looking into it. Mark Rutland
-> > raised a concern (in private) about the safety of multithreaded apps
-> > but I think you already replied that timens_install() checks for this
-> > already [1].
-> > 
-> > Maybe a similar atomicity issue to the one raised by Mark but for
-> > single-threaded processes: the thread is executing vdso code, gets
-> > interrupted and a signal handler invokes setns(). Would resuming the
-> > execution in the vdso code on sigreturn cause any issues?
-> 
-> It will not cause any issues in the kernel. In the userspace,
-> clock_gettime() can return a clock value with an inconsistent offset, if
-> a process switches between two non-root namespaces. And it can triggers
-> SIGSEGV if it switches from a non-root to the root time namespace,
-> because a time namespace isn't mapped in the root time namespace.
-> 
-> I don't think that we need to handle this case in the kernel. Users
-> must understand what they are doing and have to write code so that avoid
-> these sort of situations. In general, I would say that in most cases it
-> is a bad idea to call setns from a signal handler.
+On Fri, Jul 24, 2020 at 5:15 AM Thi=C3=A9baud Weksteen <tweek@google.com> w=
+rote:
+>
+> The audit data currently captures which process and which target
+> is responsible for a denial. There is no data on where exactly in the
+> process that call occurred. Debugging can be made easier by being able to
+> reconstruct the unified kernel and userland stack traces [1]. Add a
+> tracepoint on the SELinux denials which can then be used by userland
+> (i.e. perf).
+>
+> Although this patch could manually be added by each OS developer to
+> trouble shoot a denial, adding it to the kernel streamlines the
+> developers workflow.
+>
+> [1] https://source.android.com/devices/tech/debug/native_stack_dump
+>
+> Signed-off-by: Thi=C3=A9baud Weksteen <tweek@google.com>
+> Signed-off-by: Joel Fernandes <joelaf@google.com>
+> ---
+>  MAINTAINERS                    |  1 +
+>  include/trace/events/selinux.h | 35 ++++++++++++++++++++++++++++++++++
+>  security/selinux/avc.c         |  6 ++++++
+>  3 files changed, 42 insertions(+)
+>  create mode 100644 include/trace/events/selinux.h
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index e64cdde81851..6b6cd5e13537 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15358,6 +15358,7 @@ T:      git git://git.kernel.org/pub/scm/linux/ke=
+rnel/git/pcmoore/selinux.git
+>  F:     Documentation/ABI/obsolete/sysfs-selinux-checkreqprot
+>  F:     Documentation/ABI/obsolete/sysfs-selinux-disable
+>  F:     Documentation/admin-guide/LSM/SELinux.rst
+> +F:     include/trace/events/selinux.h
+>  F:     include/uapi/linux/selinux_netlink.h
+>  F:     scripts/selinux/
+>  F:     security/selinux/
+> diff --git a/include/trace/events/selinux.h b/include/trace/events/selinu=
+x.h
+> new file mode 100644
+> index 000000000000..e247187a8135
+> --- /dev/null
+> +++ b/include/trace/events/selinux.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM selinux
+> +
+> +#if !defined(_TRACE_SELINUX_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_SELINUX_H
+> +
+> +#include <linux/ktime.h>
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(selinux_denied,
+> +
+> +       TP_PROTO(int cls, int av),
+> +
+> +       TP_ARGS(cls, av),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(int, cls)
+> +               __field(int, av)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->cls =3D cls;
+> +               __entry->av =3D av;
+> +       ),
+> +
+> +       TP_printk("denied %d %d",
+> +               __entry->cls,
+> +               __entry->av)
+> +);
 
-I would argue that calling any function not in the list of
-man 7 signal-safety
-without checking the kernel implementation is "you get to keep the
-pieces territory". There's a whole range of syscalls that are not safe
-in signal handlers and we don't have any special precautions for them so
-I'm not sure we'd need one for setns(). But maybe I'm missing the bigger
-picture here.
-
-Thanks!
-Christian
+I would think you would want to log av as %x for easier interpretation
+especially when there are multiple permissions being checked at once
+(which can happen). Also both cls and av would properly be unsigned
+values.  Only other question I have is whether it would be beneficial
+to include other information here to help uniquely identify/correlate
+the denial with the avc: message and whether any decoding of the
+class, av, or other information could/should be done here versus in
+some userland helper.
