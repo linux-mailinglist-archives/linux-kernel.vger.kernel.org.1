@@ -2,143 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96D622C804
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCCE22C807
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgGXOcM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 24 Jul 2020 10:32:12 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38349 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbgGXOcM (ORCPT
+        id S1726989AbgGXOcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726643AbgGXOcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:32:12 -0400
-Received: from mail-pf1-f199.google.com ([209.85.210.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jyyk5-000597-Lz
-        for linux-kernel@vger.kernel.org; Fri, 24 Jul 2020 14:32:09 +0000
-Received: by mail-pf1-f199.google.com with SMTP id w4so6382102pfq.11
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 07:32:09 -0700 (PDT)
+        Fri, 24 Jul 2020 10:32:46 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FA7C0619D3;
+        Fri, 24 Jul 2020 07:32:46 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id a14so5223240pfi.2;
+        Fri, 24 Jul 2020 07:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PBya7J5P0ibxYxlDA6PEHQHimcYIa3S6ZZMr6ss88/0=;
+        b=iQjk6UgQnrkW07FaGn1nItpLJIyiCnibqzlLcqDbDy9Df37pw1IsTf7wCSdGQ9OMZ6
+         icCnawH/M+rC0M+hkqD6ZNIOaCYyg3xvGpk3QeYD5ILZQjKqclVBklgao3yVTEpca1ks
+         1aVGqQFccJGAyjZn+Vn8rLl09DUvjDQunlVBHETNPIzRvAmdBp83FynWnevag1JYJogc
+         Rxs0z+cEqCaEcCOj0qqLxECUouMnWJUElcS08BKJRJ4KYo+QB/QMm1XTjdPIVOqLUsyA
+         Y/70oNoaBKmDckWPZbLpl0ciSCu4L69kFAokPRwx3Nzu3KIgMvTogfwpsNWeHE3zxuNh
+         bsVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=OY6zbYqXoDNfg1vkCWS7IkbQH43ot9XbU/fDyuAMUME=;
-        b=jjazPLXL2oXV7a47tJqPK0HZV5HP0UZBgyPJwJH0QZd54y/Okg727TDZ9uAzekNTF4
-         VymTuEkIZovQ8YqM8JyuXQu2GYHyItHYdZBfDwToDIhXfFst9ValuBiL3PONu29VxlTD
-         CZT8ZZ783MD/pRww7OLG7eWsYb79Iu/Z6dNRxyjWPvn5xmmNkosvHxJvL02xRQ6MAjG4
-         nwHUeOeKmmHs1QG1NvldXSCxVMrMDAOkeEbP9zJuDk30lnMFk0XnPJwF/X1fVo++SMtu
-         Pnn6stuhhcrDP4BWSp20XFEqBrPH7Et7kR40a6mlWFiUK4nWTAY42PcenQ7R2oV/SWVp
-         /nOQ==
-X-Gm-Message-State: AOAM530IWIv0jEXj8ysnxGrxnPxyIglq16DwNrJ0ctHhTrwivSbFVWga
-        dzZGBWxWavDKIzDFHtVRIn4xL86QLvbrO5RSB9tga21Ca05K+HeN56W0spm/8Hb/FzYwXWtyPCf
-        oM0TJIN0LPmxkLGo2H6vg3jTKte0xxI3HbSWF8XiwVA==
-X-Received: by 2002:aa7:8e90:: with SMTP id a16mr8853492pfr.84.1595601128058;
-        Fri, 24 Jul 2020 07:32:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxls24L4v3wXph7gJpHH17hnDV5EVagwMFk9LHOOndi8kMi4J1ZA6VFcG1xMEeuLd3MRmpN7Q==
-X-Received: by 2002:aa7:8e90:: with SMTP id a16mr8853466pfr.84.1595601127681;
-        Fri, 24 Jul 2020 07:32:07 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id n9sm6136816pjo.53.2020.07.24.07.32.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Jul 2020 07:32:07 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: 5.7 regression: Lots of PCIe AER errors and suspend failure
- without pcie=noaer
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <CADLC3L1R2hssRjxHJv9yhdN_7-hGw58rXSfNp-FraZh0Tw+gRw@mail.gmail.com>
-Date:   Fri, 24 Jul 2020 22:32:05 +0800
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <87CA0F2C-5CEB-4CE7-8399-534CABE5ADD8@canonical.com>
-References: <CADLC3L20DuXw8WbS=SApmu2m49mkxxWKZrMJS_GBHDX7Vh0TvQ@mail.gmail.com>
- <CADLC3L2ZnGTQJ+fwCy42dpxhHLpAFzFkjMRG3ZS=z7R4WK08og@mail.gmail.com>
- <CADLC3L1R2hssRjxHJv9yhdN_7-hGw58rXSfNp-FraZh0Tw+gRw@mail.gmail.com>
-To:     Robert Hancock <hancockrwd@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=PBya7J5P0ibxYxlDA6PEHQHimcYIa3S6ZZMr6ss88/0=;
+        b=tQCMgUmf91KBH7OhGWLd3n9hYUDtSJauhBInWwXlbUczkg8IXogklQh2nF37U7X4vx
+         t51B98tzh04N5wfHtuFA1ro7J5o00Yy744rM3Hr4pnzqFE4vp0cWKZIOuwvGhXBK+o6i
+         84FHHebIJCC0MBFh1fgj5qgLdEd2MVN6ur/wFVIzdj6XlJLb5yo3k2TPgEs4e+STiMXV
+         lU6/UZ7zl/AQRq2Ch1OjNBd8jfcFD1Z+wWanBaBXZvxIMVrvJMrVcVQENJB4E2g7tYE4
+         qDx7QnIp7/Z1AYrFEAzUtHTbyTQcY+eisxU085xQl5H3Zz/o1LO0Bc3SlAUiHpopxxFY
+         pKDw==
+X-Gm-Message-State: AOAM530uIY/ujhCvsNjcDUYYKagIRi+iZjEPzdT+DbJxWsKJzgOtZISK
+        Zw5n/xcul7NyrCetCEfzvs6Bh1ut
+X-Google-Smtp-Source: ABdhPJzwsFoQ0/IlBhNvudnFGT0jGYfjBouRTRUTvjKhJ7sjcNLB5OGStvtJup3bdi/FWTo9sNdzbQ==
+X-Received: by 2002:a63:371c:: with SMTP id e28mr8710803pga.114.1595601165887;
+        Fri, 24 Jul 2020 07:32:45 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r9sm6260301pje.12.2020.07.24.07.32.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 07:32:44 -0700 (PDT)
+Subject: Re: [PATCH] rtc: ds1307: provide an indication that the watchdog has
+ fired
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200724045009.7293-1-chris.packham@alliedtelesis.co.nz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <5d6aaac5-0ce2-cf54-61fa-cfbc3f6bc0b3@roeck-us.net>
+Date:   Fri, 24 Jul 2020 07:32:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200724045009.7293-1-chris.packham@alliedtelesis.co.nz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
+On 7/23/20 9:50 PM, Chris Packham wrote:
+> There's not much feedback when the ds1388 watchdog fires. Generally it
+> yanks on the reset line and the board reboots. To provide some feedback
+> indicate that the watchdog has fired in the past. This should help
+> distinguish a watchdog triggered reset from a power interruption.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>  drivers/rtc/rtc-ds1307.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
+> index 49702942bb08..431b1a50c483 100644
+> --- a/drivers/rtc/rtc-ds1307.c
+> +++ b/drivers/rtc/rtc-ds1307.c
+> @@ -868,6 +868,14 @@ static int ds1388_wdt_start(struct watchdog_device *wdt_dev)
+>  	struct ds1307 *ds1307 = watchdog_get_drvdata(wdt_dev);
+>  	u8 regs[2];
+>  	int ret;
+> +	int val;
+> +
+> +	ret = regmap_read(ds1307->regmap, DS1388_REG_FLAG, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val & DS1388_BIT_WF)
+> +		dev_notice(ds1307->dev, "detected watchdog alarm flag\n");
+>  
+>  	ret = regmap_update_bits(ds1307->regmap, DS1388_REG_FLAG,
+>  				 DS1388_BIT_WF, 0);
+> 
 
-> On Jul 22, 2020, at 07:55, Robert Hancock <hancockrwd@gmail.com> wrote:
-> 
-> On Fri, Jul 10, 2020 at 6:28 PM Robert Hancock <hancockrwd@gmail.com> wrote:
->> 
->> On Fri, Jul 10, 2020 at 6:23 PM Robert Hancock <hancockrwd@gmail.com> wrote:
->>> 
->>> Noticed a problem on my desktop with an Asus PRIME H270-PRO
->>> motherboard after Fedora 32 upgraded to the 5.7 kernel (now on 5.7.8):
->>> periodically there are PCIe AER errors getting spewed in dmesg that
->>> weren't happening before, and this also seems to causes suspend to
->>> fail - the system just wakes back up again right away, I am assuming
->>> due to some AER errors interrupting the process. 5.6 kernels didn't
->>> have this problem. Setting "pcie=noaer" on the kernel command line
->>> works around the issue, but I'm not sure what would have changed to
->>> trigger this to occur?
->> 
->> Correction: the workaround option is "pci=noaer".
-> 
-> As a follow-up, from some more experimentation, it appears that
-> disabling PCIe ASPM with setpci on both the ASMedia PCIe-PCI bridge as
-> well as the PCIe root port it is connected to seems to silence the AER
-> errors and allow suspend/resume to work again:
-> 
-> setpci -s 00:1c.0 0x50.B=0x00
-> setpci -s 02:00.0 0x90.B=0x00
-> 
-> It appears the behavior changed as a result of this patch (which went
-> into the stable tree for 5.7.6 and so affects 5.7 kernels as well):
-> 
-> commit 66ff14e59e8a30690755b08bc3042359703fb07a
-> Author: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Date:   Wed May 6 01:34:21 2020 +0800
-> 
->    PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges
-> 
->    7d715a6c1ae5 ("PCI: add PCI Express ASPM support") added the ability for
->    Linux to enable ASPM, but for some undocumented reason, it didn't enable
->    ASPM on links where the downstream component is a PCIe-to-PCI/PCI-X Bridge.
-> 
->    Remove this exclusion so we can enable ASPM on these links.
-> 
->    The Dell OptiPlex 7080 mentioned in the bugzilla has a TI XIO2001
->    PCIe-to-PCI Bridge.  Enabling ASPM on the link leading to it allows the
->    Intel SoC to enter deeper Package C-states, which is a significant power
->    savings.
-> 
->    [bhelgaas: commit log]
->    Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207571
->    Link: https://lore.kernel.org/r/20200505173423.26968-1-kai.heng.feng@canonical.com
->    Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->    Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> 
-> Unfortunately it appears that this ASMedia PCIe-PCI bridge:
-> 
-> 02:00.0 PCI bridge [0604]: ASMedia Technology Inc. ASM1083/1085 PCIe
-> to PCI Bridge [1b21:1080] (rev 04)
-> 
-> doesn't cope with ASPM properly and causes a bunch of PCIe link
-> errors. (This is in addition to some broken-ness known as far back as
-> 2012 with these ASM1083/1085 chips with regard to PCI interrupts
-> getting stuck, but this ASPM problem causes issues even if no devices
-> are connected to the PCI side of the bridge, as is the case on my
-> system.)
-> 
-> Might need a quirk to disable ASPM on this device?
+This should be reported with WDIOC_GETBOOTSTATUS / WDIOF_CARDRESET,
+not as log message when starting the watchdog.
 
-Yes I think it's a great idea to do it.
-
-Can you please file a bug on [1] and we can continue our discussion there.
-
-[1] https://bugzilla.kernel.org
-
-Kai-Heng
+Guenter
