@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9189122C479
+	by mail.lfdr.de (Postfix) with ESMTP id 2417E22C478
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGXLo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
+        id S1726812AbgGXLoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbgGXLox (ORCPT
+        with ESMTP id S1726696AbgGXLox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Jul 2020 07:44:53 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD2FC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:44:52 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id h28so6823841edz.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:44:52 -0700 (PDT)
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6827EC0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:44:53 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id b13so4428357edz.7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0gsLhBTns929bqQjKSmleY078/xCezGLLk4wDzFNNps=;
-        b=g7igo7eisj06uL4L6JRb3s97UBZBfynmHh3zMqMVQN1xCX4IYGoaU1k9Yd1tyw/egd
-         xuwtB4qEAf0niacksfkTzOhw60KYxyQ0RGnCELlQ33RES1eZkHt7kRbkmo+gdFiqh2MU
-         gPT2Kp7lVyEVfLCiKgMskZ1sI+DL2SMs6Na0xSNbhLigxjQmNS79ktIHHQDA5d0jXmLy
-         TR7ags58mweKK8WtZsTshWgGUXdgr4HqSvRKIBdfc4gwv34wqsNGIJL2i1JVpRPkV811
-         Uz3HY66piJ+TY9q/qUSq4VhGqsenOnF0XE9IIYnm7/YvZQ6v+1Xswoyg0PfMN4ALGel0
-         skcA==
+        bh=je/ZaMoLASpjit77E8QX7SAmU2CLl39JJHW08Y95mVc=;
+        b=aFwf7AstUXrnTCwGoz3fCy9KJiHtFx2GDx6uN+qdyWkj/WXdcBEMeSL7gNTZs1t++U
+         UisJoKrFALZAoiVQEXmkGb1jVwbare6txIB2JzWNZACLTIqQGgd6sAh4tDQHziKpQNJA
+         6+JPIDUTmWRtKPveH3rniNetJ6eymOCqYJBrxExnxKbVYN9mQ+q6qcW+1V+ne/eO1RPo
+         jRJXEV4D/aA3DRaXtV1q3WtYBN1cjisiHjMbV76fNyFIdsWf89hoxWKvBO8Z4Dhfj+MX
+         cvugcfeHeQmed6WVWPBED3EvSIR2u8fjE7BMRxoRmlpnHbDk75PeGV5M8TE0XAlx6xlX
+         7o/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=0gsLhBTns929bqQjKSmleY078/xCezGLLk4wDzFNNps=;
-        b=VST3Aj11iHoSfPxI36P3Wm3PMLfWBJfTIc4Wpe0N07kpzlxEjH+vc+x5sUYV0WwIp2
-         DpFAJwdNKrNWhJSBNzK21GmHliDnowlX7xSjqmEKzLZOFV06UovzRX5t1PhvlC1rZpbf
-         jm+fM89poBwCHoTarPhAmNdaEuoTa40R2jNXquhNAG8+tmg+WNcjLTLq6Y+3kucYK8Ck
-         oB7eHugPZ6dYBQ/EKsNQ9AHdaCTkvnwtNdlu9DZgivBmvZSXAc421X/gxPw8J0GO9mJg
-         ozcK7zCtOlpn6u8JKcQgyIpC/frlCP4a4rODNA96lRVTZhhy4XFNpxjDYR9CuxISSzN0
-         7lNg==
-X-Gm-Message-State: AOAM530XWe4TRe0dzYfpW77LeKINtFYzkWksPi8UXJAAmhvyuzyimsg5
-        i/dJi03D6A0MeTaYTKRdIBuy5mJA
-X-Google-Smtp-Source: ABdhPJyYKgJVNhc3eyZGcfpwAzY09p8QZMC+BG/x+PjUmCRL1usHbau0m9J2AfPr062/MwLS1por5w==
-X-Received: by 2002:a05:6402:1c10:: with SMTP id ck16mr8645092edb.72.1595591090577;
-        Fri, 24 Jul 2020 04:44:50 -0700 (PDT)
+        bh=je/ZaMoLASpjit77E8QX7SAmU2CLl39JJHW08Y95mVc=;
+        b=ZJMV7DW1pYW/lLrb5eLUOHSR6x7hqIlDKm39VX5Z4jxMms1fQ0ISUTFdhBSFXh2QHm
+         G6W+CGo8MjLb2Ox3kkjWkx5VCC7yzsNnQUSbpBwTypcE9BsnjsAVNVYu8vJi/4B3iZUQ
+         wnRDtvcgQzYRlXgPZ/ELlAXM5KlWyuSfqAPYSLjGt/yyl15i90HJFmBGytvJlLMIarHM
+         aouxan1ZYCMn8maRUh8jOdfxBxtw5xUoykS0ZlCtHkkrrMH0pLEyqS2HeWkrwNMtNLlg
+         GHQ+AQGOjZjD2xnMn+UZd8Ogdt9mWalUf8sg4lCsHqdGEcC7Uvd/N6jA39yEM/ZJCbob
+         lGqg==
+X-Gm-Message-State: AOAM5337AXprRbXAS6X68daF4Mfe3yhW8MIdpbLPPxExO9sappq5IYe8
+        JqjHu2kStqFZPb7l5kCbGGAzu2Kd
+X-Google-Smtp-Source: ABdhPJxrqXA6irOygMZKAm99/1D1cfEESjaHUaZsqJJ4KHY/ePBdV5kH7yuio5Jcxxl24nS1D9AHvg==
+X-Received: by 2002:a50:af45:: with SMTP id g63mr8905200edd.52.1595591091918;
+        Fri, 24 Jul 2020 04:44:51 -0700 (PDT)
 Received: from localhost.localdomain (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id r5sm580152edx.32.2020.07.24.04.44.49
+        by smtp.gmail.com with ESMTPSA id r5sm580152edx.32.2020.07.24.04.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 04:44:49 -0700 (PDT)
+        Fri, 24 Jul 2020 04:44:51 -0700 (PDT)
 From:   Ingo Molnar <mingo@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Borislav Petkov <bp@alien8.de>
-Subject: [PATCH 1/3] x86/ioapic: Remove unused "IOAPIC_AUTO" define
-Date:   Fri, 24 Jul 2020 13:44:16 +0200
-Message-Id: <20200724114418.629021-2-mingo@kernel.org>
+Subject: [PATCH 2/3] x86/tsc: Remove unused "US_SCALE" and "NS_SCALE" leftover macros
+Date:   Fri, 24 Jul 2020 13:44:17 +0200
+Message-Id: <20200724114418.629021-3-mingo@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200724114418.629021-1-mingo@kernel.org>
 References: <20200724114418.629021-1-mingo@kernel.org>
@@ -66,29 +66,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last use was removed more than 5 years ago, in:
+Last use of them was removed 13 years ago, when the code was converted
+to use CYC2NS_SCALE_FACTOR:
 
-   5ad274d41c1b: ("x86/irq: Remove unused old IOAPIC irqdomain interfaces")
+  53d517cdbaac: ("x86: scale cyc_2_nsec according to CPU frequency")
+
+The current TSC code uses the 'struct cyc2ns_data' scaling abstraction,
+the old fixed scaling approach is long gone.
+
+This cleanup also removes the 'arbitralrily' typo from the comment,
+so win-win. ;-)
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: Borislav Petkov <bp@alien8.de>
 Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
 ---
- arch/x86/include/asm/io_apic.h | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/include/asm/tsc.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/io_apic.h b/arch/x86/include/asm/io_apic.h
-index fd20a2334885..a1a26f6d3aa4 100644
---- a/arch/x86/include/asm/io_apic.h
-+++ b/arch/x86/include/asm/io_apic.h
-@@ -99,7 +99,6 @@ struct IR_IO_APIC_route_entry {
- struct irq_alloc_info;
- struct ioapic_domain_cfg;
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 8a0c25c6bf09..b7b2624fba86 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -7,9 +7,6 @@
  
--#define IOAPIC_AUTO			-1
- #define IOAPIC_EDGE			0
- #define IOAPIC_LEVEL			1
+ #include <asm/processor.h>
  
+-#define NS_SCALE	10 /* 2^10, carefully chosen */
+-#define US_SCALE	32 /* 2^32, arbitralrily chosen */
+-
+ /*
+  * Standard way to access the cycle counter.
+  */
 -- 
 2.25.1
 
