@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9885C22C472
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF4E22C46A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgGXLlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:41:21 -0400
-Received: from mail-eopbgr80078.outbound.protection.outlook.com ([40.107.8.78]:38062
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726258AbgGXLlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:41:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BLFHoUKKcL4ftb8v9+Ri4QvA6XVqgnG4bXB8yLaU4sefgP4GwxMWI+17mXirPxg/0sWSqe66Dp4aoVaKBQgDm7rfokMTVeI1TW+DvFDR4KmpjNHeTdxhXagHJlskwhwwqFPHNZ1gzQpMoSJEHiXWPLIcoqP5doaB+PEq1Dnyfdsa6MoU6b9UlH89uUafjEVGjKFJzdfG8shBZFM7C6cy549BAK9uhbi0Ti4cuNxvdRWsOfvmI0XpEcXdWzFnq1RFy0oth6sE2nNd1A5HjHSLwCPX0xpOOFw7/5NAc0UPq+I4SBhRU7uB+7FaGL2Izt/7peTKehudivAacDxeRcvdew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hsHO/KvBMsQBpTI0T/MHRQPaSwEqDCU7+44Wnneh4aM=;
- b=RmX7erBU070N4oHuc5sqcN0mQQh5LsggZe1hX7FXwJdJbGXwM+K69+LuJtv+RPCcc+j1GLPMge+/LiGula9R1cCbKDTz6AMAmyvyroToEcZgFNmW9BcJhq/Cyn1UudxMc6VloWn/6SOoNwE0VcZFANREVOlkjWh38kf0E1jLaxP5Qfj6IlNAB4bKemw6aSsYudwLg3axl1CA1pL8otL00AwZtuJYiO9cdhscT+hWh8ZF1OSlFn5PiWI8xkfPq2AU2dFAPtzQRXPGgyp8KyWcHGPzdIALjDIK/dlXmdWp/aJ2onG1hSSD6nZ0ByAR6SMGL2mHsfVLyQYLCFR6dKfU8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hsHO/KvBMsQBpTI0T/MHRQPaSwEqDCU7+44Wnneh4aM=;
- b=Do62pTL1dtrr8JNZWO4cLY0HjY3Z67Ig1RU8jPMQ1O/c12rKcCj3oOxSC3sdsj1Mq+qa9nPSBfSzHlXs2E5yEZMzq5PpWaL3Y9iH1iYLMRK87z8ty/IrbLRmNvNSXtXv7Yg7Op5kirU20lIjLfvQpZFATpykMnMnC7lGdo6bKMw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB4800.eurprd04.prod.outlook.com (2603:10a6:803:5a::12)
- by VI1PR0402MB3375.eurprd04.prod.outlook.com (2603:10a6:803:2::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Fri, 24 Jul
- 2020 11:41:17 +0000
-Received: from VI1PR04MB4800.eurprd04.prod.outlook.com
- ([fe80::1c58:aed8:bd10:6c9e]) by VI1PR04MB4800.eurprd04.prod.outlook.com
- ([fe80::1c58:aed8:bd10:6c9e%3]) with mapi id 15.20.3216.026; Fri, 24 Jul 2020
- 11:41:17 +0000
-From:   Vabhav Sharma <vabhav.sharma@oss.nxp.com>
-To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     V.Sethi@nxp.com, Vabhav Sharma <vabhav.sharma@nxp.com>
-Subject: [PATCH] arm64: dts: ls1028a: qds: enable lpuart1
-Date:   Fri, 24 Jul 2020 17:04:42 +0530
-Message-Id: <1595590482-26833-1-git-send-email-vabhav.sharma@oss.nxp.com>
-X-Mailer: git-send-email 1.9.1
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0097.apcprd03.prod.outlook.com
- (2603:1096:4:7c::25) To VI1PR04MB4800.eurprd04.prod.outlook.com
- (2603:10a6:803:5a::12)
+        id S1726810AbgGXLfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726280AbgGXLfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 07:35:46 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8338C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:35:45 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id g37so6708499otb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0okWF7m0mxKnIjxocen5tI8Jd/G7/Bk7ETNsmNpYOFA=;
+        b=BaYEtLFIQLnHBtzZnOMivwOHKaNw21qCUdJOsfu86Ei5Eu/AOwAUeIS5K+s11lqhGi
+         yi3jldrEmla9RW8pdzXD3wUfMlp1WFy5CbWPbs8g5Is5lLdW/Dy0WjQUHqc9XADYYpuk
+         vViqlfhEZRrnADqugOPCz+3AsC2bwewAnDHr+AquPGwfJ1EpzAV9DLo5XCSOeaNCXpl7
+         /ky9hyaoJri3tfntaZiFvDykYXLfr2n+mzaja5IRUoqDuqezMFgQRovF9hqdbtU/pVbs
+         5J37MNaMF2lR3asJ5sH/Aoxf8uFnvPSlwoe0YxCXxVjz8jx3gkIvG3fwiLRIn9/d5buh
+         hrKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0okWF7m0mxKnIjxocen5tI8Jd/G7/Bk7ETNsmNpYOFA=;
+        b=bfRjNtOGMblEKwcrATugmdDsDh2rnNyFQxDWL6+3EJeqsPi5XKnb5D9LclzcZGVdxY
+         Iq4W6mDu/GJuQzyVxdl8otT/fbuJM/+2JWzbe7Wri4ouuaCNy1gRyqbdiPAeNgsR/pBM
+         cdOewXl/kFo0Hwz8ZhxN7S1MQDMq84/6QuF38kgY0dNiIx1EWPOCUlGbJO2UByL0gt4h
+         qvqbzxMbcS4PEmkI0kz3od0HAfEykhjToYIkcegK6n6sCbUmw7y3X7cjm4tN+4LF1vOZ
+         vOFBhB4Hy+5y1rYRZo16hwTG2c0DCzh+J3v3saNeX+5YX3HkyAv41hcXQOecmXd+6A6V
+         RCcQ==
+X-Gm-Message-State: AOAM530IsUgcTcAvtLjl8fN1PytUcsgnmfC9X+V4pVc/fRvgJkCNwtOV
+        TyVy9tUCq7++fx4htit3yr6hOsfNlBlk644wDOrrW7fU
+X-Google-Smtp-Source: ABdhPJzNmPb/Pb0fSf86yJwe0oZTFd8E1Iyrwq4Eu5yXiZiTxpZ0eqpb19Hem0ncB91v4QJ3fw7E/5v9+GCbNX/v3FA=
+X-Received: by 2002:a05:6830:42:: with SMTP id d2mr8760888otp.339.1595590545204;
+ Fri, 24 Jul 2020 04:35:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from uefi-OptiPlex-790.ap.freescale.net (92.120.0.71) by SG2PR03CA0097.apcprd03.prod.outlook.com (2603:1096:4:7c::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3239.9 via Frontend Transport; Fri, 24 Jul 2020 11:41:14 +0000
-X-Mailer: git-send-email 1.9.1
-X-Originating-IP: [92.120.0.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d1ee4ff6-69d2-4278-9034-08d82fc67a4d
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3375:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB33757AF15B20EFB1FBCB8AC0B2770@VI1PR0402MB3375.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IIVHPUIPvyM4PhPLh/c/GdfT7tUERzuPjdOGJMWy0sCdO4dHDyy/USOU6ZdxWKXCINaJdREElzOp33MH3NcRAzottzFQtbKguEPACRisXI1asTLcPCtDnM6P43AhXxzX9d4pZNwlWRNugnqrmjO3XfFpOsx4Byo5OtLZb23KjDjLitK2+oh2s7QHIPrjkm9DZhC7C28D7N0UOQDysSJu2BDsDbOiQnlVMvRUaN/aEnFMaTwoD4kAHYmiEQVyaLjPrA7ZSMmEhOtx3XBhq/26kVFJG1+RmhNsyUeCHjdGMudbTFsDL7FRMsnx8bArFlZtgbDE/n6mi0pG9ptq3kcl9Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4800.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(366004)(136003)(346002)(396003)(5660300002)(478600001)(66476007)(316002)(86362001)(4744005)(66556008)(4326008)(66946007)(2906002)(6506007)(186003)(6486002)(83380400001)(8676002)(26005)(16526019)(956004)(6666004)(2616005)(6512007)(44832011)(52116002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: TrF6YiOAr3JZXmc9yWEYdI9QsElB9Dx/uBPBZ8JBj4xn7H75orTuwB84vxz349w6Xq2WZz7PWrPl3q1MEUw4k/4VcTlfjpoeWQJ0+qEPJGUBPgBwXDptXL10sNR4sHhPU3+BIMH/8bs+f1vOAIIlGooXystugiLe+3UAbd3JSivzeo8E7fFK9hM+R8BXSEbH7gYO/DXdAhpmICawIMb0dEG0yCNpMXUqjD88/BLCLUBSUg7PdUeuwopxQfsF0k2o35bMOewFzwHrR+VX76t+iL9Vvb0EEmY+CRblYR3R52ctPt/jTxyNiQ7KDGrvCIL11CXWI8cSgKp6xuIv2zUJ62aTFe96UnIt84d0DQKtotru9sWLSIcybnERpAMnccRJeGzVhNkkbai2wzaxwLeLt44mHMTHMIimBjBDdjbXrw8lhHNwG97gGV6WwJwDQ/JDyFll0Szshhr86GLalsqUbItiPmAN6cv5mBQSQoPGihs=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d1ee4ff6-69d2-4278-9034-08d82fc67a4d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4800.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 11:41:17.8896
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lsWDyzBGbYbNZj0QdPLrKymqT2asFoARt/SzJdGJj9ynRVnOuvvd1h4xcHOOZFkUYGiiWlvNFw2wAFBxmCQNpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3375
+References: <20200723191525.GA24516@ogabbay-VM> <20200724093259.GB4116407@kroah.com>
+In-Reply-To: <20200724093259.GB4116407@kroah.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Fri, 24 Jul 2020 14:35:17 +0300
+Message-ID: <CAFCwf10r4eqO=6B=C_iKt17XcY7oVuRDEJs5_x9Anw_5Djig6Q@mail.gmail.com>
+Subject: Re: [git pull] habanalabs pull request for kernel 5.9-rc1 (resend)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vabhav Sharma <vabhav.sharma@nxp.com>
+On Fri, Jul 24, 2020 at 12:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jul 23, 2020 at 10:15:25PM +0300, Oded Gabbay wrote:
+> > Hello Greg,
+> >
+> > (Re-sending this pull request)
+> >
+> > This is habanalabs pull request for the merge window of kernel 5.9. It
+> > contains many small improvements to common and GAUDI code. Details are in
+> > the tag.
+> >
+> > Thanks,
+> > Oded
+> >
+> > The following changes since commit 7a4462a96777b64b22412f782de226c90290bf75:
+> >
+> >   misc: rtsx: Use standard PCI definitions (2020-07-22 13:39:31 +0200)
+> >
+> > are available in the Git repository at:
+> >
+> >   git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-next-2020-07-23
+>
+> {sigh}
+>
+> Commit: 961a7325e670 ("habanalabs: Fix memory leak in error flow of context init")
+>         Fixes tag: Fixes: 786c94810698 ("habanalabs: Use pending cs amount per asic")
+>         Has these problem(s):
+>                 - Subject does not match target commit subject
+>                   Just use
+>                                 git log -1 --format='Fixes: %h ("%s")'
+>
+> The scripts I use to check this are here:
+>         https://github.com/gregkh/gregkh-linux/blob/master/work/verify_fixes.sh
+>         https://github.com/gregkh/gregkh-linux/blob/master/work/verify_signedoff.sh
+>
+> And note, if I ignore these errors, you will just get the same response
+> from Stephen when it hits linux-next :(
+>
+> thanks,
+>
+> greg k-h
 
-LPUART nodes by default are disabled in LS1028A device
-tree, Enabling LPUART1 node
+I'm sorry for all the trouble Greg, but I wanted to ask before I send
+it again, won't the fixed sha-id be wrong once you merge this pull
+request to your tree ?
+Because this patch fixes a previous patch in this pull-request.
+Maybe I should just squash them ?
 
-Acked-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Vabhav Sharma <vabhav.sharma@nxp.com>
----
- arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-index dd69c5b..045f748 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-@@ -228,6 +228,10 @@
- 	status = "okay";
- };
- 
-+&lpuart0 {
-+	status = "okay";
-+};
-+
- &sai1 {
- 	status = "okay";
- };
--- 
-2.7.4
-
+Thanks,
+Oded
