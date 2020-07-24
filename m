@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023B822C665
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8AE22C66F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgGXN2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726747AbgGXN2G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:28:06 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615DCC0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:28:06 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id g7so1709013ejw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OJFe4XlgDaUT1BN7JDWdIBCtuqkoezpQiMpyQlUPivw=;
-        b=JlUWCrf2CQySq4nPLDpOuHiYDLaB1teJzoZobzCJo0zPBvTuqqauXTPBf/TE/66b0C
-         smsYJAk60fUKqKHoDwQpwT5PVLWEmHnWmEIkrnBbvAN+dtkunIAT5Zv2h8wddOLfpZwf
-         E/8IysQenGjDice7jtz4tuDPw+mHWnjqyobHBjJ1Adyk1zZ7XlWC3tqJyDxBOXsghc8v
-         m6Jm8eEBFhsebg5H/FFBSj/LtOVDQBomSdrMNrasboyovD5XXjMESgibGtQX+qUsVJvq
-         I6LPa+b8jAnOzZ1cETRDBKL+h91q7EbLblkxYEwgmdiyV8u2BTr1Wt8KZ5hzvcPSs2jX
-         NWnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=OJFe4XlgDaUT1BN7JDWdIBCtuqkoezpQiMpyQlUPivw=;
-        b=icaQhXWu7TO9Atby6U+N0GNUrbk71zF6tURsanZ73kmGoPqWyMEutwn/vq9j1NhOSo
-         JhBP3ImJ5S7V6H3nFOMjArCzFanLtY6oU05SWVK4H0feRdCrqIDt06PSxRvWdTiZ1yYw
-         JbVzhkzdggFGpKb3S61z1IgUN9aQ5HfuoXK/WP4lL6vG4Ss5d1e/dreocPfsdYMrgrYl
-         eHoa/O4h99MjmcY8ZFogZIWh2kvcPgOgtCZxVJ6BqpQi1xEzPV4iub7jVcf7OJpi7vGa
-         UNcGmTrrahzawmPGBa7FgVvMTmFDhvdl7Mh159I68Dyt/2ThyFT6yH5fjuf9AwoF4CvJ
-         KJ0g==
-X-Gm-Message-State: AOAM5331uUx4uMOq285TVNOLJTt7neMOhTj4mbtA4ksT+XfDthSz2Pcz
-        7fJgrzfugGlb/XIht9dUGz0=
-X-Google-Smtp-Source: ABdhPJyQUHxEbR3FDjOM4nETLdD5DuI8fWTzi9csdh5fuQaAYhk+3YtgaIeR4DWWrOpa0gFpJBThXA==
-X-Received: by 2002:a17:906:2f17:: with SMTP id v23mr8899876eji.343.1595597285096;
-        Fri, 24 Jul 2020 06:28:05 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id bz14sm665571ejc.88.2020.07.24.06.28.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 06:28:04 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 15:28:02 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Regression on todays tip/master (commit 16f70beccf43)
-Message-ID: <20200724132802.GA640628@gmail.com>
-References: <20200723133743.GA30716@8bytes.org>
- <871rl2xpar.fsf@nanos.tec.linutronix.de>
- <20200723145219.GP27672@8bytes.org>
+        id S1727786AbgGXN2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:28:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727774AbgGXN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:28:35 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FEC82065F;
+        Fri, 24 Jul 2020 13:28:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595597314;
+        bh=aVUlwaFSPbv2FOLkmLAuTXyO51kUIwT97MB3MVPw4m0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cNxwEYnSSTcZNbJ28anpaf133BCtSSNL5BVKFETSxWIjX67dvkoe00WB9jPpmI3In
+         o9UPsvYM4jDGPJ/TTeKqcjUFwTovwr8HzUJVcE3RRdfVggcBFQHc0Cs8TF2FqOgavZ
+         HlPQZPvOMFNa3dvUVimS1J+e0GXQ/FOB/OdZvp8E=
+Date:   Fri, 24 Jul 2020 15:28:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Larry Finger <Larry.Finger@lwfinger.net>,
+        Shreeya Patel <shreeya.patel23498@gmail.com>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Michael Straube <straube.linux@gmail.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable
+ authmode
+Message-ID: <20200724132836.GC316746@kroah.com>
+References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200723145219.GP27672@8bytes.org>
+In-Reply-To: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Joerg Roedel <joro@8bytes.org> wrote:
-
-> On Thu, Jul 23, 2020 at 04:46:04PM +0200, Thomas Gleixner wrote:
-> > Joerg Roedel <joro@8bytes.org> writes:
-> > > while testing the SEV-ES patches on todays tip/master I triggered the BUG
-> > > below:
-> > >
-> > > [  137.629660] ------------[ cut here ]------------
-> > > [  137.630769] kernel BUG at kernel/signal.c:1917!
-> > > [  137.631796] invalid opcode: 0000 [#1] SMP NOPTI
-> > > [  137.632822] CPU: 3 PID: 28596 Comm: test_syscall_vd Not tainted 5.8.0-rc6-tip+ #3
-> > > [  137.634495] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-> > > [  137.636236] RIP: 0010:do_notify_parent+0x25c/0x290
-> > > The guest had 4 VCPUs and ran 4 instances of the in-kernel x86-selftests
-> > > in a loop, together with 'perf top -e cycles:k'. As you can see in the
-> > > time-stamps, the issue triggered pretty quickly.
-> > >
-> > > Please let me know if you need more information or testing from my side.
-> > 
-> > Any chance to bisect this?
+On Fri, Jul 24, 2020 at 08:29:55PM +0800, Dinghao Liu wrote:
+> The variable authmode will keep uninitialized if neither if
+> statements used to initialize this variable are not triggered.
+> Then authmode may contain a garbage value and influence the
+> execution flow of this function.
 > 
-> Yes, will try. I am currently testing plain -rc6, it seems to be fine.
-> Bisecting is next.
+> Fix this by initializing it to zero.
 
-Given that you are perf stress-testing the box, some recent perf 
-commit would be the primary suspect - before doing a full bisect you 
-might want to try current perf/core (2ac5413e5edc) and its upstream 
-base: v5.8-rc3, to narrow it down.
+That does not fix anything, you just now are potentially setting a value
+you really do not have.
 
-But in principle any other commit could be the cause as well, the 
-assert suggests memory corruption - I don't think we changed anything 
-in the signal code.
+Are you sure that this variable really will never be set?  If so, please
+fix it up with a "real" value that the code can handle properly.
 
-Thanks,
+thanks,
 
-	Ingo
+greg k-h
