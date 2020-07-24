@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3008822BB59
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 03:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474F622BB78
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 03:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgGXBZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 21:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
+        id S1726782AbgGXBZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 21:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgGXBZ0 (ORCPT
+        with ESMTP id S1726010AbgGXBZr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 21:25:26 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBEBC0619D3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 18:25:26 -0700 (PDT)
-Received: from neuling.org (localhost [127.0.0.1])
-        by ozlabs.org (Postfix) with ESMTP id 4BCWjH2XG7z9sPB;
-        Fri, 24 Jul 2020 11:25:23 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=neuling.org;
-        s=201811; t=1595553924;
-        bh=tm/GU39NPJjOhnUmHyDDcZvMhBdG0uDx7EnJQcKGEho=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=XOKW50YAnge0+7ZmdCpLdxd8P+Gx1IVElGxDtqg7n8o2DtROhV6Gd/km0jYnjiC5d
-         /guTMY0h5sHwhoVmVXsZFdgGiGM9zm11xlDj4acp0AgSgtthMRCkNppZKXVVdG4iMg
-         JERKTsxs0ZF3wBBn9wjRNUEyGlmhJhF0hZCj6qrOhp1HbGf0lwrJ5PKG9bEDe0sM53
-         J8o/9EnQDDNAxlM/rMc/M5KUEUi26pwhuMQgxnB2wu4egOTE0sBUQ9/Ml1Zt01Ve3w
-         pUVyVFS4/UiiX4lK6r5AKsCnqErfhyLdIIW+MCNbRLYdgaQO1KyqcYNBh6aAUWkz1f
-         3o3gS8l4YgcjA==
-Received: by neuling.org (Postfix, from userid 1000)
-        id 3D9482C0404; Fri, 24 Jul 2020 11:25:23 +1000 (AEST)
-Message-ID: <b9507631629bfc1f36893a280b2b83ea484516f9.camel@neuling.org>
-Subject: Re: [PATCH v2 2/3] powerpc/powernv/idle: save-restore DAWR0,DAWRX0
- for P10
-From:   Michael Neuling <mikey@neuling.org>
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        ravi.bangoria@linux.ibm.com, ego@linux.vnet.ibm.com,
-        svaidy@linux.ibm.com, pratik.r.sampat@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Jul 2020 11:25:23 +1000
-In-Reply-To: <20200710052207.12003-3-psampat@linux.ibm.com>
-References: <20200710052207.12003-1-psampat@linux.ibm.com>
-         <20200710052207.12003-3-psampat@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
+        Thu, 23 Jul 2020 21:25:47 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC45C0619D3;
+        Thu, 23 Jul 2020 18:25:47 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jymT4-001Gc8-Bj; Fri, 24 Jul 2020 01:25:46 +0000
+From:   Al Viro <viro@ZenIV.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: [PATCH v2 01/20] xtensa: fix access check in csum_and_copy_from_user
+Date:   Fri, 24 Jul 2020 02:25:27 +0100
+Message-Id: <20200724012546.302155-1-viro@ZenIV.linux.org.uk>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20200724012512.GK2786714@ZenIV.linux.org.uk>
+References: <20200724012512.GK2786714@ZenIV.linux.org.uk>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-10 at 10:52 +0530, Pratik Rajesh Sampat wrote:
-> Additional registers DAWR0, DAWRX0 may be lost on Power 10 for
-> stop levels < 4.
-> Therefore save the values of these SPRs before entering a  "stop"
-> state and restore their values on wakeup.
->=20
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-> ---
->  arch/powerpc/platforms/powernv/idle.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->=20
-> diff --git a/arch/powerpc/platforms/powernv/idle.c
-> b/arch/powerpc/platforms/powernv/idle.c
-> index 19d94d021357..f2e2a6a4c274 100644
-> --- a/arch/powerpc/platforms/powernv/idle.c
-> +++ b/arch/powerpc/platforms/powernv/idle.c
-> @@ -600,6 +600,8 @@ struct p9_sprs {
->  	u64 iamr;
->  	u64 amor;
->  	u64 uamor;
-> +	u64 dawr0;
-> +	u64 dawrx0;
->  };
-> =20
->  static unsigned long power9_idle_stop(unsigned long psscr, bool mmu_on)
-> @@ -687,6 +689,10 @@ static unsigned long power9_idle_stop(unsigned long
-> psscr, bool mmu_on)
->  	sprs.iamr	=3D mfspr(SPRN_IAMR);
->  	sprs.amor	=3D mfspr(SPRN_AMOR);
->  	sprs.uamor	=3D mfspr(SPRN_UAMOR);
-> +	if (cpu_has_feature(CPU_FTR_ARCH_31)) {
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-Can you add a comment here saying even though DAWR0 is ARCH_30, it's only
-required to be saved on 31. Otherwise this looks pretty odd.
+Commit d341659f470b ("xtensa: switch to providing
+csum_and_copy_from_user()") introduced access check, but incorrectly
+tested dst instead of src.
+Fix access_ok argument in csum_and_copy_from_user.
 
-> +		sprs.dawr0 =3D mfspr(SPRN_DAWR0);
-> +		sprs.dawrx0 =3D mfspr(SPRN_DAWRX0);
-> +	}
-> =20
->  	srr1 =3D isa300_idle_stop_mayloss(psscr);		/* go idle */
-> =20
-> @@ -710,6 +716,10 @@ static unsigned long power9_idle_stop(unsigned long
-> psscr, bool mmu_on)
->  		mtspr(SPRN_IAMR,	sprs.iamr);
->  		mtspr(SPRN_AMOR,	sprs.amor);
->  		mtspr(SPRN_UAMOR,	sprs.uamor);
-> +		if (cpu_has_feature(CPU_FTR_ARCH_31)) {
-> +			mtspr(SPRN_DAWR0, sprs.dawr0);
-> +			mtspr(SPRN_DAWRX0, sprs.dawrx0);
-> +		}
-> =20
->  		/*
->  		 * Workaround for POWER9 DD2.0, if we lost resources, the ERAT
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: d341659f470b ("xtensa: switch to providing csum_and_copy_from_user()")
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/xtensa/include/asm/checksum.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/xtensa/include/asm/checksum.h b/arch/xtensa/include/asm/checksum.h
+index d8292cc9ebdf..243a5fe79d3c 100644
+--- a/arch/xtensa/include/asm/checksum.h
++++ b/arch/xtensa/include/asm/checksum.h
+@@ -57,7 +57,7 @@ static inline
+ __wsum csum_and_copy_from_user(const void __user *src, void *dst,
+ 				   int len, __wsum sum, int *err_ptr)
+ {
+-	if (access_ok(dst, len))
++	if (access_ok(src, len))
+ 		return csum_partial_copy_generic((__force const void *)src, dst,
+ 					len, sum, err_ptr, NULL);
+ 	if (len)
+-- 
+2.11.0
 
