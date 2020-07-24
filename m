@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8AE22C66F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B5A22C673
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgGXN2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37126 "EHLO mail.kernel.org"
+        id S1726753AbgGXN3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:29:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbgGXN2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:28:35 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726326AbgGXN3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:29:47 -0400
+Received: from pali.im (pali.im [31.31.79.79])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FEC82065F;
-        Fri, 24 Jul 2020 13:28:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA03C2065F;
+        Fri, 24 Jul 2020 13:29:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595597314;
-        bh=aVUlwaFSPbv2FOLkmLAuTXyO51kUIwT97MB3MVPw4m0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cNxwEYnSSTcZNbJ28anpaf133BCtSSNL5BVKFETSxWIjX67dvkoe00WB9jPpmI3In
-         o9UPsvYM4jDGPJ/TTeKqcjUFwTovwr8HzUJVcE3RRdfVggcBFQHc0Cs8TF2FqOgavZ
-         HlPQZPvOMFNa3dvUVimS1J+e0GXQ/FOB/OdZvp8E=
-Date:   Fri, 24 Jul 2020 15:28:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Larry Finger <Larry.Finger@lwfinger.net>,
-        Shreeya Patel <shreeya.patel23498@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Michael Straube <straube.linux@gmail.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable
- authmode
-Message-ID: <20200724132836.GC316746@kroah.com>
-References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
+        s=default; t=1595597387;
+        bh=yvJM5FcpUPPelkzIMDctcDI2U8az0nkLctRH80KQ/rE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QquUMn4wuWuGuQZB2ho0l93Z8D4J7m5WkilvDurUrvGlRX0n+bDaKiE+bbgw23NzF
+         O4G0hneohbW50Hd9mTd9yXKpb0MnvkMG+3nXNUfWVsVO3dirHj++gRYgZW6tR3pq7+
+         OgYvwWl0MH7fkgv5zJ1NwMr3NNc02wbcoi9mitRU=
+Received: by pali.im (Postfix)
+        id A394A88C; Fri, 24 Jul 2020 15:29:44 +0200 (CEST)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Jason Cooper <jason@lakedaemon.net>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: mvebu: Check if reset gpio is defined
+Date:   Fri, 24 Jul 2020 15:29:30 +0200
+Message-Id: <20200724132930.7206-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 08:29:55PM +0800, Dinghao Liu wrote:
-> The variable authmode will keep uninitialized if neither if
-> statements used to initialize this variable are not triggered.
-> Then authmode may contain a garbage value and influence the
-> execution flow of this function.
-> 
-> Fix this by initializing it to zero.
+Reset gpio is optional and it does not have to be defined for all boards.
 
-That does not fix anything, you just now are potentially setting a value
-you really do not have.
+So in mvebu_pcie_powerdown() like in mvebu_pcie_powerup() check that reset
+gpio is defined prior usage to prevent NULL pointer dereference.
 
-Are you sure that this variable really will never be set?  If so, please
-fix it up with a "real" value that the code can handle properly.
+Signed-off-by: Pali Rohár <pali@kernel.org>
+---
+ drivers/pci/controller/pci-mvebu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/pci/controller/pci-mvebu.c b/drivers/pci/controller/pci-mvebu.c
+index 153a64676bc9..58607cbe84c8 100644
+--- a/drivers/pci/controller/pci-mvebu.c
++++ b/drivers/pci/controller/pci-mvebu.c
+@@ -947,7 +947,8 @@ static int mvebu_pcie_powerup(struct mvebu_pcie_port *port)
+  */
+ static void mvebu_pcie_powerdown(struct mvebu_pcie_port *port)
+ {
+-	gpiod_set_value_cansleep(port->reset_gpio, 1);
++	if (port->reset_gpio)
++		gpiod_set_value_cansleep(port->reset_gpio, 1);
+ 
+ 	clk_disable_unprepare(port->clk);
+ }
+-- 
+2.20.1
 
-greg k-h
