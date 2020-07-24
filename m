@@ -2,149 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0557D22CA2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD4622CA35
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgGXQHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 12:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728008AbgGXQHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:07:17 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FD3C0619E4;
-        Fri, 24 Jul 2020 09:07:17 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id r12so8752319wrj.13;
-        Fri, 24 Jul 2020 09:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RhJpy+OvuiZv7MNQSIPaKzKl699i34XcNbcjAQN++mU=;
-        b=dwVZ1BNSTwWjuPgDCE91/UvIadNB7y0CUTggjSFZ17o/X4tYGikLjPqGSofswqtdWB
-         /vfaWNd1Oiha1OwLdV7rTUiEayhZYdCd6IR1CjgmzO6POJABikyhP9A8r3izTR70SNE7
-         MQ+RYsmgZHyQoasr9edkBIEV139XEl/WMWqxXffm650ttJxQ7cYPkK0E3vk0oKzLDYyT
-         gdOEr1+L0xq2MajUl5oLD+9gyH0G16/V48131CXvXu2M1DNNjVRezX88tm+/JalsWcLr
-         ackVLAWPk3qHUH5KTpt46Xa8UCVmvScXqt61HRNUFidD/QSQUllZoHpUEQpC+Qw6Yn5y
-         opNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RhJpy+OvuiZv7MNQSIPaKzKl699i34XcNbcjAQN++mU=;
-        b=ld0ltzZzz+fG/uLxDRN/vu9Oc4x0vUOLHdFo2PSjDc0Gf3OroReAJ8Cvw5GL7M12h5
-         aoBPhVCYCNOb//E81NU7hidEzSd+vtSAd6t3vLHLsJBnUucStWQhiVjCowMsAHCeDLbO
-         5fZjNZKP01HZGjdIoxosUNZ5pBdlCa4WlZkl5Nz/goTReBtHHpuwmndp+Mz37FBbKTFV
-         k2zc+lBhpgaOryOoSGINePlo+pGev8Z75hi8MgUwIT0Cl3D64/UrLXtJ2tp/917BY94M
-         7EWFUvS2/uCJkWhvVOk3RNEGEhOl5734BgYpEu8nlDldJrY+ip5+X1wLryFAjdGse5c3
-         izSQ==
-X-Gm-Message-State: AOAM531fYVXPYIT3XDR3o2rkp36vZgkbcwdPMunG/KJGkLI/9+SpVObJ
-        +VIJ+kaI5iTUie74OlyZfG4K5kNb/AK2+/EFfnc=
-X-Google-Smtp-Source: ABdhPJy0wLXIQikSh4izF0ApEYr9jJbbykOJr2Ds0q+OjmmFkILcjFy76pjswDLypwV4vbwT3fVx6bJk8OQAsXrrYyQ=
-X-Received: by 2002:a5d:618e:: with SMTP id j14mr9614021wru.374.1595606835774;
- Fri, 24 Jul 2020 09:07:15 -0700 (PDT)
+        id S1728468AbgGXQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 12:07:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:29460 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728039AbgGXQHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 12:07:44 -0400
+IronPort-SDR: 2LZSb+pHBH4e0hsToUChW+STfm3t2sa+P/MU+3fuDxxvBkLgKOmzCKYNwOIgI5U5hvsnHyqudL
+ qV4fMIqfgw6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="148647110"
+X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
+   d="scan'208";a="148647110"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 09:07:42 -0700
+IronPort-SDR: F8rEoAEGq1fN4gk0Q14cjgMCsVHsaBylkk6sPID/0kXCPqyCJsarDM/BvHHzboPXcM87GFtgrB
+ u4IioW+MOr2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
+   d="scan'208";a="433124626"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 24 Jul 2020 09:07:42 -0700
+Received: from [10.252.140.222] (kliang2-mobl.ccr.corp.intel.com [10.252.140.222])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id AC3F2580638;
+        Fri, 24 Jul 2020 09:07:41 -0700 (PDT)
+Subject: Re: [PATCH V7 08/14] perf/x86/intel: Generic support for hardware
+ TopDown metrics
+To:     peterz@infradead.org
+Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        like.xu@linux.intel.com
+References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+ <20200723171117.9918-9-kan.liang@linux.intel.com>
+ <20200724131906.GW119549@hirez.programming.kicks-ass.net>
+ <20200724152755.GK43129@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <d7ae2272-52ea-c5a9-2937-9a51c544ade8@linux.intel.com>
+Date:   Fri, 24 Jul 2020 12:07:40 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200723195742.GA1447143@bjorn-Precision-5520>
- <89d853d1-9e45-1ba5-5be7-4bbce79c7fb8@deltatee.com> <CADnq5_NMKK83GaNA+w85MR8bqDbFqvcdvn9MCqZtLwctJKmOUw@mail.gmail.com>
-In-Reply-To: <CADnq5_NMKK83GaNA+w85MR8bqDbFqvcdvn9MCqZtLwctJKmOUw@mail.gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 24 Jul 2020 12:07:04 -0400
-Message-ID: <CADnq5_MCPTyxG31guPFL-uvs7HisGxwO5KpALnufc=Bj4MfYCw@mail.gmail.com>
-Subject: Re: [PATCH] PCI/P2PDMA: Add AMD Zen 2 root complex to the list of
- allowed bridges
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Andrew Maier <andrew.maier@eideticom.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200724152755.GK43129@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 4:18 PM Alex Deucher <alexdeucher@gmail.com> wrote:
->
-> On Thu, Jul 23, 2020 at 4:11 PM Logan Gunthorpe <logang@deltatee.com> wro=
-te:
-> >
-> >
-> >
-> > On 2020-07-23 1:57 p.m., Bjorn Helgaas wrote:
-> > > [+cc Andrew, Armen, hpa]
-> > >
-> > > On Thu, Jul 23, 2020 at 02:01:17PM -0400, Alex Deucher wrote:
-> > >> On Thu, Jul 23, 2020 at 1:43 PM Logan Gunthorpe <logang@deltatee.com=
-> wrote:
-> > >>>
-> > >>> The AMD Zen 2 root complex (Starship/Matisse) was tested for P2PDMA
-> > >>> transactions between root ports and found to work. Therefore add it
-> > >>> to the list.
-> > >>>
-> > >>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-> > >>> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > >>> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
-> > >>> Cc: Huang Rui <ray.huang@amd.com>
-> > >>> Cc: Alex Deucher <alexdeucher@gmail.com>
-> > >>
-> > >> Starting with Zen, all AMD platforms support P2P for reads and write=
-s.
-> > >
-> > > What's the plan for getting out of the cycle of "update this list for
-> > > every new chip"?  Any new _DSMs planned, for instance?
-> >
-> > Well there was an effort to add capabilities in the PCI spec to describ=
-e
-> > this but, as far as I know, they never got anywhere, and hardware still
-> > doesn't self describe with this.
-> >
-> > > A continuous trickle of updates like this is not really appealing.  S=
-o
-> > > far we have:
-> > >
-> > >   7d5b10fcb81e ("PCI/P2PDMA: Add AMD Zen Raven and Renoir Root Ports =
-to whitelist")
-> > >   7b94b53db34f ("PCI/P2PDMA: Add Intel Sky Lake-E Root Ports B, C, D =
-to the whitelist")
-> > >   bc123a515cb7 ("PCI/P2PDMA: Add Intel SkyLake-E to the whitelist")
-> > >   494d63b0d5d0 ("PCI/P2PDMA: Whitelist some Intel host bridges")
-> > >   0f97da831026 ("PCI/P2PDMA: Allow P2P DMA between any devices under =
-AMD ZEN Root Complex")
-> > >
-> > > And that's just from the last year, not including this patch.
-> >
-> > Yes, it's not ideal. But most of these are adding old devices as people
-> > test and care about running on those platforms -- a lot of this is
-> > bootstrapping the list. I'd expect this to slow down a bit as by now we
-> > have hopefully got a lot of the existing platforms people care about.
-> > But we'd still probably expect to be adding a new Intel and AMD devices
-> > about once a year as they produce new hardware designs.
-> >
-> > Unless, the Intel and AMD folks know of a way to detect this, or even t=
-o
-> > query if a root complex is newer than a certain generation, I'm not sur=
-e
-> > what else we can do here.
->
-> I started a thread internally to see if I can find a way.  FWIW,
-> pre-ZEN parts also support p2p DMA, but only for writes.  If I can get
-> a definitive list, maybe we could switch to a blacklist for the old
-> ones?
 
-After talking with a few people internally, for AMD chips, it would
-probably be easiest to just whitelist based on the CPU family id for
-zen and newer (e.g., >=3D 0x17).
 
-Alex
+On 7/24/2020 11:27 AM, peterz@infradead.org wrote:
+> On Fri, Jul 24, 2020 at 03:19:06PM +0200, peterz@infradead.org wrote:
+>> On Thu, Jul 23, 2020 at 10:11:11AM -0700, kan.liang@linux.intel.com wrote:
+>>> @@ -3375,6 +3428,72 @@ static int intel_pmu_hw_config(struct perf_event *event)
+>>>   	if (event->attr.type != PERF_TYPE_RAW)
+>>>   		return 0;
+>>>   
+>>> +	/*
+>>> +	 * Config Topdown slots and metric events
+>>> +	 *
+>>> +	 * The slots event on Fixed Counter 3 can support sampling,
+>>> +	 * which will be handled normally in x86_perf_event_update().
+>>> +	 *
+>>> +	 * The metric events don't support sampling.
+>>> +	 *
+>>> +	 * For counting, topdown slots and metric events will be
+>>> +	 * handled specially for event update.
+>>> +	 * A flag PERF_X86_EVENT_TOPDOWN is applied for the case.
+>>> +	 */
+>>> +	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
+>>> +		if (is_metric_event(event)) {
+>>> +			struct perf_event *leader = event->group_leader;
+>>> +			struct perf_event *sibling;
+>>> +
+>>> +			/* The metric events don't support sampling. */
+>>> +			if (is_sampling_event(event))
+>>> +				return -EINVAL;
+>>> +
+>>> +			/* The metric events cannot be a group leader. */
+>>> +			if (leader == event)
+>>> +				return -EINVAL;
+>>> +
+>>> +			/*
+>>> +			 * The slots event cannot be the leader of a topdown
+>>> +			 * sample-read group, e.g., {slots, topdown-retiring}:S
+>>> +			 */
+>>> +			if (is_slots_event(leader) && is_sampling_event(leader))
+>>> +				return -EINVAL;
+>>
+>> This has nothing to do with sample-read; SLOTS cannot be sampling when
+>> coupled with the METRIC stuff because hardware is daft.
+>>
+>> And you can have SAMPLE_READ on non-leader events just fine.
+>>
+>>> +
+>>> +			/*
+>>> +			 * The slots event must be before the metric events,
+>>> +			 * because we only update the values of a topdown
+>>> +			 * group once with the slots event.
+>>> +			 */
+>>> +			if (!is_slots_event(leader)) {
+>>> +				for_each_sibling_event(sibling, leader) {
+>>> +					if (is_slots_event(sibling))
+>>> +						break;
+>>> +					if (is_metric_event(sibling))
+>>> +						return -EINVAL;
+>>> +				}
+>>> +			}
+>>
+>> Per the SIBLING patch this then wants to be:
+>>
+>> 			if (!is_slots_event(leader))
+>> 				return -EINVAL;
+>>
+>> 			event->event_caps |= PERF_EV_CAP_SIBLING.
+>> 			/*
+>> 			 * Only once we have a METRICs sibling to we
+>> 			 * need TopDown magic.
+>> 			 */
+>> 			leader->hw.flags |= PERF_X86_EVENT_TOPDOWN;
+>>> +		}
+>>> +
+>>> +		if (!is_sampling_event(event)) {
+>>> +			if (event->attr.config1 != 0)
+>>> +				return -EINVAL;
+>>
+>> How does this depend on sampling?
+>>
+>>> +			/*
+>>> +			 * The TopDown metrics events and slots event don't
+>>> +			 * support any filters.
+>>> +			 */
+>>> +			if (event->attr.config & X86_ALL_EVENT_FLAGS)
+>>> +				return -EINVAL;
+>>
+>> That seems independent of sampling too. Even a sampling SLOTS shouldn't
+>> be having any of those afaict.
+>>
+>>> +
+>>> +			event->hw.flags |= PERF_X86_EVENT_TOPDOWN;
+>>
+>> This is confusing too, a !sampling SLOTS event without METRIC siblings
+>> shouldn't have this set, right? So arguably, this should be like above.
+>>
+>>> +
+>>> +			event->event_caps |= PERF_EV_CAP_COEXIST;
+>>> +
+>>> +			if (is_metric_event(event))
+>>> +				event->hw.flags &= ~PERF_X86_EVENT_RDPMC_ALLOWED;
+>>
+>> This too seems like something that should be in the is_metric_event()
+>> branch above.
+>>
+>>> +		}
+>>> +	}
+>>> +
+>>>   	if (!(event->attr.config & ARCH_PERFMON_EVENTSEL_ANY))
+>>>   		return 0;
+>>>   
+> 
+> FWIW, I pushed out a branch with all these changes in:
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/metric
+> 
+> Just to get it some build love, if you want it differently, I'm happy to
+> throw it all out again.
 
->
-> Alex
->
-> >
-> > Logan
+Thanks Peter.
+
+I will pull the branch and do more tests.
+
+Thanks,
+Kan
