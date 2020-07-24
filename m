@@ -2,86 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EEA922BFF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7307F22BFA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgGXHne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:43:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727886AbgGXHnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:43:31 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FD5720786;
-        Fri, 24 Jul 2020 07:43:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595576611;
-        bh=01DVBx+cUJU2MUx86mEXbPPRcD1lVtSvl6DAEX/P6uE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lU+ri9XTeXV7fdDhxC3z7c5crNIvFy/Om3bddXaemL8BaUIDVVuX9FV6jrqSXkBWR
-         ErCM6ROOyf8AQp9eff/vfdrUX6AZ3oLt20pPHW84/j52XGmZkRf4N+7T5vd23jUQIG
-         gv0egVrlDdHC8WMUScaOHw/vG3Ki388NlnpxjqgY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 29/29] memory: samsung: exynos-srom: Describe the Kconfig entry
-Date:   Fri, 24 Jul 2020 09:40:38 +0200
-Message-Id: <20200724074038.5597-30-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200724074038.5597-1-krzk@kernel.org>
-References: <20200724074038.5597-1-krzk@kernel.org>
+        id S1726711AbgGXHlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:41:45 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21754 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726567AbgGXHlm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 03:41:42 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06O7Vi2W061405;
+        Fri, 24 Jul 2020 03:41:10 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32faj7a73n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 03:41:10 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06O7WkxM063974;
+        Fri, 24 Jul 2020 03:41:10 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32faj7a733-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 03:41:09 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06O7e8oe001856;
+        Fri, 24 Jul 2020 07:41:08 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma02fra.de.ibm.com with ESMTP id 32brq7x2es-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 07:41:08 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06O7f5Hh12059078
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Jul 2020 07:41:06 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BCE16A404D;
+        Fri, 24 Jul 2020 07:41:05 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76EDEA4040;
+        Fri, 24 Jul 2020 07:41:04 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 24 Jul 2020 07:41:04 +0000 (GMT)
+Date:   Fri, 24 Jul 2020 13:11:03 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Aaron Merey <amerey@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] uprobes: change handle_swbp() to send SIGTRAP with
+ si_code=SI_KERNEL
+Message-ID: <20200724074103.GA14710@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200723154420.GA32043@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200723154420.GA32043@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_01:2020-07-24,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999
+ suspectscore=0 bulkscore=0 adultscore=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007240052
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Write short description about the Exynos SROM controller driver.
+* Oleg Nesterov <oleg@redhat.com> [2020-07-23 17:44:20]:
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> If a tracee is uprobed and it hits int3 inserted by debugger, handle_swbp()
+> does send_sig(SIGTRAP, current, 0) which means si_code == SI_USER. This used
+> to work when this code was written, but then GDB started to validate si_code
+> and now it simply can't use breakpoints if the tracee has an active uprobe:
+> 
+> 
+> The tracee hits the internal breakpoint inserted by GDB to monitor shared
+> library events but GDB misinterprets this SIGTRAP and reports a signal.
+> 
+> Change handle_swbp() to use force_sig(SIGTRAP), this matches do_int3_user()
+> and fixes the problem.
+> 
+> This is the minimal fix for -stable, arch/x86/kernel/uprobes.c is equally
+> wrong; it should use send_sigtrap(TRAP_TRACE) instead of send_sig(SIGTRAP),
+> but this doesn't confuse GDB and needs another x86-specific patch.
+> 
+> Reported-by: Aaron Merey <amerey@redhat.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 
----
+Looks good to me.
 
-Changes since v1:
-1. New patch
----
- drivers/memory/samsung/Kconfig | 7 +++++++
- 1 file changed, 7 insertions(+)
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+>  kernel/events/uprobes.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index bb0862873dba..5f8b0c52fd2e 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -2199,7 +2199,7 @@ static void handle_swbp(struct pt_regs *regs)
+>  	if (!uprobe) {
+>  		if (is_swbp > 0) {
+>  			/* No matching uprobe; signal SIGTRAP. */
+> -			send_sig(SIGTRAP, current, 0);
+> +			force_sig(SIGTRAP);
+>  		} else {
+>  			/*
+>  			 * Either we raced with uprobe_unregister() or we can't
+> -- 
+> 2.25.1.362.g51ebf55
+> 
+> 
 
-diff --git a/drivers/memory/samsung/Kconfig b/drivers/memory/samsung/Kconfig
-index 20a8406ce786..8e240f078afc 100644
---- a/drivers/memory/samsung/Kconfig
-+++ b/drivers/memory/samsung/Kconfig
-@@ -23,5 +23,12 @@ config EXYNOS5422_DMC
- config EXYNOS_SROM
- 	bool "Exynos SROM controller driver" if COMPILE_TEST
- 	depends on (ARM && ARCH_EXYNOS) || (COMPILE_TEST && HAS_IOMEM)
-+	help
-+	  This adds driver for Samsung Exynos SoC SROM controller.  The driver
-+	  in basic operation mode only saves and restores SROM registers
-+	  during suspend.  If however appropriate device tree configuration
-+	  is provided, the driver enables support for external memory
-+	  or external devices.
-+	  If unsure, say Y on devices with Samsung Exynos SocS.
- 
- endif
 -- 
-2.17.1
-
+Thanks and Regards
+Srikar Dronamraju
