@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20F922C36C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D09622C36D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbgGXKi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 06:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39184 "EHLO
+        id S1728189AbgGXKjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 06:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726726AbgGXKi5 (ORCPT
+        with ESMTP id S1726726AbgGXKi7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:38:57 -0400
+        Fri, 24 Jul 2020 06:38:59 -0400
 Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2CD7C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 03:38:56 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k20so172818wmi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 03:38:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0942CC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 03:38:59 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 3so894500wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 03:38:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=asNVEYk8KfoZ4vg7N/gD3s4rcXG24Tr1/ayUv6ELQDA=;
-        b=lMS0hKsTGuLOzUEs5OuvhgZ8Stjst8miUPMx3B0A9abxrjSNgaKaVtS/0pZQZa3SZf
-         Ye6XwdvuS/WCKoxzEA6SV89RC7Liz0J/lkrgrvwMRfSwS8fc3zFStCQx+yfgR+vWo309
-         fFb8PXCdeKxJHyOwdmlWtN63viAJXcLaSGyVZ6NxxV9S5vsjjAr3D9CFnzz/2O9OU/2c
-         5NjxVsW3ifD6SijmQ08F1Fnb9PDoAIUGj7VFD3PvfYZdiAN4+mpgksweKjvd9VOOhr1z
-         +/9tqNXP9hzE7sxVQCJeyRc8ayX5l8EjVU6iCBnu5ezIHwAmRyLjIruHh+H1UvNR5HyU
-         NumA==
+        bh=jzuRpAS8/HJXVbVLylAyBQaGzmpX+rFR9BOvfquNy00=;
+        b=MKTrm8RFq3jYoOmAKlCuZn5T4X3dUyv6SahKhXYwy0NIffWYo8Lfht7c59sIvenQzP
+         vjtw6/RsPvnRZU0rkHfJ1iCIDTcsRL8emdSy1PHUEPX676EcI5jTrdhy3TBzhjhKPOtr
+         gqxTTZHhCM4XtJN90RqXybYY65zg8hKdtMMCLw81jfHtMxqbyUWsm0Bwu+Nvxzf+PP/x
+         Cs6wRftrKJ4N3JoNJqKEW8tfFR0RzCk3ZcKY+gYrywvab/+suj7cc/TYEIWr7BekITh2
+         sf+FS6BDR7oZxpfrxCNRvMBV8CWefguLDr/USZsF2ZACBS7dhNjRhpsZncgQwgGhAff1
+         fCCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=asNVEYk8KfoZ4vg7N/gD3s4rcXG24Tr1/ayUv6ELQDA=;
-        b=pDEYeaLxakrp8cO7vcbtOPbs5H/vjVu/Qb8TB9aJ5seKiZ9rmSwBHLAgvoVUnnBp6e
-         PeoK6628YJBTcgAf5w+IqKMI9b1wRKop4925NLoREu8UKL1D3WsfPKBliwbv3CC0yEY5
-         65Ka5HnQlWY+2PVQevumlFAeFSENWph94DfBJBKybgD2U9seN/QW0kyk+MmeQ1t3IbzQ
-         /rp1oi6fkDBvj4e3P1C0SL2tiBcxb3ewDswpD8FWdVL2B83MBa4wcyVblu51095J3YVn
-         W06gHj3uvdp5XxvWMCPzgF6hvhDElHpgeplcB1rEIvQM7YBP6Hqz+aj1ZKGHd8O5HGKP
-         a1Gw==
-X-Gm-Message-State: AOAM5329NggjEuM3g4pOBuOV99kVkEe/xmqmqnUE99CnWazyyMglcSBA
-        jOwosyeh2qxDVMOOWa6+gfN2Ow==
-X-Google-Smtp-Source: ABdhPJx0ZNqiuuhbIiOHn5PgnM0nwGQ+h7ykoniMkeWT2A7yZtkoVyUDBnTbW5mVNDL0oRvX3iICXQ==
-X-Received: by 2002:a1c:a181:: with SMTP id k123mr8235759wme.172.1595587135446;
-        Fri, 24 Jul 2020 03:38:55 -0700 (PDT)
+        bh=jzuRpAS8/HJXVbVLylAyBQaGzmpX+rFR9BOvfquNy00=;
+        b=eR+j0julKpgXHvg6qzvO1OIJSEkfbEmi53dA9vkOAFH+q5F3juOQFEcoLRABVCD+Yq
+         ihh9Ve/Rb2U3/yqZtCfH/3Ijs5P1GsrZUrsFbPem3JfRGsGdnA5BOcG96gkJVCGO1xvH
+         NMQ7kt25xt1+w+9yOMlYpbV61H66J4HUiM75fiY3IXoRMdo2Ol/t43drOzJPUvw/0k7N
+         N6p1ocwNoaLVcQkSej9oAxJ0VoxG50vOdBojkoN8LDJwggWiuFIqWYcgj5T/wbrQTtWW
+         pxPcnaE76Lo32aMSMG5uigtjjP3nrncTRsyaAwnRd+YOHCJxtjI4W7xOSYLDIAdZXu2b
+         fggQ==
+X-Gm-Message-State: AOAM533ger/WtvKsJZa86aUI3lxh9RwiPzXPCEU4/179F4+R/2nHEV7e
+        DesouJDlK4yl0xJkWitLSY3VvQ==
+X-Google-Smtp-Source: ABdhPJwtYg2leiWigjNBGlHSEpqgwuWkpBIB3GKIA1LeBVEGPNltJUPGNe3lI9nTH1vI6ZuZK0LpVQ==
+X-Received: by 2002:a1c:ba83:: with SMTP id k125mr8229420wmf.160.1595587137660;
+        Fri, 24 Jul 2020 03:38:57 -0700 (PDT)
 Received: from lukakovacicapc.local ([2a00:ee2:4b0d:3001:fbc5:498b:ed6d:cfac])
-        by smtp.gmail.com with ESMTPSA id f186sm6526280wmf.29.2020.07.24.03.38.54
+        by smtp.gmail.com with ESMTPSA id f186sm6526280wmf.29.2020.07.24.03.38.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 03:38:54 -0700 (PDT)
+        Fri, 24 Jul 2020 03:38:56 -0700 (PDT)
 From:   Luka Kovacic <luka.kovacic@sartura.hr>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     jason@lakedaemon.net, andrew@lunn.ch, gregory.clement@bootlin.com,
@@ -55,9 +55,9 @@ Cc:     jason@lakedaemon.net, andrew@lunn.ch, gregory.clement@bootlin.com,
         Luka Kovacic <luka.kovacic@sartura.hr>,
         Luka Perkov <luka.perkov@sartura.hr>,
         Jakov Petrina <jakov.petrina@sartura.hr>
-Subject: [PATCH 1/4] arm: mvebu: dts: Add CRS326-24G-2S board
-Date:   Fri, 24 Jul 2020 12:38:37 +0200
-Message-Id: <20200724103840.18994-2-luka.kovacic@sartura.hr>
+Subject: [PATCH 2/4] arm: mvebu: dts: Add CRS305-1G-4S board
+Date:   Fri, 24 Jul 2020 12:38:38 +0200
+Message-Id: <20200724103840.18994-3-luka.kovacic@sartura.hr>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200724103840.18994-1-luka.kovacic@sartura.hr>
 References: <20200724103840.18994-1-luka.kovacic@sartura.hr>
@@ -68,7 +68,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MikroTik CRS326-24G-2S board has a switch chip with an integrated
+MikroTik CRS305-1G-4S board has a switch chip with an integrated
 Marvell Prestera 98DX3236 CPU.
 
 This commit includes two board variants, namely the factory
@@ -82,45 +82,45 @@ Cc: Luka Perkov <luka.perkov@sartura.hr>
 Cc: Jakov Petrina <jakov.petrina@sartura.hr>
 ---
  arch/arm/boot/dts/Makefile                    |   2 +
- .../boot/dts/armada-xp-crs326-24g-2s-bit.dts  |  43 ++++++++
- arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts |  17 +++
- .../arm/boot/dts/armada-xp-crs326-24g-2s.dtsi | 104 ++++++++++++++++++
+ .../boot/dts/armada-xp-crs305-1g-4s-bit.dts   |  43 ++++++++
+ arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts  |  17 +++
+ arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi | 104 ++++++++++++++++++
  4 files changed, 166 insertions(+)
- create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts
- create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts
- create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s.dtsi
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e6a1cac0bfc7..8627a38c4100 100644
+index 8627a38c4100..f3ac0fb7f244 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
 @@ -1312,6 +1312,8 @@ dtb-$(CONFIG_MACH_ARMADA_39X) += \
  	armada-398-db.dtb
  dtb-$(CONFIG_MACH_ARMADA_XP) += \
  	armada-xp-axpwifiap.dtb \
-+	armada-xp-crs326-24g-2s.dtb \
-+	armada-xp-crs326-24g-2s-bit.dtb \
++	armada-xp-crs305-1g-4s.dtb \
++	armada-xp-crs305-1g-4s-bit.dtb \
+ 	armada-xp-crs326-24g-2s.dtb \
+ 	armada-xp-crs326-24g-2s-bit.dtb \
  	armada-xp-db.dtb \
- 	armada-xp-db-dxbc2.dtb \
- 	armada-xp-db-xc3-24g4xg.dtb \
-diff --git a/arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts b/arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts
+diff --git a/arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts b/arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts
 new file mode 100644
-index 000000000000..21f442afab1f
+index 000000000000..a022c68dc943
 --- /dev/null
-+++ b/arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts
++++ b/arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts
 @@ -0,0 +1,43 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Device Tree file for MikroTik CRS326-24G-2S+ Bit board
++ * Device Tree file for MikroTik CRS305-1G-4S+ Bit board
 + *
 + * Copyright (C) 2020 Sartura Ltd.
 + * Author: Luka Kovacic <luka.kovacic@sartura.hr>
 + */
 +
-+#include "armada-xp-crs326-24g-2s.dtsi"
++#include "armada-xp-crs305-1g-4s.dtsi"
 +
 +/ {
-+	model = "MikroTik CRS326-24G-2S+ Bit";
++	model = "MikroTik CRS305-1G-4S+ Bit";
 +};
 +
 +&spi0 {
@@ -152,38 +152,38 @@ index 000000000000..21f442afab1f
 +		};
 +	};
 +};
-diff --git a/arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts b/arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts
+diff --git a/arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts b/arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts
 new file mode 100644
-index 000000000000..83aef43f66d5
+index 000000000000..010b83b54212
 --- /dev/null
-+++ b/arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts
++++ b/arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts
 @@ -0,0 +1,17 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Device Tree file for MikroTik CRS326-24G-2S+ board
++ * Device Tree file for MikroTik CRS305-1G-4S+ board
 + *
 + * Copyright (C) 2020 Sartura Ltd.
 + * Author: Luka Kovacic <luka.kovacic@sartura.hr>
 + */
 +
-+#include "armada-xp-crs326-24g-2s.dtsi"
++#include "armada-xp-crs305-1g-4s.dtsi"
 +
 +/ {
-+	model = "MikroTik CRS326-24G-2S+";
++	model = "MikroTik CRS305-1G-4S+";
 +};
 +
 +&spi0 {
 +	status = "okay";
 +};
-diff --git a/arch/arm/boot/dts/armada-xp-crs326-24g-2s.dtsi b/arch/arm/boot/dts/armada-xp-crs326-24g-2s.dtsi
+diff --git a/arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi b/arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi
 new file mode 100644
-index 000000000000..f3e1a25ca5f2
+index 000000000000..32fb21b2bf6a
 --- /dev/null
-+++ b/arch/arm/boot/dts/armada-xp-crs326-24g-2s.dtsi
++++ b/arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi
 @@ -0,0 +1,104 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
-+ * Device Tree file for CRS326-24G-2S board
++ * Device Tree file for CRS305-1G-4S board
 + *
 + * Copyright (C) 2016 Allied Telesis Labs
 + * Copyright (C) 2020 Sartura Ltd.
@@ -204,8 +204,8 @@ index 000000000000..f3e1a25ca5f2
 +#include "armada-xp-98dx3236.dtsi"
 +
 +/ {
-+	model = "CRS326-24G-2S+";
-+	compatible = "mikrotik,crs326-24g-2s", "marvell,armadaxp-98dx3236", "marvell,armada-370-xp";
++	model = "CRS305-1G-4S+";
++	compatible = "mikrotik,crs305-1g-4s", "marvell,armadaxp-98dx3236", "marvell,armada-370-xp";
 +
 +	chosen {
 +		bootargs = "console=ttyS0,115200 earlyprintk";
