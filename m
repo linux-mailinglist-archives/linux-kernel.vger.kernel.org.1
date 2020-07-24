@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB7E22C544
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F312822C550
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgGXMgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 08:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbgGXMgt (ORCPT
+        id S1726924AbgGXMiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 08:38:15 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:14808 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726488AbgGXMiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 08:36:49 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D7AC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:36:48 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id rk21so9845773ejb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7mBU6Ac57Q5/yJlmum5UkBslB0zc26H7IqmBs4MBNNI=;
-        b=MXCMHLcxy+kIuvi0NZVpvfhKetER8O8x94w5dSE0Jm2fD5AUci679ZcsVAo1wUJY0I
-         L/zz6i2zXjyUrLy8IssEYWvi0yLYASoQJAQpvOXpLznFHr//r5CMQF8UCpOfb6Mv8tcx
-         XP+8eJ5eotN3cH01iT2YIo7jWJyMR7Y6AaB01MaDWsHkEG4uw+1QzLBBjlvZDDjxrJWS
-         nozb1UwED82xEIAV36l+u7zpuQQ61cNBuh/Oiy8zvSa8KsgvSdflDHSh9+hp8+EsjgUJ
-         jMkf8AulHevlmHyX7Q7hHGKTceLeaczrGpPvl94RQRHnxuH6v5L9tDP8O5s6lprW3N0B
-         kJhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=7mBU6Ac57Q5/yJlmum5UkBslB0zc26H7IqmBs4MBNNI=;
-        b=Ge6vaGpCJ7c3Ib/XWv4ihjVb92Lq4R3/RTrdMTjuDAgaYLGp2B6b1nLzjDvLiC7h+c
-         HPioB0frUSbejgRejZSKBxdyeo+vxhlvSJVGiGrYXUhU0T7UysJ2r1sijlcdVUBHnK6b
-         mRHgUg96HGRTGZuyyp5XkHsPg+9Pb8iLsNIWPRRnLJBeXGegD03dDZT64MQQAaBelKx2
-         O1/WQAfhSmhadjKq37BPzjDhglVTMlfcW9ggBgB3QLQU5ps38ekWh0B/8lpPbiQoFxfk
-         2DEMPd/n8IWy+nTBResa1tEHeSMPm1PqurqEsVXXMjbytSxGMKNzzC3EfUhWMHjgzY1H
-         TbGg==
-X-Gm-Message-State: AOAM531dW+7D+3qJopG7WJFc8n4+1rY+ccHgAVm30n02kzspidv2wKpB
-        oICjzvz30l8XsgRDHAWUV3I=
-X-Google-Smtp-Source: ABdhPJzFrVnpVd9+HsQJA+2RA2wzyzk2g6zZgsq3Kou102GE375x5EHuZCOf4Ts67BifY8SE4KyXWQ==
-X-Received: by 2002:a17:906:4b16:: with SMTP id y22mr9021777eju.4.1595594207475;
-        Fri, 24 Jul 2020 05:36:47 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id j21sm668912edq.20.2020.07.24.05.36.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 05:36:46 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 14:36:44 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Jiang Biao <benbjiang@gmail.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Jiang Biao <humjb_1983@163.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Subject: Re: [PATCH] sched/fair: consider sched-idle CPU when selecting idle
- core
-Message-ID: <20200724123644.GA634690@gmail.com>
-References: <20200723233853.48815-1-humjb_1983@163.com>
- <CAKfTPtCnewaivay7bftUY27+-qB=ct3eSNEoZW=-2Z6k0S4B4Q@mail.gmail.com>
- <CAPJCdBnv4W5+u6OZ4vbAdJ2U8ubhfAU7+Zt0JUFjfxKEDuGJSw@mail.gmail.com>
- <CAKfTPtCXXGEDNG+YxBbRG4vFK1+ig5EBzntmyTxr7MbQw-Q7MA@mail.gmail.com>
- <CAPJCdBm=FJp8K1SubXP4Rfa-POr8hDh320faE+4Cjcjk3BL1JQ@mail.gmail.com>
+        Fri, 24 Jul 2020 08:38:10 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OCSu3Q021272;
+        Fri, 24 Jul 2020 14:37:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=12BNeW8kdpYe6Tv/kvZ96T8siqgJHyfAxDDSL69rsG8=;
+ b=bNRdx3Msw/kPotaC5l56xfodMakG+hMLgZwRpL5jWg3jCN3Lq9/ZNsLmLX4K+NCitUM4
+ yGz+e2GMtET0w+QjQLvv/DUpmhNn13uNRGkkJ7dUV9UNugHK3gzsX2XNj1fiDoiUUPCq
+ a/5STmBdTAzVuDvS9AkqteUPPvvIzSfDqrqIb4UCTcgNCXZDxda4I78CFocigmoHHS9p
+ +mcgVSLKVsMC+b0hF/FVqPCqpp1ulnke3wdIhXCACQCecmPI3KkkH6C4dFOOBhbTL2ck
+ HXVvC6qkVw62xcRp5c8ci54b/hDQjBlraBhCskIFzVSKaAGCOwRj/DK5D36sdTXurpuz iQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32cux0tsaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 14:37:53 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 28BE710002A;
+        Fri, 24 Jul 2020 14:37:53 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 14A692AF334;
+        Fri, 24 Jul 2020 14:37:53 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 24 Jul 2020 14:37:52
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 0/4] Fix DWC2 USB role switch support
+Date:   Fri, 24 Jul 2020 14:37:44 +0200
+Message-ID: <20200724123748.25369-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPJCdBm=FJp8K1SubXP4Rfa-POr8hDh320faE+4Cjcjk3BL1JQ@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_04:2020-07-24,2020-07-24 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset adds missing documentation for usb-role-switch support in DWC2
+bindings. It also fixes build issue when config is DWC2_HOST only, 
+sleeping while atomic issue and missing usb-role-switch unregistration in probe
+error path.
 
-* Jiang Biao <benbjiang@gmail.com> wrote:
+Amelie Delaunay (4):
+  dt-bindings: usb: dwc2: add optional usb-role-switch property
+  usb: dwc2: fix build issue when config is USB_DWC2_HOST only
+  usb: dwc2: drd: fix sleeping while spinlock atomic context
+  usb: dwc2: fix error path with missing dwc2_drd_exit
 
-> On Fri, 24 Jul 2020 at 18:34, Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > On Fri, 24 Jul 2020 at 10:12, Jiang Biao <benbjiang@gmail.com> wrote:
-> > >
-> > > On Fri, 24 Jul 2020 at 15:24, Vincent Guittot
-> > > <vincent.guittot@linaro.org> wrote:
-> > > >
-> > > > On Fri, 24 Jul 2020 at 01:39, Jiang Biao <humjb_1983@163.com> wrote:
-> > > > >
-> > > > > From: Jiang Biao <benbjiang@tencent.com>
-> > > > >
-> > > > > Sched-idle CPU has been considered in select_idle_cpu and
-> > > > > select_idle_smt, it also needs to be considered in select_idle_core to
-> > > > > be consistent and keep the same *idle* policy.
-> > > >
-> > > > In the case of select_idle_core, we are looking for a core that is
-> > > > fully idle but if one CPU of the core is running a sched_idle task,
-> > > > the core will not be idle and we might end up having  the wakeup task
-> > > > on a CPU and a sched_idle task on another CPU of the core which is not
-> > > > what we want
-> > > Got it. sched_idle task may interfere its sibling, which brings me
-> > > another question,
-> > > If there's a core with smt1 running sched_idle task and smt2 idle,
-> > > selecting smt1
-> > > rather than smt2 should be more helpful for wakee task, because wakee task
-> > > could suppress the sched_idle task without neighbour interfering.
-> >
-> > But the sched_idle will then probably quickly move on the idle smt2
-> >
-> > > And there seems to be no consideration about that currently.
-> > > Is it worth improving that?
-> >
-> > This will complexify and extend the duration of the search loop  and
-> > as mentioned above, it will most probably be a nop at the end because
-> > of sched_idle task moving on smt2
-> Indeed, the complexity is not worth.
-> Thanks for the explanation.
+ .../devicetree/bindings/usb/dwc2.yaml         |  4 +++
+ drivers/usb/dwc2/core.h                       |  1 +
+ drivers/usb/dwc2/drd.c                        | 30 +++++++------------
+ drivers/usb/dwc2/platform.c                   |  2 ++
+ 4 files changed, 17 insertions(+), 20 deletions(-)
 
-BTW., if you disagree then you could add a bit of debug 
-instrumentation to measure to what extent it's a nop at the end of the 
-search loop, to turn the "most probably" statement into a specific 
-number.
+-- 
+2.17.1
 
-Thanks,
-
-	Ingo
