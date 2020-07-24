@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F42022CC03
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6109E22CC13
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727797AbgGXRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:22:55 -0400
-Received: from mga17.intel.com ([192.55.52.151]:2790 "EHLO mga17.intel.com"
+        id S1727798AbgGXRXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:23:46 -0400
+Received: from mga11.intel.com ([192.55.52.93]:37270 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727097AbgGXRWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:22:46 -0400
-IronPort-SDR: qTktffYZK0JzygwODfhRcSUwEo6I2Uxgf2oDaM9ILzQ+7bPZuovC0KpkFp+fhOULA+Y+mTFAr4
- WYXCVXgWJ7kg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="130823291"
+        id S1726488AbgGXRXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 13:23:45 -0400
+IronPort-SDR: 9gFTjqXOuyPvcfytVO5ev51AbIBPrNR8FuEKpKk2orj2VQQP1t6d/JOb0WAaMHq/ZpPLNhvSUH
+ +aISKKy95zYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="148664560"
 X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="130823291"
+   d="scan'208";a="148664560"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 10:22:46 -0700
-IronPort-SDR: dOx3JrqPVcHLFgwXArKOC8n2r4nD78EtZ4kiSpUMRBA/GLIbKLsBoLMQlwjyc8SPf3FYk4/TB+
- 2KO9S6AU1uMQ==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 10:23:45 -0700
+IronPort-SDR: X1JW4FggRo3qDiJx0NWoLol6p1tsq6DYf4Mj7qGG/ohJuRs2TnDCp10u9BuuIVBIeURlyoIeXD
+ g8wFtHdotI8g==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="302730341"
-Received: from seokjaeb-mobl1.amr.corp.intel.com (HELO arch-ashland-svkelley.intel.com) ([10.254.24.239])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 10:22:44 -0700
-From:   Sean V Kelley <sean.v.kelley@intel.com>
-To:     bhelgaas@google.com, Jonathan.Cameron@huawei.com,
-        rjw@rjwysocki.net, ashok.raj@kernel.org, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>
-Subject: [RFC PATCH 9/9] PCI/AER: Add RCEC AER error injection support
-Date:   Fri, 24 Jul 2020 10:22:23 -0700
-Message-Id: <20200724172223.145608-10-sean.v.kelley@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200724172223.145608-1-sean.v.kelley@intel.com>
-References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+   d="scan'208";a="311467245"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Jul 2020 10:23:45 -0700
+Date:   Fri, 24 Jul 2020 10:23:44 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across
+ exceptions
+Message-ID: <20200724172344.GO844235@iweiny-DESK2.sc.intel.com>
+References: <20200717072056.73134-1-ira.weiny@intel.com>
+ <20200717072056.73134-18-ira.weiny@intel.com>
+ <20200717100610.GH10769@hirez.programming.kicks-ass.net>
+ <20200722052709.GB478587@iweiny-DESK2.sc.intel.com>
+ <87o8o6vvt0.fsf@nanos.tec.linutronix.de>
+ <87lfjavvhm.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87lfjavvhm.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+On Thu, Jul 23, 2020 at 10:15:17PM +0200, Thomas Gleixner wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
+> 
+> > Ira Weiny <ira.weiny@intel.com> writes:
+> >> On Fri, Jul 17, 2020 at 12:06:10PM +0200, Peter Zijlstra wrote:
+> >>> On Fri, Jul 17, 2020 at 12:20:56AM -0700, ira.weiny@intel.com wrote:
+> >> I've been really digging into this today and I'm very concerned that I'm
+> >> completely missing something WRT idtentry_enter() and idtentry_exit().
+> >>
+> >> I've instrumented idt_{save,restore}_pkrs(), and __dev_access_{en,dis}able()
+> >> with trace_printk()'s.
+> >>
+> >> With this debug code, I have found an instance where it seems like
+> >> idtentry_enter() is called without a corresponding idtentry_exit().  This has
+> >> left the thread ref counter at 0 which results in very bad things happening
+> >> when __dev_access_disable() is called and the ref count goes negative.
+> >>
+> >> Effectively this seems to be happening:
+> >>
+> >> ...
+> >> 	// ref == 0
+> >> 	dev_access_enable()  // ref += 1 ==> disable protection
+> >> 		// exception  (which one I don't know)
+> >> 			idtentry_enter()
+> >> 				// ref = 0
+> >> 				_handler() // or whatever code...
+> >> 			// *_exit() not called [at least there is no trace_printk() output]...
+> >> 			// Regardless of trace output, the ref is left at 0
+> >> 	dev_access_disable() // ref -= 1 ==> -1 ==> does not enable protection
+> >> 	(Bad stuff is bound to happen now...)
+> >
+> > Well, if any exception which calls idtentry_enter() would return without
+> > going through idtentry_exit() then lots of bad stuff would happen even
+> > without your patches.
+> >
+> >> Also is there any chance that the process could be getting scheduled and that
+> >> is causing an issue?
+> >
+> > Only from #PF, but after the fault has been resolved and the tasks is
+> > scheduled in again then the task returns through idtentry_exit() to the
+> > place where it took the fault. That's not guaranteed to be on the same
+> > CPU. If schedule is not aware of the fact that the exception turned off
+> > stuff then you surely get into trouble. So you really want to store it
+> > in the task itself then the context switch code can actually see the
+> > state and act accordingly.
+> 
+> Actually thats nasty as well as you need a stack of PKRS values to
+> handle nested exceptions. But it might be still the most reasonable
+> thing to do. 7 PKRS values plus an index should be really sufficient,
+> that's 32bytes total, not that bad.
 
-The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
-and also have the AER capability. So add RCEC support to the current AER
-error injection driver.
+I've thought about this a bit more and unless I'm wrong I think the
+idtentry_state provides for that because each nested exception has it's own
+idtentry_state doesn't it?
 
-Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
----
- drivers/pci/pcie/aer_inject.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pcie/aer_inject.c b/drivers/pci/pcie/aer_inject.c
-index 21cc3d3387f7..5264847bd714 100644
---- a/drivers/pci/pcie/aer_inject.c
-+++ b/drivers/pci/pcie/aer_inject.c
-@@ -333,8 +333,11 @@ static int aer_inject(struct aer_error_inj *einj)
- 	if (!dev)
- 		return -ENODEV;
- 	rpdev = pcie_find_root_port(dev);
-+	/* If Root port not found, try to find an RCEC */
-+	if (!rpdev)
-+		rpdev = dev->rcec;
- 	if (!rpdev) {
--		pci_err(dev, "Root port not found\n");
-+		pci_err(dev, "Root port or RCEC not found\n");
- 		ret = -ENODEV;
- 		goto out_put;
- 	}
--- 
-2.27.0
-
+Ira
