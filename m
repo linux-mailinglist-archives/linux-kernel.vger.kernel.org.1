@@ -2,127 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F158122C8EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 17:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F422A22C8F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 17:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgGXP1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 11:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        id S1726652AbgGXP2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 11:28:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbgGXP1U (ORCPT
+        with ESMTP id S1726326AbgGXP2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 11:27:20 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72DBC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 08:27:19 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f18so162721wmc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 08:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=btolEu+oBZ4e5G3BsfMzehyCFgYxasskNysgu6TkP7Y=;
-        b=EVZTX8pdmQ7xRZx1Ep7GH7aaZzHEryY0gbe7OGRyxIVmLrW+13jSRkbeBY3YObc/fz
-         GLVyOJuL6spgU5CenG8oa4r6PNC5tSXYyiliO3zFOLPLvCkkYMz3EtGcsheDycg7rsrg
-         XGim9MKQNp37fNbDOqzZTaVav5Ydu+K1ZLXVc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=btolEu+oBZ4e5G3BsfMzehyCFgYxasskNysgu6TkP7Y=;
-        b=Kr9/W42RG9UHRafhmBmANsiJOPPgSPssBTaLSMP7obBI2ZbKFQ8ozHjeJ1sKhoqoZf
-         zvWMFasWalBII7Nhez2Rkhwl9LEOpF+UM8ZpeIcAVdAcYhNGs1+PWAinpFupXfoMwMuP
-         gN2PvJ9+nyLuIw6bdRmWzcZxCfmtunMWIT8LF96BxTXllD5MZM+mHEH9LsDf3+XRxfco
-         Cy0fmTpN/QGIkU6+KcY7G+Tb1Ro1EmotQ3dUs5YOr7INGWs6j/2FOlC62UFHAmGkRhg2
-         lAzsk9mBiQBN9mj0Qn3FzrdOeOptoEEkoz1y2fllwVAMDF3y3pmHp0PLLJZGC3LtO9oZ
-         r6qA==
-X-Gm-Message-State: AOAM532HS2NR1dpQ8GTZKE/PNims35yN4kjPBJLqvXhQaIumwtTket9j
-        UbSc8NYSI6LkDVXGJW6bF6u/Xg==
-X-Google-Smtp-Source: ABdhPJxmP6qLdy+uHYizxgbTFvILG+JdEPeE9P2WqStVt0R8TI+fyQFIT89R7AeGgp6PRKA01T3tgA==
-X-Received: by 2002:a05:600c:2907:: with SMTP id i7mr402360wmd.182.1595604438321;
-        Fri, 24 Jul 2020 08:27:18 -0700 (PDT)
-Received: from [10.136.8.246] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id d18sm1647051wrj.8.2020.07.24.08.27.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jul 2020 08:27:17 -0700 (PDT)
-Subject: Re: [PATCH v4] pwm: bcm-iproc: handle clk_get_rate() return
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-References: <20200718044606.18739-1-scott.branden@broadcom.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <17848399-2b2d-b4f9-706b-94b3471c1e76@broadcom.com>
-Date:   Fri, 24 Jul 2020 08:27:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 24 Jul 2020 11:28:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFFDC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 08:28:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nD2IKbj6Hkp+Qcze16IFgvVILlJVgrHdGLOEeTeycjY=; b=NRMFT95rDkm37t+WlIwebpRB6B
+        sypgI0mbqwj7Qj6Sy55wUZ0G2ImB/MqIYootH3js3VnQD4ScvuPjrRIrLgNf7rcxOeo34QvNmC7/i
+        7/JvDmZrYhPYYdxq6i5eAhdq4QCP4Qoi7sh1rVnyK0gIpjOksyp2LoC+NCsiy3cWhRkDzNE+f06X1
+        gmzKC3koohFJL0YnrBY5yKW1RYE7m7e4NoivnywhbQldSJK1Y6Xo5sG+bD7QRhWryRxkY6/NA+zFx
+        KgKBCVvxzd73nlGtPDcJOAABtji2Zr0jdI4w/FS1Nje96LffC6hxWjmDvOjEBwPn8o2RuZtHtTKmS
+        k+4MmYfw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jyzc4-0007Cn-QV; Fri, 24 Jul 2020 15:27:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D2E0F300446;
+        Fri, 24 Jul 2020 17:27:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BBDDE29C0D269; Fri, 24 Jul 2020 17:27:55 +0200 (CEST)
+Date:   Fri, 24 Jul 2020 17:27:55 +0200
+From:   peterz@infradead.org
+To:     kan.liang@linux.intel.com
+Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        like.xu@linux.intel.com
+Subject: Re: [PATCH V7 08/14] perf/x86/intel: Generic support for hardware
+ TopDown metrics
+Message-ID: <20200724152755.GK43129@hirez.programming.kicks-ass.net>
+References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+ <20200723171117.9918-9-kan.liang@linux.intel.com>
+ <20200724131906.GW119549@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200718044606.18739-1-scott.branden@broadcom.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724131906.GW119549@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry/Uwe,
+On Fri, Jul 24, 2020 at 03:19:06PM +0200, peterz@infradead.org wrote:
+> On Thu, Jul 23, 2020 at 10:11:11AM -0700, kan.liang@linux.intel.com wrote:
+> > @@ -3375,6 +3428,72 @@ static int intel_pmu_hw_config(struct perf_event *event)
+> >  	if (event->attr.type != PERF_TYPE_RAW)
+> >  		return 0;
+> >  
+> > +	/*
+> > +	 * Config Topdown slots and metric events
+> > +	 *
+> > +	 * The slots event on Fixed Counter 3 can support sampling,
+> > +	 * which will be handled normally in x86_perf_event_update().
+> > +	 *
+> > +	 * The metric events don't support sampling.
+> > +	 *
+> > +	 * For counting, topdown slots and metric events will be
+> > +	 * handled specially for event update.
+> > +	 * A flag PERF_X86_EVENT_TOPDOWN is applied for the case.
+> > +	 */
+> > +	if (x86_pmu.intel_cap.perf_metrics && is_topdown_event(event)) {
+> > +		if (is_metric_event(event)) {
+> > +			struct perf_event *leader = event->group_leader;
+> > +			struct perf_event *sibling;
+> > +
+> > +			/* The metric events don't support sampling. */
+> > +			if (is_sampling_event(event))
+> > +				return -EINVAL;
+> > +
+> > +			/* The metric events cannot be a group leader. */
+> > +			if (leader == event)
+> > +				return -EINVAL;
+> > +
+> > +			/*
+> > +			 * The slots event cannot be the leader of a topdown
+> > +			 * sample-read group, e.g., {slots, topdown-retiring}:S
+> > +			 */
+> > +			if (is_slots_event(leader) && is_sampling_event(leader))
+> > +				return -EINVAL;
+> 
+> This has nothing to do with sample-read; SLOTS cannot be sampling when
+> coupled with the METRIC stuff because hardware is daft.
+> 
+> And you can have SAMPLE_READ on non-leader events just fine.
+> 
+> > +
+> > +			/*
+> > +			 * The slots event must be before the metric events,
+> > +			 * because we only update the values of a topdown
+> > +			 * group once with the slots event.
+> > +			 */
+> > +			if (!is_slots_event(leader)) {
+> > +				for_each_sibling_event(sibling, leader) {
+> > +					if (is_slots_event(sibling))
+> > +						break;
+> > +					if (is_metric_event(sibling))
+> > +						return -EINVAL;
+> > +				}
+> > +			}
+> 
+> Per the SIBLING patch this then wants to be:
+> 
+> 			if (!is_slots_event(leader))
+> 				return -EINVAL;
+> 
+> 			event->event_caps |= PERF_EV_CAP_SIBLING.
+> 			/*
+> 			 * Only once we have a METRICs sibling to we
+> 			 * need TopDown magic.
+> 			 */
+> 			leader->hw.flags |= PERF_X86_EVENT_TOPDOWN;
+> > +		}
+> > +
+> > +		if (!is_sampling_event(event)) {
+> > +			if (event->attr.config1 != 0)
+> > +				return -EINVAL;
+> 
+> How does this depend on sampling?
+> 
+> > +			/*
+> > +			 * The TopDown metrics events and slots event don't
+> > +			 * support any filters.
+> > +			 */
+> > +			if (event->attr.config & X86_ALL_EVENT_FLAGS)
+> > +				return -EINVAL;
+> 
+> That seems independent of sampling too. Even a sampling SLOTS shouldn't
+> be having any of those afaict.
+> 
+> > +
+> > +			event->hw.flags |= PERF_X86_EVENT_TOPDOWN;
+> 
+> This is confusing too, a !sampling SLOTS event without METRIC siblings
+> shouldn't have this set, right? So arguably, this should be like above.
+> 
+> > +
+> > +			event->event_caps |= PERF_EV_CAP_COEXIST;
+> > +
+> > +			if (is_metric_event(event))
+> > +				event->hw.flags &= ~PERF_X86_EVENT_RDPMC_ALLOWED;
+> 
+> This too seems like something that should be in the is_metric_event()
+> branch above.
+> 
+> > +		}
+> > +	}
+> > +
+> >  	if (!(event->attr.config & ARCH_PERFMON_EVENTSEL_ANY))
+> >  		return 0;
+> >  
 
-Do you have any further comment on this patch? If not, could you please
-help to pick it up?
+FWIW, I pushed out a branch with all these changes in:
 
-Thanks,
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/metric
 
-Ray
-
-On 7/17/2020 9:46 PM, Scott Branden wrote:
-> From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> 
-> Handle clk_get_rate() returning 0 to avoid possible division by zero.
-> 
-> Fixes: daa5abc41c80 ("pwm: Add support for Broadcom iProc PWM controller")
-> Signed-off-by: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> Reviewed-by: Ray Jui <ray.jui@broadcom.com>
-> 
-> ---
-> Changes from v3: fixed typo in commit message: Reviewed-off-by.
-> Hopefully everything clean now.
-> Changes from v2: update commit message to remove <= condition
-> as clk_get_rate only returns value >= 0
-> ---
->  drivers/pwm/pwm-bcm-iproc.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pwm/pwm-bcm-iproc.c b/drivers/pwm/pwm-bcm-iproc.c
-> index 1f829edd8ee7..d392a828fc49 100644
-> --- a/drivers/pwm/pwm-bcm-iproc.c
-> +++ b/drivers/pwm/pwm-bcm-iproc.c
-> @@ -85,8 +85,6 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
->  	u64 tmp, multi, rate;
->  	u32 value, prescale;
->  
-> -	rate = clk_get_rate(ip->clk);
-> -
->  	value = readl(ip->base + IPROC_PWM_CTRL_OFFSET);
->  
->  	if (value & BIT(IPROC_PWM_CTRL_EN_SHIFT(pwm->hwpwm)))
-> @@ -99,6 +97,13 @@ static void iproc_pwmc_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
->  	else
->  		state->polarity = PWM_POLARITY_INVERSED;
->  
-> +	rate = clk_get_rate(ip->clk);
-> +	if (rate == 0) {
-> +		state->period = 0;
-> +		state->duty_cycle = 0;
-> +		return;
-> +	}
-> +
->  	value = readl(ip->base + IPROC_PWM_PRESCALE_OFFSET);
->  	prescale = value >> IPROC_PWM_PRESCALE_SHIFT(pwm->hwpwm);
->  	prescale &= IPROC_PWM_PRESCALE_MAX;
-> 
+Just to get it some build love, if you want it differently, I'm happy to
+throw it all out again.
