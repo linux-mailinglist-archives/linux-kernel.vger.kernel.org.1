@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22AE22CE92
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF6D22CE97
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgGXTRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:17:19 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26063 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726572AbgGXTRT (ORCPT
+        id S1726701AbgGXTVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:21:08 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:60198 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgGXTVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:17:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595618237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AJj/7mTJTokfFN7V2SBXvCQ6TJ6IN4DPcE0cHn1s29c=;
-        b=CxBmKivfJaKx+RiMkJeQYD4/c0/Kg5lTuE8xgboLRdk/szxaVv18+89/XeExAxK9IrqkPH
-        QEJ209rK67mlSVtF77pL7G1Iq5kumsSJtVWV9+RQNav/cqyoQtu6/rsPjeizcjAdcaEBHo
-        TIZbpgJtV41dlD5klgY8xVC7wW3Uukk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-6BoaiVaGM7ebz50loHlDeQ-1; Fri, 24 Jul 2020 15:17:13 -0400
-X-MC-Unique: 6BoaiVaGM7ebz50loHlDeQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D39CF800464;
-        Fri, 24 Jul 2020 19:17:10 +0000 (UTC)
-Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 80C546FEFE;
-        Fri, 24 Jul 2020 19:17:09 +0000 (UTC)
-Date:   Fri, 24 Jul 2020 13:17:08 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "hslester96@gmail.com" <hslester96@gmail.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
-        "efremov@linux.com" <efremov@linux.com>,
-        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
-        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
-        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
-        "wwt8723@163.com" <wwt8723@163.com>
-Subject: Re: [PATCH] USB:Fix kernel NULL pointer when unbind UHCI form
- vfio-pci
-Message-ID: <20200724131708.0a0f3358@x1.home>
-In-Reply-To: <11a7a3e67d6c40cd9fd06cd4d6300283@zhaoxin.com>
-References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
-        <20200722124414.GA3153105@kroah.com>
-        <20200722145913.GB1310843@rowland.harvard.edu>
-        <1bf449377e3448bc9c8bc7b64d7b7990@zhaoxin.com>
-        <20200722221817.542971a2@x1.home>
-        <20200723153821.GC1352396@rowland.harvard.edu>
-        <20200723101735.3222c289@w520.home>
-        <20200723163835.GA1357775@rowland.harvard.edu>
-        <11a7a3e67d6c40cd9fd06cd4d6300283@zhaoxin.com>
-Organization: Red Hat
+        Fri, 24 Jul 2020 15:21:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3uSMvInD2Jk/6cMDVdGrLAgWn9ZHoqePo02Lz6hivfE=; b=P+weo+cY0o/lpm5Nzy0Xmn5+jK
+        dix62OJ3ciCGa5qYQThWzrPst7nAnSt2UJBWzBb0n6JLallV8DS8wMhcPcvyEqTWmTCOfCssOS7GD
+        uyh1Bdnu92ZzqaNHboHbwHAVTKv6nNvz3kRMt0bGpCxUIM4oKgcD16r3lVquIZjcDVMDmblq+8qLe
+        aF5ywXjS3PsILAhPbfyVRPxB4hryFcP3JlD45yM7bZU1olKdE0lHfNaj4NGTnC38MWG/zwaNZNOhI
+        YRjBYQ/8LRQNTL0cB1Gh+En1J1Rjkhy1y4iD99pT0KP1EcldanXJujY8LROUTcOP45Rrh/CZ9pr/X
+        C+mC+d3w==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1jz3Fc-0000ue-JE; Fri, 24 Jul 2020 13:21:02 -0600
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andrew Maier <andrew.maier@eideticom.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20200723195742.GA1447143@bjorn-Precision-5520>
+ <89d853d1-9e45-1ba5-5be7-4bbce79c7fb8@deltatee.com>
+ <CADnq5_NMKK83GaNA+w85MR8bqDbFqvcdvn9MCqZtLwctJKmOUw@mail.gmail.com>
+ <CADnq5_MCPTyxG31guPFL-uvs7HisGxwO5KpALnufc=Bj4MfYCw@mail.gmail.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <7ba8fff5-990a-a59c-53cf-b0c9e9b54a6e@deltatee.com>
+Date:   Fri, 24 Jul 2020 13:20:57 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CADnq5_MCPTyxG31guPFL-uvs7HisGxwO5KpALnufc=Bj4MfYCw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: hpa@zytor.com, andrew.maier@eideticom.com, ray.huang@amd.com, christian.koenig@amd.com, bhelgaas@google.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, helgaas@kernel.org, alexdeucher@gmail.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.2 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH] PCI/P2PDMA: Add AMD Zen 2 root complex to the list of
+ allowed bridges
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 12:57:49 +0000
-WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com> wrote:
 
-> On Thu, 23 Jul 2020 12:38:21 -0400, Alan wrote:
-> > On Thu, Jul 23, 2020 at 10:17:35AM -0600, Alex Williamson wrote:  
-> > > The IOMMU grouping restriction does solve the hardware issue, so long
-> > > as one driver doesn't blindly assume the driver private data for
-> > > another device and modify it.  
-> > 
-> > Correction: The IOMMU grouping restriction solves the hardware issue for
-> > vfio-pci.  It won't necessarily help if some other driver comes along
-> > and wants to bind to this hardware.
-> >   
-> > >   I do agree that your solution would
-> > > work, requiring all devices are unbound before any can be bound, but it
-> > > also seems difficult to manage.  The issue is largely unique to USB
-> > > AFAIK.  On the other hand, drivers coordinating with each other to
-> > > register their _private_ data as share-able within a set of drivers
-> > > seems like a much more direct and explicit interaction between the
-> > > drivers.  Thanks,  
-> > 
-> > Yes, that makes sense.  But it would have to be implemented in the
-> > driver core, not in particular subsystems like USB or PCI.  And it might
-> > be seen as overkill, given that only UHCI/OHCI/EHCI devices require this
-> > sort of sharing AFAIK.
-> > 
-> > Also, when you think about it, what form would such coordination among
-> > drivers take?  From your description, it sounds like the drivers would
-> > agree to avoid accessing each other's private data if the proper
-> > registration wasn't in place.
-> > 
-> > On the other hand, a stronger and perhaps more robust approach would be
-> > to enforce the condition that non-cooperating drivers are never bound to
-> > devices in the same group at the same time.  That's basically what I'm
-> > proposing here -- the question is whether the enforcement should be
-> > instituted in the kernel or should merely be part of a standard protocol
-> > followed by userspace drivers.
-> > 
-> > Given that it's currently needed in only one place, it seems reasonable
-> > to leave this as a "gentlemen's agreement" in userspace for the time
-> > being instead of adding it to the kernel.
-> > 	  
+
+On 2020-07-24 10:07 a.m., Alex Deucher wrote:
+> On Thu, Jul 23, 2020 at 4:18 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+>>
+>> On Thu, Jul 23, 2020 at 4:11 PM Logan Gunthorpe <logang@deltatee.com> wrote:
+>>>
+>>>
+>>>
+>>> On 2020-07-23 1:57 p.m., Bjorn Helgaas wrote:
+>>>> [+cc Andrew, Armen, hpa]
+>>>>
+>>>> On Thu, Jul 23, 2020 at 02:01:17PM -0400, Alex Deucher wrote:
+>>>>> On Thu, Jul 23, 2020 at 1:43 PM Logan Gunthorpe <logang@deltatee.com> wrote:
+>>>>>>
+>>>>>> The AMD Zen 2 root complex (Starship/Matisse) was tested for P2PDMA
+>>>>>> transactions between root ports and found to work. Therefore add it
+>>>>>> to the list.
+>>>>>>
+>>>>>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>>>>>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+>>>>>> Cc: Christian König <christian.koenig@amd.com>
+>>>>>> Cc: Huang Rui <ray.huang@amd.com>
+>>>>>> Cc: Alex Deucher <alexdeucher@gmail.com>
+>>>>>
+>>>>> Starting with Zen, all AMD platforms support P2P for reads and writes.
+>>>>
+>>>> What's the plan for getting out of the cycle of "update this list for
+>>>> every new chip"?  Any new _DSMs planned, for instance?
+>>>
+>>> Well there was an effort to add capabilities in the PCI spec to describe
+>>> this but, as far as I know, they never got anywhere, and hardware still
+>>> doesn't self describe with this.
+>>>
+>>>> A continuous trickle of updates like this is not really appealing.  So
+>>>> far we have:
+>>>>
+>>>>   7d5b10fcb81e ("PCI/P2PDMA: Add AMD Zen Raven and Renoir Root Ports to whitelist")
+>>>>   7b94b53db34f ("PCI/P2PDMA: Add Intel Sky Lake-E Root Ports B, C, D to the whitelist")
+>>>>   bc123a515cb7 ("PCI/P2PDMA: Add Intel SkyLake-E to the whitelist")
+>>>>   494d63b0d5d0 ("PCI/P2PDMA: Whitelist some Intel host bridges")
+>>>>   0f97da831026 ("PCI/P2PDMA: Allow P2P DMA between any devices under AMD ZEN Root Complex")
+>>>>
+>>>> And that's just from the last year, not including this patch.
+>>>
+>>> Yes, it's not ideal. But most of these are adding old devices as people
+>>> test and care about running on those platforms -- a lot of this is
+>>> bootstrapping the list. I'd expect this to slow down a bit as by now we
+>>> have hopefully got a lot of the existing platforms people care about.
+>>> But we'd still probably expect to be adding a new Intel and AMD devices
+>>> about once a year as they produce new hardware designs.
+>>>
+>>> Unless, the Intel and AMD folks know of a way to detect this, or even to
+>>> query if a root complex is newer than a certain generation, I'm not sure
+>>> what else we can do here.
+>>
+>> I started a thread internally to see if I can find a way.  FWIW,
+>> pre-ZEN parts also support p2p DMA, but only for writes.  If I can get
+>> a definitive list, maybe we could switch to a blacklist for the old
+>> ones?
 > 
-> Provided that EHCI and UHCI host controller declare not support P2P and
-> ACS. So, we can assign EHCI and UHCI host controller to different IOMMU 
-> group separately. We assign EHCI host controller to host and assign UHCI
-> host controller to VM. Then, ehci_hcd driver load/unload operation in host
-> will cause the same issue as discussed
+> After talking with a few people internally, for AMD chips, it would
+> probably be easiest to just whitelist based on the CPU family id for
+> zen and newer (e.g., >= 0x17).
 
-And you have an example of such a device?  I expect these do not exist,
-nor should they.  It seems like it would be an improper use of ACS.
-Thanks,
+That seems sensible. I was trying to see if we could do something
+similar for Intel, and just allow anything after Skylake. I found
+this[1]. It seems they have been on family 6 for a long time, and I'm
+not comfortable enabling the whole family. Their model numbers also
+don't seem to increment in a favorable fashion, in that "small core"
+atoms (which have different host bridges with very much unknown support)
+have model numbers interspersed with regular "big core" CPUS.
 
-Alex
+So we might be stuck with the Intel white list for a while, but using
+the AMD family number will at least cut the number of additions down a
+fair amount. I can try to put a patch together in place of this one.
 
+Logan
+
+[1]
+https://elixir.bootlin.com/linux/latest/source/arch/x86/include/asm/intel-family.h#L73
