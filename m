@@ -2,95 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE7622D006
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B3D22D01E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgGXUwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 16:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgGXUwO (ORCPT
+        id S1726667AbgGXVA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 17:00:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42397 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726083AbgGXVA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 16:52:14 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CA5C0619D3;
-        Fri, 24 Jul 2020 13:52:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=xVoSEin0oXCI9Z11WKA8dMlCCn4fz58veTFmYbww9j4=; b=rM03taNBaiVcGPukQ/TrRYqMy
-        ndpmAXRoMO9TzFyK8ljLIRdNw5cEnWPMmcB4HSplfNAAdMp78OqLjPvcI5k0vpulmZ+eeFayiErRd
-        SHL8/TmJko0KeyKcioSPPwbA9YNwX5D/OzH+fwcw57pGGrKGxgjXOIBMe3mnhfg699K7jZUuCcRPw
-        HNUpsLY4bzS854NtWp61QwU3FlJRmGe7QZENJ/UOl6rbJhbCtECTulLjX6MEL2Cw5350Ns1zziFpg
-        tf2gLiv9fLOZYESI2SzBLdmz3Gmqv+GzEjZvCu5f1Hp3gzWu3xi/+DAz5gsjrWxmvA0qEvZwiMvTY
-        9IVwehB/g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43698)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jz4fq-0000Oe-6P; Fri, 24 Jul 2020 21:52:10 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jz4fp-0000u2-Gc; Fri, 24 Jul 2020 21:52:09 +0100
-Date:   Fri, 24 Jul 2020 21:52:09 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, ludovic.desroches@microchip.com,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        kamel.bouhara@bootlin.com
-Subject: Re: [RFC PATCH 1/4] dt-binding: i2c: add generic properties for GPIO
- bus recovery
-Message-ID: <20200724205209.GC1551@shell.armlinux.org.uk>
-References: <20200619141904.910889-1-codrin.ciubotariu@microchip.com>
- <20200619141904.910889-2-codrin.ciubotariu@microchip.com>
- <20200705211918.GB1055@kunai>
- <20200724193913.GD1227@ninjato>
+        Fri, 24 Jul 2020 17:00:27 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OKbO5k162778;
+        Fri, 24 Jul 2020 17:00:16 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32fac4fqcj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 17:00:15 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06OKbJ87162496;
+        Fri, 24 Jul 2020 17:00:15 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32fac4fqb4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 17:00:15 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06OKYnIJ027180;
+        Fri, 24 Jul 2020 21:00:12 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 32brq87npy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 21:00:12 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06OL09Gc27853280
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Jul 2020 21:00:09 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 84456A4040;
+        Fri, 24 Jul 2020 21:00:08 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 496EAA406D;
+        Fri, 24 Jul 2020 21:00:05 +0000 (GMT)
+Received: from hbathini.in.ibm.com (unknown [9.85.71.136])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Jul 2020 21:00:04 +0000 (GMT)
+Subject: [PATCH v5 00/11] ppc64: enable kdump support for kexec_file_load
+ syscall
+From:   Hari Bathini <hbathini@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Date:   Sat, 25 Jul 2020 02:30:04 +0530
+Message-ID: <159562433305.7836.11742488792509689660.stgit@hbathini.in.ibm.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724193913.GD1227@ninjato>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_09:2020-07-24,2020-07-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
+ adultscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007240142
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 09:39:13PM +0200, Wolfram Sang wrote:
-> On Sun, Jul 05, 2020 at 11:19:18PM +0200, Wolfram Sang wrote:
-> > 
-> > > +- pinctrl
-> > > +	add extra pinctrl to configure SCL/SDA pins to GPIO function for bus
-> > > +	recovery, call it "gpio" or "recovery" state
-> > 
-> > I think we should stick with "gpio" only. That is what at91 and imx have
-> > in their bindings. pxa uses "recovery" as a pinctrl state name but I
-> > can't find any further use or documentation of that. PXA is not fully
-> > converted to the best of my knowledge, so maybe it is no problem for PXA
-> > to switch to "gpio", too? We should ask Russell King (cced).
+This patch series enables kdump support for kexec_file_load system
+call (kexec -s -p) on PPC64. The changes are inspired from kexec-tools
+code but heavily modified for kernel consumption.
 
-Fully converted to what?  The generic handling where the i2c core layer
-handles everything to do with recovery, including the switch between
-modes?
+The first patch adds a weak arch_kexec_locate_mem_hole() function to
+override locate memory hole logic suiting arch needs. There are some
+special regions in ppc64 which should be avoided while loading buffer
+& there are multiple callers to kexec_add_buffer making it complicated
+to maintain range sanity and using generic lookup at the same time.
 
-i2c-pxa _intentionally_ carefully handles the switch between i2c mode and
-GPIO mode, and I don't see a generic driver doing that to avoid causing
-any additional glitches on the bus.  Given the use case that this recovery
-is targetted at, avoiding glitches is very important to keep.
+The second patch marks ppc64 specific code within arch/powerpc/kexec
+and arch/powerpc/purgatory to make the subsequent code changes easy
+to understand.
 
-> > Russell, do you object naming the pinctrl state for bus recovery in
-> > the pxa i2c driver from "recovery" to "gpio"?
-> 
-> No response, so far. I suggest now to support the "recovery" naming but
-> mark it as deprecated. Opinions?
+The next patch adds helper function to setup different memory ranges
+needed for loading kdump kernel, booting into it and exporting the
+crashing kernel's elfcore.
 
-I don't have a preference on the exact naming.
+The fourth patch overrides arch_kexec_locate_mem_hole() function to
+locate memory hole for kdump segments by accounting for the special
+memory regions, referred to as excluded memory ranges, and sets
+kbuf->mem when a suitable memory region is found.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+The fifth patch moves walk_drmem_lmbs() out of .init section with
+a few changes to reuse it for setting up kdump kernel's usable memory
+ranges. The next patch uses walk_drmem_lmbs() to look up the LMBs
+and set linux,drconf-usable-memory & linux,usable-memory properties
+in order to restrict kdump kernel's memory usage.
+
+The seventh patch updates purgatory to setup r8 & r9 with opal base
+and opal entry addresses respectively to aid kernels built with
+CONFIG_PPC_EARLY_DEBUG_OPAL enabled. The next patch setups up backup
+region as a kexec segment while loading kdump kernel and teaches
+purgatory to copy data from source to destination.
+
+Patch 09 builds the elfcore header for the running kernel & passes
+the info to kdump kernel via "elfcorehdr=" parameter to export as
+/proc/vmcore file. The next patch sets up the memory reserve map
+for the kexec kernel and also claims kdump support for kdump as
+all the necessary changes are added.
+
+The last patch fixes a lookup issue for `kexec -l -s` case when
+memory is reserved for crashkernel.
+
+Tested the changes successfully on P8, P9 lpars, couple of OpenPOWER
+boxes, one with secureboot enabled, KVM guest and a simulator.
+
+v4 -> v5:
+* Dropped patches 07/12 & 08/12 and updated purgatory to do everything
+  in assembly.
+* Added a new patch (which was part of patch 08/12 in v4) to update
+  r8 & r9 registers with opal base & opal entry addresses as it is
+  expected on kernels built with CONFIG_PPC_EARLY_DEBUG_OPAL enabled.
+* Fixed kexec load issue on KVM guest.
+
+v3 -> v4:
+* Updated get_node_path() function to be iterative instead of a recursive one.
+* Added comment explaining why low memory is added to kdump kernel's usable
+  memory ranges though it doesn't fall in crashkernel region.
+* Fixed stack_buf to be quadword aligned in accordance with ABI.
+* Added missing of_node_put() in setup_purgatory_ppc64().
+* Added a FIXME tag to indicate issue in adding opal/rtas regions to
+  core image.
+
+v2 -> v3:
+* Fixed TOC pointer calculation for purgatory by using section info
+  that has relocations applied.
+* Fixed arch_kexec_locate_mem_hole() function to fallback to generic
+  kexec_locate_mem_hole() lookup if exclude ranges list is empty.
+* Dropped check for backup_start in trampoline_64.S as purgatory()
+  function takes care of it anyway.
+
+v1 -> v2:
+* Introduced arch_kexec_locate_mem_hole() for override and dropped
+  weak arch_kexec_add_buffer().
+* Addressed warnings reported by lkp.
+* Added patch to address kexec load issue when memory is reserved
+  for crashkernel.
+* Used the appropriate license header for the new files added.
+* Added an option to merge ranges to minimize reallocations while
+  adding memory ranges.
+* Dropped within_crashkernel parameter for add_opal_mem_range() &
+  add_rtas_mem_range() functions as it is not really needed.
+
+---
+
+Hari Bathini (11):
+      kexec_file: allow archs to handle special regions while locating memory hole
+      powerpc/kexec_file: mark PPC64 specific code
+      powerpc/kexec_file: add helper functions for getting memory ranges
+      ppc64/kexec_file: avoid stomping memory used by special regions
+      powerpc/drmem: make lmb walk a bit more flexible
+      ppc64/kexec_file: restrict memory usage of kdump kernel
+      ppc64/kexec_file: enable early kernel's OPAL calls
+      ppc64/kexec_file: setup backup region for kdump kernel
+      ppc64/kexec_file: prepare elfcore header for crashing kernel
+      ppc64/kexec_file: add appropriate regions for memory reserve map
+      ppc64/kexec_file: fix kexec load failure with lack of memory hole
+
+
+ arch/powerpc/include/asm/crashdump-ppc64.h |   19 
+ arch/powerpc/include/asm/drmem.h           |    9 
+ arch/powerpc/include/asm/kexec.h           |   29 +
+ arch/powerpc/include/asm/kexec_ranges.h    |   25 +
+ arch/powerpc/kernel/prom.c                 |   13 
+ arch/powerpc/kexec/Makefile                |    2 
+ arch/powerpc/kexec/elf_64.c                |   36 +
+ arch/powerpc/kexec/file_load.c             |   60 +
+ arch/powerpc/kexec/file_load_64.c          | 1209 ++++++++++++++++++++++++++++
+ arch/powerpc/kexec/ranges.c                |  417 ++++++++++
+ arch/powerpc/mm/drmem.c                    |   87 +-
+ arch/powerpc/mm/numa.c                     |   13 
+ arch/powerpc/purgatory/Makefile            |    4 
+ arch/powerpc/purgatory/trampoline.S        |  117 ---
+ arch/powerpc/purgatory/trampoline_64.S     |  162 ++++
+ include/linux/kexec.h                      |   29 -
+ kernel/kexec_file.c                        |   16 
+ 17 files changed, 2052 insertions(+), 195 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/crashdump-ppc64.h
+ create mode 100644 arch/powerpc/include/asm/kexec_ranges.h
+ create mode 100644 arch/powerpc/kexec/file_load_64.c
+ create mode 100644 arch/powerpc/kexec/ranges.c
+ delete mode 100644 arch/powerpc/purgatory/trampoline.S
+ create mode 100644 arch/powerpc/purgatory/trampoline_64.S
+
