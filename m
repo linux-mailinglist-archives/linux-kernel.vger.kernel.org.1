@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9F522C6D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E5722C6D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgGXNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:37:37 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53282 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726763AbgGXNhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:37:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595597854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zkyxEbU5sxUTH/FEtcDCO3vpSvQgHkghjp2v8unR++E=;
-        b=AwIgpfzKt2RtcdiBVpwK/sm0Tmh5yR6J9rEKE1zAqtNESgzDPL4qesUA8pqcOqsgHYFfxv
-        2e28tvFTp6QZlKamHAULzHf4Tlek7eYLE86ppdsW6Ijktpqy9DZnrxTwWTxctLA5OAHVJb
-        CswBiMwss8bbdmyCTqtLr3yUqqWMZvM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-oBiQwkP_OF-vdWI7I9LYng-1; Fri, 24 Jul 2020 09:37:30 -0400
-X-MC-Unique: oBiQwkP_OF-vdWI7I9LYng-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726969AbgGXNiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:38:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgGXNiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:38:19 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1315107ACCA;
-        Fri, 24 Jul 2020 13:37:28 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 182F070105;
-        Fri, 24 Jul 2020 13:37:25 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 17/17] samples: add error state information to test-fsinfo.c
- [ver #20]
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org, viro@zeniv.linux.org.uk
-Cc:     Jeff Layton <jlayton@kernel.org>, dhowells@redhat.com,
-        raven@themaw.net, mszeredi@redhat.com, christian@brauner.io,
-        jannh@google.com, darrick.wong@oracle.com, kzak@redhat.com,
-        jlayton@redhat.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Jul 2020 14:37:25 +0100
-Message-ID: <159559784523.2144584.13104902796488677217.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159559768062.2144584.13583793543173131929.stgit@warthog.procyon.org.uk>
-References: <159559768062.2144584.13583793543173131929.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        by mail.kernel.org (Postfix) with ESMTPSA id D1473206C1;
+        Fri, 24 Jul 2020 13:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595597899;
+        bh=l9Y7q0RbNS8KATMxk+D8owDLxYNwvpw247/i9tJX1KY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0hvsBB8ih/8u5gNo5SfDJgvgcXt/Y9FdQ/c6Zq5txhfm7GKCdFX6ESBIBzzon/Tmu
+         iQ5kSV1M+yHFL2Rmps6thAsrtySJPL94q9b5pN8CvdM6/vzkeskbv9T3v0WlyKx1Rs
+         LKGsOp7GIndxfzyTaIj2DIImTsn9HZN3OPmFL7ow=
+Date:   Fri, 24 Jul 2020 16:38:15 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trivial@kernel.org
+Subject: Re: [PATCH] RDMA/mlx5: fix typo in structure name
+Message-ID: <20200724133815.GA5479@unreal>
+References: <20200724084112.GC31930@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <20200724084112.GC31930@amd>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- samples/vfs/test-fsinfo.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+On Fri, Jul 24, 2020 at 10:41:12AM +0200, Pavel Machek wrote:
+> This is user API, but likely noone uses it...? Fix it before it
+> becomes problem.
+>
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+>
+>
+> diff --git a/include/uapi/rdma/mlx5_user_ioctl_cmds.h b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+> index 8e316ef896b5..2d889df38df6 100644
+> --- a/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+> +++ b/include/uapi/rdma/mlx5_user_ioctl_cmds.h
+> @@ -259,7 +259,7 @@ enum mlx5_ib_create_flow_attrs {
+>  	MLX5_IB_ATTR_CREATE_FLOW_FLAGS,
+>  };
+>
+> -enum mlx5_ib_destoy_flow_attrs {
+> +enum mlx5_ib_destroy_flow_attrs {
+>  	MLX5_IB_ATTR_DESTROY_FLOW_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
+>  };
+>
 
-diff --git a/samples/vfs/test-fsinfo.c b/samples/vfs/test-fsinfo.c
-index 5209b6a44fb0..9525ef72378a 100644
---- a/samples/vfs/test-fsinfo.c
-+++ b/samples/vfs/test-fsinfo.c
-@@ -428,6 +428,15 @@ static void dump_afs_fsinfo_server_address(void *reply, unsigned int size)
- 	printf("family=%u\n", ss->ss_family);
- }
- 
-+static void dump_fsinfo_generic_error_state(void *reply, unsigned int size)
-+{
-+	struct fsinfo_error_state *es = reply;
-+
-+	printf("\n");
-+	printf("\tlatest error : %d (%s)\n", es->wb_error_last, strerror(es->wb_error_last));
-+	printf("\tcookie       : 0x%x\n", es->wb_error_cookie);
-+}
-+
- static void dump_string(void *reply, unsigned int size)
- {
- 	char *s = reply, *p;
-@@ -516,6 +525,7 @@ static const struct fsinfo_attribute fsinfo_attributes[] = {
- 	FSINFO_STRING	(FSINFO_ATTR_AFS_CELL_NAME,	string),
- 	FSINFO_STRING	(FSINFO_ATTR_AFS_SERVER_NAME,	string),
- 	FSINFO_LIST_N	(FSINFO_ATTR_AFS_SERVER_ADDRESSES, afs_fsinfo_server_address),
-+	FSINFO_VSTRUCT  (FSINFO_ATTR_ERROR_STATE,       fsinfo_generic_error_state),
- 	{}
- };
- 
+It looks that this enum is not in use in rdma-core.
+
+Thanks
+
+>
+> --
+> (english) http://www.livejournal.com/~pavelmachek
+> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
 
 
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQT1m3YD37UfMCUQBNwp8NhrnBAZsQUCXxrkRAAKCRAp8NhrnBAZ
+sQcXAP0RFVMvqmTE3YS59/dnHrlRqT6pdo1NqYxzlvBYRs7RygD/acgoNgGlcskw
+sP+4vHdNis5oxHkscbOp7NC/6q5LdgI=
+=gon7
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
