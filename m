@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752DC22BB8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 03:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7227822BB97
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 03:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgGXBae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 21:30:34 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35684 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbgGXBad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 21:30:33 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 38AB8279;
-        Fri, 24 Jul 2020 03:30:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1595554231;
-        bh=akS/wzc0BWt9gQYq9HsNLG1pa4mQkWgmvntLaanjo4Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qfND16UkHYN3vA2A7MdntXo1DC2Tc2f2Hjqzy89OEu8bAfIclINlSmp/x3oV/jtd0
-         Y+LT+EHhMTiOYz4EfVmvOwTKxRvvj8QTkrg59LFwJ1OuKflWR43FwvCRHSFR3ltHAQ
-         B5H6QOjrSa5SpYoUp6tezNBGa+0zHZN1Z2za++8s=
-Date:   Fri, 24 Jul 2020 04:30:24 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: bridge: adv7511: Add missing bridge type
-Message-ID: <20200724013024.GL21353@pendragon.ideasonboard.com>
-References: <20200723104523.1006706-1-vkoul@kernel.org>
+        id S1726543AbgGXBie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 21:38:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8265 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726381AbgGXBie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 21:38:34 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EE385FC44019511714EE;
+        Fri, 24 Jul 2020 09:38:30 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 24 Jul 2020 09:38:21 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v2] f2fs: fix use-after-free issue
+Date:   Fri, 24 Jul 2020 09:38:11 +0800
+Message-ID: <20200724013811.106825-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200723104523.1006706-1-vkoul@kernel.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+From: Li Guifu <bluce.liguifu@huawei.com>
 
-Thank you for the patch.
+During umount, f2fs_put_super() unregisters procfs entries after
+f2fs_destroy_segment_manager(), it may cause use-after-free
+issue when umount races with procfs accessing, fix it by relocating
+f2fs_unregister_sysfs().
 
-On Thu, Jul 23, 2020 at 04:15:23PM +0530, Vinod Koul wrote:
-> Add bridge type as DRM_MODE_CONNECTOR_HDMIA
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+[Chao Yu: change commit title/message a bit]
 
-This has already been submitted: https://lore.kernel.org/dri-devel/20200720124228.12552-1-laurentiu.palcu@oss.nxp.com/
+Signed-off-by: Li Guifu <bluce.liguifu@huawei.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- fix typo in commit message.
+- improve comment in f2fs_put_super() a bit.
+ fs/f2fs/super.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> ---
-> 
-> I found this when testing Dragon-board 410c which uses this bridge
-> [    6.671913] msm 1a00000.mdss: [drm:msm_dsi_manager_ext_bridge_init [msm]] *ERROR* drm_bridge_connector_init failed: -22
-> [    6.678879] msm 1a00000.mdss: [drm:msm_dsi_modeset_init [msm]] *ERROR* failed to create dsi connector: -19
-> 
->  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> index f45cdca9cce5..a0d392c338da 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> @@ -1283,6 +1283,7 @@ static int adv7511_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
->  	adv7511->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
->  			    | DRM_BRIDGE_OP_HPD;
->  	adv7511->bridge.of_node = dev->of_node;
-> +	adv7511->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
->  
->  	drm_bridge_add(&adv7511->bridge);
->  
-
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 80cb7cd358f8..5e0a3eeb8ca4 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1175,6 +1175,9 @@ static void f2fs_put_super(struct super_block *sb)
+ 	int i;
+ 	bool dropped;
+ 
++	/* unregister procfs/sysfs entries in advance to avoid race case */
++	f2fs_unregister_sysfs(sbi);
++
+ 	f2fs_quota_off_umount(sb);
+ 
+ 	/* prevent remaining shrinker jobs */
+@@ -1240,8 +1243,6 @@ static void f2fs_put_super(struct super_block *sb)
+ 
+ 	kvfree(sbi->ckpt);
+ 
+-	f2fs_unregister_sysfs(sbi);
+-
+ 	sb->s_fs_info = NULL;
+ 	if (sbi->s_chksum_driver)
+ 		crypto_free_shash(sbi->s_chksum_driver);
 -- 
-Regards,
+2.26.2
 
-Laurent Pinchart
