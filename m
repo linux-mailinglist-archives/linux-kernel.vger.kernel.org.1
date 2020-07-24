@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6172E22C466
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9885C22C472
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgGXLeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:34:20 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:44480 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726280AbgGXLeU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:34:20 -0400
-Received: by mail-ed1-f66.google.com with SMTP id by13so6768393edb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:34:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M110HA4nMMKBLYGy/DI8jTdSDD0jpS2wTCc48wWnBmY=;
-        b=jEft8tzJS/Z8/qtfwUz1DIv5+73cMtTQtIKn2Fa3V3NVjNiCJXBs35xWBZgtLyGdV8
-         Tr6M8xtWETXMlndVdUwWvvv5AFzodDIa54JNhXsXcZY9JZxi9Mvw+I9FAATA4ALwSO7B
-         wy7E3qL56Ja29TRA8db5PIjRG8cqIOYyAR3QrBftlqKRqqmgejSaBccedIQNGrEbmzDh
-         lCiDmhnwy3lJoUxiNPdrnduUJ580mN0DBtJCeRERcYzQr1PzVlQto5RvNIa7eMTC5I4Z
-         zzSbmdsmj3SR6MxjhqEBFv0QMGRzsHHH2++4cyJfA+0YvZ+gZ56aGtlaV7fS+MjbFW1w
-         I55A==
-X-Gm-Message-State: AOAM533mxTLsNQD31skzCnF6WAiVvo7dkQaOj/PlAZISrhqfBXPjgVlr
-        xZMIqxQz5TYz/S4vytd6ZrY=
-X-Google-Smtp-Source: ABdhPJz4nnh7QTvkeAbcVkZTca3Hx6YW1ikFfwsIPl+KbdGmUHOgsbm6KIfTaIaKeQqwCU6W2POzhQ==
-X-Received: by 2002:a05:6402:2d7:: with SMTP id b23mr8635662edx.145.1595590458024;
-        Fri, 24 Jul 2020 04:34:18 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id q21sm496212ejr.75.2020.07.24.04.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 04:34:17 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 13:34:15 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        rientjes@google.com, mgorman@suse.de, walken@google.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jianchao Guo <guojianchao@bytedance.com>
-Subject: Re: [PATCH v2] mm/hugetlb: add mempolicy check in the reservation
- routine
-Message-ID: <20200724113415.GG4061@dhcp22.suse.cz>
-References: <20200724100306.33457-1-songmuchun@bytedance.com>
+        id S1726535AbgGXLlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:41:21 -0400
+Received: from mail-eopbgr80078.outbound.protection.outlook.com ([40.107.8.78]:38062
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726258AbgGXLlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 07:41:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BLFHoUKKcL4ftb8v9+Ri4QvA6XVqgnG4bXB8yLaU4sefgP4GwxMWI+17mXirPxg/0sWSqe66Dp4aoVaKBQgDm7rfokMTVeI1TW+DvFDR4KmpjNHeTdxhXagHJlskwhwwqFPHNZ1gzQpMoSJEHiXWPLIcoqP5doaB+PEq1Dnyfdsa6MoU6b9UlH89uUafjEVGjKFJzdfG8shBZFM7C6cy549BAK9uhbi0Ti4cuNxvdRWsOfvmI0XpEcXdWzFnq1RFy0oth6sE2nNd1A5HjHSLwCPX0xpOOFw7/5NAc0UPq+I4SBhRU7uB+7FaGL2Izt/7peTKehudivAacDxeRcvdew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hsHO/KvBMsQBpTI0T/MHRQPaSwEqDCU7+44Wnneh4aM=;
+ b=RmX7erBU070N4oHuc5sqcN0mQQh5LsggZe1hX7FXwJdJbGXwM+K69+LuJtv+RPCcc+j1GLPMge+/LiGula9R1cCbKDTz6AMAmyvyroToEcZgFNmW9BcJhq/Cyn1UudxMc6VloWn/6SOoNwE0VcZFANREVOlkjWh38kf0E1jLaxP5Qfj6IlNAB4bKemw6aSsYudwLg3axl1CA1pL8otL00AwZtuJYiO9cdhscT+hWh8ZF1OSlFn5PiWI8xkfPq2AU2dFAPtzQRXPGgyp8KyWcHGPzdIALjDIK/dlXmdWp/aJ2onG1hSSD6nZ0ByAR6SMGL2mHsfVLyQYLCFR6dKfU8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hsHO/KvBMsQBpTI0T/MHRQPaSwEqDCU7+44Wnneh4aM=;
+ b=Do62pTL1dtrr8JNZWO4cLY0HjY3Z67Ig1RU8jPMQ1O/c12rKcCj3oOxSC3sdsj1Mq+qa9nPSBfSzHlXs2E5yEZMzq5PpWaL3Y9iH1iYLMRK87z8ty/IrbLRmNvNSXtXv7Yg7Op5kirU20lIjLfvQpZFATpykMnMnC7lGdo6bKMw=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR04MB4800.eurprd04.prod.outlook.com (2603:10a6:803:5a::12)
+ by VI1PR0402MB3375.eurprd04.prod.outlook.com (2603:10a6:803:2::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Fri, 24 Jul
+ 2020 11:41:17 +0000
+Received: from VI1PR04MB4800.eurprd04.prod.outlook.com
+ ([fe80::1c58:aed8:bd10:6c9e]) by VI1PR04MB4800.eurprd04.prod.outlook.com
+ ([fe80::1c58:aed8:bd10:6c9e%3]) with mapi id 15.20.3216.026; Fri, 24 Jul 2020
+ 11:41:17 +0000
+From:   Vabhav Sharma <vabhav.sharma@oss.nxp.com>
+To:     shawnguo@kernel.org, leoyang.li@nxp.com, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     V.Sethi@nxp.com, Vabhav Sharma <vabhav.sharma@nxp.com>
+Subject: [PATCH] arm64: dts: ls1028a: qds: enable lpuart1
+Date:   Fri, 24 Jul 2020 17:04:42 +0530
+Message-Id: <1595590482-26833-1-git-send-email-vabhav.sharma@oss.nxp.com>
+X-Mailer: git-send-email 1.9.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR03CA0097.apcprd03.prod.outlook.com
+ (2603:1096:4:7c::25) To VI1PR04MB4800.eurprd04.prod.outlook.com
+ (2603:10a6:803:5a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724100306.33457-1-songmuchun@bytedance.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from uefi-OptiPlex-790.ap.freescale.net (92.120.0.71) by SG2PR03CA0097.apcprd03.prod.outlook.com (2603:1096:4:7c::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3239.9 via Frontend Transport; Fri, 24 Jul 2020 11:41:14 +0000
+X-Mailer: git-send-email 1.9.1
+X-Originating-IP: [92.120.0.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d1ee4ff6-69d2-4278-9034-08d82fc67a4d
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3375:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB33757AF15B20EFB1FBCB8AC0B2770@VI1PR0402MB3375.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IIVHPUIPvyM4PhPLh/c/GdfT7tUERzuPjdOGJMWy0sCdO4dHDyy/USOU6ZdxWKXCINaJdREElzOp33MH3NcRAzottzFQtbKguEPACRisXI1asTLcPCtDnM6P43AhXxzX9d4pZNwlWRNugnqrmjO3XfFpOsx4Byo5OtLZb23KjDjLitK2+oh2s7QHIPrjkm9DZhC7C28D7N0UOQDysSJu2BDsDbOiQnlVMvRUaN/aEnFMaTwoD4kAHYmiEQVyaLjPrA7ZSMmEhOtx3XBhq/26kVFJG1+RmhNsyUeCHjdGMudbTFsDL7FRMsnx8bArFlZtgbDE/n6mi0pG9ptq3kcl9Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4800.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(376002)(366004)(136003)(346002)(396003)(5660300002)(478600001)(66476007)(316002)(86362001)(4744005)(66556008)(4326008)(66946007)(2906002)(6506007)(186003)(6486002)(83380400001)(8676002)(26005)(16526019)(956004)(6666004)(2616005)(6512007)(44832011)(52116002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: TrF6YiOAr3JZXmc9yWEYdI9QsElB9Dx/uBPBZ8JBj4xn7H75orTuwB84vxz349w6Xq2WZz7PWrPl3q1MEUw4k/4VcTlfjpoeWQJ0+qEPJGUBPgBwXDptXL10sNR4sHhPU3+BIMH/8bs+f1vOAIIlGooXystugiLe+3UAbd3JSivzeo8E7fFK9hM+R8BXSEbH7gYO/DXdAhpmICawIMb0dEG0yCNpMXUqjD88/BLCLUBSUg7PdUeuwopxQfsF0k2o35bMOewFzwHrR+VX76t+iL9Vvb0EEmY+CRblYR3R52ctPt/jTxyNiQ7KDGrvCIL11CXWI8cSgKp6xuIv2zUJ62aTFe96UnIt84d0DQKtotru9sWLSIcybnERpAMnccRJeGzVhNkkbai2wzaxwLeLt44mHMTHMIimBjBDdjbXrw8lhHNwG97gGV6WwJwDQ/JDyFll0Szshhr86GLalsqUbItiPmAN6cv5mBQSQoPGihs=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1ee4ff6-69d2-4278-9034-08d82fc67a4d
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4800.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 11:41:17.8896
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lsWDyzBGbYbNZj0QdPLrKymqT2asFoARt/SzJdGJj9ynRVnOuvvd1h4xcHOOZFkUYGiiWlvNFw2wAFBxmCQNpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3375
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 24-07-20 18:03:06, Muchun Song wrote:
-> In the reservation routine, we only check whether the cpuset meets
-> the memory allocation requirements. But we ignore the mempolicy of
-> MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
-> memory allocation may fail due to mempolicy restrictions and receives
-> the SIGBUS signal. This can be reproduced by the follow steps.
-> 
->  1) Compile the test case.
->     cd tools/testing/selftests/vm/
->     gcc map_hugetlb.c -o map_hugetlb
-> 
->  2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
->     system. Each node will pre-allocate one huge page.
->     echo 2 > /proc/sys/vm/nr_hugepages
-> 
->  3) Run test case(mmap 4MB). We receive the SIGBUS signal.
->     numactl --membind=0 ./map_hugetlb 4
-> 
-> With this patch applied, the mmap will fail in the step 3) and throw
-> "mmap: Cannot allocate memory".
-> 
-> Reported-by: Jianchao Guo <guojianchao@bytedance.com>
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
-> 
-> changelog in v2:
->  1) Reuse policy_nodemask().
-> 
->  include/linux/mempolicy.h |  1 +
->  mm/hugetlb.c              | 19 ++++++++++++++++---
->  mm/mempolicy.c            |  2 +-
->  3 files changed, 18 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-> index ea9c15b60a96..6b9640f1c990 100644
-> --- a/include/linux/mempolicy.h
-> +++ b/include/linux/mempolicy.h
-> @@ -152,6 +152,7 @@ extern int huge_node(struct vm_area_struct *vma,
->  extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
->  extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
->  				const nodemask_t *mask);
-> +extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
->  extern unsigned int mempolicy_slab_node(void);
->  
->  extern enum zone_type policy_zone;
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 589c330df4db..a753fe8591b4 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3463,12 +3463,25 @@ static int __init default_hugepagesz_setup(char *s)
->  }
->  __setup("default_hugepagesz=", default_hugepagesz_setup);
->  
-> -static unsigned int cpuset_mems_nr(unsigned int *array)
-> +static unsigned int allowed_mems_nr(struct hstate *h)
->  {
->  	int node;
->  	unsigned int nr = 0;
-> +	struct mempolicy *mpol = get_task_policy(current);
-> +	nodemask_t *mpol_allowed, *mems_allowed, nodemask;
-> +	unsigned int *array = h->free_huge_pages_node;
-> +	gfp_t gfp_mask = htlb_alloc_mask(h);
-> +
-> +	mpol_allowed = policy_nodemask(gfp_mask, mpol);
-> +	if (mpol_allowed) {
-> +		nodes_and(nodemask, cpuset_current_mems_allowed,
-> +			  *mpol_allowed);
-> +		mems_allowed = &nodemask;
-> +	} else {
-> +		mems_allowed = &cpuset_current_mems_allowed;
-> +	}
+From: Vabhav Sharma <vabhav.sharma@nxp.com>
 
-I believe you can simplify this and use a similar pattern as the page
-allocator. Something like
+LPUART nodes by default are disabled in LS1028A device
+tree, Enabling LPUART1 node
 
-	for_each_node_mask(node, mpol_allowed) {
-		if (node_isset(node, &cpuset_current_mems_allowed))
-			nr += array[node];
-	}
+Acked-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Vabhav Sharma <vabhav.sharma@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-There shouldn't be any need to allocate a potentially large nodemask on
-the stack.
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
+index dd69c5b..045f748 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
+@@ -228,6 +228,10 @@
+ 	status = "okay";
+ };
+ 
++&lpuart0 {
++	status = "okay";
++};
++
+ &sai1 {
+ 	status = "okay";
+ };
 -- 
-Michal Hocko
-SUSE Labs
+2.7.4
+
