@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6AA22CB93
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A99D22CB99
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgGXRAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:00:33 -0400
-Received: from mga18.intel.com ([134.134.136.126]:12416 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGXRAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:00:32 -0400
-IronPort-SDR: J+Im2xHnxTdEIj5ktuhQdb9xbQQXesExXlVsPAd+KbSROub+pWwTTEFmpWIZEbC+si2FodhUzV
- nCGzrFfXS9cA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="138245666"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="138245666"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 10:00:31 -0700
-IronPort-SDR: G6zJ9jlbWHEOMhv6Hj4P4IuC68udFVXIBCA/yuNM45GHvKH2Gyu0xJVeyhsY/k9PcKukfG/xjF
- HqLYGEcsaIow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="284985355"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 24 Jul 2020 10:00:30 -0700
-Received: from [10.252.140.222] (kliang2-mobl.ccr.corp.intel.com [10.252.140.222])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 0AA4A580297;
-        Fri, 24 Jul 2020 10:00:29 -0700 (PDT)
-Subject: Re: [PATCH V7 07/14] perf/core: Add a new PERF_EV_CAP_COEXIST event
- capability
-To:     peterz@infradead.org, Andi Kleen <ak@linux.intel.com>
-Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        jolsa@kernel.org, eranian@google.com,
-        alexander.shishkin@linux.intel.com, like.xu@linux.intel.com
-References: <20200723171117.9918-1-kan.liang@linux.intel.com>
- <20200723171117.9918-8-kan.liang@linux.intel.com>
- <20200724105543.GV119549@hirez.programming.kicks-ass.net>
- <20200724114628.GJ43129@hirez.programming.kicks-ass.net>
- <0d33a25c-cfe4-af7f-c915-a98dba17b53b@linux.intel.com>
- <20200724135412.GA10769@hirez.programming.kicks-ass.net>
- <e04f1708-e8c0-3787-1572-443f03ab73ca@linux.intel.com>
- <20200724143258.GB10769@hirez.programming.kicks-ass.net>
- <20200724144632.GE1180481@tassilo.jf.intel.com>
- <20200724145934.GD10769@hirez.programming.kicks-ass.net>
- <20200724164356.GL43129@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <af274c58-6935-22cd-2830-519c3977e136@linux.intel.com>
-Date:   Fri, 24 Jul 2020 13:00:28 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726890AbgGXRBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgGXRBM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 13:01:12 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92FEC0619D3;
+        Fri, 24 Jul 2020 10:01:11 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id h28so7515094edz.0;
+        Fri, 24 Jul 2020 10:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N55p9HlPMBDczNO+FOx56BHvJH2h0tKoLCVXNpo9G3M=;
+        b=WvZXqq7rAaJYphTzFQ9Vvq+Wn/RP5L3aKeqJOEyh76XpdQP96g1hniiru2fEFxQh8N
+         cuh3EHmBNmH1rGSFaUj5+FPAsM+5jEG/yLcmCnQRpFBdjiYPJAXGXjEHnc/cdTBK9Ahb
+         QMVvP7uBiXfNUvDmW7+QeaIFV2OhMP/QUyy5lnBqRVTgLzZmwNozq1QDzq7jjJzGGFCc
+         iST4nAdSfktKCoFtR5wvPKP0mwn1E8eT7e5hl5b09dy0RCD2LG+5F4tMbuyuoA53DAWh
+         esB7DuwLVNy/2QhZ+9q1iK7V7quoMDxV3BJSpSiWKeP+Ac4kXEnqbBHKLDISg5wweq0P
+         M+iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N55p9HlPMBDczNO+FOx56BHvJH2h0tKoLCVXNpo9G3M=;
+        b=FeyTiHlRKkoqiIh+eLjt10Kx6Z9pAvrX7OpeEPDd43O01AHjYska2pmS4IFkL5vV+L
+         ObikjYKnHBA6jJhrPlHFxiJ/zWVgWnk1hnC6NGdJEOxhIheo2u/inCWbW4iJIMWFSDs8
+         U/WSCfPBOGbPl4HGvGP+0ald4trMGDNiwfEeZHequYu3am8TdWcTKctR08QSIZPrwhQQ
+         V5JynQOY2Dw7xqiU2dQ2XKxsoF5Bkmm90nWx7GyThLZ1httuJe7+4iLID9jGKH1Q/FEA
+         1j3rS1jIhvy2gNFsU7QorrCIN1f3uuZDsWfrb3ruUfAPEhblQMOU4XlV5JBbhVGYVb9E
+         +zrg==
+X-Gm-Message-State: AOAM532tbCy1ehH8a3uP64PSMUXgHTjJTaS/1PelaI49zU3hvemJj0DM
+        8NZQTL1rD3ZAMmMi4P+GaE8pqrRX
+X-Google-Smtp-Source: ABdhPJytnSuqN8Rq5+gISeWtuSvudKbnrUSIIGlRetE2zWQZ4mRgW3qWuBpdGiuYKSunbCD5BMDJqQ==
+X-Received: by 2002:a50:ab5c:: with SMTP id t28mr9723421edc.209.1595610070636;
+        Fri, 24 Jul 2020 10:01:10 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id u60sm1066419edc.59.2020.07.24.10.01.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 10:01:09 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Amit Kucheria <amitk@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] thermal: Fix zone lookup by ID
+Date:   Fri, 24 Jul 2020 19:01:05 +0200
+Message-Id: <20200724170105.2705467-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200724164356.GL43129@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Thierry Reding <treding@nvidia.com>
 
+When a thermal zone is looked up by an ID and no zone is found matching
+that ID, the thermal_zone_get_by_id() function will return a pointer to
+the thermal zone list head which isn't actually a valid thermal zone.
 
-On 7/24/2020 12:43 PM, peterz@infradead.org wrote:
-> On Fri, Jul 24, 2020 at 04:59:34PM +0200, Peter Zijlstra wrote:
->> On Fri, Jul 24, 2020 at 07:46:32AM -0700, Andi Kleen wrote:
->>>> Something that seems to 'work' is:
->>>> '{cycles,cpu/instructions,period=50000/}', so maybe you can make the
->>>> group modifier :S use any sampling event if there is one, and otherwise
->>>> designate the leader.
->>>>
->>>> Then you can write things like:
->>>>
->>>>    '{slots, metric1, metric2, cpu/cycles,freq=50000/}:S'
->>>>
->>>> and then since cycles is specified as a sampling event, it will use
->>>> that.
->>>
->>> Okay possible, but it makes things more complicated
->>> for the user to understand and requires special documentation.
->>> Hopefully it's worth it the internal simplification.
->>
->> You already require special documentation for this metrics stuff. We
->> already need to state that SLOTS cannot be a sampling event, so you
->> already need to pay attention to this anyway.
->>
->> A shortcut could be a :s event modifier, then you can write:
->>
->>   '{slots, metric1, metric2, cycles:s}:S'
->>
->> and have the tool select the :s tagged one.
+This can lead to a subsequent crash because a valid pointer is returned
+to the called, but dereferencing that pointer as struct thermal_zone is
+not safe.
 
-It looks like PT encountered a similar issue as us.
-They use the 2nd event of the group as the
-"leader". I think we can simply extend the function to check the slots 
-event in perf tool.
-https://lore.kernel.org/lkml/20200401101613.6201-17-adrian.hunter@intel.com/
+Fixes: 329b064fbd13 ("thermal: core: Get thermal zone by id")
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+---
+ drivers/thermal/thermal_core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-
-> 
-> Having slots as leader also would allow doing something like
-> FORMAT_METRIC, where we return sibling/leader in some fashion.
-> 
-> That also makes sense for instructions, because, IIRC,
-> instructions/slots is the better IPC.
-> 
-> And we should probably consider FORMAT_RESET.
-
-What's FORMAT_RESET for?
-
-Thanks,
-Kan
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 007f9618e20a..9748fbb9a3a1 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -751,16 +751,18 @@ int for_each_thermal_zone(int (*cb)(struct thermal_zone_device *, void *),
+ 
+ struct thermal_zone_device *thermal_zone_get_by_id(int id)
+ {
+-	struct thermal_zone_device *tz = NULL;
++	struct thermal_zone_device *tz, *match = NULL;
+ 
+ 	mutex_lock(&thermal_list_lock);
+ 	list_for_each_entry(tz, &thermal_tz_list, node) {
+-		if (tz->id == id)
++		if (tz->id == id) {
++			match = tz;
+ 			break;
++		}
+ 	}
+ 	mutex_unlock(&thermal_list_lock);
+ 
+-	return tz;
++	return match;
+ }
+ 
+ void thermal_zone_device_unbind_exception(struct thermal_zone_device *tz,
+-- 
+2.27.0
 
