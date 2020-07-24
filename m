@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8C322C264
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665F822C267
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgGXJg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:36:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52698 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgGXJg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:36:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 28B63ACC5;
-        Fri, 24 Jul 2020 09:37:06 +0000 (UTC)
-Message-ID: <0dc1e922bf87fa73790e7471b3974528dd261486.camel@suse.de>
-Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Fri, 24 Jul 2020 11:36:55 +0200
-In-Reply-To: <CAMi1Hd0Xz6kOJFpA5PEpi6RDDGOcz0RmQ7tTOkuXq4QneOO_vQ@mail.gmail.com>
-References: <20200708164936.9340-1-nsaenzjulienne@suse.de>
-         <CAMi1Hd35tRM=cnmzwX=SDgu-OoXi1Xj+twFkoULaVZBbTpe6sw@mail.gmail.com>
-         <550b30a86c0785049d24c945e2c6628d491cee3a.camel@suse.de>
-         <CAMi1Hd2V2pJjP=USS4r-Z3vK-aq7_aBy-jcVNk1GvbdEQAuzWg@mail.gmail.com>
-         <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de>
-         <CAMi1Hd0=ZsGhTkSy221EP9Vb3GMOcS0UMczX2u5X9qK37_ea1A@mail.gmail.com>
-         <01831596e4a2a6c9c066138b23bd30435f8e5569.camel@suse.de>
-         <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com>
-         <6db722947546221ed99d3f473f78e1a6de65d7d6.camel@suse.de>
-         <CAMi1Hd0Xz6kOJFpA5PEpi6RDDGOcz0RmQ7tTOkuXq4QneOO_vQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1727115AbgGXJhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbgGXJhm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:37:42 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34570C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:37:42 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id b30so4843709lfj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5TQWChaGcld1X+jt6TSrRbT5d69VNh8YdsaNVfKXJuY=;
+        b=Ne8qy7BB6Y/7TKH1bliOs0RBd4vcuED8WeR396vymk9sAlufq/RXK9OvvOAOKekoT6
+         pXymUgec0ISJT7TxLDIWTVDVglo9UcgR20dy/VLWWRY17kxHMlGG60UdnM0I48wQ9jeu
+         fQUfUKlgsF2GuEOdu2DjPttH7ZNLTM7bwMDv0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5TQWChaGcld1X+jt6TSrRbT5d69VNh8YdsaNVfKXJuY=;
+        b=kdJ1ZTeK0Y7sTcs2z+TC9fG9kTpn3cnWCqG+zScyMX1UI0Giz/wU8TiApVS11OQu6p
+         U/g0J9F5mrst4AK0ZpGmqS8zya3mQNagY+8FNeq9xv7yQp4+ZHpdjt8VtPPH1CkrQqd2
+         C9FL1UCtRhGFnCjvSL/2troLjnXFmvJvsZUT39oMj92alcjIiXrcqbFT9smwASsaES9L
+         lLEyiOsdA4sdpHxnmOaHVVyOe8w5IuGOFtxQ6DRLnNrBrR08lvxKFse5kpF3ONEXecE4
+         rsvHXuogmGJ3KCPidfql8q7WTeWlA0jiEzA3KLjBN0UAK2bmsIcLNJA5iaxwYoEJk72A
+         QU8Q==
+X-Gm-Message-State: AOAM533vQHUV8k/yuOWR5katc/BOkcP2z77GNyRPU8dFko9XDMT0ZCZA
+        cgVBb7S85mRHDjCJvwEmHBFDx39E8bsYkcIG+WBWjw==
+X-Google-Smtp-Source: ABdhPJxFM2by9Dsl4Q00h1MKaIBnGcQKERhBxfp23nVMGa9arHxE0+0yVNbsFcgbMzInjHlHpismO9fhP/Cla8ZD8DI=
+X-Received: by 2002:ac2:5f81:: with SMTP id r1mr4508456lfe.168.1595583460497;
+ Fri, 24 Jul 2020 02:37:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200717090155.10383-1-rayagonda.kokatanur@broadcom.com>
+ <20200717090155.10383-3-rayagonda.kokatanur@broadcom.com> <20200723202053.GD908@ninjato>
+In-Reply-To: <20200723202053.GD908@ninjato>
+From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
+Date:   Fri, 24 Jul 2020 15:07:28 +0530
+Message-ID: <CAHO=5PEeek5EiXk3ZAmXPFRQ4xKF4e3z-pe6Yq9t4iV+7AUJYw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] i2c: iproc: add slave pec support
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Lori Hikichi <lori.hikichi@broadcom.com>,
+        Robert Richter <rrichter@marvell.com>,
+        Nishka Dasgupta <nishkadg.linux@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amit,
+On Fri, Jul 24, 2020 at 1:50 AM Wolfram Sang <wsa@kernel.org> wrote:
+>
+>
+> > +     /* Enable partial slave HW PEC support if requested by the client */
+> > +     iproc_i2c->en_s_pec = !!(slave->flags & I2C_CLIENT_PEC);
+> > +     if (iproc_i2c->en_s_pec)
+> > +             dev_info(iproc_i2c->device, "Enable PEC\n");
+>
+> Where do you set the I2C_CLIENT_PEC flag for the slave? Is your backend
+> code publicly available?
 
-On Thu, 2020-07-23 at 10:44 +0530, Amit Pundir wrote:
-> Hi Nicolas,
-> 
-> Sorry I got stuck on other things yesterday.
+I2C_CLIENT_PEC should be set by backend before calling i2c_slave_register() ie
 
-No worries :)
+client->flags |= I2C_CLIENT_PEC;
+ret = i2c_slave_register(client, i2c_slave_eeprom_slave_cb);
+------
+------
+------
 
-> On Tue, 21 Jul 2020 at 21:57, Nicolas Saenz Julienne
+My backend code is not yet publicly available.
 
-[...]
+>
+> I may need a second thought here, but I am not sure I2C_CLIENT_PEC is
+> the right way to enable PEC. Isn't it actually depending on the backend
+> if PEC is needed? I.e. is the backend an I2C device or an SMBus device?
+>
+Yes, it depends on the backend. If backend is SMBUS device and
+supports PEC then it should set client->flags |= I2C_CLIENT_PEC,
+before calling i2c_slave_register(), so that the slave bus driver will
+enable PEC in device.
 
-> > 
-> > Let's get a bigger hammer, I'm just looking for clues here. Can you
-> > apply this and provide the dmesg output.
-> > 
-> > diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> > index 6bc74a2d5127..2160676bf488 100644
-> > --- a/kernel/dma/pool.c
-> > +++ b/kernel/dma/pool.c
-> > @@ -268,6 +268,8 @@ void *dma_alloc_from_pool(struct device *dev, size_t size,
-> >                         schedule_work(&atomic_pool_work);
-> >         }
-> > 
-> > +       dev_info(dev, "%s: size %lx, phys addr %llx, flags 0x%x\n", __func__, size, phys, flags);
-> > +
-> >         return ptr;
-> >  }
-> 
-> I never made it to dma_alloc_from_pool() call from
-> dma_direct_alloc_pages(), dma_should_alloc_from_pool() returns False
-> from gfpflags_allow_blocking() block.
-
-I'm a little sceptical about this. The only way you can get memory from these
-pools is through dma_alloc_from_pool(), and given how changes in the pool
-initialization affected the phone, it's pretty clear some amount of pool
-allocation is happening.
-
-Regards,
-Nicolas
-
+Best regards,
+Rayagonda
