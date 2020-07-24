@@ -2,154 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFC922CC7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5799022CC84
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgGXRoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGXRog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:44:36 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3402A2067D;
-        Fri, 24 Jul 2020 17:44:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595612675;
-        bh=bAQpgRroLYP5aRy6ABfGc3GgdNAR1aE+sPxU5qd9MzQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eduqc2DjA8GQbBNmmXwHci4z566RPcuNqvvblv4OJPEP+cg1NMrBHRTOPKmptXOiL
-         fbD3r87NblRq9eY8+ROnWRqvfuRP/YiU60A6eLZmoeEwfuQ2N356OsEYUTRGwTlv8W
-         jDTvet9vZgTOohuYEsGJt9hDSwUV2MgGyrPXPSXo=
-Date:   Fri, 24 Jul 2020 19:44:37 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        kvm ML <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Radim =?utf-8?B?S3LEjW3DocWZ?= <rkrcmar@redhat.com>,
-        Rik van Riel <riel@surriel.com>, x86-ml <x86@kernel.org>,
-        cip-dev <cip-dev@lists.cip-project.org>
-Subject: Re: [PATCH 4.9 18/22] x86/fpu: Disable bottom halves while loading
- FPU registers
-Message-ID: <20200724174437.GB555114@kroah.com>
-References: <20181228113126.144310132@linuxfoundation.org>
- <20181228113127.414176417@linuxfoundation.org>
- <01857944-ce1a-c6cd-3666-1e9b6ca8cccc@siemens.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <01857944-ce1a-c6cd-3666-1e9b6ca8cccc@siemens.com>
+        id S1726981AbgGXRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:46:17 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:59281 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726397AbgGXRqO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 13:46:14 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 24 Jul 2020 10:46:13 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 24 Jul 2020 10:46:13 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 472B617EA; Fri, 24 Jul 2020 10:46:13 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [RESEND PATCH v1 1/2] thermal: qcom-spmi-temp-alarm: add support for GEN2 rev 1 PMIC peripherals
+Date:   Fri, 24 Jul 2020 10:46:10 -0700
+Message-Id: <f22bb151d836f924b09cf80ffd6e58eb286be5d6.1595612650.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 07:07:06PM +0200, Jan Kiszka wrote:
-> On 28.12.18 12:52, Greg Kroah-Hartman wrote:
-> > 4.9-stable review patch.  If anyone has any objections, please let me know.
-> > 
-> > ------------------
-> > 
-> > From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > 
-> > commit 68239654acafe6aad5a3c1dc7237e60accfebc03 upstream.
-> > 
-> > The sequence
-> > 
-> >    fpu->initialized = 1;		/* step A */
-> >    preempt_disable();		/* step B */
-> >    fpu__restore(fpu);
-> >    preempt_enable();
-> > 
-> > in __fpu__restore_sig() is racy in regard to a context switch.
-> > 
-> > For 32bit frames, __fpu__restore_sig() prepares the FPU state within
-> > fpu->state. To ensure that a context switch (switch_fpu_prepare() in
-> > particular) does not modify fpu->state it uses fpu__drop() which sets
-> > fpu->initialized to 0.
-> > 
-> > After fpu->initialized is cleared, the CPU's FPU state is not saved
-> > to fpu->state during a context switch. The new state is loaded via
-> > fpu__restore(). It gets loaded into fpu->state from userland and
-> > ensured it is sane. fpu->initialized is then set to 1 in order to avoid
-> > fpu__initialize() doing anything (overwrite the new state) which is part
-> > of fpu__restore().
-> > 
-> > A context switch between step A and B above would save CPU's current FPU
-> > registers to fpu->state and overwrite the newly prepared state. This
-> > looks like a tiny race window but the Kernel Test Robot reported this
-> > back in 2016 while we had lazy FPU support. Borislav Petkov made the
-> > link between that report and another patch that has been posted. Since
-> > the removal of the lazy FPU support, this race goes unnoticed because
-> > the warning has been removed.
-> > 
-> > Disable bottom halves around the restore sequence to avoid the race. BH
-> > need to be disabled because BH is allowed to run (even with preemption
-> > disabled) and might invoke kernel_fpu_begin() by doing IPsec.
-> > 
-> >   [ bp: massage commit message a bit. ]
-> > 
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Signed-off-by: Borislav Petkov <bp@suse.de>
-> > Acked-by: Ingo Molnar <mingo@kernel.org>
-> > Acked-by: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Andy Lutomirski <luto@kernel.org>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> > Cc: kvm ML <kvm@vger.kernel.org>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Radim Krčmář <rkrcmar@redhat.com>
-> > Cc: Rik van Riel <riel@surriel.com>
-> > Cc: stable@vger.kernel.org
-> > Cc: x86-ml <x86@kernel.org>
-> > Link: http://lkml.kernel.org/r/20181120102635.ddv3fvavxajjlfqk@linutronix.de
-> > Link: https://lkml.kernel.org/r/20160226074940.GA28911@pd.tnic
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >   arch/x86/kernel/fpu/signal.c |    4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > --- a/arch/x86/kernel/fpu/signal.c
-> > +++ b/arch/x86/kernel/fpu/signal.c
-> > @@ -342,10 +342,10 @@ static int __fpu__restore_sig(void __use
-> >   			sanitize_restored_xstate(tsk, &env, xfeatures, fx_only);
-> >   		}
-> > +		local_bh_disable();
-> >   		fpu->fpstate_active = 1;
-> > -		preempt_disable();
-> >   		fpu__restore(fpu);
-> > -		preempt_enable();
-> > +		local_bh_enable();
-> >   		return err;
-> >   	} else {
-> > 
-> > 
-> 
-> Any reason why the backport stopped back than at 4.9? I just debugged this
-> out of a 4.4 kernel, and it is needed there as well. I'm happy to propose a
-> backport, would just appreciate a hint if the BH protection is needed also
-> there (my case was without BH).
+From: David Collins <collinsd@codeaurora.org>
 
-You are asking about something we did back in 2018.  I can't remember
-what I did last week :)
+Add support for TEMP_ALARM GEN2 PMIC peripherals with digital
+major revision 1.  This revision utilizes a different temperature
+threshold mapping than earlier revisions.
 
-If you provide a backport that works, I'll be glad to take it.  The
-current patch does not apply cleanly there at all.
+Signed-off-by: David Collins <collinsd@codeaurora.org>
+Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+---
+ drivers/thermal/qcom/qcom-spmi-temp-alarm.c | 91 +++++++++++++++++++----------
+ 1 file changed, 61 insertions(+), 30 deletions(-)
 
-thanks,
+diff --git a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+index bf7bae4..05a9601 100644
+--- a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
++++ b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+@@ -17,6 +17,7 @@
+ 
+ #include "../thermal_core.h"
+ 
++#define QPNP_TM_REG_DIG_MAJOR		0x01
+ #define QPNP_TM_REG_TYPE		0x04
+ #define QPNP_TM_REG_SUBTYPE		0x05
+ #define QPNP_TM_REG_STATUS		0x08
+@@ -38,26 +39,30 @@
+ 
+ #define ALARM_CTRL_FORCE_ENABLE		BIT(7)
+ 
+-/*
+- * Trip point values based on threshold control
+- * 0 = {105 C, 125 C, 145 C}
+- * 1 = {110 C, 130 C, 150 C}
+- * 2 = {115 C, 135 C, 155 C}
+- * 3 = {120 C, 140 C, 160 C}
+-*/
+-#define TEMP_STAGE_STEP			20000	/* Stage step: 20.000 C */
+-#define TEMP_STAGE_HYSTERESIS		2000
++#define THRESH_COUNT			4
++#define STAGE_COUNT			3
++
++/* Over-temperature trip point values in mC */
++static const long temp_map_gen1[THRESH_COUNT][STAGE_COUNT] = {
++	{105000, 125000, 145000},
++	{110000, 130000, 150000},
++	{115000, 135000, 155000},
++	{120000, 140000, 160000},
++};
++
++static const long temp_map_gen2_v1[THRESH_COUNT][STAGE_COUNT] = {
++	{ 90000, 110000, 140000},
++	{ 95000, 115000, 145000},
++	{100000, 120000, 150000},
++	{105000, 125000, 155000},
++};
+ 
+-#define TEMP_THRESH_MIN			105000	/* Threshold Min: 105 C */
+-#define TEMP_THRESH_STEP		5000	/* Threshold step: 5 C */
++#define TEMP_THRESH_STEP		5000 /* Threshold step: 5 C */
+ 
+ #define THRESH_MIN			0
+ #define THRESH_MAX			3
+ 
+-/* Stage 2 Threshold Min: 125 C */
+-#define STAGE2_THRESHOLD_MIN		125000
+-/* Stage 2 Threshold Max: 140 C */
+-#define STAGE2_THRESHOLD_MAX		140000
++#define TEMP_STAGE_HYSTERESIS		2000
+ 
+ /* Temperature in Milli Celsius reported during stage 0 if no ADC is present */
+ #define DEFAULT_TEMP			37000
+@@ -77,6 +82,7 @@ struct qpnp_tm_chip {
+ 	bool				initialized;
+ 
+ 	struct iio_channel		*adc;
++	const long			(*temp_map)[THRESH_COUNT][STAGE_COUNT];
+ };
+ 
+ /* This array maps from GEN2 alarm state to GEN1 alarm stage */
+@@ -101,6 +107,23 @@ static int qpnp_tm_write(struct qpnp_tm_chip *chip, u16 addr, u8 data)
+ }
+ 
+ /**
++ * qpnp_tm_decode_temp() - return temperature in mC corresponding to the
++ *		specified over-temperature stage
++ * @chip:		Pointer to the qpnp_tm chip
++ * @stage:		Over-temperature stage
++ *
++ * Return: temperature in mC
++ */
++static long qpnp_tm_decode_temp(struct qpnp_tm_chip *chip, unsigned int stage)
++{
++	if (!chip->temp_map || chip->thresh >= THRESH_COUNT || stage == 0
++	    || stage > STAGE_COUNT)
++		return 0;
++
++	return (*chip->temp_map)[chip->thresh][stage - 1];
++}
++
++/**
+  * qpnp_tm_get_temp_stage() - return over-temperature stage
+  * @chip:		Pointer to the qpnp_tm chip
+  *
+@@ -149,14 +172,12 @@ static int qpnp_tm_update_temp_no_adc(struct qpnp_tm_chip *chip)
+ 
+ 	if (stage_new > stage_old) {
+ 		/* increasing stage, use lower bound */
+-		chip->temp = (stage_new - 1) * TEMP_STAGE_STEP +
+-			     chip->thresh * TEMP_THRESH_STEP +
+-			     TEMP_STAGE_HYSTERESIS + TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage_new)
++				+ TEMP_STAGE_HYSTERESIS;
+ 	} else if (stage_new < stage_old) {
+ 		/* decreasing stage, use upper bound */
+-		chip->temp = stage_new * TEMP_STAGE_STEP +
+-			     chip->thresh * TEMP_THRESH_STEP -
+-			     TEMP_STAGE_HYSTERESIS + TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage_new + 1)
++				- TEMP_STAGE_HYSTERESIS;
+ 	}
+ 
+ 	chip->stage = stage;
+@@ -199,26 +220,28 @@ static int qpnp_tm_get_temp(void *data, int *temp)
+ static int qpnp_tm_update_critical_trip_temp(struct qpnp_tm_chip *chip,
+ 					     int temp)
+ {
+-	u8 reg;
++	long stage2_threshold_min = (*chip->temp_map)[THRESH_MIN][1];
++	long stage2_threshold_max = (*chip->temp_map)[THRESH_MAX][1];
+ 	bool disable_s2_shutdown = false;
++	u8 reg;
+ 
+ 	WARN_ON(!mutex_is_locked(&chip->lock));
+ 
+ 	/*
+ 	 * Default: S2 and S3 shutdown enabled, thresholds at
+-	 * 105C/125C/145C, monitoring at 25Hz
++	 * lowest threshold set, monitoring at 25Hz
+ 	 */
+ 	reg = SHUTDOWN_CTRL1_RATE_25HZ;
+ 
+ 	if (temp == THERMAL_TEMP_INVALID ||
+-	    temp < STAGE2_THRESHOLD_MIN) {
++	    temp < stage2_threshold_min) {
+ 		chip->thresh = THRESH_MIN;
+ 		goto skip;
+ 	}
+ 
+-	if (temp <= STAGE2_THRESHOLD_MAX) {
++	if (temp <= stage2_threshold_max) {
+ 		chip->thresh = THRESH_MAX -
+-			((STAGE2_THRESHOLD_MAX - temp) /
++			((stage2_threshold_max - temp) /
+ 			 TEMP_THRESH_STEP);
+ 		disable_s2_shutdown = true;
+ 	} else {
+@@ -326,9 +349,7 @@ static int qpnp_tm_init(struct qpnp_tm_chip *chip)
+ 		? chip->stage : alarm_state_map[chip->stage];
+ 
+ 	if (stage)
+-		chip->temp = chip->thresh * TEMP_THRESH_STEP +
+-			     (stage - 1) * TEMP_STAGE_STEP +
+-			     TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage);
+ 
+ 	crit_temp = qpnp_tm_get_critical_trip_temp(chip);
+ 	ret = qpnp_tm_update_critical_trip_temp(chip, crit_temp);
+@@ -350,7 +371,7 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ {
+ 	struct qpnp_tm_chip *chip;
+ 	struct device_node *node;
+-	u8 type, subtype;
++	u8 type, subtype, dig_major;
+ 	u32 res;
+ 	int ret, irq;
+ 
+@@ -400,6 +421,12 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	ret = qpnp_tm_read(chip, QPNP_TM_REG_DIG_MAJOR, &dig_major);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "could not read dig_major\n");
++		return ret;
++	}
++
+ 	if (type != QPNP_TM_TYPE || (subtype != QPNP_TM_SUBTYPE_GEN1
+ 				     && subtype != QPNP_TM_SUBTYPE_GEN2)) {
+ 		dev_err(&pdev->dev, "invalid type 0x%02x or subtype 0x%02x\n",
+@@ -408,6 +435,10 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	chip->subtype = subtype;
++	if (subtype == QPNP_TM_SUBTYPE_GEN2 && dig_major >= 1)
++		chip->temp_map = &temp_map_gen2_v1;
++	else
++		chip->temp_map = &temp_map_gen1;
+ 
+ 	/*
+ 	 * Register the sensor before initializing the hardware to be able to
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-greg k-h
