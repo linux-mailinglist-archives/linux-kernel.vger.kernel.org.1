@@ -2,31 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6D522BEB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAB822BEC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgGXHMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:12:33 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:47327 "EHLO
+        id S1726877AbgGXHN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:13:59 -0400
+Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:60804 "EHLO
         smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgGXHMb (ORCPT
+        by vger.kernel.org with ESMTP id S1726543AbgGXHN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:12:31 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2465674|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0178585-0.00014203-0.981999;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03293;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.I6qVYnt_1595574739;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I6qVYnt_1595574739)
-          by smtp.aliyun-inc.com(10.147.40.200);
-          Fri, 24 Jul 2020 15:12:27 +0800
+        Fri, 24 Jul 2020 03:13:58 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.233932|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0390033-0.00187396-0.959123;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16378;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.I6qQdys_1595574830;
+Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I6qQdys_1595574830)
+          by smtp.aliyun-inc.com(10.147.42.16);
+          Fri, 24 Jul 2020 15:13:55 +0800
 From:   Frank Lee <frank@allwinnertech.com>
-To:     anarsoul@gmail.com, tiny.windzz@gmail.com, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
-        robh+dt@kernel.org, mripard@kernel.org, wens@csie.org,
-        linux-pm@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangshuosheng@allwinnertech.com,
+To:     lee.jones@linaro.org, wens@csie.org, linux-kernel@vger.kernel.org
+Cc:     tiny.windzz@gmail.com, huangshuosheng@allwinnertech.com,
         liyong@allwinnertech.com, Yangtao Li <frank@allwinnertech.com>
-Subject: [PATCH v5 09/16] thermal: sun8i: Add A100's THS controller support
-Date:   Fri, 24 Jul 2020 15:11:43 +0800
-Message-Id: <48cc75920b5c69027134626157089d8b94942711.1595572867.git.frank@allwinnertech.com>
+Subject: [PATCH v5 10/16] mfd: axp20x: Allow the AXP803 to be probed by I2C
+Date:   Fri, 24 Jul 2020 15:13:14 +0800
+Message-Id: <c19530b2ee1f377bfeb1273f07a7ceb4ea4372ab.1595572867.git.frank@allwinnertech.com>
 X-Mailer: git-send-email 2.24.0
 In-Reply-To: <cover.1595572867.git.frank@allwinnertech.com>
 References: <cover.1595572867.git.frank@allwinnertech.com>
@@ -39,46 +35,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yangtao Li <frank@allwinnertech.com>
 
-This patch add thermal sensor controller support for A100,
-which is similar to the previous ones.
+The AXP803 can be used both using the RSB proprietary bus, or a more
+traditional I2C bus.
+
+Let's add that possibility.
 
 Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 ---
- drivers/thermal/sun8i_thermal.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/mfd/axp20x-i2c.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-index f423d44b9290..f8b13071a6f4 100644
---- a/drivers/thermal/sun8i_thermal.c
-+++ b/drivers/thermal/sun8i_thermal.c
-@@ -590,6 +590,19 @@ static const struct ths_thermal_chip sun50i_a64_ths = {
- 	.calc_temp = sun8i_ths_calc_temp,
+diff --git a/drivers/mfd/axp20x-i2c.c b/drivers/mfd/axp20x-i2c.c
+index 14f9df74f855..446a7d0bbb47 100644
+--- a/drivers/mfd/axp20x-i2c.c
++++ b/drivers/mfd/axp20x-i2c.c
+@@ -63,6 +63,7 @@ static const struct of_device_id axp20x_i2c_of_match[] = {
+ 	{ .compatible = "x-powers,axp209", .data = (void *)AXP209_ID },
+ 	{ .compatible = "x-powers,axp221", .data = (void *)AXP221_ID },
+ 	{ .compatible = "x-powers,axp223", .data = (void *)AXP223_ID },
++	{ .compatible = "x-powers,axp803", .data = (void *)AXP803_ID },
+ 	{ .compatible = "x-powers,axp806", .data = (void *)AXP806_ID },
+ 	{ },
  };
- 
-+static const struct ths_thermal_chip sun50i_a100_ths = {
-+	.sensor_num = 3,
-+	.has_bus_clk_reset = true,
-+	.ft_deviation = 8000,
-+	.offset = 187744,
-+	.scale = 672,
-+	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
-+	.calibrate = sun50i_h6_ths_calibrate,
-+	.init = sun50i_h6_thermal_init,
-+	.irq_ack = sun50i_h6_irq_ack,
-+	.calc_temp = sun8i_ths_calc_temp,
-+};
-+
- static const struct ths_thermal_chip sun50i_h5_ths = {
- 	.sensor_num = 2,
- 	.has_mod_clk = true,
-@@ -619,6 +632,7 @@ static const struct of_device_id of_ths_match[] = {
- 	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
- 	{ .compatible = "allwinner,sun8i-r40-ths", .data = &sun8i_r40_ths },
- 	{ .compatible = "allwinner,sun50i-a64-ths", .data = &sun50i_a64_ths },
-+	{ .compatible = "allwinner,sun50i-a100-ths", .data = &sun50i_a100_ths },
- 	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths },
- 	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths },
- 	{ /* sentinel */ },
+@@ -74,6 +75,7 @@ static const struct i2c_device_id axp20x_i2c_id[] = {
+ 	{ "axp209", 0 },
+ 	{ "axp221", 0 },
+ 	{ "axp223", 0 },
++	{ "axp803", 0 },
+ 	{ "axp806", 0 },
+ 	{ },
+ };
 -- 
 2.24.0
 
