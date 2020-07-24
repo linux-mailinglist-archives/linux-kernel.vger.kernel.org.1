@@ -2,119 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5788422C0B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D03222C0E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgGXIcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 04:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S1726931AbgGXIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 04:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgGXIce (ORCPT
+        with ESMTP id S1726861AbgGXIdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 04:32:34 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A229AC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 01:32:34 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id f16so4829742pjt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 01:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qyOT+srqW/4ticn66C2lEkMT6M5pMOVqqYYTMOJY7n4=;
-        b=xUjgZVlR3sBn6VzmB0HqPvVQadG6JVd9ZYfR3mp+M5ExPlFkKnyR0XQK6TuWPmhgU4
-         E1diM3LlwsW/xN7B5T80ylCBEKeL42zpuGgu1FWVaoyAQVKftSVRPFEZeVSwQOWAk3Te
-         HrSHa0wigbOggBD9pCiFx/wjTxKEBxZ+ZQON92HASRHe4XsqEJqNLMX52H/QI2Bc7yT8
-         dzX1j+kFMWryjV9opmMMmz+knl6CwpMRrI1WUUktuxJoxrgKW7bEPRj4aaRd1yH64LVT
-         66Omth2ZDzDR1ywzCJCLLGrTJ7qEk/Bgj2sbzGErOOBOwcQbZGyWlnEjaK0CkED8wfwp
-         wAYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qyOT+srqW/4ticn66C2lEkMT6M5pMOVqqYYTMOJY7n4=;
-        b=FB7dWd9tTeYKZKo53vQxkg+xoQG9l8ah4KO+VkS/DCrczToQI7GHNR5PYbdENe6ex6
-         E/buMo873nyfKBHqShHqALm6AEMMlXzUbwTMEPd1N3QaeGKd4RYnHM8/HaASaFA49Ynf
-         zGKeI3lCHIUmngePby49tM4GKwqtqk4OoTPlCYhnT4sEqlrxMxBLC1Ze2VJUOrebh47P
-         beAJl0u/S6VLzN+ujvEeKty+lVplfjgL3Dss889lnJzFy4dbdMkS/BXRKJVmup7zRLAo
-         H68OKmsRPzPfcQMReAQMVaswLxmfEz1xCuMBbvLnb1YMAzq0ZqFQDvh3FYkZdjryNjkW
-         ajdg==
-X-Gm-Message-State: AOAM530tq1tPG71L8f+OqeuMiOEqbn5EVt0X1Bx3HfsfaYSke94gtrWy
-        5Xp+oDdjsfAf+VLnn99q3N8dsV8gMyRSgg==
-X-Google-Smtp-Source: ABdhPJzo9OYy5SuD2vBDwqQ8X9hEC0OXDXYZrNWoCzOgG/UbU8AiHfGSxuR1jcPT/b1BV3vXhZYPIA==
-X-Received: by 2002:a17:902:9042:: with SMTP id w2mr7186597plz.8.1595579553945;
-        Fri, 24 Jul 2020 01:32:33 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([117.136.120.151])
-        by smtp.gmail.com with ESMTPSA id x3sm5392267pfn.154.2020.07.24.01.32.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Jul 2020 01:32:33 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 16:32:18 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, guohanjun@huawei.com
-Subject: Re: [PATCH] perf: arm-spe: Fix check error when synthesizing events
-Message-ID: <20200724083218.GA5185@leoy-ThinkPad-X240s>
-References: <20200724072628.35904-1-liwei391@huawei.com>
+        Fri, 24 Jul 2020 04:33:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F3AC0619D3;
+        Fri, 24 Jul 2020 01:33:40 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 08:33:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595579619;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=IGW+7RnTRcW+DWd0UWS51KRGrN8/LUwdiWEm8cxWDJQ=;
+        b=ULWS32i+TlDouJaJU9OyvzX0Ttab49EsmSls1RjaVOGgTDTKFtpm3+wzHDzp3GSc5sRZlo
+        l8L0w6JG2r501QZA8rz7OXzmHTZj8ARnLK3If1Ynms/krLdiAWwatr1gAOfBP0qq7b9WGW
+        G9x07AchUoxyZ02+DGyaemBNL3daIqwmpMmhY1idj9ezM747fILLJG0Cq1FYOXC+pOrsvu
+        wPu2s1vqYI67vHxRlaI9xCNjGT8Fwn+Fii0NTmCgEzf3farAa6c6SOhs+f0XJzDgNXqNUT
+        pJH4Rb+RpTcgjotjAdnGyFXnWTNYl0gHj1iYjgW7ObJKccMg1pnh72dqPXK5ug==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595579619;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=IGW+7RnTRcW+DWd0UWS51KRGrN8/LUwdiWEm8cxWDJQ=;
+        b=i4FZg/SC12cQ+rjS2UoqFh+SyUtt4fcG/NwXPIMu/tUDFhPA1rb6aFuyAUcEeTkMCK/WRh
+        D55Ka+CWTqHpzxDg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/fifo] sched: Remove sched_set_*() return value
+Cc:     axboe@kernel.dk, daniel.lezcano@linaro.org, sudeep.holla@arm.com,
+        airlied@redhat.com, broonie@kernel.org, paulmck@kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724072628.35904-1-liwei391@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <159557961798.4006.15689979081053412317.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wei,
+The following commit has been merged into the sched/fifo branch of tip:
 
-On Fri, Jul 24, 2020 at 03:26:28PM +0800, Wei Li wrote:
-> In arm_spe_read_record(), when we are processing an events packet,
-> 'decoder->packet.index' is the length of payload, which has been
-> transformed in payloadlen(). So correct the check of 'idx'.
->
-> Signed-off-by: Wei Li <liwei391@huawei.com>
+Commit-ID:     8b700983de82f79e05b2c1136d6513ea4c9b22c4
+Gitweb:        https://git.kernel.org/tip/8b700983de82f79e05b2c1136d6513ea4c9b22c4
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 22 Apr 2020 13:10:04 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 15 Jun 2020 14:10:26 +02:00
 
-Good catch.  I checked the ARMv8 ARM and the function payloadlen(),
-can confirm the fixing is correct.
+sched: Remove sched_set_*() return value
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Ingo suggested that since the new sched_set_*() functions are
+implemented using the 'nocheck' variants, they really shouldn't ever
+fail, so remove the return value.
 
-> ---
->  tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> index 302a14d0aca9..93e063f22be5 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-> @@ -182,15 +182,15 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
->  			if (payload & BIT(EV_TLB_ACCESS))
->  				decoder->record.type |= ARM_SPE_TLB_ACCESS;
->  
-> -			if ((idx == 1 || idx == 2 || idx == 3) &&
-> +			if ((idx == 2 || idx == 4 || idx == 8) &&
->  			    (payload & BIT(EV_LLC_MISS)))
->  				decoder->record.type |= ARM_SPE_LLC_MISS;
->  
-> -			if ((idx == 1 || idx == 2 || idx == 3) &&
-> +			if ((idx == 2 || idx == 4 || idx == 8) &&
->  			    (payload & BIT(EV_LLC_ACCESS)))
->  				decoder->record.type |= ARM_SPE_LLC_ACCESS;
->  
-> -			if ((idx == 1 || idx == 2 || idx == 3) &&
-> +			if ((idx == 2 || idx == 4 || idx == 8) &&
->  			    (payload & BIT(EV_REMOTE_ACCESS)))
->  				decoder->record.type |= ARM_SPE_REMOTE_ACCESS;
->  
-> -- 
-> 2.17.1
-> 
+Cc: axboe@kernel.dk
+Cc: daniel.lezcano@linaro.org
+Cc: sudeep.holla@arm.com
+Cc: airlied@redhat.com
+Cc: broonie@kernel.org
+Cc: paulmck@kernel.org
+Suggested-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+---
+ drivers/block/drbd/drbd_receiver.c    |  4 +---
+ drivers/firmware/psci/psci_checker.c  |  3 +--
+ drivers/gpu/drm/msm/msm_drv.c         |  5 +----
+ drivers/platform/chrome/cros_ec_spi.c |  7 +++----
+ include/linux/sched.h                 |  6 +++---
+ kernel/rcu/rcutorture.c               |  5 +----
+ kernel/sched/core.c                   | 12 ++++++------
+ 7 files changed, 16 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+index 140fd98..280615e 100644
+--- a/drivers/block/drbd/drbd_receiver.c
++++ b/drivers/block/drbd/drbd_receiver.c
+@@ -6020,9 +6020,7 @@ int drbd_ack_receiver(struct drbd_thread *thi)
+ 	int expect   = header_size;
+ 	bool ping_timeout_active = false;
+ 
+-	rv = sched_set_fifo_low(current);
+-	if (rv < 0)
+-		drbd_err(connection, "drbd_ack_receiver: ERROR set priority, ret=%d\n", rv);
++	sched_set_fifo_low(current);
+ 
+ 	while (get_t_state(thi) == RUNNING) {
+ 		drbd_thread_current_set_cpu(thi);
+diff --git a/drivers/firmware/psci/psci_checker.c b/drivers/firmware/psci/psci_checker.c
+index a5279a4..6fff482 100644
+--- a/drivers/firmware/psci/psci_checker.c
++++ b/drivers/firmware/psci/psci_checker.c
+@@ -281,8 +281,7 @@ static int suspend_test_thread(void *arg)
+ 	wait_for_completion(&suspend_threads_started);
+ 
+ 	/* Set maximum priority to preempt all other threads on this CPU. */
+-	if (sched_set_fifo(current))
+-		pr_warn("Failed to set suspend thread scheduler on CPU %d\n", cpu);
++	sched_set_fifo(current);
+ 
+ 	dev = this_cpu_read(cpuidle_devices);
+ 	drv = cpuidle_get_cpu_driver(dev);
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 89a8b9c..556cca3 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -509,10 +509,7 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
+ 			goto err_msm_uninit;
+ 		}
+ 
+-		ret = sched_set_fifo(priv->event_thread[i].thread);
+-		if (ret)
+-			dev_warn(dev, "event_thread set priority failed:%d\n",
+-				 ret);
++		sched_set_fifo(priv->event_thread[i].thread);
+ 	}
+ 
+ 	ret = drm_vblank_init(ddev, priv->num_crtcs);
+diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
+index c20a43a..d092603 100644
+--- a/drivers/platform/chrome/cros_ec_spi.c
++++ b/drivers/platform/chrome/cros_ec_spi.c
+@@ -725,10 +725,9 @@ static int cros_ec_spi_devm_high_pri_alloc(struct device *dev,
+ 	if (err)
+ 		return err;
+ 
+-	err = sched_set_fifo(ec_spi->high_pri_worker->task);
+-	if (err)
+-		dev_err(dev, "Can't set cros_ec high pri priority: %d\n", err);
+-	return err;
++	sched_set_fifo(ec_spi->high_pri_worker->task);
++
++	return 0;
+ }
+ 
+ static int cros_ec_spi_probe(struct spi_device *spi)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index b792b8f..ae76644 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1653,9 +1653,9 @@ extern int idle_cpu(int cpu);
+ extern int available_idle_cpu(int cpu);
+ extern int sched_setscheduler(struct task_struct *, int, const struct sched_param *);
+ extern int sched_setscheduler_nocheck(struct task_struct *, int, const struct sched_param *);
+-extern int sched_set_fifo(struct task_struct *p);
+-extern int sched_set_fifo_low(struct task_struct *p);
+-extern int sched_set_normal(struct task_struct *p, int nice);
++extern void sched_set_fifo(struct task_struct *p);
++extern void sched_set_fifo_low(struct task_struct *p);
++extern void sched_set_normal(struct task_struct *p, int nice);
+ extern int sched_setattr(struct task_struct *, const struct sched_attr *);
+ extern int sched_setattr_nocheck(struct task_struct *, const struct sched_attr *);
+ extern struct task_struct *idle_task(int cpu);
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index bbc3c8a..b4c1146 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -893,10 +893,7 @@ static int rcu_torture_boost(void *arg)
+ 	VERBOSE_TOROUT_STRING("rcu_torture_boost started");
+ 
+ 	/* Set real-time priority. */
+-	if (sched_set_fifo_low(current) < 0) {
+-		VERBOSE_TOROUT_STRING("rcu_torture_boost RT prio failed!");
+-		n_rcu_torture_boost_rterror++;
+-	}
++	sched_set_fifo_low(current);
+ 
+ 	init_rcu_head_on_stack(&rbi.rcu);
+ 	/* Each pass through the following loop does one boost-test cycle. */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f882d3d..41d3778 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5183,30 +5183,30 @@ int sched_setscheduler_nocheck(struct task_struct *p, int policy,
+  * The administrator _MUST_ configure the system, the kernel simply doesn't
+  * know enough information to make a sensible choice.
+  */
+-int sched_set_fifo(struct task_struct *p)
++void sched_set_fifo(struct task_struct *p)
+ {
+ 	struct sched_param sp = { .sched_priority = MAX_RT_PRIO / 2 };
+-	return sched_setscheduler_nocheck(p, SCHED_FIFO, &sp);
++	WARN_ON_ONCE(sched_setscheduler_nocheck(p, SCHED_FIFO, &sp) != 0);
+ }
+ EXPORT_SYMBOL_GPL(sched_set_fifo);
+ 
+ /*
+  * For when you don't much care about FIFO, but want to be above SCHED_NORMAL.
+  */
+-int sched_set_fifo_low(struct task_struct *p)
++void sched_set_fifo_low(struct task_struct *p)
+ {
+ 	struct sched_param sp = { .sched_priority = 1 };
+-	return sched_setscheduler_nocheck(p, SCHED_FIFO, &sp);
++	WARN_ON_ONCE(sched_setscheduler_nocheck(p, SCHED_FIFO, &sp) != 0);
+ }
+ EXPORT_SYMBOL_GPL(sched_set_fifo_low);
+ 
+-int sched_set_normal(struct task_struct *p, int nice)
++void sched_set_normal(struct task_struct *p, int nice)
+ {
+ 	struct sched_attr attr = {
+ 		.sched_policy = SCHED_NORMAL,
+ 		.sched_nice = nice,
+ 	};
+-	return sched_setattr_nocheck(p, &attr);
++	WARN_ON_ONCE(sched_setattr_nocheck(p, &attr) != 0);
+ }
+ EXPORT_SYMBOL_GPL(sched_set_normal);
+ 
