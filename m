@@ -2,84 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465F122CE33
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 20:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0026C22CE3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgGXS7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 14:59:37 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:60911 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgGXS7h (ORCPT
+        id S1726702AbgGXTDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726658AbgGXTDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 14:59:37 -0400
-Received: from mail-qk1-f181.google.com ([209.85.222.181]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MXXZf-1kJ9ho2DDr-00Z0by for <linux-kernel@vger.kernel.org>; Fri, 24 Jul
- 2020 20:59:35 +0200
-Received: by mail-qk1-f181.google.com with SMTP id b14so7897233qkn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 11:59:35 -0700 (PDT)
-X-Gm-Message-State: AOAM533MvEDOQwXNpnqLoEebrQ7w0NqU9Py+ev7xaqBw7HeolQPfb7XN
-        wVPQRJLHegCdkapEt8Uk6y+tduHLNSTY0SVHf3g=
-X-Google-Smtp-Source: ABdhPJyKb6Wqd1WSKTFcNMehoKPyqLGClBRz4E2KS6ExDlSdHrxbk5bW4l7mcXFB+ays6GQFXAhuCMSDy5RAEaM58CY=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr12004780qkf.394.1595617174418;
- Fri, 24 Jul 2020 11:59:34 -0700 (PDT)
+        Fri, 24 Jul 2020 15:03:04 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44C9C0619E6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:03:03 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z3so5705261pfn.12
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LYsHHvmbnOnKOT161wgYJ0QUn66UfJfCSOHkGeru+cM=;
+        b=epxr0OVXttEVlXmK9gG8sngCnRWPyA1Tl8s5eFiDuptGA3XfZ7D42jzmy8C+dHex+z
+         O4t0er5aVcVIeElSNW4xKoTusneqHOYH3qTX0imlgipraUmww8ZAz/FAdRhZ2XYidyPD
+         DxcDODdQ821AGi0c+CClL91b4u9fYF+8edV0o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LYsHHvmbnOnKOT161wgYJ0QUn66UfJfCSOHkGeru+cM=;
+        b=Ufz7QlVT/XgtLxWHPbhLkUkhg8IdXihrJE+9SPze9NLq5QLzkBkhKIW4JxusIOEnBT
+         hGSmbvbdLhDKJl1L/oOioVa45s7kOx2TdpEFaeDJgrCPaSG3uYhWYL2UXyOnV4rHmOXa
+         FvhxXyOn8OteeHR0vey446b/l2ZOmcgmDIqG0jOAc/xU8Iwx2QzhzdDsTM9hb1JMtlyx
+         aWzoN0MrK2sJXRCYipc2CiSBS4lEGAY0DfTDqttMwyuFxW4IH5szgYs0lpZgQeq7pfg1
+         TeZzy4m1Qj0m4HIElhgPpmqVNgMnBUBFjMHNMepqh0h5vVJSrGRRrmjv0g0qOq3bcMqn
+         mXPQ==
+X-Gm-Message-State: AOAM530dWW7YCZ9aOmOfjrI0tYx502U/HpE3aB4g4YMG5W2Y32HSUYrn
+        Za8b2RvJW8dZITYM/MYuX6WKbg==
+X-Google-Smtp-Source: ABdhPJxe287CjvKc1vXBSsqo1vqhqr3H+/qMCmeOy+LCVrrgE2glpryiF3Hn9YFdOosrNz2I96GIrw==
+X-Received: by 2002:a62:2bd0:: with SMTP id r199mr9978051pfr.160.1595617383058;
+        Fri, 24 Jul 2020 12:03:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s89sm6440672pjj.28.2020.07.24.12.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 12:03:02 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 12:03:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+Subject: Re: [PATCH v7 4/7] fs: Introduce O_MAYEXEC flag for openat2(2)
+Message-ID: <202007241202.8D07E1F276@keescook>
+References: <20200723171227.446711-1-mic@digikod.net>
+ <20200723171227.446711-5-mic@digikod.net>
 MIME-Version: 1.0
-References: <20200724160314.8543-1-krzk@kernel.org>
-In-Reply-To: <20200724160314.8543-1-krzk@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 24 Jul 2020 20:59:18 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2v7zB5c4_s=jaO_X_ZMULnp6Mn=0kHBr2pH-wkR06rAg@mail.gmail.com>
-Message-ID: <CAK8P3a2v7zB5c4_s=jaO_X_ZMULnp6Mn=0kHBr2pH-wkR06rAg@mail.gmail.com>
-Subject: Re: [GIT PULL] memory: Cleanups of memory controller drivers for v5.9
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Olof Johansson <olof@lixom.net>, arm-soc <arm@kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:itd52hWriFcIEcW2GAtntHVq9murbaGq4lbRe1cv1cf1vNY3qWV
- 3fJViVgfZroucfOkaz9NcDkFldUzl6wFr8prey3q6Eweb994cyJR1hP8S219JkGimIjGu4a
- zsZlKUNWMoUw73eOnM4g1pPQvRJuUyMXXAlTIyPFJUf1cZ16nCU57Yb5AmIECJSwvcCeJ+i
- Ad5aRxDJjHZLfcQoKi9Dw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:W4GKn/TvZo0=:LrTKZxvYaEuU3FtGqdEJjA
- y26dvd86AJs7Wa8pPqiG7AjHpIDHnSJ111Sqce21d7YS9oIOW0NjKSBouBL8BOTdQ+nLoRett
- J812aPOFinvbIBVHvC+5NWJ1n5bL29gNJeRtjRYeNZDBoLJ4LyoOeW4JPIP6sEWpK0ryRSUKK
- U74lAiFaRnq/+ajMFIykzi33OTHxvD05+v04+ymzRA7ojosC4qK63H+RNow25g+QuaSxQgw3R
- 5xQBHw9a12Qi+i/ckZAAKLrWTYglWiC4YJV3UwehhyFz73y28i5sO2oTQn1E5YVoVQmqKmHHO
- rhwAggwglRHi3YQa8wv0/jhNn5t6BoNeY6cixRVtb5GnXFxmuwelTf2/QREVHtlRCRGgJxhxG
- SU5vQsy8K5eLcObObgY+nFNURseHlfzy3OscSYJShBHaJtVAJf4HXTVhOgUruf/SX/xdizb5k
- jnTW2p2zC6uNB2QEpolruosiBeQ23t0zVejrz/YPo1oYRKgdfRt01OwqXDXV5VG0jaZosRyID
- KAyKiMhF5l2aaZwCGajRtcYS7048ByfDUe/Z+4SQE4vdW8gGbZyQtfSsGjWVhp8VvtzQFjcdq
- nHjWavDl/GDXPX5zHFBcP1ivYr+dMZlAMugsVwYg5pcate5X6oZlfIbEHs8Q8qBXXkA/Nvv1x
- NjmKcRDtutKqzzG8jDEeedtmAxKF5sXE+HlJNvgYaK6Cwm7KgON6GgTWKSFbMpBda2ykP7TS8
- u/84QyC6MxY/a4UkUu2Mh9Xq8f0f7otbfvQRQ+Az3f+4KOzhXEveQzPnV2rGAVDfaccMmBCmN
- XsI5MeHzFjg128wbm/MchNxbtWiVyWS5/fn6BhS3x4Lyg11Kd9xtB8UUsyQWrryg2B9OqYFbS
- ccFOp9hPhOQXCZtDVSigU3yMRj+9S1Bqn8HerqMiINj0XTIOMRAdMIZFKGuE4KhemBDrBQNX+
- I0PKvDnrC8EA/2cFUmMwnb8vOkW/8hpRxMPr91Fy1B9gxidzOS3wA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200723171227.446711-5-mic@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 6:03 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Hi,
->
-> First part of my patchset, with non-intrusive changes + maintainership.
->
-> Best regards,
-> Krzysztof
->
->
-> The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
->
->   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
->
-> are available in the Git repository at:
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/memory-controller-drv-5.9
+On Thu, Jul 23, 2020 at 07:12:24PM +0200, Mickaël Salaün wrote:
+> When the O_MAYEXEC flag is passed, openat2(2) may be subject to
+> additional restrictions depending on a security policy managed by the
+> kernel through a sysctl or implemented by an LSM thanks to the
+> inode_permission hook.  This new flag is ignored by open(2) and
+> openat(2) because of their unspecified flags handling.  When used with
+> openat2(2), the default behavior is only to forbid to open a directory.
+> 
+> The underlying idea is to be able to restrict scripts interpretation
+> according to a policy defined by the system administrator.  For this to
+> be possible, script interpreters must use the O_MAYEXEC flag
+> appropriately.  To be fully effective, these interpreters also need to
+> handle the other ways to execute code: command line parameters (e.g.,
+> option -e for Perl), module loading (e.g., option -m for Python), stdin,
+> file sourcing, environment variables, configuration files, etc.
+> According to the threat model, it may be acceptable to allow some script
+> interpreters (e.g. Bash) to interpret commands from stdin, may it be a
+> TTY or a pipe, because it may not be enough to (directly) perform
+> syscalls.  Further documentation can be found in a following patch.
+> 
+> Even without enforced security policy, userland interpreters can set it
+> to enforce the system policy at their level, knowing that it will not
+> break anything on running systems which do not care about this feature.
+> However, on systems which want this feature enforced, there will be
+> knowledgeable people (i.e. sysadmins who enforced O_MAYEXEC
+> deliberately) to manage it.  A simple security policy implementation,
+> configured through a dedicated sysctl, is available in a following
+> patch.
+> 
+> O_MAYEXEC should not be confused with the O_EXEC flag which is intended
+> for execute-only, which obviously doesn't work for scripts.  However, a
+> similar behavior could be implemented in userland with O_PATH:
+> https://lore.kernel.org/lkml/1e2f6913-42f2-3578-28ed-567f6a4bdda1@digikod.net/
+> 
+> The implementation of O_MAYEXEC almost duplicates what execve(2) and
+> uselib(2) are already doing: setting MAY_OPENEXEC in acc_mode (which can
+> then be checked as MAY_EXEC, if enforced).
+> 
+> This is an updated subset of the patch initially written by Vincent
+> Strubel for CLIP OS 4:
+> https://github.com/clipos-archive/src_platform_clip-patches/blob/f5cb330d6b684752e403b4e41b39f7004d88e561/1901_open_mayexec.patch
+> This patch has been used for more than 12 years with customized script
+> interpreters.  Some examples (with the original O_MAYEXEC) can be found
+> here:
+> https://github.com/clipos-archive/clipos4_portage-overlay/search?q=O_MAYEXEC
+> 
+> Co-developed-by: Vincent Strubel <vincent.strubel@ssi.gouv.fr>
+> Signed-off-by: Vincent Strubel <vincent.strubel@ssi.gouv.fr>
 
-Merged into the drivers tree, thanks!
+Acked-by: Kees Cook <keescook@chromium.org>
 
-      Arnd
+-- 
+Kees Cook
