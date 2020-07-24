@@ -2,183 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0846522C5EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E3A22C5F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgGXNMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:12:10 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42204 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726455AbgGXNMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:12:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595596327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=l9IWhWk5HzoWyY9gKtQuImL5iYcdli7keEly6++cGLs=;
-        b=fJR7ObC1wahEkZ7LyrgrVBWBIO+ULmt8GSBIUc45my4fUzbBp8mUtL3+qVg/T4nlnVAFVI
-        ESA2/BsAdINMM3Ee2Ijyot4cpi/0axiyZua9L3lrJI6x4HkCOxM5e5FtxbkxN+5PnKqaIP
-        9WmeY2eF6RGGKYLQZ56an0OY9DBHKN8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-JIP63JXoOeCM8qjG8CCIWA-1; Fri, 24 Jul 2020 09:12:05 -0400
-X-MC-Unique: JIP63JXoOeCM8qjG8CCIWA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C26A2106B245;
-        Fri, 24 Jul 2020 13:12:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2AF4D726B1;
-        Fri, 24 Jul 2020 13:11:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 4/4] watch_queue: sample: Display mount tree change
- notifications
-From:   David Howells <dhowells@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
-        casey@schaufler-ca.com, sds@tycho.nsa.gov,
-        nicolas.dichtel@6wind.com, raven@themaw.net, christian@brauner.io,
-        jlayton@redhat.com, kzak@redhat.com, mszeredi@redhat.com,
-        linux-api@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Jul 2020 14:11:58 +0100
-Message-ID: <159559631836.2141315.12757117418181245451.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159559628247.2141315.2107013106060144287.stgit@warthog.procyon.org.uk>
-References: <159559628247.2141315.2107013106060144287.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        id S1727009AbgGXNMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:12:37 -0400
+Received: from mail.nic.cz ([217.31.204.67]:50748 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726455AbgGXNMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:12:36 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTPSA id 00A75140801;
+        Fri, 24 Jul 2020 15:12:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1595596354; bh=H1Iy2RmThtmPmY772Tk+HA8bPvycqv32qtA9Ao7DLic=;
+        h=Date:From:To;
+        b=C520icwSGGh2mVdekr0KQF668mpCO/eyWocrmmgCSzFMUB9w6cyLs5r4ujEtel7Js
+         Fl5qrXbjsh2nt3kGllxk/4ISjE6apgQkACgZmQozBcjEn+ULCk/WG3lAbNjRqd0odr
+         88ydBWYmSxH2rDzArEFB5G0EhdaI7rvyJzCvgQf4=
+Date:   Fri, 24 Jul 2020 15:12:33 +0200
+From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-leds@vger.kernel.org, jacek.anaszewski@gmail.com,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC leds + net-next v2 0/1] Add support for LEDs on
+ Marvell PHYs
+Message-ID: <20200724151233.35d799e8@dellmb.labs.office.nic.cz>
+In-Reply-To: <20200724102901.qp65rtkxucauglsp@duo.ucw.cz>
+References: <20200723181319.15988-1-marek.behun@nic.cz>
+        <20200724102901.qp65rtkxucauglsp@duo.ucw.cz>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/mixed; boundary="MP_/flYJlGJ8fDgKX5f6f0.HrAl"
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is run like:
+--MP_/flYJlGJ8fDgKX5f6f0.HrAl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-	./watch_test
+On Fri, 24 Jul 2020 12:29:01 +0200
+Pavel Machek <pavel@ucw.cz> wrote:
 
-and watches "/" for changes to the mount topology and the attributes of
-individual mount objects.
+> In future, would you expect having software "1000/100/10/nolink"
+> triggers I could activate on my scrollock LED (or on GPIO controlled
+> LEDs) to indicate network activity?
 
-	# mount -t tmpfs none /mnt
-	# mount -o remount,ro /mnt
-	# mount -o remount,rw /mnt
+Look at drivers/net/phy/phy_led_triggers.c, something like that could
+be actually implemented there.
 
-producing:
+Some of the modes are useful, like the "1000/100/10/nolink". But some
+of them are pretty weird, and I don't think anyone actually uses it
+("1000-10/else", which is on if the device is linked at 1000mbps ar
+10mbps, and else off? who would sacrifies a LED for this?).
 
-	# ./watch_test
-	read() = 16
-	NOTIFY[000]: ty=000002 sy=00 i=02000010
-	MOUNT 00000060 change=0[new_mount] aux=416
-	read() = 16
-	NOTIFY[000]: ty=000002 sy=04 i=02010010
-	MOUNT 000001a0 change=4[setattr] aux=0
-	read() = 16
-	NOTIFY[000]: ty=000002 sy=04 i=02010010
-	MOUNT 000001a0 change=4[setattr] aux=0
+I actually wanted to talk about the phy_led_triggers.c code. It
+registers several trigger for each PHY, with the name in form:
+  phy-device-name:mode
+where
+  phy-device-name is derived from OF
+    - sometimes it is in the form
+      d0032004.mdio-mii:01
+    - but sometimes in the form of whole OF path followed by ":" and
+      the PHY address:
+      /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:08
+  mode is "link", "1Gbps", "100Mbps", "10Mbps" and so on"
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+So I have a GPIO LED, and I can set it to sw trigger so that it is on
+when a specific PHY is linked on 1Gbps.
 
- samples/watch_queue/watch_test.c |   44 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 43 insertions(+), 1 deletion(-)
+The problem is that on Turris Mox I can connect up to three 8-port
+switches, which yields in 25 network PHYs overall. So reading the
+trigger file results in 4290 bytes (look at attachment cat_trigger.txt).
+I think the phy_led_triggers should have gone this way of having just
+one trigger (like netdev has), and specifying phy device via and mode
+via another file.
 
-diff --git a/samples/watch_queue/watch_test.c b/samples/watch_queue/watch_test.c
-index 46e618a897fe..b526de016de4 100644
---- a/samples/watch_queue/watch_test.c
-+++ b/samples/watch_queue/watch_test.c
-@@ -26,6 +26,9 @@
- #ifndef __NR_keyctl
- #define __NR_keyctl -1
- #endif
-+#ifndef __NR_watch_mount
-+#define __NR_watch_mount -1
-+#endif
- 
- #define BUF_SIZE 256
- 
-@@ -58,6 +61,32 @@ static void saw_key_change(struct watch_notification *n, size_t len)
- 	       k->key_id, n->subtype, key_subtypes[n->subtype], k->aux);
- }
- 
-+static const char *mount_subtypes[256] = {
-+	[NOTIFY_MOUNT_NEW_MOUNT]	= "new_mount",
-+	[NOTIFY_MOUNT_UNMOUNT]		= "unmount",
-+	[NOTIFY_MOUNT_EXPIRY]		= "expiry",
-+	[NOTIFY_MOUNT_READONLY]		= "readonly",
-+	[NOTIFY_MOUNT_SETATTR]		= "setattr",
-+	[NOTIFY_MOUNT_MOVE_FROM]	= "move_from",
-+	[NOTIFY_MOUNT_MOVE_TO]		= "move_to",
-+};
-+
-+static void saw_mount_change(struct watch_notification *n, size_t len)
-+{
-+	struct mount_notification *m = (struct mount_notification *)n;
-+
-+	if (len != sizeof(struct mount_notification))
-+		return;
-+
-+	printf("MOUNT %08x change=%u[%s] aux=%u ctr=%x,%x actr=%x\n",
-+	       m->triggered_on, n->subtype, mount_subtypes[n->subtype],
-+	       m->auxiliary_mount,
-+	       m->topology_changes,
-+	       m->attr_changes,
-+	       m->aux_topology_changes);
-+
-+}
-+
- /*
-  * Consume and display events.
-  */
-@@ -134,6 +163,9 @@ static void consumer(int fd)
- 			default:
- 				printf("other type\n");
- 				break;
-+			case WATCH_TYPE_MOUNT_NOTIFY:
-+				saw_mount_change(&n.n, len);
-+				break;
- 			}
- 
- 			p += len;
-@@ -142,12 +174,17 @@ static void consumer(int fd)
- }
- 
- static struct watch_notification_filter filter = {
--	.nr_filters	= 1,
-+	.nr_filters	= 2,
- 	.filters = {
- 		[0]	= {
- 			.type			= WATCH_TYPE_KEY_NOTIFY,
- 			.subtype_filter[0]	= UINT_MAX,
- 		},
-+		[1] = {
-+			.type			= WATCH_TYPE_MOUNT_NOTIFY,
-+			// Reject move-from notifications
-+			.subtype_filter[0]	= UINT_MAX & ~(1 << NOTIFY_MOUNT_MOVE_FROM),
-+		},
- 	},
- };
- 
-@@ -181,6 +218,11 @@ int main(int argc, char **argv)
- 		exit(1);
- 	}
- 
-+	if (syscall(__NR_watch_mount, AT_FDCWD, "/", 0, fd, 0xde) == -1) {
-+		perror("watch_mount");
-+		exit(1);
-+	}
-+
- 	consumer(fd);
- 	exit(0);
- }
+Marek
 
 
+--MP_/flYJlGJ8fDgKX5f6f0.HrAl
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=cat_trigger.txt
+
+none timer oneshot heartbeat default-on [mmc0] mmc1 /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:01:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:01:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:01:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:01:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:02:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:02:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:02:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:02:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:03:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:03:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:03:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:03:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:04:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:04:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch
+ 1@11/mdio:04:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:04:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:05:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:05:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:05:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:05:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:06:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:06:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:06:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:06:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:07:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:07:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:07:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:07:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:08:link /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:08:1Gbps /soc/inter
+ nal-regs@d0000000/mdio@32004/switch1@11/mdio:08:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch1@11/mdio:08:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:01:link /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:01:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:01:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:01:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:02:link /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:02:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:02:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:02:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:03:link /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:03:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:03:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:03:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:04:link /soc/internal-regs@d0000000/mdio@32004/
+ switch0@10/mdio:04:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:04:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:04:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:05:link /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:05:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:05:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:05:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:06:link /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:06:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:06:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:06:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:07:link /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:07:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:07:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:07:10Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:08:link /soc
+ /internal-regs@d0000000/mdio@32004/switch0@10/mdio:08:1Gbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:08:100Mbps /soc/internal-regs@d0000000/mdio@32004/switch0@10/mdio:08:10Mbps d0032004.mdio-mii:01:link d0032004.mdio-mii:01:1Gbps d0032004.mdio-mii:01:100Mbps d0032004.mdio-mii:01:10Mbps
+
+--MP_/flYJlGJ8fDgKX5f6f0.HrAl--
