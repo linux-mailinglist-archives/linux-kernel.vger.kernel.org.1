@@ -2,147 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0C322C8CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 17:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0414522C8DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 17:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgGXPIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 11:08:30 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:57183 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726938AbgGXPI0 (ORCPT
+        id S1726607AbgGXPRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 11:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726170AbgGXPRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 11:08:26 -0400
-X-IronPort-AV: E=Sophos;i="5.75,391,1589209200"; 
-   d="scan'208";a="52752077"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 25 Jul 2020 00:08:26 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 1AF46400517D;
-        Sat, 25 Jul 2020 00:08:23 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/2] media: i2c: ov772x: Add test pattern control
-Date:   Fri, 24 Jul 2020 16:08:16 +0100
-Message-Id: <1595603296-25903-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595603296-25903-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1595603296-25903-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 24 Jul 2020 11:17:24 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B22BC0619D3;
+        Fri, 24 Jul 2020 08:17:24 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k71so5403671pje.0;
+        Fri, 24 Jul 2020 08:17:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HUROjGo9h0QzPmA8W6RC42jkLEEb02wgdrCu4KyC3eQ=;
+        b=QdQ0zl1wnw3H/JKPangxnKC11AjASvBxZZMsKId7lwLQ0A8nihM3y0ieEVvXrT8kY8
+         nd+1fFqNjs1ENzcCdxqkka04SkG+Eyr1L3yXxoQKDkdx3u9r0WHNbW8uELDk7QEgxLrB
+         2dhVCq2Jp16khl1lQ+ehugu0megd6Fx0YlL7ddeke/HIzjE6pWP2eG9Q1AN7s1KgV/Gg
+         DY7Xs1PYyfOnqmQ9H8U1P2RgrB6rAH193ZrqfioIKMFZ7a1g7AyuHspvrCxT02aDwSzz
+         pcYMBfLF2OMfWVFHtIQ0LOy5nC3RXgG8/3Ff7uftIsU6+cMoxREIPxU9HQawqZFyUEPJ
+         7WQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HUROjGo9h0QzPmA8W6RC42jkLEEb02wgdrCu4KyC3eQ=;
+        b=XjT2HmJGZMioGAnonwAFALawuedcmIMgLc9upq9EEmPJ3tR+wbJbnPey43t+7gTqPG
+         SsI6TO7NK45gbsijdWnNjGMSBoskb9X3uB591INE8SsZoL3bqoGX5cVZ04TSqCD5MNAi
+         hXIPck673SMDIdEcz1vQ/UstzYstfOV5RqpBw0rh2ykN1rgjxr4Xr4Gof11X7zzh8Mcl
+         IWzIy1H5Hip+s+2aozZ2gOUeXkuJ2LRKbUnk2sIGbrhJVCI+okjvvKh5ioxQgIXFi1uL
+         VPmm8SZLsJl1KFVw0vd6bGJJUjYJPjtsHvomnQ8nN5DADfBGpkC/LwGiZWheqSiZoUod
+         WTXw==
+X-Gm-Message-State: AOAM531bQ7bnn5xhrBfTIKobTgnREY007A00y6QPV1R0Zc93f1tV2vh1
+        VrqZPTnMt3etHv3uRw1LIYQ=
+X-Google-Smtp-Source: ABdhPJwLwZPCwLH/Vq4Ur1Dg/VbJQuvtBuiU2evxy0VSK8+5L4tI0fouUwBZG0eWsbnKGuDz8zgB6Q==
+X-Received: by 2002:a17:90b:19d4:: with SMTP id nm20mr6352197pjb.206.1595603843811;
+        Fri, 24 Jul 2020 08:17:23 -0700 (PDT)
+Received: from gmail.com ([103.105.153.67])
+        by smtp.gmail.com with ESMTPSA id m6sm6728647pjb.34.2020.07.24.08.17.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 08:17:23 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 20:46:01 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1] spi: spi-topcliff-pch: use generic power management
+Message-ID: <20200724151601.GA3642@gmail.com>
+References: <20200720155714.714114-1-vaibhavgupta40@gmail.com>
+ <CAHp75Vdh-ssrmGgTc=gE9dWLhWDAw7_QHJKFeWKHpO-JqBdsEA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vdh-ssrmGgTc=gE9dWLhWDAw7_QHJKFeWKHpO-JqBdsEA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for test pattern control supported by the sensor.
+On Fri, Jul 24, 2020 at 01:51:49PM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 20, 2020 at 7:31 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
+> >
+> > Drivers using legacy PM have to manage PCI states and device's PM states
+> > themselves. They also need to take care of configuration registers.
+> >
+> > With improved and powerful support of generic PM, PCI Core takes care of
+> > above mentioned, device-independent, jobs.
+> >
+> > This driver makes use of PCI helper functions like
+> > pci_save/restore_state(), pci_enable/disable_device(), pci_enable_wake()
+> > and pci_set_power_state() to do required operations. In generic mode, they
+> > are no longer needed.
+> >
+> > Change function parameter in both .suspend() and .resume() to
+> > "struct device*" type. Use dev_get_drvdata() to get drv data.
+> 
+> > Compile-tested only.
+> 
+> Yeah...
+> 
+> ...
+> 
+> > +static int __maybe_unused pch_spi_suspend(struct device *dev)
+> >  {
+> > +       struct pch_pd_dev_save *pd_dev_save = dev_get_drvdata(dev);
+> >
+> > +       dev_dbg(dev, "%s ENTRY\n", __func__);
+> >
+> >         pd_dev_save->board_dat->suspend_sts = true;
+> >
+> > +       return 0;
+> >  }
+> >
+> > +static int __maybe_unused pch_spi_resume(struct device *dev)
+> >  {
+> > +       struct pch_pd_dev_save *pd_dev_save = dev_get_drvdata(dev);
+> >
+> > +       dev_dbg(dev, "%s ENTRY\n", __func__);
+> >
+> 
+> > +       device_wakeup_disable(dev);
+> 
+> Here I left a result. Care to explain (and perhaps send a follow up
+> fix) where is the counterpart to this call?
+> 
+Hello Andy,
+I didn't quite understand what you are trying to point at. And the result part.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/media/i2c/ov772x.c | 25 ++++++++++++++++++++++++-
- include/media/i2c/ov772x.h |  1 +
- 2 files changed, 25 insertions(+), 1 deletion(-)
+Yes, it seem I forgot to put device_wakeup_disable() in .suspend() when I
+removed pci_enable_wake(pdev, PCI_D3hot, 0); from there. It doesn't seem that
+.suspend() wants to enable-wake the device as the bool value passed to
+pci_enable_wake() is zero.
 
-diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-index 3b7dfba..bdee2a8 100644
---- a/drivers/media/i2c/ov772x.c
-+++ b/drivers/media/i2c/ov772x.c
-@@ -227,7 +227,7 @@
- 
- /* COM3 */
- #define SWAP_MASK       (SWAP_RGB | SWAP_YUV | SWAP_ML)
--#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG)
-+#define IMG_MASK        (VFLIP_IMG | HFLIP_IMG | SCOLOR_TEST)
- 
- #define VFLIP_IMG       0x80	/* Vertical flip image ON/OFF selection */
- #define HFLIP_IMG       0x40	/* Horizontal mirror image ON/OFF selection */
-@@ -425,6 +425,7 @@ struct ov772x_priv {
- 	const struct ov772x_win_size     *win;
- 	struct v4l2_ctrl		 *vflip_ctrl;
- 	struct v4l2_ctrl		 *hflip_ctrl;
-+	unsigned int			  test_pattern;
- 	/* band_filter = COM8[5] ? 256 - BDBASE : 0 */
- 	struct v4l2_ctrl		 *band_filter_ctrl;
- 	unsigned int			  fps;
-@@ -540,6 +541,11 @@ static const struct ov772x_win_size ov772x_win_sizes[] = {
- 	},
- };
- 
-+static const char * const ov772x_test_pattern_menu[] = {
-+	"Disabled",
-+	"Vertical Color Bar Type 1",
-+};
-+
- /*
-  * frame rate settings lists
-  */
-@@ -754,6 +760,13 @@ static int ov772x_s_frame_interval(struct v4l2_subdev *sd,
- 	return ret;
- }
- 
-+static int ov772x_enable_test_pattern(struct ov772x_priv *priv, u32 pattern)
-+{
-+	priv->test_pattern = pattern;
-+	return regmap_update_bits(priv->regmap, COM3, SCOLOR_TEST,
-+				  pattern ? SCOLOR_TEST : 0x00);
-+}
-+
- static int ov772x_s_ctrl(struct v4l2_ctrl *ctrl)
- {
- 	struct ov772x_priv *priv = container_of(ctrl->handler,
-@@ -801,6 +814,8 @@ static int ov772x_s_ctrl(struct v4l2_ctrl *ctrl)
- 		}
- 
- 		return ret;
-+	case V4L2_CID_TEST_PATTERN:
-+		return ov772x_enable_test_pattern(priv, ctrl->val);
- 	}
- 
- 	return -EINVAL;
-@@ -1095,10 +1110,14 @@ static int ov772x_set_params(struct ov772x_priv *priv,
- 		val |= VFLIP_IMG;
- 	if (priv->info && (priv->info->flags & OV772X_FLAG_HFLIP))
- 		val |= HFLIP_IMG;
-+	if (priv->info && (priv->info->flags & OV772X_FLAG_TEST_PATTERN))
-+		val |= SCOLOR_TEST;
- 	if (priv->vflip_ctrl->val)
- 		val ^= VFLIP_IMG;
- 	if (priv->hflip_ctrl->val)
- 		val ^= HFLIP_IMG;
-+	if (priv->test_pattern)
-+		val ^= SCOLOR_TEST;
- 
- 	ret = regmap_update_bits(priv->regmap, COM3, SWAP_MASK | IMG_MASK, val);
- 	if (ret < 0)
-@@ -1399,6 +1418,10 @@ static int ov772x_probe(struct i2c_client *client)
- 	priv->band_filter_ctrl = v4l2_ctrl_new_std(&priv->hdl, &ov772x_ctrl_ops,
- 						   V4L2_CID_BAND_STOP_FILTER,
- 						   0, 256, 1, 0);
-+	v4l2_ctrl_new_std_menu_items(&priv->hdl, &ov772x_ctrl_ops,
-+				     V4L2_CID_TEST_PATTERN,
-+				     ARRAY_SIZE(ov772x_test_pattern_menu) - 1,
-+				     0, 0, ov772x_test_pattern_menu);
- 	priv->subdev.ctrl_handler = &priv->hdl;
- 	if (priv->hdl.error) {
- 		ret = priv->hdl.error;
-diff --git a/include/media/i2c/ov772x.h b/include/media/i2c/ov772x.h
-index a1702d4..65e6f8d 100644
---- a/include/media/i2c/ov772x.h
-+++ b/include/media/i2c/ov772x.h
-@@ -12,6 +12,7 @@
- /* for flags */
- #define OV772X_FLAG_VFLIP	(1 << 0) /* Vertical flip image */
- #define OV772X_FLAG_HFLIP	(1 << 1) /* Horizontal flip image */
-+#define OV772X_FLAG_TEST_PATTERN	(1 << 2) /* Test pattern */
- 
- /*
-  * for Edge ctrl
--- 
-2.7.4
+Am I missing something else?
 
+Thanks
+Vaibhav Gupta
+> > +       /* set suspend status to false */
+> > +       pd_dev_save->board_dat->suspend_sts = false;
+> 
+> > +       return 0;
+> >  }
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
