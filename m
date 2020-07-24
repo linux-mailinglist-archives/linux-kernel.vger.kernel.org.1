@@ -2,109 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C4422C1E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF62E22C1E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgGXJRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726863AbgGXJRP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:17:15 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C75FC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:17:15 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id f12so9246423eja.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:17:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/OC350Q0A9R/G9QPy9dkketdGLXiYUcXoiXvxtiFS3I=;
-        b=chuTST1JaqOVT7yYQunPdIWjX5K7+V3f26TOUaT4KfzOSmf0pRhB9CnodvRIf/ombz
-         Bxw5TQ9jSLFkknPnQYCUXvfuOMFTBb9K65ELT2jsylkPekxy/bOlU0C1c78dhTmMePsA
-         PlNNVcPa31LsjUFOmI79sHMe09phtsApgsxDD2xxYH7Wy2oPpRHhC4PhsZAs0a77TIGb
-         Aa4ApPuru4kGYdqJ2ihY2lhuMLJnyeN1w6qUG62Zp+mCktHh+gVest/yTVxkZGNd61a/
-         6gu0WeAoM1Yb4Zp4dU9+tdw7XHas/8Y3HYvS9hWtWUEiZiOkeDgGVP4fHTEocjq+E1ie
-         bKnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/OC350Q0A9R/G9QPy9dkketdGLXiYUcXoiXvxtiFS3I=;
-        b=WrmAu7viA/P8cgKfLCo0uPY7m+tXkzgcUjR72a7IzhOb2sYjv0RqF0pf72gEe2HkFi
-         TxEnc5GvcKmOjbcwWY1sXvAYH1BB+vDGbf5p70Hygp20S1Yfy0QYaX3ShNmlStqWQ06+
-         CPVhS8hlrlPcFCzqNjaMbShgGd7xE+vt9Dk53d9ocGqbsuvOqPywcydWUXEBFOPY428A
-         2YP4/5bIkQrHkL/OtIGGas2kgfGnwJfAIPl8zAua5sBbFzOJX9o4X6YfXcThs2/NyvEY
-         /46i6UlJPSYrjqCq+8+9r9cE+oRt0ahcGi4UL+48mEv0pQzkPKT+T/M8jR2AD1e3brqJ
-         SVEw==
-X-Gm-Message-State: AOAM532QrcfP5M6kovwBy4z75VfjDFM41Ssj427Wv8A3MIuNDwrOa7bE
-        3OHq+7VYOqOm7HLVzM9NatU=
-X-Google-Smtp-Source: ABdhPJzwOcbamfMswXat/5I2ZGN5RwAMcwz8bdlQYVANNSSFvVtSOr/BB0E/b8cwXbRRmp3FTOgzLg==
-X-Received: by 2002:a17:906:6499:: with SMTP id e25mr8186466ejm.352.1595582234028;
-        Fri, 24 Jul 2020 02:17:14 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id v5sm296033ejj.61.2020.07.24.02.17.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 02:17:13 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 11:17:11 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH v5 1/6] kprobes: Remove dependency to the module_mutex
-Message-ID: <20200724091711.GB517988@gmail.com>
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
- <20200724050553.1724168-2-jarkko.sakkinen@linux.intel.com>
+        id S1728076AbgGXJRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:17:35 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:56060 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726591AbgGXJRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:17:35 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 55093257C4D081C6A94A;
+        Fri, 24 Jul 2020 17:17:33 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 24 Jul 2020 17:17:26 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
+Subject: [PATCH net-next v4 0/2] hinic: add some error messages for debug
+Date:   Fri, 24 Jul 2020 17:17:30 +0800
+Message-ID: <20200724091732.19819-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724050553.1724168-2-jarkko.sakkinen@linux.intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+patch #1: support to handle hw abnormal event
+patch #2: improve the error messages when functions return failure and
+	  dump relevant registers in some exception handling processes
 
-* Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+Luo bin (2):
+  hinic: add support to handle hw abnormal event
+  hinic: add log in exception handling processes
 
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -564,7 +564,7 @@ static void kprobe_optimizer(struct work_struct *work)
->  	cpus_read_lock();
->  	mutex_lock(&text_mutex);
->  	/* Lock modules while optimizing kprobes */
-> -	mutex_lock(&module_mutex);
-> +	lock_modules();
->  
->  	/*
->  	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
-> @@ -589,7 +589,7 @@ static void kprobe_optimizer(struct work_struct *work)
->  	/* Step 4: Free cleaned kprobes after quiesence period */
->  	do_free_cleaned_kprobes();
->  
-> -	mutex_unlock(&module_mutex);
-> +	unlock_modules();
->  	mutex_unlock(&text_mutex);
->  	cpus_read_unlock();
+ drivers/net/ethernet/huawei/hinic/hinic_dev.h |   4 +
+ .../net/ethernet/huawei/hinic/hinic_devlink.c | 296 +++++++++++++++++-
+ .../net/ethernet/huawei/hinic/hinic_devlink.h |   8 +-
+ .../net/ethernet/huawei/hinic/hinic_ethtool.c |  20 ++
+ .../ethernet/huawei/hinic/hinic_hw_api_cmd.c  |  27 +-
+ .../ethernet/huawei/hinic/hinic_hw_api_cmd.h  |   4 +
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.c |   2 +
+ .../net/ethernet/huawei/hinic/hinic_hw_cmdq.h |   2 +
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.c  | 160 +++++++++-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.h  | 148 ++++++++-
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.c  |  39 +++
+ .../net/ethernet/huawei/hinic/hinic_hw_eqs.h  |   6 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_if.c   |  23 ++
+ .../net/ethernet/huawei/hinic/hinic_hw_if.h   |  10 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_mbox.c |   2 +
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.c |  11 +
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.h |   4 +
+ .../net/ethernet/huawei/hinic/hinic_main.c    |  87 +++--
+ .../net/ethernet/huawei/hinic/hinic_port.c    |  62 ++--
+ .../net/ethernet/huawei/hinic/hinic_port.h    |  25 ++
+ .../net/ethernet/huawei/hinic/hinic_sriov.c   |   6 +-
+ 21 files changed, 865 insertions(+), 81 deletions(-)
 
-BTW., it would be nice to expand on the comments above - exactly which 
-parts of the modules code is being serialized against and why?
+-- 
+2.17.1
 
-We already hold the text_mutex here, which should protect against most 
-kprobes related activities interfering - and it's unclear (to me) 
-which part of the modules code is being serialized with here, and the 
-'lock modules while optimizing kprobes' comments is unhelpful. :-)
-
-Thanks,
-
-	Ingo
