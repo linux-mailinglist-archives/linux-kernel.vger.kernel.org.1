@@ -2,274 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C8C22CAFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C88322C9B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgGXQYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 12:24:08 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:11257 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgGXQYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:24:07 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200724162405epoutp03efea4269e46ea9e73d0b7f4bce5bffe3~kvOGsz3Y70314403144epoutp03e
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 16:24:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200724162405epoutp03efea4269e46ea9e73d0b7f4bce5bffe3~kvOGsz3Y70314403144epoutp03e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1595607845;
-        bh=KeFwOYrInKU609vftU4EN0rxqpWu0rMpyqf8XT/yacE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yg+zRx2VZbjcjICwEdV2cNmHtRMLHRygm2F6nzcL2xcqceT3HGdrpxLkRdAlU/SJZ
-         bZzbNv/nyVibEkqKXU/U7Cbidd+PxC8lf3t7AaV+pKnvG4tdPU4R3YAKo0hWoCm4my
-         YqQEtWzUb0f8N7t+YCR7+utqFyH1vyw9k9dVTBPM=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20200724162404epcas5p21d4420cd725d79755515dce085c47495~kvOGFwfgZ0166301663epcas5p2l;
-        Fri, 24 Jul 2020 16:24:04 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F0.DE.40333.42B0B1F5; Sat, 25 Jul 2020 01:24:04 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200724155350epcas5p3b8f1d59eda7f8fbb38c828f692d42fd6~kuzsaFGFN2159221592epcas5p3p;
-        Fri, 24 Jul 2020 15:53:50 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200724155350epsmtrp2568e442acbfa8216b95a7bd6d4fffab5~kuzsZNZ2Z3047030470epsmtrp2I;
-        Fri, 24 Jul 2020 15:53:50 +0000 (GMT)
-X-AuditID: b6c32a4a-991ff70000019d8d-93-5f1b0b24a73d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6F.02.08382.E040B1F5; Sat, 25 Jul 2020 00:53:50 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.110.206.5]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200724155347epsmtip1888a12b2f1b4a91068b9c468f211fa2f~kuzpxyPVc0513905139epsmtip15;
-        Fri, 24 Jul 2020 15:53:47 +0000 (GMT)
-From:   Kanchan Joshi <joshi.k@samsung.com>
-To:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org
-Cc:     willy@infradead.org, hch@infradead.org, Damien.LeMoal@wdc.com,
-        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-api@vger.kernel.org, SelvaKumar S <selvakuma.s1@samsung.com>,
-        Kanchan Joshi <joshi.k@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Subject: [PATCH v4 6/6] io_uring: add support for zone-append
-Date:   Fri, 24 Jul 2020 21:19:22 +0530
-Message-Id: <1595605762-17010-7-git-send-email-joshi.k@samsung.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595605762-17010-1-git-send-email-joshi.k@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDKsWRmVeSWpSXmKPExsWy7bCmuq4Kt3S8weNebYvf06ewWsxZtY3R
-        YvXdfjaLrn9bWCxa278xWZyesIjJ4l3rORaLx3c+s1sc/f+WzWLKtCZGi83fO9gs9t7Sttiz
-        9ySLxeVdc9gstv2ez2xxZcoiZovXP06yWZz/e5zV4vePOWwOwh47Z91l99i8Qsvj8tlSj02f
-        JrF79G1ZxejxeZOcR/uBbiaPTU/eMgVwRHHZpKTmZJalFunbJXBl3Pn5iK3giHbFts2XmRoY
-        5yl3MXJySAiYSLTfnczcxcjFISSwm1Fi4tzDTBDOJ0aJ0y/fskI43xgl5j48ygzTsmzTU6jE
-        XkaJ3X3T2SCcz4wSh/89AKri4GAT0JS4MLkUxBQRsJHYuUQFpIRZYDmzxISOH6wgg4QFbCVO
-        f+lhAalhEVCVWPEwBCTMK+As0f5rDyPELjmJm+c6wfZyCrhIXLh4Fyq+hUOi6QcHhO0isef6
-        VDYIW1ji1fEt7BC2lMTnd3uh4sUSv+4cBXtTQqCDUeJ6w0wWiIS9xMU9f5lAbmAGOnn9Ln2I
-        sKzE1FPrmEBsZgE+id7fT5gg4rwSO+bB2IoS9yY9ZYWwxSUezlgCZXtI7Pv3gRESJNOBQTJl
-        GvsERrlZCCsWMDKuYpRMLSjOTU8tNi0wykst1ytOzC0uzUvXS87P3cQITlBaXjsYHz74oHeI
-        kYmD8RCjBAezkgjvim9S8UK8KYmVValF+fFFpTmpxYcYpTlYlMR5lX6ciRMSSE8sSc1OTS1I
-        LYLJMnFwSjUwZd0/5c64+GKs8xzLixfiHcuX66pJr3wl4Z51wetJeejG1cHb33Nf2PG3ZOuc
-        5dXTckuzee6/E/jmfon98a0sl6QbpX7ThIyPS7RltSw6lTL3lt98+SU8X/aki2sxlEclCm62
-        k8m9KHfsvtK/e35MT3Zocpv6bX5wyNksXab3x/eCrtp6z6nzKlzlrzxfdvvlxY7yFb8yq4R6
-        A2c6Tg5h//Zv7y0FVRFXz83Vv3T2Rqv4Gd4+fmdCUWDI+eSWY3eyzTjel3PfyBNawBtmsTSi
-        bcFR7+e7fxw9Yq0wj7HYn22Xhrm9+ZScmb8SPZSjzzBbZ7Mcdeh9mPu48raDxBnN7YpVpby5
-        ptydtxS3TfuvxFKckWioxVxUnAgAu5ESLL8DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWy7bCSnC4fi3S8wfLD4ha/p09htZizahuj
-        xeq7/WwWXf+2sFi0tn9jsjg9YRGTxbvWcywWj+98Zrc4+v8tm8WUaU2MFpu/d7BZ7L2lbbFn
-        70kWi8u75rBZbPs9n9niypRFzBavf5xkszj/9zirxe8fc9gchD12zrrL7rF5hZbH5bOlHps+
-        TWL36NuyitHj8yY5j/YD3Uwem568ZQrgiOKySUnNySxLLdK3S+DKuPPzEVvBEe2KbZsvMzUw
-        zlPuYuTkkBAwkVi26SlrFyMXh5DAbkaJk+/eM0EkxCWar/1gh7CFJVb+e84OUfSRUWL/3knM
-        XYwcHGwCmhIXJpeC1IgIOEh0HX/MBFLDLLCdWWLm0bmsIAlhAVuJ0196WEDqWQRUJVY8DAEJ
-        8wo4S7T/2sMIMV9O4ua5TmYQm1PAReLCxbuMIOVCQDUXf5RPYORbwMiwilEytaA4Nz232LDA
-        MC+1XK84Mbe4NC9dLzk/dxMjOAa0NHcwbl/1Qe8QIxMH4yFGCQ5mJRHeFd+k4oV4UxIrq1KL
-        8uOLSnNSiw8xSnOwKInz3ihcGCckkJ5YkpqdmlqQWgSTZeLglGpgkjmXmh3W+66Lw/DZQh7P
-        m2sce9frr56q9OTjryaV2R9f/jlrkVpRmlDgJzePWcm8ZY+xLT+P+raqOwsU99cv06tjPyNj
-        MSvE9rZV1Npr5Y48KwXZ7l3UkOLuULb705yS/0naOLqxkstBXNRx/9FD7K7eubpTNvy7YSVR
-        wWZqYZ0Y2Ru388GnN12xwhWawRLqJWsk5tx+lzvbzcK1qWhOxD7rbC3l2cx5C/76PwmPMJo1
-        UUIjyGR6nnrJyc5TPWonAs9f0F4eyKH2KERzdcZ89gs6W6QUOS59PlixYNL3A6EH9QrKpf5t
-        aC5JPM/AeahYxWgaR/OtJ4llh9W2TE35MM3E1PBYnZ1S98eHi5VYijMSDbWYi4oTAeU0e+Tw
-        AgAA
-X-CMS-MailID: 20200724155350epcas5p3b8f1d59eda7f8fbb38c828f692d42fd6
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200724155350epcas5p3b8f1d59eda7f8fbb38c828f692d42fd6
-References: <1595605762-17010-1-git-send-email-joshi.k@samsung.com>
-        <CGME20200724155350epcas5p3b8f1d59eda7f8fbb38c828f692d42fd6@epcas5p3.samsung.com>
+        id S1726726AbgGXQD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 12:03:59 -0400
+Received: from 8bytes.org ([81.169.241.247]:59162 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbgGXQD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 12:03:58 -0400
+Received: from cap.home.8bytes.org (p5b006776.dip0.t-ipconnect.de [91.0.103.118])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 1963A272;
+        Fri, 24 Jul 2020 18:03:56 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v5 00/75] x86: SEV-ES Guest Support
+Date:   Fri, 24 Jul 2020 18:02:21 +0200
+Message-Id: <20200724160336.5435-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SelvaKumar S <selvakuma.s1@samsung.com>
+From: Joerg Roedel <jroedel@suse.de>
 
-Repurpose [cqe->res, cqe->flags] into cqe->res64 (signed) to report
-64bit written-offset for zone-append. The appending-write which requires
-reporting written-location (conveyed by IOCB_ZONE_APPEND flag) is
-ensured not to be a short-write; this avoids the need to report
-number-of-bytes-copied.
-append-offset is returned by lower-layer to io-uring via ret2 of
-ki_complete interface. Make changes to collect it and send to user-space
-via cqe->res64.
+Hi,
 
-Signed-off-by: SelvaKumar S <selvakuma.s1@samsung.com>
-Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
----
- fs/io_uring.c                 | 49 ++++++++++++++++++++++++++++++++++++-------
- include/uapi/linux/io_uring.h |  9 ++++++--
- 2 files changed, 48 insertions(+), 10 deletions(-)
+here is a rebased version of the latest SEV-ES patches. They are now
+based on latest tip/master instead of upstream Linux and include the
+necessary changes.
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 7809ab2..6510cf5 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -401,7 +401,14 @@ struct io_rw {
- 	/* NOTE: kiocb has the file as the first member, so don't do it here */
- 	struct kiocb			kiocb;
- 	u64				addr;
--	u64				len;
-+	union {
-+		/*
-+		 * len is used only during submission.
-+		 * append_offset is used only during completion.
-+		 */
-+		u64			len;
-+		u64			append_offset;
-+	};
- };
- 
- struct io_connect {
-@@ -541,6 +548,7 @@ enum {
- 	REQ_F_NO_FILE_TABLE_BIT,
- 	REQ_F_QUEUE_TIMEOUT_BIT,
- 	REQ_F_WORK_INITIALIZED_BIT,
-+	REQ_F_ZONE_APPEND_BIT,
- 
- 	/* not a real bit, just to check we're not overflowing the space */
- 	__REQ_F_LAST_BIT,
-@@ -598,6 +606,8 @@ enum {
- 	REQ_F_QUEUE_TIMEOUT	= BIT(REQ_F_QUEUE_TIMEOUT_BIT),
- 	/* io_wq_work is initialized */
- 	REQ_F_WORK_INITIALIZED	= BIT(REQ_F_WORK_INITIALIZED_BIT),
-+	/* to return zone append offset */
-+	REQ_F_ZONE_APPEND = BIT(REQ_F_ZONE_APPEND_BIT),
- };
- 
- struct async_poll {
-@@ -1244,8 +1254,15 @@ static bool io_cqring_overflow_flush(struct io_ring_ctx *ctx, bool force)
- 		req->flags &= ~REQ_F_OVERFLOW;
- 		if (cqe) {
- 			WRITE_ONCE(cqe->user_data, req->user_data);
--			WRITE_ONCE(cqe->res, req->result);
--			WRITE_ONCE(cqe->flags, req->cflags);
-+			if (unlikely(req->flags & REQ_F_ZONE_APPEND)) {
-+				if (likely(req->result > 0))
-+					WRITE_ONCE(cqe->res64, req->rw.append_offset);
-+				else
-+					WRITE_ONCE(cqe->res64, req->result);
-+			} else {
-+				WRITE_ONCE(cqe->res, req->result);
-+				WRITE_ONCE(cqe->flags, req->cflags);
-+			}
- 		} else {
- 			WRITE_ONCE(ctx->rings->cq_overflow,
- 				atomic_inc_return(&ctx->cached_cq_overflow));
-@@ -1284,8 +1301,15 @@ static void __io_cqring_fill_event(struct io_kiocb *req, long res, long cflags)
- 	cqe = io_get_cqring(ctx);
- 	if (likely(cqe)) {
- 		WRITE_ONCE(cqe->user_data, req->user_data);
--		WRITE_ONCE(cqe->res, res);
--		WRITE_ONCE(cqe->flags, cflags);
-+		if (unlikely(req->flags & REQ_F_ZONE_APPEND)) {
-+			if (likely(res > 0))
-+				WRITE_ONCE(cqe->res64, req->rw.append_offset);
-+			else
-+				WRITE_ONCE(cqe->res64, res);
-+		} else {
-+			WRITE_ONCE(cqe->res, res);
-+			WRITE_ONCE(cqe->flags, cflags);
-+		}
- 	} else if (ctx->cq_overflow_flushed) {
- 		WRITE_ONCE(ctx->rings->cq_overflow,
- 				atomic_inc_return(&ctx->cached_cq_overflow));
-@@ -1943,7 +1967,7 @@ static inline void req_set_fail_links(struct io_kiocb *req)
- 		req->flags |= REQ_F_FAIL_LINK;
- }
- 
--static void io_complete_rw_common(struct kiocb *kiocb, long res)
-+static void io_complete_rw_common(struct kiocb *kiocb, long res, long long res2)
- {
- 	struct io_kiocb *req = container_of(kiocb, struct io_kiocb, rw.kiocb);
- 	int cflags = 0;
-@@ -1955,6 +1979,9 @@ static void io_complete_rw_common(struct kiocb *kiocb, long res)
- 		req_set_fail_links(req);
- 	if (req->flags & REQ_F_BUFFER_SELECTED)
- 		cflags = io_put_kbuf(req);
-+	if (req->flags & REQ_F_ZONE_APPEND)
-+		req->rw.append_offset = res2;
-+
- 	__io_cqring_add_event(req, res, cflags);
- }
- 
-@@ -1962,7 +1989,7 @@ static void io_complete_rw(struct kiocb *kiocb, long res, long long res2)
- {
- 	struct io_kiocb *req = container_of(kiocb, struct io_kiocb, rw.kiocb);
- 
--	io_complete_rw_common(kiocb, res);
-+	io_complete_rw_common(kiocb, res, res2);
- 	io_put_req(req);
- }
- 
-@@ -1976,8 +2003,11 @@ static void io_complete_rw_iopoll(struct kiocb *kiocb, long res, long long res2)
- 	if (res != req->result)
- 		req_set_fail_links(req);
- 	req->result = res;
--	if (res != -EAGAIN)
-+	if (res != -EAGAIN) {
-+		if (req->flags & REQ_F_ZONE_APPEND)
-+			req->rw.append_offset =  res2;
- 		WRITE_ONCE(req->iopoll_completed, 1);
-+	}
- }
- 
- /*
-@@ -2739,6 +2769,9 @@ static int io_write(struct io_kiocb *req, bool force_nonblock)
- 						SB_FREEZE_WRITE);
- 		}
- 		kiocb->ki_flags |= IOCB_WRITE;
-+		/* zone-append requires few extra steps during completion */
-+		if (kiocb->ki_flags & IOCB_ZONE_APPEND)
-+			req->flags |= REQ_F_ZONE_APPEND;
- 
- 		if (!force_nonblock)
- 			current->signal->rlim[RLIMIT_FSIZE].rlim_cur = req->fsize;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 92c2269..2580d93 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -156,8 +156,13 @@ enum {
-  */
- struct io_uring_cqe {
- 	__u64	user_data;	/* sqe->data submission passed back */
--	__s32	res;		/* result code for this event */
--	__u32	flags;
-+	union {
-+		struct {
-+			__s32	res;	/* result code for this event */
-+			__u32	flags;
-+		};
-+		__s64	res64;	/* appending offset for zone append */
-+	};
- };
- 
- /*
+Changes to v4 are in particular:
+
+	- Moved early IDT setup code to idt.c, because the idt_descr
+	  and the idt_table are now static
+
+	- This required to make stack protector work early (or disable
+	  it for idt.c, but I didn't go that road), so MSR_GS_BASE is
+	  now set up very early too, before calling into any C code that
+	  has stack protector checks.
+
+	- As a result I decided to move the setup code which is needed
+	  before the kernel switches to virtual addresses into a C
+	  function as well. This should be much easier to maintain.
+
+	- paranoid_entry/exit now uses FSGSBASE instructions, so some
+	  refactoring was needed to make that work early for secondary
+	  CPUs too.
+
+	- As a result, some state of the APs is now set up on the
+	  boot-cpu already, like the TSS and the CPU_NODE GDT entry,
+	  so that the AP only needs to load the descriptors to handle
+	  exceptions early.
+
+The previous versions can be found as a linked-list starting here:
+
+	https://lore.kernel.org/lkml/20200714120917.11253-1-joro@8bytes.org/
+
+There you also find more detailed information about SEV-ES in general
+and its implications.
+
+Please review.
+
+Thanks,
+
+	Joerg
+
+Borislav Petkov (1):
+  KVM: SVM: Use __packed shorthand
+
+Doug Covelli (1):
+  x86/vmware: Add VMware specific handling for VMMCALL under SEV-ES
+
+Joerg Roedel (53):
+  KVM: SVM: Add GHCB Accessor functions
+  x86/traps: Move pf error codes to <asm/trap_pf.h>
+  x86/insn: Make inat-tables.c suitable for pre-decompression code
+  x86/umip: Factor out instruction fetch
+  x86/umip: Factor out instruction decoding
+  x86/insn: Add insn_get_modrm_reg_off()
+  x86/insn: Add insn_has_rep_prefix() helper
+  x86/boot/compressed/64: Disable red-zone usage
+  x86/boot/compressed/64: Add IDT Infrastructure
+  x86/boot/compressed/64: Rename kaslr_64.c to ident_map_64.c
+  x86/boot/compressed/64: Add page-fault handler
+  x86/boot/compressed/64: Always switch to own page-table
+  x86/boot/compressed/64: Don't pre-map memory in KASLR code
+  x86/boot/compressed/64: Change add_identity_map() to take start and
+    end
+  x86/boot/compressed/64: Add stage1 #VC handler
+  x86/boot/compressed/64: Call set_sev_encryption_mask earlier
+  x86/boot/compressed/64: Check return value of
+    kernel_ident_mapping_init()
+  x86/boot/compressed/64: Add set_page_en/decrypted() helpers
+  x86/boot/compressed/64: Setup GHCB Based VC Exception handler
+  x86/boot/compressed/64: Unmap GHCB page before booting the kernel
+  x86/fpu: Move xgetbv()/xsetbv() into separate header
+  x86/idt: Move IDT to data segment
+  x86/idt: Split idt_data setup out of set_intr_gate()
+  x86/head/64: Install startup GDT
+  x86/head/64: Setup MSR_GS_BASE before calling into C code
+  x86/head/64: Load GDT after switch to virtual addresses
+  x86/head/64: Load segment registers earlier
+  x86/head/64: Switch to initial stack earlier
+  x86/head/64: Make fixup_pointer() static inline
+  x86/head/64: Load IDT earlier
+  x86/head/64: Move early exception dispatch to C code
+  x86/head/64: Set CR4.FSGSBASE early
+  x86/sev-es: Add SEV-ES Feature Detection
+  x86/sev-es: Print SEV-ES info into kernel log
+  x86/sev-es: Compile early handler code into kernel image
+  x86/sev-es: Setup early #VC handler
+  x86/sev-es: Setup GHCB based boot #VC handler
+  x86/sev-es: Allocate and Map IST stack for #VC handler
+  x86/sev-es: Adjust #VC IST Stack on entering NMI handler
+  x86/dumpstack/64: Add noinstr version of get_stack_info()
+  x86/entry/64: Add entry code for #VC handler
+  x86/sev-es: Wire up existing #VC exit-code handlers
+  x86/sev-es: Handle instruction fetches from user-space
+  x86/sev-es: Handle MMIO String Instructions
+  x86/sev-es: Handle #AC Events
+  x86/sev-es: Handle #DB Events
+  x86/paravirt: Allow hypervisor specific VMMCALL handling under SEV-ES
+  x86/realmode: Add SEV-ES specific trampoline entry point
+  x86/smpboot: Setup TSS for starting AP
+  x86/head/64: Don't call verify_cpu() on starting APs
+  x86/head/64: Rename start_cpu0
+  x86/sev-es: Support CPU offline/online
+  x86/sev-es: Handle NMI State
+
+Martin Radev (1):
+  x86/sev-es: Check required CPU features for SEV-ES
+
+Tom Lendacky (19):
+  KVM: SVM: Add GHCB definitions
+  x86/cpufeatures: Add SEV-ES CPU feature
+  x86/sev-es: Add support for handling IOIO exceptions
+  x86/sev-es: Add CPUID handling to #VC handler
+  x86/sev-es: Setup per-cpu GHCBs for the runtime handler
+  x86/sev-es: Add Runtime #VC Exception Handler
+  x86/sev-es: Handle MMIO events
+  x86/sev-es: Handle MSR events
+  x86/sev-es: Handle DR7 read/write events
+  x86/sev-es: Handle WBINVD Events
+  x86/sev-es: Handle RDTSC(P) Events
+  x86/sev-es: Handle RDPMC Events
+  x86/sev-es: Handle INVD Events
+  x86/sev-es: Handle MONITOR/MONITORX Events
+  x86/sev-es: Handle MWAIT/MWAITX Events
+  x86/sev-es: Handle VMMCALL Events
+  x86/kvm: Add KVM specific VMMCALL handling under SEV-ES
+  x86/realmode: Setup AP jump table
+  x86/efi: Add GHCB mappings when SEV-ES is active
+
+ arch/x86/Kconfig                           |    1 +
+ arch/x86/boot/Makefile                     |    2 +-
+ arch/x86/boot/compressed/Makefile          |    9 +-
+ arch/x86/boot/compressed/cpuflags.c        |    4 -
+ arch/x86/boot/compressed/head_64.S         |   32 +-
+ arch/x86/boot/compressed/ident_map_64.c    |  349 +++++
+ arch/x86/boot/compressed/idt_64.c          |   54 +
+ arch/x86/boot/compressed/idt_handlers_64.S |   77 ++
+ arch/x86/boot/compressed/kaslr.c           |   36 +-
+ arch/x86/boot/compressed/kaslr_64.c        |  153 ---
+ arch/x86/boot/compressed/misc.c            |    7 +
+ arch/x86/boot/compressed/misc.h            |   50 +-
+ arch/x86/boot/compressed/sev-es.c          |  214 +++
+ arch/x86/entry/entry_64.S                  |   78 ++
+ arch/x86/include/asm/cpu.h                 |    2 +-
+ arch/x86/include/asm/cpu_entry_area.h      |   33 +-
+ arch/x86/include/asm/cpufeatures.h         |    1 +
+ arch/x86/include/asm/desc_defs.h           |    3 +
+ arch/x86/include/asm/fpu/internal.h        |   33 +-
+ arch/x86/include/asm/fpu/xcr.h             |   37 +
+ arch/x86/include/asm/idtentry.h            |   49 +
+ arch/x86/include/asm/insn-eval.h           |    6 +
+ arch/x86/include/asm/mem_encrypt.h         |    5 +
+ arch/x86/include/asm/msr-index.h           |    3 +
+ arch/x86/include/asm/page_64_types.h       |    1 +
+ arch/x86/include/asm/pgtable.h             |    2 +-
+ arch/x86/include/asm/processor.h           |    7 +
+ arch/x86/include/asm/proto.h               |    1 +
+ arch/x86/include/asm/realmode.h            |    4 +
+ arch/x86/include/asm/segment.h             |    2 +-
+ arch/x86/include/asm/setup.h               |   16 +-
+ arch/x86/include/asm/sev-es.h              |  113 ++
+ arch/x86/include/asm/stacktrace.h          |    2 +
+ arch/x86/include/asm/svm.h                 |  118 +-
+ arch/x86/include/asm/trap_pf.h             |   24 +
+ arch/x86/include/asm/trapnr.h              |    1 +
+ arch/x86/include/asm/traps.h               |   20 +-
+ arch/x86/include/asm/x86_init.h            |   16 +-
+ arch/x86/include/uapi/asm/svm.h            |   11 +
+ arch/x86/kernel/Makefile                   |    1 +
+ arch/x86/kernel/cpu/amd.c                  |    3 +-
+ arch/x86/kernel/cpu/common.c               |   37 +-
+ arch/x86/kernel/cpu/scattered.c            |    1 +
+ arch/x86/kernel/cpu/vmware.c               |   50 +-
+ arch/x86/kernel/dumpstack.c                |    7 +-
+ arch/x86/kernel/dumpstack_64.c             |   47 +-
+ arch/x86/kernel/head64.c                   |   85 +-
+ arch/x86/kernel/head_32.S                  |    4 +-
+ arch/x86/kernel/head_64.S                  |  159 ++-
+ arch/x86/kernel/idt.c                      |   94 +-
+ arch/x86/kernel/kvm.c                      |   35 +-
+ arch/x86/kernel/nmi.c                      |   12 +
+ arch/x86/kernel/sev-es-shared.c            |  507 +++++++
+ arch/x86/kernel/sev-es.c                   | 1404 ++++++++++++++++++++
+ arch/x86/kernel/smpboot.c                  |   10 +-
+ arch/x86/kernel/traps.c                    |   56 +
+ arch/x86/kernel/umip.c                     |   49 +-
+ arch/x86/kvm/svm/svm.c                     |    2 +
+ arch/x86/lib/insn-eval.c                   |  130 ++
+ arch/x86/mm/cpu_entry_area.c               |    3 +-
+ arch/x86/mm/extable.c                      |    1 +
+ arch/x86/mm/mem_encrypt.c                  |   38 +-
+ arch/x86/mm/mem_encrypt_identity.c         |    3 +
+ arch/x86/platform/efi/efi_64.c             |   10 +
+ arch/x86/realmode/init.c                   |   24 +-
+ arch/x86/realmode/rm/header.S              |    3 +
+ arch/x86/realmode/rm/trampoline_64.S       |   20 +
+ arch/x86/tools/gen-insn-attr-x86.awk       |   50 +-
+ tools/arch/x86/tools/gen-insn-attr-x86.awk |   50 +-
+ 69 files changed, 4025 insertions(+), 446 deletions(-)
+ create mode 100644 arch/x86/boot/compressed/ident_map_64.c
+ create mode 100644 arch/x86/boot/compressed/idt_64.c
+ create mode 100644 arch/x86/boot/compressed/idt_handlers_64.S
+ delete mode 100644 arch/x86/boot/compressed/kaslr_64.c
+ create mode 100644 arch/x86/boot/compressed/sev-es.c
+ create mode 100644 arch/x86/include/asm/fpu/xcr.h
+ create mode 100644 arch/x86/include/asm/sev-es.h
+ create mode 100644 arch/x86/include/asm/trap_pf.h
+ create mode 100644 arch/x86/kernel/sev-es-shared.c
+ create mode 100644 arch/x86/kernel/sev-es.c
+
 -- 
-2.7.4
+2.27.0
 
