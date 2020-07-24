@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2965522C755
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A65B22C737
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgGXOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgGXOIk (ORCPT
+        id S1726636AbgGXOBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:01:54 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32824 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726366AbgGXOBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:08:40 -0400
-X-Greylist: delayed 1320 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Jul 2020 07:08:40 PDT
-Received: from tartarus.angband.pl (tartarus.angband.pl [IPv6:2001:41d0:602:dbe::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0420DC0619D3;
-        Fri, 24 Jul 2020 07:08:40 -0700 (PDT)
-Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1jyy1p-00046j-W4; Fri, 24 Jul 2020 15:46:25 +0200
-Date:   Fri, 24 Jul 2020 15:46:25 +0200
-From:   Adam Borowski <kilobyte@angband.pl>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Nick Terrell <nickrterrell@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        linux-kbuild@vger.kernel.org, x86@kernel.org,
-        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        Patrick Williams <patrick@stwcx.xyz>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Norbert Lange <nolange79@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Xu <alex_y_xu@yahoo.ca>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Terrell <terrelln@fb.com>
-Subject: Re: [PATCH v8 6/7] x86: Add support for ZSTD compressed kernel
-Message-ID: <20200724134625.GA4100@angband.pl>
-References: <20200723192801.351114-1-nickrterrell@gmail.com>
- <20200723192801.351114-7-nickrterrell@gmail.com>
- <20200724122640.GC632343@gmail.com>
+        Fri, 24 Jul 2020 10:01:54 -0400
+X-UUID: 582a10831a1945b5a306bfadc2b48976-20200724
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=IfOVClM/Lv4VLM52AY8HzEWSy/KLqQSwlIy6ABrgbPI=;
+        b=pVnHDUPNe2rI05GE1gssxsjxBFQc1J/M9qCklXmrCrgjFS8gDa+Zpufkg+qwjlWWWQRSxMJWQ3ivxE/1wVlKXL+56WPERUEf4KymBPszwRTrb+8a8wQnu8xiYl1+glQzo9Pduu3lHjH1wsy5c0jh+5hWcFfCpMshDohfIbX1IAU=;
+X-UUID: 582a10831a1945b5a306bfadc2b48976-20200724
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1436846409; Fri, 24 Jul 2020 22:01:49 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 24 Jul 2020 22:01:45 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 24 Jul 2020 22:01:45 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <bvanassche@acm.org>
+CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
+        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v4] scsi: ufs: Quiesce all scsi devices before shutdown
+Date:   Fri, 24 Jul 2020 22:01:40 +0800
+Message-ID: <20200724140140.18186-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200724122640.GC632343@gmail.com>
-X-Junkbait: aaron@angband.pl, zzyx@angband.pl
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 02:26:40PM +0200, Ingo Molnar wrote:
-> > -#ifdef CONFIG_KERNEL_BZIP2
-> > +#if defined(CONFIG_KERNEL_BZIP2)
-> >  # define BOOT_HEAP_SIZE		0x400000
-> > -#else /* !CONFIG_KERNEL_BZIP2 */
-> > +#elif defined(CONFIG_KERNEL_ZSTD)
-> > +# define BOOT_HEAP_SIZE		 0x30000
-> > +#else
-> >  # define BOOT_HEAP_SIZE		 0x10000
-> >  #endif
-> 
-> So the other patches explain why the decompression buffer extra space 
-> was increased from 64k to 128k, but is there a similar 
-> calculation/estimate for bumping BOOT_HEAD_SIZE from 64k to 192k?
-> 
-> Admittedly the BZ2 exception doesn't set a good example, but maybe we 
-> can do this for ZSTD?
+Q3VycmVudGx5IEkvTyByZXF1ZXN0IGNvdWxkIGJlIHN0aWxsIHN1Ym1pdHRlZCB0byBVRlMgZGV2
+aWNlIHdoaWxlDQpVRlMgaXMgd29ya2luZyBvbiBzaHV0ZG93biBmbG93LiBUaGlzIG1heSBsZWFk
+IHRvIHJhY2luZyBhcyBiZWxvdw0Kc2NlbmFyaW9zIGFuZCBmaW5hbGx5IHN5c3RlbSBtYXkgY3Jh
+c2ggZHVlIHRvIHVuY2xvY2tlZCByZWdpc3Rlcg0KYWNjZXNzZXMuDQoNClRvIGZpeCB0aGlzIGtp
+bmQgb2YgaXNzdWVzLCBzcGVjaWZpY2FsbHkgcXVpZXNjZSBhbGwgU0NTSSBkZXZpY2VzDQpiZWZv
+cmUgVUZTIHNodXRkb3duIHRvIGJsb2NrIGFsbCBJL08gcmVxdWVzdCBzZW5kaW5nIGZyb20gYmxv
+Y2sNCmxheWVyLg0KDQpFeGFtcGxlIG9mIHJhY2luZyBzY2VuYXJpbzogV2hpbGUgVUZTIGRldmlj
+ZSBpcyBydW50aW1lLXN1c3BlbmRlZA0KDQpUaHJlYWQgIzE6IEV4ZWN1dGluZyBVRlMgc2h1dGRv
+d24gZmxvdywgZS5nLiwNCiAgICAgICAgICAgdWZzaGNkX3N1c3BlbmQoVUZTX1NIVVRET1dOX1BN
+KQ0KVGhyZWFkICMyOiBFeGVjdXRpbmcgcnVudGltZSByZXN1bWUgZmxvdyB0cmlnZ2VyZWQgYnkg
+SS9PIHJlcXVlc3QsDQogICAgICAgICAgIGUuZy4sIHVmc2hjZF9yZXN1bWUoVUZTX1JVTlRJTUVf
+UE0pDQoNClRoaXMgYnJlYWtzIHRoZSBhc3N1bXB0aW9uIHRoYXQgVUZTIFBNIGZsb3dzIGNhbiBu
+b3QgYmUgcnVubmluZw0KY29uY3VycmVudGx5IGFuZCBzb21lIHVuZXhwZWN0ZWQgcmFjaW5nIGJl
+aGF2aW9yIG1heSBoYXBwZW4uDQoNClNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5
+LmNodUBtZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jIHwgMjkg
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMjkgaW5zZXJ0
+aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyBiL2RyaXZl
+cnMvc2NzaS91ZnMvdWZzaGNkLmMNCmluZGV4IDlkMTgwZGE3NzQ4OC4uMmUxODU5NmYzYThlIDEw
+MDY0NA0KLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KKysrIGIvZHJpdmVycy9zY3Np
+L3Vmcy91ZnNoY2QuYw0KQEAgLTE1OSw2ICsxNTksMTIgQEAgc3RydWN0IHVmc19wbV9sdmxfc3Rh
+dGVzIHVmc19wbV9sdmxfc3RhdGVzW10gPSB7DQogCXtVRlNfUE9XRVJET1dOX1BXUl9NT0RFLCBV
+SUNfTElOS19PRkZfU1RBVEV9LA0KIH07DQogDQorI2RlZmluZSB1ZnNoY2Rfc2NzaV9mb3JfZWFj
+aF9zZGV2KGZuKSBcDQorCWxpc3RfZm9yX2VhY2hfZW50cnkoc3RhcmdldCwgJmhiYS0+aG9zdC0+
+X190YXJnZXRzLCBzaWJsaW5ncykgeyBcDQorCQlfX3N0YXJnZXRfZm9yX2VhY2hfZGV2aWNlKHN0
+YXJnZXQsIE5VTEwsIFwNCisJCQkJCSAgZm4pOyBcDQorCX0NCisNCiBzdGF0aWMgaW5saW5lIGVu
+dW0gdWZzX2Rldl9wd3JfbW9kZQ0KIHVmc19nZXRfcG1fbHZsX3RvX2Rldl9wd3JfbW9kZShlbnVt
+IHVmc19wbV9sZXZlbCBsdmwpDQogew0KQEAgLTg2MjAsNiArODYyNiwxMyBAQCBpbnQgdWZzaGNk
+X3J1bnRpbWVfaWRsZShzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KIH0NCiBFWFBPUlRfU1lNQk9MKHVm
+c2hjZF9ydW50aW1lX2lkbGUpOw0KIA0KK3N0YXRpYyB2b2lkIHVmc2hjZF9xdWllc2NlX3NkZXYo
+c3RydWN0IHNjc2lfZGV2aWNlICpzZGV2LCB2b2lkICpkYXRhKQ0KK3sNCisJLyogU3VzcGVuZGVk
+IGRldmljZXMgYXJlIGFscmVhZHkgcXVpZXNjZWQgc28gY2FuIGJlIHNraXBwZWQgKi8NCisJaWYg
+KCFwbV9ydW50aW1lX3N1c3BlbmRlZCgmc2Rldi0+c2Rldl9nZW5kZXYpKQ0KKwkJc2NzaV9kZXZp
+Y2VfcXVpZXNjZShzZGV2KTsNCit9DQorDQogLyoqDQogICogdWZzaGNkX3NodXRkb3duIC0gc2h1
+dGRvd24gcm91dGluZQ0KICAqIEBoYmE6IHBlciBhZGFwdGVyIGluc3RhbmNlDQpAQCAtODYzMSw2
+ICs4NjQ0LDcgQEAgRVhQT1JUX1NZTUJPTCh1ZnNoY2RfcnVudGltZV9pZGxlKTsNCiBpbnQgdWZz
+aGNkX3NodXRkb3duKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogew0KIAlpbnQgcmV0ID0gMDsNCisJ
+c3RydWN0IHNjc2lfdGFyZ2V0ICpzdGFyZ2V0Ow0KIA0KIAlpZiAoIWhiYS0+aXNfcG93ZXJlZCkN
+CiAJCWdvdG8gb3V0Ow0KQEAgLTg2NDQsNiArODY1OCwyMSBAQCBpbnQgdWZzaGNkX3NodXRkb3du
+KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogCQkJZ290byBvdXQ7DQogCX0NCiANCisJLyoNCisJICog
+UXVpZXNjZSBhbGwgU0NTSSBkZXZpY2VzIHRvIHByZXZlbnQgYW55IG5vbi1QTSByZXF1ZXN0cyBz
+ZW5kaW5nDQorCSAqIGZyb20gYmxvY2sgbGF5ZXIgZHVyaW5nIGFuZCBhZnRlciBzaHV0ZG93bi4N
+CisJICoNCisJICogSGVyZSB3ZSBjYW4gbm90IHVzZSBibGtfY2xlYW51cF9xdWV1ZSgpIHNpbmNl
+IFBNIHJlcXVlc3RzDQorCSAqICh3aXRoIEJMS19NUV9SRVFfUFJFRU1QVCBmbGFnKSBhcmUgc3Rp
+bGwgcmVxdWlyZWQgdG8gYmUgc2VudA0KKwkgKiB0aHJvdWdoIGJsb2NrIGxheWVyLiBUaGVyZWZv
+cmUgU0NTSSBjb21tYW5kIHF1ZXVlZCBhZnRlciB0aGUNCisJICogc2NzaV90YXJnZXRfcXVpZXNj
+ZSgpIGNhbGwgcmV0dXJuZWQgd2lsbCBibG9jayB1bnRpbA0KKwkgKiBibGtfY2xlYW51cF9xdWV1
+ZSgpIGlzIGNhbGxlZC4NCisJICoNCisJICogQmVzaWRlcywgc2NzaV90YXJnZXRfInVuInF1aWVz
+Y2UgKGUuZy4sIHNjc2lfdGFyZ2V0X3Jlc3VtZSkgY2FuDQorCSAqIGJlIGlnbm9yZWQgc2luY2Ug
+c2h1dGRvd24gaXMgb25lLXdheSBmbG93Lg0KKwkgKi8NCisJdWZzaGNkX3Njc2lfZm9yX2VhY2hf
+c2Rldih1ZnNoY2RfcXVpZXNjZV9zZGV2KTsNCisNCiAJcmV0ID0gdWZzaGNkX3N1c3BlbmQoaGJh
+LCBVRlNfU0hVVERPV05fUE0pOw0KIG91dDoNCiAJaWYgKHJldCkNCi0tIA0KMi4xOC4wDQo=
 
-By the way, I have a patchset on top of this, to drop BZ2 and LZMA(1)
-support, that should clean up this code somewhat.  And bring a lot of
-lines of Linus happiness, as both bzip2 and lzma code are not used by
-anything else in the kernel, unlike lzma2 (xz).
-
-If you draw a speed-vs-size graph, at no point bzip2 or lzma are a good
-choice, while zstd wins by a large margin for most of the range.
-
-
-Meow!
--- 
-⢀⣴⠾⠻⢶⣦⠀
-⣾⠁⢠⠒⠀⣿⡁
-⢿⡄⠘⠷⠚⠋⠀ It's time to migrate your Imaginary Protocol from version 4i to 6i.
-⠈⠳⣄⠀⠀⠀⠀
