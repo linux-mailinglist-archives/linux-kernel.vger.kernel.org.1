@@ -2,74 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5276A22BC6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0568322BC72
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgGXD2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 23:28:06 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:36684 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgGXD2G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 23:28:06 -0400
-Received: by mail-io1-f72.google.com with SMTP id h205so5450338iof.3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 20:28:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Ont9djuNY0GU/qTuUTW3soxu8Qb4Ubkk1v7mFHEioWA=;
-        b=aTdZFoWggYl+KeBPRbaTybgVC0LHpms6JEyvRTsUCMEcx9TrWBM3oKL8DtzeJbp0tx
-         VMKrhrvOcCkJWO5gHfBH84noVNKUEk6/aX6gL34mgAHcj2OlkGKaDFw50XFBj1E6yE/J
-         tFXA/KZBSbFy4h8MvQqepBdNBnfE+KvKstsF5q8d0Yzl7CKHu8MFD22lhL22ADeBryiy
-         6m1hIbaOyIJRFPz2gJZAZUUK5IMdPrE0SCCUIDDdJSbrGAZ8gPvT586rLImCq9kmKA8e
-         QZjshklK3K+tO4NjSPDGBuLQVeyPT+hJyeTfo2brNgiRnBlLV1gmrEtscoETe83cxfXQ
-         OofA==
-X-Gm-Message-State: AOAM533wRfoqHJyL3fXRIntrwyQkq+MkG0/M1JowQ0/qTGRh6RzyNwUV
-        0kwoU22c0NNkBo6zxT9hnUSXmZnN0A2+mc93xzIqqGYKK8im
-X-Google-Smtp-Source: ABdhPJyJhGuaT6ThvP5DAjoFMNwap5je5huhz7wXrzNaWbB0+3IhSTSajSiENIBUlIaXs4NeyJWylMSwM1m6OQPseXtVJY63B+ii
+        id S1726764AbgGXD3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 23:29:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63599 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726437AbgGXD3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 23:29:24 -0400
+IronPort-SDR: 7sEPOlg2g0vCizuj5NeQO+2Pr3lxSbc2eSex4DLWoTp86Dxak0B800oCCvDS8mkaVy9+e0UtHV
+ RnsFT59dYduw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="235532455"
+X-IronPort-AV: E=Sophos;i="5.75,389,1589266800"; 
+   d="scan'208";a="235532455"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 20:29:24 -0700
+IronPort-SDR: F0pCIRnT00o/gFlmlMdddXBgAQteEuDnthZw+xus5QxzuwsRyhZG1QQuCs5gkmy8w960ulnYDk
+ 8raY/cEkWJmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,389,1589266800"; 
+   d="scan'208";a="328786431"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga007.jf.intel.com with ESMTP; 23 Jul 2020 20:29:24 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id EC43F301BF9; Thu, 23 Jul 2020 20:29:23 -0700 (PDT)
+Date:   Thu, 23 Jul 2020 20:29:23 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, like.xu@linux.intel.com
+Subject: Re: [PATCH V7 12/14] perf, tools, stat: Support new per thread
+ TopDown metrics
+Message-ID: <20200724032923.GB1180481@tassilo.jf.intel.com>
+References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+ <20200723171117.9918-13-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cf06:: with SMTP id c6mr8246821ilo.73.1595561284301;
- Thu, 23 Jul 2020 20:28:04 -0700 (PDT)
-Date:   Thu, 23 Jul 2020 20:28:04 -0700
-In-Reply-To: <0000000000000a8e8605a22a1ae0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000091792505ab278f0a@google.com>
-Subject: Re: INFO: rcu detected stall in netlink_sendmsg (4)
-From:   syzbot <syzbot+0fb70e87d8e0ac278fe9@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mareklindner@neomailbox.ch, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, sven@narfation.org,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vinicius.gomes@intel.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723171117.9918-13-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+> +		if (topdown_metric_attrs[0] && str) {`
+> +			if (!stat_config.interval) {
+> +				fprintf(stat_config.output,
+> +					"Topdown accuracy may decreases when measuring long period.\n"
+> +					"Please print the result regularly, e.g. -I1000\n");
 
-commit 5a781ccbd19e4664babcbe4b4ead7aa2b9283d22
-Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Date:   Sat Sep 29 00:59:43 2018 +0000
+Can you disable this warning when --metrics-only is used? In this case it doesn't matter
+because the error is proportional to the percentage accuracy and should be invisible.
 
-    tc: Add support for configuring the taprio scheduler
+You can only see a difference when looking at the expanded counts.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d46e1b100000
-start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d46e1b100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
-dashboard link: https://syzkaller.appspot.com/bug?extid=0fb70e87d8e0ac278fe9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1023588f100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1647a88f100000
-
-Reported-by: syzbot+0fb70e87d8e0ac278fe9@syzkaller.appspotmail.com
-Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-andi
