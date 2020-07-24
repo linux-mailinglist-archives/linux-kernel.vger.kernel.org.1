@@ -2,55 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCF422D193
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 00:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FA722D19F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 00:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgGXWC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 18:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726552AbgGXWC0 (ORCPT
+        id S1726843AbgGXWFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 18:05:20 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47340 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbgGXWFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 18:02:26 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B373C0619D3;
-        Fri, 24 Jul 2020 15:02:26 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id B7534201A; Fri, 24 Jul 2020 18:02:25 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org B7534201A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1595628145;
-        bh=tWxR3BG39o5ECfKidEkWb6Hk3mHZtdLz2Tng+4hzrao=;
-        h=Date:To:Cc:Subject:From:From;
-        b=zsWL5mAKu1D8eq/kgQRSZlDBoQGJaskg6XShKViVwyw7NQl+ZGnnFw/iJ1/Xh2Peu
-         QGSHxSbL+K6FDkeSeqBzx8D0PU1Uqky0yOHj39JKw04UE1wvT9hlg0Dw+0lg4IIOG5
-         V+e4+PkXlmM6feAWky6jsVtS6ZCZ9D/88foa0nhA=
-Date:   Fri, 24 Jul 2020 18:02:25 -0400
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] nfsd bugfix for 5.8
-Message-ID: <20200724220225.GE9244@fieldses.org>
+        Fri, 24 Jul 2020 18:05:19 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 112D11C0BE2; Sat, 25 Jul 2020 00:05:17 +0200 (CEST)
+Date:   Sat, 25 Jul 2020 00:05:16 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Martin Botka <martin.botka1@gmail.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH RFC 0/6] Add QCOM pwm-lpg and tri-led drivers
+Message-ID: <20200724220516.GA21965@amd>
+References: <20200724213659.273599-1-martin.botka1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+In-Reply-To: <20200724213659.273599-1-martin.botka1@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull:
 
-  git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.8-2
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is just one fix for a NULL dereference if someone happens to read
-/proc/fs/nfsd/client/../state at the wrong moment.
+Hi!
 
---b.
+Dalsi cech co hackuje LEDky?
 
-J. Bruce Fields (1):
-      nfsd4: fix NULL dereference in nfsd/clients display code
+> This series brings QCOM pwm-lpg and tri-led drivers from 4.14 that is req=
+uired to support pmic-connected notification LED.
+> This comes straight from downstream and I'm ready for your comments.
 
- fs/nfsd/nfs4state.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+Yeah, so...
+
+Bindings should go first, they may need to be converted to yml
+(devicetree people will know).
+
+Can generic pwm driver be used here?
+
+This is for RGB modules, right? It will need to use multicolor
+framework.
+
+"Breathing" will need to be figured out. It should become a trigger.
+
+Is this for phone, btw? If so, which one?
+
+Best regards,
+								Pavel
+
+>  .../bindings/leds/leds-qti-tri-led.txt        |   72 +
+>  .../devicetree/bindings/pwm/pwm-qti-lpg.txt   |  163 +++
+>  drivers/leds/Kconfig                          |    9 +
+>  drivers/leds/Makefile                         |    1 +
+>  drivers/leds/leds-qti-tri-led.c               |  640 ++++++++
+>  drivers/pwm/Kconfig                           |   10 +
+>  drivers/pwm/Makefile                          |    1 +
+>  drivers/pwm/core.c                            |   56 +-
+>  drivers/pwm/pwm-qti-lpg.c                     | 1284 +++++++++++++++++
+>  drivers/pwm/sysfs.c                           |   56 +-
+>  include/linux/pwm.h                           |  144 +-
+>  11 files changed, 2418 insertions(+), 18 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-qti-tri-l=
+ed.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-qti-lpg.txt
+>  create mode 100644 drivers/leds/leds-qti-tri-led.c
+>  create mode 100644 drivers/pwm/pwm-qti-lpg.c
+>=20
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl8bWxwACgkQMOfwapXb+vLWJQCdHtl9UD/9yDfZ1yGURJGOFa/h
+BlsAmwV9txSx+kK7qN9Y9fI6OBfNv+A3
+=cLGg
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
