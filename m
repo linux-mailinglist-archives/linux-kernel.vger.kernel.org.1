@@ -2,191 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B3122C1EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77D922C1DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgGXJSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:18:11 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56786 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728134AbgGXJSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:18:05 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E4A3DE6E6F2762F6A3B8;
-        Fri, 24 Jul 2020 17:18:02 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 24 Jul 2020 17:17:54 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>, <zhangshaokun@hisilicon.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, <guohanjun@huawei.com>
-Subject: [PATCH 4/4] perf: arm-spe: Synthesize new events for ARMv8.3-SPE
-Date:   Fri, 24 Jul 2020 17:16:07 +0800
-Message-ID: <20200724091607.41903-5-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200724091607.41903-1-liwei391@huawei.com>
-References: <20200724091607.41903-1-liwei391@huawei.com>
+        id S1728005AbgGXJQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:16:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:58284 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726801AbgGXJQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:16:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 942FCD6E;
+        Fri, 24 Jul 2020 02:16:28 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 298433F66E;
+        Fri, 24 Jul 2020 02:16:26 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 10:16:23 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v7 1/3] sched/uclamp: Add a new sysctl to control RT
+ default boost value
+Message-ID: <20200724091623.juqepztp5xtqgzrr@e107158-lin.cambridge.arm.com>
+References: <20200716110347.19553-1-qais.yousef@arm.com>
+ <20200716110347.19553-2-qais.yousef@arm.com>
+ <20200724085405.GW10769@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200724085405.GW10769@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Synthesize unaligned address access events and partial/empty
-predicated SVE operation introduced by ARMv8.3-SPE.
+On 07/24/20 10:54, Peter Zijlstra wrote:
+> On Thu, Jul 16, 2020 at 12:03:45PM +0100, Qais Yousef wrote:
+> 
+> Would you mind terribly if I rename things like so?
 
-They can be filtered by itrace options when reporting.
+Nope, the new name is good for me too.
 
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- .../util/arm-spe-decoder/arm-spe-decoder.c    | 11 ++++
- .../util/arm-spe-decoder/arm-spe-decoder.h    |  3 +
- tools/perf/util/arm-spe.c                     | 61 +++++++++++++++++++
- 3 files changed, 75 insertions(+)
+> 
+> I tried and failed to come up with a shorter name in general, these
+> functions names are somewhat unwieldy. I considered s/_default//.
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-index 93e063f22be5..fac8102c0149 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-@@ -197,6 +197,17 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
- 			if (payload & BIT(EV_MISPRED))
- 				decoder->record.type |= ARM_SPE_BRANCH_MISS;
- 
-+			if ((idx == 4 || idx == 8) &&
-+			    (payload & BIT(EV_ALIGNMENT)))
-+				decoder->record.type |= ARM_SPE_ALIGNMENT;
-+
-+			if ((idx == 4 || idx == 8) &&
-+			    (payload & BIT(EV_PARTIAL_PREDICATE)))
-+				decoder->record.type |= ARM_SPE_PARTIAL_PREDICATE;
-+
-+			if ((idx == 4 || idx == 8) &&
-+			    (payload & BIT(EV_EMPTY_PREDICATE)))
-+				decoder->record.type |= ARM_SPE_EMPTY_PREDICATE;
- 			break;
- 		case ARM_SPE_DATA_SOURCE:
- 			break;
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-index a5111a8d4360..d165418fcc13 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-@@ -39,6 +39,9 @@ enum arm_spe_sample_type {
- 	ARM_SPE_TLB_MISS	= 1 << 5,
- 	ARM_SPE_BRANCH_MISS	= 1 << 6,
- 	ARM_SPE_REMOTE_ACCESS	= 1 << 7,
-+	ARM_SPE_ALIGNMENT	= 1 << 8,
-+	ARM_SPE_PARTIAL_PREDICATE	= 1 << 9,
-+	ARM_SPE_EMPTY_PREDICATE	= 1 << 10,
- };
- 
- struct arm_spe_record {
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 3882a5360ada..e36d6eea269b 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -53,6 +53,8 @@ struct arm_spe {
- 	u8				sample_tlb;
- 	u8				sample_branch;
- 	u8				sample_remote_access;
-+	u8				sample_alignment;
-+	u8				sample_sve;
- 
- 	u64				l1d_miss_id;
- 	u64				l1d_access_id;
-@@ -62,6 +64,9 @@ struct arm_spe {
- 	u64				tlb_access_id;
- 	u64				branch_miss_id;
- 	u64				remote_access_id;
-+	u64				alignment_id;
-+	u64				epred_sve_id;
-+	u64				ppred_sve_id;
- 
- 	u64				kernel_start;
- 
-@@ -344,6 +349,30 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
- 			return err;
- 	}
- 
-+	if (spe->sample_alignment &&
-+	    (record->type & ARM_SPE_ALIGNMENT)) {
-+		err = arm_spe_synth_spe_events_sample(speq,
-+						      spe->alignment_id);
-+		if (err)
-+			return err;
-+	}
-+
-+	if (spe->sample_sve) {
-+		if (record->type & ARM_SPE_EMPTY_PREDICATE) {
-+			err = arm_spe_synth_spe_events_sample(
-+					speq, spe->epred_sve_id);
-+			if (err)
-+				return err;
-+		}
-+
-+		if (record->type & ARM_SPE_PARTIAL_PREDICATE) {
-+			err = arm_spe_synth_spe_events_sample(
-+					speq, spe->ppred_sve_id);
-+			if (err)
-+				return err;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -907,6 +936,38 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
- 		id += 1;
- 	}
- 
-+	if (spe->synth_opts.alignment) {
-+		spe->sample_alignment = true;
-+
-+		/* Alignment */
-+		err = arm_spe_synth_event(session, &attr, id);
-+		if (err)
-+			return err;
-+		spe->alignment_id = id;
-+		arm_spe_set_event_name(evlist, id, "alignment");
-+		id += 1;
-+	}
-+
-+	if (spe->synth_opts.sve) {
-+		spe->sample_sve = true;
-+
-+		/* Empty predicated SVE */
-+		err = arm_spe_synth_event(session, &attr, id);
-+		if (err)
-+			return err;
-+		spe->epred_sve_id = id;
-+		arm_spe_set_event_name(evlist, id, "sve-pred-empty");
-+		id += 1;
-+
-+		/* Partial predicated SVE */
-+		err = arm_spe_synth_event(session, &attr, id);
-+		if (err)
-+			return err;
-+		spe->ppred_sve_id = id;
-+		arm_spe_set_event_name(evlist, id, "sve-pred-partial");
-+		id += 1;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.17.1
+Can do. Me thinking that maybe we need to sprinkle more comments then. But if
+I felt the need for more comments, I can always post another patch on top :-)
 
+If you'd like a shorter name, a slightly shorter one would be
+
+	update_uclamp_min_rt()
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> ---
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -914,7 +914,7 @@ unsigned int uclamp_rq_max_value(struct
+>  	return uclamp_idle_value(rq, clamp_id, clamp_value);
+>  }
+>  
+> -static void __uclamp_sync_util_min_rt_default_locked(struct task_struct *p)
+> +static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+>  {
+>  	unsigned int default_util_min;
+>  	struct uclamp_se *uc_se;
+> @@ -931,7 +931,7 @@ static void __uclamp_sync_util_min_rt_de
+>  	uclamp_se_set(uc_se, default_util_min, false);
+>  }
+>  
+> -static void __uclamp_sync_util_min_rt_default(struct task_struct *p)
+> +static void uclamp_update_util_min_rt_default(struct task_struct *p)
+>  {
+>  	struct rq_flags rf;
+>  	struct rq *rq;
+> @@ -941,7 +941,7 @@ static void __uclamp_sync_util_min_rt_de
+>  
+>  	/* Protect updates to p->uclamp_* */
+>  	rq = task_rq_lock(p, &rf);
+> -	__uclamp_sync_util_min_rt_default_locked(p);
+> +	__uclamp_update_util_min_rt_default(p);
+>  	task_rq_unlock(rq, p, &rf);
+>  }
+>  
+> @@ -968,7 +968,7 @@ static void uclamp_sync_util_min_rt_defa
+>  
+>  	rcu_read_lock();
+>  	for_each_process_thread(g, p)
+> -		__uclamp_sync_util_min_rt_default(p);
+> +		uclamp_update_util_min_rt_default(p);
+>  	rcu_read_unlock();
+>  }
+>  
+> @@ -1360,7 +1360,7 @@ static void __setscheduler_uclamp(struct
+>  		 * at runtime.
+>  		 */
+>  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> -			__uclamp_sync_util_min_rt_default_locked(p);
+> +			__uclamp_update_util_min_rt_default(p);
+>  		else
+>  			uclamp_se_set(uc_se, uclamp_none(clamp_id), false);
+>  
+> @@ -1404,7 +1404,7 @@ static void uclamp_fork(struct task_stru
+>  
+>  static void uclamp_post_fork(struct task_struct *p)
+>  {
+> -	__uclamp_sync_util_min_rt_default(p);
+> +	uclamp_update_util_min_rt_default(p);
+>  }
+>  
+>  static void __init init_uclamp_rq(struct rq *rq)
