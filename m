@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE5022C63D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2617622C63F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgGXNWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgGXNWh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:22:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E354BC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:22:36 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595596955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8gts4+rhoCcJmIbspKqY0dRXPYjhj0KR9ID/ZNHGSTY=;
-        b=cs33rQ2NIph3IdIHiubXINFkgQEgCuMUMNUwZB5JhRE9WHGCgr5vbG7cTfnoTXOAmznq8e
-        Tjw3rKYTn2fHAzbDZ+THN5wWU5w0GI3zmJgw5dmPucL+6Ns2MDhugZqEy5HbmtsCtz3Rls
-        x+GiwpenaOHw+QBEqML3RIA7ikoyv0KsgV7BuMUw6I2111kK8XsWjtbh8UjecGuDugaXrY
-        mfCjvNSCKDMKiKsLb/+QxjaUYHk+hgB0ddzwPnPS5I8aBfpOECwn/Kzp944oIxFVIgFkbF
-        oMKykPXTrTjU2gKBqXzVQM15aItTnzQV7nnpEyJD4rXKtUfkpdFSCp8d1pF0Lg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595596955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8gts4+rhoCcJmIbspKqY0dRXPYjhj0KR9ID/ZNHGSTY=;
-        b=wdUDbYM98kOo9cWK8AKk8HLRWvE314quZ4hQSY20WWYkfc7cPLvHRt0qLRnLrfSFombc0h
-        o9nrg8DG3u4UcgAA==
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrei Vagin <avagin@gmail.com>, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH v5 0/6] arm64: add the time namespace support
-In-Reply-To: <20200724110131.GC23388@gaia>
-References: <20200624083321.144975-1-avagin@gmail.com> <20200705064055.GA28894@gmail.com> <20200714015743.GA843937@gmail.com> <20200722181506.GA4517@gaia> <20200723174140.GA3991167@gmail.com> <87d04mvv0g.fsf@nanos.tec.linutronix.de> <20200724110131.GC23388@gaia>
-Date:   Fri, 24 Jul 2020 15:22:34 +0200
-Message-ID: <874kpxujxh.fsf@nanos.tec.linutronix.de>
+        id S1726814AbgGXNXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33820 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726182AbgGXNXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:23:22 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4902E2065F;
+        Fri, 24 Jul 2020 13:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595597001;
+        bh=iz3emlIBboqj3w97xgTGWD2hmJOu1r/oD9Rp5zyVlU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=icY+uqCpVv5U6vQ2+hkHUjbgfepgkDpCiA6MFFX1vZGUx/yRBctOxSRG9Ou/kEAH9
+         EbE/9v4c07AKTdxu5d1HEawH5rAqeXjZOmph/TmTk7N5C1u3YS8jWHTEMCIaSbOJby
+         6Zllg0p0dA7nlcI6eW9Olw7E6kL4JVd/27ysiv5Q=
+Date:   Fri, 24 Jul 2020 15:23:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Subject: Re: [git pull] habanalabs pull request for kernel 5.9-rc1 (resend)
+Message-ID: <20200724132323.GA316746@kroah.com>
+References: <20200723191525.GA24516@ogabbay-VM>
+ <20200724093259.GB4116407@kroah.com>
+ <CAFCwf10r4eqO=6B=C_iKt17XcY7oVuRDEJs5_x9Anw_5Djig6Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf10r4eqO=6B=C_iKt17XcY7oVuRDEJs5_x9Anw_5Djig6Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Catalin Marinas <catalin.marinas@arm.com> writes:
-> On Thu, Jul 23, 2020 at 10:25:35PM +0200, Thomas Gleixner wrote:
->> Andrei Vagin <avagin@gmail.com> writes:
->> > On Wed, Jul 22, 2020 at 07:15:06PM +0100, Catalin Marinas wrote:
->> >
->> > I don't think that we need to handle this case in the kernel. Users
->> > must understand what they are doing and have to write code so that avoid
->> > these sort of situations. In general, I would say that in most cases it
->> > is a bad idea to call setns from a signal handler.
->> 
->> This should not be supported in the first place and just let the
->> offender die right there.
->
-> It would have been nice if we caught the offender easily but since
-> signal handling doesn't have to be paired with sigreturn(), the kernel
-> can't tell whether setns() is called in the wrong context. I guess we
-> just have to live with this (maybe document the restriction in
-> time_namespaces(7) or setns(2)).
+On Fri, Jul 24, 2020 at 02:35:17PM +0300, Oded Gabbay wrote:
+> On Fri, Jul 24, 2020 at 12:32 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Thu, Jul 23, 2020 at 10:15:25PM +0300, Oded Gabbay wrote:
+> > > Hello Greg,
+> > >
+> > > (Re-sending this pull request)
+> > >
+> > > This is habanalabs pull request for the merge window of kernel 5.9. It
+> > > contains many small improvements to common and GAUDI code. Details are in
+> > > the tag.
+> > >
+> > > Thanks,
+> > > Oded
+> > >
+> > > The following changes since commit 7a4462a96777b64b22412f782de226c90290bf75:
+> > >
+> > >   misc: rtsx: Use standard PCI definitions (2020-07-22 13:39:31 +0200)
+> > >
+> > > are available in the Git repository at:
+> > >
+> > >   git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-next-2020-07-23
+> >
+> > {sigh}
+> >
+> > Commit: 961a7325e670 ("habanalabs: Fix memory leak in error flow of context init")
+> >         Fixes tag: Fixes: 786c94810698 ("habanalabs: Use pending cs amount per asic")
+> >         Has these problem(s):
+> >                 - Subject does not match target commit subject
+> >                   Just use
+> >                                 git log -1 --format='Fixes: %h ("%s")'
+> >
+> > The scripts I use to check this are here:
+> >         https://github.com/gregkh/gregkh-linux/blob/master/work/verify_fixes.sh
+> >         https://github.com/gregkh/gregkh-linux/blob/master/work/verify_signedoff.sh
+> >
+> > And note, if I ignore these errors, you will just get the same response
+> > from Stephen when it hits linux-next :(
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> I'm sorry for all the trouble Greg, but I wanted to ask before I send
+> it again, won't the fixed sha-id be wrong once you merge this pull
+> request to your tree ?
 
-Yes, I know that it's more or less impossible. The 'should' was just
-wishful thinking :)
+Nope, that's because I am using git to merge it.
 
-But yes, proper documentation is required.
+> Because this patch fixes a previous patch in this pull-request.
+> Maybe I should just squash them ?
 
-Thanks,
+That's up to you.  If it was a different author, perhaps keep them
+separate, it's your call.
 
-        tglx
+thanks,
+
+greg k-h
