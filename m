@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5237D22C5BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBED22C5C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgGXNHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:07:02 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:57296 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbgGXNHA (ORCPT
+        id S1726804AbgGXNJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:09:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35926 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726572AbgGXNJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:07:00 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0DE021C0BDD; Fri, 24 Jul 2020 15:06:59 +0200 (CEST)
-Date:   Fri, 24 Jul 2020 15:06:58 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     amitkarwar@gmail.com, ganapathi.bhat@nxp.com,
-        huxinming820@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org
-Subject: [PATCH] slimbus: ngd: simplify error handling
-Message-ID: <20200724130658.GA29458@duo.ucw.cz>
+        Fri, 24 Jul 2020 09:09:27 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jyxRv-0004tR-PI; Fri, 24 Jul 2020 13:09:19 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] sctp: remove redundant initialization of variable status
+Date:   Fri, 24 Jul 2020 14:09:19 +0100
+Message-Id: <20200724130919.18497-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The variable status is being initialized with a value that is never read
+and it is being updated later with a new value.  The initialization is
+redundant and can be removed.  Also put the variable declarations into
+reverse christmas tree order.
 
-Simplify error handling; we already know mwq is NULL.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+---
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+V2: put variable declarations into reverse christmas tree order.
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctr=
-l.c
-index 743ee7b4e63f..3def0c782c7f 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1396,17 +1396,11 @@ static int qcom_slim_ngd_probe(struct platform_devi=
-ce *pdev)
- 	ctrl->mwq =3D create_singlethread_workqueue("ngd_master");
- 	if (!ctrl->mwq) {
- 		dev_err(&pdev->dev, "Failed to start master worker\n");
--		ret =3D -ENOMEM;
--		goto wq_err;
-+		qcom_slim_ngd_qmi_svc_event_deinit(&ctrl->qmi);
-+		return -ENOMEM;
- 	}
-=20
- 	return 0;
--wq_err:
--	qcom_slim_ngd_qmi_svc_event_deinit(&ctrl->qmi);
--	if (ctrl->mwq)
--		destroy_workqueue(ctrl->mwq);
--
--	return ret;
- }
-=20
- static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
+---
+ net/sctp/protocol.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+diff --git a/net/sctp/protocol.c b/net/sctp/protocol.c
+index 7ecaf7d575c0..d19db22262fd 100644
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -1367,15 +1367,15 @@ static struct pernet_operations sctp_ctrlsock_ops = {
+ /* Initialize the universe into something sensible.  */
+ static __init int sctp_init(void)
+ {
+-	int i;
+-	int status = -EINVAL;
+-	unsigned long goal;
+-	unsigned long limit;
+ 	unsigned long nr_pages = totalram_pages();
++	unsigned long limit;
++	unsigned long goal;
++	int max_entry_order;
++	int num_entries;
+ 	int max_share;
++	int status;
+ 	int order;
+-	int num_entries;
+-	int max_entry_order;
++	int i;
+ 
+ 	sock_skb_cb_check_size(sizeof(struct sctp_ulpevent));
+ 
+-- 
+2.27.0
 
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXxrc8gAKCRAw5/Bqldv6
-8t64AJ9TkLMXPTQazgz1+ieXgOtgBpnQygCggKxDeQohVmkoaZvXGkAfjTtg0hk=
-=qEGF
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
