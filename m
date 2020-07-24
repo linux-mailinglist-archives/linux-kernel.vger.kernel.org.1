@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC44722BB2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C6C22BB2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgGXA5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 20:57:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727783AbgGXA5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 20:57:05 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF6B12086A;
-        Fri, 24 Jul 2020 00:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595552225;
-        bh=r5WxFrMiDdKHTC3n7Eg5/S6BdCaIflcHYZos9cjnVOI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=A6VgWN4htxp/7jHEyuT/i8Rz/5PrRRJcbIlv5FoYcEQGIwgzxxxNP8mvELD6OpEmo
-         fQFEb2RN093Ag/ZOmX8rPgE4StK8ZyCK18P3YSyEmevfo1QAufGZaeiOiltVe1G5l6
-         /sbTQfMJ7T0UtIEnmBt9bfFSv6bfZqNc0jfKe8AU=
-Date:   Thu, 23 Jul 2020 17:57:04 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        andi.kleen@intel.com, ying.huang@intel.com,
-        andriy.shevchenko@intel.com
-Subject: Re: [RFC PATCH] makefile: add debug option to enable function
- aligned on 32 bytes
-Message-Id: <20200723175704.44c4b890e76dc6dc68bf3674@linux-foundation.org>
-In-Reply-To: <20200723062933.GA65362@shbuild999.sh.intel.com>
-References: <1595475001-90945-1-git-send-email-feng.tang@intel.com>
-        <20200722203919.8b7c9b35ff51d66550c3846c@linux-foundation.org>
-        <20200723062933.GA65362@shbuild999.sh.intel.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728383AbgGXA61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 20:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727783AbgGXA61 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 20:58:27 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE785C0619D3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:58:26 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id t131so8243344iod.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:58:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=/hwv8aeqxQFc770ydGll5SHnDNU+mIuRLVZfjHpDppo=;
+        b=bsZog7S2uysndCYTS9xU78SThmFHV2CSeD4zHXCLHovasdnKb8u3qK3v+6EtCW20bH
+         9l608OBF/dlVCJlXKBBWnvHCzEAHK/OjKEI2ZvGZGC9+VavITM6HqtZBFKlSv1xG6hdB
+         TCB4ZmEZ4VmkVaYJuRy0fx1I1X8ugF/Rccv9tz3XvqytDzumE8eIdCNn0BaelrGKCGCj
+         hxuhO0FVXYhnRKFTe+CbVZjbaSEZ9NAE3B95kyGyrI9QsjPVthVqi0cn0/cC+VZ/MP3i
+         H2JbYkLhmJu5YiCqqmrv/LaOOt75F3NeYl3o0Azduiy6PmZz1/LR3i+Mk+BpKU8I7lJq
+         K62w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=/hwv8aeqxQFc770ydGll5SHnDNU+mIuRLVZfjHpDppo=;
+        b=INcxi88qcIfkFg0N5FsNxVgDMMyo9udWo1AJEzbgXLufLpjjmQ0A0O6G95ZSHXqOez
+         jaGX+FRSeNYk9KLyBFWuQ4+R5vcTbTQaqV7l+unL9fxKAVCh9akDdJmoy4OsA494uRlN
+         dgPKSf6DNygl6aeMp+pGGNVQa5M9rcz9YjbF4T+vjJfUZ8KPA9+3dbsuS0FfxCTFn7fj
+         U3kMiyZZldoBOd5VMPZCyuuHlAk/tNfD8grMooZtcfKCxKhcIOjeZdVj4cCembDzjU0H
+         TUHZ/rEDe7oV+p1/5HKpduwwp+4M+wIPxSynnoq8ay/b85DHfKzY6O3H4PYPZc6rGMlj
+         WOzg==
+X-Gm-Message-State: AOAM532CnBwAEA7L19R3puQ0jjDMeYNmBe5v9bBTK5fvhGyVgz91wcvA
+        ASEfVJ3nEtD4xZsLO3TwJKrMrdDJa9Ksq9z4nn8=
+X-Google-Smtp-Source: ABdhPJybKuecvvTfI1D+tt2La8TEvNnz33oTLTz2XwvoV6KBpR10uLyg+gK49AQxUsPUYk9R6OFs5Ujxdc87E1G8ZSo=
+X-Received: by 2002:a02:a909:: with SMTP id n9mr7893683jam.70.1595552306254;
+ Thu, 23 Jul 2020 17:58:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200723205811.1104520-1-ndesaulniers@google.com>
+In-Reply-To: <20200723205811.1104520-1-ndesaulniers@google.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 24 Jul 2020 02:58:15 +0200
+Message-ID: <CA+icZUX0jMSmE1ruCKxEyMN2-qWgPLcGHmUJ8XUz3XD6G6CT2w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] tracepoint bugfix and cleanup
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Jul 2020 14:29:33 +0800 Feng Tang <feng.tang@intel.com> wrote:
+On Thu, Jul 23, 2020 at 10:58 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> The first patch fixes a reported bug in iterating the
+> tracing/printk_formats sysfs node, and is tagged for stable.
+>
+> The second patch is a small cleanup and is less important than the
+> first.
+>
+> Nick Desaulniers (2):
+>   tracepoint: mark __tracepoint_string's __used
+>   tracepoint: used attribute definitions from compiler_attributes.h
+>
 
-> > > gcc has an option '-falign-functions=n' to force text aligned, and with
-> > > that option enabled, some of those performance changes will be gone,
-> > > like [1][2][3].
-> > > 
-> > > Add this option so that developers and 0day can easily find performance
-> > > bump caused by text alignment change,
-> > 
-> > Would they use it this way, or would they simply always enable the
-> > option to reduce the variability?
-> 
-> I may mis-understood it in my last reply. If you are asking about how
-> will developers and 0day use this option, for 0day, I've talked with
-> 0day folks, they may just enable it by default, as 0day cares more about
-> the performance delta caused by a commit (Adding Philip and Rong from
-> 0day).
+Forgot to CC CBL-ML on...?
 
-OK, thanks, I suspected as much.
+2/2 tracepoint: used attribute definitions from compiler_attributes.h
 
-The patch is so simple and probably-will-work, I guess we toss it in
-there and see.
+I didn't see it in my inbox.
 
-However it would be good if the 0day people could use it for a while
-and then provide some feedback on whether it is actually proving
-useful.  If not, we get to remove some stuff.
+- Sedat -
+
+>  include/linux/tracepoint.h | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+>
+> --
+> 2.28.0.rc0.105.gf9edc3c819-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200723205811.1104520-1-ndesaulniers%40google.com.
