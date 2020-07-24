@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4903022C7B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06AF22C7B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgGXOQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:16:41 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44937 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726317AbgGXOQl (ORCPT
+        id S1726891AbgGXORY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgGXORY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:16:41 -0400
-Received: by mail-ed1-f67.google.com with SMTP id by13so7123234edb.11;
-        Fri, 24 Jul 2020 07:16:38 -0700 (PDT)
+        Fri, 24 Jul 2020 10:17:24 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62724C0619D3;
+        Fri, 24 Jul 2020 07:17:24 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id a21so7074299otq.8;
+        Fri, 24 Jul 2020 07:17:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aJ77W7VC0CnaHTOKlpJ2EDWmm2cahJBuCdEmwoD17qU=;
+        b=SZPE9yCxR7WrG6Fo2B2u2oUI22IyoJtJqZyEkmNVqWJGnntdt9OjWKCFXQZNUqlSwg
+         1RY+9NO9QLqd8BhbSjv7d2yT6F22Fgwl8zt67LqF06tXBN+VrY6e4wf6YB6qIBB/D1Hq
+         /eAqazUwyQY8Rs5+VdB7Eb18Rf9262TcWLKHRHpBuxZo399IB7FZBemInr/dE1pSc+eP
+         AVbYX6pRSXzgrIc5zlVZ3rftuGchWygZthUZsWim8RcftFZMCkOjLxdcMh96Vntk0d+U
+         JXHo8n+L+PGZy+AqImoJCxvRZgIbllXwu6aGmSdFFnBKQuUx4IMyQSr64lsyiIF/vXmn
+         hY5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0sb81io14/iZEElRAIKtQbO/0LNyji9cw16nJ0jDSPU=;
-        b=U4sXtDjURRyG/D7k4xTE5TEmxatK1efr8nujMlYIIUbEnyuNuEbqOHH6zbhzjwCBUD
-         MkMBV2ykZahcUsltZj0xHelVP4k4FkIb7FfeqRHQLpqxNu5wCM9zqORnCdU+5IJrzdz1
-         G1DG0be4Gf6u9gSUkxoChtGc+NTsifbPq8UBUF1RFbhq7TcZhfMHSlu6G4uuIs5sgTfV
-         ZiCIHdIVk4LVDfiRFt9MmCYFVrxvowFXYWiAM8s8ArmZTfeBtvru27Zytn6WyYNQRV0o
-         BZSzv1yU2I8h+DasnMCTuTjF815OMlxI15Wf0YvpEpDLZSnQibgaaDrwK9XzrsRNLGYG
-         LIIA==
-X-Gm-Message-State: AOAM530n4ZJ17PuGIbmm2BYvyJl1p7RFqOtrVzuFKGXwD6I4DkvUayjp
-        czDobmYUjPcHOvAgtnnuZeM=
-X-Google-Smtp-Source: ABdhPJxZz5FjCvbGUaml5g0kUTy9tq4Ud3q1Jr1TK7yBGK4mPmuoJK+Z/MVfq8HjdZ2+i6JCiMoMWQ==
-X-Received: by 2002:a05:6402:2064:: with SMTP id bd4mr9018052edb.180.1595600198137;
-        Fri, 24 Jul 2020 07:16:38 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id v24sm773066eds.71.2020.07.24.07.16.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Jul 2020 07:16:37 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 16:16:34 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 22/29] memory: omap-gpmc: Fix whitespace issue
-Message-ID: <20200724141634.GD10663@kozik-lap>
-References: <20200724074038.5597-1-krzk@kernel.org>
- <20200724074038.5597-23-krzk@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aJ77W7VC0CnaHTOKlpJ2EDWmm2cahJBuCdEmwoD17qU=;
+        b=Vj3UckrlOZn4e4RHowUP1BKyzdbVwW6AJqfh8yOswc7VkQYa46GrGq8zwRzkcEU/+a
+         uVkWbciZs+guL3mFf8LYBi+tx0phkWMB9zkH+XGZceZ/aoN8B6hKJNMStltEqiRETmDM
+         hOcHdNJd3tzkUe2NxGL6fQ4vOHeBAwqsAp55Kma+Xlm2RF4Giiewl83CSPx/fPDVaHNl
+         3mmV4tzPVg1J9xskNMXr5zx2k2I2zRE92SFrU0hmdwJl5j+Xz66yfm2fP0YtxuRnveTf
+         oqIdMTPJyMjxzaWQXbo+Ki6Zp8WmyLhg1uE3+Zg/AwXxrrK+8O8TyWB/c9djZJZjigkZ
+         /B2g==
+X-Gm-Message-State: AOAM532DUtbE4ZK66vSbC5wHRRFeb8ghKOQD3AvOEEWevs0D+eM8MyVb
+        CFNqbtRPUYlphfwdBnNMRTsL3PLG014MPo95Mus=
+X-Google-Smtp-Source: ABdhPJxhNtVkYnZ/+BowuavKo7KNnAma7VTzVPnSGK3nZUxq0GAlf5iP/WueQXoZlmk8OEm+7L/wqhbBIm8NKULy0AY=
+X-Received: by 2002:a9d:5e18:: with SMTP id d24mr8814609oti.88.1595600243805;
+ Fri, 24 Jul 2020 07:17:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200724074038.5597-23-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200723170453.432-1-novikov@ispras.ru>
+In-Reply-To: <20200723170453.432-1-novikov@ispras.ru>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 24 Jul 2020 15:16:57 +0100
+Message-ID: <CA+V-a8uNfscxiM1fMjfdvZstZkkzxW41p40jpBXT3NeyiS9-Qw@mail.gmail.com>
+Subject: Re: [PATCH] media: davinci: vpif_capture: fix potential double free
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, ldv-project@linuxtesting.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 09:40:31AM +0200, Krzysztof Kozlowski wrote:
-> Fix minor whitespace and comment issues.  No functional changes.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
+Hi Evgeny,
+
+Thank you for the patch.
+
+On Thu, Jul 23, 2020 at 6:04 PM Evgeny Novikov <novikov@ispras.ru> wrote:
+>
+> In case of errors vpif_probe_complete() releases memory for vpif_obj.sd
+> and unregisters the V4L2 device. But then this is done again by
+> vpif_probe() itself. The patch removes the cleaning from
+> vpif_probe_complete().
+>
+> Found by Linux Driver Verification project (linuxtesting.org).
+>
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 > ---
+>  drivers/media/platform/davinci/vpif_capture.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/media/platform/davinci/vpif_capture.c b/drivers/media/platform/davinci/vpif_capture.c
+> index d9ec439faefa..72a0e94e2e21 100644
+> --- a/drivers/media/platform/davinci/vpif_capture.c
+> +++ b/drivers/media/platform/davinci/vpif_capture.c
+> @@ -1482,8 +1482,6 @@ static int vpif_probe_complete(void)
+>                 /* Unregister video device */
+>                 video_unregister_device(&ch->video_dev);
+>         }
+> -       kfree(vpif_obj.sd);
+> -       v4l2_device_unregister(&vpif_obj.v4l2_dev);
+>
+vpif_probe_complete() is a async callback and probe() should have
+already completed by then.
 
-Applied (and part of pull request to arm-soc).
+Cheers,
+--Prabhakar
 
-For the other omap-gpmc testing is welcomed.
-
-Best regards,
-Krzysztof
+>         return err;
+>  }
+> --
+> 2.16.4
+>
