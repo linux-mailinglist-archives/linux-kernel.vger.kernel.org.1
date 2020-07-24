@@ -2,149 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9CF22C8C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 17:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FD922C8B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 17:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgGXPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 11:06:47 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:40596 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgGXPGr (ORCPT
+        id S1726701AbgGXPEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 11:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726618AbgGXPE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 11:06:47 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06OF2bQI155207;
-        Fri, 24 Jul 2020 15:05:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=cNUP853YkWwLJ+m++81WpFZuhAR4szqqYWHOb1sXqz0=;
- b=gemkuhToopoUsuLCsecObG4T6QgT4B/aXDAA8x0npNiRxeQHCfJPAFc7YRGKq07UfZ54
- E6kefAZq3Q9X4K5Pyrs5oXDKtN5SH959WSKmrnnjxedGP+WkxV3BPYfOOZ/M53dGtcDd
- Le2y//mM/fSs6bygMvLdQImbhqYwWH0OgvRGevpZmOBUUb7R2mz5lQtDD6OBaHfTz6az
- j7R2KNzfoXK7VLk8AEklC7mmy2ilw5mUT5ywWDkcP0dJEiy4DO4zporL9QTH31mVUYvA
- qy0AGa1/vZiavNVZ7tLqAuiqXmhiT6cpTY/iAjCL22oNOYEcmxIO1Aj8if21I/hXnpgc JA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 32brgryn4g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 24 Jul 2020 15:05:53 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06OEwRAX003007;
-        Fri, 24 Jul 2020 15:03:52 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 32fswsn2mk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 24 Jul 2020 15:03:52 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06OF3kZ7022441;
-        Fri, 24 Jul 2020 15:03:46 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 24 Jul 2020 08:03:46 -0700
-Date:   Fri, 24 Jul 2020 11:04:08 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Zi Yan <ziy@nvidia.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4] mm/vmstat: Add events for THP migration without split
-Message-ID: <20200724150408.am4llb3qqjm4sibf@ca-dmjordan1.us.oracle.com>
-References: <1594287583-16568-1-git-send-email-anshuman.khandual@arm.com>
- <cab90a5c-4c61-e9ad-659f-a9438d639fe5@infradead.org>
- <27CD781D-48F0-4019-934F-78994BAEC656@nvidia.com>
- <97219d3b-96e1-4371-59ea-d038f37a672a@infradead.org>
- <C5E3C65C-8253-4638-9D3C-71A61858BB8B@nvidia.com>
+        Fri, 24 Jul 2020 11:04:29 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBB0C0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 08:04:29 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so8567376wml.3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 08:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CwqTzUi/rsF9bmn8x3JnPsegKmJmnxCYF19O9EiQB8g=;
+        b=loHVUzuSXm/GXdrjvO7AU7jZHFLrpAAJsnJpXBS5lUYxZQOZXQIF+xRvuPs3DbZJwC
+         JA/atED/VBunAZuU+Lc0CUar4pSOmbdofW5NR0oU8CB/wpFeotp11dUaouQkkRyWekaV
+         nvJIOGu036olMFpZ1yRHiOSXDx2dZfnlWh4Moz5+LJjRF9ftz7OV84tRwdSBiwfcwOf7
+         4CQW0MLexrp3YA1UAOPs8dVXsLL0ciCmTKs2j8p8iqJw+YR1zAVO4XeUbbzVMEyJR//u
+         C0Ju4QattfSL52v4YmT6xs43zp0r04a+pGzBQLd74Aa/j8JeeGgowi7oIVB2CEsO6iI7
+         FaFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CwqTzUi/rsF9bmn8x3JnPsegKmJmnxCYF19O9EiQB8g=;
+        b=cgjByZ2FjK5y66w43yVrCsRBDKULKYvn9UA+P1rjetQRmAN9AHOcszularRLG5PisL
+         LzD/XCrwQQFP5I1qyqixNesbWkvZCP9wm21ZGwN+GKYGfjjpWEQsvZA40fqtswPmSNDD
+         56o//ff0Y5E2a5ZitQyy/JMkGgBtaB2zluYsb4iMa7kmlBrvcFPzqT4TPdUKrluuFngI
+         WUoG2N/i5XPJH/NNsQpp3VboxDe71Li7rDsNuvPNT6s7fAHYORTLsVqA4v0TC7EjZSeU
+         DjaCk1tHYvxH0HM4Hit/3ZntShk/1k6aQ+4Zs1H3BI0I/Y8nm8JhGrRwNb9xwpgHv9bI
+         dQrg==
+X-Gm-Message-State: AOAM530n3XmHSpQtroa+66WRjNA8pK/dKS8zMy2an1M66gWceNR5NqBf
+        PDsylcoE9mk2UCzf/ZlyY6GHtQ==
+X-Google-Smtp-Source: ABdhPJzl0EVy4Bj5RvkTByOZ6A7C/JVWAHmDOBveLcYBe6Hq1TeuhffCfAo09aU3U03SOlJnohe47A==
+X-Received: by 2002:a05:600c:285:: with SMTP id 5mr9496156wmk.41.1595603068117;
+        Fri, 24 Jul 2020 08:04:28 -0700 (PDT)
+Received: from [192.168.1.4] ([195.24.90.54])
+        by smtp.googlemail.com with ESMTPSA id m126sm407029wmf.3.2020.07.24.08.04.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 08:04:27 -0700 (PDT)
+Subject: Re: [PATCH 1/2] firmware: qcom_scm: Add memory protect virtual
+ address ranges
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Elliot Berman <eberman@codeaurora.org>
+References: <20200709115829.8194-1-stanimir.varbanov@linaro.org>
+ <20200709115829.8194-2-stanimir.varbanov@linaro.org>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <33a63665-2f75-1b58-8a0c-3b0a8979fb85@linaro.org>
+Date:   Fri, 24 Jul 2020 18:04:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <C5E3C65C-8253-4638-9D3C-71A61858BB8B@nvidia.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 mlxlogscore=999 phishscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007240116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 spamscore=0
- impostorscore=0 suspectscore=0 adultscore=0 clxscore=1011 mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007240117
+In-Reply-To: <20200709115829.8194-2-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm assuming the newly-enlarged positive error return of migrate_pages(2) won't
-have adverse effects in userspace.  Didn't see issues with any user in debian
-codesearch, and can't imagine how it could be relied on.
+Hi,
 
-This look ok.  Just some nits, take them or leave them as you prefer.
+Gentle ping for review.
 
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-
-> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
-> index 705b33d1e395..4d434398d64d 100644
-> --- a/include/trace/events/migrate.h
-> +++ b/include/trace/events/migrate.h
-> @@ -46,13 +46,18 @@ MIGRATE_REASON
->  TRACE_EVENT(mm_migrate_pages,
+On 7/9/20 2:58 PM, Stanimir Varbanov wrote:
+> This adds a new SCM memprotect command to set virtual address ranges.
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/firmware/qcom_scm.c | 24 ++++++++++++++++++++++++
+>  drivers/firmware/qcom_scm.h |  1 +
+>  include/linux/qcom_scm.h    |  8 +++++++-
+>  3 files changed, 32 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+> index 0e7233a20f34..a73870255c2e 100644
+> --- a/drivers/firmware/qcom_scm.c
+> +++ b/drivers/firmware/qcom_scm.c
+> @@ -864,6 +864,30 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+>  }
+>  EXPORT_SYMBOL(qcom_scm_assign_mem);
 >  
->  	TP_PROTO(unsigned long succeeded, unsigned long failed,
-> -		 enum migrate_mode mode, int reason),
-> +		 unsigned long thp_succeeded, unsigned long thp_failed,
-> +		 unsigned long thp_split, enum migrate_mode mode, int reason),
+> +int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
+> +				   u32 cp_nonpixel_start,
+> +				   u32 cp_nonpixel_size)
+> +{
+> +	int ret;
+> +	struct qcom_scm_desc desc = {
+> +		.svc = QCOM_SCM_SVC_MP,
+> +		.cmd = QCOM_SCM_MP_VIDEO_VAR,
+> +		.arginfo = QCOM_SCM_ARGS(4, QCOM_SCM_VAL, QCOM_SCM_VAL,
+> +					 QCOM_SCM_VAL, QCOM_SCM_VAL),
+> +		.args[0] = cp_start,
+> +		.args[1] = cp_size,
+> +		.args[2] = cp_nonpixel_start,
+> +		.args[3] = cp_nonpixel_size,
+> +		.owner = ARM_SMCCC_OWNER_SIP,
+> +	};
+> +	struct qcom_scm_res res;
+> +
+> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
+> +
+> +	return ret ? : res.result[0];
+> +}
+> +EXPORT_SYMBOL(qcom_scm_mem_protect_video_var);
+> +
+>  /**
+>   * qcom_scm_ocmem_lock_available() - is OCMEM lock/unlock interface available
+>   */
+> diff --git a/drivers/firmware/qcom_scm.h b/drivers/firmware/qcom_scm.h
+> index d9ed670da222..14da834ac593 100644
+> --- a/drivers/firmware/qcom_scm.h
+> +++ b/drivers/firmware/qcom_scm.h
+> @@ -97,6 +97,7 @@ extern int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
+>  #define QCOM_SCM_MP_RESTORE_SEC_CFG		0x02
+>  #define QCOM_SCM_MP_IOMMU_SECURE_PTBL_SIZE	0x03
+>  #define QCOM_SCM_MP_IOMMU_SECURE_PTBL_INIT	0x04
+> +#define QCOM_SCM_MP_VIDEO_VAR			0x08
+>  #define QCOM_SCM_MP_ASSIGN			0x16
 >  
-> -	TP_ARGS(succeeded, failed, mode, reason),
-> +	TP_ARGS(succeeded, failed, thp_succeeded, thp_failed,
-> +		thp_split, mode, reason),
+>  #define QCOM_SCM_SVC_OCMEM		0x0f
+> diff --git a/include/linux/qcom_scm.h b/include/linux/qcom_scm.h
+> index 3d6a24697761..19b5188d17f4 100644
+> --- a/include/linux/qcom_scm.h
+> +++ b/include/linux/qcom_scm.h
+> @@ -81,7 +81,9 @@ extern int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+>  			       unsigned int *src,
+>  			       const struct qcom_scm_vmperm *newvm,
+>  			       unsigned int dest_cnt);
+> -
+> +extern int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
+> +					  u32 cp_nonpixel_start,
+> +					  u32 cp_nonpixel_size);
+>  extern bool qcom_scm_ocmem_lock_available(void);
+>  extern int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset,
+>  			       u32 size, u32 mode);
+> @@ -131,6 +133,10 @@ static inline int qcom_scm_iommu_secure_ptbl_init(u64 addr, u32 size, u32 spare)
+>  static inline int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+>  		unsigned int *src, const struct qcom_scm_vmperm *newvm,
+>  		unsigned int dest_cnt) { return -ENODEV; }
+> +extern inline int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
+> +						 u32 cp_nonpixel_start,
+> +						 u32 cp_nonpixel_size)
+> +		{ return -ENODEV; }
 >  
->  	TP_STRUCT__entry(
->  		__field(	unsigned long,		succeeded)
->  		__field(	unsigned long,		failed)
-> +		__field(	unsigned long,		thp_succeeded)
-> +		__field(	unsigned long,		thp_failed)
-> +		__field(	unsigned long,		thp_split)
+>  static inline bool qcom_scm_ocmem_lock_available(void) { return false; }
+>  static inline int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset,
+> 
 
-These three are ints in the code, not unsigned long.  It can save space in the
-trace event struct, 8 bytes on my machine.
-
-> >>>> diff --git a/mm/migrate.c b/mm/migrate.c
-> >>>> @@ -1429,22 +1429,35 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
-                ...
-> >>>> +	bool is_thp = false;
-
-Don't need to initialize, could declare with rc/nr_subpages.
-
-> >>>> +				if (is_thp) {
-> >>>> +					nr_thp_failed++;
-> >>>> +					nr_failed += nr_subpages;
-> >>>> +					goto out;
-> >>>> +				}
-> >>>>  				nr_failed++;
-> >>>>  				goto out;
-
-This instead, in each of the three places with this pattern?:
-
-                                        if (is_thp)
-                                        	nr_thp_failed++;
-                                        nr_failed += nr_subpages;
-                                        goto out;
-
-> diff --git a/Documentation/vm/page_migration.rst b/Documentation/vm/page_migration.rst
-...
-> +5. THP_MIGRATION_SPLIT: A THP was migrated, but not as such: first, the THP had
-> +   to be split. After splitting, a migration retry was used for it's sub-pages.
-
-The first part of this might be misinterpreted for the same reason Anshuman
-changed this earlier (migration didn't necessarily happen).  We could just
-delete "A THP was migrated, but not as such: first, "
+-- 
+regards,
+Stan
