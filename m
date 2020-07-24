@@ -2,83 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7718422C78C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6A222C798
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgGXONF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:13:05 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:32802 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgGXONE (ORCPT
+        id S1727015AbgGXON0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:13:26 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:41410 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726719AbgGXONY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:13:04 -0400
-Received: by mail-wr1-f65.google.com with SMTP id f18so8479265wrs.0;
-        Fri, 24 Jul 2020 07:13:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3L0op7xpXWeOGCgDLy+1Vtys3CtHGPDZtayka6xSb1s=;
-        b=ra7iIRPAo5ec24PtuntR1YmeSodWYWxhkAslkZQE1PXre174Oc5gCZwd+SE7vUSYF3
-         whEaqtMgzL0mdNPvKilGvTH5R5n/IoJ6j+NAjaqfB/IFxQaozuDlAwrP2THbKAdngyKc
-         VpQ5qMymCveZ1ZMIhrCeQmS50HPCSSusmsyP16sIAzUKNvy3QN0V2fcICN96o3xQWEsK
-         HTP99lUw5ft7SetDTsYRYWnjjT923qwJOy15zTi5ORbmrbW8zMliVEoBL71BMHeCZr55
-         RKuJuO3MQNs4nMtGCqhuuzkMUgcWBST5NgfNLMuCFrJh2z5wsVNq6ZHDXbCZm9GdY07e
-         U+uQ==
-X-Gm-Message-State: AOAM5311xBm8rKBeGPYOrQqycOIjAxVqPZOdGfgQkxg4hobeMzk8SvdG
-        LIvZI/l89c9Yv9caELyDyJI=
-X-Google-Smtp-Source: ABdhPJz8wgSdW2xGByxv7mBpjzaqtbxdMjyIXh0/Ytmv+7BBMoNNvjogaz3koa/G7t3STMPiEd6EBA==
-X-Received: by 2002:a5d:4c46:: with SMTP id n6mr9404640wrt.73.1595599983132;
-        Fri, 24 Jul 2020 07:13:03 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id t11sm1393280wrs.66.2020.07.24.07.13.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 Jul 2020 07:13:02 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 16:12:59 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Markus Mayer <mmayer@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roger Quadros <rogerq@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 17/29] memory: brcmstb_dpfe: Constify the contents of
- string
-Message-ID: <20200724141259.GH14851@kozik-lap>
-References: <20200724074038.5597-1-krzk@kernel.org>
- <20200724074038.5597-18-krzk@kernel.org>
+        Fri, 24 Jul 2020 10:13:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595600003; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=0OHJcEma3vAIw0ugAwhwdrW/69ogMk3CRZJI0yEnfRI=;
+ b=VO95crGnHii5IkfqtSTKLGaLklc2W8vX5PVVMgSoUqimxZgmxzU6WxqL3/+6Qacpoa2W4fso
+ YxBCzEWoQFC1MV4s/qijBTIgs9oMJIIEjpg6b95C29rbouSt2NKHehiRzkCzerU8YY5YEzX+
+ 5KeBHmfx7zUAnTYvqMDNxzceKsg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5f1aec757186ea1ee120b5a6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Jul 2020 14:13:09
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 84479C43395; Fri, 24 Jul 2020 14:13:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A629C43391;
+        Fri, 24 Jul 2020 14:13:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200724074038.5597-18-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 24 Jul 2020 19:43:07 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH v2 6/7] arm64: dts: qcom: sm8150: add interconnect nodes
+In-Reply-To: <20200713154121.22094-7-jonathan@marek.ca>
+References: <20200713154121.22094-1-jonathan@marek.ca>
+ <20200713154121.22094-7-jonathan@marek.ca>
+Message-ID: <c0660973fc5235f402f7ce9cb404fd35@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 09:40:26AM +0200, Krzysztof Kozlowski wrote:
-> The string itself can be made const for safety.
+Hey Jonathan,
+
+Thanks for the patch! Please use the
+suggested register space definitions
+instead.
+
+On 2020-07-13 21:11, Jonathan Marek wrote:
+> Add the interconnect dts nodes for sm8150.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> Acked-by: Markus Mayer <mmayer@broadcom.com>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 > ---
->  drivers/memory/brcmstb_dpfe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi | 82 ++++++++++++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> index 33ff99132f4f..fa9cd9d60093 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> @@ -11,6 +11,7 @@
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+>  #include <dt-bindings/clock/qcom,gcc-sm8150.h>
+>  #include <dt-bindings/clock/qcom,gpucc-sm8150.h>
+> +#include <dt-bindings/interconnect/qcom,sm8150.h>
+>  #include <dt-bindings/thermal/thermal.h>
+> 
+>  / {
+> @@ -440,6 +441,69 @@ uart2: serial@a90000 {
+>  			};
+>  		};
+> 
+> +		dc_noc: interconnect@14e0000 {
+> +			compatible = "qcom,sm8150-dc-noc";
+> +			reg = <0 0x014e0000 0 0x1000>;
 
-Applied (and part of pull request to arm-soc).
+0x09160000 0x3200
 
-Best regards,
-Krzysztof
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		config_noc: interconnect@1500000 {
+> +			compatible = "qcom,sm8150-config-noc";
+> +			reg = <0 0x01500000 0 0x1000>;
+
+0x01500000 0x7400
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		camnoc_virt: interconnect@1620000 {
+> +			compatible = "qcom,sm8150-camnoc-virt";
+> +			reg = <0 0x01620000 0 0x1000>;
+
+0x0ac00000 0x1000
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		ipa_virt: interconnect-ipa@1620000 {
+> +			compatible = "qcom,sm8150-ipa-virt";
+> +			reg = <0 0x01620000 0 0x1000>;
+
+0x01e00000 0x1000
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		system_noc: interconnect@1629000 {
+> +			compatible = "qcom,sm8150-system-noc";
+> +			reg = <0 0x01500000 0 0x1000>;
+
+0x01620000 0x19400
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		aggre1_noc: interconnect@16e4000 {
+> +			compatible = "qcom,sm8150-aggre1-noc";
+> +			reg = <0 0x016e4000 0 0x1000>;
+
+0x016e0000 0xd080
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		aggre2_noc: interconnect@1706000 {
+> +			compatible = "qcom,sm8150-aggre2-noc";
+> +			reg = <0 0x01706000 0 0x1000>;
+
+0x01700000 0x3b100
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		compute_noc: interconnect@1720000 {
+> +			compatible = "qcom,sm8150-compute-noc";
+> +			reg = <0 0x01720000 0 0x1000>;
+
+0x01720000 0x7000
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		mmss_noc: interconnect@1749000 {
+> +			compatible = "qcom,sm8150-mmss-noc";
+> +			reg = <0 0x01749000 0 0x1000>;
+
+0x01740000 0x1c100
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+>  		ufs_mem_hc: ufshc@1d84000 {
+>  			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
+>  				     "jedec,ufs-2.0";
+> @@ -860,6 +924,20 @@ usb_2_ssphy: lane@88eb200 {
+>  			};
+>  		};
+> 
+> +		mc_virt: interconnect@9680000 {
+> +			compatible = "qcom,sm8150-mc-virt";
+> +			reg = <0 0x09680000 0 0x1000>;
+
+0x0163a000 0x1000
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+> +		gem_noc: interconnect@96ab000 {
+> +			compatible = "qcom,sm8150-gem-noc";
+> +			reg = <0 0x096ab000 0 0x1000>;
+
+0x09680000 0x3e200
+
+> +			#interconnect-cells = <1>;
+> +			qcom,bcm-voters = <&apps_bcm_voter>;
+> +		};
+> +
+>  		usb_1: usb@a6f8800 {
+>  			compatible = "qcom,sm8150-dwc3", "qcom,dwc3";
+>  			reg = <0 0x0a6f8800 0 0x400>;
+> @@ -1280,6 +1358,10 @@ rpmhpd_opp_turbo_l1: opp11 {
+>  					};
+>  				};
+>  			};
+> +
+> +			apps_bcm_voter: bcm_voter {
+> +				compatible = "qcom,bcm-voter";
+> +			};
+>  		};
+> 
+>  		cpufreq_hw: cpufreq@18323000 {
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
