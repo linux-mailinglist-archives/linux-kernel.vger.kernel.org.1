@@ -2,58 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3290322C6F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E47422C6DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgGXNqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:46:44 -0400
-Received: from mail.monom.org ([188.138.9.77]:40748 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726235AbgGXNqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:46:43 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 232BD50056B;
-        Fri, 24 Jul 2020 15:46:41 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id 5758150039E;
-        Fri, 24 Jul 2020 15:46:40 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] v4.4.231-rt202
-Date:   Fri, 24 Jul 2020 13:41:05 -0000
-Message-ID: <159559806551.29587.13643956941367278015@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S1726985AbgGXNlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:41:13 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:35990 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726235AbgGXNlM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:41:12 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0U3g0eqJ_1595598069;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3g0eqJ_1595598069)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 24 Jul 2020 21:41:10 +0800
+Subject: Re: [patch 06/15] mm/memcg: fix refcount error while moving and
+ swapping
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        hannes@cmpxchg.org, hughd@google.com, linux-mm@kvack.org,
+        mhocko@suse.com, mm-commits@vger.kernel.org, shakeelb@google.com,
+        stable@vger.kernel.org, torvalds@linux-foundation.org
+References: <20200724041524.eAqB5zPs6%akpm@linux-foundation.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <e22a1ccb-6b5a-d448-e3ff-3045e93e4f09@linux.alibaba.com>
+Date:   Fri, 24 Jul 2020 21:41:07 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200724041524.eAqB5zPs6%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
 
-I'm pleased to announce the v4.4.231-rt202 stable release.
 
-This release is an update to the new stable v4.4.231 version.
-It also includes the backport ("BPF: Disable on PREEMPT_RT") as
-Sebastian suggested to include in v4.4-rt.
+ÔÚ 2020/7/24 ÏÂÎç12:15, Andrew Morton Ð´µÀ:
+> From: Hugh Dickins <hughd@google.com>
+> Subject: mm/memcg: fix refcount error while moving and swapping
+> 
+> It was hard to keep a test running, moving tasks between memcgs with
+> move_charge_at_immigrate, while swapping: mem_cgroup_id_get_many()'s
+> refcount is discovered to be 0 (supposedly impossible), so it is then
+> forced to REFCOUNT_SATURATED, and after thousands of warnings in quick
+> succession, the test is at last put out of misery by being OOM killed.
+> 
+> This is because of the way moved_swap accounting was saved up until the
+> task move gets completed in __mem_cgroup_clear_mc(), deferred from when
+> mem_cgroup_move_swap_account() actually exchanged old and new ids. 
+> Concurrent activity can free up swap quicker than the task is scanned,
+> bringing id refcount down 0 (which should only be possible when
+> offlining).
+> 
+> Just skip that optimization: do that part of the accounting immediately.
+> 
+> Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2007071431050.4726@eggly.anvils
+> Fixes: 615d66c37c75 ("mm: memcontrol: fix memcg id ref counter on swap charge move")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
 
-Known issues:
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-   sigwaittest with hackbench as workload is able to trigger a crash on x86_64,
-   the same as reported for the v4.4.220-rt196 release. As it turns
-   out it was not triggered by BPF.
-   https://paste.opensuse.org/view/raw/58939248
-
-Thanks,
-Daniel
+> 
+>  mm/memcontrol.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- a/mm/memcontrol.c~mm-memcg-fix-refcount-error-while-moving-and-swapping
+> +++ a/mm/memcontrol.c
+> @@ -5669,7 +5669,6 @@ static void __mem_cgroup_clear_mc(void)
+>  		if (!mem_cgroup_is_root(mc.to))
+>  			page_counter_uncharge(&mc.to->memory, mc.moved_swap);
+>  
+> -		mem_cgroup_id_get_many(mc.to, mc.moved_swap);
+>  		css_put_many(&mc.to->css, mc.moved_swap);
+>  
+>  		mc.moved_swap = 0;
+> @@ -5860,7 +5859,8 @@ put:			/* get_mctgt_type() gets the page
+>  			ent = target.ent;
+>  			if (!mem_cgroup_move_swap_account(ent, mc.from, mc.to)) {
+>  				mc.precharge--;
+> -				/* we fixup refcnts and charges later. */
+> +				mem_cgroup_id_get_many(mc.to, 1);
+> +				/* we fixup other refcnts and charges later. */
+>  				mc.moved_swap++;
+>  			}
+>  			break;
+> _
+> 
