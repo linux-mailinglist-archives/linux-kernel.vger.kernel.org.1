@@ -2,139 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8692E22BDD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 07:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B7B22BDD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 08:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgGXF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 01:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgGXF7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 01:59:42 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA86C0619D3;
-        Thu, 23 Jul 2020 22:59:42 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t6so3899036plo.3;
-        Thu, 23 Jul 2020 22:59:42 -0700 (PDT)
+        id S1726650AbgGXGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 02:02:12 -0400
+Received: from mail-eopbgr750119.outbound.protection.outlook.com ([40.107.75.119]:28549
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725942AbgGXGCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 02:02:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e8Sqx5MhmhAZU2VUDc036Wd3A8RalWBrxc/F5aCdkO/fSPyaUm14sCW5v6/PVm1SvroXOoMugdbRc46JJsa4WuWcOlttwllhKuW3173NsnGNVhosTl2uwC0nb1f2yGvWMS4vgLgD/KRhvLL0wUj19B20ntDdyej2Owp/vtm57ARuF1Wy+INSV/Bnr2B0WESSOkYFDg5+f+F0Apxrx92eJFBr6TLEAVGuapmpNns58CJ2lPHyRKhFBMX62og4mkwCRcdHYpb4MO2PnfTzuRR8vNPVaWvmcCU0paMGTkyyyUlLTBDR/adDa/wy5OSptSviW8h+9Ag4btE447CnQNfPtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HQNHTtxIzShBvGtIlMKkz9O/8pQkqF0MvUCX51cxJLI=;
+ b=EbrkrNnma8wzTvXPbVM+zf/jOTQDmJLALzwb95gocZ5OJRT4C1JrgUqpaj0gXmqG8RqYq5v/okQx8bdvOY1pDp6SooVxBsv0RtYA4CK5S7lCDJKAl1w4Pvf4mjUWWeQVKJazgSNxQo5MwZk4B+jwsM7nE9ulaps/JUWy0T9A4akgP8SieqhDvu8wnwhctKkUxy0ljswDV4fiArF0N8Dp8VvX8fevgGa4I8ocPfrCjzAIDxa7SVspNr09wWjFfEnbxKN/4F0hL3q/MKrGOhsYq1uoDjtDkJVfI0o3lpkTMPAUb4g5gDypQGv8AqmnCtZLwZyV9gSD1jSkRMfkKIj4IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=2R0lW9dUL1nYb/9lgperk2g748vxQMNCmmnNHRKkl+M=;
-        b=Pb4/uDyqpRTTP9b3ebYsdYcsxNScuYdJIPeDBdZdQ0oiVxIw9UIdugSoUtLX7SJ1/B
-         3Xdajmy3uy5LYrQAe1LgIUmt9GE2Vm15HXVAfbSCg3F0Qeru3fAvX3RNB/iMTCee5YEf
-         Adelh56xJuUYcwoXbqlzhH99jqeA0YOu72J/OiCuy0fBv5rjilfboH5Vdua2NoTnkgaP
-         NSculWvNNeRGDKrLDX9WSmf3+GTuvKrepedSaFzEn9p46GRTm21RRPTHKGRdD+k0n+GM
-         ofGi26OjkkbLfQt5mu++mN1BJa3/e/9cUcmQdOHUK+ZigZC4XvuAIo2C03brXMwXU575
-         EKog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=2R0lW9dUL1nYb/9lgperk2g748vxQMNCmmnNHRKkl+M=;
-        b=duXxVlKM+S1f/30IaC9ZK8TtJeP5va/zq/uO1kGarvC3A7HVu/7uIMSn9XlW+wvlUj
-         Ez/+6+w2/ro7EC2DpaS21tfGKd5diz4uAh/9puM/Smiid/fg2bRQdgoqHm4Di2DLAldL
-         2Rpcl3l4oF1YUyu5ogpbEsoSsMCPsS+c9qTdQxIhzKBgjVQbHH1nuSrnlSxd/UEK9i/K
-         V1E/IGPUwzQDYfLHp30wOLuaMVcd+hTKeD6NiFDOpvQesLJsYxckIBYMz71J7Bf91ujO
-         IkjfJ/IIk0golrsvlTB8hwH4ozWrN7t9YeX9LaKdqu4P1o2cBS5Mozz9F4djZplM2vFz
-         4gdg==
-X-Gm-Message-State: AOAM531oxNj5JbQHpbIHwl2hqN3vF4m3ENfnOjGnrphaqQQn1uTrnADI
-        pvp7Ail1fG5JuTMbAdMIVaK7zFWU
-X-Google-Smtp-Source: ABdhPJxbeH9FlO3dIACKcXGFcLekN350jP0rI0GOjOvxK+MH/SPj/LKJY2RwdAnGdzEYCg0FKF+/iQ==
-X-Received: by 2002:a17:902:6181:: with SMTP id u1mr6767335plj.205.1595570381925;
-        Thu, 23 Jul 2020 22:59:41 -0700 (PDT)
-Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id y24sm4966404pfp.217.2020.07.23.22.59.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jul 2020 22:59:41 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 15:59:35 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 1/2] lockdep: improve current->(hard|soft)irqs_enabled
- synchronisation with actual irq state
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will@kernel.org>
-References: <20200723105615.1268126-1-npiggin@gmail.com>
-        <20200723114010.GO5523@worktop.programming.kicks-ass.net>
-        <1595506730.3mvrxktem5.astroid@bobo.none>
-        <1884dcea-9ecd-a1f3-21bb-213c655e2480@ozlabs.ru>
-In-Reply-To: <1884dcea-9ecd-a1f3-21bb-213c655e2480@ozlabs.ru>
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HQNHTtxIzShBvGtIlMKkz9O/8pQkqF0MvUCX51cxJLI=;
+ b=FliyQKKZERRRjtUFJmodByCAl2tEwyYjzss7i4L/hJlBLMa8oVv/e6Ah+t7Tg1xXiHkM848GXH9UQKA3uJiLAmQwEJewHrs3MyNw8A04OugSqoPnifBmDdoiJqTYImkrG8m9QgAvSVFEQrPlaXYgE6Vdddhl0f9iVLb4NKhmca8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+Received: from MWHPR11MB2047.namprd11.prod.outlook.com (2603:10b6:300:2a::12)
+ by MWHPR11MB1646.namprd11.prod.outlook.com (2603:10b6:301:c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Fri, 24 Jul
+ 2020 06:02:08 +0000
+Received: from MWHPR11MB2047.namprd11.prod.outlook.com
+ ([fe80::d9e8:a3eb:4f08:e795]) by MWHPR11MB2047.namprd11.prod.outlook.com
+ ([fe80::d9e8:a3eb:4f08:e795%5]) with mapi id 15.20.3216.023; Fri, 24 Jul 2020
+ 06:02:08 +0000
+From:   Steve Lee <steves.lee@maximintegrated.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, ckeepax@opensource.cirrus.com,
+        geert@linux-m68k.org, rf@opensource.wolfsonmicro.com,
+        shumingf@realtek.com, srinivas.kandagatla@linaro.org,
+        krzk@kernel.org, dmurphy@ti.com, jack.yu@realtek.com,
+        nuno.sa@analog.com, steves.lee@maximintegrated.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com,
+        steves.lee.maxim@gmail.com
+Subject: [PATCH 1/2] ASoC: max98390: Fix dac event dapm mixer.
+Date:   Fri, 24 Jul 2020 15:00:58 +0900
+Message-Id: <20200724060058.19201-1-steves.lee@maximintegrated.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SL2PR03CA0002.apcprd03.prod.outlook.com
+ (2603:1096:100:55::14) To MWHPR11MB2047.namprd11.prod.outlook.com
+ (2603:10b6:300:2a::12)
 MIME-Version: 1.0
-Message-Id: <1595568105.4eodjnxzwp.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2001:2d8:e716:8b4b:b4b1:36e4:d148:7e35) by SL2PR03CA0002.apcprd03.prod.outlook.com (2603:1096:100:55::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.15 via Frontend Transport; Fri, 24 Jul 2020 06:02:03 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [2001:2d8:e716:8b4b:b4b1:36e4:d148:7e35]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 998eb6eb-b0c9-4720-aa13-08d82f9718c3
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1646:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR11MB16462CC59C853B72D63C32BA92770@MWHPR11MB1646.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:254;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q2CxY+8ppep7amW2x1tbhg0g8IjipqMa6YzOopk8aKDu/PSrAVh24Y6r1t6oE5R9eBI2+AaZwjXeuhP3rwPThb+tCdgRqJhQHuWTis2wUX1sj/NWKhscNVnz4Apt96cNDYKYKtgukZS1Ph7Gf2PHGeJPAS4EUbkddZ9qM2oi/wfu1HG/R4ERqj2rjgeGN1GdlxkTZ8qBYrxwBBceuHuVP2PHvUglS4AhamD4djNafkPBacNCkuutF4an+gF12F8wg+go2kkr5GK3v2TViUukSb73jOpQZNDqIeLMgLnw56PzPKRQr9wbt0usXqW+niaWRQkYwrIAUxt2LSrPrdgqM8TEqP/C6SUzmYAlU6kpPzqGCz9CQpmfLLUQ/kpklAl5J82iW3d5FYtH36HJMxc8Gg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB2047.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(7416002)(186003)(2616005)(478600001)(4744005)(52116002)(69590400007)(6512007)(6486002)(6506007)(66476007)(36756003)(66946007)(83380400001)(1076003)(316002)(6666004)(4326008)(86362001)(16526019)(5660300002)(8936002)(66556008)(8676002)(2906002)(921003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: yCLNinj1VOxZadxePMSxGwtBlXs1JXrKEmmRkNckMwuLO3lf6XfJR61033FFzoyoU4ydfJHXZHpXysCrDQAZgyQebbX/93DdsIPpM0YwNRQ3sd9Rt+kmE2sQFbD9rOOSNWREkbAIwoplFGydkUK3NEO4S6pfG3xxMv6pOQM9VQrdC23SNaVewix3mXZAA2iIztRE8LjzOAYsowAa4ZuvHvH1Ok5LYyd3/Kxb6ltl7s7Os0ssSFggFcw5EI/weJJAan3e9AxpnFtxiBhKLxV6nofuXhHGkRtd8G5Oov7mTf9bPmtqXwW19JHACCbk4r0ajmF3RUlU6RmseiwmweM9VQiY+khfl5diVKIMoIYtGlE0fhJGD50CRZACtOdXbtCs0+tX8jsLbajJjWdJysmfcAw3y7a4odDyMsrSy1oCmNtvBnMCNTqU6bM5AsU8+GIIfkPgieZxqUln3RL8vHgsw//+SV7YcCPSR12MzIWa0yd7XagvSaEU0oCM6WWUJJ8GZFY8mVf2ctVoGQIEQ1WMG48Jbs3j//lpDfkYiei3J9Q=
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 998eb6eb-b0c9-4720-aa13-08d82f9718c3
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB2047.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 06:02:07.9776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v4ZxKojnIAPwOteMRsOrujyC6KNyNf/zJT2ZxiH20B+BFd+wnQSYwCdNM4zccUZiR0a1qlZbcXD6cYgYNApi2mRa5nWqklq6ij+3eI4yHcM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1646
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Alexey Kardashevskiy's message of July 24, 2020 2:16 pm:
->=20
->=20
-> On 23/07/2020 23:11, Nicholas Piggin wrote:
->> Excerpts from Peter Zijlstra's message of July 23, 2020 9:40 pm:
->>> On Thu, Jul 23, 2020 at 08:56:14PM +1000, Nicholas Piggin wrote:
->>>
->>>> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/=
-asm/hw_irq.h
->>>> index 3a0db7b0b46e..35060be09073 100644
->>>> --- a/arch/powerpc/include/asm/hw_irq.h
->>>> +++ b/arch/powerpc/include/asm/hw_irq.h
->>>> @@ -200,17 +200,14 @@ static inline bool arch_irqs_disabled(void)
->>>>  #define powerpc_local_irq_pmu_save(flags)			\
->>>>  	 do {							\
->>>>  		raw_local_irq_pmu_save(flags);			\
->>>> -		trace_hardirqs_off();				\
->>>> +		if (!raw_irqs_disabled_flags(flags))		\
->>>> +			trace_hardirqs_off();			\
->>>>  	} while(0)
->>>>  #define powerpc_local_irq_pmu_restore(flags)			\
->>>>  	do {							\
->>>> -		if (raw_irqs_disabled_flags(flags)) {		\
->>>> -			raw_local_irq_pmu_restore(flags);	\
->>>> -			trace_hardirqs_off();			\
->>>> -		} else {					\
->>>> +		if (!raw_irqs_disabled_flags(flags))		\
->>>>  			trace_hardirqs_on();			\
->>>> -			raw_local_irq_pmu_restore(flags);	\
->>>> -		}						\
->>>> +		raw_local_irq_pmu_restore(flags);		\
->>>>  	} while(0)
->>>
->>> You shouldn't be calling lockdep from NMI context!
->>=20
->> After this patch it doesn't.
->>=20
->> trace_hardirqs_on/off implementation appears to expect to be called in N=
-MI=20
->> context though, for some reason.
->>=20
->>> That is, I recently
->>> added suport for that on x86:
->>>
->>>   https://lkml.kernel.org/r/20200623083721.155449112@infradead.org
->>>   https://lkml.kernel.org/r/20200623083721.216740948@infradead.org
->>>
->>> But you need to be very careful on how you order things, as you can see
->>> the above relies on preempt_count() already having been incremented wit=
-h
->>> NMI_MASK.
->>=20
->> Hmm. My patch seems simpler.
->=20
-> And your patches fix my error while Peter's do not:
->=20
->=20
-> IRQs not enabled as expected
-> WARNING: CPU: 0 PID: 1377 at /home/aik/p/kernel/kernel/softirq.c:169
-> __local_bh_enable_ip+0x118/0x190
+ Global EN register guide to off before AMP_EN register
+ when amp disable sequence.
+  - remove AMP_EN control before max98390_dac_event call
 
-I think they would have needed some powerpc bits as well. But I don't
-see a reason we can't merge my patches, at least they fix this case and
-don't seem to make things worse in any way.
+Signed-off-by: Steve Lee <steves.lee@maximintegrated.com>
+---
+ sound/soc/codecs/max98390.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Nick
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index 3e8094241645..44ffebac15ad 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -678,7 +678,7 @@ static const struct snd_kcontrol_new max98390_dai_controls =
+ 
+ static const struct snd_soc_dapm_widget max98390_dapm_widgets[] = {
+ 	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
+-		MAX98390_R203A_AMP_EN, 0, 0, max98390_dac_event,
++		SND_SOC_NOPM, 0, 0, max98390_dac_event,
+ 		SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_MUX("DAI Sel Mux", SND_SOC_NOPM, 0, 0,
+ 		&max98390_dai_controls),
+-- 
+2.17.1
+
