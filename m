@@ -2,90 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62ADE22D084
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1328E22D0ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgGXV3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 17:29:44 -0400
-Received: from smtprelay0080.hostedemail.com ([216.40.44.80]:42774 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726411AbgGXV3n (ORCPT
+        id S1727941AbgGXVhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 17:37:54 -0400
+Received: from sed198n136.SEDSystems.ca ([198.169.180.136]:36283 "EHLO
+        sed198n136.sedsystems.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727883AbgGXVhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 17:29:43 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 9DAC2362A;
-        Fri, 24 Jul 2020 21:29:42 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:4321:5007:6119:7903:8603:9010:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12740:12760:12895:13439:13972:14659:14721:21080:21451:21627:21990:30041:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: way24_3e0938d26f4a
-X-Filterd-Recvd-Size: 3199
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 24 Jul 2020 21:29:41 +0000 (UTC)
-Message-ID: <2cdef8d442bb5da39aed17bf994a800e768942f7.camel@perches.com>
-Subject: Re: [PATCH net-next] liquidio: Remove unneeded cast from memory
- allocation
-From:   Joe Perches <joe@perches.com>
-To:     Wang Hai <wanghai38@huawei.com>, dchickles@marvell.com,
-        sburla@marvell.com, fmanlunas@marvell.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 24 Jul 2020 14:29:39 -0700
-In-Reply-To: <20200724130001.71528-1-wanghai38@huawei.com>
-References: <20200724130001.71528-1-wanghai38@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Fri, 24 Jul 2020 17:37:45 -0400
+X-Greylist: delayed 2098 seconds by postgrey-1.27 at vger.kernel.org; Fri, 24 Jul 2020 17:37:45 EDT
+Received: from barney.sedsystems.ca (barney [198.169.180.121])
+        by sed198n136.sedsystems.ca  with ESMTP id 06OL2RfA017602
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 15:02:27 -0600 (CST)
+Received: from [192.168.234.15] (sed198n237.sedsystems.ca [198.169.180.237])
+        by barney.sedsystems.ca (8.14.7/8.14.4) with ESMTP id 06OL2QDV063279
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
+        Fri, 24 Jul 2020 15:02:26 -0600
+Subject: Re: [PATCH V2 2/3] gpio: xilinx: Add interrupt support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Srinivas Neeli <srinivas.neeli@xilinx.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        shubhrajyoti.datta@xilinx.com, sgoud@xilinx.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        git@xilinx.com
+References: <1595513168-11965-1-git-send-email-srinivas.neeli@xilinx.com>
+ <1595513168-11965-3-git-send-email-srinivas.neeli@xilinx.com>
+ <CAHp75Vd7BU5DYqyQFGfBtKrb6jWFEQjMCu2MOa_7M8XYkt6BFA@mail.gmail.com>
+From:   Robert Hancock <hancock@sedsystems.ca>
+Message-ID: <8c4d01b4-ff14-9807-303e-2e2571af12e2@sedsystems.ca>
+Date:   Fri, 24 Jul 2020 15:02:26 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75Vd7BU5DYqyQFGfBtKrb6jWFEQjMCu2MOa_7M8XYkt6BFA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.64 on 198.169.180.136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-24 at 21:00 +0800, Wang Hai wrote:
-> Remove casting the values returned by memory allocation function.
+On 2020-07-23 12:03 p.m., Andy Shevchenko wrote:
+>> +/**
+>> + * xgpio_xlate - Translate gpio_spec to the GPIO number and flags
+>> + * @gc: Pointer to gpio_chip device structure.
+>> + * @gpiospec:  gpio specifier as found in the device tree
+>> + * @flags: A flags pointer based on binding
+>> + *
+>> + * Return:
+>> + * irq number otherwise -EINVAL
+>> + */
+>> +static int xgpio_xlate(struct gpio_chip *gc,
+>> +                      const struct of_phandle_args *gpiospec, u32 *flags)
+>> +{
+>> +       if (gc->of_gpio_n_cells < 2) {
+>> +               WARN_ON(1);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       if (WARN_ON(gpiospec->args_count < gc->of_gpio_n_cells))
+>> +               return -EINVAL;
+>> +
+>> +       if (gpiospec->args[0] >= gc->ngpio)
+>> +               return -EINVAL;
+>> +
+>> +       if (flags)
+>> +               *flags = gpiospec->args[1];
+>> +
+>> +       return gpiospec->args[0];
+>> +}
 > 
-> Coccinelle emits WARNING:
+> This looks like a very standart xlate function for GPIO. Why do you
+> need to open-code it?
+
+Indeed, this seems the same as the of_gpio_simple_xlate callback which 
+is used if no xlate callback is specified, so I'm not sure why this is 
+necessary?
+
 > 
-> ./drivers/net/ethernet/cavium/liquidio/octeon_device.c:1155:14-36: WARNING:
->  casting value returned by memory allocation function to (struct octeon_dispatch *) is useless.
-[]
-> diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.c b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-[]
-> @@ -1152,8 +1152,7 @@ octeon_register_dispatch_fn(struct octeon_device *oct,
->  
->  		dev_dbg(&oct->pci_dev->dev,
->  			"Adding opcode to dispatch list linked list\n");
-> -		dispatch = (struct octeon_dispatch *)
-> -			   vmalloc(sizeof(struct octeon_dispatch));
-> +		dispatch = vmalloc(sizeof(struct octeon_dispatch));
+> ...
+> 
+>> +/**
+>> + * xgpio_irq_ack - Acknowledge a child GPIO interrupt.
+> 
+>> + * This currently does nothing, but irq_ack is unconditionally called by
+>> + * handle_edge_irq and therefore must be defined.
+> 
+> This should go after parameter description(s).
+> 
+>> + * @irq_data: per irq and chip data passed down to chip functions
+>> + */
+> 
+> ...
+> 
+>>   /**
+>> + * xgpio_irq_mask - Write the specified signal of the GPIO device.
+>> + * @irq_data: per irq and chip data passed down to chip functions
+> 
+> In all comments irq -> IRQ.
+> 
+>> + */
+>> +static void xgpio_irq_mask(struct irq_data *irq_data)
+>> +{
+>> +       unsigned long flags;
+>> +       struct xgpio_instance *chip = irq_data_get_irq_chip_data(irq_data);
+>> +       int irq_offset = irqd_to_hwirq(irq_data);
+>> +       int index = xgpio_index(chip, irq_offset);
+>> +       int offset = xgpio_offset(chip, irq_offset);
+>> +
+>> +       spin_lock_irqsave(&chip->gpio_lock, flags);
+>> +
+> 
+>> +       chip->irq_enable[index] &= ~BIT(offset);
+> 
+> If you convert your data structure to use bitmaps (and respective API) like
+> 
+> #define XILINX_NGPIOS  64
+> ...
+>    DECLARE_BITMAP(irq_enable, XILINX_NGPIOS);
+> ...
+> 
+> it will make code better to read and understand. For example, here it
+> will be just
+> __clear_bit(offset, chip->irq_enable);
+> 
+>> +       dev_dbg(chip->gc.parent, "Disable %d irq, irq_enable_mask 0x%x\n",
+>> +               irq_offset, chip->irq_enable[index]);
+> 
+> Under spin lock?! Hmm...
+> 
+>> +       if (!chip->irq_enable[index]) {
+>> +               /* Disable per channel interrupt */
+>> +               u32 temp = xgpio_readreg(chip->regs + XGPIO_IPIER_OFFSET);
+>> +
+>> +               temp &= ~BIT(index);
+>> +               xgpio_writereg(chip->regs + XGPIO_IPIER_OFFSET, temp);
+>> +       }
+>> +       spin_unlock_irqrestore(&chip->gpio_lock, flags);
+>> +}
+> 
+> ...
+> 
+>> +       for (index = 0; index < num_channels; index++) {
+>> +               if ((status & BIT(index))) {
+> 
+> If gpio_width is the same among banks, you can use for_each_set_bit()
+> here as well.
+> 
+> ...
+> 
+>> +                       for_each_set_bit(bit, &all_events, 32) {
+>> +                               generic_handle_irq(irq_find_mapping
+>> +                                       (chip->gc.irq.domain, offset + bit));
+> 
+> Strange indentation. Maybe a temporary variable helps?
+> 
+> ...
+> 
+>> +       chip->irq = platform_get_irq_optional(pdev, 0);
+>> +       if (chip->irq <= 0) {
+>> +               dev_info(&pdev->dev, "GPIO IRQ not set\n");
+> 
+> Why do you need an optional variant if you print an error anyway?
+> 
+>> +       } else {
+> 
+> 
+> ...
+> 
+>> +               chip->gc.irq.parents = (unsigned int *)&chip->irq;
+>> +               chip->gc.irq.num_parents = 1;
+> 
+> Current pattern is to use devm_kcalloc() for it (Linus has plans to
+> simplify this in the future and this will help him to find what
+> patterns are being used)
+> 
 
-More the question is why this is vmalloc at all
-as the structure size is very small.
-
-Likely this should just be kmalloc.
-
-drivers/net/ethernet/cavium/liquidio/octeon_device.h:struct octeon_dispatch {
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   /** List head for this entry */
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   struct list_head list;
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   /** The opcode for which the dispatch function & arg should be used */
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   u16 opcode;
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   /** The function to be called for a packet received by the driver */
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   octeon_dispatch_fn_t dispatch_fn;
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   /* The application specified argument to be passed to the above
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-    * function along with the received packet
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-    */
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-   void *arg;
-drivers/net/ethernet/cavium/liquidio/octeon_device.h-}
-
->  		if (!dispatch) {
->  			dev_err(&oct->pci_dev->dev,
->  				"No memory to add dispatch function\n");
-
-And this dev_err is unnecessary.
-
-
+-- 
+Robert Hancock
+Senior Hardware Designer
+SED Systems, a division of Calian Ltd.
+Email: hancock@sedsystems.ca
