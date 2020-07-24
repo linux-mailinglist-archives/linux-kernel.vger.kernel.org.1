@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0A522CF0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E94FD22CF02
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgGXUIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 16:08:12 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46834 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726381AbgGXUIM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 16:08:12 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OJmBlO012337
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:08:11 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=Iuyw+uQSv2oOg1S+YzvxSbjoeQJp7NxGe48GJfiuYmI=;
- b=Bm1jrdFy85qpCEI6GkTCU1gQ5fmoj62yrN99LiHVthkiH4zEEWiBm3mNsJNPO7hlVQaw
- 0whxlUFNW2Nliy2zb9qjB6lMKgxA28Jr08eVlVzRbd7lj3u70yNOq18nbyPehNBs4rL+
- HBsyMDMB8rvjLwyfILpnbvRYVL88OO/CvIA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 32et5m3n1q-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:08:11 -0700
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 24 Jul 2020 13:08:08 -0700
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 6603662E4E74; Fri, 24 Jul 2020 13:05:47 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Song Liu <songliubraving@fb.com>
-Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
-To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <brouer@redhat.com>, Song Liu <songliubraving@fb.com>,
-        kernel test robot <lkp@intel.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpf: fix build on architectures with special bpf_user_pt_regs_t
-Date:   Fri, 24 Jul 2020 13:05:02 -0700
-Message-ID: <20200724200503.3629591-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726717AbgGXUFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 16:05:10 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:36144 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgGXUFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 16:05:10 -0400
+Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f1b3ef30000>; Sat, 25 Jul 2020 04:05:07 +0800
+Received: from HKMAIL102.nvidia.com ([10.18.16.11])
+  by hkpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 24 Jul 2020 13:05:07 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate102.nvidia.com on Fri, 24 Jul 2020 13:05:07 -0700
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 24 Jul
+ 2020 20:05:07 +0000
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
+ by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Fri, 24 Jul 2020 20:05:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KlBuPhvKFBlISCytCjT2fYgdfEUxiWLW9CSIbzunf6Fc9hUoeELOlMDnKj486+FP8Si1I4G3QTIas8gymrxyu9tDynjalfxJ7vb9DHelUYRDwG8SYw2qkldNKKnmpzJIT1GyiHfINWCoyI479PrQrk0Ht3s6arx66YVJ5Q8xKWWM467tChJU5G2wc2a18V1/ddNFuhAjB7wKZFse3KexTiooWPn9yxI10rQHst7M8AXHY+nkrtELDL6kwy+MUf6CX2hp7p08HgdGrO3kqQX+U09IQIhbCF07fjswKcdAzRkYPesSrjZyDaGmZeuJoRVep8xLg4GR4FG0+QZoLqzjJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Y9GDbXUogGyoJfp0xcchvrjcp/jc7V3YPuzA556lps=;
+ b=Ca3KOlXrUOmZkX2Ag6izDFWZtSpyfxz265hj9wKn4qm5q6MGLj7cBPihB35SZ8R/6vBdIlrE9srkR/Chai+eKjdqmHJN8Fv3kHeccSwTacWxj3U6zpJG6pBI/e+6K9J9ielRgXaQnUaF586cXX5ASJX55TmcHMqG5C+G6sqw3hpxWs+xrOBxbg1C2PMRPlRCE7vDupC5JDrtW2kUn8qsDyRGHoG8RHuTbEeB9iQgq6/vvA7rTUF0m2C6MHcZ4z6vmKlRwp5fBguUmW5MT5NUdAOPOPDenTp3eKsl0Ke9xOZFF+nWZ70pFixXLgbYMWp2U0HTP1xXgzBNN3ocfOKmQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: ucw.cz; dkim=none (message not signed)
+ header.d=none;ucw.cz; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1658.namprd12.prod.outlook.com (2603:10b6:4:5::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3216.21; Fri, 24 Jul 2020 20:05:04 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3216.024; Fri, 24 Jul 2020
+ 20:05:04 +0000
+Date:   Fri, 24 Jul 2020 17:05:02 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <trivial@kernel.org>
+Subject: Re: [PATCH] RDMA/mlx5: fix typo in structure name
+Message-ID: <20200724200502.GA3671003@nvidia.com>
+References: <20200724084112.GC31930@amd>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200724084112.GC31930@amd>
+X-ClientProxiedBy: MN2PR05CA0013.namprd05.prod.outlook.com
+ (2603:10b6:208:c0::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-24_09:2020-07-24,2020-07-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
- suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007240140
-X-FB-Internal: deliver
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0013.namprd05.prod.outlook.com (2603:10b6:208:c0::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.9 via Frontend Transport; Fri, 24 Jul 2020 20:05:03 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1jz3wE-00FP0m-Mb; Fri, 24 Jul 2020 17:05:02 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 621ed405-3b6c-41f2-0a45-08d8300cda8b
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1658:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1658378296F8D5E3C354F38EC2770@DM5PR12MB1658.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n/B0y8olNcJBBzfl1teUwwF1GwYNE4fZZXpMwda/kO8ivKC3jIxD0ebd9+xci2dss8JBc9Ds14xPqKuLND/T29zS9IVOv/TySDnUUdYNsGYm/o5ovdoloKN1eQu6e5bVoFyfokf3cMH8Rf8EfaZ/TPbWgBZmaI29t9PsAs1dep6yjXFxM5QswhVYbMgpeBmXnWaJZUIZL1LsrdMuNk9mHkEw7gvEB1fh+UmIAqxQ7d0V5dYEIyURKePpLqRAtbW+Us2WAoWCw4HSk/JIZM8VZO4sAUx7dspoJhkbMJuYXv9yj34de/hFBV/SAuRj8zHs2vDxSWvTxUs3OJ9vASn8sA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(346002)(136003)(376002)(396003)(39860400002)(6916009)(478600001)(9786002)(66556008)(2616005)(66476007)(316002)(1076003)(86362001)(36756003)(9746002)(426003)(8676002)(4326008)(33656002)(26005)(66946007)(5660300002)(2906002)(8936002)(558084003)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 2PXy5G48LhH4r8eRU+kTmjBKG24EUViycfuvynRo1aGr/7+bb1J3Iz437/bi4hLO8Avlx2BT5hNOm10I2v1+fioTeoacrHZ+7NQYOMw5uX/R/D+N9bIOfSMlxBEmiQ1qxgUL5KS0OXRHQFpQMCQNdyEHlzmXUpCfkBeX/RRcEWxVi/jap0Anrgzi0L/+KQVvBZz5MUdCzdH44HWltrBjmDf3ccCJlT9lkOA5W58hzqNw40YbuYtQV9nzaN9h1ScbDYbP0rKbxpfvAjYTjcnHu/T7vRe7b+JYD+F6LaHF5mUW1G4fbSVhunsIiLrH4kwy9v5LyEWY94Mp5gsCA9io694dbBwzJl28rJUWEC/6mCLdV/dTUGzoUtDng31dSqj1kOgG8yRvxMpec1rexscvBcWtAZEKTYlTA7DlwPFi4lLxRikUQu0OK8nIFkL8E2zt67X4aFDjeI6hRnDSY3pHBlVQpTqZcdTK7/msE0+YHi8=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 621ed405-3b6c-41f2-0a45-08d8300cda8b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 20:05:04.0109
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W9SB9lSoFjyBkpChZBsgXcvmILWWOCZmkcM74iYAIQS7qNVY4VUbSzeIz0z02Fpv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1658
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595621107; bh=0Y9GDbXUogGyoJfp0xcchvrjcp/jc7V3YPuzA556lps=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=T0IFBHqanoyaFNmN6B3oTFPuAPg1RWtZwV0kleyedHsC6KCKaPTP7Bc+2FllDCEFG
+         BYWBWtOuAaaQ9qpebP44uKN2qOugxP85cPdkQuupoh3r9bfJQSwLFgqdHR0nxwqh1n
+         6p4a+suTfdAtBwsI1IQ9SGcVs+FZ0jT9yiD6eHq5OumEqQGq7yRZnrFWWULyzOJNRq
+         lNb5aJA2wja/AUaeYUohQC2ibiH/b4fw1FEfQj7K5WaCcor87m8YZq3hZxK1qZAsas
+         r0jUVxzlUBuY1cX7Vgw7k2BUJRPrGrsQCGAhoFC90wq8LtMMO0/53QC1wDeyK4ku1e
+         XHTPd35w1JcNA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Architectures like s390, powerpc, arm64, riscv have speical definition of
-bpf_user_pt_regs_t. So we need to cast the pointer before passing it to
-bpf_get_stack(). This is similar to bpf_get_stack_tp().
+On Fri, Jul 24, 2020 at 10:41:12AM +0200, Pavel Machek wrote:
+> This is user API, but likely noone uses it...? Fix it before it
+> becomes problem.
+> 
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Fixes: 03d42fd2d83f ("bpf: Separate bpf_get_[stack|stackid] for perf even=
-ts BPF")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- kernel/bpf/stackmap.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+Applied to for-next, thanks
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 5beb2f8c23da1..4fd830a62be2d 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -678,6 +678,7 @@ const struct bpf_func_proto bpf_get_task_stack_proto =
-=3D {
- BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_data_kern *, ctx,
- 	   void *, buf, u32, size, u64, flags)
- {
-+	struct pt_regs *regs =3D (struct pt_regs *)(ctx->regs);
- 	struct perf_event *event =3D ctx->event;
- 	struct perf_callchain_entry *trace;
- 	bool kernel, user;
-@@ -685,7 +686,7 @@ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_da=
-ta_kern *, ctx,
- 	__u64 nr_kernel;
-=20
- 	if (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY))
--		return __bpf_get_stack(ctx->regs, NULL, NULL, buf, size, flags);
-+		return __bpf_get_stack(regs, NULL, NULL, buf, size, flags);
-=20
- 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
- 			       BPF_F_USER_BUILD_ID)))
-@@ -705,8 +706,7 @@ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_da=
-ta_kern *, ctx,
- 		__u64 nr =3D trace->nr;
-=20
- 		trace->nr =3D nr_kernel;
--		err =3D __bpf_get_stack(ctx->regs, NULL, trace, buf,
--				      size, flags);
-+		err =3D __bpf_get_stack(regs, NULL, trace, buf, size, flags);
-=20
- 		/* restore nr */
- 		trace->nr =3D nr;
-@@ -718,8 +718,7 @@ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_da=
-ta_kern *, ctx,
- 			goto clear;
-=20
- 		flags =3D (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
--		err =3D __bpf_get_stack(ctx->regs, NULL, trace, buf,
--				      size, flags);
-+		err =3D __bpf_get_stack(regs, NULL, trace, buf, size, flags);
- 	}
- 	return err;
-=20
---=20
-2.24.1
-
+Jason
