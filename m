@@ -2,72 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73C122BC58
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E3322BC5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbgGXDIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 23:08:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:8269 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726178AbgGXDIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 23:08:16 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D0F2332687CB803A2F32;
-        Fri, 24 Jul 2020 11:08:11 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.56) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 24 Jul 2020
- 11:08:04 +0800
-Subject: Re: [PATCH -next] arm64: Export __cpu_logical_map
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Sumit Gupta <sumitg@nvidia.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-CC:     Hulk Robot <hulkci@huawei.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-References: <20200724030433.22287-1-wangkefeng.wang@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <82f750c4-d423-1ed8-a158-e75153745e07@huawei.com>
-Date:   Fri, 24 Jul 2020 11:08:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200724030433.22287-1-wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        id S1726666AbgGXDIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 23:08:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgGXDIr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 23:08:47 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F134B20786;
+        Fri, 24 Jul 2020 03:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595560127;
+        bh=Mi81Uejk0h0q25VxMgNb+0huSyrbkp+jl5hwFhOM7Z0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BePtWmcWENl9v0Un95gA1NkIlo1AIrn4iCnulq4SWSlp3W7wd0wplS/5Z8Du5wfTv
+         4Bq8wsbGQI1eLG0tcA+Y8Bt0VjyZzx19HW5H1UcFQekAoV76WwecT7n0i6aA+R7Pgq
+         zMavmYb/bTO5zXpkM/5oaHTftWqqiqK88KfPBDmU=
+Date:   Thu, 23 Jul 2020 20:08:46 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Michal Hocko <mhocko@suse.com>, stable@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v2 1/3] mm/shuffle: don't move pages between zones and
+ don't read garbage memmaps
+Message-Id: <20200723200846.768513d7c122ac11b6e73538@linux-foundation.org>
+In-Reply-To: <20200623093018.GA6069@L-31X9LVDL-1304.local>
+References: <20200619125923.22602-2-david@redhat.com>
+        <20200622082635.GA93552@L-31X9LVDL-1304.local>
+        <2185539f-b210-5d3f-5da2-a497b354eebb@redhat.com>
+        <20200622092221.GA96699@L-31X9LVDL-1304.local>
+        <34f36733-805e-cc61-38da-2ee578ae096c@redhat.com>
+        <20200622131003.GA98415@L-31X9LVDL-1304.local>
+        <0f4edc1f-1ce2-95b4-5866-5c4888db7c65@redhat.com>
+        <20200622215520.wa6gjr2hplurwy57@master>
+        <4b7ee49c-9bee-a905-3497-e3addd8896b8@redhat.com>
+        <c0b62330-11d3-e628-a811-b54789d8f182@redhat.com>
+        <20200623093018.GA6069@L-31X9LVDL-1304.local>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.56]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+maillist
+On Tue, 23 Jun 2020 17:30:18 +0800 Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
 
-On 2020/7/24 11:04, Kefeng Wang wrote:
-> ERROR: modpost: "__cpu_logical_map" [drivers/cpufreq/tegra194-cpufreq.ko] undefined!
->
-> ARM64 tegra194-cpufreq driver use cpu_logical_map, export
-> __cpu_logical_map to fix build issue.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->   arch/arm64/kernel/setup.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index c793276ec7ad9..3aea05fbb9998 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -275,6 +275,7 @@ static int __init reserve_memblock_reserved_regions(void)
->   arch_initcall(reserve_memblock_reserved_regions);
->   
->   u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
-> +EXPORT_SYMBOL(__cpu_logical_map);
->   
->   void __init setup_arch(char **cmdline_p)
->   {
+> On Tue, Jun 23, 2020 at 09:55:43AM +0200, David Hildenbrand wrote:
+> >On 23.06.20 09:39, David Hildenbrand wrote:
+> >>> Hmm.. I thought this is the behavior for early section, while it looks current
+> >>> code doesn't work like this:
+> >>>
+> >>>        if (section_is_early && memmap)
+> >>>                free_map_bootmem(memmap);
+> >>>        else
+> >>> 	       depopulate_section_memmap(pfn, nr_pages, altmap);
+> >>>
+> >>> section_is_early is always "true" for early section, while memmap is not-NULL
+> >>> only when sub-section map is empty.
+> >>>
+> >>> If my understanding is correct, when we remove a sub-section in early section,
+> >>> the code would call depopulate_section_memmap(), which in turn free related
+> >>> memmap. By removing the memmap, the return value from pfn_to_online_page() is
+> >>> not a valid one.
+> >> 
+> >> I think you're right, and pfn_valid() would also return true, as it is
+> >> an early section. This looks broken.
+> >> 
+> >>>
+> >>> Maybe we want to write the code like this:
+> >>>
+> >>>        if (section_is_early)
+> >>>                if (memmap)
+> >>>                        free_map_bootmem(memmap);
+> >>>        else
+> >>> 	       depopulate_section_memmap(pfn, nr_pages, altmap);
+> >>>
+> >> 
+> >> I guess that should be the way to go
+> >> 
+> >> @Dan, I think what Wei proposes here is correct, right? Or how does it
+> >> work in the VMEMMAP case with early sections?
+> >> 
+> >
+> >Especially, if you would re-hot-add, section_activate() would assume
+> >there is a memmap, it must not be removed.
+> >
+> 
+> You are right here. I didn't notice it.
+> 
+> >@Wei, can you send a patch?
+> >
+> 
+> Sure, let me prepare for it.
+
+Still awaiting this, and the v3 patch was identical to this v2 patch.
+
+It's tagged for -stable, so there's some urgency.  Should we just go
+ahead with the decently-tested v2?
 
