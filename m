@@ -2,130 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0440022BC6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B96B22BC6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgGXDW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 23:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726425AbgGXDW0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 23:22:26 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD874C0619D3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 20:22:25 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id b24so2522306uak.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 20:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uvFWn/1JCosuktFTpXt71BPZd5GcGPpKpGz+xAWCarU=;
-        b=LGBa/mwCnw7hgzeMQ1yOE4W3LBvHtBnCXxv2as5aZkYuE4RqRV/vLj2uJX63HFs0F/
-         fa7muY3QhSIGQTSC36CVRF6GjJ0agjGwzbpUn1HdI0gvJyUW/elwi7I6C4V6bQow5xd4
-         gVcXd+fDhD4cDECAxsJNiZ40XCWrQTQItFdL4EW+g9U/0o2O39bUGosRsNlCZOgk3EQo
-         iAeLxxyeaXtgF48MZZsLSJONGHTC87K4eH+sa3OO0tpR700GXnHuxB74kfyQDGZxJe9h
-         k2pmP/tpabqutJiE1vfraNfy6a9xFQIcuS+ZtNaBVahrMedLufCQ2HqscQOogJcRWfWP
-         xqAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uvFWn/1JCosuktFTpXt71BPZd5GcGPpKpGz+xAWCarU=;
-        b=hKCbJPiZTnG3glWmcbq0hxCc+WbQWCPufz5u2ehKJBoi+rWf8eSP76006vKw9zPoiX
-         /o4ToV5DUhFSJM4ZXZd0/Hqyz2z7MWdB+F0lRzR7LYCJtqoEItQPEfOhi64rN1twweP4
-         w7gVzoYjdlb//idsQkJn+UveNkiOa7HfEpPMRHmVAZSvgsXybp1dZZr2S1xKMqtMEIG5
-         7CgXQgJxBxkDy3NpjkECexpFm13B4KFlYGNG3/rwyFimM0kHLvbHAOFSZ0C73Teo+sSx
-         dUxRjz967lq735OVbDq1uClr6vppBRnTdI9b01lv9OATwlnwLbIGuLojUpCOPdXD0t6j
-         hW4g==
-X-Gm-Message-State: AOAM532izQ+/Y3PeupPN8kQ5B7MdiYWejO7cwglBpQgimst6pa79bIPk
-        Dxe8V9YO8lFXkDqQDB/rsIaES9zsgk1N2cYUT6m3kg==
-X-Google-Smtp-Source: ABdhPJzqKlfP56NY95KSCdGmlRatcL3kd19M+Z7t/LpLTqfaVTGFRmgBpwGiMv1Fn5SIu4odbJaG5M01/eMs+1eqAlM=
-X-Received: by 2002:ab0:22cf:: with SMTP id z15mr6706030uam.52.1595560944996;
- Thu, 23 Jul 2020 20:22:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200722234538.166697-1-posk@posk.io> <20200722234538.166697-2-posk@posk.io>
- <20200723112757.GN5523@worktop.programming.kicks-ass.net> <CAFTs51UJhC9TmXkzz8VbDNmkSEyZE29=dRdUi65TDpSYqoK5vw@mail.gmail.com>
- <00ec99e0-2164-123e-44ed-229c52119d7e@redhat.com>
-In-Reply-To: <00ec99e0-2164-123e-44ed-229c52119d7e@redhat.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Thu, 23 Jul 2020 20:22:14 -0700
-Message-ID: <CAFTs51XVbZ4y5NrHrcfBBb5shrQRcX4y8SAjvm76T_=EbxDiYA@mail.gmail.com>
-Subject: Re: [PATCH for 5.9 1/3] futex: introduce FUTEX_SWAP operation
-To:     Waiman Long <longman@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>, Aaron Lu <aaron.lwe@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726763AbgGXDYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 23:24:32 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:52238 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726483AbgGXDYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 23:24:32 -0400
+Received: from ticat.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx72VoVBpfxPoDAA--.1619S2;
+        Fri, 24 Jul 2020 11:24:25 +0800 (CST)
+From:   Peng Fan <fanpeng@loongson.cn>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] tracing/uprobe: Remove dead code in trace_uprobe_register()
+Date:   Fri, 24 Jul 2020 11:24:24 +0800
+Message-Id: <1595561064-29186-1-git-send-email-fanpeng@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx72VoVBpfxPoDAA--.1619S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr4UZrWrGFy3Ww48Zw4fKrg_yoWxAFcE9a
+        yqqa4vkr1UCrn09r4fWw47ZFsFgrW8Xa1Ivw4YqFW5t345Jrs8J3Z8C3ZxtFyq9a97WFyj
+        kwnxWw1kuFn8WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr4l42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0sSdPUUUUU==
+X-CM-SenderInfo: xidq1vtqj6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 8:00 PM Waiman Long <longman@redhat.com> wrote:
->
-> On 7/23/20 8:25 PM, Peter Oskolkov wrote:
-> > On Thu, Jul 23, 2020 at 4:28 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > Thanks a lot for your comments, Peter! My answers below.
-> >
-> >> On Wed, Jul 22, 2020 at 04:45:36PM -0700, Peter Oskolkov wrote:
-> >>> This patchset is the first step to open-source this work. As explained
-> >>> in the linked pdf and video, SwitchTo API has three core operations: wait,
-> >>> resume, and swap (=switch). So this patchset adds a FUTEX_SWAP operation
-> >>> that, in addition to FUTEX_WAIT and FUTEX_WAKE, will provide a foundation
-> >>> on top of which user-space threading libraries can be built.
-> >> The PDF and video can go pound sand; you get to fully explain things
-> >> here.
-> > Will do. Should I expand the cover letter or the commit message? (I'll probably
-> > split the first patch into two in the latter case).
->
-> You should put it mostly in the commit message which will be part of the
-> git log history. The cover letter, on the other hand, is not part of the
-> git log.
+In the function trace_uprobe_register(), the statement "return 0;"
+out of switch case is dead code, remove it.
 
-Ack. (Networking/David Miller usually includes the cover letter in the
-git log, so this
-is context dependent, I guess).
+Signed-off-by: Peng Fan <fanpeng@loongson.cn>
+---
+ kernel/trace/trace_uprobe.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->
->
-> >
-> >> What worries me is how FUTEX_SWAP would interact with the future
-> >> FUTEX_LOCK / FUTEX_UNLOCK. When we implement pthread_mutex with those,
-> >> there's very few WAIT/WAKE left.
-> > [+cc Waiman Long]
-> >
-> > I've looked through the latest FUTEX_LOCK patchset I could find (
-> > https://lore.kernel.org/patchwork/cover/772643/ and related), and it seems
-> > that FUTEX_SWAP and FUTEX_LOCK/FUTEX_UNLOCK patchsets
-> > address the same issue (slow wakeups) but for different use cases:
-> >
-> > FUTEX_LOCK/FUTEX_UNLOCK uses spinning and lock stealing to
-> > improve futex wake/wait performance in high contention situations;
-> > FUTEX_SWAP is designed to be used for fast context switching with
-> > _no_ contention by design: the waker that is going to sleep, and the wakee
-> > are using different futexes; the userspace will have a futex per thread/task,
-> > and when needed the thread/task will either simply sleep on its futex,
-> > or context switch (=FUTEX_SWAP) into a different thread/task.
->
-> I agree that it is a different use case. I just hope that you keep the
-> possible future extension to support FUTEX_LOCK/UNLOCK in mind so that
-> they won't conflict with each other.
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index fdd47f9..f4286c9 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1456,7 +1456,6 @@ trace_uprobe_register(struct trace_event_call *event, enum trace_reg type,
+ 	default:
+ 		return 0;
+ 	}
+-	return 0;
+ }
+ 
+ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
+-- 
+2.1.0
 
-Ack. Will do. :)
-
-Thanks,
-Peter
-
->
-> Cheers,
-> Longman
->
