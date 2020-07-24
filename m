@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F3622CEBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26CA22CEC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgGXTh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726625AbgGXTh4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:37:56 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB629C0619E7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:37:55 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id i80so5769827lfi.13
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=anre9lcJof6187CbKzrw5qizyC3m4lA555ZA9TP3qEc=;
-        b=NiuKrFL+hCZQ/5s3aFc1IxO3Tv/X/oM2SW3jpsF9kw7dKCcB+SPFaqr1FCwR9Nrt2x
-         Z3TeScoiar4gyVLvb1t5LSenXDbiZ0PEQOpqTgsMEC/TZZo5QOxr+hYTlZNrD7uJU5X2
-         ePDkfVd9bDSZICuMGZGa4WSbaBsP6xgzEVErw13brTNkFqx0wes5JsyGiAwv5f4xyZFs
-         8yTKeCpXRA1ZfUgs+6y/UkdCvpDErfmD3a3sig2rJEBXRHSSOmhKIwUrCOwRqCdqnz1L
-         vVn58JWoy5IyfS5vGKVKC68qD0Xhpsl/NkMt0GZmQJupvKF91X3IGP3REzBP3Xn0z7PW
-         8iMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=anre9lcJof6187CbKzrw5qizyC3m4lA555ZA9TP3qEc=;
-        b=EqGjo+LPuWOCL0mxtycVzWjm7B2NjGYRlIbu9gqxzaHBUocvQY0XwQcRmwJM4jE9Us
-         c3T9EJa+gXig5vYO7UgNE+O00IwNTfv9wNUsc8WwEiuGbUiMgpuxe7jWJJHuaDS5KTV3
-         0A7TK7/u4Bu18/Hp1OIbnDSJP5JlZrvBzz7uBd7j6DjMOSaOmhA2rOxK7qR5c+D+nMgH
-         eDGvQ1xBMvAnzxkEjVCYbR1aO51nFC/xJL19hmQN0GMgtrtcPoHtBFCE6rxpKsXcF9+u
-         t/MlPHeyfpzflKGNqBHs999T1EoZq2uB5iqK5TT7ODx9fOOmEQIFRSh8Ec2BbkpLjGCI
-         FE0g==
-X-Gm-Message-State: AOAM532yP+kGM84Aip5espYc5SjSqSwCwxFt1ZoamOksy/a1E5yKr+q1
-        hU1xOrhhYuj7R0EhS/v+ORBYlQ==
-X-Google-Smtp-Source: ABdhPJwBtPnJGVYlPrGHrR5aqgZMiuVvpx8x3z+sVh22q8qvDyRybL2id/F9lVjZNk7hnl7OHeIE2w==
-X-Received: by 2002:a19:c3d0:: with SMTP id t199mr5811130lff.56.1595619474080;
-        Fri, 24 Jul 2020 12:37:54 -0700 (PDT)
-Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
-        by smtp.gmail.com with ESMTPSA id y24sm443386ljy.91.2020.07.24.12.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 12:37:53 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 21:37:52 +0200
-From:   Niklas <niklas.soderlund@ragnatech.se>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: media: renesas,vin: Document
- renesas-vin-ycbcr-8b-g property
-Message-ID: <20200724193752.GE2729799@oden.dyn.berto.se>
-References: <1595602732-25582-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1595602732-25582-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S1726742AbgGXTjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726455AbgGXTjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:39:16 -0400
+Received: from localhost (p54b3305c.dip0.t-ipconnect.de [84.179.48.92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F690206F6;
+        Fri, 24 Jul 2020 19:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595619556;
+        bh=aEsJK/on98H+OBWg+Fvivyaoij+CSyJ7aAWyHCS83rA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eiOTuRbtNrpPuvVetfi8oOZnREKbgxRLyG6liJKI+RarW/ryGKDl0WKv0ewht0HAL
+         RrH/HbI3u16u5kBSO2Dh59GpPlvL/N/VukGbfUj6tqPVtN5QXHVGuU303/OGpHuP4D
+         3Zy6iiSXfJgy02u8ltSNKLCxpW3eah0D8oRfQvik=
+Date:   Fri, 24 Jul 2020 21:39:13 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, ludovic.desroches@microchip.com,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        kamel.bouhara@bootlin.com
+Subject: Re: [RFC PATCH 1/4] dt-binding: i2c: add generic properties for GPIO
+ bus recovery
+Message-ID: <20200724193913.GD1227@ninjato>
+References: <20200619141904.910889-1-codrin.ciubotariu@microchip.com>
+ <20200619141904.910889-2-codrin.ciubotariu@microchip.com>
+ <20200705211918.GB1055@kunai>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="C+ts3FVlLX8+P6JN"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1595602732-25582-2-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200705211918.GB1055@kunai>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lad,
 
-Thanks for your patch.
+--C+ts3FVlLX8+P6JN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2020-07-24 15:58:51 +0100, Lad Prabhakar wrote:
-> Add a DT property "renesas-vin-ycbcr-8b-g" to select YCbCr422 8-bit data
-> input pins.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> ---
->  Documentation/devicetree/bindings/media/renesas,vin.yaml | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/renesas,vin.yaml b/Documentation/devicetree/bindings/media/renesas,vin.yaml
-> index 53c0a72..7dfb781 100644
-> --- a/Documentation/devicetree/bindings/media/renesas,vin.yaml
-> +++ b/Documentation/devicetree/bindings/media/renesas,vin.yaml
-> @@ -106,6 +106,12 @@ properties:
->  
->            remote-endpoint: true
->  
-> +          renesas-vin-ycbcr-8b-g:
+On Sun, Jul 05, 2020 at 11:19:18PM +0200, Wolfram Sang wrote:
+>=20
+> > +- pinctrl
+> > +	add extra pinctrl to configure SCL/SDA pins to GPIO function for bus
+> > +	recovery, call it "gpio" or "recovery" state
+>=20
+> I think we should stick with "gpio" only. That is what at91 and imx have
+> in their bindings. pxa uses "recovery" as a pinctrl state name but I
+> can't find any further use or documentation of that. PXA is not fully
+> converted to the best of my knowledge, so maybe it is no problem for PXA
+> to switch to "gpio", too? We should ask Russell King (cced).
+>=20
+> Russell, do you object naming the pinctrl state for bus recovery in
+> the pxa i2c driver from "recovery" to "gpio"?
 
-I think the preferred format for vendor specific properties are 
-"<vendor>,<property>".
+No response, so far. I suggest now to support the "recovery" naming but
+mark it as deprecated. Opinions?
 
-This nit apart I'm not sure a property is the right way here. Could it 
-not be possible on some designs to have two different sensors one wired 
-to DATA[7:0] and the other to DATA[15:8] and by controlling the 
-VNDRM2_YDS register at runtime switch between the two? If so adding a DT 
-property to hard-code one of the two options would prevent this. I fear 
-we need to think of a runtime way to deal with this.
 
-The best way to do that I think is to extend the port@0 node to allow 
-for two endpoints, one for each of the two possible parallel sensors.  
-This would then have to be expressed in the media graph and selection if 
-YDS should be set or not depend on which media links are enabled.
+--C+ts3FVlLX8+P6JN
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +            type: boolean
-> +            description:
-> +              If present this property specifies to selects VIN_G[7:0] as data pins for YCbCr422 8-bit data.
-> +            default: false
-> +
->          required:
->            - remote-endpoint
->  
-> @@ -168,6 +174,13 @@ properties:
->  
->                remote-endpoint: true
->  
-> +              renesas-vin-ycbcr-8b-g:
-> +                type: boolean
-> +                description:
-> +                  If present this property specifies to selects VIN_G[7:0] as data pins for
-> +                  YCbCr422 8-bit data.
-> +                default: false
-> +
->              required:
->                - remote-endpoint
->  
-> -- 
-> 2.7.4
-> 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Regards,
-Niklas Söderlund
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8bOOEACgkQFA3kzBSg
+KbatLxAAk2OVhHrxdm0fEryvCzcONGEOEuKWTg4HCQ4cut68iX+MXLitGPJ9+vWQ
+OtvgHiP6RQ/btXSkdxTdIrybUHke0J1++CzmDnWHkHmwUjECBKbfpxq/1WblwvC5
+np+5JNo0yCwuC89MfV5B9P7elybuwro+q2HtxiZuoeDBp040GV/0T0hvV++JOiF6
+TMLUYjP3ucaOI2KQEnSk931hVzoZE42uWoN8SdsOA/ieYETISy1cf1ghuq/WLh9A
+4tvjCnJ55yAgK4rVIn6koY6hYk9waDRgSn5zdn/XvE0KnzA+9Wm/B+qiH8WLk0IN
+DfoXNWMrssgQ11B1l3uhkHM21uTIJSpofhWA1lvi2rgXoXtIptWnNv4BsEg+NEfq
+Vh6qOaPpEVG2L0uqToSLLbcRqBQbfS1iUWLSvAjoGVNLdzW7334PFC5DZ8BnVOZv
+uXt1kpVFzSRkzPk+lpX4JjWPjMw764cpXlFTQXJRbo7pyQMXEPEf4Om3Uh5eRyiL
+uRjlFkwgvOrA9gLaep3WlSRQZmdw+JQbYGDOD6jNya80V/IkjGMrfXQu9k6F0nD/
+QLHhAErkdIIXxLczXftQiGvXc1sWp83Wo5wKZvwxIzaPRhvC/d7WNmXjR8WZ76mC
+a8GLnQnzsOFN/F8ubjoEB8ABtxUO1x7PYJQk+AFRmz2AUhj9GIE=
+=ZcrW
+-----END PGP SIGNATURE-----
+
+--C+ts3FVlLX8+P6JN--
