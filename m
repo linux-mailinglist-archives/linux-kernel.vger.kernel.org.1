@@ -2,162 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3108422CE5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A5D22CE62
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgGXTIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:08:02 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45715 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGXTIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:08:02 -0400
-IronPort-SDR: GBR8bqbgV9z/+bVnCf3ee0KKf3btc5wPpUf0bCsAOQukn3YOlQVmOfuSIQDLj28blvY4ZJZ8FV
- pMH3jsWiZPyA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="130328294"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="130328294"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 12:08:01 -0700
-IronPort-SDR: Owy6CufN3MA4RtuWmHr1DJ/EIMsQB/j95gTNub98sZpRdKxfWYj17mSesXnaoj8biylRxpgJ+o
- xE8l2Qu/S5yQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="272659690"
-Received: from pittner-mobl1.amr.corp.intel.com (HELO localhost.localdomain) ([10.254.77.166])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2020 12:08:00 -0700
-From:   sathyanarayanan.kuppuswamy@linux.intel.com
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-Subject: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery() call
-Date:   Fri, 24 Jul 2020 12:07:55 -0700
-Message-Id: <cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-Reply-To: 20200714230803.GA92891@bjorn-Precision-5520
+        id S1726814AbgGXTId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGXTIc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:08:32 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F831C0619D3;
+        Fri, 24 Jul 2020 12:08:32 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id E3D5E2993B7
+Message-ID: <6bac45d9b22deacf8ac7d68f5b51a5a6c30649f3.camel@collabora.com>
+Subject: Re: [PATCH 06/10] media: uapi: h264: Cleanup DPB entry interface
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Jonas Karlman <jonas@kwiboo.se>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Date:   Fri, 24 Jul 2020 16:08:19 -0300
+In-Reply-To: <5726fac8-9d3b-d429-0894-cd8c02c288ee@kwiboo.se>
+References: <20200715202233.185680-1-ezequiel@collabora.com>
+         <20200715202233.185680-7-ezequiel@collabora.com>
+         <5726fac8-9d3b-d429-0894-cd8c02c288ee@kwiboo.se>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Hello Jonas,
 
-Current pcie_do_recovery() implementation has following two issues:
+On Wed, 2020-07-22 at 21:52 +0000, Jonas Karlman wrote:
+> On 2020-07-15 22:22, Ezequiel Garcia wrote:
+> > As discussed recently, the current interface for the
+> > Decoded Picture Buffer is not enough to properly
+> > support field coding.
+> > 
+> > This commit introduces enough semantics to support
+> > frame and field coding, and to signal how DPB entries
+> > are "used for reference".
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > ---
+> >  .../media/v4l/ext-ctrls-codec.rst             | 46 ++++++++++++-------
+> >  drivers/media/v4l2-core/v4l2-h264.c           |  4 +-
+> >  drivers/staging/media/rkvdec/rkvdec-h264.c    |  8 ++--
+> >  include/media/h264-ctrls.h                    |  8 +++-
+> >  4 files changed, 42 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > index dd8e5a2e8986..46d4c8c6ad47 100644
+> > --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> > @@ -2058,10 +2058,35 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+> >      * - __s32
+> >        - ``bottom_field_order_cnt``
+> >        -
+> > +    * - enum :c:type:`v4l2_h264_dpb_reference`
+> > +      - ``reference``
+> > +      - Specifies how the DPB entry is referenced.
+> >      * - __u32
+> >        - ``flags``
+> >        - See :ref:`DPB Entry Flags <h264_dpb_flags>`
+> >  
+> > +.. c:type:: v4l2_h264_dpb_reference
+> > +
+> > +.. cssclass:: longtable
+> > +
+> > +.. flat-table::
+> > +    :header-rows:  0
+> > +    :stub-columns: 0
+> > +    :widths:       1 1 2
+> > +
+> > +    * - ``V4L2_H264_DPB_TOP_REF``
+> > +      - 0x1
+> > +      - The top field in field pair is used for
+> > +        short-term reference.
+> > +    * - ``V4L2_H264_DPB_BOTTOM_REF``
+> > +      - 0x2
+> > +      - The bottom field in field pair is used for
+> > +        short-term reference.
+> > +    * - ``V4L2_H264_DPB_FRAME_REF``
+> > +      - 0x3
+> > +      - The frame (or the top/bottom fields, if it's a field pair)
+> > +        is used for short-term reference.
+> > +
+> >  .. _h264_dpb_flags:
+> >  
+> >  ``DPB Entries Flags``
+> > @@ -2075,29 +2100,16 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
+> >  
+> >      * - ``V4L2_H264_DPB_ENTRY_FLAG_VALID``
+> >        - 0x00000001
+> > -      - The DPB entry is valid and should be considered
+> > +      - The DPB entry is valid (non-empty) and should be considered.
+> >      * - ``V4L2_H264_DPB_ENTRY_FLAG_ACTIVE``
+> >        - 0x00000002
+> > -      - The DPB entry is currently being used as a reference frame
+> > +      - The DPB entry is used for reference.
+> >      * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
+> >        - 0x00000004
+> > -      - The DPB entry is a long term reference frame
+> > +      - The DPB entry is used for long-term reference.
+> >      * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD``
+> >        - 0x00000008
+> > -      - The DPB entry is a field reference, which means only one of the field
+> > -        will be used when decoding the new frame/field. When not set the DPB
+> > -        entry is a frame reference (both fields will be used). Note that this
+> > -        flag does not say anything about the number of fields contained in the
+> > -        reference frame, it just describes the one used to decode the new
+> > -        field/frame
+> > -    * - ``V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD``
+> > -      - 0x00000010
+> > -      - The DPB entry is a bottom field reference (only the bottom field of the
+> > -        reference frame is needed to decode the new frame/field). Only valid if
+> > -        V4L2_H264_DPB_ENTRY_FLAG_FIELD is set. When
+> > -        V4L2_H264_DPB_ENTRY_FLAG_FIELD is set but
+> > -        V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD is not, that means the
+> > -        DPB entry is a top field reference
+> > +      - The DPB entry is a single field or a complementary field pair.
+> >  
+> >  ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
+> >      Specifies the decoding mode to use. Currently exposes slice-based and
+> > diff --git a/drivers/media/v4l2-core/v4l2-h264.c b/drivers/media/v4l2-core/v4l2-h264.c
+> > index edf6225f0522..306a51683606 100644
+> > --- a/drivers/media/v4l2-core/v4l2-h264.c
+> > +++ b/drivers/media/v4l2-core/v4l2-h264.c
+> > @@ -66,10 +66,10 @@ v4l2_h264_init_reflist_builder(struct v4l2_h264_reflist_builder *b,
+> >  		else
+> >  			b->refs[i].frame_num = dpb[i].frame_num;
+> >  
+> > -		if (!(dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD))
+> > +		if (dpb[i].reference & V4L2_H264_DPB_FRAME_REF)
+> 
+> This looks wrong, should probably use ==,
+> 
+> dpb[i].reference == V4L2_H264_DPB_FRAME_REF
+> 
+> else this would match any reference value.
+> 
+> >  			pic_order_count = min(dpb[i].top_field_order_cnt,
+> >  					      dpb[i].bottom_field_order_cnt);
+> > -		else if (dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD)
+> > +		else if (dpb[i].reference & V4L2_H264_DPB_BOTTOM_REF)
+> >  			pic_order_count = dpb[i].bottom_field_order_cnt;
+> >  		else
+> >  			pic_order_count = dpb[i].top_field_order_cnt;
+> > diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
+> > index 7b66e2743a4f..57539c630422 100644
+> > --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
+> > +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
+> > @@ -953,11 +953,11 @@ static void config_registers(struct rkvdec_ctx *ctx,
+> >  			     RKVDEC_COLMV_USED_FLAG_REF;
+> >  
+> >  		if (!(dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD))
+> > -			refer_addr |= RKVDEC_TOPFIELD_USED_REF |
+> > -				      RKVDEC_BOTFIELD_USED_REF;
+> > -		else if (dpb[i].flags & V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD)
+> > +			refer_addr |= RKVDEC_FIELD_REF;
+> > +
+> > +		if (dpb[i].reference & V4L2_H264_DPB_TOP_REF)
+> >  			refer_addr |= RKVDEC_BOTFIELD_USED_REF;
+> > -		else
+> > +		else if (dpb[i].reference & V4L2_H264_DPB_BOTTOM_REF)
+> 
+> This should probably be if and not else if, and BOTFIELD/TOPFIELD_USED_REF
+> seems to be mixed up.
+> 
+> I have only taken a quick look so far, I will update ffmpeg and runtime test
+> later this weekend, will get back with result and full review on Sunday evening.
+> 
 
-1. Fatal (DPC) error recovery is currently broken for non-hotplug
-capable devices. Current fatal error recovery implementation relies
-on PCIe hotplug (pciehp) handler for detaching and re-enumerating
-the affected devices/drivers. pciehp handler listens for DLLSC state
-changes and handles device/driver detachment on DLLSC_LINK_DOWN event
-and re-enumeration on DLLSC_LINK_UP event. So when dealing with
-non-hotplug capable devices, recovery code does not restore the state
-of the affected devices correctly. Correct implementation should
-restore the device state and call report_slot_reset() function after
-resetting the link to restore the state of the device/driver.
+Thanks that would be useful.
 
-You can find fatal non-hotplug related issues reported in following links:
+However, keep in mind this series is specifically concerned
+with the uAPI review.
 
-https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
-https://lore.kernel.org/linux-pci/12115.1588207324@famine/
-https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+This is not supposed to fix the field coded support, or anything
+else in any driver.
 
-2. For non-fatal errors if report_error_detected() or
-report_mmio_enabled() functions requests PCI_ERS_RESULT_NEED_RESET then
-current pcie_do_recovery() implementation does not do the requested
-explicit device reset, instead just calls the report_slot_reset() on all
-affected devices. Notifying about the reset via report_slot_reset()
-without doing the actual device reset is incorrect.
+IMO, at this stage, fixing drivers is somewhat lower priority
+than discussing and stabilizing the uAPI.
 
-To fix above issues, use PCI_ERS_RESULT_NEED_RESET as error state after
-successful reset_link() operation. This will ensure ->slot_reset() be
-called after reset_link() operation for fatal errors. Also call
-pci_bus_reset() to do slot/bus reset() before triggering device specific
-->slot_reset() callback. Also, using pci_bus_reset() will restore the state
-of the devices after performing the reset operation.
+Thanks,
+Ezequiel
 
-Even though using pci_bus_reset() will do redundant reset operation after
-->reset_link() for fatal errors, it should should affect the functional
-behavior.
-
-[original patch is from jay.vosburgh@canonical.com]
-[original patch link https://lore.kernel.org/linux-pci/12115.1588207324@famine/]
-Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Changes since v2:
- * Changed the subject of patch to "PCI/ERR: Fix reset logic in
-   pcie_do_recovery() call". v2 patch link is,
-   https://lore.kernel.org/linux-pci/ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com/
- * Squashed "PCI/ERR: Add reset support for non fatal errors" patch.
-
- drivers/pci/pcie/err.c | 41 +++++++++++++++++++++++++++++++++++++----
- 1 file changed, 37 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index 14bb8f54723e..b5eb6ba65be1 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -165,8 +165,29 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 	pci_dbg(dev, "broadcast error_detected message\n");
- 	if (state == pci_channel_io_frozen) {
- 		pci_walk_bus(bus, report_frozen_detected, &status);
-+		/*
-+		 * After resetting the link using reset_link() call, the
-+		 * possible value of error status is either
-+		 * PCI_ERS_RESULT_DISCONNECT (failure case) or
-+		 * PCI_ERS_RESULT_NEED_RESET (success case).
-+		 * So ignore the return value of report_error_detected()
-+		 * call for fatal errors.
-+		 *
-+		 * In EDR mode, since AER and DPC Capabilities are owned by
-+		 * firmware, reported_error_detected() will return error
-+		 * status PCI_ERS_RESULT_NO_AER_DRIVER. Continuing
-+		 * pcie_do_recovery() with error status as
-+		 * PCI_ERS_RESULT_NO_AER_DRIVER will report recovery failure
-+		 * irrespective of recovery status. But successful reset_link()
-+		 * call usually recovers all fatal errors. So ignoring the
-+		 * status result of report_error_detected() also helps EDR based
-+		 * error recovery.
-+		 */
- 		status = reset_link(dev);
--		if (status != PCI_ERS_RESULT_RECOVERED) {
-+		if (status == PCI_ERS_RESULT_RECOVERED) {
-+			status = PCI_ERS_RESULT_NEED_RESET;
-+		} else {
-+			status = PCI_ERS_RESULT_DISCONNECT;
- 			pci_warn(dev, "link reset failed\n");
- 			goto failed;
- 		}
-@@ -182,10 +203,22 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
- 
- 	if (status == PCI_ERS_RESULT_NEED_RESET) {
- 		/*
--		 * TODO: Should call platform-specific
--		 * functions to reset slot before calling
--		 * drivers' slot_reset callbacks?
-+		 * TODO: Optimize the call to pci_reset_bus()
-+		 *
-+		 * There are two components to pci_reset_bus().
-+		 *
-+		 * 1. Do platform specific slot/bus reset.
-+		 * 2. Save/Restore all devices in the bus.
-+		 *
-+		 * For hotplug capable devices and fatal errors,
-+		 * device is already in reset state due to link
-+		 * reset. So repeating platform specific slot/bus
-+		 * reset via pci_reset_bus() call is redundant. So
-+		 * can optimize this logic and conditionally call
-+		 * pci_reset_bus().
- 		 */
-+		pci_reset_bus(dev);
-+
- 		status = PCI_ERS_RESULT_RECOVERED;
- 		pci_dbg(dev, "broadcast slot_reset message\n");
- 		pci_walk_bus(bus, report_slot_reset, &status);
--- 
-2.17.1
 
