@@ -2,122 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3C522C235
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7630622C23B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgGXJZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55998 "EHLO
+        id S1727819AbgGXJ1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728103AbgGXJZh (ORCPT
+        with ESMTP id S1726591AbgGXJ1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:25:37 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A28C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:25:36 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4BCkML709Xz9sTR; Fri, 24 Jul 2020 19:25:34 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1595582734;
-        bh=vCGU+gOWB/YZEqlPlPGoQ5FWWYVeper93AigHoMP2yM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U0DhRYX0HLkwPBRdyhMqonCmKugrnjrLH0ZOKIKlQ2p92nxkjjMmcQ6XwOLiu/3QF
-         xcT4vD1jzRH39+bbHwEIizY7xunSPbFSnsSjA1UsoPB4NFhUlSAg5lhEKwoxAhZSoq
-         9z37DpTQ8iCUdOdTeTYXSCM+Sw34hpu3xvzK7PeV4Ac+JO7Kh3TQ72WcCVkTKZyYST
-         jDtAHbBy97KRtx+ENsbMhYEc00Fviz8d0eiEq0Akpg6sFxoHW1JsB5gS43iZ5Xu0Fc
-         txeT4Z3a5h4Zx3C+QccnSBEoTmby4vq3Q+ZqZ/271CHyaTsX+ATOy+cZjt0SQToO/M
-         NxAjQBTYpOZsw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     linuxppc-dev@ozlabs.org
-Cc:     dja@axtens.net, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] selftests/powerpc: Remove powerpc special cases from stack expansion test
-Date:   Fri, 24 Jul 2020 19:25:28 +1000
-Message-Id: <20200724092528.1578671-5-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200724092528.1578671-1-mpe@ellerman.id.au>
-References: <20200724092528.1578671-1-mpe@ellerman.id.au>
+        Fri, 24 Jul 2020 05:27:51 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75D4C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:27:50 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id d18so6544239edv.6
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t/IL7SzOQEirppaKu0kppf6/HL3sTtCWEVRaMwuH7Qs=;
+        b=oUMohlqXje6HNqC7d0qAdNhF8nSC/reJxnDqywwzHxBm5HAEsEzTejHNXn0iX5gQRb
+         n1HvPdZyTzneiEaA9TsDkvYS/o0U2pbSU0XB3ZuDfNMw6ASlOsC2Cw7B0jIE4e+RDeAV
+         avUEPrQwU1w+yPA++GrzwdzAmNFTRuLcpymkYuzCQBKgzhGZ7veENgCKNKKJiaKvz3wG
+         6IhwOeSohyeDH6gkO5B792fOhiZerw57SxcbTg/jnFWtXSbk/CK9oMzZykP7sjQTFt+p
+         01nShC1wyGxpPh4Y0OB8MO/hNW9aN7w3WPK/m6rQKfDrEUm5A9SWUGpf0jduqVJPCYEZ
+         bhRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=t/IL7SzOQEirppaKu0kppf6/HL3sTtCWEVRaMwuH7Qs=;
+        b=YuuEBCiEx/U8ipJtxER59YSy84P5OY9cJurYXeWPPz/tzd0pbZ8fcB9rOlXjjj8z1L
+         k6/nI/I00iIAUKit2axxBsXHtvko4sxL5NJBUnIZxuxjV1eYaIhCMDGumtYnqrsbk5WY
+         dtr5RsOHfsseQej9h5E3MvTbERX9lIqOWVVPSGnIWL6Hv8HyVnQ1/RVm/8IeShH059MF
+         VyQ+5XDSKpKCTKDboNLEfnmPjo/5FFI17BwoOFUuwiqdW3kWgD53p71Guj59Y5pmT0S3
+         s1DEhHxFCEIT3/t4JI9lUsDhHYYNEqUew9x1Qt4oc2TzT69PZrjFy5C5P6keO0rnAxgd
+         H+yg==
+X-Gm-Message-State: AOAM533DZwhfpBKiobbZ83lbKGr4gPYoaXDYQn9IJ7sohyqRJ+JNvpkJ
+        Q9KjQF8EYuQNqsnJmgbo1RU=
+X-Google-Smtp-Source: ABdhPJxSikPx3K43/0XJPgZZQCP8H3i2/aIVPS15slj4KVApInsWFzJo2Eyn5iCZrVt0AejTGDHcaA==
+X-Received: by 2002:a05:6402:2350:: with SMTP id r16mr7748316eda.62.1595582869426;
+        Fri, 24 Jul 2020 02:27:49 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id d25sm326397edr.78.2020.07.24.02.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 02:27:48 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 11:27:46 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jessica Yu <jeyu@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
+Message-ID: <20200724092746.GD517988@gmail.com>
+References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
+ <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that the powerpc code behaves the same as other architectures we
-can drop the special cases we had.
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- .../powerpc/mm/stack_expansion_ldst.c         | 41 +++----------------
- 1 file changed, 5 insertions(+), 36 deletions(-)
+* Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
 
-v2: no change just rebased.
+> Use text_alloc() and text_free() instead of module_alloc() and
+> module_memfree() when an arch provides them.
+> 
+> Cc: linux-mm@kvack.org
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  kernel/kprobes.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 4e46d96d4e16..611fcda9f6bf 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -40,6 +40,7 @@
+>  #include <asm/cacheflush.h>
+>  #include <asm/errno.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/vmalloc.h>
+>  
+>  #define KPROBE_HASH_BITS 6
+>  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
+> @@ -111,12 +112,20 @@ enum kprobe_slot_state {
+>  
+>  void __weak *alloc_insn_page(void)
+>  {
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +	return text_alloc(PAGE_SIZE);
+> +#else
+>  	return module_alloc(PAGE_SIZE);
+> +#endif
+>  }
+>  
+>  void __weak free_insn_page(void *page)
+>  {
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +	text_free(page);
+> +#else
+>  	module_memfree(page);
+> +#endif
+>  }
 
-diff --git a/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c b/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c
-index 8dbfb51acf0f..ed9143990888 100644
---- a/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c
-+++ b/tools/testing/selftests/powerpc/mm/stack_expansion_ldst.c
-@@ -56,13 +56,7 @@ int consume_stack(unsigned long target_sp, unsigned long stack_high, int delta,
- #else
- 		asm volatile ("mov %%rsp, %[sp]" : [sp] "=r" (stack_top_sp));
- #endif
--
--		// Kludge, delta < 0 indicates relative to SP
--		if (delta < 0)
--			target = stack_top_sp + delta;
--		else
--			target = stack_high - delta + 1;
--
-+		target = stack_high - delta + 1;
- 		volatile char *p = (char *)target;
- 
- 		if (type == STORE)
-@@ -162,41 +156,16 @@ static int test_one(unsigned int stack_used, int delta, enum access_type type)
- 
- static void test_one_type(enum access_type type, unsigned long page_size, unsigned long rlim_cur)
- {
--	assert(test_one(DEFAULT_SIZE, 512 * _KB, type) == 0);
-+	unsigned long delta;
- 
--	// powerpc has a special case to allow up to 1MB
--	assert(test_one(DEFAULT_SIZE, 1 * _MB, type) == 0);
--
--#ifdef __powerpc__
--	// This fails on powerpc because it's > 1MB and is not a stdu &
--	// not close to r1
--	assert(test_one(DEFAULT_SIZE, 1 * _MB + 8, type) != 0);
--#else
--	assert(test_one(DEFAULT_SIZE, 1 * _MB + 8, type) == 0);
--#endif
--
--#ifdef __powerpc__
--	// Accessing way past the stack pointer is not allowed on powerpc
--	assert(test_one(DEFAULT_SIZE, rlim_cur, type) != 0);
--#else
- 	// We should be able to access anywhere within the rlimit
-+	for (delta = page_size; delta <= rlim_cur; delta += page_size)
-+		assert(test_one(DEFAULT_SIZE, delta, type) == 0);
-+
- 	assert(test_one(DEFAULT_SIZE, rlim_cur, type) == 0);
--#endif
- 
- 	// But if we go past the rlimit it should fail
- 	assert(test_one(DEFAULT_SIZE, rlim_cur + 1, type) != 0);
--
--	// Above 1MB powerpc only allows accesses within 4224 bytes of
--	// r1 for accesses that aren't stdu
--	assert(test_one(1 * _MB + page_size - 128, -4224, type) == 0);
--#ifdef __powerpc__
--	assert(test_one(1 * _MB + page_size - 128, -4225, type) != 0);
--#else
--	assert(test_one(1 * _MB + page_size - 128, -4225, type) == 0);
--#endif
--
--	// By consuming 2MB of stack we test the stdu case
--	assert(test_one(2 * _MB + page_size - 128, -4224, type) == 0);
- }
- 
- static int test(void)
--- 
-2.25.1
+I've read the observations in the other threads, but this #ifdef 
+jungle is silly, it's a de-facto open coded text_alloc() with a 
+module_alloc() fallback...
 
+Thanks,
+
+	Ingo
