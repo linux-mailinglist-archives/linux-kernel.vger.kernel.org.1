@@ -2,127 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0FD22C751
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B0C22C75A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgGXOHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:07:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38424 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726424AbgGXOHp (ORCPT
+        id S1726692AbgGXOJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:09:06 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16290 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726366AbgGXOJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:07:45 -0400
-Date:   Fri, 24 Jul 2020 14:07:41 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595599662;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=opVcxPUv963ARJfix0eZv2oOhV48P3svftrMOGDWqj8=;
-        b=Kxppuj5TTDpiFKF4ZHBMFJpK6Pht52wYRbKRufDNKLNiwZ7r9X09Hy2Nms2jmnG4UilrIw
-        MJq8Vwyv7Ojf06h0fhaySfRJYKs7SPe5ahjvaqKIZ4VpBYPKoPBtv7Gek09iWraa81TX5E
-        AEBpJnOfGjJ6tqBf+p4jPQLKdhgOJSeJ3kk4BUOIMF6rGX94Z3R3RN0xvzBUDh+IKnBoBh
-        bFsE7zr8Zq7cxfCDJK3TT2lIqlVlk+XhiMvJREADmkoAMgMGTRwMx0gMpHXSUdVWwIhnqe
-        997+gLSNXBuHS6CW5clMJg+Czq7SoXhvBwAV8jVovMxnNI3PTEiP0hkeQ0mThQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595599662;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=opVcxPUv963ARJfix0eZv2oOhV48P3svftrMOGDWqj8=;
-        b=CiLn/DBxHVCGgEFJq5bIqH0ItFramz0pFzYOWslczfSpDaiSliGK2AXrZkvbex8SFDUs22
-        7urxxbNSkRLvSwDw==
-From:   "tip-bot2 for Oleg Nesterov" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] uprobes: Change handle_swbp() to send SIGTRAP with
- si_code=SI_KERNEL, to fix GDB regression
-Cc:     Aaron Merey <amerey@redhat.com>, Oleg Nesterov <oleg@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        stable@vger.kernel.org, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200723154420.GA32043@redhat.com>
-References: <20200723154420.GA32043@redhat.com>
+        Fri, 24 Jul 2020 10:09:05 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OE2bGH148746;
+        Fri, 24 Jul 2020 10:08:54 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32fact9dnj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 10:08:54 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06OE3hOd155756;
+        Fri, 24 Jul 2020 10:08:53 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32fact9dmu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 10:08:53 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06OE4RLf007803;
+        Fri, 24 Jul 2020 14:08:51 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 32brq842dx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 14:08:51 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06OE8muY18022758
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Jul 2020 14:08:49 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E014E42041;
+        Fri, 24 Jul 2020 14:08:48 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 069854203F;
+        Fri, 24 Jul 2020 14:08:46 +0000 (GMT)
+Received: from [9.85.127.153] (unknown [9.85.127.153])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Jul 2020 14:08:45 +0000 (GMT)
+Subject: Re: [PATCH v4 06/12] ppc64/kexec_file: restrict memory usage of kdump
+ kernel
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     Pingfan Liu <piliu@redhat.com>, Nayna Jain <nayna@linux.ibm.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>
+References: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com>
+ <159524954805.20855.1164928096364700614.stgit@hbathini.in.ibm.com>
+ <875zad6ajx.fsf@morokweng.localdomain>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <77c606da-8eb2-d831-147b-a204b498c7d7@linux.ibm.com>
+Date:   Fri, 24 Jul 2020 19:38:45 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <159559966135.4006.10705285395851102706.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <875zad6ajx.fsf@morokweng.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_04:2020-07-24,2020-07-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007240105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     fe5ed7ab99c656bd2f5b79b49df0e9ebf2cead8a
-Gitweb:        https://git.kernel.org/tip/fe5ed7ab99c656bd2f5b79b49df0e9ebf2cead8a
-Author:        Oleg Nesterov <oleg@redhat.com>
-AuthorDate:    Thu, 23 Jul 2020 17:44:20 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 24 Jul 2020 15:38:37 +02:00
 
-uprobes: Change handle_swbp() to send SIGTRAP with si_code=SI_KERNEL, to fix GDB regression
+On 24/07/20 5:36 am, Thiago Jung Bauermann wrote:
+> 
+> Hari Bathini <hbathini@linux.ibm.com> writes:
+> 
+>> Kdump kernel, used for capturing the kernel core image, is supposed
+>> to use only specific memory regions to avoid corrupting the image to
+>> be captured. The regions are crashkernel range - the memory reserved
+>> explicitly for kdump kernel, memory used for the tce-table, the OPAL
+>> region and RTAS region as applicable. Restrict kdump kernel memory
+>> to use only these regions by setting up usable-memory DT property.
+>> Also, tell the kdump kernel to run at the loaded address by setting
+>> the magic word at 0x5c.
+>>
+>> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+>> Tested-by: Pingfan Liu <piliu@redhat.com>
+>> ---
+>>
+>> v3 -> v4:
+>> * Updated get_node_path() to be an iterative function instead of a
+>>   recursive one.
+>> * Added comment explaining why low memory is added to kdump kernel's
+>>   usable memory ranges though it doesn't fall in crashkernel region.
+>> * For correctness, added fdt_add_mem_rsv() for the low memory being
+>>   added to kdump kernel's usable memory ranges.
+> 
+> Good idea.
+> 
+>> * Fixed prop pointer update in add_usable_mem_property() and changed
+>>   duple to tuple as suggested by Thiago.
+> 
+> <snip>
+> 
+>> +/**
+>> + * get_node_pathlen - Get the full path length of the given node.
+>> + * @dn:               Node.
+>> + *
+>> + * Also, counts '/' at the end of the path.
+>> + * For example, /memory@0 will be "/memory@0/\0" => 11 bytes.
+> 
+> Wouldn't this function return 10 in the case of /memory@0?
 
-If a tracee is uprobed and it hits int3 inserted by debugger, handle_swbp()
-does send_sig(SIGTRAP, current, 0) which means si_code == SI_USER. This used
-to work when this code was written, but then GDB started to validate si_code
-and now it simply can't use breakpoints if the tracee has an active uprobe:
+Actually, it does return 11. +1 while returning is for counting %NUL.
+On top of that we count an extra '/' for root node.. so, it ends up as 11.
+('/'memory@0'/''\0'). Note the extra '/' before '\0'. Let me handle root node
+separately. That should avoid the confusion.
 
-	# cat test.c
-	void unused_func(void)
-	{
-	}
-	int main(void)
-	{
-		return 0;
-	}
+>> + *
+>> + * Returns the string length of the node's full path.
+>> + */
+> 
+> Maybe it's me (by analogy with strlen()), but I would expect "string
+> length" to not include the terminating \0. I suggest renaming the
+> function to something like get_node_path_size() and do s/length/size/ in
+> the comment above if it's supposed to count the terminating \0.
 
-	# gcc -g test.c -o test
-	# perf probe -x ./test -a unused_func
-	# perf record -e probe_test:unused_func gdb ./test -ex run
-	GNU gdb (GDB) 10.0.50.20200714-git
-	...
-	Program received signal SIGTRAP, Trace/breakpoint trap.
-	0x00007ffff7ddf909 in dl_main () from /lib64/ld-linux-x86-64.so.2
-	(gdb)
+Sure, will update the function name.
 
-The tracee hits the internal breakpoint inserted by GDB to monitor shared
-library events but GDB misinterprets this SIGTRAP and reports a signal.
-
-Change handle_swbp() to use force_sig(SIGTRAP), this matches do_int3_user()
-and fixes the problem.
-
-This is the minimal fix for -stable, arch/x86/kernel/uprobes.c is equally
-wrong; it should use send_sigtrap(TRAP_TRACE) instead of send_sig(SIGTRAP),
-but this doesn't confuse GDB and needs another x86-specific patch.
-
-Reported-by: Aaron Merey <amerey@redhat.com>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200723154420.GA32043@redhat.com
----
- kernel/events/uprobes.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index bb08628..5f8b0c5 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -2199,7 +2199,7 @@ static void handle_swbp(struct pt_regs *regs)
- 	if (!uprobe) {
- 		if (is_swbp > 0) {
- 			/* No matching uprobe; signal SIGTRAP. */
--			send_sig(SIGTRAP, current, 0);
-+			force_sig(SIGTRAP);
- 		} else {
- 			/*
- 			 * Either we raced with uprobe_unregister() or we can't
+Thanks
+Hari
