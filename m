@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAF322BC8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD7E22BC93
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 05:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbgGXDle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 23:41:34 -0400
-Received: from mga06.intel.com ([134.134.136.31]:43724 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726525AbgGXDle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 23:41:34 -0400
-IronPort-SDR: g0sMt2SwQmt0VM7OvQFv30hcc/mNggTIIm2IoioE2l71CmMn0aG5DfawyfOPFXqCWon8YmcI7R
- DAu6B2hAvDcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="212190273"
-X-IronPort-AV: E=Sophos;i="5.75,389,1589266800"; 
-   d="scan'208";a="212190273"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 20:41:32 -0700
-IronPort-SDR: vZBCjDyBnbRpnpu2P81a/SKOPLVUIRzclKVaAwTsp4BON/vvAMoExoSxXrR5S5hf2e3C9xmFP+
- BEXI1a2QqAjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,389,1589266800"; 
-   d="scan'208";a="288864767"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga006.jf.intel.com with ESMTP; 23 Jul 2020 20:41:31 -0700
-Message-ID: <d15816d6172ea770b63e52443aced5607f1e35c1.camel@intel.com>
-Subject: Re: [PATCH v10 00/26] Control-flow Enforcement: Shadow Stack
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Date:   Thu, 23 Jul 2020 20:40:33 -0700
-In-Reply-To: <f38b5b34-8432-9531-01b5-d0ae924ffafe@intel.com>
-References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
-         <20200723162531.GF21891@linux.intel.com>
-         <2e9806a3-7485-a0d0-b63d-f112fcff954c@intel.com>
-         <20200723165649.GG21891@linux.intel.com>
-         <f38b5b34-8432-9531-01b5-d0ae924ffafe@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        id S1726618AbgGXDqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 23:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGXDqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 23:46:15 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CF2C0619D3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 20:46:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c80so6713842wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 20:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M4J07zWXl7gx9PKEYJvn7EJ3LUQ854Vz+YTl+3vbqAY=;
+        b=C6mVErwtomReoITMugJNqU569a7mg+Mi54NW0KTPb/ek0WcdjBImAYVsJZ2NBfpOnm
+         FQ2wlSJFDFOO4d94T1hhmkXW1fbi8S9p483YWzMyqu3r+bGBngERW+C3Qs0na7MrVh8q
+         NEAhrF6u90fodX0dCPFOkyQIsOtoWnTwdUogV0qsCccR3Gks+GEl963pMUuVe9Y7WI5r
+         RTIcvOruSfzxiiVFKse6/NG8dKh73Yo06eev8NgFCbtZBAGSXZBaTMp5YfknP80pISK/
+         LxHrhby0G1lFReM4GpTz0kiL7D7eg08mRnRS8Vw/ShtKLC4Yp/MqsTizbqvq4seR+MZT
+         KaPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M4J07zWXl7gx9PKEYJvn7EJ3LUQ854Vz+YTl+3vbqAY=;
+        b=A6Vgg06nd7fBfNec9QZy87veiR26MBa/JH0ljAUmEgzY53Y17BWyBVlKvV5HCgTJSN
+         HLXT/VAFQJ9zhvqWJEOiI8k4cn38ue9V0eTyX+MBB7KmmKqfksDNvabusZILBVPGJteD
+         myZJ69oledaSxBmm89asmD/vSKOttY1GccdPBK1Af2gWYmWQG5pXXfESYv4IJ+nfBqHQ
+         r5kh/ysnOk+5gZ8i9v1HDI7P9tN9gbC4nR3FKiUH5w+S1ZRMY4VgkPTZhmjPcKitgrlz
+         A82cgtZ6mNXqr+sNRqIm7OW0t5ansNxqyLOZ8AqU/iboEtbKIdpBPMbSYPxUe4CBwOXa
+         MEnQ==
+X-Gm-Message-State: AOAM532CZeG3IaDjUao/2pcyVPZSLvuzMMaYABy+WcJzuMrGP0PBq6RB
+        KkflFbpACSxgeMOamjUkCxG6eqLDx6tGqSE/dC98iNUG
+X-Google-Smtp-Source: ABdhPJz9rZ1cUR8D93W8V+89NR+0UPp92dpRf7lfMX0mGUeNHm3QfgxO0pABEBPSxzCG4U/YTKFZ3eh1g+OkV4dnWYk=
+X-Received: by 2002:a1c:9650:: with SMTP id y77mr6597593wmd.101.1595562373681;
+ Thu, 23 Jul 2020 20:46:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200721063258.17140-1-mhocko@kernel.org> <CAHk-=whewL14RgwLZTXcNAnrDPt0H+sRJS6iDq0oGb6zwaBMxg@mail.gmail.com>
+ <CAHk-=whb0=rjc1WR+F_r_syw5Ld4=ebuNJmmpaPEzfjZRD5Y-w@mail.gmail.com>
+ <alpine.LSU.2.11.2007221359450.1017@eggly.anvils> <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
+ <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
+ <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
+ <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com>
+ <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
+ <alpine.LSU.2.11.2007231650170.1281@eggly.anvils> <CAHk-=wgptprCsM9Vv7wvBF6q23rR5WA94pBGD5kfS2sPwgNVyA@mail.gmail.com>
+In-Reply-To: <CAHk-=wgptprCsM9Vv7wvBF6q23rR5WA94pBGD5kfS2sPwgNVyA@mail.gmail.com>
+From:   Hugh Dickins <hughd@google.com>
+Date:   Thu, 23 Jul 2020 20:45:34 -0700
+Message-ID: <CANsGZ6YBf+JCPYa_QOhO-uauebK5HVmacaGCQmvNSsws3-ca-g@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-07-23 at 11:41 -0700, Dave Hansen wrote:
-> On 7/23/20 9:56 AM, Sean Christopherson wrote:
-> > On Thu, Jul 23, 2020 at 09:41:37AM -0700, Dave Hansen wrote:
-> > > On 7/23/20 9:25 AM, Sean Christopherson wrote:
-> > > > How would people feel about taking the above two patches (02 and 03 in the
-> > > > series) through the KVM tree to enable KVM virtualization of CET before the
-> > > > kernel itself gains CET support?  I.e. add the MSR and feature bits, along
-> > > > with the XSAVES context switching.  The feature definitons could use "" to
-> > > > suppress displaying them in /proc/cpuinfo to avoid falsely advertising CET
-> > > > to userspace.
-> > > > 
-> > > > AIUI, there are ABI issues that need to be sorted out, and that is likely
-> > > > going to drag on for some time. 
-> > > > 
-> > > > Is this a "hell no" sort of idea, or something that would be feasible if we
-> > > > can show that there are no negative impacts to the kernel?
-> > > Negative impacts like bloating every task->fpu with XSAVE state that
-> > > will never get used? ;)
-> > Gah, should have qualified that with "meaningful or measurable negative
-> > impacts".  E.g. the extra 40 bytes for CET XSAVE state seems like it would
-> > be acceptable overhead, but noticeably increasing the latency of XSAVES
-> > and/or XRSTORS would not be acceptable.
-> 
-> It's 40 bytes, but it's 40 bytes of just pure, unadulterated waste.  It
-> would have no *chance* of being used.  It's also quite precisely
-> measurable on a given system:
-> 
-> 	cat /proc/slabinfo | grep task_struct | awk '{print $3 * 40}'
+On Thu, Jul 23, 2020 at 5:47 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, Jul 23, 2020 at 5:07 PM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > I say that for full disclosure, so you don't wrack your brains
+> > too much, when it may still turn out to be a screwup on my part.
+>
+> Sounds unlikely.
+>
+> If that patch applied even reasonably closely, I don't see how you'd
+> see a list corruption that wasn't due to the patch.
+>
+> You'd have had to use the wrong spinlock by mistake due to munging it,
+> or something crazy like that.
+>
+> The main list-handling change is
+>
+>  (a) open-coding of that finish_wait()
+>
+>  (b) slightly different heuristics for removal in the wakeup function
+>
+> where (a) was because my original version of finishing the wait needed
+> to do that return code checking.
+>
+> So a normal "finish_wait()" just does
+>
+>         list_del_init(&wait->entry);
+>
+> where-as my open-coded one replaced that with
+>
+>         if (!list_empty(&wait->entry)) {
+>                 list_del(&wait->entry);
+>                 ret = -EINTR;
+>         }
+>
+> and apart from that "set return to -EINTR because nobody woke us up",
+> it also uses just a regular "list_del()" rather than a
+> "list_del_init()". That causes the next/prev field to be poisoned
+> rather than re-initialized. But that second change was because the
+> list entry is on the stack, and we're not touching it any more and are
+> about to return, so I removed the "init" part.
+>
+> Anyway, (a) really looks harmless. Unless the poisoning now triggers
+> some racy debug test that had been hidden by the "init". Hmm.
+>
+> In contrast, (b) means that the likely access patterns of irqs
+> removing the wait entry from the list might be very different from
+> before. The old "autoremove" semantics would only remove the entry
+> from the list when try_to_wake_up() actually woke things up. Now, a
+> successful bit state _always_ removes it, which was kind of the point.
+> But it might cause very different list handling patterns.
+>
+> All the actual list handling looks "obviously safe" because it's
+> protected by the spinlock, though...
+>
+> If you do get oopses with the new patch too, try to send me a copy,
+> and maybe I'll stare at exactly where it happens register contents and
+> go "aah".
 
-If there is value in getting these two patches merged first, we can move
-XFEATURE_MASK_CET_USER to XFEATURE_MASK_SUPERVISOR_UNSUPPORTED for now, until
-CET is eventually merged.  That way, there is no space wasted.
+This new version is doing much better: many hours to go, but all
+machines have got beyond the danger point where yesterday's version
+was crashing - phew!
 
-Yu-cheng
-
-
+Hugh
