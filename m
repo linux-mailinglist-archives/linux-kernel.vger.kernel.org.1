@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332DF22CE84
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656AA22CE8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgGXTOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgGXTOj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:14:39 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3011CC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:14:39 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id q4so11085024lji.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=td+POTQLbLYOoIxNCct7GsW10BBA9n/4Q5dVUic9E/Y=;
-        b=BmStlzF53IfQFR9lW1QEwB6WtPaCTo8kB/5l2ZVbvkNCRtpkKknR7R7gwnINKZMYbo
-         9roTE/qL7vaPo+Cyso47Tup2l6wwhF0x/6bkHDYtEfCuAEAXNXPJrsNboG8KVxzjNeDZ
-         VsPfwtpzBsiG/8I7JDAyVredl46a3Ru8+ROxI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=td+POTQLbLYOoIxNCct7GsW10BBA9n/4Q5dVUic9E/Y=;
-        b=BJ270DP3vTCYkckJSINSiByIHedpKERRN9X6Ma4DhZA1mlUrQvFuTo6ziHW2tTbv/I
-         jRxHtYSIpgdLPjFUttRm+fcOFR1XUM3iiHY9ajQhPZ1dy5H+V3eSMWtkF3j4QJwosFkV
-         KrTDZWS/xzc4Ey8G9xx3TDqC6EYu+IOhPYiQqlIoEtqmSi86rgmSl9fhUNKHOspi4aRf
-         5qdU513+iw8t/4Y+FebEqGqoDpuaHt7oycPRg59F9jV5zPfTQuCPoRkIsK2Yz+4ZAH6O
-         GLSBmbEryIaNts2mpcwpt6MrXCwmJOytVe8hhevPA5abdmHOdxzDNxYR9BEx9oNZFAF/
-         jSfw==
-X-Gm-Message-State: AOAM532n1AsD9pPnnvtSByyvDdGC4iWX7OYbO18fGfswVcQZscXKlJMK
-        12HW2H9whRSk3HQCtVFef9bD4WwYGaE=
-X-Google-Smtp-Source: ABdhPJycmn3m4TRX4VhgzRN3z1I1qA7oURPNAWFeQ8lXNss+9cVjruiHuWq+wxdzxI+TdQyR19ucsw==
-X-Received: by 2002:a2e:8157:: with SMTP id t23mr5223007ljg.417.1595618077138;
-        Fri, 24 Jul 2020 12:14:37 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id m1sm513676lfa.22.2020.07.24.12.14.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jul 2020 12:14:36 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id 185so845547ljj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:14:35 -0700 (PDT)
-X-Received: by 2002:a2e:86c4:: with SMTP id n4mr5228146ljj.312.1595618075547;
- Fri, 24 Jul 2020 12:14:35 -0700 (PDT)
+        id S1726667AbgGXTRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:17:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726381AbgGXTRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:17:05 -0400
+Received: from localhost (p54b3305c.dip0.t-ipconnect.de [84.179.48.92])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F8A7206F0;
+        Fri, 24 Jul 2020 19:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595618224;
+        bh=1Jq8jNeuEsHc+9ZAVYpD7ZWZg9rx9073ZC4wxzAB224=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UeOx/uowcd9aNoRjyHJQMB9q9YsrBnUBIEVkjOifuQpzolBXY0eKwDzWDuSb3XSc2
+         qEbc8ShfHWjbic9ICW80v38dIpl2qLsZZrlay7lJX3hse3Ug6bDK0GaSEq5L6pbXAX
+         hqAAJJmiL1E3YzlJWfc84AAkhEI4aoEjpa+dj4r0=
+Date:   Fri, 24 Jul 2020 21:16:55 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        sakari.ailus@iki.fi, robh+dt@kernel.org, helen.koike@collabora.com,
+        digetx@gmail.com, sboyd@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [RFC PATCH v4 00/14] Support for Tegra video capture from
+ external sensor
+Message-ID: <20200724191654.GA1227@ninjato>
+References: <1595548272-9809-1-git-send-email-skomatineni@nvidia.com>
+ <cb080da3-5ae5-bb83-8f5c-65d1fe17cb67@xs4all.nl>
 MIME-Version: 1.0
-References: <159559628247.2141315.2107013106060144287.stgit@warthog.procyon.org.uk>
- <159559630912.2141315.16186899692832741137.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159559630912.2141315.16186899692832741137.stgit@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 24 Jul 2020 12:14:18 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjnQArU_BewVKQgYHy2mQD6LNKC5kkKXOm7GpNkJCapQg@mail.gmail.com>
-Message-ID: <CAHk-=wjnQArU_BewVKQgYHy2mQD6LNKC5kkKXOm7GpNkJCapQg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] watch_queue: Implement mount topology and attribute
- change notifications
-To:     David Howells <dhowells@redhat.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Ian Kent <raven@themaw.net>,
-        Christian Brauner <christian@brauner.io>,
-        Jeff Layton <jlayton@redhat.com>, Karel Zak <kzak@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
+Content-Disposition: inline
+In-Reply-To: <cb080da3-5ae5-bb83-8f5c-65d1fe17cb67@xs4all.nl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This just can't be right.
 
-On Fri, Jul 24, 2020 at 6:12 AM David Howells <dhowells@redhat.com> wrote:
->
-> +
-> +/**
-> + * sys_watch_mount - Watch for mount topology/attribute changes
-> + * @dfd: Base directory to pathwalk from or fd referring to mount.
-> + * @filename: Path to mount to place the watch upon
-> + * @at_flags: Pathwalk control flags
-> + * @watch_fd: The watch queue to send notifications to.
-> + * @watch_id: The watch ID to be placed in the notification (-1 to remove watch)
-> + */
-> +SYSCALL_DEFINE5(watch_mount, [...]
-> +               int, watch_id)
-...
-> +       if (watch_id < -1 || watch_id > 0xff)
-> +               return -EINVAL;
-...
-> +       ret = inode_permission(path.dentry->d_inode, MAY_EXEC);
-> +       if (ret)
-> +               goto err_path;
-...
-> +       if (watch_id >= 0) {
-...
-> +               watch = kzalloc(sizeof(*watch), GFP_KERNEL);
-> +               if (!watch)
-> +                       goto err_wlist;
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So now you can basically allocate as much kernel memory as you want as
-a regular user, as long as you have a mounted directory you can walk
-(ie everybody).
 
-Is there any limiting of watches anywhere? I don't see it.
+> I can also take the i2c-tegra patches if preferred, but there too I need Acks.
+> Dmitry, can you either take these i2c patches, or reply with Acks if you want
+> me to take it?
 
-I notice we already have this pattern elsewhere. I think we need to
-fix this before we add more watch types.
+There are some more patches for i2c-tegra pending, so I'd rather pick
+them into my I2C tree once the Tegra maintainers acked them. I can
+provide a immutable branch, though, if there is interest.
 
-Watch allocation shouldn't just be a kzalloc(). I think you should
-have a "watch_allocate()" that does the initialization of id etc, but
-also does some basic per-user watch resource tracking or something.
 
-              Linus
+--VbJkn9YxBvnuCH5J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8bM6IACgkQFA3kzBSg
+KbYTCxAAotZrtFWCm4x17AWbkHShGvcc2z5M10agF+meIHjiSj9loeN4X928M+Hi
+bjAdLaRtKsDtpOQMvx+LUrooR8yO1+IP609BYETjzocL+jStyg4kfspuo+FSeRb2
+4MGI9FYsNLnbMz4ZEvyXvNRIK9MuM+tpRjVn0IQD+AEYOVaX86Yg37tU3pCJH+xH
+PhodfARWlVc3nQ6W/xd0/wotbDT2ZxoAB4Oaz0XVdnHbWb92imEt14IVLEtYPpz8
+dDc/K8AfqhgGHl2G74Qyg38AeDiomiRrSAEYUMurmq4sMXyQzmEBP5TPVrA5ApUL
+e9RLLRslny8bBru71qafKiWeZm8ZG2C594rtrxbmdkSwXROIekweIM/sm1/B1A30
+AxeNIaNr0JRa6f6gOAaBwOrl8p6vmfd+LzMWj/unZuF8nvucW5xoRJw6thlyy7K9
+ZfsMm3KNUXK4L2AsqgPnCMC8HDgL38i9ZguRmsmJQkhblwTTK1GQCrgP1czu2pBX
+L2P34eKIFzuPqGmnNO6KlEu+SbUwx3ihHwZxrcC8zD9WuaNT09PGWMxLYCzA7t7J
+UKcB6Prr0gToQ7aS0J8q66inAqRlQOHLzHx4uY3iJI3y17Wx39pHLIlXfbyKNp09
+42tnbRlT/ZoRdxXVfJjHhBCopnX2VnFsYJmdWvHJohTXtcZCdqs=
+=ykZo
+-----END PGP SIGNATURE-----
+
+--VbJkn9YxBvnuCH5J--
