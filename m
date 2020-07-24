@@ -2,108 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6B022CA2C
+	by mail.lfdr.de (Postfix) with ESMTP id 0557D22CA2A
 	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 18:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728471AbgGXQHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 12:07:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30488 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgGXQHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 12:07:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595606841; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=BDjCdzox03R+E0WebnMzaH3e+8GkUl2oaYOMtWhsAZY=; b=OODIOowYR0/ko6NfJy/QnHruF3jkDxnwl0WRh3B8bkx/VqkdwFrpSkZ5qVDlIL6TnYZhH+sb
- VtdjCJzfcIbClmohdbDNB/EtD+sATJfczumPXF9NbmhqZatlNBJW6Se40i3WWicbrr0vRIxy
- +4CuIsxShUtsvRzoMuJIPPz0AI0=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n15.prod.us-east-1.postgun.com with SMTP id
- 5f1b07268db7256a955ba010 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Jul 2020 16:07:02
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 03AB9C433C9; Fri, 24 Jul 2020 16:07:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.3 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.105] (unknown [183.82.136.194])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4CD91C43391;
-        Fri, 24 Jul 2020 16:06:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4CD91C43391
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH v4 4/4] clk: qcom: lpass: Add support for LPASS clock
- controller for SC7180
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     David Brown <david.brown@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        robh@kernel.org, robh+dt@kernel.org
-References: <1594795010-9074-1-git-send-email-tdas@codeaurora.org>
- <1594795010-9074-5-git-send-email-tdas@codeaurora.org>
- <159531768310.3847286.13203525525881212775@swboyd.mtv.corp.google.com>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <893b1221-6e35-a903-77d4-a60a3ce0cbdc@codeaurora.org>
-Date:   Fri, 24 Jul 2020 21:36:53 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728477AbgGXQHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 12:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728008AbgGXQHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 12:07:17 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FD3C0619E4;
+        Fri, 24 Jul 2020 09:07:17 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r12so8752319wrj.13;
+        Fri, 24 Jul 2020 09:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RhJpy+OvuiZv7MNQSIPaKzKl699i34XcNbcjAQN++mU=;
+        b=dwVZ1BNSTwWjuPgDCE91/UvIadNB7y0CUTggjSFZ17o/X4tYGikLjPqGSofswqtdWB
+         /vfaWNd1Oiha1OwLdV7rTUiEayhZYdCd6IR1CjgmzO6POJABikyhP9A8r3izTR70SNE7
+         MQ+RYsmgZHyQoasr9edkBIEV139XEl/WMWqxXffm650ttJxQ7cYPkK0E3vk0oKzLDYyT
+         gdOEr1+L0xq2MajUl5oLD+9gyH0G16/V48131CXvXu2M1DNNjVRezX88tm+/JalsWcLr
+         ackVLAWPk3qHUH5KTpt46Xa8UCVmvScXqt61HRNUFidD/QSQUllZoHpUEQpC+Qw6Yn5y
+         opNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RhJpy+OvuiZv7MNQSIPaKzKl699i34XcNbcjAQN++mU=;
+        b=ld0ltzZzz+fG/uLxDRN/vu9Oc4x0vUOLHdFo2PSjDc0Gf3OroReAJ8Cvw5GL7M12h5
+         aoBPhVCYCNOb//E81NU7hidEzSd+vtSAd6t3vLHLsJBnUucStWQhiVjCowMsAHCeDLbO
+         5fZjNZKP01HZGjdIoxosUNZ5pBdlCa4WlZkl5Nz/goTReBtHHpuwmndp+Mz37FBbKTFV
+         k2zc+lBhpgaOryOoSGINePlo+pGev8Z75hi8MgUwIT0Cl3D64/UrLXtJ2tp/917BY94M
+         7EWFUvS2/uCJkWhvVOk3RNEGEhOl5734BgYpEu8nlDldJrY+ip5+X1wLryFAjdGse5c3
+         izSQ==
+X-Gm-Message-State: AOAM531fYVXPYIT3XDR3o2rkp36vZgkbcwdPMunG/KJGkLI/9+SpVObJ
+        +VIJ+kaI5iTUie74OlyZfG4K5kNb/AK2+/EFfnc=
+X-Google-Smtp-Source: ABdhPJy0wLXIQikSh4izF0ApEYr9jJbbykOJr2Ds0q+OjmmFkILcjFy76pjswDLypwV4vbwT3fVx6bJk8OQAsXrrYyQ=
+X-Received: by 2002:a5d:618e:: with SMTP id j14mr9614021wru.374.1595606835774;
+ Fri, 24 Jul 2020 09:07:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <159531768310.3847286.13203525525881212775@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200723195742.GA1447143@bjorn-Precision-5520>
+ <89d853d1-9e45-1ba5-5be7-4bbce79c7fb8@deltatee.com> <CADnq5_NMKK83GaNA+w85MR8bqDbFqvcdvn9MCqZtLwctJKmOUw@mail.gmail.com>
+In-Reply-To: <CADnq5_NMKK83GaNA+w85MR8bqDbFqvcdvn9MCqZtLwctJKmOUw@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 24 Jul 2020 12:07:04 -0400
+Message-ID: <CADnq5_MCPTyxG31guPFL-uvs7HisGxwO5KpALnufc=Bj4MfYCw@mail.gmail.com>
+Subject: Re: [PATCH] PCI/P2PDMA: Add AMD Zen 2 root complex to the list of
+ allowed bridges
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andrew Maier <andrew.maier@eideticom.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Thu, Jul 23, 2020 at 4:18 PM Alex Deucher <alexdeucher@gmail.com> wrote:
+>
+> On Thu, Jul 23, 2020 at 4:11 PM Logan Gunthorpe <logang@deltatee.com> wro=
+te:
+> >
+> >
+> >
+> > On 2020-07-23 1:57 p.m., Bjorn Helgaas wrote:
+> > > [+cc Andrew, Armen, hpa]
+> > >
+> > > On Thu, Jul 23, 2020 at 02:01:17PM -0400, Alex Deucher wrote:
+> > >> On Thu, Jul 23, 2020 at 1:43 PM Logan Gunthorpe <logang@deltatee.com=
+> wrote:
+> > >>>
+> > >>> The AMD Zen 2 root complex (Starship/Matisse) was tested for P2PDMA
+> > >>> transactions between root ports and found to work. Therefore add it
+> > >>> to the list.
+> > >>>
+> > >>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> > >>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > >>> Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > >>> Cc: Huang Rui <ray.huang@amd.com>
+> > >>> Cc: Alex Deucher <alexdeucher@gmail.com>
+> > >>
+> > >> Starting with Zen, all AMD platforms support P2P for reads and write=
+s.
+> > >
+> > > What's the plan for getting out of the cycle of "update this list for
+> > > every new chip"?  Any new _DSMs planned, for instance?
+> >
+> > Well there was an effort to add capabilities in the PCI spec to describ=
+e
+> > this but, as far as I know, they never got anywhere, and hardware still
+> > doesn't self describe with this.
+> >
+> > > A continuous trickle of updates like this is not really appealing.  S=
+o
+> > > far we have:
+> > >
+> > >   7d5b10fcb81e ("PCI/P2PDMA: Add AMD Zen Raven and Renoir Root Ports =
+to whitelist")
+> > >   7b94b53db34f ("PCI/P2PDMA: Add Intel Sky Lake-E Root Ports B, C, D =
+to the whitelist")
+> > >   bc123a515cb7 ("PCI/P2PDMA: Add Intel SkyLake-E to the whitelist")
+> > >   494d63b0d5d0 ("PCI/P2PDMA: Whitelist some Intel host bridges")
+> > >   0f97da831026 ("PCI/P2PDMA: Allow P2P DMA between any devices under =
+AMD ZEN Root Complex")
+> > >
+> > > And that's just from the last year, not including this patch.
+> >
+> > Yes, it's not ideal. But most of these are adding old devices as people
+> > test and care about running on those platforms -- a lot of this is
+> > bootstrapping the list. I'd expect this to slow down a bit as by now we
+> > have hopefully got a lot of the existing platforms people care about.
+> > But we'd still probably expect to be adding a new Intel and AMD devices
+> > about once a year as they produce new hardware designs.
+> >
+> > Unless, the Intel and AMD folks know of a way to detect this, or even t=
+o
+> > query if a root complex is newer than a certain generation, I'm not sur=
+e
+> > what else we can do here.
+>
+> I started a thread internally to see if I can find a way.  FWIW,
+> pre-ZEN parts also support p2p DMA, but only for writes.  If I can get
+> a definitive list, maybe we could switch to a blacklist for the old
+> ones?
 
-Thanks for the review.
+After talking with a few people internally, for AMD chips, it would
+probably be easiest to just whitelist based on the CPU family id for
+zen and newer (e.g., >=3D 0x17).
 
-On 7/21/2020 1:18 PM, Stephen Boyd wrote:
-> Quoting Taniya Das (2020-07-14 23:36:50)
->> diff --git a/drivers/clk/qcom/lpasscorecc-sc7180.c b/drivers/clk/qcom/lpasscorecc-sc7180.c
+Alex
 
->> +static struct clk_alpha_pll lpass_lpaaudio_dig_pll = {
->> +       .offset = 0x1000,
->> +       .vco_table = fabia_vco,
->> +       .num_vco = ARRAY_SIZE(fabia_vco),
->> +       .regs = clk_alpha_pll_regs_offset[CLK_ALPHA_PLL_TYPE_FABIA],
->> +       .clkr = {
->> +               .hw.init = &(struct clk_init_data){
->> +                       .name = "lpass_lpaaudio_dig_pll",
->> +                       .parent_data = &(const struct clk_parent_data){
->> +                               .fw_name = "bi_tcxo",
->> +                               .name = "bi_tcxo",
-> 
-> We don't need .name if we have .fw_name and this is a new binding/device.
-> 
-
-My bad, will cleanup in the next patch.
-
->> +                       },
->> +                       .num_parents = 1,
->> +                       .ops = &clk_alpha_pll_fabia_ops,
->> +               },
->> +       },
->> +};
->> +
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+>
+> Alex
+>
+> >
+> > Logan
