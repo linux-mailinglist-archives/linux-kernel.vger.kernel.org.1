@@ -2,74 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B160F22C25E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F49622C263
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgGXJfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:35:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgGXJfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:35:33 -0400
-Received: from gaia (unknown [95.146.230.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E530206D7;
-        Fri, 24 Jul 2020 09:35:30 +0000 (UTC)
-Date:   Fri, 24 Jul 2020 10:35:28 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Sumit Gupta <sumitg@nvidia.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH -next] arm64: Export __cpu_logical_map
-Message-ID: <20200724093528.GB23388@gaia>
-References: <20200724030433.22287-1-wangkefeng.wang@huawei.com>
- <82f750c4-d423-1ed8-a158-e75153745e07@huawei.com>
- <7998529f-da52-5e46-dd09-b9b11d83ec1a@arm.com>
- <20200724091308.GA44746@C02TD0UTHF1T.local>
+        id S1727015AbgGXJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgGXJgu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:36:50 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3FAC0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:36:49 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id r7so2060964vkf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:36:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eOx9p9BRbHYFyzTDeDw1C6pMjBAIj6x0Ehxcc1dpviE=;
+        b=ECPu6+uJ3ZzbkRGb3tE2DYl78eO7To6KVAIEykSObvdCdOC8UYpYCXhwrLuj3yXU3m
+         hDps3bWLT8jFOvErQ8OjHMn+08iBtoAsrGUoK6yu9EpzbcoVF4CmaWt47LYBxamX1d2I
+         M4KVvniPWN3rj5V22sYt3kbkTDn4BY02zvoe3AXGpUtlU0zKuF4D5aflxhthdTQ8WRT0
+         N2EAUAJYiRtg4QKRaAeKm+qhFIGmRvTsFmyM9NSNQxZfplD0pJ34KI9vn3ygMFdmiZ5v
+         SB5tFwvO3DrAzsvmPQIKykXdSjgBNNVEb8QnGC6+UOtr36ecCJ1jO5Y9z3A6TzYAWNoM
+         3RLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOx9p9BRbHYFyzTDeDw1C6pMjBAIj6x0Ehxcc1dpviE=;
+        b=l+T61xDBCb6kN9VkTNENnULqGHzcMmOGqah1mbWfndtwtXvaxqUG3fkWc4onBIqsJT
+         dTh50gVWlpids2WCnAJcN/ufqHrwP1DmD3tIXOvjPN+KUglpLT91FhxuN5vZQO+Gbv7F
+         qRgBjXkdruYzYcjmpXmDXlKlrSKksZvX/CWeVO8JB70s3NklYF3PnBtJhW35LVXR+w2z
+         ir+/7oiLtelghZ5+zRjQ0ddBm35MEfmZdwyNF7CDiS/tl4WdygBKXA6x46/qScFt0o7v
+         sOS2SNhbKVtJ3I+c+h7ZpjElW0ujA6pVLs6S659uP5I4G9AxdS3qBo1nYQ7xLcLRvOMa
+         Qqmg==
+X-Gm-Message-State: AOAM530T8SejsMHYcZqRN5H3DVHHWRJNyyMQYTQyTkqSR3kKkduwB5b9
+        2pYTILt53gbLO/V3OfkB9w5lNOjhLbFTiAlxs/Ll2g==
+X-Google-Smtp-Source: ABdhPJwYNRHepiT7HFCBe+3t9Dq0oP/VTz3d5SmdWFkGQXl5erWU5g7rzzUNDCU6jQvAvpBTBCIpq/JTZuPwXRkS3pU=
+X-Received: by 2002:a1f:3f0f:: with SMTP id m15mr7154482vka.53.1595583408542;
+ Fri, 24 Jul 2020 02:36:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200724091308.GA44746@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1594213888-2780-1-git-send-email-vbadigan@codeaurora.org>
+ <1594213888-2780-2-git-send-email-vbadigan@codeaurora.org>
+ <20200710005233.GN3191083@google.com> <63323fe2-e3a3-030f-5275-01fa6b04e23b@codeaurora.org>
+ <20200711001948.GO3191083@google.com> <2c322fe1-6a86-43c9-11f3-387b917836ed@codeaurora.org>
+ <406769f7-2282-d658-5573-3a510d256eee@codeaurora.org>
+In-Reply-To: <406769f7-2282-d658-5573-3a510d256eee@codeaurora.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 24 Jul 2020 11:36:12 +0200
+Message-ID: <CAPDyKFpLg0HnZ6p=x9Egv9w65hB5CtFw=gV1rpL8vbWcHYtCzg@mail.gmail.com>
+Subject: Re: [PATCH V1] mmc: sdhci-msm: Set IO pins in low power state during suspend
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 10:13:52AM +0100, Mark Rutland wrote:
-> On Fri, Jul 24, 2020 at 01:46:18PM +0530, Anshuman Khandual wrote:
-> > On 07/24/2020 08:38 AM, Kefeng Wang wrote:
-> > >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> > >> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> > >> ---
-> > >>   arch/arm64/kernel/setup.c | 1 +
-> > >>   1 file changed, 1 insertion(+)
-> > >>
-> > >> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> > >> index c793276ec7ad9..3aea05fbb9998 100644
-> > >> --- a/arch/arm64/kernel/setup.c
-> > >> +++ b/arch/arm64/kernel/setup.c
-> > >> @@ -275,6 +275,7 @@ static int __init reserve_memblock_reserved_regions(void)
-> > >>   arch_initcall(reserve_memblock_reserved_regions);
-> > >>     u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
-> > >> +EXPORT_SYMBOL(__cpu_logical_map);
-> 
-> If modules are using cpu_logical_map(), this looks sane ot me, but I
-> wonder if we should instead turn cpu_logical_map() into a C wrapper in
-> smp.c, or at least mark __cpu_logical_map as __ro_after_init lest
-> someone have the bright idea to fiddle with it.
+On Tue, 14 Jul 2020 at 16:12, Veerabhadrarao Badiganti
+<vbadigan@codeaurora.org> wrote:
+>
+>
+> On 7/13/2020 9:26 PM, Veerabhadrarao Badiganti wrote:
+> >
+> > On 7/11/2020 5:49 AM, Matthias Kaehlcke wrote:
+> >> Hi,
+> >>
+> >> On Fri, Jul 10, 2020 at 04:28:36PM +0530, Veerabhadrarao Badiganti
+> >> wrote:
+> >>> Hi Mathias,
+> >>>
+> >>> On 7/10/2020 6:22 AM, Matthias Kaehlcke wrote:
+> >>>> Hi,
+> >>>>
+> >>>> On Wed, Jul 08, 2020 at 06:41:20PM +0530, Veerabhadrarao Badiganti
+> >>>> wrote:
+> >>>>> Configure SDHC IO pins with low power configuration when the driver
+> >>>>> is in suspend state.
+> >>>>>
+> >>>>> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+> >>>>> ---
+> >>>>>    drivers/mmc/host/sdhci-msm.c | 17 +++++++++++++++++
+> >>>>>    1 file changed, 17 insertions(+)
+> >>>>>
+> >>>>> diff --git a/drivers/mmc/host/sdhci-msm.c
+> >>>>> b/drivers/mmc/host/sdhci-msm.c
+> >>>>> index 392d41d57a6e..efd2bae1430c 100644
+> >>>>> --- a/drivers/mmc/host/sdhci-msm.c
+> >>>>> +++ b/drivers/mmc/host/sdhci-msm.c
+> >>>>> @@ -15,6 +15,7 @@
+> >>>>>    #include <linux/iopoll.h>
+> >>>>>    #include <linux/regulator/consumer.h>
+> >>>>>    #include <linux/interconnect.h>
+> >>>>> +#include <linux/pinctrl/consumer.h>
+> >>>>>    #include "sdhci-pltfm.h"
+> >>>>>    #include "cqhci.h"
+> >>>>> @@ -1352,6 +1353,19 @@ static void
+> >>>>> sdhci_msm_set_uhs_signaling(struct sdhci_host *host,
+> >>>>>            sdhci_msm_hs400(host, &mmc->ios);
+> >>>>>    }
+> >>>>> +static int sdhci_msm_set_pincfg(struct sdhci_msm_host *msm_host,
+> >>>>> bool level)
+> >>>>> +{
+> >>>>> +    struct platform_device *pdev = msm_host->pdev;
+> >>>>> +    int ret;
+> >>>>> +
+> >>>>> +    if (level)
+> >>>>> +        ret = pinctrl_pm_select_default_state(&pdev->dev);
+> >>>>> +    else
+> >>>>> +        ret = pinctrl_pm_select_sleep_state(&pdev->dev);
+> >>>>> +
+> >>>>> +    return ret;
+> >>>>> +}
+> >>>>> +
+> >>>>>    static int sdhci_msm_set_vmmc(struct mmc_host *mmc)
+> >>>>>    {
+> >>>>>        if (IS_ERR(mmc->supply.vmmc))
+> >>>>> @@ -1596,6 +1610,9 @@ static void sdhci_msm_handle_pwr_irq(struct
+> >>>>> sdhci_host *host, int irq)
+> >>>>>                ret = sdhci_msm_set_vqmmc(msm_host, mmc,
+> >>>>>                        pwr_state & REQ_BUS_ON);
+> >>>>>            if (!ret)
+> >>>>> +            ret = sdhci_msm_set_pincfg(msm_host,
+> >>>>> +                    pwr_state & REQ_BUS_ON);
+> >>>>> +        if (!ret)
+> >>>>>                irq_ack |= CORE_PWRCTL_BUS_SUCCESS;
+> >>>>>            else
+> >>>>>                irq_ack |= CORE_PWRCTL_BUS_FAIL;
+> >>>> I happened to have a debug patch in my tree which logs when regulators
+> >>>> are enabled/disabled, with this patch I see the SD card regulator
+> >>>> toggling constantly after returning from the first system suspend.
+> >>>>
+> >>>> I added more logs:
+> >>>>
+> >>>> [ 1156.085819] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
+> >>>> [ 1156.248936] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
+> >>>> [ 1156.301989] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
+> >>>> [ 1156.462383] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
+> >>>> [ 1156.525988] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
+> >>>> [ 1156.670372] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
+> >>>> [ 1156.717935] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
+> >>>> [ 1156.878122] DBG: sdhci_msm_set_pincfg: level = 1 (ret: 0)
+> >>>> [ 1156.928134] DBG: sdhci_msm_set_pincfg: level = 0 (ret: 0)
+> >>>>
+> >>>> This is on an SC7180 platform. It doesn't run an upstream kernel
+> >>>> though,
+> >>>> but v5.4 with plenty of upstream patches.
+> >>> I have verified this on couple of sc7180 targets (on Chrome platform
+> >>> with
+> >>> Chrome kernel).
+> >>> But didn't see any issue. Its working as expected.
+> >> Did you test system suspend too? At least in the Chrome OS kernel
+> >> tree system
+> >> suspend is not supported yet in the main branch, you'd need a pile of
+> >> 30+
+> >> extra patches to get it to work. This is expected to change soon
+> >> though :)
+> > Yes. I have verified with system  suspend-resume scenario.
+> > Sorry forgot to mention this point explicitly in last response.
+> >
+> > I believe all the needed patches were present on qcom internal tree.
+> > Suspend-resume is working fine on sc7180 qcom chrome tree.
+> >
+> Thanks Matthias. I cloud reproduce the issue on device without SDcard.
+>
+> Without SDcard inserted, cd-gpio (SD card detect GPIO) is getting read
+> as active HIGH
+> (as if card is inserted) during system-resume, resulting SDcard probe/scan.
+>
+> After that its triggering interrupt again when pinctrl config is applied
+> during SDcard
+> power-up sequence (as part of probe/scan) which is again triggering
+> sdcard scan.
+>
+> I will have to change SDcard cd-gpio sleep config to fix this issue like
+> below:
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index e2230f47a17d..9266d514e163 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -2447,7 +2447,7 @@
+>
+>                                  pinconf-sd-cd {
+>                                          pins = "gpio69";
+> -                                       bias-disable;
+> +                                       bias-pull-up;
+>                                          drive-strength = <2>;
+>
+> I will check more on why its getting read as active HIGH during resume.
+>
+>
+> >>> Let me know if you are observing this issue constantly on multiple
+> >>> boards, I
+> >>> will share you
+> >>> a debug patch to check it further.
+> >> I currently have only one board with the SD card slot populated, I might
+> >> get another one next week.
+> >>
+> >> The toggling occurs only when no SD card is inserted.
+>
+> Thanks
+>
+> Veera
+>
 
-I'd go for a C wrapper and also change a couple of instances where we
-assign a value directly to cpu_logical_map(cpu).
+Thanks for testing and for looking into this. Perhaps I should drop
+the $subject patch then?
 
--- 
-Catalin
+Kind regards
+Uffe
