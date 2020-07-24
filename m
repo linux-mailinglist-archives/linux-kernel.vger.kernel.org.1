@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB0C22CE2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 20:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465F122CE33
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 20:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgGXSvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 14:51:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726381AbgGXSvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 14:51:51 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 635BF206D8;
-        Fri, 24 Jul 2020 18:51:50 +0000 (UTC)
-Date:   Fri, 24 Jul 2020 14:51:48 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Minor RST rant
-Message-ID: <20200724145148.58836d66@oasis.local.home>
-In-Reply-To: <20200724174130.GC23808@casper.infradead.org>
-References: <20200724132200.51fd2065@oasis.local.home>
-        <20200724174130.GC23808@casper.infradead.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726572AbgGXS7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 14:59:37 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:60911 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGXS7h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 14:59:37 -0400
+Received: from mail-qk1-f181.google.com ([209.85.222.181]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MXXZf-1kJ9ho2DDr-00Z0by for <linux-kernel@vger.kernel.org>; Fri, 24 Jul
+ 2020 20:59:35 +0200
+Received: by mail-qk1-f181.google.com with SMTP id b14so7897233qkn.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 11:59:35 -0700 (PDT)
+X-Gm-Message-State: AOAM533MvEDOQwXNpnqLoEebrQ7w0NqU9Py+ev7xaqBw7HeolQPfb7XN
+        wVPQRJLHegCdkapEt8Uk6y+tduHLNSTY0SVHf3g=
+X-Google-Smtp-Source: ABdhPJyKb6Wqd1WSKTFcNMehoKPyqLGClBRz4E2KS6ExDlSdHrxbk5bW4l7mcXFB+ays6GQFXAhuCMSDy5RAEaM58CY=
+X-Received: by 2002:a37:b484:: with SMTP id d126mr12004780qkf.394.1595617174418;
+ Fri, 24 Jul 2020 11:59:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200724160314.8543-1-krzk@kernel.org>
+In-Reply-To: <20200724160314.8543-1-krzk@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 24 Jul 2020 20:59:18 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2v7zB5c4_s=jaO_X_ZMULnp6Mn=0kHBr2pH-wkR06rAg@mail.gmail.com>
+Message-ID: <CAK8P3a2v7zB5c4_s=jaO_X_ZMULnp6Mn=0kHBr2pH-wkR06rAg@mail.gmail.com>
+Subject: Re: [GIT PULL] memory: Cleanups of memory controller drivers for v5.9
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Olof Johansson <olof@lixom.net>, arm-soc <arm@kernel.org>,
+        SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:itd52hWriFcIEcW2GAtntHVq9murbaGq4lbRe1cv1cf1vNY3qWV
+ 3fJViVgfZroucfOkaz9NcDkFldUzl6wFr8prey3q6Eweb994cyJR1hP8S219JkGimIjGu4a
+ zsZlKUNWMoUw73eOnM4g1pPQvRJuUyMXXAlTIyPFJUf1cZ16nCU57Yb5AmIECJSwvcCeJ+i
+ Ad5aRxDJjHZLfcQoKi9Dw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:W4GKn/TvZo0=:LrTKZxvYaEuU3FtGqdEJjA
+ y26dvd86AJs7Wa8pPqiG7AjHpIDHnSJ111Sqce21d7YS9oIOW0NjKSBouBL8BOTdQ+nLoRett
+ J812aPOFinvbIBVHvC+5NWJ1n5bL29gNJeRtjRYeNZDBoLJ4LyoOeW4JPIP6sEWpK0ryRSUKK
+ U74lAiFaRnq/+ajMFIykzi33OTHxvD05+v04+ymzRA7ojosC4qK63H+RNow25g+QuaSxQgw3R
+ 5xQBHw9a12Qi+i/ckZAAKLrWTYglWiC4YJV3UwehhyFz73y28i5sO2oTQn1E5YVoVQmqKmHHO
+ rhwAggwglRHi3YQa8wv0/jhNn5t6BoNeY6cixRVtb5GnXFxmuwelTf2/QREVHtlRCRGgJxhxG
+ SU5vQsy8K5eLcObObgY+nFNURseHlfzy3OscSYJShBHaJtVAJf4HXTVhOgUruf/SX/xdizb5k
+ jnTW2p2zC6uNB2QEpolruosiBeQ23t0zVejrz/YPo1oYRKgdfRt01OwqXDXV5VG0jaZosRyID
+ KAyKiMhF5l2aaZwCGajRtcYS7048ByfDUe/Z+4SQE4vdW8gGbZyQtfSsGjWVhp8VvtzQFjcdq
+ nHjWavDl/GDXPX5zHFBcP1ivYr+dMZlAMugsVwYg5pcate5X6oZlfIbEHs8Q8qBXXkA/Nvv1x
+ NjmKcRDtutKqzzG8jDEeedtmAxKF5sXE+HlJNvgYaK6Cwm7KgON6GgTWKSFbMpBda2ykP7TS8
+ u/84QyC6MxY/a4UkUu2Mh9Xq8f0f7otbfvQRQ+Az3f+4KOzhXEveQzPnV2rGAVDfaccMmBCmN
+ XsI5MeHzFjg128wbm/MchNxbtWiVyWS5/fn6BhS3x4Lyg11Kd9xtB8UUsyQWrryg2B9OqYFbS
+ ccFOp9hPhOQXCZtDVSigU3yMRj+9S1Bqn8HerqMiINj0XTIOMRAdMIZFKGuE4KhemBDrBQNX+
+ I0PKvDnrC8EA/2cFUmMwnb8vOkW/8hpRxMPr91Fy1B9gxidzOS3wA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 18:41:30 +0100
-Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, Jul 24, 2020 at 6:03 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Hi,
+>
+> First part of my patchset, with non-intrusive changes + maintainership.
+>
+> Best regards,
+> Krzysztof
+>
+>
+> The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+>
+>   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+>
+> are available in the Git repository at:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/memory-controller-drv-5.9
 
-> Great example.  Some people definitely go too far with rst markup, and
-> we generally try to discourage it.  And I'm pretty sure we take patches
+Merged into the drivers tree, thanks!
 
-I'd send patches but I suck at markup ;-) [1]
-
-> to remove excessive markup where it's gone too far [1].
-> 
-> You can see how this renders in html at
-> https://www.kernel.org/doc/html/latest/filesystems/path-lookup.html or
-> run 'make htmldocs' to build it locally.  Personally, I don't think
-> the markup style it uses works very well in the html either.
-> 
-> I'd like to see this paragraph written as:
-> 
-> > It is tempting to describe the second kind as starting with a
-> > component, but that isn't always accurate: a pathname can lack both
-> > slashes and components, it can be empty, in other words.  This is
-> > generally forbidden in POSIX, but some of the "*at()" system calls
-> > in Linux permit it when the ``AT_EMPTY_PATH`` flag is given.  For
-> > example, if you have an open file descriptor on an executable file you
-> > can execute it by calling execveat() passing the file descriptor, an
-> > empty path, and the ``AT_EMPTY_PATH`` flag.  
-> 
-> I think we're all pretty comfortable seeing function names adorned with
-> a closing pair of parens.  The ``...`` to adorn constants feels OK to me,
-> but maybe not to you?  If that feels excessive, can you suggest something
-> that would distinguish between POSIX and AT_EMPTY_PATH?
-
-Honestly, it's the context that distinguishes the two for me. I don't
-need any markup. But yeah, the double backtick still seems awkward.
-Funny thing is, markup like this:
-
-  <b>AT_EMPTY_PATH</b>
-
-doesn't bother me as much. Not sure why though :-/
-
-My frustration with this stood out quite a bit because I went from one
-file (with the same name) in .txt format, and went through that fast and
-quickly where everything made a lot of sense, and then jumping to this
-file, and feeling like I came to a stand-still in my understanding of
-the material.
-
-> 
-> [1] Too far being a subjective measure, of course.  My preferences
-> are on display in core-api/xarray.rst
-
-[1] I maintain trace/ftrace.rst, but the markup in that was written by
-others, and I gave a lot of pushback when I found that the markup made
-it hard to read with "less".
-
--- Steve
-
+      Arnd
