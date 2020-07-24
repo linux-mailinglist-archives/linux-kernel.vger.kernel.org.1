@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55E122C035
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3AD22C041
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgGXHzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:55:13 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40288 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgGXHzM (ORCPT
+        id S1726854AbgGXH45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:56:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36184 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726543AbgGXH44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:55:12 -0400
-Received: by mail-ed1-f67.google.com with SMTP id b13so3979978edz.7;
-        Fri, 24 Jul 2020 00:55:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e70l9ba9mmLl+TWNFDLUgGIMDIu+o4DPfsM91eYhnXM=;
-        b=RehVI9sOPDqGaihTBK6zUKk3HigDD1jDXSWyvsME50oIf2lN7GnF1Lk2+mfkCffjV9
-         nQ9Ir30SQQMNlycksmbyYnrWLfY+VtfYkcD7eI98JjiEaQdGbChxQrBqDmH4JC51x5HB
-         BgqBEEFLPdsdmTzKnRSVOLrm4I3bh5BmfuzuGXf9XbovtN30rVhCZmZoxVobPBwk98oH
-         F6bczcSMSLjnPyouY6y8S8A/+uTErApKW6VOJX7qSiv2ngOd7gP5hFpxKwRHl4ILtDEj
-         G2Qebb0++mTA1tmBSwupk0r8lx4GnEZUnAXEqM1HLACP68JyB8vK4gmwd2DyDMYUulg9
-         p/Uw==
-X-Gm-Message-State: AOAM532vddqNqKTqIRmWuWHB2TsoqXGiSE8dEjcMBGkm4Rmjme0/rzJX
-        TReRi44MYG61xb8tzlfI7LE=
-X-Google-Smtp-Source: ABdhPJzkk92oCWYAtda9S7hO0B5/oUAWrHAG7N5UefVeITgPKIDsZZG4CdNxAhZpGy+FhhxcWLljmQ==
-X-Received: by 2002:a05:6402:543:: with SMTP id i3mr7593711edx.182.1595577309758;
-        Fri, 24 Jul 2020 00:55:09 -0700 (PDT)
-Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
-        by smtp.gmail.com with ESMTPSA id v24sm177041eds.71.2020.07.24.00.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 00:55:08 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 09:55:08 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     jingrui <jingrui@huawei.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>, Lizefan <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        caihaomin <caihaomin@huawei.com>,
-        "Weiwei (N)" <wick.wei@huawei.com>
-Subject: Re: PROBLEM: cgroup cost too much memory when transfer small files
- to tmpfs
-Message-ID: <20200724075508.GF4061@dhcp22.suse.cz>
-References: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
+        Fri, 24 Jul 2020 03:56:56 -0400
+Date:   Fri, 24 Jul 2020 07:56:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595577414;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4SIg3/SYrGlu5FpEqesZYPYgojA1f2D2OGjki95TLKw=;
+        b=va7aB1yxMW15tsDKQFVecBf70B/wUHAsP+1T0NCD1gggE9heF10Jz0DdrWFYoCGsggfMiP
+        CWKyP5bi6QM9UC4KGjZBCjYZkHIJkyp10TRfaaxqM0IiTIQmJZhEaavNpov95fugt7nj9o
+        zOZX3i7ujeiLuEU2RDrsxtXgpW/+AaX7xuktED1mMESE81/DYJVl4oAw30+0Na8fwt3EUy
+        YW7tVTmpt2to3deF9qT/wcNgCcatqO0059/esUV5L0O1dYDqDumcaNHIg5mOnM6wII7Zwm
+        t6wMYtfU37D1lvfN8B1P3bNXA/tE106jBcT4RY6sn9sKi36oUzRe7RgfmEautQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595577414;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4SIg3/SYrGlu5FpEqesZYPYgojA1f2D2OGjki95TLKw=;
+        b=Ozkt+gD15AL70cyR2PLbBgSKsCV8kROc+oaslZGEg5eDL7GgMahfq50nrwtyUlLUOxapla
+        cbxC35rvKHLzJ6AQ==
+From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/mm: Drop unused MAX_PHYSADDR_BITS
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200723231544.17274-2-nivedita@alum.mit.edu>
+References: <20200723231544.17274-2-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
+Message-ID: <159557741311.4006.10642517822235710788.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 21-07-20 11:19:52, jingrui wrote:
-[...]
-> systemd related issue: https://github.com/systemd/systemd/issues/16499
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Well, I would be really careful with one-off and short lived cgroups.
-Firstly there are charges which cannot be easily reparented and secondly
-even if the memory footprint is reduced there would be still memcgs
-standing in the way.
+Commit-ID:     0a787b28b7a375ad9d5c77bc3922ae1a8305239e
+Gitweb:        https://git.kernel.org/tip/0a787b28b7a375ad9d5c77bc3922ae1a8305239e
+Author:        Arvind Sankar <nivedita@alum.mit.edu>
+AuthorDate:    Thu, 23 Jul 2020 19:15:42 -04:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 24 Jul 2020 09:53:06 +02:00
 
-[...]
-> 1. Do we have any idea to descrease cgroup memory cost in this case?
+x86/mm: Drop unused MAX_PHYSADDR_BITS
 
-Others have already commented on this.
+The macro is not used anywhere, and has an incorrect value (going by the
+comment) on x86_64 since commit c898faf91b3e ("x86: 46 bit physical address
+support on 64 bits")
 
-> 2. When user remove cgroup directory, does it possible associated file memory to root cgroup?
+To avoid confusion, just remove the definition.
 
-We used to do that in the past but removed it by b2052564e66d ("mm:
-memcontrol: continue cache reclaim from offlined groups"). Please read
-through the changelog for the reasoning behind.
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200723231544.17274-2-nivedita@alum.mit.edu
 
-> 3. Can we provide an option that do not associate memory with cgroup in tmpfs?
+---
+ arch/x86/include/asm/sparsemem.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-What is the reason to run under !root cgroup in those sessions if you do
-not care about accounting anyway? tmpfs is a persistent charge until the
-file is removed. So if those outlive the session then you either want
-them to be charged to somebody or you do not care about accounting at
-all, no? Or could you explain your usecase some more?
--- 
-Michal Hocko
-SUSE Labs
+diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
+index 1992187..6bfc878 100644
+--- a/arch/x86/include/asm/sparsemem.h
++++ b/arch/x86/include/asm/sparsemem.h
+@@ -10,24 +10,20 @@
+  *    field of the struct page
+  *
+  * SECTION_SIZE_BITS		2^n: size of each section
+- * MAX_PHYSADDR_BITS		2^n: max size of physical address space
+- * MAX_PHYSMEM_BITS		2^n: how much memory we can have in that space
++ * MAX_PHYSMEM_BITS		2^n: max size of physical address space
+  *
+  */
+ 
+ #ifdef CONFIG_X86_32
+ # ifdef CONFIG_X86_PAE
+ #  define SECTION_SIZE_BITS	29
+-#  define MAX_PHYSADDR_BITS	36
+ #  define MAX_PHYSMEM_BITS	36
+ # else
+ #  define SECTION_SIZE_BITS	26
+-#  define MAX_PHYSADDR_BITS	32
+ #  define MAX_PHYSMEM_BITS	32
+ # endif
+ #else /* CONFIG_X86_32 */
+ # define SECTION_SIZE_BITS	27 /* matt - 128 is convenient right now */
+-# define MAX_PHYSADDR_BITS	(pgtable_l5_enabled() ? 52 : 44)
+ # define MAX_PHYSMEM_BITS	(pgtable_l5_enabled() ? 52 : 46)
+ #endif
+ 
