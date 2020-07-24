@@ -2,94 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC4022C0D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58822C0F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgGXIee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 04:34:34 -0400
-Received: from mga09.intel.com ([134.134.136.24]:16108 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727916AbgGXIe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 04:34:29 -0400
-IronPort-SDR: T3Zy7lJLcrkhbXrtVyRVAMK/CN2Yr1pyE5B5+slW1dGPQRaRnr/1MDzQbuk78y5LivuE2SznYQ
- UO7Vm9SUvZkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="151966796"
-X-IronPort-AV: E=Sophos;i="5.75,390,1589266800"; 
-   d="scan'208";a="151966796"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 01:34:28 -0700
-IronPort-SDR: w03y+tLCXWfNyJBHuugzrI/MIgPQ5an4GJVW4QN7FLXemkuR1r8FCIM8dz+FHXNy5MyYPhG99j
- /uqIJCREoBYw==
-X-IronPort-AV: E=Sophos;i="5.75,390,1589266800"; 
-   d="scan'208";a="463158443"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 01:34:24 -0700
-Date:   Fri, 24 Jul 2020 09:34:17 +0100
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     herbert@gondor.apana.org.au, cohuck@redhat.com, nhorman@redhat.com,
-        vdronov@redhat.com, bhelgaas@google.com, mark.a.chambers@intel.com,
-        gordon.mcfadden@intel.com, ahsan.atta@intel.com,
-        fiona.trahe@intel.com, qat-linux@intel.com, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] vfio/pci: Add device denylist
-Message-ID: <20200724083417.GA3913@silpixa00400314>
-References: <20200723214705.5399-1-giovanni.cabiddu@intel.com>
- <20200723214705.5399-3-giovanni.cabiddu@intel.com>
- <20200723164126.0249b247@w520.home>
+        id S1726638AbgGXIiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 04:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbgGXIiA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 04:38:00 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806DFC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 01:38:00 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o1so4071292plk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 01:38:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p0IULCq/Q+AE1YxUkLmIKHqXfNPlAYmp+Itiol6P2JY=;
+        b=Ccd6ytBXOtKD5o+42jMgMbZ2gCvJ0abn1yDVFv6Ym+JbqwHJ30QuFcaqmqQuup0eUC
+         DqiNTHAng20np18m4pmIC2uqci4mGZdxKeeDBu82p1PlG4Aac0UtHrnfaQhuigSrMKqn
+         jOt13HE0JX5VSi3FMu9J2dzgjKh8aJJmRgmDerCca1AColglURL442y0YmXE8E3Em4m/
+         u3xKvdBn+a5t5bw1t3yBMNJlT9Neo0MK+p0X5ptr/RN52/wOfSoLNkf55GuIVkdnGa5U
+         gYzNq864o3/rpEw6/tve5FgIGYzMzXDxOLmX37adtAPVj3KQIft+UAeqNSKmO3ogoby2
+         raBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p0IULCq/Q+AE1YxUkLmIKHqXfNPlAYmp+Itiol6P2JY=;
+        b=M19G5EzaaPkX9iPiC9LyqGJOJtgZ2cGkuJ3x/9r3ZSYnLSEueG0f7ScPUcpvyL2SPr
+         q6Zjjr8TWe3e7KhQo5aO32NbIyyevNX3EF7WxzN9LfVp70lIUl11UYvxAyRQlwpNQEyN
+         w2IZxzQaI35OIPh73LwuPjT+uo1a1QtQhVXzvs+TLmrb7djQz+hArfW8IY2vQZ9w42Ez
+         +vTtacL9Y5vLJejp+/1laLMp3MQAR3JjarkBMdfgQDtqfBOEt277igheCCVTlISDfBCB
+         wSeCLxyvLbdGS21ZBWE9H41LjddIQaS5dHiR6RblPFb3Qx06g98GDWoP2nEW0kUlIsiP
+         LDXQ==
+X-Gm-Message-State: AOAM5330t9mgXhJtucaytyRryYGgMiL4Qg3BWqLpXzX57FVdBGZOPRYp
+        p2yNIW2V51pJaCZkxgC3lXHJDr53
+X-Google-Smtp-Source: ABdhPJymSlWtgenETZB6v17Bf2UUDR0hi0PKjuxgRa2nAHSr8QUUZffT+uyvgS7xZGQeXydniUlJZA==
+X-Received: by 2002:a17:902:b706:: with SMTP id d6mr7277568pls.244.1595579879502;
+        Fri, 24 Jul 2020 01:37:59 -0700 (PDT)
+Received: from localhost (g155.222-224-148.ppp.wakwak.ne.jp. [222.224.148.155])
+        by smtp.gmail.com with ESMTPSA id e5sm4905956pjy.26.2020.07.24.01.37.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 01:37:58 -0700 (PDT)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Stafford Horne <shorne@gmail.com>, Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        openrisc@lists.librecores.org
+Subject: [PATCH v2] openrisc: Fix oops caused when dumping stack
+Date:   Fri, 24 Jul 2020 17:37:50 +0900
+Message-Id: <20200724083751.580738-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723164126.0249b247@w520.home>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 04:41:26PM -0600, Alex Williamson wrote:
-> On Thu, 23 Jul 2020 22:47:02 +0100
-> Giovanni Cabiddu <giovanni.cabiddu@intel.com> wrote:
-> 
-> > Add denylist of devices that by default are not probed by vfio-pci.
-> > Devices in this list may be susceptible to untrusted application, even
-> > if the IOMMU is enabled. To be accessed via vfio-pci, the user has to
-> > explicitly disable the denylist.
-> > 
-> > The denylist can be disabled via the module parameter disable_denylist.
-> > 
-> > Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci.c | 33 +++++++++++++++++++++++++++++++++
-> >  1 file changed, 33 insertions(+)
-> > 
-> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> > index 7c0779018b1b..673f53c4798e 100644
-> > --- a/drivers/vfio/pci/vfio_pci.c
-> > +++ b/drivers/vfio/pci/vfio_pci.c
-> > @@ -60,6 +60,10 @@ module_param(enable_sriov, bool, 0644);
-> >  MODULE_PARM_DESC(enable_sriov, "Enable support for SR-IOV configuration.  Enabling SR-IOV on a PF typically requires support of the userspace PF driver, enabling VFs without such support may result in non-functional VFs or PF.");
-> >  #endif
-> >  
-> > +static bool disable_denylist;
-> > +module_param(disable_denylist, bool, 0444);
-> > +MODULE_PARM_DESC(disable_denylist, "Disable use of device denylist. Disabling the denylist prevents binding to devices with known errata that may lead to exploitable stability or security issues when accessed by untrusted users.");
-> 
-> s/prevents/allows/
-> 
-> ie. the denylist prevents binding, therefore disabling the denylist
-> allows binding
-> 
-> I can fix this on commit without a new version if you agree.  I also
-> see that patch 1/5 didn't change since v2, so I'll transfer Bjorn's
-> ack.  If that sounds good I'll queue the first 3 patches in my next
-> branch for v5.9.  Thanks,
-My bad, apologies! I'm ok also to re-spin adding Bjorn's ack and the fix
-above.
+When dumping a stack with 'cat /proc/#/stack' the kernel would oops.
+For example:
 
-Regards,
+    # cat /proc/690/stack
+    Unable to handle kernel access
+     at virtual address 0x7fc60f58
 
+    Oops#: 0000
+    CPU #: 0
+       PC: c00097fc    SR: 0000807f    SP: d6f09b9c
+    GPR00: 00000000 GPR01: d6f09b9c GPR02: d6f09bb8 GPR03: d6f09bc4
+    GPR04: 7fc60f5c GPR05: c00099b4 GPR06: 00000000 GPR07: d6f09ba3
+    GPR08: ffffff00 GPR09: c0009804 GPR10: d6f08000 GPR11: 00000000
+    GPR12: ffffe000 GPR13: dbb86000 GPR14: 00000001 GPR15: dbb86250
+    GPR16: 7fc60f63 GPR17: 00000f5c GPR18: d6f09bc4 GPR19: 00000000
+    GPR20: c00099b4 GPR21: ffffffc0 GPR22: 00000000 GPR23: 00000000
+    GPR24: 00000001 GPR25: 000002c6 GPR26: d78b6850 GPR27: 00000001
+    GPR28: 00000000 GPR29: dbb86000 GPR30: ffffffff GPR31: dbb862fc
+      RES: 00000000 oGPR11: ffffffff
+    Process cat (pid: 702, stackpage=d79d6000)
+
+    Stack:
+    Call trace:
+    [<598977f2>] save_stack_trace_tsk+0x40/0x74
+    [<95063f0e>] stack_trace_save_tsk+0x44/0x58
+    [<b557bfdd>] proc_pid_stack+0xd0/0x13c
+    [<a2df8eda>] proc_single_show+0x6c/0xf0
+    [<e5a737b7>] seq_read+0x1b4/0x688
+    [<2d6c7480>] do_iter_read+0x208/0x248
+    [<2182a2fb>] vfs_readv+0x64/0x90
+
+This was caused by the stack trace code in save_stack_trace_tsk using
+the wrong stack pointer.  It was using the user stack pointer instead of
+the kernel stack pointer.  Fix this by using the right stack.
+
+Also for good measure we add try_get_task_stack/put_task_stack to ensure
+the task is not lost while we are walking it's stack.
+
+Fixes: eecac38b0423a ("openrisc: support framepointers and STACKTRACE_SUPPORT")
+Signed-off-by: Stafford Horne <shorne@gmail.com>
+---
+Changes since v1:
+ - V1 was not properly locating the stack, adjust for redzone and pt_regs.
+
+ arch/openrisc/kernel/stacktrace.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/arch/openrisc/kernel/stacktrace.c b/arch/openrisc/kernel/stacktrace.c
+index 43f140a28bc7..54d38809e22c 100644
+--- a/arch/openrisc/kernel/stacktrace.c
++++ b/arch/openrisc/kernel/stacktrace.c
+@@ -13,6 +13,7 @@
+ #include <linux/export.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
++#include <linux/sched/task_stack.h>
+ #include <linux/stacktrace.h>
+ 
+ #include <asm/processor.h>
+@@ -68,12 +69,25 @@ void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+ {
+ 	unsigned long *sp = NULL;
+ 
++	if (!try_get_task_stack(tsk))
++		return;
++
+ 	if (tsk == current)
+ 		sp = (unsigned long *) &sp;
+-	else
+-		sp = (unsigned long *) KSTK_ESP(tsk);
++	else {
++		unsigned long ksp;
++
++		/* Locate stack from kernel context */
++		ksp = task_thread_info(tsk)->ksp;
++		ksp += STACK_FRAME_OVERHEAD;	/* redzone */
++		ksp += sizeof(struct pt_regs);
++
++		sp = (unsigned long *) ksp;
++	}
+ 
+ 	unwind_stack(trace, sp, save_stack_address_nosched);
++
++	put_task_stack(tsk);
+ }
+ EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+ 
 -- 
-Giovanni
+2.26.2
+
