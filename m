@@ -2,128 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B1D22CBEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862AC22CC04
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgGXRUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgGXRUa (ORCPT
+        id S1727816AbgGXRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:22:57 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:26946 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727775AbgGXRWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:20:30 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13705C0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:20:30 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id s127so6728075qkf.8
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=IP2qzQ0kBQKVB32LO+oN88QxnZJT0sW8a2ViufOQFgg=;
-        b=vHfiLahnORV8Mgzz/bB6y1WEWJGOiMoOdmyjw0j5lDyRuwUP6p0zp44Af9L9uhCx0j
-         VUCeSS8G4lqXx4BxAPD7RVi87A155zHhlDCcZ6fkJ1kj8Otfn9ympj6TdEX09utbHa2v
-         rivBFNYBSgFh4OopMGUgdlNq6pZBc3/pkru8DviJ9rgHvEK3p4xDhlURVfCTOdJ2hex1
-         BIPNNLcg+9WZKZ7cxIeyZW4pDh1gb6VROcP9ULS0Wrt6dBlU0ZIjjnQIl/da44FHx4GA
-         7LDU6+Df1krma+8qoX+MVawGkmU/XY1Ghc6ivIfamSAOxwg1mNDEbQu6nZG4i5ow/fhQ
-         MOeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=IP2qzQ0kBQKVB32LO+oN88QxnZJT0sW8a2ViufOQFgg=;
-        b=TF0DuYz+NfTGs4bx83JCv5HlXWrRU0KXY6MP9wcjytiIdVyH0BAAI/xWyF2KZR+gdy
-         zh7GGZOHib8rLkqhmgCS6u0JFyCJVrIOhLDNsqu3jPDW6KuMhHt/P7XClktOswZbWMfE
-         OFf63cUgcH8t93yxKNQ7BxgPic3+VnL4deY2NXV9FK40ImxY41ONh+3akfG1hpTXIs4k
-         hAp5rvwRPB6OIfP/c+qbtvGTXkczVfL5rprNShFV2/kxAxaXTkzbqiC8nCDOvKmStmxZ
-         qab0pJe5QPwbhqdOEr+xV93/3Up7CXZLmRm6hqDk/wc701z2oS5wgFF/Bz5nVbt79IT4
-         pANA==
-X-Gm-Message-State: AOAM5332OHtbK7HGuJIdKr5IUv8VQl7A9DYSgJlTIGHfzPLEzOqwh7e6
-        CrZsqgzXwYX/mUPbc4bxVv49OXJjZ3zBqyg=
-X-Google-Smtp-Source: ABdhPJyZThuJVZdmQqMDtzLbWwFTQjCM1XIfrvE9C7Og3e6GrQ5DsYrsRk+AFDkdpz9Tnf4eTL0jz4bGa0rvBhc=
-X-Received: by 2002:ad4:424a:: with SMTP id l10mr10810463qvq.29.1595611229246;
- Fri, 24 Jul 2020 10:20:29 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 13:20:16 -0400
-In-Reply-To: <20200724172016.608742-1-ckennelly@google.com>
-Message-Id: <20200724172016.608742-2-ckennelly@google.com>
-Mime-Version: 1.0
-References: <20200724172016.608742-1-ckennelly@google.com>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-Subject: [PATCH 1/1] fs/binfmt_elf: Use PT_LOAD p_align values for suitable
- start address.
-From:   Chris Kennelly <ckennelly@google.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        David Rientjes <rientjes@google.com>,
-        Ian Rogers <irogers@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Chris Kennelly <ckennelly@google.com>
+        Fri, 24 Jul 2020 13:22:52 -0400
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 06OHMC1T015856;
+        Sat, 25 Jul 2020 02:22:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 06OHMC1T015856
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1595611333;
+        bh=fG2yn0pcLIIBdxT8aZxqMxQEYQaapN+gY06fxpmJOts=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=I85Xyy2Yx90AU6uhgw4j5t15yjd/yQw/7qA/07XjFLdpWhBjHpP/a4OWadwjPFWsc
+         8wKvWyxQf0qloU7cxw05aDEk/EVL3ic9hKqq/KQfhcYhJ8FLWmL99kh1cMvu+AyDyY
+         iVGUBwOncm09J/rdW6P+Yli6fNipjA6sTgjAUfGWBmm+N+sCV7Y5RBCMqUm84jygx7
+         jlqbQ7ZgWvnEi848Hqg96VSRIr3FDdMaThaT3z0voyda6bFrhy7LxvLpzW6IjRY8m0
+         uU5Ul5VzO0Unu9Fobqk5pPQO9p7uZ0QdePRPoJ32n4rfmFtNGSCEypigNW84UtMd/I
+         ub14RmVrSEhFQ==
+X-Nifty-SrcIP: [209.85.222.48]
+Received: by mail-ua1-f48.google.com with SMTP id r63so3179662uar.9;
+        Fri, 24 Jul 2020 10:22:13 -0700 (PDT)
+X-Gm-Message-State: AOAM533Y3GATB+PUOA3hMGY3b3+lYHhIGNBOC67N/+LY+9wa2Yh2sLmP
+        +4rgcXRLkD0phn0USFBl7gLECoxtLSZYlLbn0jM=
+X-Google-Smtp-Source: ABdhPJw26mXp9fv/rqe2SYqBL5Li25Za2DnnmpAUUUMiSv1JOH2MOK5Uv0dahEyeurACAAgkCjM3R/WMpuRIk+l9fyk=
+X-Received: by 2002:ab0:48:: with SMTP id 66mr9217639uai.40.1595611331833;
+ Fri, 24 Jul 2020 10:22:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200722053417.5915-1-jcmvbkbc@gmail.com> <20200722053417.5915-2-jcmvbkbc@gmail.com>
+In-Reply-To: <20200722053417.5915-2-jcmvbkbc@gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 25 Jul 2020 02:21:34 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS+mEEqY65AYpU8dxLDLj-NX-A44m86UbOP9g1KajTABA@mail.gmail.com>
+Message-ID: <CAK7LNAS+mEEqY65AYpU8dxLDLj-NX-A44m86UbOP9g1KajTABA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] xtensa: move vmlinux.bin[.gz] to boot subdirectory
+To:     Max Filippov <jcmvbkbc@gmail.com>
+Cc:     "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current ELF loading mechancism provides page-aligned mappings.  This
-can lead to the program being loaded in a way unsuitable for
-file-backed, transparent huge pages when handling PIE executables.
+On Wed, Jul 22, 2020 at 2:34 PM Max Filippov <jcmvbkbc@gmail.com> wrote:
+>
+> vmlinux.bin and vmlinux.bin.gz are always rebuilt in the kernel build
+> process. Add them to 'targets' and move them to the boot subdirectory
+> where their rules are. Update make rules that refer to them.
+>
+> Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+> ---
 
-Tested: verified program with -Wl,-z,max-page-size=0x200000 loading
-Signed-off-by: Chris Kennelly <ckennelly@google.com>
----
- fs/binfmt_elf.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index f4713ea76e827..83fadf66d25ef 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -418,6 +418,25 @@ static int elf_read(struct file *file, void *buf, size_t len, loff_t pos)
- 	return 0;
- }
- 
-+static unsigned long maximum_alignment(struct elf_phdr *cmds, int nr)
-+{
-+	unsigned long alignment = 0;
-+	int i;
-+
-+	for (i = 0; i < nr; i++) {
-+		if (cmds[i].p_type == PT_LOAD) {
-+			/* skip non-power of two alignments */
-+			if (cmds[i].p_align & (cmds[i].p_align - 1))
-+				continue;
-+			if (cmds[i].p_align > alignment)
-+				alignment = cmds[i].p_align;
-+		}
-+	}
-+
-+	/* ensure we align to at least one page */
-+	return ELF_PAGEALIGN(alignment);
-+}
-+
- /**
-  * load_elf_phdrs() - load ELF program headers
-  * @elf_ex:   ELF header of the binary whose program headers should be loaded
-@@ -883,6 +902,7 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 		int elf_prot, elf_flags;
- 		unsigned long k, vaddr;
- 		unsigned long total_size = 0;
-+		unsigned long alignment;
- 
- 		if (elf_ppnt->p_type != PT_LOAD)
- 			continue;
-@@ -960,6 +980,10 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 				load_bias = ELF_ET_DYN_BASE;
- 				if (current->flags & PF_RANDOMIZE)
- 					load_bias += arch_mmap_rnd();
-+				alignment = maximum_alignment(
-+					elf_phdata, elf_ex->e_phnum);
-+				if (alignment)
-+					load_bias &= ~(alignment - 1);
- 				elf_flags |= MAP_FIXED;
- 			} else
- 				load_bias = 0;
+
+>  arch/xtensa/boot/Makefile              | 11 ++++++-----
+>  arch/xtensa/boot/boot-elf/Makefile     |  4 ++--
+>  arch/xtensa/boot/boot-redboot/Makefile |  4 ++--
+>  3 files changed, 10 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/xtensa/boot/Makefile b/arch/xtensa/boot/Makefile
+> index 1a14d38d9b33..801fe30b4dfe 100644
+> --- a/arch/xtensa/boot/Makefile
+> +++ b/arch/xtensa/boot/Makefile
+> @@ -17,6 +17,7 @@ BIG_ENDIAN    := $(shell echo __XTENSA_EB__ | $(CC) -E - | grep -v "\#")
+>  export BIG_ENDIAN
+>
+>  subdir-y       := lib
+> +targets                += vmlinux.bin vmlinux.bin.gz
+>
+>  # Subdirs for the boot loader(s)
+>
+> @@ -35,19 +36,19 @@ boot-elf boot-redboot: $(addprefix $(obj)/,$(subdir-y))
+>
+>  OBJCOPYFLAGS = --strip-all -R .comment -R .notes -O binary
+>
+> -vmlinux.bin: vmlinux FORCE
+> +$(obj)/vmlinux.bin: vmlinux FORCE
+>         $(call if_changed,objcopy)
+>
+> -vmlinux.bin.gz: vmlinux.bin FORCE
+> +$(obj)/vmlinux.bin.gz: $(obj)/vmlinux.bin FORCE
+>         $(call if_changed,gzip)
+>
+> -boot-elf: vmlinux.bin
+> -boot-redboot: vmlinux.bin.gz
+> +boot-elf: $(obj)/vmlinux.bin
+> +boot-redboot: $(obj)/vmlinux.bin.gz
+>
+>  UIMAGE_LOADADDR = $(CONFIG_KERNEL_LOAD_ADDRESS)
+>  UIMAGE_COMPRESSION = gzip
+>
+> -$(obj)/uImage: vmlinux.bin.gz FORCE
+> +$(obj)/uImage: $(obj)/vmlinux.bin.gz FORCE
+>         $(call if_changed,uimage)
+>         $(Q)$(kecho) '  Kernel: $@ is ready'
+>
+> diff --git a/arch/xtensa/boot/boot-elf/Makefile b/arch/xtensa/boot/boot-elf/Makefile
+> index badee63dae27..0ebc9827f7e5 100644
+> --- a/arch/xtensa/boot/boot-elf/Makefile
+> +++ b/arch/xtensa/boot/boot-elf/Makefile
+> @@ -19,9 +19,9 @@ targets               += $(boot-y) boot.lds
+>
+>  OBJS           := $(addprefix $(obj)/,$(boot-y))
+>
+> -$(obj)/Image.o: vmlinux.bin $(OBJS)
+> +$(obj)/Image.o: $(obj)/../vmlinux.bin $(OBJS)
+>         $(Q)$(OBJCOPY) $(OBJCOPY_ARGS) -R .comment \
+> -               --add-section image=vmlinux.bin \
+> +               --add-section image=$< \
+>                 --set-section-flags image=contents,alloc,load,load,data \
+>                 $(OBJS) $@
+>
+> diff --git a/arch/xtensa/boot/boot-redboot/Makefile b/arch/xtensa/boot/boot-redboot/Makefile
+> index 1a277dd57b2a..07cb24afedc2 100644
+> --- a/arch/xtensa/boot/boot-redboot/Makefile
+> +++ b/arch/xtensa/boot/boot-redboot/Makefile
+> @@ -20,9 +20,9 @@ LIBS  := arch/xtensa/boot/lib/lib.a arch/xtensa/lib/lib.a
+>
+>  LIBGCC := $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+>
+> -$(obj)/zImage.o: vmlinux.bin.gz $(OBJS)
+> +$(obj)/zImage.o: $(obj)/../vmlinux.bin.gz $(OBJS)
+>         $(Q)$(OBJCOPY) $(OBJCOPY_ARGS) -R .comment \
+> -               --add-section image=vmlinux.bin.gz \
+> +               --add-section image=$< \
+>                 --set-section-flags image=contents,alloc,load,load,data \
+>                 $(OBJS) $@
+>
+> --
+> 2.20.1
+>
+
+
 -- 
-2.28.0.rc0.105.gf9edc3c819-goog
-
+Best Regards
+Masahiro Yamada
