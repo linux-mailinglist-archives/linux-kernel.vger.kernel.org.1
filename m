@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D13A522C450
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B50022C44B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgGXLWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:22:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57990 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbgGXLWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:22:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3B7F6AC52;
-        Fri, 24 Jul 2020 11:22:08 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5D4BEDA791; Fri, 24 Jul 2020 13:21:33 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.8-rc7
-Date:   Fri, 24 Jul 2020 13:21:32 +0200
-Message-Id: <cover.1595587350.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.25.0
+        id S1727898AbgGXLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgGXLVx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 07:21:53 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CBAC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:21:52 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r2so2882275wrs.8
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:21:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Yxn5p63f6xRMyNZIKI09U0WQN+ewDSvHCk0EiFeJonw=;
+        b=MFQ4I9EYPiUXBME2soPRf0FHybbqt0G73mLbezrYwDF9EkrdbgGj7Ql/TdkrH9A5TN
+         byMUVKgWirUxLFsx1EcGnDXrkwzQNypVsr3FEzd13RDYGLi8diuVor5dgnmpyTpWGbvF
+         snI1FdnNtl6hG7U1/7BVJVWMZPhEYyEgbqPF3CaKAFZOuCfvNCwcGJ7YtxZssa2rhHWP
+         FnWOmXg6UN1Pv/iKqpDA//ISLi0FlQ1XlCGiTNwRP49bHMfwcGp3VmLJlThQoP3HzLai
+         b9YKINrFfJgSu8X3G7H/4s1yy5zioHh1m3xO1z8lxVUHE7vwI/SXy1MJ0EdjsIWyio1n
+         SPHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yxn5p63f6xRMyNZIKI09U0WQN+ewDSvHCk0EiFeJonw=;
+        b=nF/96HGtk3OWaet0obZvC9BxDyh3IZrdi5skaqRLsGV3yFdk6InNdH8uNrtHzmHt0n
+         pVo1DbSDJ13n8WLEy6czGqX4t+2i6gvOXd0rcv1XeugsTufs9xoiMf0w09oCF46eCK9V
+         M8vaOpqa68lCpDOWTwxXOTKPN74PIC7cP8dUErxR/2EvoEwottu5wXL3UfR67Oz0vSKF
+         RiBkq1yFbPh2kEXArkPIJ7FluqkqWztrDhdxILh4MM4E0/iHy5f8SvXNnktpjNwoUQMd
+         HURVrIKoZNP25QZTnj2JWzunr9b8bYEFRGPiS5h4m1AY96MTayADbBTAFzZl7tAL2XLc
+         zJGQ==
+X-Gm-Message-State: AOAM5327wENH/jiKVLyxsdLv7XFi17o6RhOrHjg86zF3iHgxCnYUlQd6
+        iazoeqluXdgEvVW8QrpHSetQiGfjM3U=
+X-Google-Smtp-Source: ABdhPJwk3yJH2k2se0co2uZc0PH6TC0Af1M7TgEssnr7ir+wGzTPfXA1pcbKzdW/TothLmRlWDKafA==
+X-Received: by 2002:a5d:424f:: with SMTP id s15mr8736978wrr.342.1595589707519;
+        Fri, 24 Jul 2020 04:21:47 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id a10sm14965705wmd.3.2020.07.24.04.21.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Jul 2020 04:21:46 -0700 (PDT)
+Subject: Re: [PATCH v4 04/12] ASoC: qcom: lpass-platform: fix memory leak
+To:     Rohit kumar <rohitkr@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
+ <1595413915-17867-5-git-send-email-rohitkr@codeaurora.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <1b8f969a-8f88-2928-0b29-9325451d9613@linaro.org>
+Date:   Fri, 24 Jul 2020 12:21:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1595413915-17867-5-git-send-email-rohitkr@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-I've selected a few resouce leak fixes from recent patches, all are
-stable material. The problems have been observed during testing or have
-a reproducer.
 
-Please pull, thanks.
+On 22/07/2020 11:31, Rohit kumar wrote:
+> lpass_pcm_data is never freed. Free it in close
+> ops to avoid memory leak.
+> 
+> Fixes: 022d00ee0b55 ("ASoC: lpass-platform: Fix broken pcm data usage")
+> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 
-----------------------------------------------------------------
-The following changes since commit d77765911385b65fc82d74ab71b8983cddfe0b58:
 
-  btrfs: wire up iter_file_splice_write (2020-07-09 19:57:58 +0200)
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.8-rc6-tag
-
-for you to fetch changes up to 48cfa61b58a1fee0bc49eef04f8ccf31493b7cdd:
-
-  btrfs: fix mount failure caused by race with umount (2020-07-21 22:08:54 +0200)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: fix mount failure caused by race with umount
-
-Filipe Manana (1):
-      btrfs: fix double free on ulist after backref resolution failure
-
-Qu Wenruo (1):
-      btrfs: qgroup: fix data leak caused by race between writeback and truncate
-
-Robbie Ko (1):
-      btrfs: fix page leaks after failure to lock page for delalloc
-
- fs/btrfs/backref.c   |  1 +
- fs/btrfs/extent_io.c |  3 ++-
- fs/btrfs/inode.c     | 23 ++++++++++-------------
- fs/btrfs/volumes.c   |  8 ++++++++
- 4 files changed, 21 insertions(+), 14 deletions(-)
+> ---
+>   sound/soc/qcom/lpass-platform.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+> index fb9acfd..b195f3d 100644
+> --- a/sound/soc/qcom/lpass-platform.c
+> +++ b/sound/soc/qcom/lpass-platform.c
+> @@ -61,7 +61,7 @@ static int lpass_platform_pcmops_open(struct snd_soc_component *component,
+>   	int ret, dma_ch, dir = substream->stream;
+>   	struct lpass_pcm_data *data;
+>   
+> -	data = devm_kzalloc(soc_runtime->dev, sizeof(*data), GFP_KERNEL);
+> +	data = kzalloc(sizeof(*data), GFP_KERNEL);
+>   	if (!data)
+>   		return -ENOMEM;
+>   
+> @@ -118,6 +118,7 @@ static int lpass_platform_pcmops_close(struct snd_soc_component *component,
+>   	if (v->free_dma_channel)
+>   		v->free_dma_channel(drvdata, data->dma_ch);
+>   
+> +	kfree(data);
+>   	return 0;
+>   }
+>   
+> 
