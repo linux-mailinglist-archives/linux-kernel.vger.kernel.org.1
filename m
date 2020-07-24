@@ -2,161 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F1A22BAF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A36B22BAFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgGXAZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 20:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57076 "EHLO
+        id S1728352AbgGXA0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 20:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726723AbgGXAZR (ORCPT
+        with ESMTP id S1727982AbgGXA0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 20:25:17 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61F8C0619D3
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:25:16 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id n4so2420518uae.5
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SCYAm0cXhlKGumLX7lGB7J67gQ6nGdBWRNsstnRRJKg=;
-        b=Q/PA8j0irj/Go/IJbrKbECwGxNLKdOb1eB6VUasRjMghpx6SIs+l4WyzA+iAGgBXcJ
-         XLiwMTRQ28QoxhKA8otzwG7Zb/g58C9sMufsWEshd0uyUsuRBZUfGsLEcQWFT7kYayNI
-         uVI3+HuiA40NmhciTRm4JmQyaFHHOLej9HJNSlhZRACXC9C1URvoF8USzoTNgfKUW6d9
-         rV1qka8ORBgSWU/yiT6UrBHnPhJHZjd/WYTezWRAyA1L1jmGq4GGEoCWdqkxXcoQDA9V
-         ViewoS0sIPBTlMPW6R/EPTyc0l6kOTNiHHDoK16t5QMeVmz11bTTfm1Sg7nPG67wm9H1
-         V/NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SCYAm0cXhlKGumLX7lGB7J67gQ6nGdBWRNsstnRRJKg=;
-        b=muHCCQK2PF/hWEEcmOYi+uRUXhJUMHg3GoU2OCubRksGc0du66iYVpWA3jKP6pQYX9
-         62pn5z2k+IJ+gB/G/hzgktQu44iWsYZsVDQciXryT8rXwxxvdyGkaNhuY6wUeU6qoVYE
-         XMB8cGyFl2xKvpfLl2qNRjr1XPR6UnTNk4Rb42i7G0x6fFwdDVCOl/RJ1PqEgEL4Qwtw
-         xJ6QRUF1o3jRktpBjh/qmyQKbWxJUJm53TE0kobowvM2Zp7iklk/wWBJ/7VVYGkT1Np4
-         GTu7pPY/QLYu5HdEbGfoIvw/OGlLo8+BuyzNbM22IxuD2RFfijMrb71RT6wwflLj4cro
-         tpZw==
-X-Gm-Message-State: AOAM531cd60bvR83i60ODH+4LOfvaly1anvwTDLlNJOl8s2tXZYdr1Sa
-        Kj8Nb8108AMWtuT60qQXKimKkJTHOdMQIMpwU5Wt+A==
-X-Google-Smtp-Source: ABdhPJx3yILoCwHS93lBlhghb3NpzBK2ZF3fjV2PcD1VqDyXXZVmycjNeJMcFKPrhtaKknJm6pzeuhNV/ED+BFR2ueM=
-X-Received: by 2002:ab0:3b2:: with SMTP id 47mr6354662uau.139.1595550315810;
- Thu, 23 Jul 2020 17:25:15 -0700 (PDT)
+        Thu, 23 Jul 2020 20:26:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31C4C0619D3;
+        Thu, 23 Jul 2020 17:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=vhOqR9Gr3btEKPJ9ZiQD72w1Ieu2CnG1iBwxaYm/s0c=; b=VEYEIjzSxhOy772aPTMdX2Hes/
+        tbsO5Ak0tcX5qupK1rvRph3kn/2jBuqKwyS4HgqoVaT+YSO7+vmBjxThzviuRvLZbHNFM3MTgBfuD
+        aSPdbzNLSW114PMCL8CyBLf7unY4dEFgdAEQ2mvAWvPtjj3WT9VXwyiFE85Vz23tFz+EGfrxqdKOU
+        /09zOXh2etUO3lRsT20rh6p2pcZF23wtsvsGAWGv1TZwyUqb9RWPuCHTdPEl8XUNcSz1oQCcLO6xE
+        7xuftRZxiZlHarUSR9t8Lcs7a6Uqi63AEtpJK0kShdY+bJx3zy4vH5ZfVeoXwgu/gGtOS8HH9a0GS
+        cWzTSXgg==;
+Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jylXq-0007dG-1f; Fri, 24 Jul 2020 00:26:39 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org
+Subject: [PATCH] ceph: delete repeated words in fs/ceph/
+Date:   Thu, 23 Jul 2020 17:26:34 -0700
+Message-Id: <20200724002634.2545-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200722234538.166697-1-posk@posk.io> <20200722234538.166697-2-posk@posk.io>
- <20200723112757.GN5523@worktop.programming.kicks-ass.net>
-In-Reply-To: <20200723112757.GN5523@worktop.programming.kicks-ass.net>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Thu, 23 Jul 2020 17:25:05 -0700
-Message-ID: <CAFTs51UJhC9TmXkzz8VbDNmkSEyZE29=dRdUi65TDpSYqoK5vw@mail.gmail.com>
-Subject: Re: [PATCH for 5.9 1/3] futex: introduce FUTEX_SWAP operation
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Oskolkov <posk@google.com>,
-        Andrei Vagin <avagin@google.com>, Paul Turner <pjt@google.com>,
-        Ben Segall <bsegall@google.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 4:28 AM Peter Zijlstra <peterz@infradead.org> wrote:
+Drop duplicated words "down" and "the" in fs/ceph/super.[ch].
 
-Thanks a lot for your comments, Peter! My answers below.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: ceph-devel@vger.kernel.org
+---
+Jeff, this is last of the duplicate words patches for ceph.
 
->
-> On Wed, Jul 22, 2020 at 04:45:36PM -0700, Peter Oskolkov wrote:
-> > This patchset is the first step to open-source this work. As explained
-> > in the linked pdf and video, SwitchTo API has three core operations: wait,
-> > resume, and swap (=switch). So this patchset adds a FUTEX_SWAP operation
-> > that, in addition to FUTEX_WAIT and FUTEX_WAKE, will provide a foundation
-> > on top of which user-space threading libraries can be built.
->
-> The PDF and video can go pound sand; you get to fully explain things
-> here.
+ fs/ceph/super.c |    2 +-
+ fs/ceph/super.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Will do. Should I expand the cover letter or the commit message? (I'll probably
-split the first patch into two in the latter case).
-
->
-> What worries me is how FUTEX_SWAP would interact with the future
-> FUTEX_LOCK / FUTEX_UNLOCK. When we implement pthread_mutex with those,
-> there's very few WAIT/WAKE left.
-
-[+cc Waiman Long]
-
-I've looked through the latest FUTEX_LOCK patchset I could find (
-https://lore.kernel.org/patchwork/cover/772643/ and related), and it seems
-that FUTEX_SWAP and FUTEX_LOCK/FUTEX_UNLOCK patchsets
-address the same issue (slow wakeups) but for different use cases:
-
-FUTEX_LOCK/FUTEX_UNLOCK uses spinning and lock stealing to
-improve futex wake/wait performance in high contention situations;
-FUTEX_SWAP is designed to be used for fast context switching with
-_no_ contention by design: the waker that is going to sleep, and the wakee
-are using different futexes; the userspace will have a futex per thread/task,
-and when needed the thread/task will either simply sleep on its futex,
-or context switch (=FUTEX_SWAP) into a different thread/task.
-
-I can also imagine that instead of combining WAIT/WAKE for
-fast context switching, a variant of FUTEX_SWAP can use LOCK/UNLOCK
-operations in the future, when these are available; but again, I fully
-expect that
-a single "FUTEX_LOCK the current task on futex A, FUTEX_UNLOCK futex B,
-context switch into the wakee" futex op will be much faster than doing
-the same thing
-in two syscalls, as FUTEX_LOCK/FUTEX_UNLOCK does not seem to be concerned
-with fast waking of a sleeping task, but more with minimizing sleeping
-in the first place.
-
-What will be faster: FUTEX_SWAP that does
-   FUTEX_WAKE (futex A) + FUTEX_WAIT (current, futex B),
-or FUTEX_SWAP that does
-   FUTEX_UNLOCK (futex A) + FUTEX_LOCK (current, futex B)?
-
-As wake+wait will always put the waker to sleep, it means that
-there will be a true context switch on the same CPU on the fast path;
-on the other hand, unlock+lock will potentially evade sleeping,
-so the wakee will often run on a different CPU (with the waker
-spinning instead of sleeping?), thus not benefitting from cache locality
-that fast context switching on the same CPU is meant to use...
-
-I'll add some of the considerations above to the expanded cover letter
-(or a commit message).
-
->
-> Also, why would we commit to an ABI without ever having seen the rest?
-
-I'm not completely sure what you mean here. We do not envision any
-expansion/changes to the ABI proposed here, only further performance
-improvements. On these, we currently think that marking the wakee
-as the preferred next task to run on the current CPU (by storing
-"struct task_struct *preferred_next_tast" either in a per-CPU pointer,
-or in the current task_struct) and then having schedule() determine
-whether to follow the hint or ignore it would be the simplest way to speed up
-the context switch.
-
->
-> On another note: wake_up_process_prefer_current_cpu() is a horrific
-> function name :/ That's half to a third of the line limit.
-
-I fully agree. I considered wake_up_on_current_cpu() first, but this name
-does not indicate that the wakeup is a "strong wish", but "current
-cpu" is a weak
-one... Do you have any suggestions? Maybe
-
-wake_up_on_cpu(struct task_struct *next, int cpu_hint)?
-
-But this seems too broad in scope, as we are interested here in only
-migrating the task to the current CPU...
-
-Thanks again for your comments!
+--- linux-next-20200723.orig/fs/ceph/super.c
++++ linux-next-20200723/fs/ceph/super.c
+@@ -828,7 +828,7 @@ static void destroy_caches(void)
+ }
+ 
+ /*
+- * ceph_umount_begin - initiate forced umount.  Tear down down the
++ * ceph_umount_begin - initiate forced umount.  Tear down the
+  * mount, skipping steps that may hang while waiting for server(s).
+  */
+ static void ceph_umount_begin(struct super_block *sb)
+--- linux-next-20200723.orig/fs/ceph/super.h
++++ linux-next-20200723/fs/ceph/super.h
+@@ -353,7 +353,7 @@ struct ceph_inode_info {
+ 	unsigned i_dirty_caps, i_flushing_caps;     /* mask of dirtied fields */
+ 
+ 	/*
+-	 * Link to the the auth cap's session's s_cap_dirty list. s_cap_dirty
++	 * Link to the auth cap's session's s_cap_dirty list. s_cap_dirty
+ 	 * is protected by the mdsc->cap_dirty_lock, but each individual item
+ 	 * is also protected by the inode's i_ceph_lock. Walking s_cap_dirty
+ 	 * requires the mdsc->cap_dirty_lock. List presence for an item can
