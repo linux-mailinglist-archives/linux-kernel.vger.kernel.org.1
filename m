@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304AD22BCC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 06:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4CA22BCC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 06:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgGXEO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 00:14:27 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50692 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbgGXEO1 (ORCPT
+        id S1726703AbgGXEPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 00:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbgGXEPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 00:14:27 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1070)
-        id 7E94E20B4908; Thu, 23 Jul 2020 21:14:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7E94E20B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595564066;
-        bh=Aks2zkb0GLN2is1SIlOFjLMBbc/dujHnALytnlqRNGw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NM0Z9D+PIYcGxg/DkXDnwF5G3WpWreEBYx0Z8sw5p9EJf9QI77/q/+s4VbzO3UibU
-         mTvMgV/FZEhWbIQqZLIrMY8/pLj/rnb7c4tOrL7H35sQPQzENolmhyUqmqACTSY40l
-         ScIuCpDEtsW9qSEHdTkMm6OTXSIE8ATAxRZnHVno=
-Date:   Thu, 23 Jul 2020 21:14:26 -0700
-From:   Chi Song <chisong@linux.microsoft.com>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 net-next] net: hyperv: dump TX indirection table to
- ethtool regs
-Message-ID: <20200724041426.GB25409@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <alpine.LRH.2.23.451.2007222356070.2641@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.inter>
+        Fri, 24 Jul 2020 00:15:02 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0344DC0619D3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 21:15:02 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id k5so4536492pjg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 21:15:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/axfoE20/JGPCsNsinStfUiFAOr5YCp2PNYp2vEabD0=;
+        b=BKqdBUA8zNMLgZGY1L9iCUO116w6JCjKhSoeTm8/s3qhufeM1ybtByiHEIkRdZ+OQg
+         gF7cRJV5M6LAT7WHID2VGKVObo3c3xk9xvBljtt9yd1Gi23+TtCGubrl1BH2dZgJC31n
+         Gn9/R94VlefdX0EAUESBXjLu/KWIX4pHPjjlylMZtl00J4IWhEK6U57fv9hI9uSQ69Fs
+         C8c+VUSVbvPr2YR8opF4bzfbO/8EFXlf+ELgiF0SR6rRaFFttdpArvAh4nBS7s41B93X
+         GlLvSQy3jZ/LtIV6G33XbQ7IKNCORtv9aJgJ6qQMkw/ClubEqqGH+0NeYwhswO9z/2c+
+         mWxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/axfoE20/JGPCsNsinStfUiFAOr5YCp2PNYp2vEabD0=;
+        b=ovjItFsyk5LO5rTnfWbNU7zoIjS7Dlmo5p3NE/mUlzMz9NCJbYnTuT8fVuFJVWLdn4
+         vhE87Z6keDX5jQF5Et04UAIocPzMXowhVH1b8Ri93WiAX4/9mgXFypkAH3Beeo5Zcr+a
+         i/rF2Z4/XFd2fpitowEwtM4qGgkPLP1nioiByrcNVFOcVw3GKlZK6O/X82CmuYX6BZ1X
+         Rf4KhqKSUkV6xFuHRmryn003M0/goPWbcBV6vApbJBFQ+9Qej2oy08f6cOy4aUMQHZOl
+         3aivRBnVxPczGlzGFTrVU5bykd1WoBdXnVSS6Ya00+UxZrkzjil0qoFmHN9QkeKCQ4+n
+         wvLg==
+X-Gm-Message-State: AOAM5326VBkX1dJl1c5L4JdSM0O5Ps449fiiUPj/eVUEZ78jO/main6m
+        6ogiynH+IvbNswXhwEIJGDpLbDq/
+X-Google-Smtp-Source: ABdhPJyj8Bbtifw/CkEoBYpxxuDdTIkQYHiJRvTvTaaMOOWWB7eztqF7rRR3gqlKZOsEoRKcfzwBxg==
+X-Received: by 2002:a17:902:9b8f:: with SMTP id y15mr6829884plp.322.1595564101513;
+        Thu, 23 Jul 2020 21:15:01 -0700 (PDT)
+Received: from [10.230.30.107] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o11sm4467888pfp.88.2020.07.23.21.14.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jul 2020 21:15:00 -0700 (PDT)
+Subject: Re: drivers/irqchip/irq-bcm7038-l1.c:312:13: error: implicit
+ declaration of function 'cpu_logical_map'
+To:     kernel test robot <lkp@intel.com>,
+        Justin Chen <justinpopo6@gmail.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>
+References: <202007241234.G6Yf8u6V%lkp@intel.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6d4d8b18-8c55-2ad9-ec57-0e5eb65a8dec@gmail.com>
+Date:   Thu, 23 Jul 2020 21:14:55 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.23.451.2007222356070.2641@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.inter>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <202007241234.G6Yf8u6V%lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An imbalanced TX indirection table causes netvsc to have low
-performance. This table is created and managed during runtime. To help
-better diagnose performance issues caused by imbalanced tables, it needs
-make TX indirection tables visible.
 
-Because TX indirection table is driver specified information, so
-display it via ethtool register dump.
 
-Signed-off-by: Chi Song <chisong@microsoft.com>
----
-v8: fix corrupt patch file
-v7: move to ethtool register dump
-v6: update names to be more precise, remove useless assignment
-v5: update variable orders
-v4: use a separated group to organize tx_indirection better, change 
- location of attributes init/exit to netvsc_drv_init/exit
+On 7/23/2020 9:07 PM, kernel test robot wrote:
+> Hi Justin,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   d15be546031cf65a0fc34879beca02fd90fe7ac7
+> commit: 6468fc18b00685c82408f40e9569c0d3527862b8 irqchip/irq-bcm7038-l1: Add PM support
+> date:   9 months ago
+> config: mips-randconfig-r033-20200724 (attached as .config)
+> compiler: mipsel-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout 6468fc18b00685c82408f40e9569c0d3527862b8
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    drivers/irqchip/irq-bcm7038-l1.c: In function 'bcm7038_l1_suspend':
+>>> drivers/irqchip/irq-bcm7038-l1.c:312:13: error: implicit declaration of function 'cpu_logical_map' [-Werror=implicit-function-declaration]
+>      312 |  boot_cpu = cpu_logical_map(0);
+>          |             ^~~~~~~~~~~~~~~
+>    drivers/irqchip/irq-bcm7038-l1.c: At top level:
+>    drivers/irqchip/irq-bcm7038-l1.c:393:12: warning: no previous prototype for 'bcm7038_l1_of_init' [-Wmissing-prototypes]
+>      393 | int __init bcm7038_l1_of_init(struct device_node *dn,
+>          |            ^~~~~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
+> 
+> vim +/cpu_logical_map +312 drivers/irqchip/irq-bcm7038-l1.c
 
- drivers/net/hyperv/netvsc_drv.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 6267f706e8ee..3288221726ea 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -1934,6 +1934,23 @@ static int netvsc_set_features(struct net_device *ndev,
- 	return ret;
- }
- 
-+static int netvsc_get_regs_len(struct net_device *netdev)
-+{
-+	return VRSS_SEND_TAB_SIZE * sizeof(u32);
-+}
-+
-+static void netvsc_get_regs(struct net_device *netdev,
-+			    struct ethtool_regs *regs, void *p)
-+{
-+	struct net_device_context *ndc = netdev_priv(netdev);
-+	u32 *regs_buff = p;
-+
-+	/* increase the version, if buffer format is changed. */
-+	regs->version = 1;
-+
-+	memcpy(regs_buff, ndc->tx_table, VRSS_SEND_TAB_SIZE * sizeof(u32));
-+}
-+
- static u32 netvsc_get_msglevel(struct net_device *ndev)
- {
- 	struct net_device_context *ndev_ctx = netdev_priv(ndev);
-@@ -1950,6 +1967,8 @@ static void netvsc_set_msglevel(struct net_device *ndev, u32 val)
- 
- static const struct ethtool_ops ethtool_ops = {
- 	.get_drvinfo	= netvsc_get_drvinfo,
-+	.get_regs_len	= netvsc_get_regs_len,
-+	.get_regs	= netvsc_get_regs,
- 	.get_msglevel	= netvsc_get_msglevel,
- 	.set_msglevel	= netvsc_set_msglevel,
- 	.get_link	= ethtool_op_get_link,
+Ah this needs to be guarded with CONFIG_SMP which this failing .config
+did not enable, I will submit a fix for that first thing in the morning.
 -- 
-2.25.1
+Florian
