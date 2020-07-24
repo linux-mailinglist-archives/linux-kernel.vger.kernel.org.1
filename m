@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C93D22C853
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437C322C85A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgGXOqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:46:33 -0400
-Received: from mga02.intel.com ([134.134.136.20]:13307 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726742AbgGXOqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:46:33 -0400
-IronPort-SDR: lTqf57rx6xxNOd0lTPhvw0TM7yXo3R96CdrKaUMZQrSH8ziH1UPJAXtK1zGpd7qwbQ3tS6HK/n
- RC49HYrlSOFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="138781009"
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="138781009"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 07:46:32 -0700
-IronPort-SDR: inne2HZTHM7FNS7USJHHh82vmPPMo1Ua6W8m7mWQW9EbAOdCxT4RUZJgtJAvLWwwreWdNtX1ih
- JxfI5lUkIBzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
-   d="scan'208";a="363385926"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
-  by orsmga001.jf.intel.com with ESMTP; 24 Jul 2020 07:46:32 -0700
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id B496E301BF9; Fri, 24 Jul 2020 07:46:32 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 07:46:32 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Liang, Kan" <kan.liang@linux.intel.com>, acme@redhat.com,
-        mingo@kernel.org, linux-kernel@vger.kernel.org, jolsa@kernel.org,
-        eranian@google.com, alexander.shishkin@linux.intel.com,
-        like.xu@linux.intel.com
-Subject: Re: [PATCH V7 07/14] perf/core: Add a new PERF_EV_CAP_COEXIST event
- capability
-Message-ID: <20200724144632.GE1180481@tassilo.jf.intel.com>
-References: <20200723171117.9918-1-kan.liang@linux.intel.com>
- <20200723171117.9918-8-kan.liang@linux.intel.com>
- <20200724105543.GV119549@hirez.programming.kicks-ass.net>
- <20200724114628.GJ43129@hirez.programming.kicks-ass.net>
- <0d33a25c-cfe4-af7f-c915-a98dba17b53b@linux.intel.com>
- <20200724135412.GA10769@hirez.programming.kicks-ass.net>
- <e04f1708-e8c0-3787-1572-443f03ab73ca@linux.intel.com>
- <20200724143258.GB10769@hirez.programming.kicks-ass.net>
+        id S1726625AbgGXOst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgGXOss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 10:48:48 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577D9C0619D3;
+        Fri, 24 Jul 2020 07:48:48 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q3so7415430ilt.8;
+        Fri, 24 Jul 2020 07:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=AfTbl+xYnSMnr2dDiDoDcPiQOlraklTTHYcmYhyUnOg=;
+        b=HiEu5S/7+v33uYgp7Yy4N5KJQWU46qvkheSu4OxEeyWGCGYKoVn3tYCw/URpePmCWC
+         P9Sc1Gyf897uYvdoecbrMUInjQs434jXcvWwiePIajv6zsSJS0Gx7Sp/vsZYwwLuvoJH
+         1jhvHxLj/aGt0gkuLefzXVW3as5pCUp8ZNcj9aReIDN5rrLX2k2AkM43pgw1wcqNYZcz
+         7rOzxbYJQJ67iP3ybkxtLhG12iLJfmWhN8AJ6ugufemno1ihbWP6Mlq4lVG+FTwdob6A
+         YjFfkI9ju2+jtYo1fKPz/EPuAodonpTCxmqwJqYtqNAHCiOlHjR7VEHidlMhrEgkFmZK
+         GrgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=AfTbl+xYnSMnr2dDiDoDcPiQOlraklTTHYcmYhyUnOg=;
+        b=YEVvdvfgX+yIZNoenfP/9XkbheoIibMxasJ9toLaFpACfxPSEl/rAXXYNd30EXGyxM
+         WfOUXwUNhXNPOQ3wb72FmgVN8nMQXRXPlpanWFiHQ8cW750hJUJQQJ5Ro2ky8tmiVHh8
+         OwppjQCxR/gszb6ZuW30lAqAeX+e0gbP85D5ddhYdf2E20KHj+qOnltLDSskoLQlQipT
+         vnBnHk/vCuNXGP9odnX8QrRv474dYofuae6wQLRfouK5zKBH7S/GfhggngAXBQ9jUmV3
+         3jHP9N6vBkUFLIVgIa5y+BX6cwmpBwOXNFTr/hXveAg1A96MaDvZzpvA4E2kOHdS2dSO
+         jVpQ==
+X-Gm-Message-State: AOAM530CFYNtL3Wf+Mx6TxHZIhJXpMHpgevg9DtM6Q8feD3/3l0SLXIH
+        6Pt0msP7Yz8F5nE2myibvtkrpET/Tjo90ovs8UY=
+X-Google-Smtp-Source: ABdhPJx82953GvUn4UMlNxBZ/swHYEqZz9F+hAPkCEURlD4RRr7tkUILpIDrIiYQ7XzxxZ6AHYDXKwM/tq9Zc9iXYkc=
+X-Received: by 2002:a92:290a:: with SMTP id l10mr11127609ilg.204.1595602127620;
+ Fri, 24 Jul 2020 07:48:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724143258.GB10769@hirez.programming.kicks-ass.net>
+References: <20200723192801.351114-1-nickrterrell@gmail.com>
+ <20200723192801.351114-7-nickrterrell@gmail.com> <CA+icZUWV3ANmBj08QZKBtEE38Y-iyCGGxLWtiFkdpKqkGP7ZqQ@mail.gmail.com>
+ <20200724143022.GA601509@rani.riverdale.lan>
+In-Reply-To: <20200724143022.GA601509@rani.riverdale.lan>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 24 Jul 2020 16:48:36 +0200
+Message-ID: <CA+icZUWr0FBO1dpu-PPXJDSFzemoD7zniq+eQQrWXA_uGVKVAA@mail.gmail.com>
+Subject: Re: [PATCH v8 6/7] x86: Add support for ZSTD compressed kernel
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Nick Terrell <nickrterrell@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>, Nick Terrell <terrelln@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Something that seems to 'work' is:
-> '{cycles,cpu/instructions,period=50000/}', so maybe you can make the
-> group modifier :S use any sampling event if there is one, and otherwise
-> designate the leader.
-> 
-> Then you can write things like:
-> 
->   '{slots, metric1, metric2, cpu/cycles,freq=50000/}:S'
-> 
-> and then since cycles is specified as a sampling event, it will use
-> that.
+On Fri, Jul 24, 2020 at 4:30 PM Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>
+> On Fri, Jul 24, 2020 at 02:50:34AM +0200, Sedat Dilek wrote:
+> > On Thu, Jul 23, 2020 at 9:30 PM Nick Terrell <nickrterrell@gmail.com> wrote:
+> > >
+> > > From: Nick Terrell <terrelln@fb.com>
+> > >
+> > > * Add support for zstd compressed kernel
+> > > * Define __DISABLE_EXPORTS in misc.c
+> > > * Bump the heap size for zstd.
+> > > * Update the documentation.
+> > >
+> > > Integrates the ZSTD decompression code to the x86 pre-boot code.
+> > >
+> > > Zstandard requires slightly more memory during the kernel decompression
+> > > on x86 (192 KB vs 64 KB), and the memory usage is independent of the
+> > > window size.
+> > >
+> > > __DISABLE_EXPORTS is defined in misc.c instead of the Makefile because
+> > > kaslr.c defines __DISABLE_EXPORTS, and defining it in the Makefile gives
+> > > duplicate definition warnings.
+> > >
+> >
+> > That was reported by Arvind - feel free to add a Reported-by: ...
+> >
+> > - Sedat -
+> >
+>
+> It's not necessary to add Reported-by's for problems encountered while
+> developing the series. Especially as it was my drive-by suggestion to
+> use __DISABLE_EXPORTS that introduced the issue in the first place :)
+>
 
-Okay possible, but it makes things more complicated
-for the user to understand and requires special documentation.
-Hopefully it's worth it the internal simplification.
+It is up to you with credits.
 
--andi
+> I'd have added it to the Makefile and just dropped the definition in
+> kaslr.c -- should be no reason for anything in here to use EXPORT_SYMBOL.
+>
+
+I cannot follow - this is no more needed as this was due to some of
+your local changes in kaslr.c?
+
+- Sedat -
