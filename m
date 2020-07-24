@@ -2,118 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5797322C6DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0673722C6E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgGXNlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:41:18 -0400
-Received: from verein.lst.de ([213.95.11.211]:35719 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726235AbgGXNlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:41:17 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B8C5168AFE; Fri, 24 Jul 2020 15:41:14 +0200 (CEST)
-Date:   Fri, 24 Jul 2020 15:41:14 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        David Rientjes <rientjes@google.com>,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [PATCH] dma-pool: Do not allocate pool memory from CMA
-Message-ID: <20200724134114.GA3152@lst.de>
-References: <550b30a86c0785049d24c945e2c6628d491cee3a.camel@suse.de> <CAMi1Hd2V2pJjP=USS4r-Z3vK-aq7_aBy-jcVNk1GvbdEQAuzWg@mail.gmail.com> <011994f8a717a00dcd9ed7682a1ddeb421c2c43f.camel@suse.de> <CAMi1Hd0=ZsGhTkSy221EP9Vb3GMOcS0UMczX2u5X9qK37_ea1A@mail.gmail.com> <01831596e4a2a6c9c066138b23bd30435f8e5569.camel@suse.de> <CAMi1Hd3C6kh5E49EgytBAQ_2AE_jvnp+eSNsxBYaux+exSvdbg@mail.gmail.com> <6db722947546221ed99d3f473f78e1a6de65d7d6.camel@suse.de> <CAMi1Hd0Xz6kOJFpA5PEpi6RDDGOcz0RmQ7tTOkuXq4QneOO_vQ@mail.gmail.com> <0dc1e922bf87fa73790e7471b3974528dd261486.camel@suse.de> <CAMi1Hd3O2HHBsnt=sac7FdcW0-3=4S3g_F9f__2h5gTsudfirA@mail.gmail.com>
+        id S1726841AbgGXNnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:43:40 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:58292 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726326AbgGXNnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 09:43:39 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6B9BB6B6301DDE2BC00E;
+        Fri, 24 Jul 2020 21:43:29 +0800 (CST)
+Received: from DESKTOP-KKJBAGG.china.huawei.com (10.174.186.173) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 24 Jul 2020 21:43:20 +0800
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+To:     <maz@kernel.org>, <james.morse@arm.com>,
+        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <steven.price@arm.com>, <mark.rutland@arm.com>, <ascull@google.com>
+CC:     <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <yezhenyu2@huawei.com>
+Subject: [RESEND RFC PATCH v1] arm64: kvm: flush tlbs by range in unmap_stage2_range function
+Date:   Fri, 24 Jul 2020 21:43:15 +0800
+Message-ID: <20200724134315.805-1-yezhenyu2@huawei.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMi1Hd3O2HHBsnt=sac7FdcW0-3=4S3g_F9f__2h5gTsudfirA@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.186.173]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, the iommu is an interesting case, and the current code is
-wrong for that.  Can you try the patch below?  It contains a modified
-version of Nicolas' patch to try CMA again for the expansion and a new
-(for now hackish) way to not apply the addressability check for dma-iommu
-allocations.
+Now in unmap_stage2_range(), we flush tlbs one by one just after the
+corresponding pages cleared.  However, this may cause some performance
+problems when the unmap range is very large (such as when the vm
+migration rollback, this may cause vm downtime too loog).
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 6bc74a2d51273e..ec5e525d2b9309 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -3,7 +3,9 @@
-  * Copyright (C) 2012 ARM Ltd.
-  * Copyright (C) 2020 Google LLC
-  */
-+#include <linux/cma.h>
- #include <linux/debugfs.h>
-+#include <linux/dma-contiguous.h>
- #include <linux/dma-direct.h>
- #include <linux/dma-noncoherent.h>
- #include <linux/init.h>
-@@ -55,6 +57,31 @@ static void dma_atomic_pool_size_add(gfp_t gfp, size_t size)
- 		pool_size_kernel += size;
+This patch moves the kvm_tlb_flush_vmid_ipa() out of loop, and
+flush tlbs by range after other operations completed.  Because we
+do not make new mapping for the pages here, so this doesn't violate
+the Break-Before-Make rules.
+
+Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
+---
+ arch/arm64/include/asm/kvm_asm.h |  2 ++
+ arch/arm64/kvm/hyp/tlb.c         | 36 ++++++++++++++++++++++++++++++++
+ arch/arm64/kvm/mmu.c             | 11 +++++++---
+ 3 files changed, 46 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+index 352aaebf4198..ef8203d3ca45 100644
+--- a/arch/arm64/include/asm/kvm_asm.h
++++ b/arch/arm64/include/asm/kvm_asm.h
+@@ -61,6 +61,8 @@ extern char __kvm_hyp_vector[];
+ 
+ extern void __kvm_flush_vm_context(void);
+ extern void __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa);
++extern void __kvm_tlb_flush_vmid_range(struct kvm *kvm, phys_addr_t start,
++				       phys_addr_t end);
+ extern void __kvm_tlb_flush_vmid(struct kvm *kvm);
+ extern void __kvm_tlb_flush_local_vmid(struct kvm_vcpu *vcpu);
+ 
+diff --git a/arch/arm64/kvm/hyp/tlb.c b/arch/arm64/kvm/hyp/tlb.c
+index d063a576d511..4f4737a7e588 100644
+--- a/arch/arm64/kvm/hyp/tlb.c
++++ b/arch/arm64/kvm/hyp/tlb.c
+@@ -189,6 +189,42 @@ void __hyp_text __kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
+ 	__tlb_switch_to_host(kvm, &cxt);
  }
  
-+static bool cma_in_zone(gfp_t gfp)
++void __hyp_text __kvm_tlb_flush_vmid_range(struct kvm *kvm, phys_addr_t start,
++					   phys_addr_t end)
 +{
-+	phys_addr_t end;
-+	unsigned long size;
-+	struct cma *cma;
++	struct tlb_inv_context cxt;
++	unsigned long addr;
 +
-+	cma = dev_get_cma_area(NULL);
-+	if (!cma)
-+		return false;
++	start = __TLBI_VADDR(start, 0);
++	end = __TLBI_VADDR(end, 0);
 +
-+	size = cma_get_size(cma);
-+	if (!size)
-+		return false;
-+	end = cma_get_base(cma) - memblock_start_of_DRAM() + size - 1;
++	dsb(ishst);
 +
-+	/* CMA can't cross zone boundaries, see cma_activate_area() */
-+	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA) &&
-+	    end <= DMA_BIT_MASK(zone_dma_bits))
-+		return true;
-+	if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32) &&
-+	    end <= DMA_BIT_MASK(32))
-+		return true;
-+	return true;
++	/* Switch to requested VMID */
++	kvm = kern_hyp_va(kvm);
++	__tlb_switch_to_guest(kvm, &cxt);
++
++	if ((end - start) >= 512 << (PAGE_SHIFT - 12)) {
++		__tlbi(vmalls12e1is);
++		goto end;
++	}
++
++	for (addr = start; addr < end; addr += 1 << (PAGE_SHIFT - 12))
++		__tlbi(ipas2e1is, addr);
++
++	dsb(ish);
++	__tlbi(vmalle1is);
++
++end:
++	dsb(ish);
++	isb();
++
++	if (!has_vhe() && icache_is_vpipt())
++		__flush_icache_all();
++
++	__tlb_switch_to_host(kvm, &cxt);
 +}
 +
- static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 			      gfp_t gfp)
+ void __hyp_text __kvm_tlb_flush_vmid(struct kvm *kvm)
  {
-@@ -68,7 +95,11 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+ 	struct tlb_inv_context cxt;
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 8c0035cab6b6..bcc719c32921 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -63,6 +63,12 @@ static void kvm_tlb_flush_vmid_ipa(struct kvm *kvm, phys_addr_t ipa)
+ 	kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, kvm, ipa);
+ }
  
- 	do {
- 		pool_size = 1 << (PAGE_SHIFT + order);
--		page = alloc_pages(gfp, order);
-+		if (cma_in_zone(gfp))
-+ 			page = dma_alloc_from_contiguous(NULL, 1 << order,
-+ 							 order, false);
-+		if (!page)
-+			page = alloc_pages(gfp, order);
- 	} while (!page && order-- > 0);
- 	if (!page)
- 		goto out;
-@@ -251,7 +282,11 @@ void *dma_alloc_from_pool(struct device *dev, size_t size,
- 			continue;
++static void kvm_tlb_flush_vmid_range(struct kvm *kvm, phys_addr_t start,
++				     phys_addr_t end)
++{
++	kvm_call_hyp(__kvm_tlb_flush_vmid_range, kvm, start, end);
++}
++
+ /*
+  * D-Cache management functions. They take the page table entries by
+  * value, as they are flushing the cache using the kernel mapping (or
+@@ -267,7 +273,6 @@ static void unmap_stage2_ptes(struct kvm *kvm, pmd_t *pmd,
+ 			pte_t old_pte = *pte;
  
- 		phys = gen_pool_virt_to_phys(pool, val);
--		if (dma_coherent_ok(dev, phys, size))
-+		/*
-+		 * Only apply the addressability check for dma-direct.
-+		 * This is a nasty hack and won't work e.g. for arm.
-+		 */
-+		if (get_dma_ops(dev) || dma_coherent_ok(dev, phys, size))
- 			break;
+ 			kvm_set_pte(pte, __pte(0));
+-			kvm_tlb_flush_vmid_ipa(kvm, addr);
  
- 		gen_pool_free(pool, val, size);
+ 			/* No need to invalidate the cache for device mappings */
+ 			if (!kvm_is_device_pfn(pte_pfn(old_pte)))
+@@ -295,7 +300,6 @@ static void unmap_stage2_pmds(struct kvm *kvm, pud_t *pud,
+ 				pmd_t old_pmd = *pmd;
+ 
+ 				pmd_clear(pmd);
+-				kvm_tlb_flush_vmid_ipa(kvm, addr);
+ 
+ 				kvm_flush_dcache_pmd(old_pmd);
+ 
+@@ -324,7 +328,6 @@ static void unmap_stage2_puds(struct kvm *kvm, p4d_t *p4d,
+ 				pud_t old_pud = *pud;
+ 
+ 				stage2_pud_clear(kvm, pud);
+-				kvm_tlb_flush_vmid_ipa(kvm, addr);
+ 				kvm_flush_dcache_pud(old_pud);
+ 				put_page(virt_to_page(pud));
+ 			} else {
+@@ -352,6 +355,8 @@ static void unmap_stage2_p4ds(struct kvm *kvm, pgd_t *pgd,
+ 
+ 	if (stage2_p4d_table_empty(kvm, start_p4d))
+ 		clear_stage2_pgd_entry(kvm, pgd, start_addr);
++
++	kvm_tlb_flush_vmid_range(kvm, start_addr, end);
+ }
+ 
+ /**
+-- 
+2.19.1
+
+
