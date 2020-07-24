@@ -2,86 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631C222C225
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CDB22C223
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728349AbgGXJWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728340AbgGXJWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:22:30 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BE3C0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:22:29 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d17so9279917ljl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NIN2eG6kxQsTMBpOwVSU6dRg3bbC+qayNO9Wkv9P+PQ=;
-        b=ueR30SwbJ+rAmb+W+yOnb26b9Bq1/lkv19P4z+FB0L2SeIkegmvr6F6TdSscAoD6JI
-         3cERgk3EAOpgR3fsis+BCYgSh3bFlS+jKkpBZkSN/kY3V+B4+UmGrt6QxidB7/JijXJz
-         lsD0e8pAcV7u4ePXMK5g0aRWn+oXYzksG/ZbyjRjofaBY68qvHzm20fk/kTyJbw1N4dQ
-         G2dhUKBrUvIOGxW36HmMyC6QKxiZPr7W7piXKEqxYB1j22wXEbVhCS3dLZs4nTjy0KCv
-         wH/rQHC0jK6EcdVdeZ1OWUzwqUNQUAWu8dHOOpiQBGMh0DpxsqiPuodFq0e8HJmv+caa
-         KXLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NIN2eG6kxQsTMBpOwVSU6dRg3bbC+qayNO9Wkv9P+PQ=;
-        b=IbTtjuwVt+K+R1OATyvAgY2+IOex1ry66UfDgHzzao7gshYNIf+s+H+Z3PIzYjiU4m
-         +s/tatICMQOqOpFlxJUltnDgS+3QBqBePlRTGfGMJ99E5hug3YpwUnJhbev7m+zJtBDC
-         JY3m3eR/qe20T7sMd3GS7FZmVc3mLEVcVAt8Z2TcpdzMaSZJSvm3m9epDaE2mdxh2msL
-         4BItxRzDiRiLVkA3s5uUeIohWjYA+PoyssGqz5GN2gVfAWdPk3z+YmJKnU0ooNQzXWpN
-         IBfCo+fUH5EiN3juN6VlQNVh8JzJgFSA5NJmFoSeYKziDxpp9Mc6WXgXASP1hlaGANh9
-         U9PQ==
-X-Gm-Message-State: AOAM532FTwWoXfEEm7Oot1d8tkEtYzNBfQGaz2xKxc7QzNOgfBJFdFwn
-        Kn0X/hnTsxtUGO/jYoeUPz4paqS1WKhK4JoTxIRNkw==
-X-Google-Smtp-Source: ABdhPJy1kxaa4/qH3lXM5ZPK1KAZ7uW0S11/tRncapyJVFPYOfPxHvEk9ABpsCyBSKAwlbvbZ811yX3n+1ZLG46V/7M=
-X-Received: by 2002:a2e:810a:: with SMTP id d10mr3848032ljg.144.1595582548179;
- Fri, 24 Jul 2020 02:22:28 -0700 (PDT)
+        id S1728331AbgGXJW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgGXJW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:22:27 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A67020674;
+        Fri, 24 Jul 2020 09:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595582547;
+        bh=9tPh3btI6by0aK62uud8rAfohfOuysh731MEj7sejn8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Pjvn025j6/ENiK40+wMztPDg32q8wY6dI+nKO4v1gssjy/U3OV0TmOUHkk9RgHOjQ
+         OOgueNOUtqY6JsqRlzGnoC0imUP5AuYBrmwQgXtSUiZwT1eeQ1u62Ic5YFk2wF6ffb
+         9LmD2e6H5Blzip/0kwtHywg1xiSZ2nf1W63v6ASM=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <1595513168-11965-3-git-send-email-srinivas.neeli@xilinx.com> <202007241241.Eamn0vcf%lkp@intel.com>
-In-Reply-To: <202007241241.Eamn0vcf%lkp@intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 24 Jul 2020 11:22:16 +0200
-Message-ID: <CACRpkda0YiUQTUDOEo7gnuegtPFauUyeLWs7wDkapzrUC-nwAw@mail.gmail.com>
-Subject: Re: [PATCH V2 2/3] gpio: xilinx: Add interrupt support
-To:     kernel test robot <lkp@intel.com>
-Cc:     Srinivas Neeli <srinivas.neeli@xilinx.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        sgoud@xilinx.com, kbuild-all@lists.01.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1595403506-8209-17-git-send-email-claudiu.beznea@microchip.com>
+References: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com> <1595403506-8209-17-git-send-email-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v2 16/18] clk: at91: clk-sam9x60-pll: re-factor to support plls with multiple outputs
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     bbrezillon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        mturquette@baylibre.com, nicolas.ferre@microchip.com
+Date:   Fri, 24 Jul 2020 02:22:26 -0700
+Message-ID: <159558254661.3847286.7842791848340220486@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 6:12 AM kernel test robot <lkp@intel.com> wrote:
+Quoting Claudiu Beznea (2020-07-22 00:38:24)
+> Some of the SAMA7G5 PLLs support multiple outputs (e.g. AUDIO PLL).
+> For these, split the PLL clock in two: fractional clock and
+> divider clock. In case PLLs supports multiple outputs (since these
+> outputs are dividers (with different settings) sharing the same
+> fractional part), it will register one fractional clock and multiple
+> divider clocks (dividers sharing the fractional clock).
+>=20
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
 
->    drivers/gpio/gpio-xilinx.c: In function 'xgpio_probe':
->    drivers/gpio/gpio-xilinx.c:638:10: error: 'struct gpio_chip' has no member named 'of_gpio_n_cells'
->      638 |  chip->gc.of_gpio_n_cells = cells;
->          |          ^
-> >> drivers/gpio/gpio-xilinx.c:639:10: error: 'struct gpio_chip' has no member named 'of_xlate'
->      639 |  chip->gc.of_xlate = xgpio_xlate;
->          |          ^
-
-This is probably because your driver needs:
-
-depends on OF_GPIO
-
-in KConfig
-
-Yours,
-Linus Walleij
+Applied to clk-next
