@@ -2,88 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCD222C46C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F0D22C475
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgGXLgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:36:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27262 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726820AbgGXLgN (ORCPT
+        id S1726639AbgGXLmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbgGXLmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:36:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595590571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I68fbRd6bZ95LK9+jolwOQBVPAxfW2jV01rcWnCSNp0=;
-        b=NJbnzZKzhV/h+pPjDJVM2yV2WuCD9IN1DwsZXIfKemcWPpP0DfJe12hGE8+vB2ruJboxDF
-        OhdqEcwByJ+vMeM7vm3vOJUCs3TBlVH6pxSeQ7xCws4403Vu/jdn4xeiEpagtnm8dyLY9a
-        pqA53eU4PSfx3aO6xAe7hTM9Kqna64w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-PexwN0WVOwWbFOVy0tM0dg-1; Fri, 24 Jul 2020 07:36:10 -0400
-X-MC-Unique: PexwN0WVOwWbFOVy0tM0dg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 507C6107ACCA;
-        Fri, 24 Jul 2020 11:36:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDB2919723;
-        Fri, 24 Jul 2020 11:36:03 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net>
-References: <865566fb800a014868a9a7e36a00a14430efb11e.camel@themaw.net> <1293241.1595501326@warthog.procyon.org.uk> <CAJfpegspWA6oUtdcYvYF=3fij=Bnq03b8VMbU9RNMKc+zzjbag@mail.gmail.com> <158454378820.2863966.10496767254293183123.stgit@warthog.procyon.org.uk> <158454391302.2863966.1884682840541676280.stgit@warthog.procyon.org.uk> <2003787.1595585999@warthog.procyon.org.uk>
-To:     Ian Kent <raven@themaw.net>
-Cc:     dhowells@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>, nicolas.dichtel@6wind.com,
-        Christian Brauner <christian@brauner.io>, andres@anarazel.de,
-        Jeff Layton <jlayton@redhat.com>, dray@redhat.com,
-        Karel Zak <kzak@redhat.com>, keyrings@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/17] watch_queue: Implement mount topology and attribute change notifications [ver #5]
+        Fri, 24 Jul 2020 07:42:47 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74163C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:42:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a15so8012104wrh.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DS8+C7+3JkJCKAfBvk/FiQEiSKMMCSRFh6EPJECwAgM=;
+        b=scHeXXDB3x5CbKvgy/DYej+AecpbeKdHEuDxRbS3gfdq6ldhScLqmtFaj1syEsALJN
+         6PZvlCPs9dh4koSh72sIjQ84b0rPknYK2Ba4F2Me/a9tZnobNPgM1Ji8fI4kb7UGYSuW
+         Uw0t9hJSja4HqLenih6mE4VR9uULCCY8VaQ7G62qDIT9XeteuY5vPmyjaISYGsc39yMR
+         XmeMb7l+tnHrtdLiYMcr+WVH3oFGYA/MnDMmV9b2jS3eCp6GaY0CSAowB5zGDuFoYklA
+         dw62TIcHLNJXhNkcTibKEJ7SPP1KNqNPrCPA6uboawYmwtK04JrF7kWW+SbspLt7tvEy
+         XijA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DS8+C7+3JkJCKAfBvk/FiQEiSKMMCSRFh6EPJECwAgM=;
+        b=JUucic2GZDCDAB07kG1uY8QgVDmZoZWiXTP52reDdykicBUqNXb+EmGdpxnimv8sg0
+         mgmojXnkxlDLgqoNW9+gZ4nD0JrtlWH2RO+ltvOohhVcLn3Scmze4TDI1djZrTlWYudc
+         YuNOCYhl9BjYAwN9ERGS04sD/0M2lVaJg0yC8R1lozn4n50fsHvr8+RsKRUof8J3Av+M
+         o586oO/5Z+mbQKXDP6AXRrQN59NHTqJTBwbPm+QOFk+7wPzya72wxgnDBacoP1k5paVC
+         05EmxNPex8qzdKS+niweADiZjWf6UdzjiAjgs6y3FKo7DkxvzdhLaAOB7zocEwUp+wHQ
+         v1eA==
+X-Gm-Message-State: AOAM530bAYb6qD4ZGHIV5BEtIAPeVX+uEhvbOre9qJbF3cveSA6GP0N3
+        PqEC9QSQBs8V+M0L8o1A7ug7ucD3nqI=
+X-Google-Smtp-Source: ABdhPJxAyL36zQHeQpOK+bQKeJKKc+H68zY3EUmPqqgpdnrQJnOL8ZWiiHnmV64RP+8aIMYvdX31bw==
+X-Received: by 2002:adf:b352:: with SMTP id k18mr8643138wrd.386.1595590964172;
+        Fri, 24 Jul 2020 04:42:44 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id b186sm7246297wme.1.2020.07.24.04.42.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 Jul 2020 04:42:43 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [GIT PULL] interconnect changes for 5.9
+Date:   Fri, 24 Jul 2020 14:42:44 +0300
+Message-Id: <20200724114244.12094-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2023285.1595590563.1@warthog.procyon.org.uk>
-Date:   Fri, 24 Jul 2020 12:36:03 +0100
-Message-ID: <2023286.1595590563@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ian Kent <raven@themaw.net> wrote:
+Hello Greg,
 
-> I was wondering about id re-use.
-> 
-> Assuming that ids that are returned to the idr db are re-used
-> what would the chance that a recently used id would end up
-> being used?
-> 
-> Would that chance increase as ids are consumed and freed over
-> time?
+This is the pull request with the interconnect changes for the 5.9-rc1
+merge window. It contains some tiny core framework improvements. These
+will allow us to support new provider drivers for Samsung and Nvidia
+platforms, which are expected to land soon.
 
-I've added something to deal with that in the fsinfo branch.  I've given each
-mount object and superblock a supplementary 64-bit unique ID that's not likely
-to repeat before we're no longer around to have to worry about it.
+All patches have been in linux-next for the last few weeks without any
+reported issues. Please pull into char-misc-next.
 
-fsinfo() then allows you to retrieve them by path or by mount ID.
+Thanks,
+Georgi
 
-So, yes, mnt_id and s_dev are not unique and may be reused very quickly, but
-I'm also providing uniquifiers that you can check.
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
-David
+  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
 
+are available in the Git repository at:
+
+  https://git.linaro.org/people/georgi.djakov/linux.git tags/icc-5.9-rc1
+
+for you to fetch changes up to 12a400b016ab955be8e4c569346fa18aaceed9d7:
+
+  interconnect: Mark all dummy functions as static inline (2020-06-16 16:43:23 +0300)
+
+----------------------------------------------------------------
+interconnect changes for 5.9
+
+Here are the interconnect changes for the 5.9-rc1 merge window
+consisting mostly of changes that give the core more flexibility
+in order to support some new provider drivers.
+
+Core changes:
+- Export of_icc_get_from_provider()
+- Relax requirement in of_icc_get_from_provider()
+- Allow inter-provider pairs to be configured
+- Mark all dummy functions as static inline
+
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+
+----------------------------------------------------------------
+Artur Świgoń (3):
+      interconnect: Export of_icc_get_from_provider()
+      interconnect: Relax requirement in of_icc_get_from_provider()
+      interconnect: Allow inter-provider pairs to be configured
+
+Georgi Djakov (1):
+      interconnect: Mark all dummy functions as static inline
+
+ drivers/interconnect/core.c           | 16 ++++----
+ include/linux/interconnect-provider.h | 16 ++++++--
+ 2 files changed, 20 insertions(+), 12 deletions(-)
