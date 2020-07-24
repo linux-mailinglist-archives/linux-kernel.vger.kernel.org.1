@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792AD22C311
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6566422C315
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgGXK0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 06:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58582 "EHLO mail.kernel.org"
+        id S1726893AbgGXK15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 06:27:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726520AbgGXK0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:26:51 -0400
+        id S1726520AbgGXK15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 06:27:57 -0400
 Received: from kernel.org (unknown [87.71.40.38])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B46E2065C;
-        Fri, 24 Jul 2020 10:26:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C42C72065C;
+        Fri, 24 Jul 2020 10:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595586410;
-        bh=rVdfRLF8yznNkp/wFEbFevU/Hg1CdRSyD1U/86auq+s=;
+        s=default; t=1595586476;
+        bh=rTxGRGk7C2mffWe9YQ5WA7WqwJtcr2BteH9NQ77nZv0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ISuPeAIlsG5DP6x+uysiGR64wgnZiwHi2/PlNEX4EJ5gZ6a2BsFtRlWen7/jtskTJ
-         zqgCfl/IgqzipJSfqA0TnF6HXBXuCj05y2wR8foas1wGZPtTOT79Aom/l7w1yeygpI
-         LD3rcZMAX69m9q/i8RFTqTuldH+yKRQg1n51312A=
-Date:   Fri, 24 Jul 2020 13:26:41 +0300
+        b=vihE7SOo3lD4LC4+CIPQCOoOudzMuHnNuJbbTSv86K3VmmOoshAkXr/uxwxKzvfIU
+         KToD3j1GADq0268CJz4CmRLe0JbPbLqZb2itF7bI7BkVi+lkxrhdYW+HmqLDrMb+8K
+         OkBeauy5MurtdVDrclLFQxjJ+BEbo0lOnCQe1VMQ=
+Date:   Fri, 24 Jul 2020 13:27:48 +0300
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Andi Kleen <ak@linux.intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jessica Yu <jeyu@kernel.org>, linux-arch@vger.kernel.org
-Subject: Re: [PATCH v5 0/6] arch/x86: kprobes: Remove MODULES dependency
-Message-ID: <20200724102641.GC2831654@kernel.org>
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
+Message-ID: <20200724102748.GD2831654@kernel.org>
 References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
+ <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
+In-Reply-To: <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc people whi particpaged in v2 disuccsion)
-
-On Fri, Jul 24, 2020 at 08:05:47AM +0300, Jarkko Sakkinen wrote:
-> Remove MODULES dependency by migrating from module_alloc() to the new
-> text_alloc() API. Essentially these changes provide preliminaries for
-> allowing to compile a static kernel with a proper tracing support.
-> 
-> The same API can be used later on in other sites that allocate space for
-> trampolines, and trivially scaled to other arch's. An arch can inform
-> with CONFIG_ARCH_HAS_TEXT_ALLOC that it's providing implementation for
-> text_alloc().
+On Fri, Jul 24, 2020 at 08:05:52AM +0300, Jarkko Sakkinen wrote:
+> Use text_alloc() and text_free() instead of module_alloc() and
+> module_memfree() when an arch provides them.
 > 
 > Cc: linux-mm@kvack.org
 > Cc: Andi Kleen <ak@linux.intel.com>
 > Cc: Masami Hiramatsu <mhiramat@kernel.org>
 > Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  kernel/kprobes.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> v4:
-> * Squash lock_modules() patches into one.
-> * Remove fallback versions of text_alloc() and text_free(). Instead, use
->   ARCH_HAS_TEXT_ALLOC at site when required.
-> * Use lockdep_assert_irqs_enabled() in text_free() instead of
->   WARN_ON(in_interrupt()).
-> 
-> v3:
-> * Make text_alloc() API disjoint.
-> * Remove all the possible extra clutter not absolutely required and
->   split into more logical pieces.
-> 
-> Jarkko Sakkinen (6):
->   kprobes: Remove dependency to the module_mutex
->   vmalloc: Add text_alloc() and text_free()
->   arch/x86: Implement text_alloc() and text_free()
->   arch/x86: kprobes: Use text_alloc() and text_free()
->   kprobes: Use text_alloc() and text_free()
->   kprobes: Remove CONFIG_MODULES dependency
-> 
->  arch/Kconfig                   |  2 +-
->  arch/x86/Kconfig               |  3 ++
->  arch/x86/kernel/Makefile       |  1 +
->  arch/x86/kernel/kprobes/core.c |  4 +--
->  arch/x86/kernel/text_alloc.c   | 41 +++++++++++++++++++++++
->  include/linux/module.h         | 32 ++++++++++++++----
->  include/linux/vmalloc.h        | 17 ++++++++++
->  kernel/kprobes.c               | 61 +++++++++++++++++++++++-----------
->  kernel/trace/trace_kprobe.c    | 20 ++++++++---
->  9 files changed, 147 insertions(+), 34 deletions(-)
->  create mode 100644 arch/x86/kernel/text_alloc.c
-> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 4e46d96d4e16..611fcda9f6bf 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -40,6 +40,7 @@
+>  #include <asm/cacheflush.h>
+>  #include <asm/errno.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/vmalloc.h>
+>  
+>  #define KPROBE_HASH_BITS 6
+>  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
+> @@ -111,12 +112,20 @@ enum kprobe_slot_state {
+>  
+>  void __weak *alloc_insn_page(void)
+>  {
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +	return text_alloc(PAGE_SIZE);
+> +#else
+>  	return module_alloc(PAGE_SIZE);
+> +#endif
+>  }
+>  
+>  void __weak free_insn_page(void *page)
+>  {
+> +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> +	text_free(page);
+> +#else
+>  	module_memfree(page);
+> +#endif
+>  }
+
+Both alloc_insn_page() and free_insn_page() are __weak and can be simple
+overriden in arch/x86 code.
+  
+>  struct kprobe_insn_cache kprobe_insn_slots = {
 > -- 
 > 2.25.1
 > 
