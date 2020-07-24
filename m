@@ -2,148 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164AD22C4AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9175E22C4A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgGXMCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 08:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbgGXMCk (ORCPT
+        id S1726739AbgGXMCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 08:02:30 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37720 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgGXMC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 08:02:40 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F02C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:02:40 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id k27so5114941pgm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VKngwrDwYgMZRpBa5N9RttIghmCEGJz3vjqXKKgCKYk=;
-        b=Y9nHFo1tSKAnjffVi8kwBLAhbHp18RkjpUlSYPHC5SLF6ED+aAi8ub0ltlRPvNOo6m
-         jyRVYf50yN+B368eh0I9OOPp0FGE2rVkkkPe8Dl0zntj2+6UtzM9TT8LnXYpEviCFHnj
-         AO9WiXksWr8YJUBFdDCP05mzFPBm1kVCvZhEtHv6WVMgvxDwG4o0KIb6CTSZTXjfwA32
-         QTJ1McDzGMLXsUqcr4K/Hc52U/uZzAh0FtwjJfxcmknTx4AfjUNamWAvycYFBFyqWW2f
-         kP05t82lXJJmJCjHWHPoH3FY+lH2DDHsI2quYHe4UVCQ5LZWaRC3UsO+iuPw0c5NqJiV
-         O3Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VKngwrDwYgMZRpBa5N9RttIghmCEGJz3vjqXKKgCKYk=;
-        b=CyONZ2bvmOxNUfVTXoOFZcHVEOoS9738lGKBSPMV91xjzFJwCAIbHCy7HFuhDANsfs
-         T0qBh53iTnEFI4yk/jprIq7Cc89hR7ivv5KS9LNbwKan3k5lHPyTJsbp7hGsouX0Jxir
-         7SXScyTxyOf7L20qnOrZR7dFq4nqY+C7gpBqUKmNtE0iB8BXaeexc9GGDvkL6+SWPf65
-         GccrNHazrCZRBJB3baTIdWUiqdicAR1I5ggOOd4FF3i0v8L03DiSLmDuKCHVv+1i7iQ3
-         1sn62eBkyr4O213NNmvDI/njLcvRB1wWJgioiEPsWlR0OXJXh5mzDx2cIx/A0hrqhNOU
-         SzWQ==
-X-Gm-Message-State: AOAM530YCIS5Y5UjFmgaMl/8+a8Fv9VLc4O6ZQ94/hFcWf4WCUh1DhqX
-        eJHWLgq+SwB4Q261MfLJQ/Ugaw==
-X-Google-Smtp-Source: ABdhPJzGkOww4gi9LFKtV7dptKqSu31UyPoqgTqsxr4uMsEnNXSe4O6qsjXXwcf2My8/R09yVCrJew==
-X-Received: by 2002:a62:e217:: with SMTP id a23mr8616963pfi.257.1595592160037;
-        Fri, 24 Jul 2020 05:02:40 -0700 (PDT)
-Received: from kaaira-HP-Pavilion-Notebook ([103.113.213.178])
-        by smtp.gmail.com with ESMTPSA id w71sm6455658pfd.6.2020.07.24.05.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 05:02:39 -0700 (PDT)
-From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
-To:     Helen Koike <helen.koike@collabora.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Kaaira Gupta <kgupta@es.iitr.ac.in>
-Subject: [PATCH v2 3/3] media: vimc: Join pipeline if one already exists
-Date:   Fri, 24 Jul 2020 17:32:13 +0530
-Message-Id: <20200724120213.17119-4-kgupta@es.iitr.ac.in>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
-References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
+        Fri, 24 Jul 2020 08:02:26 -0400
+Date:   Fri, 24 Jul 2020 12:02:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595592142;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xgAikLBvITSzNqzcxXEvFpGwYd2TiQpsNuh8QeV6ruE=;
+        b=PBUzQrmXOoEYZOiAZc+iHJs4aV7YHvEktzeW6eaDx4X+XASJIohe683dQb/kLVj/X2K5kL
+        UxqcQ2lLmtJY9zhYGlnpJudU858cgxDyD/pFYqmOQW5GZ+188+Y1DRotxe8j3qcSJB8NQ3
+        /8jS79Q5+Tw6qFjjrnnsG6aJKwx+JbbkAxWWFdNrYku1udKlZJTlHFMFPMA15rtrT+oeNf
+        fPwcsOR49M7X2eZh8hqqJLZfOGH9Eac7oUhZXurRaCFuS4BGgqgB+0yAXS+6VF6/ry1dtn
+        LJPUAeprndekbsxfzqTbs0ZCIxNFaD9LwlgFiSqdAmmOFOBdc1fU/loyiCEUEg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595592142;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xgAikLBvITSzNqzcxXEvFpGwYd2TiQpsNuh8QeV6ruE=;
+        b=PSlwBK4WDogVDCBE8p9b1DhQVq7PUvfYnjAcQOfqK5Ey2Nf8yQmbxFbQ0eHkx6i4tRcX9w
+        PwsPW1NDNzlso8DA==
+From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/headers] compiler.h: Move instrumentation_begin()/end() to
+ new <linux/instrumentation.h> header
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200604071921.GA1361070@gmail.com>
+References: <20200604071921.GA1361070@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID: <159559214141.4006.8712776602481546473.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An output which is running is already part of a pipeline and trying to
-start a new pipeline is not possible. This prevents two capture devices
-from streaming at the same time.
+The following commit has been merged into the core/headers branch of tip:
 
-Instead of failing to start the second capture device allow it to join
-the already running pipeline. This allows two (or more) capture devices
-to independently be started and stopped.
+Commit-ID:     d19e789f068b3d633cbac430764962f404198022
+Gitweb:        https://git.kernel.org/tip/d19e789f068b3d633cbac430764962f404198022
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Fri, 24 Jul 2020 13:50:25 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 24 Jul 2020 13:56:23 +02:00
 
-[Kaaira: Changed the search for an existing connected sensor, to search
-for a non-NULL pipe instead, this helps to terminate the search at
-output itself instead of going till the sensor, changed variable names,
-commit message and conditions accordingly]
+compiler.h: Move instrumentation_begin()/end() to new <linux/instrumentation.h> header
 
-Signed-off-by: Niklas Söderlund <niklas.soderlund@ragnatech.se>
-Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+Linus pointed out that compiler.h - which is a key header that gets included in every
+single one of the 28,000+ kernel files during a kernel build - was bloated in:
+
+  655389666643: ("vmlinux.lds.h: Create section for protection against instrumentation")
+
+Linus noted:
+
+ > I have pulled this, but do we really want to add this to a header file
+ > that is _so_ core that it gets included for basically every single
+ > file built?
+ >
+ > I don't even see those instrumentation_begin/end() things used
+ > anywhere right now.
+ >
+ > It seems excessive. That 53 lines is maybe not a lot, but it pushed
+ > that header file to over 12kB, and while it's mostly comments, it's
+ > extra IO and parsing basically for _every_ single file compiled in the
+ > kernel.
+ >
+ > For what appears to be absolutely zero upside right now, and I really
+ > don't see why this should be in such a core header file!
+
+Move these primitives into a new header: <linux/instrumentation.h>, and include that
+header in the headers that make use of it.
+
+Unfortunately one of these headers is asm-generic/bug.h, which does get included
+in a lot of places, similarly to compiler.h. So the de-bloating effect isn't as
+good as we'd like it to be - but at least the interfaces are defined separately.
+
+No change to functionality intended.
+
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200604071921.GA1361070@gmail.com
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
 ---
- .../media/test-drivers/vimc/vimc-capture.c    | 35 ++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/bug.h       |  1 +-
+ include/asm-generic/bug.h        |  1 +-
+ include/linux/compiler.h         | 53 +-----------------------------
+ include/linux/context_tracking.h |  2 +-
+ include/linux/instrumentation.h  | 57 +++++++++++++++++++++++++++++++-
+ 5 files changed, 61 insertions(+), 53 deletions(-)
+ create mode 100644 include/linux/instrumentation.h
 
-diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
-index c63496b17b9a..423d5e5a508d 100644
---- a/drivers/media/test-drivers/vimc/vimc-capture.c
-+++ b/drivers/media/test-drivers/vimc/vimc-capture.c
-@@ -237,16 +237,49 @@ static void vimc_cap_return_all_buffers(struct vimc_cap_device *vcap,
- 	spin_unlock(&vcap->qlock);
- }
+diff --git a/arch/x86/include/asm/bug.h b/arch/x86/include/asm/bug.h
+index 0281895..297fa12 100644
+--- a/arch/x86/include/asm/bug.h
++++ b/arch/x86/include/asm/bug.h
+@@ -3,6 +3,7 @@
+ #define _ASM_X86_BUG_H
  
-+static struct media_entity *vimc_cap_get_output(struct vimc_cap_device *vcap)
-+{
-+	struct media_entity *entity = &vcap->vdev.entity;
-+	struct media_device *mdev = entity->graph_obj.mdev;
-+	struct media_graph graph;
-+
-+	mutex_lock(&mdev->graph_mutex);
-+	if (media_graph_walk_init(&graph, mdev)) {
-+		mutex_unlock(&mdev->graph_mutex);
-+		return NULL;
-+	}
-+
-+	media_graph_walk_start(&graph, entity);
-+
-+	while ((entity = media_graph_walk_next(&graph)))
-+		if (entity->pipe)
-+			break;
-+
-+	mutex_unlock(&mdev->graph_mutex);
-+
-+	media_graph_walk_cleanup(&graph);
-+
-+	return entity;
-+}
-+
- static int vimc_cap_start_streaming(struct vb2_queue *vq, unsigned int count)
- {
- 	struct vimc_cap_device *vcap = vb2_get_drv_priv(vq);
- 	struct media_entity *entity = &vcap->vdev.entity;
-+	struct media_pipeline *pipe = NULL;
-+	struct media_entity *oent;
- 	int ret;
+ #include <linux/stringify.h>
++#include <linux/instrumentation.h>
  
- 	vcap->sequence = 0;
+ /*
+  * Despite that some emulators terminate on UD2, we use it for WARN().
+diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
+index c94e33a..18b0f4e 100644
+--- a/include/asm-generic/bug.h
++++ b/include/asm-generic/bug.h
+@@ -3,6 +3,7 @@
+ #define _ASM_GENERIC_BUG_H
  
- 	/* Start the media pipeline */
--	ret = media_pipeline_start(entity, &vcap->stream.pipe);
-+	oent = vimc_cap_get_output(vcap);
-+	if (oent)
-+		pipe = oent->pipe;
-+	else
-+		pipe = &vcap->stream.pipe;
+ #include <linux/compiler.h>
++#include <linux/instrumentation.h>
+ 
+ #define CUT_HERE		"------------[ cut here ]------------\n"
+ 
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index 204e768..681894b 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -120,65 +120,12 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+ /* Annotate a C jump table to allow objtool to follow the code flow */
+ #define __annotate_jump_table __section(.rodata..c_jump_table)
+ 
+-#ifdef CONFIG_DEBUG_ENTRY
+-/* Begin/end of an instrumentation safe region */
+-#define instrumentation_begin() ({					\
+-	asm volatile("%c0: nop\n\t"						\
+-		     ".pushsection .discard.instr_begin\n\t"		\
+-		     ".long %c0b - .\n\t"				\
+-		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+-})
+-
+-/*
+- * Because instrumentation_{begin,end}() can nest, objtool validation considers
+- * _begin() a +1 and _end() a -1 and computes a sum over the instructions.
+- * When the value is greater than 0, we consider instrumentation allowed.
+- *
+- * There is a problem with code like:
+- *
+- * noinstr void foo()
+- * {
+- *	instrumentation_begin();
+- *	...
+- *	if (cond) {
+- *		instrumentation_begin();
+- *		...
+- *		instrumentation_end();
+- *	}
+- *	bar();
+- *	instrumentation_end();
+- * }
+- *
+- * If instrumentation_end() would be an empty label, like all the other
+- * annotations, the inner _end(), which is at the end of a conditional block,
+- * would land on the instruction after the block.
+- *
+- * If we then consider the sum of the !cond path, we'll see that the call to
+- * bar() is with a 0-value, even though, we meant it to happen with a positive
+- * value.
+- *
+- * To avoid this, have _end() be a NOP instruction, this ensures it will be
+- * part of the condition block and does not escape.
+- */
+-#define instrumentation_end() ({					\
+-	asm volatile("%c0: nop\n\t"					\
+-		     ".pushsection .discard.instr_end\n\t"		\
+-		     ".long %c0b - .\n\t"				\
+-		     ".popsection\n\t" : : "i" (__COUNTER__));		\
+-})
+-#endif /* CONFIG_DEBUG_ENTRY */
+-
+ #else
+ #define annotate_reachable()
+ #define annotate_unreachable()
+ #define __annotate_jump_table
+ #endif
+ 
+-#ifndef instrumentation_begin
+-#define instrumentation_begin()		do { } while(0)
+-#define instrumentation_end()		do { } while(0)
+-#endif
+-
+ #ifndef ASM_UNREACHABLE
+ # define ASM_UNREACHABLE
+ #endif
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index 981b880..d53cd33 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -5,6 +5,8 @@
+ #include <linux/sched.h>
+ #include <linux/vtime.h>
+ #include <linux/context_tracking_state.h>
++#include <linux/instrumentation.h>
 +
-+	ret = media_pipeline_start(entity, pipe);
- 	if (ret) {
- 		vimc_cap_return_all_buffers(vcap, VB2_BUF_STATE_QUEUED);
- 		return ret;
--- 
-2.17.1
-
+ #include <asm/ptrace.h>
+ 
+ 
+diff --git a/include/linux/instrumentation.h b/include/linux/instrumentation.h
+new file mode 100644
+index 0000000..93e2ad6
+--- /dev/null
++++ b/include/linux/instrumentation.h
+@@ -0,0 +1,57 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __LINUX_INSTRUMENTATION_H
++#define __LINUX_INSTRUMENTATION_H
++
++#if defined(CONFIG_DEBUG_ENTRY) && defined(CONFIG_STACK_VALIDATION)
++
++/* Begin/end of an instrumentation safe region */
++#define instrumentation_begin() ({					\
++	asm volatile("%c0: nop\n\t"						\
++		     ".pushsection .discard.instr_begin\n\t"		\
++		     ".long %c0b - .\n\t"				\
++		     ".popsection\n\t" : : "i" (__COUNTER__));		\
++})
++
++/*
++ * Because instrumentation_{begin,end}() can nest, objtool validation considers
++ * _begin() a +1 and _end() a -1 and computes a sum over the instructions.
++ * When the value is greater than 0, we consider instrumentation allowed.
++ *
++ * There is a problem with code like:
++ *
++ * noinstr void foo()
++ * {
++ *	instrumentation_begin();
++ *	...
++ *	if (cond) {
++ *		instrumentation_begin();
++ *		...
++ *		instrumentation_end();
++ *	}
++ *	bar();
++ *	instrumentation_end();
++ * }
++ *
++ * If instrumentation_end() would be an empty label, like all the other
++ * annotations, the inner _end(), which is at the end of a conditional block,
++ * would land on the instruction after the block.
++ *
++ * If we then consider the sum of the !cond path, we'll see that the call to
++ * bar() is with a 0-value, even though, we meant it to happen with a positive
++ * value.
++ *
++ * To avoid this, have _end() be a NOP instruction, this ensures it will be
++ * part of the condition block and does not escape.
++ */
++#define instrumentation_end() ({					\
++	asm volatile("%c0: nop\n\t"					\
++		     ".pushsection .discard.instr_end\n\t"		\
++		     ".long %c0b - .\n\t"				\
++		     ".popsection\n\t" : : "i" (__COUNTER__));		\
++})
++#else
++# define instrumentation_begin()	do { } while(0)
++# define instrumentation_end()		do { } while(0)
++#endif
++
++#endif /* __LINUX_INSTRUMENTATION_H */
