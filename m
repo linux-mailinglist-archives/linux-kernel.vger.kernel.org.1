@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C2B22CFB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7126822D000
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgGXUpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 16:45:31 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50032 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726572AbgGXUpb (ORCPT
+        id S1726768AbgGXUvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 16:51:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40442 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgGXUvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 16:45:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595623530;
+        Fri, 24 Jul 2020 16:51:42 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595623899;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kwT/4oEvxYJQDv2IZFEDIJXwGO9sAIOeOt3vIk0tEEY=;
-        b=RXxX6n+ZtMjXwQD7wwVpD/ymVuelWirP/TJmx2G2FF0wEGI359fd8/YvfSY/n4dusUGWE1
-        pPwSbHwytIHHXI0XHgHmuBomfybBP0ylbYdjwCXVOx9EnEeX7c48ydfdQqNbUz+l2H9/PC
-        o6dKr9Mvy0doFiId5TVWFRjp9VZPUPA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-142-ETpAItGKNG2mbe9j92zNNQ-1; Fri, 24 Jul 2020 16:45:24 -0400
-X-MC-Unique: ETpAItGKNG2mbe9j92zNNQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EA14100A8E7;
-        Fri, 24 Jul 2020 20:45:22 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 134F7726A9;
-        Fri, 24 Jul 2020 20:45:19 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wgWNpzCuHyyFwhR2fq49yxB9tKiH2t2y-O-8V6Gh0TFdw@mail.gmail.com>
-References: <CAHk-=wgWNpzCuHyyFwhR2fq49yxB9tKiH2t2y-O-8V6Gh0TFdw@mail.gmail.com> <159559628247.2141315.2107013106060144287.stgit@warthog.procyon.org.uk> <159559630912.2141315.16186899692832741137.stgit@warthog.procyon.org.uk> <CAHk-=wjnQArU_BewVKQgYHy2mQD6LNKC5kkKXOm7GpNkJCapQg@mail.gmail.com> <2189056.1595620785@warthog.procyon.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Ian Kent <raven@themaw.net>,
-        Christian Brauner <christian@brauner.io>,
-        Jeff Layton <jlayton@redhat.com>, Karel Zak <kzak@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] watch_queue: Implement mount topology and attribute change notifications
+        bh=XI2aWQSLSS2BL+I07xWEF5LRy5zMQpT/YbHu9Qj8EEc=;
+        b=fMsEk/8NvSDgOiAp7Z71+flURkvXsVD8muBddBugM8vlXQ2AQqwnXyZIdlWP/rFJBmVGhg
+        LbQhV2o7EgZa5s8YlnGERJKcn0d5HBqj5rxISCVnhOMVPwYhWXVxw/Tpop5obULnmVqfTm
+        FNF9j1KvABBts6J3XX19wIgDR6ep1yGHJ3wVhCa0LaMhho/OlTveywn6ZrjobqHXlp6YD4
+        0jFWY35dzpFPgKzuaFjxKYbkKB2v+qB3iGRpZv/Y7RTaGkTaYySXzG3RQzP0vrC09MKNFw
+        0AVYXnE3VMcZkUj4ORIHcuTUelr50E4YkYE9YkYzACtU9sCXFdccF0WKngeUVg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595623899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XI2aWQSLSS2BL+I07xWEF5LRy5zMQpT/YbHu9Qj8EEc=;
+        b=w3SOL69w8IkUYAClgIDcOFrChb47hjqNSs052rcwx7yOwuVBJeql5dVRBGYjX86U1n1S3y
+        7rWYLceqJ9c5IwDg==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, linux-arch@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [patch V5 00/15] entry, x86, kvm: Generic entry/exit functionality for host and guest
+In-Reply-To: <20200722215954.464281930@linutronix.de>
+References: <20200722215954.464281930@linutronix.de>
+Date:   Fri, 24 Jul 2020 22:51:38 +0200
+Message-ID: <878sf8tz51.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2195927.1595623519.1@warthog.procyon.org.uk>
-Date:   Fri, 24 Jul 2020 21:45:19 +0100
-Message-ID: <2195928.1595623519@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Thomas Gleixner <tglx@linutronix.de> writes:
+> This is the 5th version of generic entry/exit functionality for host and
+> guest.
 
-> I'd count them per user, and maybe start out saying "you can have as
-> many watches as you can have files" and just re-use RLIMIT_NOFILE as
-> the limit for them.
-> 
-> And if that causes problems, let's re-visit. How does that sound?
+I've merged the pile in two steps. Patch 1-5, i.e. the generic code is
+here:
 
-I can try that for now.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/entry
 
-David
+and merged this branch and patch 6-15 into
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
+
+core/entry is immutable and any updates, changes go on top. It's meant
+as a base for other architecture developers who want to fiddle with that
+without having to get the x86 mess as well.
+
+Thanks for all the help!
+
+       tglx
