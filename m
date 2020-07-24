@@ -2,157 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C111F22D11D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C622622D09E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgGXVim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 17:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        id S1726742AbgGXVgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 17:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGXVgq (ORCPT
+        with ESMTP id S1726576AbgGXVgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 17:36:46 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AB9C03CA40
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 14:36:45 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id k27so6147889pgm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 14:36:45 -0700 (PDT)
+        Fri, 24 Jul 2020 17:36:24 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC991C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 14:36:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w126so5815025pfw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 14:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QuSR5OKebfZG9zBTcnsVSNOUx+p1wthou5r7P45Dqng=;
-        b=e2g/T7ESZvOK2o3dhi05Vn3Jsik1P7GtuHpRHV97nJhR9chmHD3goRnMyfoRIvXkpJ
-         NotPjBIoK9R7ayTLCq5EVGqMimLDdpJZE8JgRudIQ2sj3I259P0AVctQODLLRz2Z1kAe
-         FBmH2mq4JZ0WMzHPmHsazvYGXFK3T17zub/5o=
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=opG3nW4I5rCe1WXghjH5zHF3uH0DeDd34QtX5YmytYo=;
+        b=bhcHp287NTRAuUPpjDb0FIIrsLNcEo9h8fImzbO06pVAN20KtOUPdlZEcEsWy3Vj8M
+         anX8Wf5x0H5H1KFyaw7bQZlFmjA0iBUCpZB1aSYpOkqESuKAfhAp6ZXpLQDeavjhQVhN
+         PpPVmpK4yT9oH13DFieSVLeBj90yDBgjovfSU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QuSR5OKebfZG9zBTcnsVSNOUx+p1wthou5r7P45Dqng=;
-        b=jPSQ1JBbWgizYHA7H00+gRm/2bhWD1WJdC1aakRYWxFPoAGGitDK792DF+5E/qTQjU
-         DDfyiLA98Fa4hPInotahym3SkhmWqC81EuKPOfG5a21ZTRDIemAoo1rRfKdxXnDLLxVZ
-         LL9cpDlxAPzeLrHHzct3cvLWsPEDdUnAqQn93w2D7jhurYC71S6bEooRkJ95438XPFq/
-         iYTjTBdL/32wYxTFgckMBnpu0D6TLBWD7Kw+BGw4FUUBl3HLaJWd0CyV5cTRLptQUdDq
-         aLcJa1TGtHQlTSiw8m9MMtJc4w9IwN4/x4bQWDX/DkzZIevBoYhoFTpXVoNXXfbpPJZB
-         XYiQ==
-X-Gm-Message-State: AOAM531lICHYjM7nRyxIQ9I2ruuNbs5zgxVyr7RHeDYxQ8ElPZevOUHm
-        3dEYG4mL27ThcVOa2D4RaCYMBw==
-X-Google-Smtp-Source: ABdhPJxK435CF+iz91hGK+5NgHvqqee3eWSsmt07ckHJqnxWEFT9dhACW0dihJg65rKzTr+cdKdf2g==
-X-Received: by 2002:a65:6119:: with SMTP id z25mr10602187pgu.52.1595626605323;
-        Fri, 24 Jul 2020 14:36:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 19sm7331534pfy.193.2020.07.24.14.36.43
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=opG3nW4I5rCe1WXghjH5zHF3uH0DeDd34QtX5YmytYo=;
+        b=j6nrKXCrGXY3yqPDjyWmnXV2hertt2qurMfPgYPXcTEeky0ZRX5qiW2fGIWIjOJYL9
+         YkO6FV9HzX3HocJaTmfPAidtzRxCF+mat83dzIgOqdyD2ABGfwYwC5iq5OKJkYK/w1LL
+         jxfkskisStgRcjS1eMSBOaVyXL4OqYdime08nECkM9xBE+l1PYXfJWfc2Er6ij7UP+mq
+         QIisEizYmpLgysy7Wn3MICGY8bms/O9C+B0R7M+xih7KyzFY75QasYAGQ92M8/HDz4sy
+         CyoZuTeZYIRRR2TLgA8zcJDJClFApi0owhxjPRhuA7TIIvtig+fNm6iBFHOwefaSghzm
+         t4VA==
+X-Gm-Message-State: AOAM530XlyGghq+DvIsgdgWgkzWVF7WqhFhWC9TymUM1CGBbxpKaXfKS
+        54xCy+aVilnxim1SJZzORZORkQ==
+X-Google-Smtp-Source: ABdhPJy0zuMXOSAiFIUc2m9qjxFtdLkdHu6M3LtvCsg9sjsn7n8N6UxDl/jcILWQb8Bvpg3WVe7m1w==
+X-Received: by 2002:a63:ee48:: with SMTP id n8mr10324355pgk.292.1595626583401;
+        Fri, 24 Jul 2020 14:36:23 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id k98sm6809320pjb.42.2020.07.24.14.36.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 14:36:43 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 00/19] Introduce partial kernel_read_file() support
-Date:   Fri, 24 Jul 2020 14:36:21 -0700
-Message-Id: <20200724213640.389191-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 24 Jul 2020 14:36:22 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200724213329.899216-2-swboyd@chromium.org>
+References: <20200724213329.899216-1-swboyd@chromium.org> <20200724213329.899216-2-swboyd@chromium.org>
+Subject: Re: [PATCH v2 1/5] dt-bindings: iio: Add bindings for sx9310 sensor
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Daniel Campello <campello@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        <devicetree@vger.kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Date:   Fri, 24 Jul 2020 14:36:22 -0700
+Message-ID: <159562658210.3847286.6400483831020769497@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3:
-- add reviews/acks
-- add "IMA: Add support for file reads without contents" patch
-- trim CC list, in case that's why vger ignored v2
-v2: [missing from lkml archives! (CC list too long?) repeating changes here]
-- fix issues in firmware test suite
-- add firmware partial read patches
-- various bug fixes/cleanups
-v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
+Quoting Stephen Boyd (2020-07-24 14:33:25)
+> From: Daniel Campello <campello@chromium.org>
+>=20
+> Adds device tree bandings for sx9310 sensor.
+>=20
+> Signed-off-by: Daniel Campello <campello@chromium.org>
+> Cc: Hartmut Knaack <knaack.h@gmx.de>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> [swboyd@chromium.org: Add both regulators and make them optional]
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
 
-Hi,
+I forgot to Cc devicetree list. Will do next time around.
 
-Here's my tree for adding partial read support in kernel_read_file(),
-which fixes a number of issues along the way. It's got Scott's firmware
-and IMA patches ported and everything tests cleanly for me (even with
-CONFIG_IMA_APPRAISE=y).
+-Stephen
 
-I think the intention is for this to go via Greg's tree since Scott's
-driver code will depend on it?
-
-Thanks,
-
--Kees
-
-
-Kees Cook (15):
-  test_firmware: Test platform fw loading on non-EFI systems
-  selftest/firmware: Add selftest timeout in settings
-  firmware_loader: EFI firmware loader must handle pre-allocated buffer
-  fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER enum
-  fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
-  fs/kernel_read_file: Split into separate source file
-  fs/kernel_read_file: Remove redundant size argument
-  fs/kernel_read_file: Switch buffer size arg to size_t
-  fs/kernel_read_file: Add file_size output argument
-  LSM: Introduce kernel_post_load_data() hook
-  firmware_loader: Use security_post_load_data()
-  module: Call security_kernel_post_load_data()
-  LSM: Add "contents" flag to kernel_read_file hook
-  fs/kernel_file_read: Add "offset" arg for partial reads
-  firmware: Store opt_flags in fw_priv
-
-Scott Branden (4):
-  fs/kernel_read_file: Split into separate include file
-  IMA: Add support for file reads without contents
-  firmware: Add request_partial_firmware_into_buf()
-  test_firmware: Test partial read support
-
- drivers/base/firmware_loader/fallback.c       |  19 +-
- drivers/base/firmware_loader/fallback.h       |   5 +-
- .../base/firmware_loader/fallback_platform.c  |  16 +-
- drivers/base/firmware_loader/firmware.h       |   7 +-
- drivers/base/firmware_loader/main.c           | 143 ++++++++++---
- drivers/firmware/efi/embedded-firmware.c      |  21 +-
- drivers/firmware/efi/embedded-firmware.h      |  19 ++
- fs/Makefile                                   |   3 +-
- fs/exec.c                                     | 132 +-----------
- fs/kernel_read_file.c                         | 189 ++++++++++++++++++
- include/linux/efi_embedded_fw.h               |  13 --
- include/linux/firmware.h                      |  12 ++
- include/linux/fs.h                            |  39 ----
- include/linux/ima.h                           |  19 +-
- include/linux/kernel_read_file.h              |  55 +++++
- include/linux/lsm_hook_defs.h                 |   6 +-
- include/linux/lsm_hooks.h                     |  12 ++
- include/linux/security.h                      |  19 +-
- kernel/kexec.c                                |   2 +-
- kernel/kexec_file.c                           |  19 +-
- kernel/module.c                               |  24 ++-
- lib/test_firmware.c                           | 159 +++++++++++++--
- security/integrity/digsig.c                   |   8 +-
- security/integrity/ima/ima_fs.c               |  10 +-
- security/integrity/ima/ima_main.c             |  70 +++++--
- security/integrity/ima/ima_policy.c           |   1 +
- security/loadpin/loadpin.c                    |  17 +-
- security/security.c                           |  26 ++-
- security/selinux/hooks.c                      |   8 +-
- .../selftests/firmware/fw_filesystem.sh       |  91 +++++++++
- tools/testing/selftests/firmware/settings     |   8 +
- tools/testing/selftests/kselftest/runner.sh   |   6 +-
- 32 files changed, 860 insertions(+), 318 deletions(-)
- create mode 100644 drivers/firmware/efi/embedded-firmware.h
- create mode 100644 fs/kernel_read_file.c
- create mode 100644 include/linux/kernel_read_file.h
- create mode 100644 tools/testing/selftests/firmware/settings
-
--- 
-2.25.1
-
+>  .../iio/proximity/semtech,sx9310.yaml         | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/proximity/semte=
+ch,sx9310.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/proximity/semtech,sx93=
+10.yaml b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.ya=
+ml
+> new file mode 100644
+> index 000000000000..ba734ee868c7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/proximity/semtech,sx9310.yaml
+> @@ -0,0 +1,60 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/proximity/semtech,sx9310.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Semtech's SX9310 capacitive proximity sensor
+> +
+> +maintainers:
+> +  - Daniel Campello <campello@chromium.org>
+> +
+> +description: |
+> +  Semtech's SX9310/SX9311 capacitive proximity/button solution.
+> +
+> +  Specifications about the devices can be found at:
+> +  https://www.semtech.com/products/smart-sensing/sar-sensors/sx9310
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - semtech,sx9310
+> +      - semtech,sx9311
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description:
+> +      The sole interrupt generated by the device used to announce the
+> +      preceding reading request has finished and that data is
+> +      available or that a close/far proximity event has happened.
+> +    maxItems: 1
+> +
+> +  vdd-supply:
+> +    description: Main power supply
+> +
+> +  svdd-supply:
+> +    description: Host interface power supply
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +      proximity@28 {
+> +        compatible =3D "semtech,sx9310";
+> +        reg =3D <0x28>;
+> +        interrupt-parent =3D <&pio>;
+> +        interrupts =3D <5 IRQ_TYPE_LEVEL_LOW 5>;
+> +        vdd-supply =3D <&pp3300_a>;
+> +        svdd-supply =3D <&pp1800_prox>;
+> +      };
+> +    };
