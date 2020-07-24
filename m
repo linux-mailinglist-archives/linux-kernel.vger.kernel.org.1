@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31AE22C040
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6921F22C048
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgGXH46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
+        id S1726945AbgGXH5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgGXH44 (ORCPT
+        with ESMTP id S1726567AbgGXH5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:56:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5449AC0619D3;
-        Fri, 24 Jul 2020 00:56:56 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 07:56:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595577414;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qfvrFr9qUx7uwrDcr0kApQeMT+pgLIbj6yxk0k+1+xU=;
-        b=3UAmU16NiuG+9JTZdWfGQdnJEIRZJY6yx1IQRHAMgpYxE/fCuqFT4ip8clRXNQ6xns44MH
-        NzOATn7P000vGTmOXCUMdrOoYVVsVjyFtF5SpOSuUpqZ06eLCtqYvmdoCwof5UwmdfU7ht
-        nD8mGo/Jw718p5xC4wwOvyQtvn/zvCqGAx4VNCcQuaHyVEX4M8iXaEn7z0w1Rxm56ZJH9j
-        MYHrFFkTMyqDM0appErPu4gO6cfYOJrEwUk0BYfDJR0oSBB+qpMvY5W3olLKPmyHkzx6JI
-        nTFuUpk3mzSnf9tKchP9R+6/GqCr35f4hqrKRKZ0RZH95J5iTA5R505crDwwOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595577414;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qfvrFr9qUx7uwrDcr0kApQeMT+pgLIbj6yxk0k+1+xU=;
-        b=9eQQ+Xa1Q+ocmJ9J9nKcQri4jLyLNl2t4gHKkV3vvJfd7OJItuC14xUEZiPVWWUE+YZ9wH
-        McgFy6wJ0YooIjDQ==
-From:   "tip-bot2 for Ira Weiny" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86: Correct noinstr qualifiers
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tony Luck <tony.luck@intel.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200723161405.852613-1-ira.weiny@intel.com>
-References: <20200723161405.852613-1-ira.weiny@intel.com>
+        Fri, 24 Jul 2020 03:57:48 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C87C0619D3;
+        Fri, 24 Jul 2020 00:57:48 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b92so4777163pjc.4;
+        Fri, 24 Jul 2020 00:57:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xv1zcnsXMWiFNO1yGG77PvS7le6RI8NhBpIqWlz5EF8=;
+        b=MBDrRoFhTThMwn4vuJaaJ1dUYtoHvJ9AvJUl0nf0zlaZSI6t6TWtrxf9QZLT16Cjac
+         H23NM9EEsXLczUcARcfJgpW3/75JTNWtoVXlH1i8PJQYqMUT0IESJDkn6TJLdVsA1URB
+         ZmMzUC35wS3XEC3figGP8sKiEVYd0Pxdb1pSLbN+YB9N14rqtIQaLMc8yI3lP1ATVkC0
+         C7F6xEs3MNco4mv0eLNtiF+a5dTIWyog3K+3h57lmwPpu96CBzsjOk0L9KTnAfJmfJg/
+         Zdl7/zxuRdCOtE2s5tYxBtXqjB1YznlEDwOmetthQnbq7IjCYMMoxf/PzdJjvpaibbjs
+         VPWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xv1zcnsXMWiFNO1yGG77PvS7le6RI8NhBpIqWlz5EF8=;
+        b=rKJ5+UprjweLR5iy4PeiefLesuVDRRjIvpCEAaBsUqM4mzcm6ZmbZoVGkPZfvX5n5C
+         7hH1I3o5OmlTRH+BfZI52Pmnof9O1oaAYJNXUgMOd+X1AcITX33sCClkK0k0vGnsXdGT
+         UAKQSEO6K+/o4Zndag7hmlLPidmPfLCloO3oGWK8JLz0eToM2xwKtRmq1Aejjfez03dy
+         6kah2F3H/fzxjLoDRbyB8ZnbYBpTObPoH4V7vDGON3BK11xRuordgWHuNTsmxpWemI++
+         ImAQ+jxsjKEVjsDjSFS/W1R9okxyJuEPuquj8LvC85gnAm5KY4N1tHZJMaZjzvTkLvTv
+         qjvA==
+X-Gm-Message-State: AOAM533KwR9d0zNNJ52Gi2PML1KkpWEYEDFwimH3red1NBUNA04I90Hz
+        eoMilB05pziEAjIwzGNnA8M=
+X-Google-Smtp-Source: ABdhPJynechrOQSEPYvcFtvaqlpIS9gq+rCF/yyS8wRTv0ETsMXi1wl44AtzrxCRuDoo1r19Tx0gGA==
+X-Received: by 2002:a17:902:6941:: with SMTP id k1mr7207545plt.270.1595577467811;
+        Fri, 24 Jul 2020 00:57:47 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id b22sm4784117pju.26.2020.07.24.00.57.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Jul 2020 00:57:47 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 00:57:40 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Tao Ren <taoren@fb.com>
+Subject: Re: [PATCH v2 0/3] ARM: dts: aspeed: fixup wedge40 device tree
+Message-ID: <20200724075739.GA4327@taoren-ubuntu-R90MNF91>
+References: <20200723230539.17860-1-rentao.bupt@gmail.com>
+ <CACPK8XdiHLcBBhXjCpTZotVPuRj4bFh0x8TFhSj1TBK2xB0SiQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <159557741400.4006.18075760142886374050.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACPK8XdiHLcBBhXjCpTZotVPuRj4bFh0x8TFhSj1TBK2xB0SiQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+On Fri, Jul 24, 2020 at 05:32:30AM +0000, Joel Stanley wrote:
+> On Thu, 23 Jul 2020 at 23:05, <rentao.bupt@gmail.com> wrote:
+> >
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> >
+> > The patch series update several devices' settings in Facebook Wedge40
+> > device tree.
+> >
+> > Patch #1 disables a few i2c controllers as they are not being used at
+> > present.
+> >
+> > Patch #2 enables adc device for voltage monitoring.
+> >
+> > Patch #3 enables pwm_tacho device for fan control and monitoring.
+> >
+> > Tao Ren (3):
+> >   ARM: dts: aspeed: wedge40: disable a few i2c controllers
+> >   ARM: dts: aspeed: wedge40: enable adc device
+> >   ARM: dts: aspeed: wedge40: enable pwm_tacho device
+> 
+> I have merged this series into the aspeed dt-for-5.9 branch.
+> 
+> Cheers,
+> 
+> Joel
 
-Commit-ID:     7f6fa101dfac8739764e47751d314551f6160c98
-Gitweb:        https://git.kernel.org/tip/7f6fa101dfac8739764e47751d314551f6160c98
-Author:        Ira Weiny <ira.weiny@intel.com>
-AuthorDate:    Thu, 23 Jul 2020 09:14:05 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 24 Jul 2020 09:54:15 +02:00
+Thanks a lot Joel. Have a great weekend.
 
-x86: Correct noinstr qualifiers
 
-The noinstr qualifier is to be specified before the return type in the
-same way inline is used.
+Cheers,
 
-These 2 cases were missed by previous patches.
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20200723161405.852613-1-ira.weiny@intel.com
-
----
- arch/x86/kernel/alternative.c  | 2 +-
- arch/x86/kernel/cpu/mce/core.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 8fd39ff..069e77c 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1044,7 +1044,7 @@ static __always_inline int patch_cmp(const void *key, const void *elt)
- 	return 0;
- }
- 
--int noinstr poke_int3_handler(struct pt_regs *regs)
-+noinstr int poke_int3_handler(struct pt_regs *regs)
- {
- 	struct bp_patching_desc *desc;
- 	struct text_poke_loc *tp;
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 14e4b4d..6d7aa56 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1212,7 +1212,7 @@ static void kill_me_maybe(struct callback_head *cb)
-  * backing the user stack, tracing that reads the user stack will cause
-  * potentially infinite recursion.
-  */
--void noinstr do_machine_check(struct pt_regs *regs)
-+noinstr void do_machine_check(struct pt_regs *regs)
- {
- 	DECLARE_BITMAP(valid_banks, MAX_NR_BANKS);
- 	DECLARE_BITMAP(toclear, MAX_NR_BANKS);
+Tao
