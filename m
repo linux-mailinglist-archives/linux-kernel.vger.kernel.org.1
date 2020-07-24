@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D98222D140
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56B822D14E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgGXVkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 17:40:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48810 "EHLO mail.kernel.org"
+        id S1727932AbgGXVkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 17:40:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726576AbgGXVkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726780AbgGXVkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 24 Jul 2020 17:40:03 -0400
-Subject: Re: [git pull] drm fixes for 5.8-rc7
+Subject: Re: [GIT PULL] MMC fixes for v5.8-rc7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1595626803;
-        bh=DxJA8cVzgvxqbDGC3Uzf8eFJ4JiqoI58bB3qOxHc3nc=;
+        bh=K1z+HZg/XZvGVqNYfPR7utgZFfiAHX7DRG2c1sG9geM=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=IukPE7mvaDxQtVOYlHR3w4Jos/yos2OPqoPT3wQ85RteWQRZ0nEKufzzJEeUrCaOZ
-         Tai3Lv74P55oJfYiqW0Usjq9y4uMwIEB2Z+yrBPHAYsDneu2rl62N245asoCFjpUwn
-         DthQP1jo4eudgk4C3zBlw5zeZHB+TkQ1/geSEjmg=
+        b=lvcHKnzGaiACKDlv/6pAyOCWYrBLyZs/j2tKrYvJs5uQO4JHFJtTMejjzuN2aZs3C
+         5kl9vaR8mJ8mdtX7QfpNFXs1i5ZDYJ+sJELBB9R1Zdp0nLhCjc2DNKxuWUsCGtnoix
+         9zVepfpEg/4reJQVxdd/32osG6HbHYQvDB/NRZlI=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9twWoMc=xxXnZ7kKYp_fmYEquLE=PgVtjPhcH86Ocv3W7g@mail.gmail.com>
-References: <CAPM=9twWoMc=xxXnZ7kKYp_fmYEquLE=PgVtjPhcH86Ocv3W7g@mail.gmail.com>
+In-Reply-To: <20200724110939.8934-1-ulf.hansson@linaro.org>
+References: <20200724110939.8934-1-ulf.hansson@linaro.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAPM=9twWoMc=xxXnZ7kKYp_fmYEquLE=PgVtjPhcH86Ocv3W7g@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm
- tags/drm-fixes-2020-07-24
-X-PR-Tracked-Commit-Id: d8904ca9d338cdaa67e3bd06d7a7d418e426648c
+X-PR-Tracked-Message-Id: <20200724110939.8934-1-ulf.hansson@linaro.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.8-rc5
+X-PR-Tracked-Commit-Id: ebd4050c6144b38098d8eed34df461e5e3fa82a9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 88fff0b7dcc132c924d710d75d1401264b6d0ef6
-Message-Id: <159562680338.3064.493657765815732199.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: b85bcb784fd84ef854f6a6d03a0c48c207d0b0ec
+Message-Id: <159562680364.3064.6202479855336429042.pr-tracker-bot@kernel.org>
 Date:   Fri, 24 Jul 2020 21:40:03 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 24 Jul 2020 14:56:40 +1000:
+The pull request you sent on Fri, 24 Jul 2020 13:09:39 +0200:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-07-24
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.8-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/88fff0b7dcc132c924d710d75d1401264b6d0ef6
+https://git.kernel.org/torvalds/c/b85bcb784fd84ef854f6a6d03a0c48c207d0b0ec
 
 Thank you!
 
