@@ -2,232 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1621B22C790
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7125E22C79A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgGXONU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:13:20 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:26129 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726799AbgGXONU (ORCPT
+        id S1727029AbgGXONh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:13:37 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:55619 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgGXONh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:13:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595599999; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RwctQRbm9rUDdtg6nDhU8CUxDe/QiKiPo5F5WN++oyg=;
- b=Rr2mIzqsaHCC2o9G+7kjmeFX2nRTG7CjHdfnr4j3yWJo2GGHRHjiCHO1HCsozGBK4iwE6HB0
- 48wZWjpoOPLpSmM/8VqmMnEnKTGnmlFdCkOKwsZ71Hr4PnRxnN2S9zbrHh32Oi5ZeWT990VG
- 7n/hNkTWtd7fK8a0WRhVx9sm9G0=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f1aec7e36e6de324e0aec6b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Jul 2020 14:13:18
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28922C43391; Fri, 24 Jul 2020 14:13:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46FAEC433C6;
-        Fri, 24 Jul 2020 14:13:17 +0000 (UTC)
+        Fri, 24 Jul 2020 10:13:37 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 9so8080354wmj.5;
+        Fri, 24 Jul 2020 07:13:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IOGzJ6cY2FjYdFpjVdtQFQ2yTS4SILz/gGUSj1jCM6U=;
+        b=qAyAJcWweKwfWmjl+uwT2JTXTjtrxkUvjmgWuw2xLrSTOF3/uYhzbGtJvGY/wpwXKG
+         /oKPELLid06/sQmRrYDC0M7Y64f2ywzNiTBB1r55TdQm4/QUrWI2awpGrZteLE5QR8dl
+         v858jeGEjSbKUcaOrPnqnxwAklI9cR1zNAlTHR1vK9DHFf5fGaubEGepWnQW2Tn4e2nF
+         61heGq+rXYDknrYpIy1xFUPveiPTxKIiNyau7u8A9Rib8d6p3V/dt8RlLf8jdBXYP7JO
+         TOtx1cn16QSn8iT0qLax0fe4Hnu7ieAiG72N8QsyELDi7VuLyqBVBdQ/h7r3F/0CwkvL
+         mLpw==
+X-Gm-Message-State: AOAM533p5Augq3ejPy1lPMxoLiXR5ovL55KiWTVfgGDDt6+MyeLgk7Os
+        NVy5aA+6Vx9uTj5COXrJE9g=
+X-Google-Smtp-Source: ABdhPJwL+QeVZyCxyJDZBcmgW5Pvgk096UsvgpB8okMSIFclx8Xu4901fsQGaQOHTWUHjjTjXaZfBQ==
+X-Received: by 2002:a1c:8094:: with SMTP id b142mr8846186wmd.122.1595600013959;
+        Fri, 24 Jul 2020 07:13:33 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id g126sm7375209wme.16.2020.07.24.07.13.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Jul 2020 07:13:33 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 16:13:29 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Markus Mayer <mmayer@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 19/29] memory: mtk-smi: Add argument to function
+ pointer definition
+Message-ID: <20200724141329.GJ14851@kozik-lap>
+References: <20200724074038.5597-1-krzk@kernel.org>
+ <20200724074038.5597-20-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 24 Jul 2020 19:43:17 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH v2 7/7] arm64: dts: qcom: sm8250: add interconnect nodes
-In-Reply-To: <20200713154121.22094-8-jonathan@marek.ca>
-References: <20200713154121.22094-1-jonathan@marek.ca>
- <20200713154121.22094-8-jonathan@marek.ca>
-Message-ID: <630319740d3f06cfb0435cae025e0ca1@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200724074038.5597-20-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Jonathan,
-
-Thanks for the patch! Please use the
-suggested register space definitions
-instead.
-
-On 2020-07-13 21:11, Jonathan Marek wrote:
-> Add the interconnect dts nodes for sm8250.
+On Fri, Jul 24, 2020 at 09:40:28AM +0200, Krzysztof Kozlowski wrote:
+> Fix checkpatch warning:
+>     WARNING: function definition argument 'struct device *' should also have an identifier name
 > 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  arch/arm64/boot/dts/qcom/sm8250.dtsi | 82 ++++++++++++++++++++++++++++
->  1 file changed, 82 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> index 636e2196138c..dfc1b7fa7d85 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-> @@ -11,6 +11,7 @@
->  #include <dt-bindings/power/qcom-aoss-qmp.h>
->  #include <dt-bindings/power/qcom-rpmpd.h>
->  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
-> +#include <dt-bindings/interconnect/qcom,sm8250.h>
+>  drivers/memory/mtk-smi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-please fix ^^ sort order
+Applied (and part of pull request to arm-soc).
 
-> 
->  / {
->  	interrupt-parent = <&intc>;
-> @@ -978,6 +979,55 @@ spi13: spi@a94000 {
->  			};
->  		};
-> 
-> +		config_noc: interconnect@1500000 {
-> +			compatible = "qcom,sm8250-config-noc";
-> +			reg = <0 0x01500000 0 0x1000>;
-
-0x01500000 0xa580
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		ipa_virt: interconnect@1620000 {
-> +			compatible = "qcom,sm8250-ipa-virt";
-> +			reg = <0 0x01620000 0 0x1000>;
-
-0x01e00000 0x1000
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		system_noc: interconnect@1632000 {
-> +			compatible = "qcom,sm8250-system-noc";
-> +			reg = <0 0x01632000 0 0x1000>;
-
-0x01620000 0x1C200
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		aggre1_noc: interconnect@16e2000 {
-> +			compatible = "qcom,sm8250-aggre1-noc";
-> +			reg = <0 0x016e2000 0 0x1000>;
-
-0x016e0000 0x1f180
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		aggre2_noc: interconnect@1703000 {
-> +			compatible = "qcom,sm8250-aggre2-noc";
-> +			reg = <0 0x01703000 0 0x1000>;
-
-0x01700000 0x33000
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		compute_noc: interconnect@1733000 {
-> +			compatible = "qcom,sm8250-compute-noc";
-> +			reg = <0 0x01733000 0 0x1000>;
-
-0x01733000 0xd180
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		mmss_noc: interconnect@174a000 {
-> +			compatible = "qcom,sm8250-mmss-noc";
-> +			reg = <0 0x0174a000 0 0x1000>;
-
-0x01740000 0x1f080
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
->  		ufs_mem_hc: ufshc@1d84000 {
->  			compatible = "qcom,sm8250-ufshc", "qcom,ufshc",
->  				     "jedec,ufs-2.0";
-> @@ -1364,6 +1414,34 @@ usb_2_ssphy: lane@88eb200 {
->  			};
->  		};
-> 
-> +		dc_noc: interconnect@90c0000 {
-> +			compatible = "qcom,sm8250-dc-noc";
-> +			reg = <0 0x090c0000 0 0x1000>;
-
-0x090c0000 0x4200
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		mc_virt: interconnect@9100000 {
-> +			compatible = "qcom,sm8250-mc-virt";
-> +			reg = <0 0x09100000 0 0x1000>;
-
-0x0163d000 0x1000
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		gem_noc: interconnect@9121000 {
-> +			compatible = "qcom,sm8250-gem-noc";
-> +			reg = <0 0x09121000 0 0x1000>;
-
-0x09100000 0xb4000
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
-> +		npu_noc: interconnect@9990000 {
-> +			compatible = "qcom,sm8250-npu-noc";
-> +			reg = <0 0x09990000 0 0x1000>;
-
-0x09990000 0x1600
-
-> +			#interconnect-cells = <1>;
-> +			qcom,bcm-voters = <&apps_bcm_voter>;
-> +		};
-> +
->  		usb_1: usb@a6f8800 {
->  			compatible = "qcom,sm8250-dwc3", "qcom,dwc3";
->  			reg = <0 0x0a6f8800 0 0x400>;
-> @@ -2359,6 +2437,10 @@ rpmhpd_opp_turbo_l1: opp10 {
->  					};
->  				};
->  			};
-> +
-> +			apps_bcm_voter: bcm_voter {
-> +				compatible = "qcom,bcm-voter";
-> +			};
->  		};
->  	};
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Best regards,
+Krzysztof
