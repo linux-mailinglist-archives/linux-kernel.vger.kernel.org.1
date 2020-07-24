@@ -2,83 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E6722D1E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 00:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DA322D1F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 00:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgGXWnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 18:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S1726593AbgGXWrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 18:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726154AbgGXWnq (ORCPT
+        with ESMTP id S1726274AbgGXWrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 18:43:46 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27EDEC0619D3;
-        Fri, 24 Jul 2020 15:43:46 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 7C0081274F734;
-        Fri, 24 Jul 2020 15:26:58 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 15:43:42 -0700 (PDT)
-Message-Id: <20200724.154342.1433271593505001306.davem@davemloft.net>
-To:     hch@lst.de
-Cc:     kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, edumazet@google.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: get rid of the address_space override in setsockopt v2
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200723060908.50081-1-hch@lst.de>
-References: <20200723060908.50081-1-hch@lst.de>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 24 Jul 2020 15:26:59 -0700 (PDT)
+        Fri, 24 Jul 2020 18:47:15 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27D5C0619D3;
+        Fri, 24 Jul 2020 15:47:14 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id dg28so8079628edb.3;
+        Fri, 24 Jul 2020 15:47:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nNSJrSp1TUgM0wwhmUslDh2V7fqpgFVhfMDCxW4mnVU=;
+        b=d58fSml8Av/54E84yPUHmxd2sEOOswgra7qj+1gG+jle0sA05l6SSFQ8Y9m0vUZ/Yz
+         Pa0vcAotLu63pAaRcpdjTT7b2Xzl4RfE0V41E9xZn9dYsgsAvxq48gsEAbpeRO1ljpLr
+         /Iim5Y1RxmyJqFc6sLbgAHGReBFv3Ia0MibvG8ksj+MKBW5YyR2OLGiFghWFKQDI0i4i
+         69keseER2Kmt9Fun/YyA7AtCOobgkdHQry90Ve3Tz7qHzY8y4qjPMzl7XTMvdQqn58j1
+         EIYA+oy/TVG+u4jeY6FwioZr/RwlYRXUWFo42aReRAIb2I7zZc6y4+EKasY1WzPJWNgo
+         FQvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nNSJrSp1TUgM0wwhmUslDh2V7fqpgFVhfMDCxW4mnVU=;
+        b=aE8w2SXaWBL4COGt1d4/iApJXv34/JZJEQxrshYAgT3PHev24ee57wpBSEac6OFmTh
+         A1QLTVCwbvjXRtXJ2j1jPQxO67h8D2N2PE3s54JUH/PgqLdSimKwnyAWsHd81zYiuwiT
+         jABZjCmqPjymiQSiebWaqSvxo8+jgMvUcFBO1JzGzmWPw04eTei64h7s3CFRLJ4n2LsT
+         dnH9cysRcVajxo54kgWBKZ8gyfoSrsxBrqUV+2iaf42Uh9GtJ543n44vMDYN2zGCBePN
+         raXckHPj153bzKQGtKeMT9EcsvO6lltIL+a9eiQ9O0QDRUFu7AmHLdh7GnNykjtdX3w3
+         1JOA==
+X-Gm-Message-State: AOAM531M7wqY/BQfcFNI6usY9ZjVE8NRNd5ADfVFayv+dZDvCsLYs39b
+        zFm5rpVNY1hc/3dWIbx63+00UD6EEiJs9uCQvWQ=
+X-Google-Smtp-Source: ABdhPJxyq2va4/5ayN8xqmxRJ3AEZwyieX4tzpOLtd+pSDDG4r6/v5fP3oz9hDLOS8GDIWHpM7TTxkY6d/0mnZ6DbQ8=
+X-Received: by 2002:a50:a6da:: with SMTP id f26mr424803edc.4.1595630833518;
+ Fri, 24 Jul 2020 15:47:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200724213659.273599-1-martin.botka1@gmail.com>
+ <20200724220516.GA21965@amd> <CADQ2G_HbysJbiQKSRmA6HDRfjPYPiDjbZfeuUjM1mNV-BBBC-A@mail.gmail.com>
+ <20200724223150.GB21965@amd>
+In-Reply-To: <20200724223150.GB21965@amd>
+From:   Martin Botka <martin.botka1@gmail.com>
+Date:   Sat, 25 Jul 2020 00:46:38 +0200
+Message-ID: <CADQ2G_HkL3HLjsjMyM1vO-AT6bBP9C0BGO4WjpR0PjQrnhaf_Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/6] Add QCOM pwm-lpg and tri-led drivers
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
-Date: Thu, 23 Jul 2020 08:08:42 +0200
+> Vitej do klubu :-).
 
-> setsockopt is the last place in architecture-independ code that still
-> uses set_fs to force the uaccess routines to operate on kernel pointers.
-> 
-> This series adds a new sockptr_t type that can contained either a kernel
-> or user pointer, and which has accessors that do the right thing, and
-> then uses it for setsockopt, starting by refactoring some low-level
-> helpers and moving them over to it before finally doing the main
-> setsockopt method.
-> 
-> Note that apparently the eBPF selftests do not even cover this path, so
-> the series has been tested with a testing patch that always copies the
-> data first and passes a kernel pointer.  This is something that works for
-> most common sockopts (and is something that the ePBF support relies on),
-> but unfortunately in various corner cases we either don't use the passed
-> in length, or in one case actually copy data back from setsockopt, or in
-> case of bpfilter straight out do not work with kernel pointers at all.
-> 
-> Against net-next/master.
-> 
-> Changes since v1:
->  - check that users don't pass in kernel addresses
->  - more bpfilter cleanups
->  - cosmetic mptcp tweak
+Dakujem
 
-Series applied to net-next, I'm build testing and will push this out when
-that is done.
+> Please double check. Actually, is the series for one chip or for two
+> of them? LED framework should is happy to talk to generic pwm driver...
 
-Thanks.
+I'm not sure on that one. I will have to talk to some people about that.
+I will get back to you on that when i find out how it actually is.
+But i think its one single chip. Not sure tho.
+
+> Ok. Check multicolor framework in -next.
+
+I will look into it. Thank you
+
+> Aha, ok. I assume they are still quite far away from being usable with
+> mainline kernels.
+
+Actually no.
+While Konrad didn't send the patches yet we have some stuff working as:
+Panel
+Touchscreen
+LEDs with this series
+Flash light
+
+You can check https://github.com/konradybcio/linux/commits/ninges_labs
+for the current progress on those phones.
+
+Best Regards,
+Martin
