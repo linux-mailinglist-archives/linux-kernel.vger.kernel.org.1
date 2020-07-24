@@ -2,458 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C6722D162
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A6722D0D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 23:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGXVn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 17:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
+        id S1727851AbgGXVhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 17:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbgGXVnW (ORCPT
+        with ESMTP id S1727783AbgGXVhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 17:43:22 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C38C08C5DC
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 14:43:21 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id w2so6131424pgg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 14:43:21 -0700 (PDT)
+        Fri, 24 Jul 2020 17:37:31 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C503FC0619D3;
+        Fri, 24 Jul 2020 14:37:30 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a14so9513350wra.5;
+        Fri, 24 Jul 2020 14:37:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yHo9JWZzUyjBazerQ4BEANBUtQtdpP9atcQMB9aajac=;
-        b=L3qLAXZfiql/LLd4sTBaSnChEQBu1NdskGLv9hDbxJ0H39bBoqjpbqTGi87A6uEMsA
-         UK5/Vht5W2Wc07aKpmgqqILoug1DiLHlRDadTEgPqlMqHHh8GpgU+PprIBcm674QRJSX
-         f7Yp0QWEDGO3iDUr3YyK5mvs430WiM8+uG1SE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UyLweN+II0ZCIyIgBj5I2+zaWb8dHrtfnlcwzt5oGNM=;
+        b=UNs3GuihAWHCTR9hET3VEcxcq7WMVX+ELHyM4UHV7CETbtCF1m5+/7KO22va1IUkIq
+         +1fkKnqssP31mj0evgJ/Lwak8npUBRJeFIutSGGylvGSFeDF63rQQ74j8M085mtP6IdL
+         yShmUAjK8An6YFzSSwW5w1U9F9mOSINZajKEAnI6IzSs70PQLb+9P5NRjd2r9PV9qBsJ
+         EJ2rMG/KvJVR89ZkHgvCwD8PJbsWXtzjQ0HmW1FWmsa3dpChDcNYGXDYBYa4CizLFDqH
+         GiHBdw8jaoFdAFbMk0OmDQloGdu7JQ17rAd+BLyRfZcbhq54xt2JsahGGFzwma1p3Gk0
+         fG4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yHo9JWZzUyjBazerQ4BEANBUtQtdpP9atcQMB9aajac=;
-        b=P/bBs5sRl0d4N9K612OzI2ffnKg+zVvvf/mjO9V1t96ONiBfTsDrhnq89Nmi/POqzs
-         tr0Cz0Yp0U4/EcUwbHaikkIIkvl5jxbBNNizXJ1TQKn0jVFedkxm3w9rdzfXgYUYt+td
-         61nZn1ypj4mo3x2PyI4J7zirbi0G61a1IEb+slA5iOifNU5SjYxh3wrlPpbsjGULHW7n
-         5jgqm8LDYr4tfLcXJRJW3s+4++aasVUP7wDUQWDoGB6H/PMnl0SCWaTedvDSvE0fFGGv
-         Fux+lZflmYsCGwU5AO99xWAVOF/skbfjMoO+13S+3n38p1bdZ9Jlhc12bysgjpOz5LT4
-         iw0Q==
-X-Gm-Message-State: AOAM533mNu6bQBdz017jNzIQLyoFIA10VdV/5MVeZTJZAuc/dES1nOo5
-        +Xbv4tJKwuXpny4bR/CcMm4zdw==
-X-Google-Smtp-Source: ABdhPJxKQlLt6APhlyjS22UUX6K8i6MHYddUM5LrPCQGlclvXL1tRYdAol4xgUWONouWRGmix8Nqaw==
-X-Received: by 2002:aa7:92c7:: with SMTP id k7mr10892560pfa.101.1595627000515;
-        Fri, 24 Jul 2020 14:43:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 66sm7525755pfg.63.2020.07.24.14.43.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UyLweN+II0ZCIyIgBj5I2+zaWb8dHrtfnlcwzt5oGNM=;
+        b=JhVsmAS2srevKmz61TKXYIuVBxgFNJSdtFFXU/qmD5G08+IsYfLzFZjv1SooU6O7la
+         wDcdwLpBbsjh/Ht5J/EEYNFkPCKOdKvHNHu05iuuGO+Kcueu7NElBABcY85mFLsa6C/F
+         v18madTkL0zGZ3fTJx44JgPAKcx4zj99jCkBnCeyLlLvAouoquGi6C5JXw0ydjNZ7TJ4
+         OH/+5SkLfZwBJ0YIVdPV9GcgNwMqR1QACWFjFCtO5yxes/nDqv4epxrmd4jSnScST8KI
+         fE+cdjljtEl5rifyA8YC8wOegPglhajBcUJcyGYo75x3sG1Bww0/1L++I9I6t2LeKciQ
+         zFQA==
+X-Gm-Message-State: AOAM5322bxnvQarNm+xNpeg9p760qUw8N2i3s65K9oDz1QUL1Sm7ZNy/
+        lP2/6veTLIOsgh2wiV+LwLo=
+X-Google-Smtp-Source: ABdhPJwLF1RqObtNpTGBQwMpigWEhUqbE+eLdxny/Qtkb5+QTqBldol986Ypp/6PgZjOITEYjaDXNg==
+X-Received: by 2002:adf:ea85:: with SMTP id s5mr3155449wrm.55.1595626649546;
+        Fri, 24 Jul 2020 14:37:29 -0700 (PDT)
+Received: from TimeMachine.localdomain (bband-dyn34.178-41-255.t-com.sk. [178.41.255.34])
+        by smtp.googlemail.com with ESMTPSA id 129sm8853400wmd.48.2020.07.24.14.37.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 14:43:17 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 19/19] test_firmware: Test partial read support
-Date:   Fri, 24 Jul 2020 14:36:40 -0700
-Message-Id: <20200724213640.389191-20-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200724213640.389191-1-keescook@chromium.org>
-References: <20200724213640.389191-1-keescook@chromium.org>
+        Fri, 24 Jul 2020 14:37:29 -0700 (PDT)
+From:   Martin Botka <martin.botka1@gmail.com>
+Cc:     Martin Botka <martin.botka1@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: [PATCH RFC 0/6] Add QCOM pwm-lpg and tri-led drivers
+Date:   Fri, 24 Jul 2020 23:36:50 +0200
+Message-Id: <20200724213659.273599-1-martin.botka1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Scott Branden <scott.branden@broadcom.com>
+Hello,
+This series brings QCOM pwm-lpg and tri-led drivers from 4.14 that is required to support pmic-connected notification LED.
+This comes straight from downstream and I'm ready for your comments.
 
-Add additional hooks to test_firmware to pass in support
-for partial file read using request_firmware_into_buf():
+Fenglin Wu (6):
+  pwm: Add different PWM output types support
+  pwm: core: Add option to config PWM duty/period with u64 data length
+  pwm: pwm-qti-lpg: Add PWM driver for QTI LPG module
+  leds: leds-qti-tri-led: Add LED driver for QTI TRI_LED module
+  Documentation: Add binding for qti-tri-led
+  Documentation: Add binding for pwm-qti-lpg
 
-	buf_size: size of buffer to request firmware into
-	partial: indicates that a partial file request is being made
-	file_offset: to indicate offset into file to request
+ .../bindings/leds/leds-qti-tri-led.txt        |   72 +
+ .../devicetree/bindings/pwm/pwm-qti-lpg.txt   |  163 +++
+ drivers/leds/Kconfig                          |    9 +
+ drivers/leds/Makefile                         |    1 +
+ drivers/leds/leds-qti-tri-led.c               |  640 ++++++++
+ drivers/pwm/Kconfig                           |   10 +
+ drivers/pwm/Makefile                          |    1 +
+ drivers/pwm/core.c                            |   56 +-
+ drivers/pwm/pwm-qti-lpg.c                     | 1284 +++++++++++++++++
+ drivers/pwm/sysfs.c                           |   56 +-
+ include/linux/pwm.h                           |  144 +-
+ 11 files changed, 2418 insertions(+), 18 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-qti-tri-led.txt
+ create mode 100644 Documentation/devicetree/bindings/pwm/pwm-qti-lpg.txt
+ create mode 100644 drivers/leds/leds-qti-tri-led.c
+ create mode 100644 drivers/pwm/pwm-qti-lpg.c
 
-Also update firmware selftests to use the new partial read test API.
-
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- lib/test_firmware.c                           | 154 ++++++++++++++++--
- .../selftests/firmware/fw_filesystem.sh       |  91 +++++++++++
- 2 files changed, 233 insertions(+), 12 deletions(-)
-
-diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-index 62af792e151c..387acb94eeea 100644
---- a/lib/test_firmware.c
-+++ b/lib/test_firmware.c
-@@ -50,6 +50,9 @@ struct test_batched_req {
-  * @name: the name of the firmware file to look for
-  * @into_buf: when the into_buf is used if this is true
-  *	request_firmware_into_buf() will be used instead.
-+ * @buf_size: size of buf to allocate when into_buf is true
-+ * @file_offset: file offset to request when calling request_firmware_into_buf
-+ * @partial: partial read opt when calling request_firmware_into_buf
-  * @sync_direct: when the sync trigger is used if this is true
-  *	request_firmware_direct() will be used instead.
-  * @send_uevent: whether or not to send a uevent for async requests
-@@ -89,6 +92,9 @@ struct test_batched_req {
- struct test_config {
- 	char *name;
- 	bool into_buf;
-+	size_t buf_size;
-+	size_t file_offset;
-+	bool partial;
- 	bool sync_direct;
- 	bool send_uevent;
- 	u8 num_requests;
-@@ -183,6 +189,9 @@ static int __test_firmware_config_init(void)
- 	test_fw_config->num_requests = TEST_FIRMWARE_NUM_REQS;
- 	test_fw_config->send_uevent = true;
- 	test_fw_config->into_buf = false;
-+	test_fw_config->buf_size = TEST_FIRMWARE_BUF_SIZE;
-+	test_fw_config->file_offset = 0;
-+	test_fw_config->partial = false;
- 	test_fw_config->sync_direct = false;
- 	test_fw_config->req_firmware = request_firmware;
- 	test_fw_config->test_result = 0;
-@@ -236,28 +245,35 @@ static ssize_t config_show(struct device *dev,
- 			dev_name(dev));
- 
- 	if (test_fw_config->name)
--		len += scnprintf(buf+len, PAGE_SIZE - len,
-+		len += scnprintf(buf + len, PAGE_SIZE - len,
- 				"name:\t%s\n",
- 				test_fw_config->name);
- 	else
--		len += scnprintf(buf+len, PAGE_SIZE - len,
-+		len += scnprintf(buf + len, PAGE_SIZE - len,
- 				"name:\tEMTPY\n");
- 
--	len += scnprintf(buf+len, PAGE_SIZE - len,
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"num_requests:\t%u\n", test_fw_config->num_requests);
- 
--	len += scnprintf(buf+len, PAGE_SIZE - len,
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"send_uevent:\t\t%s\n",
- 			test_fw_config->send_uevent ?
- 			"FW_ACTION_HOTPLUG" :
- 			"FW_ACTION_NOHOTPLUG");
--	len += scnprintf(buf+len, PAGE_SIZE - len,
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"into_buf:\t\t%s\n",
- 			test_fw_config->into_buf ? "true" : "false");
--	len += scnprintf(buf+len, PAGE_SIZE - len,
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
-+			"buf_size:\t%zu\n", test_fw_config->buf_size);
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
-+			"file_offset:\t%zu\n", test_fw_config->file_offset);
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
-+			"partial:\t\t%s\n",
-+			test_fw_config->partial ? "true" : "false");
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"sync_direct:\t\t%s\n",
- 			test_fw_config->sync_direct ? "true" : "false");
--	len += scnprintf(buf+len, PAGE_SIZE - len,
-+	len += scnprintf(buf + len, PAGE_SIZE - len,
- 			"read_fw_idx:\t%u\n", test_fw_config->read_fw_idx);
- 
- 	mutex_unlock(&test_fw_mutex);
-@@ -315,6 +331,30 @@ static ssize_t test_dev_config_show_bool(char *buf, bool val)
- 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
- }
- 
-+static int test_dev_config_update_size_t(const char *buf,
-+					 size_t size,
-+					 size_t *cfg)
-+{
-+	int ret;
-+	long new;
-+
-+	ret = kstrtol(buf, 10, &new);
-+	if (ret)
-+		return ret;
-+
-+	mutex_lock(&test_fw_mutex);
-+	*(size_t *)cfg = new;
-+	mutex_unlock(&test_fw_mutex);
-+
-+	/* Always return full write size even if we didn't consume all */
-+	return size;
-+}
-+
-+static ssize_t test_dev_config_show_size_t(char *buf, size_t val)
-+{
-+	return snprintf(buf, PAGE_SIZE, "%zu\n", val);
-+}
-+
- static ssize_t test_dev_config_show_int(char *buf, int val)
- {
- 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
-@@ -400,6 +440,83 @@ static ssize_t config_into_buf_show(struct device *dev,
- }
- static DEVICE_ATTR_RW(config_into_buf);
- 
-+static ssize_t config_buf_size_store(struct device *dev,
-+				     struct device_attribute *attr,
-+				     const char *buf, size_t count)
-+{
-+	int rc;
-+
-+	mutex_lock(&test_fw_mutex);
-+	if (test_fw_config->reqs) {
-+		pr_err("Must call release_all_firmware prior to changing config\n");
-+		rc = -EINVAL;
-+		mutex_unlock(&test_fw_mutex);
-+		goto out;
-+	}
-+	mutex_unlock(&test_fw_mutex);
-+
-+	rc = test_dev_config_update_size_t(buf, count,
-+					   &test_fw_config->buf_size);
-+
-+out:
-+	return rc;
-+}
-+
-+static ssize_t config_buf_size_show(struct device *dev,
-+				    struct device_attribute *attr,
-+				    char *buf)
-+{
-+	return test_dev_config_show_size_t(buf, test_fw_config->buf_size);
-+}
-+static DEVICE_ATTR_RW(config_buf_size);
-+
-+static ssize_t config_file_offset_store(struct device *dev,
-+					struct device_attribute *attr,
-+					const char *buf, size_t count)
-+{
-+	int rc;
-+
-+	mutex_lock(&test_fw_mutex);
-+	if (test_fw_config->reqs) {
-+		pr_err("Must call release_all_firmware prior to changing config\n");
-+		rc = -EINVAL;
-+		mutex_unlock(&test_fw_mutex);
-+		goto out;
-+	}
-+	mutex_unlock(&test_fw_mutex);
-+
-+	rc = test_dev_config_update_size_t(buf, count,
-+					   &test_fw_config->file_offset);
-+
-+out:
-+	return rc;
-+}
-+
-+static ssize_t config_file_offset_show(struct device *dev,
-+				       struct device_attribute *attr,
-+				       char *buf)
-+{
-+	return test_dev_config_show_size_t(buf, test_fw_config->file_offset);
-+}
-+static DEVICE_ATTR_RW(config_file_offset);
-+
-+static ssize_t config_partial_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf, size_t count)
-+{
-+	return test_dev_config_update_bool(buf,
-+					   count,
-+					   &test_fw_config->partial);
-+}
-+
-+static ssize_t config_partial_show(struct device *dev,
-+				   struct device_attribute *attr,
-+				   char *buf)
-+{
-+	return test_dev_config_show_bool(buf, test_fw_config->partial);
-+}
-+static DEVICE_ATTR_RW(config_partial);
-+
- static ssize_t config_sync_direct_store(struct device *dev,
- 					struct device_attribute *attr,
- 					const char *buf, size_t count)
-@@ -655,11 +772,21 @@ static int test_fw_run_batch_request(void *data)
- 		if (!test_buf)
- 			return -ENOSPC;
- 
--		req->rc = request_firmware_into_buf(&req->fw,
--						    req->name,
--						    req->dev,
--						    test_buf,
--						    TEST_FIRMWARE_BUF_SIZE);
-+		if (test_fw_config->partial)
-+			req->rc = request_partial_firmware_into_buf
-+						(&req->fw,
-+						 req->name,
-+						 req->dev,
-+						 test_buf,
-+						 test_fw_config->buf_size,
-+						 test_fw_config->file_offset);
-+		else
-+			req->rc = request_firmware_into_buf
-+						(&req->fw,
-+						 req->name,
-+						 req->dev,
-+						 test_buf,
-+						 test_fw_config->buf_size);
- 		if (!req->fw)
- 			kfree(test_buf);
- 	} else {
-@@ -932,6 +1059,9 @@ static struct attribute *test_dev_attrs[] = {
- 	TEST_FW_DEV_ATTR(config_name),
- 	TEST_FW_DEV_ATTR(config_num_requests),
- 	TEST_FW_DEV_ATTR(config_into_buf),
-+	TEST_FW_DEV_ATTR(config_buf_size),
-+	TEST_FW_DEV_ATTR(config_file_offset),
-+	TEST_FW_DEV_ATTR(config_partial),
- 	TEST_FW_DEV_ATTR(config_sync_direct),
- 	TEST_FW_DEV_ATTR(config_send_uevent),
- 	TEST_FW_DEV_ATTR(config_read_fw_idx),
-diff --git a/tools/testing/selftests/firmware/fw_filesystem.sh b/tools/testing/selftests/firmware/fw_filesystem.sh
-index fcc281373b4d..c2a2a100114b 100755
---- a/tools/testing/selftests/firmware/fw_filesystem.sh
-+++ b/tools/testing/selftests/firmware/fw_filesystem.sh
-@@ -149,6 +149,26 @@ config_unset_into_buf()
- 	echo 0 >  $DIR/config_into_buf
- }
- 
-+config_set_buf_size()
-+{
-+	echo $1 >  $DIR/config_buf_size
-+}
-+
-+config_set_file_offset()
-+{
-+	echo $1 >  $DIR/config_file_offset
-+}
-+
-+config_set_partial()
-+{
-+	echo 1 >  $DIR/config_partial
-+}
-+
-+config_unset_partial()
-+{
-+	echo 0 >  $DIR/config_partial
-+}
-+
- config_set_sync_direct()
- {
- 	echo 1 >  $DIR/config_sync_direct
-@@ -207,6 +227,35 @@ read_firmwares()
- 	done
- }
- 
-+read_partial_firmwares()
-+{
-+	if [ "$(cat $DIR/config_into_buf)" == "1" ]; then
-+		fwfile="${FW_INTO_BUF}"
-+	else
-+		fwfile="${FW}"
-+	fi
-+
-+	if [ "$1" = "xzonly" ]; then
-+		fwfile="${fwfile}-orig"
-+	fi
-+
-+	# Strip fwfile down to match partial offset and length
-+	partial_data="$(cat $fwfile)"
-+	partial_data="${partial_data:$2:$3}"
-+
-+	for i in $(seq 0 3); do
-+		config_set_read_fw_idx $i
-+
-+		read_firmware="$(cat $DIR/read_firmware)"
-+
-+		# Verify the contents are what we expect.
-+		if [ $read_firmware != $partial_data ]; then
-+			echo "request #$i: partial firmware was not loaded" >&2
-+			exit 1
-+		fi
-+	done
-+}
-+
- read_firmwares_expect_nofile()
- {
- 	for i in $(seq 0 3); do
-@@ -242,6 +291,21 @@ test_batched_request_firmware_into_buf_nofile()
- 	echo "OK"
- }
- 
-+test_request_partial_firmware_into_buf_nofile()
-+{
-+	echo -n "Test request_partial_firmware_into_buf() off=$1 size=$2 nofile: "
-+	config_reset
-+	config_set_name nope-test-firmware.bin
-+	config_set_into_buf
-+	config_set_partial
-+	config_set_buf_size $2
-+	config_set_file_offset $1
-+	config_trigger_sync
-+	read_firmwares_expect_nofile
-+	release_all_firmware
-+	echo "OK"
-+}
-+
- test_batched_request_firmware_direct_nofile()
- {
- 	echo -n "Batched request_firmware_direct() nofile try #$1: "
-@@ -356,6 +420,21 @@ test_request_firmware_nowait_custom()
- 	echo "OK"
- }
- 
-+test_request_partial_firmware_into_buf()
-+{
-+	echo -n "Test request_partial_firmware_into_buf() off=$1 size=$2: "
-+	config_reset
-+	config_set_name $TEST_FIRMWARE_INTO_BUF_FILENAME
-+	config_set_into_buf
-+	config_set_partial
-+	config_set_buf_size $2
-+	config_set_file_offset $1
-+	config_trigger_sync
-+	read_partial_firmwares normal $1 $2
-+	release_all_firmware
-+	echo "OK"
-+}
-+
- # Only continue if batched request triggers are present on the
- # test-firmware driver
- test_config_present
-@@ -383,6 +462,12 @@ for i in $(seq 1 5); do
- 	test_request_firmware_nowait_custom $i normal
- done
- 
-+# Partial loads cannot use fallback, so do not repeat tests.
-+test_request_partial_firmware_into_buf 0 10
-+test_request_partial_firmware_into_buf 0 5
-+test_request_partial_firmware_into_buf 1 6
-+test_request_partial_firmware_into_buf 2 10
-+
- # Test for file not found, errors are expected, the failure would be
- # a hung task, which would require a hard reset.
- echo
-@@ -407,6 +492,12 @@ for i in $(seq 1 5); do
- 	test_request_firmware_nowait_custom_nofile $i
- done
- 
-+# Partial loads cannot use fallback, so do not repeat tests.
-+test_request_partial_firmware_into_buf_nofile 0 10
-+test_request_partial_firmware_into_buf_nofile 0 5
-+test_request_partial_firmware_into_buf_nofile 1 6
-+test_request_partial_firmware_into_buf_nofile 2 10
-+
- test "$HAS_FW_LOADER_COMPRESS" != "yes" && exit 0
- 
- # test with both files present
 -- 
-2.25.1
+2.27.0
 
