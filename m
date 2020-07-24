@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 036C322CCAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5242822CCB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 19:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgGXR4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 13:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
+        id S1727784AbgGXR5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 13:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726618AbgGXR4Y (ORCPT
+        with ESMTP id S1726317AbgGXR5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 13:56:24 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0652C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:56:24 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id w17so7628177otl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:56:24 -0700 (PDT)
+        Fri, 24 Jul 2020 13:57:39 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37ADCC0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:57:39 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t15so5737220pjq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 10:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=crOELoHuO5UyCHwlOjSs28KQsKC5splMHLSUwDt5LfI=;
-        b=WsYsRiGQq/Ne+jIHDnyOUOBwFQMSO8mx0SFa5Iv16nUbj/GxaWT7Oo97hPT3V+8i8E
-         6P0QHd/ggEPcUPzWs5wlZmFqABDmPOc2y1onfiJiVNoFIeGDjo+N6AvBm97eWfW3FMrc
-         ap8Xb95k9VObNlQB34nanTazZMzARB4pnkCmjmUiEZdMftNaIJ2X3erRf9iF9/e8TkWN
-         1PwAUM+dq/TbWBjUpfNAaEd7hHVqv8iQo3Rr+kk1IHG7kW03EFsCE1ppj42sdqT2IPMX
-         hZSwl8PKiwcp8gqEyven9Z1+daim39qVhgTxjg951sWWqg/t8T/G5kZe0P7VQaq9R9gB
-         kQ1w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kMaFwW8t3IfIMVggiKK5OHJuDKp9jaqqEbc7QFoh/rs=;
+        b=CJVXb5n6JR5dWMx2tAJLg0bcwhbi4VQqyjo9ptukfmM2mUWjqZH+jR4n9It2TyDcL6
+         DImQfQV/+SB3ARDdJ+h56qcR6WkyApTGi8w3+KG7PXrxzaipl3pJotCGKEKeeIXseiao
+         kT7/1zeJ2y2o+p3sPye32JbtH4ABoCfClNQCs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=crOELoHuO5UyCHwlOjSs28KQsKC5splMHLSUwDt5LfI=;
-        b=CgfhsVC5AYHnNrOFxdISSZc6kaA06INq3EmJw5u9BiFNQZ0b2iieaYUL/ipt3B0vyd
-         Ad5HGkSikzfoX7gcSjreu3XZRPixQaXXviuZrTPhUxsj/+yolty2R1uC0F9NBxdUxc19
-         StVFCoD2GPwVjkR7FDL2QjYkjON+mrkcRERRKBx9PvJ+HvZ5NkVEEJirD69Y4x/xKlkj
-         jcdoDaDYyL9xMQtudo7omxv+sYWbruHfCZWjj/8ZKYPzj66z/waokjXXjLV/omF8LUOW
-         R5QPrhmDbrQo25SR3KUWXmoXj/PTqdW5zWD4I1I/cFziZMzt4QOHpMo7idRfJbKPhNof
-         d1Tg==
-X-Gm-Message-State: AOAM5334MyZnKvblEw+4kPqDcB2GBotFCGrHgdBlWGd+tk/l4yDE5C3m
-        bdKl7th5leBfK8QJC4T6z13aKCcl
-X-Google-Smtp-Source: ABdhPJzB+ySmpkZQodsm5CaoU4cuc/3IVfPnt5raiqSbjqvrnqiwWCuLSYICKSu1uPDuHLYpsteMxg==
-X-Received: by 2002:a9d:5915:: with SMTP id t21mr9702226oth.372.1595613383978;
-        Fri, 24 Jul 2020 10:56:23 -0700 (PDT)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id n7sm1559472ooo.38.2020.07.24.10.56.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jul 2020 10:56:23 -0700 (PDT)
-Subject: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable
- authmode
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, kjlu@umn.edu,
-        Shreeya Patel <shreeya.patel23498@gmail.com>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Michael Straube <straube.linux@gmail.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
- <20200724132836.GC316746@kroah.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <66d9502e-682f-6ccd-ef90-138feee0c2ae@lwfinger.net>
-Date:   Fri, 24 Jul 2020 12:56:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kMaFwW8t3IfIMVggiKK5OHJuDKp9jaqqEbc7QFoh/rs=;
+        b=IegCKAQImafrfDSMwaG6NY7LR9DwTWraXETE9DDbZ1SKCMWzYacLVI+nhgJdA58N4i
+         rfAjrS28ACbgJ1C9nEYFcst2rqkWFPGNuY2PpQ2Thrtjw+0ZuZpn6lM+OrZpBYYQDWXX
+         CY1FdX4KuiSXR+C+SDuvHHV2tQq7X5pnjnYNNcT3VBQerOHKJl2ys5calPPl0I9B2dpv
+         hJI31nSn/9WYNTg2S0JTXA2NwDFsSm+/XaLP02isN5Ns88rnFG5Lg6sYNdqP1LdozstD
+         kNYL7C6xmkgUn65zCG/7t3JRo1Sdq69+jB5AKUJ4MokSdQxhrJvf8e0mMwTJ1n90s1zN
+         LCLw==
+X-Gm-Message-State: AOAM531pkVJd2L+KiUy0k0iAcgsfGBm+d52tRuHLkqSnviM/hq3/lIzC
+        oer+sekI+PDvRvWmn1hOF2BGhQ==
+X-Google-Smtp-Source: ABdhPJwT1ivDifcMkDJuyupKZW8COKgntYhL394BofNxgSA9BgFQyVU125t2d5Ivjc4ONMX5CLywvA==
+X-Received: by 2002:a17:90a:ed87:: with SMTP id k7mr6699745pjy.31.1595613458750;
+        Fri, 24 Jul 2020 10:57:38 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g6sm6950620pfr.129.2020.07.24.10.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 10:57:37 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 10:57:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v5 70/75] x86/head/64: Don't call verify_cpu() on
+ starting APs
+Message-ID: <202007241057.2D78C2A41B@keescook>
+References: <20200724160336.5435-1-joro@8bytes.org>
+ <20200724160336.5435-71-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20200724132836.GC316746@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724160336.5435-71-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/20 8:28 AM, Dinghao Liu wrote:
-> The variable authmode will keep uninitialized if neither if
-> statements used to initialize this variable are not triggered.
+On Fri, Jul 24, 2020 at 06:03:31PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> The APs are not ready to handle exceptions when verify_cpu() is called
+> in secondary_startup_64.
+> 
+> Signed-off-by: Joerg Roedel <jroedel@suse.de>
 
-Besides Greg's comment, you need to re-parse this sentence. I realize that 
-English is probably not your first language, but this one is not what you meant.
+Thanks for updating this! :)
 
-You likely meant "The variable authmode will remain uninitialized if all 
-statements used to initialize this variable are not triggered."
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-A possible (line-wrapped) patch to quiet the tools would be:
-
-diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c 
-b/drivers/staging/rtl8188eu/core/rtw_mlme.c
-index 9de2d421f6b1..9e4d78bc9a2e 100644
---- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
-@@ -1729,9 +1729,11 @@ int rtw_restruct_sec_ie(struct adapter *adapter, u8 
-*in_ie, u8 *out_ie, uint in_
-         if ((ndisauthmode == Ndis802_11AuthModeWPA) ||
-             (ndisauthmode == Ndis802_11AuthModeWPAPSK))
-                 authmode = _WPA_IE_ID_;
--       if ((ndisauthmode == Ndis802_11AuthModeWPA2) ||
--           (ndisauthmode == Ndis802_11AuthModeWPA2PSK))
-+       else if ((ndisauthmode == Ndis802_11AuthModeWPA2) ||
-+                (ndisauthmode == Ndis802_11AuthModeWPA2PSK))
-                 authmode = _WPA2_IE_ID_;
-+       else
-+               authmode = 0;
-
-         if (check_fwstate(pmlmepriv, WIFI_UNDER_WPS)) {
-                 memcpy(out_ie + ielength, psecuritypriv->wps_ie, 
-psecuritypriv->wps_ie_len);
-
-
-Yes, in this routine, it would be possible for authmode to not be set; however, 
-later code only compares it to either _WPA_IE_ID_ or _WPA2_IE_ID_. It is never 
-used in a way that an unset value could make the program flow be different by 
-arbitrarily setting the value to zero. Thus your statement "Then authmode may 
-contain a garbage value and influence the execution flow of this function." is 
-false.
-
-Larry
+-- 
+Kees Cook
