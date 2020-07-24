@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A29C22C624
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401B422C611
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727823AbgGXNPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726643AbgGXNPN (ORCPT
+        id S1727095AbgGXNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:14:49 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:21007 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726820AbgGXNOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:15:13 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68507C0619D3;
-        Fri, 24 Jul 2020 06:15:13 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id a23so5065530pfk.13;
-        Fri, 24 Jul 2020 06:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DHpBnVvFWixE9Yg0d0OK10tzA3221PSUyt4Cx2IH5+E=;
-        b=myWsbPv3/UUglRzV+TMSS2ZZiFNk38LMgSBpDNrQsTIDc5WH7gUklbGO1enhGGySAz
-         E7YzZBxilSJCpvzkCjCU/0CNuVBNZLByMjo8KxMsr1RuI7lIPVyR0vvJxZNF+vEP0Mzk
-         Sn2h0sLrOt+aOi0ATgnWf89dVNz1bvDrQqo3cj6OoyWX8xCVLnNfJaAqKtDhCjUwNgA0
-         5Y/+beDc9ULzpOBEBVXgkQuIV6fUalwLPPpQY5i02r9TLUCpOAqwCxnak+DcBatC0Jyv
-         PKBIC5be55ZRIMw4PLKztz9Klrbzm6QA2rbct7J2sE+V6G3FLRbUvMgFLeL3276GLo0m
-         WAuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DHpBnVvFWixE9Yg0d0OK10tzA3221PSUyt4Cx2IH5+E=;
-        b=jVXkEbwRDRfdesW1bwxsE3Jqg53CwuOd2/pdiVzsRQSwyIUXte2PjBxM32n8U2K4Fr
-         mCTCk8QVcYK8L1iATGulUcxs5HLlkJwEp8RQRgXA7zWLsTqEJMDPDA+OLaLjMwGobT+O
-         TrD5YbrCa3azWqeTinyw7xLpeR0MAKfwonaSe+23nPsUYCyqYSkLOpcYFK4dz+ZmQEUh
-         sIMPzQ2BEFjYI6tyGr85sjOg+MKoJDxF69OII1Z7oNELE2XqxylzZArKDrHVcxW4zjD8
-         Pdq4+1SgsB6QV1/ji944H2lh7y3r+pA1mPJCb+ZQQIbp3+wl211FVlQxK88+xWLtDPtF
-         aMQA==
-X-Gm-Message-State: AOAM533kDo+c+0R+U3yMyjEYN/e6Glgu9ObXL4GBf2P72Dsj40JCTkM8
-        c1cv1/bYrs4c+6+/cud0Uzk=
-X-Google-Smtp-Source: ABdhPJyisx6hCRDrbmPNpGytS1qqjnTFZwITCd6wO1vkmRzyL31lFJNP7UVIeTdb2pnJAPV4vPWvTg==
-X-Received: by 2002:aa7:942e:: with SMTP id y14mr8909386pfo.58.1595596512969;
-        Fri, 24 Jul 2020 06:15:12 -0700 (PDT)
-Received: from bobo.ibm.com (110-174-173-27.tpgi.com.au. [110.174.173.27])
-        by smtp.gmail.com with ESMTPSA id az16sm5871998pjb.7.2020.07.24.06.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 06:15:12 -0700 (PDT)
-From:   Nicholas Piggin <npiggin@gmail.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm-ppc@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: [PATCH v4 6/6] powerpc: implement smp_cond_load_relaxed
-Date:   Fri, 24 Jul 2020 23:14:23 +1000
-Message-Id: <20200724131423.1362108-7-npiggin@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200724131423.1362108-1-npiggin@gmail.com>
-References: <20200724131423.1362108-1-npiggin@gmail.com>
+        Fri, 24 Jul 2020 09:14:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595596486; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=yk4bZqC752ih63Wy6zaU9RG+MiXqtZvr+rS//nmMLBs=; b=V7M7fjF6myUEi5AyjMJatVl7Eh2zpTY+GrAFYy3mVNtnH2CtwoGtffenFy5nL5GB+ehDPvkF
+ C3uyiaO0m2eO7QVdAZgc5CH0uRbppfS7pqf9Z9TdkAJPYNSKOV0svJwwdxh2zgt81eKgyo9i
+ a+NUb3zeCpcJV8KXyx28HG4YvRY=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-west-2.postgun.com with SMTP id
+ 5f1adebaca57a65d47a1adf7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 24 Jul 2020 13:14:34
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2909C43391; Fri, 24 Jul 2020 13:14:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 373D6C433CB;
+        Fri, 24 Jul 2020 13:14:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 373D6C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     amitkarwar@gmail.com, ganapathi.bhat@nxp.com,
+        huxinming820@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trivial@kernel.org
+Subject: Re: [PATCH] slimbus: ngd: simplify error handling
+References: <20200724130658.GA29458@duo.ucw.cz>
+Date:   Fri, 24 Jul 2020 16:14:27 +0300
+In-Reply-To: <20200724130658.GA29458@duo.ucw.cz> (Pavel Machek's message of
+        "Fri, 24 Jul 2020 15:06:58 +0200")
+Message-ID: <87365h5a30.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This implements smp_cond_load_relaed with the slowpath busy loop using the
-preferred SMT priority pattern.
+Pavel Machek <pavel@ucw.cz> writes:
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
----
- arch/powerpc/include/asm/barrier.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> Simplify error handling; we already know mwq is NULL.
+>
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+>
+> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
 
-diff --git a/arch/powerpc/include/asm/barrier.h b/arch/powerpc/include/asm/barrier.h
-index 123adcefd40f..9b4671d38674 100644
---- a/arch/powerpc/include/asm/barrier.h
-+++ b/arch/powerpc/include/asm/barrier.h
-@@ -76,6 +76,20 @@ do {									\
- 	___p1;								\
- })
- 
-+#define smp_cond_load_relaxed(ptr, cond_expr) ({		\
-+	typeof(ptr) __PTR = (ptr);				\
-+	__unqual_scalar_typeof(*ptr) VAL;			\
-+	VAL = READ_ONCE(*__PTR);				\
-+	if (unlikely(!(cond_expr))) {				\
-+		spin_begin();					\
-+		do {						\
-+			VAL = READ_ONCE(*__PTR);		\
-+		} while (!(cond_expr));				\
-+		spin_end();					\
-+	}							\
-+	(typeof(*ptr))VAL;					\
-+})
-+
- #ifdef CONFIG_PPC_BOOK3S_64
- #define NOSPEC_BARRIER_SLOT   nop
- #elif defined(CONFIG_PPC_FSL_BOOK3E)
+I think you sent this to the wrong lists:
+
+$ scripts/get_maintainer.pl drivers/slimbus/qcom-ngd-ctrl.c
+Andy Gross <agross@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
+Bjorn Andersson <bjorn.andersson@linaro.org> (maintainer:ARM/QUALCOMM SUPPORT)
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org> (maintainer:SERIAL LOW-POWER INTER-CHIP MEDIA BUS (SLIMbus))
+linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT)
+alsa-devel@alsa-project.org (moderated list:SERIAL LOW-POWER INTER-CHIP MEDIA BUS (SLIMbus))
+linux-kernel@vger.kernel.org (open list)
+
 -- 
-2.23.0
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
