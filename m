@@ -2,149 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7077D22C065
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6C222C080
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgGXICZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 04:02:25 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:35686 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbgGXICX (ORCPT
+        id S1726769AbgGXIOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 04:14:46 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:44661 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgGXIOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 04:02:23 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200724080221epoutp041b67f884f41a6a52c4fb9e3adf6ac180~koYBxiZ9o2385223852epoutp049
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 08:02:21 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200724080221epoutp041b67f884f41a6a52c4fb9e3adf6ac180~koYBxiZ9o2385223852epoutp049
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1595577741;
-        bh=hY9rpWUhx1P8mckQQzl9WKYfgD/JvNgWgM+Fv0pMqhE=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=t2x/2CGEfZtj2xq4QkiaTjtXnN6eiM1EwHtEgcBRzKACxTh2iuwmkQmLyOMJBx9h6
-         B+ZeTeMxmPchwl8Du18sSc4Ox8O/cyN03pgoeH8zo8Z0WE72PjUGloXpZhFZZym5KT
-         qCiyERja+JYDAUA0Imc1764ZPFca+k0YHYN8hWsk=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200724080220epcas1p443170d5346261ccbd17f9089c64afedd~koYBbg6y-0480704807epcas1p4f;
-        Fri, 24 Jul 2020 08:02:20 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.156]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BChWG1pyBzMqYkV; Fri, 24 Jul
-        2020 08:02:18 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F2.A5.18978.F759A1F5; Fri, 24 Jul 2020 17:02:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200724080207epcas1p125e12a249e629b1068223b16b9e07edf~koX0uHQQl2072320723epcas1p1G;
-        Fri, 24 Jul 2020 08:02:07 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200724080207epsmtrp206d8e37a04ddd95a000789a6a2e8e708~koX0tfoc_1271612716epsmtrp2C;
-        Fri, 24 Jul 2020 08:02:07 +0000 (GMT)
-X-AuditID: b6c32a35-b8298a8000004a22-bc-5f1a957f216d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E2.9E.08303.E759A1F5; Fri, 24 Jul 2020 17:02:06 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200724080206epsmtip152503e90280764acc12e5a815165880e~koX0fHojd1861618616epsmtip1t;
-        Fri, 24 Jul 2020 08:02:06 +0000 (GMT)
-Subject: Re: [PATCH] PM / devfrq: Fix indentaion of devfreq_summary debugfs
- node
-To:     Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     chanwoo@kernel.org, stable@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <41a5d612-ac02-ff22-84ad-9e2138b53b43@samsung.com>
-Date:   Fri, 24 Jul 2020 17:13:54 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Fri, 24 Jul 2020 04:14:45 -0400
+Received: from mail-qt1-f174.google.com ([209.85.160.174]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M42zo-1jysqq0f9k-0003bn for <linux-kernel@vger.kernel.org>; Fri, 24 Jul
+ 2020 10:14:44 +0200
+Received: by mail-qt1-f174.google.com with SMTP id o22so6090206qtt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 01:14:43 -0700 (PDT)
+X-Gm-Message-State: AOAM531Eitt9lseBhkip8q7TGf2XPd5Lf3vC7Pepj5YwLUX/XLVtF7H0
+        Z4jgR8Y5tofbNeOaia/key/ASzQCQ8F9yPDY3ZU=
+X-Google-Smtp-Source: ABdhPJygisjtG0/T5RZOpGU5w2vxR1Ybi3XIk/oHG1gnkzduo22/qOY0PE84/zvIhSqmrnDmSiaO0gHwgOoBfMX/5hA=
+X-Received: by 2002:ac8:7587:: with SMTP id s7mr8295990qtq.304.1595578483047;
+ Fri, 24 Jul 2020 01:14:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200717170847.F18AB207DD@mail.kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdlhTT7d+qlS8Qc90OYuJN66wWFzeNYfN
-        4nPvEUaLTWuusVks2PiI0YHVY9OqTjaPz5vkApiism0yUhNTUosUUvOS81My89JtlbyD453j
-        Tc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgLYpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yV
-        UgtScgosC/SKE3OLS/PS9ZLzc60MDQyMTIEKE7Izprc1sRec56xoOjCRpYHxPHsXIyeHhICJ
-        xKRFB9i6GLk4hAR2MErc/ngDyvnEKPF1XgczhPOZUeJf43U2mJYDvftZIRK7GCXezngJ5bxn
-        lNi7dz/YYGGBIIldrxeA2SICsRJrF19nBLGZBfQkbvSvBIuzCWhJ7H9xA2wqv4CixNUfj8Fq
-        eAXsJH4fOwNmswioSjz4/5kZxBYVCJM4ua0FqkZQ4uTMJywgNqeAhcS7iVNZIOaLS9x6Mp8J
-        wpaX2P52DtgLEgJf2SV+vd3GDPGCi8TSmVOg3hGWeHV8CzQ0pCQ+v9sLFa+WWHnyCBtEcwej
-        xJb9F1ghEsYS+5dOBtrAAbRBU2L9Ln2IsKLEzt9zoZ7kk3j3tYcVpERCgFeio00IokRZ4vKD
-        u0wQtqTE4vZOtgmMSrOQvDMLyQuzkLwwC2HZAkaWVYxiqQXFuempxYYFhsjRvYkRnBS1THcw
-        Tnz7Qe8QIxMH4yFGCQ5mJRFeHUbxeCHelMTKqtSi/Pii0pzU4kOMpsAAnsgsJZqcD0zLeSXx
-        hqZGxsbGFiaGZqaGhkrivP/OsscLCaQnlqRmp6YWpBbB9DFxcEo1MAV/nn/ulWlZLq/hrO7J
-        T3Yv2/KsXuFsg8+kg2ZPouNu30pm37pxj6/rsbALO8se1P7cE572RJ/xTuEenQUTVc6fWLri
-        rPM3hiub50w7oDInu1jgwDu7WNUm1tvGtyRfMsx/JbKpwMPu35rympy+OZ7+O0qDHe8GpNYX
-        cOWpRcsznF9VZRDVeqlg5pp3ucHxc5mmHZzewx93oWnXTS4+xlXPjvyWNL3Gu+Dp4QN1OW/L
-        gnP2Nf30iG7+oVCVqjGdaxHPlpVqefoCxwuLrso7nqpRSJ6XPGlr35Eeszvvdl+5ZnKlSmua
-        gucr8Tld0/Y0Tc+RMpT69ee3g0ois0rZ/g1uB88HPpVqamVi0XQ4dluJpTgj0VCLuag4EQCu
-        Hwn/EwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJLMWRmVeSWpSXmKPExsWy7bCSnG7dVKl4g/nbzS0m3rjCYnF51xw2
-        i8+9RxgtNq25xmaxYOMjRgdWj02rOtk8Pm+SC2CK4rJJSc3JLEst0rdL4MqY3tbEXnCes6Lp
-        wESWBsbz7F2MnBwSAiYSB3r3s4LYQgI7GCWeHTOEiEtKTLt4lLmLkQPIFpY4fLi4i5ELqOQt
-        o8SLhw8ZQWqEBYIkdr1eADZHRCBWov3qK2YQm1lAT+JG/0p2iIbdjBJLr/1kA0mwCWhJ7H9x
-        A8zmF1CUuPrjMdggXgE7id/HzoDZLAKqEg/+fwYbJCoQJrFzyWMmiBpBiZMzn7CA2JwCFhLv
-        Jk5lgVimLvFn3iWoxeISt57MZ4Kw5SW2v53DPIFReBaS9llIWmYhaZmFpGUBI8sqRsnUguLc
-        9NxiwwKjvNRyveLE3OLSvHS95PzcTYzg2NDS2sG4Z9UHvUOMTByMhxglOJiVRHh1GMXjhXhT
-        EiurUovy44tKc1KLDzFKc7AoifN+nbUwTkggPbEkNTs1tSC1CCbLxMEp1cB0SY/xtdniCeKX
-        M/xlOR/WyVgsKmV5WeGp8TrgccGBKY9m6d223Pp6Q8keef5EGfsJs2brmt5PWc/ltlVzcuv/
-        Y6qL+Rf+skvZYtzE5lq5gNNrWvDM1M+sDM8s5z30fDbh+Wo2ORG5f0fMTj1Sy2VbKmSh0ZZ1
-        SXvhrOdegn57TX57LtU5HB+rJZXjy2o+jelf+6NLe6dYv7D8aTfxaIuAue2lor3RK1YIGiw9
-        G/TJTjao/AW3BdM0ztQ7euc3Zry+vrNE1HNCzWfBr3tSrOt7bL1nnA/MVfRa5sHdt/1W9tGg
-        /bar+XI9Vt1gd2Z6O6my1a1PWsjpHn/WN46JF/ftUo/5oiAvnSVXpRB1/rYSS3FGoqEWc1Fx
-        IgDQEy35/AIAAA==
-X-CMS-MailID: 20200724080207epcas1p125e12a249e629b1068223b16b9e07edf
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200717170852epcas1p39bbb3c1e07c7a60c47f1dac2ee992a00
-References: <20200713073112.6297-1-cw00.choi@samsung.com>
-        <CGME20200717170852epcas1p39bbb3c1e07c7a60c47f1dac2ee992a00@epcas1p3.samsung.com>
-        <20200717170847.F18AB207DD@mail.kernel.org>
+References: <mhng-831c4073-aefa-4aa0-a583-6a17f9aff9b7@palmerdabbelt-glaptop1>
+ <d7e3cbb7-c12a-bce2-f1db-c336d15f74bd@ghiti.fr> <7cb2285e-68ba-6827-5e61-e33a4b65ac03@ghiti.fr>
+ <54af168083aee9dbda1b531227521a26b77ba2c8.camel@kernel.crashing.org>
+ <cade70e2-0179-2650-41c5-036679aaf30c@ghiti.fr> <418d5f3d3f42bbc79c5cf30e18ec89edfe2dbd26.camel@kernel.crashing.org>
+In-Reply-To: <418d5f3d3f42bbc79c5cf30e18ec89edfe2dbd26.camel@kernel.crashing.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 24 Jul 2020 10:14:26 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3dap8tDQVf3B9DdjQm0A_QtCwv3+tW6AUxC1Xq_VoL=A@mail.gmail.com>
+Message-ID: <CAK8P3a3dap8tDQVf3B9DdjQm0A_QtCwv3+tW6AUxC1Xq_VoL=A@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] riscv: Move kernel mapping to vmalloc zone
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linux-MM <linux-mm@kvack.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:HDwZL9icJfxyMmpxtY3DvBs7U9uzzEZ0jHaAzBBDsJ2so8pPZPS
+ /wu/uOwXTpyPAdvrdgc4tnVagGr+uPCi76sAKJu6/QBK/4wi+QMt9bYLK9z+5BAXlPfQC8L
+ lNVgPy1/NlmfVW0LriHqIpzdJCRzPS0ouPnnOVWdZBWTfn7nIfjdAyE726HqyxyPwG2JIug
+ P1+JDJ5B6Vxw4iUncm3qA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3PfhPQFARng=:lZ2ZWn6Ajn53EoqwHCDtHX
+ UrEtsq7ay2AIwwoaVqYR1sv9V4WgUpUsOkgzWchvn2cUt95RxwJW5ZeF2dLGZRyXbOYD6YYLA
+ 96V3YbIoN9M4k9KtVyJ7h3N4/rCeOA5iyrwEY5H6SjQXXYIhDZBsbTuhJYrotVp9hrwCqYwKE
+ 0A4knKgLbl/daJmCATmq8BASlWR0xmMfjOAV1t/nYQsUB/rG1w9lngehZNluY6K6mPzhfNEzZ
+ IdKvuscX69ZwcpM9jJTdRGCjtVS2xf8S5JTQH7JkXTanqF8SRZrmjL2Pac93vR934TL9zl3xx
+ 4Z0zBhFKV+axcFsCC6ciZT5q3cWBVeplIzbD3QofoCDTHnpTsNSqfzTAbP9A6Vj4ATBU2CamC
+ iaSanrrvDxYBsvcDZLRWoauYgpIBPzLxzH8OxAaToxp+C9EjNZUIfOybSmZTAjfLlA/ATLW+J
+ LQGmTQokI5jxyjDB9DeXNcrdaw/HwWGNQnisBK4eDz3jfjzW2fpR/IJNEsT8GLkn4qWEywve2
+ /cPTPCKk1/VYlw14VK0e6ruFH/6Ii6gZUE9Y46PzKFLXA2rqoLUooRPlPztoch3E9dqqCIbO5
+ pWmXmemJXA1EuaBsqViGldVKFIOYzJo72lnkzviYIvykms52QT9WFTiOVZwLRbQ4miCL/2bUW
+ IxOkm4LhdFM5Dbre/mgNQe/f8Z8JhHOG5hKSUF5CMumvGrYZvOXSMHL8TSBP6KlENyHb17ilG
+ MAhgGIlgAOnnR/d0emkx/JpidMkSa8oCyPjDd00xtUBY0KtLtEZUaEYNnZepZlg9osHqxebj7
+ UTxzWF/T3hqkXY7WkwtWZzNe+dpRXozJn6Fr4SRZXRCCtoczwPqlvJm9uEI04SokT9Kht0tM6
+ JxYgrWjfiLIkda034QKfWEC7nzKhXOc9/piHRTKbNdOlxdeGMmGRjxLCI51p/TLVuhiS1VVuK
+ lByu/L20B+iqWcBpeePZ0ms4XblV+OAI2Mn1tL797sTaAMvol/sWY
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 24, 2020 at 12:34 AM Benjamin Herrenschmidt
+<benh@kernel.crashing.org> wrote:
+> On Thu, 2020-07-23 at 01:21 -0400, Alex Ghiti wrote:
+> > > works fine with huge pages, what is your problem there ? You rely on
+> > > punching small-page size holes in there ?
+> > >
+> >
+> > ARCH_HAS_STRICT_KERNEL_RWX prevents the use of a hugepage for the kernel
+> > mapping in the direct mapping as it sets different permissions to
+> > different part of the kernel (data, text..etc).
+>
+> Ah ok, that can be solved in a couple of ways...
+>
+> One is to use the linker script to ensure those sections are linked
+> HUGE_PAGE_SIZE appart and moved appropriately by early boot code. One
+> is to selectively degrade just those huge pages.
+>
+> I'm not familiar with the RiscV MMU (I should probably go have a look)
+> but if it's a classic radix tree with huge pages at PUD/PMD level, then
+> you could just degrade the one(s) that cross those boundaries.
 
-On 7/18/20 2:08 AM, Sasha Levin wrote:
-> Hi
-> 
-> [This is an automated email]
-> 
-> This commit has been processed because it contains a "Fixes:" tag
-> fixing commit: 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name as devfreq(X) for sysfs"").
-> 
-> The bot has tested the following trees: v5.7.8, v5.4.51, v4.19.132, v4.14.188.
-> 
-> v5.7.8: Build OK!
-> v5.4.51: Failed to apply! Possible dependencies:
->     490a421bc575d ("PM / devfreq: Add debugfs support with devfreq_summary file")
-> 
-> v4.19.132: Failed to apply! Possible dependencies:
->     490a421bc575d ("PM / devfreq: Add debugfs support with devfreq_summary file")
-> 
-> v4.14.188: Failed to apply! Possible dependencies:
->     490a421bc575d ("PM / devfreq: Add debugfs support with devfreq_summary file")
-> 
-> 
-> NOTE: The patch will not be queued to stable trees until it is upstream.
-> 
-> How should we proceed with this patch?
-> 
+That would work, but if the system can otherwise use 1GB-sized pages,
+that might mean degrading the first gigabyte into a mix of 2MB pages
+and 4KB pages.
 
-The fixes commit was merged to v5.6-rc4. As your test result,
-it was possible to build above v5.6. It is not problem. Thanks for your testing.
-- 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name as devfreq(X) for sysfs"").
+If the kernel is in vmalloc space and vmap is able to use 2MB pages
+for contiguous chunks of the mapping, you get a somewhat better
+TLB usage.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+However, this also means that a writable mapping exists in the
+linear mapping for any executable part of the kernel (.text in
+both vmlinux and modules). Do we have that on other architectures
+as well, or is this something that ought to be prevented with
+STRICT_KERNEL_RWX/STRICT_MODULE_RWX?
+
+     Arnd
