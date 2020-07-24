@@ -2,83 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6BC22CF1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A425A22CF1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgGXULd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 16:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgGXULc (ORCPT
+        id S1726963AbgGXULn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 16:11:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40210 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgGXULl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 16:11:32 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A98C0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:11:32 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id 72so5159862ple.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:11:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=bs1aX7lFDIpMImaAa30odJrsbjxTgzOIzVfQ0iVdnGU=;
-        b=UJR6Qi/G0RCAPylYoDDP6ro7bWAdTsABFrM3DQu2TYtYADCQM3+wMQOYOur6BiKfxI
-         bz8Cm2Gl6vTqsY20UHa0PjMh41cQMPEmqpLhfM5zKlFQT2AeYPzNW8zw8B50s1vQKxEZ
-         SQLAwaNPwcAMq0O25XJs8rNeS7i2mSR99Zszs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=bs1aX7lFDIpMImaAa30odJrsbjxTgzOIzVfQ0iVdnGU=;
-        b=Vg0dIetfjbGUm+2PpoCNZCvIjHqfe+8+bOomM4fZHb2dDLKJqAU3SkttORq8Wd+foU
-         4FCD+u++nxzRceTT1ZHU63l2lquncEPOx4knVtW0vIgmWQxGikFY1USxRGMHLPmVDMTn
-         FN7Op4wADw1JATpXR2BWNNcgrfusLEH1o3X66khkQNgNDyXxNXtPRvR1YZL9ccxV24tb
-         97DWJ7BouB4A7iYyvdKOvytK9GeevOEyyzz8GTmIIAcRWsC55VonuGCzQFgp2O0/yqqS
-         y3oZR1j/hKyOyldryktR2cqw0UThNauLJYMh/SBFYPpS2xBZXmU+SgRNFRWjsB5tQYQD
-         e4uQ==
-X-Gm-Message-State: AOAM531uerujZ880cCv//seGwAPywT9cVWxMZ20TA0AhK620SBvz7Arv
-        BZqA7bGDo/cG5llffQRx4AwCxg==
-X-Google-Smtp-Source: ABdhPJz25ykO0sRmUj0w0Jh4M7RsJU6ajIMRWPsG0iakfnZwP1VeDqzM8GLYna05GDUUGctTSuzWnw==
-X-Received: by 2002:a17:902:7605:: with SMTP id k5mr3645859pll.331.1595621492121;
-        Fri, 24 Jul 2020 13:11:32 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id a17sm7038876pgw.60.2020.07.24.13.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 13:11:31 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 24 Jul 2020 16:11:41 -0400
+Date:   Fri, 24 Jul 2020 20:11:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595621498;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XtFCHFgAKaj5JdV4fyEA7k9jyYeHwTAiKGd37VnG1Mk=;
+        b=QjRRqZCbOKly0YYx6bdAut5VEu1K7fecXd7rnjN7Nmq4p2+8TIDTCaM46ZBpXo2uc4V/TR
+        wnNtmXJxb752LGva1p6JM908ZRWjJVSTcSDSwpO8O0uqEKIC4Nj9xJKHy6z5JTL3MAz9ZP
+        dCIAJN80VAx7cEFB9G+aoSsjzimClh9H1ElepnHIoSxJX+v4uUDCO7pdS1n2VM+M5sQ/iy
+        ISaLktwfhwH0WqOQx8jFYMdI1gy/xJvDnDDG1LMDi00HzcY7mBpO7InEvaXmMddW07bSIh
+        yWJNKvjWa4veDGnsiKoftZ01pItWtvXEs2Fk2HZ6E3rNWtJdWB72Cz8REYsFGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595621498;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XtFCHFgAKaj5JdV4fyEA7k9jyYeHwTAiKGd37VnG1Mk=;
+        b=bx8MiBTNjA3FGiovNzXK9M4r8KT1EIYl/PYxCPcOIZWHSMqU3OW8WBHBZu+Bc/4QkKz6Er
+        1xYvCBbhyhIgvfCQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/entry] x86/kvm: Use generic xfer to guest work function
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200722220520.979724969@linutronix.de>
+References: <20200722220520.979724969@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200724200841.GJ9185@codeaurora.org>
-References: <20200723010137.3127584-1-swboyd@chromium.org> <CAD=FV=WtjyYY+bmocc17S9NbRs6inkAWjj7=c9qBsVf3LtG99Q@mail.gmail.com> <159561988523.3847286.14763422711224252201@swboyd.mtv.corp.google.com> <CAD=FV=WH1vKKe=MPVdtBJZWnSzxNLO0uyM02GFG6oCJfSEwehQ@mail.gmail.com> <159562087212.3847286.9484527206999948907@swboyd.mtv.corp.google.com> <20200724200841.GJ9185@codeaurora.org>
-Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Sleep waiting for tcs slots to be free
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Lina Iyer <ilina@codeaurora.org>
-Date:   Fri, 24 Jul 2020 13:11:30 -0700
-Message-ID: <159562149056.3847286.11191144133990578500@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Message-ID: <159562149754.4006.8865086246836564879.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Lina Iyer (2020-07-24 13:08:41)
-> On Fri, Jul 24 2020 at 14:01 -0600, Stephen Boyd wrote:
-> >Quoting Doug Anderson (2020-07-24 12:49:56)
-> >> Hi,
-> >>
-> >> On Fri, Jul 24, 2020 at 12:44 PM Stephen Boyd <swboyd@chromium.org> wr=
-ote:
-> >I think Lina was alluding to this earlier in this
-> >thread.
-> I was thinking more of threaded irq handler than a kthread to post the
-> requests. We went away from post-thread approach a few years ago.
->=20
+The following commit has been merged into the x86/entry branch of tip:
 
-Ok, got it. Why was the kthread approach abandoned?
+Commit-ID:     72c3c0fe54a3f3ddea8f5ca468ddf9deaf2100b7
+Gitweb:        https://git.kernel.org/tip/72c3c0fe54a3f3ddea8f5ca468ddf9deaf2100b7
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 23 Jul 2020 00:00:09 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 24 Jul 2020 15:05:01 +02:00
+
+x86/kvm: Use generic xfer to guest work function
+
+Use the generic infrastructure to check for and handle pending work before
+transitioning into guest mode.
+
+This now handles TIF_NOTIFY_RESUME as well which was ignored so
+far. Handling it is important as this covers task work and task work will
+be used to offload the heavy lifting of POSIX CPU timers to thread context.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200722220520.979724969@linutronix.de
+
+---
+ arch/x86/kvm/Kconfig   |  1 +
+ arch/x86/kvm/vmx/vmx.c | 11 +++++------
+ arch/x86/kvm/x86.c     | 15 ++++++---------
+ 3 files changed, 12 insertions(+), 15 deletions(-)
+
+diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
+index b277a2d..fbd5bd7 100644
+--- a/arch/x86/kvm/Kconfig
++++ b/arch/x86/kvm/Kconfig
+@@ -42,6 +42,7 @@ config KVM
+ 	select HAVE_KVM_MSI
+ 	select HAVE_KVM_CPU_RELAX_INTERCEPT
+ 	select HAVE_KVM_NO_POLL
++	select KVM_XFER_TO_GUEST_WORK
+ 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+ 	select KVM_VFIO
+ 	select SRCU
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 13745f2..9909375 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -27,6 +27,7 @@
+ #include <linux/slab.h>
+ #include <linux/tboot.h>
+ #include <linux/trace_events.h>
++#include <linux/entry-kvm.h>
+ 
+ #include <asm/apic.h>
+ #include <asm/asm.h>
+@@ -5373,14 +5374,12 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
+ 		}
+ 
+ 		/*
+-		 * Note, return 1 and not 0, vcpu_run() is responsible for
+-		 * morphing the pending signal into the proper return code.
++		 * Note, return 1 and not 0, vcpu_run() will invoke
++		 * xfer_to_guest_mode() which will create a proper return
++		 * code.
+ 		 */
+-		if (signal_pending(current))
++		if (__xfer_to_guest_mode_work_pending())
+ 			return 1;
+-
+-		if (need_resched())
+-			schedule();
+ 	}
+ 
+ 	return 1;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 88c593f..82d4a9e 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -56,6 +56,7 @@
+ #include <linux/sched/stat.h>
+ #include <linux/sched/isolation.h>
+ #include <linux/mem_encrypt.h>
++#include <linux/entry-kvm.h>
+ 
+ #include <trace/events/kvm.h>
+ 
+@@ -1587,7 +1588,7 @@ EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
+ bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
+ {
+ 	return vcpu->mode == EXITING_GUEST_MODE || kvm_request_pending(vcpu) ||
+-		need_resched() || signal_pending(current);
++		xfer_to_guest_mode_work_pending();
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_exit_request);
+ 
+@@ -8681,15 +8682,11 @@ static int vcpu_run(struct kvm_vcpu *vcpu)
+ 			break;
+ 		}
+ 
+-		if (signal_pending(current)) {
+-			r = -EINTR;
+-			vcpu->run->exit_reason = KVM_EXIT_INTR;
+-			++vcpu->stat.signal_exits;
+-			break;
+-		}
+-		if (need_resched()) {
++		if (xfer_to_guest_mode_work_pending()) {
+ 			srcu_read_unlock(&kvm->srcu, vcpu->srcu_idx);
+-			cond_resched();
++			r = xfer_to_guest_mode_handle_work(vcpu);
++			if (r)
++				return r;
+ 			vcpu->srcu_idx = srcu_read_lock(&kvm->srcu);
+ 		}
+ 	}
