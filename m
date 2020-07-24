@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6A322CEFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0A522CF0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbgGXUDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 16:03:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgGXUDx (ORCPT
+        id S1726814AbgGXUIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 16:08:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46834 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726381AbgGXUIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 16:03:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E003C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:03:53 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595621031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TeW9A/qlTP1o8VO5EnHYgVwdURE2GyvHXNk/PN9Dj5s=;
-        b=BtmjxCtK8ctJgLSe8EjHUW2wx6+tzgzp71S39DtmA2VdicGT1NKLEFXkmc9HsIB3Lr3uqj
-        2AiBktpkFXj8ke5ISYhdL28i6mjaV17dLXTqB6tEA3xGtwn98xeFrXJt3sW1poETBtmWm9
-        0CrIW8HmtVRk0qnCA/nrf8IWN8nVHUgWbXwwjLvuZwpH89EICdm8zRCPzCfs9JdN/zioQh
-        IJIOquRNKpSBpgy2OUIh+EEzSyeo+/vpK0x42UhtTSDxNg16X2NZuxGUBm6z6c/LLyn5Tl
-        9dESUbP1iPqIuqnb1h9jhPnqg5QlMduPfBMYctzzg0LnWhN4rs1FQl5nSZcilA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595621031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TeW9A/qlTP1o8VO5EnHYgVwdURE2GyvHXNk/PN9Dj5s=;
-        b=qr8Lr+Ay0lMnpkHs46mGO8NrG8s/Ha1Lws3i6vjRcQBpkm3avItorbjRTpQo+X+JYSPbgO
-        +XbGzm/Q4bv/hJCQ==
-To:     John Keeping <john@metanate.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Ben Herrenschmidt <benh@amazon.com>,
-        Ali Saidi <alisaidi@amazon.com>, Marc Zyngier <maz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH V2] genirq/affinity: Handle affinity setting on inactive interrupts correctly
-In-Reply-To: <20200724182422.27ddced6.john@metanate.com>
-References: <87k0z2s2q3.fsf@nanos.tec.linutronix.de> <877dv2rv25.fsf@nanos.tec.linutronix.de> <20200724182422.27ddced6.john@metanate.com>
-Date:   Fri, 24 Jul 2020 22:03:50 +0200
-Message-ID: <87h7twu1cp.fsf@nanos.tec.linutronix.de>
+        Fri, 24 Jul 2020 16:08:12 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OJmBlO012337
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:08:11 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=Iuyw+uQSv2oOg1S+YzvxSbjoeQJp7NxGe48GJfiuYmI=;
+ b=Bm1jrdFy85qpCEI6GkTCU1gQ5fmoj62yrN99LiHVthkiH4zEEWiBm3mNsJNPO7hlVQaw
+ 0whxlUFNW2Nliy2zb9qjB6lMKgxA28Jr08eVlVzRbd7lj3u70yNOq18nbyPehNBs4rL+
+ HBsyMDMB8rvjLwyfILpnbvRYVL88OO/CvIA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32et5m3n1q-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:08:11 -0700
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 24 Jul 2020 13:08:08 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 6603662E4E74; Fri, 24 Jul 2020 13:05:47 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <brouer@redhat.com>, Song Liu <songliubraving@fb.com>,
+        kernel test robot <lkp@intel.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: fix build on architectures with special bpf_user_pt_regs_t
+Date:   Fri, 24 Jul 2020 13:05:02 -0700
+Message-ID: <20200724200503.3629591-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
 Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_09:2020-07-24,2020-07-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007240140
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John,
+Architectures like s390, powerpc, arm64, riscv have speical definition of
+bpf_user_pt_regs_t. So we need to cast the pointer before passing it to
+bpf_get_stack(). This is similar to bpf_get_stack_tp().
 
-John Keeping <john@metanate.com> writes:
-> On Fri, 17 Jul 2020 18:00:02 +0200
-> Thomas Gleixner <tglx@linutronix.de> wrote:
-> It seems that this patch breaks perf events on RK3288 because the PMU
-> interrupts that should be per-cpu are now all on CPU0 so no events are
-> collected from CPUs 1-3 and those interrupts are killed as spurious
-> after a few seconds.
->
-> I'm seeing this on 4.19.134 and 5.4.53 but as far as I can tell the
-> relevant code hasn't changed through to next-20200723.  Reverting the
-> backport of this change fixes the problem.
+Fixes: 03d42fd2d83f ("bpf: Separate bpf_get_[stack|stackid] for perf even=
+ts BPF")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ kernel/bpf/stackmap.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Bah.
-
-> It looks like what happens is that because the interrupts are not
-> per-CPU in the hardware, armpmu_request_irq() calls irq_force_affinity()
-> while the interrupt is deactivated and then request_irq() with
-> IRQF_PERCPU | IRQF_NOBALANCING.
->
-> Now when irq_startup() runs with IRQ_STARTUP_NORMAL, it calls
-> irq_setup_affinity() which returns early because IRQF_PERCPU and
-> IRQF_NOBALANCING are set, leaving the interrupt on its original CPU.
-
-Right. My brain tricked me to believe that we made activation mandatory,
-but that's not.
-
-I have some ideas for a trivial generic way to solve this without
-undoing the commit in question and without going through all the irq
-chip drivers. So far everything I came up with is butt ugly. Maybe Marc
-has some brilliant idea.
-
-Sorry for the wreckage and thanks for the excellent problem
-description. I'll come back to you in the next days.
-
-Thanks,
-
-        tglx
-
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 5beb2f8c23da1..4fd830a62be2d 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -678,6 +678,7 @@ const struct bpf_func_proto bpf_get_task_stack_proto =
+=3D {
+ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_data_kern *, ctx,
+ 	   void *, buf, u32, size, u64, flags)
+ {
++	struct pt_regs *regs =3D (struct pt_regs *)(ctx->regs);
+ 	struct perf_event *event =3D ctx->event;
+ 	struct perf_callchain_entry *trace;
+ 	bool kernel, user;
+@@ -685,7 +686,7 @@ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_da=
+ta_kern *, ctx,
+ 	__u64 nr_kernel;
+=20
+ 	if (!(event->attr.sample_type & __PERF_SAMPLE_CALLCHAIN_EARLY))
+-		return __bpf_get_stack(ctx->regs, NULL, NULL, buf, size, flags);
++		return __bpf_get_stack(regs, NULL, NULL, buf, size, flags);
+=20
+ 	if (unlikely(flags & ~(BPF_F_SKIP_FIELD_MASK | BPF_F_USER_STACK |
+ 			       BPF_F_USER_BUILD_ID)))
+@@ -705,8 +706,7 @@ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_da=
+ta_kern *, ctx,
+ 		__u64 nr =3D trace->nr;
+=20
+ 		trace->nr =3D nr_kernel;
+-		err =3D __bpf_get_stack(ctx->regs, NULL, trace, buf,
+-				      size, flags);
++		err =3D __bpf_get_stack(regs, NULL, trace, buf, size, flags);
+=20
+ 		/* restore nr */
+ 		trace->nr =3D nr;
+@@ -718,8 +718,7 @@ BPF_CALL_4(bpf_get_stack_pe, struct bpf_perf_event_da=
+ta_kern *, ctx,
+ 			goto clear;
+=20
+ 		flags =3D (flags & ~BPF_F_SKIP_FIELD_MASK) | skip;
+-		err =3D __bpf_get_stack(ctx->regs, NULL, trace, buf,
+-				      size, flags);
++		err =3D __bpf_get_stack(regs, NULL, trace, buf, size, flags);
+ 	}
+ 	return err;
+=20
+--=20
+2.24.1
 
