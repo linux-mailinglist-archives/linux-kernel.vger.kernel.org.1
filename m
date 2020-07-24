@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECA322C7AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4903022C7B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgGXOQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:16:33 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:63299 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726317AbgGXOQd (ORCPT
+        id S1726947AbgGXOQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:16:41 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:44937 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726317AbgGXOQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:16:33 -0400
-X-UUID: 8a42d10ae5014834a8de1a588a501137-20200724
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=m/J/gzq1uW0/CaTq7kELXH0oOhP3/tQJ+deO3cPbxHM=;
-        b=K7IjJVFmWr38T985rei045Yd8P6KgKnzNFFd4qhT2xaC4QcnOf2GRsHh75tys0Uj63eTo+jXb7EyYcVa+nG3r1En5NKXLxzXXP+/m8hUHsyyTr9HVVg49cAZTEwk8uwlKap7P2XXIXp28s1jiuRwpekceATXIZNaIudtm94VBFo=;
-X-UUID: 8a42d10ae5014834a8de1a588a501137-20200724
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 368038415; Fri, 24 Jul 2020 22:16:29 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 24 Jul 2020 22:16:26 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 24 Jul 2020 22:16:26 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <bvanassche@acm.org>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1] scsi: ufs-mediatek: Prevent LPM operation on undeclared VCC
-Date:   Fri, 24 Jul 2020 22:16:27 +0800
-Message-ID: <20200724141627.20094-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 24 Jul 2020 10:16:41 -0400
+Received: by mail-ed1-f67.google.com with SMTP id by13so7123234edb.11;
+        Fri, 24 Jul 2020 07:16:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0sb81io14/iZEElRAIKtQbO/0LNyji9cw16nJ0jDSPU=;
+        b=U4sXtDjURRyG/D7k4xTE5TEmxatK1efr8nujMlYIIUbEnyuNuEbqOHH6zbhzjwCBUD
+         MkMBV2ykZahcUsltZj0xHelVP4k4FkIb7FfeqRHQLpqxNu5wCM9zqORnCdU+5IJrzdz1
+         G1DG0be4Gf6u9gSUkxoChtGc+NTsifbPq8UBUF1RFbhq7TcZhfMHSlu6G4uuIs5sgTfV
+         ZiCIHdIVk4LVDfiRFt9MmCYFVrxvowFXYWiAM8s8ArmZTfeBtvru27Zytn6WyYNQRV0o
+         BZSzv1yU2I8h+DasnMCTuTjF815OMlxI15Wf0YvpEpDLZSnQibgaaDrwK9XzrsRNLGYG
+         LIIA==
+X-Gm-Message-State: AOAM530n4ZJ17PuGIbmm2BYvyJl1p7RFqOtrVzuFKGXwD6I4DkvUayjp
+        czDobmYUjPcHOvAgtnnuZeM=
+X-Google-Smtp-Source: ABdhPJxZz5FjCvbGUaml5g0kUTy9tq4Ud3q1Jr1TK7yBGK4mPmuoJK+Z/MVfq8HjdZ2+i6JCiMoMWQ==
+X-Received: by 2002:a05:6402:2064:: with SMTP id bd4mr9018052edb.180.1595600198137;
+        Fri, 24 Jul 2020 07:16:38 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id v24sm773066eds.71.2020.07.24.07.16.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Jul 2020 07:16:37 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 16:16:34 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Markus Mayer <mmayer@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 22/29] memory: omap-gpmc: Fix whitespace issue
+Message-ID: <20200724141634.GD10663@kozik-lap>
+References: <20200724074038.5597-1-krzk@kernel.org>
+ <20200724074038.5597-23-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200724074038.5597-23-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gc29tZSBwbGF0Zm9ybXMsIFZDQyByZWd1bGF0b3IgbWF5IG5vdCBiZSBkZWNsYXJlZCBpbiBk
-ZXZpY2UgdHJlZQ0KdG8ga2VlcCBpdHNlbGYgImFsd2F5cy1vbiIuIEluIHRoaXMgY2FzZSwgaGJh
-LT52cmVnX2luZm8udmNjIGlzIE5VTEwNCmFuZCBzaGFsbCBub3QgYmUgb3BlcmF0ZWQgZHVyaW5n
-IGFueSBmbG93Lg0KDQpQcmV2ZW50IHBvc3NpYmxlIE5VTEwgaGJhLT52cmVnX2luZm8udmNjIGFj
-Y2VzcyBpbiBMUE0gbW9kZSBieSBjaGVja2luZw0KaWYgaXQgaXMgdmFsaWQgZmlyc3QuDQoNClNp
-Z25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQotLS0N
-CiBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2Vk
-LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9z
-Y3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMN
-CmluZGV4IDMxYWY4YjNkMmI1My4uNjYyMjNmZTIwMGZjIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9z
-Y3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0
-ZWsuYw0KQEAgLTU3NCw3ICs1NzQsNyBAQCBzdGF0aWMgaW50IHVmc19tdGtfbGlua19zZXRfbHBt
-KHN0cnVjdCB1ZnNfaGJhICpoYmEpDQogDQogc3RhdGljIHZvaWQgdWZzX210a192cmVnX3NldF9s
-cG0oc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBscG0pDQogew0KLQlpZiAoIWhiYS0+dnJlZ19p
-bmZvLnZjY3EyKQ0KKwlpZiAoIWhiYS0+dnJlZ19pbmZvLnZjY3EyIHx8ICFoYmEtPnZyZWdfaW5m
-by52Y2MpDQogCQlyZXR1cm47DQogDQogCWlmIChscG0gJiAhaGJhLT52cmVnX2luZm8udmNjLT5l
-bmFibGVkKQ0KLS0gDQoyLjE4LjANCg==
+On Fri, Jul 24, 2020 at 09:40:31AM +0200, Krzysztof Kozlowski wrote:
+> Fix minor whitespace and comment issues.  No functional changes.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> ---
 
+Applied (and part of pull request to arm-soc).
+
+For the other omap-gpmc testing is welcomed.
+
+Best regards,
+Krzysztof
