@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3E022CF28
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 159F222CF30
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 22:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbgGXULx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 16:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44494 "EHLO
+        id S1727107AbgGXUMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 16:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726992AbgGXULq (ORCPT
+        with ESMTP id S1726573AbgGXUMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 16:11:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1150FC0619D3;
-        Fri, 24 Jul 2020 13:11:46 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 20:11:43 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595621504;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z150dKpBqAjDmluNwFwDPx+9ho6AAnp0vEZHmBCE3Ck=;
-        b=zEFRqOM/HCdK2ifuEfE7k9fEC50fK2Q9/0Xmr7haIp4RZkCPyL/RgkkGBqqHcOAg/ludRg
-        7esCTSPI+4ZTpnWpwkGM0KUERU+aST98LAnqOEK0SUTqqYIHPX07NsaD8iGm6VbWwOJyX7
-        63Gs3NgsMyHiaBvEJ53mmtMIxKfn9cOys/98p373wpn0TSIDDicVh4zsxI7yzJ5hLcfHKo
-        Zfm+9/oJGkjv92rf4a98oyJOuVIy+GX2xN0HoaeNFkbAKSAVR+zHwd/JlRiSK+qrRY0G0K
-        6MEcuXnhgzW2VXhFWfg7qTESb6ihoRQp1Tf/C9zwTWdt8olPPj8ijKk5UjfADg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595621504;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z150dKpBqAjDmluNwFwDPx+9ho6AAnp0vEZHmBCE3Ck=;
-        b=B4rDe8blpz6JoxAqoKtqFV+Oix4UzHJclhNHrjyvYdbirSdZfTmGOTPjtu+RvZLvbmwiTL
-        6kwBCYyFcvN/8KBA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Consolidate check_user_regs()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200722220519.943016204@linutronix.de>
-References: <20200722220519.943016204@linutronix.de>
+        Fri, 24 Jul 2020 16:12:16 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC0CC0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:12:15 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id 1so895640vsl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:12:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LM5eS2EeRGKww+dYskRfhmE9ybbsR8gCTRM+LVzEnYc=;
+        b=iwSz087aaVUaiSy1oH9aa8XJaarVKSzVfLzp/O4LysKy3u1QVPScnmr13iFwMv3SCT
+         0gIzFILLrv2w2raEeGSNDRBWD+3817WlhnydMdgxhGKHReLuPGu6kF6KAWjIGa2MzykV
+         JruC9nRwh9hvoMlHT7vihvIaF/VdfgBjqJfLc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LM5eS2EeRGKww+dYskRfhmE9ybbsR8gCTRM+LVzEnYc=;
+        b=Y9cSNQm395gM5J++RqC1Fah7SvKG7GXKfemJBz5onNEWVXG60hlrsk8AWobm6muxXQ
+         0L7PsHeCxDlrO5kL3c7k5MQByNxZ4/zcoIJeyhHM6CjPdj8lVNQhtzyvOg6zLJNR9CZ7
+         8qY7ki6oeCdrWX+lTBb6motklvWssyOWP9mXRVnfe0zuO5hSuDqcaxFaHb5DNnr5Z0yB
+         gCKTRGqMJsiTk+GjLNwChj4KPHEmQzm5BqgJwXrhsi0ND1ZXFOwPwgn+FzFEdhpeb0W3
+         0chrZfKi+F7gYJdwiuyOb/oyohQxB72EYG1/43TmLa1izu397UnWEel+29HIDZ0VeVaC
+         2q4w==
+X-Gm-Message-State: AOAM533jI84Kwny3gKAS474EIcHTbzeoWz6C5CFdZrBo9gZjDACpqN23
+        C2ehQAJLQyy8Ub3OXQPBjsQuJy4cGE4=
+X-Google-Smtp-Source: ABdhPJwiXJO57s71XGPkkhlnpTglmyZ7q0tgaRvgPW5l0IjdtqtmkQkMtPMgGWfFX+DbKAqT4D8Isg==
+X-Received: by 2002:a05:6102:126a:: with SMTP id q10mr8614894vsg.35.1595621533792;
+        Fri, 24 Jul 2020 13:12:13 -0700 (PDT)
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
+        by smtp.gmail.com with ESMTPSA id j189sm215776vsd.24.2020.07.24.13.12.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 13:12:12 -0700 (PDT)
+Received: by mail-vs1-f46.google.com with SMTP id m6so5525164vsl.12
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 13:12:12 -0700 (PDT)
+X-Received: by 2002:a67:ec0f:: with SMTP id d15mr8730677vso.121.1595621531870;
+ Fri, 24 Jul 2020 13:12:11 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159562150324.4006.3990914186367201441.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200723010137.3127584-1-swboyd@chromium.org> <CAD=FV=WtjyYY+bmocc17S9NbRs6inkAWjj7=c9qBsVf3LtG99Q@mail.gmail.com>
+ <159561988523.3847286.14763422711224252201@swboyd.mtv.corp.google.com>
+ <CAD=FV=WH1vKKe=MPVdtBJZWnSzxNLO0uyM02GFG6oCJfSEwehQ@mail.gmail.com> <159562087212.3847286.9484527206999948907@swboyd.mtv.corp.google.com>
+In-Reply-To: <159562087212.3847286.9484527206999948907@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 24 Jul 2020 13:11:59 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VUSwsP_xrHsufLjZqbWdn5V8rybtv2DWad2nBfU+VJ9w@mail.gmail.com>
+Message-ID: <CAD=FV=VUSwsP_xrHsufLjZqbWdn5V8rybtv2DWad2nBfU+VJ9w@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Sleep waiting for tcs slots to be free
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+Hi,
 
-Commit-ID:     8d5ea35c5e9139dbd19a3d73985d008d36c9968f
-Gitweb:        https://git.kernel.org/tip/8d5ea35c5e9139dbd19a3d73985d008d36c9968f
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 23 Jul 2020 00:00:00 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 24 Jul 2020 15:04:57 +02:00
+On Fri, Jul 24, 2020 at 1:01 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Doug Anderson (2020-07-24 12:49:56)
+> > Hi,
+> >
+> > On Fri, Jul 24, 2020 at 12:44 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > > > -       if (ret)
+> > > > > -               goto unlock;
+> > > > >
+> > > > > -       ret = find_free_tcs(tcs);
+> > > > > -       if (ret < 0)
+> > > > > -               goto unlock;
+> > > > > -       tcs_id = ret;
+> > > > > +       wait_event_lock_irq(drv->tcs_wait,
+> > > > > +                           (tcs_id = claim_tcs_for_req(drv, tcs, msg)) >= 0,
+> > > >
+> > > > Even though claim_tcs_for_req() only returns 0 or -EBUSY today (IOW it
+> > > > never returns error codes other than -EBUSY), should we handle it?  If
+> > > > we don't, claim_tcs_for_req() should be very clear that it shouldn't
+> > > > return any errors other than -EBUSY.
+> > >
+> > > Do you mean you want to change it to be
+> > >
+> > >         (tcs_id = claim_tcs_for_req(drv, tcs, msg)) != -EBUSY
+> > >
+> > > instead of >= 0? It should return the tcs_id that was claimed, not just
+> > > 0 or -EBUSY.
+> >
+> > Ah, right.  Yes, you got it right.  Of course then we have to add a
+> > "if (tcd_id < 0) goto unlock", too.  If you think it's not worth
+> > adding this then we just need to make sure it's super obvious in
+> > claim_tcs_for_req() that it's not allowed to return other errors.
+> >
+>
+> Hmm right now the code will wait forever for the condition to become
+> true, so it will only ever continue past this point if tcs_id >= 0. We
+> could add a timeout here in another patch, but I didn't want to change
+> the behavior of what is there in this patch. I don't really care if >= 0
+> or != -EBUSY is used here so I can change it to -EBUSY to provide
+> clarity.
+>
+> If we add a timeout here, it would be better to change this driver to
+> use a pull model instead of the push model it is using today so that the
+> timeout isn't necessary. That would entail making a proper kthread that
+> pulls requests off a queue of messages and then this asnyc call would
+> append messages to the end of the queue and return immediately. That
+> would be necessary if we want the async calls to work from non-sleeping
+> contexts for example. I think Lina was alluding to this earlier in this
+> thread.
 
-x86/entry: Consolidate check_user_regs()
+I wasn't suggesting adding a timeout.  I was just saying that if
+claim_tcs_for_req() were to ever return an error code other than
+-EBUSY that we'd need a check for it because otherwise we'd interpret
+the result as a tcs_id.
 
-The user register sanity check is sprinkled all over the place. Move it
-into enter_from_user_mode().
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lkml.kernel.org/r/20200722220519.943016204@linutronix.de
-
-
----
- arch/x86/entry/common.c | 24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 4eae4c1..ab6cb86 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -82,10 +82,11 @@ static noinstr void check_user_regs(struct pt_regs *regs)
-  * 2) Invoke context tracking if enabled to reactivate RCU
-  * 3) Trace interrupts off state
-  */
--static noinstr void enter_from_user_mode(void)
-+static noinstr void enter_from_user_mode(struct pt_regs *regs)
- {
- 	enum ctx_state state = ct_state();
- 
-+	check_user_regs(regs);
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	user_exit_irqoff();
- 
-@@ -95,8 +96,9 @@ static noinstr void enter_from_user_mode(void)
- 	instrumentation_end();
- }
- #else
--static __always_inline void enter_from_user_mode(void)
-+static __always_inline void enter_from_user_mode(struct pt_regs *regs)
- {
-+	check_user_regs(regs);
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	instrumentation_begin();
- 	trace_hardirqs_off_finish();
-@@ -369,9 +371,7 @@ __visible noinstr void do_syscall_64(unsigned long nr, struct pt_regs *regs)
- {
- 	struct thread_info *ti;
- 
--	check_user_regs(regs);
--
--	enter_from_user_mode();
-+	enter_from_user_mode(regs);
- 	instrumentation_begin();
- 
- 	local_irq_enable();
-@@ -434,9 +434,7 @@ static void do_syscall_32_irqs_on(struct pt_regs *regs)
- /* Handles int $0x80 */
- __visible noinstr void do_int80_syscall_32(struct pt_regs *regs)
- {
--	check_user_regs(regs);
--
--	enter_from_user_mode();
-+	enter_from_user_mode(regs);
- 	instrumentation_begin();
- 
- 	local_irq_enable();
-@@ -487,8 +485,6 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 					vdso_image_32.sym_int80_landing_pad;
- 	bool success;
- 
--	check_user_regs(regs);
--
- 	/*
- 	 * SYSENTER loses EIP, and even SYSCALL32 needs us to skip forward
- 	 * so that 'regs->ip -= 2' lands back on an int $0x80 instruction.
-@@ -496,7 +492,7 @@ __visible noinstr long do_fast_syscall_32(struct pt_regs *regs)
- 	 */
- 	regs->ip = landing_pad;
- 
--	enter_from_user_mode();
-+	enter_from_user_mode(regs);
- 	instrumentation_begin();
- 
- 	local_irq_enable();
-@@ -599,8 +595,7 @@ idtentry_state_t noinstr idtentry_enter(struct pt_regs *regs)
- 	};
- 
- 	if (user_mode(regs)) {
--		check_user_regs(regs);
--		enter_from_user_mode();
-+		enter_from_user_mode(regs);
- 		return ret;
- 	}
- 
-@@ -733,8 +728,7 @@ void noinstr idtentry_exit(struct pt_regs *regs, idtentry_state_t state)
-  */
- void noinstr idtentry_enter_user(struct pt_regs *regs)
- {
--	check_user_regs(regs);
--	enter_from_user_mode();
-+	enter_from_user_mode(regs);
- }
- 
- /**
+-Doug
