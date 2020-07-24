@@ -2,52 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBFA22C229
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E5922C22B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 11:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgGXJWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 05:22:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728340AbgGXJWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 05:22:38 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 396FC2076A;
-        Fri, 24 Jul 2020 09:22:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595582558;
-        bh=unvncGrqFVS7ZXx4Z88wqiMxuA+vFo/71kXPNlyrpRM=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=tv/zqqI/P35FYhe6x9at2Cs7aOTEF1CkiA3y1oIn6Lng6NR6so8A0Jgrb3UMSvNhY
-         8xX5JyOdzA6J9aqmyEdyrU03VLJqulvDV95xytBpabvf66Le2LLbIhazhNw/ihi1UJ
-         I8MrcVJA6+JmrZIHyPldXxRwyKRjrC+tGWvDxICA=
-Content-Type: text/plain; charset="utf-8"
+        id S1728033AbgGXJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 05:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726995AbgGXJXD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 05:23:03 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAD5C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:23:02 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id h28so6550434edz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 02:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LNGLkZP5D8/u8cZ8++DJl4JEFHoFdXiIn1C5bXtzgAs=;
+        b=TVr8EnMEYkpB0XNbRADjLeg2HaEo67xazjjWxA5VZcA++bSJRceRIQCCczT/6Rdyms
+         PxD8N3rPU0zlDTLl0LiWRrFYiuJ+8lEymThg54tbeP37GA8lo/or9STAos35EffaRkAJ
+         5SNnbMVtTySpaFcoLrjOjuAWUxUmrWXLb1V4n0Mt+3mppuMNH3pD2zFLmqfIcIs/4Bcn
+         uzAWTs/OYCwd4otci5b8oc2UaPkSA+Wd7CdgIYYKJmt2LOEyIJbt8rH66v1Awm/Gm8Bf
+         KXQdXz7kBRGTdb/n5IiRWZnltOlcihVclXxs5yiTe6tr/TehnCANlzulMrpSvZ1g6bDJ
+         CChQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=LNGLkZP5D8/u8cZ8++DJl4JEFHoFdXiIn1C5bXtzgAs=;
+        b=nGkoA5oCPHTTiAgMoBUNxdfK+GFl9GHKBRxzIjiV2DVsxPbq8K2grX2128jBnGp90z
+         tUlBnx09ICSOvHwtumvE2X5PHCrn8bF5ABi5h3arlc27c47gFXHPzYUuwd4cBtwv0Kyf
+         8jjuZVbrY/GpXydV35HYN8VNOd7E3xUuQ1d6koxJc/C4PCgYaWMc1MWxYHxoJuIo9ESz
+         8S7pkva7d/mKX4S3O7aheRFXUDxgdU8vxahUYDX8Lp4dpLlV1V2uRfcictu6Dsuu1nrV
+         gP3cRUvoV6hTTbrjk3lc5UFo9gEftt+Bk5lUVg7G83JmKDDdTw4cr97yrW+bjRGr86eW
+         mNjA==
+X-Gm-Message-State: AOAM533O/T11BIcpQ81wQ+WgGDM1c0hjr1MOdz2Ef+ooxp+y4RmwokvP
+        yN5zZ0lt/9EkdPgEpX1pRSpi15g+
+X-Google-Smtp-Source: ABdhPJyWsapp3jdS9V13rZnwZ7bt/j9qOk6Yb8QWM32MEAIMsYVZRyrJGN0IyC3c8uZfYWUPSH/StA==
+X-Received: by 2002:a05:6402:32b:: with SMTP id q11mr6140414edw.67.1595582581687;
+        Fri, 24 Jul 2020 02:23:01 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id d23sm287994ejj.74.2020.07.24.02.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 02:23:01 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 11:22:58 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Marco Elver <elver@google.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Nayna Jain <nayna@linux.ibm.com>
+Subject: Re: [PATCH v5 3/6] arch/x86: Implement text_alloc() and text_free()
+Message-ID: <20200724092258.GC517988@gmail.com>
+References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
+ <20200724050553.1724168-4-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1595403506-8209-19-git-send-email-claudiu.beznea@microchip.com>
-References: <1595403506-8209-1-git-send-email-claudiu.beznea@microchip.com> <1595403506-8209-19-git-send-email-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v2 18/18] clk: at91: sama7g5: add clock support for sama7g5
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     bbrezillon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        mturquette@baylibre.com, nicolas.ferre@microchip.com
-Date:   Fri, 24 Jul 2020 02:22:37 -0700
-Message-ID: <159558255758.3847286.4193906885185534353@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724050553.1724168-4-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Claudiu Beznea (2020-07-22 00:38:26)
-> Add clock support for SAMA7G5.
->=20
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
 
-Applied to clk-next
+* Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+
+> +void text_free(void *region)
+> +{
+> +	/*
+> +	 * This memory may be RO, and freeing RO memory in an interrupt is not
+> +	 * supported by vmalloc.
+> +	 */
+> +	lockdep_assert_irqs_enabled();
+> +
+> +	vfree(region);
+
+Had to dig around a bit to find the source of this restriction. Might 
+make sense to clarify this comment to:
+
+	/*
+	 * This memory may be read-only, and freeing VM_FLUSH_RESET_PERMS memory
+	 * in an interrupt is not supported by vmalloc.
+	 */
+
+Thanks,
+
+	Ingo
