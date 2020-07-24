@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAB822BEC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B9222BEBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgGXHN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:13:59 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:60804 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726543AbgGXHN6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:13:58 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.233932|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0390033-0.00187396-0.959123;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16378;MF=frank@allwinnertech.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.I6qQdys_1595574830;
-Received: from allwinnertech.com(mailfrom:frank@allwinnertech.com fp:SMTPD_---.I6qQdys_1595574830)
-          by smtp.aliyun-inc.com(10.147.42.16);
-          Fri, 24 Jul 2020 15:13:55 +0800
-From:   Frank Lee <frank@allwinnertech.com>
-To:     lee.jones@linaro.org, wens@csie.org, linux-kernel@vger.kernel.org
-Cc:     tiny.windzz@gmail.com, huangshuosheng@allwinnertech.com,
-        liyong@allwinnertech.com, Yangtao Li <frank@allwinnertech.com>
-Subject: [PATCH v5 10/16] mfd: axp20x: Allow the AXP803 to be probed by I2C
-Date:   Fri, 24 Jul 2020 15:13:14 +0800
-Message-Id: <c19530b2ee1f377bfeb1273f07a7ceb4ea4372ab.1595572867.git.frank@allwinnertech.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1595572867.git.frank@allwinnertech.com>
-References: <cover.1595572867.git.frank@allwinnertech.com>
+        id S1727015AbgGXHNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:13:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50776 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726543AbgGXHNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 03:13:34 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1543720748;
+        Fri, 24 Jul 2020 07:13:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595574813;
+        bh=fUeIibLbxVfYamditippdQ64erDPYhNSY56DGcKqco8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UJdUpdVHMv4UuMUJUwPQnL5XE/7udNcWNkHE2t4+1hgtIAZR2f9l0p3uu/5az95dw
+         XUkqJM5+fB8xx72eO+o8wVGKEn/oF68u4JgDpiAHIdY0+naVBAiEIjjXdgIYDgDFIz
+         Spo29x7iM0brgeiBL8tjVfD9rNrCrzVXcOG7P8sk=
+Date:   Fri, 24 Jul 2020 09:13:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paras Sharma <parashar@codeaurora.org>
+Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akashast@codeaurora.org
+Subject: Re: [PATCH] tty: serial: qcom_geni_serial: To correct logic for QUP
+ HW version
+Message-ID: <20200724071335.GA3948185@kroah.com>
+References: <1595571242-9967-1-git-send-email-parashar@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595571242-9967-1-git-send-email-parashar@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+On Fri, Jul 24, 2020 at 11:44:02AM +0530, Paras Sharma wrote:
+> To correct the logic to detect whether the QUP HW version is greater
+>  than 2.5.
 
-The AXP803 can be used both using the RSB proprietary bus, or a more
-traditional I2C bus.
+The subject line and here does not make any sense.  Can you reword this
+as what the problem is and why you need to change this?
 
-Let's add that possibility.
+> 
+> Signed-off-by: Paras Sharma <parashar@codeaurora.org>
+> ---
+>  drivers/tty/serial/qcom_geni_serial.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+> index 1ed3d35..5b0efb49 100644
+> --- a/drivers/tty/serial/qcom_geni_serial.c
+> +++ b/drivers/tty/serial/qcom_geni_serial.c
+> @@ -954,7 +954,8 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
+>  	sampling_rate = UART_OVERSAMPLING;
+>  	/* Sampling rate is halved for IP versions >= 2.5 */
+>  	ver = geni_se_get_qup_hw_version(&port->se);
+> -	if (GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
+> +	if ((GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
+> +		|| GENI_SE_VERSION_MAJOR(ver) >= 3)
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
----
- drivers/mfd/axp20x-i2c.c | 2 ++
- 1 file changed, 2 insertions(+)
+Odd coding style :(
 
-diff --git a/drivers/mfd/axp20x-i2c.c b/drivers/mfd/axp20x-i2c.c
-index 14f9df74f855..446a7d0bbb47 100644
---- a/drivers/mfd/axp20x-i2c.c
-+++ b/drivers/mfd/axp20x-i2c.c
-@@ -63,6 +63,7 @@ static const struct of_device_id axp20x_i2c_of_match[] = {
- 	{ .compatible = "x-powers,axp209", .data = (void *)AXP209_ID },
- 	{ .compatible = "x-powers,axp221", .data = (void *)AXP221_ID },
- 	{ .compatible = "x-powers,axp223", .data = (void *)AXP223_ID },
-+	{ .compatible = "x-powers,axp803", .data = (void *)AXP803_ID },
- 	{ .compatible = "x-powers,axp806", .data = (void *)AXP806_ID },
- 	{ },
- };
-@@ -74,6 +75,7 @@ static const struct i2c_device_id axp20x_i2c_id[] = {
- 	{ "axp209", 0 },
- 	{ "axp221", 0 },
- 	{ "axp223", 0 },
-+	{ "axp803", 0 },
- 	{ "axp806", 0 },
- 	{ },
- };
--- 
-2.24.0
+Please fix all of the above up and resubmit a v2.
 
+thanks,
+
+greg k-h
