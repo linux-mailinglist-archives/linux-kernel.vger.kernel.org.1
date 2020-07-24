@@ -2,127 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39AD22CE6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF3622CE6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgGXTIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgGXTIw (ORCPT
+        id S1726993AbgGXTJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:09:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39880 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGXTI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:08:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FDAC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:08:52 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 1so5726219pfn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:08:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1golVKvQMtPFKTXci2gDoubKVQV9khMoEWiJu1+cjio=;
-        b=NyPhcF7ES8xptWq8dHNT7VwVGzeQpKfZ5hRq8rGory7uVyoZMd4V8Re7FTzoRfEANd
-         V9ylGwmoW/hs3J+61sj/6UNwzlKLZhVuXYaxOx/RZfv/hLe1ieazh6AvGyiRd00lZBna
-         tiBh1rSzAdugOJEo3I+gBIlVBy6wmwjIWa7Qw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1golVKvQMtPFKTXci2gDoubKVQV9khMoEWiJu1+cjio=;
-        b=kJdjd60zh8qavfF5FJzJMUBrY5jbQLPoOHQnLQubIqcH/1Ao8D/ZmfysQd9CH6eTip
-         WNK1a+oeypwlX4PQogWNmh4HW4KenUtAWVlbRnD0GmKHWFikOq4HNm5is3Z1HyZR1IYv
-         s8IN8/a2hWFkux8C0WnDBsXlJMfx2dyq1eWhsgdepEyGCKyE2fC6Rb8Ho0m4F+nCvjJV
-         jyguHQSoNaFrtuJv3wadRrMkjBm3HqMuavchqES3K4t8J9XpiWV9VAhamCSyvUI74Wbp
-         ceqyb7EZAr+h3xkNItWcnp3YxP9qVlBtmZ8ai5X6e5ra2mmIQ8JRiOI/1IdQtiQEMlai
-         Ds5A==
-X-Gm-Message-State: AOAM532rlXmxLvxeNIyvaWVRb20YShiQ97wGM/6PqTSqiARdiI/Plbz4
-        wWZR3WzajuMZXhFl9Vj4gBsyoA==
-X-Google-Smtp-Source: ABdhPJySCxAxlkIyR/MCENi3CKBep+K5xQ84CnfCIaWUraOnMKGPI77sG+bl/zCMOaUaQwlIK10oyg==
-X-Received: by 2002:a63:c049:: with SMTP id z9mr9465123pgi.353.1595617732012;
-        Fri, 24 Jul 2020 12:08:52 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:8edc:d4ff:fe53:350d])
-        by smtp.gmail.com with ESMTPSA id c14sm7157871pfj.82.2020.07.24.12.08.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 12:08:51 -0700 (PDT)
-From:   Brian Norris <briannorris@chromium.org>
-To:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Brian Norris <briannorris@chromium.org>
-Subject: [PATCH v2 2/2] platform/chrome: cros_ec_proto: check for missing EC_CMD_HOST_EVENT_GET_WAKE_MASK
-Date:   Fri, 24 Jul 2020 12:08:41 -0700
-Message-Id: <20200724190841.3112365-2-briannorris@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-In-Reply-To: <20200724190841.3112365-1-briannorris@chromium.org>
-References: <20200724190841.3112365-1-briannorris@chromium.org>
+        Fri, 24 Jul 2020 15:08:58 -0400
+Date:   Fri, 24 Jul 2020 19:08:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595617735;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xb7gkOw79hTP+VUseD+J3vUtjmg9zwEsI6NtW/Q9tlM=;
+        b=yvqkxOjsvYzog+g5FrZ3olWQ4k9WjhMi/Jgz82wfNmaw5oGtxqesJWB1DHHKTmQwjObNc4
+        v03BZn92cYqPz9Y7NflwA1ZCNCDgklxpUBuUnuQQ92QdYw3SU5lYwFfXM0M0gAblXHAclW
+        YJjumJ0wluqg0UdME05DetWdbQ6CIuDePxdumJW4uGj9UdUpvIwD8sYn1jvPiFL2T15eUR
+        6W6t4YWiADQq5Z7FceOOW/flnhcEda7BMYdR+6M67lID/M5yyaJ+7/0efI0Ox1xd0+KVfU
+        Tjde7NEKt0S/kDDlyXwsNJ3Tq5iSN3TsHnSF4uc+NXBSCIqj07v8P62H9DkVlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595617735;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xb7gkOw79hTP+VUseD+J3vUtjmg9zwEsI6NtW/Q9tlM=;
+        b=ilOWMxXdQG44kkEnfHIrpfCdLbxFjFZk4cdSBVIVpkgc2KLnaTdB8+M+J0suwium1Ut0Bh
+        2cyywGX2p5IEuMBw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/entry] entry: Provide infrastructure for work before
+ transitioning to guest mode
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200722220519.833296398@linutronix.de>
+References: <20200722220519.833296398@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <159561773439.4006.6664021782988649777.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As with cros_ec_cmd_xfer_status(), etc., it's not enough to simply check
-for the return status of send_command() -- that only covers transport or
-other similarly-fatal errors. One must also check the ->result field, to
-see whether the command really succeeded. If not, we can't use the data
-it returns.
+The following commit has been merged into the core/entry branch of tip:
 
-The caller of cros_ec_get_host_event_wake_mask() ignores this, and so
-for example, on EC's where the command is not implemented, we're using
-junk (or in practice, all zeros) for our wake-mask. We should be using a
-non-zero default (currently, it's supposed to be all-1's).
+Commit-ID:     935ace2fb5cc49ae88bd1f1735ddc51cdc2ebfb3
+Gitweb:        https://git.kernel.org/tip/935ace2fb5cc49ae88bd1f1735ddc51cdc2ebfb3
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 22 Jul 2020 23:59:59 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 24 Jul 2020 15:03:42 +02:00
 
-Fix this by checking the ->result field and returning -EPROTO for
-errors.
+entry: Provide infrastructure for work before transitioning to guest mode
 
-I might label this as fixing commit 29d99b966d60 ("cros_ec: Don't signal
-wake event for non-wake host events"), except that this fix alone
-actually may make things worse, as it now allows for a lot more spurious
-wakeups. The patch "platform/chrome: cros_ec_proto: ignore battery/AC
-wakeups on old ECs" helps to mitigate this.
+Entering a guest is similar to exiting to user space. Pending work like
+handling signals, rescheduling, task work etc. needs to be handled before
+that.
 
-Signed-off-by: Brian Norris <briannorris@chromium.org>
+Provide generic infrastructure to avoid duplication of the same handling
+code all over the place.
+
+The transfer to guest mode handling is different from the exit to usermode
+handling, e.g. vs. rseq and live patching, so a separate function is used.
+
+The initial list of work items handled is:
+
+    TIF_SIGPENDING, TIF_NEED_RESCHED, TIF_NOTIFY_RESUME
+
+Architecture specific TIF flags can be added via defines in the
+architecture specific include files.
+
+The calling convention is also different from the syscall/interrupt entry
+functions as KVM invokes this from the outer vcpu_run() loop with
+interrupts and preemption enabled. To prevent missing a pending work item
+it invokes a check for pending TIF work from interrupt disabled code right
+before transitioning to guest mode. The lockdep, RCU and tracing state
+handling is also done directly around the switch to and from guest mode.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200722220519.833296398@linutronix.de
 ---
-v2:
- * EOPNOTSUPP, not ENOTSUPP
----
- drivers/platform/chrome/cros_ec_proto.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/linux/entry-kvm.h | 80 ++++++++++++++++++++++++++++++++++++++-
+ include/linux/kvm_host.h  |  8 ++++-
+ kernel/entry/Makefile     |  3 +-
+ kernel/entry/kvm.c        | 51 ++++++++++++++++++++++++-
+ virt/kvm/Kconfig          |  3 +-
+ 5 files changed, 144 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/entry-kvm.h
+ create mode 100644 kernel/entry/kvm.c
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index e93024b55ce8..31ca0af62388 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -208,6 +208,12 @@ static int cros_ec_get_host_event_wake_mask(struct cros_ec_device *ec_dev,
- 	msg->insize = sizeof(*r);
+diff --git a/include/linux/entry-kvm.h b/include/linux/entry-kvm.h
+new file mode 100644
+index 0000000..0cef17a
+--- /dev/null
++++ b/include/linux/entry-kvm.h
+@@ -0,0 +1,80 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __LINUX_ENTRYKVM_H
++#define __LINUX_ENTRYKVM_H
++
++#include <linux/entry-common.h>
++
++/* Transfer to guest mode work */
++#ifdef CONFIG_KVM_XFER_TO_GUEST_WORK
++
++#ifndef ARCH_XFER_TO_GUEST_MODE_WORK
++# define ARCH_XFER_TO_GUEST_MODE_WORK	(0)
++#endif
++
++#define XFER_TO_GUEST_MODE_WORK					\
++	(_TIF_NEED_RESCHED | _TIF_SIGPENDING |			\
++	 _TIF_NOTIFY_RESUME | ARCH_XFER_TO_GUEST_MODE_WORK)
++
++struct kvm_vcpu;
++
++/**
++ * arch_xfer_to_guest_mode_handle_work - Architecture specific xfer to guest
++ *					 mode work handling function.
++ * @vcpu:	Pointer to current's VCPU data
++ * @ti_work:	Cached TIF flags gathered in xfer_to_guest_mode_handle_work()
++ *
++ * Invoked from xfer_to_guest_mode_handle_work(). Defaults to NOOP. Can be
++ * replaced by architecture specific code.
++ */
++static inline int arch_xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu,
++						      unsigned long ti_work);
++
++#ifndef arch_xfer_to_guest_mode_work
++static inline int arch_xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu,
++						      unsigned long ti_work)
++{
++	return 0;
++}
++#endif
++
++/**
++ * xfer_to_guest_mode_handle_work - Check and handle pending work which needs
++ *				    to be handled before going to guest mode
++ * @vcpu:	Pointer to current's VCPU data
++ *
++ * Returns: 0 or an error code
++ */
++int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu);
++
++/**
++ * __xfer_to_guest_mode_work_pending - Check if work is pending
++ *
++ * Returns: True if work pending, False otherwise.
++ *
++ * Bare variant of xfer_to_guest_mode_work_pending(). Can be called from
++ * interrupt enabled code for racy quick checks with care.
++ */
++static inline bool __xfer_to_guest_mode_work_pending(void)
++{
++	unsigned long ti_work = READ_ONCE(current_thread_info()->flags);
++
++	return !!(ti_work & XFER_TO_GUEST_MODE_WORK);
++}
++
++/**
++ * xfer_to_guest_mode_work_pending - Check if work is pending which needs to be
++ *				     handled before returning to guest mode
++ *
++ * Returns: True if work pending, False otherwise.
++ *
++ * Has to be invoked with interrupts disabled before the transition to
++ * guest mode.
++ */
++static inline bool xfer_to_guest_mode_work_pending(void)
++{
++	lockdep_assert_irqs_disabled();
++	return __xfer_to_guest_mode_work_pending();
++}
++#endif /* CONFIG_KVM_XFER_TO_GUEST_WORK */
++
++#endif
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index d564855..ac83e9c 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1439,4 +1439,12 @@ int kvm_vm_create_worker_thread(struct kvm *kvm, kvm_vm_thread_fn_t thread_fn,
+ 				uintptr_t data, const char *name,
+ 				struct task_struct **thread_ptr);
  
- 	ret = send_command(ec_dev, msg);
-+	if (ret >= 0) {
-+		if (msg->result == EC_RES_INVALID_COMMAND)
-+			return -EOPNOTSUPP;
-+		if (msg->result != EC_RES_SUCCESS)
-+			return -EPROTO;
-+	}
- 	if (ret > 0) {
- 		r = (struct ec_response_host_event_mask *)msg->data;
- 		*mask = r->mask;
-@@ -488,6 +494,13 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
- 			  BIT(EC_HOST_EVENT_BATTERY_CRITICAL) |
- 			  BIT(EC_HOST_EVENT_PD_MCU) |
- 			  BIT(EC_HOST_EVENT_BATTERY_STATUS));
-+		/*
-+		 * Old ECs may not support this command. Complain about all
-+		 * other errors.
-+		 */
-+		if (ret != -EOPNOTSUPP)
-+			dev_err(ec_dev->dev,
-+				"failed to retrieve wake mask: %d\n", ret);
- 	}
++#ifdef CONFIG_KVM_XFER_TO_GUEST_WORK
++static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
++{
++	vcpu->run->exit_reason = KVM_EXIT_INTR;
++	vcpu->stat.signal_exits++;
++}
++#endif /* CONFIG_KVM_XFER_TO_GUEST_WORK */
++
+ #endif
+diff --git a/kernel/entry/Makefile b/kernel/entry/Makefile
+index c207d20..34c8a3f 100644
+--- a/kernel/entry/Makefile
++++ b/kernel/entry/Makefile
+@@ -9,4 +9,5 @@ KCOV_INSTRUMENT := n
+ CFLAGS_REMOVE_common.o	 = -fstack-protector -fstack-protector-strong
+ CFLAGS_common.o		+= -fno-stack-protector
  
- 	ret = 0;
--- 
-2.28.0.rc0.142.g3c755180ce-goog
-
+-obj-$(CONFIG_GENERIC_ENTRY) += common.o
++obj-$(CONFIG_GENERIC_ENTRY) 		+= common.o
++obj-$(CONFIG_KVM_XFER_TO_GUEST_WORK)	+= kvm.o
+diff --git a/kernel/entry/kvm.c b/kernel/entry/kvm.c
+new file mode 100644
+index 0000000..eb1a8a4
+--- /dev/null
++++ b/kernel/entry/kvm.c
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/entry-kvm.h>
++#include <linux/kvm_host.h>
++
++static int xfer_to_guest_mode_work(struct kvm_vcpu *vcpu, unsigned long ti_work)
++{
++	do {
++		int ret;
++
++		if (ti_work & _TIF_SIGPENDING) {
++			kvm_handle_signal_exit(vcpu);
++			return -EINTR;
++		}
++
++		if (ti_work & _TIF_NEED_RESCHED)
++			schedule();
++
++		if (ti_work & _TIF_NOTIFY_RESUME) {
++			clear_thread_flag(TIF_NOTIFY_RESUME);
++			tracehook_notify_resume(NULL);
++		}
++
++		ret = arch_xfer_to_guest_mode_handle_work(vcpu, ti_work);
++		if (ret)
++			return ret;
++
++		ti_work = READ_ONCE(current_thread_info()->flags);
++	} while (ti_work & XFER_TO_GUEST_MODE_WORK || need_resched());
++	return 0;
++}
++
++int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu)
++{
++	unsigned long ti_work;
++
++	/*
++	 * This is invoked from the outer guest loop with interrupts and
++	 * preemption enabled.
++	 *
++	 * KVM invokes xfer_to_guest_mode_work_pending() with interrupts
++	 * disabled in the inner loop before going into guest mode. No need
++	 * to disable interrupts here.
++	 */
++	ti_work = READ_ONCE(current_thread_info()->flags);
++	if (!(ti_work & XFER_TO_GUEST_MODE_WORK))
++		return 0;
++
++	return xfer_to_guest_mode_work(vcpu, ti_work);
++}
++EXPORT_SYMBOL_GPL(xfer_to_guest_mode_handle_work);
+diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
+index aad9284..1c37ccd 100644
+--- a/virt/kvm/Kconfig
++++ b/virt/kvm/Kconfig
+@@ -60,3 +60,6 @@ config HAVE_KVM_VCPU_RUN_PID_CHANGE
+ 
+ config HAVE_KVM_NO_POLL
+        bool
++
++config KVM_XFER_TO_GUEST_WORK
++       bool
