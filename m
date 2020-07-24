@@ -2,158 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AD522BDC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 07:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8692E22BDD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 07:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgGXF4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 01:56:20 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:50018 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726134AbgGXF4S (ORCPT
+        id S1726716AbgGXF7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 01:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgGXF7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 01:56:18 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06O5uFXR088243;
-        Fri, 24 Jul 2020 00:56:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595570175;
-        bh=k4XT/ag3y89G2xERAKuPRDve/n7of+kXftcTCTVuRQM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Lhagn9ri1QJbWaGkcSOPXniFFsWSYgzMAjBvykj0HSYf4VMBpDTtYXmwQILz5T6VU
-         wDkr/pwnjF1lQaxU8osh4DM+HC50dvJ/vCkFW/Y8uXHr0EZKva+8MMqWjK32bHrBUv
-         YiYxRcO/xdTOm3kTkoqD9bPKoTVI1Kmi92rc87iw=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06O5uFLZ001436
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 24 Jul 2020 00:56:15 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 24
- Jul 2020 00:56:12 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 24 Jul 2020 00:56:12 -0500
-Received: from a0393678ub.india.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06O5u437005411;
-        Fri, 24 Jul 2020 00:56:10 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kishon@ti.com>
-Subject: [PATCH 2/2] arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe instances
-Date:   Fri, 24 Jul 2020 11:26:04 +0530
-Message-ID: <20200724055604.31498-3-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200724055604.31498-1-kishon@ti.com>
-References: <20200724055604.31498-1-kishon@ti.com>
+        Fri, 24 Jul 2020 01:59:42 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA86C0619D3;
+        Thu, 23 Jul 2020 22:59:42 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t6so3899036plo.3;
+        Thu, 23 Jul 2020 22:59:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=2R0lW9dUL1nYb/9lgperk2g748vxQMNCmmnNHRKkl+M=;
+        b=Pb4/uDyqpRTTP9b3ebYsdYcsxNScuYdJIPeDBdZdQ0oiVxIw9UIdugSoUtLX7SJ1/B
+         3Xdajmy3uy5LYrQAe1LgIUmt9GE2Vm15HXVAfbSCg3F0Qeru3fAvX3RNB/iMTCee5YEf
+         Adelh56xJuUYcwoXbqlzhH99jqeA0YOu72J/OiCuy0fBv5rjilfboH5Vdua2NoTnkgaP
+         NSculWvNNeRGDKrLDX9WSmf3+GTuvKrepedSaFzEn9p46GRTm21RRPTHKGRdD+k0n+GM
+         ofGi26OjkkbLfQt5mu++mN1BJa3/e/9cUcmQdOHUK+ZigZC4XvuAIo2C03brXMwXU575
+         EKog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=2R0lW9dUL1nYb/9lgperk2g748vxQMNCmmnNHRKkl+M=;
+        b=duXxVlKM+S1f/30IaC9ZK8TtJeP5va/zq/uO1kGarvC3A7HVu/7uIMSn9XlW+wvlUj
+         Ez/+6+w2/ro7EC2DpaS21tfGKd5diz4uAh/9puM/Smiid/fg2bRQdgoqHm4Di2DLAldL
+         2Rpcl3l4oF1YUyu5ogpbEsoSsMCPsS+c9qTdQxIhzKBgjVQbHH1nuSrnlSxd/UEK9i/K
+         V1E/IGPUwzQDYfLHp30wOLuaMVcd+hTKeD6NiFDOpvQesLJsYxckIBYMz71J7Bf91ujO
+         IkjfJ/IIk0golrsvlTB8hwH4ozWrN7t9YeX9LaKdqu4P1o2cBS5Mozz9F4djZplM2vFz
+         4gdg==
+X-Gm-Message-State: AOAM531oxNj5JbQHpbIHwl2hqN3vF4m3ENfnOjGnrphaqQQn1uTrnADI
+        pvp7Ail1fG5JuTMbAdMIVaK7zFWU
+X-Google-Smtp-Source: ABdhPJxbeH9FlO3dIACKcXGFcLekN350jP0rI0GOjOvxK+MH/SPj/LKJY2RwdAnGdzEYCg0FKF+/iQ==
+X-Received: by 2002:a17:902:6181:: with SMTP id u1mr6767335plj.205.1595570381925;
+        Thu, 23 Jul 2020 22:59:41 -0700 (PDT)
+Received: from localhost (110-174-173-27.tpgi.com.au. [110.174.173.27])
+        by smtp.gmail.com with ESMTPSA id y24sm4966404pfp.217.2020.07.23.22.59.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jul 2020 22:59:41 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 15:59:35 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 1/2] lockdep: improve current->(hard|soft)irqs_enabled
+ synchronisation with actual irq state
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will@kernel.org>
+References: <20200723105615.1268126-1-npiggin@gmail.com>
+        <20200723114010.GO5523@worktop.programming.kicks-ass.net>
+        <1595506730.3mvrxktem5.astroid@bobo.none>
+        <1884dcea-9ecd-a1f3-21bb-213c655e2480@ozlabs.ru>
+In-Reply-To: <1884dcea-9ecd-a1f3-21bb-213c655e2480@ozlabs.ru>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-Id: <1595568105.4eodjnxzwp.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J721E Common Processor Board has PCIe connectors for the 1st three PCIe
-instances. Configure the three PCIe instances in RC mode and disable the
-4th PCIe instance.
+Excerpts from Alexey Kardashevskiy's message of July 24, 2020 2:16 pm:
+>=20
+>=20
+> On 23/07/2020 23:11, Nicholas Piggin wrote:
+>> Excerpts from Peter Zijlstra's message of July 23, 2020 9:40 pm:
+>>> On Thu, Jul 23, 2020 at 08:56:14PM +1000, Nicholas Piggin wrote:
+>>>
+>>>> diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/=
+asm/hw_irq.h
+>>>> index 3a0db7b0b46e..35060be09073 100644
+>>>> --- a/arch/powerpc/include/asm/hw_irq.h
+>>>> +++ b/arch/powerpc/include/asm/hw_irq.h
+>>>> @@ -200,17 +200,14 @@ static inline bool arch_irqs_disabled(void)
+>>>>  #define powerpc_local_irq_pmu_save(flags)			\
+>>>>  	 do {							\
+>>>>  		raw_local_irq_pmu_save(flags);			\
+>>>> -		trace_hardirqs_off();				\
+>>>> +		if (!raw_irqs_disabled_flags(flags))		\
+>>>> +			trace_hardirqs_off();			\
+>>>>  	} while(0)
+>>>>  #define powerpc_local_irq_pmu_restore(flags)			\
+>>>>  	do {							\
+>>>> -		if (raw_irqs_disabled_flags(flags)) {		\
+>>>> -			raw_local_irq_pmu_restore(flags);	\
+>>>> -			trace_hardirqs_off();			\
+>>>> -		} else {					\
+>>>> +		if (!raw_irqs_disabled_flags(flags))		\
+>>>>  			trace_hardirqs_on();			\
+>>>> -			raw_local_irq_pmu_restore(flags);	\
+>>>> -		}						\
+>>>> +		raw_local_irq_pmu_restore(flags);		\
+>>>>  	} while(0)
+>>>
+>>> You shouldn't be calling lockdep from NMI context!
+>>=20
+>> After this patch it doesn't.
+>>=20
+>> trace_hardirqs_on/off implementation appears to expect to be called in N=
+MI=20
+>> context though, for some reason.
+>>=20
+>>> That is, I recently
+>>> added suport for that on x86:
+>>>
+>>>   https://lkml.kernel.org/r/20200623083721.155449112@infradead.org
+>>>   https://lkml.kernel.org/r/20200623083721.216740948@infradead.org
+>>>
+>>> But you need to be very careful on how you order things, as you can see
+>>> the above relies on preempt_count() already having been incremented wit=
+h
+>>> NMI_MASK.
+>>=20
+>> Hmm. My patch seems simpler.
+>=20
+> And your patches fix my error while Peter's do not:
+>=20
+>=20
+> IRQs not enabled as expected
+> WARNING: CPU: 0 PID: 1377 at /home/aik/p/kernel/kernel/softirq.c:169
+> __local_bh_enable_ip+0x118/0x190
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../dts/ti/k3-j721e-common-proc-board.dts     | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
+I think they would have needed some powerpc bits as well. But I don't
+see a reason we can't merge my patches, at least they fix this case and
+don't seem to make things worse in any way.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index 8bc1e6ecc50e..29be88811132 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -651,3 +651,83 @@
- 
- 	status = "okay";
- };
-+
-+&serdes0 {
-+	serdes0_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <1>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz0 1>;
-+	};
-+};
-+
-+&serdes1 {
-+	serdes1_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz1 1>, <&serdes_wiz1 2>;
-+	};
-+};
-+
-+&serdes2 {
-+	serdes2_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz2 1>, <&serdes_wiz2 2>;
-+	};
-+};
-+
-+&pcie0_rc {
-+	reset-gpios = <&exp1 6 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+};
-+
-+&pcie1_rc {
-+	reset-gpios = <&exp1 2 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes1_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie2_rc {
-+	reset-gpios = <&exp2 20 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes2_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie0_ep {
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+	status = "disabled";
-+};
-+
-+&pcie1_ep {
-+	phys = <&serdes1_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
-+
-+&pcie2_ep {
-+	phys = <&serdes2_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
-+
-+&pcie3_rc {
-+	status = "disabled";
-+};
-+
-+&pcie3_ep {
-+	status = "disabled";
-+};
--- 
-2.17.1
-
+Thanks,
+Nick
