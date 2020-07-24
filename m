@@ -2,93 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CD022BABD
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E082A22BAC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 02:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgGXADh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 20:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728162AbgGXADg (ORCPT
+        id S1728272AbgGXAHJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 23 Jul 2020 20:07:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45086 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727778AbgGXAHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 20:03:36 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7063FC0619E2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:03:36 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b25so5787267qto.2
-        for <linux-kernel@vger.kernel.org>; Thu, 23 Jul 2020 17:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=EXx3pTH50omt/ZgJbm+Uc2JSnnkVtfAJekeJfeAZOCs=;
-        b=bzKI8uO3UrqoOUDWS0/S2UDskzJ3Rinve8AZ2gxLimyFyjd0T27MXWu6P0d9kTmals
-         +4UDdrMgmIvZX5zBzl6oUXgaliP5VMWcc/TZlSaCpb0nkwu3DOkeNDQF9T/0fHL5KhUn
-         /VRPxmUdZnvNvdDlsZlEb3ikhOe48oBD6GwUV+tUQylXJPlUPCt9ITHtZmAOvgsvRxrx
-         qoU9fEbY+AwxdJCYTiBcE1RYO5XmRWEJ4OdzNuSyAqIrsAGIBRTBYV3JOF3ikN4DvOeZ
-         tHcOpn6rHaUS8ZagrwA8CTFPzlIBemjeni7DCyLt9cBTxH34e3Ieu0HvY7tTxp/vTUqI
-         +Rzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=EXx3pTH50omt/ZgJbm+Uc2JSnnkVtfAJekeJfeAZOCs=;
-        b=qGdO1ePXmHYqtcMUMo4IgtC4xjE2ehBJTqMMIXylml5sSVrFUIHdG7UPlAIqP7yzx0
-         pOQtGeECl+QLRWXLmQvwDamCi1av4uDl6AaOpqQDHTZ9shbNVInAJ2x3ioV/YH41PDpG
-         /K1RJRSQ7B7u0HSj7zwPZ2AEhqq2U3cidlj+y0EP8bXr7x1jV7GP/zhUcsM9O1Kp3XV7
-         bA2H8yXiptBzgdHCk3v8v+I0IhVXtYXIgE7hKHykZPaWNC73bd/4ZKGzPijKcAoDcQB9
-         WKp88vXALt0DIfKXNg9Bhx17vP7JxMov6CwNIkQpEidSFUuimX5ULaAiN3IIr6lb8ukV
-         rT6w==
-X-Gm-Message-State: AOAM530jxFI0DkunSxqxs7YeuiNIXoU62KxtZjrc2RD1VOiNOAnCl6mJ
-        +sOVrksUNlr+OxyiLS/ySdTWRkasSt6f9OT03yc=
-X-Google-Smtp-Source: ABdhPJwBJPfbkndp5pWuZapHT1mSCKTDIMTwUbjjlNaELyJPxOulutg0HXB1TqJTCev4XB97RZ97NqSP7z9qUld22wc=
-X-Received: by 2002:aed:208c:: with SMTP id 12mr6895740qtb.286.1595549015533;
- Thu, 23 Jul 2020 17:03:35 -0700 (PDT)
+        Thu, 23 Jul 2020 20:07:09 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06O02cfu031283;
+        Thu, 23 Jul 2020 20:06:53 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32faj3sn4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Jul 2020 20:06:53 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06O03sSB034159;
+        Thu, 23 Jul 2020 20:06:53 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32faj3sn44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 23 Jul 2020 20:06:53 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06O05XXm030936;
+        Fri, 24 Jul 2020 00:06:52 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04wdc.us.ibm.com with ESMTP id 32brq9ra27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 00:06:52 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06O06nx647055344
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Jul 2020 00:06:49 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCF9478063;
+        Fri, 24 Jul 2020 00:06:50 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 560557805C;
+        Fri, 24 Jul 2020 00:06:47 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.163.53.35])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Fri, 24 Jul 2020 00:06:46 +0000 (GMT)
+References: <159524918900.20855.17709718993097359220.stgit@hbathini.in.ibm.com> <159524954805.20855.1164928096364700614.stgit@hbathini.in.ibm.com>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Hari Bathini <hbathini@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v4 06/12] ppc64/kexec_file: restrict memory usage of kdump kernel
+In-reply-to: <159524954805.20855.1164928096364700614.stgit@hbathini.in.ibm.com>
+Date:   Thu, 23 Jul 2020 21:06:42 -0300
+Message-ID: <875zad6ajx.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-Reply-To: millasmith2111@gmail.com
-Received: by 2002:aed:2356:0:0:0:0:0 with HTTP; Thu, 23 Jul 2020 17:03:35
- -0700 (PDT)
-From:   "Mrs . Milla Smith" <millasmith2110@gmail.com>
-Date:   Thu, 23 Jul 2020 17:03:35 -0700
-X-Google-Sender-Auth: n6-L7fnD_Z7ZmosIPkvTl2M1ln8
-Message-ID: <CAE+tcMO5PQ=Wv3RneMSXq--OJOsHs43zvtDoEDVks_iEaHFifw@mail.gmail.com>
-Subject: compensation
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-23_09:2020-07-23,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=2
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ spamscore=0 adultscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007230169
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
 
-I'm sorry but happy to inform you about my success in getting those
-funds transferred under the cooperation of a new partner from Vietnam,
-though I tried my best to involve you in the business but God decided
-the whole situations. Presently I m in Vietnam for investment projects
-with my own share of the total sum. Meanwhile, I didn't forget your
-past efforts and attempts to assist me in transferring those funds
-despite that it failed us some how.
+Hari Bathini <hbathini@linux.ibm.com> writes:
 
-Now contact my secretary in Burkina Faso her name is Ms. Milla Smith
-on her e-mail address below   millasmith2111@gmail.com  ask her to
-send you the total of $1.1Milion which I kept for your compensation
-for all the past efforts and attempts to assist me in this matter. I
-appreciated your efforts at that time very much. So feel free and get
-in touched with my secretary Ms. Milla Smith and instruct her where to
-send the amount to you. Please do let me know immediately you receive
-it so that we can share joy after all the sufferness at that time.
+> Kdump kernel, used for capturing the kernel core image, is supposed
+> to use only specific memory regions to avoid corrupting the image to
+> be captured. The regions are crashkernel range - the memory reserved
+> explicitly for kdump kernel, memory used for the tce-table, the OPAL
+> region and RTAS region as applicable. Restrict kdump kernel memory
+> to use only these regions by setting up usable-memory DT property.
+> Also, tell the kdump kernel to run at the loaded address by setting
+> the magic word at 0x5c.
+>
+> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+> Tested-by: Pingfan Liu <piliu@redhat.com>
+> ---
+>
+> v3 -> v4:
+> * Updated get_node_path() to be an iterative function instead of a
+>   recursive one.
+> * Added comment explaining why low memory is added to kdump kernel's
+>   usable memory ranges though it doesn't fall in crashkernel region.
+> * For correctness, added fdt_add_mem_rsv() for the low memory being
+>   added to kdump kernel's usable memory ranges.
 
-In the moment, I=E2=80=99m very busy here because of the investment project=
-s
-which I and the new partner are having at hand, finally, remember that
-I had forwarded instruction to the secretary on your behalf to receive
-that money, so feel free to get in touch with Ms. Milla Smith she will
-send the amount to you without any delay OK. Extend my greetings to
-your family.
+Good idea.
 
-My Best regards
-Yours brother
-Mr. Abu Salam
-Greetings from Vietnam
+> * Fixed prop pointer update in add_usable_mem_property() and changed
+>   duple to tuple as suggested by Thiago.
+
+<snip>
+
+> +/**
+> + * get_node_pathlen - Get the full path length of the given node.
+> + * @dn:               Node.
+> + *
+> + * Also, counts '/' at the end of the path.
+> + * For example, /memory@0 will be "/memory@0/\0" => 11 bytes.
+
+Wouldn't this function return 10 in the case of /memory@0?
+Are you saying that it should count the \0 at the end too? it's not
+doing that, AFAICS.
+
+> + *
+> + * Returns the string length of the node's full path.
+> + */
+
+Maybe it's me (by analogy with strlen()), but I would expect "string
+length" to not include the terminating \0. I suggest renaming the
+function to something like get_node_path_size() and do s/length/size/ in
+the comment above if it's supposed to count the terminating \0.
+
+> +static int get_node_pathlen(struct device_node *dn)
+> +{
+> +	int len = 0;
+> +
+> +	if (!dn)
+> +		return 0;
+> +
+> +	while (dn) {
+> +		len += strlen(dn->full_name) + 1;
+> +		dn = dn->parent;
+> +	}
+> +
+> +	return len + 1;
+> +}
+> +
+> +/**
+> + * get_node_path - Get the full path of the given node.
+> + * @node:          Device node.
+> + *
+> + * Allocates buffer for node path. The caller must free the buffer
+> + * after use.
+> + *
+> + * Returns buffer with path on success, NULL otherwise.
+> + */
+> +static char *get_node_path(struct device_node *node)
+> +{
+> +	struct device_node *dn;
+> +	int len, idx, nlen;
+> +	char *path = NULL;
+> +	char end_char;
+> +
+> +	if (!node)
+> +		goto err;
+> +
+> +	/*
+> +	 * Get the path length first and use it to iteratively build the path
+> +	 * from node to root.
+> +	 */
+> +	len = get_node_pathlen(node);
+> +
+> +	/* Allocate memory for node path */
+> +	path = kzalloc(ALIGN(len, 8), GFP_KERNEL);
+> +	if (!path)
+> +		goto err;
+> +
+> +	/*
+> +	 * Iteratively update path from node to root by decrementing
+> +	 * index appropriately.
+> +	 *
+> +	 * Also, add %NUL at the end of node & '/' at the end of all its
+> +	 * parent nodes.
+> +	 */
+> +	dn = node;
+> +	path[0] = '/';
+> +	idx = len - 1;
+
+Here, idx is pointing to the supposed '/' at the end of the node
+path ...
+
+> +	end_char = '\0';
+> +	while (dn->parent) {
+> +		path[--idx] = end_char;
+
+.. and in the first ireation, this is writing '\0' at a place which will be
+overwritten by the memcpy() below with the last character of
+dn->full_name. You need to start idx with len, not len - 1.
+
+> +		end_char = '/';
+> +
+> +		nlen = strlen(dn->full_name);
+> +		idx -= nlen;
+> +		memcpy(path + idx, dn->full_name, nlen);
+> +
+> +		dn = dn->parent;
+> +	}
+> +
+> +	return path;
+> +err:
+> +	kfree(path);
+> +	return NULL;
+> +}
+
+--
+Thiago Jung Bauermann
+IBM Linux Technology Center
