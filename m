@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CC2322BBA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 03:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752DC22BB8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 03:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgGXBnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 23 Jul 2020 21:43:22 -0400
-Received: from mga03.intel.com ([134.134.136.65]:24308 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726284AbgGXBnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 23 Jul 2020 21:43:22 -0400
-IronPort-SDR: Wat8JI1bBDoB3KvxYXS/83GjPMi3j1qdGANmlPm5JiB7L/7u1uKXdX2Rk8a0qD7RsGX43GCh1n
- hhHmQ1NMaIzg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="150632532"
-X-IronPort-AV: E=Sophos;i="5.75,388,1589266800"; 
-   d="scan'208";a="150632532"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 18:43:21 -0700
-IronPort-SDR: T7YYDmQ9wjOSJPYKP8f87ewHjV5UJCnwN4NR7F+wP9L2IS9xMbwIg33+hd3/h7ojvQvZD3NB9Z
- GU0QbpLoGiCw==
-X-IronPort-AV: E=Sophos;i="5.75,388,1589266800"; 
-   d="scan'208";a="463063485"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2020 18:43:17 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH] soundwire: master: enable pm runtime
-Date:   Thu, 23 Jul 2020 21:49:02 +0800
-Message-Id: <20200723134902.26290-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726784AbgGXBae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 23 Jul 2020 21:30:34 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:35684 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgGXBad (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 23 Jul 2020 21:30:33 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 38AB8279;
+        Fri, 24 Jul 2020 03:30:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1595554231;
+        bh=akS/wzc0BWt9gQYq9HsNLG1pa4mQkWgmvntLaanjo4Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qfND16UkHYN3vA2A7MdntXo1DC2Tc2f2Hjqzy89OEu8bAfIclINlSmp/x3oV/jtd0
+         Y+LT+EHhMTiOYz4EfVmvOwTKxRvvj8QTkrg59LFwJ1OuKflWR43FwvCRHSFR3ltHAQ
+         B5H6QOjrSa5SpYoUp6tezNBGa+0zHZN1Z2za++8s=
+Date:   Fri, 24 Jul 2020 04:30:24 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bogdan Togorean <bogdan.togorean@analog.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: bridge: adv7511: Add missing bridge type
+Message-ID: <20200724013024.GL21353@pendragon.ideasonboard.com>
+References: <20200723104523.1006706-1-vkoul@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200723104523.1006706-1-vkoul@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should enable pm runtime.
+Hi Vinod,
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/master.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thank you for the patch.
 
-diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
-index 5f0b2189defe..3488bb824e84 100644
---- a/drivers/soundwire/master.c
-+++ b/drivers/soundwire/master.c
-@@ -154,6 +154,7 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
- 	bus->dev = &md->dev;
- 	bus->md = md;
- 
-+	pm_runtime_enable(&bus->md->dev);
- device_register_err:
- 	return ret;
- }
-@@ -166,6 +167,7 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
-  */
- int sdw_master_device_del(struct sdw_bus *bus)
- {
-+	pm_runtime_disable(&bus->md->dev);
- 	device_unregister(bus->dev);
- 
- 	return 0;
+On Thu, Jul 23, 2020 at 04:15:23PM +0530, Vinod Koul wrote:
+> Add bridge type as DRM_MODE_CONNECTOR_HDMIA
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+
+This has already been submitted: https://lore.kernel.org/dri-devel/20200720124228.12552-1-laurentiu.palcu@oss.nxp.com/
+
+> ---
+> 
+> I found this when testing Dragon-board 410c which uses this bridge
+> [    6.671913] msm 1a00000.mdss: [drm:msm_dsi_manager_ext_bridge_init [msm]] *ERROR* drm_bridge_connector_init failed: -22
+> [    6.678879] msm 1a00000.mdss: [drm:msm_dsi_modeset_init [msm]] *ERROR* failed to create dsi connector: -19
+> 
+>  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> index f45cdca9cce5..a0d392c338da 100644
+> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> @@ -1283,6 +1283,7 @@ static int adv7511_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
+>  	adv7511->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID
+>  			    | DRM_BRIDGE_OP_HPD;
+>  	adv7511->bridge.of_node = dev->of_node;
+> +	adv7511->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+>  
+>  	drm_bridge_add(&adv7511->bridge);
+>  
+
 -- 
-2.17.1
+Regards,
 
+Laurent Pinchart
