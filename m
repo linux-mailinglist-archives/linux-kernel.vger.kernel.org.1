@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB6C22C332
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 510B922C36B
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 12:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgGXKhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 06:37:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:59778 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726329AbgGXKhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 06:37:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6709330E;
-        Fri, 24 Jul 2020 03:37:01 -0700 (PDT)
-Received: from [10.163.85.90] (unknown [10.163.85.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC33F3F66E;
-        Fri, 24 Jul 2020 03:36:55 -0700 (PDT)
-Subject: Re: [PATCH -next] arm64: Export __cpu_logical_map
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Sumit Gupta <sumitg@nvidia.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Hulk Robot <hulkci@huawei.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <20200724030433.22287-1-wangkefeng.wang@huawei.com>
- <82f750c4-d423-1ed8-a158-e75153745e07@huawei.com>
- <7998529f-da52-5e46-dd09-b9b11d83ec1a@arm.com> <20200724093054.GA23388@gaia>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <bd2e3029-f561-8aab-6772-1be91d457f9d@arm.com>
-Date:   Fri, 24 Jul 2020 16:06:28 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1728145AbgGXKiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 06:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgGXKix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 06:38:53 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8710C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 03:38:52 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 3so894221wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 03:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4tmCdaz8BOl0xduEDd+WbFqDaYK/wTJhp8v3Tb2E2TM=;
+        b=Z0FKEEs+iHhe7WnG9f17lbA3+BhvgYoS942m2eZ7tZ7G2zhYwOXxVT6Yw3tzIp6Fpo
+         OGbh0T4fLWbxwcmk2X3YaZAKi8lgU3EGYK9NPmKFa/dYrSJ2yjLvPwNZrB3z/t4fHvmM
+         pttHwHeT2UNIyQSpZub2SumaRqF2mEpSUuHOBwUmQyjMLlHsbhwtD6NBP+QRE6kYWrPA
+         jZVDjxdtEF6vIO9H1xaR9amVxpKammDMWdalvAFT+JvLmrBKBLe7s4CSDQAjDVKC6Si3
+         nqztHM5lGN4Sw4KQyXa5LxUFEt2nrpAqT2R/9WGEYtBdphpQwDoG6o6yjKAzGNJ/uiJW
+         /L1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4tmCdaz8BOl0xduEDd+WbFqDaYK/wTJhp8v3Tb2E2TM=;
+        b=EEqMJWrOeQXGw1Rt0qLdDkXfDcEZFmJaeaCfJ71zPsZtSy6s2feMRCe16bIzwHtWsw
+         oCSW7PwR/yuh7lmPldb7WbIaHua62e2EyleLNfT7Q/F05QV136X+YnEbvzlVhAe51TJT
+         IAlKeETTwQ/NP0pt370yqefRbDNnlSBTMbzQBTE7MDqA0jzCtHwwfO0IeQk83npkwh7Q
+         FinurXWRqil9AOZ441qdYV+aKLHGYf8LUry9GXO7foLM9hppBsT8o0fPJl/t9zdH3Y8Q
+         3e6AGKL5+a0dIMw4gDTpCNX9Z/Fxc/F765Zt4/yfFlZEUU9B7zBP6U1DkwkPJD+gusKr
+         d7/A==
+X-Gm-Message-State: AOAM5304FkY/BVo9dHpxCze08yLanbZkEUS7fpb4ekPgJ5s0Fx6QeW8P
+        3oTaUiEVfotINK9J0FOfFmKSAw==
+X-Google-Smtp-Source: ABdhPJydV86axSeppJXyJqRlp5jQnMsGUNm+DZeHqZFR79nB5xRdu6p2Ova3IV80TktFHkrJeORrig==
+X-Received: by 2002:a7b:c30e:: with SMTP id k14mr8261504wmj.69.1595587131456;
+        Fri, 24 Jul 2020 03:38:51 -0700 (PDT)
+Received: from lukakovacicapc.local ([2a00:ee2:4b0d:3001:fbc5:498b:ed6d:cfac])
+        by smtp.gmail.com with ESMTPSA id f186sm6526280wmf.29.2020.07.24.03.38.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 03:38:50 -0700 (PDT)
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     jason@lakedaemon.net, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com,
+        Luka Kovacic <luka.kovacic@sartura.hr>
+Subject: [PATCH 0/4] Add support for a series of MikroTik CRS3xx switches
+Date:   Fri, 24 Jul 2020 12:38:36 +0200
+Message-Id: <20200724103840.18994-1-luka.kovacic@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200724093054.GA23388@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These patches add support for a series of MikroTik CRS3xx switches
+based on the Marvell Prestera 98DX3236 switch chip.
 
+Namely, support is added for:
+ -  MikroTik CRS305-1G-4S+ (including the Bit variant)
+ -  MikroTik CRS326-24G-2S+ (including the Bit variant)
+ -  MikroTik CRS328-4C-20S-4S+ (including the Bit variant)
 
-On 07/24/2020 03:00 PM, Catalin Marinas wrote:
-> On Fri, Jul 24, 2020 at 01:46:18PM +0530, Anshuman Khandual wrote:
->> On 07/24/2020 08:38 AM, Kefeng Wang wrote:
->>> On 2020/7/24 11:04, Kefeng Wang wrote:
->>>> ERROR: modpost: "__cpu_logical_map" [drivers/cpufreq/tegra194-cpufreq.ko] undefined!
->>>>
->>>> ARM64 tegra194-cpufreq driver use cpu_logical_map, export
->>>> __cpu_logical_map to fix build issue.
->> Commit 887d5fc82cb4 ("cpufreq: Add Tegra194 cpufreq driver") which adds
->> this particular driver is present just on linux-next. But as expected,
->> the driver does not use __cpu_logical_map directly but instead accesses
->> it via cpu_logical_map() wrapper. Wondering, how did you even trigger
->> the modpost error ?
-> Since the wrapper is a macro, it just expands to __cpu_logical_map[].
-> 
+The Bit board variant is added for each of the boards.
+These boards were modified to use a bigger Macronix flash.
 
-Ahh, right. Existing cpu_logical_map() is not a true wrapper and it
-makes sense to convert that into one.
+Currently only basic board support is added, but the support will
+be extended in a new patchset.
+
+Luka Kovacic (4):
+  arm: mvebu: dts: Add CRS326-24G-2S board
+  arm: mvebu: dts: Add CRS305-1G-4S board
+  arm: mvebu: dts: Add CRS328-4C-20S-4S board
+  MAINTAINERS: Add an entry for MikroTik CRS3xx 98DX3236 boards
+
+ MAINTAINERS                                   |  11 ++
+ arch/arm/boot/dts/Makefile                    |   6 +
+ .../boot/dts/armada-xp-crs305-1g-4s-bit.dts   |  43 ++++++++
+ arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts  |  17 +++
+ arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi | 104 ++++++++++++++++++
+ .../boot/dts/armada-xp-crs326-24g-2s-bit.dts  |  43 ++++++++
+ arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts |  17 +++
+ .../arm/boot/dts/armada-xp-crs326-24g-2s.dtsi | 104 ++++++++++++++++++
+ .../dts/armada-xp-crs328-4c-20s-4s-bit.dts    |  43 ++++++++
+ .../boot/dts/armada-xp-crs328-4c-20s-4s.dts   |  17 +++
+ .../boot/dts/armada-xp-crs328-4c-20s-4s.dtsi  | 104 ++++++++++++++++++
+ 11 files changed, 509 insertions(+)
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s-bit.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs305-1g-4s.dtsi
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s-bit.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs326-24g-2s.dtsi
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s-bit.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s.dts
+ create mode 100644 arch/arm/boot/dts/armada-xp-crs328-4c-20s-4s.dtsi
+
+-- 
+2.26.2
+
