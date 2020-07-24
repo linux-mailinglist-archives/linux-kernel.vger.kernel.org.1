@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF47A22C82C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42E222C831
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 16:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgGXOhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 10:37:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54414 "EHLO mail.kernel.org"
+        id S1726975AbgGXOjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 10:39:10 -0400
+Received: from mga18.intel.com ([134.134.136.126]:62746 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbgGXOhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 10:37:38 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15C7F2065C;
-        Fri, 24 Jul 2020 14:37:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595601457;
-        bh=vvXRFf9DR9prMCJTMjWUgfZ40QqlI5frl3EKxELfXEw=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=ccmTg/hZvx3U8RIzCUDQcVoSBByBY/eBTr19sIwu3Ve24JomDxPRzOMMNyRAxtdXv
-         7yDzKKt87pZIQMa2tq1gxB2Utmp0l/pPxgm3m6WQMebl+DkhWBKUHPcedTFYNb2DY4
-         b2+U1imNTH4E1J2Bfg5MLMoRUkqdkIBf5UNjnDY0=
-Date:   Fri, 24 Jul 2020 15:37:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Vladimir Zapolskiy <vz@mleia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>
-In-Reply-To: <20200724005013.23278-1-vz@mleia.com>
-References: <20200724005013.23278-1-vz@mleia.com>
-Subject: Re: [PATCH] regulator: fix memory leak on error path of regulator_register()
-Message-Id: <159560144247.13250.1416101687025192776.b4-ty@kernel.org>
+        id S1726658AbgGXOjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 10:39:09 -0400
+IronPort-SDR: xFsb1O4KeEi/zoTtXzRNq9AXk2L1ikdxFHseZsUiIR858b2js2TMis8g94mSkI5KAL8mltaPr5
+ WMG94WTL89Aw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="138218393"
+X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
+   d="scan'208";a="138218393"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 07:39:09 -0700
+IronPort-SDR: ifAd3cKGAuEsmBo0T3lYxM9fJTmzHo+Zm2oBBiTYKMkE3F1oC1aITZIPqXBQiQRHb+piW8oJx6
+ zjJIXvdDn9GQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,391,1589266800"; 
+   d="scan'208";a="488758608"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Jul 2020 07:39:08 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id E996D301BF9; Fri, 24 Jul 2020 07:39:08 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 07:39:08 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     peterz@infradead.org
+Cc:     kan.liang@linux.intel.com, acme@redhat.com, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, like.xu@linux.intel.com
+Subject: Re: [PATCH V7 07/14] perf/core: Add a new PERF_EV_CAP_COEXIST event
+ capability
+Message-ID: <20200724143908.GC1180481@tassilo.jf.intel.com>
+References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+ <20200723171117.9918-8-kan.liang@linux.intel.com>
+ <20200724105543.GV119549@hirez.programming.kicks-ass.net>
+ <20200724114628.GJ43129@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724114628.GJ43129@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 03:50:13 +0300, Vladimir Zapolskiy wrote:
-> The change corrects registration and deregistration on error path
-> of a regulator, the problem was manifested by a reported memory
-> leak on deferred probe:
-> 
->     as3722-regulator as3722-regulator: regulator 13 register failed -517
-> 
->     # cat /sys/kernel/debug/kmemleak
->     unreferenced object 0xecc43740 (size 64):
->       comm "swapper/0", pid 1, jiffies 4294937640 (age 712.880s)
->       hex dump (first 32 bytes):
->         72 65 67 75 6c 61 74 6f 72 2e 32 34 00 5a 5a 5a  regulator.24.ZZZ
->         5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a 5a  ZZZZZZZZZZZZZZZZ
->       backtrace:
->         [<0c4c3d1c>] __kmalloc_track_caller+0x15c/0x2c0
->         [<40c0ad48>] kvasprintf+0x64/0xd4
->         [<109abd29>] kvasprintf_const+0x70/0x84
->         [<c4215946>] kobject_set_name_vargs+0x34/0xa8
->         [<62282ea2>] dev_set_name+0x40/0x64
->         [<a39b6757>] regulator_register+0x3a4/0x1344
->         [<16a9543f>] devm_regulator_register+0x4c/0x84
->         [<51a4c6a1>] as3722_regulator_probe+0x294/0x754
->         ...
-> 
-> [...]
+> The consequence is that SLOTS must be the leader, is that really a
+> problem? You keep providing the {cycles, slots, metric-things} example,
 
-Applied to
+Yes that's a problem. One (major) use case for topdown is to
+sample on lots of different events, but always create groups that
+also measure topdown metrics for that sampling period. For that we need
+other leaders.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/1] regulator: fix memory leak on error path of regulator_register()
-      commit: 9177514ce34902b3adb2abd490b6ad05d1cfcb43
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-Andi
