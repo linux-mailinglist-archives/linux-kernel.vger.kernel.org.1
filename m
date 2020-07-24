@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CC922C582
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9E622C57C
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgGXMoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 08:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726483AbgGXMoT (ORCPT
+        id S1726956AbgGXMoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 08:44:05 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:37838 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726326AbgGXMoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 08:44:19 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C68C0619E5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:44:19 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id j186so4795732vsd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FGHawDNNHiCHWgrOxcXKqCSMD7oEiI1UqCmKADBljuU=;
-        b=EuAwwFRWeuUdb4vF35T0sjuH5dKD0BasNwv6q+tQLoNCduhL0GWSu7acttBEE3iv1H
-         bjK3j7nBVDXvHpMygDOgB/y1hWSgES61TVbuJCpr5iBiZuBSSEwo+9b0oVR3jhDxAtRx
-         UNKAU8CRfgMVR0ZeNRGN4w0yIX6LkRxIiFL/Xsme9m/0kt5bdvN7Rk6byC9Swb+auhbI
-         c2TD/rY5ENrsNnfZmnuh8zJ0mfiuK/2aYSEB4m9eqy4IQJcfXr+UtbMp5rlsNxmnRs6d
-         fjwfLn9fg2+ssivzVRjo8yVs4khRFeKgUgX6O8zn/chNccrgLUnT2x/QoJkUFzgauZ1y
-         onMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FGHawDNNHiCHWgrOxcXKqCSMD7oEiI1UqCmKADBljuU=;
-        b=CEzk1a4xIeJfi1oISypEpCYTBhNc1oBDWIvaroMqOiUrBD8xDDaLFbeKMqpoDDrW8Y
-         dT+u75ggngrFC3c+dmojnyfD3RAMIIE3rANNuV7sSI4P5JH3KeY4G5thb1xgvyAg2brv
-         rddPLXnLdqFqUfbpqIF3blsQbFjUPclWHTgeRa3wSOi5zfB4H8rNOMV+Jwnw58Dnbc4O
-         RjNAaGCHBMa9Fih/rShvWk/oPwSLVSr6GIKEYIZmLFhs+7Fna7gj0pgeOWmGpc5RUWLP
-         LjNo/EERh1tdjb8URNpsHLDd7ej+9HmFRLUAlWa8HYJC1DBRScln2uzeQnMsZtW2/PNT
-         wcZg==
-X-Gm-Message-State: AOAM530qFOPlHeeGRtB5rHkB6qGZaKmAZkdq+fdKqQP2yZno8lLWKTvm
-        undRbMIAbf3kODBt9PzEkOBvbWeDDWXdoFO0Tn09fw==
-X-Google-Smtp-Source: ABdhPJycLPobdqjIlIM9BjxmDXvzoDmUte/V7P4h0bRLVGruk4z8NXmk6DXEi6GUkT4hQpVU32Ou5Bq/2mmkmEW1tWU=
-X-Received: by 2002:a67:f98c:: with SMTP id b12mr7556870vsq.34.1595594658333;
- Fri, 24 Jul 2020 05:44:18 -0700 (PDT)
+        Fri, 24 Jul 2020 08:44:05 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OCfn0J011543;
+        Fri, 24 Jul 2020 14:43:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=e4RZeBSLDT1ZW1C3Pxzpzqpy5ibmN8D1Dudn9nLs9/0=;
+ b=dzy9WeP5rOnyIa5KM6m9LY/RPgjpTMwIz/czuCpoWfblwMnSnJQLtV6T2xq45hscQW8k
+ pfJ79oYnvx6L3nwyfBTOwEa5RDG6ZveH5H++442/nl89AV81qujWHQr8oTLiBNz3K4RJ
+ O92v1i8+OqCNz/mURTXq6AiRG7tHidbkwjs7fs63FmMCJFsvJdBcX/qE8v06t8sJ/yK4
+ sh79ThnQe5gPOHHc5ij6QYBw5CRxvUscyxgyUXc1usvjHsvBNNjGNnghJsxFUrZonI5c
+ XNjUai5yui7iqhbHm9SseG+08ZUUcNi0ayO/y9/TJ1ElBAzI7Xa+Zcv2b1vj4ZDrRsjj Dg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32bsfq0816-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 14:43:47 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 53CD810002A;
+        Fri, 24 Jul 2020 14:43:46 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 44DD62B4D3C;
+        Fri, 24 Jul 2020 14:43:46 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.46) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 24 Jul
+ 2020 14:43:45 +0200
+Subject: Re: [PATCH v3 0/3] Add USB role switch support to DWC2
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+References: <20200724104711.5474-1-amelie.delaunay@st.com>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <4c44f596-d2c3-6d2f-bf28-9e3964b6e6f1@st.com>
+Date:   Fri, 24 Jul 2020 14:43:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200618141326.25723-1-lars.povlsen@microchip.com>
- <20200618141326.25723-3-lars.povlsen@microchip.com> <aee90bbf-f0ff-b0cb-b10a-9a2f3bb6acca@intel.com>
- <87wo2vkbns.fsf@soft-dev15.microsemi.net> <CAPDyKFpozhFSzWEM6s8cdeG+8JGX00YyFSzeXZxCsY7Efn0aeQ@mail.gmail.com>
- <87zh7pf8sg.fsf@soft-dev15.microsemi.net>
-In-Reply-To: <87zh7pf8sg.fsf@soft-dev15.microsemi.net>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 24 Jul 2020 14:43:41 +0200
-Message-ID: <CAPDyKFpzxPnVFwrPiG738_HpKnypvZev5r874k5WVgL8GEXHJg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] sdhci: sparx5: Add Sparx5 SoC eMMC driver
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, SoC Team <soc@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200724104711.5474-1-amelie.delaunay@st.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_04:2020-07-24,2020-07-24 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 at 13:32, Lars Povlsen <lars.povlsen@microchip.com> wrote:
->
->
-> Ulf Hansson writes:
->
-> > On Wed, 22 Jul 2020 at 13:54, Lars Povlsen <lars.povlsen@microchip.com> wrote:
-> >>
-> >>
-> >> Adrian Hunter writes:
-> >>
-> >> > On 18/06/20 5:13 pm, Lars Povlsen wrote:
-> >> >> This adds the eMMC driver for the Sparx5 SoC. It is based upon the
-> >> >> designware IP, but requires some extra initialization and quirks.
-> >> >>
-> >> >> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
-> >> >
-> >> > Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> >> >
-> >>
-> >> Adrian,
-> >>
-> >> Thanks for the ack. I was expecting to see this in linux-next, anything
-> >> holding it back?
-> >>
-> >> pinctrl and hwmon drivers have been merged.
-> >>
-> >> Thanks,
-> >
-> > Hi Lars,
-> >
-> > Looks like you got some feedback on the DT patch (patch1/3) from Rob.
-> > I didn't find that you have addressed them and therefore I am holding
-> > back on the $subject patch as well.
-> >
->
-> Uffe, thank you for responding.
->
-> The automated checker complains about the inclusion of a header file
-> (#include <dt-bindings/clock/microchip,sparx5.h>) in the example. The
-> header file itself is part of the "parent" patch series sent to arm-soc,
-> but is needed to make the example complete.
->
-> I e-mailed Rob about how to handle this, but never got a reply.
->
-> Can you suggest how to deal with this? I have checked the schema with
-> dt_binding_check manually - with the header file in place.
+Series dropped.
 
-I see, thanks for clarifying.
-
-When this kind of dependy happens, we have a couple of options.
-
-1. Wait for a new rc to have the dependent changes included.
-2. Share the changes between maintainers's git trees, through
-immutable branches.
-
-Looks like 1) would be easiest here. So, I suggest you re-post the
-series when v5.9-rc1 is out.
-
->
-> I can of course remove the include and associated properties, but that
-> will make the example incomplete and irrelevant.
-
-No, that doesn't sound right.
-
-[...]
-
-Kind regards
-Uffe
+On 7/24/20 12:47 PM, Amelie Delaunay wrote:
+> When using usb-c connector (but it can also be the case with a micro-b
+> connector), iddig, avalid, bvalid, vbusvalid input signals may not be
+> connected to the DWC2 OTG controller.
+> DWC2 OTG controller features an overriding control of the PHY voltage valid
+> and ID input signals.
+> So, missing signals can be forced using usb role from usb role switch and
+> this override feature.
+> 
+> This series adds support for usb role switch to dwc2, by using overriding
+> control of the PHY voltage valid and ID input signals.
+> 
+> It has been tested on stm32mp157c-dk2 [1], which has a Type-C connector
+> managed by a Type-C port controller, and connected to USB OTG controller.
+> 
+> [1] https://www.st.com/en/evaluation-tools/stm32mp157c-dk2.html
+> 
+> Amelie Delaunay (3):
+>    usb: dwc2: override PHY input signals with usb role switch support
+>    dt-bindings: usb: dwc2: add optional usb-role-switch property
+>    usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15
+>      SoCs
+> ---
+> Changes in v3:
+> - Fix build issue reported by kernel test robot in drd.c
+> Changes in v2:
+> - Previous DT patch already in stm32-next branch so removed from v2 patchset
+>    "ARM: dts: stm32: enable usb-role-switch on USB OTG on stm32mp15xx-dkx"
+> - DWC2 DT bindings update added
+> - Build issue reported by kernel test robot fixed
+> - Martin's comments taken into account
+> ---
+>   .../devicetree/bindings/usb/dwc2.yaml         |   4 +
+>   drivers/usb/dwc2/Kconfig                      |   1 +
+>   drivers/usb/dwc2/Makefile                     |   2 +-
+>   drivers/usb/dwc2/core.h                       |   9 +
+>   drivers/usb/dwc2/drd.c                        | 181 ++++++++++++++++++
+>   drivers/usb/dwc2/gadget.c                     |   2 +-
+>   drivers/usb/dwc2/params.c                     |   4 +-
+>   drivers/usb/dwc2/platform.c                   |  15 ++
+>   8 files changed, 215 insertions(+), 3 deletions(-)
+>   create mode 100644 drivers/usb/dwc2/drd.c
+> 
