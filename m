@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130B422CCE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 20:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4CE22CD71
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 20:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbgGXSTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 14:19:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60138 "EHLO mail.kernel.org"
+        id S1726703AbgGXSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 14:24:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbgGXSTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 14:19:13 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1725822AbgGXSYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 14:24:10 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C084206D8;
-        Fri, 24 Jul 2020 18:19:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDAA6206F6;
+        Fri, 24 Jul 2020 18:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595614753;
-        bh=srRP6bixLuY+rClSJQxHida3dp9yMGYO+hiBwugOPAk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KTSGKJ5LTkldW6rjfTUJ6dTR1KixeiEjg8nB+dp7tkpADE7jpVzfGILuaU+zzchlg
-         ztJCeZUlQ5K1UJFbJEUIU5/0w9FGkc43ROZutXpRMrS9gb94hV5R2S3rKMYvn61MXv
-         kswE2dZZBtufl0RdBRNl0AjYHKze6ftt4RmVA1m8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4D9213520BD1; Fri, 24 Jul 2020 11:19:13 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 11:19:13 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, tglx@linutronix.de,
-        bigeasy@linutronix.de, frederic@kernel.org
-Subject: Re: [PATCH smp 2/2] kernel/smp: Provide CSD lock timeout diagnostics
-Message-ID: <20200724181913.GA25015@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200709235436.GA20922@paulmck-ThinkPad-P72>
- <20200709235557.21080-2-paulmck@kernel.org>
- <20200710103227.GD4800@hirez.programming.kicks-ass.net>
- <20200710212834.GL9247@paulmck-ThinkPad-P72>
- <20200710225849.GA6004@paulmck-ThinkPad-P72>
- <20200723135556.GQ5523@worktop.programming.kicks-ass.net>
- <20200723225057.GB9247@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723225057.GB9247@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1595615050;
+        bh=zKnG2VC/v8+fyF5WfOvD1jU6Pi7niG9nBIQEyDhp88Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T5zjIv6+XFHcxDsseIpmWmVeLIY4fSlvyl5Ap+z1gxzHPkqJ/dJN7agaG9cvMZxh5
+         kYqzMuoL2VHts6lZTN/CY3WPmcwt+10GJUUNF5qzDaxjaMYVLETeiLT3FY65jLp3z2
+         +i7uE9V76LBjy8hcpja1V6BL6jq3MjQ1ZGFovXts=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 00/16] memory: Further cleanups
+Date:   Fri, 24 Jul 2020 20:23:12 +0200
+Message-Id: <20200724182328.3348-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 03:50:57PM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 23, 2020 at 03:55:56PM +0200, Peter Zijlstra wrote:
+Hi,
 
-[ . . . ]
+I have few other cleanups which I could take.  Two patches need here testing as
+they are not trivial.
 
-> > > +	ts2 = sched_clock();
-> > > +	ts_delta = ts2 - *ts1;
-> > > +	if (likely(ts_delta <= CSD_LOCK_TIMEOUT)) {
-> > > +		cpu_relax();
-> > > +		return false;
-> > > +	}
-> > > +
-> > > +	firsttime = !*bug_id;
-> > > +	if (firsttime)
-> > > +		*bug_id = atomic_inc_return(&csd_bug_count);
-> > > +	cpu = csd_lock_wait_getcpu(csd);
-> > > +	smp_mb(); // No stale cur_csd values!
-> > 
-> > > +	if (WARN_ONCE(cpu < 0 || cpu >= nr_cpu_ids, "%s: cpu = %d\n", __func__, cpu))
-> > > +		cpu_cur_csd = READ_ONCE(per_cpu(cur_csd, 0));
-> > > +	else
-> > > +		cpu_cur_csd = READ_ONCE(per_cpu(cur_csd, cpu));
-> > 
-> > This is a potential user-after-free, func() may free the csd when async.
-> > Although I don't believe anybody does so.
-> 
-> Huh.  This will require some thought.  The one that the CPU is currently
-> executing is available, so this is a problem only when they stack up.
+Best regards,
+Krzysztof
 
-Bah.  This is exactly why the cur_csd_func and cur_csd_info per-CPU
-variables exist, and so I just need to actually use them.  :-/
-
-							Thanx, Paul
