@@ -2,223 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6784622D21F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 01:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4E122D224
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 01:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgGXXRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 19:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgGXXRs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 19:17:48 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BDEC0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 16:17:48 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id t198so9373911oie.7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 16:17:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=BDEeEoZeABHc+HXpCOvYajS5mvgHITn4YjQHRlTsxl0=;
-        b=d+aIo4o56/TqcXavacmRnL6W408B4PflSNTk5w+KuA6bFV2rrAzqbqOYnF33nB4Gfj
-         HvTt6jpnoQZwbWtaNIsNAkcfcRB85NnoZTIgVIQjUr+fXsUjysRMytHYWmDncOM3VUUK
-         QE/ooqZ76DfB1qDivyg4j+8VFrJQf8cNqcpqE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=BDEeEoZeABHc+HXpCOvYajS5mvgHITn4YjQHRlTsxl0=;
-        b=inFc24opqqIbzdmgW+vzCTK3UKvGBTZKVXEiEgW7KYBPz4ngZtYYTNDUApruIL/HrX
-         qxlJ69IxRnpJhPmk2+kqRHPAUqEpYw3c7SUtLAXT3Oy2ooh5uL8RvCD+6Rj7QDA0Ymfq
-         v5bSTTOwlHO8ujAmAXFKigaMl9CYT2KRAvhxA2wacF1+UuxuuS7V0fD3zIKyj4jQj5hN
-         itYkUyex3bmAX9vSXm25mSmrk7dn/ORkYkDuOkYf5zF24JMm9p6JSydB5Cv80pqioRiu
-         m05B6ZAbv7GK3THAQNfivG9Xar7HM3Puqe01j/WKvj5MXC2CrG2MB/vK+USSVpVaqN6P
-         27YQ==
-X-Gm-Message-State: AOAM533r9ty29bT49MEJ7Nyw7+7Dv5syctQrSHhNmfv6vNgekm2JiOn/
-        bcQ/8jZxH/9FJl/98eBZU6VlpEm+7VU=
-X-Google-Smtp-Source: ABdhPJy+ZTNPeYQLwxF/zT6Poor3lEjzdUUxErLTvxo4LbXU9Ynx6mtXCGgCkuThX12P+TV9csMjdQ==
-X-Received: by 2002:a05:6808:a01:: with SMTP id n1mr9634050oij.112.1595632667264;
-        Fri, 24 Jul 2020 16:17:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id t5sm438984oih.19.2020.07.24.16.17.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jul 2020 16:17:46 -0700 (PDT)
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     skhan@linuxfoundation.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] cpupower update for Linux 5.9-rc1
-Message-ID: <77dacd99-533a-751b-9c88-5fc03ddc29ca@linuxfoundation.org>
-Date:   Fri, 24 Jul 2020 17:17:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726591AbgGXXYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 19:24:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726441AbgGXXYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 19:24:48 -0400
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67BEB20759;
+        Fri, 24 Jul 2020 23:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595633087;
+        bh=Xq0D/3Ahn9nc9K3oRf4KbLNgsT57WhGyF47ymke7J1I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MIZBc67KRjS8ZLworVZFG+SYVi3xl9mvfo5oYUoKFTMujoPdru9o7MwwdmH77Hz6A
+         r5pXZ/CLYwX8cvPrWZWN7lvyEwy0pySxMxvV9jZ2MNAxDpeEp8dePxAQPFfKvZpyXI
+         UqJ0ZiKUFF37FOK8uWzT5urNtwDON1Im4IGLQKVs=
+Received: by mail-ej1-f43.google.com with SMTP id g7so3269266ejw.12;
+        Fri, 24 Jul 2020 16:24:47 -0700 (PDT)
+X-Gm-Message-State: AOAM531LrPg/Ejx2wwj729HwpYxmD8i4e9OQ2KmElb1J7vu4Rqz3NIVF
+        gVDtzLn5l94azFTjjxffAoRGpf30KJZWj23E5A==
+X-Google-Smtp-Source: ABdhPJwfhfPDr4sa3JCxhKDCTo0pXvPswGrmNiVpCVyLZxB4s1571M0BK+9I9DpZATfRGeAEvIM+EI8OA/dtKifFn2Q=
+X-Received: by 2002:a17:906:b888:: with SMTP id hb8mr11401027ejb.124.1595633085797;
+ Fri, 24 Jul 2020 16:24:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------306F1F46DE76E4D6112D14BE"
-Content-Language: en-US
+References: <1595469798-3824-1-git-send-email-yongqiang.niu@mediatek.com> <1595469798-3824-8-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1595469798-3824-8-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 25 Jul 2020 07:24:34 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9hdvw7htuOkJmmmGR9SAev4O+kWuMopfP_F=8Vg=_U+A@mail.gmail.com>
+Message-ID: <CAAOTY_9hdvw7htuOkJmmmGR9SAev4O+kWuMopfP_F=8Vg=_U+A@mail.gmail.com>
+Subject: Re: [v7, PATCH 7/7] drm/mediatek: add support for mediatek SOC MT8183
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------306F1F46DE76E4D6112D14BE
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi Yongqiang:
 
-Hi Rafael,
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=
+=8823=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:15=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> This patch add support for mediatek SOC MT8183
+> 1.ovl_2l share driver with ovl
 
-Please pull the following cpupower update for Linux 5.9-rc1.
+I think this is done in [1], [2], [3], this patch just add the support
+of mt8183-ovl and mt8183-ovl-2l.
 
-This cpupower update for Linux 5.9-rc1 consists of 2 fixes to coccicheck
-warnings and one change to replacing HTTP links with HTTPS ones.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/drivers/gpu/drm/mediatek?h=3Dv5.8-rc6&id=3D132c6e250ed745443973cada8db17=
+cdbaebdf551
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/drivers/gpu/drm/mediatek?h=3Dv5.8-rc6&id=3D318462d1a568634ba09263cc730cb=
+0fb1d56c2b3
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/drivers/gpu/drm/mediatek?h=3Dv5.8-rc6&id=3D57148baac8b78461e394953cfd531=
+7bde8f795ab
 
-diff is attached.
+> 2.rdma1 share drive with rdma0, but fifo size is different
 
-thanks,
--- Shuah
+I think this is done in [4], this patch just add the support of mt8183-rdma=
+.
 
-----------------------------------------------------------------
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+[4] https://patchwork.kernel.org/patch/11679549/
 
-   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+> 3.add mt8183 mutex private data, and mmsys private data
+> 4.add mt8183 main and external path module for crtc create
 
-are available in the Git repository at:
+The fourth item is the mmsys private data in third item, so you need
+not to repeat it.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux 
-tags/linux-cpupower-5.9-rc1
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_disp_ovl.c  | 18 ++++++++++++
+>  drivers/gpu/drm/mediatek/mtk_disp_rdma.c |  6 ++++
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp.c   | 47 ++++++++++++++++++++++++++=
+++++++
+>  drivers/gpu/drm/mediatek/mtk_drm_drv.c   | 43 ++++++++++++++++++++++++++=
++++
+>  4 files changed, 114 insertions(+)
+>
 
-for you to fetch changes up to fa0866a1d1be8ffa6979bf2127272b7e3d511fcd:
+[snip]
 
-   cpupower: Replace HTTP links with HTTPS ones (2020-07-17 11:58:04 -0600)
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/med=
+iatek/mtk_drm_ddp.c
+> index 014c1bb..60788c1 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
+> @@ -15,6 +15,8 @@
+>
+>  #define MT2701_DISP_MUTEX0_MOD0                        0x2c
+>  #define MT2701_DISP_MUTEX0_SOF0                        0x30
+> +#define MT8183_DISP_MUTEX0_MOD0                        0x30
+> +#define MT8183_DISP_MUTEX0_SOF0                        0x2c
+>
+>  #define DISP_REG_MUTEX_EN(n)                   (0x20 + 0x20 * (n))
+>  #define DISP_REG_MUTEX(n)                      (0x24 + 0x20 * (n))
+> @@ -25,6 +27,18 @@
+>
+>  #define INT_MUTEX                              BIT(1)
+>
+> +#define MT8183_MUTEX_MOD_DISP_RDMA0            0
+> +#define MT8183_MUTEX_MOD_DISP_RDMA1            1
+> +#define MT8183_MUTEX_MOD_DISP_OVL0             9
+> +#define MT8183_MUTEX_MOD_DISP_OVL0_2L          10
+> +#define MT8183_MUTEX_MOD_DISP_OVL1_2L          11
+> +#define MT8183_MUTEX_MOD_DISP_WDMA0            12
+> +#define MT8183_MUTEX_MOD_DISP_COLOR0           13
+> +#define MT8183_MUTEX_MOD_DISP_CCORR0           14
+> +#define MT8183_MUTEX_MOD_DISP_AAL0             15
+> +#define MT8183_MUTEX_MOD_DISP_GAMMA0           16
+> +#define MT8183_MUTEX_MOD_DISP_DITHER0          17
+> +
+>  #define MT8173_MUTEX_MOD_DISP_OVL0             11
+>  #define MT8173_MUTEX_MOD_DISP_OVL1             12
+>  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
+> @@ -74,6 +88,10 @@
+>  #define MUTEX_SOF_DSI2                 5
+>  #define MUTEX_SOF_DSI3                 6
+>
+> +#define MT8183_MUTEX_SOF_DPI0                  2
+> +#define MT8183_MUTEX_EOF_DSI0                  (MUTEX_SOF_DSI0 << 6)
+> +#define MT8183_MUTEX_EOF_DPI0                  (MT8183_MUTEX_SOF_DPI0 <<=
+ 6)
+> +
+>
+>  struct mtk_disp_mutex {
+>         int id;
+> @@ -153,6 +171,20 @@ struct mtk_ddp {
+>         [DDP_COMPONENT_WDMA1] =3D MT8173_MUTEX_MOD_DISP_WDMA1,
+>  };
+>
+> +static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] =3D {
+> +       [DDP_COMPONENT_AAL0] =3D MT8183_MUTEX_MOD_DISP_AAL0,
+> +       [DDP_COMPONENT_CCORR] =3D MT8183_MUTEX_MOD_DISP_CCORR0,
+> +       [DDP_COMPONENT_COLOR0] =3D MT8183_MUTEX_MOD_DISP_COLOR0,
+> +       [DDP_COMPONENT_DITHER] =3D MT8183_MUTEX_MOD_DISP_DITHER0,
+> +       [DDP_COMPONENT_GAMMA] =3D MT8183_MUTEX_MOD_DISP_GAMMA0,
+> +       [DDP_COMPONENT_OVL0] =3D MT8183_MUTEX_MOD_DISP_OVL0,
+> +       [DDP_COMPONENT_OVL_2L0] =3D MT8183_MUTEX_MOD_DISP_OVL0_2L,
+> +       [DDP_COMPONENT_OVL_2L1] =3D MT8183_MUTEX_MOD_DISP_OVL1_2L,
+> +       [DDP_COMPONENT_RDMA0] =3D MT8183_MUTEX_MOD_DISP_RDMA0,
+> +       [DDP_COMPONENT_RDMA1] =3D MT8183_MUTEX_MOD_DISP_RDMA1,
+> +       [DDP_COMPONENT_WDMA0] =3D MT8183_MUTEX_MOD_DISP_WDMA0,
+> +};
+> +
+>  static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] =3D {
+>         [DDP_MUTEX_SOF_SINGLE_MODE] =3D MUTEX_SOF_SINGLE_MODE,
+>         [DDP_MUTEX_SOF_DSI0] =3D MUTEX_SOF_DSI0,
+> @@ -163,6 +195,12 @@ struct mtk_ddp {
+>         [DDP_MUTEX_SOF_DSI3] =3D MUTEX_SOF_DSI3,
+>  };
+>
+> +static const unsigned int mt8183_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] =3D {
+> +       [DDP_MUTEX_SOF_SINGLE_MODE] =3D MUTEX_SOF_SINGLE_MODE,
+> +       [DDP_MUTEX_SOF_DSI0] =3D MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
 
-----------------------------------------------------------------
-linux-cpupower-5.9-rc1
+I think this array is for 'sof', so you should drop MT8183_MUTEX_EOF_DSI0.
 
-This cpupower update for Linux 5.9-rc1 consists of 2 fixes to coccicheck
-warnings and one change to replacing HTTP links with HTTPS ones.
+> +       [DDP_MUTEX_SOF_DPI0] =3D MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF=
+_DPI0,
 
-----------------------------------------------------------------
-Alexander A. Klimov (1):
-       cpupower: Replace HTTP links with HTTPS ones
+Ditto.
 
-Shuah Khan (2):
-       cpupower: Fix comparing pointer to 0 coccicheck warns
-       cpupower: Fix NULL but dereferenced coccicheck errors
+Regards,
+Chun-Kuang.
 
-  tools/power/cpupower/lib/cpufreq.c           | 10 +++++-----
-  tools/power/cpupower/man/cpupower-monitor.1  |  4 ++--
-  tools/power/cpupower/utils/helpers/bitmask.c |  6 +++---
-  3 files changed, 10 insertions(+), 10 deletions(-)
-
-----------------------------------------------------------------
-
---------------306F1F46DE76E4D6112D14BE
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-cpupower-5.9-rc1.diff"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
- filename="linux-cpupower-5.9-rc1.diff"
-
-diff --git a/tools/power/cpupower/lib/cpufreq.c b/tools/power/cpupower/lib/cpufreq.c
-index 6e04304560ca..c3b56db8b921 100644
---- a/tools/power/cpupower/lib/cpufreq.c
-+++ b/tools/power/cpupower/lib/cpufreq.c
-@@ -285,7 +285,7 @@ struct cpufreq_available_governors *cpufreq_get_available_governors(unsigned
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -362,7 +362,7 @@ struct cpufreq_available_frequencies
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -418,7 +418,7 @@ struct cpufreq_available_frequencies
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -493,7 +493,7 @@ static struct cpufreq_affected_cpus *sysfs_get_cpu_list(unsigned int cpu,
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-@@ -726,7 +726,7 @@ struct cpufreq_stats *cpufreq_get_stats(unsigned int cpu,
- 			} else {
- 				first = malloc(sizeof(*first));
- 				if (!first)
--					goto error_out;
-+					return NULL;
- 				current = first;
- 			}
- 			current->first = first;
-diff --git a/tools/power/cpupower/man/cpupower-monitor.1 b/tools/power/cpupower/man/cpupower-monitor.1
-index 70a56476f4b0..8ee737eefa5c 100644
---- a/tools/power/cpupower/man/cpupower-monitor.1
-+++ b/tools/power/cpupower/man/cpupower-monitor.1
-@@ -170,7 +170,7 @@ displayed.
- 
- .SH REFERENCES
- "BIOS and Kernel Developer’s Guide (BKDG) for AMD Family 14h Processors"
--http://support.amd.com/us/Processor_TechDocs/43170.pdf
-+https://support.amd.com/us/Processor_TechDocs/43170.pdf
- 
- "Intel® Turbo Boost Technology
- in Intel® Core™ Microarchitecture (Nehalem) Based Processors"
-@@ -178,7 +178,7 @@ http://download.intel.com/design/processor/applnots/320354.pdf
- 
- "Intel® 64 and IA-32 Architectures Software Developer's Manual
- Volume 3B: System Programming Guide"
--http://www.intel.com/products/processor/manuals
-+https://www.intel.com/products/processor/manuals
- 
- .SH FILES
- .ta
-diff --git a/tools/power/cpupower/utils/helpers/bitmask.c b/tools/power/cpupower/utils/helpers/bitmask.c
-index 6c7932f5bd66..649d87cb8b0f 100644
---- a/tools/power/cpupower/utils/helpers/bitmask.c
-+++ b/tools/power/cpupower/utils/helpers/bitmask.c
-@@ -26,11 +26,11 @@ struct bitmask *bitmask_alloc(unsigned int n)
- 	struct bitmask *bmp;
- 
- 	bmp = malloc(sizeof(*bmp));
--	if (bmp == 0)
-+	if (!bmp)
- 		return 0;
- 	bmp->size = n;
- 	bmp->maskp = calloc(longsperbits(n), sizeof(unsigned long));
--	if (bmp->maskp == 0) {
-+	if (!bmp->maskp) {
- 		free(bmp);
- 		return 0;
- 	}
-@@ -40,7 +40,7 @@ struct bitmask *bitmask_alloc(unsigned int n)
- /* Free `struct bitmask` */
- void bitmask_free(struct bitmask *bmp)
- {
--	if (bmp == 0)
-+	if (!bmp)
- 		return;
- 	free(bmp->maskp);
- 	bmp->maskp = (unsigned long *)0xdeadcdef;  /* double free tripwire */
-
---------------306F1F46DE76E4D6112D14BE--
+> +};
+> +
+>  static const struct mtk_ddp_data mt2701_ddp_driver_data =3D {
+>         .mutex_mod =3D mt2701_mutex_mod,
+>         .mutex_sof =3D mt2712_mutex_sof,
+> @@ -184,6 +222,13 @@ struct mtk_ddp {
+>         .mutex_sof_reg =3D MT2701_DISP_MUTEX0_SOF0,
+>  };
+>
