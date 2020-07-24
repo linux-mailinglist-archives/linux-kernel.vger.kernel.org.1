@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8988A22CE46
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BA122CE4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726783AbgGXTDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S1726845AbgGXTEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgGXTDx (ORCPT
+        with ESMTP id S1726617AbgGXTEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:03:53 -0400
+        Fri, 24 Jul 2020 15:04:40 -0400
 Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B66FC0619E7
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:03:53 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l63so5821884pge.12
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:03:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E05C0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:04:40 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id k27so5844385pgm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sdXgEvqGYHlymvqSceJ6jkKcKZE63vnTThrEFoJfoJI=;
-        b=U21XHuTNZcd9Xi31/xCf87Rkodq7UIatsvvV/UwKN/JzlFCu0PB6GXerCOvF6wBSK+
-         SC2WOUDhPlu1q875fotSfx1rUNIyJCPwLsBy0JiUGot5W6Q50r/BPrfciAdVtp7Uwlle
-         rtPo4Tole4s/1hOtfMBeGT54AFN8aogMq5g4g=
+        bh=LrMXrDf7YIZaoWeBKOjSOSMpqfT8SAqX0JXj+wrASIM=;
+        b=YJdzU2vsfQm7AZSEbQDHOGAXkb0FDmlYvGdDHcCBV0Mb+I/0YGXEnNHZP0ITEGdZnq
+         rMUzebIoCugRClDH5RJXQ2VNELpwlavB8ApMKzNJeTwVnKrJanhG9XCaDVo5IwEReNVE
+         3/qzt3XofNbnyZe3522KpHnb11vBLC4noGHZA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=sdXgEvqGYHlymvqSceJ6jkKcKZE63vnTThrEFoJfoJI=;
-        b=FsUPBiYYEwY7EsF/kkUGHya41XIYNFWQVY8eGv6jIeIT0GSRurTkBgwJ20LNVYE6Gs
-         2szC4VPvgKqmDGrRqX6l/fxdUprZuKSxmW26Q1QGAGwgddpHPJg+P8DNcabi0xUdge9r
-         tbMecdqqyZXmXS1VrplmqEj+bqmznuZ3kncVqNPtbqBz0ZE00sStAuA/3bbA+zx8EyvI
-         GvZGEgvvL2zOdb9VX4rpPm4gH/mow251MXXZDri89jJBjKrGe7tKNAVXTPeYMOpBTgKL
-         pOVhrX0ZNriYxHjDcHxlFinagXLDO9Ppmsatcfi2YQQvU6jtjOGUnNddAjO63q0PmJCa
-         eXeg==
-X-Gm-Message-State: AOAM531BN4hdAn0XroIKgTbkjZLWbemk0Ww+ibM7IC8ekGDIdQMi4NU1
-        Wk+8VK7xH0tFpe2Py7+FYNJaEQ==
-X-Google-Smtp-Source: ABdhPJxz4vuqoUWyBigx8RahhArmNJ84Nut7BOOCsUQANkvjswnwvqIw0Juf0zWwzmKl2+qs8JH6nQ==
-X-Received: by 2002:a63:140f:: with SMTP id u15mr9259752pgl.94.1595617432993;
-        Fri, 24 Jul 2020 12:03:52 -0700 (PDT)
+        bh=LrMXrDf7YIZaoWeBKOjSOSMpqfT8SAqX0JXj+wrASIM=;
+        b=dpjCRGtWmU/FUApKh1rIdKL7Ss6MMkKi+x2QnqVin4Z6ugOGQl1E268ShHoM1eJYbA
+         cjy4fvPTeeMHIWJ8VYee2aRXBfaHiQF3vzpVnAcwcpj5DG+v3s44zMmD1er0N1xRlenf
+         U6Ibcr3SSETJu9IZFSBCjepbeG4yfQBcC4r9aVRcm3N5qReXQn1IOKBAzm5/GVWQSMa0
+         0ZqLxg2FF8SGgmHKA3NNDaIke+yk6EnwHQ3RR25p0KtVPddvVOkIP+iScpcfa9tgNAjK
+         CLVNUh1YvNd1ZEEOKSDoI2TcNKZ35caujlB8/Z1qmesPOIZSvRFlJvxPoM0/XrAo4Mee
+         4kAQ==
+X-Gm-Message-State: AOAM532lV31oge0VBQ5MGQVdyVraZO3QZ7lYoBI/Y3XE4VhTWJz6xRcW
+        chwKw+QLhqL2KGtuMWwEX6vAag==
+X-Google-Smtp-Source: ABdhPJwByOH/4ROCOy3QCc3kWU3xI1XY75NRzmOAdHNrzalnVxff+4jx3AjnVMN92eX9iE8obAmE4g==
+X-Received: by 2002:a62:5297:: with SMTP id g145mr10327624pfb.28.1595617479754;
+        Fri, 24 Jul 2020 12:04:39 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 66sm7436424pfa.92.2020.07.24.12.03.51
+        by smtp.gmail.com with ESMTPSA id y7sm6228743pjp.47.2020.07.24.12.04.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 12:03:52 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 12:03:51 -0700
+        Fri, 24 Jul 2020 12:04:38 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 12:04:38 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
 Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
@@ -82,29 +82,43 @@ Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
         kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
         linux-integrity@vger.kernel.org,
         linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-Subject: Re: [PATCH v7 6/7] selftest/openat2: Add tests for O_MAYEXEC
- enforcing
-Message-ID: <202007241203.E4A515733@keescook>
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v7 7/7] ima: add policy support for the new file open
+ MAY_OPENEXEC flag
+Message-ID: <202007241204.3DD9B905E@keescook>
 References: <20200723171227.446711-1-mic@digikod.net>
- <20200723171227.446711-7-mic@digikod.net>
+ <20200723171227.446711-8-mic@digikod.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200723171227.446711-7-mic@digikod.net>
+In-Reply-To: <20200723171227.446711-8-mic@digikod.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 07:12:26PM +0200, Mickaël Salaün wrote:
-> Test propagation of noexec mount points or file executability through
-> files open with or without O_MAYEXEC, thanks to the
-> fs.open_mayexec_enforce sysctl.
+On Thu, Jul 23, 2020 at 07:12:27PM +0200, Mickaël Salaün wrote:
+> From: Mimi Zohar <zohar@linux.ibm.com>
+> 
+> The kernel has no way of differentiating between a file containing data
+> or code being opened by an interpreter.  The proposed O_MAYEXEC
+> openat2(2) flag bridges this gap by defining and enabling the
+> MAY_OPENEXEC flag.
+> 
+> This patch adds IMA policy support for the new MAY_OPENEXEC flag.
+> 
+> Example:
+> measure func=FILE_CHECK mask=^MAY_OPENEXEC
+> appraise func=FILE_CHECK appraise_type=imasig mask=^MAY_OPENEXEC
 > 
 > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+
+^^^ this S-o-b should the last in the fields.
+
+> Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Link: https://lore.kernel.org/r/1588167523-7866-3-git-send-email-zohar@linux.ibm.com
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
 
