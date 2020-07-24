@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D7522C052
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B817522BFFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgGXH7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:59:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54706 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgGXH7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:59:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 61D49B1A5;
-        Fri, 24 Jul 2020 07:59:25 +0000 (UTC)
-Subject: Re: [PATCH] newport_con: vc_color is now in state
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <202007241318.wXYkumEO%lkp@intel.com>
- <20200724062735.18229-1-jslaby@suse.cz> <20200724075819.GA3955149@kroah.com>
-From:   Jiri Slaby <jslaby@suse.cz>
-Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
- mQINBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABtBtKaXJpIFNsYWJ5
- IDxqc2xhYnlAc3VzZS5jej6JAjgEEwECACIFAk6S6NgCGwMGCwkIBwMCBhUIAgkKCwQWAgMB
- Ah4BAheAAAoJEL0lsQQGtHBJgDsP/j9wh0vzWXsOPO3rDpHjeC3BT5DKwjVN/KtP7uZttlkB
- duReCYMTZGzSrmK27QhCflZ7Tw0Naq4FtmQSH8dkqVFugirhlCOGSnDYiZAAubjTrNLTqf7e
- 5poQxE8mmniH/Asg4KufD9bpxSIi7gYIzaY3hqvYbVF1vYwaMTujojlixvesf0AFlE4x8WKs
- wpk43fmo0ZLcwObTnC3Hl1JBsPujCVY8t4E7zmLm7kOB+8EHaHiRZ4fFDWweuTzRDIJtVmrH
- LWvRDAYg+IH3SoxtdJe28xD9KoJw4jOX1URuzIU6dklQAnsKVqxz/rpp1+UVV6Ky6OBEFuoR
- 613qxHCFuPbkRdpKmHyE0UzmniJgMif3v0zm/+1A/VIxpyN74cgwxjhxhj/XZWN/LnFuER1W
- zTHcwaQNjq/I62AiPec5KgxtDeV+VllpKmFOtJ194nm9QM9oDSRBMzrG/2AY/6GgOdZ0+qe+
- 4BpXyt8TmqkWHIsVpE7I5zVDgKE/YTyhDuqYUaWMoI19bUlBBUQfdgdgSKRMJX4vE72dl8BZ
- +/ONKWECTQ0hYntShkmdczcUEsWjtIwZvFOqgGDbev46skyakWyod6vSbOJtEHmEq04NegUD
- al3W7Y/FKSO8NqcfrsRNFWHZ3bZ2Q5X0tR6fc6gnZkNEtOm5fcWLY+NVz4HLaKrJuQINBE6S
- 54YBEADPnA1iy/lr3PXC4QNjl2f4DJruzW2Co37YdVMjrgXeXpiDvneEXxTNNlxUyLeDMcIQ
- K8obCkEHAOIkDZXZG8nr4mKzyloy040V0+XA9paVs6/ice5l+yJ1eSTs9UKvj/pyVmCAY1Co
- SNN7sfPaefAmIpduGacp9heXF+1Pop2PJSSAcCzwZ3PWdAJ/w1Z1Dg/tMCHGFZ2QCg4iFzg5
- Bqk4N34WcG24vigIbRzxTNnxsNlU1H+tiB81fngUp2pszzgXNV7CWCkaNxRzXi7kvH+MFHu2
- 1m/TuujzxSv0ZHqjV+mpJBQX/VX62da0xCgMidrqn9RCNaJWJxDZOPtNCAWvgWrxkPFFvXRl
- t52z637jleVFL257EkMI+u6UnawUKopa+Tf+R/c+1Qg0NHYbiTbbw0pU39olBQaoJN7JpZ99
- T1GIlT6zD9FeI2tIvarTv0wdNa0308l00bas+d6juXRrGIpYiTuWlJofLMFaaLYCuP+e4d8x
- rGlzvTxoJ5wHanilSE2hUy2NSEoPj7W+CqJYojo6wTJkFEiVbZFFzKwjAnrjwxh6O9/V3O+Z
- XB5RrjN8hAf/4bSo8qa2y3i39cuMT8k3nhec4P9M7UWTSmYnIBJsclDQRx5wSh0Mc9Y/psx9
- B42WbV4xrtiiydfBtO6tH6c9mT5Ng+d1sN/VTSPyfQARAQABiQIfBBgBAgAJBQJOkueGAhsM
- AAoJEL0lsQQGtHBJN7UQAIDvgxaW8iGuEZZ36XFtewH56WYvVUefs6+Pep9ox/9ZXcETv0vk
- DUgPKnQAajG/ViOATWqADYHINAEuNvTKtLWmlipAI5JBgE+5g9UOT4i69OmP/is3a/dHlFZ3
- qjNk1EEGyvioeycJhla0RjakKw5PoETbypxsBTXk5EyrSdD/I2Hez9YGW/RcI/WC8Y4Z/7FS
- ITZhASwaCOzy/vX2yC6iTx4AMFt+a6Z6uH/xGE8pG5NbGtd02r+m7SfuEDoG3Hs1iMGecPyV
- XxCVvSV6dwRQFc0UOZ1a6ywwCWfGOYqFnJvfSbUiCMV8bfRSWhnNQYLIuSv/nckyi8CzCYIg
- c21cfBvnwiSfWLZTTj1oWyj5a0PPgGOdgGoIvVjYXul3yXYeYOqbYjiC5t99JpEeIFupxIGV
- ciMk6t3pDrq7n7Vi/faqT+c4vnjazJi0UMfYnnAzYBa9+NkfW0w5W9Uy7kW/v7SffH/2yFiK
- 9HKkJqkN9xYEYaxtfl5pelF8idoxMZpTvCZY7jhnl2IemZCBMs6s338wS12Qro5WEAxV6cjD
- VSdmcD5l9plhKGLmgVNCTe8DPv81oDn9s0cIRLg9wNnDtj8aIiH8lBHwfUkpn32iv0uMV6Ae
- sLxhDWfOR4N+wu1gzXWgLel4drkCJcuYK5IL1qaZDcuGR8RPo3jbFO7Y
-Message-ID: <2c7e2be6-526f-0b5d-466b-3e563342f1d9@suse.cz>
-Date:   Fri, 24 Jul 2020 09:59:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728236AbgGXHng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:43:36 -0400
+Received: from mail-eopbgr00087.outbound.protection.outlook.com ([40.107.0.87]:36007
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726607AbgGXHnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 03:43:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C4SiM0oNcDQ6Tnru5emckgGeRAVEYD9QUmrR7CUk0trlxc2LJz3gO253nuN+ILGc9qz/E9ELFdRmcKY9oYFfc5rJJGP1tlMLSpZeWFVx1Y3U4EX0GZ1+gR7FUdXc8wrRJK13RpaZS1CBGWNxzCRxvJKx2O+ebN/tSmRrFBBEYr75y36k54gC1GMyp4/zf/dPq52XEcubkrqgC24GNeXsGsYW0RTSrK5bCIJEd5t+vyQczmX5u3TM+UTvFUHBaNT5dSdvjoA4mWrPcuyOwzGPE6kxV4i+t0o57B3xELmRoOXJCa3hpQu/Vs3LwwPidwcBpCh/YICsg+JnjIAGVNymRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lmGgTMIbllQUaEA8zmOQnT0s4TQFi5n7J8IqHXxHCJo=;
+ b=KbeGzmKN+PpMylGI5JQy450VAXZoRfPCAc8jr8LrPusC1oHdEjQuWaQNVUT+Bq1YZ0Ot0hNvcmBLVsQAbzxYZTOJcfm3GW3B3rq5ilyoaSFO8uWMQ7C/TS6YJfBTf9/91uEK2uq8taQESpFklrlcefjfbthQxWKkyqTSsw4J9LfVSxN6RwpNOF+49HFTcpkxsUnXjrtTr0bUSf2jJ4y3alxbb6B0CACzD/Z04p2UOQT/aU5Qv1eiMLVlO0XogvWmeW1l3eLRS/yTXSuVn6TuH4pk0aHHjRQgZJi9Bn4AdiLbnvrbFTws4Psq1gOGM+52/EzbfKkP4DFIe6/ddGy0yw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lmGgTMIbllQUaEA8zmOQnT0s4TQFi5n7J8IqHXxHCJo=;
+ b=DRL1ZkkG0Df3WDQ26V7RiYpo6fDYS6FEicNqwdFwM36JE8zdznd9uBP+Jq1N/AdX7keb2y5IxeIAPnUzxEyppvln2bVovlWK1XEp6cJj6M3nBrxDqOhdeTbru7nkAJ8IS5rVA/HlEQ9CosvUc3L+FmkCidZw9tVeG+z1WF733yc=
+Authentication-Results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB6857.eurprd04.prod.outlook.com (2603:10a6:10:114::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Fri, 24 Jul
+ 2020 07:43:27 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::2d36:b569:17c:7701]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::2d36:b569:17c:7701%4]) with mapi id 15.20.3216.024; Fri, 24 Jul 2020
+ 07:43:27 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 00/10] remoteproc: imx_rproc: support iMX8M and early boot
+Date:   Fri, 24 Jul 2020 16:08:03 +0800
+Message-Id: <20200724080813.24884-1-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.16.4
+Content-Type: text/plain
+X-ClientProxiedBy: SGAP274CA0014.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::26)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-In-Reply-To: <20200724075819.GA3955149@kroah.com>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SGAP274CA0014.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23 via Frontend Transport; Fri, 24 Jul 2020 07:43:23 +0000
+X-Mailer: git-send-email 2.16.4
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: d39b57dd-b7a8-45c3-b986-08d82fa540aa
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6857:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB6857666065C706510ECD6A2988770@DB8PR04MB6857.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7wVGcDEgjQNoxjZAuonCt7RhyVZWB4rotR/CHrx0KZOFeMIrjzhD9RxQv2U5MwuzLAUCxSeOI0DSOrcmGNRay5hrrgu910OLUkwwjwh4yYYlDukfQfI0V93RhjxNec6PWlO+/Z7R9uDPo14Re1aHxISGOqDMp6LpT9c4zA6DWTmo7MyHGGSbi2HSRDnAIiwNr6XOZ6xY5p4zx3Lxc9XfQ41VI765VmGfdgnpc69kLr7tkXKG/zXY1kiQZnZHvKSpwTgDYq7HLzOToWvAIUXga38VptcTg1idwp5M6MZ6uyV4MR91tOX9M6pKwZvvxlYH2dSF/KwZfGPrGFAIS53wlQYP6RZ6ZV33bs+yRpLtJgja67Q3V+0fVAXjWxausXkO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(136003)(346002)(376002)(39860400002)(396003)(6512007)(478600001)(8676002)(2616005)(7416002)(316002)(44832011)(956004)(66946007)(66476007)(66556008)(1076003)(5660300002)(6506007)(186003)(26005)(8936002)(6666004)(2906002)(6486002)(16526019)(86362001)(4326008)(36756003)(83380400001)(52116002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: xRRoyv5cdfPQ3QzNcXRsI2sNH0+oON4rJU8Bfgfut3nVOCC4olqhnzK3XK6PiIVK3N0KD1owvgsWGiQDyNsipbMt+/hVzHbtTRdXqi7NDND9AOQCWrmEgLM2j7JbqdRvpaM6QIEBlCrFKejyei6lj6Uhns/GKy6+Q+TWgeq8P5abgJZoA+cgzZj39Sn5yY1WKsChAfFp+m0WiSflWRKI7b/ihFFYMnhAxo64kBB/ajPaVp8LJ8KKRCbOachUNDJvfQgFnvHgUw6QAkhJ9o4sEQDzOP5oDW0jmHxphJCfdLU91SIgG1zTbyMPc0iR8OYIEsVZHduhlM4xFbBCOF93OOaWk9rZUBQ/V3vcOAyKqMlleWsSXe7wBYqupOoiQDAxBjvI9w3eoVxpAWxAOaB9mWYn3ZCtdWWpt1MwPzynqjEvJAJGahKjaL4BEkAiUqkMM3p+uW+kAHW69AWMLJpaPQPNFsiPS/yo+bnLid4wCT/CDNZ3mZCwug7v1aW55c/l
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d39b57dd-b7a8-45c3-b986-08d82fa540aa
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 07:43:27.7883
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rCQSlNHM4BkQ9jdLtH+MeJVP36oUhaN/uFvgRCxeRwgUiOoJF1yXj3Dz4ewZh9b8pVkB3k8Gpb4tYYUfAIz6DQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6857
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24. 07. 20, 9:58, Greg KH wrote:
-> On Fri, Jul 24, 2020 at 08:27:35AM +0200, Jiri Slaby wrote:
->> Since commit 28bc24fc46f9 (vc: separate state), vc->vc_color is known as
->> vc->state.color. Somehow both me and 0-day bot missed this driver during
->> the conversion.
->>
->> So fix the driver now.
->>
->> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
->> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: linux-fbdev@vger.kernel.org
->> Cc: linux-mips@vger.kernel.org
->> ---
->>  drivers/video/console/newport_con.c | 10 +++++-----
->>  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> You forgot the "Reported-by:" line :(
+This patchset is to support i.MX8MQ/M coproc booted before linux.
+Since i.MX8MQ/M was not supported, several patches are needed
+to first support the platform, then support early boot case.
 
-Ah, I didn't know/notice. Will do next time. Thanks.
+I intended to included i.MX8QM/QXP, but that would introduce a large
+patchset, so not included. But the clk/syscon optional patch for
+i.MX8QM/QXP was still kept here to avoid rebase error.
 
+Peng Fan (10):
+  dt-bindings: remoteproc: imx_rproc: add i.MX8MQ/M
+  remoteproc: imx_rproc: correct err message
+  remoteproc: imx: use devm_ioremap
+  remoteproc: imx_rproc: make syscon optional
+  remoteproc: imx_rproc: make clk optional
+  remoteproc: imx_rproc: add load hook
+  remoteproc: imx_rproc: add i.MX specific parse fw hook
+  remoteproc: imx_rproc: support i.MX8MQ/M
+  remoteproc: imx_proc: enable virtio/mailbox
+  remoteproc: imx_rproc: support coproc booting before Linux
+
+ .../devicetree/bindings/remoteproc/imx-rproc.txt   |   3 +
+ drivers/remoteproc/imx_rproc.c                     | 409 ++++++++++++++++++++-
+ 2 files changed, 401 insertions(+), 11 deletions(-)
 
 -- 
-js
-suse labs
+2.16.4
+
