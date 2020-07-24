@@ -2,99 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB63322D21A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 01:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6784622D21F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 01:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgGXXNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 19:13:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726438AbgGXXNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 19:13:11 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71BE62070B;
-        Fri, 24 Jul 2020 23:13:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595632390;
-        bh=HZpnpiku6KxH32mX+B577S8tCYjbRxTgV8cNsa4GI0Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PJhmVJgNVwvKOOofJUhYxWH9OJlKHXgaL829NsQ9oUXK4voII5EuZMs9dhXJnGY3a
-         tHN5LR4krlkI2F2vSfIRyDQEHwb/0uswkc/YsXPleq7ui3IRCxM7588YO4p4Udpg/8
-         NTcdV51wVN9JwZA4L1qVSA4PIoAedVR7NdU0dw5s=
-Date:   Fri, 24 Jul 2020 18:13:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>
-Cc:     Rui Feng <rui_feng@realsil.com.cn>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Ettle <james@ettle.org.uk>, Len Brown <lenb@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jacopo De Simoi <wilderkde@gmail.com>
-Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
-Message-ID: <20200724231309.GA1551055@bjorn-Precision-5520>
+        id S1726593AbgGXXRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 19:17:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726438AbgGXXRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 19:17:48 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BDEC0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 16:17:48 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id t198so9373911oie.7
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 16:17:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=BDEeEoZeABHc+HXpCOvYajS5mvgHITn4YjQHRlTsxl0=;
+        b=d+aIo4o56/TqcXavacmRnL6W408B4PflSNTk5w+KuA6bFV2rrAzqbqOYnF33nB4Gfj
+         HvTt6jpnoQZwbWtaNIsNAkcfcRB85NnoZTIgVIQjUr+fXsUjysRMytHYWmDncOM3VUUK
+         QE/ooqZ76DfB1qDivyg4j+8VFrJQf8cNqcpqE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=BDEeEoZeABHc+HXpCOvYajS5mvgHITn4YjQHRlTsxl0=;
+        b=inFc24opqqIbzdmgW+vzCTK3UKvGBTZKVXEiEgW7KYBPz4ngZtYYTNDUApruIL/HrX
+         qxlJ69IxRnpJhPmk2+kqRHPAUqEpYw3c7SUtLAXT3Oy2ooh5uL8RvCD+6Rj7QDA0Ymfq
+         v5bSTTOwlHO8ujAmAXFKigaMl9CYT2KRAvhxA2wacF1+UuxuuS7V0fD3zIKyj4jQj5hN
+         itYkUyex3bmAX9vSXm25mSmrk7dn/ORkYkDuOkYf5zF24JMm9p6JSydB5Cv80pqioRiu
+         m05B6ZAbv7GK3THAQNfivG9Xar7HM3Puqe01j/WKvj5MXC2CrG2MB/vK+USSVpVaqN6P
+         27YQ==
+X-Gm-Message-State: AOAM533r9ty29bT49MEJ7Nyw7+7Dv5syctQrSHhNmfv6vNgekm2JiOn/
+        bcQ/8jZxH/9FJl/98eBZU6VlpEm+7VU=
+X-Google-Smtp-Source: ABdhPJy+ZTNPeYQLwxF/zT6Poor3lEjzdUUxErLTvxo4LbXU9Ynx6mtXCGgCkuThX12P+TV9csMjdQ==
+X-Received: by 2002:a05:6808:a01:: with SMTP id n1mr9634050oij.112.1595632667264;
+        Fri, 24 Jul 2020 16:17:47 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t5sm438984oih.19.2020.07.24.16.17.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 16:17:46 -0700 (PDT)
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     skhan@linuxfoundation.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] cpupower update for Linux 5.9-rc1
+Message-ID: <77dacd99-533a-751b-9c88-5fc03ddc29ca@linuxfoundation.org>
+Date:   Fri, 24 Jul 2020 17:17:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <83fa1c44e8d342618eb5fbc491ec4779@realtek.com>
+Content-Type: multipart/mixed;
+ boundary="------------306F1F46DE76E4D6112D14BE"
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 07:16:26AM +0000, 吳昊澄 Ricky wrote:
-> Hi James, Bjorn,
-> 
-> The Card reader(10ec:5287) is a combo chip with Ethernet(10ec:8168),
-> we think it is not cause by setting our device config space in idle
-> time.
->
-> We dis/enable the ASPM(setting config space) at busy/idle time, it
-> can make our R/W performances well not a work around function
->
-> PCI Host and Device setting self config space and do handshaking, we
-> think it does not affect the system
+This is a multi-part message in MIME format.
+--------------306F1F46DE76E4D6112D14BE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Are you able to reproduce the problem?  Specifically, James observes
-that before suspend, ASPM L1 is enabled, but after resume, L0s and L1
-are enabled.  The ASPM state should be the same after resume.
+Hi Rafael,
 
-See:
+Please pull the following cpupower update for Linux 5.9-rc1.
 
-  https://bugzilla.kernel.org/show_bug.cgi?id=208117#c8
-  https://bugzilla.kernel.org/show_bug.cgi?id=208117#c9
+This cpupower update for Linux 5.9-rc1 consists of 2 fixes to coccicheck
+warnings and one change to replacing HTTP links with HTTPS ones.
 
-James *is* manually enabling ASPM L1 via a udev rule, which
-complicates things a little.  The sysfs link/l1_aspm functionality
-he's using is new and could well be buggy.
+diff is attached.
 
-Maybe we should simplify this a little bit more.  James, if you don't
-touch ASPM config at all, either manually or via udev, does the ASPM
-configuration stay the same across suspend/resume?
+thanks,
+-- Shuah
 
-> > -----Original Message-----
-> > From: Bjorn Helgaas [mailto:helgaas@kernel.org]
-> > Sent: Friday, July 24, 2020 1:13 AM
-> > To: 吳昊澄 Ricky; Rui Feng
-> > Cc: Arnd Bergmann; Greg Kroah-Hartman; James Ettle; Len Brown; Puranjay
-> > Mohan; linux-pci@vger.kernel.org; linux-kernel@vger.kernel.org; Jacopo De
-> > Simoi
-> > Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
-> > 
-> > [+cc Jacopo]
-> > 
-> > On Thu, Jul 23, 2020 at 11:56:22AM -0500, Bjorn Helgaas wrote:
-> > > James reported this issue with rtsx_pci; can you guys please take a
-> > > look at it?  https://bugzilla.kernel.org/show_bug.cgi?id=208117
-> > >
-> > > There's a lot of good info in the bugzilla already.
-> > 
-> > Likely duplicate: https://bugzilla.kernel.org/show_bug.cgi?id=198951
-> > 
-> > Jacopo, could you please attach a complete dmesg log and "sudo lspci
-> > -vvxxxx" output to your bugzilla?
-> > 
-> > ------Please consider the environment before printing this e-mail.
+----------------------------------------------------------------
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+
+   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux 
+tags/linux-cpupower-5.9-rc1
+
+for you to fetch changes up to fa0866a1d1be8ffa6979bf2127272b7e3d511fcd:
+
+   cpupower: Replace HTTP links with HTTPS ones (2020-07-17 11:58:04 -0600)
+
+----------------------------------------------------------------
+linux-cpupower-5.9-rc1
+
+This cpupower update for Linux 5.9-rc1 consists of 2 fixes to coccicheck
+warnings and one change to replacing HTTP links with HTTPS ones.
+
+----------------------------------------------------------------
+Alexander A. Klimov (1):
+       cpupower: Replace HTTP links with HTTPS ones
+
+Shuah Khan (2):
+       cpupower: Fix comparing pointer to 0 coccicheck warns
+       cpupower: Fix NULL but dereferenced coccicheck errors
+
+  tools/power/cpupower/lib/cpufreq.c           | 10 +++++-----
+  tools/power/cpupower/man/cpupower-monitor.1  |  4 ++--
+  tools/power/cpupower/utils/helpers/bitmask.c |  6 +++---
+  3 files changed, 10 insertions(+), 10 deletions(-)
+
+----------------------------------------------------------------
+
+--------------306F1F46DE76E4D6112D14BE
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-cpupower-5.9-rc1.diff"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+ filename="linux-cpupower-5.9-rc1.diff"
+
+diff --git a/tools/power/cpupower/lib/cpufreq.c b/tools/power/cpupower/lib/cpufreq.c
+index 6e04304560ca..c3b56db8b921 100644
+--- a/tools/power/cpupower/lib/cpufreq.c
++++ b/tools/power/cpupower/lib/cpufreq.c
+@@ -285,7 +285,7 @@ struct cpufreq_available_governors *cpufreq_get_available_governors(unsigned
+ 			} else {
+ 				first = malloc(sizeof(*first));
+ 				if (!first)
+-					goto error_out;
++					return NULL;
+ 				current = first;
+ 			}
+ 			current->first = first;
+@@ -362,7 +362,7 @@ struct cpufreq_available_frequencies
+ 			} else {
+ 				first = malloc(sizeof(*first));
+ 				if (!first)
+-					goto error_out;
++					return NULL;
+ 				current = first;
+ 			}
+ 			current->first = first;
+@@ -418,7 +418,7 @@ struct cpufreq_available_frequencies
+ 			} else {
+ 				first = malloc(sizeof(*first));
+ 				if (!first)
+-					goto error_out;
++					return NULL;
+ 				current = first;
+ 			}
+ 			current->first = first;
+@@ -493,7 +493,7 @@ static struct cpufreq_affected_cpus *sysfs_get_cpu_list(unsigned int cpu,
+ 			} else {
+ 				first = malloc(sizeof(*first));
+ 				if (!first)
+-					goto error_out;
++					return NULL;
+ 				current = first;
+ 			}
+ 			current->first = first;
+@@ -726,7 +726,7 @@ struct cpufreq_stats *cpufreq_get_stats(unsigned int cpu,
+ 			} else {
+ 				first = malloc(sizeof(*first));
+ 				if (!first)
+-					goto error_out;
++					return NULL;
+ 				current = first;
+ 			}
+ 			current->first = first;
+diff --git a/tools/power/cpupower/man/cpupower-monitor.1 b/tools/power/cpupower/man/cpupower-monitor.1
+index 70a56476f4b0..8ee737eefa5c 100644
+--- a/tools/power/cpupower/man/cpupower-monitor.1
++++ b/tools/power/cpupower/man/cpupower-monitor.1
+@@ -170,7 +170,7 @@ displayed.
+ 
+ .SH REFERENCES
+ "BIOS and Kernel Developer’s Guide (BKDG) for AMD Family 14h Processors"
+-http://support.amd.com/us/Processor_TechDocs/43170.pdf
++https://support.amd.com/us/Processor_TechDocs/43170.pdf
+ 
+ "Intel® Turbo Boost Technology
+ in Intel® Core™ Microarchitecture (Nehalem) Based Processors"
+@@ -178,7 +178,7 @@ http://download.intel.com/design/processor/applnots/320354.pdf
+ 
+ "Intel® 64 and IA-32 Architectures Software Developer's Manual
+ Volume 3B: System Programming Guide"
+-http://www.intel.com/products/processor/manuals
++https://www.intel.com/products/processor/manuals
+ 
+ .SH FILES
+ .ta
+diff --git a/tools/power/cpupower/utils/helpers/bitmask.c b/tools/power/cpupower/utils/helpers/bitmask.c
+index 6c7932f5bd66..649d87cb8b0f 100644
+--- a/tools/power/cpupower/utils/helpers/bitmask.c
++++ b/tools/power/cpupower/utils/helpers/bitmask.c
+@@ -26,11 +26,11 @@ struct bitmask *bitmask_alloc(unsigned int n)
+ 	struct bitmask *bmp;
+ 
+ 	bmp = malloc(sizeof(*bmp));
+-	if (bmp == 0)
++	if (!bmp)
+ 		return 0;
+ 	bmp->size = n;
+ 	bmp->maskp = calloc(longsperbits(n), sizeof(unsigned long));
+-	if (bmp->maskp == 0) {
++	if (!bmp->maskp) {
+ 		free(bmp);
+ 		return 0;
+ 	}
+@@ -40,7 +40,7 @@ struct bitmask *bitmask_alloc(unsigned int n)
+ /* Free `struct bitmask` */
+ void bitmask_free(struct bitmask *bmp)
+ {
+-	if (bmp == 0)
++	if (!bmp)
+ 		return;
+ 	free(bmp->maskp);
+ 	bmp->maskp = (unsigned long *)0xdeadcdef;  /* double free tripwire */
+
+--------------306F1F46DE76E4D6112D14BE--
