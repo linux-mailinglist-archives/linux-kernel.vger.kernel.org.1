@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C839622C555
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A37622C54D
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbgGXMiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 08:38:24 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:37261 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726892AbgGXMiQ (ORCPT
+        id S1726826AbgGXMiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 08:38:11 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35436 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726455AbgGXMiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 08:38:16 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OCbAbb009760;
+        Fri, 24 Jul 2020 08:38:09 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06OCbOKl029988;
         Fri, 24 Jul 2020 14:37:54 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-type; s=STMicroelectronics;
- bh=6UtDwAv3qeKN8/V4iakuFjxlVazOXqhLBzSsC4gvvww=;
- b=zqdOy/QvNklM6AW+mN788x7uBwT8sikiSgT0JxlV+O1ZVAccLT+ioS5QtuoYihE+k6fo
- HLM8tTMxetJAqOEjMxAmmKEAhIOLc1YWZboDkv0pfER2G5sLpWL6g2dWX+vkq3bxNO1M
- HOrkZnDw7AbZki+tM2sNk2ELaFsB6IRBsaM/fu3ue68KhTrXhVTeDzjddqyTbdysHeUw
- MjN+uUklAiSY0n+FkRZiLQTDw7hbAORXB3enq2qSuJiACM6ESlm0LUTLwbyTpMQYRIQu
- Y3pT0BpUF1iOzzfKEhlOn5VWZYgfUEKpe92CZq5fyPewyM2950j6H5Occe0QbBn0q715 +g== 
+ bh=FRFwv70pslXpbzDDFiAT4tkfUee8cC3QNP2PqAXCowg=;
+ b=m5g5GTocUGhhu0LPxOxdxuKY23LtN9Xdg9OSukoVtYQWOb6UN8eXaBK61rZnVwa8wUbM
+ IHIgjmhhz6TsegsQC5f+NUMwU2tNjBrN2BlVLFQEZ6Caes72kR2dFt+Abk9uXyMUbs4Y
+ TUvG6DYF/lvMWg8g1aeRc9UiaG/Ky9nhqDaA6D7s3rWGSIA3qnlKVl9gNIXJ7diCiygc
+ 5HY7Yw8ysMtHTKswldrPJFj87sbKs3ZQsJDrVcNzoveGQN9gLfOrJXCCC5Ys9v+S7eU1
+ SadfnZZ61+LT5booRHm8F+guo0NfhOT0ziS2izMDZFK4TdWO3GPqddfi35/yGdDvya9i bw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32bs6vg3g6-1
+        by mx07-00178001.pphosted.com with ESMTP id 32bsahgcgr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 24 Jul 2020 14:37:54 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B85B0100034;
-        Fri, 24 Jul 2020 14:37:53 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 637D210002A;
+        Fri, 24 Jul 2020 14:37:54 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A460A2AF334;
-        Fri, 24 Jul 2020 14:37:53 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 24 Jul 2020 14:37:53
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 557122AF334;
+        Fri, 24 Jul 2020 14:37:54 +0200 (CEST)
+Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1347.2; Fri, 24 Jul 2020 14:37:54
  +0200
 From:   Amelie Delaunay <amelie.delaunay@st.com>
 To:     Minas Harutyunyan <hminas@synopsys.com>,
@@ -51,16 +51,16 @@ CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Fabrice Gasnier <fabrice.gasnier@st.com>,
         Amelie Delaunay <amelie.delaunay@st.com>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 1/4] dt-bindings: usb: dwc2: add optional usb-role-switch property
-Date:   Fri, 24 Jul 2020 14:37:45 +0200
-Message-ID: <20200724123748.25369-2-amelie.delaunay@st.com>
+Subject: [PATCH 2/4] usb: dwc2: fix build issue when config is USB_DWC2_HOST only
+Date:   Fri, 24 Jul 2020 14:37:46 +0200
+Message-ID: <20200724123748.25369-3-amelie.delaunay@st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200724123748.25369-1-amelie.delaunay@st.com>
 References: <20200724123748.25369-1-amelie.delaunay@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE2.st.com
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
  (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-24_04:2020-07-24,2020-07-24 signatures=0
@@ -69,31 +69,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch documents the usb-role-switch property in dwc2 bindings, now
-that usb-role-switch support is available in dwc2 driver.
+This patch add missing definition of dwc2_hsotg_core_disconnect and
+check configuration before using hsotg->test_mode, to fix build issue when
+config USB_DWC2_PERIPHERAL or USB_DWC2_DUAL_ROLE are not set.
 
 Fixes: bc0f0d4a5853 ("usb: dwc2: override PHY input signals with usb role switch support")
-Reported-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 ---
- Documentation/devicetree/bindings/usb/dwc2.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/dwc2/core.h | 1 +
+ drivers/usb/dwc2/drd.c  | 3 +++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
-index 9352a8ef60a6..7b226eeffe82 100644
---- a/Documentation/devicetree/bindings/usb/dwc2.yaml
-+++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
-@@ -100,6 +100,10 @@ properties:
-   dr_mode:
-     enum: [host, peripheral, otg]
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index 33e790ccefb3..7161344c6522 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -1425,6 +1425,7 @@ static inline int dwc2_gadget_init(struct dwc2_hsotg *hsotg)
+ { return 0; }
+ static inline void dwc2_hsotg_core_init_disconnected(struct dwc2_hsotg *dwc2,
+ 						     bool reset) {}
++static inline void dwc2_hsotg_core_disconnect(struct dwc2_hsotg *hsotg) {}
+ static inline void dwc2_hsotg_core_connect(struct dwc2_hsotg *hsotg) {}
+ static inline void dwc2_hsotg_disconnect(struct dwc2_hsotg *dwc2) {}
+ static inline int dwc2_hsotg_set_test_mode(struct dwc2_hsotg *hsotg,
+diff --git a/drivers/usb/dwc2/drd.c b/drivers/usb/dwc2/drd.c
+index 032efffa37ab..5099841b1417 100644
+--- a/drivers/usb/dwc2/drd.c
++++ b/drivers/usb/dwc2/drd.c
+@@ -76,11 +76,14 @@ static int dwc2_drd_role_sw_set(struct usb_role_switch *sw, enum usb_role role)
+ 	    (role == USB_ROLE_HOST && hsotg->dr_mode == USB_DR_MODE_PERIPHERAL))
+ 		return -EINVAL;
  
-+  usb-role-switch:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: Support role switch.
-+
-   g-rx-fifo-size:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: size of rx fifo size in gadget mode.
++#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || \
++	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
+ 	/* Skip session if core is in test mode */
+ 	if (role == USB_ROLE_NONE && hsotg->test_mode) {
+ 		dev_dbg(hsotg->dev, "Core is in test mode\n");
+ 		return -EBUSY;
+ 	}
++#endif
+ 
+ 	spin_lock_irqsave(&hsotg->lock, flags);
+ 
 -- 
 2.17.1
 
