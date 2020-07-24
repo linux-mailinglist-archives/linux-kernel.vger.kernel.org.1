@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3F422C44E
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE0522C452
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 13:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgGXLV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 07:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45896 "EHLO
+        id S1728061AbgGXLWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 07:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726488AbgGXLV7 (ORCPT
+        with ESMTP id S1727900AbgGXLWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 07:21:59 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B7BC0619E5
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:21:58 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id 184so7943160wmb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:21:58 -0700 (PDT)
+        Fri, 24 Jul 2020 07:22:11 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C01AC0619E5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:22:11 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id k20so285542wmi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 04:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=QBcl5FK4EZqrtCnW5IQ5WndIaO7X61MMG438KlSxZ48=;
-        b=p6tgPHcxw7s+eIybTuztyk5Zh+ndlxFsb6LnTlTsA4B+g8xpvXitbOzuaGmCgfqRZb
-         giCezrtJy0QaopoXfIqaUbZHRnE5iVWB1cbawyhaA1ftF7mxE0rwYy54CkTF6S+TAbj9
-         wsgoL474l8C+LiDYwSs3Xgm/H+Rcn5CwIrD4E/2UOexcF95TC2wuxTFtgOPRIhrHiZaB
-         r2XvYlXNVFEuBXRInp4w/L4ZqgdCGK/k9GeraiDofbJx0KiZJOiz8wE1mUyIPccyoTEI
-         eQxP/4c8TCL7l6vYkJkPI5RlS/Lkz/dSezmCs60Qr+Fg8exa7O1URKW7Gh89H61GSWkm
-         ExhQ==
+        bh=GazPbHUQLsK8S7tpuO7AvOa0IiPz4pR+J44UaDqobHk=;
+        b=KrRpNFDpBZHHWPx0ETVhUqNHKnHacZ6r/gaay6WB7CS6mzqX5jorQsoiNCm9OqQcBl
+         vn7wpZGL/D2B4UwfH2LgfbjDEIh7Foz8/z7K/TCE6wAMpanMQOmDw+QkdhqmRS4bzNle
+         397s4Y+2q+fZhfj4/arSsxnViNt3HFGoVURr7YnynB++Exs/V9T5Tek+q7K/nfV3Uo0F
+         Y8m5px4KvbjmZVv3FS+mpGRsSnyoDcg3r4eBpmGyTV5SqGYyNS8Lfg3vaQf+D+6KAS3f
+         buZh9+8VeBnzqjOX9hyKTU/xIRqpDcsGFzwik6zJAJ/Vj27bgN2Fy/SOHZMyxzNnmtDq
+         82dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QBcl5FK4EZqrtCnW5IQ5WndIaO7X61MMG438KlSxZ48=;
-        b=PvgWKElp1o3W6UnQNcZ9rnuZWN3l8Wj1o6Qr54vCwvie0L4k8CkbelW60b+XoRrGOZ
-         T7iWwZaYTsQG49HW+JOukpzysVGWVV5LmshhN34Gz5ZEAxuO1+ejGjq2ebtiuYRqBh/h
-         DLq26YTKY67pc+BccOpnNyk/iulIw2MiZBof4ULSdEBUhCxyrj8N9PWd95+PN2OrNEgJ
-         NQIH+BtpoD0CsC3guN+m7/0w5hCfENQYp7b/yXJQDqWGu2ic8X2VC6GwpbPrdXr5k6mP
-         3ckLEG4Lx0/bvYt7xMGHjGrA0cNkq3otUSYd+2AXbP8lrpVwCNp0+djV62oaH3ijExC7
-         V4kA==
-X-Gm-Message-State: AOAM532NXg3KXTnYBi2AC3T3sLy+x1fLlrS476ZnU9OYjj3igNDA5lEW
-        st6crv7fQpuy5W0buWEgOokTpZVyNZ8=
-X-Google-Smtp-Source: ABdhPJyIZOVHqR8IywjbnF4AfvsOTpXs4INYnuhL6MUOJ25g639wiz/73ibH9ilrBLAIG2rjP2oPBA==
-X-Received: by 2002:a1c:4406:: with SMTP id r6mr8235833wma.161.1595589716944;
-        Fri, 24 Jul 2020 04:21:56 -0700 (PDT)
+        bh=GazPbHUQLsK8S7tpuO7AvOa0IiPz4pR+J44UaDqobHk=;
+        b=Qzw0QmxkQ/euf4Z0Cja7URqZ7hf2+TPs9RkycL+tDeRkwMBAnNdeYKC/zLc1u4wWNL
+         rxrCXIDT80m372xs8fLz5etpzs8THGtpgC5/nngP95zOwHqjR022ZdmSEJY7NcrNegy9
+         e+hW0c5IT24otkThSKN69ua1/k1uww6maqTtNT329D5RQaAKCtJeVJke6oGCEhFZaPx/
+         Vbj9wEXGWXouhR71ZendXQ7WAMWcy/6NTQsWpM9N7K/Kw8tI4hJiscSmUD5nhSf8BWQU
+         skdQMZyYkVqrkeRIgxlRo6JiMKocJ0pJG8tj4D9kWSNdU2UEcJ7Ct9NqgJxZWhWQPubV
+         yxmw==
+X-Gm-Message-State: AOAM531THhFzJo5qivhhE5TUD80Bmx1KUqlvIuA5tFI1bw0ZfMxVkV8x
+        m+iraPgkp4yumQegc/GDfoIkQhm68Ns=
+X-Google-Smtp-Source: ABdhPJzuISAaEC6wI6jIFPRKdMJneQLwLQbmOnvS88iKf9FErm/LSyy4iq1BlJvn6CgSM6jT0oW0fA==
+X-Received: by 2002:a7b:cb8d:: with SMTP id m13mr7724232wmi.120.1595589728701;
+        Fri, 24 Jul 2020 04:22:08 -0700 (PDT)
 Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.googlemail.com with ESMTPSA id p14sm1020718wrx.90.2020.07.24.04.21.55
+        by smtp.googlemail.com with ESMTPSA id y20sm6394145wmi.8.2020.07.24.04.22.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Jul 2020 04:21:56 -0700 (PDT)
-Subject: Re: [PATCH v4 06/12] ASoC: qcom: lpass-cpu: fix concurrency issue
+        Fri, 24 Jul 2020 04:22:08 -0700 (PDT)
+Subject: Re: [PATCH v4 10/12] ASoC: qcom: lpass-cpu: Use platform_get_resource
 To:     Rohit kumar <rohitkr@codeaurora.org>, agross@kernel.org,
         bjorn.andersson@linaro.org, lgirdwood@gmail.com,
         broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
@@ -57,14 +57,14 @@ To:     Rohit kumar <rohitkr@codeaurora.org>, agross@kernel.org,
         linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
- <1595413915-17867-7-git-send-email-rohitkr@codeaurora.org>
+ <1595413915-17867-11-git-send-email-rohitkr@codeaurora.org>
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <eb3854ac-6480-f6ce-4325-bd00dd18be40@linaro.org>
-Date:   Fri, 24 Jul 2020 12:21:55 +0100
+Message-ID: <c0789d98-599a-6b67-ac42-9083a6c251f3@linaro.org>
+Date:   Fri, 24 Jul 2020 12:22:07 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1595413915-17867-7-git-send-email-rohitkr@codeaurora.org>
+In-Reply-To: <1595413915-17867-11-git-send-email-rohitkr@codeaurora.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -76,53 +76,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 22/07/2020 11:31, Rohit kumar wrote:
-> i2sctl register value is set to 0 during hw_free(). This
-> impacts any ongoing concurrent session on the same i2s
-> port. As trigger() stop already resets enable bit to 0,
-> there is no need of explicit hw_free. Removing it to
-> fix the issue.
+> platform_get_resource_byname() is used when there
+> is list of reg entries. As lpass-cpu node has only
+> one reg entry, use platform_get_resource() instead.
 > 
-> Fixes: 80beab8e1d86 ("ASoC: qcom: Add LPASS CPU DAI driver")
 > Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 
 Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
 > ---
->   sound/soc/qcom/lpass-cpu.c | 16 ----------------
->   1 file changed, 16 deletions(-)
+>   sound/soc/qcom/lpass-cpu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index 6b86f16..5d84f63 100644
+> index 5d84f63..1ee6d8b 100644
 > --- a/sound/soc/qcom/lpass-cpu.c
 > +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -266,21 +266,6 @@ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
->   	return 0;
->   }
+> @@ -575,7 +575,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
 >   
-> -static int lpass_cpu_daiops_hw_free(struct snd_pcm_substream *substream,
-> -		struct snd_soc_dai *dai)
-> -{
-> -	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
-> -	int ret;
-> -
-> -	ret = regmap_write(drvdata->lpaif_map,
-> -			   LPAIF_I2SCTL_REG(drvdata->variant, dai->driver->id),
-> -			   0);
-> -	if (ret)
-> -		dev_err(dai->dev, "error writing to i2sctl reg: %d\n", ret);
-> -
-> -	return ret;
-> -}
-> -
->   static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
->   		struct snd_soc_dai *dai)
->   {
-> @@ -350,7 +335,6 @@ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
->   	.startup	= lpass_cpu_daiops_startup,
->   	.shutdown	= lpass_cpu_daiops_shutdown,
->   	.hw_params	= lpass_cpu_daiops_hw_params,
-> -	.hw_free	= lpass_cpu_daiops_hw_free,
->   	.prepare	= lpass_cpu_daiops_prepare,
->   	.trigger	= lpass_cpu_daiops_trigger,
->   };
+>   	of_lpass_cpu_parse_dai_data(dev, drvdata);
+>   
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "lpass-lpaif");
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>   
+>   	drvdata->lpaif = devm_ioremap_resource(dev, res);
+>   	if (IS_ERR((void const __force *)drvdata->lpaif)) {
 > 
