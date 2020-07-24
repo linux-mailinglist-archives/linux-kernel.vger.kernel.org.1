@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691CF22C60D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D685B22C61A
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 15:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgGXNOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 09:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35256 "EHLO
+        id S1727782AbgGXNPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 09:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbgGXNOj (ORCPT
+        with ESMTP id S1727085AbgGXNOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 09:14:39 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443B0C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:14:39 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc15so5842776pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:14:39 -0700 (PDT)
+        Fri, 24 Jul 2020 09:14:55 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CB3C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:14:55 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f185so155352pfg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 06:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=reMLRYlsYVkeM3mrx5IDn5+pquZ2PKUwq+BgQPeb0uE=;
-        b=crDQbd0+Ra2ZheXq/4azXw+hYoYrjbQc11JsdCvANLDkTf8DoL96/OEeSL8+HTgJyp
-         obQoiSet+rGZ5/JCo5sQjNwikd+TQoTXPDj6DYpCjt+AXr5HzOxgUh47x6T1EbancBVZ
-         OtIxxi0ifmL/i5lXyyfgOM3H3BEi+P+qKvC9xRdwAw5wVN7tbHB1AtdYIpDYmmBZOQDu
-         WcGFGUu4OKOgNhwSza5ek1VTyABtHAIpiQlnrobhnpix4OlG5C7NIu+KjAVRxJql74Bw
-         YQvbFZs6L40npUAtmGjF2eNaCkV4tQ3OON9gl9TPam67WRwhRpJ17ZW6WDfq9x1qLJ13
-         0KFw==
+        bh=Nit0NnPmCNNlebQQdy2f4H1BvnX3IyziXDcDUEve7ZE=;
+        b=tL4mCyjdrhqL+vhLgZx3IoyjYCPak1l0yCsxVJJMJD46G/apTkoyzVqHcSuIEHQ5PX
+         KS+g9aizILE/96lLa01H/PgF/nPuvolx5lYFXRUsdqNA/t4vXft4j9GAigBRJQruALN8
+         6Xq4YMvuhRcV6fPPCIhKdVSFmibF0OmZNaVr0qhQpzoDVJHjrhlfJJwYsoAWk8ztZeMT
+         5j4YMve59l3cJGjK18T7EDTSItm2Q22+E3z2f4TmQQ92srUk8wtqXcuAh0ptSolLkOvw
+         ZrRojXmw/VOVgTJLt/+grM+e+dyxyd9LYphkrRCAfbT0b38j1Cyutlae7k+Q8mVAye1g
+         AlYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:subject:message-id:mime-version
          :content-disposition;
-        bh=reMLRYlsYVkeM3mrx5IDn5+pquZ2PKUwq+BgQPeb0uE=;
-        b=q8vrwmQ0k73jdS0ZmAY53JlapzaDsWGpjkmscLlQyMUz1dFLIsaAgX3msqc7ccCU2x
-         bpOfWnrilKGxgURSMqHIBznwQJ+HlOJXhgWJZ+zuk3yxFxaay3/OgKIhYII7YN2BTk4n
-         GOYaGsndaTbzBiz43jIbR8y/5xvDThinLbDuPK8owDCbBFa5It5nIfCYCGBJTnbW+fQl
-         RSsfXyYVTFzFo+/NcathshMKQ8j289rWSC6a2XEHfqI2WgSKV/lDn8iw7lhZsD/NwKLK
-         wTuOnt3Rf0eXfKm57ns9BSfaDB+u/H/q637J9sGUkcdrRn9N6XAor2N40TkZmqVO3YHQ
-         WzWg==
-X-Gm-Message-State: AOAM532fv+vBIrpINWRLZSF+ElOXGY0CwC9jaFU9jm34CpdIsFbNrgK8
-        vEjmjTflG/NG9AVrA9EcTtQ=
-X-Google-Smtp-Source: ABdhPJzo6r4cVg9XFVnSSmhDLOnaM7HNU6jJzG2pIvwWmMAoLkD6y9qFg/71rcuEhHlZbvrnAbdtZw==
-X-Received: by 2002:a17:90a:1089:: with SMTP id c9mr5403159pja.180.1595596478783;
-        Fri, 24 Jul 2020 06:14:38 -0700 (PDT)
+        bh=Nit0NnPmCNNlebQQdy2f4H1BvnX3IyziXDcDUEve7ZE=;
+        b=MLSFExO/PG7JwGoB+BZjAff65APSTTtwXbS84LSSOBjkwJwfMnYymh+vHeGYzzpTcD
+         IGcFoaypPgkMvhM32s2NCm9c/VbDfAGis7B+c6ooBlRnMXV3FnEcQaUok3ACN9o8wRbG
+         e8CnOOn5D3qjK7XJmH/S/9cLMXfxYHY+TJmXNlFfuxMjFbjp01MBydzOnmZelcwnl0xq
+         AnVp7OHhinQpEbTpb47/Ab+ULFqN7dWv5XpaJmdz4p9zUmfyREPP3eLKAojoIH/w8awQ
+         vQmZyIu1NzBp+v3Ej2wvlKdVEekUgdD+4M1P4jzRHAQ5SW5Piy5HfnyQN4v79h/5ANUB
+         QsPg==
+X-Gm-Message-State: AOAM533s4nv5mgMiowtIa6F/eDLD6S43IeR3FaiDvc4xiwBZ4kjW3JcU
+        k24byF9k2QuT0En7z3p5EA8=
+X-Google-Smtp-Source: ABdhPJwfoJqjs2vuQkHsJq/jeaTMMrtFZg4TEc5MLQyXYy6rOXOpJG//k9jRmuYbugA5lryOpdcmmQ==
+X-Received: by 2002:a63:f814:: with SMTP id n20mr8203259pgh.92.1595596494738;
+        Fri, 24 Jul 2020 06:14:54 -0700 (PDT)
 Received: from localhost ([1.22.41.181])
-        by smtp.gmail.com with ESMTPSA id 66sm6600458pfg.63.2020.07.24.06.14.37
+        by smtp.gmail.com with ESMTPSA id b21sm6501633pfb.45.2020.07.24.06.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 06:14:37 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 18:44:33 +0530
+        Fri, 24 Jul 2020 06:14:54 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 18:44:49 +0530
 From:   Mrinal Pandey <mrinalmni@gmail.com>
 To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
         maco@android.com, joel@joelfernandes.org, christian@brauner.io,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         mrinalmni@gmail.com
-Subject: [PATCH 5/6] drivers: android: Fix a variable declaration coding
- style issue
-Message-ID: <20200724131433.stf3ycooogawyzb3@mrinalpandey>
+Subject: [PATCH 6/6] drivers: android: Fix the SPDX comment style
+Message-ID: <20200724131449.zvjutbemg3vqhrzh@mrinalpandey>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="grqqnbefsvlkzzvh"
+        protocol="application/pgp-signature"; boundary="76felxngyahx4fmv"
 Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -66,53 +65,51 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---grqqnbefsvlkzzvh
+--76felxngyahx4fmv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Add a blank line after variable declarations as suggested by checkpatch.
+C source files should have `//` as SPDX comment and not `/**/`. Fix this
+by running checkpatch on the file.
 
 Signed-off-by: Mrinal Pandey <mrinalmni@gmail.com>
 ---
- drivers/android/binderfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/android/binderfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-index 7cf566aafe1f..8a98a36ff71a 100644
+index 8a98a36ff71a..4eada4dc232f 100644
 --- a/drivers/android/binderfs.c
 +++ b/drivers/android/binderfs.c
-@@ -351,6 +351,7 @@ static const struct super_operations binderfs_super_ops=
- =3D {
- static inline bool is_binderfs_control_device(const struct dentry *dentry)
- {
- 	struct binderfs_info *info =3D dentry->d_sb->s_fs_info;
-+
- 	return info->control_dentry =3D=3D dentry;
- }
+@@ -1,4 +1,4 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
++// SPDX-License-Identifier: GPL-2.0
 =20
+ #include <linux/compiler_types.h>
+ #include <linux/errno.h>
 --=20
 2.25.1
 
 
---grqqnbefsvlkzzvh
+--76felxngyahx4fmv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEE8DwCG1PwaC2uTI99xIwpEWwxhGQFAl8a3rkACgkQxIwpEWwx
-hGTS3hAAnBoTVKJZTQYY6H7ngmGccBbE4quqljqUD8/0UyfwOCH91x3Py9M35U09
-DeDH2opW3cJn3boASkps0OuDsd8Eizte2DOxVnvzcFgszkty6XLxzfuaNQnywx55
-6HVPITlom5YCCV/gi1bJUBtbeTHzy9ILb3NXeycgiZua5aq9EwFqKNJaoHAtPGrT
-B6QCkNAw1hrfvCd5bgqxOgO0ODgMbOL1w/MTnbobUHKeTrLPgKQyZpEsvTBPfJfa
-8Swbmf7Wp3QNk/RJSVsHQOsOH7elK6P4ApGrAveoU/SSa9JU49G40ENHeuPDe9K+
-cTStZkaX8sO48xRxB/yLwUyGbR0E/MRbKxI4BA699fMGOIeDnNN762lr8bZoRAkg
-RUMkH7eQUgnAAsnUl3P/Mk1Wa1d4TlIdmnAeNFsa7CKxnMISGtQr/Wg6uE1guAbU
-HvcZ1CzYmy8w2o/C4jJam3F+VymG2rtpskcLmnH7rpTLWtJGu3+oOULX/d04ordD
-qCQaVuZmeg1268/RFaRICNN6oycEI3bZc8thGzmrH6YD1V9b5hoRBUo30tFJ+7Tf
-ner0nESJWLg29oeEzPVeOklqh/2gLsCrIXq/doM3VMJm7RS99cgudjWYZayaO0xB
-Ms4I19LgSIjj61avbj28nEJODFpAi+BYdZgcLBz7DiC4iR8wYpk=
-=GUIX
+iQIzBAEBCgAdFiEE8DwCG1PwaC2uTI99xIwpEWwxhGQFAl8a3skACgkQxIwpEWwx
+hGRgHw/+LIkaOIms9WecmHC1athhjWoFfmjy7JN2I/NyANmFfUbBtL/aAea868Dw
+s48fTyq+sd6WpALiPiaCgD56cI878vH7H98qsm3FqYm76uZ/wzl6fKorIhAdJBy3
+OyPj7j+8IEfDA/fBHxTYkGNpDY4gQET2nrgAqAqjaxih32tKrM7CI8FzkNPMiejL
+m9pRZGV4tw2cdqMgUhtaEsQFsonAiJy+VnrUNGS9yylNGzLSeBi/CnwueSDo0Nu5
+97YGWb6p9ck5Gs4FHgCxXgO8p3dvu29wVCaU7FjhRgvfv0DsFjEtlT2/kt3rtQJg
+nPgOa6oljuPMiPGupFVXxI827PQJL+ASsF0sQD2VIpOBX6L79qXbF5DIpHTXrxCO
+jbW5+fO6Eg1Bglj/D0QDY4QFqGDr/o9UzhOqLGtYP/efxK+5noHLaPWB4d7ps4uB
+46jH0vJ/GxHwn8y+5ycXqAaujxznZIR5FPMXVP9TKs0ZjDwB6/Itg30HozynWRT9
+E17uLXhUlWMri2EbPAabMiJCRe4IBwj34MCqAFrDwRNxfzIWhN5clLL01MnQdok2
+SuERXVT4215iJpDRRrsyUaKo7iE4ebDa5MsSQTWoMktgg2CrtCSUB8fwPlAyPo3M
+NoLo65uZ17ZwWuGvKtXQLSBEv5T5FswajawIVGkXpouWBtB/AdQ=
+=8dgS
 -----END PGP SIGNATURE-----
 
---grqqnbefsvlkzzvh--
+--76felxngyahx4fmv--
