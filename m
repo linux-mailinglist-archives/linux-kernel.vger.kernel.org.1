@@ -2,107 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336EB22D24A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 01:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8E422D256
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 01:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgGXXix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 19:38:53 -0400
-Received: from mga11.intel.com ([192.55.52.93]:48289 "EHLO mga11.intel.com"
+        id S1726890AbgGXXk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 19:40:56 -0400
+Received: from mga09.intel.com ([134.134.136.24]:33322 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726769AbgGXXiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 19:38:52 -0400
-IronPort-SDR: A05C+Xmg/24AWZ8XWCC49We/KZXqTG3zxZ5R7OU3VFq4Ozu1+Fj+WoGC8eAZi3f6sq5Y1opxbU
- p4QPAu3hRiCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="148705546"
+        id S1726592AbgGXXk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 19:40:56 -0400
+IronPort-SDR: 6/k+66Q2GyQk5r5jjrOdGheaLrEW3Bt0WXPF35sknkTnSjyfeDxLW6XlAX+pDZmGFtXUJVjj6t
+ tocOB3dbelDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9692"; a="152072502"
 X-IronPort-AV: E=Sophos;i="5.75,392,1589266800"; 
-   d="scan'208";a="148705546"
+   d="scan'208";a="152072502"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 16:38:50 -0700
-IronPort-SDR: FHY2QQkrnx0GfAGNW9L2qgado7yMVapEjpsegNmidntYGOZEDhGLPi0Y8c41n6UXiBarj0ycdG
- zyYD4SMfVQ3Q==
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 16:40:53 -0700
+IronPort-SDR: BqdVcPt3MfBCQAQuAdkO5t3owXWmJyO0xcDvlLil8k+ZYMM/xNXpFu+hDa3Ow/TodiDaDesdcY
+ AlPT90GnMZLA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,392,1589266800"; 
-   d="scan'208";a="463392443"
+   d="scan'208";a="272711681"
 Received: from assenmac-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.38.15])
-  by orsmga005.jf.intel.com with ESMTP; 24 Jul 2020 16:38:46 -0700
-Date:   Sat, 25 Jul 2020 02:38:45 +0300
+  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2020 16:40:50 -0700
+Date:   Sat, 25 Jul 2020 02:40:48 +0300
 From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andi Kleen <ak@linux.intel.com>,
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-Message-ID: <20200724233845.GB1903189@linux.intel.com>
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
- <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
- <20200724102748.GD2831654@kernel.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 3/7] vmalloc: Add text_alloc() and text_free()
+Message-ID: <20200724234048.GC1903189@linux.intel.com>
+References: <20200717030422.679972-1-jarkko.sakkinen@linux.intel.com>
+ <20200717030422.679972-4-jarkko.sakkinen@linux.intel.com>
+ <20200718162359.GA2919062@kernel.org>
+ <20200723222835.GC12405@linux.intel.com>
+ <20200724101302.GF927924@kernel.org>
+ <20200724233112.GA1903189@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200724102748.GD2831654@kernel.org>
+In-Reply-To: <20200724233112.GA1903189@linux.intel.com>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 01:27:48PM +0300, Mike Rapoport wrote:
-> On Fri, Jul 24, 2020 at 08:05:52AM +0300, Jarkko Sakkinen wrote:
-> > Use text_alloc() and text_free() instead of module_alloc() and
-> > module_memfree() when an arch provides them.
+On Sat, Jul 25, 2020 at 02:31:16AM +0300, Jarkko Sakkinen wrote:
+> On Fri, Jul 24, 2020 at 01:13:02PM +0300, Mike Rapoport wrote:
+> > On Fri, Jul 24, 2020 at 01:28:35AM +0300, Jarkko Sakkinen wrote:
+> > > On Sat, Jul 18, 2020 at 07:23:59PM +0300, Mike Rapoport wrote:
+> > > > On Fri, Jul 17, 2020 at 06:04:17AM +0300, Jarkko Sakkinen wrote:
+> > > > > Introduce functions for allocating memory for dynamic trampolines, such
+> > > > > as kprobes. An arch can promote the availability of these functions with
+> > > > > CONFIG_ARCH_HAS_TEXT_ALLOC. Provide default/fallback implementation
+> > > > > wrapping module_alloc() and module_memfree().
+> > > > > 
+> > > > > Cc: Andi Kleen <ak@linux.intel.com>
+> > > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > > > > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > > > > ---
+> > > > >  include/linux/vmalloc.h | 23 +++++++++++++++++++++++
+> > > > >  1 file changed, 23 insertions(+)
+> > > > > 
+> > > > > diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+> > > > > index 0221f852a7e1..e981436e30b6 100644
+> > > > > --- a/include/linux/vmalloc.h
+> > > > > +++ b/include/linux/vmalloc.h
+> > > > > @@ -9,6 +9,7 @@
+> > > > >  #include <asm/page.h>		/* pgprot_t */
+> > > > >  #include <linux/rbtree.h>
+> > > > >  #include <linux/overflow.h>
+> > > > > +#include <linux/moduleloader.h>
+> > > > >  
+> > > > >  #include <asm/vmalloc.h>
+> > > > >  
+> > > > > @@ -249,4 +250,26 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> > > > >  int register_vmap_purge_notifier(struct notifier_block *nb);
+> > > > >  int unregister_vmap_purge_notifier(struct notifier_block *nb);
+> > > > >  
+> > > > > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
+> > > > > +/*
+> > > > > + * Allocate memory to be used for dynamic trampoline code.
+> > > > > + */
+> > > > > +void *text_alloc(unsigned long size);
+> > > > > +
+> > > > > +/*
+> > > > > + * Free memory returned from text_alloc().
+> > > > > + */
+> > > > > +void text_free(void *region);
+> > > > > +#else
+> > > > > +static inline void *text_alloc(unsigned long size)
+> > > > > +{
+> > > > > +	return module_alloc(size);
+> > > > > +}
+> > > > > +
+> > > > > +static inline void text_free(void *region)
+> > > > > +{
+> > > > > +	module_memfree(region);
+> > > > > +}
+> > > > 
+> > > > Using module_alloc() as the default implementation of generic
+> > > > text_alloc() does not sound right to me.
+> > > > 
+> > > > I would suggest rename module_alloc() to text_alloc() on x86, as Peter
+> > > > proposed and then add text_alloc_kprobes() that can be overridden by the
+> > > > architectures. x86 could use text_alloc(), arm64 vmalloc() with options
+> > > > of their choice and the fallback would remain module_alloc(). Something
+> > > > like (untested) patch below:
+> > > 
+> > > I'm not exactly sure which of the below is relevant as the patch set
+> > > includes the exact same changes with maybe different phrasing:
 > > 
-> > Cc: linux-mm@kvack.org
-> > Cc: Andi Kleen <ak@linux.intel.com>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > ---
-> >  kernel/kprobes.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
+> > The difference in parsing is what differentiates semantically clean code
+> > from duct tape.
 > > 
-> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > index 4e46d96d4e16..611fcda9f6bf 100644
-> > --- a/kernel/kprobes.c
-> > +++ b/kernel/kprobes.c
-> > @@ -40,6 +40,7 @@
-> >  #include <asm/cacheflush.h>
-> >  #include <asm/errno.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/vmalloc.h>
-> >  
-> >  #define KPROBE_HASH_BITS 6
-> >  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
-> > @@ -111,12 +112,20 @@ enum kprobe_slot_state {
-> >  
-> >  void __weak *alloc_insn_page(void)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +	return text_alloc(PAGE_SIZE);
-> > +#else
-> >  	return module_alloc(PAGE_SIZE);
-> > +#endif
-> >  }
-> >  
-> >  void __weak free_insn_page(void *page)
-> >  {
-> > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > +	text_free(page);
-> > +#else
-> >  	module_memfree(page);
-> > +#endif
-> >  }
+> > As several people pointed out, a single text_alloc(), and apprently a
+> > single ARCH_HAS_TEXT_ALLOC, would not fit all architectures and some
+> > ground work required to implement a generic text allocation.
+> > 
+> > Your patch works aroung this for x86 with broken semantics of
+> > text_alloc() when ARCH_HAS_TEXT_ALLOC is not defined.
+> > 
+> > My suggestion does not make text_alloc() a special case of
+> > module_alloc() but rather makes text_alloc_kprobes() to fallback to
+> > module_alloc() when architecture does not provide its implementation.
 > 
-> Both alloc_insn_page() and free_insn_page() are __weak and can be simple
-> overriden in arch/x86 code.
+> OK, I see your point now. I'll response in detail to v5 comments.
+> 
+> Thank you.
 
-That is correct, but the override is obviously happening at linking time.
-module_alloc() and module_memfree() will still leave a compile time
-dependency to CONFIG_MODULES.
+I also extended the explicit CC list heavily for follow up version.
+Apologies if this have been somewhat confusing so far (e.g. getting
+only a subportion of patches).
 
 /Jarkko
