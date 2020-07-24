@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E3F22BE9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D4A22BEA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgGXHGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:06:34 -0400
-Received: from mail-eopbgr750077.outbound.protection.outlook.com ([40.107.75.77]:52612
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726554AbgGXHGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:06:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O92psmYm/nXTEEKgaJWWfjNDtYihBzG0FmNqmYY0ntfDenZpLVNHsKwcb5Zl2wO3l20aJqG/25K1mVl92zgplXu51wm9h3ncuikRbuH40NX0SlVGII3V4poVMBU3+ZMoqjP5xGH7j2BhXpSGLXC1R9YrmSkeIvsZldN3FibwOS8SUAbk0DBWWNa5CkXEG3Ug8XwTrx43Kw8E5Nn6z4wKyy/rwWibNBwcb3REXOoBxwhJSf1NwQiH1CbYXpEPft6DjZOPjDio/GDoFDk2Ir70poCpFJMR63e4vfeDeXfzErPUuFesbBDBevO2/MicTLX9yeJWhQUSaNthmKxlLptBUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hCp7RcgaieN8p0Exjrpy3Yu090OEmGK35vQF6J3fB8Y=;
- b=Nu01lnlvn8DIjpCsAX9SB1rnZJxdYDyB6QpMiR70aAjVSrLAEUX2RF3P1kQ7xYzO2/Ulu6joqWnmta9KA6A5X4vVFBoWunMlBD3zyLdgrKa4Mg+Ko/upm/Xj8V2OdJ0qvuMT21ychEap5QvvPBlf9ch15TmthefqB2F6L0q4GgaNbeNifzprTsLqibYFwheEBbn5GdBthqeUublnVCP27x2yfkoOWruQlv+k/vlU6XbRCXSxOYtou0jf5DApmemHWuvczrjXloj+DsvAQ6YhgVhsNbycxLCED4WgFU2SwBgjNzyd+vY9B7olMGc9AMXlQm1xyFk7wkAkp0ZwvBmFAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hCp7RcgaieN8p0Exjrpy3Yu090OEmGK35vQF6J3fB8Y=;
- b=bdsFIl9Oz0cT+aOuIq5CzAP5NMMQMqJsmYfRITsFANnuZwEw5+4G3Sza+Q51icbiEZHWsL4UipiAlpX/FUBUf7CInTrL7qVqqNcbOAViGutRWKhE+DiXE0ITQhUZpBhuEAE9xGyxjJbmGrsh1qM3HZS35gr6wbLVngoNMqynIIw=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
- by BYAPR03MB4008.namprd03.prod.outlook.com (2603:10b6:a03:76::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Fri, 24 Jul
- 2020 07:06:29 +0000
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::b5cc:ca6b:3c25:a99c]) by BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::b5cc:ca6b:3c25:a99c%4]) with mapi id 15.20.3216.026; Fri, 24 Jul 2020
- 07:06:29 +0000
-Date:   Fri, 24 Jul 2020 15:06:11 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v7 3/3] arm64: implement KPROBES_ON_FTRACE
-Message-ID: <20200724150611.40b17827@xhacker.debian>
-In-Reply-To: <20200721222455.e99fb8660f69f61ad1bc8942@kernel.org>
-References: <20191225172625.69811b3e@xhacker.debian>
-        <20191225173001.6c0e3fb2@xhacker.debian>
-        <20191226115707.902545688aa90b34e2e550b3@kernel.org>
-        <20191226110348.146bb80b@xhacker.debian>
-        <20191226121108.0cd1b078@xhacker.debian>
-        <20191226182607.06770598a00507090a046951@kernel.org>
-        <20200721222455.e99fb8660f69f61ad1bc8942@kernel.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYAPR01CA0136.jpnprd01.prod.outlook.com
- (2603:1096:404:2d::28) To BYAPR03MB3573.namprd03.prod.outlook.com
- (2603:10b6:a02:ae::15)
+        id S1726941AbgGXHG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:06:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65090 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726554AbgGXHG4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 03:06:56 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06O70cVu070279;
+        Fri, 24 Jul 2020 03:06:36 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32fadftct3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 03:06:36 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06O722bf075663;
+        Fri, 24 Jul 2020 03:06:36 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32fadftcsm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 03:06:36 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06O758ct021508;
+        Fri, 24 Jul 2020 07:06:35 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma02wdc.us.ibm.com with ESMTP id 32brq9tgjv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 24 Jul 2020 07:06:35 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06O76YTT40435974
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 24 Jul 2020 07:06:34 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2C45B205F;
+        Fri, 24 Jul 2020 07:06:34 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F12E6B2065;
+        Fri, 24 Jul 2020 07:06:33 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.93.226])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 24 Jul 2020 07:06:33 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 5A35A2E3C48; Fri, 24 Jul 2020 12:36:29 +0530 (IST)
+Date:   Fri, 24 Jul 2020 12:36:29 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v3 02/10] powerpc/smp: Merge Power9 topology with Power
+ topology
+Message-ID: <20200724070629.GA21415@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200723085116.4731-1-srikar@linux.vnet.ibm.com>
+ <20200723085116.4731-3-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0136.jpnprd01.prod.outlook.com (2603:1096:404:2d::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24 via Frontend Transport; Fri, 24 Jul 2020 07:06:25 +0000
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 252f9aec-890b-4ced-4bec-08d82fa0165a
-X-MS-TrafficTypeDiagnostic: BYAPR03MB4008:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB4008A74A5CEA6F1B29F27371ED770@BYAPR03MB4008.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xogJztzqr8gU5SWQZeBVQDnRZ7UvW81fnp1kME76xACB3IAaHPVfBzrcQ298Z6mecY9yLZ8Sl6xomPjc801VOcFtK32FHA+jSARTd03aYCVmLMZWG4g6BB1gWAxQ2+vk9Q7mwGfNLHA5lIIX3w9j+eyizenZgCVIDrFGmuWn7QIKBWhv6HRflYHvKVOLZ9vkfHjpPNLNMH4B/U/lxshWJgLgdGTPIeFhOWizBSW/NyPPT7mJ2jEyF3lbzqqbQzxbuNoUrVgZnTizQy0yF4r3F62iqxl2pnXxktnHXC0EYnZVo24cqskjfGxV84V9wApEQnePPFGxUR52gsAS1FZjXw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(136003)(346002)(376002)(366004)(39860400002)(9686003)(86362001)(4326008)(66556008)(8936002)(54906003)(26005)(8676002)(66476007)(7416002)(186003)(6916009)(956004)(16526019)(316002)(55016002)(66946007)(52116002)(478600001)(1076003)(4744005)(2906002)(6506007)(5660300002)(7696005)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: wey3KPK3DG0F87R3BKrYTPHvOyMZ2pCLnqlnUPHeQTN0rFnCRUQcPPU+e4ReGf3mG9dgqkLjpGUz9F32U1e0MIiS3qCnHKHF/6mU6uj67CWyGydm9PY0dpE5LypveetwZzWMvNc70HdGpSbalFVbZpNF70Ul7AXlEpVF7F+5sbcl0Y48mhSPtYSS9MJv5SsEAGzSkanBmI39PLWWQGMPDpPBRoflO6EGuXK9H9mT7AVqJm/dvyQaGVcEU7zpLAOKDrpP7jdPMJt41lYeJ2fzBPJfenJ78s87UucFVdft2cX+TaWDNJCq6Ao2kZnH8tOM1cJBhyzdKGiPr5c3XhjtDxlM9aQqWw0WxDR3PA3PxPGBSo0NiPDHdP9iZz71PlNOhkf5m7b80Pj/LJY1MhUPwKVBg/c8nvc/kyJT+UVI6zNAdNGzCXjLguyl5N0vkSQj8mmlqK5eCn7vGmb0yPLE3Ue7CaGtc0MFRwJ92UMtWQAOAUED4MbzvYzjR8IcQTpK
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 252f9aec-890b-4ced-4bec-08d82fa0165a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3573.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jul 2020 07:06:29.5181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4tI76fb9SpwylKFaQ1EnmOGqVfVCbp7Anz3FckNEPH/VmGAsObldMTDESNSOtVvVEvf6T3WNlAD3PloHmk6BMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4008
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723085116.4731-3-srikar@linux.vnet.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-24_01:2020-07-24,2020-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0 clxscore=1015
+ mlxlogscore=999 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2007240047
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 21 Jul 2020 22:24:55 +0900 Masami Hiramatsu wrote:
-
+On Thu, Jul 23, 2020 at 02:21:08PM +0530, Srikar Dronamraju wrote:
+> A new sched_domain_topology_level was added just for Power9. However the
+> same can be achieved by merging powerpc_topology with power9_topology
+> and makes the code more simpler especially when adding a new sched
+> domain.
 > 
+> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Anton Blanchard <anton@ozlabs.org>
+> Cc: Oliver O'Halloran <oohall@gmail.com>
+> Cc: Nathan Lynch <nathanl@linux.ibm.com>
+> Cc: Michael Neuling <mikey@neuling.org>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Jordan Niethe <jniethe5@gmail.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+
+LGTM.
+
+
+Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+
+> ---
+> Changelog v1 -> v2:
+> 	Replaced a reference to cpu_smt_mask with per_cpu(cpu_sibling_map, cpu)
+> 	since cpu_smt_mask is only defined under CONFIG_SCHED_SMT
 > 
-> Hi Jisheng,
-
-Hi,
-
+>  arch/powerpc/kernel/smp.c | 33 ++++++++++-----------------------
+>  1 file changed, 10 insertions(+), 23 deletions(-)
 > 
-> Would you be still working on this series?
-
-I will rebase the implementation on the latest code, then try to address
-your comments and Mark's comments. I will send out patches in this weekend.
-
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index edf94ca64eea..283a04e54f52 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -1313,7 +1313,7 @@ int setup_profiling_timer(unsigned int multiplier)
+>  }
 > 
-> If you are still want to put a probe on func+4, it is OK if you can
-> completely emulate the 1st instruction. (lr save on the stack and
-> change the regs->sp)
-
-Will check which is the better solution.
-
-Thank you very much
-
+>  #ifdef CONFIG_SCHED_SMT
+> -/* cpumask of CPUs with asymetric SMT dependancy */
+> +/* cpumask of CPUs with asymmetric SMT dependency */
+>  static int powerpc_smt_flags(void)
+>  {
+>  	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
+> @@ -1326,14 +1326,6 @@ static int powerpc_smt_flags(void)
+>  }
+>  #endif
+> 
+> -static struct sched_domain_topology_level powerpc_topology[] = {
+> -#ifdef CONFIG_SCHED_SMT
+> -	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+> -#endif
+> -	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
+> -	{ NULL, },
+> -};
+> -
+>  /*
+>   * P9 has a slightly odd architecture where pairs of cores share an L2 cache.
+>   * This topology makes it *much* cheaper to migrate tasks between adjacent cores
+> @@ -1351,7 +1343,13 @@ static int powerpc_shared_cache_flags(void)
+>   */
+>  static const struct cpumask *shared_cache_mask(int cpu)
+>  {
+> -	return cpu_l2_cache_mask(cpu);
+> +	if (shared_caches)
+> +		return cpu_l2_cache_mask(cpu);
+> +
+> +	if (has_big_cores)
+> +		return cpu_smallcore_mask(cpu);
+> +
+> +	return per_cpu(cpu_sibling_map, cpu);
+>  }
+> 
+>  #ifdef CONFIG_SCHED_SMT
+> @@ -1361,7 +1359,7 @@ static const struct cpumask *smallcore_smt_mask(int cpu)
+>  }
+>  #endif
+> 
+> -static struct sched_domain_topology_level power9_topology[] = {
+> +static struct sched_domain_topology_level powerpc_topology[] = {
+>  #ifdef CONFIG_SCHED_SMT
+>  	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
+>  #endif
+> @@ -1386,21 +1384,10 @@ void __init smp_cpus_done(unsigned int max_cpus)
+>  #ifdef CONFIG_SCHED_SMT
+>  	if (has_big_cores) {
+>  		pr_info("Big cores detected but using small core scheduling\n");
+> -		power9_topology[0].mask = smallcore_smt_mask;
+>  		powerpc_topology[0].mask = smallcore_smt_mask;
+>  	}
+>  #endif
+> -	/*
+> -	 * If any CPU detects that it's sharing a cache with another CPU then
+> -	 * use the deeper topology that is aware of this sharing.
+> -	 */
+> -	if (shared_caches) {
+> -		pr_info("Using shared cache scheduler topology\n");
+> -		set_sched_topology(power9_topology);
+> -	} else {
+> -		pr_info("Using standard scheduler topology\n");
+> -		set_sched_topology(powerpc_topology);
+> -	}
+> +	set_sched_topology(powerpc_topology);
+>  }
+> 
+>  #ifdef CONFIG_HOTPLUG_CPU
+> -- 
+> 2.18.2
+> 
