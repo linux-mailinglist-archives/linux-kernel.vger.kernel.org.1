@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF5F22C4BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C778E22C4E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 14:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgGXMJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 08:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53232 "EHLO
+        id S1726994AbgGXMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 08:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgGXMI4 (ORCPT
+        with ESMTP id S1726329AbgGXMMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 08:08:56 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA332C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:08:55 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x5so7191136wmi.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 05:08:55 -0700 (PDT)
+        Fri, 24 Jul 2020 08:12:55 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD68C0619D3;
+        Fri, 24 Jul 2020 05:12:55 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id a8so6879246edy.1;
+        Fri, 24 Jul 2020 05:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rbilDyoAGD8fHqiMG+SK9j6c/X8TIU1Eaip9AXG2aTM=;
-        b=s0YrLs84fl1PmDJdDFoY0Oz6m7PkbwBWhwEOgH/gB5Fe65olAPq2wbnB846Zr7Smu9
-         ZKmCvFbu4M3IjoTgeVO/wI4v8SaaDtpfyypZybREdhQip4WTcBm+Rx8GPrf37Li1kxsf
-         /+4H/blRZVjNaHVBH3d/AnF4DnyvNaS4XZgkbJmK+wopwVhmaHWOUOh4AYgzbmwogjiM
-         rbcLQt2pycRor1soqxpM5MFeAfsxDLC/gESoT5v6Y0aYvz+uWLZiPLXEYsNfLsgxuRkE
-         UP74bilx+KRJWYIiDJr488q4/nafesBrlecnMbVXgzF3qZFwLQL73jToOU3LpfR1hNtH
-         6+cw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MNWc0su/JnnluaDA+8CCu6YuN01mXvydu0VWX6fHUwI=;
+        b=TYl8QLioQBYmYF/e7BIhFpjG+1MonWCfI+IOfU5BxHz+b1Ycw62QsoH1U0M5QfeP2F
+         k06vKn99Rwy/ZLjZu3mTPAdJMSvfTPIKjBpNMd3WcXe9gyV2Wclu7SnkwKbBazSmnHnH
+         Mh5THBiwufkrdW7Cc/1lqulna+PtuQhLAVPPJ8d5UMMAQMzYSB8g01KsAX0BWNdb+SxI
+         A1KCrF326yh2LNcmQnKc5z4LNVE7B1jcnzE812DvEAA7b1Jg492XW4YyFlxHSggOZ3at
+         InKc7a3xf5yx/I/wVBt7A9czZY6GgxN4CDLZh+LEBn8sAGhnJNTvcL1H7ErBr3T2VarL
+         +gDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rbilDyoAGD8fHqiMG+SK9j6c/X8TIU1Eaip9AXG2aTM=;
-        b=BxPsW9IN8NtVUfS9LpvaUMZffRodNgTjF6TmByutH3TPM4T174vBa2vikkhv/Q5g9h
-         qB6Z5Dpqa08VTMXo9t1U/pzdRpqvxw+2MyU7w+dOJb2zgSs/S9ad8lkBBIIQ70vLo8BW
-         Dc0Vo6IKqijaNkFi8XYDDlV1x8xcG2JD5ga1S7Zn8xkbpA4tiDWrzMWpw+752Z3EtgSH
-         5h1Uxj6kfpz3fgp1Th8WwTAkeRyWFXgZ2WvIYGr5txB4c1ZdDW2kOld+j7p0TQGRY4Nh
-         w4uwxk4RZMh5UG7v2qJzbdq6MncZU7V/H25Yjjv8l0A2o6J22aHnoWvKuG5q+CGibeH1
-         Dsug==
-X-Gm-Message-State: AOAM532+SwqWDgbFlMruSEhOyqrzewCpE/yq598wQ5PGX6gI1wYyRB27
-        Kqx0arP4jmW5WhgK6wTJxbMjhinMvGZiwkq+rR8=
-X-Google-Smtp-Source: ABdhPJx3s6PKr19pNAPoRFfFWv3+9HCtcpn0Y8yvXnQhQ1rhlLBPr3umhkH66ZUbcfMIiBL9oLH/BhrjHHoSdq4f7VI=
-X-Received: by 2002:a1c:28a:: with SMTP id 132mr8365570wmc.109.1595592534535;
- Fri, 24 Jul 2020 05:08:54 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=MNWc0su/JnnluaDA+8CCu6YuN01mXvydu0VWX6fHUwI=;
+        b=eXW8s5Lvr3I8AD/wrUhj4VCzOzQchX2dz0KRc1hNNAgMNl5DSwH6g22PN8PJ/iGYQM
+         7bLgSeRDE8arhcmgB5vJV5dzKuheHAyRxiuud6cPPESMtsnmymZ2W5i4oLhfyTTPR09F
+         z6K+dcIGFmc4SBj8QvGrXPZEy2za4Ug3S86V4G1RaILffuqX90dLUMecyeeRHM9m1JUk
+         nzib6gowLneiYrAN1yAqzuo/eaGgqMaJgOZKSpeqXDN/grIeSkFjz7EcIXFz2NOryZSW
+         efkdo+hmEAMvfG8hZsfc0p+X/01Sx6zTna2fD12+FhY6kH59rzOH4oQC0Y1PBaJr0fpY
+         HOqA==
+X-Gm-Message-State: AOAM530Ig0SCV6PxmKErOnx6+L1Q1UiJBzDeKjBQKbUDqjJ4zsHLJG9Z
+        fX5StN4YoqYYFs+6GUJR5tFp7sTF
+X-Google-Smtp-Source: ABdhPJyMHQrJpeOA+v0byFjX0VmVqWTMsvTlwH88ith1El30XY++sl2EXRmhj74L96OyHJCfw5S1TQ==
+X-Received: by 2002:aa7:d049:: with SMTP id n9mr8952718edo.39.1595592774091;
+        Fri, 24 Jul 2020 05:12:54 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id o15sm615607edv.55.2020.07.24.05.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Jul 2020 05:12:52 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 14:12:50 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Nick Terrell <nickrterrell@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
+        linux-kbuild@vger.kernel.org, x86@kernel.org,
+        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Adam Borowski <kilobyte@angband.pl>,
+        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
+        Patrick Williams <patrick@stwcx.xyz>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Norbert Lange <nolange79@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Xu <alex_y_xu@yahoo.ca>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Terrell <terrelln@fb.com>
+Subject: Re: [PATCH v8 2/7] lib: add zstd support to decompress
+Message-ID: <20200724121250.GA632343@gmail.com>
+References: <20200723192801.351114-1-nickrterrell@gmail.com>
+ <20200723192801.351114-3-nickrterrell@gmail.com>
 MIME-Version: 1.0
-References: <cover.1593530334.git.vpillai@digitalocean.com>
- <2d0e3da8c80c314048d598fb03ae3fe52d9619f3.1593530334.git.vpillai@digitalocean.com>
- <4229D3E1-8792-4B43-9AC4-F648D49CCC99@tencent.com> <20200724071458.lah33iacywx35hdi@aaronlu-desktop>
-In-Reply-To: <20200724071458.lah33iacywx35hdi@aaronlu-desktop>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Fri, 24 Jul 2020 20:08:43 +0800
-Message-ID: <CAPJCdBk6gWwEkPGTr3=kCZ9QXboUfPFDPCA1oRgSg1cD_kHUrQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 09/16] sched/fair: core wide cfs task priority
- comparison(Internet mail)
-To:     Aaron Lu <aaron.lwe@gmail.com>
-Cc:     =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "pjt@google.com" <pjt@google.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "subhra.mazumdar@oracle.com" <subhra.mazumdar@oracle.com>,
-        "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "kerrnel@google.com" <kerrnel@google.com>,
-        Phil Auld <pauld@redhat.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joel Fernandes <joelaf@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        "vineethrp@gmail.com" <vineethrp@gmail.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Aaron Lu <ziqian.lzq@antfin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723192801.351114-3-nickrterrell@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 at 15:17, Aaron Lu <aaron.lwe@gmail.com> wrote:
->
-> On Wed, Jul 22, 2020 at 12:23:44AM +0000, benbjiang(=E8=92=8B=E5=BD=AA) w=
-rote:
-> >
-> >
-> > > +/*
-> > > + * This function takes care of adjusting the min_vruntime of sibling=
-s of
-> > > + * a core during coresched enable/disable.
-> > > + * This is called in stop machine context so no need to take the rq =
-lock.
-> > Hi,
-> >
-> > IMHO, it seems that stop machine context cannot guarantee race free. Th=
-e param *cpu* maybe not *this_cpu*, rq lock should be taken even in stop ma=
-chine context, and irq should be disabled too, to avoid potential races wit=
-h other contexts.
-> >
->
-> In stop machine context, all CPUs except the active ones are spinning
-> with irq disabled and in this invocation of stop_machine(), only one
-> CPU is active so I don't think race is possible.
-You're right, stop_machine provides much more protection than stop_*_cpu.
-Thanks for the explanation.
 
-Regards,
-Jiang
+* Nick Terrell <nickrterrell@gmail.com> wrote:
+
+> +/* Size of the input and output buffers in multi-call mode.
+> + * Pick a larger size because it isn't used during kernel decompression,
+> + * since that is single pass, and we have to allocate a large buffer for
+> + * zstd's window anyways. The larger size speeds up initramfs decompression.
+> + */
+> +#define ZSTD_IOBUF_SIZE		(1 << 17)
+
+Nit: s/anyways/anyway
+
+Also, please use the customary (multi-line) comment style:
+
+  /*
+   * Comment .....
+   * ...... goes here.
+   */
+
+specified in Documentation/CodingStyle.
+
+Thanks,
+
+        Ingo
