@@ -2,61 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D070722C08D
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF4122C095
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 10:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgGXIUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 04:20:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22498 "EHLO
+        id S1726799AbgGXIWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 04:22:49 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41388 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726437AbgGXIUe (ORCPT
+        with ESMTP id S1726554AbgGXIWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 04:20:34 -0400
+        Fri, 24 Jul 2020 04:22:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595578832;
+        s=mimecast20190719; t=1595578967;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=OyYC9tZLltn2ymf26MTZQD1S0k8Nc9T/lMl10VCfjlY=;
-        b=HXbBdCOwa+3ZclaR1jbFWMc3+trwcDY1f7tnaRUMaBoHXuaoHK9u2f3Sq8Nn6St9y4X1Vd
-        nLSvsnNJ4gAcIBI5dcNWrdcgSMx2FhTCZJmNLKKyIUzLUEKZcJttX6b0DVRhW9IADLHdkX
-        D4/i4fCgilQAcND765BFQzc1sCQfimQ=
+        bh=2BOOxIHXiCunKOxphpa2rn7Yn8nix/g65BxOHIKcfXc=;
+        b=DZUqxPEzc5+iQZG+jV2YwsLp3TZSAW7aafmOEjXeVQmNbp5ZECuKjIyE3KotuqiTmSQ8se
+        knm5KaweKToH+r7N3ZA4820DGeMfNYn5qUplYT/p9PF+mzw+DNkskIXiyC6bxx1B7FyZn9
+        LmolcSOLfW/OezR0cB0Na9I6J2q7aIE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-58dvOyc-MRS6SZHGfgGzgg-1; Fri, 24 Jul 2020 04:20:29 -0400
-X-MC-Unique: 58dvOyc-MRS6SZHGfgGzgg-1
+ us-mta-476-9V5aJZXlPUuo2RDLsNh7WQ-1; Fri, 24 Jul 2020 04:22:42 -0400
+X-MC-Unique: 9V5aJZXlPUuo2RDLsNh7WQ-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FC7F10CE782;
-        Fri, 24 Jul 2020 08:20:27 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B141957;
+        Fri, 24 Jul 2020 08:22:40 +0000 (UTC)
 Received: from [10.36.113.94] (ovpn-113-94.ams2.redhat.com [10.36.113.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 511126FEFE;
-        Fri, 24 Jul 2020 08:20:24 +0000 (UTC)
-Subject: Re: [PATCH v2 1/3] mm/shuffle: don't move pages between zones and
- don't read garbage memmaps
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     Wei Yang <richard.weiyang@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>,
-        stable@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Dan Williams <dan.j.williams@intel.com>
-References: <20200619125923.22602-2-david@redhat.com>
- <20200622082635.GA93552@L-31X9LVDL-1304.local>
- <2185539f-b210-5d3f-5da2-a497b354eebb@redhat.com>
- <20200622092221.GA96699@L-31X9LVDL-1304.local>
- <34f36733-805e-cc61-38da-2ee578ae096c@redhat.com>
- <20200622131003.GA98415@L-31X9LVDL-1304.local>
- <0f4edc1f-1ce2-95b4-5866-5c4888db7c65@redhat.com>
- <20200622215520.wa6gjr2hplurwy57@master>
- <4b7ee49c-9bee-a905-3497-e3addd8896b8@redhat.com>
- <c0b62330-11d3-e628-a811-b54789d8f182@redhat.com>
- <20200623093018.GA6069@L-31X9LVDL-1304.local>
- <20200723200846.768513d7c122ac11b6e73538@linux-foundation.org>
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D34CB6FEFE;
+        Fri, 24 Jul 2020 08:22:37 +0000 (UTC)
+Subject: Re: [PATCH 1/3] x86/mm: Drop unused MAX_PHYSADDR_BITS
+To:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-sh@vger.kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20200723231544.17274-1-nivedita@alum.mit.edu>
+ <20200723231544.17274-2-nivedita@alum.mit.edu>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -103,12 +93,12 @@ Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat GmbH
-Message-ID: <d16a2f0f-6150-d41b-f44c-96e8497bee72@redhat.com>
-Date:   Fri, 24 Jul 2020 10:20:23 +0200
+Message-ID: <45ec14e7-fd5b-f4f9-6f61-94a9159ec3ad@redhat.com>
+Date:   Fri, 24 Jul 2020 10:22:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200723200846.768513d7c122ac11b6e73538@linux-foundation.org>
+In-Reply-To: <20200723231544.17274-2-nivedita@alum.mit.edu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -118,66 +108,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.07.20 05:08, Andrew Morton wrote:
-> On Tue, 23 Jun 2020 17:30:18 +0800 Wei Yang <richard.weiyang@linux.alibaba.com> wrote:
+On 24.07.20 01:15, Arvind Sankar wrote:
+> The macro is not used anywhere, and has an incorrect value (going by the
+> comment) on x86_64 since commit
+>   c898faf91b3e ("x86: 46 bit physical address support on 64 bits")
 > 
->> On Tue, Jun 23, 2020 at 09:55:43AM +0200, David Hildenbrand wrote:
->>> On 23.06.20 09:39, David Hildenbrand wrote:
->>>>> Hmm.. I thought this is the behavior for early section, while it looks current
->>>>> code doesn't work like this:
->>>>>
->>>>>        if (section_is_early && memmap)
->>>>>                free_map_bootmem(memmap);
->>>>>        else
->>>>> 	       depopulate_section_memmap(pfn, nr_pages, altmap);
->>>>>
->>>>> section_is_early is always "true" for early section, while memmap is not-NULL
->>>>> only when sub-section map is empty.
->>>>>
->>>>> If my understanding is correct, when we remove a sub-section in early section,
->>>>> the code would call depopulate_section_memmap(), which in turn free related
->>>>> memmap. By removing the memmap, the return value from pfn_to_online_page() is
->>>>> not a valid one.
->>>>
->>>> I think you're right, and pfn_valid() would also return true, as it is
->>>> an early section. This looks broken.
->>>>
->>>>>
->>>>> Maybe we want to write the code like this:
->>>>>
->>>>>        if (section_is_early)
->>>>>                if (memmap)
->>>>>                        free_map_bootmem(memmap);
->>>>>        else
->>>>> 	       depopulate_section_memmap(pfn, nr_pages, altmap);
->>>>>
->>>>
->>>> I guess that should be the way to go
->>>>
->>>> @Dan, I think what Wei proposes here is correct, right? Or how does it
->>>> work in the VMEMMAP case with early sections?
->>>>
->>>
->>> Especially, if you would re-hot-add, section_activate() would assume
->>> there is a memmap, it must not be removed.
->>>
->>
->> You are right here. I didn't notice it.
->>
->>> @Wei, can you send a patch?
->>>
->>
->> Sure, let me prepare for it.
+> To avoid confusion, just remove the definition.
 > 
-> Still awaiting this, and the v3 patch was identical to this v2 patch.
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  arch/x86/include/asm/sparsemem.h | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> It's tagged for -stable, so there's some urgency.  Should we just go
-> ahead with the decently-tested v2?
+> diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
+> index 199218719a86..6bfc878f6771 100644
+> --- a/arch/x86/include/asm/sparsemem.h
+> +++ b/arch/x86/include/asm/sparsemem.h
+> @@ -10,24 +10,20 @@
+>   *    field of the struct page
+>   *
+>   * SECTION_SIZE_BITS		2^n: size of each section
+> - * MAX_PHYSADDR_BITS		2^n: max size of physical address space
+> - * MAX_PHYSMEM_BITS		2^n: how much memory we can have in that space
+> + * MAX_PHYSMEM_BITS		2^n: max size of physical address space
+>   *
+>   */
+>  
+>  #ifdef CONFIG_X86_32
+>  # ifdef CONFIG_X86_PAE
+>  #  define SECTION_SIZE_BITS	29
+> -#  define MAX_PHYSADDR_BITS	36
+>  #  define MAX_PHYSMEM_BITS	36
+>  # else
+>  #  define SECTION_SIZE_BITS	26
+> -#  define MAX_PHYSADDR_BITS	32
+>  #  define MAX_PHYSMEM_BITS	32
+>  # endif
+>  #else /* CONFIG_X86_32 */
+>  # define SECTION_SIZE_BITS	27 /* matt - 128 is convenient right now */
+> -# define MAX_PHYSADDR_BITS	(pgtable_l5_enabled() ? 52 : 44)
+>  # define MAX_PHYSMEM_BITS	(pgtable_l5_enabled() ? 52 : 46)
+>  #endif
+>  
+> 
 
-This patch (mm/shuffle: don't move pages between zones and don't read
-garbage memmaps) is good enough for upstream. While the issue reported
-by Wei was valid (and needs to be fixed), the user in this patch is just
-one of many affected users. Nothing special.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Thanks,
