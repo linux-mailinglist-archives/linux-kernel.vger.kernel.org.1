@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89EAF22CED7
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDBF22CEE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 21:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgGXTpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 15:45:21 -0400
-Received: from www.zeus03.de ([194.117.254.33]:57802 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726753AbgGXTpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 15:45:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=k1; bh=Eh8C7lhYPilo0pJK1tao0ffKb4ge
-        4wHU1nxtEKHZroI=; b=GvZcyUa0wyKnzpx2a18ZeF1sAqeISBF2gGtUK/re1ydW
-        /a0301/C/639LFzH7bYxkX/pcWGLyBoDZ5xkJeWN6XPJ/7GuQnVnm842vEYbWqA0
-        +klm2epLwU73oxpMsITBkVYEcQd1KUPJuneBdoiYr6Sg+L0Dscg0ugckZKrEaTo=
-Received: (qmail 3785575 invoked from network); 24 Jul 2020 21:45:18 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 24 Jul 2020 21:45:18 +0200
-X-UD-Smtp-Session: l3s3148p1@ecx0NjWrEJ8gAwDPXwcRAJKYSnl1dekZ
-Date:   Fri, 24 Jul 2020 21:45:18 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-i2c@vger.kernel.org, Robert Richter <rrichter@marvell.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        David Daney <david.daney@cavium.com>,
-        Jan Glauber <jan.glauber@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] i2c: octeon: check correct size of maximum
- RECV_LEN packet
-Message-ID: <20200724194518.GE1227@ninjato>
-References: <20200628115245.9638-1-wsa+renesas@sang-engineering.com>
- <20200628115245.9638-3-wsa+renesas@sang-engineering.com>
+        id S1726651AbgGXTuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 15:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgGXTuJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 15:50:09 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F7EC0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:50:09 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id 1so863831vsl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TI0f9ZG0XZavxVCgci5KzYO+fu3sbeQ813eMYl4khUs=;
+        b=Rt0AQ2x73oWij0mw9oc1EtbPqzzscl3mgAmVCzhc40j76TnbYno0SLKddCJrZeMn/h
+         Mn5rqXRcFD2iBaGVWy3gExG+DGlbd3PDqJ20BBRwWFP/we3eoua7c8D2tuDCfRjDzeHg
+         4WnP9Pb9X3Nkqi9YsXSEr+/aIgzac9zApPWvY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TI0f9ZG0XZavxVCgci5KzYO+fu3sbeQ813eMYl4khUs=;
+        b=g6Mq7drIYsx/bjbU3Ty/3+bawOpGdBU4v58qfJQ+4EPfTe8rnwELUqDSDsPlkz3CwY
+         AuWwSbQqOUcXx/R/5l62lqtemcrtA+Kp0mqscOVCjY5//LEMHe92+u4B+d8+ZRMNjNz0
+         KnUMjtjgCQ0HLzPH7FhM6jZcfVE3HcmN8zR/0SEpY9WtUJ/tg1nFOGyPmkmw+ZBZXwjQ
+         RA5zBhiJZuWbsk2mzUXzxKEQ/uUa4OVEEN+wZn0HtowC/f3i1gpzLC3u0cbPWt8IHOmC
+         /PkTIGRixF6avkRFPu6+aSRyI4CaKzyAbSc04d4+SQPOdlyJgc2BcJ4aAfpJ3Jy5TtxI
+         pnkw==
+X-Gm-Message-State: AOAM531A0TW9LgtkKualV9JbA1r/o1+qkQeIIot1S7t3aTfeRUIZNEW1
+        yGy7DisQEdEKZl9OQ/dtzA7AaxPEi4g=
+X-Google-Smtp-Source: ABdhPJzq1GAjReow/yCQ5l3REp9mTViDpZcEln36bYAbBoM/g8G1fsaq9qODGOsqgX3zIsl0GgqkfQ==
+X-Received: by 2002:a67:5cc6:: with SMTP id q189mr9307667vsb.3.1595620208676;
+        Fri, 24 Jul 2020 12:50:08 -0700 (PDT)
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
+        by smtp.gmail.com with ESMTPSA id j15sm166746vki.8.2020.07.24.12.50.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 12:50:08 -0700 (PDT)
+Received: by mail-vs1-f54.google.com with SMTP id o184so5538426vsc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 12:50:08 -0700 (PDT)
+X-Received: by 2002:a67:69c1:: with SMTP id e184mr9797505vsc.119.1595620207670;
+ Fri, 24 Jul 2020 12:50:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xJK8B5Wah2CMJs8h"
-Content-Disposition: inline
-In-Reply-To: <20200628115245.9638-3-wsa+renesas@sang-engineering.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200723010137.3127584-1-swboyd@chromium.org> <CAD=FV=WtjyYY+bmocc17S9NbRs6inkAWjj7=c9qBsVf3LtG99Q@mail.gmail.com>
+ <159561988523.3847286.14763422711224252201@swboyd.mtv.corp.google.com>
+In-Reply-To: <159561988523.3847286.14763422711224252201@swboyd.mtv.corp.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 24 Jul 2020 12:49:56 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WH1vKKe=MPVdtBJZWnSzxNLO0uyM02GFG6oCJfSEwehQ@mail.gmail.com>
+Message-ID: <CAD=FV=WH1vKKe=MPVdtBJZWnSzxNLO0uyM02GFG6oCJfSEwehQ@mail.gmail.com>
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Sleep waiting for tcs slots to be free
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---xJK8B5Wah2CMJs8h
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 24, 2020 at 12:44 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> > > -       if (ret)
+> > > -               goto unlock;
+> > >
+> > > -       ret = find_free_tcs(tcs);
+> > > -       if (ret < 0)
+> > > -               goto unlock;
+> > > -       tcs_id = ret;
+> > > +       wait_event_lock_irq(drv->tcs_wait,
+> > > +                           (tcs_id = claim_tcs_for_req(drv, tcs, msg)) >= 0,
+> >
+> > Even though claim_tcs_for_req() only returns 0 or -EBUSY today (IOW it
+> > never returns error codes other than -EBUSY), should we handle it?  If
+> > we don't, claim_tcs_for_req() should be very clear that it shouldn't
+> > return any errors other than -EBUSY.
+>
+> Do you mean you want to change it to be
+>
+>         (tcs_id = claim_tcs_for_req(drv, tcs, msg)) != -EBUSY
+>
+> instead of >= 0? It should return the tcs_id that was claimed, not just
+> 0 or -EBUSY.
 
-On Sun, Jun 28, 2020 at 01:52:45PM +0200, Wolfram Sang wrote:
-> I2C_SMBUS_BLOCK_MAX defines already the maximum number as defined in the
-> SMBus 2.0 specs. I don't see a reason to add 1 here.
->=20
-> Fixes: 886f6f8337dd ("i2c: octeon: Support I2C_M_RECV_LEN")
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
+Ah, right.  Yes, you got it right.  Of course then we have to add a
+"if (tcd_id < 0) goto unlock", too.  If you think it's not worth
+adding this then we just need to make sure it's super obvious in
+claim_tcs_for_req() that it's not allowed to return other errors.
 
-Robert, is this correct?
-
->=20
-> Only build tested, I don't have the HW. Please let me know if I
-> overlooked something, but to the best of my knowledge, this +1 is wrong.
->=20
->  drivers/i2c/busses/i2c-octeon-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/i2c/busses/i2c-octeon-core.c b/drivers/i2c/busses/i2=
-c-octeon-core.c
-> index d9607905dc2f..845eda70b8ca 100644
-> --- a/drivers/i2c/busses/i2c-octeon-core.c
-> +++ b/drivers/i2c/busses/i2c-octeon-core.c
-> @@ -347,7 +347,7 @@ static int octeon_i2c_read(struct octeon_i2c *i2c, in=
-t target,
->  		if (result)
->  			return result;
->  		if (recv_len && i =3D=3D 0) {
-> -			if (data[i] > I2C_SMBUS_BLOCK_MAX + 1)
-> +			if (data[i] > I2C_SMBUS_BLOCK_MAX)
->  				return -EPROTO;
->  			length +=3D data[i];
->  		}
-> --=20
-> 2.20.1
->=20
-
---xJK8B5Wah2CMJs8h
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8bOk4ACgkQFA3kzBSg
-KbZ7Og/9HlQQB0vH7HZ75JzWgb891fo1M+KGscuFvi2OhZlBX4bTvQq1ZvdXBRVB
-FjkKmOLhuuC5xveSCxZKMbl0VE8HsteM5GkbNSazuNnlNbnel1GqzCnYXDQSL67J
-+B/20Q+LNnreOHeX9LtqDjiA6f2UsIxEqbfzIPyGjGCSXh+/TpH0ftMunKL2Xzci
-svPjHneGv59b5kIgdIkB7Etq9oP+pvMtIJt7zMMaSFtLFY+qNtlnSgIixuOYuuSg
-JLu1qV1GGoMKGI1/61z+65FbKsFeaCKJOmLrmewcp5nqelY0NZCImebAWPBTfXUM
-D+/wCp1izdRe+4kaigrxe8klRU81n1twBIBerO/saSAgGjGV56fVYWjRAq4ZbvTx
-kh5IPSKN3uzbbipDzul+kOm1AV/AYYIr9Xu+aQuIZnWfjGztAqLmRLe5wh+K3mog
-fxtrlxHU6q/anv4cjL+KnzIxqwri+l1Jj7wqb9YYWVLLRGSNIT4vKCaO7cbZjIDu
-J1rJjR4QS1ZJpzsuCxH0Zkos97Gj/TKRTFZA5VB1UL5GqSvWDj+E30eOKuIVs9kn
-SWosT+f8P9t9eBKEZ93RBH9DCFknjIgYQ/+9oJuQYvoegu/1Xp0G2YfVFP0AMi3T
-P1BagBiYIHo3vyyk3tEhjeUsie2k8f/v592VODK+kynt+bqYOv8=
-=CkOK
------END PGP SIGNATURE-----
-
---xJK8B5Wah2CMJs8h--
+-Doug
