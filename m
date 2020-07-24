@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACC322BED6
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBDD22BED4
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgGXHQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:16:48 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:40127 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbgGXHQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:16:47 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06O7GQ290012633, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06O7GQ290012633
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 24 Jul 2020 15:16:27 +0800
-Received: from RTEXMB02.realtek.com.tw (172.21.6.95) by
- RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 24 Jul 2020 15:16:26 +0800
-Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
- RTEXMB02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 24 Jul 2020 15:16:26 +0800
-Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
- RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
- 15.01.1779.005; Fri, 24 Jul 2020 15:16:26 +0800
-From:   =?big5?B?p2Sp/rzhIFJpY2t5?= <ricky_wu@realtek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Rui Feng <rui_feng@realsil.com.cn>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Ettle <james@ettle.org.uk>, Len Brown <lenb@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Jacopo De Simoi" <wilderkde@gmail.com>
-Subject: RE: rtsx_pci not restoring ASPM state after suspend/resume
-Thread-Topic: rtsx_pci not restoring ASPM state after suspend/resume
-Thread-Index: AQHWYRI0DDVxZTXVzky/7XhwfZkLR6kU4LqAgAFjQYA=
-Date:   Fri, 24 Jul 2020 07:16:26 +0000
-Message-ID: <83fa1c44e8d342618eb5fbc491ec4779@realtek.com>
-References: <20200723165622.GA1413555@bjorn-Precision-5520>
- <20200723171249.GA1422397@bjorn-Precision-5520>
-In-Reply-To: <20200723171249.GA1422397@bjorn-Precision-5520>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.88.99]
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        id S1727078AbgGXHQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:16:42 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8331 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726607AbgGXHQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 03:16:39 -0400
+IronPort-SDR: JBw9HJ8w3SQr9VKOkFXMvcTmcq8VvzfJiPxaz9V3mBzXhXPuGO7iSQDeQEdllvlMI/qd+rthLi
+ HeEZWFTy6Big==
+X-IronPort-AV: E=McAfee;i="6000,8403,9691"; a="130744636"
+X-IronPort-AV: E=Sophos;i="5.75,389,1589266800"; 
+   d="scan'208";a="130744636"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2020 00:16:38 -0700
+IronPort-SDR: j2KK6kP0J+fDiKxJ95jlu/hDyyYP9v6JH6cA4bkpmW8feH7gE8IfsA4vWqkJ+k32bHItnhQeVf
+ JDPgRgmGlMEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,389,1589266800"; 
+   d="scan'208";a="320922247"
+Received: from cbuerkle-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.36.184])
+  by fmsmga002.fm.intel.com with ESMTP; 24 Jul 2020 00:16:36 -0700
+Date:   Fri, 24 Jul 2020 10:16:34 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org,
+        Wei Yongjun <weiyongjun1@huawei.com>, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] keys: asymmetric: fix error return code in
+ software_key_query()
+Message-ID: <20200724071634.GA1872662@linux.intel.com>
+References: <20200723013223.GA45081@linux.intel.com>
+ <159485211858.2340757.9890754969922775496.stgit@warthog.procyon.org.uk>
+ <1269137.1595490145@warthog.procyon.org.uk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1269137.1595490145@warthog.procyon.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSmFtZXMsIEJqb3JuLA0KDQpUaGUgQ2FyZCByZWFkZXIoMTBlYzo1Mjg3KSBpcyBhIGNvbWJv
-IGNoaXAgd2l0aCBFdGhlcm5ldCgxMGVjOjgxNjgpLCB3ZSB0aGluayBpdCBpcyBub3QgY2F1c2Ug
-Ynkgc2V0dGluZyBvdXIgZGV2aWNlIGNvbmZpZyBzcGFjZSBpbiBpZGxlIHRpbWUuDQpXZSBkaXMv
-ZW5hYmxlIHRoZSBBU1BNKHNldHRpbmcgY29uZmlnIHNwYWNlKSBhdCBidXN5L2lkbGUgdGltZSwg
-aXQgY2FuIG1ha2Ugb3VyIFIvVyBwZXJmb3JtYW5jZXMgd2VsbCBub3QgYSB3b3JrIGFyb3VuZCBm
-dW5jdGlvbg0KUENJIEhvc3QgYW5kIERldmljZSBzZXR0aW5nIHNlbGYgY29uZmlnIHNwYWNlIGFu
-ZCBkbyBoYW5kc2hha2luZywgd2UgdGhpbmsgaXQgZG9lcyBub3QgYWZmZWN0IHRoZSBzeXN0ZW0N
-Cg0KDQpSaWNreSANCg0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTog
-Qmpvcm4gSGVsZ2FhcyBbbWFpbHRvOmhlbGdhYXNAa2VybmVsLm9yZ10NCj4gU2VudDogRnJpZGF5
-LCBKdWx5IDI0LCAyMDIwIDE6MTMgQU0NCj4gVG86IKdkqf684SBSaWNreTsgUnVpIEZlbmcNCj4g
-Q2M6IEFybmQgQmVyZ21hbm47IEdyZWcgS3JvYWgtSGFydG1hbjsgSmFtZXMgRXR0bGU7IExlbiBC
-cm93bjsgUHVyYW5qYXkNCj4gTW9oYW47IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEphY29wbyBEZQ0KPiBTaW1vaQ0KPiBTdWJqZWN0OiBS
-ZTogcnRzeF9wY2kgbm90IHJlc3RvcmluZyBBU1BNIHN0YXRlIGFmdGVyIHN1c3BlbmQvcmVzdW1l
-DQo+IA0KPiBbK2NjIEphY29wb10NCj4gDQo+IE9uIFRodSwgSnVsIDIzLCAyMDIwIGF0IDExOjU2
-OjIyQU0gLTA1MDAsIEJqb3JuIEhlbGdhYXMgd3JvdGU6DQo+ID4gSmFtZXMgcmVwb3J0ZWQgdGhp
-cyBpc3N1ZSB3aXRoIHJ0c3hfcGNpOyBjYW4geW91IGd1eXMgcGxlYXNlIHRha2UgYQ0KPiA+IGxv
-b2sgYXQgaXQ/ICBodHRwczovL2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIw
-ODExNw0KPiA+DQo+ID4gVGhlcmUncyBhIGxvdCBvZiBnb29kIGluZm8gaW4gdGhlIGJ1Z3ppbGxh
-IGFscmVhZHkuDQo+IA0KPiBMaWtlbHkgZHVwbGljYXRlOiBodHRwczovL2J1Z3ppbGxhLmtlcm5l
-bC5vcmcvc2hvd19idWcuY2dpP2lkPTE5ODk1MQ0KPiANCj4gSmFjb3BvLCBjb3VsZCB5b3UgcGxl
-YXNlIGF0dGFjaCBhIGNvbXBsZXRlIGRtZXNnIGxvZyBhbmQgInN1ZG8gbHNwY2kNCj4gLXZ2eHh4
-eCIgb3V0cHV0IHRvIHlvdXIgYnVnemlsbGE/DQo+IA0KPiAtLS0tLS1QbGVhc2UgY29uc2lkZXIg
-dGhlIGVudmlyb25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGUtbWFpbC4NCg==
+On Thu, Jul 23, 2020 at 08:42:25AM +0100, David Howells wrote:
+> Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+> 
+> > Why f1774cb8956a lacked any possible testing? It extends ABI anyway.
+> > 
+> > I think it is a kind of change that would require more screening before
+> > getting applied.
+> 
+> Yeah.  It went in via a round-about route.  I left off development of it when
+> the tpm stuff I wrote broke because the tpm2 stuff went in upstream.  I then
+> handed the patches off to Denis who did the tpm support, but I never got my
+> stuff finished enough to work out how to do the testsuite (since it would
+> involve using a tpm).  However, since I did the PKCS#8 testing module as well,
+> I guess I don't need that to at least test the API.  I'll look at using that
+> to add some tests.  Any suggestions as to how to do testing via the tpm?
+> 
+> David
+
+The unfortunate thing is that I was not involved with asym_tpm.c review
+process in any possible way, which means that at the moment I lack both:
+
+1. Knowledge of crypto/asymmetric_keys.
+2. How asym_tpm.c is implemented.
+
+I only became aware of asym_tpm.c's existence last Sep [*].
+
+I'll put to my backlog to try TPM asymmetric keys (earliest when I'm back
+from vacation 08/10).
+
+[*] https://lore.kernel.org/linux-integrity/20190926171601.30404-1-jarkko.sakkinen@linux.intel.com/
+
+/Jarkko
