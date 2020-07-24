@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71E822BECC
-	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B517022BEC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 24 Jul 2020 09:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgGXHP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 03:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbgGXHP6 (ORCPT
+        id S1727016AbgGXHPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 03:15:39 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:44640 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgGXHPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 03:15:58 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2BCC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 00:15:58 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id a14so4599092pfi.2
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 00:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EC0ci2DhDfgePNa/vZJrm+2m6aiXsL39LhLmpYhtep0=;
-        b=jwIJTQBQ+HWUkP2NpurV5dxnMGxrWMVOaT7EUeAt/1xnOED8Jmb/ZzDb0XUzPO46T5
-         jzUPEvUnRXcWPkMwTdkn87O8qj3EOxSMMXcUkbNm4jt2IZFXFX6RLfUeP9cEcBVfC8qk
-         vmYaKlkAx/eSpk2lEoaxyMhpSO4s+8ZDUclVRuXu1t2v628ssIBLpmJz7W8tb7+7fNkf
-         WUP3D+Jk9EgH/4lhD3MidlhXq5ntMOhBmiCDIeCHPZzKWpZIV7IyvDJMU/1tI0sz57B/
-         5bRKoe+POyIY6/eXuf1MBG64VOsaVkCEgWv367G81AiJHzMFLPUPFsbvfaxcyDk0mYIZ
-         yiag==
+        Fri, 24 Jul 2020 03:15:38 -0400
+Received: by mail-ej1-f67.google.com with SMTP id ga4so8901844ejb.11;
+        Fri, 24 Jul 2020 00:15:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=EC0ci2DhDfgePNa/vZJrm+2m6aiXsL39LhLmpYhtep0=;
-        b=IV0p38Q/uWaXuhe2tWA+BMQrtDxcQa4I6gjKfKuGC1J9B9PU7ziJUtpsqGw5NDEhki
-         PW5XHAeQPb5AjFpndylJaEIcV2lLTzGuQUDoIstgh2JkCykESLtiD66WSBjH/2Y5macf
-         eCM3Kf4YWEVp1R9ZyYyuMRhkB8Xa98jtV03F4szPVvF/mFagKUReGnLwYe9V5mMTK7yo
-         E0Rsz77Upziu8UXKd22p4dFAOXfcBB9RJoidM9TCEDr+Wsq0x93yQ3VNoHygdBpjq5wT
-         fUtzcdVGRLcXNnopb7haQ/PfZAZOzHMEJd2MKdSC99KomTkSYT47MgpdrKgIJnh5dBup
-         Cw5w==
-X-Gm-Message-State: AOAM532fdC/3i4EXJgNc1DHNIlsP19wQL8g2w95/HTIYdnb6aVtX4t+j
-        kR2NZJnZD1rZOzmYsig1XQc=
-X-Google-Smtp-Source: ABdhPJz0dHQZpci2WbryWFU8Gj6ifsOaIxPpXAbvIjMsjGra6WY6jsbV7VA7vjB3JlnoeQv5Yz+Emg==
-X-Received: by 2002:a63:9201:: with SMTP id o1mr6678759pgd.99.1595574958107;
-        Fri, 24 Jul 2020 00:15:58 -0700 (PDT)
-Received: from localhost.localdomain ([45.124.203.15])
-        by smtp.gmail.com with ESMTPSA id e20sm5206216pfl.212.2020.07.24.00.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 00:15:56 -0700 (PDT)
-From:   Joel Stanley <joel@jms.id.au>
-To:     linux-fsi@lists.ozlabs.org
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joachim Fenkes <FENKES@de.ibm.com>,
-        linux-kernel@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
-        Alistar Popple <alistair@popple.id.au>,
-        Eddie James <eajames@linux.ibm.com>,
-        Joachim Fenkes <fenkes@de.ibm.com>
-Subject: [PATCH 2/2] fsi/sbefifo: Fix reset timeout
-Date:   Fri, 24 Jul 2020 16:45:18 +0930
-Message-Id: <20200724071518.430515-3-joel@jms.id.au>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200724071518.430515-1-joel@jms.id.au>
-References: <20200724071518.430515-1-joel@jms.id.au>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kb0NMIWA8NMC9OCkXCwQpZanLpUA9SPrAHge49T1PVs=;
+        b=lBWJFQYsSBxsqWcrEu4b/YfigHgRdG14K5XgQ1fSQCZCbA2RmD4LJu6NtATnKxngQa
+         lzR/dAq6kV8Gir3fz0mj0LhXB0KUXMudsIEr/mcWDyjLHC56LSsVVqAfwxl/zqxrVD93
+         YnzC5WJaDx3J2Xf9MDdbf7uXdRXMtqo7VH/BwcRtFQaC5bvVPpZeMrhS7EhO3IgKhrVd
+         x3l0J2WwS/MNnD1LjYOjUaNeBOAYwWdATQYY6tqwXoANb8jX1bg23+y1Q08aIcqX4bd4
+         FvfwhxWhEhmwhA0aKP1t8dxM+yZ0EDmkaOiFmFRvvl9N6ErNTIAV10OOdvk1WKRBx6Eg
+         sdjQ==
+X-Gm-Message-State: AOAM5302jtug++pR+o2rtTmzlSg+RxWjVDTGBgc3CaYoCNxfbGluxU9Q
+        IcaNT3HPdboD8pB1ZdU0A5E=
+X-Google-Smtp-Source: ABdhPJzqgO6qxeTTZTDa89MI0CgYxEaP3SeQEudnyocZKpAeuj1R0CEq2QVJrGBSwuvtwplZBmRarg==
+X-Received: by 2002:a17:906:1a16:: with SMTP id i22mr8067074ejf.439.1595574936524;
+        Fri, 24 Jul 2020 00:15:36 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id fi29sm90068ejb.83.2020.07.24.00.15.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 Jul 2020 00:15:35 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 09:15:32 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        arm@kernel.org, soc@kernel.org, Markus Mayer <mmayer@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 23/23] MAINTAINERS: Add Krzysztof Kozlowski as maintainer
+ of memory controllers
+Message-ID: <20200724071532.GA3087@kozik-lap>
+References: <20200723073744.13400-1-krzk@kernel.org>
+ <20200723073744.13400-24-krzk@kernel.org>
+ <afee0362-e9b9-26da-04e2-136a8599bc79@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <afee0362-e9b9-26da-04e2-136a8599bc79@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joachim Fenkes <FENKES@de.ibm.com>
+On Thu, Jul 23, 2020 at 10:12:36AM -0700, Florian Fainelli wrote:
+> On 7/23/20 12:37 AM, Krzysztof Kozlowski wrote:
+> > The specific drivers in drivers/memory usually go via architecture (e.g.
+> > ARM SoC) maintainers but the generic parts (of_memory.[ch]) lacked any
+> > care.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> 
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> 
+> What does this mean for specific drivers? For instance I tend to send
+> updates to brcmstb_dpfe.c through the Broadcom ARM SoC pull requests,
+> shall I continue to do this, or are you going to send memory controller
+> subsystem pull requests including that file in the future?
 
-On BMCs with lower timer resolution than 1ms, msleep(1) will take
-way longer than 1ms, so looping 10k times won't wait for 10s but
-significantly longer.
+If that's okay, I intend to take the drivers patches as well. I will
+rephrase the commit message.
 
-Fix this by using jiffies like the rest of the code.
+Thanks for the feddback.
 
-Fixes: 9f4a8a2d7f9d ("fsi/sbefifo: Add driver for the SBE FIFO")
-Signed-off-by: Joachim Fenkes <fenkes@de.ibm.com>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
----
- drivers/fsi/fsi-sbefifo.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-index 655b45c1f6ba..3ad9510ad4a4 100644
---- a/drivers/fsi/fsi-sbefifo.c
-+++ b/drivers/fsi/fsi-sbefifo.c
-@@ -325,6 +325,7 @@ static int sbefifo_up_write(struct sbefifo *sbefifo, __be32 word)
- static int sbefifo_request_reset(struct sbefifo *sbefifo)
- {
- 	struct device *dev = &sbefifo->fsi_dev->dev;
-+	unsigned long end_time;
- 	u32 status, timeout;
- 	int rc;
- 
-@@ -341,7 +342,8 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
- 	}
- 
- 	/* Wait for it to complete */
--	for (timeout = 0; timeout < SBEFIFO_RESET_TIMEOUT; timeout++) {
-+	end_time = jiffies + msecs_to_jiffies(SBEFIFO_RESET_TIMEOUT);
-+	while (!time_after(jiffies, end_time)) {
- 		rc = sbefifo_regr(sbefifo, SBEFIFO_UP | SBEFIFO_STS, &status);
- 		if (rc) {
- 			dev_err(dev, "Failed to read UP fifo status during reset"
-@@ -355,7 +357,7 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
- 			return 0;
- 		}
- 
--		msleep(1);
-+		cond_resched();
- 	}
- 	dev_err(dev, "FIFO reset timed out\n");
- 
--- 
-2.27.0
+Best regards,
+Krzysztof
 
