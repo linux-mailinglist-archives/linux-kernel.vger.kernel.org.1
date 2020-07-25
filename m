@@ -2,100 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8089D22D67D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 11:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5317022D688
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 12:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgGYJlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 05:41:44 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40924 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgGYJln (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 05:41:43 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E77261C0BD2; Sat, 25 Jul 2020 11:41:39 +0200 (CEST)
-Date:   Sat, 25 Jul 2020 11:41:39 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Marek Behun <marek.behun@nic.cz>, linux-leds@vger.kernel.org,
-        jacek.anaszewski@gmail.com, Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC leds + net-next v2 1/1] net: phy: marvell: add
- support for PHY LEDs via LED class
-Message-ID: <20200725094139.GA29992@amd>
-References: <20200723181319.15988-1-marek.behun@nic.cz>
- <20200723181319.15988-2-marek.behun@nic.cz>
- <20200723213531.GK1553578@lunn.ch>
- <20200724005349.2e90a247@nic.cz>
- <20200724102403.wyuteeql3jn5xouw@duo.ucw.cz>
- <20200724131102.GD1472201@lunn.ch>
+        id S1726763AbgGYKF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 06:05:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726572AbgGYKFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 06:05:55 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05165206F6;
+        Sat, 25 Jul 2020 10:05:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595671555;
+        bh=piz0ZupBq64aY9qnc+ju0YrGEn/kb2ANG58ej2+W9xk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GiL8gX/oav4lnQZI8TKhjzDInRyaFC/B98ohwZPqYhEIt5ze8dCkTkgyxBDpL5aR5
+         11ho/zrxMuCUTpoqD9nxxVeVVOIjCirIc4jMYjxt8XYuY2onfGWZ4Wp46khTUugFZl
+         OslWuJrMlpAjx0izyeBxebJi08Vv35ftTZqX1Lus=
+Date:   Sat, 25 Jul 2020 12:05:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/19] Introduce partial kernel_read_file() support
+Message-ID: <20200725100555.GA1073708@kroah.com>
+References: <20200724213640.389191-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200724131102.GD1472201@lunn.ch>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200724213640.389191-1-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 24, 2020 at 02:36:21PM -0700, Kees Cook wrote:
+> v3:
+> - add reviews/acks
+> - add "IMA: Add support for file reads without contents" patch
+> - trim CC list, in case that's why vger ignored v2
+> v2: [missing from lkml archives! (CC list too long?) repeating changes here]
+> - fix issues in firmware test suite
+> - add firmware partial read patches
+> - various bug fixes/cleanups
+> v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
+> 
+> Hi,
+> 
+> Here's my tree for adding partial read support in kernel_read_file(),
+> which fixes a number of issues along the way. It's got Scott's firmware
+> and IMA patches ported and everything tests cleanly for me (even with
+> CONFIG_IMA_APPRAISE=y).
+> 
+> I think the intention is for this to go via Greg's tree since Scott's
+> driver code will depend on it?
 
---Dxnq1zWXvFF0Q93v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've applied the first 3 now, as I think I need some acks/reviewed-by
+from the subsystem owners of the other patches before I can take them.
 
-Hi!
+thanks,
 
-> > > My main issue though is whether one "hw-control" trigger should be
-> > > registered via LED API and the specific mode should be chosen via
-> > > another sysfs file as in this RFC, or whether each HW control mode
-> > > should have its own trigger. The second solution would either result =
-in
-> > > a lot of registered triggers or complicate LED API, though...
-> >=20
-> > If you register say 5 triggers.... that's okay. If you do like 1024
-> > additional triggers (it happened before!)... well please don't.
->=20
-> Hi Pavel
->=20
-> There tends to be around 15 different blink patterns per LED. And
-> there can be 2 to 3 LEDs per PHY. The blink patterns can be different
-> per PHY, or they can be the same. For the Marvell PHY we are looking
-> at around 45. Most of the others PHYs tend to have the same patterns
-> for all LEDs, so 15 triggers could be shared.
->=20
-> But if you then think of a 10 port Ethernet switch, there could be 450
-> triggers, if the triggers are not shared at all.
->=20
-> So to some extent, it is a question of how much effort should be put
-> in to sharing triggers.
-
-It sounds to me ... lot of effort should be put to sharing triggers
-there :-).
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---Dxnq1zWXvFF0Q93v
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl8b/lMACgkQMOfwapXb+vKimwCfRGK+53fLznJ19wiqfJngn0BJ
-16sAoIn1IOwQhTF57yjnfe5HHzqtQeVC
-=93uu
------END PGP SIGNATURE-----
-
---Dxnq1zWXvFF0Q93v--
+greg k-h
