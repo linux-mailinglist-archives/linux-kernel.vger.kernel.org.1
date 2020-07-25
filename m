@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AFB22D382
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 03:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A4422D383
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 03:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgGYBSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 21:18:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8806 "EHLO huawei.com"
+        id S1726979AbgGYBTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 21:19:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2662 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726701AbgGYBSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 21:18:07 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id F2E91C7EF3C05A02CFBC;
-        Sat, 25 Jul 2020 09:18:03 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 25 Jul 2020 09:17:53 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2 2/2] f2fs: compress: delay temp page allocation
-Date:   Sat, 25 Jul 2020 09:17:48 +0800
-Message-ID: <20200725011748.43688-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726884AbgGYBTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 21:19:12 -0400
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by Forcepoint Email with ESMTP id B65F9D5E8D476D63CD58;
+        Sat, 25 Jul 2020 09:19:10 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Sat, 25 Jul 2020 09:19:10 +0800
+Received: from [10.174.61.242] (10.174.61.242) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Sat, 25 Jul 2020 09:19:08 +0800
+Subject: Re: [PATCH net-next v3 1/2] hinic: add support to handle hw abnormal
+ event
+To:     Edward Cree <ecree@solarflare.com>,
+        David Miller <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
+References: <20200723144038.10430-1-luobin9@huawei.com>
+ <20200723144038.10430-2-luobin9@huawei.com>
+ <20200723.120852.1882569285026023193.davem@davemloft.net>
+ <92dac9af-8623-bd1e-7a4d-9d12671699ad@solarflare.com>
+From:   "luobin (L)" <luobin9@huawei.com>
+Message-ID: <22a8ad8f-93c2-b5fb-b2d7-cc99e65d32ec@huawei.com>
+Date:   Sat, 25 Jul 2020 09:19:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
+In-Reply-To: <92dac9af-8623-bd1e-7a4d-9d12671699ad@solarflare.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.61.242]
+X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we allocate temp pages which is used to pad hole in
-cluster during read IO submission, it may take long time before
-releasing them in f2fs_decompress_pages(), since they are only
-used as temp output buffer in decompression context, so let's
-just do the allocation in that context to reduce time of memory
-pool resource occupation.
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2:
-- fix to assign return value in error path
- fs/f2fs/compress.c | 37 +++++++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 16 deletions(-)
-
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index a20c9f3272af..6e7db450006c 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -670,6 +670,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 	const struct f2fs_compress_ops *cops =
- 			f2fs_cops[fi->i_compress_algorithm];
- 	int ret;
-+	int i;
- 
- 	dec_page_count(sbi, F2FS_RD_DATA);
- 
-@@ -688,6 +689,26 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
- 		goto out_free_dic;
- 	}
- 
-+	dic->tpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
-+					dic->cluster_size, GFP_NOFS);
-+	if (!dic->tpages) {
-+		ret = -ENOMEM;
-+		goto out_free_dic;
-+	}
-+
-+	for (i = 0; i < dic->cluster_size; i++) {
-+		if (dic->rpages[i]) {
-+			dic->tpages[i] = dic->rpages[i];
-+			continue;
-+		}
-+
-+		dic->tpages[i] = f2fs_compress_alloc_page();
-+		if (!dic->tpages[i]) {
-+			ret = -ENOMEM;
-+			goto out_free_dic;
-+		}
-+	}
-+
- 	if (cops->init_decompress_ctx) {
- 		ret = cops->init_decompress_ctx(dic);
- 		if (ret)
-@@ -1449,22 +1470,6 @@ struct decompress_io_ctx *f2fs_alloc_dic(struct compress_ctx *cc)
- 		dic->cpages[i] = page;
- 	}
- 
--	dic->tpages = f2fs_kzalloc(sbi, sizeof(struct page *) *
--					dic->cluster_size, GFP_NOFS);
--	if (!dic->tpages)
--		goto out_free;
--
--	for (i = 0; i < dic->cluster_size; i++) {
--		if (cc->rpages[i]) {
--			dic->tpages[i] = cc->rpages[i];
--			continue;
--		}
--
--		dic->tpages[i] = f2fs_compress_alloc_page();
--		if (!dic->tpages[i])
--			goto out_free;
--	}
--
- 	return dic;
- 
- out_free:
--- 
-2.26.2
-
+On 2020/7/24 17:57, Edward Cree wrote:
+> On 23/07/2020 20:08, David Miller wrote:
+>> From: Luo bin <luobin9@huawei.com>
+>> Date: Thu, 23 Jul 2020 22:40:37 +0800
+>>
+>>> +static int hinic_fw_reporter_dump(struct devlink_health_reporter *reporter,
+>>> +				  struct devlink_fmsg *fmsg, void *priv_ctx,
+>>> +				  struct netlink_ext_ack *extack)
+>>> +{
+>>> +	struct hinic_mgmt_watchdog_info *watchdog_info;
+>>> +	int err;
+>>> +
+>>> +	if (priv_ctx) {
+>>> +		watchdog_info = priv_ctx;
+>>> +		err = mgmt_watchdog_report_show(fmsg, watchdog_info);
+>>> +		if (err)
+>>> +			return err;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>> This 'watchdog_info' variable is completely unnecessary, just pass
+>> 'priv_ctx' as-is into mgmt_watchdog_report_show().
+> Looks like the 'err' variable is unnecessary too...
+> 
+> -ed
+> .
+> 
+Will fix. Thanks for your review.
