@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D3722D9AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 21:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D15F22D9AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 21:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgGYTvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 15:51:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45680 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727997AbgGYTvs (ORCPT
+        id S1728036AbgGYTwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 15:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbgGYTwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 15:51:48 -0400
-Date:   Sat, 25 Jul 2020 19:51:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595706705;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tzxo93bNci/t1uZYtvQ3Ar3hGAVig7CHbrWhhDAfsqY=;
-        b=lbmvNhTjFrTQdZiGARR6IGzqB1LWkSoNRDpVrhZt2bB1FFBGOOUTnVpUGIryK+iJciFyjS
-        msF7RTY5j/X97c4e9XMM3hGsBfy7YEAK4xZ1oF44STwv2oJyrN5QW5bxSZ7l2xTOloArbh
-        /JBi7MIsWZaSMdGMf6zIIcAbqoDkH3z+jNKKUYBgQgrsNfc1GCRjnYMTXS5Bn+hiLO4f30
-        DK4br4nqbXIwX+HrSZafCWR2iXg+n5sKvG7050aOHRmpl5SOwREXb0Wuqhrvxa1pkujmvL
-        Y4j75l/I5gsn64sqGRCXYZe/eMx70R+lhp4gd8XHhFbFL4nYt8RLCYCD8gXHPA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595706705;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tzxo93bNci/t1uZYtvQ3Ar3hGAVig7CHbrWhhDAfsqY=;
-        b=wL5Ag34OfV7jeHwdAivtw2nBIBoFIPhU+jPVQh77NIEyQskG4iES5OE3HmNHGcHAlS7Rue
-        BQCs3IR8jGQnERDA==
-From:   "tip-bot2 for Chris Wilson" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/lockdep: Fix overflow in presentation
- of average lock-time
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200725185110.11588-1-chris@chris-wilson.co.uk>
-References: <20200725185110.11588-1-chris@chris-wilson.co.uk>
+        Sat, 25 Jul 2020 15:52:09 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A195DC08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 12:52:08 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id t6so341259ljk.9
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 12:52:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wl5O80oi/Kt/8fZrQY34GOq/Z5L129JRgfrldDVSyAU=;
+        b=cxrfqdzllM3VDmJvOgE1o7/Ek14r9LdBvxRMahxlJhHW+QB9pagkd9nAIyEMLNILPh
+         zCA4q9ToZ5ZsiZa12hEmLeH4toTVybbo9HDx3r8ngRndexI/92KurLTWfsgSFlOmt7pP
+         whwRb+gytczc3CSOdmLWyRx2FIFh5HiYPnlpI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wl5O80oi/Kt/8fZrQY34GOq/Z5L129JRgfrldDVSyAU=;
+        b=eIKOyDQEEL+h+TWcFdfbWP8alHbdcFFKiG8hi3cTcQLqVmTjzye3bIy+g0/DSo6C29
+         aY4oZfUwfEbgvbog82vSOzXwAtyVR9w9CiIaIcdEYYhsQQaIuop8B4WxI1Rl9/WVjFBF
+         5xT9FBvyM/EJZU7fq5SFezu+py8D81J1/UyJewvpgxA/yWlTKRb8tIwV6Q/hBkhkdGmQ
+         IMJ4i4lu9Kf9j97pjhyDHntoyGqWGpi2LwLExiFXYhM3Bel83NB9dyGeYU37DZ75yebj
+         ZiP2JI63v8zPOfgaWu43i7yKjFb180Np8Wy+I9R27BvGxa5IPxUcUD1vUsH4bZI+bOGY
+         81Dg==
+X-Gm-Message-State: AOAM533r+mc9wAeBGIwPCRFGXV60wC8+Q/HoQ5jkTUokpmFcW3+fe23D
+        rYxUPyMh+zYtWmwcnACQQ8HE/leH46g=
+X-Google-Smtp-Source: ABdhPJz4k5oHXdcLZNAzAtFKuOS+nM49+Kz6x4/3q8+Su37ITC+W3VqncHrQl+c/AE1kH6QHlqtHMA==
+X-Received: by 2002:a2e:9594:: with SMTP id w20mr6283564ljh.26.1595706726727;
+        Sat, 25 Jul 2020 12:52:06 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id 204sm1611535lfm.86.2020.07.25.12.52.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Jul 2020 12:52:06 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id i19so6953560lfj.8
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 12:52:05 -0700 (PDT)
+X-Received: by 2002:a05:6512:2082:: with SMTP id t2mr8290886lfr.142.1595706725545;
+ Sat, 25 Jul 2020 12:52:05 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159570670466.4006.5604761972444184961.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
+ <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com>
+ <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
+ <20200724152424.GC17209@redhat.com> <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
+ <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
+ <20200725101445.GB3870@redhat.com> <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+ <20200725192753.GA21962@redhat.com>
+In-Reply-To: <20200725192753.GA21962@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 25 Jul 2020 12:51:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgpdbxaWWxOeVeA-eTex6QcSZLK9S2=eSv6KbQdPapfug@mail.gmail.com>
+Message-ID: <CAHk-=wgpdbxaWWxOeVeA-eTex6QcSZLK9S2=eSv6KbQdPapfug@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Sat, Jul 25, 2020 at 12:28 PM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> What I tried to say. AFAICS before that commit we had (almost) the same
+> behaviour you propose now: unlock_page/etc wakes all the non-exclusive
+> waiters up.
+>
+> No?
 
-Commit-ID:     a7ef9b28aa8d72a1656fa6f0a01bbd1493886317
-Gitweb:        https://git.kernel.org/tip/a7ef9b28aa8d72a1656fa6f0a01bbd1493886317
-Author:        Chris Wilson <chris@chris-wilson.co.uk>
-AuthorDate:    Sat, 25 Jul 2020 19:51:10 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 25 Jul 2020 21:47:42 +02:00
+Yes, but no.
 
-locking/lockdep: Fix overflow in presentation of average lock-time
+We'd wake them _up_ fairly aggressively, but then they'd be caught on
+the bit being set again by the exclusive locker (that we also woke
+up).
 
-Though the number of lock-acquisitions is tracked as unsigned long, this
-is passed as the divisor to div_s64() which interprets it as a s32,
-giving nonsense values with more than 2 billion acquisitons. E.g.
+So they'd get woken up, and then go to sleep again.
 
-  acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
-  -------------------------------------------------------------------------
-    2350439395           0.07         353.38   649647067.36          0.-32
+So the new behavior wakes things up more aggressively (but a different
+way), but not by letting them go out of order and early, but simply by
+not going back to sleep again.
 
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20200725185110.11588-1-chris@chris-wilson.co.uk
----
- kernel/locking/lockdep_proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So the "wake up more" is very different - now it's about not going to
+sleep again, rather than by ordering the wakeup queue.
 
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 5525cd3..02ef87f 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -423,7 +423,7 @@ static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
- 	seq_time(m, lt->min);
- 	seq_time(m, lt->max);
- 	seq_time(m, lt->total);
--	seq_time(m, lt->nr ? div_s64(lt->total, lt->nr) : 0);
-+	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
- }
- 
- static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
+We _could_ order the wakeup queue too, and put all non-exclusive
+weiters at the head again. And make it *really* aggressive.
+
+But since one of ourissues has been "latency of walking the wait
+queue", I'm not sure we want that. interspesing any blocking waiters -
+and stopping the waitqueue walking as a result - might be better under
+load.
+
+Wild handwaving. We could try it, but IO think that really would be a
+separate "try this out" patch.
+
+Right now, I think my patch will likely make for _better_ latencies
+for everything.
+
+Lower latency of non-exclusive waiters (because not going back to
+sleep), but also lower latency of walking the wait queue (because
+fewer entries, hopefully, and also less contention due to the "not
+going back to sleep" noise)
+
+           Linus
