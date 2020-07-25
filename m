@@ -2,151 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7E622D471
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 05:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B4022D475
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 05:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgGYDvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 23:51:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726591AbgGYDvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 23:51:04 -0400
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2ED220719;
-        Sat, 25 Jul 2020 03:51:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595649063;
-        bh=IB/6QMM3mNcLq0yp3daj3De1omfUDNO/kHLqyEhsa6Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=K2KEh7TpNnF0mxAAYCqLboKVGglNo3SHCYHfljAe0xUta6Iitan62CbCecjxUdHwG
-         HXBphKcfLkHGOOtCm8zoVgCHNZ2F3SrYMMzB+yes4gHO1K41s2zWEp/P/TaiTzKW6+
-         AvVEhpyF9jSOP3gHlxMV12o5Wbs1AflrT4CHiD8Q=
-Received: by mail-ej1-f50.google.com with SMTP id l4so11823059ejd.13;
-        Fri, 24 Jul 2020 20:51:02 -0700 (PDT)
-X-Gm-Message-State: AOAM533VU00j56UQ4HWO2koglbN5kpUWRj5y6mVdMYii4SCpV0LqtREG
-        KBbtXd4AdmasLc7LQQA2B8qkkEAybIOP3ACGBg==
-X-Google-Smtp-Source: ABdhPJxcx4pKWckZ+ivOQWgliPqjd8Cxz0hiophWU1IPuWMgAOcngrm0sm/OsQ7JYpawO3hTDs8v8meuDWYVWGhBJ0k=
-X-Received: by 2002:a17:906:7857:: with SMTP id p23mr10925441ejm.260.1595649061371;
- Fri, 24 Jul 2020 20:51:01 -0700 (PDT)
+        id S1726696AbgGYDxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 23:53:05 -0400
+Received: from out28-97.mail.aliyun.com ([115.124.28.97]:58703 "EHLO
+        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgGYDxF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 23:53:05 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1341577|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.040148-0.00170086-0.958151;FP=0|0|0|0|0|-1|-1|-1;HT=e01l10434;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=19;RT=19;SR=0;TI=SMTPD_---.I7EgnZy_1595649141;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I7EgnZy_1595649141)
+          by smtp.aliyun-inc.com(10.147.40.2);
+          Sat, 25 Jul 2020 11:53:01 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, paul@crapouillou.net,
+        prasannatsmkumar@gmail.com, kishon@ti.com, vkoul@kernel.org,
+        gor@linux.ibm.com, hca@linux.ibm.com,
+        christophe.jaillet@wanadoo.fr, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: [PATCH v6 0/5] Add USB PHY support for new Ingenic SoCs.
+Date:   Sat, 25 Jul 2020 11:51:54 +0800
+Message-Id: <20200725035159.31231-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-References: <1595469798-3824-1-git-send-email-yongqiang.niu@mediatek.com> <1595469798-3824-7-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1595469798-3824-7-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 25 Jul 2020 11:50:50 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9jsunT=PH59yrJ=q_uPM83WVH1m4c379APCUOGL3ZjdQ@mail.gmail.com>
-Message-ID: <CAAOTY_9jsunT=PH59yrJ=q_uPM83WVH1m4c379APCUOGL3ZjdQ@mail.gmail.com>
-Subject: Re: [v7, PATCH 6/7] drm/mediatek: add fifo_size into rdma private data
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The primary thing of this patch is to get fifo size from device tree.
-So you may modify title to show the primary thing.
+v5->v6:
+1.Fix the warning that appears during compilation.
+2.Used the generic PHY framework API to create the PHY,
+  and move the driver to driver/phy/ingenic.
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B47=E6=9C=
-=8823=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8810:12=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> the fifo size of rdma in mt8183 is different.
-> rdma0 fifo size is 5k
-> rdma1 fifo size is 2k
+周琰杰 (Zhou Yanjie) (5):
+  dt-bindings: USB: Add bindings for new Ingenic SoCs.
+  USB: PHY: JZ4770: Unify code style and simplify code.
+  USB: PHY: JZ4770: Add support for new Ingenic SoCs.
+  USB: PHY: JZ4770: Reformat the code to align it.
+  USB: PHY: JZ4770: Usethe generic PHY framework.
 
-I would like the description to be "Get the fifo size from device tree
-because each rdma in the same SoC may have different fifo size."
+ .../bindings/usb/ingenic,jz4770-phy.yaml           |   6 +-
+ drivers/phy/Kconfig                                |   1 +
+ drivers/phy/Makefile                               |   1 +
+ drivers/phy/ingenic/Kconfig                        |  12 +
+ drivers/phy/ingenic/Makefile                       |   2 +
+ drivers/phy/ingenic/phy-ingenic-usb.c              | 403 +++++++++++++++++++++
+ drivers/usb/phy/Kconfig                            |   8 -
+ drivers/usb/phy/Makefile                           |   1 -
+ drivers/usb/phy/phy-jz4770.c                       | 243 -------------
+ 9 files changed, 424 insertions(+), 253 deletions(-)
+ create mode 100644 drivers/phy/ingenic/Kconfig
+ create mode 100644 drivers/phy/ingenic/Makefile
+ create mode 100644 drivers/phy/ingenic/phy-ingenic-usb.c
+ delete mode 100644 drivers/usb/phy/phy-jz4770.c
 
-Regards,
-Chun-Kuang.
+-- 
+2.11.0
 
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/m=
-ediatek/mtk_disp_rdma.c
-> index e04319f..794acc5 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-> @@ -63,6 +63,7 @@ struct mtk_disp_rdma {
->         struct mtk_ddp_comp             ddp_comp;
->         struct drm_crtc                 *crtc;
->         const struct mtk_disp_rdma_data *data;
-> +       u32                             fifo_size;
->  };
->
->  static inline struct mtk_disp_rdma *comp_to_rdma(struct mtk_ddp_comp *co=
-mp)
-> @@ -131,12 +132,18 @@ static void mtk_rdma_config(struct mtk_ddp_comp *co=
-mp, unsigned int width,
->         unsigned int threshold;
->         unsigned int reg;
->         struct mtk_disp_rdma *rdma =3D comp_to_rdma(comp);
-> +       u32 rdma_fifo_size;
->
->         mtk_ddp_write_mask(cmdq_pkt, width, comp,
->                            DISP_REG_RDMA_SIZE_CON_0, 0xfff);
->         mtk_ddp_write_mask(cmdq_pkt, height, comp,
->                            DISP_REG_RDMA_SIZE_CON_1, 0xfffff);
->
-> +       if (rdma->fifo_size)
-> +               rdma_fifo_size =3D rdma->fifo_size;
-> +       else
-> +               rdma_fifo_size =3D RDMA_FIFO_SIZE(rdma);
-> +
->         /*
->          * Enable FIFO underflow since DSI and DPI can't be blocked.
->          * Keep the FIFO pseudo size reset default of 8 KiB. Set the
-> @@ -145,7 +152,7 @@ static void mtk_rdma_config(struct mtk_ddp_comp *comp=
-, unsigned int width,
->          */
->         threshold =3D width * height * vrefresh * 4 * 7 / 1000000;
->         reg =3D RDMA_FIFO_UNDERFLOW_EN |
-> -             RDMA_FIFO_PSEUDO_SIZE(RDMA_FIFO_SIZE(rdma)) |
-> +             RDMA_FIFO_PSEUDO_SIZE(rdma_fifo_size) |
->               RDMA_OUTPUT_VALID_FIFO_THRESHOLD(threshold);
->         mtk_ddp_write(cmdq_pkt, reg, comp, DISP_REG_RDMA_FIFO_CON);
->  }
-> @@ -291,6 +298,16 @@ static int mtk_disp_rdma_probe(struct platform_devic=
-e *pdev)
->                 return comp_id;
->         }
->
-> +       if (of_find_property(dev->of_node, "mediatek,rdma_fifo_size", &re=
-t)) {
-> +               ret =3D of_property_read_u32(dev->of_node,
-> +                                          "mediatek,rdma_fifo_size",
-> +                                          &priv->fifo_size);
-> +               if (ret) {
-> +                       dev_err(dev, "Failed to get rdma fifo size\n");
-> +                       return ret;
-> +               }
-> +       }
-> +
->         ret =3D mtk_ddp_comp_init(dev, dev->of_node, &priv->ddp_comp, com=
-p_id,
->                                 &mtk_disp_rdma_funcs);
->         if (ret) {
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
