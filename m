@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D881522D3EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 04:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F88B22D3DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 04:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgGYCxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 22:53:16 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57738 "EHLO
+        id S1726885AbgGYCvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 22:51:10 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56432 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbgGYCxN (ORCPT
+        with ESMTP id S1726593AbgGYCvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 22:53:13 -0400
+        Fri, 24 Jul 2020 22:51:07 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06P2m20D043206;
-        Sat, 25 Jul 2020 02:53:01 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06P2p4fU045232;
+        Sat, 25 Jul 2020 02:51:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=g2xSZwKdfwHJtPVtvYIDrku+lieMFbr+21h4tY2QBQQ=;
- b=dwavi3TzZnex5zZq+2HAB2ewDokkEyvAf60WX5Tr2EizKFwd5IR44hyaVvLdE78ZUtgT
- ug+PU9gTtJ6imJgbJc7o7REjYa5Z+Jaf2kE5gC61dV/O2jYUQrkd8Y1Mn/BP/jS1Tw0/
- 2vllAuWNnQ609P0sFqo7de9AdVvIkGirj5ZWveV+Ic8o6fqL3PJgJdL/EsPQuV+mSwQ7
- Tn6RjYLUPvtt5uH1F+/WVkC6eWxjJ56VRiKA7F3tp8sk5AFBlhOoNohs/knLBsk5PhpI
- AxV8JAsz1Z3C2kzh2wB1PTOZq/XDOkilXPDwsuyuS+3rmO/uYMFjp5Q2wUEOMEMEvVD8 aQ== 
+ bh=E1jxlbZu5ngjHcyU+WClmjLHMGwKSJYwEZOx5LrsHJc=;
+ b=hjXgE4FGmCqWk6LEf76dP9cdZDLxReG5WZSWhuboYlWkmWeQda+Gt5lw4X+Krx0dfylW
+ yX7GHWIHMGwsjiLrQ+TO82up+v4ZvuVrbUISp/7vm6VvbfP/rNri4988oG1xg3JLvOq9
+ rhcWKS2LKVNevw2Mi4EkcFQCuRJ87tKbpEWDgBk9ikKFfcfpGihgVtDCDVwYN4/Yyvhj
+ OBEj++/wRw9ZInXqBBTmAjEqx6m5pZQFOvfX041jJaS3ZnNS1nI/nWj+tHTZcnXsKZ9R
+ YvlEuDzGu/lRQvsjryr/H6RkuDEoYrV+rmwj9ZpkMI7B/Sw0DTU3eQKI7XkbY3QnyGUk Ng== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 32bs1n1uvv-1
+        by aserp2120.oracle.com with ESMTP id 32bs1n1ur8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 25 Jul 2020 02:53:01 +0000
+        Sat, 25 Jul 2020 02:51:04 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06P2mVZ0092342;
-        Sat, 25 Jul 2020 02:51:01 GMT
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06P2mWjv092386;
+        Sat, 25 Jul 2020 02:51:04 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 32gaseas7h-1
+        by aserp3030.oracle.com with ESMTP id 32gaseas9b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 25 Jul 2020 02:51:01 +0000
+        Sat, 25 Jul 2020 02:51:04 +0000
 Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06P2oxQi000945;
-        Sat, 25 Jul 2020 02:51:00 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06P2p22k001031;
+        Sat, 25 Jul 2020 02:51:02 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 25 Jul 2020 02:50:59 +0000
+        with ESMTP ; Sat, 25 Jul 2020 02:51:02 +0000
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Luo Jiaxing <luojiaxing@huawei.com>, jejb@linux.ibm.com
+To:     jejb@linux.ibm.com, Yi Wang <wang.yi59@zte.com.cn>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, john.garry@huawei.com,
-        linuxarm@huawei.com, linux-scsi@vger.kernel.org,
-        yanaijie@huawei.com, chenxiang66@hisilicon.com
-Subject: Re: [PATCH v1 0/2] scsi: libsas: An improvement on error handle and tidy-up
-Date:   Fri, 24 Jul 2020 22:50:40 -0400
-Message-Id: <159564519422.31464.1740905503467302536.b4-ty@oracle.com>
+        linux-kernel@vger.kernel.org, wang.liang82@zte.com.cn,
+        Liao Pingfang <liao.pingfang@zte.com.cn>,
+        linux-scsi@vger.kernel.org, xue.zhihong@zte.com.cn
+Subject: Re: [PATCH] scsi: imm: Remove superfluous breaks
+Date:   Fri, 24 Jul 2020 22:50:43 -0400
+Message-Id: <159564519422.31464.1959502564009897481.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <1595408643-63011-1-git-send-email-luojiaxing@huawei.com>
-References: <1595408643-63011-1-git-send-email-luojiaxing@huawei.com>
+In-Reply-To: <1594724367-11593-1-git-send-email-wang.yi59@zte.com.cn>
+References: <1594724367-11593-1-git-send-email-wang.yi59@zte.com.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ mlxlogscore=805 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006250000 definitions=main-2007250020
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=828 malwarescore=0 clxscore=1011
  spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
  definitions=main-2007250020
@@ -71,23 +71,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Jul 2020 17:04:01 +0800, Luo Jiaxing wrote:
+On Tue, 14 Jul 2020 18:59:27 +0800, Yi Wang wrote:
 
-> This patch introduces an improvement to reduce error handle time and a
-> tidy-up, including:
-> - postreset() is deleted from sas_sata_ops.
-> - Do not perform hard reset and delayed retry on a removed SATA disk. This
-> can effectively reduce the error handle duration of hot unplug a SATA disk
-> with traffic(reduce about 30s depending on the delay setting of libata).
-> 
-> [...]
+> Remove superfluous breaks, as there is a "return" before them.
 
 Applied to 5.9/scsi-queue, thanks!
 
-[1/2] scsi: libsas: Remove postreset from sas_sata_ops
-      https://git.kernel.org/mkp/scsi/c/3a243c2c3500
-[2/2] scsi: libsas: Check link status in ATA prereset()
-      https://git.kernel.org/mkp/scsi/c/386533796574
+[1/1] scsi: imm: Remove superfluous breaks
+      https://git.kernel.org/mkp/scsi/c/b54dc46cbe71
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
