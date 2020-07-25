@@ -2,118 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702BB22D5F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EF722D5F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgGYICK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 04:02:10 -0400
-Received: from out28-149.mail.aliyun.com ([115.124.28.149]:43172 "EHLO
-        out28-149.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726017AbgGYICJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 04:02:09 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07441843|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.00786423-0.000678854-0.991457;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03293;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.I7JBaAh_1595664124;
-Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I7JBaAh_1595664124)
-          by smtp.aliyun-inc.com(10.147.41.231);
-          Sat, 25 Jul 2020 16:02:05 +0800
-Subject: Re: [PATCH] MIPS: CI20: Update defconfig for EFUSE.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, keescook@chromium.org,
-        hns@goldelico.com, ebiederm@xmission.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-References: <20200723071950.130007-1-zhouyanjie@wanyeetech.com>
- <20200723071950.130007-2-zhouyanjie@wanyeetech.com>
- <V2ZWDQ.DNM4EVLAB6YN3@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <b1de1e95-9ce3-1324-346d-07196aa30637@wanyeetech.com>
-Date:   Sat, 25 Jul 2020 16:02:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.3.0
-MIME-Version: 1.0
-In-Reply-To: <V2ZWDQ.DNM4EVLAB6YN3@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1726754AbgGYILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 04:11:05 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.10]:47129 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726434AbgGYILE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 04:11:04 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Sat, 25 Jul 2020 04:11:02 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id; bh=Bmmdc9TdbNDoanpb/xc0KWb2EO1V4Pol3FKa645b28M=; b=z
+        9j/phfFLzDq96MMao2Hgly1H6lxHJPceSKaL0ryuAAR8BAyi4N1tzn+w16XSrUjX
+        vLj/343S8/6vPaSgPvsNZsxY5SmsMK8GUunwiTfXrQJrTvJ1Ow53fNL3nUDCEwni
+        BoBefddlefeb99QWsNH02h3mighjvORaNunjiDB23I=
+Received: from localhost.localdomain (unknown [202.120.224.53])
+        by app1 (Coremail) with SMTP id XAUFCgBX2EFe5xtfDEgvAg--.23318S3;
+        Sat, 25 Jul 2020 16:03:43 +0800 (CST)
+From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>, Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH] ipv6: Fix nexthop refcnt leak when creating ipv6 route info
+Date:   Sat, 25 Jul 2020 16:02:18 +0800
+Message-Id: <1595664139-40703-1-git-send-email-xiyuyang19@fudan.edu.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: XAUFCgBX2EFe5xtfDEgvAg--.23318S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr45uFyrXFWxWF15AryrJFb_yoW8XryfpF
+        WfKrZ8Xr1rCa4UGas5ta1xtF13Jw48G3WkWFy3Ca93Kr98Z34vyr1jgrWjvrW7XrWxG34a
+        qFWjvr1jkF9xCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjn2atUUUUU==
+X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+ip6_route_info_create() invokes nexthop_get(), which increases the
+refcount of the "nh".
 
-在 2020/7/23 下午4:47, Paul Cercueil 写道:
-> Hi Zhou,
->
-> Le jeu. 23 juil. 2020 à 15:19, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> The commit 19c968222934 ("MIPS: DTS: CI20: make DM9000 Ethernet
->> controller use NVMEM to find the default MAC address") add EFUSE
->> node for DM9000 in CI20, however, the EFUSE driver is not selected,
->> which will cause the DM9000 to fail to read the MAC address from
->> EFUSE, causing the following issue:
->>
->> [FAILED] Failed to start Raise network interfaces.
->>
->> Fix this problem by select CONFIG_JZ4780_EFUSE by default in the
->> ci20_defconfig.
->
-> Does it actually fix it on a clean 5.8-rc kernel?
->
-> From what I know, the efuse driver cannot probe, because the nemc 
-> driver requests the complete memory resource, so the efuse driver's 
-> devm_platform_ioremap_resource() fails.
->
-> I did send a patch to fix this 
-> (https://lore.kernel.org/lkml/551a8560261543c1decb1d4d1671ec4b7fa52fdb.1582905653.git.hns@goldelico.com/),
-> but it's hard to have somebody merge it, because nobody maintains 
-> drivers/memory/.
->
-You are right, I cleaned up the changes made to support X1000's EFUSE 
-and rebase to clean 5.8-RC6, it still does not work properly, I think we 
-should drop this fix patch.
+When ip6_route_info_create() returns, local variable "nh" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
 
->> Fixes: 19c968222934 ("MIPS: DTS: CI20: make DM9000 Ethernet
->> controller use NVMEM to find the default MAC address").
->
-> That shouldn't be a fix IMHO - the devicetree was updated in one 
-> commit, the config should be updated in another. The "bug" here is 
-> that it wasn't done right away.
->
-Okay.
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->
-> Btw - when you add a Fixes: tag to fix a commit that is not for the 
-> kernel currently in RC phase, you need to Cc linux-stable as well.
->
-Sure, I will pay attention next time.
+The reference counting issue happens in one exception handling path of
+ip6_route_info_create(). When nexthops can not be used with source
+routing, the function forgets to decrease the refcnt increased by
+nexthop_get(), causing a refcnt leak.
 
-Thanks and best regards!
+Fix this issue by pulling up the error source routing handling when
+nexthops can not be used with source routing.
 
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+---
+ net/ipv6/route.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> Cheers,
-> -Paul
->
->> ---
->>  arch/mips/configs/ci20_defconfig | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/mips/configs/ci20_defconfig 
->> b/arch/mips/configs/ci20_defconfig
->> index f433fad16073..ba26ba4de09a 100644
->> --- a/arch/mips/configs/ci20_defconfig
->> +++ b/arch/mips/configs/ci20_defconfig
->> @@ -140,6 +140,7 @@ CONFIG_INGENIC_OST=y
->>  CONFIG_MEMORY=y
->>  CONFIG_PWM=y
->>  CONFIG_PWM_JZ4740=m
->> +CONFIG_JZ4780_EFUSE=y
->>  CONFIG_EXT4_FS=y
->>  # CONFIG_DNOTIFY is not set
->>  CONFIG_AUTOFS_FS=y
->> -- 
->> 2.11.0
->>
->
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 82cbb46a2a4f..427ecd7032bd 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -3682,14 +3682,14 @@ static struct fib6_info *ip6_route_info_create(struct fib6_config *cfg,
+ 	rt->fib6_src.plen = cfg->fc_src_len;
+ #endif
+ 	if (nh) {
+-		if (!nexthop_get(nh)) {
+-			NL_SET_ERR_MSG(extack, "Nexthop has been deleted");
+-			goto out;
+-		}
+ 		if (rt->fib6_src.plen) {
+ 			NL_SET_ERR_MSG(extack, "Nexthops can not be used with source routing");
+ 			goto out;
+ 		}
++		if (!nexthop_get(nh)) {
++			NL_SET_ERR_MSG(extack, "Nexthop has been deleted");
++			goto out;
++		}
+ 		rt->nh = nh;
+ 		fib6_nh = nexthop_fib6_nh(rt->nh);
+ 	} else {
+-- 
+2.7.4
+
