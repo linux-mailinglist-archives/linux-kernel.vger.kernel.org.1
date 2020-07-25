@@ -2,152 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BFC22DAA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 01:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A0E22DAA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 01:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbgGYXgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 19:36:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbgGYXgL (ORCPT
+        id S1727975AbgGYX4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 19:56:08 -0400
+Received: from sonic315-14.consmr.mail.bf2.yahoo.com ([74.6.134.124]:36030
+        "EHLO sonic315-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727101AbgGYX4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 19:36:11 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520A6C08C5C0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 16:36:11 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d18so9545163edv.6
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 16:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version:in-reply-to
-         :content-transfer-encoding;
-        bh=doXVHUSSwIEzy3XFrwVIRI6UzDTWsnmmK2wPZPpqcWk=;
-        b=iGSUM9p9+cOH9t7rNP0IqsPIPR/Eg+JN8fe5IrmGwNF7i2Ujnrvft7s6vBNyK7H6fq
-         Mys3RcDgNVTe4U8kpMehFh61WJfU2m6SyTwATSE4n6DZGT1ZVWVF05rkkFmfBIlRY5Iw
-         jmlD064tQY6APF8rYECHVPaHZhRGjBhfuyaj5yvm+bBIxNDKKwLY2pLzBZySVc0yBQ3S
-         YDw3VFX/Mmf/x3fRk6iecl7EiZjPivyfdSks6oNUp/KI/QegIfFWs27WrczKoV4uE+78
-         e1A+DPXBJEUs4YEDBJZIEzmuGfePrrWWWi/7GoXG+GCbcSbJb5770yDDXzPa4fLxGQ2L
-         NRpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=doXVHUSSwIEzy3XFrwVIRI6UzDTWsnmmK2wPZPpqcWk=;
-        b=oLqwV93YsZbbwuTnpllKGkppcN7z0K7DDJH7tB/15GmBphVE6t6F3Zm8TqzQnJPfx6
-         MMI7S7zK7L1iuvNI8UAfI09c00lwaU08a7eyMlWOH/hiDcRUaxzgSlX112s+te4q93v/
-         Ts4+p+rAGxUb50h8dhfRDfdUsHhHpNAhwGCA0y97jnGM44pzbvWEQdawIK/vKvgcApaP
-         VzR6k7TSLltUwDQfj2Iyx1hOIje6seXIC2+qOy72hn9GrtjXTCE1Gp2yX4ry994Mx9Bl
-         YI+8d20g4ZJpYpNMkD6ADw6dR0kiZ8xnjJm0x1A1f4rw6daCIt2JIXtCa79ONf6pBrLr
-         Y1eg==
-X-Gm-Message-State: AOAM532z5Wu00yOT+1LQjqdwDz0XV76Rr1Uk5hT/Dcq2v6XpN692P+DX
-        lGcn/m3axb0wN5+aeariXW4=
-X-Google-Smtp-Source: ABdhPJz5LXehCen61pBi3geOOZ8wp99wypWI2SNdnMt6btYQQpa/qyjdIjpHSMpI4rOPr6RGkxoy2g==
-X-Received: by 2002:aa7:c353:: with SMTP id j19mr14966329edr.219.1595720169834;
-        Sat, 25 Jul 2020 16:36:09 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:2450:10d2:194d:60d3:6c2f:f9ba:e713])
-        by smtp.gmail.com with ESMTPSA id rv14sm3722348ejb.33.2020.07.25.16.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 16:36:08 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        SeongJae Park <sjpark@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, apw@canonical.com,
-        colin.king@canonical.com, sj38.park@gmail.com, jslaby@suse.cz,
-        pavel@ucw.cz, SeongJae Park <sjpark@amazon.de>
-Subject: Re: Re: checkpatch: support deprecated terms checking
-Date:   Sun, 26 Jul 2020 01:35:57 +0200
-Message-Id: <20200725233557.8154-1-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 25 Jul 2020 19:56:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595721366; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=iW4seRVtbnpvvyI5BHItPFy1aZfVH6YEEGKDWJo4vLtvBkhQSMfkl/bcii5CynYjXMGJacM4tIAfEazh3Y4A3eIetFngBrEbzi7l/W6+mB9gXzFJ1Di33B2ipRunLWVrOELl+ELyhxqYzGk7hLeczOJo0m4Aa6uix0vBv2n3eCgqxfvVFZEbcJvAI+J8+VMfhOAZXFvm4RIdCpwXq68OOUSUWg9gcrqEuqsFiB+fSsurpkn68caAXuXG73O1a1MQi6haAcsLu7siTG9kHL6P+SySWXIFzm+LbNetfr3TiwisRU0WGRPDrPToWsP1PXFJHaIRhtRSE0GVtgcf9UNmMA==
+X-YMail-OSG: eh3EeCwVM1kOxzwj9uvxR.g36_h5mRTBG0osEdUVI2ucvwKTbsERhTxSl7EdnVV
+ iwjXSgaWW_ft91rhsILjZ86MDnKtwMvVQBDgwJKbhjcYatvS5HBX4d64w_0uxZuHgzGpd1u6Q56t
+ 2MNmIIhzgrv.AeQ9wJ0F10EN2VoY18aDWWTNy75tX9eUnh7PN6ob80FacIJ7f.BAXLmNSP6PlfBi
+ SzyiAVICbNtVATYB1wYjVnLaSPsSW3p0M3IYQBnBC0UdySF2iIYVJi0WYo2bK7obSmdVWY8jvti3
+ 6nDc4baJXyFLkveD5jIe54AhnQgjYF8cYwFH55zlG8sR1b3mcsm18u3pG.3C9xfR0A5SjGbkkN8u
+ mtUSsvSYVQxWh0uDfXH.UOXU1AbaNv.7ARsyPnf6VetSYb41Vd_RQs80g6KC1WQ.0imZ9uOIhpMe
+ sNYboDDx3Uyf5ShszshXm_IaOyQV9Tvy5r6b59K67ZQEwFvunoBOUKfYVp81nAocG2mcuwRhYbuR
+ ecAyHhzP2m5IcAL4HCBPVug.m31Rj450V8_rkPNb6gCmOIg5L9m5wt1oF16AH.5_Scfl7t4IP2pU
+ 4NG4gC5dSOJBNXCYYJhuz28GzY7lsXhrdFGVsjAk0lyYQQth72kVeDVURtMmyiBSYpc6CikPE81M
+ 4nGDSH.N4PQDmKputvMkOmyTsEmSaQUGYUNNMClqE3P_Zc.yEIItFznFJw5WkYpQ2xPLDgkleOPR
+ 7DH.f7AewcrReHZh8C2Anrg4fcVYOV9NkmUnTwHEEYl2.ok7eVPOai7vZDxVsdYpGXyD9ZwtJkV7
+ J8OGPhrGY7QHDoPxqS6VgcfCTfwyMIfapb8WGq_DKiYHO3OBVRaK53ZPOC98a4iUDduGTzdp8gxW
+ LKfbyoDGdcxWXvGi4Yod3d_H5AxKlHnEqHKfrMcNKiUtxcgfCBYtLj191n8KFYwqJH9j8eMM4sPO
+ 89.lm4QX5Fbwsvm7ZQKN5X3FmPzRPAsYXt7PR_4cotdm27xa.HfiNDtbDDbAEKJcX..sysgGMpDF
+ GA9KHlRyrw4k09bEc2yVD5.nILOhFo.lKrnk1l7ZQmr8nszOrunvPcthyrfX2TdVk87TL.EDME60
+ pZk6oryISAw7x.9nJDOSnbGvdscB2ysP1GhNuovX8jtOcxJ9mux7N3vQkfu7IlFivOWNYwu74qpo
+ Z_fI9J7cnNujK0Jv_chHvVHXPxQyObTRBMKYt.EuVEY7gOEcveLM9n3xRqeAdvXjvEygYR3rgUoi
+ b_7yrBorsuLIzT4gP54q1eJKHGpQOT_XnYikycdukXDfCIf2U9HW.8t3NmEN0EON2O1OSt9b_M0a
+ 18GZIt8ViIw--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Sat, 25 Jul 2020 23:56:06 +0000
+Date:   Sat, 25 Jul 2020 23:56:06 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <bmrsminaa4@gmail.com>
+Reply-To: amrsminaabrunel@gmail.com
+Message-ID: <2009430043.5047362.1595721366104@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-In-Reply-To: <58ed7006138bb256ad1821d5f4f892f3c3e031a8.camel@perches.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+References: <2009430043.5047362.1595721366104.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Jul 2020 10:29:23 -0700 Joe Perches <joe@perches.com> wrote:
-
-> On Sat, 2020-07-25 at 15:02 +0200, Michał Mirosław wrote:
-> > Hello,
-> > 
-> > I see that this patch went into next and is already inciting people to
-> > do wrong things [1]. Can you please fix it to require '--subjective'
-> > switch or otherwise mark it clearly as suggestion-only?
-> > 
-> > The coding-style as in Linus' master says about *NEW* uses of the words
-> > listed (those introductions I expect to be actually rare) and not about
-> > existing use in the code or industry. Making a noise about all uses
-> > found surely will generate a lot more irrelevant patches.
-> > 
-> > [1] https://www.spinics.net/lists/linux-tegra/msg51849.html
-> 
-> And if not reverted, perhaps do not check existing files
-> at all but only check patches and change the message to
-> show only suggestions not from a specification.
-
-Agreed for this case.  However, excluding existing file check doesn't fully
-avoid this problem.  Also, more terms having different deprecation rules might
-be added in future.  How about allowing file check but show reference in the
-suggestion message as below?
-
-> ---
-[...]
 
 
-Thanks,
-SeongJae Park
+My Dear in the lord
 
 
-================================ >8 ===========================================
-From aeb852296bc40ca1de8a6a11f4d5368b02d2e417 Mon Sep 17 00:00:00 2001
-From: SeongJae Park <sjpark@amazon.de>
-Date: Sun, 26 Jul 2020 01:14:48 +0200
-Subject: [PATCH] scripts/deprecatd_terms: provide references
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
 
-Deprecation of terms could have special rules.  For example, 'slave' is
-ok for existing usages.  Same to 'master', but it's also ok unless it's
-used with 'slave'.  This commit provides the references for such rules.
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- scripts/checkpatch.pl        | 2 +-
- scripts/deprecated_terms.txt | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e9fde28eb0de..77f5f777b053 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2981,7 +2981,7 @@ sub process {
- 				my $msg_level = \&WARN;
- 				$msg_level = \&CHK if ($file);
- 				if (&{$msg_level}("DEPRECATED_TERM",
--						  "Use of '$deprecated_term' is deprecated, please '$suggested', instead.\n" . $herecurr) &&
-+						  "Use of '$deprecated_term' is controversial - if not required by specification, perhaps '$suggested' instead.  See: scripts/deprecated_terms.txt\n" . $herecurr) &&
- 				    $fix) {
- 					$fixed[$fixlinenr] =~ s/(^|[^A-Za-z@])($deprecated_term)($|[^A-Za-z@])/$1$suggested$3/;
- 				}
-diff --git a/scripts/deprecated_terms.txt b/scripts/deprecated_terms.txt
-index 1be27a24187b..d92b9c896fce 100644
---- a/scripts/deprecated_terms.txt
-+++ b/scripts/deprecated_terms.txt
-@@ -3,8 +3,10 @@
- # The format of each line is:
- # deprecated||suggested
- #
-+# If special rules are applied on the terms, please comment those.
-+#
-+# Refer to "4) Naming" section of Documentation/process/coding-style.rst for
-+# below three terms.
- blacklist||(denylist|blocklist)
--# For other alternatives of 'slave', Please refer to
--# Documentation/process/coding-style.rst
- slave||(secondary|target|...)
- whitelist||(allowlist|passlist)
--- 
-2.17.1
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
 
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
