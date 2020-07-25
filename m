@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D10D22D94F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7887F22D952
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgGYSXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:23:45 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55430 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726727AbgGYSXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:23:44 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jzOpb-006pw9-R7; Sat, 25 Jul 2020 20:23:35 +0200
-Date:   Sat, 25 Jul 2020 20:23:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, jacek.anaszewski@gmail.com,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC leds + net-next v3 2/2] net: phy: marvell: add
- support for PHY LEDs via LED class
-Message-ID: <20200725182335.GN1472201@lunn.ch>
-References: <20200724164603.29148-1-marek.behun@nic.cz>
- <20200724164603.29148-3-marek.behun@nic.cz>
- <20200725172318.GK1472201@lunn.ch>
- <20200725200224.3f03c041@nic.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        id S1727877AbgGYSYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726727AbgGYSYs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 14:24:48 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E2FC08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:24:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id s189so7144664pgc.13
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:24:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=g5KV4oQr9blE2xaUSgxxVlTAVbR4qnTHAPsngn5VHhU=;
+        b=0AVLkDg4gvYXOyCyuaQ/UyC2NTl8sa7rUS972GkzEEkWYey9OY2uwFrAoxMvrbUKk6
+         x6uShijEDCqjc3W/VfyzX2UUHz4g3J7vJoapE7AN0jar+CW7JDQOm4KxbJ6uMPSkdx/j
+         /sfQhtEJQkzDwZCKtZ3dUovhjSMG3beQI9c+4ND3zgsPal5T3b9h+wTjClcJZ8OZbgla
+         qooCMTDklefjTGQtl7HKpdN21EPGnLV2HpQRFsQux3YcaBcXNIXPpewlNW/QoFke8JiM
+         FJ7zNZK7IkOtQIjbkhs9mvA2AaGpuCYX69o7w6BMoCz8rTLhCAaLD4gMBY+r/o+6LtFT
+         gWMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=g5KV4oQr9blE2xaUSgxxVlTAVbR4qnTHAPsngn5VHhU=;
+        b=leSV+FG3BAcEk2SlM96kQiyxMZPPY/F4LyA6T4cPFzKpR+SJNmiSVr1miX02xFLyJE
+         LfxGL/fXsEKkgFtavBoPTLdan38QhPp8HkTcLhuyZuJ+dTSt/Mlbq777rKCAVEUNo2ru
+         EtmCh7K1GmZTA8Z7xrD22gvm8LEZl4V/oNfiVtDOpfyHiKqR4r1pcITIG/HO0JoYSiNU
+         pzsXXSW8q3CtmStOPO8iEMYtRFBx1GL+CTOf0cC0JVu/OA9wqmphJlHr1RJAcWv+5yU0
+         3wbP/kJJOZzG45XZmAhJA6jaWq7A5dh/zo73EBMMbvbsjGzAu8GUFIAufr2GY0CCjMlk
+         ZbxQ==
+X-Gm-Message-State: AOAM533lYNb8MyMZ+3GvB5FjQZvwsFbwpcJ7Fy+Jn77goBeGdW3EjGx1
+        zVWY9fo9pPeYH3As0AvnRUxF3LDJ4bg=
+X-Google-Smtp-Source: ABdhPJws9Ncp+xuPpJvv/8k128LHXFkxmXtpwAUE3C5X74SuXudwiFvjH0EoAMdDaY+TX1yoajakZw==
+X-Received: by 2002:a63:9342:: with SMTP id w2mr13144548pgm.20.1595701486207;
+        Sat, 25 Jul 2020 11:24:46 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id m9sm9046242pjs.18.2020.07.25.11.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jul 2020 11:24:45 -0700 (PDT)
+Date:   Sat, 25 Jul 2020 11:24:45 -0700 (PDT)
+X-Google-Original-Date: Fri, 24 Jul 2020 22:21:16 PDT (-0700)
+Subject:     Re: [PATCH 0/2] Fix some build warnings when W=1
+In-Reply-To: <cover.1594880014.git.zong.li@sifive.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zong.li@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     zong.li@sifive.com
+Message-ID: <mhng-7bb6277d-bca5-4cd0-a791-3fa2b9891f69@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200725200224.3f03c041@nic.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 08:02:24PM +0200, Marek Behun wrote:
-> On Sat, 25 Jul 2020 19:23:18 +0200
-> Andrew Lunn <andrew@lunn.ch> wrote:
-> 
-> > On Fri, Jul 24, 2020 at 06:46:03PM +0200, Marek Behún wrote:
-> > > This patch adds support for controlling the LEDs connected to several
-> > > families of Marvell PHYs via the PHY HW LED trigger API. These families
-> > > are: 88E1112, 88E1121R, 88E1240, 88E1340S, 88E1510 and 88E1545. More can
-> > > be added.
-> > > 
-> > > The code reads LEDs definitions from the device-tree node of the PHY.
-> > > 
-> > > This patch does not yet add support for compound LED modes. This could
-> > > be achieved via the LED multicolor framework (which is not yet in
-> > > upstream).
-> > > 
-> > > Settings such as HW blink rate or pulse stretch duration are not yet
-> > > supported, nor are LED polarity settings.
-> > > 
-> > > Signed-off-by: Marek Behún <marek.behun@nic.cz>
-> > > ---
-> > >  drivers/net/phy/Kconfig   |   1 +
-> > >  drivers/net/phy/marvell.c | 364 ++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 365 insertions(+)
-> > > 
-> > > diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> > > index ffea11f73acd..5428a8af26d2 100644
-> > > --- a/drivers/net/phy/Kconfig
-> > > +++ b/drivers/net/phy/Kconfig
-> > > @@ -462,6 +462,7 @@ config LXT_PHY
-> > >  
-> > >  config MARVELL_PHY
-> > >  	tristate "Marvell PHYs"
-> > > +	depends on LED_TRIGGER_PHY_HW  
-> > 
-> > Does it really depend on it? I think the driver will work fine without
-> > it, just the LED control will be missing.
-> > 
-> > It is really a policy question. Cable test is always available, there
-> > is no Kconfig'ury to stop it getting built. Is LED support really big
-> > so that somebody might want to disable it? I think not. So lets just
-> > enable it all the time.
-> 
-> OK
-> 
-> > >  	help
-> > >  	  Currently has a driver for the 88E1011S
-> > >    
-> > 
-> > > +enum {
-> > > +	L1V0_RECV		= BIT(0),
-> > > +	L1V0_COPPER		= BIT(1),
-> > > +	L1V5_100_FIBER		= BIT(2),
-> > > +	L1V5_100_10		= BIT(3),
-> > > +	L2V2_INIT		= BIT(4),
-> > > +	L2V2_PTP		= BIT(5),
-> > > +	L2V2_DUPLEX		= BIT(6),
-> > > +	L3V0_FIBER		= BIT(7),
-> > > +	L3V0_LOS		= BIT(8),
-> > > +	L3V5_TRANS		= BIT(9),
-> > > +	L3V7_FIBER		= BIT(10),
-> > > +	L3V7_DUPLEX		= BIT(11),  
+On Wed, 15 Jul 2020 23:15:25 PDT (-0700), zong.li@sifive.com wrote:
+> These patches fix some build warnings when W=1, the most of warnings are
+> missing prototype as follows:
+>
+> arch/riscv/mm/init.c:520:13: warning: no previous prototype for 'resource_init' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:130:5: warning: no previous prototype for 'set_memory_ro' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:136:5: warning: no previous prototype for 'set_memory_rw' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:142:5: warning: no previous prototype for 'set_memory_x' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:147:5: warning: no previous prototype for 'set_memory_nx' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:152:5: warning: no previous prototype for 'set_direct_map_invalid_noflush' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:169:5: warning: no previous prototype for 'set_direct_map_default_noflush' [-Wmissing-prototypes]
+> arch/riscv/mm/pageattr.c:97:1: warning: 'static' is not at beginning of declaration [-Wold-style-declaration]
+>
+> Zong Li (2):
+>   riscv: Fix build warning for mm/init
+>   riscv: fix build warning of mm/pageattr
+>
+>  arch/riscv/mm/init.c     | 2 +-
+>  arch/riscv/mm/pageattr.c | 3 ++-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
 
-        COMMON			= BIT(32),
-
-> > > +static const struct marvell_led_mode_info marvell_led_mode_info[] = {
-> > > +	{ "link/act",			{ 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, }, COMMON },
-> > > +	{ "1Gbps/100Mbps/10Mbps",	{ 0x2,  -1,  -1,  -1,  -1,  -1, }, COMMON },
-> > > +	{ "act",			{ 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, }, COMMON },
-> > > +	{ "blink-act",			{ 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, }, COMMON },
-> > > +	{ "tx",				{ 0x5,  -1, 0x5,  -1, 0x5, 0x5, }, COMMON },
-> > > +	{ "tx",				{  -1,  -1,  -1, 0x5,  -1,  -1, }, L3V5_TRANS },
-> > > +	{ "rx",				{  -1,  -1,  -1,  -1, 0x0, 0x0, }, COMMON },
-> > > +	{ "rx",				{  -1, 0x0,  -1,  -1,  -1,  -1, }, L1V0_RECV },
-> > > +	{ "copper",			{ 0x6,  -1,  -1,  -1,  -1,  -1, }, COMMON },
-> > > +	{ "copper",			{  -1, 0x0,  -1,  -1,  -1,  -1, }, L1V0_COPPER },
-> > > +	{ "1Gbps",			{ 0x7,  -1,  -1,  -1,  -1,  -1, }, COMMON },
-> > > +	{ "link/rx",			{  -1, 0x2,  -1, 0x2, 0x2, 0x2, }, COMMON },
-> > > +	{ "100Mbps-fiber",		{  -1, 0x5,  -1,  -1,  -1,  -1, }, L1V5_100_FIBER },
-> > > +	{ "100Mbps-10Mbps",		{  -1, 0x5,  -1,  -1,  -1,  -1, }, L1V5_100_10 },
-> > > +	{ "1Gbps-100Mbps",		{  -1, 0x6,  -1,  -1,  -1,  -1, }, COMMON },
-> > > +	{ "1Gbps-10Mbps",		{  -1,  -1, 0x6, 0x6,  -1,  -1, }, COMMON },
-> > > +	{ "100Mbps",			{  -1, 0x7,  -1,  -1,  -1,  -1, }, COMMON },
-> > > +	{ "10Mbps",			{  -1,  -1, 0x7,  -1,  -1,  -1, }, COMMON },
-> > > +	{ "fiber",			{  -1,  -1,  -1, 0x0,  -1,  -1, }, L3V0_FIBER },
-> > > +	{ "fiber",			{  -1,  -1,  -1, 0x7,  -1,  -1, }, L3V7_FIBER },
-> > > +	{ "FullDuplex",			{  -1,  -1,  -1, 0x7,  -1,  -1, }, L3V7_DUPLEX },
-> > > +	{ "FullDuplex",			{  -1,  -1,  -1,  -1, 0x6, 0x6, }, COMMON },
-> > > +	{ "FullDuplex/collision",	{  -1,  -1,  -1,  -1, 0x7, 0x7, }, COMMON },
-> > > +	{ "FullDuplex/collision",	{  -1,  -1, 0x2,  -1,  -1,  -1, }, L2V2_DUPLEX },
-> > > +	{ "ptp",			{  -1,  -1, 0x2,  -1,  -1,  -1, }, L2V2_PTP },
-> > > +	{ "init",			{  -1,  -1, 0x2,  -1,  -1,  -1, }, L2V2_INIT },
-> > > +	{ "los",			{  -1,  -1,  -1, 0x0,  -1,  -1, }, L3V0_LOS },
-> > > +	{ "hi-z",			{ 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, }, COMMON },
-> > > +	{ "blink",			{ 0xb, 0xb, 0xb, 0xb, 0xb, 0xb, }, COMMON },
-> > > +};
-> > > +
-
-> > > +static const struct marvell_leds_info marvell_leds_info[] = {
-> > > +	LED(1112,  4, COMMON | L1V0_COPPER | L1V5_100_FIBER | L2V2_INIT | L3V0_LOS | L3V5_TRANS | L3V7_FIBER),
-> > > +	LED(1121R, 3, COMMON | L1V5_100_10),
-> > > +	LED(1240,  6, COMMON | L3V5_TRANS),
-> > > +	LED(1340S, 6, COMMON | L1V0_COPPER | L1V5_100_FIBER | L2V2_PTP | L3V0_FIBER | L3V7_DUPLEX),
-> > > +	LED(1510,  3, COMMON | L1V0_RECV | L1V5_100_FIBER | L2V2_DUPLEX),
-> > > +	LED(1545,  6, COMMON | L1V5_100_FIBER | L3V0_FIBER | L3V7_DUPLEX),
-> > > +};
-> > > +
-
-> > > +{
-> > > +	return mode->regval[led->idx] != -1 && (!mode->flags || (priv->led_flags & mode->flags));  
-
-This then becomes
-
-return mode->regval[led->idx] != -1 && (priv->led_flags & mode->flags));  
-
-       Andrew
+Thanks, these are on for-next.
