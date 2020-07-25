@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950F122D385
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 03:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB67522D38A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 03:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgGYBTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 21:19:51 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2588 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726777AbgGYBTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 21:19:50 -0400
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 0FCCDB8834938B0A3D5F;
-        Sat, 25 Jul 2020 09:19:49 +0800 (CST)
-Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Sat, 25 Jul 2020 09:19:48 +0800
-Received: from [10.174.61.242] (10.174.61.242) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Sat, 25 Jul 2020 09:19:33 +0800
-Subject: Re: [PATCH net-next v4 1/2] hinic: add support to handle hw abnormal
- event
-To:     David Miller <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
-References: <20200724091732.19819-1-luobin9@huawei.com>
- <20200724091732.19819-2-luobin9@huawei.com>
- <20200724.170415.1190789583922952011.davem@davemloft.net>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <aa6e490a-2c02-5deb-0df5-ed6dab0f7c8b@huawei.com>
-Date:   Sat, 25 Jul 2020 09:19:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <20200724.170415.1190789583922952011.davem@davemloft.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.61.242]
-X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+        id S1726957AbgGYBat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 21:30:49 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:52699 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726613AbgGYBat (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 21:30:49 -0400
+Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 06P1UlJe078212;
+        Sat, 25 Jul 2020 10:30:47 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
+ Sat, 25 Jul 2020 10:30:47 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
+Received: from localhost.localdomain (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 06P1Ue80078060
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 25 Jul 2020 10:30:47 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>,
+        syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>,
+        syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
+Subject: [PATCH] lockdep: Introduce CONFIG_LOCKDEP_LARGE
+Date:   Sat, 25 Jul 2020 10:30:39 +0900
+Message-Id: <1595640639-9310-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/25 8:04, David Miller wrote:
-> From: Luo bin <luobin9@huawei.com>
-> Date: Fri, 24 Jul 2020 17:17:31 +0800
-> 
->> +static int hinic_fw_reporter_dump(struct devlink_health_reporter *reporter,
->> +				  struct devlink_fmsg *fmsg, void *priv_ctx,
->> +				  struct netlink_ext_ack *extack)
->> +{
->> +	int err;
->> +
->> +	if (priv_ctx) {
->> +		err = mgmt_watchdog_report_show(fmsg, priv_ctx);
->> +		if (err)
->> +			return err;
->> +	}
->> +
->> +	return 0;
->> +}
-> 
-> As Edward Cree pointed out for v3 of this patch series, this 'err' is not
-> necessary at all.
-> .
-> 
-Will fix. Thanks.
+Since syzkaller continues various test cases until the kernel crashes,
+syzkaller tends to examine more locking dependencies than normal systems.
+As a result, syzbot is reporting that the fuzz testing was terminated
+due to hitting upper limits lockdep can track [1] [2] [3].
+
+Like CONFIG_LOCKDEP_SMALL which halves the upper limits, let's introduce
+CONFIG_LOCKDEP_LARGE which doubles the upper limits.
+
+[1] https://syzkaller.appspot.com/bug?id=3d97ba93fb3566000c1c59691ea427370d33ea1b
+[2] https://syzkaller.appspot.com/bug?id=381cb436fe60dc03d7fd2a092b46d7f09542a72a
+[3] https://syzkaller.appspot.com/bug?id=a588183ac34c1437fc0785e8f220e88282e5a29f
+
+Reported-by: syzbot <syzbot+cd0ec5211ac07c18c049@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+91fd909b6e62ebe06131@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ kernel/locking/lockdep.c           | 4 ++++
+ kernel/locking/lockdep_internals.h | 5 +++++
+ lib/Kconfig.debug                  | 8 ++++++++
+ 3 files changed, 17 insertions(+)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 29a8de4..85ba7eb 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -1349,7 +1349,11 @@ static int add_lock_to_list(struct lock_class *this,
+ /*
+  * For good efficiency of modular, we use power of 2
+  */
++#ifdef CONFIG_LOCKDEP_LARGE
++#define MAX_CIRCULAR_QUEUE_SIZE		8192UL
++#else
+ #define MAX_CIRCULAR_QUEUE_SIZE		4096UL
++#endif
+ #define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+ 
+ /*
+diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
+index baca699..00a3ec3 100644
+--- a/kernel/locking/lockdep_internals.h
++++ b/kernel/locking/lockdep_internals.h
+@@ -93,6 +93,11 @@ enum {
+ #define MAX_LOCKDEP_CHAINS_BITS	15
+ #define MAX_STACK_TRACE_ENTRIES	262144UL
+ #define STACK_TRACE_HASH_SIZE	8192
++#elif defined(CONFIG_LOCKDEP_LARGE)
++#define MAX_LOCKDEP_ENTRIES	65536UL
++#define MAX_LOCKDEP_CHAINS_BITS	17
++#define MAX_STACK_TRACE_ENTRIES	1048576UL
++#define STACK_TRACE_HASH_SIZE	32768
+ #else
+ #define MAX_LOCKDEP_ENTRIES	32768UL
+ 
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 9ad9210..69ba624 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1266,6 +1266,14 @@ config LOCKDEP
+ config LOCKDEP_SMALL
+ 	bool
+ 
++config LOCKDEP_LARGE
++	bool "Use larger buffer for tracking more locking dependencies"
++	depends on LOCKDEP && !LOCKDEP_SMALL
++	help
++	  If you say Y here, the upper limits the lock dependency engine uses will
++	  be doubled. Useful for fuzz testing which tends to test many complecated
++	  dependencies than normal systems.
++
+ config DEBUG_LOCKDEP
+ 	bool "Lock dependency engine debugging"
+ 	depends on DEBUG_KERNEL && LOCKDEP
+-- 
+1.8.3.1
+
