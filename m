@@ -2,160 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F1E22D95D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF11822D961
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgGYSsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        id S1727928AbgGYStC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgGYSsJ (ORCPT
+        with ESMTP id S1726035AbgGYStB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:48:09 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07BAC08C5C0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:48:08 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id b13so6907339edz.7
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:48:08 -0700 (PDT)
+        Sat, 25 Jul 2020 14:49:01 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954A1C08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:49:01 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id i80so6891036lfi.13
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:49:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=J+Mg8FrXjOOpUXGKNdsJwjOwj3SmjqQEXToX5OfPGgg=;
-        b=Jj8V+g5CBjwKufxhqOSZQdk2PR87G5SB1sP1DxTgqrtzTDOs8t/xRSGVc+9lryMSOJ
-         y4joCsPIsVUq/BwYFV66ROD1qHkeAkKgjdH+jfI+ggX0b2/rnlVIEvBxe37AdYJM22P3
-         93Toaxn/Ubt21KRJyEjgg4y7MItquN/o/8v4Uph7novYd2edC3zum9nhW2cGg24VUtIy
-         k6ZXZsZJkho8Hi8WasP+nD0R/DZNHS1odz0qs9BKi2btJ1oq6rnE0cdM23UK0T99lTZM
-         zd1i3sr7/xb0npgogbHiP3CtKnembKl8P3E/DGbD1iKgc9UnoSkRLxWgxR+3qy5dwz6a
-         DaOg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uhV82Ck0bx4IRzuHTa923nInRUJDUpSkjAmZsyGi/28=;
+        b=FCzTzzUO9rdyNK8BUOPugYbX8pHQozqQlW7Ecn0OjkAgGqfLj/Coy/X2BTx5SH5knk
+         +MMR+CWJRUV0zBDa9c80ewMvbe2qMmu/o7KRSlENLysMqA1GvXHs+1s0arsxysoAS9Dl
+         Nws4jWhAWi19kHoajgY3XM48Cg5ZxCy/7KiJg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=J+Mg8FrXjOOpUXGKNdsJwjOwj3SmjqQEXToX5OfPGgg=;
-        b=Zq7MNbjhdFtpeCz10efjEsGtieMlo/7+t3y4/+PXUMNX/3Leu5XzSxNyAPdMI7gWaN
-         t6SrSDx2hxmaFWwFx+Vxz2b2pwzld2+8wpMHcj+ha4Fw4z271y/M1ipYv0RyMafq1hHT
-         vI/aiYpWS9be6p/SpuTrvphxsBu4JWdtLw3rruKkekCUxufANb4+SHUANKff1Tpv5o3x
-         5DGTmstyd3CsEzSpfsJewkuXyGNcUGZmplOlJ7Js6ujPu5XAKgs38xGala9WOgLNKLIu
-         sL5Yxsl85gdVRHEXGoYRVRH5jFY9hOGQP/QBnGbXoqLz4bDCTnSbqeJY25cd2NJnvUb5
-         qgpA==
-X-Gm-Message-State: AOAM533ewAOwv/2uUWGtE/FcvlSIQ7DaStuWCotGsIZE5hPR7X6d0Ijh
-        fNFd7O5YCT9igya3y+T+8yhpiuWN8w==
-X-Google-Smtp-Source: ABdhPJy2GWv6Wb+FYd0PBNz124ebLOiMzSnYouKGt+VDudPTH3Gt0GRTzt2LTf9Q2y8OnTLrsPEzQQ==
-X-Received: by 2002:a50:bf07:: with SMTP id f7mr6053745edk.356.1595702885977;
-        Sat, 25 Jul 2020 11:48:05 -0700 (PDT)
-Received: from [192.168.200.34] (ip5b436a54.dynamic.kabel-deutschland.de. [91.67.106.84])
-        by smtp.gmail.com with ESMTPSA id i2sm3612187edk.30.2020.07.25.11.48.04
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uhV82Ck0bx4IRzuHTa923nInRUJDUpSkjAmZsyGi/28=;
+        b=ni1Dt6zuqwuY6kFXwqGYwIgdaDUjesl8dFpGwNriQ/vEHm7ikIYk85aJnE+Qlwe39t
+         sJxs6VWwOdKN6Tjx8DEblvFtI+FG2X35FhJrWlvgUWa0YRTc8X2BOVow35zoI2FCP0IX
+         Ba8koA5j5gvODWYUFwefk2mmq8ppoQdhvmwcOtbW3uJ/kyCWeo+Yf9vgJ1DrlMizsNZe
+         FhFELwgJiMSZTajbxNx+ceG3e0iBQYHMQrlnr91GiSv8vEwe1yc2eeXMU3uqpxn3JGbb
+         QpIx42kgtdXqTEOQnN558OZjGhlVYgSpZ0/yO3TyZ/AeEJuXMsrfpAKBas77igt0gJax
+         Ym8g==
+X-Gm-Message-State: AOAM533zU76Oxxp5MR1BIvVhcELH8Y69ebu8Adu7Hijx0mkcXNrsxV5y
+        B8Kz6/NC0yhZS0IikqW4FEhNRGK7nj0=
+X-Google-Smtp-Source: ABdhPJwCS8X5wAJcv7a4xcQDRElDq5smyXWwMBANutDS5jNio3v71E9CzPjvZFAU8+8xG0riH5aQbw==
+X-Received: by 2002:ac2:530e:: with SMTP id c14mr7902358lfh.127.1595702939368;
+        Sat, 25 Jul 2020 11:48:59 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id a19sm1572480lff.25.2020.07.25.11.48.57
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Jul 2020 11:48:05 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] drm: rockchip: various ports for older VOPs
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200722181332.26995-1-knaerzche@gmail.com>
- <CAKMK7uGKyYea_9MamAQw2=ebjW=raYCDeFCf_5jyyJPHL9AZWA@mail.gmail.com>
- <47599ce1-2a3b-87eb-c46e-8f7f79ca945e@gmail.com>
- <CAKMK7uEn0552JuTuwpL-XdYSVk7OA=fEsphpivS8ouE-10--Zg@mail.gmail.com>
-From:   Alex Bee <knaerzche@gmail.com>
-Message-ID: <0e5f6e41-5fa4-2989-f4b8-89a9471db931@gmail.com>
-Date:   Sat, 25 Jul 2020 20:48:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 25 Jul 2020 11:48:58 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id s9so6920563lfs.4
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:48:57 -0700 (PDT)
+X-Received: by 2002:a19:c206:: with SMTP id l6mr7873933lfc.152.1595702937396;
+ Sat, 25 Jul 2020 11:48:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKMK7uEn0552JuTuwpL-XdYSVk7OA=fEsphpivS8ouE-10--Zg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
+ <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
+ <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
+ <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com>
+ <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
+ <20200724152424.GC17209@redhat.com> <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
+ <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com> <20200725101445.GB3870@redhat.com>
+In-Reply-To: <20200725101445.GB3870@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 25 Jul 2020 11:48:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+Message-ID: <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Am 25.07.20 um 17:54 schrieb Daniel Vetter:
-> On Sat, Jul 25, 2020 at 3:52 PM Alex Bee <knaerzche@gmail.com> wrote:
->>
->> Am 22.07.20 um 23:43 schrieb Daniel Vetter:
->>> On Wed, Jul 22, 2020 at 8:13 PM Alex Bee <knaerzche@gmail.com> wrote:
->>>> Hi,
->>>>
->>>> this series mainly ports existining functionality to older SoCs - most
->>>> importantly enables alpha blending for RK3036, RK3066, RK3126 and
->>>> RK3188.
->>>> Besides that, it also changes the window type from DRM_PLANE_TYPE_CURSOR
->>>> to DRM_PLANE_TYPE_OVERLAY for VOPs that have only one (1) overlay window.
->>> This doesn't make much sense, the cursor overlay is really just a hint
->>> for legacy ioctls that this is the overlay that should be used for
->>> cursors. Compositors should try to use such planes as full overlays
->>> (if they don't want to use them as a cursor). So sounds like a case of
->>> "fix your compositor".
->> I agree here - but: If HWC windows would have been implemented in this
->> particular driver, their max size would be 128x128 on some SoCs - so
->> they woudn't be really suitable to create an OSD overlay at 4K, for
->> example. I don't know, but I guess other vendors implement their HWC
->> windows on this reduced HW resources as well. I guess that is one of the
->> reasons, why userspace, which aims to be cross-plattfrom, avoids
->> DRM_PLANE_TYPE_CURSOR when its looking for an usable overlay plane. (a
->> heuristic, indeed)
-> Which userspace does that?
-kodi-gbm: 
-https://github.com/xbmc/xbmc/blob/master/xbmc/windowing/gbm/DRMUtils.cpp#L406 
-
-> We should fix that, not try to work around
-> that in all the drivers in upstream, that wont work.
-You're right I'll drop this part.
-> -Daniel
+On Sat, Jul 25, 2020 at 3:14 AM Oleg Nesterov <oleg@redhat.com> wrote:
 >
->>> For atomic there's 0 difference between a overlay or a cursor (primary
->>> plane is still treated somewhat special in the RMFB ioctl, but again
->>> that's for backwards compat reasons with existing uapi, not because
->>> the primary plane is different).
->>>
->>> What does happen though is that this breaks cursor for legacy
->>> userspace, which is probably not really what you want.
->> Indeed not.
->>
->> Beforhand I was submiiting this, I looked arround and couldn't find
->> anything which relies or even depends of a cursor window to be
->> available. Even if: as per spec only one DRM_PLANE_TYPE_PRIMARY is
->> mandatory, everything else is optional.
->>
->>> -Daniel
->>>
->>>
->>>> Regards,
->>>> Alex
->>>>
->>>> Changes in v2:
->>>> - drop not yet upstreamed dsp_data_swap from RK3188 regs
->>>> - rephrase most commit messages
->>>>
->>>> Alex Bee (5):
->>>>     drm: rockchip: add scaling for RK3036 win1
->>>>     drm: rockchip: add missing registers for RK3188
->>>>     drm: rockchip: add alpha support for RK3036, RK3066, RK3126 and RK3188
->>>>     drm: rockchip: set alpha_en to 0 if it is not used
->>>>     drm: rockchip: use overlay windows as such
->>>>
->>>>    drivers/gpu/drm/rockchip/rockchip_drm_vop.c |  1 +
->>>>    drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 42 ++++++++++++++++++---
->>>>    drivers/gpu/drm/rockchip/rockchip_vop_reg.h |  1 +
->>>>    3 files changed, 38 insertions(+), 6 deletions(-)
->>>>
->>>> --
->>>> 2.17.1
->>>>
->>> --
->>> Daniel Vetter
->>> Software Engineer, Intel Corporation
->>> http://blog.ffwll.ch
->> Best Regards
->>
->
-Best regards
+> Heh. I too thought about this. And just in case, your patch looks correct
+> to me. But I can't really comment this behavioural change. Perhaps it
+> should come in a separate patch?
+
+We could do that. At the same time, I think both parts change how the
+waitqueue works that it might as well just be one "fix page_bit_wait
+waitqueue usage".
+
+But let's wait to see what Hugh's numbers say.
+
+> In essense, this partly reverts your commit 3510ca20ece0150
+> ("Minor page waitqueue cleanups"). I mean this part:
+
+Well, no. I mean, it keeps the "always add to the fail" behavior.
+
+But some of the reasons for it have gone away. Now we could just make
+it go back to always doing non-exclusive waits at the head.
+
+The non-exclusive waiters _used_ to re-insert themselves on the queue
+until they saw the bit clear, so waking them up if the bit was just
+going to be set again was just going to make for unnecessary
+scheduling and waitlist noise.
+
+That reason is gone.
+
+But I think the fundamental fairness issue might still be there. So
+I'll keep the simpler "always add at the end".
+
+But you're right - we could expedite the non-exclusive waiters even more.
+
+             Linus
