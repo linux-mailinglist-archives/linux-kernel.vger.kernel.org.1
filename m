@@ -2,17 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D7E22D6A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 12:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E861422D6A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 12:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgGYKNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 06:13:43 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43642 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726572AbgGYKNl (ORCPT
+        id S1727009AbgGYKNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 06:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726938AbgGYKNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 06:13:41 -0400
-Date:   Sat, 25 Jul 2020 10:13:39 -0000
+        Sat, 25 Jul 2020 06:13:42 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3DAC0619D3;
+        Sat, 25 Jul 2020 03:13:42 -0700 (PDT)
+Date:   Sat, 25 Jul 2020 10:13:40 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1595672020;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qMrAlyOGIn738wM0N0xR3lzjSDszTSHPdqD5zD669Ww=;
-        b=S/NEFGrUKpNWLEFFTe3oI0dY2QBivzlIqAAX63K9e+Tl74jgNw0hVZ7vH0Zjpe04yCULU3
-        oj+F5IYF22xpRdWvPnvA6yUQJag0whPuuVOjLz69T28+9dtru0Oaji6tNLDuHpX+WqnU3m
-        N2gV0XxSYxdQvhIPRDIRo7uzJpPdzGhdPUCSvLe81HCQpA94ifteLORRbxTHqPzyrczKjj
-        5Im649U9R3qlURXK9jphh0ZtNYqsKEaasvmkQScPJ4S2Qg8g7vNCB/8ffDK/CjtHSkvMr4
-        H1xpEP0ELrnAqT8MB7SlDnt5mXdxXHgvw2rtJtrqpmO5eIqxyuiYnC4EyqCtGQ==
+        bh=Qwu/iZaf7EOvYkm7ogUMnahRsySRRaJFOiD0v/N0Q4o=;
+        b=cT3KOa4gdJ/pJvw9ILHq5nHj2Qs0ojmumBHqcvFkNESytfd/48FQAJAZhneGnEZ7O8yozt
+        Jazs4fGI2FFH62HRF4unksTTr7ZIUZ1r01NbdN4C9+vGQcFHmXC5Sg6mL7zDx+JzMhV3YC
+        mSkxll4jRiA7Q9ndEustpKK4/rCSzjAwkanmZ3QbGhUZPQyHDwQpv03fJwX/SpctowwN/S
+        xFbiOKNMJ/9ugg2xtAjCCSXViXuzgo54L34rS1m0ravwXNFSYQxUsalVwBQRqfpW9GdSmS
+        BcrXGSXXw3RgfvHer/2ksR0Oe7xDWcwNhgSPPNdtz8z5bACAiSIDmQLFqwhzjg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1595672020;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,19 +36,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qMrAlyOGIn738wM0N0xR3lzjSDszTSHPdqD5zD669Ww=;
-        b=nPTL2EZBqoXoG68jewYmP+olzeS7loOkhg6w0jGcBXYfycn35a9XPFygAMcIIiBv0oQ52s
-        bnJ/gvE3hXMulRAA==
+        bh=Qwu/iZaf7EOvYkm7ogUMnahRsySRRaJFOiD0v/N0Q4o=;
+        b=HiIRxt+T5brj7graxC8ETkYFdTnox1Mff/RyBwywMEfiOe6V5nMu+4jZ3oltzVwuKbHkaR
+        qYXFZrZ7naj8e1BQ==
 From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/mm: Remove the unused mk_kernel_pgd() #define
+Subject: [tip: x86/cleanups] x86/tsc: Remove unused "US_SCALE" and "NS_SCALE"
+ leftover macros
 Cc:     Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200724114418.629021-4-mingo@kernel.org>
-References: <20200724114418.629021-4-mingo@kernel.org>
+In-Reply-To: <20200724114418.629021-3-mingo@kernel.org>
+References: <20200724114418.629021-3-mingo@kernel.org>
 MIME-Version: 1.0
-Message-ID: <159567201969.4006.15220161067207214829.tip-bot2@tip-bot2>
+Message-ID: <159567202032.4006.6639431900725796846.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -57,54 +61,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     4b8e0328e56e177663645a96ea4c5c0401ecd78f
-Gitweb:        https://git.kernel.org/tip/4b8e0328e56e177663645a96ea4c5c0401ecd78f
+Commit-ID:     161449bad5053d66f2310744ba8498158ab12c89
+Gitweb:        https://git.kernel.org/tip/161449bad5053d66f2310744ba8498158ab12c89
 Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Fri, 24 Jul 2020 13:44:18 +02:00
+AuthorDate:    Fri, 24 Jul 2020 13:44:17 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Sat, 25 Jul 2020 12:00:57 +02:00
 
-x86/mm: Remove the unused mk_kernel_pgd() #define
+x86/tsc: Remove unused "US_SCALE" and "NS_SCALE" leftover macros
 
-AFAICS the last uses of directly 'making' kernel PGDs was removed 7 years ago:
+Last use of them was removed 13 years ago, when the code was converted
+to use CYC2NS_SCALE_FACTOR:
 
-  8b78c21d72d9: ("x86, 64bit, mm: hibernate use generic mapping_init")
+  53d517cdbaac: ("x86: scale cyc_2_nsec according to CPU frequency")
 
-Where the explicit PGD walking loop was replaced with kernel_ident_mapping_init()
-calls. This was then (unnecessarily) carried over through the 5-level paging conversion.
+The current TSC code uses the 'struct cyc2ns_data' scaling abstraction,
+the old fixed scaling approach is long gone.
 
-Also clean up the 'level' comments a bit, to convey the original, meanwhile somewhat
-bit-rotten notion, that these are empty comment blocks with no methods to handle any
-of the levels except the PTE level.
+This cleanup also removes the 'arbitralrily' typo from the comment,
+so win-win. ;-)
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200724114418.629021-4-mingo@kernel.org
+Link: https://lore.kernel.org/r/20200724114418.629021-3-mingo@kernel.org
 ---
- arch/x86/include/asm/pgtable_64.h | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ arch/x86/include/asm/tsc.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
-index 1b68d24..d2af8c4 100644
---- a/arch/x86/include/asm/pgtable_64.h
-+++ b/arch/x86/include/asm/pgtable_64.h
-@@ -175,16 +175,13 @@ extern void sync_global_pgds(unsigned long start, unsigned long end);
-  * and a page entry and page directory to the page they refer to.
-  */
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 8a0c25c..b7b2624 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -7,9 +7,6 @@
  
--/*
-- * Level 4 access.
-- */
--#define mk_kernel_pgd(address) __pgd((address) | _KERNPG_TABLE)
-+/* PGD - Level 4 access */
+ #include <asm/processor.h>
  
--/* PUD - Level3 access */
-+/* PUD - Level 3 access */
- 
--/* PMD  - Level 2 access */
-+/* PMD - Level 2 access */
- 
--/* PTE - Level 1 access. */
-+/* PTE - Level 1 access */
- 
+-#define NS_SCALE	10 /* 2^10, carefully chosen */
+-#define US_SCALE	32 /* 2^32, arbitralrily chosen */
+-
  /*
-  * Encode and de-code a swap entry
+  * Standard way to access the cycle counter.
+  */
