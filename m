@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6DE22D580
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 08:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7C422D584
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 08:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgGYGa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 02:30:56 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:52854 "EHLO huawei.com"
+        id S1726993AbgGYGbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 02:31:12 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51526 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726273AbgGYGa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 02:30:56 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5450C3B4E21CE1DB4F4D;
-        Sat, 25 Jul 2020 14:30:52 +0800 (CST)
+        id S1726273AbgGYGbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 02:31:11 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9D84E36C33CB5477DF20;
+        Sat, 25 Jul 2020 14:31:06 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 25 Jul 2020 14:30:45 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 25 Jul 2020 14:30:58 +0800
 From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hyun Kwon <hyun.kwon@xilinx.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>
 CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] mtd: fix missing unlock on error in mtdchar_compat_ioctl()
-Date:   Sat, 25 Jul 2020 06:34:16 +0000
-Message-ID: <20200725063416.172037-1-weiyongjun1@huawei.com>
+        <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] drm: xlnx: Fix typo in parameter description
+Date:   Sat, 25 Jul 2020 06:34:29 +0000
+Message-ID: <20200725063429.172139-1-weiyongjun1@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
@@ -39,33 +43,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing unlock before return from function mtdchar_compat_ioctl()
-in the error handling case.
+Fix typo in parameter description.
 
-Fixes: 210bec567936 ("mtd: properly check all write ioctls for permissions")
+Fixes: d76271d22694 ("drm: xlnx: DRM/KMS driver for Xilinx ZynqMP DisplayPort Subsystem")
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/mtd/mtdchar.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 52c120f9fb0d..b40f46a43fc6 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1064,8 +1064,10 @@ static long mtdchar_compat_ioctl(struct file *file, unsigned int cmd,
- 		struct mtd_oob_buf32 buf;
- 		struct mtd_oob_buf32 __user *buf_user = argp;
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+index 821f7a71e182..3d53638ab15e 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+@@ -44,7 +44,7 @@ MODULE_PARM_DESC(aux_timeout_ms, "DP aux timeout value in msec (default: 50)");
+  */
+ static uint zynqmp_dp_power_on_delay_ms = 4;
+ module_param_named(power_on_delay_ms, zynqmp_dp_power_on_delay_ms, uint, 0444);
+-MODULE_PARM_DESC(aux_timeout_ms, "DP power on delay in msec (default: 4)");
++MODULE_PARM_DESC(power_on_delay_ms, "DP power on delay in msec (default: 4)");
  
--		if (!(file->f_mode & FMODE_WRITE))
--			return -EPERM;
-+		if (!(file->f_mode & FMODE_WRITE)) {
-+			ret = -EPERM;
-+			break;
-+		}
- 
- 		if (copy_from_user(&buf, argp, sizeof(buf)))
- 			ret = -EFAULT;
+ /* Link configuration registers */
+ #define ZYNQMP_DP_LINK_BW_SET				0x0
 
 
 
