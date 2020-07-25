@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146B422D929
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F36A22D946
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgGYSNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:13:22 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:57210 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727777AbgGYSNV (ORCPT
+        id S1727957AbgGYSO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726926AbgGYSOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:13:21 -0400
-Received: by mail-io1-f71.google.com with SMTP id f21so8513310ioo.23
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:13:21 -0700 (PDT)
+        Sat, 25 Jul 2020 14:14:25 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B3BC08C5C0;
+        Sat, 25 Jul 2020 11:14:24 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id gg18so9732029ejb.6;
+        Sat, 25 Jul 2020 11:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WiwnYihBtixDJzDpzWlD4k6I3xmTQHOsKsy9q7yUDY4=;
+        b=gOXyDauPjCBBEN92duKWIXnR1RNC3Ip8+jtR47XfISeB26t1GWY0X6lg5SHy8TPEjW
+         Xl8GpmHilFoA7woS6N5TDdNSYO2ANDRX0vJDugf8NujUr933hJ0d/UaYy4nlZnA6D80L
+         ej2tacQOtXCdp01xUG8waVAdmiGmwEVYKdNLz2TP/5jLMoOjtvVsVaEjeOURfKDFD6J/
+         ZsxAlKgb1X+9dbKDD9qaBBJnbiFdahMmQTsmpF3LpPGvxWcSmaTCcUc+SIkn1xy9vvvF
+         d2EwkybxeoZYtYCMK5yHrSxNyXw54WxdbiU+Gdo0N4z3GAoigmTGklWoo2uGs7fqC2ui
+         g+tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=k4uGA3t3jAuxCZnMZ0DJL7nSqCS04UUnj/rEYSLsADI=;
-        b=GN/FRsYzSqvGag6rCApGv7sQ9JhwAUGyrBJhd9zIiaQtxAamaVJ7fMihXXwxOqWoGg
-         8Yoo1cp2sq93QlZBsfiL1Zk7fdLA+FOaZEePqBaSlqQ1HBhBSxjsmwSdB2wYMj2tLg09
-         CDYO/io9T/7+JPBpvt2mrmzEaulZEghMO7IFuVJIp3A7jMRdS2xNpN3oVp/HsfRyvymr
-         c+eKLfst8goj8MXHlqJK8lKH4pLlKrNSeabS1vhrpCvvpICD8TgUVRnCZkXfmLchTmk/
-         D+RO99fe/yuDLa47+TQFD4DMN0g4j4BtHn5QqmrYJZt3H20lMWTdpbGXRN9qHh0Z6pkz
-         MtEw==
-X-Gm-Message-State: AOAM530/Gou66UvZLy2lzd/VwcSZx9BUCCQcofSqoPvoMN7a6B33/7KG
-        Jr+g+Ptd2IfgWr2yhKZWg91QB4RhKzeDDBC72I0/S/qcmlmy
-X-Google-Smtp-Source: ABdhPJwFq3zb1nVCNBsL5B/4Tzo2Lq1Drlc2AqfSvQa3wAbu5xxbonENma0WEs6CVwZOEQXHVCs/uPAVE5Iv/G/mdZKUuNSUH9Gt
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WiwnYihBtixDJzDpzWlD4k6I3xmTQHOsKsy9q7yUDY4=;
+        b=TjQSstOIbEAMvvnL1bUr/PAZnqU5l8AYh9RO+O4cxtCb47FfNsXmBxkMmLpLjpbphN
+         e+tPvS+r2kadmcjzOilZI/fFWhHwPzDmz3DKRGR+AwUnPJOQ/8jD8WEizShy9mwDlTyo
+         LjNldnwLbLv93ITZCwH2VQ7O5pPW3WHs1qHdC5uLF7cf+G+nL6anOUcFqgUb+c6cLzos
+         CJpqw/Zv7MkJYySkv1KsvnD1SFTp0ULlvQ78wKKldqKsQrCX2K4xL/Ig2fYOaTbyijWd
+         DgoFwrH5TRrc+JaeYFLpRFFarI1N7NAQOq4jJ6PQpdqNq6bWCy0S/1S9RL/NCM6VSxVy
+         sgOg==
+X-Gm-Message-State: AOAM533rkZLJoDAedSzqAeILPcrykwPaQsgajdvm6raup62ADUdfZK5P
+        XOnY0yAOdT9cEaTyIsSVSQQPoGA6334=
+X-Google-Smtp-Source: ABdhPJypVwaMtyAB2CYK/4ceL7rXI6q8zQ7u3cYnaITT90LoOeNxa0zgLHOowZ0j8RNSjSmKJ7f6Gw==
+X-Received: by 2002:a17:906:2b54:: with SMTP id b20mr14291952ejg.366.1595700862147;
+        Sat, 25 Jul 2020 11:14:22 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (host-79-22-5-125.retail.telecomitalia.it. [79.22.5.125])
+        by smtp.googlemail.com with ESMTPSA id qn10sm220922ejb.39.2020.07.25.11.14.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jul 2020 11:14:21 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Amit Kucheria <amit.kucheria@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v5 0/7] Add support for ipq8064 tsens
+Date:   Sat, 25 Jul 2020 20:13:56 +0200
+Message-Id: <20200725181404.18951-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9d58:: with SMTP id k24mr9469028iok.107.1595700800775;
- Sat, 25 Jul 2020 11:13:20 -0700 (PDT)
-Date:   Sat, 25 Jul 2020 11:13:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065efbf05ab480bff@google.com>
-Subject: KMSAN: uninit-value in strstr
-From:   syzbot <syzbot+a73d24a22eeeebe5f244@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, jmaloy@redhat.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This patchset convert msm8960 to reg_filed, use int_common instead 
+of a custom function and fix wrong tsens get_temp function for msm8960.
+Ipq8064 SoCs tsens driver is based on 8960 tsens driver. Ipq8064 needs
+to be registered as a gcc child as the tsens regs on this platform are
+shared with the controller.
+This is based on work and code here
+https://git.linaro.org/people/amit.kucheria/kernel.git/log/?h=wrk3/tsens-8960-breakage
 
-syzbot found the following issue on:
+v5:
+* Conver driver to use reg_fiedl
+* Use init_common 
+* Drop custom set_trip and set_interrupt
+* Use common set_trip and set_interrupt
+* Fix bad get_temp function
+* Add missing hardcoded slope
+v4:
+* Fix compilation error and warning reported by the bot
+v3:
+* Change driver to register as child instead of use phandle
+v2:
+* Fix dt-bindings problems
 
-HEAD commit:    93f54a72 instrumented.h: fix KMSAN support
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=118c3454900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c534a9fad6323722
-dashboard link: https://syzkaller.appspot.com/bug?extid=a73d24a22eeeebe5f244
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+Ansuel Smith (7):
+  drivers: thermal: tsens: Add VER_0 tsens version
+  drivers: thermal: tsens: Convert msm8960 to reg_field
+  drivers: thermal: tsens: Use init_common for msm8960
+  drivers: thermal: tsens: Fix wrong get_temp for msm8960
+  drivers: thermal: tsens: Change calib_backup name for msm8960
+  drivers: thermal: tsens: Add support for ipq8064-tsens
+  dt-bindings: thermal: tsens: Document ipq8064 bindings
 
-Unfortunately, I don't have any reproducer for this issue yet.
+ .../bindings/thermal/qcom-tsens.yaml          |  50 ++++-
+ drivers/thermal/qcom/tsens-8960.c             | 172 +++++++++++-------
+ drivers/thermal/qcom/tsens.c                  | 156 +++++++++++++---
+ drivers/thermal/qcom/tsens.h                  |   7 +-
+ 4 files changed, 284 insertions(+), 101 deletions(-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a73d24a22eeeebe5f244@syzkaller.appspotmail.com
+-- 
+2.27.0
 
-=====================================================
-BUG: KMSAN: uninit-value in strlen lib/string.c:552 [inline]
-BUG: KMSAN: uninit-value in strstr+0xfe/0x2e0 lib/string.c:991
-CPU: 0 PID: 11587 Comm: syz-executor.0 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1df/0x240 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- strlen lib/string.c:552 [inline]
- strstr+0xfe/0x2e0 lib/string.c:991
- tipc_nl_node_reset_link_stats+0x434/0xa90 net/tipc/node.c:2504
- genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
- genl_rcv_msg+0x1592/0x1740 net/netlink/genetlink.c:731
- netlink_rcv_skb+0x451/0x650 net/netlink/af_netlink.c:2469
- genl_rcv+0x63/0x80 net/netlink/genetlink.c:742
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0xf9e/0x1100 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x1246/0x14d0 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x1370/0x1400 net/socket.c:2352
- ___sys_sendmsg net/socket.c:2406 [inline]
- __sys_sendmsg+0x623/0x750 net/socket.c:2439
- __do_sys_sendmsg net/socket.c:2448 [inline]
- __se_sys_sendmsg+0x97/0xb0 net/socket.c:2446
- __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2446
- do_syscall_64+0xb0/0x150 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45c1f9
-Code: Bad RIP value.
-RSP: 002b:00007fb2b7c2ec78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000002ad40 RCX: 000000000045c1f9
-RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000003
-RBP: 000000000078bf40 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078bf0c
-R13: 0000000000c9fb6f R14: 00007fb2b7c2f9c0 R15: 000000000078bf0c
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2839 [inline]
- __kmalloc_node_track_caller+0xb40/0x1200 mm/slub.c:4478
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x2fd/0xac0 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1083 [inline]
- netlink_alloc_large_skb net/netlink/af_netlink.c:1175 [inline]
- netlink_sendmsg+0x7d3/0x14d0 net/netlink/af_netlink.c:1893
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x1370/0x1400 net/socket.c:2352
- ___sys_sendmsg net/socket.c:2406 [inline]
- __sys_sendmsg+0x623/0x750 net/socket.c:2439
- __do_sys_sendmsg net/socket.c:2448 [inline]
- __se_sys_sendmsg+0x97/0xb0 net/socket.c:2446
- __x64_sys_sendmsg+0x4a/0x70 net/socket.c:2446
- do_syscall_64+0xb0/0x150 arch/x86/entry/common.c:386
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
