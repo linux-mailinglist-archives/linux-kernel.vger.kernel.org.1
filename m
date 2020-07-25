@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EF222D779
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 14:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFB422D77A
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 14:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgGYMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 08:17:57 -0400
-Received: from crapouillou.net ([89.234.176.41]:54990 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726639AbgGYMR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 08:17:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595679474; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wtjs9oz1J8j+LAftrjDeBoK7mRdXj3uB7dc2tv4J+8s=;
-        b=SV4m4sV10yvBP+o7Wh0Oh1KVAdbLXfM9h4DPNfVo5RUy32+HNMFiS2U6G1Xk9v64icxXxa
-        vIaaH7lffvJ85wzbEIirinP72c8nVaDFBBlmB2ojIFEmFU7J+gPR2jrYoWr820RM3uVRIX
-        sv4ybxk1MVhWVYVgF4ekUcCaCcAl3O4=
-Date:   Sat, 25 Jul 2020 14:17:44 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
- architecture only
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>
-Message-Id: <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
-In-Reply-To: <20200724155436.GA7460@kozik-lap>
-References: <20200724145401.2566-1-krzk@kernel.org>
-        <20200724145401.2566-3-krzk@kernel.org>
-        <PWBZDQ.D1XCW6N2YMRA@crapouillou.net>
-        <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
-        <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
+        id S1727029AbgGYMUO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 25 Jul 2020 08:20:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49518 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726613AbgGYMUN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 08:20:13 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-403-OmdSWnoBOd-4mKuThhLMSQ-1; Sat, 25 Jul 2020 08:20:09 -0400
+X-MC-Unique: OmdSWnoBOd-4mKuThhLMSQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 64777106B243;
+        Sat, 25 Jul 2020 12:20:07 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E38E05D9DC;
+        Sat, 25 Jul 2020 12:20:00 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jin Yao <yao.jin@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH 1/2] perf tools: Allow r0x<HEX> event syntax
+Date:   Sat, 25 Jul 2020 14:19:58 +0200
+Message-Id: <20200725121959.1181869-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adding support to specify raw event with 'r0<HEX>' syntax within
+pmu term syntax like:
 
+  -e cpu/r0xdead/
 
-Le ven. 24 juil. 2020 =E0 17:54, Krzysztof Kozlowski <krzk@kernel.org> a=20
-=E9crit :
-> On Fri, Jul 24, 2020 at 05:50:06PM +0200, Paul Cercueil wrote:
->>=20
->>=20
->>  Le ven. 24 juil. 2020 =E0 17:33, Krzysztof Kozlowski=20
->> <krzk@kernel.org> a =E9crit
->>  :
->>  > On Fri, 24 Jul 2020 at 17:19, Paul Cercueil <paul@crapouillou.net>
->>  > wrote:
->>  > >
->>  > >  Hi Krzysztof,
->>  > >
->>  > >
->>  > >  Le ven. 24 juil. 2020 =E0 16:54, Krzysztof Kozlowski
->>  > > <krzk@kernel.org> a
->>  > >  =E9crit :
->>  > >  > Enabling the MTD_NAND_JZ4780 driver makes sense only for=20
->> specific
->>  > >  > hardware - the Ingenic SoC architecture.  Set it's=20
->> dependency to
->>  > >  > MACH_INGENIC so it will not appear on unrelated architectures
->>  > > (easier
->>  > >  > job for downstream/distro kernel engineers).
->>  > >
->>  > >  Disagreed. It was done this way so that distro kernels can=20
->> support
->>  > >  multiple SoCs.
->>  >
->>  > They will still be able to support multiple SoCs. Nothing changed
->>  > here. The same we do for all ARM drivers (SoCs are=20
->> multiplatform)...
->>  > Unless you want to say that it is possible to support Ingenic SoC
->>  > without MACH_INGENIC?
->>=20
->>  On MIPS, the SoC selection is a Kconfig "choice", so you can only=20
->> support
->>  one SoC family, unfortunately.
->=20
-> Let's say someone selected then some other architecture=20
-> (MIPS_ALCHEMY).
-> They could select this MTD driver.
->=20
-> Does it mean they would be able to run it on Ingenic hardware?
+It will be used to specify raw events in cases where they conflict
+with real pmu terms, like 'read', which is valid raw event syntax,
+but also a possible pmu term name as reported by Jin Yao.
 
-In *theory* yes, as long as the Kconfig options that MACH_INGENIC=20
-selects are enabled, the kernel should boot and work on Ingenic SoCs.
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/perf/Documentation/perf-list.txt | 1 +
+ tools/perf/tests/parse-events.c        | 5 +++++
+ tools/perf/util/parse-events.l         | 1 +
+ 3 files changed, 7 insertions(+)
 
--Paul
-
->>  I'm the one to blame for using "depends on
->>  MIPS || COMPILE_TEST" on ingenic drivers, maybe it should depend on
->>  MACH_INGENIC indeed, but then it should be made possible to support=20
->> more
->>  than one SoC family.
->>=20
->>  That's something that should be pointed out to the MIPS mailing=20
->> list, I
->>  believe.
->=20
-> Somehow JZ4780 entries in Maintainers do not mention MIPS list...
->=20
->>=20
->>  Btw: Does that mean you are the new maintainer for drivers/memory/?
->=20
-> Yes, that's the coming change.
->=20
-> https://lore.kernel.org/lkml/20200724140345.GB13472@kozik-lap/T/#m91ca209=
-20a7ec5f228a595f1816c15b6c85b6a09
->=20
-> Best regards,
-> Krzysztof
->=20
-
+diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
+index 376a50b3452d..10ed539a8859 100644
+--- a/tools/perf/Documentation/perf-list.txt
++++ b/tools/perf/Documentation/perf-list.txt
+@@ -119,6 +119,7 @@ It's also possible to use pmu syntax:
+ 
+  perf record -e r1a8 -a sleep 1
+  perf record -e cpu/r1a8/ ...
++ perf record -e cpu/r0x1a8/ ...
+ 
+ You should refer to the processor specific documentation for getting these
+ details. Some of them are referenced in the SEE ALSO section below.
+diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+index 895188b63f96..5aaddcb0058a 100644
+--- a/tools/perf/tests/parse-events.c
++++ b/tools/perf/tests/parse-events.c
+@@ -1766,6 +1766,11 @@ static struct evlist_test test__events_pmu[] = {
+ 		.check = test__checkevent_raw_pmu,
+ 		.id    = 4,
+ 	},
++	{
++		.name  = "software/r0x1a/",
++		.check = test__checkevent_raw_pmu,
++		.id    = 4,
++	},
+ };
+ 
+ struct terms_test {
+diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+index 56912c9641f5..44c85fea5d00 100644
+--- a/tools/perf/util/parse-events.l
++++ b/tools/perf/util/parse-events.l
+@@ -293,6 +293,7 @@ percore			{ return term(yyscanner, PARSE_EVENTS__TERM_TYPE_PERCORE); }
+ aux-output		{ return term(yyscanner, PARSE_EVENTS__TERM_TYPE_AUX_OUTPUT); }
+ aux-sample-size		{ return term(yyscanner, PARSE_EVENTS__TERM_TYPE_AUX_SAMPLE_SIZE); }
+ r{num_raw_hex}		{ return raw(yyscanner); }
++r0x{num_raw_hex}	{ return raw(yyscanner); }
+ ,			{ return ','; }
+ "/"			{ BEGIN(INITIAL); return '/'; }
+ {name_minus}		{ return str(yyscanner, PE_NAME); }
+-- 
+2.25.4
 
