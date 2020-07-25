@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904A422D9A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 21:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D3722D9AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 21:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgGYTum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 15:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgGYTum (ORCPT
+        id S1728027AbgGYTvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 15:51:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45680 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727997AbgGYTvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 15:50:42 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5101FC08C5C0;
-        Sat, 25 Jul 2020 12:50:42 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id b25so9458588qto.2;
-        Sat, 25 Jul 2020 12:50:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e08VaL7U6vcRwt77EFzQ26KfIcvSUB32fpWd9IVs9Bs=;
-        b=kt77VASDEmQbVAz4Uvdk29D1TC+84NUnd+mgBDeBIxhJSHHVN1GNaYwHzRUJnVgwYJ
-         L5FlOI/L7SKhAaXsF4O1W4MJAdo28oYFcGKqYUr+rNQNphq5ls1VVvOn9mCbap4Ig0Gy
-         rDgrrXFHn2Wyd1K68kMWEzpRjAGS+65G9lo87TtBYE6UP4JjwJzl4yqG4JJfRroRSLLl
-         WYEf+9YwxqVa6hUzNhIkZzHsM4efa2a4x9qYTfdChHwKUF1IDIzYY+Bc2ee2nIIQFeA+
-         KeE2C3Pf4APGBDVnJhPQ4CICyYxIGAvcpDMU4gxqHclzRWoUiVzkk6yiIPsIa2V0ETiG
-         uSOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=e08VaL7U6vcRwt77EFzQ26KfIcvSUB32fpWd9IVs9Bs=;
-        b=Y4ww0omLJvOj55Uz7ascDlGdUa1agLei3pnxJvJBGCwatvhJmCkByWixoKh62AGFdb
-         QRehinTvfYkU/Fmv+DzyNIei02Q8xQbQkYWpwhZ58GZ0NkPV6ZPTjtEBHImrTInOeQJM
-         VDt57DfiKJ2x4cERlds7P2bNwhmeKO5qp3PCgyJiZV7Gl0I+idj+wBG8XwLTslf5gP5v
-         /2SiT+HAd+ehchHFgs/C5cPZZnMsq4qCMa6DEOabl2VI4SojAh28K4nzd/w80rYKYOIO
-         dabSPDPAgmaXTgx/6JNIXR9MDcMeqMhKNi4O2JXVF99quMYpxpPx2kOocG8Nf5FisYqm
-         uj9w==
-X-Gm-Message-State: AOAM533MgznChcmuzKTHj0AAmXEqMqYkmn3f44VHIvvXePEUrtne0Py/
-        LZAVpgQPauau2/5ke4/q/IKU5UtaHw==
-X-Google-Smtp-Source: ABdhPJy2dOu0lT+ZNEf0I8fySl5RLPKWHC67dEp991MzbpceBkId+9TlOp8LdSJkMc9uH8ZrYznGdA==
-X-Received: by 2002:ac8:44b9:: with SMTP id a25mr11234149qto.356.1595706640781;
-        Sat, 25 Jul 2020 12:50:40 -0700 (PDT)
-Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id h144sm12680373qke.83.2020.07.25.12.50.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 12:50:40 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH] infiniband: Fix uninit-value in ucma_connect()
-Date:   Sat, 25 Jul 2020 15:48:39 -0400
-Message-Id: <20200725194839.623653-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 25 Jul 2020 15:51:48 -0400
+Date:   Sat, 25 Jul 2020 19:51:44 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595706705;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tzxo93bNci/t1uZYtvQ3Ar3hGAVig7CHbrWhhDAfsqY=;
+        b=lbmvNhTjFrTQdZiGARR6IGzqB1LWkSoNRDpVrhZt2bB1FFBGOOUTnVpUGIryK+iJciFyjS
+        msF7RTY5j/X97c4e9XMM3hGsBfy7YEAK4xZ1oF44STwv2oJyrN5QW5bxSZ7l2xTOloArbh
+        /JBi7MIsWZaSMdGMf6zIIcAbqoDkH3z+jNKKUYBgQgrsNfc1GCRjnYMTXS5Bn+hiLO4f30
+        DK4br4nqbXIwX+HrSZafCWR2iXg+n5sKvG7050aOHRmpl5SOwREXb0Wuqhrvxa1pkujmvL
+        Y4j75l/I5gsn64sqGRCXYZe/eMx70R+lhp4gd8XHhFbFL4nYt8RLCYCD8gXHPA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595706705;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tzxo93bNci/t1uZYtvQ3Ar3hGAVig7CHbrWhhDAfsqY=;
+        b=wL5Ag34OfV7jeHwdAivtw2nBIBoFIPhU+jPVQh77NIEyQskG4iES5OE3HmNHGcHAlS7Rue
+        BQCs3IR8jGQnERDA==
+From:   "tip-bot2 for Chris Wilson" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/lockdep: Fix overflow in presentation
+ of average lock-time
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200725185110.11588-1-chris@chris-wilson.co.uk>
+References: <20200725185110.11588-1-chris@chris-wilson.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <159570670466.4006.5604761972444184961.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ucma_connect() is reading uninitialized memory when `in_len` is less than
-`offsetof(struct rdma_ucm_connect, ece)`. Fix it.
+The following commit has been merged into the locking/urgent branch of tip:
 
-Reported-and-tested-by: syzbot+7446526858b83c8828b2@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=2c85ca2b1aedb22ed1029383751e36cee3f7d047
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Commit-ID:     a7ef9b28aa8d72a1656fa6f0a01bbd1493886317
+Gitweb:        https://git.kernel.org/tip/a7ef9b28aa8d72a1656fa6f0a01bbd1493886317
+Author:        Chris Wilson <chris@chris-wilson.co.uk>
+AuthorDate:    Sat, 25 Jul 2020 19:51:10 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 25 Jul 2020 21:47:42 +02:00
+
+locking/lockdep: Fix overflow in presentation of average lock-time
+
+Though the number of lock-acquisitions is tracked as unsigned long, this
+is passed as the divisor to div_s64() which interprets it as a s32,
+giving nonsense values with more than 2 billion acquisitons. E.g.
+
+  acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
+  -------------------------------------------------------------------------
+    2350439395           0.07         353.38   649647067.36          0.-32
+
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20200725185110.11588-1-chris@chris-wilson.co.uk
 ---
- drivers/infiniband/core/ucma.c | 2 +-
+ kernel/locking/lockdep_proc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
-index 5b87eee8ccc8..a591fdccdce0 100644
---- a/drivers/infiniband/core/ucma.c
-+++ b/drivers/infiniband/core/ucma.c
-@@ -1079,7 +1079,7 @@ static ssize_t ucma_connect(struct ucma_file *file, const char __user *inbuf,
- {
- 	struct rdma_conn_param conn_param;
- 	struct rdma_ucm_ece ece = {};
--	struct rdma_ucm_connect cmd;
-+	struct rdma_ucm_connect cmd = {};
- 	struct ucma_context *ctx;
- 	size_t in_size;
- 	int ret;
--- 
-2.25.1
-
+diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+index 5525cd3..02ef87f 100644
+--- a/kernel/locking/lockdep_proc.c
++++ b/kernel/locking/lockdep_proc.c
+@@ -423,7 +423,7 @@ static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
+ 	seq_time(m, lt->min);
+ 	seq_time(m, lt->max);
+ 	seq_time(m, lt->total);
+-	seq_time(m, lt->nr ? div_s64(lt->total, lt->nr) : 0);
++	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
+ }
+ 
+ static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
