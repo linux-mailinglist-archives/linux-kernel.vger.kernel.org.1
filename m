@@ -2,97 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FA622D776
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 14:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EF222D779
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 14:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgGYMOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 08:14:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:44114 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726768AbgGYMOq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 08:14:46 -0400
-Date:   Sat, 25 Jul 2020 12:14:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595679283;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+        id S1726979AbgGYMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 08:17:57 -0400
+Received: from crapouillou.net ([89.234.176.41]:54990 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726639AbgGYMR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 08:17:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595679474; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UWbLuEt0GcJJoCHotHJIuarMWHFXHOnLPSPfL0x79EU=;
-        b=Z15MJQW3+LNXkevbMqW6ETf7Q7K8JYwEgNLP9KyuhcyQUdNIdMSGfJPClUYx2njiRH966w
-        bWU6C+FWdiuU/SCSKNWxgv9g1Vuxrs2FY5dtC1rSrOGiYFoJuSXHD164POiAFdPheNbQN7
-        04G5aGIPQw8YbNiP8Vodj6f3hMOWFVUdNmch8WEUi7p1DPKbWBGEb/LnfJfSdjzCAe/gl2
-        jatrzWIJItwwKMPaNG0y1bMOaXSnCoaJbgcoF/rG29+VEcpnyIygPx9LeQb74qFHU/8spp
-        gd9OMvwgO0WE1JvSlGdkuYV89ypn2oM0n4HnQLtS54qZkWSZ6ldrZSa6utFzxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595679283;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UWbLuEt0GcJJoCHotHJIuarMWHFXHOnLPSPfL0x79EU=;
-        b=pMvrkJyga2TMB/YHbvagGNleWhyptSpGy4xeDSAySUikubRBxNyb0ENTo1DX5WZN03lz7N
-        h80dcya2DcgrNiAw==
-From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpu: Add Lakefield, Alder Lake and Rocket Lake
- models to the to Intel CPU family
-Cc:     Tony Luck <tony.luck@intel.com>, Ingo Molnar <mingo@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200721043749.31567-1-tony.luck@intel.com>
-References: <20200721043749.31567-1-tony.luck@intel.com>
+        bh=wtjs9oz1J8j+LAftrjDeBoK7mRdXj3uB7dc2tv4J+8s=;
+        b=SV4m4sV10yvBP+o7Wh0Oh1KVAdbLXfM9h4DPNfVo5RUy32+HNMFiS2U6G1Xk9v64icxXxa
+        vIaaH7lffvJ85wzbEIirinP72c8nVaDFBBlmB2ojIFEmFU7J+gPR2jrYoWr820RM3uVRIX
+        sv4ybxk1MVhWVYVgF4ekUcCaCcAl3O4=
+Date:   Sat, 25 Jul 2020 14:17:44 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
+ architecture only
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>
+Message-Id: <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
+In-Reply-To: <20200724155436.GA7460@kozik-lap>
+References: <20200724145401.2566-1-krzk@kernel.org>
+        <20200724145401.2566-3-krzk@kernel.org>
+        <PWBZDQ.D1XCW6N2YMRA@crapouillou.net>
+        <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
+        <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
 MIME-Version: 1.0
-Message-ID: <159567928234.4006.15571980059311082712.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
 
-Commit-ID:     e00b62f0b06d0ae2b844049f216807617aff0cdb
-Gitweb:        https://git.kernel.org/tip/e00b62f0b06d0ae2b844049f216807617aff0cdb
-Author:        Tony Luck <tony.luck@intel.com>
-AuthorDate:    Mon, 20 Jul 2020 21:37:49 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 25 Jul 2020 12:16:59 +02:00
 
-x86/cpu: Add Lakefield, Alder Lake and Rocket Lake models to the to Intel CPU family
+Le ven. 24 juil. 2020 =E0 17:54, Krzysztof Kozlowski <krzk@kernel.org> a=20
+=E9crit :
+> On Fri, Jul 24, 2020 at 05:50:06PM +0200, Paul Cercueil wrote:
+>>=20
+>>=20
+>>  Le ven. 24 juil. 2020 =E0 17:33, Krzysztof Kozlowski=20
+>> <krzk@kernel.org> a =E9crit
+>>  :
+>>  > On Fri, 24 Jul 2020 at 17:19, Paul Cercueil <paul@crapouillou.net>
+>>  > wrote:
+>>  > >
+>>  > >  Hi Krzysztof,
+>>  > >
+>>  > >
+>>  > >  Le ven. 24 juil. 2020 =E0 16:54, Krzysztof Kozlowski
+>>  > > <krzk@kernel.org> a
+>>  > >  =E9crit :
+>>  > >  > Enabling the MTD_NAND_JZ4780 driver makes sense only for=20
+>> specific
+>>  > >  > hardware - the Ingenic SoC architecture.  Set it's=20
+>> dependency to
+>>  > >  > MACH_INGENIC so it will not appear on unrelated architectures
+>>  > > (easier
+>>  > >  > job for downstream/distro kernel engineers).
+>>  > >
+>>  > >  Disagreed. It was done this way so that distro kernels can=20
+>> support
+>>  > >  multiple SoCs.
+>>  >
+>>  > They will still be able to support multiple SoCs. Nothing changed
+>>  > here. The same we do for all ARM drivers (SoCs are=20
+>> multiplatform)...
+>>  > Unless you want to say that it is possible to support Ingenic SoC
+>>  > without MACH_INGENIC?
+>>=20
+>>  On MIPS, the SoC selection is a Kconfig "choice", so you can only=20
+>> support
+>>  one SoC family, unfortunately.
+>=20
+> Let's say someone selected then some other architecture=20
+> (MIPS_ALCHEMY).
+> They could select this MTD driver.
+>=20
+> Does it mean they would be able to run it on Ingenic hardware?
 
-Add three new Intel CPU models.
+In *theory* yes, as long as the Kconfig options that MACH_INGENIC=20
+selects are enabled, the kernel should boot and work on Ingenic SoCs.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200721043749.31567-1-tony.luck@intel.com
----
- arch/x86/include/asm/intel-family.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+-Paul
 
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index a338a6d..5e658ba 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -89,8 +89,15 @@
- #define INTEL_FAM6_COMETLAKE		0xA5
- #define INTEL_FAM6_COMETLAKE_L		0xA6
- 
-+#define INTEL_FAM6_ROCKETLAKE		0xA7
-+
- #define INTEL_FAM6_SAPPHIRERAPIDS_X	0x8F
- 
-+/* Hybrid Core/Atom Processors */
-+
-+#define	INTEL_FAM6_LAKEFIELD		0x8A
-+#define INTEL_FAM6_ALDERLAKE		0x97
-+
- /* "Small Core" Processors (Atom) */
- 
- #define INTEL_FAM6_ATOM_BONNELL		0x1C /* Diamondville, Pineview */
+>>  I'm the one to blame for using "depends on
+>>  MIPS || COMPILE_TEST" on ingenic drivers, maybe it should depend on
+>>  MACH_INGENIC indeed, but then it should be made possible to support=20
+>> more
+>>  than one SoC family.
+>>=20
+>>  That's something that should be pointed out to the MIPS mailing=20
+>> list, I
+>>  believe.
+>=20
+> Somehow JZ4780 entries in Maintainers do not mention MIPS list...
+>=20
+>>=20
+>>  Btw: Does that mean you are the new maintainer for drivers/memory/?
+>=20
+> Yes, that's the coming change.
+>=20
+> https://lore.kernel.org/lkml/20200724140345.GB13472@kozik-lap/T/#m91ca209=
+20a7ec5f228a595f1816c15b6c85b6a09
+>=20
+> Best regards,
+> Krzysztof
+>=20
+
+
