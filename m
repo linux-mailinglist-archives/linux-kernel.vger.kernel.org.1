@@ -2,136 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEF222D2D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 02:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3051B22D313
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 02:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728139AbgGYAGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 20:06:10 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:39460 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727798AbgGYAGF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 20:06:05 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 61EAF8040A69;
-        Sat, 25 Jul 2020 00:05:59 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kuyiWnH92oZU; Sat, 25 Jul 2020 03:05:58 +0300 (MSK)
-Date:   Sat, 25 Jul 2020 03:05:57 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/7] gpio: dwapb: Convert driver to using the
- GPIO-lib-based IRQ-chip
-Message-ID: <20200725000557.ru4h5twwd4ha4l6x@mobilestation>
-References: <20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru>
- <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
- <20200723140815.GL3703480@smile.fi.intel.com>
+        id S1727775AbgGYAJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 20:09:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726882AbgGYAJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 20:09:15 -0400
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F2AF207FC
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 00:09:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595635754;
+        bh=btOIZU1MW+6PlkkqDJUz7DcCUStR/8qT0xAu53GlQ6s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sxS88DZLD1Ub3RW0YPgyikY7BDShzwcfepCzbZBjkaqBJP77hyvnz9aXpp551L9Pb
+         zU2WTGc5yM4bV7AnuKssI6OXXS3oITRb+uD4VVa0gWA1nxKyleZhPlLV48Zgna5QtC
+         kYQUX5BdvbpUC+Yv/uFXlOSxeVLIjzbZ7mfuQHwg=
+Received: by mail-wm1-f44.google.com with SMTP id t142so3249656wmt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 17:09:13 -0700 (PDT)
+X-Gm-Message-State: AOAM530CRDq0ilzbjqfdzYLyrJJ7OR5J089RW7jdAEKxOU23ISZEVqac
+        lQLEOs/oi2NA6yUKIKK9fJ8jWfzsJUQkoCj3G0R4Eg==
+X-Google-Smtp-Source: ABdhPJzODXWRSR4bEqjZdQmjvnAm94COixhWx/ZHwpxi601Bsr0u6vIlMnxzH7evHcvtBmUNUEDn46VTXFtuOAxUs7I=
+X-Received: by 2002:a1c:56c3:: with SMTP id k186mr10711218wmb.21.1595635752371;
+ Fri, 24 Jul 2020 17:09:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200723140815.GL3703480@smile.fi.intel.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+References: <20200717072056.73134-1-ira.weiny@intel.com> <20200717072056.73134-18-ira.weiny@intel.com>
+ <87r1t2vwi7.fsf@nanos.tec.linutronix.de> <20200723220435.GI844235@iweiny-DESK2.sc.intel.com>
+ <87mu3pvly7.fsf@nanos.tec.linutronix.de> <874kpwtxlh.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <874kpwtxlh.fsf@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 24 Jul 2020 17:09:00 -0700
+X-Gmail-Original-Message-ID: <CALCETrXM1q664Udfq-LnU8SaUxSn-S+FkFRP1M9n3Aav9bjChA@mail.gmail.com>
+Message-ID: <CALCETrXM1q664Udfq-LnU8SaUxSn-S+FkFRP1M9n3Aav9bjChA@mail.gmail.com>
+Subject: Re: [PATCH RFC V2 17/17] x86/entry: Preserve PKRS MSR across exceptions
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 05:08:15PM +0300, Andy Shevchenko wrote:
-> On Thu, Jul 23, 2020 at 04:38:55AM +0300, Serge Semin wrote:
-> > GPIO-lib provides a ready-to-use interface to initialize an IRQ-chip on
-> > top of a GPIO chip. It's better from maintainability and readability
-> > point of view to use one instead of supporting a hand-written Generic
-> > IRQ-chip-based implementation. Moreover the new implementation won't
-> > cause much functional overhead but will provide a cleaner driver code.
-> > All of that makes the DW APB GPIO driver conversion pretty much justified
-> > especially seeing a tendency of the other GPIO drivers getting converted
-> > too.
-> > 
-> > Here is what we do in the framework of this commit to convert the driver
-> > to using the GPIO-lib-based IRQ-chip interface:
-> > 1) IRQ ack, mask and unmask callbacks are locally defined instead of
-> > using the Generic IRQ-chip ones.
-> > 2) An irq_chip structure instance is embedded into the dwapb_gpio
-> > private data. Note we can't have a static instance of that structure since
-> > GPIO-lib will add some hooks into it by calling gpiochip_set_irq_hooks().
-> > A warning about that would have been printed by the GPIO-lib code if we
-> > used a single irq_chip structure instance for multiple DW APB GPIO
-> > controllers.
-> > 3) Initialize the gpio_irq_chip structure embedded into the gpio_chip
-> > descriptor. By default there is no IRQ enabled so any event raised will be
-> > handled by the handle_bad_irq() IRQ flow handler. If DW APB GPIO IP-core
-> > is synthesized to have non-shared reference IRQ-lines, then as before the
-> > hierarchical and cascaded cases are distinguished by checking how many
-> > parental IRQs are defined. (Note irq_set_chained_handler_and_data() won't
-> > initialize IRQs, which descriptors couldn't be found.) If DW APB GPIO IP
-> > is used on a platform with shared IRQ line, then we simply won't let the
-> > GPIO-lib to initialize the parental IRQs, but will handle them locally in
-> > the driver.
-> > 4) Discard linear IRQ-domain and Generic IRQ-chip initialization, since
-> > GPIO-lib IRQ-chip interface will create a new domain and accept a standard
-> > IRQ-chip structure pointer based on the setting we provided in the
-> > gpio_irq_chip structure.
-> > 5) Manually select a proper IRQ flow handler directly in the
-> > irq_set_type() callback by calling irq_set_handler_locked() method, since
-> > an ordinary (not Generic) irq_chip descriptor is now utilized.
-> > 6) Discard the custom GPIO-to-IRQ mapping function since GPIO-lib defines
-> > the standard method gpiochip_to_irq(), which will be used anyway no matter
-> > whether the custom to_irq callback is specified or not.
-> > 7) Discard the acpi_gpiochip_{request,free}_interrupts()
-> > invocations, since they will be called from
-> > gpiochip_add_irqchip()/gpiochip_irqchip_remove() anyway.
-> > 8) Alter CONFIG_GPIO_DWAPB kernel config to select
-> > CONFIG_GPIOLIB_IRQCHIP instead of CONFIG_GENERIC_IRQ_CHIP.
-> 
-> 
-> ...
-> 
-> One more thing...
-> 
-> >  static u32 dwapb_do_irq(struct dwapb_gpio *gpio)
-> >  {
-> > +	struct gpio_chip *gc = &gpio->ports[0].gc;
-> >  	unsigned long irq_status;
-> >  	irq_hw_number_t hwirq;
-> >  
-> >  	irq_status = dwapb_read(gpio, GPIO_INTSTATUS);
-> >  	for_each_set_bit(hwirq, &irq_status, 32) {
-> > -		int gpio_irq = irq_find_mapping(gpio->domain, hwirq);
-> > +		int gpio_irq = gc->to_irq(gc, hwirq);
-> 
+On Fri, Jul 24, 2020 at 2:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Ira,
+>
+> Thomas Gleixner <tglx@linutronix.de> writes:
+> > Ira Weiny <ira.weiny@intel.com> writes:
+> >> On Thu, Jul 23, 2020 at 09:53:20PM +0200, Thomas Gleixner wrote:
+> >> I think, after fixing my code (see below), using idtentry_state could still
+> >> work.  If the per-cpu cache and the MSR is updated in idtentry_exit() that
+> >> should carry the state to the new cpu, correct?
+> >
+> > I'm way too tired to think about that now. Will have a look tomorrow
+> > with brain awake.
+>
+> Not that I'm way more awake now, but at least I have the feeling that my
+> brain is not completely useless.
+>
+> Let me summarize what I understood:
+>
+>   1) A per CPU cache which shadows the current state of the MSR, i.e. the
+>      current valid key. You use that to avoid costly MSR writes if the
+>      key does not change.
+>
+>   2) On idtentry you store the key on entry in idtentry_state, clear it
+>      in the MSR and shadow state if necessary and restore it on exit.
+>
+>   3) On context switch out you save the per CPU cache value in the task
+>      and on context switch in you restore it from there.
+>
+> Yes, that works (see below for #2) and sorry for my confusion yesterday
+> about storing this in task state.
+>
+> #2 requires to handle the exceptions which do not go through
+> idtentry_enter/exit() seperately, but that's a manageable amount. It's
+> the ones which use IDTENTRY_RAW or a variant of it.
+>
+> #BP, #MC, #NMI, #DB, #DF need extra local storage as all the kernel
+> entries for those use nmi_enter()/exit(). So you just can create
+> wrappers around those. Somehting like this
+>
+> static __always_inline idtentry_state_t idtentry_nmi_enter(void)
+> {
+>         idtentry_state_t state = {};
+>
+>         nmi_enter();
+>         instrumentation_begin();
+>         state.key = save_and_clear_key();
+>         instrumentation_end();
+> }
+>
+> static __always_inline void idtentry_nmi_exit(idtentry_state_t state)
+> {
+>         instrumentation_begin();
+>         restore_key(state.key);
+>         instrumentation_end();
+>         nmi_exit();
+> }
+>
+> #UD and #PF are using the raw entry variant as well but still invoke
+> idtentry_enter()/exit(). #PF does not need any work. #UD handles
+> WARN/BUG without going through idtentry_enter() first, but I don't think
+> that's an issue unless a not 0 key would prevent writing to the console
+> device. You surely can figure that out.
 
-> Very, very few do this.
-> Can we stick with the original one?
-> (See plenty of other examples in the GPIO / pin control subsystems.
+Putting on my mm maintainer hat for a moment, I really think that we
+want oopses to print PKRS along with all the other registers when we
+inevitably oops due to a page fault.  And we probably also want it in
+the nasty nested case where we get infinite page faults and eventually
+double fault.
 
-You are right. After more thorough studying the IRQ-domain code I've found out
-that irq_domain_add_simple() provides the on-the-fly mapping creation. We
-don't have to call irq_create_mapping() first before using irq_find_mapping().
-So the irq_find_mapping(gc->irq.domain, hwirq) method can be freely called here
-the same way as the most of the GPIO drivers do. Thanks for noticing this.
+I'm sure it's *possible* to wire this up if we stick it in
+idtentry_state, but it's trivial if we stick it in pt_regs.  I'm okay
+with doing the save/restore in C (in fact, I prefer that), but I think
+that either the value should be stuck in pt_regs or we should find a
+way to teach the unwinder to locate idtentry_state.
 
--Sergey
+And, if we go with idtentry_state, we should make a signature change
+to nmi_enter() to also provide idtentry_state or some equivalent
+object.
 
-> 
-> >  		u32 irq_type = irq_get_trigger_type(gpio_irq);
-> >  
-> >  		generic_handle_irq(gpio_irq);
-> 
-> 
-> >  }
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+--Andy
