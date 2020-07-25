@@ -2,120 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100BB22D962
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324DA22D967
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgGYStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:49:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgGYStW (ORCPT
+        id S1727039AbgGYSvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:51:42 -0400
+Received: from mail.fireflyinternet.com ([77.68.26.236]:50035 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726035AbgGYSvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:49:22 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB208C08C5C0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:49:21 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id o72so3902389ota.11
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rMyb1gO3q+v65MaIVuTcYIle7Wdt4tjlApNFSHQMhoA=;
-        b=IeqhwkoAGMsuiqAFwxeyeJD1ArMD7DDh1kvr35hYkSEa7vAAo9Mkerlw9DBz548GNr
-         bVbommZ44uBja6vI548WYNUw1Ej1QYdSa/P22PLFeltPACVePYpkYiMcMUrlQn32RRRs
-         7oyi42ibOJgz47MrzafTjWmy3YTDCYMI/TED6GK8T0VrN/JVM8Su+ZykPwimtuJTJkbA
-         gMUKoEZBaAHPOkAe9lxda/858rkzDQFC4XgTs5+YPxkmpwpbnd/GCARSVHHnn1DLuVSz
-         AqDR6uMAN4YzLkWREmRtyyg8LJ5JUXkVkrIoRDajGE0utbEbvT5OH8fIvERBgBc7Xme4
-         veDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rMyb1gO3q+v65MaIVuTcYIle7Wdt4tjlApNFSHQMhoA=;
-        b=U+ZWZsTZ8aI8PRg4fFU/NYy03cOnvVYyjGi8/PuBIU+b4lWSqZIMIhXownJQmhnMDX
-         m1nCi7qQkdSDipg37jtlPlMx5rJ7KeZQ32Glla+yW+PkiRl9SA6uH/PNLWCyzmHggs5x
-         JCRH5dhQiMnITTFV6vET1HXbKvRmP2OIiGw7iEVHuWpeS5QYZc4TGxdITPBW+7N71pwq
-         YMySv0WLnpEJCLQx/2CbVlFpELa8lRfHyQbZdHqlxzGUZoy3Nim1UyudhHzTjzn6JLmW
-         UlLqP3PZC6fPAF4KTiFfK9EbIaqql0tb4yp0/hDVM7gpq+fKKhpzK7vOSjqbCYrxu9Ja
-         jDsg==
-X-Gm-Message-State: AOAM531zbsbQoomZt0KHba8moW0IF+BFIN+S3lKGY2nNBp8Xslqu1CYL
-        iGNOiTjfD8lK/fUkN+QjuKYzb2IJ
-X-Google-Smtp-Source: ABdhPJwRtHGA53qzVQAfRO5i9xkHDMSRTJmtpjENMgOwLX7nr8G//q1IyCJFe1LB13PCVTz3X73oOw==
-X-Received: by 2002:a9d:5d2:: with SMTP id 76mr14224874otd.55.1595702961035;
-        Sat, 25 Jul 2020 11:49:21 -0700 (PDT)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id m24sm1646438oof.5.2020.07.25.11.49.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Jul 2020 11:49:20 -0700 (PDT)
-Subject: Re: [PATCH 1/1] STAGING - REALTEK RTL8188EU DRIVERS: Fix Coding Style
- Error
-To:     Joe Perches <joe@perches.com>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Anoop S <anoop.skumar1507@gmail.com>,
-        Michael Straube <straube.linux@gmail.com>,
-        Merwin Trever Ferrao <merwintf@gmail.com>,
-        Rahul Gottipati <rahul.blr97@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200725122041.5663-1-anant.thazhemadam@gmail.com>
- <aab59eb1-baff-5de1-4e14-88ffc42db1fe@lwfinger.net>
- <d4427fb12f9d4735ec82355bbe99f7b3098fc1a4.camel@perches.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <18de15c4-1737-ae8b-b213-6f44792774be@lwfinger.net>
-Date:   Sat, 25 Jul 2020 13:49:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 25 Jul 2020 14:51:41 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from build.alporthouse.com (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP id 21931418-1500050 
+        for multiple; Sat, 25 Jul 2020 19:51:11 +0100
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+To:     linux-kernel@vger.kernel.org
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Subject: [PATCH] locking/lockdep: Fix overflow in presentation of average lock-time
+Date:   Sat, 25 Jul 2020 19:51:10 +0100
+Message-Id: <20200725185110.11588-1-chris@chris-wilson.co.uk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <d4427fb12f9d4735ec82355bbe99f7b3098fc1a4.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/20 1:39 PM, Joe Perches wrote:
-> On Sat, 2020-07-25 at 12:47 -0500, Larry Finger wrote:
->> On 7/25/20 7:20 AM, Anant Thazhemadam wrote:
->>> Running the checkpatch.pl script on the file for which patch was created, the
->>> following error was found to exist.
->>> ERROR: space required after that ',' (ctx:VxV)
->>>
->>> Fixed the above error which was found on line #721 by inserting a blank
->>> space at the appropriate position.
-> []
->>> diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-> []
->>> @@ -718,7 +718,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
->>>    				res = _FAIL;
->>>    			}
->>>    		} else {
->>> -			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo==NULL!!!\n",__func__));
->>> +			RT_TRACE(_module_rtl871x_security_c_, _drv_err_, ("%s: stainfo==NULL!!!\n", __func__));
->>>    			res = _FAIL;
->>>    		}
->>>    	}
->>
->> In fixing one checkpatch.pl condition, you introduced another - the resulting
->> line is too long. You should fix only one such condition, but you should fix any
->> others that are introduced. You do need to document it.
-> 
-> I think that doesn't matter as it was also too long
-> before this change.
-> 
->> Patch subjects for this driver should be written as "staging: rtl8188eu: .....".
-> 
-> How likely is it that this driver would ever be
-> moved to drivers/net/wireless/realtek/rtlwifi?
+Though the number of lock-acquisitions is tracked as unsigned long, this
+is passed as the divisor to div_s64() which interprets it as a s32,
+giving nonsense values with more than 2 billion acquisitons. E.g.
 
-Very unlikely. It I wanted to undertake that kind of effort, I would switch to 
-one of the later versions from Realtek that uses nl80211/cfg80211. Despite that, 
-it is likely that only the USB driver from rtlwifi could be used.
+  acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
+  -------------------------------------------------------------------------
+    2350439395           0.07         353.38   649647067.36          0.-32
 
-Larry
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+---
+ kernel/locking/lockdep_proc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
+index 5525cd3ba0c8..02ef87f50df2 100644
+--- a/kernel/locking/lockdep_proc.c
++++ b/kernel/locking/lockdep_proc.c
+@@ -423,7 +423,7 @@ static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
+ 	seq_time(m, lt->min);
+ 	seq_time(m, lt->max);
+ 	seq_time(m, lt->total);
+-	seq_time(m, lt->nr ? div_s64(lt->total, lt->nr) : 0);
++	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
+ }
+ 
+ static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
+-- 
+2.20.1
 
