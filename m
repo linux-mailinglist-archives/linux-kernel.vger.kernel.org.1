@@ -2,91 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B835B22D3E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 04:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6362D22D3F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 04:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbgGYCwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 22:52:12 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47496 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgGYCwL (ORCPT
+        id S1726852AbgGYCyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 22:54:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726592AbgGYCyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 22:52:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06P2lhoC049076;
-        Sat, 25 Jul 2020 02:51:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=QGccruug/HS1ZoUIU96kqzA3s4oTcV23/plX+v0M9Bs=;
- b=mSShgVL530rdRjd5Qg11q1A3JMoSkP8Tcz5O2q/KMvg6wg/dd9XyMjMqvkmuFVViukTP
- vPmufVaStoOZKgBbN8qvlsrmp3WhVTtJq/vM9e9QOQH4J7dnGl3nAvg4JzIE2jvrSRkF
- jXzTRYahP6UO0l+1kvlt/YpE2YCP9VnJnHSDIFHfC2/rRwSTwNvY37yZ8CxIgi71Ml9z
- hStRAYW5qWiRjzKpA4HlfBquuCmQ/qMtnxLTfTDd3uQei3jUFOVmLZIcNR/nDGfiFe7A
- vxNG+braW/xx+R7YTsEaWwJ06qaQz7eVMR+9AAW2cjPzI6e62SYI6bqfKk+YCo/ZkIPF nw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 32d6kt6422-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 25 Jul 2020 02:51:07 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06P2mEIN001223;
-        Sat, 25 Jul 2020 02:51:06 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 32gam27gup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 25 Jul 2020 02:51:06 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06P2p5Jh004231;
-        Sat, 25 Jul 2020 02:51:05 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 24 Jul 2020 19:51:04 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     jejb@linux.ibm.com, Wang Hai <wanghai38@huawei.com>,
-        aacraid@microsemi.com
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH -next] scsi: dpt_i2o: remove some not needed memset
-Date:   Fri, 24 Jul 2020 22:50:45 -0400
-Message-Id: <159564519423.31464.8874512705165332474.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200718123224.1202-1-wanghai38@huawei.com>
-References: <20200718123224.1202-1-wanghai38@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=855 adultscore=0
- malwarescore=0 spamscore=0 bulkscore=0 phishscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007250020
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9692 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=861 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 spamscore=0 adultscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007250020
+        Fri, 24 Jul 2020 22:54:43 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B512C0619D3;
+        Fri, 24 Jul 2020 19:54:43 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 79A8F1277A0AA;
+        Fri, 24 Jul 2020 19:37:57 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 19:54:41 -0700 (PDT)
+Message-Id: <20200724.195441.1368606642401001205.davem@davemloft.net>
+To:     trix@redhat.com
+Cc:     kuba@kernel.org, masahiroy@kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: cdc_ncm: USB_NET_CDC_NCM selects USB_NET_CDCETHER
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200723142210.21274-1-trix@redhat.com>
+References: <20200723142210.21274-1-trix@redhat.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 24 Jul 2020 19:37:57 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Jul 2020 20:32:24 +0800, Wang Hai wrote:
+From: trix@redhat.com
+Date: Thu, 23 Jul 2020 07:22:10 -0700
 
-> Fixes coccicheck warning:
+> From: Tom Rix <trix@redhat.com>
 > 
-> ./drivers/scsi/dpt_i2o.c:3070:11-29: WARNING:
->  dma_alloc_coherent use in sys_tbl already zeroes out memory, so memset is not needed
-> ./drivers/scsi/dpt_i2o.c:2780:10-28: WARNING:
->  dma_alloc_coherent use in status already zeroes out memory, so memset is not needed
-> ./drivers/scsi/dpt_i2o.c:2834:20-38: WARNING:
->  dma_alloc_coherent use in pHba -> reply_pool already zeroes out memory, so memset is not needed
-> ./drivers/scsi/dpt_i2o.c:1328:10-28: WARNING:
->  dma_alloc_coherent use in status already zeroes out memory, so memset is not needed
+> A link error
+> 
+> ld: drivers/net/usb/cdc_ncm.o:
+>   undefined reference to `usbnet_cdc_update_filter'
+> 
+> usbnet_cdc_update_filter is defined in cdc_ether.c
+> Building of cdc_ether.o is controlled by USB_NET_CDCETHER
+> 
+> Building of cdc_ncm.o is controlled by USB_NET_CDC_NCM
+> 
+> So add a select USB_NET_CDCETHER to USB_NET_CDC_NCM
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Applied to 5.9/scsi-queue, thanks!
+Please indicate the appropriate target tree ('net' or 'net-next') in
+your Subject line f.e. "[PATCH net-next] ..."
 
-[1/1] scsi: dpt_i2o: Remove superfluous memset()
-      https://git.kernel.org/mkp/scsi/c/003015b890e1
+Please provide an appropriate and properly formatted Fixes: tag.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thank you.
