@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3078322D953
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D1422D957
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgGYSZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:25:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726727AbgGYSZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:25:11 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88CC5206D7;
-        Sat, 25 Jul 2020 18:25:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595701510;
-        bh=Dq8mUWOBlA+CBHS/3t+mQ9cNSU1dWsOLOi1XG49t8hM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=G2n1xKBvRbijSrFphE2XU2ZGjv478I3RfCkDSELHUv000Xni/x4J58J1pzLJIRCTL
-         D4TmaMr1sn7yH7BH9vsQnUrM3tBlX0Aju3Atdgg+lQ3Ea7qaGDdiIVXG5oSDYHxhZp
-         ZW+jINN+N3ZXma0l7P5zkSjoDq6E7034huYJwPsw=
-Date:   Sat, 25 Jul 2020 20:25:06 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>, sean@mess.org,
-        kstewart@linuxfoundation.org, allison@lohutok.net,
-        tglx@linutronix.de, linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC, WIP, v7 0/4] media: vidtv: implement a virtual DVB driver
-Message-ID: <20200725202506.1db9dd3b@coco.lan>
-In-Reply-To: <1cd01ac5-55f7-68f5-791b-ae4955d916d7@linuxfoundation.org>
-References: <20200608191333.1784963-1-dwlsalmeida@gmail.com>
-        <1cd01ac5-55f7-68f5-791b-ae4955d916d7@linuxfoundation.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727820AbgGYSaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgGYSaz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 14:30:55 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E36C08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:30:55 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id w2so7143177pgg.10
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=RpLA+fP+DoLvbUEvg6utInkVa5lt66wslkma7Mkucds=;
+        b=xqchFIz3EfC5rjOlPK5SwVCU2Hutak9YpYOb4GS4j6KEy8w82eIBqWXUjJJl0vra0x
+         jFtrQzf50jI+hRpAQo6UreFtU1A2Y2A5IHDPuxl6BuBOVzXt8jckw6w4BkMrdrRsBOEl
+         XRrD+de4uODky1/HBnJjoaMcTJEbVSuTwGgi06M7IUeKdTNfXVGYISY0F4pSS+nsNn0h
+         pVsBgDhzVlMOikrsFsi3XK+RgoI0EvzP2OTKhEL11N3YTXDoGz5lVWBcOzu48WpDBf8Q
+         xBmEwTOJ1nXSliKHw9kpDyYIHH0pNKkw2XBDYjbCo9pxvzcvyLdDOGff1O74u9pBzFqd
+         eQ+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=RpLA+fP+DoLvbUEvg6utInkVa5lt66wslkma7Mkucds=;
+        b=DuBx9i3p5ZcHv1zefMhEc2U5kjzEMOgEhD/BrxUHU02ePSKpg8Q2S6dkAoswYzvnCe
+         W+bgG1TnQbj+C0qcpPhEK/O/4O8vNHoLCzr58ZttTLepHT47abmNtvFfe1Vin5I2ak8T
+         /oJOJANItSoyWA6Vgj2caJViaHHzOeQQxyjWui8AaKCyY7/2y7qWYUnS91bvWnSpTyh4
+         ljDgSOLGbhNYxTFRBL/hrPdQfEB3W7JYwRWqOKdtvfw82pmHBXQM2SlZSe43u5wM7k85
+         EiIR2CtLbgo522NI1NnK9BYUBnVImDHTdVAPUzDyOZNr+rV8wZO1VNPmVuX9N7RO9JTe
+         l0Dg==
+X-Gm-Message-State: AOAM533LADzCP40MPEMGEHbObY5hL2UpNvpSTZFkK4exOV2Zp7d73KZ9
+        2s6lIMU4kdKWvremqt0apsEz/Q==
+X-Google-Smtp-Source: ABdhPJzkcgAw5QaTaebC9kG4nrkATQ3qDp2O73dkpdQpImjpzDubCoAEBaBw4g8NzSFaCp5LppMGGw==
+X-Received: by 2002:a62:b409:: with SMTP id h9mr13600700pfn.305.1595701854895;
+        Sat, 25 Jul 2020 11:30:54 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id u8sm9276274pjn.24.2020.07.25.11.30.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jul 2020 11:30:54 -0700 (PDT)
+Date:   Sat, 25 Jul 2020 11:30:54 -0700 (PDT)
+X-Google-Original-Date: Sat, 25 Jul 2020 11:29:26 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.8-rc7
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-f2bb3f7e-e2d6-48e5-a8f6-5e47edf5441e@palmerdabbelt-glaptop1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 24 Jul 2020 17:43:55 -0600
-Shuah Khan <skhan@linuxfoundation.org> escreveu:
+The following changes since commit ba47d845d715a010f7b51f6f89bae32845e6acb7:
 
-> Hi Mauro,
-> 
-> On 6/8/20 1:13 PM, Daniel W. S. Almeida wrote:
-> > From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-> > 
-> > This series is work in progress. It represents the current work done on a
-> > virtual DVB driver for the Linux media subsystem. I am new to the media
-> > subsystem and to kernel development in general.
-> > 
-> > This driver aims to:
-> > 	- Serve as template for new DVB driver writers
-> > 	- Help userspace application writers in general
-> > 	- Push fake audio/video to userspace for testing
-> > 		purposes
-> > 	- Push debug information to userspace via debugfs
-> > The Virtual Digital TV Driver (vidtv)  
-> 
-> Any feedback on this patch series for Daniel. He has been waiting for
-> reviews and feedback from media developers for a while now.
-> 
-> Please review the patches and give him feedback and help him with
-> next steps.
+  Linux 5.8-rc6 (2020-07-19 15:41:18 -0700)
 
-I'll seek for some time to look and review them next week.
+are available in the Git repository at:
 
-What's the current status of it? Is it probing properly and working
-fine, or are there any known bugs at the code?
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.8-rc7
 
-Thanks,
-Mauro
+for you to fetch changes up to fa5a198359053c8e21dcc2b39c0e13871059bc9f:
+
+  riscv: Parse all memory blocks to remove unusable memory (2020-07-24 22:08:25 -0700)
+
+----------------------------------------------------------------
+RISC-V Fixes for 5.8-rc7
+
+I have a few more fixes this week:
+
+* A fix to avoid using SBI calls during kasan initialization, as the SBI calls
+  themselves have not been probed yet.
+* Three fixes related to systems with multiple memory regions.
+
+----------------------------------------------------------------
+Atish Patra (3):
+      RISC-V: Set maximum number of mapped pages correctly
+      RISC-V: Do not rely on initrd_start/end computed during early dt parsing
+      riscv: Parse all memory blocks to remove unusable memory
+
+Vincent Chen (1):
+      riscv: kasan: use local_tlb_flush_all() to avoid uninitialized __sbi_rfence
+
+ arch/riscv/mm/init.c       | 66 +++++++++++++++++++++++++++++++---------------
+ arch/riscv/mm/kasan_init.c |  4 +--
+ 2 files changed, 47 insertions(+), 23 deletions(-)
