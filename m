@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D1C22D5EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 09:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702BB22D5F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgGYH6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 03:58:01 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:47723 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726434AbgGYH6A (ORCPT
+        id S1726676AbgGYICK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 04:02:10 -0400
+Received: from out28-149.mail.aliyun.com ([115.124.28.149]:43172 "EHLO
+        out28-149.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgGYICJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 03:58:00 -0400
-Received: from mail-qt1-f169.google.com ([209.85.160.169]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N9M1q-1kvJNS2iUG-015J4a; Sat, 25 Jul 2020 09:57:58 +0200
-Received: by mail-qt1-f169.google.com with SMTP id h21so2218814qtp.11;
-        Sat, 25 Jul 2020 00:57:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531uZjJYB8cu37wMA9gEr3iS+uXdtkWQ1L3OmAG3klRrftf8oDGX
-        e67p7cOO//lCAmbJHiGZz3oCo/vwrJzMV1392ZI=
-X-Google-Smtp-Source: ABdhPJwbhu349b6W7ly80SHf5qioCZqejIeokVKsvAD15ZNpVnDPsfJClkcWiDwOwPkEJU9Y0uBI/RPbLezsgxUVny8=
-X-Received: by 2002:ac8:4589:: with SMTP id l9mr13039488qtn.204.1595663877320;
- Sat, 25 Jul 2020 00:57:57 -0700 (PDT)
+        Sat, 25 Jul 2020 04:02:09 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07441843|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.00786423-0.000678854-0.991457;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03293;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.I7JBaAh_1595664124;
+Received: from 192.168.10.205(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I7JBaAh_1595664124)
+          by smtp.aliyun-inc.com(10.147.41.231);
+          Sat, 25 Jul 2020 16:02:05 +0800
+Subject: Re: [PATCH] MIPS: CI20: Update defconfig for EFUSE.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, keescook@chromium.org,
+        hns@goldelico.com, ebiederm@xmission.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+References: <20200723071950.130007-1-zhouyanjie@wanyeetech.com>
+ <20200723071950.130007-2-zhouyanjie@wanyeetech.com>
+ <V2ZWDQ.DNM4EVLAB6YN3@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <b1de1e95-9ce3-1324-346d-07196aa30637@wanyeetech.com>
+Date:   Sat, 25 Jul 2020 16:02:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.3.0
 MIME-Version: 1.0
-References: <20200724214221.28125-1-grygorii.strashko@ti.com> <a91d2bad-b794-fe07-679a-e5096aa5ace8@oracle.com>
-In-Reply-To: <a91d2bad-b794-fe07-679a-e5096aa5ace8@oracle.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 25 Jul 2020 09:57:41 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3N70PbotC18K-SG9+XgfApHNZyCYvUgOyfrxrP55zSEw@mail.gmail.com>
-Message-ID: <CAK8P3a3N70PbotC18K-SG9+XgfApHNZyCYvUgOyfrxrP55zSEw@mail.gmail.com>
-Subject: Re: [RESEND PATCH] ARM: dts: keystone-k2g-evm: fix rgmii phy-mode for
- ksz9031 phy
-To:     "santosh.shilimkar@oracle.com" <santosh.shilimkar@oracle.com>
-Cc:     "arm@kernel.org" <arm@kernel.org>, Olof Johansson <olof@lixom.net>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:NQRxxDNnaKwYvx9fuQIat0bcb+FYdaDNsod9SW/Hh8SMJ15t2Hm
- 8H/MC2t87Y+kuUKfnf4iisQZxL+/hXLlTSZmGnBRNdO4JyKgMULV13Wzza0VUyDGVHDv2KM
- sGIqkK6zOZeacv7Rv9aLSg7q92CzlOc87cHGcFS6AIqoUQK2dFP5s24Djyv9pAF2PKhslVK
- canfZfxOyCb9JNxyMRxjQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:L9DkJih6lFA=:xuAAaUn/2gYK/Eo24+3/GV
- pBWcIbwgw2zDaf0YQeuIkgRwoSOw40ibvpwrnE81EBKdf9jdg5TUf1t/uClTsHWrU70ze8Y6b
- 0g5K76juwtDaUdPeyiCP2OjspVKvzG6mkJzhILMc1pr7ruY8m2LaGxb381OZ2GI/2srYqAtnG
- LH0whww7Ze3QhfSjHgddIT3Ld3UevkjgmFK3t9GKVpv82KjAhh+zkVtbndU+6uO5TXK5JPFGU
- xoGQveQWGrgEh1R0e6bAlMFc0x/UkAgkxWxu7WBQyYyioa/qfPIUivYvs1KGAQTsKUR3HjOnb
- eTCb+UnuxiGEpi3nVUer0BeON7QNckbO2ebFXmBz1k4PJX7kZMZoGb2E3ayA7QOVW1yMRANYH
- 4uZSnnD7+4gOvmSMGScgIQYDCswFgqyxER6QGqfWoj6oXaChTheHxxgYK0g0GzKx9BdYr2ZXC
- 3/4idNixwcMWiSGfx3iJLVcLk9eONXWEExrPqGpHZYVhVxVf5B+FxAWDk++VDqI0zoaDkXntQ
- /Rv9TTQb05w1xpNe5DTi/Zf8m51xOzcDOCVU3UOUEH7WghghFd4vNvpPqBRa9r1OKB1wB8qCA
- McCMpkhotmdBYi57cIkjxQaQSJDErX+W8sAQdSzOhwAsUCuPOnGr6QA6F6Hac3yJsvW/tp5Jm
- /M/RRS1ii59PKkYfngX5uIgzoC0IrgWYwZxyAJ66F/shlghP/O/2P6vKQWHkSsNGWDmyixryu
- fMjETuHe+5tNKucCpt0Y7EVcg1T/EhJ/luObjLForjGRrA44fd+uaRe/GFLUmsNhTzSkw0crh
- ie+WwxXeL5iSmqhHsp3LSYsZJTINjo6HUEuIoMFjkbbinL2SnAQdnFk4q7NOaoZjAScxjbGaM
- WidK+jl/beWkxqn/bW93+iYlTRiJWjWys+PotWUJM92e6A+5hy5INk7Z3NZijtPBICT0JUGUe
- PImiyc3jDT7X79goHKRAzjl8C7WqCdIaNAKtCa5gsV9rqjHqghfTV
+In-Reply-To: <V2ZWDQ.DNM4EVLAB6YN3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 11:57 PM santosh.shilimkar@oracle.com
-<santosh.shilimkar@oracle.com> wrote:
-> On 7/24/20 2:42 PM, Grygorii Strashko wrote:
-> > Since commit bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the
-> > KSZ9031 PHY") the networking is broken on keystone-k2g-evm board.
-> >
-> > The above board have phy-mode = "rgmii-id" and it is worked before because
-> > KSZ9031 PHY started with default RGMII internal delays configuration (TX
-> > off, RX on 1.2 ns) and MAC provided TX delay by default.
-> > After above commit, the KSZ9031 PHY starts handling phy mode properly and
-> > enables both RX and TX delays, as result networking is become broken.
-> >
-> > Fix it by switching to phy-mode = "rgmii-rxid" to reflect previous
-> > behavior.
-> >
-> > Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> > Cc: Andrew Lunn <andrew@lunn.ch>
-> > Cc: Philippe Schenker <philippe.schenker@toradex.com>
-> > Fixes: bcf3440c6dd7 ("net: phy: micrel: add phy-mode support for the KSZ9031 PHY")
-> > Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> > ---
-> > Fix for one more broken TI board with KSZ9031 PHY.
-> Can you please apply this patch to your v5.8 fixes branch and send it
-> upstream ? Without the fix K2G EVM board is broken with v5.8.
+Hi Paul,
+
+在 2020/7/23 下午4:47, Paul Cercueil 写道:
+> Hi Zhou,
 >
-> Am hoping you can pick this up with pull request since it just one
-> patch.
+> Le jeu. 23 juil. 2020 à 15:19, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> The commit 19c968222934 ("MIPS: DTS: CI20: make DM9000 Ethernet
+>> controller use NVMEM to find the default MAC address") add EFUSE
+>> node for DM9000 in CI20, however, the EFUSE driver is not selected,
+>> which will cause the DM9000 to fail to read the MAC address from
+>> EFUSE, causing the following issue:
+>>
+>> [FAILED] Failed to start Raise network interfaces.
+>>
+>> Fix this problem by select CONFIG_JZ4780_EFUSE by default in the
+>> ci20_defconfig.
+>
+> Does it actually fix it on a clean 5.8-rc kernel?
+>
+> From what I know, the efuse driver cannot probe, because the nemc 
+> driver requests the complete memory resource, so the efuse driver's 
+> devm_platform_ioremap_resource() fails.
+>
+> I did send a patch to fix this 
+> (https://lore.kernel.org/lkml/551a8560261543c1decb1d4d1671ec4b7fa52fdb.1582905653.git.hns@goldelico.com/),
+> but it's hard to have somebody merge it, because nobody maintains 
+> drivers/memory/.
+>
+You are right, I cleaned up the changes made to support X1000's EFUSE 
+and rebase to clean 5.8-RC6, it still does not work properly, I think we 
+should drop this fix patch.
 
-I've applied it now, but would point out that it's generally better if you could
-forward the patch to soc@kernel.org with your Signed-off-by if you come
-across a similar patch again. That way it ends up in patchwork, and we
-are more likely to pick it up quickly.
+>> Fixes: 19c968222934 ("MIPS: DTS: CI20: make DM9000 Ethernet
+>> controller use NVMEM to find the default MAC address").
+>
+> That shouldn't be a fix IMHO - the devicetree was updated in one 
+> commit, the config should be updated in another. The "bug" here is 
+> that it wasn't done right away.
+>
+Okay.
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> Btw - when you add a Fixes: tag to fix a commit that is not for the 
+> kernel currently in RC phase, you need to Cc linux-stable as well.
+>
+Sure, I will pay attention next time.
 
-       Arnd
+Thanks and best regards!
+
+
+> Cheers,
+> -Paul
+>
+>> ---
+>>  arch/mips/configs/ci20_defconfig | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/mips/configs/ci20_defconfig 
+>> b/arch/mips/configs/ci20_defconfig
+>> index f433fad16073..ba26ba4de09a 100644
+>> --- a/arch/mips/configs/ci20_defconfig
+>> +++ b/arch/mips/configs/ci20_defconfig
+>> @@ -140,6 +140,7 @@ CONFIG_INGENIC_OST=y
+>>  CONFIG_MEMORY=y
+>>  CONFIG_PWM=y
+>>  CONFIG_PWM_JZ4740=m
+>> +CONFIG_JZ4780_EFUSE=y
+>>  CONFIG_EXT4_FS=y
+>>  # CONFIG_DNOTIFY is not set
+>>  CONFIG_AUTOFS_FS=y
+>> -- 
+>> 2.11.0
+>>
+>
