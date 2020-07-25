@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1416522D327
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 02:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E1722D320
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 02:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbgGYAOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 20:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgGYAOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 20:14:47 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF967C0619E4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 17:14:46 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id n22so11612533ejy.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 17:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z+Vu9pSlrXeJ0YA5vWHf53k6LVNR1H6tyHZmx21hYRQ=;
-        b=SjdFktkRZL5d9npLMGNf69oDrZeerMTNoyzDanecRnbmMLkkCIovy5VZzvZI9H6ZrE
-         wf7ggS1ZDWHplJE+/Rr6YYYW2Z/GmcKEAOxxbY8kHCtfA1cZZuMsSF4unXlrp05YmoKp
-         BzaKkLMhAS/juljjaUHYbMbZIBZuyPfCEsagQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z+Vu9pSlrXeJ0YA5vWHf53k6LVNR1H6tyHZmx21hYRQ=;
-        b=l6q71a9hTAO7Rawpx4LfdKpRNg88V1vURcUCdZGoXDwp6z3HoU77oc2XdePB21+ch4
-         VJULb+STHeDzKJPDYU8HklAzHRws3duHcQapkjumMrmc4YTvUnDU/Ukv3/zZthW8oiTd
-         eA7j3S9t7g295oTs3VVYC+R3IENZIjvK9sX6yRqcIufv8MqFmDJieSKYa3v9yzRzWXeR
-         9nzERbSV042F4BMextZKkyYJH19lyqKWIpuMqTFQ0Yn+2DhzjQu5XV+Qu9PfMxXgHrH4
-         niTn85lGuXMmpDFjEaHv+7EWbz+9cOxSPUAbTXGmRhBTmjRD9S4yevWRU6voSUxzaEdq
-         SBRw==
-X-Gm-Message-State: AOAM531Un/I5b7DLXFjRL2MvMRveF3vPED6J9mczQ6Fwy5/rGQFEHe71
-        9T+DZNFXT6dzP7dq0qFPUTxeTB/f15k=
-X-Google-Smtp-Source: ABdhPJy/SPdQuy9cb0v0GIEBBosy4QeRBSV4FrVR6r8IBAJ+q737dR4RMmiXE/kCZiMD1XCpPzHaWA==
-X-Received: by 2002:a17:906:960a:: with SMTP id s10mr1741142ejx.60.1595636085053;
-        Fri, 24 Jul 2020 17:14:45 -0700 (PDT)
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
-        by smtp.gmail.com with ESMTPSA id y7sm1613432ejd.73.2020.07.24.17.14.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jul 2020 17:14:44 -0700 (PDT)
-Received: by mail-wr1-f51.google.com with SMTP id 88so9712559wrh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 17:14:44 -0700 (PDT)
-X-Received: by 2002:a5d:6744:: with SMTP id l4mr8918727wrw.105.1595636083918;
- Fri, 24 Jul 2020 17:14:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200724213329.899216-1-swboyd@chromium.org> <20200724213329.899216-4-swboyd@chromium.org>
-In-Reply-To: <20200724213329.899216-4-swboyd@chromium.org>
-From:   Daniel Campello <campello@chromium.org>
-Date:   Fri, 24 Jul 2020 18:14:07 -0600
-X-Gmail-Original-Message-ID: <CAHcu+Va3wWW_5eONbdD_VL2H3p-u3-jv_MxBR7G5hFwCr6w+tA@mail.gmail.com>
-Message-ID: <CAHcu+Va3wWW_5eONbdD_VL2H3p-u3-jv_MxBR7G5hFwCr6w+tA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] iio: sx9310: whoami is unsigned
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Douglas Anderson <dianders@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726873AbgGYANZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 20:13:25 -0400
+Received: from out1.zte.com.cn ([202.103.147.172]:63072 "EHLO mxct.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726576AbgGYANZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 24 Jul 2020 20:13:25 -0400
+Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
+        by Forcepoint Email with ESMTPS id 278F0580FEE0C14D053A;
+        Sat, 25 Jul 2020 08:13:22 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notessmtp.zte.com.cn [10.30.1.239])
+        by mse-fl2.zte.com.cn with ESMTP id 06P0DLa9078414;
+        Sat, 25 Jul 2020 08:13:21 +0800 (GMT-8)
+        (envelope-from wang.yi59@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2020072508140226-4388898 ;
+          Sat, 25 Jul 2020 08:14:02 +0800 
+From:   Yi Wang <wang.yi59@zte.com.cn>
+To:     linux@armlinux.org.uk
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        wang.liang82@zte.com.cn, Liao Pingfang <liao.pingfang@zte.com.cn>
+Subject: [PATCH v2] ARM: milbeaut: Fix possible device node reference leak
+Date:   Sat, 25 Jul 2020 08:16:48 +0800
+Message-Id: <1595636208-15179-1-git-send-email-wang.yi59@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2020-07-25 08:14:02,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2020-07-25 08:13:26,
+        Serialize complete at 2020-07-25 08:13:26
+X-MAIL: mse-fl2.zte.com.cn 06P0DLa9078414
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 3:33 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> This is an unsigned value, actually it's a u8 but regmap doesn't handle
-> that easily. Let's make it unsigned throughout so that we don't need to
-> worry about signed vs. unsigned comparison behavior.
->
-> Cc: Gwendal Grignou <gwendal@chromium.org>
-> Cc: Daniel Campello <campello@chromium.org>
-> Cc: Hartmut Knaack <knaack.h@gmx.de>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Fixes: 72ad02b15d63 ("iio: Add SEMTECH SX9310/9311 sensor driver")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+From: Liao Pingfang <liao.pingfang@zte.com.cn>
 
-Reviewed-by: Daniel Campello <campello@chromium.org>
+The variable np in function m10v_smp_init takes the return value
+of of_find_compatible_node, which gets a node but does not put it. If
+this node is not put it may cause a memory leak. Hence put np after its
+life has been exhausted.
+
+Signed-off-by: Liao Pingfang <liao.pingfang@zte.com.cn>
+Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+---
+Changes in v2: improve the subject and description of this commit.
+
+ arch/arm/mach-milbeaut/platsmp.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/mach-milbeaut/platsmp.c b/arch/arm/mach-milbeaut/platsmp.c
+index 3ea880f..1f1ff21 100644
+--- a/arch/arm/mach-milbeaut/platsmp.c
++++ b/arch/arm/mach-milbeaut/platsmp.c
+@@ -53,6 +53,7 @@ static void m10v_smp_init(unsigned int max_cpus)
+ 		return;
+ 
+ 	m10v_smp_base = of_iomap(np, 0);
++	of_node_put(np);
+ 	if (!m10v_smp_base)
+ 		return;
+ 
+-- 
+2.9.5
+
