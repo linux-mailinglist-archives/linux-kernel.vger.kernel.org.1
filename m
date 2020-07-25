@@ -2,183 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FD322D5C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 09:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C51822D5C9
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 09:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727786AbgGYHTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 03:19:41 -0400
-Received: from out28-220.mail.aliyun.com ([115.124.28.220]:52579 "EHLO
-        out28-220.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726973AbgGYHTk (ORCPT
+        id S1726736AbgGYH3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 03:29:48 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:43789 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726017AbgGYH3r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 03:19:40 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07446707|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0250197-0.000978011-0.974002;FP=6268955692866688362|2|2|11|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=19;RT=19;SR=0;TI=SMTPD_---.I7IIM8t_1595661564;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I7IIM8t_1595661564)
-          by smtp.aliyun-inc.com(10.147.42.253);
-          Sat, 25 Jul 2020 15:19:35 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org, robh+dt@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, paul@crapouillou.net,
-        prasannatsmkumar@gmail.com, kishon@ti.com, vkoul@kernel.org,
-        gor@linux.ibm.com, hca@linux.ibm.com,
-        christophe.jaillet@wanadoo.fr, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: [PATCH RESEND v6 4/5] USB: PHY: JZ4770: Reformat the code to align it.
-Date:   Sat, 25 Jul 2020 15:19:02 +0800
-Message-Id: <20200725071903.63315-5-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200725071903.63315-1-zhouyanjie@wanyeetech.com>
-References: <20200725071903.63315-1-zhouyanjie@wanyeetech.com>
+        Sat, 25 Jul 2020 03:29:47 -0400
+Received: by mail-lj1-f196.google.com with SMTP id f5so12160684ljj.10
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 00:29:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NFKiTLk4YQj4CQlqKNPWANcICm1Rabpmzh+rUQVs7dg=;
+        b=nEEo4uaxJi655H9db3UXmorToxufcurQcrOvCzWNwDlNNs2hYk5YuFpB64D9ziKQxU
+         v//qVfTi46CkbxuDCMYdqCsd2MJoY1+FdwPOhYheI72CD3Y3JaQWa9eIFTBgCXggrhNR
+         49jgHYm7KqGRlfWWXhDojwcdVZftP961urzbwEeVY5VTiul4x7Q/0L4AYjg7X8YrXKZD
+         qTdFOQDvhZvVhDcXfneNFVPfhb0GH0CUuuR1gLepIoWE+5qTYDmX14tNH1mitlgsSzn8
+         /i5N2xQRqIMySYiLADMg7Pz1euRxuJD04JczveNmEajL7/6knQ4m/0+947xK+g0oJvAe
+         s+7A==
+X-Gm-Message-State: AOAM533mrjyQuynpZcFJ7xk6E0xyh4Cq7FPfeGQp4wPfYyrXGhRcP8C+
+        Jby2Q7h7vNVe6LOo9luX894=
+X-Google-Smtp-Source: ABdhPJzpoD92jn7emirtBlyhivTUkCCnZY+Bbfmlt2Mn/k6pRPDuIo0iv/HdUCEAwLL8BnvDkPy2LA==
+X-Received: by 2002:a2e:864b:: with SMTP id i11mr5746421ljj.64.1595662185716;
+        Sat, 25 Jul 2020 00:29:45 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id n29sm1158278lfi.9.2020.07.25.00.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jul 2020 00:29:44 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jzEci-0008MI-7r; Sat, 25 Jul 2020 09:29:36 +0200
+Date:   Sat, 25 Jul 2020 09:29:36 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Li Heng <liheng40@huawei.com>
+Cc:     johan@kernel.org, elder@kernel.org, gregkh@linuxfoundation.org,
+        viresh.kumar@linaro.org, greybus-dev@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] svc: add missed destroy_workqueue when gb_svc_create
+ fails
+Message-ID: <20200725072936.GQ3634@localhost>
+References: <1595646397-53868-1-git-send-email-liheng40@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595646397-53868-1-git-send-email-liheng40@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reformat the code (add one level of indentation before the values),
-to align the code in the macro definition section.
+On Sat, Jul 25, 2020 at 11:06:37AM +0800, Li Heng wrote:
+> destroy_workqueue() should be called to destroy svc->wq
+> when gb_svc_create() init resources fails.
+> 
+> Fixes: 8465def499c7 ("staging: greybus: move the greybus core to drivers/greybus")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Li Heng <liheng40@huawei.com>
+> ---
+>  drivers/greybus/svc.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/greybus/svc.c b/drivers/greybus/svc.c
+> index ce7740e..38f858f 100644
+> --- a/drivers/greybus/svc.c
+> +++ b/drivers/greybus/svc.c
+> @@ -1340,6 +1340,7 @@ struct gb_svc *gb_svc_create(struct gb_host_device *hd)
+>  
+>  err_put_device:
+>  	put_device(&svc->dev);
+> +	destroy_workqueue(svc->wq);
 
-Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
+Your bot is broken; the workqueue is released in gb_svc_release(). 
 
-Notes:
-    v1->v2:
-    Add support for the JZ4780 SoC.
-    
-    v2->v3:
-    No change.
-    
-    v3->v4:
-    No change.
-    
-    v4->v5:
-    No change.
-    
-    v5->v6:
-    No change.
+And please fix your internal review process so that you catch things
+like this before posting.
 
- drivers/usb/phy/phy-jz4770.c | 74 ++++++++++++++++++++++----------------------
- 1 file changed, 37 insertions(+), 37 deletions(-)
+>  	return NULL;
+>  }
 
-diff --git a/drivers/usb/phy/phy-jz4770.c b/drivers/usb/phy/phy-jz4770.c
-index b1540e059a09..23d38cbc150e 100644
---- a/drivers/usb/phy/phy-jz4770.c
-+++ b/drivers/usb/phy/phy-jz4770.c
-@@ -15,46 +15,46 @@
- #include <linux/usb/phy.h>
- 
- /* OTGPHY register offsets */
--#define REG_USBPCR_OFFSET	0x00
--#define REG_USBRDT_OFFSET	0x04
--#define REG_USBVBFIL_OFFSET	0x08
--#define REG_USBPCR1_OFFSET	0x0c
-+#define REG_USBPCR_OFFSET			0x00
-+#define REG_USBRDT_OFFSET			0x04
-+#define REG_USBVBFIL_OFFSET			0x08
-+#define REG_USBPCR1_OFFSET			0x0c
- 
- /* bits within the USBPCR register */
--#define USBPCR_USB_MODE		BIT(31)
--#define USBPCR_AVLD_REG		BIT(30)
--#define USBPCR_COMMONONN	BIT(25)
--#define USBPCR_VBUSVLDEXT	BIT(24)
--#define USBPCR_VBUSVLDEXTSEL	BIT(23)
--#define USBPCR_POR		BIT(22)
--#define USBPCR_SIDDQ		BIT(21)
--#define USBPCR_OTG_DISABLE	BIT(20)
--#define USBPCR_TXPREEMPHTUNE	BIT(6)
-+#define USBPCR_USB_MODE				BIT(31)
-+#define USBPCR_AVLD_REG				BIT(30)
-+#define USBPCR_COMMONONN			BIT(25)
-+#define USBPCR_VBUSVLDEXT			BIT(24)
-+#define USBPCR_VBUSVLDEXTSEL		BIT(23)
-+#define USBPCR_POR					BIT(22)
-+#define USBPCR_SIDDQ				BIT(21)
-+#define USBPCR_OTG_DISABLE			BIT(20)
-+#define USBPCR_TXPREEMPHTUNE		BIT(6)
- 
- #define USBPCR_IDPULLUP_LSB	28
--#define USBPCR_IDPULLUP_MASK	GENMASK(29, USBPCR_IDPULLUP_LSB)
--#define USBPCR_IDPULLUP_ALWAYS	(0x2 << USBPCR_IDPULLUP_LSB)
--#define USBPCR_IDPULLUP_SUSPEND	(0x1 << USBPCR_IDPULLUP_LSB)
--#define USBPCR_IDPULLUP_OTG	(0x0 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_MASK		GENMASK(29, USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_ALWAYS		(0x2 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_SUSPEND		(0x1 << USBPCR_IDPULLUP_LSB)
-+#define USBPCR_IDPULLUP_OTG			(0x0 << USBPCR_IDPULLUP_LSB)
- 
--#define USBPCR_COMPDISTUNE_LSB	17
--#define USBPCR_COMPDISTUNE_MASK	GENMASK(19, USBPCR_COMPDISTUNE_LSB)
--#define USBPCR_COMPDISTUNE_DFT	(0x4 << USBPCR_COMPDISTUNE_LSB)
-+#define USBPCR_COMPDISTUNE_LSB		17
-+#define USBPCR_COMPDISTUNE_MASK		GENMASK(19, USBPCR_COMPDISTUNE_LSB)
-+#define USBPCR_COMPDISTUNE_DFT		(0x4 << USBPCR_COMPDISTUNE_LSB)
- 
--#define USBPCR_OTGTUNE_LSB	14
--#define USBPCR_OTGTUNE_MASK	GENMASK(16, USBPCR_OTGTUNE_LSB)
--#define USBPCR_OTGTUNE_DFT	(0x4 << USBPCR_OTGTUNE_LSB)
-+#define USBPCR_OTGTUNE_LSB			14
-+#define USBPCR_OTGTUNE_MASK			GENMASK(16, USBPCR_OTGTUNE_LSB)
-+#define USBPCR_OTGTUNE_DFT			(0x4 << USBPCR_OTGTUNE_LSB)
- 
- #define USBPCR_SQRXTUNE_LSB	11
--#define USBPCR_SQRXTUNE_MASK	GENMASK(13, USBPCR_SQRXTUNE_LSB)
-+#define USBPCR_SQRXTUNE_MASK		GENMASK(13, USBPCR_SQRXTUNE_LSB)
- #define USBPCR_SQRXTUNE_DCR_20PCT	(0x7 << USBPCR_SQRXTUNE_LSB)
--#define USBPCR_SQRXTUNE_DFT	(0x3 << USBPCR_SQRXTUNE_LSB)
-+#define USBPCR_SQRXTUNE_DFT			(0x3 << USBPCR_SQRXTUNE_LSB)
- 
--#define USBPCR_TXFSLSTUNE_LSB	7
--#define USBPCR_TXFSLSTUNE_MASK	GENMASK(10, USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_LSB		7
-+#define USBPCR_TXFSLSTUNE_MASK		GENMASK(10, USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_DCR_50PPT	(0xf << USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_DCR_25PPT	(0x7 << USBPCR_TXFSLSTUNE_LSB)
--#define USBPCR_TXFSLSTUNE_DFT	(0x3 << USBPCR_TXFSLSTUNE_LSB)
-+#define USBPCR_TXFSLSTUNE_DFT		(0x3 << USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_INC_25PPT	(0x1 << USBPCR_TXFSLSTUNE_LSB)
- #define USBPCR_TXFSLSTUNE_INC_50PPT	(0x0 << USBPCR_TXFSLSTUNE_LSB)
- 
-@@ -63,21 +63,21 @@
- #define USBPCR_TXHSXVTUNE_DFT		(0x3 << USBPCR_TXHSXVTUNE_LSB)
- #define USBPCR_TXHSXVTUNE_DCR_15MV	(0x1 << USBPCR_TXHSXVTUNE_LSB)
- 
--#define USBPCR_TXRISETUNE_LSB	4
--#define USBPCR_TXRISETUNE_MASK	GENMASK(5, USBPCR_TXRISETUNE_LSB)
--#define USBPCR_TXRISETUNE_DFT	(0x3 << USBPCR_TXRISETUNE_LSB)
-+#define USBPCR_TXRISETUNE_LSB		4
-+#define USBPCR_TXRISETUNE_MASK		GENMASK(5, USBPCR_TXRISETUNE_LSB)
-+#define USBPCR_TXRISETUNE_DFT		(0x3 << USBPCR_TXRISETUNE_LSB)
- 
--#define USBPCR_TXVREFTUNE_LSB	0
--#define USBPCR_TXVREFTUNE_MASK	GENMASK(3, USBPCR_TXVREFTUNE_LSB)
-+#define USBPCR_TXVREFTUNE_LSB		0
-+#define USBPCR_TXVREFTUNE_MASK		GENMASK(3, USBPCR_TXVREFTUNE_LSB)
- #define USBPCR_TXVREFTUNE_INC_25PPT	(0x7 << USBPCR_TXVREFTUNE_LSB)
--#define USBPCR_TXVREFTUNE_DFT	(0x5 << USBPCR_TXVREFTUNE_LSB)
-+#define USBPCR_TXVREFTUNE_DFT		(0x5 << USBPCR_TXVREFTUNE_LSB)
- 
- /* bits within the USBRDTR register */
- #define USBRDT_UTMI_RST				BIT(27)
- #define USBRDT_HB_MASK				BIT(26)
--#define USBRDT_VBFIL_LD_EN	BIT(25)
--#define USBRDT_IDDIG_EN		BIT(24)
--#define USBRDT_IDDIG_REG	BIT(23)
-+#define USBRDT_VBFIL_LD_EN			BIT(25)
-+#define USBRDT_IDDIG_EN				BIT(24)
-+#define USBRDT_IDDIG_REG			BIT(23)
- #define USBRDT_VBFIL_EN				BIT(2)
- 
- /* bits within the USBPCR1 register */
--- 
-2.11.0
-
+Johan
