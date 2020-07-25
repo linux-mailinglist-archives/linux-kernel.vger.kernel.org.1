@@ -2,90 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E686D22D94C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10D22D94F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgGYSPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgGYSPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:15:34 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD9FC08C5C0;
-        Sat, 25 Jul 2020 11:15:34 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id w9so9333848qts.6;
-        Sat, 25 Jul 2020 11:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=BoLLs9pL25bQsh1K8AZlZy8BCoVEU1VbiiHrpjhJ70k=;
-        b=jt8+hJpYx7U7Pv4o2UdmKJnGDCnIYuK7uaPWiLSuPerSnu/1L9O+7cW1Se5svGYhBq
-         PGZN5uls/Pto4Vf8OVG6r0LfbTqSTYWzZ6dhgYu/LwwpKeF7H2iN9ZCqxnST7LDMPY44
-         m+WLoh1ICZwjWcMswMJXNyzFCk7+FYnXesjgx8VPwC72onuXCRtKugi7xXofHe5bCsZl
-         dIGiubPw2iiJSqPVzRwcJcr52Kq0GlUIMug5dee0xyCLfV2uOtWLjR6QAB+ZyVrdl8JK
-         yo/RS/RzGqC+pjxl2B+88wB2t5fQDXYExVbKqi4ThXbx5oczuTI7hPQirh1Uc7bY/uhQ
-         Qr+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=BoLLs9pL25bQsh1K8AZlZy8BCoVEU1VbiiHrpjhJ70k=;
-        b=qxkyAcEMGR+OkytRYFFV3m3OScuPtnlRvY9T6+KqWFnldbMBkwsrqp0YWG8/jHOcGa
-         /4m4XXl10WYesVIkYITNks66VGSO5lVvQ/DwnPoCv7gll1qvdcrWbJySI74iKSpJfNsP
-         5qh6S3QDglXr7Wm4o10sT2suk3RkZKBjUzdUD/Fhu3eyeGdKXaywiqjG4X1ZZRrsK3wu
-         t6S8qsikw9pXuCIvqd0tYeqeYeEs/uyupw9gb9VkC6ujZZ1F0l91d75eO8Yaa4sGW9bR
-         XFXo8WZk+EmPe1eKuUauzX3RsnnVGjXnmHErSICMc+BZ66kTdDWbUlB7qCVW4id3dEx5
-         He3w==
-X-Gm-Message-State: AOAM530uK7oCNMHlxwXiHLXit1zVa5zeAZgfI2s+xvuKQrH2qCtPgPyV
-        dy2FSWFgiN/Tw9AjmUL1QSRdcGqJEVyuXQ==
-X-Google-Smtp-Source: ABdhPJxGFMafz00I9Zqenkqzb2gAb3+rqPW8PStREmdM83sDRCB6ZQeowtht6kGoIDWaz3WOadCKOQ==
-X-Received: by 2002:ac8:478e:: with SMTP id k14mr12856517qtq.21.1595700933813;
-        Sat, 25 Jul 2020 11:15:33 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:dd0e:1a59:cbe4:73ee])
-        by smtp.googlemail.com with ESMTPSA id o184sm12177664qkd.41.2020.07.25.11.15.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 11:15:33 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Shuah Khan <shuah@kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] [cgroup/testing] cg_read_strcmp: Fix null pointer dereference
-Date:   Sat, 25 Jul 2020 14:14:51 -0400
-Message-Id: <20200725181506.20199-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727828AbgGYSXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:23:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55430 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726727AbgGYSXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 14:23:44 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jzOpb-006pw9-R7; Sat, 25 Jul 2020 20:23:35 +0200
+Date:   Sat, 25 Jul 2020 20:23:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, jacek.anaszewski@gmail.com,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC leds + net-next v3 2/2] net: phy: marvell: add
+ support for PHY LEDs via LED class
+Message-ID: <20200725182335.GN1472201@lunn.ch>
+References: <20200724164603.29148-1-marek.behun@nic.cz>
+ <20200724164603.29148-3-marek.behun@nic.cz>
+ <20200725172318.GK1472201@lunn.ch>
+ <20200725200224.3f03c041@nic.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200725200224.3f03c041@nic.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Passing NULL in strcmp will cause a segmentation fault.
-Fix this by returning -1 if expected is NULL pointer. 
+On Sat, Jul 25, 2020 at 08:02:24PM +0200, Marek Behun wrote:
+> On Sat, 25 Jul 2020 19:23:18 +0200
+> Andrew Lunn <andrew@lunn.ch> wrote:
+> 
+> > On Fri, Jul 24, 2020 at 06:46:03PM +0200, Marek Behún wrote:
+> > > This patch adds support for controlling the LEDs connected to several
+> > > families of Marvell PHYs via the PHY HW LED trigger API. These families
+> > > are: 88E1112, 88E1121R, 88E1240, 88E1340S, 88E1510 and 88E1545. More can
+> > > be added.
+> > > 
+> > > The code reads LEDs definitions from the device-tree node of the PHY.
+> > > 
+> > > This patch does not yet add support for compound LED modes. This could
+> > > be achieved via the LED multicolor framework (which is not yet in
+> > > upstream).
+> > > 
+> > > Settings such as HW blink rate or pulse stretch duration are not yet
+> > > supported, nor are LED polarity settings.
+> > > 
+> > > Signed-off-by: Marek Behún <marek.behun@nic.cz>
+> > > ---
+> > >  drivers/net/phy/Kconfig   |   1 +
+> > >  drivers/net/phy/marvell.c | 364 ++++++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 365 insertions(+)
+> > > 
+> > > diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+> > > index ffea11f73acd..5428a8af26d2 100644
+> > > --- a/drivers/net/phy/Kconfig
+> > > +++ b/drivers/net/phy/Kconfig
+> > > @@ -462,6 +462,7 @@ config LXT_PHY
+> > >  
+> > >  config MARVELL_PHY
+> > >  	tristate "Marvell PHYs"
+> > > +	depends on LED_TRIGGER_PHY_HW  
+> > 
+> > Does it really depend on it? I think the driver will work fine without
+> > it, just the LED control will be missing.
+> > 
+> > It is really a policy question. Cable test is always available, there
+> > is no Kconfig'ury to stop it getting built. Is LED support really big
+> > so that somebody might want to disable it? I think not. So lets just
+> > enable it all the time.
+> 
+> OK
+> 
+> > >  	help
+> > >  	  Currently has a driver for the 88E1011S
+> > >    
+> > 
+> > > +enum {
+> > > +	L1V0_RECV		= BIT(0),
+> > > +	L1V0_COPPER		= BIT(1),
+> > > +	L1V5_100_FIBER		= BIT(2),
+> > > +	L1V5_100_10		= BIT(3),
+> > > +	L2V2_INIT		= BIT(4),
+> > > +	L2V2_PTP		= BIT(5),
+> > > +	L2V2_DUPLEX		= BIT(6),
+> > > +	L3V0_FIBER		= BIT(7),
+> > > +	L3V0_LOS		= BIT(8),
+> > > +	L3V5_TRANS		= BIT(9),
+> > > +	L3V7_FIBER		= BIT(10),
+> > > +	L3V7_DUPLEX		= BIT(11),  
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- tools/testing/selftests/cgroup/cgroup_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+        COMMON			= BIT(32),
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 8a637ca7d73a..05853b0b8831 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -106,7 +106,7 @@ int cg_read_strcmp(const char *cgroup, const char *control,
- 
- 	/* Handle the case of comparing against empty string */
- 	if (!expected)
--		size = 32;
-+		return -1;
- 	else
- 		size = strlen(expected) + 1;
- 
--- 
-2.17.1
+> > > +static const struct marvell_led_mode_info marvell_led_mode_info[] = {
+> > > +	{ "link/act",			{ 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, }, COMMON },
+> > > +	{ "1Gbps/100Mbps/10Mbps",	{ 0x2,  -1,  -1,  -1,  -1,  -1, }, COMMON },
+> > > +	{ "act",			{ 0x3, 0x3, 0x3, 0x3, 0x3, 0x3, }, COMMON },
+> > > +	{ "blink-act",			{ 0x4, 0x4, 0x4, 0x4, 0x4, 0x4, }, COMMON },
+> > > +	{ "tx",				{ 0x5,  -1, 0x5,  -1, 0x5, 0x5, }, COMMON },
+> > > +	{ "tx",				{  -1,  -1,  -1, 0x5,  -1,  -1, }, L3V5_TRANS },
+> > > +	{ "rx",				{  -1,  -1,  -1,  -1, 0x0, 0x0, }, COMMON },
+> > > +	{ "rx",				{  -1, 0x0,  -1,  -1,  -1,  -1, }, L1V0_RECV },
+> > > +	{ "copper",			{ 0x6,  -1,  -1,  -1,  -1,  -1, }, COMMON },
+> > > +	{ "copper",			{  -1, 0x0,  -1,  -1,  -1,  -1, }, L1V0_COPPER },
+> > > +	{ "1Gbps",			{ 0x7,  -1,  -1,  -1,  -1,  -1, }, COMMON },
+> > > +	{ "link/rx",			{  -1, 0x2,  -1, 0x2, 0x2, 0x2, }, COMMON },
+> > > +	{ "100Mbps-fiber",		{  -1, 0x5,  -1,  -1,  -1,  -1, }, L1V5_100_FIBER },
+> > > +	{ "100Mbps-10Mbps",		{  -1, 0x5,  -1,  -1,  -1,  -1, }, L1V5_100_10 },
+> > > +	{ "1Gbps-100Mbps",		{  -1, 0x6,  -1,  -1,  -1,  -1, }, COMMON },
+> > > +	{ "1Gbps-10Mbps",		{  -1,  -1, 0x6, 0x6,  -1,  -1, }, COMMON },
+> > > +	{ "100Mbps",			{  -1, 0x7,  -1,  -1,  -1,  -1, }, COMMON },
+> > > +	{ "10Mbps",			{  -1,  -1, 0x7,  -1,  -1,  -1, }, COMMON },
+> > > +	{ "fiber",			{  -1,  -1,  -1, 0x0,  -1,  -1, }, L3V0_FIBER },
+> > > +	{ "fiber",			{  -1,  -1,  -1, 0x7,  -1,  -1, }, L3V7_FIBER },
+> > > +	{ "FullDuplex",			{  -1,  -1,  -1, 0x7,  -1,  -1, }, L3V7_DUPLEX },
+> > > +	{ "FullDuplex",			{  -1,  -1,  -1,  -1, 0x6, 0x6, }, COMMON },
+> > > +	{ "FullDuplex/collision",	{  -1,  -1,  -1,  -1, 0x7, 0x7, }, COMMON },
+> > > +	{ "FullDuplex/collision",	{  -1,  -1, 0x2,  -1,  -1,  -1, }, L2V2_DUPLEX },
+> > > +	{ "ptp",			{  -1,  -1, 0x2,  -1,  -1,  -1, }, L2V2_PTP },
+> > > +	{ "init",			{  -1,  -1, 0x2,  -1,  -1,  -1, }, L2V2_INIT },
+> > > +	{ "los",			{  -1,  -1,  -1, 0x0,  -1,  -1, }, L3V0_LOS },
+> > > +	{ "hi-z",			{ 0xa, 0xa, 0xa, 0xa, 0xa, 0xa, }, COMMON },
+> > > +	{ "blink",			{ 0xb, 0xb, 0xb, 0xb, 0xb, 0xb, }, COMMON },
+> > > +};
+> > > +
 
+> > > +static const struct marvell_leds_info marvell_leds_info[] = {
+> > > +	LED(1112,  4, COMMON | L1V0_COPPER | L1V5_100_FIBER | L2V2_INIT | L3V0_LOS | L3V5_TRANS | L3V7_FIBER),
+> > > +	LED(1121R, 3, COMMON | L1V5_100_10),
+> > > +	LED(1240,  6, COMMON | L3V5_TRANS),
+> > > +	LED(1340S, 6, COMMON | L1V0_COPPER | L1V5_100_FIBER | L2V2_PTP | L3V0_FIBER | L3V7_DUPLEX),
+> > > +	LED(1510,  3, COMMON | L1V0_RECV | L1V5_100_FIBER | L2V2_DUPLEX),
+> > > +	LED(1545,  6, COMMON | L1V5_100_FIBER | L3V0_FIBER | L3V7_DUPLEX),
+> > > +};
+> > > +
+
+> > > +{
+> > > +	return mode->regval[led->idx] != -1 && (!mode->flags || (priv->led_flags & mode->flags));  
+
+This then becomes
+
+return mode->regval[led->idx] != -1 && (priv->led_flags & mode->flags));  
+
+       Andrew
