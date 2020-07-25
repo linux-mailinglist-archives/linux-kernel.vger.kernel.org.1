@@ -2,102 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EF722D5F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D31022D5F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgGYILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 04:11:05 -0400
-Received: from mail.fudan.edu.cn ([202.120.224.10]:47129 "EHLO fudan.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726434AbgGYILE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 04:11:04 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Sat, 25 Jul 2020 04:11:02 EDT
+        id S1726668AbgGYIIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 04:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbgGYIID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 04:08:03 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85124C0619D3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 01:08:03 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id m22so6659189pgv.9
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 01:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=Bmmdc9TdbNDoanpb/xc0KWb2EO1V4Pol3FKa645b28M=; b=z
-        9j/phfFLzDq96MMao2Hgly1H6lxHJPceSKaL0ryuAAR8BAyi4N1tzn+w16XSrUjX
-        vLj/343S8/6vPaSgPvsNZsxY5SmsMK8GUunwiTfXrQJrTvJ1Ow53fNL3nUDCEwni
-        BoBefddlefeb99QWsNH02h3mighjvORaNunjiDB23I=
-Received: from localhost.localdomain (unknown [202.120.224.53])
-        by app1 (Coremail) with SMTP id XAUFCgBX2EFe5xtfDEgvAg--.23318S3;
-        Sat, 25 Jul 2020 16:03:43 +0800 (CST)
-From:   Xiyu Yang <xiyuyang19@fudan.edu.cn>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>, Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH] ipv6: Fix nexthop refcnt leak when creating ipv6 route info
-Date:   Sat, 25 Jul 2020 16:02:18 +0800
-Message-Id: <1595664139-40703-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: XAUFCgBX2EFe5xtfDEgvAg--.23318S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr45uFyrXFWxWF15AryrJFb_yoW8XryfpF
-        WfKrZ8Xr1rCa4UGas5ta1xtF13Jw48G3WkWFy3Ca93Kr98Z34vyr1jgrWjvrW7XrWxG34a
-        qFWjvr1jkF9xCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUjn2atUUUUU==
-X-CM-SenderInfo: irzsiiysuqikmy6i3vldqovvfxof0/
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V3e7B98suvcaIJcRxtAbRV7MtSqXxZMIYgOr8Y/2Cho=;
+        b=Eq9ln5/Vrq7DfMiTlCglaTXw34Kc7eYgvg/zVIqgBwBC8l6xT55SAfH/E/xkG5j67i
+         48yEV0H52Lu5VNIEKu+gB+2wIpy+MsmgxPvw8FCgyhQX98SesXuia0rcjCftjKeYH6Z5
+         JpOOeBHWd/VyFICsrM7d7hRnsKi3LFl4KMnAxTQK9LhrHJlcxfBVB5ykLtTXmZL2BzDL
+         xi00wdjC29JvLBqqMFngq3Byg+qsqqgFkB10P4RVrDNlGlPToVD4Rh3zuz25msQwNaLU
+         /aBWSDfns4t5S5+ZyZLxDWAyktqlpGmfSgsOHnujyKs0s656pjsjbCiqW6PjPOpJsfQW
+         b9vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V3e7B98suvcaIJcRxtAbRV7MtSqXxZMIYgOr8Y/2Cho=;
+        b=uU8qPsE7JLLScp+CTI+fB6cAMGuJFNK4WW9jI+u/2qxRdzbP0APlh6NGwSalJjWIhF
+         vO/uNW93rGTIULD31SJ4OZWY/R3QbZ0QSkwEdR1TyPIuWyC1pe0Hwkm8rhO9zNHyTKTR
+         HD5+Qcn67+2LdYqSI860/Z9ioLXTG3J1h1EqUwg9VcOwP1VV9J8hsBq2+c5npjtKBZuv
+         vEx2jPNEyBZHFH38XjbfbV4lBlFLa5mOMBzV2zEOg/PEhsUm0xOZoYciM7AtikSdHhNO
+         ltPtDwraKS2Mk7w0FzVdvcPZbSVBpINLzAZFMvX6aSNOPMPsw+6aHMMXemY7t7UQAl+t
+         37ng==
+X-Gm-Message-State: AOAM5320qyMo4eUNtFk6mbHq2J574f4O2N7pIgSUAP/exBq2baPPoMN8
+        31hTqSsSjjKTEEVYfTWWHfsP4A==
+X-Google-Smtp-Source: ABdhPJwieFWFKBo6dK2nsLGlPvz7ZpBX1E2byH5k1yp9JTkjjhFKRy4UbI4RDxPgUf0YN/PVOi6Xvw==
+X-Received: by 2002:a62:ab17:: with SMTP id p23mr12981470pff.177.1595664482856;
+        Sat, 25 Jul 2020 01:08:02 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.221.71])
+        by smtp.gmail.com with ESMTPSA id r4sm7786127pji.37.2020.07.25.01.07.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 25 Jul 2020 01:08:02 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        mhocko@kernel.org
+Cc:     rientjes@google.com, mgorman@suse.de, walken@google.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        Jianchao Guo <guojianchao@bytedance.com>
+Subject: [PATCH v3] mm/hugetlb: add mempolicy check in the reservation routine
+Date:   Sat, 25 Jul 2020 16:07:49 +0800
+Message-Id: <20200725080749.70470-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ip6_route_info_create() invokes nexthop_get(), which increases the
-refcount of the "nh".
+In the reservation routine, we only check whether the cpuset meets
+the memory allocation requirements. But we ignore the mempolicy of
+MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
+memory allocation may fail due to mempolicy restrictions and receives
+the SIGBUS signal. This can be reproduced by the follow steps.
 
-When ip6_route_info_create() returns, local variable "nh" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+ 1) Compile the test case.
+    cd tools/testing/selftests/vm/
+    gcc map_hugetlb.c -o map_hugetlb
 
-The reference counting issue happens in one exception handling path of
-ip6_route_info_create(). When nexthops can not be used with source
-routing, the function forgets to decrease the refcnt increased by
-nexthop_get(), causing a refcnt leak.
+ 2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
+    system. Each node will pre-allocate one huge page.
+    echo 2 > /proc/sys/vm/nr_hugepages
 
-Fix this issue by pulling up the error source routing handling when
-nexthops can not be used with source routing.
+ 3) Run test case(mmap 4MB). We receive the SIGBUS signal.
+    numactl --membind=0 ./map_hugetlb 4
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+With this patch applied, the mmap will fail in the step 3) and throw
+"mmap: Cannot allocate memory".
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reported-by: Jianchao Guo <guojianchao@bytedance.com>
+Suggested-by: Michal Hocko <mhocko@kernel.org>
 ---
- net/ipv6/route.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+chagelog in v3:
+ 1) Do not allocate nodemask on the stack.
+ 2) Update comment.
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 82cbb46a2a4f..427ecd7032bd 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -3682,14 +3682,14 @@ static struct fib6_info *ip6_route_info_create(struct fib6_config *cfg,
- 	rt->fib6_src.plen = cfg->fc_src_len;
- #endif
- 	if (nh) {
--		if (!nexthop_get(nh)) {
--			NL_SET_ERR_MSG(extack, "Nexthop has been deleted");
--			goto out;
--		}
- 		if (rt->fib6_src.plen) {
- 			NL_SET_ERR_MSG(extack, "Nexthops can not be used with source routing");
+changelog in v2:
+ 1) Reuse policy_nodemask().
+
+ include/linux/mempolicy.h |  1 +
+ mm/hugetlb.c              | 23 +++++++++++++++++++----
+ mm/mempolicy.c            |  2 +-
+ 3 files changed, 21 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+index ea9c15b60a96..6b9640f1c990 100644
+--- a/include/linux/mempolicy.h
++++ b/include/linux/mempolicy.h
+@@ -152,6 +152,7 @@ extern int huge_node(struct vm_area_struct *vma,
+ extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
+ extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+ 				const nodemask_t *mask);
++extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
+ extern unsigned int mempolicy_slab_node(void);
+ 
+ extern enum zone_type policy_zone;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 589c330df4db..6f8e79e76676 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -3463,13 +3463,22 @@ static int __init default_hugepagesz_setup(char *s)
+ }
+ __setup("default_hugepagesz=", default_hugepagesz_setup);
+ 
+-static unsigned int cpuset_mems_nr(unsigned int *array)
++static unsigned int allowed_mems_nr(struct hstate *h)
+ {
+ 	int node;
+ 	unsigned int nr = 0;
++	struct mempolicy *mpol = get_task_policy(current);
++	nodemask_t *mpol_allowed;
++	unsigned int *array = h->free_huge_pages_node;
++	gfp_t gfp_mask = htlb_alloc_mask(h);
++
++	mpol_allowed = policy_nodemask(gfp_mask, mpol);
+ 
+-	for_each_node_mask(node, cpuset_current_mems_allowed)
+-		nr += array[node];
++	for_each_node_mask(node, cpuset_current_mems_allowed) {
++		if (!mpol_allowed ||
++		    (mpol_allowed && node_isset(node, *mpol_allowed)))
++			nr += array[node];
++	}
+ 
+ 	return nr;
+ }
+@@ -3648,12 +3657,18 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
+ 	 * we fall back to check against current free page availability as
+ 	 * a best attempt and hopefully to minimize the impact of changing
+ 	 * semantics that cpuset has.
++	 *
++	 * Apart from cpuset, we also have memory policy mechanism that
++	 * also determines from which node the kernel will allocate memory
++	 * in a NUMA system. So similar to cpuset, we also should consider
++	 * the memory policy of the current task. Similar to the description
++	 * above.
+ 	 */
+ 	if (delta > 0) {
+ 		if (gather_surplus_pages(h, delta) < 0)
+ 			goto out;
+ 
+-		if (delta > cpuset_mems_nr(h->free_huge_pages_node)) {
++		if (delta > allowed_mems_nr(h)) {
+ 			return_unused_surplus_pages(h, delta);
  			goto out;
  		}
-+		if (!nexthop_get(nh)) {
-+			NL_SET_ERR_MSG(extack, "Nexthop has been deleted");
-+			goto out;
-+		}
- 		rt->nh = nh;
- 		fib6_nh = nexthop_fib6_nh(rt->nh);
- 	} else {
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 93fcfc1f2fa2..fce14c3f4f38 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1873,7 +1873,7 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+  * Return a nodemask representing a mempolicy for filtering nodes for
+  * page allocation
+  */
+-static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
++nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+ {
+ 	/* Lower zones don't get a nodemask applied for MPOL_BIND */
+ 	if (unlikely(policy->mode == MPOL_BIND) &&
 -- 
-2.7.4
+2.11.0
 
