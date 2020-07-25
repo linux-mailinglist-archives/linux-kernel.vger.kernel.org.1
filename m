@@ -2,81 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E7D22D3A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 03:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FC022D3AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 03:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgGYBqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Jul 2020 21:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
+        id S1726592AbgGYBt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Jul 2020 21:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgGYBqo (ORCPT
+        with ESMTP id S1726553AbgGYBt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Jul 2020 21:46:44 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218E5C0619D3;
-        Fri, 24 Jul 2020 18:46:44 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id EA8101FECD;
-        Sat, 25 Jul 2020 01:46:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1595641603; bh=vaKD7IUjG1etsvFupW6edy8t9lQ2LBk8C1F1iGCfaLk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rQTCgS/aUbpHeSUWsnjBtcd7X09EjjstBhr88VM0i1XjAEGMun/AOfqJL+hpTewQ1
-         DvsqbBntCloVENKsfuezgUL7bLfZH7Ma1PWh+jNUz1Mt6GvzO6bWqCmpRFXkngZ833
-         EKNswPCUd+48axr75k+eFKEuVEDWVZIir82/D28KZlpFkkhzR3bvfpZv6V6u5mqtHg
-         rEAceI7QZYM06jrJ3AXj2ZsyUeTXgLdVd5ENmJm+HL+plMULKPG81/fz8QL5MnStpn
-         Cj6Ckp5l3+H6iAmDG/maOriPS68IJvToTJVS/ISAYxL2SKXBaZmBHX7jd/JMACiDm7
-         PW73LwosyxoJA==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] MIPS: Loongson64: Add ISA node for LS7A PCH
-Date:   Sat, 25 Jul 2020 09:45:19 +0800
-Message-Id: <20200725014529.1143208-6-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.28.0.rc1
-In-Reply-To: <20200725014529.1143208-1-jiaxun.yang@flygoat.com>
-References: <20200725014529.1143208-1-jiaxun.yang@flygoat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 24 Jul 2020 21:49:27 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDB6C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 18:49:27 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id z187so7565336pgd.11
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 18:49:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=y5e7Kxmj3rxBUzNftUQkhmDiDPvu1uklbrqjcw+cOAo=;
+        b=oVS+HTlNET/lpmLPN+f2LJEMactBsk7fHorTNCz/B4rgLPfoGBZXue3+9E2i+EmgTg
+         hrg72xs9Jl/1Jl58qIGykv2MolfPAlLKRk2GHQKWlkKrQcOsLIGvmDJxjO3Zm38KzA0V
+         xMfX0+Uq/+BHNqRACXlt5IHNo9jWwzo2hEFEVo748FhokavqEOmLC970yY1erjOhPtUl
+         mwXGvul2GQ9qdo4sOssrOVREhR91QZwhRcVdDD8QVaTMHJASIlmUVyI6cU8GNELrtxdr
+         vfJcq6kSH4m43QZ6pMGhPaBj2bDBuneK+nnk81tfzQLO4PtbgRkG+ityf4EVAqF99trA
+         BLjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=y5e7Kxmj3rxBUzNftUQkhmDiDPvu1uklbrqjcw+cOAo=;
+        b=jHGytHzzHMtGAbgNeNUkjdBYKiE8Sk3uxYLGAzMcHUbXSiva37hkTTksVvxAvRKe4m
+         os87T3o1pwUPuXss+cZXwiOS6d1N2y1uDOwYp9TN/vr/TF0g4NUFswt9zrzguUHwRdsk
+         CS8LVcJ69f/ClCdNGYnlkb1r7PvMs0Q5nCYZpowU1vbK1YcmcKc7NbsBvmYOd5fcDijY
+         JXT+Zb+dDbmox0+YgS6+Kg0d6st8HRYR+9g+0Sg8G6NY6NSmOH9y7UTJFMRdBZqOzquH
+         D9amZbgn0U18xiNRZBr4608y5cXf1/cY9dEd16qU9WmEkd184JL3HiO2a3/ZcdjH9AQU
+         ZpJg==
+X-Gm-Message-State: AOAM532xm5C6eh8RdLFvur3kYbrG+R6wvClEdTSIAyzBSbXNcOCZmXaY
+        uQjbUlfVecPbr8ryiaoRYC3PV9iqZ5wa
+X-Google-Smtp-Source: ABdhPJy2sS+P9lS1/SV1ZFFj/ZzqjbvfkdDsmQF7YTKz7RmUObF387CBf5ZOkVxHBF9lM209xqgCqka9g081
+X-Received: by 2002:a17:90b:380d:: with SMTP id mq13mr7860640pjb.186.1595641767239;
+ Fri, 24 Jul 2020 18:49:27 -0700 (PDT)
+Date:   Fri, 24 Jul 2020 18:49:09 -0700
+Message-Id: <20200725014909.614068-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+Subject: [PATCH net-next] fib: use indirect call wrappers in the most common fib_rules_ops
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although currently we're not enabling any ISA device in devicetree,
-but this node is required to express the ranges of address reserved
-for ISA.
+This avoids another inderect call per RX packet which save us around
+20-40 ns.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ net/core/fib_rules.c  | 32 ++++++++++++++++++++++++++++----
+ net/ipv4/fib_rules.c  | 12 ++++++++----
+ net/ipv6/fib6_rules.c | 12 ++++++++----
+ 3 files changed, 44 insertions(+), 12 deletions(-)
 
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 1c286bb8c703..e574a062dfae 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -367,5 +367,12 @@ pci_bridge@14,0 {
- 				interrupt-map = <0 0 0 0 &pic 39 IRQ_TYPE_LEVEL_HIGH>;
- 			};
- 		};
+diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
+index bd7eba9066f8d..ceef012dd0e65 100644
+--- a/net/core/fib_rules.c
++++ b/net/core/fib_rules.c
+@@ -14,6 +14,7 @@
+ #include <net/sock.h>
+ #include <net/fib_rules.h>
+ #include <net/ip_tunnels.h>
++#include <linux/indirect_call_wrapper.h>
+ 
+ static const struct fib_kuid_range fib_kuid_range_unset = {
+ 	KUIDT_INIT(0),
+@@ -242,6 +243,10 @@ static int nla_put_port_range(struct sk_buff *skb, int attrtype,
+ 	return nla_put(skb, attrtype, sizeof(*range), range);
+ }
+ 
++INDIRECT_CALLABLE_DECLARE(int fib6_rule_match(struct fib_rule *rule,
++					    struct flowi *fl, int flags));
++INDIRECT_CALLABLE_DECLARE(int fib4_rule_match(struct fib_rule *rule,
++					    struct flowi *fl, int flags));
+ static int fib_rule_match(struct fib_rule *rule, struct fib_rules_ops *ops,
+ 			  struct flowi *fl, int flags,
+ 			  struct fib_lookup_arg *arg)
+@@ -267,11 +272,24 @@ static int fib_rule_match(struct fib_rule *rule, struct fib_rules_ops *ops,
+ 	    uid_gt(fl->flowi_uid, rule->uid_range.end))
+ 		goto out;
+ 
+-	ret = ops->match(rule, fl, flags);
++	ret = INDIRECT_CALL_INET(ops->match,
++				 fib6_rule_match,
++				 fib4_rule_match,
++				 rule, fl, flags);
+ out:
+ 	return (rule->flags & FIB_RULE_INVERT) ? !ret : ret;
+ }
+ 
++INDIRECT_CALLABLE_DECLARE(int fib6_rule_action(struct fib_rule *rule,
++			    struct flowi *flp, int flags,
++			    struct fib_lookup_arg *arg));
++INDIRECT_CALLABLE_DECLARE(int fib4_rule_action(struct fib_rule *rule,
++			    struct flowi *flp, int flags,
++			    struct fib_lookup_arg *arg));
++INDIRECT_CALLABLE_DECLARE(bool fib6_rule_suppress(struct fib_rule *rule,
++						struct fib_lookup_arg *arg));
++INDIRECT_CALLABLE_DECLARE(bool fib4_rule_suppress(struct fib_rule *rule,
++						struct fib_lookup_arg *arg));
+ int fib_rules_lookup(struct fib_rules_ops *ops, struct flowi *fl,
+ 		     int flags, struct fib_lookup_arg *arg)
+ {
+@@ -298,9 +316,15 @@ int fib_rules_lookup(struct fib_rules_ops *ops, struct flowi *fl,
+ 		} else if (rule->action == FR_ACT_NOP)
+ 			continue;
+ 		else
+-			err = ops->action(rule, fl, flags, arg);
+-
+-		if (!err && ops->suppress && ops->suppress(rule, arg))
++			err = INDIRECT_CALL_INET(ops->action,
++					       fib6_rule_action,
++					       fib4_rule_action,
++					       rule, fl, flags, arg);
 +
-+		isa {
-+			compatible = "isa";
-+			#address-cells = <2>;
-+			#size-cells = <1>;
-+			ranges = <1 0 0 0x18000000 0x20000>;
-+		};
- 	};
- };
++		if (!err && ops->suppress && INDIRECT_CALL_INET(ops->suppress,
++								fib6_rule_suppress,
++								fib4_rule_suppress,
++								rule, arg))
+ 			continue;
+ 
+ 		if (err != -EAGAIN) {
+diff --git a/net/ipv4/fib_rules.c b/net/ipv4/fib_rules.c
+index f99e3bac5cab2..fd3def3ffa6df 100644
+--- a/net/ipv4/fib_rules.c
++++ b/net/ipv4/fib_rules.c
+@@ -29,6 +29,7 @@
+ #include <net/ip_fib.h>
+ #include <net/nexthop.h>
+ #include <net/fib_rules.h>
++#include <linux/indirect_call_wrapper.h>
+ 
+ struct fib4_rule {
+ 	struct fib_rule		common;
+@@ -103,8 +104,9 @@ int __fib_lookup(struct net *net, struct flowi4 *flp,
+ }
+ EXPORT_SYMBOL_GPL(__fib_lookup);
+ 
+-static int fib4_rule_action(struct fib_rule *rule, struct flowi *flp,
+-			    int flags, struct fib_lookup_arg *arg)
++INDIRECT_CALLABLE_SCOPE int fib4_rule_action(struct fib_rule *rule,
++			    struct flowi *flp, int flags,
++			    struct fib_lookup_arg *arg)
+ {
+ 	int err = -EAGAIN;
+ 	struct fib_table *tbl;
+@@ -138,7 +140,8 @@ static int fib4_rule_action(struct fib_rule *rule, struct flowi *flp,
+ 	return err;
+ }
+ 
+-static bool fib4_rule_suppress(struct fib_rule *rule, struct fib_lookup_arg *arg)
++INDIRECT_CALLABLE_SCOPE bool fib4_rule_suppress(struct fib_rule *rule,
++						struct fib_lookup_arg *arg)
+ {
+ 	struct fib_result *result = (struct fib_result *) arg->result;
+ 	struct net_device *dev = NULL;
+@@ -169,7 +172,8 @@ static bool fib4_rule_suppress(struct fib_rule *rule, struct fib_lookup_arg *arg
+ 	return true;
+ }
+ 
+-static int fib4_rule_match(struct fib_rule *rule, struct flowi *fl, int flags)
++INDIRECT_CALLABLE_SCOPE int fib4_rule_match(struct fib_rule *rule,
++					    struct flowi *fl, int flags)
+ {
+ 	struct fib4_rule *r = (struct fib4_rule *) rule;
+ 	struct flowi4 *fl4 = &fl->u.ip4;
+diff --git a/net/ipv6/fib6_rules.c b/net/ipv6/fib6_rules.c
+index 6053ef8515555..fb4db803a2531 100644
+--- a/net/ipv6/fib6_rules.c
++++ b/net/ipv6/fib6_rules.c
+@@ -13,6 +13,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/notifier.h>
+ #include <linux/export.h>
++#include <linux/indirect_call_wrapper.h>
+ 
+ #include <net/fib_rules.h>
+ #include <net/ipv6.h>
+@@ -255,8 +256,9 @@ static int __fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
+ 	return err;
+ }
+ 
+-static int fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
+-			    int flags, struct fib_lookup_arg *arg)
++INDIRECT_CALLABLE_SCOPE int fib6_rule_action(struct fib_rule *rule,
++			    struct flowi *flp, int flags,
++			    struct fib_lookup_arg *arg)
+ {
+ 	if (arg->lookup_ptr == fib6_table_lookup)
+ 		return fib6_rule_action_alt(rule, flp, flags, arg);
+@@ -264,7 +266,8 @@ static int fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
+ 	return __fib6_rule_action(rule, flp, flags, arg);
+ }
+ 
+-static bool fib6_rule_suppress(struct fib_rule *rule, struct fib_lookup_arg *arg)
++INDIRECT_CALLABLE_SCOPE bool fib6_rule_suppress(struct fib_rule *rule,
++						struct fib_lookup_arg *arg)
+ {
+ 	struct fib6_result *res = arg->result;
+ 	struct rt6_info *rt = res->rt6;
+@@ -296,7 +299,8 @@ static bool fib6_rule_suppress(struct fib_rule *rule, struct fib_lookup_arg *arg
+ 	return true;
+ }
+ 
+-static int fib6_rule_match(struct fib_rule *rule, struct flowi *fl, int flags)
++INDIRECT_CALLABLE_SCOPE int fib6_rule_match(struct fib_rule *rule,
++					    struct flowi *fl, int flags)
+ {
+ 	struct fib6_rule *r = (struct fib6_rule *) rule;
+ 	struct flowi6 *fl6 = &fl->u.ip6;
 -- 
-2.28.0.rc1
+2.28.0.rc0.142.g3c755180ce-goog
 
