@@ -2,134 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1D822D95C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F1E22D95D
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgGYSnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:43:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47392 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgGYSnT (ORCPT
+        id S1726716AbgGYSsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgGYSsJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:43:19 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06PIcTPv013083;
-        Sat, 25 Jul 2020 18:42:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=eJEpSUfkla/agpQCH51QK4tTiRteg4fcYTB66EtN8tQ=;
- b=Yx8cy7p67Y5KTFOgF6BIWxEauFiKJbYC5hs59KFAKYaoDXQ7q0/QJZrmXubBYVNqyj9/
- +yctd08tOKOjvwNMth5YbSOPZljx5/NBNkr+WVThUqXCaB3K+1s5PEmUpGE2kzQHFhkU
- cweo6BAulel5xko8d1VwvdDXo2ni12KqIFskMmGf1cKNZZQ6a4o+7ZMdDTsubU8DS6Og
- 2Fz3t4uJECScBEr8o/X3IXFn5ioMFhjZ2aoRDMsf5v1TxLOUchi2cJOlH+bdNedfrOzm
- S1Jb5x/wgCAzvNQNgkp1OPFsZ10S1wGYOLqO+I1G3NYpuVctqVzoVmOeyn3Tn2/0ernd qQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 32gcpksed4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 25 Jul 2020 18:42:40 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06PIdCSi098561;
-        Sat, 25 Jul 2020 18:42:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 32ghx0kp29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 25 Jul 2020 18:42:39 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06PIgbX8020632;
-        Sat, 25 Jul 2020 18:42:38 GMT
-Received: from [20.15.0.12] (/73.88.28.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 25 Jul 2020 11:42:37 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] nbd: add missed destroy_workqueue when nbd_start_device
- fails
-From:   Michael Christie <michael.christie@oracle.com>
-In-Reply-To: <1595644070-26293-1-git-send-email-liheng40@huawei.com>
-Date:   Sat, 25 Jul 2020 13:42:35 -0500
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, linux-block@vger.kernel.org,
-        nbd@other.debian.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6A2BE179-5545-4486-81B6-5CB9020F9522@oracle.com>
-References: <1595644070-26293-1-git-send-email-liheng40@huawei.com>
-To:     Li Heng <liheng40@huawei.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9693 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007250154
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9693 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 bulkscore=0
- priorityscore=1501 phishscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 impostorscore=0 clxscore=1011 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007250154
+        Sat, 25 Jul 2020 14:48:09 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07BAC08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:48:08 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id b13so6907339edz.7
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 11:48:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=J+Mg8FrXjOOpUXGKNdsJwjOwj3SmjqQEXToX5OfPGgg=;
+        b=Jj8V+g5CBjwKufxhqOSZQdk2PR87G5SB1sP1DxTgqrtzTDOs8t/xRSGVc+9lryMSOJ
+         y4joCsPIsVUq/BwYFV66ROD1qHkeAkKgjdH+jfI+ggX0b2/rnlVIEvBxe37AdYJM22P3
+         93Toaxn/Ubt21KRJyEjgg4y7MItquN/o/8v4Uph7novYd2edC3zum9nhW2cGg24VUtIy
+         k6ZXZsZJkho8Hi8WasP+nD0R/DZNHS1odz0qs9BKi2btJ1oq6rnE0cdM23UK0T99lTZM
+         zd1i3sr7/xb0npgogbHiP3CtKnembKl8P3E/DGbD1iKgc9UnoSkRLxWgxR+3qy5dwz6a
+         DaOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=J+Mg8FrXjOOpUXGKNdsJwjOwj3SmjqQEXToX5OfPGgg=;
+        b=Zq7MNbjhdFtpeCz10efjEsGtieMlo/7+t3y4/+PXUMNX/3Leu5XzSxNyAPdMI7gWaN
+         t6SrSDx2hxmaFWwFx+Vxz2b2pwzld2+8wpMHcj+ha4Fw4z271y/M1ipYv0RyMafq1hHT
+         vI/aiYpWS9be6p/SpuTrvphxsBu4JWdtLw3rruKkekCUxufANb4+SHUANKff1Tpv5o3x
+         5DGTmstyd3CsEzSpfsJewkuXyGNcUGZmplOlJ7Js6ujPu5XAKgs38xGala9WOgLNKLIu
+         sL5Yxsl85gdVRHEXGoYRVRH5jFY9hOGQP/QBnGbXoqLz4bDCTnSbqeJY25cd2NJnvUb5
+         qgpA==
+X-Gm-Message-State: AOAM533ewAOwv/2uUWGtE/FcvlSIQ7DaStuWCotGsIZE5hPR7X6d0Ijh
+        fNFd7O5YCT9igya3y+T+8yhpiuWN8w==
+X-Google-Smtp-Source: ABdhPJy2GWv6Wb+FYd0PBNz124ebLOiMzSnYouKGt+VDudPTH3Gt0GRTzt2LTf9Q2y8OnTLrsPEzQQ==
+X-Received: by 2002:a50:bf07:: with SMTP id f7mr6053745edk.356.1595702885977;
+        Sat, 25 Jul 2020 11:48:05 -0700 (PDT)
+Received: from [192.168.200.34] (ip5b436a54.dynamic.kabel-deutschland.de. [91.67.106.84])
+        by smtp.gmail.com with ESMTPSA id i2sm3612187edk.30.2020.07.25.11.48.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Jul 2020 11:48:05 -0700 (PDT)
+Subject: Re: [PATCH v2 0/5] drm: rockchip: various ports for older VOPs
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200722181332.26995-1-knaerzche@gmail.com>
+ <CAKMK7uGKyYea_9MamAQw2=ebjW=raYCDeFCf_5jyyJPHL9AZWA@mail.gmail.com>
+ <47599ce1-2a3b-87eb-c46e-8f7f79ca945e@gmail.com>
+ <CAKMK7uEn0552JuTuwpL-XdYSVk7OA=fEsphpivS8ouE-10--Zg@mail.gmail.com>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <0e5f6e41-5fa4-2989-f4b8-89a9471db931@gmail.com>
+Date:   Sat, 25 Jul 2020 20:48:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAKMK7uEn0552JuTuwpL-XdYSVk7OA=fEsphpivS8ouE-10--Zg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Am 25.07.20 um 17:54 schrieb Daniel Vetter:
+> On Sat, Jul 25, 2020 at 3:52 PM Alex Bee <knaerzche@gmail.com> wrote:
+>>
+>> Am 22.07.20 um 23:43 schrieb Daniel Vetter:
+>>> On Wed, Jul 22, 2020 at 8:13 PM Alex Bee <knaerzche@gmail.com> wrote:
+>>>> Hi,
+>>>>
+>>>> this series mainly ports existining functionality to older SoCs - most
+>>>> importantly enables alpha blending for RK3036, RK3066, RK3126 and
+>>>> RK3188.
+>>>> Besides that, it also changes the window type from DRM_PLANE_TYPE_CURSOR
+>>>> to DRM_PLANE_TYPE_OVERLAY for VOPs that have only one (1) overlay window.
+>>> This doesn't make much sense, the cursor overlay is really just a hint
+>>> for legacy ioctls that this is the overlay that should be used for
+>>> cursors. Compositors should try to use such planes as full overlays
+>>> (if they don't want to use them as a cursor). So sounds like a case of
+>>> "fix your compositor".
+>> I agree here - but: If HWC windows would have been implemented in this
+>> particular driver, their max size would be 128x128 on some SoCs - so
+>> they woudn't be really suitable to create an OSD overlay at 4K, for
+>> example. I don't know, but I guess other vendors implement their HWC
+>> windows on this reduced HW resources as well. I guess that is one of the
+>> reasons, why userspace, which aims to be cross-plattfrom, avoids
+>> DRM_PLANE_TYPE_CURSOR when its looking for an usable overlay plane. (a
+>> heuristic, indeed)
+> Which userspace does that?
+kodi-gbm: 
+https://github.com/xbmc/xbmc/blob/master/xbmc/windowing/gbm/DRMUtils.cpp#L406 
 
-> On Jul 24, 2020, at 9:27 PM, Li Heng <liheng40@huawei.com> wrote:
->=20
-> destroy_workqueue() should be called to destroy ndev->tx_wq
-> when nbd_start_device init resources fails.
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Li Heng <liheng40@huawei.com>
-> ---
-> drivers/block/nbd.c | 4 +++-
-> 1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index ce7e9f22..45e0a9f4 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -4,7 +4,7 @@
->  *
->  * Note that you can not swap over this thing, yet. Seems to work but
->  * deadlocks sometimes - you can not swap over TCP in general.
-> - *=20
-> + *
->  * Copyright 1997-2000, 2008 Pavel Machek <pavel@ucw.cz>
->  * Parts copyright 2001 Steven Whitehouse <steve@chygwyn.com>
->  *
-> @@ -1270,6 +1270,7 @@ static int nbd_start_device(struct nbd_device =
-*nbd)
-> 	error =3D device_create_file(disk_to_dev(nbd->disk), &pid_attr);
-> 	if (error) {
-> 		dev_err(disk_to_dev(nbd->disk), "device_create_file =
-failed!\n");
-> +		destroy_workqueue(nbd->recv_workq);
-> 		return error;
-> 	}
-> 	set_bit(NBD_RT_HAS_PID_FILE, &config->runtime_flags);
-> @@ -1291,6 +1292,7 @@ static int nbd_start_device(struct nbd_device =
-*nbd)
-> 			 */
-> 			if (i)
-> 				flush_workqueue(nbd->recv_workq);
-> +			destroy_workqueue(nbd->recv_workq);
-> 			return -ENOMEM;
-> 		}
-> 		sk_set_memalloc(config->socks[i]->sock->sk);
-
-For the netlink error path, we end up cleaning up everything when =
-nbd_config_put is called in the error path.
-
-Are you seeing an issue with the ioctl interface and this code path? I =
-thought normally if the the NBD_DO_IT ioctl fails, then userspace closes =
-the device and that does the nbd_config_put that will clean this up like =
-is done in the netlink path.
-
-If userspace is not closing the device and is trying to maybe retry the =
-NBD_DO_IT ioctl or reuse the device some other way, then I think you =
-need to also NULL nbd->task_recv, remove pid file, NULL recv_workq after =
-you destroy for the cases nbd_config_put is called right after a =
-failure.
-
-
+> We should fix that, not try to work around
+> that in all the drivers in upstream, that wont work.
+You're right I'll drop this part.
+> -Daniel
+>
+>>> For atomic there's 0 difference between a overlay or a cursor (primary
+>>> plane is still treated somewhat special in the RMFB ioctl, but again
+>>> that's for backwards compat reasons with existing uapi, not because
+>>> the primary plane is different).
+>>>
+>>> What does happen though is that this breaks cursor for legacy
+>>> userspace, which is probably not really what you want.
+>> Indeed not.
+>>
+>> Beforhand I was submiiting this, I looked arround and couldn't find
+>> anything which relies or even depends of a cursor window to be
+>> available. Even if: as per spec only one DRM_PLANE_TYPE_PRIMARY is
+>> mandatory, everything else is optional.
+>>
+>>> -Daniel
+>>>
+>>>
+>>>> Regards,
+>>>> Alex
+>>>>
+>>>> Changes in v2:
+>>>> - drop not yet upstreamed dsp_data_swap from RK3188 regs
+>>>> - rephrase most commit messages
+>>>>
+>>>> Alex Bee (5):
+>>>>     drm: rockchip: add scaling for RK3036 win1
+>>>>     drm: rockchip: add missing registers for RK3188
+>>>>     drm: rockchip: add alpha support for RK3036, RK3066, RK3126 and RK3188
+>>>>     drm: rockchip: set alpha_en to 0 if it is not used
+>>>>     drm: rockchip: use overlay windows as such
+>>>>
+>>>>    drivers/gpu/drm/rockchip/rockchip_drm_vop.c |  1 +
+>>>>    drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 42 ++++++++++++++++++---
+>>>>    drivers/gpu/drm/rockchip/rockchip_vop_reg.h |  1 +
+>>>>    3 files changed, 38 insertions(+), 6 deletions(-)
+>>>>
+>>>> --
+>>>> 2.17.1
+>>>>
+>>> --
+>>> Daniel Vetter
+>>> Software Engineer, Intel Corporation
+>>> http://blog.ffwll.ch
+>> Best Regards
+>>
+>
+Best regards
