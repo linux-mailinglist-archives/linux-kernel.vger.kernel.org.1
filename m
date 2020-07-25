@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4549222D63A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A09822D643
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 11:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbgGYIxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 04:53:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:56608 "EHLO huawei.com"
+        id S1726784AbgGYJAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 05:00:06 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8280 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726613AbgGYIxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 04:53:25 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 077BA79EE19677F73A12;
-        Sat, 25 Jul 2020 16:53:22 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 25 Jul 2020 16:53:17 +0800
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-nfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] nfsd: use DEFINE_SPINLOCK() for spinlock
-Date:   Sat, 25 Jul 2020 16:56:42 +0800
-Message-ID: <20200725085642.98356-1-miaoqinglang@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726583AbgGYJAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 05:00:06 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 5CB92F8EE246C408FD4E;
+        Sat, 25 Jul 2020 17:00:03 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Sat, 25 Jul 2020
+ 16:59:53 +0800
+Subject: Re: [PATCH v2 0/2] scsi: libsas: An improvement on error handle and
+ tidy-up
+To:     <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <john.garry@huawei.com>, <yanaijie@huawei.com>,
+        <chenxiang66@hisilicon.com>, <linuxarm@huawei.com>
+References: <1595665131-24543-1-git-send-email-luojiaxing@huawei.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <90974ce1-abd4-7b6d-c4cf-08e4a922c6fd@huawei.com>
+Date:   Sat, 25 Jul 2020 16:59:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
+In-Reply-To: <1595665131-24543-1-git-send-email-luojiaxing@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nfsd_drc_lock can be initialized automatically with
-DEFINE_SPINLOCK() rather than explicitly calling spin_lock_init().
+sorry，I missed Martin's e-mail "Re: [PATCH v1 0/2] scsi: libsas: An 
+improvement on error handle and tidy-up" here. Please ignore this set of 
+patches.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
----
- fs/nfsd/nfssvc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index b603dfcdd..20f0a27fe 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -88,7 +88,7 @@ DEFINE_MUTEX(nfsd_mutex);
-  * version 4.1 DRC caches.
-  * nfsd_drc_pages_used tracks the current version 4.1 DRC memory usage.
-  */
--spinlock_t	nfsd_drc_lock;
-+DEFINE_SPINLOCK(nfsd_drc_lock);
- unsigned long	nfsd_drc_max_mem;
- unsigned long	nfsd_drc_mem_used;
- 
-@@ -568,7 +568,6 @@ static void set_max_drc(void)
- 	nfsd_drc_max_mem = (nr_free_buffer_pages()
- 					>> NFSD_DRC_SIZE_SHIFT) * PAGE_SIZE;
- 	nfsd_drc_mem_used = 0;
--	spin_lock_init(&nfsd_drc_lock);
- 	dprintk("%s nfsd_drc_max_mem %lu \n", __func__, nfsd_drc_max_mem);
- }
- 
--- 
-2.25.1
+On 2020/7/25 16:18, Luo Jiaxing wrote:
+> This patch introduces an improvement to reduce error handle time and a
+> tidy-up, including:
+> - postreset() is deleted from sas_sata_ops.
+> - Do not perform hard reset and delayed retry on a removed SATA disk. This
+> can effectively reduce the error handle duration of hot unplug a SATA disk
+> with traffic(reduce about 30s depending on the delay setting of libata).
+>
+> Both John garry and Jason Yan participated in the review of the solution
+> and provided good suggestions during the development.
+>
+> Change since v1:
+> - Removed an unnecessary tag from subject.
+>
+> Luo Jiaxing (2):
+>    scsi: libsas: delete postreset at sas_sata_ops
+>    scsi: libsas: check link status at ATA prereset() ops
+>
+>   drivers/scsi/libsas/sas_ata.c | 17 +++++++++++++++--
+>   1 file changed, 15 insertions(+), 2 deletions(-)
+>
 
