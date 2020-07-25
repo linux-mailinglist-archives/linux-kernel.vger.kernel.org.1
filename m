@@ -2,75 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0B522D516
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 07:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8818122D51F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 07:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgGYFLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 01:11:05 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:37334 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgGYFLF (ORCPT
+        id S1726977AbgGYFMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 01:12:16 -0400
+Received: from out28-101.mail.aliyun.com ([115.124.28.101]:44342 "EHLO
+        out28-101.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbgGYFMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 01:11:05 -0400
-Received: by mail-il1-f200.google.com with SMTP id q9so1132430ilc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:11:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=OxvLZmqjPIgyfFJFD3jU0NCXtLqtMkM6RdMtuDq0MCs=;
-        b=SqSirh+ib5iURU+TNKAFbJOTzK6aMdj9teV0WVRiNNAQ7fPbYiUv09IE6QThnbcFZ7
-         hLO30OA10j5MTzEu0i6KBZYXco9PkTuMW0m9peFH6vOn/CUjNsBSaybrznPaYOmEtgjN
-         dfB75oRHgbVgol1NmZRJg5DkI+lec4oIm8i6Y3v/wPCjDJtYLLZIpRHiVxsbJ2nUm8XC
-         Mpvnh1mCUfwI1e4SQgOotrSOzx+pQ/l134dAHhwEFukRfTrf90U1TE/447Ios8oTPTCn
-         ZLXryTyFHva6HSwKD9BMR5+YysjBVtNiY1O7XgdLUHPWm6pRQaMm0SNfjjqdXzA+QBA8
-         cbUw==
-X-Gm-Message-State: AOAM5328WwQF3K+NBaZJq2zhrJqXvm+aY8P6F7MS4AJ6QObR/SPcnGSa
-        fQ4ZkvUQtNEDf6rUenaw06plpKOgmOCCnhEO+ygA1dsD6AoL
-X-Google-Smtp-Source: ABdhPJz7r05qYNwD8iAc+QKC+Tc9C8Eqv0mYlaRsqfEyEpJszHU46Z43bkEBNCZQUn51WRKL3DEvQ3smKEI3RDnTLqC1oTSQ+4/l
+        Sat, 25 Jul 2020 01:12:12 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2899688|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00241777-0.000472233-0.99711;FP=0|0|0|0|0|-1|-1|-1;HT=e01l10422;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.I7G.t3W_1595653922;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I7G.t3W_1595653922)
+          by smtp.aliyun-inc.com(10.147.40.26);
+          Sat, 25 Jul 2020 13:12:08 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, paul@crapouillou.net,
+        prasannatsmkumar@gmail.com, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: [PATCH 0/3] Add RTC related clocks for Ingenic SoCs.
+Date:   Sat, 25 Jul 2020 13:11:33 +0800
+Message-Id: <20200725051136.58220-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c912:: with SMTP id t18mr10628820ilp.186.1595653864438;
- Fri, 24 Jul 2020 22:11:04 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 22:11:04 -0700
-In-Reply-To: <000000000000402c5305ab0bd2a2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c641a505ab3d1d48@google.com>
-Subject: Re: INFO: task hung in synchronize_rcu (3)
-From:   syzbot <syzbot+0c6da80218456f1edc36@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, davem@davemloft.net, jhs@mojatatu.com,
-        jiri@resnulli.us, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mingo@elte.hu,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vinicius.gomes@intel.com, viro@zeniv.linux.org.uk,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+1.Add RTC related clocks bindings for the JZ4780 SoC,
+  the X1000 SoC, and the X1830 SoC.
+2.Add "XXXX_CLK_EXCLK_DIV512" and "XXXX_CLK_RTC" for
+  the JZ4780 SoC, the X1000 SoC, and the X1830 SoC.
 
-commit 5a781ccbd19e4664babcbe4b4ead7aa2b9283d22
-Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Date:   Sat Sep 29 00:59:43 2018 +0000
+周琰杰 (Zhou Yanjie) (3):
+  dt-bindings: clock: Add RTC related clocks for Ingenic SoCs.
+  dt-bindings: clock: Add tabs to align code.
+  clk: Ingenic: Add RTC related clocks for Ingenic SoCs.
 
-    tc: Add support for configuring the taprio scheduler
+ drivers/clk/ingenic/jz4780-cgu.c       |  12 +++
+ drivers/clk/ingenic/x1000-cgu.c        |  13 +++
+ drivers/clk/ingenic/x1830-cgu.c        |  13 +++
+ include/dt-bindings/clock/jz4780-cgu.h | 144 +++++++++++++++++----------------
+ include/dt-bindings/clock/x1000-cgu.h  |   2 +
+ include/dt-bindings/clock/x1830-cgu.h  |   2 +
+ 6 files changed, 115 insertions(+), 71 deletions(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149057ef100000
-start commit:   4fa640dc Merge tag 'vfio-v5.8-rc7' of git://github.com/awi..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=169057ef100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=129057ef100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c6da80218456f1edc36
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e2a437100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13af00e8900000
+-- 
+2.11.0
 
-Reported-by: syzbot+0c6da80218456f1edc36@syzkaller.appspotmail.com
-Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
