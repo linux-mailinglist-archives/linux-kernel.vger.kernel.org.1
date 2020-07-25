@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276DB22D665
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 11:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F00A22D667
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 11:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgGYJSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 05:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S1726658AbgGYJU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 05:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGYJSj (ORCPT
+        with ESMTP id S1725944AbgGYJU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 05:18:39 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999A2C0619D3;
-        Sat, 25 Jul 2020 02:18:38 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id b25so12330282ljp.6;
-        Sat, 25 Jul 2020 02:18:38 -0700 (PDT)
+        Sat, 25 Jul 2020 05:20:27 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E5EC0619D3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 02:20:26 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id di22so1486340edb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 02:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Tt4lBP8eHDcChTcrk6HpzOZG+ZscpSQCi8G310B6EEA=;
-        b=SsJ6neoxYIFGtlNWPoyAvoOlaM8lvGNtgbgtaZD/UQltNSFJfBPBIHqsdRF88KKdtJ
-         f3DUCdYuHgDEeMOBtFqaW0rDKpLRPV+MUaOuUxKpI67PAAuDGnJlQfD8EQUuX6Xb/tb2
-         oVop7ZBCmena9OX27q+XdEBlPk8mAwa0BH7t+r4uevtYzT8zMRKqwU2rcL3RfA0YkSSo
-         VYtiZLFshXQWUzuoxFGrAYKtf8/XPYr6nGuylX5b6iL5k23tefbaG/b4D/feMoTu6Ujv
-         yYHOrrEaUqi1Gne4Zhv7VWyfcSqwJxriBgozPG7cnrzZYp2Qn/YUfN1UOswhR3w+bw4Y
-         A0Bg==
+        bh=+k252SMWwDEnogS2pDzYz7A7UwtSezqAXG+jZEu5O+U=;
+        b=NxELK9ZSTI48B0wjJLslFpd8DbETOvSwPPIgG680IcvVQBQ7UqPKSgaeRlS4YvJizQ
+         99CK7yB4uAzZS1h1o8StkhQAYHzqpG3/UVKlOnRYQAEAGfkQwt7el+xz9FdZZteiyihJ
+         6/XqpmGgJmneG9ZOLSpbgUM2DsQMTLnocpLpsPUfivwlkcHyit2/BR6jVle3FREl0zqJ
+         kcIKt89rzJB81FZp11Bl/pl+DUUK6LHHWazzFtIj2DybyoTDWwFSIDTu4CAlOP439FOS
+         SysyhrikgsyQbHnFbk5gjEIvnhJku0O9C6dLKbx4INU3MFfOm1R9pJFfF8VKcEdvc2hX
+         +VFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Tt4lBP8eHDcChTcrk6HpzOZG+ZscpSQCi8G310B6EEA=;
-        b=mba8pNNbfBi/7CzBLGy22BtHEWliQy/fViriza95n5XX+7Fa9cqHozhkpuIULcbUlb
-         vIvRnajKeaGp047boIrbwVNNeqCDKnYiRomRi7AiB9BtG/xCcWcLOnqTtt/lr3c5qUqi
-         U8jxyZZbpziTBxWCEXXCIIEsRE4ySHe9qPFk0iSYJYffpzTs3qSFtKxhzosEIoHPF7kF
-         hmEkGX1l3fFqw24YTphS98JYSdm7zA0jrzUrvZwDiSuYx4++dwQc9qAXCzyubEBxUwiP
-         H1VtaKtNZNxQ6NsjzMlE1RBjEtX3PJ6BkktrHs7Ew3TBqDFGd/MtCfBuZWOFOkMoZRnF
-         gw5g==
-X-Gm-Message-State: AOAM5330+pUeq/n+MxTgM8upKaQ/keX0sP8I7mOoxAmdgrxElA9M70e+
-        PLbMSXZ/oPAQ1Kl/5nPKwCisnIuUGYw=
-X-Google-Smtp-Source: ABdhPJzHxnxj5UPJ9LFQGOyklSNEPZ4gVbk/cPhkmFeEURr4kF3VAybMQ8Q1RkYu0E3EgNGoJmZ87w==
-X-Received: by 2002:a2e:9913:: with SMTP id v19mr963221lji.292.1595668716933;
-        Sat, 25 Jul 2020 02:18:36 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:253:4416:cc94:657b:2972:b01d? ([2a00:1fa0:253:4416:cc94:657b:2972:b01d])
-        by smtp.gmail.com with ESMTPSA id e22sm876553ljb.12.2020.07.25.02.18.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Jul 2020 02:18:36 -0700 (PDT)
-Subject: Re: [PATCH v9 02/12] ata: ahci_brcm: Fix use of BCM7216 reset
- controller
-To:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200724203407.16972-1-james.quinlan@broadcom.com>
- <20200724203407.16972-3-james.quinlan@broadcom.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <4950d265-5aea-8d0b-7984-553e53f421f6@gmail.com>
-Date:   Sat, 25 Jul 2020 12:18:32 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=+k252SMWwDEnogS2pDzYz7A7UwtSezqAXG+jZEu5O+U=;
+        b=QBvJz6f2OyPUU/Zp1aerxUFn4B3el5793M85YlmRc1UE1/qVU3+Dnwm2OqdvuTZuKG
+         +15Gwp/TrdoWBRLxsipa8XhX9583vi9XYD3PqIc752abXGqG2ACg1pAEtd/DhD6PsVxi
+         PAnba3y8HA6CYnRT4y+woTLY/HprBxDAaB6PADQncR/ytnFsMIEr6qFAl2GgozaHTQiM
+         oZQGchJER52VShib3ZGd8b/L318GTJ6dPqcdOKhc3hZVOP/0Y5ykXapLUaSB438Hn6qQ
+         2OZcUqnYKYzqmtthjiLwjFNvIrZygG1HkaeoLdfb6vM58M6BrhOUD7tCFF3/j3agcd94
+         QWZA==
+X-Gm-Message-State: AOAM531Wvoq6Lu7hB6FDCrVSvFP3CYRvI08FpXTi0XU/ysjAH6bdVbO0
+        ArKVr+O0IYxtPVHJn4BxvM+6nXrI
+X-Google-Smtp-Source: ABdhPJwS4VvJIrkoM/042G6AfxnBqtOPKTeCbC3ecv+x4DYxlJL8lIjm6zIkaM9cde4y42BKV2nM2Q==
+X-Received: by 2002:aa7:cc98:: with SMTP id p24mr9484661edt.333.1595668825145;
+        Sat, 25 Jul 2020 02:20:25 -0700 (PDT)
+Received: from localhost.localdomain (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id e1sm2549140edn.16.2020.07.25.02.20.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Jul 2020 02:20:24 -0700 (PDT)
+From:   Ingo Molnar <mingo@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: [PATCH 0/2] Fixes for the generic entry/exit framework
+Date:   Sat, 25 Jul 2020 11:19:49 +0200
+Message-Id: <20200725091951.744848-1-mingo@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200724203407.16972-3-james.quinlan@broadcom.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+This fixes a !CONFIG_SECCOMP build bug found during CI testing,
+plus adds a couple of 'noinstr' attribute ordering corrections
+similar to 7f6fa101dfac and previous commits.
 
-On 24.07.2020 23:33, Jim Quinlan wrote:
+I resolved the CONFIG_SECCOMP problem by also making GENERIC_ENTRY
+depend on HAVE_ARCH_SECCOMP_FILTER. This dependency was implicit
+in the new code by virtue of x86 being a modern seccomp-filter
+architecture.
 
-> From: Jim Quinlan <jquinlan@broadcom.com>
-> 
-> A reset controller "rescal" is shared between the AHCI driver and the PCIe
-> driver for the BrcmSTB 7216 chip.  Use
-> devm_reset_control_get_optional_shared() to handle this sharing.
-> 
-> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
-> 
+The patch makes this explicit. I think it's reasonable to assume
+any architecture that wants to make use of the generic code to
+have modern seccomp framework. If they don't they'd have to
+port it to the old secure_computing_strict() API anyway.
 
-    Shouldn't break up the tag area with the empty lines.
+It's on top of the latest tip:x86/entry.
 
-> Fixes: 272ecd60a636 ("ata: ahci_brcm: BCM7216 reset is self de-asserting")
-> Fixes: c345ec6a50e9 ("ata: ahci_brcm: Support BCM7216 reset controller name")
-[...]
+Thanks,
 
-MBR, Sergei
+	Ingo
+
+Ingo Molnar (2):
+  entry: Fix CONFIG_SECCOMP assumption
+  entry: Correct 'noinstr' attributes
+
+ arch/Kconfig          | 6 ++++--
+ kernel/entry/common.c | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
+
