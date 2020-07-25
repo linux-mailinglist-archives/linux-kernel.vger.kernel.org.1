@@ -2,133 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B628622D52A
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 07:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DF322D530
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 07:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgGYFMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 01:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
+        id S1726877AbgGYFOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 01:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgGYFMo (ORCPT
+        with ESMTP id S1726651AbgGYFOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 01:12:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BFBC0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:12:43 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t10so309573plz.10
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:12:43 -0700 (PDT)
+        Sat, 25 Jul 2020 01:14:35 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB54C0619D3
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:14:35 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id p1so5638171pls.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:14:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DrFSqlp6N5hVS2J5LBpv5q3jiLHrhXO1dKkZQLcwDsA=;
-        b=ETKHiK8nr+iV+B62aVfQqRgoTi6y+8Nsvrymauknp+n3HnLTwS+VKgHGHraHbeVx4m
-         0rWCXMn0/E+pyv74rE29/PmaGadbtm1+iCgkOFxW/rfdg5SBLA1Q9yUjg1VbL42DDvtD
-         H07m44nsy9AmpsOQpHrPMlzNxEUizgdmfjGZK3xKPa70ompTgOhdpNSFywA00iHdt6gN
-         FK9QYJ5Rtg+5drnkPizzhIVsPJDXLoUrGee01RRmz5+kKMJCB5n/sWsvCb0XmOpU7iME
-         ACosYF00v1HkwxsZYCaztK5QbANtyoXntqGZg/4COPjOkzMBo0ecF45fubJaq2+gFECi
-         DydQ==
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=zgyWqznSRtZ8AuY3tULsDjN5RpahufiDT3f0fggLh5s=;
+        b=Uz3IlXv+sKUEtS5eC2DkIZtfS1Xha2bB4TKPa3hP+w1M1cIds1A7Bc9dmlvPRbvChZ
+         wRrWcllSzjbfwURKIlVM3R6geZktvtQVkAUVECySvW+9t8BX+7Y+Mwnbg2+kr26wyHyc
+         0WBa5P7q9VQ2U9GlcuKszMphubHxHCT/n6acs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=DrFSqlp6N5hVS2J5LBpv5q3jiLHrhXO1dKkZQLcwDsA=;
-        b=dHIYpG8kiLiimpdKDgCYOU+wyfwGPvKG/Auzhgh7rrgxVz5IZGFZz2K38Zd9w0Fdr+
-         aBztLHBKklsbtqobPxAb9XULy+0a+eN4oMAi2R4N14rytYHOUojF3G0mLcF3Y7YnotIF
-         6ykIcgA9fb7OZBVJtfI4FFT5FXWmpFAjy5yhwhCclou0qqTi2gl7Saem1V0okaBKkhZx
-         9MRn8crWb2ix9r042dw66n9EjWhm0Adu/YH9oXeutSnPKmZTeKgBJwol3BNONz+OBVid
-         d8tpvSKP9RHikzj+AYoMJOd0ThTAx22G//J+v/SzcgvLry7HEcoXh2zyrJO8DsXddlMT
-         xNlQ==
-X-Gm-Message-State: AOAM532L79tnuWWJhfwCj2Adz+gcKvBMXef77Dc30Vfls5MOxvs6Ib5B
-        kcHi8OaS4fa/oSSR3URXssnT4SOgYKI=
-X-Google-Smtp-Source: ABdhPJyXmUxeH1ONAeqCmQMGdvJCGS+jcxFlXcVe7yZ/XLfUb+q1nuecmx1rA+GGh534a1pzJFs5Sw==
-X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr9091398pju.159.1595653963045;
-        Fri, 24 Jul 2020 22:12:43 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z2sm7972048pfq.67.2020.07.24.22.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Jul 2020 22:12:42 -0700 (PDT)
-Date:   Fri, 24 Jul 2020 22:12:42 -0700 (PDT)
-X-Google-Original-Date: Fri, 24 Jul 2020 22:08:22 PDT (-0700)
-Subject:     Re: [PATCH 4/4] riscv: Parse all memory blocks to remove unusable memory
-In-Reply-To: <20200715233009.27183-5-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
-        aou@eecs.berkeley.edu, Anup Patel <Anup.Patel@wdc.com>,
-        greentime.hu@sifive.com, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, sudeep.holla@arm.com,
-        vincent.chen@sifive.com, zong.li@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-ab4785af-26a2-4494-81f7-b0c206711515@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=zgyWqznSRtZ8AuY3tULsDjN5RpahufiDT3f0fggLh5s=;
+        b=iVPqMSHnFvTY/SSOn0PnHdYEDNj9xqsOKqAtF/hGhEedCJn9Wfyo8zAG7c/MTSzjmV
+         iEvFbbyZsdd6uxAaVGKdcF/VLVvMTL8ryVq+4KU/qyygPF8hWjYaRZc9K4ec8iW3t245
+         HlOr7hfWLq2gUmBKZ032WWf+GWxVSwEsiRT0QJKucf3EdOJk69YuReR+9cIsBCMvPAeR
+         pTDBOu87bAr7nAAChP1iQoDPc3SJojnV7+UVWKgJxg0Ac9xWO7j2VudjZ/dFqD2A69+d
+         UZH2JlgYALWY+KGvyVVyqw4xpIC7zljRN4eWu1HjFNwAYmBKgUKDLaE+mKXpTiPQ3evJ
+         4khQ==
+X-Gm-Message-State: AOAM532Upz3gnvZQqiYt7LxvMYzN/5yzScTPDi+Go/Dx4BXohltHLYFS
+        gbleQqQ/+MVQqmBOHb4tyQ1XmEa7yxDNLjgehYaj4Y2ixAS8VKz9w6R22H6OmHQovPyIesDdGEZ
+        UzURluwsYdGHWzUBuvA4njKJ1IAKlmDhqavlfExRwpTx83cwS/XVhMHHGdjuE79xmHeUEwGZAeD
+        2JAWrAHiCv
+X-Google-Smtp-Source: ABdhPJz6ILO9KJmQAo9dsBlTgCVjwv22IuoZPDOnnhlk6scO1A0oZWI5P9disMNuzZklnQGqIVBuug==
+X-Received: by 2002:a17:90a:fe08:: with SMTP id ck8mr8549438pjb.90.1595654074430;
+        Fri, 24 Jul 2020 22:14:34 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id 193sm7829508pfz.85.2020.07.24.22.14.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 24 Jul 2020 22:14:33 -0700 (PDT)
+Subject: Re: [PATCH v3 00/19] Introduce partial kernel_read_file() support
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200724213640.389191-1-keescook@chromium.org>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <09bd8cc0-8073-c26a-fb7c-010a62f88c74@broadcom.com>
+Date:   Fri, 24 Jul 2020 22:14:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200724213640.389191-1-keescook@chromium.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Jul 2020 16:30:09 PDT (-0700), Atish Patra wrote:
-> Currently, maximum physical memory allowed is equal to -PAGE_OFFSET.
-> That's why we remove any memory blocks spanning beyond that size. However,
-> it is done only for memblock containing linux kernel which will not work
-> if there are multiple memblocks.
+On 2020-07-24 2:36 p.m., Kees Cook wrote:
+> v3:
+> - add reviews/acks
+> - add "IMA: Add support for file reads without contents" patch
+> - trim CC list, in case that's why vger ignored v2
+> v2: [missing from lkml archives! (CC list too long?) repeating changes here]
+> - fix issues in firmware test suite
+> - add firmware partial read patches
+> - various bug fixes/cleanups
+> v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
 >
-> Process all memory blocks to figure out how much memory needs to be removed
-> and remove at the end instead of updating the memblock list in place.
+> Hi,
 >
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/mm/init.c | 31 +++++++++++++++++--------------
->  1 file changed, 17 insertions(+), 14 deletions(-)
+> Here's my tree for adding partial read support in kernel_read_file(),
+> which fixes a number of issues along the way. It's got Scott's firmware
+> and IMA patches ported and everything tests cleanly for me (even with
+> CONFIG_IMA_APPRAISE=y).
 >
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index f818a47a72d1..79e9d55bdf1a 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -147,26 +147,29 @@ void __init setup_bootmem(void)
->  {
->  	struct memblock_region *reg;
->  	phys_addr_t mem_size = 0;
-> +	phys_addr_t total_mem = 0;
-> +	phys_addr_t mem_start, end = 0;
->  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
->  	phys_addr_t vmlinux_start = __pa_symbol(&_start);
->
->  	/* Find the memory region containing the kernel */
->  	for_each_memblock(memory, reg) {
-> -		phys_addr_t end = reg->base + reg->size;
-> -
-> -		if (reg->base <= vmlinux_start && vmlinux_end <= end) {
-> -			mem_size = min(reg->size, (phys_addr_t)-PAGE_OFFSET);
-> -
-> -			/*
-> -			 * Remove memblock from the end of usable area to the
-> -			 * end of region
-> -			 */
-> -			if (reg->base + mem_size < end)
-> -				memblock_remove(reg->base + mem_size,
-> -						end - reg->base - mem_size);
-> -		}
-> +		end = reg->base + reg->size;
-> +		if (!total_mem)
-> +			mem_start = reg->base;
-> +		if (reg->base <= vmlinux_start && vmlinux_end <= end)
-> +			BUG_ON(reg->size == 0);
-> +		total_mem = total_mem + reg->size;
->  	}
-> -	BUG_ON(mem_size == 0);
-> +
-> +	/*
-> +	 * Remove memblock from the end of usable area to the
-> +	 * end of region
-> +	 */
-> +	mem_size = min(total_mem, (phys_addr_t)-PAGE_OFFSET);
-> +	if (mem_start + mem_size < end)
-> +		memblock_remove(mem_start + mem_size,
-> +				end - mem_start - mem_size);
->
->  	/* Reserve from the start of the kernel to the end of the kernel */
->  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+> I think the intention is for this to go via Greg's tree since Scott's
+> driver code will depend on it?
+v3 of this patch series looks good and passes all of my tests.
+Remaining patches
+Acked-by: Scott Branden <scott.branden@broadcom.com>
 
-Thanks, this one is also on fixes.
+I have added latest bcm-vk driver code to Kees' patch series and added 
+it here:
+https://github.com/sbranden/linux/tree/kernel_read_file_for_kees_v3
+
+If everyone finds Kees' patch series acceptable then the 3 patches 
+adding the bcm-vk driver
+need to be added to the series.  I can send the 3 patches out separately 
+and then
+the two patch series can be combined in Greg or someone's tree if that 
+works?
+Or if an in-kernel user beyond kernel selftest is needed for 
+request_partial_firmware_into_buf
+in Kees' patch series then another PATCH v4 needs to be sent out 
+including the bcm-vk driver.
+>
+> Thanks,
+>
+> -Kees
+>
+>
+> Kees Cook (15):
+
+Thanks for help Kees, it's works now.
+>    test_firmware: Test platform fw loading on non-EFI systems
+>    selftest/firmware: Add selftest timeout in settings
+>    firmware_loader: EFI firmware loader must handle pre-allocated buffer
+>    fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER enum
+>    fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
+>    fs/kernel_read_file: Split into separate source file
+>    fs/kernel_read_file: Remove redundant size argument
+>    fs/kernel_read_file: Switch buffer size arg to size_t
+>    fs/kernel_read_file: Add file_size output argument
+>    LSM: Introduce kernel_post_load_data() hook
+>    firmware_loader: Use security_post_load_data()
+>    module: Call security_kernel_post_load_data()
+>    LSM: Add "contents" flag to kernel_read_file hook
+>    fs/kernel_file_read: Add "offset" arg for partial reads
+>    firmware: Store opt_flags in fw_priv
+>
+> Scott Branden (4):
+>    fs/kernel_read_file: Split into separate include file
+>    IMA: Add support for file reads without contents
+>    firmware: Add request_partial_firmware_into_buf()
+>    test_firmware: Test partial read support
+>
+>   drivers/base/firmware_loader/fallback.c       |  19 +-
+>   drivers/base/firmware_loader/fallback.h       |   5 +-
+>   .../base/firmware_loader/fallback_platform.c  |  16 +-
+>   drivers/base/firmware_loader/firmware.h       |   7 +-
+>   drivers/base/firmware_loader/main.c           | 143 ++++++++++---
+>   drivers/firmware/efi/embedded-firmware.c      |  21 +-
+>   drivers/firmware/efi/embedded-firmware.h      |  19 ++
+>   fs/Makefile                                   |   3 +-
+>   fs/exec.c                                     | 132 +-----------
+>   fs/kernel_read_file.c                         | 189 ++++++++++++++++++
+>   include/linux/efi_embedded_fw.h               |  13 --
+>   include/linux/firmware.h                      |  12 ++
+>   include/linux/fs.h                            |  39 ----
+>   include/linux/ima.h                           |  19 +-
+>   include/linux/kernel_read_file.h              |  55 +++++
+>   include/linux/lsm_hook_defs.h                 |   6 +-
+>   include/linux/lsm_hooks.h                     |  12 ++
+>   include/linux/security.h                      |  19 +-
+>   kernel/kexec.c                                |   2 +-
+>   kernel/kexec_file.c                           |  19 +-
+>   kernel/module.c                               |  24 ++-
+>   lib/test_firmware.c                           | 159 +++++++++++++--
+>   security/integrity/digsig.c                   |   8 +-
+>   security/integrity/ima/ima_fs.c               |  10 +-
+>   security/integrity/ima/ima_main.c             |  70 +++++--
+>   security/integrity/ima/ima_policy.c           |   1 +
+>   security/loadpin/loadpin.c                    |  17 +-
+>   security/security.c                           |  26 ++-
+>   security/selinux/hooks.c                      |   8 +-
+>   .../selftests/firmware/fw_filesystem.sh       |  91 +++++++++
+>   tools/testing/selftests/firmware/settings     |   8 +
+>   tools/testing/selftests/kselftest/runner.sh   |   6 +-
+>   32 files changed, 860 insertions(+), 318 deletions(-)
+>   create mode 100644 drivers/firmware/efi/embedded-firmware.h
+>   create mode 100644 fs/kernel_read_file.c
+>   create mode 100644 include/linux/kernel_read_file.h
+>   create mode 100644 tools/testing/selftests/firmware/settings
+>
+
