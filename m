@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324DA22D967
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFFE22D96C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727039AbgGYSvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:51:42 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:50035 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726035AbgGYSvl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:51:41 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from build.alporthouse.com (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP id 21931418-1500050 
-        for multiple; Sat, 25 Jul 2020 19:51:11 +0100
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-To:     linux-kernel@vger.kernel.org
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        id S1727036AbgGYS4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:56:52 -0400
+Received: from 8bytes.org ([81.169.241.247]:33470 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726035AbgGYS4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 14:56:52 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id E2DAA46A; Sat, 25 Jul 2020 20:56:50 +0200 (CEST)
+Date:   Sat, 25 Jul 2020 20:56:49 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Subject: [PATCH] locking/lockdep: Fix overflow in presentation of average lock-time
-Date:   Sat, 25 Jul 2020 19:51:10 +0100
-Message-Id: <20200725185110.11588-1-chris@chris-wilson.co.uk>
-X-Mailer: git-send-email 2.20.1
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Regression on todays tip/master (commit 16f70beccf43)
+Message-ID: <20200725185648.GY27672@8bytes.org>
+References: <20200723133743.GA30716@8bytes.org>
+ <871rl2xpar.fsf@nanos.tec.linutronix.de>
+ <20200723145219.GP27672@8bytes.org>
+ <20200724132802.GA640628@gmail.com>
+ <20200725103850.GA823877@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200725103850.GA823877@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Though the number of lock-acquisitions is tracked as unsigned long, this
-is passed as the divisor to div_s64() which interprets it as a s32,
-giving nonsense values with more than 2 billion acquisitons. E.g.
+On Sat, Jul 25, 2020 at 12:38:50PM +0200, Ingo Molnar wrote:
+> On a second thought, I think this recent bug might have been the 
+> culprit:
+> 
+>   d136122f5845: ("sched: Fix race against ptrace_freeze_trace()")
+> 
+> Fixed in tip:sched/urgent - this is why it went away in your testing 
+> perhaps?
 
-  acquisitions   holdtime-min   holdtime-max holdtime-total   holdtime-avg
-  -------------------------------------------------------------------------
-    2350439395           0.07         353.38   649647067.36          0.-32
+Indeed, tip/master with this commit reverted triggers the issue again,
+so it appears to be the same problem. But it leaves the question why I
+couldn't trigger it with plain v5.8-rc6.
 
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Will Deacon <will@kernel.org>
----
- kernel/locking/lockdep_proc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
 
-diff --git a/kernel/locking/lockdep_proc.c b/kernel/locking/lockdep_proc.c
-index 5525cd3ba0c8..02ef87f50df2 100644
---- a/kernel/locking/lockdep_proc.c
-+++ b/kernel/locking/lockdep_proc.c
-@@ -423,7 +423,7 @@ static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
- 	seq_time(m, lt->min);
- 	seq_time(m, lt->max);
- 	seq_time(m, lt->total);
--	seq_time(m, lt->nr ? div_s64(lt->total, lt->nr) : 0);
-+	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
- }
- 
- static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
--- 
-2.20.1
-
+	Joerg
