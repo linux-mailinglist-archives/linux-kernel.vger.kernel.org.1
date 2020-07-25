@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB6822D5FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC6B22D605
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 10:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgGYINS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 25 Jul 2020 04:13:18 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:36688 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgGYINR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 04:13:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id F303D6071A74;
-        Sat, 25 Jul 2020 10:13:14 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id mmZdptfRQbs3; Sat, 25 Jul 2020 10:13:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id EC4D26071A7C;
-        Sat, 25 Jul 2020 10:13:12 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 7pjzFcqw8NDv; Sat, 25 Jul 2020 10:13:12 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id C40136071A74;
-        Sat, 25 Jul 2020 10:13:12 +0200 (CEST)
-Date:   Sat, 25 Jul 2020 10:13:12 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Message-ID: <265316380.171213.1595664792652.JavaMail.zimbra@nod.at>
-In-Reply-To: <20200725063701.GA1058480@kroah.com>
-References: <20200725063416.172037-1-weiyongjun1@huawei.com> <20200725063701.GA1058480@kroah.com>
-Subject: Re: [PATCH -next] mtd: fix missing unlock on error in
- mtdchar_compat_ioctl()
+        id S1726759AbgGYIUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 04:20:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8821 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725944AbgGYIUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 04:20:51 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9AFC2BE19D4066F78E67;
+        Sat, 25 Jul 2020 16:20:48 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sat, 25 Jul 2020
+ 16:20:40 +0800
+From:   Luo Jiaxing <luojiaxing@huawei.com>
+To:     <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <john.garry@huawei.com>, <yanaijie@huawei.com>,
+        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>,
+        <linuxarm@huawei.com>
+Subject: [PATCH v2 0/2] scsi: libsas: An improvement on error handle and tidy-up
+Date:   Sat, 25 Jul 2020 16:18:49 +0800
+Message-ID: <1595665131-24543-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Topic: fix missing unlock on error in mtdchar_compat_ioctl()
-Thread-Index: unRYG1XOaa/d55A4orlZmW/yp+6gkg==
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-> An: "Wei Yongjun" <weiyongjun1@huawei.com>
-> CC: "Miquel Raynal" <miquel.raynal@bootlin.com>, "richard" <richard@nod.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
-> "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linux-kernel@vger.kernel.org>, "kernel-janitors"
-> <kernel-janitors@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
-> Gesendet: Samstag, 25. Juli 2020 08:37:01
-> Betreff: Re: [PATCH -next] mtd: fix missing unlock on error in mtdchar_compat_ioctl()
-> I think Richard already resolved this in his tree, but I could be wrong.
+This patch introduces an improvement to reduce error handle time and a
+tidy-up, including: 
+- postreset() is deleted from sas_sata_ops. 
+- Do not perform hard reset and delayed retry on a removed SATA disk. This
+can effectively reduce the error handle duration of hot unplug a SATA disk
+with traffic(reduce about 30s depending on the delay setting of libata). 
 
-Yes, fixed in git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git mtd/fixes
-and should be visible in linux-next very soon.
- 
-> And nice detection by your bot, that's good to see.
+Both John garry and Jason Yan participated in the review of the solution
+and provided good suggestions during the development.
 
-Yeah, good to see that such issues are being detected automatically.
+Change since v1:
+- Removed an unnecessary tag from subject.
 
-Thanks,
-//richard
+Luo Jiaxing (2):
+  scsi: libsas: delete postreset at sas_sata_ops
+  scsi: libsas: check link status at ATA prereset() ops
+
+ drivers/scsi/libsas/sas_ata.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+-- 
+2.7.4
+
