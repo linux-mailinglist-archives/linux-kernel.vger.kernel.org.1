@@ -2,168 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CF922D93C
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E686D22D94C
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 20:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728095AbgGYSOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 14:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
+        id S1728024AbgGYSPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 14:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728071AbgGYSOk (ORCPT
+        with ESMTP id S1726727AbgGYSPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 14:14:40 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC917C08C5C0;
-        Sat, 25 Jul 2020 11:14:39 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id d18so9255785edv.6;
-        Sat, 25 Jul 2020 11:14:39 -0700 (PDT)
+        Sat, 25 Jul 2020 14:15:34 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD9FC08C5C0;
+        Sat, 25 Jul 2020 11:15:34 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id w9so9333848qts.6;
+        Sat, 25 Jul 2020 11:15:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XKnDklCAGiv58g9Foc3TqRLdzVf3EoGTeteiTkp0kag=;
-        b=GJ07DrBgtpG7LTpUn3MU6eIPgrRISBw/2GM5Mfq3Ksb8dre5YamuMV+ffjsAT8bNgn
-         u3QU/d46eVHhq3bXl291YVu0rJhU8nDXL/MUuAuA1lI8pK2G0DI/RpbYHU15gMMFJjee
-         Fyahnj9dxmIqG1lu9/JF3D89bQA/tB5ZdOsDKXn7K8e/TkB7/RldxNoAjvq1l63VIRAy
-         weepThoEd/B4QKsqunh+bV7WQRbNkywP7IJ/VC95uz4bzuHGif9CKAyEMLLbRKnnCRQH
-         G9x9b6FzmXP2gfWUnF7pQipZdIXuTC8ZQcxN0tt9lF8MhVgBxkvtDgjVJ8S1m0utS2NT
-         XPsw==
+        h=from:to:subject:date:message-id;
+        bh=BoLLs9pL25bQsh1K8AZlZy8BCoVEU1VbiiHrpjhJ70k=;
+        b=jt8+hJpYx7U7Pv4o2UdmKJnGDCnIYuK7uaPWiLSuPerSnu/1L9O+7cW1Se5svGYhBq
+         PGZN5uls/Pto4Vf8OVG6r0LfbTqSTYWzZ6dhgYu/LwwpKeF7H2iN9ZCqxnST7LDMPY44
+         m+WLoh1ICZwjWcMswMJXNyzFCk7+FYnXesjgx8VPwC72onuXCRtKugi7xXofHe5bCsZl
+         dIGiubPw2iiJSqPVzRwcJcr52Kq0GlUIMug5dee0xyCLfV2uOtWLjR6QAB+ZyVrdl8JK
+         yo/RS/RzGqC+pjxl2B+88wB2t5fQDXYExVbKqi4ThXbx5oczuTI7hPQirh1Uc7bY/uhQ
+         Qr+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XKnDklCAGiv58g9Foc3TqRLdzVf3EoGTeteiTkp0kag=;
-        b=rUSvvzNIn/kEOblbfIozxSr4RU9K2IhIo/hyMKfSVrWJNorN9dmFJ6lOPUcZICQInR
-         qT9g2o3eLQr24q6eCtqWWLpntAK9gQVSgP0uATN4H7et1W2goienP1LJLvwLam6mi0Un
-         9GXqav6+d1OuAFBjPgjcZwK0qhtG8flPlWAL3TqKU5/bK020XwG5uHTNGVVopGR0d0mm
-         xT9PussQISpUHbbGA7Ojvb2Ojmh81HhGwhDjZZiFK7kZ3t69jSUlBsM63ctXoMjDj8ME
-         O/CZZfErAUFPqp+A6Hmcs8nA3dhZOAU3KgrF1TENsJjEBVnyV2v/Y6ukhIySeWXNfN/7
-         VcNA==
-X-Gm-Message-State: AOAM5316rVuKhDFkTJLobCU47izU7bg7ZPsywFPoa4WM2AAbDLJzjLyg
-        4PAPz+r72sHt9jFdvs3rYww=
-X-Google-Smtp-Source: ABdhPJymEfznei5ky/ny1Kg/HlDVR3Y7dGzAt4QmgjnqZoY6VY8yrVuGLMPB0Cu++anysV35CSTZCg==
-X-Received: by 2002:aa7:c655:: with SMTP id z21mr14407787edr.330.1595700878430;
-        Sat, 25 Jul 2020 11:14:38 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host-79-22-5-125.retail.telecomitalia.it. [79.22.5.125])
-        by smtp.googlemail.com with ESMTPSA id qn10sm220922ejb.39.2020.07.25.11.14.37
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=BoLLs9pL25bQsh1K8AZlZy8BCoVEU1VbiiHrpjhJ70k=;
+        b=qxkyAcEMGR+OkytRYFFV3m3OScuPtnlRvY9T6+KqWFnldbMBkwsrqp0YWG8/jHOcGa
+         /4m4XXl10WYesVIkYITNks66VGSO5lVvQ/DwnPoCv7gll1qvdcrWbJySI74iKSpJfNsP
+         5qh6S3QDglXr7Wm4o10sT2suk3RkZKBjUzdUD/Fhu3eyeGdKXaywiqjG4X1ZZRrsK3wu
+         t6S8qsikw9pXuCIvqd0tYeqeYeEs/uyupw9gb9VkC6ujZZ1F0l91d75eO8Yaa4sGW9bR
+         XFXo8WZk+EmPe1eKuUauzX3RsnnVGjXnmHErSICMc+BZ66kTdDWbUlB7qCVW4id3dEx5
+         He3w==
+X-Gm-Message-State: AOAM530uK7oCNMHlxwXiHLXit1zVa5zeAZgfI2s+xvuKQrH2qCtPgPyV
+        dy2FSWFgiN/Tw9AjmUL1QSRdcGqJEVyuXQ==
+X-Google-Smtp-Source: ABdhPJxGFMafz00I9Zqenkqzb2gAb3+rqPW8PStREmdM83sDRCB6ZQeowtht6kGoIDWaz3WOadCKOQ==
+X-Received: by 2002:ac8:478e:: with SMTP id k14mr12856517qtq.21.1595700933813;
+        Sat, 25 Jul 2020 11:15:33 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:dd0e:1a59:cbe4:73ee])
+        by smtp.googlemail.com with ESMTPSA id o184sm12177664qkd.41.2020.07.25.11.15.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 11:14:37 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Amit Kucheria <amit.kucheria@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v5 7/7] dt-bindings: thermal: tsens: Document ipq8064 bindings
-Date:   Sat, 25 Jul 2020 20:14:03 +0200
-Message-Id: <20200725181404.18951-8-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200725181404.18951-1-ansuelsmth@gmail.com>
-References: <20200725181404.18951-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 25 Jul 2020 11:15:33 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Shuah Khan <shuah@kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] [cgroup/testing] cg_read_strcmp: Fix null pointer dereference
+Date:   Sat, 25 Jul 2020 14:14:51 -0400
+Message-Id: <20200725181506.20199-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the use of bindings used for msm8960 tsens based devices.
-msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+Passing NULL in strcmp will cause a segmentation fault.
+Fix this by returning -1 if expected is NULL pointer. 
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 ---
- .../bindings/thermal/qcom-tsens.yaml          | 50 ++++++++++++++++---
- 1 file changed, 43 insertions(+), 7 deletions(-)
+ tools/testing/selftests/cgroup/cgroup_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index d7be931b42d2..9d480e3943a2 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -19,6 +19,11 @@ description: |
- properties:
-   compatible:
-     oneOf:
-+      - description: msm9860 TSENS based
-+        items:
-+          - enum:
-+            - qcom,ipq8064-tsens
-+
-       - description: v0.1 of TSENS
-         items:
-           - enum:
-@@ -85,12 +90,18 @@ properties:
-       Number of cells required to uniquely identify the thermal sensors. Since
-       we have multiple sensors this is set to 1
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
+index 8a637ca7d73a..05853b0b8831 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/cgroup_util.c
+@@ -106,7 +106,7 @@ int cg_read_strcmp(const char *cgroup, const char *control,
  
-+required:
-+  - compatible
-+  - interrupts
-+  - "#thermal-sensor-cells"
-+
- allOf:
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-+              - qcom,ipq8064-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8974-tsens
-               - qcom,msm8976-tsens
-@@ -111,17 +122,42 @@ allOf:
-         interrupt-names:
-           minItems: 2
+ 	/* Handle the case of comparing against empty string */
+ 	if (!expected)
+-		size = 32;
++		return -1;
+ 	else
+ 		size = strlen(expected) + 1;
  
--required:
--  - compatible
--  - reg
--  - "#qcom,sensors"
--  - interrupts
--  - interrupt-names
--  - "#thermal-sensor-cells"
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,tsens-v0_1
-+              - qcom,tsens-v1
-+              - qcom,tsens-v2
-+
-+    then:
-+      required:
-+        - reg
-+        - interrupt-names
-+        - "#qcom,sensors"
- 
- additionalProperties: false
- 
- examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    // Example msm9860 based SoC (ipq8064):
-+    gcc: clock-controller {
-+
-+           /* ... */
-+
-+           tsens: thermal-sensor {
-+                compatible = "qcom,ipq8064-tsens";
-+
-+                 nvmem-cells = <&tsens_calib>, <&tsens_calsel>;
-+                 nvmem-cell-names = "calib", "calib_sel";
-+                 interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+
-+                 #thermal-sensor-cells = <1>;
-+          };
-+    };
-+
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     // Example 1 (legacy: for pre v1 IP):
 -- 
-2.27.0
+2.17.1
 
