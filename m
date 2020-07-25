@@ -2,183 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DF322D530
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 07:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CC322D532
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 07:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgGYFOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 01:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
+        id S1726784AbgGYFQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 01:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbgGYFOf (ORCPT
+        with ESMTP id S1725941AbgGYFQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 01:14:35 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB54C0619D3
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:14:35 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p1so5638171pls.4
-        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:14:35 -0700 (PDT)
+        Sat, 25 Jul 2020 01:16:01 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65020C0619E4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:16:01 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id t142so3535260wmt.4
+        for <linux-kernel@vger.kernel.org>; Fri, 24 Jul 2020 22:16:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=zgyWqznSRtZ8AuY3tULsDjN5RpahufiDT3f0fggLh5s=;
-        b=Uz3IlXv+sKUEtS5eC2DkIZtfS1Xha2bB4TKPa3hP+w1M1cIds1A7Bc9dmlvPRbvChZ
-         wRrWcllSzjbfwURKIlVM3R6geZktvtQVkAUVECySvW+9t8BX+7Y+Mwnbg2+kr26wyHyc
-         0WBa5P7q9VQ2U9GlcuKszMphubHxHCT/n6acs=
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1A39S77yGNTj+vtNchAh8X3CIK8/9nKUrXkekggREdA=;
+        b=MTEQ9GJUoo0I0ctVC94zCI16k0mLXDC/KmNz0HJi91sUg4FruYGFcGbITt17rOn2VP
+         tdnVtXyN4/KuR+U9hF3oUOG5LIZVu9dgZQDAMZXNcqF3spR2qcKV3c9zakfOD4uPIphE
+         ivYrkZ3fe40Uj1MhyfCED/A1Gq2SulAnS3RFM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=zgyWqznSRtZ8AuY3tULsDjN5RpahufiDT3f0fggLh5s=;
-        b=iVPqMSHnFvTY/SSOn0PnHdYEDNj9xqsOKqAtF/hGhEedCJn9Wfyo8zAG7c/MTSzjmV
-         iEvFbbyZsdd6uxAaVGKdcF/VLVvMTL8ryVq+4KU/qyygPF8hWjYaRZc9K4ec8iW3t245
-         HlOr7hfWLq2gUmBKZ032WWf+GWxVSwEsiRT0QJKucf3EdOJk69YuReR+9cIsBCMvPAeR
-         pTDBOu87bAr7nAAChP1iQoDPc3SJojnV7+UVWKgJxg0Ac9xWO7j2VudjZ/dFqD2A69+d
-         UZH2JlgYALWY+KGvyVVyqw4xpIC7zljRN4eWu1HjFNwAYmBKgUKDLaE+mKXpTiPQ3evJ
-         4khQ==
-X-Gm-Message-State: AOAM532Upz3gnvZQqiYt7LxvMYzN/5yzScTPDi+Go/Dx4BXohltHLYFS
-        gbleQqQ/+MVQqmBOHb4tyQ1XmEa7yxDNLjgehYaj4Y2ixAS8VKz9w6R22H6OmHQovPyIesDdGEZ
-        UzURluwsYdGHWzUBuvA4njKJ1IAKlmDhqavlfExRwpTx83cwS/XVhMHHGdjuE79xmHeUEwGZAeD
-        2JAWrAHiCv
-X-Google-Smtp-Source: ABdhPJz6ILO9KJmQAo9dsBlTgCVjwv22IuoZPDOnnhlk6scO1A0oZWI5P9disMNuzZklnQGqIVBuug==
-X-Received: by 2002:a17:90a:fe08:: with SMTP id ck8mr8549438pjb.90.1595654074430;
-        Fri, 24 Jul 2020 22:14:34 -0700 (PDT)
-Received: from [10.136.13.65] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id 193sm7829508pfz.85.2020.07.24.22.14.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 24 Jul 2020 22:14:33 -0700 (PDT)
-Subject: Re: [PATCH v3 00/19] Introduce partial kernel_read_file() support
-To:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200724213640.389191-1-keescook@chromium.org>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <09bd8cc0-8073-c26a-fb7c-010a62f88c74@broadcom.com>
-Date:   Fri, 24 Jul 2020 22:14:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1A39S77yGNTj+vtNchAh8X3CIK8/9nKUrXkekggREdA=;
+        b=qhgdI+XHdwHscrRTGjWouakZCq26gZvcVD4cDWLLbzjhK9fw4DlBpY8l3nbuBhsu6U
+         Vf5P/7LfVrvHIArwdaEVYKKW6382D025nMUKOvskw3rnWAPefHo4X9wRIse7bQb2SFc5
+         /5cskb56ZL0AsWtZXqjd8GpNioP4X68bUV3ZrGeK8vOpmm2JOByYE4qsSVM3nUKOss+f
+         i6bNBNfGY/LVUOuvrgja1ZgZ7g2ZhgIrF8qZHv96ustqLhDB/4hCw88rdEizB4O/dOFm
+         qPtzjePZXKcc9jZDwK4XW/cvjxk6Bup1hkA//cSgLvMmKUIYtaD2o6e9n5cjBUAyhVqM
+         PDMA==
+X-Gm-Message-State: AOAM5302zhro3swE+uRVuUuM6vdITTwMqqy2gn8X42zq63b3K7bvoEc7
+        j7WKBKoM8jr61dsQZkJlfH16h+fqJjmHyhqooPD6GFDbkg==
+X-Google-Smtp-Source: ABdhPJw/TpCohtM1GHrvjJDelbJRTLy39MA5teHhgxb8HZ8cYzmfqAN88IMWiI/XGBhoEq2fU/c6su48TGXYRi06zvk=
+X-Received: by 2002:a1c:345:: with SMTP id 66mr11098630wmd.31.1595654159968;
+ Fri, 24 Jul 2020 22:15:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200724213640.389191-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200724071822.126758-1-anup.patel@wdc.com> <20200724071822.126758-4-anup.patel@wdc.com>
+In-Reply-To: <20200724071822.126758-4-anup.patel@wdc.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Fri, 24 Jul 2020 22:15:48 -0700
+Message-ID: <CAOnJCULOcbSWdgfWsG3ruATCP4TRLAGyXEQxirV69gOpZF0b2w@mail.gmail.com>
+Subject: Re: [PATCH v6 3/4] RISC-V: Remove CLINT related code from timer and arch
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
+        Emil Renner Berhing <kernel@esmil.dk>,
+        Anup Patel <anup@brainfault.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-24 2:36 p.m., Kees Cook wrote:
-> v3:
-> - add reviews/acks
-> - add "IMA: Add support for file reads without contents" patch
-> - trim CC list, in case that's why vger ignored v2
-> v2: [missing from lkml archives! (CC list too long?) repeating changes here]
-> - fix issues in firmware test suite
-> - add firmware partial read patches
-> - various bug fixes/cleanups
-> v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
+On Fri, Jul 24, 2020 at 12:19 AM Anup Patel <anup.patel@wdc.com> wrote:
 >
-> Hi,
+> Right now the RISC-V timer driver is convoluted to support:
+> 1. Linux RISC-V S-mode (with MMU) where it will use TIME CSR for
+>    clocksource and SBI timer calls for clockevent device.
+> 2. Linux RISC-V M-mode (without MMU) where it will use CLINT MMIO
+>    counter register for clocksource and CLINT MMIO compare register
+>    for clockevent device.
 >
-> Here's my tree for adding partial read support in kernel_read_file(),
-> which fixes a number of issues along the way. It's got Scott's firmware
-> and IMA patches ported and everything tests cleanly for me (even with
-> CONFIG_IMA_APPRAISE=y).
+> We now have a separate CLINT timer driver which also provide CLINT
+> based IPI operations so let's remove CLINT MMIO related code from
+> arch/riscv directory and RISC-V timer driver.
 >
-> I think the intention is for this to go via Greg's tree since Scott's
-> driver code will depend on it?
-v3 of this patch series looks good and passes all of my tests.
-Remaining patches
-Acked-by: Scott Branden <scott.branden@broadcom.com>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Tested-by: Emil Renner Berhing <kernel@esmil.dk>
+> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> ---
+>  arch/riscv/Kconfig                      |  2 +-
+>  arch/riscv/Kconfig.socs                 |  2 +
+>  arch/riscv/configs/nommu_virt_defconfig |  7 +--
+>  arch/riscv/include/asm/clint.h          | 14 ------
+>  arch/riscv/include/asm/timex.h          | 28 +++--------
+>  arch/riscv/kernel/Makefile              |  2 +-
+>  arch/riscv/kernel/clint.c               | 63 -------------------------
+>  arch/riscv/kernel/setup.c               |  2 -
+>  arch/riscv/kernel/smp.c                 |  1 -
+>  arch/riscv/kernel/smpboot.c             |  1 -
+>  drivers/clocksource/Kconfig             |  3 +-
+>  drivers/clocksource/timer-riscv.c       | 17 +------
+>  12 files changed, 16 insertions(+), 126 deletions(-)
+>  delete mode 100644 arch/riscv/include/asm/clint.h
+>  delete mode 100644 arch/riscv/kernel/clint.c
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index fedb4a72b29a..57a72ae23d10 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -74,7 +74,7 @@ config RISCV
+>         select PCI_DOMAINS_GENERIC if PCI
+>         select PCI_MSI if PCI
+>         select RISCV_INTC
+> -       select RISCV_TIMER
+> +       select RISCV_TIMER if RISCV_SBI
+>         select SPARSEMEM_STATIC if 32BIT
+>         select SPARSE_IRQ
+>         select SYSCTL_EXCEPTION_TRACE
+> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> index 6c88148f1b9b..8a55f6156661 100644
+> --- a/arch/riscv/Kconfig.socs
+> +++ b/arch/riscv/Kconfig.socs
+> @@ -12,6 +12,7 @@ config SOC_SIFIVE
+>
+>  config SOC_VIRT
+>         bool "QEMU Virt Machine"
+> +       select CLINT_TIMER if RISCV_M_MODE
+>         select POWER_RESET
+>         select POWER_RESET_SYSCON
+>         select POWER_RESET_SYSCON_POWEROFF
+> @@ -24,6 +25,7 @@ config SOC_VIRT
+>  config SOC_KENDRYTE
+>         bool "Kendryte K210 SoC"
+>         depends on !MMU
+> +       select CLINT_TIMER if RISCV_M_MODE
+>         select SERIAL_SIFIVE if TTY
+>         select SERIAL_SIFIVE_CONSOLE if TTY
+>         select SIFIVE_PLIC
+> diff --git a/arch/riscv/configs/nommu_virt_defconfig b/arch/riscv/configs/nommu_virt_defconfig
+> index cf74e179bf90..cf9388184aa3 100644
+> --- a/arch/riscv/configs/nommu_virt_defconfig
+> +++ b/arch/riscv/configs/nommu_virt_defconfig
+> @@ -26,6 +26,7 @@ CONFIG_EXPERT=y
+>  CONFIG_SLOB=y
+>  # CONFIG_SLAB_MERGE_DEFAULT is not set
+>  # CONFIG_MMU is not set
+> +CONFIG_SOC_VIRT=y
+>  CONFIG_MAXPHYSMEM_2GB=y
+>  CONFIG_SMP=y
+>  CONFIG_CMDLINE="root=/dev/vda rw earlycon=uart8250,mmio,0x10000000,115200n8 console=ttyS0"
+> @@ -48,7 +49,6 @@ CONFIG_VIRTIO_BLK=y
+>  # CONFIG_SERIO is not set
+>  # CONFIG_LEGACY_PTYS is not set
+>  # CONFIG_LDISC_AUTOLOAD is not set
+> -# CONFIG_DEVMEM is not set
+>  CONFIG_SERIAL_8250=y
+>  # CONFIG_SERIAL_8250_DEPRECATED_OPTIONS is not set
+>  CONFIG_SERIAL_8250_CONSOLE=y
+> @@ -56,16 +56,13 @@ CONFIG_SERIAL_8250_NR_UARTS=1
+>  CONFIG_SERIAL_8250_RUNTIME_UARTS=1
+>  CONFIG_SERIAL_OF_PLATFORM=y
+>  # CONFIG_HW_RANDOM is not set
+> +# CONFIG_DEVMEM is not set
+>  # CONFIG_HWMON is not set
+> -# CONFIG_LCD_CLASS_DEVICE is not set
+> -# CONFIG_BACKLIGHT_CLASS_DEVICE is not set
 
-I have added latest bcm-vk driver code to Kees' patch series and added 
-it here:
-https://github.com/sbranden/linux/tree/kernel_read_file_for_kees_v3
+Why these changes are in the diff ?
 
-If everyone finds Kees' patch series acceptable then the 3 patches 
-adding the bcm-vk driver
-need to be added to the series.  I can send the 3 patches out separately 
-and then
-the two patch series can be combined in Greg or someone's tree if that 
-works?
-Or if an in-kernel user beyond kernel selftest is needed for 
-request_partial_firmware_into_buf
-in Kees' patch series then another PATCH v4 needs to be sent out 
-including the bcm-vk driver.
+>  # CONFIG_VGA_CONSOLE is not set
+>  # CONFIG_HID is not set
+>  # CONFIG_USB_SUPPORT is not set
+>  CONFIG_VIRTIO_MMIO=y
+>  CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES=y
+> -CONFIG_SIFIVE_PLIC=y
+> -# CONFIG_VALIDATE_FS_PARSER is not set
+>  CONFIG_EXT2_FS=y
+>  # CONFIG_DNOTIFY is not set
+>  # CONFIG_INOTIFY_USER is not set
+> diff --git a/arch/riscv/include/asm/clint.h b/arch/riscv/include/asm/clint.h
+> deleted file mode 100644
+> index adaba98a7d6c..000000000000
+> --- a/arch/riscv/include/asm/clint.h
+> +++ /dev/null
+> @@ -1,14 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0 */
+> -#ifndef _ASM_RISCV_CLINT_H
+> -#define _ASM_RISCV_CLINT_H 1
+> -
+> -#include <linux/io.h>
+> -#include <linux/smp.h>
+> -
+> -#ifdef CONFIG_RISCV_M_MODE
+> -void clint_init_boot_cpu(void);
+> -#else /* CONFIG_RISCV_M_MODE */
+> -#define clint_init_boot_cpu()  do { } while (0)
+> -#endif /* CONFIG_RISCV_M_MODE */
+> -
+> -#endif /* _ASM_RISCV_CLINT_H */
+> diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+> index bad2a7c2cda5..a3fb85d505d4 100644
+> --- a/arch/riscv/include/asm/timex.h
+> +++ b/arch/riscv/include/asm/timex.h
+> @@ -7,41 +7,27 @@
+>  #define _ASM_RISCV_TIMEX_H
 >
-> Thanks,
+>  #include <asm/csr.h>
+> -#include <asm/mmio.h>
 >
-> -Kees
+>  typedef unsigned long cycles_t;
+>
+> -extern u64 __iomem *riscv_time_val;
+> -extern u64 __iomem *riscv_time_cmp;
+> -
+> -#ifdef CONFIG_64BIT
+> -#define mmio_get_cycles()      readq_relaxed(riscv_time_val)
+> -#else
+> -#define mmio_get_cycles()      readl_relaxed(riscv_time_val)
+> -#define mmio_get_cycles_hi()   readl_relaxed(((u32 *)riscv_time_val) + 1)
+> -#endif
+> -
+>  static inline cycles_t get_cycles(void)
+>  {
+> -       if (IS_ENABLED(CONFIG_RISCV_SBI))
+> -               return csr_read(CSR_TIME);
+> -       return mmio_get_cycles();
+> +       return csr_read(CSR_TIME);
+>  }
+>  #define get_cycles get_cycles
+>
+> +static inline u32 get_cycles_hi(void)
+> +{
+> +       return csr_read(CSR_TIMEH);
+> +}
+> +#define get_cycles_hi get_cycles_hi
+> +
+>  #ifdef CONFIG_64BIT
+>  static inline u64 get_cycles64(void)
+>  {
+>         return get_cycles();
+>  }
+>  #else /* CONFIG_64BIT */
+> -static inline u32 get_cycles_hi(void)
+> -{
+> -       if (IS_ENABLED(CONFIG_RISCV_SBI))
+> -               return csr_read(CSR_TIMEH);
+> -       return mmio_get_cycles_hi();
+> -}
+> -
+>  static inline u64 get_cycles64(void)
+>  {
+>         u32 hi, lo;
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index b355cf485671..7edf15643146 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -31,7 +31,7 @@ obj-y += cacheinfo.o
+>  obj-y  += patch.o
+>  obj-$(CONFIG_MMU) += vdso.o vdso/
+>
+> -obj-$(CONFIG_RISCV_M_MODE)     += clint.o traps_misaligned.o
+> +obj-$(CONFIG_RISCV_M_MODE)     += traps_misaligned.o
+>  obj-$(CONFIG_FPU)              += fpu.o
+>  obj-$(CONFIG_SMP)              += smpboot.o
+>  obj-$(CONFIG_SMP)              += smp.o
+> diff --git a/arch/riscv/kernel/clint.c b/arch/riscv/kernel/clint.c
+> deleted file mode 100644
+> index a9845ee023e2..000000000000
+> --- a/arch/riscv/kernel/clint.c
+> +++ /dev/null
+> @@ -1,63 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0
+> -/*
+> - * Copyright (c) 2019 Christoph Hellwig.
+> - */
+> -
+> -#include <linux/io.h>
+> -#include <linux/of_address.h>
+> -#include <linux/smp.h>
+> -#include <linux/types.h>
+> -#include <asm/clint.h>
+> -#include <asm/csr.h>
+> -#include <asm/timex.h>
+> -
+> -/*
+> - * This is the layout used by the SiFive clint, which is also shared by the qemu
+> - * virt platform, and the Kendryte KD210 at least.
+> - */
+> -#define CLINT_IPI_OFF          0
+> -#define CLINT_TIME_CMP_OFF     0x4000
+> -#define CLINT_TIME_VAL_OFF     0xbff8
+> -
+> -u32 __iomem *clint_ipi_base;
+> -
+> -static void clint_send_ipi(const struct cpumask *target)
+> -{
+> -       unsigned int cpu;
+> -
+> -       for_each_cpu(cpu, target)
+> -               writel(1, clint_ipi_base + cpuid_to_hartid_map(cpu));
+> -}
+> -
+> -static void clint_clear_ipi(void)
+> -{
+> -       writel(0, clint_ipi_base + cpuid_to_hartid_map(smp_processor_id()));
+> -}
+> -
+> -static struct riscv_ipi_ops clint_ipi_ops = {
+> -       .ipi_inject = clint_send_ipi,
+> -       .ipi_clear = clint_clear_ipi,
+> -};
+> -
+> -void clint_init_boot_cpu(void)
+> -{
+> -       struct device_node *np;
+> -       void __iomem *base;
+> -
+> -       np = of_find_compatible_node(NULL, NULL, "riscv,clint0");
+> -       if (!np) {
+> -               panic("clint not found");
+> -               return;
+> -       }
+> -
+> -       base = of_iomap(np, 0);
+> -       if (!base)
+> -               panic("could not map CLINT");
+> -
+> -       clint_ipi_base = base + CLINT_IPI_OFF;
+> -       riscv_time_cmp = base + CLINT_TIME_CMP_OFF;
+> -       riscv_time_val = base + CLINT_TIME_VAL_OFF;
+> -
+> -       clint_clear_ipi();
+> -       riscv_set_ipi_ops(&clint_ipi_ops);
+> -}
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index f04373be54a6..2c6dd329312b 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -18,7 +18,6 @@
+>  #include <linux/swiotlb.h>
+>  #include <linux/smp.h>
+>
+> -#include <asm/clint.h>
+>  #include <asm/cpu_ops.h>
+>  #include <asm/setup.h>
+>  #include <asm/sections.h>
+> @@ -79,7 +78,6 @@ void __init setup_arch(char **cmdline_p)
+>  #else
+>         unflatten_device_tree();
+>  #endif
+> -       clint_init_boot_cpu();
+>
+>  #ifdef CONFIG_SWIOTLB
+>         swiotlb_init(1);
+> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+> index 8b85683ce203..07626be78c23 100644
+> --- a/arch/riscv/kernel/smp.c
+> +++ b/arch/riscv/kernel/smp.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/seq_file.h>
+>  #include <linux/delay.h>
+>
+> -#include <asm/clint.h>
+>  #include <asm/sbi.h>
+>  #include <asm/tlbflush.h>
+>  #include <asm/cacheflush.h>
+> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+> index 5fe849791bf0..a6cfa9842d4b 100644
+> --- a/arch/riscv/kernel/smpboot.c
+> +++ b/arch/riscv/kernel/smpboot.c
+> @@ -24,7 +24,6 @@
+>  #include <linux/of.h>
+>  #include <linux/sched/task_stack.h>
+>  #include <linux/sched/mm.h>
+> -#include <asm/clint.h>
+>  #include <asm/cpu_ops.h>
+>  #include <asm/irq.h>
+>  #include <asm/mmu_context.h>
+> diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+> index 41f1c147c178..b24449da3022 100644
+> --- a/drivers/clocksource/Kconfig
+> +++ b/drivers/clocksource/Kconfig
+> @@ -648,9 +648,8 @@ config ATCPIT100_TIMER
+>           This option enables support for the Andestech ATCPIT100 timers.
+>
+>  config RISCV_TIMER
+> -       bool "Timer for the RISC-V platform"
+> +       bool "Timer for the RISC-V platform" if COMPILE_TEST
+>         depends on GENERIC_SCHED_CLOCK && RISCV
+> -       default y
+>         select TIMER_PROBE
+>         select TIMER_OF
+>         help
+> diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
+> index 9de1dabfb126..c51c5ed15aa7 100644
+> --- a/drivers/clocksource/timer-riscv.c
+> +++ b/drivers/clocksource/timer-riscv.c
+> @@ -19,26 +19,13 @@
+>  #include <linux/of_irq.h>
+>  #include <asm/smp.h>
+>  #include <asm/sbi.h>
+> -
+> -u64 __iomem *riscv_time_cmp;
+> -u64 __iomem *riscv_time_val;
+> -
+> -static inline void mmio_set_timer(u64 val)
+> -{
+> -       void __iomem *r;
+> -
+> -       r = riscv_time_cmp + cpuid_to_hartid_map(smp_processor_id());
+> -       writeq_relaxed(val, r);
+> -}
+> +#include <asm/timex.h>
+>
+>  static int riscv_clock_next_event(unsigned long delta,
+>                 struct clock_event_device *ce)
+>  {
+>         csr_set(CSR_IE, IE_TIE);
+> -       if (IS_ENABLED(CONFIG_RISCV_SBI))
+> -               sbi_set_timer(get_cycles64() + delta);
+> -       else
+> -               mmio_set_timer(get_cycles64() + delta);
+> +       sbi_set_timer(get_cycles64() + delta);
+>         return 0;
+>  }
+>
+> --
+> 2.25.1
 >
 >
-> Kees Cook (15):
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Thanks for help Kees, it's works now.
->    test_firmware: Test platform fw loading on non-EFI systems
->    selftest/firmware: Add selftest timeout in settings
->    firmware_loader: EFI firmware loader must handle pre-allocated buffer
->    fs/kernel_read_file: Remove FIRMWARE_PREALLOC_BUFFER enum
->    fs/kernel_read_file: Remove FIRMWARE_EFI_EMBEDDED enum
->    fs/kernel_read_file: Split into separate source file
->    fs/kernel_read_file: Remove redundant size argument
->    fs/kernel_read_file: Switch buffer size arg to size_t
->    fs/kernel_read_file: Add file_size output argument
->    LSM: Introduce kernel_post_load_data() hook
->    firmware_loader: Use security_post_load_data()
->    module: Call security_kernel_post_load_data()
->    LSM: Add "contents" flag to kernel_read_file hook
->    fs/kernel_file_read: Add "offset" arg for partial reads
->    firmware: Store opt_flags in fw_priv
->
-> Scott Branden (4):
->    fs/kernel_read_file: Split into separate include file
->    IMA: Add support for file reads without contents
->    firmware: Add request_partial_firmware_into_buf()
->    test_firmware: Test partial read support
->
->   drivers/base/firmware_loader/fallback.c       |  19 +-
->   drivers/base/firmware_loader/fallback.h       |   5 +-
->   .../base/firmware_loader/fallback_platform.c  |  16 +-
->   drivers/base/firmware_loader/firmware.h       |   7 +-
->   drivers/base/firmware_loader/main.c           | 143 ++++++++++---
->   drivers/firmware/efi/embedded-firmware.c      |  21 +-
->   drivers/firmware/efi/embedded-firmware.h      |  19 ++
->   fs/Makefile                                   |   3 +-
->   fs/exec.c                                     | 132 +-----------
->   fs/kernel_read_file.c                         | 189 ++++++++++++++++++
->   include/linux/efi_embedded_fw.h               |  13 --
->   include/linux/firmware.h                      |  12 ++
->   include/linux/fs.h                            |  39 ----
->   include/linux/ima.h                           |  19 +-
->   include/linux/kernel_read_file.h              |  55 +++++
->   include/linux/lsm_hook_defs.h                 |   6 +-
->   include/linux/lsm_hooks.h                     |  12 ++
->   include/linux/security.h                      |  19 +-
->   kernel/kexec.c                                |   2 +-
->   kernel/kexec_file.c                           |  19 +-
->   kernel/module.c                               |  24 ++-
->   lib/test_firmware.c                           | 159 +++++++++++++--
->   security/integrity/digsig.c                   |   8 +-
->   security/integrity/ima/ima_fs.c               |  10 +-
->   security/integrity/ima/ima_main.c             |  70 +++++--
->   security/integrity/ima/ima_policy.c           |   1 +
->   security/loadpin/loadpin.c                    |  17 +-
->   security/security.c                           |  26 ++-
->   security/selinux/hooks.c                      |   8 +-
->   .../selftests/firmware/fw_filesystem.sh       |  91 +++++++++
->   tools/testing/selftests/firmware/settings     |   8 +
->   tools/testing/selftests/kselftest/runner.sh   |   6 +-
->   32 files changed, 860 insertions(+), 318 deletions(-)
->   create mode 100644 drivers/firmware/efi/embedded-firmware.h
->   create mode 100644 fs/kernel_read_file.c
->   create mode 100644 include/linux/kernel_read_file.h
->   create mode 100644 tools/testing/selftests/firmware/settings
->
+Otherwise, looks good.
 
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
+
+-- 
+Regards,
+Atish
