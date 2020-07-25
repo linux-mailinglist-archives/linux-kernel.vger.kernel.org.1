@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E2022D6A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 12:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0326F22D6A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 12:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726985AbgGYKNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 06:13:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43650 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgGYKNn (ORCPT
+        id S1726763AbgGYKOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 06:14:55 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54524 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726618AbgGYKOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 06:13:43 -0400
-Date:   Sat, 25 Jul 2020 10:13:40 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595672021;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Sat, 25 Jul 2020 06:14:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595672093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=20DnNp5cze1/ylzfbRoAtBpyfJOVVlM56wdmug10pm8=;
-        b=EFAI8hiRkOYEU/pIsKJ8HXv1zmytq23TOrQBZAFxPuPDX97qP0RLKdXuvALRlQVCmCJ6Pq
-        aOcqdF33ZxmK7iFxPJcgjNJEpOCqCkMUzVbLCUX02i7AVv72sWE+R4+Yi0sOwojCECpMX/
-        dPc2YzVfIc9CP5JgBqpE+lRja1g60l3mEPi4bJx1wGdJGLbP98uXdWqTMVR8S3d1oMXo7y
-        RcP0fkpp6tnGcB3pesqs8Nb2sjU3RVpzF0LFG6hjQrydQ12eCoGqz+f0gBRSyMMwco96rA
-        vwlzk6MTAunvQLrX07SzkMzP5zERBVz3SVNryAx+RzDRJxJgXM6sCsV92fxeZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595672021;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=20DnNp5cze1/ylzfbRoAtBpyfJOVVlM56wdmug10pm8=;
-        b=ayEWGy4cfMCxXjviVo8hvCHlifgU+aIXU0K1KdJFz2OU2x/H4RNNHpG+/zkX2nuomUBH1h
-        6tsKJpc2j/3oB7CQ==
-From:   "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/ioapic: Remove unused "IOAPIC_AUTO" define
-Cc:     Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200724114418.629021-2-mingo@kernel.org>
-References: <20200724114418.629021-2-mingo@kernel.org>
+        bh=b0AOSE86PGeB1I9Z9HMCGCB3b0fmc6DBmuHd8pPAROo=;
+        b=Y++mNFQ3HrrYgRlxqSr5x4gYDeFBSX8pnpAxzpi/v/SQG884gBTS34yElOXTcrd1PC3Op1
+        UktxA6xzKyK/MazrAWkVMpn+U62+EM4qbBsbaDJ+Z6iGpUAWLtRe7YTLYEWWW8Lph9qKm1
+        ZR2jF3BXAXp2LMDmwAjiE0HI0Ve558c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-nScs2uXVMfyq-xnABE0aEg-1; Sat, 25 Jul 2020 06:14:51 -0400
+X-MC-Unique: nScs2uXVMfyq-xnABE0aEg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 289B91009600;
+        Sat, 25 Jul 2020 10:14:50 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.25])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C482270105;
+        Sat, 25 Jul 2020 10:14:47 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Sat, 25 Jul 2020 12:14:49 +0200 (CEST)
+Date:   Sat, 25 Jul 2020 12:14:46 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+Message-ID: <20200725101445.GB3870@redhat.com>
+References: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
+ <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
+ <20200723124749.GA7428@redhat.com>
+ <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
+ <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com>
+ <alpine.LSU.2.11.2007231549540.1016@eggly.anvils>
+ <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
+ <20200724152424.GC17209@redhat.com>
+ <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
+ <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <159567202093.4006.10042539580438472603.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On 07/24, Linus Torvalds wrote:
+>
+> I just realized that one thing we could do is to not even test the
+> page bit for the shared case in the wakeup path.
+>
+> Because anybody who uses the non-exclusive "wait_on_page_locked()" or
+> "wait_on_page_writeback()" isn't actually interested in the bit state
+> any more at that point. All they care about is that somebody cleared
+> it - not whether it was then re-taken again.
+>
+> So instead of keeping them on the list - or stopping the waitqueue
+> walk because somebody else got the bit - we could just mark them
+> successfully done, wake them up, and remove those entries from the
+> list.
 
-Commit-ID:     8cd591aeb1d650f79a49d8704c35a78bf18f5de9
-Gitweb:        https://git.kernel.org/tip/8cd591aeb1d650f79a49d8704c35a78bf18f5de9
-Author:        Ingo Molnar <mingo@kernel.org>
-AuthorDate:    Fri, 24 Jul 2020 13:44:16 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Sat, 25 Jul 2020 12:00:56 +02:00
+Heh. I too thought about this. And just in case, your patch looks correct
+to me. But I can't really comment this behavioural change. Perhaps it
+should come in a separate patch?
 
-x86/ioapic: Remove unused "IOAPIC_AUTO" define
+In essense, this partly reverts your commit 3510ca20ece0150
+("Minor page waitqueue cleanups"). I mean this part:
 
-Last use was removed more than 5 years ago, in:
 
-   5ad274d41c1b: ("x86/irq: Remove unused old IOAPIC irqdomain interfaces")
+     (b) we don't want to put the non-locking waiters always on the front of
+         the queue, and the locking waiters always on the back.  Not only is
+         that unfair, it means that we wake up thousands of reading threads
+         that will just end up being blocked by the writer later anyway.
+...
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200724114418.629021-2-mingo@kernel.org
----
- arch/x86/include/asm/io_apic.h | 1 -
- 1 file changed, 1 deletion(-)
+	@@ -972,10 +976,7 @@ static inline int wait_on_page_bit_common(wait_queue_head_t *q,
+			spin_lock_irq(&q->lock);
+	 
+			if (likely(list_empty(&wait->entry))) {
+	-			if (lock)
+	-				__add_wait_queue_entry_tail_exclusive(q, wait);
+	-			else
+	-				__add_wait_queue(q, wait);
+	+			__add_wait_queue_entry_tail(q, wait);
+				SetPageWaiters(page);
+			}
 
-diff --git a/arch/x86/include/asm/io_apic.h b/arch/x86/include/asm/io_apic.h
-index fd20a23..a1a26f6 100644
---- a/arch/x86/include/asm/io_apic.h
-+++ b/arch/x86/include/asm/io_apic.h
-@@ -99,7 +99,6 @@ struct IR_IO_APIC_route_entry {
- struct irq_alloc_info;
- struct ioapic_domain_cfg;
- 
--#define IOAPIC_AUTO			-1
- #define IOAPIC_EDGE			0
- #define IOAPIC_LEVEL			1
- 
+Oleg.
+
