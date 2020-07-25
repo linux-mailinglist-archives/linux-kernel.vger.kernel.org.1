@@ -2,62 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E8722D76F
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 14:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726E622D774
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 14:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbgGYMNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 08:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726639AbgGYMNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 08:13:04 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B06AD20674;
-        Sat, 25 Jul 2020 12:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595679183;
-        bh=zRw6d17GoVtvI1l3GK+dyKmcdnwOg4wwfjyOcWySfLA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LF4AzFkzLpfLbcNVWzXboAUULqsgUV1w0k5rTlIA30XvUDgEd1+uzAqP9aTeWdvZz
-         tLFG5izOhnSidxC1Ub2vtH06KIoH3dKFmPIDv98/ED1lQO9YtStdCZdEfCnjqHX1mX
-         rAh1JwLDZYAXfzoUZmuxmYbpDv4IBor1Lw59I9Dw=
-Received: by mail-oi1-f169.google.com with SMTP id j11so10353068oiw.12;
-        Sat, 25 Jul 2020 05:13:03 -0700 (PDT)
-X-Gm-Message-State: AOAM533YQ5oBSqX5tSY4zkq/iGkUcDNs1YX8igahOBK4zEoq/SV6z+Pl
-        SVvy53ZHzfloKpec18AJ2ffqQ7tRVAihxpULZtE=
-X-Google-Smtp-Source: ABdhPJzq1TXQYdywbReuouFO6wIWuSCTKIG6kI2Fi8vPYOalaOAOB/b222sBhZcBc1duguve0G1o73ZTMb8eJauRWIs=
-X-Received: by 2002:aca:cc0a:: with SMTP id c10mr711767oig.174.1595679183082;
- Sat, 25 Jul 2020 05:13:03 -0700 (PDT)
+        id S1727071AbgGYMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 08:14:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:44110 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726639AbgGYMOp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 08:14:45 -0400
+Date:   Sat, 25 Jul 2020 12:14:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595679282;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ni0mfcHzkt3QVnomHKCgVf5CNK+FqZMyLli/6XR0Mso=;
+        b=ETGt1qpGFDhcbt92bQE5hAU+I7hLfhCfaYSpGHl+m6gJLO8761SQbQgzgAbJKlqUKTRVkD
+        giXMjwWkhjOFDYiQ8YXhuvEwuabHa2Z1hQJ7jJS1ukPeFLmG23ZhdT2sf+b5XUC7GhUZUu
+        oMM3h8kmiP6jOiUzRCtGWMCWOyYCttdqR9mc8Cu9AILlxo426O53ujSKqzflR1ZIaoierU
+        7NOhXqPRw4oESSy7zaWtW/Egra+rXb13ERIdJiMBy9xLjQnSN/TCzqSHrtF+f1BLhDM5WO
+        SLTC3mYgoYb6+hlPYLxre3AkjlPLXrX1I1RA9gwE/n94VpaC3Yp2zvso81cr6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595679282;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ni0mfcHzkt3QVnomHKCgVf5CNK+FqZMyLli/6XR0Mso=;
+        b=wiHiuEw/QQJHu/SrEogM4KygH+qc8aAcqSKCI6brFzmBuROz3//XzGq+GRuarEpdicp5sp
+        5ZMHEVRcE+C/S6BA==
+From:   "tip-bot2 for Fenghua Yu" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/split_lock: Enable the split lock feature on
+ Sapphire Rapids and Alder Lake CPUs
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1595634320-79689-1-git-send-email-fenghua.yu@intel.com>
+References: <1595634320-79689-1-git-send-email-fenghua.yu@intel.com>
 MIME-Version: 1.0
-References: <20200709132807.32232-1-ardb@kernel.org> <CAMj1kXGHDS7PnuPsCnHWGDFdtcaJUuXboZUZQwowzw0LfrQ+pw@mail.gmail.com>
- <CAMj1kXFQt4f0XT6C_4_xAuDALv_jVsc+z0zkSnxh6MU-zHxj2g@mail.gmail.com> <20200725102559.GA757519@gmail.com>
-In-Reply-To: <20200725102559.GA757519@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 25 Jul 2020 15:12:51 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXGET_-VPpEU8QvaHT_PbBetCOjOhrL5ttRYGe=MkNCdjA@mail.gmail.com>
-Message-ID: <CAMj1kXGET_-VPpEU8QvaHT_PbBetCOjOhrL5ttRYGe=MkNCdjA@mail.gmail.com>
-Subject: Re: [GIT PULL] EFI fixes for v5.8-rc
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <159567928168.4006.15289187589508335521.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Jul 2020 at 13:26, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> > Ping again?
->
-> Sorry about the delay - sending it to Linus now.
->
+The following commit has been merged into the x86/cpu branch of tip:
 
-Thanks Ingo
+Commit-ID:     3aae57f0c3ba57715cf89201b5a5f290684078a5
+Gitweb:        https://git.kernel.org/tip/3aae57f0c3ba57715cf89201b5a5f290684078a5
+Author:        Fenghua Yu <fenghua.yu@intel.com>
+AuthorDate:    Fri, 24 Jul 2020 16:45:20 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 25 Jul 2020 12:17:00 +02:00
+
+x86/split_lock: Enable the split lock feature on Sapphire Rapids and Alder Lake CPUs
+
+Add Sapphire Rapids and Alder Lake processors to CPU list to enumerate
+and enable the split lock feature.
+
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/1595634320-79689-1-git-send-email-fenghua.yu@intel.com
+---
+ arch/x86/kernel/cpu/intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 0ab48f1..b6b7b38 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -1156,6 +1156,8 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	1),
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		1),
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		1),
++	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	1),
++	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		1),
+ 	{}
+ };
+ 
