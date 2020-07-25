@@ -2,97 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA4E22D992
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 21:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4CD22D995
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 21:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgGYT2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 15:28:04 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28250 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726381AbgGYT2E (ORCPT
+        id S1727941AbgGYT3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 15:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726381AbgGYT3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 15:28:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595705282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E4b8xOE1a+SCo8hP5TdzZ/KYctFwKJKu7PER0hCduYU=;
-        b=JpqjVj1NbLi1j2yZoeqWUY6JUrBbiC9KzZU/dZQcTI/91qXn02X7KowlTlnBY5H5H3Fn7n
-        hbDFCVXb6PeB7f3+SDR3NVPlLpWGQkncCfjx/nL3N9aA4z4qs77SwuUdZZPgO7NJmy+nKb
-        vMkTgEmVaR/dxAV3lEGh3O3rjvItgds=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-OtXHO55vMHqSr1UcLHQKag-1; Sat, 25 Jul 2020 15:27:58 -0400
-X-MC-Unique: OtXHO55vMHqSr1UcLHQKag-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C47C185BDF9;
-        Sat, 25 Jul 2020 19:27:57 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.14])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 111741C4;
-        Sat, 25 Jul 2020 19:27:54 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Sat, 25 Jul 2020 21:27:56 +0200 (CEST)
-Date:   Sat, 25 Jul 2020 21:27:53 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-Message-ID: <20200725192753.GA21962@redhat.com>
-References: <20200723124749.GA7428@redhat.com>
- <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
- <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com>
- <alpine.LSU.2.11.2007231549540.1016@eggly.anvils>
- <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
- <20200724152424.GC17209@redhat.com>
- <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
- <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
- <20200725101445.GB3870@redhat.com>
- <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+        Sat, 25 Jul 2020 15:29:49 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9BBC08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 12:29:48 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id q4so13288467lji.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 12:29:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QRn/o7p7Dr6ct7GVq8d3H/58B25NpUh0o8HDRDgbelU=;
+        b=rPFIK4uzBFnqaegkZ+ahCYgrdrkZNiv3wYqRuQzpEKS3OiuC5VNfZMggQTw7ZE6ITP
+         zJK6sTJfQD9XiBbsvXpCHALUrBKqPEP3n7UQVwTqnAajLsH7kt56nylrgTBQEx7EKG+U
+         O7SZ5oR4GHNUj+mEwpYPD6k5y3deSn868L4pXgBsrb4bIXK5uAT/WRTfGjHrlGYUytdL
+         sgQa+8AeGJU633TIgtzEjONDWz+ho+glG3ug/FvX7xowRGKrfjg1/l1HHkyU3N7RS/Zu
+         /e1p/NdzwV3hYL2PwRn3HDYlZA/fTrW3lWcLxGHiWr9PgKzHgHj2ED/R5BrqH00ovfuF
+         8yqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QRn/o7p7Dr6ct7GVq8d3H/58B25NpUh0o8HDRDgbelU=;
+        b=LXSmkHf8JayQKFOyEEJA2ls8YgHJCvT1co4y0h4sRLSRJU+lQpMjhUVL3J+PKDiEal
+         1F4EAyok5ObugqsYzYtGPbQSMKICbvHf28BtEu2G00LlJn/hmL+cQMEtH0+9l8sVYqtx
+         0dEPlpnxwV7g6XAsqF4K29uRP8OCbCahqXsFqWqwfssSoYaayjFnYUgVowCoL0IhDMef
+         BDpDWO+qCGmErAm/a0j3lvpTZHHyi02wEw8ZQq/tTmdRvXJoKePm20IlDlgUZMSEl/W8
+         pu/8WNYOil45o+NKHk1qGgG7ISsL66FhB06x91NkoJKktvS2lzQ3bchxnjBvW/CsIYDu
+         OLhg==
+X-Gm-Message-State: AOAM531+YQ8Q8+o1tmAaLHKt7QrMAsm0xZAkM/TRWh23CfQGUS+wBpFP
+        hrRzd+RxZZGZL2uZ8i1okdix3WKJrksI0Bp3mwk=
+X-Google-Smtp-Source: ABdhPJy4nIkdNHCtvK1N9MfD51qsqqFMMgFVTsb9MPToJUX4nGtOLa7aZokCkKC+sUqPYXpTnCK4esEz99fi8gSqe0M=
+X-Received: by 2002:a2e:8858:: with SMTP id z24mr6885159ljj.425.1595705386442;
+ Sat, 25 Jul 2020 12:29:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200722110411.ebkv6knvc6mzw5uf@smtp.gmail.com>
+ <20200722120502.GK6419@phenom.ffwll.local> <20200722140604.27dfzfnzug5vb75r@smtp.gmail.com>
+ <CAKMK7uHWCnJ+3YnP2FwVGH6cEDkmPnH9ALjY_1R51QVs0HPG0Q@mail.gmail.com>
+ <20200725011737.GA2851@realwakka> <CAKMK7uEWPCzx+K=+nJsLT5HRBVJ+s8tqx30Ljkr4BCBDComyWQ@mail.gmail.com>
+ <20200725174514.esh4gqek6oddizvh@smtp.gmail.com> <CAKMK7uEi0UFSwYTO7h6_YKN+UykOuVcmhMSG_ySy9uyo_7Pz-g@mail.gmail.com>
+ <20200725184918.togb54bxuifrq77c@smtp.gmail.com> <CAJeY4oEr1mDASzdjfyeXqfqUmM6n1ULgnedM7dif6db6Qk-r2g@mail.gmail.com>
+In-Reply-To: <CAJeY4oEr1mDASzdjfyeXqfqUmM6n1ULgnedM7dif6db6Qk-r2g@mail.gmail.com>
+From:   Melissa Wen <melissa.srw@gmail.com>
+Date:   Sat, 25 Jul 2020 16:29:35 -0300
+Message-ID: <CAJeY4oHzL2q1yRDQweSK5CM5WdHrWqqPVhkNc5DPzP1ayJLw+A@mail.gmail.com>
+Subject: Re: [PATCH] drm/vkms: add missing drm_crtc_vblank_put to the get/put
+ pair on flush
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Sidong Yang <realwakka@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        kernel-usp@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, to avoid the confusion, let me repeat I think your patch is fine.
-
-I too thought that non-exclusive waiters do not care about the bit state
-and thus wake_page_function() can simply wake them all up.
-
-But then I did "git blame", found your commit 3510ca20ece0150 and came to
-conclusion there are reasons we should not do this.
-
-On 07/25, Linus Torvalds wrote:
+On Sat, Jul 25, 2020 at 4:19 PM Melissa Wen <melissa.srw@gmail.com> wrote:
 >
-> On Sat, Jul 25, 2020 at 3:14 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > No, this very first warning continues (only once) :(
+> > From here (drm_crtc_vblank_on):
+> >         if (atomic_read(&vblank->refcount) != 0 || drm_vblank_offdelay == 0)
+> >                 drm_WARN_ON(dev, drm_vblank_enable(dev, pipe));
+>
+> Sorry, not sure when this warning is triggered.
+
+Again, I just had to look at the trace:
+[   52.299388]  drm_get_last_vbltimestamp+0xaa/0xc0 [drm]
+[   52.299389]  drm_reset_vblank_timestamp+0x5b/0xd0 [drm]
+[   52.299389]  drm_crtc_vblank_on.cold+0x37/0x103 [drm]
+[   52.299390]  drm_atomic_helper_commit_modeset_enable
+
+>
 > >
-> > In essense, this partly reverts your commit 3510ca20ece0150
-> > ("Minor page waitqueue cleanups"). I mean this part:
->
-> Well, no. I mean, it keeps the "always add to the fail" behavior.
-
-Ah, sorry for confusion, this doesn't matter. I didn't mean "fairness".
-
-What I tried to say. AFAICS before that commit we had (almost) the same
-behaviour you propose now: unlock_page/etc wakes all the non-exclusive
-waiters up.
-
-No?
-
-Or I misunderstood your reply? Quite possibly, too late for me...
-
-Oleg.
-
+> > > But I'm still wondering why after step 3 we don't get -EINVAL from
+> > > vblank_get() - after vblank_off() vblank->enabled should be false
+> > > again, getting us back to the same state as after 1. Is that not
+> > > happening?
+> >
+> > Yes (sorry if it got confused), we got -EINVAL after setp 3:
+> >
+> > In step 3, at the end of the 2nd running, we have:
+> > atomic_disable
+> > --> vblank_off [!vblank->inmodeset + refcount going 0->1 + inmodeset=1]
+> > and then in next vblank_get: -EINVAL (!vblank->enabled + refcount ends 1)
+> > as in the first step.
+> >
+> > Melissa
+> >
+> > > -Daniel
+> > >
+> > > >
+> > > > > >
+> > > > > > Thanks
+> > > > > > -Sidong
+> > > > > >
+> > > > > > > > >
+> > > > > > > > > >             crtc->state->event = NULL;
+> > > > > > > > > >     }
+> > > > > > > > > >
+> > > > > > > > > > --
+> > > > > > > > > > 2.27.0
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > --
+> > > > > > > > > Daniel Vetter
+> > > > > > > > > Software Engineer, Intel Corporation
+> > > > > > > > > http://blog.ffwll.ch
+> > > > > > >
+> > > > > > >
+> > > > > > >
+> > > > > > > --
+> > > > > > > Daniel Vetter
+> > > > > > > Software Engineer, Intel Corporation
+> > > > > > > http://blog.ffwll.ch
+> > > > > > > _______________________________________________
+> > > > > > > dri-devel mailing list
+> > > > > > > dri-devel@lists.freedesktop.org
+> > > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > > >
+> > > > >
+> > > > >
+> > > > > --
+> > > > > Daniel Vetter
+> > > > > Software Engineer, Intel Corporation
+> > > > > http://blog.ffwll.ch
+> > >
+> > >
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
