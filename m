@@ -2,160 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674BF22D863
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 17:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9124822D869
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Jul 2020 17:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgGYPKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 11:10:18 -0400
-Received: from mout.gmx.net ([212.227.15.15]:56627 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgGYPKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 11:10:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595689772;
-        bh=0+dq02+bTSZOWjOfes98J38UFipLGTbuXRkC1inmA3U=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=O4nMnn44Dbi2fanJvR/4mvXmlsGpcLqZG9nCR8UR0Zf5EjwcO2E35MSM9NpIMVcHe
-         EnIroe2dfwpt68KTNi50T2xmrrlTOlI+gFcS+OsteiPKzjCO0cd6oGdxD9tYcxoiNm
-         MTNnqSZl2UoCgqz34LyNdS9sDu9tRaOZxJIHTmTM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([79.150.73.70]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6lpM-1jsDCM2ftu-008GaD; Sat, 25
- Jul 2020 17:09:32 +0200
-Date:   Sat, 25 Jul 2020 17:09:14 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 2/2] kernel/trace: Remove function callback casts
-Message-ID: <20200725150914.GA3362@ubuntu>
-References: <20200719155033.24201-1-oscar.carter@gmx.com>
- <20200719155033.24201-3-oscar.carter@gmx.com>
- <20200721140545.445f0258@oasis.local.home>
- <20200724161921.GA3123@ubuntu>
- <20200724123528.36ea9c9e@oasis.local.home>
- <20200724171418.GB3123@ubuntu>
- <20200724133656.76c75629@oasis.local.home>
- <20200724134020.3160dc7c@oasis.local.home>
- <20200724175500.GD3123@ubuntu>
- <20200724143457.27755412@oasis.local.home>
+        id S1727829AbgGYPR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 11:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgGYPR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 11:17:56 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E28CC08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 08:17:56 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id l27so2047124oti.3
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 08:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ltOnyPTnPyHESFo1zHjbKU6HFj1ufxds9tDCUi8zQHY=;
+        b=iuCaR7FLbvbnazxWMnHzm2AEJNsQ5xNqhTnmUZhKxIG+ioDjLWk5nLQ/Eej2qMVnHt
+         dGcaztqvZxqe9+USxE+2LewfUyRwa2PdfKAElrheS6Zu1YFpAR3b5IiwK0E0TFw1YOsY
+         ecQhOKZJujhX7jvOCR2lWJwNbyOXcr9RqAuE4XyX55ZGWifeGWf9ckGq8y9rkmB4/Fvy
+         FWTvOiZcj1iqtJTCUJFjE0tdV3sW/LfRNOasIjT842Fp43pg1rAyZdt65SEF3YljOR89
+         i/Ik40vsp3mxiM0u8hKFTuFcAGhS6W5mhUsQ14vUXxlNZrUpfTQVP1Snx9pG2mrGg/yw
+         9/pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ltOnyPTnPyHESFo1zHjbKU6HFj1ufxds9tDCUi8zQHY=;
+        b=Wo/MpdChRtzeVgCIcquf3L7wGG/9CKmyocjQ6uJuCzGXcy8s1xTok1WhdvHnxdJ1Vy
+         GVk8el653e3QFQ7qWzRPYzKA855xW8eKUL3R0fNi9oNb45DrWOPeSNGT6KjFT1oUO3RU
+         7q9PNQFEtCgb8nF6ACQB0DNjE5xE/Ed4PWGGrEXqrQi1xkA/805lao1me0SfpaCzOD0h
+         Hd54EwANI2dd92set+45Jw4//pkMN2tVU4qIdgjLvipr4wifSgZ0p/kAp7qHkI968j/D
+         WJrU7IMxCeOMry59eVeei9KQ7ALI+65SjkECOX4WVi6rI6caNIORbnTw01p0hRrrlpAW
+         8Mog==
+X-Gm-Message-State: AOAM531zHNMXj1uXR+8UAOZapxVJ9Z2NflBmGctMfbU1MyN7+AnqyZTn
+        U7mF7WfuwbjX3fYHikPO0m+VtrCzcIkm08fu7gu+Yg==
+X-Google-Smtp-Source: ABdhPJw6jDQBM+jdnY9VEZlalEJuf+lfgwJa+JTJa7gk4YDwdfWs+xzxpeKXgDQFAAHKBOSB+kZrRAvCcZngMSlFfkM=
+X-Received: by 2002:a9d:4b01:: with SMTP id q1mr14243995otf.17.1595690275384;
+ Sat, 25 Jul 2020 08:17:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724143457.27755412@oasis.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:W/HeglBOHMPssphZao4Bb9c/Pd7lRCslUJblLnctWyCUmDYyO6w
- YpmEOMVoZslb4H/XM0PZLeTJ+nMUtI+8G9fnb6i3QfrW3F6iH8dk9uedQQIQ9e5MLUHXWwO
- Xz/FVhiyB8gt+/NXUl5xDW5qOM1ZMUJoGM3Va3eHjYRZ6JMfVU80Ovp1TMMFkNsiisiTyGJ
- 1FDsnD0UVKkFB7z/QeD7g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:g/VfRa5rABE=:OA46ynlvPUZWDrz+UmkSlE
- 9EkXlH14BlRtWJyelPFyPn/fx1HoJBtisqfBpkxceyTIC+zQoKdh1jo3BgTc2yhmkyTJ9ahNJ
- U3woiYdtYmQSv4gRkIwdKsUzyA+3zoWFdW1ZgxREUx8wwcoxLacumDG9q+OlJIOqg/6h6W1Mu
- +NDvt9bXiBmDxv8DWuC6aZtKGu7t56GxTPA1mtw16BUGLiSNSFm6tliG6wrM2UusZ8rAZJqXj
- XYreNAsToUVQiJ+a0viw7oS7rObpl1qLgXFH5oK5ukz5nD3YdU1g3tY3ZG3II/S0mxN0zCyoh
- vkfWcijHxjcxKyKP8/56NonuwBg+CVDkb/ojJ4UbuODK6RxMpq7L9RoUXyLE531BlWsBPXby6
- pmU207PNrCV8yleQqk6Mv0GsjqwclKoXOYp4aA9wWTOwk4pG5E0+xnMTZ4voV22cnBkC1G35F
- BiNHjxM3/0Jk9H2wNCP4d6Zu2a4Bo25dxw2Pj4PiWVRN9U51MvAws5wg89K0fw1UEJ2uOe+x3
- qsEShtSDphm/g4ghtww8bi1ksrw1ymmRwV3xdmZTVJdzH0DMiWp2R+e7B4Xifv8X1LmpPUIeG
- Jyx7AqGbFlbxUxmsPG1UKyrqyqYqP5zLoQtQlqQPV5zRMZ7LsK+2TQec8QGP0rfe6sCDoNtG7
- xuniJwcPVIMbUONlrwPpLSlA1Ps4LxhIqgk0fV+0JP7W+O+Du0oLCpnmahVUiZ73wbOgBiuoA
- 9y8I5HD9gJFJSY2Zx8w28BpeMG6/1Y1lm1xMWj1whM9yuBgafXL2uE52o2uV4w2cYsx1uc7A+
- /yDuU2CEUgvE3BetsXGb9Rl+Z4X5KcycD5Tz36ao/OZ1M/GlrTtWcBEsJeVnAXKsIJhTUmJXc
- yaOUg5mMoAEnGtUEQ27O2MAglt5aIRKQ2Jge6UvoovMhMLr/yJ5QJBMHGrPPrBPNPdErxJNpX
- fYyDesK7LiJKGQTrLtiI/UHwI6NafyAvqkIvpctogD2ubWwLfK8Svr+SI++hKtGQFvkDd6dSG
- 2yEjPgmpGSJ09OCRWt785IswDoZ5GYqYXKESa/M5aLNmzswqvkS+mRQBuwnHlWztb7FNnR9/H
- m0pOJ04p/IpCSmi9OHSHNmguGhJd0BIjGE/3f9QAv33woYzWJu984xPkvfE+3/2U17rCuX4BI
- /Ki4ildOojsPQG/tY6voptYtQBKpXFqi9hNrEhRPuacWDlYdyuyUG1tsPIC/grAJFq8L10622
- nGS+uDhrz7wiK4UsSd6nz2FYax27X+fw4p5eQVg==
-Content-Transfer-Encoding: quoted-printable
+References: <20200220141551.166537-1-elver@google.com> <20200220185855.GY2935@paulmck-ThinkPad-P72>
+ <20200220213317.GA35033@google.com> <20200725145623.GZ9247@paulmck-ThinkPad-P72>
+In-Reply-To: <20200725145623.GZ9247@paulmck-ThinkPad-P72>
+From:   Marco Elver <elver@google.com>
+Date:   Sat, 25 Jul 2020 17:17:43 +0200
+Message-ID: <CANpmjNPhuvrhRHAiuv2Zju1VNSe7dO0aaYn+1TB99OF2Hv0S_A@mail.gmail.com>
+Subject: Re: [PATCH] kcsan: Add option to allow watcher interruptions
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+[+Peter]
 
-On Fri, Jul 24, 2020 at 02:34:57PM -0400, Steven Rostedt wrote:
-> On Fri, 24 Jul 2020 19:55:00 +0200
-> Oscar Carter <oscar.carter@gmx.com> wrote:
+On Sat, 25 Jul 2020 at 16:56, Paul E. McKenney <paulmck@kernel.org> wrote:
 >
-> > > Which one of the above is this patch set for?
+> On Thu, Feb 20, 2020 at 10:33:17PM +0100, Marco Elver wrote:
+> > On Thu, 20 Feb 2020, Paul E. McKenney wrote:
+>
+> I am clearly not keeping up...  :-/
+
+Not to worry, I think the local_t idea was discarded based on Peter's
+feedback anyway at one point.
+
+> > > On Thu, Feb 20, 2020 at 03:15:51PM +0100, Marco Elver wrote:
+> > > > Add option to allow interrupts while a watchpoint is set up. This can be
+> > > > enabled either via CONFIG_KCSAN_INTERRUPT_WATCHER or via the boot
+> > > > parameter 'kcsan.interrupt_watcher=1'.
+[...]
+> > > > As an example, the first data race that this found:
+> > > >
+> > > > write to 0xffff88806b3324b8 of 4 bytes by interrupt on cpu 0:
+> > > >  rcu_preempt_read_enter kernel/rcu/tree_plugin.h:353 [inline]
+> > > >  __rcu_read_lock+0x3c/0x50 kernel/rcu/tree_plugin.h:373
+[...]
+> > > > read to 0xffff88806b3324b8 of 4 bytes by task 6131 on cpu 0:       |
+> > > >  rcu_preempt_read_enter kernel/rcu/tree_plugin.h:353 [inline]  ----+
+[...]
+> > > >
+> > > > The writer is doing 'current->rcu_read_lock_nesting++'. The read is as
+> > > > vulnerable to compiler optimizations and would therefore conclude this
+> > > > is a valid data race.
+> > >
+> > > Heh!  That one is a fun one!  It is on a very hot fastpath.  READ_ONCE()
+> > > and WRITE_ONCE() are likely to be measurable at the system level.
+> > >
+> > > Thoughts on other options?
 > >
-> > This patch is the result of a warning obtained with the following:
+> > Would this be a use-case for local_t? Don't think this_cpu ops work
+> > here.
 > >
-> > make allmodconfig ARCH=3Dpowerpc
-> > make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc-linux-gnu- -j4
+> > See below idea. This would avoid the data race (KCSAN stopped
+> > complaining) and seems to generate reasonable code.
 > >
-> > And with the -Wcast-function-type enabled in the top level makefile.
->
-> Looking into powerpc I found this:
->
-> arch/powerpc/include/asm/ftrace.h:
->
->   #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
->   #define ARCH_SUPPORTS_FTRACE_OPS 1
->   #endif
->
->
-> arch/powerpc/Kconfig:
->
-> 	select HAVE_DYNAMIC_FTRACE_WITH_REGS	if MPROFILE_KERNEL
-> [..]
->
->   config MPROFILE_KERNEL
-> 	depends on PPC64 && CPU_LITTLE_ENDIAN && FUNCTION_TRACER
-> 	def_bool $(success,$(srctree)/arch/powerpc/tools/gcc-check-mprofile-ker=
-nel.sh $(CC) -I$(srctree)/include -D__KERNEL__)
->
-> So, it looks like you need to be 64bit PowerPC, Little Endian, and gcc
-> needs to support -mprofile.
->
-> Otherwise, it falls back to the old way that does the type casting.
->
-> If you are really concerned about this, I would recommend adding
-> support to the architecture you care about, and then this will no
-> longer be an issue.
->
-> The funny part is, you can still add support for ftrace_ops, without
-> adding support for DYNAMIC_FTRACE_WITH_REGS, if you only care about not
-> having to do that typecast.
+> > Version before:
+> >
+> >  <__rcu_read_lock>:
+> >      130      mov    %gs:0x0,%rax
+> >      137
+> >      139      addl   $0x1,0x370(%rax)
+> >      140      retq
+> >      141      data16 nopw %cs:0x0(%rax,%rax,1)
+> >      148
+> >      14c      nopl   0x0(%rax)
+> >
+> > Version after:
+> >
+> >  <__rcu_read_lock>:
+> >      130      mov    %gs:0x0,%rax
+> >      137
+> >      139      incq   0x370(%rax)
+> >      140      retq
+> >      141      data16 nopw %cs:0x0(%rax,%rax,1)
+> >      148
+> >      14c      nopl   0x0(%rax)
+> >
+> > I haven't checked the other places where it is used, though.
+> > (Can send it as a patch if you think this might work.)
+> >
+> > Thanks,
+> > -- Marco
+> >
+> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > index 2678a37c31696..3d8586ee7ae64 100644
+> > --- a/include/linux/rcupdate.h
+> > +++ b/include/linux/rcupdate.h
+> > @@ -50,7 +50,7 @@ void __rcu_read_unlock(void);
+> >   * nesting depth, but makes sense only if CONFIG_PREEMPT_RCU -- in other
+> >   * types of kernel builds, the rcu_read_lock() nesting depth is unknowable.
+> >   */
+> > -#define rcu_preempt_depth() (current->rcu_read_lock_nesting)
+> > +#define rcu_preempt_depth() local_read(&current->rcu_read_lock_nesting)
+> >
+> >  #else /* #ifdef CONFIG_PREEMPT_RCU */
+> >
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index 0918904c939d2..70d7e3257feed 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -10,6 +10,7 @@
+> >  #include <uapi/linux/sched.h>
+> >
+> >  #include <asm/current.h>
+> > +#include <asm/local.h>
+> >
+> >  #include <linux/pid.h>
+> >  #include <linux/sem.h>
+> > @@ -708,7 +709,7 @@ struct task_struct {
+> >       cpumask_t                       cpus_mask;
+> >
+> >  #ifdef CONFIG_PREEMPT_RCU
+> > -     int                             rcu_read_lock_nesting;
+> > +     local_t                         rcu_read_lock_nesting;
+> >       union rcu_special               rcu_read_unlock_special;
+> >       struct list_head                rcu_node_entry;
+> >       struct rcu_node                 *rcu_blocked_node;
+> > diff --git a/init/init_task.c b/init/init_task.c
+> > index 096191d177d5c..941777fce11e5 100644
+> > --- a/init/init_task.c
+> > +++ b/init/init_task.c
+> > @@ -130,7 +130,7 @@ struct task_struct init_task
+> >       .perf_event_list = LIST_HEAD_INIT(init_task.perf_event_list),
+> >  #endif
+> >  #ifdef CONFIG_PREEMPT_RCU
+> > -     .rcu_read_lock_nesting = 0,
+> > +     .rcu_read_lock_nesting = LOCAL_INIT(0),
+> >       .rcu_read_unlock_special.s = 0,
+> >       .rcu_node_entry = LIST_HEAD_INIT(init_task.rcu_node_entry),
+> >       .rcu_blocked_node = NULL,
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 60a1295f43843..43af326081b06 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -1669,7 +1669,7 @@ init_task_pid(struct task_struct *task, enum pid_type type, struct pid *pid)
+> >  static inline void rcu_copy_process(struct task_struct *p)
+> >  {
+> >  #ifdef CONFIG_PREEMPT_RCU
+> > -     p->rcu_read_lock_nesting = 0;
+> > +     local_set(&p->rcu_read_lock_nesting, 0);
+> >       p->rcu_read_unlock_special.s = 0;
+> >       p->rcu_blocked_node = NULL;
+> >       INIT_LIST_HEAD(&p->rcu_node_entry);
+> > diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> > index c6ea81cd41890..e0595abd50c0f 100644
+> > --- a/kernel/rcu/tree_plugin.h
+> > +++ b/kernel/rcu/tree_plugin.h
+> > @@ -350,17 +350,17 @@ static int rcu_preempt_blocked_readers_cgp(struct rcu_node *rnp)
+> >
+> >  static void rcu_preempt_read_enter(void)
+> >  {
+> > -     current->rcu_read_lock_nesting++;
+> > +     local_inc(&current->rcu_read_lock_nesting);
+> >  }
+> >
+> >  static void rcu_preempt_read_exit(void)
+> >  {
+> > -     current->rcu_read_lock_nesting--;
+> > +     local_dec(&current->rcu_read_lock_nesting);
+> >  }
+> >
+> >  static void rcu_preempt_depth_set(int val)
+> >  {
+> > -     current->rcu_read_lock_nesting = val;
+> > +     local_set(&current->rcu_read_lock_nesting, val);
 
-I agree with you. I will try to add the support for ftrace_ops without
-adding support for DYNAMIC_FTRACE_WITH_REGS to the powerpc architecture.
+> I agree that this removes the data races, and that the code for x86 is
+> quite nice, but aren't rcu_read_lock() and rcu_read_unlock() going to
+> have heavyweight atomic operations on many CPUs?
+>
+> Maybe I am stuck with arch-specific code in rcu_read_lock() and
+> rcu_preempt_read_exit().  I suppose worse things could happen.
 
-It's a great solution to allow a clean CFI build and so, protect this
-arch (powerpc) against attacks that try to modify the normal control
-flow.
+Peter also mentioned to me that while local_t on x86 generates
+reasonable code, on other architectures it's terrible. So I think
+something else is needed, and feel free to discard the above idea.
+With sufficient enough reasoning, how bad would a 'data_race(..)' be?
 
-I take a look at the kernel documentation about port ftrace to other
-architectures [1] but it is out of date.
-
-If I try to do this I will need some help. Some info that point me to the
-right direction would be greatly appreciated. Some advice about what
-functions I will need to implement would be really helpfull. Or point me
-to the right piece of code that I can pick as base point.
-
-> My NAK still stands. I wont let an intrusive patch be added to the
-> ftrace core code to deal with an unsupported feature in an architecture.
-
-Don't worry. I agree with you and thanks for finding a better way to
-accomplish the initial purpose.
-
-> I would be will to add that linker trick to remove the warning. Or we
-> just use that warning as incentive to get architecture developers to
-> implement this feature ;-)
-
-In my opinion it would be better to leave the code as it an make the warni=
-ng
-visible until this feature has been added.
-
-> -- Steve
-
-[1] https://www.kernel.org/doc/html/latest/trace/ftrace-design.html
-
-Thanks again,
-Oscar Carter
+Thanks,
+-- Marco
