@@ -2,166 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3EA22DB10
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 03:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AEE22DB15
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 03:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbgGZBRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 21:17:53 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29701 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726931AbgGZBRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 21:17:52 -0400
-IronPort-SDR: RlavkHoJJQEVIsdEnK18skivLGjRsCJNsJvLnifpzQusxxxoU4ijvL8gtTMZlHgR0A9RG8bL/y
- exWV3yRs4VsA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9693"; a="152133480"
-X-IronPort-AV: E=Sophos;i="5.75,395,1589266800"; 
-   d="scan'208";a="152133480"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2020 18:17:51 -0700
-IronPort-SDR: bX6lR3o0mDVAR9J9KlZNif4LBCSljlLYl/dY5ECs+ra+TmFKTq2wNkj1ewbTDLcbraGgSQBF3c
- FtfjyULuxGYQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,395,1589266800"; 
-   d="scan'208";a="327664821"
-Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 25 Jul 2020 18:17:50 -0700
-Received: from kbuild by df0563f96c37 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jzVIT-0001C0-Kk; Sun, 26 Jul 2020 01:17:49 +0000
-Date:   Sun, 26 Jul 2020 09:17:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/headers] BUILD SUCCESS
- d19e789f068b3d633cbac430764962f404198022
-Message-ID: <5f1cd9a8.JaV99HRTiTFHL7fQ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728194AbgGZB0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 21:26:04 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44183 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727009AbgGZB0B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Jul 2020 21:26:01 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7533558015E;
+        Sat, 25 Jul 2020 21:26:00 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 25 Jul 2020 21:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=NK4oEFps6opW0I20N7a390yS2P
+        HhY6R+HwWvhfjHia4=; b=EVPd1CL+Nvq+jEujkBVk9W6CBa1Or/DRYaZ2O0Qk14
+        ELbFcN+mc1RmKSzXLx9GosiTAcOmttKS+QVmnReS5ipq4eNv63F+v0zooFW8+JYY
+        OvvW/yMZkwBPgLeRW0fm0oKFWOUrBENjl8u1x5ZexUagHN/lngpnKcJR+THNfByV
+        IMykOw3q6j3NU8S7C2f8d4yabqy2W7MCblqUCgvk01wm5N6wranLOI1QHcgblnC9
+        j8U/ZIjTJxa1j7VGa8BouLLkfPvJayPyLsW5HDigZahUaXYvbtGgrqpwvy7Zk5NC
+        CWr+nuaksgVQsng1+VdAgd3k833JaJ/sJRe/cp2wMPlQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=NK4oEFps6opW0I20N
+        7a390yS2PHhY6R+HwWvhfjHia4=; b=rn3qR07rDkxIPYalMbRKf5pTNltsWk2FO
+        czJkgnOA2UUbDWiUJY72giAZpZD/CNeG4ioz5edVh5EF8Znx+drxAQRHtfIebis6
+        z/DBPJ6HJg+pFEhMRWGLCHbMJvIL+WyDPimsPkU+ZUWuo+dVnljBPwFuG5ZTRo8J
+        hZ4XM2aAjqSKwX/nLo9W0DZ6HUQaZjFk+XMvg3bBrZUdurJa0pu8AVnPEcO3y/2C
+        sbcli5lOMnnlng0TQ1n0Mw+foWIxcnDphXpz+f+uoySjIfVlYRrGHy8YjELxkcZh
+        Y5HZldCPKHL/PKFeSGrF+8BLIAvqTK1fjs/8p0r2Uuz1FoepRLhlQ==
+X-ME-Sender: <xms:ptscX77KMY_lXI7gKRHSJTU8J7TVctfc0kqasdGI3ZB8PJkx1oN_0A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdegfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:ptscXw4jeKeCFpEqyogj7uQ5Y1I7DopCbz7qFo2mExlT8_vcRhVOuw>
+    <xmx:ptscXyfZ7anLQhn3huYUE2pB64GsbBr_3jglEzMY-ZN7FaJ6RIGznA>
+    <xmx:ptscX8LrNVKJTtKGbO4Uk7bv8EFlxpi1WouWliGgYI_SE5hzmgk4ag>
+    <xmx:qNscXxxunWdZ6bnR5OaSin1tC4eHrEPxCpbfXS8zqsB4H8bY3dGKOg>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1CA0A3060067;
+        Sat, 25 Jul 2020 21:25:58 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Ondrej Jirman <megous@megous.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 0/7] Allwinner A64 digital audio codec fixes
+Date:   Sat, 25 Jul 2020 20:25:50 -0500
+Message-Id: <20200726012557.38282-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/headers
-branch HEAD: d19e789f068b3d633cbac430764962f404198022  compiler.h: Move instrumentation_begin()/end() to new <linux/instrumentation.h> header
+This series fixes a couple of issues with the digital audio codec in the
+Allwinner A64 SoC:
+  1) Left/right channels were swapped when playing/recording audio
+  2) DAPM topology was wrong, breaking some kcontrols
 
-elapsed time: 2216m
+This is the minimum set of changes necessary to fix these issues in a
+backward-compatible way. For that reason, some DAPM widgets still have
+incorrect or confusing names; those and other issues will be fixed in
+later patch sets.
 
-configs tested: 104
-configs skipped: 1
+Samuel Holland (7):
+  ASoC: dt-bindings: Add a new compatible for the A64 codec
+  ASoC: sun8i-codec: Fix DAPM to match the hardware topology
+  ASoC: sun8i-codec: Add missing mixer routes
+  ASoC: sun8i-codec: Add a quirk for LRCK inversion
+  ARM: dts: sun8i: a33: Update codec widget names
+  arm64: dts: allwinner: a64: Update codec widget names
+  arm64: dts: allwinner: a64: Update the audio codec compatible
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ .../sound/allwinner,sun8i-a33-codec.yaml      |   6 +-
+ arch/arm/boot/dts/sun8i-a33-olinuxino.dts     |   4 +-
+ arch/arm/boot/dts/sun8i-a33.dtsi              |   4 +-
+ .../dts/allwinner/sun50i-a64-bananapi-m64.dts |   8 +-
+ .../dts/allwinner/sun50i-a64-orangepi-win.dts |   8 +-
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +-
+ .../dts/allwinner/sun50i-a64-pinebook.dts     |   8 +-
+ .../dts/allwinner/sun50i-a64-pinephone.dtsi   |   8 +-
+ .../boot/dts/allwinner/sun50i-a64-pinetab.dts |   8 +-
+ .../allwinner/sun50i-a64-sopine-baseboard.dts |   8 +-
+ .../boot/dts/allwinner/sun50i-a64-teres-i.dts |   8 +-
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  11 +-
+ sound/soc/sunxi/sun8i-codec.c                 | 137 ++++++++++++++----
+ 13 files changed, 155 insertions(+), 71 deletions(-)
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a003-20200724
-i386                 randconfig-a005-20200724
-i386                 randconfig-a004-20200724
-i386                 randconfig-a006-20200724
-i386                 randconfig-a002-20200724
-i386                 randconfig-a001-20200724
-i386                 randconfig-a003-20200725
-i386                 randconfig-a005-20200725
-i386                 randconfig-a004-20200725
-i386                 randconfig-a006-20200725
-i386                 randconfig-a002-20200725
-i386                 randconfig-a001-20200725
-x86_64               randconfig-a014-20200724
-x86_64               randconfig-a016-20200724
-x86_64               randconfig-a015-20200724
-x86_64               randconfig-a012-20200724
-x86_64               randconfig-a013-20200724
-x86_64               randconfig-a011-20200724
-i386                 randconfig-a016-20200725
-i386                 randconfig-a013-20200725
-i386                 randconfig-a012-20200725
-i386                 randconfig-a015-20200725
-i386                 randconfig-a014-20200725
-i386                 randconfig-a011-20200725
-i386                 randconfig-a016-20200724
-i386                 randconfig-a013-20200724
-i386                 randconfig-a012-20200724
-i386                 randconfig-a015-20200724
-i386                 randconfig-a014-20200724
-i386                 randconfig-a011-20200724
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
+-- 
+2.26.2
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
