@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016B022DF79
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 15:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE24B22DF7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 15:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgGZNbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 09:31:01 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20500 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726711AbgGZNbB (ORCPT
+        id S1727909AbgGZNcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 09:32:16 -0400
+Received: from mail1.hostfission.com ([139.99.139.48]:33700 "EHLO
+        mail1.hostfission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726711AbgGZNcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 09:31:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595770260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W/A2bM4QDQNoWhlsEvHOmFTbiGGj6Tky9OF/epfzxYU=;
-        b=ApTIxpeoL+rkSUq8XIYADlXwt6r7hGpzoa03B7iPvD/5f1yqoPXwM7Ne0PKvESfqXtVfeR
-        xBrn1r3yT4U9lchSc5kgwiDTKCOZLAIT839d3W6qHGXhroOv5OiKqfuzJe1Fbh1x7G9WlS
-        kMgbqQtwwvSzIJfUG1oveDqh+W2fd/g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-49rHXPKhNie0iPPxSI1LUg-1; Sun, 26 Jul 2020 09:30:54 -0400
-X-MC-Unique: 49rHXPKhNie0iPPxSI1LUg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A48F1902EA0;
-        Sun, 26 Jul 2020 13:30:53 +0000 (UTC)
-Received: from x1.home (ovpn-112-71.phx2.redhat.com [10.3.112.71])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E02C61001281;
-        Sun, 26 Jul 2020 13:30:52 +0000 (UTC)
-Date:   Sun, 26 Jul 2020 07:30:52 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Geoffrey McRae <geoff@hostfission.com>
+        Sun, 26 Jul 2020 09:32:16 -0400
+Received: from www1.hostfission.com (www1.hostfission.com [139.99.139.52])
+        by mail1.hostfission.com (Postfix) with ESMTP id A70DD41706;
+        Sun, 26 Jul 2020 23:32:13 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=hostfission.com;
+        s=mail; t=1595770333;
+        bh=Ei6BfRGykR1J1/uO3qHywXb/eaVBzQPhnXKWAmqXoAQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YR0m+DJDdyVO4xMw4NCM6nfi5o4aJVXCO464gc/q61cIJroTszJs2XpadXaNUhzCu
+         1UXm4wafflGokMGl/Vgal52QMYbaBq8aMB65JVGmev0OuWzp3bOITolpqwNEQKBIXq
+         GCyvdia5FeiQJna0yp5pNuqQpATtrg0KqYGv6MVk=
+Received: from mail.hostfission.com (www1.hostfission.com [127.0.0.1])
+        by www1.hostfission.com (Postfix) with ESMTP id 95F045392C;
+        Sun, 26 Jul 2020 23:32:13 +1000 (AEST)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sun, 26 Jul 2020 23:32:13 +1000
+From:   Geoffrey McRae <geoff@hostfission.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
 Cc:     hdanton@sina.com, tj@kernel.org, jiangshanlai@gmail.com,
         linux-kernel@vger.kernel.org
 Subject: Re: Poor windows VFIO performance, GPU stalls (bisected)
-Message-ID: <20200726073052.284dadb2@x1.home>
-In-Reply-To: <30452714b2935b530b9c2bbf2d20854a@hostfission.com>
+In-Reply-To: <20200726073052.284dadb2@x1.home>
 References: <30452714b2935b530b9c2bbf2d20854a@hostfission.com>
-Organization: Red Hat
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+ <20200726073052.284dadb2@x1.home>
+Message-ID: <a74373a54faf78541d96c28a00ae6757@hostfission.com>
+X-Sender: geoff@hostfission.com
+User-Agent: Roundcube Webmail/1.3.8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 17:49:07 +1000
-Geoffrey McRae <geoff@hostfission.com> wrote:
 
-> Hi All,
-> 
-> The commit 22540ca3d00d2990a4148a13b92209c3dc5422db causes a Windows KVM 
-> guest running under QEMU with a VFIO passthrough GPU to randomly stall 
-> when using the GPU leading to the guest assuming that the driver has 
-> hung. Reverting this commit resolves the problem.
 
-Please double check this commit ID, I can't find it in mainline or
-linux-next.  Thanks,
+On 2020-07-26 23:30, Alex Williamson wrote:
+> On Sun, 26 Jul 2020 17:49:07 +1000
+> Geoffrey McRae <geoff@hostfission.com> wrote:
+> 
+>> Hi All,
+>> 
+>> The commit 22540ca3d00d2990a4148a13b92209c3dc5422db causes a Windows 
+>> KVM
+>> guest running under QEMU with a VFIO passthrough GPU to randomly stall
+>> when using the GPU leading to the guest assuming that the driver has
+>> hung. Reverting this commit resolves the problem.
+> 
+> Please double check this commit ID, I can't find it in mainline or
+> linux-next.  Thanks,
+> 
+> Alex
 
-Alex
- 
-> The host system is configured with the following kernel arguments which 
-> may be related:
->    isolcpus=0-5,24-29,6-11,30-35 rcu_nocbs=0-5,24-29,6-11,30-35
-> 
-> The system is an AMD Threadripper 2970WX on a Gigabyte x399 AORUS Gaming 
-> 7 board.
-> It has two GPUs each being passed through to two separate KVM guests, 
-> one is an AMD Radeon 7 in a Linux guest, the other is a GeForce 1080Ti 
-> in a Windows guest.
-> The cores used for these two guests are isolated from the host for 
-> performance reasons.
-> 
-> Any insight as to why this is occurring would be appreciated. If you 
-> need any more information or would like to test patches please let me 
-> know.
-> 
-> Kind Regards,
-> Geoffrey McRae
-> HostFission
-> 
-> https://hostfission.com
-> 
+Confirmed:
 
+https://github.com/torvalds/linux/commit/22540ca3d00d2990a4148a13b92209c3dc5422db
+
+> 
+>> The host system is configured with the following kernel arguments 
+>> which
+>> may be related:
+>>    isolcpus=0-5,24-29,6-11,30-35 rcu_nocbs=0-5,24-29,6-11,30-35
+>> 
+>> The system is an AMD Threadripper 2970WX on a Gigabyte x399 AORUS 
+>> Gaming
+>> 7 board.
+>> It has two GPUs each being passed through to two separate KVM guests,
+>> one is an AMD Radeon 7 in a Linux guest, the other is a GeForce 1080Ti
+>> in a Windows guest.
+>> The cores used for these two guests are isolated from the host for
+>> performance reasons.
+>> 
+>> Any insight as to why this is occurring would be appreciated. If you
+>> need any more information or would like to test patches please let me
+>> know.
+>> 
+>> Kind Regards,
+>> Geoffrey McRae
+>> HostFission
+>> 
+>> https://hostfission.com
+>> 
