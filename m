@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B1F22DCB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 09:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F7722DCE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 09:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgGZHO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 03:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgGZHOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 03:14:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF4FC0619D2;
-        Sun, 26 Jul 2020 00:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=6X4e7OKSvxIk/16wDkIuYcxejxX1HL3zAnkYL6lwBI8=; b=QBlZouW5rzwkqYifDQ0WOC+x8i
-        00pAUr3/zUqXlF1kbXcEnjmJbfCzt9w9yNE0EUdsuaDrPYyJA3eE4h+wHBcByA9N9LviZ52lRrK3h
-        pCx26MNhTcyZ5PgmS7TsG5b18QxoEhTU5J1471K/uz9w3eXNqnOTInlCyV0zXo+R9iz2oq2LJlLS4
-        vBQ6axzGlITpiFBNoycbuanDdKhTi6QxxERTiYyTCL2YpAlVSLbI4WUbqTWZIa96gwLUafRooqXp5
-        X3dYbj9r3QRIlC4Bi6/4NWVT5uRrVwjzS/lkDBsMpqqZXyr/L5Ctv7236nkTVFeswJ7OKruOO/Il2
-        MQwRVM3g==;
-Received: from [2001:4bb8:18c:2acc:5ff1:d0b0:8643:670e] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jzarv-0002XC-75; Sun, 26 Jul 2020 07:14:49 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: [PATCH 21/21] init: add an init_utimes helper
-Date:   Sun, 26 Jul 2020 09:13:56 +0200
-Message-Id: <20200726071356.287160-22-hch@lst.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200726071356.287160-1-hch@lst.de>
-References: <20200726071356.287160-1-hch@lst.de>
+        id S1726884AbgGZHR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 03:17:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725937AbgGZHR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 03:17:26 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E267320658;
+        Sun, 26 Jul 2020 07:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595747845;
+        bh=aEkIV5Yc1/XFjZwqDPVoFSYk2JX22XKln/kgJ0przBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IUJ1TV40nHKMyOC0OjL/UzjKvO8R56vep5x+d05V4vytQAonEDwHXoaNDLJPOFfG2
+         vFxyrEjHETtPrY0b/7+aH5sygMOK/DGlQZ4w+Lo4VUAHjYGTBzPGVwwuepck67Bno0
+         xKm/tPegTBb7NZeFvuOuKanotC/P5eoJfPZAjnbI=
+Date:   Sun, 26 Jul 2020 09:17:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        Richard Hughes <hughsient@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] Module argument to control whether intel-spi-pci
+ attempts to turn the SPI flash chip writeable
+Message-ID: <20200726071723.GB441916@kroah.com>
+References: <20200724212853.11601-1-daniel.gutson@eclypsium.com>
+ <20200725055649.GA1047853@kroah.com>
+ <CAFmMkTE_dT9+WJYyb19uQ_HmgJWZSARBy6PveheQJk++NuGbkQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAFmMkTE_dT9+WJYyb19uQ_HmgJWZSARBy6PveheQJk++NuGbkQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a simple helper to set timestamps with a kernel space file name and
-switch the early init code over to it.
+On Sat, Jul 25, 2020 at 02:20:03PM -0300, Daniel Gutson wrote:
+> El sáb., 25 jul. 2020 2:56 a. m., Greg Kroah-Hartman <
+> gregkh@linuxfoundation.org> escribió:
+> 
+> > On Fri, Jul 24, 2020 at 06:28:53PM -0300, Daniel Gutson wrote:
+> > > Currently, intel-spi has a module argument that controls whether the
+> > driver
+> > > attempts to turn the SPI flash chip writeable. The default value
+> > > is FALSE (don't try to make it writeable).
+> > > However, this flag applies only for a number of devices, coming from the
+> > > platform driver, whereas the devices detected through the PCI driver
+> > > (intel-spi-pci) are not subject to this check since the configuration
+> > > takes place in intel-spi-pci which doesn't have an argument.
+> > >
+> > > That's why I propose this patch to add such argument to intel-spi-pci,
+> > > so the user can control whether the driver tries to make the chip
+> > > writeable or not, being the default FALSE as is the argument of
+> > > intel-spi.
+> > >
+> > > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> > > ---
+> > >  drivers/mtd/spi-nor/controllers/intel-spi-pci.c | 16 +++++++++++-----
+> > >  1 file changed, 11 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > > index 81329f680bec..77e57450f166 100644
+> > > --- a/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > > +++ b/drivers/mtd/spi-nor/controllers/intel-spi-pci.c
+> > > @@ -24,6 +24,10 @@ static const struct intel_spi_boardinfo cnl_info = {
+> > >       .type = INTEL_SPI_CNL,
+> > >  };
+> > >
+> > > +static bool writeable;
+> > > +module_param(writeable, bool, 0);
+> > > +MODULE_PARM_DESC(writeable, "Enable write access to SPI flash chip
+> > (default=0)");
+> >
+> > Ick, this isn't the 1990's, please do not add new module parameters,
+> > they are a major pain to work with and only work on a global basis, not
+> > on a per-device basis.
+> >
+> > No user will remember how to use this, as it isn't documented anywhere
+> > either.  Can you make this a sysfs attribute or something, or better
+> > yet, make it "just work" depending on the device type?
+> >
+> 
+> 1) I just did the same that intel-spi.c does.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/for_init.c                 | 13 +++++++++++++
- include/linux/init_syscalls.h |  1 +
- init/initramfs.c              |  3 +--
- 3 files changed, 15 insertions(+), 2 deletions(-)
+No need to copy bad examples :)
 
-diff --git a/fs/for_init.c b/fs/for_init.c
-index 919a50130a5919..4eee11ad63ffce 100644
---- a/fs/for_init.c
-+++ b/fs/for_init.c
-@@ -234,3 +234,16 @@ int __init init_rmdir(const char *pathname)
- {
- 	return do_rmdir(AT_FDCWD, getname_kernel(pathname));
- }
-+
-+int __init init_utimes(char *filename, struct timespec64 *ts)
-+{
-+	struct path path;
-+	int error;
-+
-+	error = kern_path(filename, 0, &path);
-+	if (error)
-+		return error;
-+	error = vfs_utimes(&path, ts);
-+	path_put(&path);
-+	return error;
-+}
-diff --git a/include/linux/init_syscalls.h b/include/linux/init_syscalls.h
-index b2fda50daca6c5..3654b525ac0b17 100644
---- a/include/linux/init_syscalls.h
-+++ b/include/linux/init_syscalls.h
-@@ -15,3 +15,4 @@ int __init init_symlink(const char *oldname, const char *newname);
- int __init init_unlink(const char *pathname);
- int __init init_mkdir(const char *pathname, umode_t mode);
- int __init init_rmdir(const char *pathname);
-+int __init init_utimes(char *filename, struct timespec64 *ts);
-diff --git a/init/initramfs.c b/init/initramfs.c
-index b1be3ada3ce4b3..b9dfc941a4c3e4 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -110,8 +110,7 @@ static long __init do_utime(char *filename, time64_t mtime)
- 	t[0].tv_nsec = 0;
- 	t[1].tv_sec = mtime;
- 	t[1].tv_nsec = 0;
--
--	return do_utimes(AT_FDCWD, filename, t, AT_SYMLINK_NOFOLLOW);
-+	return init_utimes(filename, t);
- }
- 
- static __initdata LIST_HEAD(dir_list);
--- 
-2.27.0
+> You need to understand that there's a set of DIDs coming from the
+> lpc_ich (and then the platform) driver, and another set from
+> intel-spi-pci. The first set is subject to the check, the second
+> doesn't. So there is no "just work" as I understand it.
 
+I have no idea what "DID" is here, sorry.
+
+But why do you want to write it?
+
+> 2) this is an initialization argument, I could make it always NOT attempt
+> to make the chip writable, and a system attribute to turn it writable
+> post-initialization but the behavior is not the same. In any ways, as I
+> mentioned before, some DIDs will be covered by the existing argument of
+> intel-spi and other DIDs by this sysfs attribute, becoming IMHO
+> inconsistent from the user POV.
+
+What sysfs attribute?  This is a module parameter :(
+
+totally confused,
+
+greg k-h
