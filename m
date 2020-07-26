@@ -2,136 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF6F22E301
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABE522E305
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbgGZWIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 18:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
+        id S1727835AbgGZWKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 18:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgGZWIf (ORCPT
+        with ESMTP id S1726082AbgGZWKA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 18:08:35 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E733C0619D2;
-        Sun, 26 Jul 2020 15:08:35 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 60DE151D;
-        Mon, 27 Jul 2020 00:08:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1595801311;
-        bh=KUaPOkg636bLdNE8/asczb6N8L2ExnhjaO2k2jCo0LQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PSBrJrvay92ecq4JbixGxKIabJQmc4pZJaNk3A/wXXfD3Ekkbfpt7ZT6g2Y8a0057
-         /CfKIjl0AnCKZ3jw5eSwIWM8oliHSnhewGDEZy0sr4Mjz/s6eIajbulW7/E0mI5ee2
-         /cvTxgegR9ug5m2pbBZkLTCjthrHkLQewsX4SGnw=
-Date:   Mon, 27 Jul 2020 01:08:23 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-Message-ID: <20200726220823.GI28704@pendragon.ideasonboard.com>
-References: <20200726164439.48973-1-yepeilin.cs@gmail.com>
- <20200726173044.GA14755@pendragon.ideasonboard.com>
- <20200726180752.GA49356@PWN>
+        Sun, 26 Jul 2020 18:10:00 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72594C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:10:00 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id l13so254969qvt.10
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:10:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=i3uC59zrTYqrU7WK2MYwBH2tqz/HMoZey93tc8rjRr4=;
+        b=r4GBeTT3czQZ0SGW+2ZGZiDXe9vbLdpYoiIWJ8k8Eoyl8ct25CwlsOu7qKfbM1iPTM
+         BRHUKBbHejZfRqojOTgbFQQbCYwq9SnIxU4cnvcBYCNr8JHqnEs+dgh+r+FAuOGEPLsU
+         PPrJV0mGyo+UZnW3UC+qNUaczQGkxvH5fYzNmwNdCV6FKp1k6tScFwjuaokAtZxxiuag
+         RDS8+Vn99zm+BT7vs0NPsoNn8ba9/7qgJVl3kFqlMR6R0B+vW9VrR7TxIakTcpbOk76d
+         r4x/l+19n3M3/4yeFccrPXXl3GF+fZBosnNZSehIAcUROVNKRKronFd3e6iW4xiW6Ew3
+         DBqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=i3uC59zrTYqrU7WK2MYwBH2tqz/HMoZey93tc8rjRr4=;
+        b=UjmMx3psk6eweUb9Q0CVmjM5/VIXVhkn1Ag4Z8a60g+PQ8PrQv8qkeuP/Keo67I9/5
+         4P07KueTJs6kr5znvq4uo1w1ItGMIJ2FzzRIQYNYJ+4l7KPiGsVsH8wCutFP5dBsBr+/
+         XoCcG0YYzcH7D3/H9nuJVJwZ2AbbHFq1cs0ggKUR9AStChIcVa9gFFbSB0gYJlNuYG/j
+         XOUSCraeQmkj3uEZq7mgYWNlVOlRDM7ZBiQ8yu7TlYvXmr4bn10MyX/RBpHBAWq5gk7/
+         NKmTNwXU6nZzgP+7KGG5eMJ5m/pMP/RFj740mkqT6JFiXcgkZWXhoQeNQetfR+hG2dTu
+         sBCA==
+X-Gm-Message-State: AOAM530Z0/B5v1ydfpD8WIhoB94KQSRugllaiCSA7DP2+74KB2VIMiO7
+        kXRRDq7U/OU3FWy6pbPSHRBvug==
+X-Google-Smtp-Source: ABdhPJzYmQeObi9pYiaTdzrWgeSkB4PjQ9wbXVysW/OJOKebzfOfApfWmxTKy0rUEWgNxhtrIoE2aw==
+X-Received: by 2002:a05:6214:b88:: with SMTP id fe8mr19676729qvb.244.1595801399318;
+        Sun, 26 Jul 2020 15:09:59 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id k5sm15419169qke.18.2020.07.26.15.09.57
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sun, 26 Jul 2020 15:09:58 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 15:09:44 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Hugh Dickins <hughd@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+In-Reply-To: <CAHk-=wg+7Wk7BLmLiDkoNDBvMfoooDVEaLimDY+10Jr9jLKLZg@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2007261454110.7444@eggly.anvils>
+References: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com> <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com> <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
+ <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com> <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com> <20200724152424.GC17209@redhat.com>
+ <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com> <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com> <20200725101445.GB3870@redhat.com> <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+ <alpine.LSU.2.11.2007251343370.3804@eggly.anvils> <alpine.LSU.2.11.2007252100230.5376@eggly.anvils> <alpine.LSU.2.11.2007261246530.6812@eggly.anvils> <CAHk-=wg+7Wk7BLmLiDkoNDBvMfoooDVEaLimDY+10Jr9jLKLZg@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200726180752.GA49356@PWN>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peilin,
+On Sun, 26 Jul 2020, Linus Torvalds wrote:
+> On Sun, Jul 26, 2020 at 1:30 PM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > I've deduced nothing useful from the logs, will have to leave that
+> > to others here with more experience of them.  But my assumption now
+> > is that you have successfully removed one bottleneck, so the tests
+> > get somewhat further and now stick in the next bottleneck, whatever
+> > that may be.  Which shows up as "failure", where the unlock_page()
+> > wake_up_page_bit() bottleneck had allowed the tests to proceed in
+> > a more serially sedate way.
+> 
+> Well, that's the very optimistic reading.
+> 
+> As the optimistic and happy person I am (hah!) I'm going to agree with
+> you, and plan on just merging that patch early in the next merge
+> window. It may fix a real bug in the current trere, but it's much too
+> late to apply right now, particularly with your somewhat ambiguous
+> results.
 
-On Sun, Jul 26, 2020 at 02:07:52PM -0400, Peilin Ye wrote:
-> On Sun, Jul 26, 2020 at 08:30:44PM +0300, Laurent Pinchart wrote:
-> > Hi Peilin,
-> > 
-> > Thank you for the patch.
-> > 
-> > On Sun, Jul 26, 2020 at 12:44:39PM -0400, Peilin Ye wrote:
-> > > video_put_user() is copying uninitialized stack memory to userspace. Fix
-> > > it by initializing `vb32` using memset().
-> > 
-> > What makes you think this will fix the issue ? When initializing a
-> > structure at declaration time, the fields that are not explicitly
-> > specified should be initialized to 0 by the compiler. See
-> > https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.cbclx01/strin.htm:
-> 
-> Hi Mr. Pinchart!
-> 
-> First of all, syzbot tested this patch, and it says it's "OK":
-> 
-> 	https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
-> 
-> > If a structure variable is partially initialized, all the uninitialized
-> > structure members are implicitly initialized to zero no matter what the
-> > storage class of the structure variable is. See the following example:
-> > 
-> > struct one {
-> >     int a;
-> >     int b;
-> >     int c;
-> > };
-> > 
-> > void main() {
-> >     struct one z1;         // Members in z1 do not have default initial values.
-> >     static struct one z2;  // z2.a=0, z2.b=0, and z2.c=0.
-> >     struct one z3 = {1};   // z3.a=1, z3.b=0, and z3.c=0.
-> > }
-> 
-> Yes, I understand that. I can safely printk() all members of that struct
-> without triggering a KMSAN warning, which means they have been properly
-> initialized.
-> 
-> However, if I do something like:
-> 
-> 	char *p = (char *)&vb32;
-> 	int i;
-> 
-> 	for (i = 0; i < sizeof(struct vb32); i++, p++)
-> 		printk("*(p + i): %d", *(p + i));
-> 
-> This tries to print out `vb32` as "raw memory" one byte at a time, and
-> triggers a KMSAN warning somewhere in the middle (when `i` equals to 25
-> or 26).
-> 
-> According to a previous discussion with Mr. Kroah-Hartman, as well as
-> this LWN article:
-> 
-> 	"Structure holes and information leaks"
-> 	https://lwn.net/Articles/417989/
-> 
-> Initializing a struct by assigning (both partially or fully) leaves the
-> "padding" part of it uninitialized, thus potentially leads to kernel
-> information leak if the structure in question is going to be copied to
-> userspace.
-> 
-> memset() sets these "uninitialized paddings" to zero, therefore (I
-> think) should solve the problem.
+Absolutely: it should be good to see it in v5.9,
+but much too late for a patch like this in v5.8.
 
-You're absolutely right. I wasn't aware the compiler wouldn't initialize
-holes in the structure. Thank you for educating me :-)
+> 
+> Oleg's theoretical race has probably never been seen, and while the
+> watchdog triggering is clearly a real bug, it's also extreme enough
+> not to really be a strong argument for merging this out-of-window..
+> 
+> > The xhci handle_cmd_completion list_del bugs (on an older version
+> > of the driver): weird, nothing to do with page wakeups, I'll just
+> > have to assume that it's some driver bug exposed by the greater
+> > stress allowed down, and let driver people investigate (if it
+> > still manifests) when we take in your improvements.
+> 
+> Do you have the bug-report, just to google against anybody else
+> reporting something simialr>
 
-For the patch,
+Okay, just on that basis, with some reluctance an edited extract:
+certainly not asking you or anyone on the list to investigate further.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+[35196.140502] kernel BUG at lib/list_debug.c:53!
+[35196.141448] RIP: 0010:__list_del_entry_valid+0x8e/0xb0
+[35196.141534] Call Trace:
+[35196.141538]  <IRQ>
+[35196.141557]  [<ffffffffc01bc8b4>] handle_cmd_completion+0x7d4/0x14f0 [xhci_hcd]
+[35196.141578]  [<ffffffffc01bda22>] xhci_irq+0x242/0x1ea0 [xhci_hcd]
+[35196.141608]  [<ffffffffc01bf691>] xhci_msi_irq+0x11/0x20 [xhci_hcd]
+[35196.141622]  [<ffffffffb9ff27f8>] __handle_irq_event_percpu+0x48/0x2c0
+[35196.141636]  [<ffffffffb9ff2aa2>] handle_irq_event_percpu+0x32/0x80
+[35196.141651]  [<ffffffffb9ff2b3a>] handle_irq_event+0x4a/0x80
+[35196.141680]  [<ffffffffb9ff6b08>] handle_edge_irq+0xd8/0x1b0
+[35196.141697]  [<ffffffffb9ec22ab>] handle_irq+0x2b/0x50
+[35196.141712]  [<ffffffffbaa02766>] do_IRQ+0xb6/0x1c0
+[35196.141725]  [<ffffffffbaa00990>] common_interrupt+0x90/0x90
+[35196.141732]  </IRQ>
+> 
+> > One nice thing from the comparison runs without your patches:
+> > watchdog panic did crash one of those with exactly the unlock_page()
+> > wake_up_page_bit() softlockup symptom we've been fighting, that did
+> > not appear with your patches.  So although the sample size is much
+> > too small to justify a conclusion, it does tend towards confirming
+> > your changes.
+> 
+> You win some, you lose some. But yes, I'll take that as a tentative
+> success and that the approach is valid.
 
--- 
-Regards,
+Great, yes, tentative success: and we have three months in which to
+change our minds if any real trouble surfaces; and I wouldn't call
+anything I've seen (since that very first version) *real* trouble.
 
-Laurent Pinchart
+> 
+> Thanks,
+> 
+>                Linus
