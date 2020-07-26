@@ -2,140 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9893C22DD5C
+	by mail.lfdr.de (Postfix) with ESMTP id 2C02022DD5B
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 10:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgGZI4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 04:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
+        id S1726106AbgGZI4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 04:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZI4g (ORCPT
+        with ESMTP id S1725794AbgGZI4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 04:56:36 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99370C0619D2;
-        Sun, 26 Jul 2020 01:56:36 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id w2so7713597pgg.10;
-        Sun, 26 Jul 2020 01:56:36 -0700 (PDT)
+        Sun, 26 Jul 2020 04:56:06 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D1EC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 01:56:05 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 1so7488863pfn.9
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 01:56:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cAjop5ZjgObLEdrvvwvFABP+HAGhe/69qePNfdSogC0=;
-        b=RaucRnjPITiz7zCD20F3AtFvGykB2zfxUliQRoe3n//7YXiPTVXwUQfNc3dQS0y5ti
-         KEApbPG6Y0mLcL1AhCMC78JRcP8Mk+N1W0Dy0JhoktzBQL0mhKavDpQ6WHysTHLrkpKm
-         3YMax3j7YZ+BYaQub/5ozUcuoDmbbKLjQqbz4mHW31rB02U7dSAJQcg50c59bk95brEc
-         WJrJOTQMVs19xKAxI5UzOrLKq9TUqqAxmh9FA46lbWvlW7kuy1XFsc6m5/R6dQ7/y2+j
-         kKsLE5lp2m7d/g4D4docS8beW79E4kCu1vuHLVo3wun0KTxKQf5wZiGuYH+2HYQQIgeh
-         zyBA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BiHp5LUc9PuHCot82qcRCOL9br0dFdzgknx8tkEtCyo=;
+        b=AzC6RkjlolNsWZXQ1jzEnFUYelHlzN9vaw4Mo7YjLgPC7C4QvAkSMSvgUsyqrFC5xV
+         cx6O9RKDTsKrQusl0BYJm841lANFn8nUizwXv5tLilClZTJdfmxsqm1eYVx4hsKcZhD8
+         mVf5iPIjvaN5Ml95jYWPGMff0z9LaohLAolIAJZ3jDJhkL6WQIxTLV/lwaGCOvi30BKT
+         ArBZ70amdW4zSqa9mFp5rAqePmoQSqL7yHQoDb9EBJIkVWgGBB3ttB+ixNrQglmtngCz
+         i3/mDjTRyBmEMqiPDquucRPL86ZpNncPo58YnGKdnYMU5T1z/pCkrvsScdOIed7LIwmp
+         B27Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cAjop5ZjgObLEdrvvwvFABP+HAGhe/69qePNfdSogC0=;
-        b=nNnKNMafn239Pkk3EYzidM9Xd1uUEI7/4+sX8JieLtH5LhtfU+r7/pxzzgDZudyMeo
-         /0Kc/a04rT59nE/ZP8mLlN53ZofYAf48vgqXlPRTUwSVAZrbM1d+teB7oNdM1D+TvpVD
-         yHT68QBDSs7JS+RTAdI0xMpxqMicYkNSevMqoGkj0/c6YDR6PQu/5vdEwqj+gr6zVzjl
-         xwLXHUBkKpOmRw7neirO7v5K13Qs4A/kOqlMt4gEqhTgznKRdvzYty8yj2yOn06ICJka
-         h5VZ73Htav6VitIfrIA9vw0FgtO1J0JuWhU1Mfx8lXLywc9YpbwZXSOSVMoOFM7ZrcjR
-         Pe0Q==
-X-Gm-Message-State: AOAM531d/fZEaKWXnERs503n8NDGg3x3J05Nz7Rc/4dlU4Oqooj9dBxs
-        Clf72nEiAPRc3FZNhav54wA=
-X-Google-Smtp-Source: ABdhPJxIrBw803YT5wSlbdopZtLISFYIUHaIoO3qYOqseXcgMSIdPoSuvOz/zXkIuLeexpWpsjbu1Q==
-X-Received: by 2002:aa7:9575:: with SMTP id x21mr15510611pfq.140.1595753796078;
-        Sun, 26 Jul 2020 01:56:36 -0700 (PDT)
-Received: from localhost.localdomain ([1.186.115.27])
-        by smtp.gmail.com with ESMTPSA id o22sm4577041pfu.206.2020.07.26.01.56.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 01:56:35 -0700 (PDT)
-From:   Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
-To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
-Subject: [PATCH v2 1/4] fix style of block comments
-Date:   Sun, 26 Jul 2020 14:18:58 +0530
-Message-Id: <20200726084900.19246-1-bharadwaj.rohit8@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BiHp5LUc9PuHCot82qcRCOL9br0dFdzgknx8tkEtCyo=;
+        b=fuwudOjTMNxRQ4+S6/Ubjs7M7vszqlFU2y1g7I2KHpiqD8IrLd5MuaztCJYCF5s8Xw
+         x4zypcNDALpy4fORJuwnUR4dmc5nNW60QA3eBUoY2UGfFv1io1ilzBflkecxZr2Js93I
+         R0c8IkKiryxTL1C26SdG9lttSGMA5JelxE85oaurhugHFVlkmI+rdmn+ZvIOfUH0SxHF
+         DYCU55/IrjKt7dDrqCHOi9rtVXYkhqnFu+02xbK8kaGTTXfsYMxzzN3rtNColjO6wwJ8
+         A6ZZjFeVoLhF/YkKbnjp1D19kyvNyXi+3aRoMll3xTvjwqU2dx64nLH5mABwCIsHmZeb
+         EhLg==
+X-Gm-Message-State: AOAM532BxrWO9EAzh/mjrzQSFLpJjG4Yac8moN3DKixJTMy3bPz7YDbk
+        4I1DDjo51ObJgAJ/fIrgapxzaaQ/fBOmyU8ZH6Q=
+X-Google-Smtp-Source: ABdhPJyFfPKbmYFTGSrQjEu+YSR9sojkqP2HJW83W3cI7AAOjVWSpnJEqxjzmJC4XyDEYaDuz3qAKc26hLkGxKs1JsY=
+X-Received: by 2002:a63:a05f:: with SMTP id u31mr14817755pgn.4.1595753764903;
+ Sun, 26 Jul 2020 01:56:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200726052804.GA51199@xin-virtual-machine>
+In-Reply-To: <20200726052804.GA51199@xin-virtual-machine>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 26 Jul 2020 11:55:48 +0300
+Message-ID: <CAHp75Vf8h2kXnn-2xf3BFFDvBTSUH3w0z_S-FyKdB7MSJ_1j7g@mail.gmail.com>
+Subject: Re: [PATCH] tty: fix pid refcount leak in tty_signal_session_leader
+To:     Xin Xiong <xiongx18@fudan.edu.cn>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this patch fixes the coding style of block comments.
+On Sun, Jul 26, 2020 at 8:30 AM Xin Xiong <xiongx18@fudan.edu.cn> wrote:
+>
+> In the loop, every time when p->signal->leader is true, the function
+> tty_signal_session_leader() will invoke get_pid() and return a
+> reference of tty->pgrp with increased refcount to the local variable
+> tty_pgrp or return NULL if it fails. After finishing the loop, the
+> function invokes put_pid() for only once, decreasing the refcount that
+> tty_pgrp keeps.
+>
+> Refcount leaks may occur when the scenario that p->signal->leader is
+> true happens more than once. In this assumption, if the above scenario
+> happens n times in the loop, the function forgets to decrease the
+> refcount for n-1 times, which causes refcount leaks.
+>
+> Fix the issue by decreasing the current refcount of the local variable
+> tty_pgrp before assigning new objects to it.
+>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
 
-Signed-off-by: Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
----
-v2: split patch into sequence of patches 
-v1: fix all coding style issues in single patch
+This SoB chain is out of order. If you are the author, your SoB should
+go first, if you are a commiter, the From line should correspond to
+the first SoB (not yours), if it's a group of authors (funny for
+one-/twoliner) then you consider to use Co-developed-by. Please, read
+Submitting Patches document.
 
- .../media/atomisp/pci/sh_css_firmware.c       | 28 +++++++++++++------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+...
 
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_firmware.c b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-index d4ab15b6d1ac..2907aead98b7 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-@@ -51,9 +51,12 @@ struct fw_param {
- 
- static struct firmware_header *firmware_header;
- 
--/* The string STR is a place holder
-+/*
-+ * The string STR is a place holder
-  * which will be replaced with the actual RELEASE_VERSION
-- * during package generation. Please do not modify  */
-+ * during package generation. Please do not modify
-+ */
-+
- static const char *isp2400_release_version = STR(irci_stable_candrpv_0415_20150521_0458);
- static const char *isp2401_release_version = STR(irci_ecr - master_20150911_0724);
- 
-@@ -276,10 +279,11 @@ sh_css_load_firmware(struct device *dev, const char *fw_data,
- 	for (i = 0; i < sh_css_num_binaries; i++)
- 	{
- 		struct ia_css_fw_info *bi = &binaries[i];
--		/* note: the var below is made static as it is quite large;
--		   if it is not static it ends up on the stack which could
--		   cause issues for drivers
--		*/
-+		/*
-+		 * note: the var below is made static as it is quite large;
-+		 * if it is not static it ends up on the stack which could
-+		 * cause issues for drivers
-+		 */
- 		static struct ia_css_blob_descr bd;
- 		int err;
- 
-@@ -333,7 +337,11 @@ sh_css_load_firmware(struct device *dev, const char *fw_data,
- 				return err;
- 
- 		} else {
--			/* All subsequent binaries (including bootloaders) (i>NUM_OF_SPS) are ISP firmware */
-+			/*
-+			 * All subsequent binaries
-+			 * (including bootloaders) (i>NUM_OF_SPS)
-+			 * are ISP firmware
-+			 */
- 			if (i < NUM_OF_SPS)
- 				return -EINVAL;
- 
-@@ -374,8 +382,10 @@ ia_css_ptr
- sh_css_load_blob(const unsigned char *blob, unsigned int size)
- {
- 	ia_css_ptr target_addr = hmm_alloc(size, HMM_BO_PRIVATE, 0, NULL, 0);
--	/* this will allocate memory aligned to a DDR word boundary which
--	   is required for the CSS DMA to read the instructions. */
-+	/*
-+	 * this will allocate memory aligned to a DDR word boundary which
-+	 * is required for the CSS DMA to read the instructions.
-+	 */
- 
- 	assert(blob);
- 	if (target_addr)
+>                         put_pid(p->signal->tty_old_pgrp);  /* A noop */
+>                         spin_lock(&tty->ctrl_lock);
+> +                       if (tty_pgrp)
+> +                               put_pid(tty_pgrp);
+>                         tty_pgrp = get_pid(tty->pgrp);
+>                         if (tty->pgrp)
+>                                 p->signal->tty_old_pgrp = get_pid(tty->pgrp);
+
+I guess this patch wasn't thought thru. You see the get_pid for it
+happens twice in a row. Perhaps you have to get the logic behind all
+these first?
+
+P.S. ...on top of what Greg said.
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
