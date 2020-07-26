@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CEE22E29D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 22:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C8D22E29F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 22:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgGZUlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 16:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgGZUlh (ORCPT
+        id S1726984AbgGZUs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 16:48:26 -0400
+Received: from smtprelay0225.hostedemail.com ([216.40.44.225]:57328 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726467AbgGZUsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 16:41:37 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA43BC0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 13:41:35 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m15so7217076lfp.7
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 13:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zMAqM19mk6Z9hrysbVvmXBiZmKyuJZ/Q/akYm6Ar5O8=;
-        b=VgsUmhcZ3TmL8PgzB6o7dC+JS3frPjbw6MQDMCMiEzv9oMbMxuQYkleMes2lYNtFRX
-         ZDWnCDaWTL+RvDudxDYAUTOCn1MqyzZQxhxZU0etSaJR+Qj6T+1p4T9CjrG6CK524+F5
-         FyyAoED45cuGDWZQmmbxBFVESvc0nq6NlSqsQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zMAqM19mk6Z9hrysbVvmXBiZmKyuJZ/Q/akYm6Ar5O8=;
-        b=Ay63IjnjUI1E7cQQEkSHRafFThuPkcsaLHj0IH2pE0EatIvxvSBT6R/aAXMT/5fUmw
-         dlFMiuqiWFjqTdBMAhCOoYpnoNFdDiTk7i/gvxYgYAwjY9bLQRjwA87i6bUSeSDh4nZX
-         XRwUedvg6B9RDoT1KsW0aUrBBq0xY7NPkxmvaL5VZJ3IQUIAYSu1gc6iLR6Htgb+IY0L
-         ivynykM6fXATR2yFa88bNyzuC3k13tpRv5zh0FxxKLGGbnXyezlMt3hVseEepKxgqp/I
-         B1zXg/HWtxFivLMxM7IxijbxLWrHDicNtwgSDQFyC/Bt8E5D1o60T0YcbF76iRVwBeES
-         X4oA==
-X-Gm-Message-State: AOAM533+TBAHZ/wQz3mkxqWrJOrOIz9wFChEx7UvYl0nYvTQpvpc1Ej2
-        X75G0tENl2XtmHMBDg5765KNFYkQebM=
-X-Google-Smtp-Source: ABdhPJwG3xLT4cxrllJJF/eyTTe0kettletngsUVVdPBxFdoSdN2gi/Z7FBku7JDWD0sbnNbryTLFA==
-X-Received: by 2002:a05:6512:312b:: with SMTP id p11mr9458825lfd.202.1595796093988;
-        Sun, 26 Jul 2020 13:41:33 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id c14sm1955733ljj.112.2020.07.26.13.41.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Jul 2020 13:41:32 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id d17so15030446ljl.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 13:41:32 -0700 (PDT)
-X-Received: by 2002:a2e:9b42:: with SMTP id o2mr8304055ljj.102.1595796091999;
- Sun, 26 Jul 2020 13:41:31 -0700 (PDT)
+        Sun, 26 Jul 2020 16:48:25 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C430D181D337B;
+        Sun, 26 Jul 2020 20:48:24 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:582:599:800:960:973:982:988:989:1152:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:3138:3139:3140:3141:3142:3353:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6119:6261:7875:9036:10004:10400:10848:11232:11658:11914:12043:12297:12740:12895:13069:13071:13311:13357:13894:14180:14181:14659:14685:14721:21060:21080:21324:21451:21627:21740:30030:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: salt89_0e0b54526f5b
+X-Filterd-Recvd-Size: 2643
+Received: from perches-mx.perches.com (imap-ext [216.40.42.5])
+        (Authenticated sender: webmail@joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 26 Jul 2020 20:48:24 +0000 (UTC)
 MIME-Version: 1.0
-References: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com>
- <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com>
- <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
- <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com>
- <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
- <20200724152424.GC17209@redhat.com> <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
- <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
- <20200725101445.GB3870@redhat.com> <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
- <alpine.LSU.2.11.2007251343370.3804@eggly.anvils> <alpine.LSU.2.11.2007252100230.5376@eggly.anvils>
- <alpine.LSU.2.11.2007261246530.6812@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2007261246530.6812@eggly.anvils>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 26 Jul 2020 13:41:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg+7Wk7BLmLiDkoNDBvMfoooDVEaLimDY+10Jr9jLKLZg@mail.gmail.com>
-Message-ID: <CAHk-=wg+7Wk7BLmLiDkoNDBvMfoooDVEaLimDY+10Jr9jLKLZg@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Sun, 26 Jul 2020 13:48:23 -0700
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org, Paul Mackerras <paulus@samba.org>,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 0/9] powerpc: delete duplicated words
+In-Reply-To: <4e505c35-8428-89bb-7f9b-bc819382c3cd@infradead.org>
+References: <20200726162902.Horde.TCqHYaODbkzEpM-rFzDd8A2@messagerie.si.c-s.fr>
+ <b796e912-e945-3cb1-03f8-0f38009634a4@infradead.org>
+ <add7c13b1ca24c8cb6f243b99d61c19287020efd.camel@perches.com>
+ <4e505c35-8428-89bb-7f9b-bc819382c3cd@infradead.org>
+User-Agent: Roundcube Webmail/1.4-rc2
+Message-ID: <8ccba434d98ba1319dbb9a386f7a7450@perches.com>
+X-Sender: joe@perches.com
+X-Originating-IP: [172.58.17.243]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 1:30 PM Hugh Dickins <hughd@google.com> wrote:
->
-> I've deduced nothing useful from the logs, will have to leave that
-> to others here with more experience of them.  But my assumption now
-> is that you have successfully removed one bottleneck, so the tests
-> get somewhat further and now stick in the next bottleneck, whatever
-> that may be.  Which shows up as "failure", where the unlock_page()
-> wake_up_page_bit() bottleneck had allowed the tests to proceed in
-> a more serially sedate way.
+On 2020-07-26 12:08, Randy Dunlap wrote:
+> On 7/26/20 10:49 AM, Joe Perches wrote:
+>> On Sun, 2020-07-26 at 10:23 -0700, Randy Dunlap wrote:
+>>> On 7/26/20 7:29 AM, Christophe Leroy wrote:
+>>>> Randy Dunlap <rdunlap@infradead.org> a écrit :
+>>>> 
+>>>>> Drop duplicated words in arch/powerpc/ header files.
+>>>> 
+>>>> How did you detect them ? Do you have some script for tgat, or you 
+>>>> just read all comments ?
+>>> 
+>>> Yes, it's a script that finds lots of false positives, so I have to 
+>>> check
+>>> each and every one of them for validity.
+>> 
+>> And it's a lot of work too. (thanks Randy)
+>> 
+>> It could be something like:
+>> 
+>> $ grep-2.5.4 -nrP --include=*.[ch] '\b([A-Z]?[a-z]{2,}\b)[ \t]*(?:\n[ 
+>> \t]*\*[ \t]*|)\1\b' * | \
+>>   grep -vP '\b(?:struct|enum|union)\s+([A-Z]?[a-z]{2,})\s+\*?\s*\1\b' 
+>> | \
+>>   grep -vP '\blong\s+long\b' | \
+>>   grep -vP '\b([A-Z]?[a-z]{2,})(?:\t+| {2,})\1\b'
+> 
+> Hi Joe,
 
-Well, that's the very optimistic reading.
+Hi Randy
 
-As the optimistic and happy person I am (hah!) I'm going to agree with
-you, and plan on just merging that patch early in the next merge
-window. It may fix a real bug in the current trere, but it's much too
-late to apply right now, particularly with your somewhat ambiguous
-results.
+> (what is grep-2.5.4 ?)
 
-Oleg's theoretical race has probably never been seen, and while the
-watchdog triggering is clearly a real bug, it's also extreme enough
-not to really be a strong argument for merging this out-of-window..
+It's the last version of grep that allowed spanning multiple lines.
 
-> The xhci handle_cmd_completion list_del bugs (on an older version
-> of the driver): weird, nothing to do with page wakeups, I'll just
-> have to assume that it's some driver bug exposed by the greater
-> stress allowed down, and let driver people investigate (if it
-> still manifests) when we take in your improvements.
+That's to find the comment second lines that start with *
 
-Do you have the bug-report, just to google against anybody else
-reporting something simialr>
+> It looks like you tried a few iterations of this -- since it drops 
+> things
+> like "long long".  There are lots of data types that are repeated & 
+> valid.
+> And many struct names, like "struct kref kref", "struct completion 
+> completion",
+> and "struct mutex mutex".  I handle (ignore) those manually
 
-> One nice thing from the comparison runs without your patches:
-> watchdog panic did crash one of those with exactly the unlock_page()
-> wake_up_page_bit() softlockup symptom we've been fighting, that did
-> not appear with your patches.  So although the sample size is much
-> too small to justify a conclusion, it does tend towards confirming
-> your changes.
+that's the first exclude pattern.
 
-You win some, you lose some. But yes, I'll take that as a tentative
-success and that the approach is valid.
-
-Thanks,
-
-               Linus
