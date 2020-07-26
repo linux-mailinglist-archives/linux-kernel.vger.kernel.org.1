@@ -2,118 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB1C22E321
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69F922E325
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbgGZWaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 18:30:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726522AbgGZWaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 18:30:11 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 665A9206E3;
-        Sun, 26 Jul 2020 22:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595802610;
-        bh=MJP0Jf9hKksltsWYsFTa3DOF0LkQ5HhAhLZwYMhd2Ew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NUKhHbAQ1l1sYpoRtEdqCmcjDjOLcwObwRPkskL4+SalwjYP2/NDkPgNtlsMkLxGL
-         ImabpjOa1IvxrOIzB7cfMYybTJ8o8vpGEwpERgbGJSRj4HPZHG2P32AuASKM8vbLX3
-         0ylM4f4HUGLh8TWcSWrMo+4GeUCqOt4cvLaarUUs=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 767B63C0B87; Mon, 27 Jul 2020 00:30:08 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 00:30:08 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH] power: fix duplicated words in bq2415x_charger.h
-Message-ID: <20200726223008.jlhcjrzwdjvmwavn@earth.universe>
-References: <74a380ee-d0a7-a58b-5740-6f1049d05d76@infradead.org>
- <20200716083116.oqio4clyotjqy5vw@pali>
+        id S1726929AbgGZWfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 18:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgGZWfZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 18:35:25 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CB0C0619D5
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:35:23 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a27so5691747ljn.8
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EMOTG0PO+s5CwQFVuZNWBPHyIul1aA0fgUibL6tdegM=;
+        b=hDMGD4iB8N6MW08e5ijsZsVqQDqAcRXmHyhX06vvU+sz7Un/KjdLfrrh5L6yx+6/SB
+         hch1sgS+OylR31eFhuN5okRW/045rSJmOzNFObfozuYaNN/Wto2jJuCvmBwOYtEdQX0L
+         TWocChB/EY+iYJagjeMGEzcM3ErFpyim+h8qxVt+vIFPpk2EwBnlbGIsuSo3vbaE929s
+         1YgrPVpXedOWJOhjcFqX8qtoLCFsW1RXSA26dnPMS2/ltWIkCzIWlKSD71LCU14crCOy
+         roD2OpjtjR6OO0p215DhzcrnUBunnVLkZ988eIc0jqJY8zvk4P4xkyk2ujvdcaYDM7dF
+         Xirg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EMOTG0PO+s5CwQFVuZNWBPHyIul1aA0fgUibL6tdegM=;
+        b=me7MAAyVal1ryg0QGLUGBsUcQKhsbrzhp849rS43htBExde5GROKnrgNJ0gG+XVExM
+         RoO1fSYBTvpYTalR8JJz//4AglB75gwT18IwtAJkMNgT53H8sK8Dv8IQUuUQeD2rp38M
+         dpGVqF4aIf8+1oWtX1sRVBqWRdy3PibbKWBZqIkfyH2nFEUeafae26rFioSQvT3hrN3W
+         KCFEl0FXJTRUOjnKaZ+tKicYdy5vMRC7XbKZd0Q+EfjkpiydifqqWCiJ/w97Idx+ER7I
+         2RYx9FqVt5xrfnHbt1+ZyFk5V8uhq0gqjomLVPdb0dkV4yw06ETzdIyy0GQKqkRkSGj8
+         NuIQ==
+X-Gm-Message-State: AOAM532OfblRM2FjGzE6t/b9TeJXQWNpxXXk+TBy8KWCmDSG9pa0xiVu
+        LhsgzstJS8mu42cNB/48lNkucb/Xout4/Xsm9wChXA==
+X-Google-Smtp-Source: ABdhPJxpoI4Wz0qFGlLsoQ0qfnzhIbW7RXo+Pg6uMltg+pY1lVTlif7DJngj4Tw0aAxErsl+kDQaFXGMGvRhjoiKyoE=
+X-Received: by 2002:a2e:9d4a:: with SMTP id y10mr4059257ljj.104.1595802922025;
+ Sun, 26 Jul 2020 15:35:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7tns4w7sqgcvdmy6"
-Content-Disposition: inline
-In-Reply-To: <20200716083116.oqio4clyotjqy5vw@pali>
+References: <20200722122751.266440-1-drew@beagleboard.org>
+In-Reply-To: <20200722122751.266440-1-drew@beagleboard.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 27 Jul 2020 00:35:08 +0200
+Message-ID: <CACRpkdbL6KD1fNWKBNuqVZDaMDH=S61XSU5Qhza4CuQMx=277A@mail.gmail.com>
+Subject: Re: [PATCH v5] pinctrl: core: print gpio in pins debugfs file
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 22, 2020 at 2:29 PM Drew Fustini <drew@beagleboard.org> wrote:
 
---7tns4w7sqgcvdmy6
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> If there is a gpio range mapping for the pin, then print out the gpio
+> chip and line index for the pin in the debugfs 'pins' file with the
+> format: "[line-index]:[gpio-label]"
+>
+> Here is example output on the BeagleBoard.org PocketBeagle (AM3358):
+> /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/pins
+>
+> pin 25 (PIN25) 25:gpio-32-63 44e10864 00000037 pinctrl-single
+> pin 26 (PIN26) 26:gpio-32-63 44e10868 00000037 pinctrl-single
+> pin 27 (PIN27) 27:gpio-32-63 44e1086c 00000037 pinctrl-single
+> pin 28 (PIN28) 0:? 44e10870 00000036 pinctrl-single
+> pin 29 (PIN29) 0:? 44e10874 00000006 pinctrl-single
+> pin 30 (PIN30) 28:gpio-32-63 44e10878 00000027 pinctrl-single
+> pin 31 (PIN31) 29:gpio-32-63 44e1087c 00000037 pinctrl-single
+> pin 32 (PIN32) 30:gpio-32-63 44e10880 00000037 pinctrl-single
+> pin 33 (PIN33) 31:gpio-32-63 44e10884 00000037 pinctrl-single
+> pin 34 (PIN34) 0:gpio-64-95 44e10888 00000037 pinctrl-single
+> pin 35 (PIN35) 1:gpio-64-95 44e1088c 00000037 pinctrl-single
+>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Suggested-by: Tony Lindgren <tony@atomide.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 
-Hi,
+Neat, this v5 patch applied!
 
-On Thu, Jul 16, 2020 at 10:31:16AM +0200, Pali Roh=E1r wrote:
-> On Wednesday 15 July 2020 18:30:01 Randy Dunlap wrote:
-> > From: Randy Dunlap <rdunlap@infradead.org>
-> >=20
-> > Drop the doubled word "for".
-> > Change "It it" to "If it".
-> >=20
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Pali Roh=E1r <pali@kernel.org>
-> > Cc: Sebastian Reichel <sre@kernel.org>
-> > Cc: linux-pm@vger.kernel.org
->=20
-> Thanks!
->=20
-> Acked-by: Pali Roh=E1r <pali@kernel.org>
-
-Thanks, queued.
-
--- Sebastian
-
->=20
-> > ---
-> >  include/linux/power/bq2415x_charger.h |    4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > --- linux-next-20200714.orig/include/linux/power/bq2415x_charger.h
-> > +++ linux-next-20200714/include/linux/power/bq2415x_charger.h
-> > @@ -14,8 +14,8 @@
-> >   * value is -1 then default chip value (specified in datasheet) will be
-> >   * used.
-> >   *
-> > - * Value resistor_sense is needed for for configuring charge and
-> > - * termination current. It it is less or equal to zero, configuring ch=
-arge
-> > + * Value resistor_sense is needed for configuring charge and
-> > + * termination current. If it is less or equal to zero, configuring ch=
-arge
-> >   * and termination current will not be possible.
-> >   *
-> >   * For automode support is needed to provide name of power supply devi=
-ce
-> >=20
-
---7tns4w7sqgcvdmy6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl8eA+0ACgkQ2O7X88g7
-+po1RhAAqMX5YDJYQMKcmCeYaCmwru0utzJjSfR1H6rSekotf+pkWpw84FB3VwqR
-mfLYbZZAQM7pazJAOAEKinHFkoO21dWBpiPJCC0Mje+SYHMSn/Dgjc9X9o+Z6E4S
-FjLxRCTz6JfRhPpu9o2xB3UfGWiDdEHgHY/oEIftmni7P7b9JH4+mrvg6//9OTXk
-ALY3lywv59kkgbzg7trkX2VM5maAQ4p/0GiUo/jKaWq5WCZDPB96Qu7MEHpWgzS0
-J6F8knhs5WRF57l42W5LJNTukv0JFj8ZIghAFjgT0Q/5+PhB/GudBmDC68xoT0CC
-nCLEUH/ordyXdTM2HZ2gHXkLwEvytuFjCrh5WToiW5Mu4AXzi1CshQNNfQzMUdos
-jUVsaBmGvWVd8xxjH7otDW5VR9u/K5UIkrRIroGBYS/ItsK3rPeBc7NPzsJboizd
-bwQ1YaQv3dS7SWloJGKyUF28ojpl5MQ4BKROTpaiSlsvhYFmah/kXp5yWWC0dpP2
-XnZp6Jd1bGy+qMpdiuL3Q9MOZgi1P0DpkTHcPLtJuGszcoqozNUmx1BaZ+KHjhJN
-AIT8cPEwrvOFl+dVHOVErEd8OsbYopWuA7Yqud7jK6+TWZejzSwkTmCBuDyEVHcR
-ZHo4Upnq4e0ZtLdCeLWHHb4l/kcAeTpazex2vWL6lMCM5eK7NMA=
-=e06k
------END PGP SIGNATURE-----
-
---7tns4w7sqgcvdmy6--
+Yours,
+Linus Walleij
