@@ -2,154 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C4022DDBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEDE22DDB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgGZJVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:21:23 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2538 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725810AbgGZJVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:21:22 -0400
-IronPort-SDR: rCT/aaBrPBwnTwMXAj47jUSLikRhjMIiQMkCDOkqPsldMTyYT0wMWREYqoknuxVyngwWPku1lB
- 1HrmNnPfvlWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9693"; a="130435409"
-X-IronPort-AV: E=Sophos;i="5.75,398,1589266800"; 
-   d="scan'208";a="130435409"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 02:21:20 -0700
-IronPort-SDR: pDKcTx0HMpUjHHDZWg/Q+ojOf0aed7X6GAjANVC2k6PJcvDZJWagH3qjEGqb68hKO/S4nWus3X
- tgnh/UdtbJPQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,398,1589266800"; 
-   d="scan'208";a="433544099"
-Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 26 Jul 2020 02:21:19 -0700
-Received: from kbuild by df0563f96c37 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jzcqM-0001Ms-Rr; Sun, 26 Jul 2020 09:21:18 +0000
-Date:   Sun, 26 Jul 2020 17:19:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- a7ef9b28aa8d72a1656fa6f0a01bbd1493886317
-Message-ID: <5f1d4aa2.6IY2LrUyWQazHk0W%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727910AbgGZJTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:19:53 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54760 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726100AbgGZJTw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 05:19:52 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06Q92YOF039705;
+        Sun, 26 Jul 2020 05:19:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32h2bfmsdy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jul 2020 05:19:42 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06Q92kC3040103;
+        Sun, 26 Jul 2020 05:19:42 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32h2bfmsds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jul 2020 05:19:42 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06Q9JZpn018291;
+        Sun, 26 Jul 2020 09:19:41 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04wdc.us.ibm.com with ESMTP id 32gcpqrwr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jul 2020 09:19:41 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06Q9Jfc047841742
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 26 Jul 2020 09:19:41 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0003E28058;
+        Sun, 26 Jul 2020 09:19:40 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9BE682805E;
+        Sun, 26 Jul 2020 09:19:36 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.34.120])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sun, 26 Jul 2020 09:19:36 +0000 (GMT)
+Subject: Re: [PATCH 13/19] perf metric: Add cache_miss_cycles to metric parse
+ test
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <20200719181320.785305-14-jolsa@kernel.org>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <d5fc8fdc-35ee-7e01-eb6b-bfdfce177910@linux.ibm.com>
+Date:   Sun, 26 Jul 2020 14:49:35 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20200719181320.785305-14-jolsa@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-26_02:2020-07-24,2020-07-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 clxscore=1015 adultscore=0 spamscore=0 impostorscore=0
+ mlxscore=0 phishscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007260064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/urgent
-branch HEAD: a7ef9b28aa8d72a1656fa6f0a01bbd1493886317  locking/lockdep: Fix overflow in presentation of average lock-time
 
-elapsed time: 723m
 
-configs tested: 92
-configs skipped: 1
+On 7/19/20 11:43 PM, Jiri Olsa wrote:
+> Adding test that compute metric with other metrics in it.
+> 
+>   cache_miss_cycles = metric:dcache_miss_cpi + metric:icache_miss_cycles
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reviewed-By : Kajol Jain<kjain@linux.ibm.com>
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-i386                              allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a003-20200726
-i386                 randconfig-a005-20200726
-i386                 randconfig-a004-20200726
-i386                 randconfig-a006-20200726
-i386                 randconfig-a002-20200726
-i386                 randconfig-a001-20200726
-x86_64               randconfig-a014-20200726
-x86_64               randconfig-a016-20200726
-x86_64               randconfig-a015-20200726
-x86_64               randconfig-a012-20200726
-x86_64               randconfig-a013-20200726
-x86_64               randconfig-a011-20200726
-i386                 randconfig-a016-20200726
-i386                 randconfig-a013-20200726
-i386                 randconfig-a012-20200726
-i386                 randconfig-a015-20200726
-i386                 randconfig-a011-20200726
-i386                 randconfig-a014-20200726
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Kajol Jain
+> ---
+>  tools/perf/tests/parse-metric.c | 33 +++++++++++++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+> 
+> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> index 8c48251425e1..28f33893338b 100644
+> --- a/tools/perf/tests/parse-metric.c
+> +++ b/tools/perf/tests/parse-metric.c
+> @@ -11,6 +11,8 @@
+>  #include "debug.h"
+>  #include "expr.h"
+>  #include "stat.h"
+> +#include <perf/cpumap.h>
+> +#include <perf/evlist.h>
+>  
+>  static struct pmu_event pme_test[] = {
+>  {
+> @@ -22,6 +24,18 @@ static struct pmu_event pme_test[] = {
+>  			  "( 1 + cpu_clk_unhalted.one_thread_active / cpu_clk_unhalted.ref_xclk ) )))",
+>  	.metric_name	= "Frontend_Bound_SMT",
+>  },
+> +{
+> +	.metric_expr	= "l1d\\-loads\\-misses / inst_retired.any",
+> +	.metric_name	= "dcache_miss_cpi",
+> +},
+> +{
+> +	.metric_expr	= "l1i\\-loads\\-misses / inst_retired.any",
+> +	.metric_name	= "icache_miss_cycles",
+> +},
+> +{
+> +	.metric_expr	= "(dcache_miss_cpi + icache_miss_cycles)",
+> +	.metric_name	= "cache_miss_cycles",
+> +},
+>  };
+>  
+>  static struct pmu_events_map map = {
+> @@ -162,9 +176,28 @@ static int test_frontend(void)
+>  	return 0;
+>  }
+>  
+> +static int test_cache_miss_cycles(void)
+> +{
+> +	double ratio;
+> +	struct value vals[] = {
+> +		{ .event = "l1d-loads-misses",  .val = 300 },
+> +		{ .event = "l1i-loads-misses",  .val = 200 },
+> +		{ .event = "inst_retired.any",  .val = 400 },
+> +		{ 0 },
+> +	};
+> +
+> +	TEST_ASSERT_VAL("failed to compute metric",
+> +			compute_metric("cache_miss_cycles", vals, &ratio) == 0);
+> +
+> +	TEST_ASSERT_VAL("cache_miss_cycles failed, wrong ratio",
+> +			ratio == 1.25);
+> +	return 0;
+> +}
+> +
+>  int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unused)
+>  {
+>  	TEST_ASSERT_VAL("IPC failed", test_ipc() == 0);
+>  	TEST_ASSERT_VAL("frontend failed", test_frontend() == 0);
+> +	TEST_ASSERT_VAL("cache_miss_cycles failed", test_cache_miss_cycles() == 0);
+>  	return 0;
+>  }
+> 
