@@ -2,167 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC3622E31B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 655B422E31E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgGZW21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 18:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S1727777AbgGZW2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 18:28:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgGZW21 (ORCPT
+        with ESMTP id S1726522AbgGZW2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 18:28:27 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D776CC0619D2;
-        Sun, 26 Jul 2020 15:28:26 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id s16so10904902qtn.7;
-        Sun, 26 Jul 2020 15:28:26 -0700 (PDT)
+        Sun, 26 Jul 2020 18:28:38 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89014C0619D4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:28:37 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id v4so5489505ljd.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:28:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HNVE8+pAZSpeQxmP3tSg/BQyhP/rZ6/36SGQbiLTu10=;
-        b=DTjrlCc1aaT47CyiCirs8x37QjuaaCyUvqYQxlAI4joQjoihgH45exIk7sFyfMNL5K
-         Pw2+ArAw3sF1/iA8mfH0ZZcpeCLgvYtRgj1Qg5iy/kV9z58HvEEOwG6SK9/FKBc2UY0a
-         IZid2Hl7q5oWdIRLcPYOVRDgjK+D/nAxozO0ZY4wpOb5HADvXU+4IcJEf1YkBVYjJhcu
-         P+jYmCPpS3j62awxakOMD0egTjkVlMGObcj4JVgLuj/ON1JUThB3k4j0X2CsKALrdGxx
-         usgwDcdVclIno51K0gUmkd6ExGj2ixZeE+Q3Z7o0XrCMpvLPgFlw4i0yHuOFIZXCp8Zg
-         V8lw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FqpPADHoD6/sFwAG6/8ngJdpFR3zvYVirGl0PSjjtnM=;
+        b=UXRpPhP97xX9+CyYF4MJxoc7cM9pLDOOovxeg4qoPWq1Mq9PWWRy/MYtHH66qlAuy1
+         xxPvw4xK4+nHah/la8DBT1qEmDyVxoO5WBOanlrVgKGtMv9B66LRUHIk5WTOAkMNQLkv
+         of7BbM+1jQYlJLK2FeA90UTFIomdO5vr6vcY4Aumw8KsDeVWwI8K5bDeLi7qoE6Ua2Dk
+         1qUeEMuHLg8PpxExiywWCua30nmJCspKO4ckeuMqCAFkOYSClfo18mKEPR8RD0CPGmRn
+         WtGRiJac1PDBzm5xr4mTyG9xOXAQ9lLm/aZR8nasYv6r42lKJw3BHWJHosIdk8u0wG69
+         Pwcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HNVE8+pAZSpeQxmP3tSg/BQyhP/rZ6/36SGQbiLTu10=;
-        b=ljOzeJ+zqeLvkS5s+E6OBfwa9SLx/g40yYOxKdqsDVbEY1lMmd11bhgb+sRtRTfGWQ
-         4iL4YElIeM/fqrVOUuMBWGRyTGTnLSTlgsb0/S5CddN9Io9oYH4Z71MHvorobb6PZ19K
-         9JkLaBji9j0kZp9m8tv1XogXcVW9kBsj5qHp3d0Ik0HaSssGXp0MLFEyqAmEqg5oJM+j
-         DNK1uCrv6w1rxsPovn6Q691H4wEjg9vEx35eXZJdf/Rpup2Rq6Rvn59QNCQxFlzAb7pg
-         XgX+u5xsswchin5GvHz6PRefrtPcZqk4jyfRMuBApHANVv/przRg6nXortstXbSLTOcR
-         L9Pg==
-X-Gm-Message-State: AOAM530gHlZl7W/OIH8I/BeYsu+eG76kZTFhI7CRGhteVWzgJbC3AD4f
-        ntSTdkhsV+9EkDgEZwINzQ==
-X-Google-Smtp-Source: ABdhPJxDmohnMKBdybckNP/0ftXHuIYM6ruvF1XPpe7KtytStFqJzmZc2OAjVU394YJU+GUM5f4Epg==
-X-Received: by 2002:ac8:794f:: with SMTP id r15mr10880075qtt.383.1595802506053;
-        Sun, 26 Jul 2020 15:28:26 -0700 (PDT)
-Received: from localhost.localdomain ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id h16sm15592243qkg.8.2020.07.26.15.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 15:28:25 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix kernel-infoleak in video_put_user()
-Date:   Sun, 26 Jul 2020 18:27:03 -0400
-Message-Id: <20200726222703.102701-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200726220557.102300-1-yepeilin.cs@gmail.com>
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FqpPADHoD6/sFwAG6/8ngJdpFR3zvYVirGl0PSjjtnM=;
+        b=XWYTZTBTjbeGhcCuK+fW1SEOPN8MAlUHUgRhuYnwi9+oBhg391P/iMLm8lqFsAFICW
+         3QpSR3AsxeJsRqxYtRjy4CXn3g8lRSh/AtH21iEq3acLdM1AOZyDAEi53WYwyIqIKVOu
+         IA8PpONAaLJ4ZFgDthBrZ2puj/L2h0DFJBR7Lqp7oAgr/RZQalQ5VP8YGd/zk6rNbrUx
+         MIA2BLUZjJDvn3QzXPP+sS+B2fcnI3LjW8tSa921WUgyR0jS3HhaDIYZO5J/Ml4yZLmI
+         xQ+xOkcZOIRFdSUTZ2gy8zo956mpdrnp0S8PjNLejiJA28L6JxBoWOYbfYuIMAF8JSIG
+         uZPA==
+X-Gm-Message-State: AOAM533F/+T42fMKKukhPm4gpykiTDSZ//0v2ENCF2noqNksdJ8VkFDl
+        oBeI0Z1Agh0cPS6JQ6KcFaa/A0/KK4YGCf9YC3AnRQ==
+X-Google-Smtp-Source: ABdhPJwRZsGa5mQh/euDMWVs6sXQB/+SBOXYPsqutuy+zDm8oazUfD+J8m9j1i1CcecaoorrBWNLRohjADArNpCXym8=
+X-Received: by 2002:a05:651c:1291:: with SMTP id 17mr9463017ljc.286.1595802515951;
+ Sun, 26 Jul 2020 15:28:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200725232337.27581-1-michael@walle.cc>
+In-Reply-To: <20200725232337.27581-1-michael@walle.cc>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 27 Jul 2020 00:28:25 +0200
+Message-ID: <CACRpkdbs2Thch4KiBNvSp+92wDKHrCkXKvhn7FKUH5WgbgS3Qg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: regmap: fix type clash
+To:     Michael Walle <michael@walle.cc>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-video_put_user() is copying uninitialized stack memory to userspace due
-to the compiler not initializing holes in the structures declared on the
-stack. Fix it by initializing `ev32` and `vb32` using memset().
+On Sun, Jul 26, 2020 at 1:23 AM Michael Walle <michael@walle.cc> wrote:
 
-Reported-and-tested-by: syzbot+79d751604cb6f29fbf59@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-Change in v3:
-    - Improve the commit description. (Suggested by Laurent Pinchart
-      <laurent.pinchart@ideasonboard.com>)
+> GPIO_REGMAP_ADDR_ZERO() cast to unsigned long but the actual config
+> parameters are unsigned int. We use unsigned int here because that is
+> the type which is used by the underlying regmap.
+>
+> Fixes: ebe363197e52 ("gpio: add a reusable generic gpio_chip using regmap")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Change in v2:
-    - Do the same thing for `case VIDIOC_DQEVENT_TIME32`.
+Patch applied, thanks!
 
- drivers/media/v4l2-core/v4l2-ioctl.c | 50 +++++++++++++++-------------
- 1 file changed, 27 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index a556880f225a..e3a25ea913ac 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -3189,14 +3189,16 @@ static int video_put_user(void __user *arg, void *parg, unsigned int cmd)
- #ifdef CONFIG_COMPAT_32BIT_TIME
- 	case VIDIOC_DQEVENT_TIME32: {
- 		struct v4l2_event *ev = parg;
--		struct v4l2_event_time32 ev32 = {
--			.type		= ev->type,
--			.pending	= ev->pending,
--			.sequence	= ev->sequence,
--			.timestamp.tv_sec  = ev->timestamp.tv_sec,
--			.timestamp.tv_nsec = ev->timestamp.tv_nsec,
--			.id		= ev->id,
--		};
-+		struct v4l2_event_time32 ev32;
-+
-+		memset(&ev32, 0, sizeof(ev32));
-+
-+		ev32.type	= ev->type;
-+		ev32.pending	= ev->pending;
-+		ev32.sequence	= ev->sequence;
-+		ev32.timestamp.tv_sec	= ev->timestamp.tv_sec;
-+		ev32.timestamp.tv_nsec	= ev->timestamp.tv_nsec;
-+		ev32.id		= ev->id;
- 
- 		memcpy(&ev32.u, &ev->u, sizeof(ev->u));
- 		memcpy(&ev32.reserved, &ev->reserved, sizeof(ev->reserved));
-@@ -3210,21 +3212,23 @@ static int video_put_user(void __user *arg, void *parg, unsigned int cmd)
- 	case VIDIOC_DQBUF_TIME32:
- 	case VIDIOC_PREPARE_BUF_TIME32: {
- 		struct v4l2_buffer *vb = parg;
--		struct v4l2_buffer_time32 vb32 = {
--			.index		= vb->index,
--			.type		= vb->type,
--			.bytesused	= vb->bytesused,
--			.flags		= vb->flags,
--			.field		= vb->field,
--			.timestamp.tv_sec	= vb->timestamp.tv_sec,
--			.timestamp.tv_usec	= vb->timestamp.tv_usec,
--			.timecode	= vb->timecode,
--			.sequence	= vb->sequence,
--			.memory		= vb->memory,
--			.m.userptr	= vb->m.userptr,
--			.length		= vb->length,
--			.request_fd	= vb->request_fd,
--		};
-+		struct v4l2_buffer_time32 vb32;
-+
-+		memset(&vb32, 0, sizeof(vb32));
-+
-+		vb32.index	= vb->index;
-+		vb32.type	= vb->type;
-+		vb32.bytesused	= vb->bytesused;
-+		vb32.flags	= vb->flags;
-+		vb32.field	= vb->field;
-+		vb32.timestamp.tv_sec	= vb->timestamp.tv_sec;
-+		vb32.timestamp.tv_usec	= vb->timestamp.tv_usec;
-+		vb32.timecode	= vb->timecode;
-+		vb32.sequence	= vb->sequence;
-+		vb32.memory	= vb->memory;
-+		vb32.m.userptr	= vb->m.userptr;
-+		vb32.length	= vb->length;
-+		vb32.request_fd	= vb->request_fd;
- 
- 		if (copy_to_user(arg, &vb32, sizeof(vb32)))
- 			return -EFAULT;
--- 
-2.25.1
-
+Yours,
+Linus Walleij
