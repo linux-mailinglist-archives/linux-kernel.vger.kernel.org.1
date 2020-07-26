@@ -2,191 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE89922E0C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2438222E0DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgGZPfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 11:35:15 -0400
-Received: from mga03.intel.com ([134.134.136.65]:17603 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727888AbgGZPfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 11:35:10 -0400
-IronPort-SDR: 8LddHnFtNXfG/IBnRcoiKk+SfzvuY1BDe8YYCVDqYWopXUq/yFkJ3HPRGmAs1WSGReVM4rpDWh
- 2+dAfwXj9epQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="150890995"
-X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
-   d="scan'208";a="150890995"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 08:35:10 -0700
-IronPort-SDR: 3kRb4S3UMZcWPJI1RKxZm7xPc4u8SJTUoDKGN/qEQh3LTJHvrqW/HSMT2vhA67KsmhfJXAvW+2
- CPGlp+YJ1wGg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
-   d="scan'208";a="303177649"
-Received: from sqa-gate.sh.intel.com (HELO clx-ap-likexu.tsp.org) ([10.239.48.212])
-  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2020 08:35:07 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        Like Xu <like.xu@linux.intel.com>
-Subject: [PATCH v13 10/10] KVM: vmx/pmu: Release guest LBR event via lazy release mechanism
-Date:   Sun, 26 Jul 2020 23:32:29 +0800
-Message-Id: <20200726153229.27149-12-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200726153229.27149-1-like.xu@linux.intel.com>
-References: <20200726153229.27149-1-like.xu@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727979AbgGZPgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 11:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726668AbgGZPgQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 11:36:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5D1C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 08:36:16 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id kq25so1633104ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 08:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=HDG9/ek9z1S16A5dtxmL+5qh96r+OR3wdAt2UD99xf8=;
+        b=AVo97B/a29T3cdG3nvRjJyvoj8+TvYxwL1F/zxvwaO6TPdrBJ32G2Su/QH8mD4pdP8
+         pA2xucxxTNYt2Y3YO3ew8gufRBE6xApEZM5JMV/fHqkcZTgoPHhfkcPEeSRojG8LikZr
+         NNqOzQEcVFEm8gMTEWvgpdi4t5O13Pfq0cZ5S7jLckrltiI2+QxqkzpLlxd4sUvHksr8
+         kF6jA3C+oTJ5HshEHpFDBvdPzxaeOMrM6lTwczN8daJtagRzw9ONBpLqTOsv9ynDlpqu
+         bUDKQn7Ofr+6yjhk+tuPU2JX00+9bDcdEZ3Cbbt+aG/MHpuVCNBB8KpSpUnlU6dNFjxj
+         MrdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=HDG9/ek9z1S16A5dtxmL+5qh96r+OR3wdAt2UD99xf8=;
+        b=hVHKBMFU/P1lMag6UdfmpEN5GPDDVochocyvLuzxE4lZCebYC+3n1Q/vDH0TmYGSRN
+         Ex+y3DjeJ9xhAaVqaVb54+OGDT3JMZtfEwF2zPKdNA2WokqrPmgRfOrIOYG/VWAhbeBl
+         Lq1sHne3nDZwfWJsqQxR1mJ99ZF0bmn7NG1EP811QmFLhXksBnoLqBYQOzsfw6hRQnPS
+         U9uK5ATpy2/lYeJqvX9W7pVtuEKeOs9SSt42ejvfXrq54OWXdaGa058/DmkhtvUr/X+d
+         R24X1/FBnT9Pt+t6B5RJN253DOMzMlePMzvZTe0ldls1vDGu67sIrM1AcMpk9e5bBOk/
+         zTwg==
+X-Gm-Message-State: AOAM532W3rCgT3HJgP5NGscsiC9mfG+BuLenycaJYo+i3vWghiJJ3Lj1
+        2BDIitYnfposmZnkI0/GHe8=
+X-Google-Smtp-Source: ABdhPJwEgeKfyyUieqmI040WhoQwsBIN3eS5wUk9qFfv04NNZuV0nFb5faTuEXAbBlauQoWYSbAA/Q==
+X-Received: by 2002:a17:906:3e4f:: with SMTP id t15mr3529388eji.368.1595777775095;
+        Sun, 26 Jul 2020 08:36:15 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:2450:10d2:194d:60d3:6c2f:f9ba:e713])
+        by smtp.gmail.com with ESMTPSA id ay5sm216386edb.2.2020.07.26.08.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Jul 2020 08:36:14 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     SeongJae Park <sj38.park@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        SeongJae Park <sjpark@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, apw@canonical.com,
+        colin.king@canonical.com, jslaby@suse.cz, pavel@ucw.cz,
+        SeongJae Park <sjpark@amazon.de>
+Subject: Re: Re: Re: Re: Re: checkpatch: support deprecated terms checking
+Date:   Sun, 26 Jul 2020 17:36:01 +0200
+Message-Id: <20200726153601.13855-1-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <dae471a789ee6e0bda5e641eb8e376fd03667415.camel@perches.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vPMU uses GUEST_LBR_IN_USE_IDX (bit 58) in 'pmu->pmc_in_use' to
-indicate whether a guest LBR event is still needed by the vcpu. If the
-vcpu no longer accesses LBR related registers within a scheduling time
-slice, and the enable bit of LBR has been unset, vPMU will treat the
-guest LBR event as a bland event of a vPMC counter and release it
-as usual. Also, the pass-through state of LBR records msrs is cancelled.
+On Sun, 26 Jul 2020 07:50:54 -0700 Joe Perches <joe@perches.com> wrote:
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/kvm/pmu.c           |  7 +++++++
- arch/x86/kvm/pmu.h           |  4 ++++
- arch/x86/kvm/vmx/pmu_intel.c | 17 ++++++++++++++++-
- 3 files changed, 27 insertions(+), 1 deletion(-)
+> On Sun, 2020-07-26 at 09:45 +0200, SeongJae Park wrote:
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -721,6 +721,7 @@ sub read_word_corrections {
+> >  my %deprecated_terms_fix;
+> >  read_word_corrections($deprecated_terms_file, \%deprecated_terms_fix);
+> >  my $deprecated_terms = join("|", sort keys %deprecated_terms_fix) if keys %deprecated_terms_fix;
+> > +my %deprecated_terms_reported = map { $_ => 1 }
+> 
+> overly verbose naming and this doesn't need initialization here.
+> 
+> > @@ -2975,13 +2976,16 @@ sub process {
+> >  		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
+> >  			while ($rawline =~ /(?:^|[^a-z@])($deprecated_terms)(?:\b|$|[^a-z@])/gi) { 
+> >  				my $deprecated_term = $1;
+> > +				last if (exists($deprecated_terms_reported{$deprecated_term}));
+> 
+> next if (...) to check if multiple terms exists on the same line
 
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index 405890c723a1..e7c72eea07d4 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -463,6 +463,7 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
- 	struct kvm_pmc *pmc = NULL;
- 	DECLARE_BITMAP(bitmask, X86_PMC_IDX_MAX);
- 	int i;
-+	bool extra_cleanup = false;
- 
- 	pmu->need_cleanup = false;
- 
-@@ -474,8 +475,14 @@ void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
- 
- 		if (pmc && pmc->perf_event && !pmc_speculative_in_use(pmc))
- 			pmc_stop_counter(pmc);
-+
-+		if (i == INTEL_GUEST_LBR_INUSE)
-+			extra_cleanup = true;
- 	}
- 
-+	if (extra_cleanup && kvm_x86_ops.pmu_ops->cleanup)
-+		kvm_x86_ops.pmu_ops->cleanup(vcpu);
-+
- 	bitmap_zero(pmu->pmc_in_use, X86_PMC_IDX_MAX);
- }
- 
-diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-index 742a4e98df8c..c8b650866f56 100644
---- a/arch/x86/kvm/pmu.h
-+++ b/arch/x86/kvm/pmu.h
-@@ -15,6 +15,9 @@
- #define VMWARE_BACKDOOR_PMC_REAL_TIME		0x10001
- #define VMWARE_BACKDOOR_PMC_APPARENT_TIME	0x10002
- 
-+/* Indicates whether Intel LBR msrs were accessed during the last time slice. */
-+#define INTEL_GUEST_LBR_INUSE INTEL_PMC_IDX_FIXED_VLBR
-+
- #define MAX_FIXED_COUNTERS	3
- 
- struct kvm_event_hw_type_mapping {
-@@ -40,6 +43,7 @@ struct kvm_pmu_ops {
- 	void (*init)(struct kvm_vcpu *vcpu);
- 	void (*reset)(struct kvm_vcpu *vcpu);
- 	void (*deliver_pmi)(struct kvm_vcpu *vcpu);
-+	void (*cleanup)(struct kvm_vcpu *vcpu);
- };
- 
- static inline u64 pmc_bitmask(struct kvm_pmc *pmc)
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index bcac0f59bbf1..d61a30d3a6ed 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -310,6 +310,7 @@ int intel_pmu_create_guest_lbr_event(struct kvm_vcpu *vcpu)
- 	}
- 	lbr_desc->event = event;
- 	vcpu_to_pmu(vcpu)->event_count++;
-+	__set_bit(INTEL_GUEST_LBR_INUSE, vcpu_to_pmu(vcpu)->pmc_in_use);
- 	return 0;
- }
- 
-@@ -342,10 +343,12 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
- 			rdmsrl(index, msr_info->data);
- 		else
- 			wrmsrl(index, msr_info->data);
-+		__set_bit(INTEL_GUEST_LBR_INUSE, vcpu_to_pmu(vcpu)->pmc_in_use);
- 		local_irq_enable();
- 		return true;
- 	}
- 	local_irq_enable();
-+	clear_bit(INTEL_GUEST_LBR_INUSE, vcpu_to_pmu(vcpu)->pmc_in_use);
- 
- dummy:
- 	if (read)
-@@ -496,7 +499,8 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 	if (!intel_pmu_lbr_is_enabled(vcpu)) {
- 		vcpu->arch.perf_capabilities &= ~PMU_CAP_LBR_FMT;
- 		lbr_desc->records.nr = 0;
--	}
-+	} else
-+		bitmap_set(pmu->all_valid_pmc_idx, INTEL_GUEST_LBR_INUSE, 1);
- 
- 	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
- 					 x86_pmu.num_counters_gp);
-@@ -673,17 +677,21 @@ static inline void vmx_enable_lbr_msrs_passthrough(struct kvm_vcpu *vcpu)
-  */
- void vmx_passthrough_lbr_msrs(struct kvm_vcpu *vcpu)
- {
-+	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
- 	struct lbr_desc *lbr_desc = vcpu_to_lbr_desc(vcpu);
- 
- 	if (!lbr_desc->event) {
- 		vmx_disable_lbr_msrs_passthrough(vcpu);
- 		if (vmcs_read64(GUEST_IA32_DEBUGCTL) & DEBUGCTLMSR_LBR)
- 			goto warn;
-+		if (test_bit(INTEL_GUEST_LBR_INUSE, pmu->pmc_in_use))
-+			goto warn;
- 		return;
- 	}
- 
- 	if (lbr_desc->event->state < PERF_EVENT_STATE_ACTIVE) {
- 		vmx_disable_lbr_msrs_passthrough(vcpu);
-+		__clear_bit(INTEL_GUEST_LBR_INUSE, pmu->pmc_in_use);
- 		goto warn;
- 	} else
- 		vmx_enable_lbr_msrs_passthrough(vcpu);
-@@ -695,6 +703,12 @@ void vmx_passthrough_lbr_msrs(struct kvm_vcpu *vcpu)
- 		vcpu->vcpu_id);
- }
- 
-+static void intel_pmu_cleanup(struct kvm_vcpu *vcpu)
-+{
-+	if (!(vmcs_read64(GUEST_IA32_DEBUGCTL) & DEBUGCTLMSR_LBR))
-+		intel_pmu_release_guest_lbr_event(vcpu);
-+}
-+
- struct kvm_pmu_ops intel_pmu_ops = {
- 	.find_arch_event = intel_find_arch_event,
- 	.find_fixed_event = intel_find_fixed_event,
-@@ -710,4 +724,5 @@ struct kvm_pmu_ops intel_pmu_ops = {
- 	.init = intel_pmu_init,
- 	.reset = intel_pmu_reset,
- 	.deliver_pmi = intel_pmu_deliver_pmi,
-+	.cleanup = intel_pmu_cleanup,
- };
--- 
-2.21.3
+Agreed on these comments, thanks!
 
+> 
+> > +				$deprecated_terms_reported{$deprecated_term} = 1;
+> > +
+> 
+> But this does need to be reset to empty when checking the next file
+
+Hmm... I though you mean reporting same term multiple times too verbose... Did
+I misunderstand your point?
+
+> 
+> >  				my $suggested = $deprecated_terms_fix{lc($deprecated_term)};
+> >  				$suggested = ucfirst($suggested) if ($deprecated_term=~ /^[A-Z]/);
+> >  				$suggested = uc($suggested) if ($deprecated_term =~ /^[A-Z]+$/);
+> >  				my $msg_level = \&WARN;
+> >  				$msg_level = \&CHK if ($file);
+> >  				if (&{$msg_level}("DEPRECATED_TERM",
+> > -						  "Use of '$deprecated_term' is deprecated, please '$suggested', instead.\n" . $herecurr) &&
+> > +						  "Use of '$deprecated_term' is controversial - if not required by specification, perhaps '$suggested' instead.  See: scripts/deprecated_terms.txt\n" . $herecurr) &&
+> >  				    $fix) {
+> >  					$fixed[$fixlinenr] =~ s/(^|[^A-Za-z@])($deprecated_term)($|[^A-Za-z@])/$1$suggested$3/;
+> 
+> I think it simpler to avoid emitting this on existing files.
+
+Agreed, it's much simpler.  However, my concerns on excluding existing file
+checks are:
+
+1. Avoiding existing file checks will still not stop warning patches mentioning
+existing deprecated terms.
+2. If the term mistakenly comes in newly, it would be hard to check it later.
+3. Some future deprecations of terms might be applied to existing uses, as
+'s/fuck/hug' did.
+
+> 
+> I do not want to encourage relatively inexperienced people
+> to run checkpatch and submit inappropriate patches.
+
+Me, neither.  But, I think providing more warnings and references is better for
+that.  Experienced people would be able to easily ignore the false positives.
+Simply limiting checks could allow people submitting inappropriate patches
+intorducing new uses of deprecated terms.
+
+
+Thanks,
+SeongJae Park
