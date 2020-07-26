@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CB222E1E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C79822E1EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727033AbgGZSM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 14:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48140 "EHLO
+        id S1726738AbgGZSPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 14:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgGZSMZ (ORCPT
+        with ESMTP id S1726072AbgGZSPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 14:12:25 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600FBC0619D2;
-        Sun, 26 Jul 2020 11:12:25 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 6so10647751qtt.0;
-        Sun, 26 Jul 2020 11:12:25 -0700 (PDT)
+        Sun, 26 Jul 2020 14:15:47 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DF8C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 11:15:47 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 9so12117720wmj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 11:15:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sWvoytYgdWuVZpnsHNqepIQUSxkaD87xtrtLEKkqxWY=;
-        b=MVyeUEfbyS3VZjAkUDRUL1xOAzcfaQcd8KU7aoJ4z62BDQBGfr8iG0+ajJoqOZqJIK
-         YQRZOu53+llVUz4LPxfdqQUWLZ4umPzuU+Djvnfx4znXYIT5DI2j1IKfxzS/3z8AcSMV
-         g/kTOEIb7fqZm0t6iOpgttv1EM7rot3vi9eH2Y+dZcLgljzLwP++VjViuQ5QslcR0EnW
-         sdKyWU9FBJW8VyZZPjrOnb1cjzh6zu6GCN6fhCaFCxpVFK/x3DXLYTGGdQLcb3d7/kGA
-         B5EUJmrLgMbxDNeJJ1J5FqDy/nchpFM56Z7LLHFhRmJQuS7oBhaOW83FWcB4PvteEm5/
-         fdqg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PiMm1yyj8Q6tWrjven5zlrS3Z6213SZfjWTHd4vlUEs=;
+        b=CmLMxf6kuw6cGyk+BN9PWV10v+ZIuKboIGE4KjhBEWxLqJBNXjSI3lzOYhcEDLn2+I
+         5gBkC+WleShAEybkvXkPE+M34ocghl9dpoyI9grS8J+/xnGSTfAtfg2o4j57uXxRaxzq
+         sz7efvYjguxQiemKygzsreiedWNkvEyW5uJACcZUCa8CK8Dj3CDRW3wlAIMyyFPUUfzu
+         shOycahC9xmGXJRnp7SeVGmlgKLE89yQxsyDJZsu42FUwE/1XIS4DsgohQbGTCWx1OC5
+         yICgBnq0Q8arxcc5D4LXLSESoE6dzHIe2k+ZStnawTRkp9X9KX0DPtmENs6o27Sp0tLp
+         VZeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sWvoytYgdWuVZpnsHNqepIQUSxkaD87xtrtLEKkqxWY=;
-        b=YfI8RN0/upf6yFN+KqEBIUGvhZZVNqnom9VpbR2YTnuoF9q/KlOkx4QCfhPN5Pz9D1
-         /SkRHs6xbgNMGjM7G4YUIF4huPHdFXWxQGP/sBgjMgO61c4EyNOOP3mR516H8Ps5KuOJ
-         zFr2J0cneYtuIJyvxTSRMfsjy3RtBTN8c3lu9hCMAYSQFjbYmvPPfVksclXN1/bHHd+B
-         FxN+uak4ouPndnj4aLcbwIBtB+o47gGw+MidOubvJX4Rdl9oukaA0GravsrmuAuySFu3
-         a1p8CgPzlnLInAhGo5jG4POx9Cs/ACzNzteMqDms4XSDFAhoPyFj2j0M1Q7Jmfv2L287
-         b3CA==
-X-Gm-Message-State: AOAM531MMIgTfEAKshn5xvnytmTWt/1cnNRgSOCu0IDQFUPAeRjf2q7f
-        9WDH4G+b7rYNF0d8Vmhgjg==
-X-Google-Smtp-Source: ABdhPJxKGSTuzHcLZGMGS82EEnlAeefUmZtiIGxBpjEXSvwnMIf7j9zEmOsoxXFdzO5wAarhaL0o7g==
-X-Received: by 2002:ac8:6793:: with SMTP id b19mr9261706qtp.333.1595787144680;
-        Sun, 26 Jul 2020 11:12:24 -0700 (PDT)
-Received: from PWN (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id j15sm1885535qkl.63.2020.07.26.11.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 11:12:24 -0700 (PDT)
-Date:   Sun, 26 Jul 2020 14:12:22 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Linux-kernel-mentees] [PATCH] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-Message-ID: <20200726181222.GB49356@PWN>
-References: <20200726164439.48973-1-yepeilin.cs@gmail.com>
- <20200726173044.GA14755@pendragon.ideasonboard.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PiMm1yyj8Q6tWrjven5zlrS3Z6213SZfjWTHd4vlUEs=;
+        b=RKNdD5D6c++WFLZk0q7EKrdJTxwrQKwc0Lv/rax5T0VA5eFWNiCPKS30Uftc2XaetN
+         pYieuETCtP61UQ8XoYeudEEXVurU0xmK8DIDjxxYVQ4WtK8Bd1K3DHF6BEhHdVyR4GwQ
+         HKy9zyYX4f7xFjRfK4Q3SKVZ2gbmADzQ4qeoTLrKF+ovXs23WlxNDMxS018+7MKnqsOA
+         kLEYPgfxY5DgLMniGsVvr+uf4gCgGBnbQlfJ8bAx/L3ag0JjqS3whVFSYWJKGGqsz9Z3
+         603ricEe669MGzzh1TTmXJSmjzpk2B/IpG1L2qnBYRimmimy2qp845GR7Cr+3zdDBJ9f
+         Iu7Q==
+X-Gm-Message-State: AOAM533jqXK1Lw6JFB37LZAxK3wLcj6ExMhv9An5vJ43D6/T6yX0ojpK
+        aRHeMRlIOjvuG3Td38bliqLDWAHSzpOWl8gyrBI=
+X-Google-Smtp-Source: ABdhPJwkNpZuNMVrZC51FWF7gZY8qO0E3BYnZEcsXKTs5g22I6lRW5H9rVnp97x89RgJscB5uaGUnmkuzahbN7KpyRY=
+X-Received: by 2002:a1c:3b02:: with SMTP id i2mr16770291wma.24.1595787346092;
+ Sun, 26 Jul 2020 11:15:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200726173044.GA14755@pendragon.ideasonboard.com>
+References: <20200726141831.2662-1-aditya.jainadityajain.jain@gmail.com>
+ <20200726142013.2891-1-aditya.jainadityajain.jain@gmail.com>
+ <20200726142013.2891-3-aditya.jainadityajain.jain@gmail.com>
+ <20200726150244.GD452766@kroah.com> <1177f80aa848a294f65e305729304b76d1e5ee98.camel@perches.com>
+In-Reply-To: <1177f80aa848a294f65e305729304b76d1e5ee98.camel@perches.com>
+From:   Aditya Jain <aditya.jainadityajain.jain@gmail.com>
+Date:   Sun, 26 Jul 2020 23:45:34 +0530
+Message-ID: <CAJAoDUjRZTxcOJGs2wqPPYyVCYJJTs1NWtmD0+yMXLttgCCQyA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] staging: rtl8723bs: include: Further clean up
+ function declarations
+To:     Joe Perches <joe@perches.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+        hdegoede@redhat.com, linux-kernel@vger.kernel.org,
+        Larry.Finger@lwfinger.net
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, by this code example:
+On Sun, Jul 26, 2020 at 10:45 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sun, 2020-07-26 at 17:02 +0200, Greg KH wrote:
+> > On Sun, Jul 26, 2020 at 07:50:12PM +0530, Aditya Jain wrote:
+> > > Cleaning up messy multiline function declarations in hal_phy_cfg.h
+> []
+> > > diff --git a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
+> []
+Ok, I'll merge this patch with the previous one. Had separated the two
+to make the diffs smaller thinking they'll
+be easier to review. But yeah, I get the point.
+> > > -void
+> > > -PHY_SetSwChnlBWMode8723B(
+> > > -struct adapter *Adapter,
+> > > -u8                         channel,
+> > > -enum CHANNEL_WIDTH         Bandwidth,
+> > > -u8                         Offset40,
+> > > -u8                         Offset80
+> > > +void PHY_SetBWMode8723B(struct adapter *Adapter,
+> > > +                   enum CHANNEL_WIDTH Bandwidth,   /*  20M or 40M */
+> > > +                   unsigned char Offset    /*  Upper, Lower, or Don't care */
+> >
+> > Those comments should go at the top of the function declaration, in
+> > kernel doc format.
+>
+> Not every external function needs kernel-doc.
+>
+> This is a realtek staging driver that likely it will never be
+> moved out of staging.
+>
+>
+Should I just remove the comments then? Sorry, but I'm a newbie, and
+not really sure what the function is or supposed to do.
+I can try looking it up if kernel-doc is required here.
 
-        char *p = (char *)&vb32;
-        int i;
-
-        for (i = 0; i < sizeof(struct vb32); i++, p++)
-                printk("*(p + i): %d", *(p + i));
-
-actually I meant:
-
-        char *p = (char *)&vb32;
-        int i;
-
-        for (i = 0; i < sizeof(struct vb32); i++)
-                printk("*(p + i): %d", *(p + i));
-
-But the idea is the same.
-
-Thank you,
-Peilin Ye
+Regards,
+Aditya Jain
