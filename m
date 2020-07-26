@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F92822E904
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AACF22E98C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgG0JaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:30:11 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40116 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726302AbgG0JaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:30:10 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxOMWCnh5fqSYBAA--.683S2;
-        Mon, 27 Jul 2020 17:29:40 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Ning Sun <ning.sun@intel.com>,
-        Thomas Renninger <trenn@suse.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        tboot-devel@lists.sourceforge.net, linux-pm@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] ACPI: Use valid link of ACPI specification
-Date:   Mon, 27 Jul 2020 17:29:38 +0800
-Message-Id: <1595842178-20351-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxOMWCnh5fqSYBAA--.683S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1fuF13Wr47ZrWrtry5urg_yoW8KFWrpF
-        s5KryIk34xtr1Uua18Cw17WFy5W3Z7uFW7Kr48Cw18uF4UWryvqF1akFyYya4UJr4fCFW0
-        qrZ7tF1Uu3WI9rJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-        Uq38nUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726924AbgG0Jxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:53:39 -0400
+Received: from mga09.intel.com ([134.134.136.24]:49453 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgG0Jxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:53:39 -0400
+IronPort-SDR: WqGVwXJ1NLsBhTDqOgLbOIxOuhDjc2YtYdZGdE6EMRpxAcpNLzpPz89FtxPNAGMzZdsDEtqwC0
+ og+SkluD7Jvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="152240505"
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="152240505"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 02:53:39 -0700
+IronPort-SDR: zPLjLoPPCMGlnfEV1YyScGhCR59QqS54CiI/jGC6iZ93zkwfw58CmCY3TO+EcxU32hIj0C4IrZ
+ 9hG5IoLXN3lw==
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="464006917"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 02:53:34 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
+        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        mengdong.lin@intel.com, bard.liao@intel.com
+Subject: [PATCH v2] soundwire: master: enable pm runtime
+Date:   Mon, 27 Jul 2020 05:59:45 +0800
+Message-Id: <20200726215945.3119-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, acpi.info is an invalid link to access ACPI specification,
-the new valid link is https://uefi.org/specifications.
+The hierarchy of soundwire devices is platform device -> M device -> S
+device. A S device is physically attached on the platform device. So the
+platform device should be resumed when a S device is resumed. As the
+bridge of platform device and S device, we have to implement runtime pm
+on M driver. We have set runtime pm ops in M driver already, but still
+need to enable runtime pm.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+
 ---
- Documentation/hwmon/acpi_power_meter.rst      | 2 +-
- drivers/acpi/Kconfig                          | 3 +--
- include/linux/tboot.h                         | 2 +-
- tools/power/cpupower/man/cpupower-idle-info.1 | 2 +-
- 4 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/hwmon/acpi_power_meter.rst b/Documentation/hwmon/acpi_power_meter.rst
-index 4a0941a..8628c11 100644
---- a/Documentation/hwmon/acpi_power_meter.rst
-+++ b/Documentation/hwmon/acpi_power_meter.rst
-@@ -9,7 +9,7 @@ Supported systems:
+Changes in v2:
+ - Edit the commit message to explain why we need the patch. 
+---
+ drivers/soundwire/master.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/soundwire/master.c b/drivers/soundwire/master.c
+index 5f0b2189defe..3488bb824e84 100644
+--- a/drivers/soundwire/master.c
++++ b/drivers/soundwire/master.c
+@@ -154,6 +154,7 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
+ 	bus->dev = &md->dev;
+ 	bus->md = md;
  
-     Prefix: 'power_meter'
- 
--    Datasheet: http://acpi.info/, section 10.4.
-+    Datasheet: https://uefi.org/specifications, section 10.4.
- 
- Author: Darrick J. Wong
- 
-diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index ce2730d..7428cd2 100644
---- a/drivers/acpi/Kconfig
-+++ b/drivers/acpi/Kconfig
-@@ -40,8 +40,7 @@ menuconfig ACPI
- 	  the UEFI Forum and any UEFI member can join the ASWG and contribute
- 	  to the ACPI specification.
- 	  The specification is available at:
--	  <http://www.acpi.info>
--	  <http://www.uefi.org/acpi/specs>
-+	  <https://uefi.org/specifications>
- 
- if ACPI
- 
-diff --git a/include/linux/tboot.h b/include/linux/tboot.h
-index c7e4247..5146d25 100644
---- a/include/linux/tboot.h
-+++ b/include/linux/tboot.h
-@@ -44,7 +44,7 @@ struct tboot_acpi_generic_address {
- 
- /*
-  * combines Sx info from FADT and FACS tables per ACPI 2.0+ spec
-- * (http://www.acpi.info/)
-+ * (https://uefi.org/specifications)
++	pm_runtime_enable(&bus->md->dev);
+ device_register_err:
+ 	return ret;
+ }
+@@ -166,6 +167,7 @@ int sdw_master_device_add(struct sdw_bus *bus, struct device *parent,
   */
- struct tboot_acpi_sleep_info {
- 	struct tboot_acpi_generic_address pm1a_cnt_blk;
-diff --git a/tools/power/cpupower/man/cpupower-idle-info.1 b/tools/power/cpupower/man/cpupower-idle-info.1
-index 80a1311..20b6345 100644
---- a/tools/power/cpupower/man/cpupower-idle-info.1
-+++ b/tools/power/cpupower/man/cpupower-idle-info.1
-@@ -75,7 +75,7 @@ By default only values of core zero are displayed. How to display settings of
- other cores is described in the cpupower(1) manpage in the \-\-cpu option
- section.
- .SH REFERENCES
--http://www.acpi.info/spec.htm
-+https://uefi.org/specifications
- .SH "FILES"
- .nf
- \fI/sys/devices/system/cpu/cpu*/cpuidle/state*\fP
+ int sdw_master_device_del(struct sdw_bus *bus)
+ {
++	pm_runtime_disable(&bus->md->dev);
+ 	device_unregister(bus->dev);
+ 
+ 	return 0;
 -- 
-2.1.0
+2.17.1
 
