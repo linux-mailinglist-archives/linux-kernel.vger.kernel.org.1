@@ -2,209 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2D422E0B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483C222E0B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgGZPbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 11:31:08 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46536 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726042AbgGZPbH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 11:31:07 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C3734304;
-        Sun, 26 Jul 2020 17:31:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1595777461;
-        bh=oyQAELgW6klCSGBuOr1AJ3GfNkjzCnTc0DUFvMoWBMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LenBQdlBe05DVLP1xeshTIGdl2GdKYFqLJeYF4CnKNGQvQYTKT21rgFxHmou6khqQ
-         EYjUyEn9YlfpnJPf7xhLBOxc10Ee63qu4sFKbH4eDia7dmqbkI/uwxz/OpuPcj2Nf2
-         53tvqXKiyKP+jdq+cisgvXQQwd/5ll6IpEF3+pR0=
-Date:   Sun, 26 Jul 2020 18:30:54 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     torvalds@linux-foundation.org,
-        ksummit-discuss@lists.linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        tech-board-discuss@lists.linuxfoundation.org,
-        Chris Mason <clm@fb.com>
-Subject: Re: [Ksummit-discuss] [PATCH] CodingStyle: Inclusive Terminology
-Message-ID: <20200726153054.GA5925@pendragon.ideasonboard.com>
-References: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1726859AbgGZPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 11:34:41 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17603 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726065AbgGZPek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 11:34:40 -0400
+IronPort-SDR: 3JDtvrYbd/NB2XliehxKueJtDoi/xsVOwa1mKq9vuS13pWJLmh4Ho6zE4TeDncKhhB0itQbBxq
+ Ya+Svp0Lyddg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="150890955"
+X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
+   d="scan'208";a="150890955"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 08:34:40 -0700
+IronPort-SDR: rUbsBwb1OF0ZnNlTNb4A+AFbeSGDD2v84/a2gsxpeHuSNf5b1wETG6HQPgJe8c0Vgsbsb/kH6p
+ phQhwRJNF7Fg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
+   d="scan'208";a="303177494"
+Received: from sqa-gate.sh.intel.com (HELO clx-ap-likexu.tsp.org) ([10.239.48.212])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2020 08:34:37 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH v13 00/10] Guest Last Branch Recording Enabling (KVM part)
+Date:   Sun, 26 Jul 2020 23:32:18 +0800
+Message-Id: <20200726153229.27149-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <159389297140.2210796.13590142254668787525.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan, and everybody,
+Hi Paolo,
 
-Thank you for the patch.
+Please review this new version for the Kernel 5.9 release, and
+Sean may not review them as he said in the previous email
+https://lore.kernel.org/kvm/20200710162819.GF1749@linux.intel.com/
 
-On Sat, Jul 04, 2020 at 01:02:51PM -0700, Dan Williams wrote:
-> Recent events have prompted a Linux position statement on inclusive
-> terminology. Given that Linux maintains a coding-style and its own
-> idiomatic set of terminology here is a proposal to answer the call to
-> replace non-inclusive terminology.
-> 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Chris Mason <clm@fb.clm>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  Documentation/process/coding-style.rst          |   12 ++++
->  Documentation/process/inclusive-terminology.rst |   64 +++++++++++++++++++++++
->  Documentation/process/index.rst                 |    1 
->  3 files changed, 77 insertions(+)
->  create mode 100644 Documentation/process/inclusive-terminology.rst
-> 
-> diff --git a/Documentation/process/coding-style.rst b/Documentation/process/coding-style.rst
-> index 2657a55c6f12..4b15ab671089 100644
-> --- a/Documentation/process/coding-style.rst
-> +++ b/Documentation/process/coding-style.rst
-> @@ -319,6 +319,18 @@ If you are afraid to mix up your local variable names, you have another
->  problem, which is called the function-growth-hormone-imbalance syndrome.
->  See chapter 6 (Functions).
->  
-> +For symbol names, avoid introducing new usage of the words 'slave' and
-> +'blacklist'. Recommended replacements for 'slave' are: 'secondary',
-> +'subordinate', 'replica', 'responder', 'follower', 'proxy', or
-> +'performer'.  Recommended replacements for blacklist are: 'blocklist' or
-> +'denylist'.
-> +
-> +Exceptions for introducing new usage is to maintain a userspace ABI, or
-> +when updating code for an existing (as of 2020) hardware or protocol
-> +specification that mandates those terms. For new specifications consider
-> +translating specification usage of the terminology to the kernel coding
-> +standard where possible. See :ref:`process/inclusive-terminology.rst
-> +<inclusiveterminology>` for details.
->  
->  5) Typedefs
->  -----------
-> diff --git a/Documentation/process/inclusive-terminology.rst b/Documentation/process/inclusive-terminology.rst
-> new file mode 100644
-> index 000000000000..a8eb26690eb4
-> --- /dev/null
-> +++ b/Documentation/process/inclusive-terminology.rst
-> @@ -0,0 +1,64 @@
-> +.. _inclusiveterminology:
-> +
-> +Linux kernel inclusive terminology
-> +==================================
-> +
-> +The Linux kernel is a global software project, and in 2020 there was a
-> +global reckoning on race relations that caused many organizations to
-> +re-evaluate their policies and practices relative to the inclusion of
-> +people of African descent. This document describes why the 'Naming'
-> +section in :ref:`process/coding-style.rst <codingstyle>` recommends
-> +avoiding usage of 'slave' and 'blacklist' in new additions to the Linux
-> +kernel.
-> +
-> +On the triviality of replacing words
-> +====================================
-> +
-> +The African slave trade was a brutal system of human misery deployed at
-> +global scale. Some word choice decisions in a modern software project
-> +does next to nothing to compensate for that legacy. So why put any
-> +effort into something so trivial in comparison? Because the goal is not
-> +to repair, or erase the past. The goal is to maximize availability and
-> +efficiency of the global developer community to participate in the Linux
-> +kernel development process.
-> +
-> +Word choice and developer efficiency
-> +====================================
-> +
-> +Why does any software project go through the trouble of developing a
-> +document like :ref:`process/coding-style.rst <codingstyle>`? It does so
-> +because a common coding style maximizes the efficiency of both
-> +maintainers and developers. Developers learn common design patterns and
-> +idiomatic expressions while maintainers can spot deviations from those
-> +norms. Even non-compliant whitespace is considered a leading indicator
-> +to deeper problems in a patchset. Coding style violations are known to
-> +take a maintainer "out of the zone" of reviewing code. Maintainers are
-> +also sensitive to word choice across specifications and often choose to
-> +deploy Linux terminology to replace non-idiomatic word-choice in a
-> +specification.
-> +
-> +Non-inclusive terminology has that same distracting effect which is why
-> +it is a style issue for Linux, it injures developer efficiency.
-> +
-> +Of course it is around this point someone jumps in with an etymological
-> +argument about why people should not be offended. Etymological arguments
-> +do not scale. The scope and pace of Linux to reach new developers
-> +exceeds the ability of historical terminology defenders to describe "no,
-> +not that connotation". The revelation of 2020 was that black voices were
-> +heard on a global scale and the Linux kernel project has done its small
-> +part to answer that call as it wants black voices, among all voices, in
-> +its developer community.
+You may cherry-pick the perf patches "3cb9d5464c1c..e1ad1ac2deb8"
+from the branch "tip/perf/core" of scm/linux/kernel/git/tip/tip.git
+as PeterZ said in the previous email
+https://lore.kernel.org/kvm/20200703075646.GJ117543@hirez.programming.kicks-ass.net/
 
-I've been pondering about this statement for several weeks now, sleeping
-over it for far longer than I usually do. Despite this, I haven't been
-able to shake off my initial feeling. Hence this reply.
+We may also apply the qemu-devel patch to the upstream qemu and try
+the QEMU command lines with '-cpu host' or '-cpu host,pmu=true,lbr=true'.
 
-This e-mail isn't challenging the proposed change to the kernel coding
-style policy. That's a question that I believe has been widely discussed
-behind closed doors, with also a few attempts to debate it publicly in
-this mail thread. While that process causes me concern, that's a
-separate topic, and I'm not questioning here the usefulness or
-desirability of the change. I strongly believe in a welcoming and
-inclusive kernel community, and in the need to translate these words
-into actions.
+The following error will be gone forever with the patchset:
 
-The part that initially offended me is the claim that with this change
-the "Linux kernel project has done its small part". I can't help feeling
-this sounds hypocritical at best, and cynical at worst. Can we, as the
-Linux kernel community, claim that taking this small and symbolic first
-step would be enough ? I won't try to speak about the impact this coding
-style policy change could have on people who today feel discriminated by
-our practices, but I can only imagine that stating we "will have done
-our part" could infuriate more than one, the same way I feel insulting
-that companies raise rainbow flags during Pride week as a means of cheap
-advertising.
+  $ perf record -b lbr ${WORKLOAD}
+  or $ perf record --call-graph lbr ${WORKLOAD}
+  Error:
+  cycles: PMU Hardware doesn't support sampling/overflow-interrupts. Try 'perf stat'
 
-Do we feel enough discomfort about our own racism to be compelled to
-express public sympathy, but nowhere close enough to go further ? I feel
-this would be fairly shameless, considering our community collaborates
-with large companies that refuse to condemn hate speech. I don't know if
-I'm the only one to see an elephant in the room here, but I think we
-need to have a real debate about all the other actions we can take to
-make a bigger difference.
+Please check more details in each commit and feel free to test.
 
-> +
-> +Really, 'blacklist' too?
-> +========================
-> +
-> +While 'slave' has a direct connection to human suffering the etymology
-> +of 'blacklist' is devoid of a historical racial connection. However, one
-> +thought exercise is to consider replacing 'blacklist/whitelist' with
-> +'redlist/greenlist'. Realize that the replacement only makes sense if
-> +you have been socialized with the concepts that 'red/green' implies
-> +'stop/go'. Colors to represent a policy requires an indirection. The
-> +socialization of 'black/white' to have the connotation of
-> +'impermissible/permissible' does not support inclusion.
-> +
-> +Inclusion == global developer community efficiency.
-> diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
-> index f07c9250c3ac..ed861f6f8d25 100644
-> --- a/Documentation/process/index.rst
-> +++ b/Documentation/process/index.rst
-> @@ -27,6 +27,7 @@ Below are the essential guides that every developer should read.
->     submitting-patches
->     programming-language
->     coding-style
-> +   inclusive-terminology
->     maintainer-pgp-guide
->     email-clients
->     kernel-enforcement-statement
+v12->v13 Changelog:
+- remove perf patches since they're queued in the tip/perf/core;
+- add a minor patch to refactor MSR_IA32_DEBUGCTLMSR set/get handler;
+- add a minor patch to expose vmx_set_intercept_for_msr();
+- add a minor patch to initialize perf_capabilities in the intel_pmu_init();
+- spilt the big patch to three pieces (0004-0006) for better understanding and review
+- make the LBR_FMT exposure patch as the last step to enable guest LBR;
+
+Previous:
+https://lore.kernel.org/kvm/20200613080958.132489-1-like.xu@linux.intel.com/
+
+---
+
+The last branch recording (LBR) is a performance monitor unit (PMU)
+feature on Intel processors that records a running trace of the most
+recent branches taken by the processor in the LBR stack. This patch
+series is going to enable this feature for plenty of KVM guests.
+
+The user space could configure whether it's enabled or not for each
+guest via MSR_IA32_PERF_CAPABILITIES msr. As a first step, a guest
+could only enable LBR feature if its cpu model is the same as the
+host since the LBR feature is still one of model specific features.
+
+If it's enabled on the guest, the guest LBR driver would accesses the
+LBR MSR (including IA32_DEBUGCTLMSR and records MSRs) as host does.
+The first guest access on the LBR related MSRs is always interceptible.
+The KVM trap would create a special LBR event (called guest LBR event)
+which enables the callstack mode and none of hardware counter is assigned.
+The host perf would enable and schedule this event as usual. 
+
+Guest's first access to a LBR registers gets trapped to KVM, which
+creates a guest LBR perf event. It's a regular LBR perf event which gets
+the LBR facility assigned from the perf subsystem. Once that succeeds,
+the LBR stack msrs are passed through to the guest for efficient accesses.
+However, if another host LBR event comes in and takes over the LBR
+facility, the LBR msrs will be made interceptible, and guest following
+accesses to the LBR msrs will be trapped and meaningless. 
+
+Because saving/restoring tens of LBR MSRs (e.g. 32 LBR stack entries) in
+VMX transition brings too excessive overhead to frequent vmx transition
+itself, the guest LBR event would help save/restore the LBR stack msrs
+during the context switching with the help of native LBR event callstack
+mechanism, including LBR_SELECT msr.
+
+If the guest no longer accesses the LBR-related MSRs within a scheduling
+time slice and the LBR enable bit is unset, vPMU would release its guest
+LBR event as a normal event of a unused vPMC and the pass-through
+state of the LBR stack msrs would be canceled.
+
+---
+
+LBR testcase:
+echo 1 > /proc/sys/kernel/watchdog
+echo 25 > /proc/sys/kernel/perf_cpu_time_max_percent
+echo 5000 > /proc/sys/kernel/perf_event_max_sample_rate
+echo 0 > /proc/sys/kernel/perf_cpu_time_max_percent
+./perf record -b ./br_instr a
+
+- Perf report on the host:
+Samples: 72K of event 'cycles', Event count (approx.): 72512
+Overhead  Command   Source Shared Object           Source Symbol                           Target Symbol                           Basic Block Cycles
+  12.12%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           1
+  11.05%  br_instr  br_instr                       [.] lfsr_cond                           [.] cmp_end                             5
+   8.81%  br_instr  br_instr                       [.] lfsr_cond                           [.] cmp_end                             4
+   5.04%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           20
+   4.92%  br_instr  br_instr                       [.] lfsr_cond                           [.] cmp_end                             6
+   4.88%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           6
+   4.58%  br_instr  br_instr                       [.] cmp_end                             [.] lfsr_cond                           5
+
+- Perf report on the guest:
+Samples: 92K of event 'cycles', Event count (approx.): 92544
+Overhead  Command   Source Shared Object  Source Symbol                                   Target Symbol                                   Basic Block Cycles
+  12.03%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   1
+  11.09%  br_instr  br_instr              [.] lfsr_cond                                   [.] cmp_end                                     5
+   8.57%  br_instr  br_instr              [.] lfsr_cond                                   [.] cmp_end                                     4
+   5.08%  br_instr  br_instr              [.] lfsr_cond                                   [.] cmp_end                                     6
+   5.06%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   20
+   4.87%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   6
+   4.70%  br_instr  br_instr              [.] cmp_end                                     [.] lfsr_cond                                   5
+
+Conclusion: the profiling results on the guest are similar to that on the host.
+
+Like Xu (10):
+  KVM: x86: Move common set/get handler of MSR_IA32_DEBUGCTLMSR to VMX
+  KVM: x86/vmx: Make vmx_set_intercept_for_msr() non-static and expose it
+  KVM: vmx/pmu: Initialize vcpu perf_capabilities once in intel_pmu_init()
+  KVM: vmx/pmu: Clear PMU_CAP_LBR_FMT when guest LBR is disabled
+  KVM: vmx/pmu: Create a guest LBR event when vcpu sets DEBUGCTLMSR_LBR
+  KVM: vmx/pmu: Pass-through LBR msrs to when the guest LBR event is ACTIVE
+  KVM: vmx/pmu: Reduce the overhead of LBR pass-through or cancellation
+  KVM: vmx/pmu: Emulate legacy freezing LBRs on virtual PMI
+  KVM: vmx/pmu: Expose LBR_FMT in the MSR_IA32_PERF_CAPABILITIES
+  KVM: vmx/pmu: Release guest LBR event via lazy release mechanism
+
+ arch/x86/kvm/pmu.c              |  12 +-
+ arch/x86/kvm/pmu.h              |   5 +
+ arch/x86/kvm/vmx/capabilities.h |  22 ++-
+ arch/x86/kvm/vmx/pmu_intel.c    | 296 +++++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.c          |  44 ++++-
+ arch/x86/kvm/vmx/vmx.h          |  28 +++
+ arch/x86/kvm/x86.c              |  15 +-
+ 7 files changed, 395 insertions(+), 27 deletions(-)
 
 -- 
-Regards,
+2.21.3
 
-Laurent Pinchart
