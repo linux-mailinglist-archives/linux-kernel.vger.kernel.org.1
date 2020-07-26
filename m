@@ -2,100 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26EA22DBAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 06:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AFB22DBAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 06:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgGZEP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 00:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        id S1725960AbgGZEWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 00:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgGZEPy (ORCPT
+        with ESMTP id S1725298AbgGZEWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 00:15:54 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BD3C0619D2;
-        Sat, 25 Jul 2020 21:15:54 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a9so7335400pjd.3;
-        Sat, 25 Jul 2020 21:15:54 -0700 (PDT)
+        Sun, 26 Jul 2020 00:22:48 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAADEC0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:22:46 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l23so12462809qkk.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:22:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4WYzTUUdMZgoaXQcj1WqQmcltrZ3z5zlJgG5BDAvVq0=;
-        b=Mds+cXhHNoz5AXlWOYXU3s73JA7XvAoKNrtZ0EoUYw/9juGs858oarelVHf6MWejx/
-         K9qwRNU48Io3CpDFBwMxYkMly/guogRkDhKc5l4Cfga+EVXIORgOW2e12NUAcOcdZKr6
-         oK52z8X0jkbOo/87p2Q5o9O+QLCnpKDmL+Avmq9S07uECG3Kh6MTBpGsxOZlNaFT1Wcm
-         EJSyRBFw2X/6m3tRl0UnAJOcRaT3+hed9IcREYVk5eKDgZjYcsT7x7BN9f2MLYFpfix/
-         PA82QHvi9dKmU48qqAmpIedC24aGdFnWkx/FnvfnLjgVb4TxRXGoe+N3HJpIIfJr3Vcy
-         kE5w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=2MOx2O4fUUqw8g6tJeVtZgLswZrenVEln7D6xkEdxTA=;
+        b=E/RqiRVJd1PFIofCzdppg6QVamSaDaRZnw3Lnj/LXO4q96eeGFSzRRPokaNSNoarJv
+         QX0hTv5h+x+SNFvtQN5D0TYeXu2indFJlcJm7XhYghA+QSro8eKfdVOPT2e6ngTlacj+
+         3wM6hyAIVw04HbadwhkNrSLR+XAnDpib+oARstoZVBcSwyrMEoK4kHPFFdNs/17Mcgaq
+         m/JpfuQCzsQr3eUjUhR6fFdhsGE+tRaQWS35QdgL/YoSUEEB9lpv+/NDdk2xKJgZj4tM
+         L7fX0WQ2Hsw8HsCXGwi5Xf86xjPh2dERFVidt8z/5JB1drhk3Cij5qltSIxK1kvEZKXM
+         4SfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4WYzTUUdMZgoaXQcj1WqQmcltrZ3z5zlJgG5BDAvVq0=;
-        b=CQGXSaFWZXDKL9shWKH2aJ0QQ3xjSUTTd6elt3lAZ40pGFJRKcqqQcDKmTVqc2CRN9
-         n0XM/k0vB7pJ37YowTgAvP0kmahesETFSSW2OqVO2odok/cFTRjIhoQHAY4Qj495JYzU
-         me6y2Uw1DRe5DJ+AW5HJoe+1vkseAHNY/ECta9Hw2LjdrV5sI+zrw2sIJR5qdsOo7G2f
-         zXIWGwrd9vbSQWJ4QLnbsbtDlr/WGGIv6ujQTkiosFYryFCSjVEyCVlkgFaeWRJXqnLR
-         1bKavAt3llRNCIeVp96JkKXlVV8zIcR7eBpCycJqC7WAQoP+1+7sCefZ872WtXVx9V5e
-         Wjrw==
-X-Gm-Message-State: AOAM53084VzbBvpedeXI+i2J0u9eoRTKDK7AbSytwZ1a+6HWIo2V7Moo
-        fmbEnuSe3HOqiVaRtsmrCK0=
-X-Google-Smtp-Source: ABdhPJysTVPd/ymZRoYHMSRlnRVchHuwkNi4184gSgJMYsFYwQOSJsmMh6BDWtCwUSoGz2ypa3V9tg==
-X-Received: by 2002:a17:90a:648d:: with SMTP id h13mr11662239pjj.44.1595736954007;
-        Sat, 25 Jul 2020 21:15:54 -0700 (PDT)
-Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id d16sm10725568pfo.156.2020.07.25.21.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 21:15:53 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-mips@linux-mips.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org (open list:BROADCOM BCM47XX MIPS
-        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] MIPS: BCM47xx: Include bcm47xx_sprom.h
-Date:   Sat, 25 Jul 2020 21:15:21 -0700
-Message-Id: <20200726041521.5398-3-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200726041521.5398-1-f.fainelli@gmail.com>
-References: <20200726041521.5398-1-f.fainelli@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=2MOx2O4fUUqw8g6tJeVtZgLswZrenVEln7D6xkEdxTA=;
+        b=lNDAGATRb9ml0D70/gp5DM/JP86izlan74Q55U+DrW44TiocSkVegSGrAhyLrPNR9O
+         bfR9kk1wwcf2ZKSDTOD3l6M3zYhtRTCEjBkniiSTx9Ul0WR2y/GFpkSKvf33rvD8/ZPZ
+         b9G9jEpcWDCIJYJJnt/GPHXNbUJvr75EtoPTiS0X2k3P29Ju/wByTyCyxUknzWayknEA
+         hRGg59Z0vYlDmJ52vOqiX4eokDFP+pEvLfCU0o32tms8cnB2V3sIhw2Nj6XWtTHl0ndw
+         sn16ArLgwVrYwqkormcNSipOAWCgmkxv/wekb91aBkOl2grWsOqul4RK95SfcB1p4r+2
+         fqFQ==
+X-Gm-Message-State: AOAM531ljUpksrEWDVe6v0HpKxLUXrFZMktTYRDLtwV95/2XfndvIMBk
+        2nTAdTDabR0iLNosyIa/nb1+WQ==
+X-Google-Smtp-Source: ABdhPJxlDJ00IptO5NKX6Mu4C4yd8tp6E8gcH5PyIHGUABb+uAMGtFBuHNqeL2fxNfI3QxInKf6ZEA==
+X-Received: by 2002:a37:46c6:: with SMTP id t189mr17579258qka.50.1595737365318;
+        Sat, 25 Jul 2020 21:22:45 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 71sm4564151qkk.125.2020.07.25.21.22.43
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sat, 25 Jul 2020 21:22:44 -0700 (PDT)
+Date:   Sat, 25 Jul 2020 21:22:29 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Hugh Dickins <hughd@google.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
+In-Reply-To: <alpine.LSU.2.11.2007251343370.3804@eggly.anvils>
+Message-ID: <alpine.LSU.2.11.2007252100230.5376@eggly.anvils>
+References: <CAHk-=wi=vuc6sdu0m9nYd3gb8x5Xgnc6=TH=DTOy7qU96rZ9nw@mail.gmail.com> <CAHk-=whEjnsANEhTA3aqpNLZ3vv7huP7QAmcAEd-GUxm2YMo-Q@mail.gmail.com> <20200723124749.GA7428@redhat.com> <CAHk-=wgyc7en4=HddEYiz_RKJXfqe1JYv3BzHc=+_wYq9ti+LQ@mail.gmail.com>
+ <CAHk-=whQK3OGwExTzCrwwvuuVaQAgs8KsR-Yv8m1BmXoNZZ=jQ@mail.gmail.com> <alpine.LSU.2.11.2007231549540.1016@eggly.anvils> <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com> <20200724152424.GC17209@redhat.com>
+ <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com> <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com> <20200725101445.GB3870@redhat.com> <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
+ <alpine.LSU.2.11.2007251343370.3804@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that bcm47xx_sprom.h contains a prototype for bcm47xx_fill_sprom,
-include that header file directly from bcm47xx.h.
+On Sat, 25 Jul 2020, Hugh Dickins wrote:
+> On Sat, 25 Jul 2020, Linus Torvalds wrote:
+> > On Sat, Jul 25, 2020 at 3:14 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > >
+> > > Heh. I too thought about this. And just in case, your patch looks correct
+> > > to me. But I can't really comment this behavioural change. Perhaps it
+> > > should come in a separate patch?
+> > 
+> > We could do that. At the same time, I think both parts change how the
+> > waitqueue works that it might as well just be one "fix page_bit_wait
+> > waitqueue usage".
+> > 
+> > But let's wait to see what Hugh's numbers say.
+> 
+> Oh no, no no: sorry for getting your hopes up there, I won't come up
+> with any numbers more significant than "0 out of 10" machines crashed.
+> I know it would be *really* useful if I could come up with performance
+> comparisons, or steer someone else to do so: but I'm sorry, cannot.
+> 
+> Currently it's actually 1 out of 10 machines crashed, for the same
+> driverland issue seen last time, maybe it's a bad machine; and another
+> 1 out of the 10 machines went AWOL for unknown reasons, but probably
+> something outside the kernel got confused by the stress.  No reason
+> to suspect your changes at all (but some unanalyzed "failure"s, of
+> dubious significance, accumulating like last time).
+> 
+> I'm optimistic: nothing has happened to warn us off your changes.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/mips/include/asm/mach-bcm47xx/bcm47xx.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Less optimistic now, I'm afraid.
 
-diff --git a/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h b/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h
-index d7f1ef246d5c..93817bfb7fb2 100644
---- a/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h
-+++ b/arch/mips/include/asm/mach-bcm47xx/bcm47xx.h
-@@ -10,6 +10,7 @@
- #include <linux/bcma/bcma.h>
- #include <linux/bcma/bcma_soc.h>
- #include <linux/bcm47xx_nvram.h>
-+#include <linux/bcm47xx_sprom.h>
- 
- enum bcm47xx_bus_type {
- #ifdef CONFIG_BCM47XX_SSB
-@@ -32,9 +33,6 @@ union bcm47xx_bus {
- extern union bcm47xx_bus bcm47xx_bus;
- extern enum bcm47xx_bus_type bcm47xx_bus_type;
- 
--void bcm47xx_fill_sprom(struct ssb_sprom *sprom, const char *prefix,
--			bool fallback);
--
- void bcm47xx_set_system_type(u16 chip_id);
- 
- #endif /* __ASM_BCM47XX_H */
--- 
-2.17.1
+The machine I said had (twice) crashed coincidentally in driverland
+(some USB completion thing): that machine I set running a comparison
+kernel without your changes this morning, while the others still
+running with your changes; and it has now passed the point where it
+twice crashed before (the most troublesome test), without crashing.
 
+Surprising: maybe still just coincidence, but I must look closer at
+the crashes.
+
+The others have now completed, and one other crashed in that
+troublesome test, but sadly without yielding any crash info.
+
+I've just set comparison runs going on them all, to judge whether
+to take the "failure"s seriously; and I'll look more closely at them.
+
+But hungry and tired now: unlikely to have more to say tonight.
+
+> 
+> And on Fri, 24 Jul 2020, Linus Torvalds had written:
+> > So the loads you are running are known to have sensitivity to this
+> > particular area, and are why you've done your patches to the page wait
+> > bit code?
+> 
+> Yes. It's a series of nineteen ~hour-long tests, of which about five
+> exhibited wake_up_page_bit problems in the past, and one has remained
+> intermittently troublesome that way.  Intermittently: usually it does
+> get through, so getting through yesterday and today won't even tell
+> us that your changes fixed it - that we shall learn over time later.
+> 
+> Hugh
