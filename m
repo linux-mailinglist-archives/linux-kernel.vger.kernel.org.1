@@ -2,120 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC1B22E1D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD1F22E1D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgGZSD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 14:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgGZSD7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 14:03:59 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40511C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 11:03:59 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id s144so2561175oie.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 11:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=njy1r7SA9A6fHsSkCI0GEnHbYoiGBmKDPik7qyN7YE0=;
-        b=BWipaAoAlTbeuMXzOXwuLgqgKDf8t+9SCzJK02Q3RXx7RrUL/HLsFtXqQFgRyFVcGA
-         IWvU67/VWyZz6bREp5DuyEMihnTE+oj5iIdUZVA/caUIJaSzwyxRmQZZIZYX2VkVd3qF
-         H3JbeRoOCmfkHD+W2CD4FFatE7Hlw0g1MT5zQUvJq0YPFswoEpsR4hUcB8i2LvNFCN6W
-         sL8eOVz+aEXt/5IQuPRGUw1/yM4YRabOUB3cRyI77FzKJ1izDzwPduzX+FfwEEP+7j3J
-         TyQwiHtIURal8OuiBveHTEgfUUzkK0e/Gp9XA8sfLROPS3LhloNKaAnWMhk4G363mVu+
-         iwFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=njy1r7SA9A6fHsSkCI0GEnHbYoiGBmKDPik7qyN7YE0=;
-        b=pU45rAfiFniUUmINirKKv+an/tifb9rbJIZMbHzQd8fEtNkysN/Kjgjg4TOKxo9wot
-         71sIVqhKBDp/MpxyoiGd6qjgReHcFQ9/T5OLV8zoGzVVujqAV11NzxhdPz46hnbo73Us
-         HREYmOAhJImXTSJFLOrwQXk2Ruw2tXkNzqcime0eMwGMTmnhmE1TmmB0ZGLhZSAW4Phe
-         H++bbnnOUoY61rysJsuzwgm7y+aTQoowGIPPh4FMsouC+zQLdnlDyUjSh3fiBA1c6fHn
-         /+e7wSRp81Uh6CVVbLQBSFgE88/tpJ5ZWPLuL/WZjezzjWc8cjSRrLH4wdexVxMSvtaw
-         ZcyA==
-X-Gm-Message-State: AOAM532EiC9bBS1dbnJclM3p6vfWZNWTpLa95tmqS3xsrzwQYZH2IPs1
-        sxsmvMklBliuj33TxtoJfuXBNADM
-X-Google-Smtp-Source: ABdhPJyxz7dndp/8Jap8/LjH8xV/Gz9dw4SFIhAgyYJtbOoN5iuJoOpiCHfRvrssXMFi1HQtdoTvSA==
-X-Received: by 2002:aca:5ec6:: with SMTP id s189mr14769289oib.119.1595786638381;
-        Sun, 26 Jul 2020 11:03:58 -0700 (PDT)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id w25sm1751619otm.81.2020.07.26.11.03.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Jul 2020 11:03:57 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8723bs: include: Fix coding style errors
-To:     Aditya Jain <aditya.jainadityajain.jain@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, hdegoede@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20200726080215.41501-1-aditya.jainadityajain.jain@gmail.com>
- <20200726082636.GA447282@kroah.com>
- <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <da3da8d5-7227-ad65-1449-de9fb46561c7@lwfinger.net>
-Date:   Sun, 26 Jul 2020 13:03:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726884AbgGZSFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 14:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50038 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgGZSFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 14:05:05 -0400
+Subject: Re: [GIT PULL] SCSI fixes for 5.8-rc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595786704;
+        bh=G2UsRR7v8U3BVxekOFVm5hlD0GarYSBkrkgSz/OzYGA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=CskaT07rottvwpUIkp9uzps9Qt19APtnbFDiJ7pMm75pJns5Pw9xSREWjABM8ptBM
+         rCDltvb6LWgFIuo+1SfNVKQUYa7607ogaFanNpJC+/HrGFdLGGluZ6h4ND4ZfbVtlX
+         0EzSFfr+QIrq3Rh/nQLAfgkjfFXdq4WkdVNuMZDM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <1595743091.22874.5.camel@HansenPartnership.com>
+References: <1595743091.22874.5.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1595743091.22874.5.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 3f0dcfbcd2e162fc0a11c1f59b7acd42ee45f126
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cf48f79b74de2bf900d27c924528bb41d73689c3
+Message-Id: <159578670477.6689.4787060410711360252.pr-tracker-bot@kernel.org>
+Date:   Sun, 26 Jul 2020 18:05:04 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/20 3:40 AM, Aditya Jain wrote:
-> On Sun, Jul 26, 2020 at 1:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->>
->> On Sun, Jul 26, 2020 at 01:32:15PM +0530, Aditya Jain wrote:
->>> Fixing ERROR: "foo *  bar" should be "foo *bar" in hal_phy_cfg.h
->>> as reported by checkpatch.pl
->>>
->>> Signed-off-by: Aditya Jain <aditya.jainadityajain.jain@gmail.com>
->>> ---
->>>   .../staging/rtl8723bs/include/hal_phy_cfg.h    | 18 +++++++++---------
->>>   1 file changed, 9 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
->>> index 419ddb0733aa..fd5f377bad4f 100644
->>> --- a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
->>> +++ b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
->>> @@ -42,7 +42,7 @@ u32         Data
->>>
->>>   u32
->>>   PHY_QueryRFReg_8723B(
->>> -struct adapter *             Adapter,
->>> +struct adapter               *Adapter,
->>>   u8           eRFPath,
->>>   u32                  RegAddr,
->>>   u32                  BitMask
->>
->> Ick, these are all horrid.  How about just making these all on a single
->> line like most functions have them instead of this one cleanup?
->>
->> Same for the other changes you made in this file.
->>
->> thanks,
->>
->> greg k-h
-> 
-> Agreed. I'll clean it up.
+The pull request you sent on Sat, 25 Jul 2020 22:58:11 -0700:
 
-While you are at it, drop the "include;" from the subject. For staging, the 
-usual subject is of the form "staging: driver: thing being done". In your case 
-"staging: rtl8723bs: Fix coding style errors". The directory of the files are 
-not relevant.
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-I am also not in favor of the large white space between the variable type and 
-the name, but that is probably the subject of separate patches.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cf48f79b74de2bf900d27c924528bb41d73689c3
 
-Larry
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
