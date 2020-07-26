@@ -2,95 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34A522DD3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 10:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B360D22DD42
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 10:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgGZI3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 04:29:09 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:51573 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725972AbgGZI3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 04:29:08 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 43CFBA2E;
-        Sun, 26 Jul 2020 04:29:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 26 Jul 2020 04:29:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=r8GVHbzEDmWjEFGArOzYS+vA0V7
-        d7+scuKLJRAdT1Vs=; b=FmA4qL1VKC3ud0S57gB0eP8rw20s29zFKtvBC/KdAN6
-        77Ng488mOUJeMz9k43fUPMGEFHnlUC4Qiy6WVLCOXbjJ9KT0w8CCFkMbBhX+VNf0
-        R9HHM/PogsNCn/GzlIhtSjNR+ubSPj6qtEe/Xv5s/ylK8aKGLkmwS23WChK8tMx3
-        MjAXDd7VDWKXjN+GHvh1IDSGQtqFtaFCC/iVk6jQ8b1Vf3UgOBatkJltcQmYv+H1
-        pEGMtHxX6aKs+Pg09fg4hsjED/zjoPDTHWHHlQzSAhAuBnQzGkJPd5SFeA4l9WXS
-        Cn/u7/2Gf4XT7/GEpsJ9k0Xb32ROrl0mQV1pMAHi+VA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=r8GVHb
-        zEDmWjEFGArOzYS+vA0V7d7+scuKLJRAdT1Vs=; b=sjLdDLmw/3bCkfTVRpFYe4
-        MUHPBa4OMNr8Zb8zQbsBgdIGsxnK2crY2LyCzTe7juNnhsy4gD3PW2tCToB+vIry
-        PQ+RLPY7NjhhqIJEVU93fqyh9yc+qDDDigcbBzzahX1xzkjpxEGAm05fS+JnfRV2
-        LAGE2U1aaFQUiUUTAZa6VzWKwmUr+MQJGRPRrc0AVFNZrIyg0/1MUZCmloSPCTT6
-        VPXP8oSZwdSd30CtT5y1p0e7v7AeOPvFLrAaa8Y0jkgjgOpvR7nhuVj9QWBG3fv7
-        iaWWA6359d987q3OXxwI/+G8Rw4wLXwewlbNbIgwwAuPxjeG9tlGyZyYiyseHwCQ
-        ==
-X-ME-Sender: <xms:0j4dX9kYWUK38tKz65awkzoyIbk4BTKU0ANZ2jgZOXp1uRA6CpTlbQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheejgddtgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:0j4dX42mRKrd8B5GF0wBufWQ9DN4C2DJH0N1iAmewoHBJF7HEgHAQw>
-    <xmx:0j4dXzrwOfT2SlqtjgYGro1RFhsLjWZHcxGzo_rl34Zn1GbFL574sw>
-    <xmx:0j4dX9nQ2hBsWG6uAwOWVlf7jCpDj1lQ1lCB4qaybp_Key7LxaFhZA>
-    <xmx:0j4dX5DufT5td7z0VlbEOEdEoxhzJfMF6uu_nyasiEOKnjk1u6mDHw>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 00F853280060;
-        Sun, 26 Jul 2020 04:29:05 -0400 (EDT)
-Date:   Sun, 26 Jul 2020 10:29:04 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     corbet@lwn.net, davem@davemloft.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: Re: [PATCH] devices.txt: document rfkill allocation
-Message-ID: <20200726082904.GB447282@kroah.com>
-References: <20200726075327.GA25647@duo.ucw.cz>
+        id S1726968AbgGZIcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 04:32:23 -0400
+Received: from elvis.franken.de ([193.175.24.41]:49107 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgGZIcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 04:32:22 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jzc4y-0004Hg-00; Sun, 26 Jul 2020 10:32:20 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id AF654C09A9; Sun, 26 Jul 2020 10:22:14 +0200 (CEST)
+Date:   Sun, 26 Jul 2020 10:22:14 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 0/6] mips: delete duplicated words
+Message-ID: <20200726082214.GA5032@alpha.franken.de>
+References: <20200726003429.20356-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200726075327.GA25647@duo.ucw.cz>
+In-Reply-To: <20200726003429.20356-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 09:53:27AM +0200, Pavel Machek wrote:
-> Document rfkill allocation.
+On Sat, Jul 25, 2020 at 05:34:23PM -0700, Randy Dunlap wrote:
+> Delete duplicated words in arch/mips/ header files.
 > 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
 > 
-> diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
-> index 2a97aaec8b12..763fedd94d7d 100644
-> --- a/Documentation/admin-guide/devices.txt
-> +++ b/Documentation/admin-guide/devices.txt
-> @@ -375,8 +375,9 @@
->  		239 = /dev/uhid		User-space I/O driver support for HID subsystem
->  		240 = /dev/userio	Serio driver testing device
->  		241 = /dev/vhost-vsock	Host kernel driver for virtio vsock
-> +		242 = /dev/rfkill	Turning off radio transmissions (rfkill)
->  
-> -		242-254			Reserved for local use
-> +		243-254			Reserved for local use
+>  arch/mips/include/asm/io.h              |    2 +-
+>  arch/mips/include/asm/octeon/cvmx-l2c.h |    2 +-
+>  arch/mips/include/asm/octeon/cvmx-pip.h |    2 +-
+>  arch/mips/include/asm/octeon/cvmx-pko.h |    7 +++----
+>  arch/mips/include/asm/octeon/cvmx-pow.h |    8 ++++----
+>  arch/mips/include/asm/octeon/octeon.h   |    2 +-
+>  6 files changed, 11 insertions(+), 12 deletions(-)
 
-Ugh, really?  Another "let's test this locally" value got merged into
-the tree without anyone noticing?
+series applied to mips-next.
 
-bah...
+Thomas.
 
-greg k-h
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
