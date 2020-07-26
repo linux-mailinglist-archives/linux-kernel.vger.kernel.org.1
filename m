@@ -2,228 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE07322DE0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 12:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7AC22DE12
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 12:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgGZKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 06:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
+        id S1727833AbgGZKzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 06:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZKxW (ORCPT
+        with ESMTP id S1725794AbgGZKzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 06:53:22 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80C9C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 03:53:22 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id t11so7570665pfq.11
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 03:53:22 -0700 (PDT)
+        Sun, 26 Jul 2020 06:55:54 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5241CC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 03:55:54 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j11so11937132oiw.12
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 03:55:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mT3x0356kVRWVeFjxu7KR4BK4J66kBgEfHawKmKvOdY=;
-        b=UEMXr2oh28zetGxqfszujUEJM/QhQBAVaJqXfzd+OY6V5gwlCms7u+8d/LoeUQEeFy
-         GjnQGqhkF1G2S/MMOzMfUI6h/1XalxhlevR70yIlTaNBgZrcVn2b7NDeNFLZ9r27qxIf
-         mlQoR8yOvhtW5smEofqg9910I6qdpRODOeuYDrc3rJ7wBlTq3ncMadh2hYm3ZPlw9KC1
-         G36b30DEKSReeOd+jCkH4mbsEuYbnY2B0sa16TC1oBgk434bM2F5iQVLHffVg7LR8BNj
-         OMO+99vCKkIaELYnLMSfWY4bAmmAHBWHNV+U5xqynoO9lWTQUDi1F9E/rrlDfjbaDl0X
-         yhnA==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6WNqj62XIJNMJpBSLIoF+oK3SvEtxJm7DMBMaoHvQNc=;
+        b=ksQr/KjAKoj6K1YWJsNhP5TzrcjUIZCm0bapYm+hcOK8zAVMpuGemdo1vCysNHiUGS
+         6Fhdr9xXsB1xj0jT6oQv5lTuZjX9lek/Ni+Qtk3P1thclIr40kjtx4U/SloQB8OBkLpw
+         qvqVjjQ0E5nzna81nZQACXERty84NX7gcfjZI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mT3x0356kVRWVeFjxu7KR4BK4J66kBgEfHawKmKvOdY=;
-        b=sHVcIVyr+YMod6rnomGrUrXaQL2YzoefJpsUQZlfofu9vdKmiqyz6p7AnW3C7LPhNy
-         0YvzwRcLsyZhMHhxGPz8Hz1nSHY+efxw0Zgr3KS+rMPZBX7WufnL2XpY6f56W6z6xbGj
-         JHoA2dDBo+C2bVAluXLTA6nCcEm2o1fYZ8ORTKgLQ7r+Hd1xO5YwpFjps40m37PwZLcZ
-         VuggiWZRRqn/QG9vZVmAXn1UNjmsq7cvzUoqhGDOaHNgkB2oYxCKq7ZnMCsHmtTgmhtu
-         OVgD1wQpGx3+/1KLZVga1vOciSS7pWoDaPWbVu6l0UUIknT43Ar1+axu/kYkfBkbScfC
-         bSpQ==
-X-Gm-Message-State: AOAM531vY6OuFCiZnVwRrcR8+iNMecIl0hW+U2vHiVK/DzV+nJ8ovsvS
-        ChNOUdhvKVF1lfDHNAVNNVw=
-X-Google-Smtp-Source: ABdhPJzKwvZis84Ci9mOUHaNSJHVbXXWiUs9KC8kdic9FgKmdAVksNuSk2Vyu0IlY1aRqOOjt5wz1A==
-X-Received: by 2002:a63:8949:: with SMTP id v70mr15267297pgd.256.1595760802207;
-        Sun, 26 Jul 2020 03:53:22 -0700 (PDT)
-Received: from localhost.localdomain ([122.167.86.75])
-        by smtp.googlemail.com with ESMTPSA id y22sm10642055pjp.41.2020.07.26.03.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 03:53:21 -0700 (PDT)
-From:   Aditya Jain <aditya.jainadityajain.jain@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Aditya Jain <aditya.jainadityajain.jain@gmail.com>
-Subject: [PATCH v2] staging: rtl8723bs: include: Fix coding style issues
-Date:   Sun, 26 Jul 2020 16:23:02 +0530
-Message-Id: <20200726105302.52188-1-aditya.jainadityajain.jain@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
-References: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6WNqj62XIJNMJpBSLIoF+oK3SvEtxJm7DMBMaoHvQNc=;
+        b=n1pzhVmcJi4Pjs7ge4AKH81/ngMZ//f2rLpZ53Rca33NuyZBpSRdZtSqtIQhvag0DA
+         EMJr2WGuzUpAqFVzpFe2iK/D2fnPAjgN4N0Rm8IUHn8BwXunS289CAUTZyjdZ2ActKsC
+         HO8OmUu8iiMOB97+oIt/y/2HFiw9Jy4zI8OiL2a/Yzhss6kcnObc8l0foYqWd81WJFG2
+         EGRPCiNO436+5JH7ihIsFyfQbFsmi93M187IGixUeXZhut9kNglc3YwfZufvwTUKcgm4
+         hWu879kv+ZI+3AeXb04JIZgeDWBbwMZP9LFTplvSiZsQErj8yc2Kqm1lrsaOGOQY9wIc
+         wzJg==
+X-Gm-Message-State: AOAM5339sF6kLpQN7oAlmWw59hNCGib8VyfGVMGA/bLtBmYNSq2Uqgqw
+        HH7fUXHD5/mqbip8zRHn5/KB3uJt8Y8e3HcVCWUjA19PGMU=
+X-Google-Smtp-Source: ABdhPJxlP6z88hS7L3tLUGz5t+u9WoHPURho4z8fid0z7I/joNfOsaJHogAzgfu6OgLOIwqIB41Ufv9z5QWGVPok70Q=
+X-Received: by 2002:aca:7549:: with SMTP id q70mr4710759oic.128.1595760953545;
+ Sun, 26 Jul 2020 03:55:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200722181332.26995-1-knaerzche@gmail.com> <CAKMK7uGKyYea_9MamAQw2=ebjW=raYCDeFCf_5jyyJPHL9AZWA@mail.gmail.com>
+ <47599ce1-2a3b-87eb-c46e-8f7f79ca945e@gmail.com> <CAKMK7uEn0552JuTuwpL-XdYSVk7OA=fEsphpivS8ouE-10--Zg@mail.gmail.com>
+ <0e5f6e41-5fa4-2989-f4b8-89a9471db931@gmail.com>
+In-Reply-To: <0e5f6e41-5fa4-2989-f4b8-89a9471db931@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Sun, 26 Jul 2020 12:55:42 +0200
+Message-ID: <CAKMK7uFjFVr4rDBpBWei-SAtBkKtQPQ0PmuJ9Bd6q4n3JAWv=Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] drm: rockchip: various ports for older VOPs
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleaning messy function declartions and fixing code style
-errors in hal_phy_cfg.h as reported by checkpatch.pl
+On Sat, Jul 25, 2020 at 8:48 PM Alex Bee <knaerzche@gmail.com> wrote:
+>
+>
+> Am 25.07.20 um 17:54 schrieb Daniel Vetter:
+> > On Sat, Jul 25, 2020 at 3:52 PM Alex Bee <knaerzche@gmail.com> wrote:
+> >>
+> >> Am 22.07.20 um 23:43 schrieb Daniel Vetter:
+> >>> On Wed, Jul 22, 2020 at 8:13 PM Alex Bee <knaerzche@gmail.com> wrote:
+> >>>> Hi,
+> >>>>
+> >>>> this series mainly ports existining functionality to older SoCs - mo=
+st
+> >>>> importantly enables alpha blending for RK3036, RK3066, RK3126 and
+> >>>> RK3188.
+> >>>> Besides that, it also changes the window type from DRM_PLANE_TYPE_CU=
+RSOR
+> >>>> to DRM_PLANE_TYPE_OVERLAY for VOPs that have only one (1) overlay wi=
+ndow.
+> >>> This doesn't make much sense, the cursor overlay is really just a hin=
+t
+> >>> for legacy ioctls that this is the overlay that should be used for
+> >>> cursors. Compositors should try to use such planes as full overlays
+> >>> (if they don't want to use them as a cursor). So sounds like a case o=
+f
+> >>> "fix your compositor".
+> >> I agree here - but: If HWC windows would have been implemented in this
+> >> particular driver, their max size would be 128x128 on some SoCs - so
+> >> they woudn't be really suitable to create an OSD overlay at 4K, for
+> >> example. I don't know, but I guess other vendors implement their HWC
+> >> windows on this reduced HW resources as well. I guess that is one of t=
+he
+> >> reasons, why userspace, which aims to be cross-plattfrom, avoids
+> >> DRM_PLANE_TYPE_CURSOR when its looking for an usable overlay plane. (a
+> >> heuristic, indeed)
+> > Which userspace does that?
+> kodi-gbm:
+> https://github.com/xbmc/xbmc/blob/master/xbmc/windowing/gbm/DRMUtils.cpp#=
+L406
 
-Signed-off-by: Aditya Jain <aditya.jainadityajain.jain@gmail.com>
----
- .../staging/rtl8723bs/include/hal_phy_cfg.h   | 118 +++++-------------
- 1 file changed, 33 insertions(+), 85 deletions(-)
+Can you pls file a bug report, linking to this thread here?
 
-diff --git a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-index 419ddb0733aa..2f123903279c 100644
---- a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-+++ b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-@@ -8,54 +8,31 @@
- #define __INC_HAL8723BPHYCFG_H__
- 
- /*--------------------------Define Parameters-------------------------------*/
--#define LOOP_LIMIT				5
--#define MAX_STALL_TIME			50		/* us */
-+#define LOOP_LIMIT		5
-+#define MAX_STALL_TIME		50	/* us */
- #define AntennaDiversityValue	0x80	/* Adapter->bSoftwareAntennaDiversity ? 0x00:0x80) */
- #define MAX_TXPWR_IDX_NMODE_92S	63
--#define Reset_Cnt_Limit			3
--
--#define MAX_AGGR_NUM	0x07
-+#define Reset_Cnt_Limit		3
- 
-+#define MAX_AGGR_NUM 0x07
- 
- /*--------------------------Define Parameters End-------------------------------*/
- 
--
- /*------------------------------Define structure----------------------------*/
- 
- /*------------------------------Define structure End----------------------------*/
- 
- /*--------------------------Exported Function prototype---------------------*/
--u32
--PHY_QueryBBReg_8723B(
--struct adapter *Adapter,
--u32 	RegAddr,
--u32 	BitMask
--	);
--
--void
--PHY_SetBBReg_8723B(
--struct adapter *Adapter,
--u32 	RegAddr,
--u32 	BitMask,
--u32 	Data
--	);
--
--u32
--PHY_QueryRFReg_8723B(
--struct adapter *		Adapter,
--u8 		eRFPath,
--u32 			RegAddr,
--u32 			BitMask
--	);
--
--void
--PHY_SetRFReg_8723B(
--struct adapter *		Adapter,
--u8 		eRFPath,
--u32 			RegAddr,
--u32 			BitMask,
--u32 			Data
--	);
-+u32 PHY_QueryBBReg_8723B(struct adapter *Adapter, u32 RegAddr, u32 BitMask);
-+
-+void PHY_SetBBReg_8723B(struct adapter *Adapter, u32 RegAddr,
-+			u32 BitMask, u32 Data);
-+
-+u32 PHY_QueryRFReg_8723B(struct adapter *Adapter, u8 eRFPath,
-+			 u32 RegAddr, u32 BitMask);
-+
-+void PHY_SetRFReg_8723B(struct adapter *Adapter, u8 eRFPath,
-+			u32 RegAddr, u32 BitMask, u32 Data);
- 
- /* MAC/BB/RF HAL config */
- int PHY_BBConfig8723B(struct adapter *Adapter);
-@@ -64,57 +41,28 @@ int PHY_RFConfig8723B(struct adapter *Adapter);
- 
- s32 PHY_MACConfig8723B(struct adapter *padapter);
- 
--void
--PHY_SetTxPowerIndex(
--struct adapter *		Adapter,
--u32 				PowerIndex,
--u8 			RFPath,
--u8 			Rate
--	);
--
--u8
--PHY_GetTxPowerIndex(
--struct adapter *		padapter,
--u8 			RFPath,
--u8 			Rate,
--enum CHANNEL_WIDTH		BandWidth,
--u8 			Channel
--	);
--
--void
--PHY_GetTxPowerLevel8723B(
--struct adapter *	Adapter,
--	s32*			powerlevel
--	);
--
--void
--PHY_SetTxPowerLevel8723B(
--struct adapter *	Adapter,
--u8 	channel
--	);
--
--void
--PHY_SetBWMode8723B(
--struct adapter *			Adapter,
--enum CHANNEL_WIDTH			Bandwidth,	/*  20M or 40M */
--unsigned char 			Offset		/*  Upper, Lower, or Don't care */
--);
-+void PHY_SetTxPowerIndex(struct adapter *Adapter, u32 PowerIndex,
-+			 u8 RFPath, u8 Rate);
- 
--void
--PHY_SwChnl8723B(/*  Call after initialization */
--struct adapter *Adapter,
--u8 channel
--	);
--
--void
--PHY_SetSwChnlBWMode8723B(
--struct adapter *		Adapter,
--u8 			channel,
--enum CHANNEL_WIDTH		Bandwidth,
--u8 			Offset40,
--u8 			Offset80
-+u8 PHY_GetTxPowerIndex(struct adapter *padapter, u8 RFPath, u8 Rate,
-+			enum CHANNEL_WIDTH BandWidth, u8 Channel);
-+
-+void PHY_GetTxPowerLevel8723B(struct adapter *Adapter, s32 *powerlevel);
-+
-+void PHY_SetTxPowerLevel8723B(struct adapter *Adapter, u8 channel);
-+
-+void PHY_SetBWMode8723B(struct adapter *Adapter,
-+			enum CHANNEL_WIDTH Bandwidth,	/*  20M or 40M */
-+			unsigned char Offset	/*  Upper, Lower, or Don't care */
- );
- 
-+/*  Call after initialization */
-+void PHY_SwChnl8723B(struct adapter *Adapter, u8 channel);
-+
-+void PHY_SetSwChnlBWMode8723B(struct adapter *Adapter, u8 channel,
-+				enum CHANNEL_WIDTH Bandwidth,
-+				u8 Offset40, u8 Offset80);
-+
- /*--------------------------Exported Function prototype End---------------------*/
- 
- #endif
--- 
-2.25.1
+Maybe also link to the docs:
 
+https://dri.freedesktop.org/docs/drm/gpu/drm-kms.html?highlight=3Ddrm_plane=
+#c.drm_plane_type
+
+"For userspace which is universal plane aware and which is using that
+atomic IOCTL there=E2=80=99s no difference between these planes (beyong wha=
+t
+the driver and hardware can support of course)."
+
+Also feel free to cc me on the github issue (I'm @danvet over there)
+in case there's more questions.
+
+Cheers, Daniel
+
+>
+> > We should fix that, not try to work around
+> > that in all the drivers in upstream, that wont work.
+> You're right I'll drop this part.
+> > -Daniel
+> >
+> >>> For atomic there's 0 difference between a overlay or a cursor (primar=
+y
+> >>> plane is still treated somewhat special in the RMFB ioctl, but again
+> >>> that's for backwards compat reasons with existing uapi, not because
+> >>> the primary plane is different).
+> >>>
+> >>> What does happen though is that this breaks cursor for legacy
+> >>> userspace, which is probably not really what you want.
+> >> Indeed not.
+> >>
+> >> Beforhand I was submiiting this, I looked arround and couldn't find
+> >> anything which relies or even depends of a cursor window to be
+> >> available. Even if: as per spec only one DRM_PLANE_TYPE_PRIMARY is
+> >> mandatory, everything else is optional.
+> >>
+> >>> -Daniel
+> >>>
+> >>>
+> >>>> Regards,
+> >>>> Alex
+> >>>>
+> >>>> Changes in v2:
+> >>>> - drop not yet upstreamed dsp_data_swap from RK3188 regs
+> >>>> - rephrase most commit messages
+> >>>>
+> >>>> Alex Bee (5):
+> >>>>     drm: rockchip: add scaling for RK3036 win1
+> >>>>     drm: rockchip: add missing registers for RK3188
+> >>>>     drm: rockchip: add alpha support for RK3036, RK3066, RK3126 and =
+RK3188
+> >>>>     drm: rockchip: set alpha_en to 0 if it is not used
+> >>>>     drm: rockchip: use overlay windows as such
+> >>>>
+> >>>>    drivers/gpu/drm/rockchip/rockchip_drm_vop.c |  1 +
+> >>>>    drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 42 ++++++++++++++++=
+++---
+> >>>>    drivers/gpu/drm/rockchip/rockchip_vop_reg.h |  1 +
+> >>>>    3 files changed, 38 insertions(+), 6 deletions(-)
+> >>>>
+> >>>> --
+> >>>> 2.17.1
+> >>>>
+> >>> --
+> >>> Daniel Vetter
+> >>> Software Engineer, Intel Corporation
+> >>> http://blog.ffwll.ch
+> >> Best Regards
+> >>
+> >
+> Best regards
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
