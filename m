@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6797F22DABE
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 02:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B700B22DAC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 02:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgGZAS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 20:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
+        id S1728005AbgGZAVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 20:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbgGZASZ (ORCPT
+        with ESMTP id S1726870AbgGZAVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 20:18:25 -0400
+        Sat, 25 Jul 2020 20:21:54 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41CBC08C5C0;
-        Sat, 25 Jul 2020 17:18:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9F5C08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 17:21:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
         Content-Description:In-Reply-To:References;
-        bh=VitMP7uQjz9q5/byuL/XQS+Y0BC50vmbZT4y0BkkwD4=; b=M0ADK4gRX5A4r5OV5jZ2QW0GHV
-        juSj+uUzbgNE8I7St5aQ9h9n2jIGNybUom8yKMjh4zEhpxOBndNTTFj//fRu3f/cd8+geXpF6nJmF
-        qUqynhovxvl2a0YRfKJeHh6JgRhC2YiKurcqIfrKjKZgwOeSOV2ElXRp1mTxuPnZx97LDVGIyGxfo
-        Z887Mr2x+7RS1LN73XP/BVxpfxhRIC0p+VMqLajQr31+1+cXgsf9t+ZpNwjVspU3FoKGfBpgcUw52
-        jqUB4JFxgS/9LvlwwiZqcD4hUqBRFvFVndJuJDcPlspcx4ex1uwqanp7VwhE0bv/Nef7WtOi3txY/
-        YTQOfhew==;
+        bh=iT5qrCLArCszES5racsHcDNOM4jlffe8YL9XVjHGO6Y=; b=aSasYrZPg2rMlaw+r3CKwj389V
+        ZHvH11r9CPDkoLJdI9KPliGVcQWUb3F4CBCXuaUxTNZZe7Q81pgsZvc0MOIwheI/chNJ6nfWQFT5M
+        c/IMzB8nLZlmRj4LHI+hxN63Syy4Nxb59bdK78vtCn145S8wgErF9FsK0VDRfus1K8g9h2Th5gyVR
+        PABtqTuBYGdJZxKqkYmwhh3tl1+VUZNtLnD07Fe39IRA6DxJCkxHcD6Sz71nA4B2VLYq4FtFNPZCA
+        uhWJGZkI19Y3GQfAg5klp8ZxKEqQ+ozT5W1PwKJzR6bAfyI3r4xrbeFDr/IXTrX21rnqbPaSUrb/O
+        ftZ5id5Q==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jzUMx-0002Oz-OZ; Sun, 26 Jul 2020 00:18:24 +0000
+        id 1jzUQJ-0002XX-F6; Sun, 26 Jul 2020 00:21:52 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Subject: [PATCH] kvm: paging_tmpl.h: delete duplicated word
-Date:   Sat, 25 Jul 2020 17:18:20 -0700
-Message-Id: <20200726001820.19653-1-rdunlap@infradead.org>
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] arm: dts: imx1-pinfunc.h: delete duplicate word
+Date:   Sat, 25 Jul 2020 17:21:48 -0700
+Message-Id: <20200726002148.19796-1-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,23 +44,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete the repeated word "to".
+Drop the repeated word "configurable".
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- arch/x86/kvm/mmu/paging_tmpl.h |    2 +-
+ arch/arm/boot/dts/imx1-pinfunc.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200720.orig/arch/x86/kvm/mmu/paging_tmpl.h
-+++ linux-next-20200720/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -478,7 +478,7 @@ error:
- 
- #if PTTYPE == PTTYPE_EPT
- 	/*
--	 * Use PFERR_RSVD_MASK in error_code to to tell if EPT
-+	 * Use PFERR_RSVD_MASK in error_code to tell if EPT
- 	 * misconfiguration requires to be injected. The detection is
- 	 * done by is_rsvd_bits_set() above.
- 	 *
+--- linux-next-20200720.orig/arch/arm/boot/dts/imx1-pinfunc.h
++++ linux-next-20200720/arch/arm/boot/dts/imx1-pinfunc.h
+@@ -26,7 +26,7 @@
+  *                2 - 0
+  *                3 - 1
+  *
+- * 'pin' is an integer between 0 and 0xbf. i.MX1 has 4 ports with 32 configurable
++ * 'pin' is an integer between 0 and 0xbf. i.MX1 has 4 ports with 32
+  * configurable pins each. 'pin' is PORT * 32 + PORT_PIN, PORT_PIN is the pin
+  * number on the specific port (between 0 and 31).
+  */
