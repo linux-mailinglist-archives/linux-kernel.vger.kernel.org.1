@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC3222DC3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 07:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7B022DC43
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 08:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgGZF67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 01:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46424 "EHLO
+        id S1726112AbgGZGM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 02:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbgGZF66 (ORCPT
+        with ESMTP id S1725810AbgGZGM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 01:58:58 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C50C0619D2;
-        Sat, 25 Jul 2020 22:58:58 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id kq25so903791ejb.3;
-        Sat, 25 Jul 2020 22:58:58 -0700 (PDT)
+        Sun, 26 Jul 2020 02:12:56 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38290C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 23:12:56 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v4so4212714ljd.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 23:12:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=I6XqHb7TKjXhnvSm7JahxLKLF4M+094vQnTCeqVNkHk=;
-        b=SbSLNcKWPh/7qYRAnSvGzuWEbZLO0+h4lWXaEWXhD8litGtRAL5ahdgeWCB8Ig6ObI
-         YwDN/HiSHJJWP0blpaimpJAZuhynLX3oyprm/rD1l/TktDVmW5Zo2Z1ulMFxDGiGuJ4c
-         pTrBLjPbELZUTd6hcDItI9tsy1WlHYbnPQBPpospWcZsA9st9ivkHdo+6T3ohIRYeR/u
-         +0hBoAM0ldTuWvO+lD75TEdcIf/mTRAkmpvwqjikqkLnEof+OQZPuZbSrN9SA2IYQr7x
-         nd1XW2vBU75ytINPwFe0dF8kHFZaHWhbJv7nQJ/DKJvogCREKVa8+XDwkKFyQ6LrXULv
-         wg1A==
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mjFcFPkYV6UQ15e1Sw/cnOMTT80K9lOv0sYuMsnpbg8=;
+        b=Oq/JKnUlAX9SgNCIN2rS3ntngRStgdIT5wRDVT1qa5YLa6Xljk4gSLakcYqNbwrf4A
+         rNXx4HHTqH0Jh2YjKKQi/eGniW+FMfKa74XyMOhhUKiBGr82wanEaf2ej/YPHZ84/MW5
+         IHBmbmbvb1UHIJB1PK9YIzeRm6OE5HEoJJgJ8zslayrKOxWXPkl+goJIUta9pEsJw4PF
+         gl3g15nkqfCCvCDV2tY9EKe6VG/4n5Fgzyi8abxE7bayEIU9QrSCUWM1V+jBAqIWoaYx
+         jGT5pKGDbSu1KJX+0PtRUxOKXmPipyez2I/Qew4fXGDxujA6P6TVWTEg0HHlL3Q2D3DE
+         P06Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=I6XqHb7TKjXhnvSm7JahxLKLF4M+094vQnTCeqVNkHk=;
-        b=Sc3rSq+Nbvwneohl0dpzJCOVZKdLS2kCYkxCuW8GrtHXW2cYthMqmEPQvrwkEJjBTG
-         nvZAJHXQ7KGM4ED5Mghmbn7oBcJ1A0XpYOQcT4IGIWsSjyiZYruVu47V1dgCVK4ahs5G
-         pPMczUEIOixHRq+ictCSu0MbewpYVdJgG+yoflumCPu46gb0M/ZsmrqcsSjEC9w+8ief
-         djb+AA8IWaToUbiUjSGeDSG5rm15SkDF/WrEP3AtXuvIYYiUOCvvmkRKPSS6Qvxd/y+A
-         tIUrby9DYgH5H0Yw1TrpbbniPBVDFfYV4/KrH6uhgCWmy8wbK3aiVJ9y46bz+8W2SUNu
-         rD6w==
-X-Gm-Message-State: AOAM530QyupElmOxgIcVSO1oDSo5S2mTb/45b4UwpcE8GvqmRdyJb0Yq
-        eoBMR6LIKAIPRolcqhRJ4gI=
-X-Google-Smtp-Source: ABdhPJyYrrVsodgMC9gZ4llhHzEPMHbnt08nWJ8IY+E5/yyfN9of4njsydsSLWRk1eKWk0ChImYkbA==
-X-Received: by 2002:a17:906:430a:: with SMTP id j10mr14945339ejm.163.1595743136995;
-        Sat, 25 Jul 2020 22:58:56 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2ddd:7800:e9bf:bff0:c68e:55b7])
-        by smtp.gmail.com with ESMTPSA id r9sm4556620edt.1.2020.07.25.22.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 22:58:56 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust kprobes.rst entry to new location
-Date:   Sun, 26 Jul 2020 07:58:43 +0200
-Message-Id: <20200726055843.10783-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mjFcFPkYV6UQ15e1Sw/cnOMTT80K9lOv0sYuMsnpbg8=;
+        b=jU5Rt1+10QH241yFGe46i3r5US+pjgffdlk7xmnwXoRWSu0Cuk5eRzg3TRWRQZAz8B
+         FRwfQuVSbUnlyUXH9ZqG9CCEiIpvSoAUEovKzkU8Un4oQ8gr1UAoQPp2qgz83WEOdSIK
+         c1xYQ6BkRDvm7Cq+ls6DeOsoOI5UmUIN8Rrbrvimg6LSdirfxFZoK0F7WlVftI9v5brU
+         NXNa+7M358607A2BXQbnvgkmS27rmHwRJwtaq9sZj3suMIgDeVzl/8qOrwe/wZx1PcUh
+         PFOX5bN8ASqvZ2D4m1EkYOJv9wmFFPJhg8NPdms53DSsuwlEB57WZmBeW68a+OV+B1FG
+         aOEQ==
+X-Gm-Message-State: AOAM533P6pBRESwqKL3CLcF44n1vrldsAHDOPWqXS6llOUwMCzuhkwem
+        FMojRht4fWSx+BtpAiV3AKn1P7TvcmZymrT8FYdByg==
+X-Google-Smtp-Source: ABdhPJzLAZZeMuZM0RtO55UD2RjUIs4qLuxl6cAGSb+bhh8HpFUnkvUeSQFum4N/+Mm8ZHnpyXRsev9eXIbtReWvkS8=
+X-Received: by 2002:a2e:9c59:: with SMTP id t25mr7286391ljj.402.1595743974346;
+ Sat, 25 Jul 2020 23:12:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200726030855.q6dfjekazfzl5usw@pesu.pes.edu> <CAM_iQpUFL7VdCKSgUa6N3pg7ijjZRu6-6UAs2oNosM-EzgXbaQ@mail.gmail.com>
+In-Reply-To: <CAM_iQpUFL7VdCKSgUa6N3pg7ijjZRu6-6UAs2oNosM-EzgXbaQ@mail.gmail.com>
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+Date:   Sun, 26 Jul 2020 11:42:43 +0530
+Message-ID: <CAAhDqq28h9_ji=ANttUyx2Q1Md=bZD3-JVCwQRW06W7aikPN0A@mail.gmail.com>
+Subject: Re: [PATCH v2] net: ipv6: fix use-after-free Read in __xfrm6_tunnel_spi_lookup
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2165b82fde82 ("docs: Move kprobes.rst from staging/ to trace/")
-moved kprobes.rst, but missed to adjust the MAINTAINERS entry.
+On Sun, Jul 26, 2020 at 11:05 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Sat, Jul 25, 2020 at 8:09 PM B K Karthik <bkkarthik@pesu.pes.edu> wrote:
+> > @@ -103,10 +103,10 @@ static int __xfrm6_tunnel_spi_check(struct net *net, u32 spi)
+> >  {
+> >         struct xfrm6_tunnel_net *xfrm6_tn = xfrm6_tunnel_pernet(net);
+> >         struct xfrm6_tunnel_spi *x6spi;
+> > -       int index = xfrm6_tunnel_spi_hash_byspi(spi);
+> > +       int index = xfrm6_tunnel_spi_hash_byaddr((const xfrm_address_t *)spi);
+> >
+> >         hlist_for_each_entry(x6spi,
+> > -                            &xfrm6_tn->spi_byspi[index],
+> > +                            &xfrm6_tn->spi_byaddr[index],
+> >                              list_byspi) {
+> >                 if (x6spi->spi == spi)
+>
+> How did you convince yourself this is correct? This lookup is still
+> using spi. :)
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+I'm sorry, but my intention behind writing this patch was not to fix
+the UAF, but to fix a slab-out-of-bound.
+If required, I can definitely change the subject line and resend the
+patch, but I figured this was correct for
+https://syzkaller.appspot.com/bug?id=058d05f470583ab2843b1d6785fa8d0658ef66ae
+. since that particular report did not have a reproducer,
+Dmitry Vyukov <dvyukov@google.com> suggested that I test this patch on
+other reports for xfrm/spi .
 
-  warning: no file matches    F:    Documentation/staging/kprobes.rst
+Forgive me if this was the wrong way to send a patch for that
+particular report, but I guessed since the reproducer did not trigger
+the crash
+for UAF, I would leave the subject line as 'fix UAF' :)
 
-Adjust the entry to the new file location.
+xfrm6_spi_hash_by_hash seemed more convincing because I had to prevent
+a slab-out-of-bounds because it uses ipv6_addr_hash.
+It would be of great help if you could help me understand how this was
+able to fix a UAF.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-Naveen, Masami-san, please ack.
-Jonathan, please pick this minor non-urgent patch into docs-next.
+>
+> More importantly, can you explain how UAF happens? Apparently
+> the syzbot stack traces you quote make no sense at all. I also
+> looked at other similar reports, none of them makes sense to me.
 
-applies cleanly on next-20200724
+Forgive me, but I do not understand what you mean by the stack traces
+(this or other similar reports) "make no sense".
 
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I apologise if this message was hurtful / disrespectful in any manner.
+thanks,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 960f7d43f9d7..416fc4555834 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9676,7 +9676,7 @@ M:	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
- M:	"David S. Miller" <davem@davemloft.net>
- M:	Masami Hiramatsu <mhiramat@kernel.org>
- S:	Maintained
--F:	Documentation/staging/kprobes.rst
-+F:	Documentation/trace/kprobes.rst
- F:	include/asm-generic/kprobes.h
- F:	include/linux/kprobes.h
- F:	kernel/kprobes.c
--- 
-2.17.1
-
+karthik
