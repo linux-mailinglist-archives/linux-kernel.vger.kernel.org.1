@@ -2,30 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA3422E120
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177E322E123
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbgGZQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 12:12:40 -0400
-Received: from crapouillou.net ([89.234.176.41]:52544 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgGZQMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 12:12:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595779957; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1FFAOTmTlN9hjWJiCw3Kqkh+9m3EdO/XmQtlNexVKUk=;
-        b=VgHrj87M4n7w13v3Yla8jb/IeH6VJn9SBxJnFV7HIX9qqehKWp1ggcfQlibif/zrFJYfmD
-        WqdpYSHBhJn4QXbfOwMJcmVb9kDDAiWrvYWU7B90EK27fJHMb4BrT6hhTdd5hSaB57PwIf
-        FF/uDBCSdYmh1Use/udSXAsJ0aIhmn0=
-Date:   Sun, 26 Jul 2020 18:12:27 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
- architecture only
-To:     Krzysztof Kozlowski <krzk@kernel.org>
+        id S1726967AbgGZQPw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 26 Jul 2020 12:15:52 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:33240 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgGZQPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 12:15:52 -0400
+Received: by mail-ej1-f67.google.com with SMTP id g11so2869268ejr.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 09:15:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=LHCX779xDCziv9cINGPr791+zRjJyZ0k/sQQBFyJUkU=;
+        b=G8nB0iX+lJo0Vr/MpaE9Cwo3v7bcGamQ6LtTq5XliKv/mP+L/VM3Lbf+bJu9m2cO4w
+         Pvukah5lgoB6UkDBJdRu7lYKsrabCBO0+UxwNS/9pWUcCNIt63EhNRvIjxXSsDPGCFWn
+         s4W0BiRMeAPlF2ZyPrC9SvYopYTm4u9ukrG8pQio8p3+h4ou8Kwxp7i10Ol5Q8lIXSJM
+         Yqfh2GkqfgOtMVbOokzq37RhUhRu89YXzbj/tScv1sfc5qrn9iR58VHINrp8HBlRZYYv
+         GZ/cYSjBmYHE201Q1yhs6NzEvqdxr/9yqjP9STOg0vtw5v5l9wcNuGEBuNPUqeKh53XZ
+         KbBg==
+X-Gm-Message-State: AOAM530FfAaFp1IuIYj46SZt7cV35MOiqMxhy+Ct1PJg97njFWpp8ypL
+        Lk9J0MXasJS7kmqzqHzJzWU=
+X-Google-Smtp-Source: ABdhPJxnTcSNTUSMfMTn0La6YPwuFCw4PQ75kCsUb7roUhlRYj3yttARKH7FOWYbz6r5ML3+mFGUoQ==
+X-Received: by 2002:a17:906:970a:: with SMTP id k10mr2114160ejx.189.1595780148915;
+        Sun, 26 Jul 2020 09:15:48 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id i5sm5055198ejg.121.2020.07.26.09.15.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 26 Jul 2020 09:15:47 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 18:15:45 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         Harvey Hunt <harveyhuntnexus@gmail.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -33,95 +45,83 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-kernel@vger.kernel.org,
         linux-mtd <linux-mtd@lists.infradead.org>
-Message-Id: <RO33EQ.546WD84D5N7K2@crapouillou.net>
-In-Reply-To: <20200726160616.GA2662@kozik-lap>
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
+ architecture only
+Message-ID: <20200726161545.GA6058@kozik-lap>
 References: <20200724145401.2566-1-krzk@kernel.org>
-        <20200724145401.2566-3-krzk@kernel.org>
-        <PWBZDQ.D1XCW6N2YMRA@crapouillou.net>
-        <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
-        <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
-        <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
-        <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
-        <20200726160616.GA2662@kozik-lap>
+ <20200724145401.2566-3-krzk@kernel.org>
+ <PWBZDQ.D1XCW6N2YMRA@crapouillou.net>
+ <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
+ <IBDZDQ.K28R5FAI0BXI2@crapouillou.net>
+ <20200724155436.GA7460@kozik-lap>
+ <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
+ <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
+ <20200726160616.GA2662@kozik-lap>
+ <RO33EQ.546WD84D5N7K2@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <RO33EQ.546WD84D5N7K2@crapouillou.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jul 26, 2020 at 06:12:27PM +0200, Paul Cercueil wrote:
+> 
+> 
+> Le dim. 26 juil. 2020 à 18:06, Krzysztof Kozlowski <krzk@kernel.org> a écrit
+> :
+> > On Sat, Jul 25, 2020 at 08:30:56PM +0200, Arnd Bergmann wrote:
+> > >  On Sat, Jul 25, 2020 at 2:17 PM Paul Cercueil
+> > > <paul@crapouillou.net> wrote:
+> > >  > Le ven. 24 juil. 2020 à 17:54, Krzysztof Kozlowski
+> > > <krzk@kernel.org> a
+> > >  > écrit :
+> > >  > > On Fri, Jul 24, 2020 at 05:50:06PM +0200, Paul Cercueil wrote:
+> > >  > >>  Le ven. 24 juil. 2020 à 17:33, Krzysztof Kozlowski
+> > >  > >> <krzk@kernel.org> a écrit:
+> > >  > >>  > On Fri, 24 Jul 2020 at 17:19, Paul Cercueil
+> > > <paul@crapouillou.net>
+> > >  > >>  > wrote:
+> > >  > >>
+> > >  > >>  On MIPS, the SoC selection is a Kconfig "choice", so you can
+> > > only
+> > >  > >> support
+> > >  > >>  one SoC family, unfortunately.
+> > >  > >
+> > >  > > Let's say someone selected then some other architecture
+> > >  > > (MIPS_ALCHEMY).
+> > >  > > They could select this MTD driver.
+> > >  > >
+> > >  > > Does it mean they would be able to run it on Ingenic hardware?
+> > >  >
+> > >  > In *theory* yes, as long as the Kconfig options that MACH_INGENIC
+> > >  > selects are enabled, the kernel should boot and work on Ingenic
+> > > SoCs.
+> > > 
+> > >  Right now, this won't work yet, because there are platform specific
+> > >  functions that are implemented by each of the platforms in
+> > > arch/mips,
+> > >  e.g. arch/mips/generic/init.c and arch/mips/jz4740/setup.c.
+> > 
+> > I would say even more - no DTS would be provided for such configuration.
+> > All Ingenic DTSes are included only with MACH_INGENIC.  You cannot build
+> > a kernel working on Ingenic without MACH_INGENIC. Even in theory.
+> 
+> But the devicetree doesn't have to be built-in.
+>
 
+OK, that's true. Anyway, I don't have strong opinion on any of this. I
+just followed Arnd's hint.
 
-Le dim. 26 juil. 2020 =E0 18:06, Krzysztof Kozlowski <krzk@kernel.org> a=20
-=E9crit :
-> On Sat, Jul 25, 2020 at 08:30:56PM +0200, Arnd Bergmann wrote:
->>  On Sat, Jul 25, 2020 at 2:17 PM Paul Cercueil=20
->> <paul@crapouillou.net> wrote:
->>  > Le ven. 24 juil. 2020 =E0 17:54, Krzysztof Kozlowski=20
->> <krzk@kernel.org> a
->>  > =E9crit :
->>  > > On Fri, Jul 24, 2020 at 05:50:06PM +0200, Paul Cercueil wrote:
->>  > >>  Le ven. 24 juil. 2020 =E0 17:33, Krzysztof Kozlowski
->>  > >> <krzk@kernel.org> a =E9crit:
->>  > >>  > On Fri, 24 Jul 2020 at 17:19, Paul Cercueil=20
->> <paul@crapouillou.net>
->>  > >>  > wrote:
->>  > >>
->>  > >>  On MIPS, the SoC selection is a Kconfig "choice", so you can=20
->> only
->>  > >> support
->>  > >>  one SoC family, unfortunately.
->>  > >
->>  > > Let's say someone selected then some other architecture
->>  > > (MIPS_ALCHEMY).
->>  > > They could select this MTD driver.
->>  > >
->>  > > Does it mean they would be able to run it on Ingenic hardware?
->>  >
->>  > In *theory* yes, as long as the Kconfig options that MACH_INGENIC
->>  > selects are enabled, the kernel should boot and work on Ingenic=20
->> SoCs.
->>=20
->>  Right now, this won't work yet, because there are platform specific
->>  functions that are implemented by each of the platforms in=20
->> arch/mips,
->>  e.g. arch/mips/generic/init.c and arch/mips/jz4740/setup.c.
->=20
-> I would say even more - no DTS would be provided for such=20
-> configuration.
-> All Ingenic DTSes are included only with MACH_INGENIC.  You cannot=20
-> build
-> a kernel working on Ingenic without MACH_INGENIC. Even in theory.
+For the memory driver (and MTD NAND as well) which one you prefer:
+1. https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
+2. depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
 
-But the devicetree doesn't have to be built-in.
+?
 
--Paul
-
->>=20
->>  A lot of the newer platforms are part of arch/mips/generic
->>  (CONFIG_MIPS_GENERIC), which roughly corresponds to
->>  CONFIG_ARCH_MULTIPLATFORM on in arch/arm/.
->>  Similarly, there are header files in arch/mips/include/asm/mach-*/
->>  that conflict and you need to have the right one.
->>=20
->>  To have more than one platform enabled, each one needs to
->>  have all of that platform code converted to fit into the
->>  MIPS_GENERIC framework. This can be a lot of work, but
->>  I suppose the ingenic platform would be a candidate for
->>  which this makes sense, as long as new SoCs of that family
->>  still come out.
->=20
-> I can therefore change the patch to:
-> depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
->=20
-> Other solution is to leave MTD driver as is and for the memory driver=20
-> go
-> with my v2 approach:
-> https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
->=20
-> Best regards,
-> Krzysztof
->=20
-
-
+Best regards,
+Krzysztof
