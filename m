@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C0322DB6B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 04:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C427922DB6A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 04:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgGZCyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 22:54:00 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:49405 "EHLO
+        id S1728383AbgGZCxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 22:53:55 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:52961 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728263AbgGZCxj (ORCPT
+        by vger.kernel.org with ESMTP id S1728292AbgGZCxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 25 Jul 2020 22:53:39 -0400
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D9D005804FF;
-        Sat, 25 Jul 2020 22:53:37 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5B0A4580500;
+        Sat, 25 Jul 2020 22:53:38 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:37 -0400
+  by compute3.internal (MEProxy); Sat, 25 Jul 2020 22:53:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=hMP+XOSq5Dytq
-        NXan7fqx8FFoZjdxZgtQttmYrTXXe8=; b=NsyBIab5f8qLG2VJAYMNaoe+y49UG
-        jYYhV3mhsYWIDE0Y38JkTQxkECrkyHxXs89feOF/xofBn+ja6mdYpz2EGxDkfXaN
-        f6b0JweS3vnwpif1UrdYWWiUKJROxpDzByVyb77QW93i2ClPDqka0bvjKoFL9AZQ
-        vS8xziAEbcnToKquEmIV0qASYHc8o6pbeLjG5dtYxYAl3uahrWiMegRQCmBMidiK
-        K/Mtl6Rtmzc3bKzlr5mrH3YFZZ6Hy0QtSbxsW1nZMEOoZuo/kJZk4m+Jdv8yq1Rg
-        Iglj7qrOCeMXd99rw5FYM086pxlA07FHZCXzSdYJx+5Cih9aBzyFxqqWw==
+        :mime-version:content-transfer-encoding; s=fm3; bh=ERAIJp5xBaLI/
+        ZcZmq1IesLhocpBhAj61ykp0NYJOa4=; b=UCMep3/vYhc63V/s/TI9Js1vSx2DE
+        wRutsQ8k4Uwx39LHKb6utjKHql8UEPM+E/T4iA9/xprafe3lel9+ZWVSTGLov8KW
+        6sBV8N5dWpqprIhBo8XCzlJkDCzppVyIa81GTu6A5lxPnLGBldivEolU1TezY/At
+        4F7w4DLP6D81KXnBhpXMM12WRkCrvzDYrczmsi9jSk6RKR008kbL9hCIfUTGaOOz
+        R8knBzMu7DDzTeC+NxQ0cdiWKYou5Dz3JALjrw/oSWe0lfx01vpCFVmOK5bGQIuq
+        cfnX9fc7LUEq31oquqcClhFZVrweE+HYBnvBxcyppFF8cMo1hEVdqdT/w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=hMP+XOSq5DytqNXan7fqx8FFoZjdxZgtQttmYrTXXe8=; b=MX0wUf5S
-        IsZvmDTK+zXRsXiOJ2Ehz6nz7Jez8BgdazJ7L+kJPceqvqMf3pSS5/hlI2bcsUfp
-        HW0vYblZjUkeKE7C6aAU+gvHf5jcmeB0YWgbJyx7LfjWOEfzdgE6KwWdYHSbfVaT
-        bz+0RfvlPiSo+4c2XzWNkOiEj7er6+9u2BKagOBGZiFnM26JlpNDHCMstTuyzpNe
-        2q1pIwl6dGLSNsFciqnNn3OAJLAm2JOjd58Zlzahl0z2/AgWWl6w1jA2naA2ExbU
-        FPrXPeKAzQTOD4HARbwfCvmhJyHGLrtzkEb9H72+fyjNi8niADmlDw/T5fhgRag/
-        P77gwR2gTeNB3g==
-X-ME-Sender: <xms:MfAcX4nU-faE9oOPT9bBTkcLPis3U2ChvrZejKKduGz4AF2IiBnwug>
+        fm3; bh=ERAIJp5xBaLI/ZcZmq1IesLhocpBhAj61ykp0NYJOa4=; b=jl1VQu+F
+        6eC4RDrWGnfpzVg8Z+3kTTJKelnwKTyk2gdQbqsfpPTAKFgm8A3dr8f5Zg4CC9Ko
+        kOHHONqtcweYl4JkYVs4AyGQg3M0WBE2W0vrOVShy+ikuiELow6+l0PbP/RseI3d
+        n2C28Tm0OjgsW2wibPbgzUlS9A2cllBkwgVfNfj2JAdTFXKva49AQL2ThKbQsnJS
+        8pcy/B1/HZk9B51bvaDL5wwKESJp1+swLrjrD5HCaKpr4gnhbjk5lW7B9DZw9Jqk
+        usiOyiKtCHDimxRlbv80XEWmJ2zCEHusb51w/aQvoXra11S73mgW/4Ljf3gMViL7
+        mAPp8i1pNiKvHA==
+X-ME-Sender: <xms:MvAcX6DsMRJEbHu-tG6j_cJONnfTqptWihe_N7yD_iXrJze5h0SxLw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -47,12 +47,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrheeigdeiudcutefuodetggdote
     jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
     gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
     rdhorhhg
-X-ME-Proxy: <xmx:MfAcX32wlKHd6TkMWp0ezDZzOvJ8vbI3wdMfQblC8vURasJddNPmQQ>
-    <xmx:MfAcX2rLe3OTb9ELpFGkj7DPyN9FTLNoAd9U4kG66rAf7vneBuyI9w>
-    <xmx:MfAcX0lEEht4hZmG5lnMcV8OlKICoYQvV50uW6sl1RfZqXZq_05ORw>
-    <xmx:MfAcX_lTL_u7M7wXaVNJ4V-BTHe38UvwZWwGCP3pBJgfRy9rVFAd0Q>
+X-ME-Proxy: <xmx:MvAcX0icT8X4aSilTgKNJP4MYWPk4I_-JkqFhoXghFaz9jTS4HgxyA>
+    <xmx:MvAcX9mSDgMFEyP5y5EKbgiapmBSFmj-jy9aqG1-_pgEjvG5LjgW9A>
+    <xmx:MvAcX4zoEjj547Zps2EmhjB3F2NxztkHst2FskU2A1_yjcEffGZssw>
+    <xmx:MvAcX4TIeHuMtIr86JYcNuPfnHKIB7sXCxu-DIF9M9Jgjsxft2qvmA>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 45015328005D;
+        by mail.messagingengine.com (Postfix) with ESMTPA id BA55F328005A;
         Sat, 25 Jul 2020 22:53:37 -0400 (EDT)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Mark Brown <broonie@kernel.org>,
@@ -64,9 +64,9 @@ To:     Mark Brown <broonie@kernel.org>,
 Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2 5/8] ASoC: sun50i-codec-analog: Enable DAPM for headphone switch
-Date:   Sat, 25 Jul 2020 21:53:31 -0500
-Message-Id: <20200726025334.59931-6-samuel@sholland.org>
+Subject: [PATCH v2 6/8] ASoC: sun50i-codec-analog: Make line out routes stereo
+Date:   Sat, 25 Jul 2020 21:53:32 -0500
+Message-Id: <20200726025334.59931-7-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200726025334.59931-1-samuel@sholland.org>
 References: <20200726025334.59931-1-samuel@sholland.org>
@@ -77,77 +77,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By including the headphone mute switch to the DAPM graph, both the
-headphone amplifier and the Mixer/DAC inputs can be powered off when
-the headphones are muted.
-
-The mute switch is between the source selection and the amplifier,
-as per the diagram in the SoC manual.
+This matches the hardware more accurately, and is necessary for
+including the (stereo) line out mute switch in the DAPM graph.
 
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- sound/soc/sunxi/sun50i-codec-analog.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ sound/soc/sunxi/sun50i-codec-analog.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
-index f98851067f97..176d6658d099 100644
+index 176d6658d099..df39f6ffe25a 100644
 --- a/sound/soc/sunxi/sun50i-codec-analog.c
 +++ b/sound/soc/sunxi/sun50i-codec-analog.c
-@@ -193,11 +193,6 @@ static const struct snd_kcontrol_new sun50i_a64_codec_controls[] = {
- 		       SUN50I_ADDA_HP_CTRL_HPVOL, 0x3f, 0,
- 		       sun50i_codec_hp_vol_scale),
+@@ -328,7 +328,9 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
+ 			     SUN50I_ADDA_HP_CTRL_HPPA_EN, 0, NULL, 0),
+ 	SND_SOC_DAPM_OUTPUT("HP"),
  
--	SOC_DOUBLE("Headphone Playback Switch",
--		   SUN50I_ADDA_MIX_DAC_CTRL,
--		   SUN50I_ADDA_MIX_DAC_CTRL_LHPPAMUTE,
--		   SUN50I_ADDA_MIX_DAC_CTRL_RHPPAMUTE, 1, 0),
--
- 	/* Mixer pre-gain */
- 	SOC_SINGLE_TLV("Mic1 Playback Volume", SUN50I_ADDA_MIC1_CTRL,
- 		       SUN50I_ADDA_MIC1_CTRL_MIC1G,
-@@ -264,6 +259,12 @@ static const struct snd_kcontrol_new sun50i_codec_hp_src[] = {
- 		      sun50i_codec_hp_src_enum),
- };
+-	SND_SOC_DAPM_MUX("Line Out Source Playback Route",
++	SND_SOC_DAPM_MUX("Left Line Out Source",
++			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
++	SND_SOC_DAPM_MUX("Right Line Out Source",
+ 			 SND_SOC_NOPM, 0, 0, sun50i_codec_lineout_src),
+ 	SND_SOC_DAPM_OUTPUT("LINEOUT"),
  
-+static const struct snd_kcontrol_new sun50i_codec_hp_switch =
-+	SOC_DAPM_DOUBLE("Headphone Playback Switch",
-+			SUN50I_ADDA_MIX_DAC_CTRL,
-+			SUN50I_ADDA_MIX_DAC_CTRL_LHPPAMUTE,
-+			SUN50I_ADDA_MIX_DAC_CTRL_RHPPAMUTE, 1, 0);
+@@ -439,12 +441,14 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "Mic2 Amplifier", NULL, "MIC2"},
+ 
+ 	/* Line-out Routes */
+-	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
+-	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
+-	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
+-	{ "Line Out Source Playback Route", "Mono Differential",
+-		"Right Mixer" },
+-	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
++	{ "Left Line Out Source", "Stereo", "Left Mixer" },
++	{ "Left Line Out Source", "Mono Differential", "Left Mixer" },
++	{ "Left Line Out Source", "Mono Differential", "Right Mixer" },
++	{ "LINEOUT", NULL, "Left Line Out Source" },
 +
- static const char * const sun50i_codec_lineout_src_enum_text[] = {
- 	"Stereo", "Mono Differential",
- };
-@@ -315,6 +316,10 @@ static const struct snd_soc_dapm_widget sun50i_a64_codec_widgets[] = {
- 			 SND_SOC_NOPM, 0, 0, sun50i_codec_hp_src),
- 	SND_SOC_DAPM_MUX("Right Headphone Source",
- 			 SND_SOC_NOPM, 0, 0, sun50i_codec_hp_src),
-+	SND_SOC_DAPM_SWITCH("Left Headphone Switch",
-+			    SND_SOC_NOPM, 0, 0, &sun50i_codec_hp_switch),
-+	SND_SOC_DAPM_SWITCH("Right Headphone Switch",
-+			    SND_SOC_NOPM, 0, 0, &sun50i_codec_hp_switch),
- 	SND_SOC_DAPM_OUT_DRV("Left Headphone Amp",
- 			     SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_OUT_DRV("Right Headphone Amp",
-@@ -413,13 +418,15 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
- 	/* Headphone Routes */
- 	{ "Left Headphone Source", "DAC", "Left DAC" },
- 	{ "Left Headphone Source", "Mixer", "Left Mixer" },
--	{ "Left Headphone Amp", NULL, "Left Headphone Source" },
-+	{ "Left Headphone Switch", "Headphone Playback Switch", "Left Headphone Source" },
-+	{ "Left Headphone Amp", NULL, "Left Headphone Switch" },
- 	{ "Left Headphone Amp", NULL, "Headphone Amp" },
- 	{ "HP", NULL, "Left Headphone Amp" },
++	{ "Right Line Out Source", "Stereo", "Right Mixer" },
++	{ "Right Line Out Source", "Mono Differential", "Left Line Out Source" },
++	{ "LINEOUT", NULL, "Right Line Out Source" },
  
- 	{ "Right Headphone Source", "DAC", "Right DAC" },
- 	{ "Right Headphone Source", "Mixer", "Right Mixer" },
--	{ "Right Headphone Amp", NULL, "Right Headphone Source" },
-+	{ "Right Headphone Switch", "Headphone Playback Switch", "Right Headphone Source" },
-+	{ "Right Headphone Amp", NULL, "Right Headphone Switch" },
- 	{ "Right Headphone Amp", NULL, "Headphone Amp" },
- 	{ "HP", NULL, "Right Headphone Amp" },
- 
+ 	/* Earpiece Routes */
+ 	{ "Earpiece Source Playback Route", "DACL", "Left DAC" },
 -- 
 2.26.2
 
