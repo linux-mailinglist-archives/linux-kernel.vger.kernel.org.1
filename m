@@ -2,122 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59E422DB4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 04:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0753522DB53
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 04:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgGZCHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Jul 2020 22:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
+        id S1728245AbgGZCL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Jul 2020 22:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727013AbgGZCHk (ORCPT
+        with ESMTP id S1728076AbgGZCL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Jul 2020 22:07:40 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8826C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 19:07:40 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id il6so1615804pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 19:07:40 -0700 (PDT)
+        Sat, 25 Jul 2020 22:11:56 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18C4C08C5C0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 19:11:55 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a5so1575396wrm.6
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 19:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PNDilay1sHPsEz4YR66Yr+U+zEImSfHeZ16zNl+dXoM=;
-        b=OvvfwJdw+GjOACNErXcyicqxzDz/7C8Y47ka18cmdrDcvqXqw22EcV7KQUQWYJg9eF
-         6nTa70zTxJqcVf1jPzvud8lx8RB2dzxgvYERrskJe7gObzxhkgZuB+Smp3E9VWrzoouk
-         PB2moUvU8lM6WrkbK/TWNctP7yaEYw9kgL+C0=
+        d=tfz-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2BY5Poqr2fA3RRuOzlPlb22Tg24jxGxBQVUUxrbzh/M=;
+        b=KWW7XRvnNCgZsnxgTX9/6O5WphsFCiJ5rLsriaFFCjo0w89hIZa98KECDv1RbTuJsB
+         OwKi4lc2CXeYWMG/TPbEpfad9Wc9R2wKh3+FpYWffG0Vj2ymqxzWsqtD2oe6xw1lPfPU
+         wY0u30YQLtGsFu3Ld/o0DcVKmZaLrdeMWiG2h4ItCsaC8aTXj/vbt6L39CVpNkLxuo2i
+         l2AI4Ddif5Z4Nm3HM5K6pJUACvOMOX3lTuVi4NvMtjLOr5UYjtUy+fiRH2e1+hykOBxi
+         H5RKk/F7BWjL+NkminG2g9cQeJ10xBI5HZ/CuDaCqKhKGTNVfotpQNpwHjMKXkne3blx
+         N9HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PNDilay1sHPsEz4YR66Yr+U+zEImSfHeZ16zNl+dXoM=;
-        b=FwMmmuunrnbsazpnHQ89MA3vF8B6g30uTr9Q64L1bzJSyyOdSNN+JH2Tq8OPW6Pz5q
-         SO32RrvSD4i9YtRcW8PhDHPE69xfptynmPg8BL7NCYPnOeOIkkpgW77jR1jWw77RYrx6
-         OJm9cGHS17IumZK5l+9Jf0qiZx2z7k/lul60dQCi7lPgHKS6fEAIM0iu0aDPHZbmri2f
-         d1kva8NbfSMy21/hATidqyGWBU9CxsUUO0MOlDRVTP2V7nZC3fjw+wn6gLhDxI0uD8Me
-         C8Ntjaujm1skG1y6OMXKYchnOEGXwg/FZ7rheATj1T3yeXDFWgqzhJ2U6mTlkNiAf1Ak
-         wXGA==
-X-Gm-Message-State: AOAM532UqVMTH8rYuxhK31bQzMaFPoi0WLBrAt/P24G2ch1civ91fwLF
-        pdgtNfcVCnV8CHbCxUihsfe0Lw==
-X-Google-Smtp-Source: ABdhPJyEZIF2Gn+8JPOwHUz8cKkIkjw50rDFttEqH3jrT/4n8U+HCd1iDLANMuR4xdwSkBL6sYpE5w==
-X-Received: by 2002:a17:902:c80c:: with SMTP id u12mr13809216plx.196.1595729260131;
-        Sat, 25 Jul 2020 19:07:40 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q5sm10614791pfc.130.2020.07.25.19.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 19:07:38 -0700 (PDT)
-Date:   Sat, 25 Jul 2020 19:07:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ben Hutchings <ben@decadent.org.uk>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Christian Kujau <lists@nerdbynature.de>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org,
-        klibc@lists.zytor.com, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: process '/usr/bin/rsync' started with executable stack
-Message-ID: <202007251907.DC4D4C6C15@keescook>
-References: <alpine.DEB.2.22.1.446.2006231023390.3892@trent.utfs.org>
- <20200624165148.GD31008@kadam>
- <202006241238.E9CB1CE85B@keescook>
- <20200625100429.GB2571@kadam>
- <202006251253.2893D4F67@keescook>
- <6898a5af75e165fb9524558804fca9f46f98b633.camel@decadent.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2BY5Poqr2fA3RRuOzlPlb22Tg24jxGxBQVUUxrbzh/M=;
+        b=pcbtkRaN6ikvyrxMe7YSTk8YeN3+vq2EYL8y8HlZKff+q1xz1kNgcg2vgbuz2N5TnA
+         iTbIVROyJz4X0tQIuTsaYGAXnmheZcV1bte0ghcGmRQf9Q/lgRqKkoc6O8tcfa0uNIqB
+         b3txQMimhIjScD264+cjNqT56PAoAQsgehrqfovAakbh2UR21hU8A+JKDfrmNe8PyGj6
+         PmuxHchcgEBPTtKqb1sRQtkX31VoAWwsR3i7jl9MVfHLmmWJ2dT4vySJKpX3FrzUYCvG
+         ILSaqaffwckeiVzURGc2OZsTIoqExwhz8O/ds+1ZF04g3c1HJ6w9FscIb2B/HVkXDuoX
+         Ihgw==
+X-Gm-Message-State: AOAM532wz2+sw771L93GyAx7gIUNKVhMtwVbi0uMe8QP4E8X898xSlEE
+        3mNpw4si8e9l3qKWNHjWl+dp5VwLa8nfz0QkmOxlz4OkzGw=
+X-Google-Smtp-Source: ABdhPJzYjq53hix8vYV6O/NEWrQvf44oV97N5I8qZhQjdzG/xJ+YJAaus2rch7JC6PFRpE1E4F7UxrZeV8/91/vPRjk=
+X-Received: by 2002:a05:6000:141:: with SMTP id r1mr10897990wrx.69.1595729514257;
+ Sat, 25 Jul 2020 19:11:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6898a5af75e165fb9524558804fca9f46f98b633.camel@decadent.org.uk>
+References: <20200725045921.2723-1-kalou@tfz.net> <20200725051547.3718-1-kalou@tfz.net>
+In-Reply-To: <20200725051547.3718-1-kalou@tfz.net>
+From:   Pascal Bouchareine <kalou@tfz.net>
+Date:   Sat, 25 Jul 2020 19:11:43 -0700
+Message-ID: <CAGbU3_nNeeZn8Sk28t_fqOEjBi81JXp67L7-2E+9J=8LHtcE7Q@mail.gmail.com>
+Subject: Re: [PATCH v3] This command attaches a description to a file
+ descriptor for troubleshooting purposes. The free string is displayed in the
+ process fdinfo file for that fd /proc/pid/fdinfo/fd.
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@poochiereds.net>,
+        "J. Bruce Fields" <bfields@fieldses.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 10:27:56PM +0100, Ben Hutchings wrote:
-> On Thu, 2020-06-25 at 13:20 -0700, Kees Cook wrote:
-> > On Thu, Jun 25, 2020 at 01:04:29PM +0300, Dan Carpenter wrote:
-> > > On Wed, Jun 24, 2020 at 12:39:24PM -0700, Kees Cook wrote:
-> > > > On Wed, Jun 24, 2020 at 07:51:48PM +0300, Dan Carpenter wrote:
-> > > > > In Debian testing the initrd triggers the warning.
-> > > > > 
-> > > > > [   34.529809] process '/usr/bin/fstype' started with executable stack
-> > > > 
-> > > > Where does fstype come from there? I am going to guess it is either
-> > > > busybox or linked against klibc?
-> > > > 
-> > > > klibc has known problems with executable stacks due to its trampoline
-> > > > implementation:
-> > > > https://wiki.ubuntu.com/SecurityTeam/Roadmap/ExecutableStacks
-> > > 
-> > > Yeah.  It comes from klibc-utils.
-> > 
-> > This is exactly what I was worried about back in Feb:
-> > https://lore.kernel.org/lkml/202002251341.48BC06E@keescook/
-> > 
-> > This warning, combined with klibc-based initrds, makes the whole thing
-> > pointless because it will always warn once on boot for the klibc stack,
-> > and then not warn about anything else after that.
-> > 
-> > It looks like upstream klibc hasn't been touched in about 4 years, and
-> > it's been up to Ben to keep it alive in Debian.
-> > 
-> > A couple ideas, in order of my preference:
-> > 
-> > 1) stop using klibc-utils[1]. initramfs-tools-core is the only thing with a
-> >    dependency on klibc-utils. Only a few things are missing from busybox.
-> > 
-> > 2) make the warning rate-limited instead?
-> > 
-> > 3) fix the use of trampolines in klibc
-> 
-> It only uses trampolines on alpha, m68k, parisc, s390, and sparc32.  As
-> of today, the master branch should correctly enable executable stacks
-> on these and only these architecture.
-> 
-> I have a development branch that sets sa_restorer and disables
-> executable stacks on alpha, s390, and sparc32:
-> 
-> https://git.kernel.org/pub/scm/libs/klibc/klibc.git/log/?h=execstack-fixes
+Sorry about all the noise, please disregard this one.
 
-Awesome! Thanks for tackling this. :)
 
--- 
-Kees Cook
+On Sat, Jul 25, 2020 at 7:04 PM Pascal Bouchareine <kalou@tfz.net> wrote:
+>
+> One intended usage is to allow processes to self-document sockets
+> for netstat and friends to report
+>
+> Signed-off-by: Pascal Bouchareine <kalou@tfz.net>
+> ---
+>  Documentation/filesystems/proc.rst |  3 +++
+>  fs/fcntl.c                         | 19 +++++++++++++++++++
+>  fs/file_table.c                    |  2 ++
+>  fs/proc/fd.c                       |  5 +++++
+>  include/linux/fs.h                 |  3 +++
+>  include/uapi/linux/fcntl.h         |  5 +++++
+>  6 files changed, 37 insertions(+)
+>
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 996f3cfe7030..ae8045650836 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -1918,6 +1918,9 @@ A typical output is::
+>         flags:  0100002
+>         mnt_id: 19
+>
+> +An optional 'desc' is set if the process documented its usage of
+> +the file via the fcntl command F_SET_DESCRIPTION.
+> +
+>  All locks associated with a file descriptor are shown in its fdinfo too::
+>
+>      lock:       1: FLOCK  ADVISORY  WRITE 359 00:13:11691 0 EOF
+> diff --git a/fs/fcntl.c b/fs/fcntl.c
+> index 2e4c0fa2074b..c1ef724a906e 100644
+> --- a/fs/fcntl.c
+> +++ b/fs/fcntl.c
+> @@ -319,6 +319,22 @@ static long fcntl_rw_hint(struct file *file, unsigned int cmd,
+>         }
+>  }
+>
+> +static long fcntl_set_description(struct file *file, char __user *desc)
+> +{
+> +       char *d;
+> +
+> +       d = strndup_user(desc, MAX_FILE_DESC_SIZE);
+> +       if (IS_ERR(d))
+> +               return PTR_ERR(d);
+> +
+> +       spin_lock(&file->f_lock);
+> +       kfree(file->f_description);
+> +       file->f_description = d;
+> +       spin_unlock(&file->f_lock);
+> +
+> +       return 0;
+> +}
+> +
+>  static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+>                 struct file *filp)
+>  {
+> @@ -426,6 +442,9 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+>         case F_SET_FILE_RW_HINT:
+>                 err = fcntl_rw_hint(filp, cmd, arg);
+>                 break;
+> +       case F_SET_DESCRIPTION:
+> +               err = fcntl_set_description(filp, argp);
+> +               break;
+>         default:
+>                 break;
+>         }
+> diff --git a/fs/file_table.c b/fs/file_table.c
+> index 656647f9575a..6673a48d2ea1 100644
+> --- a/fs/file_table.c
+> +++ b/fs/file_table.c
+> @@ -272,6 +272,8 @@ static void __fput(struct file *file)
+>         eventpoll_release(file);
+>         locks_remove_file(file);
+>
+> +       kfree(file->f_description);
+> +
+>         ima_file_free(file);
+>         if (unlikely(file->f_flags & FASYNC)) {
+>                 if (file->f_op->fasync)
+> diff --git a/fs/proc/fd.c b/fs/proc/fd.c
+> index 81882a13212d..60b3ff971b2b 100644
+> --- a/fs/proc/fd.c
+> +++ b/fs/proc/fd.c
+> @@ -57,6 +57,11 @@ static int seq_show(struct seq_file *m, void *v)
+>                    (long long)file->f_pos, f_flags,
+>                    real_mount(file->f_path.mnt)->mnt_id);
+>
+> +       spin_lock(&file->f_lock);
+> +       if (file->f_description)
+> +               seq_printf(m, "desc:\t%s\n", file->f_description);
+> +       spin_unlock(&file->f_lock);
+> +
+>         show_fd_locks(m, file, files);
+>         if (seq_has_overflowed(m))
+>                 goto out;
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index f5abba86107d..09717bfa4e3b 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -980,6 +980,9 @@ struct file {
+>         struct address_space    *f_mapping;
+>         errseq_t                f_wb_err;
+>         errseq_t                f_sb_err; /* for syncfs */
+> +
+> +#define MAX_FILE_DESC_SIZE 256
+> +       char                    *f_description;
+>  } __randomize_layout
+>    __attribute__((aligned(4))); /* lest something weird decides that 2 is OK */
+>
+> diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+> index 2f86b2ad6d7e..f86ff6dc45c7 100644
+> --- a/include/uapi/linux/fcntl.h
+> +++ b/include/uapi/linux/fcntl.h
+> @@ -55,6 +55,11 @@
+>  #define F_GET_FILE_RW_HINT     (F_LINUX_SPECIFIC_BASE + 13)
+>  #define F_SET_FILE_RW_HINT     (F_LINUX_SPECIFIC_BASE + 14)
+>
+> +/*
+> + * Set file description
+> + */
+> +#define F_SET_DESCRIPTION      (F_LINUX_SPECIFIC_BASE + 15)
+> +
+>  /*
+>   * Valid hint values for F_{GET,SET}_RW_HINT. 0 is "not set", or can be
+>   * used to clear any hints previously set.
+> --
+> 2.25.1
+>
