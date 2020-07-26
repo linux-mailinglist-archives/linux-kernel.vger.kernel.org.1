@@ -2,53 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031DF22DFA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 16:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A3122DFA2
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 16:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbgGZOQC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 26 Jul 2020 10:16:02 -0400
-Received: from mail.fireflyinternet.com ([77.68.26.236]:53338 "EHLO
-        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725848AbgGZOQB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 10:16:01 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21936675-1500050 
-        for multiple; Sun, 26 Jul 2020 15:15:49 +0100
-Content-Type: text/plain; charset="utf-8"
+        id S1726682AbgGZOQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 10:16:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgGZOQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 10:16:29 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8C08206D8;
+        Sun, 26 Jul 2020 14:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595772989;
+        bh=zVU7cccZJMSnC+aYNnB5KrF2gE1bqUAI8XDld2dEmf4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TIuxgsx3h/OlKyZDcEN0r33bghADU9tgUHQB73nP47orbJDBSZmy8Bn6VwvZHlKbJ
+         HTTdnzDD+nssYQTgAti0MToWmNzAWAnYZkNQ4y0DE3k0i/t6RY2OXg6C/d3rTsWZf9
+         bHVaPs4i5r6bSfuak3Bwp8Gs9yhjpNBSLRggjaJ0=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 65A33404B1; Sun, 26 Jul 2020 11:16:26 -0300 (-03)
+Date:   Sun, 26 Jul 2020 11:16:26 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, mgorman@techsingularity.net,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH] tools/perf-bench: Add basic syscall benchmark
+Message-ID: <20200726141626.GN77866@kernel.org>
+References: <20190307185253.28432-1-dave@stgolabs.net>
+ <20190307191157.GB32240@kernel.org>
+ <20190308181747.l36zqz2avtivrr3c@linux-r8p5>
+ <20200514203942.v2dbjeqrdpuucx5h@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200726073052.284dadb2@x1.home>
-References: <30452714b2935b530b9c2bbf2d20854a@hostfission.com> <20200726073052.284dadb2@x1.home>
-Subject: Re: Poor windows VFIO performance, GPU stalls (bisected)
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     hdanton@sina.com, tj@kernel.org, jiangshanlai@gmail.com,
-        linux-kernel@vger.kernel.org
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Geoffrey McRae <geoff@hostfission.com>
-Date:   Sun, 26 Jul 2020 15:15:49 +0100
-Message-ID: <159577294913.1157.91069469417568930@build.alporthouse.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200514203942.v2dbjeqrdpuucx5h@treble>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Alex Williamson (2020-07-26 14:30:52)
-> On Sun, 26 Jul 2020 17:49:07 +1000
-> Geoffrey McRae <geoff@hostfission.com> wrote:
-> 
-> > Hi All,
+Em Thu, May 14, 2020 at 03:39:42PM -0500, Josh Poimboeuf escreveu:
+> On Fri, Mar 08, 2019 at 10:17:47AM -0800, Davidlohr Bueso wrote:
+> > On Thu, 07 Mar 2019, Arnaldo Carvalho de Melo wrote:
+> > > You forgot to update tools/perf/Documentation/perf-bench.txt, and please
+> > > take a look at tools/perf/util/pmu.c convert_scale() to see how to save
+> > > the current locale, set the one you want, then restore the previous one,
+> > > so that at the end of this benchmark the environment is back to where it
+> > > was.
 > > 
-> > The commit 22540ca3d00d2990a4148a13b92209c3dc5422db causes a Windows KVM 
-> > guest running under QEMU with a VFIO passthrough GPU to randomly stall 
-> > when using the GPU leading to the guest assuming that the driver has 
-> > hung. Reverting this commit resolves the problem.
+> > Here's an updated version with the corresponding docs, but I removed the
+> > setlocale() - doesn't seem worth it; I hope Mel has no strong objection.
+> > 
+> > Thanks.
+> > 
+> > -------8<----------------------------------------------------------
+> > [PATCH v2] tools/perf-bench: Add basic syscall benchmark
+> > 
+> > The usefulness of having a standard way of testing syscall performance
+> > has come up from time to time[0]. Furthermore, some of our testing
+> > machinery (such as 'mmtests') already makes use of a simplified version
+> > of the microbenchmark. This patch mainly takes the same idea to measure
+> > syscall throughput compatible with 'perf-bench' via getppid(2), yet
+> > without any of the additional template stuff from Ingo's version (based
+> > on numa.c). The code is identical to what mmtests uses.
+> > 
+> > [0] https://lore.kernel.org/lkml/20160201074156.GA27156@gmail.com/
+> > 
+> > Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 > 
-> Please double check this commit ID, I can't find it in mainline or
-> linux-next.  Thanks,
+> It would be nice to see this merged.  I posted something very similar
+> back in 2016.
 
-See commit aa202f1f5696 ("workqueue: don't use wq_select_unbound_cpu()
-for bound works"). 22540ca3 is the cherry-pick into v5.4.26
--Chris
+So, I took this as an Acked-by: Josh, and the previous "no objection"
+from Mel as well, its now in my tmp.perf/core branch while it, together
+with other stuff goes thru build tests + 'perf test'.
+
+Sorry for the long delay in processing it, I shoudl've noticed that my
+review comments were addressed in v2.
+
+- Arnaldo
