@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C02022DD5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 10:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1324122DD5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 10:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgGZI4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 04:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47238 "EHLO
+        id S1726846AbgGZI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 04:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZI4G (ORCPT
+        with ESMTP id S1725794AbgGZI5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 04:56:06 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D1EC0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 01:56:05 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 1so7488863pfn.9
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 01:56:05 -0700 (PDT)
+        Sun, 26 Jul 2020 04:57:17 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6242C0619D2;
+        Sun, 26 Jul 2020 01:57:16 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id c6so940341pje.1;
+        Sun, 26 Jul 2020 01:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BiHp5LUc9PuHCot82qcRCOL9br0dFdzgknx8tkEtCyo=;
-        b=AzC6RkjlolNsWZXQ1jzEnFUYelHlzN9vaw4Mo7YjLgPC7C4QvAkSMSvgUsyqrFC5xV
-         cx6O9RKDTsKrQusl0BYJm841lANFn8nUizwXv5tLilClZTJdfmxsqm1eYVx4hsKcZhD8
-         mVf5iPIjvaN5Ml95jYWPGMff0z9LaohLAolIAJZ3jDJhkL6WQIxTLV/lwaGCOvi30BKT
-         ArBZ70amdW4zSqa9mFp5rAqePmoQSqL7yHQoDb9EBJIkVWgGBB3ttB+ixNrQglmtngCz
-         i3/mDjTRyBmEMqiPDquucRPL86ZpNncPo58YnGKdnYMU5T1z/pCkrvsScdOIed7LIwmp
-         B27Q==
+        bh=ZP6JsF3L+gDvWgHfD54eIIL78/CR3lRmnvV/akntuxo=;
+        b=KKEnX2zyJ6WkI8ZbudaqCNi0gmqCxgGR74WNSBQn1L5ax2cCLiA4yIxbco/HI8MUEe
+         /PWnKwGDsY2c4uH3zi7/nNB2V3aKPytCWS3gguyLYHNVQT1thhG25x7sp1KJBmraHmWh
+         r2sGLen+0xjKZxb2J9K7oQ7IQTnWzz/b9jq+n5oVOF4ZUSMy7sb+cvXakBzJiyN9vdHk
+         95zej/S8i0suWDfeg2ZLV5uLS4Jra1N01tVcu5BP/zccUYoirpfeAzo0J+39lI9zaKge
+         bTvoPhu6kDIHbJ0suV41LNBb51EIHmjXorPfaKxRbwIbXMp03ES7a/6jD50ayrnFh81h
+         Kerg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BiHp5LUc9PuHCot82qcRCOL9br0dFdzgknx8tkEtCyo=;
-        b=fuwudOjTMNxRQ4+S6/Ubjs7M7vszqlFU2y1g7I2KHpiqD8IrLd5MuaztCJYCF5s8Xw
-         x4zypcNDALpy4fORJuwnUR4dmc5nNW60QA3eBUoY2UGfFv1io1ilzBflkecxZr2Js93I
-         R0c8IkKiryxTL1C26SdG9lttSGMA5JelxE85oaurhugHFVlkmI+rdmn+ZvIOfUH0SxHF
-         DYCU55/IrjKt7dDrqCHOi9rtVXYkhqnFu+02xbK8kaGTTXfsYMxzzN3rtNColjO6wwJ8
-         A6ZZjFeVoLhF/YkKbnjp1D19kyvNyXi+3aRoMll3xTvjwqU2dx64nLH5mABwCIsHmZeb
-         EhLg==
-X-Gm-Message-State: AOAM532BxrWO9EAzh/mjrzQSFLpJjG4Yac8moN3DKixJTMy3bPz7YDbk
-        4I1DDjo51ObJgAJ/fIrgapxzaaQ/fBOmyU8ZH6Q=
-X-Google-Smtp-Source: ABdhPJyFfPKbmYFTGSrQjEu+YSR9sojkqP2HJW83W3cI7AAOjVWSpnJEqxjzmJC4XyDEYaDuz3qAKc26hLkGxKs1JsY=
-X-Received: by 2002:a63:a05f:: with SMTP id u31mr14817755pgn.4.1595753764903;
- Sun, 26 Jul 2020 01:56:04 -0700 (PDT)
+        bh=ZP6JsF3L+gDvWgHfD54eIIL78/CR3lRmnvV/akntuxo=;
+        b=gEW1R0TJyTFrFpqlFeeBAD6okNbiYD39qi8R3du10Eq4dVXyZxDhqKTEFMMtY4qGgg
+         lqFyAwNrUcteg964ky1dUnmU+bkoMtI7nv2B4SzxUovg6g+XW6hLBAmr3W9hqhddL1/9
+         NAR63ehD+5GaR5IH/WaYzW8SgPYJs2MsPevvEkAJaDhFFYkOWXB7j8bn2FkeaNUkZhNy
+         C/aFzEu13kcl4Lrvn/TssRAdegKNJ5L/AKmJHnffloYPAhOg+bWY1gg8DCdksTxVhyzQ
+         gNyp8hD9uLi2yeMV/+hYPSUQzwyKPNVxZasl2E7xBGFVYpssgbuyDHOujlmTsYkSYibu
+         KueQ==
+X-Gm-Message-State: AOAM530B7yLRRwVVCRxQpN0J55+qKGhEraSO/ty4QrQzPg0sJ0VMgTME
+        9g3mQhBTJ++BKagZLhojGVqglMCwd4VfPoCqwW4R43R6
+X-Google-Smtp-Source: ABdhPJz/011v164prAx72VNLA4uAtxCJ1iLFgTJpcujNZYr5oVQ2I6rVwrYZrx3eEti8ZKJeynfcAEuaKvMiXDR5oRA=
+X-Received: by 2002:a17:90a:498b:: with SMTP id d11mr14007458pjh.129.1595753836222;
+ Sun, 26 Jul 2020 01:57:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200726052804.GA51199@xin-virtual-machine>
-In-Reply-To: <20200726052804.GA51199@xin-virtual-machine>
+References: <20200726052047.9856-1-gaurav1086@gmail.com>
+In-Reply-To: <20200726052047.9856-1-gaurav1086@gmail.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 26 Jul 2020 11:55:48 +0300
-Message-ID: <CAHp75Vf8h2kXnn-2xf3BFFDvBTSUH3w0z_S-FyKdB7MSJ_1j7g@mail.gmail.com>
-Subject: Re: [PATCH] tty: fix pid refcount leak in tty_signal_session_leader
-To:     Xin Xiong <xiongx18@fudan.edu.cn>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
+Date:   Sun, 26 Jul 2020 11:57:00 +0300
+Message-ID: <CAHp75VcL9sT-Ff6FND1v5pWUF=Ey7MXE61uB5Ae3HMpJaOYaUg@mail.gmail.com>
+Subject: Re: [PATCH] [video/fbdev] mbxfb_remove: fix null pointer dereference
+To:     Gaurav Singh <gaurav1086@gmail.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@intel.com>,
+        "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 8:30 AM Xin Xiong <xiongx18@fudan.edu.cn> wrote:
+On Sun, Jul 26, 2020 at 8:26 AM Gaurav Singh <gaurav1086@gmail.com> wrote:
 >
-> In the loop, every time when p->signal->leader is true, the function
-> tty_signal_session_leader() will invoke get_pid() and return a
-> reference of tty->pgrp with increased refcount to the local variable
-> tty_pgrp or return NULL if it fails. After finishing the loop, the
-> function invokes put_pid() for only once, decreasing the refcount that
-> tty_pgrp keeps.
->
-> Refcount leaks may occur when the scenario that p->signal->leader is
-> true happens more than once. In this assumption, if the above scenario
-> happens n times in the loop, the function forgets to decrease the
-> refcount for n-1 times, which causes refcount leaks.
->
-> Fix the issue by decreasing the current refcount of the local variable
-> tty_pgrp before assigning new objects to it.
->
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-
-This SoB chain is out of order. If you are the author, your SoB should
-go first, if you are a commiter, the From line should correspond to
-the first SoB (not yours), if it's a group of authors (funny for
-one-/twoliner) then you consider to use Co-developed-by. Please, read
-Submitting Patches document.
+> Function mbxfb_debugfs_remove() accesses fbi->par without NULL check,
+> hence do the NULL check in the caller mbxfb_remove().
 
 ...
 
->                         put_pid(p->signal->tty_old_pgrp);  /* A noop */
->                         spin_lock(&tty->ctrl_lock);
-> +                       if (tty_pgrp)
-> +                               put_pid(tty_pgrp);
->                         tty_pgrp = get_pid(tty->pgrp);
->                         if (tty->pgrp)
->                                 p->signal->tty_old_pgrp = get_pid(tty->pgrp);
+> @@ -1012,11 +1012,10 @@ static int mbxfb_remove(struct platform_device *dev)
+>
+>         write_reg_dly(SYSRST_RST, SYSRST);
+>
+> -       mbxfb_debugfs_remove(fbi);
+> -
 
-I guess this patch wasn't thought thru. You see the get_pid for it
-happens twice in a row. Perhaps you have to get the logic behind all
-these first?
+>         if (fbi) {
 
-P.S. ...on top of what Greg said.
+Can you explain how this is NULL on ->remove()?
+
+I bet this check is simply redundant. But you have to check and update
+commit message accordingly.
+
+>                 struct mbxfb_info *mfbi = fbi->par;
+>
+> +               mbxfb_debugfs_remove(fbi);
+>                 unregister_framebuffer(fbi);
+>                 if (mfbi) {
+>                         if (mfbi->platform_remove)
+
 
 -- 
 With Best Regards,
