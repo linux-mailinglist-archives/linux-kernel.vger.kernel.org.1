@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD1F22E1D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3D522E1DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgGZSFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 14:05:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50038 "EHLO mail.kernel.org"
+        id S1727823AbgGZSF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 14:05:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgGZSFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726760AbgGZSFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 26 Jul 2020 14:05:05 -0400
-Subject: Re: [GIT PULL] SCSI fixes for 5.8-rc5
+Subject: Re: [GIT PULL] USB driver fixes for 5.8-rc7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595786704;
-        bh=G2UsRR7v8U3BVxekOFVm5hlD0GarYSBkrkgSz/OzYGA=;
+        s=default; t=1595786705;
+        bh=Y265sKMgoJxMfgoTE1x6RYCX18wyvYp9+QGQu5ljVjE=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=CskaT07rottvwpUIkp9uzps9Qt19APtnbFDiJ7pMm75pJns5Pw9xSREWjABM8ptBM
-         rCDltvb6LWgFIuo+1SfNVKQUYa7607ogaFanNpJC+/HrGFdLGGluZ6h4ND4ZfbVtlX
-         0EzSFfr+QIrq3Rh/nQLAfgkjfFXdq4WkdVNuMZDM=
+        b=qFSq8t7yktd+YHMXVioglLN5K8lsqENUMfVHlxVzk8adTN5hCpP/wiG8HOkD9uwBW
+         9RU0iaCeU/pCucDMipcuHoXt2pa/aC4NKK0DApmHusjPP1fM9cDM7eF6soza0lFjOW
+         0OLhJYk9aMlmC+23MlISvKpF1qoXtcGZSiioFlo8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1595743091.22874.5.camel@HansenPartnership.com>
-References: <1595743091.22874.5.camel@HansenPartnership.com>
+In-Reply-To: <20200726111143.GA1283454@kroah.com>
+References: <20200726111143.GA1283454@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1595743091.22874.5.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 3f0dcfbcd2e162fc0a11c1f59b7acd42ee45f126
+X-PR-Tracked-Message-Id: <20200726111143.GA1283454@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.8-rc7
+X-PR-Tracked-Commit-Id: 0b987032f8b58ef51cc8a042f46cc0cf1f277172
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: cf48f79b74de2bf900d27c924528bb41d73689c3
-Message-Id: <159578670477.6689.4787060410711360252.pr-tracker-bot@kernel.org>
-Date:   Sun, 26 Jul 2020 18:05:04 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 17f50e28a858e4bab808733339995133390aae54
+Message-Id: <159578670510.6689.6960568851748598718.pr-tracker-bot@kernel.org>
+Date:   Sun, 26 Jul 2020 18:05:05 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 25 Jul 2020 22:58:11 -0700:
+The pull request you sent on Sun, 26 Jul 2020 13:11:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.8-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/cf48f79b74de2bf900d27c924528bb41d73689c3
+https://git.kernel.org/torvalds/c/17f50e28a858e4bab808733339995133390aae54
 
 Thank you!
 
