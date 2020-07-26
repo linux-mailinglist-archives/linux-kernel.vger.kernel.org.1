@@ -2,94 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D9B22DBE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 06:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DE222DC20
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 07:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgGZEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 00:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbgGZEkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 00:40:14 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4A5C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:40:13 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id k1so7356522pjt.5
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:40:13 -0700 (PDT)
+        id S1725989AbgGZEuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 00:50:50 -0400
+Received: from mail.fudan.edu.cn ([202.120.224.73]:54133 "EHLO fudan.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725298AbgGZEuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 00:50:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=D0MdPbFwkc7fKXzhQDxoLKwNc+TslVFTHzNYvgFbJfw=;
-        b=Hq0kueyojRMANB+ONzvJX3y94df+VXRUr3vesrMvVO6RaXLyBDCJgSZgzbSYP8fVZg
-         blAixup8nOqp7jwKx82A7+ri7wOOWzg0kl9kAm9d+7LM4ggmTuqrNjT3JxjLj11FoaZ6
-         lSEqChkComE54IJuXEnoNDJ9/k68NxKfQD99w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=D0MdPbFwkc7fKXzhQDxoLKwNc+TslVFTHzNYvgFbJfw=;
-        b=H8yEY2o5/Ew6iF9GOdOFwYvuCpoG7JfGRS/15osm35R473lXTwupXySyWXk7M5PmYh
-         LrJ2gztpQ9Kj4JRq2GdwyfOUtY1CKiEprmATVbxvzYiclk7zo1Kkl2qt28NvJjSVWnqm
-         P2vNxY+VJ2Ck6wo7ala3TsIR1WYfuu+VtTm/Y2mTHMNk7p6RNftcqQvhKuIaVL01jMyU
-         FL5CK7bCKLh8DxVe4XrWaz90OnvKrvjVsMmGvp8IeGivNmIcKiq5Et190cMEC1D6urdQ
-         BYGWuBpfVNpdJYCeY3T2ry9KI2WPsffY6oUxU9hZ9mO/o1Y++0XYN54tXhzo7UIscktG
-         DWlQ==
-X-Gm-Message-State: AOAM530+HQybNuKkGmUdZPoBvyWGeu58mfmDm5wdaOt9YGxl9+9b3tAK
-        FYUrmDD2dSK1g3/OwjCNO9K3eQ==
-X-Google-Smtp-Source: ABdhPJx8UUWAmsUMGBRN15yQo65JR5PFxiqCwTqU5Olv1hgE9e9qsRE+MN6SPRLZX+SrQo3lHeMvJg==
-X-Received: by 2002:a17:90a:2d83:: with SMTP id p3mr13088347pjd.124.1595738413058;
-        Sat, 25 Jul 2020 21:40:13 -0700 (PDT)
-Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
-        by smtp.googlemail.com with ESMTPSA id t1sm10507372pje.55.2020.07.25.21.40.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 21:40:12 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     soc@kernel.org
-Cc:     arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH 7/7] ARM:mstar: Add reboot support
-Date:   Sun, 26 Jul 2020 13:39:48 +0900
-Message-Id: <20200726043948.1357573-8-daniel@0x0f.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200726043948.1357573-1-daniel@0x0f.com>
-References: <20200726043948.1357573-1-daniel@0x0f.com>
+        d=fudan.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Disposition; bh=Ay0
+        qShO16vSSzMPyTIZ2QimJo7mPQjzMgrlyLffZN8o=; b=PS5eO1W8IZG2+S9N5Of
+        qi5S9yP8VovPcHL5USEGSNMcUAB2CBEGHCr//XMxd09o1idYNBNqaHNRyLoRD49E
+        w1iyYaofAE1FCh9k5n6jM/j0jizo8rX4Apzh+fYs3LhrEx3Aewjy7tFi+tfsf1Vr
+        5+O4RLXkCv2AYCy/BTI3cVOo=
+Received: from xin-virtual-machine (unknown [114.252.69.253])
+        by app2 (Coremail) with SMTP id XQUFCgBnbLh3Cx1f7lljAg--.31863S3;
+        Sun, 26 Jul 2020 12:49:59 +0800 (CST)
+Date:   Sun, 26 Jul 2020 12:49:59 +0800
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Christian Brauner <christian@brauner.io>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian Kellner <christian@kellner.me>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
+Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn,
+        Xin Xiong <xiongx18@fudan.edu.cn>
+Subject: [PATCH] fork: fix pid refcount leaks when destroying file
+Message-ID: <20200726044959.GA50544@xin-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: XQUFCgBnbLh3Cx1f7lljAg--.31863S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrur17XFyxuryDCF17JrWrXwb_yoWkGwbEk3
+        y8ZF4DurWvyrnY9r12ka95Xr92yw1YqrW8uwn3KFWjyF9YvayUG3sxGr9xAry8XwsrWF98
+        AFn8Wr9rA34xZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbTkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
+        M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8XwCF04k20xvY0x0EwIxGrwCFx2
+        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
+        s7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
+        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUkrc-UUUUU=
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MStar v7 SoCs support reset by writing a magic value to a register
-in the "pmsleep" area.
+When clone_flags & CLONE_PIDFD is true,the function creates a new file
+object called pidfile,and invokes get_pid(),which increases the refcnt
+of pid for pidfile to hold.
 
-This adds a node for using the syscon reboot driver to trigger a reset.
+The reference counting issues take place in the error handling paths.
+When error occurs after the construction of pidfile, the function only
+invokes fput() to destroy pidfile, in which the increased refcount
+won't be decreased, resulting in a refcount leak.
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+Fix this issue by adding put_pid() in the error handling path
+bad_fork_put_pidfd.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
 ---
- arch/arm/boot/dts/mstar-v7.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/fork.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index c8b192569d05..7ac7e649189f 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -78,6 +78,13 @@ pmsleep: syscon@1c00 {
- 				reg = <0x1c00 0x100>;
- 			};
- 
-+			reboot {
-+				compatible = "syscon-reboot";
-+				regmap = <&pmsleep>;
-+				offset = <0xb8>;
-+				mask = <0x79>;
-+			};
-+
- 			l3bridge: l3bridge@204400 {
- 				compatible = "mstar,l3bridge";
- 				reg = <0x204400 0x200>;
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 142b23645d82..7cbfb2c4fce3 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2319,6 +2319,7 @@ static __latent_entropy struct task_struct *copy_process(
+ bad_fork_put_pidfd:
+ 	if (clone_flags & CLONE_PIDFD) {
+ 		fput(pidfile);
++		put_pid(pid);
+ 		put_unused_fd(pidfd);
+ 	}
+ bad_fork_free_pid:
 -- 
-2.27.0
+2.25.1
 
