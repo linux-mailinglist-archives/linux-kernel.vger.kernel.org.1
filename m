@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F28122DBE3
+	by mail.lfdr.de (Postfix) with ESMTP id 9B90022DBE4
 	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 06:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726106AbgGZEj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 00:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        id S1726244AbgGZEkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 00:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbgGZEj6 (ORCPT
+        with ESMTP id S1725747AbgGZEkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 00:39:58 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6163C0619D2
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:39:58 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id il6so1697516pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:39:58 -0700 (PDT)
+        Sun, 26 Jul 2020 00:40:02 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04699C0619D2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:40:02 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id 72so6463837ple.0
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Jul 2020 21:40:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TOWjKhpTAUxQGzRJ9viFhazH/fxYC7lH/fcb5nYvYF8=;
-        b=JKPAyqM7DYs8ZxV2wxCYxmRX9YIbRDi8htfCF4Iosv2ft0c+yX6CcF7e8oGlxBFZQd
-         tbEMr76Ja2sFM5x3o77uGnz75XZRJiOwUdwOEadXmo5WE99JA8Ajkj3WLDXOPCHiR3oz
-         KZ6YYQZ2O6yNgOvDuse6P9nGN9NGm6FfAmDrI=
+        bh=S1PScPr62Fyv3G3V3sqS9lJD1oItrdYt39x4/kLlLZg=;
+        b=f1GWr7Zc/SXlmn6mpmIZZbbZO2lfbv2DdsH8zIq4IUJlSzD2EuurHvhso0l3HGPDpy
+         OV+KB4ORv8psgddkQju9P4NtBIJNoS1Ads0DUfP2hWG3NI7lC2eAIi9iBjzoVE2yY/xo
+         uqAIBMEGixZv4admjTtM3jdG0rN3V4KkEQ4Ig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TOWjKhpTAUxQGzRJ9viFhazH/fxYC7lH/fcb5nYvYF8=;
-        b=WscZdeFS0GFdgZhDuA7A9EZDQCnUCUzxSpV5ykpPV2G9kLLxgqjWMdeKjZdCuLGwwB
-         HJxkzzRY21mXhQpGFGov6aRM0JsrBwMwZLG5IslhuVsU2XR4Tu+IhJ6pdzZytPFjSsTt
-         zcQQkRSHSUVwFbI/oOUZRRr2fqs+1llgHseM36Fw6vsJHBnqXcFIoDzx95fmCJvBITrC
-         effkk/KS4vVedrgIRAIepHwGaWUXxcqss3gj74Xgz55ZchFB8di5p0jRwO0O9PoyFjGf
-         QOeixkQTuGPCwXG12yFFkh1T/G562Q+oFt62cn2m7i4ZX7Zzfiks/aE0hKZgkCgJhepu
-         dBmw==
-X-Gm-Message-State: AOAM5310cP857GYw+mkeOyLFgsQH/0IaPG9YpxC25cbqlAxYhHckhYiJ
-        tTX5I97yeaSnTLemZZqB/jxEy6zt7Zs=
-X-Google-Smtp-Source: ABdhPJxh4sRsd07sZyUTJSxYKMWazSwAyP3irmtzA7+FVUKFIaegODvr1sdEwiFJSqJADyhWgO0+AA==
-X-Received: by 2002:a17:90b:11c7:: with SMTP id gv7mr12685172pjb.175.1595738398347;
-        Sat, 25 Jul 2020 21:39:58 -0700 (PDT)
+        bh=S1PScPr62Fyv3G3V3sqS9lJD1oItrdYt39x4/kLlLZg=;
+        b=Yo03neGWKcXzqd0ERqJsCaPPm/ulYQ5sM13R/iak+8Gnpvx74knxUpfMNVqiwi00Qd
+         83KzWrwjpgIo8dwDnXbBYnkj3eDeJVj5W4+PFPGL3y7E03U/UIf8G/7yoktad6jgDhH+
+         Al1Nsxck7xdFJe4nZR8+g+vNnxuI2h3nXSWvxuBHgX8Q1SSyKcIz6ctAnpidM+APe3OX
+         /hHjoPYD6p8KnnSLNnFtcLZzy7UZLppz5ue4/Ns63gPAqdKKocfmDZgFoYL9U2JDqQWq
+         5Kt0u1t6UmOlmkjrpND0AQ4myx9GRW2cRJ5l/l3ZQDQNId1VNGbG20GiXhAfVuT5s7mk
+         o7dA==
+X-Gm-Message-State: AOAM530ogM6ZNSU+LXejaO+ppkxGkYlg+8df51Iv4BysRdplnWTvQLuW
+        dmfWBS879JkmO5C4FRTnr48EdA==
+X-Google-Smtp-Source: ABdhPJyWKGqMGQhv/ydwBeupMiGitoRNYos25yqTDgSQYVBfbpr1lNBgCgwv7ZHoETJw+BUYNcBLag==
+X-Received: by 2002:a17:902:59c1:: with SMTP id d1mr14715427plj.78.1595738400719;
+        Sat, 25 Jul 2020 21:40:00 -0700 (PDT)
 Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
-        by smtp.googlemail.com with ESMTPSA id t1sm10507372pje.55.2020.07.25.21.39.56
+        by smtp.googlemail.com with ESMTPSA id t1sm10507372pje.55.2020.07.25.21.39.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jul 2020 21:39:57 -0700 (PDT)
+        Sat, 25 Jul 2020 21:40:00 -0700 (PDT)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     soc@kernel.org
 Cc:     arnd@arndb.de, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH 1/7] ARM:mstar: Add IMI SRAM region
-Date:   Sun, 26 Jul 2020 13:39:42 +0900
-Message-Id: <20200726043948.1357573-2-daniel@0x0f.com>
+Subject: [PATCH 2/7] ARM:mstar: Adjust IMI size of infinity
+Date:   Sun, 26 Jul 2020 13:39:43 +0900
+Message-Id: <20200726043948.1357573-3-daniel@0x0f.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200726043948.1357573-1-daniel@0x0f.com>
 References: <20200726043948.1357573-1-daniel@0x0f.com>
@@ -62,48 +62,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All MStar v7 SoCs have an internal SRAM region that is between 64KB
-(infinity2m) and 128KB(infinity3, mercury5).
-
-The region is always at the same base address and is used for the
-second stage loader (MStar IPL or u-boot SPL) and will be used for
-the DDR self-refresh entry code within the kernel eventually.
-
-This patch adds a 128KB region to the SoC and the minimum 64KB SRAM
-region to the base dtsi. Families with more SRAM will override the
-size in their family level dtsi.
+infinity has 88KB of SRAM at the IMI region.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/arm/boot/dts/mstar-v7.dtsi | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/infinity.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index 3b99bb435bb5..6bc55fdbee04 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -45,7 +45,8 @@ soc: soc {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges = <0x16001000 0x16001000 0x00007000>,
--			 <0x1f000000 0x1f000000 0x00400000>;
-+			 <0x1f000000 0x1f000000 0x00400000>,
-+			 <0xa0000000 0xa0000000 0x20000>;
+diff --git a/arch/arm/boot/dts/infinity.dtsi b/arch/arm/boot/dts/infinity.dtsi
+index f68e6d59c328..cd911adef014 100644
+--- a/arch/arm/boot/dts/infinity.dtsi
++++ b/arch/arm/boot/dts/infinity.dtsi
+@@ -5,3 +5,7 @@
+  */
  
- 		gic: interrupt-controller@16001000 {
- 			compatible = "arm,cortex-a7-gic";
-@@ -78,6 +79,11 @@ pm_uart: uart@221000 {
- 				clock-frequency = <172000000>;
- 				status = "disabled";
- 			};
-+                };
+ #include "mstar-v7.dtsi"
 +
-+		imi: sram@a0000000 {
-+			compatible = "mmio-sram";
-+			reg = <0xa0000000 0x10000>;
- 		};
- 	};
- };
++&imi {
++	reg = <0xa0000000 0x16000>;
++};
 -- 
 2.27.0
 
