@@ -2,79 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495B222E0FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352D822E14B
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726971AbgGZP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 11:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726065AbgGZP44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 11:56:56 -0400
-Received: from localhost.localdomain (unknown [194.230.155.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22F0520714;
-        Sun, 26 Jul 2020 15:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595779015;
-        bh=v13Fxhc84IN1axB88Du7lE/qbL3kockSOUNFFm3PwLg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7k3bNuchI6J7q85gstyyJGj9DVLqYIPWtl2Iz1ybboZmf8HR7kHFI63b6Xu/+Ger
-         UosG0vy04u6lE2tFKYlrKBVHu9LhYy3n9AC/+IBL56xIrJQIdkBJKp7zJGwKEDJKv8
-         OD7p+oc0w7tnPqsNVESsJ0Qdf/eVXf1Hm7eAc2eY=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        id S1727794AbgGZQ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 12:28:51 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:36001
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726044AbgGZQ2u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 12:28:50 -0400
+X-IronPort-AV: E=Sophos;i="5.75,399,1589234400"; 
+   d="scan'208";a="355317949"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 26 Jul 2020 18:28:48 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 2/2] MAINTAINERS: Add linux-mips mailing list to JZ47xx entries
-Date:   Sun, 26 Jul 2020 17:55:59 +0200
-Message-Id: <20200726155559.4650-2-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200726155559.4650-1-krzk@kernel.org>
-References: <20200726155559.4650-1-krzk@kernel.org>
+Subject: [PATCH] PCI: correct flag name
+Date:   Sun, 26 Jul 2020 17:47:35 +0200
+Message-Id: <1595778455-12132-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The entries for JZ47xx SoCs and its drivers lacked MIPS mailing list.
-Only MTD NAND driver pointed linux-mtd.  Add linux-mips so the relevant
-patches will get attention of MIPS developers.
+RESOURCE_IO does not exist.  Rename to IORESOURCE_IO.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
+Just a guess based on the most similar name...
 
-Changes since v1:
-1. Do not update DMA driver entry
-2. Add ack
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/filesystems/sysfs-pci.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 362863cae239..d1cc0afe0762 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8544,11 +8544,13 @@ F:	samples/bpf/ibumad_user.c
- INGENIC JZ4780 NAND DRIVER
- M:	Harvey Hunt <harveyhuntnexus@gmail.com>
- L:	linux-mtd@lists.infradead.org
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	drivers/mtd/nand/raw/ingenic/
+diff --git a/Documentation/filesystems/sysfs-pci.rst b/Documentation/filesystems/sysfs-pci.rst
+index a265f3e..742fbd2 100644
+--- a/Documentation/filesystems/sysfs-pci.rst
++++ b/Documentation/filesystems/sysfs-pci.rst
+@@ -63,7 +63,7 @@ files, each with their own function.
+   binary - file contains binary data
+   cpumask - file contains a cpumask type
  
- INGENIC JZ47xx SoCs
- M:	Paul Cercueil <paul@crapouillou.net>
-+L:	linux-mips@vger.kernel.org
- S:	Maintained
- F:	arch/mips/boot/dts/ingenic/
- F:	arch/mips/include/asm/mach-jz4740/
--- 
-2.17.1
+-.. [1] rw for RESOURCE_IO (I/O port) regions only
++.. [1] rw for IORESOURCE_IO (I/O port) regions only
+ 
+ The read only files are informational, writes to them will be ignored, with
+ the exception of the 'rom' file.  Writable files can be used to perform
 
