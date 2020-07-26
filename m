@@ -2,64 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C41B22E163
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A0622E167
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgGZQhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 12:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgGZQhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 12:37:16 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DA5C0619D2;
-        Sun, 26 Jul 2020 09:37:15 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jzjeB-00367e-9C; Sun, 26 Jul 2020 16:37:11 +0000
-Date:   Sun, 26 Jul 2020 17:37:11 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     x86@kernel.org, Jan Kara <jack@suse.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 4/4] quota: simplify the quotactl compat handling
-Message-ID: <20200726163711.GU2786714@ZenIV.linux.org.uk>
-References: <20200726160401.311569-1-hch@lst.de>
- <20200726160401.311569-5-hch@lst.de>
- <20200726163214.GS2786714@ZenIV.linux.org.uk>
- <20200726163422.GA24657@lst.de>
+        id S1726946AbgGZQkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 12:40:21 -0400
+Received: from mga17.intel.com ([192.55.52.151]:60255 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726117AbgGZQkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 12:40:20 -0400
+IronPort-SDR: di6lsi8cNdh0yTBkvumlRNxRR5pEyVDUH5gaTuSJDeF4ieMnauT2f1563qbCVDEGVnOlPyYGub
+ 6ey0nO9q4Ysg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="130979336"
+X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
+   d="scan'208";a="130979336"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 09:40:20 -0700
+IronPort-SDR: cp22A0yikCY4gUlhqGKnPmriG9m3AKh/ApEriQoM8Y1J4FQ5+Z0NRNmnGoqcJme2gecKhOR4Os
+ 9s7oVkPEc5Sw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
+   d="scan'208";a="303186748"
+Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 26 Jul 2020 09:40:18 -0700
+Received: from kbuild by df0563f96c37 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jzjhC-0001XO-9d; Sun, 26 Jul 2020 16:40:18 +0000
+Date:   Mon, 27 Jul 2020 00:38:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 3aae57f0c3ba57715cf89201b5a5f290684078a5
+Message-ID: <5f1db1a3.kwaVlzkq2+U7gqG2%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200726163422.GA24657@lst.de>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 06:34:22PM +0200, Christoph Hellwig wrote:
-> On Sun, Jul 26, 2020 at 05:32:14PM +0100, Al Viro wrote:
-> > > +static int compat_copy_fs_qfilestat(struct compat_fs_qfilestat __user *to,
-> > > +		struct fs_qfilestat *from)
-> > > +{
-> > > +	if (copy_to_user(to, from, sizeof(*to)) ||
-> > > +	    put_user(from->qfs_nextents, &to->qfs_nextents))
-> > > +		return -EFAULT;
-> > > +	return 0;
-> > > +}
-> > 
-> > do we have any need of that put_user()?  Note that you don't even call
-> > that thing unless compat_need_64bit_alignment_fixup() is true.  And AFAICS
-> > all such cases are little-endian...
-> 
-> The main reason it is there is to preserve the previous semantics.
-> And no, I don't think we actually need it on x86.  But what if some
-> poor souls adds a BE version that needs this?  E.g. arm oabi has similar
-> weird alignment, and now imagine someone adding arm64 compat code for
-> that..
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cpu
+branch HEAD: 3aae57f0c3ba57715cf89201b5a5f290684078a5  x86/split_lock: Enable the split lock feature on Sapphire Rapids and Alder Lake CPUs
 
-I'd probably add /* just in case some poor sod fucks up the same way for big-endian biarch */
-next to that put_user(), then ;-)
+elapsed time: 1633m
 
+configs tested: 74
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                               allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                              allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                              allnoconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+openrisc                            defconfig
+nios2                               defconfig
+nios2                            allyesconfig
+c6x                              allyesconfig
+c6x                               allnoconfig
+openrisc                         allyesconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                             allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+h8300                            allmodconfig
+xtensa                              defconfig
+arc                                 defconfig
+arc                              allyesconfig
+sh                               allmodconfig
+sh                                allnoconfig
+microblaze                        allnoconfig
+mips                             allyesconfig
+mips                              allnoconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                              defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          rhel-kconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                                defconfig
+sparc64                             defconfig
+sparc64                          allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                          allmodconfig
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
