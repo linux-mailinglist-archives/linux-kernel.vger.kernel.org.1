@@ -2,212 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EFB22DDF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 12:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1F022DDF8
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 12:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgGZK11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 06:27:27 -0400
-Received: from crapouillou.net ([89.234.176.41]:44822 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgGZK11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 06:27:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595759245; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fbU+TeK0+GgvvOesLiJ7PCOZj8nQcAuLTnnFTcND9Qo=;
-        b=yJzkDFXNIOz//Z48en5ph0zLCiLXWQQ0lwjtPF0dB28wPZmxGb5HGTf1ozlqsnVRlijhKw
-        /JBhmCGDpSQSHK2AZvnDYx/Mg5UYl+PIJFc7X5j6iNmzLv9AX4elSDIyZhPjHsB6NxL9TU
-        1WDwhTUW6K6hyqI1APOxHwrCM6XnNeQ=
-Date:   Sun, 26 Jul 2020 12:27:15 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [RESEND PATCH] usb: common: usb-conn-gpio: Register optional
- charger
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>, od@zcrc.me,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-Id: <FPN2EQ.RC89XKRQDKRN3@crapouillou.net>
-In-Reply-To: <CAHp75VcfhDncqP_hSVvRNc_vY0fOYaoxm-tiCm2G92Xrisb9hA@mail.gmail.com>
-References: <20200621224807.882184-1-paul@crapouillou.net>
-        <CAHp75VcfhDncqP_hSVvRNc_vY0fOYaoxm-tiCm2G92Xrisb9hA@mail.gmail.com>
+        id S1727111AbgGZK3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 06:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgGZK3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 06:29:39 -0400
+Received: from smtp.al2klimov.de (smtp.al2klimov.de [IPv6:2a01:4f8:c0c:1465::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2284EC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 03:29:39 -0700 (PDT)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by smtp.al2klimov.de (Postfix) with ESMTPA id 28F6060E07;
+        Sun, 26 Jul 2020 10:29:36 +0000 (UTC)
+From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
+To:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Subject: [PATCH] acpi: nfit: sysfs: Replace HTTP links with HTTPS ones
+Date:   Sun, 26 Jul 2020 12:29:30 +0200
+Message-Id: <20200726102930.16089-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+X-Spam-Level: *****
+Authentication-Results: smtp.al2klimov.de;
+        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Rationale:
+Reduces attack surface on kernel devs opening the links for MITM
+as HTTPS traffic is much harder to manipulate.
+
+Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
+---
+ Continuing my work started at 93431e0607e5 with unmaintained stuff according to:
+ perl scripts/get_maintainer.pl --nogit{,-fallback} --nol
+
+ See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+ (Actually letting a shell for loop submit all this stuff for me.)
+
+ If there are any URLs to be removed completely
+ or at least not (just) HTTPSified:
+ Just clearly say so and I'll *undo my change*.
+ See also: https://lkml.org/lkml/2020/6/27/64
+
+ If there are any valid, but yet not changed URLs:
+ See: https://lkml.org/lkml/2020/6/26/837
+
+ If you apply the patch, please let me know.
 
 
-Le dim. 26 juil. 2020 =E0 13:14, Andy Shevchenko=20
-<andy.shevchenko@gmail.com> a =E9crit :
-> On Mon, Jun 22, 2020 at 1:51 AM Paul Cercueil <paul@crapouillou.net>=20
-> wrote:
->>=20
->>  Register a power supply charger, if the Kconfig option
->>  USB_CONN_GPIO_CHARGER is set, whose online state depends on whether
->>  the USB role is set to device or not.
->>=20
->>  This is useful when the USB role is the only way to know if the=20
->> device
->>  is charging from USB. The API is the standard power supply charger=20
->> API,
->>  you get a /sys/class/power_supply/xxx/online node which tells you=20
->> the
->>  state of the charger.
->>=20
->>  The sole purpose of this is to give userspace applications a way to
->>  know whether or not the charger is plugged.
->=20
-> I'm not sure I understand the purpose of this (third?) way to detect
-> USB charger and notify user space about.
-> Why is extcon not good enough?
+ Documentation/ABI/testing/sysfs-bus-nfit | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We can't have extcon and USB role detection at the same time.
-
--Paul
-
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/usb/common/Kconfig         | 11 +++++++
->>   drivers/usb/common/usb-conn-gpio.c | 47=20
->> ++++++++++++++++++++++++++++++
->>   2 files changed, 58 insertions(+)
->>=20
->>  diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
->>  index d611477aae41..5405ae96c68f 100644
->>  --- a/drivers/usb/common/Kconfig
->>  +++ b/drivers/usb/common/Kconfig
->>  @@ -49,3 +49,14 @@ config USB_CONN_GPIO
->>=20
->>            To compile the driver as a module, choose M here: the=20
->> module will
->>            be called usb-conn-gpio.ko
->>  +
->>  +if USB_CONN_GPIO
->>  +
->>  +config USB_CONN_GPIO_CHARGER
->>  +       bool "USB charger support"
->>  +       select POWER_SUPPLY
->>  +       help
->>  +         Register a charger with the power supply subsystem. This=20
->> will allow
->>  +         userspace to know whether or not the device is charging=20
->> from USB.
->>  +
->>  +endif
->>  diff --git a/drivers/usb/common/usb-conn-gpio.c=20
->> b/drivers/usb/common/usb-conn-gpio.c
->>  index ed204cbb63ea..129d48db280b 100644
->>  --- a/drivers/usb/common/usb-conn-gpio.c
->>  +++ b/drivers/usb/common/usb-conn-gpio.c
->>  @@ -17,6 +17,7 @@
->>   #include <linux/of.h>
->>   #include <linux/pinctrl/consumer.h>
->>   #include <linux/platform_device.h>
->>  +#include <linux/power_supply.h>
->>   #include <linux/regulator/consumer.h>
->>   #include <linux/usb/role.h>
->>=20
->>  @@ -38,6 +39,9 @@ struct usb_conn_info {
->>          struct gpio_desc *vbus_gpiod;
->>          int id_irq;
->>          int vbus_irq;
->>  +
->>  +       struct power_supply_desc desc;
->>  +       struct power_supply *charger;
->>   };
->>=20
->>   /**
->>  @@ -98,6 +102,8 @@ static void usb_conn_detect_cable(struct=20
->> work_struct *work)
->>                  ret =3D regulator_enable(info->vbus);
->>                  if (ret)
->>                          dev_err(info->dev, "enable vbus regulator=20
->> failed\n");
->>  +       } else if (IS_ENABLED(CONFIG_USB_CONN_GPIO_CHARGER)) {
->>  +               power_supply_changed(info->charger);
->>          }
->>=20
->>          info->last_role =3D role;
->>  @@ -121,10 +127,35 @@ static irqreturn_t usb_conn_isr(int irq, void=20
->> *dev_id)
->>          return IRQ_HANDLED;
->>   }
->>=20
->>  +static enum power_supply_property usb_charger_properties[] =3D {
->>  +       POWER_SUPPLY_PROP_ONLINE,
->>  +};
->>  +
->>  +static int usb_charger_get_property(struct power_supply *psy,
->>  +                                   enum power_supply_property psp,
->>  +                                   union power_supply_propval *val)
->>  +{
->>  +       struct usb_conn_info *info =3D power_supply_get_drvdata(psy);
->>  +
->>  +       switch (psp) {
->>  +       case POWER_SUPPLY_PROP_ONLINE:
->>  +               val->intval =3D info->last_role =3D=3D USB_ROLE_DEVICE;
->>  +               break;
->>  +       default:
->>  +               return -EINVAL;
->>  +       }
->>  +
->>  +       return 0;
->>  +}
->>  +
->>   static int usb_conn_probe(struct platform_device *pdev)
->>   {
->>          struct device *dev =3D &pdev->dev;
->>  +       struct power_supply_desc *desc;
->>          struct usb_conn_info *info;
->>  +       struct power_supply_config cfg =3D {
->>  +               .of_node =3D dev->of_node,
->>  +       };
->>          int ret =3D 0;
->>=20
->>          info =3D devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
->>  @@ -203,6 +234,22 @@ static int usb_conn_probe(struct=20
->> platform_device *pdev)
->>                  }
->>          }
->>=20
->>  +       if (IS_ENABLED(CONFIG_USB_CONN_GPIO_CHARGER)) {
->>  +               desc =3D &info->desc;
->>  +               desc->name =3D "usb-charger";
->>  +               desc->properties =3D usb_charger_properties;
->>  +               desc->num_properties =3D=20
->> ARRAY_SIZE(usb_charger_properties);
->>  +               desc->get_property =3D usb_charger_get_property;
->>  +               desc->type =3D POWER_SUPPLY_TYPE_USB;
->>  +               cfg.drv_data =3D info;
->>  +
->>  +               info->charger =3D devm_power_supply_register(dev,=20
->> desc, &cfg);
->>  +               if (IS_ERR(info->charger)) {
->>  +                       dev_err(dev, "Unable to register=20
->> charger\n");
->>  +                       return PTR_ERR(info->charger);
->>  +               }
->>  +       }
->>  +
->>          platform_set_drvdata(pdev, info);
->>=20
->>          /* Perform initial detection */
->>  --
->>  2.27.0
->>=20
->=20
->=20
-> --
-> With Best Regards,
-> Andy Shevchenko
-
+diff --git a/Documentation/ABI/testing/sysfs-bus-nfit b/Documentation/ABI/testing/sysfs-bus-nfit
+index a1cb44dcb908..44aba665da95 100644
+--- a/Documentation/ABI/testing/sysfs-bus-nfit
++++ b/Documentation/ABI/testing/sysfs-bus-nfit
+@@ -110,7 +110,7 @@ Description:
+ 		respectively.
+ 
+ 		See the specifications for these command families here:
+-		http://pmem.io/documents/NVDIMM_DSM_Interface-V1.6.pdf
++		https://pmem.io/documents/NVDIMM_DSM_Interface-V1.6.pdf
+ 		https://github.com/HewlettPackard/hpe-nvm/blob/master/Documentation/
+ 		https://msdn.microsoft.com/library/windows/hardware/mt604741"
+ 
+-- 
+2.27.0
 
