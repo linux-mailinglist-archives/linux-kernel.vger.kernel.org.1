@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940B922DDD0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC4522DDD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgGZJvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
+        id S1726701AbgGZJ5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:57:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725810AbgGZJvy (ORCPT
+        with ESMTP id S1725794AbgGZJ5C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:51:54 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C758C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 02:51:54 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x5so10926225wmi.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 02:51:53 -0700 (PDT)
+        Sun, 26 Jul 2020 05:57:02 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88754C0619D2;
+        Sun, 26 Jul 2020 02:57:02 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id p1so6647723pls.4;
+        Sun, 26 Jul 2020 02:57:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oEbIDSC1rXRtLVhm/ydu++g4Gbu31ygS4ObIAOgDsuI=;
-        b=TjHzSRO0qj8pH/Ell4cZdrTHTTT5Pcn79M/VP86Na/C1ezMCDK3B4F+JTDwxvSxXqq
-         WLLFrVc1W7pEskjeilBNLtWE3X+CPqzgp+OeDXDh80OCrH6GbGFL2t8QBEXhAyEU8vEz
-         6e1VrBWy9N2YFIw996WWrKAmMvxLmJPBg9+vKf9HoaUZHQwP0jGm732zARsQ7Yct1mNp
-         NCVnR1Pts9tFOXA+hAAshZqLHNW0OXrFGbjTkvzgj0HvVPLFbU2jrOPxereE/lgBrdEO
-         IIUi7ZJ7Pn9+wzgsQLkRLenfgwCuXDpMe/fDsEqZHqP716COFzjIjmCPwZRQGHErfLPG
-         0GiA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bEioRYPAU2RstGlAFkLfimzj4h56/cP3ARZGSjW0G+c=;
+        b=tpdTiDHFIiZFLuKluIaRVXv06TsoqDVgPwWzaH0QECxEo4oSyVEq1VC0tviqxot+Iw
+         cJ6C/bEoWGEN9rDc1Gf7/6xDdUxiWmRhqDIv3t76STpvog04kGjY5KU4TVYansjogzTm
+         5PCyq3FdG4f0EQzIfPv4+PnspWSQnnLzpUOzEEeZ3xW3b3opihQLJKNHz4USvyPArOsU
+         X8FJZmz/PdQM7ieLTuYNyYZnenAYowmXRwZpnYeABoqj/v2Yv+myAOgwf3FSS3YfI+JT
+         SGBwV9zMsC2k3cwYk9LcE2tKUCYEEf5Y4akzhfa3BJmtbAsZQr1ud55k4w+Td+nwmx5m
+         TzJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oEbIDSC1rXRtLVhm/ydu++g4Gbu31ygS4ObIAOgDsuI=;
-        b=UaUbcwVP2kOvYDokDup85HPC3Hw8s0hZ/7bOOR2USk76Y2ENVg70dIOQj6g71q+3JP
-         zsL+uFeh6R25dgFL3ItNoRV8RP4VMvu8ws4hvK5EfOSOcCKNBbhW9rRLeuAU2wYd8yJ9
-         rRHZbnWcG3YoBnGJaDB8HienuYmYL2t2TzwV3mUOprLie6qido1EI6ooWkOx+EayXnX4
-         YuLkR6Ay/OWIU+Vrg3mXcj6OKmWiCXQ/eCWgmG3w8+Orkbh0yVP1E/xHHA9uJBfmhqDp
-         8syYWir7Lg9klxQWN0oqt1zynBF4Ex6dK+OWbJPLTx4l3szmlVSy9/85PAlOt9Z/Abyt
-         qbBg==
-X-Gm-Message-State: AOAM532abzJAhhaYgqCnGXt6HYT36ILFlJAlVz6J8HsI+yFNsJaA2Seh
-        AqRulPtIPwT9rOnC0wUka0Zurg==
-X-Google-Smtp-Source: ABdhPJyd2i2prFENiOohjTGObmcV1kDbVuCsR8PDtL8TH2kqkeX4yAQxHQRi1z1oMxYhKTU9ApArvQ==
-X-Received: by 2002:a1c:e244:: with SMTP id z65mr8187502wmg.34.1595757112204;
-        Sun, 26 Jul 2020 02:51:52 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id t2sm13192830wma.43.2020.07.26.02.51.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 02:51:51 -0700 (PDT)
-Date:   Sun, 26 Jul 2020 11:51:50 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>
-Subject: Re: [net-next v3 2/6] net: marvell: prestera: Add PCI interface
- support
-Message-ID: <20200726095150.GH2216@nanopsycho>
-References: <20200725150651.17029-1-vadym.kochan@plvision.eu>
- <20200725150651.17029-3-vadym.kochan@plvision.eu>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bEioRYPAU2RstGlAFkLfimzj4h56/cP3ARZGSjW0G+c=;
+        b=VjfRNHGqEyqhksX/zKscQvOy8UJuMXPeubprlQgepjgZQOBV1JRN5bLnzMs6VqCDlV
+         +TZNkFwPFrN0DSlAYCfMVWG1eeVSIDS+ZNGc/Y/Odaf/2K5PEYjm5C3qzxGgX9B3oJmw
+         u8SLTfvkn5b/wDAapNx5g3n2UuD1J7qBCkf/IxDtAnI829L0qlz1Bu8W6msX9tYMLY0m
+         u/UFrUhj5AYkioRTCF8EjGq4zGzf8+RXT/SxK2yiRlhzHu1nkcbW1a5qy1BApBT39i4a
+         eBCuGm2jp49LOnXm0RZzLY+RsvSY2A/cbcU6M/kqW1XrEsDm+2a9B3VolLFuE9W0iJFL
+         aIHA==
+X-Gm-Message-State: AOAM531GYRZRM3lwjPjLdfp/ZMp16ysL7KIfbkJXDtXUZ+QbhVqjpJWJ
+        FbuO1HWlgAOPRPvJClALQibxkFmER6M=
+X-Google-Smtp-Source: ABdhPJwKh0EIayObse8Qy8n0W1VwaAasvfCJ0LRmd2NS2jKpgG0P1TwE7UAjWyjG34tYjDtaeptBmQ==
+X-Received: by 2002:a17:902:82cb:: with SMTP id u11mr14742514plz.207.1595757421604;
+        Sun, 26 Jul 2020 02:57:01 -0700 (PDT)
+Received: from [192.168.0.109] ([1.186.115.27])
+        by smtp.gmail.com with ESMTPSA id k12sm1101356pjp.38.2020.07.26.02.56.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Jul 2020 02:57:00 -0700 (PDT)
+Subject: Re: [PATCH v3 2/4] staging: media: atomisp: fix style of open brace
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20200726062541.11304-1-bharadwaj.rohit8@gmail.com>
+ <20200726090512.20574-2-bharadwaj.rohit8@gmail.com>
+ <20200726114224.1825a769@coco.lan>
+From:   Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
+Message-ID: <33c496d9-227e-995e-3b43-3a64bc5163b5@gmail.com>
+Date:   Sun, 26 Jul 2020 15:26:56 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200725150651.17029-3-vadym.kochan@plvision.eu>
+In-Reply-To: <20200726114224.1825a769@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sat, Jul 25, 2020 at 05:06:47PM CEST, vadym.kochan@plvision.eu wrote:
->Add PCI interface driver for Prestera Switch ASICs family devices, which
->provides:
->
->    - Firmware loading mechanism
->    - Requests & events handling to/from the firmware
->    - Access to the firmware on the bus level
->
->The firmware has to be loaded each time device is reset. The driver is
->loading it from:
->
->    /lib/firmware/marvell/prestera_fw-v{MAJOR}.{MINOR}.img
->
->The full firmware image version is located within internal header and
->consists of 3 numbers - MAJOR.MINOR.PATCH. Additionally, driver has
->hard-coded minimum supported firmware version which it can work with:
->
->    MAJOR - reflects the support on ABI level between driver and loaded
->            firmware, this number should be the same for driver and loaded
->            firmware.
->
->    MINOR - this is the minimum supported version between driver and the
->            firmware.
->
->    PATCH - indicates only fixes, firmware ABI is not changed.
->
->Firmware image file name contains only MAJOR and MINOR numbers to make
->driver be compatible with any PATCH version.
->
->Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
->Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-
-Looks fine.
-Acked-by: Jiri Pirko <jiri@mellanox.com>
+On 26/07/20 3:12 pm, Mauro Carvalho Chehab wrote:
+> Em Sun, 26 Jul 2020 14:35:12 +0530
+> Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com> escreveu:
+> 
+>> this patch fixes style of open brace after functions and if statements
+>>
+>> Signed-off-by: Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
+> 
+>> @@ -119,8 +121,9 @@ sh_css_load_blob_info(const char *fw, const struct ia_css_fw_info *bi,
+>>  	blob = (const unsigned char *)fw + bi->blob.offset;
+>>  
+>>  	/* sanity check */
+>> -	if (bi->blob.size != bi->blob.text_size + bi->blob.icache_size + bi->blob.data_size + bi->blob.padding_size)
+>> -	{
+>> +	if (bi->blob.size !=
+>> +		bi->blob.text_size + bi->blob.icache_size +
+>> +		bi->blob.data_size + bi->blob.padding_size) {
+> 
+> 
+> Please adjust the alignments here. I'm pretty sure checkpatch --strict
+> will end complaining with the above, as the first line ends with "=".
+> 
+> I would, instead, code it as:
+> 
+> 	if (bi->blob.size != bi->blob.text_size + bi->blob.icache_size +
+> 			     bi->blob.data_size + bi->blob.padding_size) {
+> 
+> 
+> Thanks,
+> Mauro
+> 
+sure sir, do I have to make a v4 of the patch and send all the patches in this series again or should I just send this one particular patch again?
