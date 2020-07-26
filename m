@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB1722DF3E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF3D22DF65
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgGZMxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 08:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgGZMxd (ORCPT
+        id S1727854AbgGZM6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 08:58:11 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:43051 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgGZM6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 08:53:33 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B39C0619D2;
-        Sun, 26 Jul 2020 05:53:33 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a9so7716367pjd.3;
-        Sun, 26 Jul 2020 05:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R4T7tQMcRvlhK7jzS9wpJG+H4i1GMckJZWYDGHoH/II=;
-        b=rU77LQ6i8gZi61P3L9deG+VaqhuXUapmjk1algjVPC2JSElAiPIN/5qEGgW38mfTnj
-         QAX7dULkwcwM6Ubq5rMyHZsOsi4GSWpYDtUCAt5fVozNjLCfpbA9MQy5fD90PADw/mka
-         QepdRFrkGRoT+DQDXJnHe0qwyJ5zifDt9SQeCav2jscmmAFfU5a7fGVZQKdcr8Ocl9kV
-         IxxVrcZluClcwuEl9Di+lcSeqBmbw42UN9IwJezMGs2v/kRpGPn42zDHTyVWK7dVm9uW
-         UCJ1dtoem9CCYI39A0ajsZlt26ESpArPyPRcYNnHgnuvcbey0juBUIOljbZb499WWeJT
-         AXmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R4T7tQMcRvlhK7jzS9wpJG+H4i1GMckJZWYDGHoH/II=;
-        b=oKu1VNwSlLGA6ikAXfaZN7bf3h7FnFYWVycelq7Ri4IwG26HAzb0O9eus4xDZ8q4Hf
-         jkmqptU4Squr0X+GQ8+S5pVs7DxI2jyK7OyqeXx5ni81wgRCvaC4CjdGgLGqzE7mQcUp
-         QCs/GnkYgAdaMgDQI4rYHqZ3IQKx5Qd6oTNhcvxtEQFm/a7eyfQRpJrb/CesUW80yr9Y
-         IHd5xnngYiqYZIPqPPF+Ws0dBIpcqxI+Va17VLKhCzrba6023eB8k6ThhvroFpU27X/u
-         bkJLl5hs9Jj1acKaTmwaz9WKHoYzgDpSSGkHUgWi/QbYk7SQkpW3Abh02l0eLbjmXlov
-         1eUQ==
-X-Gm-Message-State: AOAM532BPBeYJOKJIcgmMo4SPtZJIuyVLfpn/WozWStRMIPMlQIjQ1M9
-        vX8TNbDXoxXX4glnXqoOxiTZBMbx6t4=
-X-Google-Smtp-Source: ABdhPJy+XjmUnqWgwhLFuieksNeTmaaDQA6UZSj6j+mjeRVxWyBNwf/r/1Tb+sxOqJMyku2EF7qUyA==
-X-Received: by 2002:a17:902:8f8b:: with SMTP id z11mr14408279plo.49.1595768012739;
-        Sun, 26 Jul 2020 05:53:32 -0700 (PDT)
-Received: from localhost (g155.222-224-148.ppp.wakwak.ne.jp. [222.224.148.155])
-        by smtp.gmail.com with ESMTPSA id x7sm12033589pfq.197.2020.07.26.05.53.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 05:53:32 -0700 (PDT)
-Date:   Sun, 26 Jul 2020 21:53:25 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH] io: Fix return type of _inb and _inl
-Message-ID: <20200726125325.GC80756@lianli.shorne-pla.net>
-References: <20200726031154.1012044-1-shorne@gmail.com>
- <CAHp75VciC+gqkCZ9voNKHU3hrtiOVzeWBu9_YEagpCGdTME2yg@mail.gmail.com>
+        Sun, 26 Jul 2020 08:58:11 -0400
+Received: from pc.localdomain (unknown [195.189.32.242])
+        (Authenticated sender: contact@artur-rojek.eu)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 35ADE240007;
+        Sun, 26 Jul 2020 12:58:07 +0000 (UTC)
+From:   Artur Rojek <contact@artur-rojek.eu>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Artur Rojek <contact@artur-rojek.eu>
+Subject: [PATCH] dt-bindings: power: Convert ingenic,battery.txt to YAML
+Date:   Sun, 26 Jul 2020 14:56:05 +0200
+Message-Id: <20200726125605.7009-1-contact@artur-rojek.eu>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VciC+gqkCZ9voNKHU3hrtiOVzeWBu9_YEagpCGdTME2yg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 12:00:37PM +0300, Andy Shevchenko wrote:
-> On Sun, Jul 26, 2020 at 6:14 AM Stafford Horne <shorne@gmail.com> wrote:
-> >
-> > The return type of functions _inb, _inw and _inl are all u16 which looks
-> > wrong.  This patch makes them u8, u16 and u32 respectively.
-> >
-> > The original commit text for these does not indicate that these should
-> > be all forced to u16.
-> 
-> Is it in alight with all architectures? that support this interface natively?
-> 
-> (Return value is arch-dependent AFAIU, so it might actually return
-> 16-bit for byte read, but I agree that this is weird for 32-bit value.
-> I think you have elaborate more in the commit message)
+Convert the textual documentation of Device Tree bindings for the
+Ingenic JZ47xx SoCs battery to YAML.
 
-Well, this is the generic io code,  at least these api's appear to not be different
-for each architecture.  The output read by the architecture dependant code i.e.
-__raw_readb() below is getting is placed into a u8.  So I think the output of
-the function will be u8.
+Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+---
+ .../bindings/power/supply/ingenic,battery.txt | 31 ---------
+ .../power/supply/ingenic,battery.yaml         | 67 +++++++++++++++++++
+ 2 files changed, 67 insertions(+), 31 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/supply/ingenic,battery.txt
+ create mode 100644 Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
 
-static inline u8 _inb(unsigned long addr)
-{
-	u8 val;
+diff --git a/Documentation/devicetree/bindings/power/supply/ingenic,battery.txt b/Documentation/devicetree/bindings/power/supply/ingenic,battery.txt
+deleted file mode 100644
+index 66430bf73815..000000000000
+--- a/Documentation/devicetree/bindings/power/supply/ingenic,battery.txt
++++ /dev/null
+@@ -1,31 +0,0 @@
+-* Ingenic JZ47xx battery bindings
+-
+-Required properties:
+-
+-- compatible: Must be "ingenic,jz4740-battery".
+-- io-channels: phandle and IIO specifier pair to the IIO device.
+-  Format described in iio-bindings.txt.
+-- monitored-battery: phandle to a "simple-battery" compatible node.
+-
+-The "monitored-battery" property must be a phandle to a node using the format
+-described in battery.txt, with the following properties being required:
+-
+-- voltage-min-design-microvolt: Drained battery voltage.
+-- voltage-max-design-microvolt: Fully charged battery voltage.
+-
+-Example:
+-
+-#include <dt-bindings/iio/adc/ingenic,adc.h>
+-
+-simple_battery: battery {
+-	compatible = "simple-battery";
+-	voltage-min-design-microvolt = <3600000>;
+-	voltage-max-design-microvolt = <4200000>;
+-};
+-
+-ingenic_battery {
+-	compatible = "ingenic,jz4740-battery";
+-	io-channels = <&adc INGENIC_ADC_BATTERY>;
+-	io-channel-names = "battery";
+-	monitored-battery = <&simple_battery>;
+-};
+diff --git a/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml b/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
+new file mode 100644
+index 000000000000..8d36216f6c0e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2019-2020 Artur Rojek
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/ingenic,battery.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Ingenic JZ47xx battery bindings
++
++maintainers:
++  - Artur Rojek <contact@artur-rojek.eu>
++
++properties:
++  compatible:
++    oneOf:
++      - enum:
++        - ingenic,jz4740-battery
++      - items:
++        - enum:
++          - ingenic,jz4725b-battery
++          - ingenic,jz4770-battery
++        - const: ingenic,jz4740-battery
++
++  io-channels:
++    items:
++      - description: >
++          phandle and IIO specifier pair to the IIO device.
++          See Documentation/devicetree/bindings/iio/iio-bindings.txt for more
++          details.
++
++  io-channel-names:
++    const: "battery"
++
++  monitored-battery:
++    items:
++      - description: >
++          phandle to a "simple-battery" compatible node.
++
++          This property must be a phandle to a node using the format described
++          in battery.txt, with the following properties being required:
++          - voltage-min-design-microvolt: drained battery voltage,
++          - voltage-max-design-microvolt: fully charged battery voltage.
++
++required:
++  - compatible
++  - io-channels
++  - io-channel-names
++  - monitored-battery
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/iio/adc/ingenic,adc.h>
++
++    simple_battery: battery {
++            compatible = "simple-battery";
++            voltage-min-design-microvolt = <3600000>;
++            voltage-max-design-microvolt = <4200000>;
++    };
++
++    ingenic-battery {
++            compatible = "ingenic,jz4740-battery";
++            io-channels = <&adc INGENIC_ADC_BATTERY>;
++            io-channel-names = "battery";
++            monitored-battery = <&simple_battery>;
++    };
+-- 
+2.27.0
 
-	__io_pbr();
-	val = __raw_readb(PCI_IOBASE + addr);
-	__io_par(val);
-	return val;
-}
-
-I can expand the commit text, but I would like to get some comments from the
-original author to confirm if this is an issue.
-
--Stafford
