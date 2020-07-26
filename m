@@ -2,89 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617E622DD76
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F58822DD7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgGZJEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S1727046AbgGZJHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgGZJEf (ORCPT
+        with ESMTP id S1725794AbgGZJHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:04:35 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF266C0619D2;
-        Sun, 26 Jul 2020 02:04:34 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k27so7751796pgm.2;
-        Sun, 26 Jul 2020 02:04:34 -0700 (PDT)
+        Sun, 26 Jul 2020 05:07:22 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5877C0619D2;
+        Sun, 26 Jul 2020 02:07:22 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e8so7736858pgc.5;
+        Sun, 26 Jul 2020 02:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aHrlTd85XWK3pOyfmvZVnMsTMYRkRM8sEaTNqMrlEeE=;
-        b=EiWMvIYCNZgUKEDR7GpvZnnTJeeR7ZjPdWr8N1i8AoOH7JGkF8PT+QofBwapvlO8dv
-         6hnoUmoHjdjfRXtLJJCo+pHnYu3InarkFRdO/uDqc5c98Jdq07D8sG9/JqTRsGUoZ5s8
-         2PFEIfeDDU3b0y3FTYlKwL1x0ZEV+X0SD8mWE/KWYci1QlbCTRq0BIB5TmKqt08n7Qt4
-         QBubCt8GTHUwAkN1uza4fnADPYGc1pxnPmFDjPUFgLQjbW1ZlN0p2Gqw4zFoKZAVX7Fr
-         hT4dZwdYIiHkfyNEtN4au4s1LpNUsOwQ5STEld5fyAfxxQdz8ze2Mce12kGxOJE3gQir
-         vO1Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TE4WH5V1PjNKPvtTMrDOivZD9WEtomgUlgWMan48ZxE=;
+        b=uhXn4kVy0oaA9ZPnoC9GsTva+siN9ZF/ExTW9LMFY/H5Bc4BsgDoebQ2YwEYChA8sh
+         LNxct7T1xLzjgW+QRQNw0VYcui8I88igldfo4FvSGrMK9hcdyT1K8dMZ3UizwpHcFp91
+         oDCe/pI4aX+LuEbHc5uaK5D28EXAAc6pokCSqZrUB5sOtgEUyjIwlpyDP3sPej91OSyV
+         o1t2wg3edrx3jD3997Yn7np/pnDKI62tWoKCkFl5PrMKqI36WfBEmsTDNNlSOwOlsO7I
+         BHhCImMs0tRuQ2i0zupqyrb/LJxUJIhdX0rmC8FD031jns3JSk5RDYoiSTWKO02GgvjL
+         WBYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aHrlTd85XWK3pOyfmvZVnMsTMYRkRM8sEaTNqMrlEeE=;
-        b=Yf3ItFlPJoSPw0KlwbMjBFOwfzH8O5DIwkKPOImVUP06yB45umGuRx+SvuhwRxJ02X
-         KlfTIbEc/jzROu4UbCM8xjnnsQF12/azsY0OxY8fnpiBEnYMjCQmMTsDcznIGDQblUQU
-         YXgn0/eHCJhAtnnVed8tU35A02pHiKZDGEhcooU0UYfbnYHw1ZnAlxxTcHRopiOcbkIx
-         rSKbpWYiqDrgLbknRQGkejtTQoG+S+E81XOdSQb0/ELczM/CURdsrGvvLvvrg0VTtAq4
-         HKrJ93+3PZEbdXq23Zt7/yy8b7tbYSj8nqFqMtXgVTjkZgGqAaweD8L7bMjkkee44akl
-         2lGQ==
-X-Gm-Message-State: AOAM532cmVqYPg/kLeKb4M5urVi6MCASpDwyZdTzCOKDN0cLhUOemUW8
-        UUDPX9qojDOgsJv/uQe6zLLQYFZ1dAM4lXUMzGpY8axa5eY=
-X-Google-Smtp-Source: ABdhPJx44ZrFZhNwXvgVe5Vd2Tea/ss8TkWcGSr7Z4Vl0BaVUKWkQCX6jehzcWJuvlQufdTtdrXtQWmbeKdaJx7L/2A=
-X-Received: by 2002:aa7:8bcb:: with SMTP id s11mr15288366pfd.170.1595754274348;
- Sun, 26 Jul 2020 02:04:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TE4WH5V1PjNKPvtTMrDOivZD9WEtomgUlgWMan48ZxE=;
+        b=tHEEbQthHUaGNQD8ss+cqwEK1P9fRACDMTofdgQp+fpDTY8KC0X9TqrwmJue+9kIvs
+         YiF9RCLdxzBiaZPWQ00h8Uhhmuw72PoM0YJY/VV0BzY4IynADTMWjQ+Qc/rm8T+4inBQ
+         ZcaH1094C9qW/A44iLO6KHrnip5lCxjnwXR60HI142JicMKrBbm8gsBPWv1r0RBBIATR
+         JZm8LdCGVvwKImPrFkwYuxXT2EQ73yAhekuMRvunSugmhdvr3UaUckOeevqOaasayi8s
+         Rqujmwla/wtcFsuEB79xvKw3hytCcrqfe5TEDDiyu/LlZJIRMJ4VCOW1jibscKYweVZR
+         U4Qw==
+X-Gm-Message-State: AOAM532zA60Uc5pmVz4BoFfUAvDrJAR3YrGU9uG2BXnpKoF3VTaXpkrb
+        hfwzx3VKZNTkyP7CQdKHIwM=
+X-Google-Smtp-Source: ABdhPJxdhVAyLhJhlakixUSaEi7TlhaMIolqf0rTviYwGQnxqsQXqtWf5IDyvqA5lL++d6/M9sCEfQ==
+X-Received: by 2002:a65:66c4:: with SMTP id c4mr10209304pgw.442.1595754442248;
+        Sun, 26 Jul 2020 02:07:22 -0700 (PDT)
+Received: from localhost.localdomain ([1.186.115.27])
+        by smtp.gmail.com with ESMTPSA id a129sm1608215pfd.165.2020.07.26.02.07.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Jul 2020 02:07:21 -0700 (PDT)
+From:   Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
+Subject: [PATCH v3 1/4] staging: media: atomisp: fix style of block comments
+Date:   Sun, 26 Jul 2020 14:35:10 +0530
+Message-Id: <20200726090512.20574-1-bharadwaj.rohit8@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200726062541.11304-1-bharadwaj.rohit8@gmail.com>
+References: <20200726062541.11304-1-bharadwaj.rohit8@gmail.com>
 MIME-Version: 1.0
-References: <20200724213659.273599-1-martin.botka1@gmail.com> <20200724213659.273599-3-martin.botka1@gmail.com>
-In-Reply-To: <20200724213659.273599-3-martin.botka1@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 26 Jul 2020 12:04:18 +0300
-Message-ID: <CAHp75VdJ14p+_+XqxrgRrjXF7m6L4nGr5vB03NTM=0xjgw4c7Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/6] pwm: core: Add option to config PWM duty/period
- with u64 data length
-To:     Martin Botka <martin.botka1@gmail.com>
-Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 12:40 AM Martin Botka <martin.botka1@gmail.com> wrote:
->
-> From: Fenglin Wu <fenglinw@codeaurora.org>
->
-> Currently, PWM core driver provides interfaces for configuring PWM
-> period and duty length in nanoseconds with an integer data type, so
-> the max period can be only set to ~2.147 seconds. Add interfaces which
-> can set PWM period and duty with u64 data type to remove this
-> limitation.
+this patch fixes the coding style of block comments.
 
-And all divisions go mad on 32-bit CPU, right?
-Please, if you thought about it carefully, update a commit message to
-clarify that.
+Signed-off-by: Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
+---
+v3: change patch subject prefix
+v2: split patch into sequence of patches 
+v1: fix all coding style issues in single patch
 
+ .../media/atomisp/pci/sh_css_firmware.c       | 28 +++++++++++++------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/sh_css_firmware.c b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
+index d4ab15b6d1ac..2907aead98b7 100644
+--- a/drivers/staging/media/atomisp/pci/sh_css_firmware.c
++++ b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
+@@ -51,9 +51,12 @@ struct fw_param {
+ 
+ static struct firmware_header *firmware_header;
+ 
+-/* The string STR is a place holder
++/*
++ * The string STR is a place holder
+  * which will be replaced with the actual RELEASE_VERSION
+- * during package generation. Please do not modify  */
++ * during package generation. Please do not modify
++ */
++
+ static const char *isp2400_release_version = STR(irci_stable_candrpv_0415_20150521_0458);
+ static const char *isp2401_release_version = STR(irci_ecr - master_20150911_0724);
+ 
+@@ -276,10 +279,11 @@ sh_css_load_firmware(struct device *dev, const char *fw_data,
+ 	for (i = 0; i < sh_css_num_binaries; i++)
+ 	{
+ 		struct ia_css_fw_info *bi = &binaries[i];
+-		/* note: the var below is made static as it is quite large;
+-		   if it is not static it ends up on the stack which could
+-		   cause issues for drivers
+-		*/
++		/*
++		 * note: the var below is made static as it is quite large;
++		 * if it is not static it ends up on the stack which could
++		 * cause issues for drivers
++		 */
+ 		static struct ia_css_blob_descr bd;
+ 		int err;
+ 
+@@ -333,7 +337,11 @@ sh_css_load_firmware(struct device *dev, const char *fw_data,
+ 				return err;
+ 
+ 		} else {
+-			/* All subsequent binaries (including bootloaders) (i>NUM_OF_SPS) are ISP firmware */
++			/*
++			 * All subsequent binaries
++			 * (including bootloaders) (i>NUM_OF_SPS)
++			 * are ISP firmware
++			 */
+ 			if (i < NUM_OF_SPS)
+ 				return -EINVAL;
+ 
+@@ -374,8 +382,10 @@ ia_css_ptr
+ sh_css_load_blob(const unsigned char *blob, unsigned int size)
+ {
+ 	ia_css_ptr target_addr = hmm_alloc(size, HMM_BO_PRIVATE, 0, NULL, 0);
+-	/* this will allocate memory aligned to a DDR word boundary which
+-	   is required for the CSS DMA to read the instructions. */
++	/*
++	 * this will allocate memory aligned to a DDR word boundary which
++	 * is required for the CSS DMA to read the instructions.
++	 */
+ 
+ 	assert(blob);
+ 	if (target_addr)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
