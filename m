@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB3B22DD94
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1452122DD78
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgGZJPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZJPL (ORCPT
+        id S1726682AbgGZJGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:06:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33403 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgGZJGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:15:11 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79119C0619D2;
-        Sun, 26 Jul 2020 02:15:11 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k1so7573124pjt.5;
-        Sun, 26 Jul 2020 02:15:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gqsz2+R48srpESLq+ec96ZXtSgH1w2eJBdh6duitcjs=;
-        b=rqW9TyJPPGeHjxPLemQmlKL8ITcw+Hx2rBaR2fL8cFQCuByvgN4XFxxaSm3Xvj1rvj
-         58sNFDKRJfaZqlWzvcJxg6Y1awM4Uhlxh8QU0uxjhZCgy1+vwLVLw7UF8fHNHcEB1vbN
-         eDGzpcDhqToR9D5EoSWoemqvr/lJhL+aWjtWJ3qqfPbqCyU1IficLgTBvNmEBT/nA2rB
-         GxYuNQt9GmikOg7xhxbPDYJzX4DDmALTqXQzrcE1GXwUhVJxPNXtosysVgzJGWIE5FK6
-         VvI8VamMvEZIjSPLblRWJc+zpU2JK46m9NBqttpK09QyeDVYybkJjxAWzhkxWBFhfaQQ
-         JBpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gqsz2+R48srpESLq+ec96ZXtSgH1w2eJBdh6duitcjs=;
-        b=fMmwKL5e6+9JwQYDz8pLR6qOdahhEJj5VyYLBfMWAC/g9bNI3Yn4LAPQ3F31ehlb1u
-         aPZ/gJrpQYhPhJQjANJuHBVcgHV5gcMdcKMtMAxvVGwiCsRiAA8tojPbPemZiTlvpNxw
-         k4ymxlMLTOlBzub8VlHRmcN3XtPpccY0DXdFcSkeoWuWQRavWpHvSTYRJ9o6uwZ6R17n
-         dnZAd6oAsIBP3j7xmvScCt2XL589IHVeyCeBV/qJ13ycy2qZ2UjmV7eN9dISvTIjjde+
-         Llg6xXOmpF/IhItYmia3cu44imXrg50jj8NTtaBa5FHGC3BaFBPSty/erhnM5KJ68sn4
-         Awpg==
-X-Gm-Message-State: AOAM532FGZFDKJYOpkyJNBhLgM6qDLN6WrYQX0sF+ru6tXQwbG/t6ZQ4
-        Kq7IsH/NwF0IZN2KSST4/mo=
-X-Google-Smtp-Source: ABdhPJy1GXHYwnH0qCgksHECal1EE5PZaUsJgsr/UBBcTcxGQJXfIy2IVlYBLr66WYfcrTsoQ9Z+Jw==
-X-Received: by 2002:a17:90b:ec8:: with SMTP id gz8mr7662770pjb.87.1595754911011;
-        Sun, 26 Jul 2020 02:15:11 -0700 (PDT)
-Received: from localhost.localdomain ([1.186.115.27])
-        by smtp.gmail.com with ESMTPSA id a129sm1608215pfd.165.2020.07.26.02.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 02:15:10 -0700 (PDT)
-From:   Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
-To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
-Subject: [PATCH v3 4/4] staging: media: atomisp: fix line length exceeds
-Date:   Sun, 26 Jul 2020 14:35:16 +0530
-Message-Id: <20200726090512.20574-4-bharadwaj.rohit8@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200726062541.11304-1-bharadwaj.rohit8@gmail.com>
-References: <20200726062541.11304-1-bharadwaj.rohit8@gmail.com>
+        Sun, 26 Jul 2020 05:06:45 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jzcbg-0007eV-AR; Sun, 26 Jul 2020 09:06:08 +0000
+Date:   Sun, 26 Jul 2020 11:06:05 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Xin Xiong <xiongx18@fudan.edu.cn>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian Kellner <christian@kellner.me>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, yuanxzhang@fudan.edu.cn
+Subject: Re: [PATCH] fork: fix pid refcount leaks when destroying file
+Message-ID: <20200726090605.bvcot4lnx2kknkob@wittgenstein>
+References: <20200726044959.GA50544@xin-virtual-machine>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200726044959.GA50544@xin-virtual-machine>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this patch fixes the line length exceeded error from checkpatch.pl
+On Sun, Jul 26, 2020 at 12:49:59PM +0800, Xin Xiong wrote:
+> When clone_flags & CLONE_PIDFD is true,the function creates a new file
+> object called pidfile,and invokes get_pid(),which increases the refcnt
+> of pid for pidfile to hold.
+> 
+> The reference counting issues take place in the error handling paths.
+> When error occurs after the construction of pidfile, the function only
+> invokes fput() to destroy pidfile, in which the increased refcount
+> won't be decreased, resulting in a refcount leak.
+> 
+> Fix this issue by adding put_pid() in the error handling path
+> bad_fork_put_pidfd.
+> 
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+> Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+> ---
+>  kernel/fork.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 142b23645d82..7cbfb2c4fce3 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2319,6 +2319,7 @@ static __latent_entropy struct task_struct *copy_process(
+>  bad_fork_put_pidfd:
+>  	if (clone_flags & CLONE_PIDFD) {
+>  		fput(pidfile);
+> +		put_pid(pid);
+>  		put_unused_fd(pidfd);
 
-Signed-off-by: Rohit K Bharadwaj <bharadwaj.rohit8@gmail.com>
----
-v3: change patch subject prefix
-v2: split patch into sequence of patches 
-v1: fix all coding style issues in single patch
+Thanks for the patch but this is actually wrong. If you look further up
+where pidfile is allocated you'll see the comment
 
- drivers/staging/media/atomisp/pci/sh_css_firmware.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+		get_pid(pid);	/* held by pidfile now */
 
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_firmware.c b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-index 2208453cbef0..6e8f45e38804 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css_firmware.c
-@@ -243,7 +243,8 @@ sh_css_load_firmware(struct device *dev, const char *fw_data,
- 	firmware_header = (struct firmware_header *)fw_data;
- 	file_header = &firmware_header->file_header;
- 	binaries = &firmware_header->binary_header;
--	strscpy(FW_rel_ver_name, file_header->version, min(sizeof(FW_rel_ver_name), sizeof(file_header->version)));
-+	strscpy(FW_rel_ver_name, file_header->version,
-+		min(sizeof(FW_rel_ver_name), sizeof(file_header->version)));
- 	ret = sh_css_check_firmware_version(dev, fw_data);
- 	if (ret) {
- 		IA_CSS_ERROR("CSS code version (%s) and firmware version (%s) mismatch!",
--- 
-2.25.1
+which I added to inidicate that the additional reference to struct pid
+has now been transferred to the pidfile and is released when the file is
+released. So the last fput(pidfile) will cause the vfs to call the
+files' ->release() method which in this case is
 
+static int pidfd_release(struct inode *inode, struct file *file)
+{
+	struct pid *pid = file->private_data;
+
+	file->private_data = NULL;
+	put_pid(pid);
+	return 0;
+}
+
+Since fput(pidfile) in the bad_fork_put_pidfd error path is the only
+reference to the pidfile the struct pid reference count will be
+decremented.
+
+Your additional put_pid() will cause a UAF which you should've seen
+during testing if you injected an error by setting CLONE_PIDFD e.g. by
+providing NULL as the args->pidfd argument to clone3() or NULL to the
+parent_tidptr argument of clone() or by placing the parent into a cgroup
+whos current pid_max limit doesn't allow it to fork.
+
+Thanks!
+Christian
