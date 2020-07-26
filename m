@@ -2,206 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52D922DCF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 09:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A265D22DCFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 09:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgGZHpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 03:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        id S1726956AbgGZHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 03:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725810AbgGZHpW (ORCPT
+        with ESMTP id S1725789AbgGZHqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 03:45:22 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08D3C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 00:45:21 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id g7so5698774ejw.12
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 00:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version:in-reply-to
-         :content-transfer-encoding;
-        bh=nCCYGPpnUcsKc3bltKWUjh1ZZs0fdH6SpF66gG9KHx8=;
-        b=loD5ec1nLKOmZlOuMAdxs7+f8R9demqGSG5nOZgBQhJwTcZoPzrVXCjs/BV92AsZyj
-         2MrIi4bYi4Y9DZSokqk2RX6DZS9D8Jjs6B+Um2EiW95H3tSWKjIPN9+xRSFrcC5c1PiH
-         WJoqtTw2/dtcm+c9mdgXoCbx+SKBmv3OUCwBAROVB1Oonoyff6wa6LfAYvgF7sOj8yfb
-         KekWBOJzkCkojMpaVOeoOqnWh9n6cXokZCzrrcxUVPblsTCWHD72qK/I/ICzTF1DoA0q
-         SRlTb9Fy4BZOD3AQLtdA5wizHNzz7kQPsS+pupx39gP48+n2fWZFjtHtgvOWc37DFhZg
-         dlNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=nCCYGPpnUcsKc3bltKWUjh1ZZs0fdH6SpF66gG9KHx8=;
-        b=ugjeC9az4R7PxKDEUdKMprfAEHM8M8dk+TYH76LCVz0IJC5L9odIwb8Oi4xCQ3iIlf
-         TSCfdC3NTAcenI64TnJtVsQPrKCWD8u2E8FPKrEnGPI08nQlzeFUpFHDLX5Ln5AH8fGo
-         w/H2Vx2ilq3nQDdIz2gh8lf5Md5Z3P8eHy5eOGvvgKwsVLT5rEnR/sNPLasL8B6j/vDG
-         oSX4BsvWyRgvvEIzcETHVUosTj6jW54TeTfocFkmtliQo2rAvU8m7Ez0QocqRAZaxlvc
-         NnhtVTQoXwdQUeJpHZhNKabHmQMfj6aNOuy7E8qGZ/oEjoyQucob1rVBIHCqHGkIBe/6
-         5Dbw==
-X-Gm-Message-State: AOAM531FDU2fh/G0onUu6IMR8FDlh/Y5QXw/X2xCgmfCN2bEFgWwua1N
-        uP1on1EMQh3yoNv8Q1i4kRI=
-X-Google-Smtp-Source: ABdhPJx3zR3qQ4I5ruomm8O0HGkU2dgx5D6KpXtdKSNC2w296PMCKmXjrP3VjsPoE/te8kZ1vmh1+A==
-X-Received: by 2002:a17:906:280c:: with SMTP id r12mr16020580ejc.105.1595749520298;
-        Sun, 26 Jul 2020 00:45:20 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:2450:10d2:194d:60d3:6c2f:f9ba:e713])
-        by smtp.gmail.com with ESMTPSA id 6sm3070782ede.84.2020.07.26.00.45.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 00:45:19 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     SeongJae Park <sj38.park@gmail.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        "SeongJae Park" <sjpark@amazon.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, apw@canonical.com,
-        colin.king@canonical.com, jslaby@suse.cz, pavel@ucw.cz,
-        "SeongJae Park" <sjpark@amazon.de>
-Subject: Re: Re: Re: Re: checkpatch: support deprecated terms checking
-Date:   Sun, 26 Jul 2020 09:45:11 +0200
-Message-Id: <20200726074511.26189-1-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-In-Reply-To: <beabe887ee1b761781f5d980a96f2c28b088c56b.camel@perches.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Sun, 26 Jul 2020 03:46:51 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC30C0619D2;
+        Sun, 26 Jul 2020 00:46:50 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::460])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9C3271277D61E;
+        Sun, 26 Jul 2020 00:30:02 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 00:46:44 -0700 (PDT)
+Message-Id: <20200726.004644.71243023033363639.davem@davemloft.net>
+To:     hch@lst.de
+Cc:     kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, edumazet@google.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-can@vger.kernel.org, dccp@vger.kernel.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
+        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
+        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
+        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
+Subject: Re: get rid of the address_space override in setsockopt v2
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200726070311.GA16687@lst.de>
+References: <20200723060908.50081-1-hch@lst.de>
+        <20200724.154342.1433271593505001306.davem@davemloft.net>
+        <20200726070311.GA16687@lst.de>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sun, 26 Jul 2020 00:30:03 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 00:29:05 -0700 Joe Perches <joe@perches.com> wrote:
+From: Christoph Hellwig <hch@lst.de>
+Date: Sun, 26 Jul 2020 09:03:11 +0200
 
-> On Sun, 2020-07-26 at 09:18 +0200, SeongJae Park wrote:
-> > On Sat, 25 Jul 2020 21:27:07 -0700 Joe Perches <joe@perches.com> wrote:
-> > 
-> > > On Sun, 2020-07-26 at 01:35 +0200, SeongJae Park wrote:
-> > > > On Sat, 25 Jul 2020 10:29:23 -0700 Joe Perches <joe@perches.com> wrote:
-> > > > 
-> > > > > On Sat, 2020-07-25 at 15:02 +0200, Michał Mirosław wrote:
-> > > > > > Hello,
-> > > > > > 
-> > > > > > I see that this patch went into next and is already inciting people to
-> > > > > > do wrong things [1]. Can you please fix it to require '--subjective'
-> > > > > > switch or otherwise mark it clearly as suggestion-only?
-> > > > > > 
-> > > > > > The coding-style as in Linus' master says about *NEW* uses of the words
-> > > > > > listed (those introductions I expect to be actually rare) and not about
-> > > > > > existing use in the code or industry. Making a noise about all uses
-> > > > > > found surely will generate a lot more irrelevant patches.
-> > > > > > 
-> > > > > > [1] https://www.spinics.net/lists/linux-tegra/msg51849.html
-> > > > > 
-> > > > > And if not reverted, perhaps do not check existing files
-> > > > > at all but only check patches and change the message to
-> > > > > show only suggestions not from a specification.
-> > > > 
-> > > > Agreed for this case.  However, excluding existing file check doesn't fully
-> > > > avoid this problem.  Also, more terms having different deprecation rules might
-> > > > be added in future.  How about allowing file check but show reference in the
-> > > > suggestion message as below?
-> > > 
-> > > The general problem is that drivers/staging, net/ and drivers/net
-> > > all have --strict on by default.
-> > > 
-> > > Emitting these deprecated terms messages with -f --file uses for
-> > > files in those directories isn't a great idea.
-> > 
-> > Thank you for kindly explaining your concenrs in detail.  However, I think it's
-> > ok to do this check even without '--strict' for files if we explicitly says
-> > it's suggestion only, as Michal said.  My patch does so.
-> > 
-> > > > diff --git a/scripts/deprecated_terms.txt b/scripts/deprecated_terms.txt
-> > > []
-> > > > @@ -3,8 +3,10 @@
-> > > >  # The format of each line is:
-> > > >  # deprecated||suggested
-> > > >  #
-> > > > +# If special rules are applied on the terms, please comment those.
-> > > 
-> > > Disagree.  Comments about these existing uses aren't helpful.
-> > 
-> > Sorry, I don't understand your point here.  Why do you think it's not helpful?
-> > If 'checkpatch' finds the deprecated terms, it will ask people to read this
-> > file, which explains special rules for each of the deprecations if exists.  The
-> > rule is, in the case of 'slave', 'applies to new uses only'.  Therefore, people
-> > could stop sending the noisy unnecessary patches to the maintainers.
+> On Fri, Jul 24, 2020 at 03:43:42PM -0700, David Miller wrote:
+>> > Changes since v1:
+>> >  - check that users don't pass in kernel addresses
+>> >  - more bpfilter cleanups
+>> >  - cosmetic mptcp tweak
+>> 
+>> Series applied to net-next, I'm build testing and will push this out when
+>> that is done.
 > 
-> Because it will describe this for _every_ instance
-> of any deprecated word in the file.
+> The buildbot found one warning with the isdn debug code after a few
+> days, here is what I think is the best fix:
 
-Thank you for kindly explaining your concern.  I personally thought the verbose
-warning is not a real problem.  Anyway, how about below patch, then?  It will
-show only one warning or check for each of the terms.
-
-================================= >8 ==========================================
-
-From 6c606c62ea25933db8bb0afec083b5b4b8b3f11f Mon Sep 17 00:00:00 2001
-From: SeongJae Park <sjpark@amazon.de>
-Date: Sun, 26 Jul 2020 01:14:48 +0200
-Subject: [PATCH] scripts/deprecatd_terms: provide references
-
-Deprecation of terms could have special rules.  For example, 'slave' is
-ok for existing usages.  Same to 'master', but it's also ok unless it's
-used with 'slave'.  This commit provides the references for such rules.
-
-Also, because the report became more verbose a little, this commit makes
-the report to be made for only one instance of each deprecated term.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- scripts/checkpatch.pl        | 6 +++++-
- scripts/deprecated_terms.txt | 6 ++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e9fde28eb0de..227e088bfe56 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -721,6 +721,7 @@ sub read_word_corrections {
- my %deprecated_terms_fix;
- read_word_corrections($deprecated_terms_file, \%deprecated_terms_fix);
- my $deprecated_terms = join("|", sort keys %deprecated_terms_fix) if keys %deprecated_terms_fix;
-+my %deprecated_terms_reported = map { $_ => 1 }
- 
- # Load common spelling mistakes and build regular expression list.
- my $misspellings;
-@@ -2975,13 +2976,16 @@ sub process {
- 		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
- 			while ($rawline =~ /(?:^|[^a-z@])($deprecated_terms)(?:\b|$|[^a-z@])/gi) {
- 				my $deprecated_term = $1;
-+				last if (exists($deprecated_terms_reported{$deprecated_term}));
-+				$deprecated_terms_reported{$deprecated_term} = 1;
-+
- 				my $suggested = $deprecated_terms_fix{lc($deprecated_term)};
- 				$suggested = ucfirst($suggested) if ($deprecated_term=~ /^[A-Z]/);
- 				$suggested = uc($suggested) if ($deprecated_term =~ /^[A-Z]+$/);
- 				my $msg_level = \&WARN;
- 				$msg_level = \&CHK if ($file);
- 				if (&{$msg_level}("DEPRECATED_TERM",
--						  "Use of '$deprecated_term' is deprecated, please '$suggested', instead.\n" . $herecurr) &&
-+						  "Use of '$deprecated_term' is controversial - if not required by specification, perhaps '$suggested' instead.  See: scripts/deprecated_terms.txt\n" . $herecurr) &&
- 				    $fix) {
- 					$fixed[$fixlinenr] =~ s/(^|[^A-Za-z@])($deprecated_term)($|[^A-Za-z@])/$1$suggested$3/;
- 				}
-diff --git a/scripts/deprecated_terms.txt b/scripts/deprecated_terms.txt
-index 1be27a24187b..d92b9c896fce 100644
---- a/scripts/deprecated_terms.txt
-+++ b/scripts/deprecated_terms.txt
-@@ -3,8 +3,10 @@
- # The format of each line is:
- # deprecated||suggested
- #
-+# If special rules are applied on the terms, please comment those.
-+#
-+# Refer to "4) Naming" section of Documentation/process/coding-style.rst for
-+# below three terms.
- blacklist||(denylist|blocklist)
--# For other alternatives of 'slave', Please refer to
--# Documentation/process/coding-style.rst
- slave||(secondary|target|...)
- whitelist||(allowlist|passlist)
--- 
-2.17.1
-
-
+I already fixed this in net-next.
