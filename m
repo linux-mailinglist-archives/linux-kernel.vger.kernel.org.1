@@ -2,196 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F09B22E1E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9473922E1DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 20:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgGZSIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 14:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S1726895AbgGZSH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 14:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgGZSH7 (ORCPT
+        with ESMTP id S1726043AbgGZSH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 14:07:59 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6429CC0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 11:07:59 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id kq25so1859518ejb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 11:07:59 -0700 (PDT)
+        Sun, 26 Jul 2020 14:07:56 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07FBC0619D2;
+        Sun, 26 Jul 2020 11:07:56 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d27so10605346qtg.4;
+        Sun, 26 Jul 2020 11:07:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to;
-        bh=2M1elyjIsh1RH9XtmhfvtASaVeMWTT/sz6S1xmpP4GM=;
-        b=edp7OWEmG9tfeMg8I77+sKCI3lGSevdMWrcIvJVWZUTroTpmfHYHBeovpNFW7/eIAg
-         TdGC5cIKCIVRYia+aTC3WP8a5+TRao836l3inNTXy6vy787dSRyWya+fx29gbiODpygl
-         uPGokuvfRWcdkjzqA8LZO2N1yvtO/84J1IiIX9cuOqUABJL4aMistiehLkewdjJ+m10X
-         7MBU4/TOnV7wAtEW0df79n07htUI5onhsLAiI9ku6ET2W9VZfZYSX1Ew7vSA3YITz3O1
-         B50V2uTH5TYgTn99aCFiij0/RpVOfv26s8RzjKhceVKQorEAH8Hj05Oz8nVCryYYuUwL
-         Zl9Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7QCobyC2ItfhaGKp9vOhyilsu/vFD41abiIi+idKUH4=;
+        b=V7TMauH/w1Ana1kFtHdtvCoOzYrzEicGu1Y7VQh+OX3RqgbbGWUHjJE7KhUY4Jb5Iw
+         a+65Vhwltu8vpzbWEN+I1yK0lPn056HV170KEzcbegvE9RjLoU5sXY3fndO2Wq8woeiZ
+         +JuaBGuqq2/3Pz1ecRT4b3Kt3CbVKzYTXJFMlqCo2kDilOfdc1p0Hw32zWJp1ejySpyx
+         fghCDWp2SwfsXbHL90T0OIVSErQLREljP415kl50bQoX8vrP6Zw5PC1Hhljc4O+X5ljY
+         RrRyICT32tUlTSPRMLM4JnP/vJjSFg4o+naE6YvGC1A1YRiIvdMV/6TjgVSl41hPQI9h
+         2fkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
-        bh=2M1elyjIsh1RH9XtmhfvtASaVeMWTT/sz6S1xmpP4GM=;
-        b=VvgtOik2HLjQ13lfEAO1J11xmjJW/0JX0L9hW2dedwSqOUdVhoxK5Z00VKf/Ez2aqP
-         PSaLhG0LbR3FBE5TtfGll0LGQWEcd/wd+HZ100FEtCFReMC+UFygfr262VNEMHcGig7M
-         33VuKT2j/3/CUtLtdIhiCvAH9r1Xyk0AYFW2B4bhWIcy2cZ8sZObC501De6USDBd/s4H
-         AhQtpQd63sAB+qzpikLdVKqUKhEsxclU3xkM4HlDHjM7q84cADWpZSskpTKcJcI3lSdP
-         f6BzXdNENHnCOyok3qDxKM66/eGzb5hP2rW8Q+LvbIeQfze2xZ1fw2oqKG7lN+HZ4z6t
-         HZIA==
-X-Gm-Message-State: AOAM530DIM9Ddcj5kU36dY3ThB6gbvNlo03Nkpa1+7GOfkOTtzMtYBTJ
-        xwaE+EyXyF/4SSdrqUDnbWfQAtI6
-X-Google-Smtp-Source: ABdhPJzjR0ydGuruBA7IaSGo9LqYRVpMCTxENug6M71E6KQ9QFEBSkeJL9IJKChBqm6W3FCRfE+/Dg==
-X-Received: by 2002:a17:906:7a16:: with SMTP id d22mr4132827ejo.478.1595786878105;
-        Sun, 26 Jul 2020 11:07:58 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:2450:10d2:194d:60d3:6c2f:f9ba:e713])
-        by smtp.gmail.com with ESMTPSA id a18sm1117186ejt.69.2020.07.26.11.07.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7QCobyC2ItfhaGKp9vOhyilsu/vFD41abiIi+idKUH4=;
+        b=KMM70pb5zVN7DN13WSM4PMaH3froLO3ONR5T1At4TCiUQQXWba1Fd+ERtPtOeLBqEW
+         7yZM74rQWvKvIPaXaLKEj6HOEOMXzb/AN37ZpP6ODxcdxQmQPU6Gywptk0V4BT6N/qI2
+         0v3WF3x1EmvlRIGt8PgJDS0OVt5oWKCn9cqJbSjtUmFosu0WNUdk/WyZD3tajhs7r8nI
+         4qSu4XX4OeiBGo9fJVI81zNxSpBDIXyuEzg+SJwRQfVPUpu1UaCjPOF7PeVwX4DP63FU
+         A9JI4Efzg3Glz/nUEOnmbJzQicWjmPl0zR3dxYd7Vep3dUI9RTYGkDPIjcVULKW/THq9
+         n4AQ==
+X-Gm-Message-State: AOAM530FQHgaiqrQuJfcL3sU2Cup2biLLirOqb0g/YRfsRQsei4zBrkC
+        /QPPTVX9jj3apu3myoOuYQ==
+X-Google-Smtp-Source: ABdhPJzlzTapl0f9uK6uWdZz8aGCLIpRNKb6qZDpaJ4z35xH941T2u8rGNiKrd05M+B8qqVCtQAnhw==
+X-Received: by 2002:ac8:47c8:: with SMTP id d8mr17743991qtr.32.1595786875627;
+        Sun, 26 Jul 2020 11:07:55 -0700 (PDT)
+Received: from PWN (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id s5sm15852823qke.120.2020.07.26.11.07.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 11:07:57 -0700 (PDT)
-From:   SeongJae Park <sj38.park@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     SeongJae Park <sj38.park@gmail.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        "SeongJae Park" <sjpark@amazon.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, apw@canonical.com,
-        colin.king@canonical.com, jslaby@suse.cz, pavel@ucw.cz,
-        "SeongJae Park" <sjpark@amazon.de>
-Subject: Re: Re: Re: Re: Re: checkpatch: support deprecated terms checking
-Date:   Sun, 26 Jul 2020 20:07:48 +0200
-Message-Id: <20200726180748.29924-1-sj38.park@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <5f5679b4c76bf0e16064f3a45319bc35938ad96b.camel@perches.com>
+        Sun, 26 Jul 2020 11:07:55 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 14:07:52 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vandana BN <bnvandana@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH] media/v4l2-core: Fix
+ kernel-infoleak in video_put_user()
+Message-ID: <20200726180752.GA49356@PWN>
+References: <20200726164439.48973-1-yepeilin.cs@gmail.com>
+ <20200726173044.GA14755@pendragon.ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200726173044.GA14755@pendragon.ideasonboard.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 09:42:06 -0700 Joe Perches <joe@perches.com> wrote:
-
-> On Sun, 2020-07-26 at 17:36 +0200, SeongJae Park wrote:
-> > On Sun, 26 Jul 2020 07:50:54 -0700 Joe Perches <joe@perches.com> wrote:
-> []
-> > > I do not want to encourage relatively inexperienced people
-> > > to run checkpatch and submit inappropriate patches.
-> > 
-> > Me, neither.  But, I think providing more warnings and references is better for
-> > that.
+On Sun, Jul 26, 2020 at 08:30:44PM +0300, Laurent Pinchart wrote:
+> Hi Peilin,
 > 
-> Unfortunately, the inexperienced _do_ in fact run
-> checkpatch on files and submit inappropriate patches.
+> Thank you for the patch.
 > 
-> It's generally a time sink for the experienced
-> maintainers to reply.
+> On Sun, Jul 26, 2020 at 12:44:39PM -0400, Peilin Ye wrote:
+> > video_put_user() is copying uninitialized stack memory to userspace. Fix
+> > it by initializing `vb32` using memset().
 > 
-> > Simply limiting checks could allow people submitting inappropriate patches
-> > intorducing new uses of deprecated terms.
+> What makes you think this will fix the issue ? When initializing a
+> structure at declaration time, the fields that are not explicitly
+> specified should be initialized to 0 by the compiler. See
+> https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.3.0/com.ibm.zos.v2r3.cbclx01/strin.htm:
+
+Hi Mr. Pinchart!
+
+First of all, syzbot tested this patch, and it says it's "OK":
+
+	https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
+
+> If a structure variable is partially initialized, all the uninitialized
+> structure members are implicitly initialized to zero no matter what the
+> storage class of the structure variable is. See the following example:
 > 
-> Tradeoffs...
+> struct one {
+>     int a;
+>     int b;
+>     int c;
+> };
 > 
-> I expect that patches being reviewed by maintainers
-> are preferred over files being inappropriately changed
-> by the inexperienced.
-> 
-> Those inappropriate changes should not be encouraged
-> by tools placed in the hands of the inexperienced.
+> void main() {
+>     struct one z1;         // Members in z1 do not have default initial values.
+>     static struct one z2;  // z2.a=0, z2.b=0, and z2.c=0.
+>     struct one z3 = {1};   // z3.a=1, z3.b=0, and z3.c=0.
+> }
 
-Right, many things are tradeoff.  Seems we arrived in the point, though we
-still have different opinions.  To summarize the pros and cons of my patch from
-my perspective:
+Yes, I understand that. I can safely printk() all members of that struct
+without triggering a KMSAN warning, which means they have been properly
+initialized.
 
-Pros 1: Handle future terms deprecated with different reasons and coverages.
-Pros 2: Inappropriate patches are avoided if the submitters carefully read the
-warning messages.
-Cons: Careless people could still bother maintainers by not carefully reading
-the message and sending inappropriate patches.
+However, if I do something like:
 
-To me, the pros still seems larger than the cons.  I would like to also again
-mention that the maintainer who first reported the problem, Michal, told it's
-ok with the explicit messaging.  Nonethelss, this is just my opinion.
+	char *p = (char *)&vb32;
+	int i;
 
-Attaching the patch addressing your comments for the previous version.  The
-changes from the previous version are:
+	for (i = 0; i < sizeof(struct vb32); i++, p++)
+		printk("*(p + i): %d", *(p + i));
 
- - Make the name of reported terms not too verbose
- - Avoid unnecessary initialization of the reported terms hash
- - Warn multiple deprecated terms in same line
+This tries to print out `vb32` as "raw memory" one byte at a time, and
+triggers a KMSAN warning somewhere in the middle (when `i` equals to 25
+or 26).
 
+According to a previous discussion with Mr. Kroah-Hartman, as well as
+this LWN article:
 
-Thanks,
-SeongJae Park
+	"Structure holes and information leaks"
+	https://lwn.net/Articles/417989/
 
+Initializing a struct by assigning (both partially or fully) leaves the
+"padding" part of it uninitialized, thus potentially leads to kernel
+information leak if the structure in question is going to be copied to
+userspace.
 
-p.s I modified my mail formatter to skip adding 'Re:' in the subject.  I
-thought it's usual behavior of the mailers, but seems it made you only
-annoying, sorry.  I will not add more 'Re:' for you.
+memset() sets these "uninitialized paddings" to zero, therefore (I
+think) should solve the problem.
 
-
-=================================== >8 ========================================
-From 169939e24ae98125efcf3af024e6e09cf5cd85f0 Mon Sep 17 00:00:00 2001
-From: SeongJae Park <sjpark@amazon.de>
-Date: Sun, 26 Jul 2020 01:14:48 +0200
-Subject: [PATCH v3] scripts/deprecatd_terms: provide references
-
-Deprecation of terms could have special rules.  For example, 'slave' is
-ok for existing usages.  Same to 'master', but it's also ok unless it's
-used with 'slave'.  This commit provides the references for such rules.
-
-Also, because the report became more verbose a little, this commit makes
-the report to be made for only one instance of each deprecated term.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- scripts/checkpatch.pl        | 6 +++++-
- scripts/deprecated_terms.txt | 6 ++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e9fde28eb0de..abed47647fb0 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -721,6 +721,7 @@ sub read_word_corrections {
- my %deprecated_terms_fix;
- read_word_corrections($deprecated_terms_file, \%deprecated_terms_fix);
- my $deprecated_terms = join("|", sort keys %deprecated_terms_fix) if keys %deprecated_terms_fix;
-+my %deprecates_reported = map
- 
- # Load common spelling mistakes and build regular expression list.
- my $misspellings;
-@@ -2975,13 +2976,16 @@ sub process {
- 		    ($in_commit_log || $line =~ /^(?:\+|Subject:)/i)) {
- 			while ($rawline =~ /(?:^|[^a-z@])($deprecated_terms)(?:\b|$|[^a-z@])/gi) {
- 				my $deprecated_term = $1;
-+				next if (exists($deprecates_reported{$deprecated_term}));
-+				$deprecates_reported{$deprecated_term} = 1;
-+
- 				my $suggested = $deprecated_terms_fix{lc($deprecated_term)};
- 				$suggested = ucfirst($suggested) if ($deprecated_term=~ /^[A-Z]/);
- 				$suggested = uc($suggested) if ($deprecated_term =~ /^[A-Z]+$/);
- 				my $msg_level = \&WARN;
- 				$msg_level = \&CHK if ($file);
- 				if (&{$msg_level}("DEPRECATED_TERM",
--						  "Use of '$deprecated_term' is deprecated, please '$suggested', instead.\n" . $herecurr) &&
-+						  "Use of '$deprecated_term' is controversial - if not required by specification, perhaps '$suggested' instead.  See: scripts/deprecated_terms.txt\n" . $herecurr) &&
- 				    $fix) {
- 					$fixed[$fixlinenr] =~ s/(^|[^A-Za-z@])($deprecated_term)($|[^A-Za-z@])/$1$suggested$3/;
- 				}
-diff --git a/scripts/deprecated_terms.txt b/scripts/deprecated_terms.txt
-index 1be27a24187b..d92b9c896fce 100644
---- a/scripts/deprecated_terms.txt
-+++ b/scripts/deprecated_terms.txt
-@@ -3,8 +3,10 @@
- # The format of each line is:
- # deprecated||suggested
- #
-+# If special rules are applied on the terms, please comment those.
-+#
-+# Refer to "4) Naming" section of Documentation/process/coding-style.rst for
-+# below three terms.
- blacklist||(denylist|blocklist)
--# For other alternatives of 'slave', Please refer to
--# Documentation/process/coding-style.rst
- slave||(secondary|target|...)
- whitelist||(allowlist|passlist)
--- 
-2.17.1
-
+Thank you!
+Peilin Ye
 
