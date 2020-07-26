@@ -2,170 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3E722DF67
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F8422DF6C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 15:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgGZM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 08:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727894AbgGZM7K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 08:59:10 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F43C0619D4
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 05:59:09 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id y3so12256883wrl.4
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 05:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aJ0QTk1kAr2FXG3tNKxMDTj3E6xC0tBqD5CEm/p3JFE=;
-        b=e3qylBuPPyd36kYi09rS61kEhLJtEb/XiQOym4M3xymiMBeoHEsRYf7Cl7PEyEpyzg
-         c6RjEdgiKjPRk80f99amxldvIWn8kAn2HrIK+4WB97VzHtKsfAq4IidLgJqkLaPb8vf2
-         lgOrGq2sfuOHdd2NQeeywpEG7BhiYWAOtFlnHV9PhGwA855BfYE19uhn8Cud4Mvvd23l
-         pKb4vFdCWBWOzwXwFnKBv/Wod/PlT0wyvHouPqYCoQQpUfqTUYylmYyoq5AYUZC3dbBp
-         LxEonSSWb6BKqUxWs+cLg65BjTqzXH6n5wq0JqZqrEzIBxAzVyPpSfVirsjtlJylWK0p
-         256A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aJ0QTk1kAr2FXG3tNKxMDTj3E6xC0tBqD5CEm/p3JFE=;
-        b=iQNqNChuKUe9ZDAKPXLzAvLvwHN1WvsCaAs3l5tSKTGZUdGSoUoKSgr0uxr9t/RGia
-         PG4mMr9ou8dZ+wSrA5hv8IhUL1xwQ7bPk/Wvp5etQi5GxipGdOEoios4YaAB57wK6CCH
-         jx5httsKNKr23Qu9HKffbqxY331Xc16jdGHrwSWghUl5SSTeeLFAxTUF3/MQjx+4KHfp
-         5nzdRqydIwuuWQldr90iMZ97N9+FQJ0hqfppoSDWgO09xQQB86EQ0V1UIowIcvsCKK09
-         nHVSr3hg9efXmx3fo4jrzl7/+fd/3kvoaj50OqVMRU7XnDLAnExyB/7VR/NilQQ81yXu
-         5hJA==
-X-Gm-Message-State: AOAM5304hj2L9KCEfX7aFQYUQZF9MZ5qscx8xqXhz19ltFS0/6ijTxo4
-        /tOjrhzoXC8HRGoewGS4Fzz8TvVEBOq7Y8fyXxtdCPpJ
-X-Google-Smtp-Source: ABdhPJwkwpK6Km+ushc9A1CmJalY7YDxkaZpWvaeV6P1vmcPyklRXsQahQs5E1vm5UD0ctxrGufZWxwQaQTBXHNbh18=
-X-Received: by 2002:adf:f186:: with SMTP id h6mr16468220wro.144.1595768348627;
- Sun, 26 Jul 2020 05:59:08 -0700 (PDT)
+        id S1726820AbgGZNJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 09:09:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33764 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgGZNJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 09:09:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B5076AB55;
+        Sun, 26 Jul 2020 13:09:12 +0000 (UTC)
+Subject: Re: [PATCH] lib: Replace HTTP links with HTTPS ones
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+References: <20200726112154.16510-1-grandmaster@al2klimov.de>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        changbin.du@intel.com, masahiroy@kernel.org, rdunlap@infradead.org,
+        krzk@kernel.org, andriy.shevchenko@linux.intel.com,
+        ben.dooks@codethink.co.uk, axboe@kernel.dk, tpiepho@gmail.com,
+        chenqiwu@xiaomi.com, walken@google.com, gustavo@embeddedor.com,
+        lasse.collin@tukaani.org, danielwa@cisco.com,
+        linux-kernel@vger.kernel.org
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ mQINBFYX6S8BEAC9VSamb2aiMTQREFXK4K/W7nGnAinca7MRuFUD4JqWMJ9FakNRd/E0v30F
+ qvZ2YWpidPjaIxHwu3u9tmLKqS+2vnP0k7PRHXBYbtZEMpy3kCzseNfdrNqwJ54A430BHf2S
+ GMVRVENiScsnh4SnaYjFVvB8SrlhTsgVEXEBBma5Ktgq9YSoy5miatWmZvHLFTQgFMabCz/P
+ j5/xzykrF6yHo0rHZtwzQzF8rriOplAFCECp/t05+OeHHxjSqSI0P/G79Ll+AJYLRRm9til/
+ K6yz/1hX5xMToIkYrshDJDrUc8DjEpISQQPhG19PzaUf3vFpmnSVYprcWfJWsa2wZyyjRFkf
+ J51S82WfclafNC6N7eRXedpRpG6udUAYOA1YdtlyQRZa84EJvMzW96iSL1Gf+ZGtRuM3k49H
+ 1wiWOjlANiJYSIWyzJjxAd/7Xtiy/s3PRKL9u9y25ftMLFa1IljiDG+mdY7LyAGfvdtIkanr
+ iBpX4gWXd7lNQFLDJMfShfu+CTMCdRzCAQ9hIHPmBeZDJxKq721CyBiGAhRxDN+TYiaG/UWT
+ 7IB7LL4zJrIe/xQ8HhRO+2NvT89o0LxEFKBGg39yjTMIrjbl2ZxY488+56UV4FclubrG+t16
+ r2KrandM7P5RjR+cuHhkKseim50Qsw0B+Eu33Hjry7YCihmGswARAQABtBhDb2x5IExpIDxj
+ b2x5bGlAc3VzZS5kZT6JAlYEEwEIAEACGyMHCwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgBYh
+ BOo+RS/0+Uhgjej60Mc5B5Nrffj8BQJcR84dBQkY++fuAAoJEMc5B5Nrffj8ixcP/3KAKg1X
+ EcoW4u/0z+Ton5rCyb/NpAww8MuRjNW82UBUac7yCi1y3OW7NtLjuBLw5SaVG5AArb7IF3U0
+ qTOobqfl5XHsT0o5wFHZaKUrnHb6y7V3SplsJWfkP3JmOooJsQB3z3K96ZTkFelsNb0ZaBRu
+ gV+LA4MomhQ+D3BCDR1it1OX/tpvm2uaDF6s/8uFtcDEM9eQeqATN/QAJ49nvU/I8zDSY9rc
+ 0x9mP0x+gH4RccbnoPu/rUG6Fm1ZpLrbb6NpaYBBJ/V1BC4lIOjnd24bsoQrQmnJn9dSr60X
+ 1MY60XDszIyzRw7vbJcUn6ZzPNFDxFFT9diIb+wBp+DD8ZlD/hnVpl4f921ZbvfOSsXAJrKB
+ 1hGY17FPwelp1sPcK2mDT+pfHEMV+OQdZzD2OCKtza/5IYismJJm3oVUYMogb5vDNAw9X2aP
+ XgwUuG+FDEFPamFMUwIfzYHcePfqf0mMsaeSgtA/xTxzx/0MLjUJHl46Bc0uKDhv7QUyGz0j
+ Ywgr2mHTvG+NWQ/mDeHNGkcnsnp3IY7koDHnN2xMFXzY4bn9m8ctqKo2roqjCzoxD/njoAhf
+ KBzdybLHATqJG/yiZSbCxDA1n/J4FzPyZ0rNHUAJ/QndmmVspE9syFpFCKigvvyrzm016+k+
+ FJ59Q6RG4MSy/+J565Xj+DNY3/dCuQINBFYX6S8BEADZP+2cl4DRFaSaBms08W8/smc5T2CO
+ YhAoygZn71rB7Djml2ZdvrLRjR8Qbn0Q/2L2gGUVc63pJnbrjlXSx2LfAFE0SlfYIJ11aFdF
+ 9w7RvqWByQjDJor3Z0fWvPExplNgMvxpD0U0QrVT5dIGTx9hadejCl/ug09Lr6MPQn+a4+qs
+ aRWwgCSHaIuDkH3zI1MJXiqXXFKUzJ/Fyx6R72rqiMPHH2nfwmMu6wOXAXb7+sXjZz5Po9GJ
+ g2OcEc+rpUtKUJGyeQsnCDxUcqJXZDBi/GnhPCcraQuqiQ7EGWuJfjk51vaI/rW4bZkA9yEP
+ B9rBYngbz7cQymUsfxuTT8OSlhxjP3l4ZIZFKIhDaQeZMj8pumBfEVUyiF6KVSfgfNQ/5PpM
+ R4/pmGbRqrAAElhrRPbKQnCkGWDr8zG+AjN1KF6rHaFgAIO7TtZ+F28jq4reLkur0N5tQFww
+ wFwxzROdeLHuZjL7eEtcnNnzSkXHczLkV4kQ3+vr/7Gm65mQfnVpg6JpwpVrbDYQeOFlxZ8+
+ GERY5Dag4KgKa/4cSZX2x/5+KkQx9wHwackw5gDCvAdZ+Q81nm6tRxEYBBiVDQZYqO73stgT
+ ZyrkxykUbQIy8PI+g7XMDCMnPiDncQqgf96KR3cvw4wN8QrgA6xRo8xOc2C3X7jTMQUytCz9
+ 0MyV1QARAQABiQI8BBgBCAAmAhsMFiEE6j5FL/T5SGCN6PrQxzkHk2t9+PwFAlxHziAFCRj7
+ 5/EACgkQxzkHk2t9+PxgfA//cH5R1DvpJPwraTAl24SUcG9EWe+NXyqveApe05nk15zEuxxd
+ e4zFEjo+xYZilSveLqYHrm/amvQhsQ6JLU+8N60DZHVcXbw1Eb8CEjM5oXdbcJpXh1/1BEwl
+ 4phsQMkxOTns51bGDhTQkv4lsZKvNByB9NiiMkT43EOx14rjkhHw3rnqoI7ogu8OO7XWfKcL
+ CbchjJ8t3c2XK1MUe056yPpNAT2XPNF2EEBPG2Y2F4vLgEbPv1EtpGUS1+JvmK3APxjXUl5z
+ 6xrxCQDWM5AAtGfM/IswVjbZYSJYyH4BQKrShzMb0rWUjkpXvvjsjt8rEXpZEYJgX9jvCoxt
+ oqjCKiVLpwje9WkEe9O9VxljmPvxAhVqJjX62S+TGp93iD+mvpCoHo3+CcvyRcilz+Ko8lfO
+ hS9tYT0HDUiDLvpUyH1AR2xW9RGDevGfwGTpF0K6cLouqyZNdhlmNciX48tFUGjakRFsxRmX
+ K0Jx4CEZubakJe+894sX6pvNFiI7qUUdB882i5GR3v9ijVPhaMr8oGuJ3kvwBIA8lvRBGVGn
+ 9xvzkQ8Prpbqh30I4NMp8MjFdkwCN6znBKPHdjNTwE5PRZH0S9J0o67IEIvHfH0eAWAsgpTz
+ +jwc7VKH7vkvgscUhq/v1/PEWCAqh9UHy7R/jiUxwzw/288OpgO+i+2l11Y=
+Message-ID: <172e85d6-06c7-19bd-d3ab-016464374d81@suse.de>
+Date:   Sun, 26 Jul 2020 21:08:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200724085441.1514-1-jiangyifei@huawei.com> <20200724085441.1514-3-jiangyifei@huawei.com>
-In-Reply-To: <20200724085441.1514-3-jiangyifei@huawei.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sun, 26 Jul 2020 18:28:57 +0530
-Message-ID: <CAAhSdy18+3ub9Lw+2v0WEujYkFJ2yU0x=GqZ+PQGe2DrWCR8Bg@mail.gmail.com>
-Subject: Re: [RFC 2/2] RISC-V: KVM: read\write kernel mmio device support
-To:     Yifei Jiang <jiangyifei@huawei.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
-        wu.wubin@huawei.com,
-        Zhanghailiang <zhang.zhanghailiang@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>, limingwang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200726112154.16510-1-grandmaster@al2klimov.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change subject to:
-RISC-V: KVM: kernel mmio read/write support
-
-Also add 1-2 sentences of commit description.
-
-On Fri, Jul 24, 2020 at 2:25 PM Yifei Jiang <jiangyifei@huawei.com> wrote:
->
-> Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
-> Signed-off-by: Mingwang Li <limingwang@huawei.com>
+On 2020/7/26 19:21, Alexander A. Klimov wrote:
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
+> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 > ---
->  arch/riscv/kvm/vcpu_exit.c | 38 ++++++++++++++++++++++++++++++++------
->  1 file changed, 32 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
-> index e97ba96cb0ae..448f11179fa8 100644
-> --- a/arch/riscv/kvm/vcpu_exit.c
-> +++ b/arch/riscv/kvm/vcpu_exit.c
-> @@ -191,6 +191,8 @@ static int virtual_inst_fault(struct kvm_vcpu *vcpu, struct kvm_run *run,
->  static int emulate_load(struct kvm_vcpu *vcpu, struct kvm_run *run,
->                         unsigned long fault_addr, unsigned long htinst)
->  {
-> +       int ret;
-> +       u8 data_buf[8];
->         unsigned long insn;
->         int shift = 0, len = 0;
->         struct kvm_cpu_trap utrap = { 0 };
-> @@ -272,19 +274,32 @@ static int emulate_load(struct kvm_vcpu *vcpu, struct kvm_run *run,
->         vcpu->arch.mmio_decode.len = len;
->         vcpu->arch.mmio_decode.return_handled = 0;
->
-> -       /* Exit to userspace for MMIO emulation */
-> -       vcpu->stat.mmio_exit_user++;
-> -       run->exit_reason = KVM_EXIT_MMIO;
-> +       ret = kvm_io_bus_read(vcpu, KVM_MMIO_BUS, fault_addr, len,
-> +                                                 data_buf);
-> +
->         run->mmio.is_write = false;
->         run->mmio.phys_addr = fault_addr;
->         run->mmio.len = len;
->
-> +       if (!ret) {
-> +               /* We handled the access successfully in the kernel. */
-> +               memcpy(run->mmio.data, data_buf, len);
-> +               vcpu->stat.mmio_exit_kernel++;
-> +               kvm_riscv_vcpu_mmio_return(vcpu, run);
-> +               return 1;
-> +       }
-> +
-> +       /* Exit to userspace for MMIO emulation */
-> +       vcpu->stat.mmio_exit_user++;
-> +       run->exit_reason = KVM_EXIT_MMIO;
-> +
->         return 0;
->  }
->
->  static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
->                          unsigned long fault_addr, unsigned long htinst)
->  {
-> +       int ret;
->         u8 data8;
->         u16 data16;
->         u32 data32;
-> @@ -378,13 +393,24 @@ static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
->                 return -ENOTSUPP;
->         };
->
-> -       /* Exit to userspace for MMIO emulation */
-> -       vcpu->stat.mmio_exit_user++;
-> -       run->exit_reason = KVM_EXIT_MMIO;
-> +       ret = kvm_io_bus_write(vcpu, KVM_MMIO_BUS, fault_addr, len,
-> +                                                  run->mmio.data);
-> +
->         run->mmio.is_write = true;
->         run->mmio.phys_addr = fault_addr;
->         run->mmio.len = len;
->
-> +       if (!ret) {
-> +               /* We handled the access successfully in the kernel. */
-> +               vcpu->stat.mmio_exit_kernel++;
-> +               kvm_riscv_vcpu_mmio_return(vcpu, run);
-> +               return 1;
-> +       }
-> +
-> +       /* Exit to userspace for MMIO emulation */
-> +       vcpu->stat.mmio_exit_user++;
-> +       run->exit_reason = KVM_EXIT_MMIO;
-> +
->         return 0;
->  }
->
-> --
-> 2.19.1
->
->
+>  Continuing my work started at 93431e0607e5 with unmaintained stuff according to:
+>  perl scripts/get_maintainer.pl --nogit{,-fallback} --nol
+> 
+>  See also: git log --oneline '--author=Alexander A. Klimov <grandmaster@al2klimov.de>' v5.7..master
+>  (Actually letting a shell for loop submit all this stuff for me.)
+> 
+>  If there are any URLs to be removed completely
+>  or at least not (just) HTTPSified:
+>  Just clearly say so and I'll *undo my change*.
+>  See also: https://lkml.org/lkml/2020/6/27/64
+> 
+>  If there are any valid, but yet not changed URLs:
+>  See: https://lkml.org/lkml/2020/6/26/837
+> 
+>  If you apply the patch, please let me know.
+> 
+> 
+>  lib/Kconfig.debug        | 2 +-
+>  lib/crc64.c              | 2 +-
+>  lib/decompress_bunzip2.c | 2 +-
+>  lib/decompress_unlzma.c  | 6 +++---
+>  lib/math/rational.c      | 2 +-
+>  lib/rbtree.c             | 2 +-
+>  lib/ts_bm.c              | 2 +-
+>  lib/xxhash.c             | 2 +-
+>  lib/xz/xz_crc32.c        | 2 +-
+>  lib/xz/xz_dec_bcj.c      | 2 +-
+>  lib/xz/xz_dec_lzma2.c    | 2 +-
+>  lib/xz/xz_lzma2.h        | 2 +-
+>  lib/xz/xz_stream.h       | 2 +-
+>  13 files changed, 15 insertions(+), 15 deletions(-)
+> 
 
-Regards,
-Anup
+[snipped]
+
+> diff --git a/lib/crc64.c b/lib/crc64.c
+> index f8928ce28280..47cfa054827f 100644
+> --- a/lib/crc64.c
+> +++ b/lib/crc64.c
+> @@ -4,7 +4,7 @@
+>   *
+>   * This is a basic crc64 implementation following ECMA-182 specification,
+>   * which can be found from,
+> - * http://www.ecma-international.org/publications/standards/Ecma-182.htm
+> + * https://www.ecma-international.org/publications/standards/Ecma-182.htm
+>   *
+>   * Dr. Ross N. Williams has a great document to introduce the idea of CRC
+>   * algorithm, here the CRC64 code is also inspired by the table-driven
+> diff --git a/lib/decompress_bunzip2.c b/lib/decompress_bunzip2.c
+> index 7c4932eed748..f9628f3924ce 100644
+> --- a/lib/decompress_bunzip2.c
+> +++ b/lib/decompress_bunzip2.c
+> @@ -34,7 +34,7 @@
+>  		Phone (337) 232-1234 or 1-800-738-2226
+>  		Fax   (337) 232-1297
+>  
+> -		http://www.hospiceacadiana.com/
+> +		https://www.hospiceacadiana.com/
+>  
+>  	Manuel
+>   */
+[snipped]
+
+For crc64.c, Acked-by: Coly Li <colyli@suse.de>
+
+Thanks.
+
+Coly Li
