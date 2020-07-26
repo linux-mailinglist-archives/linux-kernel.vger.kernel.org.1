@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B76D22E091
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E26922E096
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 17:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgGZPUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 11:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
+        id S1726780AbgGZPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 11:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgGZPUV (ORCPT
+        with ESMTP id S1725949AbgGZPYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 11:20:21 -0400
+        Sun, 26 Jul 2020 11:24:16 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ADAC0619D2;
-        Sun, 26 Jul 2020 08:20:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DDEC0619D2;
+        Sun, 26 Jul 2020 08:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uNW1eZ4bx44vGwfBMFPSJ/xfKPBN8zLMfK//Re7u/r8=; b=hgywvEY7znvmMpz/qJfRo27bKH
-        8KllS+Z3U+0/fzHmuJd2FBTeRViKOOXxYvHeFHUmQ+OPLlwk8cCRCUII73LNMY3iXCTsRotJQC6Bz
-        abLmbfPBHQMDJYgueFPta9U3YmgN5+euI9UuThGRSnOg+NdOTXU/QlxIBesV3n4A3nPO0K3DgIrPa
-        v9SkxBM3g7zT5QqqghYXEi9xn+CiLjUwjPuhLoG9VTk23a2MJU2+bCBd/OjqJ9i9m4bUA55xV4Rdo
-        j2u/9a4lsBmd34Y47dy2wb+oJJi8kkgUuehsf+mqg0NpBQTrg18+ipcQ8M7WGuBpsBYxfS4+vmLgh
-        WfR7QqGA==;
+        bh=5Z5eIAaFGWLcRkprXsSQSz/ZXR6YtVszbfA9Sx2DBkI=; b=P9RXW33o4c7/2dMj2/ZrliJYVH
+        e7c+NkQFOX6OIGXB8xTc7v5uOpS7Z40n2xtlBe0tqIkRw9nb4vGKxMTMe8aWSLu2KoXQvIl7TS+YB
+        NgkYZ30Man3k/hfFOIripyBF69nyLjO9OzSgH/SkZhYqUgTJYlap/xidu41OQtQiI67pODAcgbI/F
+        /Iw0QcuXPvPhi20xhTTC5OVZdPHIvQrzxY+kb/Ij+XXiOzSg9Tri2S+NifrSesHe6s+lDJfepzWHj
+        KGIEhGzmV3mWfDQQZovPzugaiASv24o/MepucA5rCbhMREvkBmeYge89777+wz+G9Owz4isUC564D
+        y3b2DL1Q==;
 Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jziRi-0006pE-JN; Sun, 26 Jul 2020 15:20:14 +0000
-Date:   Sun, 26 Jul 2020 16:20:14 +0100
+        id 1jziVY-0006x0-Rb; Sun, 26 Jul 2020 15:24:12 +0000
+Date:   Sun, 26 Jul 2020 16:24:12 +0100
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Kanchan Joshi <joshi.k@samsung.com>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org,
-        willy@infradead.org, hch@infradead.org, Damien.LeMoal@wdc.com,
-        asml.silence@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-api@vger.kernel.org, Selvakumar S <selvakuma.s1@samsung.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-Subject: Re: [PATCH v4 5/6] block: enable zone-append for iov_iter of bvec
- type
-Message-ID: <20200726152014.GD25328@infradead.org>
-References: <1595605762-17010-1-git-send-email-joshi.k@samsung.com>
- <CGME20200724155346epcas5p2cfb383fe9904a45280c6145f4c13e1b4@epcas5p2.samsung.com>
- <1595605762-17010-6-git-send-email-joshi.k@samsung.com>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Matthew Wilcox <willy@infradead.org>, darrick.wong@oracle.com,
+        hch@infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        khlebnikov@yandex-team.ru
+Subject: Re: WARN_ON_ONCE(1) in iomap_dio_actor()
+Message-ID: <20200726152412.GA26614@infradead.org>
+References: <20200619211750.GA1027@lca.pw>
+ <20200620001747.GC8681@bombadil.infradead.org>
+ <20200724182431.GA4871@lca.pw>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1595605762-17010-6-git-send-email-joshi.k@samsung.com>
+In-Reply-To: <20200724182431.GA4871@lca.pw>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 09:19:21PM +0530, Kanchan Joshi wrote:
-> zone-append with bvec iov_iter gives WARN_ON, and returns -EINVAL.
-> Add new helper to process such iov_iter and add pages in bio honoring
-> zone-append specific constraints.
-> This is used to enable zone-append with io-uring fixed-buffer.
+On Fri, Jul 24, 2020 at 02:24:32PM -0400, Qian Cai wrote:
+> On Fri, Jun 19, 2020 at 05:17:47PM -0700, Matthew Wilcox wrote:
+> > On Fri, Jun 19, 2020 at 05:17:50PM -0400, Qian Cai wrote:
+> > > Running a syscall fuzzer by a normal user could trigger this,
+> > > 
+> > > [55649.329999][T515839] WARNING: CPU: 6 PID: 515839 at fs/iomap/direct-io.c:391 iomap_dio_actor+0x29c/0x420
+> > ...
+> > > 371 static loff_t
+> > > 372 iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+> > > 373                 void *data, struct iomap *iomap, struct iomap *srcmap)
+> > > 374 {
+> > > 375         struct iomap_dio *dio = data;
+> > > 376
+> > > 377         switch (iomap->type) {
+> > > 378         case IOMAP_HOLE:
+> > > 379                 if (WARN_ON_ONCE(dio->flags & IOMAP_DIO_WRITE))
+> > > 380                         return -EIO;
+> > > 381                 return iomap_dio_hole_actor(length, dio);
+> > > 382         case IOMAP_UNWRITTEN:
+> > > 383                 if (!(dio->flags & IOMAP_DIO_WRITE))
+> > > 384                         return iomap_dio_hole_actor(length, dio);
+> > > 385                 return iomap_dio_bio_actor(inode, pos, length, dio, iomap);
+> > > 386         case IOMAP_MAPPED:
+> > > 387                 return iomap_dio_bio_actor(inode, pos, length, dio, iomap);
+> > > 388         case IOMAP_INLINE:
+> > > 389                 return iomap_dio_inline_actor(inode, pos, length, dio, iomap);
+> > > 390         default:
+> > > 391                 WARN_ON_ONCE(1);
+> > > 392                 return -EIO;
+> > > 393         }
+> > > 394 }
+> > > 
+> > > Could that be iomap->type == IOMAP_DELALLOC ? Looking throught the logs,
+> > > it contains a few pread64() calls until this happens,
+> > 
+> > It _shouldn't_ be able to happen.  XFS writes back ranges which exist
+> > in the page cache upon seeing an O_DIRECT I/O.  So it's not supposed to
+> > be possible for there to be an extent which is waiting for the contents
+> > of the page cache to be written back.
 > 
-> Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-> Signed-off-by: Selvakumar S <selvakuma.s1@samsung.com>
-> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-> Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
-> ---
->  block/bio.c | 31 ++++++++++++++++++++++++++++---
->  1 file changed, 28 insertions(+), 3 deletions(-)
-> 
-> diff --git a/block/bio.c b/block/bio.c
-> index 0cecdbc..ade9da7 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -975,6 +975,30 @@ static int __bio_iov_bvec_add_pages(struct bio *bio, struct iov_iter *iter)
->  	iov_iter_advance(iter, size);
->  	return 0;
->  }
-> +static int __bio_iov_bvec_append_add_pages(struct bio *bio, struct iov_iter *iter)
+> Okay, it is IOMAP_DELALLOC. We have,
 
-Missing empty line and too long line, please stick to 80 chars for this
-code.
-
-Otherwise this looks sensible.
+Can you share the fuzzer?  If we end up with delalloc space here we
+probably need to fix a bug in the cache invalidation code.
