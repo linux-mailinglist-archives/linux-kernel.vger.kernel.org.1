@@ -2,141 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BEC22DF2B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC1322DF2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgGZMsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 08:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbgGZMsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 08:48:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D2FC0619D4
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 05:48:51 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 3so5202632wmi.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 05:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rCLczGQIxWKiTkxHU6NiarIhxc9Z+JmjQxED80qEJss=;
-        b=gwsElXHX2E2bUDww3ab3IoZnn76R5AZW2fLMad++U/SfNz2BQysjn9tmQWLc68si09
-         vjvfu12vgyKudVHKrUiZ5jfldqlKc8Wj28ZbK0upIQvgG5/tXeW3EpZimmGZGW2ExcKJ
-         qP553zFfDrJdUvHw8f0LhdqsapqLZD7UtlzRre2tgNZMRe2O+1x8zy1B8/0hCRv1kHxv
-         YPkUSzFVgMQNOnLyjSHr+G4o/H9zQ9UtallmpbnPciV2SfNw8hqZ5/VHB4SBaosZh/vD
-         01OTENe/iN0DPo/jtmvNS4QD/YrdszGynX1Fb+bIQnmFxhzWGbsV1U1nzbekl4PX/7Qr
-         NIcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rCLczGQIxWKiTkxHU6NiarIhxc9Z+JmjQxED80qEJss=;
-        b=r3t6EziME14sbfy9rzSkt5W+tGo6SJIapHdFd0cUXCs2sqt1yTbeX/eseL0MtupJuA
-         eFbMt9KvhJGyXLYJoUBPbZPw06DoCLsSL1QODGGG+uyPvRkaFsrIHYSpIC/pj/maIzP+
-         ttt8zflZT3Yq/atL3svrXD76Mutdi+KVsZH/YI+/jnWN3Pz15nQo7AgrKVBrlEhX2Col
-         vVRiDdsxulo8pf5dRQp5R/7mFJAT1u7zgQqouZ8N5QZw552cve2yaCqz3e1L8axLNz1n
-         v4SDEPDUVeDFLtQYI17g5ts8aiRYunca9qY5BtjwP9ROeumJuaiRTxyTuKShPzwCFkCM
-         CwGQ==
-X-Gm-Message-State: AOAM533rYVNq77EdHYW6kf4Ag8I2tyGIRA87Q/QP7tOV6vd7182qVSky
-        6xQqZfldWNX71c7kKLlzkuTV49giCTM3EqTCsRQ5uw==
-X-Google-Smtp-Source: ABdhPJwhqkhQturWmZRFMqSZv9GNE6rrK3X7LahzNQkb0Zo4Tkad6SpMIBWX4YYc/OAmqOhmFgHIsVezEkmX8Si7Pes=
-X-Received: by 2002:a1c:6689:: with SMTP id a131mr5266820wmc.157.1595767730427;
- Sun, 26 Jul 2020 05:48:50 -0700 (PDT)
+        id S1726935AbgGZMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 08:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725848AbgGZMvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 08:51:03 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24A3B2065E;
+        Sun, 26 Jul 2020 12:51:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595767863;
+        bh=Tiy4JSgM4TpbyNf0slTi9UaPjGZNDHxnwqMnKUaMZss=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=00B5D0t9pMPSfc7RlCO3d7GBDmTYzO4D1+hR4pZMlhJN1b48jvUBYH+1JI7IEbha9
+         2tS10Kts27OogQs4aILr2uCngJHdoMsvzgIW6VIMAjUaehP368PzVc164hGUVqi5RN
+         Uj7uV7SJXnfV7XxAXcQaHBzy6IjbWnciooR5prb0=
+Date:   Sun, 26 Jul 2020 13:50:59 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Pop, Cristian" <Cristian.Pop@analog.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] one-bit-adc-dac: Add initial version of one bit
+ ADC, DAC
+Message-ID: <20200726135059.1234aa71@archlinux>
+In-Reply-To: <SN2PR03MB2317AC79D13C3A89882534F4E7770@SN2PR03MB2317.namprd03.prod.outlook.com>
+References: <20200716072737.9535-1-cristian.pop@analog.com>
+        <9bd0363c-e8fb-a36f-a107-0afd8f7851d0@metafoo.de>
+        <20200720145225.4f5d552b@archlinux>
+        <SN2PR03MB2317AC79D13C3A89882534F4E7770@SN2PR03MB2317.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200724085441.1514-1-jiangyifei@huawei.com> <20200724085441.1514-2-jiangyifei@huawei.com>
-In-Reply-To: <20200724085441.1514-2-jiangyifei@huawei.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sun, 26 Jul 2020 18:18:38 +0530
-Message-ID: <CAAhSdy08NEMR2jjJ-FVixyWMOpQ4+V-P9k2xuyO+Xu5OWKrmFQ@mail.gmail.com>
-Subject: Re: [RFC 1/2] RISC-V: KVM: enable ioeventfd capability and compile
- for risc-v
-To:     Yifei Jiang <jiangyifei@huawei.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        KVM General <kvm@vger.kernel.org>,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
-        wu.wubin@huawei.com,
-        Zhanghailiang <zhang.zhanghailiang@huawei.com>,
-        "dengkai (A)" <dengkai1@huawei.com>, limingwang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please change subject to:
-"RISC-V: KVM: enable ioeventfd capability"
+..
+> >   
+> > > > +	if (ret < 0)
+> > > > +		return ret;
+> > > > +
+> > > > +	for (i = 0; i < num_ch; i++) {
+> > > > +		channels[i] = (struct  
+> > iio_chan_spec)ONE_BIT_ADC_DAC_CHANNEL(i +  
+> > > > +							offset,
+> > > > +							direction);
+> > > > +		channels[i].extend_name = gpio_names[i];  
+> > > I think we want to avoid using extend_name in new drivers because it
+> > > makes for a very clumsy ABI. We should add a label property like we
+> > > have for the device for channels to have a symbolic name of the channel.  
+> The current dts looks like this:
+> one-bit-adc-dac@0 {
+> 				in-gpios = <&gpio 17 0>, <&gpio 27 0>;
+> 				in-gpio-names = "i_17", "i_27";
+> 				out-gpios = <&gpio 23 0>, <&gpio 24 0>;
+> 				out-gpio-names = "o_23", "o_24";
+> 			};
+> Resulting in channels:
+> in_voltage0_i_17_raw
+> in_voltage1_i_27_raw
+> out_voltage2_o_23_raw
+> out_voltage3_o_24_raw
+> If we want to lose extend_name, please provide an example for using labels.
+> How the dts should look like, how do I use it in the driver?
 
-Also add 1-2 sentences of commit description.
+Doesn't exist yet :)  Proposal was to add support for a label attribute
+to the iio core.
 
-On Fri, Jul 24, 2020 at 2:25 PM Yifei Jiang <jiangyifei@huawei.com> wrote:
->
-> Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
-> Signed-off-by: Mingwang Li <limingwang@huawei.com>
-> ---
->  arch/riscv/kvm/Kconfig  | 2 ++
->  arch/riscv/kvm/Makefile | 2 +-
->  arch/riscv/kvm/vm.c     | 1 +
->  3 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/kvm/Kconfig b/arch/riscv/kvm/Kconfig
-> index 2356dc52ebb3..95d85d893ab6 100644
-> --- a/arch/riscv/kvm/Kconfig
-> +++ b/arch/riscv/kvm/Kconfig
-> @@ -4,6 +4,7 @@
->  #
->
->  source "virt/kvm/Kconfig"
-> +source "drivers/vhost/Kconfig"
->
->  menuconfig VIRTUALIZATION
->         bool "Virtualization"
-> @@ -26,6 +27,7 @@ config KVM
->         select KVM_MMIO
->         select HAVE_KVM_VCPU_ASYNC_IOCTL
->         select SRCU
-> +       select HAVE_KVM_EVENTFD
->         help
->           Support hosting virtualized guest machines.
->
-> diff --git a/arch/riscv/kvm/Makefile b/arch/riscv/kvm/Makefile
-> index b56dc1650d2c..3ad46fe44900 100644
-> --- a/arch/riscv/kvm/Makefile
-> +++ b/arch/riscv/kvm/Makefile
-> @@ -2,7 +2,7 @@
->  # Makefile for RISC-V KVM support
->  #
->
-> -common-objs-y = $(addprefix ../../../virt/kvm/, kvm_main.o coalesced_mmio.o)
-> +common-objs-y = $(addprefix ../../../virt/kvm/, kvm_main.o coalesced_mmio.o eventfd.o)
->
->  ccflags-y := -Ivirt/kvm -Iarch/riscv/kvm
->
-> diff --git a/arch/riscv/kvm/vm.c b/arch/riscv/kvm/vm.c
-> index 4f2498198cb5..473299e71f68 100644
-> --- a/arch/riscv/kvm/vm.c
-> +++ b/arch/riscv/kvm/vm.c
-> @@ -52,6 +52,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->         int r;
->
->         switch (ext) {
-> +       case KVM_CAP_IOEVENTFD:
->         case KVM_CAP_DEVICE_CTRL:
->         case KVM_CAP_USER_MEMORY:
->         case KVM_CAP_SYNC_MMU:
-> --
-> 2.19.1
->
->
+If we were going to do a generic binding it would have to be part of the
+existing channel bindings. e.g.
+Documentation/devicetree/bindings/iio/adc/adc.txt
 
-Regards,
-Anup
+But here it might be fine to use the gpio-names to fill one in.
+Alternative would be to use a binding where the gpio was specified
+as part of the per channel child nodes rather than as a single entry.
+
+
+
