@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8683622E168
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBE422E16A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgGZQmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 12:42:10 -0400
-Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:33386 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726117AbgGZQmK (ORCPT
+        id S1726781AbgGZQoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 12:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbgGZQoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 12:42:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 34F57837F24A;
-        Sun, 26 Jul 2020 16:42:09 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6248:7903:8957:10004:10400:10848:10967:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14039:14096:14097:14181:14659:14721:14777:21080:21433:21627:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:16,LUA_SUMMARY:none
-X-HE-Tag: bait17_2e011d426f5a
-X-Filterd-Recvd-Size: 1933
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 26 Jul 2020 16:42:07 +0000 (UTC)
-Message-ID: <5f5679b4c76bf0e16064f3a45319bc35938ad96b.camel@perches.com>
-Subject: Re: Re: Re: Re: Re: checkpatch: support deprecated terms checking
-From:   Joe Perches <joe@perches.com>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        SeongJae Park <sjpark@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, apw@canonical.com,
-        colin.king@canonical.com, jslaby@suse.cz, pavel@ucw.cz,
-        SeongJae Park <sjpark@amazon.de>
-Date:   Sun, 26 Jul 2020 09:42:06 -0700
-In-Reply-To: <20200726153601.13855-1-sj38.park@gmail.com>
-References: <20200726153601.13855-1-sj38.park@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Sun, 26 Jul 2020 12:44:11 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB1BC0619D2;
+        Sun, 26 Jul 2020 09:44:11 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id h1so10574490otq.12;
+        Sun, 26 Jul 2020 09:44:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=WG+IiSADj4bC8adDl2auSWlEfulYkcaFltfgstRWQ5Y=;
+        b=FKU5MvfQ5K1ZlsKoTdFXi482971xJ8n8FjvZVjcIhM6gB+/8mytUpIch25b/fAE+oJ
+         udwQB3URwVq3O+46c9le9KD3NUXxKDLTit/DxfbO5DCussKq3Rp2ulxLZMLMZ7MM9w1W
+         J2G6OucCGO9Z5Mz5i8sHF4KGg/5Zg7/H336MHN9zbf026cUwuHv/aeOUgdwowd6+EC2F
+         L+oOFGqYePeG3mJKcV2TDTTeatw03f+XqepZ8erGEtsmP4Hi1zIhWCuakDx16NJ8l4Bb
+         0wMpBePLihDxP76vQHVuqtsdn48MVegp/CzteTtME9N0LSYx1Dm5NTr3iAFIhtok+CCJ
+         g7Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=WG+IiSADj4bC8adDl2auSWlEfulYkcaFltfgstRWQ5Y=;
+        b=lgpxYpj8f2qRbqio/xpNZ/vhwFAGb+k3MuKzU2C3QgX7ArJQxehyOWNthv4XnD+6ML
+         N3KcazJXPvLdUGgYjta9FS+9d2HCqr4YmM3cS/TwqF2PbIKlLfpDDMg1VCqvuQapTaCU
+         KM3JraiAdUpYgmFFL/qcKD8n6d1psozD9FVB5GbA9fVRQ7Nqvb5y/gSu35CHEDxLOef+
+         YrmZfasJhX5xsab4jwpDis5+J96eVa7GGBjSn60DRn9wM+F+y3q2BxsCsBSDxMhxp8IO
+         dFGPBzyvidEorGKohmhEVLq8Fu+PxzY74BF5M2e1+35+orY8O6bjtw4NKalrJ5kqxdad
+         aH6Q==
+X-Gm-Message-State: AOAM533naQe+22lOKgVkjN9lCCqc0sP3okB3fSZxxUWHCxXiBSHqgI0q
+        9iYZAKBpGea01JrK/SF24fcURYX+6smk3dWtl0vZwZOLycM=
+X-Google-Smtp-Source: ABdhPJyyQVOCA2uLL/WHvGjv3VXAVUW2/bbulIVmhdj1GCluVtTMRr6LbYDKzvWjzI2hxvnEIa+zfcmP5xChsXib1nk=
+X-Received: by 2002:a9d:2c29:: with SMTP id f38mr5654679otb.234.1595781850542;
+ Sun, 26 Jul 2020 09:44:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From:   Jan Ziak <0xe2.0x9a.0x9b@gmail.com>
+Date:   Sun, 26 Jul 2020 18:43:34 +0200
+Message-ID: <CAODFU0ogKh6iz_F9fOYwqChfWZ+VJXoBebzzMHiOtdTK_jXqqg@mail.gmail.com>
+Subject: Re: Kernel compression benchmarks
+To:     alex_y_xu@yahoo.ca
+Cc:     Kernel-team@fb.com, clm@fb.com, gregkh@linuxfoundation.org,
+        keescook@chromium.org, kilobyte@angband.pl,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, nickrterrell@gmail.com, nolange79@gmail.com,
+        oss@malat.biz, patrick@stwcx.xyz, patrickw3@fb.com, rmikey@fb.com,
+        sedat.dilek@gmail.com, terrelln@fb.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-07-26 at 17:36 +0200, SeongJae Park wrote:
-> On Sun, 26 Jul 2020 07:50:54 -0700 Joe Perches <joe@perches.com> wrote:
-[]
-> > I do not want to encourage relatively inexperienced people
-> > to run checkpatch and submit inappropriate patches.
-> 
-> Me, neither.  But, I think providing more warnings and references is better for
-> that.
+Hello
 
-Unfortunately, the inexperienced _do_ in fact run
-checkpatch on files and submit inappropriate patches.
+I looked at the SVG graphs and it appears that the formula used wasn't
+T_load+T_decompress, but was just T_decompress.
 
-It's generally a time sink for the experienced
-maintainers to reply.
+Without considering the time it takes to load the compressed data from
+a storage device, the SVG graphs are only half-done and might be
+deceiving.
 
-> Simply limiting checks could allow people submitting inappropriate patches
-> intorducing new uses of deprecated terms.
+There are 3 kinds of typical device speeds nowadays, the sequential
+read speed of a large non-fragmented compressed file is one of the
+following:
 
-Tradeoffs...
+100 MB/s: rotational disks and USB flash drives
+500 MB/s: SATA SSD
+2 GB/s: NVMe SSD
 
-I expect that patches being reviewed by maintainers
-are preferred over files being inappropriately changed
-by the inexperienced.
+The read speeds of USB flash devices vary a lot, but in case of recent
+high-speed USB flash drives it falls into the 100 MB/s category of
+rotational disks. Taking USB flash read speed into consideration is
+important for deciding which compression to use when creating the ISO
+image of a Linux distribution.
 
-Those inappropriate changes should not be encouraged
-by tools placed in the hands of the inexperienced.
+In summary: Instead of the 1 kernel-decomp.svg file, there should be 3
+kernel-read-decomp.svg files. Similarly in the case of the
+initramfs-decomp.svg file.
 
+As a rule of thumb, if the kernel and initramfs are stored on a NVMe
+SSD then simply select the fastest decompressor without considering
+the compression ratio - or avoid using any compression at all in which
+case T_decompress will be zero.
 
+The formula T_load+T_decompress assumes that loading and decompression
+aren't executing in parallel. If they are, the formula should be
+max(T_load, T_decompress).
+
+Sincerely
+Jan
