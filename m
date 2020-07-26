@@ -2,179 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1576922DE95
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 13:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C96822DEBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 13:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgGZLbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 07:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S1728178AbgGZLl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 07:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZLbr (ORCPT
+        with ESMTP id S1725794AbgGZLl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 07:31:47 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9BDBC0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 04:31:46 -0700 (PDT)
-Received: from mail.natalenko.name (vulcan.natalenko.name [IPv6:fe80::5400:ff:fe0c:dfa0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 9B4847D9EF6;
-        Sun, 26 Jul 2020 13:31:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1595763097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qb2TCMYxY7BR4BMmQM5x3ulbNhE6P2tR4EJMVyVxQBA=;
-        b=u+fD/NYy+SDz2yG8qW86qEqb2wXH18wrztBRd5H+UuYTN5leLNkxRC8MW392wWohJXewJD
-        FviVzx8MQIeWFeW5o9143NcbCvrbFbMIshj8C6WKM7UtDk6QD9cqFKOhJWRxHU4xyZlymI
-        wjCRW7Hxcq7kHDiNHi+gSFGC2Pu+COQ=
+        Sun, 26 Jul 2020 07:41:26 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5516CC0619D2;
+        Sun, 26 Jul 2020 04:41:26 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id a1so10066212edt.10;
+        Sun, 26 Jul 2020 04:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lseWHrFGrBMnahk5IsFpxWMdJQwHw9KSOQ+YjXuxbFA=;
+        b=aQBpC9fzSLDnNvo+7B291mUv7CYE5RDCBIF21+v6M1aGzer6EfkLoJTc2o7eM2K6MG
+         AEwWL5yYBW7duIplNuwImdTx2S1RNduHQeqEz7mgWGH8phlB4lVmG8WraFLhUQJQ98Z2
+         zUqMA7AMx1KI9m0wjq5Pggp54FnyaY97h8fptUzqQQSzxWh98jXHZHPHVbaEyQRKgrzd
+         i2cvvdyI3MRlbqk0xdTUVTqT7iJB3HtXVtuiJeb5ouEVGh1+FGE608Ek0ww5PSUYS0h2
+         CeGhysTrPHi4pC+EoRw7apKj2jD5TkDMRVMNrR+Ty5Y6JJ8bb8ZBiE0hUl/tm2l1AE7l
+         L86A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lseWHrFGrBMnahk5IsFpxWMdJQwHw9KSOQ+YjXuxbFA=;
+        b=oC/cjnLFM/fGqrB02GyoWkFBBWg0aExw8LZDsKSi3ULbkqPKPXxjHJqvnaMqPvBISU
+         1B/lHkaVfEndtxZ4mjrecYbKxXJZfglh2owRZw8uJ8qQ2KNvMdbNlddtufm+3eh07/hz
+         N4rCChVPVJtDjlCoBPgJiYX7EXfU05aIuN6bNNtcvtV+rGNfsJnbJ0ngsCb9JK3JiMzm
+         qktmu1cn+zl7lqBSiWg40e9yC4F5Nrn2jqlynFmtHHt0CqNp+dErz0YDQOOk1qJ5aSRx
+         LRhgucRfr6CN0BRI7uV+lJx0mqtCZzHclpfI73hZQGRVtY5b5ibLABg5B73jPTST5XxS
+         RAOg==
+X-Gm-Message-State: AOAM532qvym97B82eTSYLGdjP69wRaYRip9rDQJKU92sN/LtYzKJsnVx
+        8G3L5US3qwCwehNl+OG1DInssHzJLaMtUQArJSpdMYDaoMg=
+X-Google-Smtp-Source: ABdhPJwLaN8pOziusRtdh65jeRMP/q7PrsLl/HAajDABeyO6M98X1ss/F/xt4CRsnqgpobZve6SjTOQeV/4Mrj+BHWc=
+X-Received: by 2002:a05:6402:1ade:: with SMTP id ba30mr16127632edb.231.1595763685099;
+ Sun, 26 Jul 2020 04:41:25 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Sun, 26 Jul 2020 13:31:37 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        axboe@kernel.dk, paolo.valente@linaro.org
-Subject: Re: [PATCH] block: bfq fix blkio cgroup leakage v2
-In-Reply-To: <20200720170411.21250-1-dmtrmonakhov@yandex-team.ru>
-References: <b4561a09-f00f-568b-9d55-0a2893de4be5@kernel.dk>
- <20200720170411.21250-1-dmtrmonakhov@yandex-team.ru>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <6422992afade0015d817a65c124e0c75@natalenko.name>
-X-Sender: oleksandr@natalenko.name
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20200726111215.22361-1-konradybcio@gmail.com> <20200726111215.22361-10-konradybcio@gmail.com>
+ <20200726112920.GA1286220@kroah.com>
+In-Reply-To: <20200726112920.GA1286220@kroah.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Sun, 26 Jul 2020 13:40:46 +0200
+Message-ID: <CAMS8qEV7jhbHqpXE2UOaXBVM5WbCThaGrcD3wiH9kf6h_K-qeA@mail.gmail.com>
+Subject: Re: [PATCH 9/9] soc/qcom: Add REVID driver
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Martin Botka <martin.botka1@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        zhengbin <zhengbin13@huawei.com>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Harigovindan P <harigovi@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Xiaozhe Shi <xiaozhes@codeaurora.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Hi Greg, thanks for your review!
 
-On 20.07.2020 19:04, Dmitry Monakhov wrote:
-> commit db37a34c563b ("block, bfq: get a ref to a group when adding it
-> to a service tree")
-> introduce leak forbfq_group and blkcg_gq objects because of get/put
-> imbalance. See trace balow:
-> -> blkg_alloc
->    -> bfq_pq_alloc
->      -> bfqg_get (+1)
-> ->bfq_activate_bfqq
->   ->bfq_activate_requeue_entity
->     -> __bfq_activate_entity
->        ->bfq_get_entity
->          ->bfqg_and_blkg_get (+1)  <==== : Note1
-> ->bfq_del_bfqq_busy
->   ->bfq_deactivate_entity+0x53/0xc0 [bfq]
->     ->__bfq_deactivate_entity+0x1b8/0x210 [bfq]
->       -> bfq_forget_entity(is_in_service = true)
-> 	 entity->on_st_or_in_serv = false   <=== :Note2
-> 	 if (is_in_service)
-> 	     return;  ==> do not touch reference
-> -> blkcg_css_offline
->  -> blkcg_destroy_blkgs
->   -> blkg_destroy
->    -> bfq_pd_offline
->     -> __bfq_deactivate_entity
->          if (!entity->on_st_or_in_serv) /* true, because (Note2)
-> 		return false;
->  -> bfq_pd_free
->     -> bfqg_put() (-1, byt bfqg->ref == 2) because of (Note2)
-> So bfq_group and blkcg_gq  will leak forever, see test-case below.
-> 
-> We should drop group reference once it finaly removed from service
-> inside __bfq_bfqd_reset_in_service, as we do with queue entities.
-> 
-> ##TESTCASE_BEGIN:
-> #!/bin/bash
-> 
-> max_iters=${1:-100}
-> #prep cgroup mounts
-> mount -t tmpfs cgroup_root /sys/fs/cgroup
-> mkdir /sys/fs/cgroup/blkio
-> mount -t cgroup -o blkio none /sys/fs/cgroup/blkio
-> 
-> # Prepare blkdev
-> grep blkio /proc/cgroups
-> truncate -s 1M img
-> losetup /dev/loop0 img
-> echo bfq > /sys/block/loop0/queue/scheduler
-> 
-> grep blkio /proc/cgroups
-> for ((i=0;i<max_iters;i++))
-> do
->     mkdir -p /sys/fs/cgroup/blkio/a
->     echo 0 > /sys/fs/cgroup/blkio/a/cgroup.procs
->     dd if=/dev/loop0 bs=4k count=1 of=/dev/null iflag=direct 2> 
-> /dev/null
->     echo 0 > /sys/fs/cgroup/blkio/cgroup.procs
->     rmdir /sys/fs/cgroup/blkio/a
->     grep blkio /proc/cgroups
-> done
-> ##TESTCASE_END:
-> 
-> Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-> ---
->  block/bfq-wf2q.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
-> 
-> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-> index 8113138..93b236c 100644
-> --- a/block/bfq-wf2q.c
-> +++ b/block/bfq-wf2q.c
-> @@ -635,14 +635,10 @@ static void bfq_idle_insert(struct 
-> bfq_service_tree *st,
->   * @entity: the entity being removed.
->   * @is_in_service: true if entity is currently the in-service entity.
->   *
-> - * Forget everything about @entity. In addition, if entity represents
-> - * a queue, and the latter is not in service, then release the service
-> - * reference to the queue (the one taken through bfq_get_entity). In
-> - * fact, in this case, there is really no more service reference to
-> - * the queue, as the latter is also outside any service tree. If,
-> - * instead, the queue is in service, then __bfq_bfqd_reset_in_service
-> - * will take care of putting the reference when the queue finally
-> - * stops being served.
-> + * Forget everything about @entity. If entity is not in service, then 
-> release
-> + * the service reference to the entity (the one taken through  
-> bfq_get_entity).
-> + * If the entity is in service, then __bfq_bfqd_reset_in_service will 
-> take care
-> + * of putting the reference when the entity finally stops being 
-> served.
->   */
->  static void bfq_forget_entity(struct bfq_service_tree *st,
->  			      struct bfq_entity *entity,
-> @@ -1626,9 +1622,16 @@ bool __bfq_bfqd_reset_in_service(struct bfq_data 
-> *bfqd)
->  	 * execute the final step: reset in_service_entity along the
->  	 * path from entity to the root.
->  	 */
-> -	for_each_entity(entity)
-> +	for_each_entity(entity) {
->  		entity->sched_data->in_service_entity = NULL;
-> -
-> +		/*
-> +		 * Release bfq_groups reference if it was not released in
-> +		 * bfq_forget_entity, which was taken in bfq_get_entity.
-> +		 */
-> +		if (!bfq_entity_to_bfqq(entity) && !entity->on_st_or_in_serv)
-> +			bfqg_and_blkg_put(container_of(entity, struct bfq_group,
-> +						       entity));
-> +	}
->  	/*
->  	 * in_serv_entity is no longer in service, so, if it is in no
->  	 * service tree either, then release the service reference to
+>Why do we need this noise in the kernel log?
 
-As reported by one of my customers, this patch causes the following 
-crash: [1]
+I guess it could be left there as a debug print? Knowing your hardware
+revision seems like a good, but yeah, not a necessary thing.
 
-[1] 
-http://pix.academ.info/images/img/2020/07/26/52d097c02b6061657443bba92de75e8a.jpg
+>You can drop the GPL boilerplate text and add a proper SPDX line at the
+>top.
 
--- 
-   Oleksandr Natalenko (post-factum)
+Seems I only did that in my other local tree.. whoops!
+
+>Drivers should always use dev_err() and friends, as you have access to a
+>struct device * always.  Please fix up the driver here to use that api
+>instead, no pr_* should be needed at all.
+
+Will do.
+
+>Horrible global symbol name.  Who calls this?
+
+Welcome to development on qcom platforms :D
+
+>This is the last patch in
+>the series, so if there is no user for this, please don't export it.
+
+Other downstream drivers make use of it.. need to get this up first, sorry :V
+
+>Why do you need a .h file in the include directory if only a single .c
+>file needs it?  Just put that info in the .c file itself.
+
+Again, other downstream drivers which some people and I intend to
+bring to upstream standards use that to access the PMIC model/hw revision.
+
+>But again, who uses this module?  If it's only good for a single line in
+>the kernel log, that feels like a huge waste to me.
+
+downstream-kernel-dir$ rg -l qpnp-revid.h | wc -l
+25
+
+So yeah, quite a bunch of other qcom-specific drivers.
+
+I'll try to fix these and send a v2.
+
+Regards
+Konrad
