@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6E422DD7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2885022DDBD
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgGZJGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:06:51 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:10269 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725794AbgGZJGu (ORCPT
+        id S1726769AbgGZJXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgGZJXs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:06:50 -0400
-X-IronPort-AV: E=Sophos;i="5.75,398,1589234400"; 
-   d="scan'208";a="461332981"
-Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 26 Jul 2020 11:06:48 +0200
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     kernel-janitors@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: SOF: imx: use resource_size
-Date:   Sun, 26 Jul 2020 10:25:33 +0200
-Message-Id: <1595751933-4952-1-git-send-email-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 1.9.1
+        Sun, 26 Jul 2020 05:23:48 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF03C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 02:23:48 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id 88so11980036wrh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 02:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IRifPYsK+NVyPH264FNNiwkh83/Nree/BqnQLiW9d1c=;
+        b=l1SPzlPpdGPY8mrIuX5HzscI1H+iU0B77BLfrJ+HTsHQpZ1CbpuBaxo5y5BQLbagzm
+         ahNVMJV+XFViXN0810WuF+oXTSEuAjFRZhMh2tX3oEli8/sF1GKeQPjS6VaRloWiTwuG
+         y28IJVlcYcob0iUkzDfsBzo05H/rOvI53pNhD1S2chvYHphbQ4iHLuLaPyzs56xv4OLc
+         6pfF9Wcu7iZuNQsIs6oPa6CnupttvnAt/OeUwZWZ83le+KxxKXux0cyCTCSCl+fFdFiW
+         GwYoF5CJC6VfOatv4g7JgtRHpXYViK+a4HWo2sNzcTPHAfMwo01uEIaCMjb6MMXPJypI
+         QJKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IRifPYsK+NVyPH264FNNiwkh83/Nree/BqnQLiW9d1c=;
+        b=ELAj3ftmP1a+pIov3Lq6oXqTAEV28dQFzSvvLmhMQTd5HkpME3BbHhhiqMv1xuEf/d
+         GhHCdvNG6OtWkiC8N04HyfB8BhIGN7Y3aCDhfeL4fQUM7hihTUYOEx83tiOZCsP/nRxW
+         02LCH49WW44Prt7zzXwcWFkjI6j8dVWG89k6NEIGOPc6yfw+fOEWHtmDw9IOuOmTVVc3
+         t6OmYDZvp69eLLWKyj2EO1OcuZekbJ7RkP3fdyknWhGw9tvVODvELqRyUSqH45gqzCUQ
+         OMOYOzfUUr18Z+XVDEqZ/1ivhdPFEexlMluLnEvF094q8Rm0E4h0OfeoMNXMQIeyxkrN
+         s8Og==
+X-Gm-Message-State: AOAM5306VLmztkiWC3DqdPnG0sR0A/49a27ZLOYObWYz1Ex4tAWDNvix
+        va3giMIua+M+qW9X2ozSbToQ2HI6WIIIIygMvlo=
+X-Google-Smtp-Source: ABdhPJzmRnX9GtgCQQSUsd47l+Xrw14S4/+hUnnzUXCooTdht3nSiu4kVe23GlLgaRmrU8M/CgnSsMp2RdaYTRNllqs=
+X-Received: by 2002:adf:dfcf:: with SMTP id q15mr3987406wrn.345.1595755426875;
+ Sun, 26 Jul 2020 02:23:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200726080215.41501-1-aditya.jainadityajain.jain@gmail.com> <20200726082636.GA447282@kroah.com>
+In-Reply-To: <20200726082636.GA447282@kroah.com>
+From:   Aditya Jain <aditya.jainadityajain.jain@gmail.com>
+Date:   Sun, 26 Jul 2020 14:10:58 +0530
+Message-ID: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
+Subject: Re: [PATCH] staging: rtl8723bs: include: Fix coding style errors
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, hdegoede@redhat.com,
+        linux-kernel@vger.kernel.org, Larry.Finger@lwfinger.net
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use resource_size rather than a verbose computation on
-the end and start fields.
+On Sun, Jul 26, 2020 at 1:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Jul 26, 2020 at 01:32:15PM +0530, Aditya Jain wrote:
+> > Fixing ERROR: "foo *  bar" should be "foo *bar" in hal_phy_cfg.h
+> > as reported by checkpatch.pl
+> >
+> > Signed-off-by: Aditya Jain <aditya.jainadityajain.jain@gmail.com>
+> > ---
+> >  .../staging/rtl8723bs/include/hal_phy_cfg.h    | 18 +++++++++---------
+> >  1 file changed, 9 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
+> > index 419ddb0733aa..fd5f377bad4f 100644
+> > --- a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
+> > +++ b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
+> > @@ -42,7 +42,7 @@ u32         Data
+> >
+> >  u32
+> >  PHY_QueryRFReg_8723B(
+> > -struct adapter *             Adapter,
+> > +struct adapter               *Adapter,
+> >  u8           eRFPath,
+> >  u32                  RegAddr,
+> >  u32                  BitMask
+>
+> Ick, these are all horrid.  How about just making these all on a single
+> line like most functions have them instead of this one cleanup?
+>
+> Same for the other changes you made in this file.
+>
+> thanks,
+>
+> greg k-h
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+Agreed. I'll clean it up.
 
-<smpl>
-@@ struct resource ptr; @@
-- (ptr.end - ptr.start + 1)
-+ resource_size(&ptr)
-</smpl>
-
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-
----
- sound/soc/sof/imx/imx8m.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff -u -p a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
---- a/sound/soc/sof/imx/imx8m.c
-+++ b/sound/soc/sof/imx/imx8m.c
-@@ -188,8 +188,7 @@ static int imx8m_probe(struct snd_sof_de
- 	}
- 
- 	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev, res.start,
--							  res.end - res.start +
--							  1);
-+							  resource_size(&res));
- 	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
- 		dev_err(sdev->dev, "failed to ioremap mem 0x%x size 0x%x\n",
- 			base, size);
-
+Regards,
+Aditya Jain
