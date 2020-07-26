@@ -2,81 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC7E22E2D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 23:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030B122E2E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgGZV5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 17:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
+        id S1726997AbgGZWBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 18:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgGZV5X (ORCPT
+        with ESMTP id S1726253AbgGZWBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 17:57:23 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E15E6C0619D2;
-        Sun, 26 Jul 2020 14:57:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFGxr4WmDz9sR4;
-        Mon, 27 Jul 2020 07:57:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595800640;
-        bh=w68z9elGHIX9P0R9RdUtZpCt3tNk3gp5u1a//7njPx0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=L8GXh/8GQYLzBv5BYw78aBJTG7U7ftm9tIdeAC31yQ1mKqJRMf6w6gjY8ebc3/S/1
-         IyzmQKjqHh6eGNJ9mhJmSI2tDFPAmhLDmbeA32Ydehsmms7ag0DTrFjW4ITbHgzy2N
-         Bi1hoGdNR/07vHI9F+60BDTwcuCs2lfgv6yq0Y6GV7nvzIJC+iCxw1xF+jXhih40JQ
-         S3HoNbxXIKbiVcjxFLfgJnLhBYqWM0O7ADKOw/yx0AhPWybnMMF9FtC9xw5kxgx2RW
-         ZBo0pM5mCnmyEzTGejVOKFTDVA2IUTBnTUhr8uKaVXd+NZLgrrwRxM4k/2VIp2oDMM
-         Ga5xLZPYkVkEg==
-Date:   Mon, 27 Jul 2020 07:57:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the xfs tree
-Message-ID: <20200727075719.627a3efd@canb.auug.org.au>
+        Sun, 26 Jul 2020 18:01:08 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE97C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:01:08 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z18so9402920wrm.12
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 15:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ykSwHy3a+Ip4FoHWFbddbOpkLlMmZDO0+DHppvg2II=;
+        b=Mw0p/PEfaeYglOPiT3m4tEPCjMBi+cCMcsbcapS8TPn/lxiUqyIg6mPPAmgmsbj2wc
+         LBGBOIgCiWC/LAHNuJBGs+hq3NlNh8ACxcd+YB66SzwQIgUusgooK/+oy7rQf3cYcHyy
+         x56tSa+U6PEHUKAZizQgepS25TaKfnGgi6pGsA0DcrV4wV5xGfyzgI+ocW60NaAwsilY
+         BEvNWPnqKLnVWUdSjstJkFM0eDyx2abEHyKF107jIU2f5fYR6ITyoaUXSaD/os3LPU82
+         cWM0RPKlFHlHzlgHjQkYpOty4vPSSHMffSAaJnE6N4jUFQnh4mvd5WY2WPt+aYkc9H1U
+         XLdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ykSwHy3a+Ip4FoHWFbddbOpkLlMmZDO0+DHppvg2II=;
+        b=Q+z3RJfgEM9NjJ+qhR6kcaPdcbIPnir/I0B4vldg0SzQqwdIB8CRXIViCdCYSETg+O
+         enOXWuuH1Yj358sS3Momheda1eHcY+DD9AZmUVJkUv7dKPK1zlWfwmowG3TZr61aGKxU
+         Vrvv9M89+Kc65hISRZrxjpG5V2SmaLTk3XTYZaGmAzqvH0l8BvNNJ6/77xYPXhbB+/UY
+         pGa+hPotzv0v5Oe6TW17/oqwU7WD9oe2qGjLqoMeZu29q9tju5Ow2DMfQM0l/R/XU3b7
+         Gm+SG4LdDYDoYnv1EuoAz3AZYlmz3C+PDXwGDs0g6vH3BHoGvnh4pjg1RZ2mbzUqbIjl
+         Z4Tw==
+X-Gm-Message-State: AOAM533wXuW7R+Kw/vmyoiXUOOS56c+GFzJHS8WgbGwayZHN/Ld/rJDN
+        1X8BXwrrdFQMbAardR5Qh/umgRNiqlPTTyvq2r7hwA==
+X-Google-Smtp-Source: ABdhPJyVoGSpgnC6DoeRd8ILgq1RkG0vQwNAaWLcrORmJn5KUuov5HtalJ6gK6pErwCMHMsq8NcbSeg6Xy+rkcm3ELc=
+X-Received: by 2002:adf:f48b:: with SMTP id l11mr5754937wro.376.1595800866341;
+ Sun, 26 Jul 2020 15:01:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/znC0=KRqyGnD4u/8uyqbHhf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200726075244.1191481-1-jolsa@kernel.org> <20200726075244.1191481-2-jolsa@kernel.org>
+In-Reply-To: <20200726075244.1191481-2-jolsa@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Sun, 26 Jul 2020 15:00:55 -0700
+Message-ID: <CAP-5=fW6PZWawbaUuys21pKbCo4L=d5xKjf5EvMaxnkfVtqPeQ@mail.gmail.com>
+Subject: Re: [PATCHv2 2/2] perf tools: Fix term parsing for raw syntax
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Thomas Richter <tmricht@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/znC0=KRqyGnD4u/8uyqbHhf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Jul 26, 2020 at 12:53 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Jin Yao reported issue with possible conflict between raw
+> events and term values in pmu event syntax.
+>
+> Currently following syntax is resolved as raw event with
+> 0xead value:
+>   uncore_imc_free_running/read/
+>
+> instead of using 'read' term from uncore_imc_free_running pmu,
+> because 'read' is correct raw event syntax with 0xead value.
+>
+> To solve this issue we do following:
+>   - check existing terms during rXXXX syntax processing
+>     and make them priority in case of conflict
+>   - allow pmu/r0x1234/ syntax to be able to specify conflicting
+>     raw event (implemented in previous patch)
+>
+> Also adding automated tests for this and perf_pmu__parse_cleanup
+> call to parse_events_terms, so the test gets properly cleaned up.
+>
+> Reported-by: Jin Yao <yao.jin@linux.intel.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> v2 changes:
+>  - added comment to perf_pmu__test_parse_init
 
-Hi all,
+Acked-by: Ian Rogers <irogers@google.com>
 
-Commit
+Thanks,
+Ian
 
-  ea52eff66dcd ("xfs: preserve inode versioning across remounts")
-
-is missing a Signed-off-by from its committer.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/znC0=KRqyGnD4u/8uyqbHhf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8d/D8ACgkQAVBC80lX
-0Gwivwf8CykkuOiZjzkLPiHZubcnQZvD1GtaYVY8zAgReKO3S2QuX0eNkupoBMa/
-WEaZI271C1natetPsIg6OC7/TIuR2yWFP1dX/2zn4Ax4Swn5IEIjWQaPA6AvTucq
-EEaqLynqwEOYlT32NAl7BxvGwRatwVpuiiEGjiq5VcDAYx7vVTQTIzwgUGETzI3u
-oHvde8C3DuB0t6C8+y5ahUYIkzWAgZ8BB+a6TwbIRC66PDxPOIfODvJTD+hAna2c
-w3GnW1lGwBwXsT/98GTKn+5hQGCPHtIZXST2ggIJ1hTYLNKQYaAS5lR3rML/GjGM
-awsRhDDMdhVT5kxm4xhSFEODfKJ6TA==
-=NiM6
------END PGP SIGNATURE-----
-
---Sig_/znC0=KRqyGnD4u/8uyqbHhf--
+>  tools/perf/tests/parse-events.c | 37 ++++++++++++++++++++++++++++++++-
+>  tools/perf/util/parse-events.c  | 28 +++++++++++++++++++++++++
+>  tools/perf/util/parse-events.h  |  2 ++
+>  tools/perf/util/parse-events.l  | 19 ++++++++++-------
+>  4 files changed, 77 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
+> index 5aaddcb0058a..7f9f87a470c3 100644
+> --- a/tools/perf/tests/parse-events.c
+> +++ b/tools/perf/tests/parse-events.c
+> @@ -631,6 +631,34 @@ static int test__checkterms_simple(struct list_head *terms)
+>         TEST_ASSERT_VAL("wrong val", term->val.num == 1);
+>         TEST_ASSERT_VAL("wrong config", !strcmp(term->config, "umask"));
+>
+> +       /*
+> +        * read
+> +        *
+> +        * The perf_pmu__test_parse_init injects 'read' term into
+> +        * perf_pmu_events_list, so 'read' is evaluated as read term
+> +        * and not as raw event with 'ead' hex value.
+> +        */
+> +       term = list_entry(term->list.next, struct parse_events_term, list);
+> +       TEST_ASSERT_VAL("wrong type term",
+> +                       term->type_term == PARSE_EVENTS__TERM_TYPE_USER);
+> +       TEST_ASSERT_VAL("wrong type val",
+> +                       term->type_val == PARSE_EVENTS__TERM_TYPE_NUM);
+> +       TEST_ASSERT_VAL("wrong val", term->val.num == 1);
+> +       TEST_ASSERT_VAL("wrong config", !strcmp(term->config, "read"));
+> +
+> +       /*
+> +        * r0xead
+> +        *
+> +        * To be still able to pass 'ead' value with 'r' syntax,
+> +        * we added support to parse 'r0xHEX' event.
+> +        */
+> +       term = list_entry(term->list.next, struct parse_events_term, list);
+> +       TEST_ASSERT_VAL("wrong type term",
+> +                       term->type_term == PARSE_EVENTS__TERM_TYPE_CONFIG);
+> +       TEST_ASSERT_VAL("wrong type val",
+> +                       term->type_val == PARSE_EVENTS__TERM_TYPE_NUM);
+> +       TEST_ASSERT_VAL("wrong val", term->val.num == 0xead);
+> +       TEST_ASSERT_VAL("wrong config", !term->config);
+>         return 0;
+>  }
+>
+> @@ -1781,7 +1809,7 @@ struct terms_test {
+>
+>  static struct terms_test test__terms[] = {
+>         [0] = {
+> -               .str   = "config=10,config1,config2=3,umask=1",
+> +               .str   = "config=10,config1,config2=3,umask=1,read,r0xead",
+>                 .check = test__checkterms_simple,
+>         },
+>  };
+> @@ -1841,6 +1869,13 @@ static int test_term(struct terms_test *t)
+>
+>         INIT_LIST_HEAD(&terms);
+>
+> +       /*
+> +        * The perf_pmu__test_parse_init prepares perf_pmu_events_list
+> +        * which gets freed in parse_events_terms.
+> +        */
+> +       if (perf_pmu__test_parse_init())
+> +               return -1;
+> +
+>         ret = parse_events_terms(&terms, t->str);
+>         if (ret) {
+>                 pr_debug("failed to parse terms '%s', err %d\n",
+> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> index e88e4c7a2a9a..9f7260e69113 100644
+> --- a/tools/perf/util/parse-events.c
+> +++ b/tools/perf/util/parse-events.c
+> @@ -2019,6 +2019,32 @@ static void perf_pmu__parse_init(void)
+>         perf_pmu__parse_cleanup();
+>  }
+>
+> +/*
+> + * This function injects special term in
+> + * perf_pmu_events_list so the test code
+> + * can check on this functionality.
+> + */
+> +int perf_pmu__test_parse_init(void)
+> +{
+> +       struct perf_pmu_event_symbol *list;
+> +
+> +       list = malloc(sizeof(*list) * 1);
+> +       if (!list)
+> +               return -ENOMEM;
+> +
+> +       list->type   = PMU_EVENT_SYMBOL;
+> +       list->symbol = strdup("read");
+> +
+> +       if (!list->symbol) {
+> +               free(list);
+> +               return -ENOMEM;
+> +       }
+> +
+> +       perf_pmu_events_list = list;
+> +       perf_pmu_events_list_num = 1;
+> +       return 0;
+> +}
+> +
+>  enum perf_pmu_event_symbol_type
+>  perf_pmu__parse_check(const char *name)
+>  {
+> @@ -2080,6 +2106,8 @@ int parse_events_terms(struct list_head *terms, const char *str)
+>         int ret;
+>
+>         ret = parse_events__scanner(str, &parse_state);
+> +       perf_pmu__parse_cleanup();
+> +
+>         if (!ret) {
+>                 list_splice(parse_state.terms, terms);
+>                 zfree(&parse_state.terms);
+> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+> index f0010095fc8c..00cde7d2e30c 100644
+> --- a/tools/perf/util/parse-events.h
+> +++ b/tools/perf/util/parse-events.h
+> @@ -261,4 +261,6 @@ static inline bool is_sdt_event(char *str __maybe_unused)
+>  }
+>  #endif /* HAVE_LIBELF_SUPPORT */
+>
+> +int perf_pmu__test_parse_init(void);
+> +
+>  #endif /* __PERF_PARSE_EVENTS_H */
+> diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+> index 44c85fea5d00..3ca5fd2829ca 100644
+> --- a/tools/perf/util/parse-events.l
+> +++ b/tools/perf/util/parse-events.l
+> @@ -41,14 +41,6 @@ static int value(yyscan_t scanner, int base)
+>         return __value(yylval, text, base, PE_VALUE);
+>  }
+>
+> -static int raw(yyscan_t scanner)
+> -{
+> -       YYSTYPE *yylval = parse_events_get_lval(scanner);
+> -       char *text = parse_events_get_text(scanner);
+> -
+> -       return __value(yylval, text + 1, 16, PE_RAW);
+> -}
+> -
+>  static int str(yyscan_t scanner, int token)
+>  {
+>         YYSTYPE *yylval = parse_events_get_lval(scanner);
+> @@ -72,6 +64,17 @@ static int str(yyscan_t scanner, int token)
+>         return token;
+>  }
+>
+> +static int raw(yyscan_t scanner)
+> +{
+> +       YYSTYPE *yylval = parse_events_get_lval(scanner);
+> +       char *text = parse_events_get_text(scanner);
+> +
+> +       if (perf_pmu__parse_check(text) == PMU_EVENT_SYMBOL)
+> +               return str(scanner, PE_NAME);
+> +
+> +       return __value(yylval, text + 1, 16, PE_RAW);
+> +}
+> +
+>  static bool isbpf_suffix(char *text)
+>  {
+>         int len = strlen(text);
+> --
+> 2.25.4
+>
