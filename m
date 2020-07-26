@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C97C22DE29
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 13:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5A122DE4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 13:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgGZLNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 07:13:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41204 "EHLO mail.kernel.org"
+        id S1728125AbgGZLOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 07:14:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgGZLNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 07:13:10 -0400
+        id S1727983AbgGZLON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 07:14:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BDC82065C;
-        Sun, 26 Jul 2020 11:13:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FD912065C;
+        Sun, 26 Jul 2020 11:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595761989;
-        bh=n9/XJolG+JujfS+CKNyV63g2btTNOmnrhAyGHeQuT4c=;
+        s=default; t=1595762052;
+        bh=yTiu3aElFugfkgQka/4eiqlgwGCOo4kpJ+dj714Rhf4=;
         h=Date:From:To:Cc:Subject:From;
-        b=sciIvOA2b+etPGTq+a0sfQA/N/VXBB2S+FzXS3aKbhPzBYn+MQGXHwdRvpj4Pdx0V
-         M8iJqqJHlYmRAN5pAXNZFY0OkKltRKmdkRTjfHOK5dTocSWR7a/eyUN44xMTrBtc5x
-         5UbwlNlVA3tYBRSRh8myzxaBblX3yRjKoCf6Zu9g=
-Date:   Sun, 26 Jul 2020 13:13:06 +0200
+        b=me9y+wFyf81uaSMGXOSJkldHDBH5UsaVbsnDcQbxmAsRUt17OpsMmSqFINgsNhFbZ
+         LbBLkTjO1Iob5J4jAz5aPPqvgYyweEy3AqekvX1c7RCDvcVgNhY67NINBRRHjuyWTg
+         IiVbSS0vJlrBqYkSN3jQLcuUzQ7RHJYHUJ9ShNCw=
+Date:   Sun, 26 Jul 2020 13:14:10 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [GIT PULL] Driver core fixes for 5.8-rc7
-Message-ID: <20200726111306.GA1283843@kroah.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 5.8-rc7
+Message-ID: <20200726111410.GA1283983@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -39,33 +38,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit ba47d845d715a010f7b51f6f89bae32845e6acb7:
+The following changes since commit 3e543a4d30014d45b6bb5d2095554be02153cefc:
 
-  Linux 5.8-rc6 (2020-07-19 15:41:18 -0700)
+  Merge tag 'char-misc-5.8-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc into master (2020-07-16 11:26:40 -0700)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.8-rc7
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.8-rc7
 
-for you to fetch changes up to 29c4a54bc645c8b6745eeb58519e9ad794ceb419:
+for you to fetch changes up to 92d232d176041db5b033dd7b7f7f2cf343f82237:
 
-  device property: Avoid NULL pointer dereference in device_get_next_child_node() (2020-07-23 17:04:28 +0200)
+  interconnect: msm8916: Fix buswidth of pcnoc_s nodes (2020-07-23 10:45:24 +0200)
 
 ----------------------------------------------------------------
-Driver core fix for 5.8-rc7
+Char/misc driver fixes for 5.8-rc7
 
-Here is a single driver core fix for 5.8-rc7.  It resolves a problem
-found in the previous fix for this code made in 5.8-rc6.  Hopefully this
-is all now cleared up, as this seems to be the last of the reported
-issues in this area, and was tested on the problem hardware.
+Here are a few small driver fixes for 5.8-rc7
 
-This patch has been in linux-next with no reported problems.
+They include:
+	- habanalabs fixes
+	- tiny fpga driver fixes
+	- /dev/mem fixup from previous changes
+	- interconnect driver fixes
+	- binder fix
+
+All of these have been in linux-next for a while with no reported
+issues.
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
-Andy Shevchenko (1):
-      device property: Avoid NULL pointer dereference in device_get_next_child_node()
+Eric Biggers (1):
+      /dev/mem: Add missing memory barriers for devmem_inode
 
- drivers/base/property.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Georgi Djakov (2):
+      interconnect: Do not skip aggregation for disabled paths
+      interconnect: msm8916: Fix buswidth of pcnoc_s nodes
+
+Greg Kroah-Hartman (3):
+      Merge tag 'misc-habanalabs-fixes-2020-07-10' of git://people.freedesktop.org/~gabbayo/linux into char-misc-linus
+      Merge tag 'fpga-late-fixes-for-5.8' of git://git.kernel.org/.../mdf/linux-fpga into char-misc-linus
+      Merge tag 'misc-habanalabs-fixes-2020-07-19' of git://people.freedesktop.org/~gabbayo/linux into char-misc-linus
+
+Matthew Gerlach (1):
+      fpga: dfl: fix bug in port reset handshake
+
+Oded Gabbay (4):
+      habanalabs: block WREG_BULK packet on PDMA
+      habanalabs: set clock gating per engine
+      habanalabs: set 4s timeout for message to device CPU
+      habanalabs: prevent possible out-of-bounds array access
+
+Tetsuo Handa (1):
+      binder: Don't use mmput() from shrinker function.
+
+Xu Yilun (1):
+      fpga: dfl: pci: reduce the scope of variable 'ret'
+
+ .../ABI/testing/debugfs-driver-habanalabs          |  11 +-
+ drivers/android/binder_alloc.c                     |   2 +-
+ drivers/char/mem.c                                 |  10 +-
+ drivers/fpga/dfl-afu-main.c                        |   3 +-
+ drivers/fpga/dfl-pci.c                             |   3 +-
+ drivers/interconnect/core.c                        |  12 +-
+ drivers/interconnect/qcom/msm8916.c                |  14 +--
+ drivers/misc/habanalabs/command_submission.c       |  14 ++-
+ drivers/misc/habanalabs/debugfs.c                  |  23 ++--
+ drivers/misc/habanalabs/device.c                   |   2 +-
+ drivers/misc/habanalabs/firmware_if.c              |  10 +-
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 123 ++++++++++++++-------
+ drivers/misc/habanalabs/goya/goya.c                |  20 ++--
+ drivers/misc/habanalabs/habanalabs.h               |  19 +++-
+ drivers/misc/habanalabs/habanalabs_drv.c           |   2 +-
+ drivers/misc/habanalabs/hwmon.c                    |  19 ++--
+ drivers/misc/habanalabs/sysfs.c                    |  11 +-
+ 17 files changed, 186 insertions(+), 112 deletions(-)
