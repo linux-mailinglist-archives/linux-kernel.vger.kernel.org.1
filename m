@@ -2,91 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEDB22DD8D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7E722DD93
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgGZJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZJNF (ORCPT
+        id S1727774AbgGZJOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:14:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29170 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725794AbgGZJOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:13:05 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28943C0619D2;
-        Sun, 26 Jul 2020 02:13:05 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id o10so294355edh.6;
-        Sun, 26 Jul 2020 02:13:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O2+h3+87LaFJxbNS7QjYPeIj+UjU50oEwIWii9HZknM=;
-        b=p+hEz1ItYIQQ2yioLM3bSE8t+EGfUj4kEXTeaUUwa+9qs/XLOP8Uci3EydPEwzgi8m
-         pbI4IdHmXZ37enJvXWY1u/E7Ec9dl5uJq+gku4an9F6YX1qw+7l+eWPz/+m45uwtfniU
-         0QFcc/WqOm81e0MxsxlmNBypWgM+HUjBTPmdh6VWnFhYhw0aOaudOEXwgDxE+pEsp4tG
-         x+n1niyetYG5vunaTYUMs0YAMbHYgA6gKwnQrK3NZBc8eicz31JEctRh/zYQYzuB60gW
-         sn51ppioOlpLSMqT0O5EduLs9+x/eWY2Kxu6HGNBNLzbbvSyut890uy+hRj0SoC552UK
-         4zoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O2+h3+87LaFJxbNS7QjYPeIj+UjU50oEwIWii9HZknM=;
-        b=bPsuoLFooUaIa04ja07prbd5M+OqOuZVrO1YJgq6H9kYm6R/QosnnlTdQ/Dd/enskk
-         +tn3Mm80lOyHm3HlSKBaMDzP5KvBy6mWg/VeWUv030I4xKGIgWoSwP+Gx1xm9SBRqRWP
-         7mQ3XLIHMvS+KCuFifbf/9/UzBkKHLM4a5cM91aJL9/I9BG4CJ+wsSQkFj+zYJvtFFnU
-         AI8BgA0HlljMVDqkMnTw4oz6ONBBfZpukBSmcxBAQEhHn/xY3RO2Anhs4+jgsBYYHYmd
-         ZUa/xPr7AHlGPloKzub3O+/FxzAhcRKTFDv3gjNZjCOcBqx144Z0T0qX4XPYyemWgzbs
-         GlLA==
-X-Gm-Message-State: AOAM532tzMVOJO6Xovj4e6l2cHTb+BaCOR7syhwZ2cLlBQvt2AuBqLW/
-        1xT/DsLtQGJK3wv+3g3AQOIuBXJ/W/r3cJu11Rk=
-X-Google-Smtp-Source: ABdhPJyanvpC5G6K9EGy3sPcpR5eDP+Vp4msDGDK+Czg6cstj5s3pOZVk9ZbzWmWSVYWDBxRL72yZkcufdss2fyWLB4=
-X-Received: by 2002:a50:a125:: with SMTP id 34mr16535885edj.306.1595754783926;
- Sun, 26 Jul 2020 02:13:03 -0700 (PDT)
+        Sun, 26 Jul 2020 05:14:23 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06Q91WdE014653;
+        Sun, 26 Jul 2020 05:14:13 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32ggww5vee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jul 2020 05:14:13 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06Q9ECI0039524;
+        Sun, 26 Jul 2020 05:14:12 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 32ggww5veb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jul 2020 05:14:12 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06Q94NvJ010937;
+        Sun, 26 Jul 2020 09:14:12 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03dal.us.ibm.com with ESMTP id 32gcy6b0ra-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jul 2020 09:14:12 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06Q9EBLO52167166
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 26 Jul 2020 09:14:11 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4FFCC28064;
+        Sun, 26 Jul 2020 09:14:11 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 239332805A;
+        Sun, 26 Jul 2020 09:14:07 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.34.120])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sun, 26 Jul 2020 09:14:06 +0000 (GMT)
+Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
+ <20200720072237.GC760733@krava>
+ <6cb72b48-5244-9faf-a9e5-67858c732b83@linux.ibm.com>
+ <20200720081943.GE760733@krava>
+ <dd465647-da63-c473-9944-bdfec2abe484@linux.ibm.com>
+ <20200720191625.GL760733@krava>
+ <eec934d1-5f45-739e-d5df-847a4b995fa5@linux.ibm.com>
+ <20200725115143.GA1157288@krava>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <906aa237-e300-aaf5-2de3-0041985ae646@linux.ibm.com>
+Date:   Sun, 26 Jul 2020 14:44:05 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200724213659.273599-1-martin.botka1@gmail.com>
- <20200724213659.273599-3-martin.botka1@gmail.com> <CAHp75VdJ14p+_+XqxrgRrjXF7m6L4nGr5vB03NTM=0xjgw4c7Q@mail.gmail.com>
-In-Reply-To: <CAHp75VdJ14p+_+XqxrgRrjXF7m6L4nGr5vB03NTM=0xjgw4c7Q@mail.gmail.com>
-From:   Martin Botka <martin.botka1@gmail.com>
-Date:   Sun, 26 Jul 2020 11:12:27 +0200
-Message-ID: <CADQ2G_HkiAZx8OhfQ_jeizveMaB-QN9dfN6Tcwfk9XuF97rmOg@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/6] pwm: core: Add option to config PWM duty/period
- with u64 data length
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200725115143.GA1157288@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-26_02:2020-07-24,2020-07-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 mlxlogscore=999
+ phishscore=0 impostorscore=0 clxscore=1015 bulkscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007260064
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> And all divisions go mad on 32-bit CPU, right?
-> Please, if you thought about it carefully, update a commit message to
-> clarify that.
 
-Hello,
-This patch will be dropped in V2 since another series already made these u64.
-See a9d887dc1c60ed67f2271d66560cdcf864c4a578 in linux-next.
-I have not tested compiling that commit in linux-next on 32 bit arch
-but if it fails i can replace this commit with fix for that.
 
-Also  I'm not the author of this commit.
-Konrad Dybcio fast forwarded it to 5.8 from 4.14.
-Fenglin Wu is the author and also created that commit message.
+On 7/25/20 5:21 PM, Jiri Olsa wrote:
+> On Fri, Jul 24, 2020 at 11:22:28AM +0530, kajoljain wrote:
+> 
+> SNIP
+> 
+>>
+>> Hi Jiri,
+>>        The change looks good to me. I tried with adding this patch on top of your perf/metric branch. It did resolve the issue of not printing
+>> all chips data. And now I can see proper values for hv-24x7 metric events.
+>>
+>> I was also trying by adding new metric using the feature added in this patchset with something like this:
+>>
+>> diff --git a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
+>> index 8383a37647ad..dfe4bd63b587 100644
+>> --- a/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
+>> +++ b/tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
+>> @@ -16,6 +16,11 @@
+>>          "MetricName": "PowerBUS_Frequency",
+>>          "ScaleUnit": "2.5e-7GHz"
+>>      },
+>> +    {
+>> +       "MetricExpr": "Memory_WR_BW_Chip + Memory_RD_BW_Chip",
+>> +        "MetricName": "Total_Memory_BW",
+>> +        "ScaleUnit": "1.6e-2MB"
+>> +    },
+> 
+> hum, we'll need special case this.. because Memory_WR_BW_Chip will
+> unwind to Memory_WR_BW_Chip_[01] and Total_Memory_BW is not aware of
+> that.. what's the expected behaviour in here?
+> 
+> have Total_Memory_BW_[01] for each runtime arg?
 
-Thank you.
+Hi Jiri,
+    Yes right. So we want Total_Memory_BW to show sum results of both chip 0 and 1 seperately, which is missing here.
+> 
+> I think this will need to come on top of this changes,
+> it's already too big
+> 
 
-Best regards
-Martin
+Yes make sense. We can send separate patches on top of this patch set for this use case. 
+
+Other then that the whole patchset looks good to me with the change to rectify Paul A. Clarke concern.
+
+Tested/Reviewed-By : Kajol Jain<kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+> thanks,
+> jirka
+> 
+>>
+>> I guess as we have dependency on '?' symbol, I am not able to see all chips data for Total_Memory_BW.
+>> I am not sure if Its expected behavior?
+>>
+>> This is what I am getting:
+>>
+>> [root@ltc-zz189-lp4 perf]# ./perf stat --metric-only -M Total_Memory_BW,Memory_WR_BW_Chip,Memory_RD_BW_Chip -I 1000 -C 0
+>> #           time  MB  Total_Memory_BW MB  Memory_RD_BW_Chip_1 MB  Memory_WR_BW_Chip_1 MB  Memory_WR_BW_Chip_0 MB  Memory_RD_BW_Chip_0 
+>>      1.000067388                 36.4                      0.2                     36.3                     65.0                     72.1 
+>>      2.000374276                 36.2                      0.3                     35.9                     65.4                     77.9 
+>>      3.000543202                 36.3                      0.3                     36.0                     68.7                     81.2 
+>>      4.000702855                 36.3                      0.3                     36.0                     70.9                     93.3 
+>>      5.000856837                 36.0                      0.2                     35.8                     67.4                     81.5 
+>> ^C     5.367865273                 13.2                      0.1                     13.1                     23.5                     28.3 
+>>  Performance counter stats for 'CPU(s) 0':
+>>                194.4                      1.3                    193.1                    361.0                    434.3 
+>>        5.368039176 seconds time elapsed
+>>
+>> We can only get single chip data's sum in Total_Memory_BW. Please let me know if I am missing something.
+> 
+> SNIP
+> 
