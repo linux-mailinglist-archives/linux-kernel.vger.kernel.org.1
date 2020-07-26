@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E45722DD68
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 10:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6E422DD7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgGZI7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 04:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZI7k (ORCPT
+        id S1726984AbgGZJGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:06:51 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:10269 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725794AbgGZJGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 04:59:40 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB42C0619D2;
-        Sun, 26 Jul 2020 01:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=raj459k/Ry/Z+q4J3+wwOawrxeEM4ca9YQ65wIbZMWs=; b=FKbfc6K6S9rPTM7UPjdjDgKVrJ
-        D6LJr3AeYr+fySva3u+UezV1ZolLU9QoWVjTWtrqB9m8Om85RsK9/tw4GWtEYW2aZVuPG5591iaug
-        gDl1ZwVYreM3J+YKXrfnYpCg8omSIgKLA8ckqzMZ3RLvAZ/smIX6TUdYXZMMN2dBLAeo=;
-Received: from p5b206d80.dip0.t-ipconnect.de ([91.32.109.128] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1jzcVF-0001wr-0T; Sun, 26 Jul 2020 10:59:29 +0200
-Subject: Re: [RFC 0/7] Add support to process rx packets in thread
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>,
-        "dianders@chromium.org" <dianders@chromium.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Ding Zhao Nan <oshack@hotmail.com>,
-        "evgreen@chromium.org" <evgreen@chromium.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <20200721172514.GT1339445@lunn.ch> <20200725081633.7432-1-hdanton@sina.com>
- <20200726012244.15264-1-hdanton@sina.com>
- <20200726083239.5060-1-hdanton@sina.com>
-From:   Felix Fietkau <nbd@nbd.name>
-Autocrypt: addr=nbd@nbd.name; prefer-encrypt=mutual; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCfTKx80VvCR/PvsUlrvdOLsIgeRGAAn1ee
- RjMaxwtSdaCKMw3j33ZbsWS4
-Message-ID: <805e66e3-3090-61d2-1fda-50421eb99e3d@nbd.name>
-Date:   Sun, 26 Jul 2020 10:59:27 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200726083239.5060-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 26 Jul 2020 05:06:50 -0400
+X-IronPort-AV: E=Sophos;i="5.75,398,1589234400"; 
+   d="scan'208";a="461332981"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/AES256-SHA256; 26 Jul 2020 11:06:48 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     kernel-janitors@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: SOF: imx: use resource_size
+Date:   Sun, 26 Jul 2020 10:25:33 +0200
+Message-Id: <1595751933-4952-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-26 10:32, Hillf Danton wrote:
-> 
-> On Sun, 26 Jul 2020 10:10:15 +0200 Felix Fietkau wrote:
->> On 2020-07-26 03:22, Hillf Danton wrote:
->> > 
->> > Feel free to do that. Is it likely for me to select a Cc?
->> > 
->> Shall I use Signed-off-by: Hillf Danton <hdanton@sina.com>?
-> 
-> s/Signed-off-by/Cc/
-> 
->> What Cc do you want me to add?
-> 
-> I prefer Cc over other tags.
-Ah, okay. I was planning on adding you as the author of the patch, since
-you did most of the work on it. If you want to be attributed as author
-(or in Co-developed-by), I'd need your Signed-off-by.
+Use resource_size rather than a verbose computation on
+the end and start fields.
 
-If you don't want that, I can submit it under my name and leave you in
-as Cc only.
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
 
-- Felix
+<smpl>
+@@ struct resource ptr; @@
+- (ptr.end - ptr.start + 1)
++ resource_size(&ptr)
+</smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+
+---
+ sound/soc/sof/imx/imx8m.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff -u -p a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -188,8 +188,7 @@ static int imx8m_probe(struct snd_sof_de
+ 	}
+ 
+ 	sdev->bar[SOF_FW_BLK_TYPE_SRAM] = devm_ioremap_wc(sdev->dev, res.start,
+-							  res.end - res.start +
+-							  1);
++							  resource_size(&res));
+ 	if (!sdev->bar[SOF_FW_BLK_TYPE_SRAM]) {
+ 		dev_err(sdev->dev, "failed to ioremap mem 0x%x size 0x%x\n",
+ 			base, size);
+
