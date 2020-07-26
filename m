@@ -2,172 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62DD22E11E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6238C22E121
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgGZQGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 12:06:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42478 "EHLO mail.kernel.org"
+        id S1726892AbgGZQNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 12:13:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:38650 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgGZQGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 12:06:33 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF0002078E
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 16:06:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595779592;
-        bh=jOlSd937RAl4IikqYHXqep9iyrxRMosx470QDWX0F5o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HMnGZGZ8zFPNbKdaNkL5nkkSM8jRMIAHhiqCpnnztcLsnfOizEu4MyxHX3/PY48kQ
-         OKSriRyt3KRRiQEY7MQd/UvJ5SEe1uW/4kpCx6/OlGtmxNSrIN7a+JuuZitRc8QarT
-         57nOy9ojB0zNJZSlav9+3RAnApxBHr7GhgYpBqNU=
-Received: by mail-ot1-f53.google.com with SMTP id n24so10540623otr.13
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 09:06:32 -0700 (PDT)
-X-Gm-Message-State: AOAM5326FiEvrjQMz//MgdiLTLU2VJnZgMnF0yXYXAnxx/faujWBxxF4
-        562fyR84P5h9Yg9m3upyk38drFU5xogW7ieXPqE=
-X-Google-Smtp-Source: ABdhPJyLC8hHAzofnQu2h1FVAUiDveA5YPbaDCm/F/ft2ehbXBb05JTdDqOZFfW7sdjm1unxLObM5+FL1usYgX7CE+k=
-X-Received: by 2002:a05:6830:1094:: with SMTP id y20mr5572348oto.90.1595779591988;
- Sun, 26 Jul 2020 09:06:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
- <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
- <20200724092746.GD517988@gmail.com> <20200725031648.GG17052@linux.intel.com> <20200726081408.GB2927915@kernel.org>
-In-Reply-To: <20200726081408.GB2927915@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 26 Jul 2020 19:06:20 +0300
-X-Gmail-Original-Message-ID: <CAMj1kXHDK5RSbTu3SG1AzbLRJD_FsdAmCnjmf31P=Db6J0ktww@mail.gmail.com>
-Message-ID: <CAMj1kXHDK5RSbTu3SG1AzbLRJD_FsdAmCnjmf31P=Db6J0ktww@mail.gmail.com>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jessica Yu <jeyu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726044AbgGZQNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 12:13:31 -0400
+IronPort-SDR: gOPy6rNDnLt5QTCDYPnIFqs/BDrVESrejTS/z1MWUql4XTtWkLYDkBasgdaNweBCGie/YITFyU
+ rZCJ4EbIVuYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="212439391"
+X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
+   d="scan'208";a="212439391"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 09:13:30 -0700
+IronPort-SDR: yY+zWewQlmIQQ4SZm4+Nwpo6JVvW6PCWzRkaV6S7B8WFSsqloF5rtBvgtjoH2MxNNHuoXi08YD
+ rVQppWcFXqng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,399,1589266800"; 
+   d="scan'208";a="319798585"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by orsmga008.jf.intel.com with ESMTP; 26 Jul 2020 09:13:28 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Brent Lu <brent.lu@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: Intel: Atom: use hardware counter to update hw_ptr
+Date:   Mon, 27 Jul 2020 00:08:47 +0800
+Message-Id: <1595779727-31404-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 at 11:14, Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Sat, Jul 25, 2020 at 06:16:48AM +0300, Jarkko Sakkinen wrote:
-> > On Fri, Jul 24, 2020 at 11:27:46AM +0200, Ingo Molnar wrote:
-> > >
-> > > * Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> > >
-> > > > Use text_alloc() and text_free() instead of module_alloc() and
-> > > > module_memfree() when an arch provides them.
-> > > >
-> > > > Cc: linux-mm@kvack.org
-> > > > Cc: Andi Kleen <ak@linux.intel.com>
-> > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > > > ---
-> > > >  kernel/kprobes.c | 9 +++++++++
-> > > >  1 file changed, 9 insertions(+)
-> > > >
-> > > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> > > > index 4e46d96d4e16..611fcda9f6bf 100644
-> > > > --- a/kernel/kprobes.c
-> > > > +++ b/kernel/kprobes.c
-> > > > @@ -40,6 +40,7 @@
-> > > >  #include <asm/cacheflush.h>
-> > > >  #include <asm/errno.h>
-> > > >  #include <linux/uaccess.h>
-> > > > +#include <linux/vmalloc.h>
-> > > >
-> > > >  #define KPROBE_HASH_BITS 6
-> > > >  #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
-> > > > @@ -111,12 +112,20 @@ enum kprobe_slot_state {
-> > > >
-> > > >  void __weak *alloc_insn_page(void)
-> > > >  {
-> > > > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > > > + return text_alloc(PAGE_SIZE);
-> > > > +#else
-> > > >   return module_alloc(PAGE_SIZE);
-> > > > +#endif
-> > > >  }
-> > > >
-> > > >  void __weak free_insn_page(void *page)
-> > > >  {
-> > > > +#ifdef CONFIG_ARCH_HAS_TEXT_ALLOC
-> > > > + text_free(page);
-> > > > +#else
-> > > >   module_memfree(page);
-> > > > +#endif
-> > > >  }
-> > >
-> > > I've read the observations in the other threads, but this #ifdef
-> > > jungle is silly, it's a de-facto open coded text_alloc() with a
-> > > module_alloc() fallback...
-> >
-> > In the previous version I had:
-> >
-> >   https://lore.kernel.org/lkml/20200717030422.679972-4-jarkko.sakkinen@linux.intel.com/
-> >
-> > and I had just calls to text_alloc() and text_free() in corresponding
-> > snippet to the above.
-> >
-> > I got this feedback from Mike:
-> >
-> >   https://lore.kernel.org/lkml/20200718162359.GA2919062@kernel.org/
-> >
-> > I'm not still sure that I fully understand this feedback as I don't see
-> > any inherent and obvious difference to the v4. In that version fallbacks
-> > are to module_alloc() and module_memfree() and text_alloc() and
-> > text_memfree() can be overridden by arch.
->
-> Let me try to elaborate.
->
-> There are several subsystems that need to allocate memory for executable
-> text. As it happens, they use module_alloc() with some abilities for
-> architectures to override this behaviour.
->
-> For many architectures, it would be enough to rename modules_alloc() to
-> text_alloc(), make it built-in and this way allow removing dependency on
-> MODULES.
->
-> Yet, some architectures have different restrictions for code allocation
-> for different subsystems so it would make sense to have more than one
-> variant of text_alloc() and a single config option ARCH_HAS_TEXT_ALLOC
-> won't be sufficient.
->
-> I liked Mark's suggestion to have text_alloc_<something>() and proposed
-> a way to introduce text_alloc_kprobes() along with
-> HAVE_KPROBES_TEXT_ALLOC to enable arch overrides of this function.
->
-> The major difference between your v4 and my suggestion is that I'm not
-> trying to impose a single ARCH_HAS_TEXT_ALLOC as an alternative to
-> MODULES but rather to use per subsystem config option, e.g.
-> HAVE_KPROBES_TEXT_ALLOC.
->
-> Another thing, which might be worth doing regardless of the outcome of
-> this discussion is to rename alloc_insn_pages() to text_alloc_kprobes()
-> because the former is way too generic and does not emphasize that the
-> instruction page is actually used by kprobes only.
->
+The ring buffer counter runs faster than hardware counter if the
+period size in hw_param is larger than 240. Although the differce is
+not much (around 2k frames), it causes false underrun in CRAS
+sometimes because it's using 256 frames as period size in hw_param.
+Using the hardware counter could provide precise hw_ptr to user space
+and avoid the false underrun in CRAS.
 
-Masami or Peter should correct me if I am wrong, but it seems to me
-that the way kprobes uses these pages does not require them to be in
-relative branching range of the core kernel on any architecture, given
-that they are populated with individual instruction opcodes that are
-executed in single step mode, and relative branches are emulated (when
-needed)
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/atom/sst/sst_drv_interface.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
 
-So for kprobes in particular, we should be able to come up with a
-generic sequence that does not involve module_alloc(), and therefore
-removes the kprobes dependency on module support entirely (with the
-exception of power which maps the vmalloc space nx when module support
-is disabled). Renaming alloc_insn_page() to something more descriptive
-makes sense imo, but is a separate issue.
+diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
+index 7624953..1949ad9 100644
+--- a/sound/soc/intel/atom/sst/sst_drv_interface.c
++++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
+@@ -485,7 +485,6 @@ static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
+ 		struct snd_pcm_substream *substream,
+ 		struct snd_sst_tstamp *fw_tstamp)
+ {
+-	size_t delay_bytes, delay_frames;
+ 	size_t buffer_sz;
+ 	u32 pointer_bytes, pointer_samples;
+ 
+@@ -493,22 +492,14 @@ static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
+ 			fw_tstamp->ring_buffer_counter);
+ 	dev_dbg(ctx->dev, "mrfld hardware_counter %llu in bytes\n",
+ 			 fw_tstamp->hardware_counter);
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		delay_bytes = (size_t) (fw_tstamp->ring_buffer_counter -
+-					fw_tstamp->hardware_counter);
+-	else
+-		delay_bytes = (size_t) (fw_tstamp->hardware_counter -
+-					fw_tstamp->ring_buffer_counter);
+-	delay_frames = bytes_to_frames(substream->runtime, delay_bytes);
++
+ 	buffer_sz = snd_pcm_lib_buffer_bytes(substream);
+-	div_u64_rem(fw_tstamp->ring_buffer_counter, buffer_sz, &pointer_bytes);
++	div_u64_rem(fw_tstamp->hardware_counter, buffer_sz, &pointer_bytes);
+ 	pointer_samples = bytes_to_samples(substream->runtime, pointer_bytes);
+ 
+-	dev_dbg(ctx->dev, "pcm delay %zu in bytes\n", delay_bytes);
+-
+ 	info->buffer_ptr = pointer_samples / substream->runtime->channels;
++	info->pcm_delay = 0;
+ 
+-	info->pcm_delay = delay_frames;
+ 	dev_dbg(ctx->dev, "buffer ptr %llu pcm_delay rep: %llu\n",
+ 			info->buffer_ptr, info->pcm_delay);
+ 	return 0;
+-- 
+2.7.4
+
