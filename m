@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B983E22E304
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F001522E307
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 00:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgGZWJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 18:09:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33352 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgGZWJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 18:09:51 -0400
-Received: from earth.universe (unknown [185.213.155.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727863AbgGZWKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 18:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgGZWKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 18:10:06 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFC8C0619D2;
+        Sun, 26 Jul 2020 15:10:06 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 762762065F;
-        Sun, 26 Jul 2020 22:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595801391;
-        bh=LfHWfBg1Qfp818BKW1nd9sxbwjERmwPxm12kyIqm0Ak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1pCHgWq75TDYeOlW/SX2FohhHJ4AAL4TKHTj80iEU+lD0wfmvWm8m5Gh/sqYbB8TF
-         Gjedib6n5Ej1KUI7qoPXQRJGNIzyrBmgLdbA9xJ5oApxzt3Iqt2tMusW2GONwyAwH1
-         yOdCW4E0nnppQom5b5kGK4UUJ7EjjDrNrPVtYv0g=
-Received: by earth.universe (Postfix, from userid 1000)
-        id B16DA3C0B87; Mon, 27 Jul 2020 00:09:49 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 00:09:49 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] power: Convert to DEFINE_SHOW_ATTRIBUTE
-Message-ID: <20200726220949.m456hoqcb5bis4ry@earth.universe>
-References: <20200716085849.11571-1-miaoqinglang@huawei.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFHDX3xRlz9sRN;
+        Mon, 27 Jul 2020 08:10:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595801404;
+        bh=cobZIdmn+6KM4sl5DSzEA451/qSe5azeK5+QfyO0It8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OWLHKJnaoVqFXJwnB8fWI5fJWpe4S2nLXkaeBL1kcetHQZa6ENHhuwfVrwQ9xQEYT
+         jmc+k5nlIQCMv4EVPEwQvkJ+QVsoErum0QtVg+bgbYUAzEoxu+vdLZoYTfA1Sf8hnt
+         YbDYuDtDvy+4kaI1b8eee8zJHsHSJevQHlylM6eFLKYd5ihzlSAwNpg1fOi2Y9UWVd
+         M0RUAvfkXYgQvC+RpSz3AsPsKJhdlQ0uyf0puuwQrmj/nXveMes1CXgdximJtDytQA
+         +Zm2zAqC8En2T68bQKt90Vq9o+3pDHDj7PcrJTkn+b8Pj537xnTJhToLQCdx+qErQf
+         5VTvyEa3wT2iA==
+Date:   Mon, 27 Jul 2020 08:10:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the irqchip tree
+Message-ID: <20200727081003.7ffaa22d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2twpfrl4w4tppxvr"
-Content-Disposition: inline
-In-Reply-To: <20200716085849.11571-1-miaoqinglang@huawei.com>
+Content-Type: multipart/signed; boundary="Sig_/GMt6yF46.OMoA6Nb/29CK/N";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---2twpfrl4w4tppxvr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/GMt6yF46.OMoA6Nb/29CK/N
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-On Thu, Jul 16, 2020 at 04:58:49PM +0800, Qinglang Miao wrote:
-> From: Yongqiang Liu <liuyongqiang13@huawei.com>
->=20
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
->=20
-> Signed-off-by: Yongqiang Liu <liuyongqiang13@huawei.com>
+Commit
 
-Thanks, queued.
+  e5c19cf32b68 ("irqchip/stm32-exti: Use the hwspin_lock_timeout_in_atomic(=
+) API")
 
--- Sebastian
+is missing a Signed-off-by from its committer.
 
->  drivers/power/supply/da9030_battery.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->=20
-> diff --git a/drivers/power/supply/da9030_battery.c b/drivers/power/supply=
-/da9030_battery.c
-> index 292ecf875..0deba48d2 100644
-> --- a/drivers/power/supply/da9030_battery.c
-> +++ b/drivers/power/supply/da9030_battery.c
-> @@ -172,17 +172,7 @@ static int bat_debug_show(struct seq_file *s, void *=
-data)
->  	return 0;
->  }
-> =20
-> -static int debug_open(struct inode *inode, struct file *file)
-> -{
-> -	return single_open(file, bat_debug_show, inode->i_private);
-> -}
-> -
-> -static const struct file_operations bat_debug_fops =3D {
-> -	.open		=3D debug_open,
-> -	.read_iter		=3D seq_read_iter,
-> -	.llseek		=3D seq_lseek,
-> -	.release	=3D single_release,
-> -};
-> +DEFINE_SHOW_ATTRIBUTE(bat_debug);
-> =20
->  static struct dentry *da9030_bat_create_debugfs(struct da9030_charger *c=
-harger)
->  {
-> --=20
-> 2.17.1
->=20
+--=20
+Cheers,
+Stephen Rothwell
 
---2twpfrl4w4tppxvr
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/GMt6yF46.OMoA6Nb/29CK/N
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl8d/ygACgkQ2O7X88g7
-+pqmSA//fvwJAMXbsenKVkN26BoMn1sGqtCr6wiAveZsXonjqg6W8zMDW8AaDNJy
-RUid+1abBPkqEJ8Vvo9azVGmhHbauh+/467fY4mPyjf/Gill+FxIdap/hriiom5P
-XUKtQ9EzBroM55ktPkaH4W3lUjUTSpfuGdDc9DPKOi4Hr2VVo/pJ8PBrCm4g+MxE
-m2Ufzda9YYYzbN8Pj71k6PgYCFlUEAIuaOSPxCOrTu6hIGOyyenySooPlXtp1YbG
-Xd/o+1nHMuI+l/lKn9+ofh1xjrzz9uyOOKktPSlQhHtLG+zcfM9fHvTqpienqP3Z
-qZQ12CCjbraBkduQpJtVKlyYRDBX6/xmgpvx7qYCNk57V1dyzcwDlpOUho5dwQ9D
-Q2IzEpp6sP7R1Bj3Z03RSKtRtcl4GWumD1uKJFiZdObgIhqU8MobLE5nUYU5tdZt
-zUPTkDgxOInHxq8btmM/pWpA9OlEeqmsNffCE9k5UCaoA4kYnl56CeEBjf7fH14x
-IParuo95m1Ybi88QMu/grbXUmtHdZnGbqrSshF5zvSxaTqNupxFI+6WeEhYiRSWi
-2xOrzTe/DwuFNJ8SA1A96+v1txu8pk+JBXkwnY4NBju9+cBQJ31L8ebgTl0kpfhF
-c+a5z2qaLwCm/0/ECnVpd8xn1N20Ipgx83idM7zKQlB1qYYRr8w=
-=iYzJ
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8d/zsACgkQAVBC80lX
+0Gz2zgf8DNrMToapTA0DVShvzvwMlXWf1333DdXi6WsI7sNpNN5M2w9UGql1Bv7Q
+H98U53A5MdTPMXNeJerhTIG4jQf03DERsMqIaEWuPsZOVtCP6rmNxeCHNUbAW1x1
+RLbn1OQTV6HrugqpkzUknifOAHyA/lJZow9QZhPiQ1MxA+ZPshcqBlId7OeZeCOJ
+pGyTKzvSJXkisLLd5TKBx7qdgugFhc2wN+DmfcAknIrGySwjHjXBVgQ1+LVsxSes
+oUgvdRp96Xy4NLrdUty1e1Z9ds98YadzfQtkffGg81hG7YBZhyTliCGCvdMr7NYV
+t8VDam7Oyig8wu3HfnuGoks8O/xcTA==
+=rrdD
 -----END PGP SIGNATURE-----
 
---2twpfrl4w4tppxvr--
+--Sig_/GMt6yF46.OMoA6Nb/29CK/N--
