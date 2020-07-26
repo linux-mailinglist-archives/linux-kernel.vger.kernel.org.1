@@ -2,169 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5BB22DF66
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3E722DF67
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 14:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgGZM6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 08:58:41 -0400
-Received: from mga18.intel.com ([134.134.136.126]:11971 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726455AbgGZM6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 08:58:40 -0400
-IronPort-SDR: o8xTc4lMjx8poQT/adcoEGsTbOQQFt9CRbJ4jtFreAlMpwxp6ZB+Ab0mZW0MYMauQV1Vz5EX2X
- N1xQHwd8+tiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9693"; a="138406020"
-X-IronPort-AV: E=Sophos;i="5.75,398,1589266800"; 
-   d="scan'208";a="138406020"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 05:58:40 -0700
-IronPort-SDR: ctmewIlLnguoNWjsW6c0xARxVJ7oDCAUYIO50f3c77BNgMFz5k+XBABNKx+XU9QPfh4qnaLURJ
- YENYigs8Q8YQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,398,1589266800"; 
-   d="scan'208";a="327759107"
-Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 Jul 2020 05:58:38 -0700
-Received: from kbuild by df0563f96c37 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jzgEf-0001S1-Do; Sun, 26 Jul 2020 12:58:37 +0000
-Date:   Sun, 26 Jul 2020 20:58:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:WIP.x86/entry] BUILD REGRESSION
- 6ea7527a81333198dfb204c95e57e1891c61bfcd
-Message-ID: <5f1d7de0.1/TrGqkTfQZMeqTK%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727923AbgGZM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 08:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727894AbgGZM7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 08:59:10 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F43C0619D4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 05:59:09 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id y3so12256883wrl.4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 05:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aJ0QTk1kAr2FXG3tNKxMDTj3E6xC0tBqD5CEm/p3JFE=;
+        b=e3qylBuPPyd36kYi09rS61kEhLJtEb/XiQOym4M3xymiMBeoHEsRYf7Cl7PEyEpyzg
+         c6RjEdgiKjPRk80f99amxldvIWn8kAn2HrIK+4WB97VzHtKsfAq4IidLgJqkLaPb8vf2
+         lgOrGq2sfuOHdd2NQeeywpEG7BhiYWAOtFlnHV9PhGwA855BfYE19uhn8Cud4Mvvd23l
+         pKb4vFdCWBWOzwXwFnKBv/Wod/PlT0wyvHouPqYCoQQpUfqTUYylmYyoq5AYUZC3dbBp
+         LxEonSSWb6BKqUxWs+cLg65BjTqzXH6n5wq0JqZqrEzIBxAzVyPpSfVirsjtlJylWK0p
+         256A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aJ0QTk1kAr2FXG3tNKxMDTj3E6xC0tBqD5CEm/p3JFE=;
+        b=iQNqNChuKUe9ZDAKPXLzAvLvwHN1WvsCaAs3l5tSKTGZUdGSoUoKSgr0uxr9t/RGia
+         PG4mMr9ou8dZ+wSrA5hv8IhUL1xwQ7bPk/Wvp5etQi5GxipGdOEoios4YaAB57wK6CCH
+         jx5httsKNKr23Qu9HKffbqxY331Xc16jdGHrwSWghUl5SSTeeLFAxTUF3/MQjx+4KHfp
+         5nzdRqydIwuuWQldr90iMZ97N9+FQJ0hqfppoSDWgO09xQQB86EQ0V1UIowIcvsCKK09
+         nHVSr3hg9efXmx3fo4jrzl7/+fd/3kvoaj50OqVMRU7XnDLAnExyB/7VR/NilQQ81yXu
+         5hJA==
+X-Gm-Message-State: AOAM5304hj2L9KCEfX7aFQYUQZF9MZ5qscx8xqXhz19ltFS0/6ijTxo4
+        /tOjrhzoXC8HRGoewGS4Fzz8TvVEBOq7Y8fyXxtdCPpJ
+X-Google-Smtp-Source: ABdhPJwkwpK6Km+ushc9A1CmJalY7YDxkaZpWvaeV6P1vmcPyklRXsQahQs5E1vm5UD0ctxrGufZWxwQaQTBXHNbh18=
+X-Received: by 2002:adf:f186:: with SMTP id h6mr16468220wro.144.1595768348627;
+ Sun, 26 Jul 2020 05:59:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200724085441.1514-1-jiangyifei@huawei.com> <20200724085441.1514-3-jiangyifei@huawei.com>
+In-Reply-To: <20200724085441.1514-3-jiangyifei@huawei.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Sun, 26 Jul 2020 18:28:57 +0530
+Message-ID: <CAAhSdy18+3ub9Lw+2v0WEujYkFJ2yU0x=GqZ+PQGe2DrWCR8Bg@mail.gmail.com>
+Subject: Re: [RFC 2/2] RISC-V: KVM: read\write kernel mmio device support
+To:     Yifei Jiang <jiangyifei@huawei.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        KVM General <kvm@vger.kernel.org>,
+        kvm-riscv@lists.infradead.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        "Zhangxiaofeng (F)" <victor.zhangxiaofeng@huawei.com>,
+        wu.wubin@huawei.com,
+        Zhanghailiang <zhang.zhanghailiang@huawei.com>,
+        "dengkai (A)" <dengkai1@huawei.com>, limingwang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  WIP.x86/entry
-branch HEAD: 6ea7527a81333198dfb204c95e57e1891c61bfcd  Merge branch 'locking/nmi' into x86/entry
+Change subject to:
+RISC-V: KVM: kernel mmio read/write support
 
-Error/Warning in current branch:
+Also add 1-2 sentences of commit description.
 
-include/linux/irqflags.h:40:41: error: expected expression before ')' token
+On Fri, Jul 24, 2020 at 2:25 PM Yifei Jiang <jiangyifei@huawei.com> wrote:
+>
+> Signed-off-by: Yifei Jiang <jiangyifei@huawei.com>
+> Signed-off-by: Mingwang Li <limingwang@huawei.com>
+> ---
+>  arch/riscv/kvm/vcpu_exit.c | 38 ++++++++++++++++++++++++++++++++------
+>  1 file changed, 32 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/riscv/kvm/vcpu_exit.c b/arch/riscv/kvm/vcpu_exit.c
+> index e97ba96cb0ae..448f11179fa8 100644
+> --- a/arch/riscv/kvm/vcpu_exit.c
+> +++ b/arch/riscv/kvm/vcpu_exit.c
+> @@ -191,6 +191,8 @@ static int virtual_inst_fault(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>  static int emulate_load(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>                         unsigned long fault_addr, unsigned long htinst)
+>  {
+> +       int ret;
+> +       u8 data_buf[8];
+>         unsigned long insn;
+>         int shift = 0, len = 0;
+>         struct kvm_cpu_trap utrap = { 0 };
+> @@ -272,19 +274,32 @@ static int emulate_load(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>         vcpu->arch.mmio_decode.len = len;
+>         vcpu->arch.mmio_decode.return_handled = 0;
+>
+> -       /* Exit to userspace for MMIO emulation */
+> -       vcpu->stat.mmio_exit_user++;
+> -       run->exit_reason = KVM_EXIT_MMIO;
+> +       ret = kvm_io_bus_read(vcpu, KVM_MMIO_BUS, fault_addr, len,
+> +                                                 data_buf);
+> +
+>         run->mmio.is_write = false;
+>         run->mmio.phys_addr = fault_addr;
+>         run->mmio.len = len;
+>
+> +       if (!ret) {
+> +               /* We handled the access successfully in the kernel. */
+> +               memcpy(run->mmio.data, data_buf, len);
+> +               vcpu->stat.mmio_exit_kernel++;
+> +               kvm_riscv_vcpu_mmio_return(vcpu, run);
+> +               return 1;
+> +       }
+> +
+> +       /* Exit to userspace for MMIO emulation */
+> +       vcpu->stat.mmio_exit_user++;
+> +       run->exit_reason = KVM_EXIT_MMIO;
+> +
+>         return 0;
+>  }
+>
+>  static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>                          unsigned long fault_addr, unsigned long htinst)
+>  {
+> +       int ret;
+>         u8 data8;
+>         u16 data16;
+>         u32 data32;
+> @@ -378,13 +393,24 @@ static int emulate_store(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>                 return -ENOTSUPP;
+>         };
+>
+> -       /* Exit to userspace for MMIO emulation */
+> -       vcpu->stat.mmio_exit_user++;
+> -       run->exit_reason = KVM_EXIT_MMIO;
+> +       ret = kvm_io_bus_write(vcpu, KVM_MMIO_BUS, fault_addr, len,
+> +                                                  run->mmio.data);
+> +
+>         run->mmio.is_write = true;
+>         run->mmio.phys_addr = fault_addr;
+>         run->mmio.len = len;
+>
+> +       if (!ret) {
+> +               /* We handled the access successfully in the kernel. */
+> +               vcpu->stat.mmio_exit_kernel++;
+> +               kvm_riscv_vcpu_mmio_return(vcpu, run);
+> +               return 1;
+> +       }
+> +
+> +       /* Exit to userspace for MMIO emulation */
+> +       vcpu->stat.mmio_exit_user++;
+> +       run->exit_reason = KVM_EXIT_MMIO;
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.19.1
+>
+>
 
-Error/Warning ids grouped by kconfigs:
-
-recent_errors
-|-- i386-allyesconfig
-|   `-- include-linux-irqflags.h:error:expected-expression-before-)-token
-|-- x86_64-allyesconfig
-|   `-- include-linux-irqflags.h:error:expected-expression-before-)-token
-|-- x86_64-lkp
-|   `-- include-linux-irqflags.h:error:expected-expression-before-)-token
-|-- x86_64-randconfig-c002-20200726
-|   `-- include-linux-irqflags.h:error:expected-expression-before-)-token
-`-- x86_64-rhel-7.6-kselftests
-    `-- include-linux-irqflags.h:error:expected-expression-before-)-token
-
-elapsed time: 1600m
-
-configs tested: 92
-configs skipped: 1
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20200726
-i386                 randconfig-a005-20200726
-i386                 randconfig-a004-20200726
-i386                 randconfig-a006-20200726
-i386                 randconfig-a002-20200726
-i386                 randconfig-a001-20200726
-x86_64               randconfig-a014-20200726
-x86_64               randconfig-a016-20200726
-x86_64               randconfig-a015-20200726
-x86_64               randconfig-a012-20200726
-x86_64               randconfig-a013-20200726
-x86_64               randconfig-a011-20200726
-i386                 randconfig-a016-20200726
-i386                 randconfig-a013-20200726
-i386                 randconfig-a012-20200726
-i386                 randconfig-a015-20200726
-i386                 randconfig-a011-20200726
-i386                 randconfig-a014-20200726
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                                    lkp
-x86_64                              fedora-25
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards,
+Anup
