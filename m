@@ -2,92 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F8322E129
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D63022E138
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 18:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgGZQSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 12:18:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49730 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgGZQSb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 12:18:31 -0400
-Date:   Sun, 26 Jul 2020 16:18:28 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595780309;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=3YYkjEvHjiHC/Ar2ExSh+apOQlT3lexx+oztxhhe5u4=;
-        b=HhrGLMh4k5TPKDQqha+N9Eenz9c+jaIjtRr9NMOPCXYX88u8sk5TwJLOk0OzYaRh8ewVph
-        fuSJJEO0P3V3xB2Nf/Y6eNbrMYLA69z4HDFFSDpddFDtX36FzHOUJhJdFIxHoCH4IHNXji
-        CtCXRn9mdjaDAkCVlKq7+G6BYz9tnby5rWVJhIyh9V6dOVKekS+PP4jPsPYdE0XJ6hn5wQ
-        th6WkfPDbHveLItPD2DApgi3BoPJXEn5OIRKNafOCouNSrG5twlSOhebVINmAwG8bQJc6y
-        jKiu3dsjeksUjgG8uGO6tPLVZndSbEWd7Ax34skNiDQBlBSNoA5CGNFyyyZysA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595780309;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=3YYkjEvHjiHC/Ar2ExSh+apOQlT3lexx+oztxhhe5u4=;
-        b=JJTCDxRDmxf5RIDJ15X6jBZV0oykix3vBmwPeGjrb8r3uTiad9dWfrjiUkAo+NzXdebNy2
-        q3YOEySczfqYmMBA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/entry] entry: Correct __secure_computing() stub
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        id S1727062AbgGZQXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 12:23:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62076 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726044AbgGZQXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 12:23:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595780610; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: Date: Subject: In-Reply-To: References: Cc:
+ To: From: Sender; bh=SMD8GqIeO9u7l+fbIorG9kVzNUW8qUFr9pKbkQmeGE8=; b=FJeDIvAuE4nS/Mc+fPIBGtQOoID2l0y8XxRsQmdjHsktcRbkJVn/t8cnrCVrNVNxTMfQe6tp
+ ZpoiAWinIqLkPQAA3MvmOiHQrA3B/rApdUGlxWBX8Y1FgZMOXJtkZzBV9Dug3RxDZX8Q+Qlf
+ BlMKMvntt6ajRk+cZLSCUz46fFo=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n17.prod.us-west-2.postgun.com with SMTP id
+ 5f1dad2e49176bd382a48e60 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 26 Jul 2020 16:19:58
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 85C1AC433A0; Sun, 26 Jul 2020 16:19:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from Pillair (unknown [183.83.71.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pillair)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6F17EC433C9;
+        Sun, 26 Jul 2020 16:19:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6F17EC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pillair@codeaurora.org
+From:   "Rakesh Pillai" <pillair@codeaurora.org>
+To:     "'Johannes Berg'" <johannes@sipsolutions.net>,
+        <ath10k@lists.infradead.org>
+Cc:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <dianders@chromium.org>,
+        <evgreen@chromium.org>
+References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>           <1595351666-28193-2-git-send-email-pillair@codeaurora.org>      <0dbdef912f9d61521011f638200fd451a3530568.camel@sipsolutions.net>       <003201d6611e$c54a1c90$4fde55b0$@codeaurora.org> <ce380ea1fd1f5db40a92f67673f070a1f88eee50.camel@sipsolutions.net> 
+In-Reply-To: 
+Subject: RE: [RFC 1/7] mac80211: Add check for napi handle before WARN_ON
+Date:   Sun, 26 Jul 2020 21:49:51 +0530
+Message-ID: <000e01d66368$9a6ece70$cf4c6b50$@codeaurora.org>
 MIME-Version: 1.0
-Message-ID: <159578030831.4006.6596919231002837614.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQG1Bu1FBYi7G1oVhHY/01uT1gSslwIktOPGArPni2UCL/NlBQHsbdYmAYRemCKpCPf+gA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/entry branch of tip:
 
-Commit-ID:     543f5898d805e7e58bc5eadc20ed0a468368e7fd
-Gitweb:        https://git.kernel.org/tip/543f5898d805e7e58bc5eadc20ed0a468368e7fd
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 26 Jul 2020 18:14:43 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 26 Jul 2020 18:17:26 +02:00
 
-entry: Correct __secure_computing() stub
+> -----Original Message-----
+> From: Rakesh Pillai <pillair@codeaurora.org>
+> Sent: Friday, July 24, 2020 11:51 AM
+> To: 'Johannes Berg' <johannes@sipsolutions.net>;
+> 'ath10k@lists.infradead.org' <ath10k@lists.infradead.org>
+> Cc: 'linux-wireless@vger.kernel.org' <linux-wireless@vger.kernel.org>;
+> 'linux-kernel@vger.kernel.org' <linux-kernel@vger.kernel.org>;
+> 'kvalo@codeaurora.org' <kvalo@codeaurora.org>; 'davem@davemloft.net'
+> <davem@davemloft.net>; 'kuba@kernel.org' <kuba@kernel.org>;
+> 'netdev@vger.kernel.org' <netdev@vger.kernel.org>;
+> 'dianders@chromium.org' <dianders@chromium.org>;
+> 'evgreen@chromium.org' <evgreen@chromium.org>
+> Subject: RE: [RFC 1/7] mac80211: Add check for napi handle before
+> WARN_ON
+>=20
+>=20
+>=20
+> > -----Original Message-----
+> > From: Johannes Berg <johannes@sipsolutions.net>
+> > Sent: Friday, July 24, 2020 1:37 AM
+> > To: Rakesh Pillai <pillair@codeaurora.org>; =
+ath10k@lists.infradead.org
+> > Cc: linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > kvalo@codeaurora.org; davem@davemloft.net; kuba@kernel.org;
+> > netdev@vger.kernel.org; dianders@chromium.org;
+> evgreen@chromium.org
+> > Subject: Re: [RFC 1/7] mac80211: Add check for napi handle before
+> > WARN_ON
+> >
+> > On Thu, 2020-07-23 at 23:56 +0530, Rakesh Pillai wrote:
+> >
+> > > > > -	WARN_ON_ONCE(softirq_count() =3D=3D 0);
+> > > > > +	WARN_ON_ONCE(napi && softirq_count() =3D=3D 0);
+> > > >
+> > > > FWIW, I'm pretty sure this is incorrect - we make assumptions on
+> > > > softirqs being disabled in mac80211 for serialization and in =
+place of
+> > > > some locking, I believe.
+> > > >
+> > >
+> > > I checked this, but let me double confirm.
+> > > But after this change, no packet is submitted from driver in a =
+softirq
+> > context.
+> > > So ideally this should take care of serialization.
+> >
+> > I'd guess that we have some reliance on BHs already being disabled, =
+for
+> > things like u64 sync updates, or whatnot. I mean, we did "rx_ni()" =
+for a
+> > reason ... Maybe lockdep can help catch some of the issues.
+> >
+> > But couldn't you be in a thread and have BHs disabled too?
+>=20
+> This would ideally beat the purpose and possibly hurt the other =
+subsystems
+> running on the same core.
+>=20
 
-The original version of that used secure_computing() which has no
-arguments. Review requested to switch to __secure_computing() which has
-one. The function name was correct, but no argument added and of course
-compiling without SECCOMP was deemed overrated.
+Hi Johannes,
 
-Add the missing function argument.
+We do have the usage of napi_gro_receive and netif_receive_skb in =
+mac80211.
+                /* deliver to local stack */
+                if (rx->napi)
+                        napi_gro_receive(rx->napi, skb);
+                else
+                        netif_receive_skb(skb);
 
-Fixes: 6823ecabf030 ("seccomp: Provide stub for __secure_computing()")
-Reported-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/seccomp.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 03d28c3..3bcc214 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -58,9 +58,10 @@ static inline int seccomp_mode(struct seccomp *s)
- 
- struct seccomp { };
- struct seccomp_filter { };
-+struct seccomp_data;
- 
- #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
--static inline int secure_computing(void) { return 0; }
-+static inline int secure_computing(const struct seccomp_data *sd) { return 0; }
- static inline int __secure_computing(void) { return 0; }
- #else
- static inline void secure_computing_strict(int this_syscall) { return; }
+Also all the rx_handlers are called under the " rx->local->rx_path_lock" =
+lock.
+Is the BH disable still required ?
+
+
+> >
+> > johannes
+
+
