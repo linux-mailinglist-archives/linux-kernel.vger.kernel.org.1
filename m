@@ -2,109 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6451B22E1B9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 19:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30BA22E1BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 19:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgGZRov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 13:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
+        id S1726144AbgGZRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 13:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727062AbgGZRou (ORCPT
+        with ESMTP id S1725937AbgGZRrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 13:44:50 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A844C0619D6
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 10:44:50 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m22so8108779pgv.9
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 10:44:50 -0700 (PDT)
+        Sun, 26 Jul 2020 13:47:36 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0556DC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 10:47:35 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id kq25so1829582ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 10:47:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rz8PmAevX+AVytGTYCByWyvIy1/4eNHrEUMkdI13ieQ=;
-        b=QWRKokJ1jbQuW0PkRJtwvVGJquSmHlRYaYTPngCykthHbtqC79WUZMe9dn94R+JHQ3
-         MD6r4dbJ5S5EaTgzrs+PGRazPszQO6zgfKXIJWnhSpchzyta3doIZ1/mZ5P+pYMOJDQz
-         H3b5dNV2gTNEO8N8SPevaOxawfoYNgAXdLyr0+yPXY3YUsKjNCb7/MEFYzngumWotZa2
-         SRpKioyQgEhCAChtQDAJaDviE+f1X6taWqAtuQ0sMa5r2GQyorbXhCUrIaxkZai+xhQ/
-         gE9k0/WeZ7f9KgmR16E5JMvK0QwTmEkUJjdbe7w5yBQg5IhZ/XLHXP1aTWzYshwZtbN7
-         T23w==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5UWv79W/mn1m0FOxs5JKLUTGnpOEf+fg9+uBnox/wQY=;
+        b=BFx0qhHQKtFxrM1DGCd4wtmSwJ7USTaY4R7Flp9eqsykeIoR6OyxOAQDsRE2ylBrk5
+         Qlv1uczH3Du3XVfTNcl3eJ2NnuMdW1d2wTM0Cx8k4JTbDeJ3ACPmPh2yaiGB83ovPzGW
+         LDrlU7CRkyQBk8yyEX1Fh4o5TgYPj5KK81cNVp/TLcCNTKXw/T4fsxYZ/iV+jN6UTRkD
+         nwcBIjrAaPUeg8sbjsItbHFXvdAgr1slgFQQoio3dOjq3cULcNOYW/oqLWT5UiqIhZ4+
+         36OMiqNH9kFSuAHWT4OpGpZxWDNfRQ841DwVjDImLVxzp42xB9q6dTE788xRcwleuJpv
+         vrkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=rz8PmAevX+AVytGTYCByWyvIy1/4eNHrEUMkdI13ieQ=;
-        b=e5z2cy5+v25Sa41VPHI9lmgfeLgdhiHFNM6Mq+GWPKwKXnsMvXpG5KPaeRlfo64+pq
-         vq4JlZiUanaDyrArWN9jUZNWneWyMBgrh/AtrFqFF4VcXkwIkSh2ul8Lz2mtwf7hpPxQ
-         gGpWPHWUl4MuMwD4++PWa7Moezc7ya9gr6DbBqIE+j64Eol8HbnBxqPbBk7V+UWdnnx9
-         jOMU78o4LmSBpftjgShaPBnFYeWGoI8nV5ce/28I8sX0GsrkiLFhwNkJaiN6wm+WcL2J
-         ZgwbQ0CtQtAPcb0EqMfbU17F55fpXqJnXYrxN8pNH5z6Vcn4P9tMr2G91WBV02ynENT9
-         hfLA==
-X-Gm-Message-State: AOAM531MysTFfa5PntrdjzR2LgATnBw599dDYlvf7RKHLO5W7PG6cECR
-        3S9DcSpVKFkKcvPB9vMzGw4QUtKXRlCIIA==
-X-Google-Smtp-Source: ABdhPJwMFBKRD5d4MvMpsgEw1KumsNACvODlt+6//ct5AFSF4islz3zAwhx/bKFoMeysRB9OE9FIlA==
-X-Received: by 2002:a62:8081:: with SMTP id j123mr30331pfd.80.1595785489483;
-        Sun, 26 Jul 2020 10:44:49 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id u2sm12465061pfl.21.2020.07.26.10.44.48
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5UWv79W/mn1m0FOxs5JKLUTGnpOEf+fg9+uBnox/wQY=;
+        b=pxHF9vkESoC/O960Rj9ABMvoEMWgz7KjHVwi2GWd7vOnvK20am3yEwfYQmngBn0FJb
+         AvKsD90OwVzg+UNIudSfC+7Xom9Fknhg60Rq163JYuwdkfD1Y4nh9BBk5XmVIBIcv9Sc
+         rKIsnUBRF4mA2VJSzwutESA3HyrIFRy6hSW2Dra9i2n96yPbbnRdi+WvoQY+ndGzcPEH
+         GZXS+zh5+2YAyX4RD9Dz0PxdcVnjBQDZ87ob0UVBfp49F7hxMFHqpDvlsYleKn29zKso
+         +qpvVdtZx6teyIhCXCY7inc5Zh67Y48x62n/p8NJFMRUsJAHpEmFxv1pR+FWkz0Cu/OE
+         o5kg==
+X-Gm-Message-State: AOAM530aaMBUzTDQOKtLLXgHZPq0QBH6X8rJZiNNGY56nZmTFzx7UnVC
+        CBki6hk8b46heLolIJ1XSgklNLOU
+X-Google-Smtp-Source: ABdhPJzhGf+cetYHGIq9aFSp+JRUGe5sbLoZxyFJlOcvThhp1nuFBOzUiztKdQi2zyjbLerUMramhg==
+X-Received: by 2002:a17:906:c285:: with SMTP id r5mr17615135ejz.153.1595785654663;
+        Sun, 26 Jul 2020 10:47:34 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id s7sm5712311edr.57.2020.07.26.10.47.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 10:44:48 -0700 (PDT)
-Date:   Sun, 26 Jul 2020 10:44:48 -0700 (PDT)
-X-Google-Original-Date: Sun, 26 Jul 2020 10:44:45 PDT (-0700)
-Subject:     Re: [PATCH 4/6] arch, mm: wire up secretmemfd system call were relevant
-In-Reply-To: <20200720092435.17469-5-rppt@kernel.org>
-CC:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, luto@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, bp@alien8.de,
-        catalin.marinas@arm.com, cl@linux.com, dan.j.williams@intel.com,
-        dave.hansen@linux.intel.com, elena.reshetova@intel.com,
-        hpa@zytor.com, idan.yaniv@ibm.com, mingo@redhat.com,
-        jejb@linux.ibm.com, kirill@shutemov.name, willy@infradead.org,
-        rppt@linux.ibm.com, rppt@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>, peterz@infradead.org,
-        tglx@linutronix.de, tycho@tycho.ws, will@kernel.org,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     rppt@kernel.org
-Message-ID: <mhng-ffb01b1d-16c2-4998-8434-99f1cae575bd@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Sun, 26 Jul 2020 10:47:33 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 19:47:31 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH 1/2] entry: Fix CONFIG_SECCOMP assumption
+Message-ID: <20200726174731.GA786388@gmail.com>
+References: <20200725091951.744848-1-mingo@kernel.org>
+ <20200725091951.744848-2-mingo@kernel.org>
+ <87a6zmcs5q.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a6zmcs5q.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Jul 2020 02:24:33 PDT (-0700), rppt@kernel.org wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Wire up secretmemfd system call on architectures that define
-> ARCH_HAS_SET_DIRECT_MAP, namely arm64, risc-v and x86.
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  arch/arm64/include/asm/unistd32.h      | 2 ++
->  arch/arm64/include/uapi/asm/unistd.h   | 1 +
->  arch/riscv/include/asm/unistd.h        | 1 +
->  arch/x86/entry/syscalls/syscall_32.tbl | 1 +
->  arch/x86/entry/syscalls/syscall_64.tbl | 1 +
->  include/linux/syscalls.h               | 1 +
->  include/uapi/asm-generic/unistd.h      | 7 ++++++-
->  7 files changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/unistd.h b/arch/riscv/include/asm/unistd.h
-> index 977ee6181dab..9e47d9aed5eb 100644
-> --- a/arch/riscv/include/asm/unistd.h
-> +++ b/arch/riscv/include/asm/unistd.h
-> @@ -9,6 +9,7 @@
->   */
->
->  #define __ARCH_WANT_SYS_CLONE
-> +#define __ARCH_WANT_SECRETMEMFD
->
->  #include <uapi/asm/unistd.h>
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+* Thomas Gleixner <tglx@linutronix.de> wrote:
+
+> Ingo Molnar <mingo@kernel.org> writes:
+> > The __secure_computing() callback only exists on CONFIG_SECCOMP=y,
+> 
+> No. There is a stub function for the SECCOMP=n case.
+
+Which was buggy:
+
+  static inline int __secure_computing(void) { return 0; }
+
+Note the 'void' argument, while it should take an argument.
+
+For example on x86-64 allnoconfig there's !CONFIG_SECCOMP.
+
+> > and on architectures that have CONFIG_HAVE_ARCH_SECCOMP_FILTER.
+> 
+> which is a prerequiste for converting over.
+
+Yeah, and the patch I sent makes this explicit instead of implicit.
+
+> > Instead of complicating the #ifdef within the generic entry code,
+> 
+> There is no #ifdef in the generic code and there is none required.
+
+I simply carried that #ifdef over from the x86 code, but indeed fixing 
+the stub is a bit cleaner.
+
+> > make the generic entry code depend on the availability of a modern
+> > seccomp framework. This was implicit in the generic code due to
+> > x86 being a modern seccomp-filter architecture.
+> >
+> > Also move the Kconfig entry to after its HAVE_ARCH_SECCOMP_FILTER
+> > dependency and fix minor whitespace damage while at it.
+> >
+> > Fixes: 142781e108b1: ("entry: Provide generic syscall entry
+> > functionality")
+> 
+> I don't see what that fixes.
+
+A build bug.
+
+Thanks,
+
+	Ingo
