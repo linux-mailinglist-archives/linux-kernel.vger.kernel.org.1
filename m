@@ -2,99 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2885022DDBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1F622DD6D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 11:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgGZJXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 05:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S1726669AbgGZJAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 05:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgGZJXs (ORCPT
+        with ESMTP id S1725794AbgGZJAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 05:23:48 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF03C0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 02:23:48 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id 88so11980036wrh.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 02:23:48 -0700 (PDT)
+        Sun, 26 Jul 2020 05:00:54 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F6CC0619D2;
+        Sun, 26 Jul 2020 02:00:53 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u185so7515548pfu.1;
+        Sun, 26 Jul 2020 02:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IRifPYsK+NVyPH264FNNiwkh83/Nree/BqnQLiW9d1c=;
-        b=l1SPzlPpdGPY8mrIuX5HzscI1H+iU0B77BLfrJ+HTsHQpZ1CbpuBaxo5y5BQLbagzm
-         ahNVMJV+XFViXN0810WuF+oXTSEuAjFRZhMh2tX3oEli8/sF1GKeQPjS6VaRloWiTwuG
-         y28IJVlcYcob0iUkzDfsBzo05H/rOvI53pNhD1S2chvYHphbQ4iHLuLaPyzs56xv4OLc
-         6pfF9Wcu7iZuNQsIs6oPa6CnupttvnAt/OeUwZWZ83le+KxxKXux0cyCTCSCl+fFdFiW
-         GwYoF5CJC6VfOatv4g7JgtRHpXYViK+a4HWo2sNzcTPHAfMwo01uEIaCMjb6MMXPJypI
-         QJKg==
+        bh=mlBhtj6mj7rzh73CGqPbaedBqXAiRs4Xc3u8F8OgDvM=;
+        b=cDJ6nW6KkxctO85wMzE88+C988ifH29e1rhCCwzz7kstStSjsmycqBQVOaFBBCpo0Q
+         yElh4SlW8tKaHiKeEt8AhtYucLQUXQDkYZyY5sNjslVM4XbSaBvjzorcvis58TSPcOeQ
+         hC72TPZUo2ZArEQ8UxqgD+x0UBLsF9dc3046xKtrxM0eAEYN0gfh9bQb7fN9y3PUHijr
+         lJ2wmIt5Z77mu0W8+Yye+U5kmuQXlNx2cpWEOiV9VbDjwwiB+Qe9KWbr9gMj6O97sdtk
+         oRZpH46jG3z87kqYu0CL5WIry32P6bN2ryCUYZgS5VvODC86VyQIUGX1s31LW8FJpXfA
+         4Jqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IRifPYsK+NVyPH264FNNiwkh83/Nree/BqnQLiW9d1c=;
-        b=ELAj3ftmP1a+pIov3Lq6oXqTAEV28dQFzSvvLmhMQTd5HkpME3BbHhhiqMv1xuEf/d
-         GhHCdvNG6OtWkiC8N04HyfB8BhIGN7Y3aCDhfeL4fQUM7hihTUYOEx83tiOZCsP/nRxW
-         02LCH49WW44Prt7zzXwcWFkjI6j8dVWG89k6NEIGOPc6yfw+fOEWHtmDw9IOuOmTVVc3
-         t6OmYDZvp69eLLWKyj2EO1OcuZekbJ7RkP3fdyknWhGw9tvVODvELqRyUSqH45gqzCUQ
-         OMOYOzfUUr18Z+XVDEqZ/1ivhdPFEexlMluLnEvF094q8Rm0E4h0OfeoMNXMQIeyxkrN
-         s8Og==
-X-Gm-Message-State: AOAM5306VLmztkiWC3DqdPnG0sR0A/49a27ZLOYObWYz1Ex4tAWDNvix
-        va3giMIua+M+qW9X2ozSbToQ2HI6WIIIIygMvlo=
-X-Google-Smtp-Source: ABdhPJzmRnX9GtgCQQSUsd47l+Xrw14S4/+hUnnzUXCooTdht3nSiu4kVe23GlLgaRmrU8M/CgnSsMp2RdaYTRNllqs=
-X-Received: by 2002:adf:dfcf:: with SMTP id q15mr3987406wrn.345.1595755426875;
- Sun, 26 Jul 2020 02:23:46 -0700 (PDT)
+        bh=mlBhtj6mj7rzh73CGqPbaedBqXAiRs4Xc3u8F8OgDvM=;
+        b=rzYwMSw3y6rr7gmEvg6kk5e0mbKfRPfeejCCe4WnjJ8EuaYA55j3gSyDolvUiZ3Eh2
+         +vAGpYnvW5XBn2FfMkDGUMgAOLfNedU0w3qmcgDSl+uvheq9LP5E1N4iz1NTsQumgveQ
+         uXk4DYZRPN9Jy/TSo95Aw+xpQMyxqvOs0f1P0aTucqhy/oZvp0r6gB/rA3nnjwv4QdxY
+         yc93C0rouljFjaXK7kX52RaYA3fL7O9TYm3gYyy+YqTBxKzovE04qk+nP73gk28iharM
+         X0Nyn1qhxkf32c6Ozbd8AZpmVwrOUvKpBQdmOFNyZ5QiKpTtcIO85DT1Aqa168TS9E35
+         qiAA==
+X-Gm-Message-State: AOAM532TBUo1V/MBGYPLoTzBlUiKw7WQOW+MkvkQKqCB4+ioq1YdMVlp
+        tX7I6xyDnJ/cqgau6zWpQNdkvr+/0HEGxvJ9e0c=
+X-Google-Smtp-Source: ABdhPJzULnqz0fnaSJj9PJcaLQmORbUoT0kT60oObYuQPvv6MHdXLYTHgkOy+hcZym4uhmRbHXjwaptbpPmkpPFS/0w=
+X-Received: by 2002:a62:7b4e:: with SMTP id w75mr2631394pfc.130.1595754053508;
+ Sun, 26 Jul 2020 02:00:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200726080215.41501-1-aditya.jainadityajain.jain@gmail.com> <20200726082636.GA447282@kroah.com>
-In-Reply-To: <20200726082636.GA447282@kroah.com>
-From:   Aditya Jain <aditya.jainadityajain.jain@gmail.com>
-Date:   Sun, 26 Jul 2020 14:10:58 +0530
-Message-ID: <CAJAoDUjVBon2iiztdER82mHgJtVS6s5XYSajbCTne0KWAzoLvg@mail.gmail.com>
-Subject: Re: [PATCH] staging: rtl8723bs: include: Fix coding style errors
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, hdegoede@redhat.com,
-        linux-kernel@vger.kernel.org, Larry.Finger@lwfinger.net
+References: <20200726031154.1012044-1-shorne@gmail.com>
+In-Reply-To: <20200726031154.1012044-1-shorne@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 26 Jul 2020 12:00:37 +0300
+Message-ID: <CAHp75VciC+gqkCZ9voNKHU3hrtiOVzeWBu9_YEagpCGdTME2yg@mail.gmail.com>
+Subject: Re: [PATCH] io: Fix return type of _inb and _inl
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 1:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Sun, Jul 26, 2020 at 6:14 AM Stafford Horne <shorne@gmail.com> wrote:
 >
-> On Sun, Jul 26, 2020 at 01:32:15PM +0530, Aditya Jain wrote:
-> > Fixing ERROR: "foo *  bar" should be "foo *bar" in hal_phy_cfg.h
-> > as reported by checkpatch.pl
-> >
-> > Signed-off-by: Aditya Jain <aditya.jainadityajain.jain@gmail.com>
-> > ---
-> >  .../staging/rtl8723bs/include/hal_phy_cfg.h    | 18 +++++++++---------
-> >  1 file changed, 9 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-> > index 419ddb0733aa..fd5f377bad4f 100644
-> > --- a/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-> > +++ b/drivers/staging/rtl8723bs/include/hal_phy_cfg.h
-> > @@ -42,7 +42,7 @@ u32         Data
-> >
-> >  u32
-> >  PHY_QueryRFReg_8723B(
-> > -struct adapter *             Adapter,
-> > +struct adapter               *Adapter,
-> >  u8           eRFPath,
-> >  u32                  RegAddr,
-> >  u32                  BitMask
+> The return type of functions _inb, _inw and _inl are all u16 which looks
+> wrong.  This patch makes them u8, u16 and u32 respectively.
 >
-> Ick, these are all horrid.  How about just making these all on a single
-> line like most functions have them instead of this one cleanup?
->
-> Same for the other changes you made in this file.
->
-> thanks,
->
-> greg k-h
+> The original commit text for these does not indicate that these should
+> be all forced to u16.
 
-Agreed. I'll clean it up.
+Is it in alight with all architectures? that support this interface natively?
 
-Regards,
-Aditya Jain
+(Return value is arch-dependent AFAIU, so it might actually return
+16-bit for byte read, but I agree that this is weird for 32-bit value.
+I think you have elaborate more in the commit message)
+
+-- 
+With Best Regards,
+Andy Shevchenko
