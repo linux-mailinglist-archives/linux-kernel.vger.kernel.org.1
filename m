@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AA522E240
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 21:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE5422E243
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Jul 2020 21:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgGZT2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 15:28:15 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:33859 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726106AbgGZT2P (ORCPT
+        id S1727023AbgGZTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 15:32:10 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:56935 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726106AbgGZTcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 15:28:15 -0400
-X-Originating-IP: 90.66.108.79
+        Sun, 26 Jul 2020 15:32:10 -0400
 Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 8B183E0004;
-        Sun, 26 Jul 2020 19:28:10 +0000 (UTC)
-Date:   Sun, 26 Jul 2020 21:28:10 +0200
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id DCA17100004;
+        Sun, 26 Jul 2020 19:32:07 +0000 (UTC)
+Date:   Sun, 26 Jul 2020 21:32:07 +0200
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
         arm@kernel.org, soc@kernel.org
 Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
         Ludovic Desroches <ludovic.desroches@microchip.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ARM: at91: defconfig for 5.9
-Message-ID: <20200726192810.GA181818@piout.net>
+Subject: [GIT PULL] ARM: at91: DT for 5.9
+Message-ID: <20200726193207.GA182066@piout.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -36,8 +35,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Arnd, Olof,
 
-Here are a few sama5 defconfig changes, mainly adding DSA support for
-the switch on an evaluation board.
+Here is the DT pull request for AT91. It is mainly fixing audio nodes
+for the evaluation board. It also introduces the RTT node for sama9x60.
+Finally, it fixes Ethernet on the GMAC interface of sama5d3_xplained.
 
 The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
@@ -45,31 +45,38 @@ The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-defconfig-5.9
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux tags/at91-dt-5.9
 
-for you to fetch changes up to c12b539787efff5b4fc5abac1debf3ea1901348e:
+for you to fetch changes up to 7dbf4bbf1c320d82058878bd44805724d171e1e8:
 
-  ARM: configs: at91: sama5: enable CAN PLATFORM driver (2020-07-25 00:13:20 +0200)
-
-----------------------------------------------------------------
-AT91 defconfig for 5.9
-
- - Add ClassD, KSZ ethernet switches, brdige, vlan to sama5_defconfig
- - Reenable CAN support in sama5_defconfig
+  ARM: dts: at91: sama5d3_xplained: change phy-mode (2020-07-20 11:15:35 +0200)
 
 ----------------------------------------------------------------
-Codrin Ciubotariu (1):
-      ARM: configs: at91: sama5: Enable CLASSD
+AT91 DT for 5.9
 
-Cristian Birsan (1):
-      ARM: configs: at91: sama5: enable CAN PLATFORM driver
+ - ClassD pull down fixes
+ - Enable RTT as RTC on sam9x60ek
+ - Fix phy-mode for sama5d3_xplained
 
-Razvan Stefanescu (2):
-      ARM: configs: at91: sama5: add support for KSZ ethernet switches
-      ARM: configs: at91: sama5: enable bridge and VLAN filtering
+----------------------------------------------------------------
+Alexandre Belloni (1):
+      ARM: dts: at91: sama5d3_xplained: change phy-mode
 
- arch/arm/configs/sama5_defconfig | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Claudiu Beznea (2):
+      dt-bindings: rtc: add microchip,sam9x60-rtt
+      ARM: dts: sam9x60: add rtt
+
+Codrin Ciubotariu (3):
+      ARM: dts: at91: sama5d2_xplained: classd: pull-down the R1 and R3 lines
+      ARM: dts: at91: sam9x60ek: classd: pull-down the L1 and L3 lines
+      ARM: dts: at91: sama5d2_xplained: Remove pdmic node
+
+ .../devicetree/bindings/rtc/atmel,at91sam9-rtc.txt |  4 ++-
+ arch/arm/boot/dts/at91-sam9x60ek.dts               | 13 ++++++++--
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts        | 30 +++++++---------------
+ arch/arm/boot/dts/at91-sama5d3_xplained.dts        |  2 +-
+ arch/arm/boot/dts/sam9x60.dtsi                     |  7 +++++
+ 5 files changed, 31 insertions(+), 25 deletions(-)
 
 -- 
 Alexandre Belloni, Bootlin
