@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E78422EEF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3143D22EEFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729367AbgG0OMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:12:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
+        id S1730195AbgG0OMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:12:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730182AbgG0OMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:12:16 -0400
+        id S1730154AbgG0OMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8AA1C2173E;
-        Mon, 27 Jul 2020 14:12:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3955421883;
+        Mon, 27 Jul 2020 14:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859135;
-        bh=3OHby8XDBx0VTjGkXODfmyS4uUhnDdD6Mf6sVeCoxnM=;
+        s=default; t=1595859137;
+        bh=yDL8Vv8k1NbW6bGeTuxpjBDJNb81nTSEttoBN0jtCZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vv80Y1ahYxyBalsvrahQ5tIaeVbI6dbbaq7aSbRpk6Ov6MWB4yLhPZxBDXaOxWpx4
-         SejlHWd6m+tLoOfO+EYG7OtYletb4wUfMYYr3Ft0KiP32GonvPqXwS0Qu0/MYLo99Y
-         ZbVgvSwrNmfdV6lGBE12PoWY+Mn7y08u26F3APa0=
+        b=bNY9j0FABERsUb+yT7KmTPTBq5lBrmOhJq3y/ZSzfMIkI79uoAGLzBx7wvh7HhORn
+         NJ3hCzU/bC8GGT2q9WzxZ4ZasXaPiWnwY/f3R04Y6z6qBkJBfoqAD+baWGzFkB+CzT
+         by6fqFH+VdKgUGH2sY8Wt4KhXzfw25k3WseC6To4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Qiu Wenbo <qiuwenbo@phytium.com.cn>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.19 79/86] drm/amd/powerplay: fix a crash when overclocking Vega M
-Date:   Mon, 27 Jul 2020 16:04:53 +0200
-Message-Id: <20200727134918.363029745@linuxfoundation.org>
+        stable@vger.kernel.org, Dave Anglin <dave.anglin@bell.net>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 4.19 80/86] parisc: Add atomic64_set_release() define to avoid CPU soft lockups
+Date:   Mon, 27 Jul 2020 16:04:54 +0200
+Message-Id: <20200727134918.421854766@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
 References: <20200727134914.312934924@linuxfoundation.org>
@@ -44,52 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiu Wenbo <qiuwenbo@phytium.com.cn>
+From: John David Anglin <dave.anglin@bell.net>
 
-commit 88bb16ad998a0395fe4b346b7d3f621aaa0a2324 upstream.
+commit be6577af0cef934ccb036445314072e8cb9217b9 upstream.
 
-Avoid kernel crash when vddci_control is SMU7_VOLTAGE_CONTROL_NONE and
-vddci_voltage_table is empty. It has been tested on Intel Hades Canyon
-(i7-8809G).
+Stalls are quite frequent with recent kernels. I enabled
+CONFIG_SOFTLOCKUP_DETECTOR and I caught the following stall:
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208489
-Fixes: ac7822b0026f ("drm/amd/powerplay: add smumgr support for VEGAM (v2)")
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [cc1:22803]
+CPU: 0 PID: 22803 Comm: cc1 Not tainted 5.6.17+ #3
+Hardware name: 9000/800/rp3440
+ IAOQ[0]: d_alloc_parallel+0x384/0x688
+ IAOQ[1]: d_alloc_parallel+0x388/0x688
+ RP(r2): d_alloc_parallel+0x134/0x688
+Backtrace:
+ [<000000004036974c>] __lookup_slow+0xa4/0x200
+ [<0000000040369fc8>] walk_component+0x288/0x458
+ [<000000004036a9a0>] path_lookupat+0x88/0x198
+ [<000000004036e748>] filename_lookup+0xa0/0x168
+ [<000000004036e95c>] user_path_at_empty+0x64/0x80
+ [<000000004035d93c>] vfs_statx+0x104/0x158
+ [<000000004035dfcc>] __do_sys_lstat64+0x44/0x80
+ [<000000004035e5a0>] sys_lstat64+0x20/0x38
+ [<0000000040180054>] syscall_exit+0x0/0x14
+
+The code was stuck in this loop in d_alloc_parallel:
+
+    4037d414:   0e 00 10 dc     ldd 0(r16),ret0
+    4037d418:   c7 fc 5f ed     bb,< ret0,1f,4037d414 <d_alloc_parallel+0x384>
+    4037d41c:   08 00 02 40     nop
+
+This is the inner loop of bit_spin_lock which is called by hlist_bl_unlock in
+d_alloc_parallel:
+
+static inline void bit_spin_lock(int bitnum, unsigned long *addr)
+{
+        /*
+         * Assuming the lock is uncontended, this never enters
+         * the body of the outer loop. If it is contended, then
+         * within the inner loop a non-atomic test is used to
+         * busywait with less bus contention for a good time to
+         * attempt to acquire the lock bit.
+         */
+        preempt_disable();
+#if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+        while (unlikely(test_and_set_bit_lock(bitnum, addr))) {
+                preempt_enable();
+                do {
+                        cpu_relax();
+                } while (test_bit(bitnum, addr));
+                preempt_disable();
+        }
+#endif
+        __acquire(bitlock);
+}
+
+After consideration, I realized that we must be losing bit unlocks.
+Then, I noticed that we missed defining atomic64_set_release().
+Adding this define fixes the stalls in bit operations.
+
+Signed-off-by: Dave Anglin <dave.anglin@bell.net>
 Cc: stable@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/parisc/include/asm/atomic.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-@@ -643,9 +643,6 @@ static int vegam_get_dependency_volt_by_
+--- a/arch/parisc/include/asm/atomic.h
++++ b/arch/parisc/include/asm/atomic.h
+@@ -212,6 +212,8 @@ atomic64_set(atomic64_t *v, s64 i)
+ 	_atomic_spin_unlock_irqrestore(v, flags);
+ }
  
- 	/* sclk is bigger than max sclk in the dependence table */
- 	*voltage |= (dep_table->entries[i - 1].vddc * VOLTAGE_SCALE) << VDDC_SHIFT;
--	vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
--			(dep_table->entries[i - 1].vddc -
--					(uint16_t)VDDC_VDDCI_DELTA));
- 
- 	if (SMU7_VOLTAGE_CONTROL_NONE == data->vddci_control)
- 		*voltage |= (data->vbios_boot_state.vddci_bootup_value *
-@@ -653,8 +650,13 @@ static int vegam_get_dependency_volt_by_
- 	else if (dep_table->entries[i - 1].vddci)
- 		*voltage |= (dep_table->entries[i - 1].vddci *
- 				VOLTAGE_SCALE) << VDDC_SHIFT;
--	else
-+	else {
-+		vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
-+				(dep_table->entries[i - 1].vddc -
-+						(uint16_t)VDDC_VDDCI_DELTA));
++#define atomic64_set_release(v, i)	atomic64_set((v), (i))
 +
- 		*voltage |= (vddci * VOLTAGE_SCALE) << VDDCI_SHIFT;
-+	}
- 
- 	if (SMU7_VOLTAGE_CONTROL_NONE == data->mvdd_control)
- 		*mvdd = data->vbios_boot_state.mvdd_bootup_value * VOLTAGE_SCALE;
+ static __inline__ s64
+ atomic64_read(const atomic64_t *v)
+ {
 
 
