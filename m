@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073A422FF27
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E860622FF69
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgG1ByK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 21:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
+        id S1726814AbgG1CQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgG1ByK (ORCPT
+        with ESMTP id S1726247AbgG1CQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 21:54:10 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FECC061794;
-        Mon, 27 Jul 2020 18:54:10 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k13so1280183plk.13;
-        Mon, 27 Jul 2020 18:54:10 -0700 (PDT)
+        Mon, 27 Jul 2020 22:16:30 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340A0C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:16:30 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id i138so8972834ild.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:16:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m2ea3+R1S5kPZb5AV5bSF6B2MxbIDLdQ7d/mAIo8LIY=;
-        b=R8kMpQVXOXmB8kMBJMdrq87r3DHILHZEjX2LldIxtaj7QoDScBF3+4paR8zB5ZnDmr
-         bVDdMYgwzvcHi/vyHYcdEj/wDuYkXB/12N9anHYB3C+D1YHUGdV0Nv7KG/qA3PrwkRvn
-         dJkDoikO2Ac3ggmswmvhjqMlidPLiHjohRMcmQOueu5qeJDV9JNI2kCdkHNeqUXEtc5x
-         yWAaUwzXS2yrt4CpkGfD1noXruvVtxf+CHDzB+OfWskiXVu8+5ZjJ1JNCYRNP++CFDGF
-         C8/F9lw0yiZEqJWMpe+DDP9+jqTkzQrlFTEBsjS2/itB/RYuM5tubfNbNuRXlUl45csr
-         LybA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+qhhZcvnd3RwCE+F+SIU+6bIz1sPCtUPTyz82YandFo=;
+        b=qFRv66x+Edw1E+2euA44W6pSi/QdRSgRAuqJr5j87nkElpfIJYd0Ulo2oMb7qvFS2A
+         1YaugNbwMsygktYgyYSotHWs4z+QeIc4BhbLPLluw85gbbpJuGg27/hfsTBCSOTN0c2Z
+         KnxSpb8uZRn6vzvEns12aizFTS7X0H+TBuwNMbRq4TlHww/GMpfSlMIibX8M90RvvCDp
+         EDzsLb2qVJsm6OzyV7+I3s7OWTKed8CL5ua+kpiVkdWF7wwShVUtGYBpMn4pSdXYA/Pm
+         kYNgKfMX5KIi1KMlmP+h0paxQXYe6dVD28DGHha+CjQ+G8vdC25H2tmEkd17vauWmGg5
+         rcuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m2ea3+R1S5kPZb5AV5bSF6B2MxbIDLdQ7d/mAIo8LIY=;
-        b=X5MJ8sL5/H8l1rnCw/d9qRQNMXlp+0EJWKAnUbLXtuF5BlG98N87VvMVImofGRIBuR
-         dz8vAYKv0egcEe0qqDc2ajjg6q1mUzu+dZFTWTqkrGdwwlU+LIq39RcdEls4YwslDwJN
-         T3a5jaajVcRWUowINM9qBFRDciNBszhPO3ejYK5UteqRgb3e3tqBqA9mW6T3GNlFIj00
-         wgeEN220ksW75oCZtHVdo3iw67vj/km7Pfv/TtGZMvr7cgUsTXZcmpmv1S0U+kWsYp4+
-         5jrjqmXZvPm0vMTcmMCtCPruuTm9h665iuiMEfxZ3UYmrJndkw1A+n8J4a7voUYxp4D3
-         dbsw==
-X-Gm-Message-State: AOAM532TN5M+g82m7NqBnoE358YOMhR72DrplNV3In0aLoGNPyn5I0sb
-        waK7to/R9f6+16kSlL2v8z4=
-X-Google-Smtp-Source: ABdhPJz1wVdKmFeSV2Sh85lHePfMFtCaS+15EYZRzY0DNLsjwy+SPTseKklHrqG5eZK904qWoRhH5A==
-X-Received: by 2002:a17:90a:d314:: with SMTP id p20mr1762455pju.99.1595901249420;
-        Mon, 27 Jul 2020 18:54:09 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q16sm6102376pfg.153.2020.07.27.18.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 18:54:08 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 10:54:08 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: Re: linux-next: build failure after merge of the printk tree
-Message-ID: <20200728015408.GA1296462@jagdpanzerIV.localdomain>
-References: <20200728114927.4590731f@canb.auug.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+qhhZcvnd3RwCE+F+SIU+6bIz1sPCtUPTyz82YandFo=;
+        b=h2TH3IBDNKHIjEwCwkvAUSky/4psWM1CSyq6bRdVVQ6TlRByKkN0ySF+ADEgxSHBRS
+         sP4hzRV+1p1MgJXDJiXgIGTrVWMNEONm/pg1741OqMbWBF9hYHbf231OmY7TKfYzMYV8
+         0hZLSfAc79YJO0lYxQSEbEQUDyEkBtZNpNaBdoD9ZGPD3Yt6MpKHN6yi/BULtY/e1Uba
+         ylCjnDXYQYz+nGb4iBIGINJ7FP+oDMifEbrDj+izj1M10zrqdE5ikFW9CB7+bj9E6t2m
+         tCW/hdGh8uE2Ati/C4ewDXCT1lmz1WrsfD3jyDkshYPgPYs/LfDW7D0ZdctPItTDHIaE
+         XXig==
+X-Gm-Message-State: AOAM5315nTcjpvmNXZx0EiJa8j1Ep2vXEp3dFet2mKNaPI7zW8qELpJd
+        bovaig0MgzJ3uAfFHj0NxHP6wXfEuuAxitvHheppGQAR
+X-Google-Smtp-Source: ABdhPJyRGZ6wDA+UhVMRrrMpC3VXX10f0UdEKy2RU3tRJYFS731AYHP3Mobcvf9npHHHyQCtFPwo1Fi6FOVbF+R/H0c=
+X-Received: by 2002:a92:9f96:: with SMTP id z22mr27481140ilk.266.1595902589613;
+ Mon, 27 Jul 2020 19:16:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728114927.4590731f@canb.auug.org.au>
+References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594983811-25908-2-git-send-email-gene.chen.richtek@gmail.com> <20200727110821.GH1850026@dell>
+In-Reply-To: <20200727110821.GH1850026@dell>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 28 Jul 2020 02:16:15 +0800
+Message-ID: <CAE+NS34FexE-LwbzkOLepKytKCbKm3RowPQKqROR_a6wCrVLLA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/9] mfd: mt6360: Rearrange include file
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/07/28 11:49), Stephen Rothwell wrote:
-[..]
-> Caused by commit
-> 
->   b4a461e72bcb ("printk: Make linux/printk.h self-contained")
-> 
-> This *may* be interacting with other include file changes in linux-next.
-> 
-> I have reverted that commit for today.
+Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B47=E6=9C=8827=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:08=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Fri, 17 Jul 2020, Gene Chen wrote:
+>
+> > From: Gene Chen <gene_chen@richtek.com>
+> >
+> > Rearrange include file without sorting by alphabet.
+>
+> Why are you making this change?
+>
 
-Hi Stephen,
+Personal coding style references from upstream code.
+I can discard this change if it doesn't make sense.
 
-Sorry about that. This will be fixed for tomorrow's build. The problems
-is that we have commit dependency between printk and locking tree. So I
-pulled the
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=locking/core&id=c935cd62d3fe985d7f0ebea185d2759e8992e96f
-
-into printk/for-next.
-
-	-ss
+> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> > ---
+> >  drivers/mfd/mt6360-core.c | 11 +++++------
+> >  1 file changed, 5 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> > index e9cacc2..df4506f 100644
+> > --- a/drivers/mfd/mt6360-core.c
+> > +++ b/drivers/mfd/mt6360-core.c
+> > @@ -5,15 +5,14 @@
+> >   * Author: Gene Chen <gene_chen@richtek.com>
+> >   */
+> >
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> >  #include <linux/i2c.h>
+> > -#include <linux/init.h>
+> > +#include <linux/crc8.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/regmap.h>
+> >  #include <linux/interrupt.h>
+> > -#include <linux/kernel.h>
+> >  #include <linux/mfd/core.h>
+> > -#include <linux/module.h>
+> > -#include <linux/of_irq.h>
+> > -#include <linux/of_platform.h>
+> > -#include <linux/version.h>
+> >
+> >  #include <linux/mfd/mt6360.h>
+> >
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
