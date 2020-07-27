@@ -2,96 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD30C22F3B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCF622F3A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgG0PSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728627AbgG0PSO (ORCPT
+        id S1728920AbgG0PRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:17:45 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61416 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728824AbgG0PRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:18:14 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21768C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:18:14 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 6so12482782qtt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:18:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oumv6DjctSmluV8Ivacc6/Q4aJir+U55bBJZDerGc5I=;
-        b=Px+7gUwtxpKPDvHuoB6IlCBvk6EYS0HihLI+J0DD9Ezkc74/7XR8zWE5ozirQqLiAX
-         GkTIW+1WD/9kORpCBOnAiXOdvsQplAmxjt4x9u68njVmagBRd1EPT/DkywHRiMxics9e
-         g+KAmVPtsnmWT9MDCxCqrBnvLaV+shLM7I1MiYFWmRJGOJ1QK8QLcbClczKJNwMT1IVb
-         5b+QaTWXQGkSWsYgGI870ieUbNiJ7NlmKpo6RigKaZKsss2an4B4b3lV5RFz7Oczzu7I
-         bE5utPmhMSYKh8aNIeJoUcULYkWff3tElXuJttV6jWPZZ0P8nCREx7rS3j57zkNrQAIe
-         C5iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oumv6DjctSmluV8Ivacc6/Q4aJir+U55bBJZDerGc5I=;
-        b=QYuVi7WtUn0fnQXfk0pAbjFWrYW1pKr3jpYU5no2OtEpN1QenLJjRbq3EMexZ33ofx
-         iRzcnj+96t4A2L1KUIS9DdS2PLi2xuECCHzYZPT1edV4pggVQoCBOMXbC6yfx2U/Zm3W
-         HDpMkkVVkhiq+kTAFS7OW+H+cvFL/zZndlhPwxTmKhpNaNTeQPLcAU6t0eeIVJ/fCTP8
-         9VhdSwpu0M7Dyn5XL6nXbydkmnMVhv7ouLMJXBb30dMV5VcGnIlSb39+tYqwHzRQDGzu
-         PH6pQ0ComfMVbz6QQE7Z4GCCFNoSaLiaKwM0R7hOf2uBG6Q0e1SsSmawtEpE55zESLeq
-         SuvA==
-X-Gm-Message-State: AOAM531zl4wb2Xr+E3Jfr5BR2oFd+zk2MTxbTZzblQkWrsR4fzEe5lJS
-        lCFNxJDEWpj/+vdt6TW3tQ==
-X-Google-Smtp-Source: ABdhPJyLTAelIjtu78jYMToVbssYjgYPk3s7pOniRfc3akQhku8vGAuGb0/YsOPPTj334y5KEiY9SA==
-X-Received: by 2002:aed:2199:: with SMTP id l25mr21958744qtc.309.1595863092480;
-        Mon, 27 Jul 2020 08:18:12 -0700 (PDT)
-Received: from localhost.localdomain ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id o21sm3445003qkk.94.2020.07.27.08.18.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 08:18:12 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH] firewire: Prevent kernel-infoleak in ioctl_get_info()
-Date:   Mon, 27 Jul 2020 11:15:37 -0400
-Message-Id: <20200727151537.315023-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 27 Jul 2020 11:17:44 -0400
+Received: from 89-64-87-33.dynamic.chello.pl (89.64.87.33) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 2e44a79a69b3ba76; Mon, 27 Jul 2020 17:17:42 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Doug Smythies <dsmythies@telus.net>,
+        Francisco Jerez <francisco.jerez.plata@intel.com>
+Subject: [PATCH v3 1/2] cpufreq: intel_pstate: Rearrange the storing of new EPP values
+Date:   Mon, 27 Jul 2020 17:15:43 +0200
+Message-ID: <1874278.Dp5iLYrgV3@kreacher>
+In-Reply-To: <1709487.Bxjb1zNRZM@kreacher>
+References: <4981405.3kqTVLv5tO@kreacher> <1709487.Bxjb1zNRZM@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ioctl_get_info() is copying uninitialized stack memory to userspace due to
-the compiler not initializing holes in statically allocated structures.
-Fix it by initializing `event` using memset() in fill_bus_reset_event().
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Cc: stable@vger.kernel.org
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Move the locking away from intel_pstate_set_energy_pref_index()
+into its only caller and drop the (now redundant) return_pref label
+from it.
+
+Also move the "raw" EPP value check into the caller of that function,
+so as to do it before acquiring the mutex, and reduce code duplication
+related to the "raw" EPP values processing somewhat.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 ---
- drivers/firewire/core-cdev.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index fb6c651214f3..2341d762df5b 100644
---- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -340,6 +340,8 @@ static void fill_bus_reset_event(struct fw_cdev_event_bus_reset *event,
- {
- 	struct fw_card *card = client->device->card;
+v2 -> v3:
+
+   * Fix error handling in intel_pstate_set_energy_pref_index() and
+     rebase.
+
+---
+ drivers/cpufreq/intel_pstate.c |   35 +++++++++++++++--------------------
+ 1 file changed, 15 insertions(+), 20 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -649,28 +649,18 @@ static int intel_pstate_set_energy_pref_
+ 	if (!pref_index)
+ 		epp = cpu_data->epp_default;
  
-+	memset(event, 0, sizeof(*event));
+-	mutex_lock(&intel_pstate_limits_lock);
+-
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+ 		u64 value;
+ 
+ 		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
+ 		if (ret)
+-			goto return_pref;
++			return ret;
+ 
+ 		value &= ~GENMASK_ULL(31, 24);
+ 
+-		if (use_raw) {
+-			if (raw_epp > 255) {
+-				ret = -EINVAL;
+-				goto return_pref;
+-			}
+-			value |= (u64)raw_epp << 24;
+-			ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
+-			goto return_pref;
+-		}
+-
+-		if (epp == -EINVAL)
++		if (use_raw)
++			epp = raw_epp;
++		else if (epp == -EINVAL)
+ 			epp = epp_values[pref_index - 1];
+ 
+ 		value |= (u64)epp << 24;
+@@ -680,8 +670,6 @@ static int intel_pstate_set_energy_pref_
+ 			epp = (pref_index - 1) << 2;
+ 		ret = intel_pstate_set_epb(cpu_data->cpu, epp);
+ 	}
+-return_pref:
+-	mutex_unlock(&intel_pstate_limits_lock);
+ 
+ 	return ret;
+ }
+@@ -708,8 +696,8 @@ static ssize_t store_energy_performance_
+ 	struct cpudata *cpu_data = all_cpu_data[policy->cpu];
+ 	char str_preference[21];
+ 	bool raw = false;
++	ssize_t ret;
+ 	u32 epp = 0;
+-	int ret;
+ 
+ 	ret = sscanf(buf, "%20s", str_preference);
+ 	if (ret != 1)
+@@ -724,14 +712,21 @@ static ssize_t store_energy_performance_
+ 		if (ret)
+ 			return ret;
+ 
++		if (epp > 255)
++			return -EINVAL;
 +
- 	spin_lock_irq(&card->lock);
+ 		raw = true;
+ 	}
  
- 	event->closure	     = client->bus_reset_closure;
--- 
-2.25.1
++	mutex_lock(&intel_pstate_limits_lock);
++
+ 	ret = intel_pstate_set_energy_pref_index(cpu_data, ret, raw, epp);
+-	if (ret)
+-		return ret;
++	if (!ret)
++		ret = count;
+ 
+-	return count;
++	mutex_unlock(&intel_pstate_limits_lock);
++
++	return ret;
+ }
+ 
+ static ssize_t show_energy_performance_preference(
+
+
 
