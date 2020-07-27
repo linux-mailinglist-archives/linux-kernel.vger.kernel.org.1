@@ -2,280 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D49722F72A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DE022F734
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729205AbgG0R6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
+        id S1731554AbgG0R7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729144AbgG0R6C (ORCPT
+        with ESMTP id S1729969AbgG0R7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:58:02 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740D0C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:58:02 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id x2so4937950pfo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:58:02 -0700 (PDT)
+        Mon, 27 Jul 2020 13:59:08 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B001FC0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:59:08 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id o1so8512593plk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:59:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=v79kbmUkhVfOjNte7kKJtv1wRDHs0zSXbmGajTvWXv4=;
-        b=HEMVnZX7jaCR6Dx3/f8jO8MM2TJn10Vgm+3WwNJZC2gGx5Xuheqe2zDflWymTVnCb6
-         Td3RdtBmv1zC+GgRd5hCzx10VyDj6FvqTBDw8mynJPtkZBo7qAmX5R5CiJEPTJCBbKXS
-         1xFnzfN/29lJsw2grBcfZCyN3/rXzo62GQYeBwHWOgbmeDicxMkfDb9/XxUjS3T22Fr2
-         dLnaF9pFF3ZyLmQ1rihimEBPxc8QQKj9u8KL6EUbn0RwyyGlM8/hRHa0Hns+GBTDNbJn
-         RTlJ+tXPR90s7DOfGAosp8XIQPTn6Lm7wjjG4iuRdjJMk2qBWcJey87UyBHuaJVHnyYd
-         Jm7g==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mFDUQmogg46Posu3w903aMyaH9JFMPS/SgmwZ4I8ccU=;
+        b=I1T7nVAHC3vzto7UQ9hEUXPS9L7N6JIHGvzV+CxpjYgmTe+ds1sKddaNfOp5Lz3zFa
+         gwq29Ta3R+Ik6gTSzyHZj/QZTNGF+3YjxvH/oCQsmR39XPWWUgXlruApbZuRv4+UO6m+
+         F+qJsD58I3vBK2wxxeMXuf1z2fVrikDTjLjbR3nvBVLAacLbU8HVbI0K7jV8MOuA6Bxz
+         4oT6R6utDcWVEFQn1fppwmwQNvzuhRptA2GEPRg7km6J4qyewnJSZB9xyCMkLRSxVBOr
+         HSqr07ARxowQi2ya25mF7GPbk4Gk2mFcDQT0lHnrh3jPX2oUlHgOexqhi5yZie7+ZxLf
+         N3HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=v79kbmUkhVfOjNte7kKJtv1wRDHs0zSXbmGajTvWXv4=;
-        b=Uw/g+Y1tKAJSVejgbVy+sWPMr7OvBKvcOReO3PIz3KHXPgntWcknG0R4OnO7RcJQ+t
-         9g4gHOxiG9P7XcXCR+WUeIq9zmNgVZ+V84KTR9o45DdAWxX0PRVxOcjMo6eRfwTsL4Rf
-         DQ0suK+Sihsz7p9WsBPDdRWjjjP3gTsJ8eaAGyeDJyAZAHlm/bR/W87w/UL0zt2ldxKk
-         hPzYVgZLmtsEuiHmP2qYWqdskaF3Rts0iwawMBcfAIxTMfmRGBwL7HM57eA7jr2Tsyo7
-         fdu+/KyzLzsvqLrvLRTi0vo1OlWSnCjL4eOsx0EQ7R9pZne/nextFzrNjTOKF/todeON
-         X0tQ==
-X-Gm-Message-State: AOAM5316q7bmZLidalh0Ut9aG8FiiG/hkpr9z5KQ/Pisis7xIoqbriSY
-        eHmjqgVehqqE9Asd3X6W7X0SmGD9YK1CWXwE/9s=
-X-Google-Smtp-Source: ABdhPJyb0sm0pWa5ByI1RgPKb62bIHEnGcfdYmL0NVmKgoJbCACCmb96SrUbd51FxVdHNXFIvotUvmJ8NstJCkhTP5w=
-X-Received: by 2002:a65:6086:: with SMTP id t6mr20167995pgu.342.1595872681997;
- Mon, 27 Jul 2020 10:58:01 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 17:57:20 +0000
-In-Reply-To: <20200727175720.4022402-1-willmcvicker@google.com>
-Message-Id: <20200727175720.4022402-2-willmcvicker@google.com>
-Mime-Version: 1.0
-References: <20200727175720.4022402-1-willmcvicker@google.com>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-Subject: [PATCH 1/1] netfilter: nat: add range checks for access to nf_nat_l[34]protos[]
-From:   Will McVicker <willmcvicker@google.com>
-To:     security@kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Florian Westphal <fw@strlen.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Will McVicker <willmcvicker@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mFDUQmogg46Posu3w903aMyaH9JFMPS/SgmwZ4I8ccU=;
+        b=bjUdUwia1GX5/LJq7AMuSqrbtmqJ93FC8LLMVISGaqHcJYfQOjMn/ZaZ7MgG9guH1S
+         j1FsGiGhvlw06UBVxKkvN6XocsYdYgUQxMNWvHNB+3On9VlSDGykXE+4H83FttO9mgf4
+         lMGY74nuxjPMPcTWmEgy6jpNHOQNFLsrkp/z1L7gepETlryYXybKffkbygq2dUQT4Th1
+         p2qVIC8sAh1zug9z4DsaG2NDl+JmM4g7UauZ9bzkVH0+6h4cs3OdKx54wP0rU7I8Rjj5
+         V70YFxj755u6L1lnGR1ahs5ItHKp/MhegMIzYtj87Ih/TOmTaXa4kIXiCfRlStywVse6
+         ojVg==
+X-Gm-Message-State: AOAM530cvNnp9D142+wBIx7sIClsz+TV7EV3LnvNYWN4t9Ebmzpr3yny
+        Wvlems461+eZcBlS2J8WCw6ogA==
+X-Google-Smtp-Source: ABdhPJxmYU88VTup/scAe1Pwy/mPgv3UJuWHJtQ3YU8xLR7QKaHQ2gI4MwOQdpbgduq0ybJfvL0uCg==
+X-Received: by 2002:a17:90b:1116:: with SMTP id gi22mr495293pjb.8.1595872748151;
+        Mon, 27 Jul 2020 10:59:08 -0700 (PDT)
+Received: from [192.168.1.182] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id w70sm8378070pfc.98.2020.07.27.10.59.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 10:59:07 -0700 (PDT)
+Subject: Re: [PATCH v2] ata: use generic power management
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200727173923.694872-1-vaibhavgupta40@gmail.com>
+ <20200727174012.GA696265@gmail.com>
+ <2b4738b0-5c2c-8ee2-83f9-10b961a5d0d3@kernel.dk>
+ <20200727175119.GA700880@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <99b7cc57-1b4f-6c0b-00c6-08e22021c373@kernel.dk>
+Date:   Mon, 27 Jul 2020 11:59:05 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200727175119.GA700880@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The indexes to the nf_nat_l[34]protos arrays come from userspace. So we
-need to make sure that before indexing the arrays, we verify the index
-is within the array bounds in order to prevent an OOB memory access.
-Here is an example kernel panic on 4.14.180 when userspace passes in an
-index greater than NFPROTO_NUMPROTO.
+On 7/27/20 11:51 AM, Vaibhav Gupta wrote:
+> On Mon, Jul 27, 2020 at 11:42:51AM -0600, Jens Axboe wrote:
+>> On 7/27/20 11:40 AM, Vaibhav Gupta wrote:
+>>> The patch is compile-tested only.
+>>
+>> Please test and verify actual functionality, if you're serious about
+>> potentially getting this into the kernel.
+>>
+> Hello Jens,
+> 
+> Sadly I don't have the hardware. This upgrade is part of my Linux Kernel
+> Mentorship Program project. Like other PCI drivers which I have updated, I could
+> do compile-testing only. Though this patch covers 54 drivers but the actual
+> change is done only in drivers/ata/libata-core. Since rest of the drivers
+> make use of the same ata_pci_device_suspend/resume(), it was a chain reaction. I
+> only had to change variable binding in "struct pci_driver" variable of dependent
+> drivers.
 
-Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-Modules linked in:...
-Process poc (pid: 5614, stack limit = 0x00000000a3933121)
-CPU: 4 PID: 5614 Comm: poc Tainted: G S      W  O    4.14.180-g051355490483
-Hardware name: Qualcomm Technologies, Inc. SM8150 V2 PM8150 Google Inc. MSM
-task: 000000002a3dfffe task.stack: 00000000a3933121
-pc : __cfi_check_fail+0x1c/0x24
-lr : __cfi_check_fail+0x1c/0x24
-...
-Call trace:
-__cfi_check_fail+0x1c/0x24
-name_to_dev_t+0x0/0x468
-nfnetlink_parse_nat_setup+0x234/0x258
-ctnetlink_parse_nat_setup+0x4c/0x228
-ctnetlink_new_conntrack+0x590/0xc40
-nfnetlink_rcv_msg+0x31c/0x4d4
-netlink_rcv_skb+0x100/0x184
-nfnetlink_rcv+0xf4/0x180
-netlink_unicast+0x360/0x770
-netlink_sendmsg+0x5a0/0x6a4
-___sys_sendmsg+0x314/0x46c
-SyS_sendmsg+0xb4/0x108
-el0_svc_naked+0x34/0x38
+That's understandable, but you should find at least some hardware (maybe remotely
+accessible) to test this on. I'm not going to apply this without some confidence
+that it actually works, and compile only testing is a far cry from that. Lots of
+code compiles, but fails miserably at runtime.
 
-Signed-off-by: Will McVicker <willmcvicker@google.com>
----
- net/ipv4/netfilter/nf_nat_l3proto_ipv4.c |  6 ++++--
- net/ipv6/netfilter/nf_nat_l3proto_ipv6.c |  5 +++--
- net/netfilter/nf_nat_core.c              | 27 ++++++++++++++++++++++--
- net/netfilter/nf_nat_helper.c            |  4 ++++
- 4 files changed, 36 insertions(+), 6 deletions(-)
+While it's touching 54 drivers, at least basic coverage of the most popular
+choices will give everybody some confidence that it works in general.
 
-diff --git a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-index 6115bf1ff6f0..1912fc66147c 100644
---- a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-+++ b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-@@ -218,7 +218,8 @@ int nf_nat_icmp_reply_translation(struct sk_buff *skb,
- 		return 1;
- 
- 	l4proto = __nf_nat_l4proto_find(NFPROTO_IPV4, inside->ip.protocol);
--	if (!nf_nat_ipv4_manip_pkt(skb, hdrlen + sizeof(inside->icmp),
-+	if (!l4proto ||
-+	    !nf_nat_ipv4_manip_pkt(skb, hdrlen + sizeof(inside->icmp),
- 				   l4proto, &ct->tuplehash[!dir].tuple, !manip))
- 		return 0;
- 
-@@ -234,7 +235,8 @@ int nf_nat_icmp_reply_translation(struct sk_buff *skb,
- 	/* Change outer to look like the reply to an incoming packet */
- 	nf_ct_invert_tuplepr(&target, &ct->tuplehash[!dir].tuple);
- 	l4proto = __nf_nat_l4proto_find(NFPROTO_IPV4, 0);
--	if (!nf_nat_ipv4_manip_pkt(skb, 0, l4proto, &target, manip))
-+	if (!l4proto ||
-+	    !nf_nat_ipv4_manip_pkt(skb, 0, l4proto, &target, manip))
- 		return 0;
- 
- 	return 1;
-diff --git a/net/ipv6/netfilter/nf_nat_l3proto_ipv6.c b/net/ipv6/netfilter/nf_nat_l3proto_ipv6.c
-index ca6d38698b1a..a72840baf27b 100644
---- a/net/ipv6/netfilter/nf_nat_l3proto_ipv6.c
-+++ b/net/ipv6/netfilter/nf_nat_l3proto_ipv6.c
-@@ -228,7 +228,8 @@ int nf_nat_icmpv6_reply_translation(struct sk_buff *skb,
- 		return 1;
- 
- 	l4proto = __nf_nat_l4proto_find(NFPROTO_IPV6, inside->ip6.nexthdr);
--	if (!nf_nat_ipv6_manip_pkt(skb, hdrlen + sizeof(inside->icmp6),
-+	if (!l4proto ||
-+	    !nf_nat_ipv6_manip_pkt(skb, hdrlen + sizeof(inside->icmp6),
- 				   l4proto, &ct->tuplehash[!dir].tuple, !manip))
- 		return 0;
- 
-@@ -245,7 +246,7 @@ int nf_nat_icmpv6_reply_translation(struct sk_buff *skb,
- 
- 	nf_ct_invert_tuplepr(&target, &ct->tuplehash[!dir].tuple);
- 	l4proto = __nf_nat_l4proto_find(NFPROTO_IPV6, IPPROTO_ICMPV6);
--	if (!nf_nat_ipv6_manip_pkt(skb, 0, l4proto, &target, manip))
-+	if (!l4proto || !nf_nat_ipv6_manip_pkt(skb, 0, l4proto, &target, manip))
- 		return 0;
- 
- 	return 1;
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index 2268b10a9dcf..d28185f38955 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -64,12 +64,16 @@ struct nat_net {
- inline const struct nf_nat_l3proto *
- __nf_nat_l3proto_find(u8 family)
- {
-+	if (family >= NFPROTO_NUMPROTO)
-+		return NULL;
- 	return rcu_dereference(nf_nat_l3protos[family]);
- }
- 
- inline const struct nf_nat_l4proto *
- __nf_nat_l4proto_find(u8 family, u8 protonum)
- {
-+	if (family >= NFPROTO_NUMPROTO)
-+		return NULL;
- 	return rcu_dereference(nf_nat_l4protos[family][protonum]);
- }
- EXPORT_SYMBOL_GPL(__nf_nat_l4proto_find);
-@@ -317,7 +321,7 @@ find_best_ips_proto(const struct nf_conntrack_zone *zone,
-  * range. It might not be possible to get a unique tuple, but we try.
-  * At worst (or if we race), we will end up with a final duplicate in
-  * __ip_conntrack_confirm and drop the packet. */
--static void
-+static int
- get_unique_tuple(struct nf_conntrack_tuple *tuple,
- 		 const struct nf_conntrack_tuple *orig_tuple,
- 		 const struct nf_nat_range2 *range,
-@@ -328,13 +332,22 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
- 	const struct nf_nat_l3proto *l3proto;
- 	const struct nf_nat_l4proto *l4proto;
- 	struct net *net = nf_ct_net(ct);
-+	int ret = 0;
- 
- 	zone = nf_ct_zone(ct);
- 
- 	rcu_read_lock();
- 	l3proto = __nf_nat_l3proto_find(orig_tuple->src.l3num);
-+	if (!l3proto) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 	l4proto = __nf_nat_l4proto_find(orig_tuple->src.l3num,
- 					orig_tuple->dst.protonum);
-+	if (!l4proto) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	/* 1) If this srcip/proto/src-proto-part is currently mapped,
- 	 * and that same mapping gives a unique tuple within the given
-@@ -387,6 +400,7 @@ get_unique_tuple(struct nf_conntrack_tuple *tuple,
- 	l4proto->unique_tuple(l3proto, tuple, range, maniptype, ct);
- out:
- 	rcu_read_unlock();
-+	return ret;
- }
- 
- struct nf_conn_nat *nf_ct_nat_ext_add(struct nf_conn *ct)
-@@ -409,6 +423,7 @@ nf_nat_setup_info(struct nf_conn *ct,
- {
- 	struct net *net = nf_ct_net(ct);
- 	struct nf_conntrack_tuple curr_tuple, new_tuple;
-+	int err;
- 
- 	/* Can't setup nat info for confirmed ct. */
- 	if (nf_ct_is_confirmed(ct))
-@@ -428,7 +443,9 @@ nf_nat_setup_info(struct nf_conn *ct,
- 	nf_ct_invert_tuplepr(&curr_tuple,
- 			     &ct->tuplehash[IP_CT_DIR_REPLY].tuple);
- 
--	get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
-+	err = get_unique_tuple(&new_tuple, &curr_tuple, range, ct, maniptype);
-+	if (err < 0)
-+		return NF_DROP;
- 
- 	if (!nf_ct_tuple_equal(&new_tuple, &curr_tuple)) {
- 		struct nf_conntrack_tuple reply;
-@@ -509,8 +526,12 @@ static unsigned int nf_nat_manip_pkt(struct sk_buff *skb, struct nf_conn *ct,
- 	nf_ct_invert_tuplepr(&target, &ct->tuplehash[!dir].tuple);
- 
- 	l3proto = __nf_nat_l3proto_find(target.src.l3num);
-+	if (!l3proto)
-+		return NF_DROP;
- 	l4proto = __nf_nat_l4proto_find(target.src.l3num,
- 					target.dst.protonum);
-+	if (!l4proto)
-+		return NF_DROP;
- 	if (!l3proto->manip_pkt(skb, 0, l4proto, &target, mtype))
- 		return NF_DROP;
- 
-@@ -816,6 +837,8 @@ static int nfnetlink_parse_nat_proto(struct nlattr *attr,
- 		return err;
- 
- 	l4proto = __nf_nat_l4proto_find(nf_ct_l3num(ct), nf_ct_protonum(ct));
-+	if (!l4proto)
-+		return -EINVAL;
- 	if (l4proto->nlattr_to_range)
- 		err = l4proto->nlattr_to_range(tb, range);
- 
-diff --git a/net/netfilter/nf_nat_helper.c b/net/netfilter/nf_nat_helper.c
-index 99606baedda4..6f694444137e 100644
---- a/net/netfilter/nf_nat_helper.c
-+++ b/net/netfilter/nf_nat_helper.c
-@@ -121,6 +121,8 @@ bool __nf_nat_mangle_tcp_packet(struct sk_buff *skb,
- 	datalen = skb->len - protoff;
- 
- 	l3proto = __nf_nat_l3proto_find(nf_ct_l3num(ct));
-+	if (!l3proto)
-+		return false;
- 	l3proto->csum_recalc(skb, IPPROTO_TCP, tcph, &tcph->check,
- 			     datalen, oldlen);
- 
-@@ -179,6 +181,8 @@ nf_nat_mangle_udp_packet(struct sk_buff *skb,
- 		return true;
- 
- 	l3proto = __nf_nat_l3proto_find(nf_ct_l3num(ct));
-+	if (!l3proto)
-+		return false;
- 	l3proto->csum_recalc(skb, IPPROTO_UDP, udph, &udph->check,
- 			     datalen, oldlen);
- 
 -- 
-2.28.0.rc0.142.g3c755180ce-goog
+Jens Axboe
 
