@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B06BA22F6B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DEE22F6AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731310AbgG0Rcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        id S1731054AbgG0RbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgG0Rcr (ORCPT
+        with ESMTP id S1730662AbgG0RbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:32:47 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16122C061794;
-        Mon, 27 Jul 2020 10:32:47 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w126so9283312pfw.8;
-        Mon, 27 Jul 2020 10:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y/oiTZvRbIGlVilYBQAce6xZVdmLxNzc+uCZkzk1V9g=;
-        b=FHs7NZnjm1y+Y0yUChIknkWpkRZeJSCPECasUc1GMHAAX0gQC7gJAuExKfTQg7YxK1
-         RUEDwI/yoCS6n/MAz2kzUyR1GEi8teb8fBWPR71NfQOMldeVOEruRq8ehJwY9KQsapzX
-         VttbXvWYZpzHEXv3/AsCgnykZlqIkofJxNQRSl86UnfHYfHfCRpGD7QfBdOkCbCuc5/u
-         +tODKkcQ1dt1Q9MPe6D5gxWZL+sf27Y1rKDqNS/HwIDAbmf/aVM8qctgzobo3bNaN9Pq
-         DXAgXHVNMFUpmOkmRAZio1bmexKAlAfRo2vsRAcg5LU52jLv2Lri37SJq3juqcItZTqY
-         /xNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y/oiTZvRbIGlVilYBQAce6xZVdmLxNzc+uCZkzk1V9g=;
-        b=D6pkcIsP8QuInK/8j8YIQAVmdMcaSiKf4pm0SNROqFypP4ceJNn/oloABUBj29dB7H
-         D8IAsOf5PEC+W0aeZ1HZadhkVAS5O+TnEIKORH+UofbzsTPbj9E4FMTUGgJz1pCSVtP2
-         ct9Bd0p1qClOTYplRxMM7mEZOjOPvX1pud+W0gpZhhcxnnaJUjV4VQQX2nqZ3HeeHXyi
-         NoIye4LeCiaoTV2TLOcjy+moMRJEJ5Y59+q/shZfK4lVNUDbNifiUpo2in/HnW9PM167
-         Gh9II375z6X8nO3QSu2WQvzXrLsLnh9orP6uLqb1j3lAmt+IgD1LidD/4kjlONHHOEqL
-         b5lQ==
-X-Gm-Message-State: AOAM532VmM5tb/fiyspLc0qJkl6TTjEheMOLMnf7yrgEl4p/7WC731X7
-        lEeww7Phd4ekxAeWRnTpRBY=
-X-Google-Smtp-Source: ABdhPJyCn9FDNTlrAkhDjbasGUiicJEpzPdljaTQslwjMY8oofLHLGd1j2EDiVq6xsMqKuOfd5dCeA==
-X-Received: by 2002:a65:620e:: with SMTP id d14mr20414491pgv.360.1595871166544;
-        Mon, 27 Jul 2020 10:32:46 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.152.86])
-        by smtp.gmail.com with ESMTPSA id x66sm15427782pgb.12.2020.07.27.10.32.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 10:32:45 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v3] spi: spi-topcliff-pch: drop call to wakeup-disable
-Date:   Mon, 27 Jul 2020 22:59:37 +0530
-Message-Id: <20200727172936.661567-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
-References: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
+        Mon, 27 Jul 2020 13:31:02 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028CEC061794;
+        Mon, 27 Jul 2020 10:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=OWoBvMBmWyDilWMUdxwiwp8BDkF9aBjJr3HcaF0ozXo=; b=gNMTf3a99kpRORweCKLBEzsKU
+        iSe3KroPt7Iqtw/bTqtUJLI9vbLgXjhJlmVBffJQNmOwMpMP444Elz5KmXqbFFYSaohyNGYv4trFv
+        kLXIAej49+UmDQL8ZkxwyYIytiTS6jYsMNbGzKLZXhqjRnzYO+298DuWWtJJ/3F7w24d2Or+d16Gv
+        Mr4LBEDVQeIAInXJvWmh7F6sxHglSw/9CUoqxs2GKOo3YdDcpdYsJ5AktzS+SGXMUVkN6hIl8BwvK
+        RznIj6+WwBcv3VOUHARDlkq5x9OqDNV5L3g0xmJh7xkl0hjixEhim6FZVOCJy3WEb3hRWOBKjsynO
+        HR4yAjzmQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44886)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1k06xh-00037t-BM; Mon, 27 Jul 2020 18:30:53 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1k06xf-0003pn-Gq; Mon, 27 Jul 2020 18:30:51 +0100
+Date:   Mon, 27 Jul 2020 18:30:51 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jon Nettleton <jon@solid-run.com>, Rob Herring <robh@kernel.org>,
+        Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>,
+        a.zummo@towertech.it, Baruch Siach <baruch@tkos.co.il>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: pcf8523: add DSM pm option for
+ battery switch-over
+Message-ID: <20200727173051.GM1551@shell.armlinux.org.uk>
+References: <20200720112401.4620-2-miguelborgesdefreitas@gmail.com>
+ <20200723174905.GA596242@bogus>
+ <20200723195755.GV3428@piout.net>
+ <20200727094553.GH1551@shell.armlinux.org.uk>
+ <20200727144938.GC239143@piout.net>
+ <20200727152439.GK1551@shell.armlinux.org.uk>
+ <20200727154104.GE239143@piout.net>
+ <20200727154335.GL1551@shell.armlinux.org.uk>
+ <CABdtJHuVaTa5T0-KdQ-wZQrmFQ6HO3FvgnTgSo3aOi+=SPzDZA@mail.gmail.com>
+ <20200727161632.GF239143@piout.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727161632.GF239143@piout.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before generic upgrade, both .suspend() and .resume() were invoking
-pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
-states. (Normal trend is .suspend() enables and .resume() disables the
-wakeup.)
+On Mon, Jul 27, 2020 at 06:16:32PM +0200, Alexandre Belloni wrote:
+> On 27/07/2020 17:55:50+0200, Jon Nettleton wrote:
+> > > So, can we please have that discussion, it is pertinent to this patch.
+> > >
+> > 
+> > Thinking about this some more, I believe whether or not an IOCTL
+> > interface is in the works or needed is irrelevant.  This patch
+> > describes the hardware and how it is designed and the topic of
+> > discussion is if we need a simple boolean state, or if we need
+> > something that could be used to support dynamic configuration in the
+> > future.  I would rather make this decision now rather than keep
+> > tacking on boolean config options, or revisit a bunch of device-tree
+> > changes.
+> 
+> Something that would describe the hardware is a property telling whether
+> the filter is present on VDD, not a property selecting DSM. The driver
+> can then chose to avoid standard mode when needed.
 
-This was ambiguous and may be buggy. Instead of replicating the legacy
-behavior, drop the wakeup-disable call.
+Whether DSM needs to be enabled or not is _not_ just a function of
+whether there is a filter present or not.
 
-Fixes: f185bcc77980 ("spi: spi-topcliff-pch: use generic power management")
-Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/spi/spi-topcliff-pch.c | 2 --
- 1 file changed, 2 deletions(-)
+The requirement in the data sheet is that when the VDD supply drops
+below 2.5V, it does not fall more than 0.7V/ms.  That can be
+achieved many different ways, not only by adding a resistive filter
+to the VDD supply to the RTC.  It could also be achieved via the design
+of the power supply - for example, having a large enough reservoir
+capacitor to ensure under all loads that the VDD supply will not fall
+faster than 0.7V/ms.
 
-diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
-index 281a90f1b5d8..c73a03ddf5f3 100644
---- a/drivers/spi/spi-topcliff-pch.c
-+++ b/drivers/spi/spi-topcliff-pch.c
-@@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
- 
- 	dev_dbg(dev, "%s ENTRY\n", __func__);
- 
--	device_wakeup_disable(dev);
--
- 	/* set suspend status to false */
- 	pd_dev_save->board_dat->suspend_sts = false;
- 
+There are many ways to meet this requirement.
+
+Adding a DT property to indicate whether the filter is present or not
+is definitely not the right approach.  Should we also add properties
+for every possible solution to this problem.
+
+	vdd-has-filter;
+	psu-has-large-capacitors;
+	... etc ...
+
 -- 
-2.27.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
