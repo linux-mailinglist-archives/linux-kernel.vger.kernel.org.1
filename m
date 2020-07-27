@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACAE22EAD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C5222EADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbgG0LHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:07:37 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:45915 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgG0LHe (ORCPT
+        id S1728300AbgG0LIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726842AbgG0LIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:07:34 -0400
-Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N5VLY-1ksLsH2eE6-0170OO; Mon, 27 Jul 2020 13:07:31 +0200
-Received: by mail-qv1-f42.google.com with SMTP id s15so2778448qvv.7;
-        Mon, 27 Jul 2020 04:07:31 -0700 (PDT)
-X-Gm-Message-State: AOAM533HndIsn7C3eJfJtiaRP6SJnOrlJpjKhwuyUJbBR8t7Ul8IEshi
-        WTie9KP6tuSWckZzxlidtav9DErxuzLgBbq74+Y=
-X-Google-Smtp-Source: ABdhPJzxOngJK6stFBNtdHenz0ykV74orh0S+FvohVN1V01bLg69miZWGOg43PNVNxMAXwrpCMzVbqT41VdOkXRTOnM=
-X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr20821335qvb.210.1595848050219;
- Mon, 27 Jul 2020 04:07:30 -0700 (PDT)
+        Mon, 27 Jul 2020 07:08:10 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3D0C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:08:10 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id g7so8348900ejw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RwIbYX4tpIvaMqMMybkeITF1WqLqpQeUKMEgUeMi77w=;
+        b=Wlk1/2t1P+pF4N7yMXUW4N2wf8GT1C+3c0lTst7Dm1Kl2N2vtZznaDJvyZ9+WzK9pD
+         +TTKk4kKUSt2+k1wdZxBpDqg6BN7JlexuzvAS8niYNsqg4HCOBMGa65SCcuQBUWbSf9q
+         At1LsqecLQDJh+XI4juzy+Ib/as0kYjWBfjO0ikwatUKCOVWWBFk3OddnMdPnEed9o+P
+         O9oYkcLmeOL2m9xLutdxlmagLjFZGb8L66YY74x458YTt769aJa9UXnT7gz9gxvLYzyZ
+         PHcxGynin8/rYFQME9NyCUUxZ/9evzFY34J+njGC2D1rNS05isLUF40pKcG+tuhbRgAU
+         nCZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=RwIbYX4tpIvaMqMMybkeITF1WqLqpQeUKMEgUeMi77w=;
+        b=MnEGjfwQnk7miCn7mY/B24FclrNvF6Q7iWy76CNW3ApkxyCBmMbxb0oAPZ9VPfxzvB
+         Ae1QeBLx78/o+pdgMOW+ghOAIB4kpyJT0lImPw62wc73CXliKql4PvJf3KnVWhzl9Vwd
+         b+kLXzvmDiVGkuAicT2fcmw4U5S4uMTgD2KCHGA5hPuPYqtc3vRe0FR1zNImnEm1hWxI
+         sPNX21IwqG4mSmvvHbjl4JZ67f0EdMvKP6vhyzvG94bsWMAWZrgeEvXzOJVRfUNxLOmL
+         Q6IGlwVPZu/w8u5sqirRy+fF9ykpBGU9tPYJcIoAuBSdZIpS4yrHqEjjIjLGCmQ5XKAJ
+         9Glw==
+X-Gm-Message-State: AOAM533R5sPHdDmCrTLhtpk5qubWsU2r8Kxkn6LMpgcfK/rLRS/PJFAb
+        viomMh3hvYy5G6PZovMooJtJLdJN
+X-Google-Smtp-Source: ABdhPJx74sN0vJYTB8+Uo4VZ5jmm4xaQnmBby1us3Jm4w0zB+hsL02a5kLmTjiyWDGYJjDvbg1cIDA==
+X-Received: by 2002:a17:906:3614:: with SMTP id q20mr14816263ejb.142.1595848089310;
+        Mon, 27 Jul 2020 04:08:09 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id w20sm7227187eds.21.2020.07.27.04.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 04:08:08 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 13:08:06 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, hpa@zytor.com,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Joerg Roedel <jroedel@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] x86/mm/64: Remove vmalloc/ioremap pgtable
+ synchronization
+Message-ID: <20200727110806.GB3174@gmail.com>
+References: <20200721095953.6218-1-joro@8bytes.org>
 MIME-Version: 1.0
-References: <20200727084211.6632-1-lars.povlsen@microchip.com>
- <20200727095009.GK4073@piout.net> <87v9i9fdy7.fsf@soft-dev15.microsemi.net>
-In-Reply-To: <87v9i9fdy7.fsf@soft-dev15.microsemi.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 13:07:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0CMqqFWM+QXC0wXxrfKBN0U5cyx_naBx+hS3V3SG2KOQ@mail.gmail.com>
-Message-ID: <CAK8P3a0CMqqFWM+QXC0wXxrfKBN0U5cyx_naBx+hS3V3SG2KOQ@mail.gmail.com>
-Subject: Re: [PATCH v4 00/10] Adding support for Microchip Sparx5 SoC
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        SoC Team <soc@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Olof Johansson <olof@lixom.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VQrKRxNjIjvZRIEeCkAz30oJy/i+x4XOwSIIe22zj3vGPVX3xwW
- B8VT/nfb1I30p30rKj0Uuy9yjvkMzVHBSgnUOQ8npY2A/JwnN1j3vnSOhJadJa8D1e4ebjg
- I5kbFM46k8uMAK3FbSb8Jv819zX3TKO1LSnoASLFe4nDLMzVfbJdHE/4mYjvR6obfUWNR7X
- aSsD2jCdSZREqoHIzpZkg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zn333mraLCU=:K6u21uNyZfQWEhNs0LPmaG
- 0QCJBEOZ3RHArxr3HqpP347CBeQvh3hlTODTwJxmnRvFvGZ8ZC3nA2LalvBrtIG2zFi8KzpaN
- SZmj4R24ZiRSpzYnPD8kUTwSOd1k4MXTT3FMsVt77CCxkf6iHzGBV22Z2EWxJVi2erzNFDfNO
- 0eiJIJ0yo3dmThIQ0abPzum8M+hdaRITncovfY8fjijsYbx1FDCYKQLSbwyW51S3zK7loORi5
- 8YHUMa/7GsGpoWBz3kZuzBr/+hXtNhWVZwJ+EF/SOn/u3wsx9nG9inHenmkYryeC5I8+2efaX
- L3C4ReXq3CI522YkCfzs3BTqUJDdydCcIKWUNQM/HzEusSDq+31rpDIF6KHfw1vCB+VYUB9HM
- 9iL9MWFBF2j5DFT78ON2EvgsUdNhr4NOMZsTXbTj1vENSSHGmj4Vu/eajf4xsgx8f1nEgoG5L
- Ymc3I2fd3BLbSvwyoqMbxJrJSyjBaimXZzZ2G7r44JdxJFY96bIz2qhGWdZ0aWDKbQhs/ScQz
- yFq6jVAA0a3KyZAJwCPBHbQAgds95ppbuzCtG1ro8g07kYeqnhZWYjJrwcsYfWiaiwEMZLCap
- ff8gz2HZvFv1I39IqObBJKTUNGMFfvCUEcK44Vf0MnNAU1+hzHWGqklYTkARxbmGZlbjsCb0P
- w01HN5rJK1vMXhwEIlEr68wo90nTUSDYpRfn7sJL3UfRv9MeafJ4iU9p3zRle7tQyopNx3NAO
- fTxMCBNz5Brwp1GOpvZIqSKTroFsw5AE7uAjLbNzAyS++7/KOE3aOY6qDoFiyqB9Kr4okwC/U
- uJggSSGGIp1oBJ2CyHQdrk6AIntMvQX/V9yrvNh4398Rs0/TWswyhblAjJEkPulvDEyS0tYlm
- 8cZ5PKBg0dTaHVi4HwJ72TmgnuZJIATMfSDgujwO9QGCOgSaVSsSS/t7frgautm6I+wBraBmm
- uzHiAaQiyByeq6hm1akvyrg2RktphnyECXJgpW3RtidbAg5PMCVc/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721095953.6218-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:30 PM Lars Povlsen
-<lars.povlsen@microchip.com> wrote:
-> Alexandre Belloni writes:
-> > As Arnd stated, he already applied the patches so you have to send an
-> > incremental patch to fix the clock driver.
-> >
->
-> I actually wrote Arnd about this specifically, and he replied that a
-> patch against either next or mainline was fine - so that's why I
-> refreshed the lot (Including Reviewed-by: headers).
 
-I think I misunderstood your question. To clarify: Alexandre is right,
-you should not resend patches that have already been merged but
-instead send the incremental patches if you need further changes.
+* Joerg Roedel <joro@8bytes.org> wrote:
 
-I thought your question was about the case where your patch
-series has conflicts against another unrelated set of changes
-that may have been merged already.
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> Hi,
+> 
+> here is the third version of the patches to pre-allocate P4D/PUD pages
+> for the vmalloc/ioremap areas on x86-64. This makes the page-table
+> synchronization code obsolete and so it is also removed.
+> 
+> Please review.
+> 
+> Thanks,
+> 
+> 	Joerg
+> 
+> Changes to v2:
+> 
+> 	- Rebased to tip/master
+> 	- Some rewording of the commit-messages 
+> 
+> Joerg Roedel (3):
+>   x86/mm: Pre-allocate p4d/pud pages for vmalloc area
+>   x86/mm/64: Do not sync vmalloc/ioremap mappings
+>   x86/mm/64: Make sync_global_pgds() static
+> 
+>  arch/x86/include/asm/pgtable_64.h       |  2 -
+>  arch/x86/include/asm/pgtable_64_types.h |  2 -
+>  arch/x86/mm/init_64.c                   | 59 ++++++++++++++++++++++---
+>  3 files changed, 53 insertions(+), 10 deletions(-)
 
-> But I will send an incremental patch just in case, no problem.
+Applied to tip:x86/mm, thanks Joerg!
 
-Thanks,
-
-      Arnd
+	Ingo
