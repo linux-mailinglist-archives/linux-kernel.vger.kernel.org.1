@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2BC22F1F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F4522F27A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgG0ON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:13:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39094 "EHLO mail.kernel.org"
+        id S1728924AbgG0OJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730434AbgG0ONw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:13:52 -0400
+        id S1729577AbgG0OJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:09:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B9F320838;
-        Mon, 27 Jul 2020 14:13:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF2102073E;
+        Mon, 27 Jul 2020 14:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859232;
-        bh=l9AV1UkaxXE9CswV9nnkL1KikVVLloY1b0TxvV7pcGw=;
+        s=default; t=1595858953;
+        bh=Kud5aXcuRZFC1TM/M8ptwqIRGTSRAZWadeB2mSKiX7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xgSOTisPPH/rY58Iisk/85oULev1+/bLiS0OwCtlB8uXwF/Wuhf92yAZv1Mqu8v0S
-         W7QJ5kx0ef223Gz2/pK/VTTuU0ALsWM9w6Xloy3jLI/DnsvW9aOOUkeAG4KaJPhlI1
-         cUUyiBFqrSHs3S9Ul2C4+dLTmA35h2ojaEwmC3Tk=
+        b=tr2uqsm4fmkNy05SL1gBmaDmTeDOQyF6doe6YxaqMYobz7QBQxrmF3nnEtato4VTF
+         HVCxsi4kbn/hLhaPvJQghQq2PL7OuN+wseD6INTjb5LKe6+CtjooLtUlg/t2vsXFVo
+         1yq++5KAKy5ilNQe2Ncx0mxbaZOTiCpmlYX+tyCU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 028/138] btrfs: reloc: clear DEAD_RELOC_TREE bit for orphan roots to prevent runaway balance
-Date:   Mon, 27 Jul 2020 16:03:43 +0200
-Message-Id: <20200727134926.778733876@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 10/86] net: sky2: initialize return of gm_phy_read
+Date:   Mon, 27 Jul 2020 16:03:44 +0200
+Message-Id: <20200727134914.857464769@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Tom Rix <trix@redhat.com>
 
-commit 1dae7e0e58b484eaa43d530f211098fdeeb0f404 upstream.
+[ Upstream commit 28b18e4eb515af7c6661c3995c6e3c34412c2874 ]
 
-[BUG]
-There are several reported runaway balance, that balance is flooding the
-log with "found X extents" where the X never changes.
+clang static analysis flags this garbage return
 
-[CAUSE]
-Commit d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after
-merge_reloc_roots") introduced BTRFS_ROOT_DEAD_RELOC_TREE bit to
-indicate that one subvolume has finished its tree blocks swap with its
-reloc tree.
+drivers/net/ethernet/marvell/sky2.c:208:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
+        return v;
+        ^~~~~~~~
 
-However if balance is canceled or hits ENOSPC halfway, we didn't clear
-the BTRFS_ROOT_DEAD_RELOC_TREE bit, leaving that bit hanging forever
-until unmount.
+static inline u16 gm_phy_read( ...
+{
+	u16 v;
+	__gm_phy_read(hw, port, reg, &v);
+	return v;
+}
 
-Any subvolume root with that bit, would cause backref cache to skip this
-tree block, as it has finished its tree block swap.  This would cause
-all tree blocks of that root be ignored by balance, leading to runaway
-balance.
+__gm_phy_read can return without setting v.
 
-[FIX]
-Fix the problem by also clearing the BTRFS_ROOT_DEAD_RELOC_TREE bit for
-the original subvolume of orphan reloc root.
+So handle similar to skge.c's gm_phy_read, initialize v.
 
-Add an umount check for the stale bit still set.
-
-Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[Manually solve the conflicts due to no btrfs root refs rework]
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Tom Rix <trix@redhat.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/relocation.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/marvell/sky2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2540,6 +2540,8 @@ again:
- 			if (!IS_ERR(root)) {
- 				if (root->reloc_root == reloc_root)
- 					root->reloc_root = NULL;
-+				clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE,
-+					  &root->state);
- 			}
+diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
+index d013f30019b69..2452d8ba40730 100644
+--- a/drivers/net/ethernet/marvell/sky2.c
++++ b/drivers/net/ethernet/marvell/sky2.c
+@@ -215,7 +215,7 @@ io_error:
  
- 			list_del_init(&reloc_root->root_list);
+ static inline u16 gm_phy_read(struct sky2_hw *hw, unsigned port, u16 reg)
+ {
+-	u16 v;
++	u16 v = 0;
+ 	__gm_phy_read(hw, port, reg, &v);
+ 	return v;
+ }
+-- 
+2.25.1
+
 
 
