@@ -2,77 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E2022E978
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6212322E97C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgG0JvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:51:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgG0JvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:51:20 -0400
-Received: from localhost (unknown [122.171.202.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28CD820759;
-        Mon, 27 Jul 2020 09:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595843480;
-        bh=/Nkd3YBv64YbNEYFecnspgikZgRL+85WrksxxlVoT0I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VGVwa5C3r0p7g3xdE0OicJ5ZPXih40I1dEWTzt7TI0B1iKKgIJgAp8uLai4TrXCbn
-         1vz3BtkhI3uniG7qPbvD9VEdq91WHgb1YAHhlgAYxS8sF0+2oJSe6NWBNr10+yIZe0
-         Awo16hVElKS/ty7yqR7WrqJnTmtSSQfpuEKHoRBs=
-Date:   Mon, 27 Jul 2020 15:21:15 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        paul@crapouillou.net, prasannatsmkumar@gmail.com, kishon@ti.com,
-        gor@linux.ibm.com, hca@linux.ibm.com,
-        christophe.jaillet@wanadoo.fr, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: Re: [PATCH v6 3/5] USB: PHY: JZ4770: Add support for new Ingenic
- SoCs.
-Message-ID: <20200727095115.GV12965@vkoul-mobl>
-References: <20200725035159.31231-1-zhouyanjie@wanyeetech.com>
- <20200725035159.31231-4-zhouyanjie@wanyeetech.com>
- <87r1t0nmpr.fsf@kernel.org>
+        id S1727919AbgG0Jvw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 05:51:52 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59765 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727829AbgG0Jvv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:51:51 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-157-rSG2T3OdNGGcdmdBioAAVQ-1; Mon, 27 Jul 2020 10:51:47 +0100
+X-MC-Unique: rSG2T3OdNGGcdmdBioAAVQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 27 Jul 2020 10:51:45 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 27 Jul 2020 10:51:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Miller' <davem@davemloft.net>, "hch@lst.de" <hch@lst.de>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        "linux-hams@vger.kernel.org" <linux-hams@vger.kernel.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
+        "linux-decnet-user@lists.sourceforge.net" 
+        <linux-decnet-user@lists.sourceforge.net>,
+        "linux-wpan@vger.kernel.org" <linux-wpan@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "mptcp@lists.01.org" <mptcp@lists.01.org>,
+        "lvs-devel@vger.kernel.org" <lvs-devel@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+        "tipc-discussion@lists.sourceforge.net" 
+        <tipc-discussion@lists.sourceforge.net>,
+        "linux-x25@vger.kernel.org" <linux-x25@vger.kernel.org>
+Subject: RE: get rid of the address_space override in setsockopt v2
+Thread-Topic: get rid of the address_space override in setsockopt v2
+Thread-Index: AQHWYgvqDt5Xt3HFu0u82UKLVqcKxKkbLTEQ
+Date:   Mon, 27 Jul 2020 09:51:45 +0000
+Message-ID: <8ae792c27f144d4bb5cbea0c1cce4eed@AcuMS.aculab.com>
+References: <20200723060908.50081-1-hch@lst.de>
+ <20200724.154342.1433271593505001306.davem@davemloft.net>
+In-Reply-To: <20200724.154342.1433271593505001306.davem@davemloft.net>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r1t0nmpr.fsf@kernel.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-07-20, 09:16, Felipe Balbi wrote:
+From: David Miller
+> Sent: 24 July 2020 23:44
 > 
-> Hi,
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Thu, 23 Jul 2020 08:08:42 +0200
 > 
-> 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com> writes:
-> > Add support for probing the phy-jz4770 driver on the JZ4780 SoC,
-> > the X1000 SoC and the X1830 SoC from Ingenic.
+> > setsockopt is the last place in architecture-independ code that still
+> > uses set_fs to force the uaccess routines to operate on kernel pointers.
 > >
-> > Tested-by: 周正 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> > Co-developed-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-> > Signed-off-by: 漆鹏振 (Qi Pengzhen) <aric.pzqi@ingenic.com>
-> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > This series adds a new sockptr_t type that can contained either a kernel
+> > or user pointer, and which has accessors that do the right thing, and
+> > then uses it for setsockopt, starting by refactoring some low-level
+> > helpers and moving them over to it before finally doing the main
+> > setsockopt method.
+> >
+> > Note that apparently the eBPF selftests do not even cover this path, so
+> > the series has been tested with a testing patch that always copies the
+> > data first and passes a kernel pointer.  This is something that works for
+> > most common sockopts (and is something that the ePBF support relies on),
+> > but unfortunately in various corner cases we either don't use the passed
+> > in length, or in one case actually copy data back from setsockopt, or in
+> > case of bpfilter straight out do not work with kernel pointers at all.
+> >
+> > Against net-next/master.
+> >
+> > Changes since v1:
+> >  - check that users don't pass in kernel addresses
+> >  - more bpfilter cleanups
+> >  - cosmetic mptcp tweak
 > 
-> It would be better to move this driver to drivers/phy before adding
-> support for new SoCs. We want to remove drivers/usb/phy/ in the near
-> future, any help is welcome.
+> Series applied to net-next, I'm build testing and will push this out when
+> that is done.
 
-Yeah I was about to ask why should this patch up drivers/usb/phy/ rather
-than move to drivers/phy, thanks for confirming that :)
+Hmmm... this code does:
 
-Looking forward to move
+int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
+		int optlen)
+{
+	sockptr_t optval;
+	char *kernel_optval = NULL;
+	int err, fput_needed;
+	struct socket *sock;
 
--- 
-~Vinod
+	if (optlen < 0)
+		return -EINVAL;
+
+	err = init_user_sockptr(&optval, user_optval);
+	if (err)
+		return err;
+
+And the called code does:
+	if (copy_from_sockptr(&opt, optbuf, sizeof(opt)))
+		return -EFAULT;
+
+
+Which means that only the base of the user's buffer is checked
+for being in userspace.
+
+I'm sure there is code that processes options in chunks.
+This probably means it is possible to put a chunk boundary
+at the end of userspace and continue processing the very start
+of kernel memory.
+
+At best this faults on the kernel copy code and crashes the system.
+
+Maybe there wasn't any code that actually incremented the user address.
+But it is hardly robust.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
