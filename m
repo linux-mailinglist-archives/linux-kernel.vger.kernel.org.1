@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3D222EBCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA9D22EBD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728125AbgG0MNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:13:19 -0400
-Received: from mga14.intel.com ([192.55.52.115]:25624 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726555AbgG0MNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:13:18 -0400
-IronPort-SDR: P+RGjj4I8Y2s8QpLCHAdOlVb5Pc4XgF0kRaUOjaoh49RagdQEKBrM3p5cegyWVA7w29p/wAwy4
- hXq42LU1ofmg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="150177663"
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
-   d="scan'208";a="150177663"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 05:13:18 -0700
-IronPort-SDR: 4rhKyOccZG7f3Osp8B2R1dpFXV82fbIvjIHuUtW5LkSAl+un3SSdjkACSt63iM/ROhSpQgugB6
- u+6HuKtICUMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
-   d="scan'208";a="321779377"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 27 Jul 2020 05:13:16 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1k020K-004Gud-OH; Mon, 27 Jul 2020 15:13:16 +0300
-Date:   Mon, 27 Jul 2020 15:13:16 +0300
-From:   "Shevchenko, Andriy" <andriy.shevchenko@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] powercap: Add Power Limit4 support
-Message-ID: <20200727121316.GS3703480@smile.fi.intel.com>
-References: <1594921495-519-1-git-send-email-sumeet.r.pawnikar@intel.com>
- <CAJZ5v0jQp2sHyzFKZu4ZL2HyN+kVax960+n2epTxBZbbZuZo8Q@mail.gmail.com>
+        id S1728328AbgG0MNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:13:52 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:50090 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726555AbgG0MNv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 08:13:51 -0400
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.65.60])
+        by dispatch1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 52BE860096;
+        Mon, 27 Jul 2020 12:13:51 +0000 (UTC)
+Received: from us4-mdac16-53.ut7.mdlocal (unknown [10.7.66.24])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 5098E2009A;
+        Mon, 27 Jul 2020 12:13:51 +0000 (UTC)
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from mx1-us1.ppe-hosted.com (unknown [10.7.66.35])
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id D85B91C0051;
+        Mon, 27 Jul 2020 12:13:50 +0000 (UTC)
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 7B9D048005F;
+        Mon, 27 Jul 2020 12:13:50 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 27 Jul
+ 2020 13:13:44 +0100
+Subject: Re: [PATCH 2/7] sfc: drop unnecessary list_empty
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>
+CC:     <kernel-janitors@vger.kernel.org>,
+        Martin Habets <mhabets@solarflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1595761112-11003-1-git-send-email-Julia.Lawall@inria.fr>
+ <1595761112-11003-3-git-send-email-Julia.Lawall@inria.fr>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <f8564082-0dad-a1a7-9d2e-198b429b58d4@solarflare.com>
+Date:   Mon, 27 Jul 2020 13:13:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jQp2sHyzFKZu4ZL2HyN+kVax960+n2epTxBZbbZuZo8Q@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1595761112-11003-3-git-send-email-Julia.Lawall@inria.fr>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.6.1012-25566.005
+X-TM-AS-Result: No-1.399100-8.000000-10
+X-TMASE-MatchedRID: fgYTp5XatxaHYS4ybQtcOvZvT2zYoYOwC/ExpXrHizwumZeX1WIQ8L88
+        DvjRvF4An1Vi+LJeakUDvaj804LnkIwPUiPqp90EngIgpj8eDcC063Wh9WVqgmWCfbzydb0gsFZ
+        /31Unt9AV0D/96nhBQ90H8LFZNFG76sBnwpOylLOFBEdPN6KLPexVt431s/sfUrA4AyYCpjRnnG
+        sVz5KGCUq+D/qldGfLBsRAh8WmTAcG2WAWHb2qekrMHC7kmmSWJy4DmWREnABDDKa3G4nrLQ==
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10-1.399100-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.6.1012-25566.005
+X-MDID: 1595852031-PHB02brAlX_u
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 01:46:12PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Jul 16, 2020 at 7:38 PM Sumeet Pawnikar
-> <sumeet.r.pawnikar@intel.com> wrote:
-> >
-> > Modern Intel Mobile platforms support power limit4 (PL4), which is
-> > the SoC package level maximum power limit (in Watts). It can be used
-> > to preemptively limits potential SoC power to prevent power spikes
-> > from tripping the power adapter and battery over-current protection.
-> > This patch enables this feature by exposing package level peak power
-> > capping control to userspace via RAPL sysfs interface. With this,
-> > application like DTPF can modify PL4 power limit, the similar way
-> > of other package power limit (PL1).
-> > As this feature is not tested on previous generations, here it is
-> > enabled only for the platform that has been verified to work,
-> > for safety concerns.
-> 
-> Queued up as 5.9 material ->
-> 
-> > Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
-> > Co-developed-by: Zhang Rui <rui.zhang@intel.com>
-> > Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> 
-> -> with this tag removed, because the only case in which you can
-> include an S-o-b from someone else is when you also add a From:
-> pointing to that person.  IOW, you add a From: with a matching S-o-b
-> from someone else and you can add your own S-o-b to that.
-> 
-> In this particular case, the C-d-b tag is sufficient to make a record
-> of somebody else's contribution to a patch carrying a From: header
-> that points to you (ie. your patch).
-
-Rafael, it looks like it contradicts documentation. I mean your amendment.
-SoB is specifically required to be coupled with Co-developed-by. That said,
-both or none are acceptable. (I don't consider the chain of SoB when it goes
-thru maintainers)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+On 26/07/2020 11:58, Julia Lawall wrote:
+> list_for_each_safe is able to handle an empty list.
+> The only effect of avoiding the loop is not initializing the
+> index variable.
+> Drop list_empty tests in cases where these variables are not
+> used.
+Sure, why not.
+Acked-by: Edward Cree <ecree@solarflare.com>
