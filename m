@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9422EF5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F07722F005
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730183AbgG0OPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:15:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42294 "EHLO mail.kernel.org"
+        id S1731694AbgG0OVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730147AbgG0OPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:15:45 -0400
+        id S1731681AbgG0OVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F79420838;
-        Mon, 27 Jul 2020 14:15:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B76D52075A;
+        Mon, 27 Jul 2020 14:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859343;
-        bh=DjqTSV5xN3+3AjtaeDlHC5pVpkhZ62firTalcpotors=;
+        s=default; t=1595859672;
+        bh=buiKqjqGVgEIOE4MuNGd0Ftg20ivBkjeoj4PHmWWcTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZci0aXmrgzG1B64B6a7ALFFEfLGuGYdMKUQLW1RqaYMGcqh4GPRPvbCCXmY0EqPu
-         tbKQ6rPU5ivTpdlztE11e8gon435ZD8EOeVsicGbgLvce7kP6FvbmiYv/WWwPx51An
-         m+DTOSgjZREahvFKq/8qCFc/zwJwygyQCP7a0BlI=
+        b=YmOqp6wHKNiCcEOzbqDlHI1Qy6Yymnp1rjDItNR/qFel2XNzcYDhgxKxcTTzGiwhu
+         OW0UE9Q8gdPvnfHPQAJaOm/N+TUVaNJQcqKcrutD/lPk/qpKpv15r7OGZfGRrdB73t
+         A2EDSHUXagkET2f2TMh6j6d4kmeVd7Sjxy7ErocQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/138] vsock/virtio: annotate the_virtio_vsock RCU pointer
+Subject: [PATCH 5.7 061/179] net: smc91x: Fix possible memory leak in smc_drv_probe()
 Date:   Mon, 27 Jul 2020 16:03:56 +0200
-Message-Id: <20200727134927.417370634@linuxfoundation.org>
+Message-Id: <20200727134935.644201441@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,59 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit f961134a612c793d5901a93d85a29337c74af978 ]
+[ Upstream commit bca9749b1aa23d964d3ab930938af66dbf887f15 ]
 
-Commit 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free
-on the_virtio_vsock") starts to use RCU to protect 'the_virtio_vsock'
-pointer, but we forgot to annotate it.
+If try_toggle_control_gpio() failed in smc_drv_probe(), free_netdev(ndev)
+should be called to free the ndev created earlier. Otherwise, a memleak
+will occur.
 
-This patch adds the annotation to fix the following sparse errors:
-
-    net/vmw_vsock/virtio_transport.c:73:17: error: incompatible types in comparison expression (different address spaces):
-    net/vmw_vsock/virtio_transport.c:73:17:    struct virtio_vsock [noderef] __rcu *
-    net/vmw_vsock/virtio_transport.c:73:17:    struct virtio_vsock *
-    net/vmw_vsock/virtio_transport.c:171:17: error: incompatible types in comparison expression (different address spaces):
-    net/vmw_vsock/virtio_transport.c:171:17:    struct virtio_vsock [noderef] __rcu *
-    net/vmw_vsock/virtio_transport.c:171:17:    struct virtio_vsock *
-    net/vmw_vsock/virtio_transport.c:207:17: error: incompatible types in comparison expression (different address spaces):
-    net/vmw_vsock/virtio_transport.c:207:17:    struct virtio_vsock [noderef] __rcu *
-    net/vmw_vsock/virtio_transport.c:207:17:    struct virtio_vsock *
-    net/vmw_vsock/virtio_transport.c:561:13: error: incompatible types in comparison expression (different address spaces):
-    net/vmw_vsock/virtio_transport.c:561:13:    struct virtio_vsock [noderef] __rcu *
-    net/vmw_vsock/virtio_transport.c:561:13:    struct virtio_vsock *
-    net/vmw_vsock/virtio_transport.c:612:9: error: incompatible types in comparison expression (different address spaces):
-    net/vmw_vsock/virtio_transport.c:612:9:    struct virtio_vsock [noderef] __rcu *
-    net/vmw_vsock/virtio_transport.c:612:9:    struct virtio_vsock *
-    net/vmw_vsock/virtio_transport.c:631:9: error: incompatible types in comparison expression (different address spaces):
-    net/vmw_vsock/virtio_transport.c:631:9:    struct virtio_vsock [noderef] __rcu *
-    net/vmw_vsock/virtio_transport.c:631:9:    struct virtio_vsock *
-
-Fixes: 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock")
-Reported-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 7d2911c43815 ("net: smc91x: Fix gpios for device tree based booting")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/virtio_transport.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/smsc/smc91x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-index 082a309366905..861ec9a671f9d 100644
---- a/net/vmw_vsock/virtio_transport.c
-+++ b/net/vmw_vsock/virtio_transport.c
-@@ -22,7 +22,7 @@
- #include <net/af_vsock.h>
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index 90410f9d3b1aa..1c4fea9c3ec4c 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -2274,7 +2274,7 @@ static int smc_drv_probe(struct platform_device *pdev)
+ 		ret = try_toggle_control_gpio(&pdev->dev, &lp->power_gpio,
+ 					      "power", 0, 0, 100);
+ 		if (ret)
+-			return ret;
++			goto out_free_netdev;
  
- static struct workqueue_struct *virtio_vsock_workqueue;
--static struct virtio_vsock *the_virtio_vsock;
-+static struct virtio_vsock __rcu *the_virtio_vsock;
- static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
+ 		/*
+ 		 * Optional reset GPIO configured? Minimum 100 ns reset needed
+@@ -2283,7 +2283,7 @@ static int smc_drv_probe(struct platform_device *pdev)
+ 		ret = try_toggle_control_gpio(&pdev->dev, &lp->reset_gpio,
+ 					      "reset", 0, 0, 100);
+ 		if (ret)
+-			return ret;
++			goto out_free_netdev;
  
- struct virtio_vsock {
+ 		/*
+ 		 * Need to wait for optional EEPROM to load, max 750 us according
 -- 
 2.25.1
 
