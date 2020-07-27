@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7507E22EF9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B3C22F068
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731102AbgG0ORm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:17:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
+        id S1731407AbgG0OYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731062AbgG0OR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:17:29 -0400
+        id S1732202AbgG0OYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:24:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA23820775;
-        Mon, 27 Jul 2020 14:17:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 641472075A;
+        Mon, 27 Jul 2020 14:24:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859449;
-        bh=W6z7dnpeGGRWpWZZKzTCo6fCMQg2u8gAj9/OmC7aNfg=;
+        s=default; t=1595859858;
+        bh=8gj+gLcINm454lhIuhKjsm+FVsjMo2Q6mwn60Q42hKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=12JX/sec1/83hIdR3/Ky8hicRe50EGLdpZuptf5Y7kkns2+xedT7g0/hKuP4rkwbq
-         Y3pOCabBLAMRG4FEWVo+VzETni8Z52jYduj+wRQ3kLa06EuQKdZCMf93njYXh01bt5
-         ixo0jmSVcAJueME/9YFhTXg5xzcdpU5L/vTT5sH0=
+        b=h5D5ccgn0tXCJwWv4fnAjr60RR8jkfkzGojq4ADjUZuEQc0WZxkhP7YBiBoN0Et8H
+         vv/7JMcMj6ytY4waBxfPQFimUxOBUWI82uU5wqNTvPocgDjhg7Ojn2vRTUPwOPMn9O
+         S282rzqjNzAj1vCvQBBTGOyRTnlqOSZ4NTCj4d3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 113/138] staging: comedi: addi_apci_1500: check INSN_CONFIG_DIGITAL_TRIG shift
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 133/179] arm64: Use test_tsk_thread_flag() for checking TIF_SINGLESTEP
 Date:   Mon, 27 Jul 2020 16:05:08 +0200
-Message-Id: <20200727134931.110577599@linuxfoundation.org>
+Message-Id: <20200727134939.127148266@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Will Deacon <will@kernel.org>
 
-commit fc846e9db67c7e808d77bf9e2ef3d49e3820ce5d upstream.
+[ Upstream commit 5afc78551bf5d53279036e0bf63314e35631d79f ]
 
-The `INSN_CONFIG` comedi instruction with sub-instruction code
-`INSN_CONFIG_DIGITAL_TRIG` includes a base channel in `data[3]`. This is
-used as a right shift amount for other bitmask values without being
-checked.  Shift amounts greater than or equal to 32 will result in
-undefined behavior.  Add code to deal with this, adjusting the checks
-for invalid channels so that enabled channel bits that would have been
-lost by shifting are also checked for validity.  Only channels 0 to 15
-are valid.
+Rather than open-code test_tsk_thread_flag() at each callsite, simply
+replace the couple of offenders with calls to test_tsk_thread_flag()
+directly.
 
-Fixes: a8c66b684efaf ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
-Cc: <stable@vger.kernel.org> #4.0+: ef75e14a6c93: staging: comedi: verify array index is correct before using it
-Cc: <stable@vger.kernel.org> #4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200717145257.112660-5-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1500.c |   24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ arch/arm64/kernel/debug-monitors.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1500.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
-@@ -452,13 +452,14 @@ static int apci1500_di_cfg_trig(struct c
- 	struct apci1500_private *devpriv = dev->private;
- 	unsigned int trig = data[1];
- 	unsigned int shift = data[3];
--	unsigned int hi_mask = data[4] << shift;
--	unsigned int lo_mask = data[5] << shift;
--	unsigned int chan_mask = hi_mask | lo_mask;
--	unsigned int old_mask = (1 << shift) - 1;
-+	unsigned int hi_mask;
-+	unsigned int lo_mask;
-+	unsigned int chan_mask;
-+	unsigned int old_mask;
- 	unsigned int pm;
- 	unsigned int pt;
- 	unsigned int pp;
-+	unsigned int invalid_chan;
+diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
+index 7569deb1eac17..d64a3c1e1b6ba 100644
+--- a/arch/arm64/kernel/debug-monitors.c
++++ b/arch/arm64/kernel/debug-monitors.c
+@@ -396,14 +396,14 @@ void user_rewind_single_step(struct task_struct *task)
+ 	 * If single step is active for this thread, then set SPSR.SS
+ 	 * to 1 to avoid returning to the active-pending state.
+ 	 */
+-	if (test_ti_thread_flag(task_thread_info(task), TIF_SINGLESTEP))
++	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
+ 		set_regs_spsr_ss(task_pt_regs(task));
+ }
+ NOKPROBE_SYMBOL(user_rewind_single_step);
  
- 	if (trig > 1) {
- 		dev_dbg(dev->class_dev,
-@@ -466,7 +467,20 @@ static int apci1500_di_cfg_trig(struct c
- 		return -EINVAL;
- 	}
+ void user_fastforward_single_step(struct task_struct *task)
+ {
+-	if (test_ti_thread_flag(task_thread_info(task), TIF_SINGLESTEP))
++	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
+ 		clear_regs_spsr_ss(task_pt_regs(task));
+ }
  
--	if (chan_mask > 0xffff) {
-+	if (shift <= 16) {
-+		hi_mask = data[4] << shift;
-+		lo_mask = data[5] << shift;
-+		old_mask = (1U << shift) - 1;
-+		invalid_chan = (data[4] | data[5]) >> (16 - shift);
-+	} else {
-+		hi_mask = 0;
-+		lo_mask = 0;
-+		old_mask = 0xffff;
-+		invalid_chan = data[4] | data[5];
-+	}
-+	chan_mask = hi_mask | lo_mask;
-+
-+	if (invalid_chan) {
- 		dev_dbg(dev->class_dev, "invalid digital trigger channel\n");
- 		return -EINVAL;
- 	}
+-- 
+2.25.1
+
 
 
