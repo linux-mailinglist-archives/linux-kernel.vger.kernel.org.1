@@ -2,74 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7646622E41C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 04:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A89322E41E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 04:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgG0Cw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 22:52:29 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:60416 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726044AbgG0Cw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 22:52:29 -0400
-Received: from localhost (unknown [159.226.5.99])
-        by APP-03 (Coremail) with SMTP id rQCowAAnL8NZQR5fRJpnAw--.64264S2;
-        Mon, 27 Jul 2020 10:52:09 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     perex@perex.cz, tiwai@suse.com, alexander@tsoy.me,
-        e.burema@gmail.com, vulab@iscas.ac.cn, henryl@nvidia.com,
-        alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: endpoint : remove needless check before usb_free_coherent()
-Date:   Mon, 27 Jul 2020 02:52:08 +0000
-Message-Id: <20200727025208.8739-1-vulab@iscas.ac.cn>
+        id S1727871AbgG0Cx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 22:53:27 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:57006 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727050AbgG0Cx1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 22:53:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U3rv6BO_1595818403;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U3rv6BO_1595818403)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 27 Jul 2020 10:53:23 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     peterhuewe@gmx.de, jarkko.sakkinen@linux.intel.com, jgg@ziepe.ca,
+        arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     tianjia.zhang@linux.alibaba.com
+Subject: [PATCH] tpm: Fix the description error of the help information in Kconfig
+Date:   Mon, 27 Jul 2020 10:53:23 +0800
+Message-Id: <20200727025323.26712-1-tianjia.zhang@linux.alibaba.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: rQCowAAnL8NZQR5fRJpnAw--.64264S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDWF4UJwb_yoW3WFX_ua
-        y8Gr1DWrWqg3y7K3srCr4FyFW2g39aqF1kWF1SyFZrJF98J3yYy34xJrs8GF1fuanYgFnx
-        Xwn2krZxGryxKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Wrv_ZF1lYx0Ex4A2jsIE14v26r4UJV
-        WxJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8JwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0-dbUUUUUU==
-X-Originating-IP: [159.226.5.99]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAgYKA1JhbmICzgACs8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb_free_coherent() is safe with NULL addr and this check is
-not required.
+Obviously, the TPM version number in the help message is wrong, which
+will cause confusion. This patch fixes it.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 ---
- sound/usb/endpoint.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/char/tpm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 88760268fb55..3a2b2a309a71 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -615,9 +615,8 @@ static void release_urbs(struct snd_usb_endpoint *ep, int force)
- 	for (i = 0; i < ep->nurbs; i++)
- 		release_urb_ctx(&ep->urb[i]);
- 
--	if (ep->syncbuf)
--		usb_free_coherent(ep->chip->dev, SYNC_URBS * 4,
--				  ep->syncbuf, ep->sync_dma);
-+	usb_free_coherent(ep->chip->dev, SYNC_URBS * 4,
-+			  ep->syncbuf, ep->sync_dma);
- 
- 	ep->syncbuf = NULL;
- 	ep->nurbs = 0;
+diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+index 58b4c573d176..8eedb3e704f3 100644
+--- a/drivers/char/tpm/Kconfig
++++ b/drivers/char/tpm/Kconfig
+@@ -62,7 +62,7 @@ config TCG_TIS_SPI
+ 	help
+ 	  If you have a TPM security chip which is connected to a regular,
+ 	  non-tcg SPI master (i.e. most embedded platforms) that is compliant with the
+-	  TCG TIS 1.3 TPM specification (TPM1.2) or the TCG PTP FIFO
++	  TCG TIS 1.3 TPM specification (TPM1.3) or the TCG PTP FIFO
+ 	  specification (TPM2.0) say Yes and it will be accessible from
+ 	  within Linux. To compile this driver as a module, choose  M here;
+ 	  the module will be called tpm_tis_spi.
 -- 
 2.17.1
 
