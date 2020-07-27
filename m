@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C557E22EFC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4224022EFC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731340AbgG0OTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46768 "EHLO mail.kernel.org"
+        id S1731370AbgG0OTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:19:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731323AbgG0OS6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:18:58 -0400
+        id S1730769AbgG0OTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:19:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33D5D2070A;
-        Mon, 27 Jul 2020 14:18:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5577D2083E;
+        Mon, 27 Jul 2020 14:19:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859537;
-        bh=58KyAkNxzlfX9Tzbg4tc1CYwtIyYcUOiqkzipU7lwEI=;
+        s=default; t=1595859554;
+        bh=ePzMsZXUTslGkSsNhaVZcjTY3pwqZrmfziQBGeiOnbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KksyPU0QGm2qWQKYFWOXgbk+kZJ5sIg4PyH8MwiaglD1n/v3kBIs20btSUwhYXDhC
-         1GkdWWg4SaXnh6Zyrj1tLClacXMCAKt5VUQTUP+Bf+KNfGd/0WDACYR3G0edrdb1fs
-         qZbonwYiVPuuxd7j/HcBPPyS3ueQrTPlvghxlZmI=
+        b=UhydlO4sndCCvLScZd4JVgQHr74Hf6MV2zcDGcH2gp8KEyLq0Wqry55KndBaZfQg/
+         zVkbyUZa5ozgpFgQQAo1XCQXj11rlUocIdHhbLnZHqhxj1tl7RXaq0CiMIKfUpnAHu
+         uURULHHYgZINZKwumtDc3qZWbzpy7goztn8LFt7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH 5.7 001/179] soc: qcom: rpmh: Dirt can only make you dirtier, not cleaner
-Date:   Mon, 27 Jul 2020 16:02:56 +0200
-Message-Id: <20200727134932.738157576@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 002/179] gpio: arizona: handle pm_runtime_get_sync failure case
+Date:   Mon, 27 Jul 2020 16:02:57 +0200
+Message-Id: <20200727134932.788426020@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
 References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,43 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-commit 35bb4b22f606c0cc8eedf567313adc18161b1af4 upstream.
+[ Upstream commit e6f390a834b56583e6fc0949822644ce92fbb107 ]
 
-Adding an item into the cache should never be able to make the cache
-cleaner.  Use "|=" rather than "=" to update the dirty flag.
+Calling pm_runtime_get_sync increments the counter even in case of
+failure, causing incorrect ref count. Call pm_runtime_put if
+pm_runtime_get_sync fails.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Maulik Shah <mkshah@codeaurora.org> Thanks, Maulik
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Fixes: bb7000677a1b ("soc: qcom: rpmh: Update dirty flag only when data changes")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20200417141531.1.Ia4b74158497213eabad7c3d474c50bfccb3f342e@changeid
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200605025207.65719-1-navid.emamdoost@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/rpmh.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpio/gpio-arizona.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -150,10 +150,10 @@ existing:
- 		break;
+diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
+index 5640efe5e7504..7520a13b4c7ca 100644
+--- a/drivers/gpio/gpio-arizona.c
++++ b/drivers/gpio/gpio-arizona.c
+@@ -106,6 +106,7 @@ static int arizona_gpio_direction_out(struct gpio_chip *chip,
+ 		ret = pm_runtime_get_sync(chip->parent);
+ 		if (ret < 0) {
+ 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
++			pm_runtime_put(chip->parent);
+ 			return ret;
+ 		}
  	}
- 
--	ctrlr->dirty = (req->sleep_val != old_sleep_val ||
--			req->wake_val != old_wake_val) &&
--			req->sleep_val != UINT_MAX &&
--			req->wake_val != UINT_MAX;
-+	ctrlr->dirty |= (req->sleep_val != old_sleep_val ||
-+			 req->wake_val != old_wake_val) &&
-+			 req->sleep_val != UINT_MAX &&
-+			 req->wake_val != UINT_MAX;
- 
- unlock:
- 	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
+-- 
+2.25.1
+
 
 
