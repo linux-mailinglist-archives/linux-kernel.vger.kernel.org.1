@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E566F22F20A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8B022F1F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731150AbgG0Ogw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:36:52 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:37596 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730317AbgG0ONL (ORCPT
+        id S1732928AbgG0Of7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:35:59 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42157 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730524AbgG0OOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:13:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595859191; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=od6qu1NhBeEXZbA2Vs3vSoZKYr7uCAz7VQWNJzNyddA=;
- b=ErrfmWmUGJd9lD6rVhz1jgED8fbPh40MJinix9frLomKJ80GbSncjW6gboqgyWHFjqoTIwXh
- 3j7dCC4hSqwqhEv78gPssydL3uTR90kOU9aJn92t1q/0BiisC/4DFN2I5HG4Dz2i9FKRDqbl
- ltHUdr1ZLk5dQ8fkugy5V3yOC8w=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
- 5f1ee0d97186ea1ee1f26dff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 14:12:41
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CBF42C4344C; Mon, 27 Jul 2020 14:12:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02493C4344C;
-        Mon, 27 Jul 2020 14:12:37 +0000 (UTC)
+        Mon, 27 Jul 2020 10:14:23 -0400
+Received: by mail-ot1-f65.google.com with SMTP id v21so5132573otj.9;
+        Mon, 27 Jul 2020 07:14:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RwV/fYC6R5PVghDc7Xcfm5xADtIIp1K2tl3Z3YbTId0=;
+        b=EyX8oZgXnnyZ14gS8R68le0lWjEV7pUltjytZqZJTHMzrGP3kfFlD6aSKu2sUVX5qy
+         +r7/BwgrNFPi8NzabwoV+P7U4eWB8aHHtrzjF7e9TC6cyk1FLp/Naeun9VqE0X2TdTfN
+         d1b03WqVKQgdcEiteOXfr9uDxGghi/X+8R5HplMezJuFIIsPGMf7IegyoCe+5lqoa0Ye
+         NEnVBVKreCylidXQB4n8U6fZtjySGYO3BvZ2mb+t/q6LKmyCqxLQ4c0HB3jwh88TiMma
+         GHB+34AFs9M9PhYLaPzdKf4q7H3hbz/fQWrkS6Co5WGWdtvH6o3k6uOV8gbec6e5zdhx
+         6aKA==
+X-Gm-Message-State: AOAM531ZdEKEz0AZS7F/F0NBgGuZqAR95rrPeUTy7+KVN0QLJbWPYXhk
+        QKgmJDYO9iGTYXZYbnjBivWc4092QE7sCq/zFG4=
+X-Google-Smtp-Source: ABdhPJy3IQ4gWoo3GVjFr2jd6qToC3wtimm7RFwI0aGYMQzT7H7gS+icm3pzzCk7LtxkYZm+IgVNdSPw5XxX9M393tU=
+X-Received: by 2002:a9d:590a:: with SMTP id t10mr20554597oth.262.1595859262962;
+ Mon, 27 Jul 2020 07:14:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 27 Jul 2020 19:42:37 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
-Subject: Re: [PATCH] coresight: etm4x: Fix etm4_count race using atomic
- variable
-In-Reply-To: <c98f0c27-7f0c-cf99-d52b-8a8b1e197ace@arm.com>
-References: <20200727060728.15027-1-saiprakash.ranjan@codeaurora.org>
- <c98f0c27-7f0c-cf99-d52b-8a8b1e197ace@arm.com>
-Message-ID: <7a98dc32652731e7a795e150e7e8d14f@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1594120299-31389-1-git-send-email-ego@linux.vnet.ibm.com> <20200707113235.GM14120@in.ibm.com>
+In-Reply-To: <20200707113235.GM14120@in.ibm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 27 Jul 2020 16:14:12 +0200
+Message-ID: <CAJZ5v0jA20TJyxRwtBu31zF5otkqbTW9R03Na3LgJsWB3nDmoQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] cpuidle-pseries: Parse extended CEDE information for idle.
+To:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        linuxppc-dev@ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-27 15:09, Suzuki K Poulose wrote:
-> On 07/27/2020 07:07 AM, Sai Prakash Ranjan wrote:
->> etm4_count keeps track of number of ETMv4 registered and on some
->> systems, a race is observed on etm4_count variable which can
->> lead to multiple calls to cpuhp_setup_state_nocalls_cpuslocked().
->> This function internally calls cpuhp_store_callbacks() which
->> prevents multiple registrations of callbacks for a given state
->> and due to this race, it returns -EBUSY leading to ETM probe
->> failures like below.
->> 
->>   coresight-etm4x: probe of 7040000.etm failed with error -16
->> 
->> This race can easily be triggered with async probe by setting
->> probe type as PROBE_PREFER_ASYNCHRONOUS and with ETM power
->> management property "arm,coresight-loses-context-with-cpu".
->> 
->> Prevent this race by converting etm4_count variable to atomic.
->> 
->> Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup 
->> in probe() function")
->> Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug 
->> state machine")
->> Suggested-by: Mike Leach <mike.leach@linaro.org>
->> (Mike: Rootcause and context for commit message)
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> 
-> Please could we leave the hotplug notifier installed with the driver
-> init and don't worry about this at all ? We bail out early in the
-> notifier anyways, if the CPU is not registered with its ETM.
-> 
+On Tue, Jul 7, 2020 at 1:32 PM Gautham R Shenoy <ego@linux.vnet.ibm.com> wrote:
+>
+> Hi,
+>
+> On Tue, Jul 07, 2020 at 04:41:34PM +0530, Gautham R. Shenoy wrote:
+> > From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+> >
+> > Hi,
+> >
+> >
+> >
+> >
+> > Gautham R. Shenoy (5):
+> >   cpuidle-pseries: Set the latency-hint before entering CEDE
+> >   cpuidle-pseries: Add function to parse extended CEDE records
+> >   cpuidle-pseries : Fixup exit latency for CEDE(0)
+> >   cpuidle-pseries : Include extended CEDE states in cpuidle framework
+> >   cpuidle-pseries: Block Extended CEDE(1) which adds no additional
+> >     value.
+>
+> Forgot to mention that these patches are on top of Nathan's series to
+> remove extended CEDE offline and bogus topology update code :
+> https://lore.kernel.org/linuxppc-dev/20200612051238.1007764-1-nathanl@linux.ibm.com/
 
-Sure thing, sorry for not taking the cue from earlier discussion.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+OK, so this is targeted at the powerpc maintainers, isn't it?
