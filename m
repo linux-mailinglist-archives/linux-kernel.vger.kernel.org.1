@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEB622F152
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E7222F1FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgG0OUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48730 "EHLO mail.kernel.org"
+        id S1731163AbgG0Og2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:36:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731548AbgG0OU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:20:27 -0400
+        id S1729175AbgG0ONn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:13:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D19DC208E4;
-        Mon, 27 Jul 2020 14:20:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 794E220838;
+        Mon, 27 Jul 2020 14:13:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859627;
-        bh=O9Z9tiqTm9cnKbRq09/xuN1LzIH51JT2PRH3U8rB0eU=;
+        s=default; t=1595859223;
+        bh=c+Y+yQT3lxy7e7HAIRDMVGzel/ODh5MUBqlnOruI4bU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PlkGHAFU5hZO7IZVRY8nSLMwTsHdW/tHvQ2Ng20241QwISejDrM9KBbflS2YksQIj
-         AMzggPMNdYnu7+L/hzJROuNfNNNX10rGlL+d+Tkdij6Epd8zX1uR6X2Io2tjZbsIGb
-         WJj5sAlOMq8JzIOJhf/xjgMkH7cQgjCAhTiUbq8w=
+        b=sX8mysB2/boeBI1x3fa6DPv5hWY4JhOtdBTXPNPQT78hApuY4LPb6wqnfmmX/L6Io
+         zaFN7yCy2zlK17LH1HBSk8eH/ArHNsXNYj2sXkiySigB6NQ4AroQ+6DFBTzt2QdPyT
+         cekWNeFLsEtUneWL0SFvVWPtmy6eyHCPe5pmjGg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 043/179] bnxt_en: Fix race when modifying pause settings.
-Date:   Mon, 27 Jul 2020 16:03:38 +0200
-Message-Id: <20200727134934.779055697@linuxfoundation.org>
+Subject: [PATCH 5.4 025/138] dm: do not use waitqueue for request-based DM
+Date:   Mon, 27 Jul 2020 16:03:40 +0200
+Message-Id: <20200727134926.633536587@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,42 +44,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 163e9ef63641a02de4c95cd921577265c52e1ce2 ]
+[ Upstream commit 85067747cf9888249fa11fa49ef75af5192d3988 ]
 
-The driver was modified to not rely on rtnl lock to protect link
-settings about 2 years ago.  The pause setting was missed when
-making that change.  Fix it by acquiring link_lock mutex before
-calling bnxt_hwrm_set_pause().
+Given request-based DM now uses blk-mq's blk_mq_queue_inflight() to
+determine if outstanding IO has completed (and DM has no control over
+the blk-mq state machine used to track outstanding IO) it is unsafe to
+wakeup waiter (dm_wait_for_completion) before blk-mq has cleared a
+request's state bits (e.g. MQ_RQ_IN_FLIGHT or MQ_RQ_COMPLETE).  As
+such dm_wait_for_completion() could be left to wait indefinitely if no
+other requests complete.
 
-Fixes: e2dc9b6e38fa ("bnxt_en: Don't use rtnl lock to protect link change logic in workqueue.")
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix this by eliminating request-based DM's use of waitqueue to wait
+for blk-mq requests to complete in dm_wait_for_completion.
+
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Depends-on: 3c94d83cb3526 ("blk-mq: change blk_mq_queue_busy() to blk_mq_queue_inflight()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/md/dm-rq.c |  4 ---
+ drivers/md/dm.c    | 64 ++++++++++++++++++++++++++++------------------
+ 2 files changed, 39 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 360f9a95c1d50..21cc2bd127603 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -1687,8 +1687,11 @@ static int bnxt_set_pauseparam(struct net_device *dev,
- 	if (epause->tx_pause)
- 		link_info->req_flow_ctrl |= BNXT_LINK_PAUSE_TX;
- 
--	if (netif_running(dev))
-+	if (netif_running(dev)) {
-+		mutex_lock(&bp->link_lock);
- 		rc = bnxt_hwrm_set_pause(bp);
-+		mutex_unlock(&bp->link_lock);
-+	}
- 	return rc;
+diff --git a/drivers/md/dm-rq.c b/drivers/md/dm-rq.c
+index 3f8577e2c13be..9fb46a6301d80 100644
+--- a/drivers/md/dm-rq.c
++++ b/drivers/md/dm-rq.c
+@@ -146,10 +146,6 @@ static void rq_end_stats(struct mapped_device *md, struct request *orig)
+  */
+ static void rq_completed(struct mapped_device *md)
+ {
+-	/* nudge anyone waiting on suspend queue */
+-	if (unlikely(wq_has_sleeper(&md->wait)))
+-		wake_up(&md->wait);
+-
+ 	/*
+ 	 * dm_put() must be at the end of this function. See the comment above
+ 	 */
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 1e7ad2ad48295..87319c473594a 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -627,28 +627,6 @@ static void free_tio(struct dm_target_io *tio)
+ 	bio_put(&tio->clone);
  }
  
+-static bool md_in_flight_bios(struct mapped_device *md)
+-{
+-	int cpu;
+-	struct hd_struct *part = &dm_disk(md)->part0;
+-	long sum = 0;
+-
+-	for_each_possible_cpu(cpu) {
+-		sum += part_stat_local_read_cpu(part, in_flight[0], cpu);
+-		sum += part_stat_local_read_cpu(part, in_flight[1], cpu);
+-	}
+-
+-	return sum != 0;
+-}
+-
+-static bool md_in_flight(struct mapped_device *md)
+-{
+-	if (queue_is_mq(md->queue))
+-		return blk_mq_queue_inflight(md->queue);
+-	else
+-		return md_in_flight_bios(md);
+-}
+-
+ u64 dm_start_time_ns_from_clone(struct bio *bio)
+ {
+ 	struct dm_target_io *tio = container_of(bio, struct dm_target_io, clone);
+@@ -2439,15 +2417,29 @@ void dm_put(struct mapped_device *md)
+ }
+ EXPORT_SYMBOL_GPL(dm_put);
+ 
+-static int dm_wait_for_completion(struct mapped_device *md, long task_state)
++static bool md_in_flight_bios(struct mapped_device *md)
++{
++	int cpu;
++	struct hd_struct *part = &dm_disk(md)->part0;
++	long sum = 0;
++
++	for_each_possible_cpu(cpu) {
++		sum += part_stat_local_read_cpu(part, in_flight[0], cpu);
++		sum += part_stat_local_read_cpu(part, in_flight[1], cpu);
++	}
++
++	return sum != 0;
++}
++
++static int dm_wait_for_bios_completion(struct mapped_device *md, long task_state)
+ {
+ 	int r = 0;
+ 	DEFINE_WAIT(wait);
+ 
+-	while (1) {
++	while (true) {
+ 		prepare_to_wait(&md->wait, &wait, task_state);
+ 
+-		if (!md_in_flight(md))
++		if (!md_in_flight_bios(md))
+ 			break;
+ 
+ 		if (signal_pending_state(task_state, current)) {
+@@ -2462,6 +2454,28 @@ static int dm_wait_for_completion(struct mapped_device *md, long task_state)
+ 	return r;
+ }
+ 
++static int dm_wait_for_completion(struct mapped_device *md, long task_state)
++{
++	int r = 0;
++
++	if (!queue_is_mq(md->queue))
++		return dm_wait_for_bios_completion(md, task_state);
++
++	while (true) {
++		if (!blk_mq_queue_inflight(md->queue))
++			break;
++
++		if (signal_pending_state(task_state, current)) {
++			r = -EINTR;
++			break;
++		}
++
++		msleep(5);
++	}
++
++	return r;
++}
++
+ /*
+  * Process the deferred bios
+  */
 -- 
 2.25.1
 
