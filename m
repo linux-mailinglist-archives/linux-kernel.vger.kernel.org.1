@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBC322FE21
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A4C22FE2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbgG0Xo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgG0Xo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:44:27 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBC6C061794;
-        Mon, 27 Jul 2020 16:44:26 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id q7so19163568ljm.1;
-        Mon, 27 Jul 2020 16:44:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=moew+kZmDVAfG4fC4F4BUXU70dVOAPvVXz3aPRqWV+c=;
-        b=q1ZgQoFOYhEzcRTpKcFgFCwWWkfWsdZN9V77ruy9ePxp4kkFu4iPnUpH6Txm9eLP3K
-         Ducw5HyWELvKNTA+jGcHYqDLUPshvYa6BmrnXsro8UdgdiIcrU/WSHxuxBkofSyDwPCK
-         TL8TsWCPnDJ18icY0/LWUZd2Sf104gIsH82LtIgNn5usBJrvJ2wX+OTCcL7H5YyRraDW
-         TQ2B8A2apljo5nq5fx3VbvAbnjLgeQO4cJCsZlPAWIMOggk2NxTzZQzt4E2XAwnt/gxw
-         MRlKi6jvRdfZ1zwqyWJQ6ShIwLJze7Jc7KuP45j9bUeq+E5Vts/jXc4z8RiPWgeDrc06
-         tj2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=moew+kZmDVAfG4fC4F4BUXU70dVOAPvVXz3aPRqWV+c=;
-        b=KQgx2hHuYCOZ+EC/T7tXekyDCgeZPd5ZZT9i8JHqoQzt8KZgtMkC1Pst1V0OgJcUVs
-         pChkVdLN2waoeMwfa09oGBjZIjAgA7z+C0Fe8e11FzNCVvKchkTyyQ5Lzfl1Zutx1YzW
-         CSlYBY/eeUXEkZoorBsirx8VgUGUvkb+BGbeAFQ11FKFeH8guTV3s3YOrHIW9fvt0sdd
-         HwTGeBSkdpPWfa9FHm+VcwKYtNTJz9X12D9jwqdFxhlchJQX7faQ8fhw8Fo62hLpcPU2
-         A1xII6T3vu6N5rOfQ/sbvVXpmgLStTYR3NyCIJcrZ/9mbO16x/ZgvahpPZ6YHZ/RBA0X
-         MCQA==
-X-Gm-Message-State: AOAM5310mAtFqSbcEhjqLba5PXAYqTw69MXLQf/n5PjI8Y1cwMEU2rR6
-        er+9aXk9C2jyANSr2ShPHCKvpDtO5Zpid59Kl86Iyawxrgw=
-X-Google-Smtp-Source: ABdhPJxqt7yjHQHbPupJG9vvFvZjRsehmeM8o56Au9FRmksB3Q9itPwQ3rIbmzHlg9L/qPzCtL3kCB6IQ7KGZUHAu6M=
-X-Received: by 2002:a2e:8059:: with SMTP id p25mr5366425ljg.219.1595893464673;
- Mon, 27 Jul 2020 16:44:24 -0700 (PDT)
+        id S1726433AbgG0Xxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726091AbgG0Xxo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 19:53:44 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C466C20679;
+        Mon, 27 Jul 2020 23:53:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595894023;
+        bh=203hMgE6K9RIifS64M041Kv8rErCEe8+fB8jf0jJX8U=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NdFjnh9SDApq5FVBZggS1cUozQF9mej3TwEyaHh1d4v1rRPN2h4T6q1m/NlH6amGG
+         eLTYAvh5W2mYdEy7mchBvBQcH5IvLDaQU8beXFYZBZ8AolKjlaZLJo91ZBZOSClSMG
+         CcmDsqi55uNEXa99c5vO5U2ffSO5s3gS5oFbnE0M=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A603835231D2; Mon, 27 Jul 2020 16:53:43 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 16:53:43 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, mingo@kernel.org, tglx@linutronix.de,
+        bigeasy@linutronix.de, frederic@kernel.org
+Subject: Re: [PATCH smp 0/2] Provide CSD lock timeout diagnostics
+Message-ID: <20200727235343.GA30963@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200709235436.GA20922@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-References: <20200727194415.GA1275@embeddedor> <70ed74d65b5909615c7a9430f3479695465d3b1d.camel@perches.com>
-In-Reply-To: <70ed74d65b5909615c7a9430f3479695465d3b1d.camel@perches.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Tue, 28 Jul 2020 09:44:13 +1000
-Message-ID: <CAGRGNgW4VB1F9TdHf1Kg6WQtgHyH-ZKAnZ0kU5eKQaqUWHwbqg@mail.gmail.com>
-Subject: Re: [PATCH][next] ath11k: Use fallthrough pseudo-keyword
-To:     Joe Perches <joe@perches.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200709235436.GA20922@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+Hello!
 
-On Tue, Jul 28, 2020 at 5:48 AM Joe Perches <joe@perches.com> wrote:
->
-> On Mon, 2020-07-27 at 14:44 -0500, Gustavo A. R. Silva wrote:
-> > Replace the existing /* fall through */ comments and its variants with
-> > the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-> > fall-through markings when it is the case.
-> []
-> > diff --git a/drivers/net/wireless/ath/ath11k/dp.c b/drivers/net/wireless/ath/ath11k/dp.c
-> []
-> > @@ -159,7 +159,7 @@ int ath11k_dp_srng_setup(struct ath11k_base *ab, struct dp_srng *ring,
-> >                       break;
-> >               }
-> >               /* follow through when ring_num >= 3 */
-> > -             /* fall through */
-> > +             fallthrough;
->
-> Likely the /* follow through ... */ comment can be deleted too
+This is version 2 of a sneak preview of a series providing diagnostics
+to help track down problems that would result in excessive csd_unlock()
+latencies:
 
-If the "when ring_num >= 3" comment is needed, how should this get
-formatted? Maybe something like:
+1.	Add source and destination CPUs to __call_single_data.
+	I freely admit that I found the union declaration a
+	bit confusing!
 
-fallthrough; /* when ring_num >= 3 */
+2.	Provide CSD lock timeout diagnostics.
 
-Thanks,
+3.	Add "static" to a local variable.
 
--- 
-Julian Calaby
+Changes since v1:
 
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+o	Fix stack-out-of-bounds read in csd_lock_record located by syzbot.
+
+o	Fix KASAN-detected use-after-free issue reported by Qian Cai.
+
+o	Fix botched nr_cpu_ids comparison reported by Dan Carpenter.
+
+o	Fix numerous issues reported by Peter Zijlstra, including
+	annoying CPP macros, #ifdef consolidation, another use-after-free
+	issue, memory-ordering/comment issues, {} code-style issues.
+
+	This now has no effect unless CONFIG_CSD_LOCK_WAIT_DEBUG=y.
+	It also uses NSEC_PER_MSEC instead of cubing 1000.
+	Times are now printed in nanoseconds instead of decimal seconds.
+	Switched to C-language Classic Comment style.
+	Moved to x-mas tree variable-declaration order from alphabetic.
+	Avoided two prints via "CPU-1".
+
+o	This version still "handles" 32-bit VDSO build errors by
+	prohibiting CONFIG_CSD_LOCK_WAIT_DEBUG=y in 32-bit builds.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/smp.h       |    3 +
+ include/linux/smp_types.h |    3 +
+ kernel/smp.c              |  136 +++++++++++++++++++++++++++++++++++++++++++++-
+ lib/Kconfig.debug         |   11 +++
+ 4 files changed, 152 insertions(+), 1 deletion(-)
