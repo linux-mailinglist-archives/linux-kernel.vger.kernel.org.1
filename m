@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B01222EF31
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BDB22EEA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730483AbgG0OOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39590 "EHLO mail.kernel.org"
+        id S1729661AbgG0OJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730490AbgG0OOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:11 -0400
+        id S1728446AbgG0OJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:09:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81E962078E;
-        Mon, 27 Jul 2020 14:14:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74F1E2073E;
+        Mon, 27 Jul 2020 14:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859251;
-        bh=qCDLhlhkFegasnlzwVfmv02VbyBzY+ZJq3EAce/cSaM=;
+        s=default; t=1595858969;
+        bh=PmqNglSethUnlEQrhNyXgEHuVzSZszf9Q54SGbecUY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VSQqyDjyku8QDRDbx+V0qsQftUJnL1UaGPBBdgfvTxv7voHT/1ixgCoN0VA14LsG9
-         XOG/WFMyUiJtkRvWxdZGoM5ow2bc7bS7fnwI3Mw8voCzsSH3GsfP2qgfyIF3wLTSGo
-         6JCoH+Q8BUrpyRoTEIe/DauTI33BQ1Sff8l7I1rc=
+        b=D/c7np6oCT3EI8p6N0hw5LiKkd07bcQNrbEx/Cc79XTdtwewO08hYztbHQuIibamH
+         fGqjvuTdK4mEZVdTbm8qDrbHNBRojmenJeo7q2lYaxw83DnpuEqYqEyYRmNItiFocz
+         Qc1eW74OiqLE0M0gCOmkcnBC7/oZRP1F+hXzHM4o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Burkov <boris@bur.io>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 034/138] btrfs: fix mount failure caused by race with umount
-Date:   Mon, 27 Jul 2020 16:03:49 +0200
-Message-Id: <20200727134927.080881996@linuxfoundation.org>
+        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 16/86] spi: spi-fsl-dspi: Exit the ISR with IRQ_NONE when its not ours
+Date:   Mon, 27 Jul 2020 16:03:50 +0200
+Message-Id: <20200727134915.156933894@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,104 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+From: Vladimir Oltean <olteanv@gmail.com>
 
-commit 48cfa61b58a1fee0bc49eef04f8ccf31493b7cdd upstream.
+commit d41f36a6464a85c06ad920703d878e4491d2c023 upstream.
 
-It is possible to cause a btrfs mount to fail by racing it with a slow
-umount. The crux of the sequence is generic_shutdown_super not yet
-calling sop->put_super before btrfs_mount_root calls btrfs_open_devices.
-If that occurs, btrfs_open_devices will decide the opened counter is
-non-zero, increment it, and skip resetting fs_devices->total_rw_bytes to
-0. From here, mount will call sget which will result in grab_super
-trying to take the super block umount semaphore. That semaphore will be
-held by the slow umount, so mount will block. Before up-ing the
-semaphore, umount will delete the super block, resulting in mount's sget
-reliably allocating a new one, which causes the mount path to dutifully
-fill it out, and increment total_rw_bytes a second time, which causes
-the mount to fail, as we see double the expected bytes.
+The DSPI interrupt can be shared between two controllers at least on the
+LX2160A. In that case, the driver for one controller might misbehave and
+consume the other's interrupt. Fix this by actually checking if any of
+the bits in the status register have been asserted.
 
-Here is the sequence laid out in greater detail:
-
-CPU0                                                    CPU1
-down_write sb->s_umount
-btrfs_kill_super
-  kill_anon_super(sb)
-    generic_shutdown_super(sb);
-      shrink_dcache_for_umount(sb);
-      sync_filesystem(sb);
-      evict_inodes(sb); // SLOW
-
-                                              btrfs_mount_root
-                                                btrfs_scan_one_device
-                                                fs_devices = device->fs_devices
-                                                fs_info->fs_devices = fs_devices
-                                                // fs_devices-opened makes this a no-op
-                                                btrfs_open_devices(fs_devices, mode, fs_type)
-                                                s = sget(fs_type, test, set, flags, fs_info);
-                                                  find sb in s_instances
-                                                  grab_super(sb);
-                                                    down_write(&s->s_umount); // blocks
-
-      sop->put_super(sb)
-        // sb->fs_devices->opened == 2; no-op
-      spin_lock(&sb_lock);
-      hlist_del_init(&sb->s_instances);
-      spin_unlock(&sb_lock);
-      up_write(&sb->s_umount);
-                                                    return 0;
-                                                  retry lookup
-                                                  don't find sb in s_instances (deleted by CPU0)
-                                                  s = alloc_super
-                                                  return s;
-                                                btrfs_fill_super(s, fs_devices, data)
-                                                  open_ctree // fs_devices total_rw_bytes improperly set!
-                                                    btrfs_read_chunk_tree
-                                                      read_one_dev // increment total_rw_bytes again!!
-                                                      super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
-
-To fix this, we clear total_rw_bytes from within btrfs_read_chunk_tree
-before the calls to read_one_dev, while holding the sb umount semaphore
-and the uuid mutex.
-
-To reproduce, it is sufficient to dirty a decent number of inodes, then
-quickly umount and mount.
-
-  for i in $(seq 0 500)
-  do
-    dd if=/dev/zero of="/mnt/foo/$i" bs=1M count=1
-  done
-  umount /mnt/foo&
-  mount /mnt/foo
-
-does the trick for me.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Fixes: 13aed2392741 ("spi: spi-fsl-dspi: use IRQF_SHARED mode to request IRQ")
+Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/20190822212450.21420-2-olteanv@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/volumes.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/spi/spi-fsl-dspi.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7270,6 +7270,14 @@ int btrfs_read_chunk_tree(struct btrfs_f
- 	mutex_lock(&fs_info->chunk_mutex);
- 
- 	/*
-+	 * It is possible for mount and umount to race in such a way that
-+	 * we execute this code path, but open_fs_devices failed to clear
-+	 * total_rw_bytes. We certainly want it cleared before reading the
-+	 * device items, so clear it here.
-+	 */
-+	fs_info->fs_devices->total_rw_bytes = 0;
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -878,9 +878,11 @@ static irqreturn_t dspi_interrupt(int ir
+ 					trans_mode);
+ 			}
+ 		}
 +
-+	/*
- 	 * Read all device items, and then all the chunk items. All
- 	 * device items are found before any chunk item (their object id
- 	 * is smaller than the lowest possible object id for a chunk
++		return IRQ_HANDLED;
+ 	}
+ 
+-	return IRQ_HANDLED;
++	return IRQ_NONE;
+ }
+ 
+ static const struct of_device_id fsl_dspi_dt_ids[] = {
 
 
