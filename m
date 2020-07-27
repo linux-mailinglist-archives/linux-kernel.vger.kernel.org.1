@@ -2,62 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5517922F761
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E57622F76A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730229AbgG0SLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:11:36 -0400
-Received: from crapouillou.net ([89.234.176.41]:45736 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728556AbgG0SLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:11:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595873494; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:references; bh=a1uZ6dI3revExsbwQsIqi1pThqXLFYmFNrGJ1505KSI=;
-        b=RALWgwdktf5953lze/tfqx7Md7gy21mrPtuv+5Fz9kcWprfLXgDfm92xrxZ4LEnnNVl5uL
-        P5IZoRn+JnOZm8cIFChAof2fwdOcZCdaaCLYCMYdeAGt30oIVPOF8SheY7xWy4rOGsuF7z
-        Ta74WF7tE432hLg//uKAJtMBpk7egCA=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        stable@vger.kernel.org
-Subject: [PATCH] MIPS: qi_lb60: Fix routing to audio amplifier
-Date:   Mon, 27 Jul 2020 20:11:28 +0200
-Message-Id: <20200727181128.25756-1-paul@crapouillou.net>
+        id S1729753AbgG0SNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728312AbgG0SNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:13:10 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A9DC061794;
+        Mon, 27 Jul 2020 11:13:10 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id p1so8525291pls.4;
+        Mon, 27 Jul 2020 11:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kR383wS8kqwekIjxfXK5kIjXSbnIh9i7VOxO4cysSoo=;
+        b=dsIZtQnrESfjZx0zpTL6h5JDXL/rRLZ3xWAJWBj3SXWF/o76ZkStabCnFKUDo2LSrh
+         aypLIUiYaSJFu8CZsNXXO/X2kJGZXKAy0SEQSp1sSV158dfSWab0RDENgd6qL2h+l/pq
+         H7iEhYY7FmoQTM2pLFc2TxcdKbH8wEP+bG5bsq8DMwONxmMdFkroipo1HpSDu0c0VQLc
+         lVMkFZOOYuqZ84Xa1StBWtpBMPGzrjUfjUJtvOCbXTZvYIZD2UXA2fsQ7wZh4XyebtHQ
+         raVpZi8aaFXiDWANQXFsXr1rsxpymFC5JrWJIuCFhzFJKTUGvtiL09p0oi1GH9SGyZxm
+         no7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kR383wS8kqwekIjxfXK5kIjXSbnIh9i7VOxO4cysSoo=;
+        b=YOipMrulhwOfjO+Ow1ehvC9nXL8UgNmygUBp7VUpplGJBias7Lo6OHHH5uj3pqo3hN
+         iWxM4Ab4istOOZ8bx4CCwDRBrv0FOxPOzX2tPgZy7B3aHJhFx5LbGgekA3LQxrmc1aTk
+         YT7SEHhAsZ+MN4w83y08lsDMki754gD+qQMLlxkmIHR5N2QzxXGXjMeqeW/QwIrx5BWc
+         oWB3LpbDPsbUhMQ3GETLDpAevIVR1HDW+leWhcm4JAbvhA4pjxnJHO5hKKtb0XyMNaXO
+         bDKsYBSnNrjiIGFJXzgxlZVhLxoOzAw18z26KVng1T/2ShInd9NRtlvFISpdkIroH0O8
+         2dCg==
+X-Gm-Message-State: AOAM531mNwWSWPZeqTcISnXwj/ON4L+lu9urAVwYW+/rN5dAkrlXgyJp
+        z721GEfp3eNu72Y8n2qHvWQ=
+X-Google-Smtp-Source: ABdhPJx2W8GAzXwFm0DY2CvswNN7eeV0OJe+kpgDp9G5l3uvOcy3v3G4ipQeuyhK8me3YL7tW5c4HQ==
+X-Received: by 2002:a17:90a:2349:: with SMTP id f67mr489127pje.17.1595873589858;
+        Mon, 27 Jul 2020 11:13:09 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id w18sm15382775pgj.31.2020.07.27.11.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 11:13:09 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 23:41:44 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2] ata: use generic power management
+Message-ID: <20200727181144.GA543@gmail.com>
+References: <20200727173923.694872-1-vaibhavgupta40@gmail.com>
+ <20200727174012.GA696265@gmail.com>
+ <2b4738b0-5c2c-8ee2-83f9-10b961a5d0d3@kernel.dk>
+ <20200727175119.GA700880@gmail.com>
+ <99b7cc57-1b4f-6c0b-00c6-08e22021c373@kernel.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <99b7cc57-1b4f-6c0b-00c6-08e22021c373@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ROUT (right channel output of audio codec) was connected to INL
-(left channel of audio amplifier) instead of INR (right channel of audio
-amplifier).
+On Mon, Jul 27, 2020 at 11:59:05AM -0600, Jens Axboe wrote:
+> On 7/27/20 11:51 AM, Vaibhav Gupta wrote:
+> > On Mon, Jul 27, 2020 at 11:42:51AM -0600, Jens Axboe wrote:
+> >> On 7/27/20 11:40 AM, Vaibhav Gupta wrote:
+> >>> The patch is compile-tested only.
+> >>
+> >> Please test and verify actual functionality, if you're serious about
+> >> potentially getting this into the kernel.
+> >>
+> > Hello Jens,
+> > 
+> > Sadly I don't have the hardware. This upgrade is part of my Linux Kernel
+> > Mentorship Program project. Like other PCI drivers which I have updated, I could
+> > do compile-testing only. Though this patch covers 54 drivers but the actual
+> > change is done only in drivers/ata/libata-core. Since rest of the drivers
+> > make use of the same ata_pci_device_suspend/resume(), it was a chain reaction. I
+> > only had to change variable binding in "struct pci_driver" variable of dependent
+> > drivers.
+> 
+> That's understandable, but you should find at least some hardware (maybe remotely
+> accessible) to test this on. I'm not going to apply this without some confidence
+> that it actually works, and compile only testing is a far cry from that. Lots of
+> code compiles, but fails miserably at runtime.
+> 
+> While it's touching 54 drivers, at least basic coverage of the most popular
+> choices will give everybody some confidence that it works in general.
+>
+Yes, I agree. Actually with previous drivers, I was able to get help from
+maintainers and/or supporters for the hardware testing. Is that possible for
+this patch?
 
-Fixes: 8ddebad15e9b ("MIPS: qi_lb60: Migrate to devicetree")
-Cc: stable@vger.kernel.org # v5.3
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- arch/mips/boot/dts/ingenic/qi_lb60.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/boot/dts/ingenic/qi_lb60.dts b/arch/mips/boot/dts/ingenic/qi_lb60.dts
-index 7a371d9c5a33..eda37fb516f0 100644
---- a/arch/mips/boot/dts/ingenic/qi_lb60.dts
-+++ b/arch/mips/boot/dts/ingenic/qi_lb60.dts
-@@ -69,7 +69,7 @@ sound {
- 			"Speaker", "OUTL",
- 			"Speaker", "OUTR",
- 			"INL", "LOUT",
--			"INL", "ROUT";
-+			"INR", "ROUT";
- 
- 		simple-audio-card,aux-devs = <&amp>;
- 
--- 
-2.27.0
-
+Thanks
+Vaibhav Gupta 
+> -- 
+> Jens Axboe
+> 
