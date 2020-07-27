@@ -2,124 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2710B22F6A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06BA22F6B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731039AbgG0RaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:30:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731008AbgG0RaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:30:21 -0400
-Received: from gaia (unknown [95.146.230.158])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16E9D20714;
-        Mon, 27 Jul 2020 17:30:17 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 18:30:15 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, dyoung@redhat.com,
-        bhe@redhat.com, will@kernel.org, james.morse@arm.com,
-        robh+dt@kernel.org, arnd@arndb.de, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, nsaenzjulienne@suse.de, corbet@lwn.net,
-        bhsharma@redhat.com, horms@verge.net.au, guohanjun@huawei.com,
-        xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v10 4/5] arm64: kdump: fix kdump broken with ZONE_DMA
- reintroduced
-Message-ID: <20200727173014.GL13938@gaia>
-References: <20200703035816.31289-1-chenzhou10@huawei.com>
- <20200703035816.31289-5-chenzhou10@huawei.com>
+        id S1731310AbgG0Rcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgG0Rcr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:32:47 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16122C061794;
+        Mon, 27 Jul 2020 10:32:47 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w126so9283312pfw.8;
+        Mon, 27 Jul 2020 10:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Y/oiTZvRbIGlVilYBQAce6xZVdmLxNzc+uCZkzk1V9g=;
+        b=FHs7NZnjm1y+Y0yUChIknkWpkRZeJSCPECasUc1GMHAAX0gQC7gJAuExKfTQg7YxK1
+         RUEDwI/yoCS6n/MAz2kzUyR1GEi8teb8fBWPR71NfQOMldeVOEruRq8ehJwY9KQsapzX
+         VttbXvWYZpzHEXv3/AsCgnykZlqIkofJxNQRSl86UnfHYfHfCRpGD7QfBdOkCbCuc5/u
+         +tODKkcQ1dt1Q9MPe6D5gxWZL+sf27Y1rKDqNS/HwIDAbmf/aVM8qctgzobo3bNaN9Pq
+         DXAgXHVNMFUpmOkmRAZio1bmexKAlAfRo2vsRAcg5LU52jLv2Lri37SJq3juqcItZTqY
+         /xNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Y/oiTZvRbIGlVilYBQAce6xZVdmLxNzc+uCZkzk1V9g=;
+        b=D6pkcIsP8QuInK/8j8YIQAVmdMcaSiKf4pm0SNROqFypP4ceJNn/oloABUBj29dB7H
+         D8IAsOf5PEC+W0aeZ1HZadhkVAS5O+TnEIKORH+UofbzsTPbj9E4FMTUGgJz1pCSVtP2
+         ct9Bd0p1qClOTYplRxMM7mEZOjOPvX1pud+W0gpZhhcxnnaJUjV4VQQX2nqZ3HeeHXyi
+         NoIye4LeCiaoTV2TLOcjy+moMRJEJ5Y59+q/shZfK4lVNUDbNifiUpo2in/HnW9PM167
+         Gh9II375z6X8nO3QSu2WQvzXrLsLnh9orP6uLqb1j3lAmt+IgD1LidD/4kjlONHHOEqL
+         b5lQ==
+X-Gm-Message-State: AOAM532VmM5tb/fiyspLc0qJkl6TTjEheMOLMnf7yrgEl4p/7WC731X7
+        lEeww7Phd4ekxAeWRnTpRBY=
+X-Google-Smtp-Source: ABdhPJyCn9FDNTlrAkhDjbasGUiicJEpzPdljaTQslwjMY8oofLHLGd1j2EDiVq6xsMqKuOfd5dCeA==
+X-Received: by 2002:a65:620e:: with SMTP id d14mr20414491pgv.360.1595871166544;
+        Mon, 27 Jul 2020 10:32:46 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id x66sm15427782pgb.12.2020.07.27.10.32.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 10:32:45 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v3] spi: spi-topcliff-pch: drop call to wakeup-disable
+Date:   Mon, 27 Jul 2020 22:59:37 +0530
+Message-Id: <20200727172936.661567-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
+References: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200703035816.31289-5-chenzhou10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 11:58:15AM +0800, Chen Zhou wrote:
-> commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32")
-> broken the arm64 kdump. If the memory reserved for crash dump kernel
-> falled in ZONE_DMA32, the devices in crash dump kernel need to use
-> ZONE_DMA will alloc fail.
-> 
-> This patch addressed the above issue based on "reserving crashkernel
-> above 4G". Originally, we reserve low memory below 4G, and now just need
-> to adjust memory limit to arm64_dma_phys_limit in reserve_crashkernel_low
-> if ZONE_DMA is enabled. That is, if there are devices need to use ZONE_DMA
-> in crash dump kernel, it is a good choice to use parameters
-> "crashkernel=X crashkernel=Y,low".
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> ---
->  kernel/crash_core.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index a7580d291c37..e8ecbbc761a3 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -320,6 +320,7 @@ int __init reserve_crashkernel_low(void)
->  	unsigned long long base, low_base = 0, low_size = 0;
->  	unsigned long total_low_mem;
->  	int ret;
-> +	phys_addr_t crash_max = 1ULL << 32;
->  
->  	total_low_mem = memblock_mem_size(1UL << (32 - PAGE_SHIFT));
->  
-> @@ -352,7 +353,11 @@ int __init reserve_crashkernel_low(void)
->  			return 0;
->  	}
->  
-> -	low_base = memblock_find_in_range(0, 1ULL << 32, low_size, CRASH_ALIGN);
-> +#ifdef CONFIG_ARM64
-> +	if (IS_ENABLED(CONFIG_ZONE_DMA))
-> +		crash_max = arm64_dma_phys_limit;
-> +#endif
-> +	low_base = memblock_find_in_range(0, crash_max, low_size, CRASH_ALIGN);
->  	if (!low_base) {
->  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
->  		       (unsigned long)(low_size >> 20));
+Before generic upgrade, both .suspend() and .resume() were invoking
+pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
+states. (Normal trend is .suspend() enables and .resume() disables the
+wakeup.)
 
-Given the number of #ifdefs we end up with in this function, I think
-it's better to simply copy to the code to arch/arm64 and tailor it
-accordingly.
+This was ambiguous and may be buggy. Instead of replicating the legacy
+behavior, drop the wakeup-disable call.
 
-Anyway, there are two series solving slightly different issues with
-kdump reservations:
+Fixes: f185bcc77980 ("spi: spi-topcliff-pch: use generic power management")
+Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/spi/spi-topcliff-pch.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-1. This series which relaxes the crashkernel= allocation to go anywhere
-   in the accessible space while having a dedicated crashkernel=X,low
-   option for ZONE_DMA.
-
-2. Bhupesh's series [1] forcing crashkernel=X allocations only from
-   ZONE_DMA.
-
-For RPi4 support, we limited ZONE_DMA allocations to the 1st GB.
-Existing crashkernel= uses may no longer work, depending on where the
-allocation falls. Option (2) above is a quick fix assuming that the
-crashkernel reservation is small enough. What's a typical crashkernel
-option here? That series is probably more prone to reservation failures.
-
-Option (1), i.e. this series, doesn't solve the problem raised by
-Bhupesh unless one uses the crashkernel=X,low argument. It can actually
-make it worse even for ZONE_DMA32 since the allocation can go above 4G
-(assuming that we change the ZONE_DMA configuration to only limit it to
-1GB on RPi4).
-
-I'm more inclined to keep the crashkernel= behaviour to ZONE_DMA
-allocations. If this is too small for typical kdump, we can look into
-expanding ZONE_DMA to 4G on non-RPi4 hardware (we had patches on the
-list). In addition, if Chen thinks allocations above 4G are still needed
-or if RPi4 needs a sufficiently large crashkernel=, I'd rather have a
-",high" option to explicitly require such access.
-
-[1] http://lists.infradead.org/pipermail/kexec/2020-July/020777.html
-
+diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+index 281a90f1b5d8..c73a03ddf5f3 100644
+--- a/drivers/spi/spi-topcliff-pch.c
++++ b/drivers/spi/spi-topcliff-pch.c
+@@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
+ 
+ 	dev_dbg(dev, "%s ENTRY\n", __func__);
+ 
+-	device_wakeup_disable(dev);
+-
+ 	/* set suspend status to false */
+ 	pd_dev_save->board_dat->suspend_sts = false;
+ 
 -- 
-Catalin
+2.27.0
+
