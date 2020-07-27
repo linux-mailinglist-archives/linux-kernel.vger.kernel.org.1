@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABD622EFE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8797B22EF1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731530AbgG0OUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
+        id S1730361AbgG0ONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:13:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731489AbgG0OUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:20:08 -0400
+        id S1729741AbgG0ONT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:13:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61F2620775;
-        Mon, 27 Jul 2020 14:20:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCF4D208E4;
+        Mon, 27 Jul 2020 14:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859607;
-        bh=YZnLq741nuBq9qjJB7z7uTuxh27wOPHBavzsDj+frRM=;
+        s=default; t=1595859199;
+        bh=1qUn0lMJORu6ifgNr/+2XMmc4BJdRSnGJM6VzusjKEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DJY+g84KCZekxxQCWf2crSo0C2F3sXy3VKAFb9cqUV0+C5mqj2F0GDvnhGzAZ/JFb
-         E97mZPUD98b58OBRolq7X3xMIDAxw/GG6V/W25u5QgvI3hQkEyxcc6qLym7HiDWe/z
-         0rXQ0P8KaESXa5mkS//faEJHgbqVDmdl7dMyYuAk=
+        b=YmFCUXMOrIzAFKjyW5t11wIBW77yMl7r1xK1mmKaHUOL/WQBpLcGLZS1yjc84I/4l
+         SLWC/hbCgBZiFcYDbpTnDwAbrSEEu615Pql9zpoZwmnalvS/xLfZgFJF6Pb9/3jvDn
+         7hjsmRpgT37/bm20pX/eqciMkIrJuSy9JueUTGc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.7 036/179] ASoC: Intel: cht_bsw_rt5672: Change bus format to I2S 2 channel
-Date:   Mon, 27 Jul 2020 16:03:31 +0200
-Message-Id: <20200727134934.429451982@linuxfoundation.org>
+        stable@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 017/138] drivers/firmware/psci: Fix memory leakage in alloc_init_cpu_groups()
+Date:   Mon, 27 Jul 2020 16:03:32 +0200
+Message-Id: <20200727134926.176944604@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Gavin Shan <gshan@redhat.com>
 
-commit 0ceb8a36d023d4bb4ffca3474a452fb1dfaa0ef2 upstream.
+[ Upstream commit c377e67c6271954969384f9be1b1b71de13eba30 ]
 
-The default mode for SSP configuration is TDM 4 slot and so far we were
-using this for the bus format on cht-bsw-rt56732 boards.
+The CPU mask (@tmp) should be released on failing to allocate
+@cpu_groups or any of its elements. Otherwise, it leads to memory
+leakage because the CPU mask variable is dynamically allocated
+when CONFIG_CPUMASK_OFFSTACK is enabled.
 
-One board, the Lenovo Miix 2 10 uses not 1 but 2 codecs connected to SSP2.
-The second piggy-backed, output-only codec is inside the keyboard-dock
-(which has extra speakers). Unlike the main rt5672 codec, we cannot
-configure this codec, it is hard coded to use 2 channel 24 bit I2S.
-
-Using 4 channel TDM leads to the dock speakers codec (which listens in on
-the data send from the SSP to the rt5672 codec) emiting horribly distorted
-sound.
-
-Since we only support 2 channels anyways, there is no need for TDM on any
-cht-bsw-rt5672 designs. So we can simply use I2S 2ch everywhere.
-
-This commit fixes the Lenovo Miix 2 10 dock speakers issue by changing
-the bus format set in cht_codec_fixup() to I2S 2 channel.
-
-This change has been tested on the following devices with a rt5672 codec:
-
-Lenovo Miix 2 10
-Lenovo Thinkpad 8
-Lenovo Thinkpad 10 (gen 1)
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Cc: stable@vger.kernel.org
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1786723
-Link: https://lore.kernel.org/r/20200628155231.71089-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Link: https://lore.kernel.org/r/20200630075227.199624-1-gshan@redhat.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c |   23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ drivers/firmware/psci/psci_checker.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -253,21 +253,20 @@ static int cht_codec_fixup(struct snd_so
- 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
+diff --git a/drivers/firmware/psci/psci_checker.c b/drivers/firmware/psci/psci_checker.c
+index 6a445397771ca..03eb798ad3ed9 100644
+--- a/drivers/firmware/psci/psci_checker.c
++++ b/drivers/firmware/psci/psci_checker.c
+@@ -157,8 +157,10 @@ static int alloc_init_cpu_groups(cpumask_var_t **pcpu_groups)
  
- 	/*
--	 * Default mode for SSP configuration is TDM 4 slot
-+	 * Default mode for SSP configuration is TDM 4 slot. One board/design,
-+	 * the Lenovo Miix 2 10 uses not 1 but 2 codecs connected to SSP2. The
-+	 * second piggy-backed, output-only codec is inside the keyboard-dock
-+	 * (which has extra speakers). Unlike the main rt5672 codec, we cannot
-+	 * configure this codec, it is hard coded to use 2 channel 24 bit I2S.
-+	 * Since we only support 2 channels anyways, there is no need for TDM
-+	 * on any cht-bsw-rt5672 designs. So we simply use I2S 2ch everywhere.
- 	 */
--	ret = snd_soc_dai_set_fmt(asoc_rtd_to_codec(rtd, 0),
--				  SND_SOC_DAIFMT_DSP_B |
--				  SND_SOC_DAIFMT_IB_NF |
-+	ret = snd_soc_dai_set_fmt(asoc_rtd_to_cpu(rtd, 0),
-+				  SND_SOC_DAIFMT_I2S     |
-+				  SND_SOC_DAIFMT_NB_NF   |
- 				  SND_SOC_DAIFMT_CBS_CFS);
- 	if (ret < 0) {
--		dev_err(rtd->dev, "can't set format to TDM %d\n", ret);
--		return ret;
--	}
--
--	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
--	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_codec(rtd, 0), 0xF, 0xF, 4, 24);
--	if (ret < 0) {
--		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
- 		return ret;
- 	}
+ 	cpu_groups = kcalloc(nb_available_cpus, sizeof(cpu_groups),
+ 			     GFP_KERNEL);
+-	if (!cpu_groups)
++	if (!cpu_groups) {
++		free_cpumask_var(tmp);
+ 		return -ENOMEM;
++	}
  
+ 	cpumask_copy(tmp, cpu_online_mask);
+ 
+@@ -167,6 +169,7 @@ static int alloc_init_cpu_groups(cpumask_var_t **pcpu_groups)
+ 			topology_core_cpumask(cpumask_any(tmp));
+ 
+ 		if (!alloc_cpumask_var(&cpu_groups[num_groups], GFP_KERNEL)) {
++			free_cpumask_var(tmp);
+ 			free_cpu_groups(num_groups, &cpu_groups);
+ 			return -ENOMEM;
+ 		}
+-- 
+2.25.1
+
 
 
