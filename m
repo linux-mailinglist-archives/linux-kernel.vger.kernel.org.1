@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34DB22EA73
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E4222EA77
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728169AbgG0Kwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:52:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45466 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726298AbgG0Kwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:52:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay1.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EEA79B632;
-        Mon, 27 Jul 2020 10:52:52 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8DCE01E12C5; Mon, 27 Jul 2020 12:52:42 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 12:52:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Rong Chen <rong.a.chen@intel.com>, Jan Kara <jack@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [fsnotify] c738fbabb0: will-it-scale.per_process_ops -9.5%
- regression
-Message-ID: <20200727105242.GK23179@quack2.suse.cz>
-References: <20200721001505.GD19262@shao2-debian>
- <CAOQ4uxgq39EDS_k3eDTngEAm8cxHPa7qrkUSW8Rk6qS9cxC18w@mail.gmail.com>
- <9a2a4086-fbad-b4f8-9c00-2b7606441022@intel.com>
- <CAOQ4uxgHf_4GQzQGGRTxTECMvEeNjoqhsbGOm5T3GRpV+=0YzA@mail.gmail.com>
- <CAOQ4uxiXiSAaK92pvGDGUCd2hYq=J-7FxJYdUp=KSXncivwJZw@mail.gmail.com>
+        id S1728348AbgG0KyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgG0KyG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:54:06 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42C9C061794;
+        Mon, 27 Jul 2020 03:54:05 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id 72so7813956ple.0;
+        Mon, 27 Jul 2020 03:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oIEKzcok0AHytuejxAqDHox+Hv/4xCQLeQwpksAUjBk=;
+        b=NATaD6DOFsQ65caJoNxzMR1zR5wWv1mukgUlz/BQxbkOyAc5URJ66Y+8cdha222tlD
+         khfhBoARpbTJAfxfgmxzI25DrnSdQBWxkRBW4/FLvsE89WqdYen4yWtLcPPRWXfcPiQW
+         Gik2kR8VvdLGEoWhb8f0jxxfsTaN1VITh/z6fnufWcLt+xSwyDnNjizNAmxx5ggA+Tl+
+         ij30otw8WWxa0Me518bb4RvNp+5dOrGeuixKwriyJ/GTmZ0NBZVS3RelFEGMegirNXO3
+         /3CobaheVraCdrqydqqbQPsNUyqVJl8E46cp9mILLaxCGk4jnpvgGsPmnunjnFgO7aeq
+         LL8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oIEKzcok0AHytuejxAqDHox+Hv/4xCQLeQwpksAUjBk=;
+        b=KFpEi9J7MISEH0iONR3nJaoIUpy0/uMKA/LAMhltjDKbfVXw7z1AQjnxp2o/SriHim
+         uJuKTVon0Bjt9ronjDl0Y6XbOrIZi3T2Tc7ByWlVuf2o6mbtsk8DoZ/3gFp0koUgUiW3
+         NFlj/XBVZIrYM6FGjjId2CqYKok9LdLF/4ssMm9cmh1Ejmdh1ur6bp96131NkZ48ZQAp
+         z/+OGhVsS7//yWhetkUrg7BazCkHRquMbvGFehDG01Pgj9+0A1mvhxQ2wroEQSfTLFdF
+         1Z3GWJ6VK2r2OVw/VBuQ0MD2KzIJvCyNCwSTu8KBkfQYwG2tEm8EARw6ZhdSroP2ZL+z
+         Vbxw==
+X-Gm-Message-State: AOAM531VNSC8Fqc3q/FwaSo1uzXPU6wyjmp5i/xcObqRBTlyez+7LFnm
+        D0JGsdeshRQFLlGZMtlKZzOp/VE/eoTY0pj4u0scEdNa
+X-Google-Smtp-Source: ABdhPJzKpuotHtZQWXCNXpW4Rd40X2ZHyq6xGCf7dma4uujyWwxfrgebmhgIZK8KpV8IbxrNGqpdB0U2NUlVH+QVpNQ=
+X-Received: by 2002:a17:90a:498b:: with SMTP id d11mr19017924pjh.129.1595847245382;
+ Mon, 27 Jul 2020 03:54:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxiXiSAaK92pvGDGUCd2hYq=J-7FxJYdUp=KSXncivwJZw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <0bad52e6e10ff2e8d8a19f95bab7642ec5e71838.1595838334.git.sramani@mellanox.com>
+In-Reply-To: <0bad52e6e10ff2e8d8a19f95bab7642ec5e71838.1595838334.git.sramani@mellanox.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 27 Jul 2020 13:53:50 +0300
+Message-ID: <CAHp75Vdsw61-uNi2TiR7F4j0s=F6XCnQC_j81hXfyJ9tfeq8QA@mail.gmail.com>
+Subject: Re: [PATCH v1] platform/mellanox: mlxbf-pmc: Add Mellanox BlueField
+ PMC driver
+To:     Shravan Kumar Ramani <sramani@mellanox.com>
+Cc:     Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 26-07-20 14:52:47, Amir Goldstein wrote:
-> On Fri, Jul 24, 2020 at 6:47 AM Amir Goldstein <amir73il@gmail.com> wrote:
-> >
-> > On Fri, Jul 24, 2020 at 5:45 AM Rong Chen <rong.a.chen@intel.com> wrote:
-> > >
-> > >
-> > >
-> > > On 7/21/20 11:59 PM, Amir Goldstein wrote:
-> > > > On Tue, Jul 21, 2020 at 3:15 AM kernel test robot <rong.a.chen@intel.com> wrote:
-> > > >> Greeting,
-> > > >>
-> > > >> FYI, we noticed a -9.5% regression of will-it-scale.per_process_ops due to commit:
-> > > >>
-> > > >>
-> > > >> commit: c738fbabb0ff62d0f9a9572e56e65d05a1b34c6a ("fsnotify: fold fsnotify() call into fsnotify_parent()")
-> > > > Strange, that's a pretty dumb patch moving some inlined code from one
-> > > > function to
-> > > > another (assuming there are no fsnotify marks in this test).
-> > > >
-> > > > Unless I am missing something the only thing that changes slightly is
-> > > > an extra d_inode(file->f_path.dentry) deference.
-> > > > I can get rid of it.
-> > > >
-> > > > Is it possible to ask for a re-test with fix patch (attached)?
-> > >
-> > > Hi Amir,
-> > >
-> > > We failed to apply this patch, could you tell us the base commit or the
-> > > base branch?
-> > >
-> >
-> > Hi Rong,
-> >
-> > The patch is applied on top of the reported offending commit:
-> > c738fbabb0ff62d0f9a9572e56e65d05a1b34c6a ("fsnotify: fold fsnotify()
-> > call into fsnotify_parent()")
-> >
-> > I pushed it to my github:
-> > https://github.com/amir73il/linux/commits/for_lkp
-> >
-> 
-> FWIW, I tried reproducing the reported regression on a local machine.
-> 
-> I ran the test twice on each of the branch commits:
-> 
-> 26dc3d2bff62 fsnotify: pass inode to fsnotify_parent()
-> c738fbabb0ff fsnotify: fold fsnotify() call into fsnotify_parent()
-> 71d734103edf fsnotify: Rearrange fast path to minimise overhead when
-> there is no watcher
-> 47aaabdedf36 fanotify: Avoid softlockups when reading many events
-> 
-> Not only did I not observe a regression with the reported commit,
-> but there was a slight improvement. And then there yet was another
-> improvement with the fix commit on top of it.
+On Mon, Jul 27, 2020 at 12:02 PM Shravan Kumar Ramani
+<sramani@mellanox.com> wrote:
+>
+> The performance modules in BlueField are present in several hardware
+> blocks and each block provides access to these stats either through
+> counters that can be programmed to monitor supported events or
+> through memory-mapped registers that hold the relevant information.
+> The hardware blocks that include a performance module are:
+>  * Tile (block containing 2 cores and a shared L2 cache)
+>  * TRIO (PCIe root complex)
+>  * MSS (Memory Sub-system containing the Memory Controller and L3 cache)
+>  * GIC (Interrupt controller)
+>  * SMMU (System Memory Management Unit)
+> The mlx_pmc driver provides access to all of these performance modules
+> through a hwmon sysfs interface.
 
-I suspect this may be closely related to code generation, code cacheline
-alignment etc. and thus depends heavily on a particular compiler version
-and CPU. I've checked the commit myself and I agree it looks innocent so
-for these reasons, I'm not particularly worried about this regression.
+Just brief comments:
+- consider to revisit header block to see what is really necessary and
+what can be dropped
+- add comma to the arrays where last line is not a termination
+- look at match_string() / sysfs_match_string() API, I think they can
+be utilised here
+- UUID manipulations (esp. with that GUID_INIT() against non-constant)
+seems too much, consider refactoring and cleaning up these pieces
+- use kstroto*() API instead of sscanf. It has a range check
 
-								Honza
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
