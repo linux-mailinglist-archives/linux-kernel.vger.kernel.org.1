@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942CD22EE11
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7CC22EE19
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728893AbgG0N5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:57:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46892 "EHLO mail.kernel.org"
+        id S1728901AbgG0N5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:57:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728873AbgG0N5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:57:05 -0400
+        id S1726744AbgG0N5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:57:20 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 468DF2074F;
-        Mon, 27 Jul 2020 13:57:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED1172070A;
+        Mon, 27 Jul 2020 13:57:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858224;
-        bh=kU5PVciGwJeECNv1giAjq0Weunv/9iuJSQi6OmpPGe8=;
+        s=default; t=1595858240;
+        bh=Egeq+a8oWDr1xtB1xbFHglsSZ6j1GXnIOgGl3YfP39c=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=a8WL01Wz6KzC1keNhS4+xS2Kje6D+nIgppB2IHx77K/nBCPkmvqelBh6zpepLsBjb
-         wzsAhGl1JQy4MJxFWhips+pRGnsO+y5GSHvCzWxxtByXBpGSAB7YGNwoYHItBF17L4
-         dzyLhI4sHmi1BcZLQXKbAd4tWfquSk2rMrNkdcIo=
-Date:   Mon, 27 Jul 2020 14:56:47 +0100
+        b=QJCj4FlhVyGBn71gPApMPrk9ALQq2zR3lQwvdtcITRWzDgFvw8Ee6+fxmp3zzej1i
+         cd9WgMNsMCUVx45aAqG7OgEDWFqhv5r8PG22q3uOqOXksz8j/4jP6edNRQl4x3IRH7
+         1E3qFQDxdiLPFrLPuOHhqZE+5jj+JZEDWw+xAlwY=
+Date:   Mon, 27 Jul 2020 14:57:03 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Yicheng Li <yichengli@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-In-Reply-To: <20200724080358.619245-1-pihsun@chromium.org>
-References: <20200724080358.619245-1-pihsun@chromium.org>
-Subject: Re: [PATCH] platform/chrome: cros_ec: Fix host command for regulator control.
-Message-Id: <159585820266.22516.18324449635576565431.b4-ty@kernel.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jonathan Liu <net147@gmail.com>
+Cc:     Olliver Schinagl <oliver@schinagl.nl>,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+In-Reply-To: <20200727072328.510798-1-net147@gmail.com>
+References: <20200727072328.510798-1-net147@gmail.com>
+Subject: Re: [PATCH] spi: sun4i: update max transfer size reported
+Message-Id: <159585821344.22560.5654112245536281167.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 16:03:55 +0800, Pi-Hsun Shih wrote:
-> Since the host command number 0x012B conflicts with other EC host
-> command, add one to all regulator control related host command.
+On Mon, 27 Jul 2020 17:23:28 +1000, Jonathan Liu wrote:
+> The spi-sun4i driver already has the ability to do large transfers.
+> However, the max transfer size reported is still fifo depth - 1.
 > 
-> Also fix a wrong alignment on struct and sync the comment with the one
-> in ChromeOS EC codebase.
+> Update the max transfer size reported to the max value possible.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] platform/chrome: cros_ec: Fix host command for regulator control.
-      commit: a233547660a3915973d41e2a9a0923d0cf317a62
+[1/1] spi: sun4i: update max transfer size reported
+      commit: 241b888791ee2fa47b97b3b9dc0e857d241db18d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
