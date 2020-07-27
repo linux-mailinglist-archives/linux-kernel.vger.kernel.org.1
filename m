@@ -2,111 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505D822F63F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E690822F5EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730415AbgG0RLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:11:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728712AbgG0RLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:11:17 -0400
-Received: from kernel.org (unknown [87.71.40.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AAEB206E7;
-        Mon, 27 Jul 2020 17:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595869877;
-        bh=XLRy4SH6xYtcSpdHOrlqOGtGsA5ScggILcg7hMblP4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RGlKfXBUd26L5XDA1ssqNMsN524ad4SB5OWposrAfAR1GqXXVCoku8j2/PxKiDDlt
-         ZjgCXf8wWE4+IGmxJrktVr72zad9jL8jTfqjGu+VoAyYWbVCO1WDhniWv6reqEeMu8
-         mqapPlh3w6TjsmKchi6eYJoHQoysiCGjddWIxmbQ=
-Date:   Mon, 27 Jul 2020 20:11:02 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 7/7] mm: secretmem: add ability to reserve memory at
- boot
-Message-ID: <20200727171102.GA3655207@kernel.org>
-References: <20200727162935.31714-1-rppt@kernel.org>
- <20200727162935.31714-8-rppt@kernel.org>
+        id S1728633AbgG0RBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:01:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:34328 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726979AbgG0RBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:01:37 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 30A38974B87AF2C0C6FF;
+        Tue, 28 Jul 2020 01:01:32 +0800 (CST)
+Received: from kernelci-master.huawei.com (10.175.101.6) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 01:01:21 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     Hulk Robot <hulkci@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>
+CC:     Wei Yongjun <weiyongjun1@huawei.com>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] powerpc/powernv/sriov: Remove unused but set variable 'phb'
+Date:   Tue, 28 Jul 2020 01:11:12 +0800
+Message-ID: <20200727171112.2781-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727162935.31714-8-rppt@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, something went wrong with the rebase, this should have been
-squashed into the previous patch...
+Gcc report warning as follows:
 
-On Mon, Jul 27, 2020 at 07:29:35PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Taking pages out from the direct map and bringing them back may create
-> undesired fragmentation and usage of the smaller pages in the direct
-> mapping of the physical memory.
-> 
-> This can be avoided if a significantly large area of the physical memory
-> would be reserved for secretmem purposes at boot time.
-> 
-> Add ability to reserve physical memory for secretmem at boot time using
-> "secretmem" kernel parameter and then use that reserved memory as a global
-> pool for secret memory needs.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index fb95fad81c79..6f3c2f28160f 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4548,6 +4548,10 @@
->  			Format: integer between 0 and 10
->  			Default is 0.
->  
-> +	secretmem=n[KMG]
-> +			[KNL,BOOT] Reserve specified amount of memory to
-> +			back mappings of secret memory.
-> +
->  	skew_tick=	[KNL] Offset the periodic timer tick per cpu to mitigate
->  			xtime_lock contention on larger systems, and/or RCU lock
->  			contention on all systems with CONFIG_MAXSMP set.
-> -- 
-> 2.26.2
-> 
+arch/powerpc/platforms/powernv/pci-sriov.c:602:25: warning:
+ variable 'phb' set but not used [-Wunused-but-set-variable]
+  602 |  struct pnv_phb        *phb;
+      |                         ^~~
 
--- 
-Sincerely yours,
-Mike.
+This variable is not used, so this commit removing it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ arch/powerpc/platforms/powernv/pci-sriov.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
+index 8404d8c3901d..7894745fd4f8 100644
+--- a/arch/powerpc/platforms/powernv/pci-sriov.c
++++ b/arch/powerpc/platforms/powernv/pci-sriov.c
+@@ -599,10 +599,8 @@ static int pnv_pci_vf_resource_shift(struct pci_dev *dev, int offset)
+ static void pnv_pci_sriov_disable(struct pci_dev *pdev)
+ {
+ 	u16                    num_vfs, base_pe;
+-	struct pnv_phb        *phb;
+ 	struct pnv_iov_data   *iov;
+ 
+-	phb = pci_bus_to_pnvhb(pdev->bus);
+ 	iov = pnv_iov_get(pdev);
+ 	num_vfs = iov->num_vfs;
+ 	base_pe = iov->vf_pe_arr[0].pe_number;
+
