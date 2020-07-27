@@ -2,238 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3DA22E5C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1717C22E5E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbgG0GQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 02:16:53 -0400
-Received: from mail-eopbgr60080.outbound.protection.outlook.com ([40.107.6.80]:13454
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726171AbgG0GQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 02:16:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dUunenqaWikVgGJZCdA0VxlujnuecY0L/mUJ5/yq26t6nuoIZDd4In9y07DZOEqwuZDSisZ6xKTXH4cC90nFoYYp0DK936E5lOF45lxu6EKqmgzQwCMolXvstouHMo7xZIwDmtMOjmDA+Rd1rBUSBo4ONjzEGCmfK5WKMep7M6CFAn5pQVO5I2elEvuIubPMwPrhUHd8Q6jZZZ5Wl5bHQuBoaR/0SmIl/tNNbAWeZfmdY/fgM62fjhEJ77T5Nj6v7STFFH6C9zbs+wBDaBqBHPXng6VbdjO8tJFQqXR+1tIFwuruSQVp2PhhWvQyYiQDz3tvDVwaFZ3M3KyMEF+PHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TObf+wDx8VEHendrmsa+yWcB3HIIOjWW8t88yx1Ll20=;
- b=a/lcOn1mMqWkYfd2OGb/7G7AYz921RPJSxGCnNQhIgpLt9uHUAdRG1EFGXAelsViQmL1+e68rOwtMPOSYxoNAOcrTuzOGia9fdsEsDYYoV7g09Tw/R//TFuF10i3ZKqwIaUIH3U0h/G0gVyAN9L34kJKLTu8eT1f2TTzFVdGgQxx2u41hrdfxH7QKrE8ZSGzYvFOimvGsp6txAzgybR8LJyCFz1V3vFyKQgxgDWBz+0QYL2TQMej8iBzvb80SkqVBMTVXg62UZsPonH0PAme+KgaEsBFgMMcp0MhoKfteToWwNV31zGxAmju21e2IxvXKq/HZ8XnDMfZz0nDPrsbVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TObf+wDx8VEHendrmsa+yWcB3HIIOjWW8t88yx1Ll20=;
- b=CEy8Cilk7SPq/CSognPAim04JRCB3Z+Sl5a94OKH4Ey8F1fijfz8pYcPMJCI+ZjWOvCUroGuSlROIeej/6wwyP6+ggNcB30POBiCLAXP1sjUvzZ1L9sEVhIyxYjXHTUMt/NqEJ/mL+UGUSihECfyAXZCwZ++gWs//ZE1hE/OzLU=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB5305.eurprd04.prod.outlook.com (2603:10a6:10:22::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Mon, 27 Jul
- 2020 06:16:49 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::6dce:e74b:4350:1be5]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::6dce:e74b:4350:1be5%9]) with mapi id 15.20.3216.033; Mon, 27 Jul 2020
- 06:16:49 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 1/1] irqchip: imx-intmux: implement intmux PM
-Date:   Mon, 27 Jul 2020 22:17:34 +0800
-Message-Id: <20200727141734.24890-2-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200727141734.24890-1-qiangqing.zhang@nxp.com>
-References: <20200727141734.24890-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR01CA0139.apcprd01.prod.exchangelabs.com
- (2603:1096:4:8f::19) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+        id S1726268AbgG0Gdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 02:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbgG0Gdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 02:33:31 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C92C0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 23:33:30 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id k18so11408744qtm.10
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 23:33:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w03YsC20p+dHNFM0U+uQthrGb6bTfy1HNpPAv/xPssM=;
+        b=fb9XUO9zYs7ABnO/X0liXVU0exs845LVf7rzCAGArl4oIBDv6nRZMmTaLM/ad3gxfr
+         WxjqZ69tAQlIm5FmiqeZkuPVAJfSDEV+FMiAAuvtJpUM2aAR0g/g/pCReUQikOfSIfUn
+         Yonte7RtlVRG7RLZAJgn6vi89u2VC+MUH19PQZUD1dafIYgRzOMpC9pxj0z93j2BgFqA
+         B26cuaNWywhMWJTYlfEdX57GNU//HWAZ3MbixzXamt96ER2zJiMBXpKweR2PC6xyepYh
+         wI0Jf7tQG79YfUoegG5+Lwp3huwydPO2HasvcGqsiOVgIEsYpumF/InSmusZXpeawmM7
+         ZSxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w03YsC20p+dHNFM0U+uQthrGb6bTfy1HNpPAv/xPssM=;
+        b=fdwj7/2DCP3wFQL/tzUQz286MLhIoT6+2KrW9I11jlJGl0+mGyBo5tAfPn8BFJqyor
+         9oqhaPEg8e8scdz8DTVnkkkilbAGjcAW4jMQG/rUOQt2xB394QZDiLM27355lEc/55PV
+         B3vqIgoMI1Va1j1A9RDFRh5zvGVtLFe37ToYnH5yiCOEtF3SrsB6lPLQfP5oQrtVln7E
+         MOVD1Z/JHfRrwnHT80C6DSfpWo0roPtxjA5QYbnQ3gKF3D52CIxNcwxUY+ifAHheuXX0
+         8Mga7ZWeiNDzMlD3BXKbjLGNfXA1BeZosQWeVdgZXzIBvQaNSicRtgSm+iEkjgH+EimU
+         QXKQ==
+X-Gm-Message-State: AOAM532uhNpOOaKKCFXTQv+9zEnfzlspBF69xF52PJRJU7tTE4PFfgek
+        zpDRaWZGoqL5MpkIL7xpWRFn+CyVh+E3BpuqQnc=
+X-Google-Smtp-Source: ABdhPJxAach4+q/kZpihLnqh0Vmpd7JeL6MA+Nyc9iccYws64hNeTYJWYJ30qASwfI5ZNQ2LrtckCQGMba3t1dGXCXI=
+X-Received: by 2002:aed:2946:: with SMTP id s64mr442181qtd.204.1595831609481;
+ Sun, 26 Jul 2020 23:33:29 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR01CA0139.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21 via Frontend Transport; Mon, 27 Jul 2020 06:16:46 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 33a373a4-77a9-4e3c-d6ce-08d831f4a550
-X-MS-TrafficTypeDiagnostic: DB7PR04MB5305:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB53059E9DCF675BCF1BE00D3AE6720@DB7PR04MB5305.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rEDD6fPFq4VVQhzlnIhogsxsZo+c+nxvF+mODIz+T2jo16UKI06/iW6RdPcCWyBt46tFpgk6dZvEEnBo5s6MYH3aDj7GFLpltM5fKD+VwuLtJd7uvHfijpASi59dXMUlL3Xo05Bn+fPHLnDa4MigsgOO4SfWAt8oPYs1T04RFsrrjF0o4clfZXMhH3Lw38YwK7OHP+ZalxePgzs4GxY50UKKo979TeqMQ6cjxk6f0S7bf64qCPBq9OJfVeXrsXSp3oSgWoBg2/FtjOpcNpdE1H4IIYYxtn4Q+Z0cjQimQyaw7HIQnqxJ5DRjaTM2zMEOJORahwsF3PPe1bWdIelWT+ooLVEg6JJcri5CVzimADCm1orBujk6rt9Kp5Y0u+HK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(16526019)(6506007)(186003)(52116002)(956004)(1076003)(2616005)(26005)(66476007)(66556008)(8936002)(66946007)(6486002)(6512007)(5660300002)(8676002)(316002)(83380400001)(86362001)(69590400007)(4326008)(2906002)(36756003)(478600001)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: n3hh10UVPXXYBkge4r85cmj0V9qRC+kAK/ClRH/lRT4Ld4I6sDc/DLHE4C2n1YIBiNRuwfOcvS9sYsE5hpHkJ4xZMaf2sU0Z/BUBNUYJYVQfMykAxTGvXo8SWYXD+zUKoyYboyXrhU4WEzrCXJVNSBJ9ooiPBldQd8rJRdVAna8PAhsO0mKuOgjgjaw66nZyNFGl7+PybA0r9s2r4estYTs5lbqWnK9r3GPt2LAHLDuiXDZ4xTCQUbmQ2mPkITjtnymzGhsi7vcbq4pn0BdvhERkSYoiI2ItQlm6neRsK/v6iAuY67XamOaJeEmCT1u8wSMaV0HhSL+Dfvz2ku2jyn//GUtf6js+CIznKSTYT/D6rRwI7BK3STz0Opnqm/ULK9hqjmsc/0lIKK7iPZRG/KOAFW6B924BR1Y5lXh0/UEmfiNCyFDjuC8xeNrkJIDvsLRI72N9cOYy1V7k+FDJNZFARWBFb/rmfwSAnEGPrHc=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33a373a4-77a9-4e3c-d6ce-08d831f4a550
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2020 06:16:49.0027
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GjQ2Yx1STeqWGnTZEPLSbY4A2X2t71b2tjI+BjHWa9RmS0u86Vs1M26TsWavHYoBe1d9dz6yXqXpYXNYgzhMeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5305
+References: <1595762417-2190-1-git-send-email-shengjiu.wang@nxp.com> <20200727005558.GA30124@Asurada-Nvidia>
+In-Reply-To: <20200727005558.GA30124@Asurada-Nvidia>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Mon, 27 Jul 2020 14:33:18 +0800
+Message-ID: <CAA+D8AOfh1gDec=0BPk6SUutqtY_gL1Rm1-Uc4Dv4s-86LAwPA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl-asoc-card: Remove fsl_asoc_card_set_bias_level function
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When system suspended, we could explicitly disable clock to save power.
-And we need save registers' state since it could be lost after power
-off.
+On Mon, Jul 27, 2020 at 8:58 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> On Sun, Jul 26, 2020 at 07:20:17PM +0800, Shengjiu Wang wrote:
+> > With this case:
+> > aplay -Dhw:x 16khz.wav 24khz.wav
+> > There is sound distortion for 24khz.wav. The reason is that setting
+> > PLL of WM8962 with set_bias_level function, the bias level is not
+> > changed when 24khz.wav is played, then the PLL won't be reset, the
+> > clock is not correct, so distortion happens.
+> >
+> > The resolution of this issue is to remove fsl_asoc_card_set_bias_level.
+> > Move PLL configuration to hw_params and hw_free.
+>
+> Hmm...using set_bias_level() instead of hw_params/hw_free() was
+> strongly suggested by Mark when I got imx-wm8962 machine driver
+> upstream. So we will need his input here, although I personally
+> don't have a problem with it...
+>
+> > After removing fsl_asoc_card_set_bias_level, also test WM8960 case,
+> > it can work.
+> >
+> > Fixes: 708b4351f08c ("ASoC: fsl: Add Freescale Generic ASoC Sound Card with ASRC support")
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  sound/soc/fsl/fsl-asoc-card.c | 149 +++++++++++++++-------------------
+> >  1 file changed, 66 insertions(+), 83 deletions(-)
+> >
+> > diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+> > index 4848ba61d083..0517dbb3e908 100644
+> > --- a/sound/soc/fsl/fsl-asoc-card.c
+> > +++ b/sound/soc/fsl/fsl-asoc-card.c
+> > @@ -73,6 +73,7 @@ struct cpu_priv {
+> >   * @codec_priv: CODEC private data
+> >   * @cpu_priv: CPU private data
+> >   * @card: ASoC card structure
+> > + * @is_stream_in_use: flags for release resource in hw_free
+>
+> Would love to see something shorter... Could we reuse similar
+> one below, borrowing from fsl_ssi driver?
+>
+>  * @streams: Mask of current active streams: BIT(TX) and BIT(RX)
+>
+> >  static int fsl_asoc_card_audmux_init(struct device_node *np,
+> >                                    struct fsl_asoc_card_priv *priv)
+> >  {
+> > @@ -611,7 +600,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
+> >       /* Diversify the card configurations */
+> >       if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
+> >               codec_dai_name = "cs42888";
+> > -             priv->card.set_bias_level = NULL;
+>
+> Can check if set_bias_level is still being used with this change.
 
-Implement PM which will:
-1) Without CONFIG_PM, clock is always on after probe stage.
-2) With CONFIG_PM, clock is off after probe stage.
-3) Disable clock and save registers' state when do system suspend and
-enable clock and restore registers' state while system resume.
-4) Make Power Domain framework be able to shutdown the corresponding
-power domain of this device.
+Do you mean to keep this line:
+priv->card.set_bias_level = NULL; ?
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/irqchip/irq-imx-intmux.c | 67 +++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/irqchip/irq-imx-intmux.c b/drivers/irqchip/irq-imx-intmux.c
-index c27577c81126..4524c931c368 100644
---- a/drivers/irqchip/irq-imx-intmux.c
-+++ b/drivers/irqchip/irq-imx-intmux.c
-@@ -53,6 +53,7 @@
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
- #include <linux/spinlock.h>
-+#include <linux/pm_runtime.h>
- 
- #define CHANIER(n)	(0x10 + (0x40 * n))
- #define CHANIPR(n)	(0x20 + (0x40 * n))
-@@ -60,6 +61,8 @@
- #define CHAN_MAX_NUM		0x8
- 
- struct intmux_irqchip_data {
-+	struct irq_chip		chip;
-+	u32			saved_reg;
- 	int			chanidx;
- 	int			irq;
- 	struct irq_domain	*domain;
-@@ -120,8 +123,10 @@ static struct irq_chip imx_intmux_irq_chip = {
- static int imx_intmux_irq_map(struct irq_domain *h, unsigned int irq,
- 			      irq_hw_number_t hwirq)
- {
--	irq_set_chip_data(irq, h->host_data);
--	irq_set_chip_and_handler(irq, &imx_intmux_irq_chip, handle_level_irq);
-+	struct intmux_irqchip_data *data = h->host_data;
-+
-+	irq_set_chip_data(irq, data);
-+	irq_set_chip_and_handler(irq, &data->chip, handle_level_irq);
- 
- 	return 0;
- }
-@@ -232,6 +237,10 @@ static int imx_intmux_probe(struct platform_device *pdev)
- 	data->channum = channum;
- 	raw_spin_lock_init(&data->lock);
- 
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
- 	ret = clk_prepare_enable(data->ipg_clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to enable ipg clk: %d\n", ret);
-@@ -239,6 +248,8 @@ static int imx_intmux_probe(struct platform_device *pdev)
- 	}
- 
- 	for (i = 0; i < channum; i++) {
-+		data->irqchip_data[i].chip = imx_intmux_irq_chip;
-+		data->irqchip_data[i].chip.parent_device = &pdev->dev;
- 		data->irqchip_data[i].chanidx = i;
- 
- 		data->irqchip_data[i].irq = irq_of_parse_and_map(np, i);
-@@ -267,6 +278,12 @@ static int imx_intmux_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, data);
- 
-+	/*
-+	 * Let pm_runtime_put() disable clock.
-+	 * If CONFIG_PM is not enabled, the clock will stay powered.
-+	 */
-+	pm_runtime_put(&pdev->dev);
-+
- 	return 0;
- out:
- 	clk_disable_unprepare(data->ipg_clk);
-@@ -288,11 +305,56 @@ static int imx_intmux_remove(struct platform_device *pdev)
- 		irq_domain_remove(data->irqchip_data[i].domain);
- 	}
- 
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+static int imx_intmux_runtime_suspend(struct device *dev)
-+{
-+	struct intmux_data *data = dev_get_drvdata(dev);
-+	struct intmux_irqchip_data irqchip_data;
-+	int i;
-+
-+	for (i = 0; i < data->channum; i++) {
-+		irqchip_data = data->irqchip_data[i];
-+		irqchip_data.saved_reg = readl_relaxed(data->regs + CHANIER(i));
-+	}
-+
- 	clk_disable_unprepare(data->ipg_clk);
- 
- 	return 0;
- }
- 
-+static int imx_intmux_runtime_resume(struct device *dev)
-+{
-+	struct intmux_data *data = dev_get_drvdata(dev);
-+	struct intmux_irqchip_data irqchip_data;
-+	int ret, i;
-+
-+	ret = clk_prepare_enable(data->ipg_clk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable ipg clk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	for (i = 0; i < data->channum; i++) {
-+		irqchip_data = data->irqchip_data[i];
-+		writel_relaxed(irqchip_data.saved_reg, data->regs + CHANIER(i));
-+	}
-+
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops imx_intmux_pm_ops = {
-+	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				      pm_runtime_force_resume)
-+	SET_RUNTIME_PM_OPS(imx_intmux_runtime_suspend,
-+			   imx_intmux_runtime_resume, NULL)
-+};
-+
- static const struct of_device_id imx_intmux_id[] = {
- 	{ .compatible = "fsl,imx-intmux", },
- 	{ /* sentinel */ },
-@@ -302,6 +364,7 @@ static struct platform_driver imx_intmux_driver = {
- 	.driver = {
- 		.name = "imx-intmux",
- 		.of_match_table = imx_intmux_id,
-+		.pm = &imx_intmux_pm_ops,
- 	},
- 	.probe = imx_intmux_probe,
- 	.remove = imx_intmux_remove,
--- 
-2.17.1
-
+best regards
+wang shengjiu
