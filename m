@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2C522F3EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802C122F3EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730548AbgG0PgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:36:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727784AbgG0PgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:36:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 13D2DADBB;
-        Mon, 27 Jul 2020 15:36:17 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5B096DA701; Mon, 27 Jul 2020 17:35:38 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 17:35:38 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     kernel test robot <lkp@intel.com>
-Cc:     David Sterba <dsterba@suse.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: fs/btrfs/tests/../ctree.h:2166:8: warning: type qualifiers
- ignored on function return type
-Message-ID: <20200727153538.GP3703@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
-        David Sterba <dsterba@suse.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <202007272305.7v7EMn6N%lkp@intel.com>
+        id S1730668AbgG0Pgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727784AbgG0Pgu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 11:36:50 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6CF9C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:36:49 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g10so13636186wmc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:36:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9Sxz73y7RgL+u8rtUA8o/y4P1sug9uuvbcujn5qnKbQ=;
+        b=iH5n0MEYtT4YX4vz0+es0cG6ngjgu8JZkgehP9d1Bac8LeJBip7FVVyiY0MVpzYDOa
+         z1+qJnnWCG0bhO/7hP7PJnr4wjg1smeucxRq6DamKSBf/86PS1DS7G/fBV5vQesgnxVN
+         j+E7kKqmYvUW5bOghim2SeKo26bigiIkvcWnKSbqlo8BZDmYM0d6Ia8MgE198BNkNtj0
+         Uxjs1O28nvudo6Ced6APXqNqGP/Y7iJDwYQrZ3iyJE/7VMfE3L2mYpxEmHnz+4MxG2GU
+         FvlYU32xK+jYorluwclaGotK+Tf2ok4aZ4XNNVcRovbVxkqhvKgwDo16A+ytuH7Fp//G
+         oLZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9Sxz73y7RgL+u8rtUA8o/y4P1sug9uuvbcujn5qnKbQ=;
+        b=fNaA78SJUSsA0P+aqJFx5CAeM/+YUJPAAySiDF/C+V45LuK8zQ4CQrapCXMDZ/JyNp
+         Dx9UKbTBH54vwSJdctsZti6w9SYiw7wj3poTRglPthY7/4NZJy010K/1/TXY0/cJDMHx
+         XbwnRt65WEx+UGTsDirKgBNaSXuWDDHAv4S4j0MlR3haQlOJirnxroIxamZyzs86RnYW
+         VKwWmMeJRhnYxZ7/4bPGPjE6eqw8gu3RObQSxxXBRHEUN5QGbAzFhZziyv9Vq9T9MDMO
+         hObrnuJDQNa1q7FnB9KKGXsakFdVrpxZGxw6qptQE8sTw+wGozPPIu2RfJ3/lFQPGNcA
+         9i3Q==
+X-Gm-Message-State: AOAM530OhhUpkRmRQLv0c62lwxazwKX38vwbcOPiHmGg/zTNHDQcLpk+
+        ZiiVJqZYC8QsvCHY6aNanScv3Q==
+X-Google-Smtp-Source: ABdhPJzDd+slK0xeJj9N8JVIU+68m7qp81qNM4BOeECx6/igXbWfKhNRBt+GUriqZEYH6Z8lCODsUw==
+X-Received: by 2002:a1c:19c4:: with SMTP id 187mr21778043wmz.100.1595864208416;
+        Mon, 27 Jul 2020 08:36:48 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id k126sm19423810wme.17.2020.07.27.08.36.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 08:36:47 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 16:36:46 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Frank Lee <frank@allwinnertech.com>
+Cc:     wens@csie.org, linux-kernel@vger.kernel.org, tiny.windzz@gmail.com,
+        huangshuosheng@allwinnertech.com, liyong@allwinnertech.com
+Subject: Re: [PATCH v5 10/16] mfd: axp20x: Allow the AXP803 to be probed by
+ I2C
+Message-ID: <20200727153646.GX1850026@dell>
+References: <cover.1595572867.git.frank@allwinnertech.com>
+ <c19530b2ee1f377bfeb1273f07a7ceb4ea4372ab.1595572867.git.frank@allwinnertech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202007272305.7v7EMn6N%lkp@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c19530b2ee1f377bfeb1273f07a7ceb4ea4372ab.1595572867.git.frank@allwinnertech.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 11:02:07PM +0800, kernel test robot wrote:
-> Hi David,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   92ed301919932f777713b9172e525674157e983d
-> commit: f7cea56c0fff95bd5a6cd21b9fa299f66193b604 btrfs: sysfs: export supported checksums
-> date:   8 months ago
-> config: h8300-randconfig-r021-20200727 (attached as .config)
-> compiler: h8300-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout f7cea56c0fff95bd5a6cd21b9fa299f66193b604
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    In file included from fs/btrfs/tests/extent-map-tests.c:8:
-> >> fs/btrfs/tests/../ctree.h:2166:8: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
->     2166 | size_t __const btrfs_get_num_csums(void);
->          |        ^~~~~~~
+On Fri, 24 Jul 2020, Frank Lee wrote:
 
-Ah right, the attribute is supposed to be __attribute_const__, thanks
-for the report.
+> From: Yangtao Li <frank@allwinnertech.com>
+> 
+> The AXP803 can be used both using the RSB proprietary bus, or a more
+> traditional I2C bus.
+> 
+> Let's add that possibility.
+> 
+> Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+> Acked-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+>  drivers/mfd/axp20x-i2c.c | 2 ++
+>  1 file changed, 2 insertions(+)
+
+Why do you keep sending this?
+
+It was applied in v3 [0].
+
+[0] https://lkml.org/lkml/2020/7/16/745
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
