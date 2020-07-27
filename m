@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D732722EEE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A981322F03F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730037AbgG0OLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:11:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35174 "EHLO mail.kernel.org"
+        id S1731398AbgG0OW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:22:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730026AbgG0OLc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:11:32 -0400
+        id S1731961AbgG0OWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:22:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4237420838;
-        Mon, 27 Jul 2020 14:11:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D19472070A;
+        Mon, 27 Jul 2020 14:22:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859091;
-        bh=QZVW5a1aE5FbLe9+ltNBnDpgn0AHKSmS9TQ8jjloP9U=;
+        s=default; t=1595859775;
+        bh=K/QnzBnxSz8nRtmvwhBj2GIp+N4PtdWh0qolEym6wG4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqbg/9CRN6SWcZKc0KIWyr90rWj0QkFlm7ctQyUn4omFGgVEs83RS/AyrVXUaEkYE
-         kBHwR1YylpzMRp6ezTz5jMdGd6Yh54WzSR05rqs1PAF7vZceV/B13mgQ+xR0RPuCck
-         Q+5xWAYFr3AYws7eDQG7xBspZaEs0K9Nm9b8wZhU=
+        b=efL7B7GKO/trxLOncScPXlQOK0OfB1/7c/HQfVoxVM3NgNs9elqWPo7HyRwsyN9V3
+         9ABu8O2SO3ivu+HbGHJffE8w3zX/cju3SYhUFPky4euxf17d8y4n6IZCKUtsIJqUBs
+         XxIRwuE8R6MU0HixYzFRhVZ41+Pn/p43T8dDK8yo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>,
-        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Michal Hocko <mhocko@suse.com>, Todd Kjos <tkjos@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 4.19 61/86] binder: Dont use mmput() from shrinker function.
-Date:   Mon, 27 Jul 2020 16:04:35 +0200
-Message-Id: <20200727134917.494599997@linuxfoundation.org>
+        stable@vger.kernel.org, Caiyuan Xie <caiyuan.xie@cn.alps.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 101/179] HID: alps: support devices with report id 2
+Date:   Mon, 27 Jul 2020 16:04:36 +0200
+Message-Id: <20200727134937.573191176@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,46 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Caiyuan Xie <caiyuan.xie@cn.alps.com>
 
-commit f867c771f98891841c217fa8459244ed0dd28921 upstream.
+[ Upstream commit aa3c439c144f0a465ed1f28f11c772886fb02b35 ]
 
-syzbot is reporting that mmput() from shrinker function has a risk of
-deadlock [1], for delayed_uprobe_add() from update_ref_ctr() calls
-kzalloc(GFP_KERNEL) with delayed_uprobe_lock held, and
-uprobe_clear_state() from __mmput() also holds delayed_uprobe_lock.
+Add support for devices which that have reports with id == 2
 
-Commit a1b2289cef92ef0e ("android: binder: drop lru lock in isolate
-callback") replaced mmput() with mmput_async() in order to avoid sleeping
-with spinlock held. But this patch replaces mmput() with mmput_async() in
-order not to start __mmput() from shrinker context.
-
-[1] https://syzkaller.appspot.com/bug?id=bc9e7303f537c41b2b0cc2dfcea3fc42964c2d45
-
-Reported-by: syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Reviewed-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Todd Kjos <tkjos@google.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Caiyuan Xie <caiyuan.xie@cn.alps.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/android/binder_alloc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-alps.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -987,7 +987,7 @@ enum lru_status binder_alloc_free_page(s
- 		trace_binder_unmap_user_end(alloc, index);
- 	}
- 	up_read(&mm->mmap_sem);
--	mmput(mm);
-+	mmput_async(mm);
+diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+index b2ad319a74b9a..d33f5abc8f64d 100644
+--- a/drivers/hid/hid-alps.c
++++ b/drivers/hid/hid-alps.c
+@@ -25,6 +25,7 @@
  
- 	trace_binder_unmap_kernel_start(alloc, index);
+ #define U1_MOUSE_REPORT_ID			0x01 /* Mouse data ReportID */
+ #define U1_ABSOLUTE_REPORT_ID		0x03 /* Absolute data ReportID */
++#define U1_ABSOLUTE_REPORT_ID_SECD  0x02 /* FW-PTP Absolute data ReportID */
+ #define U1_FEATURE_REPORT_ID		0x05 /* Feature ReportID */
+ #define U1_SP_ABSOLUTE_REPORT_ID	0x06 /* Feature ReportID */
  
+@@ -368,6 +369,7 @@ static int u1_raw_event(struct alps_dev *hdata, u8 *data, int size)
+ 	case U1_FEATURE_REPORT_ID:
+ 		break;
+ 	case U1_ABSOLUTE_REPORT_ID:
++	case U1_ABSOLUTE_REPORT_ID_SECD:
+ 		for (i = 0; i < hdata->max_fingers; i++) {
+ 			u8 *contact = &data[i * 5];
+ 
+-- 
+2.25.1
+
 
 
