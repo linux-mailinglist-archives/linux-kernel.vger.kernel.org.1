@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AA922EF77
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B192D22F052
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730929AbgG0OQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:16:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43678 "EHLO mail.kernel.org"
+        id S1732122AbgG0OXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:23:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730918AbgG0OQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:16:42 -0400
+        id S1732106AbgG0OXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:23:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F5A02070A;
-        Mon, 27 Jul 2020 14:16:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADF942070A;
+        Mon, 27 Jul 2020 14:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859401;
-        bh=KHiEmeSDHEk36Ap081u5lxBnesPSBOC4MwK1QNOPB98=;
+        s=default; t=1595859813;
+        bh=Fdxxx/6s/07AQaFKa9HaHxd0Er/Fjo+qamSOf3sgGZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e91EX2abEWlTZJbQpkegbBxyavBDnWEQSGvUbNNn8coIsor2bXeRyQGF31VQn0xvb
-         UvjDH0Hff9NrdvtLFIr02qlrOjAKjqylRcg17CJQSvAcOQ492pjxcGxn+oC8IZxdIJ
-         46GIwjfiBFW4hOgoddd7lCz7ZBjuhIoC+ZoINNwk=
+        b=nqTHJ1WTEUp4OcDKrvPp/cbz+RPsDPm0Au2OqLDr7/jxrNubHYgGS0NYHEyoPRdD+
+         LZZrUgpI0XVVpYAitAIrXhV/gt3wzbAJqiFJdrzF8VQERFNp1rFRfTsGwIkI5CMQzZ
+         Q2HcSRT7mtPAZtarws06+IJjY2ZPEWw4wHfGc7IM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Dietrich <roots@gmx.de>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
         Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 093/138] hwmon: (nct6775) Accept PECI Calibration as temperature source for NCT6798D
-Date:   Mon, 27 Jul 2020 16:04:48 +0200
-Message-Id: <20200727134930.028179403@linuxfoundation.org>
+Subject: [PATCH 5.7 114/179] hwmon: (aspeed-pwm-tacho) Avoid possible buffer overflow
+Date:   Mon, 27 Jul 2020 16:04:49 +0200
+Message-Id: <20200727134938.207084422@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 8a03746c8baf82e1616f05a1a716d34378dcf780 ]
+[ Upstream commit bc4071aafcf4d0535ee423b69167696d6c03207d ]
 
-Stefan Dietrich reports invalid temperature source messages on Asus Formula
-XII Z490.
+aspeed_create_fan() reads a pwm_port value using of_property_read_u32().
+If pwm_port will be more than ARRAY_SIZE(pwm_port_params), there will be
+a buffer overflow in
+aspeed_create_pwm_port()->aspeed_set_pwm_port_enable(). The patch fixes
+the potential buffer overflow.
 
-nct6775 nct6775.656: Invalid temperature source 28 at index 0,
-		source register 0x100, temp register 0x73
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Debugging suggests that temperature source 28 reports the CPU temperature.
-Let's assume that temperature sources 28 and 29 reflect "PECI Agent {0,1}
-Calibration", similar to other chips of the series.
-
-Reported-by: Stefan Dietrich <roots@gmx.de>
-Cc: Stefan Dietrich <roots@gmx.de>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Link: https://lore.kernel.org/r/20200703111518.9644-1-novikov@ispras.ru
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/nct6775.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/hwmon/aspeed-pwm-tacho.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
-index 7efa6bfef0609..ba9b96973e808 100644
---- a/drivers/hwmon/nct6775.c
-+++ b/drivers/hwmon/nct6775.c
-@@ -786,13 +786,13 @@ static const char *const nct6798_temp_label[] = {
- 	"Agent1 Dimm1",
- 	"BYTE_TEMP0",
- 	"BYTE_TEMP1",
--	"",
--	"",
-+	"PECI Agent 0 Calibration",	/* undocumented */
-+	"PECI Agent 1 Calibration",	/* undocumented */
- 	"",
- 	"Virtual_TEMP"
- };
+diff --git a/drivers/hwmon/aspeed-pwm-tacho.c b/drivers/hwmon/aspeed-pwm-tacho.c
+index 33fb54845bf6d..3d8239fd66ed6 100644
+--- a/drivers/hwmon/aspeed-pwm-tacho.c
++++ b/drivers/hwmon/aspeed-pwm-tacho.c
+@@ -851,6 +851,8 @@ static int aspeed_create_fan(struct device *dev,
+ 	ret = of_property_read_u32(child, "reg", &pwm_port);
+ 	if (ret)
+ 		return ret;
++	if (pwm_port >= ARRAY_SIZE(pwm_port_params))
++		return -EINVAL;
+ 	aspeed_create_pwm_port(priv, (u8)pwm_port);
  
--#define NCT6798_TEMP_MASK	0x8fff0ffe
-+#define NCT6798_TEMP_MASK	0xbfff0ffe
- #define NCT6798_VIRT_TEMP_MASK	0x80000c00
- 
- /* NCT6102D/NCT6106D specific data */
+ 	ret = of_property_count_u8_elems(child, "cooling-levels");
 -- 
 2.25.1
 
