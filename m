@@ -2,109 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B25022FB1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B20922FB17
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgG0VLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 17:11:12 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38304 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG0VLM (ORCPT
+        id S1726760AbgG0VKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 17:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgG0VKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 17:11:12 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06RLAL0p078832;
-        Mon, 27 Jul 2020 16:10:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595884221;
-        bh=TZF0KLe8ZtYIhI+Y7RD9A3jUdGCFtjvjRXhA9sWCJC0=;
-        h=From:To:CC:Subject:Date;
-        b=wZllyO6hSWcWeGADNdU65VAmZ/hWgRb5LA0T8CcniqsOwNVZWzlQzvEUNP1TqKKFY
-         GLKeXYxvqMyNQmN/8nfYh5rE6tGW5JDR1KD7h1NbjU41DJRuo8bSry/4AvdzByf/ug
-         7mIGV1NUoRbnqzfVkJcIhzm/weHyAlDOWsv7CAm8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06RLAKES124003;
-        Mon, 27 Jul 2020 16:10:21 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
- Jul 2020 16:10:12 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 27 Jul 2020 16:10:12 -0500
-Received: from lelv0597.itg.ti.com (lelv0597.itg.ti.com [10.181.64.32])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06RLACrN062741;
-        Mon, 27 Jul 2020 16:10:12 -0500
-Received: from localhost ([10.250.34.248])
-        by lelv0597.itg.ti.com (8.14.7/8.14.7) with ESMTP id 06RLAC26125049;
-        Mon, 27 Jul 2020 16:10:12 -0500
-From:   Suman Anna <s-anna@ti.com>
-To:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        David Lechner <david@lechnology.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Roger Quadros <rogerq@ti.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>, Suman Anna <s-anna@ti.com>
-Subject: [RESEND PATCH v2] mfd: syscon: Use a unique name with regmap_config
-Date:   Mon, 27 Jul 2020 16:10:08 -0500
-Message-ID: <20200727211008.24225-1-s-anna@ti.com>
-X-Mailer: git-send-email 2.26.0
+        Mon, 27 Jul 2020 17:10:22 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45611C061794;
+        Mon, 27 Jul 2020 14:10:22 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id i80so9772396lfi.13;
+        Mon, 27 Jul 2020 14:10:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gCi4uQupGH9wlbYDIIaXDuhHkIJkqnW5jRCmhH4yzys=;
+        b=iP+7r2dt0mrERD07SdS+TGzP3SyiL1AoMitm778mxLBgJZrySPoHh14xUJfzeLz3EW
+         daetsozIsLIZLGcVVraW3Pmc5VAuA2+odgfJLWBYul6shRJ9hh0Qgp/svRTItr1aTWTe
+         RxWRKJCIdxzKFXV/QM9dPDBoGbmKArmISv250T5rYezYh69L6dIp0+NntO7tF00HJwr2
+         R1KkIYCfuDYF3NKEpywJJuDXrFTbw83C9pNgaChmhw5v05WuAFe1eTxpXzAkoMG+dPLP
+         DsRsoV7FL6PuFxs1I+S81exnBP7IBPH+DBS7qPlw8yaNONrobm9F0AqURFY18yLGtnSC
+         k0lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gCi4uQupGH9wlbYDIIaXDuhHkIJkqnW5jRCmhH4yzys=;
+        b=njxqLsWRPkpAbi7HqUA+39SJw/UM+zx0VFlLuQmO2qfQJgVAR24z07NOzpdl0QhhN9
+         alvBrpWCBwjmzoEO2B43x/HHlNOzR9LyWdaRTryyP7T+rkN0LBt+6zVYbW9TfvyEVor7
+         8QXeoPKj1sKSnow6hQTXZElda3DoaqUT/oE6QRIBiLpnjt8iYYrTVWf6rwcybLM63gha
+         YDvnGpNQFnQPdNg4I4ThDRVWzYV67GtKeSPSRXa6r5oGfB5cuaPKE2bF+ExvSHqAvIqn
+         zD0nbxZHVRQIjZDAXq75wtAuxRUmv3KY12yh+HnLsliE38EZt8NJ21MJr4e1KtP7WozL
+         uYEQ==
+X-Gm-Message-State: AOAM532jd9m04i0YoTwEKoIINIlMyAM7BjYLQD1mf4E2vzLD/9fiyREg
+        98M0r6INbzg20mkH5iUc3w4icDii850=
+X-Google-Smtp-Source: ABdhPJwJkrQ26iT00/yNlcmK6rwCV8JlV2VJHQdUO53NwZI5VUUccB9yeYw2y0rV9rMYW2G9Uff4ag==
+X-Received: by 2002:a05:6512:10ca:: with SMTP id k10mr12911706lfg.177.1595884220130;
+        Mon, 27 Jul 2020 14:10:20 -0700 (PDT)
+Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id s1sm3266078lfi.76.2020.07.27.14.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 14:10:19 -0700 (PDT)
+From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH v2 1/1] rcu/tree: Drop the lock before entering to page allocator
+Date:   Mon, 27 Jul 2020 23:10:12 +0200
+Message-Id: <20200727211012.30948-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DT node full name is currently being used in regmap_config
-which in turn is used to create the regmap debugfs directories.
-This name however is not guaranteed to be unique and the regmap
-debugfs registration can fail in the cases where the syscon nodes
-have the same unit-address but are present in different DT node
-hierarchies. Replace this logic using the syscon reg resource
-address instead (inspired from logic used while creating platform
-devices) to ensure a unique name is given for each syscon.
+If the kernel is built with CONFIG_PROVE_RAW_LOCK_NESTING
+option, the lockedp will complain about violation of the
+nesting rules:
 
-Signed-off-by: Suman Anna <s-anna@ti.com>
+<snip>
+[   28.060389] =============================
+[   28.060389] [ BUG: Invalid wait context ]
+[   28.060389] 5.8.0-rc3-rcu #211 Tainted: G            E
+[   28.060389] -----------------------------
+[   28.060390] vmalloc_test/0/523 is trying to lock:
+[   28.060390] ffff96df7ffe0228 (&zone->lock){-.-.}-{3:3}, at: get_page_from_freelist+0xcf0/0x16d0
+[   28.060391] other info that might help us debug this:
+[   28.060391] context-{5:5}
+[   28.060392] 2 locks held by vmalloc_test/0/523:
+[   28.060392]  #0: ffffffffc06750d0 (prepare_for_test_rwsem){++++}-{4:4}, at: test_func+0x76/0x240 [test_vmalloc]
+[   28.060393]  #1: ffff96df5fa1d390 (krc.lock){..-.}-{2:2}, at: kvfree_call_rcu+0x5c/0x230
+[   28.060395] stack backtrace:
+[   28.060395] CPU: 0 PID: 523 Comm: vmalloc_test/0 Tainted: G            E     5.8.0-rc3-rcu #211
+[   28.060395] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+[   28.060396] Call Trace:
+[   28.060397]  dump_stack+0x96/0xd0
+[   28.060397]  __lock_acquire.cold.65+0x166/0x2d7
+[   28.060398]  ? find_held_lock+0x2d/0x90
+[   28.060399]  lock_acquire+0xad/0x370
+[   28.060400]  ? get_page_from_freelist+0xcf0/0x16d0
+[   28.060401]  ? mark_held_locks+0x48/0x70
+[   28.060402]  _raw_spin_lock+0x25/0x30
+[   28.060403]  ? get_page_from_freelist+0xcf0/0x16d0
+[   28.060404]  get_page_from_freelist+0xcf0/0x16d0
+[   28.060405]  ? __lock_acquire+0x3ee/0x1b90
+[   28.060407]  __alloc_pages_nodemask+0x16a/0x3a0
+[   28.060408]  __get_free_pages+0xd/0x30
+[   28.060409]  kvfree_call_rcu+0x18a/0x230
+<snip>
+
+Internally the kfree_rcu() uses raw_spinlock_t whereas the
+page allocator internally deals with spinlock_t to access
+to its zones.
+
+In order to prevent such vialation that is in question we
+can drop the internal raw_spinlock_t before entering to
+the page allocaor.
+
+Short changelog (v1 -> v2):
+    - rework the commit message;
+    - rework the patch making it smaller;
+    - add more comments.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
-Hi Arnd,
-Lee is looking for your review on this patch. Can you please
-review and provide your comments.
+ kernel/rcu/tree.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-This is a resend of the patch that was posted previously, rebased
-now onto latest kernel.
-
-v2: https://patchwork.kernel.org/patch/11353355/
- - Fix build warning reported by kbuild test bot
-v1: https://patchwork.kernel.org/patch/11346363/
-
- drivers/mfd/syscon.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-index 3a97816d0cba..75859e492984 100644
---- a/drivers/mfd/syscon.c
-+++ b/drivers/mfd/syscon.c
-@@ -101,12 +101,14 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 21c2fa5bd8c3..2de112404121 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3287,6 +3287,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 		return false;
+ 
+ 	lockdep_assert_held(&krcp->lock);
++	lockdep_assert_irqs_disabled();
++
+ 	idx = !!is_vmalloc_addr(ptr);
+ 
+ 	/* Check if a new block is required. */
+@@ -3306,6 +3308,29 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 			if (IS_ENABLED(CONFIG_PREEMPT_RT))
+ 				return false;
+ 
++			/*
++			 * If built with CONFIG_PROVE_RAW_LOCK_NESTING option,
++			 * the lockedp will complain about violation of the
++			 * nesting rules. It does the raw_spinlock vs. spinlock
++			 * nesting checks.
++			 *
++			 * That is why we drop the raw lock. Please note IRQs are
++			 * still disabled it guarantees that the "current" stays
++			 * on the same CPU later on when the raw lock is taken
++			 * back.
++			 *
++			 * It is important because if the page allocator is invoked
++			 * in fully preemptible context, it can be that we get a page
++			 * but end up on another CPU. That another CPU might not need
++			 * a page because of having some extra spots in its internal
++			 * array for pointer collecting. Staying on same CPU eliminates
++			 * described issue.
++			 *
++			 * Dropping the lock also reduces the critical section by
++			 * the time taken by the page allocator to obtain a page.
++			 */
++			raw_spin_unlock(&krcp->lock);
++
+ 			/*
+ 			 * NOTE: For one argument of kvfree_rcu() we can
+ 			 * drop the lock and get the page in sleepable
+@@ -3315,6 +3340,8 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
+ 			 */
+ 			bnode = (struct kvfree_rcu_bulk_data *)
+ 				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
++
++			raw_spin_lock(&krcp->lock);
  		}
- 	}
  
--	syscon_config.name = of_node_full_name(np);
-+	syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", np,
-+				       (u64)res.start);
- 	syscon_config.reg_stride = reg_io_width;
- 	syscon_config.val_bits = reg_io_width * 8;
- 	syscon_config.max_register = resource_size(&res) - reg_io_width;
- 
- 	regmap = regmap_init_mmio(NULL, base, &syscon_config);
-+	kfree(syscon_config.name);
- 	if (IS_ERR(regmap)) {
- 		pr_err("regmap init failed\n");
- 		ret = PTR_ERR(regmap);
+ 		/* Switch to emergency path. */
 -- 
-2.26.0
+2.20.1
 
