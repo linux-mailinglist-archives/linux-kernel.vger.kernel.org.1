@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D15322F013
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D0722EE92
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731767AbgG0OVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:21:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
+        id S1729507AbgG0OIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:08:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731736AbgG0OVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:21:35 -0400
+        id S1729472AbgG0OIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:08:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCB542070A;
-        Mon, 27 Jul 2020 14:21:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95D382073E;
+        Mon, 27 Jul 2020 14:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859695;
-        bh=kLEHju0KVoJDbYE61TY9rQc9V4gcT5FyCvKtiHi0cDQ=;
+        s=default; t=1595858930;
+        bh=hb73mPjW7aVbKLsg8JZT+XC20KzbazBLqYgGJO10gww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZpHg/eAdmlKd5Ez7pNo0zy46PeRBsBIn+giF0kGxvKy+tzv+b/un63cA9ajnaKb22
-         t1lA01k6dyzQolcheT5dwIgMgQFiePqI5cr5LmWlIG0ZBynDbgoxuo51TM/IypfdPF
-         JzFG/RJ8ol3q/48pHQPwytfe1kU4IB7zrrkjGeHc=
+        b=ppjSW5SJ2TGWw00VRZVF1bfv46zDVWjFXNd002lcpuJuLUZ/aO4q4k8PEjgFMf10Y
+         ZgP689s/fo3MRupUIhP1sUyff/PWz18GO2D/q+KD1tnrKtZYYp0CgP7eqIdTv2wNSE
+         al60BKYj8Y5clr21/GmMXoNVhIm5G9hphwITpc6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Mans Rullgard <mans@mansr.com>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 069/179] mlxsw: destroy workqueue when trap_register in mlxsw_emad_init
+Subject: [PATCH 4.14 25/64] drm: sun4i: hdmi: Fix inverted HPD result
 Date:   Mon, 27 Jul 2020 16:04:04 +0200
-Message-Id: <20200727134936.031965866@linuxfoundation.org>
+Message-Id: <20200727134912.397758711@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Jian <liujian56@huawei.com>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 5dbaeb87f2b309936be0aeae00cbc9e7f20ab296 ]
+[ Upstream commit baa1841eb797eadce6c907bdaed7cd6f01815404 ]
 
-When mlxsw_core_trap_register fails in mlxsw_emad_init,
-destroy_workqueue() shouled be called to destroy mlxsw_core->emad_wq.
+When the extra HPD polling in sun4i_hdmi was removed, the result of
+HPD was accidentally inverted.
 
-Fixes: d965465b60ba ("mlxsw: core: Fix possible deadlock")
-Signed-off-by: Liu Jian <liujian56@huawei.com>
-Reviewed-by: Ido Schimmel <idosch@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fix this by inverting the check.
+
+Fixes: bda8eaa6dee7 ("drm: sun4i: hdmi: Remove extra HPD polling")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Tested-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200711011030.21997-1-wens@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
-index e9ccd333f61dd..d6d6fe64887b3 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/core.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
-@@ -710,7 +710,7 @@ static int mlxsw_emad_init(struct mlxsw_core *mlxsw_core)
- 	err = mlxsw_core_trap_register(mlxsw_core, &mlxsw_emad_rx_listener,
- 				       mlxsw_core);
- 	if (err)
--		return err;
-+		goto err_trap_register;
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+index 82cb939351889..c9f1a8cd5f2ac 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+@@ -215,7 +215,7 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	unsigned long reg;
  
- 	err = mlxsw_core->driver->basic_trap_groups_set(mlxsw_core);
- 	if (err)
-@@ -722,6 +722,7 @@ static int mlxsw_emad_init(struct mlxsw_core *mlxsw_core)
- err_emad_trap_set:
- 	mlxsw_core_trap_unregister(mlxsw_core, &mlxsw_emad_rx_listener,
- 				   mlxsw_core);
-+err_trap_register:
- 	destroy_workqueue(mlxsw_core->emad_wq);
- 	return err;
- }
+ 	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
+-	if (reg & SUN4I_HDMI_HPD_HIGH) {
++	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
+ 		cec_phys_addr_invalidate(hdmi->cec_adap);
+ 		return connector_status_disconnected;
+ 	}
 -- 
 2.25.1
 
