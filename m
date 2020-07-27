@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F9122F042
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A42722EECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732005AbgG0OXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52032 "EHLO mail.kernel.org"
+        id S1729301AbgG0OKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731989AbgG0OW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:58 -0400
+        id S1729907AbgG0OKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4216720775;
-        Mon, 27 Jul 2020 14:22:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EC26021744;
+        Mon, 27 Jul 2020 14:10:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859777;
-        bh=8GWiwIqvkE4dJReinRavzUd3Vi9BD68A8VuSrWzkGdY=;
+        s=default; t=1595859045;
+        bh=gsPJusJ2WJfAmoKVDrtfaIh+MKZOfkh8nvK442dShYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtZx6dUs6FRYR8a1ZwYJH6SjAMCelonuMNmSmk1vvGceDMBUONdtXdIuC1Yyu1FZA
-         U/jg2gddp3KmTsT/DU1t9Ztc5zfhG6DdQ6NIN2HWnvE4oQl5ZdZ9ORbcPltu7e7WUG
-         iH6C9M+afYa7TpvgI6vEYeOwsiqIu4y2a3VZKyQk=
+        b=cGz5EkQet3Xemc9BBY21XnsTq5RufpYnZDjAJbG6YFuBNg2AbGD6Lq4ko+KizYhli
+         NI+YDtW3+M6MbP/Og3inlsY6iuFUNhqzeWlwoTpt+JJsUPw7ruw9R4ym1Ld2DKuWqq
+         nAY/ZJvUTajkyWeW+MoYcpJJxgTCgsnATRjr8ijw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 084/179] qed: suppress false-positives interrupt error messages on HW init
-Date:   Mon, 27 Jul 2020 16:04:19 +0200
-Message-Id: <20200727134936.778071007@linuxfoundation.org>
+        stable@vger.kernel.org, Joao Moreno <mail@joaomoreno.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 46/86] HID: apple: Disable Fn-key key-re-mapping on clone keyboards
+Date:   Mon, 27 Jul 2020 16:04:20 +0200
+Message-Id: <20200727134916.726651388@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,146 +44,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@marvell.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit eb61c2d69903e977ffa2b80b1da9d1f758cf228d ]
+[ Upstream commit a5d81646fa294eed57786a9310b06ca48902adf8 ]
 
-It was found that qed_pglueb_rbc_attn_handler() can produce a lot of
-false-positive error detections on driver load/reload (especially after
-crashes/recoveries) and spam the kernel log:
+The Maxxter KB-BT-001 Bluetooth keyboard, which looks somewhat like the
+Apple Wireless Keyboard, is using the vendor and product IDs (05AC:0239)
+of the Apple Wireless Keyboard (2009 ANSI version) <sigh>.
 
-[    4.958275] [qed_pglueb_rbc_attn_handler:324()]ICPL error - 00d00ff0
-[ 2079.146764] [qed_pglueb_rbc_attn_handler:324()]ICPL error - 00d80ff0
-[ 2116.374631] [qed_pglueb_rbc_attn_handler:324()]ICPL error - 00d80ff0
-[ 2135.250564] [qed_pglueb_rbc_attn_handler:324()]ICPL error - 00d80ff0
-[...]
+But its F1 - F10 keys are marked as sending F1 - F10, not the special
+functions hid-apple.c maps them too; and since its descriptors do not
+contain the HID_UP_CUSTOM | 0x0003 usage apple-hid looks for for the
+Fn-key, apple_setup_input() never gets called, so F1 - F6 are mapped
+to key-codes which have not been set in the keybit array causing them
+to not send any events at all.
 
-Reduce the logging level of two false-positive prone error messages from
-notice to verbose on initialization (only) to not mix it with real error
-attentions while debugging.
+The lack of a usage code matching the Fn key in the clone is actually
+useful as this allows solving this problem in a generic way.
 
-Fixes: 666db4862f2d ("qed: Revise load sequence to avoid PCI errors")
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This commits adds a fn_found flag and it adds a input_configured
+callback which checks if this flag is set once all usages have been
+mapped. If it is not set, then assume this is a clone and clear the
+quirks bitmap so that the hid-apple code does not add any special
+handling to this keyboard.
+
+This fixes F1 - F6 not sending anything at all and F7 - F12 sending
+the wrong codes on the Maxxter KB-BT-001 Bluetooth keyboard and on
+similar clones.
+
+Cc: Joao Moreno <mail@joaomoreno.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_dev.c |  2 +-
- drivers/net/ethernet/qlogic/qed/qed_int.c | 50 +++++++++++++----------
- drivers/net/ethernet/qlogic/qed/qed_int.h |  4 +-
- 3 files changed, 32 insertions(+), 24 deletions(-)
+ drivers/hid/hid-apple.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-index 58913fe4f3457..0629dd4e18d97 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-@@ -3096,7 +3096,7 @@ int qed_hw_init(struct qed_dev *cdev, struct qed_hw_init_params *p_params)
- 		}
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index 8ab8f2350bbcd..b58ab769aa7b3 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -57,6 +57,7 @@ MODULE_PARM_DESC(swap_opt_cmd, "Swap the Option (\"Alt\") and Command (\"Flag\")
+ struct apple_sc {
+ 	unsigned long quirks;
+ 	unsigned int fn_on;
++	unsigned int fn_found;
+ 	DECLARE_BITMAP(pressed_numlock, KEY_CNT);
+ };
  
- 		/* Log and clear previous pglue_b errors if such exist */
--		qed_pglueb_rbc_attn_handler(p_hwfn, p_hwfn->p_main_ptt);
-+		qed_pglueb_rbc_attn_handler(p_hwfn, p_hwfn->p_main_ptt, true);
- 
- 		/* Enable the PF's internal FID_enable in the PXP */
- 		rc = qed_pglueb_set_pfid_enable(p_hwfn, p_hwfn->p_main_ptt,
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.c b/drivers/net/ethernet/qlogic/qed/qed_int.c
-index 9f5113639eaf0..8d106063e9275 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_int.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_int.c
-@@ -256,9 +256,10 @@ out:
- #define PGLUE_ATTENTION_ZLR_VALID		(1 << 25)
- #define PGLUE_ATTENTION_ILT_VALID		(1 << 23)
- 
--int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn,
--				struct qed_ptt *p_ptt)
-+int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt,
-+				bool hw_init)
+@@ -342,12 +343,15 @@ static int apple_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 		struct hid_field *field, struct hid_usage *usage,
+ 		unsigned long **bit, int *max)
  {
-+	char msg[256];
- 	u32 tmp;
- 
- 	tmp = qed_rd(p_hwfn, p_ptt, PGLUE_B_REG_TX_ERR_WR_DETAILS2);
-@@ -272,22 +273,23 @@ int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn,
- 		details = qed_rd(p_hwfn, p_ptt,
- 				 PGLUE_B_REG_TX_ERR_WR_DETAILS);
- 
--		DP_NOTICE(p_hwfn,
--			  "Illegal write by chip to [%08x:%08x] blocked.\n"
--			  "Details: %08x [PFID %02x, VFID %02x, VF_VALID %02x]\n"
--			  "Details2 %08x [Was_error %02x BME deassert %02x FID_enable deassert %02x]\n",
--			  addr_hi, addr_lo, details,
--			  (u8)GET_FIELD(details, PGLUE_ATTENTION_DETAILS_PFID),
--			  (u8)GET_FIELD(details, PGLUE_ATTENTION_DETAILS_VFID),
--			  GET_FIELD(details,
--				    PGLUE_ATTENTION_DETAILS_VF_VALID) ? 1 : 0,
--			  tmp,
--			  GET_FIELD(tmp,
--				    PGLUE_ATTENTION_DETAILS2_WAS_ERR) ? 1 : 0,
--			  GET_FIELD(tmp,
--				    PGLUE_ATTENTION_DETAILS2_BME) ? 1 : 0,
--			  GET_FIELD(tmp,
--				    PGLUE_ATTENTION_DETAILS2_FID_EN) ? 1 : 0);
-+		snprintf(msg, sizeof(msg),
-+			 "Illegal write by chip to [%08x:%08x] blocked.\n"
-+			 "Details: %08x [PFID %02x, VFID %02x, VF_VALID %02x]\n"
-+			 "Details2 %08x [Was_error %02x BME deassert %02x FID_enable deassert %02x]",
-+			 addr_hi, addr_lo, details,
-+			 (u8)GET_FIELD(details, PGLUE_ATTENTION_DETAILS_PFID),
-+			 (u8)GET_FIELD(details, PGLUE_ATTENTION_DETAILS_VFID),
-+			 !!GET_FIELD(details, PGLUE_ATTENTION_DETAILS_VF_VALID),
-+			 tmp,
-+			 !!GET_FIELD(tmp, PGLUE_ATTENTION_DETAILS2_WAS_ERR),
-+			 !!GET_FIELD(tmp, PGLUE_ATTENTION_DETAILS2_BME),
-+			 !!GET_FIELD(tmp, PGLUE_ATTENTION_DETAILS2_FID_EN));
++	struct apple_sc *asc = hid_get_drvdata(hdev);
 +
-+		if (hw_init)
-+			DP_VERBOSE(p_hwfn, NETIF_MSG_INTR, "%s\n", msg);
-+		else
-+			DP_NOTICE(p_hwfn, "%s\n", msg);
+ 	if (usage->hid == (HID_UP_CUSTOM | 0x0003) ||
+ 			usage->hid == (HID_UP_MSVENDOR | 0x0003) ||
+ 			usage->hid == (HID_UP_HPVENDOR2 | 0x0003)) {
+ 		/* The fn key on Apple USB keyboards */
+ 		set_bit(EV_REP, hi->input->evbit);
+ 		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, KEY_FN);
++		asc->fn_found = true;
+ 		apple_setup_input(hi->input);
+ 		return 1;
  	}
- 
- 	tmp = qed_rd(p_hwfn, p_ptt, PGLUE_B_REG_TX_ERR_RD_DETAILS2);
-@@ -320,8 +322,14 @@ int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn,
- 	}
- 
- 	tmp = qed_rd(p_hwfn, p_ptt, PGLUE_B_REG_TX_ERR_WR_DETAILS_ICPL);
--	if (tmp & PGLUE_ATTENTION_ICPL_VALID)
--		DP_NOTICE(p_hwfn, "ICPL error - %08x\n", tmp);
-+	if (tmp & PGLUE_ATTENTION_ICPL_VALID) {
-+		snprintf(msg, sizeof(msg), "ICPL error - %08x", tmp);
-+
-+		if (hw_init)
-+			DP_VERBOSE(p_hwfn, NETIF_MSG_INTR, "%s\n", msg);
-+		else
-+			DP_NOTICE(p_hwfn, "%s\n", msg);
-+	}
- 
- 	tmp = qed_rd(p_hwfn, p_ptt, PGLUE_B_REG_MASTER_ZLR_ERR_DETAILS);
- 	if (tmp & PGLUE_ATTENTION_ZLR_VALID) {
-@@ -360,7 +368,7 @@ int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn,
- 
- static int qed_pglueb_rbc_attn_cb(struct qed_hwfn *p_hwfn)
- {
--	return qed_pglueb_rbc_attn_handler(p_hwfn, p_hwfn->p_dpc_ptt);
-+	return qed_pglueb_rbc_attn_handler(p_hwfn, p_hwfn->p_dpc_ptt, false);
+@@ -374,6 +378,19 @@ static int apple_input_mapped(struct hid_device *hdev, struct hid_input *hi,
+ 	return 0;
  }
  
- #define QED_DORQ_ATTENTION_REASON_MASK  (0xfffff)
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_int.h b/drivers/net/ethernet/qlogic/qed/qed_int.h
-index 9ad568d93ae65..defb0d1bc45a2 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_int.h
-+++ b/drivers/net/ethernet/qlogic/qed/qed_int.h
-@@ -431,7 +431,7 @@ int qed_int_set_timer_res(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt,
++static int apple_input_configured(struct hid_device *hdev,
++		struct hid_input *hidinput)
++{
++	struct apple_sc *asc = hid_get_drvdata(hdev);
++
++	if ((asc->quirks & APPLE_HAS_FN) && !asc->fn_found) {
++		hid_info(hdev, "Fn key not found (Apple Wireless Keyboard clone?), disabling Fn key handling\n");
++		asc->quirks = 0;
++	}
++
++	return 0;
++}
++
+ static int apple_probe(struct hid_device *hdev,
+ 		const struct hid_device_id *id)
+ {
+@@ -588,6 +605,7 @@ static struct hid_driver apple_driver = {
+ 	.event = apple_event,
+ 	.input_mapping = apple_input_mapping,
+ 	.input_mapped = apple_input_mapped,
++	.input_configured = apple_input_configured,
+ };
+ module_hid_driver(apple_driver);
  
- #define QED_MAPPING_MEMORY_SIZE(dev)	(NUM_OF_SBS(dev))
- 
--int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn,
--				struct qed_ptt *p_ptt);
-+int qed_pglueb_rbc_attn_handler(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt,
-+				bool hw_init);
- 
- #endif
 -- 
 2.25.1
 
