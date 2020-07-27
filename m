@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1625222F2D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F51D22F251
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733157AbgG0Omg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:42:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
+        id S1732871AbgG0OjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:39:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727833AbgG0OGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:55 -0400
+        id S1729748AbgG0OKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3A652078E;
-        Mon, 27 Jul 2020 14:06:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F9852083E;
+        Mon, 27 Jul 2020 14:09:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858815;
-        bh=lXydRmKUFY5sur3nSfW3FGBmlslf8j7RwPqS6nb1vfQ=;
+        s=default; t=1595858999;
+        bh=JSY/ZG6E/SThjrRqN49pp2TkyzumB4ywJMpDltI+IAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E0GdkqaPc2q31ayQYrxw3vIsLnfrypajvfHWi75szcgq0gOslMdvBvlikLlUfPn/w
-         nDYxtOK6b9XAyyGKVQmXvDEYljFLoX4yTURsLO+oYh/KuxKeBq+Ni0JfAA0RI37an/
-         ma/z4yHJ2Dr+PxWwfzafF6E1ogYEnNES6n7c8Tcc=
+        b=uJW9axA9Ga3x2J66eniy2WIqGb/o4hE0YMAftk4Iu1OQrGz0cSto2aLwD+FhqJDL3
+         4SlSON38m2BLdmSWjDQNFmd8JyAjeShPVwLBLemm60HK66B/Ftwe2sjEv/FF0XoJMI
+         jvySwhQpuNXuCaDl6hQ9JJs503t3g17/1IWqu3Ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 21/64] bnxt_en: Fix race when modifying pause settings.
-Date:   Mon, 27 Jul 2020 16:04:00 +0200
-Message-Id: <20200727134912.096049773@linuxfoundation.org>
+Subject: [PATCH 4.19 27/86] hippi: Fix a size used in a pci_free_consistent() in an error handling path
+Date:   Mon, 27 Jul 2020 16:04:01 +0200
+Message-Id: <20200727134915.816999436@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,42 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 163e9ef63641a02de4c95cd921577265c52e1ce2 ]
+[ Upstream commit 3195c4706b00106aa82c73acd28340fa8fc2bfc1 ]
 
-The driver was modified to not rely on rtnl lock to protect link
-settings about 2 years ago.  The pause setting was missed when
-making that change.  Fix it by acquiring link_lock mutex before
-calling bnxt_hwrm_set_pause().
+The size used when calling 'pci_alloc_consistent()' and
+'pci_free_consistent()' should match.
 
-Fixes: e2dc9b6e38fa ("bnxt_en: Don't use rtnl lock to protect link change logic in workqueue.")
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Fix it and have it consistent with the corresponding call in 'rr_close()'.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/hippi/rrunner.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-index 3c78cd1cdd6fb..6edbbfc1709a2 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
-@@ -1287,8 +1287,11 @@ static int bnxt_set_pauseparam(struct net_device *dev,
- 	if (epause->tx_pause)
- 		link_info->req_flow_ctrl |= BNXT_LINK_PAUSE_TX;
- 
--	if (netif_running(dev))
-+	if (netif_running(dev)) {
-+		mutex_lock(&bp->link_lock);
- 		rc = bnxt_hwrm_set_pause(bp);
-+		mutex_unlock(&bp->link_lock);
-+	}
- 	return rc;
- }
- 
+diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
+index 029206e4da3b3..2a8c33abb363a 100644
+--- a/drivers/net/hippi/rrunner.c
++++ b/drivers/net/hippi/rrunner.c
+@@ -1248,7 +1248,7 @@ static int rr_open(struct net_device *dev)
+ 		rrpriv->info = NULL;
+ 	}
+ 	if (rrpriv->rx_ctrl) {
+-		pci_free_consistent(pdev, sizeof(struct ring_ctrl),
++		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
+ 				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
+ 		rrpriv->rx_ctrl = NULL;
+ 	}
 -- 
 2.25.1
 
