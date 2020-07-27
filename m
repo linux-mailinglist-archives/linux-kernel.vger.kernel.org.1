@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C425122EF04
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7C822F049
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgG0OMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:12:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        id S1732042AbgG0OXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:23:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730231AbgG0OMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:12:38 -0400
+        id S1732027AbgG0OXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:23:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6366D20838;
-        Mon, 27 Jul 2020 14:12:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D043C2070A;
+        Mon, 27 Jul 2020 14:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859157;
-        bh=W6z7dnpeGGRWpWZZKzTCo6fCMQg2u8gAj9/OmC7aNfg=;
+        s=default; t=1595859793;
+        bh=9FOnQYGHVN4dOx8fmzyzmZVhYjbLjfdb9/yh2ELR+Ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nnqanGUJQ5KFSvTnLSc5wXQEw4DV00O2SH9PmzHHEH57Y3asQhXuwWIC8Uk1LbM0I
-         DxQ7as1EzTVbVe3ikizGTO28HQZqPuD2SqdZYUEsWAu8wq96be0QFRs/BXp49IGysr
-         6Kj+k2E27uQIJK5+4nD98UnxuSEP7mmHiXB6WAz8=
+        b=pPsJpn+g3b1H1y1MRd/pH+Qtnz7NCFtEEPQVuUnBbj4ueqQ/WxvsU2z3GaVv7Nwx9
+         AQPVJ3UarEONynDuBL+ojp4LwrHwM95Vpa5JR5uhrb7DqVEUSd/VLoqT2thpF7hgaX
+         P0kYll2PrBuDsGypLIMj4My5L5iz4t5FcRBDBhCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.19 68/86] staging: comedi: addi_apci_1500: check INSN_CONFIG_DIGITAL_TRIG shift
+        stable@vger.kernel.org, Joao Moreno <mail@joaomoreno.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 107/179] HID: apple: Disable Fn-key key-re-mapping on clone keyboards
 Date:   Mon, 27 Jul 2020 16:04:42 +0200
-Message-Id: <20200727134917.830175777@linuxfoundation.org>
+Message-Id: <20200727134937.863144249@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,72 +44,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit fc846e9db67c7e808d77bf9e2ef3d49e3820ce5d upstream.
+[ Upstream commit a5d81646fa294eed57786a9310b06ca48902adf8 ]
 
-The `INSN_CONFIG` comedi instruction with sub-instruction code
-`INSN_CONFIG_DIGITAL_TRIG` includes a base channel in `data[3]`. This is
-used as a right shift amount for other bitmask values without being
-checked.  Shift amounts greater than or equal to 32 will result in
-undefined behavior.  Add code to deal with this, adjusting the checks
-for invalid channels so that enabled channel bits that would have been
-lost by shifting are also checked for validity.  Only channels 0 to 15
-are valid.
+The Maxxter KB-BT-001 Bluetooth keyboard, which looks somewhat like the
+Apple Wireless Keyboard, is using the vendor and product IDs (05AC:0239)
+of the Apple Wireless Keyboard (2009 ANSI version) <sigh>.
 
-Fixes: a8c66b684efaf ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
-Cc: <stable@vger.kernel.org> #4.0+: ef75e14a6c93: staging: comedi: verify array index is correct before using it
-Cc: <stable@vger.kernel.org> #4.0+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200717145257.112660-5-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+But its F1 - F10 keys are marked as sending F1 - F10, not the special
+functions hid-apple.c maps them too; and since its descriptors do not
+contain the HID_UP_CUSTOM | 0x0003 usage apple-hid looks for for the
+Fn-key, apple_setup_input() never gets called, so F1 - F6 are mapped
+to key-codes which have not been set in the keybit array causing them
+to not send any events at all.
 
+The lack of a usage code matching the Fn key in the clone is actually
+useful as this allows solving this problem in a generic way.
+
+This commits adds a fn_found flag and it adds a input_configured
+callback which checks if this flag is set once all usages have been
+mapped. If it is not set, then assume this is a clone and clear the
+quirks bitmap so that the hid-apple code does not add any special
+handling to this keyboard.
+
+This fixes F1 - F6 not sending anything at all and F7 - F12 sending
+the wrong codes on the Maxxter KB-BT-001 Bluetooth keyboard and on
+similar clones.
+
+Cc: Joao Moreno <mail@joaomoreno.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1500.c |   24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ drivers/hid/hid-apple.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1500.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
-@@ -452,13 +452,14 @@ static int apci1500_di_cfg_trig(struct c
- 	struct apci1500_private *devpriv = dev->private;
- 	unsigned int trig = data[1];
- 	unsigned int shift = data[3];
--	unsigned int hi_mask = data[4] << shift;
--	unsigned int lo_mask = data[5] << shift;
--	unsigned int chan_mask = hi_mask | lo_mask;
--	unsigned int old_mask = (1 << shift) - 1;
-+	unsigned int hi_mask;
-+	unsigned int lo_mask;
-+	unsigned int chan_mask;
-+	unsigned int old_mask;
- 	unsigned int pm;
- 	unsigned int pt;
- 	unsigned int pp;
-+	unsigned int invalid_chan;
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index d732d1d10cafb..6909c045fece1 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -54,6 +54,7 @@ MODULE_PARM_DESC(swap_opt_cmd, "Swap the Option (\"Alt\") and Command (\"Flag\")
+ struct apple_sc {
+ 	unsigned long quirks;
+ 	unsigned int fn_on;
++	unsigned int fn_found;
+ 	DECLARE_BITMAP(pressed_numlock, KEY_CNT);
+ };
  
- 	if (trig > 1) {
- 		dev_dbg(dev->class_dev,
-@@ -466,7 +467,20 @@ static int apci1500_di_cfg_trig(struct c
- 		return -EINVAL;
- 	}
- 
--	if (chan_mask > 0xffff) {
-+	if (shift <= 16) {
-+		hi_mask = data[4] << shift;
-+		lo_mask = data[5] << shift;
-+		old_mask = (1U << shift) - 1;
-+		invalid_chan = (data[4] | data[5]) >> (16 - shift);
-+	} else {
-+		hi_mask = 0;
-+		lo_mask = 0;
-+		old_mask = 0xffff;
-+		invalid_chan = data[4] | data[5];
-+	}
-+	chan_mask = hi_mask | lo_mask;
+@@ -339,12 +340,15 @@ static int apple_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 		struct hid_field *field, struct hid_usage *usage,
+ 		unsigned long **bit, int *max)
+ {
++	struct apple_sc *asc = hid_get_drvdata(hdev);
 +
-+	if (invalid_chan) {
- 		dev_dbg(dev->class_dev, "invalid digital trigger channel\n");
- 		return -EINVAL;
+ 	if (usage->hid == (HID_UP_CUSTOM | 0x0003) ||
+ 			usage->hid == (HID_UP_MSVENDOR | 0x0003) ||
+ 			usage->hid == (HID_UP_HPVENDOR2 | 0x0003)) {
+ 		/* The fn key on Apple USB keyboards */
+ 		set_bit(EV_REP, hi->input->evbit);
+ 		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, KEY_FN);
++		asc->fn_found = true;
+ 		apple_setup_input(hi->input);
+ 		return 1;
  	}
+@@ -371,6 +375,19 @@ static int apple_input_mapped(struct hid_device *hdev, struct hid_input *hi,
+ 	return 0;
+ }
+ 
++static int apple_input_configured(struct hid_device *hdev,
++		struct hid_input *hidinput)
++{
++	struct apple_sc *asc = hid_get_drvdata(hdev);
++
++	if ((asc->quirks & APPLE_HAS_FN) && !asc->fn_found) {
++		hid_info(hdev, "Fn key not found (Apple Wireless Keyboard clone?), disabling Fn key handling\n");
++		asc->quirks = 0;
++	}
++
++	return 0;
++}
++
+ static int apple_probe(struct hid_device *hdev,
+ 		const struct hid_device_id *id)
+ {
+@@ -585,6 +602,7 @@ static struct hid_driver apple_driver = {
+ 	.event = apple_event,
+ 	.input_mapping = apple_input_mapping,
+ 	.input_mapped = apple_input_mapped,
++	.input_configured = apple_input_configured,
+ };
+ module_hid_driver(apple_driver);
+ 
+-- 
+2.25.1
+
 
 
