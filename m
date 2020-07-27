@@ -2,135 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B3222E54B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 07:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4A222E564
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 07:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgG0FaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 01:30:09 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:31786 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726006AbgG0FaG (ORCPT
+        id S1726433AbgG0Fcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 01:32:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52014 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726006AbgG0Fcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 01:30:06 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06R5Rmv6011000;
-        Mon, 27 Jul 2020 01:30:05 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32ghn5da4u-1
+        Mon, 27 Jul 2020 01:32:55 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06R53WCV126676;
+        Mon, 27 Jul 2020 01:32:43 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32gdmc4sxd-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 01:30:05 -0400
-Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 06R5U3EM017819
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 27 Jul 2020 01:30:04 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Sun, 26 Jul
- 2020 22:30:02 -0700
-Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Sun, 26 Jul 2020 22:30:02 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06R5TksV007624;
-        Mon, 27 Jul 2020 01:30:00 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH v6 9/9] dt-bindings: hwmon: Add bindings for ADM1266
-Date:   Mon, 27 Jul 2020 08:31:21 +0300
-Message-ID: <20200727053121.23288-10-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200727053121.23288-1-alexandru.tachici@analog.com>
-References: <20200727053121.23288-1-alexandru.tachici@analog.com>
+        Mon, 27 Jul 2020 01:32:43 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06R54GpA129854;
+        Mon, 27 Jul 2020 01:32:43 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32gdmc4swv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Jul 2020 01:32:42 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06R5WSBS031738;
+        Mon, 27 Jul 2020 05:32:40 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 32gcqghu0n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Jul 2020 05:32:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06R5WZ1M26607880
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Jul 2020 05:32:35 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C11154C050;
+        Mon, 27 Jul 2020 05:32:35 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A91414C044;
+        Mon, 27 Jul 2020 05:32:32 +0000 (GMT)
+Received: from srikart450.in.ibm.com (unknown [9.85.97.241])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Jul 2020 05:32:32 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <michaele@au1.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Nick Piggin <npiggin@au1.ibm.com>,
+        Oliver OHalloran <oliveroh@au1.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@linux.ibm.com>,
+        Anton Blanchard <anton@au1.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: [PATCH v4 00/10] Coregroup support on Powerpc
+Date:   Mon, 27 Jul 2020 11:02:20 +0530
+Message-Id: <20200727053230.19753-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-27_03:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007270040
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ adultscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007270036
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+Changelog v3 ->v4:
+v3: https://lore.kernel.org/lkml/20200723085116.4731-1-srikar@linux.vnet.ibm.com/t/#u
 
-Add bindings for the Analog Devices ADM1266 sequencer.
+powerpc/smp: Create coregroup domain
+	if coregroup_support doesn't exist, update MC mask to the next
+	smaller domain mask.
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- .../bindings/hwmon/adi,adm1266.yaml           | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
+Changelog v2 -> v3:
+v2: https://lore.kernel.org/linuxppc-dev/20200721113814.32284-1-srikar@linux.vnet.ibm.com/t/#u
 
-diff --git a/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml b/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
-new file mode 100644
-index 000000000000..ad92686e2ee6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/adi,adm1266.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices ADM1266 Cascadable Super Sequencer with Margin
-+  Control and Fault Recording
-+
-+maintainers:
-+  - Alexandru Tachici <alexandru.tachici@analog.com>
-+
-+description: |
-+  Analog Devices ADM1266 Cascadable Super Sequencer with Margin
-+  Control and Fault Recording.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ADM1266.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adm1266
-+
-+  reg:
-+    description: |
-+      I2C address of slave device.
-+    items:
-+      minimum: 0x40
-+      maximum: 0x4F
-+
-+  avcc-supply:
-+    description: |
-+      Phandle to the Avcc power supply.
-+
-+  adi,master-adm1266:
-+    description: |
-+      Represents phandle of a master ADM1266 device cascaded through the IDB.
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adm1266@40 {
-+                compatible = "adi,adm1266";
-+                reg = <0x40>;
-+        };
-+    };
-+...
+powerpc/smp: Cache node for reuse
+	Removed node caching part. Rewrote the Commit msg (Michael Ellerman)
+	Renamed to powerpc/smp: Fix a warning under !NEED_MULTIPLE_NODES
+
+powerpc/smp: Enable small core scheduling sooner
+	Rewrote changelog (Gautham)
+	Renamed to powerpc/smp: Move topology fixups into  a new function
+
+powerpc/smp: Create coregroup domain
+	Add optimization for mask updation under coregroup_support
+
+Changelog v1 -> v2:
+v1: https://lore.kernel.org/linuxppc-dev/20200714043624.5648-1-srikar@linux.vnet.ibm.com/t/#u
+
+powerpc/smp: Merge Power9 topology with Power topology
+	Replaced a reference to cpu_smt_mask with per_cpu(cpu_sibling_map, cpu)
+	since cpu_smt_mask is only defined under CONFIG_SCHED_SMT
+
+powerpc/smp: Enable small core scheduling sooner
+	Restored the previous info msg (Jordan)
+	Moved big core topology fixup to fixup_topology (Gautham)
+
+powerpc/smp: Dont assume l2-cache to be superset of sibling
+	Set cpumask after verifying l2-cache. (Gautham)
+
+powerpc/smp: Generalize 2nd sched domain
+	Moved shared_cache topology fixup to fixup_topology (Gautham)
+
+Powerpc/numa: Detect support for coregroup
+	Explained Coregroup in commit msg (Michael Ellerman)
+
+Powerpc/smp: Create coregroup domain
+	Moved coregroup topology fixup to fixup_topology (Gautham)
+
+powerpc/smp: Implement cpu_to_coregroup_id
+	Move coregroup_enabled before getting associativity (Gautham)
+
+powerpc/smp: Provide an ability to disable coregroup
+	Patch dropped (Michael Ellerman)
+
+Cleanup of existing powerpc topologies and add coregroup support on
+Powerpc. Coregroup is a group of (subset of) cores of a DIE that share
+a resource.
+
+Patch 7 of this patch series: "Powerpc/numa: Detect support for coregroup"
+depends on
+https://lore.kernel.org/linuxppc-dev/20200707140644.7241-1-srikar@linux.vnet.ibm.com/t/#u
+However it should be easy to rebase the patch without the above patch.
+
+This patch series is based on top of current powerpc/next tree + the
+above patch.
+
+On Power 8 Systems
+------------------
+$ tail /proc/cpuinfo
+processor	: 255
+cpu		: POWER8 (architected), altivec supported
+clock		: 3724.000000MHz
+revision	: 2.1 (pvr 004b 0201)
+
+timebase	: 512000000
+platform	: pSeries
+model		: IBM,8408-E8E
+machine		: CHRP IBM,8408-E8E
+MMU		: Hash
+
+Before the patchset
+-------------------
+$ cat /proc/sys/kernel/sched_domain/cpu0/domain*/name
+SMT
+DIE
+NUMA
+NUMA
+$ head /proc/schedstat
+version 15
+timestamp 4295534931
+cpu0 0 0 0 0 0 0 41389823338 17682779896 14117
+domain0 00000000,00000000,00000000,00000000,00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,00000000,00000000,00000000,00000000,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain2 00000000,00000000,00000000,00000000,00000000,00000000,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain3 ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+cpu1 0 0 0 0 0 0 27087859050 152273672 10396
+domain0 00000000,00000000,00000000,00000000,00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,00000000,00000000,00000000,00000000,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+After the patchset
+------------------
+$ cat /proc/sys/kernel/sched_domain/cpu0/domain*/name
+SMT
+DIE
+NUMA
+NUMA
+$ head /proc/schedstat
+version 15
+timestamp 4295534931
+cpu0 0 0 0 0 0 0 41389823338 17682779896 14117
+domain0 00000000,00000000,00000000,00000000,00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,00000000,00000000,00000000,00000000,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain2 00000000,00000000,00000000,00000000,00000000,00000000,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain3 ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+cpu1 0 0 0 0 0 0 27087859050 152273672 10396
+domain0 00000000,00000000,00000000,00000000,00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,00000000,00000000,00000000,00000000,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+On Power 9 (with device-tree enablement to show coregroups).
+(hunks for mimicing a coregroup was posted at
+https://lore.kernel.org/linuxppc-dev/20200714043624.5648-1-srikar@linux.vnet.ibm.com/t/#m2cb09bb11c7a93257d6123d1d27edb8212f8af21)
+-----------------------------------------------------------
+$ tail /proc/cpuinfo
+processor	: 127
+cpu		: POWER9 (architected), altivec supported
+clock		: 3000.000000MHz
+revision	: 2.2 (pvr 004e 0202)
+
+timebase	: 512000000
+platform	: pSeries
+model		: IBM,9008-22L
+machine		: CHRP IBM,9008-22L
+MMU		: Hash
+
+Before patchset
+--------------
+$ cat /proc/sys/kernel/sched_domain/cpu0/domain*/name
+SMT
+CACHE
+DIE
+NUMA
+
+$ head /proc/schedstat
+version 15
+timestamp 4318242208
+cpu0 0 0 0 0 0 0 28077107004 4773387362 78205
+domain0 00000000,00000000,00000000,00000055 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain2 00000000,00000000,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain3 ffffffff,ffffffff,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+cpu1 0 0 0 0 0 0 24177439200 413887604 75393
+domain0 00000000,00000000,00000000,000000aa 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+After patchset
+--------------
+$ cat /proc/sys/kernel/sched_domain/cpu0/domain*/name
+SMT
+CACHE
+MC
+DIE
+NUMA
+
+$ head /proc/schedstat
+version 15
+timestamp 4318242208
+cpu0 0 0 0 0 0 0 28077107004 4773387362 78205
+domain0 00000000,00000000,00000000,00000055 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain1 00000000,00000000,00000000,000000ff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain2 00000000,00000000,00000000,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain3 00000000,00000000,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+domain4 ffffffff,ffffffff,ffffffff,ffffffff 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+cpu1 0 0 0 0 0 0 24177439200 413887604 75393
+domain0 00000000,00000000,00000000,000000aa 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <michaele@au1.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Nick Piggin <npiggin@au1.ibm.com>
+Cc: Oliver OHalloran <oliveroh@au1.ibm.com>
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Michael Neuling <mikey@linux.ibm.com>
+Cc: Anton Blanchard <anton@au1.ibm.com>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+Cc: Jordan Niethe <jniethe5@gmail.com>
+
+Srikar Dronamraju (10):
+  powerpc/smp: Fix a warning under !NEED_MULTIPLE_NODES
+  powerpc/smp: Merge Power9 topology with Power topology
+  powerpc/smp: Move powerpc_topology above
+  powerpc/smp: Move topology fixups into  a new function
+  powerpc/smp: Dont assume l2-cache to be superset of sibling
+  powerpc/smp: Generalize 2nd sched domain
+  powerpc/numa: Detect support for coregroup
+  powerpc/smp: Allocate cpumask only after searching thread group
+  powerpc/smp: Create coregroup domain
+  powerpc/smp: Implement cpu_to_coregroup_id
+
+ arch/powerpc/include/asm/smp.h      |   1 +
+ arch/powerpc/include/asm/topology.h |  10 ++
+ arch/powerpc/kernel/smp.c           | 246 +++++++++++++++++-----------
+ arch/powerpc/mm/numa.c              |  59 +++++--
+ 4 files changed, 210 insertions(+), 106 deletions(-)
+
 -- 
-2.20.1
+2.17.1
 
