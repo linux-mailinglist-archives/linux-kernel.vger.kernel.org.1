@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E4222EA77
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6041C22EA7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgG0KyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgG0KyG (ORCPT
+        id S1728360AbgG0KyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:54:24 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:46473 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728349AbgG0KyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:54:06 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42C9C061794;
-        Mon, 27 Jul 2020 03:54:05 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id 72so7813956ple.0;
-        Mon, 27 Jul 2020 03:54:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oIEKzcok0AHytuejxAqDHox+Hv/4xCQLeQwpksAUjBk=;
-        b=NATaD6DOFsQ65caJoNxzMR1zR5wWv1mukgUlz/BQxbkOyAc5URJ66Y+8cdha222tlD
-         khfhBoARpbTJAfxfgmxzI25DrnSdQBWxkRBW4/FLvsE89WqdYen4yWtLcPPRWXfcPiQW
-         Gik2kR8VvdLGEoWhb8f0jxxfsTaN1VITh/z6fnufWcLt+xSwyDnNjizNAmxx5ggA+Tl+
-         ij30otw8WWxa0Me518bb4RvNp+5dOrGeuixKwriyJ/GTmZ0NBZVS3RelFEGMegirNXO3
-         /3CobaheVraCdrqydqqbQPsNUyqVJl8E46cp9mILLaxCGk4jnpvgGsPmnunjnFgO7aeq
-         LL8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oIEKzcok0AHytuejxAqDHox+Hv/4xCQLeQwpksAUjBk=;
-        b=KFpEi9J7MISEH0iONR3nJaoIUpy0/uMKA/LAMhltjDKbfVXw7z1AQjnxp2o/SriHim
-         uJuKTVon0Bjt9ronjDl0Y6XbOrIZi3T2Tc7ByWlVuf2o6mbtsk8DoZ/3gFp0koUgUiW3
-         NFlj/XBVZIrYM6FGjjId2CqYKok9LdLF/4ssMm9cmh1Ejmdh1ur6bp96131NkZ48ZQAp
-         z/+OGhVsS7//yWhetkUrg7BazCkHRquMbvGFehDG01Pgj9+0A1mvhxQ2wroEQSfTLFdF
-         1Z3GWJ6VK2r2OVw/VBuQ0MD2KzIJvCyNCwSTu8KBkfQYwG2tEm8EARw6ZhdSroP2ZL+z
-         Vbxw==
-X-Gm-Message-State: AOAM531VNSC8Fqc3q/FwaSo1uzXPU6wyjmp5i/xcObqRBTlyez+7LFnm
-        D0JGsdeshRQFLlGZMtlKZzOp/VE/eoTY0pj4u0scEdNa
-X-Google-Smtp-Source: ABdhPJzKpuotHtZQWXCNXpW4Rd40X2ZHyq6xGCf7dma4uujyWwxfrgebmhgIZK8KpV8IbxrNGqpdB0U2NUlVH+QVpNQ=
-X-Received: by 2002:a17:90a:498b:: with SMTP id d11mr19017924pjh.129.1595847245382;
- Mon, 27 Jul 2020 03:54:05 -0700 (PDT)
+        Mon, 27 Jul 2020 06:54:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595847263; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/E07zcWP7cDl0cKYrcOVvgqPqfhXiQamtMhLxP/YTkw=;
+ b=YGeVg23QjS9hF2wvZk+Akkwl0U2kT+Typ1mZvtBUdlLvkJ/ckxBcl4CMrbhNFVR9Dasb0I5p
+ 28SnO6C4nZgK1xdOD+yZTM1ujDfPFwIGL2keQ5s8L/oRXlCdiAiIgGJ5ooexai/he7Dglcgv
+ WU1NzCwMaJ6IBmorA63DdWBcZ2Q=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5f1eb2577ab15087ebfc0f59 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 10:54:15
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25E83C433CB; Mon, 27 Jul 2020 10:54:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 953A0C433C9;
+        Mon, 27 Jul 2020 10:54:14 +0000 (UTC)
 MIME-Version: 1.0
-References: <0bad52e6e10ff2e8d8a19f95bab7642ec5e71838.1595838334.git.sramani@mellanox.com>
-In-Reply-To: <0bad52e6e10ff2e8d8a19f95bab7642ec5e71838.1595838334.git.sramani@mellanox.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 27 Jul 2020 13:53:50 +0300
-Message-ID: <CAHp75Vdsw61-uNi2TiR7F4j0s=F6XCnQC_j81hXfyJ9tfeq8QA@mail.gmail.com>
-Subject: Re: [PATCH v1] platform/mellanox: mlxbf-pmc: Add Mellanox BlueField
- PMC driver
-To:     Shravan Kumar Ramani <sramani@mellanox.com>
-Cc:     Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 27 Jul 2020 16:24:14 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org, mka@chromium.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH 3/6] interconnect: qcom: sdm845: Replace xlate with
+ xlate_extended
+In-Reply-To: <20200723130942.28491-4-georgi.djakov@linaro.org>
+References: <20200723130942.28491-1-georgi.djakov@linaro.org>
+ <20200723130942.28491-4-georgi.djakov@linaro.org>
+Message-ID: <5e145c668b5c9c6709e102145b8d403b@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:02 PM Shravan Kumar Ramani
-<sramani@mellanox.com> wrote:
->
-> The performance modules in BlueField are present in several hardware
-> blocks and each block provides access to these stats either through
-> counters that can be programmed to monitor supported events or
-> through memory-mapped registers that hold the relevant information.
-> The hardware blocks that include a performance module are:
->  * Tile (block containing 2 cores and a shared L2 cache)
->  * TRIO (PCIe root complex)
->  * MSS (Memory Sub-system containing the Memory Controller and L3 cache)
->  * GIC (Interrupt controller)
->  * SMMU (System Memory Management Unit)
-> The mlx_pmc driver provides access to all of these performance modules
-> through a hwmon sysfs interface.
+On 2020-07-23 18:39, Georgi Djakov wrote:
+> Use the qcom_icc_xlate_extended() in order to parse tags, that are
+> specified as an additional arguments to the path endpoints in DT.
+> 
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-Just brief comments:
-- consider to revisit header block to see what is really necessary and
-what can be dropped
-- add comma to the arrays where last line is not a termination
-- look at match_string() / sysfs_match_string() API, I think they can
-be utilised here
-- UUID manipulations (esp. with that GUID_INIT() against non-constant)
-seems too much, consider refactoring and cleaning up these pieces
-- use kstroto*() API instead of sscanf. It has a range check
+Tested-by: Sibi Sankar <sibis@codeaurora.org>
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
 
+> ---
+>  drivers/interconnect/qcom/sdm845.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/interconnect/qcom/sdm845.c
+> b/drivers/interconnect/qcom/sdm845.c
+> index f6c7b969520d..3b81dbb71b0b 100644
+> --- a/drivers/interconnect/qcom/sdm845.c
+> +++ b/drivers/interconnect/qcom/sdm845.c
+> @@ -469,7 +469,7 @@ static int qnoc_probe(struct platform_device *pdev)
+>  	provider->set = qcom_icc_set;
+>  	provider->pre_aggregate = qcom_icc_pre_aggregate;
+>  	provider->aggregate = qcom_icc_aggregate;
+> -	provider->xlate = of_icc_xlate_onecell;
+> +	provider->xlate_extended = qcom_icc_xlate_extended;
+>  	INIT_LIST_HEAD(&provider->nodes);
+>  	provider->data = data;
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
