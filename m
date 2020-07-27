@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DD522F5F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AC122F60A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729414AbgG0RDO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 13:03:14 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:38513 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgG0RDH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:03:07 -0400
-Received: by mail-ed1-f67.google.com with SMTP id n2so12680827edr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:03:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=m5pStuZGF1Su2qanmiDVuEvfYQ90bm1Risw4vLu52TA=;
-        b=dFOoLp6aMUshVrBObU8jgCblT4hXCHtrBREJ1SXLf5lhM5Cn//60yxMzKS69lEtr/g
-         jjAeXbxFJ1yCvkdNf6aJhYnnxy/jBie9SCLCvkZTt1ChqCgoirNXCD3Ad2PXtcw8dks1
-         oyb6abHL8xthpp58amivcBYY6U9SNtk6EnlsnDlQ+DOWbRv0x0gfqsaSodsw4pWVlpSc
-         A1HO8iXthV1GQ+0qqNN1DQRd/Ur1NeXCE7xjPvYrwsbeLlU7biDUw8t6fEbIFza8f7h2
-         c1jgXWGE83PT4CZKSpP3pYl+1eOLvVAD2WoGDxnwaNohnIXf/wGnXT7G8gy3wWECaFKZ
-         KDvg==
-X-Gm-Message-State: AOAM532aIlHXpbZDiaxubqupAy/+daaY7AfsrRhEHdrVq2zhDQfh4Zym
-        KgaV7u7jWYSzDKif9L87zpk=
-X-Google-Smtp-Source: ABdhPJzK+jjRoJ65ijtuAY/v3feRZx9jqvfIP6SDKNST7vf2+VBdYCOvHgvl54SbPjeFHmGsL/fa8Q==
-X-Received: by 2002:aa7:d2d2:: with SMTP id k18mr21411115edr.16.1595869385368;
-        Mon, 27 Jul 2020 10:03:05 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id dc12sm5975430ejb.124.2020.07.27.10.03.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Jul 2020 10:03:04 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 19:03:02 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
- architecture only
-Message-ID: <20200727170302.GA3507@kozik-lap>
-References: <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
- <IBDZDQ.K28R5FAI0BXI2@crapouillou.net>
- <20200724155436.GA7460@kozik-lap>
- <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
- <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
- <20200726160616.GA2662@kozik-lap>
- <RO33EQ.546WD84D5N7K2@crapouillou.net>
- <20200726161545.GA6058@kozik-lap>
- <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
- <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
+        id S1729814AbgG0REW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:04:22 -0400
+Received: from crapouillou.net ([89.234.176.41]:50942 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728945AbgG0REV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:04:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595869459; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=eT2jj7Ti6DrN9oXU7iVezLcMMoelbwTnKJJCcgsMRyA=;
+        b=r37eGibOeuqtd+N5v/w3TcFBPfpIyU0J3ooSjYyHjhFZ55FavejAJqKmnq0Cmx7YZ+rwVh
+        FaLPjh8DRrjApyks/NvKEjs5LvCKuQDTagG9JGsWkr/2iRXVdEy6yi5ohY/hvdrPGe5Oau
+        0MT+YP7TZJ9mIDzxmKarnioOc4VmyRU=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     od@zcrc.me, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH v2] usb: common: usb-conn-gpio: Register charger
+Date:   Mon, 27 Jul 2020 19:04:13 +0200
+Message-Id: <20200727170413.23131-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 09:55:54AM +0200, Arnd Bergmann wrote:
-> On Sun, Jul 26, 2020 at 6:20 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> > Le dim. 26 juil. 2020 à 18:15, Krzysztof Kozlowski <krzk@kernel.org> a écrit :
-> > > On Sun, Jul 26, 2020 at 06:12:27PM +0200, Paul Cercueil wrote:
-> > >>  Le dim. 26 juil. 2020 à 18:06, Krzysztof Kozlowski <krzk@kernel.org> a écrit
->  >
-> > > OK, that's true. Anyway, I don't have strong opinion on any of this. I
-> > > just followed Arnd's hint.
-> > >
-> > > For the memory driver (and MTD NAND as well) which one you prefer:
-> > > 1. https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
-> > > 2. depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
-> > >
-> > > ?
-> >
-> > I'd say a slightly modified #1. The driver shouldn't be "default y" in
-> > the first place, so the patch could be to disable it by default.
-> 
-> If it defaults to 'n' even for MACH_INGENIC, you may have to enable
-> it in the four defconfig files for these machines to avoid surprises.
+Register a power supply charger, whose online state depends on whether
+the USB role is set to device or not.
 
-Exactly. Nothing else selects JZ4780_NEMC, so either we keep default y
-("if MACH_INGENIC || MIPS_GENERIC"), or you select it directly from
-MACH_INGENIC/MIPS_GENERIC.
+This is useful when the USB role is the only way to know if the device
+is charging from USB. The API is the standard power supply charger API,
+you get a /sys/class/power_supply/xxx/online node which tells you the
+state of the charger.
 
-A related question is how essential are these drivers? At least for ARM
-platforms, all essential SoC blocks/IPs are selected by default, if
-support for chosen SoC is enabled. Only non-essential stuff is left,
-e.g. DRM, cpufreq, devfreq, ADC, crypto, video, USB, eMMC (although one
-could argue that it is essential), IOMMU.
+The sole purpose of this is to give userspace applications a way to
+know whether or not the charger is plugged.
 
-> > And when the Ingenic code is merged into the MIPS generic framework, I'll
-> > send a set of patches to change all driver dependencies on MIPS to
-> > MIPS_GENERIC.
-> 
-> The way we do it on Arm, the machine Kconfig identifiers stay around
-> even for multiplatform targets (which now make up basically actively
-> maintained machines).
-> 
-> I don't think it makes any sense for a driver to depend on MIPS_GENERIC:
-> either it is a generic driver that should always be visible or it is specific
-> to a set of SoCs and should depend on some corresponding vendor
-> specific identifiers.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
 
-If support for Ingenic is provided also by MIPS_GENERIC (without
-selecting MACH_INGENIC), then it makes sense. This would be just a
-different way than ARM of building multi-platform kernel.
+Notes:
+    v2: Don't make charger registration optional
 
-Best regards,
-Krzysztof
+ drivers/usb/common/Kconfig         |  1 +
+ drivers/usb/common/usb-conn-gpio.c | 45 ++++++++++++++++++++++++++++++
+ 2 files changed, 46 insertions(+)
+
+diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
+index d611477aae41..5e8a04e3dd3c 100644
+--- a/drivers/usb/common/Kconfig
++++ b/drivers/usb/common/Kconfig
+@@ -40,6 +40,7 @@ config USB_CONN_GPIO
+ 	tristate "USB GPIO Based Connection Detection Driver"
+ 	depends on GPIOLIB
+ 	select USB_ROLE_SWITCH
++	select POWER_SUPPLY
+ 	help
+ 	  The driver supports USB role switch between host and device via GPIO
+ 	  based USB cable detection, used typically if an input GPIO is used
+diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
+index ed204cbb63ea..fb7d35b040b7 100644
+--- a/drivers/usb/common/usb-conn-gpio.c
++++ b/drivers/usb/common/usb-conn-gpio.c
+@@ -17,6 +17,7 @@
+ #include <linux/of.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
++#include <linux/power_supply.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/usb/role.h>
+ 
+@@ -38,6 +39,9 @@ struct usb_conn_info {
+ 	struct gpio_desc *vbus_gpiod;
+ 	int id_irq;
+ 	int vbus_irq;
++
++	struct power_supply_desc desc;
++	struct power_supply *charger;
+ };
+ 
+ /**
+@@ -104,6 +108,8 @@ static void usb_conn_detect_cable(struct work_struct *work)
+ 
+ 	dev_dbg(info->dev, "vbus regulator is %s\n",
+ 		regulator_is_enabled(info->vbus) ? "enabled" : "disabled");
++
++	power_supply_changed(info->charger);
+ }
+ 
+ static void usb_conn_queue_dwork(struct usb_conn_info *info,
+@@ -121,10 +127,35 @@ static irqreturn_t usb_conn_isr(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++static enum power_supply_property usb_charger_properties[] = {
++	POWER_SUPPLY_PROP_ONLINE,
++};
++
++static int usb_charger_get_property(struct power_supply *psy,
++				    enum power_supply_property psp,
++				    union power_supply_propval *val)
++{
++	struct usb_conn_info *info = power_supply_get_drvdata(psy);
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_ONLINE:
++		val->intval = info->last_role == USB_ROLE_DEVICE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int usb_conn_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
++	struct power_supply_desc *desc;
+ 	struct usb_conn_info *info;
++	struct power_supply_config cfg = {
++		.of_node = dev->of_node,
++	};
+ 	int ret = 0;
+ 
+ 	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
+@@ -203,6 +234,20 @@ static int usb_conn_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	desc = &info->desc;
++	desc->name = "usb-charger";
++	desc->properties = usb_charger_properties;
++	desc->num_properties = ARRAY_SIZE(usb_charger_properties);
++	desc->get_property = usb_charger_get_property;
++	desc->type = POWER_SUPPLY_TYPE_USB;
++	cfg.drv_data = info;
++
++	info->charger = devm_power_supply_register(dev, desc, &cfg);
++	if (IS_ERR(info->charger)) {
++		dev_err(dev, "Unable to register charger\n");
++		return PTR_ERR(info->charger);
++	}
++
+ 	platform_set_drvdata(pdev, info);
+ 
+ 	/* Perform initial detection */
+-- 
+2.27.0
+
