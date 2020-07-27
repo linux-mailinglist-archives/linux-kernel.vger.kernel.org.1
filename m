@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9B022F49E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8D422F4E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731454AbgG0QQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:16:52 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:27400 "EHLO
+        id S1731910AbgG0QSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:18:40 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:50106 "EHLO
         mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731361AbgG0QQn (ORCPT
+        by vger.kernel.org with ESMTP id S1731726AbgG0QSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:16:43 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RFxh2B030724;
-        Mon, 27 Jul 2020 12:16:42 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32gek677ug-1
+        Mon, 27 Jul 2020 12:18:07 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RG7xms019091;
+        Mon, 27 Jul 2020 12:17:51 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 32ghn5eypn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 12:16:42 -0400
-Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 06RGGfaX045826
+        Mon, 27 Jul 2020 12:17:51 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 06RGHn6c050825
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 27 Jul 2020 12:16:41 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+        Mon, 27 Jul 2020 12:17:50 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Jul 2020 12:16:39 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ 15.1.1779.2; Mon, 27 Jul 2020 09:17:48 -0700
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Jul 2020 12:16:39 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 27 Jul 2020 12:16:39 -0400
+ 15.1.1779.2; Mon, 27 Jul 2020 09:17:48 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 27 Jul 2020 09:17:48 -0700
 Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06RGGShq009603;
-        Mon, 27 Jul 2020 12:16:38 -0400
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06RGHjX6009637;
+        Mon, 27 Jul 2020 12:17:46 -0400
 From:   <alexandru.tachici@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>
-CC:     <jic23@kernel.org>, <robh+dt@kernel.org>
-Subject: [PATCH v7 9/9] dt-bindings: hwmon: Add bindings for ADM1266
-Date:   Mon, 27 Jul 2020 19:18:14 +0300
-Message-ID: <20200727161814.14076-10-alexandru.tachici@analog.com>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v7 0/9] hwmon: pmbus: adm1266: add support
+Date:   Mon, 27 Jul 2020 19:19:19 +0300
+Message-ID: <20200727161928.14122-1-alexandru.tachici@analog.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200727161814.14076-1-alexandru.tachici@analog.com>
-References: <20200727161814.14076-1-alexandru.tachici@analog.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-ADIRoutedOnPrem: True
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-07-27_11:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 clxscore=1015 suspectscore=0 impostorscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007270110
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007270111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -64,76 +63,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Add bindings for the Analog Devices ADM1266 sequencer.
+Add PMBus probing driver for the adm1266 Cascadable
+Super Sequencer with Margin Control and Fault Recording.
+Driver is using the pmbus_core, creating sysfs files
+under hwmon for inputs: vh1->vh4 and vp1->vp13.
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
----
- .../bindings/hwmon/adi,adm1266.yaml           | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
+1. Add PMBus probing driver for inputs vh1->vh4
+and vp1->vp13.
+
+2. Add Block Write-Read Process Call command.
+A PMBus specific implementation was required because
+block write with I2C_SMBUS_PROC_CALL flag allows a
+maximum of 32 bytes to be received.
+
+3. This makes adm1266 driver expose GPIOs
+to user-space. Currently are read only. Future
+developments on the firmware will allow
+them to be writable.
+
+4. Allow the current sate of the sequencer to be read
+through debugfs.
+
+5. Blackboxes are 64 bytes of chip state related data
+that is generated on faults. Use the nvmem kernel api
+to expose the blackbox chip functionality to userspace.
+
+6. Add group command support. This will allow the driver
+to stop/program all cascaded adm1266 devices at once.
+
+7. Writing the firmware hex file with offset 0
+to the nvmem of the master adm1266 will trigger
+the firmware programming of all cascaded devices.
+The master adm1266 of each device is specified in
+the devicetree.
+
+8. Writing the configuration hex file to 0x30000
+byte address of the nvmem file will trigger the
+programming of that device in particular.
+
+9. DT bindings for ADM1266.
+
+Alexandru Tachici (9):
+  hwmon: pmbus: adm1266: add support
+  hwmon: pmbus: adm1266: Add Block process call
+  hwmon: pmbus: adm1266: Add support for GPIOs
+  hwmon: pmbus: adm1266: add debugfs for states
+  hwmon: pmbus: adm1266: read blackbox
+  hwmon: pmbus: adm1266: Add group command support
+  hwmon: pmbus: adm1266: program firmware
+  hwmon: pmbus: adm1266: program configuration
+  dt-bindings: hwmon: Add bindings for ADM1266
+
+Changelog: v5 -> v6:
+  - added adm1266 to index.rst
+  - changed max lines length from 80 to 100
+  - replaced i2c_get_dma_safe_msg_buf with the use of kzalloc and ____cacheline_aligned
+  - removed #ifdef CONFIG_GPIOLIB
+  - removed ioctl commands, the state of the device can be read through debugfs
+  - use the device managed version of nvmem_register
+  - on power-up, set the UNIX time to adm1266 (this value is reset
+  to 0 on each power-cycle).
+  - removed patch adm1266: debugfs for blackbox info, rtc in blackbox is enough
+  to help identify the current index
+  - added two new nvmem cells for firmware and configuration
+
+Changelog: v6 -> v7:
+  - fixed compilation warning: removed unused variable ,entry, in
+adm1266_init_debugfs
+
+ .../bindings/hwmon/adi,adm1266.yaml           |   56 +
+ Documentation/hwmon/adm1266.rst               |   37 +
+ Documentation/hwmon/index.rst                 |    1 +
+ drivers/hwmon/pmbus/Kconfig                   |   10 +
+ drivers/hwmon/pmbus/Makefile                  |    1 +
+ drivers/hwmon/pmbus/adm1266.c                 | 1272 +++++++++++++++++
+ 6 files changed, 1377 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
+ create mode 100644 Documentation/hwmon/adm1266.rst
+ create mode 100644 drivers/hwmon/pmbus/adm1266.c
 
-diff --git a/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml b/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
-new file mode 100644
-index 000000000000..ad92686e2ee6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/adi,adm1266.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices ADM1266 Cascadable Super Sequencer with Margin
-+  Control and Fault Recording
-+
-+maintainers:
-+  - Alexandru Tachici <alexandru.tachici@analog.com>
-+
-+description: |
-+  Analog Devices ADM1266 Cascadable Super Sequencer with Margin
-+  Control and Fault Recording.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ADM1266.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adm1266
-+
-+  reg:
-+    description: |
-+      I2C address of slave device.
-+    items:
-+      minimum: 0x40
-+      maximum: 0x4F
-+
-+  avcc-supply:
-+    description: |
-+      Phandle to the Avcc power supply.
-+
-+  adi,master-adm1266:
-+    description: |
-+      Represents phandle of a master ADM1266 device cascaded through the IDB.
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adm1266@40 {
-+                compatible = "adi,adm1266";
-+                reg = <0x40>;
-+        };
-+    };
-+...
 -- 
 2.20.1
 
