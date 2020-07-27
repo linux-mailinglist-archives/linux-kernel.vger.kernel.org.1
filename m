@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD83822F3D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD8122F3E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730234AbgG0Pah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726744AbgG0Pag (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:30:36 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C665C061794;
-        Mon, 27 Jul 2020 08:30:36 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id u8so7616591qvj.12;
-        Mon, 27 Jul 2020 08:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=06/0Fc/CzxtKe/AQi80TbkGLzxKNq+FXAhjScQa1P0w=;
-        b=DMDO/s0VURJbuRU3EHjXuLMdKHeGJSp2p9miEcOKpygLfWx3etfGBJvyZT6YdaZv+D
-         cRoFG+Y+3ZnrS9yjMKJeiB0VelIwPoCw1EqPPnVv2zHz3BT28EHOgaRMlAD8lBHtJSV2
-         swA4A9tm6Gr6T7RraR1YT/GNZ2z1TVHDrKojgEASJ9i+C1WXyMQDEZvJIv8tYeF/jp7S
-         Tz9tY4hGgzbJZO8677sk2m2r2b3E4NQT2kL4hY1SAiikCv20LlP77egY5OY91ZRUSADj
-         BK240vqACl1y5S2tAum2n+iasGs2ljw/dzEQQdijqTFEuVEbFezqKj92L1fG5KWU/Mt+
-         X43A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=06/0Fc/CzxtKe/AQi80TbkGLzxKNq+FXAhjScQa1P0w=;
-        b=o3xGibHCqN4ftcE2X91ivADbsm3IIThXFMoIlAjbF8bAjAWJNoKUIM1eI0EpqAiX0y
-         gBu9vvGR1wsQfFnwOzrr0hzVqGprHiu719FoMZ6SuGNdBSbxHjfA1JawWt8v20v/Ji2Z
-         NNl84/KlIB97hbGDXNzVhyAW86YnBE3k5qV4rgwUkOx8d04tYpFWafvaDOH7aiSYApAa
-         8kTTd67nDXYfK0Y8JSrlIITJJmsCu6ucBC/sRD+8MKu+Y1SRL3uSjJv6v42Fa+6ESyMS
-         QDp3gdhpMnjqVu6L8yeHMiUt+DxXBR+jTSxyLXL6Hm4eCeML5f27TFr0ACJR8o/+nkox
-         X5fw==
-X-Gm-Message-State: AOAM531L1CDfbha934atYsv3fRMVxuNpv+uLsSfWO0SWEc1K8DNE5iWX
-        pKVw4LrLQv/MVEuQO+pwig==
-X-Google-Smtp-Source: ABdhPJw5MjdGAe9ULHqTPC3/a5mAB9/7H9/flRqXH8RawvWje9UzoAdVymmniLR/3m88yRIKeSCTXQ==
-X-Received: by 2002:a05:6214:1143:: with SMTP id b3mr21082466qvt.84.1595863835563;
-        Mon, 27 Jul 2020 08:30:35 -0700 (PDT)
-Received: from PWN ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id c133sm19928340qkb.111.2020.07.27.08.30.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 08:30:34 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 11:30:32 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-Message-ID: <20200727153032.GB315139@PWN>
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com>
- <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
- <20200727131608.GD1913@kadam>
- <CAK8P3a3+9Gr6G6KDWu=iW3316O9cPH+XupBBajJaxrq20xQcyQ@mail.gmail.com>
- <20200727141416.GA306745@PWN>
- <20200727144609.GG1913@kadam>
+        id S1730338AbgG0PcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:32:00 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15774 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730297AbgG0Pb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 11:31:59 -0400
+IronPort-SDR: zr9c0HMWZ8XuiQkwoN2lj0hdNp/xeHFN1jQb9NEFvoqZnTCUgjKr3tVKiy1iTkbMBu6b/3GOLb
+ vrIZot9UCM1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="148915970"
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="148915970"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 08:31:59 -0700
+IronPort-SDR: Kym2xbdqrRFyklcNQIA6wGe9KaMBLbQw4shEg/IB13YOgTm3UFBoLS/wxAhlBYTD01Izv8f6mk
+ WgPFz2caVWGg==
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="464099679"
+Received: from pdewan-mobl1.amr.corp.intel.com (HELO [10.255.228.220]) ([10.255.228.220])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 08:31:58 -0700
+Subject: Re: [PATCH v3 00/10] ASoC: qdsp6: add gapless compressed audio
+ support
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        broonie@kernel.org
+Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
+        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com
+References: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <5f3e6f81-965e-d7e2-bd93-edb54f72e478@linux.intel.com>
+Date:   Mon, 27 Jul 2020 10:24:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727144609.GG1913@kadam>
+In-Reply-To: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 05:46:09PM +0300, Dan Carpenter wrote:
-> On Mon, Jul 27, 2020 at 10:14:16AM -0400, Peilin Ye wrote:
-> > Yes, I would like to! I will start from:
-> > 
-> > 	drivers/firewire/core-cdev.c:463
-> 
-> My prefered fix for this would be to add a memset at the start of
-> fill_bus_reset_event().
-> 
-> 	memset(event, 0, sizeof(*event));
-> 
-> 	spin_lock_irq(&card->lock);
-> 
-> 	event->closure       = client->bus_reset_closure;
-> 
-> 
-> > 	drivers/input/misc/uinput.c:743
 
-I just sent a patch to fix this as you suggested.
 
-> I don't think this is a bug.
+On 7/27/20 4:37 AM, Srinivas Kandagatla wrote:
+> This patchset adds gapless compressed audio support on q6asm.
+> Gapless on q6asm is implemented using 2 streams in a single q6asm session.
+> 
+> First few patches such as stream id per each command, gapless flags
+> and silence meta data are for preparedness for adding gapless support.
+> Last patch implements copy callback to allow finer control over buffer offsets,
+> specially in partial drain cases.
+> 
+> This patchset is tested on RB3 aka DB845c platform.
+> 
+> This patchset as it is will support gapless however QDSP can also
+> support switching decoders on a single stream. Patches to support such feature
+> are send in different patchset which involves adding generic interfaces.
+> 
+> Thanks,
+> srini
 
-I see. I am now fixing:
+I've run out of comments :-)
 
-	block/scsi_ioctl.c:707 scsi_put_cdrom_generic_arg() warn: check that 'cgc32' doesn't leak information (struct has a hole after 'data_direction')
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> Changes since v2:(mostly suggested by Pierre)
+> - removed unnessary kernel style comments,
+> - moved TIMESTAMP flag to respective patch.
+> - move preparatory code from gapless support patch to new one.
+> - fix subject prefix of one patch.
+> - add comments to clarify valid stream_ids
+> 
+> Srinivas Kandagatla (10):
+>    ASoC: q6asm: rename misleading session id variable
+>    ASoC: q6asm: make commands specific to streams
+>    ASoC: q6asm: use flags directly from q6asm-dai
+>    ASoC: q6asm: add length to write command token
+>    ASoC: q6asm: add support to remove intial and trailing silence
+>    ASoC: q6asm: add support to gapless flag in q6asm open
+>    ASoC: q6asm-dai: add next track metadata support
+>    ASoC: q6asm-dai: prepare set params to accept profile change
+>    ASoC: q6asm-dai: add gapless support
+>    ASoC: q6asm-dai: add support to copy callback
+> 
+>   sound/soc/qcom/qdsp6/q6asm-dai.c | 414 +++++++++++++++++++++++--------
+>   sound/soc/qcom/qdsp6/q6asm.c     | 169 +++++++++----
+>   sound/soc/qcom/qdsp6/q6asm.h     |  49 ++--
+>   3 files changed, 469 insertions(+), 163 deletions(-)
+> 
