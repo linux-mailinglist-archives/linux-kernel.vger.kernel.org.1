@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3383922E859
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C74C22E85D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgG0JEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgG0JEK (ORCPT
+        id S1727814AbgG0JFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:05:05 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:57414 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727012AbgG0JFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:04:10 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C49C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:04:09 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id l2so3493393wrc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Kqm25lF7ewtP6gQPXchdKeNoTYsJJHa4GocmE1fwErk=;
-        b=XmcVqhm/0j31KrSqjLijP1s5O/yWVNg7px+madWmjsWNWEnyhRedmOJyD+xjYK/r7n
-         8U8SVRacZPb6JwHk3RCn6JoCOcPvmJul8pfv6QdYnFXT7UhsTLPKKOez8SYps/oomt1p
-         Mqjsy/gRiLkMI/JSZi9BTiVFUxhoa5MFURwilJliSiBhywoOmgkfw6aaAyPLOBvQ0KTe
-         Itst60BaAacAOd20K1brUt6YD8fGLY8fMpaXhTktIehhpffXaTAywydveUbmy9UR1P91
-         n9Ff8R7wZ8gbeMXLYl+5LV4uVOWZz8ybacK1NrAkRTZptBA2dsCYKtRppAMt/6jqp7is
-         cKwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Kqm25lF7ewtP6gQPXchdKeNoTYsJJHa4GocmE1fwErk=;
-        b=VSmek13qOMZuNK7Cu6pBzEWmn9NOORo5yh0BWlhq/XvDFKwJfMaMYhGIn07UHKpshZ
-         /7YoPmK74Gs3+t2EBsik81N6rOygqzIxThRGM9ne+SxA+b21GVr8ze+Wb0INGkARh2Vw
-         SRydDkhhcyRZ2yiIQwn+KIJkame9+yTAZsDMauHz6Vm+BhMs2b5+SxEm9JXatvphfFL9
-         rbya7zWpYXX10vHqY2cLsNHd3mT+oAwSWYk0fBZD8j1IfPmJF44UTcaoufa2GHDxgj0i
-         sJ7yJy/7hjr83zWKQ/710E0mKkV8PUWCUQVefQBYXkRHFXZYU/RrGAFj1l+DokpXQg3E
-         GjaQ==
-X-Gm-Message-State: AOAM5330Uw9aw1XBf3M9sqjaE8l1lAk01HmhBj7hC3v/29C49GijluqN
-        f/rLa36xWl59C5HG8nNE9Z6tKSCqe/kM/g==
-X-Google-Smtp-Source: ABdhPJyoMNFU464fyBQyU0C+Zj/H8Z010qinNwqPEnEO85BmQspEmZ4wPd3WZmuD3V+yssQpfa5Mgg==
-X-Received: by 2002:a5d:4649:: with SMTP id j9mr18401968wrs.270.1595840647556;
-        Mon, 27 Jul 2020 02:04:07 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:24ff:55c1:a76d:5341? ([2a01:e34:ed2f:f020:24ff:55c1:a76d:5341])
-        by smtp.googlemail.com with ESMTPSA id f17sm19136347wme.14.2020.07.27.02.04.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 02:04:07 -0700 (PDT)
-Subject: Re: [PATCH] thermal: Fix zone lookup by ID
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>, Amit Kucheria <amitk@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200724170105.2705467-1-thierry.reding@gmail.com>
- <db6efeab-b2bc-bad5-9c75-89e3e306256c@linaro.org>
- <20200727090133.GG2781612@ulmo>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <baa76252-5f8c-0d2f-224b-221804289e1c@linaro.org>
-Date:   Mon, 27 Jul 2020 11:04:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 27 Jul 2020 05:05:05 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06R94WDj8029226, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06R94WDj8029226
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 27 Jul 2020 17:04:32 +0800
+Received: from RTEXMB05.realtek.com.tw (172.21.6.98) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 27 Jul 2020 17:04:32 +0800
+Received: from RTEXMB04.realtek.com.tw (172.21.6.97) by
+ RTEXMB05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 27 Jul 2020 17:04:32 +0800
+Received: from RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44]) by
+ RTEXMB04.realtek.com.tw ([fe80::941:6388:7d34:5c44%3]) with mapi id
+ 15.01.1779.005; Mon, 27 Jul 2020 17:04:32 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "joe@perches.com" <joe@perches.com>,
+        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Subject: Re: [PATCH 2/6] rtlwifi: Remove unnecessary parenthese in rtl_dbg uses
+Thread-Topic: [PATCH 2/6] rtlwifi: Remove unnecessary parenthese in rtl_dbg
+ uses
+Thread-Index: AQHWYr2nd/FEJBO53EeTfs6a/wfURqkabMAAgAAnRYCAAApCAA==
+Date:   Mon, 27 Jul 2020 09:04:31 +0000
+Message-ID: <1595840670.17671.4.camel@realtek.com>
+References: <cover.1595706419.git.joe@perches.com>
+         <9b2eaedb7ea123ea766a379459b20a9486d1cd41.1595706420.git.joe@perches.com>
+         <1595830034.12227.7.camel@realtek.com>
+         <ae9d562ec9ef765dddd1491d4cfb5f6d18f7025f.camel@perches.com>
+In-Reply-To: <ae9d562ec9ef765dddd1491d4cfb5f6d18f7025f.camel@perches.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.239.103]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4D079F2225DFB045A56F9FC874DE8311@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20200727090133.GG2781612@ulmo>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Thierry,
-
-thanks for testing the code.
-
-On 27/07/2020 11:01, Thierry Reding wrote:
-> On Fri, Jul 24, 2020 at 07:12:49PM +0200, Daniel Lezcano wrote:
->> Hi Thierry,
->>
->> Applied, thanks for the fix!
-> 
-> I ran into this as I was experimenting with the new netlink interface
-> and got things wrong. Do you have any userspace that you use for testing
-> this that I can use as a reference?
-> 
-> I have managed to get it to work now, but I'm still interested in any
-> userspace that you might have for this.
-
-
-  https://git.linaro.org/people/daniel.lezcano/thermal-genl.git/
-
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+T24gTW9uLCAyMDIwLTA3LTI3IGF0IDAxOjI3IC0wNzAwLCBKb2UgUGVyY2hlcyB3cm90ZToNCj4g
+T24gTW9uLCAyMDIwLTA3LTI3IGF0IDA2OjA3ICswMDAwLCBQa3NoaWggd3JvdGU6DQo+ID4gT24g
+U2F0LCAyMDIwLTA3LTI1IGF0IDEyOjU1IC0wNzAwLCBKb2UgUGVyY2hlcyB3cm90ZToNCj4gPiA+
+IE1ha2UgdGhlc2Ugc3RhdGVtZW50cyBhIGxpdHRsZSBzaW1wbGVyLg0KPiBbXQ0KPiA+ID4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnRsd2lmaS9idGNvZXhpc3Qv
+aGFsYnRjb3V0c3JjLmMNCj4gW10NCj4gPiA+IEBAIC04NzQsMTEgKzg3NCwxMCBAQCBzdGF0aWMg
+dm9pZCBoYWxidGNfZGlzcGxheV93aWZpX3N0YXR1cyhzdHJ1Y3QNCj4gPiA+IGJ0Y19jb2V4aXN0
+ICpidGNvZXhpc3QsDQo+ID4gPsKgwqAJc2VxX3ByaW50ZihtLCAiXG4gJS0zNXMgPSAlcyAvICVz
+LyAlcy8gQVA9JWQgIiwNCj4gPiA+wqDCoAkJwqDCoMKgIldpZmkgZnJlcS8gYncvIHRyYWZmaWMi
+LA0KPiA+ID7CoMKgCQnCoMKgwqBnbF9idGNfd2lmaV9mcmVxX3N0cmluZ1t3aWZpX2ZyZXFdLA0K
+PiA+ID4gLQkJwqDCoMKgKCh3aWZpX3VuZGVyX2JfbW9kZSkgPyAiMTFiIiA6DQo+ID4gPiAtCQnC
+oMKgwqDCoGdsX2J0Y193aWZpX2J3X3N0cmluZ1t3aWZpX2J3XSksDQo+ID4gPiAtCQnCoMKgwqAo
+KCF3aWZpX2J1c3kpID8gImlkbGUiIDogKChCVENfV0lGSV9UUkFGRklDX1RYID09DQo+ID4gPiAt
+CQkJCQnCoMKgwqDCoMKgwqB3aWZpX3RyYWZmaWNfZGlyKSA/DQo+ICJ1cGxpbmsiIDoNCj4gPiA+
+IC0JCQkJCcKgwqDCoMKgwqAiZG93bmxpbmsiKSksDQo+ID4gPiArCQnCoMKgwqB3aWZpX3VuZGVy
+X2JfbW9kZSA/ICIxMWIiIDoNCj4gZ2xfYnRjX3dpZmlfYndfc3RyaW5nW3dpZmlfYnddLA0KPiA+
+ID4gKwkJwqDCoMKgKCF3aWZpX2J1c3kgPyAiaWRsZSIgOg0KPiA+ID4gKwkJwqDCoMKgwqB3aWZp
+X3RyYWZmaWNfZGlyID09IEJUQ19XSUZJX1RSQUZGSUNfVFggPyAidXBsaW5rIiA6DQo+ID4gPiAr
+CQnCoMKgwqDCoCJkb3dubGluayIpLA0KPiA+wqANCj4gPiBJIHRoaW5rIHRoaXMgd291bGQgYmUg
+YmV0dGVyDQo+ID7CoA0KPiA+ICsJCcKgwqDCoCF3aWZpX2J1c3kgPyAiaWRsZSIgOg0KPiA+ICsJ
+CcKgwqDCoCh3aWZpX3RyYWZmaWNfZGlyID09IEJUQ19XSUZJX1RSQUZGSUNfVFggPyAidXBsaW5r
+IiA6DQo+ID4gKwkJwqDCoMKgwqAiZG93bmxpbmsiKSwNCj4gDQo+IEl0IHNlZW1zIG1vc3QgcmVw
+ZWF0ZWQgdGVzdDEgPyA6IHRlc3QyID8gOiB0ZXN0MyA/Og0KPiB1c2VzIGRvIG5vdCBoYXZlIHRo
+ZSBzdHlsZSB5b3Ugc3VnZ2VzdCBpbiB0aGUga2VybmVsLg0KPiANCg0KWW91ciBjaGFuZ2UgaXPC
+oA0KKHRlc3QxID8gOiB0ZXN0MiA/IDopDQoNClNvLCBJIHRoaW5rIHlvdSB3b3VsZCBsaWtlIHRv
+IGhhdmUgcGFyZW50aGVzaXMgaW50ZW50aW9uYWxseS4NCklmIHNvLMKgDQp0ZXN0MSA/IDogKHRl
+c3QyID8gOikNCndvdWxkIGJlIGJldHRlci4NCg0KDQpJZiBub3QsDQp0ZXN0MSA/IDogdGVzdDIg
+PyA6DQptYXkgYmUgd2hhdCB5b3Ugd2FudCAod2l0aG91dCBhbnkgcGFyZW50aGVzaXMpLg0KDQo=
