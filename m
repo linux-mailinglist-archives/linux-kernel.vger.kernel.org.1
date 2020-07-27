@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9848C22F2D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F7722F247
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbgG0OGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55016 "EHLO mail.kernel.org"
+        id S1732981AbgG0OjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:39:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728731AbgG0OGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:50 -0400
+        id S1729802AbgG0OKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B0452073E;
-        Mon, 27 Jul 2020 14:06:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B27F220838;
+        Mon, 27 Jul 2020 14:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858809;
-        bh=XEytakMRbTXVdAm6n/F8+1DevYQ/bp7DXiBxFb2pgbQ=;
+        s=default; t=1595859017;
+        bh=rGyKxKZX6b3Ow+n3+T9s6BHBuaad/6NgYACL9wTGXrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yAycUviy6s8PcQUVGkwxOve8HkmpgaCnS9Srh0K/QwdILZ6iuYEYYwaasGlHqlmC9
-         w9izq/z+Jx1E3fK8jHhLswJIHW4n6SCaJjBqZA3/pMWxLukjF/o/IQFfyPbgNtrGOK
-         WRyzLeSuMPMw9nmnetK7fJzf3rXMZevVgt2rx3+I=
+        b=zph/xzub2uUz3JHfDZh21W0QXwsLkUENjKg3PDq2i8JgLcmyVnzP+u5FKKR4v1MuH
+         PpnHWSqPM9VlG2ylBread3jOyOEgYepDMcqKGe22SEw5pSjzznCR/NPtQ318ARYzUM
+         mRhVsaH0n3G3+gD/aakEQ94B7Ikq2/1qGc2SQkVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 02/64] gpio: arizona: put pm_runtime in case of failure
-Date:   Mon, 27 Jul 2020 16:03:41 +0200
-Message-Id: <20200727134911.151317072@linuxfoundation.org>
+Subject: [PATCH 4.19 08/86] xtensa: update *pos in cpuinfo_op.next
+Date:   Mon, 27 Jul 2020 16:03:42 +0200
+Message-Id: <20200727134914.765381034@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Max Filippov <jcmvbkbc@gmail.com>
 
-[ Upstream commit 861254d826499944cb4d9b5a15f5a794a6b99a69 ]
+[ Upstream commit 0d5ab144429e8bd80889b856a44d56ab4a5cd59b ]
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count if pm_runtime_put is not called in
-error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
+Increment *pos in the cpuinfo_op.next to fix the following warning
+triggered by cat /proc/cpuinfo:
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200605030052.78235-1-navid.emamdoost@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+  seq_file: buggy .next function c_next did not update position index
+
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-arizona.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/xtensa/kernel/setup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
-index e09834b91ea52..694674dfbf82a 100644
---- a/drivers/gpio/gpio-arizona.c
-+++ b/drivers/gpio/gpio-arizona.c
-@@ -69,6 +69,7 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
- 		ret = pm_runtime_get_sync(chip->parent);
- 		if (ret < 0) {
- 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
-+			pm_runtime_put_autosuspend(chip->parent);
- 			return ret;
- 		}
+diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
+index 15580e4fc766a..6a0167ac803c6 100644
+--- a/arch/xtensa/kernel/setup.c
++++ b/arch/xtensa/kernel/setup.c
+@@ -720,7 +720,8 @@ c_start(struct seq_file *f, loff_t *pos)
+ static void *
+ c_next(struct seq_file *f, void *v, loff_t *pos)
+ {
+-	return NULL;
++	++*pos;
++	return c_start(f, pos);
+ }
  
-@@ -77,12 +78,15 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
- 		if (ret < 0) {
- 			dev_err(chip->parent, "Failed to drop cache: %d\n",
- 				ret);
-+			pm_runtime_put_autosuspend(chip->parent);
- 			return ret;
- 		}
- 
- 		ret = regmap_read(arizona->regmap, reg, &val);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_autosuspend(chip->parent);
- 			return ret;
-+		}
- 
- 		pm_runtime_mark_last_busy(chip->parent);
- 		pm_runtime_put_autosuspend(chip->parent);
+ static void
 -- 
 2.25.1
 
