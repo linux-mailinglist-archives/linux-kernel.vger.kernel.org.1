@@ -2,147 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4E422FB07
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E3622FAFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgG0VGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 17:06:49 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45224 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726443AbgG0VGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 17:06:48 -0400
-IronPort-SDR: dEeJyMysDGKD87F4alkx9Nzulvn6y7TyyIeiEtA1sEPvOi+COS5A56hxm0G5sFp9QGI2ySDk+7
- tJBHGquPostQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="139148547"
-X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; 
-   d="scan'208";a="139148547"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 14:06:48 -0700
-IronPort-SDR: dKoq50hnMWhSYGg1kcrUd9G10wWxcFNeiw3Q0kr0w0LcmzkbPs9fKCFSwIaoCige2tkH+gHUUC
- dug/P7koDd8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; 
-   d="scan'208";a="285911347"
-Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 27 Jul 2020 14:06:46 -0700
-Received: from kbuild by df0563f96c37 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1k0AKb-000238-Uf; Mon, 27 Jul 2020 21:06:45 +0000
-Date:   Tue, 28 Jul 2020 05:05:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:WIP.core/entry] BUILD REGRESSION
- 85546baab915492f05f29b91c4003bf15891e89b
-Message-ID: <5f1f419a.ul1MND6j1Dag8Zi1%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726410AbgG0VGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 17:06:16 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40736 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgG0VGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 17:06:15 -0400
+Received: by mail-io1-f65.google.com with SMTP id l17so18504502iok.7;
+        Mon, 27 Jul 2020 14:06:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uNJA6hxthLWoViobyjxlj8lWj83PnXb0wbDuaLutL0g=;
+        b=fPxyzRBlynkJidQedSj5ed1NNy3iuxi9NfxByVdR5U3Ce4diS6BeB/AI+OG2f5azzB
+         +rTkY8oGQ9kU5VmfMQBCPu8CkTud4DoswDFidrL4QpqLfbFghokn75JR3eOHpq5ZBsox
+         xnbtQr3CRsoOtbV++sPUOPjAqztRz5QT+/2bZczLXda3ED4pa2SbquWTOX2QFUfSYn+U
+         hy6WnTHuZVRgO4yrpIFPK3rPY0DzIKum+WBseR1VMcbTPySHx6wUmDeWb9QdDz3c4Rtk
+         h+cyoEWB2fqnDRqTOnbWvZzdsgyi7omu0v7+2xW3c3CDLfaUXGt+Xndcqj99L9496tL4
+         uSng==
+X-Gm-Message-State: AOAM532sd1QMYkvifB/ulmUrvSwl5igAFqLIM6lLgfD9Wn6r4jIzuWnp
+        BFAh62eKgKiqjSm8XrHrbg==
+X-Google-Smtp-Source: ABdhPJzzDamUTYXPVSulEAobeeT0K3y18tYf5sifUQBFezxPTGh0WBwGZkAmII2vPYeUhpNHtG2pZA==
+X-Received: by 2002:a5d:9a86:: with SMTP id c6mr11888011iom.27.1595883974742;
+        Mon, 27 Jul 2020 14:06:14 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id l11sm4997492ioh.52.2020.07.27.14.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 14:06:14 -0700 (PDT)
+Received: (nullmailer pid 871469 invoked by uid 1000);
+        Mon, 27 Jul 2020 21:06:12 -0000
+Date:   Mon, 27 Jul 2020 15:06:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: sound: convert Everest ES8316 binding to
+ yaml
+Message-ID: <20200727210612.GA871439@bogus>
+References: <20200724155933.1040501-1-katsuhiro@katsuster.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200724155933.1040501-1-katsuhiro@katsuster.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  WIP.core/entry
-branch HEAD: 85546baab915492f05f29b91c4003bf15891e89b  entry: Fix !CONFIG_SECCOMP stub
+On Sat, 25 Jul 2020 00:59:33 +0900, Katsuhiro Suzuki wrote:
+> This patch converts Everest Semiconductor ES8316 low power audio
+> CODEC binding to DT schema.
+> 
+> Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+> 
+> ---
+> 
+> Changes in v2:
+>   - Change maintainers from Mark to Daniel and me
+> ---
+>  .../bindings/sound/everest,es8316.txt         | 23 ---------
+>  .../bindings/sound/everest,es8316.yaml        | 50 +++++++++++++++++++
+>  2 files changed, 50 insertions(+), 23 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/everest,es8316.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/everest,es8316.yaml
+> 
 
-Error/Warning in current branch:
-
-arch/arm64/kernel/ptrace.c:1863:6: error: too few arguments to function 'secure_computing'
-arch/riscv/kernel/ptrace.c:162:6: error: too few arguments to function 'secure_computing'
-arch/riscv/kernel/ptrace.c:164:6: error: too few arguments to function 'secure_computing'
-
-Error/Warning ids grouped by kconfigs:
-
-recent_errors
-|-- arm64-allnoconfig
-|   `-- arch-arm64-kernel-ptrace.c:error:too-few-arguments-to-function-secure_computing
-|-- riscv-allnoconfig
-|   `-- arch-riscv-kernel-ptrace.c:error:too-few-arguments-to-function-secure_computing
-|-- riscv-defconfig
-|   `-- arch-riscv-kernel-ptrace.c:error:too-few-arguments-to-function-secure_computing
-`-- riscv-randconfig-m031-20200727
-    `-- arch-riscv-kernel-ptrace.c:error:too-few-arguments-to-function-secure_computing
-
-elapsed time: 1728m
-
-configs tested: 70
-configs skipped: 1
-
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                            allyesconfig
-arm64                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-openrisc                            defconfig
-nios2                               defconfig
-nios2                            allyesconfig
-c6x                              allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-xtensa                              defconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a003-20200727
-i386                 randconfig-a005-20200727
-i386                 randconfig-a004-20200727
-i386                 randconfig-a006-20200727
-i386                 randconfig-a002-20200727
-i386                 randconfig-a001-20200727
-i386                 randconfig-a016-20200727
-i386                 randconfig-a013-20200727
-i386                 randconfig-a012-20200727
-i386                 randconfig-a015-20200727
-i386                 randconfig-a011-20200727
-i386                 randconfig-a014-20200727
-x86_64               randconfig-a005-20200727
-x86_64               randconfig-a004-20200727
-x86_64               randconfig-a003-20200727
-x86_64               randconfig-a006-20200727
-x86_64               randconfig-a002-20200727
-x86_64               randconfig-a001-20200727
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-sparc64                             defconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                              defconfig
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Rob Herring <robh@kernel.org>
