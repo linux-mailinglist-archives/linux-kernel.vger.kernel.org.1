@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D9D22F6F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71FDE22F6FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730446AbgG0Rrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
+        id S1730843AbgG0Rs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728532AbgG0Rrr (ORCPT
+        with ESMTP id S1728532AbgG0Rs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:47:47 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7753BC061794;
-        Mon, 27 Jul 2020 10:47:47 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id o18so17915082eje.7;
-        Mon, 27 Jul 2020 10:47:47 -0700 (PDT)
+        Mon, 27 Jul 2020 13:48:57 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A23C061794;
+        Mon, 27 Jul 2020 10:48:57 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 9so14906212wmj.5;
+        Mon, 27 Jul 2020 10:48:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ijZvlgHQ+v2BWZ6VMCXnmgIYM9lqeQKC/Q58LwpkS18=;
-        b=goLiuJ7DPYB9oXd4K0FnBTft52vRIoaP8HHEoIjYGrc+tPTm98AuJdQQocC0tZrdIO
-         ISnBrkYunC/SuXetp8LVr0AUf/okLJ7rrydaj2DlRa14m/mvYjy2MO9Rvx0uPp+A8RyR
-         ymBD+HZEaA5cJTq65kSojT0vwfQ4HSr8m4XWE/Xzs+yGcAoqpMhdWdDComye4rXmIyNH
-         1mMPIkOzJGlzCzIIULku257QIFw6Zzwpm0koPrP4cP4qc+XHaUVgWdwTt7t3gSy+4oyy
-         m7HHgCRC9ms0IxORbtyaQdhlzBR/Pv7QY3qA5NofrhA7hDTOz7MJv713hvGuzUJiqbpc
-         bzxw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qOH/UoaqC+LDO4kkcL97+3vWeaaagSUdgiIVI5ufHis=;
+        b=XWcLeYAWwLQnQ/+Vniw+1NZMkQBf5jPAzdnX66/ZOrG+d8xxI/geLEvfjZuvZxTw6A
+         T5Na0PcnsDM5t4kNk6hPCIJTXxwx5VzLDWQa/DFx9ItkiyaVmZC0SsYIAOpwMP/MqLLW
+         wBtasEqQKV1jN/y3TFd9fkF1l3pw0pNF8OzWQ0T+erudPq0LAc6g9JSLk/NNmWG6/1Qk
+         B5U20kHwZgUKg4twqfKp0UjqMkkX0QwES20iQSgWlh/WpKektlQ0znluUNwnpdF7GuEW
+         1NGVzAaSZePpJpIgwJI6oPBcYrUVglr1Z0LoUZV8IKbJ7pyJ8sWlH9v3edi0eSRh7W8c
+         zApg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ijZvlgHQ+v2BWZ6VMCXnmgIYM9lqeQKC/Q58LwpkS18=;
-        b=P8gocLr8pJH5qrOnoY0C4CUxh/G0zra+psMbip1xmnwTP/wkrFFkUphCIYEv/8mc8/
-         A9UBkAJdpXykiRyAhOXe+mtE6KbGFV2JON5STiSEaoenrSTCnlWCh6knHt45LqO55Pz1
-         HOWoszn/HP8tdcTXD/TkX3SWGMNk1nd3n7wGcAlUHbz79W8VeGh4sYVExZHgubu8Bxci
-         P3tNy1oSs7RurdP2BJZBS9OucUb1urTZ0OrABagrkelN/v7KwVWlG+46rfT0abnYRi6U
-         zBM+B49py1pEmBQH/1rrw4jg+oLbqhXaS/7g+jikgPTxNZRbZkUO1Zv+8/N6WBR2NJCc
-         caRA==
-X-Gm-Message-State: AOAM532De5d4j0PtlZ41XTLMxcq94779MnFY1BOPrfjhJCMd8yQTnO5N
-        7OhPowTDvwTYUVUKpjNhSUvf7E43KHEqFMu39tbd5gKGd9U=
-X-Google-Smtp-Source: ABdhPJyWjX1lCFQR4mrrLCa3z5egBfKg89MlfQ1v3c4dfSsnCgXyu7fZcZo4LE8I8xaNaz1PFPPa723qH/VZge8XLSU=
-X-Received: by 2002:a17:906:743:: with SMTP id z3mr21889697ejb.216.1595872066116;
- Mon, 27 Jul 2020 10:47:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qOH/UoaqC+LDO4kkcL97+3vWeaaagSUdgiIVI5ufHis=;
+        b=TLopHUN7qFcsoS24mAIASZmjWMGuoLazJLg8Qx4oQjgy/Ur6j4Xlid6gLvjg0d1M/r
+         ZdcCH1j4fGl2Oa4n5/kqFDBgeB4IComL1wSMP/h8dJlAFgVJtNhQc4g8ppg5HYoUv3Yv
+         tUiRtz7jJPpI2HKNYdZV3ngCAoKUebhHJrXpd+gMd+s0KnjIWMFOjgm0o/5vnCkjOkjq
+         r6nqO0iHYR3pAcOWXfSVFZmIjb8LZLVaL5Q//NersT2d1dS9QnGOR2sAhpL1+SHd31aJ
+         3tfqNlUDB1moP+Hzr/a/xwlmJ2LbR2547UIqCXhDIALYekd9BEDK6F1lioWb4s7kANP+
+         dFCw==
+X-Gm-Message-State: AOAM533TWCzubT9ZA4M76ndQ03L9GRAXJmPYLKtZwrgW4KpoRU1SUjAZ
+        M0OFI9eKFRaZSPMqsMQyeeY=
+X-Google-Smtp-Source: ABdhPJxfNAV1+tUhphWVdB/yAnUKsH2CS8FGtw6ozsRuygaha6vREw+pf9Ma8uRtJcQlBCFiG9T9YQ==
+X-Received: by 2002:a1c:5646:: with SMTP id k67mr367294wmb.61.1595872135762;
+        Mon, 27 Jul 2020 10:48:55 -0700 (PDT)
+Received: from localhost.localdomain (112.red-81-32-35.dynamicip.rima-tde.net. [81.32.35.112])
+        by smtp.gmail.com with ESMTPSA id y11sm14072266wrs.80.2020.07.27.10.48.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 10:48:55 -0700 (PDT)
+From:   Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v3] media: atomisp-mt9m114: replace fixed function names
+Date:   Mon, 27 Jul 2020 19:48:12 +0200
+Message-Id: <20200727174811.57486-1-juant.aldea@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200727092346.19780-1-amelie.delaunay@st.com> <20200727092346.19780-2-amelie.delaunay@st.com>
-In-Reply-To: <20200727092346.19780-2-amelie.delaunay@st.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 27 Jul 2020 19:47:35 +0200
-Message-ID: <CAFBinCA_GzdWC+L3Wj_PesRmNFP2rhpZ6jWhhNJP03O5AHc5Kw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] dt-bindings: usb: dwc2: add optional
- usb-role-switch property
-To:     Amelie Delaunay <amelie.delaunay@st.com>
-Cc:     Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Amelie,
+There are a couple of debug messages using hardcoded function names
+instead of the preferred __func__ magic constant.
 
-thank you for adding this patch!
+Replace them:
 
-On Mon, Jul 27, 2020 at 11:23 AM Amelie Delaunay <amelie.delaunay@st.com> wrote:
->
-> This patch documents the usb-role-switch property in dwc2 bindings, now
-> that usb-role-switch support is available in dwc2 driver.
->
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-please add my:
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+WARNING: Prefer using '"%s...", __func__' to using 'misensor_rmw_reg', this function's name, in a string
+215: FILE: ./media/atomisp/i2c/atomisp-mt9m114.c:215:
++       v4l2_err(client, "misensor_rmw_reg error exit, read failed\n");
 
+WARNING: Prefer using '"%s...", __func__' to using 'misensor_rmw_reg', this function's name, in a string
+236: FILE: ./media/atomisp/i2c/atomisp-mt9m114.c:236:
++       v4l2_err(client, "misensor_rmw_reg error exit, write failed\n");
 
-Martin
+Signed-off-by: Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
+---
+PATCH V2:
+* Restored word "error" as pointed out by Dan Carpenter <dan.carpenter@oracle.com>
+
+PATCH V3: 
+* Fix V2 changelog message.
+
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index 0d60918a9b19..f5de81132177 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -212,7 +212,7 @@ misensor_rmw_reg(struct i2c_client *client, u16 data_length, u16 reg,
+ 
+ 	err = mt9m114_read_reg(client, data_length, reg, &val);
+ 	if (err) {
+-		v4l2_err(client, "misensor_rmw_reg error exit, read failed\n");
++		v4l2_err(client, "%s error exit, read failed\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -233,7 +233,7 @@ misensor_rmw_reg(struct i2c_client *client, u16 data_length, u16 reg,
+ 
+ 	err = mt9m114_write_reg(client, data_length, reg, val);
+ 	if (err) {
+-		v4l2_err(client, "misensor_rmw_reg error exit, write failed\n");
++		v4l2_err(client, "%s error exit, write failed\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.27.0
+
