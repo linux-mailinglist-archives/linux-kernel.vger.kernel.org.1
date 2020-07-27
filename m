@@ -2,100 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEAF22E9AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D23422E9AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbgG0J71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:59:27 -0400
-Received: from mag112.magazineer.net ([157.7.134.112]:54880 "EHLO
-        157.7.134.112" rhost-flags-OK-OK-FAIL-FAIL) by vger.kernel.org
-        with ESMTP id S1726269AbgG0J71 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:59:27 -0400
-X-Greylist: delayed 387 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Jul 2020 05:59:27 EDT
-To:     <linux-kernel@vger.kernel.org>
-Subject: =?iso-2022-jp?B?GyRCOWI5O0ssTGQkTj1FTVdALSEhIUE5YkI0Ok5NUSUqJXMlaSUkJXM5VjpCIUEbKEI=?=
-From:   =?ISO-2022-JP?B?GyRCJTglZyVWJUklaSVVJUglOyVfJUohPDE/MUQ8PBsoQg==?= 
-        <info@hr-saiyo.work>
-Date:   Mon, 27 Jul 2020 18:59:27 +0900
-Reply-To: info@hr-saiyo.work
-Message-Id: <20200627185927.19410@hr-saiyo.work>
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
+        id S1727120AbgG0KBf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 06:01:35 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2529 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726139AbgG0KBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:01:35 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id D2CE66CD8921393AABEB;
+        Mon, 27 Jul 2020 11:01:33 +0100 (IST)
+Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 11:01:33 +0100
+Date:   Mon, 27 Jul 2020 11:00:10 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@kernel.org>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 1/9] pci_ids: Add class code and extended capability
+ for RCEC
+Message-ID: <20200727110010.00005042@Huawei.com>
+In-Reply-To: <20200724172223.145608-2-sean.v.kelley@intel.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+        <20200724172223.145608-2-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.121.176]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-いつもお世話になります。
+On Fri, 24 Jul 2020 10:22:15 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-この度は、高卒採用において効果の高い
-“高校訪問”についてのセミナーをご案内申し上げます。
+> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> 
+> A PCIe Root Complex Event Collector(RCEC) has the base class 0x08,
+> sub-class 0x07, and programming interface 0x00. Add the class code
+> 0x0807 to identify RCEC devices and add the defines for the RCEC
+> Endpoint Association Extended Capability.
+> 
+> See PCI Express Base Specification, version 5.0-1, section "1.3.4
+> Root Complex Event Collector" and section "7.9.10 Root Complex
+> Event Collector Endpoint Association Extended Capability"
 
-7月30日オンライン開催
-――――――――――――――――――――――――――――
+Add a reference to the document
+"PCI Code and ID Assignment Specification"
+for the class number.
 
- “高校訪問”の重要性とコロナ下での実施ポイント
-　　　　〜15%を職場見学につなげる方法〜
+From the change log on latest version seems like it's been there since
+version 1.4.
 
-　　　　　　　　▼　詳細　▼
-　　　　 https://hr-saiyo.work/200730/
+There is a worrying note (bottom of page 16 of 1.12 version of that docs)
+in there that says some older specs used 0x0806 for RCECs and that we
+should use the port type field to actually check if we have one.
 
-――――――――――――――――――――――――――――
+Hopefully we won't encounter any of those in the wild.
 
-21年高卒採用に向けて、求人票の作成が終わり
-次に重要なポイントを迎えるのが“高校訪問”です。
+Otherwise, it's exactly what the spec says.
+We could bike shed on naming choices, but the ones you have seem clear enough
+to me.
 
-
-進路指導の先生の手元には、膨大な求人票が届きます。
-
-
-自社の求人票は、その中から生徒に紹介してもらえているでしょうか。
-
-
-せっかく作った求人票も、見てもらえなければ意味もありません。
-
-
-そうならないためにも“高校訪問”が大きな効果を発揮します。
-
-
-しかしいざ訪問となると、タイミングや準備、
-何をどう伝えるか、等々ポイントが多くあります。
-
-
-特に今年はコロナの影響で、高校によっては訪問ＮＧのケースもあります。
+FWIW
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 
-そこで本講座では、2000社を超える企業へのアドバイス経験を元に
-「コロナ下に応じた、15%以上を職場見学に繋げる高校訪問」の方法をご紹介します。
+Jonathan
+> 
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> ---
+>  include/linux/pci_ids.h       | 1 +
+>  include/uapi/linux/pci_regs.h | 7 +++++++
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+> index 0ad57693f392..de8dff1fb176 100644
+> --- a/include/linux/pci_ids.h
+> +++ b/include/linux/pci_ids.h
+> @@ -81,6 +81,7 @@
+>  #define PCI_CLASS_SYSTEM_RTC		0x0803
+>  #define PCI_CLASS_SYSTEM_PCI_HOTPLUG	0x0804
+>  #define PCI_CLASS_SYSTEM_SDHCI		0x0805
+> +#define PCI_CLASS_SYSTEM_RCEC		0x0807
+>  #define PCI_CLASS_SYSTEM_OTHER		0x0880
+>  
+>  #define PCI_BASE_CLASS_INPUT		0x09
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index f9701410d3b5..f335f65f65d6 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -828,6 +828,13 @@
+>  #define  PCI_PWR_CAP_BUDGET(x)	((x) & 1)	/* Included in system budget */
+>  #define PCI_EXT_CAP_PWR_SIZEOF	16
+>  
+> +/* Root Complex Event Collector Endpoint Association  */
+> +#define PCI_RCEC_RCIEP_BITMAP	4	/* Associated Bitmap for RCiEPs */
+> +#define PCI_RCEC_BUSN		8	/* RCEC Associated Bus Numbers */
+> +#define  PCI_RCEC_BUSN_REG_VER	0x02	/* Least capability version that BUSN present */
+> +#define  PCI_RCEC_BUSN_NEXT(x)	(((x) >> 8) & 0xff)
+> +#define  PCI_RCEC_BUSN_LAST(x)	(((x) >> 16) & 0xff)
+> +
+>  /* Vendor-Specific (VSEC, PCI_EXT_CAP_ID_VNDR) */
+>  #define PCI_VNDR_HEADER		4	/* Vendor-Specific Header */
+>  #define  PCI_VNDR_HEADER_ID(x)	((x) & 0xffff)
 
 
-求人票が見られているか不安だ、
-高校訪問しようにもコロナ下でどう動いたら良いかわからない
-
-といった悩みをお持ちの企業様は、是非ともご参加ください。
-
-
-――――――――――――――――――――――――――――
-
- “高校訪問”の重要性とコロナ下での実施ポイント
-　　　　〜15%を職場見学につなげる方法〜
-
-　 日程：7月30日
-　 時間：11:00〜11:45
-　 会場：オンライン開催（自宅や職場で視聴可能）
-　
-　■　詳細・申込　https://hr-saiyo.work/200730/　■
-
-――――――――――――――――――――――――――――
-　本メールのご不要な方には大変ご迷惑をおかけいたしました。
-　配信停止ご希望の方は、お手数ですが「配信不要」と
-　ご返信いただくか、下記アドレスよりお手続き願います。
-　 https://form9dm.site/kaijo/
-――――――――――――――――――――――――――――
-   ジョブドラフトセミナー運営室(株式会社ジンジブ)
-　 住所：東京都港区浜松町2丁目7-19　KDX浜松町ビル5階    
- 　TEL：03-5777-2679
-　 Mail：info@hr-service.work
-――――――――――――――――――――――――――――
