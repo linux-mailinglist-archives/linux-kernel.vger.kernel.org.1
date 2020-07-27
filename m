@@ -2,113 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE69622F2E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4EA22F2E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728829AbgG0OoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727833AbgG0OoW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:44:22 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9631AC061794;
-        Mon, 27 Jul 2020 07:44:22 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 801122958A9
-Message-ID: <44dcbbc97a06352169a2cc99536e41f2ad111238.camel@collabora.com>
-Subject: Re: [PATCH 09/10] media: hantro: Don't require unneeded
- H264_SLICE_PARAMS
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Mon, 27 Jul 2020 11:44:10 -0300
-In-Reply-To: <CAPBb6MWG5aXuc7ExiaKvgtLL0o=HDYKFa4D4-v8hfvyGiNFBdA@mail.gmail.com>
-References: <20200715202233.185680-1-ezequiel@collabora.com>
-         <20200715202233.185680-10-ezequiel@collabora.com>
-         <CAPBb6MWG5aXuc7ExiaKvgtLL0o=HDYKFa4D4-v8hfvyGiNFBdA@mail.gmail.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        id S1728985AbgG0OqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:46:06 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:16454 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728536AbgG0OqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:46:05 -0400
+Received: by ajax-webmail-mail-app4 (Coremail) ; Mon, 27 Jul 2020 22:45:24
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.186]
+Date:   Mon, 27 Jul 2020 22:45:24 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Dan Carpenter" <dan.carpenter@oracle.com>
+Cc:     devel@driverdev.osuosl.org,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, kjlu@umn.edu,
+        linux-kernel@vger.kernel.org,
+        "Julia Lawall" <julia.lawall@inria.fr>,
+        "Stefano Brivio" <sbrivio@redhat.com>,
+        "Shreeya Patel" <shreeya.patel23498@gmail.com>,
+        "Larry Finger" <Larry.Finger@lwfinger.net>
+Subject: Re: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized
+ variable authmode
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20200727132351.GF1913@kadam>
+References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
+ <20200727114451.GA1913@kadam> <20200727132351.GF1913@kadam>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Message-ID: <37fe50b0.13978.17390bc440f.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgD3__+E6B5fh0ZfAA--.11823W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAggHBlZdtPRcawAjsU
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbGCS07vEb7Iv0x
+        C_Cr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wCS07vE84ACjcxK6I8E87Iv67AKxVW0oV
+        Cq3wCS07vE84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DMIAIbVAS0I0E0xvYzxvE52x0
+        82IY62kv0487MIAIbVAqx4xG64xvF2IEw4CE5I8CrVC2j2WlV2xY6cIj6xIIjxv20xvE14
+        v26r1j6r18MIAIbVAv7VC2z280aVAFwI0_Jr0_Gr1lV2xY6cvjeVCFs4IE7xkEbVWUJVW8
+        JwCS07vE7I0Y64k_MIAIbVCY02Avz4vE14v_XrylV2xY6xkI7II2jI8vz4vEwIxGrwCS07
+        vE42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMIAIbVCF72vE77IF4wCS07vE4I8I3I0E4IkC
+        6x0Yz7v_Jr0_Gr1lV2xY6I8I3I0E5I8CrVAFwI0_Jr0_Jr4lV2xY6I8I3I0E7480Y4vE14
+        v26r106r1rMIAIbVC2zVAF1VAY17CE14v26r1q6r43MIAIbVCI42IY6xIIjxv20xvE14v2
+        6r1j6r1xMIAIbVCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lV2xY6IIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIAIbVCI42IY6I8E87Iv67AKxVWUJVW8JwCS07vEIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
-
-Despite you've asked to ignore this review,
-let me comment on it.
-
-On Sat, 2020-07-25 at 23:45 +0900, Alexandre Courbot wrote:
-> On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > Now that slice invariant parameters have been moved,
-> > the driver no longer needs this control, so drop it.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > ---
-> >  drivers/staging/media/hantro/hantro_drv.c  | 5 -----
-> >  drivers/staging/media/hantro/hantro_h264.c | 5 -----
-> >  drivers/staging/media/hantro/hantro_hw.h   | 2 --
-> >  3 files changed, 12 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> > index 34797507f214..3cd00cc0a364 100644
-> > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > @@ -306,11 +306,6 @@ static const struct hantro_ctrl controls[] = {
-> >                 .cfg = {
-> >                         .id = V4L2_CID_MPEG_VIDEO_H264_DECODE_PARAMS,
-> >                 },
-> > -       }, {
-> > -               .codec = HANTRO_H264_DECODER,
-> > -               .cfg = {
-> > -                       .id = V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS,
-> > -               },
-> 
-> Isn't this going to make the driver reject (as opposed to just ignore)
-> this control altogether? Also, even though the control is not required
-> anymore, don't we want to check that it is provided in order to ensure
-> user-space follows the spec (granted, this would be better done in a
-> common framework shared by all drivers).
-> 
-
-As you mentioned on your next reply, indeed frame-based drivers
-can't really parse the slice headers.
-
-I believe the above comment would make sense, if we want to avoid
-breaking compatibility.
-
-In our case, we are already breaking this (it's broken from the minute
-you change any control in the API, as V4L2 reject mismatch sizes
-for the controls).
-
-So, I'd say it makes sense to drop it now while we can.
-
-Also, Nicolas has suggested that this makes applications simpler. 
-
-> I'd also suggest this patch (and the following one) to be merged into
-> the previous one as they are just removing fields that have become
-> unneeded because of it.
-
-I'd like to keep the patches touching the uAPI separate from the
-ones touching the driver, when possible (i.e. when the build
-is not broken by API changes).
-
-Thanks,
-Ezequiel
-
-
+PiBJIHJldmlldyB0aGluZ3MgaW4gdGhlIG9yZGVyIHRoYXQgdGhleSBhcHBlYXIgaW4gbXkgaW5i
+b3ggc28gSSBoYWRuJ3QKPiBzZWVuIEdyZWcgYW5kIExhcnJ5J3MgY29tbWVudHMuICBZb3UndmUg
+bm93IHN0dW1ibGVkIGludG8gYW4gYXJlYSBvZgo+IHBvbGl0aWNzIHdoZXJlIHlvdSBoYXZlIGNv
+bmZsaWN0aW5nIHJldmlld3MuLi4gIDpQICBGb3J0dW5hdGVseSwgd2UncmUKPiBhbGwgb2YgdXMg
+cmVhc29uYWJsZSBwZW9wbGUuCj4gCj4gSSB0aGluayB5b3VyIHBhdGNoIGlzIGNvcnJlY3QgaW4g
+dGhhdCBpdCBpcyB3aGF0IHRoZSBvcmlnaW5hbCBjb2Rlcgo+IGludGVuZGVkLiAgWW91IGp1c3Qg
+bmVlZCB0byBzZWxsIHRoZSBwYXRjaCBjb3JyZWN0bHkgaW4gdGhlIGNvbW1pdAo+IG1lc3NhZ2Uu
+ICBUaGUgcmVhbCBkYW5nZXIgb2YgdGhlIG9yaWdpbmFsIGNvZGUgd291bGQgYmUgaWYgImF1dGht
+b2RlIiBpcwo+IGFjY2lkZW50YWxseSAweDMwIG9yIDB4ZGQganVzdCBiZWNhdXNlIGl0IHdhcyB1
+bmluaXRpYWxpemVkLiAgU2V0dGluZyBpdAo+IHRvIHplcm8gZW5zdXJlcyB0aGF0IGl0IGlzIG5v
+dCBhbmQgaXQgYWxzbyBtYXRjaGVzIGhvdyB0aGlzIGlzIGhhbmRsZWQKPiBpbiB0aGUgcnRsODcy
+M2JzIGRyaXZlci4gIFRoaXMgbWF0Y2hlcyB0aGUgb3JpZ2luYWwgYXV0aG9yJ3MgaW50ZW50aW9u
+Lgo+IAo+IFNvOgo+IAo+IDEpIFJlLXdyaXRlIHRoZSBjb21taXQgbWVzc2FnZS4KPiAKPiAgICAg
+VGhlIHZhcmlhYmxlIGF1dGhtb2RlIGNhbiBiZSB1bmluaXRpYWxpemVkLiAgVGhlIGRhbmdlciB3
+b3VsZCBiZQo+ICAgICBpZiBpdCBlcXVhbHMgX1dQQV9JRV9JRF8gKDB4ZGQpIG9yIF9XUEEyX0lF
+X0lEXyAoMHgzMykuICBXZSBjYW4KPiAgICAgYXZvaWQgdGhpcyBieSBzZXR0aW5nIGl0IHRvIHpl
+cm8gaW5zdGVhZC4gIFRoaXMgaXMgdGhlIGFwcHJvYWNoIHRoYXQKPiAgICAgd2FzIHVzZWQgaW4g
+dGhlIHJ0bDg3MjNicyBkcml2ZXIuCj4gCj4gMikgQWRkIGEgZml4ZXMgdGFnLgo+ICAgIEZpeGVz
+OiA3YjQ2NGM5ZmE1Y2MgKCJzdGFnaW5nOiByODE4OGV1OiBBZGQgZmlsZXMgZm9yIG5ldyBkcml2
+ZXIgLSBwYXJ0IDQiKQo+IAo+IDMpIENoYW5nZSB0aGUgY29tbWl0IHRvIExhcnJ5J3Mgc3R5bGUg
+d2l0aCB0aGUgImVsc2UgaWYiIGFuZCAiZWxzZSIuCj4gICAgU29tZXRpbWVzIHBlb3BsZSBqdXN0
+IGRpc2FncmVlIGFib3V0IHN0eWxlIHNvIGl0J3MgZWFzaWVzdCB0byBnbyB3aXRoCj4gICAgd2hh
+dGV2ZXIgdGhlIG1haW50YWluZXIgKExhcnJ5KSB3YW50cy4gIEl0J3Mgbm90IHdvcnRoIGRlYmF0
+aW5nIG9uZQo+ICAgIHdheSBvciB0aGUgb3RoZXIgc28ganVzdCByZWRvIGl0Lgo+IAo+IFRoZW4g
+cmVzZW5kLiAgR29vZ2xlIGZvciAiaG93IHRvIHNlbmQgYSB2MiBwYXRjaCIgdG8gZ2V0IHRoZSBy
+aWdodAo+IGZvcm1hdC4KPiAKPiByZWdhcmRzLAo+IGRhbiBjYXJwZW50ZXIKPiAKCllvdXIgYWR2
+aWNlIGlzIHZlcnkgaGVscGZ1bCB0byBtZSwgdGhhbmtzISBJIHdpbGwgcHJlcGFyZSB2MiBwYXRj
+aCBhbmQKcmVzZW5kIGl0IHNvb24uCgpSZWdhcmRzLApEaW5naGFvCgo=
