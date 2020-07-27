@@ -2,158 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F2622E41A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 04:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21D422E403
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 04:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgG0CpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 22:45:02 -0400
-Received: from mail-eopbgr70082.outbound.protection.outlook.com ([40.107.7.82]:21791
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726044AbgG0CpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 22:45:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZW5vwQLGJEloUel3nc5Qtez4K9wPlWWPv/mecxqCnYUBwqZR87o2ImDsViIPr71iNIU+W6eL8mDtxXbYnrH1nSzNFYi9dbtPSw35aCYZUE7qL0321m9OnlflZ86Sy1BuD/+/Sfqgo3HNTb/UzN9ZoBwoS/r+/q8pVcmHxwHBcRKOUhH448hQMomyk66OkUVsk/frgb+Jp0/Pq+vGOXAiZXQnxMS2krLTlDAajzGhjrXKMV95S36B9WunLZ9mY8ksfMLCZdAsczsnFTNkovD0YcTLxENDjcUR9p/2FQkoVhYRBci4u/iYv9dzw8+XVDLq6nhI4KjGhIX8pzb3hKM6VA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wcDIYke0iPpuHOLt/ghaOT3m1jMm+Yh+XrnkoBQuiTc=;
- b=CctnWgMo2zsOShdVBZXYTJ2FjZBp0F0Ze9n2bGZ+55P5pRJDWpAcymHpOgdhLjqp54V0JnwkkVjIf2hgkAhlFGmhNPNu5Or3JSTbG903Dfa64hyrRa4o659jo7CtV/xF8UzIF46PqZeKFCMsrvkGdZq0uRFj3+C7UJaKYDguH4qZ0Eedi0qjP90GQQCLRfvK1rJc6k9isAfkRLY2vIGg42xVAIg40Y25dM7MJGf3OYDynuHuqEAdjDPs24xr1hDcqE2qZXdCv5ZJAnarHUAYxraPBObwf5VF+z3R8VTmJS9KXyg1jSMTPQpU/mDSzH465rBz9FRGaz4S9GP9g2oUzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wcDIYke0iPpuHOLt/ghaOT3m1jMm+Yh+XrnkoBQuiTc=;
- b=OWbeGp4rikG3q1fMrtY9JDqswdaRv3a5fLOdrjuPeQ4N5iFguYhnG5fcbB9GMcxh+VigMMfLXOavc7eXih7oMb+dBij1cUL00iojH2ozEo91hOCn+xtqQsMi50Qxmpjr0nxabhck4VmFxQEW9GVvZx/5OqhM8ZxavNQQ946hJHM=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB5306.eurprd04.prod.outlook.com (2603:10a6:10:1f::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22; Mon, 27 Jul
- 2020 02:44:55 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::6dce:e74b:4350:1be5]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::6dce:e74b:4350:1be5%9]) with mapi id 15.20.3216.033; Mon, 27 Jul 2020
- 02:44:55 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Marc Zyngier <maz@kernel.org>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "jason@lakedaemon.net" <jason@lakedaemon.net>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V2 1/1] irqchip: imx-intmux: implement intmux PM
-Thread-Topic: [PATCH V2 1/1] irqchip: imx-intmux: implement intmux PM
-Thread-Index: AQHWXj9MF0LBL96DeUir99X7ZJWKqakYTAEAgAJ011A=
-Date:   Mon, 27 Jul 2020 02:44:55 +0000
-Message-ID: <DB8PR04MB67950EC575602273EDF35DD2E6720@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20200720104237.13119-1-qiangqing.zhang@nxp.com>
-        <20200720104237.13119-2-qiangqing.zhang@nxp.com>
- <87365fycbz.wl-maz@kernel.org>
-In-Reply-To: <87365fycbz.wl-maz@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: af1586c4-0587-4240-ef34-08d831d70bca
-x-ms-traffictypediagnostic: DB7PR04MB5306:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB53060E7FFCC7EA3CFD66FF11E6720@DB7PR04MB5306.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: o1ZZkpOEInlb/EmDQM6BBYwSpIW/67CEwAeJ4DijAdIH+kfqEpGyQIOkMBs6dS1hLAP5/RD7S5ZFApgze6W2tdB42BarBIqt0pTGzmySVsEnuNNxWvC16J0RKIraejCsLaU2CMmMvZXDOsfw0NSfilulueW8IReNXpiyUT2l8R5aeejCsrmFLckGIlJ9vRL8il8k3CZRgQW+tAJLzS+t5I0Zw+8W4z2o1BHbuRtsN6yfqVHMhvDyYVWlSPxyV7k1PqIWPRjNnK/jJeeCn6imCDKih9/yVj59buH+gElJFJQZRtK5Rx1XfxPPNWWd0dHa51Z9igvXfKvKmSqSJKK15Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(39860400002)(366004)(136003)(376002)(54906003)(86362001)(33656002)(186003)(52536014)(9686003)(76116006)(83380400001)(6916009)(5660300002)(7696005)(26005)(8936002)(53546011)(55016002)(6506007)(4326008)(316002)(478600001)(8676002)(2906002)(66446008)(66476007)(64756008)(66556008)(71200400001)(66946007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: IaEIQxP2fcqgpXkFCDhKpEN6dFb/eyV/N3D6B1xZGGof8cyBJ0e41QLE3FWkhgQXy8l7z3cCRu6OtQvXXWqX4wKKNO7hCtdsdCd2fsndJAIIQtJ6+wDJhzcCg/e92bNN/t2nQDwbyeL4VUuhE1ErnyRsuJ74A1JgkdBbBq+hZDyLn0Vuf1vI2D8QcMR1So74xv/R5hE3mh4urMMOtijarTI4o1ODiwAXfj98c2yk9EzmdcUS2wdh8LwzEGkN/EmkQY5lTMVHge4bHyXKDRLefv07a8AIOmx9akXR7nTDCfcCd2htp9MMWxyGxfV8pewte8fgy6QOUxJULnX9Qv3DzMszxtZEXVV0qO1Wu2FEap4FSlLf7GmbAjdFpSeZQeT+kni1/r9jgDbd7/64ZD5xIKRZkOKCu/CAcAH3ty5Kp7HFKB/ZBtruxJBWam95BA0cF0hbtT7J8H7lWcVZAZrp7S/MG963qWcG1uU/6C1gw7U=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af1586c4-0587-4240-ef34-08d831d70bca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2020 02:44:55.7388
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RGhkes2slvQqTWF/yl2aWjTHwycX0uEiF1afbjpmvXMScdbYs74u/wQc+KrmafZDhP3OgnAl3ciL+BcylJ6suA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5306
+        id S1727109AbgG0Cdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 22:33:53 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:43327 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726890AbgG0Cdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 22:33:53 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200727023350epoutp014cc2d9d3d694c9bb1c7538d736e5b41d~le1EEYujn0503105031epoutp01Z
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:33:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200727023350epoutp014cc2d9d3d694c9bb1c7538d736e5b41d~le1EEYujn0503105031epoutp01Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1595817230;
+        bh=nyorqQFc3R2/eKKFva9vj1FIOhdGfDZzIo30VBX79mQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=OOinQJ+kAOxUy5LeELg8p1HqXPdx+/rfb+vPDsjAjzoSMKPZO3mQUw/jRj+lO2z5+
+         5Yi8bhoItu70OL+on3OJsqqaCM5lePbXk0wl9c+T6QKt1lelgXkCPp1PIZ/IH03Ogs
+         TABb23EkGCgcj4iJKzJ8GDb52CA6X4aHSOMfGyC4=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200727023350epcas1p27d58be94218ef8bc849209971d22faa9~le1DuGReY2987029870epcas1p2S;
+        Mon, 27 Jul 2020 02:33:50 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4BFP4r24PszMqYkY; Mon, 27 Jul
+        2020 02:33:48 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        77.13.28578.60D3E1F5; Mon, 27 Jul 2020 11:33:42 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb~le08BIz681376213762epcas1p3M;
+        Mon, 27 Jul 2020 02:33:42 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200727023342epsmtrp174ada468c5624a2dd72067f77aca882c~le08Afr9V3044430444epsmtrp1V;
+        Mon, 27 Jul 2020 02:33:42 +0000 (GMT)
+X-AuditID: b6c32a39-8c9ff70000006fa2-05-5f1e3d06b6cd
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D6.2B.08303.60D3E1F5; Mon, 27 Jul 2020 11:33:42 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200727023341epsmtip119e8b6fc7db150ce587062ccdaaa31cc~le07ypIK72422024220epsmtip1X;
+        Mon, 27 Jul 2020 02:33:41 +0000 (GMT)
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        stable@vger.kernel.org
+Subject: [PATCH] PM / devfreq: Fix the wrong end with semicolon
+Date:   Mon, 27 Jul 2020 11:45:24 +0900
+Message-Id: <20200727024524.24203-1-cw00.choi@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7bCmgS6brVy8wa3XchYTb1xhsbj+5Tmr
+        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUdk2GamJKalF
+        Cql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUDLlRTKEnNKgUIBicXF
+        Svp2NkX5pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGbd+nmYv2MpR
+        sfNxVgNjG3sXIyeHhICJxJZpW5m7GLk4hAR2MEp82XqJBcL5xCjxbf5RdgjnM6NEz8d7LDAt
+        e94+YoRI7GKUWLTiHlT/F0aJI0f3MIJUsQloSex/cYMNxBYRsJI4/b+DGcRmFqiRmNC4iBXE
+        Fhawl1i3fBfYVBYBVYlL894ygdi8QPU9LzuZIbbJS6zecABsgYTAMnaJ32/uskIkXCRaV2xi
+        hLCFJV4d3wL1kZTEy36Y76olVp48wgbR3MEosWX/BahmY4n9SycDbeMAukhTYv0ufYiwosTO
+        33MZIQ7lk3j3tYcVpERCgFeio00IokRZ4vKDu0wQtqTE4vZONogSD4kpd1xATCGBWInDb/wm
+        MMrOQhi/gJFxFaNYakFxbnpqsWGBKXIcbWIEJyctyx2M099+0DvEyMTBeIhRgoNZSYSXW1Qm
+        Xog3JbGyKrUoP76oNCe1+BCjKTC4JjJLiSbnA9NjXkm8oamRsbGxhYmhmamhoZI477+z7PFC
+        AumJJanZqakFqUUwfUwcnFINTDNjT6/75fVSTNMn4naGoN4na42Cy9MCtup77Hj140Ry663P
+        hsvXRnb2lXD3/Nbff+e+kpFSzgmt/ld9l1tXvbl4KX/3teJsPZXwsBoOcWMHTuY2m59X3LYe
+        /rzFu8Df+ebF+AatG7LXQmf4GVUVfOy+eiKv4/G2jK+czZEz95zsVDYy2NssG2DQe+my4NHM
+        xPyC7i9K3JOlO5N883+Jb+6em3Ugc3OlP+MRMTsHGaX+2xOvb13fniR1TtCV87zYttsp65b0
+        SG34FxboVl5sHNnjJZ06f+bHB3P6r6/vqN/etV6UbaXGoyTJBdd2T1FcO7XJ4oVxXkyaXxmL
+        Ro9qlIm5qeuB9bW1d50fJTxRYinOSDTUYi4qTgQAk9HuL9cDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCJMWRmVeSWpSXmKPExsWy7bCSnC6brVy8wfpHHBYTb1xhsbj+5Tmr
+        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUVw2Kak5mWWp
+        Rfp2CVwZt36eZi/YylGx83FWA2MbexcjJ4eEgInEnrePGLsYuTiEBHYwSqz+PJ8FIiEpMe3i
+        UeYuRg4gW1ji8OFiiJpPjBJNrZvAmtkEtCT2v7jBBmKLCNhI3F18jQWkiFmgiVFi4ryDjCAJ
+        YQF7iXXLd4ENZRFQlbg07y0TiM0rYCXR87KTGWKZvMTqDQeYJzDyLGBkWMUomVpQnJueW2xY
+        YJSXWq5XnJhbXJqXrpecn7uJERwwWlo7GPes+qB3iJGJg/EQowQHs5IIL7eoTLwQb0piZVVq
+        UX58UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRmp6YWpBbBZJk4OKUamKKadRpMV3d55Anr8F1+
+        vytLuNpRYhfzPmO93dd+xZ/2069/VrEkPFqWeTkrd+O1dfPqTt7fmjfbfKLyviWSDsIdx2p1
+        5Zb9dpUXWxOYrjI37qrvKYaMI8nrPmxa8mCKhMrP79vMFnAl7zBafuXhW+5gTeH8FS8y/oVu
+        aTMKOv7qxr/2ZdkfPC4Ia/TnBjStSFH3jvfWfr55QnXjaQ2Gq33XteY+WtS3mWW+44rG7Tn2
+        TAVPQg8tc3Qw+vj+k9iX2VxnrM8sly9QvFMkm2oRsbE0YuXbvNadU18Yzq2Se1lhUnl72r79
+        NRMzXm7+eHPKFjld57pjt0tKTe1vBrDdODt/0kT72oK9+U8c/y8s3KnEUpyRaKjFXFScCABG
+        ZjGvhwIAAA==
+X-CMS-MailID: 20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb
+References: <CGME20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb@epcas1p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmMgWnluZ2llciA8bWF6
-QGtlcm5lbC5vcmc+DQo+IFNlbnQ6IDIwMjDE6jfUwjI1yNUgMjE6MDUNCj4gVG86IEpvYWtpbSBa
-aGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IENjOiB0Z2x4QGxpbnV0cm9uaXguZGU7
-IGphc29uQGxha2VkYWVtb24ubmV0OyBzaGF3bmd1b0BrZXJuZWwub3JnOw0KPiBzLmhhdWVyQHBl
-bmd1dHJvbml4LmRlOyBrZXJuZWxAcGVuZ3V0cm9uaXguZGU7IGZlc3RldmFtQGdtYWlsLmNvbTsN
-Cj4gZGwtbGludXgtaW14IDxsaW51eC1pbXhAbnhwLmNvbT47IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCBWMiAxLzFdIGlycWNoaXA6IGlteC1pbnRt
-dXg6IGltcGxlbWVudCBpbnRtdXggUE0NCj4gDQo+IE9uIE1vbiwgMjAgSnVsIDIwMjAgMTE6NDI6
-MzcgKzAxMDAsDQo+IEpvYWtpbSBaaGFuZyA8cWlhbmdxaW5nLnpoYW5nQG54cC5jb20+IHdyb3Rl
-Og0KPiA+DQo+ID4gV2hlbiBzeXN0ZW0gc3VzcGVuZGVkLCB3ZSBjb3VsZCBleHBsaWNpdGx5IGRp
-c2FibGUgY2xvY2sgdG8gc2F2ZSBwb3dlci4NCj4gPiBBbmQgd2UgbmVlZCBzYXZlIHJlZ2lzdGVy
-cycgc3RhdGUgc2luY2UgaXQgY291bGQgYmUgbG9zdCBhZnRlciBwb3dlcg0KPiA+IG9mZi4NCj4g
-Pg0KPiA+IEltcGxlbWVudCBQTSB3aGljaCB3aWxsOg0KPiA+IDEpIFdpdGhvdXQgQ09ORklHX1BN
-LCBjbG9jayBpcyBhbHdheXMgb24gYWZ0ZXIgcHJvYmUgc3RhZ2UuDQo+ID4gMikgV2l0aCBDT05G
-SUdfUE0sIGNsb2NrIGlzIG9mZiBhZnRlciBwcm9iZSBzdGFnZS4NCj4gPiAzKSBEaXNhYmxlIGNs
-b2NrIGFuZCBzYXZlIHJlZ2lzdGVycycgc3RhdGUgd2hlbiBkbyBzeXN0ZW0gc3VzcGVuZCBhbmQN
-Cj4gPiBlbmFibGUgY2xvY2sgYW5kIHJlc3RvcmUgcmVnaXN0ZXJzJyBzdGF0ZSB3aGlsZSBzeXN0
-ZW0gcmVzdW1lLg0KPiA+IDQpIE1ha2UgUG93ZXIgRG9tYWluIGZyYW1ld29yayBiZSBhYmxlIHRv
-IHNodXRkb3duIHRoZSBjb3JyZXNwb25kaW5nDQo+ID4gcG93ZXIgZG9tYWluIG9mIHRoaXMgZGV2
-aWNlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSm9ha2ltIFpoYW5nIDxxaWFuZ3Fpbmcuemhh
-bmdAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9pcnFjaGlwL2lycS1pbXgtaW50bXV4
-LmMgfCA3MA0KPiA+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystDQo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCA2OCBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvaXJxY2hpcC9pcnEtaW14LWludG11eC5jDQo+ID4gYi9kcml2ZXJz
-L2lycWNoaXAvaXJxLWlteC1pbnRtdXguYw0KPiA+IGluZGV4IGMyNzU3N2M4MTEyNi4uNTk3MTYw
-M2NjNjA3IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvaXJxY2hpcC9pcnEtaW14LWludG11eC5j
-DQo+ID4gKysrIGIvZHJpdmVycy9pcnFjaGlwL2lycS1pbXgtaW50bXV4LmMNCj4gPiBAQCAtNTMs
-NiArNTMsNyBAQA0KPiA+ICAjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQo+ID4gICNpbmNsdWRl
-IDxsaW51eC9vZl9wbGF0Zm9ybS5oPg0KPiA+ICAjaW5jbHVkZSA8bGludXgvc3BpbmxvY2suaD4N
-Cj4gPiArI2luY2x1ZGUgPGxpbnV4L3BtX3J1bnRpbWUuaD4NCj4gPg0KPiA+ICAjZGVmaW5lIENI
-QU5JRVIobikJKDB4MTAgKyAoMHg0MCAqIG4pKQ0KPiA+ICAjZGVmaW5lIENIQU5JUFIobikJKDB4
-MjAgKyAoMHg0MCAqIG4pKQ0KPiA+IEBAIC02MCw2ICs2MSw3IEBADQo+ID4gICNkZWZpbmUgQ0hB
-Tl9NQVhfTlVNCQkweDgNCj4gPg0KPiA+ICBzdHJ1Y3QgaW50bXV4X2lycWNoaXBfZGF0YSB7DQo+
-ID4gKwlzdHJ1Y3QgaXJxX2NoaXAJCWNoaXA7DQo+ID4gIAlpbnQJCQljaGFuaWR4Ow0KPiA+ICAJ
-aW50CQkJaXJxOw0KPiA+ICAJc3RydWN0IGlycV9kb21haW4JKmRvbWFpbjsNCj4gPiBAQCAtNzAs
-NiArNzIsNyBAQCBzdHJ1Y3QgaW50bXV4X2RhdGEgew0KPiA+ICAJdm9pZCBfX2lvbWVtCQkJKnJl
-Z3M7DQo+ID4gIAlzdHJ1Y3QgY2xrCQkJKmlwZ19jbGs7DQo+ID4gIAlpbnQJCQkJY2hhbm51bTsN
-Cj4gPiArCXUzMgkJCQkqc2F2ZWRfcmVnOw0KPiA+ICAJc3RydWN0IGludG11eF9pcnFjaGlwX2Rh
-dGEJaXJxY2hpcF9kYXRhW107DQo+ID4gIH07DQo+ID4NCj4gPiBAQCAtMTIwLDggKzEyMywxMCBA
-QCBzdGF0aWMgc3RydWN0IGlycV9jaGlwIGlteF9pbnRtdXhfaXJxX2NoaXAgPSB7DQo+ID4gc3Rh
-dGljIGludCBpbXhfaW50bXV4X2lycV9tYXAoc3RydWN0IGlycV9kb21haW4gKmgsIHVuc2lnbmVk
-IGludCBpcnEsDQo+ID4gIAkJCSAgICAgIGlycV9od19udW1iZXJfdCBod2lycSkNCj4gPiAgew0K
-PiA+IC0JaXJxX3NldF9jaGlwX2RhdGEoaXJxLCBoLT5ob3N0X2RhdGEpOw0KPiA+IC0JaXJxX3Nl
-dF9jaGlwX2FuZF9oYW5kbGVyKGlycSwgJmlteF9pbnRtdXhfaXJxX2NoaXAsIGhhbmRsZV9sZXZl
-bF9pcnEpOw0KPiA+ICsJc3RydWN0IGludG11eF9pcnFjaGlwX2RhdGEgKmRhdGEgPSBoLT5ob3N0
-X2RhdGE7DQo+ID4gKw0KPiA+ICsJaXJxX3NldF9jaGlwX2RhdGEoaXJxLCBkYXRhKTsNCj4gPiAr
-CWlycV9zZXRfY2hpcF9hbmRfaGFuZGxlcihpcnEsICZkYXRhLT5jaGlwLCBoYW5kbGVfbGV2ZWxf
-aXJxKTsNCj4gPg0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0NCj4gPiBAQCAtMjMyLDYgKzIzNywx
-OSBAQCBzdGF0aWMgaW50IGlteF9pbnRtdXhfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQ0K
-PiAqcGRldikNCj4gPiAgCWRhdGEtPmNoYW5udW0gPSBjaGFubnVtOw0KPiA+ICAJcmF3X3NwaW5f
-bG9ja19pbml0KCZkYXRhLT5sb2NrKTsNCj4gPg0KPiA+ICsJaWYgKElTX0VOQUJMRUQoQ09ORklH
-X1BNKSkgew0KPiA+ICsJCS8qIHNhdmUgQ0hBTklFUiByZWdpc3RlciAqLw0KPiA+ICsJCWRhdGEt
-PnNhdmVkX3JlZyA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LA0KPiA+ICsJCQkJCSAgICAgICBz
-aXplb2YodW5zaWduZWQgaW50KSAqIGNoYW5udW0sDQo+IA0KPiBUaGlzIGlzbid0IGNvbnNpc3Rl
-bnQgd2l0aCB0aGUgdHlwZSBvZiBkYXRhLT5zYXZlZF9yZWcuIENvbnNpZGVyIHVzaW5nDQo+IHNp
-emVvZigqZGF0YS0+c2F2ZWRfcmVnKSwgd2hpY2ggaXMgZ3VhcmFudGVlZCB0byBiZSB0aGUgcmln
-aHQgdHlwZS4NCg0KU29ycnkgZm9yIG15IG1pc3Rha2UsIEkgZm9yZ290IHRvIG1vZGlmeSB0aGlz
-IHVuaXQuDQoNCj4gSXQgYWxzbyBiZWdzIHRoZSBxdWVzdGlvbjogc2luY2UgdGhpcyBzYXZlZF9y
-ZWcgYXJyYXkgaXMgYWxsb2NhdGVkIG9uIGEgcGVyDQo+IGNoYW5uZWwgYmFzaXMsIHdoeSBkb24n
-dCB5b3UgaGF2ZSBhIHBlci1jaGFubmVsIGFkZGl0aW9uYWwgdTMyIGluIHRoZQ0KPiBpbnRtdXhf
-aXJxY2hpcF9kYXRhIHN0cnVjdHVyZSBpbnN0ZWFkPyBUaGlzIHdvdWxkIHNpZGVzdGVwIHRoaXMg
-ZXh0cmENCj4gYWxsb2NhdGlvbiBhbHRvZ2V0aGVyLg0KDQpZZXMsIHRoaXMgbWFrZSBzZW5zZS4g
-VGhhbmtzLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gVGhhbmtzLA0KPiANCj4g
-CU0uDQo+IA0KPiAtLQ0KPiBXaXRob3V0IGRldmlhdGlvbiBmcm9tIHRoZSBub3JtLCBwcm9ncmVz
-cyBpcyBub3QgcG9zc2libGUuDQo=
+Fix the wrong grammar at the end of code line by using semicolon.
+
+Cc: stable@vger.kernel.org
+Fixes: 490a421bc575 ("PM / devfreq: Add debugfs support with devfreq_summary file")
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+---
+It was my mistake using comma instead of semicolon. But, I don't know
+why the build error was not caught. Anyway, I fix the wrong basic grammar.
+
+ drivers/devfreq/devfreq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index 9d324ff87ee6..561d91b2d3bf 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -1800,9 +1800,9 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
+ #endif
+ 
+ 		mutex_lock(&devfreq->lock);
+-		cur_freq = devfreq->previous_freq,
++		cur_freq = devfreq->previous_freq;
+ 		get_freq_range(devfreq, &min_freq, &max_freq);
+-		polling_ms = devfreq->profile->polling_ms,
++		polling_ms = devfreq->profile->polling_ms;
+ 		mutex_unlock(&devfreq->lock);
+ 
+ 		seq_printf(s,
+-- 
+2.17.1
+
