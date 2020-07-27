@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D47722E654
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9210B22E643
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgG0HQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:16:51 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:35255 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727091AbgG0HQt (ORCPT
+        id S1726957AbgG0HPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:15:09 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:46571 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726116AbgG0HPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:16:49 -0400
-X-UUID: a4fb24737e4a43cd875755d57ae76d1a-20200727
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=kMaydL2v9BshbyUReMb3wcjNfslH3HmUZia9G0XRnJc=;
-        b=f8QOemF0Ybi/R3Y2gLV5RrHQgGd+/QS0DvA6FC9LbwHengawHYgF+FJWwfSogANP+W+OqSti5+7s1a33onQGtna3AAXxOFSlbAVpbudpfpxOSTqgEBQm1DNSW0SmDrRm32K7zgh6/Btvths5HYA6bSJBIQPp4iCdJTmGtT7yw/U=;
-X-UUID: a4fb24737e4a43cd875755d57ae76d1a-20200727
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 32602630; Mon, 27 Jul 2020 15:16:46 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 27 Jul 2020 15:16:43 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 27 Jul 2020 15:16:43 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH 11/11] usb: mtu3: simplify mtu3_req_complete()
-Date:   Mon, 27 Jul 2020 15:15:00 +0800
-Message-ID: <1595834101-13094-11-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1595834101-13094-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1595834101-13094-1-git-send-email-chunfeng.yun@mediatek.com>
+        Mon, 27 Jul 2020 03:15:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U3tikPA_1595834105;
+Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0U3tikPA_1595834105)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 27 Jul 2020 15:15:05 +0800
+Subject: Re: [PATCH] ocfs2: fix unbalanced locking
+To:     Pavel Machek <pavel@ucw.cz>, trivial@kernel.org, mark@fasheh.com,
+        jlbec@evilplan.org, ocfs2-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200724124443.GA28164@duo.ucw.cz>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <41de02bf-3c16-3492-6f9c-7ae4b519778e@linux.alibaba.com>
+Date:   Mon, 27 Jul 2020 15:15:04 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: B2FBB65A761F5069A6267965A8BC72CF8580797430EE14138B9473B4676492382000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200724124443.GA28164@duo.ucw.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VXNlIGFyZ3VtZW50IHJlcSBkaXJlY3RseSBpbnN0ZWFkIG9mIG1yZXEtPnJlcXVlc3QsIHRoZXkN
-CmFyZSB0aGUgc2FtZSB1c2IgcmVxdWVzdC4NCg0KU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVu
-IDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy91c2IvbXR1My9tdHUz
-X2dhZGdldC5jIHwgMTcgKysrKysrKy0tLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgNyBpbnNl
-cnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL210
-dTMvbXR1M19nYWRnZXQuYyBiL2RyaXZlcnMvdXNiL210dTMvbXR1M19nYWRnZXQuYw0KaW5kZXgg
-NzNhODUzNi4uMWRlNWM5YSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdXNiL210dTMvbXR1M19nYWRn
-ZXQuYw0KKysrIGIvZHJpdmVycy91c2IvbXR1My9tdHUzX2dhZGdldC5jDQpAQCAtMTUsMTUgKzE1
-LDEzIEBAIHZvaWQgbXR1M19yZXFfY29tcGxldGUoc3RydWN0IG10dTNfZXAgKm1lcCwNCiBfX3Jl
-bGVhc2VzKG1lcC0+bXR1LT5sb2NrKQ0KIF9fYWNxdWlyZXMobWVwLT5tdHUtPmxvY2spDQogew0K
-LQlzdHJ1Y3QgbXR1M19yZXF1ZXN0ICptcmVxOw0KLQlzdHJ1Y3QgbXR1MyAqbXR1Ow0KKwlzdHJ1
-Y3QgbXR1M19yZXF1ZXN0ICptcmVxID0gdG9fbXR1M19yZXF1ZXN0KHJlcSk7DQorCXN0cnVjdCBt
-dHUzICptdHUgPSBtcmVxLT5tdHU7DQogDQotCW1yZXEgPSB0b19tdHUzX3JlcXVlc3QocmVxKTsN
-CiAJbGlzdF9kZWwoJm1yZXEtPmxpc3QpOw0KLQlpZiAobXJlcS0+cmVxdWVzdC5zdGF0dXMgPT0g
-LUVJTlBST0dSRVNTKQ0KLQkJbXJlcS0+cmVxdWVzdC5zdGF0dXMgPSBzdGF0dXM7DQorCWlmIChy
-ZXEtPnN0YXR1cyA9PSAtRUlOUFJPR1JFU1MpDQorCQlyZXEtPnN0YXR1cyA9IHN0YXR1czsNCiAN
-Ci0JbXR1ID0gbXJlcS0+bXR1Ow0KIAl0cmFjZV9tdHUzX3JlcV9jb21wbGV0ZShtcmVxKTsNCiAJ
-c3Bpbl91bmxvY2soJm10dS0+bG9jayk7DQogDQpAQCAtMzEsMTEgKzI5LDEwIEBAIHZvaWQgbXR1
-M19yZXFfY29tcGxldGUoc3RydWN0IG10dTNfZXAgKm1lcCwNCiAJaWYgKG1lcC0+ZXBudW0pDQog
-CQl1c2JfZ2FkZ2V0X3VubWFwX3JlcXVlc3QoJm10dS0+ZywgcmVxLCBtZXAtPmlzX2luKTsNCiAN
-Ci0JZGV2X2RiZyhtdHUtPmRldiwgIiVzIGNvbXBsZXRlIHJlcTogJXAsIHN0cyAlZCwgJWQvJWRc
-biIsIG1lcC0+bmFtZSwNCi0JCXJlcSwgcmVxLT5zdGF0dXMsIG1yZXEtPnJlcXVlc3QuYWN0dWFs
-LCBtcmVxLT5yZXF1ZXN0Lmxlbmd0aCk7DQotDQotCXVzYl9nYWRnZXRfZ2l2ZWJhY2tfcmVxdWVz
-dCgmbWVwLT5lcCwgJm1yZXEtPnJlcXVlc3QpOw0KKwlkZXZfZGJnKG10dS0+ZGV2LCAiJXMgY29t
-cGxldGUgcmVxOiAlcCwgc3RzICVkLCAlZC8lZFxuIiwNCisJCW1lcC0+bmFtZSwgcmVxLCByZXEt
-PnN0YXR1cywgcmVxLT5hY3R1YWwsIHJlcS0+bGVuZ3RoKTsNCiANCisJdXNiX2dhZGdldF9naXZl
-YmFja19yZXF1ZXN0KCZtZXAtPmVwLCByZXEpOw0KIAlzcGluX2xvY2soJm10dS0+bG9jayk7DQog
-fQ0KIA0KLS0gDQoxLjkuMQ0K
 
+
+On 2020/7/24 20:44, Pavel Machek wrote:
+> 
+> Based on what fails, function can return with nfs_sync_rwlock either
+> locked or unlocked. That can not be right.
+> 
+> Always return with lock unlocked on error.
+> 
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Looks good.
+
+Fixes: 4cd9973f9ff6 ("ocfs2: avoid inode removal while nfsd is accessing it")
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+
+> 
+> diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
+> index 751bc4dc7466..8e3a369086db 100644
+> --- a/fs/ocfs2/dlmglue.c
+> +++ b/fs/ocfs2/dlmglue.c
+> @@ -2871,9 +2871,15 @@ int ocfs2_nfs_sync_lock(struct ocfs2_super *osb, int ex)
+>  
+>  	status = ocfs2_cluster_lock(osb, lockres, ex ? LKM_EXMODE : LKM_PRMODE,
+>  				    0, 0);
+> -	if (status < 0)
+> +	if (status < 0) {
+>  		mlog(ML_ERROR, "lock on nfs sync lock failed %d\n", status);
+>  
+> +		if (ex)
+> +			up_write(&osb->nfs_sync_rwlock);
+> +		else
+> +			up_read(&osb->nfs_sync_rwlock);
+> +	}
+> +
+>  	return status;
+>  }
+>  
+> 
