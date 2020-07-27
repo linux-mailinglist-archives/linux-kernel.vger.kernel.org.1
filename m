@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC10522EFDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483DF22EF34
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731463AbgG0OTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47926 "EHLO mail.kernel.org"
+        id S1730534AbgG0OO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731445AbgG0OTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:19:50 -0400
+        id S1730515AbgG0OOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:14:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 824F32075A;
-        Mon, 27 Jul 2020 14:19:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA60021744;
+        Mon, 27 Jul 2020 14:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859590;
-        bh=FrXkJIjIfPxFCaet73fYO+GvqQejZFZxu7LwH5m4W6s=;
+        s=default; t=1595859261;
+        bh=8UlBsW1v3tfZ3Y34/kCWH8FukhJMIanc5NRLM/MI7/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QP6VQdqvzItpFCfZyRlNWp+LKQcsWAfJBHCjcWXC/YTuJMvx9XaWbP1s58lILZgcA
-         fgmWYR5nbCkk0vImnk9BcAsIDshNXj7DvWfQGSp3ZTCS9FXxtv5kGJVEDDYJcq1HDc
-         ZbZTFK5lyGVnGjpAbqRYzeXbsCJm107W1Ys/Ovg0=
+        b=w/chggdrN6cqMmJB/p02GiaWHtBU8sFfDJN9sybr7XdzUJbblGAqFJG78fH4nvODI
+         v2Hi8neug5UNRwAkDXrN1OaNlQwhK3x6cr6nlas6kvw1Sjj8eKWeFFogNeWQrxwR27
+         Ij8mNo8tTxPNBB6ix1xptcYeHLOpCD5wFLt2pd+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Minqiang <ptpt52@gmail.com>,
-        Ilya Ponetayev <i.ponetaev@ndmsystems.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>
-Subject: [PATCH 5.7 030/179] exfat: fix name_hash computation on big endian systems
+        stable@vger.kernel.org, Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 010/138] drivers/net/wan/lapbether: Fixed the value of hard_header_len
 Date:   Mon, 27 Jul 2020 16:03:25 +0200
-Message-Id: <20200727134934.132666901@linuxfoundation.org>
+Message-Id: <20200727134925.756313009@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Ponetayev <i.ponetaev@ndmsystems.com>
+From: Xie He <xie.he.0141@gmail.com>
 
-commit db415f7aae07cadcabd5d2a659f8ad825c905299 upstream.
+[ Upstream commit 9dc829a135fb5927f1519de11286e2bbb79f5b66 ]
 
-On-disk format for name_hash field is LE, so it must be explicitly
-transformed on BE system for proper result.
+When this driver transmits data,
+  first this driver will remove a pseudo header of 1 byte,
+  then the lapb module will prepend the LAPB header of 2 or 3 bytes,
+  then this driver will prepend a length field of 2 bytes,
+  then the underlying Ethernet device will prepend its own header.
 
-Fixes: 370e812b3ec1 ("exfat: add nls operations")
-Cc: stable@vger.kernel.org # v5.7
-Signed-off-by: Chen Minqiang <ptpt52@gmail.com>
-Signed-off-by: Ilya Ponetayev <i.ponetaev@ndmsystems.com>
-Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
-Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So, the header length required should be:
+  -1 + 3 + 2 + "the header length needed by the underlying device".
 
+This patch fixes kernel panic when this driver is used with AF_PACKET
+SOCK_DGRAM sockets.
+
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/exfat/nls.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wan/lapbether.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/fs/exfat/nls.c
-+++ b/fs/exfat/nls.c
-@@ -495,7 +495,7 @@ static int exfat_utf8_to_utf16(struct su
- 		struct exfat_uni_name *p_uniname, int *p_lossy)
- {
- 	int i, unilen, lossy = NLS_NAME_NO_LOSSY;
--	unsigned short upname[MAX_NAME_LENGTH + 1];
-+	__le16 upname[MAX_NAME_LENGTH + 1];
- 	unsigned short *uniname = p_uniname->name;
+diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
+index 0f1217b506ad2..5a6f27298b90f 100644
+--- a/drivers/net/wan/lapbether.c
++++ b/drivers/net/wan/lapbether.c
+@@ -303,7 +303,6 @@ static void lapbeth_setup(struct net_device *dev)
+ 	dev->netdev_ops	     = &lapbeth_netdev_ops;
+ 	dev->needs_free_netdev = true;
+ 	dev->type            = ARPHRD_X25;
+-	dev->hard_header_len = 3;
+ 	dev->mtu             = 1000;
+ 	dev->addr_len        = 0;
+ }
+@@ -324,6 +323,14 @@ static int lapbeth_new_device(struct net_device *dev)
+ 	if (!ndev)
+ 		goto out;
  
- 	WARN_ON(!len);
-@@ -523,7 +523,7 @@ static int exfat_utf8_to_utf16(struct su
- 		    exfat_wstrchr(bad_uni_chars, *uniname))
- 			lossy |= NLS_NAME_LOSSY;
++	/* When transmitting data:
++	 * first this driver removes a pseudo header of 1 byte,
++	 * then the lapb module prepends an LAPB header of at most 3 bytes,
++	 * then this driver prepends a length field of 2 bytes,
++	 * then the underlying Ethernet device prepends its own header.
++	 */
++	ndev->hard_header_len = -1 + 3 + 2 + dev->hard_header_len;
++
+ 	lapbeth = netdev_priv(ndev);
+ 	lapbeth->axdev = ndev;
  
--		upname[i] = exfat_toupper(sb, *uniname);
-+		upname[i] = cpu_to_le16(exfat_toupper(sb, *uniname));
- 		uniname++;
- 	}
- 
-@@ -614,7 +614,7 @@ static int exfat_nls_to_ucs2(struct supe
- 		struct exfat_uni_name *p_uniname, int *p_lossy)
- {
- 	int i = 0, unilen = 0, lossy = NLS_NAME_NO_LOSSY;
--	unsigned short upname[MAX_NAME_LENGTH + 1];
-+	__le16 upname[MAX_NAME_LENGTH + 1];
- 	unsigned short *uniname = p_uniname->name;
- 	struct nls_table *nls = EXFAT_SB(sb)->nls_io;
- 
-@@ -628,7 +628,7 @@ static int exfat_nls_to_ucs2(struct supe
- 		    exfat_wstrchr(bad_uni_chars, *uniname))
- 			lossy |= NLS_NAME_LOSSY;
- 
--		upname[unilen] = exfat_toupper(sb, *uniname);
-+		upname[unilen] = cpu_to_le16(exfat_toupper(sb, *uniname));
- 		uniname++;
- 		unilen++;
- 	}
+-- 
+2.25.1
+
 
 
