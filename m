@@ -2,242 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F9B22FCA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3251E22FCA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgG0XIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:08:15 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:38435 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726782AbgG0XIM (ORCPT
+        id S1727915AbgG0XJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:09:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40548 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgG0XJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:08:12 -0400
-Received: by mail-qk1-f195.google.com with SMTP id e13so16990271qkg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:08:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jkR3OCxoCbxG3vF6cRMTnE0zZTwV830b9tfRaVWZTTE=;
-        b=OeQZwpSRli1eFMy0Pyezv/GOJuXSZRFypsFysvQSo7BBZpZM3oUveaEwqW5g/qGDWD
-         0zlSQ+A2cmQ5M5b3mogyTBDyv/FexStpG/I7nK/wJ7Qaz1xcRRlyl4NWKQS23vDloR1o
-         w+trXzT/qmw8oEKUAoLZyMI0Sq1qbGCPVHqAG0JvC1LApDykS0BECIFYMfQx3B7m8Gf1
-         fkZKwFXw9jleDOCA9sg8pSbVLZyGtZdRGDXhxL0zLQ58lEZMqgBj9Zo8WgsBG/PlDBm4
-         POWS6KOxCaxU+gf1Zg0GdKtaRqjNgizdSDV0armiYeLiyBSX/GjcZYIATWImY6LYZevE
-         a9uQ==
-X-Gm-Message-State: AOAM5323n5fHBS/t7P+yfj74RlXrjvURsl6JADYRlbXEMt0fG6yctMMf
-        WtFejveOiA0fXEah4cThIno=
-X-Google-Smtp-Source: ABdhPJx9nehytSJtgwS3+bxIDMx/94uD9yQEK8lTrn1lNZs3i1T86yFXj+/uQWtFqWMXvqnNmuqD0A==
-X-Received: by 2002:a37:9a46:: with SMTP id c67mr25967516qke.85.1595891290483;
-        Mon, 27 Jul 2020 16:08:10 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id j61sm8216984qtd.52.2020.07.27.16.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 16:08:09 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] x86/kaslr: Don't use 64-bit mem_vector for 32-bit kernel
-Date:   Mon, 27 Jul 2020 19:08:01 -0400
-Message-Id: <20200727230801.3468620-9-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200727215047.3341098-1-nivedita@alum.mit.edu>
-References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
+        Mon, 27 Jul 2020 19:09:26 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RN7bfj146823;
+        Mon, 27 Jul 2020 23:09:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=EM2szTfHxhcNcUnxiraVqc2XvgYTpD04zBO+/KMacU0=;
+ b=WzM2vOKuGzSmDI5BQSg+1kvuvWOSQA21Ddj8KefCiR8DAtVL0/jgBtOKqVDZwZ2Ft/ji
+ hsYYIDHrcdTpGzLuSKDiAVCx5yk1lNh5CwGdzNmAU5vjV4ToTk3SnywlWQ79QtDn1b6x
+ P5tnlPYCXsHGjhlLwIsXyhy9xycl/0ctnU9SKmbocq0p02qdUqyewlqF9W8fQxFn6GZr
+ LFJI+5Wo3P1V5y70Wg0+1ay3zPTVylBEWqw+kGJ0361gdn2JK2LHCGOwqMlip5Ucslqf
+ UBAgikXNY+zLMOPaam98Iduy0nO1uV4PuIYdVD0qLBSGmFbOcci1LaDUT3LRtyozV/V4 cA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 32hu1j4afs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Jul 2020 23:09:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RN8OC6072853;
+        Mon, 27 Jul 2020 23:09:17 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 32hu5s0tvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Jul 2020 23:09:16 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06RN9DCr018180;
+        Mon, 27 Jul 2020 23:09:13 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Jul 2020 16:09:13 -0700
+Subject: Re: [PATCH v3] mm/hugetlb: add mempolicy check in the reservation
+ routine
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        mhocko@kernel.org
+Cc:     rientjes@google.com, mgorman@suse.de, walken@google.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jianchao Guo <guojianchao@bytedance.com>
+References: <20200725080749.70470-1-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <b2dd0138-ed3e-c704-0625-6b6158d5b434@oracle.com>
+Date:   Mon, 27 Jul 2020 16:09:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200725080749.70470-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007270156
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ phishscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007270156
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
-  f28442497b5c ("x86/boot: Fix KASLR and memmap= collision")
-converted mem_vector type to use 64-bit on the 32-bit kernel as well,
-based on Thomas's review [0]. However:
-- the code still doesn't consistently use 64-bit types. For instance,
-  mem_avoid_overlap uses 32-bit types when checking for overlaps.  This
-  is actually okay, as the passed in memory range will have been clipped
-  to below 4G, but it is difficult to reason about the safety of the
-  code.
-- KASLR on 32-bit can't use memory above 4G anyway, so it's pointless
-  to keep track of ranges above 4G.
+On 7/25/20 1:07 AM, Muchun Song wrote:
+> In the reservation routine, we only check whether the cpuset meets
+> the memory allocation requirements. But we ignore the mempolicy of
+> MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
+> memory allocation may fail due to mempolicy restrictions and receives
+> the SIGBUS signal. This can be reproduced by the follow steps.
+> 
+>  1) Compile the test case.
+>     cd tools/testing/selftests/vm/
+>     gcc map_hugetlb.c -o map_hugetlb
+> 
+>  2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
+>     system. Each node will pre-allocate one huge page.
+>     echo 2 > /proc/sys/vm/nr_hugepages
+> 
+>  3) Run test case(mmap 4MB). We receive the SIGBUS signal.
+>     numactl --membind=0 ./map_hugetlb 4
+> 
+> With this patch applied, the mmap will fail in the step 3) and throw
+> "mmap: Cannot allocate memory".
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reported-by: Jianchao Guo <guojianchao@bytedance.com>
+> Suggested-by: Michal Hocko <mhocko@kernel.org>
 
-Switch the type back to unsigned long, and use a helper function to clip
-regions to 4G on 32-bit, when storing mem_avoid, immovable_mem, EFI,
-E820 and command-line memory regions.
+Thank you Muchun and Michal,
 
-[0] https://lore.kernel.org/linux-nvdimm/alpine.DEB.2.20.1701111246400.3579@nanos/
+This patch forced me to once again look at the bad the interaction of
+hugetlb reservations and cpusets or mempolicy.  This new code will help
+produce a quick failure as described in the commit message, and it does
+not make existing interactions any worse.
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
----
- arch/x86/boot/compressed/acpi.c  |  7 +++----
- arch/x86/boot/compressed/kaslr.c | 25 ++++++++++---------------
- arch/x86/boot/compressed/misc.h  | 19 +++++++++++++++++--
- 3 files changed, 30 insertions(+), 21 deletions(-)
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-diff --git a/arch/x86/boot/compressed/acpi.c b/arch/x86/boot/compressed/acpi.c
-index 8bcbcee54aa1..d09e0ec5637e 100644
---- a/arch/x86/boot/compressed/acpi.c
-+++ b/arch/x86/boot/compressed/acpi.c
-@@ -106,7 +106,7 @@ static acpi_physical_address kexec_get_rsdp_addr(void)
- 	}
- 
- 	/* Get systab from boot params. */
--	systab = (efi_system_table_64_t *) (ei->efi_systab | ((__u64)ei->efi_systab_hi << 32));
-+	systab = (efi_system_table_64_t *) (ei->efi_systab | ((u64)ei->efi_systab_hi << 32));
- 	if (!systab)
- 		error("EFI system table not found in kexec boot_params.");
- 
-@@ -139,7 +139,7 @@ static acpi_physical_address efi_get_rsdp_addr(void)
- 
- 	/* Get systab from boot params. */
- #ifdef CONFIG_X86_64
--	systab = ei->efi_systab | ((__u64)ei->efi_systab_hi << 32);
-+	systab = ei->efi_systab | ((u64)ei->efi_systab_hi << 32);
- #else
- 	if (ei->efi_systab_hi || ei->efi_memmap_hi) {
- 		debug_putstr("Error getting RSDP address: EFI system table located above 4GB.\n");
-@@ -404,8 +404,7 @@ int count_immovable_mem_regions(void)
- 
- 			ma = (struct acpi_srat_mem_affinity *)sub_table;
- 			if (!(ma->flags & ACPI_SRAT_MEM_HOT_PLUGGABLE) && ma->length) {
--				immovable_mem[num].start = ma->base_address;
--				immovable_mem[num].size = ma->length;
-+				immovable_mem[num] = mem_vector_ctor(ma->base_address, ma->length);
- 				num++;
- 			}
- 
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index eca2acc65e2a..8c44041ae9cb 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -98,7 +98,7 @@ static bool memmap_too_large;
-  * Store memory limit: MAXMEM on 64-bit and KERNEL_IMAGE_SIZE on 32-bit.
-  * It may be reduced by "mem=nn[KMG]" or "memmap=nn[KMG]" command line options.
-  */
--static unsigned long long mem_limit;
-+static unsigned long mem_limit;
- 
- /* Number of immovable memory regions */
- static int num_immovable_mem;
-@@ -141,8 +141,7 @@ enum parse_mode {
- };
- 
- static int
--parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
--		enum parse_mode mode)
-+parse_memmap(char *p, u64 *start, u64 *size, enum parse_mode mode)
- {
- 	char *oldp;
- 
-@@ -172,7 +171,7 @@ parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
- 			 */
- 			*size = 0;
- 		} else {
--			unsigned long long flags;
-+			u64 flags;
- 
- 			/*
- 			 * efi_fake_mem=nn@ss:attr the attr specifies
-@@ -211,7 +210,7 @@ static void mem_avoid_memmap(enum parse_mode mode, char *str)
- 
- 	while (str && (i < MAX_MEMMAP_REGIONS)) {
- 		int rc;
--		unsigned long long start, size;
-+		u64 start, size;
- 		char *k = strchr(str, ',');
- 
- 		if (k)
-@@ -230,8 +229,7 @@ static void mem_avoid_memmap(enum parse_mode mode, char *str)
- 			continue;
- 		}
- 
--		mem_avoid[MEM_AVOID_MEMMAP_BEGIN + i].start = start;
--		mem_avoid[MEM_AVOID_MEMMAP_BEGIN + i].size = size;
-+		mem_avoid[MEM_AVOID_MEMMAP_BEGIN + i] = mem_vector_ctor(start, size);
- 		i++;
- 	}
- 
-@@ -422,8 +420,7 @@ static void mem_avoid_init(unsigned long input, unsigned long input_size,
- 	initrd_start |= boot_params->hdr.ramdisk_image;
- 	initrd_size  = (u64)boot_params->ext_ramdisk_size << 32;
- 	initrd_size |= boot_params->hdr.ramdisk_size;
--	mem_avoid[MEM_AVOID_INITRD].start = initrd_start;
--	mem_avoid[MEM_AVOID_INITRD].size = initrd_size;
-+	mem_avoid[MEM_AVOID_INITRD] = mem_vector_ctor(initrd_start, initrd_size);
- 	/* No need to set mapping for initrd, it will be handled in VO. */
- 
- 	/* Avoid kernel command line. */
-@@ -673,7 +670,7 @@ static bool process_mem_region(struct mem_vector *region,
- 	 * immovable memory and @region.
- 	 */
- 	for (i = 0; i < num_immovable_mem; i++) {
--		unsigned long long start, end, entry_end, region_end;
-+		unsigned long start, end, entry_end, region_end;
- 		struct mem_vector entry;
- 
- 		if (!mem_overlaps(region, &immovable_mem[i]))
-@@ -728,7 +725,7 @@ process_efi_entries(unsigned long minimum, unsigned long image_size)
- 	}
- 	pmap =  e->efi_memmap;
- #else
--	pmap = (e->efi_memmap | ((__u64)e->efi_memmap_hi << 32));
-+	pmap = (e->efi_memmap | ((u64)e->efi_memmap_hi << 32));
- #endif
- 
- 	nr_desc = e->efi_memmap_size / e->efi_memdesc_size;
-@@ -765,8 +762,7 @@ process_efi_entries(unsigned long minimum, unsigned long image_size)
- 		    !(md->attribute & EFI_MEMORY_MORE_RELIABLE))
- 			continue;
- 
--		region.start = md->phys_addr;
--		region.size = md->num_pages << EFI_PAGE_SHIFT;
-+		region = mem_vector_ctor(md->phys_addr, md->num_pages << EFI_PAGE_SHIFT);
- 		if (process_mem_region(&region, minimum, image_size))
- 			break;
- 	}
-@@ -793,8 +789,7 @@ static void process_e820_entries(unsigned long minimum,
- 		/* Skip non-RAM entries. */
- 		if (entry->type != E820_TYPE_RAM)
- 			continue;
--		region.start = entry->addr;
--		region.size = entry->size;
-+		region = mem_vector_ctor(entry->addr, entry->size);
- 		if (process_mem_region(&region, minimum, image_size))
- 			break;
- 	}
-diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
-index 726e264410ff..fd7c49ab0f02 100644
---- a/arch/x86/boot/compressed/misc.h
-+++ b/arch/x86/boot/compressed/misc.h
-@@ -70,10 +70,25 @@ int cmdline_find_option(const char *option, char *buffer, int bufsize);
- int cmdline_find_option_bool(const char *option);
- 
- struct mem_vector {
--	unsigned long long start;
--	unsigned long long size;
-+	unsigned long start;
-+	unsigned long size;
- };
- 
-+static inline
-+struct mem_vector mem_vector_ctor(u64 start, u64 size)
-+{
-+	u64 end = start + size;
-+	struct mem_vector ret;
-+
-+	start = min_t(u64, start, ULONG_MAX);
-+	end   = min_t(u64, end,   ULONG_MAX);
-+
-+	ret.start = (unsigned long)start;
-+	ret.size  = (unsigned long)(end - start);
-+
-+	return ret;
-+}
-+
- #if CONFIG_RANDOMIZE_BASE
- /* kaslr.c */
- void choose_random_location(unsigned long input,
 -- 
-2.26.2
-
+Mike Kravetz
