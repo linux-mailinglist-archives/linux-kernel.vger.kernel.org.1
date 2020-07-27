@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AF222E834
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C482922E83B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgG0Ivx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        id S1726877AbgG0IxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgG0Ivx (ORCPT
+        with ESMTP id S1726838AbgG0IxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:51:53 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD31C061794;
-        Mon, 27 Jul 2020 01:51:53 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k4so7654828pld.12;
-        Mon, 27 Jul 2020 01:51:53 -0700 (PDT)
+        Mon, 27 Jul 2020 04:53:11 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06883C061794;
+        Mon, 27 Jul 2020 01:53:11 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id c6so2314293pje.1;
+        Mon, 27 Jul 2020 01:53:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=EZjAvhd8qymP3xpSpzTYFJmsDpJMlX1w4p6r1Y0paWY=;
-        b=ikrYwhLLahj2sdZohM5IMbBMrTjt76+TKRMK03SDt1aI6sHcSO3b/gUj7S9n4vz7U8
-         RrUVDwsNl0ZGp7hMkY5KG5odV9EhTuNHhsJ0ygjK3uGuFQYONhkJPrbeW7AphEF+1XiZ
-         8nhMHL2VGSYy+M3CX8ousdF7MHbUKL+6cWjANNtjFwlhqAVc8t0JrqZlSyWDy7L47FKp
-         abcck6WieVPI1cLCGwyvIr2IkBmlAopvhbzGmFrPRuRp0Oyg2v1d1EnyqLaIdG4XVwyQ
-         Tmpmae4ybwt8DXovMaxx4/Sj/HdwkfvhT37E3rwnMX0TwVTvQF+JP6cSvgB1wwHchIBq
-         XFEg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NCfXf8WOmtA2IUxBJzSQxTBQrQqF9PVCIrC60H56Exo=;
+        b=OFdfEPcJFl2T27EH2T+kq4cP2/lNJblPK9whqMS8JwUToaZ6c7g0P7tDaHEiCetLTi
+         XLVWMLmwwVpxlfNlIWbW/SURNBk10dPdRs/BXcf1cBp/wqXq9ZB8zeP2Y3KvWO1argOe
+         9FZc5gX4qPSJqKwxsxi4SABf+hTOgJV3H5JoqLdGUr2Yk+UZCstXwu5v+VknFWAYq5qi
+         WqWCmljrN0zwRXKvUrEO6WO1Q023awVGbMfcfEQnkfWWSreHvQWYvznVskoT+6ZdBtBP
+         VQbRRGsYFm1yPT5B1qwywSy7mLetjxkq2oqxhbeVwJwFR9JHrbJynDfdjBsdYjHwzf+D
+         bjOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=EZjAvhd8qymP3xpSpzTYFJmsDpJMlX1w4p6r1Y0paWY=;
-        b=gkRnp8pQ3WleDjawe79fMIAk2rJQKgFbVdnNcYo6BlXNKUg7lTZlT8nwj6NGuwWEwi
-         JWykhUZ7/rShv+K9s2/4Ah7Jm2hXAdUEEvY2FA4J8ZBwVJBRR2mL0amH4AyvKha/JryC
-         mx37oZMbEeGilgA6njGUKzFANwvx27A+qCySk+/sN2K2/PX1u5zJeg0RqZmfwE3MINSh
-         pWLoxmTK///3GYE87Ce3ZLo3l8eFFX86XvPEdHazyZffeiUSNR1XXMqO3Mbm1puxtFAg
-         DP5Evb8Y4EXu8/B1QvDQA2qNktug1iJpFoGvRCKngYeVLf5GH7nrbGWkVXNQJa2z2iVd
-         VrUQ==
-X-Gm-Message-State: AOAM530DE211mqPOISDDl+Wyd+f2eQoD3lqgfMFIaUEY17EsdkQ//a1b
-        Cb/MtvPtPmZRTCjun27L3v0=
-X-Google-Smtp-Source: ABdhPJwjPDH+IFJJdHOop3ZKX2VcJCnpKBqZS4KnsFP0FgL6C5zO0stUwEwN67XLg/Gtba7Pr+uMvg==
-X-Received: by 2002:a17:90a:ea83:: with SMTP id h3mr18544832pjz.176.1595839912798;
-        Mon, 27 Jul 2020 01:51:52 -0700 (PDT)
-Received: from bj616583pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id o11sm14291130pfp.88.2020.07.27.01.51.49
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NCfXf8WOmtA2IUxBJzSQxTBQrQqF9PVCIrC60H56Exo=;
+        b=J8Ah9ouCzJxHKFFiAanQUB36qIkZCrUhSXxDoY1RHXk6hkaoSlL/tutoi5vTwy0x4Y
+         STvbDtffekZdQOFrQDPMx5h5vFNjL9GQu3jKVjGeXwiO4VsvCbrlLXACuxxFPS4mswDz
+         PC128km0Y/VxewP6ihSPW+ZueGKfOjgUiesC3YA5mkfZPIPIQ81U5Pkxj6xKUqc53o1p
+         mBKLyL1pyMDh2aexlX8SyDC4j158QGOJJdOEyqLjPZ0emyMcxKxi8cjayq4M2hqiV5xv
+         URoJ/xV6HdYRM1Zx2xT6Xm6vn9ZIDCEdc5ZD8SPs0a2/ikozB9P8IOB5asjlxMBNBVJp
+         3VPQ==
+X-Gm-Message-State: AOAM5330EMQ3dkBmhuxzbvqLwwWVlsVi4mo+oVOUXDPST9rosar67Cmk
+        BiisKcZvUMbpnx3JyoUh99k=
+X-Google-Smtp-Source: ABdhPJyNaMdlpQ3AwoP7H3S3OxqRlhliSqoOA8hmKa9Cx8v/1LLppfqf9JPH9t52ILX2hBAJkzzJGg==
+X-Received: by 2002:a17:90a:c68e:: with SMTP id n14mr17086238pjt.182.1595839990572;
+        Mon, 27 Jul 2020 01:53:10 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id r204sm14346668pfc.134.2020.07.27.01.53.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 01:51:52 -0700 (PDT)
-From:   gengcixi@gmail.com
-To:     gregkh@linuxfoundation.org, jslaby@suse.com, oberpar@linux.ibm.com,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com,
-        Cixi Geng <cixi.geng1@unisoc.com>
-Subject: [PATCH V7] GCOV: Add config to check the preqequisites situation
-Date:   Mon, 27 Jul 2020 16:51:32 +0800
-Message-Id: <20200727085132.29754-1-gengcixi@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 27 Jul 2020 01:53:09 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 17:53:08 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [v3 PATCH RESEND] printk: Make linux/printk.h self-contained
+Message-ID: <20200727085308.GE1386@jagdpanzerIV.localdomain>
+References: <20200721062248.GA18383@gondor.apana.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200721062248.GA18383@gondor.apana.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cixi Geng <cixi.geng1@unisoc.com>
+On (20/07/21 16:22), Herbert Xu wrote:
+> As it stands if you include printk.h by itself it will fail to
+> compile because it requires definitions from ratelimit.h.  However,
+> simply including ratelimit.h from printk.h does not work due to
+> inclusion loops involving sched.h and kernel.h.
+> 
+> This patch solves this by moving bits from ratelimit.h into a new
+> header file which can then be included by printk.h without any
+> worries about header loops.
+> 
+> The build bot then revealed some intriguing failures arising out
+> of this patch.  On s390 there is an inclusion loop with asm/bug.h
+> and linux/kernel.h that triggers a compile failure, because kernel.h
+> will cause asm-generic/bug.h to be included before s390's own
+> asm/bug.h has finished processing.  This has been fixed by not
+> including kernel.h in arch/s390/include/asm/bug.h.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Acked-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Introduce new configuration option GCOV_PROFILE_PREREQS that can be
-used to check whether the prerequisites for enabling gcov profiling
-for specific files and directories are met.
+Applied to for-5.9, thanks.
 
-Only add SERIAL_GCOV for an example.
-
-Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
----
- drivers/tty/serial/Kconfig  |  7 +++++++
- drivers/tty/serial/Makefile |  1 +
- kernel/gcov/Kconfig         | 12 ++++++++++++
- 3 files changed, 20 insertions(+)
-
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 780908d43557..55b128b6b31d 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -1576,3 +1576,10 @@ endmenu
- 
- config SERIAL_MCTRL_GPIO
- 	tristate
-+
-+config SERIAL_GCOV
-+	bool "Enable profile gcov for serial directory"
-+	depends on GCOV_PROFILE_PREREQS
-+	help
-+	  The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
-+	  Say 'Y' here if you want the gcov data for the serial directory,
-diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-index d056ee6cca33..17272733db95 100644
---- a/drivers/tty/serial/Makefile
-+++ b/drivers/tty/serial/Makefile
-@@ -3,6 +3,7 @@
- # Makefile for the kernel serial device drivers.
- #
- 
-+GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
- obj-$(CONFIG_SERIAL_CORE) += serial_core.o
- 
- obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 3110c77230c7..bb2e1fb85743 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -51,4 +51,16 @@ config GCOV_PROFILE_ALL
- 	larger and run slower. Also be sure to exclude files from profiling
- 	which are not linked to the kernel image to prevent linker errors.
- 
-+config GCOV_PROFILE_PREREQS
-+	bool "Profile Kernel for prereqs"
-+	depends on GCOV_KERNEL
-+	depends on  !COMPILE_TEST
-+	def_bool y if GCOV_KERNEL && !COMPILE_TEST
-+	help
-+	  This options activates profiling for the specified kernel modules.
-+
-+	  When some modules need Gcov data, enable this config, then configure
-+	  with gcov on the corresponding modules,The directories or files of
-+	  these modules will be added profiling flags after kernel compile.
-+
- endmenu
--- 
-2.17.1
-
+	-ss
