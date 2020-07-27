@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F2E22F21D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF82822F295
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732957AbgG0Ohd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:37:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36820 "EHLO mail.kernel.org"
+        id S1729180AbgG0OI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:08:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730207AbgG0OMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:12:30 -0400
+        id S1729524AbgG0OIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:08:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4E472083E;
-        Mon, 27 Jul 2020 14:12:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6CBF2073E;
+        Mon, 27 Jul 2020 14:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859150;
-        bh=5MbtI0ihvkEoxI9SWcTbrLH2vIzaHkcSMuxKD1ckyRM=;
+        s=default; t=1595858935;
+        bh=0ZB1inq6G3mEXC1hC6A8lpXD+S8c6wP75Jh/MvwT8Ts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y2oCgmDBuruF3efKtxjRZuLaM0VzEEigoN07TioAXvwipStmSN5WU2GBPzBa5bWNs
-         FuCzyfooVupvcPnDz6FBhBX8OqLv6jSjaVrFrHoijTYd3b3ypxlEy+Y/yTyYVxh6eF
-         wW3HDaCZZeyuAfnsdPFzRsvFcxAzjq7JcZZlDfb8=
+        b=QJclpbQGXiA2Mf2k6RvcjF1uAMKe0tNb2P4QoL58xplTqHqoLpDemRPRE996/pwal
+         s76ALPs4qiQwuMxdL8TxNPXk5LqcCEmtQB6ojcCqiTHP7O8USSjfv+UAU+hSNWkDcE
+         pRtjLMwHbhYO36CTL0II80Vb0iQTeD+oDt6rMhYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 65/86] staging: wlan-ng: properly check endpoint types
+        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 60/64] mm/memcg: fix refcount error while moving and swapping
 Date:   Mon, 27 Jul 2020 16:04:39 +0200
-Message-Id: <20200727134917.687322916@linuxfoundation.org>
+Message-Id: <20200727134914.144811936@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Hugh Dickins <hughd@google.com>
 
-commit faaff9765664009c1c7c65551d32e9ed3b1dda8f upstream.
+commit 8d22a9351035ef2ff12ef163a1091b8b8cf1e49c upstream.
 
-As syzkaller detected, wlan-ng driver does not do sanity check of
-endpoints in prism2sta_probe_usb(), add check for xfer direction and type
+It was hard to keep a test running, moving tasks between memcgs with
+move_charge_at_immigrate, while swapping: mem_cgroup_id_get_many()'s
+refcount is discovered to be 0 (supposedly impossible), so it is then
+forced to REFCOUNT_SATURATED, and after thousands of warnings in quick
+succession, the test is at last put out of misery by being OOM killed.
 
-Reported-and-tested-by: syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=c2a1fa67c02faa0de723
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722161052.999754-1-rkovhaev@gmail.com
+This is because of the way moved_swap accounting was saved up until the
+task move gets completed in __mem_cgroup_clear_mc(), deferred from when
+mem_cgroup_move_swap_account() actually exchanged old and new ids.
+Concurrent activity can free up swap quicker than the task is scanned,
+bringing id refcount down 0 (which should only be possible when
+offlining).
+
+Just skip that optimization: do that part of the accounting immediately.
+
+Fixes: 615d66c37c75 ("mm: memcontrol: fix memcg id ref counter on swap charge move")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2007071431050.4726@eggly.anvils
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/wlan-ng/prism2usb.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ mm/memcontrol.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -61,11 +61,25 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
- {
- 	struct usb_device *dev;
--
-+	const struct usb_endpoint_descriptor *epd;
-+	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	struct wlandevice *wlandev = NULL;
- 	struct hfa384x *hw = NULL;
- 	int result = 0;
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4883,7 +4883,6 @@ static void __mem_cgroup_clear_mc(void)
+ 		if (!mem_cgroup_is_root(mc.to))
+ 			page_counter_uncharge(&mc.to->memory, mc.moved_swap);
  
-+	if (iface_desc->desc.bNumEndpoints != 2) {
-+		result = -ENODEV;
-+		goto failed;
-+	}
-+
-+	result = -EINVAL;
-+	epd = &iface_desc->endpoint[1].desc;
-+	if (!usb_endpoint_is_bulk_in(epd))
-+		goto failed;
-+	epd = &iface_desc->endpoint[2].desc;
-+	if (!usb_endpoint_is_bulk_out(epd))
-+		goto failed;
-+
- 	dev = interface_to_usbdev(interface);
- 	wlandev = create_wlan();
- 	if (!wlandev) {
+-		mem_cgroup_id_get_many(mc.to, mc.moved_swap);
+ 		css_put_many(&mc.to->css, mc.moved_swap);
+ 
+ 		mc.moved_swap = 0;
+@@ -5074,7 +5073,8 @@ put:			/* get_mctgt_type() gets the page
+ 			ent = target.ent;
+ 			if (!mem_cgroup_move_swap_account(ent, mc.from, mc.to)) {
+ 				mc.precharge--;
+-				/* we fixup refcnts and charges later. */
++				mem_cgroup_id_get_many(mc.to, 1);
++				/* we fixup other refcnts and charges later. */
+ 				mc.moved_swap++;
+ 			}
+ 			break;
 
 
