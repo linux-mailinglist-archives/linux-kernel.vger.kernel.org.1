@@ -2,152 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6D522EC0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3127822EC10
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728453AbgG0MXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:23:47 -0400
-Received: from mail-vi1eur05on2133.outbound.protection.outlook.com ([40.107.21.133]:30592
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        id S1728515AbgG0MYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:24:18 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2535 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727078AbgG0MXn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:23:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JWbZauqValTq+lPOcUwqeeWENnQpMlyE3mJWraLU9YcCgpy1sZH1F0L/AfyeP7npS/Hpustpd/ln5f0XIRH7ZLZ4L5rZF4ZnVUCjkTgXvm3mq8XpJS0jDIDKjGF+2R4y7T0Zrt0zOVe46c5TSCY+nT5axYi1Glyo+NzqEvu3fJZR+4V3OZT9o3M4iCocnvuO+v1QSNwr4fzkdeJRHP78uvYHK/6jDws8+Oxfduju1stLfotcjOVzxEUeC5QooGeKTYAAgN7+NXmCCiZK6HaoJVLJNG7QPMlosWiNwJs0GPWxRvtBorcIFV90oSARqiSLi8W+v8DK5syBi+e0firivw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OUm1aS9UUuseD4nWcf7QHncYBRxQA+2Hm6PztoMAtIA=;
- b=nJpdiXBchMStZp12/IDSoxNnDWNMrSpzU0a81V7bhcPq90lwZHcXZjbAm8f4EIXRpYMzmjcX1fkT7wz6r4Tkb5UF6LOGFjFWXVjtkQ9w0ihOFWCXcIaQIHnOBcJ0zTgsTIrEg/sHK8e0w9vVb3ULN/55Zcz+/5sU0q7qX9D+Z3qLaZyIgAeArk1XdRGssd8U1rnAj3ng/PwbRMwa0SFo1s12Ny7PIvc8Ahf1+v2rXmUf29wFRkmJ49N0p/DUXgF7iYNBflmhYJC4crN7BNv7gqm5yG30KL6NRoeYnY7rJeEUOWu9xCrB9IVlxwII5MqoqXU6jIuF6F8Dd+5JRLSWPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OUm1aS9UUuseD4nWcf7QHncYBRxQA+2Hm6PztoMAtIA=;
- b=cqNj4ifF4KDZ2CorUfUPihKYoM+rS0uVInD0iog4/jdW8Gs/Sja78kAxqTqECyLReSOf2HKsmWJOqrcp9/4eUvfEnxxMj9n+SnTbYIA1BH/wM2WDBnbco4RG1XopIvf/o1bkxtdcMT1g2WV7JI7/lqDyP2JYy+gLE3YU2qsI234=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
-Received: from DB6P190MB0534.EURP190.PROD.OUTLOOK.COM (2603:10a6:6:33::15) by
- DB6P190MB0151.EURP190.PROD.OUTLOOK.COM (2603:10a6:4:88::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3216.24; Mon, 27 Jul 2020 12:23:18 +0000
-Received: from DB6P190MB0534.EURP190.PROD.OUTLOOK.COM
- ([fe80::2c35:1eb3:3877:3c1d]) by DB6P190MB0534.EURP190.PROD.OUTLOOK.COM
- ([fe80::2c35:1eb3:3877:3c1d%7]) with mapi id 15.20.3216.033; Mon, 27 Jul 2020
- 12:23:18 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: [net-next v4 6/6] dt-bindings: marvell,prestera: Add description for device-tree bindings
-Date:   Mon, 27 Jul 2020 15:22:42 +0300
-Message-Id: <20200727122242.32337-7-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200727122242.32337-1-vadym.kochan@plvision.eu>
-References: <20200727122242.32337-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain
-X-ClientProxiedBy: AM5PR0602CA0010.eurprd06.prod.outlook.com
- (2603:10a6:203:a3::20) To DB6P190MB0534.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:6:33::15)
+        id S1728292AbgG0MYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 08:24:18 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 50336B258D4D68A1850D;
+        Mon, 27 Jul 2020 13:24:16 +0100 (IST)
+Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 13:24:15 +0100
+Date:   Mon, 27 Jul 2020 13:22:52 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@kernel.org>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 7/9] PCI/AER: Add RCEC AER handling
+Message-ID: <20200727132252.0000644c@Huawei.com>
+In-Reply-To: <20200724172223.145608-8-sean.v.kelley@intel.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+        <20200724172223.145608-8-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM5PR0602CA0010.eurprd06.prod.outlook.com (2603:10a6:203:a3::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20 via Frontend Transport; Mon, 27 Jul 2020 12:23:17 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: df3ce69f-3289-4faa-1f96-08d83227d808
-X-MS-TrafficTypeDiagnostic: DB6P190MB0151:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6P190MB015129C183896F872E12A90D95720@DB6P190MB0151.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wGnzy4uoyOHPaRmcHfrAOeXZqtvyxMkA43WyP8c/Rs6nJSH3c7xzwsYriDNxp3Zrat5+1M+hkKq3PJ9j/rUShgoiOQP1jNKQPnyh4lWRMcrI8rhqo+kIYuqZhExPw9LPT2lSvwViF5ewbCrlktSwhDxGRjhoXGeqK6ImTsRbLsrg5pSGHDkL6aMM0oWhnKtekqa+Oar1S4ZNH0Ep8g/rBfCaTJbB4t3V1kUVxpTWXGtmWkNy6/AU54Encpc9spvmELVmEE/35Giz+9pl7lFLMuoMD6iZ+rA9lEozXgmYpBq13RsGwVrcnbLUjl5F32NPPQfOcfnMg+AA5YUwMVLo5sEuXxeZHK9CyOkN0eCtMqGfNg9L9KfSUAe112K44S5VxBaH88hN7t2mzGfelZtUzw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6P190MB0534.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(39830400003)(396003)(136003)(376002)(346002)(366004)(6506007)(508600001)(83380400001)(956004)(52116002)(316002)(66946007)(8936002)(36756003)(26005)(2616005)(8676002)(66476007)(66556008)(186003)(44832011)(54906003)(6486002)(110136005)(16526019)(6512007)(86362001)(1076003)(107886003)(4326008)(6666004)(5660300002)(2906002)(142933001)(921003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: sBya+nhjcfsePgY3ef/d495K4fsHKwCT1k0Zuxm1QR0gwbKD0a1pNRga2vMIClfaBLpoyyRNEUX/MKU3unrkn+uu706MwzRDA3GtcJxZGcXnprlhk9+K33c5LYSVut24ZXgl2tWMluxzou5QifdvM5Mt5ViqLf2nb1TIgnCXst6X0HEF9cwKePi7zhnRfDl4sk8GeWSdyfGq3YjJQWLvOzRo/M7RPsjwD0KP1/f24QrZo4TN2R6wedi30kXtH08fQ5bnjT/pskenpj+uw6s13V0XkuuCc9fz9wxc1xBKL94kiIoPLA7UhjgubiJ8FWZc9dxsPcQqaqqKmgN2hdz0W3ivqj9zPcEqCv8TNwnTR1nJSqh6GFPDGcYVeQpE8ABLckObH8rexyMp16rwtfTOCts007sC+oVqgS035SR3cMe4bvl3EF8oFkO2pC/fSJXav3Id5OXWObBbSG+LOzaUC85b6SV+KzaiW4fFdaIEX1w=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: df3ce69f-3289-4faa-1f96-08d83227d808
-X-MS-Exchange-CrossTenant-AuthSource: DB6P190MB0534.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2020 12:23:18.4328
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7ifNWvjCB/7VJuBoBvrEWq56bAxkuuPkeYZdmvc+AkqRjHY0g4Pwz0n+KWJw1Hi7CBPoQLSwz7FVf3DRzVhj7AVD9oI/zeKYnPVk0kgJnyM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6P190MB0151
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.176]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add brief description how to configure base mac address binding in
-device-tree.
+On Fri, 24 Jul 2020 10:22:21 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-Describe requirement for the PCI port which is connected to the ASIC, to
-allow access to the firmware related registers.
+> The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
+> and also have the AER capability. So add RCEC support to the current AER
+> service driver and attach the AER service driver to the RCEC device.
+> 
+> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
----
- .../bindings/net/marvell,prestera.txt         | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+A few questions and comments for this patch.
 
-diff --git a/Documentation/devicetree/bindings/net/marvell,prestera.txt b/Documentation/devicetree/bindings/net/marvell,prestera.txt
-index 83370ebf5b89..e28938ddfdf5 100644
---- a/Documentation/devicetree/bindings/net/marvell,prestera.txt
-+++ b/Documentation/devicetree/bindings/net/marvell,prestera.txt
-@@ -45,3 +45,37 @@ dfx-server {
- 	ranges = <0 MBUS_ID(0x08, 0x00) 0 0x100000>;
- 	reg = <MBUS_ID(0x08, 0x00) 0 0x100000>;
- };
-+
-+Marvell Prestera SwitchDev bindings
-+-----------------------------------
-+Optional properties:
-+- compatible: must be "marvell,prestera"
-+- base-mac-provider: describes handle to node which provides base mac address,
-+	might be a static base mac address or nvme cell provider.
-+
-+Example:
-+
-+eeprom_mac_addr: eeprom-mac-addr {
-+       compatible = "eeprom,mac-addr-cell";
-+       status = "okay";
-+
-+       nvmem = <&eeprom_at24>;
-+};
-+
-+prestera {
-+       compatible = "marvell,prestera";
-+       status = "okay";
-+
-+       base-mac-provider = <&eeprom_mac_addr>;
-+};
-+
-+The current implementation of Prestera Switchdev PCI interface driver requires
-+that BAR2 is assigned to 0xf6000000 as base address from the PCI IO range:
-+
-+&cp0_pcie0 {
-+	ranges = <0x81000000 0x0 0xfb000000 0x0 0xfb000000 0x0 0xf0000
-+		0x82000000 0x0 0xf6000000 0x0 0xf6000000 0x0 0x2000000
-+		0x82000000 0x0 0xf9000000 0x0 0xf9000000 0x0 0x100000>;
-+	phys = <&cp0_comphy0 0>;
-+	status = "okay";
-+};
--- 
-2.17.1
+See inline.
+
+Jonathan
+
+
+> ---
+>  drivers/pci/pcie/aer.c | 34 +++++++++++++++++++++++++++-------
+>  1 file changed, 27 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> index f1bf06be449e..7cc430c74c46 100644
+> --- a/drivers/pci/pcie/aer.c
+> +++ b/drivers/pci/pcie/aer.c
+> @@ -303,7 +303,7 @@ int pci_aer_raw_clear_status(struct pci_dev *dev)
+>  		return -EIO;
+>  
+>  	port_type = pci_pcie_type(dev);
+> -	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
+> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT || port_type == PCI_EXP_TYPE_RC_EC) {
+>  		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &status);
+>  		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, status);
+>  	}
+> @@ -389,6 +389,12 @@ void pci_aer_init(struct pci_dev *dev)
+>  	pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_ERR, sizeof(u32) * n);
+>  
+>  	pci_aer_clear_status(dev);
+> +
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC) {
+> +		if (!pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC))
+> +			return;
+> +		pci_info(dev, "AER: RCEC CAP FOUND and cap_has_rtctl = %d\n", n);
+
+It feels like failing to find an RC_EC extended cap in a RCEC deserved
+a nice strong error message.  Perhaps this isn't the right place to do it
+though.  For that matter, why are we checking for it here?
+
+> +	}
+>  }
+>  
+>  void pci_aer_exit(struct pci_dev *dev)
+> @@ -577,7 +583,8 @@ static umode_t aer_stats_attrs_are_visible(struct kobject *kobj,
+>  	if ((a == &dev_attr_aer_rootport_total_err_cor.attr ||
+>  	     a == &dev_attr_aer_rootport_total_err_fatal.attr ||
+>  	     a == &dev_attr_aer_rootport_total_err_nonfatal.attr) &&
+
+It is a bit ugly to have these called rootport_total_err etc for the rcec.
+Perhaps we should just add additional attributes to reflect we are looking at
+an RCEC?
+
+> -	    pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
+> +	    ((pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT) &&
+> +	    (pci_pcie_type(pdev) != PCI_EXP_TYPE_RC_EC)))
+>  		return 0;
+>  
+>  	return a->mode;
+> @@ -894,7 +901,10 @@ static bool find_source_device(struct pci_dev *parent,
+>  	if (result)
+>  		return true;
+>  
+> -	pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+> +	if (pci_pcie_type(parent) == PCI_EXP_TYPE_RC_EC)
+> +		pcie_walk_rcec(parent, find_device_iter, e_info);
+> +	else
+> +		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+>  
+>  	if (!e_info->error_dev_num) {
+>  		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
+> @@ -1030,6 +1040,7 @@ int aer_get_device_error_info(struct pci_dev *dev, struct aer_err_info *info)
+>  		if (!(info->status & ~info->mask))
+>  			return 0;
+>  	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> +		   pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC ||
+>  	           pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
+>  		   info->severity == AER_NONFATAL) {
+>  
+> @@ -1182,6 +1193,8 @@ static int set_device_error_reporting(struct pci_dev *dev, void *data)
+>  	int type = pci_pcie_type(dev);
+>  
+>  	if ((type == PCI_EXP_TYPE_ROOT_PORT) ||
+> +	    (type == PCI_EXP_TYPE_RC_EC) ||
+> +	    (type == PCI_EXP_TYPE_RC_END) ||
+
+Why add RC_END here?
+
+>  	    (type == PCI_EXP_TYPE_UPSTREAM) ||
+>  	    (type == PCI_EXP_TYPE_DOWNSTREAM)) {
+>  		if (enable)
+> @@ -1206,9 +1219,11 @@ static void set_downstream_devices_error_reporting(struct pci_dev *dev,
+>  {
+>  	set_device_error_reporting(dev, &enable);
+>  
+> -	if (!dev->subordinate)
+> -		return;
+> -	pci_walk_bus(dev->subordinate, set_device_error_reporting, &enable);
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
+> +		pcie_walk_rcec(dev, set_device_error_reporting, &enable);
+> +	else if (dev->subordinate)
+> +		pci_walk_bus(dev->subordinate, set_device_error_reporting, &enable);
+> +
+>  }
+>  
+>  /**
+> @@ -1306,6 +1321,11 @@ static int aer_probe(struct pcie_device *dev)
+>  	struct device *device = &dev->device;
+>  	struct pci_dev *port = dev->port;
+>  
+> +	/* Limit to Root Ports or Root Complex Event Collectors */
+> +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
+> +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
+> +		return -ENODEV;
+> +
+>  	rpc = devm_kzalloc(device, sizeof(struct aer_rpc), GFP_KERNEL);
+>  	if (!rpc)
+>  		return -ENOMEM;
+> @@ -1362,7 +1382,7 @@ static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>  
+>  static struct pcie_port_service_driver aerdriver = {
+>  	.name		= "aer",
+> -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
+> +	.port_type	= PCIE_ANY_PORT,
+
+Why this particular change?  Seems that is a lot wider than simply
+adding RCEC.  Obviously we'll then drop out in the aer_probe but it
+is still rather inelegant.
+
+>  	.service	= PCIE_PORT_SERVICE_AER,
+>  
+>  	.probe		= aer_probe,
+
 
