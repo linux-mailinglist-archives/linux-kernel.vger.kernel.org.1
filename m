@@ -2,143 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0537422FCD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6183222FCD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgG0XQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:16:01 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29472 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726313AbgG0XQA (ORCPT
+        id S1726946AbgG0XRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgG0XRr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:16:00 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 06RN7Iuk014872;
-        Mon, 27 Jul 2020 16:15:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=NmfcTJjN0IyDuAfHLwKbxC346sD4a4PSJ/de2fIauT0=;
- b=eG/CU3B6sXxsQKZOW8g7GOMOIDgyr4I5gEDOG0vH2OV/dGAn/+Jmh1I+UOMQ8O3i57gw
- sj7AeK8hwqwuRHOszfvcsaYiZE6UKbsToYhoYmMJ2EUPp9BfgaYv83sOKljrj5e+/aa4
- Nm/1PAo23O0lTEfOi+eW2Qadd7/xvoVcnro= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 32ggdmhpxy-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 27 Jul 2020 16:15:47 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 27 Jul 2020 16:15:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IbeWD+8f2FDhhRz47BOnl7mf8Karm7m9zr8LpBJ5Q49BBnAjkAkz/ZTXxwYoxRVnaWlY/cgWg5i8/OYN+8mmeq8OyN/wHN44VmorWex8kiv4IoExzmys/5+B0gAhknEjNfuuhuUrVH4MJ2AYcuau3ByXsOeRru6lCDVH6t9gJG60DSwk2kwZ6uThyKIFZMtiDrWFszKCfuXlqMpmXfTGbWpKlw60IZiZiH4q98ZYL7+kwm7hlkPW/cVCRxXVNtS/flaG99j9YUddZ8DOBT/7b/THC6jEZaYBPSc1nL8NePprI5fEJZMT/Q284yAVbJtGJkXWbNIUZ+16l9xTgcuOSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NmfcTJjN0IyDuAfHLwKbxC346sD4a4PSJ/de2fIauT0=;
- b=A4Ke15N3/N77S9T53jFFsOKqY7wbs7b95hCCwO8uNFtEW94AXt4wzd1w6YVPhyPonh5K4460A8cZyYOE854RCCS3nK/rG1spdLEzVuli2xMbTlT4udWq3sS7lijpIJ2vn9KvmKoc8lnCksIPD5X83Y4iRoEUhKy9kAZ2PaWvKX/9YPRz9HTdyvHxkzn1dvSpX8z4vOS5cOn9xCq6NG5AcQ31Hc5Ho8Ug/0wsE+Eva3n8DNQDP/hgnVMUYa+eSNQpwcT/DMFeqP00exEq8xo+WHyXMPWWWYDbSxqpFuhUSUXVSrNcyYtsFuDZM4CcA6ukOiCy8Cs0wU9pE9h1n1TxFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NmfcTJjN0IyDuAfHLwKbxC346sD4a4PSJ/de2fIauT0=;
- b=SsrL7AOy986IJIgXfDcKIgKjXuVmCt3WQFiNnr4Jq4OPTVwhcocO0oBZ2ek+B2H2ui9LRCwcu5/DCU2k8oAg9VRGbE9njefePu3TAi4E3Txf8SM5r7UL7WC05IFYwupsZKMy7wMJ+KBn6ZSi06qv/VbzrUa9JYzn6MGbj449CA0=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3477.namprd15.prod.outlook.com (2603:10b6:a03:10e::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Mon, 27 Jul
- 2020 23:15:41 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3216.033; Mon, 27 Jul 2020
- 23:15:41 +0000
-Date:   Mon, 27 Jul 2020 16:15:38 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 29/35] bpf: libbpf: cleanup RLIMIT_MEMLOCK
- usage
-Message-ID: <20200727231538.GA352883@carbon.DHCP.thefacebook.com>
-References: <20200727184506.2279656-1-guro@fb.com>
- <20200727184506.2279656-30-guro@fb.com>
- <CAEf4BzZjbK4W1fmW07tMOJsRGCYNeBd6eqyFE_fSXAK6+0uHhw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZjbK4W1fmW07tMOJsRGCYNeBd6eqyFE_fSXAK6+0uHhw@mail.gmail.com>
-X-ClientProxiedBy: BYAPR05CA0032.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::45) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Mon, 27 Jul 2020 19:17:47 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2427DC061794;
+        Mon, 27 Jul 2020 16:17:47 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dk23so6882148ejb.11;
+        Mon, 27 Jul 2020 16:17:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDnv2u+7TDzJf6n14HBXmnArxjJaJEHjEbe0bHhRUEs=;
+        b=KiIBbWcBZhyW+O5o7G4YzliTSdzRlHO3ORbQkKF7vDXDh+RKwoKsVS45CuN6sDhcwi
+         MS6gtQ4SbOeq5N0U5rZO71owLxneWs+NmllXn5j9Yxmf5YXLh/ug6/MQNw66FQv3ZTm0
+         +ys2uAAqEIS/PjtOWviT2taNv9v6u0vORAEU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eDnv2u+7TDzJf6n14HBXmnArxjJaJEHjEbe0bHhRUEs=;
+        b=sxhZKtd1aAXoQFEcSEfCiNJM/Vi1eHgxxAKPCIMGWU6QRYHlSLVEmfhlPwTba/llzW
+         nU8o3XYQ0XEb0HTe66L2S0B1KZ+Vqfyhdvh+zddDr6GA3JWWHIrzG0pXOZxFj/11by7K
+         eaVVQ4emIlPPlmHo7FJt5uoMCm01UqDyx3SJzmVMkfLq0KT1KXU/craM3VfJ9oqZPE2N
+         wBfJy3pdQQzs8kcjSsrgyOiJRzaVn+F3wglw859MeSChf+lKLe6Wr3YrisseLaDDC7BP
+         BVAm80ESxxk3ZBv1ulnCZtWAJrfYprRek7uhNcRRBzqBX/Xbop13+fbl3LlANiw2P7Hl
+         whHg==
+X-Gm-Message-State: AOAM531H3famPpru0ZyjR2MvnkVCKmaR31saiYPzgNgBgbj5nqa/edWg
+        XrES5CgxOnL9mvtEWbdKPPXJpBhU146PHpzy4Js=
+X-Google-Smtp-Source: ABdhPJxOcmWyKoA18jpAXsp32LtWuJw1BLE/bPSxZbhDgSL2NjTVUOG5rI+yrx1nsrMlE7eI1AugXL9kMzpILn9Lr7w=
+X-Received: by 2002:a17:906:488:: with SMTP id f8mr13964940eja.215.1595891865841;
+ Mon, 27 Jul 2020 16:17:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:9930) by BYAPR05CA0032.namprd05.prod.outlook.com (2603:10b6:a03:c0::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.10 via Frontend Transport; Mon, 27 Jul 2020 23:15:40 +0000
-X-Originating-IP: [2620:10d:c090:400::5:9930]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b3cb0c2c-cb09-4acb-9433-08d83282fb13
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3477:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3477D7F3154B74CE2CBE26C9BE720@BYAPR15MB3477.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Jvxa/wwD6pWHUwx8dt8jbMGzqBIftvRrQ8GPjw5v9bvB6SA0PdcEgoiSZWlOg2A2TEMCk2cbtaybxYd2f4yfQAKM0Qdfh2iLZgh4xwWUB8EQUM5dcniyBS6TbaSsQGxvg4J/mrURmGphUjVQvaDZ0lWNKvdtFID7c0Wn9SeUjJZRef5VETZ6N7Cnpl8LaR7+9PQG/zXwLK8YASKFGAl//Q6t4KT9JUJ44ZqGSDLT6F/sCsX1qRHVJZgMC6vAfJzoaIrUZO7/jsOJgJEql31++G0xiIo2XNS5sajrgIRlDYvHzec++XIjpdMrtP1pHB5WbwhuPguO445JC6JcKHvO4g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(366004)(396003)(39860400002)(1076003)(4744005)(83380400001)(66946007)(8936002)(66556008)(66476007)(2906002)(52116002)(16526019)(9686003)(8676002)(478600001)(186003)(7696005)(55016002)(53546011)(316002)(86362001)(6506007)(5660300002)(6916009)(4326008)(33656002)(54906003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: y0irvZwOTm98S+72aC1sDW/tmzuWFRpXBufgt9n/U5LbcU29sELYYctfaNEUZ8YEyOpE76+porDhRw+MxJVbtSgXnmSRRSjVOgDIzY7Y3TH8PtC+kIHPLLyaFl9jzn26a8E3i5U0L3qreOstIReffrmwNw1/tbYlDKKmEi5z37t/uoDtEnhHn46u+GZGEyM1uVIe0wyhWApIKc3ptGR6geNzJFLyus08tWGS3/fFjZ4Aeeez+8mYfm/6uQimUB3Tdus2luINQ/LiGGtxCuTCcxSxO2dZi9wz7Um6M1uhiNgU7I2ssF1TFXTvXAwLCT/5wA/e+IU3SOwLX6FspCjhU+5aTGQAZslg5Kz7C/BbeKjYpv+9l5H33OjahbUmU7XGV/WTCq9nz8wHfZBh6sGeXS7SJGYNr0T09NBaPvpRoVHH4fwwMnnqGCTjExWXvKuBHZSZT9EG+fCl+RkeG7nUqnD4jt8ZD7Z44wc14lIHWkfHojqkVaxBorUgGMnD7qIWnpMEYAxyRCDor64O3VsLqw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3cb0c2c-cb09-4acb-9433-08d83282fb13
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2020 23:15:41.4335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WPpPnxGeUEsiy9kFOFHI4IwDdWaYf6BQIhZb4b46P0K+F7e/glyu6uJC7Y/QYnOP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3477
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_15:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- malwarescore=0 adultscore=0 spamscore=0 impostorscore=0 mlxscore=0
- clxscore=1011 bulkscore=0 lowpriorityscore=0 suspectscore=1
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007270157
-X-FB-Internal: deliver
+References: <20200724192818.68068-1-supreeth.venkatesh@amd.com>
+In-Reply-To: <20200724192818.68068-1-supreeth.venkatesh@amd.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 27 Jul 2020 23:17:33 +0000
+Message-ID: <CACPK8XcZCySQt_wVzkthciYWg_GfOY-7VAkFxu5TjuJRRMFRxQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] ARM:dts:aspeed: Initial device tree for AMD EthanolX
+To:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 03:05:11PM -0700, Andrii Nakryiko wrote:
-> On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > As bpf is not using memlock rlimit for memory accounting anymore,
-> > let's remove the related code from libbpf.
-> >
-> > Bpf operations can't fail because of exceeding the limit anymore.
-> >
-> 
-> They can't in the newest kernel, but libbpf will keep working and
-> supporting old kernels for a very long time now. So please don't
-> remove any of this.
+On Fri, 24 Jul 2020 at 19:28, Supreeth Venkatesh
+<supreeth.venkatesh@amd.com> wrote:
+>
+> Initial introduction of AMD EthanolX platform equipped with an
+> Aspeed ast2500 BMC manufactured by AMD.
+>
+> AMD EthanolX platform is an AMD customer reference board with an
+> Aspeed ast2500 BMC manufactured by AMD.
+> This adds AMD EthanolX device tree file including the flash layout
+> used by EthanolX BMC machines.
+>
+> This also adds an entry of AMD EthanolX device tree file in Makefile.
+>
+> Signed-off-by: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
 
-Yeah, good point, agree.
-So we just can drop this patch from the series, no other changes
-are needed.
+Looks good! I've merged this to dt-for-5.9.
 
-> 
-> But it would be nice to add a detection of whether kernel needs a
-> RLIMIT_MEMLOCK bump or not. Is there some simple and reliable way to
-> detect this from user-space?
+Cheers,
 
-Hm, the best idea I can think of is to wait for -EPERM before bumping.
-We can in theory look for the presence of memory.stat::percpu in cgroupfs,
-but it's way to cryptic.
+Joel
 
-Thanks!
+> ---
+> Changes since v2:
+> * Removed incorrect I2C0 and I2C1 Reg addresses
+>
+> Changes since v1:
+> * Addressed review comment regarding SPDX License Identifier
+> * Added I2c0 and I2c1 which cater to AMD's APML Interface
+> ---
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 219 ++++++++++++++++++
+>  2 files changed, 220 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
+>
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index d6dfdf73e66b..55ed881d2ebc 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1281,6 +1281,7 @@ dtb-$(CONFIG_ARCH_ZX) += zx296702-ad1.dtb
+>  dtb-$(CONFIG_ARCH_ASPEED) += \
+>         aspeed-ast2500-evb.dtb \
+>         aspeed-ast2600-evb.dtb \
+> +       aspeed-bmc-amd-ethanolx.dtb \
+>         aspeed-bmc-arm-centriq2400-rep.dtb \
+>         aspeed-bmc-arm-stardragon4800-rep2.dtb \
+>         aspeed-bmc-facebook-cmm.dtb \
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
+> new file mode 100644
+> index 000000000000..60ba86f3e5bc
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
+> @@ -0,0 +1,219 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2020 AMD Inc.
+> +// Author: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
+> +/dts-v1/;
+> +
+> +#include "aspeed-g5.dtsi"
+> +#include <dt-bindings/gpio/aspeed-gpio.h>
+> +
+> +/ {
+> +       model = "AMD EthanolX BMC";
+> +       compatible = "amd,ethanolx-bmc", "aspeed,ast2500";
+> +
+> +       memory@80000000 {
+> +               reg = <0x80000000 0x20000000>;
+> +       };
+> +       aliases {
+> +               serial0 = &uart1;
+> +               serial4 = &uart5;
+> +       };
+> +       chosen {
+> +               stdout-path = &uart5;
+> +               bootargs = "console=ttyS4,115200 earlyprintk";
+> +       };
+> +       leds {
+> +               compatible = "gpio-leds";
+> +
+> +               fault {
+> +                       gpios = <&gpio ASPEED_GPIO(A, 2) GPIO_ACTIVE_LOW>;
+> +               };
+> +
+> +               identify {
+> +                       gpios = <&gpio ASPEED_GPIO(A, 3) GPIO_ACTIVE_LOW>;
+> +               };
+> +       };
+> +       iio-hwmon {
+> +               compatible = "iio-hwmon";
+> +               io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>, <&adc 4>;
+> +       };
+> +};
+> +
+> +&fmc {
+> +       status = "okay";
+> +       flash@0 {
+> +               status = "okay";
+> +               m25p,fast-read;
+> +               #include "openbmc-flash-layout.dtsi"
+> +       };
+> +};
+> +
+> +
+> +&mac0 {
+> +       status = "okay";
+> +
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pinctrl_rmii1_default>;
+> +       clocks = <&syscon ASPEED_CLK_GATE_MAC1CLK>,
+> +                <&syscon ASPEED_CLK_MAC1RCLK>;
+> +       clock-names = "MACCLK", "RCLK";
+> +};
+> +
+> +&uart1 {
+> +       //Host Console
+> +       status = "okay";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pinctrl_txd1_default
+> +                    &pinctrl_rxd1_default>;
+> +};
+> +
+> +&uart5 {
+> +       //BMC Console
+> +       status = "okay";
+> +};
+> +
+> +&adc {
+> +       status = "okay";
+> +
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pinctrl_adc0_default
+> +                    &pinctrl_adc1_default
+> +                    &pinctrl_adc2_default
+> +                    &pinctrl_adc3_default
+> +                    &pinctrl_adc4_default>;
+> +};
+> +
+> +//APML for P0
+> +&i2c0 {
+> +       status = "okay";
+> +};
+> +
+> +//APML for P1
+> +&i2c1 {
+> +       status = "okay";
+> +};
+> +
+> +// Thermal Sensors
+> +&i2c7 {
+> +       status = "okay";
+> +
+> +       lm75a@48 {
+> +               compatible = "national,lm75a";
+> +               reg = <0x48>;
+> +       };
+> +
+> +       lm75a@49 {
+> +               compatible = "national,lm75a";
+> +               reg = <0x49>;
+> +       };
+> +
+> +       lm75a@4a {
+> +               compatible = "national,lm75a";
+> +               reg = <0x4a>;
+> +       };
+> +
+> +       lm75a@4b {
+> +               compatible = "national,lm75a";
+> +               reg = <0x4b>;
+> +       };
+> +
+> +       lm75a@4c {
+> +               compatible = "national,lm75a";
+> +               reg = <0x4c>;
+> +       };
+> +
+> +       lm75a@4d {
+> +               compatible = "national,lm75a";
+> +               reg = <0x4d>;
+> +       };
+> +
+> +       lm75a@4e {
+> +               compatible = "national,lm75a";
+> +               reg = <0x4e>;
+> +       };
+> +
+> +       lm75a@4f {
+> +               compatible = "national,lm75a";
+> +               reg = <0x4f>;
+> +       };
+> +};
+> +
+> +&kcs1 {
+> +       status = "okay";
+> +       kcs_addr = <0x60>;
+> +};
+> +
+> +&kcs2 {
+> +       status = "okay";
+> +       kcs_addr = <0x62>;
+> +};
+> +
+> +&kcs4 {
+> +       status = "okay";
+> +       kcs_addr = <0x97DE>;
+> +};
+> +
+> +&lpc_snoop {
+> +       status = "okay";
+> +       snoop-ports = <0x80>;
+> +};
+> +
+> +&lpc_ctrl {
+> +       //Enable lpc clock
+> +       status = "okay";
+> +};
+> +
+> +&pwm_tacho {
+> +       status = "okay";
+> +       pinctrl-names = "default";
+> +       pinctrl-0 = <&pinctrl_pwm0_default
+> +       &pinctrl_pwm1_default
+> +       &pinctrl_pwm2_default
+> +       &pinctrl_pwm3_default
+> +       &pinctrl_pwm4_default
+> +       &pinctrl_pwm5_default
+> +       &pinctrl_pwm6_default
+> +       &pinctrl_pwm7_default>;
+> +
+> +       fan@0 {
+> +               reg = <0x00>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x00>;
+> +       };
+> +
+> +       fan@1 {
+> +               reg = <0x01>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x01>;
+> +       };
+> +
+> +       fan@2 {
+> +               reg = <0x02>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x02>;
+> +       };
+> +
+> +       fan@3 {
+> +               reg = <0x03>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x03>;
+> +       };
+> +
+> +       fan@4 {
+> +               reg = <0x04>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x04>;
+> +       };
+> +
+> +       fan@5 {
+> +               reg = <0x05>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x05>;
+> +       };
+> +
+> +       fan@6 {
+> +               reg = <0x06>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x06>;
+> +       };
+> +
+> +       fan@7 {
+> +               reg = <0x07>;
+> +               aspeed,fan-tach-ch = /bits/ 8 <0x07>;
+> +       };
+> +};
+> +
+> +
+> +
+> --
+> 2.17.1
+>
