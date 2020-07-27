@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D48922E42E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 05:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1723F22E42F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 05:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgG0DDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 23:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgG0DDd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 23:03:33 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F18CC0619D2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 20:03:33 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id l84so600644oig.10
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 20:03:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=fkOV/O/kNHZFKdtAVB8sb4T2DKi6scD2vvTjm2Gdfqw=;
-        b=dRSL0lbY5nq2kJl32rI3bvbQV7YwZGiMnJZCnZAC+ymE5OAV/PBYKUjE/sv0VnV8yd
-         jz9dYbDnPqdLRelkUeTjlqb+iB7EEN4IPEeUXoaTtY+6SPD5k9f2TW05G9pyyvwBsMEZ
-         lmWrvPnjy9OplvxE9MgQuEplMRGLY7/1q6qaPUsVK7NqdLI8XNv9/cfyQbtDnfIO/kR7
-         5Omng4IZ/VXNvrp0g+6wk4HXWYNWOw1df31SfQvjIYs4iyt4ZW/qaf0QpvlnnMN8WJUU
-         DP8GmBpwv6OcdnC01zcG/eLol9h7FehVXEH75FIkGq7EVgHEwTQkVCN8Wy7NBSRUB3Ph
-         aSZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=fkOV/O/kNHZFKdtAVB8sb4T2DKi6scD2vvTjm2Gdfqw=;
-        b=apgBobM6sGRCSuFWe+tDF1bvvVXBVCs02RTLO78sz64SL+yON0Iy9cQMUPmSCLEI0/
-         WfBQ5b9OpSX2AuufJw38wtPlz0QthgFN1Wz3mfFlAP+6lXnIh8wAuOqSF2P9LxJ6slYM
-         r5g7+Uo/KFt9Qh8S/QMvcnSBM9itj3r7IMwRtuNDn11EwD5PEnx+Pxy+NEhtoSUlcVBT
-         1b3ovyAuiFbcd8DZrf8HQYYpEVDhVuBhRL4YmmDn0VrXsQwAPZKWxMgu8Kydn4a33jkU
-         6v4VtrdJe88JOs5IqV2iVfjgpnOLivQOkRf2KAUtTKS+hjaIYFgGkHX2IBhp2FnuK8U6
-         arSQ==
-X-Gm-Message-State: AOAM533XUtLibB61ZQJCptn5OzYZUsSJsbBBnDBv/Wgf4ss+6iD879pv
-        Im801B2GqE5BkJfgm1AaQsT657HudgqCzx9DgnWHVSjw1E8=
-X-Google-Smtp-Source: ABdhPJwtnMrFY5H/y6xGKI6VwNLjMw4MAkz7DUVThi1J8t+gbrS7hX9yAbiMeWdVtKljVjzXjBwGOpfEGYDBXks7/vg=
-X-Received: by 2002:aca:d509:: with SMTP id m9mr15724168oig.116.1595819001911;
- Sun, 26 Jul 2020 20:03:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1593766028.git.zong.li@sifive.com>
-In-Reply-To: <cover.1593766028.git.zong.li@sifive.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Mon, 27 Jul 2020 11:03:09 +0800
-Message-ID: <CANXhq0p7HO=zD7fDyz9O+TFzwFq2tqJva_V6RiFO6PExzuUq=g@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Get cache information from userland
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727016AbgG0DEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 23:04:20 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:41626 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726044AbgG0DEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 23:04:20 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowACX_wEoRB5fMetnAw--.37467S2;
+        Mon, 27 Jul 2020 11:04:09 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     andriy.shevchenko@linux.intel.com, lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] intel_soc_pmic_mrfld: simplify the return expression of intel_scu_ipc_dev_iowrite8()
+Date:   Mon, 27 Jul 2020 03:04:07 +0000
+Message-Id: <20200727030407.8820-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowACX_wEoRB5fMetnAw--.37467S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF47GF4DJF4kWFWUWrW5GFg_yoW3trc_GF
+        W5Xr4xZryUGr9Y934kCrWSkryv9F10g3ykGFn2qF45J3ZFvF18ur90vFn8W348Zr4UAF1D
+        Gr1xWryxAr47ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJV
+        WxJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8GwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU058n5UUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAgkKA1JhbmI0GgABsS
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 3, 2020 at 4:57 PM Zong Li <zong.li@sifive.com> wrote:
->
-> There are no standard CSR registers to provide cache information, the
-> way for RISC-V is to get this information from DT. Currently, AT_L1I_X,
-> AT_L1D_X and AT_L2_X are present in glibc header, and sysconf syscall
-> could use them to get information of cache through AUX vector. We
-> exploit 'struct cacheinfo' to obtain the information of cache, then we
-> don't need additional variable or data structure to record it.
->
-> We also need some works in glibc, but we have to support the function in
-> kernel first by rule of glibc, then post the patch to glibc site.
->
-> The result of 'getconf -a' as follows:
->
-> LEVEL1_ICACHE_SIZE                 32768
-> LEVEL1_ICACHE_ASSOC                8
-> LEVEL1_ICACHE_LINESIZE             64
-> LEVEL1_DCACHE_SIZE                 32768
-> LEVEL1_DCACHE_ASSOC                8
-> LEVEL1_DCACHE_LINESIZE             64
-> LEVEL2_CACHE_SIZE                  2097152
-> LEVEL2_CACHE_ASSOC                 32
-> LEVEL2_CACHE_LINESIZE              64
->
-> Zong Li (3):
->   riscv: Set more data to cacheinfo
->   riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
->   riscv: Add cache information in AUX vector
->
->  arch/riscv/include/asm/cacheinfo.h   | 14 +++++
->  arch/riscv/include/asm/elf.h         | 13 ++++
->  arch/riscv/include/uapi/asm/auxvec.h | 24 ++++++++
->  arch/riscv/kernel/cacheinfo.c        | 92 +++++++++++++++++++++++-----
->  4 files changed, 127 insertions(+), 16 deletions(-)
->  create mode 100644 arch/riscv/include/asm/cacheinfo.h
->
-> --
-> 2.27.0
->
+Simplify the return expression.
 
-ping
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/mfd/intel_soc_pmic_mrfld.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/drivers/mfd/intel_soc_pmic_mrfld.c b/drivers/mfd/intel_soc_pmic_mrfld.c
+index bd94c989d232..71da861e8c27 100644
+--- a/drivers/mfd/intel_soc_pmic_mrfld.c
++++ b/drivers/mfd/intel_soc_pmic_mrfld.c
+@@ -91,13 +91,8 @@ static int bcove_ipc_byte_reg_write(void *context, unsigned int reg,
+ {
+ 	struct intel_soc_pmic *pmic = context;
+ 	u8 ipc_in = val;
+-	int ret;
+ 
+-	ret = intel_scu_ipc_dev_iowrite8(pmic->scu, reg, ipc_in);
+-	if (ret)
+-		return ret;
+-
+-	return 0;
++	return intel_scu_ipc_dev_iowrite8(pmic->scu, reg, ipc_in);
+ }
+ 
+ static const struct regmap_config bcove_regmap_config = {
+-- 
+2.17.1
+
