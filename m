@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6529222F050
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C439C22EEF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbgG0OXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:23:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52762 "EHLO mail.kernel.org"
+        id S1730130AbgG0OMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:12:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732070AbgG0OXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:23:31 -0400
+        id S1729550AbgG0OMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3166E2083E;
-        Mon, 27 Jul 2020 14:23:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CCEB20838;
+        Mon, 27 Jul 2020 14:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859810;
-        bh=8UMyjt/AzFGIS1GD45TwNQmUI/lsxAFHKcAG7o84BZM=;
+        s=default; t=1595859121;
+        bh=VSI3D5h7mlQTZzLRontNsAGHQkolV1oX2bfOXzy3PaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xWvsPcEvdoDwJ5GnhwxB1zSZQMrYDwVG2sbAJKmdggbowNhc0pzrRd3jvNy+Q5i6Q
-         +VUhcDPFLuh+SLGP9VXtgg+p/3WSQPBm6cJH2ZaTF2KY7VWfUrxShbzsjeFfS+ZcGm
-         l66Xy33aujTBk18+7bGV+LWTdQ7fr7yA+dL55+S4=
+        b=2IV1yGDTfszC2oqWzu9VpEwtsVI89hmUFsLpZ9Sau1XCGAWDCVTZtzh4H5T/665th
+         jes5NQHQ5PivpCzkH63b0AMdaajbzqUBJDdHjR5CajVLS/qiiBTOb/SRF621rOimG7
+         Q8muwKWPua1fQnbY7N31MofpqfgbdJEACdTKptmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 113/179] regmap: dev_get_regmap_match(): fix string comparison
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.19 74/86] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
 Date:   Mon, 27 Jul 2020 16:04:48 +0200
-Message-Id: <20200727134938.158461781@linuxfoundation.org>
+Message-Id: <20200727134918.114276757@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Fangrui Song <maskray@google.com>
 
-[ Upstream commit e84861fec32dee8a2e62bbaa52cded6b05a2a456 ]
+commit ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 upstream.
 
-This function is used by dev_get_regmap() to retrieve a regmap for the
-specified device. If the device has more than one regmap, the name parameter
-can be used to specify one.
+When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
+$(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-elfedit,
+GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
+/usr/bin/ and Clang as of 11 will search for both
+$(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
 
-The code here uses a pointer comparison to check for equal strings. This
-however will probably always fail, as the regmap->name is allocated via
-kstrdup_const() from the regmap's config->name.
+GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
+$(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
+$(prefix)aarch64-linux-gnu/$needle rarely contains executables.
 
-Fix this by using strcmp() instead.
+To better model how GCC's -B/--prefix takes in effect in practice, newer
+Clang (since
+https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90)
+only searches for $(prefix)$needle. Currently it will find /usr/bin/as
+instead of /usr/bin/aarch64-linux-gnu-as.
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20200703103315.267996-1-mkl@pengutronix.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+(/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
+appropriate cross compiling GNU as (when -no-integrated-as is in
+effect).
+
+Cc: stable@vger.kernel.org
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1099
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/base/regmap/regmap.c | 2 +-
+ Makefile |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 320d23de02c29..927ebde1607be 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1363,7 +1363,7 @@ static int dev_get_regmap_match(struct device *dev, void *res, void *data)
- 
- 	/* If the user didn't specify a name match any */
- 	if (data)
--		return (*r)->name == data;
-+		return !strcmp((*r)->name, data);
- 	else
- 		return 1;
- }
--- 
-2.25.1
-
+--- a/Makefile
++++ b/Makefile
+@@ -485,7 +485,7 @@ ifeq ($(cc-name),clang)
+ ifneq ($(CROSS_COMPILE),)
+ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+ GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+-CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
++CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+ GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+ endif
+ ifneq ($(GCC_TOOLCHAIN),)
 
 
