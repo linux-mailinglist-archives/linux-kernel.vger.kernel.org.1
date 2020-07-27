@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3545722F439
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B52922F443
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729907AbgG0QBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:01:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726800AbgG0QBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:01:12 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-111-31.bvtn.or.frontiernet.net [50.39.111.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 783DD20672;
-        Mon, 27 Jul 2020 16:01:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595865671;
-        bh=TyuIfn7O9yjs35JfR7DUagieEalz1hEmViE6CiWVKtg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lkp/GaXkC6lAfR/wK8oDYvOQqYth2ZXVH7Uhzgb3o/iMjOB1Q8fUH3mSxHi/I4iAD
-         uSjxRHv+RXxfRcHKo/KJrHBJX1bHA+xaf6+A+qRlqELWL9MdwJqkRKav4K/Zuxn7VV
-         Xip0UI7L6rUHyd2GcT6nqKuKn0B7XDwh/tee/GR8=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 37CDA3522AF4; Mon, 27 Jul 2020 09:01:11 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 09:01:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
-Message-ID: <20200727160111.GH9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200717044427.68747-1-ebiggers@kernel.org>
- <20200717174750.GQ12769@casper.infradead.org>
- <20200718013839.GD2183@sol.localdomain>
- <20200718021304.GS12769@casper.infradead.org>
- <20200718052818.GF2183@sol.localdomain>
- <20200727151746.GC1468275@rowland.harvard.edu>
- <20200727152827.GM23808@casper.infradead.org>
+        id S1728353AbgG0QDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:03:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29640 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727116AbgG0QDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 12:03:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595865830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=PzdX7wVbIx8ObG6INsApXS+qCsher40rhMpcw3UMWXc=;
+        b=fRWep9/eDzx7Ww6z4zN62m+rTnXBNTYCOg7UuWVuOsuPf17ojus0npnfFNslirEqNBp0GD
+        DhxnNcqh91EVD4gIY0ZAV6TvzGjcDazOfwHY04iqlTfr5Sai/0tcf0mS75P2YPjXMjF7BH
+        12Xh1PcEEYssn4/Mk/n9R2d6eyic8TA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-xNh-l0k5P1acssznhjs_Xg-1; Mon, 27 Jul 2020 12:03:48 -0400
+X-MC-Unique: xNh-l0k5P1acssznhjs_Xg-1
+Received: by mail-wr1-f69.google.com with SMTP id h4so4107705wrh.10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:03:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=PzdX7wVbIx8ObG6INsApXS+qCsher40rhMpcw3UMWXc=;
+        b=WKrmNfNY7dq9ev+VdDCi/PN5EjQXTIOg/gkgDssVOH7nLwSy0Yhq59o6wTj6ZuxSw0
+         dEqGaB/PzQWX0XRB6d3MNCQFVIcviYXNyHyI4+g6W/0HbC8X15Mo6o30ZJ1fHRkxWmNe
+         MDZ+ZVLR/rthVRHwyXRMzQ0M1TlfrAKl3KKTyAztxMHwXkTwdQFtNj+HDSKP5nNRxcRt
+         IZKgBPvu0Y1FuF6f+WnajthnulDPXHjVb3Wl8GfD+i7vakQeQxVYellWKQ/U56NkESZu
+         4OSNdf3lDywk93vg+B1zKwEOZsAGuIrizTy37D8W0Q793ZkXEhruLRUlcsXpk7vmsKmr
+         xfvA==
+X-Gm-Message-State: AOAM5324rijOkNKAcGdUYsED1nS8/xvu62d6+fSy9RM7uqKdSvtmqZEr
+        J1cKl2hyMKJC7m7j7qjC2YQ5W7jaJbiiZTbU+Nf2OVMrVHABzczwjpNivD81km+4G5ouXnonUiP
+        SWmQ+iNdCJdmhYfut8aXE7ErI
+X-Received: by 2002:adf:b1cf:: with SMTP id r15mr22476416wra.118.1595865827382;
+        Mon, 27 Jul 2020 09:03:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7Ef1D9xDtsNFK+f9eP9IKT0MLwb1s7S8Er/1M1xlErxN9gFMzZ7/LwGj3k9MKPcujJZ0e8g==
+X-Received: by 2002:adf:b1cf:: with SMTP id r15mr22476396wra.118.1595865827149;
+        Mon, 27 Jul 2020 09:03:47 -0700 (PDT)
+Received: from redhat.com ([192.117.173.58])
+        by smtp.gmail.com with ESMTPSA id z63sm111712wmb.2.2020.07.27.09.03.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 09:03:46 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 12:03:43 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Liang Li <liang.z.li@intel.com>,
+        Wei Wang <wei.w.wang@intel.com>,
+        virtualization@lists.linux-foundation.org,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: [PATCH] virtio_balloon: fix up endian-ness for free cmd id
+Message-ID: <20200727160310.102494-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727152827.GM23808@casper.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 04:28:27PM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 27, 2020 at 11:17:46AM -0400, Alan Stern wrote:
-> > Given a type "T", an object x of type pointer-to-T, and a function
-> > "func" that takes various arguments and returns a pointer-to-T, the
-> > accepted API for calling func once would be to create once_func() as
-> > follows:
-> > 
-> > T *once_func(T **ppt, args...)
-> > {
-> > 	static DEFINE_MUTEX(mut);
-> > 	T *p;
-> > 
-> > 	p = smp_load_acquire(ppt);	/* Mild optimization */
-> > 	if (p)
-> > 		return p;
-> > 
-> > 	mutex_lock(mut);
-> > 	p = smp_load_acquire(ppt);
-> > 	if (!p) {
-> > 		p = func(args...);
-> > 		if (!IS_ERR_OR_NULL(p))
-> > 			smp_store_release(ppt, p);
-> > 	}
-> > 	mutex_unlock(mut);
-> > 	return p;
-> > }
-> > 
-> > Users then would have to call once_func(&x, args...) and check the
-> > result.  Different x objects would constitute different "once"
-> > domains.
-> [...]
-> > In fact, the only drawback I can think of is that because this relies
-> > on a single mutex for all the different possible x's, it might lead to
-> > locking conflicts (if func had to call once_func() recursively, for
-> > example).  In most reasonable situations such conflicts would not
-> > arise.
-> 
-> Another drawback for this approach relative to my get_foo() approach
-> upthread is that, because we don't have compiler support, there's no
-> enforcement that accesses to 'x' go through once_func().  My approach
-> wraps accesses in a deliberately-opaque struct so you have to write
-> some really ugly code to get at the raw value, and it's just easier to
-> call get_foo().
+free cmd id is read using virtio endian, spec says all fields
+in balloon are LE. Fix it up.
 
-Could ACCESS_PRIVATE() help in this case?  This relies on sparse rather
-than the compiler, but some of the testing services do run sparse
-regularly.
+Fixes: 86a559787e6f ("virtio-balloon: VIRTIO_BALLOON_F_FREE_PAGE_HINT")
+Cc: stable@vger.kernel.org
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+ drivers/virtio/virtio_balloon.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-							Thanx, Paul
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index 774deb65a9bb..798ec304fe3e 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -578,10 +578,14 @@ static int init_vqs(struct virtio_balloon *vb)
+ static u32 virtio_balloon_cmd_id_received(struct virtio_balloon *vb)
+ {
+ 	if (test_and_clear_bit(VIRTIO_BALLOON_CONFIG_READ_CMD_ID,
+-			       &vb->config_read_bitmap))
++			       &vb->config_read_bitmap)) {
+ 		virtio_cread(vb->vdev, struct virtio_balloon_config,
+ 			     free_page_hint_cmd_id,
+ 			     &vb->cmd_id_received_cache);
++		/* Legacy balloon config space is LE, unlike all other devices. */
++		if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
++			vb->cmd_id_received_cache = le32_to_cpu((__force __le32)vb->cmd_id_received_cache);
++	}
+ 
+ 	return vb->cmd_id_received_cache;
+ }
+-- 
+MST
+
