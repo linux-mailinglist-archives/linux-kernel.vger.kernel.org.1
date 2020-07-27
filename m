@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF44F22EF35
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCEB22EF43
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730540AbgG0OO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730516AbgG0OOV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:21 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E279C061794;
-        Mon, 27 Jul 2020 07:14:21 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id k18so12242503qtm.10;
-        Mon, 27 Jul 2020 07:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y9lbwhpNkXDEPrCqs4m21x/DyaLmLEGxvTObYoYswfg=;
-        b=nuZF0Mj0owgt6tEsiTXfnJ2eI2ujMyxvOF5pbIRSQUbOvAb/wtVocAFwgKr/er65gC
-         C+d5tZT5DB2J9mjk94BGMWgb/W/f0Vh23B440hN+Aq88n/FP8GewmdyNeyXWAY21tTmJ
-         t7bpomd1mNoPFxL9K6XpFtfMGuNmL1KfpMUHbjJnOUwLskuli1JzIReFdu0ImyICn0Pc
-         bHqtCJKDiGzoWZQxs7GdkkLzBpuZN00UJrdoU41KBPiXmuQleavSAW/ACB/IMRJoGSNs
-         v70CMNmIuhXeq/Q/fMM7fndWFHAhGhxWyS0imUpzLXQpQyOWhMwb6GXeQ/hKgLZ0w5gb
-         t6PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y9lbwhpNkXDEPrCqs4m21x/DyaLmLEGxvTObYoYswfg=;
-        b=iXBe/RGVofqzH9NOaPZg5Yo7QbBjIfcH5mA+Cmvnq1QR6p1lK7WzNNZhwKafyI6CjF
-         +ymPgllF9FJHO0FX8Qb4bWEPqFG9ZBuOV4z9TyEFKiQIlabzT00y/1Q9KwlAO32KgCNz
-         c2pdasyUG+e+NprBIcj5z9AIcbzxG5+fe+8EfaLz7tqbmOANsUwC0Tu3UM+lQ1I8+Wpu
-         mYv4u+Q5R/p+jKvLNQvQ64mmgVLdWBdiwLJgHY27Tkm11JmVX1TTM0ES+s0Cc9JmvtuA
-         x/Tri6jFU3Y4KU9qE3e+/en270xWm3CeS+MO5n955b7GVLU+1K5Vcmn+ybhKNMsMf9M3
-         Lh0w==
-X-Gm-Message-State: AOAM532hqKhJoBH5V9yoILZwb7wfLkbOWEmxVweiTNRmlnZHOnFhS/8X
-        ckg29mBs2mJJJW0cfIFBjA==
-X-Google-Smtp-Source: ABdhPJy1E319z1D33SixUBWRgVTxX65uy8ONSuGjV3Q4iaZunOwRcDqmSGKsYBSkw3Ql8PSuJxAW0g==
-X-Received: by 2002:ac8:5207:: with SMTP id r7mr22026332qtn.191.1595859259370;
-        Mon, 27 Jul 2020 07:14:19 -0700 (PDT)
-Received: from PWN ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id y24sm2422196qtv.71.2020.07.27.07.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 07:14:18 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 10:14:16 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S1730604AbgG0OOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:14:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730582AbgG0OOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:14:41 -0400
+Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82D1F2173E;
+        Mon, 27 Jul 2020 14:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595859280;
+        bh=hqGjzG7kcr/MsbjRxsV9hAB3/B1VJxy+zFkGz8jLWdc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gVWT8qiP8B2d3sTJWw8jQuwCKb3Ijd21gSw5+UBWrb5jM7RD83N2Xm6QSWdZUsPF4
+         eGVxErBhMwzWE7lKlM103qKgBzyjtjdGMAgnxaU3R+cp4PsPNU3lmozQjqz094GyZx
+         2MntVodiw2oVVzOD8/Rq62m6IKmhl5bzXm6+YpII=
+Date:   Mon, 27 Jul 2020 09:14:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     James Ettle <james@ettle.org.uk>
+Cc:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>,
+        Rui Feng <rui_feng@realsil.com.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-Message-ID: <20200727141416.GA306745@PWN>
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com>
- <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
- <20200727131608.GD1913@kadam>
- <CAK8P3a3+9Gr6G6KDWu=iW3316O9cPH+XupBBajJaxrq20xQcyQ@mail.gmail.com>
+        Jacopo De Simoi <wilderkde@gmail.com>
+Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
+Message-ID: <20200727141438.GA1743062@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3+9Gr6G6KDWu=iW3316O9cPH+XupBBajJaxrq20xQcyQ@mail.gmail.com>
+In-Reply-To: <aaa64572fac0fc411b79a9adb59b5bbcbdf4b1a8.camel@ettle.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 04:05:38PM +0200, Arnd Bergmann wrote:
-> On Mon, Jul 27, 2020 at 3:16 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > On Mon, Jul 27, 2020 at 09:25:16AM +0200, Arnd Bergmann wrote:
-> > > On Mon, Jul 27, 2020 at 12:28 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> > > >
-> > > > video_put_user() is copying uninitialized stack memory to userspace due
-> > > > to the compiler not initializing holes in the structures declared on the
-> > > > stack. Fix it by initializing `ev32` and `vb32` using memset().
-> > > >
-> > > > Reported-and-tested-by: syzbot+79d751604cb6f29fbf59@syzkaller.appspotmail.com
-> > > > Link: https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
-> > > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > >
-> > > Thanks a lot for addressing this! I now see that I actually created a similar
-> > > bugfix for it back in January, but for some reason that got stuck in my
-> > > backlog and I never wrote a proper description for it or sent it out to the
-> > > list, sorry about that. I would hope we could find a way to have either
-> > > the compiler or sparse warn if we copy uninitialized data to user space,
-> > > but we now don't even check for that within the kernel any more.
-> >
-> > Here are my latest warnings on linux-next from Friday.
+On Sat, Jul 25, 2020 at 09:27:11PM +0100, James Ettle wrote:
+> On Fri, 2020-07-24 at 18:13 -0500, Bjorn Helgaas wrote:
+> > 
+> > Maybe we should simplify this a little bit more.  James, if you don't
+> > touch ASPM config at all, either manually or via udev, does the ASPM
+> > configuration stay the same across suspend/resume?
 > 
-> Ah, I forgot you had that kind of list already, thanks for checking!
+> Yes, it stays the same. Explicitly: 
 > 
-> > block/scsi_ioctl.c:707 scsi_put_cdrom_generic_arg() warn: check that 'cgc32' doesn't leak information (struct has a hole after 'data_direction')
+> With the udev rule disabled, immediately following clean boot from
+> power-off (and no additional tinkering), ASPM is OFF to the best of my
+> knowledge:
 > 
-> I see no padding in this one, should be fine AFAICT. Any idea why you
-> get a warning
-> for this instance?
+>  - link/l1_aspm in sysfs is 0 for PCI devices 0000:01:00.[01];
+>  - the processor sleeps no deeper than package C3.
 > 
-> > drivers/input/misc/uinput.c:743 uinput_ff_upload_to_user() warn: check that 'ff_up_compat' doesn't leak information (struct has a hole after 'replay')
+> The situation above is the same following a suspend/resume cycle --
+> both in terms of sysfs, and observed package C-state occupancy.
 > 
-> This one hs padding in it and looks broken.
-> 
-> > drivers/input/misc/uinput.c:958 uinput_ioctl_handler() warn: check that 'ff_up' doesn't leak information (struct has a hole after 'replay')
-> 
-> hard to tell.
-> 
-> > drivers/firewire/core-cdev.c:463 ioctl_get_info() warn: check that 'bus_reset' doesn't leak information (struct has a hole after 'generation')
-> 
-> broken, trivial to fix
-> 
-> > drivers/scsi/megaraid/megaraid_mm.c:824 kioc_to_mimd() warn: check that 'cinfo.base' doesn't leak information
-> 
-> Seems fine due to __packed annotation.
-> 
-> > drivers/gpio/gpiolib-cdev.c:473 lineevent_read() warn: check that 'ge' doesn't leak information (struct has a hole after 'id')
-> 
-> The driver seems to initialize the elements correctly before putting
-> them into the kfifo, so there is no infoleak. However the structure layout
-> of "struct gpioevent_data" is incompatible between x86-32 and x86-64
-> calling conventions, so this is likely broken in x86 compat mode,
-> unless user space can explicitly deal with the difference.
-> 
-> > drivers/gpu/drm/i915/i915_query.c:136 query_engine_info() warn: check that 'query.num_engines' doesn't leak information
-> 
-> I don't think this leaks any state, as it just copies data to user space that
-> it copied from there originally.
-> 
-> Stopping here for now.
-> 
-> Peilin Ye, is this something you are interested in fixing for the other drivers
-> as well? I'd be happy to help review any further patches if you Cc me.
+> [Tested on kernel 5.7.10, but the behaviour is the same as prior
+> kernels.]
 
-Yes, I would like to! I will start from:
+I don't know the connection between ASPM and package C-states, so I
+need to simplify this even more.  All I want to do right now is verify
+that if we don't have any outside influences on the ASPM configuration
+(eg, no manual changes and no udev rules), it stays the same across
+suspend/resume.
 
-	drivers/firewire/core-cdev.c:463
-	drivers/input/misc/uinput.c:743
+In https://bugzilla.kernel.org/show_bug.cgi?id=208117#c12, we saw that
+ASPM L0s was disabled before suspend but was enabled after resume.
+That should not happen.
 
-...as you mentioned above.
+You're looking at the sysfs link/l1_aspm file, which tells us what the
+PCI core thinks the state is, but I'm not confident that's accurate,
+especially because the driver fiddles with the state behind the back
+of the PCI core.  So let's read the ASPM state directly from the
+hardware like this:
 
-Thank you!
-Peilin Ye
+  sudo lspci -vvs 00:1d.0 | egrep "^0|Lnk|L1|LTR|snoop"
+  sudo lspci -vvs 01:00   | egrep "^0|Lnk|L1|LTR|snoop"
+
+Can you try that before and after suspend/resume?
