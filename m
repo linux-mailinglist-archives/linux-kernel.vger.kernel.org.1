@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CDC22F6CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D5C22F6E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731247AbgG0RiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
+        id S1731151AbgG0Rlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729034AbgG0RiO (ORCPT
+        with ESMTP id S1728170AbgG0Rlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:38:14 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81430C061794;
-        Mon, 27 Jul 2020 10:38:14 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id z17so12742229edr.9;
-        Mon, 27 Jul 2020 10:38:14 -0700 (PDT)
+        Mon, 27 Jul 2020 13:41:53 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF2CC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:41:53 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t6so8472068plo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 10:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/sKKwVMF8e4uHhkt8F3tJZDTVJK3HD/IRNcRCGfQ0iI=;
-        b=Ai5egpzaMg+snqXKaqxknnOqLimP/zj6IXv/zg0JBwwuK2BwrBIY0TLJ4HUwd86yOj
-         RCLN69SG4FyZirYcRCk7C74kaP0ZojtIhFxs4zZEB+TYfzr48Lk8HudamqQshhc0D/wC
-         gpXUFpQsiOSLG1rdFgb+Tz4Y9nO0Q1tfTio11oUlFfkkqHMdbN/Xf6f/9CeaCq6XXQZH
-         KIu2zNkMU9nLtBYFfqks/doGXNHXkrcKdXtXcs5bslKRbh3qRWP8eHyhhKr0T7c3+677
-         1udexORQ0Qi8oYFeVw4NjT6bh2qLFnFLVrCSShBsy1UvMhSqDV1LNoHsPKbuOPGx1jNn
-         Y2yw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=anIhz+sUWSZj2LLbB+V68VzBj1HjbcN4RzXAFjEj7pk=;
+        b=A53/TAW3iJzAqM3UVSdj8n8yLACsMpMkFdUpHx7hdCQwG5BdtaS1xgwPMV27wBQGBX
+         ezA9FGjP8KpBIMFbq6O1w6hZ5uE9zlro/tDge9V3CGS8LA+F3KYOrKBXfNOBqsZ0N4op
+         Pnnt/7hiVk3as30/qnaqFkpxDj/Jth8sa2E98wzqaMrUnSHN6g9WHuFTrpjPorz0dF1w
+         uUZh5BYXRB6CQu8wdCgc/AYY1B+S4ZZSoz2LbWiJPBXSOxpMlGafLRIqQfP+VdgdMYgM
+         LufmOjVkc9jvN82+yXkl2ir4gO2HOOlSAWkfzpkioWoj8YS+kQePQp3n+03q9SMhyNE/
+         Qesw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/sKKwVMF8e4uHhkt8F3tJZDTVJK3HD/IRNcRCGfQ0iI=;
-        b=RWY0MnM5qeE9CSQi+R46OWs75N+5iJWi9s5c4/hBUZo485kJ31vzS+asyF5fMG4X5t
-         1ZLC4bu0KQtqOntwakZd87E/t4hcn2N+y+JNMRRSfYGKp/emZjptWAdK5uQEH14fARJO
-         9HnNSjRsKAWCnSNPZCGuC7sm6NGSEyJgdMWOlS3aO28XmQMah8pZC012WC4hvbnz40nV
-         b616xE6nk/MpPr93cqJA4mfXOi3Us87bdLyZvTlvUpZxdIedJLBb/8aZk3rannQRnL/A
-         o59JWuMSicNQK5DvK0JcltBi15kkvXOc4+f4FLKmrm+Y2rReMCtVqbq7poCzkgPwgfA1
-         GCTQ==
-X-Gm-Message-State: AOAM532EBKg/dJ/csfgLoVkLhggGkvlj9FKeVt0yWKa8CwEwaD79uVhW
-        IzINypjKQqO36orXRpYJSdQrRV4GnQE=
-X-Google-Smtp-Source: ABdhPJxBfOMURSmESYSYBVelY4lBWbo7lOCvYRLpUDv8nxmeawmAsgobF3dOIFn/CqLO8ohJbJKl8g==
-X-Received: by 2002:a05:6402:22f0:: with SMTP id dn16mr22471016edb.83.1595871493204;
-        Mon, 27 Jul 2020 10:38:13 -0700 (PDT)
-Received: from localhost.localdomain (p200300f13716be00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3716:be00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id cc9sm8115756edb.14.2020.07.27.10.38.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=anIhz+sUWSZj2LLbB+V68VzBj1HjbcN4RzXAFjEj7pk=;
+        b=LFK+FwYxznM/XXVRPeTelNxmcr31oV0YM8FseEIFPtxKTh4ouYXTlD7QjC3BuVWwYB
+         wNKeMYlM821VCpWtf6o+r162YJVNosIDkeGitJmXJlYPaK9tR6/qr/8uTyuGCr9706aA
+         WziiOoH9oMu9USplieFhB+eTpUMyOdq0fToBbWRwv0gu8KD7lCopbCWqIBL6fQZgtJf5
+         r9EIzL7FeVnAi/wQIp/RZdVs1IsoOHeMw91gHsH0aMbmSDqpmQEYM6U7pR0V0kfXi++X
+         OThU+z8YWkowWNtRQLN5ev0edcg1BbDRdnpsh4qMwpMinAVzzTNvIpHxr/VXlSk9GQFO
+         l5dQ==
+X-Gm-Message-State: AOAM533FSZrWFLa1i7kujkRcosUZG0WxypKBtbrCOldESdfCXU9UInX6
+        OFPsKBeMS8nLBHxH6JvqSTXI6g==
+X-Google-Smtp-Source: ABdhPJxonNO7C1s8c7dsZ01iiSbx7OWhiK4Kk7C7FePc4SZXpL20+c+k2aEeLh7w9nx+KMSqOYL4mg==
+X-Received: by 2002:a17:902:bb82:: with SMTP id m2mr19649190pls.61.1595871712379;
+        Mon, 27 Jul 2020 10:41:52 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id u13sm201376pjy.40.2020.07.27.10.41.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 10:38:12 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     hminas@synopsys.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, marex@denx.de,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v3] usb: dwc2: Add missing cleanups when usb_add_gadget_udc() fails
-Date:   Mon, 27 Jul 2020 19:38:01 +0200
-Message-Id: <20200727173801.792626-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 27 Jul 2020 10:41:51 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 10:38:18 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     linux-pm@vger.kernel.org, evgreen@chromium.org,
+        akashast@codeaurora.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] interconnect: Add bulk API helpers
+Message-ID: <20200727173818.GE63496@builder.lan>
+References: <20200528162542.30158-1-georgi.djakov@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200528162542.30158-1-georgi.djakov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call dwc2_debugfs_exit() and dwc2_hcd_remove() (if the HCD was enabled
-earlier) when usb_add_gadget_udc() has failed. This ensures that the
-debugfs entries created by dwc2_debugfs_init() as well as the HCD are
-cleaned up in the error path.
+On Thu 28 May 09:25 PDT 2020, Georgi Djakov wrote:
+> diff --git a/drivers/interconnect/bulk.c b/drivers/interconnect/bulk.c
+> new file mode 100644
+> index 000000000000..9bd418594665
+> --- /dev/null
+> +++ b/drivers/interconnect/bulk.c
+> @@ -0,0 +1,119 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/interconnect-provider.h>
+> +#include <linux/device.h>
+> +#include <linux/export.h>
+> +
+> +/**
+> + * of_icc_bulk_get - get interconnect paths
 
-Fixes: 207324a321a866 ("usb: dwc2: Postponed gadget registration to the udc class driver")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
-Changes since v2 at [1]:
-- add #if around the new label and it's code to prevent the following
-  warning found by the Kernel test robot:
-    unused label 'error_debugfs' [-Wunused-label]
+Parenthesis on the function name here, and on the other functions below.
 
-Changes since v1 at [0]
-- also cleanup the HCD as suggested by Minas (thank you!)
-- updated the subject accordingly
+> + * @dev: the device requesting the path
+> + * @num_paths: the number of icc_bulk_data
+> + * @paths: the table with the paths we want to get
+> + *
+> + * Returns 0 on success or -EERROR otherwise.
 
+s/-EERROR/negative errno/
 
-[0] https://patchwork.kernel.org/patch/11631381/
-[1] https://patchwork.kernel.org/patch/11642957/
+> + */
+> +int __must_check of_icc_bulk_get(struct device *dev, int num_paths,
+> +				 struct icc_bulk_data *paths)
+> +{
+> +	int ret, i;
+> +
+> +	for (i = 0; i < num_paths; i++) {
+> +		paths[i].path = of_icc_get(dev, paths[i].name);
+> +		if (IS_ERR(paths[i].path)) {
+> +			ret = PTR_ERR(paths[i].path);
+> +			dev_err(dev, "of_icc_get() failed on path %s (%d)\n",
+> +				paths[i].name, ret);
 
+I think you only should print this error if ret != -EPROBE_DEFER.
 
- drivers/usb/dwc2/platform.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+> +			paths[i].path = NULL;
+> +			goto err;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+> +	icc_bulk_put(i, paths);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(of_icc_bulk_get);
+> +
+> +/**
+> + * icc_bulk_put - put a list of interconnect paths
+> + * @num_paths: the number of icc_bulk_data
+> + * @paths: the icc_bulk_data table with the paths being put
+> + */
+> +void icc_bulk_put(int num_paths, struct icc_bulk_data *paths)
+> +{
+> +	while (--num_paths >= 0) {
+> +		icc_put(paths[num_paths].path);
+> +		paths[num_paths].path = NULL;
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(icc_bulk_put);
+> +
+> +/**
+> + * icc_bulk_set - set bandwidth to a set of paths
+> + * @num_paths: the number of icc_bulk_data
+> + * @paths: the icc_bulk_data table containing the paths and bandwidth
+> + *
+> + * Returns 0 on success or -EERROR otherwise.
+> + */
+> +int icc_bulk_set_bw(int num_paths, const struct icc_bulk_data *paths)
+> +{
+> +	int ret = 0;
+> +	int i;
+> +
+> +	for (i = 0; i < num_paths; i++) {
+> +		ret = icc_set_bw(paths[i].path, paths[i].avg_bw,
+> +				 paths[i].peak_bw);
 
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index cb8ddbd53718..b74099764b2d 100644
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -583,12 +583,19 @@ static int dwc2_driver_probe(struct platform_device *dev)
- 		retval = usb_add_gadget_udc(hsotg->dev, &hsotg->gadget);
- 		if (retval) {
- 			dwc2_hsotg_remove(hsotg);
--			goto error_init;
-+			goto error_debugfs;
- 		}
- 	}
- #endif /* CONFIG_USB_DWC2_PERIPHERAL || CONFIG_USB_DWC2_DUAL_ROLE */
- 	return 0;
- 
-+#if IS_ENABLED(CONFIG_USB_DWC2_PERIPHERAL) || \
-+	IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
-+error_debugfs:
-+	dwc2_debugfs_exit(hsotg);
-+	if (hsotg->hcd_enabled)
-+		dwc2_hcd_remove(hsotg);
-+#endif
- error_init:
- 	if (hsotg->params.activate_stm_id_vb_detection)
- 		regulator_disable(hsotg->usb33d);
--- 
-2.27.0
+You can unwrap this line.
 
+Regards,
+Bjorn
