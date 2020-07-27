@@ -2,53 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9A622F429
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826FC22F430
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730463AbgG0P4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:56:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52042 "EHLO
+        id S1726982AbgG0P6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgG0P4W (ORCPT
+        with ESMTP id S1726278AbgG0P6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:56:22 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE91C061794;
-        Mon, 27 Jul 2020 08:56:22 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k05U8-003kGF-BB; Mon, 27 Jul 2020 15:56:16 +0000
-Date:   Mon, 27 Jul 2020 16:56:16 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, x86@kernel.org,
-        Jan Kara <jack@suse.com>, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 4/4] quota: simplify the quotactl compat handling
-Message-ID: <20200727155616.GF794331@ZenIV.linux.org.uk>
-References: <20200726160401.311569-1-hch@lst.de>
- <20200726160401.311569-5-hch@lst.de>
- <20200727124127.GO23179@quack2.suse.cz>
+        Mon, 27 Jul 2020 11:58:15 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1E6C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:58:15 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id g19so5403231ioh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:58:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=dQZitrlwx6ip2rrYyl8DNyEdyZDEpSPBcMJHF4Yk58I=;
+        b=ZrS84GZUQh/oXiEHtq+zpaw9wIgBgHc0Coo/9lW7ydkphQ5h7Rg6CiAK5lDwRS92Kk
+         kfL5ZHI9MqTPtxJn4ncf65g2UgJSlDwDrnsZHukF/6b7agnnmftuQDCBO1JBbddydQkh
+         lznxCjPry7xMSvxEWQreu4QhuLEb6V6nSUAkswc9gNKvjUsu9++c/AnEyOHllZ1gOFBF
+         e31EYX9QwDK+9bRehNmCPmEWHS+U8iX80e8lGbNfY0h4yRtoGghGgRDETHOhX8FomL7/
+         zPtKes2/hAz4E55f/BT2QXdV4F1L11vHQgWcCzOXDyr6AkVHcJtUvIIcnNCQRqR1PEcM
+         0vYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=dQZitrlwx6ip2rrYyl8DNyEdyZDEpSPBcMJHF4Yk58I=;
+        b=YlwGaLlMxTnHejvPr02zLfhAhI86Ji/n7LR1WJ1i7z5Yr7pC69CapKv9RaLKnKCmld
+         HrRXwySAsbh9CiHSdoqflZq8DyyWNlScajICtMy5NqB6IxvqqfMIZk5vp1r3p0+3uumP
+         PD0b9779j3ZUrfisprxDFy9tSm5byqYpHxa2AGkSfrANRGOuZ5obtyGSleZKn/6GQWHh
+         tQ4gBGHUnB0irAMwgLBF1mW/pUWgWiTkmgwHklFdISuQOpQgUz9y4Ie5eCOnkDpCpbks
+         OV4TYFhs2BhC8tCjLSpp9A1Ze8RXEmtCa5aow3n7kaap8iYUioPacNeUpyP1ArC6Tgsn
+         ckYA==
+X-Gm-Message-State: AOAM532AXh7lGj3ucn/2loVeNMPz0hmG2r3aI9NeTDV8y1y7bm/s8LKf
+        04ef2OGJxq0xu+WEoHhKWWN/D361Hycr9G+h0B8=
+X-Google-Smtp-Source: ABdhPJxlbHDOhsFlr1GpTucDGvyQD16xqZvg66Db21+jijc7WEPOrOH1W0oLaHfTkcAOOa6LC+vGeyU85dBCVkXG95E=
+X-Received: by 2002:a5e:d906:: with SMTP id n6mr24547125iop.106.1595865494424;
+ Mon, 27 Jul 2020 08:58:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727124127.GO23179@quack2.suse.cz>
+Received: by 2002:a05:6638:a56:0:0:0:0 with HTTP; Mon, 27 Jul 2020 08:58:13
+ -0700 (PDT)
+Reply-To: waxson.a@yahoo.com
+From:   "Mr.Dickson Nsebeh" <mr.elvisbi@gmail.com>
+Date:   Mon, 27 Jul 2020 08:58:13 -0700
+Message-ID: <CAK+AdvwdS1J9QJRdmZPNDn6RJuKyuhw_c_BM3yS01aQuC+gsFQ@mail.gmail.com>
+Subject: Your Urgent Assistance Needed Pls.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 02:41:27PM +0200, Jan Kara wrote:
-> On Sun 26-07-20 18:04:01, Christoph Hellwig wrote:
-> > Fold the misaligned u64 workarounds into the main quotactl flow instead
-> > of implementing a separate compat syscall handler.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> The patch looks good to me and it saves a lot of boiler-plate code so feel
-> free to add:
-> 
-> Acked-by: Jan Kara <jack@suse.cz>
+Dear Friend,
+I contact you with good reason.
 
-Which tree do we put that through?  I can grab it into vfs.git, but IIRC usually
-you put quota-related stuff through yours...
+My name is Mr.Dickson Nsebeh, a banker by profession,  with position
+of ( Assistant Manager ) I will be going on retirement end of August
+2020.
+
+Please can i trust you to release the sum of $9.3 Million Dollars, to
+you for safe keeping in any account there in your country ?. You will
+have 40% as your share while 60% will be for me to move into any
+investment you will suggest for me.
+Please kindly reply me with your information as stated below for more
+details and how to execute this transfer to your provided account as
+soon as possible.
+
+Your Full Name...
+Your Age.......
+Your Home Address..
+Your Occupation...
+Your Country......
+Your Cellular N0...
+
+Am waiting for your response. God bless you.
+
+Mr.Dickson Nsebeh.
+Reply to> waxson.a@yahoo.com
