@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CB722E63C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E940022E641
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgG0HHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:07:42 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36546 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726140AbgG0HHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:07:42 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv98UfR5fIRkBAA--.653S2;
-        Mon, 27 Jul 2020 15:07:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: Move pci_info() after pci_fixup_device() in pci_setup_device()
-Date:   Mon, 27 Jul 2020 15:06:55 +0800
-Message-Id: <1595833615-8049-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxv98UfR5fIRkBAA--.653S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw45Jr47ZFW8ury5ArykAFb_yoWkCrXEv3
-        yUuF4xWr4DAa10kFn8Jw43Z3sYk3Z09rWxWr48Ka4IvayIvrZ8XF4UXry7K3WUua15Cr90
-        qFWDGr4rCr10kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbwkYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC2
-        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-        0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-        14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
-        vaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8iL0UUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726952AbgG0HLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:11:10 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:50799 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbgG0HLK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:11:10 -0400
+Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1N4h7p-1kyCr62TdH-011hog; Mon, 27 Jul 2020 09:11:07 +0200
+Received: by mail-qk1-f182.google.com with SMTP id u64so14355116qka.12;
+        Mon, 27 Jul 2020 00:11:07 -0700 (PDT)
+X-Gm-Message-State: AOAM531OSdJyh3z8+ghcN9eoMwnQL5ebKU0+xOc2zmyA/5ri9anUQq4Q
+        Ut1RRd6tvjNX2x1IolAjyHi7RKwuzKQBc8nCC74=
+X-Google-Smtp-Source: ABdhPJy3om/b5yfbL78HDLH/rnzkke+/U+UGsNkbziTiST5/6yFHt5avoAQwzc+RR0buVr7DFkGVHITGn7RcGzdsP58=
+X-Received: by 2002:a37:9004:: with SMTP id s4mr21325446qkd.286.1595833866359;
+ Mon, 27 Jul 2020 00:11:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200727025323.26712-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20200727025323.26712-1-tianjia.zhang@linux.alibaba.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Jul 2020 09:10:50 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2neQUP2marbRUxpSZE4OTJtf97JKSK5-LC6EzH8rRHDQ@mail.gmail.com>
+Message-ID: <CAK8P3a2neQUP2marbRUxpSZE4OTJtf97JKSK5-LC6EzH8rRHDQ@mail.gmail.com>
+Subject: Re: [PATCH] tpm: Fix the description error of the help information in Kconfig
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        gregkh <gregkh@linuxfoundation.org>,
+        linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Christophe Ricard <christophe.ricard@gmail.com>,
+        Peter Huewe <peter.huewe@infineon.com>,
+        Alexander Steffen <Alexander.Steffen@infineon.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:8Z5K81F9baE7B2UaBG7GLmf7c7eet4NNXGiJprqd+LoI1Ak6v7f
+ N3woNLGYBGzhnzUxbrq31ftzIgs9tDE+CEmNTha3xdo5bRSWzA6cRN0loJIuhnFcivk633b
+ 333pTz8tK9+eML8uu9LTYU7BuqCW00DJ/h64Y8wSmBr85k0hJX0C+/AoQn3nBfUPROuZyPA
+ Oo8uSWdTLOOhzoYw2vjdQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3Wct88ulyn8=:KvaP+lz/86jDuuHMJ/yfXP
+ /ELuXiqhtIm4OTTc2o+4wdhiXccCq3VCHZ37uaNyCEXy/fcG3g+3vPVdETIFApsAQ9iExLblS
+ cLYkz0UQn2lU5rz5UtYXgSEQa/5xjFF4RioilFWaLoNxX+HJPHS8Ypv3FhYjO0a/h84HJeKw7
+ 3YDbsRaiABB+zBkAcEZKcrJ2H6ywdRecH288pgt/g4MvN6tso9oKvGjBwUlBXK4w6qygFN6Hy
+ kKfYN5+GotKLb41bHI+q7IyPR1VPhnXOP09uaW5LDkUfU9TdC3lF1oVzpbUNfXIXNYpv0fu/8
+ 176F/g7ELCg3rECy2O+6s72mDftUNSlGYjI6rxTYlOFaiZEN/y17KwseNvNqfP2tzbXTGN6MP
+ tzSEfnhXs7H4qh84Rm66xk0GZNK5ArXWd7qOoNGfGs3NZvPsMBnxD+jhzkX5tNrtDvo1CfHyN
+ 79c7xy/e7puo/zy/kV4rXNTw5/Np04A4y1UrsojToSpiiYrE8K/M+6POtEIMQgXSMpbZ7CFrB
+ wVvJY6+0w8LOtCxd2VoU3A3jMs/2Og5bPWRLypsS+XaiBw3uZgaayPB//6ZgrIjaCy+whDU7H
+ ga52W04iYK8dMR1xLJQbH/UIUWRTgsakI7apDlvpHCxxNpguLx4jDyJ8Pd7exHVryasa5K7xc
+ Vgl6qjbp78K2dXuaZHwIp2iTlAto4TJg9kf+817vugcGWhrSi5tJeYl/ET3ZDwFjAaVQHAMDl
+ iNMqwy9jOWHI+tueEfNLV7yLT5vwx3MJ3Vc1QLf4SEV1MhfMnkaVnMwwT1Ya2kkiteuvOdck1
+ R1rVF4U+TD4g3EKBWL5JMVjd2wPpm6nUwqomONkkLNKrz05/zvIXi2OWGe0TbxYVckc+YQ4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current code, we can not see the PCI info after fixup which is
-correct to reflect the reality, it is better to move pci_info() after
-pci_fixup_device() in pci_setup_device().
+On Mon, Jul 27, 2020 at 4:54 AM Tianjia Zhang
+<tianjia.zhang@linux.alibaba.com> wrote:
+>
+> Obviously, the TPM version number in the help message is wrong, which
+> will cause confusion. This patch fixes it.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- drivers/pci/probe.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+How is this "obvious"? I tried finding the specification and could not
+see anything
+to back up TIS 1.3 being only supported with TPM 1.3, or the existence of a
+TPM 1.3 specification at all.
 
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 2f66988..7c046aed 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1802,9 +1802,6 @@ int pci_setup_device(struct pci_dev *dev)
- 	dev->revision = class & 0xff;
- 	dev->class = class >> 8;		    /* upper 3 bytes */
- 
--	pci_info(dev, "[%04x:%04x] type %02x class %#08x\n",
--		   dev->vendor, dev->device, dev->hdr_type, dev->class);
--
- 	if (pci_early_dump)
- 		early_dump_pci_device(dev);
- 
-@@ -1822,6 +1819,9 @@ int pci_setup_device(struct pci_dev *dev)
- 	/* Early fixups, before probing the BARs */
- 	pci_fixup_device(pci_fixup_early, dev);
- 
-+	pci_info(dev, "[%04x:%04x] type %02x class %#08x\n",
-+		 dev->vendor, dev->device, dev->hdr_type, dev->class);
-+
- 	/* Device class may be changed after fixup */
- 	class = dev->class >> 8;
- 
--- 
-2.1.0
+Please consider that not everyone reading this patch description is deeply
+familiar with the details and explain exactly what the mistake is.
 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+
+In a bug fix, try to always add a 'FIxes' tag such as 'Fixes: 0edbfea537d1
+("tpm/tpm_tis_spi: Add support for spi phy")', and Cc everyone that was
+involved in the original patch that introduced a bug so they can Ack or
+Nak it.
+
+      Arnd
+
+>  drivers/char/tpm/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+> index 58b4c573d176..8eedb3e704f3 100644
+> --- a/drivers/char/tpm/Kconfig
+> +++ b/drivers/char/tpm/Kconfig
+> @@ -62,7 +62,7 @@ config TCG_TIS_SPI
+>         help
+>           If you have a TPM security chip which is connected to a regular,
+>           non-tcg SPI master (i.e. most embedded platforms) that is compliant with the
+> -         TCG TIS 1.3 TPM specification (TPM1.2) or the TCG PTP FIFO
+> +         TCG TIS 1.3 TPM specification (TPM1.3) or the TCG PTP FIFO
+>           specification (TPM2.0) say Yes and it will be accessible from
+>           within Linux. To compile this driver as a module, choose  M here;
+>           the module will be called tpm_tis_spi.
+> --
+> 2.17.1
+>
