@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07FF22EB27
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DC922EB2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbgG0LYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        id S1728213AbgG0LY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728128AbgG0LYL (ORCPT
+        with ESMTP id S1726967AbgG0LY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:24:11 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2ECC0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:11 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id n2so11847275edr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:11 -0700 (PDT)
+        Mon, 27 Jul 2020 07:24:59 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E3AC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:58 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id by13so11813181edb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=8WExgmjzhkJIIdgRhNcx1DWzg/HnrNSynjBxi/uh2bI=;
-        b=PDt2zaNgpsoJOPHz6lDUOcyEJ3ubM9QOXJ795vKIcgnRxiLhBkaoXQWMwouzkcneWy
-         g7hx0bAik6R1rl9gm0pMgb54kGpA/wCmxAlU+LcUrZ67xGIe5eptlmCJ9AaKcwSr6UB/
-         OzwiwqvNXD/I7LIRk4+DdKdXXgvwUrq6v6bN4ch3tPFN5mN5yPHjG497hosZf34ZsZJ8
-         Isl8JvV1413hKAPlh5zoynb65YRtDNUf7fQLR7DJ7cIESTAQiyI9spNhMXdGmY12sZgt
-         zBAXMYSTYWW61apTLwBZA49xQMgMFIPUorILsKbnuc5H1PR3kZUrYfoE278j5YzFblo4
-         KMHA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KVi4ci9r11iJZabvuK+KNAiYWVzMLwehv9ewIXbDGvM=;
+        b=dfnfcBE6Yer3PftNB0mQkFcdpQxmYW+IAxCT1L7YYGg40QLgJIxlPRaitzNSbYHI2J
+         Ua1KreJbpjZUCWqdZ5tRBs4Kae+7xdizoBUycqxkjCrkdXflATo1qFrW/NKGW3VuLksh
+         aoufBsNLCw84ngyFvga395rF6HeZ+bcBMAmIpeElC5zQZOdR7gXMsSI0sIgPdmoccDOf
+         uCma2h06EdedbuF9LTZbhb2/y7YWaQv0MD0tMZwYncTHRZzWnRTWpL4zlL95cQOdatS9
+         xL0/IPtgx3SnqIvhQNY4fXMoTtf+tRewou/ecsvGltm3lQwOfhkgOOvq7MypRhfLsoDm
+         JCFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=8WExgmjzhkJIIdgRhNcx1DWzg/HnrNSynjBxi/uh2bI=;
-        b=udqa25MVa+GXtLR+wpKZOx7rlO3c44FK02X8j21vj0xbssf4tx4Y006nqfzk70WdAu
-         CdblaZzjMzOwvb8b7eXMPJbNIoyqLVQ2Jvp/efsFol+Qdxa9G0zbUYc3dMEHDG5gtEEU
-         X2E0ETF4KOFOnlY+q9AzHdELNWLwBRX1yPZI/gqvLFIFwrWbiJT9Z+pJaGEUVOy8CX6r
-         O4hoff4/UXzA8XBTwJ6NYfg60bBT68lcsnijClynNtNCN0DkNBtzfRSD/2ddtHGNCZOA
-         Wj1XzP6n3BSWS1mZK4hXy41Ja8SjyPLWkcsTUkZrRKgo0EdF5Z+dtGlzXX+mkiX1Mxym
-         MFeQ==
-X-Gm-Message-State: AOAM530xK5yFxhzjzVCGu8uXQ36SkogfCYOeorjX3WlKm6exNvuupUnG
-        jaxiVZLefvzr9xzyrFeaPjFxUiwN0CrMyQdYTE4=
-X-Google-Smtp-Source: ABdhPJxb/4clygCvjCiO88XYG/sbJ6RKoH2Z8xrd10Kb85V7ZjADycyDpSdncP2GPDXnJ5FshMib0fbA5Tgo6BLdO9c=
-X-Received: by 2002:a50:9fc9:: with SMTP id c67mr9960008edf.69.1595849049765;
- Mon, 27 Jul 2020 04:24:09 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=KVi4ci9r11iJZabvuK+KNAiYWVzMLwehv9ewIXbDGvM=;
+        b=pwd6eg+0JdMq2qUF5C3Yq6FnfiWmem2D9zPT/JIaBaTcN1JRYPnYHJoDMR4Ub/xa2X
+         9hJu26G6/9QbGUQgDfZeLDAmoxVewlePlj+U6HQmFmeijNkB/4o6VTvY7vyMw8wAkuFw
+         VTn52V/1VfltkSk7ZJnAH1eOlz+aqkI8mI+rOGY72vSuUZ6Lf7fGjd9Gp3yMWebPVEOr
+         uRfrBWdX4XIzSPZz43j4YkS8ohC/VQhw628vG3wdIVPAhH/WIxC8dt0tx0xN20DuC827
+         fbrl+nQa3cTla3Qy3ESbx+tfVIOpnCvJ8vm6Bp268jBsR4/O/tPHfV+BQWcwrLbsVPqE
+         J5ww==
+X-Gm-Message-State: AOAM533LS0b+2e5RzGemo+QySE+/Rsc8w/UZy7CFDG9/o6ZeokIvCcPP
+        h0MR4/lnUoEDvN1VQ7ZOkz0=
+X-Google-Smtp-Source: ABdhPJxBqgF5ZegS8JvKjGK4iLDDSjijDGanOkVWxVEKsWvZu/6aXcQPq1GqtUHxarRZ3mCaDkWaqw==
+X-Received: by 2002:a05:6402:b4c:: with SMTP id bx12mr20224476edb.157.1595849097185;
+        Mon, 27 Jul 2020 04:24:57 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id i5sm6689345ejg.121.2020.07.27.04.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 04:24:56 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 13:24:54 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     vincent.donnefort@arm.com
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        lukasz.luba@arm.com, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: provide u64 read for 32-bits arch helper
+Message-ID: <20200727112454.GB55660@gmail.com>
+References: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
 MIME-Version: 1.0
-Reply-To: evanaprso@gmail.com
-Received: by 2002:a54:2b90:0:0:0:0:0 with HTTP; Mon, 27 Jul 2020 04:24:09
- -0700 (PDT)
-From:   EVANA PRSO <rm2568590@gmail.com>
-Date:   Mon, 27 Jul 2020 13:24:09 +0200
-X-Google-Sender-Auth: GGKkRaxdo0XqH9l5mVosQBXE4ug
-Message-ID: <CADxkk6Upufr_-B3PQs+YRwxShFTnxXYpi8yym6O_qv3gii-NYQ@mail.gmail.com>
-Subject: Please co-operate with me
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-my Dear friend,
 
-My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick
-Bruun.A gold merchant who owns a small gold Mine in Syria; He died of
-Cardiovascular Disease in mid-March 2011. During his life time he
-deposited the sum of (=E2=82=AC16.1 Million Euro) sixteen million, one hund=
-red
-thousand Euros in a bank in Ouagadougou the capital city of Burkina
-Faso in West Africa. The deposited money was from the sale of the
-shares, death benefits payment and entitlements of my deceased husband
-by his company. I am sending this message to you praying that it will
-reach you in good health, since I am not in good health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day.
+* vincent.donnefort@arm.com <vincent.donnefort@arm.com> wrote:
 
- I am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confinded in me that i have less chance to live. Having known
-my health condition, I decided to contact you to claim the fund since
-I don't have any relation I grew up from the orphanage home, I have
-decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed of cancer for about 2 years ago. I have been touched by God
-almighty to donate from what I have inherited from my late husband to
-you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon.
+> From: Vincent Donnefort <vincent.donnefort@arm.com>
+> 
+> Introducing two macro helpers u64_32read() and u64_32read_set_copy() to
+> factorize the u64 vminruntime and last_update_time read on a 32-bits
+> architecture. Those new helpers encapsulate smp_rmb() and smp_wmb()
+> synchronization and therefore, have a small penalty in set_task_rq_fair()
+> and init_cfs_rq().
+> 
+> The choice of using a macro over an inline function is driven by the
+> conditional u64 variable copy declarations.
 
- This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-information on how the fund will be transferred to your bank account.
+Could you please explain how "conditional u64 variable copy 
+declarations" prevents us to use an inline function for this:
 
+> +/*
+> + * u64_32read() / u64_32read_set_copy()
+> + *
+> + * Use the copied u64 value to protect against data race. This is only
+> + * applicable for 32-bits architectures.
+> + */
+> +#if !defined(CONFIG_64BIT) && defined(CONFIG_SMP)
+> +# define u64_32read(val, copy)						\
+> +({									\
+> +	u64 _val;							\
+> +	u64 _val_copy;							\
+> +									\
+> +	do {								\
+> +		_val_copy = copy;					\
+> +		/*							\
+> +		 * paired with u64_32read_set_copy, ordering access	\
+> +		 * to val and copy.					\
+> +		 */							\
+> +		smp_rmb();						\
+> +		_val = val;						\
+> +	} while (_val != _val_copy);					\
+> +									\
+> +	_val;								\
+> +})
+> +# define u64_32read_set_copy(val, copy)					\
+> +do {									\
+> +	/* paired with u64_32read, ordering access to val and copy */	\
+> +	smp_wmb();							\
+> +	copy = val;							\
+> +} while (0)
+> +#else
+> +# define u64_32read(val, copy) (val)
+> +# define u64_32read_set_copy(val, copy) do { } while (0)
+> +#endif
+> +
 
 Thanks,
-Mrs. Evana Prso.
+
+	Ingo
