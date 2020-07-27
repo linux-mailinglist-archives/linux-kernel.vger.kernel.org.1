@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208F422E4FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 06:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5E222E4FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 06:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgG0Ec2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 00:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbgG0EcX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 00:32:23 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4D2C0619D4
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 21:32:22 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id m15so7572772lfp.7
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 21:32:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y2MT8K7LJP0h4HIjUSHIF3kx72ZyLwnnER3/s7uorqE=;
-        b=D8HCNvbbfeCXTArUC4WY1QDrs9HjLspd9XS6l+ZIduQcykgLo9mIag8AEPoxijQdxx
-         N0I6GZ6ggif98PyvczFJQTezcR085wLtKWpW32z+fnl1YcUMRliE2ieD4PCcJ+Af9qM5
-         XgNj7w46y1O7ff2pkN657Rpag5lZjbuv52oqk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y2MT8K7LJP0h4HIjUSHIF3kx72ZyLwnnER3/s7uorqE=;
-        b=M8Kl3aTyNyi0mlLxLZd6rHlxgqgy9CZfXhp5KX0olqHVrDs65Ai6enlvDmVpQVWz6L
-         pjNsPpCtpPLLY+eQ6U73I2Ka6pO8MDkzW+dQNLvg8dVzcnTk0/znbtQFYszl/QFX9+zW
-         Y9AVgPMd+GZ1CcA045jbObWprvKosYXapMJlRLxfidLUB3f3lMsf+2qxs4Zp5oACRWhw
-         HqcrTZqRayAuSaatrEDY1qEZBsenelHpRxPQWr7NENYg87CY97SrfzCxmU8PRhYeJKK4
-         TVbE7kD6CHnld4kHBBVRa69E+E+UfRFuF+Afuy/5jTGDXmOfi4RkFNj3fia5W40Kke5y
-         heMw==
-X-Gm-Message-State: AOAM530kUm0Qp88NVcYCI38HySwS9wxwodKhAaN0aJBHugYxwsR8Mie9
-        siQUQ4Q6wmgpEsKtcVyuQYFq/8LZLG5RfStbL6iWzA==
-X-Google-Smtp-Source: ABdhPJyPqCU/OdRwDZPqwlMkGbnhgQCLKdZNaMgRtj9kGkbaFfHHszQybGc/isZ4yrfqqymo2EzDGJjUEh54mtwmKWg=
-X-Received: by 2002:ac2:5502:: with SMTP id j2mr9290650lfk.50.1595824340928;
- Sun, 26 Jul 2020 21:32:20 -0700 (PDT)
+        id S1726222AbgG0Ei7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 00:38:59 -0400
+Received: from mga09.intel.com ([134.134.136.24]:18171 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725775AbgG0Ei7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 00:38:59 -0400
+IronPort-SDR: oHt++YRZMMtHbKQAZju13K2pWl5Sywl9mgmz5q4fVb/YxhLlJrt39CQ7Axp4Kh9FzW230mRgjg
+ Cxs0KFhWKRrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="152212542"
+X-IronPort-AV: E=Sophos;i="5.75,401,1589266800"; 
+   d="scan'208";a="152212542"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 21:38:58 -0700
+IronPort-SDR: L6jOe41O0iqVqciMLpspnbWmF0D/4Y9vYi1l/Y5ngszxIkVL7I31Gq/pAxbYff5Pj9SPokJhGM
+ 6Q7GnAjVYErQ==
+X-IronPort-AV: E=Sophos;i="5.75,401,1589266800"; 
+   d="scan'208";a="463930493"
+Received: from unknown (HELO [10.239.13.99]) ([10.239.13.99])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 21:38:55 -0700
+Subject: Re: [RFC 2/2] KVM: VMX: Enable bus lock VM exit
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200628085341.5107-1-chenyi.qiang@intel.com>
+ <20200628085341.5107-3-chenyi.qiang@intel.com>
+ <878sg3bo8b.fsf@vitty.brq.redhat.com>
+ <0159554d-82d5-b388-d289-a5375ca91323@intel.com>
+ <87366bbe1y.fsf@vitty.brq.redhat.com>
+ <adad61e8-8252-0491-7feb-992a52c1b4f3@intel.com>
+ <87zh8j9to2.fsf@vitty.brq.redhat.com> <20200723012114.GP9114@linux.intel.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <a1c2a7dc-d52a-daad-4078-3097579ffef2@intel.com>
+Date:   Mon, 27 Jul 2020 12:38:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1595115599-100054-1-git-send-email-dphadke@linux.microsoft.com>
- <116ac90c-8b49-ca89-90a4-9a28f43a7c50@broadcom.com> <20200722104128.GK1030@ninjato>
- <5048cf44-e2c2-ee31-a9fb-b823f16c2c7d@broadcom.com> <20200725101815.GA1519@ninjato>
-In-Reply-To: <20200725101815.GA1519@ninjato>
-From:   Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Date:   Mon, 27 Jul 2020 10:02:09 +0530
-Message-ID: <CAHO=5PF6WmgTYAA8vVd86cx0YTx0CKouJ2k+13hNVCPiEtMVYA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: iproc: fix race between client unreg and isr
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Ray Jui <ray.jui@broadcom.com>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200723012114.GP9114@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 3:48 PM Wolfram Sang <wsa@kernel.org> wrote:
->
->
-> > I think the following sequence needs to be implemented to make this
-> > safe, i.e., after 'synchronize_irq', no further slave interrupt will be
-> > fired.
-> >
-> > In 'bcm_iproc_i2c_unreg_slave':
-> >
-> > 1. Set an atomic variable 'unreg_slave' (I'm bad in names so please come
-> > up with a better name than this)
-> >
-> > 2. Disable all slave interrupts
-> >
-> > 3. synchronize_irq
-> >
-> > 4. Set slave to NULL
-> >
-> > 5. Erase slave addresses
->
-> What about this in unreg_slave?
->
-> 1. disable_irq()
->         This includes synchronize_irq() and avoids the race. Because irq
->         will be masked at interrupt controller level, interrupts coming
->         in at the I2C IP core level should still be pending once we
->         reenable the irq.
->
-> 2. disable all slave interrupts
->
-> 3. enable_irq()
->
-> 4. clean up the rest (pointer, address)
->
-> Or am I overlooking something?
+On 7/23/2020 9:21 AM, Sean Christopherson wrote:
+> On Wed, Jul 01, 2020 at 04:49:49PM +0200, Vitaly Kuznetsov wrote:
+>> Xiaoyao Li <xiaoyao.li@intel.com> writes:
+>>> So you want an exit to userspace for every bus lock and leave it all to
+>>> userspace. Yes, it's doable.
+>>
+>> In some cases we may not even want to have a VM exit: think
+>> e.g. real-time/partitioning case when even in case of bus lock we may
+>> not want to add additional latency just to count such events.
+> 
+> Hmm, I suspect this isn't all that useful for real-time cases because they'd
+> probably want to prevent the split lock in the first place, e.g. would prefer
+> to use the #AC variant in fatal mode.  Of course, the availability of split
+> lock #AC is a whole other can of worms.
+> 
+> But anyways, I 100% agree that this needs either an off-by-default module
+> param or an opt-in per-VM capability.
+> 
 
-This sequence will take care of all cases.
+Maybe on-by-default or an opt-out per-VM capability?
+Turning it on introduces no overhead if no bus lock happens in guest but 
+gives KVM the capability to track every potential bus lock. If user 
+doesn't want the extra latency due to bus lock VM exit, it's better try 
+to fix the bus lock, which also incurs high latency.
 
-@Dhananjay Phadke is it possible to verify this from your side once.
+>> I'd suggest we make the new capability tri-state:
+>> - disabled (no vmexit, default)
+>> - stats only (what this patch does)
+>> - userspace exit
+>> But maybe this is an overkill, I'd like to hear what others think.
+> 
+> Userspace exit would also be interesting for debug.  Another throttling
+> option would be schedule() or cond_reched(), though that's probably getting
+> into overkill territory.
+> 
 
-Best regards,
-Raaygonda
+We're going to leverage host's policy, i.e., calling 
+handle_user_bus_lock(), for throttling, as proposed in 
+https://lkml.kernel.org/r/1595021700-68460-1-git-send-email-fenghua.yu@intel.com
+
