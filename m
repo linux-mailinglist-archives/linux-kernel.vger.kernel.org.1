@@ -2,145 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3280A22EC38
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696D922EC3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgG0McI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728163AbgG0McH (ORCPT
+        id S1728368AbgG0MdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:33:22 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:35935 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727120AbgG0MdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:32:07 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36E6C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:32:07 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k8so4254405wma.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C8QbR5zyTiJb36EsILccvSdIsabewYNUHO3eZE7AkKM=;
-        b=Uq0OIrNcpnUv/3tRWpwWrUirps2u80D93FiEvNpCNX9TnzyLtPdhfHmK7Vcj7sz4ET
-         EU+WmAuhPmuk4MPZAOxxVbytnrZKsFy3pNNflebMHcoYmglII1cAHAhGUhxLdGmIE5HQ
-         b1k6niaVPiuyXKq/+owU7WRJS4D4TDPRfGHRJPB+iOOy/crYsLhp0TyBk0giGX0tyv82
-         qbuvylyj3eKNQXezMeK5LatVFzFnVy0hWU9bl9cfyO6vCwhrNa6oWz57TtCf+XpgkVmK
-         rkWbxvs9q3BFu6vL/gLclpVvNuUJ2w9Z9gRfEU2Gqo6T1zJNltq9rzARp6l1HsYH41jB
-         XTqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C8QbR5zyTiJb36EsILccvSdIsabewYNUHO3eZE7AkKM=;
-        b=PcHFp77CVLeK6xlJZbQENJwQEFVZExfeagQ66Dyyi3ZEzD+se+r9QrQERwoFaqDOKg
-         w5HsbyTuO0ukUVWsfJWV1JnwUiyZ8JKNIlZG14vUhckG8ns/tixYCosee4Vo6KOhDwF5
-         ZbPfJls43Hl9pEZGrLlUUJkSJqszsqn1W1h9kFpMAzu1ltlfXCT+Hi6kKS7NzrGmQ1Pf
-         LHjlta0S6A3Y5HB36wAwVIVAfyFJaTLSYQpsmxYIwkO26MhwQCaN9ohHHIEdF2GWHgfU
-         wXtuwP5nvcfPGJA5azgaE4ShpX6Jcl5EEXVebHS1nHrHWEiGOdB4ov3BgjnjbFJvTIRn
-         eIrg==
-X-Gm-Message-State: AOAM532A7KkVxJIivt2ZMkI70nyGrZ86hM1GBO4qEVweN+XqyXMx6aiG
-        4+Swnlkm+htblQH03KPVzhLI0CR4aYc=
-X-Google-Smtp-Source: ABdhPJyxMPsRhgOKke1Ay34HuSeOUlftnnlzvU3RF4higjoaRg1DtCpzPlqDKkYQacOY2TZxW8k1QQ==
-X-Received: by 2002:a1c:3102:: with SMTP id x2mr21549194wmx.171.1595853126361;
-        Mon, 27 Jul 2020 05:32:06 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id h10sm12370520wro.57.2020.07.27.05.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 05:32:05 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 14:32:05 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Subject: Re: [net-next v4 2/6] net: marvell: prestera: Add PCI interface
- support
-Message-ID: <20200727123205.GJ2216@nanopsycho>
-References: <20200727122242.32337-1-vadym.kochan@plvision.eu>
- <20200727122242.32337-3-vadym.kochan@plvision.eu>
+        Mon, 27 Jul 2020 08:33:21 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1M89P1-1jvNcB0l5X-005GPJ for <linux-kernel@vger.kernel.org>; Mon, 27 Jul
+ 2020 14:33:20 +0200
+Received: by mail-qk1-f176.google.com with SMTP id b79so14969284qkg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:33:20 -0700 (PDT)
+X-Gm-Message-State: AOAM531pOCX9l+ufy7hELAGDP4IX4txvqMLlhyjRcXQOQLBLOUDurgAe
+        RPZrsrWksedSH0+ml4cIFZ+3tCZ6yIMwu6Ws/yo=
+X-Google-Smtp-Source: ABdhPJw68VCiW/DLtcLu54gOPUDyNjx9WjqRGVPgaVxT5FTBfLZHpsK5EK0oQPC06J4wwQ7/UDL2L/aUU5eRdI+1QIg=
+X-Received: by 2002:a37:b484:: with SMTP id d126mr22577670qkf.394.1595853199094;
+ Mon, 27 Jul 2020 05:33:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727122242.32337-3-vadym.kochan@plvision.eu>
+References: <20200726043948.1357573-1-daniel@0x0f.com>
+In-Reply-To: <20200726043948.1357573-1-daniel@0x0f.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Jul 2020 14:33:02 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0K6LmNkGPdKeBcFTgi5wJz8T0rzO=Kg2Fmz=NtyFWAfQ@mail.gmail.com>
+Message-ID: <CAK8P3a0K6LmNkGPdKeBcFTgi5wJz8T0rzO=Kg2Fmz=NtyFWAfQ@mail.gmail.com>
+Subject: Re: [PATCH 0/7] ARM:mstar: DT filling out
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     SoC Team <soc@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:g89A2meFQUYj24PvclTBRpwayZ/OpuSy/06YpEvZClzaEjyKDBp
+ 0OYxzttfDc68F7fw5L4zLJAklMox2GUD2mWj5DqGb7sQUsckXJZVxsHITvT1wKzGMa0tQ4x
+ 7gTZjjlNXp6o1ciEfZGNkZzUcSBLvp6WgbbjN8ycbXovKtfPaZ3MTjqnhdEiIXZdLJMzx15
+ Ll6Eg9ay7oeCOPsnRPF9g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:mcHDhi9sHiY=:tzHKnbEQffvQcxcSGgmLGn
+ wAIfTEy0+lFW/6oTXYZNf3cPKSVasKptq0/PcbXXtTzm58OzAbaPsMlOc+TDfdZoTSKCYVBnK
+ IW+e5N5/yrBpyj6vaWZSQ1/fpEVRKREKX5othN5jw9ICL3qvfL2x7nfCDWU/6K62DhlE07eDk
+ ZMYDrVi5AeH4nMAkBu1wT8oQSqsh9ddz/FFRSYSv2YB9cBL13I24CLdvZVm6JjgVtLj2t+LEi
+ 5e+a3gj1+SIU1dcaN78TAZ+CoeXYjvbDplTUUC0fUHOR5j1RkdbEuTYIz6psR9XzM614TlCIk
+ 1nlL8IhzKSEt7QM37ZSAVvXPxbwtg9K4YLQOeV23lSXkj/oPYEhZ81FGSRT92Z0VOe7njyrz2
+ mGTjA6mFzDHUB7PDZpP5GvNDf5CP3BQj+iBRatH2tnEZb1SifrgLTxKRMKBHPi6QiDbGo6i33
+ dBRLfcuVg8ucdaSltuS9p/UbFrrY8D+0jPxUqJEwwhGiBFgPFrQ/E7rqGaN6JHPWVWjSuFGSi
+ 9HklBrvzgo583rTbBKVvz/YAfRzU84UDZn4YyRN6kxgCZOxQ/dunIUoQYqQVxOGFRq2ZdYqoR
+ 2gVkeA/J08dzJVbv0wWdemenhxl2tI7H5SF19pUwAMjRCrLNKjiqTwz4D74oHz+p5rVgk1En/
+ x76szKxBdc+ho8GGXlrEem+mct30QSKfH8U5xdwYYiYIDFalppk12Ejif24WbmhIO8YSeXevF
+ R0C7d9keQSbIkjOAPQDGW9H6Sh2Ze4y7dT4n7D02qd7rBt6wv4C2hyAYmWgw72bYCBgBhIW6b
+ wOWq72Gfeao4hdBG3HgNaB4thX6byEQ1FIYWUqUPFLU4d94DUFimejWlRDoNXJD+DX2yzfU6L
+ XpvKasMTmdivvdO6zMGZz8Poo2s7XIr9YAX92PUJTtLmYBnu3IWEAIwAmxJ5WAw0XXz4hSfWI
+ PesalNsa4mQjmWnf86ronZ/4MkconjOutMRv400UMshs2wczPwe2f
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Jul 27, 2020 at 02:22:38PM CEST, vadym.kochan@plvision.eu wrote:
->Add PCI interface driver for Prestera Switch ASICs family devices, which
->provides:
+On Sun, Jul 26, 2020 at 6:39 AM Daniel Palmer <daniel@0x0f.com> wrote:
 >
->    - Firmware loading mechanism
->    - Requests & events handling to/from the firmware
->    - Access to the firmware on the bus level
+> This series adds a few low hanging fruit that are purely DT changes to
+> keep the ball rolling while I work on series for more complicated things
+> like the interrupt controllers.
 >
->The firmware has to be loaded each time the device is reset. The driver
->is loading it from:
+> Summary of changes:
 >
->    /lib/firmware/marvell/prestera_fw-v{MAJOR}.{MINOR}.img
->
->The full firmware image version is located within the internal header
->and consists of 3 numbers - MAJOR.MINOR.PATCH. Additionally, driver has
->hard-coded minimum supported firmware version which it can work with:
->
->    MAJOR - reflects the support on ABI level between driver and loaded
->            firmware, this number should be the same for driver and loaded
->            firmware.
->
->    MINOR - this is the minimum supported version between driver and the
->            firmware.
->
->    PATCH - indicates only fixes, firmware ABI is not changed.
->
->Firmware image file name contains only MAJOR and MINOR numbers to make
->driver be compatible with any PATCH version.
->
->Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
->Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
->Acked-by: Jiri Pirko <jiri@mellanox.com>
+> - Adds the IMI SRAM region and sets the right size for each family
+> - Adds the ARM PMU
+> - Adds a syscon for a lump of registers called "pmsleep"
+> - Uses the pmsleep syscon to enable reboot
 
-You have to remove the tag if you change the patch from last tagged
-version...
+I had one comment for the last commit in this list and have therefore
+not applied the series (yet).
 
+I also noticed that the subject lines are slightly inconsistent, please
+add  a space between "ARM:" and "mstar:" as you did for the first
+set of patches.
 
->---
->PATCH v4:
->    1) Get rid of "packed" attribute for the fw image header, it is
->       already aligned.
->
->    2) Cleanup not needed initialization of variables which are used in
->       readl_poll_timeout() helpers.
->
->    3) Replace #define's of prestera_{fw,ldr}_{read,write} to static funcs.
->
->    4) Use pcim_ helpers for resource allocation
->
->    5) Use devm_zalloc() for struct prestera_fw instance allocation.
->
->    6) Use module_pci_driver(prestera_pci_driver) instead of module_{init,exit}.
->
->    7) Use _MS prefix for timeout #define's.
->
->    8) Use snprintf for firmware image path generation instead of using
->       macrosses.
->
->    9) Use memcpy_xxxio helpers for IO memory copying.
->
->   10) By default use same build type ('m' or 'y') for
->       CONFIG_PRESTERA_PCI which is used by CONFIG_PRESTERA.
->
-
-[...]
+      Arnd
