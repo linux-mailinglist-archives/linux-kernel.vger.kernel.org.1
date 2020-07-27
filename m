@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D1822F958
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3163922F987
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgG0TpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgG0TpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:45:18 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A189C20672;
-        Mon, 27 Jul 2020 19:45:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595879118;
-        bh=8p/mpBOD8QPWQP7hYQ4q+7NKUEkDaVHRM+uqJ5CVEtY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vwB3CVZJLOdBJmWAb7lI6QKfZB364JXIg1GW9NEBSecO7u5S8lNvkT0Rw0QR9go4o
-         1NrYuVy4c8N654v52Dh8djZmLqHI9rizTV7EvC8p7zBxjDnKNeWXNkV3sr88qZu/Ni
-         6HyX18T+LESDoPUr6ng+QbwgAAR/Txz2Z+ubhG5E=
-Date:   Mon, 27 Jul 2020 14:51:11 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] ath6kl: Use fallthrough pseudo-keyword
-Message-ID: <20200727195111.GA1603@embeddedor>
+        id S1729014AbgG0Twp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:52:45 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:46655 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728348AbgG0Two (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 15:52:44 -0400
+Received: from dante.cb.ettle ([143.159.226.70]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.179]) with ESMTPSA (Nemesis) id
+ 1MDhth-1k6zik1Bvr-00Am5E; Mon, 27 Jul 2020 21:52:29 +0200
+Message-ID: <f02332767323fc3ecccea13dd47ecfff12526112.camel@ettle.org.uk>
+Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
+From:   James Ettle <james@ettle.org.uk>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?UTF-8?Q?=E5=90=B3=E6=98=8A=E6=BE=84?= Ricky 
+        <ricky_wu@realtek.com>, Rui Feng <rui_feng@realsil.com.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Len Brown <lenb@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jacopo De Simoi <wilderkde@gmail.com>
+Date:   Mon, 27 Jul 2020 20:52:25 +0100
+In-Reply-To: <20200727141438.GA1743062@bjorn-Precision-5520>
+References: <20200727141438.GA1743062@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:9hfivm38n1X2xOxy/Suu/TO1CvJBOaht+YsoUaogoxU2UatFES1
+ yLbIx7EiMtZhjackxSMSZoMYO8ABl6QCTeqHGkykO4ApN3mCjgRPNtF5RciMeU0EM69bu2S
+ OynHPsgfDsivKrc6SkbIs2lGnk8XKXsRhl+4uLfUfNHrtcy3+v9xkwFnMQE9OzS6uLvjFKp
+ swW30Q12/xmzaYP+eWX5Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ftS2pohcS44=:t9NtZstD6U5IboUkPoKZr/
+ QuBjV/xi+EqWcbyOcIFWFIJshm/cxNM7FxtJVqjAEhnD7O6LpxKq+JP2unecoONFokTC9S/OJ
+ i/c7U6pwvgTY3kKrTFX1W1pakuXJDBp7a1pG2vLzpFnSjX4xnBbuzh+faqGUWc8IJibbQoEdh
+ LWfZmkWq05eCeDlIh5KZfCrurarxASSPuC/NCyew/ivYUDVO0WWidbXEOayMN4/4BUZDM2TlJ
+ tgrCDVfcjCgVoDm/Qk6a8u4q1cliB2st7gdtzwE3BMG/0ox4Peas6AkUKi0B547p1lS9/NP2p
+ MmgulaBcXD5d3ocSibBiBm47Bsb8DiGRnZDMzsyh+GzLGZ5wXJ0EisQmrRyvXoT7oQIC5/Npi
+ v1WliQ5cnNwWolvZ4gVt0HmDo0ltEju1iuPARcgiXmhOdhw1SzjeDXoVc64YbZ35odewz6gCP
+ R4wyfUjVGtArz4SIGpVFpB8jmsaW04Q1hvenZiREgEpEmY/ULOwyT6lbZ4zB6kwnU3yY8OxLT
+ MWGP+4tQlQxNUJ08rUazkVbxEBuy1NNkjDcAUsBc+jatGsGqfBlpsCVy+GL1BRUqUWrBp3kpJ
+ hLjnU6dB9a0CHOcmyCy5y3LLX/xmF7KP5zbdvw/GODMLhbY3RJ9z44e2CzB/1PnMo9Iz4LMCG
+ +DdMSfslEQNb2AJaFC9zWBQJycwowss57O1tPSrkT2EWhdXU6AzMELjhyHZIt6AflaciqxCcx
+ aKnumUXOBrUtxhy3yC7GZGJ+MZt2t6mdKzwZAkKWj99YmjUTEVJ3Ys0JMzsfVKw7tl9zq4r/T
+ AccI7JgKavL12PVXGy1R5pu4lf3SztPcBEmVnuKGcPaf9pWFdu2AhmRiGXzIAxDbT6dhJRK
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+On Mon, 2020-07-27 at 09:14 -0500, Bjorn Helgaas wrote:
+> I don't know the connection between ASPM and package C-states, so I
+> need to simplify this even more.  All I want to do right now is
+> verify
+> that if we don't have any outside influences on the ASPM
+> configuration
+> (eg, no manual changes and no udev rules), it stays the same across
+> suspend/resume.
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+Basically this started from me observing deep package C-states weren't
+being used, until I went and fiddled with the ASPM state of the
+rtsx_pci card reader under sysfs -- so phenomenological poking on my
+part.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/ath/ath6kl/cfg80211.c | 6 +++---
- drivers/net/wireless/ath/ath6kl/main.c     | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> So let's read the ASPM state directly from the
+> hardware like this:
+> 
+>   sudo lspci -vvs 00:1d.0 | egrep "^0|Lnk|L1|LTR|snoop"
+>   sudo lspci -vvs 01:00   | egrep "^0|Lnk|L1|LTR|snoop"
+> 
+> Can you try that before and after suspend/resume?
 
-diff --git a/drivers/net/wireless/ath/ath6kl/cfg80211.c b/drivers/net/wireless/ath/ath6kl/cfg80211.c
-index 67f8f2aa7a53..9c83e9a4299b 100644
---- a/drivers/net/wireless/ath/ath6kl/cfg80211.c
-+++ b/drivers/net/wireless/ath/ath6kl/cfg80211.c
-@@ -3897,19 +3897,19 @@ int ath6kl_cfg80211_init(struct ath6kl *ar)
- 	switch (ar->hw.cap) {
- 	case WMI_11AN_CAP:
- 		ht = true;
--		/* fall through */
-+		fallthrough;
- 	case WMI_11A_CAP:
- 		band_5gig = true;
- 		break;
- 	case WMI_11GN_CAP:
- 		ht = true;
--		/* fall through */
-+		fallthrough;
- 	case WMI_11G_CAP:
- 		band_2gig = true;
- 		break;
- 	case WMI_11AGN_CAP:
- 		ht = true;
--		/* fall through */
-+		fallthrough;
- 	case WMI_11AG_CAP:
- 		band_2gig = true;
- 		band_5gig = true;
-diff --git a/drivers/net/wireless/ath/ath6kl/main.c b/drivers/net/wireless/ath/ath6kl/main.c
-index 5e7ea838a921..210218298e13 100644
---- a/drivers/net/wireless/ath/ath6kl/main.c
-+++ b/drivers/net/wireless/ath/ath6kl/main.c
-@@ -389,7 +389,7 @@ void ath6kl_connect_ap_mode_bss(struct ath6kl_vif *vif, u16 channel)
- 		if (!ik->valid || ik->key_type != WAPI_CRYPT)
- 			break;
- 		/* for WAPI, we need to set the delayed group key, continue: */
--		/* fall through */
-+		fallthrough;
- 	case WPA_PSK_AUTH:
- 	case WPA2_PSK_AUTH:
- 	case (WPA_PSK_AUTH | WPA2_PSK_AUTH):
--- 
-2.27.0
+I've attached these to the bugzilla entry at:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=208117
+
+Spoiler: With no udev rules or suspend hooks, things are the same
+before and after suspend/resume. One thing I do see (both before and
+after) is that ASPM L0s and L1 is enabled for the card reader, but
+disabled for the ethernet chip (does r8169 fiddle with ASPM too?).
+
+[Oddly when I set ASPM (e.g. using udev) the lspci tools show ASPM
+enabled after a suspend/resume, but still no deep package C-states
+until I manually fiddle via sysfs on the card reader. Sorry if this
+only muddies the water further!]
+
+Thanks,
+-James
+
+
 
