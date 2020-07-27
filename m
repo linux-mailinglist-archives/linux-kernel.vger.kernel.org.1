@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935DE22EF24
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088D122EEB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbgG0ONs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38814 "EHLO mail.kernel.org"
+        id S1729789AbgG0OKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730400AbgG0ONl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:13:41 -0400
+        id S1729775AbgG0OKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11BE62073E;
-        Mon, 27 Jul 2020 14:13:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4390F20838;
+        Mon, 27 Jul 2020 14:10:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859220;
-        bh=eAee0Yhy+tSpMqQhl+nq7bZftpMdrjnGQy79r86fn+g=;
+        s=default; t=1595859009;
+        bh=yOHQNzrKgO5dGVzNFGwRdnu5BdnGHjIkXX7aoTeoJXM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GdJQTsYiXWRKvs25wTfwuh2tSTvq3rr5Kq9YaTu7XmnCPu27g4XK9691kHdNGJZwN
-         SVbejhBXOLqj7B8RzY4DUMyNyKHPYOUmJ50uZ/Kd2vC3EGDdSf5HY4QF3b/Ed+dvyz
-         1c1KtKkZ4pBKCTnaj5AcptWN1bkcCjtl6zUyMSLQ=
+        b=t32iJKlFmO5TvgI8a1wfQ4JEdKHnt2VkL5uPg9pTvfZsCVsY2WlgtI3gAN/LsJz4q
+         8zb7+d9FVAy/qwcl/jwybufWmcyZhTjSRaIUotbQiUu17DRnBz1MCuFzH/OVrqAFfY
+         vkATBqCXGIVH0maaulqDVI9B8kzbN31hTG25fM+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 024/138] dm mpath: pass IO start time to path selector
+Subject: [PATCH 4.19 05/86] mac80211: allow rx of mesh eapol frames with default rx key
 Date:   Mon, 27 Jul 2020 16:03:39 +0200
-Message-Id: <20200727134926.568755096@linuxfoundation.org>
+Message-Id: <20200727134914.615975164@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,132 +44,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+From: Markus Theil <markus.theil@tu-ilmenau.de>
 
-[ Upstream commit 087615bf3acdafd0ba7c7c9ed5286e7b7c80fe1b ]
+[ Upstream commit 0b467b63870d9c05c81456aa9bfee894ab2db3b6 ]
 
-The HST path selector needs this information to perform path
-prediction. For request-based mpath, struct request's io_start_time_ns
-is used, while for bio-based, use the start_time stored in dm_io.
+Without this patch, eapol frames cannot be received in mesh
+mode, when 802.1X should be used. Initially only a MGTK is
+defined, which is found and set as rx->key, when there are
+no other keys set. ieee80211_drop_unencrypted would then
+drop these eapol frames, as they are data frames without
+encryption and there exists some rx->key.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fix this by differentiating between mesh eapol frames and
+other data frames with existing rx->key. Allow mesh mesh
+eapol frames only if they are for our vif address.
+
+With this patch in-place, ieee80211_rx_h_mesh_fwding continues
+after the ieee80211_drop_unencrypted check and notices, that
+these eapol frames have to be delivered locally, as they should.
+
+Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
+Link: https://lore.kernel.org/r/20200625104214.50319-1-markus.theil@tu-ilmenau.de
+[small code cleanups]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-mpath.c         | 9 ++++++---
- drivers/md/dm-path-selector.h | 2 +-
- drivers/md/dm-queue-length.c  | 2 +-
- drivers/md/dm-service-time.c  | 2 +-
- drivers/md/dm.c               | 9 +++++++++
- include/linux/device-mapper.h | 2 ++
- 6 files changed, 20 insertions(+), 6 deletions(-)
+ net/mac80211/rx.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-index f2de4c73cc8fa..d7ebed50895f0 100644
---- a/drivers/md/dm-mpath.c
-+++ b/drivers/md/dm-mpath.c
-@@ -558,7 +558,8 @@ static void multipath_release_clone(struct request *clone,
- 		if (pgpath && pgpath->pg->ps.type->end_io)
- 			pgpath->pg->ps.type->end_io(&pgpath->pg->ps,
- 						    &pgpath->path,
--						    mpio->nr_bytes);
-+						    mpio->nr_bytes,
-+						    clone->io_start_time_ns);
- 	}
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index c17e148e06e71..5e56719f999c4 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -2230,6 +2230,7 @@ static int ieee80211_802_1x_port_control(struct ieee80211_rx_data *rx)
  
- 	blk_put_request(clone);
-@@ -1560,7 +1561,8 @@ static int multipath_end_io(struct dm_target *ti, struct request *clone,
- 		struct path_selector *ps = &pgpath->pg->ps;
- 
- 		if (ps->type->end_io)
--			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes);
-+			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes,
-+					 clone->io_start_time_ns);
- 	}
- 
- 	return r;
-@@ -1604,7 +1606,8 @@ static int multipath_end_io_bio(struct dm_target *ti, struct bio *clone,
- 		struct path_selector *ps = &pgpath->pg->ps;
- 
- 		if (ps->type->end_io)
--			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes);
-+			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes,
-+					 dm_start_time_ns_from_clone(clone));
- 	}
- 
- 	return r;
-diff --git a/drivers/md/dm-path-selector.h b/drivers/md/dm-path-selector.h
-index b6eb5365b1a46..c47bc0e20275b 100644
---- a/drivers/md/dm-path-selector.h
-+++ b/drivers/md/dm-path-selector.h
-@@ -74,7 +74,7 @@ struct path_selector_type {
- 	int (*start_io) (struct path_selector *ps, struct dm_path *path,
- 			 size_t nr_bytes);
- 	int (*end_io) (struct path_selector *ps, struct dm_path *path,
--		       size_t nr_bytes);
-+		       size_t nr_bytes, u64 start_time);
- };
- 
- /* Register a path selector */
-diff --git a/drivers/md/dm-queue-length.c b/drivers/md/dm-queue-length.c
-index 969c4f1a36336..5fd018d184187 100644
---- a/drivers/md/dm-queue-length.c
-+++ b/drivers/md/dm-queue-length.c
-@@ -227,7 +227,7 @@ static int ql_start_io(struct path_selector *ps, struct dm_path *path,
- }
- 
- static int ql_end_io(struct path_selector *ps, struct dm_path *path,
--		     size_t nr_bytes)
-+		     size_t nr_bytes, u64 start_time)
+ static int ieee80211_drop_unencrypted(struct ieee80211_rx_data *rx, __le16 fc)
  {
- 	struct path_info *pi = path->pscontext;
++	struct ieee80211_hdr *hdr = (void *)rx->skb->data;
+ 	struct sk_buff *skb = rx->skb;
+ 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
  
-diff --git a/drivers/md/dm-service-time.c b/drivers/md/dm-service-time.c
-index f006a9005593b..9cfda665e9ebd 100644
---- a/drivers/md/dm-service-time.c
-+++ b/drivers/md/dm-service-time.c
-@@ -309,7 +309,7 @@ static int st_start_io(struct path_selector *ps, struct dm_path *path,
- }
+@@ -2240,6 +2241,31 @@ static int ieee80211_drop_unencrypted(struct ieee80211_rx_data *rx, __le16 fc)
+ 	if (status->flag & RX_FLAG_DECRYPTED)
+ 		return 0;
  
- static int st_end_io(struct path_selector *ps, struct dm_path *path,
--		     size_t nr_bytes)
-+		     size_t nr_bytes, u64 start_time)
- {
- 	struct path_info *pi = path->pscontext;
- 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 3cf5b354568e5..1e7ad2ad48295 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -649,6 +649,15 @@ static bool md_in_flight(struct mapped_device *md)
- 		return md_in_flight_bios(md);
- }
- 
-+u64 dm_start_time_ns_from_clone(struct bio *bio)
-+{
-+	struct dm_target_io *tio = container_of(bio, struct dm_target_io, clone);
-+	struct dm_io *io = tio->io;
++	/* check mesh EAPOL frames first */
++	if (unlikely(rx->sta && ieee80211_vif_is_mesh(&rx->sdata->vif) &&
++		     ieee80211_is_data(fc))) {
++		struct ieee80211s_hdr *mesh_hdr;
++		u16 hdr_len = ieee80211_hdrlen(fc);
++		u16 ethertype_offset;
++		__be16 ethertype;
 +
-+	return jiffies_to_nsecs(io->start_time);
-+}
-+EXPORT_SYMBOL_GPL(dm_start_time_ns_from_clone);
++		if (!ether_addr_equal(hdr->addr1, rx->sdata->vif.addr))
++			goto drop_check;
 +
- static void start_io_acct(struct dm_io *io)
- {
- 	struct mapped_device *md = io->md;
-diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-index 399ad86323568..ec19222f67666 100644
---- a/include/linux/device-mapper.h
-+++ b/include/linux/device-mapper.h
-@@ -328,6 +328,8 @@ void *dm_per_bio_data(struct bio *bio, size_t data_size);
- struct bio *dm_bio_from_per_bio_data(void *data, size_t data_size);
- unsigned dm_bio_get_target_bio_nr(const struct bio *bio);
- 
-+u64 dm_start_time_ns_from_clone(struct bio *bio);
++		/* make sure fixed part of mesh header is there, also checks skb len */
++		if (!pskb_may_pull(rx->skb, hdr_len + 6))
++			goto drop_check;
 +
- int dm_register_target(struct target_type *t);
- void dm_unregister_target(struct target_type *t);
- 
++		mesh_hdr = (struct ieee80211s_hdr *)(skb->data + hdr_len);
++		ethertype_offset = hdr_len + ieee80211_get_mesh_hdrlen(mesh_hdr) +
++				   sizeof(rfc1042_header);
++
++		if (skb_copy_bits(rx->skb, ethertype_offset, &ethertype, 2) == 0 &&
++		    ethertype == rx->sdata->control_port_protocol)
++			return 0;
++	}
++
++drop_check:
+ 	/* Drop unencrypted frames if key is set. */
+ 	if (unlikely(!ieee80211_has_protected(fc) &&
+ 		     !ieee80211_is_any_nullfunc(fc) &&
 -- 
 2.25.1
 
