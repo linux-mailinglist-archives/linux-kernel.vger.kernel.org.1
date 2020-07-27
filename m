@@ -2,172 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB5F22E92A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A263122E933
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbgG0Jic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:38:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S1728272AbgG0JjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728285AbgG0Ji2 (ORCPT
+        with ESMTP id S1726196AbgG0JjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:38:28 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB48CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:27 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id g8so2355231wmk.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:27 -0700 (PDT)
+        Mon, 27 Jul 2020 05:39:11 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FC7C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:39:11 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r4so11199300wrx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:39:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4g6JTg8tTLO2020Bjhn7eVLu84pNN3Ez/f+4ZOHp8Mw=;
-        b=Vw6yarDLp7xE5sbxpiPl8n3EAmtDzjFJyzaxBiABIvnzdUP3KkAKxeSlW3W6SbgrD/
-         T8G7ahhsdn4L46scDkPbfQNIgJNSP6CaS0LYZulaFbUhXCCYczSPNesaE0p/7s6JkX2S
-         jN/wwL3RZHOsvs8MGt+5PES+T28h68H+FWZhvCnKJzWCpZ44CyL45Xq/dsNreXeeUzfb
-         dna9uutJEsLRCEUHj0zu6x2o+XlnH/TelUuUpPM0755es32CmTyoidh+tmanI99WuYKS
-         HM1S7BM4gG2jA8PU+Z8LzAPJIIbofzSB3eJRSuAPnVjUHwOPlC3xpJvHJAhUwe5R9FOA
-         FXmg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8RCoZkhoieZac/MTCN4IyM+rPgUjma0v0Zq7zVhhyeg=;
+        b=GzkYmEP8m/BdmdATLXvwvkzOzhLtQDtPsoDJIKpMsw6nAoTTjeSsPH+lmMoKkiG3Kj
+         DTcD374BbOMNZzXWS75vl1qBv/9Y/dSDfDDuK8ZMctiqzZP6pGnOnUTKGkudttUGNZgW
+         6z+YyyCmgSWKSay+w/T4/Fb0zM71NJAXUWRtM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4g6JTg8tTLO2020Bjhn7eVLu84pNN3Ez/f+4ZOHp8Mw=;
-        b=pBEQfS+df4jIYdEuxy2MQU28+NzKlQzzvxzUlDjNm6PGEyOkVGsN6pbP8dlfg+gkVW
-         qrt9hhE0wQaUdAVb1SuMnTMZZxC2eRh0UPR+kap/MKrKQ1ualHAH8bR+WXCv1zoKS1Fx
-         QCETOAD/4CaBmup8+v8lSEhfhzniXso85bnDf76Lc3yzOn6Hvg2weMz39Kg5hJrLGAbK
-         H7zNYITjHVtgTID5kj4Gu2mS3pOOMdC7ZOXpVc2lQQCq7/WD0c02nJQNWStwbK7P88gt
-         9DwKujjWDXF7oAitoCw5O0MnwvOc9KXtbZBtd6n5wa8ouNbmIXpD+plZ17L3WIs9ENw5
-         IxNg==
-X-Gm-Message-State: AOAM5306FNJolQ2Fm9ZLt/0P5V/RBeqnMpuSbjPTMLUh/6zxYUOimIpo
-        ygNjqHnTQ3lBj6dIysL/trMoqA==
-X-Google-Smtp-Source: ABdhPJwBe0He/oPMtUrF31nAwEubsSn+/sRTYsIOCKuy3A0IoW5Yzj6VbAPKKsNGEWXBQ4/mz68dtQ==
-X-Received: by 2002:a1c:f016:: with SMTP id a22mr18737295wmb.47.1595842706597;
-        Mon, 27 Jul 2020 02:38:26 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=8RCoZkhoieZac/MTCN4IyM+rPgUjma0v0Zq7zVhhyeg=;
+        b=DjJYJFHhFUpqzHMkVBbZYIfwN6RrMtNwzib9RtHbaMSaR0Y2uOrEiVqEeGdKEhps0Q
+         Qtm5FEKeGnqQh8zEFUKF/KDCso+Km9BQkQaExgKTBQbL/Lwe/OVhOrusQnTW6JK4kT3S
+         joe0DIXgkanORpUMsMQCllyjPekbK/Ub42CR3bbcPHXc7Qm9RySPdcF6UVhVEIAa9Ufa
+         96M+k1Lak5iIml0Gu0UpLYKwtR3l4L7nUAjuNdS+4TTAnkicW7lVZJAsSPBnkVDy8tMi
+         KLULF+z/zCj0QgcDuOqrOh6BtknFmaJT8Qx0D31ur5bBP6YpiRb8yEe2DFy4xhURV1Wz
+         vbmg==
+X-Gm-Message-State: AOAM531JuaD3wjudSUtraKt9uZ1eRzJer+q4V3O0sXWrZbJ8xhXZSyyc
+        Q3sa/1gjWS9N9RqU8Hq3OnTq68qpvWY=
+X-Google-Smtp-Source: ABdhPJw75vAc101pWEOGCaxoXpoO4Pq+2dtXYVMRaimrbaDttaYjkaCndLVxKo7QwXXGdffqB7vNnQ==
+X-Received: by 2002:a5d:5151:: with SMTP id u17mr19767200wrt.154.1595842749725;
+        Mon, 27 Jul 2020 02:39:09 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id o2sm3410131wmh.5.2020.07.27.02.39.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 02:38:25 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
-        pierre-louis.bossart@linux.intel.com,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 10/10] ASoC: q6asm-dai: add support to copy callback
-Date:   Mon, 27 Jul 2020 10:38:06 +0100
-Message-Id: <20200727093806.17089-11-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
-References: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+        Mon, 27 Jul 2020 02:39:08 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 11:39:07 +0200
+From:   daniel@ffwll.ch
+Cc:     <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next 1/2] drm: Remove redundant NULL check
+Message-ID: <20200727093907.GN6419@phenom.ffwll.local>
+Mail-Followup-To: Li Heng <liheng40@huawei.com>, <airlied@linux.ie>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1595474863-33112-1-git-send-email-liheng40@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595474863-33112-1-git-send-email-liheng40@huawei.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During gapless playback, its possible for previous track to
-end at unaligned boundary, starting next track on the same
-boundary can lead to unaligned address exception in dsp.
+On Thu, Jul 23, 2020 at 11:27:42AM +0800, Li Heng wrote:
+> Fix below warnings reported by coccicheck:
+> ./drivers/gpu/drm/drm_drv.c:819:2-7: WARNING: NULL check before some freeing functions is not needed.
+> 
+> Fixes: 5dad34f3c444 ("drm: Cleanups after drmm_add_final_kfree rollout")
+> Signed-off-by: Li Heng <liheng40@huawei.com>
 
-So implement copy callback for finer control on the buffer offsets.
+Queued up, should make it into 5.9 merge window, thanks for your patch.
+-Daniel
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6asm-dai.c | 65 +++++++++++++++++++++++++++++---
- 1 file changed, 60 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 4ecf9cb658ae..648a64e11188 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -1055,16 +1055,71 @@ static int q6asm_dai_compr_pointer(struct snd_soc_component *component,
- 	return 0;
- }
- 
--static int q6asm_dai_compr_ack(struct snd_soc_component *component,
--			       struct snd_compr_stream *stream,
--			       size_t count)
-+static int q6asm_compr_copy(struct snd_soc_component *component,
-+			    struct snd_compr_stream *stream, char __user *buf,
-+			    size_t count)
- {
- 	struct snd_compr_runtime *runtime = stream->runtime;
- 	struct q6asm_dai_rtd *prtd = runtime->private_data;
- 	unsigned long flags;
-+	u32 wflags = 0;
-+	int avail, bytes_in_flight = 0;
-+	void *dstn;
-+	size_t copy;
-+	u32 app_pointer;
-+	u32 bytes_received;
-+
-+	bytes_received = prtd->bytes_received;
-+
-+	/**
-+	 * Make sure that next track data pointer is aligned at 32 bit boundary
-+	 * This is a Mandatory requirement from DSP data buffers alignment
-+	 */
-+	if (prtd->next_track)
-+		bytes_received = ALIGN(prtd->bytes_received, prtd->pcm_count);
-+
-+	app_pointer = bytes_received/prtd->pcm_size;
-+	app_pointer = bytes_received -  (app_pointer * prtd->pcm_size);
-+	dstn = prtd->dma_buffer.area + app_pointer;
-+
-+	if (count < prtd->pcm_size - app_pointer) {
-+		if (copy_from_user(dstn, buf, count))
-+			return -EFAULT;
-+	} else {
-+		copy = prtd->pcm_size - app_pointer;
-+		if (copy_from_user(dstn, buf, copy))
-+			return -EFAULT;
-+		if (copy_from_user(prtd->dma_buffer.area, buf + copy,
-+				   count - copy))
-+			return -EFAULT;
-+	}
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
--	prtd->bytes_received += count;
-+
-+	bytes_in_flight = prtd->bytes_received - prtd->copied_total;
-+
-+	if (prtd->next_track) {
-+		prtd->next_track = false;
-+		prtd->copied_total = ALIGN(prtd->copied_total, prtd->pcm_count);
-+		prtd->bytes_sent = ALIGN(prtd->bytes_sent, prtd->pcm_count);
-+	}
-+
-+	prtd->bytes_received = bytes_received + count;
-+
-+	/* Kick off the data to dsp if its starving!! */
-+	if (prtd->state == Q6ASM_STREAM_RUNNING && (bytes_in_flight == 0)) {
-+		uint32_t bytes_to_write = prtd->pcm_count;
-+
-+		avail = prtd->bytes_received - prtd->bytes_sent;
-+
-+		if (avail < prtd->pcm_count)
-+			bytes_to_write = avail;
-+
-+		q6asm_write_async(prtd->audio_client, prtd->stream_id,
-+				  bytes_to_write, 0, 0, wflags);
-+		prtd->bytes_sent += bytes_to_write;
-+	}
-+
- 	spin_unlock_irqrestore(&prtd->lock, flags);
- 
- 	return count;
-@@ -1127,7 +1182,7 @@ static struct snd_compress_ops q6asm_dai_compress_ops = {
- 	.get_caps	= q6asm_dai_compr_get_caps,
- 	.get_codec_caps	= q6asm_dai_compr_get_codec_caps,
- 	.mmap		= q6asm_dai_compr_mmap,
--	.ack		= q6asm_dai_compr_ack,
-+	.copy		= q6asm_compr_copy,
- };
- 
- static int q6asm_dai_pcm_new(struct snd_soc_component *component,
+> ---
+>  drivers/gpu/drm/drm_drv.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> index bc38322..13068fd 100644
+> --- a/drivers/gpu/drm/drm_drv.c
+> +++ b/drivers/gpu/drm/drm_drv.c
+> @@ -815,8 +815,7 @@ static void drm_dev_release(struct kref *ref)
+>  
+>  	drm_managed_release(dev);
+>  
+> -	if (dev->managed.final_kfree)
+> -		kfree(dev->managed.final_kfree);
+> +	kfree(dev->managed.final_kfree);
+>  }
+>  
+>  /**
+> -- 
+> 2.7.4
+> 
+
 -- 
-2.21.0
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
