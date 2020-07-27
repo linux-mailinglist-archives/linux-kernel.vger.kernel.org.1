@@ -2,68 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8C322E7BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3019D22E7CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgG0I3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:29:44 -0400
-Received: from mail-ej1-f52.google.com ([209.85.218.52]:33787 "EHLO
-        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG0I3n (ORCPT
+        id S1726808AbgG0Iej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:34:39 -0400
+Received: from outbound1mad.lav.puc.rediris.es ([130.206.19.137]:60518 "EHLO
+        mx01.puc.rediris.es" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726227AbgG0Iej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:29:43 -0400
-Received: by mail-ej1-f52.google.com with SMTP id g11so4394917ejr.0;
-        Mon, 27 Jul 2020 01:29:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=nCH15011ULLgua14hO6k9+Wy0yqjOncFU6eW8oYQbYg=;
-        b=Oc2Akq1nHstNB/PlJzNEyNkiY2SNDS/taKe5NiddO9QJFFFwc9Iw1roV81U8VSf9qi
-         AcOOYkbQLx8Vk124cLbA2nERuLH6fxMBXMsZxrdvQB3KktWfHAvAGyXZ8xijB0RAsX3Q
-         baaBPffw9OGarvmRc3qnWsPZ1+4xtJBoUEkUZJ31t2kRctbV8fREDsXOH7NdGCZmPVdH
-         BD/Q/FKhZL9mLwKElmuX1TWkeMH95+tECyuc/fw4oDgi4nC2XXGitOGq/RDxfZNwCxdc
-         orxPmFjl4SsKnRL9H03tDzB2+5Qq0EoXZ5fh6Cfs4c7TFrTaPsIr8HRVqiFjqciULmXc
-         kZBQ==
-X-Gm-Message-State: AOAM5316aKaNrdpurGBEuVf+x77JqX/pBJgQE7jh2Y3P6oLza7ESYYWe
-        qrqzP5gYbGcELpbJ5hmumVxWLOKFTvI=
-X-Google-Smtp-Source: ABdhPJz2CUV9C4KJyv+GvWrIA9OTOeJRCHY20K4L2aBZWq8Y1JyOs5XvBWrbylBvvLcVpxPH7xa6aw==
-X-Received: by 2002:a17:906:4f82:: with SMTP id o2mr20642996eju.424.1595838581802;
-        Mon, 27 Jul 2020 01:29:41 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id k25sm638841edj.84.2020.07.27.01.29.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Jul 2020 01:29:40 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 10:29:38 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>
-Subject: Include krzk/linux-mem-ctrl (for drivers/memory) in next
-Message-ID: <20200727082938.GA25420@kozik-lap>
+        Mon, 27 Jul 2020 04:34:39 -0400
+X-Greylist: delayed 642 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Jul 2020 04:34:38 EDT
+Received: from mta-out02.sim.rediris.es (mta-out02.sim.rediris.es [130.206.24.44])
+        by mx01.puc.rediris.es  with ESMTP id 06R8Nclx000553-06R8Ncm1000553
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 27 Jul 2020 10:23:38 +0200
+Received: from mta-out02.sim.rediris.es (localhost.localdomain [127.0.0.1])
+        by mta-out02.sim.rediris.es (Postfix) with ESMTPS id F263AC143E2;
+        Mon, 27 Jul 2020 10:23:37 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mta-out02.sim.rediris.es (Postfix) with ESMTP id 9E3D9C143E5;
+        Mon, 27 Jul 2020 10:23:37 +0200 (CEST)
+X-Amavis-Modified: Mail body modified (using disclaimer) -
+        mta-out02.sim.rediris.es
+Received: from mta-out02.sim.rediris.es ([127.0.0.1])
+        by localhost (mta-out02.sim.rediris.es [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id uzO0DVWZRF3N; Mon, 27 Jul 2020 10:23:37 +0200 (CEST)
+Received: from lt-gp.iram.es (75.red-88-27-245.staticip.rima-tde.net [88.27.245.75])
+        by mta-out02.sim.rediris.es (Postfix) with ESMTPA id F2D9CC143E2;
+        Mon, 27 Jul 2020 10:23:35 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 10:23:31 +0200
+From:   Gabriel Paubert <paubert@iram.es>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@ozlabs.org, linux-kernel@vger.kernel.org,
+        dja@axtens.net
+Subject: Re: [PATCH v2 2/5] powerpc: Allow 4224 bytes of stack expansion for
+ the signal frame
+Message-ID: <20200727082331.GA2110@lt-gp.iram.es>
+References: <20200724092528.1578671-1-mpe@ellerman.id.au>
+ <20200724092528.1578671-2-mpe@ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200724092528.1578671-2-mpe@ellerman.id.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=iram.es; s=DKIM; c=relaxed/relaxed;
+ h=date:from:to:cc:subject:message-id:references:mime-version:content-type;
+ bh=1ZiclzWz6oRLNeIZ15slU/UsF+W9BEH+Xsbw5PctIeE=;
+ b=AVE2V79dBHbGgXqjCH0Kp156+jzlwPfSIyCjGr6Gtf4dw7kS/LpXXwsmne4zYQ5FBqsbd+3q/s5y
+        JvlpRRdehpXLSBWzkgtmf5caJJvqbUHvrCFykvs9JpJEyOvE/hzs71VhQbJiTwTwfoXhuZK/jr6w
+        FjWQFPU6BkL7q17HUxt9y9PRhQUN1hMYi2oR+Mgi+fAwQLEy/sM4JycmET/8I/mGsVgnpzHTyx8t
+        RnHFFXFvaSDEylntHhb0rPl3L6FrgzKHk0iU/5g9WS9ZGY7qG4pNNEwza+nxYA00El9rcC0gUr+y
+        /l+hJUkZluc9lLyLD2PpSEkZ1rToQES3GKFrGg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 24, 2020 at 07:25:25PM +1000, Michael Ellerman wrote:
+> We have powerpc specific logic in our page fault handling to decide if
+> an access to an unmapped address below the stack pointer should expand
+> the stack VMA.
+> 
+> The code was originally added in 2004 "ported from 2.4". The rough
+> logic is that the stack is allowed to grow to 1MB with no extra
+> checking. Over 1MB the access must be within 2048 bytes of the stack
+> pointer, or be from a user instruction that updates the stack pointer.
+> 
+> The 2048 byte allowance below the stack pointer is there to cover the
+> 288 byte "red zone" as well as the "about 1.5kB" needed by the signal
+> delivery code.
+> 
+> Unfortunately since then the signal frame has expanded, and is now
+> 4224 bytes on 64-bit kernels with transactional memory enabled.
 
-Please include in linux-next a new tree for drivers/memory:
-URL: https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git
+Are there really users of transactional memory in the wild? 
 
-branches:
-1. for-next
-   into next,
-2. fixes
-   into pending fixes (for current cycle),
+Just asking because Power10 removes TM, and Power9 has had some issues
+with it AFAICT.
 
-The tree will have patches later send via pull-request to arm-soc (Arnd,
-Olof).
+Getting rid of it (if possible) would result in smaller signal frames,
+with simpler signal delivery code (probably slightly faster also).
 
-Best regards,
-Krzysztof
+	Gabriel
+ 
+
