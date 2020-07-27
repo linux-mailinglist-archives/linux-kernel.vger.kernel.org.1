@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CC122E714
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DBE22E71D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgG0H6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:58:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgG0H6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:58:01 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80C1420738;
-        Mon, 27 Jul 2020 07:58:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595836680;
-        bh=pFZyTgLd3xYYzeu+q0Y9eI/gLqSakkiOd6qEy6AoK6c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UEu83P/HXZHqBR8qjfrTD2iwi1LEuDZFHt9rIx5+1N3VTQT6sGC4Xupm00PFzSWsJ
-         nDjzJysoa3s8HauGOOTrX0gIALShEOHsXGV3lvTU1qrC+tsKwaqKMGTUtUat6WF0R8
-         /ARAA9sDFnKmKSXw4TVhq9XVBZKJXxJCk5onfYpI=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jzy1G-00FE6z-RP; Mon, 27 Jul 2020 08:57:59 +0100
+        id S1727915AbgG0H6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgG0H6l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:58:41 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CB4C0619D2;
+        Mon, 27 Jul 2020 00:58:41 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id b13so9033331edz.7;
+        Mon, 27 Jul 2020 00:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/REZwXRz5HY7fev5AIX1xp+FPLMsQ7CaayNFnZrrTs4=;
+        b=E44rSvPDKHSJX+gzJpv/MuvSGtQjfA11R0Nh4HxsD6D1B5bHRPLrkBH/vfDoZksV83
+         KsSWhzHTRZo0Rww/ofA+K5yQKW1aK/xVe5AoztxOw7HbSy/gedDM5c3cg4U0sejJpgUs
+         L284SKbEPvZ9oC7+Qkf3jPB9mH7i8w1kTu6VIcKGXZBSgCcPR+GVUdqII/E7ZVwsZGqo
+         yQE8GVLKAn3SA6J/4ebOZ/a7264TG3A+cMu4rLHy0hPG9lsal2aHAavjUUsEYWSOoq31
+         YEguXeDWgrFftAuF7xlHV4Ax8OXRBLt1pBzq/yAKq8nWIfmTA0IT5g400Sksqt/2AeKY
+         Xbdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/REZwXRz5HY7fev5AIX1xp+FPLMsQ7CaayNFnZrrTs4=;
+        b=ZOKO49eS8GZa+zR5IjKGAB0gyG8RGqxyWsQMO/2KamomWXYh8YwSj92wNYrXjoJq4Y
+         QtnuXG3nzVAc6iuSOGUGncQ3dvO5iFXstmG93XBPdTsUZwgppzCg9/qIcNtr0tJpsnS2
+         e0MSMBvRMrSTgG2jgg/opgMhs6fKNlWz13Upj8vnkqnwl5BiTlyt61DPG6HSh4x7IZ1Z
+         AAdSNBElLy0UjBKrscKgTUwXP8aQIF7B8QB6rzn0uLfTpLd0Q0VTQ2Jmsk7yRsXLIB/r
+         o5iyyRm+5CX6ERK9ZrNiN6axBhFSovZ2J3bvKeFDItBanKJ4E2HEZ+aNO6FRNrgJOquX
+         9iEg==
+X-Gm-Message-State: AOAM530bpWDojYtO79z/E15mB+MbW9F1YDvIK2g6FkfRbo4ivOfKtkQf
+        doCeXiS+qWkclbhsla0JXFp5YjuuCTAzE/hLZts=
+X-Google-Smtp-Source: ABdhPJxmdLhj0c/I/e6nCS/GkX9N03ZFRIjfJxIDkT8JXKbvvnm424ImsRXPevmDiHhJhXEiXih0lG99CTDFI8Na8CQ=
+X-Received: by 2002:aa7:d4c1:: with SMTP id t1mr20176260edr.253.1595836719999;
+ Mon, 27 Jul 2020 00:58:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 27 Jul 2020 08:57:58 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        jason@lakedaemon.net, wanghaibin.wang@huawei.com,
-        kuhn.chenqun@huawei.com, wangjingyi11@huawei.com
-Subject: Re: [PATCH] irqchip/gic-v4.1: Use GFP_ATOMIC flag in
- allocate_vpe_l1_table()
-In-Reply-To: <076a3e82-ba21-6e6a-c6cd-937abb063eb9@huawei.com>
-References: <20200630133746.816-1-yuzenghui@huawei.com>
- <076a3e82-ba21-6e6a-c6cd-937abb063eb9@huawei.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <9c18d534e3a57aad5f8d4a6f69c7c041@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, wanghaibin.wang@huawei.com, kuhn.chenqun@huawei.com, wangjingyi11@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20200724213659.273599-1-martin.botka1@gmail.com>
+ <20200724213659.273599-3-martin.botka1@gmail.com> <CAHp75VdJ14p+_+XqxrgRrjXF7m6L4nGr5vB03NTM=0xjgw4c7Q@mail.gmail.com>
+ <CADQ2G_HkiAZx8OhfQ_jeizveMaB-QN9dfN6Tcwfk9XuF97rmOg@mail.gmail.com>
+ <CADQ2G_HYTE6cd=PM2JzCTadkPe2DDb8dxObPdPJtz1626ktE9Q@mail.gmail.com> <20200727075243.cjkxblsivgnn6jsk@pengutronix.de>
+In-Reply-To: <20200727075243.cjkxblsivgnn6jsk@pengutronix.de>
+From:   Martin Botka <martin.botka1@gmail.com>
+Date:   Mon, 27 Jul 2020 09:58:01 +0200
+Message-ID: <CADQ2G_GcYh13CGbApCqvi3xcHU-Ur2ej98VccKFOUSOZPrQZnQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/6] pwm: core: Add option to config PWM duty/period
+ with u64 data length
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
+Hello,
 
-On 2020-07-27 04:50, Zenghui Yu wrote:
-> Hi Marc,
-> 
-> On 2020/6/30 21:37, Zenghui Yu wrote:
->> Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 
->> enabled
->> box, I get the following kernel splat:
->> 
->> [    0.053766] BUG: sleeping function called from invalid context at 
->> mm/slab.h:567
->> [    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, 
->> pid: 0, name: swapper/1
->> [    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ 
->> #23
->> [    0.053770] Call trace:
->> [    0.053774]  dump_backtrace+0x0/0x218
->> [    0.053775]  show_stack+0x2c/0x38
->> [    0.053777]  dump_stack+0xc4/0x10c
->> [    0.053779]  ___might_sleep+0xfc/0x140
->> [    0.053780]  __might_sleep+0x58/0x90
->> [    0.053782]  slab_pre_alloc_hook+0x7c/0x90
->> [    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
->> [    0.053785]  its_cpu_init+0x6f4/0xe40
->> [    0.053786]  gic_starting_cpu+0x24/0x38
->> [    0.053788]  cpuhp_invoke_callback+0xa0/0x710
->> [    0.053789]  notify_cpu_starting+0xcc/0xd8
->> [    0.053790]  secondary_start_kernel+0x148/0x200
->> 
->>  # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
->> its_cpu_init+0x6f4/0xe40:
->> allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
->> (inlined by) its_cpu_init_lpis at 
->> drivers/irqchip/irq-gic-v3-its.c:3138
->> (inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
->> 
->> It turned out that we're allocating memory using GFP_KERNEL (may 
->> sleep)
->> within the CPU hotplug notifier, which is indeed an atomic context. 
->> Bad
->> thing may happen if we're playing on a system with more than a single
->> CommonLPIAff group. Avoid it by turning this into an atomic 
->> allocation.
->> 
->> Fixes: 5e5168461c22 ("irqchip/gic-v4.1: VPE table (aka 
->> GICR_VPROPBASER) allocation")
->> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->> ---
->>  drivers/irqchip/irq-gic-v3-its.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
->> b/drivers/irqchip/irq-gic-v3-its.c
->> index 6a5a87fc4601..b66eeca442c4 100644
->> --- a/drivers/irqchip/irq-gic-v3-its.c
->> +++ b/drivers/irqchip/irq-gic-v3-its.c
->> @@ -2814,7 +2814,7 @@ static int allocate_vpe_l1_table(void)
->>  	if (val & GICR_VPROPBASER_4_1_VALID)
->>  		goto out;
->>  -	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), 
->> GFP_KERNEL);
->> +	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), 
->> GFP_ATOMIC);
->>  	if (!gic_data_rdist()->vpe_table_mask)
->>  		return -ENOMEM;
->>  @@ -2881,7 +2881,7 @@ static int allocate_vpe_l1_table(void)
->>   	pr_debug("np = %d, npg = %lld, psz = %d, epp = %d, esz = %d\n",
->>  		 np, npg, psz, epp, esz);
->> -	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, get_order(np * 
->> PAGE_SIZE));
->> +	page = alloc_pages(GFP_ATOMIC | __GFP_ZERO, get_order(np * 
->> PAGE_SIZE));
->>  	if (!page)
->>  		return -ENOMEM;
->> 
-> 
-> Do you mind taking this patch into v5.9? Or please let me know if you
-> still have any concerns on it?
+> I hit "reply-to-all" and the mail only was sent to you because you wrote
+> to only me.
 
-Oops, I seem to have dropped this one on the floor.
-I've picked it up now.
+Yes my reply was only to you. But your original message was sent only to me too.
+So when i clicked reply to all it was only you as you sent it only to me.
 
-Thanks for the heads up,
+> Also threading is somehow strange because your reply to my mail
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Yes Gmail would not allow me to reply to your message and also send it
+to everyone so i had to reply to Andy's email which is why the
+threading is broken there. Sorry for that.
+
+> So I assume all the strange things happened on your side until proved
+> otherwise. :-)
+
+I think i just proved otherwise :)
+
+Best Regards,
+Martin
