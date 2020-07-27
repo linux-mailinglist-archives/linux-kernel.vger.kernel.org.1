@@ -2,121 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7EA22F67D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8144522F691
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730581AbgG0RXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:23:38 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:59756 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgG0RXg (ORCPT
+        id S1730810AbgG0R0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729927AbgG0R0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:23:36 -0400
-Received: from 89-64-87-33.dynamic.chello.pl (89.64.87.33) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 52252b58e7e4f51e; Mon, 27 Jul 2020 19:23:33 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Francisco Jerez <currojerez@riseup.net>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
-Date:   Mon, 27 Jul 2020 19:23:32 +0200
-Message-ID: <1712943.Luj0Z5seXe@kreacher>
-In-Reply-To: <87h7u0h34t.fsf@riseup.net>
-References: <3955470.QvD6XneCf3@kreacher> <babeff29a60d3fadb5515eaf57f7bb42a1c9c792.camel@linux.intel.com> <87h7u0h34t.fsf@riseup.net>
+        Mon, 27 Jul 2020 13:26:22 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA66C061794;
+        Mon, 27 Jul 2020 10:26:21 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id f18so15570523wml.3;
+        Mon, 27 Jul 2020 10:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zsKxRhlKd+uQDOq2/CXnJ6zIjjtOUm8tfFO4C1ExSks=;
+        b=brpUcL1dvlfAx+vy6LtKzjhnTVyIriswGfEVAhcn4lBEgN/dKomchE/adCVnX6Oz32
+         zhDR+MYC8aTX9htq5QRg2ynAPL+FB8ryT3We2P5zzOC89WsfiY0bWxSW0myzQmURj22O
+         lQE6O8H0GvW4NxapvQP/VgTe3ERzx1YwXMVSMJNbiuGdOIeb6m6b0V4S9SeOjVKOU5g0
+         BSnRm4tHiaSZSJSWfdPIPZ/+OqdRqhvUxlgiToNidPwGm7Z3YRHWHbNHfVeYlxG+JSZ/
+         ajeP647s5kvSE4564J6Pyamp+hpZgvdecG6Xs90bphDofFiPSNteiTh986fJ17/h7F7L
+         kUGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zsKxRhlKd+uQDOq2/CXnJ6zIjjtOUm8tfFO4C1ExSks=;
+        b=EMafQtJnHvqyoF9twiOTVGIzqsBShyJohiAyXnQsYqsQEEGvThgglCkwxkrpJFppce
+         29Qh2utiAFHWfSuSFH7p9KNLMc+HViNmcfwYkrGUHJ4ISng6NLxOhJYgHNL5BFtktHwS
+         YtYI8Yp6YAivV0fcXxqVdfjSza9jwM3uPfhQpdtvEQgmjiYgye+8HZ9ET7LrLui+mnAk
+         TkFIO4/wIHgQjfmqtvv2Vtn5AeWE6MWjCJ95+v+TaKuKfk8LJcta+75Gu5mcXOcF2JP0
+         dysIBes0RB5I7+5i6Hor10lr1cthSFly4mCz3Kk9h7UjB4iKgx/JmrbF5Auh/Gk5pydM
+         WJdw==
+X-Gm-Message-State: AOAM530HlJPcGuNXYoycqoaThFsv/nT8t82fuQL/KVHiac/5brat3zcf
+        vfCN5ljSuEvQxbRdm+am/GkzgyD1JaVDPg==
+X-Google-Smtp-Source: ABdhPJwkJV3qaZGLM3sAXvMmmraw2MnHdwguxhJ8gmiBPedSmNgltn0XLRIhYjiS1VEvidDNTPbdvA==
+X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr344180wmt.26.1595870780590;
+        Mon, 27 Jul 2020 10:26:20 -0700 (PDT)
+Received: from localhost.localdomain (112.red-81-32-35.dynamicip.rima-tde.net. [81.32.35.112])
+        by smtp.gmail.com with ESMTPSA id l10sm9198395wru.3.2020.07.27.10.26.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 10:26:20 -0700 (PDT)
+From:   Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2] media: atomisp-mt9m114: replace fixed function names
+Date:   Mon, 27 Jul 2020 19:24:17 +0200
+Message-Id: <20200727172415.54935-1-juant.aldea@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, July 22, 2020 1:14:42 AM CEST Francisco Jerez wrote:
-> 
-> --==-=-=
-> Content-Type: multipart/mixed; boundary="=-=-="
-> 
-> --=-=-=
-> Content-Type: text/plain; charset=utf-8
-> Content-Disposition: inline
-> Content-Transfer-Encoding: quoted-printable
-> 
-> Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> writes:
-> 
-> > On Mon, 2020-07-20 at 16:20 -0700, Francisco Jerez wrote:
-> >> "Rafael J. Wysocki" <rafael@kernel.org> writes:
-> >>=20
-> >> > On Fri, Jul 17, 2020 at 2:21 AM Francisco Jerez <
-> >> > currojerez@riseup.net> wrote:
-> >> > > "Rafael J. Wysocki" <rafael@kernel.org> writes:
-> >> > >=20
-> > {...]
-> >
-> >> > Overall, so far, I'm seeing a claim that the CPU subsystem can be
-> >> > made
-> >> > use less energy and do as much work as before (which is what
-> >> > improving
-> >> > the energy-efficiency means in general) if the maximum frequency of
-> >> > CPUs is limited in a clever way.
-> >> >=20
-> >> > I'm failing to see what that clever way is, though.
-> >> Hopefully the clarifications above help some.
-> >
-> > To simplify:
-> >
-> > Suppose I called a function numpy.multiply() to multiply two big arrays
-> > and thread is a pegged to a CPU. Let's say it is causing CPU to
-> > finish the job in 10ms and it is using a P-State of 0x20. But the same
-> > job could have been done in 10ms even if it was using P-state of 0x16.
-> > So we are not energy efficient. To really know where is the bottle neck
-> > there are numbers of perf counters, may be cache was the issue, we
-> > could rather raise the uncore frequency a little. A simple APRF,MPERF
-> > counters are not enough.=20
-> 
-> Yes, that's right, APERF and MPERF aren't sufficient to identify every
-> kind of possible bottleneck, some visibility of the utilization of other
-> subsystems is necessary in addition -- Like e.g the instrumentation
-> introduced in my series to detect a GPU bottleneck.  A bottleneck
-> condition in an IO device can be communicated to CPUFREQ
+There are a couple of debug messages using hardcoded function names
+instead of the preferred __func__ magic constant.
 
-It generally is not sufficient to communicate it to cpufreq.  It needs to be
-communicated to the CPU scheduler.
+Replace them:
 
-> by adjusting a
-> PM QoS latency request (link [2] in my previous reply) that effectively
-> gives the governor permission to rearrange CPU work arbitrarily within
-> the specified time frame (which should be of the order of the natural
-> latency of the IO device -- e.g. at least the rendering time of a frame
-> for a GPU) in order to minimize energy usage.
+WARNING: Prefer using '"%s...", __func__' to using 'misensor_rmw_reg', this function's name, in a string
+215: FILE: ./media/atomisp/i2c/atomisp-mt9m114.c:215:
++       v4l2_err(client, "misensor_rmw_reg error exit, read failed\n");
 
-OK, we need to talk more about this.
+WARNING: Prefer using '"%s...", __func__' to using 'misensor_rmw_reg', this function's name, in a string
+236: FILE: ./media/atomisp/i2c/atomisp-mt9m114.c:236:
++       v4l2_err(client, "misensor_rmw_reg error exit, write failed\n");
 
-> > or we characterize the workload at different P-states and set limits.
-> > I think this is not you want to say for energy efficiency with your
-> > changes.=20
-> >
-> > The way you are trying to improve "performance" is by caller (device
-> > driver) to say how important my job at hand. Here device driver suppose
-> > offload this calculations to some GPU and can wait up to 10 ms, you
-> > want to tell CPU to be slow. But the p-state driver at a movement
-> > observes that there is a chance of overshoot of latency, it will
-> > immediately ask for higher P-state. So you want P-state limits based on
-> > the latency requirements of the caller. Since caller has more knowledge
-> > of latency requirement, this allows other devices sharing the power
-> > budget to get more or less power, and improve overall energy efficiency
-> > as the combined performance of system is improved.
-> > Is this correct?
-> 
-> Yes, pretty much.
+Signed-off-by: Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>
 
-OK
+PATCH V2:
+* Restored word "error" as pointed out by Dan Carpenter <dan.carpenter@oracle.com>
 
+---
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index 0d60918a9b19..f5de81132177 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -212,7 +212,7 @@ misensor_rmw_reg(struct i2c_client *client, u16 data_length, u16 reg,
+ 
+ 	err = mt9m114_read_reg(client, data_length, reg, &val);
+ 	if (err) {
+-		v4l2_err(client, "misensor_rmw_reg error exit, read failed\n");
++		v4l2_err(client, "%s error exit, read failed\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -233,7 +233,7 @@ misensor_rmw_reg(struct i2c_client *client, u16 data_length, u16 reg,
+ 
+ 	err = mt9m114_write_reg(client, data_length, reg, val);
+ 	if (err) {
+-		v4l2_err(client, "misensor_rmw_reg error exit, write failed\n");
++		v4l2_err(client, "%s error exit, write failed\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.27.0
 
