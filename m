@@ -2,181 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF62B22F743
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D180A22F73B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731054AbgG0SEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:04:06 -0400
-Received: from crapouillou.net ([89.234.176.41]:39978 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728313AbgG0SEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:04:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595873043; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a8hnFBflIFs2SlnL6a+fKRKHJ7sn0cbnakResXbbUtA=;
-        b=leOnkFjIl0aSA5iqFDCdj5b+p3adVmnkZKXJg0N7/xmPXnt3X1S6LDuqIngP9ozNT/YcJF
-        P6k20aw9Hi23nRy1MU0vEYqq5ixwb8QF38FlpFaiwOiZyHF0VVzNXwlGknrghO+D8/MUYv
-        G2qb4VceNxHI5vyBnhak5mccVGMdk/s=
-Date:   Mon, 27 Jul 2020 19:59:14 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 2/6] drm: dsi: Let host and device specify supported bus
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Noralf =?iso-8859-1?q?Tr=F8nnes?= <noralf@tronnes.org>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <QA35EQ.0IE6UXSOG224@crapouillou.net>
-In-Reply-To: <20200727170245.GF17521@pendragon.ideasonboard.com>
-References: <20200727164613.19744-1-paul@crapouillou.net>
-        <20200727164613.19744-3-paul@crapouillou.net>
-        <20200727170245.GF17521@pendragon.ideasonboard.com>
+        id S1730446AbgG0SBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:01:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:55092 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729610AbgG0SBR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:01:17 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RHvoW3022570;
+        Mon, 27 Jul 2020 18:00:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=eu4SrTGieRdpo72CtnDZ91l+25Ht7vSkZp5hzFeF660=;
+ b=DEc72janMLcdPS8ZsEPwLHNF3DJzt4ricPlsLOmBD1/LCfhSq+9Q7BUil5Cgy659rh2G
+ ZgnlsxeI4z0r7XM2WebMEbKMUkdnsYV7rx0cZaoUtyXkS9HABUtxL17icKvPC31tigSF
+ dvdgJU37nAmobyMf3qnrrDmz9+6AXy/35DgVzZH1SlCycpeChR8RmjdX+OQPMFpqEKx0
+ ZThfzrvB/79OH3r91iE3lHXvOMZldYSn8hkTnnYTPWuHpmRcam0ZMaXwNxT1IRrzmR8Z
+ YvKcMtHZARTLjZrdd1Z3O9fsygYlhUNtrb+ksvr8DVmzd5tndW1j2USVZH5tm+9B+PSP pQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 32hu1j31k9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Jul 2020 18:00:29 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RHxIp3102771;
+        Mon, 27 Jul 2020 18:00:28 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 32hu5r5014-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Jul 2020 18:00:27 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06RI0LEV025773;
+        Mon, 27 Jul 2020 18:00:21 GMT
+Received: from [10.39.226.160] (/10.39.226.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Jul 2020 11:00:21 -0700
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
+        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
+        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
+        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+ <87pn8glwd2.fsf@x220.int.ebiederm.org>
+From:   Steven Sistare <steven.sistare@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <28125570-4129-bcba-099b-f90481cfbfe8@oracle.com>
+Date:   Mon, 27 Jul 2020 14:00:17 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87pn8glwd2.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007270121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 malwarescore=0 clxscore=1011 mlxscore=0 impostorscore=0
+ phishscore=0 adultscore=0 suspectscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007270121
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On 7/27/2020 1:07 PM, ebiederm@xmission.com wrote:
+> Anthony Yznaga <anthony.yznaga@oracle.com> writes:
+> 
+>> This patchset adds support for preserving an anonymous memory range across
+>> exec(3) using a new madvise MADV_DOEXEC argument.  The primary benefit for
+>> sharing memory in this manner, as opposed to re-attaching to a named shared
+>> memory segment, is to ensure it is mapped at the same virtual address in
+>> the new process as it was in the old one.  An intended use for this is to
+>> preserve guest memory for guests using vfio while qemu exec's an updated
+>> version of itself.  By ensuring the memory is preserved at a fixed address,
+>> vfio mappings and their associated kernel data structures can remain valid.
+>> In addition, for the qemu use case, qemu instances that back guest RAM with
+>> anonymous memory can be updated.
+> 
+> What is wrong with using a file descriptor to a possibly deleted file
+> and re-mmaping it?
+> 
+> There is already MAP_FIXED that allows you to ensure you have the same
+> address.
 
-Le lun. 27 juil. 2020 =E0 20:02, Laurent Pinchart=20
-<laurent.pinchart@ideasonboard.com> a =E9crit :
-> Hi Paul,
->=20
-> Thank you for the patch.
->=20
-> On Mon, Jul 27, 2020 at 06:46:09PM +0200, Paul Cercueil wrote:
->>  The current MIPI DSI framework can very well be used to support=20
->> MIPI DBI
->>  panels. In order to add support for the various bus types supported=20
->> by
->>  DBI, the DRM panel drivers should specify the bus type they will=20
->> use,
->>  and the DSI host drivers should specify the bus types they are
->>  compatible with.
->>=20
->>  The DSI host driver can then use the information provided by the=20
->> DBI/DSI
->>  device driver, such as the bus type and the number of lanes, to
->>  configure its hardware properly.
->>=20
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/gpu/drm/drm_mipi_dsi.c |  9 +++++++++
->>   include/drm/drm_mipi_dsi.h     | 12 ++++++++++++
->=20
-> Use the mipi_dsi_* API for DBI panels will be very confusing to say=20
-> the
-> least. Can we consider a global name refactoring to clarify all this ?
+MAP_FIXED blows away any existing mapping in that range, which is not the 
+desired behavior.  We want to preserve the previously created mapping at
+the same VA and co-exist with other mappings created by the new process.
+There is no way to guarantee availability of a VA post-exec.
 
-I was thinking that this could be done when the code is cleaned up and=20
-drivers/gpu/drm/drm_mipi_dbi.c is removed. I'm scared of tree-wide=20
-patchsets.
+> I think all it would take would be a small protocol from one version
+> to the next to say map file descriptor #N and address #A.  Something
+> easily passed on the command line.
+> 
+> There is just enough complexity in exec currently that our
+> implementation of exec is already teetering.  So if we could use
+> existing mechanisms it would be good.
+> 
+> And I don't see why this version of sharing a mmap area would be
+> particularly general.  I do imagine that being able to force a
+> mmap area into a setuid executable would be a fun attack vector.
 
--Paul
+Any mmap(MAP_ANON) segment can be preserved.  That is very general, and is 
+the case we need to support to upgrade legacy applications that are already
+running (such as qemu) -- we cannot recode them before they are updated.
 
->=20
->>   2 files changed, 21 insertions(+)
->>=20
->>  diff --git a/drivers/gpu/drm/drm_mipi_dsi.c=20
->> b/drivers/gpu/drm/drm_mipi_dsi.c
->>  index 5dd475e82995..11ef885de765 100644
->>  --- a/drivers/gpu/drm/drm_mipi_dsi.c
->>  +++ b/drivers/gpu/drm/drm_mipi_dsi.c
->>  @@ -281,6 +281,9 @@ int mipi_dsi_host_register(struct mipi_dsi_host=20
->> *host)
->>   {
->>   	struct device_node *node;
->>=20
->>  +	if (WARN_ON_ONCE(!host->bus_types))
->>  +		host->bus_types =3D MIPI_DEVICE_TYPE_DSI;
->>  +
->>   	for_each_available_child_of_node(host->dev->of_node, node) {
->>   		/* skip nodes without reg property */
->>   		if (!of_find_property(node, "reg", NULL))
->>  @@ -323,6 +326,12 @@ int mipi_dsi_attach(struct mipi_dsi_device=20
->> *dsi)
->>   {
->>   	const struct mipi_dsi_host_ops *ops =3D dsi->host->ops;
->>=20
->>  +	if (WARN_ON_ONCE(!dsi->bus_type))
->>  +		dsi->bus_type =3D MIPI_DEVICE_TYPE_DSI;
->>  +
->>  +	if (!(dsi->bus_type & dsi->host->bus_types))
->>  +		return -EINVAL;
->>  +
->>   	if (!ops || !ops->attach)
->>   		return -ENOSYS;
->>=20
->>  diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
->>  index 360e6377e84b..65d2961fc054 100644
->>  --- a/include/drm/drm_mipi_dsi.h
->>  +++ b/include/drm/drm_mipi_dsi.h
->>  @@ -63,6 +63,14 @@ struct mipi_dsi_packet {
->>   int mipi_dsi_create_packet(struct mipi_dsi_packet *packet,
->>   			   const struct mipi_dsi_msg *msg);
->>=20
->>  +/* MIPI bus types */
->>  +#define MIPI_DEVICE_TYPE_DSI		BIT(0)
->>  +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE1	BIT(1)
->>  +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE2	BIT(2)
->>  +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE3	BIT(3)
->>  +#define MIPI_DEVICE_TYPE_DBI_M6800	BIT(4)
->>  +#define MIPI_DEVICE_TYPE_DBI_I8080	BIT(5)
->>  +
->>   /**
->>    * struct mipi_dsi_host_ops - DSI bus operations
->>    * @attach: attach DSI device to DSI host
->>  @@ -94,11 +102,13 @@ struct mipi_dsi_host_ops {
->>    * struct mipi_dsi_host - DSI host device
->>    * @dev: driver model device node for this DSI host
->>    * @ops: DSI host operations
->>  + * @bus_types: Bitmask of supported MIPI bus types
->>    * @list: list management
->>    */
->>   struct mipi_dsi_host {
->>   	struct device *dev;
->>   	const struct mipi_dsi_host_ops *ops;
->>  +	unsigned int bus_types;
->>   	struct list_head list;
->>   };
->>=20
->>  @@ -162,6 +172,7 @@ struct mipi_dsi_device_info {
->>    * @host: DSI host for this peripheral
->>    * @dev: driver model device node for this peripheral
->>    * @name: DSI peripheral chip type
->>  + * @bus_type: MIPI bus type (MIPI_DEVICE_TYPE_DSI/...)
->>    * @channel: virtual channel assigned to the peripheral
->>    * @format: pixel format for video mode
->>    * @lanes: number of active data lanes
->>  @@ -178,6 +189,7 @@ struct mipi_dsi_device {
->>   	struct device dev;
->>=20
->>   	char name[DSI_DEV_NAME_SIZE];
->>  +	unsigned int bus_type;
->>   	unsigned int channel;
->>   	unsigned int lanes;
->>   	enum mipi_dsi_pixel_format format;
->=20
-> --
-> Regards,
->=20
-> Laurent Pinchart
+> Perhaps I missed this in my skim of these patches but I did not see
+> anything that guarded this feature against an exec that changes an
+> applications privileges.
 
+The ELF opt-in flag must be set, so only selected executables will accept
+incoming mappings.  The exec() code verifies that the preserved mappings 
+do not overlap or become adjacent to text or stack, so it is not possible for
+example for an attacker to cause stack underflow or overflow to access injected
+content.  A gadget invoked by some other attack could access the preserved content.
 
+- Steve
+
+>> Patches 1 and 2 ensure that loading of ELF load segments does not silently
+>> clobber existing VMAS, and remove assumptions that the stack is the only
+>> VMA in the mm when the stack is set up.  Patch 1 re-introduces the use of
+>> MAP_FIXED_NOREPLACE to load ELF binaries that addresses the previous issues
+>> and could be considered on its own.
+>>
+>> Patches 3, 4, and 5 introduce the feature and an opt-in method for its use
+>> using an ELF note.
+>>
+>> Anthony Yznaga (5):
+>>   elf: reintroduce using MAP_FIXED_NOREPLACE for elf executable mappings
+>>   mm: do not assume only the stack vma exists in setup_arg_pages()
+>>   mm: introduce VM_EXEC_KEEP
+>>   exec, elf: require opt-in for accepting preserved mem
+>>   mm: introduce MADV_DOEXEC
+>>
+>>  arch/x86/Kconfig                       |   1 +
+>>  fs/binfmt_elf.c                        | 196 +++++++++++++++++++++++++--------
+>>  fs/exec.c                              |  33 +++++-
+>>  include/linux/binfmts.h                |   7 +-
+>>  include/linux/mm.h                     |   5 +
+>>  include/uapi/asm-generic/mman-common.h |   3 +
+>>  kernel/fork.c                          |   2 +-
+>>  mm/madvise.c                           |  25 +++++
+>>  mm/mmap.c                              |  47 ++++++++
+>>  9 files changed, 266 insertions(+), 53 deletions(-)
