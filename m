@@ -2,279 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D9122EA8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FD222EA92
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728401AbgG0K6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:58:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13336 "EHLO m43-7.mailgun.net"
+        id S1728419AbgG0K7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:59:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:41800 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728392AbgG0K6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:58:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595847519; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=DEfjH/2I4evPsMqfPSbH/iM41ACmWP5x0mOUhdXb52s=;
- b=qLSFx10QkkV0S7oqsbFOKJTUIArC02n3K+lD/P+rQCduGwCLEdlg/nDiglOuqFhEWhUjbBDe
- tMjIrBXuSU9Rg8kFH4MISE2khT2jG0vws69N1LO5hXcRNO3pQNzxEmL18N1PEycB4d9n/wOn
- UUKqzglzYUp8c/HI8YGD6V77ifs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f1eb35da61bb9e3f58d35e0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 10:58:37
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 861D9C433CB; Mon, 27 Jul 2020 10:58:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 914D4C433C6;
-        Mon, 27 Jul 2020 10:58:35 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 27 Jul 2020 16:28:35 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org, mka@chromium.org,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 4/6] arm64: dts: qcom: sdm845: Increase the number of
- interconnect cells
-In-Reply-To: <20200723130942.28491-5-georgi.djakov@linaro.org>
-References: <20200723130942.28491-1-georgi.djakov@linaro.org>
- <20200723130942.28491-5-georgi.djakov@linaro.org>
-Message-ID: <3c8c4aae7697d9d5a052b9dfd1ea0cf4@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S1727775AbgG0K7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:59:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 279CF30E;
+        Mon, 27 Jul 2020 03:59:48 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0C9AB3F66E;
+        Mon, 27 Jul 2020 03:59:46 -0700 (PDT)
+From:   vincent.donnefort@arm.com
+To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        lukasz.luba@arm.com, valentin.schneider@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] sched/fair: provide u64 read for 32-bits arch helper
+Date:   Mon, 27 Jul 2020 11:59:24 +0100
+Message-Id: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-23 18:39, Georgi Djakov wrote:
-> Increase the number of interconnect-cells, as now we can include
-> the tag information. The consumers can specify the path tag as an
-> additional argument to the endpoints.
+From: Vincent Donnefort <vincent.donnefort@arm.com>
 
-Tested-by: Sibi Sankar <sibis@codeaurora.org>
-Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+Introducing two macro helpers u64_32read() and u64_32read_set_copy() to
+factorize the u64 vminruntime and last_update_time read on a 32-bits
+architecture. Those new helpers encapsulate smp_rmb() and smp_wmb()
+synchronization and therefore, have a small penalty in set_task_rq_fair()
+and init_cfs_rq().
 
-https://patchwork.kernel.org/patch/11655409/
-I'll replace the tag ids with the
-macros once ^^ lands.
+The choice of using a macro over an inline function is driven by the
+conditional u64 variable copy declarations.
 
-> 
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 44 ++++++++++++++--------------
->  1 file changed, 22 insertions(+), 22 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index e506793407d8..94f5d27f2927 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -200,7 +200,7 @@ &LITTLE_CPU_SLEEP_1
->  			dynamic-power-coefficient = <100>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			operating-points-v2 = <&cpu0_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_0>;
-> @@ -225,7 +225,7 @@ &LITTLE_CPU_SLEEP_1
->  			dynamic-power-coefficient = <100>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			operating-points-v2 = <&cpu0_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_100>;
-> @@ -247,7 +247,7 @@ &LITTLE_CPU_SLEEP_1
->  			dynamic-power-coefficient = <100>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			operating-points-v2 = <&cpu0_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_200>;
-> @@ -269,7 +269,7 @@ &LITTLE_CPU_SLEEP_1
->  			dynamic-power-coefficient = <100>;
->  			qcom,freq-domain = <&cpufreq_hw 0>;
->  			operating-points-v2 = <&cpu0_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_300>;
-> @@ -291,7 +291,7 @@ &BIG_CPU_SLEEP_1
->  			dynamic-power-coefficient = <396>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			operating-points-v2 = <&cpu4_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_400>;
-> @@ -313,7 +313,7 @@ &BIG_CPU_SLEEP_1
->  			dynamic-power-coefficient = <396>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			operating-points-v2 = <&cpu4_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_500>;
-> @@ -335,7 +335,7 @@ &BIG_CPU_SLEEP_1
->  			dynamic-power-coefficient = <396>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			operating-points-v2 = <&cpu4_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_600>;
-> @@ -357,7 +357,7 @@ &BIG_CPU_SLEEP_1
->  			dynamic-power-coefficient = <396>;
->  			qcom,freq-domain = <&cpufreq_hw 1>;
->  			operating-points-v2 = <&cpu4_opp_table>;
-> -			interconnects = <&gladiator_noc MASTER_APPSS_PROC &mem_noc 
-> SLAVE_EBI1>,
-> +			interconnects = <&gladiator_noc MASTER_APPSS_PROC 3 &mem_noc 
-> SLAVE_EBI1 3>,
->  					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
->  			#cooling-cells = <2>;
->  			next-level-cache = <&L2_700>;
-> @@ -2011,49 +2011,49 @@ pcie1_lane: lanes@1c06200 {
->  		mem_noc: interconnect@1380000 {
->  			compatible = "qcom,sdm845-mem-noc";
->  			reg = <0 0x01380000 0 0x27200>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
->  		dc_noc: interconnect@14e0000 {
->  			compatible = "qcom,sdm845-dc-noc";
->  			reg = <0 0x014e0000 0 0x400>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
->  		config_noc: interconnect@1500000 {
->  			compatible = "qcom,sdm845-config-noc";
->  			reg = <0 0x01500000 0 0x5080>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
->  		system_noc: interconnect@1620000 {
->  			compatible = "qcom,sdm845-system-noc";
->  			reg = <0 0x01620000 0 0x18080>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
->  		aggre1_noc: interconnect@16e0000 {
->  			compatible = "qcom,sdm845-aggre1-noc";
->  			reg = <0 0x016e0000 0 0x15080>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
->  		aggre2_noc: interconnect@1700000 {
->  			compatible = "qcom,sdm845-aggre2-noc";
->  			reg = <0 0x01700000 0 0x1f300>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
->  		mmss_noc: interconnect@1740000 {
->  			compatible = "qcom,sdm845-mmss-noc";
->  			reg = <0 0x01740000 0 0x1c100>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
-> 
-> @@ -2156,8 +2156,8 @@ ipa: ipa@1e40000 {
->  			clocks = <&rpmhcc RPMH_IPA_CLK>;
->  			clock-names = "core";
-> 
-> -			interconnects = <&aggre2_noc MASTER_IPA &mem_noc SLAVE_EBI1>,
-> -				        <&aggre2_noc MASTER_IPA &system_noc SLAVE_IMEM>,
-> +			interconnects = <&aggre2_noc MASTER_IPA 0 &mem_noc SLAVE_EBI1 0>,
-> +					<&aggre2_noc MASTER_IPA 0 &system_noc SLAVE_IMEM 0>,
->  					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_IPA_CFG>;
->  			interconnect-names = "memory",
->  					     "imem",
-> @@ -3561,8 +3561,8 @@ usb_1: usb@a6f8800 {
-> 
->  			resets = <&gcc GCC_USB30_PRIM_BCR>;
-> 
-> -			interconnects = <&aggre2_noc MASTER_USB3_0 &mem_noc SLAVE_EBI1>,
-> -					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_0>;
-> +			interconnects = <&aggre2_noc MASTER_USB3_0 0 &mem_noc SLAVE_EBI1 
-> 0>,
-> +					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_0 0>;
->  			interconnect-names = "usb-ddr", "apps-usb";
-> 
->  			usb_1_dwc3: dwc3@a600000 {
-> @@ -3609,8 +3609,8 @@ usb_2: usb@a8f8800 {
-> 
->  			resets = <&gcc GCC_USB30_SEC_BCR>;
-> 
-> -			interconnects = <&aggre2_noc MASTER_USB3_1 &mem_noc SLAVE_EBI1>,
-> -					<&gladiator_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3_1>;
-> +			interconnects = <&aggre2_noc MASTER_USB3_1 0 &mem_noc SLAVE_EBI1 
-> 0>,
-> +					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_1 0>;
->  			interconnect-names = "usb-ddr", "apps-usb";
-> 
->  			usb_2_dwc3: dwc3@a800000 {
-> @@ -4306,7 +4306,7 @@ lpasscc: clock-controller@17014000 {
->  		gladiator_noc: interconnect@17900000 {
->  			compatible = "qcom,sdm845-gladiator-noc";
->  			reg = <0 0x17900000 0 0xd080>;
-> -			#interconnect-cells = <1>;
-> +			#interconnect-cells = <2>;
->  			qcom,bcm-voters = <&apps_bcm_voter>;
->  		};
+  #ifndef CONFIG_64BIT
+     u64 [vminruntime|last_update_time]_copy;
+  #endif
 
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1a68a05..00a825d 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -563,10 +563,8 @@ static void update_min_vruntime(struct cfs_rq *cfs_rq)
+ 
+ 	/* ensure we never gain time by being placed backwards. */
+ 	cfs_rq->min_vruntime = max_vruntime(cfs_rq->min_vruntime, vruntime);
+-#ifndef CONFIG_64BIT
+-	smp_wmb();
+-	cfs_rq->min_vruntime_copy = cfs_rq->min_vruntime;
+-#endif
++
++	u64_32read_set_copy(cfs_rq->min_vruntime, cfs_rq->min_vruntime_copy);
+ }
+ 
+ /*
+@@ -3284,6 +3282,11 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+ }
+ 
+ #ifdef CONFIG_SMP
++static inline u64 cfs_rq_last_update_time(struct cfs_rq *cfs_rq)
++{
++	return u64_32read(cfs_rq->avg.last_update_time,
++			  cfs_rq->load_last_update_time_copy);
++}
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ /**
+  * update_tg_load_avg - update the tg's load avg
+@@ -3340,27 +3343,9 @@ void set_task_rq_fair(struct sched_entity *se,
+ 	if (!(se->avg.last_update_time && prev))
+ 		return;
+ 
+-#ifndef CONFIG_64BIT
+-	{
+-		u64 p_last_update_time_copy;
+-		u64 n_last_update_time_copy;
+-
+-		do {
+-			p_last_update_time_copy = prev->load_last_update_time_copy;
+-			n_last_update_time_copy = next->load_last_update_time_copy;
+-
+-			smp_rmb();
++	p_last_update_time = cfs_rq_last_update_time(prev);
++	n_last_update_time = cfs_rq_last_update_time(next);
+ 
+-			p_last_update_time = prev->avg.last_update_time;
+-			n_last_update_time = next->avg.last_update_time;
+-
+-		} while (p_last_update_time != p_last_update_time_copy ||
+-			 n_last_update_time != n_last_update_time_copy);
+-	}
+-#else
+-	p_last_update_time = prev->avg.last_update_time;
+-	n_last_update_time = next->avg.last_update_time;
+-#endif
+ 	__update_load_avg_blocked_se(p_last_update_time, se);
+ 	se->avg.last_update_time = n_last_update_time;
+ }
+@@ -3681,10 +3666,8 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+ 
+ 	decayed |= __update_load_avg_cfs_rq(now, cfs_rq);
+ 
+-#ifndef CONFIG_64BIT
+-	smp_wmb();
+-	cfs_rq->load_last_update_time_copy = sa->last_update_time;
+-#endif
++	u64_32read_set_copy(sa->last_update_time,
++			    cfs_rq->load_last_update_time_copy);
+ 
+ 	return decayed;
+ }
+@@ -3810,27 +3793,6 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+ 	}
+ }
+ 
+-#ifndef CONFIG_64BIT
+-static inline u64 cfs_rq_last_update_time(struct cfs_rq *cfs_rq)
+-{
+-	u64 last_update_time_copy;
+-	u64 last_update_time;
+-
+-	do {
+-		last_update_time_copy = cfs_rq->load_last_update_time_copy;
+-		smp_rmb();
+-		last_update_time = cfs_rq->avg.last_update_time;
+-	} while (last_update_time != last_update_time_copy);
+-
+-	return last_update_time;
+-}
+-#else
+-static inline u64 cfs_rq_last_update_time(struct cfs_rq *cfs_rq)
+-{
+-	return cfs_rq->avg.last_update_time;
+-}
+-#endif
+-
+ /*
+  * Synchronize entity load avg of dequeued entity without locking
+  * the previous rq.
+@@ -6744,21 +6706,9 @@ static void migrate_task_rq_fair(struct task_struct *p, int new_cpu)
+ 	if (p->state == TASK_WAKING) {
+ 		struct sched_entity *se = &p->se;
+ 		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+-		u64 min_vruntime;
+-
+-#ifndef CONFIG_64BIT
+-		u64 min_vruntime_copy;
+-
+-		do {
+-			min_vruntime_copy = cfs_rq->min_vruntime_copy;
+-			smp_rmb();
+-			min_vruntime = cfs_rq->min_vruntime;
+-		} while (min_vruntime != min_vruntime_copy);
+-#else
+-		min_vruntime = cfs_rq->min_vruntime;
+-#endif
+ 
+-		se->vruntime -= min_vruntime;
++		se->vruntime -= u64_32read(cfs_rq->min_vruntime,
++					   cfs_rq->min_vruntime_copy);
+ 	}
+ 
+ 	if (p->on_rq == TASK_ON_RQ_MIGRATING) {
+@@ -10891,9 +10841,7 @@ void init_cfs_rq(struct cfs_rq *cfs_rq)
+ {
+ 	cfs_rq->tasks_timeline = RB_ROOT_CACHED;
+ 	cfs_rq->min_vruntime = (u64)(-(1LL << 20));
+-#ifndef CONFIG_64BIT
+-	cfs_rq->min_vruntime_copy = cfs_rq->min_vruntime;
+-#endif
++	u64_32read_set_copy(cfs_rq->min_vruntime, cfs_rq->min_vruntime_copy);
+ #ifdef CONFIG_SMP
+ 	raw_spin_lock_init(&cfs_rq->removed.lock);
+ #endif
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 9f33c77..c8c4646 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -605,6 +605,41 @@ struct cfs_rq {
+ #endif /* CONFIG_FAIR_GROUP_SCHED */
+ };
+ 
++/*
++ * u64_32read() / u64_32read_set_copy()
++ *
++ * Use the copied u64 value to protect against data race. This is only
++ * applicable for 32-bits architectures.
++ */
++#if !defined(CONFIG_64BIT) && defined(CONFIG_SMP)
++# define u64_32read(val, copy)						\
++({									\
++	u64 _val;							\
++	u64 _val_copy;							\
++									\
++	do {								\
++		_val_copy = copy;					\
++		/*							\
++		 * paired with u64_32read_set_copy, ordering access	\
++		 * to val and copy.					\
++		 */							\
++		smp_rmb();						\
++		_val = val;						\
++	} while (_val != _val_copy);					\
++									\
++	_val;								\
++})
++# define u64_32read_set_copy(val, copy)					\
++do {									\
++	/* paired with u64_32read, ordering access to val and copy */	\
++	smp_wmb();							\
++	copy = val;							\
++} while (0)
++#else
++# define u64_32read(val, copy) (val)
++# define u64_32read_set_copy(val, copy) do { } while (0)
++#endif
++
+ static inline int rt_bandwidth_enabled(void)
+ {
+ 	return sysctl_sched_rt_runtime >= 0;
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+2.7.4
+
