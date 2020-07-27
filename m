@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF4722E767
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3944F22E769
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgG0IPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:15:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726298AbgG0IPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:15:03 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2AB72070B;
-        Mon, 27 Jul 2020 08:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595837702;
-        bh=eXy/m7JHLeCOts1JoHZUSOPXrsnh+SvaKm23EURb5gI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DdnkLiFuG7mLHxg/eVJz8zjbPBL9E07Ttn5dB5bjjcnTnYO8p6EN7omVNMTKe3gUa
-         5yOY7DLhCQFMBjFYgwjfxXA6Ljprk174qd3bZPvPIsQII8J+B03itxlOUVaZb5dCN6
-         plOjwAFohCe2I6lj6KUV95qtaKYi6+bZO8tW3Qzc=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jzyHl-00FENM-8d; Mon, 27 Jul 2020 09:15:01 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     tglx@linutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, jason@lakedaemon.net,
-        linux-kernel@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, festevam@gmail.com,
-        wangjingyi11@huawei.com, wanghaibin.wang@huawei.com,
-        kuhn.chenqun@huawei.com
-Subject: Re: [PATCH] irqchip/gic-v4.1: Use GFP_ATOMIC flag in allocate_vpe_l1_table()
-Date:   Mon, 27 Jul 2020 09:14:49 +0100
-Message-Id: <159583764131.244522.1925786531384349855.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200630133746.816-1-yuzenghui@huawei.com>
-References: <20200630133746.816-1-yuzenghui@huawei.com>
+        id S1727852AbgG0IPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:15:08 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:40125 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbgG0IPC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 04:15:02 -0400
+Received: by mail-ed1-f68.google.com with SMTP id b13so9067149edz.7;
+        Mon, 27 Jul 2020 01:15:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uQ6jS2p/wfLKpN5rZ4uG0Txi8VApzRXQQMOZTpW6E5I=;
+        b=FlSx8lyn6PxIQqtnya+AZusTMI7TnZzh4VZsyO2q4xap/E/TKNtQ3EdqGVTWt2H0U7
+         aPMm8gM3EPZr+WnMGc66W9a8Ir69ceWf9m0uLdbhV0iqmRcEfh/Su22WGENIPcfKB0B7
+         Ur6jPmE2rCcNb6bvxVrnIG9XzTZkga7ukNdIGoG8aPz1rUCOc1ZX/a4y9EtDMSelwR6w
+         iueugoGjhFyQT2/6vyGGWdwqcB+pydLnrYlaR18oYOmqhV8qQSw9R7+FDeXvtHO7bfe7
+         v3X7QXNKPlE05rXIE2WGNA5MMqDU7hHwa2O5ovqSwoA54FybRUb0vj/2kSRpujSOCM/h
+         u4UQ==
+X-Gm-Message-State: AOAM5318kQ9Pi4iKTuoXr/4vFC3T9U2VE10XiReBFOEmKeeuUxV54Lh1
+        fSXv63IZalKusBZ1zZInNyo=
+X-Google-Smtp-Source: ABdhPJzZy8lYuF4Dnv8+CzgE9UBuWcfCF+6QoG4nD0xokbAAauobBpYUph+um4SOa4k7Kb6rNYcUlQ==
+X-Received: by 2002:a05:6402:1bc1:: with SMTP id ch1mr11717034edb.142.1595837700542;
+        Mon, 27 Jul 2020 01:15:00 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id g6sm6545579ejz.19.2020.07.27.01.14.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 27 Jul 2020 01:14:59 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 10:14:57 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-pm@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 11/16] memory: brcmstb_dpfe: Fix language typo
+Message-ID: <20200727081457.GA17644@kozik-lap>
+References: <20200724182328.3348-1-krzk@kernel.org>
+ <20200724182328.3348-12-krzk@kernel.org>
+ <ca3f8dd3-7fc7-85dc-5656-e1e95302d501@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, qiangqing.zhang@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org, yuzenghui@huawei.com, kernel@pengutronix.de, linux-imx@nxp.com, festevam@gmail.com, wangjingyi11@huawei.com, wanghaibin.wang@huawei.com, kuhn.chenqun@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ca3f8dd3-7fc7-85dc-5656-e1e95302d501@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 30 Jun 2020 21:37:46 +0800, Zenghui Yu wrote:
-> Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 enabled
-> box, I get the following kernel splat:
+On Fri, Jul 24, 2020 at 11:38:57AM -0700, Florian Fainelli wrote:
+> On 7/24/20 11:23 AM, Krzysztof Kozlowski wrote:
+> > Fix firwmare -> firmware.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> [    0.053766] BUG: sleeping function called from invalid context at mm/slab.h:567
-> [    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, pid: 0, name: swapper/1
-> [    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ #23
-> [    0.053770] Call trace:
-> [    0.053774]  dump_backtrace+0x0/0x218
-> [    0.053775]  show_stack+0x2c/0x38
-> [    0.053777]  dump_stack+0xc4/0x10c
-> [    0.053779]  ___might_sleep+0xfc/0x140
-> [    0.053780]  __might_sleep+0x58/0x90
-> [    0.053782]  slab_pre_alloc_hook+0x7c/0x90
-> [    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
-> [    0.053785]  its_cpu_init+0x6f4/0xe40
-> [    0.053786]  gic_starting_cpu+0x24/0x38
-> [    0.053788]  cpuhp_invoke_callback+0xa0/0x710
-> [    0.053789]  notify_cpu_starting+0xcc/0xd8
-> [    0.053790]  secondary_start_kernel+0x148/0x200
-> 
-> [...]
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Applied to irq/irqchip-next, thanks!
+Thanks!
 
-[1/1] irqchip/gic-v4.1: Use GFP_ATOMIC flag in allocate_vpe_l1_table()
-      commit: d1bd7e0ba533a2a6f313579ec9b504f6614c35c4
+Applied to drivers/memory tree.
 
-Cheers,
-
-	M.
--- 
-Without deviation from the norm, progress is not possible.
-
+Best regards,
+Krzysztof
 
