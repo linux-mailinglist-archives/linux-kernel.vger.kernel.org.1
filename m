@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493BC22EB7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E294F22EB88
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgG0Lxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54318 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726873AbgG0Lxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:53:39 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A227E206E7;
-        Mon, 27 Jul 2020 11:53:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595850819;
-        bh=pmx7r4So4ltU9GFLtyowT8sGCWQ3CPndiOgHKn5MH2Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G1ACx5gLsKOlLnHUq7TxrmlaoSuUj35QO83mZgX22J+x2NolUsEZLVhjOUT0Duu2X
-         UBU8N1plsG6Qtp1WieL6u0koBH+1NAhNq5ckcoQiUhlW12aQ+nQzPDHVpbAGDiZ+1d
-         LpaP1h91USoBeicfxQp8fugF1xEmm13NGV/cXHe4=
-Date:   Mon, 27 Jul 2020 12:53:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mike Looijmans <mike.looijmans@topic.nl>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        balbi@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com
-Subject: Re: [PATCH v3] usb: dwc3: Add support for VBUS power control
-Message-ID: <20200727115321.GC6275@sirena.org.uk>
-References: <20200619142512.19824-1-mike.looijmans@topic.nl>
- <20200723075612.tn5dbkhes2chohwh@axis.com>
- <20200723110523.GA4759@sirena.org.uk>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.2698920d-90ba-4c46-abda-83e18e2093c8@emailsignatures365.codetwo.com>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.ac9c2a67-d7df-4f70-81b3-db983bbfb4db@emailsignatures365.codetwo.com>
- <e63ee918-c9e3-a8ee-e7c5-577b5a3e09be@topic.nl>
- <20200727102317.GA6275@sirena.org.uk>
- <be4013b6-01c6-7f67-35ad-5c398b85c066@topic.nl>
+        id S1728340AbgG0LzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:55:05 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44981 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726873AbgG0LzF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 07:55:05 -0400
+Received: by mail-oi1-f193.google.com with SMTP id k6so14060699oij.11;
+        Mon, 27 Jul 2020 04:55:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+nMscq6n0UM4f049oAnE2J85xvPdNxrPg8zduxodr20=;
+        b=ZqpdNN5aPdbLPhCaHe1P+3sn7Gf0+2QUC0450JpfxOipBWk2D0JXIfd/ZPCq/IPHfv
+         fsAbcTh9ltH3J4AgNxPMbXRCPJ0+ERrOHGlfkBjfbbxkKrZaa8kYlBdb15abZsWVf+IO
+         LwD/H01jN6UWIWkgPkJdD2M4qoFfxTa++dwAMEuVIht0QTCjotY9BJdVX1ZRl9dZxz6m
+         fNl7VhWm8EUz7pxsyYHetSZase1Q/kKtivsS5BBfqmkA8nu0yUr0AFywPwJBR/lNrPNp
+         20guLKfKB3GwBERDs8mqtGE5dCdmAsCOhxZk5u9rimZblXMJf9cqG0bbkq8BDlOyTdGz
+         b3WQ==
+X-Gm-Message-State: AOAM530DZFkk6EcBcS/W0u7Quw43zUzsm+cp1A5cih0G2b40Lv2tL0G7
+        jJDR51VgU29xDfvwxYNeQB4T+CBimW7EW/CXAJGHvw==
+X-Google-Smtp-Source: ABdhPJzLcKyAF3Dl+QDQe69GM5quHd38ofFnHcNd4Wk3jS8Fyhn6THBfHPLb95IImnttADRoc1kFXBoiwyiIAfoIPWE=
+X-Received: by 2002:a05:6808:34e:: with SMTP id j14mr18450437oie.110.1595850904464;
+ Mon, 27 Jul 2020 04:55:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
-Content-Disposition: inline
-In-Reply-To: <be4013b6-01c6-7f67-35ad-5c398b85c066@topic.nl>
-X-Cookie: Doing gets it done.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200716124250.9829-1-paul@crapouillou.net>
+In-Reply-To: <20200716124250.9829-1-paul@crapouillou.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 27 Jul 2020 13:54:35 +0200
+Message-ID: <CAJZ5v0ju0KhXdfniZYqmZs+EmMx4U01RJZu3DVYazPYk6pK=Cg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] PM: introduce pm_ptr() macro
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Ulf Hansson <ulf.hansson@linaro.org>, od@zcrc.me,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 16, 2020 at 2:43 PM Paul Cercueil <paul@crapouillou.net> wrote:
+>
+> This macro is analogous to the infamous of_match_ptr(). If CONFIG_PM
+> is enabled, this macro will resolve to its argument, otherwise to NULL.
+>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>
+> Notes:
+>     v2: Remove pm_sleep_ptr() macro
+>     v3: Rebase on 5.8-rc5 and add Ulf's Reviewed-by
+>
+>  include/linux/pm.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/include/linux/pm.h b/include/linux/pm.h
+> index 121c104a4090..1f227c518db3 100644
+> --- a/include/linux/pm.h
+> +++ b/include/linux/pm.h
+> @@ -374,6 +374,12 @@ const struct dev_pm_ops name = { \
+>         SET_RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
+>  }
+>
+> +#ifdef CONFIG_PM
+> +#define pm_ptr(_ptr) (_ptr)
+> +#else
+> +#define pm_ptr(_ptr) NULL
+> +#endif
+> +
+>  /*
+>   * PM_EVENT_ messages
+>   *
+> --
 
---vOmOzSkFvhd7u8Ms
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 27, 2020 at 01:50:26PM +0200, Mike Looijmans wrote:
->=20
-> Met vriendelijke groet / kind regards,
->=20
-> Mike Looijmans
-> System Expert
-
-You probably want to remove your signature when replying to the list...
-
-> On 27-07-2020 12:23, Mark Brown wrote:
-> > On Sun, Jul 26, 2020 at 09:10:39AM +0200, Mike Looijmans wrote:
-
-> > > It's the 5V VBUS power for the USB "plug" that's being controlled her=
-e. It
-> > > must turned on when the controller is in "host" mode. Some boards arr=
-ange
-> > > this in hardware through the PHY, and some just don't have any contro=
-l at
-> > > all and have it permanently on or off. On a board where the 5V is con=
-trolled
-> > > using a GPIO line or an I2C chip, this patch is required to make it w=
-ork.
-
-> > That sounds like the driver should not be using _get_optional() then.
-
-> Making it mandatory would break most (read: all except Topic's) existing
-> boards as they won't have it in their devicetree. I'm perfectly okay with
-> that, but others might disagree.
-
-No, it wouldn't break them at all - they'd get a dummy regulator
-provided.
-
---vOmOzSkFvhd7u8Ms
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8ewDEACgkQJNaLcl1U
-h9AOeAf/Q3uCuO9POLkFE4AFLM60fwOW/cXI1NJMegOuZ91RhQk4TF2WaZlMWHIf
-b8SYB4gvI151gQYg2UPgf52UpWEbVUZN6GoM/wyk1dOAm6ulrMx248Upv3gQkpHi
-RBRynDGfnTgOdn6GPde9XO24zF9zCpL6HyN1AHbp9y9zuC3nVg23Pi+Usyw3MyiG
-RWRyQ3lKAqssLAh+6CYQQBVQ2mEp6ubHxH9UuGoKYfgDDqo7gff1b4Ibfkv9QT3G
-wjVCthn7ZcgpKyFalB1cZ6MJcsnvEvtWcdz/lMAYT6YXpha0UvuVs5xj0LFYw6pc
-u9fo8pNhRClmGM+PizicmWsAcQ6aBg==
-=yKtV
------END PGP SIGNATURE-----
-
---vOmOzSkFvhd7u8Ms--
+Applied along with the [2-3/3] as 5.9 material, thanks!
