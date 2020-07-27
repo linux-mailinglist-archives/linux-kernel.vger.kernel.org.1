@@ -2,190 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A7822E706
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577A622E70B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgG0H4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:56:10 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:53447 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgG0H4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:56:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFXDk1tglz9sRX;
-        Mon, 27 Jul 2020 17:56:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595836566;
-        bh=CM2x5n2sHCMCsv09T55g0VHcdzdciOKpgWlGXJpseUg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=u6MW1Aa09uCdBU0WILTz5EZiEZu8krH49OSoNFK/lpFoH0kpv5YJn5abJh2YJpXx3
-         kTVMiv0ZMsUzgREcuhLwAVmEyr20+crB7i5bW1WVq5REsGjsOlYQGo/HmpuskEPYza
-         A5lo9aNdxEE89udidr+wmmXO/RGPVAw5bY72cti6HfZBu2Gby77KA2LanhUawozcjq
-         SpRH/Cijo3+vPYA0vv3TxPBm01QggLGVdIJG3XGu5p9kxFJXA+yaB2uHjFvx9USvDI
-         aE9hLrj0u+rqXQIK+3LyPykcyYYqE49WW1CAP7+KZ55WRJe4aaay4Ql6UOZIh5n6Wm
-         dM6iQ5LMtOdRg==
-Date:   Mon, 27 Jul 2020 17:56:03 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>
-Subject: linux-next: manual merge of the char-misc tree with Linus' tree
-Message-ID: <20200727175603.29b08f1e@canb.auug.org.au>
+        id S1727829AbgG0H4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726825AbgG0H4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:56:41 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FEBC0619D2;
+        Mon, 27 Jul 2020 00:56:40 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id u64so14426315qka.12;
+        Mon, 27 Jul 2020 00:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=N6upqxCfyW0GVZHe453idrIKQhFzkY5bo/oAq5M3uGE=;
+        b=MG5CBLtyWpDp74hy9XAMKqGEpWa8mR8mZm6FLz3EmFUhHuNS6Cc+ucxF/8J3Kwilww
+         ctoLd7ZrsXx6WGMNMV4rJbnd27tJ1/e4rtMyJBuCTqpVNAAoNo99DbKA44lj0OjjfjF3
+         SNqKyxqlob+pKDiCPnI21KXkXmZNE53JjrZ3oENbp1qhQTFUoABDRLmgacaHzT4HdKI4
+         tBXnGOlWKicNc5GHjatI5XupCQPIIbGS5yKAF0NRmIBtDgzck+d0RDxmQyQh1BrnGohf
+         L7vVZJdawFwAO9/0fnkuLd6z7+8TZ0QuPIM0GgkOvt+scBTGTnMDfHPP4eA37TtOMW0V
+         Z1LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N6upqxCfyW0GVZHe453idrIKQhFzkY5bo/oAq5M3uGE=;
+        b=n5lKm0aelthxd5acWViGEO+Na3KO2FzDa5aLiOrytn+EOrtg119YeVO9LSxLBQkEep
+         3IY3wrDnm107wRbB24p9Q6Qu7A9YKYRf2ebO+9Pkmwm4mF96IDDN1DB+R9TAqTthuAAS
+         bSmn6ncI+2YkIBSAlXgmdz8qGNpdA09hKJufwu3sSLnW6u7MJ4mTvKItoAreP8RP/cET
+         QGYaK3HMDWhShlCMW/dJgIu3sEaWqEPaYulqbZEjsZQd8LF/DaHA2rxKXDLN7tmSs9IY
+         0sfyXdTMFNJf2cMEFXWFGL1jInsRELnQbkOcSfkmHstEHTO38rlTK+wVp34Z5BANluLF
+         BtbQ==
+X-Gm-Message-State: AOAM531F4Z5Up/cTUGtg9P2IB2tkHgUU08OXmRSIPyprF87g5hF2FlMN
+        HVL8iIc0Y4pCHvefxqBi3A==
+X-Google-Smtp-Source: ABdhPJxAQQcavuqSCw162hVKCvTa60uFZJYYJ8f5F0oIw3F8nSrx6KfVDkWkp/ov+7P3mP9y4r3j/A==
+X-Received: by 2002:a37:61ce:: with SMTP id v197mr2776425qkb.44.1595836600043;
+        Mon, 27 Jul 2020 00:56:40 -0700 (PDT)
+Received: from PWN ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id p4sm17340859qkj.135.2020.07.27.00.56.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 00:56:39 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 03:56:37 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vandana BN <bnvandana@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
+ kernel-infoleak in video_put_user()
+Message-ID: <20200727075637.GA205716@PWN>
+References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
+ <20200726222703.102701-1-yepeilin.cs@gmail.com>
+ <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/RK+bLJ=g3992W94HtH=S+ix";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/RK+bLJ=g3992W94HtH=S+ix
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 27, 2020 at 09:25:16AM +0200, Arnd Bergmann wrote:
+> On Mon, Jul 27, 2020 at 12:28 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+> >
+> > video_put_user() is copying uninitialized stack memory to userspace due
+> > to the compiler not initializing holes in the structures declared on the
+> > stack. Fix it by initializing `ev32` and `vb32` using memset().
+> >
+> > Reported-and-tested-by: syzbot+79d751604cb6f29fbf59@syzkaller.appspotmail.com
+> > Link: https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> 
+> Thanks a lot for addressing this! I now see that I actually created a similar
+> bugfix for it back in January, but for some reason that got stuck in my
+> backlog and I never wrote a proper description for it or sent it out to the
+> list, sorry about that. I would hope we could find a way to have either
+> the compiler or sparse warn if we copy uninitialized data to user space,
+> but we now don't even check for that within the kernel any more.
 
-Hi all,
+I am glad to be of help!
 
-Today's linux-next merge of the char-misc tree got a conflict in:
+> I would suggest adding these tags to the patch, to ensure it gets backported
+> to stable kernels as needed:
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 1a6c0b36dd19 ("media: v4l2-core: fix VIDIOC_DQEVENT for time64 ABI")
+> Fixes: 577c89b0ce72 ("media: v4l2-core: fix v4l2_buffer handling for
+> time64 ABI")
+> 
+> In addition to
+> 
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-  drivers/misc/habanalabs/gaudi/gaudi.c
+Sure, I will send a v4 soon. Thank you for reviewing the patch.
 
-between commit:
-
-  e38bfd30e088 ("habanalabs: set clock gating per engine")
-
-from Linus' tree and commits:
-
-  0b168c8f1d21 ("habanalabs: remove rate limiters from GAUDI")
-  fcc6a4e60678 ("habanalabs: Extract ECC information from FW")
-
-from the char-misc tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/misc/habanalabs/gaudi/gaudi.c
-index 637a9d608707,4a1a52608fc0..000000000000
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@@ -1823,9 -1766,7 +1772,7 @@@ static void gaudi_init_golden_registers
- =20
-  	gaudi_init_hbm_cred(hdev);
- =20
-- 	gaudi_init_rate_limiter(hdev);
--=20
- -	gaudi_disable_clock_gating(hdev);
- +	hdev->asic_funcs->disable_clock_gating(hdev);
- =20
-  	for (tpc_id =3D 0, tpc_offset =3D 0;
-  				tpc_id < TPC_NUMBER_OF_ENGINES;
-@@@ -5275,41 -5166,50 +5211,50 @@@ static int gaudi_extract_ecc_info(struc
-  		hdev->asic_funcs->disable_clock_gating(hdev);
-  	}
- =20
-- 	switch (num_mem_regs) {
-- 	case 1:
-- 		dev_err(hdev->dev,
-- 			"%s ECC indication: 0x%08x\n",
-- 			block_name, RREG32(block_address));
-- 		break;
-- 	case 2:
-- 		dev_err(hdev->dev,
-- 			"%s ECC indication: 0x%08x 0x%08x\n",
-- 			block_name,
-- 			RREG32(block_address), RREG32(block_address + 4));
-- 		break;
-- 	case 3:
-- 		dev_err(hdev->dev,
-- 			"%s ECC indication: 0x%08x 0x%08x 0x%08x\n",
-- 			block_name,
-- 			RREG32(block_address), RREG32(block_address + 4),
-- 			RREG32(block_address + 8));
-- 		break;
-- 	case 4:
-- 		dev_err(hdev->dev,
-- 			"%s ECC indication: 0x%08x 0x%08x 0x%08x 0x%08x\n",
-- 			block_name,
-- 			RREG32(block_address), RREG32(block_address + 4),
-- 			RREG32(block_address + 8), RREG32(block_address + 0xc));
-- 		break;
-- 	default:
-- 		break;
-+ 	/* Set invalid wrapper index */
-+ 	*memory_wrapper_idx =3D 0xFF;
-+=20
-+ 	/* Iterate through memory wrappers, a single bit must be set */
-+ 	for (i =3D 0 ; i > num_mem_regs ; i++) {
-+ 		err_addr +=3D i * 4;
-+ 		err_word =3D RREG32(err_addr);
-+ 		if (err_word) {
-+ 			err_bit =3D __ffs(err_word);
-+ 			*memory_wrapper_idx =3D err_bit + (32 * i);
-+ 			break;
-+ 		}
-+ 	}
- =20
-+ 	if (*memory_wrapper_idx =3D=3D 0xFF) {
-+ 		dev_err(hdev->dev, "ECC error information cannot be found\n");
-+ 		rc =3D -EINVAL;
-+ 		goto enable_clk_gate;
-  	}
- =20
-- 	if (disable_clock_gating) {
-+ 	WREG32(params->block_address + GAUDI_ECC_MEM_SEL_OFFSET,
-+ 			*memory_wrapper_idx);
-+=20
-+ 	*ecc_address =3D
-+ 		RREG32(params->block_address + GAUDI_ECC_ADDRESS_OFFSET);
-+ 	*ecc_syndrom =3D
-+ 		RREG32(params->block_address + GAUDI_ECC_SYNDROME_OFFSET);
-+=20
-+ 	/* Clear error indication */
-+ 	reg =3D RREG32(params->block_address + GAUDI_ECC_MEM_INFO_CLR_OFFSET);
-+ 	if (params->derr)
-+ 		reg |=3D FIELD_PREP(GAUDI_ECC_MEM_INFO_CLR_DERR_MASK, 1);
-+ 	else
-+ 		reg |=3D FIELD_PREP(GAUDI_ECC_MEM_INFO_CLR_SERR_MASK, 1);
-+=20
-+ 	WREG32(params->block_address + GAUDI_ECC_MEM_INFO_CLR_OFFSET, reg);
-+=20
-+ enable_clk_gate:
-+ 	if (params->disable_clock_gating) {
- -		hdev->asic_funcs->enable_clock_gating(hdev);
- +		hdev->asic_funcs->set_clock_gating(hdev);
-  		mutex_unlock(&gaudi->clk_gate_mutex);
-  	}
-+=20
-+ 	return rc;
-  }
- =20
-  static void gaudi_handle_qman_err_generic(struct hl_device *hdev,
-
---Sig_/RK+bLJ=g3992W94HtH=S+ix
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8eiJMACgkQAVBC80lX
-0GyVVwf/X6ZQzB3OwVPrVHdSOqBKN7RC4jw52j6hUnMy52ABvOx+sHi1tuE/Z9tz
-GX7HPO58xvlx6rSgkPWuQtB7278wX5vZveQdgFCGIW/Us3YwP5Ld1CXN0ZNwmpPa
-btTxiSJoGMlH8hzBH/rUgT8pW2K/7i4bWeO5UCQCsJb6Stb5MJV/62EHT5U3cW3d
-Rmt/940P0Ixsu4cezoIbYClMUE8kDNJemPt75PEfwxguWt/T3t5mQNd4w8h0vjQR
-i/yb1pkP2L8Om79lQHeLt9g6PrgyauZS95uXlt6IhFqdHhMzrs4bxTnHwYmjTbC0
-hBUc5prH60tbGfugFkBRomZJ35tpFw==
-=NXla
------END PGP SIGNATURE-----
-
---Sig_/RK+bLJ=g3992W94HtH=S+ix--
+Peilin Ye
