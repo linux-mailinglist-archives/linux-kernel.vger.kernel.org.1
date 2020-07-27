@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB0722FA2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2315122FA3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbgG0Ueu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 16:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728383AbgG0Uet (ORCPT
+        id S1726760AbgG0Ukp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:40:45 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41480 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726091AbgG0Ukp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:34:49 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D56C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:34:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id g11so6638083ejr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=YkkYId0qfscEeVLanlp+9fO+1FJwDeA+iuhChUKUNzw=;
-        b=TFIlcTtpMEaEdu6Obq566fed0LcNw+s440FAiZQNexu+CUbPGjDfb6nfXkHqleRqLN
-         tFOWBKFUPOfYQfMhOzBu1gwFG3/lFKYYHAtzejaA3o80NVCQQBpWunZMbprtdV95VAQA
-         7oKbk07ix9uEjSfcBHu33BiBYrp3JewmWGPWZFc9dIxvibmjsf6sfVqun4jW2E0wdQRJ
-         6N/qH4NmO8N0JLZ/mlcOFUe3MiIrJ42nBaluJFCeseAgOhsthgqyN6YGACf7IyPgTRYe
-         vIln5m6LNeabOu9Cqhn4yO+CltTQS9EN1HRs5zy5Iu+rdho1AvMPfbPTMtwTQg1AHDG5
-         necQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=YkkYId0qfscEeVLanlp+9fO+1FJwDeA+iuhChUKUNzw=;
-        b=Cvk15LzChc916kNkOgQQk5SqUeiLXR0uec3ErzQPMu2xhFNS5pFLQySwnjJPE86vSm
-         ImBKmJNc1qlOQRW2TkEm2Am3NUU4zd92CVj0bi7dzhmrCZNrhYm8+cJojUOX8tL5xOOm
-         oW0E9on5wAVC32BVBALlcYLpZ9PEckzPlKEXNxghtBHxznRME9Gf/alX7CFS9DMfENhY
-         4L+/Y9WiF/O8LjSYzoxLtr3QrQsDN0ZN1BwhCLIT7xCw4bACo59BpU7lc6y/36jrutFX
-         EYSO2oQaBSZW9WTbIq5bvSAyOtOOtrYIJRHqXYVj+QsRVi8m3GOY7UjCIAQt7tb8LlTw
-         5uuw==
-X-Gm-Message-State: AOAM531U6SEs/WEr+Sfrqq4WR/i4m2V6+2itONYaVwWGe3sdpS1jCiLN
-        3J2h5qtjL+ot2QRK86gmzMU=
-X-Google-Smtp-Source: ABdhPJylqd2aCo4OdWacO1NzkdhKrkGlngvsgTCA2pPxab/QetyviXICeIv/c4d1XODXuH8f7xOATw==
-X-Received: by 2002:a17:906:60d0:: with SMTP id f16mr22112045ejk.17.1595882087821;
-        Mon, 27 Jul 2020 13:34:47 -0700 (PDT)
-Received: from felia ([2001:16b8:2daf:f700:54de:db5:3d20:437c])
-        by smtp.gmail.com with ESMTPSA id q6sm7758159ejn.30.2020.07.27.13.34.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 13:34:47 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-X-Google-Original-From: Lukas Bulwahn <lukas@gmail.com>
-Date:   Mon, 27 Jul 2020 22:34:37 +0200 (CEST)
-X-X-Sender: lukas@felia
-To:     Nachiket Naganure <nachiketun8@gmail.com>
-cc:     Joe Perches <joe@perches.com>, apw@canonical.com,
-        lukas.bulwahn@gmail.com, skhan@linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] checkpatch: disable commit log length check warning for
- signature tag
-In-Reply-To: <20200727071159.GA595854@endurance>
-Message-ID: <alpine.DEB.2.21.2007272229280.15655@felia>
-References: <20200727055458.559558-1-nachiketun8@gmail.com> <66bbaec73d8f69541535db5390c0f12b304c0467.camel@perches.com> <20200727071159.GA595854@endurance>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 27 Jul 2020 16:40:45 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RKbcpu146352;
+        Mon, 27 Jul 2020 20:40:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=LyXgMk0f2r2QyhaI8yTJHaBKGPFro/rxd5GTPDWD6B4=;
+ b=WOWsIZqj41ThqMb+p7GdDDHm5AV1uiYsm/CMxIzod/VeKcNyQ1mShNlKBXPFcNeIwzXo
+ zoL0SFIIU826nYdlE6U8cRdy6QLmR5LyFfBF1NQperb779Daxxxxgub//yaFkE3fV2BB
+ 9D/InZpmLbvu5xwMDKkAK9eWesUZGD52OplWgyADvSMqdIQhb/QXMHzDGelJnPWuh9G3
+ pGAs79+GVrWrF6HGk5e02tRg6/oyrmCOv6UeHTPSMuYEDewjKk26bbueRmLFp8sw4Qs7
+ J3QxxFKPWSLyWUyOwcLtiKos3seIDcZCYwhusTx4+eZX4y4dvJM4dr8071IKQo7NikOo Yw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 32hu1jbsg9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Jul 2020 20:40:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RKcO2f014022;
+        Mon, 27 Jul 2020 20:38:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 32hu5rq8qg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Jul 2020 20:38:40 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06RKcdHI010469;
+        Mon, 27 Jul 2020 20:38:39 GMT
+Received: from dhcp-10-154-112-121.vpn.oracle.com (/10.154.112.121)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Jul 2020 13:38:39 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.5\))
+Subject: Re: (resend) [PATCH [linux-4.14.y]] dm cache: submit writethrough
+ writes in parallel to origin and cache
+From:   John Donnelly <john.p.donnelly@oracle.com>
+In-Reply-To: <20200727201700.GJ406581@sasha-vm>
+Date:   Mon, 27 Jul 2020 15:38:38 -0500
+Cc:     Mike Snitzer <snitzer@redhat.com>, stable@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6F764B9B-DEE6-4060-9F11-050D2F0999ED@oracle.com>
+References: <37c5a615-655d-c106-afd0-54e03f3c0eef@oracle.com>
+ <20200727150014.GA27472@redhat.com> <20200727191809.GI406581@sasha-vm>
+ <D8DDA535-33D5-4E80-85B3-62A463441B5F@oracle.com>
+ <20200727201700.GJ406581@sasha-vm>
+To:     Sasha Levin <sashal@kernel.org>
+X-Mailer: Apple Mail (2.3445.9.5)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007270138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ suspectscore=3 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007270138
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -72,57 +77,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On Mon, 27 Jul 2020, Nachiket Naganure wrote:
+> On Jul 27, 2020, at 3:17 PM, Sasha Levin <sashal@kernel.org> wrote:
+>=20
+> On Mon, Jul 27, 2020 at 02:38:52PM -0500, John Donnelly wrote:
+>>=20
+>>=20
+>>> On Jul 27, 2020, at 2:18 PM, Sasha Levin <sashal@kernel.org> wrote:
+>>>=20
+>>> On Mon, Jul 27, 2020 at 11:00:14AM -0400, Mike Snitzer wrote:
+>>>> This mail needs to be saent to stable@vger.kernel.org (now cc'd).
+>>>>=20
+>>>> Greg et al: please backport =
+2df3bae9a6543e90042291707b8db0cbfbae9ee9
+>>>=20
+>>> Hm, what's the issue that this patch addresses? It's not clear from =
+the
+>>> commit message.
+>>>=20
+>>> --
+>>> Thanks,
+>>> Sasha
+>>=20
+>> HI Sasha ,
+>>=20
+>> In an off-line conversation I had with Mike , he indicated that :
+>>=20
+>>=20
+>> commit 1b17159e52bb31f982f82a6278acd7fab1d3f67b
+>> Author: Mike Snitzer <snitzer@redhat.com>
+>> Date:   Fri Feb 28 18:00:53 2020 -0500
+>>=20
+>>  dm bio record: save/restore bi_end_io and bi_integrity
+>>=20
+>>=20
+>> commit 248aa2645aa7fc9175d1107c2593cc90d4af5a4e
+>> Author: Mike Snitzer <snitzer@redhat.com>
+>> Date:   Fri Feb 28 18:11:53 2020 -0500
+>>=20
+>>  dm integrity: use dm_bio_record and dm_bio_restore
+>>=20
+>>=20
+>> Were picked up  in  "stable" kernels picked up even though
+>> neither was marked for stable@vger.kernel.org
+>>=20
+>> Adding this missing  commit :
+>>=20
+>> 2df3bae9a6543e90042291707b8db0cbfbae9ee9
+>>=20
+>>=20
+>> Completes the series
+>=20
+> Should we just revert those two commits instead if they're not needed?
+>=20
+> --=20
+> Thanks,
+> Sasha
 
-> On Sun, Jul 26, 2020 at 11:14:42PM -0700, Joe Perches wrote:
-> > On Mon, 2020-07-27 at 11:24 +0530, Nachiket Naganure wrote:
-> > > Disable commit log length check in case of signature tag. If the commit
-> > > log line has valid signature tags such as "Reported-and-tested-by" with
-> > > more than 75 characters, suppress the long length warning.
-> > > 
-> > > For instance in commit ac854131d984 ("USB: core: Fix misleading driver bug
-> > > report"), the corresponding patch contains a "Reported by" tag line which
-> > > exceeds 75 chars. And there is no valid way to shorten the length.
-> > > 
-> > > Signed-off-by: Nachiket Naganure <nachiketun8@gmail.com>
-> > > ---
-> > >  scripts/checkpatch.pl | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> > > index 197436b20288..46237e9e0550 100755
-> > > --- a/scripts/checkpatch.pl
-> > > +++ b/scripts/checkpatch.pl
-> > > @@ -2806,6 +2806,8 @@ sub process {
-> > >  					# filename then :
-> > >  		      $line =~ /^\s*(?:Fixes:|Link:)/i ||
-> > >  					# A Fixes: or Link: line
-> > > +		      $line =~ /$signature_tags/ ||
-> > > +					# Check for signature_tags
-> > >  		      $commit_log_possible_stack_dump)) {
-> > >  			WARN("COMMIT_LOG_LONG_LINE",
-> > >  			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-> > 
-> > OK, but the test should be:
-> > 
-> > 		      $line =~ /^\s*$signature_tags/ ||
-> > 
-> > so the line has to start with a signature and
-> > it won't match on signature tags in the middle
-> > of other content on the same line.
-> > 
-> > 
-> But the suggested won't work in case of merged signatures.
-> Such as "Reported-and-tested-by: user@email.com"
-> 
+  As I stated above:
 
-But Joe's remark is valid; we do not want to match on signature tags in 
-the middle. These cases are probably mentioning signature tags as part of 
-a sentence or some explanation.
+> Fixes: 705559706d62038b74c5088114c1799cf2c9dce8 (dm bio record:
+> save/restore bi_end_io and bi_integrity, version 4.14.188)
+>=20
+> 70555970 introduced a mkfs.ext4 hang on a LVM device that has been
+> modified with lvconvert --cachemode=3Dwritethrough.
 
-Nachiket, think about a proper solution for this issue.
+  It corrects an issue we discovered in 4.14.188 .    Any other branches =
+those two commits have migrated to will likely have the same regression.=20=
 
-The evaluation data from running checkpatch.pl on previous commits will 
-provide you some guidance on which heuristics might work and which not.
 
-Lukas
+I am confident linux-4.14.y will  be better off with it ;-)=20
+
+
+
+
