@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A883B22EFEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDDC22EF1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731532AbgG0OUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:20:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
+        id S1730379AbgG0ONc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:13:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730983AbgG0OUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:20:19 -0400
+        id S1730374AbgG0ON1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:13:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 063B72070A;
-        Mon, 27 Jul 2020 14:20:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 174262073E;
+        Mon, 27 Jul 2020 14:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859619;
-        bh=UbrhK8raAGl/tgRM7NvsEH1DQh0Hx4h2ZnCsXset6dY=;
+        s=default; t=1595859206;
+        bh=W1kz7H0Zg4K77PouQ4bwaTC+6NDwjaCUYFCrs+r8C1U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=THfHzLVMSGiqdARziOxUMoZqpJFvfRvliUIvxN27TVrltCmAS8ztVf3gz8394H8+O
-         ftlaEuQO2SVrU60utsHwAUHTuXjx2/qBNxnnX8Na4eBM8e8tVA79RU9gLinKSK54NY
-         02VG13TVGhg3VH1eD43CdEr+wkv8Kl4JQI2gzw+Q=
+        b=dV8CWNH/gAkilIAovRiWH8tQTE8xIe7mrzE3VWc7cwaMmXZ2hKjGycVDUrxLKXaTH
+         G9r/ae6Sy7fegBPZS3kFh3uvNLA56292DAj9k1DOn1r9rIJfzplYBcxeSQi/bKFjcB
+         ydXT2qDCTCq9hF3rWsOS6F2EKWvLU7R27hb3S+/k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Robbie Ko <robbieko@synology.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.7 040/179] btrfs: fix page leaks after failure to lock page for delalloc
+        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 020/138] ARM: dts: imx6qdl-gw551x: Do not use simple-audio-card,dai-link
 Date:   Mon, 27 Jul 2020 16:03:35 +0200
-Message-Id: <20200727134934.628527557@linuxfoundation.org>
+Message-Id: <20200727134926.330762347@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robbie Ko <robbieko@synology.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-commit 5909ca110b29aa16b23b52b8de8d3bb1035fd738 upstream.
+[ Upstream commit e52928e8d5c1c4837a0c6ec2068beea99defde8b ]
 
-When locking pages for delalloc, we check if it's dirty and mapping still
-matches. If it does not match, we need to return -EAGAIN and release all
-pages. Only the current page was put though, iterate over all the
-remaining pages too.
+According to Documentation/devicetree/bindings/sound/simple-card.txt
+the 'simple-audio-card,dai-link' may be omitted when the card has
+only one DAI link, which is the case here.
 
-CC: stable@vger.kernel.org # 4.14+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Robbie Ko <robbieko@synology.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Get rid of 'simple-audio-card,dai-link' in order to fix the following
+build warning with W=1:
 
+arch/arm/boot/dts/imx6qdl-gw551x.dtsi:109.32-121.5: Warning (unit_address_vs_reg): /sound-digital/simple-audio-card,dai-link@0: node has a unit name, but no reg property
+
+Cc: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/extent_io.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6qdl-gw551x.dtsi | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1999,7 +1999,8 @@ static int __process_pages_contig(struct
- 				if (!PageDirty(pages[i]) ||
- 				    pages[i]->mapping != mapping) {
- 					unlock_page(pages[i]);
--					put_page(pages[i]);
-+					for (; i < ret; i++)
-+						put_page(pages[i]);
- 					err = -EAGAIN;
- 					goto out;
- 				}
+diff --git a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+index c23ba229fd057..c38e86eedcc01 100644
+--- a/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-gw551x.dtsi
+@@ -105,19 +105,16 @@
+ 	sound-digital {
+ 		compatible = "simple-audio-card";
+ 		simple-audio-card,name = "tda1997x-audio";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,bitclock-master = <&sound_codec>;
++		simple-audio-card,frame-master = <&sound_codec>;
+ 
+-		simple-audio-card,dai-link@0 {
+-			format = "i2s";
+-
+-			cpu {
+-				sound-dai = <&ssi2>;
+-			};
++		sound_cpu: simple-audio-card,cpu {
++			sound-dai = <&ssi2>;
++		};
+ 
+-			codec {
+-				bitclock-master;
+-				frame-master;
+-				sound-dai = <&hdmi_receiver>;
+-			};
++		sound_codec: simple-audio-card,codec {
++			sound-dai = <&hdmi_receiver>;
+ 		};
+ 	};
+ };
+-- 
+2.25.1
+
 
 
