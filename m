@@ -2,116 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 577A622E70B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CC122E714
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbgG0H4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726825AbgG0H4l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:56:41 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FEBC0619D2;
-        Mon, 27 Jul 2020 00:56:40 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id u64so14426315qka.12;
-        Mon, 27 Jul 2020 00:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N6upqxCfyW0GVZHe453idrIKQhFzkY5bo/oAq5M3uGE=;
-        b=MG5CBLtyWpDp74hy9XAMKqGEpWa8mR8mZm6FLz3EmFUhHuNS6Cc+ucxF/8J3Kwilww
-         ctoLd7ZrsXx6WGMNMV4rJbnd27tJ1/e4rtMyJBuCTqpVNAAoNo99DbKA44lj0OjjfjF3
-         SNqKyxqlob+pKDiCPnI21KXkXmZNE53JjrZ3oENbp1qhQTFUoABDRLmgacaHzT4HdKI4
-         tBXnGOlWKicNc5GHjatI5XupCQPIIbGS5yKAF0NRmIBtDgzck+d0RDxmQyQh1BrnGohf
-         L7vVZJdawFwAO9/0fnkuLd6z7+8TZ0QuPIM0GgkOvt+scBTGTnMDfHPP4eA37TtOMW0V
-         Z1LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N6upqxCfyW0GVZHe453idrIKQhFzkY5bo/oAq5M3uGE=;
-        b=n5lKm0aelthxd5acWViGEO+Na3KO2FzDa5aLiOrytn+EOrtg119YeVO9LSxLBQkEep
-         3IY3wrDnm107wRbB24p9Q6Qu7A9YKYRf2ebO+9Pkmwm4mF96IDDN1DB+R9TAqTthuAAS
-         bSmn6ncI+2YkIBSAlXgmdz8qGNpdA09hKJufwu3sSLnW6u7MJ4mTvKItoAreP8RP/cET
-         QGYaK3HMDWhShlCMW/dJgIu3sEaWqEPaYulqbZEjsZQd8LF/DaHA2rxKXDLN7tmSs9IY
-         0sfyXdTMFNJf2cMEFXWFGL1jInsRELnQbkOcSfkmHstEHTO38rlTK+wVp34Z5BANluLF
-         BtbQ==
-X-Gm-Message-State: AOAM531F4Z5Up/cTUGtg9P2IB2tkHgUU08OXmRSIPyprF87g5hF2FlMN
-        HVL8iIc0Y4pCHvefxqBi3A==
-X-Google-Smtp-Source: ABdhPJxAQQcavuqSCw162hVKCvTa60uFZJYYJ8f5F0oIw3F8nSrx6KfVDkWkp/ov+7P3mP9y4r3j/A==
-X-Received: by 2002:a37:61ce:: with SMTP id v197mr2776425qkb.44.1595836600043;
-        Mon, 27 Jul 2020 00:56:40 -0700 (PDT)
-Received: from PWN ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id p4sm17340859qkj.135.2020.07.27.00.56.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 00:56:39 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 03:56:37 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-Message-ID: <20200727075637.GA205716@PWN>
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com>
- <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
+        id S1726970AbgG0H6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:58:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgG0H6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:58:01 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80C1420738;
+        Mon, 27 Jul 2020 07:58:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595836680;
+        bh=pFZyTgLd3xYYzeu+q0Y9eI/gLqSakkiOd6qEy6AoK6c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UEu83P/HXZHqBR8qjfrTD2iwi1LEuDZFHt9rIx5+1N3VTQT6sGC4Xupm00PFzSWsJ
+         nDjzJysoa3s8HauGOOTrX0gIALShEOHsXGV3lvTU1qrC+tsKwaqKMGTUtUat6WF0R8
+         /ARAA9sDFnKmKSXw4TVhq9XVBZKJXxJCk5onfYpI=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jzy1G-00FE6z-RP; Mon, 27 Jul 2020 08:57:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 27 Jul 2020 08:57:58 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Zenghui Yu <yuzenghui@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        jason@lakedaemon.net, wanghaibin.wang@huawei.com,
+        kuhn.chenqun@huawei.com, wangjingyi11@huawei.com
+Subject: Re: [PATCH] irqchip/gic-v4.1: Use GFP_ATOMIC flag in
+ allocate_vpe_l1_table()
+In-Reply-To: <076a3e82-ba21-6e6a-c6cd-937abb063eb9@huawei.com>
+References: <20200630133746.816-1-yuzenghui@huawei.com>
+ <076a3e82-ba21-6e6a-c6cd-937abb063eb9@huawei.com>
+User-Agent: Roundcube Webmail/1.4.5
+Message-ID: <9c18d534e3a57aad5f8d4a6f69c7c041@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, linux-kernel@vger.kernel.org, tglx@linutronix.de, jason@lakedaemon.net, wanghaibin.wang@huawei.com, kuhn.chenqun@huawei.com, wangjingyi11@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 09:25:16AM +0200, Arnd Bergmann wrote:
-> On Mon, Jul 27, 2020 at 12:28 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> >
-> > video_put_user() is copying uninitialized stack memory to userspace due
-> > to the compiler not initializing holes in the structures declared on the
-> > stack. Fix it by initializing `ev32` and `vb32` using memset().
-> >
-> > Reported-and-tested-by: syzbot+79d751604cb6f29fbf59@syzkaller.appspotmail.com
-> > Link: https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> 
-> Thanks a lot for addressing this! I now see that I actually created a similar
-> bugfix for it back in January, but for some reason that got stuck in my
-> backlog and I never wrote a proper description for it or sent it out to the
-> list, sorry about that. I would hope we could find a way to have either
-> the compiler or sparse warn if we copy uninitialized data to user space,
-> but we now don't even check for that within the kernel any more.
+Hi Zenghui,
 
-I am glad to be of help!
-
-> I would suggest adding these tags to the patch, to ensure it gets backported
-> to stable kernels as needed:
+On 2020-07-27 04:50, Zenghui Yu wrote:
+> Hi Marc,
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 1a6c0b36dd19 ("media: v4l2-core: fix VIDIOC_DQEVENT for time64 ABI")
-> Fixes: 577c89b0ce72 ("media: v4l2-core: fix v4l2_buffer handling for
-> time64 ABI")
+> On 2020/6/30 21:37, Zenghui Yu wrote:
+>> Booting the latest kernel with DEBUG_ATOMIC_SLEEP=y on a GICv4.1 
+>> enabled
+>> box, I get the following kernel splat:
+>> 
+>> [    0.053766] BUG: sleeping function called from invalid context at 
+>> mm/slab.h:567
+>> [    0.053767] in_atomic(): 1, irqs_disabled(): 128, non_block: 0, 
+>> pid: 0, name: swapper/1
+>> [    0.053769] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.8.0-rc3+ 
+>> #23
+>> [    0.053770] Call trace:
+>> [    0.053774]  dump_backtrace+0x0/0x218
+>> [    0.053775]  show_stack+0x2c/0x38
+>> [    0.053777]  dump_stack+0xc4/0x10c
+>> [    0.053779]  ___might_sleep+0xfc/0x140
+>> [    0.053780]  __might_sleep+0x58/0x90
+>> [    0.053782]  slab_pre_alloc_hook+0x7c/0x90
+>> [    0.053783]  kmem_cache_alloc_trace+0x60/0x2f0
+>> [    0.053785]  its_cpu_init+0x6f4/0xe40
+>> [    0.053786]  gic_starting_cpu+0x24/0x38
+>> [    0.053788]  cpuhp_invoke_callback+0xa0/0x710
+>> [    0.053789]  notify_cpu_starting+0xcc/0xd8
+>> [    0.053790]  secondary_start_kernel+0x148/0x200
+>> 
+>>  # ./scripts/faddr2line vmlinux its_cpu_init+0x6f4/0xe40
+>> its_cpu_init+0x6f4/0xe40:
+>> allocate_vpe_l1_table at drivers/irqchip/irq-gic-v3-its.c:2818
+>> (inlined by) its_cpu_init_lpis at 
+>> drivers/irqchip/irq-gic-v3-its.c:3138
+>> (inlined by) its_cpu_init at drivers/irqchip/irq-gic-v3-its.c:5166
+>> 
+>> It turned out that we're allocating memory using GFP_KERNEL (may 
+>> sleep)
+>> within the CPU hotplug notifier, which is indeed an atomic context. 
+>> Bad
+>> thing may happen if we're playing on a system with more than a single
+>> CommonLPIAff group. Avoid it by turning this into an atomic 
+>> allocation.
+>> 
+>> Fixes: 5e5168461c22 ("irqchip/gic-v4.1: VPE table (aka 
+>> GICR_VPROPBASER) allocation")
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> ---
+>>  drivers/irqchip/irq-gic-v3-its.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/irqchip/irq-gic-v3-its.c 
+>> b/drivers/irqchip/irq-gic-v3-its.c
+>> index 6a5a87fc4601..b66eeca442c4 100644
+>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>> @@ -2814,7 +2814,7 @@ static int allocate_vpe_l1_table(void)
+>>  	if (val & GICR_VPROPBASER_4_1_VALID)
+>>  		goto out;
+>>  -	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), 
+>> GFP_KERNEL);
+>> +	gic_data_rdist()->vpe_table_mask = kzalloc(sizeof(cpumask_t), 
+>> GFP_ATOMIC);
+>>  	if (!gic_data_rdist()->vpe_table_mask)
+>>  		return -ENOMEM;
+>>  @@ -2881,7 +2881,7 @@ static int allocate_vpe_l1_table(void)
+>>   	pr_debug("np = %d, npg = %lld, psz = %d, epp = %d, esz = %d\n",
+>>  		 np, npg, psz, epp, esz);
+>> -	page = alloc_pages(GFP_KERNEL | __GFP_ZERO, get_order(np * 
+>> PAGE_SIZE));
+>> +	page = alloc_pages(GFP_ATOMIC | __GFP_ZERO, get_order(np * 
+>> PAGE_SIZE));
+>>  	if (!page)
+>>  		return -ENOMEM;
+>> 
 > 
-> In addition to
-> 
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> Do you mind taking this patch into v5.9? Or please let me know if you
+> still have any concerns on it?
 
-Sure, I will send a v4 soon. Thank you for reviewing the patch.
+Oops, I seem to have dropped this one on the floor.
+I've picked it up now.
 
-Peilin Ye
+Thanks for the heads up,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
