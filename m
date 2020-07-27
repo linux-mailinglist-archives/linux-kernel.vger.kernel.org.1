@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDDD22EFAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D777D22EFB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731204AbgG0OSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45884 "EHLO mail.kernel.org"
+        id S1731238AbgG0OS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:18:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729781AbgG0OSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:18:16 -0400
+        id S1731224AbgG0OSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:18:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ADFF2070A;
-        Mon, 27 Jul 2020 14:18:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DB6020825;
+        Mon, 27 Jul 2020 14:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859495;
-        bh=n3RbqFT8KAWFA1dTxPYGZH156V8HwXIVPBz/LrIGyoE=;
+        s=default; t=1595859503;
+        bh=WIIPYcX+La5dUgPvwyLCdvuORcDgdMxo2o+Zea3h6QU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gg4JZRcEcHhiXEhEP07f5Ti/HYj+zqK7OTIQzgu33q5kTT4QAPj+lFdIB9lqb4tIv
-         0cjfnXDMYWRsvN6rnTpdBH+klft4eR+3ivtzQwEfzUgj4uwK0cvIStwMRytstX/jUZ
-         qZ/pAvWqZK9smefU7hz+TLBJjARqbL43BbgR+zQg=
+        b=0o1Njx34uRkVnB2vDLcMVS6a2cqoninyQWEBrZ3qSAJyzRIyFYbnFeavCn25KrM1I
+         nacm5E8gPprDQ2BUwf4KrDzimZg/S6ZTdV96R7H4qXVP6kfvQ0pTDXyfLuAdlt4TfK
+         CFboaEAgzwt3fVYc5RP8sxaX5mW+ABBaFyrwEhQA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>,
-        syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Michal Hocko <mhocko@suse.com>, Todd Kjos <tkjos@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [PATCH 5.4 104/138] binder: Dont use mmput() from shrinker function.
-Date:   Mon, 27 Jul 2020 16:04:59 +0200
-Message-Id: <20200727134930.671211807@linuxfoundation.org>
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 5.4 105/138] usb: xhci-mtk: fix the failure of bandwidth allocation
+Date:   Mon, 27 Jul 2020 16:05:00 +0200
+Message-Id: <20200727134930.719926915@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
 References: <20200727134925.228313570@linuxfoundation.org>
@@ -47,46 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit f867c771f98891841c217fa8459244ed0dd28921 upstream.
+commit 5ce1a24dd98c00a57a8fa13660648abf7e08e3ef upstream.
 
-syzbot is reporting that mmput() from shrinker function has a risk of
-deadlock [1], for delayed_uprobe_add() from update_ref_ctr() calls
-kzalloc(GFP_KERNEL) with delayed_uprobe_lock held, and
-uprobe_clear_state() from __mmput() also holds delayed_uprobe_lock.
+The wMaxPacketSize field of endpoint descriptor may be zero
+as default value in alternate interface, and they are not
+actually selected when start stream, so skip them when try to
+allocate bandwidth.
 
-Commit a1b2289cef92ef0e ("android: binder: drop lru lock in isolate
-callback") replaced mmput() with mmput_async() in order to avoid sleeping
-with spinlock held. But this patch replaces mmput() with mmput_async() in
-order not to start __mmput() from shrinker context.
-
-[1] https://syzkaller.appspot.com/bug?id=bc9e7303f537c41b2b0cc2dfcea3fc42964c2d45
-
-Reported-by: syzbot <syzbot+1068f09c44d151250c33@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+e5344baa319c9a96edec@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Reviewed-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Todd Kjos <tkjos@google.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/4ba9adb2-43f5-2de0-22de-f6075c1fab50@i-love.sakura.ne.jp
+Fixes: 0cbd4b34cda9 ("xhci: mediatek: support MTK xHCI host controller")
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1594360672-2076-1-git-send-email-chunfeng.yun@mediatek.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/android/binder_alloc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/xhci-mtk-sch.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -948,7 +948,7 @@ enum lru_status binder_alloc_free_page(s
- 		trace_binder_unmap_user_end(alloc, index);
- 	}
- 	up_read(&mm->mmap_sem);
--	mmput(mm);
-+	mmput_async(mm);
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -557,6 +557,10 @@ static bool need_bw_sch(struct usb_host_
+ 	if (is_fs_or_ls(speed) && !has_tt)
+ 		return false;
  
- 	trace_binder_unmap_kernel_start(alloc, index);
++	/* skip endpoint with zero maxpkt */
++	if (usb_endpoint_maxp(&ep->desc) == 0)
++		return false;
++
+ 	return true;
+ }
  
 
 
