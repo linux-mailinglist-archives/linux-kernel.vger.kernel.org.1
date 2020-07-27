@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2642222EF3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D12E22EFFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730569AbgG0OOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40110 "EHLO mail.kernel.org"
+        id S1731653AbgG0OVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730538AbgG0OO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:28 -0400
+        id S1731638AbgG0OU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:20:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01D26208E4;
-        Mon, 27 Jul 2020 14:14:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8D1B2070A;
+        Mon, 27 Jul 2020 14:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859268;
-        bh=90/WbSukEK5s1iW2h/xGVzDI+tjhox/mLpz3WTRUY30=;
+        s=default; t=1595859656;
+        bh=ebxccEJRHPOOC7cjposBDMtnXGLMNHK5sBFz01mP/R4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TJTAuMsVEl6LSoqHGR53BQStQs5KMtnSMnuZKDXIKr8p/l1yNzk5Hk8kmzFP5KHcW
-         gNAxXetwCEG8vcUGQcLGVmh6alg4eMSOxcNPfXHtamVMoso7AcOrNaAi0M81aePv3x
-         u7KuA+moEUxUn4A+ZrYU7wGYcAenOE5TNPwgxofI=
+        b=Z/YqtaRsD36vpPwtE7CGFMwEI9PFJSb5q2R1WkOVD5B5bJjguyXpfLkr3d2Uw6wlr
+         bTwfk7a7NCIMkyeS7anXCFPPzg/o0zaUhL2omBF5KbrlZ7/V+FOJspiGpOPSIIVxtb
+         u9QckGMHPr3Ld/ajjsOQ7A5Pd5z3r10PW18LL7L8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 003/138] gpio: arizona: put pm_runtime in case of failure
-Date:   Mon, 27 Jul 2020 16:03:18 +0200
-Message-Id: <20200727134925.411997159@linuxfoundation.org>
+Subject: [PATCH 5.7 024/179] dm mpath: pass IO start time to path selector
+Date:   Mon, 27 Jul 2020 16:03:19 +0200
+Message-Id: <20200727134933.846667790@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,52 +45,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-[ Upstream commit 861254d826499944cb4d9b5a15f5a794a6b99a69 ]
+[ Upstream commit 087615bf3acdafd0ba7c7c9ed5286e7b7c80fe1b ]
 
-Calling pm_runtime_get_sync increments the counter even in case of
-failure, causing incorrect ref count if pm_runtime_put is not called in
-error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
+The HST path selector needs this information to perform path
+prediction. For request-based mpath, struct request's io_start_time_ns
+is used, while for bio-based, use the start_time stored in dm_io.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200605030052.78235-1-navid.emamdoost@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-arizona.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/md/dm-mpath.c         | 9 ++++++---
+ drivers/md/dm-path-selector.h | 2 +-
+ drivers/md/dm-queue-length.c  | 2 +-
+ drivers/md/dm-service-time.c  | 2 +-
+ drivers/md/dm.c               | 9 +++++++++
+ include/linux/device-mapper.h | 2 ++
+ 6 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
-index 7520a13b4c7ca..5bda38e0780f2 100644
---- a/drivers/gpio/gpio-arizona.c
-+++ b/drivers/gpio/gpio-arizona.c
-@@ -64,6 +64,7 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
- 		ret = pm_runtime_get_sync(chip->parent);
- 		if (ret < 0) {
- 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
-+			pm_runtime_put_autosuspend(chip->parent);
- 			return ret;
- 		}
+diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+index e0c800cf87a9b..74246d7c7d68e 100644
+--- a/drivers/md/dm-mpath.c
++++ b/drivers/md/dm-mpath.c
+@@ -567,7 +567,8 @@ static void multipath_release_clone(struct request *clone,
+ 		if (pgpath && pgpath->pg->ps.type->end_io)
+ 			pgpath->pg->ps.type->end_io(&pgpath->pg->ps,
+ 						    &pgpath->path,
+-						    mpio->nr_bytes);
++						    mpio->nr_bytes,
++						    clone->io_start_time_ns);
+ 	}
  
-@@ -72,12 +73,15 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
- 		if (ret < 0) {
- 			dev_err(chip->parent, "Failed to drop cache: %d\n",
- 				ret);
-+			pm_runtime_put_autosuspend(chip->parent);
- 			return ret;
- 		}
+ 	blk_put_request(clone);
+@@ -1617,7 +1618,8 @@ static int multipath_end_io(struct dm_target *ti, struct request *clone,
+ 		struct path_selector *ps = &pgpath->pg->ps;
  
- 		ret = regmap_read(arizona->regmap, reg, &val);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_autosuspend(chip->parent);
- 			return ret;
-+		}
+ 		if (ps->type->end_io)
+-			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes);
++			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes,
++					 clone->io_start_time_ns);
+ 	}
  
- 		pm_runtime_mark_last_busy(chip->parent);
- 		pm_runtime_put_autosuspend(chip->parent);
+ 	return r;
+@@ -1661,7 +1663,8 @@ static int multipath_end_io_bio(struct dm_target *ti, struct bio *clone,
+ 		struct path_selector *ps = &pgpath->pg->ps;
+ 
+ 		if (ps->type->end_io)
+-			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes);
++			ps->type->end_io(ps, &pgpath->path, mpio->nr_bytes,
++					 dm_start_time_ns_from_clone(clone));
+ 	}
+ 
+ 	return r;
+diff --git a/drivers/md/dm-path-selector.h b/drivers/md/dm-path-selector.h
+index b6eb5365b1a46..c47bc0e20275b 100644
+--- a/drivers/md/dm-path-selector.h
++++ b/drivers/md/dm-path-selector.h
+@@ -74,7 +74,7 @@ struct path_selector_type {
+ 	int (*start_io) (struct path_selector *ps, struct dm_path *path,
+ 			 size_t nr_bytes);
+ 	int (*end_io) (struct path_selector *ps, struct dm_path *path,
+-		       size_t nr_bytes);
++		       size_t nr_bytes, u64 start_time);
+ };
+ 
+ /* Register a path selector */
+diff --git a/drivers/md/dm-queue-length.c b/drivers/md/dm-queue-length.c
+index 969c4f1a36336..5fd018d184187 100644
+--- a/drivers/md/dm-queue-length.c
++++ b/drivers/md/dm-queue-length.c
+@@ -227,7 +227,7 @@ static int ql_start_io(struct path_selector *ps, struct dm_path *path,
+ }
+ 
+ static int ql_end_io(struct path_selector *ps, struct dm_path *path,
+-		     size_t nr_bytes)
++		     size_t nr_bytes, u64 start_time)
+ {
+ 	struct path_info *pi = path->pscontext;
+ 
+diff --git a/drivers/md/dm-service-time.c b/drivers/md/dm-service-time.c
+index f006a9005593b..9cfda665e9ebd 100644
+--- a/drivers/md/dm-service-time.c
++++ b/drivers/md/dm-service-time.c
+@@ -309,7 +309,7 @@ static int st_start_io(struct path_selector *ps, struct dm_path *path,
+ }
+ 
+ static int st_end_io(struct path_selector *ps, struct dm_path *path,
+-		     size_t nr_bytes)
++		     size_t nr_bytes, u64 start_time)
+ {
+ 	struct path_info *pi = path->pscontext;
+ 
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 9793b04e9ff3b..cefda95c9abb7 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -676,6 +676,15 @@ static bool md_in_flight(struct mapped_device *md)
+ 		return md_in_flight_bios(md);
+ }
+ 
++u64 dm_start_time_ns_from_clone(struct bio *bio)
++{
++	struct dm_target_io *tio = container_of(bio, struct dm_target_io, clone);
++	struct dm_io *io = tio->io;
++
++	return jiffies_to_nsecs(io->start_time);
++}
++EXPORT_SYMBOL_GPL(dm_start_time_ns_from_clone);
++
+ static void start_io_acct(struct dm_io *io)
+ {
+ 	struct mapped_device *md = io->md;
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index af48d9da39160..934037d938b9a 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -332,6 +332,8 @@ void *dm_per_bio_data(struct bio *bio, size_t data_size);
+ struct bio *dm_bio_from_per_bio_data(void *data, size_t data_size);
+ unsigned dm_bio_get_target_bio_nr(const struct bio *bio);
+ 
++u64 dm_start_time_ns_from_clone(struct bio *bio);
++
+ int dm_register_target(struct target_type *t);
+ void dm_unregister_target(struct target_type *t);
+ 
 -- 
 2.25.1
 
