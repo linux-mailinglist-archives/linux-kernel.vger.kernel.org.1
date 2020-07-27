@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2A322F19B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EF722F184
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731141AbgG0OSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S1731182AbgG0OSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:18:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731135AbgG0OR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:17:57 -0400
+        id S1731158AbgG0OSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:18:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03FE420775;
-        Mon, 27 Jul 2020 14:17:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17F622075A;
+        Mon, 27 Jul 2020 14:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859476;
-        bh=0+6B4XYsrE6LKZe512g1y/6Ot1mgwwu8QP5iQFqgLDk=;
+        s=default; t=1595859483;
+        bh=1w8MiR6uKDyPlF/1ToVflJLi46J2u7KN6DicBT8X3T4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yzAfNOa9cIncsNzhGoYYL7kQRPRXJ59Q+896CLkPppJGgi0m8CR9KnkSSfC4aakhp
-         beQz3KzPtljgDU07NczqJvBpVN7sRMeaNJvJGTQqgSQlfvtV21pbMq7BeQqcUsTCP2
-         oDOSZd1u0DHC8qanjHiB36mnMuZFbu8bh5hGA4WY=
+        b=l02IGlZamQsrUH+iRv4UNZG6+0l/gcMlfrpWCH0XrX4nmyLzxTkPjPRjmpSPns2GZ
+         lU+sHstJoM+5l8WAopy94WB9yrtTnk0Trjbj+8P1QrFybYqQBs6dySsFLLj/EPfL/r
+         pGr5zl51Ity59/4aqFcd+AEEaHdvjsE31X0Ij+ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        stable@vger.kernel.org,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 123/138] mm/memcg: fix refcount error while moving and swapping
-Date:   Mon, 27 Jul 2020 16:05:18 +0200
-Message-Id: <20200727134931.583282832@linuxfoundation.org>
+Subject: [PATCH 5.4 126/138] io-mapping: indicate mapping failure
+Date:   Mon, 27 Jul 2020 16:05:21 +0200
+Message-Id: <20200727134931.729052190@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
 References: <20200727134925.228313570@linuxfoundation.org>
@@ -48,61 +49,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+From: Michael J. Ruhl <michael.j.ruhl@intel.com>
 
-commit 8d22a9351035ef2ff12ef163a1091b8b8cf1e49c upstream.
+commit e0b3e0b1a04367fc15c07f44e78361545b55357c upstream.
 
-It was hard to keep a test running, moving tasks between memcgs with
-move_charge_at_immigrate, while swapping: mem_cgroup_id_get_many()'s
-refcount is discovered to be 0 (supposedly impossible), so it is then
-forced to REFCOUNT_SATURATED, and after thousands of warnings in quick
-succession, the test is at last put out of misery by being OOM killed.
+The !ATOMIC_IOMAP version of io_maping_init_wc will always return
+success, even when the ioremap fails.
 
-This is because of the way moved_swap accounting was saved up until the
-task move gets completed in __mem_cgroup_clear_mc(), deferred from when
-mem_cgroup_move_swap_account() actually exchanged old and new ids.
-Concurrent activity can free up swap quicker than the task is scanned,
-bringing id refcount down 0 (which should only be possible when
-offlining).
+Since the ATOMIC_IOMAP version returns NULL when the init fails, and
+callers check for a NULL return on error this is unexpected.
 
-Just skip that optimization: do that part of the accounting immediately.
+During a device probe, where the ioremap failed, a crash can look like
+this:
 
-Fixes: 615d66c37c75 ("mm: memcontrol: fix memcg id ref counter on swap charge move")
-Signed-off-by: Hugh Dickins <hughd@google.com>
+    BUG: unable to handle page fault for address: 0000000000210000
+     #PF: supervisor write access in kernel mode
+     #PF: error_code(0x0002) - not-present page
+     Oops: 0002 [#1] PREEMPT SMP
+     CPU: 0 PID: 177 Comm:
+     RIP: 0010:fill_page_dma [i915]
+       gen8_ppgtt_create [i915]
+       i915_ppgtt_create [i915]
+       intel_gt_init [i915]
+       i915_gem_init [i915]
+       i915_driver_probe [i915]
+       pci_device_probe
+       really_probe
+       driver_probe_device
+
+The remap failure occurred much earlier in the probe.  If it had been
+propagated, the driver would have exited with an error.
+
+Return NULL on ioremap failure.
+
+[akpm@linux-foundation.org: detect ioremap_wc() errors earlier]
+
+Fixes: cafaf14a5d8f ("io-mapping: Always create a struct to hold metadata about the io-mapping")
+Signed-off-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2007071431050.4726@eggly.anvils
+Link: http://lkml.kernel.org/r/20200721171936.81563-1-michael.j.ruhl@intel.com
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/memcontrol.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/io-mapping.h |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5770,7 +5770,6 @@ static void __mem_cgroup_clear_mc(void)
- 		if (!mem_cgroup_is_root(mc.to))
- 			page_counter_uncharge(&mc.to->memory, mc.moved_swap);
- 
--		mem_cgroup_id_get_many(mc.to, mc.moved_swap);
- 		css_put_many(&mc.to->css, mc.moved_swap);
- 
- 		mc.moved_swap = 0;
-@@ -5961,7 +5960,8 @@ put:			/* get_mctgt_type() gets the page
- 			ent = target.ent;
- 			if (!mem_cgroup_move_swap_account(ent, mc.from, mc.to)) {
- 				mc.precharge--;
--				/* we fixup refcnts and charges later. */
-+				mem_cgroup_id_get_many(mc.to, 1);
-+				/* we fixup other refcnts and charges later. */
- 				mc.moved_swap++;
- 			}
- 			break;
+--- a/include/linux/io-mapping.h
++++ b/include/linux/io-mapping.h
+@@ -108,9 +108,12 @@ io_mapping_init_wc(struct io_mapping *io
+ 		   resource_size_t base,
+ 		   unsigned long size)
+ {
++	iomap->iomem = ioremap_wc(base, size);
++	if (!iomap->iomem)
++		return NULL;
++
+ 	iomap->base = base;
+ 	iomap->size = size;
+-	iomap->iomem = ioremap_wc(base, size);
+ #if defined(pgprot_noncached_wc) /* archs can't agree on a name ... */
+ 	iomap->prot = pgprot_noncached_wc(PAGE_KERNEL);
+ #elif defined(pgprot_writecombine)
 
 
