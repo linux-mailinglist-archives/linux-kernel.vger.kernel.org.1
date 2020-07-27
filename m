@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E93C22EC7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F45322EC7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbgG0Mql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:46:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgG0MqX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:46:23 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931B2C061794;
-        Mon, 27 Jul 2020 05:46:22 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 12:46:20 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595853980;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zaloEFRTqoTP58E0zEf74QFtQaCoWtp3TL9B5Itjv9U=;
-        b=vUnyyTQRM8mcfmW1fqsro1OjmXz4vT5EvBs0ppcNdOYvJDoSBtbdcyN5IAfG7bxoJPxqh1
-        S3KLddU4m2OP38D8GiZ69BNJOETMPgytjCHjJQ7aiPiWsIBZ7krqVrMdDPd7CcQn+iL2al
-        2iuxkUGcgCuKrqdFnWcfUL45lAvd4mniVHpyx5lmBZcy9o3AwNqC9BVWoAZfCTvgE4IizS
-        gxmpj9Ew7GgVxEyz8rxL9+6BXse9mBiN6ISJayh0aOIAMSGtGt2WI2JXgAjJNKuQlltu0z
-        cmwgpZJLbwnw5fUBcrpxbbKCUcnOdf8LoQU3xBR+IVMds5s8L1S0L3C7uXzyeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595853980;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zaloEFRTqoTP58E0zEf74QFtQaCoWtp3TL9B5Itjv9U=;
-        b=5Vlu6OlzWRusdYSFX7h07Y10owcO8UdyBwUmxXq9Px6ljvz8K/XICgNFWOt0OhY6DLVlU8
-        HlCYNPCf4R6wWnCw==
-From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/mm/64: Do not sync vmalloc/ioremap mappings
-Cc:     Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200721095953.6218-3-joro@8bytes.org>
-References: <20200721095953.6218-3-joro@8bytes.org>
+        id S1728555AbgG0Mqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:46:33 -0400
+Received: from ozlabs.org ([203.11.71.1]:34313 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728387AbgG0Mq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 08:46:29 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFfgl5N6pz9sRW;
+        Mon, 27 Jul 2020 22:46:27 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595853987;
+        bh=z9rdvwOF6uXrEEHNg+TarJ4QGqVBruerZKTchw/2sqs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Vc60w6ReJvLWCbKWo3jwjNl8hn6/N9Afm3jxW8Er+eOy868pD19jv7wtklNnBvVPg
+         qGUp0pGey9Gmwrtk2CYQU8dXRPPT1+k5NB+pcT2JxgHZUzfyNjxn0XxnX3k341esPb
+         0SzucaSUWLu60FPYP9r1C0sjNaR91sZItdh8gen77A4TvS8hfKAu2pTC10pJ8eObfi
+         95Et2j0nOhGAUfNkKnIM4fOrLf8YXVgAQ4wxbGYd7+3FWvOJ+wSj008dqwUefteFN2
+         iK+H7fhiYQ9JOaJqoyhrz/N8mI7tWNinOLWfhvEMa44EDRMl+1izajNZZL3lF2cXGu
+         BdD9WYg/mtYug==
+Date:   Mon, 27 Jul 2020 22:46:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm tree with the fsinfo tree
+Message-ID: <20200727224626.463ffeaf@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <159585398003.4006.15699987838110302486.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/+n6mSv4+B3O64+e2m+UyXow";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+--Sig_/+n6mSv4+B3O64+e2m+UyXow
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Commit-ID:     8bb9bf242d1fee925636353807c511d54fde8986
-Gitweb:        https://git.kernel.org/tip/8bb9bf242d1fee925636353807c511d54fde8986
-Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Tue, 21 Jul 2020 11:59:52 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 27 Jul 2020 12:32:29 +02:00
+Hi all,
 
-x86/mm/64: Do not sync vmalloc/ioremap mappings
+The notificiations tree has been rebased to remove a new syscall and
+the fsinfo tree rebased on top of that, so the syscall numbers have all
+changed again :-(
 
-Remove the code to sync the vmalloc and ioremap ranges for x86-64. The
-page-table pages are all pre-allocated now so that synchronization is
-no longer necessary.
+--=20
+Cheers,
+Stephen Rothwell
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-Link: https://lore.kernel.org/r/20200721095953.6218-3-joro@8bytes.org
----
- arch/x86/include/asm/pgtable_64_types.h | 2 --
- arch/x86/mm/init_64.c                   | 5 -----
- 2 files changed, 7 deletions(-)
+--Sig_/+n6mSv4+B3O64+e2m+UyXow
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/arch/x86/include/asm/pgtable_64_types.h b/arch/x86/include/asm/pgtable_64_types.h
-index 8f63efb..52e5f5f 100644
---- a/arch/x86/include/asm/pgtable_64_types.h
-+++ b/arch/x86/include/asm/pgtable_64_types.h
-@@ -159,6 +159,4 @@ extern unsigned int ptrs_per_p4d;
- 
- #define PGD_KERNEL_START	((PAGE_SIZE / 2) / sizeof(pgd_t))
- 
--#define ARCH_PAGE_TABLE_SYNC_MASK	(pgtable_l5_enabled() ?	PGTBL_PGD_MODIFIED : PGTBL_P4D_MODIFIED)
--
- #endif /* _ASM_X86_PGTABLE_64_DEFS_H */
-diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
-index e76bdb0..e0cd2df 100644
---- a/arch/x86/mm/init_64.c
-+++ b/arch/x86/mm/init_64.c
-@@ -217,11 +217,6 @@ void sync_global_pgds(unsigned long start, unsigned long end)
- 		sync_global_pgds_l4(start, end);
- }
- 
--void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
--{
--	sync_global_pgds(start, end);
--}
--
- /*
-  * NOTE: This function is marked __ref because it calls __init function
-  * (alloc_bootmem_pages). It's safe to do it ONLY when after_bootmem == 0.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8ezKIACgkQAVBC80lX
+0GyOPAf+LP3r4a9kb3ESOw+ZN7NEbf59fKgeQ7aWApfy0ohv1uBuwwFaamsagvn0
+HLr/fv22tG5ovxMm9Im55mZo/IxnakX7Bhf8fZZ/vxhIcksqCJG38QymDIZ/UffL
+8vbIKPwFC4XdGgmf1P3UouxomvT84YKBY7Ci+USB+1l1vkvU7f7BTP4H+fMJj+bE
+tlvQs8QTJHiQUwnKslRRUoZuSjT2OsEiImvQgtaL/65yipRRe0LaFJpexh3lSYiS
+CYTr8A4GleXxOxuKTvPGd5yODntWBAavbyiZVYCeE4/CJQO8kxUHObZmGhzMBodt
+rPfqilgSjoVtq3FMYlzpfXnXspwDqg==
+=SgGv
+-----END PGP SIGNATURE-----
+
+--Sig_/+n6mSv4+B3O64+e2m+UyXow--
