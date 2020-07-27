@@ -2,158 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E99122E69B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E413222E69A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgG0Haw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgG0Haw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:30:52 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E57F3C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:30:50 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h19so16055887ljg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:30:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X5fEgGpWVjcw3GRcV8W7F39oPVxz0g7j7zQ9WmB3YxM=;
-        b=wTEt2lrn6iDyN6guMCNKvxo53XxAT/Od7zPDoyQMdhtpeUAX5wPigM0QD2nn4VpV0T
-         +tga4M2lbQ6K5gxHGjd8/VLgGkQX7lAM3tHTJBM1pxUcxnOGI6BqxL63qLaiQG9u2liO
-         JVghUkOvKiBdsSaZadHafzaz5HjI/2NKxUJOMT60/hhY5GaHUKodBPAJnt19a06CiTGE
-         59gEeAq1r2nAVNCw+kIh0UQbCxP0B9d7rLbfIFmXLz2EU7V8XJKb5m5rLrsrk1Tx1PTY
-         5gpTqQmgjqLg13zQ50BY7xmTeD8ybY8kVvVgm/KrLci13tpk34460t8OjNi3bwA+i4rA
-         RUaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=X5fEgGpWVjcw3GRcV8W7F39oPVxz0g7j7zQ9WmB3YxM=;
-        b=Rt/27YecUwVpmqksEiTck+r+6WONI966rha//tLi1nZd5BHRObhiV8B6NJmF5wpDc+
-         4cgPZz/4SKtKswJIlP475ucMKXtZh4glgqVyC+uYLVW4WlHPn0sfbFO1NON/mjzlaBZK
-         madHSJDRZg/KnwegadSmcV5M55Rwtu0EJjXf/+3WyNPqNJrduDsBWkw/gqHo0EsCRBp/
-         g2Y0epRaUWdQiZ9vLpS/axXfngTX9V2iVGWQocwfFZlclsQOb36ofwQn/oxKZCH/PIWY
-         mk5ZI7OGu2xcNdGRIo3Y595KLlnV5i33OtChjM1B4eOvGDrjeq/53m+tITQ0W0yKRN7E
-         q5RQ==
-X-Gm-Message-State: AOAM5313q3KNlbqpmILqHO+FnTsgCLV7KHG+fFTWw8r8DZaYoJdopWuC
-        TrwcBl/MlRUhBHFcIFcMSct3zw==
-X-Google-Smtp-Source: ABdhPJyuLjVh2cOZgL9pZNyZcOlOQDP8GFllPafx2uYt1/WePcdJCVxUQEx21L80AXYxJIgK2bmYOQ==
-X-Received: by 2002:a2e:9855:: with SMTP id e21mr10116088ljj.424.1595835049441;
-        Mon, 27 Jul 2020 00:30:49 -0700 (PDT)
-Received: from localhost.localdomain (c-92d7225c.014-348-6c756e10.bbcust.telenor.se. [92.34.215.146])
-        by smtp.gmail.com with ESMTPSA id b204sm2840514lfd.48.2020.07.27.00.30.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 00:30:48 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] mfd: dm355evm_msp: Convert LEDs to GPIO descriptor table
-Date:   Mon, 27 Jul 2020 09:28:44 +0200
-Message-Id: <20200727072844.195723-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.26.2
+        id S1727091AbgG0Hag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:30:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:44078 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726891AbgG0Hae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:30:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595835033; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=CVDJovx8o6kxZAd7Siw03nCa0NOSEKdy2eVnCp0MImQ=;
+ b=XrzxGc0kcC0g0Mv1zBjQ5DoJKw6PaY1tiyc09i2+npig/PNNjCOjJrRyJElBP7ugPX76/loA
+ lRBpAOgyv7R8moOziy/rvV58UhF9ZqtyZO/oOS55grd94LcI3BHMEtmaSnuC9swGWaARrl8L
+ fJcpNBSpAfkdYANv65RgozVBBSE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n14.prod.us-west-2.postgun.com with SMTP id
+ 5f1e8284298a38b61655f804 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 07:30:12
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 08794C43391; Mon, 27 Jul 2020 07:30:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CB45FC433C9;
+        Mon, 27 Jul 2020 07:30:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 27 Jul 2020 15:30:10 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        bvanassche@acm.org, beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com
+Subject: Re: [PATCH v4] scsi: ufs: Quiesce all scsi devices before shutdown
+In-Reply-To: <20200724140140.18186-1-stanley.chu@mediatek.com>
+References: <20200724140140.18186-1-stanley.chu@mediatek.com>
+Message-ID: <84510fc12ada0de8284e6a689b7a2358@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This converts the DaVinci DM355EVM LEDs to use GPIO
-descriptor look-ups.
+Hi Stanley,
 
-Cc: Sekhar Nori <nsekhar@ti.com>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mfd/dm355evm_msp.c | 49 ++++++++++++++++++++++++++++----------
- 1 file changed, 37 insertions(+), 12 deletions(-)
+On 2020-07-24 22:01, Stanley Chu wrote:
+> Currently I/O request could be still submitted to UFS device while
+> UFS is working on shutdown flow. This may lead to racing as below
+> scenarios and finally system may crash due to unclocked register
+> accesses.
+> 
+> To fix this kind of issues, specifically quiesce all SCSI devices
+> before UFS shutdown to block all I/O request sending from block
+> layer.
+> 
+> Example of racing scenario: While UFS device is runtime-suspended
+> 
+> Thread #1: Executing UFS shutdown flow, e.g.,
+>            ufshcd_suspend(UFS_SHUTDOWN_PM)
+> Thread #2: Executing runtime resume flow triggered by I/O request,
+>            e.g., ufshcd_resume(UFS_RUNTIME_PM)
+> 
 
-diff --git a/drivers/mfd/dm355evm_msp.c b/drivers/mfd/dm355evm_msp.c
-index 151c36ce7343..af24712d605e 100644
---- a/drivers/mfd/dm355evm_msp.c
-+++ b/drivers/mfd/dm355evm_msp.c
-@@ -12,6 +12,7 @@
- #include <linux/module.h>
- #include <linux/err.h>
- #include <linux/gpio.h>
-+#include <linux/gpio/machine.h>
- #include <linux/leds.h>
- #include <linux/i2c.h>
- #include <linux/mfd/dm355evm_msp.h>
-@@ -260,31 +261,55 @@ static int add_children(struct i2c_client *client)
- 
- 	/* LED output */
- 	if (msp_has_leds()) {
--#define GPIO_LED(l)	.name = l, .active_low = true
- 		static struct gpio_led evm_leds[] = {
--			{ GPIO_LED("dm355evm::ds14"),
-+			{ .name = "dm355evm::ds14",
- 				.default_trigger = "heartbeat", },
--			{ GPIO_LED("dm355evm::ds15"),
-+			{ .name = "dm355evm::ds15",
- 				.default_trigger = "mmc0", },
--			{ GPIO_LED("dm355evm::ds16"),
-+			{ .name = "dm355evm::ds16",
- 				/* could also be a CE-ATA drive */
- 				.default_trigger = "mmc1", },
--			{ GPIO_LED("dm355evm::ds17"),
-+			{ .name = "dm355evm::ds17",
- 				.default_trigger = "nand-disk", },
--			{ GPIO_LED("dm355evm::ds18"), },
--			{ GPIO_LED("dm355evm::ds19"), },
--			{ GPIO_LED("dm355evm::ds20"), },
--			{ GPIO_LED("dm355evm::ds21"), },
-+			{ .name = "dm355evm::ds18", },
-+			{ .name = "dm355evm::ds19", },
-+			{ .name = "dm355evm::ds20", },
-+			{ .name = "dm355evm::ds21", },
- 		};
--#undef GPIO_LED
- 
- 		struct gpio_led_platform_data evm_led_data = {
- 			.num_leds	= ARRAY_SIZE(evm_leds),
- 			.leds		= evm_leds,
- 		};
- 
--		for (i = 0; i < ARRAY_SIZE(evm_leds); i++)
--			evm_leds[i].gpio = i + dm355evm_msp_gpio.base;
-+		static struct gpiod_lookup_table evm_leds_gpio_table = {
-+			.dev_id = "leds-gpio",
-+			.table = {
-+				/*
-+				 * These GPIOs are on the dm355evm_msp
-+				 * GPIO chip at index 0..7
-+				 */
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 0, NULL,
-+						0, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 1, NULL,
-+						1, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 2, NULL,
-+						2, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 3, NULL,
-+						3, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 4, NULL,
-+						4, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 5, NULL,
-+						5, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 6, NULL,
-+						6, GPIO_ACTIVE_LOW),
-+				GPIO_LOOKUP_IDX("dm355evm_msp", 7, NULL,
-+						7, GPIO_ACTIVE_LOW),
-+				{ },
-+			},
-+		};
-+
-+		gpiod_add_lookup_table(&evm_leds_gpio_table);
- 
- 		/* NOTE:  these are the only fully programmable LEDs
- 		 * on the board, since GPIO-61/ds22 (and many signals
--- 
-2.26.2
+I don't quite get it, how can you prevent block layer PM from iniating
+hba runtime resume by quiescing the scsi devices? Block layer PM
+iniates hba async runtime resume in blk_queue_enter(). But quiescing
+the scsi devices can only prevent general I/O requests from passing
+through scsi_queue_rq() callback.
 
+Say hba is runtime suspended, if an I/O request to sda is sent from
+block layer (sda must be runtime suspended as well at this time),
+blk_queue_enter() initiates async runtime resume for sda. But since
+sda's parents are also runtime suspended, the RPM framework shall do
+runtime resume to the devices in the sequence hba->host->target->sda.
+In this case, ufshcd_resume() still runs concurrently, no?
+
+Thanks,
+
+Can Guo.
+
+> This breaks the assumption that UFS PM flows can not be running
+> concurrently and some unexpected racing behavior may happen.
+> 
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 9d180da77488..2e18596f3a8e 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -159,6 +159,12 @@ struct ufs_pm_lvl_states ufs_pm_lvl_states[] = {
+>  	{UFS_POWERDOWN_PWR_MODE, UIC_LINK_OFF_STATE},
+>  };
+> 
+> +#define ufshcd_scsi_for_each_sdev(fn) \
+> +	list_for_each_entry(starget, &hba->host->__targets, siblings) { \
+> +		__starget_for_each_device(starget, NULL, \
+> +					  fn); \
+> +	}
+> +
+>  static inline enum ufs_dev_pwr_mode
+>  ufs_get_pm_lvl_to_dev_pwr_mode(enum ufs_pm_level lvl)
+>  {
+> @@ -8620,6 +8626,13 @@ int ufshcd_runtime_idle(struct ufs_hba *hba)
+>  }
+>  EXPORT_SYMBOL(ufshcd_runtime_idle);
+> 
+> +static void ufshcd_quiesce_sdev(struct scsi_device *sdev, void *data)
+> +{
+> +	/* Suspended devices are already quiesced so can be skipped */
+> +	if (!pm_runtime_suspended(&sdev->sdev_gendev))
+> +		scsi_device_quiesce(sdev);
+> +}
+> +
+>  /**
+>   * ufshcd_shutdown - shutdown routine
+>   * @hba: per adapter instance
+> @@ -8631,6 +8644,7 @@ EXPORT_SYMBOL(ufshcd_runtime_idle);
+>  int ufshcd_shutdown(struct ufs_hba *hba)
+>  {
+>  	int ret = 0;
+> +	struct scsi_target *starget;
+> 
+>  	if (!hba->is_powered)
+>  		goto out;
+> @@ -8644,6 +8658,21 @@ int ufshcd_shutdown(struct ufs_hba *hba)
+>  			goto out;
+>  	}
+> 
+> +	/*
+> +	 * Quiesce all SCSI devices to prevent any non-PM requests sending
+> +	 * from block layer during and after shutdown.
+> +	 *
+> +	 * Here we can not use blk_cleanup_queue() since PM requests
+> +	 * (with BLK_MQ_REQ_PREEMPT flag) are still required to be sent
+> +	 * through block layer. Therefore SCSI command queued after the
+> +	 * scsi_target_quiesce() call returned will block until
+> +	 * blk_cleanup_queue() is called.
+> +	 *
+> +	 * Besides, scsi_target_"un"quiesce (e.g., scsi_target_resume) can
+> +	 * be ignored since shutdown is one-way flow.
+> +	 */
+> +	ufshcd_scsi_for_each_sdev(ufshcd_quiesce_sdev);
+> +
+>  	ret = ufshcd_suspend(hba, UFS_SHUTDOWN_PM);
+>  out:
+>  	if (ret)
