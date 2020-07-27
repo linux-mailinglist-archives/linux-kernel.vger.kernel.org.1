@@ -2,107 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2FD22E707
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A7822E706
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgG0H4P convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 03:56:15 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:47899 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgG0H4N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:56:13 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MQMmF-1kDWnN0KfJ-00MOyW for <linux-kernel@vger.kernel.org>; Mon, 27 Jul
- 2020 09:56:12 +0200
-Received: by mail-qk1-f182.google.com with SMTP id b79so14432212qkg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:56:11 -0700 (PDT)
-X-Gm-Message-State: AOAM531Wokv7W6aWtxRYW721+KHdJb9UAPeHbLfQMdcfObI6Qfyzbwmp
-        zz8dw9mnGiRu004mmfrYLXlTjNNL35lEY9i0lmc=
-X-Google-Smtp-Source: ABdhPJwN73bC8kIruJcdjJC2GFRSQxWwqPQCem38agJRvfEW+LrAzk5A0Z4s9LvPRY/dFw6d3xdJR2PEcDvNhP9aTUY=
-X-Received: by 2002:a37:385:: with SMTP id 127mr20493263qkd.3.1595836570861;
- Mon, 27 Jul 2020 00:56:10 -0700 (PDT)
+        id S1727113AbgG0H4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:56:10 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53447 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726387AbgG0H4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:56:10 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFXDk1tglz9sRX;
+        Mon, 27 Jul 2020 17:56:06 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595836566;
+        bh=CM2x5n2sHCMCsv09T55g0VHcdzdciOKpgWlGXJpseUg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=u6MW1Aa09uCdBU0WILTz5EZiEZu8krH49OSoNFK/lpFoH0kpv5YJn5abJh2YJpXx3
+         kTVMiv0ZMsUzgREcuhLwAVmEyr20+crB7i5bW1WVq5REsGjsOlYQGo/HmpuskEPYza
+         A5lo9aNdxEE89udidr+wmmXO/RGPVAw5bY72cti6HfZBu2Gby77KA2LanhUawozcjq
+         SpRH/Cijo3+vPYA0vv3TxPBm01QggLGVdIJG3XGu5p9kxFJXA+yaB2uHjFvx9USvDI
+         aE9hLrj0u+rqXQIK+3LyPykcyYYqE49WW1CAP7+KZ55WRJe4aaay4Ql6UOZIh5n6Wm
+         dM6iQ5LMtOdRg==
+Date:   Mon, 27 Jul 2020 17:56:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oded Gabbay <oded.gabbay@gmail.com>
+Subject: linux-next: manual merge of the char-misc tree with Linus' tree
+Message-ID: <20200727175603.29b08f1e@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200724145401.2566-1-krzk@kernel.org> <20200724145401.2566-3-krzk@kernel.org>
- <PWBZDQ.D1XCW6N2YMRA@crapouillou.net> <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
- <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
- <K5Y0EQ.WYAK00ADM46F3@crapouillou.net> <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
- <20200726160616.GA2662@kozik-lap> <RO33EQ.546WD84D5N7K2@crapouillou.net>
- <20200726161545.GA6058@kozik-lap> <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
-In-Reply-To: <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 09:55:54 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
-Message-ID: <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
- architecture only
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Harvey Hunt <harveyhuntnexus@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:dU5DLlV+sbrqR4UICfuTpx0/Lh9IPvagrWGBCSIgUCh5uqnV5r8
- L9aw89+q+Gk1+tn9DBWV25UHAZmwYqmxnbf/VDQQ5vLg9AUAtLERNC7m/gAusPnq3jnR46c
- 3MWCoGKLyAt7dR/sfP+0UioTI7NSUz8w+3uXxqG5uyZJ5JTmZusvK1YkdfqQ6HUd7adAaFk
- cVsrC+GeAKX3L9ffVzuPw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+PvoUUmvStM=:2Kfr7htIz1Pt0/aj/fVZPh
- O2N2gSr2lj0ywHcZMXVpZQHZpHulQ/2smksiRdojaoBvt4BXqc6r2zCPDSoVFRAK58DGh/+ia
- 8Aigoom5sxUFmD1Tcyr2YLU5Niay/2h5FTEdvn5F6cDHUkmsrzn08RRZo9cPmNqqR5k2QuFAd
- KFSKbTWtdi/h3xzMxIeaHYrvfY9gLPOB4lsOSPVdm5WMEPsKMlozv0uq9PgS49+Tr7yfvrYJr
- FEGx3CQUDgO9E6ozaEO90Y3Rv4rj3Z6akea2yQetDsu0vxxclcJUbkeOmC0jUfYlsyHKP9nU6
- 5S+FzRT3MVzfaf6/4hVGSRgjW+skoj3bKajvb/nU3jN5K9K5YkNPN6fmPcOvaPizkRj9f2xnb
- c8A5pHsDSb0MT2mLkSud+JrhzYPiofxsRb4nl2L8BRLo4cpV53OC4jWF5ze+2F4c+yqKRxFY9
- +OgAS9i6+KuvzKpVZte/QzNyy4dBD9+1ucj7pGkZ+tpSaW3VP0n9S4BvHfA8KzKMq+sPsbaie
- YLGXVy9y4lkwzd54SzabgOjUUGtuEYFYGvSCJ7aO89xEj7aBh+LRC6zMEgz2x1KV/P6ph3/Nn
- YdVSWDG8KhGxttFlbkitZFcerxgwAC1mHK6GR/uEeAKunppun7eGurlpY1x5aBGKW7QGwcflK
- wFDErshG6jGveJE99NQ+U7LblC1cgRNGxXFbArQe+Tz4mzEQSA+8S4wJNnms2Mvzva9agHAb6
- yzlR4+6crAwZg6oGkyihLqsmAQs1ntzihcLfuSAYG9PjKvhYcPuMsG0I5hrLvvW2r/dGy0tlZ
- 7YlALXdtwaec/pJEWqew1wWVlh5EvjKHpwyU35sqCRDJzcnyC3R6/hNSYsHOkH7pqhhwH++Zt
- +TETEBeLwFlFbapzHsbEXuf103/fqpBxLEPm7v+oUDnsIFnAx1bnTqkflSlqP+yNEDpDo5yPW
- 5HY6+ikXF7/wH5PcLNK+vFVIx9AyFyQ92l53hfme3GOx/Fsqx643X
+Content-Type: multipart/signed; boundary="Sig_/RK+bLJ=g3992W94HtH=S+ix";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 6:20 PM Paul Cercueil <paul@crapouillou.net> wrote:
-> Le dim. 26 juil. 2020 à 18:15, Krzysztof Kozlowski <krzk@kernel.org> a écrit :
-> > On Sun, Jul 26, 2020 at 06:12:27PM +0200, Paul Cercueil wrote:
-> >>  Le dim. 26 juil. 2020 à 18:06, Krzysztof Kozlowski <krzk@kernel.org> a écrit
- >
-> > OK, that's true. Anyway, I don't have strong opinion on any of this. I
-> > just followed Arnd's hint.
-> >
-> > For the memory driver (and MTD NAND as well) which one you prefer:
-> > 1. https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
-> > 2. depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
-> >
-> > ?
->
-> I'd say a slightly modified #1. The driver shouldn't be "default y" in
-> the first place, so the patch could be to disable it by default.
+--Sig_/RK+bLJ=g3992W94HtH=S+ix
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If it defaults to 'n' even for MACH_INGENIC, you may have to enable
-it in the four defconfig files for these machines to avoid surprises.
+Hi all,
 
-> And when the Ingenic code is merged into the MIPS generic framework, I'll
-> send a set of patches to change all driver dependencies on MIPS to
-> MIPS_GENERIC.
+Today's linux-next merge of the char-misc tree got a conflict in:
 
-The way we do it on Arm, the machine Kconfig identifiers stay around
-even for multiplatform targets (which now make up basically actively
-maintained machines).
+  drivers/misc/habanalabs/gaudi/gaudi.c
 
-I don't think it makes any sense for a driver to depend on MIPS_GENERIC:
-either it is a generic driver that should always be visible or it is specific
-to a set of SoCs and should depend on some corresponding vendor
-specific identifiers.
+between commit:
 
-       Arnd
+  e38bfd30e088 ("habanalabs: set clock gating per engine")
+
+from Linus' tree and commits:
+
+  0b168c8f1d21 ("habanalabs: remove rate limiters from GAUDI")
+  fcc6a4e60678 ("habanalabs: Extract ECC information from FW")
+
+from the char-misc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/misc/habanalabs/gaudi/gaudi.c
+index 637a9d608707,4a1a52608fc0..000000000000
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@@ -1823,9 -1766,7 +1772,7 @@@ static void gaudi_init_golden_registers
+ =20
+  	gaudi_init_hbm_cred(hdev);
+ =20
+- 	gaudi_init_rate_limiter(hdev);
+-=20
+ -	gaudi_disable_clock_gating(hdev);
+ +	hdev->asic_funcs->disable_clock_gating(hdev);
+ =20
+  	for (tpc_id =3D 0, tpc_offset =3D 0;
+  				tpc_id < TPC_NUMBER_OF_ENGINES;
+@@@ -5275,41 -5166,50 +5211,50 @@@ static int gaudi_extract_ecc_info(struc
+  		hdev->asic_funcs->disable_clock_gating(hdev);
+  	}
+ =20
+- 	switch (num_mem_regs) {
+- 	case 1:
+- 		dev_err(hdev->dev,
+- 			"%s ECC indication: 0x%08x\n",
+- 			block_name, RREG32(block_address));
+- 		break;
+- 	case 2:
+- 		dev_err(hdev->dev,
+- 			"%s ECC indication: 0x%08x 0x%08x\n",
+- 			block_name,
+- 			RREG32(block_address), RREG32(block_address + 4));
+- 		break;
+- 	case 3:
+- 		dev_err(hdev->dev,
+- 			"%s ECC indication: 0x%08x 0x%08x 0x%08x\n",
+- 			block_name,
+- 			RREG32(block_address), RREG32(block_address + 4),
+- 			RREG32(block_address + 8));
+- 		break;
+- 	case 4:
+- 		dev_err(hdev->dev,
+- 			"%s ECC indication: 0x%08x 0x%08x 0x%08x 0x%08x\n",
+- 			block_name,
+- 			RREG32(block_address), RREG32(block_address + 4),
+- 			RREG32(block_address + 8), RREG32(block_address + 0xc));
+- 		break;
+- 	default:
+- 		break;
++ 	/* Set invalid wrapper index */
++ 	*memory_wrapper_idx =3D 0xFF;
++=20
++ 	/* Iterate through memory wrappers, a single bit must be set */
++ 	for (i =3D 0 ; i > num_mem_regs ; i++) {
++ 		err_addr +=3D i * 4;
++ 		err_word =3D RREG32(err_addr);
++ 		if (err_word) {
++ 			err_bit =3D __ffs(err_word);
++ 			*memory_wrapper_idx =3D err_bit + (32 * i);
++ 			break;
++ 		}
++ 	}
+ =20
++ 	if (*memory_wrapper_idx =3D=3D 0xFF) {
++ 		dev_err(hdev->dev, "ECC error information cannot be found\n");
++ 		rc =3D -EINVAL;
++ 		goto enable_clk_gate;
+  	}
+ =20
+- 	if (disable_clock_gating) {
++ 	WREG32(params->block_address + GAUDI_ECC_MEM_SEL_OFFSET,
++ 			*memory_wrapper_idx);
++=20
++ 	*ecc_address =3D
++ 		RREG32(params->block_address + GAUDI_ECC_ADDRESS_OFFSET);
++ 	*ecc_syndrom =3D
++ 		RREG32(params->block_address + GAUDI_ECC_SYNDROME_OFFSET);
++=20
++ 	/* Clear error indication */
++ 	reg =3D RREG32(params->block_address + GAUDI_ECC_MEM_INFO_CLR_OFFSET);
++ 	if (params->derr)
++ 		reg |=3D FIELD_PREP(GAUDI_ECC_MEM_INFO_CLR_DERR_MASK, 1);
++ 	else
++ 		reg |=3D FIELD_PREP(GAUDI_ECC_MEM_INFO_CLR_SERR_MASK, 1);
++=20
++ 	WREG32(params->block_address + GAUDI_ECC_MEM_INFO_CLR_OFFSET, reg);
++=20
++ enable_clk_gate:
++ 	if (params->disable_clock_gating) {
+ -		hdev->asic_funcs->enable_clock_gating(hdev);
+ +		hdev->asic_funcs->set_clock_gating(hdev);
+  		mutex_unlock(&gaudi->clk_gate_mutex);
+  	}
++=20
++ 	return rc;
+  }
+ =20
+  static void gaudi_handle_qman_err_generic(struct hl_device *hdev,
+
+--Sig_/RK+bLJ=g3992W94HtH=S+ix
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8eiJMACgkQAVBC80lX
+0GyVVwf/X6ZQzB3OwVPrVHdSOqBKN7RC4jw52j6hUnMy52ABvOx+sHi1tuE/Z9tz
+GX7HPO58xvlx6rSgkPWuQtB7278wX5vZveQdgFCGIW/Us3YwP5Ld1CXN0ZNwmpPa
+btTxiSJoGMlH8hzBH/rUgT8pW2K/7i4bWeO5UCQCsJb6Stb5MJV/62EHT5U3cW3d
+Rmt/940P0Ixsu4cezoIbYClMUE8kDNJemPt75PEfwxguWt/T3t5mQNd4w8h0vjQR
+i/yb1pkP2L8Om79lQHeLt9g6PrgyauZS95uXlt6IhFqdHhMzrs4bxTnHwYmjTbC0
+hBUc5prH60tbGfugFkBRomZJ35tpFw==
+=NXla
+-----END PGP SIGNATURE-----
+
+--Sig_/RK+bLJ=g3992W94HtH=S+ix--
