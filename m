@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B5E22F03B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF36022EEE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729417AbgG0OWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:22:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51830 "EHLO mail.kernel.org"
+        id S1730045AbgG0OLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:11:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731961AbgG0OWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:48 -0400
+        id S1729452AbgG0OL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:11:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6517620775;
-        Mon, 27 Jul 2020 14:22:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C972920838;
+        Mon, 27 Jul 2020 14:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859767;
-        bh=pw+zoWOo5qE3BJjvI2ogxid0E79/xtE7wob1dj8vH1M=;
+        s=default; t=1595859086;
+        bh=kB41gXh/gK69Ub+thQTzV8vVMeVaJNEl8ZZLFyl95ZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ne9o5BwHM4IoEbQakbkZqw7UU0eU6GOnVb8F+zSuRNtm9lgthwxs+7k9CgOkWjGNN
-         j29lPAA1Dh9MQzi1GCPxc8GxlQEAr2UEONa5go17aCsdAE9yewz/80rioyA1Q9sgq8
-         g3AFnvPrazWHn2q+1O81JUQeS/l0jj1xtw6p1PF8=
+        b=180DPRe+hrjhJZC6XYqnwqzGxeMzu1JbtxFWLlO1dNkqondoJMWmWmgVdgA7TzMec
+         RoB/jrlYbAEimVeRUhmz5ZkrSY7t/PftZR+PTdatNgCf1TYOE/pIxKA8nEngzunxcY
+         YvAw3/QuwxS2YQwliCV+X+SOL2hKwILvlY3TGnFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 098/179] RISC-V: Do not rely on initrd_start/end computed during early dt parsing
+Subject: [PATCH 4.19 59/86] x86: math-emu: Fix up cmp insn for clang ias
 Date:   Mon, 27 Jul 2020 16:04:33 +0200
-Message-Id: <20200727134937.430056754@linuxfoundation.org>
+Message-Id: <20200727134917.395764070@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atish Patra <atish.patra@wdc.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 4400231c8acc7e513204c8470c6d796ba47dc169 ]
+[ Upstream commit 81e96851ea32deb2c921c870eecabf335f598aeb ]
 
-Currently, initrd_start/end are computed during early_init_dt_scan
-but used during arch_setup. We will get the following panic if initrd is used
-and CONFIG_DEBUG_VIRTUAL is turned on.
+The clang integrated assembler requires the 'cmp' instruction to
+have a length prefix here:
 
-[    0.000000] ------------[ cut here ]------------
-[    0.000000] kernel BUG at arch/riscv/mm/physaddr.c:33!
-[    0.000000] Kernel BUG [#1]
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.8.0-rc4-00015-ged0b226fed02 #886
-[    0.000000] epc: ffffffe0002058d2 ra : ffffffe0000053f0 sp : ffffffe001001f40
-[    0.000000]  gp : ffffffe00106e250 tp : ffffffe001009d40 t0 : ffffffe00107ee28
-[    0.000000]  t1 : 0000000000000000 t2 : ffffffe000a2e880 s0 : ffffffe001001f50
-[    0.000000]  s1 : ffffffe0001383e8 a0 : ffffffe00c087e00 a1 : 0000000080200000
-[    0.000000]  a2 : 00000000010bf000 a3 : ffffffe00106f3c8 a4 : ffffffe0010bf000
-[    0.000000]  a5 : ffffffe000000000 a6 : 0000000000000006 a7 : 0000000000000001
-[    0.000000]  s2 : ffffffe00106f068 s3 : ffffffe00106f070 s4 : 0000000080200000
-[    0.000000]  s5 : 0000000082200000 s6 : 0000000000000000 s7 : 0000000000000000
-[    0.000000]  s8 : 0000000080011010 s9 : 0000000080012700 s10: 0000000000000000
-[    0.000000]  s11: 0000000000000000 t3 : 000000000001fe30 t4 : 000000000001fe30
-[    0.000000]  t5 : 0000000000000000 t6 : ffffffe00107c471
-[    0.000000] status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-[    0.000000] random: get_random_bytes called from print_oops_end_marker+0x22/0x46 with crng_init=0
+arch/x86/math-emu/wm_sqrt.S:212:2: error: ambiguous instructions require an explicit suffix (could be 'cmpb', 'cmpw', or 'cmpl')
+ cmp $0xffffffff,-24(%ebp)
+ ^
 
-To avoid the error, initrd_start/end can be computed from phys_initrd_start/size
-in setup itself. It also improves the initrd placement by aligning the start
-and size with the page size.
+Make this a 32-bit comparison, which it was clearly meant to be.
 
-Fixes: 76d2a0493a17 ("RISC-V: Init and Halt Code")
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lkml.kernel.org/r/20200527135352.1198078-1-arnd@arndb.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/mm/init.c | 33 +++++++++++++++++++++++++++------
- 1 file changed, 27 insertions(+), 6 deletions(-)
+ arch/x86/math-emu/wm_sqrt.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index fdc772f57edc3..81493cee0a167 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -94,19 +94,40 @@ void __init mem_init(void)
- #ifdef CONFIG_BLK_DEV_INITRD
- static void __init setup_initrd(void)
- {
-+	phys_addr_t start;
- 	unsigned long size;
+diff --git a/arch/x86/math-emu/wm_sqrt.S b/arch/x86/math-emu/wm_sqrt.S
+index f031c0e193565..515cdee90df72 100644
+--- a/arch/x86/math-emu/wm_sqrt.S
++++ b/arch/x86/math-emu/wm_sqrt.S
+@@ -209,7 +209,7 @@ sqrt_stage_2_finish:
  
--	if (initrd_start >= initrd_end) {
--		pr_info("initrd not found or empty");
-+	/* Ignore the virtul address computed during device tree parsing */
-+	initrd_start = initrd_end = 0;
-+
-+	if (!phys_initrd_size)
-+		return;
-+	/*
-+	 * Round the memory region to page boundaries as per free_initrd_mem()
-+	 * This allows us to detect whether the pages overlapping the initrd
-+	 * are in use, but more importantly, reserves the entire set of pages
-+	 * as we don't want these pages allocated for other purposes.
-+	 */
-+	start = round_down(phys_initrd_start, PAGE_SIZE);
-+	size = phys_initrd_size + (phys_initrd_start - start);
-+	size = round_up(size, PAGE_SIZE);
-+
-+	if (!memblock_is_region_memory(start, size)) {
-+		pr_err("INITRD: 0x%08llx+0x%08lx is not a memory region",
-+		       (u64)start, size);
- 		goto disable;
- 	}
--	if (__pa_symbol(initrd_end) > PFN_PHYS(max_low_pfn)) {
--		pr_err("initrd extends beyond end of memory");
-+
-+	if (memblock_is_region_reserved(start, size)) {
-+		pr_err("INITRD: 0x%08llx+0x%08lx overlaps in-use memory region\n",
-+		       (u64)start, size);
- 		goto disable;
- 	}
+ #ifdef PARANOID
+ /* It should be possible to get here only if the arg is ffff....ffff */
+-	cmp	$0xffffffff,FPU_fsqrt_arg_1
++	cmpl	$0xffffffff,FPU_fsqrt_arg_1
+ 	jnz	sqrt_stage_2_error
+ #endif /* PARANOID */
  
--	size = initrd_end - initrd_start;
--	memblock_reserve(__pa_symbol(initrd_start), size);
-+	memblock_reserve(start, size);
-+	/* Now convert initrd to virtual addresses */
-+	initrd_start = (unsigned long)__va(phys_initrd_start);
-+	initrd_end = initrd_start + phys_initrd_size;
- 	initrd_below_start_ok = 1;
- 
- 	pr_info("Initial ramdisk at: 0x%p (%lu bytes)\n",
 -- 
 2.25.1
 
