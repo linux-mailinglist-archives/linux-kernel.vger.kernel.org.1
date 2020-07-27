@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3001322EE57
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 382A022EF42
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgG0OHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:07:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
+        id S1730596AbgG0OOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:14:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729064AbgG0OG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:58 -0400
+        id S1730572AbgG0OOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:14:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E5C22078E;
-        Mon, 27 Jul 2020 14:06:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8497D208E4;
+        Mon, 27 Jul 2020 14:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858818;
-        bh=ZGHLr7kALoPqFwJLj/tZqPaw1QXVTJmEq/VIiu3n9H8=;
+        s=default; t=1595859279;
+        bh=FqV7naqdE+WXYz3j7X7YOjTCWWaUZ3mIg+maH9TaCt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1egwd68DsjfVZGRWu6P0Ro5kQ4ZyUvH8a7MsQ9df+gSVHAOUgOJgrJ1wat1VEbNI3
-         59x+0MqZe0JM5uwx/RiJxtBi+zqksS6dpc4/QXJyjFemkRDSbTeDFdizvGYIkFZ8eC
-         VQAdWr7YLa/r3vGlP/QqyNF2AlvkUkU+EjB+Jhc4=
+        b=CcbaWfvKc/FrPhPzfkjb7TDZcWkPfL6yvcMMXIh7gP3GqjOM+fMU1tfhjckKiwEOh
+         K8b9/QdhTrO9SQiWIn54jfxS7qoX971TRJR9hmS4wW2X4aZH3CqO6xB3ZIgEWFJnH2
+         3lm0Al/WrpCvTeOaoYDyAhEMMvhXabFVWkp8Ncs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Mans Rullgard <mans@mansr.com>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/64] hippi: Fix a size used in a pci_free_consistent() in an error handling path
-Date:   Mon, 27 Jul 2020 16:04:01 +0200
-Message-Id: <20200727134912.240928673@linuxfoundation.org>
+Subject: [PATCH 5.4 047/138] drm: sun4i: hdmi: Fix inverted HPD result
+Date:   Mon, 27 Jul 2020 16:04:02 +0200
+Message-Id: <20200727134927.707753132@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 3195c4706b00106aa82c73acd28340fa8fc2bfc1 ]
+[ Upstream commit baa1841eb797eadce6c907bdaed7cd6f01815404 ]
 
-The size used when calling 'pci_alloc_consistent()' and
-'pci_free_consistent()' should match.
+When the extra HPD polling in sun4i_hdmi was removed, the result of
+HPD was accidentally inverted.
 
-Fix it and have it consistent with the corresponding call in 'rr_close()'.
+Fix this by inverting the check.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bda8eaa6dee7 ("drm: sun4i: hdmi: Remove extra HPD polling")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Tested-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200711011030.21997-1-wens@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hippi/rrunner.c | 2 +-
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
-index d7ba2b813effc..40ef4aeb0ef04 100644
---- a/drivers/net/hippi/rrunner.c
-+++ b/drivers/net/hippi/rrunner.c
-@@ -1250,7 +1250,7 @@ static int rr_open(struct net_device *dev)
- 		rrpriv->info = NULL;
- 	}
- 	if (rrpriv->rx_ctrl) {
--		pci_free_consistent(pdev, sizeof(struct ring_ctrl),
-+		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
- 				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
- 		rrpriv->rx_ctrl = NULL;
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+index 63b4de81686ac..4acdfa6087751 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+@@ -263,7 +263,7 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	unsigned long reg;
+ 
+ 	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
+-	if (reg & SUN4I_HDMI_HPD_HIGH) {
++	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
+ 		cec_phys_addr_invalidate(hdmi->cec_adap);
+ 		return connector_status_disconnected;
  	}
 -- 
 2.25.1
