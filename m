@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624EF22EE8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC2822EF47
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729478AbgG0OIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58294 "EHLO mail.kernel.org"
+        id S1730658AbgG0OPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:15:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729472AbgG0OIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:08:42 -0400
+        id S1730646AbgG0OPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:15:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 973732083E;
-        Mon, 27 Jul 2020 14:08:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FB442078E;
+        Mon, 27 Jul 2020 14:15:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858922;
-        bh=bkASIU+tcHNYr4Je/uAYwATeDov4hpolKUnT+rpI18o=;
+        s=default; t=1595859304;
+        bh=fdJBcHhe5Y0lEAqNrc+DepWq3JAQJpBhn8tEIoaSXVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fXdG92NdjLEur3fUcO8BtQ7iO+bBu5qkvwluBhMJQng4+yPTfbMwPq6JUGiWCeoe0
-         M1/GLxgmBbr7WK6cKiexBlS+0J/cAXESp7wDMOKZzz9Z5BQTL6wt/TEdRDICbGiLZT
-         hxoP4pwvfThGjJyyZ7PdIvP6oSpEn0hY7zuD43FA=
+        b=DTQpkrB4W8hgLkZMqrRH6+SGNSDANbDYMyynwTPzmnb/8TPpDDB3Yv0atzigc61Ql
+         Y1aRHLP/z5llmx2gE7rOjyt7daJBV1r455k0WxLlLr1f4h88fdcgR084MsKc7dyBJe
+         3OHp4OP0PmgNg3VXEqzBtm78hFWicj3mQx8CxqAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthew Howell <matthew.howell@sealevel.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 32/64] serial: exar: Fix GPIO configuration for Sealevel cards based on XR17V35X
+Subject: [PATCH 5.4 056/138] netdevsim: fix unbalaced locking in nsim_create()
 Date:   Mon, 27 Jul 2020 16:04:11 +0200
-Message-Id: <20200727134912.750933479@linuxfoundation.org>
+Message-Id: <20200727134928.210346069@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Howell <matthew.howell@sealevel.com>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit 5fdbe136ae19ab751daaa4d08d9a42f3e30d17f9 ]
+[ Upstream commit 2c9d8e01f0c6017317eee7638496173d4a64e6bc ]
 
-Sealevel XR17V35X based devices are inoperable on kernel versions
-4.11 and above due to a change in the GPIO preconfiguration introduced in
-commit
-7dea8165f1d. This patch fixes this by preconfiguring the GPIO on Sealevel
-cards to the value (0x00) used prior to commit 7dea8165f1d
+In the nsim_create(), rtnl_lock() is called before nsim_bpf_init().
+If nsim_bpf_init() is failed, rtnl_unlock() should be called,
+but it isn't called.
+So, unbalanced locking would occur.
 
-With GPIOs preconfigured as per commit 7dea8165f1d all ports on
-Sealevel XR17V35X based devices become stuck in high impedance
-mode, regardless of dip-switch or software configuration. This
-causes the device to become effectively unusable. This patch (in
-various forms) has been distributed to our customers and no issues
-related to it have been reported.
-
-Fixes: 7dea8165f1d6 ("serial: exar: Preconfigure xr17v35x MPIOs as output")
-Signed-off-by: Matthew Howell <matthew.howell@sealevel.com>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2007221605270.13247@tstest-VirtualBox
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e05b2d141fef ("netdevsim: move netdev creation/destruction to dev probe")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_exar.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/net/netdevsim/netdev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-index 899f36b59af79..ed81128bb42e0 100644
---- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -229,7 +229,17 @@ static void setup_gpio(struct pci_dev *pcidev, u8 __iomem *p)
- 	 * devices will export them as GPIOs, so we pre-configure them safely
- 	 * as inputs.
- 	 */
--	u8 dir = pcidev->vendor == PCI_VENDOR_ID_EXAR ? 0xff : 0x00;
-+
-+	u8 dir = 0x00;
-+
-+	if  ((pcidev->vendor == PCI_VENDOR_ID_EXAR) &&
-+		(pcidev->subsystem_vendor != PCI_VENDOR_ID_SEALEVEL)) {
-+		// Configure GPIO as inputs for Commtech adapters
-+		dir = 0xff;
-+	} else {
-+		// Configure GPIO as outputs for SeaLevel adapters
-+		dir = 0x00;
-+	}
+diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+index 55f57f76d01bb..a6bbe93f29ef6 100644
+--- a/drivers/net/netdevsim/netdev.c
++++ b/drivers/net/netdevsim/netdev.c
+@@ -301,7 +301,7 @@ nsim_create(struct nsim_dev *nsim_dev, struct nsim_dev_port *nsim_dev_port)
+ 	rtnl_lock();
+ 	err = nsim_bpf_init(ns);
+ 	if (err)
+-		goto err_free_netdev;
++		goto err_rtnl_unlock;
  
- 	writeb(0x00, p + UART_EXAR_MPIOINT_7_0);
- 	writeb(0x00, p + UART_EXAR_MPIOLVL_7_0);
+ 	nsim_ipsec_init(ns);
+ 
+@@ -315,8 +315,8 @@ nsim_create(struct nsim_dev *nsim_dev, struct nsim_dev_port *nsim_dev_port)
+ err_ipsec_teardown:
+ 	nsim_ipsec_teardown(ns);
+ 	nsim_bpf_uninit(ns);
++err_rtnl_unlock:
+ 	rtnl_unlock();
+-err_free_netdev:
+ 	free_netdev(dev);
+ 	return ERR_PTR(err);
+ }
 -- 
 2.25.1
 
