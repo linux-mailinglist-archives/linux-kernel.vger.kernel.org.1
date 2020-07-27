@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E5722EF36
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938B922EFDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730549AbgG0OOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39966 "EHLO mail.kernel.org"
+        id S1731475AbgG0OT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:19:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730528AbgG0OOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:24 -0400
+        id S1731455AbgG0OTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:19:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 467C3208E4;
-        Mon, 27 Jul 2020 14:14:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E34902070A;
+        Mon, 27 Jul 2020 14:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859263;
-        bh=CDgSlUqKPGmQBQWGQKwaip8LlKp+TzgJr12FOTDVWuc=;
+        s=default; t=1595859592;
+        bh=W1KFMAIHFlohENhNRehYvsOhP45gjEfT1u4uc4hD2kM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OiNT2d3MRfy8ezfXapoWD/ut8riLrpthFB9bTa16MlBBH0k/+O9/F2IqbceiwKRZZ
-         uHd5o6jMwTsLllw7mj8GqnbqzB7vzucQdWzav361NnTu19SC+vWVoYs7chF45wQZ6i
-         +TVQT8gThctze53HHiHkw5XzSejk8pH1AtAEdU7w=
+        b=c6cCWkTV0AFsCbjAIRrCq0t0AV0eu3gMZGKWCNiMoXgM5VL/wjIMDFsDi9MEPRZeC
+         L9/isjDEeW0LmyXiOUpOTxNGgo3lRzaiJsKl5HseAXcwGZl679gMCQE4J2GHim7inA
+         xyK94OxLfJJHkKJhz3irL5QctuIQUdMYng7002lc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 011/138] ALSA: hda/hdmi: fix failures at PCM open on Intel ICL and later
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.7 031/179] btrfs: reloc: clear DEAD_RELOC_TREE bit for orphan roots to prevent runaway balance
 Date:   Mon, 27 Jul 2020 16:03:26 +0200
-Message-Id: <20200727134925.807460273@linuxfoundation.org>
+Message-Id: <20200727134934.182761381@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,105 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 56275036d8185f92eceac7479d48b858ee3dab84 ]
+commit 1dae7e0e58b484eaa43d530f211098fdeeb0f404 upstream.
 
-When HDMI PCM devices are opened in a specific order, with at least one
-HDMI/DP receiver connected, ALSA PCM open fails to -EBUSY on the
-connected monitor, on recent Intel platforms (ICL/JSL and newer). While
-this is not a typical sequence, at least Pulseaudio does this every time
-when it is started, to discover the available PCMs.
+[BUG]
+There are several reported runaway balance, that balance is flooding the
+log with "found X extents" where the X never changes.
 
-The rootcause is an invalid assumption in hdmi_add_pin(), where the
-total number of converters is assumed to be known at the time the
-function is called. On older Intel platforms this held true, but after
-ICL/JSL, the order how pins and converters are in the subnode list as
-returned by snd_hda_get_sub_nodes(), was changed. As a result,
-information for some converters was not stored to per_pin->mux_nids.
-And this means some pins cannot be connected to all converters, and
-application instead gets -EBUSY instead at open.
+[CAUSE]
+Commit d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after
+merge_reloc_roots") introduced BTRFS_ROOT_DEAD_RELOC_TREE bit to
+indicate that one subvolume has finished its tree blocks swap with its
+reloc tree.
 
-The assumption that converters are always before pins in the subnode
-list, is not really a valid one. Fix the problem in hdmi_parse_codec()
-by introducing separate loops for discovering converters and pins.
+However if balance is canceled or hits ENOSPC halfway, we didn't clear
+the BTRFS_ROOT_DEAD_RELOC_TREE bit, leaving that bit hanging forever
+until unmount.
 
-BugLink: https://github.com/thesofproject/linux/issues/1978
-BugLink: https://github.com/thesofproject/linux/issues/2216
-BugLink: https://github.com/thesofproject/linux/issues/2217
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200703153818.2808592-1-kai.vehmanen@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Any subvolume root with that bit, would cause backref cache to skip this
+tree block, as it has finished its tree block swap.  This would cause
+all tree blocks of that root be ignored by balance, leading to runaway
+balance.
+
+[FIX]
+Fix the problem by also clearing the BTRFS_ROOT_DEAD_RELOC_TREE bit for
+the original subvolume of orphan reloc root.
+
+Add an umount check for the stale bit still set.
+
+Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
 ---
- sound/pci/hda/patch_hdmi.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ fs/btrfs/disk-io.c    |    1 +
+ fs/btrfs/relocation.c |    2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index e78c4367b6c86..820f534a67b1c 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1817,33 +1817,43 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1998,6 +1998,7 @@ void btrfs_put_root(struct btrfs_root *r
  
- static int hdmi_parse_codec(struct hda_codec *codec)
- {
--	hda_nid_t nid;
-+	hda_nid_t start_nid;
-+	unsigned int caps;
- 	int i, nodes;
+ 	if (refcount_dec_and_test(&root->refs)) {
+ 		WARN_ON(!RB_EMPTY_ROOT(&root->inode_tree));
++		WARN_ON(test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state));
+ 		if (root->anon_dev)
+ 			free_anon_bdev(root->anon_dev);
+ 		btrfs_drew_lock_destroy(&root->snapshot_lock);
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2642,6 +2642,8 @@ again:
+ 					root->reloc_root = NULL;
+ 					btrfs_put_root(reloc_root);
+ 				}
++				clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE,
++					  &root->state);
+ 				btrfs_put_root(root);
+ 			}
  
--	nodes = snd_hda_get_sub_nodes(codec, codec->core.afg, &nid);
--	if (!nid || nodes < 0) {
-+	nodes = snd_hda_get_sub_nodes(codec, codec->core.afg, &start_nid);
-+	if (!start_nid || nodes < 0) {
- 		codec_warn(codec, "HDMI: failed to get afg sub nodes\n");
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < nodes; i++, nid++) {
--		unsigned int caps;
--		unsigned int type;
-+	/*
-+	 * hdmi_add_pin() assumes total amount of converters to
-+	 * be known, so first discover all converters
-+	 */
-+	for (i = 0; i < nodes; i++) {
-+		hda_nid_t nid = start_nid + i;
- 
- 		caps = get_wcaps(codec, nid);
--		type = get_wcaps_type(caps);
- 
- 		if (!(caps & AC_WCAP_DIGITAL))
- 			continue;
- 
--		switch (type) {
--		case AC_WID_AUD_OUT:
-+		if (get_wcaps_type(caps) == AC_WID_AUD_OUT)
- 			hdmi_add_cvt(codec, nid);
--			break;
--		case AC_WID_PIN:
-+	}
-+
-+	/* discover audio pins */
-+	for (i = 0; i < nodes; i++) {
-+		hda_nid_t nid = start_nid + i;
-+
-+		caps = get_wcaps(codec, nid);
-+
-+		if (!(caps & AC_WCAP_DIGITAL))
-+			continue;
-+
-+		if (get_wcaps_type(caps) == AC_WID_PIN)
- 			hdmi_add_pin(codec, nid);
--			break;
--		}
- 	}
- 
- 	return 0;
--- 
-2.25.1
-
 
 
