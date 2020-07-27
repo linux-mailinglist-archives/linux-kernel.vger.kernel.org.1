@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCCB22ECFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF6522ED11
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728682AbgG0NRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
+        id S1728688AbgG0NVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728147AbgG0NRf (ORCPT
+        with ESMTP id S1726139AbgG0NVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:17:35 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99753C061794;
-        Mon, 27 Jul 2020 06:17:35 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gg18so13653996ejb.6;
-        Mon, 27 Jul 2020 06:17:35 -0700 (PDT)
+        Mon, 27 Jul 2020 09:21:07 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE868C061794;
+        Mon, 27 Jul 2020 06:21:05 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id z188so1212247pfc.6;
+        Mon, 27 Jul 2020 06:21:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iNBgboLv8PrTHcQjEn6Y9Jz21Y45h4oiyFqkeuFiwIo=;
-        b=m9lNB2hwvTAN4kqxBWcMSgc2vgMnClGnzEA91il0qX2jUYtR538v0I2sE26G/ytH/P
-         T4RpMxw+ereB4LMTBg2ajmg9kqdKW0PgzzSeU8sTmBmdVnTqfF+APt1NR6U7rTn935Vq
-         RQz9PBK/vu4qFbPbvkHcqKwFfkOzCuJ4h+lGMYyZXSMcIcrTC+SXb72CDkt1H97ma2U4
-         dxl6QtFhkWvIB5irb0Xg+cpAMxL/blcAidpAhInbfCNTpdTTjQPSxxB84V3NvhskyUdN
-         m/7dCRpV+nbGGnpwKuOtMgwrYNVnDEROAp6X0BETYaS+7C3vmXsY7wLNy0rSb/5F4ZFM
-         L7YQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lCrFxpLw5jwB0ZWba+VhbgCI7p4GpK2jg/E4s1AB/yM=;
+        b=IO7Asnw1x5jaHrPrBYcTWUlGNNMyYH8tet7FkILH4HmzUn9u+meMUVh7296Xg4Rcrw
+         26mjFiFrtobGZP6/JQgzxcGK4uQo2Ig3wmk7+u7qj0oChgvGHJ5G9KhIY810qGt9ivDU
+         ecmte3moVCfdGcTryICQuGadpX09WZv7fo/TBHNX0iVyai2I1ajQfLVDjDziQuCVg66d
+         Op9jGMYmfwrIRYRcsmdDWYl1LEML4CLEJmejHa22x3gGRBecWBIPddPw5Uv7QAQUHlzf
+         sAX2Uzq+xrcpElEoZ7YiGfd1t7G8ipJ6UnABh/A6XbzkyEMxuz72nuyz0qykT0qrGyq2
+         K9VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=iNBgboLv8PrTHcQjEn6Y9Jz21Y45h4oiyFqkeuFiwIo=;
-        b=EFjzxGHrmun2nl3QRhnhxyVcjCg6/UU2lg64V8z7YOWVKVdiwOglopAt9qA/w/5y9c
-         vdWP2cjJZXvcFttgo8MD5PyL1+ay6Sk88mwMnout2fkGhjm26RbEkVhcIr33VqWA6w6k
-         xnpbKF431XeNQtmKO3cRv8Jlox7Kiy3tD2x9SlGwJHygoWrpxH+hnTyD9uLWD7bebfNq
-         vCEPbDmLdicWOOIJXWe9DdJFzUjKGoxiNF78DbbUne5Gg3sZUmGQw4f6dAIbrpmHyyG4
-         4cPazL885UfYZNXQ8eD4Tv3gSF9mzfEWwYxbVWypMGACpgsgJmfqG+p8qecxOvJSjblA
-         cN8A==
-X-Gm-Message-State: AOAM533xmZiyfUlkDBiaZqeas9wn/+yOpV6s1l0UB82lHP22lwjifaQq
-        wXUsf7qyBMs9AO0GEOy+q2s=
-X-Google-Smtp-Source: ABdhPJyVxWiINoqkfFlfIcdrJsa1NvE979dm5Bc7LcNowaJCcOqoBIdVfKcSurwauXtjizprI63uuQ==
-X-Received: by 2002:a17:906:1751:: with SMTP id d17mr20468545eje.140.1595855854375;
-        Mon, 27 Jul 2020 06:17:34 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id y7sm6961705ejd.73.2020.07.27.06.17.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lCrFxpLw5jwB0ZWba+VhbgCI7p4GpK2jg/E4s1AB/yM=;
+        b=Xd1ssR79aJre2Ww0osYOzXlelshgca/9fMVXEWWC3fwiOCQcFWnVdSho8zgX4SNdMo
+         kiGcK37dTNPOr70byjQB/UYcjKOk9uPvh3edL4k5tNo9sTFFZBbMDkiNMQn8cgP7yDWZ
+         +ZNekGaTwksWb+Nh/IXfyitVZ5K1E/JPlHIxPzwfqvXhPbVcA9JJ9X8t+bras7stp59H
+         hPDrxLCLixYRAx1Iv6ps/n7Q7BGvfTExqmEvNe7V4Ujcs+hwhRixGv5mcijjhHKf57x7
+         /j9/x5qOa/VeSKitKooncazySmr5wGtMMowtGsb8trJjJMMRZ9Fn3AanG2rCxXhlS3OR
+         QpXQ==
+X-Gm-Message-State: AOAM5302EW+m3eEXkU/4/YB+RjFxiqcH6Au6Bac1kqkzI0K47DDACO+m
+        WDnRueyKhnL9QelWKXOAH8k=
+X-Google-Smtp-Source: ABdhPJxRloIPWLVUZ2/SuwNrfH74RWEzbhOzbwrdKU/RikSvAOSrIk2YgZzbcFwz0HqrECq6wOxFhQ==
+X-Received: by 2002:a63:5a20:: with SMTP id o32mr20002948pgb.15.1595856064511;
+        Mon, 27 Jul 2020 06:21:04 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id my16sm12206087pjb.43.2020.07.27.06.21.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 06:17:33 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 15:17:31 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     peterz@infradead.org
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        npiggin@gmail.com, x86@kernel.org, linux-sh@vger.kernel.org,
-        borntraeger@de.ibm.com, jcmvbkbc@gmail.com
-Subject: Re: [PATCH] lockdep: Fix TRACE_IRQFLAGS vs NMIs
-Message-ID: <20200727131731.GB105139@gmail.com>
-References: <20200727124852.GK119549@hirez.programming.kicks-ass.net>
+        Mon, 27 Jul 2020 06:21:03 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v2] spi: spi-topcliff-pch: drop call to wakeup-disable
+Date:   Mon, 27 Jul 2020 18:47:43 +0530
+Message-Id: <20200727131742.82289-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
+References: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727124852.GK119549@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Before generic upgrade, both .suspend() and .resume() were invoking
+pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
+states. (Normal trend is .suspend() enables and .resume() disables the
+wakeup.)
 
-* peterz@infradead.org <peterz@infradead.org> wrote:
+This was ambiguous and may be buggy. Instead of replicating the legacy
+behavior, drop the wakeup-disable call.
 
-> 
-> Prior to commit 859d069ee1dd ("lockdep: Prepare for NMI IRQ state
-> tracking") IRQ state tracking was disabled in NMIs due to nmi_enter()
-> doing lockdep_off() -- with the obvious requirement that NMI entry
-> call nmi_enter() before trace_hardirqs_off().
-> 
-> [ afaict, PowerPC and SH violate this order on their NMI entry ]
-> 
-> However, that commit explicitly changed lockdep_hardirqs_*() to ignore
-> lockdep_off() and breaks every architecture that has irq-tracing in
-> it's NMI entry that hasn't been fixed up (x86 being the only fixed one
-> at this point).
-> 
-> The reason for this change is that by ignoring lockdep_off() we can:
-> 
->   - get rid of 'current->lockdep_recursion' in lockdep_assert_irqs*()
->     which was going to to give header-recursion issues with the
->     seqlock rework.
-> 
->   - allow these lockdep_assert_*() macros to function in NMI context.
-> 
-> Restore the previous state of things and allow an architecture to
-> opt-in to the NMI IRQ tracking support, however instead of relying on
-> lockdep_off(), rely on in_nmi(), both are part of nmi_enter() and so
-> over-all entry ordering doesn't need to change.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/Kconfig.debug   |    3 +++
->  kernel/locking/lockdep.c |    8 +++++++-
->  lib/Kconfig.debug        |    6 ++++++
->  3 files changed, 16 insertions(+), 1 deletion(-)
+Fix: f185bcc77980("spi: spi-topcliff-pch: use generic power management")
+Reported by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/spi/spi-topcliff-pch.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Tree management side note: to apply this I've created a new 
-tip:locking/nmi branch, which is based off the existing NMI vs. IRQ 
-tracing commits included in locking/core:
+diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+index 281a90f1b5d8..c73a03ddf5f3 100644
+--- a/drivers/spi/spi-topcliff-pch.c
++++ b/drivers/spi/spi-topcliff-pch.c
+@@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
+ 
+ 	dev_dbg(dev, "%s ENTRY\n", __func__);
+ 
+-	device_wakeup_disable(dev);
+-
+ 	/* set suspend status to false */
+ 	pd_dev_save->board_dat->suspend_sts = false;
+ 
+-- 
+2.27.0
 
-ed00495333cc: ("locking/lockdep: Fix TRACE_IRQFLAGS vs. NMIs")
-ba1f2b2eaa2a: ("x86/entry: Fix NMI vs IRQ state tracking")
-859d069ee1dd: ("lockdep: Prepare for NMI IRQ state tracking")
-248591f5d257: ("kcsan: Make KCSAN compatible with new IRQ state tracking")
-e1bcad609f5a: ("Merge branch 'tip/x86/entry'")
-b037b09b9058: ("x86/entry: Rename idtentry_enter/exit_cond_rcu() to idtentry_enter/exit()")
-dcb7fd82c75e: ("Linux 5.8-rc4")
-
-This locking/nmi branch can then be merged into irq/entry (there's a 
-bunch of conflicts between them), without coupling all of v5.9's 
-locking changes to Thomas's generic entry work.
-
-Thanks,
-
-	Ingo
