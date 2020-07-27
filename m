@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F07722E924
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366EF22E932
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgG0JiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        id S1728227AbgG0JiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbgG0JiP (ORCPT
+        with ESMTP id S1726263AbgG0JiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:38:15 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00C3C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:14 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id a5so4173817wrm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:14 -0700 (PDT)
+        Mon, 27 Jul 2020 05:38:16 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0C2C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:16 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b6so14153449wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qC3CDVB7kR9rDCfdJZLYs8Kg8/UF5PfbuV6G/eCKZfg=;
-        b=lnCjxacwzAHt2R2k9vsjrdHuJnI9NhyZHxDnyjUtKw3U3MmDCQItie9CkfkDYGGHP4
-         XeIJSyMymz5IBuuDlALyaYlWVolg41q8s0BMs5KnJSgEC+z12CqdbFFDfIGpb4Og423o
-         E6nI+IaFvBgExDGodgtOz0Tz29Asee8YhO4Ki2rz96JlHwJq3mpulS+TTbtHes6lz6mm
-         agVrRM7NEvOHEJ3eos3/a8VYbO7GGmY4ORLWoiUOi90zOpNzf0mNcd+YnzCifx4dSJRk
-         NPfTLC1SQmXjvNVyRsoLvKWt987ynlEeq2R9Wvk2HMScrHBtax0Ufx8i0LwyLQ1WH6Sn
-         +Aew==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XmFQ91h0GZrG5WahISB8fgmLlciVJglL2OXgg5eRNY4=;
+        b=iRS7vofa4J8zmxsEDII42gfJgszCaqgth1nT6MJzl/o2Ne/5UFf5Aw8ZigFDURPIyZ
+         V3kQCYXrPr/G8X3l0hdpr6yDnxzEdK5l6IcxZjJl8NqaL4rdPtO/0bjiElIzmnITRAAs
+         a0T3l2cQxquXvuEZXLqA4purNnP7Zw55/SXIY1GmzJXo9cp9GyXX6pE1VNi0b4dYMtyG
+         YngNIQKPzu0J/ZyHp94WUQXsm3DLdNgyd+Of3w+/CPHdLNCvUdEvRfvv2ig5axxivImg
+         3LlQz0fwM0iVymO208cBo6wJX1qMpacvMlSxCbF/GxNH7UlPBvcJfjCFdfJx+DeEAyek
+         MDOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qC3CDVB7kR9rDCfdJZLYs8Kg8/UF5PfbuV6G/eCKZfg=;
-        b=nyc7Pb6BxaIeYYzoPOTPPahQrP76Jv4xC6D8wQeYcCy5BwAAOVE4mD/HWvT1YbwV/B
-         HvJpoRpeoBqJxOwnchVs0JBxQXtuhADw2X4NqDmF60PPNjTovaXDQYoYbq9FXkziazTl
-         lPREe9hSVteMOWaDJ8/5pAx+hN1EPzzX8x/RUtOlrX5+Lfvy8mG6t8vkwrDYfFjDUY/X
-         rmqiVRct7zvshfQooKyw17zTq+izm/j0IvMZ6xzuguHi5Y6jEXdZViSuOdMqH0Vvep2i
-         DGA7Cf4FdRojuO1dt6Z7XuiZKaAgP+jOEIjk3hloKjPYKIHnSxLIIZ5tqS50QxCgSmEH
-         4hZA==
-X-Gm-Message-State: AOAM532JB/VTeiyyRIF2t25wNWPVjmRWrBJxajeGwJKLaQhRfUuInGxw
-        /5iFPrWQw1SWfihrGH661/ZI9A==
-X-Google-Smtp-Source: ABdhPJxkg+f3gXXkXPzVNhCME4nqb/wHXSFJO1dBNFDBKMoDQ8HkFPldWS7rLgHDBWRBxPareMatjg==
-X-Received: by 2002:adf:ded0:: with SMTP id i16mr19318452wrn.389.1595842693413;
-        Mon, 27 Jul 2020 02:38:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XmFQ91h0GZrG5WahISB8fgmLlciVJglL2OXgg5eRNY4=;
+        b=Lr1LMsOEa44D9FOxXymUTNfqjt86afjkV91cQG7l3ySYMubE2SLtxWLmf9lm+kGbFW
+         w5THcafy4cqgJjbDmeSIp6r84iU9IL+ZqiatQYbzGbPxT6I4+RLFb4kSE0D1c63UQ36W
+         /WHZRsFSMTsLxt0M0vaZDylamWqRKJw9QakZIZUPetvY9EzAosqmemq7SpQMjVyQptY1
+         rcU4UxWe+rtDt/I8zstIzj/rOAtBajQNtOK8dPMJrRXZcAvYPcSMh8ktoC58imu8IX2d
+         cyv8XOFshscbSzt4JMvXK0ueNE+wgjW2ltWnsmMlPWll2Da2uKKEpJFDJ1/6JjxBbB1T
+         fIAA==
+X-Gm-Message-State: AOAM533sUWqzLYYxttAxU/Ls49nhSgu5EiAZ9aJJo0IV2rJer3Lf5PzC
+        UsIExyl/L9AD3t9w08TrDl75cw==
+X-Google-Smtp-Source: ABdhPJwFZJgNsmBQxchH9gOwIzssFTkFWdmxFcOb7dHoHRFPfVpfia0IZSSV2YRgdXbwBgOihXQc4A==
+X-Received: by 2002:a5d:6401:: with SMTP id z1mr16219109wru.272.1595842694746;
+        Mon, 27 Jul 2020 02:38:14 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.12
+        by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 02:38:12 -0700 (PDT)
+        Mon, 27 Jul 2020 02:38:14 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org
 Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
@@ -55,10 +55,12 @@ Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
         linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
         pierre-louis.bossart@linux.intel.com,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 00/10] ASoC: qdsp6: add gapless compressed audio support
-Date:   Mon, 27 Jul 2020 10:37:56 +0100
-Message-Id: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 01/10] ASoC: q6asm: rename misleading session id variable
+Date:   Mon, 27 Jul 2020 10:37:57 +0100
+Message-Id: <20200727093806.17089-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+References: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,48 +68,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds gapless compressed audio support on q6asm.
-Gapless on q6asm is implemented using 2 streams in a single q6asm session.
+Each q6asm session can have multiple streams, mixing usage of these
+names in variable are bit misleading to reader, so rename them accordingly.
 
-First few patches such as stream id per each command, gapless flags
-and silence meta data are for preparedness for adding gapless support.
-Last patch implements copy callback to allow finer control over buffer offsets,
-specially in partial drain cases.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/q6asm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-This patchset is tested on RB3 aka DB845c platform.
-
-This patchset as it is will support gapless however QDSP can also
-support switching decoders on a single stream. Patches to support such feature
-are send in different patchset which involves adding generic interfaces.
-
-Thanks,
-srini
-
-
-Changes since v2:(mostly suggested by Pierre)
-- removed unnessary kernel style comments,
-- moved TIMESTAMP flag to respective patch.
-- move preparatory code from gapless support patch to new one.
-- fix subject prefix of one patch.
-- add comments to clarify valid stream_ids
-
-Srinivas Kandagatla (10):
-  ASoC: q6asm: rename misleading session id variable
-  ASoC: q6asm: make commands specific to streams
-  ASoC: q6asm: use flags directly from q6asm-dai
-  ASoC: q6asm: add length to write command token
-  ASoC: q6asm: add support to remove intial and trailing silence
-  ASoC: q6asm: add support to gapless flag in q6asm open
-  ASoC: q6asm-dai: add next track metadata support
-  ASoC: q6asm-dai: prepare set params to accept profile change
-  ASoC: q6asm-dai: add gapless support
-  ASoC: q6asm-dai: add support to copy callback
-
- sound/soc/qcom/qdsp6/q6asm-dai.c | 414 +++++++++++++++++++++++--------
- sound/soc/qcom/qdsp6/q6asm.c     | 169 +++++++++----
- sound/soc/qcom/qdsp6/q6asm.h     |  49 ++--
- 3 files changed, 469 insertions(+), 163 deletions(-)
-
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index e0983970cba9..51da3717a6a6 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -828,21 +828,21 @@ EXPORT_SYMBOL_GPL(q6asm_get_session_id);
+  * @dev: Pointer to asm child device.
+  * @cb: event callback.
+  * @priv: private data associated with this client.
+- * @stream_id: stream id
++ * @session_id: session id
+  * @perf_mode: performace mode for this client
+  *
+  * Return: Will be an error pointer on error or a valid audio client
+  * on success.
+  */
+ struct audio_client *q6asm_audio_client_alloc(struct device *dev, q6asm_cb cb,
+-					      void *priv, int stream_id,
++					      void *priv, int session_id,
+ 					      int perf_mode)
+ {
+ 	struct q6asm *a = dev_get_drvdata(dev->parent);
+ 	struct audio_client *ac;
+ 	unsigned long flags;
+ 
+-	ac = q6asm_get_audio_client(a, stream_id + 1);
++	ac = q6asm_get_audio_client(a, session_id + 1);
+ 	if (ac) {
+ 		dev_err(dev, "Audio Client already active\n");
+ 		return ac;
+@@ -853,9 +853,9 @@ struct audio_client *q6asm_audio_client_alloc(struct device *dev, q6asm_cb cb,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	spin_lock_irqsave(&a->slock, flags);
+-	a->session[stream_id + 1] = ac;
++	a->session[session_id + 1] = ac;
+ 	spin_unlock_irqrestore(&a->slock, flags);
+-	ac->session = stream_id + 1;
++	ac->session = session_id + 1;
+ 	ac->cb = cb;
+ 	ac->dev = dev;
+ 	ac->q6asm = a;
 -- 
 2.21.0
 
