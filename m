@@ -2,75 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1CF22E9C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3CC22E9BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgG0KFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:05:53 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:40597 "EHLO mailout08.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727775AbgG0KFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:05:53 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4BFb6P6jBSzMngK;
-        Mon, 27 Jul 2020 12:05:49 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4BFb6323yVz2xFY;
-        Mon, 27 Jul 2020 12:05:31 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.121) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 27 Jul
- 2020 12:05:31 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Christian Eggers <ceggers@arri.de>
-Subject: [PATCH] dt-bindings: at25: fix syntax error in example code
-Date:   Mon, 27 Jul 2020 12:05:05 +0200
-Message-ID: <20200727100505.23908-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S1727948AbgG0KFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:05:35 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:53343 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727775AbgG0KFf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:05:35 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id B75F05C00D3;
+        Mon, 27 Jul 2020 06:05:33 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 27 Jul 2020 06:05:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=nkiXJc4keFr7cYw6tolgITjL9Sd
+        lT92NZc95gSR+fm0=; b=Z5bnTPaU3sbRrlCzG9wPczFBbPGV9iwU/s0b9UxkXQf
+        vRzgP6FKCjAkLP5O88VRX0oDTGB62E4aXa/yNvhvdbCUh18VsMN8/9GO7M0bgk0p
+        gGq3lLT4aa4dMkZlP+fQAYnfqgK5rniGhg2M4ZfbzN5vwDr+QbjBH9z2quiSrwCD
+        ZkIERREM2mRFWgVdDBqZVqyOmDwLUwyrL79R2Kg8h9EL0rR+XyUBIFtmWZOdN9Cu
+        RcFPcqCsNeQJcErLNKGPXAMfkmCxPLRq1W4gT3yPTO4POYwpacbNEvzY7AqfxPnq
+        eQjBVeKmw25KQ8Dps77vFIm+riD0VKRtkXjhG2BZC4Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=nkiXJc
+        4keFr7cYw6tolgITjL9SdlT92NZc95gSR+fm0=; b=W3BUIpJnVYBR0xm/ujel9V
+        uNyxSzGnlSy9HEZpnp1udvneuEBH40hOoKJMO8tCarWOdBfHvsgizJsjDnAsGrkG
+        ZamN4+vwjVa0HmtSlggok5UTX8cgg5ggM64u7hvaoIg4Hw2G1kFCFE/Jk4Lfhlnx
+        56PPMHvdVTrkqnt6/obiZvzFflSDYVWxNLsxrboKgcz8IbVL3LU2hCrNg+BbggaH
+        zYOlmsiPuyQcANIpvtKRlGKOrEAqVUd2uthiA/SM60HH24N34dxrH+3iDU0CfeeZ
+        0DnVacDR1zc49uTY9lUsX2O3hh0ljW9mxQLK65CY62ADVsf5GIHh7LY3IobXRJPw
+        ==
+X-ME-Sender: <xms:7KYeX6cUPcKSBZkSULXQsrxyvOjHlnMh_uW_Fr0i2X29jBVAs9R0zA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedtgddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
+    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:7KYeX0PxebgLQibtZEg-RVn5Ezv1CEPgJ9XctMrAG45KZiOscOcgfQ>
+    <xmx:7KYeX7hD0pVIfbco7Ky4mO8HZ6S49X8PUOOhdxIH7IEsMHQ7XurfLA>
+    <xmx:7KYeX3-R4fXB2OPuWyiAz8WkFn2PW0qYz6F0wVO_lBpevRV7rmNe6Q>
+    <xmx:7aYeX_6AyBrxMa_rSKrPGvjCF03YNI1IQbi2lBdP6jjddunJsHPUNQ>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 88B0F3060067;
+        Mon, 27 Jul 2020 06:05:32 -0400 (EDT)
+Date:   Mon, 27 Jul 2020 12:05:29 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Omer Shpigelman <oshpigelman@habana.ai>
+Subject: Re: linux-next: build failure after merge of the char-misc tree
+Message-ID: <20200727100529.GA1922918@kroah.com>
+References: <20200727180831.6c356fc1@canb.auug.org.au>
+ <20200727092448.GB1764157@kroah.com>
+ <CAFCwf13o6A_88xBZdTk+XamAULckKB3Wk8A-V8NmmvkXDwB60w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.121]
-X-RMX-ID: 20200727-120531-4BFb6323yVz2xFY-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf13o6A_88xBZdTk+XamAULckKB3Wk8A-V8NmmvkXDwB60w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing semicolon.
+On Mon, Jul 27, 2020 at 12:28:14PM +0300, Oded Gabbay wrote:
+> On Mon, Jul 27, 2020 at 12:24 PM Greg KH <greg@kroah.com> wrote:
+> >
+> > On Mon, Jul 27, 2020 at 06:08:31PM +1000, Stephen Rothwell wrote:
+> > > Hi all,
+> > >
+> > > After merging the char-misc tree, today's linux-next build (x86_64
+> > > allmodconfig) failed like this:
+> > >
+> > > In file included from drivers/misc/habanalabs/goya/goya.c:8:
+> > > drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: No such file or directory
+> > >    12 | #include "habanalabs.h"
+> > >       |          ^~~~~~~~~~~~~~
+> > > In file included from drivers/misc/habanalabs/goya/goya_security.c:8:
+> > > drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: No such file or directory
+> > >    12 | #include "habanalabs.h"
+> > >       |          ^~~~~~~~~~~~~~
+> > >
+> > > Presumably caused by commit
+> > >
+> > >   70b2f993ea4a ("habanalabs: create common folder")
+> > >
+> > > I have used the char-misc tree from next-20200724 for today.
+> >
+> > Ugh, this is a mess of a merge with this driver.
+> >
+> > Oded, I'll take Stephen's merge resolutions here and push out a new
+> > version, and try to resolve this error, but if you could verify I got it
+> > correct, that would be great.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Sure, np. Just point me where to look.
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
- Documentation/devicetree/bindings/eeprom/at25.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I didn't see the above build issue, but maybe I didn't have the right
+configuration options enabled for my build.
 
-diff --git a/Documentation/devicetree/bindings/eeprom/at25.txt b/Documentation/devicetree/bindings/eeprom/at25.txt
-index fcacd97abd0a..fe91ecf1f61b 100644
---- a/Documentation/devicetree/bindings/eeprom/at25.txt
-+++ b/Documentation/devicetree/bindings/eeprom/at25.txt
-@@ -33,7 +33,7 @@ Additional compatible properties are also allowed.
- Example:
- 	eeprom@0 {
- 		compatible = "st,m95256", "atmel,at25";
--		reg = <0>
-+		reg = <0>;
- 		spi-max-frequency = <5000000>;
- 		spi-cpha;
- 		spi-cpol;
--- 
-Christian Eggers
-Embedded software developer
+Oded, I've done the merge and pushed it out to my char-misc-next branch,
+let me know if I've messed anything up there.
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+thanks,
 
+greg k-h
