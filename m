@@ -2,171 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E2822E856
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E6722E85B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgG0JDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:03:36 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:23452 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgG0JDf (ORCPT
+        id S1727780AbgG0JE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:04:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:55703 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726222AbgG0JE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595840616; x=1627376616;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=oYQUjD8dm/BApSQBrI8Gg5yalczlaUdJshqRb6pjbFc=;
-  b=YvSZb7Y2b+yrwvLX5yBmaw36yNlVZEVU9HhkmXeMyFiytCSldgQwZELN
-   rLsqKiLNxfuvotkN8yeP7/yQ8F+cL7f8HQobVqo9wqv9kmgoXcC8VOUmz
-   krqwKIJMMSfmx0zuQaS8DQzABQPRe6sJoZiiG6Ih3YJAms0qbCJJHXwCR
-   c=;
-IronPort-SDR: SeUBRoAaOOHBYkmwX+kFFfS0f8E2TXF9TxG1RPvIcCdkvjKgx+opOY2SaqTBlDb9GuvV29duQw
- S/y4+38llViw==
-X-IronPort-AV: E=Sophos;i="5.75,402,1589241600"; 
-   d="scan'208";a="63149857"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 27 Jul 2020 09:03:33 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-4e7c8266.us-west-2.amazon.com (Postfix) with ESMTPS id AD0E1A1E1E;
-        Mon, 27 Jul 2020 09:03:30 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 27 Jul 2020 09:03:29 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.48) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 27 Jul 2020 09:03:13 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Greg Thelen <gthelen@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>,
-        "SeongJae Park" <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH v18 06/14] mm/damon: Implement callbacks for the virtual memory address spaces
-Date:   Mon, 27 Jul 2020 11:02:55 +0200
-Message-ID: <20200727090255.24114-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <xr934kpt76n5.fsf@gthelen.svl.corp.google.com>
+        Mon, 27 Jul 2020 05:04:26 -0400
+X-UUID: 3686618d230a4e6e8a547b389d08f30c-20200727
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=IBn5xpH5cJeGPjS4mVMMUKqVoCrBnUo1UxRgWUpySx0=;
+        b=IHV7QDPAESgfEXtpFX7hkI9C9GnVNCHgbhgyZRzzfmhiiNpC4HWjf8IAeG7nuJmMdwv/BnghWRcylgVpAq3bdhezzer4Dwewo7rtaiQw4Ve9AbafoDxz+iGIiYnYYsQfWE/mb20qjLeKBARkhOLFxY29vUan8ZQ3FO11mk9hpSA=;
+X-UUID: 3686618d230a4e6e8a547b389d08f30c-20200727
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 411020366; Mon, 27 Jul 2020 17:04:15 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 27 Jul 2020 17:04:00 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 27 Jul 2020 17:04:01 +0800
+Message-ID: <1595840642.12203.4.camel@mtksdaap41>
+Subject: Re: [PATCH 3/4] clk: mediatek: Add configurable enable control to
+ mtk_pll_data
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Wendell Lin <wendell.lin@mediatek.com>,
+        Ikjoon Jang <ikjn@chromium.org>
+Date:   Mon, 27 Jul 2020 17:04:02 +0800
+In-Reply-To: <CANMq1KDzmeMcVQU=i89sa-B4EQbz6OxZP3tDasV-Q__qB_7_9g@mail.gmail.com>
+References: <1595400601-26220-1-git-send-email-weiyi.lu@mediatek.com>
+         <1595400601-26220-4-git-send-email-weiyi.lu@mediatek.com>
+         <CANMq1KC5i8GU2zMxk+NvY5hF7Qvd-Jx-+pvY2cXfqzb=X-BWRQ@mail.gmail.com>
+         <1595473043.5077.8.camel@mtksdaap41>
+         <CANMq1KDzmeMcVQU=i89sa-B4EQbz6OxZP3tDasV-Q__qB_7_9g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.48]
-X-ClientProxiedBy: EX13D47UWC003.ant.amazon.com (10.43.162.70) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-TM-SNTS-SMTP: 9FD50798F87956F1E7AA59E7EB164F337BD8E584AF608234D7272EE39CC2E56D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020 00:34:54 -0700 Greg Thelen <gthelen@google.com> wrote:
+T24gVGh1LCAyMDIwLTA3LTIzIGF0IDE1OjUxICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
+DQo+IE9uIFRodSwgSnVsIDIzLCAyMDIwIGF0IDEwOjU3IEFNIFdlaXlpIEx1IDx3ZWl5aS5sdUBt
+ZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gT24gV2VkLCAyMDIwLTA3LTIyIGF0IDE2OjUx
+ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6DQo+ID4gPiBPbiBXZWQsIEp1bCAyMiwgMjAy
+MCBhdCAyOjUwIFBNIFdlaXlpIEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+
+ID4gPg0KPiA+ID4gPiBJbiBhbGwgTWVkaWFUZWsgUExMIGRlc2lnbiwgYml0IDAgb2YgQ09OMCBy
+ZWdpc3RlciBpcyBhbHdheXMNCj4gPiA+ID4gdGhlIGVuYWJsZSBiaXQuDQo+ID4gPiA+IEhvd2V2
+ZXIsIHRoZXJlJ3MgYSBzcGVjaWFsIGNhc2Ugb2YgdXNicGxsIG9uIE1UODE5Mi4NCj4gPiA+ID4g
+VGhlIGVuYWJsZSBiaXQgb2YgdXNicGxsIGlzIG1vdmVkIHRvIGJpdCAyIG9mIG90aGVyIHJlZ2lz
+dGVyLg0KPiA+ID4gPiBBZGQgY29uZmlndXJhYmxlIGVuX3JlZyBhbmQgYmFzZV9lbl9iaXQgZm9y
+IGVuYWJsZSBjb250cm9sIG9yDQo+ID4gPiA+IHVzaW5nIHRoZSBkZWZhdWx0IGlmIHdpdGhvdXQg
+c2V0dGluZyBpbiBwbGwgZGF0YS4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogV2Vp
+eWkgTHUgPHdlaXlpLmx1QG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICBkcml2
+ZXJzL2Nsay9tZWRpYXRlay9jbGstbXRrLmggfCAgMiArKw0KPiA+ID4gPiAgZHJpdmVycy9jbGsv
+bWVkaWF0ZWsvY2xrLXBsbC5jIHwgMjYgKysrKysrKysrKysrKysrKysrKysrKy0tLS0NCj4gPiA+
+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4g
+PiA+ID4NCj4gPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdGsu
+aCBiL2RyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdGsuaA0KPiA+ID4gPiBpbmRleCBjM2Q2NzU2
+Li44YmIwYjNkIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGst
+bXRrLmgNCj4gPiA+ID4gKysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ay5oDQo+ID4g
+PiA+IEBAIC0yMzMsNiArMjMzLDggQEAgc3RydWN0IG10a19wbGxfZGF0YSB7DQo+ID4gPiA+ICAg
+ICAgICAgdWludDMyX3QgcGN3X2NoZ19yZWc7DQo+ID4gPiA+ICAgICAgICAgY29uc3Qgc3RydWN0
+IG10a19wbGxfZGl2X3RhYmxlICpkaXZfdGFibGU7DQo+ID4gPiA+ICAgICAgICAgY29uc3QgY2hh
+ciAqcGFyZW50X25hbWU7DQo+ID4gPiA+ICsgICAgICAgdWludDMyX3QgZW5fcmVnOw0KPiA+ID4g
+PiArICAgICAgIHVpbnQ4X3QgYmFzZV9lbl9iaXQ7DQo+ID4gPiA+ICB9Ow0KPiA+ID4gPg0KPiA+
+ID4gPiAgdm9pZCBtdGtfY2xrX3JlZ2lzdGVyX3BsbHMoc3RydWN0IGRldmljZV9ub2RlICpub2Rl
+LA0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLXBsbC5jIGIv
+ZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLXBsbC5jDQo+ID4gPiA+IGluZGV4IGY0NDBmMmNkLi5i
+OGNjZDQyIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstcGxs
+LmMNCj4gPiA+ID4gKysrIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLXBsbC5jDQo+ID4gPiA+
+IEBAIC00NCw2ICs0NCw3IEBAIHN0cnVjdCBtdGtfY2xrX3BsbCB7DQo+ID4gPiA+ICAgICAgICAg
+dm9pZCBfX2lvbWVtICAgICp0dW5lcl9lbl9hZGRyOw0KPiA+ID4gPiAgICAgICAgIHZvaWQgX19p
+b21lbSAgICAqcGN3X2FkZHI7DQo+ID4gPiA+ICAgICAgICAgdm9pZCBfX2lvbWVtICAgICpwY3df
+Y2hnX2FkZHI7DQo+ID4gPiA+ICsgICAgICAgdm9pZCBfX2lvbWVtICAgICplbl9hZGRyOw0KPiA+
+ID4gPiAgICAgICAgIGNvbnN0IHN0cnVjdCBtdGtfcGxsX2RhdGEgKmRhdGE7DQo+ID4gPiA+ICB9
+Ow0KPiA+ID4gPg0KPiA+ID4gPiBAQCAtNTYsNyArNTcsMTAgQEAgc3RhdGljIGludCBtdGtfcGxs
+X2lzX3ByZXBhcmVkKHN0cnVjdCBjbGtfaHcgKmh3KQ0KPiA+ID4gPiAgew0KPiA+ID4gPiAgICAg
+ICAgIHN0cnVjdCBtdGtfY2xrX3BsbCAqcGxsID0gdG9fbXRrX2Nsa19wbGwoaHcpOw0KPiA+ID4g
+Pg0KPiA+ID4gPiAtICAgICAgIHJldHVybiAocmVhZGwocGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09O
+MCkgJiBDT04wX0JBU0VfRU4pICE9IDA7DQo+ID4gPiA+ICsgICAgICAgaWYgKHBsbC0+ZW5fYWRk
+cikNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAocmVhZGwocGxsLT5lbl9hZGRyKSAm
+IEJJVChwbGwtPmRhdGEtPmJhc2VfZW5fYml0KSkgIT0gMDsNCj4gPiA+ID4gKyAgICAgICBlbHNl
+DQo+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gKHJlYWRsKHBsbC0+YmFzZV9hZGRyICsg
+UkVHX0NPTjApICYgQ09OMF9CQVNFX0VOKSAhPSAwOw0KPiA+ID4gPiAgfQ0KPiA+ID4gPg0KPiA+
+ID4gPiAgc3RhdGljIHVuc2lnbmVkIGxvbmcgX19tdGtfcGxsX3JlY2FsY19yYXRlKHN0cnVjdCBt
+dGtfY2xrX3BsbCAqcGxsLCB1MzIgZmluLA0KPiA+ID4gPiBAQCAtMjUxLDYgKzI1NSwxMiBAQCBz
+dGF0aWMgaW50IG10a19wbGxfcHJlcGFyZShzdHJ1Y3QgY2xrX2h3ICpodykNCj4gPiA+ID4gICAg
+ICAgICByIHw9IHBsbC0+ZGF0YS0+ZW5fbWFzazsNCj4gPiA+ID4gICAgICAgICB3cml0ZWwociwg
+cGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09OMCk7DQo+ID4gPiA+DQo+ID4gPg0KPiA+ID4gVGhpcyBp
+cyBub3QgYSBuZXcgY2hhbmdlLCBidXQgSSdtIHdvbmRlcmluZyBpZiB0aGUgYXN5bW1ldHJ5IGlz
+DQo+ID4gPiBpbnRlbnRpb25hbCBoZXJlLCB0aGF0IGlzLCBwcmVwYXJlIHNldHMgYml0IHBsbC0+
+ZGF0YS0+ZW5fbWFzayBvZg0KPiA+ID4gUkVHX0NPTjA7IHVucHJlcGFyZSBjbGVhcnMgQ09OMF9C
+QVNFX0VOIG9mIFJFR19DT04wLg0KPiA+ID4NCj4gPiA+IFdpdGggdGhpcyBwYXRjaCwgaWYgcGxs
+LT5lbl9hZGRyIGlzIHNldCwgeW91IHNldCBib3RoDQo+ID4gPiBwbGwtPmRhdGEtPmVuX21hc2sg
+X2FuZF8gcGxsLT5kYXRhLT5iYXNlX2VuX2JpdCwgYW5kIGNsZWFyIG9ubHkNCj4gPiA+IHBsbC0+
+ZGF0YS0+YmFzZV9lbl9iaXQuDQo+ID4gPg0KPiA+DQo+ID4gSGkgTmljb2xhcywNCj4gPg0KPiA+
+IEFGQUlLLCB0aGUgYXN5bW1ldHJ5IHdhcyBpbnRlbnRpb25hbC4NCj4gPiBlbl9tYXNrIGlzIGFj
+dHVhbGx5IGEgY29tYmluYXRpb24gb2YgZGl2aWRlciBlbmFibGUgbWFzayBhbmQgdGhlIHBsbA0K
+PiA+IGVuYWJsZSBiaXQoQ09OMF9CQVNFX0VOKS4NCj4gPiBFdmVuIHdpdGhvdXQgbXkgcGF0Y2gs
+IGl0IHN0aWxsIHNldHMgZGl2aWRlciBlbmFibGUgbWFzayBhbmQgZW5fYml0LCBhbmQNCj4gPiBv
+bmx5IGNsZWFycyBlbl9iaXQuDQo+ID4gWW91IGNvdWxkIHNlZSB0aGUgcGxsX2RhdGEgaW4gY2xr
+LW10ODE5Mi5jIG9mIHBhdGNoIFs0LzRdDQo+ID4gVGFrZSBtYWlucGxsIGFzIGFuIGV4YW1wbGUs
+DQo+ID4gdGhlIGVuYWJsZSBtYXNrIG9mIG1haW5wbGwgaXMgMHhmZjAwMDAwMSwgd2hlcmUgMHhm
+ZjAwMDAwMCBpcyB0aGUNCj4gPiBkaXZpZGVyIGVuYWJsZSBtYXNrIGFuZCAweDEgaXMgdGhlIGVu
+X2JpdA0KPiA+DQo+ID4gRm9yIHVzYnBsbCBpbiBzcGVjaWFsIGNhc2UsIHVzYnBsbCBkb2Vzbid0
+IGhhdmUgZGl2aWRlciBlbmFibGUgbWFzayBvbg0KPiA+IE1UODE5MiBzbyBJIGdpdmUgbm90aGlu
+ZygweDAwMDAwMDAwKSBpbiB0aGUgZW5fbWFzayBmaWVsZC4NCj4gPiBIb3dldmVyLCB0aGUgbWFp
+biByZWFzb24gd2h5IEkgZG9uJ3Qgc2tpcCBzZXR0aW5nIHRoZSBlbl9tYXNrIG9mIE1UODE5Mg0K
+PiA+IHVzYnBsbCBpcyB0aGF0IEknZCBqdXN0IGxpa2UgdG8gcmVzZXJ2ZSB0aGUgZGl2aWRlciBl
+bmFibGUgbWFzayBmb3IgYW55DQo+ID4gc3BlY2lhbCBwbGxzIHdpdGggZGl2aWRlciBlbmFibGUg
+bWFzayBpbiBuZWFyIGZ1dHVyZS4NCj4gDQo+IEFyZ2gsIEkgc2VlLCBpdCdzIGEgYml0IG9mIGEg
+Y2FuIG9mIHdvcm1zLCB3aXRoIG1hbnkgc3BlY2lhbCBjYXNlcy4uLg0KPiANCj4gU28gSSBwbGF5
+ZWQgYSBiaXQgd2l0aCAzIGV4YW1wbGVzLg0KPiANCj4gQ3VycmVudCBzaXR1YXRpb24gbG9va3Mg
+bGlrZSB0aGlzOg0KPiANCj4gODE4MyBDTEtfQVBNSVhFRF9BUk1QTExfTEwNCj4gICBlbl9tYXNr
+ID0gMHgwMDAwMDAwMQ0KPiAgIGVuX3JlZyA9IDANCj4gICBiYXNlX2VuX2JpdCA9IDANCj4gDQo+
+IHByZXBhcmU6IFJFR19DT04wIHw9IGVuX21hc2sNCj4gdW5wcmVwYXJlOiBSRUdfQ09OMCAmPSB+
+Q09OMF9CQVNFX0VOIChCSVQoMSkpDQo+IA0KPiA4MTkyIENMS19BUE1JWEVEX1VOSVZQTEwNCj4g
+ICBlbl9tYXNrID0gMHhmZjAwMDAwMQ0KPiAgIGVuX3JlZyA9IDB4MDM5Yw0KPiAgIGJhc2VfZW5f
+Yml0ID0gMA0KPiANCj4gcHJlcGFyZToNCj4gICBSRUdfQ09OMCB8PSBlbl9tYXNrDQo+ICAgZW5f
+cmVnIHw9IGJhc2VfZW5fYml0DQo+IHVucHJlcGFyZToNCj4gICBlbl9yZWcgJj0gfmJhc2VfZW5f
+Yml0DQo+IA0KPiA4MTkyIENMS19BUE1JWEVEX1VTQlBMTA0KPiAgIGVuX21hc2sgPSAweDAwMDAw
+MDAwDQo+ICAgZW5fcmVnID0gMHgwM2NjDQo+ICAgYmFzZV9lbl9iaXQgPSAyDQo+IA0KPiBwcmVw
+YXJlOg0KPiAgIFJFR19DT04wIHw9IGVuX21hc2sgKDApDQo+ICAgZW5fcmVnIHw9IGJhc2VfZW5f
+Yml0DQo+IHVucHJlcGFyZToNCj4gICBlbl9yZWcgJj0gfmJhc2VfZW5fYml0DQo+IA0KPiBBbmQg
+SSB0aGluayB0aGUgbG9naWMgY291bGQgc3RpbGwgYmUgc2ltcGxpZmllZCBieSBfbm90XyBwdXR0
+aW5nDQo+IENPTjBfQkFTRV9FTiBpbiBlbl9tYXNrLCBhbmQgdXBkYXRpbmcgdGhlIENPTjAgaW4g
+MiBzdGVwczogZmlyc3QgYWxsDQo+IHRoZSBiaXRzIHRoYXQgYXJlIG5vdCBDT04wX0JBU0VfRU4s
+IHRoZW4gQ09OMF9CQVNFX0VOLiBPZiBjb3Vyc2UgSQ0KPiBhc3N1bWUgdGhhdCdzIGl0J3MgZmlu
+ZSB0byBkbyBzbywgYnV0IEkgaGF2ZSBubyBpZGVhLg0KPiANCj4gcmVnaXN0ZXJfcGxsKCkgew0K
+PiAgICBpZiAoIWVuX2FkZHIpIHsNCj4gICAgICBlbl9yZWcgPSBSRUdfQ09OMA0KPiAgICAgIGJh
+c2VfZW5fYml0ID0gQ09OMF9CQVNFX0VODQo+ICAgIH0NCj4gfQ0KPiANCj4gcHJlcGFyZSgpIHsN
+Cj4gICAgIFJFR19DT04wIHw9IGVuX21hc2sNCj4gICAgIGVuX3JlZyB8PSBiYXNlX2VuX2JpdA0K
+PiB9DQo+IA0KPiB1bnByZXBhcmUoKSB7DQo+ICAgICBlbl9yZWcgJj0gfmJhc2VfZW5fYml0DQo+
+IH0NCj4gDQo+IFRoZW4gdGhlIG5ldyBjbG9jayBkYXRhOg0KPiANCj4gODE4MyBDTEtfQVBNSVhF
+RF9BUk1QTExfTEwNCj4gICBlbl9tYXNrID0gMHgwMDAwMDAwMCAoQ09OMF9CQVNFX0VOIGlzIGlt
+cGxpY2l0LCBidXQgb3RoZXIgYml0cyBjb3VsZCBiZSBzZXQpDQo+ICAgZW5fcmVnID0gMA0KPiAg
+IGJhc2VfZW5fYml0ID0gMA0KPiANCj4gcHJlcGFyZTogew0KPiAgICAgUkVHX0NPTjAgfD0gZW5f
+bWFzayAoMHgwMDAwMDAwMCwgaGVyZSwgd2UgY2FuIHNraXAsIGJ1dCBvdGhlciBiaXRzDQo+IGNv
+dWxkIGJlIHNldCkNCj4gICAgIGVuX3JlZyB8PSBiYXNlX2VuX2JpdCAoUkVHX0NPTjAgfD0gQ09O
+MF9CQVNFX0VOKQ0KPiB9DQo+IHVucHJlcGFyZTogZW5fcmVnICY9IH5iYXNlX2VuX2JpdCAoUkVH
+X0NPTjAgJj0gfkNPTjBfQkFTRV9FTikNCj4gDQo+IDgxOTIgQ0xLX0FQTUlYRURfVU5JVlBMTA0K
+PiAgIGVuX21hc2sgPSAweGZmMDAwMDAxIChOb3RlIHRoZSBiaXQgMSBpcyBfbm90XyBkcm9wcGVk
+IGhlcmUsIGFzIGl0DQo+IG5lZWRzIHRvIGJlIHNldCB0b28pDQo+ICAgZW5fcmVnID0gMHgwMzlj
+DQo+ICAgYmFzZV9lbl9iaXQgPSAwDQo+IChzYW1lIGFzIGFib3ZlKQ0KPiANCj4gODE5MiBDTEtf
+QVBNSVhFRF9VU0JQTEwNCj4gICBlbl9tYXNrID0gMHgwMDAwMDAwMA0KPiAgIGVuX3JlZyA9IDB4
+MDNjYw0KPiAgIGJhc2VfZW5fYml0ID0gMg0KPiAoc2FtZSBhcyBhYm92ZSkNCj4gDQo+IE5vdywg
+bWF5YmUgdGhpcyBpcyBhbHNvIGEgYml0IG92ZXJjb21wbGljYXRlZC4gTWF5YmUgYSBzaW1wbGVy
+DQo+IHNvbHV0aW9uIGlzIGp1c3QgdG8gYWRkIGEgY29tbWVudCBpbiBwcmVwYXJlIHRoYXQgInIg
+fD0NCj4gcGxsLT5kYXRhLT5lbl9tYXNrOyIgaXMgbWVhbnQgdG8gaW5jbHVkZSBDT04wX0JBU0Vf
+RU4gaW4gbW9zdCBjYXNlcywNCj4gYW5kIHRoZW4gdGhlIGNvZGUgY291bGQgYmUgb2sgYXMtaXMg
+KGp1c3QgdG8gbWFrZSBzdXJlIHRoYXQgdGhlIG5leHQNCj4gcGVyc29uIHdobyBsb29rcyBhdCB0
+aGlzIGNvZGUgZG9lcyBub3QgdGhpbmsgdGhlcmUgaXMgYSBidWcuLi4pLg0KPiANCg0KSGkgTmlj
+b2xhcywNCg0KSSB0aG91Z2h0IHRoZXNlIHN0aWxsIHRvbyBjb21wbGljYXRlZCBhbmQgSSBndWVz
+cyB0aGUgYXN5bW1ldHJpY2FsDQpwcm9ibGVtIGNvdWxkIGJlIGZpeGVkLg0KQW5kIHRoYXQgd2ls
+bCBtYWtlIHRoaXMgcGFydCBzaW1wbGVyIGp1c3QgbGlrZSB3aGF0IHlvdSBtZW50aW9uZWQgaW4N
+CnByZXZpb3VzIGNvbW1lbnQuDQpJJ2xsIGNvbmZpcm0gQVNBUCBhbmQgc2VuZCBhIG5ldyB2ZXJz
+aW9uIGlmIGl0IGlzIHBvc3NpYmxlIHRvIGJlIGZpeGVkLg0KDQo+ID4NCj4gPiA+ID4gKyAgICAg
+ICBpZiAocGxsLT5lbl9hZGRyKSB7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICByID0gcmVhZGwo
+cGxsLT5lbl9hZGRyKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHIgfD0gQklUKHBsbC0+ZGF0
+YS0+YmFzZV9lbl9iaXQpOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgd3JpdGVsKHIsIHBsbC0+
+ZW5fYWRkcik7DQo+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICAgICAgICAg
+X19tdGtfcGxsX3R1bmVyX2VuYWJsZShwbGwpOw0KPiA+ID4gPg0KPiA+ID4gPiAgICAgICAgIHVk
+ZWxheSgyMCk7DQo+ID4gPiA+IEBAIC0yNzcsOSArMjg3LDE1IEBAIHN0YXRpYyB2b2lkIG10a19w
+bGxfdW5wcmVwYXJlKHN0cnVjdCBjbGtfaHcgKmh3KQ0KPiA+ID4gPg0KPiA+ID4gPiAgICAgICAg
+IF9fbXRrX3BsbF90dW5lcl9kaXNhYmxlKHBsbCk7DQo+ID4gPiA+DQo+ID4gPiA+IC0gICAgICAg
+ciA9IHJlYWRsKHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApOw0KPiA+ID4gPiAtICAgICAgIHIg
+Jj0gfkNPTjBfQkFTRV9FTjsNCj4gPiA+ID4gLSAgICAgICB3cml0ZWwociwgcGxsLT5iYXNlX2Fk
+ZHIgKyBSRUdfQ09OMCk7DQo+ID4gPiA+ICsgICAgICAgaWYgKHBsbC0+ZW5fYWRkcikgew0KPiA+
+ID4gPiArICAgICAgICAgICAgICAgciA9IHJlYWRsKHBsbC0+ZW5fYWRkcik7DQo+ID4gPiA+ICsg
+ICAgICAgICAgICAgICByICY9IH5CSVQocGxsLT5kYXRhLT5iYXNlX2VuX2JpdCk7DQo+ID4gPiA+
+ICsgICAgICAgICAgICAgICB3cml0ZWwociwgcGxsLT5lbl9hZGRyKTsNCj4gPiA+ID4gKyAgICAg
+ICB9IGVsc2Ugew0KPiA+ID4gPiArICAgICAgICAgICAgICAgciA9IHJlYWRsKHBsbC0+YmFzZV9h
+ZGRyICsgUkVHX0NPTjApOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgciAmPSB+Q09OMF9CQVNF
+X0VOOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgd3JpdGVsKHIsIHBsbC0+YmFzZV9hZGRyICsg
+UkVHX0NPTjApOw0KPiA+ID4gPiArICAgICAgIH0NCj4gPiA+ID4NCj4gPiA+ID4gICAgICAgICBy
+ID0gcmVhZGwocGxsLT5wd3JfYWRkcikgfCBDT04wX0lTT19FTjsNCj4gPiA+ID4gICAgICAgICB3
+cml0ZWwociwgcGxsLT5wd3JfYWRkcik7DQo+ID4gPiA+IEBAIC0zMjEsNiArMzM3LDggQEAgc3Rh
+dGljIHN0cnVjdCBjbGsgKm10a19jbGtfcmVnaXN0ZXJfcGxsKGNvbnN0IHN0cnVjdCBtdGtfcGxs
+X2RhdGEgKmRhdGEsDQo+ID4gPiA+ICAgICAgICAgICAgICAgICBwbGwtPnR1bmVyX2FkZHIgPSBi
+YXNlICsgZGF0YS0+dHVuZXJfcmVnOw0KPiA+ID4gPiAgICAgICAgIGlmIChkYXRhLT50dW5lcl9l
+bl9yZWcpDQo+ID4gPiA+ICAgICAgICAgICAgICAgICBwbGwtPnR1bmVyX2VuX2FkZHIgPSBiYXNl
+ICsgZGF0YS0+dHVuZXJfZW5fcmVnOw0KPiA+ID4gPiArICAgICAgIGlmIChkYXRhLT5lbl9yZWcp
+DQo+ID4gPiA+ICsgICAgICAgICAgICAgICBwbGwtPmVuX2FkZHIgPSBiYXNlICsgZGF0YS0+ZW5f
+cmVnOw0KPiA+ID4NCj4gPiA+IElmIHRoZSBhbnN3ZXIgdG8gbXkgcXVlc3Rpb24gYWJvdmUgaG9s
+ZHMgKGFzeW1tZXRyeSBpcyBub3QNCj4gPiA+IGludGVudGlvbmFsKSwgdGhpcyBwYXRjaC90aGUg
+Y29kZSBjb3VsZCBiZSBzaW1wbGlmaWVkIGEgbG90IGlmIHlvdQ0KPiA+ID4gYWxzbyBhZGRlZCBh
+IHBsbC0+ZW5fYml0IG1lbWJlciwgYW5kLCBoZXJlLCBkaWQgdGhpczoNCj4gPiA+DQo+ID4gPiBp
+ZiAocGxsLT5lbl9yZWcpIHsNCj4gPiA+ICAgIHBsbC0+ZW5fYWRkciA9IGJhc2UgKyBkYXRhLT5l
+bl9yZWc7DQo+ID4gPiAgICBwbGwtPmVuZF9iaXQgPSBkYXRhLT5lbl9iaXQ7DQo+ID4gPiB9IGVs
+c2Ugew0KPiA+ID4gICAgcGxsLT5lbl9hZGRyID0gcGxsLT5iYXNlX2FkZHIgKyBSRUdfQ09OMDsN
+Cj4gPiA+ICAgIHBsbC0+ZW5fYml0ID0gQ09OMF9CQVNFX0VOOw0KPiA+ID4gfQ0KPiA+ID4NCj4g
+PiA+ID4gICAgICAgICBwbGwtPmh3LmluaXQgPSAmaW5pdDsNCj4gPiA+ID4gICAgICAgICBwbGwt
+PmRhdGEgPSBkYXRhOw0KPiA+ID4gPg0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAxLjguMS4xLmRpcnR5
+DQo+ID4NCg0K
 
-> SeongJae Park <sjpark@amazon.com> wrote:
-> 
-> > From: SeongJae Park <sjpark@amazon.de>
-> >
-> > This commit introduces a reference implementation of the address space
-> > specific low level primitives for the virtual address space, so that
-> > users of DAMON can easily monitor the data accesses on virtual address
-> > spaces of specific processes by simply configuring the implementation to
-> > be used by DAMON.
-[...]
-> > diff --git a/mm/damon.c b/mm/damon.c
-> > index b844924b9fdb..386780739007 100644
-> > --- a/mm/damon.c
-> > +++ b/mm/damon.c
-> > @@ -9,6 +9,9 @@
-[...]
-> > +/*
-> > + * Functions for the access checking of the regions
-> > + */
-> > +
-> > +static void damon_mkold(struct mm_struct *mm, unsigned long addr)
-> > +{
-> > +	pte_t *pte = NULL;
-> > +	pmd_t *pmd = NULL;
-> > +	spinlock_t *ptl;
-> > +
-> > +	if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
-> > +		return;
-> > +
-> > +	if (pte) {
-> > +		if (pte_young(*pte)) {
-> > +			clear_page_idle(pte_page(*pte));
-> > +			set_page_young(pte_page(*pte));
-> 
-> While this compiles without support for PG_young and PG_idle, I assume
-> it won't work well because it'd clear pte.young without setting
-> PG_young.  And this would mess with vmscan.
-
-You're right, thanks for catching this up!  This definitely need to be fixed in
-the next spin.
-
-> 
-> So this code appears to depend on PG_young and PG_idle, which are
-> currently only available via CONFIG_IDLE_PAGE_TRACKING.  DAMON could
-> depend on CONFIG_IDLE_PAGE_TRACKING via Kconfig.  But I assume that
-> CONFIG_IDLE_PAGE_TRACKING and CONFIG_DAMON cannot be concurrently used
-> because they'll stomp on each other's use of pte.young, PG_young,
-> PG_idle.
-> So I suspect we want:
-> 1. CONFIG_DAMON to depend on !CONFIG_IDLE_PAGE_TRACKING and vise-versa.
-> 2. PG_young,PG_idle and related helpers to depend on
->    CONFIG_DAMON||CONFIG_IDLE_PAGE_TRACKING.
-
-Awesome insights and suggestions, thanks!
-
-I would like to note that DAMON could be interfered by IDLE_PAGE_TRACKING and
-vmscan, but not vice versa, as DAMON respects PG_idle and PG_young.  This
-design came from the weak goal of DAMON.  DAMON aims to provide not perfect
-monitoring but only best effort accuracy that would be sufficient for
-performance-centric DRAM level memory management.  So, at that time, I thought
-being interfered by IDLE_PAGE_TRACKING and the reclaim logic would not be a
-real problem but letting IDLE_PAGE_TRACKING coexist is somehow beneficial.
-That said, I couldn't find a real benefit of the coexistance yet, and the
-problem of being interference now seems bigger as we will support more cases
-including the page granularity.
-
-Maybe we could make IDLE_PAGE_TRACKING and DAMON coexist but mutual exclusive
-in runtime, if the beneficial of coexistance turns out big.  However, I would
-like to make it simple first and optimize the case later if real requirement
-found.
-
-So, I will implement your suggestions in the next spin.  If you have different
-opinions, please feel free to comment.
-
-
-Thanks,
-SeongJae Park
-
-> 
-> > +		}
-> > +		*pte = pte_mkold(*pte);
-> > +		pte_unmap_unlock(pte, ptl);
-> > +		return;
-> > +	}
-> > +
-> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > +	if (pmd_young(*pmd)) {
-> > +		clear_page_idle(pmd_page(*pmd));
-> > +		set_page_young(pmd_page(*pmd));
-> > +	}
-> > +	*pmd = pmd_mkold(*pmd);
-> > +	spin_unlock(ptl);
-> > +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> > +}
-> > +
-[...]
