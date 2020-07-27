@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940AC22F9BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2AF322F9C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgG0UAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 16:00:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
+        id S1728663AbgG0UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgG0UAw (ORCPT
+        with ESMTP id S1727032AbgG0UCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:00:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FD9C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:00:52 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1k09Ik-0003r7-CU; Mon, 27 Jul 2020 22:00:46 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1k09Ii-0001LM-QN; Mon, 27 Jul 2020 22:00:44 +0200
-Date:   Mon, 27 Jul 2020 22:00:44 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
-Cc:     linux-pwm@vger.kernel.org, thierry.reding@gmail.com,
-        p.zabel@pengutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        rahul.tanwar.linux@gmail.com
-Subject: Re: [PATCH v5 2/2] Add PWM fan controller driver for LGM SoC
-Message-ID: <20200727200044.qmrpjua3fewli3vo@pengutronix.de>
-References: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
- <0f47648107ec23f72868ca37f29ea43e15c08e08.1595489518.git.rahul.tanwar@linux.intel.com>
- <20200723161553.ey47oijnwitf4hvu@pengutronix.de>
- <c2ef8f5c-af23-a63d-5f72-de0c307be8eb@linux.intel.com>
- <20200727070126.2juwfmra3i67lxfw@pengutronix.de>
- <70fde2ba-b38f-a0d6-bc2d-89c074afd466@linux.intel.com>
+        Mon, 27 Jul 2020 16:02:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF2AC0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:02:39 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d4so10532773pgk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=IXDeKj/8CgvwBowlCvSFrtK4qV4sd1hCGAzTc7QYtD4=;
+        b=Y3HVXgsRYqk2PJIxygUxaAR7AKRLEORJjoG6eXL600/gkGgOi2sSTJ0j0691Qu0VWN
+         JI+1n6sCK5PDGAca2AOtTUa++CMoguByq0quyCD6X7WayrZ8TDfnlWxG/yBUO1UfjdOn
+         j0KYrkKQLQNv6UNdXBXDg2Q293ux5L7n7GxFk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=IXDeKj/8CgvwBowlCvSFrtK4qV4sd1hCGAzTc7QYtD4=;
+        b=rfAJrEPtQRN88iNzl+IfrHD7/jj/nQmh3+AulAbDOJUvozlYuvCmg62+dxs+wsXc3a
+         bFSIJNVjYaZJfrcErfW/s8jNyj4pun796ygU4478owfsXjlCY/16s1wyaTIhN3kiuHHr
+         5cvgII71JDQakBZXz1ZY7tR9y9orFVnT5FbleDwDfSbGMJ3hcNrv9tT3yCV/QSyK7aJF
+         8YaNXOOxK6WUA062hhU4LoxE/pI74dCl8ud52vrAo5i8/PsHmhF5QVrrjdKFVyFu0IHP
+         IpVVuwt1QDuAtnNh0XvlGLg4s2KWwplX3AobxurTWVnQLhqCwQNc2U/81rONygI6CPPs
+         Xj9Q==
+X-Gm-Message-State: AOAM5305s4tiZmE9kunzrzcdt+CCFEHkOST9C1LlqRj44xEXFgHL/mC7
+        PJN6vjtqhE7Km3ogyjV0TgyC9ahR+yw=
+X-Google-Smtp-Source: ABdhPJwoSS7iWNG6ib5qqh9HziwtyhV7QAHABX4BFAetR8LGWSTIw5v3Xyvkxa2lVfZQgeiGcZV5nw==
+X-Received: by 2002:a63:e24a:: with SMTP id y10mr19769530pgj.1.1595880159038;
+        Mon, 27 Jul 2020 13:02:39 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id 21sm15629639pfu.124.2020.07.27.13.02.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 13:02:38 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="udb6nlegm2enchjz"
-Content-Disposition: inline
-In-Reply-To: <70fde2ba-b38f-a0d6-bc2d-89c074afd466@linux.intel.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200726125636.3aa003ad@archlinux>
+References: <20200724213329.899216-1-swboyd@chromium.org> <20200726125636.3aa003ad@archlinux>
+Subject: Re: [PATCH 0/3] Some sx9310 iio driver updates
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Campello <campello@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Date:   Mon, 27 Jul 2020 13:02:37 -0700
+Message-ID: <159588015706.1360974.7201974727081274212@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---udb6nlegm2enchjz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Mon, Jul 27, 2020 at 03:30:16PM +0800, Tanwar, Rahul wrote:
-> On 27/7/2020 3:01 pm, Uwe Kleine-K=F6nig wrote:
-> > In v4 you had:
-> >
-> > 	if (state->polarity !=3D PWM_POLARITY_NORMAL ||
-> > 	    state->period < pc->period)
-> > 		return -EINVAL;
-> >
-> > That's the right thing to do (even though I was unsettled at one point
-> > and wrote it was wrong). The check in v5 with state->period !=3D
-> > pc->period is wrong.
+Quoting Jonathan Cameron (2020-07-26 04:56:36)
+> On Fri, 24 Jul 2020 14:33:24 -0700
+> Stephen Boyd <swboyd@chromium.org> wrote:
 >=20
-> Does that mean we should allow state->period >=3D pc->period cases?
+> > These patches are only related because I'm looking at this driver. The
+> > first one resends the DT binding for the driver that was merged in
+> > v5.8-rc1 with a small change to update for proper regulators. The second
+> > patch fixes a few printks that are missing newlines and should be
+> > totally non-trivial to apply. The third patch changes whoami to unsigned
+> > to avoid confusing. The fourth patch drops channel_users because it's
+> > unused. The final patch adds support to enable the svdd and vdd supplies
+> > so that this driver can work on a board I have where the svdd supply
+> > isn't enabled at boot and needs to be turned on before this driver
+> > starts to communicate with the chip.
+> Hi Stephen,
+>=20
+> I clearly made a mess of picking this driver up in the first place.
+>=20
+> Anyhow, we now have two series in flight for the driver that, whilst
+> mostly independent (I think) will result in at least some fuzz.
+> If possible could you work with Daniel to send me one single series
+> with all the changes?
+>=20
 
-Yes, the driver is supposed to implement the longest period not longer
-than the requested one. This implies everything >=3D pc->period is fine.
-
-> If the state->period is greater than HW supported pc->period and
-> if we allow it then the duty cycle will again be evaluated to be
-> incorrect/higher than requested duty cycle. Am i missing something
-> else? Thanks.
-
-Yes, similar as with period you're supposed to implement the longest
-duty cycle your hardware supports and that is not longer than the
-requested duty cycle.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---udb6nlegm2enchjz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8fMmkACgkQwfwUeK3K
-7AmMIwgAj2/ZcC+tvYGBFv9yVeB6UDsy/sKUN3nqlJu/OeZ3y7N13gAy+p3IbmNl
-AVCGmQTRaUZv3aXXPRASXDktXF7x05ycXJiwTlavY9CKsScmXrkWUdjYJF7qujlV
-tsPDmA18PlWwycKsFsp2hj18TbITnwO3rGzeb9qQScLH2iGOH0tjWwKjKhADrz1M
-a9ThxUA0AeVCVlIx6f8tJ0CLIKeHrFf85CChfLcD67xh4CqEXo57uDbGnsSGwsa1
-wfKdLaeBYoRbpJIEsHUxfmZOfTCv7/V5TGcp7QURaNeUWZvJxRf7iDDP+er70mrX
-IieOWaZuvyQhfF5GuiRBqSLKQeZXZg==
-=Uk3U
------END PGP SIGNATURE-----
-
---udb6nlegm2enchjz--
+Sure. No problem for me to work with Daniel. Thanks.
