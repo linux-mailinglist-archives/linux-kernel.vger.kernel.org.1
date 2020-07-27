@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E27222EEFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B8E22F044
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgG0OM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:12:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36652 "EHLO mail.kernel.org"
+        id S1728832AbgG0OXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:23:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730194AbgG0OMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:12:23 -0400
+        id S1732004AbgG0OXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:23:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60F202083E;
-        Mon, 27 Jul 2020 14:12:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6194D2070A;
+        Mon, 27 Jul 2020 14:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859142;
-        bh=oKGghECnOuCDtNH1ZYo2vmubxt0MKgCDi77vFnlNNIE=;
+        s=default; t=1595859782;
+        bh=e9V3lPrkqDvI9PpIFRoLbKwiPOAE5nFcLwbfsSfpGZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jDn7OvqbBzyySU4Bfs9KQtCJLsXjPu4trjMUpnvqz8ibRwyFgRfEEbVdeeLKgI/YQ
-         14VNLmRu0tGcJ5NF4KxUVdjyeHaK2EPbcUm6GXG7aTlQ/YkBtlUf/jo6CzobjxymhP
-         jJeDjgtMfSHQPohwGMgOecZaezoe7B/6uK+U9BSE=
+        b=i9QdEFmXUUaCw6pViwV10r5Ua79rEAQW1nyOgAxHxOfUxcuNImnNa2s4tC+f5g/kt
+         Lxo3JqQwB8vKfsicL7N5Z4fYAToo6BpZkXB9A64NjIOtzJqdKbCUUgMTWigaQsrN5C
+         dA+rZzofdLT+Bk0heXmYXbr1LSebAIzErqI+XpCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Steve French <stfrench@microsoft.com>,
-        Patrick Fernie <patrick.fernie@gmail.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: [PATCH 4.19 64/86] Revert "cifs: Fix the target file was deleted when rename failed."
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 103/179] dmaengine: ti: k3-udma: Fix the running channel handling in alloc_chan_resources
 Date:   Mon, 27 Jul 2020 16:04:38 +0200
-Message-Id: <20200727134917.638089035@linuxfoundation.org>
+Message-Id: <20200727134937.668966561@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,58 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-commit 0e6705182d4e1b77248a93470d6d7b3013d59b30 upstream.
+[ Upstream commit b5b0180c2f767e90b4a6a885a0a2abaab6e3d48d ]
 
-This reverts commit 9ffad9263b467efd8f8dc7ae1941a0a655a2bab2.
+In the unlikely case when the channel is running (RT enabled) during
+alloc_chan_resources then we should use udma_reset_chan() and not
+udma_stop() as the later is trying to initiate a teardown on the channel,
+which is not valid at this point.
 
-Upon additional testing with older servers, it was found that
-the original commit introduced a regression when using the old SMB1
-dialect and rsyncing over an existing file.
-
-The patch will need to be respun to address this, likely including
-a larger refactoring of the SMB1 and SMB3 rename code paths to make
-it less confusing and also to address some additional rename error
-cases that SMB3 may be able to workaround.
-
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reported-by: Patrick Fernie <patrick.fernie@gmail.com>
-CC: Stable <stable@vger.kernel.org>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Acked-by: Pavel Shilovsky <pshilov@microsoft.com>
-Acked-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20200527070612.636-3-peter.ujfalusi@ti.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/inode.c |   10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/dma/ti/k3-udma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/inode.c
-+++ b/fs/cifs/inode.c
-@@ -1783,7 +1783,6 @@ cifs_rename2(struct inode *source_dir, s
- 	FILE_UNIX_BASIC_INFO *info_buf_target;
- 	unsigned int xid;
- 	int rc, tmprc;
--	bool new_target = d_really_is_negative(target_dentry);
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 35f54a1af29d8..b777f1924968f 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -1868,7 +1868,7 @@ static int udma_alloc_chan_resources(struct dma_chan *chan)
  
- 	if (flags & ~RENAME_NOREPLACE)
- 		return -EINVAL;
-@@ -1860,13 +1859,8 @@ cifs_rename2(struct inode *source_dir, s
- 	 */
- 
- unlink_target:
--	/*
--	 * If the target dentry was created during the rename, try
--	 * unlinking it if it's not negative
--	 */
--	if (new_target &&
--	    d_really_is_positive(target_dentry) &&
--	    (rc == -EACCES || rc == -EEXIST)) {
-+	/* Try unlinking the target dentry if it's not negative */
-+	if (d_really_is_positive(target_dentry) && (rc == -EACCES || rc == -EEXIST)) {
- 		if (d_is_dir(target_dentry))
- 			tmprc = cifs_rmdir(target_dir, target_dentry);
- 		else
+ 	if (udma_is_chan_running(uc)) {
+ 		dev_warn(ud->dev, "chan%d: is running!\n", uc->id);
+-		udma_stop(uc);
++		udma_reset_chan(uc, false);
+ 		if (udma_is_chan_running(uc)) {
+ 			dev_err(ud->dev, "chan%d: won't stop!\n", uc->id);
+ 			goto err_res_free;
+-- 
+2.25.1
+
 
 
