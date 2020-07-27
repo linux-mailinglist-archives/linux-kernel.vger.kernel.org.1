@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC53022EB59
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D72522EB5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgG0LnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgG0LnI (ORCPT
+        id S1727975AbgG0Lnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:43:42 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:48315 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726873AbgG0Lnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:43:08 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E583C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:43:07 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id i26so8576363edv.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=npsW02qfGd4D5Pq9wgHcEBxBe/85HbrjVblV94aw6Go=;
-        b=Wdsz9cvlvfFPZWTZRmq4crM4Vi2tSSHPhOy9Vwqu535Xzvabkb3H6TEIuRRs2j4Yg+
-         WNE5bCe5sXeTzkIuaNOU+WLnkWojzQUmR8XVwQuncjmHEvKNQMp1WfdgytbIxuD4XEr+
-         TWs/gp+tFzAm/gxN7j+H8iK7SByvebNFrJF57oMnGIz2wnTc7o4lQ2h+8iinEWkIOcTs
-         r5twNj6VHDr4JaLl+osmnFMUT6aON0Srtt49JsRT0m3afEsaRNIvGBPFkxtlZodM4Rn2
-         hq6K6dHlHgkBvk6ygcXC6dpGdX8Ke1p3movKlD1b+owlYP/frOLUS9aWB/IQ6gxIs6lE
-         vbpA==
+        Mon, 27 Jul 2020 07:43:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595850220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fj8z1m818DDGkVImIUhwVP/NDjsB0jy0U2cJeVkzmBs=;
+        b=fg9mY3bfKpiBXrf4XzzMYKgMC2vdMSrV1//q2xovEHXRn//prfNeoD/yRhcyTPz7Tyt1fr
+        CFRuewyi1zsxJ7L8pQGXVdLAsAPAZVhMwypbX1V9W8m/WbibzTR/vdSv60j4AFZpxwtIrD
+        NkJrex9pOF29nxQstO0eSLlgsn4LOB8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-0SXGWZF0P8Wa1nNjWjejyg-1; Mon, 27 Jul 2020 07:43:37 -0400
+X-MC-Unique: 0SXGWZF0P8Wa1nNjWjejyg-1
+Received: by mail-wr1-f70.google.com with SMTP id z12so3843739wrl.16
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:43:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=npsW02qfGd4D5Pq9wgHcEBxBe/85HbrjVblV94aw6Go=;
-        b=kuz5cIqWHWtypvSWgs/b/T9c+W+UJ2Oy6WGoz2Z8sGeVun9yx2a10Z+AJONzDigWl3
-         JSWe+3XYKenRhHiCConUqXkK8eyVsvlzdwR2Cf1euz2+rYZz7lI/N2b1KQFZbPskR9U8
-         JCgQIReHVbur4EnN1BVut3gOlrXz/IKzKqfDAM2kT2szitL9qqxfNh++hObEF053eW/m
-         hQ1U9G23dEWRqpbDizwk2+jKw9P8Je1UGbpN7w3fDW1tj3AyAOKjNXtO43h0Zy0lJtPb
-         ltcEfhrBr2d71qYnQIgj++5IoLMJ5G3K6eXYbrnFPAAsOS6sLxDKkhTAJ80RmnGCTpWb
-         M5wg==
-X-Gm-Message-State: AOAM530akmlwXsnsEWkDIbxtC/yqe/ZeSQUpNDWS53chwfaN1FSC79O0
-        VWDbksNu0OZn+HExFZpQYrw=
-X-Google-Smtp-Source: ABdhPJxqsaRnbuSFkpkmHFcKxmLBK9brfFzN3IGPkGGgziIBKCSDwOfmr2YL2WCfjX5i2xTGiksKBw==
-X-Received: by 2002:aa7:c45a:: with SMTP id n26mr1709689edr.45.1595850186068;
-        Mon, 27 Jul 2020 04:43:06 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id qn10sm3794945ejb.39.2020.07.27.04.43.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 04:43:05 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:43:03 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     peterz@infradead.org, tglx@linutronix.de, bigeasy@linutronix.de,
-        namit@vmware.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] smp: Fix a potential usage of stale nr_cpus
-Message-ID: <20200727114303.GA57241@gmail.com>
-References: <20200721034239.72013-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Fj8z1m818DDGkVImIUhwVP/NDjsB0jy0U2cJeVkzmBs=;
+        b=CAbQiCLAil8zb+jrAZrzX/Ab76qYRTK78NmnFq3elAnGOT6h41s0e7U/USUxFW7M+U
+         xnXxGf5/CKcrMDMhKJk/0Gbo09heKyQdGoOAMt/G3cna87mmexosOi6hroSTyYNHNiku
+         5umBzZlqGGvR1IakYo0B5++iOH3baBulgYb4NUqnZjaCBuMLEpRj7w39yJesGJDajjfy
+         mr26Yt//5ti35qbgDWJirfoF5cvoJghWYrYvF9ApobEe2z0Cv8n5Mqjc/xSYK95Sx1ky
+         Y2/ZrNNZ1F2h0uqmmsnJlA/wYBEHE/qGY9AwKBm68o1x8mimEosDlEWL+TqG/hthWU6D
+         Xjiw==
+X-Gm-Message-State: AOAM5331Ap3eE+5vFm2lKvW6sO9dP8Lu57KGhL9WTT+SPyoWma5nzHrX
+        VZxLgrbxP79pwQsTIgQgy6cPL1ws9NslQw1NLhrPZTfArApf0NdS9xV4w/m0bdhbnWv1ogBNlOP
+        hhmLNvzsSuPtvQ9COMUq96RVa
+X-Received: by 2002:a1c:1f8b:: with SMTP id f133mr7502920wmf.65.1595850215566;
+        Mon, 27 Jul 2020 04:43:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxw1DFiLxTBnx0dQkBfP08qqXab6djnIi+darp7HN96pmEh9Ssi7B4w9eJAMu1Apm8wi3pLdA==
+X-Received: by 2002:a1c:1f8b:: with SMTP id f133mr7502892wmf.65.1595850215283;
+        Mon, 27 Jul 2020 04:43:35 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:4502:3ee3:2bae:c612? ([2001:b07:6468:f312:4502:3ee3:2bae:c612])
+        by smtp.gmail.com with ESMTPSA id f17sm19698789wme.14.2020.07.27.04.43.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 04:43:34 -0700 (PDT)
+Subject: Re: [PATCH] KVM: nVMX: properly pad struct kvm_vmx_nested_state_hdr
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+References: <20200713082824.1728868-1-vkuznets@redhat.com>
+ <20200713151750.GA29901@linux.intel.com>
+ <878sfntnoz.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <85fd54ff-01f5-0f1f-1bb7-922c740a37c1@redhat.com>
+Date:   Mon, 27 Jul 2020 13:43:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200721034239.72013-1-songmuchun@bytedance.com>
+In-Reply-To: <878sfntnoz.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 13/07/20 17:54, Vitaly Kuznetsov wrote:
+> Which means that userspace built for the old kernel will potentially send in
+> garbage for the new 'flags' field due to it being uninitialized stack data,
+> even with the layout after this patch.
 
-* Muchun Song <songmuchun@bytedance.com> wrote:
+It might as well send it now if the code didn't attempt to zero the
+struct before filling it in (this is another good reason to use a
+"flags" field to say what's been filled in).  I don't think special
+casing padding is particularly useful; C11 for example requires
+designated initializers to fill padding with zero bits[1] and even
+before it's always been considered good behavior to use memset.
 
-> When the cmdline of "nr_cpus" is not valid, the @nr_cpu_ids is assigned
-> a stale value. The nr_cpus is only valid when get_option() return 1. So
-> check the return value to prevent this.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
-> changelog in v3:
->  1) Return -EINVAL when the parameter is bogus. 
-> 
-> changelog in v2:
->  1) Rework the commit log.
->  2) Rework the return value check.
-> 
->  kernel/smp.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index a5a66fc28f4e..0dacfcfcf00b 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
-> @@ -772,9 +772,13 @@ static int __init nrcpus(char *str)
->  {
->  	int nr_cpus;
->  
-> -	get_option(&str, &nr_cpus);
-> +	if (get_option(&str, &nr_cpus) != 1)
-> +		return -EINVAL;
-> +
->  	if (nr_cpus > 0 && nr_cpus < nr_cpu_ids)
->  		nr_cpu_ids = nr_cpus;
-> +	else
-> +		return -EINVAL;
+Paolo
 
-Exactly what does 'not valid' mean, and why doesn't get_option() 
-return -EINVAL in that case?
+[1]  It says: "If an object that has static or thread storage duration
+is not initialized explicitly, then [...] any padding is initialized to
+zero bits" and even for non-static objects, "If there are fewer
+initializers in a brace-enclosed list than there are elements or members
+of an aggregate [...] the remainder of the aggregate shall be
+initialized implicitly the same as objects that have static storage
+duration".
 
-Thanks,
-
-	Ingo
