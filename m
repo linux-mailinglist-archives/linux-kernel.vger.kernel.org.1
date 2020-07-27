@@ -2,104 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958DD22F3FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600F522F401
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730815AbgG0PlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730309AbgG0PlH (ORCPT
+        id S1730884AbgG0PlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:41:11 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:34315 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730527AbgG0PlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:41:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3B3C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:41:06 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595864465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v2GoCD6qjiCp2SZh/B51AWSLCQivBgFFObpLzIT1tS4=;
-        b=rG1283DoQ5qLCZ574zhNvf40GyaDkQrdPlUP9Iv5UQ8JOaetvZsFPsvgerdjwyQsP0CfIH
-        dbH5HMelj7eSirYeGuHhUKV8rL1/PpQ49hvqNyTpVm/5zViRGg481mtxRhCNyzHgbGm7Y9
-        P9Gw6Q39k+PnboWZDwIXpcH8oEgaO1f3N4d8t+MPx+1jjPyNnAqwP64AVYGugtw+gKwE2D
-        tLpQ4fSMOBCvX/mpGpPLxZP2IpFay23N95P9gJtqZ8fLSjuvnLKDrcgXPvVPKBx+ciiaHl
-        REDbY0H2jGgCd3bIiPQpD9+gyX9Af7uLEpW6leLlqA3bD3Nw7TLgNIFUV9+W/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595864465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v2GoCD6qjiCp2SZh/B51AWSLCQivBgFFObpLzIT1tS4=;
-        b=oabFngj7mpGC/vE+Ror7c/XAQUxxNR3FamgmIhbF7oLNio+SG/GFlC4z4NIQgzSs94O/Cy
-        XzJfFyj5/DtMGwBw==
-To:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
-        luto@kernel.org
-Cc:     linux-kernel@vger.kernel.org, laoar.shao@gmail.com,
-        urezki@gmail.com, jun qian <qianjun.kernel@gmail.com>
-Subject: Re: [PATCH V4] Softirq:avoid large sched delay from the pending softirqs
-In-Reply-To: <1595601083-10183-1-git-send-email-qianjun.kernel@gmail.com>
-References: <1595601083-10183-1-git-send-email-qianjun.kernel@gmail.com>
+        Mon, 27 Jul 2020 11:41:08 -0400
+X-Originating-IP: 90.66.108.79
+Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id CA78DFF81B;
+        Mon, 27 Jul 2020 15:41:04 +0000 (UTC)
 Date:   Mon, 27 Jul 2020 17:41:04 +0200
-Message-ID: <87sgddaru7.fsf@nanos.tec.linutronix.de>
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Rob Herring <robh@kernel.org>, miguelborgesdefreitas@gmail.com,
+        a.zummo@towertech.it, baruch@tkos.co.il, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: pcf8523: add DSM pm option for
+ battery switch-over
+Message-ID: <20200727154104.GE239143@piout.net>
+References: <20200719145028.3370-3-miguelborgesdefreitas@gmail.com>
+ <20200720112401.4620-1-miguelborgesdefreitas@gmail.com>
+ <20200720112401.4620-2-miguelborgesdefreitas@gmail.com>
+ <20200723174905.GA596242@bogus>
+ <20200723195755.GV3428@piout.net>
+ <20200727094553.GH1551@shell.armlinux.org.uk>
+ <20200727144938.GC239143@piout.net>
+ <20200727152439.GK1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727152439.GK1551@shell.armlinux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qian,
+On 27/07/2020 16:24:39+0100, Russell King - ARM Linux admin wrote:
+> On Mon, Jul 27, 2020 at 04:49:38PM +0200, Alexandre Belloni wrote:
+> > On 27/07/2020 10:45:53+0100, Russell King - ARM Linux admin wrote:
+> > > > This is but this shouldn't be a DT property as it has to be changed
+> > > > dynamically. I'm working on an ioctl interface to change this
+> > > > configuration.
+> > > 
+> > > Why does it need to be changed dynamically?  If the hardware components
+> > > are not fitted to allow the RTC to be safely used without DSM, then
+> > > why should userspace be able to disable DSM?
+> > 
+> > For RTCs with a standby mode, you want to be able to return to standby
+> > mode.
+> > 
+> > That would happen for example after factory flashing in that common use
+> > case:
+> >  - the board is manufactured
+> >  - Vbackup is installed, the RTC switches to standby mode
+> >  - the board is then booted to flash a system, Vprimary is now present,
+> >    the RTC switches to DSM.
+> > 
+> > At this point, if the board is simply shut down, the RTC will start
+> > draining Vbackup before leaving the factory. Instead, we want to be able
+> > to return to standby mode until the final user switches the product on
+> > for the first time.
+> 
+> I don't think you're understanding what's going on with this proposed
+> patch.  The cubox-i does work today, and the RTC does survive most
+> power-downs. There are situations where it doesn't.
+> 
+> So, let's take your process above.
+> 
+> - the board is manufactured
+> - Vbackup is installed, the RTC switches to standby mode
+> - the board is then booted to flash a system, Vprimary is now present
+> - the board is powered down.  the RTC _might_ switch over to battery
+>   if it notices the power failure in time, or it might not.  A random
+>   sample of units leaving the factory have the RTC in standby mode.
+>   Others are draining the battery.
+> 
+> I'm not saying what you propose isn't a good idea.  I'm questioning
+> why we should expose this in the generic kernel on platforms where
+> it's likely to end up with the RTC being corrupted.
+> 
 
-qianjun.kernel@gmail.com writes:
->  /*
->   * We restart softirq processing for at most MAX_SOFTIRQ_RESTART times,
->   * but break the loop if need_resched() is set or after 2 ms.
-> - * The MAX_SOFTIRQ_TIME provides a nice upper bound in most cases, but in
-> - * certain cases, such as stop_machine(), jiffies may cease to
-> - * increment and so we need the MAX_SOFTIRQ_RESTART limit as
-> - * well to make sure we eventually return from this method.
-> + * In the loop, if the processing time of the softirq has exceeded 2
-> + * milliseconds, we also need to break the loop to wakeup the
-> ksofirqd.
+Note that I didn't say we should expose settings that are not working
+but it is a different discussion. I was explaining why we need to be
+able to change it dynamically.
 
-You are removing the MAX_SOFTIRQ_RESTART limit explanation and I rather
-have MAX_SOFTIRQ_TIME_NS there than '2 milliseconds' in case the value
-gets adjusted later on. Also while sched_clock() is granular on many
-systems it still can be jiffies based and then the above problem
-persists.
+> Now, I question your idea that units should leave the factory without
+> the RTC being programmed.  We know that lovely systemd goes utterly
+> bonkers if the system time is beyond INT_MAX.  If the RTC leaves
+> standby mode containing a date which we translate beyond INT_MAX,
+> systemd will refuse to boot the system, and the user will have no
+> way to set the correct time.  The user returns the device to the
+> supplier as faulty...
 
-> @@ -299,6 +298,19 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
->  		}
->  		h++;
->  		pending >>= softirq_bit;
-> +
-> +		/*
-> +		 * the softirq's action has been running for too much time
-> +		 * so it may need to wakeup the ksoftirqd
-> +		 */
-> +		if (need_resched() && sched_clock() > end) {
-> +			/*
-> +			 * Ensure that the remaining pending bits are
-> +			 * handled.
-> +			 */
-> +			or_softirq_pending(pending << (vec_nr + 1));
+This is doesn't happen since v4.17.
 
-To or the value interrupts need to be disabled because otherwise you can
-lose a bit when an interrupt happens in the middle of the RMW operation
-and raises a softirq which is not in @pending and not in the per CPU
-local softirq pending storage.
-
-There is another problem. Assume bit 0 and 1 are pending when the
-processing starts. Now it breaks out after bit 0 has been handled and
-stores back bit 1 as pending. Before ksoftirqd runs bit 0 gets raised
-again. ksoftirqd runs and handles bit 0, which takes more than the
-timeout. As a result the bit 0 processing can starve all other softirqs.
-
-So this needs more thought.
-
-Thanks,
-
-        tglx
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
