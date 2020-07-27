@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF11022EFBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3303722F0B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731302AbgG0OSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:18:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46500 "EHLO mail.kernel.org"
+        id S1732620AbgG0O0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731285AbgG0OSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:18:44 -0400
+        id S1732592AbgG0O02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:26:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 432A62070A;
-        Mon, 27 Jul 2020 14:18:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6405D2070A;
+        Mon, 27 Jul 2020 14:26:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859523;
-        bh=/DH+aznXkv1qnF4v0DOaOA0IRaamledIRcwzbyJV4iA=;
+        s=default; t=1595859987;
+        bh=W+aZnU5vNg9bWZKBSUOjo0QnhgEt+zvcWQNSDiewMUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qPcwx6L7nnZ7C/QcFmxb0NfF48VoSnBEN4K+AQ7qnetNccYH3P5KvSjZoIJo/vQQU
-         LwaaJQHJTwC587GiCCPxEpFJKIg2ANkBpCXZN1cZUlY+UkJYGBNSeYNXRBujVg3R8B
-         wYE72PjAP6AftZNE9FMud388doUsftuUs+BRjDMU=
+        b=UcONdk9zduLmDFq1eTHumMdy6mL6mjfF2QkNG36aTMXCy5nh7KFbyZqTA04G1iKXy
+         zSId63I0iLMXZj+2XkNjHmEMN0Zg6Qzwm7KBG+LO0XVhjqmUWVq+QYN7Ratof6WnQ8
+         l2R+7Yrc90Xi0+JbEFdC7YYxCG9Fh1tuN8UMFU8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 135/138] ASoC: topology: fix tlvs in error handling for widget_dmixer
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Russell King <linux@arm.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH 5.7 155/179] /dev/mem: Add missing memory barriers for devmem_inode
 Date:   Mon, 27 Jul 2020 16:05:30 +0200
-Message-Id: <20200727134932.162428254@linuxfoundation.org>
+Message-Id: <20200727134940.222949527@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +49,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 8edac489e7c3fce44208373bb3e7b5835a672c66 upstream.
+commit b34e7e298d7a5ed76b3aa327c240c29f1ef6dd22 upstream.
 
-we need to free all allocated tlvs, not just the one allocated in
-the loop before releasing kcontrols - other the tlvs references will
-leak.
+WRITE_ONCE() isn't the correct way to publish a pointer to a data
+structure, since it doesn't include a write memory barrier.  Therefore
+other tasks may see that the pointer has been set but not see that the
+pointed-to memory has finished being initialized yet.  Instead a
+primitive with "release" semantics is needed.
 
-Fixes: 9f90af3a995298 ('ASoC: topology: Consolidate and fix asoc_tplg_dapm_widget_*_create flow')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20200707203749.113883-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Use smp_store_release() for this.
+
+The use of READ_ONCE() on the read side is still potentially correct if
+there's no control dependency, i.e. if all memory being "published" is
+transitively reachable via the pointer itself.  But this pairing is
+somewhat confusing and error-prone.  So just upgrade the read side to
+smp_load_acquire() so that it clearly pairs with smp_store_release().
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Russell King <linux@arm.linux.org.uk>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Fixes: 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims the region")
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Dan Williams <dan.j.williams@intel.com>
+Link: https://lore.kernel.org/r/20200716060553.24618-1-ebiggers@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-topology.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/mem.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1394,7 +1394,6 @@ static struct snd_kcontrol_new *soc_tplg
- 		if (err < 0) {
- 			dev_err(tplg->dev, "ASoC: failed to init %s\n",
- 				mc->hdr.name);
--			soc_tplg_free_tlv(tplg, &kc[i]);
- 			goto err_sm;
- 		}
- 	}
-@@ -1402,6 +1401,7 @@ static struct snd_kcontrol_new *soc_tplg
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -814,7 +814,8 @@ static struct inode *devmem_inode;
+ #ifdef CONFIG_IO_STRICT_DEVMEM
+ void revoke_devmem(struct resource *res)
+ {
+-	struct inode *inode = READ_ONCE(devmem_inode);
++	/* pairs with smp_store_release() in devmem_init_inode() */
++	struct inode *inode = smp_load_acquire(&devmem_inode);
  
- err_sm:
- 	for (; i >= 0; i--) {
-+		soc_tplg_free_tlv(tplg, &kc[i]);
- 		sm = (struct soc_mixer_control *)kc[i].private_value;
- 		kfree(sm);
- 		kfree(kc[i].name);
+ 	/*
+ 	 * Check that the initialization has completed. Losing the race
+@@ -1028,8 +1029,11 @@ static int devmem_init_inode(void)
+ 		return rc;
+ 	}
+ 
+-	/* publish /dev/mem initialized */
+-	WRITE_ONCE(devmem_inode, inode);
++	/*
++	 * Publish /dev/mem initialized.
++	 * Pairs with smp_load_acquire() in revoke_devmem().
++	 */
++	smp_store_release(&devmem_inode, inode);
+ 
+ 	return 0;
+ }
 
 
