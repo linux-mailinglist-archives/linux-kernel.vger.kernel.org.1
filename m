@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0992822EE5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D96C22F010
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbgG0OHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:07:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55402 "EHLO mail.kernel.org"
+        id S1731744AbgG0OVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729120AbgG0OHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:07:04 -0400
+        id S1731728AbgG0OVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 299D420775;
-        Mon, 27 Jul 2020 14:07:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E13B52070A;
+        Mon, 27 Jul 2020 14:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858823;
-        bh=/+lYmerbp5LL2nkMd56EBYUGie/PD1wv+QobVSI6++M=;
+        s=default; t=1595859690;
+        bh=h1XxfQffSdng9jG/pVznLTCz6+7NXwQpLZd95y/eJKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RmjLrT599/Zd67R/ltWcmaG9yt3jWgW+XkNC3dB1K2QnXrwIoCl8lmXbvVf77b5Ct
-         FWt05/QYIvPk4bWU83H7cCHwNTXgSJkqPtqLa2lyp/I4wmbdhf4D7oSfVUuMRMnfc2
-         l/oNlqOy2+FDQoG9JpHCDvQfr486YYaga+8+siAQ=
+        b=xlyW9E9XeVtcupysc2rmkd+8IaqufcTz3QDNvx3+1hTpkSWoyN/GZtoRj8/rHePvG
+         uMGv5QcN9tVKqthSvhRRmKhiqEQi5TGf6A65W/tbHAD+OckgFqyt3RjnXQN0/5v/HP
+         wcPAdDBF15xZ7b5sIaX5H8f1vfPzFpsmS9hKbP5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Organov <sorganov@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Liu Jian <liujian56@huawei.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 24/64] net: dp83640: fix SIOCSHWTSTAMP to update the struct with actual configuration
+Subject: [PATCH 5.7 068/179] dpaa_eth: Fix one possible memleak in dpaa_eth_probe
 Date:   Mon, 27 Jul 2020 16:04:03 +0200
-Message-Id: <20200727134912.349190447@linuxfoundation.org>
+Message-Id: <20200727134935.981834348@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Organov <sorganov@gmail.com>
+From: Liu Jian <liujian56@huawei.com>
 
-[ Upstream commit 473309fb8372365ad211f425bca760af800e10a7 ]
+[ Upstream commit 6790711f8ac5faabc43237c0d05d93db431a1ecc ]
 
->From Documentation/networking/timestamping.txt:
+When dma_coerce_mask_and_coherent() fails, the alloced netdev need to be freed.
 
-  A driver which supports hardware time stamping shall update the
-  struct with the actual, possibly more permissive configuration.
-
-Do update the struct passed when we upscale the requested time
-stamping mode.
-
-Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
-Signed-off-by: Sergey Organov <sorganov@gmail.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+Acked-by: Madalin Bucur <madalin.bucur@oss.nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/dp83640.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
-index c52c016676af3..5752280fdb408 100644
---- a/drivers/net/phy/dp83640.c
-+++ b/drivers/net/phy/dp83640.c
-@@ -1339,6 +1339,7 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
- 		dp83640->hwts_rx_en = 1;
- 		dp83640->layer = PTP_CLASS_L4;
- 		dp83640->version = PTP_CLASS_V1;
-+		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V1_L4_EVENT;
- 		break;
- 	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
-@@ -1346,6 +1347,7 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
- 		dp83640->hwts_rx_en = 1;
- 		dp83640->layer = PTP_CLASS_L4;
- 		dp83640->version = PTP_CLASS_V2;
-+		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_L4_EVENT;
- 		break;
- 	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
-@@ -1353,6 +1355,7 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
- 		dp83640->hwts_rx_en = 1;
- 		dp83640->layer = PTP_CLASS_L2;
- 		dp83640->version = PTP_CLASS_V2;
-+		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
- 		break;
- 	case HWTSTAMP_FILTER_PTP_V2_EVENT:
- 	case HWTSTAMP_FILTER_PTP_V2_SYNC:
-@@ -1360,6 +1363,7 @@ static int dp83640_hwtstamp(struct phy_device *phydev, struct ifreq *ifr)
- 		dp83640->hwts_rx_en = 1;
- 		dp83640->layer = PTP_CLASS_L4 | PTP_CLASS_L2;
- 		dp83640->version = PTP_CLASS_V2;
-+		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
- 		break;
- 	default:
- 		return -ERANGE;
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index 6bfa7575af942..5f82c1f32f09b 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -2938,7 +2938,7 @@ static int dpaa_eth_probe(struct platform_device *pdev)
+ 						   DMA_BIT_MASK(40));
+ 	if (err) {
+ 		netdev_err(net_dev, "dma_coerce_mask_and_coherent() failed\n");
+-		return err;
++		goto free_netdev;
+ 	}
+ 
+ 	/* If fsl_fm_max_frm is set to a higher value than the all-common 1500,
 -- 
 2.25.1
 
