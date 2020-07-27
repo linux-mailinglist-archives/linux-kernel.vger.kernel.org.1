@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C8222F8D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF9C22F8E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgG0TSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:18:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        id S1728810AbgG0TS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgG0TSi (ORCPT
+        with ESMTP id S1728707AbgG0TS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:18:38 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE87C061794;
-        Mon, 27 Jul 2020 12:18:38 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3C26B12763789;
-        Mon, 27 Jul 2020 12:01:52 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 12:18:36 -0700 (PDT)
-Message-Id: <20200727.121836.2197759951419525125.davem@davemloft.net>
-To:     alobakin@marvell.com
-Cc:     kuba@kernel.org, irusskikh@marvell.com,
-        michal.kalderon@marvell.com, aelior@marvell.com,
-        denis.bolotin@marvell.com, GR-everest-linux-l2@marvell.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH net-next] qed: fix the allocation of the chains with an
- external PBL
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200727115133.1631-1-alobakin@marvell.com>
-References: <20200727115133.1631-1-alobakin@marvell.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Jul 2020 12:01:52 -0700 (PDT)
+        Mon, 27 Jul 2020 15:18:57 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137C9C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:57 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x9so8653036plr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=KYcxnJiJj69tRTiEAadwyrdtR22boWUN2z9HB/fXNUA=;
+        b=R2jjdbqKOeMyZXLB5gCmo1dIyD9OXYKPAw+app2x6HmA8T10ZwHHuGiPJj3zRmg6O7
+         1Kh9JSmdZ1lQWiFdA9qmTn0+xQjjDc5+40Vwtt44N8cymoskiaKIubLi364r/FxULAYZ
+         d0cyj50JO7V7RoocGGEctm4t/IqWYi/7QEc647x1JKyp99qd9q5Vdzz9vaS0ICmd3Gni
+         TVW7BrlR7HduEobquyFjGm0jjX1nZdfZUuKAeZ/OLCrRhocMGZMdopallxdVUWyPa4L3
+         XrMnPwSV2+3bsPyAPrhLet0db6mtxzHtCuvWmHQa8tlfiQUBdGFh/CpHQGL7MYakiAy5
+         Qopg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KYcxnJiJj69tRTiEAadwyrdtR22boWUN2z9HB/fXNUA=;
+        b=iZz6gyU8KlgdJpPGj4cvDz6QevDmHFaYEWrGztoBT+WHcXzsZZepWms04DB59o6KsE
+         rWZUhzIBBO0VP+I52y7gIEsDyN6rtMntqIPFdGKZSOKIoKq3IayAI5jKFS0g6KynlxSu
+         Gu6CPoRY1z0hfKo7GmeGbl3b29hYgZ0qx7fMJnei81vN8v2mnq1BKgL9/zwxcHK8yvlb
+         Ncgm+sxhsl+5PukDWxeyFdnIk58Qu9bPtW1oSY9pWOwwCZXRfc/eNxqjoByyim6Oacvc
+         OjNz92WW/FrUKxnwK+PY7yr6wmNMieiRK1w6BAQlHQhJrCtwqRlSu+yThHrRyi81m011
+         uBtA==
+X-Gm-Message-State: AOAM530bv8SpSv83TWQj7xSlqet/1EcRbZxCvZrT8gDrA3rPSihmdN1g
+        Xk2OnEDvv6Qyc8XyoLgTEZTQfg==
+X-Google-Smtp-Source: ABdhPJz2jqCiQQNL40op8DOdoDG7P0HFj98+NtEUkvD4/UOy/rpmH+LlNHdciSjH2PKrVot5+x/gRg==
+X-Received: by 2002:a17:902:6bc2:: with SMTP id m2mr19056144plt.119.1595877536516;
+        Mon, 27 Jul 2020 12:18:56 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id o10sm345581pjo.55.2020.07.27.12.18.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 12:18:55 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3
+Date:   Mon, 27 Jul 2020 12:18:53 -0700
+Message-Id: <159587752409.20735.8859718228289623070.b4-ty@baylibre.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200721015950.11816-1-christianshewitt@gmail.com>
+References: <20200721015950.11816-1-christianshewitt@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@marvell.com>
-Date: Mon, 27 Jul 2020 14:51:33 +0300
+On Tue, 21 Jul 2020 01:59:50 +0000, Christian Hewitt wrote:
+> Similar to other G12B devices using the W400 dtsi, I see reports of mmc0
+> tuning errors on VIM3 after a few hours uptime:
+> 
+> [12483.917391] mmc0: tuning execution failed: -5
+> [30535.551221] mmc0: tuning execution failed: -5
+> [35359.953671] mmc0: tuning execution failed: -5
+> [35561.875332] mmc0: tuning execution failed: -5
+> [61733.348709] mmc0: tuning execution failed: -5
+> 
+> [...]
 
-> Dan reports static checker warning:
-> 
-> "The patch 9b6ee3cf95d3: "qed: sanitize PBL chains allocation" from Jul
-> 23, 2020, leads to the following static checker warning:
-> 
-> 	drivers/net/ethernet/qlogic/qed/qed_chain.c:299 qed_chain_alloc_pbl()
-> 	error: uninitialized symbol 'pbl_virt'.
-> 
-> drivers/net/ethernet/qlogic/qed/qed_chain.c
->    249  static int qed_chain_alloc_pbl(struct qed_dev *cdev, struct qed_chain *chain)
->    250  {
->    251          struct device *dev = &cdev->pdev->dev;
->    252          struct addr_tbl_entry *addr_tbl;
->    253          dma_addr_t phys, pbl_phys;
->    254          __le64 *pbl_virt;
->                 ^^^^^^^^^^^^^^^^
-> [...]
->    271          if (chain->b_external_pbl)
->    272                  goto alloc_pages;
->                         ^^^^^^^^^^^^^^^^ uninitialized
-> [...]
->    298                  /* Fill the PBL table with the physical address of the page */
->    299                  pbl_virt[i] = cpu_to_le64(phys);
->                         ^^^^^^^^^^^
-> [...]
-> "
-> 
-> This issue was introduced with commit c3a321b06a80 ("qed: simplify
-> initialization of the chains with an external PBL"), when
-> chain->pbl_sp.table_virt initialization was moved up to
-> qed_chain_init_params().
-> Fix it by initializing pbl_virt with an already filled chain struct field.
-> 
-> Fixes: c3a321b06a80 ("qed: simplify initialization of the chains with an external PBL")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+Applied, thanks!
 
-Applied, thank you.
+[1/1] arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3
+      commit: f1bb924e8f5b50752a80fa5b48c43003680a7b64
+
+Best regards,
+-- 
+Kevin Hilman <khilman@baylibre.com>
