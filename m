@@ -2,76 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7021C22E9B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632EC22E9BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgG0KD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726976AbgG0KD5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:03:57 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1931BC061794;
-        Mon, 27 Jul 2020 03:03:57 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id c3so1501656lfb.3;
-        Mon, 27 Jul 2020 03:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d6I2lLfZNvMeErNBP+6RCTBs+KS8Tnc+1L09dfq9pLM=;
-        b=eMacKXxB0UWbCbTyTrY1Y2dKEZbpP4OCoTxx8nqEiWAJznuSw23HeKgtCZeLmTZcor
-         Q/xQgMIiwmvlBzU1Tadh4s8dPw0ZbNMII5XJASaoJpBrSPK2oeVpmDHRnhgnBb4gAUpb
-         mGKQtYTB3u7OxTSOv3Ik9dI0QyEuc7t9IYZYtsSRWr0ACBuhlIc1c5aTQurKD3WoCExC
-         7hFuxlbr9/NZN4hyKWTaeyTG2R1Eof253JVjShzM7a31FPkMebnykTXKd+lF4y2C6lKR
-         Nubp9PMFE4kZFZBJ+0Og5tieHtw6MEWikGRr6Vswc5/VHyjoqYLA6cjdHvZ71wOMgaKX
-         jf7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d6I2lLfZNvMeErNBP+6RCTBs+KS8Tnc+1L09dfq9pLM=;
-        b=T0n35u+eBgs+tS6xwiO6ZDin+xQLcrD5SSwOuKkcxj7v+EE0uEdbBE5LexRIzZJZYi
-         74Epvo2zQT4zPfudIpGfG8H0twU4af4/NzN8ySHgF+0OmGpWxMgMterUgDB2nud+lLEC
-         asHWzgCHaZvD/XUoudeiWopNyLa1QzhY5YILoVsv8CWautvo6M9VqrQbUo/CxY2P7ckB
-         llb38ql1YiRPBa84u2tKH+/c+NKBPBfeZjmgPjzoRBPhR1a1bgu4IpdXP+yCm8VM3aP2
-         2yuEFDLsBnJfrwQ1iPVih97nRDWOtbIYaF2N4JsEaDRupaD1W6VwcVPIyK05FYBTM5VX
-         kmbQ==
-X-Gm-Message-State: AOAM532nUPhpcfSVC2bOf6iGAETmF47xHHedMI/XHBWEX6fX0Cbv9Xlw
-        Ifn+duG/XpmF0XTMyqPQkI+8gX8U3SL81rvVD/wpaEt4N2I=
-X-Google-Smtp-Source: ABdhPJzNIJlwlw2uz6FtpnKqLkz53xW+A4YgKjOefKWGV+Ww1GXoJ3ZG1EtqY1tyDSqZgkozgDcDen2BIje09EZ39ZE=
-X-Received: by 2002:a19:7f94:: with SMTP id a142mr3612342lfd.43.1595844235631;
- Mon, 27 Jul 2020 03:03:55 -0700 (PDT)
+        id S1727893AbgG0KFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:05:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41670 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726976AbgG0KE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:04:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 10B4EAD11;
+        Mon, 27 Jul 2020 10:05:09 +0000 (UTC)
+Subject: Re: [PATCH] xen: hypercall.h: fix duplicated word
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org
+References: <20200726001731.19540-1-rdunlap@infradead.org>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <076a4b2e-51f2-bff9-b93f-2a44258df2e7@suse.com>
+Date:   Mon, 27 Jul 2020 12:04:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200727090629.169701-1-cyrozap@gmail.com> <20200727090629.169701-2-cyrozap@gmail.com>
- <20200727092654.GD1764157@kroah.com>
-In-Reply-To: <20200727092654.GD1764157@kroah.com>
-From:   Forest Crossman <cyrozap@gmail.com>
-Date:   Mon, 27 Jul 2020 05:03:43 -0500
-Message-ID: <CAO3ALPwJq4=GairV8ksHenRtXwg2mYNDKtnYcf99eN6Eo6es5A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] usb: xhci: define IDs for various ASMedia host controllers
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, mathias.nyman@intel.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200726001731.19540-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 4:26 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jul 27, 2020 at 04:06:28AM -0500, Forest Crossman wrote:
-> > Signed-off-by: Forest Crossman <cyrozap@gmail.com>
->
-> I can not take patches without any changelog text, sorry.
+On 26.07.20 02:17, Randy Dunlap wrote:
+> Change the repeated word "as" to "as a".
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-Ah, whoops, I'm very sorry about that! Should I send a v2 of just this
-patch? Or would it be better to send the whole series again?
+Reviewed-by: Juergen Gross <jgross@suse.com>
 
 
-Thanks,
-
-Forest
+Juergen
