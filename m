@@ -2,77 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEE622F96D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 578F422F948
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgG0TrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729014AbgG0TrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:47:13 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753CAC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:47:13 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id k18so2432400pfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sGQ4r67ks10a9qe3fOk8YWAIOQIxbh+oSzV4pqpcTt8=;
-        b=sMHMB8VZWqlwbXWM79T30VxlVj+IefdVKIwTlDf0VEjEv0eg47NENQ/0P7cKueGUQI
-         +8nCHx/Ez7jCJPiWFvLniRPedw/rfenucP/14M5GaV6t8Zn2iq3AXAhY6Mc+cF3AR3If
-         tkCKJqdysJX89NANjkdlAhWQTwOG+8LgOxgJ2JlKw3YXfLyDeLItP97oJ/Uzr2hl1rMB
-         ZRjX+FLOJIycW9o9c32RRniQbyQMsB3tp05irQxgp5w0I2NSrE4EJqvs7BgHp59q6LFR
-         sSsaJU5PbtaQIrdsqZ8GU4BRO5vax1iCuEN5CX6vkdnYosN0wJ/x18k+S3G/oTn1SWP/
-         CnKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sGQ4r67ks10a9qe3fOk8YWAIOQIxbh+oSzV4pqpcTt8=;
-        b=QPzxGp4inDmhYTEKfKxo3R/PEjimGScPSsAH1xHFi16nAX93/E0Kojr5vuRRVSZN7I
-         6hJmjDBpCzI7sS5Hxl2+uaPhLlTyzPNB5/KNMLt11S+HrXO8yE+jnDEh8A1QM2PBp5RZ
-         a1H1YUzf0AwvJKIqoyDz5tPlsp8hIwBYP3pNOQuO4I3rqzw7oMw2ckIbieipXb9Bgjc9
-         kR08hIxZl6wkE4xoJWeLT9+YZVqhi7XBbFGKqAOIOKc45asz63mSNvbeHM2Y1V0dPy1B
-         CUtjrf9prystMvPmiLm26w6hb/Y7s3HXPloFS0TjgEGxFxT9YTu7WPT9ZR1rCwx3QSaZ
-         xfGg==
-X-Gm-Message-State: AOAM5324vIrUx+jfXj95TbAvjvjet8Jf/cYtQrZE5XgBbEmUr9xKx5Pa
-        bnqcCuLqiSEjkv3+0AyeYtqdrIghozu7q3SBt94=
-X-Google-Smtp-Source: ABdhPJy+//PBMIQeWkJdzakQn7hhFAyqjwSVtG1idgDdUKWtxtdXzoCU6G/qQ8c7jAKH4frEP1nSdfwatABy3IKsXas=
-X-Received: by 2002:a62:758f:: with SMTP id q137mr3071458pfc.170.1595879232782;
- Mon, 27 Jul 2020 12:47:12 -0700 (PDT)
+        id S1728673AbgG0Tni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgG0Tni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 15:43:38 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7858320738;
+        Mon, 27 Jul 2020 19:43:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595879017;
+        bh=lxdBxXJ5zxVKvvxwH9ezbqRV5SEW+6CysTLL1xhSRH0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HivMI1fID38/+kcrg9AV6RGk9Adcd7AijgDE+kRiAxSWOR82Z62jTmDc8yldXCc/l
+         alt8WMRc8SGbPuHRFHdnCV4iBv+m902tP+sf/BXX6UJarINKUTVzpObgUZanfsKDKk
+         yvc6eUcDXmLs8hXIqRMQQgV3WGEQbDqEBzjqAMOI=
+Date:   Mon, 27 Jul 2020 14:49:30 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] ath5k: Use fallthrough pseudo-keyword
+Message-ID: <20200727194930.GA1491@embeddedor>
 MIME-Version: 1.0
-References: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com>
-In-Reply-To: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 27 Jul 2020 22:46:56 +0300
-Message-ID: <CAHp75Ve1VUWsw8GdSmEbGs6v=B2=VGgcieS-voA+AqvypTpbdw@mail.gmail.com>
-Subject: Re: Kernel panic - not syncing: IO-APIC + timer doesn't work!
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 10:20 PM Scott Branden
-<scott.branden@broadcom.com> wrote:
->
-> Occasionally I get the following Kernel panic on boot.  This is running on the latest kernel but have seen it previously as well.
-> "Kernel panic - not syncing: IO-APIC + timer doesn't work!  Boot with apic=debug and send a report."
->
-> I don't know who I am support to send a report to.  But here is the log with apic=debug
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1].
 
-Just a wild guess, do you have x2APIC in your system enabled and driver for it?
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/wireless/ath/ath5k/eeprom.c | 4 ++--
+ drivers/net/wireless/ath/ath5k/pcu.c    | 4 ++--
+ drivers/net/wireless/ath/ath5k/phy.c    | 6 +++---
+ drivers/net/wireless/ath/ath5k/reset.c  | 2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath5k/eeprom.c b/drivers/net/wireless/ath/ath5k/eeprom.c
+index 307f1fea0a88..1fbc2c19848f 100644
+--- a/drivers/net/wireless/ath/ath5k/eeprom.c
++++ b/drivers/net/wireless/ath/ath5k/eeprom.c
+@@ -1172,13 +1172,13 @@ ath5k_cal_data_offset_2413(struct ath5k_eeprom_info *ee, int mode)
+ 			offset += ath5k_pdgains_size_2413(ee,
+ 					AR5K_EEPROM_MODE_11B) +
+ 					AR5K_EEPROM_N_2GHZ_CHAN_2413 / 2;
+-		/* fall through */
++		fallthrough;
+ 	case AR5K_EEPROM_MODE_11B:
+ 		if (AR5K_EEPROM_HDR_11A(ee->ee_header))
+ 			offset += ath5k_pdgains_size_2413(ee,
+ 					AR5K_EEPROM_MODE_11A) +
+ 					AR5K_EEPROM_N_5GHZ_CHAN / 2;
+-		/* fall through */
++		fallthrough;
+ 	case AR5K_EEPROM_MODE_11A:
+ 		break;
+ 	default:
+diff --git a/drivers/net/wireless/ath/ath5k/pcu.c b/drivers/net/wireless/ath/ath5k/pcu.c
+index 05140d8baa36..7e9c3f0f8607 100644
+--- a/drivers/net/wireless/ath/ath5k/pcu.c
++++ b/drivers/net/wireless/ath/ath5k/pcu.c
+@@ -670,7 +670,7 @@ ath5k_hw_init_beacon_timers(struct ath5k_hw *ah, u32 next_beacon, u32 interval)
+ 		break;
+ 	case NL80211_IFTYPE_ADHOC:
+ 		AR5K_REG_ENABLE_BITS(ah, AR5K_TXCFG, AR5K_TXCFG_ADHOC_BCN_ATIM);
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		/* On non-STA modes timer1 is used as next DMA
+ 		 * beacon alert (DBA) timer and timer2 as next
+@@ -913,7 +913,7 @@ ath5k_hw_set_opmode(struct ath5k_hw *ah, enum nl80211_iftype op_mode)
+ 		pcu_reg |= AR5K_STA_ID1_KEYSRCH_MODE
+ 			| (ah->ah_version == AR5K_AR5210 ?
+ 				AR5K_STA_ID1_PWR_SV : 0);
+-		/* fall through */
++		fallthrough;
+ 	case NL80211_IFTYPE_MONITOR:
+ 		pcu_reg |= AR5K_STA_ID1_KEYSRCH_MODE
+ 			| (ah->ah_version == AR5K_AR5210 ?
+diff --git a/drivers/net/wireless/ath/ath5k/phy.c b/drivers/net/wireless/ath/ath5k/phy.c
+index ae08572c4b58..00f9e347d414 100644
+--- a/drivers/net/wireless/ath/ath5k/phy.c
++++ b/drivers/net/wireless/ath/ath5k/phy.c
+@@ -3229,10 +3229,10 @@ ath5k_write_pwr_to_pdadc_table(struct ath5k_hw *ah, u8 ee_mode)
+ 	switch (pdcurves) {
+ 	case 3:
+ 		reg |= AR5K_REG_SM(pdg_to_idx[2], AR5K_PHY_TPC_RG1_PDGAIN_3);
+-		/* Fall through */
++		fallthrough;
+ 	case 2:
+ 		reg |= AR5K_REG_SM(pdg_to_idx[1], AR5K_PHY_TPC_RG1_PDGAIN_2);
+-		/* Fall through */
++		fallthrough;
+ 	case 1:
+ 		reg |= AR5K_REG_SM(pdg_to_idx[0], AR5K_PHY_TPC_RG1_PDGAIN_1);
+ 		break;
+@@ -3353,7 +3353,7 @@ ath5k_setup_channel_powertable(struct ath5k_hw *ah,
+ 					table_min[pdg] = table_max[pdg] - 126;
+ 			}
+ 
+-			/* Fall through */
++			fallthrough;
+ 		case AR5K_PWRTABLE_PWR_TO_PCDAC:
+ 		case AR5K_PWRTABLE_PWR_TO_PDADC:
+ 
+diff --git a/drivers/net/wireless/ath/ath5k/reset.c b/drivers/net/wireless/ath/ath5k/reset.c
+index 56d7925a0c2c..9fdb5283b39c 100644
+--- a/drivers/net/wireless/ath/ath5k/reset.c
++++ b/drivers/net/wireless/ath/ath5k/reset.c
+@@ -522,7 +522,7 @@ ath5k_hw_set_power_mode(struct ath5k_hw *ah, enum ath5k_power_mode mode,
+ 	switch (mode) {
+ 	case AR5K_PM_AUTO:
+ 		staid &= ~AR5K_STA_ID1_DEFAULT_ANTENNA;
+-		/* fallthrough */
++		fallthrough;
+ 	case AR5K_PM_NETWORK_SLEEP:
+ 		if (set_chip)
+ 			ath5k_hw_reg_write(ah,
 -- 
-With Best Regards,
-Andy Shevchenko
+2.27.0
+
