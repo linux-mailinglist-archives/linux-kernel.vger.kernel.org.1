@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706D222F1DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC1B22F143
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732404AbgG0Oe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42132 "EHLO mail.kernel.org"
+        id S1731684AbgG0OVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730715AbgG0OPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:15:39 -0400
+        id S1731638AbgG0OVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08C9B2075A;
-        Mon, 27 Jul 2020 14:15:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 310492070B;
+        Mon, 27 Jul 2020 14:21:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859338;
-        bh=/47BWBc6v5oxAa25PLXXdkKGC8Ysnkl3mQ5TMot2coE=;
+        s=default; t=1595859669;
+        bh=TecO03OPduOUqsycocBSfTknmGQEVs9nwM8nTt4HnO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nmDJoNhH5so6DdDgfPuh1NU4iGZOjN92owiKQoGxWZZtAQHImgc1L49zK1qTnP8HJ
-         0Qa1Dq4YPMQaofsBD3li7ElbgX3pl6UShv17DCEXLn+qZHTqxhCyMa6Ht4fWgVpn+u
-         OlRhIf7eF0qKbLowpleksTmgc8bh8LCIU/WLgpQ0=
+        b=u1Gfzg5YoPpNOoKms/o9WqI6WXSUcLABU96sVFUr0SQOgVdZhHPvkoxFu3s1UPXqM
+         xdOJxD7iY9fr/JG1k7sTh8gTSgbvcfMH5EolNsyfv5TNccdXw8KL4TID9aHnr9ap/y
+         eTluKDLtHnPNwhnN5lImYz0lxHxmMP9awFXP6FA8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
+        Mans Rullgard <mans@mansr.com>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/138] fpga: dfl: fix bug in port reset handshake
-Date:   Mon, 27 Jul 2020 16:03:54 +0200
-Message-Id: <20200727134927.327140673@linuxfoundation.org>
+Subject: [PATCH 5.7 060/179] drm: sun4i: hdmi: Fix inverted HPD result
+Date:   Mon, 27 Jul 2020 16:03:55 +0200
+Message-Id: <20200727134935.594677480@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+From: Chen-Yu Tsai <wens@csie.org>
 
-[ Upstream commit 8614afd689df59d9ce019439389be20bd788a897 ]
+[ Upstream commit baa1841eb797eadce6c907bdaed7cd6f01815404 ]
 
-When putting the port in reset, driver must wait for the soft reset
-acknowledgment bit instead of the soft reset bit.
+When the extra HPD polling in sun4i_hdmi was removed, the result of
+HPD was accidentally inverted.
 
-Fixes: 47c1b19c160f (fpga: dfl: afu: add port ops support)
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Acked-by: Wu Hao <hao.wu@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fix this by inverting the check.
+
+Fixes: bda8eaa6dee7 ("drm: sun4i: hdmi: Remove extra HPD polling")
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Tested-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200711011030.21997-1-wens@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/fpga/dfl-afu-main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
-index e4a34dc7947f9..041d23469238d 100644
---- a/drivers/fpga/dfl-afu-main.c
-+++ b/drivers/fpga/dfl-afu-main.c
-@@ -83,7 +83,8 @@ int __afu_port_disable(struct platform_device *pdev)
- 	 * on this port and minimum soft reset pulse width has elapsed.
- 	 * Driver polls port_soft_reset_ack to determine if reset done by HW.
- 	 */
--	if (readq_poll_timeout(base + PORT_HDR_CTRL, v, v & PORT_CTRL_SFTRST,
-+	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
-+			       v & PORT_CTRL_SFTRST_ACK,
- 			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
- 		dev_err(&pdev->dev, "timeout, fail to reset device\n");
- 		return -ETIMEDOUT;
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+index f07e0c32b93a2..4c5072a578bf2 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
+@@ -263,7 +263,7 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	unsigned long reg;
+ 
+ 	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
+-	if (reg & SUN4I_HDMI_HPD_HIGH) {
++	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
+ 		cec_phys_addr_invalidate(hdmi->cec_adap);
+ 		return connector_status_disconnected;
+ 	}
 -- 
 2.25.1
 
