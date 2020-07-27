@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CF022EE73
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2719822F055
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbgG0OHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:07:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56730 "EHLO mail.kernel.org"
+        id S1732131AbgG0OXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729298AbgG0OHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:07:45 -0400
+        id S1732118AbgG0OXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:23:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 83CDB2078E;
-        Mon, 27 Jul 2020 14:07:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C1DA2083E;
+        Mon, 27 Jul 2020 14:23:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858865;
-        bh=HE1tTQZPf/uXLBnCJG+o1pp+WMQMH2wEqncDBLCC6p8=;
+        s=default; t=1595859816;
+        bh=lKLFzz1koLMHMmMdhUez96JofGg89ksPjKoDytzHQkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hqiczZIQao+lCmAyFWvsIkDtSgcltn9HTTzj90D/qIfBqvY3qaPVdGX0Z9SgRjK6W
-         fNv8IUqL28gfNBG5ZQPG7IJx1e5Qm6ekBaf0yI6fKUvakyHDzzligN256jzc/4Lydx
-         gurxhhURDCRe+DKh7ddpQsAgavRYWQG8/GCP//KE=
+        b=rbnghd07vwvzQXGDm9bC03LT8cKru7wEZ6TUqRA2vop/seooIdptFKT3YGgOcaapB
+         pRdWFvqrANrNuKwVbAGaiIHdp8Shhndds+Br9+z2uIhT7zeOmAMCU7sR9AbWHx2n1k
+         /b+OHYM2lph4qLvhv7K2VwbRRdpjRLUE6IpEoW64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonid Ravich <Leonid.Ravich@emc.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 41/64] dmaengine: ioat setting ioat timeout as module parameter
-Date:   Mon, 27 Jul 2020 16:04:20 +0200
-Message-Id: <20200727134913.214594051@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 086/179] net: ethernet: ave: Fix error returns in ave_init
+Date:   Mon, 27 Jul 2020 16:04:21 +0200
+Message-Id: <20200727134936.877009671@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonid Ravich <Leonid.Ravich@emc.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 87730ccbddcb48478b1b88e88b14e73424130764 ]
+[ Upstream commit 1264d7fa3a64d8bea7aebb77253f917947ffda25 ]
 
-DMA transaction time to completion is a function of PCI bandwidth,
-transaction size and a queue depth.  So hard coded value for timeouts
-might be wrong for some scenarios.
+When regmap_update_bits failed in ave_init(), calls of the functions
+reset_control_assert() and clk_disable_unprepare() were missed.
+Add goto out_reset_assert to do this.
 
-Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20200701184816.29138-1-leonid.ravich@dell.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 57878f2f4697 ("net: ethernet: ave: add support for phy-mode setting of system controller")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/ioat/dma.c | 12 ++++++++++++
- drivers/dma/ioat/dma.h |  2 --
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/socionext/sni_ave.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
-index e3899ae429e0f..4c2b41beaf638 100644
---- a/drivers/dma/ioat/dma.c
-+++ b/drivers/dma/ioat/dma.c
-@@ -38,6 +38,18 @@
+diff --git a/drivers/net/ethernet/socionext/sni_ave.c b/drivers/net/ethernet/socionext/sni_ave.c
+index 67ddf782d98a5..897c895629d03 100644
+--- a/drivers/net/ethernet/socionext/sni_ave.c
++++ b/drivers/net/ethernet/socionext/sni_ave.c
+@@ -1191,7 +1191,7 @@ static int ave_init(struct net_device *ndev)
+ 	ret = regmap_update_bits(priv->regmap, SG_ETPINMODE,
+ 				 priv->pinmode_mask, priv->pinmode_val);
+ 	if (ret)
+-		return ret;
++		goto out_reset_assert;
  
- #include "../dmaengine.h"
+ 	ave_global_reset(ndev);
  
-+int completion_timeout = 200;
-+module_param(completion_timeout, int, 0644);
-+MODULE_PARM_DESC(completion_timeout,
-+		"set ioat completion timeout [msec] (default 200 [msec])");
-+int idle_timeout = 2000;
-+module_param(idle_timeout, int, 0644);
-+MODULE_PARM_DESC(idle_timeout,
-+		"set ioat idel timeout [msec] (default 2000 [msec])");
-+
-+#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
-+#define COMPLETION_TIMEOUT msecs_to_jiffies(completion_timeout)
-+
- static char *chanerr_str[] = {
- 	"DMA Transfer Source Address Error",
- 	"DMA Transfer Destination Address Error",
-diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
-index 56200eefcf5ee..01f9299572303 100644
---- a/drivers/dma/ioat/dma.h
-+++ b/drivers/dma/ioat/dma.h
-@@ -111,8 +111,6 @@ struct ioatdma_chan {
- 	#define IOAT_RUN 5
- 	#define IOAT_CHAN_ACTIVE 6
- 	struct timer_list timer;
--	#define COMPLETION_TIMEOUT msecs_to_jiffies(100)
--	#define IDLE_TIMEOUT msecs_to_jiffies(2000)
- 	#define RESET_DELAY msecs_to_jiffies(100)
- 	struct ioatdma_device *ioat_dma;
- 	dma_addr_t completion_dma;
 -- 
 2.25.1
 
