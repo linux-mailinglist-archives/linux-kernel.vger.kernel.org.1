@@ -2,164 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572E822ED6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8046422ED7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbgG0Ndl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:33:41 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:37971 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728322AbgG0Ndk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:33:40 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0448158053F;
-        Mon, 27 Jul 2020 09:33:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 27 Jul 2020 09:33:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=YgsMZx
-        5pwgpEVAvT6XOgIf4w7AHitJHDyTwwU4qEatA=; b=jQRpjra5a+K9eBy0w+s+Vz
-        mPB94ZBosBduEWOnSjljw+8hpjEzFFC904sOPmp7ARDe+7b/eXgsCKJmhtNyicBZ
-        zCPwwjkkb05K0YfGiAlA2DjbQ1tDLUZN+JjPw3S7qjVj1grZEX4aHI1AiVsE9Io+
-        bNlBAGI/fkhfHIPXd+03GrSnOlle3YkzFc7ppSc0/mjvP7Ug0ymP/jml3M2cNzpZ
-        3nqHV1F7F7FdVxhEmwJMcva5WUKD1OYbGuvTFkmIgufIhR4Y72HrPEITOBAe68Cd
-        fvWvVqG/K7r5+3fgppYIz90IWY9h/aEu1muFU3O5nc5cERR4JMg31zdbbJgisnTQ
-        ==
-X-ME-Sender: <xms:rtceXy0qPafjj9qpXmjj6TnMvhnN8iqgYqZd1rJD6mGA9-PBCQUb-w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedtgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
-    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
-    necukfhppeejledrudekuddrvddrudejleenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:rtceX1F_YViw2fDAyMCnC7fGnfljQba279q87vXUcjjPowXNi_Cqsg>
-    <xmx:rtceX65T8s2wLqXjs6IFdWVooA4TqBK23wtFXT8C9ITPngl1WqSE7w>
-    <xmx:rtceXz1hp7RD7fUx415E-Em3LUMy8FS0rLa4p_YYh0paweRCsdWclA>
-    <xmx:stceX9WkosEn1T_dUOgyyDuWyUiT95rC7CZ-5r4WjPh7lQcldUdW1g>
-Received: from localhost (bzq-79-181-2-179.red.bezeqint.net [79.181.2.179])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9886A3280064;
-        Mon, 27 Jul 2020 09:33:33 -0400 (EDT)
-Date:   Mon, 27 Jul 2020 16:33:31 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-sctp@vger.kernel.org, linux-hams@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, bridge@lists.linux-foundation.org,
-        linux-can@vger.kernel.org, dccp@vger.kernel.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-wpan@vger.kernel.org, linux-s390@vger.kernel.org,
-        mptcp@lists.01.org, lvs-devel@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-afs@lists.infradead.org,
-        tipc-discussion@lists.sourceforge.net, linux-x25@vger.kernel.org
-Subject: Re: [PATCH 19/26] net/ipv6: switch ipv6_flowlabel_opt to sockptr_t
-Message-ID: <20200727133331.GA1851348@shredder>
-References: <20200723060908.50081-1-hch@lst.de>
- <20200723060908.50081-20-hch@lst.de>
- <20200727121505.GA1804864@shredder>
- <20200727130029.GA26393@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727130029.GA26393@lst.de>
+        id S1728984AbgG0NfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:35:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726298AbgG0NfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:35:03 -0400
+Received: from localhost.localdomain (pool-96-246-152-186.nycmny.fios.verizon.net [96.246.152.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C2A62083B;
+        Mon, 27 Jul 2020 13:35:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595856902;
+        bh=lsb8DwuA8VH82LyNkysVJs9u8cUS6ID7TdHH9rnuG9E=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UcMWrZGHef3xmGLz2KuVpjsTc4DIyfyoqvrtijkOjBGNC5pfY8sc+CNGTT4ppkVzm
+         MuHrVj5LSOyuoI/u/aR8bJpLPmTQFiNAi1Zjjjq1/mHJJ0n6l9NoUF1sondP0D6+nF
+         76pshYuPvhHtjLWejlPFBh082rkCH/MoxpsRrNl8=
+Message-ID: <1595856900.4841.88.camel@kernel.org>
+Subject: Re: [PATCH v3 04/19] fs/kernel_read_file: Remove
+ FIRMWARE_PREALLOC_BUFFER enum
+From:   Mimi Zohar <zohar@kernel.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, Scott Branden <scott.branden@broadcom.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 27 Jul 2020 09:35:00 -0400
+In-Reply-To: <20200724213640.389191-5-keescook@chromium.org>
+References: <20200724213640.389191-1-keescook@chromium.org>
+         <20200724213640.389191-5-keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 03:00:29PM +0200, Christoph Hellwig wrote:
-> On Mon, Jul 27, 2020 at 03:15:05PM +0300, Ido Schimmel wrote:
-> > I see a regression with IPv6 flowlabel that I bisected to this patch.
-> > When passing '-F 0' to 'ping' the flow label should be random, yet it's
-> > the same every time after this patch.
+On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
+> FIRMWARE_PREALLOC_BUFFER is a "how", not a "what", and confuses the LSMs
+> that are interested in filtering between types of things. The "how"
+> should be an internal detail made uninteresting to the LSMs.
 > 
-> Can you send a reproducer?
+> Fixes: a098ecd2fa7d ("firmware: support loading into a pre-allocated buffer")
+> Fixes: fd90bc559bfb ("ima: based on policy verify firmware signatures (pre-allocated buffer)")
+> Fixes: 4f0496d8ffa3 ("ima: based on policy warn about loading firmware (pre-allocated buffer)")
+> Cc: stable@vger.kernel.org
+> Acked-by: Scott Branden <scott.branden@broadcom.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-```
-#!/bin/bash
+Thank you for updating the pre-allocated buffer comment.
 
-ip link add name dummy10 up type dummy
-
-ping -q -F 0 -I dummy10 ff02::1 &> /dev/null &
-tcpdump -nne -e -i dummy10 -vvv -c 1 dst host ff02::1
-pkill ping
-
-echo
-
-ping -F 0 -I dummy10 ff02::1 &> /dev/null &
-tcpdump -nne -e -i dummy10 -vvv -c 1 dst host ff02::1
-pkill ping
-
-ip link del dev dummy10
-```
-
-Output with commit ff6a4cf214ef ("net/ipv6: split up
-ipv6_flowlabel_opt"):
-
-```
-dropped privs to tcpdump
-tcpdump: listening on dummy10, link-type EN10MB (Ethernet), capture size 262144 bytes
-16:26:27.072559 62:80:34:1d:b4:b8 > 33:33:00:00:00:01, ethertype IPv6 (0x86dd), length 118: (flowlabel 0x920cf, hlim 1, next-header ICMPv6 (58) payload length: 64) fe80::6080:34ff:fe1d:b4b8 > ff02::1: [icmp6 sum ok] ICMP6, echo request, seq 2
-1 packet captured
-1 packet received by filter
-0 packets dropped by kernel
-
-dropped privs to tcpdump
-tcpdump: listening on dummy10, link-type EN10MB (Ethernet), capture size 262144 bytes
-16:26:28.352528 62:80:34:1d:b4:b8 > 33:33:00:00:00:01, ethertype IPv6 (0x86dd), length 118: (flowlabel 0xcdd97, hlim 1, next-header ICMPv6 (58) payload length: 64) fe80::6080:34ff:fe1d:b4b8 > ff02::1: [icmp6 sum ok] ICMP6, echo request, seq 2
-1 packet captured
-1 packet received by filter
-0 packets dropped by kernel
-```
-
-Output with commit 86298285c9ae ("net/ipv6: switch ipv6_flowlabel_opt to
-sockptr_t"):
-
-```
-dropped privs to tcpdump
-tcpdump: listening on dummy10, link-type EN10MB (Ethernet), capture size 262144 bytes
-16:32:17.848517 f2:9a:05:ff:cb:25 > 33:33:00:00:00:01, ethertype IPv6 (0x86dd), length 118: (flowlabel 0xfab36, hlim 1, next-header ICMPv6 (58) payload length: 64) fe80::f09a:5ff:feff:cb25 > ff02::1: [icmp6 sum ok] ICMP6, echo request, seq 2
-1 packet captured
-1 packet received by filter
-0 packets dropped by kernel
-
-dropped privs to tcpdump
-tcpdump: listening on dummy10, link-type EN10MB (Ethernet), capture size 262144 bytes
-16:32:19.000779 f2:9a:05:ff:cb:25 > 33:33:00:00:00:01, ethertype IPv6 (0x86dd), length 118: (flowlabel 0xfab36, hlim 1, next-header ICMPv6 (58) payload length: 64) fe80::f09
-a:5ff:feff:cb25 > ff02::1: [icmp6 sum ok] ICMP6, echo request, seq 2
-1 packet captured
-1 packet received by filter
-0 packets dropped by kernel
-```
-
-> 
-> > 
-> > It seems that the pointer is never advanced after the call to
-> > sockptr_advance() because it is passed by value and not by reference.
-> > Even if you were to pass it by reference I think you would later need to
-> > call sockptr_decrease() or something similar. Otherwise it is very
-> > error-prone.
-> > 
-> > Maybe adding an offset to copy_to_sockptr() and copy_from_sockptr() is
-> > better?
-> 
-> We could do that, although I wouldn't add it to the existing functions
-> to avoid the churns and instead add copy_to_sockptr_offset or something
-> like that.
-
-Sounds good
-
-Thanks
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
