@@ -2,91 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B9122E674
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D430022E676
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgG0H0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgG0H0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:26:34 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6894C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:26:34 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id u64so14379006qka.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:26:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bcQMkiC6JyOAC4Lv4CWi0++I1XNF82/fz8tqn1+E1Hw=;
-        b=IyqtPWAaKhAh+DaxDQ4DPb3PUihUUHg8FyCmLNkaMd01kCj5NBl4KCGQa/PWeiKjvy
-         lYiDgQlerDSKik78BIzs/K0+t9zjJEXiGFWlYKsGkciLp+jsot0ilKwAfdPe7YGjRNbf
-         OR/xYOR5VD5tJTttqVfi3tZ1SpLAtqmyRi3zc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bcQMkiC6JyOAC4Lv4CWi0++I1XNF82/fz8tqn1+E1Hw=;
-        b=dj9hWZPzh1b6QtZvgRAd8CmlM2SHDAF66sxMkaLOCRhqAiJWD8nzrMcb1GzkMk0ZU+
-         WXdWK1g4Oegm/V2uqWy3feVJ4Dj0QUXQ88oc4lp3u03/cC9SWFIMKySrTmVClVs8tFIf
-         PFLhw12oAD6q+AX30sbUWE/na/f9FmNgtjpSrfU6Ae942nDip/mxvuWkWMpAoXxXRY50
-         8In/LaYGFqRXYac6rQ2zyiXJXAMUokE6yvv0Rhe73Y0DzzoGfdG8wNGuVn8uBhwsAwwS
-         kcVFe4QcYFOVtzTsSaAd00pv798t9E14IDmIF4266g7B16cWAaUslc0YcsiwR/i0o4Df
-         0eYg==
-X-Gm-Message-State: AOAM532CdeauKWumiqucvKHPBAdUbaiUB8ZNN+EM3ZfaIyPGLCGC7fDQ
-        U5lsilB2oD9XH9IgsmKqo+TjPlyf1ss+Fe96u08cSQ==
-X-Google-Smtp-Source: ABdhPJx7sIx/y5po184X2+GWLwV1Q6wkqZEsbr9KeZ2FcprUla1gV50XWsaJXbGbAAZ1t3jNlIzBsu1Wfo+Q1W6K+cg=
-X-Received: by 2002:a05:620a:209b:: with SMTP id e27mr21265347qka.431.1595834793706;
- Mon, 27 Jul 2020 00:26:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200615190119.382589-1-drc@linux.vnet.ibm.com>
- <20200617185117.732849-1-drc@linux.vnet.ibm.com> <4bb07889-063f-c12d-28e0-11de9766c774@linux.vnet.ibm.com>
-In-Reply-To: <4bb07889-063f-c12d-28e0-11de9766c774@linux.vnet.ibm.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Mon, 27 Jul 2020 00:26:22 -0700
-Message-ID: <CACKFLimJTiRx1L+FFOZfR3-yrR9u+TY_Fdy3OSgH49v9QLKGwg@mail.gmail.com>
-Subject: Re: [PATCH v2] tg3: driver sleeps indefinitely when EEH errors exceed eeh_max_freezes
-To:     David Christensen <drc@linux.vnet.ibm.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Siva Reddy Kallam <siva.kallam@broadcom.com>,
-        Prashant Sreedharan <prashant@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726897AbgG0H0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:26:47 -0400
+Received: from ozlabs.org ([203.11.71.1]:43153 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726116AbgG0H0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:26:47 -0400
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4BFWZs6fFyz9sTQ; Mon, 27 Jul 2020 17:26:45 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <cover.1593428200.git.christophe.leroy@csgroup.eu>
+References: <cover.1593428200.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v2 0/6] powerpc/32s: Allocate modules outside of vmalloc space for STRICT_KERNEL_RWX
+Message-Id: <159583478807.602200.856546124460688008.b4-ty@ellerman.id.au>
+Date:   Mon, 27 Jul 2020 17:26:45 +1000 (AEST)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 5:19 PM David Christensen
-<drc@linux.vnet.ibm.com> wrote:
+On Mon, 29 Jun 2020 11:15:19 +0000 (UTC), Christophe Leroy wrote:
+> On book3s32 (hash), exec protection is set per 256Mb segments with NX bit.
+> Instead of clearing NX bit on vmalloc space when CONFIG_MODULES is selected,
+> allocate modules in a dedicated segment (0xb0000000-0xbfffffff by default).
+> This allows to keep exec protection on vmalloc space while allowing exec
+> on modules.
+> 
+> v2:
+> - Removed the two patches that fix ptdump. Will submitted independently
+> - Only changing the user/kernel boundary for PPC32 now.
+> - Reordered the patches inside the series.
+> 
+> [...]
 
-> In the working case, tg3_init_hw() returns successfully, resulting in
-> every instance of napi_disable() being followed by an instance of
-> napi_enable().
->
-> In the failing case, tg3_hw_init() returns an error. (This is not
-> surprising since the system is now preventing the adapter from accessing
-> its MMIO registers.  I'm curious why it doesn't always fail.)  When
-> tg3_hw_init() fails, tg3_netif_start() is not called, and we end up with
-> two sequential calls to napi_disable(), resulting in multiple hung task
-> messages.
->
+Applied to powerpc/next.
 
-If the driver fails to initialize the chip completely, the tg3_flags
-should indicate we are in this failed state.  We already have
-TG3_FLAG_INIT_COMPLETE.  Perhaps, we can expand the use of this flag
-to cover the scenario that you described above.  We can clear
-TG3_FLAG_INIT_COMPLETE before calling tg3_halt() and only set it back
-when tg3_hw_init() completes successfully.  This is the rough idea,
-but a more detailed analysis on how this flag is used needs to be done
-first.
+[1/6] powerpc/lib: Prepare code-patching for modules allocated outside vmalloc space
+      https://git.kernel.org/powerpc/c/ccc8fcf72a6953fbfd6998999d622295f522b952
+[2/6] powerpc: Use MODULES_VADDR if defined
+      https://git.kernel.org/powerpc/c/7fbc22ce29931630da200cfc90fe5a454f54a794
+[3/6] powerpc/32s: Only leave NX unset on segments used for modules
+      https://git.kernel.org/powerpc/c/c496433197154144c310a17939736bc5c155914d
+[4/6] powerpc/32: Set user/kernel boundary at TASK_SIZE instead of PAGE_OFFSET
+      https://git.kernel.org/powerpc/c/b6be1bb7f7216b9e9f33f57abe6e3290c0e66bd4
+[5/6] powerpc/32s: Kernel space starts at TASK_SIZE
+      https://git.kernel.org/powerpc/c/f1a1f7a15eb0e13b84791ff2738b84e414501718
+[6/6] powerpc/32s: Use dedicated segment for modules with STRICT_KERNEL_RWX
+      https://git.kernel.org/powerpc/c/6ca055322da8fe25ff9ac50db6f3b7b59b6f961c
 
-Assuming this works, the EEH handler can check TG3_FLAG_INIT_COMPLETE
-to see if we should call tg3_netif_stop().
-
-Another way to fix it is to call dev_close() if tg3_reset_task() fails
-to re-initialize the device.
+cheers
