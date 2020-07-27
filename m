@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F220E22E92D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3AC22E926
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgG0JiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728261AbgG0JiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 27 Jul 2020 05:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgG0JiT (ORCPT
+        with ESMTP id S1728229AbgG0JiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:38:19 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C17EC0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:18 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id z18so10596946wrm.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:18 -0700 (PDT)
+        Mon, 27 Jul 2020 05:38:20 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBA1C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:19 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r12so14116221wrj.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NGhSMw5rANk93AxDzrh+wwZG+B5HF8qJTCODBy27FHQ=;
-        b=RhOXMgssTx6PPGu1/Vegg97W3OXjoKMeWxLRo2HdsCYofJV7I6CWx3NqsrMfRyin3G
-         SN4xkcFD4ZPa3UAetwasbE3Hjm9kLETVc72d/EhjygzCyg9O5Pvdt24lQXrf988dBhCw
-         0R3jANKPQFUZaGGFy+FFrfBbySVuV7PxdtTLPLKS56uCUgBx6b3eUBrozqtSdhD9wP8Y
-         AUnRULsfwCpQjxr/nnNABoG3reJ+YiARMnmK1DcekF2+ZMGVaeaPbWvlDxyAXGhM/QZS
-         kM3TD6v8lG5okWyFgl10QvoWXVU/eMkNVda2aAgy4OMQbRTMAT4CymAAaIdterxvqEI+
-         v4ZQ==
+        bh=BGEGYiZyCfPzP/WgV+vYnmOQ/dOVXNWBzQ8hq5Z41ko=;
+        b=ltxkpA9ir5ZOEwoGWUBGf8shaPDTwgYkI7Suv2aMjHin7DHFcAByud8XWneDNcjuOS
+         H9OVjgbnUP4LV1sLt4AP9WtGTukJ9/sQtMM4DaHjzJTD6xd7UTyc4nyaQbj5ZcBQPNIg
+         Tnd9vXt3eBY/K41w3R3KIUmUQvOtbZxqbAkDRQpx5W4aonKTp9FFsTGHDaF2DLTn1yAK
+         Ez4dhdKa5ihdkku7MbNWBv57Wvcqov/t+Fmrs7t5/bjjHmfY+VS/LASxSxHWfE5Yh5yY
+         ORwwrUtm3crGbH5INu4krR+09BUnLziT2/I7c2bosdomjhoVVJQdjwMcWGOH9qrbIUC7
+         9NmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NGhSMw5rANk93AxDzrh+wwZG+B5HF8qJTCODBy27FHQ=;
-        b=jzYJdPRAz9QCWZSCvPeikPLwiVAEJxHl1ouzhER+aqaxslJyrXft71RxlwHfdJpZUG
-         fr76IpJ4fco3z86AK4lQTWnA5Cacra3WoQk4lhQpAApHdFfVNuwaP72rzXQNC3owPsYD
-         AckfcXnoSbyUSCtwmKFKtITi7Ww9wyuYIsIGl1Dcc8r51s87avxHBa8klynvleefX9jV
-         Pd+SXHvsZFyqdFNXj7nw4zdxHxiltk93vlcACh3lWR6O04CjC7EXKXFPUJH+7IYQlY2J
-         wwQz7WNd33QFOQypQuNiLePV/dmIEnu7kEHssIP12cHUO/4lnlWegeEnF9YaMMqCHMcb
-         PSew==
-X-Gm-Message-State: AOAM531m0n1tRgEDMzGDgrUjDbZfxF3buPFTOMMFKJoZCshJgSiwx2DF
-        LaF8to44M5jAu00lV8rRUvWqpg==
-X-Google-Smtp-Source: ABdhPJya93rqdcJwhckPQUaHBuEIu9GMb+saVL1XYg0o4gz1LaDhJSt0Sn/S40itt6TIeef+yn1+Eg==
-X-Received: by 2002:a5d:4942:: with SMTP id r2mr15760878wrs.285.1595842697169;
-        Mon, 27 Jul 2020 02:38:17 -0700 (PDT)
+        bh=BGEGYiZyCfPzP/WgV+vYnmOQ/dOVXNWBzQ8hq5Z41ko=;
+        b=BCR+YcmyKrWG5uh4SzvRv1P7CE8iRTeD21AjjxJtDP7SSHYQplmx0e2gnajMXoUlnt
+         Eff7iiE+OGYJ6b9dAWJpUh5LNcWozHt8z82ylq0qIMzmUPhqcVN8I6hxrDKCa71yLnT8
+         8/+hQw0uTHHq5WCM8NFM0D7HlSmU5xcaibRgo6CEI+Qg9lSWrOcH3+Uy7GPKP8za1dcW
+         RAMqOF+CzUI3hTBz63jicuvg+WAC+MWWGTds/bvEIv3XxgEAEOTKkjQxxg0gJLxTxBDO
+         nGYzw2iJhpv+yNKZ/Se8uVPqCCHBkVKFRHUQXNMVPeI87Y2sCPwnLbBPi3hFVucG820/
+         b+5g==
+X-Gm-Message-State: AOAM53217sR8M8npcLiLYBUs3rlkgjEug6MxeeK03Pmg4XfN+yCHY6M+
+        3TUaz2+976USjJYnAWDpqAkXbQ==
+X-Google-Smtp-Source: ABdhPJyRhmnUtPua5J4n3aoS3uN4PK6KuvPMmIUlBFDqDftLzkly2DB7Wb/ZyqoEISkgcAEl97RUag==
+X-Received: by 2002:a5d:55c9:: with SMTP id i9mr18964490wrw.31.1595842698519;
+        Mon, 27 Jul 2020 02:38:18 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
-        by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.16
+        by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 02:38:16 -0700 (PDT)
+        Mon, 27 Jul 2020 02:38:17 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org
 Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
@@ -55,9 +55,9 @@ Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
         linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
         pierre-louis.bossart@linux.intel.com,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 03/10] ASoC: q6asm: use flags directly from q6asm-dai
-Date:   Mon, 27 Jul 2020 10:37:59 +0100
-Message-Id: <20200727093806.17089-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 04/10] ASoC: q6asm: add length to write command token
+Date:   Mon, 27 Jul 2020 10:38:00 +0100
+Message-Id: <20200727093806.17089-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
 References: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
@@ -68,86 +68,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-use flags set by q6asm-dais directly!
+Add length to write command packet token so that we can track exactly
+how many bytes are consumed by DSP in the command reply.
 
-This will be useful gapless case where write needs a special flag to indicate
-that last buffer.
+This is useful in some use-cases where the end of the file/stream
+is not aligned with period size.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 8 ++++----
- sound/soc/qcom/qdsp6/q6asm.c     | 5 +----
- sound/soc/qcom/qdsp6/q6asm.h     | 1 -
- 3 files changed, 5 insertions(+), 9 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 4 +++-
+ sound/soc/qcom/qdsp6/q6asm.c     | 7 ++++---
+ sound/soc/qcom/qdsp6/q6asm.h     | 3 +++
+ 3 files changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index e8c732ec6061..466383b8c20c 100644
+index 466383b8c20c..5f0e36e23ef3 100644
 --- a/sound/soc/qcom/qdsp6/q6asm-dai.c
 +++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -186,7 +186,7 @@ static void event_handler(uint32_t opcode, uint32_t token,
+@@ -509,6 +509,7 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
+ 	struct snd_compr_stream *substream = prtd->cstream;
+ 	unsigned long flags;
+ 	uint64_t avail;
++	uint32_t bytes_written;
+ 
+ 	switch (opcode) {
  	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--				   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
-+				   prtd->pcm_count, 0, 0, 0);
- 		break;
- 	case ASM_CLIENT_EVENT_CMD_EOS_DONE:
- 		prtd->state = Q6ASM_STREAM_STOPPED;
-@@ -196,7 +196,7 @@ static void event_handler(uint32_t opcode, uint32_t token,
- 		snd_pcm_period_elapsed(substream);
- 		if (prtd->state == Q6ASM_STREAM_RUNNING)
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
-+					   prtd->pcm_count, 0, 0, 0);
- 
- 		break;
- 		}
-@@ -515,7 +515,7 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
+@@ -529,7 +530,8 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
+ 	case ASM_CLIENT_EVENT_DATA_WRITE_DONE:
  		spin_lock_irqsave(&prtd->lock, flags);
- 		if (!prtd->bytes_sent) {
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--					  prtd->pcm_count, 0, 0, NO_TIMESTAMP);
-+					  prtd->pcm_count, 0, 0, 0);
- 			prtd->bytes_sent += prtd->pcm_count;
- 		}
  
-@@ -541,7 +541,7 @@ static void compress_event_handler(uint32_t opcode, uint32_t token,
+-		prtd->copied_total += prtd->pcm_count;
++		bytes_written = token >> ASM_WRITE_TOKEN_LEN_SHIFT;
++		prtd->copied_total += bytes_written;
+ 		snd_compr_fragment_elapsed(substream);
  
- 		if (avail >= prtd->pcm_count) {
- 			q6asm_write_async(prtd->audio_client, prtd->stream_id,
--					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
-+					   prtd->pcm_count, 0, 0, 0);
- 			prtd->bytes_sent += prtd->pcm_count;
- 		}
- 
+ 		if (prtd->state != Q6ASM_STREAM_RUNNING) {
 diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index f5d1f3c2c1ec..d6728304ce6a 100644
+index d6728304ce6a..205453d1c1fc 100644
 --- a/sound/soc/qcom/qdsp6/q6asm.c
 +++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -1546,10 +1546,7 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
- 	write->mem_map_handle =
- 	    ac->port[SNDRV_PCM_STREAM_PLAYBACK].mem_map_handle;
+@@ -670,6 +670,7 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
+ 		if (ac->io_mode & ASM_SYNC_IO_MODE) {
+ 			phys_addr_t phys;
+ 			unsigned long flags;
++			int token = hdr->token & ASM_WRITE_TOKEN_MASK;
  
--	if (wflags == NO_TIMESTAMP)
--		write->flags = (wflags & 0x800000FF);
--	else
--		write->flags = (0x80000000 | wflags);
-+	write->flags = wflags;
+ 			spin_lock_irqsave(&ac->lock, flags);
  
- 	port->dsp_buf++;
+@@ -681,12 +682,12 @@ static int32_t q6asm_stream_callback(struct apr_device *adev,
+ 				goto done;
+ 			}
  
+-			phys = port->buf[hdr->token].phys;
++			phys = port->buf[token].phys;
+ 
+ 			if (lower_32_bits(phys) != result->opcode ||
+ 			    upper_32_bits(phys) != result->status) {
+ 				dev_err(ac->dev, "Expected addr %pa\n",
+-					&port->buf[hdr->token].phys);
++					&port->buf[token].phys);
+ 				spin_unlock_irqrestore(&ac->lock, flags);
+ 				ret = -EINVAL;
+ 				goto done;
+@@ -1535,7 +1536,7 @@ int q6asm_write_async(struct audio_client *ac, uint32_t stream_id, uint32_t len,
+ 	q6asm_add_hdr(ac, &pkt->hdr, pkt_size, false, stream_id);
+ 
+ 	ab = &port->buf[port->dsp_buf];
+-	pkt->hdr.token = port->dsp_buf;
++	pkt->hdr.token = port->dsp_buf | (len << ASM_WRITE_TOKEN_LEN_SHIFT);
+ 	pkt->hdr.opcode = ASM_DATA_CMD_WRITE_V2;
+ 	write->buf_addr_lsw = lower_32_bits(ab->phys);
+ 	write->buf_addr_msw = upper_32_bits(ab->phys);
 diff --git a/sound/soc/qcom/qdsp6/q6asm.h b/sound/soc/qcom/qdsp6/q6asm.h
-index ceece124dd3d..9ac020c609c6 100644
+index 9ac020c609c6..312a0452dcdf 100644
 --- a/sound/soc/qcom/qdsp6/q6asm.h
 +++ b/sound/soc/qcom/qdsp6/q6asm.h
-@@ -29,7 +29,6 @@ enum {
- };
+@@ -20,6 +20,9 @@
+ #define ASM_CLIENT_EVENT_CMD_RUN_DONE		0x1008
+ #define ASM_CLIENT_EVENT_DATA_WRITE_DONE	0x1009
+ #define ASM_CLIENT_EVENT_DATA_READ_DONE		0x100a
++#define ASM_WRITE_TOKEN_MASK			GENMASK(15, 0)
++#define ASM_WRITE_TOKEN_LEN_MASK		GENMASK(31, 16)
++#define ASM_WRITE_TOKEN_LEN_SHIFT		16
  
- #define MAX_SESSIONS	8
--#define NO_TIMESTAMP    0xFF00
- #define FORMAT_LINEAR_PCM   0x0000
- 
- struct q6asm_flac_cfg {
+ enum {
+ 	LEGACY_PCM_MODE = 0,
 -- 
 2.21.0
 
