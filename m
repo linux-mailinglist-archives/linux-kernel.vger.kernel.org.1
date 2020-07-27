@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36F122F14F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED5C22F145
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732811AbgG0ObY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:31:24 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:50865 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729944AbgG0OUt (ORCPT
+        id S1732778AbgG0Oa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:30:56 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43714 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731696AbgG0OVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:20:49 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N7Qkv-1ks1bu0Bv3-017mrg; Mon, 27 Jul 2020 16:20:47 +0200
-Received: by mail-qk1-f175.google.com with SMTP id 11so15376792qkn.2;
-        Mon, 27 Jul 2020 07:20:46 -0700 (PDT)
-X-Gm-Message-State: AOAM533y6Nxrz7bQxQrAS357lFSp6J8YyGfbQUyVTnIyHWCbjskNE+PF
-        UpFnPSk5BzPvBBZSUtUxA9hYRks2o8yWXY6vbbg=
-X-Google-Smtp-Source: ABdhPJw7HU4DkkeUrMcak+NpsOXmslOO3+jYmC/8AEojsfZg/P4wKNKY0WLTL5LRBq4hmj1FpqBJPo8pIawzXbM9u3M=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr23013501qkf.394.1595859645873;
- Mon, 27 Jul 2020 07:20:45 -0700 (PDT)
+        Mon, 27 Jul 2020 10:21:18 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1k040B-0002xm-PK; Mon, 27 Jul 2020 14:21:15 +0000
+Date:   Mon, 27 Jul 2020 16:21:14 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: bpfilter logging write errors in dmesg
+Message-ID: <20200727142114.uzxr4kl7xdj2ildi@wittgenstein>
+References: <20200727104636.nuz3u4xb7ba7ue5a@wittgenstein>
+ <20200727132855.GA28165@lst.de>
+ <20200727141337.liwdfjxq4cwvt5if@wittgenstein>
 MIME-Version: 1.0
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com> <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
- <20200727131608.GD1913@kadam> <CAK8P3a3+9Gr6G6KDWu=iW3316O9cPH+XupBBajJaxrq20xQcyQ@mail.gmail.com>
- <20200727141416.GA306745@PWN>
-In-Reply-To: <20200727141416.GA306745@PWN>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 16:20:28 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3qBs8CsAeTqk7aKgdxsfR677sSwaEHR9+V1vn_4RKRbw@mail.gmail.com>
-Message-ID: <CAK8P3a3qBs8CsAeTqk7aKgdxsfR677sSwaEHR9+V1vn_4RKRbw@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:bRdVwWHVEUXivD/D7sCmgCA140AsJUA9jRlU58lESa77rrOpZWF
- HuK62xNqTxjP/doIpKwpIrQ0kjahTavnNHVMBnOQ3wkR5QdZJcHFfQdxir2UdOF4oC9YeGX
- PUU3QgYBCEVOTjncVokTnHtCf42RMJ2j0J/Kgt8BKmAzT/bO4oqbKwuQRZ69QUL+EcnBiYo
- BwDCC1xuB6FyvScbGhVjQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gHAZ7reSrAM=:3DBYSZkIdy9kQzEPZ02bwO
- xEuWURKWvQduKdYtwGFqm3JZvZTZDUQheNMD7HkdWaZzmRLXYVS+phDRyYJbyijXrqzg5vBun
- ntBFbGT8Oh724pKf0uNFY6pay0OLgOt/hoM48XsdBU6QVF2lgY8EJEyhDQk9lvC+VG9OilsE+
- pSMIoZ/kVPXKdoRwJubXDFJ6R7qBLwsDvS9gOTEW7b13mKTyNCx5+1+iIfJz3GtCFLLhLIhbe
- EQBpX2ukO830QCcxTnECV/xAP09YKQzr3qM9b8n1q+qNzRx7oqC/azGJlPbcxGZUBeqI80rrK
- ft6kaQ5dNjMkO59S04LUpqFGABZ2iZqjkpppdgxSLGGMNx5RTvsPN3vG+tU48RSMv38qOwmEU
- 7YL5cqVUFf1TMGpeNTYh9wzwPMSUWcAArcsbFr5H544FON1uBC6g9KF+qw5eP3TZ+KexouN0p
- vcAcHa4l5PsvhTgJeJIvVYrYNWWboY2uY0X9BAaAOcgzfOxWDqm7uQdbYAGBvRjwdFfqxZ5M3
- g7+UO+p872pj4EjwcjA0cjxos68DaapCqlU7QiciLaqYB31sVDkgDBga6vcmpdaHE6jVlPtP0
- EAG9NARpau4Jvi5w8A7FKOqEaSdLKxZ8/AnuiZZ0IWKn4mW0xfGAf8/4/SQvPvEe9iqVnEQWQ
- 5nxKdpOJlxb/czjGyPLiXQHFjovnd86MzuCXXLnPgYkA/gQ/5sJ2KMhvDgeAgri/oUb/dlNmQ
- GJsrkR1tiD6bfHSePas9E0XGo+JDfeVfaVa1eo/9I5AyQLND7RSAeSzjBt5doPdrdKn21IXk+
- nUre7KiS8+/NhqMWFk0o96AeeRfYz4/DaZpxNb49bycFNK93cDgcXhqu6K99w5qVp6KzoWptc
- eHYAVt3D5anuz0sHCEwZM6XQbQQB33WN+0KtKkLojsoLAWTsPi6+mdRnyag3u8AkR7EK8k29A
- DV9oSh5V+zT04tM0WFF9Vh9rTl/J55r1TsQd4Vf5AG/drtr+lDDA3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200727141337.liwdfjxq4cwvt5if@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 4:14 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> On Mon, Jul 27, 2020 at 04:05:38PM +0200, Arnd Bergmann wrote:
-> > Peilin Ye, is this something you are interested in fixing for the other drivers
-> > as well? I'd be happy to help review any further patches if you Cc me.
->
-> Yes, I would like to! I will start from:
->
->         drivers/firewire/core-cdev.c:463
->         drivers/input/misc/uinput.c:743
->
-> ...as you mentioned above.
+On Mon, Jul 27, 2020 at 04:13:38PM +0200, Christian Brauner wrote:
+> On Mon, Jul 27, 2020 at 03:28:55PM +0200, Christoph Hellwig wrote:
+> > On Mon, Jul 27, 2020 at 12:46:36PM +0200, Christian Brauner wrote:
+> > > Hey Christoph,
+> > > 
+> > > Seems that commit
+> > > 6955a76fbcd5 ("bpfilter: switch to kernel_write")
+> > > causes bpfilter to spew these useless messages in dmesg?
+> > > 
+> > > [   26.356824] Started bpfilter
+> > > [   26.357059] bpfilter: write fail -22
+> > > [   26.396244] Started bpfilter
+> > > [   26.396325] bpfilter: Loaded bpfilter_umh pid 637
+> > > [   26.396542] bpfilter: write fail -22
+> > > [   26.409588] bpfilter: Loaded bpfilter_umh pid 638
+> > > [   26.410790] Started bpfilter
+> > > [   26.410960] bpfilter: write fail -22
+> > > [   26.445718] Started bpfilter
+> > > [   26.445799] bpfilter: Loaded bpfilter_umh pid 640
+> > > [   26.445983] bpfilter: write fail -22
+> > > [   26.451122] bpfilter: read fail 0
+> > > [   26.496497] bpfilter: Loaded bpfilter_umh pid 648
+> > > [   26.497889] Started bpfilter
+> > > [   26.750028] bpfilter: write fail -22
+> > > [   26.768400] Started bpfilter
+> > > [   26.768496] bpfilter: Loaded bpfilter_umh pid 661
+> > > [   26.768699] bpfilter: write fail -22
+> > > [   26.806550] Started bpfilter
+> > > [   26.806616] bpfilter: Loaded bpfilter_umh pid 663
+> > > [   26.864708] bpfilter: write fail -22
+> > > [   26.872345] bpfilter: Loaded bpfilter_umh pid 666
+> > > [   26.873072] Started bpfilter
+> > > [   26.873194] bpfilter: write fail -22
+> > > [   27.295514] kauditd_printk_skb: 22 callbacks suppressed
+> > > 
+> > > This is on a pure v5.8-rc7 via make bindep-pkg. I'm not using bpfilter
+> > > in any shape or form afaict and haven't seen those messages before and
+> > > this seems to be the last change I see.
+> > 
+> > I don't see any of those on 5.8-rc, just:
+> > 
+> > root@testvm:~# dmesg | grep bpf
+> > [    6.692550] bpfilter: Loaded bpfilter_umh pid 1849
+> 
+> Hm, odd
+> 
+> > 
+> > That debug patch below should help to pintpoint what is going on for
+> > you:
+> 
+> Thanks for the debug patch! Applied and ran a kernel and I'm getting:
+> 
+> [   21.919851] bpfilter: Loaded bpfilter_umh pid 619
+> [   22.000229] rw_verify_area
+> [   22.000235] bpfilter: write fail -22
+> [   22.014686] Started bpfilter
+> 
+> I'm also seeing some other failures later:
+> 
+> [  236.898220] bpfilter: write fail -22
+> [  236.899255] bpfilter: write fail -32
+> [  236.922557] bpfilter: Loaded bpfilter_umh pid 1101
+> [  236.923310] Started bpfilter
+> [  236.923521] rw_verify_area
+> [  236.923524] bpfilter: write fail -22
+> [  236.925273] bpfilter: read fail 0
+> [  236.945117] bpfilter: Loaded bpfilter_umh pid 1103
+> [  236.945925] Started bpfilter
+> [  236.946123] rw_verify_area
+> [  236.946126] bpfilter: write fail -22
+> [  236.947641] bpfilter: read fail 0
+> [  236.968143] bpfilter: Loaded bpfilter_umh pid 1105
+> [  236.968734] Started bpfilter
+> [  236.987777] rw_verify_area
+> [  236.987781] bpfilter: write fail -22
+> [  236.990072] bpfilter: read fail 0
+> 
+> Seems I can trigger this via iptables:
+> 
+> [  437.922719] bpfilter: write fail -22
+> [  437.924488] bpfilter: read fail 0
+> root@g1-vm:~# iptables -S
+> iptables v1.8.4 (legacy): can't initialize iptables table `filter': Bad address
+> Perhaps iptables or your kernel needs to be upgraded.
+> 
+> I have
+> CONFIG_IP_NF_IPTABLES=m
+> CONFIG_IP6_NF_IPTABLES=m
+> maybe I'm just missing another kernel option or something and I have no
+> idea how this bpfilter thing and iptables relate to each other. So maybe
+> it's not worth the effort and it's just my setup being broken somehow.
 
-Sounds good, thanks!
+Fwiw, it seems that on kernels that replace iptables with nftables
+programs calling into iptables will cause this bpfilter dmesg logging.
 
-     Arnd
+Christian
