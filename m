@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E5222EE10
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9391D22EE28
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgG0N5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:57:04 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:33812 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728815AbgG0N5A (ORCPT
+        id S1727854AbgG0OCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726298AbgG0OCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:57:00 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RDnfGi022328;
-        Mon, 27 Jul 2020 09:56:59 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32gek66tyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 09:56:59 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 06RDuw4l005706
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 27 Jul 2020 09:56:58 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Jul 2020 09:56:57 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Jul 2020 09:56:55 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 27 Jul 2020 09:56:55 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06RDunPK001316;
-        Mon, 27 Jul 2020 09:56:54 -0400
-From:   Darius Berghe <darius.berghe@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <jic23@kernel.org>, <robh@kernel.org>
-Subject: [PATCH v3 3/3] ltc2471 driver yaml
-Date:   Mon, 27 Jul 2020 16:58:34 +0300
-Message-ID: <20200727135834.84093-4-darius.berghe@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200727135834.84093-1-darius.berghe@analog.com>
-References: <20200727135834.84093-1-darius.berghe@analog.com>
+        Mon, 27 Jul 2020 10:02:16 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8DDC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:02:15 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 3so7958622wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=r8KV96F+gaN7TANhBIEFOAQenxbJ7bcYKYSXKhGSVNg=;
+        b=sJ/HsKUqqaFCS03Ij0E600tDkDC82e15zw4TOeG7gMFN7K4SYrmGIK8TTh0eUJYxnI
+         Yu+svzKOUeagUNSz/tl9QqXKbUEzvVedFmgyg5xYUDmMwhZXHn1iuCdPbZ24YSqwJtS1
+         l90zGT7T30DG3HA6g/Iu7Xxyrum2W0IWm2snDn9/+V0uVFC6xOrVUo6GxLIO1ryostM+
+         SeF6LqDxlJG1OBGv5mfgLnsvCQIv4wyEl3s6r6gdh/6OUOui7Uga4/FdqIwsoBVM1Bj9
+         si/6nuUHSclaNfvL0gM4Mg7PaGLltQl7hZJ+38aP4tLGf/f+d47x7PDI+1jFNOq4awfm
+         56rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=r8KV96F+gaN7TANhBIEFOAQenxbJ7bcYKYSXKhGSVNg=;
+        b=Icr4zzVfXEckTFU9P7yRcVsw8hyq8yNO42y7q8sdBSqmh3nMeBTkReMW+IRPcpqflO
+         t1vUEz2jxthxayCniE1AbajSKAqO7GDQcc4eHWTWZ5i+vpn4uyhilnbpqNtXYAnNUIeQ
+         s83FkI0dQihNa12qaleYdpVIftg5p13opXXwxRNCA+wRFxD3gQg8UIVf3dKp8cDD4ecT
+         6ACVXmk1tPYlLAgBdYen5cKEt+Ujs9E3qohkuuKE2c9eDfFLyRWzXKB2i6kYMBcd+LWo
+         5pqKawKqg1Ls1mGDxf7KWMXrwVBKtBKGa9XBBzFCpuZhGfXhRJoUg6XORpmyKc4+keVR
+         nFnQ==
+X-Gm-Message-State: AOAM533lsy/TF4/w10ELQuAVbru1pQRp8QwkvIHGPpksOekxJH+TPXlq
+        bC7xpadffnj8727aVKkcT+OhgA==
+X-Google-Smtp-Source: ABdhPJx7M8RG19PQ301yDXiubgR+OZs7Pk5oY2k0iBfh/zhIsarZqMrRoz4btbjEfa3WtbM5K0MaAA==
+X-Received: by 2002:a7b:c941:: with SMTP id i1mr2944745wml.73.1595858534475;
+        Mon, 27 Jul 2020 07:02:14 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id c136sm18698750wmd.10.2020.07.27.07.02.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 07:02:13 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 15:02:12 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [RESEND PATCH v3 1/2] mfd: mfd-core: Add mechanism for removal
+ of a subset of children
+Message-ID: <20200727140212.GS1850026@dell>
+References: <20200723105459.5530-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_08:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 clxscore=1015 suspectscore=0 impostorscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007270102
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200723105459.5530-1-ckeepax@opensource.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt binding documentation for ltc2471 driver. This covers all supported
-devices.
+On Thu, 23 Jul 2020, Charles Keepax wrote:
 
-Signed-off-by: Darius Berghe <darius.berghe@analog.com>
----
- .../bindings/iio/adc/adi,ltc2471.yaml         | 49 +++++++++++++++++++
- 1 file changed, 49 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml
+> Currently, the only way to remove MFD children is with a call to
+> mfd_remove_devices, which will remove all the children. Under
+> some circumstances it is useful to remove only a subset of the
+> child devices. For example if some additional clean up is required
+> between removal of certain child devices.
+> 
+> To accomplish this a level field is added to mfd_cell, the normal
+> mfd_remove_devices is modified to not remove devices that are set
+> to a higher level and a corresponding mfd_remove_devices_late
+> function is added to remove those children.
+> 
+> See further discussion at:
+> https://lore.kernel.org/lkml/20200616075834.GF2608702@dell/
+> 
+> Suggested-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>  drivers/mfd/mfd-core.c   | 16 +++++++++++++++-
+>  include/linux/mfd/core.h |  5 +++++
+>  2 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml
-new file mode 100644
-index 000000000000..d5b35a1fa651
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ltc2471.yaml
-@@ -0,0 +1,49 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2020 Analog Devices Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/bindings/iio/adc/adi,ltc2471.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices LTC2471 16-bit I2C Sigma-Delta ADC
-+
-+maintainers:
-+  - Mike Looijmans <mike.looijmans@topic.nl>
-+
-+description: |
-+  Analog Devices LTC2461 (single-ended) and LTC2463 (differential) 16-bit
-+  I2C Sigma-Delta ADC with 60sps output rate.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/24613fa.pdf
-+
-+  Analog Devices LTC2471 (single-ended) and LTC2473 (differential) 16-bit
-+  I2C Sigma-Delta ADC with selectable 208/833sps output rate.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/24713fb.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ltc2461
-+      - adi,ltc2463
-+      - adi,ltc2471
-+      - adi,ltc2473
-+
-+  reg:
-+    maxItems: 1
-+
-+  avcc-supply:
-+    description:
-+      Phandle to the Avcc power supply (2.7V - 5.5V)
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    i2c0 {
-+      adc@14 {
-+        compatible = "adi,ltc2461";
-+        reg = <0x14>;
-+      };
-+    };
-+
+Applied, thanks.
+
 -- 
-2.27.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
