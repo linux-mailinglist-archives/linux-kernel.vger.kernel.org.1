@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126B422EB04
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6955922EAFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728071AbgG0LSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:18:52 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2533 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726269AbgG0LSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:18:51 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 0D70944B09787BEA11F6;
-        Mon, 27 Jul 2020 12:18:50 +0100 (IST)
-Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
- 2020 12:18:49 +0100
-Date:   Mon, 27 Jul 2020 12:17:26 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@kernel.org>,
-        <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Subject: Re: [RFC PATCH 5/9] PCI/AER: Apply function level reset to RCiEP on
- fatal error
-Message-ID: <20200727121726.000072a8@Huawei.com>
-In-Reply-To: <20200724172223.145608-6-sean.v.kelley@intel.com>
-References: <20200724172223.145608-1-sean.v.kelley@intel.com>
-        <20200724172223.145608-6-sean.v.kelley@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1727964AbgG0LSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:18:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgG0LSH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 07:18:07 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63FAC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:18:06 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so14376914wml.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ayi/e4qc8xsetgggFV1hGFKG2SY4MV5HUyFO2Mns7hA=;
+        b=IMFfBxmDH9GeAp56UoH+TgHOtCIiUsNZQlRMuhPNR2+G6Zwp86/9MbqRT+5hTh47xv
+         R9nBTL76EFjq8v3PQdXQ0BidZgDDDJOAO1RAflVBpHaJsdVlwtAf1SRZEqxZEtS6YQfr
+         LxaCTVein0aWx2Gs87EjEy7GjkU5SePER0v9mjKisrOTw7hP7N2ytuez5fqEtSNfAb5G
+         p6y1zLl2xVbkI5RL24b/psWd2L6OgSv0BxL45jKKat7HmncnEncoIzsv4fT+Wpw5Bl1g
+         RwfIdJiw9oP9BBTbluqBzUnqTx9hWD3krEiuxhQWrxWo0r9bk3fkBTlwPqVG9R6p4ivg
+         4Rmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ayi/e4qc8xsetgggFV1hGFKG2SY4MV5HUyFO2Mns7hA=;
+        b=qLi3CmpmpqTGCjSDd4HrtOp0FY5tHjBNPwY01xNXn2ANYyQYONoNfg5G59oxPNZqAM
+         If2DzF4XPQaSKDwYgUEtZK3MKtXXQc5IacOxJA6fJgM1bCVFgazbL1gdUuFtlrvLGHF1
+         O7ehbZ1Jd8D/CgwWulFvIoxSAFsofS27ZKaBvURcuZ1CNgZleJFGhQcyCpC2PQV9DgF6
+         j9F4yycUkVT9pmIdf0Oxu41n8BpWSRBqjnf9CW4u+4N4igdFNFsmvV8gWiIkeLY2Cj5Z
+         vuHklsUqubzTDmz+Dc2rnlIaQzDwPTMmtwK3l5lyuxCxOtG9+KQgcd3JPswq4ghmhhc8
+         eLCQ==
+X-Gm-Message-State: AOAM533xmdDHAXO8xqAMO8t4m8OnXKxxVhogMlQHUOpnKIKJYiHbclGn
+        egZ04k9JQaGc3rMPifrkgjW6QzYeOj77fg==
+X-Google-Smtp-Source: ABdhPJyEVPTtaZkFD5puzMfIs+tGPWC79KREOCpaGAp8nx5iTohc4uOl5cs7PUgnZdn+9nAq+DobtA==
+X-Received: by 2002:a1c:5f41:: with SMTP id t62mr19489176wmb.53.1595848685470;
+        Mon, 27 Jul 2020 04:18:05 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id l1sm13038878wrb.12.2020.07.27.04.18.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 04:18:04 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 12:18:02 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, benjamin.chao@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH v2 3/9] mfd: mt6360: Indicate sub-dev compatible name by
+ using "-"
+Message-ID: <20200727111802.GJ1850026@dell>
+References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594983811-25908-4-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.176]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594983811-25908-4-git-send-email-gene.chen.richtek@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 10:22:19 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
+On Fri, 17 Jul 2020, Gene Chen wrote:
 
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> From: Gene Chen <gene_chen@richtek.com>
 > 
-> Attempt to do function level reset for an RCiEP associated with an
-> RCEC device on fatal error.
-
-I'd like to understand more on your reasoning for flr here.
-Is it simply that it is all we can do, or is there some basis
-in a spec somewhere?
-
+> Indicate sub-dev compatible name by using "-".
 > 
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
 > ---
->  drivers/pci/pcie/err.c | 31 ++++++++++++++++++++++---------
->  1 file changed, 22 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 044df004f20b..9b3ec94bdf1d 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -170,6 +170,17 @@ static void pci_walk_dev_affected(struct pci_dev *dev, int (*cb)(struct pci_dev
->  	}
->  }
->  
-> +static enum pci_channel_state flr_on_rciep(struct pci_dev *dev)
-> +{
-> +	if (!pcie_has_flr(dev))
-> +		return PCI_ERS_RESULT_NONE;
-> +
-> +	if (pcie_flr(dev))
-> +		return PCI_ERS_RESULT_DISCONNECT;
-> +
-> +	return PCI_ERS_RESULT_RECOVERED;
-> +}
-> +
->  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  			enum pci_channel_state state,
->  			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
-> @@ -191,15 +202,17 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	if (state == pci_channel_io_frozen) {
->  		pci_walk_dev_affected(dev, report_frozen_detected, &status);
->  		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
-> -			pci_warn(dev, "link reset not possible for RCiEP\n");
-> -			status = PCI_ERS_RESULT_NONE;
-> -			goto failed;
-> -		}
-> -
-> -		status = reset_link(dev);
-> -		if (status != PCI_ERS_RESULT_RECOVERED) {
-> -			pci_warn(dev, "link reset failed\n");
-> -			goto failed;
-> +			status = flr_on_rciep(dev);
-> +			if (status != PCI_ERS_RESULT_RECOVERED) {
-> +				pci_warn(dev, "function level reset failed\n");
-> +				goto failed;
-> +			}
-> +		} else {
-> +			status = reset_link(dev);
-> +			if (status != PCI_ERS_RESULT_RECOVERED) {
-> +				pci_warn(dev, "link reset failed\n");
-> +				goto failed;
-> +			}
->  		}
->  	} else {
->  		pci_walk_dev_affected(dev, report_normal_detected, &status);
+>  drivers/mfd/mt6360-core.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 
+For my own reference (apply this as-is to your sign-off block):
 
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
