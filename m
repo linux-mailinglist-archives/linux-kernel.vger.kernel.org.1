@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0CD22F023
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C879222EF4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731839AbgG0OWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:22:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50934 "EHLO mail.kernel.org"
+        id S1729924AbgG0OPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:15:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731833AbgG0OWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:05 -0400
+        id S1730669AbgG0OPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:15:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C9C721775;
-        Mon, 27 Jul 2020 14:22:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B74A2073E;
+        Mon, 27 Jul 2020 14:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859724;
-        bh=UB1WFAH0LsvRP3pR4wMVX8K7pSEkfAz9uaGlQBD04b8=;
+        s=default; t=1595859312;
+        bh=LNGoL3vc+lqXp9mFVWdXslKqRXleYCl6zUFQXak43GI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LC4zaScf3dgloaNBJ1HMfoaXusieb9iA1avXkfVSYaQUvBk1+yso08XiAnMUIHuLF
-         +TKx3S3C9CidhXYgS751lKZanJioVHk2IXIeHIUaLqPwusPlodIVX3MElQPehMfMfN
-         e8vwi/TcJu3Krls0P9rk/XCyskJ8+Gp794oq9xi4=
+        b=bdAnwRNp8RYkLwy9S+O3sFy+yDdGPQPW/gRVgERuaAEAWTWucZ6UprcaC6N60d5Ef
+         Pz44tEgQmBkAVM54rSujpccOp859A6y38SpH9j198jUZrYg1jxQhthoUU5xUzEyJmo
+         oUy/vqpKXy1vkegWcOFpnO0mbZ+ZeTH9ZUJqEuVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, zhouxudong <zhouxudong8@huawei.com>,
+        guodeqing <geffrey.guo@huawei.com>, Julian Anastasov <ja@ssi.bg>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 079/179] net: hns3: fix error handling for desc filling
+Subject: [PATCH 5.4 059/138] ipvs: fix the connection sync failed in some cases
 Date:   Mon, 27 Jul 2020 16:04:14 +0200
-Message-Id: <20200727134936.531272429@linuxfoundation.org>
+Message-Id: <20200727134928.358700395@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,77 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: guodeqing <geffrey.guo@huawei.com>
 
-[ Upstream commit 8ceca59fb3ed48a693171bd571c4fcbd555b7f1f ]
+[ Upstream commit 8210e344ccb798c672ab237b1a4f241bda08909b ]
 
-The content of the TX desc is automatically cleared by the HW
-when the HW has sent out the packet to the wire. When desc filling
-fails in hns3_nic_net_xmit(), it will call hns3_clear_desc() to do
-the error handling, which miss zeroing of the TX desc and the
-checking if a unmapping is needed.
+The sync_thread_backup only checks sk_receive_queue is empty or not,
+there is a situation which cannot sync the connection entries when
+sk_receive_queue is empty and sk_rmem_alloc is larger than sk_rcvbuf,
+the sync packets are dropped in __udp_enqueue_schedule_skb, this is
+because the packets in reader_queue is not read, so the rmem is
+not reclaimed.
 
-So add the zeroing and checking in hns3_clear_desc() to avoid the
-above problem. Also add DESC_TYPE_UNKNOWN to indicate the info in
-desc_cb is not valid, because hns3_nic_reclaim_desc() may treat
-the desc_cb->type of zero as packet and add to the sent pkt
-statistics accordingly.
+Here I add the check of whether the reader_queue of the udp sock is
+empty or not to solve this problem.
 
-Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2276f58ac589 ("udp: use a separate rx queue for packet reception")
+Reported-by: zhouxudong <zhouxudong8@huawei.com>
+Signed-off-by: guodeqing <geffrey.guo@huawei.com>
+Acked-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hnae3.h     | 1 +
- drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 8 ++++++++
- 2 files changed, 9 insertions(+)
+ net/netfilter/ipvs/ip_vs_sync.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index 5587605d6deb2..cc45662f77f04 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -77,6 +77,7 @@
- 	((ring)->p = ((ring)->p - 1 + (ring)->desc_num) % (ring)->desc_num)
+diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
+index 8dc892a9dc91a..0c1bc654245c0 100644
+--- a/net/netfilter/ipvs/ip_vs_sync.c
++++ b/net/netfilter/ipvs/ip_vs_sync.c
+@@ -1717,6 +1717,8 @@ static int sync_thread_backup(void *data)
+ {
+ 	struct ip_vs_sync_thread_data *tinfo = data;
+ 	struct netns_ipvs *ipvs = tinfo->ipvs;
++	struct sock *sk = tinfo->sock->sk;
++	struct udp_sock *up = udp_sk(sk);
+ 	int len;
  
- enum hns_desc_type {
-+	DESC_TYPE_UNKNOWN,
- 	DESC_TYPE_SKB,
- 	DESC_TYPE_FRAGLIST_SKB,
- 	DESC_TYPE_PAGE,
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-index 5dab84aa3afd5..df1cb0441183c 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-@@ -1351,6 +1351,10 @@ static void hns3_clear_desc(struct hns3_enet_ring *ring, int next_to_use_orig)
- 	unsigned int i;
+ 	pr_info("sync thread started: state = BACKUP, mcast_ifn = %s, "
+@@ -1724,12 +1726,14 @@ static int sync_thread_backup(void *data)
+ 		ipvs->bcfg.mcast_ifn, ipvs->bcfg.syncid, tinfo->id);
  
- 	for (i = 0; i < ring->desc_num; i++) {
-+		struct hns3_desc *desc = &ring->desc[ring->next_to_use];
-+
-+		memset(desc, 0, sizeof(*desc));
-+
- 		/* check if this is where we started */
- 		if (ring->next_to_use == next_to_use_orig)
- 			break;
-@@ -1358,6 +1362,9 @@ static void hns3_clear_desc(struct hns3_enet_ring *ring, int next_to_use_orig)
- 		/* rollback one */
- 		ring_ptr_move_bw(ring, next_to_use);
+ 	while (!kthread_should_stop()) {
+-		wait_event_interruptible(*sk_sleep(tinfo->sock->sk),
+-			 !skb_queue_empty(&tinfo->sock->sk->sk_receive_queue)
+-			 || kthread_should_stop());
++		wait_event_interruptible(*sk_sleep(sk),
++					 !skb_queue_empty_lockless(&sk->sk_receive_queue) ||
++					 !skb_queue_empty_lockless(&up->reader_queue) ||
++					 kthread_should_stop());
  
-+		if (!ring->desc_cb[ring->next_to_use].dma)
-+			continue;
-+
- 		/* unmap the descriptor dma address */
- 		if (ring->desc_cb[ring->next_to_use].type == DESC_TYPE_SKB ||
- 		    ring->desc_cb[ring->next_to_use].type ==
-@@ -1374,6 +1381,7 @@ static void hns3_clear_desc(struct hns3_enet_ring *ring, int next_to_use_orig)
- 
- 		ring->desc_cb[ring->next_to_use].length = 0;
- 		ring->desc_cb[ring->next_to_use].dma = 0;
-+		ring->desc_cb[ring->next_to_use].type = DESC_TYPE_UNKNOWN;
- 	}
- }
- 
+ 		/* do we have data now? */
+-		while (!skb_queue_empty(&(tinfo->sock->sk->sk_receive_queue))) {
++		while (!skb_queue_empty_lockless(&sk->sk_receive_queue) ||
++		       !skb_queue_empty_lockless(&up->reader_queue)) {
+ 			len = ip_vs_receive(tinfo->sock, tinfo->buf,
+ 					ipvs->bcfg.sync_maxlen);
+ 			if (len <= 0) {
 -- 
 2.25.1
 
