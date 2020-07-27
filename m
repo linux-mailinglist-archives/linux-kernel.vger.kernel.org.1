@@ -2,121 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217E722F3EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2C522F3EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730535AbgG0Pfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:35:32 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:38947 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727784AbgG0Pfb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:35:31 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MD9Gh-1k97ia2Nij-0095Zf for <linux-kernel@vger.kernel.org>; Mon, 27 Jul
- 2020 17:35:29 +0200
-Received: by mail-qk1-f170.google.com with SMTP id g26so15645170qka.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:35:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532WVumWIFn8JG9R6iY/W1j6mf1qRQb5Yz0ZbD8qUA11k5VFe7G8
-        WjQnECL96fHnRa3Y3d8Pm3ZSE+KzvnhpK9WJX2c=
-X-Google-Smtp-Source: ABdhPJyVQdveqzi3+Zb7UJcBadCVqyMgS/2llv9C5krFaKnCxaCdt2m5GnZ6CZHjLDH5JnzHZKBsLh1LbsXT3UyAjOs=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr23352046qkf.394.1595864128427;
- Mon, 27 Jul 2020 08:35:28 -0700 (PDT)
+        id S1730548AbgG0PgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:36:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727784AbgG0PgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 11:36:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 13D2DADBB;
+        Mon, 27 Jul 2020 15:36:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5B096DA701; Mon, 27 Jul 2020 17:35:38 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 17:35:38 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     kernel test robot <lkp@intel.com>
+Cc:     David Sterba <dsterba@suse.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: fs/btrfs/tests/../ctree.h:2166:8: warning: type qualifiers
+ ignored on function return type
+Message-ID: <20200727153538.GP3703@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, kernel test robot <lkp@intel.com>,
+        David Sterba <dsterba@suse.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org
+References: <202007272305.7v7EMn6N%lkp@intel.com>
 MIME-Version: 1.0
-References: <20200727151537.315023-1-yepeilin.cs@gmail.com>
-In-Reply-To: <20200727151537.315023-1-yepeilin.cs@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 17:35:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3zz-xfz2jwUpEU5R7GyCK735PFQK7OjFmmTESgnSzq=Q@mail.gmail.com>
-Message-ID: <CAK8P3a3zz-xfz2jwUpEU5R7GyCK735PFQK7OjFmmTESgnSzq=Q@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH] firewire: Prevent kernel-infoleak
- in ioctl_get_info()
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux1394-devel@lists.sourceforge.net,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:zbOxuSIsI5mjZrgdzMRoJRr329VZYfnzrW3OumMbzpug6f2xYra
- 5lDDoU8xEj67l5752hoIPmaQSEVrMvI0T5D+LX1ZLixjUdpW0GyrmpGqNzpgm334sY3B0i/
- hcy5Cuu8T26rdwyS0/Bho4YE2vyTdkZ6XhWrl7FIGhlbHBamAd1HDHfLLoprTzvtaS5xPZV
- SgjEbgnGtR1qXBTD+M64g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7ezjon7aq/c=:PkUl8pQ6sR4wL1bXY6sbnl
- c/K7G2fjj2WhgpX3X8PAxNakJr59x+oXR6a8O/DthBSznPDxkmHiJzwfGQ2546WyJFCsGyCtL
- akQy8dz0Hqp9EQxWrEZcnU1CwSBRTlQhqfMbSJpvSovBtodJ04J5oLPlKUwqV5VmBDeqJmdpu
- l/pabICFLIsBHSHPq6Ry80+sh3rWBVB/WInhWHBp6jnqlcyj/1SxEYJf9sQNEB+FAncIiEP/V
- YaHe/KnGCHUrNxVSC/fXEvUqp9OjPwNqAV4VAAVT5B3dy6fNlfgYA75QnDuGK5EdbA7BbBrtZ
- dbLP6NG08xkHXAmotVSlbieySW4FPEov0Zk87tjlz3Uo8snNkD1qVl+EUex96KqIY3dGduPsd
- B6oxtP8CNpx58/DaYptvgdIKezUgxqmPS6LxFYtvAeucUAYWnnd/Ow7U4CEdvMytIKyZPqgnk
- fHCgiUuQIap7/cTU2EPeIEYL8PqFp+SUplao6zintP1O1oaMbHqvM6luCqGnTxdWjCaGi8vd9
- k2hmZd+U0PkOrcbEsMPmRG10KQdwvjeYJkS+vR89Rcc5H06TUqaRrJd8zEKrWO3Rck3TDcJcN
- 9HjKOJMgdmv1u9vvad5EZsXCBPJW1Ig9V6uDL15J6czPUuM1OxNPkvytPvBib/kUwmDtr9USi
- baNp79RRb1IZMdZMkPRCc7/LcdIFFOjWuOThrGPUVCi6vUAgZzTj31IQBWMkRJHUEYXJi63vM
- 0Z5/g0/GpHVdfRvB29y7YfcZIH52ZQKBriwYm5Pa3GXVozzRQPSWHKLpxnjBLYr08s4I3nTxw
- Wrz6rnzZeT/ZW4QNfgwmfmGICaSxtNTtlqba2uBESzJ3kq6ZmTmdLfOYUTzPZx7cDgvmPwqYE
- slffCg3o3JJwogDrRczjpLHMw6Rn6xev5e4v1E8OWeMszfilsp8VVD8bPFGXg3Z8aQExt/YZB
- su+8+Qsg8mAo39hkZg4UFamGUUoynt15K8q8F85EFvZETCXL5PoNX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202007272305.7v7EMn6N%lkp@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 5:18 PM Peilin Ye <yepeilin.cs@gmail.com> wrote:
->
-> ioctl_get_info() is copying uninitialized stack memory to userspace due to
-> the compiler not initializing holes in statically allocated structures.
-> Fix it by initializing `event` using memset() in fill_bus_reset_event().
->
-> Cc: stable@vger.kernel.org
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+On Mon, Jul 27, 2020 at 11:02:07PM +0800, kernel test robot wrote:
+> Hi David,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   92ed301919932f777713b9172e525674157e983d
+> commit: f7cea56c0fff95bd5a6cd21b9fa299f66193b604 btrfs: sysfs: export supported checksums
+> date:   8 months ago
+> config: h8300-randconfig-r021-20200727 (attached as .config)
+> compiler: h8300-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout f7cea56c0fff95bd5a6cd21b9fa299f66193b604
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    In file included from fs/btrfs/tests/extent-map-tests.c:8:
+> >> fs/btrfs/tests/../ctree.h:2166:8: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
+>     2166 | size_t __const btrfs_get_num_csums(void);
+>          |        ^~~~~~~
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-I would recommend always looking through the git history of the
-file to come up with an appropriate 'Fixes' tag. In this case
-
-$ git log -p --follow drivers/firewire/core-cdev.c
-
-searching for any mention of fill_bus_reset_event leads you to
-commit 344bbc4de14e.
-
-In my ~/.gitconfig I have this alias:
-
-[core]
-        abbrev = 12
-[alias]
-        fixes = show --format='Fixes: %h (\"%s\")' -s
-
-With something like that, calling 'git fixes 344bbc4de14e' produces
-the line to copy:
-
-Fixes: 344bbc4de14e ("firewire: Generalize get_config_rom to get_info.")
-
-     Arnd
-
-> ---
->  drivers/firewire/core-cdev.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-> index fb6c651214f3..2341d762df5b 100644
-> --- a/drivers/firewire/core-cdev.c
-> +++ b/drivers/firewire/core-cdev.c
-> @@ -340,6 +340,8 @@ static void fill_bus_reset_event(struct fw_cdev_event_bus_reset *event,
->  {
->         struct fw_card *card = client->device->card;
->
-> +       memset(event, 0, sizeof(*event));
-> +
->         spin_lock_irq(&card->lock);
->
->         event->closure       = client->bus_reset_closure;
-> --
-> 2.25.1
->
+Ah right, the attribute is supposed to be __attribute_const__, thanks
+for the report.
