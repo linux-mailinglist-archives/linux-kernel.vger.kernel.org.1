@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8481422EF8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAAA22EED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731021AbgG0ORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44374 "EHLO mail.kernel.org"
+        id S1729999AbgG0OLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:11:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730989AbgG0ORK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:17:10 -0400
+        id S1729993AbgG0OLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:11:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35AFD208E4;
-        Mon, 27 Jul 2020 14:17:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83C07208E4;
+        Mon, 27 Jul 2020 14:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859429;
-        bh=9FOnQYGHVN4dOx8fmzyzmZVhYjbLjfdb9/yh2ELR+Ow=;
+        s=default; t=1595859074;
+        bh=7/bT1ObWFc0vmB+DUQCMp5JYvmyrsUL+aA9T/8le4Dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zhsEUEUas2DISX9baXhE1qGw7y6jNeIV5oScOe5i6VVB262vjScPKbBkQjr3N88C+
-         GgHLv6iR9LPEd7o/hfOL03buKkaXEpcwx81QL0n4qNl4MLhjRJzOXFp2wESy7tJ7oG
-         mD/e96eZDXMeQLix2Bt7pXbHB6hWxJPyGRVnZ9Ag=
+        b=Eqif9O2KLQKysbk2esvvEg+B9udQBYOB+xl2dnuoYrng6BiJ27Us6y5Di5FXdOGD7
+         13ijE9ZA1CCu7vc/XUoNWUxlHyM7WoIwZ3LYOoQe+bg7uYSzQHV9fnaC4gj/zZSJyP
+         9JOSjQDQQgKh88d8Kd/XPQhKEsjOYqZcBkcQ/5ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joao Moreno <mail@joaomoreno.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 074/138] HID: apple: Disable Fn-key key-re-mapping on clone keyboards
-Date:   Mon, 27 Jul 2020 16:04:29 +0200
-Message-Id: <20200727134929.085789159@linuxfoundation.org>
+        stable@vger.kernel.org, Chu Lin <linchuyuan@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 56/86] hwmon: (adm1275) Make sure we are reading enough data for different chips
+Date:   Mon, 27 Jul 2020 16:04:30 +0200
+Message-Id: <20200727134917.225251026@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,97 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Chu Lin <linchuyuan@google.com>
 
-[ Upstream commit a5d81646fa294eed57786a9310b06ca48902adf8 ]
+[ Upstream commit 6d1d41c075a1a54ba03370e268171fec20e06563 ]
 
-The Maxxter KB-BT-001 Bluetooth keyboard, which looks somewhat like the
-Apple Wireless Keyboard, is using the vendor and product IDs (05AC:0239)
-of the Apple Wireless Keyboard (2009 ANSI version) <sigh>.
+Issue:
+When PEC is enabled, binding adm1272 to the adm1275 would
+fail due to PEC error. See below:
+adm1275: probe of xxxx failed with error -74
 
-But its F1 - F10 keys are marked as sending F1 - F10, not the special
-functions hid-apple.c maps them too; and since its descriptors do not
-contain the HID_UP_CUSTOM | 0x0003 usage apple-hid looks for for the
-Fn-key, apple_setup_input() never gets called, so F1 - F6 are mapped
-to key-codes which have not been set in the keybit array causing them
-to not send any events at all.
+Diagnosis:
+Per the datasheet of adm1272, adm1278, adm1293 and amd1294,
+PMON_CONFIG (0xd4) is 16bits wide. On the other hand,
+PMON_CONFIG (0xd4) for adm1275 is 8bits wide. The driver should not
+assume everything is 8bits wide and read only 8bits from it.
 
-The lack of a usage code matching the Fn key in the clone is actually
-useful as this allows solving this problem in a generic way.
+Solution:
+If it is adm1272, adm1278, adm1293 and adm1294, use i2c_read_word.
+Else, use i2c_read_byte
 
-This commits adds a fn_found flag and it adds a input_configured
-callback which checks if this flag is set once all usages have been
-mapped. If it is not set, then assume this is a clone and clear the
-quirks bitmap so that the hid-apple code does not add any special
-handling to this keyboard.
+Testing:
+Binding adm1272 to the driver.
+The change is only tested on adm1272.
 
-This fixes F1 - F6 not sending anything at all and F7 - F12 sending
-the wrong codes on the Maxxter KB-BT-001 Bluetooth keyboard and on
-similar clones.
-
-Cc: Joao Moreno <mail@joaomoreno.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Chu Lin <linchuyuan@google.com>
+Link: https://lore.kernel.org/r/20200709040612.3977094-1-linchuyuan@google.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-apple.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/hwmon/pmbus/adm1275.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-index d732d1d10cafb..6909c045fece1 100644
---- a/drivers/hid/hid-apple.c
-+++ b/drivers/hid/hid-apple.c
-@@ -54,6 +54,7 @@ MODULE_PARM_DESC(swap_opt_cmd, "Swap the Option (\"Alt\") and Command (\"Flag\")
- struct apple_sc {
- 	unsigned long quirks;
- 	unsigned int fn_on;
-+	unsigned int fn_found;
- 	DECLARE_BITMAP(pressed_numlock, KEY_CNT);
- };
- 
-@@ -339,12 +340,15 @@ static int apple_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 		struct hid_field *field, struct hid_usage *usage,
- 		unsigned long **bit, int *max)
+diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
+index 13600fa79e7f3..a19cf9052fc6d 100644
+--- a/drivers/hwmon/pmbus/adm1275.c
++++ b/drivers/hwmon/pmbus/adm1275.c
+@@ -364,6 +364,7 @@ MODULE_DEVICE_TABLE(i2c, adm1275_id);
+ static int adm1275_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *id)
  {
-+	struct apple_sc *asc = hid_get_drvdata(hdev);
-+
- 	if (usage->hid == (HID_UP_CUSTOM | 0x0003) ||
- 			usage->hid == (HID_UP_MSVENDOR | 0x0003) ||
- 			usage->hid == (HID_UP_HPVENDOR2 | 0x0003)) {
- 		/* The fn key on Apple USB keyboards */
- 		set_bit(EV_REP, hi->input->evbit);
- 		hid_map_usage_clear(hi, usage, bit, max, EV_KEY, KEY_FN);
-+		asc->fn_found = true;
- 		apple_setup_input(hi->input);
- 		return 1;
- 	}
-@@ -371,6 +375,19 @@ static int apple_input_mapped(struct hid_device *hdev, struct hid_input *hi,
- 	return 0;
- }
++	s32 (*config_read_fn)(const struct i2c_client *client, u8 reg);
+ 	u8 block_buffer[I2C_SMBUS_BLOCK_MAX + 1];
+ 	int config, device_config;
+ 	int ret;
+@@ -408,11 +409,16 @@ static int adm1275_probe(struct i2c_client *client,
+ 			   "Device mismatch: Configured %s, detected %s\n",
+ 			   id->name, mid->name);
  
-+static int apple_input_configured(struct hid_device *hdev,
-+		struct hid_input *hidinput)
-+{
-+	struct apple_sc *asc = hid_get_drvdata(hdev);
-+
-+	if ((asc->quirks & APPLE_HAS_FN) && !asc->fn_found) {
-+		hid_info(hdev, "Fn key not found (Apple Wireless Keyboard clone?), disabling Fn key handling\n");
-+		asc->quirks = 0;
-+	}
-+
-+	return 0;
-+}
-+
- static int apple_probe(struct hid_device *hdev,
- 		const struct hid_device_id *id)
- {
-@@ -585,6 +602,7 @@ static struct hid_driver apple_driver = {
- 	.event = apple_event,
- 	.input_mapping = apple_input_mapping,
- 	.input_mapped = apple_input_mapped,
-+	.input_configured = apple_input_configured,
- };
- module_hid_driver(apple_driver);
+-	config = i2c_smbus_read_byte_data(client, ADM1275_PMON_CONFIG);
++	if (mid->driver_data == adm1272 || mid->driver_data == adm1278 ||
++	    mid->driver_data == adm1293 || mid->driver_data == adm1294)
++		config_read_fn = i2c_smbus_read_word_data;
++	else
++		config_read_fn = i2c_smbus_read_byte_data;
++	config = config_read_fn(client, ADM1275_PMON_CONFIG);
+ 	if (config < 0)
+ 		return config;
+ 
+-	device_config = i2c_smbus_read_byte_data(client, ADM1275_DEVICE_CONFIG);
++	device_config = config_read_fn(client, ADM1275_DEVICE_CONFIG);
+ 	if (device_config < 0)
+ 		return device_config;
  
 -- 
 2.25.1
