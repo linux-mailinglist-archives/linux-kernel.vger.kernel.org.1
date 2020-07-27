@@ -2,155 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC3422F4B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD9722F4C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731557AbgG0QRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:17:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35927 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731542AbgG0QRE (ORCPT
+        id S1731627AbgG0QRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:17:50 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4267 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728996AbgG0QRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:17:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595866621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BsUwnhDK87WKgN3gqd90CcbtRyIxe05OQOcWAwl8fSE=;
-        b=IuTQSyB2ZJs58ydl0LAtJwvDyXThs2+AWlGZ+dlNC3u9TG6lex16s+BswLCmvoTG4lsNVy
-        8DUkXHEJgWM2V9b7MLiNa8yTzgEwrGd6brElj6E5dTVxBlHC/R7xeoAbS/4VL4WsSY3Jwq
-        QkO8BOA49hqOYcbmFUfhr9iHBlxMxTM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-B5H_vO1jPPqp1TMy90Z1og-1; Mon, 27 Jul 2020 12:17:00 -0400
-X-MC-Unique: B5H_vO1jPPqp1TMy90Z1og-1
-Received: by mail-wr1-f72.google.com with SMTP id w7so1811933wre.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:16:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BsUwnhDK87WKgN3gqd90CcbtRyIxe05OQOcWAwl8fSE=;
-        b=WWxUvDxDcMw6CZ35dYqv1pNtLs0SLmlkWj+zKvDV1+F62iidmO/jzYL2w2OzaCclK3
-         740BIsLvfgC1iO342J5MV8MdltRPOIq0UtAP4ETbomR7gnCJZMcrZN17pqpLxtLHrN6f
-         lXahD8m6fTn8Pv47IMVOSI/wJq1p4sNDZRvvJEkiTNRhLnONTpViMcYfzTp6bbCgmRVY
-         If/8qOLcV+8NMlwfD44W1pP0aJO7/Yn7IGNKtHABYkqb8GLVkj5c6AxP4yTjxggWZahJ
-         TtEmtExXweuKLJWSMBBiDPamhkmhWdnGhVGNDqvnSgkSzKu0yL4Nj8dGrhT3HHsh2k5B
-         aS2A==
-X-Gm-Message-State: AOAM533PN830cBWEp7ytZ5Ld/YzE26pRGTyc6/bKgSLI6se1aOxMrV+/
-        ZcjLwTEHIbtwWLXh/SpGb57RDWKyIpU5Ua/+pyodjxRvbzPVwwOiPOnJ3iu9++IYXtJE6oAklqW
-        5uCd5JiLyIlv/jl7a1Q9qWMOF
-X-Received: by 2002:a1c:6408:: with SMTP id y8mr84041wmb.52.1595866618758;
-        Mon, 27 Jul 2020 09:16:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLKcAmtjP5qdwtcop3VZz69phHqUmhA/GYnUvT8EjsYnFf+2mjdi7w0x6HCc4EEuewJ9M+uA==
-X-Received: by 2002:a1c:6408:: with SMTP id y8mr84025wmb.52.1595866618480;
-        Mon, 27 Jul 2020 09:16:58 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id u66sm76686wmu.37.2020.07.27.09.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 09:16:57 -0700 (PDT)
-Subject: Re: [PATCH] KVM: nVMX: properly pad struct kvm_vmx_nested_state_hdr
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-References: <20200713082824.1728868-1-vkuznets@redhat.com>
- <20200713151750.GA29901@linux.intel.com>
- <878sfntnoz.fsf@vitty.brq.redhat.com>
- <85fd54ff-01f5-0f1f-1bb7-922c740a37c1@redhat.com>
- <20200727154654.GA8675@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5d50ea1e-f2a2-8aa9-1dd3-4cbca6c6f885@redhat.com>
-Date:   Mon, 27 Jul 2020 18:16:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 27 Jul 2020 12:17:49 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f1efe1e0000>; Mon, 27 Jul 2020 09:17:34 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 27 Jul 2020 09:17:47 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 27 Jul 2020 09:17:47 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Jul
+ 2020 16:17:43 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 27 Jul 2020 16:17:42 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cr+Bf5aAbOYMzo9dXV+L4rLDc5lYFmaV4DGiSQEFxUSIxY+0ZPhQuNlePIr7+WAyDHYsQX0mt21yCX8nTvgpv7vJz9ObOcJsJ2Mq1xxSpM5+wJpEjTxpf7/gZLzwaizYIe9vKYAsVlY4N5B+pcGj8wu9eVEmOc/ODH0p+ZTjA2d6eXfbdI6VeqDQXSXFGJlKUqzOf05MzuJD7NeosCrTFDt8c0v+CIt+QCxlCbnq7kGFbir4tOurdfxE4tyrjPRblM07mTuvd9dXLlvG/paJ1dNubEDXbiBXNSRKGZd6KXvpKL0GtHVI7YeqiOKLnQYbzvk6SL1lDROuHoeY9ggk+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ITjagY+5fmaN0QFmpLWh2IwmGPom7D+XzLTEiLGEjt0=;
+ b=Ypn1KmmrgzKNcnLHmg9FOxo2xpyB1HDtmCtmjx4csjt2Apk8uxO0ASRz1jSv25BkXNZvS7KSYjRp0AB9M8ltIJ9ILksBc0CXX6z4qcQUuwZa9heQerO0OK6FdjqqqEzyo7s67bMNRTXyrdjYotLkLtfiSLezI6gsR/ZyIAh+3KaNB5DqrLRmkfSpIY9exR2kOKjs8fTN01Xf2/LC2JRDqfNH8Znh6iEhs8AseI+VEraRSd1q71S9QAHAvaoh6485WgaOT9EJiNb2EYja59odnZhKd3Qsr1AHibt8HJT7C+MemSL4eY43ig+JyAYIJzPK6taWwTKBahIYPhaxcG73Og==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: canonical.com; dkim=none (message not signed)
+ header.d=none;canonical.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB2601.namprd12.prod.outlook.com (2603:10b6:5:45::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.26; Mon, 27 Jul
+ 2020 16:17:41 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3216.033; Mon, 27 Jul 2020
+ 16:17:41 +0000
+Date:   Mon, 27 Jul 2020 13:17:39 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Colin King <colin.king@canonical.com>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Alexander Lobakin <alobakin@marvell.com>,
+        <linux-rdma@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] qed: fix assignment of n_rq_elems to incorrect params
+ field
+Message-ID: <20200727161739.GA60250@nvidia.com>
+References: <20200727141712.112906-1-colin.king@canonical.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200727141712.112906-1-colin.king@canonical.com>
+X-ClientProxiedBy: MN2PR05CA0060.namprd05.prod.outlook.com
+ (2603:10b6:208:236::29) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <20200727154654.GA8675@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR05CA0060.namprd05.prod.outlook.com (2603:10b6:208:236::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.10 via Frontend Transport; Mon, 27 Jul 2020 16:17:40 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k05op-000FjP-82; Mon, 27 Jul 2020 13:17:39 -0300
+X-Originating-IP: [156.34.48.30]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 632edbe3-d606-489f-f66e-08d8324895ad
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2601:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB2601862D5C48422DD31202D7C2720@DM6PR12MB2601.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HvWE3YPXyj9W1+DSMtKUrc+1lZ+RdoQ4d1tf+wNc8rvC0sCqxaYSOrSV3eeGMV/K6ewaZsjaWlxzipMpS5HaP3fL+o075ULL82l+v2KueneHshqtkf2UtYgkprhvDT/XdHpg1D+I3zTKrZ7H/aMrfPT1tQ8T0RzpcNr+l7NIoQHdFMbk2qUZUeecTXbQ1FUszCkqYPXvFVAIT5Ffu2boMebLHcDHqcwYSmrM0kib03bsu2NQNqfZw0nVqKQt7lPn/Y54LRIyCaKWoK+1Sk3F3lPe96mB4eAIkE/k9D6y+EGfQ9RwTN6CrrCpUWyrKpSMScXg4Ze4x0v9fTV3jKDJdg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(346002)(396003)(39860400002)(366004)(110136005)(54906003)(83380400001)(316002)(4326008)(86362001)(5660300002)(9786002)(33656002)(1076003)(9746002)(2906002)(36756003)(4744005)(478600001)(66946007)(26005)(186003)(2616005)(66476007)(7416002)(8936002)(426003)(8676002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ghdDI4IkX0klU1kgAJXjvesTOyfa1C91qDKzg7ny5z0xd55EHUg0EJU69a9bdSjuHl1atJ6W0ss03fqKoXn9up4skLNoIefFH/jJqtk1g/ei2kyOWPusZiqfDXUgd6CcLMD1N3o7X9ilcFJnKVK5iX9zn2Eup6Aham/pxqUhmI7ZYmNFkxuND+O3d9tIqjsiJOeOs6qcbiYqnBG9z3cdWo182f6Jxse9H8NUwQLcD/lI7Ps5XWBEPVC2ur4gJXvDQtNl0cU/CtOQ6lK4luvJ6GRQ7PxTL20TMtc4hOV1WQaR2mryoOPECSjHcY6mOz16+5y1AtAHTUMGpPvanFu4yCGfLRhP+hyNCkWxxPN1J5Y6lgODHqdmhf3iDnGCx9NQSZL9IOVZz2E/V7+g/kM1geSyRtpYJU98SVEAnBGTXm+4RLQrhMzj3V7Elov9vA/30wfR9fEL2qMvUmGwH/JyD07h9IIXL7lpwRsY9Mzu+G8=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 632edbe3-d606-489f-f66e-08d8324895ad
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2020 16:17:40.9791
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CZJB6MjpqDs2GzBr9Nz2IkESaW9kV5HJa+GMNI9U7AYlq8jXMvetX92EcWud+gK9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2601
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595866654; bh=ITjagY+5fmaN0QFmpLWh2IwmGPom7D+XzLTEiLGEjt0=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-Microsoft-Antispam-PRVS:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=N0aKyKBuQLbohWRsMYf9bMBLCYeAXUgUpXcAOYO2b4QCAeMzmsppODn7kYkdA3a4K
+         2N67gyS8plUmldOxQ78QDb+tXDzJiiSFxpNfBrzFV3OwRq6wpwV1ZDZlyG6cCaomaw
+         WhxnPc1rqsl6E5doHb1PqF9kMB9iWoD+VOHbCxnNrChEBeJXejDilbBCEQtPWqFdsh
+         qHMgO5fI0fUkbdEGYw8AIhHSNyU33gd6NfxuH0HAlBoT9SSOVm+7wruZIdtx3TJHao
+         e5B0QG19YgypNGQ1A8whOATFguTR4bD1MUCBCr0knDHOe+ByxD5gFRIYEpT00i+B9o
+         Vl8Ni37Dr6XSA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/07/20 17:46, Sean Christopherson wrote:
->> It might as well send it now if the code didn't attempt to zero the
->> struct before filling it in (this is another good reason to use a
->> "flags" field to say what's been filled in).
-> The issue is that flags itself could hold garbage.
+On Mon, Jul 27, 2020 at 03:17:12PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> https://lkml.kernel.org/r/20200713151750.GA29901@linux.intel.com
-
-Quoting from there:
-
-> Which means that userspace built for the old kernel will potentially send in
-> garbage for the new 'flags' field due to it being uninitialized stack data,
-> even with the layout after this patch.
-
-Userspace should always zero everything.  I don't think that the padding
-between fields is any different from the other bytes padding the header
-to 128 bytes.
-
->   struct kvm_vmx_nested_state_hdr hdr = {
->       .vmxon_pa = root,
->       .vmcs12_pa = vmcs12,
->   };
+> Currently n_rq_elems is being assigned to params.elem_size instead of the
+> field params.num_elems.  Coverity is detecting this as a double assingment
+> to params.elem_size and reporting this as an usused value on the first
+> assignment.  Fix this.
 > 
-> QEMU won't see issues because it zero allocates the entire nested state.
-> 
-> All the above being said, after looking at the whole picture I think padding
-> the header is a moot point.  The header is padded out to 120 bytes[*] when
-> including in the full nested state, and KVM only ever consumes the header in
-> the context of the full nested state.  I.e. if there's garbage at offset 6,
-> odds are there's going to be garbage at offset 18, so internally padding the
-> header does nothing.
+> Addresses-Coverity: ("Unused value")
+> Fixes: b6db3f71c976 ("qed: simplify chain allocation with init params struct")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/infiniband/hw/qedr/verbs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, that was what I was hinting at with "it might as well send it now"
-(i.e., after the patch).
+DaveM will need to take this since the Fixed patch is in his tree,
+thanks.
 
-(All of this is moot for userspace that just uses KVM_GET_NESTED_STATE
-and passes it back to KVM_SET_NESTED_STATE).
-
-> KVM should be checking that the unused bytes of (sizeof(pad) - sizeof(vmx/svm))
-> is zero if we want to expand into the padding in the future.  Right now we're
-> relying on userspace to zero allocate the struct without enforcing it.
-
-The alternative, which is almost as good, is to only use these extra
-fields which could be garbage if the flags are not set, and check the
-flags (see the patches I have sent earlier today).
-
-The chance of the flags passing the check will decrease over time as
-more flags are added; but the chance of having buggy userspace that
-sends down garbage also will.
-
-> [*] Amusing side note, the comment in the header is wrong.  It states "pad
->     the header to 128 bytes", but only pads it to 120 bytes, because union.
-> 
-> /* for KVM_CAP_NESTED_STATE */
-> struct kvm_nested_state {
-> 	__u16 flags;
-> 	__u16 format;
-> 	__u32 size;
-> 
-> 	union {
-> 		struct kvm_vmx_nested_state_hdr vmx;
-> 		struct kvm_svm_nested_state_hdr svm;
-> 
-> 		/* Pad the header to 128 bytes.  */
-> 		__u8 pad[120];
-> 	} hdr;
-
-There are 8 bytes before the union, and it's not a coincidence. :)
-"Header" refers to the stuff before the data region.
-
-> Odds are no real VMM will have issue given the dynamic size of struct
-> kvm_nested_state, but 
-
-... *suspence* ...
-
-Paolo
-
+Jason
