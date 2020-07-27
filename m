@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C1C22E4B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 06:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1171422E4F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 06:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgG0EVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 00:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgG0EVW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 00:21:22 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50244C0619D2;
-        Sun, 26 Jul 2020 21:21:22 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jzudO-003Pp0-V8; Mon, 27 Jul 2020 04:21:07 +0000
-Date:   Mon, 27 Jul 2020 05:21:06 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
+        id S1726184AbgG0EcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 00:32:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24188 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725775AbgG0EcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 00:32:08 -0400
+IronPort-SDR: H+RFwzZODVHqw1b8h13NIchou8UDhXUvN6KRvuX6lpAWaxBGu6c9u21yXRta+4qCx6LWKmiCm3
+ gFBcss2C5Qmw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="131016888"
+X-IronPort-AV: E=Sophos;i="5.75,401,1589266800"; 
+   d="scan'208";a="131016888"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2020 21:32:08 -0700
+IronPort-SDR: iuEOLJ5Pl9H/YE9yJqNi0fbRDikC8RMmnFw2yX4nRSoZUV4UZgGiXRjIPf7Ic3NZqfQbuDu8JM
+ r7xCKdq52h3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,401,1589266800"; 
+   d="scan'208";a="329550029"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by orsmga007.jf.intel.com with ESMTP; 26 Jul 2020 21:32:07 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>, x86@kernel.org
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Cathy Zhang <cathy.zhang@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kyung Min Park <kyung.min.park@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-Subject: Re: [PATCH v7 4/7] fs: Introduce O_MAYEXEC flag for openat2(2)
-Message-ID: <20200727042106.GB794331@ZenIV.linux.org.uk>
-References: <20200723171227.446711-1-mic@digikod.net>
- <20200723171227.446711-5-mic@digikod.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200723171227.446711-5-mic@digikod.net>
+        linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH 0/4] x86/cpu: Use SERIALIZE in sync_core() 
+Date:   Sun, 26 Jul 2020 21:31:28 -0700
+Message-Id: <20200727043132.15082-1-ricardo.neri-calderon@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 07:12:24PM +0200, Mickaël Salaün wrote:
-> When the O_MAYEXEC flag is passed, openat2(2) may be subject to
-> additional restrictions depending on a security policy managed by the
-> kernel through a sysctl or implemented by an LSM thanks to the
-> inode_permission hook.  This new flag is ignored by open(2) and
-> openat(2) because of their unspecified flags handling.  When used with
-> openat2(2), the default behavior is only to forbid to open a directory.
+A recent submission to LKML introduced a CPU feature flag for a new
+Intel architecture Serializing Instruction, SERIALIZE [1]. Unlike the
+existing Serializing Instructions, this new instruction does not have
+side effects such as clobbering registers or exiting to a hypervisor.
 
-Correct me if I'm wrong, but it looks like you are introducing a magical
-flag that would mean "let the Linux S&M take an extra special whip
-for this open()".
+As stated in the Intel "extensions" (ISE) manual [2], this instruction
+will appear first in Sapphire Rapids and Alder Lake.
 
-Why is it done during open?  If the caller is passing it deliberately,
-why not have an explicit request to apply given torture device to an
-already opened file?  Why not sys_masochism(int fd, char *hurt_flavour),
-for that matter?
+Andy Lutomirski suggested to use this instruction in sync_core() as it
+serves the very purpose of this function [3].
+
+For completeness, I picked patch #3 from Cathy's series (and has become
+patch #1 here) [1]. Her series depends on such patch to build correctly.
+Maybe it can be merged independently while the discussion continues?
+
+Thanks and BR,
+Ricardo
+
+[1]. https://lore.kernel.org/kvm/1594088183-7187-1-git-send-email-cathy.zhang@intel.com/
+[2]. https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
+[3]. https://lore.kernel.org/kvm/CALCETrWudiF8G8r57r5i4JefuP5biG1kHg==0O8YXb-bYS-0BA@mail.gmail.com/
+
+Ricardo Neri (4):
+  x86/cpufeatures: Add enumeration for SERIALIZE instruction
+  x86/cpu: Relocate sync_core() to sync_core.h
+  x86/cpu: Refactor sync_core() for readability
+  x86/cpu: Use SERIALIZE in sync_core() when available
+
+ arch/x86/include/asm/cpufeatures.h   |  1 +
+ arch/x86/include/asm/processor.h     | 64 ----------------------
+ arch/x86/include/asm/special_insns.h |  4 ++
+ arch/x86/include/asm/sync_core.h     | 80 ++++++++++++++++++++++++++++
+ arch/x86/kernel/alternative.c        |  1 +
+ arch/x86/kernel/cpu/mce/core.c       |  1 +
+ drivers/misc/sgi-gru/grufault.c      |  1 +
+ drivers/misc/sgi-gru/gruhandles.c    |  1 +
+ drivers/misc/sgi-gru/grukservices.c  |  1 +
+ 9 files changed, 90 insertions(+), 64 deletions(-)
+
+-- 
+2.17.1
+
