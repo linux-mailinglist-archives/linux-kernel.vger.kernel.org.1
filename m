@@ -2,299 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF2D22EDC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B0422EDC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgG0Nm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:42:58 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37218 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728169AbgG0Nm6 (ORCPT
+        id S1728491AbgG0NpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:45:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728391AbgG0NpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:42:58 -0400
-Received: by mail-oi1-f196.google.com with SMTP id 12so14365526oir.4;
-        Mon, 27 Jul 2020 06:42:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pvPzBZVgDAopAS1lI3CQpjCsa8HFcE1uN9uVOKEOSpk=;
-        b=CbhG+KFzJTp0GNyOaNgadj1KHsv/FYrggg4LMPQ8+DP9k3+KCwsjyqinyq8922mSAK
-         kOuFLIFPTIy6QottnYqKqVccdMe3A9Wv0lAaVogyVCYaZN286d844MBwmZ7JjEfzD4Sz
-         8Ml1j2JTBJESG0eMsYJHje7kEO3PHfD0QB9eOveMm8E5L5VyzGTtmeapVfyUZYvcQuIE
-         pOumPoLdLbc+cOd35fcYNENW+gAaom9CGqGSwQXL+NXEkDKhwW0tlaCnmOnRluNYMUZV
-         Xw6Ak5aZ6jEdiVkVFuR1TSUOIFPNHK+baUHUgAtNeN3H7mdPSz0Vr7imt/aoPRD3mi7B
-         DURQ==
-X-Gm-Message-State: AOAM531mZ3aU/yvcBMtVUxPQIAJFcQS26gv1GSkZonU5BpqC3Ru717mo
-        yZSYwsMWgBQnSIHx1cmSoOpqTpyQXeBRlNXPCbb6kA==
-X-Google-Smtp-Source: ABdhPJz0TvSVaNc8ulOS2JvmYwwhi/DIqKubE/aaIFsIH15FU8fiOFKiVgnLscHnh52p8XsoInOL/jOpCFJUMU7AFHE=
-X-Received: by 2002:aca:3646:: with SMTP id d67mr6786735oia.68.1595857376945;
- Mon, 27 Jul 2020 06:42:56 -0700 (PDT)
+        Mon, 27 Jul 2020 09:45:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADB1C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 06:45:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w3IFzN3dHxTsM6d1vVVpNI9q/Oauc9/cIxmbJnleAH8=; b=fKUUcjouGdOCtKPvq7fa+umPtH
+        Ip3H8UImSDIcUah7UMcMXwJsU6623ygbn3SR/tbDfYEKnPIvQVGYQp9d/Pj+BHHMH/aMYEYZTvmfT
+        Eqi1UnyZnECIU4auCg+Sl3YY3n2qa4V1aAwfAMmh6xPMuLFCO71rRFUFhmPAnGEQPHr06hczZ7SWs
+        y4EeAKJxiAm66IvXqKXGiZuOVg8znkZfbeOsQKZSZYbPIJW+GiuXyWLANjHk5Bibz0Q5jdQFzRLNH
+        vVO2PPip/PxRp9Ev9wb6IJUYK1RTdCY3h+CupiXqDVGF18o5YumL051RB7bresygHWaoOw4GndcJB
+        o/xZQ7Tw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k03Qs-0002Oi-Gr; Mon, 27 Jul 2020 13:44:46 +0000
+Date:   Mon, 27 Jul 2020 14:44:46 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+c48f34012b06c4ac67dd@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Markus Elfring <Markus.Elfring@web.de>
+Subject: Re: kernel BUG at include/linux/swapops.h:LINE!
+Message-ID: <20200727134446.GL23808@casper.infradead.org>
+References: <000000000000bc4fd705a6e090e2@google.com>
+ <0000000000004c38cd05aad1d13f@google.com>
+ <20200720165144.93189f7825bd28e234a42cb8@linux-foundation.org>
+ <20200723073744.5268-1-hdanton@sina.com>
+ <20200724111311.rcjqigtjqpkenxg6@box>
+ <20200726164904.GG23808@casper.infradead.org>
+ <20200727103140.xycdx6ctecomqsoe@box>
+ <20200727125950.12048-1-hdanton@sina.com>
 MIME-Version: 1.0
-References: <20200721124300.65615-1-psampat@linux.ibm.com> <20200721124300.65615-2-psampat@linux.ibm.com>
-In-Reply-To: <20200721124300.65615-2-psampat@linux.ibm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 27 Jul 2020 15:42:46 +0200
-Message-ID: <CAJZ5v0j3ip77opkaW3Rtn0cqT7VTL_8goctFBDVehWoZowDY0Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] cpuidle: Trace IPI based and timer based wakeup
- latency from idle states
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, srivatsa@csail.mit.edu,
-        Shuah Khan <shuah@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
-        pratik.r.sampat@gmail.com, Linux PM <linux-pm@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727125950.12048-1-hdanton@sina.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 2:43 PM Pratik Rajesh Sampat
-<psampat@linux.ibm.com> wrote:
->
-> Fire directed smp_call_function_single IPIs from a specified source
-> CPU to the specified target CPU to reduce the noise we have to wade
-> through in the trace log.
+On Mon, Jul 27, 2020 at 08:59:50PM +0800, Hillf Danton wrote:
+> Can you elaborate on the difference between the two dumps?
 
-And what's the purpose of it?
+You didn't trim anything, so I have no idea which two dumps you mean.
 
-> The module is based on the idea written by Srivatsa Bhat and maintained
-> by Vaidyanathan Srinivasan internally.
->
-> Queue HR timer and measure jitter. Wakeup latency measurement for idle
-> states using hrtimer.  Echo a value in ns to timer_test_function and
-> watch trace. A HRtimer will be queued and when it fires the expected
-> wakeup vs actual wakeup is computes and delay printed in ns.
->
-> Implemented as a module which utilizes debugfs so that it can be
-> integrated with selftests.
->
-> To include the module, check option and include as module
-> kernel hacking -> Cpuidle latency selftests
->
-> [srivatsa.bhat@linux.vnet.ibm.com: Initial implementation in
->  cpidle/sysfs]
->
-> [svaidy@linux.vnet.ibm.com: wakeup latency measurements using hrtimer
->  and fix some of the time calculation]
->
-> [ego@linux.vnet.ibm.com: Fix some whitespace and tab errors and
->  increase the resolution of IPI wakeup]
->
-> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
-> Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> ---
->  drivers/cpuidle/Makefile               |   1 +
->  drivers/cpuidle/test-cpuidle_latency.c | 150 +++++++++++++++++++++++++
->  lib/Kconfig.debug                      |  10 ++
->  3 files changed, 161 insertions(+)
->  create mode 100644 drivers/cpuidle/test-cpuidle_latency.c
->
-> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-> index f07800cbb43f..2ae05968078c 100644
-> --- a/drivers/cpuidle/Makefile
-> +++ b/drivers/cpuidle/Makefile
-> @@ -8,6 +8,7 @@ obj-$(CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED) += coupled.o
->  obj-$(CONFIG_DT_IDLE_STATES)             += dt_idle_states.o
->  obj-$(CONFIG_ARCH_HAS_CPU_RELAX)         += poll_state.o
->  obj-$(CONFIG_HALTPOLL_CPUIDLE)           += cpuidle-haltpoll.o
-> +obj-$(CONFIG_IDLE_LATENCY_SELFTEST)      += test-cpuidle_latency.o
->
->  ##################################################################################
->  # ARM SoC drivers
-> diff --git a/drivers/cpuidle/test-cpuidle_latency.c b/drivers/cpuidle/test-cpuidle_latency.c
-> new file mode 100644
-> index 000000000000..61574665e972
-> --- /dev/null
-> +++ b/drivers/cpuidle/test-cpuidle_latency.c
-> @@ -0,0 +1,150 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Module-based API test facility for cpuidle latency using IPIs and timers
+I'll annotate below ...
 
-I'd like to see a more detailed description of what it does and how it
-works here.
+> > > On Sun, Jul 26, 2020 at 05:49:04PM +0100, Matthew Wilcox wrote:
+> > > > 1457 086 (20181): drop_caches: 3
+> > > > 1457 page:00000000a216ae9a refcount:2 mapcount:0 mapping:000000009ba7bfed index:0x2227 pfn:0x229e7
+> > > > 1457 aops:def_blk_aops ino:0
+> > > > 1457 flags: 0x4000000000002030(lru|active|private)
+> > > > 1457 raw: 4000000000002030 fffff5b4416b5a48 fffff5b4408a7988 ffff9e9c34848578
+> > > > 1457 raw: 0000000000002227 ffff9e9bd18f0d00 00000002ffffffff 0000000000000000
+> > > > 1457 page dumped because: not locked
+> > > > 1457 swap entry 30.229e7
 
-> + */
-> +
-> +#include <linux/debugfs.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +
-> +/* IPI based wakeup latencies */
-> +struct latency {
-> +       unsigned int src_cpu;
-> +       unsigned int dest_cpu;
-> +       ktime_t time_start;
-> +       ktime_t time_end;
-> +       u64 latency_ns;
-> +} ipi_wakeup;
-> +
-> +static void measure_latency(void *info)
-> +{
-> +       struct latency *v;
-> +       ktime_t time_diff;
-> +
-> +       v = (struct latency *)info;
-> +       v->time_end = ktime_get();
-> +       time_diff = ktime_sub(v->time_end, v->time_start);
-> +       v->latency_ns = ktime_to_ns(time_diff);
-> +}
-> +
-> +void run_smp_call_function_test(unsigned int cpu)
-> +{
-> +       ipi_wakeup.src_cpu = smp_processor_id();
-> +       ipi_wakeup.dest_cpu = cpu;
-> +       ipi_wakeup.time_start = ktime_get();
-> +       smp_call_function_single(cpu, measure_latency, &ipi_wakeup, 1);
-> +}
-> +
-> +/* Timer based wakeup latencies */
-> +struct timer_data {
-> +       unsigned int src_cpu;
-> +       u64 timeout;
-> +       ktime_t time_start;
-> +       ktime_t time_end;
-> +       struct hrtimer timer;
-> +       u64 timeout_diff_ns;
-> +} timer_wakeup;
-> +
-> +static enum hrtimer_restart timer_called(struct hrtimer *hrtimer)
-> +{
-> +       struct timer_data *w;
-> +       ktime_t time_diff;
-> +
-> +       w = container_of(hrtimer, struct timer_data, timer);
-> +       w->time_end = ktime_get();
-> +
-> +       time_diff = ktime_sub(w->time_end, w->time_start);
-> +       time_diff = ktime_sub(time_diff, ns_to_ktime(w->timeout));
-> +       w->timeout_diff_ns = ktime_to_ns(time_diff);
-> +       return HRTIMER_NORESTART;
-> +}
-> +
-> +static void run_timer_test(unsigned int ns)
-> +{
-> +       hrtimer_init(&timer_wakeup.timer, CLOCK_MONOTONIC,
-> +                    HRTIMER_MODE_REL);
-> +       timer_wakeup.timer.function = timer_called;
-> +       timer_wakeup.time_start = ktime_get();
-> +       timer_wakeup.src_cpu = smp_processor_id();
-> +       timer_wakeup.timeout = ns;
-> +
-> +       hrtimer_start(&timer_wakeup.timer, ns_to_ktime(ns),
-> +                     HRTIMER_MODE_REL_PINNED);
-> +}
-> +
-> +static struct dentry *dir;
-> +
-> +static int cpu_read_op(void *data, u64 *value)
-> +{
-> +       *value = ipi_wakeup.dest_cpu;
-> +       return 0;
-> +}
-> +
-> +static int cpu_write_op(void *data, u64 value)
-> +{
-> +       run_smp_call_function_test(value);
-> +       return 0;
-> +}
-> +DEFINE_SIMPLE_ATTRIBUTE(ipi_ops, cpu_read_op, cpu_write_op, "%llu\n");
-> +
-> +static int timeout_read_op(void *data, u64 *value)
-> +{
-> +       *value = timer_wakeup.timeout;
-> +       return 0;
-> +}
-> +
-> +static int timeout_write_op(void *data, u64 value)
-> +{
-> +       run_timer_test(value);
-> +       return 0;
-> +}
-> +DEFINE_SIMPLE_ATTRIBUTE(timeout_ops, timeout_read_op, timeout_write_op, "%llu\n");
-> +
-> +static int __init latency_init(void)
-> +{
-> +       struct dentry *temp;
-> +
-> +       dir = debugfs_create_dir("latency_test", 0);
-> +       if (!dir) {
-> +               pr_alert("latency_test: failed to create /sys/kernel/debug/latency_test\n");
-> +               return -1;
-> +       }
-> +       temp = debugfs_create_file("ipi_cpu_dest",
-> +                                  0666,
-> +                                  dir,
-> +                                  NULL,
-> +                                  &ipi_ops);
-> +       if (!temp) {
-> +               pr_alert("latency_test: failed to create /sys/kernel/debug/ipi_cpu_dest\n");
-> +               return -1;
-> +       }
-> +       debugfs_create_u64("ipi_latency_ns", 0444, dir, &ipi_wakeup.latency_ns);
-> +       debugfs_create_u32("ipi_cpu_src", 0444, dir, &ipi_wakeup.src_cpu);
-> +
-> +       temp = debugfs_create_file("timeout_expected_ns",
-> +                                  0666,
-> +                                  dir,
-> +                                  NULL,
-> +                                  &timeout_ops);
-> +       if (!temp) {
-> +               pr_alert("latency_test: failed to create /sys/kernel/debug/timeout_expected_ns\n");
-> +               return -1;
-> +       }
-> +       debugfs_create_u64("timeout_diff_ns", 0444, dir, &timer_wakeup.timeout_diff_ns);
-> +       debugfs_create_u32("timeout_cpu_src", 0444, dir, &timer_wakeup.src_cpu);
-> +       pr_info("Latency Test module loaded\n");
-> +       return 0;
-> +}
-> +
-> +static void __exit latency_cleanup(void)
-> +{
-> +       pr_info("Cleaning up Latency Test module.\n");
-> +       debugfs_remove_recursive(dir);
-> +}
-> +
-> +module_init(latency_init);
-> +module_exit(latency_cleanup);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("IBM Corporation");
-> +MODULE_DESCRIPTION("Measuring idle latency for IPIs and Timers");
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index d74ac0fd6b2d..e2283790245a 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -1375,6 +1375,16 @@ config DEBUG_KOBJECT
->           If you say Y here, some extra kobject debugging messages will be sent
->           to the syslog.
->
-> +config IDLE_LATENCY_SELFTEST
-> +       tristate "Cpuidle latency selftests"
-> +       depends on CPU_IDLE
-> +       help
-> +         This option provides a kernel module that runs tests using the IPI and
-> +         timers to measure latency.
+This is a dump of the page that was found when looking up the migration entry.
 
-What latency does it measure?
+> On Mon, 27 Jul 2020 13:03:10 +0100 Matthew Wilcox wrote:
+> > It's not mapped with a PMD.  I tweaked my debugging slightly:
+> > 
+> >  static inline swp_entry_t make_migration_entry(struct page *page, int write)
+> >  {
+> > -       BUG_ON(!PageLocked(compound_head(page)));
+> > +       VM_BUG_ON_PAGE(!PageLocked(page), page);
+> >  
+> > +if (PageHead(page)) dump_page(page, "make entry");
+> > +if (PageTail(page)) printk("pfn %lx order %d\n", page_to_pfn(page), thp_order(thp_head(page)));
+> > 
+> > 1523 page:0000000006f62206 refcount:490 mapcount:1 mapping:0000000000000000 index:0x562b12a00 pfn:0x1dc00
+> > 1523 head:0000000006f62206 order:9 compound_mapcount:0 compound_pincount:0
+> > 1523 anon flags: 0x400000000009003d(locked|uptodate|dirty|lru|active|head|swapbacked)
+> > 1523 raw: 400000000009003d ffffecfd41301308 ffffecfd41b08008 ffff9e9971c00059
+> > 1523 raw: 0000000562b12a00 0000000000000000 000001ea00000000 0000000000000000
+> > 1523 page dumped because: make entry
 
-> +
-> +         Say M if you want these self tests to build as a module.
-> +         Say N if you are unsure.
-> +
->  config DEBUG_KOBJECT_RELEASE
->         bool "kobject release debugging"
->         depends on DEBUG_OBJECTS_TIMERS
-> --
-> 2.25.4
->
+This is dumping the page when we create the entry.
+
+For completeness, here's the page that we find from the same run.
+
+1523 page:00000000a18100e6 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x1ddde
+1523 flags: 0x4000000000000000()
+1523 raw: 4000000000000000 dead000000000100 dead000000000122 0000000000000000
+1523 raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+1523 page dumped because: not locked
+
+(an order-9 page will occupy PFNs 0x1dc00-0x1ddff)
+
+It's clearly been freed and is still sitting on the per-CPU free list.
+I've also seen them as PageBuddy and, as in the first example above,
+reallocated to a different user.
