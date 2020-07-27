@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD5822E9B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC7222E9C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgG0KBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG0KBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:01:37 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B28DC061794;
-        Mon, 27 Jul 2020 03:01:37 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id m200so4290928ybf.10;
-        Mon, 27 Jul 2020 03:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=0ovBpV1RCu/BA4nTaDoRsgP6/JwSLVZ6NKuTSDEoq2o=;
-        b=E1eEVpGEJkFOHv/jqkFzsLLBeZstzNWOnkRuOgqZq3k7vgl9/Ijqj/NHFA/SBQMZJO
-         Y5OwQaqHN56aElH0syOGrNz6hrxinVDdoiIx40CkrlNzdXZF+LOTL2Kw/XHgTflBaNs3
-         s+SDsKy1h6DhAsl7AVa9QBZryXqrY7kxTLH1jWsyUnRFbQQyFGtpXyU2kkn02DvoxTUr
-         EIRmh0xZkgIjxUFFLjuQpMcN/lNSu64f2XwZf0TqoQ+2+b0vfQxtGe+OR30rtc1OadC0
-         eb8Ox+INKvauRuG7kuqzAKaaZc177gbuissG5WyDzbxBY1aD4g0CEDZ1xv5EqIm7nKLz
-         xx3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=0ovBpV1RCu/BA4nTaDoRsgP6/JwSLVZ6NKuTSDEoq2o=;
-        b=roXU5ZXqKLuEryFQ/Il5pYIMEKnKIN/EOzquosRyHRRcp3ZXV9R9KcoolDmwRR3eOR
-         PskYogj4q1zg78Z4VANgyUlD52A1GFmwNvp9KLeQ4P9epxS55zZlbB6YE7SWcMfLU/cD
-         +jvCQ1kFOv8Ot53HCIcypE2ihIB9FgGUjDd+hf9kTTIZ2tIr7kCLEdVnjOKv8V5LEkfH
-         wi8AG/6JoZl22raNSKLPKImjInFD2xnUWNFx7IirKPhhTaA6hhyrhxCH/ojaNv69UsI5
-         ZMCwWXoYZ6IzRgq9p/zNzF050/3jQ2p7MB0p95BmuK2nj8BwPJKZy1UYcHm/hSLm9GMq
-         desw==
-X-Gm-Message-State: AOAM531nTkU22fYHH9B2PezcXShMfmf5vm4OFJa5oNn0QOjLnzVVOLRk
-        RFqiQf5E311JBqkxXSjtD0/aXlBYw4NYxMMxIW0=
-X-Google-Smtp-Source: ABdhPJz2Z1EfUwootw8qs317nd/jj2jzAlI9c6sRGBnky/I0AJpP1/G4Jft3ZDAapmF2Mq/YqGV64nNWGGukhI/jh4w=
-X-Received: by 2002:a25:bbd2:: with SMTP id c18mr31296332ybk.495.1595844096142;
- Mon, 27 Jul 2020 03:01:36 -0700 (PDT)
-MIME-Version: 1.0
-From:   Cixi Geng <gengcixi@gmail.com>
-Date:   Mon, 27 Jul 2020 18:00:59 +0800
-Message-ID: <CAF12kFsOrFOQBrZv6qBbcQ971acEM0XxLWKqBJvEspoQ3UOHUQ@mail.gmail.com>
-Subject: kunit compile failed on um
-To:     brendanhiggins@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>, zhang.lyra@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1728001AbgG0KGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:06:00 -0400
+Received: from mga17.intel.com ([192.55.52.151]:59100 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727775AbgG0KF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:05:59 -0400
+IronPort-SDR: 97iV+zWiCVVNhgZKX75hKPbGCNSyq4uOPSLGwtoSQFAO//XTIrWg26Tyuleg2Q31l0fF6QeH7L
+ Fe4ZulAwI6nQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="131049061"
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="131049061"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 03:05:59 -0700
+IronPort-SDR: gLrtZhCIqTtP1z8ARPRtlLQ4yubkUbdvxJAN3lrIaPOF67bGKxi5QCWGH0Sw1dbL7HK0E7CM1Y
+ JTF4P9vFwGtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="489454657"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Jul 2020 03:05:56 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     kishon@ti.com, linux-kernel@vger.kernel.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        andriy.shevchenko@intel.com, balbi@kernel.org,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com, yin1.li@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v7 0/2] phy: Add USB PHY support on Intel LGM SoC
+Date:   Mon, 27 Jul 2020 18:03:34 +0800
+Message-Id: <20200727100336.32153-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brendan:
-When I run kunit test in um , it failed on kernel 5.8-rc* while
-succeeded  in v5.7 with same configuration. is this a bug?
+The USB PHY provides the optimized for low power dissipation while active, idle, or on standby.
+Requires minimal external components, a single resistor, for best operation.
+Supports 10/5-Gbps high-speed data transmission rates through 3-m USB 3.x cable
+---
+v7:
+  - No Change
+v6:
+  - No Change
+v5:
+  - As per Felipe and Greg's suggestion usb phy driver reviewed patches
+    changed the folder from drivers/usb/phy to drivers/phy
+  - Reviewed-By tag added in commit message
+v4:
+  - Andy's review comments addressed
+  - drop the excess error debug prints
+  - error check optimized
+  - merge the split line to one line
+v3:
+  - Andy's review comments update
+  - hardcode return value changed to actual return value from the callee
+  - add error check is fixed according to the above
+  - correct the assignment in redundant
+  - combine the split line into one line
+v2:
+  - Address Phillip's review comments
+  - replace devm_reset_control_get() by devm_reset_control_get_exclusive()
+  - re-design the assert and deassert fucntion calls as per review comments
+  - address kbuild bot warnings
+  - add the comments
+v1:
+  - initial version
 
-Here is my operation:
- gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)
+---
+dt-bindings: usb: Add USB PHY support for Intel LGM SoC
+v7:
+  - Fixed the bot issue: usb-phy@e7e00000: '#phy-cells' is a required property
+v6:
+  - Fixed the bot issue.
+  - replace node-name by usb-phy@ in example
+v5:
+  - Reviewed-By tag added
+v4:
+  - No Change
+v3:
+  - No Change
+v2:
+  - No Change
+v1:
+  - initial version
 
-the kunitconfig:
-Cixi.Geng:~/git-projects/torvals-linux$ cat .kunitconfig
-CONFIG_KUNIT=y
-CONFIG_KUNIT_TEST=y
-CONFIG_KUNIT_EXAMPLE_TEST=y
 
-command:
-Cixi.Geng:~/git-projects/torvals-linux$ ./tools/testing/kunit/kunit.py run
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: phy: Add USB PHY support for Intel LGM SoC
+  phy: Add USB3 PHY support for Intel LGM SoC
 
-the Error log:
-[17:51:14] Configuring KUnit Kernel ...
-[17:51:14] Building KUnit Kernel ...
-ERROR:root:b"make[1]:
-\xe8\xbf\x9b\xe5\x85\xa5\xe7\x9b\xae\xe5\xbd\x95\xe2\x80\x9c/home/cixi.geng1/git-projects/torvals-linux/.kunit\xe2\x80\x9d\n/home/cixi.geng1/git-projects/torvals-linux/Makefile:551:
-recipe for target 'outputmakefile' failed\nmake[1]:
-\xe7\xa6\xbb\xe5\xbc\x80\xe7\x9b\xae\xe5\xbd\x95\xe2\x80\x9c/home/cixi.geng1/git-projects/torvals-linux/.kunit\xe2\x80\x9d\nMakefile:185:
-recipe for target '__sub-make' failed\n"
+ .../devicetree/bindings/phy/intel,lgm-usb-phy.yaml |  58 +++++
+ drivers/phy/Kconfig                                |  11 +
+ drivers/phy/Makefile                               |   1 +
+ drivers/phy/phy-lgm-usb.c                          | 278 +++++++++++++++++++++
+ 4 files changed, 348 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,lgm-usb-phy.yaml
+ create mode 100644 drivers/phy/phy-lgm-usb.c
+
+-- 
+2.11.0
+
