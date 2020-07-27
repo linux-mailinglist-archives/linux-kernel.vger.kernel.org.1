@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378D822F44B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5293522F44E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730268AbgG0QGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        id S1730671AbgG0QHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726662AbgG0QGB (ORCPT
+        with ESMTP id S1726662AbgG0QHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:06:01 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696F8C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:06:01 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k05dS-003kVB-Or; Mon, 27 Jul 2020 16:05:54 +0000
-Date:   Mon, 27 Jul 2020 17:05:54 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Nick Bowler <nbowler@draconx.ca>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: PROBLEM: cryptsetup fails to unlock drive in 5.8-rc6 (regression)
-Message-ID: <20200727160554.GG794331@ZenIV.linux.org.uk>
-References: <20200723155101.pnezpo574ot4qkzx@atlas.draconx.ca>
+        Mon, 27 Jul 2020 12:07:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27034C061794;
+        Mon, 27 Jul 2020 09:07:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=2aQmIJDaFTj/Kf9z4Bfaajb+6jbNo420+J7NaCJSi0E=; b=Jzs4m41kN5iL1/gualbsul8T/y
+        cw4AZk4oqI7HMAnzxgjm5NiBMUORs3Q1BHldhz8+BUZ7DOuVz4VjJum57i6TOXIWZvjSl64osO29N
+        zutaD/Sp9RREubVIBg54Nelz22OU6LYT4kXCt4AsQoMJH9xay8IDCZtgPLn7xB5tN8Scve560/oWh
+        SnBwPBbhLFOsQIDOWKLTqhGqfj4mca2E84r8gD66FzBvJbofThKrI1uwWtg/TlKlhZfuN9OdSfe5u
+        KMILkhmtCx5VJy6RKXJK6zUOhjE+iPwOw2UOcDgEIn/on55e7XeUsBWOq1EBTWNSXTld5k9Y7yPUw
+        TbG0y9cw==;
+Received: from [2001:4bb8:18c:2acc:aa45:8411:1fb3:30ec] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k05fH-0002mL-1O; Mon, 27 Jul 2020 16:07:48 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: fixes for: decruft the early init / initrd / initramfs code v2
+Date:   Mon, 27 Jul 2020 18:07:41 +0200
+Message-Id: <20200727160744.329121-1-hch@lst.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723155101.pnezpo574ot4qkzx@atlas.draconx.ca>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 11:51:01AM -0400, Nick Bowler wrote:
-> Hi,
-> 
-> After installing Linux 5.8-rc6, it seems cryptsetup can no longer
-> open LUKS volumes.  Regardless of the entered passphrase (correct
-> or otherwise), the result is a very unhelpful "Keyslot open failed."
-> message.
-> 
-> On the kernels which fail, I also noticed that the cryptsetup
-> benchmark command appears to not be able to determine that any
-> ciphers are available (output at end of message), possibly for
-> the same reason.
-> 
-> Bisected to the following commit, which suggests a problem specific
-> to compat userspace (this is amd64 kernel).  I tested both ia32 and
-> x32 userspace to confirm the problem.  Reverting this commit on top
-> of 5.8-rc6 resolves the issue.
-> 
-> Looking at strace output the failing syscall appears to be:
-> 
->   sendmsg(8, {msg_name=NULL, msg_namelen=0, 
-> 	     msg_iov=[{iov_base=..., iov_len=512}], msg_iovlen=1,
-> 	     msg_control=[{cmsg_len=16, cmsg_level=SOL_ALG,
-> 	     cmsg_type=0x3}, {cmsg_len=32, cmsg_level=SOL_ALG,
-> 	     cmsg_type=0x2}], msg_controllen=48, msg_flags=0}, 0)
-> 	     = -1 EINVAL (Invalid argument)
+Hi all,
 
-Huh?  Just in case - could you verify that on the kernel with that
-commit reverted the same sendmsg() succeeds?
+this series fixes up a few issues found in my
+
+    git://git.infradead.org/users/hch/misc.git init-user-pointers
+
+tree.  The patches are relative to it.
