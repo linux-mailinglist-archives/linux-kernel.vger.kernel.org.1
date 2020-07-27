@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B5822EEBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F63C22EFF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729810AbgG0OKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:10:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32822 "EHLO mail.kernel.org"
+        id S1729857AbgG0OUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729790AbgG0OKM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:10:12 -0400
+        id S1729871AbgG0OUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:20:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B384A2083E;
-        Mon, 27 Jul 2020 14:10:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB18E2070B;
+        Mon, 27 Jul 2020 14:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859012;
-        bh=hhuOWuHf7e1hRbr1agT3ODhnh3OFAi7Fw/8QD9fmEfE=;
+        s=default; t=1595859638;
+        bh=19mQB+PQDrdF584KAX767sTni5YlZ0N4xfTr5X9tToo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zthnJBfeEiRVB5yEy4i97T6BobtqnCIMI1vtCimZx2gMVspI74JlDUWgc7XLx0Rl8
-         r6pzcGHFpi4S8L7+Wo72OqzYsbea0RgSanfamZNjnjP3Duq2Bu1Qn+zzvSqNPwhAhE
-         r50hnM8P7WlVp9Cz1dNwpUiL55b+yjdwYMAcSF6A=
+        b=QC+9M1kAoG2BafWvk3Ld4UroETstJMsStKzi/m5eD5CSdGK09H1O/BIQ4bxZWgA8l
+         EvcmewoYEVnqGiRy91x/3ibkXmh5SM+IvS/kS080XRTAEfvw+M3untPmbqNx9cOV8F
+         o7AKEb/DDIRDamjSyo0yDimbISZDIwadLixQRcu8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Bottomley <jejb@linux.ibm.com>,
-        Tom Rix <trix@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 06/86] scsi: scsi_transport_spi: Fix function pointer check
-Date:   Mon, 27 Jul 2020 16:03:40 +0200
-Message-Id: <20200727134914.661970189@linuxfoundation.org>
+Subject: [PATCH 5.7 046/179] fpga: dfl: pci: reduce the scope of variable ret
+Date:   Mon, 27 Jul 2020 16:03:41 +0200
+Message-Id: <20200727134934.913345380@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Xu Yilun <yilun.xu@intel.com>
 
-[ Upstream commit 5aee52c44d9170591df65fafa1cd408acc1225ce ]
+[ Upstream commit e19485dc7a0d210b428a249c0595769bd495fb71 ]
 
-clang static analysis flags several null function pointer problems.
+This is to fix lkp cppcheck warnings:
 
-drivers/scsi/scsi_transport_spi.c:374:1: warning: Called function pointer is null (null dereference) [core.CallAndMessage]
-spi_transport_max_attr(offset, "%d\n");
-^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/fpga/dfl-pci.c:230:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
+    int ret = 0;
+        ^
 
-Reviewing the store_spi_store_max macro
+ drivers/fpga/dfl-pci.c:230:10: warning: Variable 'ret' is assigned a value that is never used. [unreadVariable]
+    int ret = 0;
+            ^
 
-	if (i->f->set_##field)
-		return -EINVAL;
-
-should be
-
-	if (!i->f->set_##field)
-		return -EINVAL;
-
-Link: https://lore.kernel.org/r/20200627133242.21618-1-trix@redhat.com
-Reviewed-by: James Bottomley <jejb@linux.ibm.com>
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 3c2760b78f90 ("fpga: dfl: pci: fix return value of cci_pci_sriov_configure")
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+Acked-by: Wu Hao <hao.wu@intel.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/fpga/dfl-pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_transport_spi.c b/drivers/scsi/scsi_transport_spi.c
-index 40b85b752b794..69213842e63e0 100644
---- a/drivers/scsi/scsi_transport_spi.c
-+++ b/drivers/scsi/scsi_transport_spi.c
-@@ -352,7 +352,7 @@ store_spi_transport_##field(struct device *dev, 			\
- 	struct spi_transport_attrs *tp					\
- 		= (struct spi_transport_attrs *)&starget->starget_data;	\
- 									\
--	if (i->f->set_##field)						\
-+	if (!i->f->set_##field)						\
- 		return -EINVAL;						\
- 	val = simple_strtoul(buf, NULL, 0);				\
- 	if (val > tp->max_##field)					\
+diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
+index 538755062ab7c..a78c409bf2c44 100644
+--- a/drivers/fpga/dfl-pci.c
++++ b/drivers/fpga/dfl-pci.c
+@@ -227,7 +227,6 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
+ {
+ 	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
+ 	struct dfl_fpga_cdev *cdev = drvdata->cdev;
+-	int ret = 0;
+ 
+ 	if (!num_vfs) {
+ 		/*
+@@ -239,6 +238,8 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
+ 		dfl_fpga_cdev_config_ports_pf(cdev);
+ 
+ 	} else {
++		int ret;
++
+ 		/*
+ 		 * before enable SRIOV, put released ports into VF access mode
+ 		 * first of all.
 -- 
 2.25.1
 
