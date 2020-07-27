@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C7E22F766
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC66A22F76D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbgG0SMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728312AbgG0SMM (ORCPT
+        id S1730719AbgG0SNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:13:52 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:36087 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728312AbgG0SNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:12:12 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB92C061794;
-        Mon, 27 Jul 2020 11:12:12 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id f1so15271761wro.2;
-        Mon, 27 Jul 2020 11:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n+cjMJexAD4hVslCLfZxYw0xSj4v32Cg73ix8mAo6lQ=;
-        b=rvXZRTq8JQeLezn3Y8PtrvIvpSkDiBHveZhfRmIRsSBeDJZnjKqBGy+QWwELGHHK9h
-         IcMm8HWjNIwnu3YVdbwj7AmtnCfpAhFZ+Rpc4w8N91b/7XRDjPtMUQxHAY+v6x5JU1nS
-         3XcXWMQ8Z6v41HCiM/COJFtN8CNp79O9B+gMY9IdeHjA7WwIXl3acZ7NJYKKF2pW6le1
-         9956/PiAmuH96Npac+3FjCpIR1YH8sTu6ZSf+wTE+16ZZ4Wm2B1q9cjwtZTrnH27vFLU
-         Os2LTJRtUv0ccsrNI3bsAmwtod5CkcmTpMeDKKx+aTuxVAdxyuvYtKYrRed634svN5W2
-         SgpA==
+        Mon, 27 Jul 2020 14:13:52 -0400
+Received: by mail-il1-f194.google.com with SMTP id z3so3673526ilh.3;
+        Mon, 27 Jul 2020 11:13:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n+cjMJexAD4hVslCLfZxYw0xSj4v32Cg73ix8mAo6lQ=;
-        b=qq7G3SgGR7kOnfXrQfxqFwOxK/OuoXzma4U7I3ST2E2L1GlVjes1Uxq4mezZjy7hx5
-         nkAIfhVgdHkKUT+7+MuVM+pMstmdYwl2ND1+U2w11PFB5wuQDGcFZlrkohscb1hjgyoe
-         ZKYiJ8hEUUR8yeVDljolzTebJigAZ4IcgN50fIkNdD9H6HHyZd0tvMR1GuUdfUrbeQZ/
-         3c8+iXDtpoRCZuO0uWDOgsyuQIjoC32rwmrYQonP3H1lCMY2/idVVpmkn+oLs/2FlW9J
-         vGBWaXVlaldkEPhYT9z6cgkIcW+/Q6MwnCmmngqULEIV/aJxU01k/t8e/1LVO3CpuZm1
-         FYSQ==
-X-Gm-Message-State: AOAM533gHrys5Ac8UysKXYDfih6ujTdw/uXgKlq+oXYuTHxT5TOjZb60
-        TQCYAoA4rwHi4RLOvmWTB0u4O7JL714DDl9+BF8=
-X-Google-Smtp-Source: ABdhPJwFtDW1X9++0RKW78h+dwtCDaX++VHQCmLYontPEXnwlgS2w9CTdMWsfkGtAl4r3B+vtG4bXra770bQd6VRpaY=
-X-Received: by 2002:adf:a351:: with SMTP id d17mr21027063wrb.111.1595873530004;
- Mon, 27 Jul 2020 11:12:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200727103436.50793-1-christophe.jaillet@wanadoo.fr> <898acaf6-9975-40b1-1104-586b64689ccd@gmail.com>
-In-Reply-To: <898acaf6-9975-40b1-1104-586b64689ccd@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 27 Jul 2020 14:11:58 -0400
-Message-ID: <CADnq5_OqdUxSKv21pg9o=a_dwyW7-j3URy+BYHrS+ubzuA-7NQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/radeon: avoid a useless memset
-To:     Christian Koenig <christian.koenig@amd.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FezFginUTy2nglTrBQrbccgUu3m/rgDlVyShBQFXbuM=;
+        b=HfzXlKqcU5oWxENTYnB2cM0h/mDjkeheLT5qiOyyLv0UV5kzbx2wyw/Q/0Pi8tb9BH
+         kjtl+RIFEHVJ6J473PunNXxQuk5hJvoijHnyXsYcTiRhr9W69qb+pN0WevFXd1PJuq6V
+         0KDZ8FLpiogNRXDNAY8AYntD3xi9hrIRsMWYLAyKWoatfteE3Yk1br9Q3FzyOu1o5fJV
+         66bQRlQHriOvMkFigq+rRZCP3neNgaPK1GVBrmRF4/z+B3WQiuZoJn+w9QgPysMCeyv4
+         FwyQrf3FI4zEo16Lrif2i3rq99zOnvMBm0XNIODx6qaq8Owb6fP/Ea8GRgbboBTq1KLd
+         ZBRw==
+X-Gm-Message-State: AOAM530IK2lFEHVwffUu3GpyutQswwfdKRFlE05ez9GIWqkoBPpNScL1
+        zpWkQOxWx2W6JPrpYWHDtQ==
+X-Google-Smtp-Source: ABdhPJxcTZ1wWiZQBj6GSHPIlQHm9ClLpwRYBVSWGAnLwaItX6R/lSkREMbAFXVOnxUjPhxCOFMv7g==
+X-Received: by 2002:a05:6e02:8e4:: with SMTP id n4mr16683067ilt.96.1595873631429;
+        Mon, 27 Jul 2020 11:13:51 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id c67sm9202464iof.16.2020.07.27.11.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 11:13:50 -0700 (PDT)
+Received: (nullmailer pid 638435 invoked by uid 1000);
+        Mon, 27 Jul 2020 18:13:46 -0000
+Date:   Mon, 27 Jul 2020 12:13:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     martin.botka1@gmail.com, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        kernel-janitors@vger.kernel.org,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        zhengbin <zhengbin13@huawei.com>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Harigovindan P <harigovi@codeaurora.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Xiaozhe Shi <xiaozhes@codeaurora.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 9/9] soc/qcom: Add REVID driver
+Message-ID: <20200727181346.GA634850@bogus>
+References: <20200726111215.22361-1-konradybcio@gmail.com>
+ <20200726111215.22361-10-konradybcio@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200726111215.22361-10-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Sun, Jul 26, 2020 at 01:12:06PM +0200, Konrad Dybcio wrote:
+> From: Xiaozhe Shi <xiaozhes@codeaurora.org>
+> 
+> Add the REVID device driver. The REVID driver will print out the PMIC
+> revision at probe time.
+> 
+> Signed-off-by: Xiaozhe Shi <xiaozhes@codeaurora.org>
+> [konradybcio@gmail.com: Fast-forward the driver from kernel 4.14 to 5.8,
+> convert binding to yaml]
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> ---
+>  .../bindings/soc/qcom/qcom,qpnp-revid.yaml    |  38 ++
 
-Alex
+Bindings should be a separate patch. checkpatch.pl will tell you this.
 
-On Mon, Jul 27, 2020 at 9:41 AM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> Am 27.07.20 um 12:34 schrieb Christophe JAILLET:
-> > Avoid a memset after a call to 'dma_alloc_coherent()'.
-> > This is useless since
-> > commit 518a2f1925c3 ("dma-mapping: zero memory returned from dma_alloc_=
-*")
-> >
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->
-> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> > ---
-> >   drivers/gpu/drm/radeon/radeon_gart.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/radeon/radeon_gart.c b/drivers/gpu/drm/rad=
-eon/radeon_gart.c
-> > index b7ce254e5663..3808a753127b 100644
-> > --- a/drivers/gpu/drm/radeon/radeon_gart.c
-> > +++ b/drivers/gpu/drm/radeon/radeon_gart.c
-> > @@ -85,7 +85,6 @@ int radeon_gart_table_ram_alloc(struct radeon_device =
-*rdev)
-> >       }
-> >   #endif
-> >       rdev->gart.ptr =3D ptr;
-> > -     memset((void *)rdev->gart.ptr, 0, rdev->gart.table_size);
-> >       return 0;
-> >   }
-> >
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+>  drivers/soc/qcom/Kconfig                      |   9 +
+>  drivers/soc/qcom/Makefile                     |   1 +
+>  drivers/soc/qcom/qpnp-revid.c                 | 288 ++++++++++++++
+>  include/linux/qpnp/qpnp-revid.h               | 369 ++++++++++++++++++
+>  5 files changed, 705 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,qpnp-revid.yaml
+>  create mode 100644 drivers/soc/qcom/qpnp-revid.c
+>  create mode 100644 include/linux/qpnp/qpnp-revid.h
