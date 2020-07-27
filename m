@@ -2,148 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D59722E713
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432BF22E6FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727897AbgG0H5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:57:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63190 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727886AbgG0H47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:56:59 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06R7We79040948;
-        Mon, 27 Jul 2020 03:56:43 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32gh933ss2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 03:56:43 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06R7YP25047667;
-        Mon, 27 Jul 2020 03:56:42 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32gh933srd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 03:56:42 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06R7uKGc020633;
-        Mon, 27 Jul 2020 07:56:40 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 32gcqghxw4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 07:56:40 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06R7tDIG58982854
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Jul 2020 07:55:13 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 11EE6AE045;
-        Mon, 27 Jul 2020 07:56:38 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 82AE7AE04D;
-        Mon, 27 Jul 2020 07:56:35 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.199.36.96])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Jul 2020 07:56:35 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH 6/7] powerpc/smp: Stop passing mask to update_mask_by_l2
-Date:   Mon, 27 Jul 2020 13:25:31 +0530
-Message-Id: <20200727075532.30058-7-srikar@linux.vnet.ibm.com>
+        id S1726992AbgG0Hzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:55:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726211AbgG0Hzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 03:55:43 -0400
+Received: from localhost.localdomain (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0AA320672;
+        Mon, 27 Jul 2020 07:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595836542;
+        bh=klIYZ3z3AZ82e3hAd5ya/zhpvWBojtO3/DLyBwGwpHA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fcx2rUQXA8HJhCYavhUebUtAby8I1DMdXZV1YYeNYIHbB0QCfO6xAo1G/ywddtxcg
+         Nsb55Ip7/oiqwz13Z/c0TKnTV5QC1NrfucD90T1VuptwznRdQ95njxQYlBxi7iOPRj
+         /rMVqBb5ldQ+YVYhCunj7CYj+uootpc6l3akxsEE=
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH] arm64: dts: qcom: sdm845-db845c: Add hdmi bridge nodes
+Date:   Mon, 27 Jul 2020 13:25:32 +0530
+Message-Id: <20200727075532.1932134-1-vkoul@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200727075532.30058-1-srikar@linux.vnet.ibm.com>
-References: <20200727075532.30058-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_04:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 bulkscore=0 priorityscore=1501 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007270051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update_mask_by_l2 is called only once. But it passes cpu_l2_cache_mask
-as parameter. Instead of passing cpu_l2_cache_mask, use it directly in
-update_mask_by_l2.
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Enable MDSS and DSI and add the LT9611 HDMI bridge. Also add the HDMI
+audio nodes.
+
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Co-developed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- arch/powerpc/kernel/smp.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 118 +++++++++++++++++++++
+ 1 file changed, 118 insertions(+)
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index 9b03aad0beac..eceb7aa0f4b8 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1222,7 +1222,7 @@ static struct device_node *cpu_to_l2cache(int cpu)
- 	return cache;
- }
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index c00797bd3b07..a2a98680ccf5 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -74,6 +74,17 @@ bt {
+ 		};
+ 	};
  
--static bool update_mask_by_l2(int cpu, struct cpumask *(*mask_fn)(int))
-+static bool update_mask_by_l2(int cpu)
- {
- 	struct device_node *l2_cache, *np;
- 	int i;
-@@ -1231,7 +1231,7 @@ static bool update_mask_by_l2(int cpu, struct cpumask *(*mask_fn)(int))
- 	if (!l2_cache)
- 		return false;
++	hdmi-out {
++		compatible = "hdmi-connector";
++		type = "a";
++
++		port {
++			hdmi_con: endpoint {
++				remote-endpoint = <&lt9611_out>;
++			};
++		};
++	};
++
+ 	lt9611_1v8: lt9611-vdd18-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "LT9611_1V8";
+@@ -382,6 +393,25 @@ &cdsp_pas {
+ 	firmware-name = "qcom/sdm845/cdsp.mdt";
+ };
  
--	cpumask_set_cpu(cpu, mask_fn(cpu));
-+	cpumask_set_cpu(cpu, cpu_l2_cache_mask(cpu));
- 	for_each_cpu_and(i, cpu_online_mask, cpu_cpu_mask(cpu)) {
- 		/*
- 		 * when updating the marks the current CPU has not been marked
-@@ -1242,7 +1242,7 @@ static bool update_mask_by_l2(int cpu, struct cpumask *(*mask_fn)(int))
- 			continue;
++&dsi0 {
++	status = "okay";
++	vdda-supply = <&vreg_l26a_1p2>;
++
++	ports {
++		port@1 {
++			endpoint {
++				remote-endpoint = <&lt9611_a>;
++				data-lanes = <0 1 2 3>;
++			};
++		};
++	};
++};
++
++&dsi0_phy {
++	status = "okay";
++	vdds-supply = <&vreg_l1a_0p875>;
++};
++
+ &gcc {
+ 	protected-clocks = <GCC_QSPI_CORE_CLK>,
+ 			   <GCC_QSPI_CORE_CLK_SRC>,
+@@ -395,6 +425,48 @@ zap-shader {
+ 	};
+ };
  
- 		if (np == l2_cache)
--			set_cpus_related(cpu, i, mask_fn);
-+			set_cpus_related(cpu, i, cpu_l2_cache_mask);
++&i2c10 {
++	status = "okay";
++	clock-frequency = <400000>;
++
++	lt9611_codec: hdmi-bridge@3b {
++		compatible = "lontium,lt9611";
++		reg = <0x3b>;
++		#sound-dai-cells = <1>;
++
++		interrupts-extended = <&tlmm 84 IRQ_TYPE_EDGE_FALLING>;
++
++		reset-gpios = <&tlmm 128 GPIO_ACTIVE_HIGH>;
++
++		vdd-supply = <&lt9611_1v8>;
++		vcc-supply = <&lt9611_3v3>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&lt9611_irq_pin>, <&dsi_sw_sel>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++
++				lt9611_out: endpoint {
++					remote-endpoint = <&hdmi_con>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++
++				lt9611_a: endpoint {
++					remote-endpoint = <&dsi0_out>;
++				};
++			};
++		};
++	};
++};
++
+ &i2c11 {
+ 	/* On Low speed expansion */
+ 	label = "LS-I2C1";
+@@ -407,6 +479,14 @@ &i2c14 {
+ 	status = "okay";
+ };
  
- 		of_node_put(np);
- 	}
-@@ -1306,7 +1306,7 @@ static void add_cpu_to_masks(int cpu)
- 			set_cpus_related(i, cpu, cpu_sibling_mask);
++&mdss {
++	status = "okay";
++};
++
++&mdss_mdp {
++	status = "okay";
++};
++
+ &mss_pil {
+ 	status = "okay";
+ 	firmware-name = "qcom/sdm845/mba.mbn", "qcom/sdm845/modem.mbn";
+@@ -612,6 +692,21 @@ cpu {
+ 		};
+ 	};
  
- 	add_cpu_to_smallcore_masks(cpu);
--	update_mask_by_l2(cpu, cpu_l2_cache_mask);
-+	update_mask_by_l2(cpu);
++	hdmi-dai-link {
++		link-name = "HDMI Playback";
++		cpu {
++			sound-dai = <&q6afedai QUATERNARY_MI2S_RX>;
++		};
++
++		platform {
++			sound-dai = <&q6routing>;
++		};
++
++		codec {
++			sound-dai =  <&lt9611_codec 0>;
++		};
++	};
++
+ 	slim-dai-link {
+ 		link-name = "SLIM Playback";
+ 		cpu {
+@@ -686,6 +781,21 @@ mclk3 {
+ 		};
+ 	};
  
- 	if (has_coregroup_support()) {
- 		int coregroup_id = cpu_to_coregroup_id(cpu);
++	dsi_sw_sel: dsi-sw-sel {
++		pins = "gpio120";
++		function = "gpio";
++
++		drive-strength = <2>;
++		bias-disable;
++		output-high;
++	};
++
++	lt9611_irq_pin: lt9611-irq {
++		pins = "gpio84";
++		function = "gpio";
++		bias-disable;
++	};
++
+ 	pcie0_default_state: pcie0-default {
+ 		clkreq {
+ 			pins = "gpio36";
+@@ -943,6 +1053,14 @@ pinmux {
+ 	};
+ };
+ 
++&qup_i2c10_default {
++	pinconf {
++		pins = "gpio55", "gpio56";
++		drive-strength = <2>;
++		bias-disable;
++	};
++};
++
+ &qup_uart6_default {
+ 	pinmux {
+ 		pins = "gpio45", "gpio46", "gpio47", "gpio48";
 -- 
-2.17.1
+2.26.2
 
