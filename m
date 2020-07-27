@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCF922F23D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9DF22F1E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732941AbgG0Oih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:38:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33454 "EHLO mail.kernel.org"
+        id S1730700AbgG0OfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729864AbgG0OKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:10:33 -0400
+        id S1730690AbgG0OPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:15:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1C9F21744;
-        Mon, 27 Jul 2020 14:10:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C639D2078E;
+        Mon, 27 Jul 2020 14:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859032;
-        bh=xQI0yFnzNSvyeRpOKzZjkpmDe9gDpNvkcWJfGC4Ahyg=;
+        s=default; t=1595859320;
+        bh=9fi20TPI1MFfdKm2wcuihBn1I4F7kSBAr/fE6EhADck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yBVwAQqncffz0jLtuUxfupds0anVjQAYvOeyIMz5amCDHOKxjyatEOaYXbC5rJQCH
-         vGeQrtY8W2KYjYPUsL3XWj5lve1tb5snMzXSVn0vBIqmR54liCp3HrvwiTt7g4znic
-         cIN3lLw0b4/UMGoycHPy3RG+voVTC/vI9uW8UcvY=
+        b=byHQNdf6U/Cm8zEYBp0gT8eoyYv7ufm5K1T3rBg/twoB6xaPTULWkIiOvcOSNpc7x
+         CqMbPlr8qS87kG7waO02CL2zaxEjE1NK+k4eVxYV3axIE4lov0cRV1NWpWMDTCI+7T
+         ASzWyYoOCzam1U2V9pwDDTdepFdStEk8hN23ZgGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pi-Hsun Shih <pihsun@chromium.org>,
-        Shik Chen <shik@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 41/86] scripts/decode_stacktrace: strip basepath from all paths
-Date:   Mon, 27 Jul 2020 16:04:15 +0200
-Message-Id: <20200727134916.507425735@linuxfoundation.org>
+        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 062/138] nfsd4: fix NULL dereference in nfsd/clients display code
+Date:   Mon, 27 Jul 2020 16:04:17 +0200
+Message-Id: <20200727134928.512290568@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,47 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pi-Hsun Shih <pihsun@chromium.org>
+From: J. Bruce Fields <bfields@redhat.com>
 
-[ Upstream commit d178770d8d21489abf5bafefcbb6d5243b482e9a ]
+[ Upstream commit 9affa435817711861d774f5626c393c80f16d044 ]
 
-Currently the basepath is removed only from the beginning of the string.
-When the symbol is inlined and there's multiple line outputs of
-addr2line, only the first line would have basepath removed.
+We hold the cl_lock here, and that's enough to keep stateid's from going
+away, but it's not enough to prevent the files they point to from going
+away.  Take fi_lock and a reference and check for NULL, as we do in
+other code.
 
-Change to remove the basepath prefix from all lines.
-
-Fixes: 31013836a71e ("scripts/decode_stacktrace: match basepath using shell prefix operator, not regex")
-Co-developed-by: Shik Chen <shik@chromium.org>
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-Signed-off-by: Shik Chen <shik@chromium.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Nicolas Boichat <drinkcat@chromium.org>
-Cc: Jiri Slaby <jslaby@suse.cz>
-Link: http://lkml.kernel.org/r/20200720082709.252805-1-pihsun@chromium.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: NeilBrown <neilb@suse.de>
+Fixes: 78599c42ae3c ("nfsd4: add file to display list of client's opens")
+Reviewed-by: NeilBrown <neilb@suse.de>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/decode_stacktrace.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/nfsd/nfs4state.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index 5aa75a0a1cede..946735bd5a252 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
-@@ -77,8 +77,8 @@ parse_symbol() {
- 		return
- 	fi
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 9af9b673f2923..68cf116607645 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -506,6 +506,17 @@ find_any_file(struct nfs4_file *f)
+ 	return ret;
+ }
  
--	# Strip out the base of the path
--	code=${code#$basepath/}
-+	# Strip out the base of the path on each line
-+	code=$(while read -r line; do echo "${line#$basepath/}"; done <<< "$code")
++static struct nfsd_file *find_deleg_file(struct nfs4_file *f)
++{
++	struct nfsd_file *ret = NULL;
++
++	spin_lock(&f->fi_lock);
++	if (f->fi_deleg_file)
++		ret = nfsd_file_get(f->fi_deleg_file);
++	spin_unlock(&f->fi_lock);
++	return ret;
++}
++
+ static atomic_long_t num_delegations;
+ unsigned long max_delegations;
  
- 	# In the case of inlines, move everything to same line
- 	code=${code//$'\n'/' '}
+@@ -2378,6 +2389,8 @@ static int nfs4_show_open(struct seq_file *s, struct nfs4_stid *st)
+ 	oo = ols->st_stateowner;
+ 	nf = st->sc_file;
+ 	file = find_any_file(nf);
++	if (!file)
++		return 0;
+ 
+ 	seq_printf(s, "- 0x%16phN: { type: open, ", &st->sc_stateid);
+ 
+@@ -2411,6 +2424,8 @@ static int nfs4_show_lock(struct seq_file *s, struct nfs4_stid *st)
+ 	oo = ols->st_stateowner;
+ 	nf = st->sc_file;
+ 	file = find_any_file(nf);
++	if (!file)
++		return 0;
+ 
+ 	seq_printf(s, "- 0x%16phN: { type: lock, ", &st->sc_stateid);
+ 
+@@ -2439,7 +2454,9 @@ static int nfs4_show_deleg(struct seq_file *s, struct nfs4_stid *st)
+ 
+ 	ds = delegstateid(st);
+ 	nf = st->sc_file;
+-	file = nf->fi_deleg_file;
++	file = find_deleg_file(nf);
++	if (!file)
++		return 0;
+ 
+ 	seq_printf(s, "- 0x%16phN: { type: deleg, ", &st->sc_stateid);
+ 
+@@ -2451,6 +2468,7 @@ static int nfs4_show_deleg(struct seq_file *s, struct nfs4_stid *st)
+ 
+ 	nfs4_show_superblock(s, file);
+ 	seq_printf(s, " }\n");
++	nfsd_file_put(file);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
