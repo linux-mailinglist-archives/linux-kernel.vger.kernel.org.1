@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECA622F3DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05FC22F3E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbgG0Pbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48152 "EHLO
+        id S1730511AbgG0PeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726744AbgG0Pbj (ORCPT
+        with ESMTP id S1727784AbgG0PeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:31:39 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30207C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:31:39 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id h7so15582235qkk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:31:39 -0700 (PDT)
+        Mon, 27 Jul 2020 11:34:00 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E999C061794;
+        Mon, 27 Jul 2020 08:34:00 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id k71so9617485pje.0;
+        Mon, 27 Jul 2020 08:34:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=eclypsium.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Tc6U4B4ifrBotOh/fXS5TVXJl0j6RPCfuacCtXdF/Bs=;
-        b=POX89PUxNVTvKUH1A4IvhZs88Vh004sHJ6vDsdtT1qEnZTeAPN9d4ux66c8fnpxrLe
-         GFGANIM94UQHjSOL5C71fJf7QzOZId/30YS5Ou0PhM0TJLI9TSgzRlPogD77U0QuBXwT
-         0uwHQgRBAlbeQQ9+6j8K9dA5uoqGwT3TzdEuiPHM3pGN/IkvAI3aZWgz9jQoB6Do/BK4
-         rGSeGwbUzBeaisWIlSSv99+V+BhnkHa5t3otM4Y93xF/iLBsSLdplEJm6KdgNARJONoG
-         3csM6GxAGc3rQZK+s2fndFK/n4xtDktyPnOscTVI2U1B+DyQ7aEZIKxxzelNQuUUXZ5E
-         ga3A==
+         :cc;
+        bh=pcY0A56aPSXRoinZe6gcqtnoZNboGx9+nJBDiq4Vbx4=;
+        b=oX9WXK5+2EvvTcwgfnjjqmWJEGAJFSDR+6Y+PALc3mZWl6t1xf36+ZokY1jfxLY7Qx
+         vTu998n7s3xDkI9n/LSZS0dMqffhKSJKb0hFh7pcle5RV5Std2H1RZ0r4v04vaJrnhzu
+         BRE3xUNHmeKVI2lsgqw+dSq9Rsmm3SHV+jCO3Kya+2LiTdlGvTzXMwtFZmNIgY420cJ3
+         e3W1GcEpIkCg0b79rAC+Ylq0CRIBh/T6VaY5/tg2M4JsO55k3cZKtH4euSXLnN6zoNOB
+         zG5Xhio5Ex4GeOLHwdwafmRKUSc4Ef25ch/lHKy5opAkEtNpwmCoowZSMZkkc/9Da2W5
+         cG2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Tc6U4B4ifrBotOh/fXS5TVXJl0j6RPCfuacCtXdF/Bs=;
-        b=aJm3HP5j6cMlzld3v5utLuQAc2bj1U0mOWlNXigPlO+LGnWGVpzUgZu6zKzFYwgkOa
-         K1BTnQBKOlrbB4EDK3hvfBvUcIvtfOg7T2dhfbtrZb+un/JEMRlxR0izuQcdgOOsnZMu
-         CPNngM/Xu8qZ5yqPCvEg00AtO0UZbrqMoPOkzpK5tkvFcyL+cAg7zmWdOHP9OIxPLeKo
-         WzrGbblt62HMWwo43fJPjWFx0r6Y+qOL1V5jasxV5UA/MmoZf5ENFW5zNgNlnLEzYnAq
-         +c5IRNmbyEXyrz5lH3r1tso44h30SrxJjk+OJTaXruz3D6YBE9r0FRQ4B4BtzO05CZlo
-         k+sw==
-X-Gm-Message-State: AOAM533fwXnQ3nVKxW5pYO41SKSeZvyFCz+29ce7DVhGPEA5s1Ave9Da
-        aLeB3IFsJ3uqeVotS86qETWiNeWge2lro/Q6h9BoaA==
-X-Google-Smtp-Source: ABdhPJxyNMAKvg1LEG48ofJJNYU+f8IxgUp0EcqzWaM5nc5Eojucgiz/T7/9vC6vuPXocWDtZtqeYPIuc6dsnTOw1Ws=
-X-Received: by 2002:a37:278d:: with SMTP id n135mr22801202qkn.486.1595863898240;
- Mon, 27 Jul 2020 08:31:38 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=pcY0A56aPSXRoinZe6gcqtnoZNboGx9+nJBDiq4Vbx4=;
+        b=jEz4G8DnIuFgy+X+sdCt3j7ThdhloA1yBGB/BNXvSXGsi4WA1xSxlK4J2qz870pXc2
+         jbw8XllfRDeTXpGLIxVt+jyJGQ2ou3B9q8Vx46dUuK8YBAWEKlIAltieK/WCXpeapIt5
+         BYMmq/3HSnQM04AlRsRcrPOD4u65D1icwmQPMs1rSkVdbftbQrNhyA0cvNvz21hcnZNm
+         PpWl/Af29FTbtmos0ddC1514Ld7n3wzbvWvistdqOwTMV6tIjVIH18MOtVr5Agwqd4Kt
+         UhSgYEh59Vzy/P/KcXpSg7JWgOXCufR5Ak1znH5ETgpwXXACbXC5PNxOwmbmgYfLYryF
+         Oqjw==
+X-Gm-Message-State: AOAM531HyZZUfuPuXn4slX2uC92CkJdXI51RkFTLP7HpaQtE9pT9TRaq
+        LY/cNyg7Ad0sKQSpLIsMS53cj/9+1PZHc0HNDtU=
+X-Google-Smtp-Source: ABdhPJwFOUmxIDqsOSd+NVchInvYpDQG+Iuwpt2fmGBMHos1KdESwfZEZIwNlqyS+wub10WN3LvGw7Njhl8UDVddk08=
+X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr17086062pjp.228.1595864040131;
+ Mon, 27 Jul 2020 08:34:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200724212853.11601-1-daniel.gutson@eclypsium.com>
- <20200725055649.GA1047853@kroah.com> <CAFmMkTE_dT9+WJYyb19uQ_HmgJWZSARBy6PveheQJk++NuGbkQ@mail.gmail.com>
- <20200726071723.GB441916@kroah.com> <CAFmMkTFzGfFDrJrdgHztzLK2K-zBWy6T2Tv+G4-rrbVpbahkgg@mail.gmail.com>
- <CAK8P3a1nA7K15Cxz84Q8Grw3tKfgkUmsfURcytJEWb_0Wjqm5w@mail.gmail.com>
-In-Reply-To: <CAK8P3a1nA7K15Cxz84Q8Grw3tKfgkUmsfURcytJEWb_0Wjqm5w@mail.gmail.com>
-From:   Daniel Gutson <daniel@eclypsium.com>
-Date:   Mon, 27 Jul 2020 12:31:27 -0300
-Message-ID: <CAFmMkTExBY3V_Ghej7Bzjatg+vFtWq3UZmKzjAiEoR9EqnFN9Q@mail.gmail.com>
-Subject: Re: [PATCH] Module argument to control whether intel-spi-pci attempts
- to turn the SPI flash chip writeable
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>
+References: <20200727122242.32337-1-vadym.kochan@plvision.eu>
+ <20200727122242.32337-3-vadym.kochan@plvision.eu> <CAHp75VeWGUB8izyHptfsXXv4GbsDu6_4rr9EaRR9wooXywaP+g@mail.gmail.com>
+ <20200727141152.GM2216@nanopsycho>
+In-Reply-To: <20200727141152.GM2216@nanopsycho>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 27 Jul 2020 18:33:45 +0300
+Message-ID: <CAHp75Vemcp1y3S09PVTQoyB10goZfhb1HYmeMxqiReQdQJ3JBw@mail.gmail.com>
+Subject: Re: [net-next v4 2/6] net: marvell: prestera: Add PCI interface support
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Andrii Savka <andrii.savka@plvision.eu>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mickey Rachamim <mickeyr@marvell.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:15 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Mon, Jul 27, 2020 at 5:05 PM Daniel Gutson <daniel@eclypsium.com> wrot=
-e:
-> > On Sun, Jul 26, 2020 at 4:17 AM Greg Kroah-Hartman <gregkh@linuxfoundat=
-ion.org> wrote:
-> >>
-> >> On Sat, Jul 25, 2020 at 02:20:03PM -0300, Daniel Gutson wrote:
-> >> > El s=C3=A1b., 25 jul. 2020 2:56 a. m., Greg Kroah-Hartman <
-> >> > gregkh@linuxfoundation.org> escribi=C3=B3:
-> >> >
-> >> >
-> >> > 1) I just did the same that intel-spi.c does.
-> >>
-> >> No need to copy bad examples :)
+On Mon, Jul 27, 2020 at 5:11 PM Jiri Pirko <jiri@resnulli.us> wrote:
+> Mon, Jul 27, 2020 at 03:29:17PM CEST, andy.shevchenko@gmail.com wrote:
+> >On Mon, Jul 27, 2020 at 3:23 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+
+...
+
+> >> +err_prestera_dev_register:
+> >> +       free_irq(pci_irq_vector(pdev, 0), fw);
+> >> +err_request_irq:
+> >> +       pci_free_irq_vectors(pdev);
+> >> +err_irq_alloc:
+> >> +       destroy_workqueue(fw->wq);
+> >> +err_wq_alloc:
+> >> +       prestera_fw_uninit(fw);
 > >
+> >> +err_prestera_fw_init:
+> >> +err_pci_dev_alloc:
+> >> +err_dma_mask:
 > >
-> > Didn't know it was a bad example. What's is the current modern mechanis=
-m that replaces initialization-time configuration?
+> >All three are useless.
 >
-> I'd say you'd generally want this to be a per-instance setting, which
-> could be a sysfs attribute of the physical device, or an ioctl for an
-> existing user space abstraction.
+> This is okay. It is symmetrical with init. err_what_you_init. It is all
+> over the place.
 
-But still, they are not equivalent. The initial configuration remains
-constant for the rest of the life of the driver, whereas the
-sysfs attribute is set after the initialization and can be re-set over
-time. I'm not asking module parameters "to come back" if
-they are now considered obsolete, I'm just trying to understand.
+We use multi-point return and these are inconsistent with the
+approach. They simple LOCs without value.
 
->
-> In the changelog, you should also explain what this is used for. Do
-> you actually want to write to a device that is marked read-only, or
-> are you just trying to make the interface more consistent between the
-> two drivers?
-
-The device can either be locked or unlocked. If it is unlocked, it can
-be set writable depending on the module
-argument in intel-spi, or straight writable in intel-spi-pci. Which is
-dangerous.
-I wanted to make, as you say, the interface consistent.
-Exposing an interface to the user (via a sysfs attribute) to try to
-make the driver writable is definitively a bad idea.
-I'd rather do nothing (no module arg) rather than open that
-here-be-dragons door.
->
->      Arnd
-
-
-
---=20
-Daniel Gutson
-Argentina Site Director
-Enginieering Director
-Eclypsium
-
-Below The Surface: Get the latest threat research and insights on
-firmware and supply chain threats from the research team at Eclypsium.
-https://eclypsium.com/research/#threatreport
+-- 
+With Best Regards,
+Andy Shevchenko
