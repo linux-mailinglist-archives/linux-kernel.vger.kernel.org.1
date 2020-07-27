@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15DB22F658
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3988A22F5ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730524AbgG0ROA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:14:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729991AbgG0RNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:13:46 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BCC72074F;
-        Mon, 27 Jul 2020 17:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595870025;
-        bh=DzMvaEZ2c8PRGNGNoXy8zUYsCmrHhqwpQRTnJDQLDUI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ta4V/TlHAZL7GlZvS59gW5IPtECdtMnZt2+tatrDJyqnWz1O6zwUr/fjbiyRZzCUq
-         jbQwi39X/aeKjmSakvqPkNV8my08NF3uxhR/Zx6p1bH1iAMVpOzamiGemiMOa0FQnw
-         H5LnEhMnt0XB5o29YPiUmoxLPKtR1O7dM4ibE91o=
-Date:   Mon, 27 Jul 2020 16:38:47 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Kieran Bingham <kbingham@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 4.19 42/86] scripts/gdb: fix lx-symbols gdb.error while
- loading modules
-Message-ID: <20200727143847.GA189341@kroah.com>
-References: <20200727134914.312934924@linuxfoundation.org>
- <20200727134916.556617777@linuxfoundation.org>
- <7675dec9-7b66-b785-5034-22e8ede0b597@kernel.org>
+        id S1728815AbgG0RCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:02:52 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:55702 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728434AbgG0RCw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:02:52 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06RH2kdB111893;
+        Mon, 27 Jul 2020 12:02:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595869366;
+        bh=ra8ZdNG64gqiGE/obEmUEMweGgGl04HZSwgKLKJS2bM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Omxugap+fhz6qMQJrnSPQuLZLHJZapWy5P7mjkrZpOhVjeGre/CZ7xuijEZPQAAlh
+         igPeo0QMUL2QmnsfHbcVOjuQZ9YxouVyx8/Aj/BxCys0MuAQ4eZGf+Ey8igOHXKDqT
+         YHyyql90N+YuD1b2c5N6t4fmO/t70RzKSVEn7H6I=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06RH2kAv074195
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Jul 2020 12:02:46 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Jul 2020 12:02:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Jul 2020 12:02:45 -0500
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06RH2gbO112745;
+        Mon, 27 Jul 2020 12:02:43 -0500
+Subject: Re: [PATCH v4 0/2] Add new PHY APIs to framework to get/set PHY
+ attributes
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Swapnil Jakhade <sjakhade@cadence.com>, <kishon@ti.com>,
+        <linux-kernel@vger.kernel.org>, <maxime@cerno.tech>,
+        <mparab@cadence.com>, <yamonkar@cadence.com>,
+        <tomi.valkeinen@ti.com>, <jsarha@ti.com>, <praneeth@ti.com>
+References: <1594968633-12535-1-git-send-email-sjakhade@cadence.com>
+ <f1f2cdca-99a1-2bcc-6fe2-9ce95553a7cd@ti.com>
+ <20200727095515.GX12965@vkoul-mobl>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <b6c1984d-e774-3b24-cb10-ee47cb5fd835@ti.com>
+Date:   Mon, 27 Jul 2020 22:32:41 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7675dec9-7b66-b785-5034-22e8ede0b597@kernel.org>
+In-Reply-To: <20200727095515.GX12965@vkoul-mobl>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 03:26:42PM +0100, Kieran Bingham wrote:
-> Hi Greg, Sasha,
+On 7/27/20 3:25 PM, Vinod Koul wrote:
+> Hi Sekhar,
 > 
-> On 27/07/2020 15:04, Greg Kroah-Hartman wrote:
-> > From: Stefano Garzarella <sgarzare@redhat.com>
-> > 
-> > [ Upstream commit 7359608a271ce81803de148befefd309baf88c76 ]
-> > 
-> > Commit ed66f991bb19 ("module: Refactor section attr into bin attribute")
-> > removed the 'name' field from 'struct module_sect_attr' triggering the
-> > following error when invoking lx-symbols:
+> On 26-07-20, 01:24, Sekhar Nori wrote:
+>> Hi Vinod,
+>>
+>> On 7/17/20 12:20 PM, Swapnil Jakhade wrote:
+>>> This patch series adds a new pair of PHY APIs that can be used to get/set
+>>> all the PHY attributes. It also adds a new PHY attribute max_link_rate.
+>>>
+>>> It includes following patches:
+>>>
+>>> 1. v4-0001-phy-Add-new-PHY-attribute-max_link_rate-and-APIs-.patch
+>>> This patch adds max_link_rate as a new PHY attribute along with a pair of
+>>> APIs that allow using the generic PHY subsystem to get/set PHY attributes
+>>> supported by the PHY.
+>>>
+>>> 2. v4-0002-phy-cadence-torrent-Use-kernel-PHY-API-to-set-PHY.patch
+>>> This patch uses PHY API phy_set_attrs() to set corresponding PHY properties
+>>> in Cadence Torrent PHY driver. This will enable drivers using this PHY to
+>>> read these properties using PHY framework.
+>>>
+>>> The phy_get_attrs() API will be used in the DRM bridge driver [1] which is
+>>> in the process of upstreaming.
+>>
+>> Is it possible to queue these for v5.9 also? I did notice that phy
+>> updates for v5.9-rc1 are posted already. But these APIs are needed for
+>> the DisplayPort driver thats getting ready for merge too. Having these
+>> queued now will make managing dependencies much easier.
 > 
+> I would prefer if we defer core change to post rc1. For your display, we
+> can provide a signed tag for you/drm folks to fetch.
 > 
-> Has ed66f991bb19 ("module: Refactor section attr into bin attribute")
-> been backported to 4.19? It doesn't /sound/ like something that would
-> require backporting unless something else depended up on it,  but if it
-> hasn't been ... then *this* patch shouldn't be either...
+> Would that be okay?
 
-It was released in 4.19.133, 5.4.52, and 5.7.9.
+Okay, that would work too.
 
-> Same for 5.4, and 5.7 that's just come in.
-> 
-> This patch will 'apply' cleanly, and not hit any compilation errors, as
-> it only changes python code... so my reason to highlight is in case some
-> automated system picked it up based on those assumptions.
-> 
-> If ed66f991bb19 has also been backported, then I'm sorry for the noise ;-)
-
-It was, but thanks for the review!
-
-greg k-h
+Thanks,
+Sekhar
