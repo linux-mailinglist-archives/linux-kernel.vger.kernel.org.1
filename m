@@ -2,136 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E1322F924
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DA622F926
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgG0TfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgG0TfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:35:18 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAFD120738;
-        Mon, 27 Jul 2020 19:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595878517;
-        bh=xsoGM31kW2VrPyMnU5Snl46HwG9kOCh/rN4IW3/JF0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2jC35nd4Q0ZjnCUAnY73gev9iFF2t2wk0UuRnoUMz8dSiFq8MP+4YlRbgmATlLtIG
-         qaae1QhTZ0V2A18mlAkLEJNCLOIS1lpliii17qB8BUfSv4v9/sHPFw4zfNJNB+fbUR
-         igL3KYajQoAZfzyXPbROFj/A2AF2V9hsO87EM/+A=
-Date:   Mon, 27 Jul 2020 21:35:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] mm: silence soft lockups from unlock_page
-Message-ID: <20200727193512.GA236164@kroah.com>
-References: <alpine.LSU.2.11.2007231549540.1016@eggly.anvils>
- <CAHk-=wgvGOnMF0ePU4xS236bOsP8jouj3rps+ysCaGXvCjh2Dg@mail.gmail.com>
- <20200724152424.GC17209@redhat.com>
- <CAHk-=whuG+5pUeUqdiW4gk0prvqu7GZSMo-6oWv5PdDC5dBr=A@mail.gmail.com>
- <CAHk-=wjYHvbOs9i39EnUsC6VEJiuJ2e_5gZB5-J5CRKxq80B_Q@mail.gmail.com>
- <20200725101445.GB3870@redhat.com>
- <CAHk-=whSJbODMVmxxDs64f7BaESKWuMqOxWGpjUSDn6Jzqa71g@mail.gmail.com>
- <alpine.LSU.2.11.2007251343370.3804@eggly.anvils>
- <alpine.LSU.2.11.2007252100230.5376@eggly.anvils>
- <alpine.LSU.2.11.2007261246530.6812@eggly.anvils>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2007261246530.6812@eggly.anvils>
+        id S1728254AbgG0TfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:35:25 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:15634 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727887AbgG0TfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 15:35:24 -0400
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 27 Jul 2020 12:35:23 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 27 Jul 2020 12:35:23 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 02FCC18FA; Mon, 27 Jul 2020 12:35:22 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Amit Kucheria <amit.kucheria@linaro.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v1 1/2] thermal: qcom-spmi-temp-alarm: add support for GEN2 rev 1 PMIC peripherals
+Date:   Mon, 27 Jul 2020 12:35:18 -0700
+Message-Id: <f22bb151d836f924b09cf80ffd6e58eb286be5d6.1595878198.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 01:30:32PM -0700, Hugh Dickins wrote:
-> On Sat, 25 Jul 2020, Hugh Dickins wrote:
-> > On Sat, 25 Jul 2020, Hugh Dickins wrote:
-> > > On Sat, 25 Jul 2020, Linus Torvalds wrote:
-> > > > On Sat, Jul 25, 2020 at 3:14 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> > > > >
-> > > > > Heh. I too thought about this. And just in case, your patch looks correct
-> > > > > to me. But I can't really comment this behavioural change. Perhaps it
-> > > > > should come in a separate patch?
-> > > > 
-> > > > We could do that. At the same time, I think both parts change how the
-> > > > waitqueue works that it might as well just be one "fix page_bit_wait
-> > > > waitqueue usage".
-> > > > 
-> > > > But let's wait to see what Hugh's numbers say.
-> > > 
-> > > Oh no, no no: sorry for getting your hopes up there, I won't come up
-> > > with any numbers more significant than "0 out of 10" machines crashed.
-> > > I know it would be *really* useful if I could come up with performance
-> > > comparisons, or steer someone else to do so: but I'm sorry, cannot.
-> > > 
-> > > Currently it's actually 1 out of 10 machines crashed, for the same
-> > > driverland issue seen last time, maybe it's a bad machine; and another
-> > > 1 out of the 10 machines went AWOL for unknown reasons, but probably
-> > > something outside the kernel got confused by the stress.  No reason
-> > > to suspect your changes at all (but some unanalyzed "failure"s, of
-> > > dubious significance, accumulating like last time).
-> > > 
-> > > I'm optimistic: nothing has happened to warn us off your changes.
-> > 
-> > Less optimistic now, I'm afraid.
-> > 
-> > The machine I said had (twice) crashed coincidentally in driverland
-> > (some USB completion thing): that machine I set running a comparison
-> > kernel without your changes this morning, while the others still
-> > running with your changes; and it has now passed the point where it
-> > twice crashed before (the most troublesome test), without crashing.
-> > 
-> > Surprising: maybe still just coincidence, but I must look closer at
-> > the crashes.
-> > 
-> > The others have now completed, and one other crashed in that
-> > troublesome test, but sadly without yielding any crash info.
-> > 
-> > I've just set comparison runs going on them all, to judge whether
-> > to take the "failure"s seriously; and I'll look more closely at them.
-> 
-> The comparison runs have not yet completed (except for the one started
-> early), but they have all got past the most interesting tests, and it's
-> clear that they do not have the "failure"s seen with your patches.
-> 
-> >From that I can only conclude that your patches make a difference.
-> 
-> I've deduced nothing useful from the logs, will have to leave that
-> to others here with more experience of them.  But my assumption now
-> is that you have successfully removed one bottleneck, so the tests
-> get somewhat further and now stick in the next bottleneck, whatever
-> that may be.  Which shows up as "failure", where the unlock_page()
-> wake_up_page_bit() bottleneck had allowed the tests to proceed in
-> a more serially sedate way.
-> 
-> The xhci handle_cmd_completion list_del bugs (on an older version
-> of the driver): weird, nothing to do with page wakeups, I'll just
-> have to assume that it's some driver bug exposed by the greater
-> stress allowed down, and let driver people investigate (if it
-> still manifests) when we take in your improvements.
+From: David Collins <collinsd@codeaurora.org>
 
-Linus just pointed me at this thread.
+Add support for TEMP_ALARM GEN2 PMIC peripherals with digital
+major revision 1.  This revision utilizes a different temperature
+threshold mapping than earlier revisions.
 
-If you could run:
-	echo -n 'module xhci_hcd =p' > /sys/kernel/debug/dynamic_debug/control
-and run the same workload to see if anything shows up in the log when
-xhci crashes, that would be great.
+Signed-off-by: David Collins <collinsd@codeaurora.org>
+Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+---
+Apologies for resending - My earlier two submissions were directed to the wrong
+reviewer audience and list.
 
-Although if you are using an "older version" of the driver, there's not
-much I can suggest except update to a newer one :)
+ drivers/thermal/qcom/qcom-spmi-temp-alarm.c | 91 +++++++++++++++++++----------
+ 1 file changed, 61 insertions(+), 30 deletions(-)
 
-thanks,
+diff --git a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+index bf7bae4..05a9601 100644
+--- a/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
++++ b/drivers/thermal/qcom/qcom-spmi-temp-alarm.c
+@@ -17,6 +17,7 @@
+ 
+ #include "../thermal_core.h"
+ 
++#define QPNP_TM_REG_DIG_MAJOR		0x01
+ #define QPNP_TM_REG_TYPE		0x04
+ #define QPNP_TM_REG_SUBTYPE		0x05
+ #define QPNP_TM_REG_STATUS		0x08
+@@ -38,26 +39,30 @@
+ 
+ #define ALARM_CTRL_FORCE_ENABLE		BIT(7)
+ 
+-/*
+- * Trip point values based on threshold control
+- * 0 = {105 C, 125 C, 145 C}
+- * 1 = {110 C, 130 C, 150 C}
+- * 2 = {115 C, 135 C, 155 C}
+- * 3 = {120 C, 140 C, 160 C}
+-*/
+-#define TEMP_STAGE_STEP			20000	/* Stage step: 20.000 C */
+-#define TEMP_STAGE_HYSTERESIS		2000
++#define THRESH_COUNT			4
++#define STAGE_COUNT			3
++
++/* Over-temperature trip point values in mC */
++static const long temp_map_gen1[THRESH_COUNT][STAGE_COUNT] = {
++	{105000, 125000, 145000},
++	{110000, 130000, 150000},
++	{115000, 135000, 155000},
++	{120000, 140000, 160000},
++};
++
++static const long temp_map_gen2_v1[THRESH_COUNT][STAGE_COUNT] = {
++	{ 90000, 110000, 140000},
++	{ 95000, 115000, 145000},
++	{100000, 120000, 150000},
++	{105000, 125000, 155000},
++};
+ 
+-#define TEMP_THRESH_MIN			105000	/* Threshold Min: 105 C */
+-#define TEMP_THRESH_STEP		5000	/* Threshold step: 5 C */
++#define TEMP_THRESH_STEP		5000 /* Threshold step: 5 C */
+ 
+ #define THRESH_MIN			0
+ #define THRESH_MAX			3
+ 
+-/* Stage 2 Threshold Min: 125 C */
+-#define STAGE2_THRESHOLD_MIN		125000
+-/* Stage 2 Threshold Max: 140 C */
+-#define STAGE2_THRESHOLD_MAX		140000
++#define TEMP_STAGE_HYSTERESIS		2000
+ 
+ /* Temperature in Milli Celsius reported during stage 0 if no ADC is present */
+ #define DEFAULT_TEMP			37000
+@@ -77,6 +82,7 @@ struct qpnp_tm_chip {
+ 	bool				initialized;
+ 
+ 	struct iio_channel		*adc;
++	const long			(*temp_map)[THRESH_COUNT][STAGE_COUNT];
+ };
+ 
+ /* This array maps from GEN2 alarm state to GEN1 alarm stage */
+@@ -101,6 +107,23 @@ static int qpnp_tm_write(struct qpnp_tm_chip *chip, u16 addr, u8 data)
+ }
+ 
+ /**
++ * qpnp_tm_decode_temp() - return temperature in mC corresponding to the
++ *		specified over-temperature stage
++ * @chip:		Pointer to the qpnp_tm chip
++ * @stage:		Over-temperature stage
++ *
++ * Return: temperature in mC
++ */
++static long qpnp_tm_decode_temp(struct qpnp_tm_chip *chip, unsigned int stage)
++{
++	if (!chip->temp_map || chip->thresh >= THRESH_COUNT || stage == 0
++	    || stage > STAGE_COUNT)
++		return 0;
++
++	return (*chip->temp_map)[chip->thresh][stage - 1];
++}
++
++/**
+  * qpnp_tm_get_temp_stage() - return over-temperature stage
+  * @chip:		Pointer to the qpnp_tm chip
+  *
+@@ -149,14 +172,12 @@ static int qpnp_tm_update_temp_no_adc(struct qpnp_tm_chip *chip)
+ 
+ 	if (stage_new > stage_old) {
+ 		/* increasing stage, use lower bound */
+-		chip->temp = (stage_new - 1) * TEMP_STAGE_STEP +
+-			     chip->thresh * TEMP_THRESH_STEP +
+-			     TEMP_STAGE_HYSTERESIS + TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage_new)
++				+ TEMP_STAGE_HYSTERESIS;
+ 	} else if (stage_new < stage_old) {
+ 		/* decreasing stage, use upper bound */
+-		chip->temp = stage_new * TEMP_STAGE_STEP +
+-			     chip->thresh * TEMP_THRESH_STEP -
+-			     TEMP_STAGE_HYSTERESIS + TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage_new + 1)
++				- TEMP_STAGE_HYSTERESIS;
+ 	}
+ 
+ 	chip->stage = stage;
+@@ -199,26 +220,28 @@ static int qpnp_tm_get_temp(void *data, int *temp)
+ static int qpnp_tm_update_critical_trip_temp(struct qpnp_tm_chip *chip,
+ 					     int temp)
+ {
+-	u8 reg;
++	long stage2_threshold_min = (*chip->temp_map)[THRESH_MIN][1];
++	long stage2_threshold_max = (*chip->temp_map)[THRESH_MAX][1];
+ 	bool disable_s2_shutdown = false;
++	u8 reg;
+ 
+ 	WARN_ON(!mutex_is_locked(&chip->lock));
+ 
+ 	/*
+ 	 * Default: S2 and S3 shutdown enabled, thresholds at
+-	 * 105C/125C/145C, monitoring at 25Hz
++	 * lowest threshold set, monitoring at 25Hz
+ 	 */
+ 	reg = SHUTDOWN_CTRL1_RATE_25HZ;
+ 
+ 	if (temp == THERMAL_TEMP_INVALID ||
+-	    temp < STAGE2_THRESHOLD_MIN) {
++	    temp < stage2_threshold_min) {
+ 		chip->thresh = THRESH_MIN;
+ 		goto skip;
+ 	}
+ 
+-	if (temp <= STAGE2_THRESHOLD_MAX) {
++	if (temp <= stage2_threshold_max) {
+ 		chip->thresh = THRESH_MAX -
+-			((STAGE2_THRESHOLD_MAX - temp) /
++			((stage2_threshold_max - temp) /
+ 			 TEMP_THRESH_STEP);
+ 		disable_s2_shutdown = true;
+ 	} else {
+@@ -326,9 +349,7 @@ static int qpnp_tm_init(struct qpnp_tm_chip *chip)
+ 		? chip->stage : alarm_state_map[chip->stage];
+ 
+ 	if (stage)
+-		chip->temp = chip->thresh * TEMP_THRESH_STEP +
+-			     (stage - 1) * TEMP_STAGE_STEP +
+-			     TEMP_THRESH_MIN;
++		chip->temp = qpnp_tm_decode_temp(chip, stage);
+ 
+ 	crit_temp = qpnp_tm_get_critical_trip_temp(chip);
+ 	ret = qpnp_tm_update_critical_trip_temp(chip, crit_temp);
+@@ -350,7 +371,7 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ {
+ 	struct qpnp_tm_chip *chip;
+ 	struct device_node *node;
+-	u8 type, subtype;
++	u8 type, subtype, dig_major;
+ 	u32 res;
+ 	int ret, irq;
+ 
+@@ -400,6 +421,12 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	ret = qpnp_tm_read(chip, QPNP_TM_REG_DIG_MAJOR, &dig_major);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "could not read dig_major\n");
++		return ret;
++	}
++
+ 	if (type != QPNP_TM_TYPE || (subtype != QPNP_TM_SUBTYPE_GEN1
+ 				     && subtype != QPNP_TM_SUBTYPE_GEN2)) {
+ 		dev_err(&pdev->dev, "invalid type 0x%02x or subtype 0x%02x\n",
+@@ -408,6 +435,10 @@ static int qpnp_tm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	chip->subtype = subtype;
++	if (subtype == QPNP_TM_SUBTYPE_GEN2 && dig_major >= 1)
++		chip->temp_map = &temp_map_gen2_v1;
++	else
++		chip->temp_map = &temp_map_gen1;
+ 
+ 	/*
+ 	 * Register the sensor before initializing the hardware to be able to
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-greg k-h
