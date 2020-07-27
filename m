@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B16A22EE46
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A0022F12A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728830AbgG0OGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:06:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
+        id S1731902AbgG0OWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728731AbgG0OGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:31 -0400
+        id S1731879AbgG0OWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:22:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C485C2073E;
-        Mon, 27 Jul 2020 14:06:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7B3B2173E;
+        Mon, 27 Jul 2020 14:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858791;
-        bh=PUSF2uKY6ZSg2dfEurFMvzgYDI1RG5wqluUewKxwnVg=;
+        s=default; t=1595859745;
+        bh=XJuEidlReUIBMXF0vMRweVd7zH9eejVPBgUWArVlU2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pQ7Z0F1TbhcwwdiUz5kmn1noBJmmqxVqPy6CHkZgjLzq2MV9uC1S6ZuJevyZlykEi
-         B0sm9AJGOBhYekHJre5P9sZNXpBQF/tHQPmDkvjKWExHdC0wa90R2FZHVKITXuodZf
-         OwA5iQiXZFMhBn0XjxwnJ3vvQAE0E1jlNaZiLScA=
+        b=Srqe6jTM2AQA3BvcN4nSlpeX10H2Pn2dGuD88LaOANSB/bTIskzUsi6ETAF0tP3/5
+         rh8lWh/E1NzILNLs0Tg4JX3cFNcja9Yz5CNM6eNl5W+s/8TJrDBkP81CKufCJc0/bx
+         CakUNdJqV8Xcp/thPkAAK7aaqkVsj2kyx3UKsVUc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <olteanv@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 13/64] spi: spi-fsl-dspi: Exit the ISR with IRQ_NONE when its not ours
-Date:   Mon, 27 Jul 2020 16:03:52 +0200
-Message-Id: <20200727134911.689399235@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Organov <sorganov@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 058/179] net: dp83640: fix SIOCSHWTSTAMP to update the struct with actual configuration
+Date:   Mon, 27 Jul 2020 16:03:53 +0200
+Message-Id: <20200727134935.497840503@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <olteanv@gmail.com>
+From: Sergey Organov <sorganov@gmail.com>
 
-commit d41f36a6464a85c06ad920703d878e4491d2c023 upstream.
+[ Upstream commit 473309fb8372365ad211f425bca760af800e10a7 ]
 
-The DSPI interrupt can be shared between two controllers at least on the
-LX2160A. In that case, the driver for one controller might misbehave and
-consume the other's interrupt. Fix this by actually checking if any of
-the bits in the status register have been asserted.
+>From Documentation/networking/timestamping.txt:
 
-Fixes: 13aed2392741 ("spi: spi-fsl-dspi: use IRQF_SHARED mode to request IRQ")
-Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
-Link: https://lore.kernel.org/r/20190822212450.21420-2-olteanv@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  A driver which supports hardware time stamping shall update the
+  struct with the actual, possibly more permissive configuration.
 
+Do update the struct passed when we upscale the requested time
+stamping mode.
+
+Fixes: cb646e2b02b2 ("ptp: Added a clock driver for the National Semiconductor PHYTER.")
+Signed-off-by: Sergey Organov <sorganov@gmail.com>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsl-dspi.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/phy/dp83640.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -886,9 +886,11 @@ static irqreturn_t dspi_interrupt(int ir
- 					trans_mode);
- 			}
- 		}
-+
-+		return IRQ_HANDLED;
- 	}
- 
--	return IRQ_HANDLED;
-+	return IRQ_NONE;
- }
- 
- static const struct of_device_id fsl_dspi_dt_ids[] = {
+diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
+index ecbd5e0d685cf..acb0aae607558 100644
+--- a/drivers/net/phy/dp83640.c
++++ b/drivers/net/phy/dp83640.c
+@@ -1260,6 +1260,7 @@ static int dp83640_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
+ 		dp83640->hwts_rx_en = 1;
+ 		dp83640->layer = PTP_CLASS_L4;
+ 		dp83640->version = PTP_CLASS_V1;
++		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V1_L4_EVENT;
+ 		break;
+ 	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
+ 	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
+@@ -1267,6 +1268,7 @@ static int dp83640_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
+ 		dp83640->hwts_rx_en = 1;
+ 		dp83640->layer = PTP_CLASS_L4;
+ 		dp83640->version = PTP_CLASS_V2;
++		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_L4_EVENT;
+ 		break;
+ 	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
+ 	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
+@@ -1274,6 +1276,7 @@ static int dp83640_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
+ 		dp83640->hwts_rx_en = 1;
+ 		dp83640->layer = PTP_CLASS_L2;
+ 		dp83640->version = PTP_CLASS_V2;
++		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+ 		break;
+ 	case HWTSTAMP_FILTER_PTP_V2_EVENT:
+ 	case HWTSTAMP_FILTER_PTP_V2_SYNC:
+@@ -1281,6 +1284,7 @@ static int dp83640_hwtstamp(struct mii_timestamper *mii_ts, struct ifreq *ifr)
+ 		dp83640->hwts_rx_en = 1;
+ 		dp83640->layer = PTP_CLASS_L4 | PTP_CLASS_L2;
+ 		dp83640->version = PTP_CLASS_V2;
++		cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
+ 		break;
+ 	default:
+ 		return -ERANGE;
+-- 
+2.25.1
+
 
 
