@@ -2,93 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3108A22E7C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2454C22E7D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgG0Idf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:33:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbgG0Ide (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:33:34 -0400
-Received: from smtp11.infineon.com (smtp11.infineon.com [IPv6:2a00:18f0:1e00:4::5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A7DC061794;
-        Mon, 27 Jul 2020 01:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1595838814; x=1627374814;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=7LaxfNE64L/JQojkBYKPBox9K7OsCJ2QWRkABxmkPjM=;
-  b=mFLKdcFQgQpykAkKnhK5RC8pXW/JiYfP981U2cqVj+ZcGtV4SsfZ5aGX
-   HN40acsAMv55IJnT1gr15lyxvdTBL/Csk9sUFb9sbco5qCWN0baLvOiNR
-   agwyfkiZKhiFFivQfCjNGnkNqMWj1QgpOoaPnOhcaAT27KRsyGiWl6fxr
-   4=;
-IronPort-SDR: PVi5OazAKoPZruS2kF89Nl+QuAH5Cf0zALIf9QHKU/ThpnLejm8exJ/z1MBw42vI0b3Akyc2hp
- Dq7XmJAzcboUW0eLMTyy1Tglo4RwhtBbXkZVAEUDNDUtAY+gUGx/Ctv4iv2eD6/jg1H0L8qSdi
- IyZSJF/fsH6O6nz1QAChwc6DwRRzm2YpLKKJh23670kxOyeTgk2C9HLvJ91ioYcjxh/TLVcK7U
- qmovStrYg6u0tBejJnJLCjX8XqMKKfDM6YfhmMHFnibrtgd5Vi0qsL/tVkucvNVP3gs974afN7
- qCg=
-X-SBRS: None
-X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="171356427"
-X-IronPort-AV: E=Sophos;i="5.75,401,1589234400"; 
-   d="scan'208";a="171356427"
-Received: from unknown (HELO mucxv001.muc.infineon.com) ([172.23.11.16])
-  by smtp11.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 10:33:28 +0200
-Received: from MUCSE718.infineon.com (MUCSE718.infineon.com [172.23.7.101])
-        by mucxv001.muc.infineon.com (Postfix) with ESMTPS;
-        Mon, 27 Jul 2020 10:33:27 +0200 (CEST)
-Received: from MUCSE701.infineon.com (172.23.7.90) by MUCSE718.infineon.com
- (172.23.7.101) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256) id 15.1.1913.5; Mon, 27
- Jul 2020 10:33:27 +0200
-Received: from MUCSE711.infineon.com (172.23.7.83) by MUCSE701.infineon.com
- (172.23.7.90) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256) id 15.1.1913.5; Mon, 27
- Jul 2020 10:33:27 +0200
-Received: from MUCSE711.infineon.com ([fe80::cc45:4d1a:3881:a6e5]) by
- MUCSE711.infineon.com ([fe80::cc45:4d1a:3881:a6e5%20]) with mapi id
- 15.01.1913.010; Mon, 27 Jul 2020 10:33:27 +0200
-From:   <Peter.Huewe@infineon.com>
-To:     <tianjia.zhang@linux.alibaba.com>, <arnd@arndb.de>
-CC:     <peterhuewe@gmx.de>, <jarkko.sakkinen@linux.intel.com>,
-        <jgg@ziepe.ca>, <gregkh@linuxfoundation.org>,
-        <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <christophe.ricard@gmail.com>, <Alexander.Steffen@infineon.com>
-Subject: RE: [PATCH] tpm: Fix the description error of the help information in
- Kconfig
-Thread-Topic: [PATCH] tpm: Fix the description error of the help information
- in Kconfig
-Thread-Index: AQHWY8Enxsmh6g9s/kGoV2thptZCGaka4RQAgAAU+ICAACMGkA==
-Date:   Mon, 27 Jul 2020 08:33:26 +0000
-Message-ID: <09571889ac784850a6c5855f2dc0888e@infineon.com>
-References: <20200727025323.26712-1-tianjia.zhang@linux.alibaba.com>
- <CAK8P3a2neQUP2marbRUxpSZE4OTJtf97JKSK5-LC6EzH8rRHDQ@mail.gmail.com>
- <13d8ab17-5cea-3e00-ecdb-87c68d7f2a15@linux.alibaba.com>
-In-Reply-To: <13d8ab17-5cea-3e00-ecdb-87c68d7f2a15@linux.alibaba.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.23.8.247]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726841AbgG0Ie4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:34:56 -0400
+Received: from mailout07.rmx.de ([94.199.90.95]:42382 "EHLO mailout07.rmx.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726227AbgG0Ie4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 04:34:56 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout07.rmx.de (Postfix) with ESMTPS id 4BFY5Q0RkvzBxd7;
+        Mon, 27 Jul 2020 10:34:50 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4BFY4q211qz2TTNP;
+        Mon, 27 Jul 2020 10:34:19 +0200 (CEST)
+Received: from N95HX1G2.wgnetz.xx (192.168.54.102) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 27 Jul
+ 2020 10:34:19 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Rob Hering <robh@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        "Richard Leitner" <richard.leitner@skidata.com>,
+        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ceggers@arri.de>
+Subject: [PATCH v3 1/4] dt-bindings: usb: Add Microchip USB253x/USB3x13/USB46x4 support
+Date:   Mon, 27 Jul 2020 10:33:30 +0200
+Message-ID: <20200727083333.19623-2-ceggers@arri.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200727083333.19623-1-ceggers@arri.de>
+References: <20200726084116.GD448215@kroah.com>
+ <20200727083333.19623-1-ceggers@arri.de>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [192.168.54.102]
+X-RMX-ID: 20200727-103419-4BFY4q211qz2TTNP-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQpPbiAyMDIwLzcvMjcgMTU6MTAsIEFybmQgQmVyZ21hbm4gd3JvdGU6DQo+IE9uIE1vbiwg
-SnVsIDI3LCAyMDIwIGF0IDQ6NTQgQU0gVGlhbmppYSBaaGFuZyANCj4gPHRpYW5qaWEuemhhbmdA
-bGludXguYWxpYmFiYS5jb20+IHdyb3RlOg0KPj4NCj4+IE9idmlvdXNseSwgdGhlIFRQTSB2ZXJz
-aW9uIG51bWJlciBpbiB0aGUgaGVscCBtZXNzYWdlIGlzIHdyb25nLCB3aGljaCANCj4+IHdpbGwg
-Y2F1c2UgY29uZnVzaW9uLiBUaGlzIHBhdGNoIGZpeGVzIGl0Lg0KPiANCj4gSG93IGlzIHRoaXMg
-Im9idmlvdXMiPyBJIHRyaWVkIGZpbmRpbmcgdGhlIHNwZWNpZmljYXRpb24gYW5kIGNvdWxkIG5v
-dCANCj4gc2VlIGFueXRoaW5nIHRvIGJhY2sgdXAgVElTIDEuMyBiZWluZyBvbmx5IHN1cHBvcnRl
-ZCB3aXRoIFRQTSAxLjMsIG9yIA0KPiB0aGUgZXhpc3RlbmNlIG9mIGEgVFBNIDEuMyBzcGVjaWZp
-Y2F0aW9uIGF0IGFsbC4NCj4gDQpUaGVyZSBpcyBubyBUUE0gMS4zLg0KDQpUaGVyZSBpcyBhIFRJ
-UyBTcGVjaWZpY2F0aW9uIDEuMyB3aGljaCBhcHBsaWVzIHRvIFRQTTEuMiANClRoZXNlIGFyZSBk
-aWZmZXJlbnQgc3BlY3MsIHdpdGggZGlmZmVyZW50IHZlcnNpb24gbnVtYmVycy4NClNvIHRoZSBm
-aXggaXMgaW5jb3JyZWN0Lg0KDQpUaGFua3MsDQpQZXRlcg0K
+Add DT bindings for Microchip USB253x/USB3x13/USB46x4 driver.
+
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+---
+ .../devicetree/bindings/usb/usb253x.yaml      | 234 ++++++++++++++++++
+ 1 file changed, 234 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/usb253x.yaml
+
+diff --git a/Documentation/devicetree/bindings/usb/usb253x.yaml b/Documentation/devicetree/bindings/usb/usb253x.yaml
+new file mode 100644
+index 000000000000..88ea744147b6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/usb253x.yaml
+@@ -0,0 +1,234 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/usb253x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip USB253x/USB3x13/USB46x4 USB 2.0 Hi-Speed Hub Controller
++
++maintainers:
++  - Christian Eggers <ceggers@arri.de>
++
++description: |
++  http://ww1.microchip.com/downloads/en/AppNotes/00001801C.pdf
++
++properties:
++  compatible:
++    enum:
++      - microchip,usb2532
++      - microchip,usb2532i
++      - microchip,usb2533
++      - microchip,usb2533i
++      - microchip,usb2534
++      - microchip,usb2534i
++      - microchip,usb3613
++      - microchip,usb3613i
++      - microchip,usb3813
++      - microchip,usb3813i
++      - microchip,usb4604
++      - microchip,usb4604i
++      - microchip,usb4624
++      - microchip,usb4624i
++
++  reg:
++    maxItems: 1
++    description:
++      I2C address on the selected bus (usually <0x2D>).
++
++  reset-gpios:
++    maxItems: 1
++    description:
++      Specify the gpio for hub reset.
++
++  vdd-supply:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      Specify the regulator supplying vdd.
++
++  skip-config:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Skip Hub configuration, but only send the USB-Attach command.
++
++  vendor-id:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 65535
++    description:
++      Set USB Vendor ID of the hub.
++
++  product-id:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 65535
++    description:
++      Set USB Product ID of the hub.
++
++  device-id:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 65535
++    description:
++      Set USB Device ID of the hub.
++
++  language-id:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maximum: 65535
++    description:
++      Set USB Language ID.
++
++  manufacturer:
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      Set USB Manufacturer string (max. a total of 93 characters for
++      manufacturer, product and serial).
++
++  product:
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      Set USB Product string (max. a total of 93 characters for
++      manufacturer, product and serial).
++
++  serial:
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      Set USB Serial string (max. a total of 93 characters for
++      manufacturer, product and serial).
++
++  bus-powered:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Selects bus powered operation.
++
++  self-powered:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Selects self powered operation (default).
++
++  disable-hi-speed:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Disable USB Hi-Speed support.
++
++  multi-tt:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Selects multi-transaction-translator (default).
++
++  single-tt:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Selects single-transaction-translator.
++
++  disable-eop:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Disable End of Packet generation in full-speed mode.
++
++  ganged-sensing:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Select ganged over-current sense type in self-powered mode.
++
++  individual-sensing:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Select individual over-current sense type in self-powered mode (default).
++
++  ganged-port-switching:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Select ganged port power switching mode.
++
++  individual-port-switching:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Select individual port power switching mode (default).
++
++  dynamic-power-switching:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Enable auto-switching from self- to bus-powered operation if the local
++      power source is removed or unavailable.
++
++  oc-delay-us:
++    enum:
++      - 100
++      - 4000
++      - 8000
++      - 16000
++    default: 8000
++    description:
++      Delay time (in microseconds) for filtering the over-current sense inputs.
++      If an invalid value is given, the default is used instead.
++
++  compound-device:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Indicate the hub is part of a compound device.
++
++  port-mapping-mode:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description:
++      Enable port mapping mode.
++
++  non-removable-ports:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Should specify the ports which have a non-removable device connected.
++
++  sp-disabled-ports:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Specifies the ports which will be self-power disabled.
++
++  bp-disabled-ports:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Specifies the ports which will be bus-power disabled.
++
++  power-on-time-ms:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    default: 100
++    minimum: 0
++    maximum: 510
++    description:
++      Specifies the time (in milliseconds) it takes from the time the host
++      initiates the power-on sequence to a port until the port has adequate
++      power.
++
++  hub-controller-port:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Hub port where the internal hub controller shall be connected. Usually
++      <number of ports>+1.
++
++additionalProperties: false
++
++required:
++  - compatible
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      usb2534i@2d {
++        compatible = "microchip,usb2534i";
++        reg = <0x2d>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_usb_hub>;
++        /* usb253x.c already assumes low-active, don't negate twice */
++        reset-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
++        /*skip-config;*/
++        /* T_ON,max = 4 ms for NCP380 */
++        power-on-time-ms = <4>;
++        manufacturer = "Foo";
++        product = "Foo-Bar";
++        /* port 2 is connected to an internal SD-Card reader */
++        non-removable-ports = <2>;
++        /* hub controller mapped to logical port 5 */
++        hub-controller-port = <5>;
++      };
++    };
++
++...
+-- 
+Christian Eggers
+Embedded software developer
+
+Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
+Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
+Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
+Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+
