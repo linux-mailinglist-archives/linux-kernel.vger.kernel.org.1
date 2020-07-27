@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5AC22F128
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFD022EF3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731874AbgG0OWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51252 "EHLO mail.kernel.org"
+        id S1730584AbgG0OOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731863AbgG0OWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:20 -0400
+        id S1729978AbgG0OOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:14:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0AEE2083E;
-        Mon, 27 Jul 2020 14:22:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 950C320838;
+        Mon, 27 Jul 2020 14:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859740;
-        bh=N3uvxnTFN3pzdT4wAHLGM8Qz19yO6nAZXWjbSZF/A0w=;
+        s=default; t=1595859271;
+        bh=Z71URfF1deFG2Su/vdXfO9Wq0fh/V5I1+AEO+5F6fjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zgyVk9T1AXZasFF8HIzb3nTnatAiW0X1aI591e0AE8kYH7+kzl3LLOE5zLauGoa7g
-         eXkDqWCi7pklK1SUsl/OXwZv7Xtkcb6l/IQyP93f3L1ZX6NSelgB7lrPAXpXET3l4C
-         CipB2lVLi853ZB6ZTMg/VO3CeXV1fWciuPnRxqfM=
+        b=wQQ5+lJ7lasZchhevX82tBvAd84H82NbNhf5Y5jZcHWMWJBhrQ+xkimuosAPE3pyc
+         hjJtULhj1+jqUpWcNGLK8YuYoW+ab2mDGVaDoaCXntH1fF7ChJKSD/Z8635qPp373Z
+         6Iw10/i76cs83G1uyfP0Oze9xvkcqGSC7AUW0zbI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Organov <sorganov@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 056/179] net: fec: fix hardware time stamping by external devices
+Subject: [PATCH 5.4 036/138] bnxt_en: Fix race when modifying pause settings.
 Date:   Mon, 27 Jul 2020 16:03:51 +0200
-Message-Id: <20200727134935.399267347@linuxfoundation.org>
+Message-Id: <20200727134927.179295298@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,108 +47,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Organov <sorganov@gmail.com>
+From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 
-[ Upstream commit 340746398b67e3ce5019698748ebaa7adf048114 ]
+[ Upstream commit 163e9ef63641a02de4c95cd921577265c52e1ce2 ]
 
-Fix support for external PTP-aware devices such as DSA or PTP PHY:
+The driver was modified to not rely on rtnl lock to protect link
+settings about 2 years ago.  The pause setting was missed when
+making that change.  Fix it by acquiring link_lock mutex before
+calling bnxt_hwrm_set_pause().
 
-Make sure we never time stamp tx packets when hardware time stamping
-is disabled.
-
-Check for PTP PHY being in use and then pass ioctls related to time
-stamping of Ethernet packets to the PTP PHY rather than handle them
-ourselves. In addition, disable our own hardware time stamping in this
-case.
-
-Fixes: 6605b730c061 ("FEC: Add time stamping code and a PTP hardware clock")
-Signed-off-by: Sergey Organov <sorganov@gmail.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Acked-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: e2dc9b6e38fa ("bnxt_en: Don't use rtnl lock to protect link change logic in workqueue.")
+Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec.h      |  1 +
- drivers/net/ethernet/freescale/fec_main.c | 23 +++++++++++++++++------
- drivers/net/ethernet/freescale/fec_ptp.c  | 12 ++++++++++++
- 3 files changed, 30 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
-index e74dd1f86bbae..828eb8ce6631c 100644
---- a/drivers/net/ethernet/freescale/fec.h
-+++ b/drivers/net/ethernet/freescale/fec.h
-@@ -597,6 +597,7 @@ struct fec_enet_private {
- void fec_ptp_init(struct platform_device *pdev, int irq_idx);
- void fec_ptp_stop(struct platform_device *pdev);
- void fec_ptp_start_cyclecounter(struct net_device *ndev);
-+void fec_ptp_disable_hwts(struct net_device *ndev);
- int fec_ptp_set(struct net_device *ndev, struct ifreq *ifr);
- int fec_ptp_get(struct net_device *ndev, struct ifreq *ifr);
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+index fb1ab58da9fa5..1f512e7c3d434 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+@@ -1688,8 +1688,11 @@ static int bnxt_set_pauseparam(struct net_device *dev,
+ 	if (epause->tx_pause)
+ 		link_info->req_flow_ctrl |= BNXT_LINK_PAUSE_TX;
  
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index dc6f8763a5d40..bf73bc9bf35b9 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -1302,8 +1302,13 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id)
- 			ndev->stats.tx_bytes += skb->len;
- 		}
- 
--		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS) &&
--			fep->bufdesc_ex) {
-+		/* NOTE: SKBTX_IN_PROGRESS being set does not imply it's we who
-+		 * are to time stamp the packet, so we still need to check time
-+		 * stamping enabled flag.
-+		 */
-+		if (unlikely(skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS &&
-+			     fep->hwts_tx_en) &&
-+		    fep->bufdesc_ex) {
- 			struct skb_shared_hwtstamps shhwtstamps;
- 			struct bufdesc_ex *ebdp = (struct bufdesc_ex *)bdp;
- 
-@@ -2731,10 +2736,16 @@ static int fec_enet_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
- 		return -ENODEV;
- 
- 	if (fep->bufdesc_ex) {
--		if (cmd == SIOCSHWTSTAMP)
--			return fec_ptp_set(ndev, rq);
--		if (cmd == SIOCGHWTSTAMP)
--			return fec_ptp_get(ndev, rq);
-+		bool use_fec_hwts = !phy_has_hwtstamp(phydev);
-+
-+		if (cmd == SIOCSHWTSTAMP) {
-+			if (use_fec_hwts)
-+				return fec_ptp_set(ndev, rq);
-+			fec_ptp_disable_hwts(ndev);
-+		} else if (cmd == SIOCGHWTSTAMP) {
-+			if (use_fec_hwts)
-+				return fec_ptp_get(ndev, rq);
-+		}
- 	}
- 
- 	return phy_mii_ioctl(phydev, rq, cmd);
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 945643c026155..f8a592c96beb0 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -452,6 +452,18 @@ static int fec_ptp_enable(struct ptp_clock_info *ptp,
- 	return -EOPNOTSUPP;
+-	if (netif_running(dev))
++	if (netif_running(dev)) {
++		mutex_lock(&bp->link_lock);
+ 		rc = bnxt_hwrm_set_pause(bp);
++		mutex_unlock(&bp->link_lock);
++	}
+ 	return rc;
  }
  
-+/**
-+ * fec_ptp_disable_hwts - disable hardware time stamping
-+ * @ndev: pointer to net_device
-+ */
-+void fec_ptp_disable_hwts(struct net_device *ndev)
-+{
-+	struct fec_enet_private *fep = netdev_priv(ndev);
-+
-+	fep->hwts_tx_en = 0;
-+	fep->hwts_rx_en = 0;
-+}
-+
- int fec_ptp_set(struct net_device *ndev, struct ifreq *ifr)
- {
- 	struct fec_enet_private *fep = netdev_priv(ndev);
 -- 
 2.25.1
 
