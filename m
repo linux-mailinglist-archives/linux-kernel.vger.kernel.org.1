@@ -2,123 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4DC922EB2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3598B22EB3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgG0LY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
+        id S1727037AbgG0L31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726967AbgG0LY7 (ORCPT
+        with ESMTP id S1726744AbgG0L30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:24:59 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E3AC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:58 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id by13so11813181edb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:58 -0700 (PDT)
+        Mon, 27 Jul 2020 07:29:26 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43ECDC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:29:25 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 184so14399074wmb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:29:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KVi4ci9r11iJZabvuK+KNAiYWVzMLwehv9ewIXbDGvM=;
-        b=dfnfcBE6Yer3PftNB0mQkFcdpQxmYW+IAxCT1L7YYGg40QLgJIxlPRaitzNSbYHI2J
-         Ua1KreJbpjZUCWqdZ5tRBs4Kae+7xdizoBUycqxkjCrkdXflATo1qFrW/NKGW3VuLksh
-         aoufBsNLCw84ngyFvga395rF6HeZ+bcBMAmIpeElC5zQZOdR7gXMsSI0sIgPdmoccDOf
-         uCma2h06EdedbuF9LTZbhb2/y7YWaQv0MD0tMZwYncTHRZzWnRTWpL4zlL95cQOdatS9
-         xL0/IPtgx3SnqIvhQNY4fXMoTtf+tRewou/ecsvGltm3lQwOfhkgOOvq7MypRhfLsoDm
-         JCFw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EKtNZF82mH4EnUTfOug/S5EqMmxmydLS/o7zuPsZsAg=;
+        b=oqr9f9v9ib3ir2dTayTCoS6+B/x4vLofP7/ciW3dY1I6LcRa6FGyYqAoyRJIG76GE1
+         oH8PB5k8BDapkVVfjFdS7CRSVr2DK7Of3iLXi+PCpcml3vbAKZPCq+LBrWNh+Jz7Bbcu
+         d2yS/viPCeYaH8BH8Lge/c9ZRzatFiidYJsjLR9vyV+r+aytOenZou+60oe3Mrj3CSmO
+         oe2ynIo6sqDPh4v09oVYqlM6xv6gxkbOBLbUUiEbRjr5L7QE6hqL9Ynaap5V/UJQsMkm
+         66rh7TkFOWTm0S7wEsShM6qqdIV8pxrUBlCm6+8tFPPscrNtZZk6pz6IEHQXDjEB0Zx5
+         4Brw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=KVi4ci9r11iJZabvuK+KNAiYWVzMLwehv9ewIXbDGvM=;
-        b=pwd6eg+0JdMq2qUF5C3Yq6FnfiWmem2D9zPT/JIaBaTcN1JRYPnYHJoDMR4Ub/xa2X
-         9hJu26G6/9QbGUQgDfZeLDAmoxVewlePlj+U6HQmFmeijNkB/4o6VTvY7vyMw8wAkuFw
-         VTn52V/1VfltkSk7ZJnAH1eOlz+aqkI8mI+rOGY72vSuUZ6Lf7fGjd9Gp3yMWebPVEOr
-         uRfrBWdX4XIzSPZz43j4YkS8ohC/VQhw628vG3wdIVPAhH/WIxC8dt0tx0xN20DuC827
-         fbrl+nQa3cTla3Qy3ESbx+tfVIOpnCvJ8vm6Bp268jBsR4/O/tPHfV+BQWcwrLbsVPqE
-         J5ww==
-X-Gm-Message-State: AOAM533LS0b+2e5RzGemo+QySE+/Rsc8w/UZy7CFDG9/o6ZeokIvCcPP
-        h0MR4/lnUoEDvN1VQ7ZOkz0=
-X-Google-Smtp-Source: ABdhPJxBqgF5ZegS8JvKjGK4iLDDSjijDGanOkVWxVEKsWvZu/6aXcQPq1GqtUHxarRZ3mCaDkWaqw==
-X-Received: by 2002:a05:6402:b4c:: with SMTP id bx12mr20224476edb.157.1595849097185;
-        Mon, 27 Jul 2020 04:24:57 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id i5sm6689345ejg.121.2020.07.27.04.24.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EKtNZF82mH4EnUTfOug/S5EqMmxmydLS/o7zuPsZsAg=;
+        b=ujwjDJL3D1j1ndHTJQofUVpetGMF3FAWRNwWD4ns9Q7fudlBuaxisrWJsqJA/9PGcQ
+         ofhJ1kbkm73rYbmB+DrFnBdFe4BzV0c4w2erymnpNFcFzKzkYxm+v3Y3xbyLxYBA7z6K
+         wyMInn7hWYTTe1MseKwKI4kbwOX4mkRrDVA76kv4YiDualDhH4pRNWpdJaxBa+DkHpj8
+         1dvJtB6yW+hqcSm5Jz7MLou3vFyyCJeIaG4PW0JrS6e0av7g5d45FKDSadiuOLbvMMGO
+         eammw7cUoRjh/qmIsUPFFgV++y14jvg8KjtDNh3fQzkN48SldtBPvy7QrSDnDMOeQ2ju
+         m2Zg==
+X-Gm-Message-State: AOAM532rx/mORbxchZbWirEmoyHsB8VHema+qayOa2EGROytloCFgar0
+        kM1gAiuTEP33lkr1XMUZ1pWmEA==
+X-Google-Smtp-Source: ABdhPJwozf0SUllR1Iqin/QO4pcEiW+aQJPZDJ37xCt8IxZMIGjhFfx+9XxaifgFKqEPWIcyZbOEEA==
+X-Received: by 2002:a1c:7204:: with SMTP id n4mr4687818wmc.161.1595849363913;
+        Mon, 27 Jul 2020 04:29:23 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id k131sm19041738wmb.36.2020.07.27.04.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 04:24:56 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:24:54 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     vincent.donnefort@arm.com
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        lukasz.luba@arm.com, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: provide u64 read for 32-bits arch helper
-Message-ID: <20200727112454.GB55660@gmail.com>
-References: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
+        Mon, 27 Jul 2020 04:29:23 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 12:29:21 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, benjamin.chao@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH v2 4/9] mfd: mt6360: Combine mt6360 pmic/ldo resouces
+ into mt6360 regulator resources
+Message-ID: <20200727112921.GK1850026@dell>
+References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594983811-25908-5-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594983811-25908-5-git-send-email-gene.chen.richtek@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 17 Jul 2020, Gene Chen wrote:
 
-* vincent.donnefort@arm.com <vincent.donnefort@arm.com> wrote:
-
-> From: Vincent Donnefort <vincent.donnefort@arm.com>
+> From: Gene Chen <gene_chen@richtek.com>
 > 
-> Introducing two macro helpers u64_32read() and u64_32read_set_copy() to
-> factorize the u64 vminruntime and last_update_time read on a 32-bits
-> architecture. Those new helpers encapsulate smp_rmb() and smp_wmb()
-> synchronization and therefore, have a small penalty in set_task_rq_fair()
-> and init_cfs_rq().
+> Combine mt6360 pmic/ldo resouces into mt6360 regulator resources
+> to simplify the similar resources object.
+
+Do the sub-devices actually share these resources, or are you doing
+this just to make the code simpler?
+
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  drivers/mfd/mt6360-core.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
 > 
-> The choice of using a macro over an inline function is driven by the
-> conditional u64 variable copy declarations.
+> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> index 7cc1b59..665e26f 100644
+> --- a/drivers/mfd/mt6360-core.c
+> +++ b/drivers/mfd/mt6360-core.c
+> @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[] = {
+>  	DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt"),
+>  };
+>  
+> -static const struct resource mt6360_pmic_resources[] = {
+> +static const struct resource mt6360_regulator_resources[] = {
+>  	DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
+>  	DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
+>  	DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
+> @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[] = {
+>  	DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
+>  	DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
+>  	DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
+> -};
+> -
+> -static const struct resource mt6360_ldo_resources[] = {
+>  	DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
+>  	DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
+>  	DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
+> @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] = {
+>  		    NULL, 0, 0, "mediatek,mt6360-chg"),
+>  	OF_MFD_CELL("mt6360-led", mt6360_led_resources,
+>  		    NULL, 0, 0, "mediatek,mt6360-led"),
+> -	OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
+> -		    NULL, 0, 0, "mediatek,mt6360-pmic"),
+> -	OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
+> -		    NULL, 0, 0, "mediatek,mt6360-ldo"),
+> +	OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
+> +		    NULL, 0, 0, "mediatek,mt6360-regulator"),
+>  	OF_MFD_CELL("mt6360-tcpc", NULL,
+>  		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
+>  };
 
-Could you please explain how "conditional u64 variable copy 
-declarations" prevents us to use an inline function for this:
-
-> +/*
-> + * u64_32read() / u64_32read_set_copy()
-> + *
-> + * Use the copied u64 value to protect against data race. This is only
-> + * applicable for 32-bits architectures.
-> + */
-> +#if !defined(CONFIG_64BIT) && defined(CONFIG_SMP)
-> +# define u64_32read(val, copy)						\
-> +({									\
-> +	u64 _val;							\
-> +	u64 _val_copy;							\
-> +									\
-> +	do {								\
-> +		_val_copy = copy;					\
-> +		/*							\
-> +		 * paired with u64_32read_set_copy, ordering access	\
-> +		 * to val and copy.					\
-> +		 */							\
-> +		smp_rmb();						\
-> +		_val = val;						\
-> +	} while (_val != _val_copy);					\
-> +									\
-> +	_val;								\
-> +})
-> +# define u64_32read_set_copy(val, copy)					\
-> +do {									\
-> +	/* paired with u64_32read, ordering access to val and copy */	\
-> +	smp_wmb();							\
-> +	copy = val;							\
-> +} while (0)
-> +#else
-> +# define u64_32read(val, copy) (val)
-> +# define u64_32read_set_copy(val, copy) do { } while (0)
-> +#endif
-> +
-
-Thanks,
-
-	Ingo
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
