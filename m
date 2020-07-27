@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A68D22F457
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F1C22F458
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgG0QJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:09:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58460 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726942AbgG0QJk (ORCPT
+        id S1728170AbgG0QJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:09:41 -0400
+Received: from smtprelay0194.hostedemail.com ([216.40.44.194]:55062 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727862AbgG0QJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Jul 2020 12:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595866179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OPQOqiZCF/CXGUjGCPsDuUPFb0RD1RJET28Zyk3zKE4=;
-        b=b2xjOflb8J5fau5CigoAJ+8yPx7kJ4zb32IRj5U9rAts3KjDTpPhT2WX1Pozsg4LtMTFWV
-        OYsVbKJ9QS6gtAADNlqyzba98v1WDpjB0URTytJCmdszab7Tyz6qJwJXmhyiYnbVQmnM8P
-        AMvb+d0KdSyAcaGclpav6+CV18pcI+A=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-hINEtqRlNgyWkwDA0yu2Ug-1; Mon, 27 Jul 2020 12:09:35 -0400
-X-MC-Unique: hINEtqRlNgyWkwDA0yu2Ug-1
-Received: by mail-ed1-f70.google.com with SMTP id m12so5768528edv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:09:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=OPQOqiZCF/CXGUjGCPsDuUPFb0RD1RJET28Zyk3zKE4=;
-        b=nZHyS5kx8XFtxAZC00IyFtiCErTUbKQpTh+QxHIYhyTaJYRIz3N7orRYIFHS+L9yy1
-         SCWuHnADlT3cdGpP5/QVSoa8MiBj4YXN6u3J1xFEdA0M9YDcR2AFEUeqDjHcqifbRdAd
-         R8/k6jD5LCBn/BXKzlu7Qnsq6ZrNsDDQzmEfJVd5tZTiZb80oyryRQ0oQWUvE/VmjdBO
-         VsPjp0LDnT9Nxraxu41V2XvLQfmtwV5s659VOAkOw2XxVQYT+EQl7DPBVV/T1Ji4cJGN
-         mxqNMkkiS6BmJrusG3raeKoCNtUSar4KdbaYZbPQeyNNon6eP9GNYce5uMVgjocXsMen
-         JXHQ==
-X-Gm-Message-State: AOAM533NkmTreF6aauXpb3fozudQf5PhiIiPUo8JXTzMmVsHeHejBebb
-        7Zy3lp6HHaUIUtwpRajn4iqBw2KrMJ0XsHzurLvRIRL1HDZExMc0cFe1B/6WiRs1RI6HMo2KqzS
-        WTE698FCZEH3I/rpEfiTB/In2
-X-Received: by 2002:a05:6402:cb:: with SMTP id i11mr9374789edu.372.1595866174517;
-        Mon, 27 Jul 2020 09:09:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/hhArY+P/WnFI9GEc6R3AlSG06qBpjRYmUOuaXpr8IMw0UcMbxhNf3VfCAhBOae5V8WHpqw==
-X-Received: by 2002:a05:6402:cb:: with SMTP id i11mr9374774edu.372.1595866174365;
-        Mon, 27 Jul 2020 09:09:34 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id gh25sm1891816ejb.109.2020.07.27.09.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 09:09:33 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vivek Goyal <vgoyal@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com
-Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
-In-Reply-To: <20200727135603.GA39559@redhat.com>
-References: <20200720211359.GF502563@redhat.com> <20200727135603.GA39559@redhat.com>
-Date:   Mon, 27 Jul 2020 18:09:32 +0200
-Message-ID: <87ft9dlz2b.fsf@vitty.brq.redhat.com>
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BD4BF182251C0;
+        Mon, 27 Jul 2020 16:09:39 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3868:3871:4250:4321:5007:8603:8660:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12740:12760:12895:13069:13148:13230:13311:13357:13439:14659:14721:21080:21451:21627:21939:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: stem58_2a1235a26f62
+X-Filterd-Recvd-Size: 1602
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 27 Jul 2020 16:09:37 +0000 (UTC)
+Message-ID: <0897d9bec8865859694c917f3f72ab8fd12321ff.camel@perches.com>
+Subject: Re: [PATCH 2/2] media: bt8xx: avoid a useless memset
+From:   Joe Perches <joe@perches.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        mchehab@kernel.org, akpm@linux-foundation.org, rppt@kernel.org,
+        hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Date:   Mon, 27 Jul 2020 09:09:34 -0700
+In-Reply-To: <20200727135151.54757-1-christophe.jaillet@wanadoo.fr>
+References: <20200727135151.54757-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vivek Goyal <vgoyal@redhat.com> writes:
+On Mon, 2020-07-27 at 15:51 +0200, Christophe JAILLET wrote:
+> Avoid a memset after a call to 'dma_alloc_coherent()'.
+> This is useless since
+> commit 518a2f1925c3 ("dma-mapping: zero memory returned from dma_alloc_*")
+[]
+> diff --git a/drivers/media/pci/bt8xx/btcx-risc.c b/drivers/media/pci/bt8xx/btcx-risc.c
+[]
+> @@ -73,7 +73,6 @@ int btcx_riscmem_alloc(struct pci_dev *pci,
+>  		dprintk("btcx: riscmem alloc [%d] dma=%lx cpu=%p size=%d\n",
+>  			memcnt, (unsigned long)dma, cpu, size);
+>  	}
+> -	memset(risc->cpu,0,risc->size);
+>  	return 0;
+>  }
 
-> On Mon, Jul 20, 2020 at 05:13:59PM -0400, Vivek Goyal wrote:
->> Page fault error handling behavior in kvm seems little inconsistent when
->> page fault reports error. If we are doing fault synchronously
->> then we capture error (-EFAULT) returned by __gfn_to_pfn_memslot() and
->> exit to user space and qemu reports error, "error: kvm run failed Bad address".
->
-> Hi Vitaly,
->
-> A gentle reminder. How does this patch look now?
->
+Likely NAK.
 
-Sorry, I even reviewd it but never replied. It looks good to me!
+This is not useless as risc->cpu may be reused
+and the alloc may not have been done.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
 
