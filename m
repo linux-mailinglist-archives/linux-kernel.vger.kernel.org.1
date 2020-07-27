@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AF022EF2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1CF22F011
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730481AbgG0OOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39274 "EHLO mail.kernel.org"
+        id S1731105AbgG0OVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730454AbgG0OOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:00 -0400
+        id S1730258AbgG0OVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A10A2073E;
-        Mon, 27 Jul 2020 14:13:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DADC2070B;
+        Mon, 27 Jul 2020 14:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859240;
-        bh=mlp2IfWZzgqQ27OXIqAAKqj1cTvN5TNHIzGsGb2Ypdk=;
+        s=default; t=1595859692;
+        bh=qZ/q8yUYZulNBOTbHyiSlh+qQ7ws0lW90pxD72l4R9I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0sqDZXCAjx1HsEImvw1nqo/H6Ff5s7aGAeeAFkdjGh5UsjgdrwZ+fatzAWUC8geJa
-         uDy2KWjbgR3FsbN7BQLzZT7WNWRwS0/Q00v9y0Az09ABOHRqnGPuQ0Qblf1hzYSRuj
-         9tfQ/QRK9NPu6Ddmi0Qw++TScjEkbS/jrdbiDW2M=
+        b=rLzg6Ebq2TheqrePFb87qusuHZwmnoCiyrBb2bLPTJRB8vCi9rrMdDAUQG6hLFNyT
+         dRXienJvQt/ulV3Lg0H9rwhTc4N0fNAjVSA1kWlj1Z6k8k/9ACWcAoOCMws9ahOrCa
+         UBh69c4rq7M8U2WufZlkURiYAKLXeGA0oz5R1TDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 031/138] ALSA: info: Drop WARN_ON() from buffer NULL sanity check
+        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 051/179] vsock/virtio: annotate the_virtio_vsock RCU pointer
 Date:   Mon, 27 Jul 2020 16:03:46 +0200
-Message-Id: <20200727134926.933294762@linuxfoundation.org>
+Message-Id: <20200727134935.154462720@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit 60379ba08532eca861e933b389526a4dc89e0c42 upstream.
+[ Upstream commit f961134a612c793d5901a93d85a29337c74af978 ]
 
-snd_info_get_line() has a sanity check of NULL buffer -- both buffer
-itself being NULL and buffer->buffer being NULL.  Basically both
-checks are valid and necessary, but the problem is that it's with
-snd_BUG_ON() macro that triggers WARN_ON().  The latter condition
-(NULL buffer->buffer) can be met arbitrarily by user since the buffer
-is allocated at the first write, so it means that user can trigger
-WARN_ON() at will.
+Commit 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free
+on the_virtio_vsock") starts to use RCU to protect 'the_virtio_vsock'
+pointer, but we forgot to annotate it.
 
-This patch addresses it by simply moving buffer->buffer NULL check out
-of snd_BUG_ON() so that spurious WARNING is no longer triggered.
+This patch adds the annotation to fix the following sparse errors:
 
-Reported-by: syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200717084023.5928-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    net/vmw_vsock/virtio_transport.c:73:17: error: incompatible types in comparison expression (different address spaces):
+    net/vmw_vsock/virtio_transport.c:73:17:    struct virtio_vsock [noderef] __rcu *
+    net/vmw_vsock/virtio_transport.c:73:17:    struct virtio_vsock *
+    net/vmw_vsock/virtio_transport.c:171:17: error: incompatible types in comparison expression (different address spaces):
+    net/vmw_vsock/virtio_transport.c:171:17:    struct virtio_vsock [noderef] __rcu *
+    net/vmw_vsock/virtio_transport.c:171:17:    struct virtio_vsock *
+    net/vmw_vsock/virtio_transport.c:207:17: error: incompatible types in comparison expression (different address spaces):
+    net/vmw_vsock/virtio_transport.c:207:17:    struct virtio_vsock [noderef] __rcu *
+    net/vmw_vsock/virtio_transport.c:207:17:    struct virtio_vsock *
+    net/vmw_vsock/virtio_transport.c:561:13: error: incompatible types in comparison expression (different address spaces):
+    net/vmw_vsock/virtio_transport.c:561:13:    struct virtio_vsock [noderef] __rcu *
+    net/vmw_vsock/virtio_transport.c:561:13:    struct virtio_vsock *
+    net/vmw_vsock/virtio_transport.c:612:9: error: incompatible types in comparison expression (different address spaces):
+    net/vmw_vsock/virtio_transport.c:612:9:    struct virtio_vsock [noderef] __rcu *
+    net/vmw_vsock/virtio_transport.c:612:9:    struct virtio_vsock *
+    net/vmw_vsock/virtio_transport.c:631:9: error: incompatible types in comparison expression (different address spaces):
+    net/vmw_vsock/virtio_transport.c:631:9:    struct virtio_vsock [noderef] __rcu *
+    net/vmw_vsock/virtio_transport.c:631:9:    struct virtio_vsock *
 
+Fixes: 0deab087b16a ("vsock/virtio: use RCU to avoid use-after-free on the_virtio_vsock")
+Reported-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/info.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/vmw_vsock/virtio_transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -608,7 +608,9 @@ int snd_info_get_line(struct snd_info_bu
- {
- 	int c = -1;
+diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+index dfbaf6bd8b1c7..2700a63ab095e 100644
+--- a/net/vmw_vsock/virtio_transport.c
++++ b/net/vmw_vsock/virtio_transport.c
+@@ -22,7 +22,7 @@
+ #include <net/af_vsock.h>
  
--	if (snd_BUG_ON(!buffer || !buffer->buffer))
-+	if (snd_BUG_ON(!buffer))
-+		return 1;
-+	if (!buffer->buffer)
- 		return 1;
- 	if (len <= 0 || buffer->stop || buffer->error)
- 		return 1;
+ static struct workqueue_struct *virtio_vsock_workqueue;
+-static struct virtio_vsock *the_virtio_vsock;
++static struct virtio_vsock __rcu *the_virtio_vsock;
+ static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
+ 
+ struct virtio_vsock {
+-- 
+2.25.1
+
 
 
