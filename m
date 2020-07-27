@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDC122F995
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A8322F997
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728840AbgG0T4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:56:12 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:46166 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgG0T4L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:56:11 -0400
-Received: by mail-io1-f68.google.com with SMTP id a5so3060582ioa.13;
-        Mon, 27 Jul 2020 12:56:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C8UHP2DIuI2PhUn6nQlydwILHy7h5veWF+bWL7pWmYI=;
-        b=t6aHTR0rhje2Y1yZqvcoadZgdBqa1fv/bvvSvorRyM7ZhInaaQkh2Rxw9bkIH9u0wm
-         pY8Bpy5tUZj2C8ZpL9GsgQi9U9F1DayB/dTdmxHAJzJdfcEXlAOLwg0wj4eNKvyJDGCr
-         gU5c1TtrSYLij5zMyxx+cKwrSAfDovKnSUTqiA8Dv5geZ55ynDPtTK07GUjtd2P/5EUW
-         k9dxNoofTVGIjJwmOgFAebRUu2rw8HfW8/LHdkdkYcquBM/xj7d2hTs+iUBvKMyvXuE9
-         diE2OEzuM6iuxgkDPEYMv++1aYJ3fhvhH9v3Xf25jfWnY85zGLSWuxL+9a/DX1bwIGHr
-         DWXQ==
-X-Gm-Message-State: AOAM533dkLlfuab1fn7JiYcxT/Fu2Ac5tqKIn2T53RQqGzGgaOZNb19Q
-        3ApsiXB9htOK6EKt6KVqRA==
-X-Google-Smtp-Source: ABdhPJwE+bqEac4f3wM8AlVwnQRJLKAVkJx8XhPsguZt8wv7uHc9/LrC6MgxM35EmhAD4wDtwDAGKg==
-X-Received: by 2002:a5e:9519:: with SMTP id r25mr21081467ioj.199.1595879770589;
-        Mon, 27 Jul 2020 12:56:10 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id r2sm6613651ilc.58.2020.07.27.12.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 12:56:09 -0700 (PDT)
-Received: (nullmailer pid 777930 invoked by uid 1000);
-        Mon, 27 Jul 2020 19:56:06 -0000
-Date:   Mon, 27 Jul 2020 13:56:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Emil Renner Berhing <kernel@esmil.dk>,
-        linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v6 4/4] dt-bindings: timer: Add CLINT bindings
-Message-ID: <20200727195606.GA777876@bogus>
-References: <20200724071822.126758-1-anup.patel@wdc.com>
- <20200724071822.126758-5-anup.patel@wdc.com>
+        id S1729040AbgG0T4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgG0T4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 15:56:44 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 598A62072E;
+        Mon, 27 Jul 2020 19:56:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595879803;
+        bh=8AzCarMRtNvpFmv6CLe9LN+iMyNxXBO5Qr1sPYzB+j8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=krsKeN2DScs85NMOxCVNvPD6miSBkNOFc9qD/hmUvr0yQ5XtEq6jCH0Bjoe84l0kr
+         orvcrsnQE1mekBu3pKRGpuOsNWq1jonPpPstUDGvt2F4Did/2eCxaYDm04Sblx4HD4
+         SgfEr+igyMWJzg8IlE9f4GAqWbPVpXT3cMFmNnDE=
+Date:   Mon, 27 Jul 2020 21:56:38 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     hminas@synopsys.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marex@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH v3] usb: dwc2: Add missing cleanups when
+ usb_add_gadget_udc() fails
+Message-ID: <20200727195638.GA240997@kroah.com>
+References: <20200727173801.792626-1-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200724071822.126758-5-anup.patel@wdc.com>
+In-Reply-To: <20200727173801.792626-1-martin.blumenstingl@googlemail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 12:48:22 +0530, Anup Patel wrote:
-> We add DT bindings documentation for CLINT device.
+On Mon, Jul 27, 2020 at 07:38:01PM +0200, Martin Blumenstingl wrote:
+> Call dwc2_debugfs_exit() and dwc2_hcd_remove() (if the HCD was enabled
+> earlier) when usb_add_gadget_udc() has failed. This ensures that the
+> debugfs entries created by dwc2_debugfs_init() as well as the HCD are
+> cleaned up in the error path.
 > 
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Tested-by: Emil Renner Berhing <kernel@esmil.dk>
+> Fixes: 207324a321a866 ("usb: dwc2: Postponed gadget registration to the udc class driver")
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->  .../bindings/timer/sifive,clint.yaml          | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.yaml
+> Changes since v2 at [1]:
+> - add #if around the new label and it's code to prevent the following
+>   warning found by the Kernel test robot:
+>     unused label 'error_debugfs' [-Wunused-label]
 > 
+> Changes since v1 at [0]
+> - also cleanup the HCD as suggested by Minas (thank you!)
+> - updated the subject accordingly
+> 
+> 
+> [0] https://patchwork.kernel.org/patch/11631381/
+> [1] https://patchwork.kernel.org/patch/11642957/
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+<formletter>
+
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+</formletter>
