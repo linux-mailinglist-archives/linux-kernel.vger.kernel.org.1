@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CF722E874
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A658F22E877
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbgG0JGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        id S1727968AbgG0JGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:06:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbgG0JGt (ORCPT
+        with ESMTP id S1727951AbgG0JGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:06:49 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89955C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:06:49 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id c25so11772940otf.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:06:49 -0700 (PDT)
+        Mon, 27 Jul 2020 05:06:53 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A83C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:06:52 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id s144so3808164oie.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:06:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9DYPZ/cg5bWE+8mLgqqq5d9bdeBFDbTl2cHuY4OPgV8=;
-        b=mjEnxSSWFDn78QhEXgzlYfh83jJuISJo2pdRp1br6PNji3pirhIc1VAtH1Z/j4oyhV
-         NFTROO0H/SWb6rGbVv/F4z46CtgbeyWbJ5aDTP/EKWrSYArqEHOJpi8ctMUkST74mOwx
-         SKd2hFHI0GgPrHFFYZm/RBbnj7FnmTCCNNz9A=
+        bh=BmzwV5D0tUNlvhJVCS/jJG+N+MKJEeKpMNP1+n+ZO3A=;
+        b=P7yY6zTapyco0YgX6oqY8Ipe9DxBcbIrSEBNdF5idPlppIjjkhFh/DDM5aQG8EEmBZ
+         8jO2IM9ogz+hF/nUTPtPCFqvvIfasw58AwXAp5nJmEFlUcUZdrrgKB2KpyB7up8S6IPc
+         wBtwdwDZ0LHbDNJGM42HFGYWjZoK+o5CCdn/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9DYPZ/cg5bWE+8mLgqqq5d9bdeBFDbTl2cHuY4OPgV8=;
-        b=gT1awFGbkIC9gKqd8PxZgASoCTgaM/9MeLuUmyso+F8LeCU9E8DZQXefQZbBiiVpLl
-         2gm/S53pdQNNLwAAFzskFy8gcm90Gq7pdTjB69wgq9b/OT8PxUQ4evY8qsalixfJE6Gy
-         RhSvHzg6dEDkse9o1Y2lUEZGu8MmymhfbiHVna5FlUJXApqC1ePBJ8fEC+p07idOxJiJ
-         RUAN61HiPjdCLJf5Wm30XAzg94uxhquwOrF+L/+TebHFJTLOZlFdZXnao8ksRhdFN2iC
-         UFufT7sjzETyMK8ACejWwIOMoy6lYfpy6bpoyCpTPW7ZhrFdNhXr2HFPJYbxx5s1m1/B
-         vcYw==
-X-Gm-Message-State: AOAM533+MvQb/yjDeSKgjFnj4SLinXytitJ+ePFxaqyn/tEpH/Mq9twR
-        jknDVoDW9L8iR40fWJMii92D9HG4QaY=
-X-Google-Smtp-Source: ABdhPJxV45/LXj/u4rK3ZYXbYpl3WLbXnZNuqQ/6zGA9KqqKftCDToo0LbqGgkDmgllz4ZBQyjv3Qg==
-X-Received: by 2002:a9d:6d0c:: with SMTP id o12mr9982832otp.249.1595840807682;
-        Mon, 27 Jul 2020 02:06:47 -0700 (PDT)
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com. [209.85.161.47])
-        by smtp.gmail.com with ESMTPSA id k16sm3399626otl.63.2020.07.27.02.06.45
+        bh=BmzwV5D0tUNlvhJVCS/jJG+N+MKJEeKpMNP1+n+ZO3A=;
+        b=ViqwgWNK0MPO4SQ1H2wjWv/cq+csfGOmm65uey63K745kA1NJSO+S3o3eujgp7x90w
+         6R4gDTMLb6hwp0jZwYNHZ2fVM7RxAaSNQREjRXH7M2JmEB8oex2JL+Zw5izaUwUAGSyW
+         pvoq9D8tP7QUv7eMMHxiqX9gjmAhRHl6CJWtNEbcbjeEe+8r0heG7HT7/Zce/NPOoDAW
+         CAWdxbVmXKI0iQcxcp70HYx25ejw/H5fc4bzqjlqlLVSdmBfcArzo+fIvAzOOQY/+sR3
+         DJOYrn7k+zgF19yxE/JF7Xa7It6UsDfhV6xfpRkea4OMsTpP9FQjtYBuI0CkjF2NEtfn
+         x+7g==
+X-Gm-Message-State: AOAM532vYWbGG7XF9+JppFo+BAFC0sL1sxRuGO/esoG49gbbax3+nef4
+        y/1OSP2n30xZigz7MbkjrGtYMeRikAI=
+X-Google-Smtp-Source: ABdhPJx4DZ0DYBwT/9Ftcv5K5kW7H0FkBnafurf5BWHEB8RpwavV/yZj7ijA23q/BegC+/HG/uy4BQ==
+X-Received: by 2002:aca:dc43:: with SMTP id t64mr17305194oig.19.1595840810923;
+        Mon, 27 Jul 2020 02:06:50 -0700 (PDT)
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com. [209.85.167.169])
+        by smtp.gmail.com with ESMTPSA id n6sm3227057otl.53.2020.07.27.02.06.48
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 02:06:46 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id k63so167694oob.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:06:45 -0700 (PDT)
-X-Received: by 2002:a05:6820:1015:: with SMTP id v21mr19420231oor.50.1595840804794;
- Mon, 27 Jul 2020 02:06:44 -0700 (PDT)
+        Mon, 27 Jul 2020 02:06:49 -0700 (PDT)
+Received: by mail-oi1-f169.google.com with SMTP id 12so13750423oir.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:06:48 -0700 (PDT)
+X-Received: by 2002:aca:b6c3:: with SMTP id g186mr16300307oif.55.1595840807593;
+ Mon, 27 Jul 2020 02:06:47 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200713060842.471356-1-acourbot@chromium.org>
- <20200713060842.471356-3-acourbot@chromium.org> <CAAEAJfD8yfdTptkmXoPzrw6S=6eKr=K4yL9-5aq2JtWF7M3=7w@mail.gmail.com>
-In-Reply-To: <CAAEAJfD8yfdTptkmXoPzrw6S=6eKr=K4yL9-5aq2JtWF7M3=7w@mail.gmail.com>
+ <20200713060842.471356-4-acourbot@chromium.org> <CAAEAJfBO1Sih3r_RqxYCLRxtx6SoDq674zrvqhJiEBJeiDAtvw@mail.gmail.com>
+In-Reply-To: <CAAEAJfBO1Sih3r_RqxYCLRxtx6SoDq674zrvqhJiEBJeiDAtvw@mail.gmail.com>
 From:   Alexandre Courbot <acourbot@chromium.org>
-Date:   Mon, 27 Jul 2020 18:06:31 +0900
-X-Gmail-Original-Message-ID: <CAPBb6MW3AC2savGCHk8w98u1oRuZAs9m6sqz++ksJ58DGvJ5nQ@mail.gmail.com>
-Message-ID: <CAPBb6MW3AC2savGCHk8w98u1oRuZAs9m6sqz++ksJ58DGvJ5nQ@mail.gmail.com>
-Subject: Re: [PATCH v3 02/16] dt-bindings: media: mtk-vcodec: document SCP node
+Date:   Mon, 27 Jul 2020 18:06:34 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MV=oo-a9POY_qedcJYU_qSJ695FwJthBrp3SQUK+g0JvA@mail.gmail.com>
+Message-ID: <CAPBb6MV=oo-a9POY_qedcJYU_qSJ695FwJthBrp3SQUK+g0JvA@mail.gmail.com>
+Subject: Re: [PATCH v3 03/16] media: mtk-vcodec: add SCP firmware ops
 To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -76,57 +76,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 6:37 AM Ezequiel Garcia
+On Thu, Jul 23, 2020 at 6:40 AM Ezequiel Garcia
 <ezequiel@vanguardiasur.com.ar> wrote:
 >
 > On Mon, 13 Jul 2020 at 03:09, Alexandre Courbot <acourbot@chromium.org> wrote:
 > >
-> > The mediatek codecs can use either the VPU or the SCP as their interface
-> > to firmware. Reflect this in the DT bindings.
+> > From: Yunfei Dong <yunfei.dong@mediatek.com>
 > >
+> > Add support for communicating with the SCP firmware, which will be used
+> > by MT8183.
+> >
+> > Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> > [acourbot: refactor, cleanup and split]
+> > Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
 > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 > > Acked-by: Tiffany Lin <tiffany.lin@mediatek.com>
 > > ---
-> >  Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> >  drivers/media/platform/Kconfig                |  1 +
+> >  .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  3 +
+> >  .../platform/mtk-vcodec/mtk_vcodec_enc_drv.c  |  3 +
+> >  .../media/platform/mtk-vcodec/mtk_vcodec_fw.c | 56 +++++++++++++++++++
+> >  .../media/platform/mtk-vcodec/mtk_vcodec_fw.h |  2 +
+> >  5 files changed, 65 insertions(+)
 > >
-> > diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> > index b6b5dde6abd8..7aef0a4fe207 100644
-> > --- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> > +++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-> > @@ -19,7 +19,9 @@ Required properties:
-> >  - iommus : should point to the respective IOMMU block with master port as
-> >    argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-> >    for details.
-> > -- mediatek,vpu : the node of video processor unit
-> > +One of the two following nodes:
-> > +- mediatek,vpu : the node of the video processor unit, if using VPU.
-> > +- mediatek,scp : the noode of the SCP unit, if using SCP.
+> > diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> > index c57ee78fa99d..f0dbe048efea 100644
+> > --- a/drivers/media/platform/Kconfig
+> > +++ b/drivers/media/platform/Kconfig
+> > @@ -256,6 +256,7 @@ config VIDEO_MEDIATEK_VCODEC
+> >         select VIDEOBUF2_DMA_CONTIG
+> >         select V4L2_MEM2MEM_DEV
+> >         select VIDEO_MEDIATEK_VPU
+> > +       select MTK_SCP
+> >         help
+> >             Mediatek video codec driver provides HW capability to
+> >             encode and decode in a range of video formats
+> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> > index 4f07a5fcce7f..5b5765b98e57 100644
+> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
+> > @@ -225,6 +225,9 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+> >         if (!of_property_read_u32(pdev->dev.of_node, "mediatek,vpu",
+> >                                   &rproc_phandle)) {
+> >                 fw_type = VPU;
+> > +       } else if (!of_property_read_u32(pdev->dev.of_node, "mediatek,scp",
+> > +                                        &rproc_phandle)) {
+> > +               fw_type = SCP;
+> >         } else {
+> >                 mtk_v4l2_err("Could not get vdec IPI device");
+> >                 return -ENODEV;
+> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+> > index 4340ea10afd0..42530cd01a30 100644
+> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+> > @@ -233,6 +233,9 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+> >         if (!of_property_read_u32(pdev->dev.of_node, "mediatek,vpu",
+> >                                   &rproc_phandle)) {
+> >                 fw_type = VPU;
+> > +       } else if (!of_property_read_u32(pdev->dev.of_node, "mediatek,scp",
+> > +                                        &rproc_phandle)) {
+> > +               fw_type = SCP;
+> >         } else {
+> >                 mtk_v4l2_err("Could not get venc IPI device");
+> >                 return -ENODEV;
+> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
+> > index 967bb100a990..f2a62ea62fc6 100644
+> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
+> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_fw.c
+> > @@ -19,6 +19,7 @@ struct mtk_vcodec_fw {
+> >         enum mtk_vcodec_fw_type type;
+> >         const struct mtk_vcodec_fw_ops *ops;
+> >         struct platform_device *pdev;
+> > +       struct mtk_scp *scp;
+> >  };
 > >
+> >  static int mtk_vcodec_vpu_load_firmware(struct mtk_vcodec_fw *fw)
+> > @@ -71,6 +72,48 @@ static const struct mtk_vcodec_fw_ops mtk_vcodec_vpu_msg = {
+> >         .ipi_send = mtk_vcodec_vpu_ipi_send,
+> >  };
+> >
+> > +static int mtk_vcodec_scp_load_firmware(struct mtk_vcodec_fw *fw)
+> > +{
+> > +       return rproc_boot(scp_get_rproc(fw->scp));
+> > +}
+> > +
+> > +static unsigned int mtk_vcodec_scp_get_vdec_capa(struct mtk_vcodec_fw *fw)
+> > +{
+> > +       return scp_get_vdec_hw_capa(fw->scp);
+> > +}
+> > +
+> > +static unsigned int mtk_vcodec_scp_get_venc_capa(struct mtk_vcodec_fw *fw)
+> > +{
+> > +       return scp_get_venc_hw_capa(fw->scp);
+> > +}
+> > +
+> > +static void *mtk_vcodec_vpu_scp_dm_addr(struct mtk_vcodec_fw *fw,
+> > +                                       u32 dtcm_dmem_addr)
+> > +{
+> > +       return scp_mapping_dm_addr(fw->scp, dtcm_dmem_addr);
+> > +}
+> > +
+> > +static int mtk_vcodec_scp_set_ipi_register(struct mtk_vcodec_fw *fw, int id,
+> > +               mtk_vcodec_ipi_handler handler, const char *name, void *priv)
+> > +{
+> > +       return scp_ipi_register(fw->scp, id, handler, priv);
+> > +}
+> > +
+> > +static int mtk_vcodec_scp_ipi_send(struct mtk_vcodec_fw *fw, int id, void *buf,
+> > +               unsigned int len, unsigned int wait)
+> > +{
+> > +       return scp_ipi_send(fw->scp, id, buf, len, wait);
+> > +}
+> > +
+> > +static const struct mtk_vcodec_fw_ops mtk_vcodec_rproc_msg = {
+> > +       .load_firmware = mtk_vcodec_scp_load_firmware,
+> > +       .get_vdec_capa = mtk_vcodec_scp_get_vdec_capa,
+> > +       .get_venc_capa = mtk_vcodec_scp_get_venc_capa,
+> > +       .map_dm_addr = mtk_vcodec_vpu_scp_dm_addr,
+> > +       .ipi_register = mtk_vcodec_scp_set_ipi_register,
+> > +       .ipi_send = mtk_vcodec_scp_ipi_send,
+> > +};
+> > +
+> >  static void mtk_vcodec_reset_handler(void *priv)
+> >  {
+> >         struct mtk_vcodec_dev *dev = priv;
+> > @@ -94,6 +137,7 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
+> >         const struct mtk_vcodec_fw_ops *ops;
+> >         struct mtk_vcodec_fw *fw;
+> >         struct platform_device *fw_pdev = NULL;
+> > +       struct mtk_scp *scp = NULL;
+> >
+> >         switch (type) {
+> >         case VPU:
+> > @@ -106,6 +150,14 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
+> >                 vpu_wdt_reg_handler(fw_pdev, mtk_vcodec_reset_handler,
+> >                                     dev, rst_id);
+> >                 break;
+> > +       case SCP:
+> > +               ops = &mtk_vcodec_rproc_msg;
+> > +               scp = scp_get(dev->plat_dev);
+> > +               if (!scp) {
+> > +                       mtk_v4l2_err("could not get vdec scp handle");
+> > +                       return ERR_PTR(-EPROBE_DEFER);
 >
-> This interface doesn't enforce the fact only one of the two
-> should be present, but not both (which is the case, right?).
+> I suspect the EPROBE_DEFER should be returned by scp_get
+> itself instead.
 
-That's correct.
-
->
-> I hope I'm not bikeshedding here, but from an interface POV,
-> would it be cleaner to just have a single mediatek,coprocessor
-> property, and then use of_device_is_compatible
-> to distinguish VPU from SCP type?
-
-From an interface point of view maybe, however doing so would
-introduce a backward-incompatible change with the existing MT8173
-bindings. I also feel like it is less error-prone to have the property
-explicitly state what it is expecting at the other end of the phandle
-(vpu or scp) instead of the more generic "coprocessor".
+scp_get() is a function of of mtk_scp remoteproc driver, so even if we
+decide this is desirable (which I am not convinced, as the current
+code leaves the freedom to decide how the absence of SCP should be
+interpreted to the driver) this is beyond the scope of this series.
 
 >
-> Moreover, I'd argue you don't need a dt-binding change
-> and should just keep the current mediatek-vpu property,
-> and then rely on of_device_is_compatible.
+> > +               }
+> > +               break;
+> >         default:
+> >                 mtk_v4l2_err("invalid vcodec fw type");
+> >                 return ERR_PTR(-EINVAL);
+> > @@ -118,6 +170,7 @@ struct mtk_vcodec_fw *mtk_vcodec_fw_select(struct mtk_vcodec_dev *dev,
+> >         fw->type = type;
+> >         fw->ops = ops;
+> >         fw->pdev = fw_pdev;
+> > +       fw->scp = scp;
+> >
+> >         return fw;
+> >  }
+> > @@ -129,6 +182,9 @@ void mtk_vcodec_fw_release(struct mtk_vcodec_fw *fw)
+> >         case VPU:
+> >                 put_device(&fw->pdev->dev);
+> >                 break;
+> > +       case SCP:
+> > +               scp_put(fw->scp);
+>
+> Interestingly scp_put is a wrapper around put_device :-)
+> Perhaps not a reason to violate the layering.
 
-VPU and SCP are different kinds of processors, so I'm not sure whether
-it is desirable to use VPU interchangeably like this. Note that I'm
-not strongly against it either, but for things like bindings I tend to
-prefer precise language to avoid confusions.
+I don't see what is wrong with the current code? If SCP is in use, we
+use SCP functions to manage it. If in the future SCP involves in such
+a way that we need to do more than a put_device(), we are covered. Or
+am I missing something?
