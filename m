@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B820D22FBAA
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB6D22FBA9
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgG0VvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 17:51:08 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:47045 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726897AbgG0Vuz (ORCPT
+        id S1727033AbgG0VvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 17:51:02 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34105 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726946AbgG0Vu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 17:50:55 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d14so16779503qke.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 14:50:54 -0700 (PDT)
+        Mon, 27 Jul 2020 17:50:56 -0400
+Received: by mail-qk1-f194.google.com with SMTP id x69so16842699qkb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 14:50:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=C8/1Hf8iU28AAeCNJ39bOpU5D7IlHEtSkRRaWVr2wKs=;
-        b=E5APldgfAVUtL7OOwwmlP+HpaYul0hDY3ADgPgoR/ak8sk0ho10KI9L4GT2JUEAgp4
-         gr+sI2t/MG8JBKPfR3PUJXydqGZrecqyRwT0btqtpMxVezVj2mNdTtkKXEHk+QxuG6cA
-         PjAmPTelAzwChjWw9z9xNdTJHgT5CnQwq/Mxm/X1NUMfZ7sx8Upgawad4cWh8FM9k039
-         RHDxGhOvKSbTAjrtQJupexE7eR2rnqcs+n6y4Ogp5KLoAcD8r+BazOyCGIoUyOzLIRJO
-         vp3lpPx3crD1YoOaE18GwfEX0yvAvCdeFKogIje7BnuULRbTz5q+MvlH+e5j0YWqtXab
-         L96w==
-X-Gm-Message-State: AOAM5316wYz0x22kyEUpPEzHGwWyUoCi1PQS2M1YfM+ZaMCbn61IzxME
-        28W+iWV7hV5V9tT6HdNYlzY=
-X-Google-Smtp-Source: ABdhPJynQj5CwhRpOhm8vAU/yxngtQ8INCO3SxFjmEQt7f3NDvXfMShVS2X58kOVaJVYg6Wj7a9Dfw==
-X-Received: by 2002:a05:620a:20ca:: with SMTP id f10mr24651100qka.0.1595886654472;
-        Mon, 27 Jul 2020 14:50:54 -0700 (PDT)
+        bh=xf8u112G9B6jocNxpIpSZ5Ma8y1M/w5PTt/UgbiI4/s=;
+        b=ZMsuDCfx/ThSZIAky4LIzEagGIbw1+E/u0IhdmOr/fR3FNrCqxQmVtUgRlhfYmAEdj
+         QmjukLET29BMQ5E4vNm0TzGWDXlvux4qrKPZO+WwlbLNry0u4e2WLn8XH/GcEZ3hiKZB
+         vNKSHQ8Hw9YutZwytIUNAlU/k946KxdUmVEXJ+c9uyWury7d3QlyGOqLXU6AfQBrjMWe
+         zQ5VSkNio0uHwbcOkIrDzZ8l8vpzrejluxEUVJTcUm67PzQ7RCTZx7PwkOW7t41sJ65H
+         O7DoNwf3ttoAnItL96ISt4Omu4+XlHGIGrQV+Yi1vfBTQ89lNZyOPMhALR89qGOQr1cD
+         dayA==
+X-Gm-Message-State: AOAM532/a4WFPbPKtd1GvwsE82i/5P/QN0p1CBtyk6gF2fXBjSvID5vD
+        hpAAwPsnFyBHrRjEFB62fsYIl5R9
+X-Google-Smtp-Source: ABdhPJwvTNjzxaJ0CBPfM3l41ojSWKcAqqK56y4tzPDyZNZNMTf7NEpoWfiFkmQt/TeswMFwR10T5w==
+X-Received: by 2002:a37:6482:: with SMTP id y124mr25625811qkb.470.1595886655245;
+        Mon, 27 Jul 2020 14:50:55 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id n90sm15629338qte.21.2020.07.27.14.50.53
+        by smtp.gmail.com with ESMTPSA id n90sm15629338qte.21.2020.07.27.14.50.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 27 Jul 2020 14:50:54 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 6/8] x86/kaslr: Simplify process_gb_huge_pages
-Date:   Mon, 27 Jul 2020 17:50:45 -0400
-Message-Id: <20200727215047.3341098-7-nivedita@alum.mit.edu>
+Subject: [PATCH 7/8] x86/kaslr: Clean up slot handling
+Date:   Mon, 27 Jul 2020 17:50:46 -0400
+Message-Id: <20200727215047.3341098-8-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727215047.3341098-1-nivedita@alum.mit.edu>
 References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
@@ -50,94 +50,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Short-circuit the whole function on 32-bit.
+The number of slots and slot areas can be unsigned int, since on 64-bit,
+the maximum amount of memory is 2^52, the minimum alignment is 2^21, so
+the slot number cannot be greater than 2^31. The slot areas are limited
+by MAX_SLOT_AREA, currently 100. Replace the type used for slot number,
+which is currently a mix of int and unsigned long, with unsigned int
+consistently.
 
-Replace the loop to determine the number of 1Gb pages with arithmetic.
+Drop unnecessary check that number of slots is not zero in
+store_slot_info, it's guaranteed to be at least 1 by the calculation.
 
-Fix one minor bug: if the end of the region is aligned on a 1Gb
-boundary, the current code will not use the last available 1Gb page due
-to an off-by-one error.
+Drop unnecessary alignment of image_size to CONFIG_PHYSICAL_ALIGN in
+find_random_virt_addr, it cannot change the result: the largest valid
+slot is the largest n that satisfies
+
+  minimum + n * CONFIG_PHYSICAL_ALIGN + image_size <= KERNEL_IMAGE_SIZE
+
+(since minimum is already aligned) and so n is equal to
+
+  (KERNEL_IMAGE_SIZE - minimum - image_size) / CONFIG_PHYSICAL_ALIGN
+
+even if image_size is not aligned to CONFIG_PHYSICAL_ALIGN.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 48 ++++++++++++++------------------
- 1 file changed, 21 insertions(+), 27 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 36 ++++++++++++--------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 850e131121f7..29ec964b1330 100644
+index 29ec964b1330..ffbcc0444f70 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -546,49 +546,43 @@ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
- static void
- process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
+@@ -511,16 +511,14 @@ static bool mem_avoid_overlap(struct mem_vector *img,
+ 
+ struct slot_area {
+ 	unsigned long addr;
+-	int num;
++	unsigned int num;
+ };
+ 
+ #define MAX_SLOT_AREA 100
+ 
+ static struct slot_area slot_areas[MAX_SLOT_AREA];
+-
+-static unsigned long slot_max;
+-
+-static unsigned long slot_area_index;
++static unsigned int slot_area_index;
++static unsigned int slot_max;
+ 
+ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
  {
--	unsigned long addr, size = 0;
-+	unsigned long pud_start, pud_end, gb_huge_pages;
- 	struct mem_vector tmp;
--	int i = 0;
- 
--	if (!max_gb_huge_pages) {
-+	if (IS_ENABLED(CONFIG_X86_32) || !max_gb_huge_pages) {
- 		store_slot_info(region, image_size);
+@@ -530,13 +528,10 @@ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
  		return;
- 	}
  
--	addr = ALIGN(region->start, PUD_SIZE);
--	/* Did we raise the address above the passed in memory entry? */
--	if (addr < region->start + region->size)
--		size = region->size - (addr - region->start);
--
--	/* Check how many 1GB huge pages can be filtered out: */
--	while (size > PUD_SIZE && max_gb_huge_pages) {
--		size -= PUD_SIZE;
--		max_gb_huge_pages--;
--		i++;
+ 	slot_area.addr = region->start;
+-	slot_area.num = (region->size - image_size) /
+-			CONFIG_PHYSICAL_ALIGN + 1;
++	slot_area.num = 1 + (region->size - image_size) / CONFIG_PHYSICAL_ALIGN;
+ 
+-	if (slot_area.num > 0) {
+-		slot_areas[slot_area_index++] = slot_area;
+-		slot_max += slot_area.num;
 -	}
-+	/* Are there any 1GB pages in the region? */
-+	pud_start = ALIGN(region->start, PUD_SIZE);
-+	pud_end = ALIGN_DOWN(region->start + region->size, PUD_SIZE);
- 
- 	/* No good 1GB huge pages found: */
--	if (!i) {
-+	if (pud_start >= pud_end) {
- 		store_slot_info(region, image_size);
- 		return;
- 	}
- 
--	/*
--	 * Skip those 'i'*1GB good huge pages, and continue checking and
--	 * processing the remaining head or tail part of the passed region
--	 * if available.
--	 */
--
--	if (addr >= region->start + image_size) {
-+	/* Check if the head part of the region is usable. */
-+	if (pud_start - region->start >= image_size) {
- 		tmp.start = region->start;
--		tmp.size = addr - region->start;
-+		tmp.size = pud_start - region->start;
- 		store_slot_info(&tmp, image_size);
- 	}
- 
--	size  = region->size - (addr - region->start) - i * PUD_SIZE;
--	if (size >= image_size) {
--		tmp.start = addr + i * PUD_SIZE;
--		tmp.size = size;
-+	/* Skip the good 1GB pages. */
-+	gb_huge_pages = (pud_end - pud_start) >> PUD_SHIFT;
-+	if (gb_huge_pages > max_gb_huge_pages) {
-+		pud_end = pud_start + (max_gb_huge_pages << PUD_SHIFT);
-+		max_gb_huge_pages = 0;
-+	} else
-+		max_gb_huge_pages -= gb_huge_pages;
-+
-+	/* Check if the tail part of the region is usable. */
-+	if (region->start + region->size - pud_end >= image_size) {
-+		tmp.start = pud_end;
-+		tmp.size = region->start + region->size - pud_end;
- 		store_slot_info(&tmp, image_size);
- 	}
++	slot_areas[slot_area_index++] = slot_area;
++	slot_max += slot_area.num;
  }
+ 
+ /*
+@@ -589,8 +584,7 @@ process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
+ 
+ static unsigned long slots_fetch_random(void)
+ {
+-	unsigned long slot;
+-	int i;
++	unsigned int slot, i;
+ 
+ 	/* Handle case of no slots stored. */
+ 	if (slot_max == 0)
+@@ -603,7 +597,7 @@ static unsigned long slots_fetch_random(void)
+ 			slot -= slot_areas[i].num;
+ 			continue;
+ 		}
+-		return slot_areas[i].addr + slot * CONFIG_PHYSICAL_ALIGN;
++		return slot_areas[i].addr + (unsigned long)slot * CONFIG_PHYSICAL_ALIGN;
+ 	}
+ 
+ 	if (i == slot_area_index)
+@@ -819,28 +813,24 @@ static unsigned long find_random_phys_addr(unsigned long minimum,
+ 		return 0;
+ 	}
+ 
+-	if (process_efi_entries(minimum, image_size))
+-		return slots_fetch_random();
++	if (!process_efi_entries(minimum, image_size))
++		process_e820_entries(minimum, image_size);
+ 
+-	process_e820_entries(minimum, image_size);
+ 	return slots_fetch_random();
+ }
+ 
+ static unsigned long find_random_virt_addr(unsigned long minimum,
+ 					   unsigned long image_size)
+ {
+-	unsigned long slots, random_addr;
+-
+-	/* Align image_size for easy slot calculations. */
+-	image_size = ALIGN(image_size, CONFIG_PHYSICAL_ALIGN);
++	unsigned int slots;
++	unsigned long random_addr;
+ 
+ 	/*
+ 	 * There are how many CONFIG_PHYSICAL_ALIGN-sized slots
+ 	 * that can hold image_size within the range of minimum to
+ 	 * KERNEL_IMAGE_SIZE?
+ 	 */
+-	slots = (KERNEL_IMAGE_SIZE - minimum - image_size) /
+-		 CONFIG_PHYSICAL_ALIGN + 1;
++	slots = 1 + (KERNEL_IMAGE_SIZE - minimum - image_size) / CONFIG_PHYSICAL_ALIGN;
+ 
+ 	random_addr = kaslr_get_random_long("Virtual") % slots;
+ 
 -- 
 2.26.2
 
