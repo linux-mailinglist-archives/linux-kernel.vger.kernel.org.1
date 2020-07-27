@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C2922FC3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4107022FC41
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgG0WeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 18:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgG0WeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 18:34:00 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E573C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 15:34:00 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id di5so8247071qvb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 15:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qdRJPfeh5unLgeU8AmitK4ZcKNveusAvABQiizyUCDs=;
-        b=hh3U81GhCy8kQSwX8BCigvuYF0zagijulCGFoytEaIYbrGxnz4puPKlCb9AuPxk+aF
-         2Quut0UsjOaOClJRMvcjQjVts5Sm6ipo3/Hktv7Iep6RzEfEsHKgOoiUlN6IWLwc0J9L
-         PrFlFUwd7PqM4vj2owBZuLDLHCugFabY/GeNK/iiKjUpSYfYv/lxgBUNisVgzeZu/26Y
-         epEqhW8VSn0VRxB8QKM5y7aPJpsTl7Z4JbQwqZjKIs/nmo3VX1F4OBNbKPctT0Jt4DEh
-         T6wwYLfXTcFheUSUkCnjuU2m8FTj8iviMFQuZejdEXBCcs0BeglwCcJKn3CbgOy5IuK+
-         xHuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qdRJPfeh5unLgeU8AmitK4ZcKNveusAvABQiizyUCDs=;
-        b=Ut1DxrfjlRFQlLAUQvo9R1dAkb4E4MJOsMDHrxi8nIpPncg8XStrqbUW9Iyfn301m/
-         5JBFwpXmsg/yweswyjgd4KqgJ6m+pJEnzxpkzCYxXRrScF06/kIzC7NP1On0tvI7L5m0
-         TxfCIGeNU5f3w/wu6oBseCzUAcMdDoBMoxXm4Tw7AUW3/oEcj6RdHSQb5S+pXYqTZ5Xh
-         81ix9XblvCBeWhxtNfZGpSS5TZKUm9j3EEYEvrLYMrKEL009n4DOri5LgqXojwqS2l07
-         1tJd3M+9rM766KTDsb2PGS1fUq2NFbk0oNtsAlDnDzi9vzsGZqvAgUYfEHo4chI/U/dj
-         OQZg==
-X-Gm-Message-State: AOAM533z7RfDJZYt1f2LM+9pA3vVHOp5RfN/ErS+C+sIvJxyL7b9Ze7X
-        xRFEMVFXWdD83Ow06lc74P0aT5JnOA==
-X-Google-Smtp-Source: ABdhPJwZ1I1WmUcL7yD7/isTmdXBnVJZX/XmomlAIyrrdEd1/vNKh8c+rv/2d9uwmtKD0r5KESK3iQ==
-X-Received: by 2002:a0c:a306:: with SMTP id u6mr24953891qvu.88.1595889239764;
-        Mon, 27 Jul 2020 15:33:59 -0700 (PDT)
-Received: from PWN ([209.94.141.207])
-        by smtp.gmail.com with ESMTPSA id n68sm21044944qkd.89.2020.07.27.15.33.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 15:33:59 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 18:33:57 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-Message-ID: <20200727223357.GA329006@PWN>
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com>
- <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
- <20200727131608.GD1913@kadam>
+        id S1727771AbgG0Wgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 18:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726171AbgG0Wgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 18:36:49 -0400
+Received: from earth.universe (unknown [185.213.155.232])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 582DA206D7;
+        Mon, 27 Jul 2020 22:36:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595889408;
+        bh=Q1+CdX6g1uX5/O4dcOLZ5AB/jAjBef9C9fNZJmce1m0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OX4KJ4iq2Aza8rqPoReQm3fxVnq8XzWC0xaUVoAK0XQvyPTpJhf0sFbyztkBGJS/R
+         44zN+Ed8FCn80kX+4SeRqPFP6+mg7L0deOIXJ4mRqKXpxpLRN4nhk9r0PzvwTuTkCz
+         FFhDe6wqOUi7SVs1c8zJahy/rDixare7AmYGvnYQ=
+Received: by earth.universe (Postfix, from userid 1000)
+        id 1A3243C0B87; Tue, 28 Jul 2020 00:36:46 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 00:36:46 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     afd@ti.com, pali@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        robh@kernel.org
+Subject: Re: [PATCH v3 2/4] power: supply: bq27xxx_battery: Add the BQ27561
+ Battery monitor
+Message-ID: <20200727223646.vjnkyrmipwin3pj6@earth.universe>
+References: <20200721163206.25438-1-dmurphy@ti.com>
+ <20200721163206.25438-2-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dzrshq2akzwyrchr"
 Content-Disposition: inline
-In-Reply-To: <20200727131608.GD1913@kadam>
+In-Reply-To: <20200721163206.25438-2-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 04:16:08PM +0300, Dan Carpenter wrote:
-> drivers/block/floppy.c:3132 raw_cmd_copyout() warn: check that 'cmd' doesn't leak information (struct has a hole after 'flags')
 
-(Removed some Cc: recipients from the list.)
+--dzrshq2akzwyrchr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm not very sure, but I think this one is also a false positive.
+Hi,
 
-Here Smatch is complaining about a linked list called `my_raw_cmd`
-defined in raw_cmd_ioctl():
+On Tue, Jul 21, 2020 at 11:32:04AM -0500, Dan Murphy wrote:
+> Add the Texas Instruments BQ27561 battery monitor.  The register address
+> map is laid out the same as compared to other devices within the file.
+> The battery status register has differing bits to determine if the
+> battery is full, discharging or dead.
+>=20
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
 
-drivers/block/floppy.c:3249:
+Looks mostly good to me, but
 
-	ret = raw_cmd_copyin(cmd, param, &my_raw_cmd);
+[...]
 
-In raw_cmd_copyin(), each element of the linked list is allocated by
-kmalloc() then copied from user:
+> @@ -1710,6 +1769,13 @@ static int bq27xxx_battery_capacity_level(struct b=
+q27xxx_device_info *di,
+>  			level =3D POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
+>  		else
+>  			level =3D POWER_SUPPLY_CAPACITY_LEVEL_NORMAL;
+> +	} else if (di->opts & BQ27561_O_BITS) {
+> +		if (di->cache.flags & BQ27561_FLAG_FC)
+> +			level =3D POWER_SUPPLY_CAPACITY_LEVEL_FULL;
+> +		else if (di->cache.flags & BQ27561_FLAG_DIS_CH)
+> +			level =3D POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
 
-drivers/block/floppy.c:3180:
+Shouldn't this be checking for FLAG_FDC instead of FLAG_DIS_CH?
 
-loop:
-	ptr = kmalloc(sizeof(struct floppy_raw_cmd), GFP_KERNEL);
-	      ^^^^^^^
-	if (!ptr)
-		return -ENOMEM;
-	*rcmd = ptr;
-	ret = copy_from_user(ptr, param, sizeof(*ptr));
-	      ^^^^^^^^^^^^^^
+-- Sebastian
 
-I think copy_from_user() is filling in the paddings inside `struct
-floppy_raw_cmd`?
+--dzrshq2akzwyrchr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thank you,
-Peilin Ye
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl8fVvsACgkQ2O7X88g7
++pq4BhAAobVH8GBXmthjmhclE8H+qS3thRQaDNbpb4ind+SP2i5f9YdaIf9Nxa/e
+XFWS1SbU1AcTTs6jGE2OeGt8dHqIsp/fp/Nhpog17e+4/nujlMyYSqFJzasalGTd
+lz5zMvfmfIBbt++UcsccFXoUNG3YKNP/pc4rKMQNL4iyqEWyGj+S0SCqjBNe409U
+f0DMj2/32+RbJVB1GONooer/9drlpShdOND62ALDxXUBbVhT2Zh6bcMX0R7YRmSd
+RruoWxlHH1fUFeBNMQAcBal6WAxmPu23oLLDnXAvqcehioGnBWVMr4nVeeuMXpuV
+0/LLXgz5PIzwsGvVLq6jkLXzjPIH9uoaiyJoJyqGOBXVOal39tDG8Vt5stNilkNo
+zGUd9ebkxBVBcS5AhEWrPTEXkwKRwKs+wbIq6ccpfi22b3gI7GsjGLwBhdJBynvk
+DloHl/dM3+HpKo0h5S56cMnEFt/08WqetU2/83XW1+TRpVq3lH7jueTGWArK38qs
+FhHvs+pM3o2mWLrYIBTpEO3048Sb93vauby20MMP14CpSafrOfYZXYWcsoC4WIZa
+T99D19eSJvSpRULxjHHQqA+KN6lP+UZ4D8BDXCgeyXcen9DXr/N+WrE2CGzEWj5m
+1ImaoB45hu1HZgt53ezthI4Ak6EZzbg5ObRFl92zPSH/7hqD7rI=
+=G+a9
+-----END PGP SIGNATURE-----
+
+--dzrshq2akzwyrchr--
