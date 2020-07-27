@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339CC22F1AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B6322F1A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732604AbgG0Odr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44766 "EHLO mail.kernel.org"
+        id S1732868AbgG0Odh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731050AbgG0OR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:17:27 -0400
+        id S1731077AbgG0ORe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:17:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95B5E2083E;
-        Mon, 27 Jul 2020 14:17:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84ECF2070A;
+        Mon, 27 Jul 2020 14:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859447;
-        bh=Tdh9cOVs/2IgNFxLPF4ZL/iqY0zBfjy8MZwS73LcFlo=;
+        s=default; t=1595859454;
+        bh=sr55WZBKO1zAa55a/U4uiXMrVkozFZ9KxigTSgpK8Z0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o+z0VTFwRyC2npN7oOyVix48lVRHTlwH60pl6ynKnd0AbYm7j5ynU45CcG/dpKKr2
-         AWq9EvZ/7FZNKowN+4hKaPnhk0QWwi/2/0ALpTLfIk9YeVZy4t8JA77MS3/R1wb5A9
-         mTBCuWsLq0jv9Dc2+pceswXJP7aEBLZayYrBErdo=
+        b=AmMvAPYBSOd6sjOwSpP2Wp1w1ks/PVJydrZ68kNu0bODQSuMdL+HOuTKxfwTm5B5L
+         GTeZ7n1OAEKWft9n1Qx/KKnbJAnG8Z4rmxXLTTC+VrhJZiVXPlEN6pkbD4k6ljCxg5
+         QL3Jrra2Yo9N64Fk7Y7zd7rmkqulY47VvFiINGWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 112/138] staging: comedi: ni_6527: fix INSN_CONFIG_DIGITAL_TRIG support
-Date:   Mon, 27 Jul 2020 16:05:07 +0200
-Message-Id: <20200727134931.063175633@linuxfoundation.org>
+        stable@vger.kernel.org, Shardar Shariff Md <smohammed@nvidia.com>,
+        Krishna Yarlagadda <kyarlagadda@nvidia.com>,
+        Johan Hovold <johan@kernel.org>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 5.4 115/138] serial: tegra: fix CREAD handling for PIO
+Date:   Mon, 27 Jul 2020 16:05:10 +0200
+Message-Id: <20200727134931.199769367@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
 References: <20200727134925.228313570@linuxfoundation.org>
@@ -42,51 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Johan Hovold <johan@kernel.org>
 
-commit f07804ec77d77f8a9dcf570a24154e17747bc82f upstream.
+commit b374c562ee7ab3f3a1daf959c01868bae761571c upstream.
 
-`ni6527_intr_insn_config()` processes `INSN_CONFIG` comedi instructions
-for the "interrupt" subdevice.  When `data[0]` is
-`INSN_CONFIG_DIGITAL_TRIG` it is configuring the digital trigger.  When
-`data[2]` is `COMEDI_DIGITAL_TRIG_ENABLE_EDGES` it is configuring rising
-and falling edge detection for the digital trigger, using a base channel
-number (or shift amount) in `data[3]`, a rising edge bitmask in
-`data[4]` and falling edge bitmask in `data[5]`.
+Commit 33ae787b74fc ("serial: tegra: add support to ignore read") added
+support for dropping input in case CREAD isn't set, but for PIO the
+ignore_status_mask wasn't checked until after the character had been
+put in the receive buffer.
 
-If the base channel number (shift amount) is greater than or equal to
-the number of channels (24) of the digital input subdevice, there are no
-changes to the rising and falling edges, so the mask of channels to be
-changed can be set to 0, otherwise the mask of channels to be changed,
-and the rising and falling edge bitmasks are shifted by the base channel
-number before calling `ni6527_set_edge_detection()` to change the
-appropriate registers.  Unfortunately, the code is comparing the base
-channel (shift amount) to the interrupt subdevice's number of channels
-(1) instead of the digital input subdevice's number of channels (24).
-Fix it by comparing to 32 because all shift amounts for an `unsigned
-int` must be less than that and everything from bit 24 upwards is
-ignored by `ni6527_set_edge_detection()` anyway.
+Note that the NULL tty-port test is bogus and will be removed by a
+follow-on patch.
 
-Fixes: 110f9e687c1a8 ("staging: comedi: ni_6527: support INSN_CONFIG_DIGITAL_TRIG")
-Cc: <stable@vger.kernel.org> # 3.17+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200717145257.112660-2-abbotti@mev.co.uk
+Fixes: 33ae787b74fc ("serial: tegra: add support to ignore read")
+Cc: stable <stable@vger.kernel.org>     # 5.4
+Cc: Shardar Shariff Md <smohammed@nvidia.com>
+Cc: Krishna Yarlagadda <kyarlagadda@nvidia.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20200710135947.2737-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/ni_6527.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/serial-tegra.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/comedi/drivers/ni_6527.c
-+++ b/drivers/staging/comedi/drivers/ni_6527.c
-@@ -332,7 +332,7 @@ static int ni6527_intr_insn_config(struc
- 		case COMEDI_DIGITAL_TRIG_ENABLE_EDGES:
- 			/* check shift amount */
- 			shift = data[3];
--			if (shift >= s->n_chan) {
-+			if (shift >= 32) {
- 				mask = 0;
- 				rising = 0;
- 				falling = 0;
+--- a/drivers/tty/serial/serial-tegra.c
++++ b/drivers/tty/serial/serial-tegra.c
+@@ -651,11 +651,14 @@ static void tegra_uart_handle_rx_pio(str
+ 		ch = (unsigned char) tegra_uart_read(tup, UART_RX);
+ 		tup->uport.icount.rx++;
+ 
+-		if (!uart_handle_sysrq_char(&tup->uport, ch) && tty)
+-			tty_insert_flip_char(tty, ch, flag);
++		if (uart_handle_sysrq_char(&tup->uport, ch))
++			continue;
+ 
+ 		if (tup->uport.ignore_status_mask & UART_LSR_DR)
+ 			continue;
++
++		if (tty)
++			tty_insert_flip_char(tty, ch, flag);
+ 	} while (1);
+ }
+ 
 
 
