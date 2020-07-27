@@ -2,147 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B5322EC15
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DABB22EC23
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgG0M0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
+        id S1728363AbgG0M2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727078AbgG0M0M (ORCPT
+        with ESMTP id S1726890AbgG0M2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:26:12 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B587BC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:26:10 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 3so7629862wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6rri9mhUlxebznKAimXAy/9Cm8FbvWLt4+hoq73h+fg=;
-        b=ufvCrz6ZcjseH/gYg4ZTe6zEzxxBdDu/FZzW+/moozUD7jvBaNfqZjv5A34h1JVTTs
-         1xUt+sX775nu+Yzz4gUmHcEUURBPs8CEXsKysjYQa3Jsp/Slud4vARhsOSDOw9frRPSL
-         oWDSF2sO2uCcLCHI1HE4FMsLLnvI0/JbptlThAhgwh3XZnV36rbo77kCysTpTKvl71AY
-         19eYrNtuElNUaUVL1ockn7C2N7XlkPEmKnXxUizQp/NjgFHkdR58DfsHP8TtcZ3DBqkO
-         hyNR6OVv0YaBW1U3E4gv93FjcTVb38WOk7tfeX1re5BF3t/j120PMfmQ1AZi7wqTcv0b
-         Fi0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6rri9mhUlxebznKAimXAy/9Cm8FbvWLt4+hoq73h+fg=;
-        b=kWctxm5dvnZt45v/ek2RW7fkAKhlg25Y9sTWv8DxPyhmbIxsr0kFbCzx/prUuFvMbJ
-         z9kJMDm30fA3X87xs+T6+TQmKW3bNZQjWXOhLuVGfoiIJM104rtPN1TXgeSl1RV6a9y+
-         dri0oCK2oRvfR2atm2GTQ/ZZZVlWExYd39AkX1SIAlTUtQSseYj0nXamxCqU/Z+07zY9
-         OfVCcCHFoAEsgBq7Zri8wF4ANU9t37yUZDeHz4ZDyddBa2TQTuzrZRtqH8709gwBnO1I
-         WjZm5qV6mEE/3TFHDF9H0TNxPJKKp/QnACBNMNX8LoFqHLIMPUPipr9vmYQi3btekD9R
-         10Cw==
-X-Gm-Message-State: AOAM532dIL2+v5OJAbJeZOz1dWp8yer6lS1qUy1JuDVjfZF8BcnPG1Qp
-        K3eNd+O1KlOGboSbG+MV5Hmiag==
-X-Google-Smtp-Source: ABdhPJxWRBzQIb/NGY4w/mLgO/880v6aJtaTUgabR7iHW48GPvS3Zr/z4csjZpZBpu9zq+g/LhATtQ==
-X-Received: by 2002:a05:600c:285:: with SMTP id 5mr21108863wmk.41.1595852769343;
-        Mon, 27 Jul 2020 05:26:09 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id n189sm7842688wmn.40.2020.07.27.05.26.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 05:26:08 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:26:06 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, benjamin.chao@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: Re: [PATCH v2 8/9] mfd: mt6360: Fix flow which is used to check ic
- exist
-Message-ID: <20200727122557.GO1850026@dell>
-References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
- <1594983811-25908-9-git-send-email-gene.chen.richtek@gmail.com>
+        Mon, 27 Jul 2020 08:28:15 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A3FC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:28:14 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFfGf4B1wz9sRN;
+        Mon, 27 Jul 2020 22:28:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1595852890;
+        bh=j7IswI7LeuXrByn9IRbR3NmoDK1ZKhlctszqUmkC7uE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EWr+X3jvsCyLG4bhtvXSK0U+qEdG7lQGAjFKGLEDOhXnpWIYEX+YcDUPWf2BUVtla
+         +8ag4sQMY/VB2/KwFAb/8kLKZT5s0UzFv2aOi/SCBOpdcXDmr2/nKZypxtKkqvnlQo
+         HWktAq7rZMfSuGZEwHEdjKEn0lb64/vPaMVZQ13PTztXXqhh2rKcIzsRrto9Gv9MDn
+         9IVzQf9rzb1GplxBId+TIJA80jgX7aQ/Fj4se1cL/C57nn9bUXSuF4AOiGxUrEygRR
+         EttPAOJhO0ebEOlm1gkoKxaLZpmv+04Zdm/nar2Y1IP6Y5no9KXdnLKxF3f9KZ5J0e
+         k1gw4x3Yc4cpQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Gabriel Paubert <paubert@iram.es>
+Cc:     linuxppc-dev@ozlabs.org, linux-kernel@vger.kernel.org,
+        dja@axtens.net
+Subject: Re: [PATCH v2 2/5] powerpc: Allow 4224 bytes of stack expansion for the signal frame
+In-Reply-To: <20200727082331.GA2110@lt-gp.iram.es>
+References: <20200724092528.1578671-1-mpe@ellerman.id.au> <20200724092528.1578671-2-mpe@ellerman.id.au> <20200727082331.GA2110@lt-gp.iram.es>
+Date:   Mon, 27 Jul 2020 22:28:09 +1000
+Message-ID: <87mu3l6t2e.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1594983811-25908-9-git-send-email-gene.chen.richtek@gmail.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Jul 2020, Gene Chen wrote:
+Gabriel Paubert <paubert@iram.es> writes:
+> On Fri, Jul 24, 2020 at 07:25:25PM +1000, Michael Ellerman wrote:
+>> We have powerpc specific logic in our page fault handling to decide if
+>> an access to an unmapped address below the stack pointer should expand
+>> the stack VMA.
+>> 
+>> The code was originally added in 2004 "ported from 2.4". The rough
+>> logic is that the stack is allowed to grow to 1MB with no extra
+>> checking. Over 1MB the access must be within 2048 bytes of the stack
+>> pointer, or be from a user instruction that updates the stack pointer.
+>> 
+>> The 2048 byte allowance below the stack pointer is there to cover the
+>> 288 byte "red zone" as well as the "about 1.5kB" needed by the signal
+>> delivery code.
+>> 
+>> Unfortunately since then the signal frame has expanded, and is now
+>> 4224 bytes on 64-bit kernels with transactional memory enabled.
+>
+> Are there really users of transactional memory in the wild? 
 
-> From: Gene Chen <gene_chen@richtek.com>
-> 
-> Fix flow which is used to check ic exist.
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> ---
->  drivers/mfd/mt6360-core.c | 28 +++++++++++++++++++---------
->  1 file changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> index 5a68228..3186a7c 100644
-> --- a/drivers/mfd/mt6360-core.c
-> +++ b/drivers/mfd/mt6360-core.c
-> @@ -293,6 +293,23 @@ static const struct mfd_cell mt6360_devs[] = {
->  		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
->  };
->  
-> +static int mt6360_check_vendor_info(struct mt6360_data *data)
-> +{
-> +	u32 info;
-> +	int ret;
-> +
-> +	ret = regmap_read(data->regmap, MT6360_PMU_DEV_INFO, &info);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if ((info & CHIP_VEN_MASK) != CHIP_VEN_MT6360)
-> +		return -ENODEV;
-> +
-> +	data->chip_rev = info & CHIP_REV_MASK;
-> +
-> +	return 0;
-> +}
-> +
->  static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
->  	MT6360_PMU_SLAVEID,
->  	MT6360_PMIC_SLAVEID,
-> @@ -303,7 +320,6 @@ static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
->  static int mt6360_probe(struct i2c_client *client)
->  {
->  	struct mt6360_data *data;
-> -	unsigned int reg_data;
->  	int i, ret;
->  
->  	data = devm_kzalloc(&client->dev, sizeof(*data), GFP_KERNEL);
-> @@ -319,16 +335,10 @@ static int mt6360_probe(struct i2c_client *client)
->  		return PTR_ERR(data->regmap);
->  	}
->  
-> -	ret = regmap_read(data->regmap, MT6360_PMU_DEV_INFO, &reg_data);
-> +	ret = mt6360_check_vendor_info(data);
->  	if (ret) {
-> -		dev_err(&client->dev, "Device not found\n");
-> -		return ret;
-> -	}
-> -
-> -	data->chip_rev = reg_data & CHIP_REV_MASK;
-> -	if (data->chip_rev != CHIP_VEN_MT6360) {
->  		dev_err(&client->dev, "Device not supported\n");
+Not many that I've heard of, but some.
 
-Can you move this into mt6360_check_vendor_info() too please?
+Though anything that does use it needs to be written to fallback to
+regular locking if TM is not available anyway.
 
-> -		return -ENODEV;
-> +		return ret;
->  	}
->  
->  	ret = devm_regmap_add_irq_chip(&client->dev, data->regmap, client->irq,
+> Just asking because Power10 removes TM, and Power9 has had some issues
+> with it AFAICT.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+It varies on different Power9 chip levels. For guests it should work.
+
+> Getting rid of it (if possible) would result in smaller signal frames,
+> with simpler signal delivery code (probably slightly faster also).
+
+All the kernel code should be behind CONFIG_PPC_TRANSACTIONAL_MEM.
+
+Deciding to disable that is really a distro decision.
+
+In upstream we tend not to drop support for existing hardware while
+people are still using it. But we could make a special case for TM,
+because it's quite intrusive. I think we'd wait for a major distro to
+ship without TM enabled before we did that though.
+
+cheers
