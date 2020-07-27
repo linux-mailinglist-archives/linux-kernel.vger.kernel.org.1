@@ -2,470 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D4622FB19
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0F222FB1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 23:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgG0VKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 17:10:50 -0400
-Received: from crapouillou.net ([89.234.176.41]:34038 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgG0VKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 17:10:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595884246; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ibbcLRFYEgPnpCrphWR8XefoNyDdgUA3SsRIyBPw0sk=;
-        b=vG80/saNxe7RbQ4n9kOrudyT3as6nUBJKZqkLrVI1Cg6EJihUgPVNcQMfo4rDTZ+y2wLkB
-        V9iid1aHwaVBMeVpis/PXLy0/e768UIgbPZkj6XiEUKxfGtaKwUT12VwqR+0K7rTaG+g92
-        R0YfOeOU/4nSYQCgFpqQUMY22Loz/QQ=
-Date:   Mon, 27 Jul 2020 23:10:30 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 3/6] drm/bridge: Add SPI DBI host driver
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Noralf =?iso-8859-1?q?Tr=F8nnes?= <noralf@tronnes.org>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-Id: <I5C5EQ.EDR7T5UF0W67@crapouillou.net>
-In-Reply-To: <20200727203158.GA1016751@ravnborg.org>
-References: <20200727164613.19744-1-paul@crapouillou.net>
-        <20200727164613.19744-4-paul@crapouillou.net>
-        <20200727203158.GA1016751@ravnborg.org>
+        id S1726918AbgG0VLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 17:11:43 -0400
+Received: from mail-40141.protonmail.ch ([185.70.40.141]:49103 "EHLO
+        mail-40141.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgG0VLm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 17:11:42 -0400
+Date:   Mon, 27 Jul 2020 21:11:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1595884297;
+        bh=J5UnwDGjGDm1GIlnrWPWuIc1UUtS+SRgiZtCCMV1dgU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=TCnJrzRADNWeQKeNkq7j/brbkgXB3qrKl+Rp2Wc5h/nV1lC3QuG9kocLN7saKdlyG
+         ZIuXvVqUS4x9x9Os8WxeECHqmYJ899OgEM5urtxygOH51zYh0hXOsHol8eViV2UTtN
+         eFkrUeuCPy3dLPJNUkQ0oFVobzsxJiWJ71S2vK4k=
+To:     Daniel Vetter <daniel@ffwll.ch>
+From:   Mazin Rezk <mnrzk@protonmail.com>
+Cc:     =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        Mazin Rezk <mnrzk@protonmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "anthony.ruhier@gmail.com" <anthony.ruhier@gmail.com>,
+        Duncan <1i5t5.duncan@cox.net>, Kees Cook <keescook@chromium.org>,
+        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
+        "regressions@leemhuis.info" <regressions@leemhuis.info>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "mphantomx@yahoo.com.br" <mphantomx@yahoo.com.br>
+Reply-To: Mazin Rezk <mnrzk@protonmail.com>
+Subject: Re: [PATCH] drm/amd/display: Clear dm_state for fast updates
+Message-ID: <Fnx2lsAReNccvQbyMYBgghvef4ekiQ_ZWL0m5BwF-2h48gvnNLghI4zkIWhQwy-H6CiytTXaxEtZ83dYRlzAXeKHujBRLc_tffmcJVWjwuo=@protonmail.com>
+In-Reply-To: <CAKMK7uHCu02P4tvhF4LQbtYeNciU61ONC9EZRmQ-0wEGFPzZgg@mail.gmail.com>
+References: <M0lxN5AUlPvzBKULfIBe5BZRwfQGXeMQCdWItYcQ-9P79y32WzExYK2Y0DwyNVtyGelqbvV07_lFk1oeT4cApbT-P_oH0bnxQbMmFsJv_xg=@protonmail.com> <ba078fb0-0dbc-df06-cfe9-f9537883f82a@amd.com> <e2f55480-c24f-6c85-08d3-21131a22d0bf@amd.com> <3b7e3e50-2ff7-eff3-2ffc-abaa4b36ce7f@amd.com> <CAKMK7uHCu02P4tvhF4LQbtYeNciU61ONC9EZRmQ-0wEGFPzZgg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_REPLYTO
+        shortcircuit=no autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
+On Monday, July 27, 2020 4:29 PM, Daniel Vetter <daniel@ffwll.ch> wrote:
 
-Le lun. 27 juil. 2020 =E0 22:31, Sam Ravnborg <sam@ravnborg.org> a=20
-=E9crit :
-> Hi Paul.
->=20
-> On Mon, Jul 27, 2020 at 06:46:10PM +0200, Paul Cercueil wrote:
->>  This driver will register a DBI host driver for panels connected=20
->> over
->>  SPI.
-> So this is actually a MIPI DBI host driver.
->=20
-> I personally would love to have added mipi_ in the names - to make it
-> all more explicit.
-> But maybe that just because I get confused on all the acronyms.
+> On Mon, Jul 27, 2020 at 9:28 PM Christian K=C3=B6nig
+> <christian.koenig@amd.com> wrote:
+> >
+> > Am 27.07.20 um 16:05 schrieb Kazlauskas, Nicholas:
+> > > On 2020-07-27 9:39 a.m., Christian K=C3=B6nig wrote:
+> > >> Am 27.07.20 um 07:40 schrieb Mazin Rezk:
+> > >>> This patch fixes a race condition that causes a use-after-free duri=
+ng
+> > >>> amdgpu_dm_atomic_commit_tail. This can occur when 2 non-blocking
+> > >>> commits
+> > >>> are requested and the second one finishes before the first.
+> > >>> Essentially,
+> > >>> this bug occurs when the following sequence of events happens:
+> > >>>
+> > >>> 1. Non-blocking commit #1 is requested w/ a new dm_state #1 and is
+> > >>> deferred to the workqueue.
+> > >>>
+> > >>> 2. Non-blocking commit #2 is requested w/ a new dm_state #2 and is
+> > >>> deferred to the workqueue.
+> > >>>
+> > >>> 3. Commit #2 starts before commit #1, dm_state #1 is used in the
+> > >>> commit_tail and commit #2 completes, freeing dm_state #1.
+> > >>>
+> > >>> 4. Commit #1 starts after commit #2 completes, uses the freed dm_st=
+ate
+> > >>> 1 and dereferences a freelist pointer while setting the context.
+> > >>
+> > >> Well I only have a one mile high view on this, but why don't you let
+> > >> the work items execute in order?
+> > >>
+> > >> That would be better anyway cause this way we don't trigger a cache
+> > >> line ping pong between CPUs.
+> > >>
+> > >> Christian.
+> > >
+> > > We use the DRM helpers for managing drm_atomic_commit_state and those
+> > > helpers internally push non-blocking commit work into the system
+> > > unbound work queue.
+> >
+> > Mhm, well if you send those helper atomic commits in the order A,B and
+> > they execute it in the order B,A I would call that a bug :)
+>
+> The way it works is it pushes all commits into unbound work queue, but
+> then forces serialization as needed. We do _not_ want e.g. updates on
+> different CRTC to be serialized, that would result in lots of judder.
+> And hw is funny enough that there's all kinds of dependencies.
+>
+> The way you force synchronization is by adding other CRTC state
+> objects. So if DC is busted and can only handle a single update per
+> work item, then I guess you always need all CRTC states and everything
+> will be run in order. But that also totally kills modern multi-screen
+> compositors. Xorg isn't modern, just in case that's not clear :-)
+>
+> Lucking at the code it seems like you indeed have only a single dm
+> state, so yeah global sync is what you'll need as immediate fix, and
+> then maybe fix up DM to not be quite so silly ... or at least only do
+> the dm state stuff when really needed.
+>
+> We could also sprinkle the drm_crtc_commit structure around a bit
+> (it's the glue that provides the synchronization across commits), but
+> since your dm state is global just grabbing all crtc states
+> unconditionally as part of that is probably best.
+>
+> > > While we could duplicate a copy of that code with nothing but the
+> > > workqueue changed that isn't something I'd really like to maintain
+> > > going forward.
+> >
+> > I'm not talking about duplicating the code, I'm talking about fixing th=
+e
+> > helpers. I don't know that code well, but from the outside it sounds
+> > like a bug there.
+> >
+> > And executing work items in the order they are submitted is trivial.
+> >
+> > Had anybody pinged Daniel or other people familiar with the helper code
+> > about it?
+>
+> Yeah something is wrong here, and the fix looks horrible :-)
+>
+> Aside, I've also seen some recent discussion flare up about
+> drm_atomic_state_get/put used to paper over some other use-after-free,
+> but this time related to interrupt handlers. Maybe a few rules about
+> that:
+> - dont
+> - especially not when it's interrupt handlers, because you can't call
+> drm_atomic_state_put from interrupt handlers.
+>
+> Instead have an spin_lock_irq to protect the shared date with your
+> interrupt handler, and _copy_ the date over. This is e.g. what
+> drm_crtc_arm_vblank_event does.
 
-I can rename the driver and move it out of drm/bridge/, no problem.
+Nicholas wrote a patch that attempted to resolve the issue by adding every
+CRTC into the commit to use use the stall checks. [1] While this forces
+synchronisation on commits, it's kind of a hacky method that may take a
+toll on performance.
 
-> Some details in the following. Will try to find some more time so I=20
-> can
-> grasp the full picture. The following was just my low-level notes for
-> now.
->=20
-> 	Sam
->>=20
->>  DBI types c1 and c3 are supported. C1 is a SPI protocol with 9 bits=20
->> per
->>  word, with the data/command information in the 9th (MSB) bit. C3 is=20
->> a
->>  SPI protocol with 8 bits per word, with the data/command information
->>  carried by a separate GPIO.
->=20
-> We did not have any define to distingush between DBI_C1 and DBI_c3:
-> +/* MIPI bus types */
-> +#define MIPI_DEVICE_TYPE_DSI           BIT(0)
-> +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE1 BIT(1)
-> +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE2 BIT(2)
-> +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE3 BIT(3)
-> +#define MIPI_DEVICE_TYPE_DBI_M6800     BIT(4)
-> +#define MIPI_DEVICE_TYPE_DBI_I8080     BIT(5)
->=20
-> Is this on purpose?
+Is it possible to have a DRM helper that forces synchronisation on some
+commits without having to add every CRTC into the commit?
 
-I understand the confusion. Here SPI_MODE1/3 actually mean SPI_C1/3. I=20
-will rename them.
+Also, is synchronisation really necessary for fast updates in amdgpu?
+I'll admit, the idea of eliminating the use-after-free bug by eliminating
+the use entirely doesn't seem ideal; but is forcing synchronisation on
+these updates that much better?
 
-> I had assumed the host should tell what it supports and the device=20
-> should
-> tell what it wanted.
-> So if the host did not support DBI_C3 and device wants it - then we
-> could give up early.
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D207383#c96
 
-Well that's exactly what's done here - just with badly named macros :)
+Thanks,
+Mazin Rezk
 
->>=20
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->>  ---
->>   drivers/gpu/drm/bridge/Kconfig   |   8 +
->>   drivers/gpu/drm/bridge/Makefile  |   1 +
->>   drivers/gpu/drm/bridge/dbi-spi.c | 261=20
->> +++++++++++++++++++++++++++++++
-> This is no bridge driver - so does not belong in the bridge
-> directory.
-> gpu/drm/drm_mipi_dbi_spi.c?
->=20
->>   3 files changed, 270 insertions(+)
->>   create mode 100644 drivers/gpu/drm/bridge/dbi-spi.c
->>=20
->>  diff --git a/drivers/gpu/drm/bridge/Kconfig=20
->> b/drivers/gpu/drm/bridge/Kconfig
->>  index c7f0dacfb57a..ed38366847c1 100644
->>  --- a/drivers/gpu/drm/bridge/Kconfig
->>  +++ b/drivers/gpu/drm/bridge/Kconfig
->>  @@ -219,6 +219,14 @@ config DRM_TI_TPD12S015
->>   	  Texas Instruments TPD12S015 HDMI level shifter and ESD=20
->> protection
->>   	  driver.
->>=20
->>  +config DRM_MIPI_DBI_SPI
->>  +	tristate "SPI host support for MIPI DBI"
->>  +	depends on OF && SPI
->>  +	select DRM_MIPI_DSI
->>  +	select DRM_MIPI_DBI
->>  +	help
->>  +	  Driver to support DBI over SPI.
->>  +
->>   source "drivers/gpu/drm/bridge/analogix/Kconfig"
->>=20
->>   source "drivers/gpu/drm/bridge/adv7511/Kconfig"
->>  diff --git a/drivers/gpu/drm/bridge/Makefile=20
->> b/drivers/gpu/drm/bridge/Makefile
->>  index 7d7c123a95e4..c2c522c2774f 100644
->>  --- a/drivers/gpu/drm/bridge/Makefile
->>  +++ b/drivers/gpu/drm/bridge/Makefile
->>  @@ -20,6 +20,7 @@ obj-$(CONFIG_DRM_I2C_ADV7511) +=3D adv7511/
->>   obj-$(CONFIG_DRM_TI_SN65DSI86) +=3D ti-sn65dsi86.o
->>   obj-$(CONFIG_DRM_TI_TFP410) +=3D ti-tfp410.o
->>   obj-$(CONFIG_DRM_TI_TPD12S015) +=3D ti-tpd12s015.o
->>  +obj-$(CONFIG_DRM_MIPI_DBI_SPI) +=3D dbi-spi.o
-> mipi_dbi_spi.o would be nice...
->=20
->>   obj-$(CONFIG_DRM_NWL_MIPI_DSI) +=3D nwl-dsi.o
->>=20
->>   obj-y +=3D analogix/
->>  diff --git a/drivers/gpu/drm/bridge/dbi-spi.c=20
->> b/drivers/gpu/drm/bridge/dbi-spi.c
->>  new file mode 100644
->>  index 000000000000..1060b8f95fba
->>  --- /dev/null
->>  +++ b/drivers/gpu/drm/bridge/dbi-spi.c
->>  @@ -0,0 +1,261 @@
->>  +// SPDX-License-Identifier: GPL-2.0-or-later
->>  +/*
->>  + * MIPI Display Bus Interface (DBI) SPI support
->>  + *
->>  + * Copyright 2016 Noralf Tr=F8nnes
->>  + * Copyright 2020 Paul Cercueil <paul@crapouillou.net>
->>  + */
->>  +
->>  +#include <linux/gpio/consumer.h>
->>  +#include <linux/module.h>
->>  +#include <linux/spi/spi.h>
->>  +
->>  +#include <drm/drm_mipi_dbi.h>
->>  +#include <drm/drm_mipi_dsi.h>
->>  +
->>  +#include <video/mipi_display.h>
->>  +
->>  +struct dbi_spi {
->>  +	struct mipi_dsi_host host;
-> It is very confusing that the mipi_dbi_spi driver uses a dsi_host.
-> It clashes in my head - and then reviewing it not easy.
-
- From now on read all "mipi_dsi_*" as a MIPI DSI/DBI API. Renaming the=20
-API means a treewide patchset that touches many many files...
-
->=20
->>  +	struct mipi_dsi_host_ops host_ops;
-> const?
->>  +
->>  +	struct spi_device *spi;
->>  +	struct gpio_desc *dc;
->>  +	struct mutex cmdlock;
->>  +
->>  +	unsigned int current_bus_type;
->>  +
->>  +	/**
->>  +	 * @tx_buf9: Buffer used for Option 1 9-bit conversion
->>  +	 */
->>  +	void *tx_buf9;
->>  +
->>  +	/**
->>  +	 * @tx_buf9_len: Size of tx_buf9.
->>  +	 */
->>  +	size_t tx_buf9_len;
->>  +};
->>  +
->>  +static inline struct dbi_spi *host_to_dbi_spi(struct mipi_dsi_host=20
->> *host)
->>  +{
->>  +	return container_of(host, struct dbi_spi, host);
->>  +}
->>  +
->>  +static ssize_t dbi_spi1_transfer(struct mipi_dsi_host *host,
->>  +				 const struct mipi_dsi_msg *msg)
->>  +{
->>  +	struct dbi_spi *dbi =3D host_to_dbi_spi(host);
->>  +	struct spi_device *spi =3D dbi->spi;
->>  +	struct spi_transfer tr =3D {
->>  +		.bits_per_word =3D 9,
->>  +	};
->>  +	const u8 *src8 =3D msg->tx_buf;
->>  +	struct spi_message m;
->>  +	size_t max_chunk, chunk;
->>  +	size_t len =3D msg->tx_len;
->>  +	bool cmd_byte =3D true;
->>  +	unsigned int i;
->>  +	u16 *dst16;
->>  +	int ret;
->>  +
->>  +	tr.speed_hz =3D mipi_dbi_spi_cmd_max_speed(spi, len);
->>  +	dst16 =3D dbi->tx_buf9;
->>  +
->>  +	max_chunk =3D min(dbi->tx_buf9_len / 2, len);
-> Hmm, this looks not right. We limit the max_chunk to 8K here.
-> We learned the other day that we count in bytes.
-> OR did I miss something?
-
-We want to extend 8-bit values into 16-bit values, and we have a=20
-X-bytes output buffer for that, so the maximum input buffer size we can=20
-use is (X/2).
-
-This code is the original algorithm in drm_mipi_dbi.c, I didn't change=20
-anything here (safe for the fix that was merged a couple of days ago to=20
-drm-misc-fixes).
-
->=20
->>  +
->>  +	spi_message_init_with_transfers(&m, &tr, 1);
->>  +	tr.tx_buf =3D dst16;
->>  +
->>  +	while (len) {
->>  +		chunk =3D min(len, max_chunk);
->>  +
->>  +		for (i =3D 0; i < chunk; i++) {
->>  +			dst16[i] =3D *src8++;
->>  +
->>  +			/* Bit 9: 0 means command, 1 means data */
->>  +			if (!cmd_byte)
->>  +				dst16[i] |=3D BIT(9);
->>  +
->>  +			cmd_byte =3D false;
->>  +		}
->>  +
->>  +		tr.len =3D chunk * 2;
->>  +		len -=3D chunk;
->>  +
->>  +		ret =3D spi_sync(spi, &m);
->>  +		if (ret)
->>  +			return ret;
->>  +	}
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static ssize_t dbi_spi3_transfer(struct mipi_dsi_host *host,
->>  +				 const struct mipi_dsi_msg *msg)
->>  +{
->>  +	struct dbi_spi *dbi =3D host_to_dbi_spi(host);
->>  +	struct spi_device *spi =3D dbi->spi;
->>  +	const u8 *buf =3D msg->tx_buf;
->>  +	unsigned int bpw =3D 8;
->>  +	u32 speed_hz;
->>  +	ssize_t ret;
->>  +
->>  +	/* for now we only support sending messages, not receiving */
->>  +	if (msg->rx_len)
->>  +		return -EINVAL;
->>  +
->>  +	gpiod_set_value_cansleep(dbi->dc, 0);
->>  +
->>  +	speed_hz =3D mipi_dbi_spi_cmd_max_speed(spi, 1);
->>  +	ret =3D mipi_dbi_spi_transfer(spi, speed_hz, 8, buf, 1);
->>  +	if (ret || msg->tx_len =3D=3D 1)
->>  +		return ret;
->>  +
->>  +	if (buf[0] =3D=3D MIPI_DCS_WRITE_MEMORY_START)
->>  +		bpw =3D 16;
->>  +
->>  +	gpiod_set_value_cansleep(dbi->dc, 1);
->>  +	speed_hz =3D mipi_dbi_spi_cmd_max_speed(spi, msg->tx_len - 1);
->>  +
->>  +	ret =3D mipi_dbi_spi_transfer(spi, speed_hz, bpw,
->>  +				    &buf[1], msg->tx_len - 1);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	return msg->tx_len;
->>  +}
->>  +
->>  +static ssize_t dbi_spi_transfer(struct mipi_dsi_host *host,
->>  +				const struct mipi_dsi_msg *msg)
->>  +{
->>  +	struct dbi_spi *dbi =3D host_to_dbi_spi(host);
->>  +
->>  +	switch (dbi->current_bus_type) {
->>  +	case MIPI_DEVICE_TYPE_DBI_SPI_MODE1:
->>  +		return dbi_spi1_transfer(host, msg);
->>  +	case MIPI_DEVICE_TYPE_DBI_SPI_MODE3:
->>  +		return dbi_spi3_transfer(host, msg);
->>  +	default:
->>  +		dev_err(&dbi->spi->dev, "Unknown transfer type\n");
->>  +		return -EINVAL;
->>  +	}
->>  +}
->>  +
->>  +static int dbi_spi_attach(struct mipi_dsi_host *host,
->>  +			  struct mipi_dsi_device *dsi)
->>  +{
->>  +	struct dbi_spi *dbi =3D host_to_dbi_spi(host);
->>  +
->>  +	dbi->current_bus_type =3D dsi->bus_type;
->>  +
->>  +	if (dbi->current_bus_type =3D=3D MIPI_DEVICE_TYPE_DBI_SPI_MODE1) {
->>  +		dbi->tx_buf9_len =3D SZ_16K;
->>  +
->>  +		dbi->tx_buf9 =3D kmalloc(dbi->tx_buf9_len, GFP_KERNEL);
->>  +		if (!dbi->tx_buf9)
->>  +			return -ENOMEM;
->>  +	}
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static int dbi_spi_detach(struct mipi_dsi_host *host,
->>  +			  struct mipi_dsi_device *dsi)
->>  +{
->>  +	struct dbi_spi *dbi =3D host_to_dbi_spi(host);
->>  +
->>  +	kfree(dbi->tx_buf9);
->>  +	dbi->tx_buf9_len =3D 0;
->>  +
->>  +	return 0; /* Nothing to do */
->>  +}
->>  +
->>  +static void dbi_spi_host_unregister(void *d)
->>  +{
->>  +	mipi_dsi_host_unregister(d);
->>  +}
->>  +
->>  +static int dbi_spi_probe(struct spi_device *spi)
->>  +{
->>  +	struct device *dev =3D &spi->dev;
->>  +	struct mipi_dsi_device_info info =3D { };
->>  +	struct mipi_dsi_device *dsi;
->>  +	struct dbi_spi *dbi;
->>  +	int ret;
->>  +
->>  +	dbi =3D devm_kzalloc(dev, sizeof(*dbi), GFP_KERNEL);
->>  +	if (!dbi)
->>  +		return -ENOMEM;
->>  +
->>  +	dbi->host.dev =3D dev;
->>  +	dbi->host.ops =3D &dbi->host_ops;
->>  +	dbi->spi =3D spi;
->>  +	spi_set_drvdata(spi, dbi);
->>  +
->>  +	dbi->dc =3D devm_gpiod_get_optional(dev, "dc", GPIOD_OUT_LOW);
->>  +	if (IS_ERR(dbi->dc)) {
->>  +		dev_err(dev, "Failed to get gpio 'dc'\n");
->>  +		return PTR_ERR(dbi->dc);
->>  +	}
->>  +
->>  +	if (spi_is_bpw_supported(spi, 9))
->>  +		dbi->host.bus_types |=3D MIPI_DEVICE_TYPE_DBI_SPI_MODE1;
->>  +	if (dbi->dc)
->>  +		dbi->host.bus_types |=3D MIPI_DEVICE_TYPE_DBI_SPI_MODE3;
->>  +
->>  +	if (!dbi->host.bus_types) {
->>  +		dev_err(dev, "Neither Type1 nor Type3 are supported\n");
->>  +		return -EINVAL;
->>  +	}
->>  +
->>  +	dbi->host_ops.transfer =3D dbi_spi_transfer;
->>  +	dbi->host_ops.attach =3D dbi_spi_attach;
->>  +	dbi->host_ops.detach =3D dbi_spi_detach;
->>  +
->>  +	mutex_init(&dbi->cmdlock);
->>  +
->>  +	ret =3D mipi_dsi_host_register(&dbi->host);
->>  +	if (ret) {
->>  +		dev_err(dev, "Unable to register DSI host\n");
->>  +		return ret;
->>  +	}
->>  +
->>  +	ret =3D devm_add_action_or_reset(dev, dbi_spi_host_unregister,=20
->> &dbi->host);
->>  +	if (ret)
->>  +		return ret;
->>  +
->>  +	/*
->>  +	 * Register our own node as a MIPI DSI device.
->>  +	 * This ensures that the panel driver will be probed.
->>  +	 */
->>  +	info.channel =3D 0;
->>  +	info.node =3D of_node_get(dev->of_node);
->>  +
->>  +	dsi =3D mipi_dsi_device_register_full(&dbi->host, &info);
->>  +	if (IS_ERR(dsi)) {
->>  +		dev_err(dev, "Failed to add DSI device\n");
->>  +		return PTR_ERR(dsi);
->>  +	}
->>  +
->>  +	return 0;
->>  +}
->>  +
->>  +static const struct of_device_id dbi_spi_of_match[] =3D {
->>  +	{ .compatible =3D "adafruit,yx240qv29" },
->>  +	{ .compatible =3D "leadtek,ltk035c5444t-spi" },
->>  +	{ }
-> Would it be better with a fall-back compatible like:
-> mipi,dbi-spi.
-> So the nodes must includes this compatible to be registered with
-> this driver?
-
-Ideally, it would be perfect, but unfortunately we cannot do that.
-
-If a node has the following:
-compatible =3D "adafruit,yx240qv29", "mipi-dbi-spi";
-
-Then Linux will probe only with the first compatible string since it=20
-has a driver for it. It will use the fallback string only if no driver=20
-matches the first string.
-
--Paul
-
->=20
->>  +};
->>  +MODULE_DEVICE_TABLE(of, dbi_spi_of_match);
->>  +
->>  +static struct spi_driver dbi_spi_driver =3D {
->>  +	.driver =3D {
->>  +		.name =3D "dbi-spi",
->>  +		.of_match_table =3D dbi_spi_of_match,
->>  +	},
->>  +	.probe =3D dbi_spi_probe,
->>  +};
->>  +module_spi_driver(dbi_spi_driver);
->>  +
->>  +MODULE_DESCRIPTION("DBI SPI bus driver");
->>  +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
->>  +MODULE_LICENSE("GPL");
->>  --
->>  2.27.0
-
-
+>
+> Cheers, Daniel
+>
+> >
+> > Regards,
+> > Christian.
+> >
+> > >
+> > > Regards,
+> > > Nicholas Kazlauskas
+> > >
+> > >>
+> > >>>
+> > >>> Since this bug has only been spotted with fast commits, this patch
+> > >>> fixes
+> > >>> the bug by clearing the dm_state instead of using the old dc_state =
+for
+> > >>> fast updates. In addition, since dm_state is only used for its dc_s=
+tate
+> > >>> and amdgpu_dm_atomic_commit_tail will retain the dc_state if none i=
+s
+> > >>> found,
+> > >>> removing the dm_state should not have any consequences in fast upda=
+tes.
+> > >>>
+> > >>> This use-after-free bug has existed for a while now, but only cause=
+d a
+> > >>> noticeable issue starting from 5.7-rc1 due to 3202fa62f ("slub:
+> > >>> relocate
+> > >>> freelist pointer to middle of object") moving the freelist pointer =
+from
+> > >>> dm_state->base (which was unused) to dm_state->context (which is
+> > >>> dereferenced).
+> > >>>
+> > >>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D207383
+> > >>> Fixes: bd200d190f45 ("drm/amd/display: Don't replace the dc_state
+> > >>> for fast updates")
+> > >>> Reported-by: Duncan <1i5t5.duncan@cox.net>
+> > >>> Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
+> > >>> ---
+> > >>>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 36
+> > >>> ++++++++++++++-----
+> > >>>   1 file changed, 27 insertions(+), 9 deletions(-)
+> > >>>
+> > >>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > >>> b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > >>> index 86ffa0c2880f..710edc70e37e 100644
+> > >>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > >>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > >>> @@ -8717,20 +8717,38 @@ static int amdgpu_dm_atomic_check(struct
+> > >>> drm_device *dev,
+> > >>>            * the same resource. If we have a new DC context as part=
+ of
+> > >>>            * the DM atomic state from validation we need to free it=
+ and
+> > >>>            * retain the existing one instead.
+> > >>> +         *
+> > >>> +         * Furthermore, since the DM atomic state only contains th=
+e DC
+> > >>> +         * context and can safely be annulled, we can free the sta=
+te
+> > >>> +         * and clear the associated private object now to free
+> > >>> +         * some memory and avoid a possible use-after-free later.
+> > >>>            */
+> > >>> -        struct dm_atomic_state *new_dm_state, *old_dm_state;
+> > >>>
+> > >>> -        new_dm_state =3D dm_atomic_get_new_state(state);
+> > >>> -        old_dm_state =3D dm_atomic_get_old_state(state);
+> > >>> +        for (i =3D 0; i < state->num_private_objs; i++) {
+> > >>> +            struct drm_private_obj *obj =3D state->private_objs[i]=
+.ptr;
+> > >>>
+> > >>> -        if (new_dm_state && old_dm_state) {
+> > >>> -            if (new_dm_state->context)
+> > >>> -                dc_release_state(new_dm_state->context);
+> > >>> +            if (obj->funcs =3D=3D adev->dm.atomic_obj.funcs) {
+> > >>> +                int j =3D state->num_private_objs-1;
+> > >>>
+> > >>> -            new_dm_state->context =3D old_dm_state->context;
+> > >>> +                dm_atomic_destroy_state(obj,
+> > >>> +                        state->private_objs[i].state);
+> > >>> +
+> > >>> +                /* If i is not at the end of the array then the
+> > >>> +                 * last element needs to be moved to where i was
+> > >>> +                 * before the array can safely be truncated.
+> > >>> +                 */
+> > >>> +                if (i !=3D j)
+> > >>> +                    state->private_objs[i] =3D
+> > >>> +                        state->private_objs[j];
+> > >>>
+> > >>> -            if (old_dm_state->context)
+> > >>> -                dc_retain_state(old_dm_state->context);
+> > >>> +                state->private_objs[j].ptr =3D NULL;
+> > >>> +                state->private_objs[j].state =3D NULL;
+> > >>> +                state->private_objs[j].old_state =3D NULL;
+> > >>> +                state->private_objs[j].new_state =3D NULL;
+> > >>> +
+> > >>> +                state->num_private_objs =3D j;
+> > >>> +                break;
+> > >>> +            }
+> > >>>           }
+> > >>>       }
+> > >>>
+> > >>> --
+> > >>> 2.27.0
+> > >>>
+> > >>
+> > >
+> >
+> > _______________________________________________
+> > dri-devel mailing list
+> > dri-devel@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
