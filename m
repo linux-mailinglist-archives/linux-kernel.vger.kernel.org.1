@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D777D22EFB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D3C22EF0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731238AbgG0OS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:18:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46048 "EHLO mail.kernel.org"
+        id S1730296AbgG0ONB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731224AbgG0OSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:18:24 -0400
+        id S1730273AbgG0OMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DB6020825;
-        Mon, 27 Jul 2020 14:18:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FECF2078E;
+        Mon, 27 Jul 2020 14:12:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859503;
-        bh=WIIPYcX+La5dUgPvwyLCdvuORcDgdMxo2o+Zea3h6QU=;
+        s=default; t=1595859173;
+        bh=sDEnlAlhFB/QP2r2vRPVPqWMEAb7Ot7M+9SnlkSmfxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0o1Njx34uRkVnB2vDLcMVS6a2cqoninyQWEBrZ3qSAJyzRIyFYbnFeavCn25KrM1I
-         nacm5E8gPprDQ2BUwf4KrDzimZg/S6ZTdV96R7H4qXVP6kfvQ0pTDXyfLuAdlt4TfK
-         CFboaEAgzwt3fVYc5RP8sxaX5mW+ABBaFyrwEhQA=
+        b=KRTIRep8fhX9FnMTOzu2CcTq4bh/uxtm9H39l1ZnsR8lukAKGTBdQhFoxBTNBurJA
+         Dd+jQqOU5BY7zRGXHU+7WHWkhsnDVF29ehS60B7YcVAybpDfxwQ1ISBpc4JdjVd51T
+         pq4XfnbylbOUifHCvqc5LqFACtGSJT8Tx4njJ5K0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 5.4 105/138] usb: xhci-mtk: fix the failure of bandwidth allocation
+        stable@vger.kernel.org, Mark ODonovan <shiftee@posteo.net>,
+        Roman Mamedov <rm@romanrm.net>,
+        =?UTF-8?q?Viktor=20J=C3=A4gersk=C3=BCpper?= 
+        <viktor_jaegerskuepper@freenet.de>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.19 86/86] ath9k: Fix regression with Atheros 9271
 Date:   Mon, 27 Jul 2020 16:05:00 +0200
-Message-Id: <20200727134930.719926915@linuxfoundation.org>
+Message-Id: <20200727134918.713749319@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Mark O'Donovan <shiftee@posteo.net>
 
-commit 5ce1a24dd98c00a57a8fa13660648abf7e08e3ef upstream.
+commit 92f53e2fda8bb9a559ad61d57bfb397ce67ed0ab upstream.
 
-The wMaxPacketSize field of endpoint descriptor may be zero
-as default value in alternate interface, and they are not
-actually selected when start stream, so skip them when try to
-allocate bandwidth.
+This fix allows ath9k_htc modules to connect to WLAN once again.
 
-Cc: stable <stable@vger.kernel.org>
-Fixes: 0cbd4b34cda9 ("xhci: mediatek: support MTK xHCI host controller")
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/1594360672-2076-1-git-send-email-chunfeng.yun@mediatek.com
+Fixes: 2bbcaaee1fcb ("ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=208251
+Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+Reported-by: Roman Mamedov <rm@romanrm.net>
+Tested-by: Viktor Jägersküpper <viktor_jaegerskuepper@freenet.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200711043324.8079-1-shiftee@posteo.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-mtk-sch.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath9k/hif_usb.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-mtk-sch.c
-+++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -557,6 +557,10 @@ static bool need_bw_sch(struct usb_host_
- 	if (is_fs_or_ls(speed) && !has_tt)
- 		return false;
+--- a/drivers/net/wireless/ath/ath9k/hif_usb.c
++++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
+@@ -733,11 +733,13 @@ static void ath9k_hif_usb_reg_in_cb(stru
+ 			return;
+ 		}
  
-+	/* skip endpoint with zero maxpkt */
-+	if (usb_endpoint_maxp(&ep->desc) == 0)
-+		return false;
++		rx_buf->skb = nskb;
 +
- 	return true;
- }
+ 		usb_fill_int_urb(urb, hif_dev->udev,
+ 				 usb_rcvintpipe(hif_dev->udev,
+ 						 USB_REG_IN_PIPE),
+ 				 nskb->data, MAX_REG_IN_BUF_SIZE,
+-				 ath9k_hif_usb_reg_in_cb, nskb, 1);
++				 ath9k_hif_usb_reg_in_cb, rx_buf, 1);
+ 	}
  
+ resubmit:
 
 
