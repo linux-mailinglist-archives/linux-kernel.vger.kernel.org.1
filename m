@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AF522FC9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E5322FC9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgG0XIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:08:06 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39324 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgG0XIF (ORCPT
+        id S1727067AbgG0XIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:08:09 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:44307 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726967AbgG0XIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:08:05 -0400
-Received: by mail-qt1-f196.google.com with SMTP id w9so13584773qts.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:08:04 -0700 (PDT)
+        Mon, 27 Jul 2020 19:08:06 -0400
+Received: by mail-qt1-f195.google.com with SMTP id h21so7193589qtp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:08:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=y1Rnn4vCkQ65/r9EgXb15c20xR4qwlNC9n/tWJktCdE=;
-        b=pvL7VSHQrNo9T6TiP/O4AGm4GItnnWPXaqA3CnsABYt8+5+khr5IH/UelUWSAkXn0l
-         PmNdsDoS1m+zMh3hFsenYPR2wjsYGnGg671ZqBTRgFAAbbloTCVq5KLZ4cCgoL6pdbHe
-         9XXN2kYS9OqbVQDNX8HfixyWlRjLI73/Nw4RNJkBoUVSMEUlaOdZnnvQRzmZOIkTvUDF
-         piupzSvyt+NBD7UJbWLgRfnGATNYVbDlEXV4zC+6UT1bM+AQdGyNuEDN05rfuxCAO1VB
-         BR7wrL7pzwZycpzygoX/B2wAcZuhZdsE+Kss42LoJu/g/XhVQO33JgJfiE8VcBUQNEIQ
-         t+DA==
-X-Gm-Message-State: AOAM530HkjA/x7JDLcMfY+ePK5wqIGZvusIf4WNbqdRkxEH3ax8+m/Ae
-        SiTUVi0p9MYyWzZfZu6CctjMpUJQ
-X-Google-Smtp-Source: ABdhPJzLov2y7kpW3MsOIWujcojcoIAh0FzIIZNyngwsbbuKVHivngsLQ2rY+EjhxQhG7r0HpPXCVA==
-X-Received: by 2002:aed:3081:: with SMTP id 1mr24609841qtf.118.1595891284479;
-        Mon, 27 Jul 2020 16:08:04 -0700 (PDT)
+        bh=9T+6TTM2jquV/2xo6rzyYgs+MoQ8msgYOchHxJqCp/Q=;
+        b=UCfGgsf7HM21xyoeS9U+f4v/26YEWbZx2u7n4KD2wkqKkrDtzHAe9sDtlhjn4QZPXj
+         oLuwa9NdcpPkhAyAvUVJDjobXNopGjROipQsPeHw59QdquNaGPDHU3MMRYUvxNCQsBcC
+         qNycqhhD3FhSCy9WHYkdLXodwNZeE35rV+YrHWo2wQaDIQo53tvueMtWQneiEulh6sH1
+         3f7VlNqq0NXycqwxukgbtSaCtyZSGMuHsZ0CeKnpWRhvAFbj7dolkLJDNMVT+EHlPqaY
+         ZllwUxZomDghz4SAAuogLNQT9zcy7Xy/bD/0i6QUJiRHrILx4lVAJ8G4EBMYOvJ/gZrU
+         1juA==
+X-Gm-Message-State: AOAM533gypSP9yvXjiEZ9FHeoxkrrzQOo4RNqgnSmf2f1YlM3vTexUBr
+        oJDMWM7Z+22uBjblv/7FvnI=
+X-Google-Smtp-Source: ABdhPJwZwjcrGlMFcvi2v3HmouIUg6ngFSrMOuuMSa6dqGQ3gSMrsYDtm4IQyRzEYv7a2EA9VL+8Fw==
+X-Received: by 2002:ac8:6782:: with SMTP id b2mr4297886qtp.152.1595891285347;
+        Mon, 27 Jul 2020 16:08:05 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id j61sm8216984qtd.52.2020.07.27.16.08.03
+        by smtp.gmail.com with ESMTPSA id j61sm8216984qtd.52.2020.07.27.16.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 16:08:03 -0700 (PDT)
+        Mon, 27 Jul 2020 16:08:04 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/8] x86/kaslr: Remove bogus warning and unnecessary goto
-Date:   Mon, 27 Jul 2020 19:07:55 -0400
-Message-Id: <20200727230801.3468620-3-nivedita@alum.mit.edu>
+Subject: [PATCH v2 3/8] x86/kaslr: Fix process_efi_entries comment
+Date:   Mon, 27 Jul 2020 19:07:56 -0400
+Message-Id: <20200727230801.3468620-4-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727215047.3341098-1-nivedita@alum.mit.edu>
 References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
@@ -50,51 +50,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the warning on seeing "--" in handle_mem_options. This will trigger
-whenever one of the memory options is present in the command line
-together with "--", but there's no problem if that is the case.
-
-Replace goto with break.
+Since commit
+  0982adc74673 ("x86/boot/KASLR: Work around firmware bugs by excluding EFI_BOOT_SERVICES_* and EFI_LOADER_* from KASLR's choice")
+process_efi_entries will return true if we have an EFI memmap, not just
+if it contained EFI_MEMORY_MORE_RELIABLE regions.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index a4af89646094..21cd9e07f1f6 100644
+index 21cd9e07f1f6..207fcb7e7b71 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -295,10 +295,8 @@ static void handle_mem_options(void)
- 	while (*args) {
- 		args = next_arg(args, &param, &val);
- 		/* Stop at -- */
--		if (!val && strcmp(param, "--") == 0) {
--			warn("Only '--' specified in cmdline");
--			goto out;
--		}
-+		if (!val && strcmp(param, "--") == 0)
-+			break;
+@@ -741,8 +741,8 @@ static bool process_mem_region(struct mem_vector *region,
  
- 		if (!strcmp(param, "memmap")) {
- 			mem_avoid_memmap(PARSE_MEMMAP, val);
-@@ -311,7 +309,7 @@ static void handle_mem_options(void)
- 				continue;
- 			mem_size = memparse(p, &p);
- 			if (mem_size == 0)
--				goto out;
-+				break;
- 
- 			mem_limit = mem_size;
- 		} else if (!strcmp(param, "efi_fake_mem")) {
-@@ -319,7 +317,6 @@ static void handle_mem_options(void)
- 		}
- 	}
- 
--out:
- 	free(tmp_cmdline);
- 	return;
- }
+ #ifdef CONFIG_EFI
+ /*
+- * Returns true if mirror region found (and must have been processed
+- * for slots adding)
++ * Returns true if we processed the EFI memmap, which we prefer over the E820
++ * table if it is available.
+  */
+ static bool
+ process_efi_entries(unsigned long minimum, unsigned long image_size)
 -- 
 2.26.2
 
