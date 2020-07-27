@@ -2,139 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04DA22E96E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256CD22E974
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgG0JuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:50:14 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:55601 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG0JuN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:50:13 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id DAB87E0011;
-        Mon, 27 Jul 2020 09:50:09 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 11:50:09 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     SoC Team <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Olof Johansson <olof@lixom.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/10] Adding support for Microchip Sparx5 SoC
-Message-ID: <20200727095009.GK4073@piout.net>
-References: <20200727084211.6632-1-lars.povlsen@microchip.com>
+        id S1727091AbgG0Jur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:50:47 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:44132 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgG0Juq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:50:46 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 64AA420561;
+        Mon, 27 Jul 2020 11:50:44 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ufs28DryHkk0; Mon, 27 Jul 2020 11:50:44 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 01B4920482;
+        Mon, 27 Jul 2020 11:50:44 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 27 Jul 2020 11:50:43 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 27 Jul
+ 2020 11:50:43 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 671043184651; Mon, 27 Jul 2020 11:50:43 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 11:50:43 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     B K Karthik <bkkarthik@pesu.pes.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        <skhan@linuxfoundation.org>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>
+Subject: Re: [PATCH v2] net: ipv6: fix use-after-free Read in
+ __xfrm6_tunnel_spi_lookup
+Message-ID: <20200727095043.GA20687@gauss3.secunet.de>
+References: <20200726030855.q6dfjekazfzl5usw@pesu.pes.edu>
+ <CAM_iQpUFL7VdCKSgUa6N3pg7ijjZRu6-6UAs2oNosM-EzgXbaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200727084211.6632-1-lars.povlsen@microchip.com>
+In-Reply-To: <CAM_iQpUFL7VdCKSgUa6N3pg7ijjZRu6-6UAs2oNosM-EzgXbaQ@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lars,
+On Sat, Jul 25, 2020 at 10:35:12PM -0700, Cong Wang wrote:
+> On Sat, Jul 25, 2020 at 8:09 PM B K Karthik <bkkarthik@pesu.pes.edu> wrote:
+> > @@ -103,10 +103,10 @@ static int __xfrm6_tunnel_spi_check(struct net *net, u32 spi)
+> >  {
+> >         struct xfrm6_tunnel_net *xfrm6_tn = xfrm6_tunnel_pernet(net);
+> >         struct xfrm6_tunnel_spi *x6spi;
+> > -       int index = xfrm6_tunnel_spi_hash_byspi(spi);
+> > +       int index = xfrm6_tunnel_spi_hash_byaddr((const xfrm_address_t *)spi);
+> >
+> >         hlist_for_each_entry(x6spi,
+> > -                            &xfrm6_tn->spi_byspi[index],
+> > +                            &xfrm6_tn->spi_byaddr[index],
+> >                              list_byspi) {
+> >                 if (x6spi->spi == spi)
+> 
+> How did you convince yourself this is correct? This lookup is still
+> using spi. :)
 
-As Arnd stated, he already applied the patches so you have to send an
-incremental patch to fix the clock driver.
-
-On 27/07/2020 10:42:01+0200, Lars Povlsen wrote:
-> This patch series adds support for Microchip Sparx5 SoC, the CPU
-> system of a advanced, TSN capable gigabit switch. The CPU is an armv8
-> x 2 CPU core (A53).
-> 
-> Although this is an ARM core, it shares some peripherals with the
-> Microsemi Ocelot MIPS SoC.
-> 
-> NB: This version *only* updates the drivers/clk/clk-sparx5.c driver
-> 
-> Changes in v4:
-> - Updates to the clock driver per Stephen Boyd <sboyd@kernel.org>
->  - Remove unused include of of_address.h
->  - Remove unused member in s5_hw_clk struct
->  - Changed type (to unsigned long) for freq in s5_pll_conf struct
->  - Use .parent_data instead of looking up parent name
->  - Use devm_of_clk_add_hw_provider
->  - Some minor comsmetics
-> 
-> Changes in v3:
-> - a "gpio-restart" node has been added to the pcb134/pcb135 DT files.
-> - pinctrl-ocelot.c: ENOTSUPP replaced by EOPNOTSUPP. Fixed non-static
->   ocelot_pinconf_set(), Fixed ocelot_hw_get_value() not returning proper
->   read value.
-> - Rebased on v5.8-rc1
-> 
-> Changes in v2:
-> - Misc fixes to bindings/arm/microchip,sparx5.yaml
-> - Changed clock driver to platform driver, using bitfields, recalc
->   properly implented, using proper clock parent.
-> - arch/arm64/boot/dts/microchip/sparx5.dtsi:
->  - Added pmu and psci node, using PSCI
->  - Updates to GICv3 register spaces (GICV/GICH)
->  - Updated timer interrupt specifiers
-> - pinctrl: ocelot: Fixed symbol clashes from powerpc
-> 
-> Lars Povlsen (10):
->   dt-bindings: arm: sparx5: Add documentation for Microchip Sparx5 SoC
->   arm64: sparx5: Add support for Microchip 2xA53 SoC
->   arm64: dts: sparx5: Add basic cpu support
->   arm64: dts: sparx5: Add pinctrl support
->   pinctrl: ocelot: Add Sparx5 SoC support
->   dt-bindings: clock: sparx5: Add Sparx5 SoC DPLL clock
->   dt-bindings: clock: sparx5: Add bindings include file
->   clk: sparx5: Add Sparx5 SoC DPLL clock driver
->   arm64: dts: sparx5: Add Sparx5 SoC DPLL clock
->   arm64: dts: sparx5: Add i2c devices, i2c muxes
-> 
->  .../bindings/arm/microchip,sparx5.yaml        |  65 +++
->  .../bindings/clock/microchip,sparx5-dpll.yaml |  52 +++
->  .../devicetree/bindings/mfd/syscon.yaml       |   1 +
->  MAINTAINERS                                   |   9 +
->  arch/arm64/Kconfig.platforms                  |  14 +
->  arch/arm64/boot/dts/Makefile                  |   1 +
->  arch/arm64/boot/dts/microchip/Makefile        |   4 +
->  arch/arm64/boot/dts/microchip/sparx5.dtsi     | 213 +++++++++
->  .../boot/dts/microchip/sparx5_pcb125.dts      |  21 +
->  .../boot/dts/microchip/sparx5_pcb134.dts      |  17 +
->  .../dts/microchip/sparx5_pcb134_board.dtsi    | 252 ++++++++++
->  .../boot/dts/microchip/sparx5_pcb134_emmc.dts |  17 +
->  .../boot/dts/microchip/sparx5_pcb135.dts      |  17 +
->  .../dts/microchip/sparx5_pcb135_board.dtsi    |  92 ++++
->  .../boot/dts/microchip/sparx5_pcb135_emmc.dts |  17 +
->  .../boot/dts/microchip/sparx5_pcb_common.dtsi |  19 +
->  drivers/clk/Makefile                          |   1 +
->  drivers/clk/clk-sparx5.c                      | 295 ++++++++++++
->  drivers/pinctrl/pinctrl-ocelot.c              | 430 +++++++++++++++++-
->  include/dt-bindings/clock/microchip,sparx5.h  |  23 +
->  20 files changed, 1559 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/arm/microchip,sparx5.yaml
->  create mode 100644 Documentation/devicetree/bindings/clock/microchip,sparx5-dpll.yaml
->  create mode 100644 arch/arm64/boot/dts/microchip/Makefile
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5.dtsi
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb134_emmc.dts
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb135_board.dtsi
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb135_emmc.dts
->  create mode 100644 arch/arm64/boot/dts/microchip/sparx5_pcb_common.dtsi
->  create mode 100644 drivers/clk/clk-sparx5.c
->  create mode 100644 include/dt-bindings/clock/microchip,sparx5.h
-> 
-> --
-> 2.27.0
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+This can not be correct, it takes a u32 spi value and casts it to a
+pointer to an IP address.
