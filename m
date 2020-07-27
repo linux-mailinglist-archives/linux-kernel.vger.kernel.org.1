@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F5B22F8D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505C522F8DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbgG0TS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        id S1728797AbgG0TSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgG0TS2 (ORCPT
+        with ESMTP id S1728107AbgG0TSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:18:28 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5529C0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:28 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e8so10420124pgc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:28 -0700 (PDT)
+        Mon, 27 Jul 2020 15:18:41 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965D9C0619D7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:40 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c80so15129682wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2xySvV1IjY/ykAIVcs+vE5LOnvW22SWhPjf5yGr8ub4=;
-        b=naMvyOJdT0LmNEVjAZJNPFto3+cHVILBVTkAr9eDy2kEWatCjbsevbDKbZEUwUxrN1
-         03PXmw7vaaifaTs5uxCJxs/K0Mn5g3/tJ2r2VLcCYE6VH4I/9dtNCbtcdADpwbwuUFmA
-         TeD/KFkaSOzBnAybvvjtjX5wmagf37ExNGMpw=
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=AD/pgeUaAWIctoPbHAQcCg8O5lgu8H5ssjeAH3MlNAE=;
+        b=b9Xi8EPKDhPyvptqzRh9TEyHmMfd/reQxGu/+VvNXDLeNkn94+A5XsLMU4sZGwGnYc
+         VQ7cN6oppIHp7Sb9aOnqtUx8KbqUL2t0VNncf/TBpGWpM0VcUa7jrep3fZu9VV7ljCF3
+         Wx50YZGH7fXe4vbZqShyP7XqktwHUoOhIiKJk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2xySvV1IjY/ykAIVcs+vE5LOnvW22SWhPjf5yGr8ub4=;
-        b=DmC8xKftLow43rPvzeTVn5egJAlxre7NMN0U4ptVww3ixmLTzIz7BZPhLt3zDHo3O1
-         6WDNSifN+25NEiOqQo3eCm/SffRpbeeLmtXdfkN4W9z8mSq/F8lP2n81JDk9fHW2aDy6
-         ocNStDIUkm3OeVkpSmX6OlcQOmACOO2f9TdKtANiIS7W0lJmg/ahb9imP+oxqzJHVbw7
-         3cmsQo/GWphsD1WycnQTZd1PhZD2eI4BF+T8eT2O+e5b5HXkYnm9CiYAgeLigoDjEv9W
-         aBSRcHjB7xWfzUrU8O9G+3ZrOSKUGGGN9NOhKCpq1s6zHKibJfqwQ0UDQ0u4bQKqkElq
-         +d4w==
-X-Gm-Message-State: AOAM5312QKeZz1eINOw6oUvGW8e76KQpbBI3EiWozrAANZlBZK/pVZKm
-        Gv2iwtX3YM7Zoh6PWXka9Qx8Yg==
-X-Google-Smtp-Source: ABdhPJxHxU54eoeuYUvz0gC8SenG8BHXpKDdQtpJ9uHUXR3Pw/fdpX8ZlqWMdFH8+3KSnha9vSr3vQ==
-X-Received: by 2002:a63:df03:: with SMTP id u3mr20314068pgg.84.1595877508338;
-        Mon, 27 Jul 2020 12:18:28 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id f3sm356807pju.54.2020.07.27.12.18.27
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=AD/pgeUaAWIctoPbHAQcCg8O5lgu8H5ssjeAH3MlNAE=;
+        b=PML67doGSx/JozIrP4w83sohv9fr3dWm9tLB2fLW0YsSsQQEPFYm6Hwdww4n5Ozmkf
+         qodoDVZJrJTk8z7zaB3n2kL7VE27tYimobLI1V2pKZo4e0uIqZvG53ui/cHpZYodzWRy
+         /RF09Xys05hy6o1OhmLxSNZqr+wtXgYlW7t42w6SxOCqkc7+nwnnA4s/fdGBfiK+1aGd
+         jPE/Lk7x+O7Vbs3PiAk2x6lAV7+v74JGTUtbU7KagxfzT+YgJoKaV6h4Bagw5thudshA
+         vbeRDEvgDKUUxtKgb/hU6EnmSq9xG3TOQ7Kr+tzEx+eflHMGToMSirbs+G59lzABWTq8
+         JLBw==
+X-Gm-Message-State: AOAM532nA6uW6Ht47z9L+pwnnkbCshGLw/iN1OXqyN5QPsbNGhjKQeSM
+        N5H8qa2BqBprMbHhAYCEOmLZTV+0tMeojFQkOBkEhPUtRziOBq2zD7nqjiL6eK5W49vXLPTbNhr
+        m261k08By/AMFj3EhP9Rphq33JeWGT9B7DJG6IyHaXSbWOtv4dKxs/nbz2SMynuGDQZPhBjev/h
+        Yu3RnHfgEu
+X-Google-Smtp-Source: ABdhPJw7IDXDgUVkm/BmOYhovEDy4epUcWGU5dwgTcbUsYWhYOQSjfwYb9HbZEpCRr1sm9NvxhoSPA==
+X-Received: by 2002:a1c:7fd3:: with SMTP id a202mr607949wmd.67.1595877518878;
+        Mon, 27 Jul 2020 12:18:38 -0700 (PDT)
+Received: from [10.136.13.65] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id p11sm13730030wre.32.2020.07.27.12.18.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 12:18:27 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 12:18:26 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-Subject: Re: [PATCH v10 1/2] usb: dwc3: qcom: Add interconnect support in
- dwc3 driver
-Message-ID: <20200727191826.GC3191083@google.com>
-References: <1595528857-25357-1-git-send-email-sanm@codeaurora.org>
- <1595528857-25357-2-git-send-email-sanm@codeaurora.org>
- <20200727191719.GB3191083@google.com>
+        Mon, 27 Jul 2020 12:18:38 -0700 (PDT)
+Subject: Re: [PATCH v3 00/19] Introduce partial kernel_read_file() support
+To:     Mimi Zohar <zohar@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200724213640.389191-1-keescook@chromium.org>
+ <1595848589.4841.78.camel@kernel.org>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <1a46db6f-1c8a-3509-6371-7c77999833f2@broadcom.com>
+Date:   Mon, 27 Jul 2020 12:18:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <1595848589.4841.78.camel@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200727191719.GB3191083@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-CA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:17:19PM -0700, Matthias Kaehlcke wrote:
-> On Thu, Jul 23, 2020 at 11:57:36PM +0530, Sandeep Maheswaram wrote:
-> > Add interconnect support in dwc3-qcom driver to vote for bus
-> > bandwidth.
-> > 
-> > This requires for two different paths - from USB to
-> > DDR. The other is from APPS to USB.
-> > 
-> > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> > Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-> 
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Hi Mimi/Kees,
 
-Sorry, that was meant for v11
+On 2020-07-27 4:16 a.m., Mimi Zohar wrote:
+> On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
+>> v3:
+>> - add reviews/acks
+>> - add "IMA: Add support for file reads without contents" patch
+>> - trim CC list, in case that's why vger ignored v2
+>> v2: [missing from lkml archives! (CC list too long?) repeating changes here]
+>> - fix issues in firmware test suite
+>> - add firmware partial read patches
+>> - various bug fixes/cleanups
+>> v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
+>>
+>> Hi,
+>>
+>> Here's my tree for adding partial read support in kernel_read_file(),
+>> which fixes a number of issues along the way. It's got Scott's firmware
+>> and IMA patches ported and everything tests cleanly for me (even with
+>> CONFIG_IMA_APPRAISE=y).
+> Thanks, Kees.  Other than my comments on the new
+> security_kernel_post_load_data() hook, the patch set is really nice.
+>
+> In addition to compiling with CONFIG_IMA_APPRAISE enabled, have you
+> booted the kernel with the ima_policy=tcb?  The tcb policy will add
+> measurements to the IMA measurement list and extend the TPM with the
+> file or buffer data digest.  Are you seeing the firmware measurements,
+> in particular the partial read measurement?
+I booted the kernel with ima_policy=tcb.
+
+Unfortunately after enabling the following, fw_run_tests.sh does not run.
+
+mkdir /sys/kernel/security
+mount -t securityfs securityfs /sys/kernel/security
+echo "measure func=FIRMWARE_CHECK" > /sys/kernel/security/ima/policy
+echo "appraise func=FIRMWARE_CHECK appraise_type=imasig" > /sys/kernel/security/ima/policy
+./fw_run_tests.sh
+
+[ 1296.258052] test_firmware: loading 'test-firmware.bin'
+[ 1296.263903] misc test_firmware: loading /lib/firmware/test-firmware.bin failed with error -13
+[ 1296.263905] audit: type=1800 audit(1595905754.266:9): pid=5696 uid=0 auid=4294967295 ses=4294967295 subj=kernel op=appraise_data cause=IMA-signature-required comm="fw_namespace" name="/lib/firmware/test-firmware.bin" dev="tmpfs" ino=4592 res=0
+[ 1296.297085] misc test_firmware: Direct firmware load for test-firmware.bin failed with error -13
+[ 1296.305947] test_firmware: load of 'test-firmware.bin' failed: -13
+
+>
+> thanks,
+>
+> Mimi
+
