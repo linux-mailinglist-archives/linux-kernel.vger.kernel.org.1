@@ -2,95 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AF322F9C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB4622F9C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgG0UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 16:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727032AbgG0UCj (ORCPT
+        id S1728796AbgG0UD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:03:28 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:44580 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727837AbgG0UD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:02:39 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF2AC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:02:39 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d4so10532773pgk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=IXDeKj/8CgvwBowlCvSFrtK4qV4sd1hCGAzTc7QYtD4=;
-        b=Y3HVXgsRYqk2PJIxygUxaAR7AKRLEORJjoG6eXL600/gkGgOi2sSTJ0j0691Qu0VWN
-         JI+1n6sCK5PDGAca2AOtTUa++CMoguByq0quyCD6X7WayrZ8TDfnlWxG/yBUO1UfjdOn
-         j0KYrkKQLQNv6UNdXBXDg2Q293ux5L7n7GxFk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=IXDeKj/8CgvwBowlCvSFrtK4qV4sd1hCGAzTc7QYtD4=;
-        b=rfAJrEPtQRN88iNzl+IfrHD7/jj/nQmh3+AulAbDOJUvozlYuvCmg62+dxs+wsXc3a
-         bFSIJNVjYaZJfrcErfW/s8jNyj4pun796ygU4478owfsXjlCY/16s1wyaTIhN3kiuHHr
-         5cvgII71JDQakBZXz1ZY7tR9y9orFVnT5FbleDwDfSbGMJ3hcNrv9tT3yCV/QSyK7aJF
-         8YaNXOOxK6WUA062hhU4LoxE/pI74dCl8ud52vrAo5i8/PsHmhF5QVrrjdKFVyFu0IHP
-         IpVVuwt1QDuAtnNh0XvlGLg4s2KWwplX3AobxurTWVnQLhqCwQNc2U/81rONygI6CPPs
-         Xj9Q==
-X-Gm-Message-State: AOAM5305s4tiZmE9kunzrzcdt+CCFEHkOST9C1LlqRj44xEXFgHL/mC7
-        PJN6vjtqhE7Km3ogyjV0TgyC9ahR+yw=
-X-Google-Smtp-Source: ABdhPJwoSS7iWNG6ib5qqh9HziwtyhV7QAHABX4BFAetR8LGWSTIw5v3Xyvkxa2lVfZQgeiGcZV5nw==
-X-Received: by 2002:a63:e24a:: with SMTP id y10mr19769530pgj.1.1595880159038;
-        Mon, 27 Jul 2020 13:02:39 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id 21sm15629639pfu.124.2020.07.27.13.02.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 13:02:38 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200726125636.3aa003ad@archlinux>
-References: <20200724213329.899216-1-swboyd@chromium.org> <20200726125636.3aa003ad@archlinux>
-Subject: Re: [PATCH 0/3] Some sx9310 iio driver updates
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mon, 27 Jul 2020 16:03:27 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 79BA32002B;
+        Mon, 27 Jul 2020 22:03:21 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 22:03:20 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Campello <campello@chromium.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-Date:   Mon, 27 Jul 2020 13:02:37 -0700
-Message-ID: <159588015706.1360974.7201974727081274212@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
+        od@zcrc.me, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/6] drm: dsi: Let host and device specify supported bus
+Message-ID: <20200727200320.GA1014103@ravnborg.org>
+References: <20200727164613.19744-1-paul@crapouillou.net>
+ <20200727164613.19744-3-paul@crapouillou.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727164613.19744-3-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=mj1frrxOal-xCd-NJWkA:9
+        a=kvZZqAbxeRUPa8gG:21 a=D4JMFfri3F8EuTwx:21 a=CjuIK1q_8ugA:10
+        a=9LHmKk7ezEChjTCyhBa9:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Cameron (2020-07-26 04:56:36)
-> On Fri, 24 Jul 2020 14:33:24 -0700
-> Stephen Boyd <swboyd@chromium.org> wrote:
->=20
-> > These patches are only related because I'm looking at this driver. The
-> > first one resends the DT binding for the driver that was merged in
-> > v5.8-rc1 with a small change to update for proper regulators. The second
-> > patch fixes a few printks that are missing newlines and should be
-> > totally non-trivial to apply. The third patch changes whoami to unsigned
-> > to avoid confusing. The fourth patch drops channel_users because it's
-> > unused. The final patch adds support to enable the svdd and vdd supplies
-> > so that this driver can work on a board I have where the svdd supply
-> > isn't enabled at boot and needs to be turned on before this driver
-> > starts to communicate with the chip.
-> Hi Stephen,
->=20
-> I clearly made a mess of picking this driver up in the first place.
->=20
-> Anyhow, we now have two series in flight for the driver that, whilst
-> mostly independent (I think) will result in at least some fuzz.
-> If possible could you work with Daniel to send me one single series
-> with all the changes?
->=20
+Hi Paul.
 
-Sure. No problem for me to work with Daniel. Thanks.
+On Mon, Jul 27, 2020 at 06:46:09PM +0200, Paul Cercueil wrote:
+> The current MIPI DSI framework can very well be used to support MIPI DBI
+> panels. In order to add support for the various bus types supported by
+> DBI, the DRM panel drivers should specify the bus type they will use,
+> and the DSI host drivers should specify the bus types they are
+> compatible with.
+> 
+> The DSI host driver can then use the information provided by the DBI/DSI
+> device driver, such as the bus type and the number of lanes, to
+> configure its hardware properly.
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/drm_mipi_dsi.c |  9 +++++++++
+>  include/drm/drm_mipi_dsi.h     | 12 ++++++++++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_mipi_dsi.c b/drivers/gpu/drm/drm_mipi_dsi.c
+> index 5dd475e82995..11ef885de765 100644
+> --- a/drivers/gpu/drm/drm_mipi_dsi.c
+> +++ b/drivers/gpu/drm/drm_mipi_dsi.c
+> @@ -281,6 +281,9 @@ int mipi_dsi_host_register(struct mipi_dsi_host *host)
+>  {
+>  	struct device_node *node;
+>  
+> +	if (WARN_ON_ONCE(!host->bus_types))
+> +		host->bus_types = MIPI_DEVICE_TYPE_DSI;
+> +
+So all 14 users need to specify bus_types.
+Seems doable.
+
+>  	for_each_available_child_of_node(host->dev->of_node, node) {
+>  		/* skip nodes without reg property */
+>  		if (!of_find_property(node, "reg", NULL))
+> @@ -323,6 +326,12 @@ int mipi_dsi_attach(struct mipi_dsi_device *dsi)
+>  {
+>  	const struct mipi_dsi_host_ops *ops = dsi->host->ops;
+>  
+> +	if (WARN_ON_ONCE(!dsi->bus_type))
+> +		dsi->bus_type = MIPI_DEVICE_TYPE_DSI;
+We have ~50 users of mipi_dsi_attach() - doable. But a bit more work.
+
+> +
+> +	if (!(dsi->bus_type & dsi->host->bus_types))
+> +		return -EINVAL;
+> +
+>  	if (!ops || !ops->attach)
+>  		return -ENOSYS;
+>  
+> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+> index 360e6377e84b..65d2961fc054 100644
+> --- a/include/drm/drm_mipi_dsi.h
+> +++ b/include/drm/drm_mipi_dsi.h
+> @@ -63,6 +63,14 @@ struct mipi_dsi_packet {
+>  int mipi_dsi_create_packet(struct mipi_dsi_packet *packet,
+>  			   const struct mipi_dsi_msg *msg);
+>  
+> +/* MIPI bus types */
+If you define this as an enum then kernel-doc syntax will be picked up.
+See for example: enum drm_driver_feature
+
+> +#define MIPI_DEVICE_TYPE_DSI		BIT(0)
+> +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE1	BIT(1)
+> +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE2	BIT(2)
+> +#define MIPI_DEVICE_TYPE_DBI_SPI_MODE3	BIT(3)
+> +#define MIPI_DEVICE_TYPE_DBI_M6800	BIT(4)
+> +#define MIPI_DEVICE_TYPE_DBI_I8080	BIT(5)
+> +
+>  /**
+>   * struct mipi_dsi_host_ops - DSI bus operations
+>   * @attach: attach DSI device to DSI host
+> @@ -94,11 +102,13 @@ struct mipi_dsi_host_ops {
+>   * struct mipi_dsi_host - DSI host device
+>   * @dev: driver model device node for this DSI host
+>   * @ops: DSI host operations
+> + * @bus_types: Bitmask of supported MIPI bus types
+Please add some kind of reference to MIPI_DEVICE_TYPE_* - so the reader
+knows for sure this is the bits used here.
+
+>   * @list: list management
+>   */
+>  struct mipi_dsi_host {
+>  	struct device *dev;
+>  	const struct mipi_dsi_host_ops *ops;
+> +	unsigned int bus_types;
+Use u32. Shorter and we know this is 32 bits wide.
+
+>  	struct list_head list;
+>  };
+>  
+> @@ -162,6 +172,7 @@ struct mipi_dsi_device_info {
+>   * @host: DSI host for this peripheral
+>   * @dev: driver model device node for this peripheral
+>   * @name: DSI peripheral chip type
+> + * @bus_type: MIPI bus type (MIPI_DEVICE_TYPE_DSI/...)
+>   * @channel: virtual channel assigned to the peripheral
+>   * @format: pixel format for video mode
+>   * @lanes: number of active data lanes
+> @@ -178,6 +189,7 @@ struct mipi_dsi_device {
+>  	struct device dev;
+>  
+>  	char name[DSI_DEV_NAME_SIZE];
+> +	unsigned int bus_type;
+Use u32.
+
+>  	unsigned int channel;
+>  	unsigned int lanes;
+>  	enum mipi_dsi_pixel_format format;
+> -- 
+> 2.27.0
