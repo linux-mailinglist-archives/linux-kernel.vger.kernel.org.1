@@ -2,264 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58AE22F1D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BAFD22F1B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730625AbgG0OO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:58 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:52725 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730573AbgG0OOl (ORCPT
+        id S1730821AbgG0OQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730808AbgG0OQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:41 -0400
-Received: from nexussix (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 17F09240027;
-        Mon, 27 Jul 2020 14:14:33 +0000 (UTC)
-Message-ID: <bae57cca5899c2618c168532f4589e1a22cbc137.camel@kernel.wtf>
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
- do_syscall_32_irqs_on
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     bp@alien8.de, hpa@zytor.com, luto@kernel.org, mingo@redhat.com,
-        tglx@linutronix.de
-Cc:     syzbot <syzbot+0e3a50ab9ac2fdf9ffc6@syzkaller.appspotmail.com>,
-        x86@kernel.org, syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 27 Jul 2020 17:14:32 +0300
-In-Reply-To: <000000000000a46a7505ab53a387@google.com>
-References: <000000000000a46a7505ab53a387@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4 
+        Mon, 27 Jul 2020 10:16:09 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D0EC0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:16:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id x5so13756876wmi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=OfeIQ7fuyXMNX3+/WRYrDZ4OiAswU9YSpAGq0MJR3Qk=;
+        b=Hn668tMsYylryOuBEj9y8mjBaum1BR6RWwK0ku3JWX59ZQxBLDwOmMgBAWCVcE5Z5b
+         2c2kjrPGs/8IJv9fOZU6LTFL4823pdOCMHScobKcGB26/UvcwGxObmVQ+nfSYok3UVXV
+         y8jZntEGdDqBkfACeuCFPpviPI1bF4y/WyHmV64TdjpUWYcx/vlwfaEo93Q7N19ALPuf
+         dgxdM4C4v0gg99rHSeRt7zP0s+HePYSo+MBAgAcGaFshIYFkq6VtQN5LKuUuY+F7rHOv
+         KZsvs2TP7WvjrxFzkPBs4rtVc8MNiIke1P073VcVxPYEWd1vNSH6mYgIlLs/YdC5xo03
+         9vhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OfeIQ7fuyXMNX3+/WRYrDZ4OiAswU9YSpAGq0MJR3Qk=;
+        b=k8EvcQXOQOBUXa8Gf0cyL51Q+BaKsY0WIRhkshjV3yHp4t/BI8DO871pfIM83hVhJN
+         hILr6xUDRM0dGS29lL4YyTKWhFOV4TkpAadDZOKF2NiHfkLmlxSBdBJC6XDWFpKknMZC
+         6z2X7Do929y4vAL5uEqS4nCZWA8NeQa69IX4xDqhUzsO25QTKLJvCs5cfdq4wpu6d2bs
+         gVzwFygXajcDPuNYencrI1ODrFGL5ByT7Qi5xTrTsbnsmsg/4nUrZGR6kteUxtJBERKB
+         X5Xknn+9mzzTefWy31c3AaJ8NFlIFN9BJzEJCEM1GmAOjCqU22J/mUqw8K5EpF1xxVgv
+         0lKA==
+X-Gm-Message-State: AOAM532Yd59S4cEYzMRnVGwdJFmdlsdH7IfXd8icF5dYoGfA5fZCWHaL
+        NSUlrFz6krLpg+zMMesEKjFflw==
+X-Google-Smtp-Source: ABdhPJwXT7IGhG6i2ax6YMsMfOUVYdF5VVpy+kpRsWP14/nCVLIlyPmNmTdhme4qI9qNmQgKjAM1MA==
+X-Received: by 2002:a1c:a7d1:: with SMTP id q200mr2832327wme.131.1595859368016;
+        Mon, 27 Jul 2020 07:16:08 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id 32sm12369292wrn.86.2020.07.27.07.16.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 07:16:07 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 15:16:05 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     robh+dt@kernel.org, tony@atomide.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH] mfd: Replace HTTP links with HTTPS ones
+Message-ID: <20200727141605.GW1850026@dell>
+References: <20200722184711.GI3533@dell>
+ <20200722192454.69591-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200722192454.69591-1-grandmaster@al2klimov.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 22 Jul 2020, Alexander A. Klimov wrote:
 
-On Sun, 2020-07-26 at 01:03 -0700, syzbot wrote:
-> Hello,
+> Rationale:
+> Reduces attack surface on kernel devs opening the links for MITM
+> as HTTPS traffic is much harder to manipulate.
 > 
-> syzbot found the following issue on:
+> Deterministic algorithm:
+> For each file:
+>   If not .svg:
+>     For each line:
+>       If doesn't contain `\bxmlns\b`:
+>         For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
+> 	  If neither `\bgnu\.org/license`, nor `\bmozilla\.org/MPL\b`:
+>             If both the HTTP and HTTPS versions
+>             return 200 OK and serve the same content:
+>               Replace HTTP with HTTPS.
 > 
-> HEAD commit:    23ee3e4e Merge tag 'pci-v5.8-fixes-2' of
-> git://git.kernel...
-> git tree:       upstream
-> console output: 
-> https://syzkaller.appspot.com/x/log.txt?x=14a4c7d8900000
-> kernel config:  
-> https://syzkaller.appspot.com/x/.config?x=f87a5e4232fdb267
-> dashboard link: 
-> https://syzkaller.appspot.com/bug?extid=0e3a50ab9ac2fdf9ffc6
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> userspace arch: i386
-> syz repro:      
-> https://syzkaller.appspot.com/x/repro.syz?x=168fe3a0900000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the
-> commit:
-> Reported-by: syzbot+0e3a50ab9ac2fdf9ffc6@syzkaller.appspotmail.com
-> 
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 94d49067 P4D 94d49067 PUD a1c93067 PMD 0 
-> Oops: 0002 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 6854 Comm: syz-executor.3 Not tainted 5.8.0-rc6-syzkaller 
-> #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 01/01/2011
-> RIP: 0010:do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:428
-> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00>
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> RSP: 0018:ffffc900017b7f28 EFLAGS: 00010296
-> RAX: 0000000000000000 RBX: ffffc900017b7f58 RCX: 1ffff920002f6fd2
-> RDX: ffff888098bb4240 RSI: ffffffff81c214b2 RDI: 0000000000000005
-> RBP: ffffc900017b7f58 R08: 0000000000000001 R09: ffff888098bb4b08
-> R10: 00000000ffffff8c R11: 0000000000000000 R12: 0000000000000001
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880ae600000(0063)
-> knlGS:000000000a292900
-> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 00000000a1b88000 CR4: 00000000001406f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __do_fast_syscall_32 arch/x86/entry/common.c:475 [inline]
->  do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:503
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 94d49067 P4D 94d49067 PUD a1c93067 PMD 0 
-> Oops: 0002 [#2] PREEMPT SMP KASAN
-> CPU: 0 PID: 6854 Comm: syz-executor.3 Not tainted 5.8.0-rc6-syzkaller 
-> #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 01/01/2011
-> RIP: 0010:in_gate_area_no_mm+0x0/0x6a
-> arch/x86/entry/vsyscall/vsyscall_64.c:343
-> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00>
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> RSP: 0018:ffffc900017b7440 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: ffffc900017b74e0 RCX: ffffffff816a62f0
-> RDX: ffff888098bb4240 RSI: ffffffff816a631b RDI: 00000000f7f83569
-> RBP: 00000000f7f83569 R08: ffffc900017b75f0 R09: ffffffff8c8d7109
-> R10: 00000000f7f83569 R11: 0000000000000000 R12: ffffc900017b75f0
-> R13: 0000000000000001 R14: 00000000f7f83569 R15: ffffc900017b7500
-> FS:  0000000000000000(0000) GS:ffff8880ae600000(0063)
-> knlGS:000000000a292900
-> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 00000000a1b88000 CR4: 00000000001406f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  is_kernel include/linux/kallsyms.h:44 [inline]
->  is_ksym_addr include/linux/kallsyms.h:50 [inline]
->  kallsyms_lookup+0xc3/0x2e0 kernel/kallsyms.c:290
->  __sprint_symbol+0x9c/0x1c0 kernel/kallsyms.c:363
->  symbol_string+0x14c/0x370 lib/vsprintf.c:969
->  pointer+0x185/0x970 lib/vsprintf.c:2226
->  vsnprintf+0x5b2/0x14f0 lib/vsprintf.c:2624
->  vscnprintf+0x29/0x80 lib/vsprintf.c:2723
->  vprintk_store+0x44/0x4a0 kernel/printk/printk.c:1942
->  vprintk_emit+0x139/0x770 kernel/printk/printk.c:2003
->  vprintk_func+0x8f/0x1a6 kernel/printk/printk_safe.c:393
->  printk+0xba/0xed kernel/printk/printk.c:2070
->  show_ip+0x22/0x30 arch/x86/kernel/dumpstack.c:124
->  show_iret_regs+0x10/0x32 arch/x86/kernel/dumpstack.c:131
->  __show_regs+0x18/0x50 arch/x86/kernel/process_64.c:72
->  show_trace_log_lvl+0x255/0x2b4 arch/x86/kernel/dumpstack.c:274
->  show_regs arch/x86/kernel/dumpstack.c:447 [inline]
->  __die_body arch/x86/kernel/dumpstack.c:393 [inline]
->  __die+0x51/0x90 arch/x86/kernel/dumpstack.c:407
->  no_context+0x56b/0x9f0 arch/x86/mm/fault.c:695
->  __bad_area_nosemaphore+0xa9/0x480 arch/x86/mm/fault.c:789
->  do_user_addr_fault+0x8ce/0xd00 arch/x86/mm/fault.c:1258
->  handle_page_fault arch/x86/mm/fault.c:1365 [inline]
->  exc_page_fault+0xab/0x170 arch/x86/mm/fault.c:1418
->  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:542
-> RIP: 0010:do_syscall_32_irqs_on+0x3f/0x60 arch/x86/entry/common.c:428
-> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00>
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> RSP: 0018:ffffc900017b7f28 EFLAGS: 00010296
-> RAX: 0000000000000000 RBX: ffffc900017b7f58 RCX: 1ffff920002f6fd2
-> RDX: ffff888098bb4240 RSI: ffffffff81c214b2 RDI: 0000000000000005
-> RBP: ffffc900017b7f58 R08: 0000000000000001 R09: ffff888098bb4b08
-> R10: 00000000ffffff8c R11: 0000000000000000 R12: 0000000000000001
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
->  __do_fast_syscall_32 arch/x86/entry/common.c:475 [inline]
->  do_fast_syscall_32+0x7f/0x120 arch/x86/entry/common.c:503
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 94d49067 P4D 94d49067 PUD a1c93067 PMD 0 
-> Oops: 0002 [#3] PREEMPT SMP KASAN
-> CPU: 0 PID: 6854 Comm: syz-executor.3 Not tainted 5.8.0-rc6-syzkaller 
-> #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 01/01/2011
-> RIP: 0010:in_gate_area_no_mm+0x0/0x6a
-> arch/x86/entry/vsyscall/vsyscall_64.c:343
-> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00>
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> RSP: 0018:ffffc900017b6930 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: ffffc900017b69d0 RCX: ffffffff816a62f0
-> RDX: ffff888098bb4240 RSI: ffffffff816a631b RDI: 00000000f7f83569
-> RBP: 00000000f7f83569 R08: ffffc900017b6ae0 R09: ffff8880ae623dcd
-> R10: 00000000f7f83569 R11: 0000000000000001 R12: ffffc900017b6ae0
-> R13: 0000000000000001 R14: 00000000f7f83569 R15: ffffc900017b69f0
-> FS:  0000000000000000(0000) GS:ffff8880ae600000(0063)
-> knlGS:000000000a292900
-> CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-> CR2: 0000000000000000 CR3: 00000000a1b88000 CR4: 00000000001406f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  is_kernel include/linux/kallsyms.h:44 [inline]
->  is_ksym_addr include/linux/kallsyms.h:50 [inline]
->  kallsyms_lookup+0xc3/0x2e0 kernel/kallsyms.c:290
->  __sprint_symbol+0x9c/0x1c0 kernel/kallsyms.c:363
->  symbol_string+0x14c/0x370 lib/vsprintf.c:969
->  pointer+0x185/0x970 lib/vsprintf.c:2226
->  vsnprintf+0x5b2/0x14f0 lib/vsprintf.c:2624
->  vscnprintf+0x29/0x80 lib/vsprintf.c:2723
->  printk_safe_log_store+0xf5/0x250 kernel/printk/printk_safe.c:94
->  vprintk_safe kernel/printk/printk_safe.c:347 [inline]
->  vprintk_func+0xef/0x1a6 kernel/printk/printk_safe.c:390
->  printk+0xba/0xed kernel/printk/printk.c:2070
->  show_ip+0x22/0x30 arch/x86/kernel/dumpstack.c:124
->  show_iret_regs+0x10/0x32 arch/x86/kernel/dumpstack.c:131
->  __show_regs+0x18/0x50 arch/x86/kernel/process_64.c:72
->  show_trace_log_lvl+0x255/0x2b4 arch/x86/kernel/dumpstack.c:274
->  show_regs arch/x86/kernel/dumpstack.c:447 [inline]
->  __die_body arch/x86/kernel/dumpstack.c:393 [inline]
->  __die+0x51/0x90 arch/x86/kernel/dumpstack.c:407
->  no_context+0x56b/0x9f0 arch/x86/mm/fault.c:695
->  __bad_area_nosemaphore+0xa9/0x480 arch/x86/mm/fault.c:789
->  do_user_addr_fault+0x783/0xd00 arch/x86/mm/fault.c:1171
->  handle_page_fault arch/x86/mm/fault.c:1365 [inline]
->  exc_page_fault+0xab/0x170 arch/x86/mm/fault.c:1418
->  asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:542
-> RIP: 0010:in_gate_area_no_mm+0x0/0x6a
-> arch/x86/entry/vsyscall/vsyscall_64.c:343
-> Code: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <00>
-> 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> RSP: 0018:ffffc900017b7440 EFLAGS: 00010093
-> RAX: 0000000000000000 RBX: ffffc900017b74e0 RCX: ffffffff816a62f0
-> RDX: ffff888098bb4240 RSI: ffffffff816a631b RDI: 00000000f7f83569
-> RBP: 00000000f7f83569 R08: ffffc900017b75f0 R09: ffffffff8c8d7109
-> R10: 00000000f7f83569 R11: 0000000000000000 R12: ffffc900017b75f0
-> R13: 0000000000000001 R14: 00000000f7f83569 R15: ffffc900017b7500
->  is_kernel include/linux/kallsyms.h:44 [inline]
->  is_ksym_addr include/linux/kallsyms.h:50 [inline]
->  kallsyms_lookup+0xc3/0x2e0 kernel/kallsyms.c:290
->  __sprint_symbol+0x9c/0x1c0 kernel/kallsyms.c:363
->  symbol_string+0x14c/0x370 lib/vsprintf.c:969
->  pointer+0x185/0x970 lib/vsprintf.c:2226
->  vsnprintf+0x5b2/0x14f0 lib/vsprintf.c:2624
->  vscnprintf+0x29/0x80 lib/vsprintf.c:2723
->  vprintk_store+0x44/0x4a0 kernel/printk/printk.c:1942
->  vprintk_emit+0x139/0x770 kernel/printk/printk.c:2003
->  vprintk_func+0x8f/0x1a6 kernel/printk/printk_safe.c:393
->  printk+0xba/0xed kernel/printk/printk.c:2070
->  show_ip+0x22/0x30 arch/x86/kernel/dumpstack.c:124
->  show_iret_regs+0x10/0x32 arch/x86/kernel/dumpstack.c:131
->  __show_regs+0x18/0x50 arch/x86/kernel/process_64.c:72
->  show_trace_log_lvl+0x255/0x2b4 arch/x86/kernel/dumpstack.c:274
->  show_regs arch/x86/kernel/dumpstack.c:447 [inline]
->  __die_body arch/x86/kernel/dumpstack.c:393 [inline]
->  __die+0x51/0x90 arch/x86/kernel/dumpstack.c:407
->  no_context+0x56b/0x9f0 arch/x86/mm/fault.c:695
->  __bad_area_nosemaphore+0xa9/0x480 arch/x86/mm/fault.c:789
->  do_user_addr_fault+0x8ce/0xd00 arch/x86/mm/fault.c:1258
-> Lost 45 message(s)!
-> 
-> 
+> Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+>  Documentation/devicetree/bindings/mfd/twl-family.txt | 2 +-
+>  drivers/mfd/hi6421-pmic-core.c                       | 2 +-
+>  drivers/mfd/lp873x.c                                 | 2 +-
+>  drivers/mfd/lp87565.c                                | 2 +-
+>  drivers/mfd/omap-usb-host.c                          | 2 +-
+>  drivers/mfd/omap-usb-tll.c                           | 2 +-
+>  drivers/mfd/smsc-ece1099.c                           | 2 +-
+>  drivers/mfd/ti_am335x_tscadc.c                       | 2 +-
+>  drivers/mfd/tps65086.c                               | 2 +-
+>  drivers/mfd/tps65217.c                               | 2 +-
+>  drivers/mfd/tps65218.c                               | 2 +-
+>  drivers/mfd/tps65912-core.c                          | 2 +-
+>  drivers/mfd/tps65912-i2c.c                           | 2 +-
+>  drivers/mfd/tps65912-spi.c                           | 2 +-
+>  include/linux/mfd/hi6421-pmic.h                      | 2 +-
+>  include/linux/mfd/lp873x.h                           | 2 +-
+>  include/linux/mfd/lp87565.h                          | 2 +-
+>  include/linux/mfd/ti_am335x_tscadc.h                 | 2 +-
+>  include/linux/mfd/tps65086.h                         | 2 +-
+>  include/linux/mfd/tps65217.h                         | 2 +-
+>  include/linux/mfd/tps65218.h                         | 2 +-
+>  include/linux/mfd/tps65912.h                         | 2 +-
+>  22 files changed, 22 insertions(+), 22 deletions(-)
 
-There's no C reproducer for this syzkaller report but I'm trying to
-reproduce it, in order to understand and possibly fix it if it's legit.
+Applied, thanks.
 
-Wanted to notify if anyone is already working on it or has an idea.
-
-Thank you
-
-Cengiz Can
-
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
