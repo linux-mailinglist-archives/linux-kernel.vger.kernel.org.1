@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EDA22EF94
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3298522EF96
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729723AbgG0ORZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:17:25 -0400
-Received: from smtprelay0005.hostedemail.com ([216.40.44.5]:50792 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731012AbgG0ORR (ORCPT
+        id S1731064AbgG0ORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:17:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43625 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731022AbgG0ORS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:17:17 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id A86F2182CF670;
-        Mon, 27 Jul 2020 14:17:13 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3874:4321:5007:7514:10004:10400:10848:11232:11658:11914:12295:12297:12555:12679:12740:12760:12895:13069:13095:13161:13181:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21212:21433:21451:21627:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: park62_3b1655626f61
-X-Filterd-Recvd-Size: 2448
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Jul 2020 14:17:11 +0000 (UTC)
-Message-ID: <a594ffa8112a9696260d8a01fa7941b125cf6226.camel@perches.com>
-Subject: Re: [PATCH v2] spi: spi-topcliff-pch: drop call to wakeup-disable
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Date:   Mon, 27 Jul 2020 07:17:10 -0700
-In-Reply-To: <CAHp75Vfuw1rAYxy41hVKNaqZQg4W-_Y=6St-X0yb5O4zN6qCfw@mail.gmail.com>
-References: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
-         <20200727131742.82289-1-vaibhavgupta40@gmail.com>
-         <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
-         <20200727134646.GA114726@gmail.com>
-         <CAHp75Vfuw1rAYxy41hVKNaqZQg4W-_Y=6St-X0yb5O4zN6qCfw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Mon, 27 Jul 2020 10:17:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k03wG-0002jX-Uz; Mon, 27 Jul 2020 14:17:13 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Alexander Lobakin <alobakin@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] qed: fix assignment of n_rq_elems to incorrect params field
+Date:   Mon, 27 Jul 2020 15:17:12 +0100
+Message-Id: <20200727141712.112906-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 17:08 +0300, Andy Shevchenko wrote:
-> Joe, can we amend checkpatch to at least shout about simple typos in
-> the tag area?
-> See below for the context.
-> 
-> On Mon, Jul 27, 2020 at 4:48 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
-> > On Mon, Jul 27, 2020 at 04:38:40PM +0300, Andy Shevchenko wrote:
-> > > On Mon, Jul 27, 2020 at 4:21 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
-> 
-> ...
-> 
-> > > > Fix: f185bcc77980("spi: spi-topcliff-pch: use generic power management")
-> > > 
-> > > Fixes: and missed space.
-> 
-> (1)
-> 
-> > > > Reported by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > 
-> > > Missed dash.
-> > > Does checkpatch complain?
-> > No, I got this message:
-> > "* .patch has no obvious style problems and is ready for submission"
-> 
-> (2)
+From: Colin Ian King <colin.king@canonical.com>
 
-Not reasonably so far as I can tell, no.
+Currently n_rq_elems is being assigned to params.elem_size instead of the
+field params.num_elems.  Coverity is detecting this as a double assingment
+to params.elem_size and reporting this as an usused value on the first
+assignment.  Fix this.
 
-The test for a signature uses -by:
+Addresses-Coverity: ("Unused value")
+Fixes: b6db3f71c976 ("qed: simplify chain allocation with init params struct")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/infiniband/hw/qedr/verbs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fix: starting a line seems a reasonable thing
-that someone might want to have in a commit
-message.
-
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 5a80471577a6..4ce4e2eef6cc 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -1930,7 +1930,7 @@ qedr_roce_create_kernel_qp(struct qedr_dev *dev,
+ 	in_params->sq_pbl_ptr = qed_chain_get_pbl_phys(&qp->sq.pbl);
+ 
+ 	params.intended_use = QED_CHAIN_USE_TO_CONSUME_PRODUCE;
+-	params.elem_size = n_rq_elems;
++	params.num_elems = n_rq_elems;
+ 	params.elem_size = QEDR_RQE_ELEMENT_SIZE;
+ 
+ 	rc = dev->ops->common->chain_alloc(dev->cdev, &qp->rq.pbl, &params);
+-- 
+2.27.0
 
