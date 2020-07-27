@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D821922EF71
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44DA22EED1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730893AbgG0OQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:16:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43378 "EHLO mail.kernel.org"
+        id S1729959AbgG0OLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:11:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730860AbgG0OQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:16:26 -0400
+        id S1729943AbgG0OLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:11:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 862B92078E;
-        Mon, 27 Jul 2020 14:16:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5022520838;
+        Mon, 27 Jul 2020 14:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859386;
-        bh=XWAO2rDwOr0pL/+FcfDAObp3HO8jmPTq0soq/G32Nt0=;
+        s=default; t=1595859060;
+        bh=404mlOwBRprthN1mkVirySgS0S2bS+wvcYx3rW8zKHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1YBTVaGFin6dUU11U7rfUcOZ295zX1gLlUfhU2uZ8rpnGRkTn7/WjyP6Ml0aeZL+e
-         WV+icGLIAFMn/tqm89W1LdSnpJO+J9dYUr8dQ8wdbNqIeLqhi59EvD052mS20pKPZg
-         AwF4QVcUzlcryT72X0lbS3j1HlWVoiQ/luFNh2J8=
+        b=rKWCkPJ0xS6U465/hGnh4MdpCqzYcUuD6sJzy24DHL5Lwe5yuuE36nyPbJr4zd/Wu
+         OY7M+cljOsyGkPoCrxFSuqeNb8QOI+xXlyGy5SKN1DpEehllwg4ROKU1suGn3QANEz
+         UeF7F8Xz14kV+SqT5gQ7UfPlsvtkbu6HNZtp7xus=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 070/138] scripts/gdb: fix lx-symbols gdb.error while loading modules
+Subject: [PATCH 4.19 51/86] hwmon: (aspeed-pwm-tacho) Avoid possible buffer overflow
 Date:   Mon, 27 Jul 2020 16:04:25 +0200
-Message-Id: <20200727134928.892489201@linuxfoundation.org>
+Message-Id: <20200727134916.977587429@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,49 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 7359608a271ce81803de148befefd309baf88c76 ]
+[ Upstream commit bc4071aafcf4d0535ee423b69167696d6c03207d ]
 
-Commit ed66f991bb19 ("module: Refactor section attr into bin attribute")
-removed the 'name' field from 'struct module_sect_attr' triggering the
-following error when invoking lx-symbols:
+aspeed_create_fan() reads a pwm_port value using of_property_read_u32().
+If pwm_port will be more than ARRAY_SIZE(pwm_port_params), there will be
+a buffer overflow in
+aspeed_create_pwm_port()->aspeed_set_pwm_port_enable(). The patch fixes
+the potential buffer overflow.
 
-  (gdb) lx-symbols
-  loading vmlinux
-  scanning for modules in linux/build
-  loading @0xffffffffc014f000: linux/build/drivers/net/tun.ko
-  Python Exception <class 'gdb.error'> There is no member named name.:
-  Error occurred in Python: There is no member named name.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-This patch fixes the issue taking the module name from the 'struct
-attribute'.
-
-Fixes: ed66f991bb19 ("module: Refactor section attr into bin attribute")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
-Reviewed-by: Kieran Bingham <kbingham@kernel.org>
-Link: http://lkml.kernel.org/r/20200722102239.313231-1-sgarzare@redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Link: https://lore.kernel.org/r/20200703111518.9644-1-novikov@ispras.ru
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/gdb/linux/symbols.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwmon/aspeed-pwm-tacho.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-index be984aa29b759..1be9763cf8bb2 100644
---- a/scripts/gdb/linux/symbols.py
-+++ b/scripts/gdb/linux/symbols.py
-@@ -96,7 +96,7 @@ lx-symbols command."""
-             return ""
-         attrs = sect_attrs['attrs']
-         section_name_to_address = {
--            attrs[n]['name'].string(): attrs[n]['address']
-+            attrs[n]['battr']['attr']['name'].string(): attrs[n]['address']
-             for n in range(int(sect_attrs['nsections']))}
-         args = []
-         for section_name in [".data", ".data..read_mostly", ".rodata", ".bss",
+diff --git a/drivers/hwmon/aspeed-pwm-tacho.c b/drivers/hwmon/aspeed-pwm-tacho.c
+index 5e449eac788a1..a43fa730a513b 100644
+--- a/drivers/hwmon/aspeed-pwm-tacho.c
++++ b/drivers/hwmon/aspeed-pwm-tacho.c
+@@ -880,6 +880,8 @@ static int aspeed_create_fan(struct device *dev,
+ 	ret = of_property_read_u32(child, "reg", &pwm_port);
+ 	if (ret)
+ 		return ret;
++	if (pwm_port >= ARRAY_SIZE(pwm_port_params))
++		return -EINVAL;
+ 	aspeed_create_pwm_port(priv, (u8)pwm_port);
+ 
+ 	ret = of_property_count_u8_elems(child, "cooling-levels");
 -- 
 2.25.1
 
