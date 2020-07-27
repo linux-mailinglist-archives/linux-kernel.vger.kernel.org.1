@@ -2,217 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C06422EE55
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8541822EE9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729046AbgG0OG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729005AbgG0OGx (ORCPT
+        id S1728925AbgG0OJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:09:23 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:53206 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729617AbgG0OJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:53 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48261C0619D2;
-        Mon, 27 Jul 2020 07:06:53 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id c6so2812845pje.1;
-        Mon, 27 Jul 2020 07:06:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=/dlgd3xXF2wViyMH4/dVOyKUUCfyX+RzmgXdSrfRYJs=;
-        b=llKbCc1Jzqqo+R2xnbeoSk/TDJIw41decVAgoX43zZVyuP/6dBJRdvVkOESBSZdY3L
-         A96qMW2LreOn6cizUXAumgXb4phDCe+3Wmp0SCjIhtrMbZc9/XlXNsuZ42Mkxi9onWUN
-         e/kI4+z14oylOT5JCyzHeS2a6YKqMRmH64petkoLdwnt4KWGFluP0k0YrufbbbybYjjW
-         v5/tH2Z311vFwPIgGNRMCNKM9yR9GKhUEmjyiPAtXXp2VBPT9GelUDEFlRgNgWDpxgrC
-         jgiGlAuMF/8reRfi4rxL91Xiz0S4wZvgvqDfkIyyLp3PWYjaVoEGxqU3u7qlC5u448EM
-         KVWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=/dlgd3xXF2wViyMH4/dVOyKUUCfyX+RzmgXdSrfRYJs=;
-        b=fwcOMntVLKtYfuIQN39cugOgI9Sl8ZrPUU2VxdvMk8f+PzqUkaZHdWnVN8iJOiJ48i
-         SWirCozrdo/XcxeTcZ08Sj0HHqW01Xe4IdAIMB1FX6vuBYGoacBIEtYWE4ajB8qZx2j+
-         fvClJ/gJCoZu+TFuI3mqU+q0VebrM9fNBGTk7mQGIeIwvg/U93u1ElhuLZJ+hcFxqFd9
-         Hoh1nIPwhRvr0RMKiX13rx2WpyqdQJnohVsECFuNXXXuLfR7CHn0QuCrnWjH1mXUmdLB
-         7PlKdxX9L6/r9Mn39Xc7Onb/7TlkTRa+MI33wZbWd44yGeCg9Z/SE3HVbPwqK1OCg0Sg
-         /oJw==
-X-Gm-Message-State: AOAM532gr8j+dFs7miW1gU70ENr0+MMMati3d4R9GlBpoAJTJ2AJWyUo
-        thdE0iNNqDDX/6R8BsgMaS0PL/QR+j4=
-X-Google-Smtp-Source: ABdhPJyNjZQimFQYsPZZojsGgdduUxnpmtCXQWSqh9MJ9HkwSZ8ELCmS6a/9rrVk9cGhiLpy+DgT6A==
-X-Received: by 2002:a17:90a:2d8b:: with SMTP id p11mr13163026pjd.10.1595858812742;
-        Mon, 27 Jul 2020 07:06:52 -0700 (PDT)
-Received: from blackclown ([103.88.82.91])
-        by smtp.gmail.com with ESMTPSA id y18sm15372647pff.10.2020.07.27.07.06.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Jul 2020 07:06:51 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 19:36:40 +0530
-From:   Suraj Upadhyay <usuraj35@gmail.com>
-To:     hare@suse.com, jejb@linux.ibm.com, martin.peterson@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] scsi: aic7xxx: Remove pci-dma-compat wrapper APIs.
-Message-ID: <20200727140640.GA14759@blackclown>
+        Mon, 27 Jul 2020 10:09:20 -0400
+Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A6C9F20B4909;
+        Mon, 27 Jul 2020 07:09:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A6C9F20B4909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1595858958;
+        bh=gQfNPjbMtiLw79tGj9bRmOj5FZFZE/TY/VjUKPcR7xs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KvtvY1fxBnHUPZsItNgIsxWH0mzf/2BASXXWLWY5jNXE1tX77MlmoEaiNS8Jg9dFt
+         VkARKG+GVvUElRV9k2+fbxy2q3wLw8GTd8YALP4IqaHqSydRktTqNvCojcjGQ+Bz/4
+         WcrlzumesAnv2wfirwvr2wXf5L6EyhsiZgTlduPU=
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Nayna Jain <nayna@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH 1/2] ima: Pre-parse the list of keyrings in a KEY_CHECK rule
+Date:   Mon, 27 Jul 2020 09:08:30 -0500
+Message-Id: <20200727140831.64251-2-tyhicks@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200727140831.64251-1-tyhicks@linux.microsoft.com>
+References: <20200727140831.64251-1-tyhicks@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ima_keyrings buffer was used as a work buffer for strsep()-based
+parsing of the "keyrings=" option of an IMA policy rule. This parsing
+was re-performed each time an asymmetric key was added to a kernel
+keyring for each loaded policy rule that contained a "keyrings=" option.
 
---UugvWAfsgieZRqgk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+An example rule specifying this option is:
 
-The legacy API wrappers in include/linux/pci-dma-compat.h
-should go away as it creates unnecessary midlayering
-for include/linux/dma-mapping.h APIs, instead use dma-mapping.h
-APIs directly.
+ measure func=KEY_CHECK keyrings=a|b|c
 
-The patch has been generated with the coccinelle script below
-and has been hand modified to replace GFP_ with correct flag.
+The rule says to measure asymmetric keys added to any of the kernel
+keyrings named "a", "b", or "c". The size of the buffer size was
+equal to the size of the largest "keyrings=" value seen in a previously
+loaded rule (5 + 1 for the NUL-terminator in the previous example) and
+the buffer was pre-allocated at the time of policy load.
 
-Compile-tested only.
+The pre-allocated buffer approach suffered from a couple bugs:
 
-@@@@
-- PCI_DMA_BIDIRECTIONAL
-+ DMA_BIDIRECTIONAL
+1) There was no locking around the use of the buffer so concurrent key
+   add operations, to two different keyrings, would result in the
+   strsep() loop of ima_match_keyring() to modify the buffer at the same
+   time. This resulted in unexpected results from ima_match_keyring()
+   and, therefore, could cause unintended keys to be measured or keys to
+   not be measured when IMA policy intended for them to be measured.
 
-@@@@
-- PCI_DMA_TODEVICE
-+ DMA_TO_DEVICE
+2) If the kstrdup() that initialized entry->keyrings in ima_parse_rule()
+   failed, the ima_keyrings buffer was freed and set to NULL even when a
+   valid KEY_CHECK rule was previously loaded. The next KEY_CHECK event
+   would trigger a call to strcpy() with a NULL destination pointer and
+   crash the kernel.
 
-@@@@
-- PCI_DMA_FROMDEVICE
-+ DMA_FROM_DEVICE
+Remove the need for a pre-allocated global buffer by parsing the list of
+keyrings in a KEY_CHECK rule at the time of policy load. The
+ima_rule_entry will contain an array of string pointers which point to
+the name of each keyring specified in the rule. No string processing
+needs to happen at the time of asymmetric key add so iterating through
+the list and doing a string comparison is all that's required at the
+time of policy check.
 
-@@@@
-- PCI_DMA_NONE
-+ DMA_NONE
+In the process of changing how the "keyrings=" policy option is handled,
+a couple additional bugs were fixed:
 
-@@ expression E1, E2, E3; @@
-- pci_alloc_consistent(E1, E2, E3)
-+ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+1) The rule parser accepted rules containing invalid "keyrings=" values
+   such as "a|b||c", "a|b|", or simply "|".
 
-@@ expression E1, E2, E3; @@
-- pci_zalloc_consistent(E1, E2, E3)
-+ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+2) The /sys/kernel/security/ima/policy file did not display the entire
+   "keyrings=" value if the list of keyrings was longer than what could
+   fit in the fixed size tbuf buffer in ima_policy_show().
 
-@@ expression E1, E2, E3, E4; @@
-- pci_free_consistent(E1, E2, E3, E4)
-+ dma_free_coherent(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_map_single(E1, E2, E3, E4)
-+ dma_map_single(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_single(E1, E2, E3, E4)
-+ dma_unmap_single(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4, E5; @@
-- pci_map_page(E1, E2, E3, E4, E5)
-+ dma_map_page(&E1->dev, E2, E3, E4, E5)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_page(E1, E2, E3, E4)
-+ dma_unmap_page(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_map_sg(E1, E2, E3, E4)
-+ dma_map_sg(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_unmap_sg(E1, E2, E3, E4)
-+ dma_unmap_sg(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_single_for_cpu(E1, E2, E3, E4)
-+ dma_sync_single_for_cpu(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_single_for_device(E1, E2, E3, E4)
-+ dma_sync_single_for_device(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_sg_for_cpu(E1, E2, E3, E4)
-+ dma_sync_sg_for_cpu(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2, E3, E4; @@
-- pci_dma_sync_sg_for_device(E1, E2, E3, E4)
-+ dma_sync_sg_for_device(&E1->dev, E2, E3, E4)
-
-@@ expression E1, E2; @@
-- pci_dma_mapping_error(E1, E2)
-+ dma_mapping_error(&E1->dev, E2)
-
-@@ expression E1, E2; @@
-- pci_set_consistent_dma_mask(E1, E2)
-+ dma_set_coherent_mask(&E1->dev, E2)
-
-@@ expression E1, E2; @@
-- pci_set_dma_mask(E1, E2)
-+ dma_set_mask(&E1->dev, E2)
-
-Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+Fixes: 5c7bac9fb2c5 ("IMA: pre-allocate buffer to hold keyrings string")
+Fixes: 2b60c0ecedf8 ("IMA: Read keyrings= option from the IMA policy")
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 ---
- drivers/scsi/aic7xxx/aic79xx_osm.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ security/integrity/ima/ima_policy.c | 138 +++++++++++++++++++---------
+ 1 file changed, 93 insertions(+), 45 deletions(-)
 
-diff --git a/drivers/scsi/aic7xxx/aic79xx_osm.c b/drivers/scsi/aic7xxx/aic7=
-9xx_osm.c
-index 3782a20d5888..2998d70e1987 100644
---- a/drivers/scsi/aic7xxx/aic79xx_osm.c
-+++ b/drivers/scsi/aic7xxx/aic79xx_osm.c
-@@ -952,8 +952,8 @@ int
- ahd_dmamem_alloc(struct ahd_softc *ahd, bus_dma_tag_t dmat, void** vaddr,
- 		 int flags, bus_dmamap_t *mapp)
- {
--	*vaddr =3D pci_alloc_consistent(ahd->dev_softc,
--				      dmat->maxsize, mapp);
-+	*vaddr =3D dma_alloc_coherent(&ahd->dev_softc->dev, dmat->maxsize, mapp,
-+				    GFP_ATOMIC);
- 	if (*vaddr =3D=3D NULL)
- 		return (ENOMEM);
- 	return(0);
-@@ -963,8 +963,7 @@ void
- ahd_dmamem_free(struct ahd_softc *ahd, bus_dma_tag_t dmat,
- 		void* vaddr, bus_dmamap_t map)
- {
--	pci_free_consistent(ahd->dev_softc, dmat->maxsize,
--			    vaddr, map);
-+	dma_free_coherent(&ahd->dev_softc->dev, dmat->maxsize, vaddr, map);
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 07f033634b27..c328cfa0fc49 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -59,6 +59,11 @@ enum policy_types { ORIGINAL_TCB = 1, DEFAULT_TCB };
+ 
+ enum policy_rule_list { IMA_DEFAULT_POLICY = 1, IMA_CUSTOM_POLICY };
+ 
++struct ima_rule_opt_list {
++	size_t count;
++	char *items[];
++};
++
+ struct ima_rule_entry {
+ 	struct list_head list;
+ 	int action;
+@@ -78,7 +83,7 @@ struct ima_rule_entry {
+ 		int type;	/* audit type */
+ 	} lsm[MAX_LSM_RULES];
+ 	char *fsname;
+-	char *keyrings; /* Measure keys added to these keyrings */
++	struct ima_rule_opt_list *keyrings; /* Measure keys added to these keyrings */
+ 	struct ima_template_desc *template;
+ };
+ 
+@@ -206,10 +211,6 @@ static LIST_HEAD(ima_policy_rules);
+ static LIST_HEAD(ima_temp_rules);
+ static struct list_head *ima_rules = &ima_default_rules;
+ 
+-/* Pre-allocated buffer used for matching keyrings. */
+-static char *ima_keyrings;
+-static size_t ima_keyrings_len;
+-
+ static int ima_policy __initdata;
+ 
+ static int __init default_measure_policy_setup(char *str)
+@@ -253,6 +254,72 @@ static int __init default_appraise_policy_setup(char *str)
  }
-=20
- int
---=20
-2.17.1
+ __setup("ima_appraise_tcb", default_appraise_policy_setup);
+ 
++static struct ima_rule_opt_list *ima_alloc_rule_opt_list(const substring_t *src)
++{
++	struct ima_rule_opt_list *opt_list;
++	size_t count = 0;
++	char *src_copy;
++	char *cur, *next;
++	size_t i;
++
++	src_copy = match_strdup(src);
++	if (!src_copy)
++		return NULL;
++
++	next = src_copy;
++	while ((cur = strsep(&next, "|"))) {
++		/* Don't accept an empty list item */
++		if (!(*cur)) {
++			kfree(src_copy);
++			return ERR_PTR(-EINVAL);
++		}
++		count++;
++	}
++
++	/* Don't accept an empty list */
++	if (!count) {
++		kfree(src_copy);
++		return ERR_PTR(-EINVAL);
++	}
++
++	opt_list = kzalloc(struct_size(opt_list, items, count), GFP_KERNEL);
++	if (!opt_list) {
++		kfree(src_copy);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	/*
++	 * strsep() has already replaced all instances of '|' with '\0',
++	 * leaving a byte sequence of NUL-terminated strings. Reference each
++	 * string with the array of items.
++	 *
++	 * IMPORTANT: Ownership of the allocated buffer is transferred from
++	 * src_copy to the first element in the items array. To free the
++	 * buffer, kfree() must only be called on the first element of the
++	 * array.
++	 */
++	for (i = 0, cur = src_copy; i < count; i++) {
++		opt_list->items[i] = cur;
++		cur = strchr(cur, '\0') + 1;
++	}
++	opt_list->count = count;
++
++	return opt_list;
++}
++
++static void ima_free_rule_opt_list(struct ima_rule_opt_list *opt_list)
++{
++	if (!opt_list)
++		return;
++
++	if (opt_list->count) {
++		kfree(opt_list->items[0]);
++		opt_list->count = 0;
++	}
++
++	kfree(opt_list);
++}
++
+ static void ima_lsm_free_rule(struct ima_rule_entry *entry)
+ {
+ 	int i;
+@@ -274,7 +341,7 @@ static void ima_free_rule(struct ima_rule_entry *entry)
+ 	 * the defined_templates list and cannot be freed here
+ 	 */
+ 	kfree(entry->fsname);
+-	kfree(entry->keyrings);
++	ima_free_rule_opt_list(entry->keyrings);
+ 	ima_lsm_free_rule(entry);
+ 	kfree(entry);
+ }
+@@ -394,8 +461,8 @@ int ima_lsm_policy_change(struct notifier_block *nb, unsigned long event,
+ static bool ima_match_keyring(struct ima_rule_entry *rule,
+ 			      const char *keyring, const struct cred *cred)
+ {
+-	char *next_keyring, *keyrings_ptr;
+ 	bool matched = false;
++	size_t i;
+ 
+ 	if ((rule->flags & IMA_UID) && !rule->uid_op(cred->uid, rule->uid))
+ 		return false;
+@@ -406,15 +473,8 @@ static bool ima_match_keyring(struct ima_rule_entry *rule,
+ 	if (!keyring)
+ 		return false;
+ 
+-	strcpy(ima_keyrings, rule->keyrings);
+-
+-	/*
+-	 * "keyrings=" is specified in the policy in the format below:
+-	 * keyrings=.builtin_trusted_keys|.ima|.evm
+-	 */
+-	keyrings_ptr = ima_keyrings;
+-	while ((next_keyring = strsep(&keyrings_ptr, "|")) != NULL) {
+-		if (!strcmp(next_keyring, keyring)) {
++	for (i = 0; i < rule->keyrings->count; i++) {
++		if (!strcmp(rule->keyrings->items[i], keyring)) {
+ 			matched = true;
+ 			break;
+ 		}
+@@ -1065,7 +1125,6 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 	bool uid_token;
+ 	struct ima_template_desc *template_desc;
+ 	int result = 0;
+-	size_t keyrings_len;
+ 
+ 	ab = integrity_audit_log_start(audit_context(), GFP_KERNEL,
+ 				       AUDIT_INTEGRITY_POLICY_RULE);
+@@ -1231,37 +1290,18 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+ 		case Opt_keyrings:
+ 			ima_log_string(ab, "keyrings", args[0].from);
+ 
+-			keyrings_len = strlen(args[0].from) + 1;
+-
+-			if ((entry->keyrings) ||
+-			    (keyrings_len < 2)) {
++			if (entry->keyrings) {
+ 				result = -EINVAL;
+ 				break;
+ 			}
+ 
+-			if (keyrings_len > ima_keyrings_len) {
+-				char *tmpbuf;
+-
+-				tmpbuf = krealloc(ima_keyrings, keyrings_len,
+-						  GFP_KERNEL);
+-				if (!tmpbuf) {
+-					result = -ENOMEM;
+-					break;
+-				}
+-
+-				ima_keyrings = tmpbuf;
+-				ima_keyrings_len = keyrings_len;
+-			}
+-
+-			entry->keyrings = kstrdup(args[0].from, GFP_KERNEL);
+-			if (!entry->keyrings) {
+-				kfree(ima_keyrings);
+-				ima_keyrings = NULL;
+-				ima_keyrings_len = 0;
+-				result = -ENOMEM;
++			entry->keyrings = ima_alloc_rule_opt_list(args);
++			if (IS_ERR(entry->keyrings)) {
++				result = PTR_ERR(entry->keyrings);
++				entry->keyrings = NULL;
+ 				break;
+ 			}
+-			result = 0;
++
+ 			entry->flags |= IMA_KEYRINGS;
+ 			break;
+ 		case Opt_fsuuid:
+@@ -1574,6 +1614,15 @@ static void policy_func_show(struct seq_file *m, enum ima_hooks func)
+ 		seq_printf(m, "func=%d ", func);
+ }
+ 
++static void ima_show_rule_opt_list(struct seq_file *m,
++				   const struct ima_rule_opt_list *opt_list)
++{
++	size_t i;
++
++	for (i = 0; i < opt_list->count; i++)
++		seq_printf(m, "%s%s", i ? "|" : "", opt_list->items[i]);
++}
++
+ int ima_policy_show(struct seq_file *m, void *v)
+ {
+ 	struct ima_rule_entry *entry = v;
+@@ -1630,9 +1679,8 @@ int ima_policy_show(struct seq_file *m, void *v)
+ 	}
+ 
+ 	if (entry->flags & IMA_KEYRINGS) {
+-		if (entry->keyrings != NULL)
+-			snprintf(tbuf, sizeof(tbuf), "%s", entry->keyrings);
+-		seq_printf(m, pt(Opt_keyrings), tbuf);
++		seq_puts(m, "keyrings=");
++		ima_show_rule_opt_list(m, entry->keyrings);
+ 		seq_puts(m, " ");
+ 	}
+ 
+-- 
+2.25.1
 
-
---UugvWAfsgieZRqgk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8e32UACgkQ+gRsbIfe
-744KDw/7BpO7VI4xx9d2wmnGAwifaIX6neKoXzHs8RxWHssVDdZHn0PVd07wcNTZ
-2GYQ3gr9HVZJKe3GGwLY1naLzK2Ee28bHvfUro/DEdcJHjF5oyVgCwYEJT5vxdrU
-0wO2SvP3uUha3INyogAqUecWIdhqo6sGJ4LPnoeu93vp/RIK81CELKebxP9vkY9s
-Lq2l+BxeXyMMTxxfUWNMRTurf3FqqOnmRuN9uqM9hH+wMmM6WgY0BYDKam4fVecw
-/AwSrHQVyDzRle/zMnGUgJhV50KPwJbkmm2de2aqAUkwwrYYpOan5VgU5A+hRQJO
-7ry9jBXRxZn1rBz8T/v9IXD2UZ705/o6tDm51YrUrNY+Kk7JOI1rp2pTHV2ITpIQ
-aGp7SBUSEeXELdjrkgD/BSC0iopZ+apeiIh87qZEJ3VqS7xvrB05b8xm0XPKXDNy
-i3O3Vc5aOAypnb7GhBWxvKaM962WGhnH2AvRvxrPDbFRycsafwnkVa7QPU4P1Xs4
-xZG8HYg8SSJ3uLLpxb00SrtvDL9lyzR1cMWVU42eEDUeB0W9N/fY3rPvpB28iJ37
-CeAaJu8purH1u/+2B80S/p0933lWpih07cmnIx12q3R1MiFY2z5PlyJDiUGxeIbq
-YGsKrIMLMgPAHmNt5/I9LyAyoA1TaVsgiHwRKOY2jHFOWCHc+n0=
-=yJ/4
------END PGP SIGNATURE-----
-
---UugvWAfsgieZRqgk--
