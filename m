@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5460522F239
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1EF22F2BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732952AbgG0Oi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:38:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33956 "EHLO mail.kernel.org"
+        id S1733100AbgG0Olz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:41:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729410AbgG0OKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:10:48 -0400
+        id S1729310AbgG0OHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:07:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD5ED2083E;
-        Mon, 27 Jul 2020 14:10:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52CC92083E;
+        Mon, 27 Jul 2020 14:07:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859048;
-        bh=iEtFf7QMN19S5dmrOUJonugb+EIs3TYktwEmUKejVvI=;
+        s=default; t=1595858869;
+        bh=3Ntu81l2iPqRZi+s6BEQIwuKCV0gzsZOWwcMMWUJBYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CauK4a8jiVCT6HzTR5p3IcMMq+iKd6PXjHTtbFUsvSL8pwDLeaQlrB+5x6fHaM1U7
-         DL3LJxn3E895ZKdb4n//84zYTnGPLd1QgJNz1fKgaEpjwzaqSGSbHqLQtAExK0Ji2A
-         7j+3Rx66S2xJleP7dBbdmv5v+AwRTwvf3wII3lSk=
+        b=DFT/Qog/pu9kU2sYn85Lje43PVAGZTZjmRFh+jzWUZ08YdaEVbZC/6ke2YE3Ec/1B
+         EwACnhoYs5CzdhMruI6ksQ5jvictGm3aGi5df4DT5kUkisfi4ScuieVgzdBjxZZmlw
+         qhnpj717LgY79kB0FHau+0oOvB02Mo2gOjvvIgtg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 47/86] dmaengine: tegra210-adma: Fix runtime PM imbalance on error
-Date:   Mon, 27 Jul 2020 16:04:21 +0200
-Message-Id: <20200727134916.775045097@linuxfoundation.org>
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 43/64] usb: gadget: udc: gr_udc: fix memleak on error handling path in gr_ep_init()
+Date:   Mon, 27 Jul 2020 16:04:22 +0200
+Message-Id: <20200727134913.315062511@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 5b78fac4b1ba731cf4177fdbc1e3a4661521bcd0 ]
+[ Upstream commit c8f8529e2c4141afa2ebb487ad48e8a6ec3e8c99 ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code. Thus a pairing decrement is needed on
-the error handling path to keep the counter balanced.
+gr_ep_init() does not assign the allocated request anywhere if allocation
+of memory for the buffer fails. This is a memory leak fixed by the given
+patch.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Link: https://lore.kernel.org/r/20200624064626.19855-1-dinghao.liu@zju.edu.cn
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/tegra210-adma.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/udc/gr_udc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-index 045351f3549c1..86b45198fb962 100644
---- a/drivers/dma/tegra210-adma.c
-+++ b/drivers/dma/tegra210-adma.c
-@@ -583,6 +583,7 @@ static int tegra_adma_alloc_chan_resources(struct dma_chan *dc)
+diff --git a/drivers/usb/gadget/udc/gr_udc.c b/drivers/usb/gadget/udc/gr_udc.c
+index feb73a1c42ef9..be094f4e116b1 100644
+--- a/drivers/usb/gadget/udc/gr_udc.c
++++ b/drivers/usb/gadget/udc/gr_udc.c
+@@ -2000,9 +2000,12 @@ static int gr_ep_init(struct gr_udc *dev, int num, int is_in, u32 maxplimit)
  
- 	ret = pm_runtime_get_sync(tdc2dev(tdc));
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(tdc2dev(tdc));
- 		free_irq(tdc->irq, tdc);
- 		return ret;
- 	}
-@@ -764,8 +765,10 @@ static int tegra_adma_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
+ 	if (num == 0) {
+ 		_req = gr_alloc_request(&ep->ep, GFP_ATOMIC);
++		if (!_req)
++			return -ENOMEM;
++
+ 		buf = devm_kzalloc(dev->dev, PAGE_SIZE, GFP_DMA | GFP_ATOMIC);
+-		if (!_req || !buf) {
+-			/* possible _req freed by gr_probe via gr_remove */
++		if (!buf) {
++			gr_free_request(&ep->ep, _req);
+ 			return -ENOMEM;
+ 		}
  
- 	ret = pm_runtime_get_sync(&pdev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(&pdev->dev);
- 		goto rpm_disable;
-+	}
- 
- 	ret = tegra_adma_init(tdma);
- 	if (ret)
 -- 
 2.25.1
 
