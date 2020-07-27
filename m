@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1134D22E461
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 05:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DCB22E464
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 05:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgG0DYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 23:24:33 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40401 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgG0DYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 23:24:33 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFQCL6Lx4z9sPB;
-        Mon, 27 Jul 2020 13:24:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595820271;
-        bh=IfBRA6eVpcHJNAolxx2wP0Kl+Bk8woNPiXAVx2Spiss=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GhiZxUwrNcfLYCccmWTarHNB24q9vVGsdR9zWrd44uVlPUnQzKzAMBt+cU5KlrWdy
-         uyp6+nyFmuPqi/W2myMoYHPZnO0FyeYp+plGUfFk8pcUdfpBTjsMZf0zQx2l71QRsl
-         UZt3GinFN94VBckgC4mxOH6gamBgyWcshTn662+4jn8lsKWfjLA3ne4Ca31x0uWK/f
-         RVzwZQlYY33UkZv3PstbhQMXYHz0d5IHMfZv3P4tPRQTEIT5d6OPdUwiGNoE12395+
-         mq9NLD4qBvIHv3f84Z/EcjaGuz/7LTVQtumP/yf3XauECL+btulACvHFF+PL10gfxE
-         DBKtt1dqgOQdg==
-Date:   Mon, 27 Jul 2020 13:24:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the devfreq tree
-Message-ID: <20200727132428.2763f57b@canb.auug.org.au>
+        id S1726967AbgG0DZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 23:25:52 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:23218 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726701AbgG0DZw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 23:25:52 -0400
+X-UUID: ed7933e00dc847e383996d2f93d14690-20200727
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=eSopwLpH/77DG0bJJS5cJFVvSCyQIzU5BBA1AxHDxlA=;
+        b=a1ck6GHoJ6jLtLN3ma2OO38vM0av3wzNJHxpBikaAeOyA/qOmNOzDx4PAej1Xk4CRugb+ZheHT7dHCR9HkW6dcz9uX9Dg3C91BvzCW6Sa0PPNRhkGa++xQvBYcgSAv3WBnM68S+8g5KtzPMkR05ms1pNbhudAZD3U6ej1sfGOUc=;
+X-UUID: ed7933e00dc847e383996d2f93d14690-20200727
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 297905851; Mon, 27 Jul 2020 11:25:50 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 27 Jul 2020 11:25:47 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 27 Jul 2020 11:25:47 +0800
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+CC:     Neal Liu <neal.liu@mediatek.com>, <linux-acpi@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Subject: [PATCH v3] cpuidle: Fix CFI failure
+Date:   Mon, 27 Jul 2020 11:25:45 +0800
+Message-ID: <1595820346-4361-1-git-send-email-neal.liu@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/J8q3D4iwceZKDr7Y4ZEUwtl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-TM-SNTS-SMTP: D08AD23496ADA7D400167910677C0DCFFBB567C0F76E1255568C6D18DA940D892000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/J8q3D4iwceZKDr7Y4ZEUwtl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Y2hhbmdlcyBzaW5jZSB2MjoNCi0gYWRkIG1vcmUgY29tbWVudHMgb24gZW50ZXJfczJpZGxlIHRv
+IGV4cGxhaW4gd2h5IGl0IGlzIG5lY2Vzc2FyeSB0byByZXR1cm4NCiAgaW50IGV2ZW4gaWYgaXRz
+IHJldHVybiB2YWx1ZSBpcyBuZXZlciB1c2VkLg0KDQpjaGFuZ2VzIHNpbmNlIHYxOg0KLSBhZGQg
+bW9yZSBkZXNjcmlwdGlvbiBpbiBjb21taXQgbWVzc2FnZS4NCg0KKioqIEJMVVJCIEhFUkUgKioq
+DQoNCk5lYWwgTGl1ICgxKToNCiAgY3B1aWRsZTogY2hhbmdlIGVudGVyX3MyaWRsZSgpIHByb3Rv
+dHlwZQ0KDQogZHJpdmVycy9hY3BpL3Byb2Nlc3Nvcl9pZGxlLmMgICB8IDYgKysrKy0tDQogZHJp
+dmVycy9jcHVpZGxlL2NwdWlkbGUtdGVncmEuYyB8IDggKysrKystLS0NCiBkcml2ZXJzL2lkbGUv
+aW50ZWxfaWRsZS5jICAgICAgIHwgNiArKysrLS0NCiBpbmNsdWRlL2xpbnV4L2NwdWlkbGUuaCAg
+ICAgICAgIHwgOSArKysrKystLS0NCiA0IGZpbGVzIGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyks
+IDEwIGRlbGV0aW9ucygtKQ0KDQotLSANCjIuMTguMA0K
 
-Hi all,
-
-In commit
-
-  332c5b522b7c ("PM / devfrq: Fix indentaion of devfreq_summary debugfs nod=
-e")
-
-Fixes tag
-
-  Fixes: commit 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name=
- as devfreq(X) for sysfs"")
-
-has these problem(s):
-
-  - leading word 'commit' unexpected
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/J8q3D4iwceZKDr7Y4ZEUwtl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8eSOwACgkQAVBC80lX
-0Gy3rgf/W4KKU6ZgDddibwcN/kNPBKAq1JV3dAWeIongnd+HYZvME0+lSJ1WqPhm
-hlOOLufYNQd15KGAo8YWtvoee4yt0EBq7lAvUSAq+l7mGlb98rUiiXmUs/DfMnAs
-WT3I1h56FpLn+GCvy7fvJvR+jdktV968RsWe6kyM3eZ0y+u8BxZgbqPkFZwwyElZ
-Rhs6u8ef76kctSaDgJ8wLV9gOY0dFZ2UAKm6qFi0FHi28Zx6wx/BSqTAIt6ikF+3
-iBLNGxMX87PDs/UgaY7+t4/0yvhUXQU9Pnm6MS55HmJaYI54fU8fgMzoZ4dHsZgS
-5uCSNvNgeWOK228DaFv28Tu0hHQbRg==
-=xLOt
------END PGP SIGNATURE-----
-
---Sig_/J8q3D4iwceZKDr7Y4ZEUwtl--
