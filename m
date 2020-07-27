@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AA322EEC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0CD22F023
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbgG0OKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:10:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
+        id S1731839AbgG0OWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729851AbgG0OK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:10:28 -0400
+        id S1731833AbgG0OWF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:22:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4EBA2073E;
-        Mon, 27 Jul 2020 14:10:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C9C721775;
+        Mon, 27 Jul 2020 14:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859027;
-        bh=DKPMavGPBrYM78YOsHIPRxg7fswAFpWf5gmyCUqE340=;
+        s=default; t=1595859724;
+        bh=UB1WFAH0LsvRP3pR4wMVX8K7pSEkfAz9uaGlQBD04b8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ugkw8AXWrSltSCWzdiW/grtxd0MhxXfhp/sGvyAqTrZFiz3J3E4ExCjffhuBzVIz4
-         fx2G+Oze4UzOMf6bDk/48/0l8aN0xLDMUVvvd3rS3Ou1tOB5DpNq92JImsvlZcnciA
-         gV2OkkH/FOSRjo9fBlnt03EtycD9Ob9DLcan4/6Q=
+        b=LC4zaScf3dgloaNBJ1HMfoaXusieb9iA1avXkfVSYaQUvBk1+yso08XiAnMUIHuLF
+         +TKx3S3C9CidhXYgS751lKZanJioVHk2IXIeHIUaLqPwusPlodIVX3MElQPehMfMfN
+         e8vwi/TcJu3Krls0P9rk/XCyskJ8+Gp794oq9xi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Beniamino Galvani <bgalvani@redhat.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
+        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+bbc3a11c4da63c1b74d6@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 39/86] bonding: check return value of register_netdevice() in bond_newlink()
-Date:   Mon, 27 Jul 2020 16:04:13 +0200
-Message-Id: <20200727134916.390664502@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 079/179] net: hns3: fix error handling for desc filling
+Date:   Mon, 27 Jul 2020 16:04:14 +0200
+Message-Id: <20200727134936.531272429@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,43 +45,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit c75d1d5248c0c97996051809ad0e9f154ba5d76e ]
+[ Upstream commit 8ceca59fb3ed48a693171bd571c4fcbd555b7f1f ]
 
-Very similar to commit 544f287b8495
-("bonding: check error value of register_netdevice() immediately"),
-we should immediately check the return value of register_netdevice()
-before doing anything else.
+The content of the TX desc is automatically cleared by the HW
+when the HW has sent out the packet to the wire. When desc filling
+fails in hns3_nic_net_xmit(), it will call hns3_clear_desc() to do
+the error handling, which miss zeroing of the TX desc and the
+checking if a unmapping is needed.
 
-Fixes: 005db31d5f5f ("bonding: set carrier off for devices created through netlink")
-Reported-and-tested-by: syzbot+bbc3a11c4da63c1b74d6@syzkaller.appspotmail.com
-Cc: Beniamino Galvani <bgalvani@redhat.com>
-Cc: Taehee Yoo <ap420073@gmail.com>
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+So add the zeroing and checking in hns3_clear_desc() to avoid the
+above problem. Also add DESC_TYPE_UNKNOWN to indicate the info in
+desc_cb is not valid, because hns3_nic_reclaim_desc() may treat
+the desc_cb->type of zero as packet and add to the sent pkt
+statistics accordingly.
+
+Fixes: 76ad4f0ee747 ("net: hns3: Add support of HNS3 Ethernet Driver for hip08 SoC")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_netlink.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h     | 1 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 8 ++++++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/drivers/net/bonding/bond_netlink.c b/drivers/net/bonding/bond_netlink.c
-index 6b9ad86732188..fbcd8a752ee70 100644
---- a/drivers/net/bonding/bond_netlink.c
-+++ b/drivers/net/bonding/bond_netlink.c
-@@ -451,11 +451,10 @@ static int bond_newlink(struct net *src_net, struct net_device *bond_dev,
- 		return err;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+index 5587605d6deb2..cc45662f77f04 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+@@ -77,6 +77,7 @@
+ 	((ring)->p = ((ring)->p - 1 + (ring)->desc_num) % (ring)->desc_num)
  
- 	err = register_netdevice(bond_dev);
--
--	netif_carrier_off(bond_dev);
- 	if (!err) {
- 		struct bonding *bond = netdev_priv(bond_dev);
+ enum hns_desc_type {
++	DESC_TYPE_UNKNOWN,
+ 	DESC_TYPE_SKB,
+ 	DESC_TYPE_FRAGLIST_SKB,
+ 	DESC_TYPE_PAGE,
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 5dab84aa3afd5..df1cb0441183c 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -1351,6 +1351,10 @@ static void hns3_clear_desc(struct hns3_enet_ring *ring, int next_to_use_orig)
+ 	unsigned int i;
  
-+		netif_carrier_off(bond_dev);
- 		bond_work_init_all(bond);
+ 	for (i = 0; i < ring->desc_num; i++) {
++		struct hns3_desc *desc = &ring->desc[ring->next_to_use];
++
++		memset(desc, 0, sizeof(*desc));
++
+ 		/* check if this is where we started */
+ 		if (ring->next_to_use == next_to_use_orig)
+ 			break;
+@@ -1358,6 +1362,9 @@ static void hns3_clear_desc(struct hns3_enet_ring *ring, int next_to_use_orig)
+ 		/* rollback one */
+ 		ring_ptr_move_bw(ring, next_to_use);
+ 
++		if (!ring->desc_cb[ring->next_to_use].dma)
++			continue;
++
+ 		/* unmap the descriptor dma address */
+ 		if (ring->desc_cb[ring->next_to_use].type == DESC_TYPE_SKB ||
+ 		    ring->desc_cb[ring->next_to_use].type ==
+@@ -1374,6 +1381,7 @@ static void hns3_clear_desc(struct hns3_enet_ring *ring, int next_to_use_orig)
+ 
+ 		ring->desc_cb[ring->next_to_use].length = 0;
+ 		ring->desc_cb[ring->next_to_use].dma = 0;
++		ring->desc_cb[ring->next_to_use].type = DESC_TYPE_UNKNOWN;
  	}
+ }
  
 -- 
 2.25.1
