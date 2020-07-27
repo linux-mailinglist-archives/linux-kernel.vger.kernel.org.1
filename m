@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCEB22EF43
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4539122EF6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730604AbgG0OOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730582AbgG0OOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:41 -0400
-Received: from localhost (mobile-166-175-191-139.mycingular.net [166.175.191.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82D1F2173E;
-        Mon, 27 Jul 2020 14:14:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859280;
-        bh=hqGjzG7kcr/MsbjRxsV9hAB3/B1VJxy+zFkGz8jLWdc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=gVWT8qiP8B2d3sTJWw8jQuwCKb3Ijd21gSw5+UBWrb5jM7RD83N2Xm6QSWdZUsPF4
-         eGVxErBhMwzWE7lKlM103qKgBzyjtjdGMAgnxaU3R+cp4PsPNU3lmozQjqz094GyZx
-         2MntVodiw2oVVzOD8/Rq62m6IKmhl5bzXm6+YpII=
-Date:   Mon, 27 Jul 2020 09:14:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     James Ettle <james@ettle.org.uk>
-Cc:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>,
-        Rui Feng <rui_feng@realsil.com.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Len Brown <lenb@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jacopo De Simoi <wilderkde@gmail.com>
-Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
-Message-ID: <20200727141438.GA1743062@bjorn-Precision-5520>
+        id S1730285AbgG0OQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730840AbgG0OQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:16:19 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEB6C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:16:18 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m15so8423381lfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:16:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pesu-pes-edu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xXHUq+GPzg8FK4S6+EdRbVWjybtJrgatUKy7SXDL+iQ=;
+        b=fbHGlTFf6UiyosFji1yVJnin+2GpGhwuMIPQk7R8Cqngdmtmmg1w4zzgLnMdEpBEuT
+         Mmt2zAwdmQpGxnKbdugxOngK/qljcak+sVw4DgmLFFotPEWfxXneTVPUzftqhVUQwMq5
+         n/q6XExE/jCJ4L0yjPt6zNXF7WVpGxZk4m7mPEllW6Xt4Gi1DwdFlkIS3j/nJAwpJYLX
+         7xEYVflxmjWCSY/WVFfbArZ+84/KIb/+Cgx28PsngTO9BIhoCfA9UOzGEf0ETh97unxY
+         91VoWjO1fCd54WjlybfBQlCDiyAFK6DD8wnnYSFjibzBCsXJwd/jihIBgjO/PA2TTceg
+         Caug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xXHUq+GPzg8FK4S6+EdRbVWjybtJrgatUKy7SXDL+iQ=;
+        b=EKMFj8eZG4ScFtDiGCH1ZZTnIEUUAL+yhP0IpcLCTI8ZeT/VJCqeFLRKbfkr8PJbPQ
+         /AeOfrvOiXdlXWqgGT6gGrXB4LCaYkl6SFcYOVIIRA0q7PB/WC1Pvwykdw2X+MiXCuhK
+         allzQ3LbegiP4ImQ6LJzxjEHjutvaelZJqXmyt/o0rIyFkmCya5d2c7HOKJhotnX6mvl
+         noIeI/stVgPKZivEofn2j30iUOz14HeV6Tpe57OKVdPdH4+UCEz2slgWrmiayTzr8bBE
+         JE1dfm1fbs1RXYRBkm4F6hp23U++vVfAHgdaNhq5ePiVEWdQqyvXzkKeZM1AFPPSDv63
+         Eerg==
+X-Gm-Message-State: AOAM532V+v1pv/3T3JS8IOUxvuG3j9WMAxIGBRryJcCV/8hDcmGdEmyN
+        /J2gddC5c0Urj0PT6uPkqHOhLYzSHmwpVUlkTEh4jA==
+X-Google-Smtp-Source: ABdhPJxBBdhHhJDhPI/I8NlecIrpo2ELWEx0rUO4NX/elZOnTncGFz78jyf4SCcCXLSNshfYOoEt/z0QAG9tUI0/pPM=
+X-Received: by 2002:ac2:4144:: with SMTP id c4mr11891945lfi.118.1595859377115;
+ Mon, 27 Jul 2020 07:16:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aaa64572fac0fc411b79a9adb59b5bbcbdf4b1a8.camel@ettle.org.uk>
+References: <20200727131057.7a3of3hhsld4ng5t@pesu.pes.edu> <20200727132256.GA3933866@kroah.com>
+In-Reply-To: <20200727132256.GA3933866@kroah.com>
+From:   B K Karthik <bkkarthik@pesu.pes.edu>
+Date:   Mon, 27 Jul 2020 19:46:05 +0530
+Message-ID: <CAAhDqq2N6nTHpz_CNTwh-ZRK-rQO0uUXO41iOouKn690R494Ww@mail.gmail.com>
+Subject: Re: [PATCH] net: tipc: fix general protection fault in tipc_conn_delete_sub
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        tipc-discussion@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 25, 2020 at 09:27:11PM +0100, James Ettle wrote:
-> On Fri, 2020-07-24 at 18:13 -0500, Bjorn Helgaas wrote:
-> > 
-> > Maybe we should simplify this a little bit more.  James, if you don't
-> > touch ASPM config at all, either manually or via udev, does the ASPM
-> > configuration stay the same across suspend/resume?
-> 
-> Yes, it stays the same. Explicitly: 
-> 
-> With the udev rule disabled, immediately following clean boot from
-> power-off (and no additional tinkering), ASPM is OFF to the best of my
-> knowledge:
-> 
->  - link/l1_aspm in sysfs is 0 for PCI devices 0000:01:00.[01];
->  - the processor sleeps no deeper than package C3.
-> 
-> The situation above is the same following a suspend/resume cycle --
-> both in terms of sysfs, and observed package C-state occupancy.
-> 
-> [Tested on kernel 5.7.10, but the behaviour is the same as prior
-> kernels.]
+On Mon, Jul 27, 2020 at 6:53 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Jul 27, 2020 at 06:40:57PM +0530, B K Karthik wrote:
+> > fix a general protection fault in tipc_conn_delete_sub
+> > by checking for the existance of con->server.
+> > prevent a null-ptr-deref by returning -EINVAL when
+> > con->server is NULL
+> >
+> > general protection fault, probably for non-canonical address 0xdffffc0000000014: 0000 [#1] PREEMPT SMP KASAN
+> > KASAN: null-ptr-deref in range [0x00000000000000a0-0x00000000000000a7]
+> > CPU: 1 PID: 113 Comm: kworker/u4:3 Not tainted 5.6.0-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Workqueue: tipc_send tipc_conn_send_work
+> > RIP: 0010:tipc_conn_delete_sub+0x54/0x440 net/tipc/topsrv.c:231
+> > Code: 48 c1 ea 03 80 3c 02 00 0f 85 f0 03 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 18 48 8d bd a0 00 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c0 03 00 00 48 c7 c0 34 0b 8a 8a 4c 8b a5 a0 00
+> > RSP: 0018:ffffc900012d7b58 EFLAGS: 00010206
+> > RAX: dffffc0000000000 RBX: ffff8880a8269c00 RCX: ffffffff8789ca01
+> > RDX: 0000000000000014 RSI: ffffffff8789a059 RDI: 00000000000000a0
+> > RBP: 0000000000000000 R08: ffff8880a8d88380 R09: fffffbfff18577a8
+> > R10: fffffbfff18577a7 R11: ffffffff8c2bbd3f R12: dffffc0000000000
+> > R13: ffff888093d35a18 R14: ffff8880a8269c00 R15: ffff888093d35a00
+> > FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 000000000076c000 CR3: 000000009441d000 CR4: 00000000001406e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  tipc_conn_send_to_sock+0x380/0x560 net/tipc/topsrv.c:266
+> >  tipc_conn_send_work+0x6f/0x90 net/tipc/topsrv.c:304
+> >  process_one_work+0x965/0x16a0 kernel/workqueue.c:2266
+> >  worker_thread+0x96/0xe20 kernel/workqueue.c:2412
+> >  kthread+0x388/0x470 kernel/kthread.c:268
+> >  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> > Modules linked in:
+> > ---[ end trace 2c161a84be832606 ]---
+> > RIP: 0010:tipc_conn_delete_sub+0x54/0x440 net/tipc/topsrv.c:231
+> > Code: 48 c1 ea 03 80 3c 02 00 0f 85 f0 03 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 18 48 8d bd a0 00 00 00 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 c0 03 00 00 48 c7 c0 34 0b 8a 8a 4c 8b a5 a0 00
+> > RSP: 0018:ffffc900012d7b58 EFLAGS: 00010206
+> > RAX: dffffc0000000000 RBX: ffff8880a8269c00 RCX: ffffffff8789ca01
+> > RDX: 0000000000000014 RSI: ffffffff8789a059 RDI: 00000000000000a0
+> > RBP: 0000000000000000 R08: ffff8880a8d88380 R09: fffffbfff18577a8
+> > R10: fffffbfff18577a7 R11: ffffffff8c2bbd3f R12: dffffc0000000000
+> > R13: ffff888093d35a18 R14: ffff8880a8269c00 R15: ffff888093d35a00
+> > FS:  0000000000000000(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000020800000 CR3: 0000000091b8e000 CR4: 00000000001406e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >
+> > Reported-and-tested-by: syzbot+55a38037455d0351efd3@syzkaller.appspotmail.com
+> > Signed-off-by: B K Karthik <bkkarthik@pesu.pes.edu>
+> > ---
+> >  net/tipc/topsrv.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/net/tipc/topsrv.c b/net/tipc/topsrv.c
+> > index 1489cfb941d8..6c8d0c6bb112 100644
+> > --- a/net/tipc/topsrv.c
+> > +++ b/net/tipc/topsrv.c
+> > @@ -255,6 +255,9 @@ static void tipc_conn_send_to_sock(struct tipc_conn *con)
+> >       int count = 0;
+> >       int ret;
+> >
+> > +     if (!con->server)
+> > +             return -EINVAL;
+>
+> What is wrong with looking at the srv local variable instead?
+>
+> And how is server getting set to NULL and this function still being
+> called?
 
-I don't know the connection between ASPM and package C-states, so I
-need to simplify this even more.  All I want to do right now is verify
-that if we don't have any outside influences on the ASPM configuration
-(eg, no manual changes and no udev rules), it stays the same across
-suspend/resume.
+tipc_conn_send_work makes a call to connected() which just returns con
+&& test_bit(CF_CONNECTED, &con->flags)
+maybe we can add this check to the implementation of connection() if
+you agree, but I found this solution to be fairly simpler because I'm
+not sure where else connected() is being used, and I did not want to
+introduce redundant function calls.
 
-In https://bugzilla.kernel.org/show_bug.cgi?id=208117#c12, we saw that
-ASPM L0s was disabled before suspend but was enabled after resume.
-That should not happen.
+Yes we can replace con->server with the local variable srv. Extremely
+sorry, I hadn't noticed it earlier.
 
-You're looking at the sysfs link/l1_aspm file, which tells us what the
-PCI core thinks the state is, but I'm not confident that's accurate,
-especially because the driver fiddles with the state behind the back
-of the PCI core.  So let's read the ASPM state directly from the
-hardware like this:
+please let me know if i've wrongly understood any of these.
+thanks,
 
-  sudo lspci -vvs 00:1d.0 | egrep "^0|Lnk|L1|LTR|snoop"
-  sudo lspci -vvs 01:00   | egrep "^0|Lnk|L1|LTR|snoop"
-
-Can you try that before and after suspend/resume?
+karthik
