@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB3B22F8D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F5B22F8D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgG0TSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:18:37 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:38247 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728107AbgG0TSh (ORCPT
+        id S1728674AbgG0TS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728107AbgG0TS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:18:37 -0400
-Received: from mail-qk1-f172.google.com ([209.85.222.172]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N4yuK-1kyoJi1ap2-010reW; Mon, 27 Jul 2020 21:18:34 +0200
-Received: by mail-qk1-f172.google.com with SMTP id b14so14647372qkn.4;
-        Mon, 27 Jul 2020 12:18:34 -0700 (PDT)
-X-Gm-Message-State: AOAM5315TarJ964jIzA0jkckVQjgHvwvmD9Z6JJjIamE3Zd6/6EMrXDy
-        B+Jc0wRqz2acYj+Cqi5OsE8WNaqqNhDvKkMTfUA=
-X-Google-Smtp-Source: ABdhPJyPyuOhSSKcN3s0PoPWgWpIsASyjJkBJWTfjnn06ZQrJGvrqqFPGvwBi9CaJlGj78PTXJEf6kW9xdQMA/GJnj4=
-X-Received: by 2002:a05:620a:2444:: with SMTP id h4mr25459006qkn.352.1595877513159;
- Mon, 27 Jul 2020 12:18:33 -0700 (PDT)
+        Mon, 27 Jul 2020 15:18:28 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5529C0619D4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:28 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e8so10420124pgc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2xySvV1IjY/ykAIVcs+vE5LOnvW22SWhPjf5yGr8ub4=;
+        b=naMvyOJdT0LmNEVjAZJNPFto3+cHVILBVTkAr9eDy2kEWatCjbsevbDKbZEUwUxrN1
+         03PXmw7vaaifaTs5uxCJxs/K0Mn5g3/tJ2r2VLcCYE6VH4I/9dtNCbtcdADpwbwuUFmA
+         TeD/KFkaSOzBnAybvvjtjX5wmagf37ExNGMpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2xySvV1IjY/ykAIVcs+vE5LOnvW22SWhPjf5yGr8ub4=;
+        b=DmC8xKftLow43rPvzeTVn5egJAlxre7NMN0U4ptVww3ixmLTzIz7BZPhLt3zDHo3O1
+         6WDNSifN+25NEiOqQo3eCm/SffRpbeeLmtXdfkN4W9z8mSq/F8lP2n81JDk9fHW2aDy6
+         ocNStDIUkm3OeVkpSmX6OlcQOmACOO2f9TdKtANiIS7W0lJmg/ahb9imP+oxqzJHVbw7
+         3cmsQo/GWphsD1WycnQTZd1PhZD2eI4BF+T8eT2O+e5b5HXkYnm9CiYAgeLigoDjEv9W
+         aBSRcHjB7xWfzUrU8O9G+3ZrOSKUGGGN9NOhKCpq1s6zHKibJfqwQ0UDQ0u4bQKqkElq
+         +d4w==
+X-Gm-Message-State: AOAM5312QKeZz1eINOw6oUvGW8e76KQpbBI3EiWozrAANZlBZK/pVZKm
+        Gv2iwtX3YM7Zoh6PWXka9Qx8Yg==
+X-Google-Smtp-Source: ABdhPJxHxU54eoeuYUvz0gC8SenG8BHXpKDdQtpJ9uHUXR3Pw/fdpX8ZlqWMdFH8+3KSnha9vSr3vQ==
+X-Received: by 2002:a63:df03:: with SMTP id u3mr20314068pgg.84.1595877508338;
+        Mon, 27 Jul 2020 12:18:28 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id f3sm356807pju.54.2020.07.27.12.18.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 12:18:27 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 12:18:26 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+Subject: Re: [PATCH v10 1/2] usb: dwc3: qcom: Add interconnect support in
+ dwc3 driver
+Message-ID: <20200727191826.GC3191083@google.com>
+References: <1595528857-25357-1-git-send-email-sanm@codeaurora.org>
+ <1595528857-25357-2-git-send-email-sanm@codeaurora.org>
+ <20200727191719.GB3191083@google.com>
 MIME-Version: 1.0
-References: <20200726191428.26767-1-samuel@sholland.org>
-In-Reply-To: <20200726191428.26767-1-samuel@sholland.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 21:18:17 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3yj=ySNCn7YtEXxWiRK0FtG+5ftkV+vb3s82yRi7cdLw@mail.gmail.com>
-Message-ID: <CAK8P3a3yj=ySNCn7YtEXxWiRK0FtG+5ftkV+vb3s82yRi7cdLw@mail.gmail.com>
-Subject: Re: [PATCH] scsi: 3w-9xxx: Fix endianness issues found by sparse
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:UTGN9kH981sad+tzK2dGq9L2NaYVeEeMZy6v6a2LlDQ9ci+Wn6/
- YTtyH2IsyOhjgLd4lo8vq1iZPrOC0Q4APJAJVDAO/S1p5vV+hxLsyP51feGlHi81GSSON12
- NhchqazUdiae6HxhWyxO7odDe+aKGwc5avTQIQi/stGOfLxkmcMn0foU1FHE6dTkoYHUaOx
- m8hi0FJHBEifpYx38s6AQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WY/a3fnxwng=:NU9/9WsxwVggoUJLyMB5bi
- QOoRm9smivL+qrAIICUGoNBwgRs21vTHrL1pETKVrwTVpViLiFmeCEyNCpS6WxP77m6YQmwIf
- VMPuTNJBa6HH2jPIAIo77ijtBRFtkbqXY6s/lS8ha+cauuoFyz4tP6caPCNMuJdOEFOySLH/M
- H9VGZzB8uhJyecBa5WS2JHkGixmw7sqFszZwaFr24LXXrsq1z+O+vJPxydeuYv3d5hK/bsN7t
- v1xqFg9rKpHsSiSE2g904eg/UpRAvXRE5Y0t6atgwx2jXssHGB/D8jkv9qrKAUzbgO/zq6yuD
- u76deoNWur84eZO4/hG8L4mrrojdUdSAjfXjH8qN0UtWMfZLPydYYCrWcF7G50KEf5+5VUUe/
- Eiit7CZFHyDGALJoQ9ScP7TogOd3eEYk0qUWZLHY73sKpjNGWVtJa0mnomrFvpv8/zFe3Y5Zd
- 7nR0NG3MYrmwTvCleAqG5rkq0XxUjKhHbf6UzBaMbSASY+9JsG+yVZRWCX/iLzLv67ZO426Qm
- C79g0SVeUVa9Uh0Dujkas8L4AUn4LgD48dZhypnOUQfTtKhg/Xju0jr6Igxp4tj521PNtpYxo
- 7nalHVUA5JQyE0MxvKqQbl/zSvIpByu6Cq0QtccTHwlPWs2o9FrDg1ipPTpE/hJwoM1HoPBEn
- 9n+DLs1Iy1aczVcYqkn72613nCV0BwSgLgptmuMCVEd3I7HlR7zaClxyxSKPyiqXPX0mb8Ucc
- QEA1BKCU32gfir6xjpD2pTa+yc7PXTmkHEfezBj45ImLrXnAhYYkns+rHiCdBu+fT1E8zHaJi
- TecCER1YaldxTx1IGFwEIU06szaryIxK/dOq5OxDYFqqtADCCWDMntA9cxT2vx0clGuBoML
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200727191719.GB3191083@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 9:15 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> The main issue observed was at the call to scsi_set_resid, where the
-> byteswapped parameter would eventually trigger the alignment check at
-> drivers/scsi/sd.c:2009. At that point, the kernel would continuously
-> complain about an "Unaligned partial completion", and no further I/O
-> could occur.
->
-> This gets the controller working on big endian powerpc64.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  drivers/scsi/3w-9xxx.c | 35 +++++++++++++++++------------------
->  drivers/scsi/3w-9xxx.h |  6 +++++-
->  2 files changed, 22 insertions(+), 19 deletions(-)
->
-> diff --git a/drivers/scsi/3w-9xxx.c b/drivers/scsi/3w-9xxx.c
-> index 3337b1e80412..95e25fda1f90 100644
-> --- a/drivers/scsi/3w-9xxx.c
-> +++ b/drivers/scsi/3w-9xxx.c
-> @@ -303,10 +303,10 @@ static int twa_aen_drain_queue(TW_Device_Extension *tw_dev, int no_check_reset)
->
->         /* Initialize sglist */
->         memset(&sglist, 0, sizeof(TW_SG_Entry));
-> -       sglist[0].length = TW_SECTOR_SIZE;
-> -       sglist[0].address = tw_dev->generic_buffer_phys[request_id];
-> +       sglist[0].length = cpu_to_le32(TW_SECTOR_SIZE);
-> +       sglist[0].address = TW_CPU_TO_SGL(tw_dev->generic_buffer_phys[request_id]);
+On Mon, Jul 27, 2020 at 12:17:19PM -0700, Matthias Kaehlcke wrote:
+> On Thu, Jul 23, 2020 at 11:57:36PM +0530, Sandeep Maheswaram wrote:
+> > Add interconnect support in dwc3-qcom driver to vote for bus
+> > bandwidth.
+> > 
+> > This requires for two different paths - from USB to
+> > DDR. The other is from APPS to USB.
+> > 
+> > Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> > Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+> 
+> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
 
-This looks like it would add a sparse warning, not fix one, unless you also
-change the types of the target structure.
-
-> @@ -501,7 +501,7 @@ static void twa_aen_sync_time(TW_Device_Extension *tw_dev, int request_id)
->             Sunday 12:00AM */
->         local_time = (ktime_get_real_seconds() - (sys_tz.tz_minuteswest * 60));
->         div_u64_rem(local_time - (3 * 86400), 604800, &schedulertime);
-> -       schedulertime = cpu_to_le32(schedulertime % 604800);
-> +       cpu_to_le32p(&schedulertime);
->
->         memcpy(param->data, &schedulertime, sizeof(u32));
-
-You dropped the '%' operation, and the result of the byteswap?
-
-> @@ -1004,7 +1004,7 @@ static int twa_fill_sense(TW_Device_Extension *tw_dev, int request_id, int copy_
->                                full_command_packet->header.status_block.error,
->                                error_str[0] == '\0' ?
->                                twa_string_lookup(twa_error_table,
-> -                                                full_command_packet->header.status_block.error) : error_str,
-> +                                                le16_to_cpu(full_command_packet->header.status_block.error)) : error_str,
->                                full_command_packet->header.err_specific_desc);
->                 else
-
-This looks correct, but the error value has already been copied into the local
-'error' variable, which you could use for simplification. As 'status_block' is
-defined as a native_endian structure, this also introduced a sparse warning.
-
-> @@ -1012,7 +1012,7 @@ static int twa_fill_sense(TW_Device_Extension *tw_dev, int request_id, int copy_
->                                full_command_packet->header.status_block.error,
->                                error_str[0] == '\0' ?
->                                twa_string_lookup(twa_error_table,
-> -                                                full_command_packet->header.status_block.error) : error_str,
-> +                                                le16_to_cpu(full_command_packet->header.status_block.error)) : error_str,
-
-Same here
-
-       Arnd
+Sorry, that was meant for v11
