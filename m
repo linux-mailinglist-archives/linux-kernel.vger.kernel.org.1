@@ -2,222 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7FE22F40A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFFF22F3F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730993AbgG0PpM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 11:45:12 -0400
-Received: from omta012.uswest2.a.cloudfilter.net ([35.164.127.235]:56223 "EHLO
-        omta012.uswest2.a.cloudfilter.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728015AbgG0PpL (ORCPT
+        id S1730797AbgG0PiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729509AbgG0PiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:45:11 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Jul 2020 11:45:10 EDT
-Received: from cxr.smtp.a.cloudfilter.net ([10.0.16.145])
-        by cmsmtp with ESMTP
-        id 00M5kTac7mUuy05CUkkwzh; Mon, 27 Jul 2020 15:38:02 +0000
-Received: from ws ([68.106.48.162])
-        by cmsmtp with ESMTPSA
-        id 05CIkRkFGKrUj05CJkzNoN; Mon, 27 Jul 2020 15:38:02 +0000
-Authentication-Results: cox.net; auth=pass (LOGIN)
- smtp.auth=1i5t5.duncan@cox.net
-X-Authority-Analysis: v=2.4 cv=Wu6VjfTv c=1 sm=1 tr=0 ts=5f1ef4da
- a=fEuF7Lzz1MGHEe1xFtqdOg==:117 a=fEuF7Lzz1MGHEe1xFtqdOg==:17
- a=IkcTkHD0fZMA:10 a=zd2uoN0lAAAA:8 a=VwQbUJbxAAAA:8 a=kviXuzpPAAAA:8
- a=sfOm8-O8AAAA:8 a=GEFCdFOGbQv7mSB_pWQA:9 a=tqTlq1B0_eMsoCT5:21
- a=h_W-Jm2LaEDf4Mgu:21 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
- a=qrIFiuKZe2vaD64auk6j:22 a=TvTJqdcANYtsRzA46cdi:22
-Date:   Mon, 27 Jul 2020 08:37:49 -0700
-From:   Duncan <1i5t5.duncan@cox.net>
-To:     "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Mazin Rezk <mnrzk@protonmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Harry Wentland <Harry.Wentland@amd.com>,
-        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Deucher <Alexander.Deucher@amd.com>,
-        "mphantomx@yahoo.com.br" <mphantomx@yahoo.com.br>,
-        "regressions@leemhuis.info" <regressions@leemhuis.info>,
-        "anthony.ruhier@gmail.com" <anthony.ruhier@gmail.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Re: [PATCH] drm/amd/display: Clear dm_state for fast updates
-Message-ID: <20200727083749.7b0fe41d@ws>
-In-Reply-To: <e2f55480-c24f-6c85-08d3-21131a22d0bf@amd.com>
-References: <M0lxN5AUlPvzBKULfIBe5BZRwfQGXeMQCdWItYcQ-9P79y32WzExYK2Y0DwyNVtyGelqbvV07_lFk1oeT4cApbT-P_oH0bnxQbMmFsJv_xg=@protonmail.com>
-        <ba078fb0-0dbc-df06-cfe9-f9537883f82a@amd.com>
-        <e2f55480-c24f-6c85-08d3-21131a22d0bf@amd.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 27 Jul 2020 11:38:14 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEE1C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:38:14 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d1so8195110plr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=NkVbGEZqq2gtUYFFHihdCf9UlSJbj6QF8gPVaF8Bfbo=;
+        b=SQNYbubVmJC7AL7K9qiuOd/Gn3pZrb2Pj6GSZkzj5uiofy/xe8+FFypgWHTLDIlppl
+         JCleeZ9of5qVBsZWWlVx7kXEfl+m3LqjmR2QBW7rfu9QuEuS5xziWEVE6GYrMCSrSs7O
+         kXoF4xAo3teKyO/XcsnRddniMMAbVRMgsTEv33E/v4LDLxnHshM4KCBgvpoy/iQTXhIR
+         Btb28CisbS4v3W9GLSU1hM0q+zgKqoP8W0PEu1aTj9UldG7y3uuYRHT6tHkNmGwLJ2MN
+         99ss8OhFnJUsX021lCurIDBdvJGxzfmGkcXigsmA+phWdEJgEe+K7PpzOC3sq58gPFd7
+         W0Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=NkVbGEZqq2gtUYFFHihdCf9UlSJbj6QF8gPVaF8Bfbo=;
+        b=GbPe+Ro4kkWxc2w3B/26dQwWpew03PPbc4new6bm99x2SFkJDPXQNxlgPIaYbPOZ9+
+         bta2O4YdVNMc+ji3tjO7OGnpy02Rcb6Ch8c2K9tVXSsRwc/sarV7t3HL6HCWm1vCRdPK
+         2jQ/p56uMnQKPPN6CJrsofm8rB1GZtgc/oCNePEB3VlBrhaK1IE9NjFWLySu/bk7pV/X
+         TimVIn9UGm8GpQNfFdiktI5NTmIii7lRgHoLKVdOm0HBREN+zTb7t3tsnkvwgB9pkYLP
+         LbSkTIEpYKbOQfCz4zLbkUF5gXTUBo51qU8mojZ28eUq0f50n3fqGEPUiy/p6UB4sq1O
+         80kw==
+X-Gm-Message-State: AOAM530vXmebJ/iJUm3TkB8i3GQEVHkCNctd88fuMdjHKT0DA8OPXR8x
+        6/805FRneb52SvjKF8sQ2nX1Cg==
+X-Google-Smtp-Source: ABdhPJzAXd8kJn2pS6mbPjKZXLIavxQW9wr44q5/JPYSYykSlpkS173kdTtzJWxxIonR/XqZ3Jaxlg==
+X-Received: by 2002:a17:90a:ea0b:: with SMTP id w11mr2833577pjy.80.1595864293473;
+        Mon, 27 Jul 2020 08:38:13 -0700 (PDT)
+Received: from localhost ([223.190.9.130])
+        by smtp.gmail.com with ESMTPSA id y19sm4363801pfn.77.2020.07.27.08.38.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 27 Jul 2020 08:38:12 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 21:08:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Taniya Das <tdas@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v4 4/5] arm64: dts: sdm845: Add OPP tables and
+ power-domains for venus
+Message-ID: <20200727153806.kgegadvghmkevch3@vireshk-mac-ubuntu>
+References: <1595503612-2901-1-git-send-email-rnayak@codeaurora.org>
+ <1595503612-2901-5-git-send-email-rnayak@codeaurora.org>
+ <e68ff810-362a-5b99-206b-f676b204101d@linaro.org>
+ <94581989-e069-55e5-6b70-919185eda33e@linaro.org>
+ <e0c03ce2-136c-2c5c-6f36-bb0c69a82e2d@codeaurora.org>
+ <5a8af2da-cc3f-005d-47e6-b36be1104d6a@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-CMAE-Envelope: MS4xfGkEX9Tay6GTZG9sI91aPbcWvbf0prl9drr0Vb6zi1HgHYrb/SN12LpKXhuWCazaf+qGdIhr0rDqn9HLwAXeM3wycfWeeljqu1boy1ql56iXYF2bAXJz
- 4PrWzP+Uy36trlqXirzeMrGeboMFt5LYoa6RHk/m4z70GBnLHEb6dD51SPsGoU4nyO9+XjhxIA7nzI+kH3dHHRcaTZJKCsWPmAKdNAFR85/ZzNe/G505umhL
- h5CVTpg7b1YPJw/h0qcK/1supgqADO8HdqrrhcUkwDxg0wBbbhtvN4knfxZ15D9ZP7Vdp3TwhRWBocd9U846F4Myu7GiNfD1fEPPgypGBriCShImbrMLiNMt
- I8jOgqdsreoANf1ywhz9Rmlj+/tPyho79HkyyOJslD72GwFlmp+FtkCAExRvUWW5o3PuuZ1k8068az/563afztRlxPOQjjl6JZlAwYnBQZBWcc2zGrVJLf21
- A0WiYWxTG32RH9chFcrpewHDI5k9VQICRbmygXFqWm72nVjpGOXgsSEESMKBd7pC9eEmiuhV1gGAFrl2i6kuFALoqDWw22oWX4OE8XA3fSlsvUckRa429M7i
- F+PNepcnIOHv/i8opDVBn1KoLqr4xLXANds5JsRyi7cHs5Z1vOKxnyuCIJ7Ku+iNvZQikjzJ31959ojtKu9vJwdVZ04RpiXp0mpWHlVh4edw/Q==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a8af2da-cc3f-005d-47e6-b36be1104d6a@codeaurora.org>
+User-Agent: NeoMutt/20170609 (1.8.3)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020 10:05:01 -0400
-"Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com> wrote:
-
-> On 2020-07-27 9:39 a.m., Christian KÃ¶nig wrote:
-> > Am 27.07.20 um 07:40 schrieb Mazin Rezk:
-> >> This patch fixes a race condition that causes a use-after-free
-> >> during amdgpu_dm_atomic_commit_tail. This can occur when 2
-> >> non-blocking commits are requested and the second one finishes
-> >> before the first. Essentially, this bug occurs when the following
-> >> sequence of events happens:
-> >>
-> >> 1. Non-blocking commit #1 is requested w/ a new dm_state #1 and is
-> >> deferred to the workqueue.
-> >>
-> >> 2. Non-blocking commit #2 is requested w/ a new dm_state #2 and is
-> >> deferred to the workqueue.
-> >>
-> >> 3. Commit #2 starts before commit #1, dm_state #1 is used in the
-> >> commit_tail and commit #2 completes, freeing dm_state #1.
-> >>
-> >> 4. Commit #1 starts after commit #2 completes, uses the freed
-> >> dm_state 1 and dereferences a freelist pointer while setting the
-> >> context.
-> > 
-> > Well I only have a one mile high view on this, but why don't you
-> > let the work items execute in order?
-> > 
-> > That would be better anyway cause this way we don't trigger a cache
-> > line ping pong between CPUs.
-> > 
-> > Christian.
+On 27-07-20, 17:38, Rajendra Nayak wrote:
 > 
-> We use the DRM helpers for managing drm_atomic_commit_state and those 
-> helpers internally push non-blocking commit work into the system
-> unbound work queue.
-> 
-> While we could duplicate a copy of that code with nothing but the 
-> workqueue changed that isn't something I'd really like to maintain
-> going forward.
-> 
-> Regards,
-> Nicholas Kazlauskas
-
-Additionally, I don't see mentioned on-thread (it's on the bug and now
-in the details below) that we're talking multi-monitor, not
-single-monitor. Presumably that goes some way toward answering the "why
-not force order?" question, considering the outputs may be running at
-different refresh frequencies, etc...
-
-All the reports on the bug seem to be multi-monitor (after seeing
-multi-monitor/output in several reports I asked if anyone was seeing it
-with only one monitor and no answers), and as you commented on the bug
-for your proposed patch but seems missing from this one here (different
-author/proposal) ...
-
-Commits #1 and #2 don't touch any of the same core DRM objects (CRTCs,
-Planes, Connectors) so Commit #2 does not stall for Commit #1. DRM
-Private Objects have always been avoided in stall checks, so we have no
-safety from DRM core in this regard.
-
-> >>
-> >> Since this bug has only been spotted with fast commits, this patch
-> >> fixes the bug by clearing the dm_state instead of using the old
-> >> dc_state for fast updates. In addition, since dm_state is only
-> >> used for its dc_state and amdgpu_dm_atomic_commit_tail will retain
-> >> the dc_state if none is found,
-> >> removing the dm_state should not have any consequences in fast
-> >> updates.
-> >>
-> >> This use-after-free bug has existed for a while now, but only
-> >> caused a noticeable issue starting from 5.7-rc1 due to 3202fa62f
-> >> ("slub: relocate freelist pointer to middle of object") moving the
-> >> freelist pointer from dm_state->base (which was unused) to
-> >> dm_state->context (which is dereferenced).
-> >>
-> >> Bugzilla: 
-> >> https://bugzilla.kernel.org/show_bug.cgi?id=207383 
-> >>
-> >> Fixes: bd200d190f45 ("drm/amd/display: Don't replace the dc_state
-> >> for fast updates")
-> >> Reported-by: Duncan <1i5t5.duncan@cox.net>
-> >> Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
-> >> ---
-> >> Â  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 36
-> >> ++++++++++++++----- 1 file changed, 27 insertions(+), 9
-> >> deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c 
-> >> b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> >> index 86ffa0c2880f..710edc70e37e 100644
-> >> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> >> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> >> @@ -8717,20 +8717,38 @@ static int amdgpu_dm_atomic_check(struct 
-> >> drm_device *dev,
-> >> Â Â Â Â Â Â Â Â Â Â  * the same resource. If we have a new DC context as
-> >> part of
-> >> Â Â Â Â Â Â Â Â Â Â  * the DM atomic state from validation we need to free
-> >> it and
-> >> Â Â Â Â Â Â Â Â Â Â  * retain the existing one instead.
-> >> +Â Â Â Â Â Â Â Â  *
-> >> +Â Â Â Â Â Â Â Â  * Furthermore, since the DM atomic state only contains
-> >> the DC
-> >> +Â Â Â Â Â Â Â Â  * context and can safely be annulled, we can free the
-> >> state
-> >> +Â Â Â Â Â Â Â Â  * and clear the associated private object now to free
-> >> +Â Â Â Â Â Â Â Â  * some memory and avoid a possible use-after-free later.
-> >> Â Â Â Â Â Â Â Â Â Â  */
-> >> -Â Â Â Â Â Â Â  struct dm_atomic_state *new_dm_state, *old_dm_state;
-> >>
-> >> -Â Â Â Â Â Â Â  new_dm_state = dm_atomic_get_new_state(state);
-> >> -Â Â Â Â Â Â Â  old_dm_state = dm_atomic_get_old_state(state);
-> >> +Â Â Â Â Â Â Â  for (i = 0; i < state->num_private_objs; i++) {
-> >> +Â Â Â Â Â Â Â Â Â Â Â  struct drm_private_obj *obj =
-> >> state->private_objs[i].ptr;
-> >>
-> >> -Â Â Â Â Â Â Â  if (new_dm_state && old_dm_state) {
-> >> -Â Â Â Â Â Â Â Â Â Â Â  if (new_dm_state->context)
-> >> -Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  dc_release_state(new_dm_state->context);
-> >> +Â Â Â Â Â Â Â Â Â Â Â  if (obj->funcs == adev->dm.atomic_obj.funcs) {
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  int j = state->num_private_objs-1;
-> >>
-> >> -Â Â Â Â Â Â Â Â Â Â Â  new_dm_state->context = old_dm_state->context;
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  dm_atomic_destroy_state(obj,
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[i].state);
-> >> +
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  /* If i is not at the end of the array then the
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  * last element needs to be moved to where i was
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  * before the array can safely be truncated.
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  */
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  if (i != j)
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[i] =
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[j];
-> >>
-> >> -Â Â Â Â Â Â Â Â Â Â Â  if (old_dm_state->context)
-> >> -Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  dc_retain_state(old_dm_state->context);
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[j].ptr = NULL;
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[j].state = NULL;
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[j].old_state = NULL;
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->private_objs[j].new_state = NULL;
-> >> +
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  state->num_private_objs = j;
-> >> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  break;
-> >> +Â Â Â Â Â Â Â Â Â Â Â  }
-> >> Â Â Â Â Â Â Â Â Â  }
-> >> Â Â Â Â Â  }
-> >>
-> >> -- 
-> >> 2.27.0
-> >>
+> On 7/27/2020 11:23 AM, Rajendra Nayak wrote:
 > > 
+> > 
+> > On 7/24/2020 7:39 PM, Stanimir Varbanov wrote:
+> > > Hi,
+> > > 
+> > > On 7/23/20 9:06 PM, Stanimir Varbanov wrote:
+> > > > Hi Rajendra,
+> > > > 
+> > > > After applying 2,3 and 4/5 patches on linaro-integration v5.8-rc2 I see
+> > > > below messages on db845:
+> > > > 
+> > > > qcom-venus aa00000.video-codec: dev_pm_opp_set_rate: failed to find
+> > > > current OPP for freq 533000097 (-34)
+> > > > 
+> > > > ^^^ This one is new.
+> > > > 
+> > > > qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x30000
+> > > > 
+> > > > ^^^ and this message is annoying, can we make it pr_debug in rpmh?
+> > > > 
+> > > > On 7/23/20 2:26 PM, Rajendra Nayak wrote:
+> > > > > Add the OPP tables in order to be able to vote on the performance state of
+> > > > > a power-domain.
+> > > > > 
+> > > > > Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> > > > > ---
+> > > > >   arch/arm64/boot/dts/qcom/sdm845.dtsi | 40 ++++++++++++++++++++++++++++++++++--
+> > > > >   1 file changed, 38 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > > > > index e506793..5ca2265 100644
+> > > > > --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > > > > +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> > > > > @@ -3631,8 +3631,10 @@
+> > > > >               interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
+> > > > >               power-domains = <&videocc VENUS_GDSC>,
+> > > > >                       <&videocc VCODEC0_GDSC>,
+> > > > > -                    <&videocc VCODEC1_GDSC>;
+> > > > > -            power-domain-names = "venus", "vcodec0", "vcodec1";
+> > > > > +                    <&videocc VCODEC1_GDSC>,
+> > > > > +                    <&rpmhpd SDM845_CX>;
+> > > > > +            power-domain-names = "venus", "vcodec0", "vcodec1", "cx";
+> > > > > +            operating-points-v2 = <&venus_opp_table>;
+> > > > >               clocks = <&videocc VIDEO_CC_VENUS_CTL_CORE_CLK>,
+> > > > >                    <&videocc VIDEO_CC_VENUS_AHB_CLK>,
+> > > > >                    <&videocc VIDEO_CC_VENUS_CTL_AXI_CLK>,
+> > > > > @@ -3654,6 +3656,40 @@
+> > > > >               video-core1 {
+> > > > >                   compatible = "venus-encoder";
+> > > > >               };
+> > > > > +
+> > > > > +            venus_opp_table: venus-opp-table {
+> > > > > +                compatible = "operating-points-v2";
+> > > > > +
+> > > > > +                opp-100000000 {
+> > > > > +                    opp-hz = /bits/ 64 <100000000>;
+> > > > > +                    required-opps = <&rpmhpd_opp_min_svs>;
+> > > > > +                };
+> > > > > +
+> > > > > +                opp-200000000 {
+> > > > > +                    opp-hz = /bits/ 64 <200000000>;
+> > > > > +                    required-opps = <&rpmhpd_opp_low_svs>;
+> > > > > +                };
+> > > > > +
+> > > > > +                opp-320000000 {
+> > > > > +                    opp-hz = /bits/ 64 <320000000>;
+> > > > > +                    required-opps = <&rpmhpd_opp_svs>;
+> > > > > +                };
+> > > > > +
+> > > > > +                opp-380000000 {
+> > > > > +                    opp-hz = /bits/ 64 <380000000>;
+> > > > > +                    required-opps = <&rpmhpd_opp_svs_l1>;
+> > > > > +                };
+> > > > > +
+> > > > > +                opp-444000000 {
+> > > > > +                    opp-hz = /bits/ 64 <444000000>;
+> > > > > +                    required-opps = <&rpmhpd_opp_nom>;
+> > > > > +                };
+> > > > > +
+> > > > > +                opp-533000000 {
+> > > > > +                    opp-hz = /bits/ 64 <533000000>;
+
+Is this the highest OPP in table ?
+
+> > > Actually it comes from videocc, where ftbl_video_cc_venus_clk_src
+> > > defines 533000000 but the real calculated freq is 533000097.
+> > 
+> > I still don't quite understand why the videocc driver returns this
+> > frequency despite this not being in the freq table.
 > 
+> Ok, so I see the same issue on sc7180 also. clk_round_rate() does seem to
+> return whats in the freq table, but clk_set_rate() goes ahead and sets it
+> to 533000097. Subsequently when we try to set a different OPP, it fails to
+> find the 'current' OPP entry for 533000097. This sounds like an issue with the OPP
+> framework? Should we not fall back to the highest OPP as the current OPP?
+> 
+> Stephen/Viresh, any thoughts?
+
+I think we (in all frameworks generally) try to set a frequency <=
+target frequency and so there may be a problem if the frequency is
+larger than highest supported. IOW, you need to fix tables a bit.
 
 -- 
-Duncan - No HTML messages please; they are filtered as spam.
-"Every nonfree program has a lord, a master --
-and if you use the program, he is your master."  Richard Stallman
+viresh
