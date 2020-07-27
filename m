@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2D122F20D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0141A22F21A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731981AbgG0Og4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:36:56 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:58202 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729823AbgG0Ogy (ORCPT
+        id S1732842AbgG0Ohb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:37:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28860 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732940AbgG0Oha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:36:54 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06REVRC4015524;
-        Mon, 27 Jul 2020 07:36:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0818;
- bh=ZvYytE26mgm/phw5XQmFzqxhqbaV+4vagxEmhtiLVmA=;
- b=AWbUNslcY1IyiOni3WzCshIWvTp4Us4+KfWzwvsePxzta5ggR+VBnl9khCw8dnvgzNsX
- QDCnEUifvrhP40gRneZVkgyluL0Deh7i6F+e7++mHswBhvYd7h4bWQiMUsfSVFhqJgOl
- L6bus/ujJxvVwZ+eFZQ6DGQ8JaaUmb8Pd6hauxJLnP53rERBsthPXMG7f0/EMumiGyW0
- wnfvYibgdmlq9Za3bMiz6/k75VuOYdugaY0qsEpKoWRO8626iuT91D/7kgn0v2Log/Nn
- 35Ydhq4H/u3TPZlvjhud8GO8StQ8hB2T+G1SCgeZTfAvvu7O2OHDN7NAYWvXU3ouHwva XQ== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 32gj3qqq0v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 07:36:48 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 27 Jul
- 2020 07:36:48 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 27 Jul 2020 07:36:48 -0700
-Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.54.6])
-        by maili.marvell.com (Postfix) with ESMTP id B7A283F703F;
-        Mon, 27 Jul 2020 07:36:44 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     Colin King <colin.king@canonical.com>
-CC:     Alexander Lobakin <alobakin@marvell.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-rdma@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] qed: fix assignment of n_rq_elems to incorrect params field
-Date:   Mon, 27 Jul 2020 17:36:04 +0300
-Message-ID: <20200727143604.3835-1-alobakin@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200727141712.112906-1-colin.king@canonical.com>
-References: <20200727141712.112906-1-colin.king@canonical.com>
+        Mon, 27 Jul 2020 10:37:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595860649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u5HKAp4ZUkGbVlQE18UlOQNKjizI/cY6UzIC6ImvqWM=;
+        b=Y6Ctstxa01bguxMbIpM06aqH77wWdAFCBmDQlFypzoTFcAUZUA2edV88HNC15cBbnE5cet
+        EBlToPRN8vYPJovnginvUu13omYmzpoq5JPSayh36M32eKtXvX8gYqry+/G/EKkjJk0ZjD
+        pfZL22bjnA1abUC56QlRT8lxhJ/83TY=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-s2Ng742HNvSm9bfzn1_uBw-1; Mon, 27 Jul 2020 10:37:27 -0400
+X-MC-Unique: s2Ng742HNvSm9bfzn1_uBw-1
+Received: by mail-wm1-f71.google.com with SMTP id b13so7896030wme.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:37:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u5HKAp4ZUkGbVlQE18UlOQNKjizI/cY6UzIC6ImvqWM=;
+        b=t2SdBCu3qHm598GLMbb5aeEpGgCuVHjT1BB1e2Gg1iBXe10ynvXATwGpTOQRZRNqIs
+         Fyr6deJTbAPZSxGiug4+MXpCyWoxlEl4NjgZL4oQZwnI2owPnaaqeh3ZjXlKPhAjeGp8
+         3Rh39hqhyCqwi4pUK4xRrK3jwW1jgBKo9NEJNUyHLq3XlQC8JHvEjV78DWGoSugcr2HH
+         blauhVzQCcBZKhrdKs8/vYR/yl3ec7Q1IVMUM1Mr+bm5ff7kcQU/8zkMDdEieXdvzvrX
+         ivfCcd4onrC5xjheATBSfmyiP0R+hX5rFnsaeQCg6PcjQlZ81eexWe/XQr4kZ36MGaAU
+         EpEA==
+X-Gm-Message-State: AOAM531I602FL4pk7vz8sRHwJCGRg+nJ8V/ibUWzAaZDI1FC177L00/Y
+        yCSYON6puFRu7tIDVtZXiHpXliQxjEbkJMt7spL23l7WGFVPOkCNTUTNCJULlEp6TSKOyhKQYw8
+        6J8iQqpg1z1XASdFU91rYLo9p
+X-Received: by 2002:adf:f248:: with SMTP id b8mr21851981wrp.247.1595860646125;
+        Mon, 27 Jul 2020 07:37:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyAQpp+VslCFH5JlkAq7a2IphD8QcADVVGEUVmcuWS0HNr9I77f3KRIAzXhaAX4q+h0XMcYwg==
+X-Received: by 2002:adf:f248:: with SMTP id b8mr21851965wrp.247.1595860645912;
+        Mon, 27 Jul 2020 07:37:25 -0700 (PDT)
+Received: from steredhat ([5.180.207.22])
+        by smtp.gmail.com with ESMTPSA id z6sm7209387wml.41.2020.07.27.07.37.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 07:37:25 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 16:37:00 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Kieran Bingham <kbingham@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 4.19 42/86] scripts/gdb: fix lx-symbols gdb.error while
+ loading modules
+Message-ID: <20200727143700.rtouw4mgim4kjmeb@steredhat>
+References: <20200727134914.312934924@linuxfoundation.org>
+ <20200727134916.556617777@linuxfoundation.org>
+ <7675dec9-7b66-b785-5034-22e8ede0b597@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_08:2020-07-27,2020-07-27 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7675dec9-7b66-b785-5034-22e8ede0b597@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
-
-From: Colin King <colin.king@canonical.com>
-Date: Mon, 27 Jul 2020 15:17:12 +0100
-
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Jul 27, 2020 at 03:26:42PM +0100, Kieran Bingham wrote:
+> Hi Greg, Sasha,
 > 
-> Currently n_rq_elems is being assigned to params.elem_size instead of the
-> field params.num_elems.  Coverity is detecting this as a double assingment
-> to params.elem_size and reporting this as an usused value on the first
-> assignment.  Fix this.
+> On 27/07/2020 15:04, Greg Kroah-Hartman wrote:
+> > From: Stefano Garzarella <sgarzare@redhat.com>
+> > 
+> > [ Upstream commit 7359608a271ce81803de148befefd309baf88c76 ]
+> > 
+> > Commit ed66f991bb19 ("module: Refactor section attr into bin attribute")
+> > removed the 'name' field from 'struct module_sect_attr' triggering the
+> > following error when invoking lx-symbols:
 > 
-> Addresses-Coverity: ("Unused value")
-> Fixes: b6db3f71c976 ("qed: simplify chain allocation with init params struct")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/infiniband/hw/qedr/verbs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-> index 5a80471577a6..4ce4e2eef6cc 100644
-> --- a/drivers/infiniband/hw/qedr/verbs.c
-> +++ b/drivers/infiniband/hw/qedr/verbs.c
-> @@ -1930,7 +1930,7 @@ qedr_roce_create_kernel_qp(struct qedr_dev *dev,
->  	in_params->sq_pbl_ptr = qed_chain_get_pbl_phys(&qp->sq.pbl);
->  
->  	params.intended_use = QED_CHAIN_USE_TO_CONSUME_PRODUCE;
-> -	params.elem_size = n_rq_elems;
-> +	params.num_elems = n_rq_elems;
+> Has ed66f991bb19 ("module: Refactor section attr into bin attribute")
+> been backported to 4.19? It doesn't /sound/ like something that would
+> require backporting unless something else depended up on it,  but if it
+> hasn't been ... then *this* patch shouldn't be either...
+> 
+> Same for 5.4, and 5.7 that's just come in.
+> 
+> This patch will 'apply' cleanly, and not hit any compilation errors, as
+> it only changes python code... so my reason to highlight is in case some
+> automated system picked it up based on those assumptions.
+> 
+> If ed66f991bb19 has also been backported, then I'm sorry for the noise ;-)
+> 
 
-Sorry for copy'n'paste braino. Thanks for catching.
+I had the same doubt, but I just saw that ed66f991bb19 was backported to
+the stable branches (4.19, 5.4 and 5.7), so I think this backport is
+correct.
 
->  	params.elem_size = QEDR_RQE_ELEMENT_SIZE;
->  
->  	rc = dev->ops->common->chain_alloc(dev->cdev, &qp->rq.pbl, &params);
-> -- 
-> 2.27.0
+Thanks,
+Stefano
 
-Acked-by: Alexander Lobakin <alobakin@marvell.com>
-
-Al
