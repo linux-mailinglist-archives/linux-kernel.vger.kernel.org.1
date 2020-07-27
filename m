@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF6522ED11
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8803922ED0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:20:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgG0NVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgG0NVH (ORCPT
+        id S1727823AbgG0NUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:20:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55648 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726222AbgG0NUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:21:07 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE868C061794;
-        Mon, 27 Jul 2020 06:21:05 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id z188so1212247pfc.6;
-        Mon, 27 Jul 2020 06:21:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lCrFxpLw5jwB0ZWba+VhbgCI7p4GpK2jg/E4s1AB/yM=;
-        b=IO7Asnw1x5jaHrPrBYcTWUlGNNMyYH8tet7FkILH4HmzUn9u+meMUVh7296Xg4Rcrw
-         26mjFiFrtobGZP6/JQgzxcGK4uQo2Ig3wmk7+u7qj0oChgvGHJ5G9KhIY810qGt9ivDU
-         ecmte3moVCfdGcTryICQuGadpX09WZv7fo/TBHNX0iVyai2I1ajQfLVDjDziQuCVg66d
-         Op9jGMYmfwrIRYRcsmdDWYl1LEML4CLEJmejHa22x3gGRBecWBIPddPw5Uv7QAQUHlzf
-         sAX2Uzq+xrcpElEoZ7YiGfd1t7G8ipJ6UnABh/A6XbzkyEMxuz72nuyz0qykT0qrGyq2
-         K9VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lCrFxpLw5jwB0ZWba+VhbgCI7p4GpK2jg/E4s1AB/yM=;
-        b=Xd1ssR79aJre2Ww0osYOzXlelshgca/9fMVXEWWC3fwiOCQcFWnVdSho8zgX4SNdMo
-         kiGcK37dTNPOr70byjQB/UYcjKOk9uPvh3edL4k5tNo9sTFFZBbMDkiNMQn8cgP7yDWZ
-         +ZNekGaTwksWb+Nh/IXfyitVZ5K1E/JPlHIxPzwfqvXhPbVcA9JJ9X8t+bras7stp59H
-         hPDrxLCLixYRAx1Iv6ps/n7Q7BGvfTExqmEvNe7V4Ujcs+hwhRixGv5mcijjhHKf57x7
-         /j9/x5qOa/VeSKitKooncazySmr5wGtMMowtGsb8trJjJMMRZ9Fn3AanG2rCxXhlS3OR
-         QpXQ==
-X-Gm-Message-State: AOAM5302EW+m3eEXkU/4/YB+RjFxiqcH6Au6Bac1kqkzI0K47DDACO+m
-        WDnRueyKhnL9QelWKXOAH8k=
-X-Google-Smtp-Source: ABdhPJxRloIPWLVUZ2/SuwNrfH74RWEzbhOzbwrdKU/RikSvAOSrIk2YgZzbcFwz0HqrECq6wOxFhQ==
-X-Received: by 2002:a63:5a20:: with SMTP id o32mr20002948pgb.15.1595856064511;
-        Mon, 27 Jul 2020 06:21:04 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.152.86])
-        by smtp.gmail.com with ESMTPSA id my16sm12206087pjb.43.2020.07.27.06.21.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 06:21:03 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: [PATCH v2] spi: spi-topcliff-pch: drop call to wakeup-disable
-Date:   Mon, 27 Jul 2020 18:47:43 +0530
-Message-Id: <20200727131742.82289-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
-References: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
+        Mon, 27 Jul 2020 09:20:36 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595856034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QEC599F9d5Phwiy4Paam7iRk0SAUOnpMx6pT2BgmNxk=;
+        b=Fm0myA6rXHM1+w5H5Trz/8ZiYA4t4LwTwf3FmObzt0//Ux1ppnJ3+3ru6H28X//ryQBfJE
+        gxKGnpQddqPor7JNsAbnDoNhVv6s/OiSWJZWy9q2nnCSUgDsEIVvP4vFcRrVGGv2sjxzZt
+        5BFYPzLGQnWER224YM0kqjXTAP36GmusLbBuvSvEJ3qgJPOM4Ox82WIyEo0KKCFywf7cZL
+        zh+hSyrTXBNN8exMXahbqwdqWUq6IBYaip8svDt13x+YV8S5qt/UfXUf/oGIWw0o+QJLq+
+        BhshrPhcQsDnmjamN6XnIw/DC41qiyDqkduOURHZlFrLXiEzKvNUWN63Kte3dg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595856034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QEC599F9d5Phwiy4Paam7iRk0SAUOnpMx6pT2BgmNxk=;
+        b=nn3Ccf0KX4putGJjeUuJelLK04rIfaVzoa3gkLlqOlrBHwwfn0SbBMpekV1j9ylP2uhNWD
+        I9jGD6aCGCFG1zCQ==
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [PATCH] printk: fix ifnullfree.cocci warnings
+In-Reply-To: <alpine.DEB.2.21.2007241203410.2834@hadrien>
+References: <alpine.DEB.2.21.2007241203410.2834@hadrien>
+Date:   Mon, 27 Jul 2020 15:26:33 +0206
+Message-ID: <87y2n53xi6.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before generic upgrade, both .suspend() and .resume() were invoking
-pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
-states. (Normal trend is .suspend() enables and .resume() disables the
-wakeup.)
+On 2020-07-24, Julia Lawall <julia.lawall@inria.fr> wrote:
+> Make the code a little simpler by dropping
+> some unneeded tests.
+>
+> Generated by: scripts/coccinelle/free/ifnullfree.cocci
+>
+> Fixes: c406fbce2054 ("printk: implement syslog")
+> CC: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 
-This was ambiguous and may be buggy. Instead of replicating the legacy
-behavior, drop the wakeup-disable call.
+This is for the rogue version of the printk ringbuffer within RT at the
+moment. Until the new accepted version is mainline, we might as well
+keep the RT variant maintained.
 
-Fix: f185bcc77980("spi: spi-topcliff-pch: use generic power management")
-Reported by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/spi/spi-topcliff-pch.c | 2 --
- 1 file changed, 2 deletions(-)
+Acked-by: John Ogness <john.ogness@linutronix.de>
 
-diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
-index 281a90f1b5d8..c73a03ddf5f3 100644
---- a/drivers/spi/spi-topcliff-pch.c
-+++ b/drivers/spi/spi-topcliff-pch.c
-@@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
- 
- 	dev_dbg(dev, "%s ENTRY\n", __func__);
- 
--	device_wakeup_disable(dev);
--
- 	/* set suspend status to false */
- 	pd_dev_save->board_dat->suspend_sts = false;
- 
--- 
-2.27.0
-
+> ---
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git linux-5.4.y-rt
+> head:   5fbf1e70f11dba64cc05c9d85120a3aa7c67a4a2
+> commit: c406fbce2054efbf812b3d811ed23a872f719db9 [43/325] printk: implement syslog
+> :::::: branch date: 4 months ago
+> :::::: commit date: 7 months ago
+>
+>  printk.c |   12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+>
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -1539,10 +1539,8 @@ static int syslog_print_all(char __user
+>  	if (clear && !seq)
+>  		syslog_clear();
+>
+> -	if (text)
+> -		kfree(text);
+> -	if (msgbuf)
+> -		kfree(msgbuf);
+> +	kfree(text);
+> +	kfree(msgbuf);
+>  	return len;
+>  }
+>
+> @@ -1695,10 +1693,8 @@ int do_syslog(int type, char __user *buf
+>  		break;
+>  	}
+>  out:
+> -	if (msgbuf)
+> -		kfree(msgbuf);
+> -	if (text)
+> -		kfree(text);
+> +	kfree(msgbuf);
+> +	kfree(text);
+>  	return error;
+>  }
+>
