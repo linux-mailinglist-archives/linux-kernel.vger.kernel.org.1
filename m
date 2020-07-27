@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DC322EF2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E633122F022
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbgG0OOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39354 "EHLO mail.kernel.org"
+        id S1731830AbgG0OWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729896AbgG0OOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:03 -0400
+        id S1731825AbgG0OWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:22:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 843562073E;
-        Mon, 27 Jul 2020 14:14:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82D1F2070B;
+        Mon, 27 Jul 2020 14:22:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859243;
-        bh=pNZ5dqteI6Mnoc1TUKncTKofJ2ZiWdSCFdqSL3JX16o=;
+        s=default; t=1595859722;
+        bh=mosuk51w2WKwugCfuBZtqjV/aSmnJy/uMF70i0hQ1Y4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDFTlHwuAqtWfi/ywMeXmM0/urCNb8cdKtz/hyQltM3uQGvMeTAn82YDV0xRHOCuF
-         /cxx9EXgkK3Ev4K3gllyIe8mG6PTza8ZTi6iGcFdT3Uz8xuwe8Os9zt7D91T/v8I74
-         Kx6ogiW2ktxE8dPO3MTqQJj/9U3Tlb8rvSYeVDZg=
+        b=Toa3N6hgyARDwKiOvTe49dzkbuW+n7koDcC0gmlZSYabJ/+FvX4ANnALQ3lLyyjzn
+         Y4jicqToG8GyO7eXJaelsrXymy+ccPZOmpS6y/ABcnAYpLicC27In+82tNxWBpZ85J
+         6AmpxZPUdJXaN+pP2KeCz1QB491S/Zjo+eV964y0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 032/138] ASoC: rt5670: Correct RT5670_LDO_SEL_MASK
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        syzbot+4cd84f527bf4a10fc9c1@syzkaller.appspotmail.com,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 052/179] ax88172a: fix ax88172a_unbind() failures
 Date:   Mon, 27 Jul 2020 16:03:47 +0200
-Message-Id: <20200727134926.981403633@linuxfoundation.org>
+Message-Id: <20200727134935.202883308@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: George Kennedy <george.kennedy@oracle.com>
 
-commit 5cacc6f5764e94fa753b2c1f5f7f1f3f74286e82 upstream.
+[ Upstream commit c28d9a285668c799eeae2f7f93e929a6028a4d6d ]
 
-The RT5670_PWR_ANLG1 register has 3 bits to select the LDO voltage,
-so the correct mask is 0x7 not 0x3.
+If ax88172a_unbind() fails, make sure that the return code is
+less than zero so that cleanup is done properly and avoid UAF.
 
-Because of this wrong mask we were programming the ldo bits
-to a setting of binary 001 (0x05 & 0x03) instead of binary 101
-when moving to SND_SOC_BIAS_PREPARE.
-
-According to the datasheet 001 is a reserved value, so no idea
-what it did, since the driver was working fine before I guess we
-got lucky and it does something which is ok.
-
-Fixes: 5e8351de740d ("ASoC: add RT5670 CODEC driver")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200628155231.71089-3-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: a9a51bd727d1 ("ax88172a: fix information leak on short answers")
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+Reported-by: syzbot+4cd84f527bf4a10fc9c1@syzkaller.appspotmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5670.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/ax88172a.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -757,7 +757,7 @@
- #define RT5670_PWR_VREF2_BIT			4
- #define RT5670_PWR_FV2				(0x1 << 3)
- #define RT5670_PWR_FV2_BIT			3
--#define RT5670_LDO_SEL_MASK			(0x3)
-+#define RT5670_LDO_SEL_MASK			(0x7)
- #define RT5670_LDO_SEL_SFT			0
- 
- /* Power Management for Analog 2 (0x64) */
+diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
+index 4e514f5d7c6c7..fd3a04d98dc14 100644
+--- a/drivers/net/usb/ax88172a.c
++++ b/drivers/net/usb/ax88172a.c
+@@ -187,6 +187,7 @@ static int ax88172a_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	ret = asix_read_cmd(dev, AX_CMD_READ_NODE_ID, 0, 0, ETH_ALEN, buf, 0);
+ 	if (ret < ETH_ALEN) {
+ 		netdev_err(dev->net, "Failed to read MAC address: %d\n", ret);
++		ret = -EIO;
+ 		goto free;
+ 	}
+ 	memcpy(dev->net->dev_addr, buf, ETH_ALEN);
+-- 
+2.25.1
+
 
 
