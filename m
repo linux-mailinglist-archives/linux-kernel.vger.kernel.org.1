@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAAD22EFB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE3F22F065
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730683AbgG0OSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:18:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
+        id S1732241AbgG0OYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:24:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731262AbgG0OSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:18:36 -0400
+        id S1732202AbgG0OYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:24:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFA0A20775;
-        Mon, 27 Jul 2020 14:18:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C17B2083E;
+        Mon, 27 Jul 2020 14:24:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859516;
-        bh=5MbtI0ihvkEoxI9SWcTbrLH2vIzaHkcSMuxKD1ckyRM=;
+        s=default; t=1595859850;
+        bh=bsvqLDOLlUmaBR5IRdHrcZS4+AMxNdAhjU/AXGsiBvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FzDEX2Qco/ss3y09xvBD6VfdoYPT355xewhzuW8TKNmZErcisaGgVu/fx5SuTfBNX
-         phn1+Z3CKvXcwN5aEqHxGmyDuXswdCxLDnyCqufZESpxj0Z1k0/wAe0tYbugmV/ghP
-         k3bWU0EiCsYMOxZltjYfYI4KFI0oKLXPq7JGc3X4=
+        b=r4rc4CROeX8MUP2Xb5V6EnydkE+dFqCYPhGbtjyeDZlH1Nld4od6+IJDwCnoqzCFw
+         jm8oTcZ5fwi5UlSng6zV7xhonZKpz8HBzk+FjMw8/qR3TAcqgIVpmZBmO0rV2Ylde4
+         5BIqDsBtwPQPBk3jYeNMpaocKEnXwKlRg0T8GCiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Subject: [PATCH 5.4 110/138] staging: wlan-ng: properly check endpoint types
+        stable@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 130/179] hwmon: (scmi) Fix potential buffer overflow in scmi_hwmon_probe()
 Date:   Mon, 27 Jul 2020 16:05:05 +0200
-Message-Id: <20200727134930.967084310@linuxfoundation.org>
+Message-Id: <20200727134938.986229976@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
 
-commit faaff9765664009c1c7c65551d32e9ed3b1dda8f upstream.
+[ Upstream commit 3ce17cd2b94907f6d91b81b32848044b84c97606 ]
 
-As syzkaller detected, wlan-ng driver does not do sanity check of
-endpoints in prism2sta_probe_usb(), add check for xfer direction and type
+SMATCH detected a potential buffer overflow in the manipulation of
+hwmon_attributes array inside the scmi_hwmon_probe function:
 
-Reported-and-tested-by: syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=c2a1fa67c02faa0de723
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722161052.999754-1-rkovhaev@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/hwmon/scmi-hwmon.c:226
+ scmi_hwmon_probe() error: buffer overflow 'hwmon_attributes' 6 <= 9
 
+Fix it by statically declaring the size of the array as the maximum
+possible as defined by hwmon_max define.
+
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Link: https://lore.kernel.org/r/20200715121338.GA18761@e119603-lin.cambridge.arm.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wlan-ng/prism2usb.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/hwmon/scmi-hwmon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -61,11 +61,25 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
- {
- 	struct usb_device *dev;
--
-+	const struct usb_endpoint_descriptor *epd;
-+	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	struct wlandevice *wlandev = NULL;
- 	struct hfa384x *hw = NULL;
- 	int result = 0;
+diff --git a/drivers/hwmon/scmi-hwmon.c b/drivers/hwmon/scmi-hwmon.c
+index 286d3cfda7de8..d421e691318b3 100644
+--- a/drivers/hwmon/scmi-hwmon.c
++++ b/drivers/hwmon/scmi-hwmon.c
+@@ -147,7 +147,7 @@ static enum hwmon_sensor_types scmi_types[] = {
+ 	[ENERGY] = hwmon_energy,
+ };
  
-+	if (iface_desc->desc.bNumEndpoints != 2) {
-+		result = -ENODEV;
-+		goto failed;
-+	}
-+
-+	result = -EINVAL;
-+	epd = &iface_desc->endpoint[1].desc;
-+	if (!usb_endpoint_is_bulk_in(epd))
-+		goto failed;
-+	epd = &iface_desc->endpoint[2].desc;
-+	if (!usb_endpoint_is_bulk_out(epd))
-+		goto failed;
-+
- 	dev = interface_to_usbdev(interface);
- 	wlandev = create_wlan();
- 	if (!wlandev) {
+-static u32 hwmon_attributes[] = {
++static u32 hwmon_attributes[hwmon_max] = {
+ 	[hwmon_chip] = HWMON_C_REGISTER_TZ,
+ 	[hwmon_temp] = HWMON_T_INPUT | HWMON_T_LABEL,
+ 	[hwmon_in] = HWMON_I_INPUT | HWMON_I_LABEL,
+-- 
+2.25.1
+
 
 
