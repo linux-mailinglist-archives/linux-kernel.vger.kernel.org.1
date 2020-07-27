@@ -2,84 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601D922FABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA2622FAC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbgG0Uzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 16:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        id S1726753AbgG0U4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgG0Uzr (ORCPT
+        with ESMTP id S1726091AbgG0U4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:55:47 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0D0C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:55:47 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w126so9580601pfw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bhP8c3ORdPWDlqnnbGuCZRHV46MZaJIZrpgZrFhGf0A=;
-        b=FTa08JumHKpL7dCKC6F3Y/47u+bsnLr2xoLj/mrKwMm9jY+pMPtRfLqaiYH5ajOiuy
-         gwazm9DFfePxGyl1LYAaSGP02ptms9TKzvb23nHDTO2FYNuIU9JcTYHTlwu84rQ516tL
-         nTujTvdWrvTobCmmr/ve2s3jKy/eDqOyoG5Ic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bhP8c3ORdPWDlqnnbGuCZRHV46MZaJIZrpgZrFhGf0A=;
-        b=fKQd7Z2Nt4vpl/RnvNnY3LRwtpxzc4JigZmEImUselMsXTprurStX3/CROxwa8QIAv
-         fIIBQyigEL7vuP8EA+jdeigppeLba4gcXzvgdcruESn8OunknK473kqfqB8RpcIIJrpY
-         p6xIEDYE+g1ihW+hU6/yPgOTu1bykYQpQsyoXqIplyulzfBfmHCs9r5Y2sksKfWswyVY
-         gcO3KwcYe8D/pqO6wfhJETHNung1e582f7rtJGAP83y6MkYFs9KNSSECBe7z6jVRaH7p
-         3r+gjGogY6Q8d6TpGZQTu9VKlYEqYeeE/nFSPe2E6zCNxlF62JrRcTkLzFw8k5hM9TL0
-         jzrg==
-X-Gm-Message-State: AOAM532ZjNWbiOCGWmajrxe5DKANaNr0b2U9Eq7ji/b19Z4aQRZH3Mrs
-        G/aU9jbGuJWq19v+nMuyZV2L3w==
-X-Google-Smtp-Source: ABdhPJxjpKz+El+vxYGRCL/Ty0XO15gWn2h9AfLlj9O3/ZH0J4sph2IftFtarPwxqF/aRzxx/DSE8Q==
-X-Received: by 2002:aa7:848b:: with SMTP id u11mr21353847pfn.72.1595883347093;
-        Mon, 27 Jul 2020 13:55:47 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id d9sm16200235pgv.45.2020.07.27.13.55.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 13:55:46 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:55:45 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, dianders@chromium.org,
-        linux-kernel@vger.kernel.org, linux-kernel-owner@vger.kernel.org
-Subject: Re: [PATCH 4/6] arm64: dts: qcom: sdm845: Increase the number of
- interconnect cells
-Message-ID: <20200727205545.GH3191083@google.com>
-References: <20200723130942.28491-1-georgi.djakov@linaro.org>
- <20200723130942.28491-5-georgi.djakov@linaro.org>
- <3c8c4aae7697d9d5a052b9dfd1ea0cf4@codeaurora.org>
+        Mon, 27 Jul 2020 16:56:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB0DC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:56:06 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595883364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vGlklfhOhKMe52+hawZnpl3d36F4/BFOW/Vk8oQE7eM=;
+        b=Y+lqk4wl3HL7c+JNJAFxRC1GzsSXbJ0VMOlLjOY4Ni0TuONAOSVDBx2jAX8nnZd9BJx/LJ
+        ap3ZhsmV0KycsC33/t7LDlK64uUeKZG4Sgz5Mm1qFk7nBwIKfdCcWOIGX9sifLuHxKnl9B
+        Z6qaybkU6dgaYLrf7pL0v5STxN3MfKHOQdyZSyBnwlpvpUjztrkueY9B6C2kV6ICuTHRnF
+        6/K9i7GCqexJK0/s9WcEY05TuXaNbevELaiy1FFvGJODfvYxojlZoJbf7mJtCx6CQKy/+0
+        xRtD6tM7bcSK867HNsXVNZwEE0+15y3hmh6vZvEch3mzK6IfSOiQ5p+E53sGjw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595883364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vGlklfhOhKMe52+hawZnpl3d36F4/BFOW/Vk8oQE7eM=;
+        b=ubrfn5F5T2p7GfJQ/BCtS23kE9iQnqxHg/uK2gDXVj+jvcTjq8vwhFhrAQi0w2a1HvwOVE
+        5VcYODlch6rUInCQ==
+To:     peterz@infradead.org, Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, mbenes@suse.cz
+Subject: Re: [PATCH] objtool,x86: Verify poke_int3_handler() is self contained
+In-Reply-To: <20200727104050.GH119549@hirez.programming.kicks-ass.net>
+References: <20200727104050.GH119549@hirez.programming.kicks-ass.net>
+Date:   Mon, 27 Jul 2020 22:56:03 +0200
+Message-ID: <87eeowbrto.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3c8c4aae7697d9d5a052b9dfd1ea0cf4@codeaurora.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 04:28:35PM +0530, Sibi Sankar wrote:
-> On 2020-07-23 18:39, Georgi Djakov wrote:
-> > Increase the number of interconnect-cells, as now we can include
-> > the tag information. The consumers can specify the path tag as an
-> > additional argument to the endpoints.
-> 
-> Tested-by: Sibi Sankar <sibis@codeaurora.org>
-> Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-> 
-> https://patchwork.kernel.org/patch/11655409/
-> I'll replace the tag ids with the
-> macros once ^^ lands.
+peterz@infradead.org writes:
+> Abuse the SMAP rules to ensure poke_int3_handler() doesn't call out to
+> anything.
 
-Great, I was going to ask about that :)
+Yuck. Isn't that what noinstr is for or am I missing something?
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Thanks,
+
+        tglx
+
+
