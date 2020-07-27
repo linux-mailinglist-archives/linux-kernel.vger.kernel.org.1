@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF27122F717
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0F722F701
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731250AbgG0Ryj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726821AbgG0Ryi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:54:38 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AEAC061794;
-        Mon, 27 Jul 2020 10:54:38 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 5B00F263ACB
-Subject: Re: [PATCH v2 0/3] media: vimc: Allow multiple capture devices to use
- the same sensor
-To:     kieran.bingham@ideasonboard.com,
-        Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
- <20200724121521.GA2705690@oden.dyn.berto.se>
- <20200724122104.GA18482@kaaira-HP-Pavilion-Notebook>
- <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <2a6cb067-283d-ca65-2698-1fae66a17d02@collabora.com>
-Date:   Mon, 27 Jul 2020 14:54:30 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730971AbgG0Rtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726846AbgG0Rte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:49:34 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39C8F2070B;
+        Mon, 27 Jul 2020 17:49:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595872174;
+        bh=2HB61QDPf92Lsa6Jf9B/n+P3MmdDD0gqtDvjOvcjP1g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UvUboc7otMxoumCsLUUP+igA9u9ZI3B8OmQXctMhbTROY+Bi5UZcwBQj468javLeg
+         qGOLSbbqKUQiM1LzYbtPooWQSyXO3YodxM9b+ZsvG3zBs7w/NVzrlY/M/NxENCA9SD
+         qgJFoRBthteOsmqjxUGcmYTfHnl+Zqckim4GbHkM=
+Date:   Mon, 27 Jul 2020 12:55:26 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tariq Toukan <tariqt@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] net/mlx4: Use fallthrough pseudo-keyword
+Message-ID: <20200727175526.GA21335@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1].
 
-On 7/27/20 11:31 AM, Kieran Bingham wrote:
-> Hi all,
-> 
-> +Dafna for the thread discussion, as she's missed from the to/cc list.
-> 
-> 
-> On 24/07/2020 13:21, Kaaira Gupta wrote:
->> On Fri, Jul 24, 2020 at 02:15:21PM +0200, Niklas Söderlund wrote:
->> Hi,
->>
->>> Hi Kaaira,
->>>
->>> Thanks for your work.
->>
->> Thanks for yours :D
->>
->>>
->>> On 2020-07-24 17:32:10 +0530, Kaaira Gupta wrote:
->>>> This is version 2 of the patch series posted by Niklas for allowing
->>>> multiple streams in VIMC.
->>>> The original series can be found here:
->>>> https://patchwork.kernel.org/cover/10948831/
->>>>
->>>> This series adds support for two (or more) capture devices to be 
->>>> connected to the same sensors and run simultaneously. Each capture device 
->>>> can be started and stopped independent of each other.
->>>>
->>>> Patch 1/3 and 2/3 deals with solving the issues that arises once two 
->>>> capture devices can be part of the same pipeline. While 3/3 allows for 
->>>> two capture devices to be part of the same pipeline and thus allows for 
->>>> simultaneously use.
->>>
->>> I'm just curious if you are aware of this series? It would replace the 
->>> need for 1/3 and 2/3 of this series right?
->>
->> v3 of this series replaces the need for 1/3, but not the current version
->> (ie v4). v4 of patch 2/5 removes the stream_counter that is needed to
->> keep count of the calls to s_stream. Hence 1/3 becomes relevant again.
-> 
-> So the question really is, how do we best make use of the two current
-> series, to achieve our goal of supporting multiple streams.
-> 
-> Having not parsed Dafna's series yet, do we need to combine elements of
-> both ? Or should we work towards starting with this series and get
-> dafna's patches built on top ?
-> 
-> Or should patch 1/3 and 3/3 of this series be on top of Dafna's v4 ?
-> 
-> (It might be noteworthy to say that Kaaira has reported successful
-> multiple stream operation from /this/ series and her development branch
-> on libcamera).
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-Dafna's patch seems still under discussion, but I don't want to block progress in Vimc either.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c | 4 ++--
+ drivers/net/ethernet/mellanox/mlx4/eq.c    | 2 +-
+ drivers/net/ethernet/mellanox/mlx4/mcg.c   | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-So I was wondering if we can move forward with Vimc support for multistreaming,
-without considering Dafna's patchset, and we can do the clean up later once we solve that.
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 8a10285b0e10..b50c567ef508 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -806,10 +806,10 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+ 				goto xdp_drop_no_cnt; /* Drop on xmit failure */
+ 			default:
+ 				bpf_warn_invalid_xdp_action(act);
+-				/* fall through */
++				fallthrough;
+ 			case XDP_ABORTED:
+ 				trace_xdp_exception(dev, xdp_prog, act);
+-				/* fall through */
++				fallthrough;
+ 			case XDP_DROP:
+ 				ring->xdp_drop++;
+ xdp_drop_no_cnt:
+diff --git a/drivers/net/ethernet/mellanox/mlx4/eq.c b/drivers/net/ethernet/mellanox/mlx4/eq.c
+index c790a5fcea73..ae305c2e9225 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/eq.c
+@@ -558,7 +558,7 @@ static int mlx4_eq_int(struct mlx4_dev *dev, struct mlx4_eq *eq)
+ 			mlx4_dbg(dev, "%s: MLX4_EVENT_TYPE_SRQ_LIMIT. srq_no=0x%x, eq 0x%x\n",
+ 				 __func__, be32_to_cpu(eqe->event.srq.srqn),
+ 				 eq->eqn);
+-			/* fall through */
++			fallthrough;
+ 		case MLX4_EVENT_TYPE_SRQ_CATAS_ERROR:
+ 			if (mlx4_is_master(dev)) {
+ 				/* forward only to slave owning the SRQ */
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mcg.c b/drivers/net/ethernet/mellanox/mlx4/mcg.c
+index 9486caecfbdc..f1b4ad9c66d2 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mcg.c
++++ b/drivers/net/ethernet/mellanox/mlx4/mcg.c
+@@ -1412,7 +1412,7 @@ int mlx4_multicast_attach(struct mlx4_dev *dev, struct mlx4_qp *qp, u8 gid[16],
+ 	case MLX4_STEERING_MODE_A0:
+ 		if (prot == MLX4_PROT_ETH)
+ 			return 0;
+-		/* fall through */
++		fallthrough;
+ 
+ 	case MLX4_STEERING_MODE_B0:
+ 		if (prot == MLX4_PROT_ETH)
+@@ -1442,7 +1442,7 @@ int mlx4_multicast_detach(struct mlx4_dev *dev, struct mlx4_qp *qp, u8 gid[16],
+ 	case MLX4_STEERING_MODE_A0:
+ 		if (prot == MLX4_PROT_ETH)
+ 			return 0;
+-		/* fall through */
++		fallthrough;
+ 
+ 	case MLX4_STEERING_MODE_B0:
+ 		if (prot == MLX4_PROT_ETH)
+-- 
+2.27.0
 
-What do you think?
-
-Regards,
-Helen
-
-> 
-> 
->>> 1.  https://lore.kernel.org/linux-media/20200522075522.6190-1-dafna.hirschfeld@collabora.com/
->>>
->>>>
->>>> Changes since v1:
->>>> 	- All three patches rebased on latest media-tree.
->>>> 	Patch 3:
->>>> 	- Search for an entity with a non-NULL pipe instead of searching
->>>> 	  for sensor. This terminates the search at output itself.
->>>>
->>>> Kaaira Gupta (3):
->>>>   media: vimc: Add usage count to subdevices
->>>>   media: vimc: Serialize vimc_streamer_s_stream()
->>>>   media: vimc: Join pipeline if one already exists
->>>>
->>>>  .../media/test-drivers/vimc/vimc-capture.c    | 35 ++++++++++++++++++-
->>>>  .../media/test-drivers/vimc/vimc-debayer.c    |  8 +++++
->>>>  drivers/media/test-drivers/vimc/vimc-scaler.c |  8 +++++
->>>>  drivers/media/test-drivers/vimc/vimc-sensor.c |  9 ++++-
->>>>  .../media/test-drivers/vimc/vimc-streamer.c   | 23 +++++++-----
->>>>  5 files changed, 73 insertions(+), 10 deletions(-)
->>>>
->>>> -- 
->>>> 2.17.1
->>>>
->>>
->>> -- 
->>> Regards,
->>> Niklas Söderlund
-> 
