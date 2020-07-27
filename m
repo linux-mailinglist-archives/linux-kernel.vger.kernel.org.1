@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A699622F0E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E78422EEF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732690AbgG0O2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:28:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54586 "EHLO mail.kernel.org"
+        id S1729367AbgG0OMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:12:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730619AbgG0OYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:24:52 -0400
+        id S1730182AbgG0OMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE99E2075A;
-        Mon, 27 Jul 2020 14:24:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AA1C2173E;
+        Mon, 27 Jul 2020 14:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859892;
-        bh=qR3qR1P8zCZPBL7I5aiHn7cQAkCbUrhl/7b8QvE1Xlo=;
+        s=default; t=1595859135;
+        bh=3OHby8XDBx0VTjGkXODfmyS4uUhnDdD6Mf6sVeCoxnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZRYnqueRcJF8vRC1yL9uF4spC10xtdBFN+876DhC3HE9bKuczX85ZsNJH4Smos52k
-         u2OfBRBgHZvNM64dS3eAb9rIqU34mFzJZQyyxM8pE6poruv+Kjb/+RUkvTsNkTZuVt
-         96qRYxTTR2yWmX7bFcA351fbkcPimxdplPwrD3+Y=
+        b=Vv80Y1ahYxyBalsvrahQ5tIaeVbI6dbbaq7aSbRpk6Ov6MWB4yLhPZxBDXaOxWpx4
+         SejlHWd6m+tLoOfO+EYG7OtYletb4wUfMYYr3Ft0KiP32GonvPqXwS0Qu0/MYLo99Y
+         ZbVgvSwrNmfdV6lGBE12PoWY+Mn7y08u26F3APa0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Derek Basehore <dbasehore@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 118/179] Input: elan_i2c - only increment wakeup count on touch
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Qiu Wenbo <qiuwenbo@phytium.com.cn>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 4.19 79/86] drm/amd/powerplay: fix a crash when overclocking Vega M
 Date:   Mon, 27 Jul 2020 16:04:53 +0200
-Message-Id: <20200727134938.403057177@linuxfoundation.org>
+Message-Id: <20200727134918.363029745@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Derek Basehore <dbasehore@chromium.org>
+From: Qiu Wenbo <qiuwenbo@phytium.com.cn>
 
-[ Upstream commit 966334dfc472bdfa67bed864842943b19755d192 ]
+commit 88bb16ad998a0395fe4b346b7d3f621aaa0a2324 upstream.
 
-This moves the wakeup increment for elan devices to the touch report.
-This prevents the drivers from incorrectly reporting a wakeup when the
-resume callback resets then device, which causes an interrupt to
-occur.
+Avoid kernel crash when vddci_control is SMU7_VOLTAGE_CONTROL_NONE and
+vddci_voltage_table is empty. It has been tested on Intel Hades Canyon
+(i7-8809G).
 
-Signed-off-by: Derek Basehore <dbasehore@chromium.org>
-Link: https://lore.kernel.org/r/20200706235046.1984283-1-dbasehore@chromium.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208489
+Fixes: ac7822b0026f ("drm/amd/powerplay: add smumgr support for VEGAM (v2)")
+Reviewed-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/mouse/elan_i2c_core.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
-index 8719da5403834..196e8505dd8d7 100644
---- a/drivers/input/mouse/elan_i2c_core.c
-+++ b/drivers/input/mouse/elan_i2c_core.c
-@@ -951,6 +951,8 @@ static void elan_report_absolute(struct elan_tp_data *data, u8 *packet)
- 	u8 hover_info = packet[ETP_HOVER_INFO_OFFSET];
- 	bool contact_valid, hover_event;
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
+@@ -643,9 +643,6 @@ static int vegam_get_dependency_volt_by_
  
-+	pm_wakeup_event(&data->client->dev, 0);
+ 	/* sclk is bigger than max sclk in the dependence table */
+ 	*voltage |= (dep_table->entries[i - 1].vddc * VOLTAGE_SCALE) << VDDC_SHIFT;
+-	vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
+-			(dep_table->entries[i - 1].vddc -
+-					(uint16_t)VDDC_VDDCI_DELTA));
+ 
+ 	if (SMU7_VOLTAGE_CONTROL_NONE == data->vddci_control)
+ 		*voltage |= (data->vbios_boot_state.vddci_bootup_value *
+@@ -653,8 +650,13 @@ static int vegam_get_dependency_volt_by_
+ 	else if (dep_table->entries[i - 1].vddci)
+ 		*voltage |= (dep_table->entries[i - 1].vddci *
+ 				VOLTAGE_SCALE) << VDDC_SHIFT;
+-	else
++	else {
++		vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
++				(dep_table->entries[i - 1].vddc -
++						(uint16_t)VDDC_VDDCI_DELTA));
 +
- 	hover_event = hover_info & 0x40;
- 	for (i = 0; i < ETP_MAX_FINGERS; i++) {
- 		contact_valid = tp_info & (1U << (3 + i));
-@@ -974,6 +976,8 @@ static void elan_report_trackpoint(struct elan_tp_data *data, u8 *report)
- 	u8 *packet = &report[ETP_REPORT_ID_OFFSET + 1];
- 	int x, y;
+ 		*voltage |= (vddci * VOLTAGE_SCALE) << VDDCI_SHIFT;
++	}
  
-+	pm_wakeup_event(&data->client->dev, 0);
-+
- 	if (!data->tp_input) {
- 		dev_warn_once(&data->client->dev,
- 			      "received a trackpoint report while no trackpoint device has been created. Please report upstream.\n");
-@@ -998,7 +1002,6 @@ static void elan_report_trackpoint(struct elan_tp_data *data, u8 *report)
- static irqreturn_t elan_isr(int irq, void *dev_id)
- {
- 	struct elan_tp_data *data = dev_id;
--	struct device *dev = &data->client->dev;
- 	int error;
- 	u8 report[ETP_MAX_REPORT_LEN];
- 
-@@ -1016,8 +1019,6 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
- 	if (error)
- 		goto out;
- 
--	pm_wakeup_event(dev, 0);
--
- 	switch (report[ETP_REPORT_ID_OFFSET]) {
- 	case ETP_REPORT_ID:
- 		elan_report_absolute(data, report);
-@@ -1026,7 +1027,7 @@ static irqreturn_t elan_isr(int irq, void *dev_id)
- 		elan_report_trackpoint(data, report);
- 		break;
- 	default:
--		dev_err(dev, "invalid report id data (%x)\n",
-+		dev_err(&data->client->dev, "invalid report id data (%x)\n",
- 			report[ETP_REPORT_ID_OFFSET]);
- 	}
- 
--- 
-2.25.1
-
+ 	if (SMU7_VOLTAGE_CONTROL_NONE == data->mvdd_control)
+ 		*mvdd = data->vbios_boot_state.mvdd_bootup_value * VOLTAGE_SCALE;
 
 
