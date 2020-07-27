@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E0B22EF12
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954DF22EFFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgG0ONG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37626 "EHLO mail.kernel.org"
+        id S1731644AbgG0OU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:20:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730293AbgG0OM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:12:58 -0400
+        id S1731616AbgG0OUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:20:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE6E22078E;
-        Mon, 27 Jul 2020 14:12:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BD962070B;
+        Mon, 27 Jul 2020 14:20:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859178;
-        bh=58KyAkNxzlfX9Tzbg4tc1CYwtIyYcUOiqkzipU7lwEI=;
+        s=default; t=1595859651;
+        bh=hieHIYOhvmEWOXDY2W3R6y6/9MZURkm3sq/GeG6V4qU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxyej4wjXThZtr9tWWClVKHGrUOeu9GFpkRd+lXoZnC3doQxlftJQay+KhFm+j6lj
-         Nb4P+t2Q1zVS0t0nmuOo2/S3kiW1NSxKvuWdES8+Hl/3N6FW6yrFAUNZbQBoDUmKvB
-         FjZmKUUPgAojye0OAO0vswqF3feyiupC91s8+NEo=
+        b=aOJbcQvPMN4extNowZ5rjnRESmCLc8+qwBGDqJyXEDCAAYZYMeuhG5dBj8Po3MtfP
+         Err51WpFXq5ODqQsvVaDYNL7voAHmOyflD2gePttk+XsWVHdmOTJZomzw7NOzcyxeA
+         cjrndvb4bd/J7El7IroqYk/YmZIopD1b3Ykpd9Pk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH 5.4 001/138] soc: qcom: rpmh: Dirt can only make you dirtier, not cleaner
-Date:   Mon, 27 Jul 2020 16:03:16 +0200
-Message-Id: <20200727134925.311606227@linuxfoundation.org>
+        stable@vger.kernel.org, "Jerry (Fangzhi) Zuo" <Jerry.Zuo@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 022/179] drm/amd/display: Check DMCU Exists Before Loading
+Date:   Mon, 27 Jul 2020 16:03:17 +0200
+Message-Id: <20200727134933.751392896@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,43 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Jerry (Fangzhi) Zuo <Jerry.Zuo@amd.com>
 
-commit 35bb4b22f606c0cc8eedf567313adc18161b1af4 upstream.
+[ Upstream commit 17bdb4a82fe5014c8aa5b2103c80c5729744a096 ]
 
-Adding an item into the cache should never be able to make the cache
-cleaner.  Use "|=" rather than "=" to update the dirty flag.
-
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Maulik Shah <mkshah@codeaurora.org> Thanks, Maulik
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Fixes: bb7000677a1b ("soc: qcom: rpmh: Update dirty flag only when data changes")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20200417141531.1.Ia4b74158497213eabad7c3d474c50bfccb3f342e@changeid
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Jerry (Fangzhi) Zuo <Jerry.Zuo@amd.com>
+Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/rpmh.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/soc/qcom/rpmh.c
-+++ b/drivers/soc/qcom/rpmh.c
-@@ -150,10 +150,10 @@ existing:
- 		break;
- 	}
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index d06fa63801799..7da2a22dbde7e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1342,9 +1342,14 @@ static int dm_late_init(void *handle)
+ 	struct dmcu_iram_parameters params;
+ 	unsigned int linear_lut[16];
+ 	int i;
+-	struct dmcu *dmcu = adev->dm.dc->res_pool->dmcu;
++	struct dmcu *dmcu = NULL;
+ 	bool ret;
  
--	ctrlr->dirty = (req->sleep_val != old_sleep_val ||
--			req->wake_val != old_wake_val) &&
--			req->sleep_val != UINT_MAX &&
--			req->wake_val != UINT_MAX;
-+	ctrlr->dirty |= (req->sleep_val != old_sleep_val ||
-+			 req->wake_val != old_wake_val) &&
-+			 req->sleep_val != UINT_MAX &&
-+			 req->wake_val != UINT_MAX;
++	if (!adev->dm.fw_dmcu)
++		return detect_mst_link_for_all_connectors(adev->ddev);
++
++	dmcu = adev->dm.dc->res_pool->dmcu;
++
+ 	for (i = 0; i < 16; i++)
+ 		linear_lut[i] = 0xFFFF * i / 15;
  
- unlock:
- 	spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
+-- 
+2.25.1
+
 
 
