@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5960622F7BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F0F22F7D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730367AbgG0S1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:27:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50646 "EHLO mail.kernel.org"
+        id S1730625AbgG0Sgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727886AbgG0S1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:27:06 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728313AbgG0Sgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:36:39 -0400
+Received: from localhost.localdomain (unknown [194.230.155.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DBDC2073E;
-        Mon, 27 Jul 2020 18:27:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 132B32074F;
+        Mon, 27 Jul 2020 18:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595874425;
-        bh=nl3YqSg5yRUKzi1NxGUaTX+dHjct03zN6hSrSzFt7ug=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mtlb7pQv7oGj0f1ql71mGPzhVZsWpQvQErN5vyWDwwiVpxlyPXkmAJDduRQqMz/vD
-         KJWUSxSxTOcDvIt4AP90BQW/pKJjZHkRkFfg8oYTIckexd5i143PLr97jjtcAa9VcX
-         KQkgb73uR0zWHithBAj4OVOSHiUi7TZvTP6EXRKU=
-Date:   Mon, 27 Jul 2020 13:32:58 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] greybus: Use fallthrough pseudo-keyword
-Message-ID: <20200727183258.GA28571@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        s=default; t=1595874999;
+        bh=REyX7sYO8cBj8Z4eVm4euOusP1EBARA9iuGH/ZQYyZQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pv4nTJWKipLej8QRQzP8XH2RFQx3XdSR+QDJEcMr8jZBq+eQ3qN49HIQSgwLHp+kQ
+         32NzMYhz9xzTKgEHUZjrSCAmOt2Ah2WKZxH16ig6Koi3+8fyGXQomAM70X20YC+1MI
+         O5DB/fgwSmJUfvYLyJqzrcrF7NDk/PM3N3We1Fgw=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] iommu: amd: Add missing function prototypes to fix -Wmissing-prototypes
+Date:   Mon, 27 Jul 2020 20:36:31 +0200
+Message-Id: <20200727183631.16744-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+Few exported functions from AMD IOMMU driver are missing prototypes.
+They have declaration in arch/x86/events/amd/iommu.h but this file
+cannot be included in the driver.  Add prototypes to fix W=1 warnings
+like:
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+    drivers/iommu/amd/init.c:3066:19: warning:
+        no previous prototype for 'get_amd_iommu' [-Wmissing-prototypes]
+     3066 | struct amd_iommu *get_amd_iommu(unsigned int idx)
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/greybus/es2.c       | 2 +-
- drivers/greybus/interface.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/iommu/amd/amd_iommu.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/greybus/es2.c b/drivers/greybus/es2.c
-index 366716f11b1a..1df6ab5d339d 100644
---- a/drivers/greybus/es2.c
-+++ b/drivers/greybus/es2.c
-@@ -759,7 +759,7 @@ static int check_urb_status(struct urb *urb)
- 	case -EOVERFLOW:
- 		dev_err(dev, "%s: overflow actual length is %d\n",
- 			__func__, urb->actual_length);
--		/* fall through */
-+		fallthrough;
- 	case -ECONNRESET:
- 	case -ENOENT:
- 	case -ESHUTDOWN:
-diff --git a/drivers/greybus/interface.c b/drivers/greybus/interface.c
-index 67dbe6fda9a1..58ea374d8aaa 100644
---- a/drivers/greybus/interface.c
-+++ b/drivers/greybus/interface.c
-@@ -1233,7 +1233,7 @@ int gb_interface_add(struct gb_interface *intf)
- 	case GB_INTERFACE_TYPE_GREYBUS:
- 		dev_info(&intf->dev, "GMP VID=0x%08x, PID=0x%08x\n",
- 			 intf->vendor_id, intf->product_id);
--		/* fall-through */
-+		fallthrough;
- 	case GB_INTERFACE_TYPE_UNIPRO:
- 		dev_info(&intf->dev, "DDBL1 Manufacturer=0x%08x, Product=0x%08x\n",
- 			 intf->ddbl1_manufacturer_id,
+diff --git a/drivers/iommu/amd/amd_iommu.h b/drivers/iommu/amd/amd_iommu.h
+index 57309716fd18..0781b7112467 100644
+--- a/drivers/iommu/amd/amd_iommu.h
++++ b/drivers/iommu/amd/amd_iommu.h
+@@ -41,6 +41,15 @@ extern int amd_iommu_guest_ir;
+ struct iommu_domain;
+ 
+ extern bool amd_iommu_v2_supported(void);
++extern struct amd_iommu *get_amd_iommu(unsigned int idx);
++extern u8 amd_iommu_pc_get_max_banks(unsigned int idx);
++extern bool amd_iommu_pc_supported(void);
++extern u8 amd_iommu_pc_get_max_counters(unsigned int idx);
++extern int amd_iommu_pc_get_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
++				u8 fxn, u64 *value);
++extern int amd_iommu_pc_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
++				u8 fxn, u64 *value);
++
+ extern int amd_iommu_register_ppr_notifier(struct notifier_block *nb);
+ extern int amd_iommu_unregister_ppr_notifier(struct notifier_block *nb);
+ extern void amd_iommu_domain_direct_map(struct iommu_domain *dom);
 -- 
-2.27.0
+2.17.1
 
