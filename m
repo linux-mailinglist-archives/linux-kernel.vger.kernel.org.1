@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02B322EF33
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F54422EFDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730526AbgG0OOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39710 "EHLO mail.kernel.org"
+        id S1730880AbgG0OTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729945AbgG0OOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:16 -0400
+        id S1731406AbgG0OTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:19:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A09142073E;
-        Mon, 27 Jul 2020 14:14:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F8F020FC3;
+        Mon, 27 Jul 2020 14:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859256;
-        bh=07Y0K6B/jas/WfqhlgWNpkqqZf+TC6BP68ukDb77Of0=;
+        s=default; t=1595859587;
+        bh=iUh9dnBwToXwhWtzVBeJCBPtLhp603IQ6o4UTkg+7LU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDZeuwFQfPPoJmd4OIvOVKhJVYs1zCZZI1+w12sYA8KKFAtdLOiaZBEQ1wMQLD3Lq
-         kvYhg1abE2aJH+Xx2ygQS+cSHmoEEpBSukbConBsuL6GrON0XsSxWLHUmUWTr7tKYE
-         zQRTKaH7o4CzrX68W1DsTvT5ynjruYX7CzvxWnFQ=
+        b=j8H4A4CHjrZbL7xjtZwXELLsozo3S5vXe2P/PcG7E1MuA7TizuRRV+8eYFhjtJHYJ
+         q9QCnpyHJShu29UCr01roK2LAW8SouFAHYkRzY4BQWWfSFkIdgnY4hgAtd38I00+16
+         aC46uZbWTccDN5F/4hQMykndixBlXTB97iLD2x5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 008/138] xtensa: update *pos in cpuinfo_op.next
-Date:   Mon, 27 Jul 2020 16:03:23 +0200
-Message-Id: <20200727134925.661395495@linuxfoundation.org>
+        stable@vger.kernel.org, Hyeongseok Kim <hyeongseok@gmail.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>
+Subject: [PATCH 5.7 029/179] exfat: fix wrong size update of stream entry by typo
+Date:   Mon, 27 Jul 2020 16:03:24 +0200
+Message-Id: <20200727134934.084625370@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+From: Hyeongseok Kim <hyeongseok@gmail.com>
 
-[ Upstream commit 0d5ab144429e8bd80889b856a44d56ab4a5cd59b ]
+commit 41e3928f8c58184fcf0bb22e822af39a436370c7 upstream.
 
-Increment *pos in the cpuinfo_op.next to fix the following warning
-triggered by cat /proc/cpuinfo:
+The stream.size field is updated to the value of create timestamp
+of the file entry. Fix this to use correct stream entry pointer.
 
-  seq_file: buggy .next function c_next did not update position index
+Fixes: 29bbb14bfc80 ("exfat: fix incorrect update of stream entry in __exfat_truncate()")
+Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/xtensa/kernel/setup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/exfat/file.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
-index e0e1e1892b86b..d08172138369b 100644
---- a/arch/xtensa/kernel/setup.c
-+++ b/arch/xtensa/kernel/setup.c
-@@ -716,7 +716,8 @@ c_start(struct seq_file *f, loff_t *pos)
- static void *
- c_next(struct seq_file *f, void *v, loff_t *pos)
- {
--	return NULL;
-+	++*pos;
-+	return c_start(f, pos);
- }
+--- a/fs/exfat/file.c
++++ b/fs/exfat/file.c
+@@ -175,7 +175,7 @@ int __exfat_truncate(struct inode *inode
+ 			ep2->dentry.stream.size = 0;
+ 		} else {
+ 			ep2->dentry.stream.valid_size = cpu_to_le64(new_size);
+-			ep2->dentry.stream.size = ep->dentry.stream.valid_size;
++			ep2->dentry.stream.size = ep2->dentry.stream.valid_size;
+ 		}
  
- static void
--- 
-2.25.1
-
+ 		if (new_size == 0) {
 
 
