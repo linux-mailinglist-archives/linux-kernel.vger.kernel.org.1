@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4C922F23E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B547B22F2C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732967AbgG0Oim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:38:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33368 "EHLO mail.kernel.org"
+        id S1733134AbgG0OmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729382AbgG0OKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:10:30 -0400
+        id S1729255AbgG0OHc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:07:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53FFF21744;
-        Mon, 27 Jul 2020 14:10:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50810207FC;
+        Mon, 27 Jul 2020 14:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859029;
-        bh=PNYpTtFi30Z3+cG4WR/Y1XCxwls4tNt9213U061rBew=;
+        s=default; t=1595858851;
+        bh=iEtFf7QMN19S5dmrOUJonugb+EIs3TYktwEmUKejVvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CjRlB7/iVO6QreSFnlxVxpJbGCZ2F1WbE3lPdPSCod/5bErCuE0AlG9riEqO6ioyl
-         YjIa4UJrdVjlG4p7LnxrL1JLpMLAHIT04lJ4XmUaGt5ZnlDJaXh6D7a92XXqspSkT3
-         9+mrqYNuLOaijrslCM66yOy+Pu+xeGeTWoCMeyjs=
+        b=pw9trEZ3NXeP7Kw6teAcVzytJIiS6ELmbeo/SsFlyXCaenZHnWW3ulu5nVwXn0HKD
+         34ZxDmJ3IVcwGb2BOI/Zxf/W6IQxQuMs+O9ItSB064DdPm6jZWl26ItFWY995lyyp3
+         KVe9s7bs5dgTMi9BUwuLeqXDxn09beCI/UkOI+to=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthew Howell <matthew.howell@sealevel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 40/86] serial: exar: Fix GPIO configuration for Sealevel cards based on XR17V35X
-Date:   Mon, 27 Jul 2020 16:04:14 +0200
-Message-Id: <20200727134916.453952976@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 36/64] dmaengine: tegra210-adma: Fix runtime PM imbalance on error
+Date:   Mon, 27 Jul 2020 16:04:15 +0200
+Message-Id: <20200727134912.948273454@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Howell <matthew.howell@sealevel.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 5fdbe136ae19ab751daaa4d08d9a42f3e30d17f9 ]
+[ Upstream commit 5b78fac4b1ba731cf4177fdbc1e3a4661521bcd0 ]
 
-Sealevel XR17V35X based devices are inoperable on kernel versions
-4.11 and above due to a change in the GPIO preconfiguration introduced in
-commit
-7dea8165f1d. This patch fixes this by preconfiguring the GPIO on Sealevel
-cards to the value (0x00) used prior to commit 7dea8165f1d
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-With GPIOs preconfigured as per commit 7dea8165f1d all ports on
-Sealevel XR17V35X based devices become stuck in high impedance
-mode, regardless of dip-switch or software configuration. This
-causes the device to become effectively unusable. This patch (in
-various forms) has been distributed to our customers and no issues
-related to it have been reported.
-
-Fixes: 7dea8165f1d6 ("serial: exar: Preconfigure xr17v35x MPIOs as output")
-Signed-off-by: Matthew Howell <matthew.howell@sealevel.com>
-Link: https://lore.kernel.org/r/alpine.DEB.2.21.2007221605270.13247@tstest-VirtualBox
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Link: https://lore.kernel.org/r/20200624064626.19855-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_exar.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/dma/tegra210-adma.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250/8250_exar.c
-index 8707357764375..d39162e71f59d 100644
---- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -227,7 +227,17 @@ static void setup_gpio(struct pci_dev *pcidev, u8 __iomem *p)
- 	 * devices will export them as GPIOs, so we pre-configure them safely
- 	 * as inputs.
- 	 */
--	u8 dir = pcidev->vendor == PCI_VENDOR_ID_EXAR ? 0xff : 0x00;
-+
-+	u8 dir = 0x00;
-+
-+	if  ((pcidev->vendor == PCI_VENDOR_ID_EXAR) &&
-+		(pcidev->subsystem_vendor != PCI_VENDOR_ID_SEALEVEL)) {
-+		// Configure GPIO as inputs for Commtech adapters
-+		dir = 0xff;
-+	} else {
-+		// Configure GPIO as outputs for SeaLevel adapters
-+		dir = 0x00;
+diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
+index 045351f3549c1..86b45198fb962 100644
+--- a/drivers/dma/tegra210-adma.c
++++ b/drivers/dma/tegra210-adma.c
+@@ -583,6 +583,7 @@ static int tegra_adma_alloc_chan_resources(struct dma_chan *dc)
+ 
+ 	ret = pm_runtime_get_sync(tdc2dev(tdc));
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(tdc2dev(tdc));
+ 		free_irq(tdc->irq, tdc);
+ 		return ret;
+ 	}
+@@ -764,8 +765,10 @@ static int tegra_adma_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(&pdev->dev);
+ 		goto rpm_disable;
 +	}
  
- 	writeb(0x00, p + UART_EXAR_MPIOINT_7_0);
- 	writeb(0x00, p + UART_EXAR_MPIOLVL_7_0);
+ 	ret = tegra_adma_init(tdma);
+ 	if (ret)
 -- 
 2.25.1
 
