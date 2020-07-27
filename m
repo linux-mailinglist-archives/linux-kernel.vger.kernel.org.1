@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3916B22E765
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C4C22E766
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgG0IOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:14:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38798 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726270AbgG0IOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:14:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595837674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IY4OegseFyVH/DUlzMVrRnb9yo4KDwtMwLRH1768Rd8=;
-        b=J1I+TzWchfA/JgEtPLVu0r6PLxkrjP09U4jXlqG7nXTpLURNBBzXiqIGjB4IrZcEqytZro
-        ui2NjdtqAnFYTWOgZ4lO2GX7sLz227RtAu2eJmaUgCpd2BAIePH/JvWxH089XlNhqdRi/x
-        KDE8Cx+fETg194fF/gb07xyK8pXfHbQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-gh-Hn-vwNNedtzwxAzImGw-1; Mon, 27 Jul 2020 04:14:30 -0400
-X-MC-Unique: gh-Hn-vwNNedtzwxAzImGw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727804AbgG0IPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726298AbgG0IPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 04:15:02 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 074C8805723;
-        Mon, 27 Jul 2020 08:14:28 +0000 (UTC)
-Received: from T590 (ovpn-12-208.pek2.redhat.com [10.72.12.208])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7E9896FEC6;
-        Mon, 27 Jul 2020 08:14:20 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 16:14:16 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/fs-writeback.c: not WARN on unregistered BDI
-Message-ID: <20200727081416.GB1146643@T590>
-References: <20200611072251.474246-1-ming.lei@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 13D4D20738;
+        Mon, 27 Jul 2020 08:15:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595837702;
+        bh=wNsYlGRYx0Axpox0Rm3jZGxBal/xwqeBwbF9ySgg41s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2O8vxB5QdBDM+NiSAXCFJN6dr1rh0QbNhi2HbXgrE+kZX7KANvKv2KqplIbRURPsO
+         OI+OBV5Jz78DlQlee6k6w1U99nWWJTDKWh1LKXcKGsDWhzMJNdyco1WPLe+osJenSs
+         3kUm+3kmYnx7HyKMGVuI+fs58EA7YLDc3uvuo+7E=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jzyHk-00FENM-HX; Mon, 27 Jul 2020 09:15:00 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     tglx@linutronix.de, Joakim Zhang <qiangqing.zhang@nxp.com>,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, jason@lakedaemon.net
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, festevam@gmail.com
+Subject: Re: [PATCH V3 0/1] irqchip: intmux: implement intmux PM
+Date:   Mon, 27 Jul 2020 09:14:48 +0100
+Message-Id: <159583764131.244522.11919582439422415024.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200727141734.24890-1-qiangqing.zhang@nxp.com>
+References: <20200727141734.24890-1-qiangqing.zhang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200611072251.474246-1-ming.lei@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, qiangqing.zhang@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de, jason@lakedaemon.net, kernel@pengutronix.de, linux-kernel@vger.kernel.org, linux-imx@nxp.com, festevam@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 03:22:51PM +0800, Ming Lei wrote:
-> BDI is unregistered from del_gendisk() which is usually done in device's
-> release handler from device hotplug or error handling context, so BDI
-> can be unregistered anytime.
+On Mon, 27 Jul 2020 22:17:33 +0800, Joakim Zhang wrote:
+> This patch intends to implement intmux PM.
 > 
-> It should be normal for __mark_inode_dirty to see un-registered BDI,
-> so kill the WARN().
+> ChangeLogs:
+> V2->V3:
+> 	1. allocate u32 saved_reg for a per channel.
 > 
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Brian Foster <bfoster@redhat.com>
-> Cc: Dave Chinner <dchinner@redhat.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: linux-block@vger.kernel.org
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
->  fs/fs-writeback.c | 4 ----
->  1 file changed, 4 deletions(-)
+> V1->V2:
+> 	1. add more detailed commit message.
+> 	2. use u32 for 32bit HW registers.
+> 	3. fix kbuild failures.
+> 	4. move trivial functions into their respective callers.
+> 	5. squash two patches together.
 > 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index a605c3dddabc..5e718580d4bf 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2318,10 +2318,6 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  
->  			wb = locked_inode_to_wb_and_lock_list(inode);
->  
-> -			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
-> -			     !test_bit(WB_registered, &wb->state),
-> -			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
-> -
->  			inode->dirtied_when = jiffies;
->  			if (dirtytime)
->  				inode->dirtied_time_when = jiffies;
+> [...]
 
-Hello Alexander,
+Applied to irq/irqchip-next, thanks!
 
-Could you merge this patch if you are fine? 
+[1/1] irqchip/imx-intmux: Implement intmux runtime power management
+      commit: bb403111e017a327737242eca40311921f833627
 
-Thanks,
-Ming
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
 
