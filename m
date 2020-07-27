@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E972822F9A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940AC22F9BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgG0T6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728990AbgG0T6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:58:05 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6DC420759;
-        Mon, 27 Jul 2020 19:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595879884;
-        bh=0zLbwOrLh3AaOF3vmnAEIzeqmlSo/e9+NLDubtnDas4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XeVsShoCzLPI2FjpnpUwVJS4A1NkUdicvO9ccEvCGXZb+gGFQt1rkJAVVd830abqA
-         ZzlaMEy+pLo5zkIHiuuSpz4rtWVZU0hVYANklGuolPq+lI42Y2/hDFlarh5yVGipbO
-         3bxmFPf9rO1tkhlGK9lOZzMOaZibkXd7CiP4pDfg=
-Date:   Mon, 27 Jul 2020 15:03:57 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Coly Li <colyli@suse.de>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] bcache: Use fallthrough pseudo-keyword
-Message-ID: <20200727200357.GA2079@embeddedor>
+        id S1728375AbgG0UAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgG0UAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 16:00:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FD9C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 13:00:52 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k09Ik-0003r7-CU; Mon, 27 Jul 2020 22:00:46 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k09Ii-0001LM-QN; Mon, 27 Jul 2020 22:00:44 +0200
+Date:   Mon, 27 Jul 2020 22:00:44 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Cc:     linux-pwm@vger.kernel.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+Subject: Re: [PATCH v5 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200727200044.qmrpjua3fewli3vo@pengutronix.de>
+References: <cover.1595489518.git.rahul.tanwar@linux.intel.com>
+ <0f47648107ec23f72868ca37f29ea43e15c08e08.1595489518.git.rahul.tanwar@linux.intel.com>
+ <20200723161553.ey47oijnwitf4hvu@pengutronix.de>
+ <c2ef8f5c-af23-a63d-5f72-de0c307be8eb@linux.intel.com>
+ <20200727070126.2juwfmra3i67lxfw@pengutronix.de>
+ <70fde2ba-b38f-a0d6-bc2d-89c074afd466@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="udb6nlegm2enchjz"
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <70fde2ba-b38f-a0d6-bc2d-89c074afd466@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+--udb6nlegm2enchjz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/md/bcache/journal.c |  2 +-
- drivers/md/bcache/util.c    | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Hello,
 
-diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
-index 77fbfd52edcf..c1227bdb57e7 100644
---- a/drivers/md/bcache/journal.c
-+++ b/drivers/md/bcache/journal.c
-@@ -608,7 +608,7 @@ static void do_journal_discard(struct cache *ca)
- 			ca->sb.njournal_buckets;
- 
- 		atomic_set(&ja->discard_in_flight, DISCARD_READY);
--		/* fallthrough */
-+		fallthrough;
- 
- 	case DISCARD_READY:
- 		if (ja->discard_idx == ja->last_idx)
-diff --git a/drivers/md/bcache/util.c b/drivers/md/bcache/util.c
-index 62fb917f7a4f..66965de548d0 100644
---- a/drivers/md/bcache/util.c
-+++ b/drivers/md/bcache/util.c
-@@ -33,27 +33,27 @@ int bch_ ## name ## _h(const char *cp, type *res)		\
- 	case 'y':						\
- 	case 'z':						\
- 		u++;						\
--		/* fall through */				\
-+		fallthrough;					\
- 	case 'e':						\
- 		u++;						\
--		/* fall through */				\
-+		fallthrough;					\
- 	case 'p':						\
- 		u++;						\
--		/* fall through */				\
-+		fallthrough;					\
- 	case 't':						\
- 		u++;						\
--		/* fall through */				\
-+		fallthrough;					\
- 	case 'g':						\
- 		u++;						\
--		/* fall through */				\
-+		fallthrough					\
- 	case 'm':						\
- 		u++;						\
--		/* fall through */				\
-+		fallthrough;					\
- 	case 'k':						\
- 		u++;						\
- 		if (e++ == cp)					\
- 			return -EINVAL;				\
--		/* fall through */				\
-+		fallthrough;					\
- 	case '\n':						\
- 	case '\0':						\
- 		if (*e == '\n')					\
--- 
-2.27.0
+On Mon, Jul 27, 2020 at 03:30:16PM +0800, Tanwar, Rahul wrote:
+> On 27/7/2020 3:01 pm, Uwe Kleine-K=F6nig wrote:
+> > In v4 you had:
+> >
+> > 	if (state->polarity !=3D PWM_POLARITY_NORMAL ||
+> > 	    state->period < pc->period)
+> > 		return -EINVAL;
+> >
+> > That's the right thing to do (even though I was unsettled at one point
+> > and wrote it was wrong). The check in v5 with state->period !=3D
+> > pc->period is wrong.
+>=20
+> Does that mean we should allow state->period >=3D pc->period cases?
 
+Yes, the driver is supposed to implement the longest period not longer
+than the requested one. This implies everything >=3D pc->period is fine.
+
+> If the state->period is greater than HW supported pc->period and
+> if we allow it then the duty cycle will again be evaluated to be
+> incorrect/higher than requested duty cycle. Am i missing something
+> else? Thanks.
+
+Yes, similar as with period you're supposed to implement the longest
+duty cycle your hardware supports and that is not longer than the
+requested duty cycle.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--udb6nlegm2enchjz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8fMmkACgkQwfwUeK3K
+7AmMIwgAj2/ZcC+tvYGBFv9yVeB6UDsy/sKUN3nqlJu/OeZ3y7N13gAy+p3IbmNl
+AVCGmQTRaUZv3aXXPRASXDktXF7x05ycXJiwTlavY9CKsScmXrkWUdjYJF7qujlV
+tsPDmA18PlWwycKsFsp2hj18TbITnwO3rGzeb9qQScLH2iGOH0tjWwKjKhADrz1M
+a9ThxUA0AeVCVlIx6f8tJ0CLIKeHrFf85CChfLcD67xh4CqEXo57uDbGnsSGwsa1
+wfKdLaeBYoRbpJIEsHUxfmZOfTCv7/V5TGcp7QURaNeUWZvJxRf7iDDP+er70mrX
+IieOWaZuvyQhfF5GuiRBqSLKQeZXZg==
+=Uk3U
+-----END PGP SIGNATURE-----
+
+--udb6nlegm2enchjz--
