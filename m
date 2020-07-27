@@ -2,68 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE4922ECE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39EB22ECE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbgG0NKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgG0NKL (ORCPT
+        id S1728612AbgG0NKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:10:15 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56100 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728141AbgG0NKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:10:11 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A754FC061794;
-        Mon, 27 Jul 2020 06:10:10 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id x9so17157461ljc.5;
-        Mon, 27 Jul 2020 06:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=S8aJgTeOOMNvC3X35ZPNyQ7MJmZxrJEivSO6dpNlY0w=;
-        b=YpOet+5OohAKeocqhV4KRLZsIftxN6qyrcm78/wxaBs4d531oO5QKTKrZAavKghZL1
-         pCvTUMj6CTUQ7v/+BuleaUG+AhkLfMHR3pY4oYBx5YzOCRaa/7hEJ2fd3CUvYiZIHVsJ
-         YhVqVLUXSKvLjP2D3TReIOkhipMEb03uXaymu+V+PtUQ4Mj/bMQ5pnv2WGm1toyTWaFy
-         TVznEBSh19VXP+D2rafhgJJLiuV1/YzcVhg7LbMTkvVkKtaioOBnzibXP9GPx3C85zqq
-         Q1V6b2Yrfk2meVn+ZJe9/8si9mV1w3U2qX92U8RK+Ih6CAN0M8VfxziWYQ8JgrrTWrj6
-         xPbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S8aJgTeOOMNvC3X35ZPNyQ7MJmZxrJEivSO6dpNlY0w=;
-        b=RAYuWxAddQxooYjf7nVcS6fyNBErfL5tsUFzqmYworOA9hLbR/CoBBsU00v2n6choj
-         AYZkn7ZEJ9uuzqQZISiWsyMBdfhK9ZpM8sJ9K4mNXV0dI/4uP/Rwyo8sF08amc3vOyCm
-         BEwPAISwshsDZ8+rrgPvfMPvYm8efBMXPwrjFjVwqjdV4NjqHvpc/h2xxgjhpghVSkqI
-         gAs+332hD5rpiZGuRdpaucWXzuflBKRxnBtHBqMnfvjJ9kPBjKPgLsijNTaOYfBdMJY8
-         oM15SiSJYDCuZLpOUL1qigVBG6/Dz2Gb39rNlDw/WKWDiE2JX9QSay+DOEkaxZstzyET
-         WILw==
-X-Gm-Message-State: AOAM532rWUhSAxAiRn/q0kc6wU1CcbxVLM/m9djy2F5n6u21aI59a0Vh
-        wYAiiQ2t8hYGEIM8YseL4bEufgmB
-X-Google-Smtp-Source: ABdhPJwnoGvwlTb4Q7yMAGl31ThQ1KF8qea01jP6Ay2SV7pxHkffrZcL4Kvcg7FIL4wXQC4qb+FkRQ==
-X-Received: by 2002:a2e:a0cd:: with SMTP id f13mr9415769ljm.343.1595855409032;
-        Mon, 27 Jul 2020 06:10:09 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-76-12-16.pppoe.mtu-net.ru. [91.76.12.16])
-        by smtp.googlemail.com with ESMTPSA id l19sm2348443ljb.15.2020.07.27.06.10.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 06:10:08 -0700 (PDT)
-Subject: Re: [PATCH] mmc: tegra: Add Runtime PM callbacks
-To:     Aniruddha Rao <anrao@nvidia.com>, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, p.zabel@pengutronix.de
-Cc:     linux-mmc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1595854036-15434-1-git-send-email-anrao@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ea1a68b6-2399-f7ae-a336-bd1e14793b52@gmail.com>
-Date:   Mon, 27 Jul 2020 16:10:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 27 Jul 2020 09:10:14 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=shile.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U3zRBsO_1595855409;
+Received: from B-J2UMLVDL-1650.local(mailfrom:shile.zhang@linux.alibaba.com fp:SMTPD_---0U3zRBsO_1595855409)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 27 Jul 2020 21:10:10 +0800
+Subject: Re: [PATCH v2] virtio_ring: use alloc_pages_node for NUMA-aware
+ allocation
+From:   Shile Zhang <shile.zhang@linux.alibaba.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jiang Liu <liuj97@gmail.com>, linux-pci@vger.kernel.org,
+        bhelgaas@google.com
+References: <20200721070013.62894-1-shile.zhang@linux.alibaba.com>
+ <20200721041550-mutt-send-email-mst@kernel.org>
+ <d16c8191-3837-8734-8cdf-ae6dd75725f7@linux.alibaba.com>
+Message-ID: <222b40f1-a36c-0375-e965-cd949e8b9eeb@linux.alibaba.com>
+Date:   Mon, 27 Jul 2020 21:10:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1595854036-15434-1-git-send-email-anrao@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <d16c8191-3837-8734-8cdf-ae6dd75725f7@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,48 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-27.07.2020 15:47, Aniruddha Rao пишет:
-> Add runtime suspend/resume callbacks to save power
-> when the bus is not in use.
-> In runtime suspend
-> - Turn off the SDMMC host CAR clock.
-> - Turn off the trimmer/DLL circuit(BG) power supply(VREG).
-> - Turn off the SDMMC host internal clocks.
-> 
-> Re-enable all the disabled clocks/regulators in runtime resume.
-> 
-> Signed-off-by: Aniruddha Rao <anrao@nvidia.com>
-> ---
->  drivers/mmc/host/sdhci-tegra.c | 149 ++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 140 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-tegra.c b/drivers/mmc/host/sdhci-tegra.c
-> index 0a3f9d0..1b4b245 100644
-> --- a/drivers/mmc/host/sdhci-tegra.c
-> +++ b/drivers/mmc/host/sdhci-tegra.c
-> @@ -23,6 +23,7 @@
->  #include <linux/mmc/slot-gpio.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/ktime.h>
-> +#include <linux/pm_runtime.h>
->  
->  #include "sdhci-pltfm.h"
->  #include "cqhci.h"
-> @@ -36,6 +37,7 @@
->  #define SDHCI_CLOCK_CTRL_SDR50_TUNING_OVERRIDE		BIT(5)
->  #define SDHCI_CLOCK_CTRL_PADPIPE_CLKEN_OVERRIDE		BIT(3)
->  #define SDHCI_CLOCK_CTRL_SPI_MODE_CLKEN_OVERRIDE	BIT(2)
-> +#define SDHCI_CLOCK_CTRL_SDMMC_CLK			BIT(0)
->  
->  #define SDHCI_TEGRA_VENDOR_SYS_SW_CTRL			0x104
->  #define SDHCI_TEGRA_SYS_SW_CTRL_ENHANCED_STROBE		BIT(31)
-> @@ -51,6 +53,9 @@
->  #define SDHCI_MISC_CTRL_ENABLE_SDHCI_SPEC_300		0x20
->  #define SDHCI_MISC_CTRL_ENABLE_DDR50			0x200
->  
-> +#define SDHCI_TEGRA_VENDOR_IO_TRIM_CTRL_0		0x1AC
-> +#define SDHCI_TEGRA_IO_TRIM_CTRL_0_SEL_VREG_MASK	0x4
 
-Hello Aniruddha,
 
-Does this register exist on older Tegra SoCs?
+On 2020/7/21 19:28, Shile Zhang wrote:
+> 
+> 
+> On 2020/7/21 16:18, Michael S. Tsirkin wrote:
+>> On Tue, Jul 21, 2020 at 03:00:13PM +0800, Shile Zhang wrote:
+>>> Use alloc_pages_node() allocate memory for vring queue with proper
+>>> NUMA affinity.
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Suggested-by: Jiang Liu <liuj97@gmail.com>
+>>> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+>>
+>> Do you observe any performance gains from this patch?
+> 
+> Thanks for your comments!
+> Yes, the bandwidth can boost more than doubled (from 30Gbps to 80GBps) 
+> with this changes in my test env (8 numa nodes), with netperf test.
+> 
+>>
+>> I also wonder why isn't the probe code run on the correct numa node?
+>> That would fix a wide class of issues like this without need to tweak
+>> drivers.
+> 
+> Good point, I'll check this, thanks!
+
+Sorry, I have no idea about how the probe code to grab the appropriate 
+NUMA node.
+
+> 
+>>
+>> Bjorn, what do you think? Was this considered?
+
+Hi Bjorn, Could you please give any comments about this issue?
+Thanks!
+
+>>
+>>> ---
+>>> Changelog
+>>> v1 -> v2:
+>>> - fixed compile warning reported by LKP.
+>>> ---
+>>>   drivers/virtio/virtio_ring.c | 10 ++++++----
+>>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>>> index 58b96baa8d48..d38fd6872c8c 100644
+>>> --- a/drivers/virtio/virtio_ring.c
+>>> +++ b/drivers/virtio/virtio_ring.c
+>>> @@ -276,9 +276,11 @@ static void *vring_alloc_queue(struct 
+>>> virtio_device *vdev, size_t size,
+>>>           return dma_alloc_coherent(vdev->dev.parent, size,
+>>>                         dma_handle, flag);
+>>>       } else {
+>>> -        void *queue = alloc_pages_exact(PAGE_ALIGN(size), flag);
+>>> -
+>>> -        if (queue) {
+>>> +        void *queue = NULL;
+>>> +        struct page *page = 
+>>> alloc_pages_node(dev_to_node(vdev->dev.parent),
+>>> +                             flag, get_order(size));
+>>> +        if (page) {
+>>> +            queue = page_address(page);
+>>>               phys_addr_t phys_addr = virt_to_phys(queue);
+>>>               *dma_handle = (dma_addr_t)phys_addr;
+>>> @@ -308,7 +310,7 @@ static void vring_free_queue(struct virtio_device 
+>>> *vdev, size_t size,
+>>>       if (vring_use_dma_api(vdev))
+>>>           dma_free_coherent(vdev->dev.parent, size, queue, dma_handle);
+>>>       else
+>>> -        free_pages_exact(queue, PAGE_ALIGN(size));
+>>> +        free_pages((unsigned long)queue, get_order(size));
+>>>   }
+>>>   /*
+>>> -- 
+>>> 2.24.0.rc2
