@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E464522F42E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E505722F426
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731106AbgG0P4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgG0P43 (ORCPT
+        id S1728049AbgG0P4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:56:06 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:29036 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726944AbgG0P4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:56:29 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174FFC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:56:29 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id g11so5825299ejr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:56:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=solid-run-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b1XOxgs+ESH1/h8P2K3MXhzlqoLMlitlCI9KqWLboA8=;
-        b=CZYJVHdAzY438h4GmyeOZBJQ3RJwFLYRn2E1DQxZ5Wezrb7oXcGMUySyBcYrem9oJy
-         v85wJKg5Rry75jt4q6esgMorhv+VWA221Nuuh5qDR5tG7dD9q/LbW6zFOy2DW2bvdrJv
-         ZNvdyj5EbtQj6TmMRDcsjCv2mWuGyN0FcsmIs93lPfCDGeJQWQRjQ404EeNfqdNnGcFt
-         XZC1sEOze1Vc5O8S/dxoJFzqKDS8l3ev1Y1e8lQkG7Kaf0NZxeZFNYTXoaB2XOwyfgX+
-         Du1cltEgNV4JdfnK0pNQ6BMRBpMrFN2f6ZQNYq0BSmbOH2DBb9/L9dpaGCLi2/5G6HeL
-         Eedw==
+        Mon, 27 Jul 2020 11:56:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595865362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TDBVj7bHt6Fay5LTDY6rfY9vuNNASLukydt89FqrzTY=;
+        b=OlnuqN9NYCnRCbAzaY6OBbz2YyqKurS6A+XKuNK9tflmwwzmOpASzHCmZek4rcBF8lNANE
+        ti+4Vcxo1+PPvaut2oElMnSp+Ja0G9K0C1b7fnj5vnyXQCTln0f2Q0DhpAjlcg6HVt4DhK
+        6BR+2lelTNepHugjByCy+PZSxXytXDs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-438-u6h2zuAnPaOtFZ6eXjo-cA-1; Mon, 27 Jul 2020 11:55:58 -0400
+X-MC-Unique: u6h2zuAnPaOtFZ6eXjo-cA-1
+Received: by mail-ed1-f70.google.com with SMTP id u25so5773392edq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:55:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b1XOxgs+ESH1/h8P2K3MXhzlqoLMlitlCI9KqWLboA8=;
-        b=lbjSjJSwtg146hVbzTCMRG1pKRRIIoHYrvG76mxHEDMfLe9dcKtfmC4g3dbYLa1P5T
-         xe2edtaiReGmAVokwoJpu/1oYblIl3TpCOmB6fkGSDlGw09SqfOWy+p3jMjob0ZMrprX
-         hGMB0lZCxm4MYGC5O2YSkBPyqkc/o6taVskwOPAlheD9OZ6Pkio/bmqbDds1ENO+KAA/
-         hDy9ia+DHkpdXCwkJHz15MsAZ+oUtLJAJwDBPzNICNKpQgbWL/FCyM0mf8Mfgh1IC23h
-         s0POuNOA6WwsCPAgkHeRT/gjdTc9TRcqOxVyjubUm2t8faSRcI00QegS6l1Rr91o7v4r
-         /4ug==
-X-Gm-Message-State: AOAM531GQjMoZyzip9/Ne1uJjpFGlDKBqKaxzWo/Bvh23USoEwgfRICZ
-        Fk9lGj3vXw/e1abEMnqGoKfT97eMgbzf/ubJSI4Cww==
-X-Google-Smtp-Source: ABdhPJyNSLUvhPPAp68+3bvGDOcxxHsEMX1B13+H02YFrz1OJkOjrSCdVMD5/2ncg2y+CTRAol+zwks9nnOn444jfsY=
-X-Received: by 2002:a17:906:600f:: with SMTP id o15mr6771795ejj.41.1595865387804;
- Mon, 27 Jul 2020 08:56:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=TDBVj7bHt6Fay5LTDY6rfY9vuNNASLukydt89FqrzTY=;
+        b=FYtNXvIBrxfR0FsFhaKXOkcVuylXu6zCLDEJjIyhkZrn7M6b7xcV7tHdVaLqUm8+Q+
+         5060ZmtM1Fw6LGSzlNsQgEw8LWUB7ql6nahWhzPB+lZbJfqQGiVDidIfPP/aIIzAKCcC
+         bmcvlvA6XvkTocam7dFT9eL6BPDgSNEv09opVQjtSZMMLbBbAplrbKMx9YgLlv/9K6ar
+         HxyVr6TYezTkQNqorhETPyGrxgFYXwpO9ykgzMXG52PbCpoUKgVIgasS9LmuVL9yYnqX
+         AzcS8q+D6ni59CvgtGdLzt/sCX7mOCVD3I1RA/XBf5yUqmAeVrsGvI05NnnO7/moKtIE
+         o9lA==
+X-Gm-Message-State: AOAM532bbv7dGHAEualIcmRlEDWRdTXqhclRMQCypqHyLhUSEBL0Zc9f
+        0SMZ8WJ7qPvn4xrXzwYY/el5IIdz4QXdgA0qrnZOnDd+08W8lpQdIAyhBoxY5hLsaOeS8ZDZs9y
+        +BrEeoyEqMUAhh9de1rsa14BR
+X-Received: by 2002:a17:906:8316:: with SMTP id j22mr2275456ejx.20.1595865356852;
+        Mon, 27 Jul 2020 08:55:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzYP4hsrj5jhbksZ3bHS+m22n8MBnPkqWri7tfe/lVqT8nyCOh1YNkb5qxrkUlGB6A+j62Chg==
+X-Received: by 2002:a17:906:8316:: with SMTP id j22mr2275433ejx.20.1595865356545;
+        Mon, 27 Jul 2020 08:55:56 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id a1sm7311678ejk.125.2020.07.27.08.55.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 08:55:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Julia Suvorova <jusual@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "open list\:VFIO DRIVER" <kvm@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH] x86/PCI: Use MMCONFIG by default for KVM guests
+In-Reply-To: <CAHp75VfLjYvFUVw+uHbMJCeoNfs6nb4Qh1OoQraA5bTkR9SeRg@mail.gmail.com>
+References: <20200722001513.298315-1-jusual@redhat.com> <87d04nq40h.fsf@vitty.brq.redhat.com> <CAHp75VfLjYvFUVw+uHbMJCeoNfs6nb4Qh1OoQraA5bTkR9SeRg@mail.gmail.com>
+Date:   Mon, 27 Jul 2020 17:55:55 +0200
+Message-ID: <87lfj5lzp0.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20200719145028.3370-3-miguelborgesdefreitas@gmail.com>
- <20200720112401.4620-1-miguelborgesdefreitas@gmail.com> <20200720112401.4620-2-miguelborgesdefreitas@gmail.com>
- <20200723174905.GA596242@bogus> <20200723195755.GV3428@piout.net>
- <20200727094553.GH1551@shell.armlinux.org.uk> <20200727144938.GC239143@piout.net>
- <20200727152439.GK1551@shell.armlinux.org.uk> <20200727154104.GE239143@piout.net>
- <20200727154335.GL1551@shell.armlinux.org.uk>
-In-Reply-To: <20200727154335.GL1551@shell.armlinux.org.uk>
-From:   Jon Nettleton <jon@solid-run.com>
-Date:   Mon, 27 Jul 2020 17:55:50 +0200
-Message-ID: <CABdtJHuVaTa5T0-KdQ-wZQrmFQ6HO3FvgnTgSo3aOi+=SPzDZA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: pcf8523: add DSM pm option for
- battery switch-over
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>,
-        a.zummo@towertech.it, Baruch Siach <baruch@tkos.co.il>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 5:43 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> On Mon, Jul 27, 2020 at 05:41:04PM +0200, Alexandre Belloni wrote:
-> > On 27/07/2020 16:24:39+0100, Russell King - ARM Linux admin wrote:
-> > > On Mon, Jul 27, 2020 at 04:49:38PM +0200, Alexandre Belloni wrote:
-> > > > On 27/07/2020 10:45:53+0100, Russell King - ARM Linux admin wrote:
-> > > > > > This is but this shouldn't be a DT property as it has to be changed
-> > > > > > dynamically. I'm working on an ioctl interface to change this
-> > > > > > configuration.
-> > > > >
-> > > > > Why does it need to be changed dynamically?  If the hardware components
-> > > > > are not fitted to allow the RTC to be safely used without DSM, then
-> > > > > why should userspace be able to disable DSM?
-> > > >
-> > > > For RTCs with a standby mode, you want to be able to return to standby
-> > > > mode.
-> > > >
-> > > > That would happen for example after factory flashing in that common use
-> > > > case:
-> > > >  - the board is manufactured
-> > > >  - Vbackup is installed, the RTC switches to standby mode
-> > > >  - the board is then booted to flash a system, Vprimary is now present,
-> > > >    the RTC switches to DSM.
-> > > >
-> > > > At this point, if the board is simply shut down, the RTC will start
-> > > > draining Vbackup before leaving the factory. Instead, we want to be able
-> > > > to return to standby mode until the final user switches the product on
-> > > > for the first time.
-> > >
-> > > I don't think you're understanding what's going on with this proposed
-> > > patch.  The cubox-i does work today, and the RTC does survive most
-> > > power-downs. There are situations where it doesn't.
-> > >
-> > > So, let's take your process above.
-> > >
-> > > - the board is manufactured
-> > > - Vbackup is installed, the RTC switches to standby mode
-> > > - the board is then booted to flash a system, Vprimary is now present
-> > > - the board is powered down.  the RTC _might_ switch over to battery
-> > >   if it notices the power failure in time, or it might not.  A random
-> > >   sample of units leaving the factory have the RTC in standby mode.
-> > >   Others are draining the battery.
-> > >
-> > > I'm not saying what you propose isn't a good idea.  I'm questioning
-> > > why we should expose this in the generic kernel on platforms where
-> > > it's likely to end up with the RTC being corrupted.
-> > >
-> >
-> > Note that I didn't say we should expose settings that are not working
-> > but it is a different discussion.
->
-> It isn't a different discussion - that is exactly what the point of
-> my emails to you all along have been!
->
-> So, can we please have that discussion, it is pertinent to this patch.
->
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
 
-Thinking about this some more, I believe whether or not an IOCTL
-interface is in the works or needed is irrelevant.  This patch
-describes the hardware and how it is designed and the topic of
-discussion is if we need a simple boolean state, or if we need
-something that could be used to support dynamic configuration in the
-future.  I would rather make this decision now rather than keep
-tacking on boolean config options, or revisit a bunch of device-tree
-changes.
+> On Wed, Jul 22, 2020 at 12:47 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>> Julia Suvorova <jusual@redhat.com> writes:
+>
+>> > Scanning for PCI devices at boot takes a long time for KVM guests. It
+>> > can be reduced if KVM will handle all configuration space accesses for
+>> > non-existent devices without going to userspace [1]. But for this to
+>> > work, all accesses must go through MMCONFIG.
+>> > This change allows to use pci_mmcfg as raw_pci_ops for 64-bit KVM
+>> > guests making MMCONFIG the default access method.
+>
+> I'm not sure it won't break anything.
+
+It likely will as it's really hard to check all possible KVM
+configurations in existence and that's why we are converging on adding a
+feature bit which KVM userspace (e.g. QEMU) will set when the
+configuration is known to be good.
+
+>
+>> > [1] https://lkml.org/lkml/2020/5/14/936
+>
+> use Link: tag and better to use lore.kernel.org.
+>
+>> This implies mmconfig access method is always functional (when present)
+>> for all KVM guests, regardless of hypervisor version/which KVM userspace
+>> is is use/... In case the assumption is true the patch looks good (to
+>> me) but in case it isn't or if we think that more control over this
+>> is needed we may want to introduce a PV feature bit for KVM.
+>>
+>> Also, I'm thinking about moving this to arch/x86/kernel/kvm.c: we can
+>> override x86_init.pci.arch_init and reassign raw_pci_ops after doing
+>> pci_arch_init().
+>
+> % git grep -n -w x86_init.pci.arch_init -- arch/x86/
+> arch/x86/hyperv/hv_init.c:400:  x86_init.pci.arch_init = hv_pci_init;
+> arch/x86/kernel/apic/apic_numachip.c:203:       x86_init.pci.arch_init
+> = pci_numachip_init;
+> arch/x86/kernel/jailhouse.c:207:        x86_init.pci.arch_init
+>  = jailhouse_pci_arch_init;
+> arch/x86/pci/init.c:20: if (x86_init.pci.arch_init && !x86_init.pci.arch_init())
+> arch/x86/platform/intel-mid/intel-mid.c:172:    x86_init.pci.arch_init
+> = intel_mid_pci_init;
+> arch/x86/platform/olpc/olpc.c:309:              x86_init.pci.arch_init
+> = pci_olpc_init;
+> arch/x86/xen/enlighten_pv.c:1411:
+> x86_init.pci.arch_init = pci_xen_init;
+>
+> Are you going to update all these? Or how this is supposed to work (I
+> may be missing something)?
+
+My suggestion was to do exactly the same for KVM guests instead of
+switching ops in pci_mmcfg_arch_init() depending on kvm_para_available()
+output. Basically, keep all KVM-related tunings in one place
+(arch/x86/kernel/kvm.c).
+
+-- 
+Vitaly
+
