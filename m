@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DC822F254
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF9B22F146
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729250AbgG0OJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:09:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60356 "EHLO mail.kernel.org"
+        id S1732785AbgG0Oa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729710AbgG0OJu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:09:50 -0400
+        id S1731698AbgG0OVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28D792250E;
-        Mon, 27 Jul 2020 14:09:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14FF42070B;
+        Mon, 27 Jul 2020 14:21:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858989;
-        bh=zEVmAW/mzx/dAhVV09yGCqrIDf46DtJJOMXi6z63jn0=;
+        s=default; t=1595859677;
+        bh=U1vHDKNq8WHILmUU+SD2QZgy44JApUdZ+BAhy+I1cx8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZ8hlrXxqazehSFQMMAypN7CEPSPKXxfoTLV07Dp4MGGbYrBxhkpwfO6AU7a1WM3H
-         OsuGHLGH9EOAhIjSi6iqebAre/ZsFIFEb/YVhnG09+N9U/uRfrTlGQwVI6MeEyi3UB
-         Aiq8cML6EgddJNKfqLQpRTB/4+gv5BUV/EqIbmDY=
+        b=v/8yDaZPW6rpFagCGVWI8LKmkKG/fz8iNUMn7L50ps6AePONx5mAK3/PtKilbi1H0
+         wdBoVrazYOIcQGfnNAGYZQUsE+ENIUvGvFQnV2d4mn8/3QmHzcVxUioqTKHgfXaHVF
+         37WZEbo0Zx7gQJDwtB2dzVRWEXPYi+YrOGed3Ubw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Burkov <boris@bur.io>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 4.19 23/86] btrfs: fix mount failure caused by race with umount
-Date:   Mon, 27 Jul 2020 16:03:57 +0200
-Message-Id: <20200727134915.517999274@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 063/179] net: dsa: mv88e6xxx: fix in-band AN link establishment
+Date:   Mon, 27 Jul 2020 16:03:58 +0200
+Message-Id: <20200727134935.740410070@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,104 +45,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-commit 48cfa61b58a1fee0bc49eef04f8ccf31493b7cdd upstream.
+[ Upstream commit fad58190c0ffd72c394722928cd3e919b6e18357 ]
 
-It is possible to cause a btrfs mount to fail by racing it with a slow
-umount. The crux of the sequence is generic_shutdown_super not yet
-calling sop->put_super before btrfs_mount_root calls btrfs_open_devices.
-If that occurs, btrfs_open_devices will decide the opened counter is
-non-zero, increment it, and skip resetting fs_devices->total_rw_bytes to
-0. From here, mount will call sget which will result in grab_super
-trying to take the super block umount semaphore. That semaphore will be
-held by the slow umount, so mount will block. Before up-ing the
-semaphore, umount will delete the super block, resulting in mount's sget
-reliably allocating a new one, which causes the mount path to dutifully
-fill it out, and increment total_rw_bytes a second time, which causes
-the mount to fail, as we see double the expected bytes.
+If in-band negotiation or fixed-link modes are specified for a DSA
+port, the DSA code will force the link down during initialisation. For
+fixed-link mode, this is fine, as phylink will manage the link state.
+However, for in-band mode, phylink expects the PCS to detect link,
+which will not happen if the link is forced down.
 
-Here is the sequence laid out in greater detail:
+There is a related issue that in in-band mode, the link could come up
+while we are making configuration changes, so we should force the link
+down prior to reconfiguring the interface mode.
 
-CPU0                                                    CPU1
-down_write sb->s_umount
-btrfs_kill_super
-  kill_anon_super(sb)
-    generic_shutdown_super(sb);
-      shrink_dcache_for_umount(sb);
-      sync_filesystem(sb);
-      evict_inodes(sb); // SLOW
+This patch addresses both issues.
 
-                                              btrfs_mount_root
-                                                btrfs_scan_one_device
-                                                fs_devices = device->fs_devices
-                                                fs_info->fs_devices = fs_devices
-                                                // fs_devices-opened makes this a no-op
-                                                btrfs_open_devices(fs_devices, mode, fs_type)
-                                                s = sget(fs_type, test, set, flags, fs_info);
-                                                  find sb in s_instances
-                                                  grab_super(sb);
-                                                    down_write(&s->s_umount); // blocks
-
-      sop->put_super(sb)
-        // sb->fs_devices->opened == 2; no-op
-      spin_lock(&sb_lock);
-      hlist_del_init(&sb->s_instances);
-      spin_unlock(&sb_lock);
-      up_write(&sb->s_umount);
-                                                    return 0;
-                                                  retry lookup
-                                                  don't find sb in s_instances (deleted by CPU0)
-                                                  s = alloc_super
-                                                  return s;
-                                                btrfs_fill_super(s, fs_devices, data)
-                                                  open_ctree // fs_devices total_rw_bytes improperly set!
-                                                    btrfs_read_chunk_tree
-                                                      read_one_dev // increment total_rw_bytes again!!
-                                                      super_total_bytes < fs_devices->total_rw_bytes // ERROR!!!
-
-To fix this, we clear total_rw_bytes from within btrfs_read_chunk_tree
-before the calls to read_one_dev, while holding the sb umount semaphore
-and the uuid mutex.
-
-To reproduce, it is sufficient to dirty a decent number of inodes, then
-quickly umount and mount.
-
-  for i in $(seq 0 500)
-  do
-    dd if=/dev/zero of="/mnt/foo/$i" bs=1M count=1
-  done
-  umount /mnt/foo&
-  mount /mnt/foo
-
-does the trick for me.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Boris Burkov <boris@bur.io>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 3be98b2d5fbc ("net: dsa: Down cpu/dsa ports phylink will control")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/volumes.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/dsa/mv88e6xxx/chip.c | 22 +++++++++++++++++++---
+ drivers/net/dsa/mv88e6xxx/chip.h |  1 +
+ 2 files changed, 20 insertions(+), 3 deletions(-)
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -6935,6 +6935,14 @@ int btrfs_read_chunk_tree(struct btrfs_f
- 	mutex_lock(&fs_info->chunk_mutex);
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 2b4a723c83065..e065be419a03d 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -664,8 +664,11 @@ static void mv88e6xxx_mac_config(struct dsa_switch *ds, int port,
+ 				 const struct phylink_link_state *state)
+ {
+ 	struct mv88e6xxx_chip *chip = ds->priv;
++	struct mv88e6xxx_port *p;
+ 	int err;
  
- 	/*
-+	 * It is possible for mount and umount to race in such a way that
-+	 * we execute this code path, but open_fs_devices failed to clear
-+	 * total_rw_bytes. We certainly want it cleared before reading the
-+	 * device items, so clear it here.
-+	 */
-+	fs_info->fs_devices->total_rw_bytes = 0;
++	p = &chip->ports[port];
 +
-+	/*
- 	 * Read all device items, and then all the chunk items. All
- 	 * device items are found before any chunk item (their object id
- 	 * is smaller than the lowest possible object id for a chunk
+ 	/* FIXME: is this the correct test? If we're in fixed mode on an
+ 	 * internal port, why should we process this any different from
+ 	 * PHY mode? On the other hand, the port may be automedia between
+@@ -675,10 +678,14 @@ static void mv88e6xxx_mac_config(struct dsa_switch *ds, int port,
+ 		return;
+ 
+ 	mv88e6xxx_reg_lock(chip);
+-	/* FIXME: should we force the link down here - but if we do, how
+-	 * do we restore the link force/unforce state? The driver layering
+-	 * gets in the way.
++	/* In inband mode, the link may come up at any time while the link
++	 * is not forced down. Force the link down while we reconfigure the
++	 * interface mode.
+ 	 */
++	if (mode == MLO_AN_INBAND && p->interface != state->interface &&
++	    chip->info->ops->port_set_link)
++		chip->info->ops->port_set_link(chip, port, LINK_FORCED_DOWN);
++
+ 	err = mv88e6xxx_port_config_interface(chip, port, state->interface);
+ 	if (err && err != -EOPNOTSUPP)
+ 		goto err_unlock;
+@@ -691,6 +698,15 @@ static void mv88e6xxx_mac_config(struct dsa_switch *ds, int port,
+ 	if (err > 0)
+ 		err = 0;
+ 
++	/* Undo the forced down state above after completing configuration
++	 * irrespective of its state on entry, which allows the link to come up.
++	 */
++	if (mode == MLO_AN_INBAND && p->interface != state->interface &&
++	    chip->info->ops->port_set_link)
++		chip->info->ops->port_set_link(chip, port, LINK_UNFORCED);
++
++	p->interface = state->interface;
++
+ err_unlock:
+ 	mv88e6xxx_reg_unlock(chip);
+ 
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.h b/drivers/net/dsa/mv88e6xxx/chip.h
+index e5430cf2ad711..6476524e8239d 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.h
++++ b/drivers/net/dsa/mv88e6xxx/chip.h
+@@ -232,6 +232,7 @@ struct mv88e6xxx_port {
+ 	u64 atu_full_violation;
+ 	u64 vtu_member_violation;
+ 	u64 vtu_miss_violation;
++	phy_interface_t interface;
+ 	u8 cmode;
+ 	bool mirror_ingress;
+ 	bool mirror_egress;
+-- 
+2.25.1
+
 
 
