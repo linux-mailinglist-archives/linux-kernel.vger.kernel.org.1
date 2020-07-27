@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAD122F8E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E38A22F8F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgG0TUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55694 "EHLO
+        id S1728940AbgG0TV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728313AbgG0TUw (ORCPT
+        with ESMTP id S1728922AbgG0TVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:20:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EF7C0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:20:52 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k18so2394270pfp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:20:52 -0700 (PDT)
+        Mon, 27 Jul 2020 15:21:25 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F906C061794;
+        Mon, 27 Jul 2020 12:21:25 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id o13so10458260pgf.0;
+        Mon, 27 Jul 2020 12:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t8hLkFIbtpdEX3UBYFfNbS3mhtXXCA/FYFZZm/zp7IQ=;
-        b=AaPrVOqNWMgqMpxH88BEQJnuih5t7lG8Pv8holLzmGEU4PKPfhWaJFBe3+epjBa5TG
-         Keaw7CEihV8ZtlT6zoxgh/RsdsdBJpqs4TK1Q0FOtw+Q+IDZMp3VNvwboWf9iZB/5Gh/
-         RmXdaa/Uox3jj+vCZXTE35yj488G1nA9Bf82c=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gv1At7xomxbSkiHEMMp/MdVQGHl3xOeUcLOgVXl9jaM=;
+        b=QPX8niCszCEYxpgHRA5feQ/5WYif4D6kceFBFbLizenbe1uHxoE95G8CQl0uVw6dVx
+         iWI628gC8Auh8f2Sn2cYTiODS3rtto/PqyyXjC4aqXyPIQh2GRwnPvB78GrTYsdaW5Qk
+         kCIR6b/geTpTRscY3wkdoVzf3PMZa135FxFeKrN8PYWdYPhwd2hOznrO0iMhyDSRmjc3
+         O8aU3acP5lYmqS8KuElcP4uMhYjfaYoOxP6h1RFFlRlhvKj2XnPubCw1XDHHAHFSHoDa
+         yUCtjmJXR+54EuDPRAeKkjeamRrM9si89qDs3TP3fkvV3+yS7Xnt+00eZ1EHkLgmP+7Y
+         hAmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t8hLkFIbtpdEX3UBYFfNbS3mhtXXCA/FYFZZm/zp7IQ=;
-        b=S6Zgrlkk/M8MfbcJB8W7kS0+pAyrcehwskmEbsWVG9yJG7Es0+vBROjKYC6QkLu8gI
-         caBPoCgAMj1lm4akh0HH5oT0Vx7CCH9b+s8O08wXzbS2eMIx6tcgc1l7qCycBUwUOy0L
-         e6CAge56BxajdiKzOIl6G72z8vvFOvGy+S6RYvEMqOhF39FVD0IRug50Dhx6sOntEXWI
-         iQLrfeXMglSqVd0xxHE+vOBBT+5b4s3/QxL7VEc8vI3CRJF4zO109SweHAfvPxMIS2ar
-         N2Fr+R0T6wWm16T+1bRzCb6+Q1uhY24KoRyJeO/tI7SKl7PCEpbVwgNy95+3SDFeUBQg
-         DehQ==
-X-Gm-Message-State: AOAM532/0Mx3RmX89sqbeiTcad3lp8jDF6rTob1D4yE4MeZPpa8dKPGu
-        pErHk9ERyJlYt6bVofy+Ms+EeA==
-X-Google-Smtp-Source: ABdhPJx0j3o/dfARdxLCxZFu0QCg2nY4pjGflu6c0tuLw5tUQhIucFl39ZjiLASPZto5FWJNbE3ECA==
-X-Received: by 2002:a63:6c0a:: with SMTP id h10mr21194250pgc.11.1595877651605;
-        Mon, 27 Jul 2020 12:20:51 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id u24sm15605054pfm.211.2020.07.27.12.20.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 12:20:51 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 12:20:50 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
-Subject: Re: [PATCH v11 1/2] usb: dwc3: qcom: Add interconnect support in
- dwc3 driver
-Message-ID: <20200727192050.GD3191083@google.com>
-References: <1595869597-26049-1-git-send-email-sanm@codeaurora.org>
- <1595869597-26049-2-git-send-email-sanm@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gv1At7xomxbSkiHEMMp/MdVQGHl3xOeUcLOgVXl9jaM=;
+        b=mzjln8AkR/+tHdNx92P0ohvgu6zUsRr8kBPwSYJpxgo8d5fZGyXL3DHsZQlEUnxVSs
+         d49ttDTGZQuNjXzM4fro9ovqmuR+sCDD/cTGYHovyxGZRuXM2ahBeX8rh9RDbxNjHYHb
+         lfnA7BhpSXyyabz+qqF9KtM1pgbyk5+Q2JkXfbGqQInlu0OcY4NSASgCidGb5owEML+7
+         FtI9reKGL6hh9mQDrbBszFTqoFxEt1AWyXmqJoCDsF7kNHFQBJoSwSxj1oMMhnlaDMMV
+         5RgW41a45VY2G2PPlyn5vVokSKmnBpAazdIsVqN4KzBlZldEMRj2zxPZRxoSx3j6lOO/
+         pzpg==
+X-Gm-Message-State: AOAM530QKlt2pH6nZSJUuj3MYEgkBt7prPcF9WQfm3VPJGNYpfmAefav
+        yGVbNFaR/8MUILu3XGI9eAyE+/BJ+KcuQlHHodk=
+X-Google-Smtp-Source: ABdhPJyfSvzZi2vRzSnEZEjBLSS9LyzO6gG6U0zP8zFBEhZmoVNYvIwmuUBctF5HQlx29j1LFbs3SnGVTiMNfMgihp0=
+X-Received: by 2002:a63:a05f:: with SMTP id u31mr20695620pgn.4.1595877685130;
+ Mon, 27 Jul 2020 12:21:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1595869597-26049-2-git-send-email-sanm@codeaurora.org>
+References: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
+ <20200727172936.661567-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <20200727172936.661567-1-vaibhavgupta40@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 27 Jul 2020 22:21:08 +0300
+Message-ID: <CAHp75VfdNJqviZgbsG5mQdFKVa_0Cu8nhT5L_hgKsgPB6gutoA@mail.gmail.com>
+Subject: Re: [PATCH v3] spi: spi-topcliff-pch: drop call to wakeup-disable
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 10:36:36PM +0530, Sandeep Maheswaram wrote:
-> Add interconnect support in dwc3-qcom driver to vote for bus
-> bandwidth.
-> 
-> This requires for two different paths - from USB to
-> DDR. The other is from APPS to USB.
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+On Mon, Jul 27, 2020 at 8:32 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
+>
+> Before generic upgrade, both .suspend() and .resume() were invoking
+> pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
+> states. (Normal trend is .suspend() enables and .resume() disables the
+> wakeup.)
+>
+> This was ambiguous and may be buggy. Instead of replicating the legacy
+> behavior, drop the wakeup-disable call.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Thanks!
+
+> Fixes: f185bcc77980 ("spi: spi-topcliff-pch: use generic power management")
+> Reported-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/spi/spi-topcliff-pch.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+> index 281a90f1b5d8..c73a03ddf5f3 100644
+> --- a/drivers/spi/spi-topcliff-pch.c
+> +++ b/drivers/spi/spi-topcliff-pch.c
+> @@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
+>
+>         dev_dbg(dev, "%s ENTRY\n", __func__);
+>
+> -       device_wakeup_disable(dev);
+> -
+>         /* set suspend status to false */
+>         pd_dev_save->board_dat->suspend_sts = false;
+>
+> --
+> 2.27.0
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
