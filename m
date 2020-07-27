@@ -2,88 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C44722EDC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C06522EDCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbgG0NqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:46:15 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:42069 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728264AbgG0NqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:46:15 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BFh0j1Gygz9sPB;
-        Mon, 27 Jul 2020 23:46:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595857573;
-        bh=B1vYykWWB1vRTRXzc6qPktG/npyuWbJ8rcf/oj8D32E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=MT2SdTajAUxbjtyZ7GYqErCSlB35KKGQMQQMxoGEw1MScnB5xDE52MZidM4q8pJhX
-         0AjNx9rDbYiCjtV1iVOSMJ0UOwWHuIBZyssVCYS37fGK2dUQqPKIFzLCp9nkbEmGWJ
-         Un+vPj3aYUypmdjaRhZiInBmyp8gEpNZ6Q2QpECjQIKiF7B+/48IjM4GABjr8eXF6I
-         V+IRNitQTFtPKHvVFB380xmPtYd+0UuOXUe+EUQcjM9dU1tHbXU6FWkFXqv5XZ6yPe
-         Lo7ZMLw+zKmJUNu4GnNiosz2J9Y4xDJIPCHkn6fyHwkBBUWto8E40nRiSAb3YwSP9b
-         QuM2pf3stDkHw==
-Date:   Mon, 27 Jul 2020 23:46:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        id S1728552AbgG0NsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:48:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgG0NsN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:48:13 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B464C061794;
+        Mon, 27 Jul 2020 06:48:12 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id d1so8017272plr.8;
+        Mon, 27 Jul 2020 06:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NJmzr2KQBRICuAu1pv5/YVfC3bftlzNt8R1cIWx8IbE=;
+        b=HGdOixIk+LNjSWHZUK4ATkRjyLKVYX9VDXRfBVLTFUpwXDGNhSj4hugCezPW9Watsx
+         DYgDZ6JCFTZY80+LajAIl6hG/xxGlUt9ZyUgDqUdpVo6rBJwHbLJeDk5vXNDNvNc5B2E
+         zs0J2SZylYJf7qK0SlBtWgx5evTnK03U1hVPC5Xlyc09IDWm/VQ1utPmgy0u+xM9jmaJ
+         f+rhR8xPr3nXDIjYoKPiKCn/sPnMg3KgmFHHQOyy1tIFj00YAkUPvg9klo5iDy87NOyA
+         tG7CHXjSi62kGyMvl26Mtc/GCmB2hAWEpTAenN83BgOUn6hgIkZxa32MZ8DXzyZZiwMX
+         lEKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NJmzr2KQBRICuAu1pv5/YVfC3bftlzNt8R1cIWx8IbE=;
+        b=DPTRzQZjja9g0WBmK5GZPHdoAeh0OPaEci671ajPiY3viiSPo7+GYykYmZcIMVE6ET
+         OBgc3/hXG4k/0w4NmO0i1QYJYBKM9BquRJImBlPbDJG619kG02zwheaPnxng0M1QaLpJ
+         7BaOlWSo8aNs8ObME5MJ32s6vgyuUnHq0GSWsYmx1piDErP51kP0iqcxK6J7YNxFxraL
+         jM8YOrGFNJATs8Y5mXaqlYfR6athIHn9xlDBDlADuGG/2YsaZBUNuoa3vpo1E2vmAjLg
+         sM3oqLUcjcOPYq5IHkyU2luqeX+EI8GGfmIrDfoSKzBs/qSE2hhGkFcWHmm8tK7btxQi
+         78Jg==
+X-Gm-Message-State: AOAM531HScepw2cHUOOfR6iUpY6RLws/lQhseMQvWvPWAEuUnrjlKY+z
+        zDMaEbC21YSn60nCkj1lgEfE7yNUTLIrng==
+X-Google-Smtp-Source: ABdhPJymzaESRpyXHYliILrQeceM1V9MDg1bBV/LilZuHpXMR5G3RB1SERXvj8gZzKFTg+PWAatrsg==
+X-Received: by 2002:a17:90a:3fc7:: with SMTP id u7mr18805322pjm.231.1595857691850;
+        Mon, 27 Jul 2020 06:48:11 -0700 (PDT)
+Received: from gmail.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id f6sm2551521pfa.23.2020.07.27.06.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 06:48:11 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 19:16:46 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: linux-next: Fixes tag needs some work in the printk tree
-Message-ID: <20200727234612.3037c4a5@canb.auug.org.au>
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v2] spi: spi-topcliff-pch: drop call to wakeup-disable
+Message-ID: <20200727134646.GA114726@gmail.com>
+References: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
+ <20200727131742.82289-1-vaibhavgupta40@gmail.com>
+ <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/OoKAPBgphrrI0yd9CSkMldM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/OoKAPBgphrrI0yd9CSkMldM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jul 27, 2020 at 04:38:40PM +0300, Andy Shevchenko wrote:
+> On Mon, Jul 27, 2020 at 4:21 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
+> >
+> > Before generic upgrade, both .suspend() and .resume() were invoking
+> > pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
+> > states. (Normal trend is .suspend() enables and .resume() disables the
+> > wakeup.)
+> >
+> > This was ambiguous and may be buggy. Instead of replicating the legacy
+> > behavior, drop the wakeup-disable call.
+> >
+> 
+> > Fix: f185bcc77980("spi: spi-topcliff-pch: use generic power management")
+> 
+> Fixes: and missed space.
+> 
+> Note:
+> 
+> % grep one ~/.gitconfig
+>        one = show -s --pretty='format:%h (\"%s\")'
+> 
+> % git one f185bcc77980
+> f185bcc77980 ("spi: spi-topcliff-pch: use generic power management")
+> 
+> > Reported by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> Missed dash.
+> Does checkpatch complain?
+No, I got this message:
+"* .patch has no obvious style problems and is ready for submission"
 
-Hi all,
+I will fix the commit message.
 
-In commit
-
-  96b917f8e9ec ("printk: ringbuffer: support dataless records")
-
-Fixes tag
-
-  Fixes: ("printk: use the lockless ringbuffer")
-
-has these problem(s):
-
-  - No SHA1 recognised
-
-Maybe you meant
-
-Fixes: 896fbe20b4e2 ("printk: use the lockless ringbuffer")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/OoKAPBgphrrI0yd9CSkMldM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8e2qQACgkQAVBC80lX
-0Gyv6ggAhAASWG145yAQpOhUd+3bYdxAeJcOxeKVJTqrWuCfNDqf1NwyG9yUaiAh
-QU1ePPL6ubgVSFe5j+9fTqzumQjLZRKIRPPzU8h6qabO0vtfvzmrF5+EwfXuv1Yl
-5Uilaa0C3Zpn6s8xdYaeiaElx9OvC740oyvFxmwTiY3nr5+RUWeveWDTbzZ/PHRo
-VxqvM539L2wbwDHPu09dwByRgd2N7y0/Rykkfp1NFHCqvZZDjZXJq3/kAwobPDYy
-zRqDHhSJT1QNxRJYRVz2an33/cZPbXfvZRS9cW3UKtmEUOyroKWVRbBoE9EUU1sk
-9dw2Bs21WFZYRnSY2g0BE/e7eHIS7w==
-=RmbZ
------END PGP SIGNATURE-----
-
---Sig_/OoKAPBgphrrI0yd9CSkMldM--
+Thanks!
+Vaibhav Gupta
+> 
+> > Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> > ---
+> >  drivers/spi/spi-topcliff-pch.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+> > index 281a90f1b5d8..c73a03ddf5f3 100644
+> > --- a/drivers/spi/spi-topcliff-pch.c
+> > +++ b/drivers/spi/spi-topcliff-pch.c
+> > @@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
+> >
+> >         dev_dbg(dev, "%s ENTRY\n", __func__);
+> >
+> > -       device_wakeup_disable(dev);
+> > -
+> >         /* set suspend status to false */
+> >         pd_dev_save->board_dat->suspend_sts = false;
+> >
+> > --
+> > 2.27.0
+> >
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
