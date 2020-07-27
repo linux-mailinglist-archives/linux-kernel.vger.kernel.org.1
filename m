@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DCB22F829
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6CD22F879
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732286AbgG0Sqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:46:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35542 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732095AbgG0Spw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:45:52 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB38E2075A;
-        Mon, 27 Jul 2020 18:45:51 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 14:45:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tingwei Zhang <tingwei@codeaurora.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, tsoni@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
+        id S1727905AbgG0SwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgG0SwU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:52:20 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280AAC061794;
+        Mon, 27 Jul 2020 11:52:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 38B46126BCA48;
+        Mon, 27 Jul 2020 11:35:34 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 11:52:18 -0700 (PDT)
+Message-Id: <20200727.115218.1191292272155021831.davem@davemloft.net>
+To:     matthieu.baerts@tessares.net
+Cc:     netdev@vger.kernel.org, mathew.j.martineau@linux.intel.com,
+        kuba@kernel.org, pabeni@redhat.com, mptcp@lists.01.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] tracing: add flag to control different traces
-Message-ID: <20200727144550.7aa40c61@oasis.local.home>
-In-Reply-To: <20200726025931.30510-3-tingwei@codeaurora.org>
-References: <20200726025931.30510-1-tingwei@codeaurora.org>
-        <20200726025931.30510-3-tingwei@codeaurora.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: [PATCH net] mptcp: fix joined subflows with unblocking sk
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200727102433.3422117-1-matthieu.baerts@tessares.net>
+References: <20200727102433.3422117-1-matthieu.baerts@tessares.net>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Jul 2020 11:35:34 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 10:59:27 +0800
-Tingwei Zhang <tingwei@codeaurora.org> wrote:
+From: Matthieu Baerts <matthieu.baerts@tessares.net>
+Date: Mon, 27 Jul 2020 12:24:33 +0200
 
+> Unblocking sockets used for outgoing connections were not containing
+> inet info about the initial connection due to a typo there: the value of
+> "err" variable is negative in the kernelspace.
+> 
+> This fixes the creation of additional subflows where the remote port has
+> to be reused if the other host didn't announce another one. This also
+> fixes inet_diag showing blank info about MPTCP sockets from unblocking
+> sockets doing a connect().
+> 
+> Fixes: 41be81a8d3d0 ("mptcp: fix unblocking connect()")
+> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-> diff --git a/include/linux/trace.h b/include/linux/trace.h
-> index 7fd86d3c691f..d2fdf9be84b5 100644
-> --- a/include/linux/trace.h
-> +++ b/include/linux/trace.h
-> @@ -3,6 +3,9 @@
->  #define _LINUX_TRACE_H
->  
->  #ifdef CONFIG_TRACING
-> +
-> +#define TRACE_EXPORT_FUNCTION	BIT_ULL(0)
-
-All the flags variables below are defined as "int". Why the BIT_ULL()?
-BIT(0) should work just fine. The ULL makes one think these flags will
-be used for unsigned long variables, which it is not.
-
--- Steve
-
-
-> +
-
->  struct trace_export {
->  	struct trace_export __rcu	*next;
->  	void (*write)(struct trace_export *, const void *, unsigned int);
-> +	int flags;
->  };
->  
->  int register_ftrace_export(struct trace_export *export);
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index bb62269724d5..8f1e66831e9e 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -2747,33 +2747,37 @@ trace_buffer_unlock_commit_nostack(struct trace_buffer *buffer,
->  
->  static void
->  trace_process_export(struct trace_export *export,
-> -	       struct ring_buffer_event *event)
-> +	       struct ring_buffer_event *event, int flag)
->  {
->  	struct trace_entry *entry;
->  	unsigned int size = 0;
->  
-> -	entry = ring_buffer_event_data(event);
-> -	size = ring_buffer_event_length(event);
-> -	export->write(export, entry, size);
-> +	if (export->flags & flag) {
-> +		entry = ring_buffer_event_data(event);
-> +		size = ring_buffer_event_length(event);
-> +		export->write(export, entry, size);
-> +	}
->  }
+Applied, thanks!
