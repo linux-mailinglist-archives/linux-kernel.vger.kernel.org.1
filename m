@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9E922F05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4E722EF63
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732159AbgG0OXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:23:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53000 "EHLO mail.kernel.org"
+        id S1730786AbgG0OQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:16:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732118AbgG0OXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:23:42 -0400
+        id S1730210AbgG0OP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:15:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27E3B2083E;
-        Mon, 27 Jul 2020 14:23:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78BDE2075A;
+        Mon, 27 Jul 2020 14:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859821;
-        bh=uTzKu8227IvK2neuOEG36qM3bzCod7rBoHzbc5aDt0M=;
+        s=default; t=1595859358;
+        bh=5zQqoD96yDS07C+kDyvDQ1xSEMfj4vIcSvr/g+YgXR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vYWYLx8joNRlyI0EhMj2UZ+dCnMcbtJUCQFYsrpudh5l5v4YJN3BP9zF/JhizKKIn
-         vkDa15bJQIVz2wgPzng+tjT0KjIrUWgkdPHXaNerfDqVzPYRwrE7hEqUIGFsHxFgDW
-         f7tQ2ij21APG3TA2MoO1RXaKt1UllQOLylP+5Iz4=
+        b=088AVJPRU9q0pK8dtquzfqJcjljuhJsaNk1ftHGCbR3Mf3JfHFIdYUW9pvgE6aQkb
+         MRK8emzmKYBxAT4X/sIJ6gDfy/C3kvEBkF00yFG9bRpeiH/lpiS6qsRiwfYhDaD1OM
+         A/Jpkwq/r6hkDIAmglNQt54Ldvktj/pVrH3Cl6nY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Patrick Volkerding <volkerdi@gmail.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 088/179] Revert "PCI/PM: Assume ports without DLL Link Active train links in 100 ms"
-Date:   Mon, 27 Jul 2020 16:04:23 +0200
-Message-Id: <20200727134936.962434071@linuxfoundation.org>
+        stable@vger.kernel.org, Pi-Hsun Shih <pihsun@chromium.org>,
+        Shik Chen <shik@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 069/138] scripts/decode_stacktrace: strip basepath from all paths
+Date:   Mon, 27 Jul 2020 16:04:24 +0200
+Message-Id: <20200727134928.843826770@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,98 +49,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Pi-Hsun Shih <pihsun@chromium.org>
 
-[ Upstream commit d08c30d7a0d1826f771f16cde32bd86e48401791 ]
+[ Upstream commit d178770d8d21489abf5bafefcbb6d5243b482e9a ]
 
-This reverts commit ec411e02b7a2e785a4ed9ed283207cd14f48699d.
+Currently the basepath is removed only from the beginning of the string.
+When the symbol is inlined and there's multiple line outputs of
+addr2line, only the first line would have basepath removed.
 
-Patrick reported that this commit broke hybrid graphics on a ThinkPad X1
-Extreme 2nd with Intel UHD Graphics 630 and NVIDIA GeForce GTX 1650 Mobile:
+Change to remove the basepath prefix from all lines.
 
-  nouveau 0000:01:00.0: fifo: PBDMA0: 01000000 [] ch 0 [00ff992000 DRM] subc 0 mthd 0008 data 00000000
-
-Karol reported that this commit broke Nouveau firmware loading on a Lenovo
-P1G2 with Intel UHD Graphics 630 and NVIDIA TU117GLM [Quadro T1000 Mobile]:
-
-  nouveau 0000:01:00.0: acr: AHESASC binary failed
-
-In both cases, reverting ec411e02b7a2 solved the problem.  Unfortunately,
-this revert will reintroduce the "Thunderbolt bridges take long time to
-resume from D3cold" problem:
-https://bugzilla.kernel.org/show_bug.cgi?id=206837
-
-Link: https://lore.kernel.org/r/CAErSpo5sTeK_my1dEhWp7aHD0xOp87+oHYWkTjbL7ALgDbXo-Q@mail.gmail.com
-Link: https://lore.kernel.org/r/CACO55tsAEa5GXw5oeJPG=mcn+qxNvspXreJYWDJGZBy5v82JDA@mail.gmail.com
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=208597
-Reported-by: Patrick Volkerding <volkerdi@gmail.com>
-Reported-by: Karol Herbst <kherbst@redhat.com>
-Fixes: ec411e02b7a2 ("PCI/PM: Assume ports without DLL Link Active train links in 100 ms")
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 31013836a71e ("scripts/decode_stacktrace: match basepath using shell prefix operator, not regex")
+Co-developed-by: Shik Chen <shik@chromium.org>
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+Signed-off-by: Shik Chen <shik@chromium.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Nicolas Boichat <drinkcat@chromium.org>
+Cc: Jiri Slaby <jslaby@suse.cz>
+Link: http://lkml.kernel.org/r/20200720082709.252805-1-pihsun@chromium.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 30 +++++++++---------------------
- 1 file changed, 9 insertions(+), 21 deletions(-)
+ scripts/decode_stacktrace.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index d4758518a97bd..a4efc7e0061f5 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4662,8 +4662,7 @@ static int pci_pm_reset(struct pci_dev *dev, int probe)
-  * pcie_wait_for_link_delay - Wait until link is active or inactive
-  * @pdev: Bridge device
-  * @active: waiting for active or inactive?
-- * @delay: Delay to wait after link has become active (in ms). Specify %0
-- *	   for no delay.
-+ * @delay: Delay to wait after link has become active (in ms)
-  *
-  * Use this to wait till link becomes active or inactive.
-  */
-@@ -4704,7 +4703,7 @@ static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
- 		msleep(10);
- 		timeout -= 10;
- 	}
--	if (active && ret && delay)
-+	if (active && ret)
- 		msleep(delay);
- 	else if (ret != active)
- 		pci_info(pdev, "Data Link Layer Link Active not %s in 1000 msec\n",
-@@ -4825,28 +4824,17 @@ void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev)
- 	if (!pcie_downstream_port(dev))
- 		return;
+diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
+index 13e5fbafdf2f7..fe7076fdac8a3 100755
+--- a/scripts/decode_stacktrace.sh
++++ b/scripts/decode_stacktrace.sh
+@@ -84,8 +84,8 @@ parse_symbol() {
+ 		return
+ 	fi
  
--	/*
--	 * Per PCIe r5.0, sec 6.6.1, for downstream ports that support
--	 * speeds > 5 GT/s, we must wait for link training to complete
--	 * before the mandatory delay.
--	 *
--	 * We can only tell when link training completes via DLL Link
--	 * Active, which is required for downstream ports that support
--	 * speeds > 5 GT/s (sec 7.5.3.6).  Unfortunately some common
--	 * devices do not implement Link Active reporting even when it's
--	 * required, so we'll check for that directly instead of checking
--	 * the supported link speed.  We assume devices without Link Active
--	 * reporting can train in 100 ms regardless of speed.
--	 */
--	if (dev->link_active_reporting) {
--		pci_dbg(dev, "waiting for link to train\n");
--		if (!pcie_wait_for_link_delay(dev, true, 0)) {
-+	if (pcie_get_speed_cap(dev) <= PCIE_SPEED_5_0GT) {
-+		pci_dbg(dev, "waiting %d ms for downstream link\n", delay);
-+		msleep(delay);
-+	} else {
-+		pci_dbg(dev, "waiting %d ms for downstream link, after activation\n",
-+			delay);
-+		if (!pcie_wait_for_link_delay(dev, true, delay)) {
- 			/* Did not train, no need to wait any further */
- 			return;
- 		}
- 	}
--	pci_dbg(child, "waiting %d ms to become accessible\n", delay);
--	msleep(delay);
+-	# Strip out the base of the path
+-	code=${code#$basepath/}
++	# Strip out the base of the path on each line
++	code=$(while read -r line; do echo "${line#$basepath/}"; done <<< "$code")
  
- 	if (!pci_device_is_present(child)) {
- 		pci_dbg(child, "waiting additional %d ms to become accessible\n", delay);
+ 	# In the case of inlines, move everything to same line
+ 	code=${code//$'\n'/' '}
 -- 
 2.25.1
 
