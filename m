@@ -2,91 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7009122EBB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4581F22EBC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgG0MJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:09:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57475 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbgG0MJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:09:09 -0400
-IronPort-SDR: 2K7LhbcBJHcjX3jq1KhUL4KanAZEDFKE04d+qHNeLyuyVBfv1F/FtUu7YJre7nxvss/5K5vw06
- rRK+z6XdlJbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="148877489"
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
-   d="scan'208";a="148877489"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 05:09:09 -0700
-IronPort-SDR: vG9ARVnVR0G3e8Hw4iGLpIChAYRf4SBYy2FFldqF9756jK6syneLqufm1YK5PdpvQ7AR+8p7vP
- zdNK+Bc8vKww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
-   d="scan'208";a="329659230"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007.jf.intel.com with ESMTP; 27 Jul 2020 05:09:08 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1k01wK-004Gsx-8X; Mon, 27 Jul 2020 15:09:08 +0300
-Date:   Mon, 27 Jul 2020 15:09:08 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] intel_soc_pmic_mrfld: simplify the return expression of
- intel_scu_ipc_dev_iowrite8()
-Message-ID: <20200727120908.GR3703480@smile.fi.intel.com>
-References: <20200727030407.8820-1-vulab@iscas.ac.cn>
+        id S1728248AbgG0MKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:10:11 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36411 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728046AbgG0MKK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 08:10:10 -0400
+Received: by mail-oi1-f196.google.com with SMTP id s144so4183976oie.3;
+        Mon, 27 Jul 2020 05:10:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MY8NFYemyusLitbLbaMoVSrE9YgFZMePGaF7pe3X/ig=;
+        b=faVciNUS/lZe/q44gVqtjyTGYoXpiyBzS48vs5p6TVGDaSPzoIUiEvbfe/uWJw+tM/
+         T5inF/dVm4YyICu9IafwEAK0LGPqmZItdeC42GaTYm+PFJwd75SW++3r4SfZ6VSu2Aco
+         Mo6r8eXrv67p6caTop1vFJcqWv5/hclJmeYQ8iDCO4tmxtUPn90eyh/xcYKjc29flVzE
+         Ph5THp3A/edojAYaqr6WfOku2qKMLSVfonTDcwFJTTjXZVGhE2PU0rj7vgyd/5ZQ51KN
+         MvotOfveZwGDtq4kh11gg+Tun3e0NS0CVzOr3KivTIZUmeShlrqskkO1rLTfsbL6J67P
+         QWmQ==
+X-Gm-Message-State: AOAM533Z/H+EzQeAMhfHd1MgW5gb1IU89b6En6YbS8QplWERnRxQuAgs
+        YiZW2MC/9LyYk6KiedmcVgXnf+2FBOupWBujPDs=
+X-Google-Smtp-Source: ABdhPJx+eJ2XZmKmc1yyOWlaMremLljLAQsKfx87QRnMm2/D3J76CmRbkiallwCViQ1xjwchuuWJJxzfrCmDO0Cn0+U=
+X-Received: by 2002:aca:4a89:: with SMTP id x131mr18642621oia.103.1595851808250;
+ Mon, 27 Jul 2020 05:10:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727030407.8820-1-vulab@iscas.ac.cn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <1595820346-4361-1-git-send-email-neal.liu@mediatek.com> <1595820346-4361-2-git-send-email-neal.liu@mediatek.com>
+In-Reply-To: <1595820346-4361-2-git-send-email-neal.liu@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 27 Jul 2020 14:09:39 +0200
+Message-ID: <CAJZ5v0ij3KxSyB_06+p0aYcy2pMex8HCmHD5R2B8V90UnynrWQ@mail.gmail.com>
+Subject: Re: [PATCH v3] cpuidle: change enter_s2idle() prototype
+To:     Neal Liu <neal.liu@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 03:04:07AM +0000, Xu Wang wrote:
-> Simplify the return expression.
-
-I understand your intention, but I would rather leave as is.
-It's a bit more helpful in the original form in case to add some debugging.
-It also keep it symmetrical with read() counterpart.
-
-That said, I'm not objecting the change if Lee finds it good enough.
-
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+On Mon, Jul 27, 2020 at 5:25 AM Neal Liu <neal.liu@mediatek.com> wrote:
+>
+> Control Flow Integrity(CFI) is a security mechanism that disallows
+> changes to the original control flow graph of a compiled binary,
+> making it significantly harder to perform such attacks.
+>
+> init_state_node() assign same function callback to different
+> function pointer declarations.
+>
+> static int init_state_node(struct cpuidle_state *idle_state,
+>                            const struct of_device_id *matches,
+>                            struct device_node *state_node) { ...
+>         idle_state->enter = match_id->data; ...
+>         idle_state->enter_s2idle = match_id->data; }
+>
+> Function declarations:
+>
+> struct cpuidle_state { ...
+>         int (*enter) (struct cpuidle_device *dev,
+>                       struct cpuidle_driver *drv,
+>                       int index);
+>
+>         void (*enter_s2idle) (struct cpuidle_device *dev,
+>                               struct cpuidle_driver *drv,
+>                               int index); };
+>
+> In this case, either enter() or enter_s2idle() would cause CFI check
+> failed since they use same callee.
+>
+> Align function prototype of enter() since it needs return value for
+> some use cases. The return value of enter_s2idle() is no
+> need currently.
+>
+> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
+> Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 > ---
->  drivers/mfd/intel_soc_pmic_mrfld.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mfd/intel_soc_pmic_mrfld.c b/drivers/mfd/intel_soc_pmic_mrfld.c
-> index bd94c989d232..71da861e8c27 100644
-> --- a/drivers/mfd/intel_soc_pmic_mrfld.c
-> +++ b/drivers/mfd/intel_soc_pmic_mrfld.c
-> @@ -91,13 +91,8 @@ static int bcove_ipc_byte_reg_write(void *context, unsigned int reg,
->  {
->  	struct intel_soc_pmic *pmic = context;
->  	u8 ipc_in = val;
-> -	int ret;
->  
-> -	ret = intel_scu_ipc_dev_iowrite8(pmic->scu, reg, ipc_in);
-> -	if (ret)
-> -		return ret;
-> -
-> -	return 0;
-> +	return intel_scu_ipc_dev_iowrite8(pmic->scu, reg, ipc_in);
+>  drivers/acpi/processor_idle.c   |    6 ++++--
+>  drivers/cpuidle/cpuidle-tegra.c |    8 +++++---
+>  drivers/idle/intel_idle.c       |    6 ++++--
+>  include/linux/cpuidle.h         |    9 ++++++---
+>  4 files changed, 19 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 75534c5..6ffb6c9 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -655,8 +655,8 @@ static int acpi_idle_enter(struct cpuidle_device *dev,
+>         return index;
 >  }
->  
->  static const struct regmap_config bcove_regmap_config = {
-> -- 
-> 2.17.1
-> 
+>
+> -static void acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+> -                                  struct cpuidle_driver *drv, int index)
+> +static int acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+> +                                 struct cpuidle_driver *drv, int index)
+>  {
+>         struct acpi_processor_cx *cx = per_cpu(acpi_cstate[index], dev->cpu);
+>
+> @@ -674,6 +674,8 @@ static void acpi_idle_enter_s2idle(struct cpuidle_device *dev,
+>                 }
+>         }
+>         acpi_idle_do_entry(cx);
+> +
+> +       return 0;
+>  }
+>
+>  static int acpi_processor_setup_cpuidle_cx(struct acpi_processor *pr,
+> diff --git a/drivers/cpuidle/cpuidle-tegra.c b/drivers/cpuidle/cpuidle-tegra.c
+> index 1500458..a12fb14 100644
+> --- a/drivers/cpuidle/cpuidle-tegra.c
+> +++ b/drivers/cpuidle/cpuidle-tegra.c
+> @@ -253,11 +253,13 @@ static int tegra_cpuidle_enter(struct cpuidle_device *dev,
+>         return err ? -1 : index;
+>  }
+>
+> -static void tegra114_enter_s2idle(struct cpuidle_device *dev,
+> -                                 struct cpuidle_driver *drv,
+> -                                 int index)
+> +static int tegra114_enter_s2idle(struct cpuidle_device *dev,
+> +                                struct cpuidle_driver *drv,
+> +                                int index)
+>  {
+>         tegra_cpuidle_enter(dev, drv, index);
+> +
+> +       return 0;
+>  }
+>
+>  /*
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index f449584..b178da3 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -175,13 +175,15 @@ static __cpuidle int intel_idle(struct cpuidle_device *dev,
+>   * Invoked as a suspend-to-idle callback routine with frozen user space, frozen
+>   * scheduler tick and suspended scheduler clock on the target CPU.
+>   */
+> -static __cpuidle void intel_idle_s2idle(struct cpuidle_device *dev,
+> -                                       struct cpuidle_driver *drv, int index)
+> +static __cpuidle int intel_idle_s2idle(struct cpuidle_device *dev,
+> +                                      struct cpuidle_driver *drv, int index)
+>  {
+>         unsigned long eax = flg2MWAIT(drv->states[index].flags);
+>         unsigned long ecx = 1; /* break on interrupt flag */
+>
+>         mwait_idle_with_hints(eax, ecx);
+> +
+> +       return 0;
+>  }
+>
+>  /*
+> diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> index ec2ef63..b65909a 100644
+> --- a/include/linux/cpuidle.h
+> +++ b/include/linux/cpuidle.h
+> @@ -65,10 +65,13 @@ struct cpuidle_state {
+>          * CPUs execute ->enter_s2idle with the local tick or entire timekeeping
+>          * suspended, so it must not re-enable interrupts at any point (even
+>          * temporarily) or attempt to change states of clock event devices.
+> +        *
+> +        * This callback may point to the same function as ->enter if all of
+> +        * the above requirements are met by it.
+>          */
+> -       void (*enter_s2idle) (struct cpuidle_device *dev,
+> -                             struct cpuidle_driver *drv,
+> -                             int index);
+> +       int (*enter_s2idle)(struct cpuidle_device *dev,
+> +                           struct cpuidle_driver *drv,
+> +                           int index);
+>  };
+>
+>  /* Idle State Flags */
+> --
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Applied as 5.9 material, thanks!
