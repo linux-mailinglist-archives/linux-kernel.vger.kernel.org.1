@@ -2,264 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7435922EDCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC9A22EDD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgG0Nsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgG0Ns3 (ORCPT
+        id S1729023AbgG0Nsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:48:52 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42891 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgG0Nsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:48:29 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC65FC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 06:48:28 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k13so207541plk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 06:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=szunKijEXv6Oi5Ur3X4bC9MRzV/pKzbZV4r4GAHkBNY=;
-        b=UO1iaSKRkRYbWrwirjm9kkXJySnMLFJjvS2oQm6NqGsKeD7NxjL+SjCe6bZbkRJgtL
-         4RKQwVeN4Xl2hQZo3ELW4F4Xs6QpFdkvmiuqPpfa6rQ7QH2eVnnP1M/nnk6IOrfqrI9u
-         ypAHwwB5TIOTqkCNdLBeOUKZP7rfpjZNxR8Fk=
+        Mon, 27 Jul 2020 09:48:51 -0400
+Received: by mail-ot1-f66.google.com with SMTP id v21so5065358otj.9;
+        Mon, 27 Jul 2020 06:48:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=szunKijEXv6Oi5Ur3X4bC9MRzV/pKzbZV4r4GAHkBNY=;
-        b=ArrT1iY3po1y/lxcplbhPwFrmDLaTPnEILL2geR/LyC7ebpWERb7qUTPNFyWEWNtSP
-         q6H7gMxAOPsUadDIWV3UhLSa/wKNur+5VGUqLnClf6nq7/6rp0JWn8lYzCNB0wp+xAf6
-         b7QAE9qJ7xJ65R5pubB7Fkm2tiRS5K4dwfbXGPpgVKTfIkH0RPVj3arzvbsaF4QmnP58
-         8Wetpri10YIZtDPpmyDYfxPd+o5hEI62g6PSQUqfjEzPijgCdld6CIxSXRKmJu0Bkavm
-         anCTSxzzActn5wbCu4hBKGDyJ41owtkTywLRhKBn7C7+/ldHcGn1xrYUWeJypmABzct5
-         l+Vw==
-X-Gm-Message-State: AOAM533bc+w+DAGTqOXum42nw1kpjlwRIQ6zV8wxvjRkXwY8OQ6u73xZ
-        hexqxvyZLVb3XQJJ91uxyqltrn1kXRw=
-X-Google-Smtp-Source: ABdhPJyuxmOYDhPH3QVlCnzX7TGgH1yjOH7R1emHg9aNyw2t6pWlA3Ge4DTuqMAMunateeij5IEfhg==
-X-Received: by 2002:a17:90b:f0a:: with SMTP id br10mr12838066pjb.77.1595857708308;
-        Mon, 27 Jul 2020 06:48:28 -0700 (PDT)
-Received: from localhost (2001-44b8-111e-5c00-9402-c547-7ebf-a307.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:9402:c547:7ebf:a307])
-        by smtp.gmail.com with ESMTPSA id g13sm15295894pje.29.2020.07.27.06.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 06:48:27 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@ozlabs.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] powerpc/mm: Remove custom stack expansion checking
-In-Reply-To: <20200724092528.1578671-4-mpe@ellerman.id.au>
-References: <20200724092528.1578671-1-mpe@ellerman.id.au> <20200724092528.1578671-4-mpe@ellerman.id.au>
-Date:   Mon, 27 Jul 2020 23:48:24 +1000
-Message-ID: <87tuxtrrvb.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G04O0/r0JtPjrA8T/yOTsq6lvTWvwXhHJzNHSD+Bvv0=;
+        b=Gf359EdhteI4Nnq8Yld1iYnvTexUhH9eL8GOUhs/UP2BN6++DzC2jAzaiegIg8SAR6
+         GgPsXH2riEdq/YZ5KGBsCkkftO8iyfdZ3snvhNvzvaU13qFDhjXKDAu0vRYshGVGN2T/
+         5Tw6Opaf0JIVq8VySt11ydieDvi4SYdR6/WbmVl7/ZTC8HZ85D7LI9TIzpTXeInuNoMH
+         YlVdh61tIoNiQtqhwmQJ/K84pm0V/UUIHk9siLcht/oAguHpNFtVYbf3gt7ZUC1cW4uC
+         hgEWodd5x/1ie9cRSZcXvMjg9/UaRq1o3S32f4lgJ5DZ5YJkQiw6xXNTal8uuSKAKms4
+         VtJg==
+X-Gm-Message-State: AOAM531Csy/22jzx06rTDRHG2w2J9nWQ/lK4lcz3MGcilGELdEBWHb4p
+        SejIt7TandJbMVFBjwQkalvsZUYyKojLo+slLGI=
+X-Google-Smtp-Source: ABdhPJxQLiGqjTBzCpfevLDoRoDaKwlSc6cFqo2M+nGytqpin0EHVT6UPpVSxY5bGbBw9MjXXpk0V2Yid7ru5AgB5bY=
+X-Received: by 2002:a9d:306:: with SMTP id 6mr10573023otv.167.1595857730290;
+ Mon, 27 Jul 2020 06:48:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200722093732.14297-1-ionela.voinescu@arm.com> <20200722093732.14297-2-ionela.voinescu@arm.com>
+In-Reply-To: <20200722093732.14297-2-ionela.voinescu@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 27 Jul 2020 15:48:39 +0200
+Message-ID: <CAJZ5v0i5Xrk6oTt81aeXDi1F8gnEspJo9e6nGf10nSvBz-Dbkw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] cpufreq: move invariance setter calls in cpufreq core
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-I tested v1 of this. I ran the test from the bug with a range of stack
-sizes, in a loop, for several hours and didn't see any crashes/signal
-delivery failures.
-
-I retested v2 for a few minutes just to be sure, and I ran stress-ng's
-stack, stackmmap and bad-altstack stressors to make sure no obvious
-kernel bugs were exposed. Nothing crashed.
-
-All tests done on a P8 LE guest under KVM.
-
-On that basis:
-
-Tested-by: Daniel Axtens <dja@axtens.net>
-
-The more I look at this the less qualified I feel to Review it, but
-certainly it looks better than my ugly hack from late last year.
-
-Kind regards,
-Daniel
-
-> We have powerpc specific logic in our page fault handling to decide if
-> an access to an unmapped address below the stack pointer should expand
-> the stack VMA.
+On Wed, Jul 22, 2020 at 11:38 AM Ionela Voinescu
+<ionela.voinescu@arm.com> wrote:
 >
-> The logic aims to prevent userspace from doing bad accesses below the
-> stack pointer. However as long as the stack is < 1MB in size, we allow
-> all accesses without further checks. Adding some debug I see that I
-> can do a full kernel build and LTP run, and not a single process has
-> used more than 1MB of stack. So for the majority of processes the
-> logic never even fires.
+> From: Valentin Schneider <valentin.schneider@arm.com>
 >
-> We also recently found a nasty bug in this code which could cause
-> userspace programs to be killed during signal delivery. It went
-> unnoticed presumably because most processes use < 1MB of stack.
+> To properly scale its per-entity load-tracking signals, the task scheduler
+> needs to be given a frequency scale factor, i.e. some image of the current
+> frequency the CPU is running at. Currently, this scale can be computed
+> either by using counters (APERF/MPERF on x86, AMU on arm64), or by
+> piggy-backing on the frequency selection done by cpufreq.
 >
-> The generic mm code has also grown support for stack guard pages since
-> this code was originally written, so the most heinous case of the
-> stack expanding into other mappings is now handled for us.
+> For the latter, drivers have to explicitly set the scale factor
+> themselves, despite it being purely boiler-plate code: the required
+> information depends entirely on the kind of frequency switch callback
+> implemented by the driver, i.e. either of: target_index(), target(),
+> fast_switch() and setpolicy().
 >
-> Finally although some other arches have special logic in this path,
-> from what I can tell none of x86, arm64, arm and s390 impose any extra
-> checks other than those in expand_stack().
+> The fitness of those callbacks with regard to driving the Frequency
+> Invariance Engine (FIE) is studied below:
 >
-> So drop our complicated logic and like other architectures just let
-> the stack expand as long as its within the rlimit.
+> target_index()
+> ==============
+> Documentation states that the chosen frequency "must be determined by
+> freq_table[index].frequency". It isn't clear if it *has* to be that
+> frequency, or if it can use that frequency value to do some computation
+> that ultimately leads to a different frequency selection. All drivers
+> go for the former, while the vexpress-spc-cpufreq has an atypical
+> implementation which is handled separately.
 >
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> Therefore, the hook works on the assumption the core can use
+> freq_table[index].frequency.
+>
+> target()
+> =======
+> This has been flagged as deprecated since:
+>
+>   commit 9c0ebcf78fde ("cpufreq: Implement light weight ->target_index() routine")
+>
+> It also doesn't have that many users:
+>
+>   cpufreq-nforce2.c:371:2:      .target = nforce2_target,
+>   cppc_cpufreq.c:416:2:         .target = cppc_cpufreq_set_target,
+>   gx-suspmod.c:439:2:           .target = cpufreq_gx_target,
+>   pcc-cpufreq.c:573:2:          .target = pcc_cpufreq_target,
+
+Also intel_pstate in the passive mode.
+
+>
+> Should we care about drivers using this hook, we may be able to exploit
+> cpufreq_freq_transition_{being, end}(). This is handled in a separate
+> patch.
+>
+> fast_switch()
+> =============
+> This callback *has* to return the frequency that was selected.
+>
+> setpolicy()
+> ===========
+> This callback does not have any designated way of informing what was the
+> end choice. But there are only two drivers using setpolicy(), and none
+> of them have current FIE support:
+>
+>   drivers/cpufreq/longrun.c:281:        .setpolicy      = longrun_set_policy,
+>   drivers/cpufreq/intel_pstate.c:2215:  .setpolicy      = intel_pstate_set_policy,
+>
+> The intel_pstate is known to use counter-driven frequency invariance.
+>
+> Conclusion
+> ==========
+>
+> Given that the significant majority of current FIE enabled drivers use
+> callbacks that lend themselves to triggering the setting of the FIE scale
+> factor in a generic way, move the invariance setter calls to cpufreq core.
+>
+> As a result of setting the frequency scale factor in cpufreq core, after
+> callbacks that lend themselves to trigger it, remove this functionality
+> from the driver side.
+>
+> To be noted that despite marking a successful frequency change, many
+> cpufreq drivers will consider the new frequency as the requested
+> frequency, although this is might not be the one granted by the hardware.
+>
+> Therefore, the call to arch_set_freq_scale() is a "best effort" one, and
+> it is up to the architecture if the new frequency is used in the new
+> frequency scale factor setting (determined by the implementation of
+> arch_set_freq_scale()) or eventually used by the scheduler (determined
+> by the implementation of arch_scale_freq_capacity()). The architecture
+> is in a better position to decide if it has better methods to obtain
+> more accurate information regarding the current frequency and use that
+> information instead (for example, the use of counters).
+>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  arch/powerpc/mm/fault.c | 109 ++--------------------------------------
->  1 file changed, 5 insertions(+), 104 deletions(-)
+>  drivers/cpufreq/cpufreq-dt.c           | 10 +---------
+>  drivers/cpufreq/cpufreq.c              | 20 +++++++++++++++++---
+>  drivers/cpufreq/qcom-cpufreq-hw.c      |  9 +--------
+>  drivers/cpufreq/scmi-cpufreq.c         | 12 ++----------
+>  drivers/cpufreq/scpi-cpufreq.c         |  6 +-----
+>  drivers/cpufreq/vexpress-spc-cpufreq.c |  5 -----
+>  6 files changed, 22 insertions(+), 40 deletions(-)
 >
-> v2: no change just rebased.
+> diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+> index 944d7b45afe9..9fd4ce774f12 100644
+> --- a/drivers/cpufreq/cpufreq-dt.c
+> +++ b/drivers/cpufreq/cpufreq-dt.c
+> @@ -40,16 +40,8 @@ static int set_target(struct cpufreq_policy *policy, unsigned int index)
+>  {
+>         struct private_data *priv = policy->driver_data;
+>         unsigned long freq = policy->freq_table[index].frequency;
+> -       int ret;
+> -
+> -       ret = dev_pm_opp_set_rate(priv->cpu_dev, freq * 1000);
 >
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 3ebb1792e636..925a7231abb3 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -42,39 +42,7 @@
->  #include <asm/kup.h>
->  #include <asm/inst.h>
->  
-> -/*
-> - * Check whether the instruction inst is a store using
-> - * an update addressing form which will update r1.
-> - */
-> -static bool store_updates_sp(struct ppc_inst inst)
-> -{
-> -	/* check for 1 in the rA field */
-> -	if (((ppc_inst_val(inst) >> 16) & 0x1f) != 1)
-> -		return false;
-> -	/* check major opcode */
-> -	switch (ppc_inst_primary_opcode(inst)) {
-> -	case OP_STWU:
-> -	case OP_STBU:
-> -	case OP_STHU:
-> -	case OP_STFSU:
-> -	case OP_STFDU:
-> -		return true;
-> -	case OP_STD:	/* std or stdu */
-> -		return (ppc_inst_val(inst) & 3) == 1;
-> -	case OP_31:
-> -		/* check minor opcode */
-> -		switch ((ppc_inst_val(inst) >> 1) & 0x3ff) {
-> -		case OP_31_XOP_STDUX:
-> -		case OP_31_XOP_STWUX:
-> -		case OP_31_XOP_STBUX:
-> -		case OP_31_XOP_STHUX:
-> -		case OP_31_XOP_STFSUX:
-> -		case OP_31_XOP_STFDUX:
-> -			return true;
-> -		}
-> -	}
-> -	return false;
-> -}
-> +
->  /*
->   * do_page_fault error handling helpers
->   */
-> @@ -267,57 +235,6 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->  	return false;
+> -       if (!ret) {
+> -               arch_set_freq_scale(policy->related_cpus, freq,
+> -                                   policy->cpuinfo.max_freq);
+> -       }
+> -
+> -       return ret;
+> +       return dev_pm_opp_set_rate(priv->cpu_dev, freq * 1000);
 >  }
->  
-> -// This comes from 64-bit struct rt_sigframe + __SIGNAL_FRAMESIZE
-> -#define SIGFRAME_MAX_SIZE	(4096 + 128)
-> -
-> -static bool bad_stack_expansion(struct pt_regs *regs, unsigned long address,
-> -				struct vm_area_struct *vma, unsigned int flags,
-> -				bool *must_retry)
-> -{
-> -	/*
-> -	 * N.B. The POWER/Open ABI allows programs to access up to
-> -	 * 288 bytes below the stack pointer.
-> -	 * The kernel signal delivery code writes a bit over 4KB
-> -	 * below the stack pointer (r1) before decrementing it.
-> -	 * The exec code can write slightly over 640kB to the stack
-> -	 * before setting the user r1.  Thus we allow the stack to
-> -	 * expand to 1MB without further checks.
-> -	 */
-> -	if (address + 0x100000 < vma->vm_end) {
-> -		struct ppc_inst __user *nip = (struct ppc_inst __user *)regs->nip;
-> -		/* get user regs even if this fault is in kernel mode */
-> -		struct pt_regs *uregs = current->thread.regs;
-> -		if (uregs == NULL)
-> -			return true;
-> -
-> -		/*
-> -		 * A user-mode access to an address a long way below
-> -		 * the stack pointer is only valid if the instruction
-> -		 * is one which would update the stack pointer to the
-> -		 * address accessed if the instruction completed,
-> -		 * i.e. either stwu rs,n(r1) or stwux rs,r1,rb
-> -		 * (or the byte, halfword, float or double forms).
-> -		 *
-> -		 * If we don't check this then any write to the area
-> -		 * between the last mapped region and the stack will
-> -		 * expand the stack rather than segfaulting.
-> -		 */
-> -		if (address + SIGFRAME_MAX_SIZE >= uregs->gpr[1])
-> -			return false;
-> -
-> -		if ((flags & FAULT_FLAG_WRITE) && (flags & FAULT_FLAG_USER) &&
-> -		    access_ok(nip, sizeof(*nip))) {
-> -			struct ppc_inst inst;
-> -
-> -			if (!probe_user_read_inst(&inst, nip))
-> -				return !store_updates_sp(inst);
-> -			*must_retry = true;
-> -		}
-> -		return true;
-> -	}
-> -	return false;
-> -}
-> -
->  #ifdef CONFIG_PPC_MEM_KEYS
->  static bool access_pkey_error(bool is_write, bool is_exec, bool is_pkey,
->  			      struct vm_area_struct *vma)
-> @@ -483,7 +400,6 @@ static int __do_page_fault(struct pt_regs *regs, unsigned long address,
->  	int is_user = user_mode(regs);
->  	int is_write = page_fault_is_write(error_code);
->  	vm_fault_t fault, major = 0;
-> -	bool must_retry = false;
->  	bool kprobe_fault = kprobe_page_fault(regs, 11);
->  
->  	if (unlikely(debugger_fault_handler(regs) || kprobe_fault))
-> @@ -572,30 +488,15 @@ static int __do_page_fault(struct pt_regs *regs, unsigned long address,
->  	vma = find_vma(mm, address);
->  	if (unlikely(!vma))
->  		return bad_area(regs, address);
-> -	if (likely(vma->vm_start <= address))
-> -		goto good_area;
-> -	if (unlikely(!(vma->vm_flags & VM_GROWSDOWN)))
-> -		return bad_area(regs, address);
->  
-> -	/* The stack is being expanded, check if it's valid */
-> -	if (unlikely(bad_stack_expansion(regs, address, vma, flags,
-> -					 &must_retry))) {
-> -		if (!must_retry)
-> +	if (unlikely(vma->vm_start > address)) {
-> +		if (unlikely(!(vma->vm_flags & VM_GROWSDOWN)))
->  			return bad_area(regs, address);
->  
-> -		mmap_read_unlock(mm);
-> -		if (fault_in_pages_readable((const char __user *)regs->nip,
-> -					    sizeof(unsigned int)))
-> -			return bad_area_nosemaphore(regs, address);
-> -		goto retry;
-> +		if (unlikely(expand_stack(vma, address)))
-> +			return bad_area(regs, address);
->  	}
->  
-> -	/* Try to expand it */
-> -	if (unlikely(expand_stack(vma, address)))
-> -		return bad_area(regs, address);
-> -
-> -good_area:
-> -
->  #ifdef CONFIG_PPC_MEM_KEYS
->  	if (unlikely(access_pkey_error(is_write, is_exec,
->  				       (error_code & DSISR_KEYFAULT), vma)))
-> -- 
-> 2.25.1
+>
+>  /*
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 036f4cc42ede..bac4101546db 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -2058,9 +2058,16 @@ EXPORT_SYMBOL(cpufreq_unregister_notifier);
+>  unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+>                                         unsigned int target_freq)
+>  {
+> +       unsigned int freq;
+> +
+>         target_freq = clamp_val(target_freq, policy->min, policy->max);
+> +       freq = cpufreq_driver->fast_switch(policy, target_freq);
+> +
+> +       if (freq)
+> +               arch_set_freq_scale(policy->related_cpus, freq,
+> +                                   policy->cpuinfo.max_freq);
+
+Why can't arch_set_freq_scale() handle freq == 0?
