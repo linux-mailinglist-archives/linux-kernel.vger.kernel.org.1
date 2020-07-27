@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC8022E68A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A6A22E685
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgG0H1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726953AbgG0H1m (ORCPT
+        id S1726918AbgG0H1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:27:25 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:39727 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726853AbgG0H1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:27:42 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED959C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:27:40 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t6so7549494plo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2+yXBFkFF1Q2hs9eJ61ZmtSb7ia2MRn3KxqycD73Flw=;
-        b=Cqmot9h6sPwuj2faph4jOKs5weve7eUvzLaNx9IhHsELXyEoGYyUza9Ardp+smS119
-         TGfMgjCb+Q7A7eMlTsKK1TArG0L4+p6Yh5Hitl9TxMzHIgngQbZVbvG96NyRIghMd4GZ
-         PSQhOpZYac/IkW1TddyHCGy0l1+sGFE81BAyo2Hb5QjOOcz26H384tpdAi1lBSX3uiAT
-         /Fot+ATlEjMnzh3JJdOAz9bKQICojC/8+16x4lno+1tGL0LHnT06tvaHkiv5jK2COAjS
-         Y5WBOGm3KMcL9mujuHQ+2frzPL0jk3yHfeDvv9sz4bvVgOxWnCyTONCx+MkvocuDhwAh
-         xXLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2+yXBFkFF1Q2hs9eJ61ZmtSb7ia2MRn3KxqycD73Flw=;
-        b=r6B3kWj6P/qhFVOHbf+9OPFFumzLG0Z9vYbK4QGngDYiuhDsWi5FIw7NJmlvXxA1C7
-         qLtPHO44Aw95yCV7g/YWSlgosgVZpjSS73miWpVUViGCtON02AR7aTr4tFxnRRIdorAK
-         MAWUinUFvKz09tfmMgbWXlTtjrR4+rwmt+yqDbyQq0m7ECib9CkHdycPidTQprCWdxKA
-         TP+mu8RO9xV5lL8KSPaRtwGdcgvlsHsi3fpvJR6La9HndltiDq3xa8ak/smIEJPhpi3T
-         BcFI0JgODbPkGOYPF9HIQe7maQZpz+O5I3AFMv9p51CC5qKx9UYS2YchHVqE2sS2esTS
-         2goA==
-X-Gm-Message-State: AOAM532Bq6bqMz5b5FBKJ/zuSYeC6V/41M1MN/Y42Wrqn6avFrBbL8qL
-        rk3jMAu/BgYNEQWVeVVkjWg=
-X-Google-Smtp-Source: ABdhPJzONbuJenpMzjphtdEOeUlAPu08ifyLaXxU1TZh2ESyDjSyATv/zYZBeXghWq9As+UF665jdA==
-X-Received: by 2002:a17:90a:db8a:: with SMTP id h10mr17706557pjv.58.1595834860479;
-        Mon, 27 Jul 2020 00:27:40 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id s10sm52384649pjf.3.2020.07.27.00.27.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Jul 2020 00:27:39 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 00:26:59 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ASoC: fsl-asoc-card: Remove fsl_asoc_card_set_bias_level
- function
-Message-ID: <20200727072658.GA16513@Asurada-Nvidia>
-References: <1595762417-2190-1-git-send-email-shengjiu.wang@nxp.com>
- <20200727005558.GA30124@Asurada-Nvidia>
- <CAA+D8AOfh1gDec=0BPk6SUutqtY_gL1Rm1-Uc4Dv4s-86LAwPA@mail.gmail.com>
+        Mon, 27 Jul 2020 03:27:24 -0400
+Received: from mail-qv1-f41.google.com ([209.85.219.41]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mc0Aj-1kVSTM0AMJ-00dX0t; Mon, 27 Jul 2020 09:27:23 +0200
+Received: by mail-qv1-f41.google.com with SMTP id y11so4044003qvl.4;
+        Mon, 27 Jul 2020 00:27:22 -0700 (PDT)
+X-Gm-Message-State: AOAM531O+m0T9tHYKL4f9Pg8nd+PzZFE/BzLY7mvOXZBKFi5BkzdSAdZ
+        mfkwG+3LoKb2GYC+SNOU7L/lt5Fc1Xlf/hvjoLY=
+X-Google-Smtp-Source: ABdhPJx7QfkbbHjeVpGBxLCfoP6oDWFRJdrfbKfyxAw4Od2mQhSmfIx4RhJICA2HJ/eXvfrqvup2jjTrQDLzEQ1GJaw=
+X-Received: by 2002:a05:6214:1926:: with SMTP id es6mr21364796qvb.222.1595834841785;
+ Mon, 27 Jul 2020 00:27:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA+D8AOfh1gDec=0BPk6SUutqtY_gL1Rm1-Uc4Dv4s-86LAwPA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200727073547.5c556e10@canb.auug.org.au>
+In-Reply-To: <20200727073547.5c556e10@canb.auug.org.au>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Jul 2020 09:27:05 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3-Ak5fEUHTYSPv7-OZSjMWBxRLW4S4fBoixBbP1AN60Q@mail.gmail.com>
+Message-ID: <CAK8P3a3-Ak5fEUHTYSPv7-OZSjMWBxRLW4S4fBoixBbP1AN60Q@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commits in the arm-soc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Olof Johansson <olof@lixom.net>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:/amC9IBt/UbantO2zf7s24pWcu4BZvWhZhrfh5w1idseTnu6Rcy
+ 3fT8G5drD+6ACtNKMP7M6cm1IsuQnQc3Jm66a8UO3Y2QEuoJRNYBT3HqX9zNnIa03QCYeOl
+ gboZI522ecWS4WEnmOzMy49qlI5NrfQuuZfET4uBPKt5AU+nEcj94ci9/s57Ezr/AQVuN/0
+ Alj9vMqySAH9qYBS9qaBQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jW7s+W57WR0=:Dq8HlZRf4l1ngxt/u4OIHa
+ 7QumopPHxq8a57Q8XQMT5VEpMFu7YxFsa/zaO/vrvKbIxMRs6xslfgmRLrVtWqwKHdPi1v1aw
+ R9Z3fiA97ZEDRLjyZOSSa9Kqzb9tSf3BjIqYySazDSkVFVEVA3nLeOF56svrGaUL6YrsNJT5B
+ hV11RjwkNOGZ5CGesNuAHCFYylqLnBCh3gNi3/X9P7UAbhsOvxwuyrxJo0XNrYOk3L4adQwR8
+ ykPHLoNY/ISFWKWVgzAElZt9ms9Q+eP8GOOpehAHa1b6fA7NCN2s7jvAnNoIvzNZqsWGmMabX
+ aM1FZEh16p0pVKXOfN2TcHzAUAIGbtlw7RiYXHrxE888qwPIy4elK0sBay3M/0lPAQwCfHCIe
+ wvl5ZRpLRkAVH001hpSQ9ZA2G1dWizc7y4yKhL7bq0ZD6HR0Q54aEYpaPUq70wx+2JsBtUcO2
+ bFlzB1FkSHgH5f/7VUMzeJAxUVf+kdvWeOITpcBvuc6sVVnnIBchG2m/rDSsnOglwvL75vLtt
+ BqROxiTQvq/8mmjmEE1CzHPF+2uCXSMiaasEvuG5hMmHDJY9b1KT7GZ9ADHDgSm0u+GnPAZIF
+ F7tsGrhcc7yxOjl/Um9LGJUwjnuuXBrxYDXMqIBipiKUciOLpm960xLj3MiZcw0ZwT1gRrbaJ
+ qiOXDTXLchAsW4lUxXPk+1PQ5owsx873oXab6zrjQSzxzLlvg9o5SbOj9qvcuHoMwsC64P3Sp
+ FUCvcuRCOB6ohpKlWM5SjvJdZDZz4sKraDwh6c1cELAzgc9ccoj11XxOaltsUppHkxCdtasKP
+ In/baMv1zjOS8hvvQK31w90gGDvIKZZ5BcJXv+Nab4H2W/CVQ5BP+xVcUUW6fElGOzO4YED4Z
+ ytzinLT5+t8P8r+9Y9xb80L6j7bkaJxr5I2/kcHpIfYEwbZdFFJK/EfA4vA0hqw+mN1nSTaqG
+ aO4aINQKNQNAJ8T5tcg5CJejc5sSxaVts/4CGKg71LLTKw357UTY7
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 02:33:18PM +0800, Shengjiu Wang wrote:
-> > >  static int fsl_asoc_card_audmux_init(struct device_node *np,
-> > >                                    struct fsl_asoc_card_priv *priv)
-> > >  {
-> > > @@ -611,7 +600,6 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
-> > >       /* Diversify the card configurations */
-> > >       if (of_device_is_compatible(np, "fsl,imx-audio-cs42888")) {
-> > >               codec_dai_name = "cs42888";
-> > > -             priv->card.set_bias_level = NULL;
-> >
-> > Can check if set_bias_level is still being used with this change.
-> 
-> Do you mean to keep this line:
-> priv->card.set_bias_level = NULL; ?
+On Sun, Jul 26, 2020 at 11:35 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commits
+>
+>   16730dda542e ("ARM: mstar: Add dts for 70mai midrive d08")
+>   22a30e8035c6 ("ARM: mstar: Add dts for msc313(e) based BreadBee boards")
+>   b6d785a8410e ("ARM: mstar: Add mercury5 series dtsis")
+>   34a6a898b3f4 ("ARM: mstar: Add infinity/infinity3 family dtsis")
+>   b968eee1862f ("ARM: mstar: Add Armv7 base dtsi")
+>   d1c7f6eb7e48 ("ARM: mstar: Add binding details for mstar,l3bridge")
+>   9c2387eeba44 ("ARM: mstar: Add machine for MStar/Sigmastar Armv7 SoCs")
+>   04c7bb3695ef ("dt-bindings: arm: Add mstar YAML schema")
+>   97771c5bcbe7 ("dt-bindings: vendor-prefixes: Add thingy.jp prefix")
+>   9f9b6e5560fe ("dt-bindings: vendor-prefixes: Add 70mai vendor prefix")
+>   13fd6dfd3503 ("dt-bindings: vendor-prefixes: Add sstar vendor prefix")
+>   cb0d5cba0294 ("dt-bindings: vendor-prefixes: Add mstar vendor prefix")
+>
+> are missing a Signed-off-by from their committer.
 
-Sorry. You can just ignore this part -- just double checked the
-code, and I think I misread something :-/
+Thanks for the report. I had already noticed this when I added a follow-up
+patch and I fixed the arm/newsoc branch (which is the one destined for
+inclusion)
+that contains these commits, but I failed to rebase the for-next branch, which
+now contains both copies of the patches. I'll fix it up with the next
+set of merges
+and recreate the for-next branch.
+
+      Arnd
