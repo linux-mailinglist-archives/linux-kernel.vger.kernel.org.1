@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E197722F6DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5DB22F6D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730874AbgG0Rlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:41:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728347AbgG0Rlh (ORCPT
+        id S1730226AbgG0Rk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:40:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49847 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728935AbgG0Rk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:41:37 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280F2C061794;
-        Mon, 27 Jul 2020 10:41:37 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id lw1so1507338pjb.1;
-        Mon, 27 Jul 2020 10:41:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1TfTR8Lp7hRKQ+lCxjn1lE5hq4Qzl/G7eGSS/NXpthA=;
-        b=Cq6woHmUEFsyeHVigdpNgaWCeD86WWgw582JKS8rCuPZybUNqZht+GutR4QWkIv2Rj
-         9YF0xezN/AKwW3gE7MsWbAdbBZWZqmsUTVQSWSxzE645sU1PlnnFcMrZUDSuCQh3oVaz
-         YN7MtpJ1T+LTcenKvw8P7BhQ9kwwN0t6NnrOs0ph5RxPS+XY3I/mtt0HAUbR5a6K08XD
-         GRUQaxnNqm7BNdiun9d7MkxmLN1w2m6YVitUFpuxMmiRSrsUsNquGHotkyIIF8x1mQfM
-         1xv0j1DbNWQbwg4ML0p2K8SN7KufMNTaCpj0MmLmDOY5FOvC9ZsMd6wI113SGHMx2WZp
-         rXrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1TfTR8Lp7hRKQ+lCxjn1lE5hq4Qzl/G7eGSS/NXpthA=;
-        b=Mrt6hNZExeloid8uyPP5qNTJ13fwW+r5Uprmpe67415uS7CKNRqpcb4qCIR3wqlD6+
-         QfIyU6rm2RalyI9PQqCoVE768QBjVP6cCDFGOa4bSx0xgie+AMRfQlUjBwYoShBiwjKJ
-         4tnZMTwLzIQLX/zJDQrq2l63ku5ssX99VWgGDpkv2hyui/DR7xjpwuYmQDK389qsw0Cy
-         TWNq5i/9j7YnhIRW3o8HCStseCQlT47QH8SIHv04Cq/uibeiaJdjKrog4DKqJuj9l7l2
-         cEmNulG3wJkzaQJtn+YzY+pb7b3ISCnTl9ZOjVl83sM5ivsYu0BcFstOS/qfcLk0kEtn
-         KMWQ==
-X-Gm-Message-State: AOAM5337+KLfbnJDi3e7audoled2e/XK6xeORDl3bCK8ffzqumixGP/V
-        B8nD4vh9nLKH5Jp/3q5eQWc=
-X-Google-Smtp-Source: ABdhPJw3h5ONincj8TGVAAY/7gRJt2JrJiVZpSVpdEaIygpNKh6GppIm6ej3Djgn6lbXyudPGEncFg==
-X-Received: by 2002:a17:90b:2083:: with SMTP id hb3mr381357pjb.234.1595871696690;
-        Mon, 27 Jul 2020 10:41:36 -0700 (PDT)
-Received: from gmail.com ([103.105.152.86])
-        by smtp.gmail.com with ESMTPSA id s194sm5470283pfc.187.2020.07.27.10.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 10:41:36 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 23:10:12 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v2] ata: use generic power management
-Message-ID: <20200727174012.GA696265@gmail.com>
-References: <20200727173923.694872-1-vaibhavgupta40@gmail.com>
+        Mon, 27 Jul 2020 13:40:56 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k077O-0001vZ-V6; Mon, 27 Jul 2020 17:40:55 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] binfmt_elf: fix unsigned regset0_size compared to less than zero
+Date:   Mon, 27 Jul 2020 18:40:54 +0100
+Message-Id: <20200727174054.154765-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200727173923.694872-1-vaibhavgupta40@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch is compile-tested only.
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks
-Vaibhav Gupta
+Variable regset0_size is an unsigned int and it is being checked
+for an error by checking if it is less than zero, and hence this
+check is always going to be false.  Fix this by making the variable
+regset0_size signed.
+
+Addresses-Coverity: ("Unsigned compared against 0")
+Fixes: 0f17865d8847 ("introduction of regset ->get() wrappers, switching ELF coredumps to those")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ fs/binfmt_elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 6a171a28bdf7..13d053982dd7 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1821,7 +1821,7 @@ static int fill_thread_core_info(struct elf_thread_core_info *t,
+ 				 long signr, size_t *total)
+ {
+ 	unsigned int i;
+-	unsigned int regset0_size;
++	int regset0_size;
+ 
+ 	/*
+ 	 * NT_PRSTATUS is the one special case, because the regset data
+-- 
+2.27.0
+
