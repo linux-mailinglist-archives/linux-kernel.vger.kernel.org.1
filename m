@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAB022F0D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0A322EFA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732410AbgG0O17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:27:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54990 "EHLO mail.kernel.org"
+        id S1731132AbgG0OR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:17:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732381AbgG0OZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:25:11 -0400
+        id S1728918AbgG0ORt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:17:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 577C522B40;
-        Mon, 27 Jul 2020 14:25:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 603A12070A;
+        Mon, 27 Jul 2020 14:17:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859910;
-        bh=6IiCZJSCazxGZ+S4y95kWx0DvTpmrq6GMeSZMEbfpyM=;
+        s=default; t=1595859468;
+        bh=MutjSMAafDXjPRebpjYD2MZe+oGnDIbyaCZJHeddI8Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y2nfmy1HiUX7EzjB8mjCNyR+Pz+hkVtDtSHWDV9B8SQBvQAQMXh544G0KLYkXrlfL
-         eEWha2oVdN+5mGToA885Co5UCGYDMGr0tjhhD9W9363Zo4hPiuXBLcjeolQcbyABwo
-         ECxmXE5p+6kYBbrr555ET/nLRQ8bmIJg8XbOYGbI=
+        b=M4Bww8XEVgqzYLz79okILBeKru30ZszUlDVpQzkYsZSiCj7lui7E0f9Fymb4Ye/fb
+         okfVPIVaWUfHM1Amxpv07eB35nbcpinL7W74B3BlhyYXexPngRmf9sniuvHa2U4iNO
+         Rw6VBMrtlhQUvK3W/FSEIEooEHJ5eikCl0aOISJw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Peter Chen <peter.chen@nxp.com>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 123/179] usb: cdns3: trace: fix some endian issues
+Subject: [PATCH 5.4 103/138] RISC-V: Upgrade smp_mb__after_spinlock() to iorw,iorw
 Date:   Mon, 27 Jul 2020 16:04:58 +0200
-Message-Id: <20200727134938.643783619@linuxfoundation.org>
+Message-Id: <20200727134930.622406151@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,37 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Chen <peter.chen@nxp.com>
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-[ Upstream commit 65b7cf48c211ece5e2560a334eb9608e48775a8f ]
+[ Upstream commit 38b7c2a3ffb1fce8358ddc6006cfe5c038ff9963 ]
 
-It is found by sparse.
+While digging through the recent mmiowb preemption issue it came up that
+we aren't actually preventing IO from crossing a scheduling boundary.
+While it's a bit ugly to overload smp_mb__after_spinlock() with this
+behavior, it's what PowerPC is doing so there's some precedent.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/cdns3/trace.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/riscv/include/asm/barrier.h | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/cdns3/trace.h b/drivers/usb/cdns3/trace.h
-index 755c565822575..0a2a3269bfac6 100644
---- a/drivers/usb/cdns3/trace.h
-+++ b/drivers/usb/cdns3/trace.h
-@@ -404,9 +404,9 @@ DECLARE_EVENT_CLASS(cdns3_log_trb,
- 	TP_fast_assign(
- 		__assign_str(name, priv_ep->name);
- 		__entry->trb = trb;
--		__entry->buffer = trb->buffer;
--		__entry->length = trb->length;
--		__entry->control = trb->control;
-+		__entry->buffer = le32_to_cpu(trb->buffer);
-+		__entry->length = le32_to_cpu(trb->length);
-+		__entry->control = le32_to_cpu(trb->control);
- 		__entry->type = usb_endpoint_type(priv_ep->endpoint.desc);
- 		__entry->last_stream_id = priv_ep->last_stream_id;
- 	),
+diff --git a/arch/riscv/include/asm/barrier.h b/arch/riscv/include/asm/barrier.h
+index 3f1737f301ccb..d0e24aaa2aa06 100644
+--- a/arch/riscv/include/asm/barrier.h
++++ b/arch/riscv/include/asm/barrier.h
+@@ -58,8 +58,16 @@ do {									\
+  * The AQ/RL pair provides a RCpc critical section, but there's not really any
+  * way we can take advantage of that here because the ordering is only enforced
+  * on that one lock.  Thus, we're just doing a full fence.
++ *
++ * Since we allow writeX to be called from preemptive regions we need at least
++ * an "o" in the predecessor set to ensure device writes are visible before the
++ * task is marked as available for scheduling on a new hart.  While I don't see
++ * any concrete reason we need a full IO fence, it seems safer to just upgrade
++ * this in order to avoid any IO crossing a scheduling boundary.  In both
++ * instances the scheduler pairs this with an mb(), so nothing is necessary on
++ * the new hart.
+  */
+-#define smp_mb__after_spinlock()	RISCV_FENCE(rw,rw)
++#define smp_mb__after_spinlock()	RISCV_FENCE(iorw,iorw)
+ 
+ #include <asm-generic/barrier.h>
+ 
 -- 
 2.25.1
 
