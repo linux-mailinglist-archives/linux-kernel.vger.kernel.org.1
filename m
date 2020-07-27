@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1066522F133
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697C922F027
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732769AbgG0OaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:30:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51112 "EHLO mail.kernel.org"
+        id S1731864AbgG0OWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730707AbgG0OWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:13 -0400
+        id S1731838AbgG0OWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:22:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2996C2083E;
-        Mon, 27 Jul 2020 14:22:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B41AA2070A;
+        Mon, 27 Jul 2020 14:22:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859732;
-        bh=ntk01Kim6t9W9EGr/aZfU8ztLQHGiTsPGvsW5wOPnEk=;
+        s=default; t=1595859735;
+        bh=zRyeNmoL3wHIHCpZmIbNx0rdAsjMnQGiXt97sJtg14w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LzQgloeavDSAWINGeII7PTlTrwEXSboSH3g97m50Otq5pbJ0evFyS99HdIoKTc+pd
-         3V/OsnzG5H3ZCxf+lszyi8SD8Q3gIVUD1SCVimJYtuI1NfGaWGupJA/T0UvubBJ2S1
-         Katcj8gT1dgfThhMKUqk9quz/EQHxdleytf53Lmk=
+        b=Yl7mdC1cZNyQYYaJdojpqQezHcpQcf/pC2fsE+IMv54dxUx89fB7kpsLr/qlsjVgJ
+         btwV7T/EmZ8kNsUA711MpJV4OP+52/rzJBuLjrPx6vuMtdLVrDv1+XEbxvQ7QZ71cj
+         /4cA0YBVr5NibZ8FtX9DASvALbi3xCL57UeNddjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 053/179] RDMA/mlx5: Use xa_lock_irq when access to SRQ table
-Date:   Mon, 27 Jul 2020 16:03:48 +0200
-Message-Id: <20200727134935.251709742@linuxfoundation.org>
+Subject: [PATCH 5.7 054/179] RDMA/core: Fix race in rdma_alloc_commit_uobject()
+Date:   Mon, 27 Jul 2020 16:03:49 +0200
+Message-Id: <20200727134935.301622638@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
 References: <20200727134932.659499757@linuxfoundation.org>
@@ -45,112 +44,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+From: Leon Romanovsky <leonro@mellanox.com>
 
-[ Upstream commit c3d6057e07a5d15be7c69ea545b3f91877808c96 ]
+[ Upstream commit 0d1fd39bb27e479fb1de3dd4b4c247c7c9a1fabf ]
 
-SRQ table is accessed both from interrupt and process context,
-therefore we must use xa_lock_irq.
+The FD should not be installed until all of the setup is completed as the
+fd_install() transfers ownership of the kref to the FD table. A thread can
+race a close() and trigger concurrent rdma_alloc_commit_uobject() and
+uverbs_uobject_fd_release() which, at least, triggers a safety WARN_ON:
 
-   inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-   kworker/u17:9/8573   takes:
-   ffff8883e3503d30 (&xa->xa_lock#13){?...}-{2:2}, at: mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
-   {IN-HARDIRQ-W} state was registered at:
-     lock_acquire+0xb9/0x3a0
-     _raw_spin_lock+0x25/0x30
-     srq_event_notifier+0x2b/0xc0 [mlx5_ib]
-     notifier_call_chain+0x45/0x70
-     __atomic_notifier_call_chain+0x69/0x100
-     forward_event+0x36/0xc0 [mlx5_core]
-     notifier_call_chain+0x45/0x70
-     __atomic_notifier_call_chain+0x69/0x100
-     mlx5_eq_async_int+0xc5/0x160 [mlx5_core]
-     notifier_call_chain+0x45/0x70
-     __atomic_notifier_call_chain+0x69/0x100
-     mlx5_irq_int_handler+0x19/0x30 [mlx5_core]
-     __handle_irq_event_percpu+0x43/0x2a0
-     handle_irq_event_percpu+0x30/0x70
-     handle_irq_event+0x34/0x60
-     handle_edge_irq+0x7c/0x1b0
-     do_IRQ+0x60/0x110
-     ret_from_intr+0x0/0x2a
-     default_idle+0x34/0x160
-     do_idle+0x1ec/0x220
-     cpu_startup_entry+0x19/0x20
-     start_secondary+0x153/0x1a0
-     secondary_startup_64+0xa4/0xb0
-   irq event stamp: 20907
-   hardirqs last  enabled at (20907):   _raw_spin_unlock_irq+0x24/0x30
-   hardirqs last disabled at (20906):   _raw_spin_lock_irq+0xf/0x40
-   softirqs last  enabled at (20746):   __do_softirq+0x2c9/0x436
-   softirqs last disabled at (20681):   irq_exit+0xb3/0xc0
+  WARNING: CPU: 4 PID: 6913 at drivers/infiniband/core/rdma_core.c:768 uverbs_uobject_fd_release+0x202/0x230
+  Kernel panic - not syncing: panic_on_warn set ...
+  CPU: 4 PID: 6913 Comm: syz-executor.3 Not tainted 5.7.0-rc2 #22
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
+  [..]
+  RIP: 0010:uverbs_uobject_fd_release+0x202/0x230
+  Code: fe 4c 89 e7 e8 af 23 fe ff e9 2a ff ff ff e8 c5 fa 61 fe be 03 00 00 00 4c 89 e7 e8 68 eb f5 fe e9 13 ff ff ff e8 ae fa 61 fe <0f> 0b eb ac e8 e5 aa 3c fe e8 50 2b 86 fe e9 6a fe ff ff e8 46 2b
+  RSP: 0018:ffffc90008117d88 EFLAGS: 00010293
+  RAX: ffff88810e146580 RBX: 1ffff92001022fb1 RCX: ffffffff82d5b902
+  RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff88811951b040
+  RBP: ffff88811951b000 R08: ffffed10232a3609 R09: ffffed10232a3609
+  R10: ffff88811951b043 R11: 0000000000000001 R12: ffff888100a7c600
+  R13: ffff888100a7c650 R14: ffffc90008117da8 R15: ffffffff82d5b700
+   ? __uverbs_cleanup_ufile+0x270/0x270
+   ? uverbs_uobject_fd_release+0x202/0x230
+   ? uverbs_uobject_fd_release+0x202/0x230
+   ? __uverbs_cleanup_ufile+0x270/0x270
+   ? locks_remove_file+0x282/0x3d0
+   ? security_file_free+0xaa/0xd0
+   __fput+0x2be/0x770
+   task_work_run+0x10e/0x1b0
+   exit_to_usermode_loop+0x145/0x170
+   do_syscall_64+0x2d0/0x390
+   ? prepare_exit_to_usermode+0x17a/0x230
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  RIP: 0033:0x414da7
+  Code: 00 00 0f 05 48 3d 00 f0 ff ff 77 3f f3 c3 0f 1f 44 00 00 53 89 fb 48 83 ec 10 e8 f4 fb ff ff 89 df 89 c2 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 2b 89 d7 89 44 24 0c e8 36 fc ff ff 8b 44 24
+  RSP: 002b:00007fff39d379d0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+  RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000414da7
+  RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000003
+  RBP: 00007fff39d37a3c R08: 0000000400000000 R09: 0000000400000000
+  R10: 00007fff39d37910 R11: 0000000000000293 R12: 0000000000000001
+  R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000003
 
-   other info that might help us debug this:
-    Possible unsafe locking scenario:
+Reorder so that fd_install() is the last thing done in
+rdma_alloc_commit_uobject().
 
-          CPU0
-          ----
-     lock(&xa->xa_lock#13);
-     <Interrupt>
-       lock(&xa->xa_lock#13);
-
-    *** DEADLOCK ***
-
-   2 locks held by kworker/u17:9/8573:
-    #0: ffff888295218d38 ((wq_completion)mlx5_ib_page_fault){+.+.}-{0:0}, at: process_one_work+0x1f1/0x5f0
-    #1: ffff888401647e78 ((work_completion)(&pfault->work)){+.+.}-{0:0}, at: process_one_work+0x1f1/0x5f0
-
-   stack backtrace:
-   CPU: 0 PID: 8573 Comm: kworker/u17:9 Tainted: GO      5.7.0_for_upstream_min_debug_2020_06_14_11_31_46_41 #1
-   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
-   Workqueue: mlx5_ib_page_fault mlx5_ib_eqe_pf_action [mlx5_ib]
-   Call Trace:
-    dump_stack+0x71/0x9b
-    mark_lock+0x4f2/0x590
-    ? print_shortest_lock_dependencies+0x200/0x200
-    __lock_acquire+0xa00/0x1eb0
-    lock_acquire+0xb9/0x3a0
-    ? mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
-    _raw_spin_lock+0x25/0x30
-    ? mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
-    mlx5_cmd_get_srq+0x18/0x70 [mlx5_ib]
-    mlx5_ib_eqe_pf_action+0x257/0xa30 [mlx5_ib]
-    ? process_one_work+0x209/0x5f0
-    process_one_work+0x27b/0x5f0
-    ? __schedule+0x280/0x7e0
-    worker_thread+0x2d/0x3c0
-    ? process_one_work+0x5f0/0x5f0
-    kthread+0x111/0x130
-    ? kthread_park+0x90/0x90
-    ret_from_fork+0x24/0x30
-
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Link: https://lore.kernel.org/r/20200712102641.15210-1-leon@kernel.org
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Fixes: aba94548c9e4 ("IB/uverbs: Move the FD uobj type struct file allocation to alloc_commit")
+Link: https://lore.kernel.org/r/20200716102059.1420681-1-leon@kernel.org
 Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/srq_cmd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/rdma_core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/srq_cmd.c b/drivers/infiniband/hw/mlx5/srq_cmd.c
-index 8fc3630a9d4c3..0224231a2e6f8 100644
---- a/drivers/infiniband/hw/mlx5/srq_cmd.c
-+++ b/drivers/infiniband/hw/mlx5/srq_cmd.c
-@@ -83,11 +83,11 @@ struct mlx5_core_srq *mlx5_cmd_get_srq(struct mlx5_ib_dev *dev, u32 srqn)
- 	struct mlx5_srq_table *table = &dev->srq_table;
- 	struct mlx5_core_srq *srq;
+diff --git a/drivers/infiniband/core/rdma_core.c b/drivers/infiniband/core/rdma_core.c
+index 75bcbc625616e..3ab84fcbaadec 100644
+--- a/drivers/infiniband/core/rdma_core.c
++++ b/drivers/infiniband/core/rdma_core.c
+@@ -638,9 +638,6 @@ void rdma_alloc_commit_uobject(struct ib_uobject *uobj,
+ {
+ 	struct ib_uverbs_file *ufile = attrs->ufile;
  
--	xa_lock(&table->array);
-+	xa_lock_irq(&table->array);
- 	srq = xa_load(&table->array, srqn);
- 	if (srq)
- 		refcount_inc(&srq->common.refcount);
--	xa_unlock(&table->array);
-+	xa_unlock_irq(&table->array);
+-	/* alloc_commit consumes the uobj kref */
+-	uobj->uapi_object->type_class->alloc_commit(uobj);
+-
+ 	/* kref is held so long as the uobj is on the uobj list. */
+ 	uverbs_uobject_get(uobj);
+ 	spin_lock_irq(&ufile->uobjects_lock);
+@@ -650,6 +647,9 @@ void rdma_alloc_commit_uobject(struct ib_uobject *uobj,
+ 	/* matches atomic_set(-1) in alloc_uobj */
+ 	atomic_set(&uobj->usecnt, 0);
  
- 	return srq;
++	/* alloc_commit consumes the uobj kref */
++	uobj->uapi_object->type_class->alloc_commit(uobj);
++
+ 	/* Matches the down_read in rdma_alloc_begin_uobject */
+ 	up_read(&ufile->hw_destroy_rwsem);
  }
 -- 
 2.25.1
