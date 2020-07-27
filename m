@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CE222F297
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C3022F1B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729528AbgG0OI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:08:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        id S1731702AbgG0Oef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:34:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729501AbgG0OIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:08:53 -0400
+        id S1730825AbgG0OQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:16:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E2AB20838;
-        Mon, 27 Jul 2020 14:08:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7C8920775;
+        Mon, 27 Jul 2020 14:16:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858932;
-        bh=biPPC4FOwAOBUCib4uH65eXmJpEkTdAaFUzPoJlHoXs=;
+        s=default; t=1595859373;
+        bh=kOVhulJk+pdwU88duSZrqzaEiuBdYU+NRWyGSP6HyBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fL3x+eBeReAEdz3DdryE/5vqO4TVqcXw43hZqs4g9tW0J3Akj5B/tl4jlXl0IlaWJ
-         4RGGmrZS93/6FZAUdp1DnWaPc8NV1A5/ZgFBE8tglL8rvOnqH2iDVfDjF1eyDLInU4
-         Qp6oTpm0Zz2DoXlDEqmd+41AtdBvDJnNTeVWMvY0=
+        b=ylBacZGJWUMRlSq/4ImHIKsUaR2ZqjkY+7HNg4iEEiiri2VjxVoe9rVip1/CmDaDk
+         NGOXJADfZOCmFGe31Ut58Y8af9lDesPr8RjhumzW23sJ9XlI+lip/IVfO994PUCl1n
+         9f+V4PmM58OlNeupOnwvzzH6vJNvJksomdZ5OhIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.14 59/64] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
+        stable@vger.kernel.org, Ilya Katsnelson <me@0upti.me>,
+        Lyude Paul <lyude@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 083/138] Input: synaptics - enable InterTouch for ThinkPad X1E 1st gen
 Date:   Mon, 27 Jul 2020 16:04:38 +0200
-Message-Id: <20200727134914.103631971@linuxfoundation.org>
+Message-Id: <20200727134929.523320856@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,56 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Ilya Katsnelson <me@0upti.me>
 
-commit ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 upstream.
+[ Upstream commit dcb00fc799dc03fd320e123e4c81b3278c763ea5 ]
 
-When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
-$(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-elfedit,
-GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
-/usr/bin/ and Clang as of 11 will search for both
-$(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
+Tested on my own laptop, touchpad feels slightly more responsive with
+this on, though it might just be placebo.
 
-GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
-$(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
-$(prefix)aarch64-linux-gnu/$needle rarely contains executables.
-
-To better model how GCC's -B/--prefix takes in effect in practice, newer
-Clang (since
-https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90)
-only searches for $(prefix)$needle. Currently it will find /usr/bin/as
-instead of /usr/bin/aarch64-linux-gnu-as.
-
-Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-(/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
-appropriate cross compiling GNU as (when -no-integrated-as is in
-effect).
-
-Cc: stable@vger.kernel.org
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1099
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Ilya Katsnelson <me@0upti.me>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Link: https://lore.kernel.org/r/20200703143457.132373-1-me@0upti.me
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/mouse/synaptics.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -482,7 +482,7 @@ ifeq ($(cc-name),clang)
- ifneq ($(CROSS_COMPILE),)
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
- GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
--CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
-+CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
- endif
- ifneq ($(GCC_TOOLCHAIN),)
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index 758dae8d65006..4b81b2d0fe067 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -179,6 +179,7 @@ static const char * const smbus_pnp_ids[] = {
+ 	"LEN0093", /* T480 */
+ 	"LEN0096", /* X280 */
+ 	"LEN0097", /* X280 -> ALPS trackpoint */
++	"LEN0099", /* X1 Extreme 1st */
+ 	"LEN009b", /* T580 */
+ 	"LEN200f", /* T450s */
+ 	"LEN2044", /* L470  */
+-- 
+2.25.1
+
 
 
