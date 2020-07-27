@@ -2,49 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB2B22EEAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B6D22EEC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbgG0OJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:09:47 -0400
-Received: from mga03.intel.com ([134.134.136.65]:12471 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729675AbgG0OJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:09:44 -0400
-IronPort-SDR: hMLBCNFjZ2UOpqvdOHS16f4r3XkGSBFVtz1JyGKgxzPj585QiqJqy7Xbz1tP4mTTd1qYX/rlwX
- bKoaV2hIXyZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="150999341"
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
-   d="scan'208";a="150999341"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 07:09:41 -0700
-IronPort-SDR: TteHECRx2z8pElXEkov08M+PbVBtWngjBskOFUpL4BVnmJcFp1UnVeZf4MHtlf6s5hX1B1yDBG
- F8P+M2f4mb7Q==
-X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
-   d="scan'208";a="464070925"
-Received: from pdewan-mobl1.amr.corp.intel.com (HELO [10.255.228.220]) ([10.255.228.220])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 07:09:34 -0700
-Subject: Re: [PATCH] ASoC: Intel: Atom: use hardware counter to update hw_ptr
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
-References: <1595779727-31404-1-git-send-email-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7dec7fcd-0381-d279-4dac-77c27ea5f6fe@linux.intel.com>
-Date:   Mon, 27 Jul 2020 09:09:33 -0500
+        id S1729847AbgG0OKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:10:25 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11908 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729829AbgG0OKX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:23 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RE0qlp162323;
+        Mon, 27 Jul 2020 10:10:04 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32hvhdqhmm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Jul 2020 10:10:04 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06RE0uYE162713;
+        Mon, 27 Jul 2020 10:10:03 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32hvhdqhm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Jul 2020 10:10:03 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06RDoQQ0032136;
+        Mon, 27 Jul 2020 14:10:02 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma03dal.us.ibm.com with ESMTP id 32gcy6p1qj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Jul 2020 14:10:02 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06RE9xjE41419180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Jul 2020 14:09:59 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75B786A05A;
+        Mon, 27 Jul 2020 14:09:59 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 288766A057;
+        Mon, 27 Jul 2020 14:09:58 +0000 (GMT)
+Received: from cpe-172-100-175-116.stny.res.rr.com (unknown [9.85.167.215])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Jul 2020 14:09:57 +0000 (GMT)
+Subject: Re: [PATCH v9 02/15] s390/vfio-ap: use new AP bus interface to search
+ for queue devices
+To:     Pierre Morel <pmorel@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     freude@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
+        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, kernel test robot <lkp@intel.com>
+References: <20200720150344.24488-1-akrowiak@linux.ibm.com>
+ <20200720150344.24488-3-akrowiak@linux.ibm.com>
+ <a946e992-ff36-ca45-1811-7c6b0aaa161f@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <4b0bd2a8-4c28-7daa-8ea4-397926c9054b@linux.ibm.com>
+Date:   Mon, 27 Jul 2020 10:09:57 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <1595779727-31404-1-git-send-email-brent.lu@intel.com>
+In-Reply-To: <a946e992-ff36-ca45-1811-7c6b0aaa161f@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-27_08:2020-07-27,2020-07-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999
+ clxscore=1015 mlxscore=0 priorityscore=1501 suspectscore=3 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007270096
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,68 +82,146 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 7/26/20 11:08 AM, Brent Lu wrote:
-> The ring buffer counter runs faster than hardware counter if the
-> period size in hw_param is larger than 240. Although the differce is
-> not much (around 2k frames), it causes false underrun in CRAS
-> sometimes because it's using 256 frames as period size in hw_param.
+On 7/24/20 4:38 AM, Pierre Morel wrote:
+>
+>
+> On 2020-07-20 17:03, Tony Krowiak wrote:
+>> This patch refactor's the vfio_ap device driver to use the AP bus's
+>> ap_get_qdev() function to retrieve the vfio_ap_queue struct containing
+>> information about a queue that is bound to the vfio_ap device driver.
+>> The bus's ap_get_qdev() function retrieves the queue device from a
+>> hashtable keyed by APQN. This is much more efficient than looping over
+>> the list of devices attached to the AP bus by several orders of
+>> magnitude.
+>
+> The patch does much more than modifying this line. ;)
+>
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_drv.c     | 27 ++-------
+>>   drivers/s390/crypto/vfio_ap_ops.c     | 86 +++++++++++++++------------
+>>   drivers/s390/crypto/vfio_ap_private.h |  8 ++-
+>>   3 files changed, 59 insertions(+), 62 deletions(-)
+>>
+>> diff --git a/drivers/s390/crypto/vfio_ap_drv.c 
+>> b/drivers/s390/crypto/vfio_ap_drv.c
+>> index f4ceb380dd61..24cdef60039a 100644
+>> --- a/drivers/s390/crypto/vfio_ap_drv.c
+>> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+>> @@ -53,15 +53,9 @@ MODULE_DEVICE_TABLE(vfio_ap, ap_queue_ids);
+>>    */
+>>   static int vfio_ap_queue_dev_probe(struct ap_device *apdev)
+>>   {
+>> -    struct vfio_ap_queue *q;
+>> -
+>> -    q = kzalloc(sizeof(*q), GFP_KERNEL);
+>> -    if (!q)
+>> -        return -ENOMEM;
+>> -    dev_set_drvdata(&apdev->device, q);
+>> -    q->apqn = to_ap_queue(&apdev->device)->qid;
+>> -    q->saved_isc = VFIO_AP_ISC_INVALID;
+>> -    return 0;
+>> +    struct ap_queue *queue = to_ap_queue(&apdev->device);
+>> +
+>> +    return vfio_ap_mdev_probe_queue(queue);
+>>   }
+>
+> You should explain the reason why this function is modified.
+>
+>>     /**
+>> @@ -72,18 +66,9 @@ static int vfio_ap_queue_dev_probe(struct 
+>> ap_device *apdev)
+>>    */
+>>   static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
+>>   {
+>> -    struct vfio_ap_queue *q;
+>> -    int apid, apqi;
+>> -
+>> -    mutex_lock(&matrix_dev->lock);
+>> -    q = dev_get_drvdata(&apdev->device);
+>> -    dev_set_drvdata(&apdev->device, NULL);
+>> -    apid = AP_QID_CARD(q->apqn);
+>> -    apqi = AP_QID_QUEUE(q->apqn);
+>> -    vfio_ap_mdev_reset_queue(apid, apqi, 1);
+>> -    vfio_ap_irq_disable(q);
+>> -    kfree(q);
+>> -    mutex_unlock(&matrix_dev->lock);
+>> +    struct ap_queue *queue = to_ap_queue(&apdev->device);
+>> +
+>> +    vfio_ap_mdev_remove_queue(queue);
+>>   }
+>
+> ... and this one?
+>
+>>     static void vfio_ap_matrix_dev_release(struct device *dev)
+>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c 
+>> b/drivers/s390/crypto/vfio_ap_ops.c
+>> index e0bde8518745..ad3925f04f61 100644
+>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>> @@ -26,43 +26,26 @@
+>>     static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
+>>   -static int match_apqn(struct device *dev, const void *data)
+>> -{
+>> -    struct vfio_ap_queue *q = dev_get_drvdata(dev);
+>> -
+>> -    return (q->apqn == *(int *)(data)) ? 1 : 0;
+>> -}
+>> -
+>>   /**
+>> - * vfio_ap_get_queue: Retrieve a queue with a specific APQN from a list
+>> - * @matrix_mdev: the associated mediated matrix
+>> + * vfio_ap_get_queue: Retrieve a queue with a specific APQN.
+>>    * @apqn: The queue APQN
+>>    *
+>> - * Retrieve a queue with a specific APQN from the list of the
+>> - * devices of the vfio_ap_drv.
+>> - * Verify that the APID and the APQI are set in the matrix.
+>> + * Retrieve a queue with a specific APQN from the AP queue devices 
+>> attached to
+>> + * the AP bus.
+>>    *
+>> - * Returns the pointer to the associated vfio_ap_queue
+>> + * Returns the pointer to the vfio_ap_queue with the specified APQN, 
+>> or NULL.
+>>    */
+>> -static struct vfio_ap_queue *vfio_ap_get_queue(
+>> -                    struct ap_matrix_mdev *matrix_mdev,
+>> -                    int apqn)
+>> +static struct vfio_ap_queue *vfio_ap_get_queue(unsigned long apqn)
+>>   {
+>> +    struct ap_queue *queue;
+>>       struct vfio_ap_queue *q;
+>> -    struct device *dev;
+>>   -    if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
+>> -        return NULL;
+>> -    if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
+>> +    queue = ap_get_qdev(apqn);
+>> +    if (!queue)
+>>           return NULL;
+>>   -    dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
+>> -                 &apqn, match_apqn);
+>> -    if (!dev)
+>> -        return NULL;
+>> -    q = dev_get_drvdata(dev);
+>> -    q->matrix_mdev = matrix_mdev;
+>> -    put_device(dev);
+>> +    q = dev_get_drvdata(&queue->ap_dev.device);
+>> +    put_device(&queue->ap_dev.device);
+>>         return q;
+>>   }
+>
+> this function changed a lot too, you should explain the goal in the 
+> patch comment.
 
-All the Atom firmware assumes data chunks in multiples of 1ms (typically 
-5, 10 or 20ms). I have never seen anyone use 256 frames, that's asking 
-for trouble really.
+This is precisely what the current patch comment describes.
 
-it's actually the same with Skylake and SOF in most cases.
+>
+> ...snip...
+>
+> Regards,
+> Pierre
+>
 
-Is this a 'real' problem or a problem detected by the Chrome ALSA 
-compliance tests, in the latter case that would hint at a too generic 
-value of min_period.
-
-> Using the hardware counter could provide precise hw_ptr to user space
-> and avoid the false underrun in CRAS.
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->   sound/soc/intel/atom/sst/sst_drv_interface.c | 15 +++------------
->   1 file changed, 3 insertions(+), 12 deletions(-)
-> 
-> diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-> index 7624953..1949ad9 100644
-> --- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-> +++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-> @@ -485,7 +485,6 @@ static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
->   		struct snd_pcm_substream *substream,
->   		struct snd_sst_tstamp *fw_tstamp)
->   {
-> -	size_t delay_bytes, delay_frames;
->   	size_t buffer_sz;
->   	u32 pointer_bytes, pointer_samples;
->   
-> @@ -493,22 +492,14 @@ static inline int sst_calc_tstamp(struct intel_sst_drv *ctx,
->   			fw_tstamp->ring_buffer_counter);
->   	dev_dbg(ctx->dev, "mrfld hardware_counter %llu in bytes\n",
->   			 fw_tstamp->hardware_counter);
-> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> -		delay_bytes = (size_t) (fw_tstamp->ring_buffer_counter -
-> -					fw_tstamp->hardware_counter);
-> -	else
-> -		delay_bytes = (size_t) (fw_tstamp->hardware_counter -
-> -					fw_tstamp->ring_buffer_counter);
-> -	delay_frames = bytes_to_frames(substream->runtime, delay_bytes);
-> +
->   	buffer_sz = snd_pcm_lib_buffer_bytes(substream);
-> -	div_u64_rem(fw_tstamp->ring_buffer_counter, buffer_sz, &pointer_bytes);
-> +	div_u64_rem(fw_tstamp->hardware_counter, buffer_sz, &pointer_bytes);
->   	pointer_samples = bytes_to_samples(substream->runtime, pointer_bytes);
->   
-> -	dev_dbg(ctx->dev, "pcm delay %zu in bytes\n", delay_bytes);
-> -
->   	info->buffer_ptr = pointer_samples / substream->runtime->channels;
-> +	info->pcm_delay = 0;
-
-and that seems also wrong? Why would the delay be zero?
-
-> -	info->pcm_delay = delay_frames;
->   	dev_dbg(ctx->dev, "buffer ptr %llu pcm_delay rep: %llu\n",
->   			info->buffer_ptr, info->pcm_delay);
->   	return 0;
-> 
