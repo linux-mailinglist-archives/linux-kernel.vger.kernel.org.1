@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4DA22FE3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E8422FE40
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgG0X6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:58:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgG0X6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:58:37 -0400
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D91920729;
-        Mon, 27 Jul 2020 23:58:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595894316;
-        bh=KOHL4dqqOgt80ENeUP3fboWfrZ4Es2kGP47CsCXbxcc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aYLfTp63EvOY7mzzhG3YX+3lCzRVUC/99sTt3Kzg6B7o1mRawcxxXeAzPgkFayaGb
-         CtzdbutF1yLSPKl9jqguggzLu+kvTJ3tlhfvsSEdQEpRmXgdcLzM2yQkM9wkD4T5M5
-         P/0wVHxukuXpUMIQv/O9iXuJYx8tVa9Sqt6Ne5EA=
-Received: by mail-lj1-f178.google.com with SMTP id s16so3947607ljc.8;
-        Mon, 27 Jul 2020 16:58:36 -0700 (PDT)
-X-Gm-Message-State: AOAM5326Np0b4C1fDMHNEP0wMRbyVzd1Lran4EkIpVTnUH35UlHu9tvg
-        aSSmexu/xEpQkaQwryyHHkA8BciZnm+iYqBPBIE=
-X-Google-Smtp-Source: ABdhPJyv4OWF5To6eW9anQABnbVH7sCiHCLi4jX2RUv1HVc5jxz2Gscx3ylyxBMeO5DNTJGjoZiX9w8flGdoziNTeDY=
-X-Received: by 2002:a2e:88c6:: with SMTP id a6mr11178609ljk.27.1595894314926;
- Mon, 27 Jul 2020 16:58:34 -0700 (PDT)
+        id S1726739AbgG0X7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgG0X7B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 19:59:01 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E97AC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:59:01 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id i138so8751589ild.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:59:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=40PEaev2AR89A76wIRPh9VfSUB5wAXw9k1uNgC1xL9I=;
+        b=QV9jS8xGVpXS1MnzL+IOlUZ00NhuszDykNVROAl12nkRTkPSRJLf8LWBy7IRcQeBX5
+         Q7f1VxShoP8ALlK0YhPDWsDbywP86qxft9UyqmnZuX+rR645yR4+nVqTHWAwl2Gb52kv
+         /BqhaOQy6KgfBLL+wrtuwtW4qoNCupFxb70UW7HRopA6YU2/2dju9n1s3CLS4500Q0wK
+         hgbLm2BsulQtzVxybbH+gZEHdWSP1sCjbAhQBJQXzqutkN7XHkgyJE8oR+BNXYDS4r39
+         T6lK2ZqTNfxiCaLRnb83C7QgeaRLag0TKTConCjZSzPTEONEKPDoaxjfEJfiWpm9lJ/A
+         qAqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=40PEaev2AR89A76wIRPh9VfSUB5wAXw9k1uNgC1xL9I=;
+        b=JaeEkizBXLA7UkcHlA2QpYAusqhNS0rXU5JALLijcxHI2dvbOKInOwyfludYp/CHZr
+         /JHK3jCvXsppufEf6kD6JCq36Fa3/0ly/dOBr4YfwC/uTi8ptOAD3HiZ8doJp/pJGD44
+         a/4PAXQ+VIymKMFefB0UjTKt4sHkrCg4H/yjFYil2JnJ0vMHtJE3d+mZxi9UzBbL5unF
+         5zIsCnb/8gigmVYnUuT9M+WeqcXPgFobeLp+JIs5jLHVQZyoTS6tGELm9dx0/pkNYmTA
+         Yii9f92XkO0pT43SetdEYmJObyFf2pbrtByW5QAbTo24n5jvu4RXnOCst7DvO0Jcf83N
+         P8uQ==
+X-Gm-Message-State: AOAM531LsjdzdUpnChfR7nBKPAFwuyJh8N/3LC6pQuGXZbppXH4zMT8D
+        zbCxIjUKE9KqA5T6K1HuI0Z0zVaK4vo6a6BLPHoKtdzz
+X-Google-Smtp-Source: ABdhPJySvicnnryYF1OslzmbsSVu5tO/Hy3Wk6Iz23QfOb9jDrUA0O4lYDXYPFMGDFdRo7HCdOu6N4VcluEmZYHL/U0=
+X-Received: by 2002:a92:7a07:: with SMTP id v7mr16791692ilc.122.1595894340476;
+ Mon, 27 Jul 2020 16:59:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-12-guro@fb.com>
-In-Reply-To: <20200727184506.2279656-12-guro@fb.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 27 Jul 2020 16:58:23 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW70Tzw=V7+N9Y=rzKSyihtiHHv03B_=Murr+GyepUTtpA@mail.gmail.com>
-Message-ID: <CAPhsuW70Tzw=V7+N9Y=rzKSyihtiHHv03B_=Murr+GyepUTtpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 11/35] bpf: refine memcg-based memory
- accounting for sockmap and sockhash maps
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20200727171112.2781-1-weiyongjun1@huawei.com>
+In-Reply-To: <20200727171112.2781-1-weiyongjun1@huawei.com>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Tue, 28 Jul 2020 09:58:49 +1000
+Message-ID: <CAOSf1CESE9tM_oJLwzfwx0AZfeJNXP719kJuo-Ba+NSY6BYhFg@mail.gmail.com>
+Subject: Re: [PATCH -next] powerpc/powernv/sriov: Remove unused but set
+ variable 'phb'
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Hulk Robot <hulkci@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:27 PM Roman Gushchin <guro@fb.com> wrote:
+On Tue, Jul 28, 2020 at 3:01 AM Wei Yongjun <weiyongjun1@huawei.com> wrote:
 >
-> Include internal metadata into the memcg-based memory accounting.
-> Also include the memory allocated on updating an element.
+> Gcc report warning as follows:
 >
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
+> arch/powerpc/platforms/powernv/pci-sriov.c:602:25: warning:
+>  variable 'phb' set but not used [-Wunused-but-set-variable]
+>   602 |  struct pnv_phb        *phb;
+>       |                         ^~~
+>
+> This variable is not used, so this commit removing it.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 > ---
->  net/core/sock_map.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>  arch/powerpc/platforms/powernv/pci-sriov.c | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 119f52a99dc1..bc797adca44c 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -38,7 +38,7 @@ static struct bpf_map *sock_map_alloc(union bpf_attr *attr)
->             attr->map_flags & ~SOCK_CREATE_FLAG_MASK)
->                 return ERR_PTR(-EINVAL);
+> diff --git a/arch/powerpc/platforms/powernv/pci-sriov.c b/arch/powerpc/platforms/powernv/pci-sriov.c
+> index 8404d8c3901d..7894745fd4f8 100644
+> --- a/arch/powerpc/platforms/powernv/pci-sriov.c
+> +++ b/arch/powerpc/platforms/powernv/pci-sriov.c
+> @@ -599,10 +599,8 @@ static int pnv_pci_vf_resource_shift(struct pci_dev *dev, int offset)
+>  static void pnv_pci_sriov_disable(struct pci_dev *pdev)
+>  {
+>         u16                    num_vfs, base_pe;
+> -       struct pnv_phb        *phb;
+>         struct pnv_iov_data   *iov;
 >
-> -       stab = kzalloc(sizeof(*stab), GFP_USER);
-> +       stab = kzalloc(sizeof(*stab), GFP_USER | __GFP_ACCOUNT);
->         if (!stab)
->                 return ERR_PTR(-ENOMEM);
+> -       phb = pci_bus_to_pnvhb(pdev->bus);
+>         iov = pnv_iov_get(pdev);
+>         num_vfs = iov->num_vfs;
+>         base_pe = iov->vf_pe_arr[0].pe_number;
 >
-> @@ -829,7 +829,8 @@ static struct bpf_shtab_elem *sock_hash_alloc_elem(struct bpf_shtab *htab,
->                 }
->         }
->
-> -       new = kmalloc_node(htab->elem_size, GFP_ATOMIC | __GFP_NOWARN,
-> +       new = kmalloc_node(htab->elem_size,
-> +                          GFP_ATOMIC | __GFP_NOWARN | __GFP_ACCOUNT,
->                            htab->map.numa_node);
->         if (!new) {
->                 atomic_dec(&htab->count);
-> @@ -1011,7 +1012,7 @@ static struct bpf_map *sock_hash_alloc(union bpf_attr *attr)
->         if (attr->key_size > MAX_BPF_STACK)
->                 return ERR_PTR(-E2BIG);
->
-> -       htab = kzalloc(sizeof(*htab), GFP_USER);
-> +       htab = kzalloc(sizeof(*htab), GFP_USER | __GFP_ACCOUNT);
->         if (!htab)
->                 return ERR_PTR(-ENOMEM);
->
-> --
-> 2.26.2
->
+
+Acked-by: Oliver O'Halloran <oohall@gmail.com>
