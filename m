@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1364D22E5A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 07:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6017622E597
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 07:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgG0F5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 01:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgG0F5g (ORCPT
+        id S1726717AbgG0Fxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 01:53:50 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:33508 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgG0Fxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 01:57:36 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739A9C0619D2;
-        Sun, 26 Jul 2020 22:57:36 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s189so8737327pgc.13;
-        Sun, 26 Jul 2020 22:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ojCM4rcZA96P0+wYCYATBc6LgEm75+hAFgIqDFOegjg=;
-        b=JvJ1i2zjXJsDib23ea7V6rVZT/kKvgUOybX3UDQMqhzqDcryWgLk9Aj8IUMQR3fYMz
-         W/plEXMdny8Yr9Otjc3GO1Je5BASmH+EA/lzkF+Wv4rQPwsaO3cGK6MZD+DnmWYFnBzX
-         WRxDNbftR8UjMHfQanTc+XNBL1UlI9X5ntNI9raYrdEvv6rxe/7d8TEzNU8kiqZ5ziMz
-         ijxy4s+U90KbwFcRf1NcK5uFqbdWkK7jC8Z6esQQHeaTQS0FxCGhaCEcI1ma93Gf8SDz
-         DhnPneqzENOChiAjvVIFbfE2EO6QrsnQCQB1jobuI3xgP0dHEGCvNWdDhETFdJR+kQ1P
-         o0hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ojCM4rcZA96P0+wYCYATBc6LgEm75+hAFgIqDFOegjg=;
-        b=khtu48akzucTiu4ULsM4RUgMqmgH99c9vSy/s5JLbvasT5uBh8dJVcNhriGi0S1/Fm
-         PoOtp6Yr26/mTNwIL59986Wzl23JtZ7Jq/3gFA84xbT1Hz1tNir0kZePqBLoXBS13GSS
-         ycZbiw8K81JoLPyD4RW8EKxob8g+UgbMdNJQzu7VsuEJ/9S+OXcNrq35PdcQplyUft82
-         0qyB/VolsiIAVsHfmF6DScpyk8Y6eMUnmp1MtD/eg1Y09zxbQQ5xQiKOfVEm1bE8dyuj
-         OYw4PSTNsO1UYvZ+w5Cf99P3FY+zDSHTSuisMC8AMe0MK8sNCD/yelXOHgdg2vuZtIB3
-         hBVw==
-X-Gm-Message-State: AOAM531B283Y+gyQYyhNeS1vI3xtsbCKO1yVDYafX+BHSNxcYrzKM9AA
-        dvp0elPu0QZy+U72RqxbzQXxpM5A
-X-Google-Smtp-Source: ABdhPJzR4NxrvRgSWdob2lxd/ae6gaoqG9QQ/ksnMfW4dvN/ybo9JIF4mVDcWBGJWczatUjsDVyldA==
-X-Received: by 2002:a63:fc09:: with SMTP id j9mr19120254pgi.308.1595829455924;
-        Sun, 26 Jul 2020 22:57:35 -0700 (PDT)
-Received: from sol (106-69-185-93.dyn.iinet.net.au. [106.69.185.93])
-        by smtp.gmail.com with ESMTPSA id f6sm780009pfa.23.2020.07.26.22.57.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Jul 2020 22:57:35 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:57:30 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 03/18] gpiolib: make cdev a build option
-Message-ID: <20200727055730.GA29606@sol>
-References: <20200725041955.9985-1-warthog618@gmail.com>
- <20200725041955.9985-4-warthog618@gmail.com>
- <CACRpkdZymmO9ku5OmCO74eiX3Y3jq_1g5De9Tx4hg3Lyrdt6bQ@mail.gmail.com>
- <20200727014601.GA10761@sol>
+        Mon, 27 Jul 2020 01:53:49 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200727055347epoutp03d7c52d70e793a1e40fdca69a88296c9f~lhjobyse22016820168epoutp03G
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:53:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200727055347epoutp03d7c52d70e793a1e40fdca69a88296c9f~lhjobyse22016820168epoutp03G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1595829227;
+        bh=saHxhsM0w2XX7RJSQrbqe2wZRztjJhp30+NjpyHF3Uw=;
+        h=Subject:To:From:Date:In-Reply-To:References:From;
+        b=FRMOQ3jg5lGnk4gATMtJlJ3Q2aXIOhOulSO1MzCOvLMMXQKnlzeBJEf4oNn5QjxDl
+         XhVnigOGRV+f72hyUav0Z6Pw4/YT77/puSvcL7Pb7DGjLGUbfVf3s3M7IndK1QhsRw
+         FcNjx0Vocvcw1eCd9232QMnE3tZLfXsT4ZF7+6Is=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200727055346epcas1p2090864eb719c92c0b9fb0fb03621e653~lhjoQieXQ2918529185epcas1p29;
+        Mon, 27 Jul 2020 05:53:46 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.156]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4BFTWW3ZlCzMqYm0; Mon, 27 Jul
+        2020 05:53:43 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3B.E7.29173.1EB6E1F5; Mon, 27 Jul 2020 14:53:38 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200727055337epcas1p16683bb2e79f0014871e0512fd35d0869~lhjfgkL5N3027230272epcas1p1t;
+        Mon, 27 Jul 2020 05:53:37 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200727055337epsmtrp26057c71521d276f6171330b69d3c53d2~lhjffnA590809708097epsmtrp2i;
+        Mon, 27 Jul 2020 05:53:37 +0000 (GMT)
+X-AuditID: b6c32a37-9b7ff700000071f5-e7-5f1e6be19d73
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        06.97.08382.1EB6E1F5; Mon, 27 Jul 2020 14:53:37 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200727055337epsmtip125908687d47990ef35e99a2658ba7348~lhjfWYG4X3261232612epsmtip1u;
+        Mon, 27 Jul 2020 05:53:37 +0000 (GMT)
+Subject: Re: linux-next: Fixes tag needs some work in the devfreq tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <cda32633-6fce-6baf-738b-ae2d60f40c34@samsung.com>
+Date:   Mon, 27 Jul 2020 15:05:21 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727014601.GA10761@sol>
+In-Reply-To: <20200727141707.3e96c3ee@canb.auug.org.au>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrEKsWRmVeSWpSXmKPExsWy7bCmge6jbLl4g7aZTBaXd81hs9i69yq7
+        A5NH440bbB6fN8kFMEVl22SkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qba
+        Krn4BOi6ZeYAjVdSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTkFFgW6BUn5haX5qXr
+        JefnWhkaGBiZAhUmZGfMXv2LseA9S8XGnvssDYz3mLsYOTgkBEwklq1L6WLk4hAS2MEo8Xrj
+        c3YI5xOjxNpls5kgnG+MEhPPNLJ2MXKCdRx6d4oZIrGXUeL33M9QzntGiQs75zGDVAkLuEms
+        Ob+cBcQWEciR+LBmA1icTUBLYv+LG2wgNr+AosTVH48ZQWxeATuJxx8ngdWzCKhKTFi8AswW
+        FQiTOLmtBapGUOLkzCdgcU4Bc4lFn68ygdjMAgYSRxbNYYWwxSVuPZkPFZeX2P52DthxEgKn
+        2CVuX7vICPGCi8SVK+fZIGxhiVfHt7BD2FISn9/thYpXS6w8eYQNormDUWLL/gtQ/xtL7F86
+        mQnCVpTY+XsuI8Q2Pol3X3tYIaHKK9HRJgRRoixx+cFdqHJJicXtnVDzPSRWbznNPoFRcRaS
+        32Yh+WcWkn9mIflnASPLKkax1ILi3PTUYsMCY+T43sQITnxa5jsYp739oHeIkYmD8RCjBAez
+        kggvt6hMvBBvSmJlVWpRfnxRaU5q8SFGU2BwT2SWEk3OB6bevJJ4Q1MjY2NjCxNDM1NDQyVx
+        3n9n2eOFBNITS1KzU1MLUotg+pg4OKUamMznGR19ssDKaK7qO/PcWLe7F0OaDnzxMbRUS9h1
+        89XWvT5e2wPnX1lQuOJ3zsOzmkfkTTq3HT6mkT/7etuTn2cOPnf+d3VmdEicfrL0i7rq9ttd
+        KzQruEPjzpyuWp/KdnDRHJYfBn8XB/9xnhv8MVGM5Wa5Wm01p3dmsH0yS0VNgI9DifF0Sy6Z
+        /geP+jlW/V/U257aoPPj8lnXthXeZldOfQhe9O6cwKmtm9Ze9vp+odtj6XOO2apM7z/9CQzx
+        vqE2TaiRtaL8QORhhguaP2bbBwbcMsj81KgQ2X1QbjZbjcSihOvr96dPei/y1+Xsd5mJ9g+L
+        GGdoFwcENzzs2M8d/2SXS9DOhZq/172awKnEUpyRaKjFXFScCADp0r7ABQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPLMWRmVeSWpSXmKPExsWy7bCSnO7DbLl4g1vTpS0u75rDZrF171V2
+        ByaPxhs32Dw+b5ILYIrisklJzcksSy3St0vgypi9+hdjwXuWio0991kaGO8xdzFyckgImEgc
+        encKyObiEBLYzSjxbc8iFoiEpMS0i0eBEhxAtrDE4cPFEDVvGSWWHvjCBFIjLOAmseb8crB6
+        EYEcifcP5kMN2s4ocb7hA9gGNgEtif0vbrCB2PwCihJXfzxmBLF5BewkHn+cBNbMIqAqMWHx
+        CjBbVCBMYueSx0wQNYISJ2c+AYtzCphLLPp8FSzOLKAnseP6L1YIW1zi1pP5UHF5ie1v5zBP
+        YBSahaR9FpKWWUhaZiFpWcDIsopRMrWgODc9t9iwwDAvtVyvODG3uDQvXS85P3cTIzjMtTR3
+        MG5f9UHvECMTB+MhRgkOZiURXm5RmXgh3pTEyqrUovz4otKc1OJDjNIcLErivDcKF8YJCaQn
+        lqRmp6YWpBbBZJk4OKUamELlOR127qtk9u936HNbxbvwA4uq24ynnIcWvWt68vfjZd9VZ350
+        SDRsmimtf8X5xdXJRcoPmaS+TD8hmj3hQM8E9TRthWV6u2N49M8qzBbsVjFxWL0qa9miSbIa
+        fms3ege6dL/m3m95T7Ret//wjM1b6r9sSkpaobdBuMbLcr+dSF5sh1p5a6Ywj5DKE5Ml02ZG
+        8wRFz7/256q7XK5exxGmtSnOU87zVGyvStbqeRU/X5XFuqpP5Udr1+bb14I+ha+eP+VC3d5J
+        YZd2ZXU6fl716+c3vznXiw5dDeu42a6pOr3iytycM0cyfNMTvirwnzoTPa9m6aSvxsZXOxuK
+        5j5uvljDt17LfqGiRv4LXiWW4oxEQy3mouJEABs5SQDiAgAA
+X-CMS-MailID: 20200727055337epcas1p16683bb2e79f0014871e0512fd35d0869
+X-Msg-Generator: CA
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200727041725epcas1p26800df7997a32a6b0d16ba2d034da372
+References: <20200727132428.2763f57b@canb.auug.org.au>
+        <CGME20200727041725epcas1p26800df7997a32a6b0d16ba2d034da372@epcas1p2.samsung.com>
+        <20200727141707.3e96c3ee@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 09:46:01AM +0800, Kent Gibson wrote:
-> On Mon, Jul 27, 2020 at 12:25:53AM +0200, Linus Walleij wrote:
-> > On Sat, Jul 25, 2020 at 6:21 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > 
-> > > +config GPIO_CDEV
-> > > +       bool "/dev/gpiochipN (character device interface)"
-> > > +       default y
-> > 
-> > I don't want to make it too easy to do this, as I see it as a standard
-> > kernel feature.
-> > 
-> > Can we add:
-> > 
-> > depends on EXPERT
-> > 
-> > as with other standard kernel features?
-> > 
+Hi,
+
+On 7/27/20 1:17 PM, Stephen Rothwell wrote:
+> Hi,
 > 
-> Fair enough.
+> On Mon, 27 Jul 2020 13:24:28 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Hi all,
+>>
+>> In commit
+>>
+>>   332c5b522b7c ("PM / devfrq: Fix indentaion of devfreq_summary debugfs node")
 > 
-> But what of the GPIO_CDEV_V1 option to disable uAPI V1 added in patch 04,
-> and that depends on GPIO_CDEV?
-> That is equivalent to GPIO_SYSFS, which is not dependent on EXPERT,
-> so I'll need to restructure the dependencies so it doesn't
-> inherit the EXPERT dependency.
-> Unless you also want it to be dependent on EXPERT.
+> This is now commit 470fa173646f
+> 
+>> Fixes tag
+>>
+>>   Fixes: commit 66d0e797bf09 ("Revert "PM / devfreq: Modify the device name as devfreq(X) for sysfs"")
+>>
+>> has these problem(s):
+>>
+>>   - leading word 'commit' unexpected
 > 
 
-I've gone with this:
+Thanks for pointing out. I fixed it. Thanks.
 
-+config GPIO_CDEV
-+       bool
-+       prompt "Character device (/dev/gpiochipN) support" if EXPERT
-+       default y
 
-so the entry is always present in menuconfig, and GPIO_CDEV_V1 can still
-depend on it, but GPIO_CDEV can only be disabled if EXPERT is set.
-
-> Hmmm, and maybe patch 04 should be later in the series - after V2 is
-> fully implemented and V1 is deprecated - around patch 11.
-> 
-
-Just ignore me - the earlier code patches need the define else the V1
-will be compiled out.
-
-Cheers,
-Kent.
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
