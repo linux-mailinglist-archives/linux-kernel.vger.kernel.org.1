@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5B822EEAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B4E22EF59
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbgG0OJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60132 "EHLO mail.kernel.org"
+        id S1730736AbgG0OPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:15:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729694AbgG0OJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:09:44 -0400
+        id S1730728AbgG0OPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:15:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBDCD2083E;
-        Mon, 27 Jul 2020 14:09:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B4562078E;
+        Mon, 27 Jul 2020 14:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858984;
-        bh=391sbRHYpWgc8awcde+J3xrFm3+48hwdU8hDC9WLgas=;
+        s=default; t=1595859341;
+        bh=8uOWQna+xF+wALsfQe81pslny6LeDhpRhdbY+HKlN6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qn7IjSjlEWmKjbWYaQ9d0A+UtzhBYpbPrPiWxtTlhwvj8lnR7uW0+I/QZ1BmhDCCY
-         iL6tP4WwvVlqgWoFOK/t8KeusXtKdYEaGVp7PpdVl9IKtHSfhMGdtLsyZzRUwRgnlH
-         NbR0Q3Ww3vB0GxyZ5ArSNWoN1jPQwEPVSJxyBCPg=
+        b=K9uD9JjDv21fK+To9GhhJvBy0MjyWaKqMhC764zlH98iJmGxZjhyVV/z07DXN8izq
+         bNPYIujXvHPJudEGVLlhEOyaOj0Bg6IK6OV+9KIW53bAoqWCG3GMuPdEK+Tcwcf/bD
+         oPooKDawDjcqAHaW3aeGvPGbujSsetzDdDrJbJxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 21/86] ASoC: rt5670: Correct RT5670_LDO_SEL_MASK
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 040/138] hippi: Fix a size used in a pci_free_consistent() in an error handling path
 Date:   Mon, 27 Jul 2020 16:03:55 +0200
-Message-Id: <20200727134915.420924035@linuxfoundation.org>
+Message-Id: <20200727134927.368645377@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 5cacc6f5764e94fa753b2c1f5f7f1f3f74286e82 upstream.
+[ Upstream commit 3195c4706b00106aa82c73acd28340fa8fc2bfc1 ]
 
-The RT5670_PWR_ANLG1 register has 3 bits to select the LDO voltage,
-so the correct mask is 0x7 not 0x3.
+The size used when calling 'pci_alloc_consistent()' and
+'pci_free_consistent()' should match.
 
-Because of this wrong mask we were programming the ldo bits
-to a setting of binary 001 (0x05 & 0x03) instead of binary 101
-when moving to SND_SOC_BIAS_PREPARE.
+Fix it and have it consistent with the corresponding call in 'rr_close()'.
 
-According to the datasheet 001 is a reserved value, so no idea
-what it did, since the driver was working fine before I guess we
-got lucky and it does something which is ok.
-
-Fixes: 5e8351de740d ("ASoC: add RT5670 CODEC driver")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20200628155231.71089-3-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5670.h |    2 +-
+ drivers/net/hippi/rrunner.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/soc/codecs/rt5670.h
-+++ b/sound/soc/codecs/rt5670.h
-@@ -760,7 +760,7 @@
- #define RT5670_PWR_VREF2_BIT			4
- #define RT5670_PWR_FV2				(0x1 << 3)
- #define RT5670_PWR_FV2_BIT			3
--#define RT5670_LDO_SEL_MASK			(0x3)
-+#define RT5670_LDO_SEL_MASK			(0x7)
- #define RT5670_LDO_SEL_SFT			0
- 
- /* Power Management for Analog 2 (0x64) */
+diff --git a/drivers/net/hippi/rrunner.c b/drivers/net/hippi/rrunner.c
+index 2a6ec53949666..a4b3fce69ecd9 100644
+--- a/drivers/net/hippi/rrunner.c
++++ b/drivers/net/hippi/rrunner.c
+@@ -1242,7 +1242,7 @@ static int rr_open(struct net_device *dev)
+ 		rrpriv->info = NULL;
+ 	}
+ 	if (rrpriv->rx_ctrl) {
+-		pci_free_consistent(pdev, sizeof(struct ring_ctrl),
++		pci_free_consistent(pdev, 256 * sizeof(struct ring_ctrl),
+ 				    rrpriv->rx_ctrl, rrpriv->rx_ctrl_dma);
+ 		rrpriv->rx_ctrl = NULL;
+ 	}
+-- 
+2.25.1
+
 
 
