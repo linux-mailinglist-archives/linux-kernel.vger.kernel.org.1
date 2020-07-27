@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F204622EE71
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A704F22EECA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgG0OHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56598 "EHLO mail.kernel.org"
+        id S1729913AbgG0OKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:10:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729281AbgG0OHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:07:40 -0400
+        id S1729266AbgG0OKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2DD42078E;
-        Mon, 27 Jul 2020 14:07:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1832B2173E;
+        Mon, 27 Jul 2020 14:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858860;
-        bh=957oKhyzfJEsn2BNVCIWxTyGK7q0im7wFaa03N9dAic=;
+        s=default; t=1595859042;
+        bh=CNA2UcGDHuCk9lpCPB6VSEaq6G3lroCk8+yxTtXAEhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OplE0zDswr8P2VBeTMKglzRspW3v0rCF7k2v1y4gBFqn0v7l9DMknBmWPAAlTFF6f
-         o+uctx10kDR4e7K8d9GX2x+AceKufviWKHEeBCU5A2MDkXHvr7n3ozjPnzHx9vdRIZ
-         mrKjD+ZeZ1Ned2Ooh5vYVc/FIHe4ml4FWekmMCtw=
+        b=wCAScgS9cyVcwL9vYITVj34LyWdA45XvFaKJ4XNI/J2lKjHkNfWltMZuN3gLa/Rza
+         mW85b6L2HCOGVdr65XvVIrSInb+G/Vi1KIAU4NigzTSMhvcr2/IiAqdz/LZ5bv6IP4
+         AdH0EqejJUQOvpRHAaCa+jAcRoca0lgsMYKYIZUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 39/64] regmap: dev_get_regmap_match(): fix string comparison
-Date:   Mon, 27 Jul 2020 16:04:18 +0200
-Message-Id: <20200727134913.105979980@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Rodrigo Rivas Costa <rodrigorivascosta@gmail.com>,
+        Siarhei Vishniakou <svv@google.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 45/86] HID: steam: fixes race in handling device list.
+Date:   Mon, 27 Jul 2020 16:04:19 +0200
+Message-Id: <20200727134916.683187544@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Rodrigo Rivas Costa <rodrigorivascosta@gmail.com>
 
-[ Upstream commit e84861fec32dee8a2e62bbaa52cded6b05a2a456 ]
+[ Upstream commit 2d3f53a80e4eed078669853a178ed96d88f74143 ]
 
-This function is used by dev_get_regmap() to retrieve a regmap for the
-specified device. If the device has more than one regmap, the name parameter
-can be used to specify one.
+Using uhid and KASAN this driver crashed because it was getting
+several connection events where it only expected one. Then the
+device was added several times to the static device list and it got
+corrupted.
 
-The code here uses a pointer comparison to check for equal strings. This
-however will probably always fail, as the regmap->name is allocated via
-kstrdup_const() from the regmap's config->name.
+This patch checks if the device is already in the list before adding
+it.
 
-Fix this by using strcmp() instead.
-
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://lore.kernel.org/r/20200703103315.267996-1-mkl@pengutronix.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Rodrigo Rivas Costa <rodrigorivascosta@gmail.com>
+Tested-by: Siarhei Vishniakou <svv@google.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/regmap/regmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-steam.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
-index 013d0a2b3ba0a..4e0cc40ad9ceb 100644
---- a/drivers/base/regmap/regmap.c
-+++ b/drivers/base/regmap/regmap.c
-@@ -1242,7 +1242,7 @@ static int dev_get_regmap_match(struct device *dev, void *res, void *data)
+diff --git a/drivers/hid/hid-steam.c b/drivers/hid/hid-steam.c
+index 6286204d4c560..a3b151b29bd71 100644
+--- a/drivers/hid/hid-steam.c
++++ b/drivers/hid/hid-steam.c
+@@ -526,7 +526,8 @@ static int steam_register(struct steam_device *steam)
+ 			steam_battery_register(steam);
  
- 	/* If the user didn't specify a name match any */
- 	if (data)
--		return (*r)->name == data;
-+		return !strcmp((*r)->name, data);
- 	else
- 		return 1;
- }
+ 		mutex_lock(&steam_devices_lock);
+-		list_add(&steam->list, &steam_devices);
++		if (list_empty(&steam->list))
++			list_add(&steam->list, &steam_devices);
+ 		mutex_unlock(&steam_devices_lock);
+ 	}
+ 
+@@ -552,7 +553,7 @@ static void steam_unregister(struct steam_device *steam)
+ 		hid_info(steam->hdev, "Steam Controller '%s' disconnected",
+ 				steam->serial_no);
+ 		mutex_lock(&steam_devices_lock);
+-		list_del(&steam->list);
++		list_del_init(&steam->list);
+ 		mutex_unlock(&steam_devices_lock);
+ 		steam->serial_no[0] = 0;
+ 	}
+@@ -738,6 +739,7 @@ static int steam_probe(struct hid_device *hdev,
+ 	mutex_init(&steam->mutex);
+ 	steam->quirks = id->driver_data;
+ 	INIT_WORK(&steam->work_connect, steam_work_connect_cb);
++	INIT_LIST_HEAD(&steam->list);
+ 
+ 	steam->client_hdev = steam_create_client_hid(hdev);
+ 	if (IS_ERR(steam->client_hdev)) {
 -- 
 2.25.1
 
