@@ -2,243 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF8D22EDBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF2D22EDC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgG0Nml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726555AbgG0Nmk (ORCPT
+        id S1729164AbgG0Nm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:42:58 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:37218 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728169AbgG0Nm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:42:40 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C4DC061794;
-        Mon, 27 Jul 2020 06:42:40 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a8so12172581edy.1;
-        Mon, 27 Jul 2020 06:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=r5UgUYmGIu8dXLKxxEsnpe0wyvxQ3PiGThgV1hXOvFQ=;
-        b=ID/e03+HVhMp8vhvRxAWcrJqeQDn0B0elBX4JgzNp19TqdRPpj0JAdi/gB71qgMKDg
-         4zs/nX407YlE6kFur9vBNlLxC7jkSwZtXgiCd8aDcz8Yr+qF09IxcCzXzaxapbhlv3gb
-         3t+nSiqVhTjec8RzhU3Z7PXqxtq1dOGRSkTtaLAjXxNMM/YpEXrG5AXcedxIPgvhHDdZ
-         tQbfJSYoS9+SHbUQ9t2/jdCRXO+H1AuOUMxtgUQ401FmFWdgdoLWulNpKhKFUc2rkVwa
-         w9M6e2dLQEHB2l/6aIqg5U9jaFgiQ58s7ukCDxCIlQGT/k213KvKlieMi2URT44kJ/m2
-         /K1Q==
+        Mon, 27 Jul 2020 09:42:58 -0400
+Received: by mail-oi1-f196.google.com with SMTP id 12so14365526oir.4;
+        Mon, 27 Jul 2020 06:42:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=r5UgUYmGIu8dXLKxxEsnpe0wyvxQ3PiGThgV1hXOvFQ=;
-        b=qu5i2qOgQiKU3cuOWZqPxJkMN7Zyt8GwDTIFdoSniBbWdtjjGVRW/jxppEwibSoQjr
-         wuS8eSyFnTPm/d0GwE6vJhnDGXbvL2YPMxbGos0aX7Tb5VBSf5/AW5ivjD58kO7jG6xx
-         zEXGgWOMB0kMKTVymolPAIypUB1ljoucm8HAeH5FAlgsr3uQaa2CekNFNXMdHsgvcCh1
-         ejVZ0vQWVmrabxm5tZXA8WeFMbH0n5MdrL0tp8MrhV431jhl3hJ4/k6ptL+BBbD5IW79
-         tcrD3wx7rvJrZhXatK3HZLdbuoBdyAFX7lt7pyw59A1zuKD9fu+fl3nN/qWTRnwOJrhE
-         vivw==
-X-Gm-Message-State: AOAM531q4JxozX4akgjX9r1WoCWxWo3Fg5/4YO5XssERVzWBkP65yp4+
-        4ypsbzzxn1zKaZOZ8WNF9ozkIn7l
-X-Google-Smtp-Source: ABdhPJwZznYnW4z4lkEFxOLCLYaX5bd+Wte9m7+t5rV8Uu8lPzz5m3GiJZ1jVnXU0ape3kDfG59Mng==
-X-Received: by 2002:a05:6402:1777:: with SMTP id da23mr20990077edb.260.1595857358906;
-        Mon, 27 Jul 2020 06:42:38 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id n5sm6989547eja.70.2020.07.27.06.42.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 06:42:38 -0700 (PDT)
-Reply-To: christian.koenig@amd.com
-Subject: Re: [PATCH 1/2] drm/radeon: switch from 'pci_' to 'dma_' API
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200727103421.50739-1-christophe.jaillet@wanadoo.fr>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <224fc7f6-f56b-1dc8-87f2-33ff85d5720d@gmail.com>
-Date:   Mon, 27 Jul 2020 15:42:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pvPzBZVgDAopAS1lI3CQpjCsa8HFcE1uN9uVOKEOSpk=;
+        b=CbhG+KFzJTp0GNyOaNgadj1KHsv/FYrggg4LMPQ8+DP9k3+KCwsjyqinyq8922mSAK
+         kOuFLIFPTIy6QottnYqKqVccdMe3A9Wv0lAaVogyVCYaZN286d844MBwmZ7JjEfzD4Sz
+         8Ml1j2JTBJESG0eMsYJHje7kEO3PHfD0QB9eOveMm8E5L5VyzGTtmeapVfyUZYvcQuIE
+         pOumPoLdLbc+cOd35fcYNENW+gAaom9CGqGSwQXL+NXEkDKhwW0tlaCnmOnRluNYMUZV
+         Xw6Ak5aZ6jEdiVkVFuR1TSUOIFPNHK+baUHUgAtNeN3H7mdPSz0Vr7imt/aoPRD3mi7B
+         DURQ==
+X-Gm-Message-State: AOAM531mZ3aU/yvcBMtVUxPQIAJFcQS26gv1GSkZonU5BpqC3Ru717mo
+        yZSYwsMWgBQnSIHx1cmSoOpqTpyQXeBRlNXPCbb6kA==
+X-Google-Smtp-Source: ABdhPJz0TvSVaNc8ulOS2JvmYwwhi/DIqKubE/aaIFsIH15FU8fiOFKiVgnLscHnh52p8XsoInOL/jOpCFJUMU7AFHE=
+X-Received: by 2002:aca:3646:: with SMTP id d67mr6786735oia.68.1595857376945;
+ Mon, 27 Jul 2020 06:42:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200727103421.50739-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200721124300.65615-1-psampat@linux.ibm.com> <20200721124300.65615-2-psampat@linux.ibm.com>
+In-Reply-To: <20200721124300.65615-2-psampat@linux.ibm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 27 Jul 2020 15:42:46 +0200
+Message-ID: <CAJZ5v0j3ip77opkaW3Rtn0cqT7VTL_8goctFBDVehWoZowDY0Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] cpuidle: Trace IPI based and timer based wakeup
+ latency from idle states
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, srivatsa@csail.mit.edu,
+        Shuah Khan <shuah@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.ibm.com>,
+        pratik.r.sampat@gmail.com, Linux PM <linux-pm@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 27.07.20 um 12:34 schrieb Christophe JAILLET:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
+On Tue, Jul 21, 2020 at 2:43 PM Pratik Rajesh Sampat
+<psampat@linux.ibm.com> wrote:
 >
-> The patch has been generated with the coccinelle script below and has been
-> hand modified to replace GFP_ with a correct flag.
-> It has been compile tested.
->
-> When memory is allocated in 'radeon_gart_table_ram_alloc()' GFP_KERNEL
-> can be used because its callers already use this flag.
->
-> Both 'r100_pci_gart_init()' (r100.c) and 'rs400_gart_init()' (rs400.c)
-> call 'radeon_gart_init()'.
-> This function uses 'vmalloc'.
->
->
-> @@
-> @@
-> -    PCI_DMA_BIDIRECTIONAL
-> +    DMA_BIDIRECTIONAL
->
-> @@
-> @@
-> -    PCI_DMA_TODEVICE
-> +    DMA_TO_DEVICE
->
-> @@
-> @@
-> -    PCI_DMA_FROMDEVICE
-> +    DMA_FROM_DEVICE
->
-> @@
-> @@
-> -    PCI_DMA_NONE
-> +    DMA_NONE
->
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_alloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->
-> @@
-> expression e1, e2, e3;
-> @@
-> -    pci_zalloc_consistent(e1, e2, e3)
-> +    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_free_consistent(e1, e2, e3, e4)
-> +    dma_free_coherent(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_single(e1, e2, e3, e4)
-> +    dma_map_single(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_single(e1, e2, e3, e4)
-> +    dma_unmap_single(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4, e5;
-> @@
-> -    pci_map_page(e1, e2, e3, e4, e5)
-> +    dma_map_page(&e1->dev, e2, e3, e4, e5)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_page(e1, e2, e3, e4)
-> +    dma_unmap_page(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_map_sg(e1, e2, e3, e4)
-> +    dma_map_sg(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_unmap_sg(e1, e2, e3, e4)
-> +    dma_unmap_sg(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-> +    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-> +    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2, e3, e4;
-> @@
-> -    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-> +    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_dma_mapping_error(e1, e2)
-> +    dma_mapping_error(&e1->dev, e2)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_dma_mask(e1, e2)
-> +    dma_set_mask(&e1->dev, e2)
->
-> @@
-> expression e1, e2;
-> @@
-> -    pci_set_consistent_dma_mask(e1, e2)
-> +    dma_set_coherent_mask(&e1->dev, e2)
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Fire directed smp_call_function_single IPIs from a specified source
+> CPU to the specified target CPU to reduce the noise we have to wade
+> through in the trace log.
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+And what's the purpose of it?
 
+> The module is based on the idea written by Srivatsa Bhat and maintained
+> by Vaidyanathan Srinivasan internally.
+>
+> Queue HR timer and measure jitter. Wakeup latency measurement for idle
+> states using hrtimer.  Echo a value in ns to timer_test_function and
+> watch trace. A HRtimer will be queued and when it fires the expected
+> wakeup vs actual wakeup is computes and delay printed in ns.
+>
+> Implemented as a module which utilizes debugfs so that it can be
+> integrated with selftests.
+>
+> To include the module, check option and include as module
+> kernel hacking -> Cpuidle latency selftests
+>
+> [srivatsa.bhat@linux.vnet.ibm.com: Initial implementation in
+>  cpidle/sysfs]
+>
+> [svaidy@linux.vnet.ibm.com: wakeup latency measurements using hrtimer
+>  and fix some of the time calculation]
+>
+> [ego@linux.vnet.ibm.com: Fix some whitespace and tab errors and
+>  increase the resolution of IPI wakeup]
+>
+> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+> Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
 > ---
-> If needed, see post from Christoph Hellwig on the kernel-janitors ML:
->     https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
-> ---
->   drivers/gpu/drm/radeon/radeon_gart.c | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
+>  drivers/cpuidle/Makefile               |   1 +
+>  drivers/cpuidle/test-cpuidle_latency.c | 150 +++++++++++++++++++++++++
+>  lib/Kconfig.debug                      |  10 ++
+>  3 files changed, 161 insertions(+)
+>  create mode 100644 drivers/cpuidle/test-cpuidle_latency.c
 >
-> diff --git a/drivers/gpu/drm/radeon/radeon_gart.c b/drivers/gpu/drm/radeon/radeon_gart.c
-> index f178ba321715..b7ce254e5663 100644
-> --- a/drivers/gpu/drm/radeon/radeon_gart.c
-> +++ b/drivers/gpu/drm/radeon/radeon_gart.c
-> @@ -72,8 +72,8 @@ int radeon_gart_table_ram_alloc(struct radeon_device *rdev)
->   {
->   	void *ptr;
->   
-> -	ptr = pci_alloc_consistent(rdev->pdev, rdev->gart.table_size,
-> -				   &rdev->gart.table_addr);
-> +	ptr = dma_alloc_coherent(&rdev->pdev->dev, rdev->gart.table_size,
-> +				 &rdev->gart.table_addr, GFP_KERNEL);
->   	if (ptr == NULL) {
->   		return -ENOMEM;
->   	}
-> @@ -110,9 +110,8 @@ void radeon_gart_table_ram_free(struct radeon_device *rdev)
->   			      rdev->gart.table_size >> PAGE_SHIFT);
->   	}
->   #endif
-> -	pci_free_consistent(rdev->pdev, rdev->gart.table_size,
-> -			    (void *)rdev->gart.ptr,
-> -			    rdev->gart.table_addr);
-> +	dma_free_coherent(&rdev->pdev->dev, rdev->gart.table_size,
-> +			  (void *)rdev->gart.ptr, rdev->gart.table_addr);
->   	rdev->gart.ptr = NULL;
->   	rdev->gart.table_addr = 0;
->   }
+> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
+> index f07800cbb43f..2ae05968078c 100644
+> --- a/drivers/cpuidle/Makefile
+> +++ b/drivers/cpuidle/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_ARCH_NEEDS_CPU_IDLE_COUPLED) += coupled.o
+>  obj-$(CONFIG_DT_IDLE_STATES)             += dt_idle_states.o
+>  obj-$(CONFIG_ARCH_HAS_CPU_RELAX)         += poll_state.o
+>  obj-$(CONFIG_HALTPOLL_CPUIDLE)           += cpuidle-haltpoll.o
+> +obj-$(CONFIG_IDLE_LATENCY_SELFTEST)      += test-cpuidle_latency.o
+>
+>  ##################################################################################
+>  # ARM SoC drivers
+> diff --git a/drivers/cpuidle/test-cpuidle_latency.c b/drivers/cpuidle/test-cpuidle_latency.c
+> new file mode 100644
+> index 000000000000..61574665e972
+> --- /dev/null
+> +++ b/drivers/cpuidle/test-cpuidle_latency.c
+> @@ -0,0 +1,150 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Module-based API test facility for cpuidle latency using IPIs and timers
 
+I'd like to see a more detailed description of what it does and how it
+works here.
+
+> + */
+> +
+> +#include <linux/debugfs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +
+> +/* IPI based wakeup latencies */
+> +struct latency {
+> +       unsigned int src_cpu;
+> +       unsigned int dest_cpu;
+> +       ktime_t time_start;
+> +       ktime_t time_end;
+> +       u64 latency_ns;
+> +} ipi_wakeup;
+> +
+> +static void measure_latency(void *info)
+> +{
+> +       struct latency *v;
+> +       ktime_t time_diff;
+> +
+> +       v = (struct latency *)info;
+> +       v->time_end = ktime_get();
+> +       time_diff = ktime_sub(v->time_end, v->time_start);
+> +       v->latency_ns = ktime_to_ns(time_diff);
+> +}
+> +
+> +void run_smp_call_function_test(unsigned int cpu)
+> +{
+> +       ipi_wakeup.src_cpu = smp_processor_id();
+> +       ipi_wakeup.dest_cpu = cpu;
+> +       ipi_wakeup.time_start = ktime_get();
+> +       smp_call_function_single(cpu, measure_latency, &ipi_wakeup, 1);
+> +}
+> +
+> +/* Timer based wakeup latencies */
+> +struct timer_data {
+> +       unsigned int src_cpu;
+> +       u64 timeout;
+> +       ktime_t time_start;
+> +       ktime_t time_end;
+> +       struct hrtimer timer;
+> +       u64 timeout_diff_ns;
+> +} timer_wakeup;
+> +
+> +static enum hrtimer_restart timer_called(struct hrtimer *hrtimer)
+> +{
+> +       struct timer_data *w;
+> +       ktime_t time_diff;
+> +
+> +       w = container_of(hrtimer, struct timer_data, timer);
+> +       w->time_end = ktime_get();
+> +
+> +       time_diff = ktime_sub(w->time_end, w->time_start);
+> +       time_diff = ktime_sub(time_diff, ns_to_ktime(w->timeout));
+> +       w->timeout_diff_ns = ktime_to_ns(time_diff);
+> +       return HRTIMER_NORESTART;
+> +}
+> +
+> +static void run_timer_test(unsigned int ns)
+> +{
+> +       hrtimer_init(&timer_wakeup.timer, CLOCK_MONOTONIC,
+> +                    HRTIMER_MODE_REL);
+> +       timer_wakeup.timer.function = timer_called;
+> +       timer_wakeup.time_start = ktime_get();
+> +       timer_wakeup.src_cpu = smp_processor_id();
+> +       timer_wakeup.timeout = ns;
+> +
+> +       hrtimer_start(&timer_wakeup.timer, ns_to_ktime(ns),
+> +                     HRTIMER_MODE_REL_PINNED);
+> +}
+> +
+> +static struct dentry *dir;
+> +
+> +static int cpu_read_op(void *data, u64 *value)
+> +{
+> +       *value = ipi_wakeup.dest_cpu;
+> +       return 0;
+> +}
+> +
+> +static int cpu_write_op(void *data, u64 value)
+> +{
+> +       run_smp_call_function_test(value);
+> +       return 0;
+> +}
+> +DEFINE_SIMPLE_ATTRIBUTE(ipi_ops, cpu_read_op, cpu_write_op, "%llu\n");
+> +
+> +static int timeout_read_op(void *data, u64 *value)
+> +{
+> +       *value = timer_wakeup.timeout;
+> +       return 0;
+> +}
+> +
+> +static int timeout_write_op(void *data, u64 value)
+> +{
+> +       run_timer_test(value);
+> +       return 0;
+> +}
+> +DEFINE_SIMPLE_ATTRIBUTE(timeout_ops, timeout_read_op, timeout_write_op, "%llu\n");
+> +
+> +static int __init latency_init(void)
+> +{
+> +       struct dentry *temp;
+> +
+> +       dir = debugfs_create_dir("latency_test", 0);
+> +       if (!dir) {
+> +               pr_alert("latency_test: failed to create /sys/kernel/debug/latency_test\n");
+> +               return -1;
+> +       }
+> +       temp = debugfs_create_file("ipi_cpu_dest",
+> +                                  0666,
+> +                                  dir,
+> +                                  NULL,
+> +                                  &ipi_ops);
+> +       if (!temp) {
+> +               pr_alert("latency_test: failed to create /sys/kernel/debug/ipi_cpu_dest\n");
+> +               return -1;
+> +       }
+> +       debugfs_create_u64("ipi_latency_ns", 0444, dir, &ipi_wakeup.latency_ns);
+> +       debugfs_create_u32("ipi_cpu_src", 0444, dir, &ipi_wakeup.src_cpu);
+> +
+> +       temp = debugfs_create_file("timeout_expected_ns",
+> +                                  0666,
+> +                                  dir,
+> +                                  NULL,
+> +                                  &timeout_ops);
+> +       if (!temp) {
+> +               pr_alert("latency_test: failed to create /sys/kernel/debug/timeout_expected_ns\n");
+> +               return -1;
+> +       }
+> +       debugfs_create_u64("timeout_diff_ns", 0444, dir, &timer_wakeup.timeout_diff_ns);
+> +       debugfs_create_u32("timeout_cpu_src", 0444, dir, &timer_wakeup.src_cpu);
+> +       pr_info("Latency Test module loaded\n");
+> +       return 0;
+> +}
+> +
+> +static void __exit latency_cleanup(void)
+> +{
+> +       pr_info("Cleaning up Latency Test module.\n");
+> +       debugfs_remove_recursive(dir);
+> +}
+> +
+> +module_init(latency_init);
+> +module_exit(latency_cleanup);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("IBM Corporation");
+> +MODULE_DESCRIPTION("Measuring idle latency for IPIs and Timers");
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index d74ac0fd6b2d..e2283790245a 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1375,6 +1375,16 @@ config DEBUG_KOBJECT
+>           If you say Y here, some extra kobject debugging messages will be sent
+>           to the syslog.
+>
+> +config IDLE_LATENCY_SELFTEST
+> +       tristate "Cpuidle latency selftests"
+> +       depends on CPU_IDLE
+> +       help
+> +         This option provides a kernel module that runs tests using the IPI and
+> +         timers to measure latency.
+
+What latency does it measure?
+
+> +
+> +         Say M if you want these self tests to build as a module.
+> +         Say N if you are unsure.
+> +
+>  config DEBUG_KOBJECT_RELEASE
+>         bool "kobject release debugging"
+>         depends on DEBUG_OBJECTS_TIMERS
+> --
+> 2.25.4
+>
