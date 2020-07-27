@@ -2,70 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930AE22E915
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E1022E95F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728117AbgG0JfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:35:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:40564 "EHLO foss.arm.com"
+        id S1726852AbgG0JpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgG0JfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:35:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1ED69D6E;
-        Mon, 27 Jul 2020 02:35:04 -0700 (PDT)
-Received: from [10.37.8.154] (unknown [10.37.8.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CCF83F718;
-        Mon, 27 Jul 2020 02:35:02 -0700 (PDT)
-Subject: Re: [PATCH] coresight: etm4x: Fix etm4_count race using atomic
- variable
-To:     saiprakash.ranjan@codeaurora.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
-References: <20200727060728.15027-1-saiprakash.ranjan@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <c98f0c27-7f0c-cf99-d52b-8a8b1e197ace@arm.com>
-Date:   Mon, 27 Jul 2020 10:39:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726269AbgG0JpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:45:03 -0400
+Received: from localhost (unknown [122.171.202.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9E014206D7;
+        Mon, 27 Jul 2020 09:45:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595843102;
+        bh=DLS6vu+tF/Yr4axusONjg1ATVJlwfe6hyJtgwtl3cEc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nb96BsOq2UFJortPd2AwocDDVxbx43ewV+au31xXLCatkujH299GZIJ40VXDICWc+
+         jz+AhXxOnYIVA8X5MlTUwOt8yLVgxxdWAZnW0JqsvaWc71gmId1L0LeQOyElEADiYS
+         exnlU70eGFczsyRZcdsjPiFSRelD3n2PWlK2mi+w=
+Date:   Mon, 27 Jul 2020 15:14:58 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     EastL <EastL.Lee@mediatek.com>
+Cc:     Sean Wang <sean.wang@mediatek.com>, robh+dt@kernel.org,
+        mark.rutland@arm.com, matthias.bgg@gmail.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        wsd_upstream@mediatek.com, cc.hwang@mediatek.com
+Subject: Re: [PATCH v6 2/4] dmaengine: mediatek-cqdma: remove redundant queue
+ structure
+Message-ID: <20200727094458.GU12965@vkoul-mobl>
+References: <1593673564-4425-1-git-send-email-EastL.Lee@mediatek.com>
+ <1593673564-4425-3-git-send-email-EastL.Lee@mediatek.com>
+ <20200715061957.GA34333@vkoul-mobl>
+ <1595471650.22392.12.camel@mtkswgap22>
 MIME-Version: 1.0
-In-Reply-To: <20200727060728.15027-1-saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595471650.22392.12.camel@mtkswgap22>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/27/2020 07:07 AM, Sai Prakash Ranjan wrote:
-> etm4_count keeps track of number of ETMv4 registered and on some
-> systems, a race is observed on etm4_count variable which can
-> lead to multiple calls to cpuhp_setup_state_nocalls_cpuslocked().
-> This function internally calls cpuhp_store_callbacks() which
-> prevents multiple registrations of callbacks for a given state
-> and due to this race, it returns -EBUSY leading to ETM probe
-> failures like below.
-> 
->   coresight-etm4x: probe of 7040000.etm failed with error -16
-> 
-> This race can easily be triggered with async probe by setting
-> probe type as PROBE_PREFER_ASYNCHRONOUS and with ETM power
-> management property "arm,coresight-loses-context-with-cpu".
-> 
-> Prevent this race by converting etm4_count variable to atomic.
-> 
-> Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup in probe() function")
-> Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug state machine")
-> Suggested-by: Mike Leach <mike.leach@linaro.org>
-> (Mike: Rootcause and context for commit message)
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+On 23-07-20, 10:34, EastL wrote:
+> On Wed, 2020-07-15 at 11:49 +0530, Vinod Koul wrote:
+> > On 02-07-20, 15:06, EastL Lee wrote:
+> > 
+> > >  static enum dma_status mtk_cqdma_tx_status(struct dma_chan *c,
+> > >  					   dma_cookie_t cookie,
+> > >  					   struct dma_tx_state *txstate)
+> > >  {
+> > > -	struct mtk_cqdma_vchan *cvc = to_cqdma_vchan(c);
+> > > -	struct mtk_cqdma_vdesc *cvd;
+> > > -	struct virt_dma_desc *vd;
+> > > -	enum dma_status ret;
+> > > -	unsigned long flags;
+> > > -	size_t bytes = 0;
+> > > -
+> > > -	ret = dma_cookie_status(c, cookie, txstate);
+> > > -	if (ret == DMA_COMPLETE || !txstate)
+> > > -		return ret;
+> > > -
+> > > -	spin_lock_irqsave(&cvc->vc.lock, flags);
+> > > -	vd = mtk_cqdma_find_active_desc(c, cookie);
+> > > -	spin_unlock_irqrestore(&cvc->vc.lock, flags);
+> > > -
+> > > -	if (vd) {
+> > > -		cvd = to_cqdma_vdesc(vd);
+> > > -		bytes = cvd->residue;
+> > > -	}
+> > > -
+> > > -	dma_set_residue(txstate, bytes);
+> > 
+> > any reason why you want to remove setting residue?
+> Because Mediatek CQDMA HW can't support residue.
 
-Please could we leave the hotplug notifier installed with the driver
-init and don't worry about this at all ? We bail out early in the
-notifier anyways, if the CPU is not registered with its ETM.
-
-Cheers
-Suzuki
+And previously it did?
+-- 
+~Vinod
