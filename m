@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD4222EF39
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16D722EFE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730559AbgG0OOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40042 "EHLO mail.kernel.org"
+        id S1730580AbgG0OUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:20:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729966AbgG0OO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:26 -0400
+        id S1731461AbgG0OT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:19:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9504420838;
-        Mon, 27 Jul 2020 14:14:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFA592070A;
+        Mon, 27 Jul 2020 14:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859266;
-        bh=lFa9ealmUnL5eTxGTVWXAJx6OXdjFIu5PQPUxkyFW6A=;
+        s=default; t=1595859597;
+        bh=iINv9F84Bgoo99yjFob1WezwwZvaTlQYEjVwF0s72S8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k3xJ3wmeswhCkTphjhgPIUzdslO3bWnwvO8o8QicaHveQKDvEjR+JFxyz0T0bP11W
-         99GYvh7wDyc9sKUN4toWfNAbDZjyFd5XHL9AatkxIeGjbs2T8Nkebg/iw2ei54R/b2
-         YgqSlJUjFilLRTG7Thak4nmHfQ78tXUhrVL4hqMQ=
+        b=HajdEWyRRXdwXdOC61jAVC4pwatQTnCsyW3YG9YU26sUsdt+w0hIIK45mVcoplphj
+         KDfVSugCWFWTNa8HvxoMF8dElaCv2DATR7mqLK9ZjruKIZyhwRD9Tq+Q6Pw2mBJhUy
+         rR9QOd2azZ8FIDtEuPBf2XHtJ/shgUHDeLra8UvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 012/138] net: sky2: initialize return of gm_phy_read
-Date:   Mon, 27 Jul 2020 16:03:27 +0200
-Message-Id: <20200727134925.858493098@linuxfoundation.org>
+        stable@vger.kernel.org, Joonho Wohn <doomsheart@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.7 033/179] ALSA: hda/realtek: Fixed ALC298 sound bug by adding quirk for Samsung Notebook Pen S
+Date:   Mon, 27 Jul 2020 16:03:28 +0200
+Message-Id: <20200727134934.279131875@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Joonho Wohn <doomsheart@gmail.com>
 
-[ Upstream commit 28b18e4eb515af7c6661c3995c6e3c34412c2874 ]
+commit 568e4e82128aac2c62c2c359ebebb6007fd794f9 upstream.
 
-clang static analysis flags this garbage return
+Fixed no headphone sound bug on laptop Samsung Notebook Pen S
+(950SBE-951SBE), by using existing patch in Linus' tree, commit
+14425f1f521f (ALSA: hda/realtek: Add quirk for Samsung Notebook).
+This laptop uses the same ALC298 but different subsystem id 0x144dc812.
+I added SND_PCI_QUIRK at sound/pci/hda/patch_realtek.c
 
-drivers/net/ethernet/marvell/sky2.c:208:2: warning: Undefined or garbage value returned to caller [core.uninitialized.UndefReturn]
-        return v;
-        ^~~~~~~~
+Signed-off-by: Joonho Wohn <doomsheart@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/CAHcbMh291aWDKiWSZoxXB4-Eru6OYRwGA4AVEdCZeYmVLo5ZxQ@mail.gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-static inline u16 gm_phy_read( ...
-{
-	u16 v;
-	__gm_phy_read(hw, port, reg, &v);
-	return v;
-}
-
-__gm_phy_read can return without setting v.
-
-So handle similar to skge.c's gm_phy_read, initialize v.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/sky2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/marvell/sky2.c b/drivers/net/ethernet/marvell/sky2.c
-index 5f56ee83e3b10..df7c23cd33600 100644
---- a/drivers/net/ethernet/marvell/sky2.c
-+++ b/drivers/net/ethernet/marvell/sky2.c
-@@ -203,7 +203,7 @@ io_error:
- 
- static inline u16 gm_phy_read(struct sky2_hw *hw, unsigned port, u16 reg)
- {
--	u16 v;
-+	u16 v = 0;
- 	__gm_phy_read(hw, port, reg, &v);
- 	return v;
- }
--- 
-2.25.1
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7551,6 +7551,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
++	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-X58)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
 
 
