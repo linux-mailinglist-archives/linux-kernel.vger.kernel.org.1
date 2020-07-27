@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB9522F18E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99FF22F228
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730904AbgG0OQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43574 "EHLO mail.kernel.org"
+        id S1728545AbgG0OMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730895AbgG0OQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:16:34 -0400
+        id S1729192AbgG0OMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B575121744;
-        Mon, 27 Jul 2020 14:16:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B17A2073E;
+        Mon, 27 Jul 2020 14:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859394;
-        bh=z7Xsc4pAQnAXAS8z63rxjvWkR5v1ktjL8dfKflE2mQM=;
+        s=default; t=1595859124;
+        bh=zrKBIjCnCmBPGY+wqL3lLsnjhyuLe5/lQbJwslNZXN8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HEeLc0AkG6xqJ22ZCtd0brZkxxHppzCzzjdoPOS8aeD38IR3tcXA7vonxJKsbYAoW
-         ZHw+emrMJjijEaw5EVZh9X1NLJjJ0XTTmFhBkx2nCsB+VecHG9C8foiHF9Egs1gHO+
-         Ib1lwD2tLeYum+TVUVhSelNkniInWH71RxjhtIxM=
+        b=VEZ9aW7ZlouApy4RLSpv8X/iFTiw7T6nR7e2KOouktUgJLTHzKUw9BMSFywO6vO9+
+         LEzy8tU0DS8xiThVMjToRNHcg0xec5VCc3RwruBrcRgF1CnWRqCr4PQEb+FZimrwGI
+         FeG57CBpRqH9prbk2FTGfValoaBGT9AARRJPRKMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chu Lin <linchuyuan@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 090/138] hwmon: (adm1275) Make sure we are reading enough data for different chips
-Date:   Mon, 27 Jul 2020 16:04:45 +0200
-Message-Id: <20200727134929.864259107@linuxfoundation.org>
+        stable@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 75/86] mm/memcg: fix refcount error while moving and swapping
+Date:   Mon, 27 Jul 2020 16:04:49 +0200
+Message-Id: <20200727134918.154511384@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chu Lin <linchuyuan@google.com>
+From: Hugh Dickins <hughd@google.com>
 
-[ Upstream commit 6d1d41c075a1a54ba03370e268171fec20e06563 ]
+commit 8d22a9351035ef2ff12ef163a1091b8b8cf1e49c upstream.
 
-Issue:
-When PEC is enabled, binding adm1272 to the adm1275 would
-fail due to PEC error. See below:
-adm1275: probe of xxxx failed with error -74
+It was hard to keep a test running, moving tasks between memcgs with
+move_charge_at_immigrate, while swapping: mem_cgroup_id_get_many()'s
+refcount is discovered to be 0 (supposedly impossible), so it is then
+forced to REFCOUNT_SATURATED, and after thousands of warnings in quick
+succession, the test is at last put out of misery by being OOM killed.
 
-Diagnosis:
-Per the datasheet of adm1272, adm1278, adm1293 and amd1294,
-PMON_CONFIG (0xd4) is 16bits wide. On the other hand,
-PMON_CONFIG (0xd4) for adm1275 is 8bits wide. The driver should not
-assume everything is 8bits wide and read only 8bits from it.
+This is because of the way moved_swap accounting was saved up until the
+task move gets completed in __mem_cgroup_clear_mc(), deferred from when
+mem_cgroup_move_swap_account() actually exchanged old and new ids.
+Concurrent activity can free up swap quicker than the task is scanned,
+bringing id refcount down 0 (which should only be possible when
+offlining).
 
-Solution:
-If it is adm1272, adm1278, adm1293 and adm1294, use i2c_read_word.
-Else, use i2c_read_byte
+Just skip that optimization: do that part of the accounting immediately.
 
-Testing:
-Binding adm1272 to the driver.
-The change is only tested on adm1272.
+Fixes: 615d66c37c75 ("mm: memcontrol: fix memcg id ref counter on swap charge move")
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/alpine.LSU.2.11.2007071431050.4726@eggly.anvils
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Chu Lin <linchuyuan@google.com>
-Link: https://lore.kernel.org/r/20200709040612.3977094-1-linchuyuan@google.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/pmbus/adm1275.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ mm/memcontrol.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-index 5caa37fbfc187..66b12e5ccbc65 100644
---- a/drivers/hwmon/pmbus/adm1275.c
-+++ b/drivers/hwmon/pmbus/adm1275.c
-@@ -454,6 +454,7 @@ MODULE_DEVICE_TABLE(i2c, adm1275_id);
- static int adm1275_probe(struct i2c_client *client,
- 			 const struct i2c_device_id *id)
- {
-+	s32 (*config_read_fn)(const struct i2c_client *client, u8 reg);
- 	u8 block_buffer[I2C_SMBUS_BLOCK_MAX + 1];
- 	int config, device_config;
- 	int ret;
-@@ -499,11 +500,16 @@ static int adm1275_probe(struct i2c_client *client,
- 			   "Device mismatch: Configured %s, detected %s\n",
- 			   id->name, mid->name);
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5147,7 +5147,6 @@ static void __mem_cgroup_clear_mc(void)
+ 		if (!mem_cgroup_is_root(mc.to))
+ 			page_counter_uncharge(&mc.to->memory, mc.moved_swap);
  
--	config = i2c_smbus_read_byte_data(client, ADM1275_PMON_CONFIG);
-+	if (mid->driver_data == adm1272 || mid->driver_data == adm1278 ||
-+	    mid->driver_data == adm1293 || mid->driver_data == adm1294)
-+		config_read_fn = i2c_smbus_read_word_data;
-+	else
-+		config_read_fn = i2c_smbus_read_byte_data;
-+	config = config_read_fn(client, ADM1275_PMON_CONFIG);
- 	if (config < 0)
- 		return config;
+-		mem_cgroup_id_get_many(mc.to, mc.moved_swap);
+ 		css_put_many(&mc.to->css, mc.moved_swap);
  
--	device_config = i2c_smbus_read_byte_data(client, ADM1275_DEVICE_CONFIG);
-+	device_config = config_read_fn(client, ADM1275_DEVICE_CONFIG);
- 	if (device_config < 0)
- 		return device_config;
- 
--- 
-2.25.1
-
+ 		mc.moved_swap = 0;
+@@ -5338,7 +5337,8 @@ put:			/* get_mctgt_type() gets the page
+ 			ent = target.ent;
+ 			if (!mem_cgroup_move_swap_account(ent, mc.from, mc.to)) {
+ 				mc.precharge--;
+-				/* we fixup refcnts and charges later. */
++				mem_cgroup_id_get_many(mc.to, 1);
++				/* we fixup other refcnts and charges later. */
+ 				mc.moved_swap++;
+ 			}
+ 			break;
 
 
