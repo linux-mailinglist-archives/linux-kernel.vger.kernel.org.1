@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF0922F396
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD30C22F3B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbgG0PP4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 11:15:56 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:46491 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728071AbgG0PPz (ORCPT
+        id S1729798AbgG0PSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:18:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728627AbgG0PSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:15:55 -0400
-Received: from mail-qv1-f46.google.com ([209.85.219.46]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mjjzx-1kfPo90V91-00lBjw for <linux-kernel@vger.kernel.org>; Mon, 27 Jul
- 2020 17:15:54 +0200
-Received: by mail-qv1-f46.google.com with SMTP id dm12so7598488qvb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:15:53 -0700 (PDT)
-X-Gm-Message-State: AOAM532kwl1dGaXmc3+QgYhJMw8Tifrm95VeOdwANoUNqfs3yduCI/7Z
-        0apZVdZGR0b5Zo2jPA86Kr/jbCef4NXqvvKH7ho=
-X-Google-Smtp-Source: ABdhPJz8JYqQMrxytjrFJZ6So17u6EFfd3xP72JlJzwExdG83wSW6pg2ww44Y8DvCC/6WlC7KCmUOokvY6zbG6c7byE=
-X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr21830645qvb.210.1595862953011;
- Mon, 27 Jul 2020 08:15:53 -0700 (PDT)
+        Mon, 27 Jul 2020 11:18:14 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21768C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:18:14 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id 6so12482782qtt.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:18:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oumv6DjctSmluV8Ivacc6/Q4aJir+U55bBJZDerGc5I=;
+        b=Px+7gUwtxpKPDvHuoB6IlCBvk6EYS0HihLI+J0DD9Ezkc74/7XR8zWE5ozirQqLiAX
+         GkTIW+1WD/9kORpCBOnAiXOdvsQplAmxjt4x9u68njVmagBRd1EPT/DkywHRiMxics9e
+         g+KAmVPtsnmWT9MDCxCqrBnvLaV+shLM7I1MiYFWmRJGOJ1QK8QLcbClczKJNwMT1IVb
+         5b+QaTWXQGkSWsYgGI870ieUbNiJ7NlmKpo6RigKaZKsss2an4B4b3lV5RFz7Oczzu7I
+         bE5utPmhMSYKh8aNIeJoUcULYkWff3tElXuJttV6jWPZZ0P8nCREx7rS3j57zkNrQAIe
+         C5iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oumv6DjctSmluV8Ivacc6/Q4aJir+U55bBJZDerGc5I=;
+        b=QYuVi7WtUn0fnQXfk0pAbjFWrYW1pKr3jpYU5no2OtEpN1QenLJjRbq3EMexZ33ofx
+         iRzcnj+96t4A2L1KUIS9DdS2PLi2xuECCHzYZPT1edV4pggVQoCBOMXbC6yfx2U/Zm3W
+         HDpMkkVVkhiq+kTAFS7OW+H+cvFL/zZndlhPwxTmKhpNaNTeQPLcAU6t0eeIVJ/fCTP8
+         9VhdSwpu0M7Dyn5XL6nXbydkmnMVhv7ouLMJXBb30dMV5VcGnIlSb39+tYqwHzRQDGzu
+         PH6pQ0ComfMVbz6QQE7Z4GCCFNoSaLiaKwM0R7hOf2uBG6Q0e1SsSmawtEpE55zESLeq
+         SuvA==
+X-Gm-Message-State: AOAM531zl4wb2Xr+E3Jfr5BR2oFd+zk2MTxbTZzblQkWrsR4fzEe5lJS
+        lCFNxJDEWpj/+vdt6TW3tQ==
+X-Google-Smtp-Source: ABdhPJyLTAelIjtu78jYMToVbssYjgYPk3s7pOniRfc3akQhku8vGAuGb0/YsOPPTj334y5KEiY9SA==
+X-Received: by 2002:aed:2199:: with SMTP id l25mr21958744qtc.309.1595863092480;
+        Mon, 27 Jul 2020 08:18:12 -0700 (PDT)
+Received: from localhost.localdomain ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id o21sm3445003qkk.94.2020.07.27.08.18.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 08:18:12 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Stefan Richter <stefanr@s5r6.in-berlin.de>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux1394-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH] firewire: Prevent kernel-infoleak in ioctl_get_info()
+Date:   Mon, 27 Jul 2020 11:15:37 -0400
+Message-Id: <20200727151537.315023-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200724212853.11601-1-daniel.gutson@eclypsium.com>
- <20200725055649.GA1047853@kroah.com> <CAFmMkTE_dT9+WJYyb19uQ_HmgJWZSARBy6PveheQJk++NuGbkQ@mail.gmail.com>
- <20200726071723.GB441916@kroah.com> <CAFmMkTFzGfFDrJrdgHztzLK2K-zBWy6T2Tv+G4-rrbVpbahkgg@mail.gmail.com>
-In-Reply-To: <CAFmMkTFzGfFDrJrdgHztzLK2K-zBWy6T2Tv+G4-rrbVpbahkgg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 17:15:37 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1nA7K15Cxz84Q8Grw3tKfgkUmsfURcytJEWb_0Wjqm5w@mail.gmail.com>
-Message-ID: <CAK8P3a1nA7K15Cxz84Q8Grw3tKfgkUmsfURcytJEWb_0Wjqm5w@mail.gmail.com>
-Subject: Re: [PATCH] Module argument to control whether intel-spi-pci attempts
- to turn the SPI flash chip writeable
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alex Bazhaniuk <alex@eclypsium.com>,
-        Richard Hughes <hughsient@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:hOc+ZkqHfgNWGLVbPWlrhOmb5zC6xv/hIC+TVHVn8xzjtdMf5/0
- bApDUjnlcyN7zYtHAmokOJHGDjlXRUAXWzIjYBRTeWXqpfqKuJNYVuQx1mVqrDwfttDtgAf
- zAIjKcpZCoejpkICjTdFLaFbD48bc3biph/yUeO7hZMjBIGEoTM7BmnugLFJpn9GaGtbTeT
- HCgzht//u1ffI324Dxkaw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lM9a73egz7I=:jRgB6SnjzPmh9pwPEvh5qD
- 1RqHmRj04f5oXNrJYWFYjwO6qy7Mino+j34bx54RRsT2IlvHp1qWeKda0EsWmZTRGi8kINH6E
- p1fuh3q25ldyUs6FX6Nt8Jg68uf3sJbawvxuV/lmhtlQKPS+9JuurZ8vAg8v5jNH6hC6gDfKw
- gWFQk/XMQ1uKkGDnbuvRHwze0Z3mrlWekwqG/tx/2JAEOpE+CNgnuuWwDzyd+PxEJoK5LaEzK
- kkkp/7nUb17uUQ3pCtIvWj/Nl64B9vMErS7zU3FToSunjxNzh0zuprQC+0Scnis/YA7wZfOFq
- Sj3B3fJofb0JzynGDDdz8RnZaryvXLAxr3CnCd4h01ajRaUH0jMe3aqlHqh4yYJNyNWbmsLRP
- wFhmBeVC3rYthDaUDbQh73ma5kiRYU4Xy/fyJfj5G65XX6oERtK7L8tghRxOmJLIyY+7pDYhp
- fC5VHTuHtduvL4a3ugmktyeAp969JsAdNxZy+R9xosg8S1RnOyOn+n9R2Apo1aHg1XbNlUQf7
- QOh9IraA0uJ7Gf1TL+7G9VLnr3xZZhVfiVQasbGcZaBO3mS932i0bEyXjRWYaI5+9kUtWwIMX
- np7EpzhJ32RHI3MyJs79ZjIdIr4HpJx468aaABEofbeFsXozIJW5pUtM/+BYWEPELrGk+KxIQ
- qxRgmKu4bHgLW9zBQEgIm6tXxD4ezEOXp4TUTkxJ7t7i3loOY0klr99yUHXDdTIDLPw3xUxzk
- XDzHpy4ixyaeZUmBRE3dXIaFD2U5oKkmes+oDFLkXD1vFJOtMkdC8qTX4O79PT2jcP1P0C9t7
- QTAx1D82Z1yyUgfZLdXjk2yH1ajzmzdWSyPIec/ck+sSARiMD6rMbEAFmxewxCsBbU6rYIr2d
- d3DF0C4KYezfb46FFX5/cMkfZZSEtsF78ITG2rxVadLjvQ2bfSTj68vQPxWUd2PDlmYicJmtc
- tYI0o3+FabE5k5EvjGCmPfLCnFp+bjueYWOfDe0xLWV6z4lnNFe8V
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 5:05 PM Daniel Gutson <daniel@eclypsium.com> wrote:
-> On Sun, Jul 26, 2020 at 4:17 AM Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
->>
->> On Sat, Jul 25, 2020 at 02:20:03PM -0300, Daniel Gutson wrote:
->> > El sáb., 25 jul. 2020 2:56 a. m., Greg Kroah-Hartman <
->> > gregkh@linuxfoundation.org> escribió:
->> >
->> >
->> > 1) I just did the same that intel-spi.c does.
->>
->> No need to copy bad examples :)
->
->
-> Didn't know it was a bad example. What's is the current modern mechanism that replaces initialization-time configuration?
+ioctl_get_info() is copying uninitialized stack memory to userspace due to
+the compiler not initializing holes in statically allocated structures.
+Fix it by initializing `event` using memset() in fill_bus_reset_event().
 
-I'd say you'd generally want this to be a per-instance setting, which
-could be a sysfs attribute of the physical device, or an ioctl for an
-existing user space abstraction.
+Cc: stable@vger.kernel.org
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ drivers/firewire/core-cdev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-In the changelog, you should also explain what this is used for. Do
-you actually want to write to a device that is marked read-only, or
-are you just trying to make the interface more consistent between the
-two drivers?
+diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
+index fb6c651214f3..2341d762df5b 100644
+--- a/drivers/firewire/core-cdev.c
++++ b/drivers/firewire/core-cdev.c
+@@ -340,6 +340,8 @@ static void fill_bus_reset_event(struct fw_cdev_event_bus_reset *event,
+ {
+ 	struct fw_card *card = client->device->card;
+ 
++	memset(event, 0, sizeof(*event));
++
+ 	spin_lock_irq(&card->lock);
+ 
+ 	event->closure	     = client->bus_reset_closure;
+-- 
+2.25.1
 
-     Arnd
