@@ -2,66 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2673922EE3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C06422EE55
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728591AbgG0OGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:06:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43076 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgG0OGD (ORCPT
+        id S1729046AbgG0OG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729005AbgG0OGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1k03lR-0001ev-5a; Mon, 27 Jul 2020 14:06:01 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        linux-iio@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] counter: microchip-tcb-capture: remove ATMEL_TC_ETRGEDG_NONE bit check
-Date:   Mon, 27 Jul 2020 15:06:00 +0100
-Message-Id: <20200727140600.112562-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 27 Jul 2020 10:06:53 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48261C0619D2;
+        Mon, 27 Jul 2020 07:06:53 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id c6so2812845pje.1;
+        Mon, 27 Jul 2020 07:06:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=/dlgd3xXF2wViyMH4/dVOyKUUCfyX+RzmgXdSrfRYJs=;
+        b=llKbCc1Jzqqo+R2xnbeoSk/TDJIw41decVAgoX43zZVyuP/6dBJRdvVkOESBSZdY3L
+         A96qMW2LreOn6cizUXAumgXb4phDCe+3Wmp0SCjIhtrMbZc9/XlXNsuZ42Mkxi9onWUN
+         e/kI4+z14oylOT5JCyzHeS2a6YKqMRmH64petkoLdwnt4KWGFluP0k0YrufbbbybYjjW
+         v5/tH2Z311vFwPIgGNRMCNKM9yR9GKhUEmjyiPAtXXp2VBPT9GelUDEFlRgNgWDpxgrC
+         jgiGlAuMF/8reRfi4rxL91Xiz0S4wZvgvqDfkIyyLp3PWYjaVoEGxqU3u7qlC5u448EM
+         KVWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=/dlgd3xXF2wViyMH4/dVOyKUUCfyX+RzmgXdSrfRYJs=;
+        b=fwcOMntVLKtYfuIQN39cugOgI9Sl8ZrPUU2VxdvMk8f+PzqUkaZHdWnVN8iJOiJ48i
+         SWirCozrdo/XcxeTcZ08Sj0HHqW01Xe4IdAIMB1FX6vuBYGoacBIEtYWE4ajB8qZx2j+
+         fvClJ/gJCoZu+TFuI3mqU+q0VebrM9fNBGTk7mQGIeIwvg/U93u1ElhuLZJ+hcFxqFd9
+         Hoh1nIPwhRvr0RMKiX13rx2WpyqdQJnohVsECFuNXXXuLfR7CHn0QuCrnWjH1mXUmdLB
+         7PlKdxX9L6/r9Mn39Xc7Onb/7TlkTRa+MI33wZbWd44yGeCg9Z/SE3HVbPwqK1OCg0Sg
+         /oJw==
+X-Gm-Message-State: AOAM532gr8j+dFs7miW1gU70ENr0+MMMati3d4R9GlBpoAJTJ2AJWyUo
+        thdE0iNNqDDX/6R8BsgMaS0PL/QR+j4=
+X-Google-Smtp-Source: ABdhPJyNjZQimFQYsPZZojsGgdduUxnpmtCXQWSqh9MJ9HkwSZ8ELCmS6a/9rrVk9cGhiLpy+DgT6A==
+X-Received: by 2002:a17:90a:2d8b:: with SMTP id p11mr13163026pjd.10.1595858812742;
+        Mon, 27 Jul 2020 07:06:52 -0700 (PDT)
+Received: from blackclown ([103.88.82.91])
+        by smtp.gmail.com with ESMTPSA id y18sm15372647pff.10.2020.07.27.07.06.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 27 Jul 2020 07:06:51 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 19:36:40 +0530
+From:   Suraj Upadhyay <usuraj35@gmail.com>
+To:     hare@suse.com, jejb@linux.ibm.com, martin.peterson@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] scsi: aic7xxx: Remove pci-dma-compat wrapper APIs.
+Message-ID: <20200727140640.GA14759@blackclown>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UugvWAfsgieZRqgk"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-The macro ATMEL_TC_ETRGEDG_NONE is defined as 0 << 8 which is zero and
-hence the check cmr & ATMEL_TC_ETRGEDG_NONE can never be true. Since
-*action is already assigned MCHP_TC_SYNAPSE_ACTION_NONE then this check
-and set is redundant dead code and can be removed.
+--UugvWAfsgieZRqgk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Addresses-Coverity: ("Logically dead code")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+The legacy API wrappers in include/linux/pci-dma-compat.h
+should go away as it creates unnecessary midlayering
+for include/linux/dma-mapping.h APIs, instead use dma-mapping.h
+APIs directly.
+
+The patch has been generated with the coccinelle script below
+and has been hand modified to replace GFP_ with correct flag.
+
+Compile-tested only.
+
+@@@@
+- PCI_DMA_BIDIRECTIONAL
++ DMA_BIDIRECTIONAL
+
+@@@@
+- PCI_DMA_TODEVICE
++ DMA_TO_DEVICE
+
+@@@@
+- PCI_DMA_FROMDEVICE
++ DMA_FROM_DEVICE
+
+@@@@
+- PCI_DMA_NONE
++ DMA_NONE
+
+@@ expression E1, E2, E3; @@
+- pci_alloc_consistent(E1, E2, E3)
++ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+
+@@ expression E1, E2, E3; @@
+- pci_zalloc_consistent(E1, E2, E3)
++ dma_alloc_coherent(&E1->dev, E2, E3, GFP_)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_free_consistent(E1, E2, E3, E4)
++ dma_free_coherent(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_map_single(E1, E2, E3, E4)
++ dma_map_single(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_single(E1, E2, E3, E4)
++ dma_unmap_single(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4, E5; @@
+- pci_map_page(E1, E2, E3, E4, E5)
++ dma_map_page(&E1->dev, E2, E3, E4, E5)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_page(E1, E2, E3, E4)
++ dma_unmap_page(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_map_sg(E1, E2, E3, E4)
++ dma_map_sg(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_unmap_sg(E1, E2, E3, E4)
++ dma_unmap_sg(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_single_for_cpu(E1, E2, E3, E4)
++ dma_sync_single_for_cpu(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_single_for_device(E1, E2, E3, E4)
++ dma_sync_single_for_device(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_sg_for_cpu(E1, E2, E3, E4)
++ dma_sync_sg_for_cpu(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2, E3, E4; @@
+- pci_dma_sync_sg_for_device(E1, E2, E3, E4)
++ dma_sync_sg_for_device(&E1->dev, E2, E3, E4)
+
+@@ expression E1, E2; @@
+- pci_dma_mapping_error(E1, E2)
++ dma_mapping_error(&E1->dev, E2)
+
+@@ expression E1, E2; @@
+- pci_set_consistent_dma_mask(E1, E2)
++ dma_set_coherent_mask(&E1->dev, E2)
+
+@@ expression E1, E2; @@
+- pci_set_dma_mask(E1, E2)
++ dma_set_mask(&E1->dev, E2)
+
+Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
 ---
- drivers/counter/microchip-tcb-capture.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/scsi/aic7xxx/aic79xx_osm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/microchip-tcb-capture.c
-index f7b7743ddb94..119640d6d6ab 100644
---- a/drivers/counter/microchip-tcb-capture.c
-+++ b/drivers/counter/microchip-tcb-capture.c
-@@ -185,9 +185,7 @@ static int mchp_tc_count_action_get(struct counter_device *counter,
- 
- 	*action = MCHP_TC_SYNAPSE_ACTION_NONE;
- 
--	if (cmr & ATMEL_TC_ETRGEDG_NONE)
--		*action = MCHP_TC_SYNAPSE_ACTION_NONE;
--	else if (cmr & ATMEL_TC_ETRGEDG_RISING)
-+	if (cmr & ATMEL_TC_ETRGEDG_RISING)
- 		*action = MCHP_TC_SYNAPSE_ACTION_RISING_EDGE;
- 	else if (cmr & ATMEL_TC_ETRGEDG_FALLING)
- 		*action = MCHP_TC_SYNAPSE_ACTION_FALLING_EDGE;
--- 
-2.27.0
+diff --git a/drivers/scsi/aic7xxx/aic79xx_osm.c b/drivers/scsi/aic7xxx/aic7=
+9xx_osm.c
+index 3782a20d5888..2998d70e1987 100644
+--- a/drivers/scsi/aic7xxx/aic79xx_osm.c
++++ b/drivers/scsi/aic7xxx/aic79xx_osm.c
+@@ -952,8 +952,8 @@ int
+ ahd_dmamem_alloc(struct ahd_softc *ahd, bus_dma_tag_t dmat, void** vaddr,
+ 		 int flags, bus_dmamap_t *mapp)
+ {
+-	*vaddr =3D pci_alloc_consistent(ahd->dev_softc,
+-				      dmat->maxsize, mapp);
++	*vaddr =3D dma_alloc_coherent(&ahd->dev_softc->dev, dmat->maxsize, mapp,
++				    GFP_ATOMIC);
+ 	if (*vaddr =3D=3D NULL)
+ 		return (ENOMEM);
+ 	return(0);
+@@ -963,8 +963,7 @@ void
+ ahd_dmamem_free(struct ahd_softc *ahd, bus_dma_tag_t dmat,
+ 		void* vaddr, bus_dmamap_t map)
+ {
+-	pci_free_consistent(ahd->dev_softc, dmat->maxsize,
+-			    vaddr, map);
++	dma_free_coherent(&ahd->dev_softc->dev, dmat->maxsize, vaddr, map);
+ }
+=20
+ int
+--=20
+2.17.1
 
+
+--UugvWAfsgieZRqgk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE7AbCa0kOsMJ4cx0j+gRsbIfe744FAl8e32UACgkQ+gRsbIfe
+744KDw/7BpO7VI4xx9d2wmnGAwifaIX6neKoXzHs8RxWHssVDdZHn0PVd07wcNTZ
+2GYQ3gr9HVZJKe3GGwLY1naLzK2Ee28bHvfUro/DEdcJHjF5oyVgCwYEJT5vxdrU
+0wO2SvP3uUha3INyogAqUecWIdhqo6sGJ4LPnoeu93vp/RIK81CELKebxP9vkY9s
+Lq2l+BxeXyMMTxxfUWNMRTurf3FqqOnmRuN9uqM9hH+wMmM6WgY0BYDKam4fVecw
+/AwSrHQVyDzRle/zMnGUgJhV50KPwJbkmm2de2aqAUkwwrYYpOan5VgU5A+hRQJO
+7ry9jBXRxZn1rBz8T/v9IXD2UZ705/o6tDm51YrUrNY+Kk7JOI1rp2pTHV2ITpIQ
+aGp7SBUSEeXELdjrkgD/BSC0iopZ+apeiIh87qZEJ3VqS7xvrB05b8xm0XPKXDNy
+i3O3Vc5aOAypnb7GhBWxvKaM962WGhnH2AvRvxrPDbFRycsafwnkVa7QPU4P1Xs4
+xZG8HYg8SSJ3uLLpxb00SrtvDL9lyzR1cMWVU42eEDUeB0W9N/fY3rPvpB28iJ37
+CeAaJu8purH1u/+2B80S/p0933lWpih07cmnIx12q3R1MiFY2z5PlyJDiUGxeIbq
+YGsKrIMLMgPAHmNt5/I9LyAyoA1TaVsgiHwRKOY2jHFOWCHc+n0=
+=yJ/4
+-----END PGP SIGNATURE-----
+
+--UugvWAfsgieZRqgk--
