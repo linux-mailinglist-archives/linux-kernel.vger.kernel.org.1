@@ -2,133 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7814422E720
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2FD22E707
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgG0H6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:58:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:23980 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726183AbgG0H6r (ORCPT
+        id S1727780AbgG0H4P convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 03:56:15 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:47899 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbgG0H4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:58:47 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06R7YcUo128842;
-        Mon, 27 Jul 2020 03:56:45 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32hrnkkgk9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 03:56:45 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06R7lTDM170602;
-        Mon, 27 Jul 2020 03:56:45 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 32hrnkkgju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 03:56:45 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06R7t1T8023670;
-        Mon, 27 Jul 2020 07:56:43 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 32gcq0s6hj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 07:56:43 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06R7ueiC61931744
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Jul 2020 07:56:41 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D7F25AE056;
-        Mon, 27 Jul 2020 07:56:40 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B483AE04D;
-        Mon, 27 Jul 2020 07:56:38 +0000 (GMT)
-Received: from srikart450.in.ibm.com (unknown [9.199.36.96])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Jul 2020 07:56:38 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH 7/7] powerpc/smp: Depend on cpu_l1_cache_map when adding cpus
-Date:   Mon, 27 Jul 2020 13:25:32 +0530
-Message-Id: <20200727075532.30058-8-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200727075532.30058-1-srikar@linux.vnet.ibm.com>
-References: <20200727075532.30058-1-srikar@linux.vnet.ibm.com>
+        Mon, 27 Jul 2020 03:56:13 -0400
+Received: from mail-qk1-f182.google.com ([209.85.222.182]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MQMmF-1kDWnN0KfJ-00MOyW for <linux-kernel@vger.kernel.org>; Mon, 27 Jul
+ 2020 09:56:12 +0200
+Received: by mail-qk1-f182.google.com with SMTP id b79so14432212qkg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:56:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531Wokv7W6aWtxRYW721+KHdJb9UAPeHbLfQMdcfObI6Qfyzbwmp
+        zz8dw9mnGiRu004mmfrYLXlTjNNL35lEY9i0lmc=
+X-Google-Smtp-Source: ABdhPJwN73bC8kIruJcdjJC2GFRSQxWwqPQCem38agJRvfEW+LrAzk5A0Z4s9LvPRY/dFw6d3xdJR2PEcDvNhP9aTUY=
+X-Received: by 2002:a37:385:: with SMTP id 127mr20493263qkd.3.1595836570861;
+ Mon, 27 Jul 2020 00:56:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_04:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 impostorscore=0 phishscore=0
- mlxscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007270051
+References: <20200724145401.2566-1-krzk@kernel.org> <20200724145401.2566-3-krzk@kernel.org>
+ <PWBZDQ.D1XCW6N2YMRA@crapouillou.net> <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
+ <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
+ <K5Y0EQ.WYAK00ADM46F3@crapouillou.net> <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
+ <20200726160616.GA2662@kozik-lap> <RO33EQ.546WD84D5N7K2@crapouillou.net>
+ <20200726161545.GA6058@kozik-lap> <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
+In-Reply-To: <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Jul 2020 09:55:54 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
+Message-ID: <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
+ architecture only
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Provags-ID: V03:K1:dU5DLlV+sbrqR4UICfuTpx0/Lh9IPvagrWGBCSIgUCh5uqnV5r8
+ L9aw89+q+Gk1+tn9DBWV25UHAZmwYqmxnbf/VDQQ5vLg9AUAtLERNC7m/gAusPnq3jnR46c
+ 3MWCoGKLyAt7dR/sfP+0UioTI7NSUz8w+3uXxqG5uyZJ5JTmZusvK1YkdfqQ6HUd7adAaFk
+ cVsrC+GeAKX3L9ffVzuPw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+PvoUUmvStM=:2Kfr7htIz1Pt0/aj/fVZPh
+ O2N2gSr2lj0ywHcZMXVpZQHZpHulQ/2smksiRdojaoBvt4BXqc6r2zCPDSoVFRAK58DGh/+ia
+ 8Aigoom5sxUFmD1Tcyr2YLU5Niay/2h5FTEdvn5F6cDHUkmsrzn08RRZo9cPmNqqR5k2QuFAd
+ KFSKbTWtdi/h3xzMxIeaHYrvfY9gLPOB4lsOSPVdm5WMEPsKMlozv0uq9PgS49+Tr7yfvrYJr
+ FEGx3CQUDgO9E6ozaEO90Y3Rv4rj3Z6akea2yQetDsu0vxxclcJUbkeOmC0jUfYlsyHKP9nU6
+ 5S+FzRT3MVzfaf6/4hVGSRgjW+skoj3bKajvb/nU3jN5K9K5YkNPN6fmPcOvaPizkRj9f2xnb
+ c8A5pHsDSb0MT2mLkSud+JrhzYPiofxsRb4nl2L8BRLo4cpV53OC4jWF5ze+2F4c+yqKRxFY9
+ +OgAS9i6+KuvzKpVZte/QzNyy4dBD9+1ucj7pGkZ+tpSaW3VP0n9S4BvHfA8KzKMq+sPsbaie
+ YLGXVy9y4lkwzd54SzabgOjUUGtuEYFYGvSCJ7aO89xEj7aBh+LRC6zMEgz2x1KV/P6ph3/Nn
+ YdVSWDG8KhGxttFlbkitZFcerxgwAC1mHK6GR/uEeAKunppun7eGurlpY1x5aBGKW7QGwcflK
+ wFDErshG6jGveJE99NQ+U7LblC1cgRNGxXFbArQe+Tz4mzEQSA+8S4wJNnms2Mvzva9agHAb6
+ yzlR4+6crAwZg6oGkyihLqsmAQs1ntzihcLfuSAYG9PjKvhYcPuMsG0I5hrLvvW2r/dGy0tlZ
+ 7YlALXdtwaec/pJEWqew1wWVlh5EvjKHpwyU35sqCRDJzcnyC3R6/hNSYsHOkH7pqhhwH++Zt
+ +TETEBeLwFlFbapzHsbEXuf103/fqpBxLEPm7v+oUDnsIFnAx1bnTqkflSlqP+yNEDpDo5yPW
+ 5HY6+ikXF7/wH5PcLNK+vFVIx9AyFyQ92l53hfme3GOx/Fsqx643X
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently on hotplug/hotunplug, the cpu iterates through all the cpus in
-its core to find threads in its thread group. However this info is
-already captured in cpu_l1_cache_map. Hence we could reduce the
-iteration and cleanup add_cpu_to_smallcore_masks function.
+On Sun, Jul 26, 2020 at 6:20 PM Paul Cercueil <paul@crapouillou.net> wrote:
+> Le dim. 26 juil. 2020 à 18:15, Krzysztof Kozlowski <krzk@kernel.org> a écrit :
+> > On Sun, Jul 26, 2020 at 06:12:27PM +0200, Paul Cercueil wrote:
+> >>  Le dim. 26 juil. 2020 à 18:06, Krzysztof Kozlowski <krzk@kernel.org> a écrit
+ >
+> > OK, that's true. Anyway, I don't have strong opinion on any of this. I
+> > just followed Arnd's hint.
+> >
+> > For the memory driver (and MTD NAND as well) which one you prefer:
+> > 1. https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
+> > 2. depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
+> >
+> > ?
+>
+> I'd say a slightly modified #1. The driver shouldn't be "default y" in
+> the first place, so the patch could be to disable it by default.
 
-Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Anton Blanchard <anton@ozlabs.org>
-Cc: Oliver O'Halloran <oohall@gmail.com>
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- arch/powerpc/kernel/smp.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+If it defaults to 'n' even for MACH_INGENIC, you may have to enable
+it in the four defconfig files for these machines to avoid surprises.
 
-diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-index eceb7aa0f4b8..22f4b3856470 100644
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@ -1276,16 +1276,15 @@ static void remove_cpu_from_masks(int cpu)
- 
- static inline void add_cpu_to_smallcore_masks(int cpu)
- {
--	struct cpumask *this_l1_cache_map = per_cpu(cpu_l1_cache_map, cpu);
--	int i, first_thread = cpu_first_thread_sibling(cpu);
-+	int i;
- 
- 	if (!has_big_cores)
- 		return;
- 
- 	cpumask_set_cpu(cpu, cpu_smallcore_mask(cpu));
- 
--	for (i = first_thread; i < first_thread + threads_per_core; i++) {
--		if (cpu_online(i) && cpumask_test_cpu(i, this_l1_cache_map))
-+	for_each_cpu(i, per_cpu(cpu_l1_cache_map, cpu)) {
-+		if (cpu_online(i))
- 			set_cpus_related(i, cpu, cpu_smallcore_mask);
- 	}
- }
--- 
-2.17.1
+> And when the Ingenic code is merged into the MIPS generic framework, I'll
+> send a set of patches to change all driver dependencies on MIPS to
+> MIPS_GENERIC.
 
+The way we do it on Arm, the machine Kconfig identifiers stay around
+even for multiplatform targets (which now make up basically actively
+maintained machines).
+
+I don't think it makes any sense for a driver to depend on MIPS_GENERIC:
+either it is a generic driver that should always be visible or it is specific
+to a set of SoCs and should depend on some corresponding vendor
+specific identifiers.
+
+       Arnd
