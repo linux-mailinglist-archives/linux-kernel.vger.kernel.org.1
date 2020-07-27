@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48F722EDCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8928F22EDAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728636AbgG0NsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:48:24 -0400
-Received: from m177126.mail.qiye.163.com ([123.58.177.126]:27697 "EHLO
-        m177126.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgG0NsY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:48:24 -0400
-X-Greylist: delayed 508 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Jul 2020 09:48:22 EDT
-Received: from vivo.com (wm-5 [127.0.0.1])
-        by m177126.mail.qiye.163.com (Hmail) with ESMTP id DF77C1832B7;
-        Mon, 27 Jul 2020 21:39:51 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AAcAXwBTDSpsKN-5iyIOtaqk.1.1595857191899.Hmail.wenhu.wang@vivo.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     mgorman@suse.de, bsegall@google.com, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        trivial <trivial@kernel.org>
-Subject: =?UTF-8?B?W1BBVENIXSBzY2hlZDogZml4IGEgdHlwbyBmb3Igc2NoZWQuaCBmb3Igc3RydWN0IHNjaGVkX2F2Zw==?=
+        id S1729163AbgG0NkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:40:19 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:8922 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728109AbgG0NkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:40:18 -0400
+Received: by ajax-webmail-mail-app4 (Coremail) ; Mon, 27 Jul 2020 21:39:57
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.186]
+Date:   Mon, 27 Jul 2020 21:39:57 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Larry Finger" <Larry.Finger@lwfinger.net>
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, kjlu@umn.edu,
+        "Shreeya Patel" <shreeya.patel23498@gmail.com>,
+        "Julia Lawall" <julia.lawall@inria.fr>,
+        "Michael Straube" <straube.linux@gmail.com>,
+        "Stefano Brivio" <sbrivio@redhat.com>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized
+ variable authmode
 X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
+X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <66d9502e-682f-6ccd-ef90-138feee0c2ae@lwfinger.net>
+References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
+ <20200724132836.GC316746@kroah.com>
+ <66d9502e-682f-6ccd-ef90-138feee0c2ae@lwfinger.net>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 27 Jul 2020 21:39:51 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
-Date:   Mon, 27 Jul 2020 21:39:51 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGEJCTRhDHR0ZQx0ZVkpOQk5DTkxKQkpCSk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVKS0tZBg++
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo6GDojDDkvPygLCDA1Vk4SAjI0
-        DxoKEFVKVUpOQk5DTkxKQklIQ09VMxYaEhdVDB4VEw5VDBoVHDsNEg0UVRgUFkVZV1kSC1lBWU5D
-        VUlOSlVMT1VJSU1ZV1kIAVlBSU1DTzcG
-X-HM-Tid: 0a73908043f36458kursdf77c1832b7
+Message-ID: <1721a94f.13572.173908057cb.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgBn6Pwt2R5fMeheAA--.11594W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAggHBlZdtPRcawAesp
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbGCS07vEb7Iv0x
+        C_Ar1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
+        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
+        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
+        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
+        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
+        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
+        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6ry8MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2
+        xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCa
+        FVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67
+        AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AK
+        xVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw2
+        0EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUU==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hhbmdlIHRoZSBjb21tZW50IHR5cG86ICJkaXJlY2x5IiAtPiAiZGlyZWN0bHkiLgoKU2lnbmVk
-LW9mZi1ieTogV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4KLS0tCiBpbmNsdWRlL2xp
-bnV4L3NjaGVkLmggfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVs
-ZXRpb24oLSkKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NjaGVkLmggYi9pbmNsdWRlL2xp
-bnV4L3NjaGVkLmgKaW5kZXggNDQxOGY1Y2I4MzI0Li5hZWM1ZDdmYjE5NTIgMTAwNjQ0Ci0tLSBh
-L2luY2x1ZGUvbGludXgvc2NoZWQuaAorKysgYi9pbmNsdWRlL2xpbnV4L3NjaGVkLmgKQEAgLTM3
-Nyw3ICszNzcsNyBAQCBzdHJ1Y3QgdXRpbF9lc3QgewogICogRm9yIGNmc19ycSwgdGhleSBhcmUg
-dGhlIGFnZ3JlZ2F0ZWQgdmFsdWVzIG9mIGFsbCBydW5uYWJsZSBhbmQgYmxvY2tlZAogICogc2No
-ZWRfZW50aXRpZXMuCiAgKgotICogVGhlIGxvYWQvcnVubmFibGUvdXRpbF9hdmcgZG9lc24ndCBk
-aXJlY2x5IGZhY3RvciBmcmVxdWVuY3kgc2NhbGluZyBhbmQgQ1BVCisgKiBUaGUgbG9hZC9ydW5u
-YWJsZS91dGlsX2F2ZyBkb2Vzbid0IGRpcmVjdGx5IGZhY3RvciBmcmVxdWVuY3kgc2NhbGluZyBh
-bmQgQ1BVCiAgKiBjYXBhY2l0eSBzY2FsaW5nLiBUaGUgc2NhbGluZyBpcyBkb25lIHRocm91Z2gg
-dGhlIHJxX2Nsb2NrX3BlbHQgdGhhdCBpcyB1c2VkCiAgKiBmb3IgY29tcHV0aW5nIHRob3NlIHNp
-Z25hbHMgKHNlZSB1cGRhdGVfcnFfY2xvY2tfcGVsdCgpKQogICoKLS0gCjIuMTcuMQoKDQoNCg==
+PiAKPiBZZXMsIGluIHRoaXMgcm91dGluZSwgaXQgd291bGQgYmUgcG9zc2libGUgZm9yIGF1dGht
+b2RlIHRvIG5vdCBiZSBzZXQ7IGhvd2V2ZXIsIAo+IGxhdGVyIGNvZGUgb25seSBjb21wYXJlcyBp
+dCB0byBlaXRoZXIgX1dQQV9JRV9JRF8gb3IgX1dQQTJfSUVfSURfLiBJdCBpcyBuZXZlciAKPiB1
+c2VkIGluIGEgd2F5IHRoYXQgYW4gdW5zZXQgdmFsdWUgY291bGQgbWFrZSB0aGUgcHJvZ3JhbSBm
+bG93IGJlIGRpZmZlcmVudCBieSAKPiBhcmJpdHJhcmlseSBzZXR0aW5nIHRoZSB2YWx1ZSB0byB6
+ZXJvLiBUaHVzIHlvdXIgc3RhdGVtZW50ICJUaGVuIGF1dGhtb2RlIG1heSAKPiBjb250YWluIGEg
+Z2FyYmFnZSB2YWx1ZSBhbmQgaW5mbHVlbmNlIHRoZSBleGVjdXRpb24gZmxvdyBvZiB0aGlzIGZ1
+bmN0aW9uLiIgaXMgCj4gZmFsc2UuCj4gCgpJdCdzIGNsZWFyIHRvIG1lLiBUaGFuayB5b3UgZm9y
+IHlvdXIgYWR2aWNlLgoKUmVnYXJkcywKRGluZ2hhbwo=
