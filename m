@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B5122F2B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE50622F1AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733065AbgG0Ol0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:41:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
+        id S1732883AbgG0Od4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729381AbgG0OIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:08:11 -0400
+        id S1731013AbgG0ORQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:17:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6002B207FC;
-        Mon, 27 Jul 2020 14:08:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2EBA4208E4;
+        Mon, 27 Jul 2020 14:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858890;
-        bh=5MbtI0ihvkEoxI9SWcTbrLH2vIzaHkcSMuxKD1ckyRM=;
+        s=default; t=1595859434;
+        bh=T91JMT8+ATmHZgGTjTGeIrl+abx5KOHBjY+EUmJFlaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YmZP/EKn3PzoGsbB87wEGPWQosBa+Xc73ra7S4f6L3iLHZTMwMjnMD6HcLDyDfCBH
-         yRtjA1GUVbEPt8y56xzAqzvP40coTyq/nyeigg39RBpfq/ME6q4XVPSrwfERSlSb7d
-         IHL5qcirUaDVOw+J8jCCPuUvz1BLHirNShSul58E=
+        b=Z/gF1gkGcd6A5DxxdF27YkDCCZceoY7ZmIwcSxRYMx9b+lZqNZwfViBfPdCguMmuO
+         aTOh8JQHSsJ9VTTYBG1Ap2p1jLh/b95F1T3vtV05Q/TJ/44TdZsFzSUjygJDFovTh7
+         9CWqt0huDee7ML6kJEwJYAnTfRLcCPOHYIbh0YCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 50/64] staging: wlan-ng: properly check endpoint types
-Date:   Mon, 27 Jul 2020 16:04:29 +0200
-Message-Id: <20200727134913.648225386@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 076/138] Input: add `SW_MACHINE_COVER`
+Date:   Mon, 27 Jul 2020 16:04:31 +0200
+Message-Id: <20200727134929.185115628@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +47,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Merlijn Wajer <merlijn@wizzup.org>
 
-commit faaff9765664009c1c7c65551d32e9ed3b1dda8f upstream.
+[ Upstream commit c463bb2a8f8d7d97aa414bf7714fc77e9d3b10df ]
 
-As syzkaller detected, wlan-ng driver does not do sanity check of
-endpoints in prism2sta_probe_usb(), add check for xfer direction and type
+This event code represents the state of a removable cover of a device.
+Value 0 means that the cover is open or removed, value 1 means that the
+cover is closed.
 
-Reported-and-tested-by: syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=c2a1fa67c02faa0de723
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722161052.999754-1-rkovhaev@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Merlijn Wajer <merlijn@wizzup.org>
+Link: https://lore.kernel.org/r/20200612125402.18393-2-merlijn@wizzup.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wlan-ng/prism2usb.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ include/linux/mod_devicetable.h        | 2 +-
+ include/uapi/linux/input-event-codes.h | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -61,11 +61,25 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
- {
- 	struct usb_device *dev;
--
-+	const struct usb_endpoint_descriptor *epd;
-+	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	struct wlandevice *wlandev = NULL;
- 	struct hfa384x *hw = NULL;
- 	int result = 0;
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index 953d7ca01eb60..4c56404e53a76 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -318,7 +318,7 @@ struct pcmcia_device_id {
+ #define INPUT_DEVICE_ID_LED_MAX		0x0f
+ #define INPUT_DEVICE_ID_SND_MAX		0x07
+ #define INPUT_DEVICE_ID_FF_MAX		0x7f
+-#define INPUT_DEVICE_ID_SW_MAX		0x0f
++#define INPUT_DEVICE_ID_SW_MAX		0x10
+ #define INPUT_DEVICE_ID_PROP_MAX	0x1f
  
-+	if (iface_desc->desc.bNumEndpoints != 2) {
-+		result = -ENODEV;
-+		goto failed;
-+	}
-+
-+	result = -EINVAL;
-+	epd = &iface_desc->endpoint[1].desc;
-+	if (!usb_endpoint_is_bulk_in(epd))
-+		goto failed;
-+	epd = &iface_desc->endpoint[2].desc;
-+	if (!usb_endpoint_is_bulk_out(epd))
-+		goto failed;
-+
- 	dev = interface_to_usbdev(interface);
- 	wlandev = create_wlan();
- 	if (!wlandev) {
+ #define INPUT_DEVICE_ID_MATCH_BUS	1
+diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+index 85387c76c24f3..472cd5bc55676 100644
+--- a/include/uapi/linux/input-event-codes.h
++++ b/include/uapi/linux/input-event-codes.h
+@@ -808,7 +808,8 @@
+ #define SW_LINEIN_INSERT	0x0d  /* set = inserted */
+ #define SW_MUTE_DEVICE		0x0e  /* set = device disabled */
+ #define SW_PEN_INSERTED		0x0f  /* set = pen inserted */
+-#define SW_MAX			0x0f
++#define SW_MACHINE_COVER	0x10  /* set = cover closed */
++#define SW_MAX			0x10
+ #define SW_CNT			(SW_MAX+1)
+ 
+ /*
+-- 
+2.25.1
+
 
 
