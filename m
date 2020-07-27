@@ -2,71 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503D622FA5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D039522FA5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgG0UtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 16:49:04 -0400
-Received: from smtprelay0241.hostedemail.com ([216.40.44.241]:48152 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727111AbgG0UtE (ORCPT
+        id S1726846AbgG0UvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:51:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57994 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgG0UvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:49:04 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 4FC8B12CA;
-        Mon, 27 Jul 2020 20:49:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3872:3874:4321:5007:7775:8957:9010:10004:10400:10848:10967:11232:11658:11914:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21433:21627:21939:30012:30054:30064:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: team71_150227526f64
-X-Filterd-Recvd-Size: 1934
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Jul 2020 20:49:01 +0000 (UTC)
-Message-ID: <7f07e16c47c7dcb35685cddbb3a740e4698258fc.camel@perches.com>
-Subject: Re: checkpatch: support deprecated terms checking
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sjpark@amazon.com>
-Cc:     =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        SeongJae Park <sj38.park@gmail.com>,
-        linux-kernel@vger.kernel.org, apw@canonical.com,
-        colin.king@canonical.com, jslaby@suse.cz, pavel@ucw.cz,
-        SeongJae Park <sjpark@amazon.de>
-Date:   Mon, 27 Jul 2020 13:49:00 -0700
-In-Reply-To: <20200727134411.73461df2fe73f8f96d93f75e@linux-foundation.org>
-References: <20200726203328.GA8321@qmqm.qmqm.pl>
-         <20200727065441.27164-1-sjpark@amazon.com>
-         <20200727134411.73461df2fe73f8f96d93f75e@linux-foundation.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Mon, 27 Jul 2020 16:51:19 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595883077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dhykwSSEM4P/f4CIPUxEsuotsrwgjKM/44WpLI7BfPI=;
+        b=AK2dCcs7xSlaxYkM3uXuNl0xGhiAmK9gvA3IMxs9h0WsNDp0CzcpRyyglDb81EqHBP8D7p
+        umBqTgf3vjxF3WiMS9gGoPtKNO/cwB26yVXwhu6ev0FZ0RD0+vYTd0hcPPK5SU6gm7UHLK
+        lA1IChVvNlkOpmuVWOjp5nByNG+FMpC1hAuHs5bnuBxy+1iEzjBLpNKjyC1Da1hiKpPspA
+        5ttPOf6QdMw0kVK9mJwwRPbV/m1AOwmqYxb/qH/K14IuuX1onhLhiI5XNcIi6CGRJmI0aj
+        53a05EIUdl7KcPEhE7UGCkeZrTgAZW3miE48KYy/qZBm842Zc43fk2tw9GERGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595883077;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dhykwSSEM4P/f4CIPUxEsuotsrwgjKM/44WpLI7BfPI=;
+        b=LJ3Pkd8VDO5Q+V30VSkd15T9XogzrwJnKeoF18D8K5FYeGuhiEKj90knwj+/8sCps5uqc1
+        9o2OVD/KweLjpPBg==
+To:     Scott Branden <scott.branden@broadcom.com>, bp@alien8.de,
+        x86@kernel.org, mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: Kernel panic - not syncing: IO-APIC + timer doesn't work!
+In-Reply-To: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com>
+References: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com>
+Date:   Mon, 27 Jul 2020 22:51:16 +0200
+Message-ID: <87h7tsbs1n.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 13:44 -0700, Andrew Morton wrote:
-> On Mon, 27 Jul 2020 08:54:41 +0200 SeongJae Park <sjpark@amazon.com> wrote:
-> 
-> > > > > Unfortunately, the inexperienced _do_ in fact run
-> > > > > checkpatch on files and submit inappropriate patches.
-> 
-> I don't think I really agree with the "new code only" guideline (where
-> did this come from, anyway?).  10 years from now any remaining pre-2020
-> terms will look exceedingly archaic and will get converted at some
-> point.
-> 
-> Wouldn't be longterm realistic to just bite the bullet now and add these
-> conversions to the various todo lists?
+Scott,
 
-I don't think so.
+Scott Branden <scott.branden@broadcom.com> writes:
 
-There's no exclusion list for existing uses
-written to external specification.
+> Occasionally I get the following Kernel panic on boot.=C2=A0 This is
+> running on the latest kernel but have seen it previously as well.
+> "Kernel panic - not syncing: IO-APIC + timer doesn't work!=C2=A0 Boot with
+> apic=3Ddebug and send a report."
+>
+> I don't know who I am support to send a report to.=C2=A0 But here is the =
+log with apic=3Ddebug
 
-It's just emitting effectively noisy warnings
-on things that should not be changed.
+> [=C2=A0=C2=A0=C2=A0 0.006000] ENABLING IO-APIC IRQs
+> [=C2=A0=C2=A0=C2=A0 0.007000] ..TIMER: vector=3D0x30 apic1=3D0 pin1=3D2 a=
+pic2=3D-1 pin2=3D-1
+> [=C2=A0=C2=A0=C2=A0 0.007000] ..MP-BIOS bug: 8254 timer not connected to =
+IO-APIC
+> [=C2=A0=C2=A0=C2=A0 0.007000] ...trying to set up timer (IRQ0) through th=
+e 8259A ...
+> [=C2=A0=C2=A0=C2=A0 0.007000] ..... (found apic 0 pin 2) ...
+> [=C2=A0=C2=A0=C2=A0 0.007000] ....... failed.
+> [=C2=A0=C2=A0=C2=A0 0.007000] ...trying to set up timer as Virtual Wire I=
+RQ...
+> [=C2=A0=C2=A0=C2=A0 0.007000] ..... failed.
+> [=C2=A0=C2=A0=C2=A0 0.007000] ...trying to set up timer as ExtINT IRQ...
+> [=C2=A0=C2=A0=C2=A0 0.007000] ..... failed :(.
+> [=C2=A0=C2=A0=C2=A0 0.007000] Kernel panic - not syncing: IO-APIC + timer=
+ doesn't work!=C2=A0 Boot with apic=3Ddebug and send a report.=C2=A0 Then t=
+ry booting with the 'noapic' option.
 
+Nothing which rings a bell. Can you please provide a boot log from a
+successful boot with apic=3Ddebug on the command line?
+
+Also you might check whether there are BIOS updates for this board. The
+early Ryzen BIOSes had some rough edges.
+
+Thanks,
+
+        tglx
 
