@@ -2,46 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B6D22E60D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE8622E612
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgG0GuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 02:50:00 -0400
-Received: from verein.lst.de ([213.95.11.211]:42221 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726116AbgG0GuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 02:50:00 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 2774168B05; Mon, 27 Jul 2020 08:49:58 +0200 (CEST)
-Date:   Mon, 27 Jul 2020 08:49:57 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     hpa@zytor.com
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 18/23] init: open code setting up stdin/stdout/stderr
-Message-ID: <20200727064957.GB2317@lst.de>
-References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-19-hch@lst.de> <20200727030534.GD795125@ZenIV.linux.org.uk> <F3DAF5DA-82C2-4833-805D-4F54F7C4326E@zytor.com> <20200727062425.GA2005@lst.de> <366377E2-6F19-45E1-9285-CFA5E660C6B5@zytor.com>
+        id S1726901AbgG0GvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 02:51:05 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:15954 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726116AbgG0GvF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 02:51:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595832663; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NZJVjYhVsFEASgD9T7lU7RM9AwnOeyEC5q0Uw50tNJ4=;
+ b=xlV8JrP8bmwv97bU8kP/z69xedTccw1rtWfToleubvMFpDXfcCapZdlu0U6ltLOB1tpNgjSc
+ pf3HTz7SJ533r0ZTY+Qwne7jaV9lzHiG8C9XX05oyIoivskGqqplmyaAfgeM4NFcc/3PD6zO
+ 7AQTPqs9EhBQe4BJ8rD68t4rWvg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n19.prod.us-east-1.postgun.com with SMTP id
+ 5f1e7940a61bb9e3f52225b9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 06:50:40
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4E8AAC433C6; Mon, 27 Jul 2020 06:50:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C5A3C433C9;
+        Mon, 27 Jul 2020 06:50:38 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <366377E2-6F19-45E1-9285-CFA5E660C6B5@zytor.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 27 Jul 2020 12:20:38 +0530
+From:   sbhanu@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, rnayak@codeaurora.org,
+        Pradeep P V K <ppvk@codeaurora.org>,
+        devicetree-owner@vger.kernel.org
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7180: Add bandwidth votes for eMMC
+ and SDcard
+In-Reply-To: <20200724171018.GZ3191083@google.com>
+References: <1595328381-29552-1-git-send-email-sbhanu@codeaurora.org>
+ <20200724171018.GZ3191083@google.com>
+Message-ID: <7ffcb56e9e6723f4bae687e0f491cb93@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 11:36:15PM -0700, hpa@zytor.com wrote:
-> >Err, why?  The changes have been pretty simple, and I'd rather not come
-> >up with new crazy ways just to make things complicated.
+On 2020-07-24 22:40, Matthias Kaehlcke wrote:
+> Hi Shaik,
 > 
-> Why? To avoid this neverending avalanche of special interfaces and layering violations. Neatly deals with non-contiguous contents and initramfs in device memory, etc. etc. etc.
+> On Tue, Jul 21, 2020 at 04:16:21PM +0530, Shaik Sajida Bhanu wrote:
+>> From: Pradeep P V K <ppvk@codeaurora.org>
+>> 
+>> Add the bandwidth domain supporting performance state and
+>> the corresponding OPP tables for the sdhc device on sc7180.
+>> 
+>> Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
+>> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+>> ---
+>> 
+>> Changes since V1:
+>> 	- Incorporated review comments by Bjorn Andersson.
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 15 +++++++++++++++
+>>  1 file changed, 15 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> index 68f9894..d78a066 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> @@ -684,6 +684,9 @@
+>>  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+>>  					<&gcc GCC_SDCC1_AHB_CLK>;
+>>  			clock-names = "core", "iface";
+>> +			interconnects = <&aggre1_noc MASTER_EMMC &mc_virt SLAVE_EBI1>,
+>> +				<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_EMMC_CFG>;
+>> +			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>>  			power-domains = <&rpmhpd SC7180_CX>;
+>>  			operating-points-v2 = <&sdhc1_opp_table>;
+>> 
+>> @@ -704,11 +707,15 @@
+>>  				opp-100000000 {
+>>  					opp-hz = /bits/ 64 <100000000>;
+>>  					required-opps = <&rpmhpd_opp_low_svs>;
+>> +					opp-peak-kBps = <100000 100000>;
+>> +					opp-avg-kBps = <100000 50000>;
+>>  				};
+>> 
+>>  				opp-384000000 {
+>>  					opp-hz = /bits/ 64 <384000000>;
+>>  					required-opps = <&rpmhpd_opp_svs_l1>;
+>> +					opp-peak-kBps = <600000 900000>;
+>> +					opp-avg-kBps = <261438 300000>;
+>>  				};
+>>  			};
+>>  		};
+>> @@ -2476,6 +2483,10 @@
+>>  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+>>  					<&gcc GCC_SDCC2_AHB_CLK>;
+>>  			clock-names = "core", "iface";
+>> +
+>> +			interconnects = <&aggre1_noc MASTER_SDCC_2 &mc_virt SLAVE_EBI1>,
+>> +				<&gem_noc MASTER_APPSS_PROC &config_noc	SLAVE_SDCC_2>;
+>> +			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>>  			power-domains = <&rpmhpd SC7180_CX>;
+>>  			operating-points-v2 = <&sdhc2_opp_table>;
+>> 
+>> @@ -2489,11 +2500,15 @@
+>>  				opp-100000000 {
+>>  					opp-hz = /bits/ 64 <100000000>;
+>>  					required-opps = <&rpmhpd_opp_low_svs>;
+>> +					opp-peak-kBps = <160000 100000>;
+>> +					opp-avg-kBps = <80000 50000>;
+>>  				};
+>> 
+>>  				opp-202000000 {
+>>  					opp-hz = /bits/ 64 <202000000>;
+>>  					required-opps = <&rpmhpd_opp_svs_l1>;
+>> +					opp-peak-kBps = <200000	120000>;
+>> +					opp-avg-kBps = <100000 60000>;
+>>  				};
+>>  			};
+>>  		};
+> 
+> Does the sdhci-msm driver actually have BW scaling support at this 
+> point?
+> 
 
-I don't think it will be all that simple.  But given that linux-next
-is just missing one series Al was already ok with to kill off set_fs
-entirely for about half of our architectures I'd rather go ahead with
-this series.  If you can send a series mapping user memory that actually
-cleans things up on top of it I'm not going to complain, but I'm not
-sure it really is going to be all that much cleaner.
+yes
+
+> There is commit 4ece9795be56 ("mmc: sdhci-msm: Add interconnect
+> bandwidth scaling support"), whose commit message says "make sure
+> interconnect driver is ready before handling interconnect scaling.".
+> 
+> I haven't seen any patch adding the scaling support (supposedly by
+> adding dev_pm_opp_set_bw() calls?). Did I miss it? If not it seems
+> it would make sense to post it in a series together with this patch,
+> as far as I can tell this patch alone does nothing in practical terms.
+> 
+> grep sdhc /sys/kernel/debug/interconnect/interconnect_summary
+>   8804000.sdhci                          0            0            0
+>   7c4000.sdhci                           0            0            0
+>   7c4000.sdhci                           0            0            0
+>   8804000.sdhci                          0            0            0
+>   ...
+
+"mmc: sdhci-msm: Use OPP API to set clk/perf 
+state"(https://lkml.org/lkml/2020/4/8/425) and "mmc: sdhci-msm: Add 
+interconnect bandwidth scaling 
+support"(https://lkml.org/lkml/2020/3/12/60) with these two patches 
+scaling will be supported for sdhci-msm driver.
+
+the values  in  grep sdhc 
+/sys/kernel/debug/interconnect/interconnect_summary will be zero during 
+device is in suspend state... and the values in  grep sdhc 
+/sys/kernel/debug/interconnect/interconnect_summary during device in 
+resume state will be like the following::
+
+cicalhost / # cat /sys/kernel/debug/interconnect/interconnect_summary | 
+grep sdh
+   8804000.sdhci                          0        60000       120000
+   7c4000.sdhci                           0       300000       900000
+   7c4000.sdhci                           0       300000       900000
+   8804000.sdhci                          0        60000       120000
+   8804000.sdhci                          0       100000       200000
+   7c4000.sdhci                           0       261438       600000
+   8804000.sdhci                          0        60000       120000
+
