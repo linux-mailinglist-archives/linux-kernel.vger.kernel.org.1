@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8928F22EDAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1850622EDAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgG0NkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:40:19 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:8922 "EHLO zju.edu.cn"
+        id S1729097AbgG0NkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:40:12 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:44906 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728109AbgG0NkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:40:18 -0400
-Received: by ajax-webmail-mail-app4 (Coremail) ; Mon, 27 Jul 2020 21:39:57
- +0800 (GMT+08:00)
-X-Originating-IP: [210.32.144.186]
-Date:   Mon, 27 Jul 2020 21:39:57 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Larry Finger" <Larry.Finger@lwfinger.net>
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, kjlu@umn.edu,
-        "Shreeya Patel" <shreeya.patel23498@gmail.com>,
-        "Julia Lawall" <julia.lawall@inria.fr>,
-        "Michael Straube" <straube.linux@gmail.com>,
-        "Stefano Brivio" <sbrivio@redhat.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized
- variable authmode
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <66d9502e-682f-6ccd-ef90-138feee0c2ae@lwfinger.net>
-References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
- <20200724132836.GC316746@kroah.com>
- <66d9502e-682f-6ccd-ef90-138feee0c2ae@lwfinger.net>
+        id S1728314AbgG0NkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:40:10 -0400
+Received: from dggemi403-hub.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 6C8E8FA6F30BD7BEA73B;
+        Mon, 27 Jul 2020 21:40:09 +0800 (CST)
+Received: from DGGEMI526-MBX.china.huawei.com ([169.254.8.132]) by
+ dggemi403-hub.china.huawei.com ([10.3.17.136]) with mapi id 14.03.0487.000;
+ Mon, 27 Jul 2020 21:40:03 +0800
+From:   "Fangxiuning (Jack, EulerOS)" <fangxiuning@huawei.com>
+To:     jingrui <jingrui@huawei.com>, Michal Hocko <mhocko@kernel.org>
+CC:     "tj@kernel.org" <tj@kernel.org>, Lizefan <lizefan@huawei.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        caihaomin <caihaomin@huawei.com>,
+        "Weiwei (N)" <wick.wei@huawei.com>
+Subject: =?gb2312?B?tPC4tDogtPC4tDogUFJPQkxFTTogY2dyb3VwIGNvc3QgdG9vIG11Y2ggbWVt?=
+ =?gb2312?Q?ory_when_transfer_small_files_to_tmpfs?=
+Thread-Topic: =?gb2312?B?tPC4tDogUFJPQkxFTTogY2dyb3VwIGNvc3QgdG9vIG11Y2ggbWVtb3J5IHdo?=
+ =?gb2312?Q?en_transfer_small_files_to_tmpfs?=
+Thread-Index: AdZfPbaDbBlN0uuzRT+WBs1zGYD4fAAETDVgAH9ylAAAE+ehUP//nlQA//tVE3D/9fVQYA==
+Date:   Mon, 27 Jul 2020 13:40:02 +0000
+Message-ID: <E76E3B653DA8834F9E97D3B9694D2E5B816B7C@DGGEMI526-MBX.china.huawei.com>
+References: <2E04DD7753BE0E4ABABF0B664610AD6F2620CAF7@dggeml528-mbx.china.huawei.com>
+ <20200724075508.GF4061@dhcp22.suse.cz>
+ <2E04DD7753BE0E4ABABF0B664610AD6F2620D4F6@dggeml528-mbx.china.huawei.com>
+ <20200724113530.GH4061@dhcp22.suse.cz>
+ <2E04DD7753BE0E4ABABF0B664610AD6F2621907D@dggeml508-mbx.china.huawei.com>
+In-Reply-To: <2E04DD7753BE0E4ABABF0B664610AD6F2621907D@dggeml508-mbx.china.huawei.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.179.95]
+Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Message-ID: <1721a94f.13572.173908057cb.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgBn6Pwt2R5fMeheAA--.11594W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAggHBlZdtPRcawAesp
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbGCS07vEb7Iv0x
-        C_Ar1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlV2xY628EF7xvwVC2z280aVAFwI0_Gc
-        CE3s1lV2xY628EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wCS07vEe2I262IYc4CY6c8I
-        j28IcVAaY2xG8wCS07vE5I8CrVACY4xI64kE6c02F40Ex7xfMIAIbVAv7VC0I7IYx2IY67
-        AKxVWUJVWUGwCS07vEYx0Ex4A2jsIE14v26r1j6r4UMIAIbVAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lV2xY6x02cVAKzwCS07vEc2xSY4AK67AK6ry8MIAIbVCY0x0Ix7I2Y4AK64vIr41lV2
-        xY6xAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCS07vE4x8a6x804xWlV2xY6xC20s026xCa
-        FVCjc4AY6r1j6r4UMIAIbVC20s026c02F40E14v26r1j6r18MIAIbVC20s026x8GjcxK67
-        AKxVWUGVWUWwCS07vEx4CE17CEb7AF67AKxVWUtVW8ZwCS07vEIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCS07vEIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIAIbVCI42IY6xAIw2
-        0EY4v20xvaj40_WFyUJVCq3wCS07vEIxAIcVC2z280aVAFwI0_Jr0_Gr1lV2xY6IIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUU==
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAKPiBZZXMsIGluIHRoaXMgcm91dGluZSwgaXQgd291bGQgYmUgcG9zc2libGUgZm9yIGF1dGht
-b2RlIHRvIG5vdCBiZSBzZXQ7IGhvd2V2ZXIsIAo+IGxhdGVyIGNvZGUgb25seSBjb21wYXJlcyBp
-dCB0byBlaXRoZXIgX1dQQV9JRV9JRF8gb3IgX1dQQTJfSUVfSURfLiBJdCBpcyBuZXZlciAKPiB1
-c2VkIGluIGEgd2F5IHRoYXQgYW4gdW5zZXQgdmFsdWUgY291bGQgbWFrZSB0aGUgcHJvZ3JhbSBm
-bG93IGJlIGRpZmZlcmVudCBieSAKPiBhcmJpdHJhcmlseSBzZXR0aW5nIHRoZSB2YWx1ZSB0byB6
-ZXJvLiBUaHVzIHlvdXIgc3RhdGVtZW50ICJUaGVuIGF1dGhtb2RlIG1heSAKPiBjb250YWluIGEg
-Z2FyYmFnZSB2YWx1ZSBhbmQgaW5mbHVlbmNlIHRoZSBleGVjdXRpb24gZmxvdyBvZiB0aGlzIGZ1
-bmN0aW9uLiIgaXMgCj4gZmFsc2UuCj4gCgpJdCdzIGNsZWFyIHRvIG1lLiBUaGFuayB5b3UgZm9y
-IHlvdXIgYWR2aWNlLgoKUmVnYXJkcywKRGluZ2hhbwo=
+QFhpdW5pbmcgV291bGQgeW91IHBsZWFzZSB0YWtlIGEgbG9vayBhbmQgZ2l2ZSBzb21lIHN1Z2dl
+c3Rpb24/DQpJIGRvbid0IHN1Z2dlc3QgdGhpcyBzb2x1dGlvbiBmb3IgdXNpbmcgaW4gbG9uZyB0
+ZXJtIHdoaWNoIHNraXAgY2FsbCBwYW0tc3lzdGVtZC5zbyB0byBmaXggdGhpcyBpc3N1ZSwgU2Z0
+cCBzZW5kcyBmaWxlcyBhbmQgY2FsbCBwYW0tc3lzdGVtZC5zbyB0byBjcmVhdGUgc2Vzc2lvbiB3
+aGljaCBtYW5hZ2UgcmVzb3VyY2VzIG1vcmUgcmVhc29uYWJsZSwgdGhpcyBpcyBldm9sdXRpb24g
+ZGlyZWN0aW9uIG9mIHN5c3RlbWQgdXBzdHJlYW0uIFN5c3RlbWQgZG9uJ3QgaGF2ZSBiZXR0ZXIg
+c29sdXRpb24gYW5kIEtlcm5lbCBjZ3JvdXAgbWF5YmUgZ2l2ZSBhIGJldHRlciBvbmUgZm9yIHRo
+aXMgaXNzdWUuDQoNCg==
