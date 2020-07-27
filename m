@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A0622EE4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5B822EEAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgG0OGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54706 "EHLO mail.kernel.org"
+        id S1729196AbgG0OJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:09:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728731AbgG0OGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:06:39 -0400
+        id S1729694AbgG0OJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:09:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 466CA2250E;
-        Mon, 27 Jul 2020 14:06:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBDCD2083E;
+        Mon, 27 Jul 2020 14:09:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858798;
-        bh=N9rfu8Rm9dG6SIRtmK83SO4PfCqaxsXzeswlY0y/zTI=;
+        s=default; t=1595858984;
+        bh=391sbRHYpWgc8awcde+J3xrFm3+48hwdU8hDC9WLgas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wMUKSiJlc0XtDSOKo454tU23IvRMAypJh1vpVVzODLms2dIuUKfMQSRZ+Ky1YUJGP
-         DyCFh0prWtFd+Fr7cCZ/XS8TCElcM6qaoobTwnuAnBJHfEJdMKirQMPiexgMM4tnnA
-         vRtX+r8tDMC/q93+SuxGKpdBdB4FHTaAfXz4YwMg=
+        b=Qn7IjSjlEWmKjbWYaQ9d0A+UtzhBYpbPrPiWxtTlhwvj8lnR7uW0+I/QZ1BmhDCCY
+         iL6tP4WwvVlqgWoFOK/t8KeusXtKdYEaGVp7PpdVl9IKtHSfhMGdtLsyZzRUwRgnlH
+         NbR0Q3Ww3vB0GxyZ5ArSNWoN1jPQwEPVSJxyBCPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 16/64] ALSA: info: Drop WARN_ON() from buffer NULL sanity check
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 21/86] ASoC: rt5670: Correct RT5670_LDO_SEL_MASK
 Date:   Mon, 27 Jul 2020 16:03:55 +0200
-Message-Id: <20200727134911.833341128@linuxfoundation.org>
+Message-Id: <20200727134915.420924035@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 60379ba08532eca861e933b389526a4dc89e0c42 upstream.
+commit 5cacc6f5764e94fa753b2c1f5f7f1f3f74286e82 upstream.
 
-snd_info_get_line() has a sanity check of NULL buffer -- both buffer
-itself being NULL and buffer->buffer being NULL.  Basically both
-checks are valid and necessary, but the problem is that it's with
-snd_BUG_ON() macro that triggers WARN_ON().  The latter condition
-(NULL buffer->buffer) can be met arbitrarily by user since the buffer
-is allocated at the first write, so it means that user can trigger
-WARN_ON() at will.
+The RT5670_PWR_ANLG1 register has 3 bits to select the LDO voltage,
+so the correct mask is 0x7 not 0x3.
 
-This patch addresses it by simply moving buffer->buffer NULL check out
-of snd_BUG_ON() so that spurious WARNING is no longer triggered.
+Because of this wrong mask we were programming the ldo bits
+to a setting of binary 001 (0x05 & 0x03) instead of binary 101
+when moving to SND_SOC_BIAS_PREPARE.
 
-Reported-by: syzbot+e42d0746c3c3699b6061@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200717084023.5928-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+According to the datasheet 001 is a reserved value, so no idea
+what it did, since the driver was working fine before I guess we
+got lucky and it does something which is ok.
+
+Fixes: 5e8351de740d ("ASoC: add RT5670 CODEC driver")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200628155231.71089-3-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/info.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5670.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -634,7 +634,9 @@ int snd_info_get_line(struct snd_info_bu
- {
- 	int c = -1;
+--- a/sound/soc/codecs/rt5670.h
++++ b/sound/soc/codecs/rt5670.h
+@@ -760,7 +760,7 @@
+ #define RT5670_PWR_VREF2_BIT			4
+ #define RT5670_PWR_FV2				(0x1 << 3)
+ #define RT5670_PWR_FV2_BIT			3
+-#define RT5670_LDO_SEL_MASK			(0x3)
++#define RT5670_LDO_SEL_MASK			(0x7)
+ #define RT5670_LDO_SEL_SFT			0
  
--	if (snd_BUG_ON(!buffer || !buffer->buffer))
-+	if (snd_BUG_ON(!buffer))
-+		return 1;
-+	if (!buffer->buffer)
- 		return 1;
- 	if (len <= 0 || buffer->stop || buffer->error)
- 		return 1;
+ /* Power Management for Analog 2 (0x64) */
 
 
