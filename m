@@ -2,163 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3FB22E57A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 07:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7F322E57B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 07:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgG0Fkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 01:40:46 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:60923 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726140AbgG0Fkq (ORCPT
+        id S1726495AbgG0Fk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 01:40:57 -0400
+Received: from mail4.protonmail.ch ([185.70.40.27]:15455 "EHLO
+        mail4.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726313AbgG0Fk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 01:40:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U3tiQ2q_1595828439;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3tiQ2q_1595828439)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 27 Jul 2020 13:40:40 +0800
-Subject: Re: [PATCH v17 00/21] per memcg lru lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <49d4f3bf-ccce-3c97-3a4c-f5cefe2d623a@linux.alibaba.com>
-Date:   Mon, 27 Jul 2020 13:40:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Mon, 27 Jul 2020 01:40:56 -0400
+Date:   Mon, 27 Jul 2020 05:40:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1595828452;
+        bh=f9E9zZQz6TG7mCxptgTH09Y9wak5F4Jj1SYOm0YNufQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=Int6NshKrx1Ffc8MyTRH9fefJnr1kVBjUJWpHQdx46ak6d8wSiiMTanKhTGRZnX7G
+         frVWJoGPVO3m258gffeEbskhsffc4E24gz305kTL0piiDDhEGxr0j3saXzoLRJMP+O
+         XwztT1DUGAXlX41dPvlHcn9M6Rt8Al/vqzodxUaw=
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+From:   Mazin Rezk <mnrzk@protonmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Harry Wentland <Harry.Wentland@amd.com>,
+        Mazin Rezk <mnrzk@protonmail.com>,
+        "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        "sunpeng.li@amd.com" <sunpeng.li@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Duncan <1i5t5.duncan@cox.net>,
+        "mphantomx@yahoo.com.br" <mphantomx@yahoo.com.br>,
+        "regressions@leemhuis.info" <regressions@leemhuis.info>,
+        "anthony.ruhier@gmail.com" <anthony.ruhier@gmail.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Reply-To: Mazin Rezk <mnrzk@protonmail.com>
+Subject: [PATCH] drm/amd/display: Clear dm_state for fast updates
+Message-ID: <M0lxN5AUlPvzBKULfIBe5BZRwfQGXeMQCdWItYcQ-9P79y32WzExYK2Y0DwyNVtyGelqbvV07_lFk1oeT4cApbT-P_oH0bnxQbMmFsJv_xg=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_REPLYTO
+        shortcircuit=no autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch fixes a race condition that causes a use-after-free during
+amdgpu_dm_atomic_commit_tail. This can occur when 2 non-blocking commits
+are requested and the second one finishes before the first. Essentially,
+this bug occurs when the following sequence of events happens:
 
+1. Non-blocking commit #1 is requested w/ a new dm_state #1 and is
+deferred to the workqueue.
 
+2. Non-blocking commit #2 is requested w/ a new dm_state #2 and is
+deferred to the workqueue.
 
+3. Commit #2 starts before commit #1, dm_state #1 is used in the
+commit_tail and commit #2 completes, freeing dm_state #1.
 
+4. Commit #1 starts after commit #2 completes, uses the freed dm_state
+1 and dereferences a freelist pointer while setting the context.
 
+Since this bug has only been spotted with fast commits, this patch fixes
+the bug by clearing the dm_state instead of using the old dc_state for
+fast updates. In addition, since dm_state is only used for its dc_state
+and amdgpu_dm_atomic_commit_tail will retain the dc_state if none is found,
+removing the dm_state should not have any consequences in fast updates.
 
-A standard for new page isolation steps like the following:
-1, get_page(); #pin the page avoid be free
-2, TestClearPageLRU(); #serialize other isolation, also memcg change
-3, spin_lock on lru_lock; #serialize lru list access
-The step 2 could be optimzed/replaced in scenarios which page is unlikely
-be accessed by others.
+This use-after-free bug has existed for a while now, but only caused a
+noticeable issue starting from 5.7-rc1 due to 3202fa62f ("slub: relocate
+freelist pointer to middle of object") moving the freelist pointer from
+dm_state->base (which was unused) to dm_state->context (which is
+dereferenced).
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D207383
+Fixes: bd200d190f45 ("drm/amd/display: Don't replace the dc_state for fast =
+updates")
+Reported-by: Duncan <1i5t5.duncan@cox.net>
+Signed-off-by: Mazin Rezk <mnrzk@protonmail.com>
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 36 ++++++++++++++-----
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gp=
+u/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 86ffa0c2880f..710edc70e37e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -8717,20 +8717,38 @@ static int amdgpu_dm_atomic_check(struct drm_device=
+ *dev,
+ =09=09 * the same resource. If we have a new DC context as part of
+ =09=09 * the DM atomic state from validation we need to free it and
+ =09=09 * retain the existing one instead.
++=09=09 *
++=09=09 * Furthermore, since the DM atomic state only contains the DC
++=09=09 * context and can safely be annulled, we can free the state
++=09=09 * and clear the associated private object now to free
++=09=09 * some memory and avoid a possible use-after-free later.
+ =09=09 */
+-=09=09struct dm_atomic_state *new_dm_state, *old_dm_state;
 
-在 2020/7/25 下午8:59, Alex Shi 写道:
-> The new version which bases on v5.8-rc6. It includes Hugh Dickins fix in 
-> mm/swap.c and mm/mlock.c fix which Alexander Duyck pointed out, then
-> removes 'mm/mlock: reorder isolation sequence during munlock' 
-> 
-> Hi Johanness & Hugh & Alexander & Willy,
-> 
-> Could you like to give a reviewed by since you address much of issue and
-> give lots of suggestions! Many thanks!
-> 
-> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-> lru lists, but now we had moved the lru lists into memcg for long time. Still
-> using per node lru_lock is clearly unscalable, pages on each of memcgs have
-> to compete each others for a whole lru_lock. This patchset try to use per
-> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-> it scalable for memcgs and get performance gain.
-> 
-> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-> but if we want to use specific lruvec lock on the page, we need to pin down
-> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-> undermined by the page's memcg charge/migration. To fix this problem, we could
-> take out the page's lru bit clear and use it as pin down action to block the
-> memcg changes. That's the reason for new atomic func TestClearPageLRU.
-> So now isolating a page need both actions: TestClearPageLRU and hold the
-> lru_lock.
-> 
-> The typical usage of this is isolate_migratepages_block() in compaction.c
-> we have to take lru bit before lru lock, that serialized the page isolation
-> in memcg page charge/migration which will change page's lruvec and new 
-> lru_lock in it.
-> 
-> The above solution suggested by Johannes Weiner, and based on his new memcg 
-> charge path, then have this patchset. (Hugh Dickins tested and contributed much
-> code from compaction fix to general code polish, thanks a lot!).
-> 
-> The patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation.
-> 2, use TestCleanPageLRU as page isolation's precondition
-> 3, replace per node lru_lock with per memcg per node lru_lock
-> 
-> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
-> containers on a 2s * 26cores * HT box with a modefied case:
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> With this patchset, the readtwice performance increased about 80%
-> in concurrent containers.
-> 
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
-> 
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
-> 
-> 
-> Alex Shi (19):
->   mm/vmscan: remove unnecessary lruvec adding
->   mm/page_idle: no unlikely double check for idle page counting
->   mm/compaction: correct the comments of compact_defer_shift
->   mm/compaction: rename compact_deferred as compact_should_defer
->   mm/thp: move lru_add_page_tail func to huge_memory.c
->   mm/thp: clean up lru_add_page_tail
->   mm/thp: remove code path which never got into
->   mm/thp: narrow lru locking
->   mm/memcg: add debug checking in lock_page_memcg
->   mm/swap: fold vm event PGROTATED into pagevec_move_tail_fn
->   mm/lru: move lru_lock holding in func lru_note_cost_page
->   mm/lru: move lock into lru_note_cost
->   mm/lru: introduce TestClearPageLRU
->   mm/compaction: do page isolation first in compaction
->   mm/thp: add tail pages into lru anyway in split_huge_page()
->   mm/swap: serialize memcg changes in pagevec_lru_move_fn
->   mm/lru: replace pgdat lru_lock with lruvec lock
->   mm/lru: introduce the relock_page_lruvec function
->   mm/pgdat: remove pgdat lru_lock
-> 
-> Hugh Dickins (2):
->   mm/vmscan: use relock for move_pages_to_lru
->   mm/lru: revise the comments of lru_lock
-> 
->  Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
->  Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
->  Documentation/trace/events-kmem.rst                |   2 +-
->  Documentation/vm/unevictable-lru.rst               |  22 +--
->  include/linux/compaction.h                         |   4 +-
->  include/linux/memcontrol.h                         |  98 ++++++++++
->  include/linux/mm_types.h                           |   2 +-
->  include/linux/mmzone.h                             |   6 +-
->  include/linux/page-flags.h                         |   1 +
->  include/linux/swap.h                               |   4 +-
->  include/trace/events/compaction.h                  |   2 +-
->  mm/compaction.c                                    | 113 ++++++++----
->  mm/filemap.c                                       |   4 +-
->  mm/huge_memory.c                                   |  48 +++--
->  mm/memcontrol.c                                    |  71 ++++++-
->  mm/memory.c                                        |   3 -
->  mm/mlock.c                                         |  43 +++--
->  mm/mmzone.c                                        |   1 +
->  mm/page_alloc.c                                    |   1 -
->  mm/page_idle.c                                     |   8 -
->  mm/rmap.c                                          |   4 +-
->  mm/swap.c                                          | 203 ++++++++-------------
->  mm/swap_state.c                                    |   2 -
->  mm/vmscan.c                                        | 174 ++++++++++--------
->  mm/workingset.c                                    |   2 -
->  25 files changed, 510 insertions(+), 344 deletions(-)
-> 
+-=09=09new_dm_state =3D dm_atomic_get_new_state(state);
+-=09=09old_dm_state =3D dm_atomic_get_old_state(state);
++=09=09for (i =3D 0; i < state->num_private_objs; i++) {
++=09=09=09struct drm_private_obj *obj =3D state->private_objs[i].ptr;
+
+-=09=09if (new_dm_state && old_dm_state) {
+-=09=09=09if (new_dm_state->context)
+-=09=09=09=09dc_release_state(new_dm_state->context);
++=09=09=09if (obj->funcs =3D=3D adev->dm.atomic_obj.funcs) {
++=09=09=09=09int j =3D state->num_private_objs-1;
+
+-=09=09=09new_dm_state->context =3D old_dm_state->context;
++=09=09=09=09dm_atomic_destroy_state(obj,
++=09=09=09=09=09=09state->private_objs[i].state);
++
++=09=09=09=09/* If i is not at the end of the array then the
++=09=09=09=09 * last element needs to be moved to where i was
++=09=09=09=09 * before the array can safely be truncated.
++=09=09=09=09 */
++=09=09=09=09if (i !=3D j)
++=09=09=09=09=09state->private_objs[i] =3D
++=09=09=09=09=09=09state->private_objs[j];
+
+-=09=09=09if (old_dm_state->context)
+-=09=09=09=09dc_retain_state(old_dm_state->context);
++=09=09=09=09state->private_objs[j].ptr =3D NULL;
++=09=09=09=09state->private_objs[j].state =3D NULL;
++=09=09=09=09state->private_objs[j].old_state =3D NULL;
++=09=09=09=09state->private_objs[j].new_state =3D NULL;
++
++=09=09=09=09state->num_private_objs =3D j;
++=09=09=09=09break;
++=09=09=09}
+ =09=09}
+ =09}
+
+--
+2.27.0
+
