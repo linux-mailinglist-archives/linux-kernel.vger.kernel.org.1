@@ -2,74 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE33E22EC1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E5822EC32
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgG0M1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:27:03 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36926 "EHLO huawei.com"
+        id S1728141AbgG0Mbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:31:35 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2536 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726890AbgG0M1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:27:03 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C6BC9AC316369470C401;
-        Mon, 27 Jul 2020 20:26:58 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 27 Jul 2020
- 20:26:48 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     <tj@kernel.org>, <jiangshanlai@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] workqueue: Use wake_up_worker() to wake up first idle worker
-Date:   Mon, 27 Jul 2020 20:29:29 +0800
-Message-ID: <1595852969-21049-1-git-send-email-linmiaohe@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1727078AbgG0Mbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 08:31:35 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 064B5A8BB5A575217348;
+        Mon, 27 Jul 2020 13:31:34 +0100 (IST)
+Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 13:31:33 +0100
+Date:   Mon, 27 Jul 2020 13:30:10 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@kernel.org>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 2/9] PCI: Extend Root Port Driver to support RCEC
+Message-ID: <20200727133010.00003de8@Huawei.com>
+In-Reply-To: <20200724172223.145608-3-sean.v.kelley@intel.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+        <20200724172223.145608-3-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.176]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+On Fri, 24 Jul 2020 10:22:16 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-Use wrapper function wake_up_worker() to wake up first idle worker.
+> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> 
+> If a Root Complex Integrated Endpoint (RCiEP) is implemented, errors may
+> optionally be sent to a corresponding Root Complex Event Collector (RCEC).
+> Each RCiEP must be associated with no more than one RCEC. Interface errors
+> are reported to the OS by RCECs.
+> 
+> For an RCEC (technically not a Bridge), error messages "received" from
+> associated RCiEPs must be enabled for "transmission" in order to cause a
+> System Error via the Root Control register or (when the Advanced Error
+> Reporting Capability is present) reporting via the Root Error Command
+> register and logging in the Root Error Status register and Error Source
+> Identification register.
+> 
+> Given the commonality with Root Ports and the need to also support AER
+> and PME services for RCECs, extend the Root Port driver to support RCEC
+> devices through the addition of the RCEC Class ID to the driver
+> structure.
+> 
+Hi.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- kernel/workqueue.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+I'm surprised it ended up this simple :) Seems we are a bit lucky that
+the existing code is rather flexible on what is there and what isn't
+and that there is never any reason to directly touch the various
+type1 specific registers (given as I read the spec, an RCEC uses a
+type0 config space header unlike the ports).
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c41c3c17b86a..5302f227f38f 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -864,7 +864,7 @@ void wq_worker_running(struct task_struct *task)
-  */
- void wq_worker_sleeping(struct task_struct *task)
- {
--	struct worker *next, *worker = kthread_data(task);
-+	struct worker *worker = kthread_data(task);
- 	struct worker_pool *pool;
- 
- 	/*
-@@ -896,11 +896,9 @@ void wq_worker_sleeping(struct task_struct *task)
- 	 * lock is safe.
- 	 */
- 	if (atomic_dec_and_test(&pool->nr_running) &&
--	    !list_empty(&pool->worklist)) {
--		next = first_idle_worker(pool);
--		if (next)
--			wake_up_process(next->task);
--	}
-+	    !list_empty(&pool->worklist))
-+		wake_up_worker(pool);
-+
- 	raw_spin_unlock_irq(&pool->lock);
- }
- 
--- 
-2.19.1
+Given you mention PME, it's probably worth noting (I think) you aren't
+actually enabling the service yet as there is a check in that path on whether we
+have a root port or not.
+https://elixir.bootlin.com/linux/v5.8-rc4/source/drivers/pci/pcie/portdrv_core.c#L241
+
+Thanks,
+
+Jonathan
+
+
+> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> ---
+>  drivers/pci/pcie/portdrv_pci.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
+> index 3acf151ae015..d5b109499b10 100644
+> --- a/drivers/pci/pcie/portdrv_pci.c
+> +++ b/drivers/pci/pcie/portdrv_pci.c
+> @@ -106,7 +106,8 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
+>  	if (!pci_is_pcie(dev) ||
+>  	    ((pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT) &&
+>  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_UPSTREAM) &&
+> -	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM)))
+> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM) &&
+> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
+>  		return -ENODEV;
+>  
+>  	status = pcie_port_device_register(dev);
+> @@ -195,6 +196,8 @@ static const struct pci_device_id port_pci_ids[] = {
+>  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x00), ~0) },
+>  	/* subtractive decode PCI-to-PCI bridge, class type is 060401h */
+>  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x01), ~0) },
+> +	/* handle any Root Complex Event Collector */
+> +	{ PCI_DEVICE_CLASS(((PCI_CLASS_SYSTEM_RCEC << 8) | 0x00), ~0) },
+>  	{ },
+>  };
+>  
+
 
