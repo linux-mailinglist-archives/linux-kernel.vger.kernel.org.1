@@ -2,69 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF3E822F69C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D0022F6A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730906AbgG0R27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38182 "EHLO
+        id S1730994AbgG0R3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730663AbgG0R27 (ORCPT
+        with ESMTP id S1730974AbgG0R3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:28:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0328FC0619D2;
-        Mon, 27 Jul 2020 10:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=CmygioY1skJ3ZoZf02/bumjZmxuivqPuGfV1LmHfRLM=; b=JGlQ42aWhcaZ5SsiR7SUqB/XBc
-        vI7bc74sMOmlxQNI5Nqdl1L6oRbZL/IY60XxkFSpUic2M9GxcY1j5GM3KM66MhO92R6lEbrZIGsQQ
-        yb7PCg4SlEGh6f0nCeB5LtY/E5mz46Na6lneiuHN3g9uXOrDtzEFj2HgdnDK/CEvkeWkbhb1xh04v
-        nVaElu3hkt0eY0RUOUh7aoF2HQSjrCLT0nPpVy5iSw3roqPgazOejDotpK9p1Iu3myGQ3MrD8fpON
-        Sow1035sR/3mLKSuXj0q6jMwlTGSw9EvVtHu8hy9eo7WJOW2NeeKcUjiRcxCTV3+2S+dLGywXjPPn
-        gGKWctDA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k06vk-00071Y-VA; Mon, 27 Jul 2020 17:28:55 +0000
-Subject: Re: linux-next: Tree for Jul 27 (kernel/bpf/syscall.o)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-References: <20200727232346.0106c375@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e342e8ce-db29-1603-3fd9-40792a783296@infradead.org>
-Date:   Mon, 27 Jul 2020 10:28:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 27 Jul 2020 13:29:18 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 564E8C061794;
+        Mon, 27 Jul 2020 10:29:18 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id q75so9663868iod.1;
+        Mon, 27 Jul 2020 10:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Twl8egs2sgu9K2jUzyioOJdzChfT8oqMYRNtXj1w94Y=;
+        b=bmEegtJgjmIbLBbTat5MprW8AbcHi/GCR+b/be88P4z6uYRhqOPQwZvY+KgtlwvHg1
+         N4ICNnkrSuvMfHyrhCaMPTSaCWpTNZiYMoaBCFSEiX6+67oaI2o2Df46D+cTiuk6RKdH
+         LWIB01sC9tVfimdUuCkacMamqOI4goVj7R8ybw+7+k22pVMpYzsI0LGnufsKU5FycBKV
+         2q73J0Qm7SMd32tsPQMf3QShXIO6yNCb3aa4W9pF7X/T24ON0LbQvPOAuKLjAIkIiUYx
+         ZyhLhQaLzj6rP7kU8egE6STMuJZQjb41Nkl75U7o8ci1ybC3TTzICtF1T3ozEhlXjbbt
+         MncQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Twl8egs2sgu9K2jUzyioOJdzChfT8oqMYRNtXj1w94Y=;
+        b=ZOw7tQ9WlQgOqCxf8shf5TkZpdYXX64wYNNxhoqzAoYYDGZ/cLoIO3AVEcLuh30R1d
+         jPycdmeMRCbG7HQlpAduZVQ7JP6yZNZTgf/ZGRtsQao7vyHX4Y8FSTo7GIHNaXhsrKNc
+         l+dfH0HQMV+SdyrfF15uqoluQo334U6DmqfQsCbkpG7dUG6RjOBO+8Yf8JqjP75osOzL
+         vS9VJqzf1RpU5tfz/xsZMbZ4eiM6+Msu6uHB2c3w+QfDUK2UEKC5Xg2ajXDVTxqK4Czy
+         WwDKrHa+dt3XXM7BYmUtOE/+sHJr3R/eUWoiBdvQVhvmTPT+X4djf6LSM+g0Y3v2cAb9
+         Uzag==
+X-Gm-Message-State: AOAM531alpy9GJrHWqLYCV9eF5VWd+MtDjdG6OD8KTitVzXCHP8nHRuz
+        3IiOdlTUclxoZ5A0XySB8TSXRv3a/Pzn7gsuLuc=
+X-Google-Smtp-Source: ABdhPJxxgfdHHeyfu9fL+ZOZXfFlu0kc7hS7ebEk7MvDy1g28AJrX540XgnyyU+MlbYM5jUv6exPXnqOeN3OwC8/9tI=
+X-Received: by 2002:a5d:9051:: with SMTP id v17mr6151014ioq.88.1595870957629;
+ Mon, 27 Jul 2020 10:29:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200727232346.0106c375@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com> <1595681998-19193-4-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1595681998-19193-4-git-send-email-alex.shi@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 27 Jul 2020 10:29:06 -0700
+Message-ID: <CAKgT0UfmbdhpUdGy+4VircovmJfiJy9m-MN_o0LChNT_kWRUng@mail.gmail.com>
+Subject: Re: [PATCH v17 03/21] mm/compaction: correct the comments of compact_defer_shift
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/20 6:23 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20200724:
-> 
+On Sat, Jul 25, 2020 at 6:00 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>
+> There is no compact_defer_limit. It should be compact_defer_shift in
+> use. and add compact_order_failed explanation.
+>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/mmzone.h | 1 +
+>  mm/compaction.c        | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index f6f884970511..14c668b7e793 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -512,6 +512,7 @@ struct zone {
+>          * On compaction failure, 1<<compact_defer_shift compactions
+>          * are skipped before trying again. The number attempted since
+>          * last failure is tracked with compact_considered.
+> +        * compact_order_failed is the minimum compaction failed order.
+>          */
+>         unsigned int            compact_considered;
+>         unsigned int            compact_defer_shift;
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 86375605faa9..cd1ef9e5e638 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -136,7 +136,7 @@ void __ClearPageMovable(struct page *page)
+>
+>  /*
+>   * Compaction is deferred when compaction fails to result in a page
+> - * allocation success. 1 << compact_defer_limit compactions are skipped up
+> + * allocation success. compact_defer_shift++, compactions are skipped up
+>   * to a limit of 1 << COMPACT_MAX_DEFER_SHIFT
+>   */
+>  void defer_compaction(struct zone *zone, int order)
 
-on i386:
-when CONFIG_XPS is not set/enabled:
-
-ld: kernel/bpf/syscall.o: in function `__do_sys_bpf':
-syscall.c:(.text+0x4482): undefined reference to `bpf_xdp_link_attach'
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+So this doesn't read right. I wouldn't keep the "++," in the
+explanation, and if we are going to refer to a limit of "1 <<
+COMPACT_MAX_DEFER_SHIFT" then maybe this should be left as "1 <<
+compact_defer_shift".
