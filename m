@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4816C22EB16
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D17A22EB1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgG0LVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:21:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727880AbgG0LVs (ORCPT
+        id S1728038AbgG0LWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:22:32 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:42094 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726475AbgG0LWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:21:48 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE690C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:21:47 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id z17so11829383edr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TTu31hLARJRsohvfso05Z79QSOvELrg4SIt3ybWefFQ=;
-        b=bG1WgRH/B/wcmHbOd2y4WYybIwAG81XW8YkY5/3P03QuKnLlh+h7SyCp/ccy2i5Jc8
-         xEshmCj1BIgvzaxmFrpwhYHt9Ds2YwRWqYfaRXjraimNmYVxMqhLnQlFv8HUjxBIoLbY
-         fs1qBCraZecXeXECXp1fnHD8ft+3O76il6Ka0TUBWxCPveVWzrqBex92SdCx61bI5SDD
-         qgGb+cDrA80zAIR6lbS/us6b3MRsfQdvj3n3bMhiqgUIgDdx+udYsYywFle8tUV2dNKm
-         4Z0gonIY4S3vUavwywnwcimLdQyw9WynjkJJTXLbSFxT3sGnyWA0MneKPlcxkdvLNn+6
-         v2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=TTu31hLARJRsohvfso05Z79QSOvELrg4SIt3ybWefFQ=;
-        b=s85QbzL2AThKb06nPyD5cucx2sP2CGppDlaRDZQRMDz1B1rfrzPh0G5T6/jQ3nd/uC
-         EIpu3xAoBKQG1hv2FJUPr3X9eAqGpgHh+nUlMT6yfNc7DZLGeVWVjmIJd1b5Kg+wHPXD
-         pJz8yBHMTcJYtaMdaGXPH7X4hoVQmsHxV5zbVEjHS4QAMyPmhaZpk68fCAXJTVzfVweM
-         Z3jPJIklfEd09X0hFqpwyzMqw+T/N4WcIT70dvLCwWiqloWqOKHLKc+G1+8VeJ8jHplU
-         j375v13Fh6/1JUBLtUte8nntCG95sdJ2m3d7UXrhEAHrRA9gf1xp0CQb9yhj6cAKH/1l
-         g2uA==
-X-Gm-Message-State: AOAM532TjVQCfV7fZ4WoQrtd4sQdDreFCFv1zniUcGRmJ2O5ebqCM44t
-        LnYxIsRh04eongyDKAKlobM=
-X-Google-Smtp-Source: ABdhPJyMbeMMAaWaGgAKpDBrgRZDkcvxpV6+s0bGDCbYs/eHFwVhqpiIZSp//L2ocfdGRtr27zcTOQ==
-X-Received: by 2002:a05:6402:1ac4:: with SMTP id ba4mr20048330edb.60.1595848906686;
-        Mon, 27 Jul 2020 04:21:46 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id v24sm7138834eds.71.2020.07.27.04.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 04:21:46 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:21:44 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     peterz@infradead.org
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, mbenes@suse.cz
-Subject: Re: [PATCH] objtool,x86: Verify poke_int3_handler() is self contained
-Message-ID: <20200727112144.GA55660@gmail.com>
-References: <20200727104050.GH119549@hirez.programming.kicks-ass.net>
+        Mon, 27 Jul 2020 07:22:32 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06RBMQ9D020074;
+        Mon, 27 Jul 2020 06:22:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595848946;
+        bh=cjOHNqbos8U9QHHdm8NoFhXloyp3FqlATA9mWNMvqIg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=N4VVSDl1shxZ5LVEH2OP072sDDbtFnOt8bxEszU8isU+UtOJyhNOokNJnr69vEF52
+         x5F6EFWED5WrqfpkqwOnthum9hH2SWwTJ+cjmRFGQ5EOrZ2coNx0fIMoTzIgqGDJqY
+         1Ssk6oh+oZvq+EiXnadHkZ47+IucHwkHuBEOatJQ=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06RBMQdf064228
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Jul 2020 06:22:26 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Jul 2020 06:22:26 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Jul 2020 06:22:26 -0500
+Received: from [10.250.53.226] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06RBMQqf092859;
+        Mon, 27 Jul 2020 06:22:26 -0500
+Subject: Re: [net-next v5 PATCH 0/7] Add PRP driver
+To:     David Miller <davem@davemloft.net>
+CC:     <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <nsekhar@ti.com>, <grygorii.strashko@ti.com>,
+        <vinicius.gomes@intel.com>
+References: <20200722144022.15746-1-m-karicheri2@ti.com>
+ <7133d5ca-e72b-b406-feb2-21429085c96a@ti.com>
+ <20200724.152136.239820662240192829.davem@davemloft.net>
+From:   Murali Karicheri <m-karicheri2@ti.com>
+Message-ID: <d2305d25-eeb9-1377-2209-d89bc10710b8@ti.com>
+Date:   Mon, 27 Jul 2020 07:22:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727104050.GH119549@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200724.152136.239820662240192829.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dave,
 
-* peterz@infradead.org <peterz@infradead.org> wrote:
-
+On 7/24/20 6:21 PM, David Miller wrote:
+> From: Murali Karicheri <m-karicheri2@ti.com>
+> Date: Fri, 24 Jul 2020 08:27:01 -0400
 > 
-> Abuse the SMAP rules to ensure poke_int3_handler() doesn't call out to
-> anything.
+>> If there are no more comments, can we consider merging this to
+>> net-next? I could re-base and repost if there is any conflict.
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  tools/objtool/check.c |    8 ++++++++
->  1 file changed, 8 insertions(+)
+> I can't apply them until I next merge net into net-next, and I don't
+> know exactly when that will happen yet.
 > 
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -551,6 +551,14 @@ static const char *uaccess_safe_builtin[
->  	"__memcpy_mcsafe",
->  	"mcsafe_handle_tail",
->  	"ftrace_likely_update", /* CONFIG_TRACE_BRANCH_PROFILING */
-> +	/*
-> +	 * Abuse alert!
-> +	 *
-> +	 * poke_int3_handler() is not in fact related to uaccess at all, we
-> +	 * abuse the uaccess rules to ensure poke_int3_handler() is self
-> +	 * contained and doesn't CALL out to other code.
-> +	 */
-> +	"poke_int3_handler",
-
-So ->uaccess_safe makes sure that we don't CALL into non-uaccess-safe 
-functions, but it still allows CALLs into *other* uaccess-safe 
-functions, right?
-
-So unless I missed something in the logic, the comment should say 
-something like "doesn't CALL out to other non-uaccess safe code" or 
-so? Which is, arguably, like 99% of all functions - but still, a whole 
-bunch are allowed, such as low level instrumentation and other utility 
-functions.
-
-Thanks,
-
-	Ingo
+> It'd also be nice to get some review and ACK's on this series
+> meanwhile.
+> 
+OK. Thanks.
+-- 
+Murali Karicheri
+Texas Instruments
