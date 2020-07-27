@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566D422FCA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AF522FC9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727898AbgG0XIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:08:30 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41878 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgG0XIE (ORCPT
+        id S1726992AbgG0XIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:08:06 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39324 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726861AbgG0XIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:08:04 -0400
-Received: by mail-qt1-f194.google.com with SMTP id v22so7672142qtq.8
+        Mon, 27 Jul 2020 19:08:05 -0400
+Received: by mail-qt1-f196.google.com with SMTP id w9so13584773qts.6
         for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:08:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FKap99YMpd59dOGOX7zP3mBQNGnZwMBaTyLtvOGre74=;
-        b=I59Bh2A2ncTxntfvAH5KlcDHzjhQCU6yKnkbtqT1BTuMi5U4lAk8GbiDNSs07/Z71W
-         GTQkET6k7tgT5/DTBI3Sy78gMKwBKxAhjbed1p4qOXVg/6/yjlKwUzu1tWr7f/WuglQ4
-         5N+XHvMXhM1yrnwSNY6UBzybTax8Ys+fEPrTqN1fVckH9ACeiMhOaDLx7NnQebAHUj06
-         e5xx8KbGLtXcZVOis+Au27nq8tRk35eA5P5c21k925KQX9ACKtEdVXziFgt1A/Bt1Hfk
-         +sg6cPiCA/Yx8djhgCOD1v6M41+/KQ2OASuacphOc9CG60xmH6LFonfgigaYGjIu1Eoh
-         LOSg==
-X-Gm-Message-State: AOAM531MbXizSdCjJ637KBV/9+9VrupfyqkeHvKpbXQg6nYNUBOu4vir
-        /FUu0oputccfdT4K30TSQR8=
-X-Google-Smtp-Source: ABdhPJzB5Y9fqc5OEgHRr5z3/YBHZazsnBIhhauvpVoiGA2m2gOpuNgGPjw2ti9j590cp0VJysT8BQ==
-X-Received: by 2002:aed:2f67:: with SMTP id l94mr15807560qtd.301.1595891283649;
-        Mon, 27 Jul 2020 16:08:03 -0700 (PDT)
+        bh=y1Rnn4vCkQ65/r9EgXb15c20xR4qwlNC9n/tWJktCdE=;
+        b=pvL7VSHQrNo9T6TiP/O4AGm4GItnnWPXaqA3CnsABYt8+5+khr5IH/UelUWSAkXn0l
+         PmNdsDoS1m+zMh3hFsenYPR2wjsYGnGg671ZqBTRgFAAbbloTCVq5KLZ4cCgoL6pdbHe
+         9XXN2kYS9OqbVQDNX8HfixyWlRjLI73/Nw4RNJkBoUVSMEUlaOdZnnvQRzmZOIkTvUDF
+         piupzSvyt+NBD7UJbWLgRfnGATNYVbDlEXV4zC+6UT1bM+AQdGyNuEDN05rfuxCAO1VB
+         BR7wrL7pzwZycpzygoX/B2wAcZuhZdsE+Kss42LoJu/g/XhVQO33JgJfiE8VcBUQNEIQ
+         t+DA==
+X-Gm-Message-State: AOAM530HkjA/x7JDLcMfY+ePK5wqIGZvusIf4WNbqdRkxEH3ax8+m/Ae
+        SiTUVi0p9MYyWzZfZu6CctjMpUJQ
+X-Google-Smtp-Source: ABdhPJzLov2y7kpW3MsOIWujcojcoIAh0FzIIZNyngwsbbuKVHivngsLQ2rY+EjhxQhG7r0HpPXCVA==
+X-Received: by 2002:aed:3081:: with SMTP id 1mr24609841qtf.118.1595891284479;
+        Mon, 27 Jul 2020 16:08:04 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
         by smtp.gmail.com with ESMTPSA id j61sm8216984qtd.52.2020.07.27.16.08.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -37,9 +37,9 @@ Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/8] x86/kaslr: Make command line handling safer
-Date:   Mon, 27 Jul 2020 19:07:54 -0400
-Message-Id: <20200727230801.3468620-2-nivedita@alum.mit.edu>
+Subject: [PATCH v2 2/8] x86/kaslr: Remove bogus warning and unnecessary goto
+Date:   Mon, 27 Jul 2020 19:07:55 -0400
+Message-Id: <20200727230801.3468620-3-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727215047.3341098-1-nivedita@alum.mit.edu>
 References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
@@ -50,66 +50,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle the possibility that the command line is NULL.
+Drop the warning on seeing "--" in handle_mem_options. This will trigger
+whenever one of the memory options is present in the command line
+together with "--", but there's no problem if that is the case.
 
-Replace open-coded strlen with a function call.
+Replace goto with break.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index d7408af55738..a4af89646094 100644
+index a4af89646094..21cd9e07f1f6 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -268,15 +268,19 @@ static void parse_gb_huge_pages(char *param, char *val)
- static void handle_mem_options(void)
- {
- 	char *args = (char *)get_cmd_line_ptr();
--	size_t len = strlen((char *)args);
-+	size_t len;
- 	char *tmp_cmdline;
- 	char *param, *val;
- 	u64 mem_size;
+@@ -295,10 +295,8 @@ static void handle_mem_options(void)
+ 	while (*args) {
+ 		args = next_arg(args, &param, &val);
+ 		/* Stop at -- */
+-		if (!val && strcmp(param, "--") == 0) {
+-			warn("Only '--' specified in cmdline");
+-			goto out;
+-		}
++		if (!val && strcmp(param, "--") == 0)
++			break;
  
-+	if (!args)
-+		return;
-+
- 	if (!strstr(args, "memmap=") && !strstr(args, "mem=") &&
- 		!strstr(args, "hugepages"))
- 		return;
+ 		if (!strcmp(param, "memmap")) {
+ 			mem_avoid_memmap(PARSE_MEMMAP, val);
+@@ -311,7 +309,7 @@ static void handle_mem_options(void)
+ 				continue;
+ 			mem_size = memparse(p, &p);
+ 			if (mem_size == 0)
+-				goto out;
++				break;
  
-+	len = strlen(args);
- 	tmp_cmdline = malloc(len + 1);
- 	if (!tmp_cmdline)
- 		error("Failed to allocate space for tmp_cmdline");
-@@ -399,8 +403,7 @@ static void mem_avoid_init(unsigned long input, unsigned long input_size,
- {
- 	unsigned long init_size = boot_params->hdr.init_size;
- 	u64 initrd_start, initrd_size;
--	u64 cmd_line, cmd_line_size;
--	char *ptr;
-+	unsigned long cmd_line, cmd_line_size = 0;
+ 			mem_limit = mem_size;
+ 		} else if (!strcmp(param, "efi_fake_mem")) {
+@@ -319,7 +317,6 @@ static void handle_mem_options(void)
+ 		}
+ 	}
  
- 	/*
- 	 * Avoid the region that is unsafe to overlap during
-@@ -421,12 +424,10 @@ static void mem_avoid_init(unsigned long input, unsigned long input_size,
- 	/* No need to set mapping for initrd, it will be handled in VO. */
- 
- 	/* Avoid kernel command line. */
--	cmd_line  = (u64)boot_params->ext_cmd_line_ptr << 32;
--	cmd_line |= boot_params->hdr.cmd_line_ptr;
-+	cmd_line = get_cmd_line_ptr();
- 	/* Calculate size of cmd_line. */
--	ptr = (char *)(unsigned long)cmd_line;
--	for (cmd_line_size = 0; ptr[cmd_line_size++];)
--		;
-+	if (cmd_line)
-+		cmd_line_size = strlen((char *)cmd_line);
- 	mem_avoid[MEM_AVOID_CMDLINE].start = cmd_line;
- 	mem_avoid[MEM_AVOID_CMDLINE].size = cmd_line_size;
- 	add_identity_map(mem_avoid[MEM_AVOID_CMDLINE].start,
+-out:
+ 	free(tmp_cmdline);
+ 	return;
+ }
 -- 
 2.26.2
 
