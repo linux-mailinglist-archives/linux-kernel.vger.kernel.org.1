@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826FC22F430
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164C422F431
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgG0P6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726278AbgG0P6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:58:15 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1E6C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:58:15 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id g19so5403231ioh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=dQZitrlwx6ip2rrYyl8DNyEdyZDEpSPBcMJHF4Yk58I=;
-        b=ZrS84GZUQh/oXiEHtq+zpaw9wIgBgHc0Coo/9lW7ydkphQ5h7Rg6CiAK5lDwRS92Kk
-         kfL5ZHI9MqTPtxJn4ncf65g2UgJSlDwDrnsZHukF/6b7agnnmftuQDCBO1JBbddydQkh
-         lznxCjPry7xMSvxEWQreu4QhuLEb6V6nSUAkswc9gNKvjUsu9++c/AnEyOHllZ1gOFBF
-         e31EYX9QwDK+9bRehNmCPmEWHS+U8iX80e8lGbNfY0h4yRtoGghGgRDETHOhX8FomL7/
-         zPtKes2/hAz4E55f/BT2QXdV4F1L11vHQgWcCzOXDyr6AkVHcJtUvIIcnNCQRqR1PEcM
-         0vYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=dQZitrlwx6ip2rrYyl8DNyEdyZDEpSPBcMJHF4Yk58I=;
-        b=YlwGaLlMxTnHejvPr02zLfhAhI86Ji/n7LR1WJ1i7z5Yr7pC69CapKv9RaLKnKCmld
-         HrRXwySAsbh9CiHSdoqflZq8DyyWNlScajICtMy5NqB6IxvqqfMIZk5vp1r3p0+3uumP
-         PD0b9779j3ZUrfisprxDFy9tSm5byqYpHxa2AGkSfrANRGOuZ5obtyGSleZKn/6GQWHh
-         tQ4gBGHUnB0irAMwgLBF1mW/pUWgWiTkmgwHklFdISuQOpQgUz9y4Ie5eCOnkDpCpbks
-         OV4TYFhs2BhC8tCjLSpp9A1Ze8RXEmtCa5aow3n7kaap8iYUioPacNeUpyP1ArC6Tgsn
-         ckYA==
-X-Gm-Message-State: AOAM532AXh7lGj3ucn/2loVeNMPz0hmG2r3aI9NeTDV8y1y7bm/s8LKf
-        04ef2OGJxq0xu+WEoHhKWWN/D361Hycr9G+h0B8=
-X-Google-Smtp-Source: ABdhPJxlbHDOhsFlr1GpTucDGvyQD16xqZvg66Db21+jijc7WEPOrOH1W0oLaHfTkcAOOa6LC+vGeyU85dBCVkXG95E=
-X-Received: by 2002:a5e:d906:: with SMTP id n6mr24547125iop.106.1595865494424;
- Mon, 27 Jul 2020 08:58:14 -0700 (PDT)
+        id S1728059AbgG0P6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:58:33 -0400
+Received: from verein.lst.de ([213.95.11.211]:44198 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727097AbgG0P6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 11:58:32 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 91E3C68B05; Mon, 27 Jul 2020 17:58:29 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 17:58:29 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Song Liu <song@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 18/23] init: open code setting up stdin/stdout/stderr
+Message-ID: <20200727155829.GA7225@lst.de>
+References: <20200714190427.4332-1-hch@lst.de> <20200714190427.4332-19-hch@lst.de> <20200727030534.GD795125@ZenIV.linux.org.uk> <20200727054625.GA1241@lst.de> <20200727060322.GC794331@ZenIV.linux.org.uk> <20200727064828.GA2317@lst.de> <20200727155453.GE794331@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:a56:0:0:0:0 with HTTP; Mon, 27 Jul 2020 08:58:13
- -0700 (PDT)
-Reply-To: waxson.a@yahoo.com
-From:   "Mr.Dickson Nsebeh" <mr.elvisbi@gmail.com>
-Date:   Mon, 27 Jul 2020 08:58:13 -0700
-Message-ID: <CAK+AdvwdS1J9QJRdmZPNDn6RJuKyuhw_c_BM3yS01aQuC+gsFQ@mail.gmail.com>
-Subject: Your Urgent Assistance Needed Pls.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727155453.GE794331@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-I contact you with good reason.
+On Mon, Jul 27, 2020 at 04:54:53PM +0100, Al Viro wrote:
+> On Mon, Jul 27, 2020 at 08:48:28AM +0200, Christoph Hellwig wrote:
+> > On Mon, Jul 27, 2020 at 07:03:22AM +0100, Al Viro wrote:
+> > > On Mon, Jul 27, 2020 at 07:46:25AM +0200, Christoph Hellwig wrote:
+> > > > On Mon, Jul 27, 2020 at 04:05:34AM +0100, Al Viro wrote:
+> > > > > On Tue, Jul 14, 2020 at 09:04:22PM +0200, Christoph Hellwig wrote:
+> > > > > > Don't rely on the implicit set_fs(KERNEL_DS) for ksys_open to work, but
+> > > > > > instead open a struct file for /dev/console and then install it as FD
+> > > > > > 0/1/2 manually.
+> > > > > 
+> > > > > I really hate that one.  Every time we exposed the internal details to
+> > > > > the fucking early init code, we paid for that afterwards.  And this
+> > > > > goes over the top wrt the level of details being exposed.
+> > > > > 
+> > > > > _IF_ you want to keep that thing, move it to fs/file.c, with dire comment
+> > > > > re that being very special shite for init and likely cause of subsequent
+> > > > > trouble whenever anything gets changed, a gnat farts somewhere, etc.
+> > > > 
+> > > > Err, while I'm all for keeping internals internal, fd_install and
+> > > > get_unused_fd_flags are exported routines with tons of users of this
+> > > > pattern all over.
+> > > 
+> > > get_file_rcu_many()?  All over the place?  Besides, that's _not_ the normal
+> > > pattern for get_unused_fd() - there's a very special reason we don't expect
+> > > an error from it here.
+> > 
+> > Oh well.  I can add an init_dup2, but that should probably go after
+> > the series adding fs/for-init.c or fs/init.c.  I'll skip it for the
+> > current set of fixups and will send it once we have a stable branch for
+> > that.
+> 
+> OK.  The really serious ones are around f_pos uses and d_genocide() one.
+> FWIW, cleanup_rootfs() should probably be removed - it looks rather
+> pointless.
 
-My name is Mr.Dickson Nsebeh, a banker by profession,  with position
-of ( Assistant Manager ) I will be going on retirement end of August
-2020.
-
-Please can i trust you to release the sum of $9.3 Million Dollars, to
-you for safe keeping in any account there in your country ?. You will
-have 40% as your share while 60% will be for me to move into any
-investment you will suggest for me.
-Please kindly reply me with your information as stated below for more
-details and how to execute this transfer to your provided account as
-soon as possible.
-
-Your Full Name...
-Your Age.......
-Your Home Address..
-Your Occupation...
-Your Country......
-Your Cellular N0...
-
-Am waiting for your response. God bless you.
-
-Mr.Dickson Nsebeh.
-Reply to> waxson.a@yahoo.com
+I've got all that in a series I've tested this morning, and which
+I really should post now..
