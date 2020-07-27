@@ -2,38 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2067522FC10
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579A922FC1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgG0WWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 18:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgG0WWq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 18:22:46 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3744FC061794;
-        Mon, 27 Jul 2020 15:22:46 -0700 (PDT)
+        id S1726952AbgG0W2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 18:28:07 -0400
+Received: from ms.lwn.net ([45.79.88.28]:58004 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726171AbgG0W2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 18:28:06 -0400
 Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A0BCC44A;
-        Mon, 27 Jul 2020 22:22:45 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 16:22:44 -0600
+        by ms.lwn.net (Postfix) with ESMTPSA id 7DCC12E7;
+        Mon, 27 Jul 2020 22:28:06 +0000 (UTC)
+Date:   Mon, 27 Jul 2020 16:28:05 -0600
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-doc@vger.kernel.org,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: adjust kprobes.rst entry to new location
-Message-ID: <20200727162244.2a2395bf@lwn.net>
-In-Reply-To: <20200726055843.10783-1-lukas.bulwahn@gmail.com>
-References: <20200726055843.10783-1-lukas.bulwahn@gmail.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH] scripts/kernel-doc: optionally treat warnings as errors
+Message-ID: <20200727162805.3ef9bacf@lwn.net>
+In-Reply-To: <20200724230138.153178-1-pierre-louis.bossart@linux.intel.com>
+References: <20200724230138.153178-1-pierre-louis.bossart@linux.intel.com>
 Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -43,23 +34,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 07:58:43 +0200
-Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+On Fri, 24 Jul 2020 18:01:38 -0500
+Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
 
-> Commit 2165b82fde82 ("docs: Move kprobes.rst from staging/ to trace/")
-> moved kprobes.rst, but missed to adjust the MAINTAINERS entry.
+> The kbuild bot recently added the W=1 option, which triggered
+> documentation cleanups to squelch hundreds of kernel-doc warnings.
 > 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> To make sure new kernel contributions don't add regressions to
+> kernel-doc descriptors, this patch suggests an option to treat
+> warnings as errors in CI/automated tests. A command-line option is
+> provided to the kernel-doc script, as well as a check on environment
+> variables to turn this optional behavior on.
 > 
->   warning: no file matches    F:    Documentation/staging/kprobes.rst
+> Examples for the two subsystems I contribute to:
 > 
-> Adjust the entry to the new file location.
+> KCFLAGS="-Wall -Werror" make W=1 sound/
+> KCFLAGS="-Wall -Werror" make W=1 drivers/soundwire/
 > 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> Naveen, Masami-san, please ack.
-> Jonathan, please pick this minor non-urgent patch into docs-next.
+> Randy Dunlap also suggested adding a log for when generating
+> documentation. The documentation build is however not stopped for now.
+> 
+> KDOC_WERROR=1 make htmldocs
 
-Applied, thanks.
+So I'm not opposed to this, but I'm missing a couple of things in the
+changelog:
+
+ - A statement that you are adding a -Werror option that invokes this
+   behavior.
+
+ - Mention of the fact that you also cause it to look at a couple of
+   environment variables and change its behavior based on that.
+
+Could I get a version with that clarified a bit?
+
+Thanks,
 
 jon
