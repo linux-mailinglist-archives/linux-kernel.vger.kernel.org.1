@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC9222EE3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389F722F08F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbgG0OF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:05:58 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:52043 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726222AbgG0OF6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:05:58 -0400
-Received: from mail-qt1-f175.google.com ([209.85.160.175]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mkpj7-1keMbU49JH-00mGMu; Mon, 27 Jul 2020 16:05:56 +0200
-Received: by mail-qt1-f175.google.com with SMTP id 6so12267451qtt.0;
-        Mon, 27 Jul 2020 07:05:55 -0700 (PDT)
-X-Gm-Message-State: AOAM5327FGTxxBDo5Oi5XN1wZ/q2cVIkLwoK+76IcPJJWpNTQ9+BhIyq
-        AU8iyWerlh55CfYlRr47GKRN9gqZEmoGAIZXNdY=
-X-Google-Smtp-Source: ABdhPJyLw0yS/axt0gy7Q4r8Mv5c5syAQIHggRwgMclz+d8wr5c6LKZiPDs5uhjwt61MDn3Dh4YP6VF9XZYYgL6b5rw=
-X-Received: by 2002:aed:33e7:: with SMTP id v94mr19493367qtd.18.1595858754708;
- Mon, 27 Jul 2020 07:05:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com> <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
- <20200727131608.GD1913@kadam>
-In-Reply-To: <20200727131608.GD1913@kadam>
-From:   Arnd Bergmann <arnd@arndb.de>
+        id S1732487AbgG0OZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:25:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732467AbgG0OZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:25:36 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 013BA2177B;
+        Mon, 27 Jul 2020 14:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595859936;
+        bh=ggkb6GNnAaJi1PDawlhwRfvMEN7RJxZwWjUYOHVfT6k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=E3tEhvI1/riuJb/Co9smKlmg0cwUB+5cq1/QJor1AxLwNTuaUs3WyDKOdjzyuPlgn
+         Ypa+usFCWBNmwnfBce4V+9393KgMEFN4PNX4jMkiBFLfjv9Du9ruTj+0+c14Q4/ZkE
+         eyB0uex4AzCg6O2JGyHaGUqQv8shAzcf5kVN4rVE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Barry Song <song.bao.hua@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Roman Gushchin <guro@fb.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.7 163/179] mm/hugetlb: avoid hardcoding while checking if cma is enabled
 Date:   Mon, 27 Jul 2020 16:05:38 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3+9Gr6G6KDWu=iW3316O9cPH+XupBBajJaxrq20xQcyQ@mail.gmail.com>
-Message-ID: <CAK8P3a3+9Gr6G6KDWu=iW3316O9cPH+XupBBajJaxrq20xQcyQ@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:uYTTDyuV42QIpGKOCNEEJ+PUI3+ux0SBsv8tF5Ho0S0vzFmKGog
- TcyE4TgnawrR6xE72VZ+fE59OSPlVlqX4s3KcFHxZbJhXdil7/Y0WxnveLPDjl3py7pELbf
- fRe/QCgKZhFs2bM4PgbqYWZnvVYxDxn4urGSveq0yzoAP9G2q4rY70i0HLbgR3xRDmtnnUQ
- DbCbVasMf1h4AHE/3slYw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cYFVaI5WBYI=:98jziNKZlNXKNy+uR4ZSOI
- 8fAVlZzVEqhLe6zvP/UeqiT3K8ahGWYRUInl4yH3WJ5d2jocEKtrAaLj81+oXo+NHeeVOxDFR
- ISh16TPwCc0X6BQ4eaRrc5B8D3A/rU3EqZ1+74RRXkS0lUWMoW2jLW3UvC7pezD6v8NEHHaTj
- 8691zR/eYK6qkH5qTgFzNtbNu3mxT2i1Ho9r8APionDoEGOQ3Zu0HG/2QMcs28ynnDw3pqFwQ
- Ab1Klvkh0NzNTjRPBNlCaSSAsZ1tMOOliJgCsUmuaoDHzVFAGC6Za+NR7eehvd4dYY38oR8K8
- XGl+uUUMiMDllcJlGQCqiISBqx4GrnNarQ3ECWdCF6dOX4Jl2yjk5I1pJSekOawhCjpNxmI42
- VFwR3hIw5COlQ/wiUeIyrcbD8gWwaI/rqzn2Jrto1XmePRJkf4OFyoK1dByHuQU2ATP/2d5xg
- RHxkKb8tDAqFQQhdlxqK2uDtMvzgub8YGzS/OzVdCIL23EJX2zolx4zWebLUQqstQTvbVFH8t
- BmDTkw/Vf47E8xBO4LXL5ut4B9x0p5iDYQ6GYzZqkx344yZyS2wAjHJfjxhq7W4J3WMduLL1Y
- s0IT7EwBZAoKDH675ikMZ2lVLyV2GnG2Ke3WwNF0c7dKv/C2kxgJHMrohlI9TcyvLmTG1C78U
- IWZgOBtJHvcFkxwJMYxHBGV9X6tvYbBcslY5PCJqTK0vxWu3xOWishgrO4Sg6FFdZTtTCQEqt
- LgBxb+zZztuB/F6WMQd5Q5w/1EpiwURaJgKP42+XkydtwHudzEALtVyWfqKCRaTmyHZuiFKn0
- GzGe8viUOfiw9ypa613osJnFQWhCOoUh80TCxuzm/G5WEx1qm1D1dVOGgYHzUUwC3D+eLwDYl
- K6c/FAfSTYLH9dIOz9s0bh9r90pKJZbAKcqbOSbRABPWoG1ncvps6VQ5CH37gUh82Ip2fQ92L
- FMpd9xILL3vA2UyOqZfihRwOyqtmu9A1RzLsvtfUZEFYBX+P5lBKt
+Message-Id: <20200727134940.606780792@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 3:16 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Mon, Jul 27, 2020 at 09:25:16AM +0200, Arnd Bergmann wrote:
-> > On Mon, Jul 27, 2020 at 12:28 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
-> > >
-> > > video_put_user() is copying uninitialized stack memory to userspace due
-> > > to the compiler not initializing holes in the structures declared on the
-> > > stack. Fix it by initializing `ev32` and `vb32` using memset().
-> > >
-> > > Reported-and-tested-by: syzbot+79d751604cb6f29fbf59@syzkaller.appspotmail.com
-> > > Link: https://syzkaller.appspot.com/bug?extid=79d751604cb6f29fbf59
-> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> >
-> > Thanks a lot for addressing this! I now see that I actually created a similar
-> > bugfix for it back in January, but for some reason that got stuck in my
-> > backlog and I never wrote a proper description for it or sent it out to the
-> > list, sorry about that. I would hope we could find a way to have either
-> > the compiler or sparse warn if we copy uninitialized data to user space,
-> > but we now don't even check for that within the kernel any more.
->
-> Here are my latest warnings on linux-next from Friday.
+From: Barry Song <song.bao.hua@hisilicon.com>
 
-Ah, I forgot you had that kind of list already, thanks for checking!
+commit dbda8feadfa46b3d8dd7a2304f84ccbc036effe9 upstream.
 
-> block/scsi_ioctl.c:707 scsi_put_cdrom_generic_arg() warn: check that 'cgc32' doesn't leak information (struct has a hole after 'data_direction')
+hugetlb_cma[0] can be NULL due to various reasons, for example, node0
+has no memory.  so NULL hugetlb_cma[0] doesn't necessarily mean cma is
+not enabled.  gigantic pages might have been reserved on other nodes.
+This patch fixes possible double reservation and CMA leak.
 
-I see no padding in this one, should be fine AFAICT. Any idea why you
-get a warning
-for this instance?
+[akpm@linux-foundation.org: fix CONFIG_CMA=n warning]
+[sfr@canb.auug.org.au: better checks before using hugetlb_cma]
+  Link: http://lkml.kernel.org/r/20200721205716.6dbaa56b@canb.auug.org.au
 
-> drivers/input/misc/uinput.c:743 uinput_ff_upload_to_user() warn: check that 'ff_up_compat' doesn't leak information (struct has a hole after 'replay')
+Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200710005726.36068-1-song.bao.hua@hisilicon.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This one hs padding in it and looks broken.
+---
+ mm/hugetlb.c |   15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-> drivers/input/misc/uinput.c:958 uinput_ioctl_handler() warn: check that 'ff_up' doesn't leak information (struct has a hole after 'replay')
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -46,7 +46,10 @@ int hugetlb_max_hstate __read_mostly;
+ unsigned int default_hstate_idx;
+ struct hstate hstates[HUGE_MAX_HSTATE];
+ 
++#ifdef CONFIG_CMA
+ static struct cma *hugetlb_cma[MAX_NUMNODES];
++#endif
++static unsigned long hugetlb_cma_size __initdata;
+ 
+ /*
+  * Minimum page order among possible hugepage sizes, set to a proper value
+@@ -1236,9 +1239,10 @@ static void free_gigantic_page(struct pa
+ 	 * If the page isn't allocated using the cma allocator,
+ 	 * cma_release() returns false.
+ 	 */
+-	if (IS_ENABLED(CONFIG_CMA) &&
+-	    cma_release(hugetlb_cma[page_to_nid(page)], page, 1 << order))
++#ifdef CONFIG_CMA
++	if (cma_release(hugetlb_cma[page_to_nid(page)], page, 1 << order))
+ 		return;
++#endif
+ 
+ 	free_contig_range(page_to_pfn(page), 1 << order);
+ }
+@@ -1249,7 +1253,8 @@ static struct page *alloc_gigantic_page(
+ {
+ 	unsigned long nr_pages = 1UL << huge_page_order(h);
+ 
+-	if (IS_ENABLED(CONFIG_CMA)) {
++#ifdef CONFIG_CMA
++	{
+ 		struct page *page;
+ 		int node;
+ 
+@@ -1263,6 +1268,7 @@ static struct page *alloc_gigantic_page(
+ 				return page;
+ 		}
+ 	}
++#endif
+ 
+ 	return alloc_contig_pages(nr_pages, gfp_mask, nid, nodemask);
+ }
+@@ -2572,7 +2578,7 @@ static void __init hugetlb_hstate_alloc_
+ 
+ 	for (i = 0; i < h->max_huge_pages; ++i) {
+ 		if (hstate_is_gigantic(h)) {
+-			if (IS_ENABLED(CONFIG_CMA) && hugetlb_cma[0]) {
++			if (hugetlb_cma_size) {
+ 				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
+ 				break;
+ 			}
+@@ -5548,7 +5554,6 @@ void move_hugetlb_state(struct page *old
+ }
+ 
+ #ifdef CONFIG_CMA
+-static unsigned long hugetlb_cma_size __initdata;
+ static bool cma_reserve_called __initdata;
+ 
+ static int __init cmdline_parse_hugetlb_cma(char *p)
 
-hard to tell.
 
-> drivers/firewire/core-cdev.c:463 ioctl_get_info() warn: check that 'bus_reset' doesn't leak information (struct has a hole after 'generation')
-
-broken, trivial to fix
-
-> drivers/scsi/megaraid/megaraid_mm.c:824 kioc_to_mimd() warn: check that 'cinfo.base' doesn't leak information
-
-Seems fine due to __packed annotation.
-
-> drivers/gpio/gpiolib-cdev.c:473 lineevent_read() warn: check that 'ge' doesn't leak information (struct has a hole after 'id')
-
-The driver seems to initialize the elements correctly before putting
-them into the kfifo, so there is no infoleak. However the structure layout
-of "struct gpioevent_data" is incompatible between x86-32 and x86-64
-calling conventions, so this is likely broken in x86 compat mode,
-unless user space can explicitly deal with the difference.
-
-> drivers/gpu/drm/i915/i915_query.c:136 query_engine_info() warn: check that 'query.num_engines' doesn't leak information
-
-I don't think this leaks any state, as it just copies data to user space that
-it copied from there originally.
-
-Stopping here for now.
-
-Peilin Ye, is this something you are interested in fixing for the other drivers
-as well? I'd be happy to help review any further patches if you Cc me.
-
-     Arnd
