@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82D422EF7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E515A22EEF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730941AbgG0OQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43802 "EHLO mail.kernel.org"
+        id S1730155AbgG0OMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730918AbgG0OQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:16:46 -0400
+        id S1730138AbgG0OMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DE8720FC3;
-        Mon, 27 Jul 2020 14:16:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AB38121775;
+        Mon, 27 Jul 2020 14:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859406;
-        bh=iBO41IItOf1SqfGhheAjtKbnoUPdrkRC8ORQw9SEKCI=;
+        s=default; t=1595859130;
+        bh=29cjQnjSC+wuvHtG+20VVuSfXqeNY9zwFB/jMOukLSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GBNyxA2EwVV4Xl/lRvaB4RlDuWZ/sa1cnWzIehWWp06D7G8CktvTgBxcoiEQZY7af
-         VAW8kS9xKOcaRVJ052xXlYID26G5TG2xDg2wIVjiFbONOZkZUU7mQDbbaShcTSbSA6
-         wDfi1Wvj9jeeYsSMCso3V59KqYM33wRKyVTN37mg=
+        b=uGzB/uurOdrp52J/izWLlqdoh9PYXKjgSXoD/lEmq4IHbt+ihIzwRQ4hRhpTzVzBK
+         bVa8hV5h3wYM05EYpvOwFgDlDdQ7vjllJ/dq9ahreOy1ns6ZV5B2aSBtOWWgsYjg7s
+         peuHZJyKxZB6Dsoy8XnZ9QuMDkhApnjApBKQRNwY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasiliy Kupriakov <rublag-ns@yandex.ru>,
+        stable@vger.kernel.org,
+        "Michael J. Ruhl" <michael.j.ruhl@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/138] platform/x86: asus-wmi: allow BAT1 battery name
-Date:   Mon, 27 Jul 2020 16:04:50 +0200
-Message-Id: <20200727134930.128529717@linuxfoundation.org>
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 77/86] io-mapping: indicate mapping failure
+Date:   Mon, 27 Jul 2020 16:04:51 +0200
+Message-Id: <20200727134918.255432367@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +49,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasiliy Kupriakov <rublag-ns@yandex.ru>
+From: Michael J. Ruhl <michael.j.ruhl@intel.com>
 
-[ Upstream commit 9a33e375d98ece5ea40c576eabd3257acb90c509 ]
+commit e0b3e0b1a04367fc15c07f44e78361545b55357c upstream.
 
-The battery on my laptop ASUS TUF Gaming FX706II is named BAT1.
-This patch allows battery extension to load.
+The !ATOMIC_IOMAP version of io_maping_init_wc will always return
+success, even when the ioremap fails.
 
-Signed-off-by: Vasiliy Kupriakov <rublag-ns@yandex.ru>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Since the ATOMIC_IOMAP version returns NULL when the init fails, and
+callers check for a NULL return on error this is unexpected.
+
+During a device probe, where the ioremap failed, a crash can look like
+this:
+
+    BUG: unable to handle page fault for address: 0000000000210000
+     #PF: supervisor write access in kernel mode
+     #PF: error_code(0x0002) - not-present page
+     Oops: 0002 [#1] PREEMPT SMP
+     CPU: 0 PID: 177 Comm:
+     RIP: 0010:fill_page_dma [i915]
+       gen8_ppgtt_create [i915]
+       i915_ppgtt_create [i915]
+       intel_gt_init [i915]
+       i915_gem_init [i915]
+       i915_driver_probe [i915]
+       pci_device_probe
+       really_probe
+       driver_probe_device
+
+The remap failure occurred much earlier in the probe.  If it had been
+propagated, the driver would have exited with an error.
+
+Return NULL on ioremap failure.
+
+[akpm@linux-foundation.org: detect ioremap_wc() errors earlier]
+
+Fixes: cafaf14a5d8f ("io-mapping: Always create a struct to hold metadata about the io-mapping")
+Signed-off-by: Michael J. Ruhl <michael.j.ruhl@intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200721171936.81563-1-michael.j.ruhl@intel.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/platform/x86/asus-wmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/io-mapping.h |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index b1f4a31ba1ee5..ed83fb135bab3 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -424,6 +424,7 @@ static int asus_wmi_battery_add(struct power_supply *battery)
- 	 * battery is named BATT.
- 	 */
- 	if (strcmp(battery->desc->name, "BAT0") != 0 &&
-+	    strcmp(battery->desc->name, "BAT1") != 0 &&
- 	    strcmp(battery->desc->name, "BATT") != 0)
- 		return -ENODEV;
- 
--- 
-2.25.1
-
+--- a/include/linux/io-mapping.h
++++ b/include/linux/io-mapping.h
+@@ -120,9 +120,12 @@ io_mapping_init_wc(struct io_mapping *io
+ 		   resource_size_t base,
+ 		   unsigned long size)
+ {
++	iomap->iomem = ioremap_wc(base, size);
++	if (!iomap->iomem)
++		return NULL;
++
+ 	iomap->base = base;
+ 	iomap->size = size;
+-	iomap->iomem = ioremap_wc(base, size);
+ #if defined(pgprot_noncached_wc) /* archs can't agree on a name ... */
+ 	iomap->prot = pgprot_noncached_wc(PAGE_KERNEL);
+ #elif defined(pgprot_writecombine)
 
 
