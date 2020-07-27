@@ -2,140 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B8C22F22A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E566F22F20A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732530AbgG0Oh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730093AbgG0OLz (ORCPT
+        id S1731150AbgG0Ogw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:36:52 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:37596 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730317AbgG0ONL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:11:55 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A10CC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:11:54 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f18so15065384wrs.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4JgRbp7y5AMyhvqG5bScPLnAhL+Dr6FW3JEWyK7fnPk=;
-        b=Thx0NMVZq3esv/QXucfWm4kQBU20kaxbTvp2huJ8YMSgaOyNpOu2HcIk+4W8IY3A8f
-         HjtYp6mAAec55vmuLzIiSogxlGoEU2880uywG1sqaBwr/n1omJywwQw0DKjB060HOv49
-         4lWKCNp+doOf1wBGb/+2Ts1l+JExa32v9Wgo0Ndj4HWfA/O6qn5ZCoMu+i8V7sKNq6uv
-         cm7mwcqZs7QeMkTXYOmIEjL9AEbmeFfQ+v+C0rhByRRxf4nRuZ7K/NKS0EuxDM7Y/Yuz
-         pocwriw+mhSodfDj+M8fa0/rKQ5CI4r36WwUoUc6qFkMVxBjkCfGIS9etNNNYwOx1xQP
-         3YQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4JgRbp7y5AMyhvqG5bScPLnAhL+Dr6FW3JEWyK7fnPk=;
-        b=PYcIo0R+e5NplTQqz/jPN/QOhAv0mTjh5mnolb64qOo4rryCndhbCXMKoEwfSB1DMO
-         aH0ZHd7Z7evz4CoLdgkw0TG7xuxnb0Md7goVjdgVKqZPwphuCuGnOkiDxSyyFZScNRbo
-         ZDOx9XrCP7DZXTm2LG25rR4tEd4Jd+uyabibEP/sbeONY6HDFBuPgJue5sJA/KshrZ2o
-         ugZUMbYCo8Sy44Y4Hfidf/exNn3PPEyj7GOwiCnofbdxU8K0Hai0TTPzwfyvEAsKvYcB
-         eM469vM/SpC+S0LOcOMYUeKIqjNkPUsZKLrc7ToK7r+omKh3UEri9x9bDE/cB0vle88e
-         z9kw==
-X-Gm-Message-State: AOAM531BRrPg+K/ehVVmyl4L0TkkQvV5NV0kyWwM0PMLR2a7VTyfyLv1
-        o/Ok6Z37Yhze3sRDNktfLmO/tQ==
-X-Google-Smtp-Source: ABdhPJyCLUfbgdOKuyocs1RKy2bsV8tZ+7kkol6NIXVdzCIujtkOmUZ3a4Hrt1NRLIASlK55CYUfXg==
-X-Received: by 2002:adf:ee8e:: with SMTP id b14mr9197042wro.213.1595859113354;
-        Mon, 27 Jul 2020 07:11:53 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id p6sm13014534wmg.0.2020.07.27.07.11.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 07:11:52 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 16:11:52 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Subject: Re: [net-next v4 2/6] net: marvell: prestera: Add PCI interface
- support
-Message-ID: <20200727141152.GM2216@nanopsycho>
-References: <20200727122242.32337-1-vadym.kochan@plvision.eu>
- <20200727122242.32337-3-vadym.kochan@plvision.eu>
- <CAHp75VeWGUB8izyHptfsXXv4GbsDu6_4rr9EaRR9wooXywaP+g@mail.gmail.com>
+        Mon, 27 Jul 2020 10:13:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595859191; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=od6qu1NhBeEXZbA2Vs3vSoZKYr7uCAz7VQWNJzNyddA=;
+ b=ErrfmWmUGJd9lD6rVhz1jgED8fbPh40MJinix9frLomKJ80GbSncjW6gboqgyWHFjqoTIwXh
+ 3j7dCC4hSqwqhEv78gPssydL3uTR90kOU9aJn92t1q/0BiisC/4DFN2I5HG4Dz2i9FKRDqbl
+ ltHUdr1ZLk5dQ8fkugy5V3yOC8w=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5f1ee0d97186ea1ee1f26dff (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 14:12:41
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CBF42C4344C; Mon, 27 Jul 2020 14:12:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02493C4344C;
+        Mon, 27 Jul 2020 14:12:37 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeWGUB8izyHptfsXXv4GbsDu6_4rr9EaRR9wooXywaP+g@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 27 Jul 2020 19:42:37 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: Re: [PATCH] coresight: etm4x: Fix etm4_count race using atomic
+ variable
+In-Reply-To: <c98f0c27-7f0c-cf99-d52b-8a8b1e197ace@arm.com>
+References: <20200727060728.15027-1-saiprakash.ranjan@codeaurora.org>
+ <c98f0c27-7f0c-cf99-d52b-8a8b1e197ace@arm.com>
+Message-ID: <7a98dc32652731e7a795e150e7e8d14f@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mon, Jul 27, 2020 at 03:29:17PM CEST, andy.shevchenko@gmail.com wrote:
->On Mon, Jul 27, 2020 at 3:23 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+On 2020-07-27 15:09, Suzuki K Poulose wrote:
+> On 07/27/2020 07:07 AM, Sai Prakash Ranjan wrote:
+>> etm4_count keeps track of number of ETMv4 registered and on some
+>> systems, a race is observed on etm4_count variable which can
+>> lead to multiple calls to cpuhp_setup_state_nocalls_cpuslocked().
+>> This function internally calls cpuhp_store_callbacks() which
+>> prevents multiple registrations of callbacks for a given state
+>> and due to this race, it returns -EBUSY leading to ETM probe
+>> failures like below.
+>> 
+>>   coresight-etm4x: probe of 7040000.etm failed with error -16
+>> 
+>> This race can easily be triggered with async probe by setting
+>> probe type as PROBE_PREFER_ASYNCHRONOUS and with ETM power
+>> management property "arm,coresight-loses-context-with-cpu".
+>> 
+>> Prevent this race by converting etm4_count variable to atomic.
+>> 
+>> Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup 
+>> in probe() function")
+>> Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug 
+>> state machine")
+>> Suggested-by: Mike Leach <mike.leach@linaro.org>
+>> (Mike: Rootcause and context for commit message)
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> 
+> Please could we leave the hotplug notifier installed with the driver
+> init and don't worry about this at all ? We bail out early in the
+> notifier anyways, if the CPU is not registered with its ETM.
+> 
 
-[...]
+Sure thing, sorry for not taking the cue from earlier discussion.
 
->
->> +       pci_set_drvdata(pdev, fw);
->> +
->> +       err = prestera_fw_init(fw);
->> +       if (err)
->> +               goto err_prestera_fw_init;
->> +
->> +       dev_info(fw->dev.dev, "Switch FW is ready\n");
->> +
->> +       fw->wq = alloc_workqueue("prestera_fw_wq", WQ_HIGHPRI, 1);
->> +       if (!fw->wq)
->> +               goto err_wq_alloc;
->> +
->> +       INIT_WORK(&fw->evt_work, prestera_fw_evt_work_fn);
->> +
->> +       err = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_MSI);
->> +       if (err < 0) {
->> +               pci_err(pdev, "MSI IRQ init failed\n");
->> +               goto err_irq_alloc;
->> +       }
->> +
->> +       err = request_irq(pci_irq_vector(pdev, 0), prestera_pci_irq_handler,
->> +                         0, driver_name, fw);
->> +       if (err) {
->> +               pci_err(pdev, "fail to request IRQ\n");
->> +               goto err_request_irq;
->> +       }
->> +
->> +       err = prestera_device_register(&fw->dev);
->> +       if (err)
->> +               goto err_prestera_dev_register;
->> +
->> +       return 0;
->> +
->> +err_prestera_dev_register:
->> +       free_irq(pci_irq_vector(pdev, 0), fw);
->> +err_request_irq:
->> +       pci_free_irq_vectors(pdev);
->> +err_irq_alloc:
->> +       destroy_workqueue(fw->wq);
->> +err_wq_alloc:
->> +       prestera_fw_uninit(fw);
->
->> +err_prestera_fw_init:
->> +err_pci_dev_alloc:
->> +err_dma_mask:
->
->All three are useless.
+Thanks,
+Sai
 
-This is okay. It is symmetrical with init. err_what_you_init. It is all
-over the place.
-
-[...]
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
