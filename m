@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 935AC22EF2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7DD22EE9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730464AbgG0OOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39226 "EHLO mail.kernel.org"
+        id S1729629AbgG0OJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:09:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730032AbgG0ON6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:13:58 -0400
+        id S1729618AbgG0OJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:09:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 112FD2083E;
-        Mon, 27 Jul 2020 14:13:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 120F8207FC;
+        Mon, 27 Jul 2020 14:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859237;
-        bh=iINv9F84Bgoo99yjFob1WezwwZvaTlQYEjVwF0s72S8=;
+        s=default; t=1595858958;
+        bh=6BIAxrKabhOJYy2xeoMCfBD72A96CeHELJj9q3yhH6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oiBnAK/3rAbuP7/gIFAurk2IeWzu990t6IvzslhK+822sv3UPNEa3Z2bpAOULYR9V
-         CgfqSu89EZyjhdAPSvQfLR4UKcBMOUc9y81jnuylz6kZSLIHt7v7SwT10koMcDarMf
-         XMeMo8akTBTDTWfYA9YrwbKc2I19imfXrWkaHDR8=
+        b=VxOZNnTy3lpLjc5ELy2/V9yldu3YO1uAHC9j+bpAcx/uu0DZYCk6sxx640lIER/Tl
+         BAUGZ6HiWMP/pqNqY3ZAtKqSXBGqWfAd1pVJ6n5GUK21fj0ypB4s1uUIjAX7hnxRPO
+         DRZwTs9WnLwm7L24LeXGZCvs45yrCmH1rD0zYwKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joonho Wohn <doomsheart@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 030/138] ALSA: hda/realtek: Fixed ALC298 sound bug by adding quirk for Samsung Notebook Pen S
-Date:   Mon, 27 Jul 2020 16:03:45 +0200
-Message-Id: <20200727134926.878102514@linuxfoundation.org>
+        stable@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 12/86] drivers/firmware/psci: Fix memory leakage in alloc_init_cpu_groups()
+Date:   Mon, 27 Jul 2020 16:03:46 +0200
+Message-Id: <20200727134914.952600087@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joonho Wohn <doomsheart@gmail.com>
+From: Gavin Shan <gshan@redhat.com>
 
-commit 568e4e82128aac2c62c2c359ebebb6007fd794f9 upstream.
+[ Upstream commit c377e67c6271954969384f9be1b1b71de13eba30 ]
 
-Fixed no headphone sound bug on laptop Samsung Notebook Pen S
-(950SBE-951SBE), by using existing patch in Linus' tree, commit
-14425f1f521f (ALSA: hda/realtek: Add quirk for Samsung Notebook).
-This laptop uses the same ALC298 but different subsystem id 0x144dc812.
-I added SND_PCI_QUIRK at sound/pci/hda/patch_realtek.c
+The CPU mask (@tmp) should be released on failing to allocate
+@cpu_groups or any of its elements. Otherwise, it leads to memory
+leakage because the CPU mask variable is dynamically allocated
+when CONFIG_CPUMASK_OFFSTACK is enabled.
 
-Signed-off-by: Joonho Wohn <doomsheart@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAHcbMh291aWDKiWSZoxXB4-Eru6OYRwGA4AVEdCZeYmVLo5ZxQ@mail.gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Link: https://lore.kernel.org/r/20200630075227.199624-1-gshan@redhat.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/firmware/psci_checker.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7551,6 +7551,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x144d, 0xc169, "Samsung Notebook 9 Pen (NP930SBE-K01US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc176, "Samsung Notebook 9 Pro (NP930MBE-K04US)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x144d, 0xc740, "Samsung Ativ book 8 (NP870Z5G)", ALC269_FIXUP_ATIV_BOOK_8),
-+	SND_PCI_QUIRK(0x144d, 0xc812, "Samsung Notebook Pen S (NT950SBE-X58)", ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET),
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+diff --git a/drivers/firmware/psci_checker.c b/drivers/firmware/psci_checker.c
+index cbd53cb1b2d47..9f1a913933d53 100644
+--- a/drivers/firmware/psci_checker.c
++++ b/drivers/firmware/psci_checker.c
+@@ -164,8 +164,10 @@ static int alloc_init_cpu_groups(cpumask_var_t **pcpu_groups)
+ 
+ 	cpu_groups = kcalloc(nb_available_cpus, sizeof(cpu_groups),
+ 			     GFP_KERNEL);
+-	if (!cpu_groups)
++	if (!cpu_groups) {
++		free_cpumask_var(tmp);
+ 		return -ENOMEM;
++	}
+ 
+ 	cpumask_copy(tmp, cpu_online_mask);
+ 
+@@ -174,6 +176,7 @@ static int alloc_init_cpu_groups(cpumask_var_t **pcpu_groups)
+ 			topology_core_cpumask(cpumask_any(tmp));
+ 
+ 		if (!alloc_cpumask_var(&cpu_groups[num_groups], GFP_KERNEL)) {
++			free_cpumask_var(tmp);
+ 			free_cpu_groups(num_groups, &cpu_groups);
+ 			return -ENOMEM;
+ 		}
+-- 
+2.25.1
+
 
 
