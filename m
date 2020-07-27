@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382A022EF42
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C691822F00D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgG0OOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40404 "EHLO mail.kernel.org"
+        id S1731733AbgG0OVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730572AbgG0OOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:14:39 -0400
+        id S1730258AbgG0OV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8497D208E4;
-        Mon, 27 Jul 2020 14:14:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A34D2070B;
+        Mon, 27 Jul 2020 14:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859279;
-        bh=FqV7naqdE+WXYz3j7X7YOjTCWWaUZ3mIg+maH9TaCt4=;
+        s=default; t=1595859688;
+        bh=DafwVra6R15YiKS3P4lQV5RXKI9bC2rto+ReRK0TKTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CcbaWfvKc/FrPhPzfkjb7TDZcWkPfL6yvcMMXIh7gP3GqjOM+fMU1tfhjckKiwEOh
-         K8b9/QdhTrO9SQiWIn54jfxS7qoX971TRJR9hmS4wW2X4aZH3CqO6xB3ZIgEWFJnH2
-         3lm0Al/WrpCvTeOaoYDyAhEMMvhXabFVWkp8Ncs0=
+        b=Ww5dUR8PsFuibZATpuAoG/pTJ9Ys5dS0KwZz6CoXrIJO37x9MtnWuVAddHs6M26z8
+         1annWHdwTqdapmksBF7+d+WCQVVaFCVh7WLvjyKMLX5QBIINcGbjP7xXzMMbZZ3jXY
+         r/vG2CoCV3JVo/d9fRh8fwVo0DUWVtAmL1qiEhQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Mans Rullgard <mans@mansr.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Doug Berger <opendmb@gmail.com>,
+        Florian fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 047/138] drm: sun4i: hdmi: Fix inverted HPD result
+Subject: [PATCH 5.7 067/179] net: bcmgenet: fix error returns in bcmgenet_probe()
 Date:   Mon, 27 Jul 2020 16:04:02 +0200
-Message-Id: <20200727134927.707753132@linuxfoundation.org>
+Message-Id: <20200727134935.932943126@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +47,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit baa1841eb797eadce6c907bdaed7cd6f01815404 ]
+[ Upstream commit 24a63fe6d45d6527db5ab87bcd1da6921f10e89e ]
 
-When the extra HPD polling in sun4i_hdmi was removed, the result of
-HPD was accidentally inverted.
+The driver forgets to call clk_disable_unprepare() in error path after
+a success calling for clk_prepare_enable().
 
-Fix this by inverting the check.
+Fix to goto err_clk_disable if clk_prepare_enable() is successful.
 
-Fixes: bda8eaa6dee7 ("drm: sun4i: hdmi: Remove extra HPD polling")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Tested-by: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200711011030.21997-1-wens@kernel.org
+Fixes: 99d55638d4b0 ("net: bcmgenet: enable NETIF_F_HIGHDMA flag")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Doug Berger <opendmb@gmail.com>
+Acked-by: Florian fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 2 +-
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-index 63b4de81686ac..4acdfa6087751 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-@@ -263,7 +263,7 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
- 	unsigned long reg;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index dde1c23c8e399..7b95bb77ad3bb 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3522,7 +3522,7 @@ static int bcmgenet_probe(struct platform_device *pdev)
+ 	if (err)
+ 		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 	if (err)
+-		goto err;
++		goto err_clk_disable;
  
- 	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
--	if (reg & SUN4I_HDMI_HPD_HIGH) {
-+	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
- 		cec_phys_addr_invalidate(hdmi->cec_adap);
- 		return connector_status_disconnected;
- 	}
+ 	/* Mii wait queue */
+ 	init_waitqueue_head(&priv->wq);
 -- 
 2.25.1
 
