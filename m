@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F33422F039
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F20D22EEDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731965AbgG0OWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:22:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51772 "EHLO mail.kernel.org"
+        id S1730019AbgG0OLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:11:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731950AbgG0OWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:46 -0400
+        id S1730000AbgG0OLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:11:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDCFC2070B;
-        Mon, 27 Jul 2020 14:22:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6683320838;
+        Mon, 27 Jul 2020 14:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859765;
-        bh=XWAO2rDwOr0pL/+FcfDAObp3HO8jmPTq0soq/G32Nt0=;
+        s=default; t=1595859079;
+        bh=LQsZh6B58xYbN7fyPaEnUzMa5mwNfHfmclnKpLJfYHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iUt8UUy0w0d9E5WbYmnnTsLbggO52DlwhAOoO7ZTWLM857Q5Zeq69IyTk9jTMeojJ
-         6eAbWQWvoSsz01VtZCPtGdgu/f0Im2ULBBAHJzwlEHR19fOXbdflep68FPXeVvIPOU
-         FmdLbUX7BfXl2CnquQwC2rK3U5ICitGkCay9zb4k=
+        b=FuAnH93yNM9DktwidoUmLfyOqWb1WKVGUlsaAvnYxN2ZuCm6uyF6QUzBWkz/AuFGT
+         ywYFdOYKtk4ci4sXEZY+rXx1TaloP2G1+iRHLcXtW6pa4uT8RqSHyGceU0Ev4kzOwd
+         uiP0yvL8ZnRdD8tvHk6wueBv4VZhAxRmGaLcoA+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 097/179] scripts/gdb: fix lx-symbols gdb.error while loading modules
+Subject: [PATCH 4.19 58/86] arm64: Use test_tsk_thread_flag() for checking TIF_SINGLESTEP
 Date:   Mon, 27 Jul 2020 16:04:32 +0200
-Message-Id: <20200727134937.382845323@linuxfoundation.org>
+Message-Id: <20200727134917.345507336@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,49 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Will Deacon <will@kernel.org>
 
-[ Upstream commit 7359608a271ce81803de148befefd309baf88c76 ]
+[ Upstream commit 5afc78551bf5d53279036e0bf63314e35631d79f ]
 
-Commit ed66f991bb19 ("module: Refactor section attr into bin attribute")
-removed the 'name' field from 'struct module_sect_attr' triggering the
-following error when invoking lx-symbols:
+Rather than open-code test_tsk_thread_flag() at each callsite, simply
+replace the couple of offenders with calls to test_tsk_thread_flag()
+directly.
 
-  (gdb) lx-symbols
-  loading vmlinux
-  scanning for modules in linux/build
-  loading @0xffffffffc014f000: linux/build/drivers/net/tun.ko
-  Python Exception <class 'gdb.error'> There is no member named name.:
-  Error occurred in Python: There is no member named name.
-
-This patch fixes the issue taking the module name from the 'struct
-attribute'.
-
-Fixes: ed66f991bb19 ("module: Refactor section attr into bin attribute")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
-Reviewed-by: Kieran Bingham <kbingham@kernel.org>
-Link: http://lkml.kernel.org/r/20200722102239.313231-1-sgarzare@redhat.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/gdb/linux/symbols.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/debug-monitors.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-index be984aa29b759..1be9763cf8bb2 100644
---- a/scripts/gdb/linux/symbols.py
-+++ b/scripts/gdb/linux/symbols.py
-@@ -96,7 +96,7 @@ lx-symbols command."""
-             return ""
-         attrs = sect_attrs['attrs']
-         section_name_to_address = {
--            attrs[n]['name'].string(): attrs[n]['address']
-+            attrs[n]['battr']['attr']['name'].string(): attrs[n]['address']
-             for n in range(int(sect_attrs['nsections']))}
-         args = []
-         for section_name in [".data", ".data..read_mostly", ".rodata", ".bss",
+diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
+index 93ee34dee9f22..501e835c65007 100644
+--- a/arch/arm64/kernel/debug-monitors.c
++++ b/arch/arm64/kernel/debug-monitors.c
+@@ -392,14 +392,14 @@ void user_rewind_single_step(struct task_struct *task)
+ 	 * If single step is active for this thread, then set SPSR.SS
+ 	 * to 1 to avoid returning to the active-pending state.
+ 	 */
+-	if (test_ti_thread_flag(task_thread_info(task), TIF_SINGLESTEP))
++	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
+ 		set_regs_spsr_ss(task_pt_regs(task));
+ }
+ NOKPROBE_SYMBOL(user_rewind_single_step);
+ 
+ void user_fastforward_single_step(struct task_struct *task)
+ {
+-	if (test_ti_thread_flag(task_thread_info(task), TIF_SINGLESTEP))
++	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
+ 		clear_regs_spsr_ss(task_pt_regs(task));
+ }
+ 
 -- 
 2.25.1
 
