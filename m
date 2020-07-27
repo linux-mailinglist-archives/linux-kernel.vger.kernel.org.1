@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C2722FC65
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842CC22FC7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgG0WpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 18:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727846AbgG0WpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 18:45:00 -0400
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF06D20A8B;
-        Mon, 27 Jul 2020 22:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595889900;
-        bh=JNgiYfTrbNl40HuPXfOPGzQd+Pz6KgPmslq9zg8TKcE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CHxTzexH7pcmV+xLnwhlzXdnWhlC2KVdjv9tVZSVIseQc79RvgYGPDwW/CGoodjC0
-         QAXPyQiubGTWgzI1g/7ZApb65wUK3g7Avr2+JhUatm7XaVCYQbq7r0RZbukk66V3Zq
-         xRyC43IeUbaQwyZbDcCNCIPGAsMnWQfdIYbulU5A=
-Received: by mail-lf1-f48.google.com with SMTP id m15so9235396lfp.7;
-        Mon, 27 Jul 2020 15:44:59 -0700 (PDT)
-X-Gm-Message-State: AOAM530/s2K6RE1Hpv5GBfsCuPN1VCIaX0kmBgtsOng3LPjpdzVdwo3A
-        AdyJ0Eajvayqw1Sx8UNbnBd+bFeJqumnw8B9PWw=
-X-Google-Smtp-Source: ABdhPJzn6/szMBVbE/sS/47cJfytwIL6LNRxd4cXwyyxJUCcc1x2a+4Rj0suCq/Kg+8MpsKsuE8jnTVpoXYLg5I+wWI=
-X-Received: by 2002:ac2:5683:: with SMTP id 3mr12529185lfr.69.1595889898210;
- Mon, 27 Jul 2020 15:44:58 -0700 (PDT)
+        id S1727051AbgG0WsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 18:48:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42542 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726193AbgG0WsG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 18:48:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595890085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g7DpUnhWTHsvoUdwqfxUUOMTIlMH+umWpPN0dIrg5X8=;
+        b=WioTLJ76xxvXSfFEqqrUBWMP6hKk3GrSOf3Ci5JNLl9F819MFtpdvcsUrO98wI3aIxuKGU
+        7UAbV3nCS+dCIjVL9Q/kUYiC4YCqTBkWrsHG0qB/5jRtTnU59ptE+Sej5Ampu+nG5ZcuxC
+        JXUyxxZDqkd8vFPxmJifWxIG3IGRO9Y=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-ygaste2EPEOpCIUy8FQQSQ-1; Mon, 27 Jul 2020 18:48:01 -0400
+X-MC-Unique: ygaste2EPEOpCIUy8FQQSQ-1
+Received: by mail-qt1-f198.google.com with SMTP id 15so12501600qtp.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 15:48:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=g7DpUnhWTHsvoUdwqfxUUOMTIlMH+umWpPN0dIrg5X8=;
+        b=lACs9mDHmEk4jlwCWA/xkL2aJAS30MoVP1UWwVTyYGd/0xOSjYedfFP94aF5oENebm
+         E6uBxcEbagRovTIPdV5KYM4zfUtQqGb2fQfBcjU+i/vOx+igFyXehTK9vMNxbT4yUKsP
+         3DvR4gxovbB1Aiahmh47CoYhHT886Om3F46twahMQOo9zUc/kOgXN/D5vI2njef5AN2J
+         EiBP4uP/TJr6sODjTsvACOQJezwhU8q3thJ+9MXPTItyMwMgRNL0KCbhhvxi5ydK8oHW
+         n+o3MT3tnCum9Sw1LLbUNXYofeR/fA9cJnThWmbqAXJbSeLHkbJJlYaFzCLPBVHwLBOE
+         lSgA==
+X-Gm-Message-State: AOAM5306O6Gy15Kb42txs6ku9ZzG9gnThuszlglSBSo9qiBc/JJ4wf1o
+        sDstYhN3gdTkNkTm6pPxsztXEuH9A9AgAoLnO5v34i9caj3e79nd/we78wy1P8t3dRPB+h8KZpG
+        tXPzEFperIafyVDB4kXDisqwG
+X-Received: by 2002:a05:620a:13c4:: with SMTP id g4mr25562809qkl.142.1595890080849;
+        Mon, 27 Jul 2020 15:48:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzuYLocdQhO8B6g9jpDn6ppAm+zAIH12jWbEP9PdLioydEy0bF3tsSzbG4Iq7w9Rb/5kQHCNg==
+X-Received: by 2002:a05:620a:13c4:: with SMTP id g4mr25562791qkl.142.1595890080542;
+        Mon, 27 Jul 2020 15:48:00 -0700 (PDT)
+Received: from localhost (ip70-163-223-149.ph.ph.cox.net. [70.163.223.149])
+        by smtp.gmail.com with ESMTPSA id n85sm5167162qkn.80.2020.07.27.15.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 15:47:59 -0700 (PDT)
+References: <20200630200636.48600-1-jsnitsel@redhat.com>
+User-agent: mu4e 1.4.10; emacs 26.3
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH v2 0/2] iommu: Move AMD and Intel Kconfig + Makefile bits into their directories
+In-reply-to: <20200630200636.48600-1-jsnitsel@redhat.com>
+Date:   Mon, 27 Jul 2020 15:47:58 -0700
+Message-ID: <87d04gshgh.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-30-guro@fb.com>
- <CAEf4BzZjbK4W1fmW07tMOJsRGCYNeBd6eqyFE_fSXAK6+0uHhw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZjbK4W1fmW07tMOJsRGCYNeBd6eqyFE_fSXAK6+0uHhw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 27 Jul 2020 15:44:47 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4D0TYtvdexBnn5icg3EdTaBRu7ON8Q0REJ_hPRKx4aeA@mail.gmail.com>
-Message-ID: <CAPhsuW4D0TYtvdexBnn5icg3EdTaBRu7ON8Q0REJ_hPRKx4aeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 29/35] bpf: libbpf: cleanup RLIMIT_MEMLOCK usage
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 3:07 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > As bpf is not using memlock rlimit for memory accounting anymore,
-> > let's remove the related code from libbpf.
-> >
-> > Bpf operations can't fail because of exceeding the limit anymore.
-> >
->
-> They can't in the newest kernel, but libbpf will keep working and
-> supporting old kernels for a very long time now. So please don't
-> remove any of this.
->
-> But it would be nice to add a detection of whether kernel needs a
-> RLIMIT_MEMLOCK bump or not. Is there some simple and reliable way to
-> detect this from user-space?
->
 
-Agreed. We will need compatibility or similar detection for perf as well.
+Jerry Snitselaar @ 2020-06-30 13:06 MST:
 
-Thanks,
-Song
+> This patchset imeplements the suggestion from Linus to move the
+> Kconfig and Makefile bits for AMD and Intel into their respective
+> directories.
+>
+> v2: Rebase against v5.8-rc3. Dropped ---help--- changes from Kconfig as that was
+>     dealt with in systemwide cleanup.
+>
+> Jerry Snitselaar (2):
+>       iommu/vt-d: Move Kconfig and Makefile bits down into intel directory
+>       iommu/amd: Move Kconfig and Makefile bits down into amd directory
+>
+>
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+
+Hi Joerg,
+
+Looks like I forgot to cc you on this cover letter for v2.
+Does this work for you now?
+
+Regards,
+Jerry
+
