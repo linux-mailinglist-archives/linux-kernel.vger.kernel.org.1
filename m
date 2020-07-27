@@ -2,220 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE3822E6FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0663022E702
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726976AbgG0Hyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726211AbgG0Hyp (ORCPT
+        id S1727071AbgG0Hzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:55:54 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:44501 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727016AbgG0Hzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:54:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC37C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:54:45 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jzxy5-0004EB-Nm; Mon, 27 Jul 2020 09:54:41 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jzxy5-0008Pg-AP; Mon, 27 Jul 2020 09:54:41 +0200
-Date:   Mon, 27 Jul 2020 09:54:41 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/10] remoteproc: imx_rproc: support iMX8M and early boot
-Message-ID: <20200727075441.lgscydoj3txupeay@pengutronix.de>
-References: <20200724080813.24884-1-peng.fan@nxp.com>
- <20200727063839.kfgrtperzkygvjr2@pengutronix.de>
- <DB6PR0402MB2760FBC0109E98A447BB716588720@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        Mon, 27 Jul 2020 03:55:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595836553; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gUQnuzeMx0G2OHWIdwKvAsh0TfCZ+tz43jXXFrsOTLU=; b=TKFlbEvXUBUGHbZZdjQb1a1fp3s7M6lOleE9RQuaaKuJqTPlcRIdze5Er1EEv51WgVm0sBFB
+ nOEhebR//FQNwpztAh7pBH3TPUBX3P6H8rnf0bqqdBD4lBXkWGqTud52cXg7EoZwLYNtQQZY
+ 7UGnlAVO/HIRDEWvPD3ECWKaTPQ=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f1e88701db0b33fd8c326a4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 07:55:28
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3D55BC433C6; Mon, 27 Jul 2020 07:55:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.8 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.0
+Received: from [192.168.0.13] (unknown [183.83.138.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BC1A1C433CA;
+        Mon, 27 Jul 2020 07:55:24 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BC1A1C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH] i2c: qcom-geni: fix spelling mistake "unepxected" ->
+ "unexpected"
+To:     Colin King <colin.king@canonical.com>,
+        Alok Chauhan <alokc@codeaurora.org>,
+        Andy Gross <agross@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20191103212204.13606-1-colin.king@canonical.com>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <74e71d14-9f27-6a44-f253-4756ba124695@codeaurora.org>
+Date:   Mon, 27 Jul 2020 13:25:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ndwcthydipkpuzsn"
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB2760FBC0109E98A447BB716588720@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:38:11 up 254 days, 22:56, 250 users,  load average: 0.02, 0.06,
- 0.03
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20191103212204.13606-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ndwcthydipkpuzsn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 11/4/2019 2:52 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a spelling mistake in an error message string, fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/i2c/busses/i2c-qcom-geni.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index 17abf60c94ae..387fb5a83471 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -98,7 +98,7 @@ static const struct geni_i2c_err_log gi2c_log[] = {
+>   	[GP_IRQ0] = {-EIO, "Unknown I2C err GP_IRQ0"},
+>   	[NACK] = {-ENXIO, "NACK: slv unresponsive, check its power/reset-ln"},
+>   	[GP_IRQ2] = {-EIO, "Unknown I2C err GP IRQ2"},
+> -	[BUS_PROTO] = {-EPROTO, "Bus proto err, noisy/unepxected start/stop"},
+> +	[BUS_PROTO] = {-EPROTO, "Bus proto err, noisy/unexpected start/stop"},
+>   	[ARB_LOST] = {-EAGAIN, "Bus arbitration lost, clock line undriveable"},
+>   	[GP_IRQ5] = {-EIO, "Unknown I2C err GP IRQ5"},
+>   	[GENI_OVERRUN] = {-EIO, "Cmd overrun, check GENI cmd-state machine"},
 
-On Mon, Jul 27, 2020 at 06:44:32AM +0000, Peng Fan wrote:
-> Hi Oleksij,
->=20
-> > Subject: Re: [PATCH 00/10] remoteproc: imx_rproc: support iMX8M and ear=
-ly
-> > boot
-> >=20
-> > Hi,
-> >=20
-> > On Fri, Jul 24, 2020 at 04:08:03PM +0800, Peng Fan wrote:
-> > > This patchset is to support i.MX8MQ/M coproc booted before linux.
-> > > Since i.MX8MQ/M was not supported, several patches are needed to first
-> > > support the platform, then support early boot case.
-> > >
-> > > I intended to included i.MX8QM/QXP, but that would introduce a large
-> > > patchset, so not included. But the clk/syscon optional patch for
-> > > i.MX8QM/QXP was still kept here to avoid rebase error.
-> >=20
-> > Thank you for your work.
-> >=20
-> > Can you please provide more information about big picture of this work.
-> >=20
-> > If I see it correctly, we have here support for i.MX8MM, which seems to=
- be
-> > able to fully control Cortex M4 (enable CPU core, etc...).
->=20
-> Yes.
+The patch is still applying cleanly on tip.
 
-In this case, I would recommend to mainline the i.MX8MM part
-first/separately.
+Reviewed-by: Akash Asthana <akashast@codeauror.org>
 
-> >=20
-> > And other case, where remoteproc is running on application processor and
-> > can't or should not touch M4 (i.MX7ULP, i.MX8QM/QXP..). Since M4 provid=
-es
-> > some functionality, you are trying to reuse remoteproc framework to get
-> > resource table present in ELF header and to dynamically load things. Fo=
-r some
-> > reasons this header provides more information then needed, so you are
-> > changing the ELF parser in the kernel to workaround it.
->=20
-> Not exactly.
->=20
-> For i.MX8MM, we support two cases. M4 kicked by U-Boot, M4 kicked by Linu=
-x remoteproc.
-> For i.MX8QM/QXP, the typical usecase is M4 kicked by SCFW, but we will al=
-so add M4 kicked
-> by Linux remoteproc.
-> For i.MX7ULP, I would only support M4 dual boot case, M4 control everythi=
-ng.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
-=46rom current state of discussion, i'm not sure what role plays
-remoteproc in the scenario where M4 is started before linux. Especially
-if we are not using resource table.
-
-> The reason the change the elf parser is that when M4 elf is loaded by Lin=
-ux remoteproc,
-> It use memset to clear area.
-
-The use of memset, depends on ELF format. Fix/change the linker script
-on your firmware and memset will be never called.
-
-> However we use ioremap, memset on ARM64 will report
-> crash to device nGnRE memory. And we could not use ioremap_wc to TCM area=
-, since
-> it could have data correctly written into TCM.
-
-I have strong feeling, that we are talking about badly or not properly
-formatted ELF binary. I would prefer to double check it, before we will
-apply fixes on wrong place.
-
-> Maintainer not wanna to drop memset in common code, and TI guys suggest
-> add i.MX specific elf stuff. So I add elf handler in i.MX code.
-
-I think, removing memset may damage current users of imx_rproc driver.
-Since, like I said: the use of memset depends on ELF format.
-
-> Thanks,
-> Peng.
->=20
-> >=20
-> > Correct?
-> >=20
-> > > Peng Fan (10):
-> > >   dt-bindings: remoteproc: imx_rproc: add i.MX8MQ/M
-> > >   remoteproc: imx_rproc: correct err message
-> > >   remoteproc: imx: use devm_ioremap
-> > >   remoteproc: imx_rproc: make syscon optional
-> > >   remoteproc: imx_rproc: make clk optional
-> > >   remoteproc: imx_rproc: add load hook
-> > >   remoteproc: imx_rproc: add i.MX specific parse fw hook
-> > >   remoteproc: imx_rproc: support i.MX8MQ/M
-> > >   remoteproc: imx_proc: enable virtio/mailbox
-> > >   remoteproc: imx_rproc: support coproc booting before Linux
-> > >
-> > >  .../devicetree/bindings/remoteproc/imx-rproc.txt   |   3 +
-> > >  drivers/remoteproc/imx_rproc.c                     | 409
-> > ++++++++++++++++++++-
-> > >  2 files changed, 401 insertions(+), 11 deletions(-)
-> > >
-> > > --
-> > > 2.16.4
-> > >
-> > >
-> > > _______________________________________________
-> > > linux-arm-kernel mailing list
-> > > linux-arm-kernel@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> > >
-> >=20
-> > --
-> > Pengutronix e.K.                           |
-> > |
-> > Steuerwalder Str. 21                       |
-> > http://www.pengutronix.de/  |
-> > 31137 Hildesheim, Germany                  | Phone:
-> > +49-5121-206917-0    |
-> > Amtsgericht Hildesheim, HRA 2686           | Fax:
-> > +49-5121-206917-5555 |
-
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
---ndwcthydipkpuzsn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl8eiDwACgkQ4omh9DUa
-UbPVKw//RiwTubWT5hjSS95taFOhrjklnCkKnNdNrx15w38fSGf1Gly5UtAfKTRo
-7svoNWtbHzPDT5TILc/NQpP2C86ug3kuhLRzwzppP2DB217lFIzqwRWZ1QBYbYko
-Ho8u4nHgR/++MiZs3KwgeJvlvKhISpvTxNKR1wmXj8MPw4lD6Vrq1L2GdKMiiaOb
-x1bziy2+IEp+/ntohTvvjrUHjD7mcTEW25LPgP28cgED1mnJJX+IRKJnymBCTQi9
-w+MHTgAGOPXkHeho3BFhg7S8T+Wj9JeiVewLOpryzosw96gGYmkRXE+QW75iIJRu
-L4+2b1wrb5O3VpuhK7oVxpQe5QhEYG1PIAizWNQSJV5jRbuN1Xct7i949d+a91FF
-8dcE4xOqsGVhQ7+IMf+6HMOk0m/FXXmjBZzpOs++RTsQR/cPAuD2QTLWHuaETb4v
-H6aRwgLZGDZzyBAyF6HnFYdZvLYY0XiINfi1b65+lSarCgaIrHWqPogNtsX8RGET
-PngXCMQ85XF4Bi/TR6vj0ym1jEd4fPBIHPSS/nCzwfDC5pkUUCdzdpEOdVPSKxf0
-YIStW+5krTiQwnp566EC4+fHH+pyzcV6W6BrpKrDsAwUk4KUIpyxr9I9eKkp8YVp
-xzYl92mLOq0vkp1Mv4WZFpKaH3LTWYqq4AwbryvEhpM29g9XXjQ=
-=Hp2H
------END PGP SIGNATURE-----
-
---ndwcthydipkpuzsn--
