@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC8922EF99
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D7022F06B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgG0ORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:17:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44852 "EHLO mail.kernel.org"
+        id S1731639AbgG0OYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:24:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730442AbgG0ORc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:17:32 -0400
+        id S1732202AbgG0OY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:24:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22E382070A;
-        Mon, 27 Jul 2020 14:17:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D50A22083E;
+        Mon, 27 Jul 2020 14:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859451;
-        bh=wgQ+dqjWde6gj5sHLIy3LyLTb5h2Ed0FJyVL+Tfcgec=;
+        s=default; t=1595859866;
+        bh=dVQ0hwlWWpDvG5Xm+0dZcSPdLlPaxjOtR+QNtoShlzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kauvi2uxtsXVcWiCiQgFUj8AtQa7JvDFIribmNlXczkPBe1i2Z6EfSdhBy0Naj3Kj
-         ZagtVdBD94993n9oqE2HgVtpRZXCIbS5S+Bj5xrm3DuD3xMGnOizjCnp5MgaeP8kGL
-         0oM7jakrrUBg0ccxRk2ky4w6tVDvc4/kRZEr6eUY=
+        b=oWJjs17rYgn+KyBYTFj4MGS/ClJeoMS4ZCg9f/LumRexPwz8TlmJZ1WJDYk28BATa
+         Ggn0lMdBKoUxp8flnZwZ5gEov89RGx8gmvIxez9yeQrtmtctXhceBgbxdnFOS3syMF
+         SIQs4WU/aARn6vu/sy/kIf0Yzgt7bn8TvXBTn8x0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 114/138] staging: comedi: addi_apci_1564: check INSN_CONFIG_DIGITAL_TRIG shift
-Date:   Mon, 27 Jul 2020 16:05:09 +0200
-Message-Id: <20200727134931.150739679@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Guo Ren <guoren@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 135/179] asm-generic/mmiowb: Allow mmiowb_set_pending() when preemptible()
+Date:   Mon, 27 Jul 2020 16:05:10 +0200
+Message-Id: <20200727134939.225631465@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +49,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Will Deacon <will@kernel.org>
 
-commit 926234f1b8434c4409aa4c53637aa3362ca07cea upstream.
+[ Upstream commit bd024e82e4cd95c7f1a475a55f99871936c2b2db ]
 
-The `INSN_CONFIG` comedi instruction with sub-instruction code
-`INSN_CONFIG_DIGITAL_TRIG` includes a base channel in `data[3]`. This is
-used as a right shift amount for other bitmask values without being
-checked.  Shift amounts greater than or equal to 32 will result in
-undefined behavior.  Add code to deal with this.
+Although mmiowb() is concerned only with serialising MMIO writes occuring
+in contexts where a spinlock is held, the call to mmiowb_set_pending()
+from the MMIO write accessors can occur in preemptible contexts, such
+as during driver probe() functions where ordering between CPUs is not
+usually a concern, assuming that the task migration path provides the
+necessary ordering guarantees.
 
-Fixes: 1e15687ea472 ("staging: comedi: addi_apci_1564: add Change-of-State interrupt subdevice and required functions")
-Cc: <stable@vger.kernel.org> #3.17+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200717145257.112660-4-abbotti@mev.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Unfortunately, the default implementation of mmiowb_set_pending() is not
+preempt-safe, as it makes use of a a per-cpu variable to track its
+internal state. This has been reported to generate the following splat
+on riscv:
 
+ | BUG: using smp_processor_id() in preemptible [00000000] code: swapper/0/1
+ | caller is regmap_mmio_write32le+0x1c/0x46
+ | CPU: 3 PID: 1 Comm: swapper/0 Not tainted 5.8.0-rc3-hfu+ #1
+ | Call Trace:
+ |  walk_stackframe+0x0/0x7a
+ |  dump_stack+0x6e/0x88
+ |  regmap_mmio_write32le+0x18/0x46
+ |  check_preemption_disabled+0xa4/0xaa
+ |  regmap_mmio_write32le+0x18/0x46
+ |  regmap_mmio_write+0x26/0x44
+ |  regmap_write+0x28/0x48
+ |  sifive_gpio_probe+0xc0/0x1da
+
+Although it's possible to fix the driver in this case, other splats have
+been seen from other drivers, including the infamous 8250 UART, and so
+it's better to address this problem in the mmiowb core itself.
+
+Fix mmiowb_set_pending() by using the raw_cpu_ptr() to get at the mmiowb
+state and then only updating the 'mmiowb_pending' field if we are not
+preemptible (i.e. we have a non-zero nesting count).
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Reported-by: Palmer Dabbelt <palmer@dabbelt.com>
+Reported-by: Emil Renner Berthing <kernel@esmil.dk>
+Tested-by: Emil Renner Berthing <kernel@esmil.dk>
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Link: https://lore.kernel.org/r/20200716112816.7356-1-will@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/addi_apci_1564.c |   20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ include/asm-generic/mmiowb.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1564.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1564.c
-@@ -331,14 +331,22 @@ static int apci1564_cos_insn_config(stru
- 				    unsigned int *data)
- {
- 	struct apci1564_private *devpriv = dev->private;
--	unsigned int shift, oldmask;
-+	unsigned int shift, oldmask, himask, lomask;
+diff --git a/include/asm-generic/mmiowb.h b/include/asm-generic/mmiowb.h
+index 9439ff037b2d1..5698fca3bf560 100644
+--- a/include/asm-generic/mmiowb.h
++++ b/include/asm-generic/mmiowb.h
+@@ -27,7 +27,7 @@
+ #include <asm/smp.h>
  
- 	switch (data[0]) {
- 	case INSN_CONFIG_DIGITAL_TRIG:
- 		if (data[1] != 0)
- 			return -EINVAL;
- 		shift = data[3];
--		oldmask = (1U << shift) - 1;
-+		if (shift < 32) {
-+			oldmask = (1U << shift) - 1;
-+			himask = data[4] << shift;
-+			lomask = data[5] << shift;
-+		} else {
-+			oldmask = 0xffffffffu;
-+			himask = 0;
-+			lomask = 0;
-+		}
- 		switch (data[2]) {
- 		case COMEDI_DIGITAL_TRIG_DISABLE:
- 			devpriv->ctrl = 0;
-@@ -362,8 +370,8 @@ static int apci1564_cos_insn_config(stru
- 				devpriv->mode2 &= oldmask;
- 			}
- 			/* configure specified channels */
--			devpriv->mode1 |= data[4] << shift;
--			devpriv->mode2 |= data[5] << shift;
-+			devpriv->mode1 |= himask;
-+			devpriv->mode2 |= lomask;
- 			break;
- 		case COMEDI_DIGITAL_TRIG_ENABLE_LEVELS:
- 			if (devpriv->ctrl != (APCI1564_DI_IRQ_ENA |
-@@ -380,8 +388,8 @@ static int apci1564_cos_insn_config(stru
- 				devpriv->mode2 &= oldmask;
- 			}
- 			/* configure specified channels */
--			devpriv->mode1 |= data[4] << shift;
--			devpriv->mode2 |= data[5] << shift;
-+			devpriv->mode1 |= himask;
-+			devpriv->mode2 |= lomask;
- 			break;
- 		default:
- 			return -EINVAL;
+ DECLARE_PER_CPU(struct mmiowb_state, __mmiowb_state);
+-#define __mmiowb_state()	this_cpu_ptr(&__mmiowb_state)
++#define __mmiowb_state()	raw_cpu_ptr(&__mmiowb_state)
+ #else
+ #define __mmiowb_state()	arch_mmiowb_state()
+ #endif	/* arch_mmiowb_state */
+@@ -35,7 +35,9 @@ DECLARE_PER_CPU(struct mmiowb_state, __mmiowb_state);
+ static inline void mmiowb_set_pending(void)
+ {
+ 	struct mmiowb_state *ms = __mmiowb_state();
+-	ms->mmiowb_pending = ms->nesting_count;
++
++	if (likely(ms->nesting_count))
++		ms->mmiowb_pending = ms->nesting_count;
+ }
+ 
+ static inline void mmiowb_spin_lock(void)
+-- 
+2.25.1
+
 
 
