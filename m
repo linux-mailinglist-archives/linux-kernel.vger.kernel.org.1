@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F51A22F509
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6423022F519
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729890AbgG0Q0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729668AbgG0Q0g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:26:36 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17FAC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:26:36 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id 2so9034449ybr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=draconx-ca.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=t/olIwYqxp1DyF1+bW9J2vZgk69Gj3uV2JTib0EW5Sg=;
-        b=Si4G24rbigkgdAImlbDToCCGZL0kCGnAQvty5GeSVw4L0ScgzB8ijFZoUfapsn+BNF
-         LJ8NxdyGuZ51rVMSGsRD6PhV7TeEzmVJAXRhsjW8pPo6Hxi7yFtwux+quxWdiNK/d6rh
-         F7EmOX6qIvczVK1xW30DFscIJzdbF1AIGW4Q+cxGK/wjdPQK0+UXQM/BVR0I6zbzxepN
-         y7x3fp1tTNol3me+YD/HmqpdU2sOD79SrKbkZIIFq0l0bKBzYc8SI7Baw2gTqchtRSp1
-         dY7tPCj66Jq+jOpFtEwJVWx8gGFZ99c9brhF4TDXgPk80l+xmkGVypxtKbnjT5A/FWun
-         k7Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=t/olIwYqxp1DyF1+bW9J2vZgk69Gj3uV2JTib0EW5Sg=;
-        b=D6HS6Baje6BSwNZhLBxrCYLQOqKo6DEKpIeh73KmQWUl/SPiQPoRqdIcSKke24vBa4
-         dwkQalFZVv97m7p0MU0cQ3v1UCutOzNH5gBAF0a+6quJNlcZxA7O3VoPy4s9sfhFWLzs
-         hH9Zt8p/wduogStSZ5JI3Ei0MYJco+n7Kte7lomaoGoDOXbJVPY61sP4G7Go6cFS2rxv
-         r5w9mOLevAoIi7cyYAZfMItYVJG6KA66taqiP/CR2HvdEe8jfmNbJWSMCwJVvuoEDeHi
-         y9ODse8YyubGtpJrqQ6jFTaYHUhJ5TDqiaSfMCs1zBH6nQWKethd5ME4BTgAFnB7Jf5m
-         guQA==
-X-Gm-Message-State: AOAM531TxsAFTnGWSTCwt3tuflikS00vu0ZBALPpV3qBp/4man3dGYIt
-        CnJJrBEOJKLAkc1vAW3T3xqHEOLQrqiGJuq8lUNOefY0ykg=
-X-Google-Smtp-Source: ABdhPJwUz/OEyvaeMrlRL7/0gzWkSvl13aw4W+YbB6UZVVd9EunH/SkBmAxVgNok0fEA7Y4Mv3RanZgv5EEeNkF63v0=
-X-Received: by 2002:a25:df0e:: with SMTP id w14mr20160814ybg.225.1595867195726;
- Mon, 27 Jul 2020 09:26:35 -0700 (PDT)
+        id S1729752AbgG0Q1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:27:21 -0400
+Received: from mga02.intel.com ([134.134.136.20]:17460 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728398AbgG0Q1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 12:27:21 -0400
+IronPort-SDR: Zyrt3+BfaOtjdtjZZV+UkB/nvfcEMGxND+8xw1RB12XAwqBbyEHd4GkyMOY2II0tb2Ks0WEy89
+ jz2w91RLJD6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9694"; a="139093719"
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="139093719"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 09:27:19 -0700
+IronPort-SDR: nF9r4Ff70lscw3zHgJ4L5MfCizfqd26FMjfRw15FVNDjjE6Yj+Y0Po5vFBUGzSdTCfPYyjAheu
+ mhnzQ7O2hliw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,402,1589266800"; 
+   d="scan'208";a="312267699"
+Received: from orsmsx104.amr.corp.intel.com ([10.22.225.131])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Jul 2020 09:27:18 -0700
+Received: from orsmsx121.amr.corp.intel.com (10.22.225.226) by
+ ORSMSX104.amr.corp.intel.com (10.22.225.131) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 27 Jul 2020 09:27:18 -0700
+Received: from orsmsx115.amr.corp.intel.com ([169.254.4.57]) by
+ ORSMSX121.amr.corp.intel.com ([169.254.10.221]) with mapi id 14.03.0439.000;
+ Mon, 27 Jul 2020 09:27:18 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+CC:     "Hansen, Dave" <dave.hansen@intel.com>,
+        "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Park, Kyung Min" <kyung.min.park@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Neri, Ricardo" <ricardo.neri@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>
+Subject: RE: [PATCH 4/4] x86/cpu: Use SERIALIZE in sync_core() when available
+Thread-Topic: [PATCH 4/4] x86/cpu: Use SERIALIZE in sync_core() when
+ available
+Thread-Index: AQHWY87lOQINcdfFdkGk2Wd5AEVUOKkbYrqAgAA6k+A=
+Date:   Mon, 27 Jul 2020 16:27:18 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F7F6B0D4A@ORSMSX115.amr.corp.intel.com>
+References: <20200727043132.15082-1-ricardo.neri-calderon@linux.intel.com>
+ <20200727043132.15082-5-ricardo.neri-calderon@linux.intel.com>
+ <D51F2DC3-3C56-44E6-A1F2-434E7D27133C@zytor.com>
+In-Reply-To: <D51F2DC3-3C56-44E6-A1F2-434E7D27133C@zytor.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Received: by 2002:a25:807:0:0:0:0:0 with HTTP; Mon, 27 Jul 2020 09:26:35 -0700 (PDT)
-X-Originating-IP: [24.53.240.163]
-In-Reply-To: <20200727160554.GG794331@ZenIV.linux.org.uk>
-References: <20200723155101.pnezpo574ot4qkzx@atlas.draconx.ca> <20200727160554.GG794331@ZenIV.linux.org.uk>
-From:   Nick Bowler <nbowler@draconx.ca>
-Date:   Mon, 27 Jul 2020 12:26:35 -0400
-Message-ID: <CADyTPEx=Y5KxYRV0JXgeH6njJMObTOFpAc4wmha0uUfO8yQfxQ@mail.gmail.com>
-Subject: Re: PROBLEM: cryptsetup fails to unlock drive in 5.8-rc6 (regression)
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-27, Al Viro <viro@zeniv.linux.org.uk> wrote:
-> On Thu, Jul 23, 2020 at 11:51:01AM -0400, Nick Bowler wrote:
->> Hi,
->>
->> After installing Linux 5.8-rc6, it seems cryptsetup can no longer
->> open LUKS volumes.  Regardless of the entered passphrase (correct
->> or otherwise), the result is a very unhelpful "Keyslot open failed."
->> message.
->>
->> On the kernels which fail, I also noticed that the cryptsetup
->> benchmark command appears to not be able to determine that any
->> ciphers are available (output at end of message), possibly for
->> the same reason.
->>
->> Bisected to the following commit, which suggests a problem specific
->> to compat userspace (this is amd64 kernel).  I tested both ia32 and
->> x32 userspace to confirm the problem.  Reverting this commit on top
->> of 5.8-rc6 resolves the issue.
->>
->> Looking at strace output the failing syscall appears to be:
->>
->>   sendmsg(8, {msg_name=NULL, msg_namelen=0,
->> 	     msg_iov=[{iov_base=..., iov_len=512}], msg_iovlen=1,
->> 	     msg_control=[{cmsg_len=16, cmsg_level=SOL_ALG,
->> 	     cmsg_type=0x3}, {cmsg_len=32, cmsg_level=SOL_ALG,
->> 	     cmsg_type=0x2}], msg_controllen=48, msg_flags=0}, 0)
->> 	     = -1 EINVAL (Invalid argument)
->
-> Huh?  Just in case - could you verify that on the kernel with that
-> commit reverted the same sendmsg() succeeds?
-
-Seems so; with commit 547ce4cfb34c reverted on top of 5.8-rc6 there is
-no such error in the strace output.  This particular syscall seems
-to be succeeding:
-
-  sendmsg(8, {msg_name=NULL, msg_namelen=0,
-	  msg_iov=[{iov_base=..., iov_len=512}], msg_iovlen=1,
-	  msg_control=[{cmsg_len=16, cmsg_level=SOL_ALG,
-	  cmsg_type=0x3}, {cmsg_len=32, cmsg_level=SOL_ALG,
-	  cmsg_type=0x2}], msg_controllen=48, msg_flags=0}, 0) = 512
-
-Cheers,
-  Nick
+PiBGb3IgYSByZWFsbHkgb3ZlcmVuZ2luZXJlZCBzb2x1dGlvbiwgYnV0IHdoaWNoIG1pZ2h0IHBl
+cmZvcm0gdW5uZWNlc3NhcnkgcG9vcmx5IG9uIGV4aXN0aW5nIGhhcmR3YXJlOg0KPg0KPiBhc20g
+dm9sYXRpbGUoIjE6IC5ieXRlIDB4ZiwgMHgxLCAweGU4OyAyOiINCj4gICAgICAgICAgICAgICAg
+ICAgICAgICBfQVNNX0VYVEFCTEUoMWIsMmIpKTsNCg0KWW91IHdpbiB0aGUgcHJpemUgZm9yIHRo
+ZSBzbWFsbGVzdCBjb2RlLiAgTWlnaHQgbmVlZCAodGhlIGFscmVhZHkgbGFyZ2UpIGNvbW1lbnQg
+dG8gZG91YmxlDQppbiBzaXplIHRvIGV4cGxhaW4gdGhlIHN1YnRsZXRpZXMhDQoNCi1Ub255DQo=
