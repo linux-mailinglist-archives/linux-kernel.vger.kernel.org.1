@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C861E22EACE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACAE22EAD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgG0LHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:07:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728543AbgG0LHN (ORCPT
+        id S1728707AbgG0LHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:07:37 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:45915 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726885AbgG0LHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:07:13 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C7AC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:07:12 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id kq25so3680350ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dEfM/EY8tC154C2rwL5ogODobRFKuF9CxDLsGxT0WGI=;
-        b=rc3tXNyV7R276wYboOBdHzxUVwpGu0Vb1efwroUxr0x2jtmmlXlDZS77LrS1hr6WPq
-         wQsJLUcoxyOO5JBVTiSwvumjjuNPucbAXaHLXPu99BpHgXFf4k0W3ttAYa0/raduQWBp
-         hSEg7WzJa9LEKwP+LbGnTn0jo6B1KySB19gg/f/1bVmKFYiKF/w2C4nCMOvxYiNELCDU
-         YPrhbZZdsr2ozjBeVoceMzRkJiAhhAbiVCcvrzu79R03utauD6v9sj1sf35swl+A/RK1
-         8GpZQQCnEapcfHqfj3PS1skIDxHKAxtvs8hIjuZ9wNXIAdabXqYU+nB1otvEKJDzN81j
-         vlAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=dEfM/EY8tC154C2rwL5ogODobRFKuF9CxDLsGxT0WGI=;
-        b=sqMemL9Xowxo0BeRau3spyfcY5daUL3wk26LWsJrcEGsHbeAC8ztlO+XVpZ3WIoT+O
-         T/r/lep7rg1CgECBLTp5ZvTM3SC24kOufVhUPGl34fzTF7vR/2yJcrG3tsGgKzZLtXI7
-         SkGvUm5EFERUQkTOz+tkB3Uo/dFQh70R7ddEJhI2sMk7CGMtNtCztRN1bZBn4G61Wwfq
-         7qI+crTKpcGM1uFTKAGZeeVUvopzjtY1kQ35TFNzsUkCtvFIpi5N9YX5OrrOCKw9Du7C
-         05XXtB8OKjyWJZ6mxuBSvXTUHlYUIz0Dj6wVvlkuHr+8DaP9QfCcqjT2quu/lnNkVIof
-         6Icw==
-X-Gm-Message-State: AOAM530dod87iluIEdtCAaonEP1eD1+3oQu1gz4we6utKaJXM9+LXvDo
-        dLjnkGnV5QBN33EZLEFSM9JiQ9fJ
-X-Google-Smtp-Source: ABdhPJx5UpAjUiDPyQWPnVmC0GUYi5YiDTyW1gnQivR7D1ZNlC9f+M2/5A5tzRu2zUzScyGIATGimg==
-X-Received: by 2002:a17:906:a3d5:: with SMTP id ca21mr4868901ejb.453.1595848031489;
-        Mon, 27 Jul 2020 04:07:11 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id j5sm7271212edh.41.2020.07.27.04.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 04:07:10 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:07:08 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>, x86@kernel.org,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kyung Min Park <kyung.min.park@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        linux-kernel@vger.kernel.org, Ricardo Neri <ricardo.neri@intel.com>
-Subject: Re: [PATCH 0/4] x86/cpu: Use SERIALIZE in sync_core()
-Message-ID: <20200727110708.GA3174@gmail.com>
-References: <20200727043132.15082-1-ricardo.neri-calderon@linux.intel.com>
+        Mon, 27 Jul 2020 07:07:34 -0400
+Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
+ mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1N5VLY-1ksLsH2eE6-0170OO; Mon, 27 Jul 2020 13:07:31 +0200
+Received: by mail-qv1-f42.google.com with SMTP id s15so2778448qvv.7;
+        Mon, 27 Jul 2020 04:07:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533HndIsn7C3eJfJtiaRP6SJnOrlJpjKhwuyUJbBR8t7Ul8IEshi
+        WTie9KP6tuSWckZzxlidtav9DErxuzLgBbq74+Y=
+X-Google-Smtp-Source: ABdhPJzxOngJK6stFBNtdHenz0ykV74orh0S+FvohVN1V01bLg69miZWGOg43PNVNxMAXwrpCMzVbqT41VdOkXRTOnM=
+X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr20821335qvb.210.1595848050219;
+ Mon, 27 Jul 2020 04:07:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727043132.15082-1-ricardo.neri-calderon@linux.intel.com>
+References: <20200727084211.6632-1-lars.povlsen@microchip.com>
+ <20200727095009.GK4073@piout.net> <87v9i9fdy7.fsf@soft-dev15.microsemi.net>
+In-Reply-To: <87v9i9fdy7.fsf@soft-dev15.microsemi.net>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Jul 2020 13:07:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0CMqqFWM+QXC0wXxrfKBN0U5cyx_naBx+hS3V3SG2KOQ@mail.gmail.com>
+Message-ID: <CAK8P3a0CMqqFWM+QXC0wXxrfKBN0U5cyx_naBx+hS3V3SG2KOQ@mail.gmail.com>
+Subject: Re: [PATCH v4 00/10] Adding support for Microchip Sparx5 SoC
+To:     Lars Povlsen <lars.povlsen@microchip.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        SoC Team <soc@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Olof Johansson <olof@lixom.net>,
+        Michael Turquette <mturquette@baylibre.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:VQrKRxNjIjvZRIEeCkAz30oJy/i+x4XOwSIIe22zj3vGPVX3xwW
+ B8VT/nfb1I30p30rKj0Uuy9yjvkMzVHBSgnUOQ8npY2A/JwnN1j3vnSOhJadJa8D1e4ebjg
+ I5kbFM46k8uMAK3FbSb8Jv819zX3TKO1LSnoASLFe4nDLMzVfbJdHE/4mYjvR6obfUWNR7X
+ aSsD2jCdSZREqoHIzpZkg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zn333mraLCU=:K6u21uNyZfQWEhNs0LPmaG
+ 0QCJBEOZ3RHArxr3HqpP347CBeQvh3hlTODTwJxmnRvFvGZ8ZC3nA2LalvBrtIG2zFi8KzpaN
+ SZmj4R24ZiRSpzYnPD8kUTwSOd1k4MXTT3FMsVt77CCxkf6iHzGBV22Z2EWxJVi2erzNFDfNO
+ 0eiJIJ0yo3dmThIQ0abPzum8M+hdaRITncovfY8fjijsYbx1FDCYKQLSbwyW51S3zK7loORi5
+ 8YHUMa/7GsGpoWBz3kZuzBr/+hXtNhWVZwJ+EF/SOn/u3wsx9nG9inHenmkYryeC5I8+2efaX
+ L3C4ReXq3CI522YkCfzs3BTqUJDdydCcIKWUNQM/HzEusSDq+31rpDIF6KHfw1vCB+VYUB9HM
+ 9iL9MWFBF2j5DFT78ON2EvgsUdNhr4NOMZsTXbTj1vENSSHGmj4Vu/eajf4xsgx8f1nEgoG5L
+ Ymc3I2fd3BLbSvwyoqMbxJrJSyjBaimXZzZ2G7r44JdxJFY96bIz2qhGWdZ0aWDKbQhs/ScQz
+ yFq6jVAA0a3KyZAJwCPBHbQAgds95ppbuzCtG1ro8g07kYeqnhZWYjJrwcsYfWiaiwEMZLCap
+ ff8gz2HZvFv1I39IqObBJKTUNGMFfvCUEcK44Vf0MnNAU1+hzHWGqklYTkARxbmGZlbjsCb0P
+ w01HN5rJK1vMXhwEIlEr68wo90nTUSDYpRfn7sJL3UfRv9MeafJ4iU9p3zRle7tQyopNx3NAO
+ fTxMCBNz5Brwp1GOpvZIqSKTroFsw5AE7uAjLbNzAyS++7/KOE3aOY6qDoFiyqB9Kr4okwC/U
+ uJggSSGGIp1oBJ2CyHQdrk6AIntMvQX/V9yrvNh4398Rs0/TWswyhblAjJEkPulvDEyS0tYlm
+ 8cZ5PKBg0dTaHVi4HwJ72TmgnuZJIATMfSDgujwO9QGCOgSaVSsSS/t7frgautm6I+wBraBmm
+ uzHiAaQiyByeq6hm1akvyrg2RktphnyECXJgpW3RtidbAg5PMCVc/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 27, 2020 at 12:30 PM Lars Povlsen
+<lars.povlsen@microchip.com> wrote:
+> Alexandre Belloni writes:
+> > As Arnd stated, he already applied the patches so you have to send an
+> > incremental patch to fix the clock driver.
+> >
+>
+> I actually wrote Arnd about this specifically, and he replied that a
+> patch against either next or mainline was fine - so that's why I
+> refreshed the lot (Including Reviewed-by: headers).
 
-* Ricardo Neri <ricardo.neri-calderon@linux.intel.com> wrote:
+I think I misunderstood your question. To clarify: Alexandre is right,
+you should not resend patches that have already been merged but
+instead send the incremental patches if you need further changes.
 
-> A recent submission to LKML introduced a CPU feature flag for a new
-> Intel architecture Serializing Instruction, SERIALIZE [1]. Unlike the
-> existing Serializing Instructions, this new instruction does not have
-> side effects such as clobbering registers or exiting to a hypervisor.
-> 
-> As stated in the Intel "extensions" (ISE) manual [2], this instruction
-> will appear first in Sapphire Rapids and Alder Lake.
-> 
-> Andy Lutomirski suggested to use this instruction in sync_core() as it
-> serves the very purpose of this function [3].
-> 
-> For completeness, I picked patch #3 from Cathy's series (and has become
-> patch #1 here) [1]. Her series depends on such patch to build correctly.
-> Maybe it can be merged independently while the discussion continues?
-> 
-> Thanks and BR,
-> Ricardo
-> 
-> [1]. https://lore.kernel.org/kvm/1594088183-7187-1-git-send-email-cathy.zhang@intel.com/
-> [2]. https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
-> [3]. https://lore.kernel.org/kvm/CALCETrWudiF8G8r57r5i4JefuP5biG1kHg==0O8YXb-bYS-0BA@mail.gmail.com/
-> 
-> Ricardo Neri (4):
->   x86/cpufeatures: Add enumeration for SERIALIZE instruction
->   x86/cpu: Relocate sync_core() to sync_core.h
->   x86/cpu: Refactor sync_core() for readability
->   x86/cpu: Use SERIALIZE in sync_core() when available
+I thought your question was about the case where your patch
+series has conflicts against another unrelated set of changes
+that may have been merged already.
 
-I've picked up the first 3 preparatory patches into tip:x86/cpu, as 
-they are valid improvements even without the 4th patch. The actual 
-functionality in the 4th patch still needs work.
+> But I will send an incremental patch just in case, no problem.
 
-Thannks,
+Thanks,
 
-	Ingo
+      Arnd
