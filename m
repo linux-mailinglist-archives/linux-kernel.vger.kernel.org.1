@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3017E22EB30
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A07FF22EB27
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728237AbgG0LZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:25:23 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2534 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726967AbgG0LZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:25:23 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id EC015FC00B6E85392BDD;
-        Mon, 27 Jul 2020 12:25:21 +0100 (IST)
-Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
- 2020 12:25:21 +0100
-Date:   Mon, 27 Jul 2020 12:23:58 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sean V Kelley <sean.v.kelley@intel.com>
-CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@kernel.org>,
-        <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Subject: Re: [RFC PATCH 6/9] PCI: Add 'rcec' field to pci_dev for associated
- RCiEPs
-Message-ID: <20200727122358.00006c23@Huawei.com>
-In-Reply-To: <20200724172223.145608-7-sean.v.kelley@intel.com>
-References: <20200724172223.145608-1-sean.v.kelley@intel.com>
-        <20200724172223.145608-7-sean.v.kelley@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1728199AbgG0LYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728128AbgG0LYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 07:24:11 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2ECC0619D4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:11 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id n2so11847275edr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 04:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=8WExgmjzhkJIIdgRhNcx1DWzg/HnrNSynjBxi/uh2bI=;
+        b=PDt2zaNgpsoJOPHz6lDUOcyEJ3ubM9QOXJ795vKIcgnRxiLhBkaoXQWMwouzkcneWy
+         g7hx0bAik6R1rl9gm0pMgb54kGpA/wCmxAlU+LcUrZ67xGIe5eptlmCJ9AaKcwSr6UB/
+         OzwiwqvNXD/I7LIRk4+DdKdXXgvwUrq6v6bN4ch3tPFN5mN5yPHjG497hosZf34ZsZJ8
+         Isl8JvV1413hKAPlh5zoynb65YRtDNUf7fQLR7DJ7cIESTAQiyI9spNhMXdGmY12sZgt
+         zBAXMYSTYWW61apTLwBZA49xQMgMFIPUorILsKbnuc5H1PR3kZUrYfoE278j5YzFblo4
+         KMHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=8WExgmjzhkJIIdgRhNcx1DWzg/HnrNSynjBxi/uh2bI=;
+        b=udqa25MVa+GXtLR+wpKZOx7rlO3c44FK02X8j21vj0xbssf4tx4Y006nqfzk70WdAu
+         CdblaZzjMzOwvb8b7eXMPJbNIoyqLVQ2Jvp/efsFol+Qdxa9G0zbUYc3dMEHDG5gtEEU
+         X2E0ETF4KOFOnlY+q9AzHdELNWLwBRX1yPZI/gqvLFIFwrWbiJT9Z+pJaGEUVOy8CX6r
+         O4hoff4/UXzA8XBTwJ6NYfg60bBT68lcsnijClynNtNCN0DkNBtzfRSD/2ddtHGNCZOA
+         Wj1XzP6n3BSWS1mZK4hXy41Ja8SjyPLWkcsTUkZrRKgo0EdF5Z+dtGlzXX+mkiX1Mxym
+         MFeQ==
+X-Gm-Message-State: AOAM530xK5yFxhzjzVCGu8uXQ36SkogfCYOeorjX3WlKm6exNvuupUnG
+        jaxiVZLefvzr9xzyrFeaPjFxUiwN0CrMyQdYTE4=
+X-Google-Smtp-Source: ABdhPJxb/4clygCvjCiO88XYG/sbJ6RKoH2Z8xrd10Kb85V7ZjADycyDpSdncP2GPDXnJ5FshMib0fbA5Tgo6BLdO9c=
+X-Received: by 2002:a50:9fc9:: with SMTP id c67mr9960008edf.69.1595849049765;
+ Mon, 27 Jul 2020 04:24:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.176]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Reply-To: evanaprso@gmail.com
+Received: by 2002:a54:2b90:0:0:0:0:0 with HTTP; Mon, 27 Jul 2020 04:24:09
+ -0700 (PDT)
+From:   EVANA PRSO <rm2568590@gmail.com>
+Date:   Mon, 27 Jul 2020 13:24:09 +0200
+X-Google-Sender-Auth: GGKkRaxdo0XqH9l5mVosQBXE4ug
+Message-ID: <CADxkk6Upufr_-B3PQs+YRwxShFTnxXYpi8yym6O_qv3gii-NYQ@mail.gmail.com>
+Subject: Please co-operate with me
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Jul 2020 10:22:20 -0700
-Sean V Kelley <sean.v.kelley@intel.com> wrote:
+my Dear friend,
 
-> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> 
-> When attempting error recovery for an RCiEP associated with an RCEC device,
-> there needs to be a way to update the Root Error Status, the Uncorrectable
-> Error Status and the Uncorrectable Error Severity of the parent RCEC.
-> So add the 'rcec' field to the pci_dev structure and provide a hook for the
-> Root Port Driver to associate RCiEPs with their respective parent RCEC.
-> 
-> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick
+Bruun.A gold merchant who owns a small gold Mine in Syria; He died of
+Cardiovascular Disease in mid-March 2011. During his life time he
+deposited the sum of (=E2=82=AC16.1 Million Euro) sixteen million, one hund=
+red
+thousand Euros in a bank in Ouagadougou the capital city of Burkina
+Faso in West Africa. The deposited money was from the sale of the
+shares, death benefits payment and entitlements of my deceased husband
+by his company. I am sending this message to you praying that it will
+reach you in good health, since I am not in good health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day.
 
-I haven't tested yet, but I think there is one path in here that breaks
-my case (no OS visible rcec / all done in firmware GHESv2 / APEI)
+ I am suffering from long time cancer and presently i am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I am married to my late husband for over 4 years
+before he died and is unfortunately that we don't have a child, my
+doctor confinded in me that i have less chance to live. Having known
+my health condition, I decided to contact you to claim the fund since
+I don't have any relation I grew up from the orphanage home, I have
+decided to donate what I have to you for the support of helping
+Motherless babies/Less privileged/Widows' because I am dying and
+diagnosed of cancer for about 2 years ago. I have been touched by God
+almighty to donate from what I have inherited from my late husband to
+you for good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has, because He is a Merciful God I will be
+going in for an operation surgery soon.
 
-Jonathan
-
-> ---
->  drivers/pci/pcie/aer.c         |  9 +++++----
->  drivers/pci/pcie/err.c         |  9 +++++++++
->  drivers/pci/pcie/portdrv_pci.c | 15 +++++++++++++++
->  include/linux/pci.h            |  3 +++
->  4 files changed, 32 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-> index 3acf56683915..f1bf06be449e 100644
-> --- a/drivers/pci/pcie/aer.c
-> +++ b/drivers/pci/pcie/aer.c
-> @@ -1335,17 +1335,18 @@ static int aer_probe(struct pcie_device *dev)
->  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
->  {
->  	int aer = dev->aer_cap;
-> +	int rc = 0;
->  	u32 reg32;
-> -	int rc;
-> -
->  
->  	/* Disable Root's interrupt in response to error messages */
->  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
->  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
->  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
->  
-> -	rc = pci_bus_error_reset(dev);
-> -	pci_info(dev, "Root Port link has been reset\n");
-> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
-> +		rc = pci_bus_error_reset(dev);
-> +		pci_info(dev, "Root Port link has been reset\n");
-> +	}
->  
->  	/* Clear Root Error Status */
->  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 9b3ec94bdf1d..0aae7643132e 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -203,6 +203,11 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  		pci_walk_dev_affected(dev, report_frozen_detected, &status);
->  		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
->  			status = flr_on_rciep(dev);
-> +			/*
-> +			 * The callback only clears the Root Error Status
-> +			 * of the RCEC (see aer.c).
-> +			 */
-> +			reset_link(dev->rcec);
-
-This looks dangerous for my case where APEI / GHESv2 is used.  In that case
-we don't expose an RCEC at all.   I don't think the reset_link callback
-is safe to a null pointer here.  Fix may be as simple as
-if (dev->rcec)
-	reset_link(dev->rcec);
+ This is the reason i need your services to stand as my next of kin or
+an executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+information on how the fund will be transferred to your bank account.
 
 
->  			if (status != PCI_ERS_RESULT_RECOVERED) {
->  				pci_warn(dev, "function level reset failed\n");
->  				goto failed;
-> @@ -246,7 +251,11 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->  	     pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)) {
->  		pci_aer_clear_device_status(dev);
->  		pci_aer_clear_nonfatal_status(dev);
-> +	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
-> +		pci_aer_clear_device_status(dev->rcec);
-> +		pci_aer_clear_nonfatal_status(dev->rcec);
-
-These may be safe as in my both now have protections for !pcie_aer_is_native.
-
->  	}
-> +
->  	pci_info(dev, "device recovery successful\n");
->  	return status;
->  
-> diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
-> index d5b109499b10..f9409a0110c2 100644
-> --- a/drivers/pci/pcie/portdrv_pci.c
-> +++ b/drivers/pci/pcie/portdrv_pci.c
-> @@ -90,6 +90,18 @@ static const struct dev_pm_ops pcie_portdrv_pm_ops = {
->  #define PCIE_PORTDRV_PM_OPS	NULL
->  #endif /* !PM */
->  
-> +static int pcie_hook_rcec(struct pci_dev *pdev, void *data)
-> +{
-> +	struct pci_dev *rcec = (struct pci_dev *)data;
-> +
-> +	pdev->rcec = rcec;
-> +	pci_info(rcec, "RCiEP(under an RCEC) %04x:%02x:%02x.%d\n",
-> +		 pci_domain_nr(pdev->bus), pdev->bus->number,
-> +		 PCI_SLOT(pdev->devfn), PCI_FUNC(pdev->devfn));
-
-We may want to make this debug info at somepoint if we have a way
-of discovering it from userspace.   The PCI boot up is extremely
-verbose already!
-
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * pcie_portdrv_probe - Probe PCI-Express port devices
->   * @dev: PCI-Express port device being probed
-> @@ -110,6 +122,9 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
->  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
->  		return -ENODEV;
->  
-> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
-> +		pcie_walk_rcec(dev, pcie_hook_rcec, dev);
-> +
->  	status = pcie_port_device_register(dev);
->  	if (status)
->  		return status;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 34c1c4f45288..e920f29df40b 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -326,6 +326,9 @@ struct pci_dev {
->  #ifdef CONFIG_PCIEAER
->  	u16		aer_cap;	/* AER capability offset */
->  	struct aer_stats *aer_stats;	/* AER stats for this device */
-> +#endif
-> +#ifdef CONFIG_PCIEPORTBUS
-> +	struct pci_dev	*rcec;		/* Associated RCEC device */
->  #endif
->  	u8		pcie_cap;	/* PCIe capability offset */
->  	u8		msi_cap;	/* MSI capability offset */
-
-
+Thanks,
+Mrs. Evana Prso.
