@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69BB22EFC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2F522F001
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731366AbgG0OTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:19:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47034 "EHLO mail.kernel.org"
+        id S1731668AbgG0OVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730389AbgG0OTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:19:10 -0400
+        id S1731638AbgG0OVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78A782083E;
-        Mon, 27 Jul 2020 14:19:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B0D22070A;
+        Mon, 27 Jul 2020 14:21:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859550;
-        bh=Nq5QR3iG8Cr3ox2BQ3/zYb67ZQcxz9425Pv2U2LcgGI=;
+        s=default; t=1595859661;
+        bh=cToFvjwH/rD41ff8mryTBGVqToQbljdz/cOulN4Cwqg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t4leshEv4j31eTuIP1m7PQX9SwXafozh0TTKHKm4tcML31ygnH7o2MfKIFBbA2ukk
-         iaNeMR8k1P9/bVb+QVvGYEYraStkfiQmm2/t2hKBvx9DDUmZzUf2hS5CNMzlsIZ96w
-         XUgB4Lq7S7X72Uhs9FYTHXf1UXeo2ePKsUw5I69U=
+        b=E9FKyTht/FGSgtTrsLXtm3lY2lildYuHaQvGvNjy0PyCe5KCQjT9CB9zie9OYgTgw
+         gBZbAdoStJm96+yXEjlBYabLXaXj1phFFU34t75HdJDSm0w9knHU33aWpdvXBuUw35
+         t2t39AJ8gABHeAZXDJiPAgIjlD+6zCIduSlMZprA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        stable@vger.kernel.org,
+        Steve Schremmer <steve.schremmer@netapp.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 014/179] drm/nouveau/i2c/g94-: increase NV_PMGR_DP_AUXCTL_TRANSACTREQ timeout
-Date:   Mon, 27 Jul 2020 16:03:09 +0200
-Message-Id: <20200727134933.368447190@linuxfoundation.org>
+Subject: [PATCH 5.7 016/179] scsi: dh: Add Fujitsu device to devinfo and dh lists
+Date:   Mon, 27 Jul 2020 16:03:11 +0200
+Message-Id: <20200727134933.464050722@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
 References: <20200727134932.659499757@linuxfoundation.org>
@@ -43,54 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Skeggs <bskeggs@redhat.com>
+From: Steve Schremmer <steve.schremmer@netapp.com>
 
-[ Upstream commit 0156e76d388310a490aeb0f2fbb5b284ded3aecc ]
+[ Upstream commit e094fd346021b820f37188aaa6b502c7490ab5b5 ]
 
-Tegra TRM says worst-case reply time is 1216us, and this should fix some
-spurious timeouts that have been popping up.
+Add FUJITSU ETERNUS_AHB
 
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Link: https://lore.kernel.org/r/DM6PR06MB5276CCA765336BD312C4282E8C660@DM6PR06MB5276.namprd06.prod.outlook.com
+Signed-off-by: Steve Schremmer <steve.schremmer@netapp.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c   | 4 ++--
- drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/scsi_devinfo.c | 1 +
+ drivers/scsi/scsi_dh.c      | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-index c8ab1b5741a3e..db7769cb33eba 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxg94.c
-@@ -118,10 +118,10 @@ g94_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
- 		if (retries)
- 			udelay(400);
+diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
+index eed31021e7885..ba84244c1b4f6 100644
+--- a/drivers/scsi/scsi_devinfo.c
++++ b/drivers/scsi/scsi_devinfo.c
+@@ -239,6 +239,7 @@ static struct {
+ 	{"LSI", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
+ 	{"ENGENIO", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
+ 	{"LENOVO", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
++	{"FUJITSU", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
+ 	{"SanDisk", "Cruzer Blade", NULL, BLIST_TRY_VPD_PAGES |
+ 		BLIST_INQUIRY_36},
+ 	{"SMSC", "USB 2 HS-CF", NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
+diff --git a/drivers/scsi/scsi_dh.c b/drivers/scsi/scsi_dh.c
+index 42f0550d6b11f..6f41e4b5a2b85 100644
+--- a/drivers/scsi/scsi_dh.c
++++ b/drivers/scsi/scsi_dh.c
+@@ -63,6 +63,7 @@ static const struct scsi_dh_blist scsi_dh_blist[] = {
+ 	{"LSI", "INF-01-00",		"rdac", },
+ 	{"ENGENIO", "INF-01-00",	"rdac", },
+ 	{"LENOVO", "DE_Series",		"rdac", },
++	{"FUJITSU", "ETERNUS_AHB",	"rdac", },
+ 	{NULL, NULL,			NULL },
+ };
  
--		/* transaction request, wait up to 1ms for it to complete */
-+		/* transaction request, wait up to 2ms for it to complete */
- 		nvkm_wr32(device, 0x00e4e4 + base, 0x00010000 | ctrl);
- 
--		timeout = 1000;
-+		timeout = 2000;
- 		do {
- 			ctrl = nvkm_rd32(device, 0x00e4e4 + base);
- 			udelay(1);
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
-index 7ef60895f43a7..edb6148cbca04 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm200.c
-@@ -118,10 +118,10 @@ gm200_i2c_aux_xfer(struct nvkm_i2c_aux *obj, bool retry,
- 		if (retries)
- 			udelay(400);
- 
--		/* transaction request, wait up to 1ms for it to complete */
-+		/* transaction request, wait up to 2ms for it to complete */
- 		nvkm_wr32(device, 0x00d954 + base, 0x00010000 | ctrl);
- 
--		timeout = 1000;
-+		timeout = 2000;
- 		do {
- 			ctrl = nvkm_rd32(device, 0x00d954 + base);
- 			udelay(1);
 -- 
 2.25.1
 
