@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4074C22E8FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F92822E904
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgG0J26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:28:58 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:7630 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgG0J25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:28:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1110; q=dns/txt; s=axis-central1;
-  t=1595842137; x=1627378137;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LDGMiNDyHEEpsPh7ha2tAju2Qa0XvBjPxQymomgNiZU=;
-  b=TqTg7bkhR+PqETWVSxuQSXyVt0r3xPSF9Ul65CZIUgCW51/JcChQB6WO
-   /+2D7lkoBtgkOfeRfmqfhT4Xm+v3aeBykBlhe31exacC+6Gv5HLrwtMw+
-   TNUeND8fBbJpA4pehYDsVaLCVV6yMp7LN0hhcI1d9pAq+H7vLKoU/JBvR
-   1aQmSPhN6VGbU4Il+Zvo6uSgP+cDFTRR8E6GWdQHPDo8mVc7FKXEuXjb3
-   qz86EFEZG7WOD4gxnwLJptjLcsTcInwxYWHingvx3RFcNLvCFhkLxA47C
-   FHeKayKOBRYmRlKRhRfVyad7ctS8XYahK/gRL/1ZPn2O7vy41cJqvYpOI
-   A==;
-IronPort-SDR: 6H1P+HoGSEAeLwpLTlTr0VvQFeuXjp8ZiRVbfqpCucp2qs7Y3oONw1sIApR7+BuqX59LlHKR6Z
- v2/Dx9AV0YivCd+WqOn80QKd+MiCGOMCYf8xC1ZyKNp0DMJvE1IvU4tYfVw9F6XS+RZcBP8ma5
- +41Lyuo0alSXbXx9zNM2sk8bw1OGJ6wer4b0QwH2q41UXBKyEDyzEXwUDzwoVokL0OrKgodMqB
- JA2AkAOtYcD6LLa4T37ALsr/BbkUzpUps+5aN48/RRb9stWj+tYd9kIw3bCuzxRFau+DVgvtnw
- 0jo=
-X-IronPort-AV: E=Sophos;i="5.75,402,1589234400"; 
-   d="scan'208";a="10911943"
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-CC:     <kernel@axis.com>, <tglx@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] tracing: Remove outdated comment in stack handling
-Date:   Mon, 27 Jul 2020 11:28:40 +0200
-Message-ID: <20200727092840.18659-1-vincent.whitchurch@axis.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S1728133AbgG0JaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:30:11 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40116 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726302AbgG0JaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:30:10 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxOMWCnh5fqSYBAA--.683S2;
+        Mon, 27 Jul 2020 17:29:40 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, Ning Sun <ning.sun@intel.com>,
+        Thomas Renninger <trenn@suse.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        tboot-devel@lists.sourceforge.net, linux-pm@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH] ACPI: Use valid link of ACPI specification
+Date:   Mon, 27 Jul 2020 17:29:38 +0800
+Message-Id: <1595842178-20351-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxOMWCnh5fqSYBAA--.683S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr1fuF13Wr47ZrWrtry5urg_yoW8KFWrpF
+        s5KryIk34xtr1Uua18Cw17WFy5W3Z7uFW7Kr48Cw18uF4UWryvqF1akFyYya4UJr4fCFW0
+        qrZ7tF1Uu3WI9rJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+        Uq38nUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This comment describes the behaviour before commit 2a820bf74918
-("tracing: Use percpu stack trace buffer more intelligently").  Since
-that commit, interrupts and NMIs do use the per-cpu stacks so the
-comment is no longer correct.  Remove it.
+Currently, acpi.info is an invalid link to access ACPI specification,
+the new valid link is https://uefi.org/specifications.
 
-(Note that the FTRACE_STACK_SIZE mentioned in the comment has never
-existed, it probably should have said FTRACE_STACK_ENTRIES.)
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- kernel/trace/trace.c | 6 ------
- 1 file changed, 6 deletions(-)
+ Documentation/hwmon/acpi_power_meter.rst      | 2 +-
+ drivers/acpi/Kconfig                          | 3 +--
+ include/linux/tboot.h                         | 2 +-
+ tools/power/cpupower/man/cpupower-idle-info.1 | 2 +-
+ 4 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bb62269724d5..0a0fd197888c 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2932,12 +2932,6 @@ static void __ftrace_trace_stack(struct trace_buffer *buffer,
- 		skip++;
- #endif
+diff --git a/Documentation/hwmon/acpi_power_meter.rst b/Documentation/hwmon/acpi_power_meter.rst
+index 4a0941a..8628c11 100644
+--- a/Documentation/hwmon/acpi_power_meter.rst
++++ b/Documentation/hwmon/acpi_power_meter.rst
+@@ -9,7 +9,7 @@ Supported systems:
  
--	/*
--	 * Since events can happen in NMIs there's no safe way to
--	 * use the per cpu ftrace_stacks. We reserve it and if an interrupt
--	 * or NMI comes in, it will just have to use the default
--	 * FTRACE_STACK_SIZE.
--	 */
- 	preempt_disable_notrace();
+     Prefix: 'power_meter'
  
- 	stackidx = __this_cpu_inc_return(ftrace_stack_reserve) - 1;
+-    Datasheet: http://acpi.info/, section 10.4.
++    Datasheet: https://uefi.org/specifications, section 10.4.
+ 
+ Author: Darrick J. Wong
+ 
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index ce2730d..7428cd2 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -40,8 +40,7 @@ menuconfig ACPI
+ 	  the UEFI Forum and any UEFI member can join the ASWG and contribute
+ 	  to the ACPI specification.
+ 	  The specification is available at:
+-	  <http://www.acpi.info>
+-	  <http://www.uefi.org/acpi/specs>
++	  <https://uefi.org/specifications>
+ 
+ if ACPI
+ 
+diff --git a/include/linux/tboot.h b/include/linux/tboot.h
+index c7e4247..5146d25 100644
+--- a/include/linux/tboot.h
++++ b/include/linux/tboot.h
+@@ -44,7 +44,7 @@ struct tboot_acpi_generic_address {
+ 
+ /*
+  * combines Sx info from FADT and FACS tables per ACPI 2.0+ spec
+- * (http://www.acpi.info/)
++ * (https://uefi.org/specifications)
+  */
+ struct tboot_acpi_sleep_info {
+ 	struct tboot_acpi_generic_address pm1a_cnt_blk;
+diff --git a/tools/power/cpupower/man/cpupower-idle-info.1 b/tools/power/cpupower/man/cpupower-idle-info.1
+index 80a1311..20b6345 100644
+--- a/tools/power/cpupower/man/cpupower-idle-info.1
++++ b/tools/power/cpupower/man/cpupower-idle-info.1
+@@ -75,7 +75,7 @@ By default only values of core zero are displayed. How to display settings of
+ other cores is described in the cpupower(1) manpage in the \-\-cpu option
+ section.
+ .SH REFERENCES
+-http://www.acpi.info/spec.htm
++https://uefi.org/specifications
+ .SH "FILES"
+ .nf
+ \fI/sys/devices/system/cpu/cpu*/cpuidle/state*\fP
 -- 
-2.25.1
+2.1.0
 
