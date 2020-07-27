@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17AB22F0D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82D422EF7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732271AbgG0O1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:27:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55160 "EHLO mail.kernel.org"
+        id S1730941AbgG0OQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:16:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730881AbgG0OZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:25:16 -0400
+        id S1730918AbgG0OQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:16:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1075D22B43;
-        Mon, 27 Jul 2020 14:25:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DE8720FC3;
+        Mon, 27 Jul 2020 14:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859915;
-        bh=myRiqgsrgu8L7BwSvXexwZdTgvqMXP0UprAQ0a3Razo=;
+        s=default; t=1595859406;
+        bh=iBO41IItOf1SqfGhheAjtKbnoUPdrkRC8ORQw9SEKCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlZ/kfucsHTK+a/XTARJpGkz36EQCd8gU4nRAoT9J0BnX/noIU2VQShJdzD6a9xQ0
-         xFxkqptTRVoEJzvrQfRRGuKQxH2dWFCkc/JewPQNoyiCgo/sYScUGPnhVfwxwj5iX3
-         1kjdecElzoIgJU/q58Wyy5MXkH7ouxtfsWy0RcbQ=
+        b=GBNyxA2EwVV4Xl/lRvaB4RlDuWZ/sa1cnWzIehWWp06D7G8CktvTgBxcoiEQZY7af
+         VAW8kS9xKOcaRVJ052xXlYID26G5TG2xDg2wIVjiFbONOZkZUU7mQDbbaShcTSbSA6
+         wDfi1Wvj9jeeYsSMCso3V59KqYM33wRKyVTN37mg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        kbuild test robot <lkp@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 115/179] dmaengine: fsl-edma: fix wrong tcd endianness for big-endian cpu
+        stable@vger.kernel.org, Vasiliy Kupriakov <rublag-ns@yandex.ru>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 095/138] platform/x86: asus-wmi: allow BAT1 battery name
 Date:   Mon, 27 Jul 2020 16:04:50 +0200
-Message-Id: <20200727134938.256828085@linuxfoundation.org>
+Message-Id: <20200727134930.128529717@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,73 +44,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Dureghello <angelo.dureghello@timesys.com>
+From: Vasiliy Kupriakov <rublag-ns@yandex.ru>
 
-[ Upstream commit 8678c71c17721e0f771f135967ef0cce8f69ce9a ]
+[ Upstream commit 9a33e375d98ece5ea40c576eabd3257acb90c509 ]
 
-Due to recent fixes in m68k arch-specific I/O accessor macros, this
-driver is not working anymore for ColdFire. Fix wrong tcd endianness
-removing additional swaps, since edma_writex() functions should already
-take care of any eventual swap if needed.
+The battery on my laptop ASUS TUF Gaming FX706II is named BAT1.
+This patch allows battery extension to load.
 
-Note, i could only test the change in ColdFire mcf54415 and Vybrid
-vf50 / Colibri where i don't see any issue. So, every feedback and
-test for all other SoCs involved is really appreciated.
-
-Signed-off-by: Angelo Dureghello <angelo.dureghello@timesys.com>
-Reported-by: kbuild test robot <lkp@intel.com>
-Link: https://lore.kernel.org/r/20200701225205.1674463-1-angelo.dureghello@timesys.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Vasiliy Kupriakov <rublag-ns@yandex.ru>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/fsl-edma-common.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ drivers/platform/x86/asus-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/dma/fsl-edma-common.c b/drivers/dma/fsl-edma-common.c
-index 5697c3622699b..9285884758b27 100644
---- a/drivers/dma/fsl-edma-common.c
-+++ b/drivers/dma/fsl-edma-common.c
-@@ -352,26 +352,28 @@ static void fsl_edma_set_tcd_regs(struct fsl_edma_chan *fsl_chan,
- 	/*
- 	 * TCD parameters are stored in struct fsl_edma_hw_tcd in little
- 	 * endian format. However, we need to load the TCD registers in
--	 * big- or little-endian obeying the eDMA engine model endian.
-+	 * big- or little-endian obeying the eDMA engine model endian,
-+	 * and this is performed from specific edma_write functions
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index b1f4a31ba1ee5..ed83fb135bab3 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -424,6 +424,7 @@ static int asus_wmi_battery_add(struct power_supply *battery)
+ 	 * battery is named BATT.
  	 */
- 	edma_writew(edma, 0,  &regs->tcd[ch].csr);
--	edma_writel(edma, le32_to_cpu(tcd->saddr), &regs->tcd[ch].saddr);
--	edma_writel(edma, le32_to_cpu(tcd->daddr), &regs->tcd[ch].daddr);
+ 	if (strcmp(battery->desc->name, "BAT0") != 0 &&
++	    strcmp(battery->desc->name, "BAT1") != 0 &&
+ 	    strcmp(battery->desc->name, "BATT") != 0)
+ 		return -ENODEV;
  
--	edma_writew(edma, le16_to_cpu(tcd->attr), &regs->tcd[ch].attr);
--	edma_writew(edma, le16_to_cpu(tcd->soff), &regs->tcd[ch].soff);
-+	edma_writel(edma, (s32)tcd->saddr, &regs->tcd[ch].saddr);
-+	edma_writel(edma, (s32)tcd->daddr, &regs->tcd[ch].daddr);
- 
--	edma_writel(edma, le32_to_cpu(tcd->nbytes), &regs->tcd[ch].nbytes);
--	edma_writel(edma, le32_to_cpu(tcd->slast), &regs->tcd[ch].slast);
-+	edma_writew(edma, (s16)tcd->attr, &regs->tcd[ch].attr);
-+	edma_writew(edma, tcd->soff, &regs->tcd[ch].soff);
- 
--	edma_writew(edma, le16_to_cpu(tcd->citer), &regs->tcd[ch].citer);
--	edma_writew(edma, le16_to_cpu(tcd->biter), &regs->tcd[ch].biter);
--	edma_writew(edma, le16_to_cpu(tcd->doff), &regs->tcd[ch].doff);
-+	edma_writel(edma, (s32)tcd->nbytes, &regs->tcd[ch].nbytes);
-+	edma_writel(edma, (s32)tcd->slast, &regs->tcd[ch].slast);
- 
--	edma_writel(edma, le32_to_cpu(tcd->dlast_sga),
-+	edma_writew(edma, (s16)tcd->citer, &regs->tcd[ch].citer);
-+	edma_writew(edma, (s16)tcd->biter, &regs->tcd[ch].biter);
-+	edma_writew(edma, (s16)tcd->doff, &regs->tcd[ch].doff);
-+
-+	edma_writel(edma, (s32)tcd->dlast_sga,
- 			&regs->tcd[ch].dlast_sga);
- 
--	edma_writew(edma, le16_to_cpu(tcd->csr), &regs->tcd[ch].csr);
-+	edma_writew(edma, (s16)tcd->csr, &regs->tcd[ch].csr);
- }
- 
- static inline
 -- 
 2.25.1
 
