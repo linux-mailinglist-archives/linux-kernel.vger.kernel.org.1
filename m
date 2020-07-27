@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4982B22F045
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5391522EF03
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732026AbgG0OXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52256 "EHLO mail.kernel.org"
+        id S1729400AbgG0OMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:12:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732017AbgG0OXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:23:08 -0400
+        id S1730225AbgG0OMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:12:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C83D2083E;
-        Mon, 27 Jul 2020 14:23:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D335F20838;
+        Mon, 27 Jul 2020 14:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859787;
-        bh=aDH47WXYmEoiCKBRtSqqp2kH1h4RsMqOn8BGWaxOkZc=;
+        s=default; t=1595859155;
+        bh=Tdh9cOVs/2IgNFxLPF4ZL/iqY0zBfjy8MZwS73LcFlo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nUaw1nwYw3n2a3ulRmqA4OUjo68FhNUbVrc5DKW9czYGySCfpUVnEwma5dLFI1ALL
-         jjj64rDu9D0fk3VdmUkwkYWqo36HWbNtSslX2xt4pF0Xx0tWZPZT+QOQOgGz0GBvcX
-         hrcYBKyTJj4Gyrmr/Bra3tQ+lgybcfkdRyCQKBFM=
+        b=ySIvT1fyw0UfxKLV5v1Hsxdp3RsWjaInf8UpH03UW34GVudmb5xlyQs3BJEXc6Vbt
+         EDEfHDy8PsExTqfvEBZBt6RcMrIKwsGtJfcFSYsDEPKfyi574OzELzoZlNHhHTLllX
+         Qn0s/tY2KTFc0LcxUZtSWCse4hUfpcU/ZecRrI1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 105/179] dmaengine: ti: k3-udma: add missing put_device() call in of_xudma_dev_get()
-Date:   Mon, 27 Jul 2020 16:04:40 +0200
-Message-Id: <20200727134937.766221623@linuxfoundation.org>
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.19 67/86] staging: comedi: ni_6527: fix INSN_CONFIG_DIGITAL_TRIG support
+Date:   Mon, 27 Jul 2020 16:04:41 +0200
+Message-Id: <20200727134917.781284555@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-[ Upstream commit 1438cde8fe9cb709b569f5829c4c892c0f3f15b3 ]
+commit f07804ec77d77f8a9dcf570a24154e17747bc82f upstream.
 
-if of_find_device_by_node() succeed and platform_get_drvdata() failed,
-of_xudma_dev_get() will return without put_device(), which will leak
-the memory.
+`ni6527_intr_insn_config()` processes `INSN_CONFIG` comedi instructions
+for the "interrupt" subdevice.  When `data[0]` is
+`INSN_CONFIG_DIGITAL_TRIG` it is configuring the digital trigger.  When
+`data[2]` is `COMEDI_DIGITAL_TRIG_ENABLE_EDGES` it is configuring rising
+and falling edge detection for the digital trigger, using a base channel
+number (or shift amount) in `data[3]`, a rising edge bitmask in
+`data[4]` and falling edge bitmask in `data[5]`.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Link: https://lore.kernel.org/r/20200618130110.582543-1-yukuai3@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+If the base channel number (shift amount) is greater than or equal to
+the number of channels (24) of the digital input subdevice, there are no
+changes to the rising and falling edges, so the mask of channels to be
+changed can be set to 0, otherwise the mask of channels to be changed,
+and the rising and falling edge bitmasks are shifted by the base channel
+number before calling `ni6527_set_edge_detection()` to change the
+appropriate registers.  Unfortunately, the code is comparing the base
+channel (shift amount) to the interrupt subdevice's number of channels
+(1) instead of the digital input subdevice's number of channels (24).
+Fix it by comparing to 32 because all shift amounts for an `unsigned
+int` must be less than that and everything from bit 24 upwards is
+ignored by `ni6527_set_edge_detection()` anyway.
+
+Fixes: 110f9e687c1a8 ("staging: comedi: ni_6527: support INSN_CONFIG_DIGITAL_TRIG")
+Cc: <stable@vger.kernel.org> # 3.17+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20200717145257.112660-2-abbotti@mev.co.uk
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/ti/k3-udma-private.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/comedi/drivers/ni_6527.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/ti/k3-udma-private.c b/drivers/dma/ti/k3-udma-private.c
-index 0b8f3dd6b1463..77e8e67d995b3 100644
---- a/drivers/dma/ti/k3-udma-private.c
-+++ b/drivers/dma/ti/k3-udma-private.c
-@@ -42,6 +42,7 @@ struct udma_dev *of_xudma_dev_get(struct device_node *np, const char *property)
- 	ud = platform_get_drvdata(pdev);
- 	if (!ud) {
- 		pr_debug("UDMA has not been probed\n");
-+		put_device(&pdev->dev);
- 		return ERR_PTR(-EPROBE_DEFER);
- 	}
- 
--- 
-2.25.1
-
+--- a/drivers/staging/comedi/drivers/ni_6527.c
++++ b/drivers/staging/comedi/drivers/ni_6527.c
+@@ -332,7 +332,7 @@ static int ni6527_intr_insn_config(struc
+ 		case COMEDI_DIGITAL_TRIG_ENABLE_EDGES:
+ 			/* check shift amount */
+ 			shift = data[3];
+-			if (shift >= s->n_chan) {
++			if (shift >= 32) {
+ 				mask = 0;
+ 				rising = 0;
+ 				falling = 0;
 
 
