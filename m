@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B4122EAF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126B422EB04
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727900AbgG0LQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:16:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbgG0LQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:16:32 -0400
-Received: from localhost.localdomain (pool-96-246-152-186.nycmny.fios.verizon.net [96.246.152.186])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1682420663;
-        Mon, 27 Jul 2020 11:16:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595848592;
-        bh=huU9FrrRSkbKfoK/WI/8ojDrsG1FAaBqigpZCvBwXX8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=GCy8ebTiS11gvztCsOHteRvKuVdxOKytVP0wMGyEh5vdqaOd8NK9tESxZvfTF+Lmi
-         0QPQrPJQGjkiOMAFKl2spUTQyH5dnXdz77bGmfSaKVc5xwfqC4HaetSeihngkfD/bf
-         El2EDPh+zLuWgzunDco7HVeJJH+fXwkaQUY2+Cko=
-Message-ID: <1595848589.4841.78.camel@kernel.org>
-Subject: Re: [PATCH v3 00/19] Introduce partial kernel_read_file() support
-From:   Mimi Zohar <zohar@kernel.org>
-To:     Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 27 Jul 2020 07:16:29 -0400
-In-Reply-To: <20200724213640.389191-1-keescook@chromium.org>
-References: <20200724213640.389191-1-keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728071AbgG0LSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:18:52 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2533 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726269AbgG0LSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 07:18:51 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 0D70944B09787BEA11F6;
+        Mon, 27 Jul 2020 12:18:50 +0100 (IST)
+Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 12:18:49 +0100
+Date:   Mon, 27 Jul 2020 12:17:26 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <ashok.raj@kernel.org>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 5/9] PCI/AER: Apply function level reset to RCiEP on
+ fatal error
+Message-ID: <20200727121726.000072a8@Huawei.com>
+In-Reply-To: <20200724172223.145608-6-sean.v.kelley@intel.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+        <20200724172223.145608-6-sean.v.kelley@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.121.176]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
-> v3:
-> - add reviews/acks
-> - add "IMA: Add support for file reads without contents" patch
-> - trim CC list, in case that's why vger ignored v2
-> v2: [missing from lkml archives! (CC list too long?) repeating changes here]
-> - fix issues in firmware test suite
-> - add firmware partial read patches
-> - various bug fixes/cleanups
-> v1: https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
+On Fri, 24 Jul 2020 10:22:19 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
+
+> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 > 
-> Hi,
+> Attempt to do function level reset for an RCiEP associated with an
+> RCEC device on fatal error.
+
+I'd like to understand more on your reasoning for flr here.
+Is it simply that it is all we can do, or is there some basis
+in a spec somewhere?
+
 > 
-> Here's my tree for adding partial read support in kernel_read_file(),
-> which fixes a number of issues along the way. It's got Scott's firmware
-> and IMA patches ported and everything tests cleanly for me (even with
-> CONFIG_IMA_APPRAISE=y).
+> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> ---
+>  drivers/pci/pcie/err.c | 31 ++++++++++++++++++++++---------
+>  1 file changed, 22 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+> index 044df004f20b..9b3ec94bdf1d 100644
+> --- a/drivers/pci/pcie/err.c
+> +++ b/drivers/pci/pcie/err.c
+> @@ -170,6 +170,17 @@ static void pci_walk_dev_affected(struct pci_dev *dev, int (*cb)(struct pci_dev
+>  	}
+>  }
+>  
+> +static enum pci_channel_state flr_on_rciep(struct pci_dev *dev)
+> +{
+> +	if (!pcie_has_flr(dev))
+> +		return PCI_ERS_RESULT_NONE;
+> +
+> +	if (pcie_flr(dev))
+> +		return PCI_ERS_RESULT_DISCONNECT;
+> +
+> +	return PCI_ERS_RESULT_RECOVERED;
+> +}
+> +
+>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  			enum pci_channel_state state,
+>  			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
+> @@ -191,15 +202,17 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>  	if (state == pci_channel_io_frozen) {
+>  		pci_walk_dev_affected(dev, report_frozen_detected, &status);
+>  		if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
+> -			pci_warn(dev, "link reset not possible for RCiEP\n");
+> -			status = PCI_ERS_RESULT_NONE;
+> -			goto failed;
+> -		}
+> -
+> -		status = reset_link(dev);
+> -		if (status != PCI_ERS_RESULT_RECOVERED) {
+> -			pci_warn(dev, "link reset failed\n");
+> -			goto failed;
+> +			status = flr_on_rciep(dev);
+> +			if (status != PCI_ERS_RESULT_RECOVERED) {
+> +				pci_warn(dev, "function level reset failed\n");
+> +				goto failed;
+> +			}
+> +		} else {
+> +			status = reset_link(dev);
+> +			if (status != PCI_ERS_RESULT_RECOVERED) {
+> +				pci_warn(dev, "link reset failed\n");
+> +				goto failed;
+> +			}
+>  		}
+>  	} else {
+>  		pci_walk_dev_affected(dev, report_normal_detected, &status);
 
-Thanks, Kees.  Other than my comments on the new
-security_kernel_post_load_data() hook, the patch set is really nice.
 
-In addition to compiling with CONFIG_IMA_APPRAISE enabled, have you
-booted the kernel with the ima_policy=tcb?  The tcb policy will add
-measurements to the IMA measurement list and extend the TPM with the
-file or buffer data digest.  Are you seeing the firmware measurements,
-in particular the partial read measurement?
-
-thanks,
-
-Mimi
