@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E780422F0B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321B522EFAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732593AbgG0O0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:26:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56484 "EHLO mail.kernel.org"
+        id S1731212AbgG0OSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:18:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731976AbgG0O0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:26:16 -0400
+        id S1731194AbgG0OSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:18:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11696207FC;
-        Mon, 27 Jul 2020 14:26:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C65322250E;
+        Mon, 27 Jul 2020 14:18:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859975;
-        bh=wgQ+dqjWde6gj5sHLIy3LyLTb5h2Ed0FJyVL+Tfcgec=;
+        s=default; t=1595859493;
+        bh=yDL8Vv8k1NbW6bGeTuxpjBDJNb81nTSEttoBN0jtCZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wtEB5Db6gvD4Qi8BLEYwD/GeclQx2r3RvZOSCDJ+4fgz1b0Clr3XSegtHoNvQWZH1
-         MqM/h0gFXcvy76boty3hGWBknn3d/rAbWWQBb1NZZm41JlaYZaGChS15CuQDK8nHdp
-         1cIlVBl0Twsrrs8EuvFmnetUBbbTKP5OIOasjf/w=
+        b=LNcSnm+IOXvgTEjDbV5yhQRgbZuknQVvHUd/y4NMf40mN+FB1mDc109ZPMmAjY/og
+         xAkupxGRs68Bi3RcZHf7cf5wkgUsZ+aVJXn2U1i0RuGd1JAGGCxFOEbQtc0LdiS7gh
+         Gyp2/hPzUmGFHd9Ml3mNlkgDgI7+xVbk5GzeMSKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.7 150/179] staging: comedi: addi_apci_1564: check INSN_CONFIG_DIGITAL_TRIG shift
+        stable@vger.kernel.org, Dave Anglin <dave.anglin@bell.net>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 5.4 130/138] parisc: Add atomic64_set_release() define to avoid CPU soft lockups
 Date:   Mon, 27 Jul 2020 16:05:25 +0200
-Message-Id: <20200727134939.978739829@linuxfoundation.org>
+Message-Id: <20200727134931.925012885@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: John David Anglin <dave.anglin@bell.net>
 
-commit 926234f1b8434c4409aa4c53637aa3362ca07cea upstream.
+commit be6577af0cef934ccb036445314072e8cb9217b9 upstream.
 
-The `INSN_CONFIG` comedi instruction with sub-instruction code
-`INSN_CONFIG_DIGITAL_TRIG` includes a base channel in `data[3]`. This is
-used as a right shift amount for other bitmask values without being
-checked.  Shift amounts greater than or equal to 32 will result in
-undefined behavior.  Add code to deal with this.
+Stalls are quite frequent with recent kernels. I enabled
+CONFIG_SOFTLOCKUP_DETECTOR and I caught the following stall:
 
-Fixes: 1e15687ea472 ("staging: comedi: addi_apci_1564: add Change-of-State interrupt subdevice and required functions")
-Cc: <stable@vger.kernel.org> #3.17+
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20200717145257.112660-4-abbotti@mev.co.uk
+watchdog: BUG: soft lockup - CPU#0 stuck for 22s! [cc1:22803]
+CPU: 0 PID: 22803 Comm: cc1 Not tainted 5.6.17+ #3
+Hardware name: 9000/800/rp3440
+ IAOQ[0]: d_alloc_parallel+0x384/0x688
+ IAOQ[1]: d_alloc_parallel+0x388/0x688
+ RP(r2): d_alloc_parallel+0x134/0x688
+Backtrace:
+ [<000000004036974c>] __lookup_slow+0xa4/0x200
+ [<0000000040369fc8>] walk_component+0x288/0x458
+ [<000000004036a9a0>] path_lookupat+0x88/0x198
+ [<000000004036e748>] filename_lookup+0xa0/0x168
+ [<000000004036e95c>] user_path_at_empty+0x64/0x80
+ [<000000004035d93c>] vfs_statx+0x104/0x158
+ [<000000004035dfcc>] __do_sys_lstat64+0x44/0x80
+ [<000000004035e5a0>] sys_lstat64+0x20/0x38
+ [<0000000040180054>] syscall_exit+0x0/0x14
+
+The code was stuck in this loop in d_alloc_parallel:
+
+    4037d414:   0e 00 10 dc     ldd 0(r16),ret0
+    4037d418:   c7 fc 5f ed     bb,< ret0,1f,4037d414 <d_alloc_parallel+0x384>
+    4037d41c:   08 00 02 40     nop
+
+This is the inner loop of bit_spin_lock which is called by hlist_bl_unlock in
+d_alloc_parallel:
+
+static inline void bit_spin_lock(int bitnum, unsigned long *addr)
+{
+        /*
+         * Assuming the lock is uncontended, this never enters
+         * the body of the outer loop. If it is contended, then
+         * within the inner loop a non-atomic test is used to
+         * busywait with less bus contention for a good time to
+         * attempt to acquire the lock bit.
+         */
+        preempt_disable();
+#if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+        while (unlikely(test_and_set_bit_lock(bitnum, addr))) {
+                preempt_enable();
+                do {
+                        cpu_relax();
+                } while (test_bit(bitnum, addr));
+                preempt_disable();
+        }
+#endif
+        __acquire(bitlock);
+}
+
+After consideration, I realized that we must be losing bit unlocks.
+Then, I noticed that we missed defining atomic64_set_release().
+Adding this define fixes the stalls in bit operations.
+
+Signed-off-by: Dave Anglin <dave.anglin@bell.net>
+Cc: stable@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/addi_apci_1564.c |   20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ arch/parisc/include/asm/atomic.h |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/staging/comedi/drivers/addi_apci_1564.c
-+++ b/drivers/staging/comedi/drivers/addi_apci_1564.c
-@@ -331,14 +331,22 @@ static int apci1564_cos_insn_config(stru
- 				    unsigned int *data)
- {
- 	struct apci1564_private *devpriv = dev->private;
--	unsigned int shift, oldmask;
-+	unsigned int shift, oldmask, himask, lomask;
+--- a/arch/parisc/include/asm/atomic.h
++++ b/arch/parisc/include/asm/atomic.h
+@@ -212,6 +212,8 @@ atomic64_set(atomic64_t *v, s64 i)
+ 	_atomic_spin_unlock_irqrestore(v, flags);
+ }
  
- 	switch (data[0]) {
- 	case INSN_CONFIG_DIGITAL_TRIG:
- 		if (data[1] != 0)
- 			return -EINVAL;
- 		shift = data[3];
--		oldmask = (1U << shift) - 1;
-+		if (shift < 32) {
-+			oldmask = (1U << shift) - 1;
-+			himask = data[4] << shift;
-+			lomask = data[5] << shift;
-+		} else {
-+			oldmask = 0xffffffffu;
-+			himask = 0;
-+			lomask = 0;
-+		}
- 		switch (data[2]) {
- 		case COMEDI_DIGITAL_TRIG_DISABLE:
- 			devpriv->ctrl = 0;
-@@ -362,8 +370,8 @@ static int apci1564_cos_insn_config(stru
- 				devpriv->mode2 &= oldmask;
- 			}
- 			/* configure specified channels */
--			devpriv->mode1 |= data[4] << shift;
--			devpriv->mode2 |= data[5] << shift;
-+			devpriv->mode1 |= himask;
-+			devpriv->mode2 |= lomask;
- 			break;
- 		case COMEDI_DIGITAL_TRIG_ENABLE_LEVELS:
- 			if (devpriv->ctrl != (APCI1564_DI_IRQ_ENA |
-@@ -380,8 +388,8 @@ static int apci1564_cos_insn_config(stru
- 				devpriv->mode2 &= oldmask;
- 			}
- 			/* configure specified channels */
--			devpriv->mode1 |= data[4] << shift;
--			devpriv->mode2 |= data[5] << shift;
-+			devpriv->mode1 |= himask;
-+			devpriv->mode2 |= lomask;
- 			break;
- 		default:
- 			return -EINVAL;
++#define atomic64_set_release(v, i)	atomic64_set((v), (i))
++
+ static __inline__ s64
+ atomic64_read(const atomic64_t *v)
+ {
 
 
