@@ -2,288 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893F122F881
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C05322F888
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbgG0SxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:53:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31614 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726196AbgG0SxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:53:11 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RIWsZk178491;
-        Mon, 27 Jul 2020 14:52:58 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32hs1c6enq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 14:52:57 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06RIX2wT179663;
-        Mon, 27 Jul 2020 14:52:57 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32hs1c6en6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 14:52:57 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06RIoa0B022493;
-        Mon, 27 Jul 2020 18:52:56 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 32gcy40ak8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 18:52:56 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06RIqstZ64356780
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Jul 2020 18:52:54 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB2E46E04C;
-        Mon, 27 Jul 2020 18:52:54 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E93876E04E;
-        Mon, 27 Jul 2020 18:52:53 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.73.118])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Jul 2020 18:52:53 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 42F622E33AC; Tue, 28 Jul 2020 00:22:49 +0530 (IST)
-Date:   Tue, 28 Jul 2020 00:22:49 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>
-Subject: Re: [PATCH v4 09/10] Powerpc/smp: Create coregroup domain
-Message-ID: <20200727185249.GA26602@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com>
- <20200727053230.19753-10-srikar@linux.vnet.ibm.com>
+        id S1727781AbgG0S4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:56:02 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55661 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgG0S4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:56:02 -0400
+IronPort-SDR: vGBEV2E6bz2njcfM1LQfKgRPu4Cn2bnGK5cUo5WdnyKIc9YgUG2Dvy4sgja3zsZ2X5yL73ryg5
+ wY4xko0Cq7NQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="130657572"
+X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; 
+   d="scan'208";a="130657572"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2020 11:56:01 -0700
+IronPort-SDR: Ar7w+vhOs7cs+We/rDXMdsxQWkC8w8KE7VWY9eFwEoeZlDucekD2wjp56bEJmwV7BK6MI9KGts
+ UjzxOn5Ia5SA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,403,1589266800"; 
+   d="scan'208";a="321914893"
+Received: from lkp-server01.sh.intel.com (HELO df0563f96c37) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Jul 2020 11:56:00 -0700
+Received: from kbuild by df0563f96c37 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k08I3-00020l-EK; Mon, 27 Jul 2020 18:55:59 +0000
+Date:   Tue, 28 Jul 2020 02:54:31 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 13efa616124f7eec7d6a58adeeef31864aa03879
+Message-ID: <5f1f22e7.cpkb30MrIWiDyqCy%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727053230.19753-10-srikar@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_13:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007270125
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srikar,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  sched/core
+branch HEAD: 13efa616124f7eec7d6a58adeeef31864aa03879  sched/uclamp: Remove unnecessary mutex_init()
 
-On Mon, Jul 27, 2020 at 11:02:29AM +0530, Srikar Dronamraju wrote:
-> Add percpu coregroup maps and masks to create coregroup domain.
-> If a coregroup doesn't exist, the coregroup domain will be degenerated
-> in favour of SMT/CACHE domain.
-> 
-> Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-> Cc: LKML <linux-kernel@vger.kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Anton Blanchard <anton@ozlabs.org>
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Nathan Lynch <nathanl@linux.ibm.com>
-> Cc: Michael Neuling <mikey@neuling.org>
-> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Jordan Niethe <jniethe5@gmail.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+elapsed time: 3396m
 
-This version looks good to me.
+configs tested: 64
+configs skipped: 1
 
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+arm64                            allyesconfig
+arm64                               defconfig
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                           sun3_defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+xtensa                              defconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+arc                              allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+nios2                               defconfig
+openrisc                            defconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200727
+i386                 randconfig-a005-20200727
+i386                 randconfig-a004-20200727
+i386                 randconfig-a006-20200727
+i386                 randconfig-a002-20200727
+i386                 randconfig-a001-20200727
+i386                 randconfig-a016-20200725
+i386                 randconfig-a013-20200725
+i386                 randconfig-a012-20200725
+i386                 randconfig-a015-20200725
+i386                 randconfig-a014-20200725
+i386                 randconfig-a011-20200725
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+sparc64                             defconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                                   rhel
 
-> ---
-> Changelog v3 ->v4:
-> 	if coregroup_support doesn't exist, update MC mask to the next
-> 	smaller domain mask.
-> 
-> Changelog v2 -> v3:
-> 	Add optimization for mask updation under coregroup_support
-> 
-> Changelog v1 -> v2:
-> 	Moved coregroup topology fixup to fixup_topology (Gautham)
-> 
->  arch/powerpc/include/asm/topology.h | 10 +++++++
->  arch/powerpc/kernel/smp.c           | 44 +++++++++++++++++++++++++++++
->  arch/powerpc/mm/numa.c              |  5 ++++
->  3 files changed, 59 insertions(+)
-> 
-> diff --git a/arch/powerpc/include/asm/topology.h b/arch/powerpc/include/asm/topology.h
-> index f0b6300e7dd3..6609174918ab 100644
-> --- a/arch/powerpc/include/asm/topology.h
-> +++ b/arch/powerpc/include/asm/topology.h
-> @@ -88,12 +88,22 @@ static inline int cpu_distance(__be32 *cpu1_assoc, __be32 *cpu2_assoc)
-> 
->  #if defined(CONFIG_NUMA) && defined(CONFIG_PPC_SPLPAR)
->  extern int find_and_online_cpu_nid(int cpu);
-> +extern int cpu_to_coregroup_id(int cpu);
->  #else
->  static inline int find_and_online_cpu_nid(int cpu)
->  {
->  	return 0;
->  }
-> 
-> +static inline int cpu_to_coregroup_id(int cpu)
-> +{
-> +#ifdef CONFIG_SMP
-> +	return cpu_to_core_id(cpu);
-> +#else
-> +	return 0;
-> +#endif
-> +}
-> +
->  #endif /* CONFIG_NUMA && CONFIG_PPC_SPLPAR */
-> 
->  #include <asm-generic/topology.h>
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index dab96a1203ec..95f0bf72e283 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -80,6 +80,7 @@ DEFINE_PER_CPU(cpumask_var_t, cpu_sibling_map);
->  DEFINE_PER_CPU(cpumask_var_t, cpu_smallcore_map);
->  DEFINE_PER_CPU(cpumask_var_t, cpu_l2_cache_map);
->  DEFINE_PER_CPU(cpumask_var_t, cpu_core_map);
-> +DEFINE_PER_CPU(cpumask_var_t, cpu_coregroup_map);
-> 
->  EXPORT_PER_CPU_SYMBOL(cpu_sibling_map);
->  EXPORT_PER_CPU_SYMBOL(cpu_l2_cache_map);
-> @@ -91,6 +92,7 @@ enum {
->  	smt_idx,
->  #endif
->  	bigcore_idx,
-> +	mc_idx,
->  	die_idx,
->  };
-> 
-> @@ -869,6 +871,21 @@ static const struct cpumask *smallcore_smt_mask(int cpu)
->  }
->  #endif
-> 
-> +static struct cpumask *cpu_coregroup_mask(int cpu)
-> +{
-> +	return per_cpu(cpu_coregroup_map, cpu);
-> +}
-> +
-> +static bool has_coregroup_support(void)
-> +{
-> +	return coregroup_enabled;
-> +}
-> +
-> +static const struct cpumask *cpu_mc_mask(int cpu)
-> +{
-> +	return cpu_coregroup_mask(cpu);
-> +}
-> +
->  static const struct cpumask *cpu_bigcore_mask(int cpu)
->  {
->  	return per_cpu(cpu_sibling_map, cpu);
-> @@ -879,6 +896,7 @@ static struct sched_domain_topology_level powerpc_topology[] = {
->  	{ cpu_smt_mask, powerpc_smt_flags, SD_INIT_NAME(SMT) },
->  #endif
->  	{ cpu_bigcore_mask, SD_INIT_NAME(BIGCORE) },
-> +	{ cpu_mc_mask, SD_INIT_NAME(MC) },
->  	{ cpu_cpu_mask, SD_INIT_NAME(DIE) },
->  	{ NULL, },
->  };
-> @@ -925,6 +943,10 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  					GFP_KERNEL, cpu_to_node(cpu));
->  		zalloc_cpumask_var_node(&per_cpu(cpu_core_map, cpu),
->  					GFP_KERNEL, cpu_to_node(cpu));
-> +		if (has_coregroup_support())
-> +			zalloc_cpumask_var_node(&per_cpu(cpu_coregroup_map, cpu),
-> +						GFP_KERNEL, cpu_to_node(cpu));
-> +
->  #ifdef CONFIG_NEED_MULTIPLE_NODES
->  		/*
->  		 * numa_node_id() works after this.
-> @@ -942,6 +964,9 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  	cpumask_set_cpu(boot_cpuid, cpu_l2_cache_mask(boot_cpuid));
->  	cpumask_set_cpu(boot_cpuid, cpu_core_mask(boot_cpuid));
-> 
-> +	if (has_coregroup_support())
-> +		cpumask_set_cpu(boot_cpuid, cpu_coregroup_mask(boot_cpuid));
-> +
->  	init_big_cores();
->  	if (has_big_cores) {
->  		cpumask_set_cpu(boot_cpuid,
-> @@ -1233,6 +1258,8 @@ static void remove_cpu_from_masks(int cpu)
->  		set_cpus_unrelated(cpu, i, cpu_sibling_mask);
->  		if (has_big_cores)
->  			set_cpus_unrelated(cpu, i, cpu_smallcore_mask);
-> +		if (has_coregroup_support())
-> +			set_cpus_unrelated(cpu, i, cpu_coregroup_mask);
->  	}
->  }
->  #endif
-> @@ -1293,6 +1320,20 @@ static void add_cpu_to_masks(int cpu)
->  	add_cpu_to_smallcore_masks(cpu);
->  	update_mask_by_l2(cpu, cpu_l2_cache_mask);
-> 
-> +	if (has_coregroup_support()) {
-> +		int coregroup_id = cpu_to_coregroup_id(cpu);
-> +
-> +		cpumask_set_cpu(cpu, cpu_coregroup_mask(cpu));
-> +		for_each_cpu_and(i, cpu_online_mask, cpu_cpu_mask(cpu)) {
-> +			int fcpu = cpu_first_thread_sibling(i);
-> +
-> +			if (fcpu == first_thread)
-> +				set_cpus_related(cpu, i, cpu_coregroup_mask);
-> +			else if (coregroup_id == cpu_to_coregroup_id(i))
-> +				set_cpus_related(cpu, i, cpu_coregroup_mask);
-> +		}
-> +	}
-> +
->  	if (pkg_id == -1) {
->  		struct cpumask *(*mask)(int) = cpu_sibling_mask;
-> 
-> @@ -1398,6 +1439,9 @@ static void fixup_topology(void)
->  		powerpc_topology[bigcore_idx].name = "CACHE";
->  #endif
->  	}
-> +
-> +	if (!has_coregroup_support())
-> +		powerpc_topology[mc_idx].mask = powerpc_topology[bigcore_idx].mask;
->  }
-> 
->  void __init smp_cpus_done(unsigned int max_cpus)
-> diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-> index 51cb672f113b..0d57779e7942 100644
-> --- a/arch/powerpc/mm/numa.c
-> +++ b/arch/powerpc/mm/numa.c
-> @@ -1216,6 +1216,11 @@ int find_and_online_cpu_nid(int cpu)
->  	return new_nid;
->  }
-> 
-> +int cpu_to_coregroup_id(int cpu)
-> +{
-> +	return cpu_to_core_id(cpu);
-> +}
-> +
->  static int topology_update_init(void)
->  {
->  	topology_inited = 1;
-> -- 
-> 2.17.1
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
