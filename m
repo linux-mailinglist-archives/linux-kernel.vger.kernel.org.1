@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B249522EA97
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C8422EA88
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgG0LAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:00:31 -0400
-Received: from mailout12.rmx.de ([94.199.88.78]:41595 "EHLO mailout12.rmx.de"
+        id S1728391AbgG0K5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:57:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727775AbgG0LAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:00:31 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726324AbgG0K5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:57:47 -0400
+Received: from localhost.localdomain (pool-96-246-152-186.nycmny.fios.verizon.net [96.246.152.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout12.rmx.de (Postfix) with ESMTPS id 4BFcKQ0JqPzRpnd;
-        Mon, 27 Jul 2020 13:00:26 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4BFcHv1CVBz2xDp;
-        Mon, 27 Jul 2020 12:59:07 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.121) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Mon, 27 Jul
- 2020 12:58:37 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>
-CC:     Christian Eggers <ceggers@arri.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>,
-        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-Subject: [PATCH 1/3] ARM: dts: imx6ull: Add rngb node
-Date:   Mon, 27 Jul 2020 12:57:14 +0200
-Message-ID: <20200727105718.26225-2-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200727105718.26225-1-ceggers@arri.de>
-References: <20200727105718.26225-1-ceggers@arri.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.121]
-X-RMX-ID: 20200727-125911-4BFcHv1CVBz2xDp-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+        by mail.kernel.org (Postfix) with ESMTPSA id 33B532070B;
+        Mon, 27 Jul 2020 10:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595847467;
+        bh=U/1331pETiuwhTM+IUIHu8BPQ+Psbv5olq3HsSqSQj4=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=BOOtDTGzLu1hTazCClx7HJFY7Dt9e0BGgjqhW55IgbB7sYLyFJQmkCiZsCNCbcDAN
+         qbhKky3oNrVus9Cyuz3LIUQvJMOg0lqaOeqv0zAxcW3IpJh6GA0wELNna+X8ji8WNE
+         0goynQGVKw1nTR64C36POjKqj7RQSApbiKx8wIkk=
+Message-ID: <1595847465.4841.63.camel@kernel.org>
+Subject: Re: [PATCH v3 12/19] firmware_loader: Use security_post_load_data()
+From:   Mimi Zohar <zohar@kernel.org>
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 27 Jul 2020 06:57:45 -0400
+In-Reply-To: <20200724213640.389191-13-keescook@chromium.org>
+References: <20200724213640.389191-1-keescook@chromium.org>
+         <20200724213640.389191-13-keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RNGB block on 6ull has no major differences, but it has no
-switchable clock.
+On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
+> Now that security_post_load_data() is wired up, use it instead
+> of the NULL file argument style of security_post_read_file(),
+> and update the security_kernel_load_data() call to indicate that a
+> security_kernel_post_load_data() call is expected.
+> 
+> Wire up the IMA check to match earlier logic. Perhaps a generalized
+> change to ima_post_load_data() might look something like this:
+> 
+>     return process_buffer_measurement(buf, size,
+>                                       kernel_load_data_id_str(load_id),
+>                                       read_idmap[load_id] ?: FILE_CHECK,
+>                                       0, NULL);
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
----
- arch/arm/boot/dts/imx6ull.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+process_measurement() measures, verifies a file signature -  both
+signatures stored as an xattr and as an appended buffer signature -
+and augments audit records with the file hash. (Support for measuring,
+augmenting audit records, and/or verifying fs-verity signatures has
+yet to be added.)
 
-diff --git a/arch/arm/boot/dts/imx6ull.dtsi b/arch/arm/boot/dts/imx6ull.dtsi
-index fcde7f77ae42..3d021b304a83 100644
---- a/arch/arm/boot/dts/imx6ull.dtsi
-+++ b/arch/arm/boot/dts/imx6ull.dtsi
-@@ -68,6 +68,12 @@ dcp: crypto@2280000 {
- 				clock-names = "dcp";
- 			};
- 
-+			rngb: rng@2284000 {
-+				compatible = "fsl,imx6ull-dcp", "fsl,imx25-rngb";
-+				reg = <0x02284000 0x4000>;
-+				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-+			};
-+
- 			iomuxc_snvs: iomuxc-snvs@2290000 {
- 				compatible = "fsl,imx6ull-iomuxc-snvs";
- 				reg = <0x02290000 0x4000>;
--- 
-Christian Eggers
-Embedded software developer
+As explained in my response to 11/19, the file descriptor provides the
+file pathname associated with the buffer data.  In addition, IMA
+policy rules may be defined in terms of other file descriptor info -
+uid, euid, uuid, etc.
 
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
+Recently support was added for measuring the kexec boot command line,
+certificates being loaded onto a keyring, and blacklisted file hashes
+(limited to appended signatures).  None of these buffers are signed.
+ process_buffer_measurement() was added for this reason and as a
+result is limited to just measuring the buffer data.
 
+Whether process_measurement() or process_buffer_measurement() should
+be modified, needs to be determined.  In either case to support the
+init_module syscall, would at minimum require the associated file
+pathname.
+
+Mimi
