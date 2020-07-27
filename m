@@ -2,157 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A704422F30F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE76222F31D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729700AbgG0OxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
+        id S1730340AbgG0Oxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728593AbgG0OxF (ORCPT
+        with ESMTP id S1728743AbgG0Oxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:53:05 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37369C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:53:05 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id di22so5184224edb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:53:05 -0700 (PDT)
+        Mon, 27 Jul 2020 10:53:36 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FDFC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:53:36 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id f14so1514082ejb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=solid-run-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DMgN5tZMxqYrW7jQ12rF21saA28TBC0yxDThKi4Y2Xk=;
-        b=hxLR76E4N9viPtHqqQtAE8b60wZVrZdsC9t3ff7Tm0CZxzG/syJaZW3kduG89h50wS
-         tq6gKpMa4gYp4isW/rKyf+FqFfB0lxcdUASPxgL2r4qRijur9HU0j4xNot3v0YkOX+Pf
-         JVNFga9Tzr/K51kVqTwHwtFqZLJDFRnbhVWN4=
+        bh=jCQp04gaUj6KkSnmOynTN5DWIdoTsVqJqWxUkHbzffI=;
+        b=pq5TkMXOQlAMMfmLjbyxYb5ODxbZOaUIvr98CgMAX+JRzkZXMXVCqNbI0PnrVM/8Ii
+         +YPP+5B9ghuK0TO845Bv6JhjHvj2rM3UMlRbrF36R4ql2z6nDxX9CJV8Ufa1ALYIGdWG
+         czoOmvTHFSjFGN5lnQ2hZv8t8wJ6jKhoE/ZmogrWKtHRH9/LxX2tChA0K4dKKDFARJ8K
+         ysM36eVGT7/R94eoeeDlcDOKtyYNlY9YC/sEOd5uJLXWwmqzu1qmRIMfAPiECZ4DZHVH
+         KUIPzPwaKL38NQWH1VYkUlwNxotUxis5blXXICAWS04m7R1ecgEwHSzM7QGidgXpmQAx
+         onKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DMgN5tZMxqYrW7jQ12rF21saA28TBC0yxDThKi4Y2Xk=;
-        b=GPAiWOGkFoHNUAmUMmGVUnIkYCct2yTvvcNo06sW53giaAWcCFsAtSaPHZYQ4gjdl0
-         uP9lxHzwDPIjpR09vnld/D23DsicbvnlJb/3UukFPR/5xAbWpYIucMvUxDqXWDeQm64y
-         gwCXzDg4bR2p7sPKHEMYXwU8H8IbcVf7gQrrPWnZfPhrRKJaS48yLWVmsvdP8qvcDSrs
-         gxaMwN9iUevoVfYGvK+pDsqBuMRpcQIctVQVWXABcOOkLEuO3KGO6L0bWIhtWb7FFqh2
-         M6rnTf1/vAC71h7T0zsl8Rmn9wfmIHrOg3gQPrGEmFWzs/eyWSUKphv8pPkq57KEdZAT
-         v7GQ==
-X-Gm-Message-State: AOAM530sIZZl7utRzT5I7wn3aI2NaFqPfh+4qtosijcF+aQLZ+4amge7
-        S+UZy2ld33onQHC2LLmD5dQsuFqPiibLVA==
-X-Google-Smtp-Source: ABdhPJz5ntgoYJ76Jyq/FxV4F0M83mL32yDYbZG3MQKs1wbBmRzlKC55vZP/BxXULcwC6mP5uSrxkw==
-X-Received: by 2002:a50:f19c:: with SMTP id x28mr19369236edl.295.1595861583522;
-        Mon, 27 Jul 2020 07:53:03 -0700 (PDT)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id k22sm3527437edo.24.2020.07.27.07.53.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 07:53:02 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id a15so15183588wrh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:53:02 -0700 (PDT)
-X-Received: by 2002:adf:fe12:: with SMTP id n18mr20714835wrr.295.1595861581935;
- Mon, 27 Jul 2020 07:53:01 -0700 (PDT)
+        bh=jCQp04gaUj6KkSnmOynTN5DWIdoTsVqJqWxUkHbzffI=;
+        b=RPXkj3yOh/DVqbin4nS7DJrt4CPJ/YLlkMNhGFsvwC6cnCmPxH11hYABQvaZsHWKAe
+         Vysn9FMe87Y/Z/Hm1HzWnMisxgxKb4ykG8s5CuG+vAiapuVERlfwGbQaQ8AdOvF3/oFm
+         yIdGKT5InLw7+xPMGttkNb12Z7N3tMM+d68DoLe0RQCxrWRCIg0iCR2L9K73Z8i4TUhA
+         4K6DRr/jAV3OGKReN2DJbaF2zHziDaMtU7Gpr55uNQ8Yiwq60SqbRb0ck/188RHlfuVg
+         HXzWycPY4UUb9zH56mJwd++7xQ33JJT0rwpk9E77OMe5jCsM0ASNjrP4mZSwkmUrxVsE
+         G14g==
+X-Gm-Message-State: AOAM530ykQaDPUXrRF3xPGfNrGKs6cnPNR4F/cz7DsGGizIuByqPMuTi
+        qc+gdkQPnA1X7cc2wWxNtVthrG5K24DHbarPqzWWzg==
+X-Google-Smtp-Source: ABdhPJy7XLns5nLG05OdBbUylSemksWFr2TLHaYF566wq5VWjAAx+FLLYE2WnV0UslxIVf7mRgpoCwhY5w/gyXEARqQ=
+X-Received: by 2002:a17:906:600f:: with SMTP id o15mr6513709ejj.41.1595861615025;
+ Mon, 27 Jul 2020 07:53:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200715202233.185680-1-ezequiel@collabora.com>
- <20200715202233.185680-9-ezequiel@collabora.com> <CAPBb6MVMXeTcUfb-98McYCKjh=eM=BTo2dSY=L1c6dv2jHqXcg@mail.gmail.com>
- <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
-In-Reply-To: <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 27 Jul 2020 16:52:50 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5DVfroAXRw+OT=EktDtVzRjPZYxnUS8daWQ5=3LLwn=SA@mail.gmail.com>
-Message-ID: <CAAFQd5DVfroAXRw+OT=EktDtVzRjPZYxnUS8daWQ5=3LLwn=SA@mail.gmail.com>
-Subject: Re: [PATCH 08/10] media: uapi: h264: Clean slice invariants syntax elements
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+References: <20200719145028.3370-3-miguelborgesdefreitas@gmail.com>
+ <20200720112401.4620-1-miguelborgesdefreitas@gmail.com> <20200720112401.4620-2-miguelborgesdefreitas@gmail.com>
+ <20200723174905.GA596242@bogus> <20200723195755.GV3428@piout.net>
+ <20200727094553.GH1551@shell.armlinux.org.uk> <CABdtJHu2BacX+EeVkCxFYWfNxJ-7Z5MP7BqVfF2KHy+XfJGN3w@mail.gmail.com>
+ <20200727141729.GJ1551@shell.armlinux.org.uk>
+In-Reply-To: <20200727141729.GJ1551@shell.armlinux.org.uk>
+From:   Jon Nettleton <jon@solid-run.com>
+Date:   Mon, 27 Jul 2020 16:52:58 +0200
+Message-ID: <CABdtJHtQfrnfdyUgp07G=2_7dLBqnnkmAdZ_Fbqiy84tndJX6Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: rtc: pcf8523: add DSM pm option for
+ battery switch-over
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Rob Herring <robh@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sascha Hauer <kernel@pengutronix.de>, a.zummo@towertech.it,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 4:39 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+On Mon, Jul 27, 2020 at 4:17 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
 >
-> Hi Alexandre,
->
-> Thanks a lot for the review.
->
-> On Sat, 2020-07-25 at 23:34 +0900, Alexandre Courbot wrote:
-> > On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > > The H.264 specification requires in its "Slice header semantics"
-> > > section that the following values shall be the same in all slice headers:
+> On Mon, Jul 27, 2020 at 03:33:17PM +0200, Jon Nettleton wrote:
+> > On Mon, Jul 27, 2020 at 11:46 AM Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
 > > >
-> > >   pic_parameter_set_id
-> > >   frame_num
-> > >   field_pic_flag
-> > >   bottom_field_flag
-> > >   idr_pic_id
-> > >   pic_order_cnt_lsb
-> > >   delta_pic_order_cnt_bottom
-> > >   delta_pic_order_cnt[ 0 ]
-> > >   delta_pic_order_cnt[ 1 ]
-> > >   sp_for_switch_flag
-> > >   slice_group_change_cycle
+> > > On Thu, Jul 23, 2020 at 09:57:55PM +0200, Alexandre Belloni wrote:
+> > > > On 23/07/2020 11:49:05-0600, Rob Herring wrote:
+> > > > > On Mon, Jul 20, 2020 at 12:23:59PM +0100, miguelborgesdefreitas@gmail.com wrote:
+> > > > > > From: Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>
+> > > > > >
+> > > > > > This adds direct-switching mode as a configurable DT flag for
+> > > > > > RTC modules supporting it (e.g. nxp pcf8523).
+> > > > > > DSM switches the power source to the battery supply whenever the
+> > > > > > VDD drops below VBAT. The option is recommended for hw designs
+> > > > > > where VDD is always expected to be higher than VBAT.
+> > > > > >
+> > > > > > Signed-off-by: Miguel Borges de Freitas <miguelborgesdefreitas@gmail.com>
+> > > > > > ---
+> > > > > > Changes in v2:
+> > > > > > - Added extended commit message for git history
+> > > > > > - Separate dt bindings documentation into a single patch
+> > > > > >
+> > > > > >  Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt | 7 ++++++-
+> > > > > >  Documentation/devicetree/bindings/rtc/rtc.yaml        | 7 +++++++
+> > > > > >  2 files changed, 13 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+> > > > > > index 0b1080c..f715a8f 100644
+> > > > > > --- a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+> > > > > > +++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+> > > > > > @@ -4,10 +4,14 @@ Required properties:
+> > > > > >  - compatible: Should contain "nxp,pcf8523".
+> > > > > >  - reg: I2C address for chip.
+> > > > > >
+> > > > > > -Optional property:
+> > > > > > +Optional properties:
+> > > > > >  - quartz-load-femtofarads: The capacitive load of the quartz(x-tal),
+> > > > > >    expressed in femto Farad (fF). Valid values are 7000 and 12500.
+> > > > > >    Default value (if no value is specified) is 12500fF.
+> > > > > > +- pm-enable-dsm: battery switch-over function is enabled in direct
+> > > > > > +  switching mode. The power failure condition happens when VDD < VBAT,
+> > > > > > +  without requiring VDD to drop below Vth(sw)bat.
+> > > > > > +  Default value (if not provided) is the standard mode.
+> > > > > >
+> > > > > >  Example:
+> > > > > >
+> > > > > > @@ -15,4 +19,5 @@ pcf8523: rtc@68 {
+> > > > > >   compatible = "nxp,pcf8523";
+> > > > > >   reg = <0x68>;
+> > > > > >   quartz-load-femtofarads = <7000>;
+> > > > > > + pm-enable-dsm;
+> > > > > >  };
+> > > > > > diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > > > > > index ee237b2..a0048f4 100644
+> > > > > > --- a/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > > > > > +++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+> > > > > > @@ -47,4 +47,11 @@ properties:
+> > > > > >      description:
+> > > > > >        Enables wake up of host system on alarm.
+> > > > > >
+> > > > > > +  pm-enable-dsm:
+> > > > > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > > > > +    description:
+> > > > > > +      Enables the battery switch-over function in direct switching
+> > > > > > +      mode. Should be set in systems where VDD is higher than VBAT
+> > > > > > +      at all times.
+> > > > >
+> > > > > I'm all for common properties, but is this common across vendors?
+> > > > >
+> > > >
+> > > > This is but this shouldn't be a DT property as it has to be changed
+> > > > dynamically. I'm working on an ioctl interface to change this
+> > > > configuration.
 > > >
-> > > and can therefore be moved to the per-frame decode parameters control.
+> > > Why does it need to be changed dynamically?  If the hardware components
+> > > are not fitted to allow the RTC to be safely used without DSM, then
+> > > why should userspace be able to disable DSM?
+> > >
 > >
-> > I am really not a H.264 expert, so this question may not be relevant,
+> > My presumption would be if you had a system that ran at different
+> > system voltages depending if it is plugged in to mains or running on a
+> > battery.
 >
-> All questions are welcome. I'm more than happy to discuss this patchset.
+> Yes, but we're not talking about that case with the Cubox-i.
 >
-> > but are these values specified for every slice header in the
-> > bitstream, or are they specified only once per frame?
-> >
-> > I am asking this because it would certainly make user-space code
-> > simpler if we could remain as close to the bitstream as possible. If
-> > these values are specified once per slice, then factorizing them would
-> > leave user-space with the burden of deciding what to do if they change
-> > across slices.
-> >
-> > Note that this is a double-edged sword, because it is not necessarily
-> > better to leave the firmware in charge of deciding what to do in such
-> > a case. :) So hopefully these are only specified once per frame in the
-> > bitstream, in which case your proposal makes complete sense.
+> Should a platform like the Cubox-i allow the user to disable DSM?
 >
-> Frame-based hardwares accelerators such as Hantro and Rockchip VDEC
-> are doing the slice header parsing themselves. Therefore, the
-> driver is not really parsing these fields on each slice header.
+> There needs to be a way to block the ability to dynamically change
+> this mode if the hardware is not up to operating without DSM.
 >
-> Currently, we are already using only the first slice in a frame,
-> as you can see from:
->
->         if (slices[0].flags & V4L2_H264_SLICE_FLAG_FIELD_PIC)
->                 reg |= G1_REG_DEC_CTRL0_PIC_FIELDMODE_E;
->
-> Even if these fields are transported in the slice header,
-> I think it makes sense for us to split them into the decode params
-> (per-frame) control.
->
-> They are really specified to be the same across all slices,
-> so even I'd say if a bitstream violates this, it's likely
-> either a corrupted bitstream or an encoder bug.
->
-> OTOH, one thing this makes me realize is that the slice params control
-> is wrongly specified as an array.
 
-It is _not_.
-
-> Namely, this text
-> should be removed:
->
->        This structure is expected to be passed as an array, with one
->        entry for each slice included in the bitstream buffer.
->
-> As the API is really not defined that way.
->
-> I'll remove that on next iteration.
-
-The v4l2_ctrl_h264_slice_params struct has more data than those that
-are deemed to be the same across all the slices. A remarkable example
-are the size and start_byte_offset fields.
+Agreed.  Do we need a modes supported device-tree property?  That
+would actually describe the hardware as device-tree is supposed to do.
