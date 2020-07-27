@@ -2,254 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D2C22EA62
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E7722EA6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbgG0Kuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726298AbgG0Kux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:50:53 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D451AC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 03:50:53 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id i92so1379164pje.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 03:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=VW4nx3HJC3GTr4WQovKita528C2f+Z4sEHBp51DiCgY=;
-        b=EAsYCt1FUA9wRC2Xm6Mr61eF98VtF0g2zcVzKEqN3cDGfLVaPzI9Nk5cUDpKSFvxK4
-         ZtDKcdWTL6cBHAAlSgpv7f+lvID904zYcT/xm7Nbc2prZFRj/hBzccoc73aEH0eHyj/D
-         yuYD5W7S7xrIUX/squJwiiLAbCXNP5YiE4fjo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=VW4nx3HJC3GTr4WQovKita528C2f+Z4sEHBp51DiCgY=;
-        b=AeIBEUCHJKKUf9Wa1GrsHAjJHNqHa34ue3u4fkNVUD00NNej7xdp5sThSELWuWVlm1
-         5yamz6rLUR0wKX/W+L2NTxzsoGUrp0FcRm61Oo7OnTjEfDY89yN+2d7X+2Hy8H4+vWVd
-         32FOtSMs339GH2QKrIP8W2/XtwXlocOBOFpE+er2D2SqmdJt17Xya5sR7TPjK4txrbHZ
-         2+a2ks/O3QdgNKX09uT9af6pl0OVrW+IDl4Ne5OKzHPXUcnrLqcu/iZ0MWPKCGwg36EA
-         QiiaJw8AXH3gUKHBMobimGW/3VS94FQpNoYQedvcOkv0TQbVNZX2s3O/moLosBjXJm4N
-         hofg==
-X-Gm-Message-State: AOAM5321AWh/G0VPG5kqs2Nh97slEtuLq+6CGkBnDN/aatrlhKpw6VWw
-        iPwfvoGUuOYFx91w0eJTnUc8Aj7NMTA=
-X-Google-Smtp-Source: ABdhPJwMrxDDDKk2+yIhU7W9PcbeMFTv8yspow6RW4e7rUV/x9YNYINLKac1noepKLENhpYnzOUzWw==
-X-Received: by 2002:a17:90a:f996:: with SMTP id cq22mr19692582pjb.208.1595847053266;
-        Mon, 27 Jul 2020 03:50:53 -0700 (PDT)
-Received: from localhost (2001-44b8-111e-5c00-e189-1479-1117-2b11.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:e189:1479:1117:2b11])
-        by smtp.gmail.com with ESMTPSA id 66sm15227419pfg.63.2020.07.27.03.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 03:50:52 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@ozlabs.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] powerpc: Allow 4224 bytes of stack expansion for the signal frame
-In-Reply-To: <20200724092528.1578671-2-mpe@ellerman.id.au>
-References: <20200724092528.1578671-1-mpe@ellerman.id.au> <20200724092528.1578671-2-mpe@ellerman.id.au>
-Date:   Mon, 27 Jul 2020 20:50:49 +1000
-Message-ID: <87y2n5s03a.fsf@dja-thinkpad.axtens.net>
+        id S1728345AbgG0KwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:52:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43513 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726298AbgG0Kv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:51:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595847118; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ot+sszGgKz5/ItpDLIHFFfApINZtJ7SHjN4haXIg1Js=;
+ b=u6C/4tIJnTrB2+sYXZo0NbuxvjG2bXdu8EElBrgvf855vtQ7IA8SUYotDULpf5qRfmw+tFb/
+ zqMo84Z+dFo8N+wg74onPYXO+JgExV5k2II/aBsnANwhNDQR0mVZkR1Lq8QxpNUeloGSDRMI
+ A+RDCHjW8TinQ8udYH8HUc/gHmQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
+ 5f1eb1cda19b5f4b113100c3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 10:51:57
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 737BDC43391; Mon, 27 Jul 2020 10:51:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E6F1C433C6;
+        Mon, 27 Jul 2020 10:51:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 27 Jul 2020 16:21:56 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org, mka@chromium.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] interconnect: Introduce xlate_extended() callback
+In-Reply-To: <20200723130942.28491-2-georgi.djakov@linaro.org>
+References: <20200723130942.28491-1-georgi.djakov@linaro.org>
+ <20200723130942.28491-2-georgi.djakov@linaro.org>
+Message-ID: <62ffca1e81c59131ba5e5c040e6b3cbc@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hey Georgi,
 
-I have tested this with the test from the bug and it now seems to pass
-fine. On that basis:
+Thanks for the patch!
 
-Tested-by: Daniel Axtens <dja@axtens.net>
+On 2020-07-23 18:39, Georgi Djakov wrote:
+> Currently there is the xlate() callback, which is provider-specific is
 
-Thank you for coming up with a better solution than my gross hack!
+nit: currently xlate callback isn't
+provider specific.
 
-Kind regards,
-Daniel
+> used for mapping the nodes from phandle arguments. This is fine for 
+> simple
+> mappings, but the phandle arguments could contain an additional data, 
+> such
+> as tag information. Let's create another callback xlate_extended() for 
+> the
+> cases where providers want also populate the tagging data.
+> 
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-> We have powerpc specific logic in our page fault handling to decide if
-> an access to an unmapped address below the stack pointer should expand
-> the stack VMA.
->
-> The code was originally added in 2004 "ported from 2.4". The rough
-> logic is that the stack is allowed to grow to 1MB with no extra
-> checking. Over 1MB the access must be within 2048 bytes of the stack
-> pointer, or be from a user instruction that updates the stack pointer.
->
-> The 2048 byte allowance below the stack pointer is there to cover the
-> 288 byte "red zone" as well as the "about 1.5kB" needed by the signal
-> delivery code.
->
-> Unfortunately since then the signal frame has expanded, and is now
-> 4224 bytes on 64-bit kernels with transactional memory enabled. This
-> means if a process has consumed more than 1MB of stack, and its stack
-> pointer lies less than 4224 bytes from the next page boundary, signal
-> delivery will fault when trying to expand the stack and the process
-> will see a SEGV.
->
-> The total size of the signal frame is the size of struct rt_sigframe
-> (which includes the red zone) plus __SIGNAL_FRAMESIZE (128 bytes on
-> 64-bit).
->
-> The 2048 byte allowance was correct until 2008 as the signal frame
-> was:
->
-> struct rt_sigframe {
->         struct ucontext    uc;                           /*     0  1440 */
->         /* --- cacheline 11 boundary (1408 bytes) was 32 bytes ago --- */
->         long unsigned int          _unused[2];           /*  1440    16 */
->         unsigned int               tramp[6];             /*  1456    24 */
->         struct siginfo *           pinfo;                /*  1480     8 */
->         void *                     puc;                  /*  1488     8 */
->         struct siginfo     info;                         /*  1496   128 */
->         /* --- cacheline 12 boundary (1536 bytes) was 88 bytes ago --- */
->         char                       abigap[288];          /*  1624   288 */
->
->         /* size: 1920, cachelines: 15, members: 7 */
->         /* padding: 8 */
-> };
->
-> 1920 + 128 = 2048
->
-> Then in commit ce48b2100785 ("powerpc: Add VSX context save/restore,
-> ptrace and signal support") (Jul 2008) the signal frame expanded to
-> 2304 bytes:
->
-> struct rt_sigframe {
->         struct ucontext    uc;                           /*     0  1696 */	<--
->         /* --- cacheline 13 boundary (1664 bytes) was 32 bytes ago --- */
->         long unsigned int          _unused[2];           /*  1696    16 */
->         unsigned int               tramp[6];             /*  1712    24 */
->         struct siginfo *           pinfo;                /*  1736     8 */
->         void *                     puc;                  /*  1744     8 */
->         struct siginfo     info;                         /*  1752   128 */
->         /* --- cacheline 14 boundary (1792 bytes) was 88 bytes ago --- */
->         char                       abigap[288];          /*  1880   288 */
->
->         /* size: 2176, cachelines: 17, members: 7 */
->         /* padding: 8 */
-> };
->
-> 2176 + 128 = 2304
->
-> At this point we should have been exposed to the bug, though as far as
-> I know it was never reported. I no longer have a system old enough to
-> easily test on.
->
-> Then in 2010 commit 320b2b8de126 ("mm: keep a guard page below a
-> grow-down stack segment") caused our stack expansion code to never
-> trigger, as there was always a VMA found for a write up to PAGE_SIZE
-> below r1.
->
-> That meant the bug was hidden as we continued to expand the signal
-> frame in commit 2b0a576d15e0 ("powerpc: Add new transactional memory
-> state to the signal context") (Feb 2013):
->
-> struct rt_sigframe {
->         struct ucontext    uc;                           /*     0  1696 */
->         /* --- cacheline 13 boundary (1664 bytes) was 32 bytes ago --- */
->         struct ucontext    uc_transact;                  /*  1696  1696 */	<--
->         /* --- cacheline 26 boundary (3328 bytes) was 64 bytes ago --- */
->         long unsigned int          _unused[2];           /*  3392    16 */
->         unsigned int               tramp[6];             /*  3408    24 */
->         struct siginfo *           pinfo;                /*  3432     8 */
->         void *                     puc;                  /*  3440     8 */
->         struct siginfo     info;                         /*  3448   128 */
->         /* --- cacheline 27 boundary (3456 bytes) was 120 bytes ago --- */
->         char                       abigap[288];          /*  3576   288 */
->
->         /* size: 3872, cachelines: 31, members: 8 */
->         /* padding: 8 */
->         /* last cacheline: 32 bytes */
-> };
->
-> 3872 + 128 = 4000
->
-> And commit 573ebfa6601f ("powerpc: Increase stack redzone for 64-bit
-> userspace to 512 bytes") (Feb 2014):
->
-> struct rt_sigframe {
->         struct ucontext    uc;                           /*     0  1696 */
->         /* --- cacheline 13 boundary (1664 bytes) was 32 bytes ago --- */
->         struct ucontext    uc_transact;                  /*  1696  1696 */
->         /* --- cacheline 26 boundary (3328 bytes) was 64 bytes ago --- */
->         long unsigned int          _unused[2];           /*  3392    16 */
->         unsigned int               tramp[6];             /*  3408    24 */
->         struct siginfo *           pinfo;                /*  3432     8 */
->         void *                     puc;                  /*  3440     8 */
->         struct siginfo     info;                         /*  3448   128 */
->         /* --- cacheline 27 boundary (3456 bytes) was 120 bytes ago --- */
->         char                       abigap[512];          /*  3576   512 */	<--
->
->         /* size: 4096, cachelines: 32, members: 8 */
->         /* padding: 8 */
-> };
->
-> 4096 + 128 = 4224
->
-> Then finally in 2017, commit 1be7107fbe18 ("mm: larger stack guard
-> gap, between vmas") exposed us to the existing bug, because it changed
-> the stack VMA to be the correct/real size, meaning our stack expansion
-> code is now triggered.
->
-> Fix it by increasing the allowance to 4224 bytes.
->
-> Hard-coding 4224 is obviously unsafe against future expansions of the
-> signal frame in the same way as the existing code. We can't easily use
-> sizeof() because the signal frame structure is not in a header. We
-> will either fix that, or rip out all the custom stack expansion
-> checking logic entirely.
->
-> Fixes: ce48b2100785 ("powerpc: Add VSX context save/restore, ptrace and signal support")
-> Cc: stable@vger.kernel.org # v2.6.27+
-> Reported-by: Tom Lane <tgl@sss.pgh.pa.us>
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Tested-by: Sibi Sankar <sibis@codeaurora.org>
+Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
+
 > ---
->
-> v2: Account for the extra 128 bytes of __SIGNAL_FRAMESIZE, making the
->     total size 4224, as noticed by dja.
->
-> See also https://bugzilla.kernel.org/show_bug.cgi?id=205183
-> ---
->  arch/powerpc/mm/fault.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 641fc5f3d7dd..3ebb1792e636 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -267,6 +267,9 @@ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->  	return false;
->  }
->  
-> +// This comes from 64-bit struct rt_sigframe + __SIGNAL_FRAMESIZE
-> +#define SIGFRAME_MAX_SIZE	(4096 + 128)
+>  drivers/interconnect/core.c           | 73 ++++++++++++++++++---------
+>  include/linux/interconnect-provider.h | 17 ++++++-
+>  2 files changed, 65 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+> index befd111049c0..6ccf55818e68 100644
+> --- a/drivers/interconnect/core.c
+> +++ b/drivers/interconnect/core.c
+> @@ -336,12 +336,13 @@ EXPORT_SYMBOL_GPL(of_icc_xlate_onecell);
+>   * Looks for interconnect provider under the node specified by @spec 
+> and if
+>   * found, uses xlate function of the provider to map phandle args to 
+> node.
+>   *
+> - * Returns a valid pointer to struct icc_node on success or ERR_PTR()
+> + * Returns a valid pointer to struct icc_node_data on success or 
+> ERR_PTR()
+>   * on failure.
+>   */
+> -struct icc_node *of_icc_get_from_provider(struct of_phandle_args 
+> *spec)
+> +struct icc_node_data *of_icc_get_from_provider(struct of_phandle_args 
+> *spec)
+>  {
+>  	struct icc_node *node = ERR_PTR(-EPROBE_DEFER);
+> +	struct icc_node_data *data = NULL;
+>  	struct icc_provider *provider;
+> 
+>  	if (!spec)
+> @@ -349,14 +350,33 @@ struct icc_node *of_icc_get_from_provider(struct
+> of_phandle_args *spec)
+> 
+>  	mutex_lock(&icc_lock);
+>  	list_for_each_entry(provider, &icc_providers, provider_list) {
+> -		if (provider->dev->of_node == spec->np)
+> -			node = provider->xlate(spec, provider->data);
+> -		if (!IS_ERR(node))
+> -			break;
+> +		if (provider->dev->of_node == spec->np) {
+> +			if (provider->xlate_extended) {
+> +				data = provider->xlate_extended(spec, provider->data);
+> +				if (!IS_ERR(data)) {
+> +					node = data->node;
+> +					break;
+> +				}
+> +			} else {
+> +				node = provider->xlate(spec, provider->data);
+> +				if (!IS_ERR(node))
+> +					break;
+> +			}
+> +		}
+>  	}
+>  	mutex_unlock(&icc_lock);
+> 
+> -	return node;
+> +	if (IS_ERR(node))
+> +		return ERR_CAST(node);
 > +
->  static bool bad_stack_expansion(struct pt_regs *regs, unsigned long address,
->  				struct vm_area_struct *vma, unsigned int flags,
->  				bool *must_retry)
-> @@ -274,7 +277,7 @@ static bool bad_stack_expansion(struct pt_regs *regs, unsigned long address,
->  	/*
->  	 * N.B. The POWER/Open ABI allows programs to access up to
->  	 * 288 bytes below the stack pointer.
-> -	 * The kernel signal delivery code writes up to about 1.5kB
-> +	 * The kernel signal delivery code writes a bit over 4KB
->  	 * below the stack pointer (r1) before decrementing it.
->  	 * The exec code can write slightly over 640kB to the stack
->  	 * before setting the user r1.  Thus we allow the stack to
-> @@ -299,7 +302,7 @@ static bool bad_stack_expansion(struct pt_regs *regs, unsigned long address,
->  		 * between the last mapped region and the stack will
->  		 * expand the stack rather than segfaulting.
->  		 */
-> -		if (address + 2048 >= uregs->gpr[1])
-> +		if (address + SIGFRAME_MAX_SIZE >= uregs->gpr[1])
->  			return false;
->  
->  		if ((flags & FAULT_FLAG_WRITE) && (flags & FAULT_FLAG_USER) &&
-> -- 
-> 2.25.1
+> +	if (!data) {
+> +		data = kzalloc(sizeof(*data), GFP_KERNEL);
+> +		if (!data)
+> +			return ERR_PTR(-ENOMEM);
+> +		data->node = node;
+> +	}
+> +
+> +	return data;
+>  }
+>  EXPORT_SYMBOL_GPL(of_icc_get_from_provider);
+> 
+> @@ -403,7 +423,7 @@ EXPORT_SYMBOL_GPL(devm_of_icc_get);
+>  struct icc_path *of_icc_get_by_index(struct device *dev, int idx)
+>  {
+>  	struct icc_path *path;
+> -	struct icc_node *src_node, *dst_node;
+> +	struct icc_node_data *src_data, *dst_data;
+>  	struct device_node *np;
+>  	struct of_phandle_args src_args, dst_args;
+>  	int ret;
+> @@ -441,39 +461,46 @@ struct icc_path *of_icc_get_by_index(struct
+> device *dev, int idx)
+> 
+>  	of_node_put(dst_args.np);
+> 
+> -	src_node = of_icc_get_from_provider(&src_args);
+> +	src_data = of_icc_get_from_provider(&src_args);
+> 
+> -	if (IS_ERR(src_node)) {
+> -		if (PTR_ERR(src_node) != -EPROBE_DEFER)
+> +	if (IS_ERR(src_data)) {
+> +		if (PTR_ERR(src_data) != -EPROBE_DEFER)
+>  			dev_err(dev, "error finding src node: %ld\n",
+> -				PTR_ERR(src_node));
+> -		return ERR_CAST(src_node);
+> +				PTR_ERR(src_data));
+> +		return ERR_CAST(src_data);
+>  	}
+> 
+> -	dst_node = of_icc_get_from_provider(&dst_args);
+> +	dst_data = of_icc_get_from_provider(&dst_args);
+> 
+> -	if (IS_ERR(dst_node)) {
+> -		if (PTR_ERR(dst_node) != -EPROBE_DEFER)
+> +	if (IS_ERR(dst_data)) {
+> +		if (PTR_ERR(dst_data) != -EPROBE_DEFER)
+>  			dev_err(dev, "error finding dst node: %ld\n",
+> -				PTR_ERR(dst_node));
+> -		return ERR_CAST(dst_node);
+> +				PTR_ERR(dst_data));
+> +		kfree(src_data);
+> +		return ERR_CAST(dst_data);
+>  	}
+> 
+>  	mutex_lock(&icc_lock);
+> -	path = path_find(dev, src_node, dst_node);
+> +	path = path_find(dev, src_data->node, dst_data->node);
+>  	mutex_unlock(&icc_lock);
+>  	if (IS_ERR(path)) {
+>  		dev_err(dev, "%s: invalid path=%ld\n", __func__, PTR_ERR(path));
+> -		return path;
+> +		goto free_icc_data;
+>  	}
+> 
+> +	if (src_data->tag && src_data->tag == dst_data->tag)
+> +		icc_set_tag(path, src_data->tag);
+> +
+>  	path->name = kasprintf(GFP_KERNEL, "%s-%s",
+> -			       src_node->name, dst_node->name);
+> +			       src_data->node->name, dst_data->node->name);
+>  	if (!path->name) {
+>  		kfree(path);
+> -		return ERR_PTR(-ENOMEM);
+> +		path = ERR_PTR(-ENOMEM);
+>  	}
+> 
+> +free_icc_data:
+> +	kfree(src_data);
+> +	kfree(dst_data);
+>  	return path;
+>  }
+>  EXPORT_SYMBOL_GPL(of_icc_get_by_index);
+> @@ -975,7 +1002,7 @@ int icc_provider_add(struct icc_provider 
+> *provider)
+>  {
+>  	if (WARN_ON(!provider->set))
+>  		return -EINVAL;
+> -	if (WARN_ON(!provider->xlate))
+> +	if (WARN_ON(!provider->xlate && !provider->xlate_extended))
+>  		return -EINVAL;
+> 
+>  	mutex_lock(&icc_lock);
+> diff --git a/include/linux/interconnect-provider.h
+> b/include/linux/interconnect-provider.h
+> index 4735518de515..4d535fddd5d3 100644
+> --- a/include/linux/interconnect-provider.h
+> +++ b/include/linux/interconnect-provider.h
+> @@ -14,6 +14,17 @@
+>  struct icc_node;
+>  struct of_phandle_args;
+> 
+> +/**
+> + * struct icc_node_data - icc node data
+> + *
+> + * @node: icc node
+> + * @tag: tag
+> + */
+> +struct icc_node_data {
+> +	struct icc_node *node;
+> +	u32 tag;
+> +};
+> +
+>  /**
+>   * struct icc_onecell_data - driver data for onecell interconnect 
+> providers
+>   *
+> @@ -39,6 +50,7 @@ struct icc_node *of_icc_xlate_onecell(struct
+> of_phandle_args *spec,
+>   * @pre_aggregate: pointer to device specific function that is called
+>   *		   before the aggregation begins (optional)
+>   * @xlate: provider-specific callback for mapping nodes from phandle 
+> arguments
+> + * @xlate_extended: vendor-specific callback for mapping node data
+> from phandle arguments
+>   * @dev: the device this interconnect provider belongs to
+>   * @users: count of active users
+>   * @inter_set: whether inter-provider pairs will be configured with 
+> @set
+> @@ -52,6 +64,7 @@ struct icc_provider {
+>  			 u32 peak_bw, u32 *agg_avg, u32 *agg_peak);
+>  	void (*pre_aggregate)(struct icc_node *node);
+>  	struct icc_node* (*xlate)(struct of_phandle_args *spec, void *data);
+> +	struct icc_node_data* (*xlate_extended)(struct of_phandle_args
+> *spec, void *data);
+>  	struct device		*dev;
+>  	int			users;
+>  	bool			inter_set;
+> @@ -105,7 +118,7 @@ void icc_node_del(struct icc_node *node);
+>  int icc_nodes_remove(struct icc_provider *provider);
+>  int icc_provider_add(struct icc_provider *provider);
+>  int icc_provider_del(struct icc_provider *provider);
+> -struct icc_node *of_icc_get_from_provider(struct of_phandle_args 
+> *spec);
+> +struct icc_node_data *of_icc_get_from_provider(struct of_phandle_args 
+> *spec);
+> 
+>  #else
+> 
+> @@ -157,7 +170,7 @@ static inline int icc_provider_del(struct
+> icc_provider *provider)
+>  	return -ENOTSUPP;
+>  }
+> 
+> -static inline struct icc_node *of_icc_get_from_provider(struct
+> of_phandle_args *spec)
+> +static inline struct icc_node_data *of_icc_get_from_provider(struct
+> of_phandle_args *spec)
+>  {
+>  	return ERR_PTR(-ENOTSUPP);
+>  }
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
