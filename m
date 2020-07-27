@@ -2,120 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8958522F257
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD9F22F253
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732995AbgG0Oj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:39:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39000 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732992AbgG0OjY (ORCPT
+        id S1730446AbgG0OjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:39:22 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44303 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729718AbgG0OjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:39:24 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 070152948A2
-Message-ID: <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
-Subject: Re: [PATCH 08/10] media: uapi: h264: Clean slice invariants syntax
- elements
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Mon, 27 Jul 2020 11:39:12 -0300
-In-Reply-To: <CAPBb6MVMXeTcUfb-98McYCKjh=eM=BTo2dSY=L1c6dv2jHqXcg@mail.gmail.com>
-References: <20200715202233.185680-1-ezequiel@collabora.com>
-         <20200715202233.185680-9-ezequiel@collabora.com>
-         <CAPBb6MVMXeTcUfb-98McYCKjh=eM=BTo2dSY=L1c6dv2jHqXcg@mail.gmail.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Mon, 27 Jul 2020 10:39:17 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1k04Ha-0004DP-87; Mon, 27 Jul 2020 14:39:14 +0000
+Subject: Re: [PATCH] qed: fix assignment of n_rq_elems to incorrect params
+ field
+To:     Alexander Lobakin <alobakin@marvell.com>
+Cc:     Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200727141712.112906-1-colin.king@canonical.com>
+ <20200727143604.3835-1-alobakin@marvell.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
+ mQINBE6TJCgBEACo6nMNvy06zNKj5tiwDsXXS+LhT+LwtEsy9EnraKYXAf2xwazcICSjX06e
+ fanlyhB0figzQO0n/tP7BcfMVNG7n1+DC71mSyRK1ZERcG1523ajvdZOxbBCTvTitYOy3bjs
+ +LXKqeVMhK3mRvdTjjmVpWnWqJ1LL+Hn12ysDVVfkbtuIm2NoaSEC8Ae8LSSyCMecd22d9Pn
+ LR4UeFgrWEkQsqROq6ZDJT9pBLGe1ZS0pVGhkRyBP9GP65oPev39SmfAx9R92SYJygCy0pPv
+ BMWKvEZS/7bpetPNx6l2xu9UvwoeEbpzUvH26PHO3DDAv0ynJugPCoxlGPVf3zcfGQxy3oty
+ dNTWkP6Wh3Q85m+AlifgKZudjZLrO6c+fAw/jFu1UMjNuyhgShtFU7NvEzL3RqzFf9O1qM2m
+ uj83IeFQ1FZ65QAiCdTa3npz1vHc7N4uEQBUxyXgXfCI+A5yDnjHwzU0Y3RYS52TA3nfa08y
+ LGPLTf5wyAREkFYou20vh5vRvPASoXx6auVf1MuxokDShVhxLpryBnlKCobs4voxN54BUO7m
+ zuERXN8kadsxGFzItAyfKYzEiJrpUB1yhm78AecDyiPlMjl99xXk0zs9lcKriaByVUv/NsyJ
+ FQj/kmdxox3XHi9K29kopFszm1tFiDwCFr/xumbZcMY17Yi2bQARAQABtCVDb2xpbiBLaW5n
+ IDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+iQI2BBMBCAAhBQJOkyQoAhsDBQsJCAcDBRUK
+ CQgLBRYCAwEAAh4BAheAAAoJEGjCh9/GqAImsBcP9i6C/qLewfi7iVcOwqF9avfGzOPf7CVr
+ n8CayQnlWQPchmGKk6W2qgnWI2YLIkADh53TS0VeSQ7Tetj8f1gV75eP0Sr/oT/9ovn38QZ2
+ vN8hpZp0GxOUrzkvvPjpH+zdmKSaUsHGp8idfPpZX7XeBO0yojAs669+3BrnBcU5wW45SjSV
+ nfmVj1ZZj3/yBunb+hgNH1QRcm8ZPICpjvSsGFClTdB4xu2AR28eMiL/TTg9k8Gt72mOvhf0
+ fS0/BUwcP8qp1TdgOFyiYpI8CGyzbfwwuGANPSupGaqtIRVf+/KaOdYUM3dx/wFozZb93Kws
+ gXR4z6tyvYCkEg3x0Xl9BoUUyn9Jp5e6FOph2t7TgUvv9dgQOsZ+V9jFJplMhN1HPhuSnkvP
+ 5/PrX8hNOIYuT/o1AC7K5KXQmr6hkkxasjx16PnCPLpbCF5pFwcXc907eQ4+b/42k+7E3fDA
+ Erm9blEPINtt2yG2UeqEkL+qoebjFJxY9d4r8PFbEUWMT+t3+dmhr/62NfZxrB0nTHxDVIia
+ u8xM+23iDRsymnI1w0R78yaa0Eea3+f79QsoRW27Kvu191cU7QdW1eZm05wO8QUvdFagVVdW
+ Zg2DE63Fiin1AkGpaeZG9Dw8HL3pJAJiDe0KOpuq9lndHoGHs3MSa3iyQqpQKzxM6sBXWGfk
+ EkK5Ag0ETpMkKAEQAMX6HP5zSoXRHnwPCIzwz8+inMW7mJ60GmXSNTOCVoqExkopbuUCvinN
+ 4Tg+AnhnBB3R1KTHreFGoz3rcV7fmJeut6CWnBnGBtsaW5Emmh6gZbO5SlcTpl7QDacgIUuT
+ v1pgewVHCcrKiX0zQDJkcK8FeLUcB2PXuJd6sJg39kgsPlI7R0OJCXnvT/VGnd3XPSXXoO4K
+ cr5fcjsZPxn0HdYCvooJGI/Qau+imPHCSPhnX3WY/9q5/WqlY9cQA8tUC+7mgzt2VMjFft1h
+ rp/CVybW6htm+a1d4MS4cndORsWBEetnC6HnQYwuC4bVCOEg9eXMTv88FCzOHnMbE+PxxHzW
+ 3Gzor/QYZGcis+EIiU6hNTwv4F6fFkXfW6611JwfDUQCAHoCxF3B13xr0BH5d2EcbNB6XyQb
+ IGngwDvnTyKHQv34wE+4KtKxxyPBX36Z+xOzOttmiwiFWkFp4c2tQymHAV70dsZTBB5Lq06v
+ 6nJs601Qd6InlpTc2mjd5mRZUZ48/Y7i+vyuNVDXFkwhYDXzFRotO9VJqtXv8iqMtvS4xPPo
+ 2DtJx6qOyDE7gnfmk84IbyDLzlOZ3k0p7jorXEaw0bbPN9dDpw2Sh9TJAUZVssK119DJZXv5
+ 2BSc6c+GtMqkV8nmWdakunN7Qt/JbTcKlbH3HjIyXBy8gXDaEto5ABEBAAGJAh8EGAEIAAkF
+ Ak6TJCgCGwwACgkQaMKH38aoAiZ4lg/+N2mkx5vsBmcsZVd3ys3sIsG18w6RcJZo5SGMxEBj
+ t1UgyIXWI9lzpKCKIxKx0bskmEyMy4tPEDSRfZno/T7p1mU7hsM4owi/ic0aGBKP025Iok9G
+ LKJcooP/A2c9dUV0FmygecRcbIAUaeJ27gotQkiJKbi0cl2gyTRlolKbC3R23K24LUhYfx4h
+ pWj8CHoXEJrOdHO8Y0XH7059xzv5oxnXl2SD1dqA66INnX+vpW4TD2i+eQNPgfkECzKzGj+r
+ KRfhdDZFBJj8/e131Y0t5cu+3Vok1FzBwgQqBnkA7dhBsQm3V0R8JTtMAqJGmyOcL+JCJAca
+ 3Yi81yLyhmYzcRASLvJmoPTsDp2kZOdGr05Dt8aGPRJL33Jm+igfd8EgcDYtG6+F8MCBOult
+ TTAu+QAijRPZv1KhEJXwUSke9HZvzo1tNTlY3h6plBsBufELu0mnqQvHZmfa5Ay99dF+dL1H
+ WNp62+mTeHsX6v9EACH4S+Cw9Q1qJElFEu9/1vFNBmGY2vDv14gU2xEiS2eIvKiYl/b5Y85Q
+ QLOHWV8up73KK5Qq/6bm4BqVd1rKGI9un8kezUQNGBKre2KKs6wquH8oynDP/baoYxEGMXBg
+ GF/qjOC6OY+U7kNUW3N/A7J3M2VdOTLu3hVTzJMZdlMmmsg74azvZDV75dUigqXcwjE=
+Message-ID: <e41e4534-a621-53a0-f0e8-08ff8a3ade65@canonical.com>
+Date:   Mon, 27 Jul 2020 15:39:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200727143604.3835-1-alobakin@marvell.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
-
-Thanks a lot for the review.
-
-On Sat, 2020-07-25 at 23:34 +0900, Alexandre Courbot wrote:
-> On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > The H.264 specification requires in its "Slice header semantics"
-> > section that the following values shall be the same in all slice headers:
-> > 
-> >   pic_parameter_set_id
-> >   frame_num
-> >   field_pic_flag
-> >   bottom_field_flag
-> >   idr_pic_id
-> >   pic_order_cnt_lsb
-> >   delta_pic_order_cnt_bottom
-> >   delta_pic_order_cnt[ 0 ]
-> >   delta_pic_order_cnt[ 1 ]
-> >   sp_for_switch_flag
-> >   slice_group_change_cycle
-> > 
-> > and can therefore be moved to the per-frame decode parameters control.
+On 27/07/2020 15:36, Alexander Lobakin wrote:
+> Hi Colin,
 > 
-> I am really not a H.264 expert, so this question may not be relevant,
-
-All questions are welcome. I'm more than happy to discuss this patchset.
-
-> but are these values specified for every slice header in the
-> bitstream, or are they specified only once per frame?
+> From: Colin King <colin.king@canonical.com>
+> Date: Mon, 27 Jul 2020 15:17:12 +0100
 > 
-> I am asking this because it would certainly make user-space code
-> simpler if we could remain as close to the bitstream as possible. If
-> these values are specified once per slice, then factorizing them would
-> leave user-space with the burden of deciding what to do if they change
-> across slices.
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Currently n_rq_elems is being assigned to params.elem_size instead of the
+>> field params.num_elems.  Coverity is detecting this as a double assingment
+>> to params.elem_size and reporting this as an usused value on the first
+>> assignment.  Fix this.
+>>
+>> Addresses-Coverity: ("Unused value")
+>> Fixes: b6db3f71c976 ("qed: simplify chain allocation with init params struct")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/infiniband/hw/qedr/verbs.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+>> index 5a80471577a6..4ce4e2eef6cc 100644
+>> --- a/drivers/infiniband/hw/qedr/verbs.c
+>> +++ b/drivers/infiniband/hw/qedr/verbs.c
+>> @@ -1930,7 +1930,7 @@ qedr_roce_create_kernel_qp(struct qedr_dev *dev,
+>>  	in_params->sq_pbl_ptr = qed_chain_get_pbl_phys(&qp->sq.pbl);
+>>  
+>>  	params.intended_use = QED_CHAIN_USE_TO_CONSUME_PRODUCE;
+>> -	params.elem_size = n_rq_elems;
+>> +	params.num_elems = n_rq_elems;
 > 
-> Note that this is a double-edged sword, because it is not necessarily
-> better to leave the firmware in charge of deciding what to do in such
-> a case. :) So hopefully these are only specified once per frame in the
-> bitstream, in which case your proposal makes complete sense.
+> Sorry for copy'n'paste braino. Thanks for catching.
 
-Frame-based hardwares accelerators such as Hantro and Rockchip VDEC
-are doing the slice header parsing themselves. Therefore, the
-driver is not really parsing these fields on each slice header.
+Kudos goes to Coverity, it's good at finding these buglets. :-)
 
-Currently, we are already using only the first slice in a frame,
-as you can see from:
-
-        if (slices[0].flags & V4L2_H264_SLICE_FLAG_FIELD_PIC)
-                reg |= G1_REG_DEC_CTRL0_PIC_FIELDMODE_E;
-
-Even if these fields are transported in the slice header,
-I think it makes sense for us to split them into the decode params
-(per-frame) control.
-
-They are really specified to be the same across all slices,
-so even I'd say if a bitstream violates this, it's likely
-either a corrupted bitstream or an encoder bug.
-
-OTOH, one thing this makes me realize is that the slice params control
-is wrongly specified as an array. Namely, this text
-should be removed:
-
-       This structure is expected to be passed as an array, with one
-       entry for each slice included in the bitstream buffer.
-
-As the API is really not defined that way.
-
-I'll remove that on next iteration.
-
-Thanks for raising this point,
-Ezequiel
-
+> 
+>>  	params.elem_size = QEDR_RQE_ELEMENT_SIZE;
+>>  
+>>  	rc = dev->ops->common->chain_alloc(dev->cdev, &qp->rq.pbl, &params);
+>> -- 
+>> 2.27.0
+> 
+> Acked-by: Alexander Lobakin <alobakin@marvell.com>
+> 
+> Al
+> 
 
