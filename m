@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C439C22EEF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AA922EF77
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgG0OMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:12:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36010 "EHLO mail.kernel.org"
+        id S1730929AbgG0OQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729550AbgG0OMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:12:02 -0400
+        id S1730918AbgG0OQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:16:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0CCEB20838;
-        Mon, 27 Jul 2020 14:12:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F5A02070A;
+        Mon, 27 Jul 2020 14:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859121;
-        bh=VSI3D5h7mlQTZzLRontNsAGHQkolV1oX2bfOXzy3PaM=;
+        s=default; t=1595859401;
+        bh=KHiEmeSDHEk36Ap081u5lxBnesPSBOC4MwK1QNOPB98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2IV1yGDTfszC2oqWzu9VpEwtsVI89hmUFsLpZ9Sau1XCGAWDCVTZtzh4H5T/665th
-         jes5NQHQ5PivpCzkH63b0AMdaajbzqUBJDdHjR5CajVLS/qiiBTOb/SRF621rOimG7
-         Q8muwKWPua1fQnbY7N31MofpqfgbdJEACdTKptmM=
+        b=e91EX2abEWlTZJbQpkegbBxyavBDnWEQSGvUbNNn8coIsor2bXeRyQGF31VQn0xvb
+         UvjDH0Hff9NrdvtLFIr02qlrOjAKjqylRcg17CJQSvAcOQ492pjxcGxn+oC8IZxdIJ
+         46GIwjfiBFW4hOgoddd7lCz7ZBjuhIoC+ZoINNwk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.19 74/86] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
+        stable@vger.kernel.org, Stefan Dietrich <roots@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 093/138] hwmon: (nct6775) Accept PECI Calibration as temperature source for NCT6798D
 Date:   Mon, 27 Jul 2020 16:04:48 +0200
-Message-Id: <20200727134918.114276757@linuxfoundation.org>
+Message-Id: <20200727134930.028179403@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,56 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 upstream.
+[ Upstream commit 8a03746c8baf82e1616f05a1a716d34378dcf780 ]
 
-When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
-$(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-elfedit,
-GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
-/usr/bin/ and Clang as of 11 will search for both
-$(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
+Stefan Dietrich reports invalid temperature source messages on Asus Formula
+XII Z490.
 
-GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
-$(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
-$(prefix)aarch64-linux-gnu/$needle rarely contains executables.
+nct6775 nct6775.656: Invalid temperature source 28 at index 0,
+		source register 0x100, temp register 0x73
 
-To better model how GCC's -B/--prefix takes in effect in practice, newer
-Clang (since
-https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90)
-only searches for $(prefix)$needle. Currently it will find /usr/bin/as
-instead of /usr/bin/aarch64-linux-gnu-as.
+Debugging suggests that temperature source 28 reports the CPU temperature.
+Let's assume that temperature sources 28 and 29 reflect "PECI Agent {0,1}
+Calibration", similar to other chips of the series.
 
-Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
-(/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
-appropriate cross compiling GNU as (when -no-integrated-as is in
-effect).
-
-Cc: stable@vger.kernel.org
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1099
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Stefan Dietrich <roots@gmx.de>
+Cc: Stefan Dietrich <roots@gmx.de>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hwmon/nct6775.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/Makefile
-+++ b/Makefile
-@@ -485,7 +485,7 @@ ifeq ($(cc-name),clang)
- ifneq ($(CROSS_COMPILE),)
- CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
- GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
--CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
-+CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
- GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
- endif
- ifneq ($(GCC_TOOLCHAIN),)
+diff --git a/drivers/hwmon/nct6775.c b/drivers/hwmon/nct6775.c
+index 7efa6bfef0609..ba9b96973e808 100644
+--- a/drivers/hwmon/nct6775.c
++++ b/drivers/hwmon/nct6775.c
+@@ -786,13 +786,13 @@ static const char *const nct6798_temp_label[] = {
+ 	"Agent1 Dimm1",
+ 	"BYTE_TEMP0",
+ 	"BYTE_TEMP1",
+-	"",
+-	"",
++	"PECI Agent 0 Calibration",	/* undocumented */
++	"PECI Agent 1 Calibration",	/* undocumented */
+ 	"",
+ 	"Virtual_TEMP"
+ };
+ 
+-#define NCT6798_TEMP_MASK	0x8fff0ffe
++#define NCT6798_TEMP_MASK	0xbfff0ffe
+ #define NCT6798_VIRT_TEMP_MASK	0x80000c00
+ 
+ /* NCT6102D/NCT6106D specific data */
+-- 
+2.25.1
+
 
 
