@@ -2,136 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1ABC22E7ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBBE22E7F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbgG0Igv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:36:51 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:13263 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726227AbgG0Igs (ORCPT
+        id S1726297AbgG0Ilt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:41:49 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:44333 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726139AbgG0Ilt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:36:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595839007; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=JqWfd/1AwzywENu929p5CV6pTKTw5ZyiTiaOJDpxEvU=; b=it786BeQVO7B62hO4K10hgc6mtPsdl+YoUynIHzDUHF8FUc0JM215WL+5DGjfUrK9fq604JW
- A2yb+G/tvoYy3Qw0BxpO4e+etpHwznh87so2zCHWJP3PmcCGloCbyA9CNRnis2LK3Nf0Wq3X
- 8bKWLGJ5d18IEu26N6eVb4/W418=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5f1e921cc7e7bf09e0ce2348 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 08:36:44
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3B4E6C4339C; Mon, 27 Jul 2020 08:36:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.8 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.13] (unknown [183.83.138.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B086C433C9;
-        Mon, 27 Jul 2020 08:36:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5B086C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH v2] i2c: i2c-qcom-geni: Fix DMA transfer race
-To:     Wolfram Sang <wsa@the-dreams.de>,
-        Douglas Anderson <dianders@chromium.org>
-Cc:     swboyd@chromium.org, msavaliy@codeaurora.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Alok Chauhan <alokc@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        Karthikeyan Ramasubramanian <kramasub@codeaurora.org>,
-        Sagar Dharia <sdharia@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200722145948.v2.1.I7efdf6efaa6edadbb690196cd4fbe3392a582c89@changeid>
- <20200723195634.GA908@ninjato> <20200726124747.GA16169@ninjato>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <ed066f01-0c3a-a14b-5616-cbdfd074bfeb@codeaurora.org>
-Date:   Mon, 27 Jul 2020 14:06:36 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 27 Jul 2020 04:41:49 -0400
+Received: from mail-qv1-f49.google.com ([209.85.219.49]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MgNlH-1kR3ae0Egx-00htln; Mon, 27 Jul 2020 10:41:47 +0200
+Received: by mail-qv1-f49.google.com with SMTP id di5so7035416qvb.11;
+        Mon, 27 Jul 2020 01:41:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530yS4+RaonJrbla95HZiwRrIyxT4V4282Enlt2KgZHCsM1W7ILs
+        AHOulQCiVbpZKpWoRzGM6CRS3PNXPI4rW+ni3/0=
+X-Google-Smtp-Source: ABdhPJyFy7iTz1AbZ0fR7sKfDU51z6IeCONSD5JbC+rvcHhVLzEoSaPB8khjv+HojCYyEyIzph23AGS99NUwimzjZoE=
+X-Received: by 2002:a0c:cc01:: with SMTP id r1mr709301qvk.4.1595839305851;
+ Mon, 27 Jul 2020 01:41:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200726124747.GA16169@ninjato>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200726031154.1012044-1-shorne@gmail.com> <CAHp75VciC+gqkCZ9voNKHU3hrtiOVzeWBu9_YEagpCGdTME2yg@mail.gmail.com>
+ <20200726125325.GC80756@lianli.shorne-pla.net> <CAK8P3a0-wPsVi-fXPW4Dghn30cumrzvLujp7usio50EHmCHM=g@mail.gmail.com>
+ <a55f21a7-aff9-09a9-2fcd-c9ef76728116@huawei.com>
+In-Reply-To: <a55f21a7-aff9-09a9-2fcd-c9ef76728116@huawei.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Jul 2020 10:41:30 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a37s8ct5moydwwVO+C5TLfW+GU6VS-+zuAQfZzs2czXaw@mail.gmail.com>
+Message-ID: <CAK8P3a37s8ct5moydwwVO+C5TLfW+GU6VS-+zuAQfZzs2czXaw@mail.gmail.com>
+Subject: Re: [PATCH] io: Fix return type of _inb and _inl
+To:     John Garry <john.garry@huawei.com>
+Cc:     Stafford Horne <shorne@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gzg4p9Vgjp+46iDBHEFnConwigWrr+5uZFAlW//h7+Z9pmupd4h
+ LQy9RHqT1BM3PygvxEJAfygQ9Iq56S/lXffJxD8EbY4pBHLohnIqxAVATfI+AKZm81lP5fr
+ w7lm32PtZSq5LYtiGPSPVt0tcS7avhyjG/jDrrY0FdO7kzksply7HS2JlNXeDep7gX63puk
+ OGdEEa2tLUUDnp3Sbpn0A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yD8d1g1NW7g=:SehQg26NrsPZDVWSpyInSx
+ Pw6nBb9dAfbt0G0+MJt7ZC18+XwDjHQUkz6zYakN73u72EVaRmJqJ/K/D1VN1+ETP+Wlg4PVU
+ GGA2LqoxTNK3gox/nnkj0qzxRJK9fvhIrN4lnDDtV8m/T6DB5/myRIZKt2Bj7IT7Bj/IsK2Ks
+ oTma2KROK5iopV4zQKvj7sOeFmIV4loR/3YgZqRVIPqJzup82+h0tKlioU7AfsrrhnVjH9N0H
+ j+o94VMsn8GL5PKKFmCI/Uas9YRyujH159wxdEjj1L4Mp8MUUMRA3ch46X9Og0JZF/Ov3JSAT
+ MayaHwXCGz6BUbysk3YFix33p3ASBzBgPt7QzfZffdlIQrbsVn2Rla5waDfrRu4oPzYOlwBdd
+ qawDoziVEqk8uS7p6Ww/SCbDSWJ4Djei43UuOtOkSGLpZtc2qqs6zTj8djQDM3KqDCAinui+i
+ TZokX613Hnbrp2+Mi7hD9l6/GkHHD9U7ZKqvF3plMG9mN2st2k9hE6rm+bcL1RxIqnFlaB6ey
+ oGPunheLjNveZMpZo44y0KlxUix/3wkTbo/UaLgioKdqBp9HlxEWpAy/vYe/oHFeLXshsR/GE
+ fdwZ8jQC4VyAdk+6ammoAcrZ9Rc62bx4RtIY39nvA/r3QM4Fx1kzCuEJgjbsAjY27FhwMgNF8
+ YWRHi284XTPUrxUO/D3UYeX/rFUKsxBtO3CskaRx4cnPlq65A/BC8VT009rrylA6v2zk7dZI3
+ PVO8CVV2k5B/VpZ6eYNgO7zhXvMXFvXlqjrF8ashU1DVgbWetCuddXqjgL1854lJbLT0HBoKR
+ +rJX9wcqz3jxZxEiWr4pM+7kqWJHmFfGwkUOsvLTock/C04dBb82Vs0pY6B114y5Y7D+lXygM
+ yXyU18UAOo5UQxJddeD2hbnSuZ2q0FFzBTRAmyLGiuXY0ggw/LPlARY2kwrKjGv61e3ZJ+GUN
+ gYy1Hs3Dg5zNNLc3r6ulz3gmFjVgmNqpgGL/Gp63twJAs39svx9Ob
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/2020 6:17 PM, Wolfram Sang wrote:
-> On Thu, Jul 23, 2020 at 09:56:34PM +0200, Wolfram Sang wrote:
->> On Wed, Jul 22, 2020 at 03:00:21PM -0700, Douglas Anderson wrote:
->>> When I have KASAN enabled on my kernel and I start stressing the
->>> touchscreen my system tends to hang.  The touchscreen is one of the
->>> only things that does a lot of big i2c transfers and ends up hitting
->>> the DMA paths in the geni i2c driver.  It appears that KASAN adds
->>> enough delay in my system to tickle a race condition in the DMA setup
->>> code.
->>>
->>> When the system hangs, I found that it was running the geni_i2c_irq()
->>> over and over again.  It had these:
->>>
->>> m_stat   = 0x04000080
->>> rx_st    = 0x30000011
->>> dm_tx_st = 0x00000000
->>> dm_rx_st = 0x00000000
->>> dma      = 0x00000001
->>>
->>> Notably we're in DMA mode but are getting M_RX_IRQ_EN and
->>> M_RX_FIFO_WATERMARK_EN over and over again.
->>>
->>> Putting some traces in geni_i2c_rx_one_msg() showed that when we
->>> failed we were getting to the start of geni_i2c_rx_one_msg() but were
->>> never executing geni_se_rx_dma_prep().
->>>
->>> I believe that the problem here is that we are starting the geni
->>> command before we run geni_se_rx_dma_prep().  If a transfer makes it
->>> far enough before we do that then we get into the state I have
->>> observed.  Let's change the order, which seems to work fine.
->>>
->>> Although problems were seen on the RX path, code inspection suggests
->>> that the TX should be changed too.  Change it as well.
->>>
->>> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
->>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->>> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
->> Applied to for-current, thanks!
-> Glad we got this sorted. I just wondered that Alok wasn't part of the
-> discussion. Is he still interested in maintaining the driver? Also
-> because there is an unprocessed patch left for this driver:
+On Mon, Jul 27, 2020 at 10:30 AM John Garry <john.garry@huawei.com> wrote:
+> On 27/07/2020 09:04, Arnd Bergmann wrote:> On Sun, Jul 26, 2020 at 2:53
+> PM Stafford Horne <shorne@gmail.com> wrote:
+> >>
+> >> On Sun, Jul 26, 2020 at 12:00:37PM +0300, Andy Shevchenko wrote:
+> >>> On Sun, Jul 26, 2020 at 6:14 AM Stafford Horne <shorne@gmail.com> wrote:
+> >>>>
+> >>>> The return type of functions _inb, _inw and _inl are all u16 which looks
+> >>>> wrong.  This patch makes them u8, u16 and u32 respectively.
+> >>>>
+> >>>> The original commit text for these does not indicate that these should
+> >>>> be all forced to u16.
+> >>>
+> >>> Is it in alight with all architectures? that support this interface natively?
+> >>>
+> >>> (Return value is arch-dependent AFAIU, so it might actually return
+> >>> 16-bit for byte read, but I agree that this is weird for 32-bit value.
+> >>> I think you have elaborate more in the commit message)
+> >>
+> >> Well, this is the generic io code,  at least these api's appear to not be different
+> >> for each architecture.  The output read by the architecture dependant code i.e.
+> >> __raw_readb() below is getting is placed into a u8.  So I think the output of
+> >> the function will be u8.
+> >>
+> >> static inline u8 _inb(unsigned long addr)
+> >> {
+> >>          u8 val;
+> >>
+> >>          __io_pbr();
+> >>          val = __raw_readb(PCI_IOBASE + addr);
+> >>          __io_par(val);
+> >>          return val;
+> >> }
+> >>
+> >> I can expand the commit text, but I would like to get some comments from the
+> >> original author to confirm if this is an issue.
+> >
+> > I think your original version is fine, this was clearly just a typo and I've
+> > applied your fix now and will forward it to Linus in the next few days,
+> > giving John the chance to add his Ack or further comments.
+> >
+> > Thanks a lot for spotting it and sending a fix.
 >
-> http://patchwork.ozlabs.org/project/linux-i2c/patch/20191103212204.13606-1-colin.king@canonical.com/
+> Thanks Arnd.
+>
+> Yeah, these looks like copy+paste errors on my part:
+>
+> Reviewed-by: John Garry <john.garry@huawei.com>
 
-Alok has moved out of GENI team, he no longer supports GENI I2C drivers.
-
-I have posted a patch to update maintainers list. Patch: 
-https://patchwork.kernel.org/patch/11686541/ [MAINTAINERS: Update Geni 
-I2C maintainers list]
-
-Also, Girish Mahadevan, Sagar Dharia and Karthikeyan Ramasubramanian  no 
-longer supports GENI drivers.
-
-Regards,
-
-Akash
+Thanks!
 
 >
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+> I'll give this patch a spin, but not expecting any differences (since
+> original seems ok).
+>
+> Note that kbuild robot also reported this:
+> https://lore.kernel.org/lkml/202007140549.J7X9BVPT%25lkp@intel.com/
+>
+> Extract:
+>
+> include/asm-generic/io.h:521:22: sparse: sparse: incorrect type in
+> argument 1 (different base types) @@     expected unsigned int
+> [usertype] value @@     got restricted __le32 [usertype] @@
+>     include/asm-generic/io.h:521:22: sparse:     expected unsigned int
+> [usertype] value
+>     include/asm-generic/io.h:521:22: sparse:     got restricted __le32
+> [usertype]
+>
+> But they look like issues which were in the existing code.
 
+Yes, this driver code (atm/ambassador.c) seems to have been broken that
+way since it was merged in 1999.
+
+      Arnd
