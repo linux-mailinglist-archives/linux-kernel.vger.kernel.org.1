@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B32222EB86
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493BC22EB7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgG0Lyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:54:31 -0400
-Received: from mail-dm6nam11on2051.outbound.protection.outlook.com ([40.107.223.51]:59361
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726873AbgG0Ly2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:54:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gEAFRqZFwlCuNRTokzBDI03yNl2LKJst6EOakvs49F+WAyl31jfIQBZ+opE3aKkdsroTKnaimU7FfIdoiWbBTR2+0JezIqFXCnV6PxZeAOCPVJMaSIE++9COnxc0hWW+ceQQqOPJajPljsbHZ8FqzQz+4KtgM9v3tU21Aru3b4bTd5H0ji23FsB//xOJlplO4rap2BjGluwzGkah6e5TdLZIJsQAdCFu6WqzT2mJrGcoOaLFMYribcu0JPjpCugbbOcoxlVUSHehT11WAo/ijLs94Rq0giXFMwkd3RJ5wTtY5QWCNkqv0aGlETQLJH5Js//x4+WqPFHi2hgxB+uuGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JGearzZqCHPul4M4Obvhn+rfdNpjHphVUQtJTdY9/8k=;
- b=iMd3Jj1rUi4ZqLpJldof6kPd1n4fdhT1rndOEcZWv6JlX0uGHslKGevUlD5gpYcU01TNTQkEFSBNOzm8MoTxen19ML1a2kMkU/5Kb9hI6YFJmD+I3F+RV96CA9FezzLWmWOBI38oEsEn3MJBYCo8/rEXVsxYniP37Avdel+neIxbWCIIPhIuZi3EDegAg3Xl8xJ3HoiWxghYdKsXM2zQ/lrJc02rMetb/Ftb1+sMh7o6lYPVkVaKLs/B5y0I4X1donGkAUnhyFhO+sqZkKid/upXJK+2zGEJUw+kOi7yL2MsoBuqtEGbTv8I5RVD2fdiOfTn51/w0ykA8mFWEc92UA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JGearzZqCHPul4M4Obvhn+rfdNpjHphVUQtJTdY9/8k=;
- b=IwsPGDkR/vBmpFpjkgTeb2g2i/duYfD7w3mOtxQ/Gg1u+hShg3zQ+oKifF10zymWKdVGCWFjYZHMOSOoc2uzodWB5O9JxZL7BSq6ZYZlc/nxdriQ6YiNSdtA48oDBUFzKlab5IJVpqKUNNZACyrevLMe4G7g2R1AewlPiFzHoQY=
-Authentication-Results: bootlin.com; dkim=none (message not signed)
- header.d=none;bootlin.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
- by BYAPR03MB4647.namprd03.prod.outlook.com (2603:10b6:a03:12e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.20; Mon, 27 Jul
- 2020 11:54:26 +0000
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::b5cc:ca6b:3c25:a99c]) by BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::b5cc:ca6b:3c25:a99c%4]) with mapi id 15.20.3216.033; Mon, 27 Jul 2020
- 11:54:26 +0000
-Date:   Mon, 27 Jul 2020 19:53:14 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-nex 2/2] net: mvneta: Don't speed down the PHY when
- changing mtu
-Message-ID: <20200727195314.704dfaed@xhacker.debian>
-In-Reply-To: <20200727195012.4bcd069d@xhacker.debian>
-References: <20200727195012.4bcd069d@xhacker.debian>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYAPR01CA0044.jpnprd01.prod.outlook.com
- (2603:1096:404:28::32) To BYAPR03MB3573.namprd03.prod.outlook.com
- (2603:10b6:a02:ae::15)
+        id S1728245AbgG0Lxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:53:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726873AbgG0Lxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 07:53:39 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A227E206E7;
+        Mon, 27 Jul 2020 11:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595850819;
+        bh=pmx7r4So4ltU9GFLtyowT8sGCWQ3CPndiOgHKn5MH2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G1ACx5gLsKOlLnHUq7TxrmlaoSuUj35QO83mZgX22J+x2NolUsEZLVhjOUT0Duu2X
+         UBU8N1plsG6Qtp1WieL6u0koBH+1NAhNq5ckcoQiUhlW12aQ+nQzPDHVpbAGDiZ+1d
+         LpaP1h91USoBeicfxQp8fugF1xEmm13NGV/cXHe4=
+Date:   Mon, 27 Jul 2020 12:53:21 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mike Looijmans <mike.looijmans@topic.nl>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        balbi@kernel.org, gregkh@linuxfoundation.org, lgirdwood@gmail.com
+Subject: Re: [PATCH v3] usb: dwc3: Add support for VBUS power control
+Message-ID: <20200727115321.GC6275@sirena.org.uk>
+References: <20200619142512.19824-1-mike.looijmans@topic.nl>
+ <20200723075612.tn5dbkhes2chohwh@axis.com>
+ <20200723110523.GA4759@sirena.org.uk>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.2698920d-90ba-4c46-abda-83e18e2093c8@emailsignatures365.codetwo.com>
+ <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.0d2bd5fa-15cc-4b27-b94e-83614f9e5b38.ac9c2a67-d7df-4f70-81b3-db983bbfb4db@emailsignatures365.codetwo.com>
+ <e63ee918-c9e3-a8ee-e7c5-577b5a3e09be@topic.nl>
+ <20200727102317.GA6275@sirena.org.uk>
+ <be4013b6-01c6-7f67-35ad-5c398b85c066@topic.nl>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0044.jpnprd01.prod.outlook.com (2603:1096:404:28::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23 via Frontend Transport; Mon, 27 Jul 2020 11:54:24 +0000
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0dec320e-0bf8-4148-0c41-08d83223cf89
-X-MS-TrafficTypeDiagnostic: BYAPR03MB4647:
-X-Microsoft-Antispam-PRVS: <BYAPR03MB464738482804F0FDD0784709ED720@BYAPR03MB4647.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:494;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RhN61h6SLNO4RHUI8OXYbzwc+LxmRVkFEh8AynuPrD446VlatMsWi79x1kjIaQjeBwQLrqDGtG0FzNFnOLuC3HprcshXVnbJ79baFx6jmv6rM0H1oaEgh5PXCrDHghGeiu6RZOIRjzZ8I5//d5Dqv8od+Q9UteMCX3NiABl5um8pwOzAK+3hJMDdBUo9NGm+WI2NODKioIyl7hMF2nvIuQWn3bKUDEVYA3wJe1yrXiso3R0W81bXYrT+044KXwAqVz/ZaSP/Xt54gn/oLD0AoNtAEqmIi1EEyo/fZOqaE2mwI50qjFmL61K737c6/EA0nwOQDpYQNJbgb0j3OT45Zg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(136003)(396003)(376002)(346002)(366004)(478600001)(52116002)(6666004)(9686003)(66556008)(66476007)(66946007)(86362001)(7696005)(8936002)(4744005)(8676002)(83380400001)(5660300002)(2906002)(316002)(186003)(4326008)(1076003)(110136005)(16526019)(26005)(55016002)(6506007)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: cAxAB0Ms3mGmN0f3FO/b3UH1qs87FIrl8ajiXcdSXqgxr7va32y4/KjGZKMqWJYi5Ne+IY5Ihdbui0F1X7hLISaivcg+L58512WH3Fo/M8r19qzqivPwlQyEP7+EPr2xmT9d7STc2znnrEybB1ZmNurb10pX2IEbw5PWAoZqFWFPx0CiGYfTcn0yhdq4vk4UU/OO3hj+oomB5Ib4JbnxL22chPHuTLuhv0fhjWzfubx2umb0jp7IFZSBguv935pJ3uIEEHxi71I2lLp3ciphSXzGGemXWpWJA5P3NRXho9GYObRFt7Zjw5TnFCvFmPu4ayFO/Ujr25hI/rWtYZ3frOLnfi0Zgic2k+qTJlmsNcJCEBJ0suIbhZBoNH0DCpJW/DBzVt+/urs8wyMEd/rXXd9FwCCqgI6L5hKn5U2fT5zN5mNI7TvwRsL7rLMKGXwyVweWhRKTuvdK4UHYavQq0nqo8rMnf//NZtUzKmNv+qg=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0dec320e-0bf8-4148-0c41-08d83223cf89
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3573.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2020 11:54:26.3012
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6ydn7WFLZHmuh0SaJJ9IEPNIrY+80MUXGEz8xSQ6l2gj9K/236VGshLkSZsQ3+k+6hxQMOPw21mM1HlJRJxyAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4647
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
+Content-Disposition: inline
+In-Reply-To: <be4013b6-01c6-7f67-35ad-5c398b85c066@topic.nl>
+X-Cookie: Doing gets it done.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found a case where the phy link speed is changed to 10Mbps
-then back to 1000Mbps when changing the mtu:
 
-ethtool -s eth0 wol g
-ip link set eth0 mtu 1400
+--vOmOzSkFvhd7u8Ms
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Add a simple check to avoid unnecessary phylink_speed_down() when
-changing the mtu.
+On Mon, Jul 27, 2020 at 01:50:26PM +0200, Mike Looijmans wrote:
+>=20
+> Met vriendelijke groet / kind regards,
+>=20
+> Mike Looijmans
+> System Expert
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+You probably want to remove your signature when replying to the list...
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index c9b6b0f85bb0..9cdbb05277eb 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -3651,7 +3651,8 @@ static void mvneta_stop_dev(struct mvneta_port *pp)
- 
- 	set_bit(__MVNETA_DOWN, &pp->state);
- 
--	if (device_may_wakeup(&pp->dev->dev))
-+	if (device_may_wakeup(&pp->dev->dev) &&
-+	    pp->pkt_size == MVNETA_RX_PKT_SIZE(pp->dev->mtu))
- 		phylink_speed_down(pp->phylink, false);
- 
- 	phylink_stop(pp->phylink);
--- 
-2.28.0.rc0
+> On 27-07-2020 12:23, Mark Brown wrote:
+> > On Sun, Jul 26, 2020 at 09:10:39AM +0200, Mike Looijmans wrote:
 
+> > > It's the 5V VBUS power for the USB "plug" that's being controlled her=
+e. It
+> > > must turned on when the controller is in "host" mode. Some boards arr=
+ange
+> > > this in hardware through the PHY, and some just don't have any contro=
+l at
+> > > all and have it permanently on or off. On a board where the 5V is con=
+trolled
+> > > using a GPIO line or an I2C chip, this patch is required to make it w=
+ork.
+
+> > That sounds like the driver should not be using _get_optional() then.
+
+> Making it mandatory would break most (read: all except Topic's) existing
+> boards as they won't have it in their devicetree. I'm perfectly okay with
+> that, but others might disagree.
+
+No, it wouldn't break them at all - they'd get a dummy regulator
+provided.
+
+--vOmOzSkFvhd7u8Ms
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8ewDEACgkQJNaLcl1U
+h9AOeAf/Q3uCuO9POLkFE4AFLM60fwOW/cXI1NJMegOuZ91RhQk4TF2WaZlMWHIf
+b8SYB4gvI151gQYg2UPgf52UpWEbVUZN6GoM/wyk1dOAm6ulrMx248Upv3gQkpHi
+RBRynDGfnTgOdn6GPde9XO24zF9zCpL6HyN1AHbp9y9zuC3nVg23Pi+Usyw3MyiG
+RWRyQ3lKAqssLAh+6CYQQBVQ2mEp6ubHxH9UuGoKYfgDDqo7gff1b4Ibfkv9QT3G
+wjVCthn7ZcgpKyFalB1cZ6MJcsnvEvtWcdz/lMAYT6YXpha0UvuVs5xj0LFYw6pc
+u9fo8pNhRClmGM+PizicmWsAcQ6aBg==
+=yKtV
+-----END PGP SIGNATURE-----
+
+--vOmOzSkFvhd7u8Ms--
