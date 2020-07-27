@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAA122F326
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F2E22F32F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729610AbgG0O5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:57:49 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:35054 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727032AbgG0O5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:57:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595861868; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=7443zfi2pZMKrWNjK4v1Ad32a0BS0R3bKBhFoOV5yxQ=; b=E+G3R4B1sPqZCElfV4veCz/iyX+85irwaGkNLQADPlPX6Suuhnxufdqc/nrDXymdSLwKem9Q
- wI3qHOtlLXzgoGvNpt7PGXeZ6VEvnDe8pWBGpe8eMIbIiyUT8ZgqhQFGCMIdzU333C6ssXTD
- oBIl7nhqdaVgF+Nzk8R6WW6EdtQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5f1eeb6ba61bb9e3f5539ec2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 14:57:47
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B7445C433AD; Mon, 27 Jul 2020 14:57:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C638C433C9;
-        Mon, 27 Jul 2020 14:57:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2C638C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 27 Jul 2020 08:57:41 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10 04/13] iommu/arm-smmu-qcom: Add implementation for
- the adreno GPU SMMU
-Message-ID: <20200727145740.GA32521@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
-        iommu@lists.linux-foundation.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200720154047.3611092-1-jcrouse@codeaurora.org>
- <20200720154047.3611092-5-jcrouse@codeaurora.org>
- <20200727062703.GB3521288@ripper>
+        id S1729184AbgG0O7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:59:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728708AbgG0O67 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:58:59 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03EBC0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:58:59 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id h7so15464237qkk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TkvFuceN5jtaSzIFRaFmMTmsAfPlIWdDO7sdSoKaSpw=;
+        b=oHHYVEc5gtscdX6oNEqwGKJG71QcSo0Wh3LdkVEHmkW/JhR2KSGRrVQR3lciUpmSHa
+         v0Vwe8Zww3VELryrRRUhxZw8CIuBi1dqVQKBWhzwOWdakmgLkHTr3MPIf2grpGg8D1MS
+         6HpaR11uS9JC0rXDm+RDhqY++zWpcCC558aFPJdBAmeImhDoEIEPpRWFlFyqjzGyQFK2
+         FDxLPsvTR/dqRoWxTHaXzzBqJXudlj4Ss2aRnqY2RwlnyHChjMwWiqsZSFIAQNNs+y9X
+         qdlOoDgCXwP+pgOsXWkBkRuI9YdxRiTDOvL9/vpvKswnsCXZCKoxfa2xuL9asF3wBz13
+         pyfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TkvFuceN5jtaSzIFRaFmMTmsAfPlIWdDO7sdSoKaSpw=;
+        b=mrnJobN/YO1iUnC6e+tS+KGhDrhShv/uF2DUfcoilBMt8ssCAb1pIPCrKT3UARba6Q
+         zXNg32ntAVlOWkKVM9oQoOQCE2mDq6fE9xoToeoRAk9mSe3HvRADj3e+siRded/0lpup
+         VpJZbFHk0oew6J3hcVxk7z2+IkykrZn541xogJ6GKG6XsrIqKXHCeUmuwUyEDQ92C4Nh
+         V0XhLDDfQiW4jE2CJr92kwrf9QJMnmBiW1VAjN6gYWcufSax1z7wyQzKIfVbQ1lfxLit
+         E+UKtbQHk8TaOCycP2iWDi/3NvokaUTH4p6Z7E9lMJzNim0bgJ5Y7FLF59IaEhIcNpxR
+         349A==
+X-Gm-Message-State: AOAM530gHrX7CDq/y/+fzjNuoscPF9xHmauaOcpZuKguN+nz0PzgLcxp
+        8wmVOW9BMD3VOgKrcJdzdpk+Xw==
+X-Google-Smtp-Source: ABdhPJxmJKGTk9LAqszhQ5uIMsZwDdgfTOhelOUomNZVFWhdcCDjxAJHzaA+yfpoXRafzi6fjCqj2g==
+X-Received: by 2002:a05:620a:142:: with SMTP id e2mr22636849qkn.418.1595861938755;
+        Mon, 27 Jul 2020 07:58:58 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id g21sm7306628qts.18.2020.07.27.07.58.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 07:58:57 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1k04ae-000Cmh-Vl; Mon, 27 Jul 2020 11:58:56 -0300
+Date:   Mon, 27 Jul 2020 11:58:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Linux-kernel-mentees] [PATCH v2] infiniband: Prevent
+ uninit-value in ucma_accept()
+Message-ID: <20200727145856.GA24045@ziepe.ca>
+References: <20200725220203.624557-1-yepeilin.cs@gmail.com>
+ <20200726022716.635727-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727062703.GB3521288@ripper>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200726022716.635727-1-yepeilin.cs@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 26, 2020 at 11:27:03PM -0700, Bjorn Andersson wrote:
-> On Mon 20 Jul 08:40 PDT 2020, Jordan Crouse wrote:
-> > diff --git a/drivers/iommu/arm-smmu-qcom.c b/drivers/iommu/arm-smmu-qcom.c
-> [..]
-> > +static int qcom_adreno_smmu_alloc_context_bank(struct arm_smmu_domain *smmu_domain,
-> > +		struct device *dev, int start, int count)
-> > +{
-> > +	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> > +
-> > +	/*
-> > +	 * Assign context bank 0 to the GPU device so the GPU hardware can
-> > +	 * switch pagetables
-> > +	 */
-> > +	if (qcom_adreno_smmu_is_gpu_device(dev)) {
-> > +		if (start > 0 || test_bit(0, smmu->context_map))
-> > +			return -ENOSPC;
-> > +
-> > +		set_bit(0, smmu->context_map);
-> > +		return 0;
-> > +	}
-> > +
-> > +	return __arm_smmu_alloc_bitmap(smmu->context_map, start, count);
+On Sat, Jul 25, 2020 at 10:27:16PM -0400, Peilin Ye wrote:
+> ucma_accept() is reading uninitialized memory when `in_len` is
+> less than `offsetof(struct rdma_ucm_accept, ece)`. Fix it.
 > 
-> If we end up here before the GPU device shows up this is going to
-> steal the first context bank, causing the subsequent allocation for the
-> GPU to always fail.
+> Reported-and-tested-by: syzbot+086ab5ca9eafd2379aa6@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?id=0bce3bb68cb383fce92f78444e3ef77c764b60ad
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> ---
+> Change in v2:
+>     - syzbot has reported this bug as "KMSAN: uninit-value in xa_load".
+>       Add "Reported-and-tested-by:" and "Link:" tags for it.
 > 
-> As such I think it would be appropriate for you to adjust "start" to
-> never be 0 here. And I think it would be appropriate to write this
-> function as:
-> 
-> 	if (gpu) {
-> 		start = 0;
-> 		count = 1;
-> 	} else {
-> 		if (start == 0)
-> 			start = 1;
-> 	}
-> 
-> 	return __arm_smmu_alloc_bitmap(smmu->context_map, start, count);
+>  drivers/infiniband/core/ucma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Excellent suggestions.  Thanks.
+Already fixed:
 
-Jordan
+https://lore.kernel.org/r/0-v1-d5b86dab17dc+28c25-ucma_syz_min_jgg@nvidia.com
 
-> Regards,
-> Bjorn
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Jason
