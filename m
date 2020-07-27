@@ -2,65 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCA622FBE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD7622FBEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgG0WJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 18:09:25 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:36534 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgG0WJZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 18:09:25 -0400
-Date:   Mon, 27 Jul 2020 18:09:24 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [GIT PULL] arch/sh additional critical fixes 5.8
-Message-ID: <20200727220922.GP6949@brightrain.aerifal.cx>
+        id S1726888AbgG0WL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 18:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgG0WL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 18:11:56 -0400
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61CC62075D;
+        Mon, 27 Jul 2020 22:11:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595887915;
+        bh=YW8G5VIksYVlmPs2UYgjtPkt8iVM6SF5lgGo16m/L+s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VEg/hiXbEvSHn7tT7/JVBAirYrXZkHYmk4kdcPNa/scCSdEmq7h+lM4JGHAH9d+zw
+         myLFxqOizViKGdWaCDv7NE2V+mRVuFha62/JUGkXl3qDEvwOLMqlZv7vSmZ3tN28/1
+         u2l0pzq8mz4u4nTf90pIJxGzq8WgUS3lr2j2ZlDM=
+Received: by mail-lj1-f176.google.com with SMTP id d17so18969873ljl.3;
+        Mon, 27 Jul 2020 15:11:55 -0700 (PDT)
+X-Gm-Message-State: AOAM532Ps1eGbC+nJDrGtIBsymc1JQe2vBDMjwEC+JjY5LGVXnTYknuw
+        p5fVCKfE5U3Zn9Z+oCUKbpUlKGuI7lJiPND1Eno=
+X-Google-Smtp-Source: ABdhPJyZ6t063En8urXrZJrupJ8Ja4mHFNI8fGTOXCFR2l6OXfdWbkzRLIN2bX2+ImzTYbrrLG7ml3lTI3tqrwiy9JY=
+X-Received: by 2002:a2e:9996:: with SMTP id w22mr12043567lji.446.1595887913748;
+ Mon, 27 Jul 2020 15:11:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-2-guro@fb.com>
+In-Reply-To: <20200727184506.2279656-2-guro@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Jul 2020 15:11:42 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW49mOQYCx77jucJ_NkeYhoSxOZ_cCujBUjgMdJBy3keeg@mail.gmail.com>
+Message-ID: <CAPhsuW49mOQYCx77jucJ_NkeYhoSxOZ_cCujBUjgMdJBy3keeg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 01/35] bpf: memcg-based memory accounting for
+ bpf progs
+To:     Roman Gushchin <guro@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Jul 27, 2020 at 12:20 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> Include memory used by bpf programs into the memcg-based accounting.
+> This includes the memory used by programs itself, auxiliary data
+> and statistics.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  kernel/bpf/core.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index bde93344164d..daab8dcafbd4 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -77,7 +77,7 @@ void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb, int k, uns
+>
+>  struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flags)
+>  {
+> -       gfp_t gfp_flags = GFP_KERNEL | __GFP_ZERO | gfp_extra_flags;
+> +       gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
+>         struct bpf_prog_aux *aux;
+>         struct bpf_prog *fp;
+>
+> @@ -86,7 +86,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+>         if (fp == NULL)
+>                 return NULL;
+>
+> -       aux = kzalloc(sizeof(*aux), GFP_KERNEL | gfp_extra_flags);
+> +       aux = kzalloc(sizeof(*aux), GFP_KERNEL_ACCOUNT | gfp_extra_flags);
+>         if (aux == NULL) {
+>                 vfree(fp);
+>                 return NULL;
+> @@ -104,7 +104,7 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+>
+>  struct bpf_prog *bpf_prog_alloc(unsigned int size, gfp_t gfp_extra_flags)
+>  {
+> -       gfp_t gfp_flags = GFP_KERNEL | __GFP_ZERO | gfp_extra_flags;
+> +       gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
+>         struct bpf_prog *prog;
+>         int cpu;
+>
+> @@ -217,7 +217,7 @@ void bpf_prog_free_linfo(struct bpf_prog *prog)
+>  struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
+>                                   gfp_t gfp_extra_flags)
+>  {
+> -       gfp_t gfp_flags = GFP_KERNEL | __GFP_ZERO | gfp_extra_flags;
+> +       gfp_t gfp_flags = GFP_KERNEL_ACCOUNT | __GFP_ZERO | gfp_extra_flags;
+>         struct bpf_prog *fp;
+>         u32 pages, delta;
+>         int ret;
+> --
 
-I have some last-minute fixes I hope you can still pull in for 5.8.
-One is for a boot regression (mmu code broken) and the other fixes a
-long-standing broken syscall number bounds check.
+Do we need similar changes in
 
-Rich
+bpf_prog_array_copy()
+bpf_prog_alloc_jited_linfo()
+bpf_prog_clone_create()
 
+and maybe a few more?
 
-
-The following changes since commit 92ed301919932f777713b9172e525674157e983d:
-
-  Linux 5.8-rc7 (2020-07-26 14:14:06 -0700)
-
-are available in the Git repository at:
-
-  git://git.libc.org/linux-sh tags/sh-for-5.8-part2
-
-for you to fetch changes up to 04a8a3d0a73f51c7c2da84f494db7ec1df230e69:
-
-  sh: Fix validation of system call number (2020-07-27 16:12:49 -0400)
-
-----------------------------------------------------------------
-Fixes for major regression and longstanding bounds-checking error.
-
-----------------------------------------------------------------
-Michael Karcher (1):
-      sh: Fix validation of system call number
-
-Peter Zijlstra (1):
-      sh/tlb: Fix PGTABLE_LEVELS > 2
-
- arch/sh/include/asm/pgalloc.h | 10 +---------
- arch/sh/kernel/entry-common.S |  6 +++---
- 2 files changed, 4 insertions(+), 12 deletions(-)
+Thanks,
+Song
