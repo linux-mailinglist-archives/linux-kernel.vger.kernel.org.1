@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE9B22F96B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEE622F96D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgG0TrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59736 "EHLO
+        id S1729026AbgG0TrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728990AbgG0TrG (ORCPT
+        with ESMTP id S1729014AbgG0TrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:47:06 -0400
-Received: from smtp-190f.mail.infomaniak.ch (smtp-190f.mail.infomaniak.ch [IPv6:2001:1600:3:17::190f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99584C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:47:06 -0700 (PDT)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4BFr1022KyzlhTrH;
-        Mon, 27 Jul 2020 21:47:00 +0200 (CEST)
-Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
-        by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4BFr0w2zRPzlh8T4;
-        Mon, 27 Jul 2020 21:46:56 +0200 (CEST)
-Subject: Re: [PATCH v7 4/7] fs: Introduce O_MAYEXEC flag for openat2(2)
-To:     Florian Weimer <fweimer@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Eric Chiang <ericchiang@google.com>,
-        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thibaut Sautereau <thibaut.sautereau@clip-os.org>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
-References: <20200723171227.446711-1-mic@digikod.net>
- <20200723171227.446711-5-mic@digikod.net>
- <20200727042106.GB794331@ZenIV.linux.org.uk>
- <87y2n55xzv.fsf@oldenburg2.str.redhat.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <eaf5bc42-e086-740b-a90c-93e67c535eee@digikod.net>
-Date:   Mon, 27 Jul 2020 21:46:55 +0200
-User-Agent: 
+        Mon, 27 Jul 2020 15:47:13 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753CAC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:47:13 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id k18so2432400pfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 12:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sGQ4r67ks10a9qe3fOk8YWAIOQIxbh+oSzV4pqpcTt8=;
+        b=sMHMB8VZWqlwbXWM79T30VxlVj+IefdVKIwTlDf0VEjEv0eg47NENQ/0P7cKueGUQI
+         +8nCHx/Ez7jCJPiWFvLniRPedw/rfenucP/14M5GaV6t8Zn2iq3AXAhY6Mc+cF3AR3If
+         tkCKJqdysJX89NANjkdlAhWQTwOG+8LgOxgJ2JlKw3YXfLyDeLItP97oJ/Uzr2hl1rMB
+         ZRjX+FLOJIycW9o9c32RRniQbyQMsB3tp05irQxgp5w0I2NSrE4EJqvs7BgHp59q6LFR
+         sSsaJU5PbtaQIrdsqZ8GU4BRO5vax1iCuEN5CX6vkdnYosN0wJ/x18k+S3G/oTn1SWP/
+         CnKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sGQ4r67ks10a9qe3fOk8YWAIOQIxbh+oSzV4pqpcTt8=;
+        b=QPzxGp4inDmhYTEKfKxo3R/PEjimGScPSsAH1xHFi16nAX93/E0Kojr5vuRRVSZN7I
+         6hJmjDBpCzI7sS5Hxl2+uaPhLlTyzPNB5/KNMLt11S+HrXO8yE+jnDEh8A1QM2PBp5RZ
+         a1H1YUzf0AwvJKIqoyDz5tPlsp8hIwBYP3pNOQuO4I3rqzw7oMw2ckIbieipXb9Bgjc9
+         kR08hIxZl6wkE4xoJWeLT9+YZVqhi7XBbFGKqAOIOKc45asz63mSNvbeHM2Y1V0dPy1B
+         CUtjrf9prystMvPmiLm26w6hb/Y7s3HXPloFS0TjgEGxFxT9YTu7WPT9ZR1rCwx3QSaZ
+         xfGg==
+X-Gm-Message-State: AOAM5324vIrUx+jfXj95TbAvjvjet8Jf/cYtQrZE5XgBbEmUr9xKx5Pa
+        bnqcCuLqiSEjkv3+0AyeYtqdrIghozu7q3SBt94=
+X-Google-Smtp-Source: ABdhPJy+//PBMIQeWkJdzakQn7hhFAyqjwSVtG1idgDdUKWtxtdXzoCU6G/qQ8c7jAKH4frEP1nSdfwatABy3IKsXas=
+X-Received: by 2002:a62:758f:: with SMTP id q137mr3071458pfc.170.1595879232782;
+ Mon, 27 Jul 2020 12:47:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87y2n55xzv.fsf@oldenburg2.str.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+References: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com>
+In-Reply-To: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 27 Jul 2020 22:46:56 +0300
+Message-ID: <CAHp75Ve1VUWsw8GdSmEbGs6v=B2=VGgcieS-voA+AqvypTpbdw@mail.gmail.com>
+Subject: Re: Kernel panic - not syncing: IO-APIC + timer doesn't work!
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 27, 2020 at 10:20 PM Scott Branden
+<scott.branden@broadcom.com> wrote:
+>
+> Occasionally I get the following Kernel panic on boot.  This is running on the latest kernel but have seen it previously as well.
+> "Kernel panic - not syncing: IO-APIC + timer doesn't work!  Boot with apic=debug and send a report."
+>
+> I don't know who I am support to send a report to.  But here is the log with apic=debug
 
-On 27/07/2020 07:27, Florian Weimer wrote:
-> * Al Viro:
-> 
->> On Thu, Jul 23, 2020 at 07:12:24PM +0200, MickaÃ«l SalaÃ¼n wrote:
->>> When the O_MAYEXEC flag is passed, openat2(2) may be subject to
->>> additional restrictions depending on a security policy managed by the
->>> kernel through a sysctl or implemented by an LSM thanks to the
->>> inode_permission hook.  This new flag is ignored by open(2) and
->>> openat(2) because of their unspecified flags handling.  When used with
->>> openat2(2), the default behavior is only to forbid to open a directory.
->>
->> Correct me if I'm wrong, but it looks like you are introducing a magical
->> flag that would mean "let the Linux S&M take an extra special whip
->> for this open()".
+Just a wild guess, do you have x2APIC in your system enabled and driver for it?
 
-There is nothing magic, it doesn't only work with the LSM framework, and
-there is nothing painful nor humiliating here (except maybe this language).
-
->>
->> Why is it done during open?  If the caller is passing it deliberately,
->> why not have an explicit request to apply given torture device to an
->> already opened file?  Why not sys_masochism(int fd, char *hurt_flavour),
->> for that matter?
-> 
-> While I do not think this is appropriate language for a workplace, Al
-> has a point: If the auditing event can be generated on an already-open
-> descriptor, it would also cover scenarios like this one:
-> 
->   perl < /path/to/script
-> 
-> Where the process that opens the file does not (and cannot) know that it
-> will be used for execution purposes.
-
-The check is done during open because the goal of this patch series is
-to address the problem of script execution when opening a script in well
-controlled systems (e.g. to enforce a "write xor execute" policy, to do
-an atomic integrity check [1], to check specific execute/read
-permissions, etc.). As discussed multiple times, controlling other means
-to interpret commands (stdin, environment variables, etc.) is out of
-scope and should be handled by interpreters (in userspace). Someone
-could still extend fcntl(2) to enable to check file descriptors, but it
-is an independent change not required for now.
-Specific audit features are also out of scope for now [2].
-
-[1] https://lore.kernel.org/lkml/1544699060.6703.11.camel@linux.ibm.com/
-[2] https://lore.kernel.org/lkml/202007160822.CCDB5478@keescook/
+-- 
+With Best Regards,
+Andy Shevchenko
