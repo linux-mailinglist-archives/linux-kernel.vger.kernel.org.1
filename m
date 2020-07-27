@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E860622FF69
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA75B22FF99
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgG1CQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        id S1726824AbgG1C2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:28:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgG1CQa (ORCPT
+        with ESMTP id S1726237AbgG1C2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:16:30 -0400
+        Mon, 27 Jul 2020 22:28:47 -0400
 Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340A0C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:16:30 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id i138so8972834ild.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:16:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B24EC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:28:47 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id s21so14893139ilk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:28:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=+qhhZcvnd3RwCE+F+SIU+6bIz1sPCtUPTyz82YandFo=;
-        b=qFRv66x+Edw1E+2euA44W6pSi/QdRSgRAuqJr5j87nkElpfIJYd0Ulo2oMb7qvFS2A
-         1YaugNbwMsygktYgyYSotHWs4z+QeIc4BhbLPLluw85gbbpJuGg27/hfsTBCSOTN0c2Z
-         KnxSpb8uZRn6vzvEns12aizFTS7X0H+TBuwNMbRq4TlHww/GMpfSlMIibX8M90RvvCDp
-         EDzsLb2qVJsm6OzyV7+I3s7OWTKed8CL5ua+kpiVkdWF7wwShVUtGYBpMn4pSdXYA/Pm
-         kYNgKfMX5KIi1KMlmP+h0paxQXYe6dVD28DGHha+CjQ+G8vdC25H2tmEkd17vauWmGg5
-         rcuQ==
+        bh=X81wKNuIN/ZBgNP01q1lrp0XDb3zK0TgXb0/3enbG4E=;
+        b=Iq4q/uAaaDFkDFJLGD5NrMQMX3PCt6qe6l9b/3p4udFexbBIOpyOdQGnKowNmd9NGe
+         JYOD9gV20hNjhE3+pvKP8ttNKhKZbDhE/IRlUbPz45F2qT8JflGxdO4vAnTjTxj2R+ra
+         wAu8h7vIehJPG17+zKn2uj2ajEa75hYZv1A4+RvYYzDys/+NZz4BSp5mGbMnDvhhfoQe
+         1ki1EQcbyal983V0gHpZVTWSGiCPfUXCWqRqbfvoIobWiRv44kSw33psx/RAnukmTa7N
+         Qysm6luz3Vb9xSjjP1NmqtoxjazUrUu/sc5h5tS0+77Io/q8RmCnSC1cujDVc9ZECnUl
+         cmDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+qhhZcvnd3RwCE+F+SIU+6bIz1sPCtUPTyz82YandFo=;
-        b=h2TH3IBDNKHIjEwCwkvAUSky/4psWM1CSyq6bRdVVQ6TlRByKkN0ySF+ADEgxSHBRS
-         sP4hzRV+1p1MgJXDJiXgIGTrVWMNEONm/pg1741OqMbWBF9hYHbf231OmY7TKfYzMYV8
-         0hZLSfAc79YJO0lYxQSEbEQUDyEkBtZNpNaBdoD9ZGPD3Yt6MpKHN6yi/BULtY/e1Uba
-         ylCjnDXYQYz+nGb4iBIGINJ7FP+oDMifEbrDj+izj1M10zrqdE5ikFW9CB7+bj9E6t2m
-         tCW/hdGh8uE2Ati/C4ewDXCT1lmz1WrsfD3jyDkshYPgPYs/LfDW7D0ZdctPItTDHIaE
-         XXig==
-X-Gm-Message-State: AOAM5315nTcjpvmNXZx0EiJa8j1Ep2vXEp3dFet2mKNaPI7zW8qELpJd
-        bovaig0MgzJ3uAfFHj0NxHP6wXfEuuAxitvHheppGQAR
-X-Google-Smtp-Source: ABdhPJyRGZ6wDA+UhVMRrrMpC3VXX10f0UdEKy2RU3tRJYFS731AYHP3Mobcvf9npHHHyQCtFPwo1Fi6FOVbF+R/H0c=
-X-Received: by 2002:a92:9f96:: with SMTP id z22mr27481140ilk.266.1595902589613;
- Mon, 27 Jul 2020 19:16:29 -0700 (PDT)
+        bh=X81wKNuIN/ZBgNP01q1lrp0XDb3zK0TgXb0/3enbG4E=;
+        b=aD12j7Sfw+sVJZfTcbBLNiJIUA8lpA7iGn1u55u6cH1Dx1XqbmxTXCo4+uU4kezJGD
+         agPNOV8mF7fi3Rg4kZ1K8zDBexinqQAjgN82XPf4BpYgyKB87Odezgoa8ycXlL8cYePI
+         OWk2XZnOwqKc+qy/V8lnxRBybErwS6juaYjIRvmy1ct+qEgeb/sAIgeNrCXuZqhteuzo
+         ZJyKZ+vw0XzDZl8SES6CNJkwDtMfApHqDIs0awT4050eFNDw9BueaZ0AqK4CgZ+R9Ab5
+         HCmwEnUv2TjL+EURrflh5AcrRDalMLnu4Mah9c9oMRM4KhgD6tjO3/Smy7dxqAlWnPS3
+         J4Rg==
+X-Gm-Message-State: AOAM533nHtk1YPovCLWUgBAFGqnQ8Nzwtbr4imfxE65ml1LU5Qp+hvE0
+        dWmfcpfyLfuyQKmSha6D8gMmuJE1ckuZJMAH6PU=
+X-Google-Smtp-Source: ABdhPJzyKdyXWVAX9P7Mf/nv1KVhHyZI+2eMBipAvoOzXxrE76PZ1ClBhDf1EO76moVzQz4JrEMxm7qkX2iNE66y7cg=
+X-Received: by 2002:a92:9f96:: with SMTP id z22mr27519152ilk.266.1595903326578;
+ Mon, 27 Jul 2020 19:28:46 -0700 (PDT)
 MIME-Version: 1.0
 References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
- <1594983811-25908-2-git-send-email-gene.chen.richtek@gmail.com> <20200727110821.GH1850026@dell>
-In-Reply-To: <20200727110821.GH1850026@dell>
+ <1594983811-25908-5-git-send-email-gene.chen.richtek@gmail.com> <20200727112921.GK1850026@dell>
+In-Reply-To: <20200727112921.GK1850026@dell>
 From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 28 Jul 2020 02:16:15 +0800
-Message-ID: <CAE+NS34FexE-LwbzkOLepKytKCbKm3RowPQKqROR_a6wCrVLLA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] mfd: mt6360: Rearrange include file
+Date:   Tue, 28 Jul 2020 02:28:32 +0800
+Message-ID: <CAE+NS36cxY9KqxxcmuctK_W_3ZmZnC_xK8VVVaTZqC3vSoqbUw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] mfd: mt6360: Combine mt6360 pmic/ldo resouces into
+ mt6360 regulator resources
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
@@ -66,50 +67,67 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B47=E6=9C=8827=E6=97=
-=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:08=E5=AF=AB=E9=81=93=EF=BC=9A
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=887:29=E5=AF=AB=E9=81=93=EF=BC=9A
 >
 > On Fri, 17 Jul 2020, Gene Chen wrote:
 >
 > > From: Gene Chen <gene_chen@richtek.com>
 > >
-> > Rearrange include file without sorting by alphabet.
+> > Combine mt6360 pmic/ldo resouces into mt6360 regulator resources
+> > to simplify the similar resources object.
 >
-> Why are you making this change?
+> Do the sub-devices actually share these resources, or are you doing
+> this just to make the code simpler?
 >
 
-Personal coding style references from upstream code.
-I can discard this change if it doesn't make sense.
+They are different resources used by different bucks and ldos without
+sharing relations.
+I just to make the code simpler.
 
 > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
 > > ---
-> >  drivers/mfd/mt6360-core.c | 11 +++++------
-> >  1 file changed, 5 insertions(+), 6 deletions(-)
+> >  drivers/mfd/mt6360-core.c | 11 +++--------
+> >  1 file changed, 3 insertions(+), 8 deletions(-)
 > >
 > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > index e9cacc2..df4506f 100644
+> > index 7cc1b59..665e26f 100644
 > > --- a/drivers/mfd/mt6360-core.c
 > > +++ b/drivers/mfd/mt6360-core.c
-> > @@ -5,15 +5,14 @@
-> >   * Author: Gene Chen <gene_chen@richtek.com>
-> >   */
+> > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resources[]=
+ =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to_evt=
+"),
+> >  };
 > >
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> >  #include <linux/i2c.h>
-> > -#include <linux/init.h>
-> > +#include <linux/crc8.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/regmap.h>
-> >  #include <linux/interrupt.h>
-> > -#include <linux/kernel.h>
-> >  #include <linux/mfd/core.h>
-> > -#include <linux/module.h>
-> > -#include <linux/of_irq.h>
-> > -#include <linux/of_platform.h>
-> > -#include <linux/version.h>
-> >
-> >  #include <linux/mfd/mt6360.h>
-> >
+> > -static const struct resource mt6360_pmic_resources[] =3D {
+> > +static const struct resource mt6360_regulator_resources[] =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
+> > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resources[=
+] =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
+> > -};
+> > -
+> > -static const struct resource mt6360_ldo_resources[] =3D {
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
+> >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
+> > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] =3D {
+> >                   NULL, 0, 0, "mediatek,mt6360-chg"),
+> >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
+> >                   NULL, 0, 0, "mediatek,mt6360-led"),
+> > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
+> > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
+> > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
+> > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
+> > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
+> > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
+> >       OF_MFD_CELL("mt6360-tcpc", NULL,
+> >                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
+> >  };
 >
 > --
 > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
