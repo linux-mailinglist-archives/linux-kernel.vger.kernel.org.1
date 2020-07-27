@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2F522F001
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752E122EFD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731668AbgG0OVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:21:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
+        id S1731410AbgG0OTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:19:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731638AbgG0OVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:21:02 -0400
+        id S1731406AbgG0OTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:19:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B0D22070A;
-        Mon, 27 Jul 2020 14:21:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 216F320825;
+        Mon, 27 Jul 2020 14:19:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859661;
-        bh=cToFvjwH/rD41ff8mryTBGVqToQbljdz/cOulN4Cwqg=;
+        s=default; t=1595859576;
+        bh=TRh+4gzYuKIy2BqkB2gH3yL1Ae8c0trDVyJ/lwGZ8aM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9FKyTht/FGSgtTrsLXtm3lY2lildYuHaQvGvNjy0PyCe5KCQjT9CB9zie9OYgTgw
-         gBZbAdoStJm96+yXEjlBYabLXaXj1phFFU34t75HdJDSm0w9knHU33aWpdvXBuUw35
-         t2t39AJ8gABHeAZXDJiPAgIjlD+6zCIduSlMZprA=
+        b=MZpvEY1l3SL2nFx626BL9ZTpgv/PjCwtmWWpYD4/qQXwmbdo6BHyGjdyqBMBjqLz/
+         9DgaG/bTov0zI02f12yK4bcxGxeaWtNURW5fVTfPjXsaspYMc7jtCwRUzEcPhtSKrJ
+         Ks81UwekFIL5/a3O/FTlTlcHmwa8fhgib0GKT/ro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Steve Schremmer <steve.schremmer@netapp.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 016/179] scsi: dh: Add Fujitsu device to devinfo and dh lists
-Date:   Mon, 27 Jul 2020 16:03:11 +0200
-Message-Id: <20200727134933.464050722@linuxfoundation.org>
+Subject: [PATCH 5.7 017/179] dm: use bio_uninit instead of bio_disassociate_blkg
+Date:   Mon, 27 Jul 2020 16:03:12 +0200
+Message-Id: <20200727134933.511961229@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
 References: <20200727134932.659499757@linuxfoundation.org>
@@ -45,45 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve Schremmer <steve.schremmer@netapp.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit e094fd346021b820f37188aaa6b502c7490ab5b5 ]
+[ Upstream commit 382761dc6312965a11f82f2217e16ec421bf17ae ]
 
-Add FUJITSU ETERNUS_AHB
+bio_uninit is the proper API to clean up a BIO that has been allocated
+on stack or inside a structure that doesn't come from the BIO allocator.
+Switch dm to use that instead of bio_disassociate_blkg, which really is
+an implementation detail.  Note that the bio_uninit calls are also moved
+to the two callers of __send_empty_flush, so that they better pair with
+the bio_init calls used to initialize them.
 
-Link: https://lore.kernel.org/r/DM6PR06MB5276CCA765336BD312C4282E8C660@DM6PR06MB5276.namprd06.prod.outlook.com
-Signed-off-by: Steve Schremmer <steve.schremmer@netapp.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_devinfo.c | 1 +
- drivers/scsi/scsi_dh.c      | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/md/dm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-index eed31021e7885..ba84244c1b4f6 100644
---- a/drivers/scsi/scsi_devinfo.c
-+++ b/drivers/scsi/scsi_devinfo.c
-@@ -239,6 +239,7 @@ static struct {
- 	{"LSI", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
- 	{"ENGENIO", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
- 	{"LENOVO", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
-+	{"FUJITSU", "Universal Xport", "*", BLIST_NO_ULD_ATTACH},
- 	{"SanDisk", "Cruzer Blade", NULL, BLIST_TRY_VPD_PAGES |
- 		BLIST_INQUIRY_36},
- 	{"SMSC", "USB 2 HS-CF", NULL, BLIST_SPARSELUN | BLIST_INQUIRY_36},
-diff --git a/drivers/scsi/scsi_dh.c b/drivers/scsi/scsi_dh.c
-index 42f0550d6b11f..6f41e4b5a2b85 100644
---- a/drivers/scsi/scsi_dh.c
-+++ b/drivers/scsi/scsi_dh.c
-@@ -63,6 +63,7 @@ static const struct scsi_dh_blist scsi_dh_blist[] = {
- 	{"LSI", "INF-01-00",		"rdac", },
- 	{"ENGENIO", "INF-01-00",	"rdac", },
- 	{"LENOVO", "DE_Series",		"rdac", },
-+	{"FUJITSU", "ETERNUS_AHB",	"rdac", },
- 	{NULL, NULL,			NULL },
- };
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 05333fc2f8d2b..9793b04e9ff3b 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1446,9 +1446,6 @@ static int __send_empty_flush(struct clone_info *ci)
+ 	BUG_ON(bio_has_data(ci->bio));
+ 	while ((ti = dm_table_get_target(ci->map, target_nr++)))
+ 		__send_duplicate_bios(ci, ti, ti->num_flush_bios, NULL);
+-
+-	bio_disassociate_blkg(ci->bio);
+-
+ 	return 0;
+ }
  
+@@ -1636,6 +1633,7 @@ static blk_qc_t __split_and_process_bio(struct mapped_device *md,
+ 		ci.bio = &flush_bio;
+ 		ci.sector_count = 0;
+ 		error = __send_empty_flush(&ci);
++		bio_uninit(ci.bio);
+ 		/* dec_pending submits any data associated with flush */
+ 	} else if (op_is_zone_mgmt(bio_op(bio))) {
+ 		ci.bio = bio;
+@@ -1710,6 +1708,7 @@ static blk_qc_t __process_bio(struct mapped_device *md, struct dm_table *map,
+ 		ci.bio = &flush_bio;
+ 		ci.sector_count = 0;
+ 		error = __send_empty_flush(&ci);
++		bio_uninit(ci.bio);
+ 		/* dec_pending submits any data associated with flush */
+ 	} else {
+ 		struct dm_target_io *tio;
 -- 
 2.25.1
 
