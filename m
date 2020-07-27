@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E64F22F12B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8C422EEC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731937AbgG0OWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:22:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
+        id S1729904AbgG0OKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731908AbgG0OWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:22:32 -0400
+        id S1729898AbgG0OKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F335B20775;
-        Mon, 27 Jul 2020 14:22:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FA4E2083E;
+        Mon, 27 Jul 2020 14:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859750;
-        bh=Nh/XQaVlZEmpfRFE3FVIVYBDIfjODdpwOTf59f+q5u0=;
+        s=default; t=1595859040;
+        bh=66bg3+WNh4NSxqZznyJHZ6nazNhXZHVobYkVRGnUTSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fz9bXan/m8GE33jzjbcStV/4DMr/1jBPukrTmR6cWJIL+HnbDwGXCyP9Z4gNEKUKK
-         bLnIsKe5gT9KhlqMT5ycy0JPOtFz7jHFGkr1724Q/vkfiDol3YKfb9tANchFCcHmAo
-         DweLKR/iqJX/GhbKz4Wwn5mBKDc6u9uM6RS67NIE=
+        b=o8diH8EqYlYHtLYNbQlExKidF/wAdgASPcLHNWgU0PdK5muJYEQn31smoiZAEI639
+         iSB509oQfCxG7FRjtB1sPpsHLk6O4wQVrKvOHz5l9cUTy6c2fRNOL/HsjD5V9VN1Xe
+         1zNJWEQz8OynMGMmlAsCGT+smzHPzSdTFEwehJl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Lobakin <alobakin@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 083/179] qed: suppress "dont support RoCE & iWARP" flooding on HW init
+        stable@vger.kernel.org, Caiyuan Xie <caiyuan.xie@cn.alps.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 44/86] HID: alps: support devices with report id 2
 Date:   Mon, 27 Jul 2020 16:04:18 +0200
-Message-Id: <20200727134936.726650135@linuxfoundation.org>
+Message-Id: <20200727134916.637405862@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,58 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@marvell.com>
+From: Caiyuan Xie <caiyuan.xie@cn.alps.com>
 
-[ Upstream commit 1ea999039fe7c7953da2fbb7ca7c3ef00064d328 ]
+[ Upstream commit aa3c439c144f0a465ed1f28f11c772886fb02b35 ]
 
-Change the verbosity of the "don't support RoCE & iWARP simultaneously"
-warning to debug level to stop flooding on driver/hardware initialization:
+Add support for devices which that have reports with id == 2
 
-[    4.783230] qede 01:00.00: Storm FW 8.37.7.0, Management FW 8.52.9.0
-[MBI 15.10.6] [eth0]
-[    4.810020] [qed_rdma_set_pf_params:2076()]Current day drivers don't
-support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only
-[    4.861186] qede 01:00.01: Storm FW 8.37.7.0, Management FW 8.52.9.0
-[MBI 15.10.6] [eth1]
-[    4.893311] [qed_rdma_set_pf_params:2076()]Current day drivers don't
-support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only
-[    5.181713] qede a1:00.00: Storm FW 8.37.7.0, Management FW 8.52.9.0
-[MBI 15.10.6] [eth2]
-[    5.224740] [qed_rdma_set_pf_params:2076()]Current day drivers don't
-support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only
-[    5.276449] qede a1:00.01: Storm FW 8.37.7.0, Management FW 8.52.9.0
-[MBI 15.10.6] [eth3]
-[    5.318671] [qed_rdma_set_pf_params:2076()]Current day drivers don't
-support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only
-[    5.369548] qede a1:00.02: Storm FW 8.37.7.0, Management FW 8.52.9.0
-[MBI 15.10.6] [eth4]
-[    5.411645] [qed_rdma_set_pf_params:2076()]Current day drivers don't
-support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only
-
-Fixes: e0a8f9de16fc ("qed: Add iWARP enablement support")
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Caiyuan Xie <caiyuan.xie@cn.alps.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_cxt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/hid-alps.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_cxt.c b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-index aeed8939f410a..3bbcff5f26214 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_cxt.c
-@@ -1987,8 +1987,8 @@ static void qed_rdma_set_pf_params(struct qed_hwfn *p_hwfn,
- 	num_srqs = min_t(u32, QED_RDMA_MAX_SRQS, p_params->num_srqs);
+diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
+index 3489f0af7409c..f4cf541d13e08 100644
+--- a/drivers/hid/hid-alps.c
++++ b/drivers/hid/hid-alps.c
+@@ -29,6 +29,7 @@
  
- 	if (p_hwfn->mcp_info->func_info.protocol == QED_PCI_ETH_RDMA) {
--		DP_NOTICE(p_hwfn,
--			  "Current day drivers don't support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only\n");
-+		DP_VERBOSE(p_hwfn, QED_MSG_SP,
-+			   "Current day drivers don't support RoCE & iWARP simultaneously on the same PF. Default to RoCE-only\n");
- 		p_hwfn->hw_info.personality = QED_PCI_ETH_ROCE;
- 	}
+ #define U1_MOUSE_REPORT_ID			0x01 /* Mouse data ReportID */
+ #define U1_ABSOLUTE_REPORT_ID		0x03 /* Absolute data ReportID */
++#define U1_ABSOLUTE_REPORT_ID_SECD  0x02 /* FW-PTP Absolute data ReportID */
+ #define U1_FEATURE_REPORT_ID		0x05 /* Feature ReportID */
+ #define U1_SP_ABSOLUTE_REPORT_ID	0x06 /* Feature ReportID */
+ 
+@@ -372,6 +373,7 @@ static int u1_raw_event(struct alps_dev *hdata, u8 *data, int size)
+ 	case U1_FEATURE_REPORT_ID:
+ 		break;
+ 	case U1_ABSOLUTE_REPORT_ID:
++	case U1_ABSOLUTE_REPORT_ID_SECD:
+ 		for (i = 0; i < hdata->max_fingers; i++) {
+ 			u8 *contact = &data[i * 5];
  
 -- 
 2.25.1
