@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743A422EB66
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE5122EB6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 13:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728128AbgG0LpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 07:45:24 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:54088 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgG0LpX (ORCPT
+        id S1728203AbgG0Lrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 07:47:37 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48328 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727770AbgG0Lrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 07:45:23 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RBgkOY131177;
-        Mon, 27 Jul 2020 11:45:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=/2Bqbh6mqEzNlmJp3/m5FcHLpogK8hoaUEdhgHBnRQk=;
- b=cwY+dBq91vP6K4S/p3qzO7J1vrmggFsezqZnrUydf6kZ8YxdNkrAblw23f13pv7PdaVr
- bvBy5typaaIrD1BbGqXZE5XN++9OgiXXJZyP3Y3u2VjJGDSGTFqv4bw7QImVRn1Yt4pE
- cWRNd146HxzSb0aU+laHDhQCC23QXCrUTza1oluiWZXN3Du4UNSmnYPkx6r6fzr3M47E
- no4fDY+MTuCxhHrs9SPfmdWiUiCduNLsthZcR1VmGrrRu/GoWRrYy5Dps0JH+8wC5p2C
- 97W3crDVz7H8ycBkqh+IY3PLqNUgeiEXG9+CYw8HL5u8hDRoyqxkRODAKNDW8UkMY1Sa iA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 32hu1j119u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Jul 2020 11:45:09 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RBhGp9154648;
-        Mon, 27 Jul 2020 11:45:09 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 32hu5qhhu7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Jul 2020 11:45:09 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06RBj0gB014202;
-        Mon, 27 Jul 2020 11:45:00 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 27 Jul 2020 04:44:59 -0700
-Date:   Mon, 27 Jul 2020 14:44:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Shreeya Patel <shreeya.patel23498@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH] Staging: rtl8188eu: rtw_mlme: Fix uninitialized variable
- authmode
-Message-ID: <20200727114451.GA1913@kadam>
-References: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
+        Mon, 27 Jul 2020 07:47:36 -0400
+X-UUID: 499e236331c842dabcc22b3ee8a2bd46-20200727
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=b3By9T3GQYDCgOA6dniEjcfbP4km3HT3VtwE/lnbgzY=;
+        b=T8VTSUU6J604Uv1hpMXXoaJuRU1BV/pgZcdiFWwsmJ7xOWdbFwZbjdDyiEIt3AupKh+9HkHn7TaeVi8+TZjhQnHXi/N+zFloLJM47bLAEfTzTnw7jJaixxOz9s9NL7G08mEw0GZpA1qLNRFkY8bG6KjS/FlJo0h8fevoFfBsAl0=;
+X-UUID: 499e236331c842dabcc22b3ee8a2bd46-20200727
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw02.mediatek.com
+        (envelope-from <fengping.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 798339912; Mon, 27 Jul 2020 19:47:31 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 27 Jul 2020 19:47:26 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 27 Jul 2020 19:47:25 +0800
+From:   Fengping Yu <fengping.yu@mediatek.com>
+To:     Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+CC:     <linux-input@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v16] Add matrix keypad driver support for Mediatek SoCs 
+Date:   Mon, 27 Jul 2020 19:45:01 +0800
+Message-ID: <20200727114504.28536-1-fengping.yu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724122957.30411-1-dinghao.liu@zju.edu.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9694 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- suspectscore=18 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007270087
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9694 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1011
- malwarescore=0 spamscore=0 suspectscore=18 bulkscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007270087
+Content-Type: text/plain
+X-TM-SNTS-SMTP: FE8F0DE6355989A622C88EB60EFD84C13347A735279417E4D9EFD82E64A156EB2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 08:29:55PM +0800, Dinghao Liu wrote:
-> The variable authmode will keep uninitialized if neither if
-> statements used to initialize this variable are not triggered.
-> Then authmode may contain a garbage value and influence the
-> execution flow of this function.
-> 
-> Fix this by initializing it to zero.
-> 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-
-This matches how rtl8723bs does it.
-
-Fixes: 7b464c9fa5cc ("staging: r8188eu: Add files for new driver - part 4")
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-There is a quirk/bug in GCC where it's initializing stuff to zero
-sometimes instead of printing a compile warning so this probably doesn't
-change run time very much.
-
-regards,
-dan carpenter
+DQpDaGFuZ2Ugc2luY2UgdjE1Og0KLSBtb2RpZnkgcmVnbWFwX3Jhd19yZWFkIHRvIHJlZ21hcF9i
+dWxrX3JlYWQNCi0gbW9kaWZ5IHJlZ21hcCBvdXRwdXQgc3BlY2lmaWVyIHRvICVwZQ0KDQpmZW5n
+cGluZy55dSAoMyk6DQogIGR0LWJpbmRpbmdzOiBBZGQga2V5cGFkIGRldmljZXRyZWUgZG9jdW1l
+bnRhdGlvbg0KICBkcml2ZXJzOiBpbnB1dDoga2V5Ym9hcmQ6IEFkZCBtdGsga2V5cGFkIGRyaXZl
+cg0KICBjb25maWdzOiBkZWZjb25maWc6IEFkZCBDT05GSUdfS0VZQk9BUkRfTVRLX0tQRD1tDQoN
+CiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9pbnB1dC9tdGsta3BkLnlhbWwgICAgfCAgOTYgKysr
+KysrKysNCiBhcmNoL2FybTY0L2NvbmZpZ3MvZGVmY29uZmlnICAgICAgICAgICAgICAgICAgfCAg
+IDEgKw0KIGRyaXZlcnMvaW5wdXQva2V5Ym9hcmQvS2NvbmZpZyAgICAgICAgICAgICAgICB8ICAx
+MSArDQogZHJpdmVycy9pbnB1dC9rZXlib2FyZC9NYWtlZmlsZSAgICAgICAgICAgICAgIHwgICAx
+ICsNCiBkcml2ZXJzL2lucHV0L2tleWJvYXJkL210ay1rcGQuYyAgICAgICAgICAgICAgfCAyMDkg
+KysrKysrKysrKysrKysrKysrDQogNSBmaWxlcyBjaGFuZ2VkLCAzMTggaW5zZXJ0aW9ucygrKQ0K
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaW5w
+dXQvbXRrLWtwZC55YW1sDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvaW5wdXQva2V5Ym9h
+cmQvbXRrLWtwZC5jDQoNCi0tDQoyLjE4LjANCg0K
 
