@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4163A22EFAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFC522F0C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbgG0OSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:18:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
+        id S1732522AbgG0OZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:25:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731188AbgG0OSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:18:11 -0400
+        id S1732495AbgG0OZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:25:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6372520775;
-        Mon, 27 Jul 2020 14:18:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4861921775;
+        Mon, 27 Jul 2020 14:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859490;
-        bh=9eh4zjibUGsJrkBsVkA2O+Xz5FTZwE39Qzz12cZceuk=;
+        s=default; t=1595859946;
+        bh=W6z7dnpeGGRWpWZZKzTCo6fCMQg2u8gAj9/OmC7aNfg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O+II9mm9XhSUHtcBDrb3spic9eQ6mywZ+qWnt9nmGQcH7Q7I74NcKKqyYJUt3i5G7
-         m5qr0FE7Y1n25HuFoglT91YorFs1otoHME8su6jOb/3i2DGBy1IyvuiFqIexH1V3Fj
-         W19R18yfGBaG7ln0G1bru1S/6is9MyAiCUGrUOUk=
+        b=TyrnaELTqI+lXmWgC8dDLl5Qv1Wx0+eMwnDuH8B0FvejniHLuzBrnREJtG7VfTEPs
+         gfb5GNfrSKnDekDD7aVgu0BwR1PJ7LUQy2Y0vdePwjGY/AsiAan3vyFnBcC4Zv4EST
+         939VGZdkId2Bdu9Axt3FnZWyhbZRu6Hl96iMfHuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Qiu Wenbo <qiuwenbo@phytium.com.cn>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 129/138] drm/amd/powerplay: fix a crash when overclocking Vega M
+        stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 5.7 149/179] staging: comedi: addi_apci_1500: check INSN_CONFIG_DIGITAL_TRIG shift
 Date:   Mon, 27 Jul 2020 16:05:24 +0200
-Message-Id: <20200727134931.876843687@linuxfoundation.org>
+Message-Id: <20200727134939.928825242@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiu Wenbo <qiuwenbo@phytium.com.cn>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 88bb16ad998a0395fe4b346b7d3f621aaa0a2324 upstream.
+commit fc846e9db67c7e808d77bf9e2ef3d49e3820ce5d upstream.
 
-Avoid kernel crash when vddci_control is SMU7_VOLTAGE_CONTROL_NONE and
-vddci_voltage_table is empty. It has been tested on Intel Hades Canyon
-(i7-8809G).
+The `INSN_CONFIG` comedi instruction with sub-instruction code
+`INSN_CONFIG_DIGITAL_TRIG` includes a base channel in `data[3]`. This is
+used as a right shift amount for other bitmask values without being
+checked.  Shift amounts greater than or equal to 32 will result in
+undefined behavior.  Add code to deal with this, adjusting the checks
+for invalid channels so that enabled channel bits that would have been
+lost by shifting are also checked for validity.  Only channels 0 to 15
+are valid.
 
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=208489
-Fixes: ac7822b0026f ("drm/amd/powerplay: add smumgr support for VEGAM (v2)")
-Reviewed-by: Evan Quan <evan.quan@amd.com>
-Signed-off-by: Qiu Wenbo <qiuwenbo@phytium.com.cn>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Fixes: a8c66b684efaf ("staging: comedi: addi_apci_1500: rewrite the subdevice support functions")
+Cc: <stable@vger.kernel.org> #4.0+: ef75e14a6c93: staging: comedi: verify array index is correct before using it
+Cc: <stable@vger.kernel.org> #4.0+
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20200717145257.112660-5-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/staging/comedi/drivers/addi_apci_1500.c |   24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
---- a/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/smumgr/vegam_smumgr.c
-@@ -642,9 +642,6 @@ static int vegam_get_dependency_volt_by_
+--- a/drivers/staging/comedi/drivers/addi_apci_1500.c
++++ b/drivers/staging/comedi/drivers/addi_apci_1500.c
+@@ -452,13 +452,14 @@ static int apci1500_di_cfg_trig(struct c
+ 	struct apci1500_private *devpriv = dev->private;
+ 	unsigned int trig = data[1];
+ 	unsigned int shift = data[3];
+-	unsigned int hi_mask = data[4] << shift;
+-	unsigned int lo_mask = data[5] << shift;
+-	unsigned int chan_mask = hi_mask | lo_mask;
+-	unsigned int old_mask = (1 << shift) - 1;
++	unsigned int hi_mask;
++	unsigned int lo_mask;
++	unsigned int chan_mask;
++	unsigned int old_mask;
+ 	unsigned int pm;
+ 	unsigned int pt;
+ 	unsigned int pp;
++	unsigned int invalid_chan;
  
- 	/* sclk is bigger than max sclk in the dependence table */
- 	*voltage |= (dep_table->entries[i - 1].vddc * VOLTAGE_SCALE) << VDDC_SHIFT;
--	vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
--			(dep_table->entries[i - 1].vddc -
--					(uint16_t)VDDC_VDDCI_DELTA));
+ 	if (trig > 1) {
+ 		dev_dbg(dev->class_dev,
+@@ -466,7 +467,20 @@ static int apci1500_di_cfg_trig(struct c
+ 		return -EINVAL;
+ 	}
  
- 	if (SMU7_VOLTAGE_CONTROL_NONE == data->vddci_control)
- 		*voltage |= (data->vbios_boot_state.vddci_bootup_value *
-@@ -652,8 +649,13 @@ static int vegam_get_dependency_volt_by_
- 	else if (dep_table->entries[i - 1].vddci)
- 		*voltage |= (dep_table->entries[i - 1].vddci *
- 				VOLTAGE_SCALE) << VDDC_SHIFT;
--	else
-+	else {
-+		vddci = phm_find_closest_vddci(&(data->vddci_voltage_table),
-+				(dep_table->entries[i - 1].vddc -
-+						(uint16_t)VDDC_VDDCI_DELTA));
-+
- 		*voltage |= (vddci * VOLTAGE_SCALE) << VDDCI_SHIFT;
+-	if (chan_mask > 0xffff) {
++	if (shift <= 16) {
++		hi_mask = data[4] << shift;
++		lo_mask = data[5] << shift;
++		old_mask = (1U << shift) - 1;
++		invalid_chan = (data[4] | data[5]) >> (16 - shift);
++	} else {
++		hi_mask = 0;
++		lo_mask = 0;
++		old_mask = 0xffff;
++		invalid_chan = data[4] | data[5];
 +	}
- 
- 	if (SMU7_VOLTAGE_CONTROL_NONE == data->mvdd_control)
- 		*mvdd = data->vbios_boot_state.mvdd_bootup_value * VOLTAGE_SCALE;
++	chan_mask = hi_mask | lo_mask;
++
++	if (invalid_chan) {
+ 		dev_dbg(dev->class_dev, "invalid digital trigger channel\n");
+ 		return -EINVAL;
+ 	}
 
 
