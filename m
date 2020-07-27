@@ -2,287 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE7B22FA08
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929B022FA1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 22:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgG0U2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 16:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgG0U2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 16:28:23 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        id S1729211AbgG0UcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 16:32:08 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:43000 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgG0UcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 16:32:07 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4696E206E7;
-        Mon, 27 Jul 2020 20:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595881702;
-        bh=aYSeVSHouvNAoh4D27QzelNJE605X6Pqy1mo5TW2Y4A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=wgH46tyrQPCV701y9bxUNPMT8OdNFXzLfyld1hCA4blHuT/HLRdEptgxWAipDur7F
-         svTK/RHIq7+4i481ud8/+UxPIjPbKzrS9oxzbTb3Wc44rvBpz4Z2thZQzcqBlF1Xnp
-         jWJHJWacMYwHzUVAZSemKQ/34bZu2ZZttiiyGdxo=
-Date:   Mon, 27 Jul 2020 15:34:13 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Li Yang <leoyang.li@nxp.com>, Zhang Wei <zw@zh-kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] dmaengine: Use fallthrough pseudo-keyword
-Message-ID: <20200727203413.GA6245@embeddedor>
+        by asavdk4.altibox.net (Postfix) with ESMTPS id E258B8048A;
+        Mon, 27 Jul 2020 22:31:59 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 22:31:58 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
+        od@zcrc.me, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/6] drm/bridge: Add SPI DBI host driver
+Message-ID: <20200727203158.GA1016751@ravnborg.org>
+References: <20200727164613.19744-1-paul@crapouillou.net>
+ <20200727164613.19744-4-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200727164613.19744-4-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=ER_8r6IbAAAA:8 a=7X9hF7tqX14c7ykuo-AA:9
+        a=wPNLvfGTeEIA:10 a=9LHmKk7ezEChjTCyhBa9:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-fall-through markings when it is the case.
+Hi Paul.
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+On Mon, Jul 27, 2020 at 06:46:10PM +0200, Paul Cercueil wrote:
+> This driver will register a DBI host driver for panels connected over
+> SPI.
+So this is actually a MIPI DBI host driver.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/dma/amba-pl08x.c    | 10 +++++-----
- drivers/dma/fsldma.c        |  2 +-
- drivers/dma/imx-dma.c       |  2 +-
- drivers/dma/iop-adma.h      | 12 ++++++------
- drivers/dma/nbpfaxi.c       |  2 +-
- drivers/dma/pl330.c         | 10 +++-------
- drivers/dma/sh/shdma-base.c |  2 +-
- 7 files changed, 18 insertions(+), 22 deletions(-)
+I personally would love to have added mipi_ in the names - to make it
+all more explicit.
+But maybe that just because I get confused on all the acronyms.
 
-diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
-index 9adc7a2fa3d3..a24882ba3764 100644
---- a/drivers/dma/amba-pl08x.c
-+++ b/drivers/dma/amba-pl08x.c
-@@ -1767,7 +1767,7 @@ static u32 pl08x_memcpy_cctl(struct pl08x_driver_data *pl08x)
- 	default:
- 		dev_err(&pl08x->adev->dev,
- 			"illegal burst size for memcpy, set to 1\n");
--		/* Fall through */
-+		fallthrough;
- 	case PL08X_BURST_SZ_1:
- 		cctl |= PL080_BSIZE_1 << PL080_CONTROL_SB_SIZE_SHIFT |
- 			PL080_BSIZE_1 << PL080_CONTROL_DB_SIZE_SHIFT;
-@@ -1806,7 +1806,7 @@ static u32 pl08x_memcpy_cctl(struct pl08x_driver_data *pl08x)
- 	default:
- 		dev_err(&pl08x->adev->dev,
- 			"illegal bus width for memcpy, set to 8 bits\n");
--		/* Fall through */
-+		fallthrough;
- 	case PL08X_BUS_WIDTH_8_BITS:
- 		cctl |= PL080_WIDTH_8BIT << PL080_CONTROL_SWIDTH_SHIFT |
- 			PL080_WIDTH_8BIT << PL080_CONTROL_DWIDTH_SHIFT;
-@@ -1850,7 +1850,7 @@ static u32 pl08x_ftdmac020_memcpy_cctl(struct pl08x_driver_data *pl08x)
- 	default:
- 		dev_err(&pl08x->adev->dev,
- 			"illegal bus width for memcpy, set to 8 bits\n");
--		/* Fall through */
-+		fallthrough;
- 	case PL08X_BUS_WIDTH_8_BITS:
- 		cctl |= PL080_WIDTH_8BIT << FTDMAC020_LLI_SRC_WIDTH_SHIFT |
- 			PL080_WIDTH_8BIT << FTDMAC020_LLI_DST_WIDTH_SHIFT;
-@@ -2612,7 +2612,7 @@ static int pl08x_of_probe(struct amba_device *adev,
- 	switch (val) {
- 	default:
- 		dev_err(&adev->dev, "illegal burst size for memcpy, set to 1\n");
--		/* Fall through */
-+		fallthrough;
- 	case 1:
- 		pd->memcpy_burst_size = PL08X_BURST_SZ_1;
- 		break;
-@@ -2647,7 +2647,7 @@ static int pl08x_of_probe(struct amba_device *adev,
- 	switch (val) {
- 	default:
- 		dev_err(&adev->dev, "illegal bus width for memcpy, set to 8 bits\n");
--		/* Fall through */
-+		fallthrough;
- 	case 8:
- 		pd->memcpy_bus_width = PL08X_BUS_WIDTH_8_BITS;
- 		break;
-diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
-index ad72b3f42ffa..e342cf52d296 100644
---- a/drivers/dma/fsldma.c
-+++ b/drivers/dma/fsldma.c
-@@ -1163,7 +1163,7 @@ static int fsl_dma_chan_probe(struct fsldma_device *fdev,
- 	switch (chan->feature & FSL_DMA_IP_MASK) {
- 	case FSL_DMA_IP_85XX:
- 		chan->toggle_ext_pause = fsl_chan_toggle_ext_pause;
--		/* Fall through */
-+		fallthrough;
- 	case FSL_DMA_IP_83XX:
- 		chan->toggle_ext_start = fsl_chan_toggle_ext_start;
- 		chan->set_src_loop_size = fsl_chan_set_src_loop_size;
-diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
-index 5c0fb3134825..88717506c1f6 100644
---- a/drivers/dma/imx-dma.c
-+++ b/drivers/dma/imx-dma.c
-@@ -556,7 +556,7 @@ static int imxdma_xfer_desc(struct imxdma_desc *d)
- 		 * We fall-through here intentionally, since a 2D transfer is
- 		 * similar to MEMCPY just adding the 2D slot configuration.
- 		 */
--		/* Fall through */
-+		fallthrough;
- 	case IMXDMA_DESC_MEMCPY:
- 		imx_dmav1_writel(imxdma, d->src, DMA_SAR(imxdmac->channel));
- 		imx_dmav1_writel(imxdma, d->dest, DMA_DAR(imxdmac->channel));
-diff --git a/drivers/dma/iop-adma.h b/drivers/dma/iop-adma.h
-index c499c9578f00..d44eabb6f5eb 100644
---- a/drivers/dma/iop-adma.h
-+++ b/drivers/dma/iop-adma.h
-@@ -496,7 +496,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
- 		}
- 		hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = edcr;
- 		src_cnt = 24;
--		/* fall through */
-+		fallthrough;
- 	case 17 ... 24:
- 		if (!u_desc_ctrl.field.blk_ctrl) {
- 			hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
-@@ -510,7 +510,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
- 		}
- 		hw_desc->src_edc[AAU_EDCR1_IDX].e_desc_ctrl = edcr;
- 		src_cnt = 16;
--		/* fall through */
-+		fallthrough;
- 	case 9 ... 16:
- 		if (!u_desc_ctrl.field.blk_ctrl)
- 			u_desc_ctrl.field.blk_ctrl = 0x2; /* use EDCR0 */
-@@ -522,7 +522,7 @@ iop3xx_desc_init_xor(struct iop3xx_desc_aau *hw_desc, int src_cnt,
- 		}
- 		hw_desc->src_edc[AAU_EDCR0_IDX].e_desc_ctrl = edcr;
- 		src_cnt = 8;
--		/* fall through */
-+		fallthrough;
- 	case 2 ... 8:
- 		shift = 1;
- 		for (i = 0; i < src_cnt; i++) {
-@@ -602,19 +602,19 @@ iop_desc_init_null_xor(struct iop_adma_desc_slot *desc, int src_cnt,
- 	case 25 ... 32:
- 		u_desc_ctrl.field.blk_ctrl = 0x3; /* use EDCR[2:0] */
- 		hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
--		/* fall through */
-+		fallthrough;
- 	case 17 ... 24:
- 		if (!u_desc_ctrl.field.blk_ctrl) {
- 			hw_desc->src_edc[AAU_EDCR2_IDX].e_desc_ctrl = 0;
- 			u_desc_ctrl.field.blk_ctrl = 0x3; /* use EDCR[2:0] */
- 		}
- 		hw_desc->src_edc[AAU_EDCR1_IDX].e_desc_ctrl = 0;
--		/* fall through */
-+		fallthrough;
- 	case 9 ... 16:
- 		if (!u_desc_ctrl.field.blk_ctrl)
- 			u_desc_ctrl.field.blk_ctrl = 0x2; /* use EDCR0 */
- 		hw_desc->src_edc[AAU_EDCR0_IDX].e_desc_ctrl = 0;
--		/* fall through */
-+		fallthrough;
- 	case 1 ... 8:
- 		if (!u_desc_ctrl.field.blk_ctrl && src_cnt > 4)
- 			u_desc_ctrl.field.blk_ctrl = 0x1; /* use mini-desc */
-diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
-index 74df621402e1..ca4e0930207a 100644
---- a/drivers/dma/nbpfaxi.c
-+++ b/drivers/dma/nbpfaxi.c
-@@ -483,7 +483,7 @@ static size_t nbpf_xfer_size(struct nbpf_device *nbpf,
- 
- 	default:
- 		pr_warn("%s(): invalid bus width %u\n", __func__, width);
--		/* fall through */
-+		fallthrough;
- 	case DMA_SLAVE_BUSWIDTH_1_BYTE:
- 		size = burst;
- 	}
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 2c508ee672b9..9b69716172a4 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -1061,16 +1061,16 @@ static bool _start(struct pl330_thread *thrd)
- 
- 		if (_state(thrd) == PL330_STATE_KILLING)
- 			UNTIL(thrd, PL330_STATE_STOPPED)
--		/* fall through */
-+		fallthrough;
- 
- 	case PL330_STATE_FAULTING:
- 		_stop(thrd);
--		/* fall through */
-+		fallthrough;
- 
- 	case PL330_STATE_KILLING:
- 	case PL330_STATE_COMPLETING:
- 		UNTIL(thrd, PL330_STATE_STOPPED)
--		/* fall through */
-+		fallthrough;
- 
- 	case PL330_STATE_STOPPED:
- 		return _trigger(thrd);
-@@ -1121,7 +1121,6 @@ static u32 _emit_load(unsigned int dry_run, u8 buf[],
- 
- 	switch (direction) {
- 	case DMA_MEM_TO_MEM:
--		/* fall through */
- 	case DMA_MEM_TO_DEV:
- 		off += _emit_LD(dry_run, &buf[off], cond);
- 		break;
-@@ -1155,7 +1154,6 @@ static inline u32 _emit_store(unsigned int dry_run, u8 buf[],
- 
- 	switch (direction) {
- 	case DMA_MEM_TO_MEM:
--		/* fall through */
- 	case DMA_DEV_TO_MEM:
- 		off += _emit_ST(dry_run, &buf[off], cond);
- 		break;
-@@ -1216,7 +1214,6 @@ static int _bursts(struct pl330_dmac *pl330, unsigned dry_run, u8 buf[],
- 
- 	switch (pxs->desc->rqtype) {
- 	case DMA_MEM_TO_DEV:
--		/* fall through */
- 	case DMA_DEV_TO_MEM:
- 		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, cyc,
- 			cond);
-@@ -1266,7 +1263,6 @@ static int _dregs(struct pl330_dmac *pl330, unsigned int dry_run, u8 buf[],
- 
- 	switch (pxs->desc->rqtype) {
- 	case DMA_MEM_TO_DEV:
--		/* fall through */
- 	case DMA_DEV_TO_MEM:
- 		off += _emit_MOV(dry_run, &buf[off], CCR, dregs_ccr);
- 		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, 1,
-diff --git a/drivers/dma/sh/shdma-base.c b/drivers/dma/sh/shdma-base.c
-index 2deeaab078a4..788d696323bb 100644
---- a/drivers/dma/sh/shdma-base.c
-+++ b/drivers/dma/sh/shdma-base.c
-@@ -383,7 +383,7 @@ static dma_async_tx_callback __ld_cleanup(struct shdma_chan *schan, bool all)
- 			switch (desc->mark) {
- 			case DESC_COMPLETED:
- 				desc->mark = DESC_WAITING;
--				/* Fall through */
-+				fallthrough;
- 			case DESC_WAITING:
- 				if (head_acked)
- 					async_tx_ack(&desc->async_tx);
--- 
-2.27.0
 
+Some details in the following. Will try to find some more time so I can
+grasp the full picture. The following was just my low-level notes for
+now.
+
+	Sam
+> 
+> DBI types c1 and c3 are supported. C1 is a SPI protocol with 9 bits per
+> word, with the data/command information in the 9th (MSB) bit. C3 is a
+> SPI protocol with 8 bits per word, with the data/command information
+> carried by a separate GPIO.
+
+We did not have any define to distingush between DBI_C1 and DBI_c3:
++/* MIPI bus types */
++#define MIPI_DEVICE_TYPE_DSI           BIT(0)
++#define MIPI_DEVICE_TYPE_DBI_SPI_MODE1 BIT(1)
++#define MIPI_DEVICE_TYPE_DBI_SPI_MODE2 BIT(2)
++#define MIPI_DEVICE_TYPE_DBI_SPI_MODE3 BIT(3)
++#define MIPI_DEVICE_TYPE_DBI_M6800     BIT(4)
++#define MIPI_DEVICE_TYPE_DBI_I8080     BIT(5)
+
+Is this on purpose?
+I had assumed the host should tell what it supports and the device should
+tell what it wanted.
+So if the host did not support DBI_C3 and device wants it - then we
+could give up early.
+
+> 
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>  drivers/gpu/drm/bridge/Kconfig   |   8 +
+>  drivers/gpu/drm/bridge/Makefile  |   1 +
+>  drivers/gpu/drm/bridge/dbi-spi.c | 261 +++++++++++++++++++++++++++++++
+This is no bridge driver - so does not belong in the bridge
+directory.
+gpu/drm/drm_mipi_dbi_spi.c?
+
+>  3 files changed, 270 insertions(+)
+>  create mode 100644 drivers/gpu/drm/bridge/dbi-spi.c
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index c7f0dacfb57a..ed38366847c1 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -219,6 +219,14 @@ config DRM_TI_TPD12S015
+>  	  Texas Instruments TPD12S015 HDMI level shifter and ESD protection
+>  	  driver.
+>  
+> +config DRM_MIPI_DBI_SPI
+> +	tristate "SPI host support for MIPI DBI"
+> +	depends on OF && SPI
+> +	select DRM_MIPI_DSI
+> +	select DRM_MIPI_DBI
+> +	help
+> +	  Driver to support DBI over SPI.
+> +
+>  source "drivers/gpu/drm/bridge/analogix/Kconfig"
+>  
+>  source "drivers/gpu/drm/bridge/adv7511/Kconfig"
+> diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
+> index 7d7c123a95e4..c2c522c2774f 100644
+> --- a/drivers/gpu/drm/bridge/Makefile
+> +++ b/drivers/gpu/drm/bridge/Makefile
+> @@ -20,6 +20,7 @@ obj-$(CONFIG_DRM_I2C_ADV7511) += adv7511/
+>  obj-$(CONFIG_DRM_TI_SN65DSI86) += ti-sn65dsi86.o
+>  obj-$(CONFIG_DRM_TI_TFP410) += ti-tfp410.o
+>  obj-$(CONFIG_DRM_TI_TPD12S015) += ti-tpd12s015.o
+> +obj-$(CONFIG_DRM_MIPI_DBI_SPI) += dbi-spi.o
+mipi_dbi_spi.o would be nice...
+
+>  obj-$(CONFIG_DRM_NWL_MIPI_DSI) += nwl-dsi.o
+>  
+>  obj-y += analogix/
+> diff --git a/drivers/gpu/drm/bridge/dbi-spi.c b/drivers/gpu/drm/bridge/dbi-spi.c
+> new file mode 100644
+> index 000000000000..1060b8f95fba
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/dbi-spi.c
+> @@ -0,0 +1,261 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * MIPI Display Bus Interface (DBI) SPI support
+> + *
+> + * Copyright 2016 Noralf Trønnes
+> + * Copyright 2020 Paul Cercueil <paul@crapouillou.net>
+> + */
+> +
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/module.h>
+> +#include <linux/spi/spi.h>
+> +
+> +#include <drm/drm_mipi_dbi.h>
+> +#include <drm/drm_mipi_dsi.h>
+> +
+> +#include <video/mipi_display.h>
+> +
+> +struct dbi_spi {
+> +	struct mipi_dsi_host host;
+It is very confusing that the mipi_dbi_spi driver uses a dsi_host.
+It clashes in my head - and then reviewing it not easy.
+
+> +	struct mipi_dsi_host_ops host_ops;
+const?
+> +
+> +	struct spi_device *spi;
+> +	struct gpio_desc *dc;
+> +	struct mutex cmdlock;
+> +
+> +	unsigned int current_bus_type;
+> +
+> +	/**
+> +	 * @tx_buf9: Buffer used for Option 1 9-bit conversion
+> +	 */
+> +	void *tx_buf9;
+> +
+> +	/**
+> +	 * @tx_buf9_len: Size of tx_buf9.
+> +	 */
+> +	size_t tx_buf9_len;
+> +};
+> +
+> +static inline struct dbi_spi *host_to_dbi_spi(struct mipi_dsi_host *host)
+> +{
+> +	return container_of(host, struct dbi_spi, host);
+> +}
+> +
+> +static ssize_t dbi_spi1_transfer(struct mipi_dsi_host *host,
+> +				 const struct mipi_dsi_msg *msg)
+> +{
+> +	struct dbi_spi *dbi = host_to_dbi_spi(host);
+> +	struct spi_device *spi = dbi->spi;
+> +	struct spi_transfer tr = {
+> +		.bits_per_word = 9,
+> +	};
+> +	const u8 *src8 = msg->tx_buf;
+> +	struct spi_message m;
+> +	size_t max_chunk, chunk;
+> +	size_t len = msg->tx_len;
+> +	bool cmd_byte = true;
+> +	unsigned int i;
+> +	u16 *dst16;
+> +	int ret;
+> +
+> +	tr.speed_hz = mipi_dbi_spi_cmd_max_speed(spi, len);
+> +	dst16 = dbi->tx_buf9;
+> +
+> +	max_chunk = min(dbi->tx_buf9_len / 2, len);
+Hmm, this looks not right. We limit the max_chunk to 8K here.
+We learned the other day that we count in bytes.
+OR did I miss something?
+
+> +
+> +	spi_message_init_with_transfers(&m, &tr, 1);
+> +	tr.tx_buf = dst16;
+> +
+> +	while (len) {
+> +		chunk = min(len, max_chunk);
+> +
+> +		for (i = 0; i < chunk; i++) {
+> +			dst16[i] = *src8++;
+> +
+> +			/* Bit 9: 0 means command, 1 means data */
+> +			if (!cmd_byte)
+> +				dst16[i] |= BIT(9);
+> +
+> +			cmd_byte = false;
+> +		}
+> +
+> +		tr.len = chunk * 2;
+> +		len -= chunk;
+> +
+> +		ret = spi_sync(spi, &m);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static ssize_t dbi_spi3_transfer(struct mipi_dsi_host *host,
+> +				 const struct mipi_dsi_msg *msg)
+> +{
+> +	struct dbi_spi *dbi = host_to_dbi_spi(host);
+> +	struct spi_device *spi = dbi->spi;
+> +	const u8 *buf = msg->tx_buf;
+> +	unsigned int bpw = 8;
+> +	u32 speed_hz;
+> +	ssize_t ret;
+> +
+> +	/* for now we only support sending messages, not receiving */
+> +	if (msg->rx_len)
+> +		return -EINVAL;
+> +
+> +	gpiod_set_value_cansleep(dbi->dc, 0);
+> +
+> +	speed_hz = mipi_dbi_spi_cmd_max_speed(spi, 1);
+> +	ret = mipi_dbi_spi_transfer(spi, speed_hz, 8, buf, 1);
+> +	if (ret || msg->tx_len == 1)
+> +		return ret;
+> +
+> +	if (buf[0] == MIPI_DCS_WRITE_MEMORY_START)
+> +		bpw = 16;
+> +
+> +	gpiod_set_value_cansleep(dbi->dc, 1);
+> +	speed_hz = mipi_dbi_spi_cmd_max_speed(spi, msg->tx_len - 1);
+> +
+> +	ret = mipi_dbi_spi_transfer(spi, speed_hz, bpw,
+> +				    &buf[1], msg->tx_len - 1);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return msg->tx_len;
+> +}
+> +
+> +static ssize_t dbi_spi_transfer(struct mipi_dsi_host *host,
+> +				const struct mipi_dsi_msg *msg)
+> +{
+> +	struct dbi_spi *dbi = host_to_dbi_spi(host);
+> +
+> +	switch (dbi->current_bus_type) {
+> +	case MIPI_DEVICE_TYPE_DBI_SPI_MODE1:
+> +		return dbi_spi1_transfer(host, msg);
+> +	case MIPI_DEVICE_TYPE_DBI_SPI_MODE3:
+> +		return dbi_spi3_transfer(host, msg);
+> +	default:
+> +		dev_err(&dbi->spi->dev, "Unknown transfer type\n");
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int dbi_spi_attach(struct mipi_dsi_host *host,
+> +			  struct mipi_dsi_device *dsi)
+> +{
+> +	struct dbi_spi *dbi = host_to_dbi_spi(host);
+> +
+> +	dbi->current_bus_type = dsi->bus_type;
+> +
+> +	if (dbi->current_bus_type == MIPI_DEVICE_TYPE_DBI_SPI_MODE1) {
+> +		dbi->tx_buf9_len = SZ_16K;
+> +
+> +		dbi->tx_buf9 = kmalloc(dbi->tx_buf9_len, GFP_KERNEL);
+> +		if (!dbi->tx_buf9)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int dbi_spi_detach(struct mipi_dsi_host *host,
+> +			  struct mipi_dsi_device *dsi)
+> +{
+> +	struct dbi_spi *dbi = host_to_dbi_spi(host);
+> +
+> +	kfree(dbi->tx_buf9);
+> +	dbi->tx_buf9_len = 0;
+> +
+> +	return 0; /* Nothing to do */
+> +}
+> +
+> +static void dbi_spi_host_unregister(void *d)
+> +{
+> +	mipi_dsi_host_unregister(d);
+> +}
+> +
+> +static int dbi_spi_probe(struct spi_device *spi)
+> +{
+> +	struct device *dev = &spi->dev;
+> +	struct mipi_dsi_device_info info = { };
+> +	struct mipi_dsi_device *dsi;
+> +	struct dbi_spi *dbi;
+> +	int ret;
+> +
+> +	dbi = devm_kzalloc(dev, sizeof(*dbi), GFP_KERNEL);
+> +	if (!dbi)
+> +		return -ENOMEM;
+> +
+> +	dbi->host.dev = dev;
+> +	dbi->host.ops = &dbi->host_ops;
+> +	dbi->spi = spi;
+> +	spi_set_drvdata(spi, dbi);
+> +
+> +	dbi->dc = devm_gpiod_get_optional(dev, "dc", GPIOD_OUT_LOW);
+> +	if (IS_ERR(dbi->dc)) {
+> +		dev_err(dev, "Failed to get gpio 'dc'\n");
+> +		return PTR_ERR(dbi->dc);
+> +	}
+> +
+> +	if (spi_is_bpw_supported(spi, 9))
+> +		dbi->host.bus_types |= MIPI_DEVICE_TYPE_DBI_SPI_MODE1;
+> +	if (dbi->dc)
+> +		dbi->host.bus_types |= MIPI_DEVICE_TYPE_DBI_SPI_MODE3;
+> +
+> +	if (!dbi->host.bus_types) {
+> +		dev_err(dev, "Neither Type1 nor Type3 are supported\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dbi->host_ops.transfer = dbi_spi_transfer;
+> +	dbi->host_ops.attach = dbi_spi_attach;
+> +	dbi->host_ops.detach = dbi_spi_detach;
+> +
+> +	mutex_init(&dbi->cmdlock);
+> +
+> +	ret = mipi_dsi_host_register(&dbi->host);
+> +	if (ret) {
+> +		dev_err(dev, "Unable to register DSI host\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_add_action_or_reset(dev, dbi_spi_host_unregister, &dbi->host);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Register our own node as a MIPI DSI device.
+> +	 * This ensures that the panel driver will be probed.
+> +	 */
+> +	info.channel = 0;
+> +	info.node = of_node_get(dev->of_node);
+> +
+> +	dsi = mipi_dsi_device_register_full(&dbi->host, &info);
+> +	if (IS_ERR(dsi)) {
+> +		dev_err(dev, "Failed to add DSI device\n");
+> +		return PTR_ERR(dsi);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id dbi_spi_of_match[] = {
+> +	{ .compatible = "adafruit,yx240qv29" },
+> +	{ .compatible = "leadtek,ltk035c5444t-spi" },
+> +	{ }
+Would it be better with a fall-back compatible like:
+mipi,dbi-spi.
+So the nodes must includes this compatible to be registered with
+this driver?
+
+> +};
+> +MODULE_DEVICE_TABLE(of, dbi_spi_of_match);
+> +
+> +static struct spi_driver dbi_spi_driver = {
+> +	.driver = {
+> +		.name = "dbi-spi",
+> +		.of_match_table = dbi_spi_of_match,
+> +	},
+> +	.probe = dbi_spi_probe,
+> +};
+> +module_spi_driver(dbi_spi_driver);
+> +
+> +MODULE_DESCRIPTION("DBI SPI bus driver");
+> +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.27.0
