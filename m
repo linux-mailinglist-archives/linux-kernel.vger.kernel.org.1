@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A3D22E7B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFF322E7BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgG0I1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:27:51 -0400
-Received: from smtprelay0083.hostedemail.com ([216.40.44.83]:48704 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726139AbgG0I1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:27:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id C23DD1730850;
-        Mon, 27 Jul 2020 08:27:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3870:3872:3873:4321:4605:5007:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sleet04_270be7a26f5f
-X-Filterd-Recvd-Size: 2386
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Jul 2020 08:27:48 +0000 (UTC)
-Message-ID: <ae9d562ec9ef765dddd1491d4cfb5f6d18f7025f.camel@perches.com>
-Subject: Re: [PATCH 2/6] rtlwifi: Remove unnecessary parenthese in rtl_dbg
- uses
-From:   Joe Perches <joe@perches.com>
-To:     Pkshih <pkshih@realtek.com>,
-        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Date:   Mon, 27 Jul 2020 01:27:47 -0700
-In-Reply-To: <1595830034.12227.7.camel@realtek.com>
-References: <cover.1595706419.git.joe@perches.com>
-         <9b2eaedb7ea123ea766a379459b20a9486d1cd41.1595706420.git.joe@perches.com>
-         <1595830034.12227.7.camel@realtek.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1726719AbgG0IaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:30:24 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2525 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726139AbgG0IaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 04:30:23 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 1001EE1A7B0462DD1BCC;
+        Mon, 27 Jul 2020 09:30:22 +0100 (IST)
+Received: from [127.0.0.1] (10.210.169.250) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 09:30:21 +0100
+Subject: Re: [PATCH] io: Fix return type of _inb and _inl
+To:     Arnd Bergmann <arnd@arndb.de>, Stafford Horne <shorne@gmail.com>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>
+References: <20200726031154.1012044-1-shorne@gmail.com>
+ <CAHp75VciC+gqkCZ9voNKHU3hrtiOVzeWBu9_YEagpCGdTME2yg@mail.gmail.com>
+ <20200726125325.GC80756@lianli.shorne-pla.net>
+ <CAK8P3a0-wPsVi-fXPW4Dghn30cumrzvLujp7usio50EHmCHM=g@mail.gmail.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a55f21a7-aff9-09a9-2fcd-c9ef76728116@huawei.com>
+Date:   Mon, 27 Jul 2020 09:28:25 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
+In-Reply-To: <CAK8P3a0-wPsVi-fXPW4Dghn30cumrzvLujp7usio50EHmCHM=g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.169.250]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 06:07 +0000, Pkshih wrote:
-> On Sat, 2020-07-25 at 12:55 -0700, Joe Perches wrote:
-> > Make these statements a little simpler.
-[]
-> > diff --git a/drivers/net/wireless/realtek/rtlwifi/btcoexist/halbtcoutsrc.c
-[]
-> > @@ -874,11 +874,10 @@ static void halbtc_display_wifi_status(struct
-> > btc_coexist *btcoexist,
-> >  	seq_printf(m, "\n %-35s = %s / %s/ %s/ AP=%d ",
-> >  		   "Wifi freq/ bw/ traffic",
-> >  		   gl_btc_wifi_freq_string[wifi_freq],
-> > -		   ((wifi_under_b_mode) ? "11b" :
-> > -		    gl_btc_wifi_bw_string[wifi_bw]),
-> > -		   ((!wifi_busy) ? "idle" : ((BTC_WIFI_TRAFFIC_TX ==
-> > -					      wifi_traffic_dir) ? "uplink" :
-> > -					     "downlink")),
-> > +		   wifi_under_b_mode ? "11b" : gl_btc_wifi_bw_string[wifi_bw],
-> > +		   (!wifi_busy ? "idle" :
-> > +		    wifi_traffic_dir == BTC_WIFI_TRAFFIC_TX ? "uplink" :
-> > +		    "downlink"),
+On 27/07/2020 09:04, Arnd Bergmann wrote:> On Sun, Jul 26, 2020 at 2:53 
+PM Stafford Horne <shorne@gmail.com> wrote:
+>>
+>> On Sun, Jul 26, 2020 at 12:00:37PM +0300, Andy Shevchenko wrote:
+>>> On Sun, Jul 26, 2020 at 6:14 AM Stafford Horne <shorne@gmail.com> wrote:
+>>>>
+>>>> The return type of functions _inb, _inw and _inl are all u16 which looks
+>>>> wrong.  This patch makes them u8, u16 and u32 respectively.
+>>>>
+>>>> The original commit text for these does not indicate that these should
+>>>> be all forced to u16.
+>>>
+>>> Is it in alight with all architectures? that support this interface natively?
+>>>
+>>> (Return value is arch-dependent AFAIU, so it might actually return
+>>> 16-bit for byte read, but I agree that this is weird for 32-bit value.
+>>> I think you have elaborate more in the commit message)
+>>
+>> Well, this is the generic io code,  at least these api's appear to not be different
+>> for each architecture.  The output read by the architecture dependant code i.e.
+>> __raw_readb() below is getting is placed into a u8.  So I think the output of
+>> the function will be u8.
+>>
+>> static inline u8 _inb(unsigned long addr)
+>> {
+>>          u8 val;
+>>
+>>          __io_pbr();
+>>          val = __raw_readb(PCI_IOBASE + addr);
+>>          __io_par(val);
+>>          return val;
+>> }
+>>
+>> I can expand the commit text, but I would like to get some comments from the
+>> original author to confirm if this is an issue.
 > 
-> I think this would be better
+> I think your original version is fine, this was clearly just a typo and I've
+> applied your fix now and will forward it to Linus in the next few days,
+> giving John the chance to add his Ack or further comments.
 > 
-> +		   !wifi_busy ? "idle" :
-> +		   (wifi_traffic_dir == BTC_WIFI_TRAFFIC_TX ? "uplink" :
-> +		    "downlink"),
+> Thanks a lot for spotting it and sending a fix.
 
-It seems most repeated test1 ? : test2 ? : test3 ?:
-uses do not have the style you suggest in the kernel.
+Thanks Arnd.
 
+Yeah, these looks like copy+paste errors on my part:
 
+Reviewed-by: John Garry <john.garry@huawei.com>
+
+I'll give this patch a spin, but not expecting any differences (since 
+original seems ok).
+
+Note that kbuild robot also reported this:
+https://lore.kernel.org/lkml/202007140549.J7X9BVPT%25lkp@intel.com/
+
+Extract:
+
+include/asm-generic/io.h:521:22: sparse: sparse: incorrect type in 
+argument 1 (different base types) @@     expected unsigned int 
+[usertype] value @@     got restricted __le32 [usertype] @@
+    include/asm-generic/io.h:521:22: sparse:     expected unsigned int 
+[usertype] value
+    include/asm-generic/io.h:521:22: sparse:     got restricted __le32 
+[usertype]
+
+But they look like issues which were in the existing code. I tried to 
+recreate to verify any change, but trying to manually upgrade glibc 
+busted my machine :(
+
+Thanks,
+John
