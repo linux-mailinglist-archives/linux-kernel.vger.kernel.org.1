@@ -2,76 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED1D22F8B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4763022F8B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgG0TKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:10:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728387AbgG0TKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:10:38 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1728446AbgG0TLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:11:00 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:34164 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728387AbgG0TK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 15:10:59 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EC06207FC;
-        Mon, 27 Jul 2020 19:10:36 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 15:10:33 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Pavel Machek <pavel@denx.de>,
-        Joe Korty <joe.korty@concurrent-rt.com>
-Subject: Re: [ANNOUNCE] v4.4.231-rt202
-Message-ID: <20200727151033.7c37df2b@oasis.local.home>
-In-Reply-To: <3732c1c4-36d4-2cdc-677a-cb58a9507df1@suse.de>
-References: <159559806551.29587.13643956941367278015@beryllium>
-        <3732c1c4-36d4-2cdc-677a-cb58a9507df1@suse.de>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id CF9E98046C;
+        Mon, 27 Jul 2020 21:10:53 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 21:10:52 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>,
+        od@zcrc.me, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] dt-bindings: display: Document NewVision NV3052C DT
+ node
+Message-ID: <20200727191052.GA1011220@ravnborg.org>
+References: <20200727164613.19744-1-paul@crapouillou.net>
+ <20200727164613.19744-2-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727164613.19744-2-paul@crapouillou.net>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=aP3eV41m c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=gEfo2CItAAAA:8 a=cFL5_wh2AAAA:8
+        a=47UgJTjCgcInOTyXzTsA:9 a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
+        a=sptkURWiP4Gy88Gu7hUp:22 a=yWaY75k36LOQ25BSl4KT:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 13:55:12 +0200
-Daniel Wagner <dwagner@suse.de> wrote:
+Hi Paul.
 
-> Hi,
+On Mon, Jul 27, 2020 at 06:46:08PM +0200, Paul Cercueil wrote:
+> Add documentation for the Device Tree node for LCD panels based on the
+> NewVision NV3052C controller.
 > 
-> On 24.07.20 15:41, Daniel Wagner wrote:
-> > Known issues:
-> > 
-> >     sigwaittest with hackbench as workload is able to trigger a crash on x86_64,
-> >     the same as reported for the v4.4.220-rt196 release. As it turns
-> >     out it was not triggered by BPF.
-> >     https://paste.opensuse.org/view/raw/58939248  
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+
+Very happy to see work on RG-350 :-)
+Some feedback below.
+
+	Sam
+
+> ---
+>  .../display/panel/newvision,nv3052c.yaml      | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/newvision,nv3052c.yaml
 > 
-> Joe pointed out [1] that v4.4-rt is missing 9567db2ebe56 ("signal: 
-> Prevent double-free of user struct") from devel-rt. With this
-> patch all my tests pass.
-> 
-> @stable-rt team: Can you please add it to the missing trees?
+> diff --git a/Documentation/devicetree/bindings/display/panel/newvision,nv3052c.yaml b/Documentation/devicetree/bindings/display/panel/newvision,nv3052c.yaml
+> new file mode 100644
+> index 000000000000..751a28800fc2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/newvision,nv3052c.yaml
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/newvision,nv3052c.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NewVision NV3052C TFT LCD panel driver with SPI control bus
+> +
+> +maintainers:
+> +  - Paul Cercueil <paul@crapouillou.net>
+> +
+> +description: |
+> +  This is a driver for 320x240 TFT panels,
+The binding describes the HW, not the driver. So please re-phrase this
+part.
 
-Good catch,
+This datasheet: https://www.phoenixdisplay.com/wp-content/uploads/2019/05/NV3052C-Datasheet-V0.2.pdf
+tells that the driver supports additional resoltions.
+I guess the 320x240 resolution is limited to the leadtek panel.
 
-I'll pull this in on Friday.
+> +  accepting a variety of input
+> +  streams that get adapted and scaled to the panel. The panel output has
+> +  960 TFT source driver pins and 240 TFT gate driver pins, VCOM, VCOML and
+> +  VCOMH outputs.
+> +
+> +  The panel must obey the rules for a SPI slave device as specified in
+> +  spi/spi-controller.yaml
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +        - leadtek,ltk035c5444t-spi
+> +
+> +      - const: newvision,nv3052c
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reset-gpios: true
+> +  port: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+Do the panel need any power?
+I had expected to see a power-supply node as mandatory.
 
--- Steve
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      display@0 {
+> +        compatible = "leadtek,ltk035c5444t-spi", "newvision,nv3052c";
+> +        reg = <0>;
+> +
+> +        spi-max-frequency = <15000000>;
+> +        spi-3wire;
+> +        reset-gpios = <&gpe 2 GPIO_ACTIVE_LOW>;
 
-> 
-> Thanks,
-> Daniel
-> 
-> [1] 
-> https://lore.kernel.org/linux-rt-users/20200626130544.GA37967@zipoli.concurrent-rt.com/
 
+> +        backlight = <&backlight>;
+> +        power-supply = <&vcc>;
+These would fail later due to "unevaluatedProperties: false".
+Add them above like
+  backlight: true
+  power-supply: true
+
+as done for reset-gpios for example.
+
+> +
+> +        port {
+> +          panel_input: endpoint {
+> +              remote-endpoint = <&panel_output>;
+> +          };
+> +        };
+> +      };
+> +    };
+Personally I prefer 4 space indent. But there is no fixed rule (yet)
+what to use.
+
+> +
+> +...
+> -- 
+> 2.27.0
