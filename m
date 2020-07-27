@@ -2,109 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBCF22F3A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9920222F3B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 17:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgG0PRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 11:17:49 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:46657 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1729039AbgG0PRr (ORCPT
+        id S1729976AbgG0PTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 11:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbgG0PTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 11:17:47 -0400
-Received: (qmail 1470770 invoked by uid 1000); 27 Jul 2020 11:17:46 -0400
-Date:   Mon, 27 Jul 2020 11:17:46 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        linux-fsdevel@vger.kernel.org, Akira Yokosawa <akiyks@gmail.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] tools/memory-model: document the "one-time init" pattern
-Message-ID: <20200727151746.GC1468275@rowland.harvard.edu>
-References: <20200717044427.68747-1-ebiggers@kernel.org>
- <20200717174750.GQ12769@casper.infradead.org>
- <20200718013839.GD2183@sol.localdomain>
- <20200718021304.GS12769@casper.infradead.org>
- <20200718052818.GF2183@sol.localdomain>
+        Mon, 27 Jul 2020 11:19:40 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4231BC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:19:40 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ha11so2306031pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 08:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IHt3OW1PiSHH3TWA+f0N3SNu3bHzJ0l57BQilBA3+pI=;
+        b=LAU0Mjbfq939NMhR/eiOISTSzZ9oAfhJTSxKjcTso60ALATkC5zXQCp5KQUPL/wCgm
+         ja60LFpDGWc1sSr3aQq6ZI8QaeLAxCnpPBydGhrg0x8zaWXLfdLDojDDaEmc+CaDGm6I
+         GwlwDmf79WJcCprY+TwEZf/+gK4kaMLzdwcoUc6N+1fD9zGbEc8Mb0AN+WuQNEKZ8pzH
+         5RqDhNJYq63sLWYrmnbB1xjMCrh9pDx5ZujZB1fwWi1a7i38pnbRNRk8LVvwWuwggpLu
+         TkSXyYOHtOqwjHstCtR7RKNkjup6VSaIuwvXfSZqJN54lxeu5fOprak8fJBeJ/ixzz6T
+         e9RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IHt3OW1PiSHH3TWA+f0N3SNu3bHzJ0l57BQilBA3+pI=;
+        b=gBN26NED2roQKA4vxZJqQE0dNEI+PYo6TBqnM/9w16q8Tv3HsQoSTUvgWnRo40dBRh
+         znk1vMrUr06x+ihbM29Ag5rYNmBQafNnMUoNL2SUTTcSxrjUKNoM069xs7s+cnxH6E1L
+         T+xeI2g5l6S8Q3U0b0caXb0QFZQCu4kPkTHZ5E6DGCxwRiKRF7kD8kLh2AAEW+RdRgq4
+         1gSqGm2vt/6lvSezG74VBs1wbIKuwMKT98aUi1P1QI7tdSWRYCFiDTrn7GJ0cJ0u4mW+
+         XPSL3SJrzx4q1xGQgJkpDvbrHdJ6ZCDg5bMJTpyssk2PE+vCIp0xQ77jh7UCQ6ERZ+wo
+         NiUA==
+X-Gm-Message-State: AOAM532NLJBQhCHRpKi06G71gGNLXBrrG+QUIxhBE7gBj4a48lsDjxjM
+        rrXNJK1K8XUB+P3TE0tEoG2T4g==
+X-Google-Smtp-Source: ABdhPJwy0oTu2o2WnKkue2AcW6YKBHustiMeVNrhbryx+OeQ6y1H8Rr3bvh4JQxasU+B4vomTScXCg==
+X-Received: by 2002:a17:902:b18b:: with SMTP id s11mr19674722plr.152.1595863179706;
+        Mon, 27 Jul 2020 08:19:39 -0700 (PDT)
+Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
+        by smtp.gmail.com with ESMTPSA id 66sm16045562pfg.63.2020.07.27.08.19.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Jul 2020 08:19:39 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>
+Cc:     bhelgaas@google.com, rjw@rjwysocki.net, tony.luck@intel.com,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Qiuxu Zhuo" <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 7/9] PCI/AER: Add RCEC AER handling
+Date:   Mon, 27 Jul 2020 08:19:39 -0700
+X-Mailer: MailMate (1.13.1r5671)
+Message-ID: <6C5C96C5-0365-48A0-B623-1A4C0CE0D13E@intel.com>
+In-Reply-To: <20200727132252.0000644c@Huawei.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+ <20200724172223.145608-8-sean.v.kelley@intel.com>
+ <20200727132252.0000644c@Huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200718052818.GF2183@sol.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 10:28:18PM -0700, Eric Biggers wrote:
-> I'm still not sure this is the best API.
+On 27 Jul 2020, at 5:22, Jonathan Cameron wrote:
 
-I cast my vote for something along the following lines.  It's simple,
-easily understood and easily used.  The approach has two variants: One
-that returns an integer and one that returns a pointer.  I'll use the
-pointer variant to illustrate.
+> On Fri, 24 Jul 2020 10:22:21 -0700
+> Sean V Kelley <sean.v.kelley@intel.com> wrote:
+>
+>> The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
+>> and also have the AER capability. So add RCEC support to the current 
+>> AER
+>> service driver and attach the AER service driver to the RCEC device.
+>>
+>> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>
+> A few questions and comments for this patch.
+>
+> See inline.
+>
+> Jonathan
+>
+>
+>> ---
+>>  drivers/pci/pcie/aer.c | 34 +++++++++++++++++++++++++++-------
+>>  1 file changed, 27 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+>> index f1bf06be449e..7cc430c74c46 100644
+>> --- a/drivers/pci/pcie/aer.c
+>> +++ b/drivers/pci/pcie/aer.c
+>> @@ -303,7 +303,7 @@ int pci_aer_raw_clear_status(struct pci_dev *dev)
+>>  		return -EIO;
+>>
+>>  	port_type = pci_pcie_type(dev);
+>> -	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
+>> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT || port_type == 
+>> PCI_EXP_TYPE_RC_EC) {
+>>  		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &status);
+>>  		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, status);
+>>  	}
+>> @@ -389,6 +389,12 @@ void pci_aer_init(struct pci_dev *dev)
+>>  	pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_ERR, sizeof(u32) * 
+>> n);
+>>
+>>  	pci_aer_clear_status(dev);
+>> +
+>> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC) {
+>> +		if (!pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC))
+>> +			return;
+>> +		pci_info(dev, "AER: RCEC CAP FOUND and cap_has_rtctl = %d\n", n);
+>
+> It feels like failing to find an RC_EC extended cap in a RCEC deserved
+> a nice strong error message.  Perhaps this isn't the right place to do 
+> it
+> though.  For that matter, why are we checking for it here?
 
-Given a type "T", an object x of type pointer-to-T, and a function
-"func" that takes various arguments and returns a pointer-to-T, the
-accepted API for calling func once would be to create once_func() as
-follows:
+Sorry, I’ve left an in-development output in the code.  Will replace 
+with a check with more meaningful output elsewhere.
 
-T *once_func(T **ppt, args...)
-{
-	static DEFINE_MUTEX(mut);
-	T *p;
+>
+>> +	}
+>>  }
+>>
+>>  void pci_aer_exit(struct pci_dev *dev)
+>> @@ -577,7 +583,8 @@ static umode_t aer_stats_attrs_are_visible(struct 
+>> kobject *kobj,
+>>  	if ((a == &dev_attr_aer_rootport_total_err_cor.attr ||
+>>  	     a == &dev_attr_aer_rootport_total_err_fatal.attr ||
+>>  	     a == &dev_attr_aer_rootport_total_err_nonfatal.attr) &&
+>
+> It is a bit ugly to have these called rootport_total_err etc for the 
+> rcec.
+> Perhaps we should just add additional attributes to reflect we are 
+> looking at
+> an RCEC?
 
-	p = smp_load_acquire(ppt);	/* Mild optimization */
-	if (p)
-		return p;
+I was trying to avoid any renaming to reduce churn as I did with my 
+first patch for ACPI / CLX_OSC support.
+Will take a look.
 
-	mutex_lock(mut);
-	p = smp_load_acquire(ppt);
-	if (!p) {
-		p = func(args...);
-		if (!IS_ERR_OR_NULL(p))
-			smp_store_release(ppt, p);
-	}
-	mutex_unlock(mut);
-	return p;
-}
+>
+>> -	    pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
+>> +	    ((pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT) &&
+>> +	    (pci_pcie_type(pdev) != PCI_EXP_TYPE_RC_EC)))
+>>  		return 0;
+>>
+>>  	return a->mode;
+>> @@ -894,7 +901,10 @@ static bool find_source_device(struct pci_dev 
+>> *parent,
+>>  	if (result)
+>>  		return true;
+>>
+>> -	pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+>> +	if (pci_pcie_type(parent) == PCI_EXP_TYPE_RC_EC)
+>> +		pcie_walk_rcec(parent, find_device_iter, e_info);
+>> +	else
+>> +		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+>>
+>>  	if (!e_info->error_dev_num) {
+>>  		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
+>> @@ -1030,6 +1040,7 @@ int aer_get_device_error_info(struct pci_dev 
+>> *dev, struct aer_err_info *info)
+>>  		if (!(info->status & ~info->mask))
+>>  			return 0;
+>>  	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+>> +		   pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC ||
+>>  	           pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
+>>  		   info->severity == AER_NONFATAL) {
+>>
+>> @@ -1182,6 +1193,8 @@ static int set_device_error_reporting(struct 
+>> pci_dev *dev, void *data)
+>>  	int type = pci_pcie_type(dev);
+>>
+>>  	if ((type == PCI_EXP_TYPE_ROOT_PORT) ||
+>> +	    (type == PCI_EXP_TYPE_RC_EC) ||
+>> +	    (type == PCI_EXP_TYPE_RC_END) ||
+>
+> Why add RC_END here?
 
-Users then would have to call once_func(&x, args...) and check the
-result.  Different x objects would constitute different "once"
-domains.
+I’m not clear on your question.  Errors can come from RCEC or RCiEPs.  
+We still need to enable reporting by the RCiEPs.
 
-(In the integer variant, x, p and the return type of func are all int,
-and ppt is an int *.  Everything else is the same.  This variant would
-be used in cases where you're not allocating anything, you're doing
-some other sort of initialization only once.)
+>
+>>  	    (type == PCI_EXP_TYPE_UPSTREAM) ||
+>>  	    (type == PCI_EXP_TYPE_DOWNSTREAM)) {
+>>  		if (enable)
+>> @@ -1206,9 +1219,11 @@ static void 
+>> set_downstream_devices_error_reporting(struct pci_dev *dev,
+>>  {
+>>  	set_device_error_reporting(dev, &enable);
+>>
+>> -	if (!dev->subordinate)
+>> -		return;
+>> -	pci_walk_bus(dev->subordinate, set_device_error_reporting, 
+>> &enable);
+>> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
+>> +		pcie_walk_rcec(dev, set_device_error_reporting, &enable);
+>> +	else if (dev->subordinate)
+>> +		pci_walk_bus(dev->subordinate, set_device_error_reporting, 
+>> &enable);
+>> +
+>>  }
+>>
+>>  /**
+>> @@ -1306,6 +1321,11 @@ static int aer_probe(struct pcie_device *dev)
+>>  	struct device *device = &dev->device;
+>>  	struct pci_dev *port = dev->port;
+>>
+>> +	/* Limit to Root Ports or Root Complex Event Collectors */
+>> +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
+>> +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
+>> +		return -ENODEV;
+>> +
+>>  	rpc = devm_kzalloc(device, sizeof(struct aer_rpc), GFP_KERNEL);
+>>  	if (!rpc)
+>>  		return -ENOMEM;
+>> @@ -1362,7 +1382,7 @@ static pci_ers_result_t aer_root_reset(struct 
+>> pci_dev *dev)
+>>
+>>  static struct pcie_port_service_driver aerdriver = {
+>>  	.name		= "aer",
+>> -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
+>> +	.port_type	= PCIE_ANY_PORT,
+>
+> Why this particular change?  Seems that is a lot wider than simply
+> adding RCEC.  Obviously we'll then drop out in the aer_probe but it
+> is still rather inelegant.
 
-While this would be a perfectly good recipe in itself, the whole thing
-can be made much simpler for users by creating a MAKE_ONCE_FUNC macro
-which would generate once_func given the type T, the name "func", and
-the args.  The result is type-safe.
+In order to extend the service drivers to non-root-port devices (i.e., 
+RCEC), the simple path appeared to only require setting the type to 
+ANY_PORT and catching the needed types arriving in the probe.  Would you 
+prefer extending to a type2?  I’m not sure how one is more elegant 
+than another but open to that approach.  However, this seems to require 
+less code perhaps and seems consistent with most ‘drop-out’ 
+conditional patterns in the kernel.  The same applies to pme.
 
-IMO the fact that once_func() is not inline is an advantage, not a
-drawback.  Yes, it doesn't actually do any allocation or anything like
-that -- the idea is that once_func's purpose is merely to ensure that
-func is successfully called only once.  Any memory allocation or other
-stuff of that sort should be handled by func.
+Thanks,
 
-In fact, the only drawback I can think of is that because this relies
-on a single mutex for all the different possible x's, it might lead to
-locking conflicts (if func had to call once_func() recursively, for
-example).  In most reasonable situations such conflicts would not
-arise.
+Sean
 
-Alan Stern
+
+>
+>>  	.service	= PCIE_PORT_SERVICE_AER,
+>>
+>>  	.probe		= aer_probe,
