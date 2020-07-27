@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E5722F008
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBEE22F136
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731715AbgG0OVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:21:21 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36144 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731681AbgG0OVQ (ORCPT
+        id S1732771AbgG0Oaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731779AbgG0OVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:21:16 -0400
-Received: by mail-ot1-f65.google.com with SMTP id l27so5266976oti.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 07:21:16 -0700 (PDT)
+        Mon, 27 Jul 2020 10:21:45 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CE8C061794;
+        Mon, 27 Jul 2020 07:21:45 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y3so15081639wrl.4;
+        Mon, 27 Jul 2020 07:21:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=08HVDBYiMLNS5XaEBrGoenMFHqqclU1QBddk4akAPFw=;
+        b=hI3i+gfEGNazjpvSI75AsgFBxTTz4xmK3jIwBaYMfM3Zne+iiqhonRBJGk4ZPGeOap
+         OAc+UieDDbHdQ7AwSGd5BIrzzAcaAudriODK+OK+g/G0iaB7pficesjRa9vUUhyRIjU9
+         DmwGtMhWUl8pYw/ZE1WxOULHa0jATpX0BNKBtT9HhcuaptGLSs3a2oNPcnKsDa0J9cRp
+         gioUy4YBv+SeeyVaMrJyH6xMYxUkl/uC6ti/fG1ar5nNThP3oqKpzoooSmoPlUbYCJVd
+         WZmp/O9Rk6VYfCMv20+sU2D1PCTxIHDeQENcIN+rEzMzQEX3fLX8jCr0mWfc37XskeeR
+         sBug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B9VkZvYaPk8hX/PpnZk1Tslvy3DaFGYN1APB+k9gEkI=;
-        b=ia71QoBOf2Yxz62vM48XL8uTlZTqgApiXw4Ybd123Y1CCVg0cRc9mra3eHks9q0TLo
-         ZCzWNWc1pAsN0pvZrW2aUeXE+TF0gsm5/TL+dX0Dc6q53MA20jGpusdbpp2+lSeXoif0
-         ksCi5joKRz6fnGHXGRh4UohFwTzxt1vzaoojOiQV6wsOUopWazODJfepE8gPICauSfKw
-         nqiOlLq3PInuHgzxGs0jmp9HrhzU56O3hWGap2TLoXWrch9i7xkw7We7z6I4y1SORCIE
-         daqTl12IAmaS1JYydDBSsVmnC7gZX5of7Z524mj+nCKv54Rahl0ZLRfXD1Y7ZuB0y2Z9
-         EuNQ==
-X-Gm-Message-State: AOAM530o289PmfznQk23B84PvIGWiWEPGjTzTYocUvvxhjg5WfbHj8Q4
-        tMYhCrx5VSk3/AnbAqDD72HZZoKUn0c6bRhlkIk=
-X-Google-Smtp-Source: ABdhPJzOpEicgz1kXmzLNmdZl/uWYUTogdTp6XYFaJsmPsLQaFO6kx2wKVR8yXH24Xr2YY+rawUwhkAB61UTgxRUAgU=
-X-Received: by 2002:a9d:306:: with SMTP id 6mr10689700otv.167.1595859676010;
- Mon, 27 Jul 2020 07:21:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=08HVDBYiMLNS5XaEBrGoenMFHqqclU1QBddk4akAPFw=;
+        b=qEvqMI2wQTaaheO3kki+OY3bfDge+1GzYYhsX47tDG26sx/BWZGCDZ6eu1y2igxUJg
+         la2sYOlFE9Fl0RXcuWAbNgLcn0sDVe+pXCOxPM4WFKrXOE9625mLST8Jtqf11Dbir6k/
+         AeLmFBJpsRbcUycd7cWWn0OPEA3xRZ3SE07imIVyYDyVKPZ1+suQTTQJSInO3lvyp+pG
+         8o1bO6QSlNRY/Wla3jT0tDrXvUFtOMDCXebPR4g1Xw8u7r5DBGlGZyqx1u2adEGDGIk4
+         TfcOA83fPJ8dDSJRNwS8u0PRau5CXYsSYb6d+Wfb6nt83rc+n3W37G1sDrrlhzHFp3T+
+         x/uQ==
+X-Gm-Message-State: AOAM532Xshj4YrqIwbk5YKa6MJ8ffwK75pCnfcLnjz67cJzf7nl3c7Ue
+        sSsj9EY8wdQiv10v+rceHWn4sP0=
+X-Google-Smtp-Source: ABdhPJzK61MEVIVpGuumk3//Y/qZrqM2db/on+NNv8Bei1v2JPIIdN+CuQuvn66Oi+9hF5Quff4Tng==
+X-Received: by 2002:a5d:6a8d:: with SMTP id s13mr22157101wru.201.1595859703886;
+        Mon, 27 Jul 2020 07:21:43 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.253.162])
+        by smtp.gmail.com with ESMTPSA id r11sm17493493wmh.1.2020.07.27.07.21.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 07:21:43 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 17:21:40 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Pascal Bouchareine <kalou@tfz.net>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@poochiereds.net>,
+        "J. Bruce Fields" <bfields@fieldses.org>
+Subject: Re: [PATCH v3] proc,fcntl: introduce F_SET_DESCRIPTION
+Message-ID: <20200727142140.GA116567@localhost.localdomain>
+References: <20200725045921.2723-1-kalou@tfz.net>
+ <20200725052236.4062-1-kalou@tfz.net>
 MIME-Version: 1.0
-References: <20200724180523.1393383-1-saravanak@google.com>
-In-Reply-To: <20200724180523.1393383-1-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 27 Jul 2020 16:21:05 +0200
-Message-ID: <CAJZ5v0izVrJeQNroeNS8xu66c8LskHSiCJRQvVvrhWSZV8tL_g@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Change delimiter in devlink device's name
- to "--"
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200725052236.4062-1-kalou@tfz.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 8:05 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> The devlink device name is of the form "supplier:consumer". But ":" is
-> fairly common in device names and makes it visually hard to distinguish
-> supplier and consumer. So, replace it with "--" to make it easier.
->
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+On Fri, Jul 24, 2020 at 10:22:36PM -0700, Pascal Bouchareine wrote:
+> This command attaches a description to a file descriptor for
+> troubleshooting purposes. The free string is displayed in the
+> process fdinfo file for that fd /proc/pid/fdinfo/fd.
+> 
+> One intended usage is to allow processes to self-document sockets
+> for netstat and friends to report
 
-Well, this makes sense in principle, but I wonder how much risk of
-breaking anything in user space there is?
+> +static long fcntl_set_description(struct file *file, char __user *desc)
+> +{
+> +	char *d;
+> +
+> +	d = strndup_user(desc, MAX_FILE_DESC_SIZE);
 
-> ---
->  Documentation/ABI/testing/sysfs-class-devlink | 2 +-
->  drivers/base/core.c                           | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/ABI/testing/sysfs-class-devlink b/Documentation/ABI/testing/sysfs-class-devlink
-> index 3a24973abb83..64791b65c9a3 100644
-> --- a/Documentation/ABI/testing/sysfs-class-devlink
-> +++ b/Documentation/ABI/testing/sysfs-class-devlink
-> @@ -4,7 +4,7 @@ Contact:        Saravana Kannan <saravanak@google.com>
->  Description:
->                 Provide a place in sysfs for the device link objects in the
->                 kernel at any given time.  The name of a device link directory,
-> -               denoted as ... above, is of the form <supplier>:<consumer>
-> +               denoted as ... above, is of the form <supplier>--<consumer>
->                 where <supplier> is the supplier device name and <consumer> is
->                 the consumer device name.
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index b6e8b0bb76e4..4d05868d9356 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -623,7 +623,7 @@ struct device_link *device_link_add(struct device *consumer,
->
->         link->link_dev.class = &devlink_class;
->         device_set_pm_not_required(&link->link_dev);
-> -       dev_set_name(&link->link_dev, "%s:%s",
-> +       dev_set_name(&link->link_dev, "%s--%s",
->                      dev_name(supplier), dev_name(consumer));
->         if (device_register(&link->link_dev)) {
->                 put_device(consumer);
-> --
-> 2.28.0.rc0.142.g3c755180ce-goog
->
+This should be kmem accounted because allocation is persistent.
+To make things more entertaining, strndup_user() doesn't have gfp_t argument.
+
+> +	if (IS_ERR(d))
+> +		return PTR_ERR(d);
+> +
+> +	spin_lock(&file->f_lock);
+> +	kfree(file->f_description);
+> +	file->f_description = d;
+> +	spin_unlock(&file->f_lock);
+
+Generally kfree under spinlock is not good idea.
+You can replace the pointer and free without spinlock.
+
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -980,6 +980,9 @@ struct file {
+>  	struct address_space	*f_mapping;
+>  	errseq_t		f_wb_err;
+>  	errseq_t		f_sb_err; /* for syncfs */
+> +
+> +#define MAX_FILE_DESC_SIZE 256
+> +	char                    *f_description;
+
+struct file is nicely aligned to 256 bytes on distro configs.
+Will this break everything?
+
+	$ cat /sys/kernel/slab/filp/object_size
