@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288B022EE87
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEC122F01A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgG0OIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:08:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
+        id S1731793AbgG0OVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729436AbgG0OIe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:08:34 -0400
+        id S1730258AbgG0OVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:21:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 686C42073E;
-        Mon, 27 Jul 2020 14:08:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8778A2070A;
+        Mon, 27 Jul 2020 14:21:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858913;
-        bh=L3NAJFu9xgpy0+dpwkTodzwTIjTIyNZVPiBUh2hZEiE=;
+        s=default; t=1595859706;
+        bh=9wNdLFe2Mc0qAiEK+P603wJC8PshkNcKQvnyLiY81/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EnIGxGliK5jZxhBGV9PIMLd2RHtGVJeyuPzR4jiMZVNc3EPct0tYUomX3DdjBCupE
-         g8Fs1x5xK/FjTpyGS+3L9rSGfceSPnXiH1Idyl/1iWlGyaKTDRlINavfeqzO5yCnuK
-         YW0ark9ZQzzyrnE5wuTqLmbo5FLVufiZZLrh8Dpg=
+        b=d2y35IClG6sYTM37tVh1ksFWFTNOeCszvdU5kc4Xf2WaCpyj25Q6SmQTcJ/m8lbJx
+         Y5WCFraQUgvpc8J/VgE3+YABWVfCxealk31V5t3DB49hJLy32JKuB2ACp8ELou/XqT
+         LQ05jWPrK5Ei61CJmrelD1s1U24oZYOrkNb9NHtg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zhouxudong <zhouxudong8@huawei.com>,
-        guodeqing <geffrey.guo@huawei.com>, Julian Anastasov <ja@ssi.bg>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Shannon Nelson <snelson@pensando.io>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 29/64] ipvs: fix the connection sync failed in some cases
+Subject: [PATCH 5.7 073/179] ionic: keep rss hash after fw update
 Date:   Mon, 27 Jul 2020 16:04:08 +0200
-Message-Id: <20200727134912.596333202@linuxfoundation.org>
+Message-Id: <20200727134936.238606592@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: guodeqing <geffrey.guo@huawei.com>
+From: Shannon Nelson <snelson@pensando.io>
 
-[ Upstream commit 8210e344ccb798c672ab237b1a4f241bda08909b ]
+[ Upstream commit bdff46665ee655600d0fe2a0e5f62ec7853d3b22 ]
 
-The sync_thread_backup only checks sk_receive_queue is empty or not,
-there is a situation which cannot sync the connection entries when
-sk_receive_queue is empty and sk_rmem_alloc is larger than sk_rcvbuf,
-the sync packets are dropped in __udp_enqueue_schedule_skb, this is
-because the packets in reader_queue is not read, so the rmem is
-not reclaimed.
+Make sure the RSS hash key is kept across a fw update by not
+de-initing it when an update is happening.
 
-Here I add the check of whether the reader_queue of the udp sock is
-empty or not to solve this problem.
-
-Fixes: 2276f58ac589 ("udp: use a separate rx queue for packet reception")
-Reported-by: zhouxudong <zhouxudong8@huawei.com>
-Signed-off-by: guodeqing <geffrey.guo@huawei.com>
-Acked-by: Julian Anastasov <ja@ssi.bg>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: c672412f6172 ("ionic: remove lifs on fw reset")
+Signed-off-by: Shannon Nelson <snelson@pensando.io>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/ipvs/ip_vs_sync.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/pensando/ionic/ionic_lif.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
-index b373e053ff9a3..90261055062ed 100644
---- a/net/netfilter/ipvs/ip_vs_sync.c
-+++ b/net/netfilter/ipvs/ip_vs_sync.c
-@@ -1726,6 +1726,8 @@ static int sync_thread_backup(void *data)
- {
- 	struct ip_vs_sync_thread_data *tinfo = data;
- 	struct netns_ipvs *ipvs = tinfo->ipvs;
-+	struct sock *sk = tinfo->sock->sk;
-+	struct udp_sock *up = udp_sk(sk);
- 	int len;
+diff --git a/drivers/net/ethernet/pensando/ionic/ionic_lif.c b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
+index 48aa502e4bd3d..08ab6dafc66c5 100644
+--- a/drivers/net/ethernet/pensando/ionic/ionic_lif.c
++++ b/drivers/net/ethernet/pensando/ionic/ionic_lif.c
+@@ -2227,11 +2227,10 @@ static void ionic_lif_deinit(struct ionic_lif *lif)
+ 		cancel_work_sync(&lif->deferred.work);
+ 		cancel_work_sync(&lif->tx_timeout_work);
+ 		ionic_rx_filters_deinit(lif);
++		if (lif->netdev->features & NETIF_F_RXHASH)
++			ionic_lif_rss_deinit(lif);
+ 	}
  
- 	pr_info("sync thread started: state = BACKUP, mcast_ifn = %s, "
-@@ -1733,12 +1735,14 @@ static int sync_thread_backup(void *data)
- 		ipvs->bcfg.mcast_ifn, ipvs->bcfg.syncid, tinfo->id);
- 
- 	while (!kthread_should_stop()) {
--		wait_event_interruptible(*sk_sleep(tinfo->sock->sk),
--			 !skb_queue_empty(&tinfo->sock->sk->sk_receive_queue)
--			 || kthread_should_stop());
-+		wait_event_interruptible(*sk_sleep(sk),
-+					 !skb_queue_empty_lockless(&sk->sk_receive_queue) ||
-+					 !skb_queue_empty_lockless(&up->reader_queue) ||
-+					 kthread_should_stop());
- 
- 		/* do we have data now? */
--		while (!skb_queue_empty(&(tinfo->sock->sk->sk_receive_queue))) {
-+		while (!skb_queue_empty_lockless(&sk->sk_receive_queue) ||
-+		       !skb_queue_empty_lockless(&up->reader_queue)) {
- 			len = ip_vs_receive(tinfo->sock, tinfo->buf,
- 					ipvs->bcfg.sync_maxlen);
- 			if (len <= 0) {
+-	if (lif->netdev->features & NETIF_F_RXHASH)
+-		ionic_lif_rss_deinit(lif);
+-
+ 	napi_disable(&lif->adminqcq->napi);
+ 	ionic_lif_qcq_deinit(lif, lif->notifyqcq);
+ 	ionic_lif_qcq_deinit(lif, lif->adminqcq);
 -- 
 2.25.1
 
