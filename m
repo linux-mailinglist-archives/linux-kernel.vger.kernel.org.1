@@ -2,149 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0D122F62D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BBA22F648
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730231AbgG0RIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:08:00 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59392 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729403AbgG0RH7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:07:59 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RGgkN5077073;
-        Mon, 27 Jul 2020 17:02:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=EH2bcmGiKig5NQUr25P5VYLKdWqRTYRE1Orwb4KgXik=;
- b=l1LOF0dmlbi1ncVDq7RWlEvNJYr2LbPMPmGo3aXniYWPZhLlMSHR0iWNp/2cDgmG6dbR
- RsmBzBxwcJM3BxRVkITqX1WvldXoqwBEQ03KjtD+yDZgD1mbk32LJV5cwSQ381iZh3Y9
- BCtLvGVqEyXedSXoHlknOTfyCHrbE6mWURmbGcIEEHGXvrGUEJ5/qtMwH8azy5BTtzxL
- krFCtP1n2bTqG81bcnd5Xz1b8ajPJlHCouPTuK7bHtdIFfZN519587R0e4/RkkwN7uww
- /QNbyjqx8Ocr6uD0+RLlm6G5JCez12sO4h0aSAWN1OV1n+iLEpHqky6Wc6yI5u2WSKKf jg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 32hu1j2rvc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Jul 2020 17:02:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06RGgViM055487;
-        Mon, 27 Jul 2020 17:02:16 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 32hu5r9fda-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Jul 2020 17:02:16 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06RGuWGn111604;
-        Mon, 27 Jul 2020 17:02:15 GMT
-Received: from ca-qasparc-x86-2.us.oracle.com (ca-qasparc-x86-2.us.oracle.com [10.147.24.103])
-        by userp3020.oracle.com with ESMTP id 32hu5r9f7r-6;
-        Mon, 27 Jul 2020 17:02:15 +0000
-From:   Anthony Yznaga <anthony.yznaga@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org
-Cc:     mhocko@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org, arnd@arndb.de,
-        ebiederm@xmission.com, keescook@chromium.org, gerg@linux-m68k.org,
-        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
-        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
-        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com,
-        steven.sistare@oracle.com
-Subject: [RFC PATCH 5/5] mm: introduce MADV_DOEXEC
-Date:   Mon, 27 Jul 2020 10:11:27 -0700
-Message-Id: <1595869887-23307-6-git-send-email-anthony.yznaga@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 clxscore=1015
- malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007270116
+        id S1729267AbgG0RMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:12:45 -0400
+Received: from crapouillou.net ([89.234.176.41]:57330 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728939AbgG0RMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:12:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595869961; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QQPLs8G7xnlp4G++Lxr0CaXPWeOA/xM0miRvxkULoFU=;
+        b=RUtGBy/i4V/XNluTUdmDFr74yRTLWR7L1GRbbP9w7yddGXxuLrCUkfhlvzs4CPyU6AYG5P
+        lSEix0m2n1AsiO3Ft1WNq/ulI22WuJxsx+PDi0yGmbG6tWTwJ7HQApZL8etJXeDW8n3Z51
+        HR3qTj0qqZoxYAjpBwCmrB8+rbnG1h4=
+Date:   Mon, 27 Jul 2020 19:12:32 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: ingenic: Limit MTD_NAND_JZ4780 to
+ architecture only
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Message-Id: <W415EQ.VPN8W77YD4D13@crapouillou.net>
+In-Reply-To: <20200727170302.GA3507@kozik-lap>
+References: <CAJKOXPc2w0QHQDEwqoeg9Nm361MszM4LRaCoJD2En-fPgPp+4Q@mail.gmail.com>
+        <IBDZDQ.K28R5FAI0BXI2@crapouillou.net> <20200724155436.GA7460@kozik-lap>
+        <K5Y0EQ.WYAK00ADM46F3@crapouillou.net>
+        <CAK8P3a0HDu15u5dREd6gk_e9D6mrZ9JqT0DJs9AeC9C2602nAw@mail.gmail.com>
+        <20200726160616.GA2662@kozik-lap> <RO33EQ.546WD84D5N7K2@crapouillou.net>
+        <20200726161545.GA6058@kozik-lap> <B243EQ.VEXGA7ZL5JAE2@crapouillou.net>
+        <CAK8P3a1r6AMz2wKBEosAqn7qkuJY4LGFYK7o85sO++d+TSVOgQ@mail.gmail.com>
+        <20200727170302.GA3507@kozik-lap>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-madvise MADV_DOEXEC preserves a memory range across exec.  Initially
-only supported for non-executable, non-stack, anonymous memory.
-MADV_DONTEXEC reverts the effect of a previous MADV_DOXEXEC call and
-undoes the preservation of the range.  After a successful exec call,
-the behavior of all ranges reverts to MADV_DONTEXEC.
 
-Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
----
- include/uapi/asm-generic/mman-common.h |  3 +++
- mm/madvise.c                           | 25 +++++++++++++++++++++++++
- 2 files changed, 28 insertions(+)
 
-diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
-index f94f65d429be..7c5f616b28f7 100644
---- a/include/uapi/asm-generic/mman-common.h
-+++ b/include/uapi/asm-generic/mman-common.h
-@@ -72,6 +72,9 @@
- #define MADV_COLD	20		/* deactivate these pages */
- #define MADV_PAGEOUT	21		/* reclaim these pages */
- 
-+#define MADV_DOEXEC	22		/* do inherit across exec */
-+#define MADV_DONTEXEC	23		/* don't inherit across exec */
-+
- /* compatibility flags */
- #define MAP_FILE	0
- 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index dd1d43cf026d..b447fa748649 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -103,6 +103,26 @@ static long madvise_behavior(struct vm_area_struct *vma,
- 	case MADV_KEEPONFORK:
- 		new_flags &= ~VM_WIPEONFORK;
- 		break;
-+	case MADV_DOEXEC:
-+		/*
-+		 * MADV_DOEXEC is only supported on private, non-executable,
-+		 * non-stack anonymous memory and if the VM_EXEC_KEEP flag
-+		 * is available.
-+		 */
-+		if (!VM_EXEC_KEEP || vma->vm_file || vma->vm_flags & (VM_EXEC|VM_SHARED|VM_STACK)) {
-+			error = -EINVAL;
-+			goto out;
-+		}
-+		new_flags |= (new_flags & ~VM_MAYEXEC) | VM_EXEC_KEEP;
-+		break;
-+	case MADV_DONTEXEC:
-+		if (!VM_EXEC_KEEP) {
-+			error = -EINVAL;
-+			goto out;
-+		}
-+		if (new_flags & VM_EXEC_KEEP)
-+			new_flags |= (new_flags & ~VM_EXEC_KEEP) | VM_MAYEXEC;
-+		break;
- 	case MADV_DONTDUMP:
- 		new_flags |= VM_DONTDUMP;
- 		break;
-@@ -983,6 +1003,8 @@ static int madvise_inject_error(int behavior,
- 	case MADV_SOFT_OFFLINE:
- 	case MADV_HWPOISON:
- #endif
-+	case MADV_DOEXEC:
-+	case MADV_DONTEXEC:
- 		return true;
- 
- 	default:
-@@ -1037,6 +1059,9 @@ static int madvise_inject_error(int behavior,
-  *  MADV_DONTDUMP - the application wants to prevent pages in the given range
-  *		from being included in its core dump.
-  *  MADV_DODUMP - cancel MADV_DONTDUMP: no longer exclude from core dump.
-+ *  MADV_DOEXEC - On exec, preserve and duplicate this area in the new process
-+ *		  if the new process allows it.
-+ *  MADV_DONTEXEC - Undo the effect of MADV_DOEXEC.
-  *
-  * return values:
-  *  zero    - success
--- 
-1.8.3.1
+Le lun. 27 juil. 2020 =E0 19:03, Krzysztof Kozlowski <krzk@kernel.org> a=20
+=E9crit :
+> On Mon, Jul 27, 2020 at 09:55:54AM +0200, Arnd Bergmann wrote:
+>>  On Sun, Jul 26, 2020 at 6:20 PM Paul Cercueil=20
+>> <paul@crapouillou.net> wrote:
+>>  > Le dim. 26 juil. 2020 =E0 18:15, Krzysztof Kozlowski=20
+>> <krzk@kernel.org> a =E9crit :
+>>  > > On Sun, Jul 26, 2020 at 06:12:27PM +0200, Paul Cercueil wrote:
+>>  > >>  Le dim. 26 juil. 2020 =E0 18:06, Krzysztof Kozlowski=20
+>> <krzk@kernel.org> a =E9crit
+>>   >
+>>  > > OK, that's true. Anyway, I don't have strong opinion on any of=20
+>> this. I
+>>  > > just followed Arnd's hint.
+>>  > >
+>>  > > For the memory driver (and MTD NAND as well) which one you=20
+>> prefer:
+>>  > > 1.=20
+>> https://lore.kernel.org/lkml/20200724074038.5597-6-krzk@kernel.org/
+>>  > > 2. depends on MACH_INGENIC || MIPS_GENERIC || COMPILE_TEST
+>>  > >
+>>  > > ?
+>>  >
+>>  > I'd say a slightly modified #1. The driver shouldn't be "default=20
+>> y" in
+>>  > the first place, so the patch could be to disable it by default.
+>>=20
+>>  If it defaults to 'n' even for MACH_INGENIC, you may have to enable
+>>  it in the four defconfig files for these machines to avoid=20
+>> surprises.
+>=20
+> Exactly. Nothing else selects JZ4780_NEMC, so either we keep default y
+> ("if MACH_INGENIC || MIPS_GENERIC"), or you select it directly from
+> MACH_INGENIC/MIPS_GENERIC.
+>=20
+> A related question is how essential are these drivers? At least for=20
+> ARM
+> platforms, all essential SoC blocks/IPs are selected by default, if
+> support for chosen SoC is enabled. Only non-essential stuff is left,
+> e.g. DRM, cpufreq, devfreq, ADC, crypto, video, USB, eMMC (although=20
+> one
+> could argue that it is essential), IOMMU.
+
+They are only used for NAND access, which is not really essential (some
+boards only use MMC storage), that's why I said they shouldn't have been
+enabled by default in the first place.
+
+-Paul
+
+>=20
+>>  > And when the Ingenic code is merged into the MIPS generic=20
+>> framework, I'll
+>>  > send a set of patches to change all driver dependencies on MIPS to
+>>  > MIPS_GENERIC.
+>>=20
+>>  The way we do it on Arm, the machine Kconfig identifiers stay around
+>>  even for multiplatform targets (which now make up basically actively
+>>  maintained machines).
+>>=20
+>>  I don't think it makes any sense for a driver to depend on=20
+>> MIPS_GENERIC:
+>>  either it is a generic driver that should always be visible or it=20
+>> is specific
+>>  to a set of SoCs and should depend on some corresponding vendor
+>>  specific identifiers.
+>=20
+> If support for Ingenic is provided also by MIPS_GENERIC (without
+> selecting MACH_INGENIC), then it makes sense. This would be just a
+> different way than ARM of building multi-platform kernel.
+>=20
+> Best regards,
+> Krzysztof
+
 
