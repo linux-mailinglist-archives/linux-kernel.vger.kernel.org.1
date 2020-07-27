@@ -2,61 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E4222EA68
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34DB22EA73
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 12:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgG0Kvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 06:51:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45294 "EHLO mx2.suse.de"
+        id S1728169AbgG0Kwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 06:52:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45466 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726298AbgG0Kvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 06:51:50 -0400
+        id S1726298AbgG0Kwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 06:52:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 76F5FB615;
-        Mon, 27 Jul 2020 10:51:59 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 12:52:10 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Petr Vorel <pvorel@suse.cz>
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Jens Axboe <axboe@kernel.dk>, Sagi Grimberg <sagi@grimberg.me>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>, lkp@lists.01.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, ltp@lists.linux.it
-Subject: Re: [LTP] [blk] 6e6fcbc27e: ltp.fs_fill.fail
-Message-ID: <20200727105210.GA12348@yuki.lan>
-References: <20200726075511.GI1850@shao2-debian>
- <20200727093156.GA29739@dell5510>
+Received: from relay1.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EEA79B632;
+        Mon, 27 Jul 2020 10:52:52 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8DCE01E12C5; Mon, 27 Jul 2020 12:52:42 +0200 (CEST)
+Date:   Mon, 27 Jul 2020 12:52:42 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Rong Chen <rong.a.chen@intel.com>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [fsnotify] c738fbabb0: will-it-scale.per_process_ops -9.5%
+ regression
+Message-ID: <20200727105242.GK23179@quack2.suse.cz>
+References: <20200721001505.GD19262@shao2-debian>
+ <CAOQ4uxgq39EDS_k3eDTngEAm8cxHPa7qrkUSW8Rk6qS9cxC18w@mail.gmail.com>
+ <9a2a4086-fbad-b4f8-9c00-2b7606441022@intel.com>
+ <CAOQ4uxgHf_4GQzQGGRTxTECMvEeNjoqhsbGOm5T3GRpV+=0YzA@mail.gmail.com>
+ <CAOQ4uxiXiSAaK92pvGDGUCd2hYq=J-7FxJYdUp=KSXncivwJZw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727093156.GA29739@dell5510>
+In-Reply-To: <CAOQ4uxiXiSAaK92pvGDGUCd2hYq=J-7FxJYdUp=KSXncivwJZw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-> > tst_test.c:1308: INFO: Testing on vfat
-> > tst_mkfs.c:90: INFO: Formatting /dev/loop0 with vfat opts='' extra opts=''
-> > tst_test.c:1247: INFO: Timeout per run is 0h 05m 00s
-> > fs_fill.c:103: INFO: Running 10 writer threads
-> > Test timeouted, sending SIGKILL!
-> > Test timeouted, sending SIGKILL!
-> > Test timeouted, sending SIGKILL!
-> > Test timeouted, sending SIGKILL!
-> > Test timeouted, sending SIGKILL!
-> > Test timeouted, sending SIGKILL!
-> The only "error" I found is that fs_fill test timeouted on vfat. That might
-> indicate some problems. Note, for slow machines, there is LTP_TIMEOUT_MUL
-> https://github.com/linux-test-project/ltp/wiki/User-Guidelines#1-library-environment-variables
+On Sun 26-07-20 14:52:47, Amir Goldstein wrote:
+> On Fri, Jul 24, 2020 at 6:47 AM Amir Goldstein <amir73il@gmail.com> wrote:
+> >
+> > On Fri, Jul 24, 2020 at 5:45 AM Rong Chen <rong.a.chen@intel.com> wrote:
+> > >
+> > >
+> > >
+> > > On 7/21/20 11:59 PM, Amir Goldstein wrote:
+> > > > On Tue, Jul 21, 2020 at 3:15 AM kernel test robot <rong.a.chen@intel.com> wrote:
+> > > >> Greeting,
+> > > >>
+> > > >> FYI, we noticed a -9.5% regression of will-it-scale.per_process_ops due to commit:
+> > > >>
+> > > >>
+> > > >> commit: c738fbabb0ff62d0f9a9572e56e65d05a1b34c6a ("fsnotify: fold fsnotify() call into fsnotify_parent()")
+> > > > Strange, that's a pretty dumb patch moving some inlined code from one
+> > > > function to
+> > > > another (assuming there are no fsnotify marks in this test).
+> > > >
+> > > > Unless I am missing something the only thing that changes slightly is
+> > > > an extra d_inode(file->f_path.dentry) deference.
+> > > > I can get rid of it.
+> > > >
+> > > > Is it possible to ask for a re-test with fix patch (attached)?
+> > >
+> > > Hi Amir,
+> > >
+> > > We failed to apply this patch, could you tell us the base commit or the
+> > > base branch?
+> > >
+> >
+> > Hi Rong,
+> >
+> > The patch is applied on top of the reported offending commit:
+> > c738fbabb0ff62d0f9a9572e56e65d05a1b34c6a ("fsnotify: fold fsnotify()
+> > call into fsnotify_parent()")
+> >
+> > I pushed it to my github:
+> > https://github.com/amir73il/linux/commits/for_lkp
+> >
+> 
+> FWIW, I tried reproducing the reported regression on a local machine.
+> 
+> I ran the test twice on each of the branch commits:
+> 
+> 26dc3d2bff62 fsnotify: pass inode to fsnotify_parent()
+> c738fbabb0ff fsnotify: fold fsnotify() call into fsnotify_parent()
+> 71d734103edf fsnotify: Rearrange fast path to minimise overhead when
+> there is no watcher
+> 47aaabdedf36 fanotify: Avoid softlockups when reading many events
+> 
+> Not only did I not observe a regression with the reported commit,
+> but there was a slight improvement. And then there yet was another
+> improvement with the fix commit on top of it.
 
-Actually you had removed the most important part, it not only timeouted
-but the process ended up stuck in kernel and could not be killed. So
-this looks like deadlock somewhere in filesystem code.
+I suspect this may be closely related to code generation, code cacheline
+alignment etc. and thus depends heavily on a particular compiler version
+and CPU. I've checked the commit myself and I agree it looks innocent so
+for these reasons, I'm not particularly worried about this regression.
 
+								Honza
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
