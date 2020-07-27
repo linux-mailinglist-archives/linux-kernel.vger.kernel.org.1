@@ -2,111 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C94022EBAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A313E22EBB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 14:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgG0MFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 08:05:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:42832 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727978AbgG0MFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 08:05:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DDB230E;
-        Mon, 27 Jul 2020 05:05:30 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 112FF3F66E;
-        Mon, 27 Jul 2020 05:05:28 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 13:05:21 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        lukasz.luba@arm.com, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: provide u64 read for 32-bits arch helper
-Message-ID: <20200727120520.GA257620@e120877-lin.cambridge.arm.com>
-References: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
- <20200727112454.GB55660@gmail.com>
+        id S1728286AbgG0MGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 08:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgG0MGp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 08:06:45 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC3DC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:06:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k20so6844923wmi.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 05:06:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=5UvigPasIrEc+VPwUEGBhdkiXGZn95eI7wd8yU/NXHk=;
+        b=l78o4thxdBd3295c7pq1uvaxXqQTXHoIQBDLzkseo8M7LFVeKFainbABNhEmZapKRT
+         P5oJ4Vup4dtsW/3gtAbTrXJDdAlShl6zK2tUyzN4TfvHhxQ3Y8ZGBRjs6AZFYJJGdAfm
+         dwiY3NQxeS41hV5vvXoSrW6GPkCDFlVn4D4kODRAQ3qCN0cfix/c/oOLgYtyBDc3NpM5
+         BZR2gyEtU8S5oFQbmcwpHagAGPNAyCjf2Df7FoOj1rkV+7XyHn6aUY3StpbafKoaM0el
+         i5ke21itLgICKDUfYFWS9C2nWnpHfoKub8TU5N+gFSHLKtawF4HM1QcXrYDdVlQutv0M
+         8Hug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=5UvigPasIrEc+VPwUEGBhdkiXGZn95eI7wd8yU/NXHk=;
+        b=KerTUslPoPTFdLxkVMA+RxXGakc6+kwrBO/GUwLAa+GheL9HcGFoEjU7rxiuPcCdI9
+         qzjVprncAc1ZH0eBull2VmVRl/+TF8BCHi4TqNZ/WODXdjJ5v1dHQ9tWwuL5M2eCkLjp
+         STb1yE9+gJGhSZqEceQpXcaFntXeMtNH7CMRG1wBC4h0n2OBVhS5mz6NKuwhHtkcuWhW
+         kEE9FjQgNTPwKGvAgqO9xUwg/FCfcW0Duiqj/Ht6r197w2o0uaL/qjE5RhEot1AYOUMo
+         aGv99AU6eyjT946UrVzSn/sYz9d2HZL8nmItqrg2zw6anCthR0Yi427hqS+RcjlIxbGU
+         B4VQ==
+X-Gm-Message-State: AOAM5335dFeVWSuDWnvsGAtZ3Ct7AcqGjodg9RK9GtnvxNcrj6gcahI9
+        ZlvD2uEL1oC3MC28jllu/0/vlQ==
+X-Google-Smtp-Source: ABdhPJyuQ01S7wwBQxUL+QMuwikPrDGYc6VGrJ4m7+PH/d8swh6Q30/Gg3VIPA0xLk3rSz+BtA3rQg==
+X-Received: by 2002:a1c:98c1:: with SMTP id a184mr20475238wme.116.1595851603333;
+        Mon, 27 Jul 2020 05:06:43 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id k4sm13177909wrd.72.2020.07.27.05.06.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 05:06:42 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 13:06:41 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, benjamin.chao@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com
+Subject: Re: [PATCH v2 5/9] mfd: mt6360: Rename mt6360_pmu_data by mt6360_data
+Message-ID: <20200727120641.GL1850026@dell>
+References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1594983811-25908-6-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200727112454.GB55660@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1594983811-25908-6-git-send-email-gene.chen.richtek@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 17 Jul 2020, Gene Chen wrote:
 
-On Mon, Jul 27, 2020 at 01:24:54PM +0200, Ingo Molnar wrote:
+> From: Gene Chen <gene_chen@richtek.com>
 > 
-> * vincent.donnefort@arm.com <vincent.donnefort@arm.com> wrote:
+> Rename mt6360_pmu_data by mt6360_data because of including
+> not only PMU part, but also entire MT6360 IC.
 > 
-> > From: Vincent Donnefort <vincent.donnefort@arm.com>
-> > 
-> > Introducing two macro helpers u64_32read() and u64_32read_set_copy() to
-> > factorize the u64 vminruntime and last_update_time read on a 32-bits
-> > architecture. Those new helpers encapsulate smp_rmb() and smp_wmb()
-> > synchronization and therefore, have a small penalty in set_task_rq_fair()
-> > and init_cfs_rq().
-> > 
-> > The choice of using a macro over an inline function is driven by the
-> > conditional u64 variable copy declarations.
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> ---
+>  drivers/mfd/mt6360-core.c  | 44 ++++++++++++++++++++++----------------------
+>  include/linux/mfd/mt6360.h |  2 +-
+>  2 files changed, 23 insertions(+), 23 deletions(-)
 > 
-> Could you please explain how "conditional u64 variable copy 
-> declarations" prevents us to use an inline function for this
+> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> index 665e26f..62bae1a 100644
+> --- a/drivers/mfd/mt6360-core.c
+> +++ b/drivers/mfd/mt6360-core.c
+> @@ -210,9 +210,9 @@ static const struct regmap_irq mt6360_pmu_irqs[] =  {
+>  
+>  static int mt6360_pmu_handle_post_irq(void *irq_drv_data)
+>  {
+> -	struct mt6360_pmu_data *mpd = irq_drv_data;
+> +	struct mt6360_data *data = irq_drv_data;
 
-I meant, as the "copy" variable [vminruntime|last_update_time]_copy, is
-declared only in the !CONFIG_64BIT case, a function call would fail when
-CONFIG_64BIT is set.
+'data' is a terrible variable name.
 
-   u64_32read(cfs_rq->min_vruntime, cfs_rq->min_vruntime_copy); 
-						^
-					  not declared
+Could you rename this 'ddata' please?
 
-I could rephrase this part to something more understandable ?
+[...]
 
-> 
-> > +/*
-> > + * u64_32read() / u64_32read_set_copy()
-> > + *
-> > + * Use the copied u64 value to protect against data race. This is only
-> > + * applicable for 32-bits architectures.
-> > + */
-> > +#if !defined(CONFIG_64BIT) && defined(CONFIG_SMP)
-> > +# define u64_32read(val, copy)						\
-> > +({									\
-> > +	u64 _val;							\
-> > +	u64 _val_copy;							\
-> > +									\
-> > +	do {								\
-> > +		_val_copy = copy;					\
-> > +		/*							\
-> > +		 * paired with u64_32read_set_copy, ordering access	\
-> > +		 * to val and copy.					\
-> > +		 */							\
-> > +		smp_rmb();						\
-> > +		_val = val;						\
-> > +	} while (_val != _val_copy);					\
-> > +									\
-> > +	_val;								\
-> > +})
-> > +# define u64_32read_set_copy(val, copy)					\
-> > +do {									\
-> > +	/* paired with u64_32read, ordering access to val and copy */	\
-> > +	smp_wmb();							\
-> > +	copy = val;							\
-> > +} while (0)
-> > +#else
-> > +# define u64_32read(val, copy) (val)
-> > +# define u64_32read_set_copy(val, copy) do { } while (0)
-> > +#endif
-> > +
-> 
-> Thanks,
-> 
-> 	Ingo
+> -struct mt6360_pmu_data {
+> +struct mt6360_data {
+
+Same here, 'mt6360_ddata'.
+
+Once you make these changes, you can add my:
+
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
-Vincent
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
