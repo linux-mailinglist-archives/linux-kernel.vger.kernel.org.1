@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0F722F701
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146C022F71C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730971AbgG0Rtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726846AbgG0Rte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:49:34 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39C8F2070B;
-        Mon, 27 Jul 2020 17:49:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595872174;
-        bh=2HB61QDPf92Lsa6Jf9B/n+P3MmdDD0gqtDvjOvcjP1g=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UvUboc7otMxoumCsLUUP+igA9u9ZI3B8OmQXctMhbTROY+Bi5UZcwBQj468javLeg
-         qGOLSbbqKUQiM1LzYbtPooWQSyXO3YodxM9b+ZsvG3zBs7w/NVzrlY/M/NxENCA9SD
-         qgJFoRBthteOsmqjxUGcmYTfHnl+Zqckim4GbHkM=
-Date:   Mon, 27 Jul 2020 12:55:26 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Tariq Toukan <tariqt@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] net/mlx4: Use fallthrough pseudo-keyword
-Message-ID: <20200727175526.GA21335@embeddedor>
+        id S1729352AbgG0Rz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728496AbgG0Rz5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:55:57 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9B3C061794;
+        Mon, 27 Jul 2020 10:55:56 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id v22so2024531edy.0;
+        Mon, 27 Jul 2020 10:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BfQsl2VkPzgMjJHaARqwNqUbw1qIxknvRprBs1qxAqw=;
+        b=rvIHSw7X95GJr0+XCFfmmero5cD0/utExmJuKYz5Qs91sBvJXMlcCDzKQXK2BYAF0q
+         AOyqJaZngQWr9wfISZQjGxz7+meMd/1D7iHIkUQofP/eBvXJf6CUZyBQGBZBgRfC6trk
+         i9V1whbAYAhLMZ1Ng8LBUYQyNA/ltTX7xk7PRr1gOsJQE7fPjvrOOFpVSMbkdKEEGlPd
+         xIdBRhbyQRReLzRwZ9apKo1+tqI81oY9UNdZe2783fIH1PaB3ImM/EoqUJ9I2Gjtb1DL
+         aZ7sqkAYV32yhov8ktBIyeVgaGarSpP8xTcJTPyK+iDceCdsXg9JT/G41ThxH4puV+mT
+         9jUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BfQsl2VkPzgMjJHaARqwNqUbw1qIxknvRprBs1qxAqw=;
+        b=qUAcUwjRsMi+656tO/+nwplMOtyceqfV0O4dcswWJo/RYyNH7Z+7JAdIGy3YxGYKfe
+         rlg0YKaGrcOcgANRA8eGvcHdBwgTlzz+Gk8MBNzdoR+fRhhgVD1KJGoISktgoncRH7+J
+         uAeVzotOlod9rF8ZbA0P9dXFIWv239YZGud9a03SN2HAlIppUiZ3eqw0vQsaGyxfx91p
+         0GpYeu1jOv3Oixm/OdsK2R8mmpvkcX2uBlVqTk9q9p45a7Dh113/1TAI1SzJLnxvzu2o
+         rMy3bsW1NevIJYhoGDrzXwXc31SFwNbdG2qExZ/0Kww9kszF1t7aP2TU4ty2v/kxdG9Z
+         YA5Q==
+X-Gm-Message-State: AOAM533jdzm8dIztfRpxT9Eul51/wcIINY0qxRSgXZUzGhQV/94d6l2E
+        LREdDs1dqGwpq/BjpIHXoSdPZmSZCYh70qU4Qh8=
+X-Google-Smtp-Source: ABdhPJwOE9lGhBvTtOQCpdnEA2roxCZkipXvXyeHn714NvtvMLoTIv9wK2fKfq+w2poL81YL7Lc+OfvmhPCaxPbx1SQ=
+X-Received: by 2002:aa7:c788:: with SMTP id n8mr2559169eds.146.1595872555514;
+ Mon, 27 Jul 2020 10:55:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200727092346.19780-1-amelie.delaunay@st.com> <20200727092346.19780-3-amelie.delaunay@st.com>
+In-Reply-To: <20200727092346.19780-3-amelie.delaunay@st.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 27 Jul 2020 19:55:44 +0200
+Message-ID: <CAFBinCBDtuJ19_WZe1H+_BJTJAi=jENyczybPhC1AGYwedNHcQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] usb: dwc2: override PHY input signals with usb
+ role switch support
+To:     Amelie Delaunay <amelie.delaunay@st.com>
+Cc:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+Hi Amelie,
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+On Mon, Jul 27, 2020 at 11:23 AM Amelie Delaunay <amelie.delaunay@st.com> wrote:
+>
+> This patch adds support for usb role switch to dwc2, by using overriding
+> control of the PHY voltage valid and ID input signals.
+>
+> iddig signal (ID) can be overridden:
+> - when setting GUSBCFG_FORCEHOSTMODE, iddig input pin is overridden with 1;
+> - when setting GUSBCFG_FORCEDEVMODE, iddig input pin is overridden with 0.
+>
+> avalid/bvalid/vbusvalid signals can be overridden respectively with:
+> - GOTGCTL_AVALOEN + GOTGCTL_AVALOVAL
+> - GOTGCTL_BVALOEN + GOTGCTL_BVALOVAL
+> - GOTGCTL_VBVALEN + GOTGCTL_VBVALOVAL
+>
+> It is possible to determine valid sessions thanks to usb role switch:
+> - if USB_ROLE_NONE then !avalid && !bvalid && !vbusvalid
+> - if USB_ROLE_DEVICE then !avalid && bvalid && vbusvalid
+> - if USB_ROLE_HOST then avalid && !bvalid && vbusvalid
+>
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+please add my:
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx4/en_rx.c | 4 ++--
- drivers/net/ethernet/mellanox/mlx4/eq.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx4/mcg.c   | 4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+The usb_role_switch part looks correct to me
+I don't understand the details of the dwc2 hardware well enough to say
+if the rest of this patch is fine or not (which is why I'm giving my
+Acked-by instead of Reviewed-by).
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-index 8a10285b0e10..b50c567ef508 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-@@ -806,10 +806,10 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
- 				goto xdp_drop_no_cnt; /* Drop on xmit failure */
- 			default:
- 				bpf_warn_invalid_xdp_action(act);
--				/* fall through */
-+				fallthrough;
- 			case XDP_ABORTED:
- 				trace_xdp_exception(dev, xdp_prog, act);
--				/* fall through */
-+				fallthrough;
- 			case XDP_DROP:
- 				ring->xdp_drop++;
- xdp_drop_no_cnt:
-diff --git a/drivers/net/ethernet/mellanox/mlx4/eq.c b/drivers/net/ethernet/mellanox/mlx4/eq.c
-index c790a5fcea73..ae305c2e9225 100644
---- a/drivers/net/ethernet/mellanox/mlx4/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/eq.c
-@@ -558,7 +558,7 @@ static int mlx4_eq_int(struct mlx4_dev *dev, struct mlx4_eq *eq)
- 			mlx4_dbg(dev, "%s: MLX4_EVENT_TYPE_SRQ_LIMIT. srq_no=0x%x, eq 0x%x\n",
- 				 __func__, be32_to_cpu(eqe->event.srq.srqn),
- 				 eq->eqn);
--			/* fall through */
-+			fallthrough;
- 		case MLX4_EVENT_TYPE_SRQ_CATAS_ERROR:
- 			if (mlx4_is_master(dev)) {
- 				/* forward only to slave owning the SRQ */
-diff --git a/drivers/net/ethernet/mellanox/mlx4/mcg.c b/drivers/net/ethernet/mellanox/mlx4/mcg.c
-index 9486caecfbdc..f1b4ad9c66d2 100644
---- a/drivers/net/ethernet/mellanox/mlx4/mcg.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/mcg.c
-@@ -1412,7 +1412,7 @@ int mlx4_multicast_attach(struct mlx4_dev *dev, struct mlx4_qp *qp, u8 gid[16],
- 	case MLX4_STEERING_MODE_A0:
- 		if (prot == MLX4_PROT_ETH)
- 			return 0;
--		/* fall through */
-+		fallthrough;
- 
- 	case MLX4_STEERING_MODE_B0:
- 		if (prot == MLX4_PROT_ETH)
-@@ -1442,7 +1442,7 @@ int mlx4_multicast_detach(struct mlx4_dev *dev, struct mlx4_qp *qp, u8 gid[16],
- 	case MLX4_STEERING_MODE_A0:
- 		if (prot == MLX4_PROT_ETH)
- 			return 0;
--		/* fall through */
-+		fallthrough;
- 
- 	case MLX4_STEERING_MODE_B0:
- 		if (prot == MLX4_PROT_ETH)
--- 
-2.27.0
+Unfortunately I'm still fighting with the Amlogic bits (or my
+board...) to make this work on my boards.
+That why I can't give my Tested-by yet
+At the same time I'm confident that the problem lies within the
+Amlogic OTG detection/GPIOs so I don't see a reason to hold your patch
+up due to this
 
+Finally, please note that there may be a small conflict due to one
+bugfix I sent: [0]
+I think it will be trivial to solve (since we're both adding a new error label)
+
+
+Thank you for your good work again!
+Best regards,
+Martin
+
+
+[0] https://patchwork.kernel.org/patch/11687357/
