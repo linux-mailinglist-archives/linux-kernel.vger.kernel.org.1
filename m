@@ -2,76 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA4E22FCBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A37A22FC9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 01:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgG0XLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 19:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgG0XLS (ORCPT
+        id S1726885AbgG0XIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 19:08:05 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:35034 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgG0XIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 19:11:18 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DC9C061794;
-        Mon, 27 Jul 2020 16:11:18 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g67so10817828pgc.8;
-        Mon, 27 Jul 2020 16:11:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=033/koxi8tBQP0JLIdsncSOzrcGFA+WfwhEA16y7708=;
-        b=o/42ecP1wt3/lKVqAeCt9rLgTgayqkb0BJt9p0HtivzihkYbK87byrWtQwVTE9mDUP
-         Ufwiv/ASJ+m/fdP25UfiWmnAci8j3RRKS2PRwBPg6kONV1lrADwEEAAcx/fzdPC0xaFG
-         zdcfd4dSyUlg0jZZnU2AuBZUgpXEKIa9C/wwey99cZbipYbLx5Hx1fpXAGg+H7TTpB+d
-         RT+0apZG6tkWqqJeu4PY4nDZC2nicZ5uP9ryISe7l75jz1LqQ8NiyxJY3Md7SD7t8/Q/
-         j2c36w9cbq/jdf/6YVw1yAol3CeiC538VEShZGyaI1EBo7OXxC5cfNx7d9s2R7rP3D2Y
-         O/lQ==
+        Mon, 27 Jul 2020 19:08:04 -0400
+Received: by mail-qt1-f196.google.com with SMTP id b25so13591388qto.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 16:08:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=033/koxi8tBQP0JLIdsncSOzrcGFA+WfwhEA16y7708=;
-        b=pDA9nCbV56K4kwJRT26neCaZJ+ht2yQZN/5iCL5bWRXePCV58G5RV6PVLO81SKu8TL
-         TtRe3t85OZjduiU6xRx8zN+C3fdzwk85BjGmQdS/UykUDoltQkIOmZz6AfrGYycwqkg7
-         e+xOnoLe6vHNUlOyEWgRrdWbD1AG02vM2IGkncN44wACf4HFAFcI7YBMGjg2KRApcYlI
-         x4WSpzfk6be6J0po/WpG3Sva3+mIhndiCNVTo5xG0Js2EgkGVrrcnxbK42ETQQU6eJHS
-         TK61yqxaRbttz+YAoTV6drv2gD7k1VvTTB41YD/tclPcFxe10GMvpGQXgnbm/k+IhV0V
-         53GA==
-X-Gm-Message-State: AOAM531qFgfzV5o827z20YheCXavk+yp+UhpCmysCC0plIeC3Uk4cXBt
-        Vk9QHJW/KU/pTSY8kPf7PGw=
-X-Google-Smtp-Source: ABdhPJwSIGJiY6qF1htNdKw7Qsxj+lvPw3N//2uWMk0INz4lIp1B2byz5NdDiMEWTyEWS7Vs2tN0lA==
-X-Received: by 2002:a63:2104:: with SMTP id h4mr22557614pgh.427.1595891477606;
-        Mon, 27 Jul 2020 16:11:17 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id y68sm3515931pfy.185.2020.07.27.16.11.16
+        bh=S8I1Kaf/LJR4Y2Bet9OYDl+rhIGtV8E+QzPTHozOKCg=;
+        b=A35PtSRVDxMx4Jq4p02ftwEcyCcr1+pe29UjivWiVnYIlSiB5Z92cKmJs+DeIwcQXe
+         nGmOWNt7yKr72aFEU0HTjOr3RPIXHuo2CN8xqcXxqwksvrhyE2YMZTIUj/XA3NWi+JIP
+         HBWV3oqcyhzFeLfAxOWd10l+sAgE8vV+rbW+saJU1Hl1auX+2ZWr04ZCSAwlqNIPHG7s
+         k1fmBEARxLR4zzUIJzKjTPJsMtbnNlgGL73OA0AJFsW8nXeI+NettqcVyqeu6W0BX/fi
+         oR+WhdL3dDkY3j0g0+dhY9tOy69dfV7weN/+SalZVd4JYgJ739eSbbWsx3b0zEabiw6L
+         IuSg==
+X-Gm-Message-State: AOAM533ZQDjkn7Kvz5j2OC0dYiv1+9vhVml8kU1CG9AD9sUIgRDfC1hb
+        uD7D+jmGbVbFLdGHUm0oJ8s=
+X-Google-Smtp-Source: ABdhPJxw+vDsMqIkXyqNp1yfZ+5/7GQ8e393lN1cnzbxP+t5nnYR1A/ddGwAZBVg5a7w1R0q8F6OMA==
+X-Received: by 2002:ac8:f73:: with SMTP id l48mr24198737qtk.296.1595891282983;
+        Mon, 27 Jul 2020 16:08:02 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id j61sm8216984qtd.52.2020.07.27.16.08.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 16:11:17 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>,
-        linux-kbuild@vger.kernel.org, x86@kernel.org,
-        gregkh@linuxfoundation.org, Petr Malat <oss@malat.biz>,
-        Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>, rmikey@fb.com,
-        mingo@kernel.org, Patrick Williams <patrick@stwcx.xyz>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Norbert Lange <nolange79@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Xu <alex_y_xu@yahoo.ca>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Terrell <terrelln@fb.com>
-Subject: [PATCH v9 7/7] .gitignore: add ZSTD-compressed files
-Date:   Mon, 27 Jul 2020 16:06:06 -0700
-Message-Id: <20200727230606.906598-8-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727230606.906598-1-nickrterrell@gmail.com>
-References: <20200727230606.906598-1-nickrterrell@gmail.com>
+        Mon, 27 Jul 2020 16:08:02 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] x86/kaslr: Cleanup and small bugfixes
+Date:   Mon, 27 Jul 2020 19:07:53 -0400
+Message-Id: <20200727230801.3468620-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200727215047.3341098-1-nivedita@alum.mit.edu>
+References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -79,31 +50,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Borowski <kilobyte@angband.pl>
+The first 7 patches are cleanup and minor bugfixes on the x86 KASLR
+code.
 
-For now, that's arch/x86/boot/compressed/vmlinux.bin.zst but probably more
-will come, thus let's be consistent with all other compressors.
+The last one is a bit of an RFC. The memory regions used for KASLR are
+stored as 64-bit even on a 32-bit kernel. However there are still a few
+local variables that are 32-bit, but should be ok as far as I can see
+because they are assigned values that have been already limited to
+32-bit. It does make it a little harder to verify that the code is
+correct. Since KASLR cannot actually use 64-bit regions for the 32-bit
+kernel, the patch reduces regions to their below-4G segment when
+creating them, making the actual variables 32-bit. Alternatively, the
+few local variables could be upgraded to 64-bit.
 
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nick Terrell <terrelln@fb.com>
-Signed-off-by: Adam Borowski <kilobyte@angband.pl>
----
- .gitignore | 1 +
- 1 file changed, 1 insertion(+)
+v1->v2:
+- Fix a bug in the bugfix 5/8: overlap.start can be smaller than
+  region.start, so shouldn't subtract before comparing.
 
-diff --git a/.gitignore b/.gitignore
-index d5f4804ed07c..162bd2b67bdf 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -44,6 +44,7 @@
- *.tab.[ch]
- *.tar
- *.xz
-+*.zst
- Module.symvers
- modules.builtin
- modules.order
+Arvind Sankar (8):
+  x86/kaslr: Make command line handling safer
+  x86/kaslr: Remove bogus warning and unnecessary goto
+  x86/kaslr: Fix process_efi_entries comment
+  x86/kaslr: Initialize mem_limit to the real maximum address
+  x86/kaslr: Simplify __process_mem_region
+  x86/kaslr: Simplify process_gb_huge_pages
+  x86/kaslr: Clean up slot handling
+  x86/kaslr: Don't use 64-bit mem_vector for 32-bit kernel
+
+ arch/x86/boot/compressed/acpi.c  |   7 +-
+ arch/x86/boot/compressed/kaslr.c | 228 ++++++++++++-------------------
+ arch/x86/boot/compressed/misc.h  |  19 ++-
+ 3 files changed, 111 insertions(+), 143 deletions(-)
+
 -- 
-2.27.0
+2.26.2
 
