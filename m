@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1989D22F141
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F9D22F24E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732596AbgG0Oau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:30:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50014 "EHLO mail.kernel.org"
+        id S1729761AbgG0OKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731719AbgG0OVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:21:25 -0400
+        id S1729743AbgG0OKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:10:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE1C12070A;
-        Mon, 27 Jul 2020 14:21:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1D1B208E4;
+        Mon, 27 Jul 2020 14:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859685;
-        bh=DFVeJ/lrb11eR2M8PKEcHH/XGizsaMEJnixiYlEdY1o=;
+        s=default; t=1595859002;
+        bh=ZlkBZRpRZouPucAK8to0nNZMYP7bbrHIinNn677J9D8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAYq7emz2+/SQnkFQZu1ozvHpGjs4hyUcfNMEeWeMr3tTz5CywpkwelJG0rRU8P4k
-         h9XU4azLTpQ7mWRijypP7kpLHhp8zbR+YHszMsQtl7ERSE4LsWkaS4TRA7sKRssiHq
-         Q1dmA8JEgfXe5TiLXJhi8i6gmse9BxxDfSuI9tLU=
+        b=GElU7A8jvnaSkrLhQNpH1Rx82P7b4P/QXMJjtW0iifg5oVhRg5+R4MqK9TPWnpsFD
+         2ie4IUyi2Pq9H3dxHCQOGzFNhRYOpS1g7QNhb3mTMnLbANIG+7XgaItmtK+WekoF3g
+         +w779XaquDcuUIusw7d+TWWs22Ym7LsoBD0opYsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alessio Bonfiglio <alessio.bonfiglio@mail.polimi.it>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        syzbot+4cd84f527bf4a10fc9c1@syzkaller.appspotmail.com,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 066/179] iwlwifi: Make some Killer Wireless-AC 1550 cards work again
-Date:   Mon, 27 Jul 2020 16:04:01 +0200
-Message-Id: <20200727134935.883326149@linuxfoundation.org>
+Subject: [PATCH 4.19 28/86] ax88172a: fix ax88172a_unbind() failures
+Date:   Mon, 27 Jul 2020 16:04:02 +0200
+Message-Id: <20200727134915.862491789@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alessio Bonfiglio <alessio.bonfiglio@mail.polimi.it>
+From: George Kennedy <george.kennedy@oracle.com>
 
-[ Upstream commit b5ba46b81c2fef00bcf110777fb6d51befa4a23e ]
+[ Upstream commit c28d9a285668c799eeae2f7f93e929a6028a4d6d ]
 
-Fix the regression introduced by commit c8685937d07f ("iwlwifi: move
-pu devices to new table") by adding the ids and the configurations of
-two missing Killer 1550 cards in order to configure and let them work
-correctly again (following the new table convention).
-Resolve bug 208141 ("Wireless ac 9560 not working kernel 5.7.2",
-https://bugzilla.kernel.org/show_bug.cgi?id=208141).
+If ax88172a_unbind() fails, make sure that the return code is
+less than zero so that cleanup is done properly and avoid UAF.
 
-Fixes: c8685937d07f ("iwlwifi: move pu devices to new table")
-Signed-off-by: Alessio Bonfiglio <alessio.bonfiglio@mail.polimi.it>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200714091911.4442-1-alessio.bonfiglio@mail.polimi.it
+Fixes: a9a51bd727d1 ("ax88172a: fix information leak on short answers")
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+Reported-by: syzbot+4cd84f527bf4a10fc9c1@syzkaller.appspotmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/usb/ax88172a.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-index 29971c25dba44..9ea3e56346722 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -577,6 +577,8 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
- 	IWL_DEV_INFO(0x30DC, 0x1552, iwl9560_2ac_cfg_soc, iwl9560_killer_1550i_name),
- 	IWL_DEV_INFO(0x31DC, 0x1551, iwl9560_2ac_cfg_soc, iwl9560_killer_1550s_name),
- 	IWL_DEV_INFO(0x31DC, 0x1552, iwl9560_2ac_cfg_soc, iwl9560_killer_1550i_name),
-+	IWL_DEV_INFO(0xA370, 0x1551, iwl9560_2ac_cfg_soc, iwl9560_killer_1550s_name),
-+	IWL_DEV_INFO(0xA370, 0x1552, iwl9560_2ac_cfg_soc, iwl9560_killer_1550i_name),
- 
- 	IWL_DEV_INFO(0x271C, 0x0214, iwl9260_2ac_cfg, iwl9260_1_name),
- 
+diff --git a/drivers/net/usb/ax88172a.c b/drivers/net/usb/ax88172a.c
+index 914cac55a7ae7..909755ef71ac3 100644
+--- a/drivers/net/usb/ax88172a.c
++++ b/drivers/net/usb/ax88172a.c
+@@ -210,6 +210,7 @@ static int ax88172a_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	ret = asix_read_cmd(dev, AX_CMD_READ_NODE_ID, 0, 0, ETH_ALEN, buf, 0);
+ 	if (ret < ETH_ALEN) {
+ 		netdev_err(dev->net, "Failed to read MAC address: %d\n", ret);
++		ret = -EIO;
+ 		goto free;
+ 	}
+ 	memcpy(dev->net->dev_addr, buf, ETH_ALEN);
 -- 
 2.25.1
 
