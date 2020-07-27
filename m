@@ -2,65 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F1C22F458
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8435822F45D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728170AbgG0QJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:09:41 -0400
-Received: from smtprelay0194.hostedemail.com ([216.40.44.194]:55062 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727862AbgG0QJk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:09:40 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BD4BF182251C0;
-        Mon, 27 Jul 2020 16:09:39 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3868:3871:4250:4321:5007:8603:8660:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12740:12760:12895:13069:13148:13230:13311:13357:13439:14659:14721:21080:21451:21627:21939:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: stem58_2a1235a26f62
-X-Filterd-Recvd-Size: 1602
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Jul 2020 16:09:37 +0000 (UTC)
-Message-ID: <0897d9bec8865859694c917f3f72ab8fd12321ff.camel@perches.com>
-Subject: Re: [PATCH 2/2] media: bt8xx: avoid a useless memset
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        mchehab@kernel.org, akpm@linux-foundation.org, rppt@kernel.org,
-        hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Mon, 27 Jul 2020 09:09:34 -0700
-In-Reply-To: <20200727135151.54757-1-christophe.jaillet@wanadoo.fr>
-References: <20200727135151.54757-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        id S1728347AbgG0QJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49654 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728269AbgG0QJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 12:09:59 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A9322075A;
+        Mon, 27 Jul 2020 16:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595866198;
+        bh=w72uQXMP5YHY08KIGqAqx53HT7rk/vkevwYe+3HCPz0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p4Sucanw2Q6ekKNN4eVTk3rhHV7r7potA+wJqIcZMTxM0W1czFkkL48Ahjiu5agax
+         G41HUN2vdItQkhfi2Si1Ju6gXOTwCVoyNZvW0ezCJnkO7maTJiEPG6Os/m4RYd/dFv
+         yZWvqZAIURw993uSvhhqaRrwut4LtHEdjhd4sxl8=
+Date:   Mon, 27 Jul 2020 17:09:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Alexander.Deucher@amd.com, Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: Re: [PATCH 3/6] ASoC: amd: SND_SOC_RT5682_I2C does not build rt5682
+Message-ID: <20200727160941.GE6275@sirena.org.uk>
+References: <20200727145840.25142-1-Vishnuvardhanrao.Ravulapati@amd.com>
+ <20200727145840.25142-3-Vishnuvardhanrao.Ravulapati@amd.com>
+ <c467e2ee-727d-4bf5-8ceb-90c784245a43@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9crTWz/Z+Zyzu20v"
+Content-Disposition: inline
+In-Reply-To: <c467e2ee-727d-4bf5-8ceb-90c784245a43@linux.intel.com>
+X-Cookie: Doing gets it done.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 15:51 +0200, Christophe JAILLET wrote:
-> Avoid a memset after a call to 'dma_alloc_coherent()'.
-> This is useless since
-> commit 518a2f1925c3 ("dma-mapping: zero memory returned from dma_alloc_*")
-[]
-> diff --git a/drivers/media/pci/bt8xx/btcx-risc.c b/drivers/media/pci/bt8xx/btcx-risc.c
-[]
-> @@ -73,7 +73,6 @@ int btcx_riscmem_alloc(struct pci_dev *pci,
->  		dprintk("btcx: riscmem alloc [%d] dma=%lx cpu=%p size=%d\n",
->  			memcnt, (unsigned long)dma, cpu, size);
->  	}
-> -	memset(risc->cpu,0,risc->size);
->  	return 0;
->  }
 
-Likely NAK.
+--9crTWz/Z+Zyzu20v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is not useless as risc->cpu may be reused
-and the alloc may not have been done.
+On Mon, Jul 27, 2020 at 10:31:24AM -0500, Pierre-Louis Bossart wrote:
+> On 7/27/20 9:58 AM, Ravulapati Vishnu vardhan rao wrote:
 
+> > changing SND_SOC_RT5682_I2C to SND_SOC_RT5682 because,
+> > This flag which was previously set as SND_SOC_RT5682
+> > used to build rt5682 codec driver but by changing into
+> > SND_SOC_RT5682_I2C is preventing to build rt5682 codec
+> > driver and machine driver fails to probe.So Reverting the changes.
 
+> The split between I2C and SoundWire means you have to choose the I2C or SDW
+> mode. Selecting the common part looks very strange.
+
+Right, and I can't understand the commit message at all.  What's the
+actual issue here and how could this fix it - in what situation wouldn't
+you need one of the bus modules?
+
+--9crTWz/Z+Zyzu20v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl8e/EQACgkQJNaLcl1U
+h9CKXgf6AvYkL/VifAwuI6fufCCqohAgwDo9/Sn+16ySmm6jOodTnLwgOBpZdbe9
+bVop3W0j0q+YF3H8fkqlaxWM29d/LRRRj8mjqZ8MfMwOIieCFsGcnsMtlQjx1a/w
+l564OVBpTazkcHPBeQv/B3czqvKGqi69b4UEm0YkiNtzpY1VFakDkiBFp5Vk0wEE
+OqUIzNxL4GyW5GGX7XMxIpDlYAd3XwLDUlzy2q/6nqbpINwTPRLx9iG/NHCCa8sD
+Cdkev+6SsslKfKcni65VGqacIutXl5ynN1WDsFhLylWSl6YnD1HEti9t14j6YQP3
+fwLkcF533X5G/OLy2KmhiWxvB14zkw==
+=4bQQ
+-----END PGP SIGNATURE-----
+
+--9crTWz/Z+Zyzu20v--
