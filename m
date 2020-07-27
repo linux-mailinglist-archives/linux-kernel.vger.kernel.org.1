@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74CC22E6E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E851922E6ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbgG0HuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
+        id S1727124AbgG0Hu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:50:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgG0HuA (ORCPT
+        with ESMTP id S1726116AbgG0Hu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:50:00 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00805C0619D2;
-        Mon, 27 Jul 2020 00:49:58 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id k71so8798103pje.0;
-        Mon, 27 Jul 2020 00:49:58 -0700 (PDT)
+        Mon, 27 Jul 2020 03:50:57 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 421DEC0619D2;
+        Mon, 27 Jul 2020 00:50:57 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id z5so8985473pgb.6;
+        Mon, 27 Jul 2020 00:50:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HhIDh5Hx27FTVnTfWMP3UANCkbwxny8/a15rEFriMYg=;
-        b=qSKI9QTIVnlWHPnZx/oZulFmEZuP+u00joILTApKVVfP8s8yOV9YqDxlWAUO5yHFRZ
-         +GS4TjL2cTBKGeoTyNVVBx1rnsHKcPP0+cHUOMhMsjBjoC4Fp0St0V6WOdKcHWE3a7qY
-         uBuoUliduYJmBTAK5v4zBrqqhFQl9sD9/AAWfSRvwNPOxyUS8btYqgX4mjC84N2qLcaA
-         AGn7/vABnbyl3VYcHiBYvEwUWuv8YJXVoaPeEXT7L5npeTKE9SRyUmOSV8t9X66GNovS
-         ThzJhhTB2NqIDsg3ULQ7+1AV9S1UOREuUFckafPO97cbrkHJwl/HhP1AkxRHz5x4hXOI
-         2JaA==
+        bh=HvRchyhkxeOLvzDuOrbaCYZ/zyb156MiLRE1ABCH84I=;
+        b=KHuKlq97lOmpgvmfdymhvpN8uf/hANCv3kkGu6QGEqkIdNfGIKZoOZhPHipHkLubxz
+         POPDaIvlCDmqdt9EHt7kMEd2b/8zf6vzgQHOUoqBub+XyOdPIzUhYy/M7DPe1oBeuxHm
+         VT6qGOMZw880nUoP71XlImKhZHXsHRa6k7ISxETfFyQWt4qsYJEqtGdsxmMoiFbRPzW7
+         xIdi8aQIpCR4QQU98/NyNdI8wHvkq5pL1AZmHs3ozQH0nJRU8LdmLjMxR2dn+3BAkL+w
+         wVzyC0kgNbBOgIa6RjciRV692+rSYDnkvWWtH0diAUZ0nlE8RHT718PeeBTdn4lFfUpR
+         IFaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HhIDh5Hx27FTVnTfWMP3UANCkbwxny8/a15rEFriMYg=;
-        b=mG04y1v7f55elE7Br1wzKu+uY7M9EurmetBZMsIPaPeXuWfAgUFSrS1jkD/sRh7XKG
-         IchU4agWjIGTDJzV6Nav0cLQY/0D/fBdOqeZcc/liK8relTpJaIN+zV/KnjtNK3Att1r
-         aYCINdELA7i0t04ULn9r34DmQdWYRxwejo5nIyvjYhyDk75abuGWv2IgDfygMznxUeS6
-         dkYC/EGL+0W9VcUbRXbr3NLmbSciGiLQhdHL9wvBA1UHqDer/55S2CN4DwpqYdjmv67T
-         zvF/Hc+/U4FibwI7CI/5wpxuoE5250PStZf7sWhVBcuzL7STQaDAFrz82hYUhE0FLyOQ
-         33Zg==
-X-Gm-Message-State: AOAM530JHKQAHZIokwweT/BGycAU/pz2hMzp75YC9BrAR6KHPvFiEOqc
-        ezKdDDogz2V2lCrp9f1IDq6BECR6RdapYPklubM=
-X-Google-Smtp-Source: ABdhPJyPnB6FMtVB5Q9bd2CIaxCVWPVOup1tHBVKZLnpG1UbzQLvIgKLF9H89TgmFXZDcF6RR6t7SbG6MhniZDPpst8=
-X-Received: by 2002:a17:90a:8985:: with SMTP id v5mr2061101pjn.181.1595836198458;
- Mon, 27 Jul 2020 00:49:58 -0700 (PDT)
+        bh=HvRchyhkxeOLvzDuOrbaCYZ/zyb156MiLRE1ABCH84I=;
+        b=HCleAqbcx+s9vj2bLP8jhzp+X46HhVkMUSek6zuN0/EeGaMN3feNdEn8sTvi5WeJ83
+         NA/Zi3197LovCvVwoOx5N3vkj9Aov1IwjFrp4O2HiSemiDfjtvWfApcebwmhQ1T4ySLa
+         gvdKLs1PvMraT6+8nklmPH1wWk5ncLBFbNtoGhE2KDBYdz+0YlAcCqYBx3bQaUz3Qh8+
+         imghdUJ79CZ6rehvlgTAB6QReeH+oRwKeHjHXSWlWWnO3H85GwgWjUM9KxWvgcvROHRL
+         GrWmNusLa7MMPWAH1B9Uts9rlZOKCMa/YAHbaYqdUB0y9rzu9r4Z5vA9dN5KDAs7dqE+
+         sQYQ==
+X-Gm-Message-State: AOAM530tDAsn5x94XOZAUcFIHHriepA3vTfPXMMyJ6aBgOQIAubxDwrl
+        gryum4sAjdSdAl4F+UdiO5alzG64fcGlvdcuoP4=
+X-Google-Smtp-Source: ABdhPJwZN36/0+bYxDq0YBCSQHuH6bnFz+l4e8yWNnes2mWDmufxX0YDvCAitBi7fUC2Q0zTyPsuywd9QxQfHrNA5eQ=
+X-Received: by 2002:a63:924b:: with SMTP id s11mr18169222pgn.74.1595836256878;
+ Mon, 27 Jul 2020 00:50:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200717114155.56222-1-hdegoede@redhat.com> <20200719225649.GA4341@khazad-dum.debian.net>
- <20200722054144.GQ1665100@dtor-ws> <20200727005049.GA10254@khazad-dum.debian.net>
- <f67ede61-c9d4-6abc-9b59-a5b2b615d1b6@redhat.com>
-In-Reply-To: <f67ede61-c9d4-6abc-9b59-a5b2b615d1b6@redhat.com>
+References: <20200607162350.21297-1-mani@kernel.org> <20200607162350.21297-3-mani@kernel.org>
+ <20200701130206.GD3334@localhost> <20200726155223.GB12036@Mani-XPS-13-9360>
+ <CAHp75VeP8CMZ-T2Kk24NzOPiWHM62GErxCDUgBbYzNotwiFHhw@mail.gmail.com> <20200727044610.GC12036@Mani-XPS-13-9360>
+In-Reply-To: <20200727044610.GC12036@Mani-XPS-13-9360>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 27 Jul 2020 10:49:42 +0300
-Message-ID: <CAHp75VdvhC5HJ-BjqjDxU_Z_7_i8MV5UDN4FgWHvZfSD5=smqg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Add 3 new keycodes and use them for 3 new hotkeys on
- new Lenovo Thinkpads
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-        Darren Hart <dvhart@infradead.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Marco Trevisan <marco.trevisan@canonical.com>,
-        Mark Pearson <mpearson@lenovo.com>,
-        Christian Kellner <ckellner@redhat.com>,
-        Benjamin Berg <bberg@redhat.com>,
-        Thinkpad-acpi devel ML <ibm-acpi-devel@lists.sourceforge.net>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 27 Jul 2020 10:50:39 +0300
+Message-ID: <CAHp75Vddgt=dDxjtd9A7HejVYk+_GMVgvUM3dfzH5giCwhbaKA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v4 2/3] usb: serial: xr_serial: Add gpiochip support
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        patong.mxl@gmail.com, Linus Walleij <linus.walleij@linaro.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 10:45 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 7/27/20 2:50 AM, Henrique de Moraes Holschuh wrote:
-> > On Tue, 21 Jul 2020, Dmitry Torokhov wrote:
-> >> On Sun, Jul 19, 2020 at 07:56:49PM -0300, Henrique de Moraes Holschuh wrote:
-> >>> On Fri, 17 Jul 2020, Hans de Goede wrote:
-> >>>> This is a simple patch-series adding support for 3 new hotkeys found
-> >>>> on various new Lenovo Thinkpad models.
-> >>>
-> >>> For all three patches, pending an ack for the new keycodes by the input
-> >>> maintainers:
-> >>>
-> >>> Acked-by: Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-> >>
-> >> Do you want me to merge all 3 through input tree?
-> >
-> > Hans, Daren, Andy, what do you prefer?
->
-> Taking all this upstream through Dmitry's input tree is fine with
-> me, but this really is up to Andy and/or Daren.
+On Mon, Jul 27, 2020 at 7:46 AM Manivannan Sadhasivam <mani@kernel.org> wrote:
+> On Sun, Jul 26, 2020 at 07:34:54PM +0300, Andy Shevchenko wrote:
+> > On Sun, Jul 26, 2020 at 6:53 PM Manivannan Sadhasivam <mani@kernel.org> wrote:
 
-Fine with me.
+...
+
+> > I'm wondering if you may use mctrl_gpio_*() API instead.
+>
+> How? mctrl_gpio APIs are a wrapper for accessing modem control gpio pins but
+> here we are not accessing the pins but rather exposing the pins as a gpiochip.
+
+I see. Thanks for the explanation.
+
+> Am I missing something?
 
 -- 
 With Best Regards,
