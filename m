@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B9822F156
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9848C22F2D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731567AbgG0Obe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:31:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48824 "EHLO mail.kernel.org"
+        id S1729014AbgG0OGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731559AbgG0OUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:20:33 -0400
+        id S1728731AbgG0OGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:06:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 396952070B;
-        Mon, 27 Jul 2020 14:20:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B0452073E;
+        Mon, 27 Jul 2020 14:06:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859632;
-        bh=sq93jyy/5hOdO3MnMsnMTGHwVKWz45e3z6SC8rJ91ZM=;
+        s=default; t=1595858809;
+        bh=XEytakMRbTXVdAm6n/F8+1DevYQ/bp7DXiBxFb2pgbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGF9kBsQzfwrshmyXGcRyBzExtl1uqrrPy1O2WOeHJieZrnLOyQb4tqqn6/p+j02g
-         V1kSKiL14mxWtznxwRkf7Ne6ES57S58DhcBxCwmKx66Bv3myXibGkKUCBWhBZ7AiTD
-         J9XM3Jceiv2aRMEqglchCDZPbVtAqtIVu/GVELHo=
+        b=yAycUviy6s8PcQUVGkwxOve8HkmpgaCnS9Srh0K/QwdILZ6iuYEYYwaasGlHqlmC9
+         w9izq/z+Jx1E3fK8jHhLswJIHW4n6SCaJjBqZA3/pMWxLukjF/o/IQFfyPbgNtrGOK
+         WRyzLeSuMPMw9nmnetK7fJzf3rXMZevVgt2rx3+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 045/179] bnxt_en: Fix completion ring sizing with TPA enabled.
-Date:   Mon, 27 Jul 2020 16:03:40 +0200
-Message-Id: <20200727134934.874432975@linuxfoundation.org>
+Subject: [PATCH 4.14 02/64] gpio: arizona: put pm_runtime in case of failure
+Date:   Mon, 27 Jul 2020 16:03:41 +0200
+Message-Id: <20200727134911.151317072@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,63 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 27640ce68d21e556b66bc5fa022aacd26e53c947 ]
+[ Upstream commit 861254d826499944cb4d9b5a15f5a794a6b99a69 ]
 
-The current completion ring sizing formula is wrong with TPA enabled.
-The formula assumes that the number of TPA completions are bound by the
-RX ring size, but that's not true.  TPA_START completions are immediately
-recycled so they are not bound by the RX ring size.  We must add
-bp->max_tpa to the worst case maximum RX and TPA completions.
+Calling pm_runtime_get_sync increments the counter even in case of
+failure, causing incorrect ref count if pm_runtime_put is not called in
+error handling paths. Call pm_runtime_put if pm_runtime_get_sync fails.
 
-The completion ring can overflow because of this mistake.  This will
-cause hardware to disable the completion ring when this happens,
-leading to RX and TX traffic to stall on that ring.  This issue is
-generally exposed only when the RX ring size is set very small.
-
-Fix the formula by adding bp->max_tpa to the number of RX completions
-if TPA is enabled.
-
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.");
-Reviewed-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200605030052.78235-1-navid.emamdoost@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/gpio/gpio-arizona.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 198bca9c1e2df..1656dc277af41 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -3418,7 +3418,7 @@ void bnxt_set_tpa_flags(struct bnxt *bp)
-  */
- void bnxt_set_ring_params(struct bnxt *bp)
- {
--	u32 ring_size, rx_size, rx_space;
-+	u32 ring_size, rx_size, rx_space, max_rx_cmpl;
- 	u32 agg_factor = 0, agg_ring_size = 0;
+diff --git a/drivers/gpio/gpio-arizona.c b/drivers/gpio/gpio-arizona.c
+index e09834b91ea52..694674dfbf82a 100644
+--- a/drivers/gpio/gpio-arizona.c
++++ b/drivers/gpio/gpio-arizona.c
+@@ -69,6 +69,7 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 		ret = pm_runtime_get_sync(chip->parent);
+ 		if (ret < 0) {
+ 			dev_err(chip->parent, "Failed to resume: %d\n", ret);
++			pm_runtime_put_autosuspend(chip->parent);
+ 			return ret;
+ 		}
  
- 	/* 8 for CRC and VLAN */
-@@ -3474,7 +3474,15 @@ void bnxt_set_ring_params(struct bnxt *bp)
- 	bp->tx_nr_pages = bnxt_calc_nr_ring_pages(ring_size, TX_DESC_CNT);
- 	bp->tx_ring_mask = (bp->tx_nr_pages * TX_DESC_CNT) - 1;
+@@ -77,12 +78,15 @@ static int arizona_gpio_get(struct gpio_chip *chip, unsigned offset)
+ 		if (ret < 0) {
+ 			dev_err(chip->parent, "Failed to drop cache: %d\n",
+ 				ret);
++			pm_runtime_put_autosuspend(chip->parent);
+ 			return ret;
+ 		}
  
--	ring_size = bp->rx_ring_size * (2 + agg_factor) + bp->tx_ring_size;
-+	max_rx_cmpl = bp->rx_ring_size;
-+	/* MAX TPA needs to be added because TPA_START completions are
-+	 * immediately recycled, so the TPA completions are not bound by
-+	 * the RX ring size.
-+	 */
-+	if (bp->flags & BNXT_FLAG_TPA)
-+		max_rx_cmpl += bp->max_tpa;
-+	/* RX and TPA completions are 32-byte, all others are 16-byte */
-+	ring_size = max_rx_cmpl * 2 + agg_ring_size + bp->tx_ring_size;
- 	bp->cp_ring_size = ring_size;
+ 		ret = regmap_read(arizona->regmap, reg, &val);
+-		if (ret < 0)
++		if (ret < 0) {
++			pm_runtime_put_autosuspend(chip->parent);
+ 			return ret;
++		}
  
- 	bp->cp_nr_pages = bnxt_calc_nr_ring_pages(ring_size, CP_DESC_CNT);
+ 		pm_runtime_mark_last_busy(chip->parent);
+ 		pm_runtime_put_autosuspend(chip->parent);
 -- 
 2.25.1
 
