@@ -2,66 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D847C22FC50
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF50222FC3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgG0WkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 18:40:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45638 "EHLO mail.kernel.org"
+        id S1726862AbgG0WgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 18:36:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727800AbgG0WkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 18:40:07 -0400
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726171AbgG0WgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 18:36:09 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A3B020FC3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:40:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18524206D7;
+        Mon, 27 Jul 2020 22:36:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595889606;
-        bh=bFPrgU1Jk9K/I7DQUNxsJ01gcPYC3G9ZPht5BYF0kM8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=w+gqaDIcclPtKT4N8I4PlPGw/3ZfZO3xy2fUtCvLzNd6QdKXNte+8p1VvOSUp6buE
-         Gm/DP30ZkkY9pe2wrNkDPsX3L/ToWQPV3w9TjvaoTKbRFZf2FAp1NaYrPWC1MC3q61
-         X5fmnnQlYmK26oUlgUmG9ZNfu1BpFuoKgX3zA5RQ=
-Received: by mail-wr1-f47.google.com with SMTP id a5so6413696wrm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 15:40:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531P/zbevi1ZVvQ1Mtm/phRer0yfXZI+0NC/VMHd4atABqyGyYw4
-        IcWgtUD5eWm/IBAGSG6lVRWAAg/vmvbWHUyHIKzR8w==
-X-Google-Smtp-Source: ABdhPJzd/wIx7hz77kMspi3Ap4wzBDMwXrL3/v/GsIahaf+7is+QENmLWwBqaUwNt2/x6huhKSjrbFAM2Lz0dTnsVDo=
-X-Received: by 2002:adf:fa85:: with SMTP id h5mr22738351wrr.18.1595889605046;
- Mon, 27 Jul 2020 15:40:05 -0700 (PDT)
+        s=default; t=1595889368;
+        bh=xH/2W2HYXueBgpFbXH6T7J94Jk224b7or73aw7CZnI4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SCZYQOjGindndaZIZWJs98kb88zQD1ytiM857gDvGLH9QRFHwhq846rviv9r9kZCZ
+         Lckp54IMoHX+H2tKnZzKjToZ32Utb2LCeaikAMurD44D5NhtoGPXApox7MPWg28INK
+         2ZM1A/pZZwljFOVbRmnnm37CbU/RacAMw0hEVq6E=
+Date:   Mon, 27 Jul 2020 17:42:01 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH][next] powerpc: Use fallthrough pseudo-keyword
+Message-ID: <20200727224201.GA10133@embeddedor>
 MIME-Version: 1.0
-References: <20200721105706.030914876@linutronix.de> <20200721110808.889765456@linutronix.de>
-In-Reply-To: <20200721110808.889765456@linutronix.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 27 Jul 2020 15:39:53 -0700
-X-Gmail-Original-Message-ID: <CALCETrW0OmZ04rWO=JN1M+Bcum18Vna+St+QM9pHEeV0yVc=rQ@mail.gmail.com>
-Message-ID: <CALCETrW0OmZ04rWO=JN1M+Bcum18Vna+St+QM9pHEeV0yVc=rQ@mail.gmail.com>
-Subject: Re: [patch V4 06/15] x86/entry: Consolidate check_user_regs()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 21, 2020 at 4:08 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> From: Thomas Gleixner <tglx@linutronix.de>
->
-> The user register sanity check is sprinkled all over the place. Move it
-> into enter_from_user_mode().
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Replace the existing /* fall through */ comments and its variants with
+the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
+fall-through markings when it is the case.
 
-Acked-by: Andy Lutomirski <luto@kernel.org>
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ arch/powerpc/kernel/align.c                 | 8 ++++----
+ arch/powerpc/platforms/powermac/feature.c   | 2 +-
+ arch/powerpc/platforms/powernv/opal-async.c | 2 +-
+ arch/powerpc/platforms/pseries/hvcserver.c  | 2 +-
+ arch/powerpc/xmon/xmon.c                    | 2 +-
+ 5 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/powerpc/kernel/align.c b/arch/powerpc/kernel/align.c
+index 1f1ce8b86d5b..c7797eb958c7 100644
+--- a/arch/powerpc/kernel/align.c
++++ b/arch/powerpc/kernel/align.c
+@@ -178,11 +178,11 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
+ 			ret |= __get_user_inatomic(temp.v[1], p++);
+ 			ret |= __get_user_inatomic(temp.v[2], p++);
+ 			ret |= __get_user_inatomic(temp.v[3], p++);
+-			/* fall through */
++			fallthrough;
+ 		case 4:
+ 			ret |= __get_user_inatomic(temp.v[4], p++);
+ 			ret |= __get_user_inatomic(temp.v[5], p++);
+-			/* fall through */
++			fallthrough;
+ 		case 2:
+ 			ret |= __get_user_inatomic(temp.v[6], p++);
+ 			ret |= __get_user_inatomic(temp.v[7], p++);
+@@ -263,11 +263,11 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
+ 			ret |= __put_user_inatomic(data.v[1], p++);
+ 			ret |= __put_user_inatomic(data.v[2], p++);
+ 			ret |= __put_user_inatomic(data.v[3], p++);
+-			/* fall through */
++			fallthrough;
+ 		case 4:
+ 			ret |= __put_user_inatomic(data.v[4], p++);
+ 			ret |= __put_user_inatomic(data.v[5], p++);
+-			/* fall through */
++			fallthrough;
+ 		case 2:
+ 			ret |= __put_user_inatomic(data.v[6], p++);
+ 			ret |= __put_user_inatomic(data.v[7], p++);
+diff --git a/arch/powerpc/platforms/powermac/feature.c b/arch/powerpc/platforms/powermac/feature.c
+index 181caa3f6717..5c77b9a24c0e 100644
+--- a/arch/powerpc/platforms/powermac/feature.c
++++ b/arch/powerpc/platforms/powermac/feature.c
+@@ -1465,7 +1465,7 @@ static long g5_i2s_enable(struct device_node *node, long param, long value)
+ 	case 2:
+ 		if (macio->type == macio_shasta)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return -ENODEV;
+ 	}
+diff --git a/arch/powerpc/platforms/powernv/opal-async.c b/arch/powerpc/platforms/powernv/opal-async.c
+index 1656e8965d6b..c094fdf5825c 100644
+--- a/arch/powerpc/platforms/powernv/opal-async.c
++++ b/arch/powerpc/platforms/powernv/opal-async.c
+@@ -104,7 +104,7 @@ static int __opal_async_release_token(int token)
+ 	 */
+ 	case ASYNC_TOKEN_DISPATCHED:
+ 		opal_async_tokens[token].state = ASYNC_TOKEN_ABANDONED;
+-		/* Fall through */
++		fallthrough;
+ 	default:
+ 		rc = 1;
+ 	}
+diff --git a/arch/powerpc/platforms/pseries/hvcserver.c b/arch/powerpc/platforms/pseries/hvcserver.c
+index 267139b13530..96e18d3b2fcf 100644
+--- a/arch/powerpc/platforms/pseries/hvcserver.c
++++ b/arch/powerpc/platforms/pseries/hvcserver.c
+@@ -45,7 +45,7 @@ static int hvcs_convert(long to_convert)
+ 		case H_LONG_BUSY_ORDER_10_SEC:
+ 		case H_LONG_BUSY_ORDER_100_SEC:
+ 			return -EBUSY;
+-		case H_FUNCTION: /* fall through */
++		case H_FUNCTION:
+ 		default:
+ 			return -EPERM;
+ 	}
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 8fb1f857c11c..ed1a9f43709d 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -4278,7 +4278,7 @@ static int do_spu_cmd(void)
+ 		subcmd = inchar();
+ 		if (isxdigit(subcmd) || subcmd == '\n')
+ 			termch = subcmd;
+-		/* fall through */
++		fallthrough;
+ 	case 'f':
+ 		scanhex(&num);
+ 		if (num >= XMON_NUM_SPUS || !spu_info[num].spu) {
+-- 
+2.27.0
+
