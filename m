@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFA322E8B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE8B22E8BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgG0JUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgG0JUH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:20:07 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C427DC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:20:07 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id k4so13770089oik.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:20:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=UOr65DEC+2TW/zt7uOWWliltVKZ89UsSxVAE/jQE1oM=;
-        b=ly5p3kRHVkIddztgirMCWiv1SSbDZ9Cujlt2724ltOYiyHLjGhx2j7mXZ/0AYrQHLd
-         QOPdFpNuwZV7UEVJ67jGJoSIIgB4WE0RCigYy0OPVqekVs6kQZ2A02wPPEtP6jfSRR/N
-         OWN+Va+HhQWZh7Qw79drpkWceHEfstjg6TNMw2P8VQv6uouk93ioE4oqMsHh/wK1/jJo
-         1DR55kPNnUS81yJmyJlJKlVHlEXxtTZ/UnyDaQw3SMYoS0/8WWHe6/T/m9FxacM7WA0s
-         XCT4DYXddAyDdL8wpF1TIYDOB7ijtBri4m2wCRUCQs0d0hzf7BcXS9SZrD8qLSDsvqFp
-         ShKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=UOr65DEC+2TW/zt7uOWWliltVKZ89UsSxVAE/jQE1oM=;
-        b=lHb6T83HLI0M3ouoQWw2vj57jNMAiiVAbG0AkoxYNzgQqpr9+pu3duE3B/v5hr2JhG
-         8eA7fEb8uzJDN32vj1Icv2gtXzjqkYwexpPeiWrmxxqaA7JzUejpgIF8qfkzD2Z3BArY
-         i+gvVbellkmxPgFyLDkbjBbdBiXHAC3XyiSfgdt1GnF5Ir2E+OsaukC3pcGyzIcoV4iD
-         gA8nELyBjnuDN58XSh/egbP1KDX6+kg03IZDO/wSuEjq4RB2lghhM2QzdhoI/MuKXgcA
-         VhDj5IUN06gdB3O02mUS7HbW/IcrFyccvjc1d8mskH9BR7UsCkyv5qVWrecKHWW+91KZ
-         Wxvg==
-X-Gm-Message-State: AOAM531drbBYf9Mu1O3eeTEMkz/STmzYnZxe8sbBF5e04GCToQPW7Ww/
-        EOxlLX5dHpvDTscZhkzBZcvNtj7QnZwgt9Y183o=
-X-Google-Smtp-Source: ABdhPJzYeu2/ceYnHDSmv1mOLVazIEvU3KFUPaZDopPPtYrEZckx3kvKiDTGh0jdCdBw9PfL9+dS4Fh8Mdz3NoUcqPk=
-X-Received: by 2002:aca:a983:: with SMTP id s125mr17626004oie.30.1595841607241;
- Mon, 27 Jul 2020 02:20:07 -0700 (PDT)
+        id S1727792AbgG0JVu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 05:21:50 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2526 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726263AbgG0JVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:21:49 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id E39C5FA1E84846A6F6C9;
+        Mon, 27 Jul 2020 10:21:47 +0100 (IST)
+Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 10:21:47 +0100
+Date:   Mon, 27 Jul 2020 10:20:24 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Logan Gunthorpe <logang@deltatee.com>
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Andrew Maier <andrew.maier@eideticom.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Eric Wehage <Eric.Wehage@futurewei.com>,
+        "Alex Umansky" <alex.umansky@huawei.com>
+Subject: Re: [PATCH] PCI/P2PDMA: Add AMD Zen 2 root complex to the list of
+ allowed bridges
+Message-ID: <20200727102024.00005f8b@Huawei.com>
+In-Reply-To: <59b68da4-cd3c-bf65-6654-02d4feaede27@deltatee.com>
+References: <20200724150641.GA1518875@bjorn-Precision-5520>
+        <59b68da4-cd3c-bf65-6654-02d4feaede27@deltatee.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Reply-To: mrahmedmuzashah@gmail.com
-Received: by 2002:a4a:d6cf:0:0:0:0:0 with HTTP; Mon, 27 Jul 2020 02:20:06
- -0700 (PDT)
-From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
-Date:   Mon, 27 Jul 2020 10:20:06 +0100
-X-Google-Sender-Auth: KP2AgscLWdsCSV09yh5oSlxScn4
-Message-ID: <CAKAJx4e2jib281UOpM7gu5NBSPjDU=+X5gzMxfHWS_e4-cdEMQ@mail.gmail.com>
-Subject: =?UTF-8?B?U2Now7ZuZW4gVGFn?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.121.176]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sch=C3=B6nen Tag,
+On Fri, 24 Jul 2020 09:56:39 -0600
+Logan Gunthorpe <logang@deltatee.com> wrote:
 
-Bitte entschuldigen Sie, dass Sie einen =C3=9Cberraschungsbrief geschrieben
-haben. Ich bin Herr Ahmed Muzashah, Account Manager bei einer
-Investmentbank hier in Burkina Faso. Ich habe ein sehr wichtiges
-Gesch=C3=A4ft, das ich mit Ihnen besprechen m=C3=B6chte. In meinem Konto is=
-t ein
-Kontoentwurf er=C3=B6ffnet Ich habe die M=C3=B6glichkeit, den verbleibenden
-Fonds (15,8 Millionen US-Dollar) von f=C3=BCnfzehn Millionen
-achthunderttausend US-Dollar eines meiner Bankkunden zu =C3=BCbertragen,
-der beim Zusammenbruch der Welt gestorben ist Handelszentrum in den
-Vereinigten Staaten am 11. September 2001.
+> [+cc Jonathan]
+> 
+> On 2020-07-24 9:06 a.m., Bjorn Helgaas wrote:
+> > On Thu, Jul 23, 2020 at 02:10:52PM -0600, Logan Gunthorpe wrote:  
+> >> On 2020-07-23 1:57 p.m., Bjorn Helgaas wrote:  
+> >>> On Thu, Jul 23, 2020 at 02:01:17PM -0400, Alex Deucher wrote:  
+> >>>> On Thu, Jul 23, 2020 at 1:43 PM Logan Gunthorpe <logang@deltatee.com> wrote:  
+> >>>>>
+> >>>>> The AMD Zen 2 root complex (Starship/Matisse) was tested for P2PDMA
+> >>>>> transactions between root ports and found to work. Therefore add it
+> >>>>> to the list.
+> >>>>>
+> >>>>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+> >>>>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> >>>>> Cc: Christian König <christian.koenig@amd.com>
+> >>>>> Cc: Huang Rui <ray.huang@amd.com>
+> >>>>> Cc: Alex Deucher <alexdeucher@gmail.com>  
+> >>>>
+> >>>> Starting with Zen, all AMD platforms support P2P for reads and writes.  
+> >>>
+> >>> What's the plan for getting out of the cycle of "update this list for
+> >>> every new chip"?  Any new _DSMs planned, for instance?  
+> >>
+> >> Well there was an effort to add capabilities in the PCI spec to describe
+> >> this but, as far as I know, they never got anywhere, and hardware still
+> >> doesn't self describe with this.  
+> > 
+> > Any idea what happened?  Is there hope for the future?  I'm really not
+> > happy about signing up for open-ended device-specific patches like
+> > this.  It's certainly not in the plug and play spirit that has made
+> > PCI successful.  I know, preaching to the choir here.  
+> 
+> Agreed, though I'm not really hooked into the PCI SIG. The last email I
+> got about this was an RFC from Jonathan Cameron in late 2018. I've CC'd
+> him here, maybe he'll have a bit more insight.
 
-Ich m=C3=B6chte diese Mittel investieren und Sie unserer Bank f=C3=BCr dies=
-en
-Deal vorstellen. Alles, was ich ben=C3=B6tige, ist Ihre ehrliche
-Zusammenarbeit und ich garantiere Ihnen, dass dies unter einer
-legitimen Vereinbarung durchgef=C3=BChrt wird, die uns vor
-Gesetzesverst=C3=B6=C3=9Fen sch=C3=BCtzt Ich bin damit einverstanden, dass =
-40% dieses
-Geldes f=C3=BCr Sie als meinen ausl=C3=A4ndischen Partner, 50% f=C3=BCr mic=
-h und 10%
-f=C3=BCr die Schaffung der Grundlage f=C3=BCr die weniger Privilegien in Ih=
-rem
-Land bestimmt sind. Wenn Sie wirklich an meinem Vorschlag interessiert
-sind, werden weitere Einzelheiten der =C3=9Cbertragung ber=C3=BCcksichtigt =
-Sie
-werden an Sie weitergeleitet, sobald ich Ihre Bereitschaftsmail f=C3=BCr
-eine erfolgreiche =C3=9Cberweisung erhalte.
+For non technical reasons, you can probably figure out, that particular
+ECR stalled. Unfortunately I can't directly provide info on any newer
+discussions. Eric, could you perhaps find out if there is anything we can share?
 
-Dein,
-Mr.Ahmed Muzashah,
+This is the same question of trying to find a way to avoid white listing
+root complexes that can do peer 2 peer that would have been covered by
+your Advanced Peer to Peer Capabilities ECR.
+
+Thanks,
+
+Jonathan
+
+
+
+
+
+> 
+> Logan
+
+
