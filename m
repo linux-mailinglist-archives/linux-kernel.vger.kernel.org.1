@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABDC22F1BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CE222F297
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731881AbgG0Oej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:34:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43022 "EHLO mail.kernel.org"
+        id S1729528AbgG0OI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:08:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730811AbgG0OQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:16:11 -0400
+        id S1729501AbgG0OIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:08:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62B8D20825;
-        Mon, 27 Jul 2020 14:16:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E2AB20838;
+        Mon, 27 Jul 2020 14:08:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859370;
-        bh=RBYFblPQop8OJr48l7BkzZOT8znndds4pQrFRWY0Whw=;
+        s=default; t=1595858932;
+        bh=biPPC4FOwAOBUCib4uH65eXmJpEkTdAaFUzPoJlHoXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q9tApZVA1QN1JR/hE/BrO4i1QAqckPDfCeKaENmiqdezqnF2EEmAkLSRs9vzrl+4B
-         xwzkrOIU2WNPf7JBo1/6iReKsik9UjXHQ+QDxYFCCVyAF2mkG/C1T9yH7Fg3WeYs3n
-         AD0XGu4wTA/gxWlDgbBFuuZ6Q8FLc7Sh6mfZpinQ=
+        b=fL3x+eBeReAEdz3DdryE/5vqO4TVqcXw43hZqs4g9tW0J3Akj5B/tl4jlXl0IlaWJ
+         4RGGmrZS93/6FZAUdp1DnWaPc8NV1A5/ZgFBE8tglL8rvOnqH2iDVfDjF1eyDLInU4
+         Qp6oTpm0Zz2DoXlDEqmd+41AtdBvDJnNTeVWMvY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonid Ravich <Leonid.Ravich@emc.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 082/138] dmaengine: ioat setting ioat timeout as module parameter
-Date:   Mon, 27 Jul 2020 16:04:37 +0200
-Message-Id: <20200727134929.475486996@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.14 59/64] Makefile: Fix GCC_TOOLCHAIN_DIR prefix for Clang cross compilation
+Date:   Mon, 27 Jul 2020 16:04:38 +0200
+Message-Id: <20200727134914.103631971@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonid Ravich <Leonid.Ravich@emc.com>
+From: Fangrui Song <maskray@google.com>
 
-[ Upstream commit 87730ccbddcb48478b1b88e88b14e73424130764 ]
+commit ca9b31f6bb9c6aa9b4e5f0792f39a97bbffb8c51 upstream.
 
-DMA transaction time to completion is a function of PCI bandwidth,
-transaction size and a queue depth.  So hard coded value for timeouts
-might be wrong for some scenarios.
+When CROSS_COMPILE is set (e.g. aarch64-linux-gnu-), if
+$(CROSS_COMPILE)elfedit is found at /usr/bin/aarch64-linux-gnu-elfedit,
+GCC_TOOLCHAIN_DIR will be set to /usr/bin/.  --prefix= will be set to
+/usr/bin/ and Clang as of 11 will search for both
+$(prefix)aarch64-linux-gnu-$needle and $(prefix)$needle.
 
-Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20200701184816.29138-1-leonid.ravich@dell.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+GCC searchs for $(prefix)aarch64-linux-gnu/$version/$needle,
+$(prefix)aarch64-linux-gnu/$needle and $(prefix)$needle. In practice,
+$(prefix)aarch64-linux-gnu/$needle rarely contains executables.
+
+To better model how GCC's -B/--prefix takes in effect in practice, newer
+Clang (since
+https://github.com/llvm/llvm-project/commit/3452a0d8c17f7166f479706b293caf6ac76ffd90)
+only searches for $(prefix)$needle. Currently it will find /usr/bin/as
+instead of /usr/bin/aarch64-linux-gnu-as.
+
+Set --prefix= to $(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+(/usr/bin/aarch64-linux-gnu-) so that newer Clang can find the
+appropriate cross compiling GNU as (when -no-integrated-as is in
+effect).
+
+Cc: stable@vger.kernel.org
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1099
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/ioat/dma.c | 12 ++++++++++++
- drivers/dma/ioat/dma.h |  2 --
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
-index 18c011e57592e..8e2a4d1f0be53 100644
---- a/drivers/dma/ioat/dma.c
-+++ b/drivers/dma/ioat/dma.c
-@@ -26,6 +26,18 @@
- 
- #include "../dmaengine.h"
- 
-+int completion_timeout = 200;
-+module_param(completion_timeout, int, 0644);
-+MODULE_PARM_DESC(completion_timeout,
-+		"set ioat completion timeout [msec] (default 200 [msec])");
-+int idle_timeout = 2000;
-+module_param(idle_timeout, int, 0644);
-+MODULE_PARM_DESC(idle_timeout,
-+		"set ioat idel timeout [msec] (default 2000 [msec])");
-+
-+#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
-+#define COMPLETION_TIMEOUT msecs_to_jiffies(completion_timeout)
-+
- static char *chanerr_str[] = {
- 	"DMA Transfer Source Address Error",
- 	"DMA Transfer Destination Address Error",
-diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
-index b8e8e0b9693c7..4ac9134962f3b 100644
---- a/drivers/dma/ioat/dma.h
-+++ b/drivers/dma/ioat/dma.h
-@@ -99,8 +99,6 @@ struct ioatdma_chan {
- 	#define IOAT_RUN 5
- 	#define IOAT_CHAN_ACTIVE 6
- 	struct timer_list timer;
--	#define COMPLETION_TIMEOUT msecs_to_jiffies(100)
--	#define IDLE_TIMEOUT msecs_to_jiffies(2000)
- 	#define RESET_DELAY msecs_to_jiffies(100)
- 	struct ioatdma_device *ioat_dma;
- 	dma_addr_t completion_dma;
--- 
-2.25.1
-
+--- a/Makefile
++++ b/Makefile
+@@ -482,7 +482,7 @@ ifeq ($(cc-name),clang)
+ ifneq ($(CROSS_COMPILE),)
+ CLANG_FLAGS	+= --target=$(notdir $(CROSS_COMPILE:%-=%))
+ GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+-CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)
++CLANG_FLAGS	+= --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+ GCC_TOOLCHAIN	:= $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+ endif
+ ifneq ($(GCC_TOOLCHAIN),)
 
 
