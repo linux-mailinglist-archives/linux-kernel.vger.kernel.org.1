@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D6422E5BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325EC22E5CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbgG0GOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 02:14:46 -0400
-Received: from smtprelay0011.hostedemail.com ([216.40.44.11]:36592 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726116AbgG0GOq (ORCPT
+        id S1726753AbgG0GXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 02:23:05 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:61142 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726228AbgG0GXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 02:14:46 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id BE710182CED5B;
-        Mon, 27 Jul 2020 06:14:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2902:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4321:4605:5007:7514:8531:10004:10400:10450:10455:11026:11232:11473:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:12986:13069:13255:13311:13357:13439:14093:14097:14181:14659:14721:19904:19999:21080:21433:21451:21627:21660:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: start73_170cec826f5f
-X-Filterd-Recvd-Size: 2345
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Jul 2020 06:14:43 +0000 (UTC)
-Message-ID: <66bbaec73d8f69541535db5390c0f12b304c0467.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: disable commit log length check warning for
- signature tag
-From:   Joe Perches <joe@perches.com>
-To:     Nachiket Naganure <nachiketun8@gmail.com>, apw@canonical.com,
-        lukas.bulwahn@gmail.com, skhan@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Date:   Sun, 26 Jul 2020 23:14:42 -0700
-In-Reply-To: <20200727055458.559558-1-nachiketun8@gmail.com>
-References: <20200727055458.559558-1-nachiketun8@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
-MIME-Version: 1.0
+        Mon, 27 Jul 2020 02:23:05 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200727062302epoutp01c3fe3fd8c2cd536d17036d7346d9116b~lh9K_q5dV1114811148epoutp01Z
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 06:23:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200727062302epoutp01c3fe3fd8c2cd536d17036d7346d9116b~lh9K_q5dV1114811148epoutp01Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1595830982;
+        bh=JpORZJFQpljj7zbq7Uq5L0uuPoUohXTIkVippavmwNo=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=uGtwyHZKQj25OBa47nm1KPKAWS/DQNA1+E4kYmLoKictdMrWmAgjA7wIt0algacsO
+         /LRPH+uDxtoIfI4fFvo5cY3EGvL6Z7Xdtokrqi4to73VWp1Ie/vitbfROZXDLFhvSf
+         B7wYrtgu8ZmRIw9w/EZkgRUOQgcc6ElIv8bIdtTY=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200727062301epcas1p2c53b02094f8dd1da5fe76e202aaa895d~lh9Kj5iV33172031720epcas1p2e;
+        Mon, 27 Jul 2020 06:23:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: Re: [PATCH v6 2/5] scsi: ufs: Add UFS-feature layer
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <7bcf45da-233b-0c38-b93a-99d205603e63@acm.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21595830981720.JavaMail.epsvc@epcpadp2>
+Date:   Mon, 27 Jul 2020 15:18:15 +0900
+X-CMS-MailID: 20200727061815epcms2p3c85befcefda3bd5f292a32c29d29e000
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8
+References: <7bcf45da-233b-0c38-b93a-99d205603e63@acm.org>
+        <231786897.01594636801601.JavaMail.epsvc@epcpadp1>
+        <963815509.21594636682161.JavaMail.epsvc@epcpadp2>
+        <231786897.01594637401708.JavaMail.epsvc@epcpadp1>
+        <20200722064112.GB21117@infradead.org>
+        <yq1h7tzg1lb.fsf@ca-mkp.ca.oracle.com>
+        <CGME20200713103423epcms2p8442ee7cc22395e4a4cedf224f95c45e8@epcms2p3>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 11:24 +0530, Nachiket Naganure wrote:
-> Disable commit log length check in case of signature tag. If the commit
-> log line has valid signature tags such as "Reported-and-tested-by" with
-> more than 75 characters, suppress the long length warning.
+> > I am also not sold on the whole "bus" thing.
 > 
-> For instance in commit ac854131d984 ("USB: core: Fix misleading driver bug
-> report"), the corresponding patch contains a "Reported by" tag line which
-> exceeds 75 chars. And there is no valid way to shorten the length.
-> 
-> Signed-off-by: Nachiket Naganure <nachiketun8@gmail.com>
-> ---
->  scripts/checkpatch.pl | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 197436b20288..46237e9e0550 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -2806,6 +2806,8 @@ sub process {
->  					# filename then :
->  		      $line =~ /^\s*(?:Fixes:|Link:)/i ||
->  					# A Fixes: or Link: line
-> +		      $line =~ /$signature_tags/ ||
-> +					# Check for signature_tags
->  		      $commit_log_possible_stack_dump)) {
->  			WARN("COMMIT_LOG_LONG_LINE",
->  			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
+> How about implementing HPB as a kernel module that calls the functions
+> in the UFS core directly, or in other words, get rid completely of the
+> new ufsf_bus introduced by this patch?
 
-OK, but the test should be:
+OK, I will remove the ufsf_bus and indirect calling functions.
 
-		      $line =~ /^\s*$signature_tags/ ||
-
-so the line has to start with a signature and
-it won't match on signature tags in the middle
-of other content on the same line.
-
-
+Thanks,
+Daejun
