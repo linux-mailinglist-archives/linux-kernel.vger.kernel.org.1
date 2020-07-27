@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3163922F987
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDC122F995
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729014AbgG0Twp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:52:45 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:46655 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728348AbgG0Two (ORCPT
+        id S1728840AbgG0T4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:56:12 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:46166 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgG0T4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:52:44 -0400
-Received: from dante.cb.ettle ([143.159.226.70]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.179]) with ESMTPSA (Nemesis) id
- 1MDhth-1k6zik1Bvr-00Am5E; Mon, 27 Jul 2020 21:52:29 +0200
-Message-ID: <f02332767323fc3ecccea13dd47ecfff12526112.camel@ettle.org.uk>
-Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
-From:   James Ettle <james@ettle.org.uk>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     =?UTF-8?Q?=E5=90=B3=E6=98=8A=E6=BE=84?= Ricky 
-        <ricky_wu@realtek.com>, Rui Feng <rui_feng@realsil.com.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Len Brown <lenb@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jacopo De Simoi <wilderkde@gmail.com>
-Date:   Mon, 27 Jul 2020 20:52:25 +0100
-In-Reply-To: <20200727141438.GA1743062@bjorn-Precision-5520>
-References: <20200727141438.GA1743062@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
+        Mon, 27 Jul 2020 15:56:11 -0400
+Received: by mail-io1-f68.google.com with SMTP id a5so3060582ioa.13;
+        Mon, 27 Jul 2020 12:56:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C8UHP2DIuI2PhUn6nQlydwILHy7h5veWF+bWL7pWmYI=;
+        b=t6aHTR0rhje2Y1yZqvcoadZgdBqa1fv/bvvSvorRyM7ZhInaaQkh2Rxw9bkIH9u0wm
+         pY8Bpy5tUZj2C8ZpL9GsgQi9U9F1DayB/dTdmxHAJzJdfcEXlAOLwg0wj4eNKvyJDGCr
+         gU5c1TtrSYLij5zMyxx+cKwrSAfDovKnSUTqiA8Dv5geZ55ynDPtTK07GUjtd2P/5EUW
+         k9dxNoofTVGIjJwmOgFAebRUu2rw8HfW8/LHdkdkYcquBM/xj7d2hTs+iUBvKMyvXuE9
+         diE2OEzuM6iuxgkDPEYMv++1aYJ3fhvhH9v3Xf25jfWnY85zGLSWuxL+9a/DX1bwIGHr
+         DWXQ==
+X-Gm-Message-State: AOAM533dkLlfuab1fn7JiYcxT/Fu2Ac5tqKIn2T53RQqGzGgaOZNb19Q
+        3ApsiXB9htOK6EKt6KVqRA==
+X-Google-Smtp-Source: ABdhPJwE+bqEac4f3wM8AlVwnQRJLKAVkJx8XhPsguZt8wv7uHc9/LrC6MgxM35EmhAD4wDtwDAGKg==
+X-Received: by 2002:a5e:9519:: with SMTP id r25mr21081467ioj.199.1595879770589;
+        Mon, 27 Jul 2020 12:56:10 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id r2sm6613651ilc.58.2020.07.27.12.56.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 12:56:09 -0700 (PDT)
+Received: (nullmailer pid 777930 invoked by uid 1000);
+        Mon, 27 Jul 2020 19:56:06 -0000
+Date:   Mon, 27 Jul 2020 13:56:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Anup Patel <anup@brainfault.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Emil Renner Berhing <kernel@esmil.dk>,
+        linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v6 4/4] dt-bindings: timer: Add CLINT bindings
+Message-ID: <20200727195606.GA777876@bogus>
+References: <20200724071822.126758-1-anup.patel@wdc.com>
+ <20200724071822.126758-5-anup.patel@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:9hfivm38n1X2xOxy/Suu/TO1CvJBOaht+YsoUaogoxU2UatFES1
- yLbIx7EiMtZhjackxSMSZoMYO8ABl6QCTeqHGkykO4ApN3mCjgRPNtF5RciMeU0EM69bu2S
- OynHPsgfDsivKrc6SkbIs2lGnk8XKXsRhl+4uLfUfNHrtcy3+v9xkwFnMQE9OzS6uLvjFKp
- swW30Q12/xmzaYP+eWX5Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ftS2pohcS44=:t9NtZstD6U5IboUkPoKZr/
- QuBjV/xi+EqWcbyOcIFWFIJshm/cxNM7FxtJVqjAEhnD7O6LpxKq+JP2unecoONFokTC9S/OJ
- i/c7U6pwvgTY3kKrTFX1W1pakuXJDBp7a1pG2vLzpFnSjX4xnBbuzh+faqGUWc8IJibbQoEdh
- LWfZmkWq05eCeDlIh5KZfCrurarxASSPuC/NCyew/ivYUDVO0WWidbXEOayMN4/4BUZDM2TlJ
- tgrCDVfcjCgVoDm/Qk6a8u4q1cliB2st7gdtzwE3BMG/0ox4Peas6AkUKi0B547p1lS9/NP2p
- MmgulaBcXD5d3ocSibBiBm47Bsb8DiGRnZDMzsyh+GzLGZ5wXJ0EisQmrRyvXoT7oQIC5/Npi
- v1WliQ5cnNwWolvZ4gVt0HmDo0ltEju1iuPARcgiXmhOdhw1SzjeDXoVc64YbZ35odewz6gCP
- R4wyfUjVGtArz4SIGpVFpB8jmsaW04Q1hvenZiREgEpEmY/ULOwyT6lbZ4zB6kwnU3yY8OxLT
- MWGP+4tQlQxNUJ08rUazkVbxEBuy1NNkjDcAUsBc+jatGsGqfBlpsCVy+GL1BRUqUWrBp3kpJ
- hLjnU6dB9a0CHOcmyCy5y3LLX/xmF7KP5zbdvw/GODMLhbY3RJ9z44e2CzB/1PnMo9Iz4LMCG
- +DdMSfslEQNb2AJaFC9zWBQJycwowss57O1tPSrkT2EWhdXU6AzMELjhyHZIt6AflaciqxCcx
- aKnumUXOBrUtxhy3yC7GZGJ+MZt2t6mdKzwZAkKWj99YmjUTEVJ3Ys0JMzsfVKw7tl9zq4r/T
- AccI7JgKavL12PVXGy1R5pu4lf3SztPcBEmVnuKGcPaf9pWFdu2AhmRiGXzIAxDbT6dhJRK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724071822.126758-5-anup.patel@wdc.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 09:14 -0500, Bjorn Helgaas wrote:
-> I don't know the connection between ASPM and package C-states, so I
-> need to simplify this even more.  All I want to do right now is
-> verify
-> that if we don't have any outside influences on the ASPM
-> configuration
-> (eg, no manual changes and no udev rules), it stays the same across
-> suspend/resume.
-
-Basically this started from me observing deep package C-states weren't
-being used, until I went and fiddled with the ASPM state of the
-rtsx_pci card reader under sysfs -- so phenomenological poking on my
-part.
-
-> So let's read the ASPM state directly from the
-> hardware like this:
+On Fri, 24 Jul 2020 12:48:22 +0530, Anup Patel wrote:
+> We add DT bindings documentation for CLINT device.
 > 
->   sudo lspci -vvs 00:1d.0 | egrep "^0|Lnk|L1|LTR|snoop"
->   sudo lspci -vvs 01:00   | egrep "^0|Lnk|L1|LTR|snoop"
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> Tested-by: Emil Renner Berhing <kernel@esmil.dk>
+> ---
+>  .../bindings/timer/sifive,clint.yaml          | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/sifive,clint.yaml
 > 
-> Can you try that before and after suspend/resume?
 
-I've attached these to the bugzilla entry at:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=208117
-
-Spoiler: With no udev rules or suspend hooks, things are the same
-before and after suspend/resume. One thing I do see (both before and
-after) is that ASPM L0s and L1 is enabled for the card reader, but
-disabled for the ethernet chip (does r8169 fiddle with ASPM too?).
-
-[Oddly when I set ASPM (e.g. using udev) the lspci tools show ASPM
-enabled after a suspend/resume, but still no deep package C-states
-until I manually fiddle via sysfs on the card reader. Sorry if this
-only muddies the water further!]
-
-Thanks,
--James
-
-
-
+Reviewed-by: Rob Herring <robh@kernel.org>
