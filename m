@@ -2,91 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B2D22E610
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379DD22E62D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgG0Guq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 02:50:46 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:50362 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726116AbgG0Guq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 02:50:46 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 020D2A30C70C8211127B;
-        Mon, 27 Jul 2020 14:50:44 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Mon, 27 Jul 2020
- 14:50:41 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <haren@us.ibm.com>, <herbert@gondor.apana.org.au>,
-        <ddstreet@ieee.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] lib: Verify array index is correct before using it
-Date:   Mon, 27 Jul 2020 02:59:10 -0400
-Message-ID: <20200727065910.1628-1-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.104.82]
-X-CFilter-Loop: Reflected
+        id S1726911AbgG0G7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 02:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbgG0G7w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 02:59:52 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DDAC0619D2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 23:59:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i62so19648941ybc.15
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Jul 2020 23:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9/YSwprGE0WZwSWfXLYVy6V0Ah3OoUpnPGrBV/LRITA=;
+        b=m+fTHaAj0JPw3ABBmUnN46A5mmPLHkTVVyZ8suMxXp+vWgocvuwn2YhFNGm88lQUDF
+         0Ipw8hhTQmjl6srPRoA77U8pFkle0oyTVg9q7efUVULis+4aPAbpcNJYLgXjR9pGks2K
+         0yFv71jR8JqgC1y6376PhYUd0wsXPulqQ2fYvCwRvvx2kEDQ4bGhIi38ppg63XRYKsli
+         OJhjdpysVbe0efevbEozHhMUjOoKKqsfe9ptDyWa9vwKUoCod/akcOxXjLKP3GmfnlNp
+         F82cjKtzMvkUKQvUWJk48FIhA3xTcb0HP6tKvdZlrtDtw2WZeBIBXmTLt5yDgVbYCM8A
+         abNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9/YSwprGE0WZwSWfXLYVy6V0Ah3OoUpnPGrBV/LRITA=;
+        b=JtQp+fXM/WPuiSyF9K4W0ASjVPdDAZ0TYaIujw7rYwnoXQOkWoZiuhMotN0zV28Rkv
+         lLD4d0s95Rjbr+62NPf5/CpP1kbTfM2uG+grNy1MzSJ2OH7iTWfC5dAZp5pv12KUy0cA
+         3378UvWtsxCeSn9Gzt32T7tGDvz6H3rKeJI/nB6NS78TWSy4SQeBjp7SQh8MOh5yDBxb
+         YRMhxev8kCQVFYMC49ui5+LP0RgUzzLpecUQc3P03VWHeWgZPLGzxTbQYASF/A2KEiCj
+         smn3nk/xpaJVfWbzAd88YgiSyCGkBwEsGy5SLj98Ewp3qVfeMwZZOEhD90NpIdJszSGP
+         vJ8g==
+X-Gm-Message-State: AOAM532lMc3X8kUjAwEiCiTbw5hqGp2iiyeTxnGzjgLbKtndOLXtWpKL
+        /bXfDhhydoem1Do5HDQpntVrpu2FEcO8
+X-Google-Smtp-Source: ABdhPJz7ZE9JX1xcuL6ggGjeX4GY2EfS6ZQVKaFpFeKXbWp8rV2g56PwdJo+OYTDl/0xDoD2QJjN04vRVhCC
+X-Received: by 2002:a5b:14a:: with SMTP id c10mr32329689ybp.493.1595833191601;
+ Sun, 26 Jul 2020 23:59:51 -0700 (PDT)
+Date:   Sun, 26 Jul 2020 23:59:48 -0700
+Message-Id: <20200727065948.12201-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+Subject: [PATCH] perf record: Set PERF_RECORD_SAMPLE if attr->freq is set.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        David Sharp <dhsharp@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code reads from the array before verifying that "c" is a valid
-index. Move test array offset code before use to fix it.
+From: David Sharp <dhsharp@google.com>
 
-Fixes: 2da572c959dd ("lib: add software 842 compression/decompression")
-Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
+evsel__config() would only set PERF_RECORD_SAMPLE if it set attr->freq
+from perf record options. When it is set by libpfm events, it would not
+get set. This changes evsel__config to see if attr->freq is set outside of
+whether or not it changes attr->freq itself.
+
+Signed-off-by: David Sharp <dhsharp@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- lib/842/842_compress.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ tools/perf/util/evsel.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/lib/842/842_compress.c b/lib/842/842_compress.c
-index c02baa4168e1..c37bfe0b9346 100644
---- a/lib/842/842_compress.c
-+++ b/lib/842/842_compress.c
-@@ -11,6 +11,7 @@
- #define MODULE_NAME "842_compress"
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index ef802f6d40c1..811f538f7d77 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -979,13 +979,18 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+ 	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+ 				     opts->user_interval != ULLONG_MAX)) {
+ 		if (opts->freq) {
+-			evsel__set_sample_bit(evsel, PERIOD);
+ 			attr->freq		= 1;
+ 			attr->sample_freq	= opts->freq;
+ 		} else {
+ 			attr->sample_period = opts->default_interval;
+ 		}
+ 	}
++	/*
++	 * If attr->freq was set (here or earlier), ask for period
++	 * to be sampled.
++	 */
++	if (attr->freq)
++		evsel__set_sample_bit(evsel, PERIOD);
  
- #include <linux/hashtable.h>
-+#include <linux/nospec.h>
- 
- #include "842.h"
- #include "842_debugfs.h"
-@@ -222,12 +223,14 @@ static int add_bits(struct sw842_param *p, u64 d, u8 n)
- static int add_template(struct sw842_param *p, u8 c)
- {
- 	int ret, i, b = 0;
--	u8 *t = comp_ops[c];
-+	u8 *t = NULL;
- 	bool inv = false;
- 
- 	if (c >= OPS_MAX)
- 		return -EINVAL;
-+	c = array_index_nospec(c, OPS_MAX);
- 
-+	t = comp_ops[c];
- 	pr_debug("template %x\n", t[4]);
- 
- 	ret = add_bits(p, t[4], OP_BITS);
-@@ -379,12 +382,14 @@ static int add_end_template(struct sw842_param *p)
- 
- static bool check_template(struct sw842_param *p, u8 c)
- {
--	u8 *t = comp_ops[c];
-+	u8 *t = NULL;
- 	int i, match, b = 0;
- 
- 	if (c >= OPS_MAX)
- 		return false;
-+	c = array_index_nospec(c, OPS_MAX);
- 
-+	t = comp_ops[c];
- 	for (i = 0; i < 4; i++) {
- 		if (t[i] & OP_ACTION_INDEX) {
- 			if (t[i] & OP_AMOUNT_2)
+ 	if (opts->no_samples)
+ 		attr->sample_freq = 0;
 -- 
-2.17.1
+2.28.0.rc0.142.g3c755180ce-goog
 
