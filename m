@@ -2,144 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF6422F4E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A16B22F491
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731611AbgG0QS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:18:28 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39798 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731648AbgG0QSM (ORCPT
+        id S1731311AbgG0QQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:16:37 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:14046 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726728AbgG0QQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:18:12 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 025CE296D3C
-Message-ID: <e49635b95db0e295a85f1be9a3909f7f29495e3a.camel@collabora.com>
-Subject: Re: [PATCH 08/10] media: uapi: h264: Clean slice invariants syntax
- elements
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Mon, 27 Jul 2020 13:18:02 -0300
-In-Reply-To: <CAAFQd5DVfroAXRw+OT=EktDtVzRjPZYxnUS8daWQ5=3LLwn=SA@mail.gmail.com>
-References: <20200715202233.185680-1-ezequiel@collabora.com>
-         <20200715202233.185680-9-ezequiel@collabora.com>
-         <CAPBb6MVMXeTcUfb-98McYCKjh=eM=BTo2dSY=L1c6dv2jHqXcg@mail.gmail.com>
-         <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
-         <CAAFQd5DVfroAXRw+OT=EktDtVzRjPZYxnUS8daWQ5=3LLwn=SA@mail.gmail.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Mon, 27 Jul 2020 12:16:35 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RG7wf5019076;
+        Mon, 27 Jul 2020 12:16:34 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 32ghn5eykm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Jul 2020 12:16:32 -0400
+Received: from SCSQMBX11.ad.analog.com (scsqmbx11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 06RGGVwN050426
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Mon, 27 Jul 2020 12:16:31 -0400
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 27 Jul 2020 09:16:29 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 27 Jul 2020 09:16:17 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Mon, 27 Jul 2020 09:16:29 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06RGGShh009603;
+        Mon, 27 Jul 2020 12:16:28 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>
+Subject: [PATCH v7 0/9] hwmon: pmbus: adm1266: add support
+Date:   Mon, 27 Jul 2020 19:18:05 +0300
+Message-ID: <20200727161814.14076-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-27_11:2020-07-27,2020-07-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007270111
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 16:52 +0200, Tomasz Figa wrote:
-> On Mon, Jul 27, 2020 at 4:39 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > Hi Alexandre,
-> > 
-> > Thanks a lot for the review.
-> > 
-> > On Sat, 2020-07-25 at 23:34 +0900, Alexandre Courbot wrote:
-> > > On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > > > The H.264 specification requires in its "Slice header semantics"
-> > > > section that the following values shall be the same in all slice headers:
-> > > > 
-> > > >   pic_parameter_set_id
-> > > >   frame_num
-> > > >   field_pic_flag
-> > > >   bottom_field_flag
-> > > >   idr_pic_id
-> > > >   pic_order_cnt_lsb
-> > > >   delta_pic_order_cnt_bottom
-> > > >   delta_pic_order_cnt[ 0 ]
-> > > >   delta_pic_order_cnt[ 1 ]
-> > > >   sp_for_switch_flag
-> > > >   slice_group_change_cycle
-> > > > 
-> > > > and can therefore be moved to the per-frame decode parameters control.
-> > > 
-> > > I am really not a H.264 expert, so this question may not be relevant,
-> > 
-> > All questions are welcome. I'm more than happy to discuss this patchset.
-> > 
-> > > but are these values specified for every slice header in the
-> > > bitstream, or are they specified only once per frame?
-> > > 
-> > > I am asking this because it would certainly make user-space code
-> > > simpler if we could remain as close to the bitstream as possible. If
-> > > these values are specified once per slice, then factorizing them would
-> > > leave user-space with the burden of deciding what to do if they change
-> > > across slices.
-> > > 
-> > > Note that this is a double-edged sword, because it is not necessarily
-> > > better to leave the firmware in charge of deciding what to do in such
-> > > a case. :) So hopefully these are only specified once per frame in the
-> > > bitstream, in which case your proposal makes complete sense.
-> > 
-> > Frame-based hardwares accelerators such as Hantro and Rockchip VDEC
-> > are doing the slice header parsing themselves. Therefore, the
-> > driver is not really parsing these fields on each slice header.
-> > 
-> > Currently, we are already using only the first slice in a frame,
-> > as you can see from:
-> > 
-> >         if (slices[0].flags & V4L2_H264_SLICE_FLAG_FIELD_PIC)
-> >                 reg |= G1_REG_DEC_CTRL0_PIC_FIELDMODE_E;
-> > 
-> > Even if these fields are transported in the slice header,
-> > I think it makes sense for us to split them into the decode params
-> > (per-frame) control.
-> > 
-> > They are really specified to be the same across all slices,
-> > so even I'd say if a bitstream violates this, it's likely
-> > either a corrupted bitstream or an encoder bug.
-> > 
-> > OTOH, one thing this makes me realize is that the slice params control
-> > is wrongly specified as an array.
-> 
-> It is _not_.
-> 
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-We introduced the hold capture buffer specifically to support
-this without having a slice array.
+Add PMBus probing driver for the adm1266 Cascadable
+Super Sequencer with Margin Control and Fault Recording.
+Driver is using the pmbus_core, creating sysfs files
+under hwmon for inputs: vh1->vh4 and vp1->vp13.
 
-I don't think we have a plan to support this control properly
-as an array.
+1. Add PMBus probing driver for inputs vh1->vh4
+and vp1->vp13.
 
-If we decide to support the slice control as an array,
-we would have to implement a mechanism to specify the array size,
-which we currently don't have AFAIK.
+2. Add Block Write-Read Process Call command.
+A PMBus specific implementation was required because
+block write with I2C_SMBUS_PROC_CALL flag allows a
+maximum of 32 bytes to be received.
 
-> > Namely, this text
-> > should be removed:
-> > 
-> >        This structure is expected to be passed as an array, with one
-> >        entry for each slice included in the bitstream buffer.
-> > 
-> > As the API is really not defined that way.
-> > 
-> > I'll remove that on next iteration.
-> 
-> The v4l2_ctrl_h264_slice_params struct has more data than those that
-> are deemed to be the same across all the slices. A remarkable example
-> are the size and start_byte_offset fields.
+3. This makes adm1266 driver expose GPIOs
+to user-space. Currently are read only. Future
+developments on the firmware will allow
+them to be writable.
 
-Not sure how this applies to this discussion.
+4. Allow the current sate of the sequencer to be read
+through debugfs.
 
-Thanks!
-Ezequiel
+5. Blackboxes are 64 bytes of chip state related data
+that is generated on faults. Use the nvmem kernel api
+to expose the blackbox chip functionality to userspace.
+
+6. Add group command support. This will allow the driver
+to stop/program all cascaded adm1266 devices at once.
+
+7. Writing the firmware hex file with offset 0
+to the nvmem of the master adm1266 will trigger
+the firmware programming of all cascaded devices.
+The master adm1266 of each device is specified in
+the devicetree.
+
+8. Writing the configuration hex file to 0x30000
+byte address of the nvmem file will trigger the
+programming of that device in particular.
+
+9. DT bindings for ADM1266.
+
+Alexandru Tachici (9):
+  hwmon: pmbus: adm1266: add support
+  hwmon: pmbus: adm1266: Add Block process call
+  hwmon: pmbus: adm1266: Add support for GPIOs
+  hwmon: pmbus: adm1266: add debugfs for states
+  hwmon: pmbus: adm1266: read blackbox
+  hwmon: pmbus: adm1266: Add group command support
+  hwmon: pmbus: adm1266: program firmware
+  hwmon: pmbus: adm1266: program configuration
+  dt-bindings: hwmon: Add bindings for ADM1266
+
+Changelog: v5 -> v6:
+  - added adm1266 to index.rst
+  - changed max lines length from 80 to 100
+  - replaced i2c_get_dma_safe_msg_buf with the use of kzalloc and ____cacheline_aligned
+  - removed #ifdef CONFIG_GPIOLIB
+  - removed ioctl commands, the state of the device can be read through debugfs
+  - use the device managed version of nvmem_register
+  - on power-up, set the UNIX time to adm1266 (this value is reset
+  to 0 on each power-cycle).
+  - removed patch adm1266: debugfs for blackbox info, rtc in blackbox is enough
+  to help identify the current index
+  - added two new nvmem cells for firmware and configuration
+
+Changelog: v6 -> v7:
+  - fixed compilation warning: removed unused variable ,entry, in
+adm1266_init_debugfs
+
+ .../bindings/hwmon/adi,adm1266.yaml           |   56 +
+ Documentation/hwmon/adm1266.rst               |   37 +
+ Documentation/hwmon/index.rst                 |    1 +
+ drivers/hwmon/pmbus/Kconfig                   |   10 +
+ drivers/hwmon/pmbus/Makefile                  |    1 +
+ drivers/hwmon/pmbus/adm1266.c                 | 1272 +++++++++++++++++
+ 6 files changed, 1377 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
+ create mode 100644 Documentation/hwmon/adm1266.rst
+ create mode 100644 drivers/hwmon/pmbus/adm1266.c
+
+-- 
+2.20.1
 
