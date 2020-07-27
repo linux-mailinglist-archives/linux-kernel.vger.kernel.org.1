@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A99222F175
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C2F22F173
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730556AbgG0Oc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46824 "EHLO mail.kernel.org"
+        id S1732846AbgG0OcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:32:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731334AbgG0OTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:19:00 -0400
+        id S1730406AbgG0OTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:19:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 128BA2070A;
-        Mon, 27 Jul 2020 14:18:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03AD020775;
+        Mon, 27 Jul 2020 14:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859540;
-        bh=E9kOmYvx3YB9KGGH3MDEv+MFY5zgfWQoOjXQAr6Pwbo=;
+        s=default; t=1595859552;
+        bh=GAFcz6VMhCl4x1qHq3sS9k3Cf5CjbBVOHTbT3FSCZ9s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gcBlrFhxWlkSHBUcpT58Z8jGw68PrJSDjzW5bFAufGO2J446J63v9+tbov0iVgXQG
-         GMOqHN5+o6eKsO8GC0+iLjyvuvbRdhjHe1eqa8KLB0YkTdDWSKjT6fjNfz0FdXHUkK
-         p+R2iSBYnDa/Tapw62SEP2eXDV91E3WlpQn+CdQY=
+        b=qifkfn3AjvJ1KHOMBhHG8nrWhBDVYb01Rqa2hc9BQ3QpsItHvjN0hbxJAbFEz64+r
+         gewkA4Yos29Bjb5th47buwpdqd+phDFBl2gieVwL5JSJCh1jrk7iNZldFRZcmeRH9t
+         9KiyOS9esKLlIaaBB8ipfzJe1hwEtNR734ulXUJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        stable@vger.kernel.org, Damien Le Moal <damien.lemoal@wdc.com>,
         Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 010/179] scsi: mpt3sas: Fix unlock imbalance
-Date:   Mon, 27 Jul 2020 16:03:05 +0200
-Message-Id: <20200727134933.176852512@linuxfoundation.org>
+Subject: [PATCH 5.7 015/179] scsi: mpt3sas: Fix error returns in BRM_status_show
+Date:   Mon, 27 Jul 2020 16:03:10 +0200
+Message-Id: <20200727134933.416219782@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
 References: <20200727134932.659499757@linuxfoundation.org>
@@ -47,80 +46,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Damien Le Moal <damien.lemoal@wdc.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit cb551b8dc079d2ef189145782627c99cb68c0255 ]
+[ Upstream commit 0fd181456aa0826057adbfb6c79c40f4083cfd75 ]
 
-In BRM_status_show(), if the condition "!ioc->is_warpdrive" tested on entry
-to the function is true, a "goto out" is called. This results in unlocking
-ioc->pci_access_mutex without this mutex lock being taken.  This generates
-the following splat:
+BRM_status_show() has several error branches, but none of them record the
+error in the error return.
 
-[ 1148.539883] mpt3sas_cm2: BRM_status_show: BRM attribute is only for warpdrive
-[ 1148.547184]
-[ 1148.548708] =====================================
-[ 1148.553501] WARNING: bad unlock balance detected!
-[ 1148.558277] 5.8.0-rc3+ #827 Not tainted
-[ 1148.562183] -------------------------------------
-[ 1148.566959] cat/5008 is trying to release lock (&ioc->pci_access_mutex) at:
-[ 1148.574035] [<ffffffffc070b7a3>] BRM_status_show+0xd3/0x100 [mpt3sas]
-[ 1148.580574] but there are no more locks to release!
-[ 1148.585524]
-[ 1148.585524] other info that might help us debug this:
-[ 1148.599624] 3 locks held by cat/5008:
-[ 1148.607085]  #0: ffff92aea3e392c0 (&p->lock){+.+.}-{3:3}, at: seq_read+0x34/0x480
-[ 1148.618509]  #1: ffff922ef14c4888 (&of->mutex){+.+.}-{3:3}, at: kernfs_seq_start+0x2a/0xb0
-[ 1148.630729]  #2: ffff92aedb5d7310 (kn->active#224){.+.+}-{0:0}, at: kernfs_seq_start+0x32/0xb0
-[ 1148.643347]
-[ 1148.643347] stack backtrace:
-[ 1148.655259] CPU: 73 PID: 5008 Comm: cat Not tainted 5.8.0-rc3+ #827
-[ 1148.665309] Hardware name: HGST H4060-S/S2600STB, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-[ 1148.678394] Call Trace:
-[ 1148.684750]  dump_stack+0x78/0xa0
-[ 1148.691802]  lock_release.cold+0x45/0x4a
-[ 1148.699451]  __mutex_unlock_slowpath+0x35/0x270
-[ 1148.707675]  BRM_status_show+0xd3/0x100 [mpt3sas]
-[ 1148.716092]  dev_attr_show+0x19/0x40
-[ 1148.723664]  sysfs_kf_seq_show+0x87/0x100
-[ 1148.731193]  seq_read+0xbc/0x480
-[ 1148.737882]  vfs_read+0xa0/0x160
-[ 1148.744514]  ksys_read+0x58/0xd0
-[ 1148.751129]  do_syscall_64+0x4c/0xa0
-[ 1148.757941]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 1148.766240] RIP: 0033:0x7f1230566542
-[ 1148.772957] Code: Bad RIP value.
-[ 1148.779206] RSP: 002b:00007ffeac1bcac8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[ 1148.790063] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007f1230566542
-[ 1148.800284] RDX: 0000000000020000 RSI: 00007f1223460000 RDI: 0000000000000003
-[ 1148.810474] RBP: 00007f1223460000 R08: 00007f122345f010 R09: 0000000000000000
-[ 1148.820641] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000000000
-[ 1148.830728] R13: 0000000000000003 R14: 0000000000020000 R15: 0000000000020000
+Also while at it remove the manual mutex_unlock() of the pci_access_mutex
+in case of an ongoing pci error recovery or host removal and jump to the
+cleanup label instead.
 
-Fix this by returning immediately instead of jumping to the out label.
+Note: We can safely jump to out from here as io_unit_pg3 is initialized to
+NULL and if it hasn't been allocated, kfree() skips the NULL pointer.
 
-Link: https://lore.kernel.org/r/20200701085254.51740-1-damien.lemoal@wdc.com
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+[mkp: compilation warning]
+
+Link: https://lore.kernel.org/r/20200701131454.5255-1-johannes.thumshirn@wdc.com
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
 Acked-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_ctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-index 62e552838565f..e94e72de2fc68 100644
+index e94e72de2fc68..983e568ff2317 100644
 --- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
 +++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -3145,7 +3145,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
- 	if (!ioc->is_warpdrive) {
- 		ioc_err(ioc, "%s: BRM attribute is only for warpdrive\n",
- 			__func__);
--		goto out;
-+		return 0;
+@@ -3149,15 +3149,14 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
  	}
  	/* pci_access_mutex lock acquired by sysfs show path */
  	mutex_lock(&ioc->pci_access_mutex);
+-	if (ioc->pci_error_recovery || ioc->remove_host) {
+-		mutex_unlock(&ioc->pci_access_mutex);
+-		return 0;
+-	}
++	if (ioc->pci_error_recovery || ioc->remove_host)
++		goto out;
+ 
+ 	/* allocate upto GPIOVal 36 entries */
+ 	sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
+ 	io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
+ 	if (!io_unit_pg3) {
++		rc = -ENOMEM;
+ 		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
+ 			__func__, sz);
+ 		goto out;
+@@ -3167,6 +3166,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ 	    0) {
+ 		ioc_err(ioc, "%s: failed reading iounit_pg3\n",
+ 			__func__);
++		rc = -EINVAL;
+ 		goto out;
+ 	}
+ 
+@@ -3174,12 +3174,14 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ 	if (ioc_status != MPI2_IOCSTATUS_SUCCESS) {
+ 		ioc_err(ioc, "%s: iounit_pg3 failed with ioc_status(0x%04x)\n",
+ 			__func__, ioc_status);
++		rc = -EINVAL;
+ 		goto out;
+ 	}
+ 
+ 	if (io_unit_pg3->GPIOCount < 25) {
+ 		ioc_err(ioc, "%s: iounit_pg3->GPIOCount less than 25 entries, detected (%d) entries\n",
+ 			__func__, io_unit_pg3->GPIOCount);
++		rc = -EINVAL;
+ 		goto out;
+ 	}
+ 
 -- 
 2.25.1
 
