@@ -2,246 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473C822E803
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD01722E836
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 10:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbgG0Imk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 04:42:40 -0400
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:1649 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbgG0Imh (ORCPT
+        id S1726769AbgG0IwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 04:52:10 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:50531 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726302AbgG0IwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 04:42:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1595839357;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=2o9INdDVMeRMpvPPdJXUmq8eiLdRA5WJoeGCeiRGYrU=;
-  b=F73vK9BpepB+vPl+d+c78bY95pYqIU0GVLtohWw9kd+zjMGX069bJmnQ
-   Tj1gfvPmyVUcTQSTAGykOb3Ic7D05uNr9RgV088pGbCuZ5SItOVLut+wm
-   36ktWWWOeHylGtp9Ij9Vy5lRvzK69PN1JMfHxiR+Ae39mBOpufYtNuBao
-   k=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: Yca7UCFJpaeOVZ9HKKhOTpqfBIiKAriZvcgYQaPo0HE6fOZZvkR2AsF9VPPYu+epj83BLXOj3k
- gl4P3yNaDa+q84isI/NKLZRu5XiC5bGaEOEF3FTgoj+iZcb/ix9957FLQMorJuzTQAIMY4mlrr
- +Np4yzWrMWMuXFxxLOYqckYRLVib17RgIt6eFK+1pbXrqnh8A0gbggdDiPM/afSmih9XF5fKrg
- wxNMorQafr287qc0Qw8RptqovfS5+FeO5tPZwpnc2Guobc2FdC+j1QTLSlRwnKGOD1mALt5D0y
- MwQ=
-X-SBRS: 2.7
-X-MesageID: 23253209
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.75,402,1589256000"; 
-   d="scan'208";a="23253209"
-Date:   Mon, 27 Jul 2020 10:42:16 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-CC:     David Hildenbrand <david@redhat.com>,
-        <linux-kernel@vger.kernel.org>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Wei Liu <wl@xen.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        "Yan Yankovskyi" <yyankovskyi@gmail.com>,
-        <dri-devel@lists.freedesktop.org>,
-        "Michal Hocko" <mhocko@kernel.org>, <linux-mm@kvack.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <xen-devel@lists.xenproject.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2 4/4] xen: add helpers to allocate unpopulated memory
-Message-ID: <20200727084216.GO7191@Air-de-Roger>
-References: <20200724124241.48208-1-roger.pau@citrix.com>
- <20200724124241.48208-5-roger.pau@citrix.com>
- <1778c97f-3a69-8280-141c-879814dd213f@redhat.com>
- <1fd1d29e-5c10-0c29-0628-b79807f81de6@oracle.com>
+        Mon, 27 Jul 2020 04:52:09 -0400
+X-UUID: 4faa5b68767544c988f8a5078b80dc23-20200727
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=q34zqKlfJT1egqrpS4Z0LW4UkZCQFjyQJ1hrO1Kt++w=;
+        b=jdh9vUaEP2PlzjKm/2oker36hCtrU4F+ZAjB2yirdFYudZ0SNBA/h8ra30CPxk0Ue1jRLD4gswLnpoiX55DNLLt/CyNcWkR7bbJP6M7fWkjviEmKFUfhgUhXzYw5KnBSmjHDkaW1c8U96XW23RwYiLj5bdomeApnwD0X0MVlMbg=;
+X-UUID: 4faa5b68767544c988f8a5078b80dc23-20200727
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <chao.hao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1620473155; Mon, 27 Jul 2020 16:52:02 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 27 Jul 2020 16:51:59 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 27 Jul 2020 16:51:58 +0800
+Message-ID: <1595839778.2350.4.camel@mbjsdccf07>
+Subject: Re: [PATCH 11/21] iommu/mediatek: Add power-domain operation
+From:   chao hao <Chao.Hao@mediatek.com>
+To:     Yong Wu <yong.wu@mediatek.com>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <youlin.pei@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <cui.zhang@mediatek.com>,
+        <ming-fan.chen@mediatek.com>, chao hao <"Chao. Hao"@mediatek.com>
+Date:   Mon, 27 Jul 2020 16:49:38 +0800
+In-Reply-To: <20200711064846.16007-12-yong.wu@mediatek.com>
+References: <20200711064846.16007-1-yong.wu@mediatek.com>
+         <20200711064846.16007-12-yong.wu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1fd1d29e-5c10-0c29-0628-b79807f81de6@oracle.com>
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 12:36:33PM -0400, Boris Ostrovsky wrote:
-> On 7/24/20 10:34 AM, David Hildenbrand wrote:
-> > CCing Dan
-> >
-> > On 24.07.20 14:42, Roger Pau Monne wrote:
-> >> +
-> >> +#include <linux/errno.h>
-> >> +#include <linux/gfp.h>
-> >> +#include <linux/kernel.h>
-> >> +#include <linux/mm.h>
-> >> +#include <linux/memremap.h>
-> >> +#include <linux/slab.h>
-> >> +
-> >> +#include <asm/page.h>
-> >> +
-> >> +#include <xen/page.h>
-> >> +#include <xen/xen.h>
-> >> +
-> >> +static DEFINE_MUTEX(lock);
-> >> +static LIST_HEAD(list);
-> >> +static unsigned int count;
-> >> +
-> >> +static int fill(unsigned int nr_pages)
-> 
-> 
-> Less generic names? How about  list_lock, pg_list, pg_count,
-> fill_pglist()? (But these are bad too, so maybe you can come up with
-> something better)
+T24gU2F0LCAyMDIwLTA3LTExIGF0IDE0OjQ4ICswODAwLCBZb25nIFd1IHdyb3RlOg0KPiBJbiB0
+aGUgcHJldmlvdXMgU29DLCB0aGUgTTRVIEhXIGlzIGluIHRoZSBFTUkgcG93ZXIgZG9tYWluIHdo
+aWNoIGlzDQo+IGFsd2F5cyBvbi4gdGhlIGxhdGVzdCBNNFUgaXMgaW4gdGhlIGRpc3BsYXkgcG93
+ZXIgZG9tYWluIHdoaWNoIG1heSBiZQ0KPiB0dXJuZWQgb24vb2ZmLCB0aHVzIHdlIGhhdmUgdG8g
+YWRkIHBtX3J1bnRpbWUgaW50ZXJmYWNlIGZvciBpdC4NCj4gDQo+IHdlIHNob3VsZCBlbmFibGUg
+aXRzIHBvd2VyIGJlZm9yZSBNNFUgaHcgaW5pdGlhbC4gYW5kIGRpc2FibGUgaXQgYWZ0ZXIgSFcN
+Cj4gaW5pdGlhbGl6ZS4NCj4gDQo+IFdoZW4gdGhlIGVuZ2luZSB3b3JrLCB0aGUgZW5naW5lIGFs
+d2F5cyBlbmFibGUgdGhlIHBvd2VyIGFuZCBjbG9ja3MgZm9yDQo+IHNtaS1sYXJiL3NtaS1jb21t
+b24sIHRoZW4gdGhlIE00VSdzIHBvd2VyIHdpbGwgYWx3YXlzIGJlIHBvd2VyZWQgb24NCj4gYXV0
+b21hdGljYWxseSB2aWEgdGhlIGRldmljZSBsaW5rIHdpdGggc21pLWNvbW1vbi4NCj4gDQo+IE5v
+dGU6IHdlIGRvbid0IGVuYWJsZSB0aGUgTTRVIHBvd2VyIGluIGlvbW11X21hcC91bm1hcCBmb3Ig
+dGxiIGZsdXNoLg0KPiBJZiBpdHMgcG93ZXIgYWxyZWFkeSBpcyBvbiwgb2YgY291cnNlIGl0IGlz
+IG9rLiBpZiB0aGUgcG93ZXIgaXMgb2ZmLA0KPiB0aGUgbWFpbiB0bGIgd2lsbCBiZSByZXNldCB3
+aGlsZSBNNFUgcG93ZXIgb24sIHRodXMgdGhlIHRsYiBmbHVzaCB3aGlsZQ0KPiBtNHUgcG93ZXIg
+b2ZmIGlzIHVubmVjZXNzYXJ5LCBqdXN0IHNraXAgaXQuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZ
+b25nIFd1IDx5b25nLnd1QG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2lvbW11L210
+a19pb21tdS5jIHwgNTQgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tDQo+
+ICAxIGZpbGUgY2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgNyBkZWxldGlvbnMoLSkNCj4gDQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lvbW11L210a19pb21tdS5jIGIvZHJpdmVycy9pb21tdS9t
+dGtfaW9tbXUuYw0KPiBpbmRleCA5MzFmZGQxOWM4ZjMuLjAzYTZkNjZmNGJlZiAxMDA2NDQNCj4g
+LS0tIGEvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiArKysgYi9kcml2ZXJzL2lvbW11L210
+a19pb21tdS5jDQo+IEBAIC0yMCw2ICsyMCw3IEBADQo+ICAjaW5jbHVkZSA8bGludXgvb2ZfaXJx
+Lmg+DQo+ICAjaW5jbHVkZSA8bGludXgvb2ZfcGxhdGZvcm0uaD4NCj4gICNpbmNsdWRlIDxsaW51
+eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9wbV9ydW50aW1lLmg+DQo+
+ICAjaW5jbHVkZSA8bGludXgvc2xhYi5oPg0KPiAgI2luY2x1ZGUgPGxpbnV4L3NwaW5sb2NrLmg+
+DQo+ICAjaW5jbHVkZSA8YXNtL2JhcnJpZXIuaD4NCj4gQEAgLTE3Miw2ICsxNzMsMTkgQEAgc3Rh
+dGljIHN0cnVjdCBtdGtfaW9tbXVfZG9tYWluICp0b19tdGtfZG9tYWluKHN0cnVjdCBpb21tdV9k
+b21haW4gKmRvbSkNCj4gIAlyZXR1cm4gY29udGFpbmVyX29mKGRvbSwgc3RydWN0IG10a19pb21t
+dV9kb21haW4sIGRvbWFpbik7DQo+ICB9DQo+ICANCj4gK3N0YXRpYyBpbnQgbXRrX2lvbW11X3Jw
+bV9nZXQoc3RydWN0IGRldmljZSAqZGV2KQ0KPiArew0KPiArCWlmIChwbV9ydW50aW1lX2VuYWJs
+ZWQoZGV2KSkNCj4gKwkJcmV0dXJuIHBtX3J1bnRpbWVfZ2V0X3N5bmMoZGV2KTsNCj4gKwlyZXR1
+cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGljIHZvaWQgbXRrX2lvbW11X3JwbV9wdXQoc3RydWN0
+IGRldmljZSAqZGV2KQ0KPiArew0KPiArCWlmIChwbV9ydW50aW1lX2VuYWJsZWQoZGV2KSkNCj4g
+KwkJcG1fcnVudGltZV9wdXRfYXV0b3N1c3BlbmQoZGV2KTsNCj4gK30NCj4gKw0KPiAgc3RhdGlj
+IHZvaWQgbXRrX2lvbW11X3RsYl9mbHVzaF9hbGwodm9pZCAqY29va2llKQ0KPiAgew0KPiAgCXN0
+cnVjdCBtdGtfaW9tbXVfZGF0YSAqZGF0YSA9IGNvb2tpZTsNCj4gQEAgLTE5Myw2ICsyMDcsMTEg
+QEAgc3RhdGljIHZvaWQgbXRrX2lvbW11X3RsYl9mbHVzaF9yYW5nZV9zeW5jKHVuc2lnbmVkIGxv
+bmcgaW92YSwgc2l6ZV90IHNpemUsDQo+ICAJdTMyIHRtcDsNCj4gIA0KPiAgCWZvcl9lYWNoX200
+dShkYXRhKSB7DQo+ICsJCS8qIHNraXAgdGxiIGZsdXNoIHdoZW4gcG0gaXMgbm90IGFjdGl2ZSAq
+Lw0KPiArCQlpZiAocG1fcnVudGltZV9lbmFibGVkKGRhdGEtPmRldikgJiYNCj4gKwkJICAgICFw
+bV9ydW50aW1lX2FjdGl2ZShkYXRhLT5kZXYpKQ0KPiArCQkJY29udGludWU7DQo+ICsNCj4gIAkJ
+c3Bpbl9sb2NrX2lycXNhdmUoJmRhdGEtPnRsYl9sb2NrLCBmbGFncyk7DQo+ICAJCXdyaXRlbF9y
+ZWxheGVkKEZfSU5WTERfRU4xIHwgRl9JTlZMRF9FTjAsDQo+ICAJCQkgICAgICAgZGF0YS0+YmFz
+ZSArIGRhdGEtPnBsYXRfZGF0YS0+aW52X3NlbF9yZWcpOw0KPiBAQCAtMzc3LDE1ICszOTYsMjAg
+QEAgc3RhdGljIGludCBtdGtfaW9tbXVfYXR0YWNoX2RldmljZShzdHJ1Y3QgaW9tbXVfZG9tYWlu
+ICpkb21haW4sDQo+ICB7DQo+ICAJc3RydWN0IG10a19pb21tdV9kYXRhICpkYXRhID0gZGV2X2lv
+bW11X3ByaXZfZ2V0KGRldik7DQo+ICAJc3RydWN0IG10a19pb21tdV9kb21haW4gKmRvbSA9IHRv
+X210a19kb21haW4oZG9tYWluKTsNCj4gKwlpbnQgcmV0Ow0KPiAgDQo+ICAJaWYgKCFkYXRhKQ0K
+PiAgCQlyZXR1cm4gLUVOT0RFVjsNCj4gIA0KPiAgCS8qIFVwZGF0ZSB0aGUgcGd0YWJsZSBiYXNl
+IGFkZHJlc3MgcmVnaXN0ZXIgb2YgdGhlIE00VSBIVyAqLw0KPiAgCWlmICghZGF0YS0+bTR1X2Rv
+bSkgew0KPiArCQlyZXQgPSBtdGtfaW9tbXVfcnBtX2dldChkZXYpOw0KPiArCQlpZiAocmV0IDwg
+MCkNCj4gKwkJCXJldHVybiByZXQ7DQo+ICAJCWRhdGEtPm00dV9kb20gPSBkb207DQo+ICAJCXdy
+aXRlbChkb20tPmNmZy5hcm1fdjdzX2NmZy50dGJyICYgTU1VX1BUX0FERFJfTUFTSywNCj4gIAkJ
+ICAgICAgIGRhdGEtPmJhc2UgKyBSRUdfTU1VX1BUX0JBU0VfQUREUik7DQo+ICsJCW10a19pb21t
+dV9ycG1fcHV0KGRldik7DQo+ICAJfQ0KPiAgDQo+ICAJbXRrX2lvbW11X2NvbmZpZyhkYXRhLCBk
+ZXYsIHRydWUpOw0KPiBAQCAtNTQzLDEwICs1NjcsMTQgQEAgc3RhdGljIGludCBtdGtfaW9tbXVf
+aHdfaW5pdChjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGEpDQo+ICAJdTMyIHJlZ3Zh
+bDsNCj4gIAlpbnQgcmV0Ow0KPiAgDQo+IC0JcmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKGRhdGEt
+PmJjbGspOw0KPiAtCWlmIChyZXQpIHsNCj4gLQkJZGV2X2VycihkYXRhLT5kZXYsICJGYWlsZWQg
+dG8gZW5hYmxlIGlvbW11IGJjbGsoJWQpXG4iLCByZXQpOw0KPiAtCQlyZXR1cm4gcmV0Ow0KPiAr
+CS8qIGJjbGsgd2lsbCBiZSBlbmFibGVkIGluIHBtIGNhbGxiYWNrIGluIHBvd2VyLWRvbWFpbiBj
+YXNlLiAqLw0KPiArCWlmICghcG1fcnVudGltZV9lbmFibGVkKGRhdGEtPmRldikpIHsNCj4gKwkJ
+cmV0ID0gY2xrX3ByZXBhcmVfZW5hYmxlKGRhdGEtPmJjbGspOw0KPiArCQlpZiAocmV0KSB7DQo+
+ICsJCQlkZXZfZXJyKGRhdGEtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgaW9tbXUgYmNsayglZClc
+biIsDQo+ICsJCQkJcmV0KTsNCj4gKwkJCXJldHVybiByZXQ7DQo+ICsJCX0NCj4gIAl9DQo+ICAN
+Cj4gIAlpZiAoZGF0YS0+cGxhdF9kYXRhLT5tNHVfcGxhdCA9PSBNNFVfTVQ4MTczKSB7DQo+IEBA
+IC03MjgsNyArNzU2LDE1IEBAIHN0YXRpYyBpbnQgbXRrX2lvbW11X3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICANCj4gIAlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBk
+YXRhKTsNCj4gIA0KPiArCWlmIChkZXYtPnBtX2RvbWFpbikNCj4gKwkJcG1fcnVudGltZV9lbmFi
+bGUoZGV2KTsNCg0KaGkgeW9uZywNCg0KSWYgeW91IHB1dCAicG1fcnVudGltZV9lbmFibGUiIGhl
+cmUsIGl0IG1heWJlIG5vdCBkZXZpY2VfbGluayB3aXRoDQpzbWlfY29tbW9uIGZvciBwcmV2aW91
+cyBwYXRjaDogDQppZihpIHx8ICFwbV9ydW50aW1lX2VuYWJsZWQoZGV2KSkNCiAgICBjb250aW51
+ZTsNCg0KV2hldGhlciBwdXQgaXQgdXAgZnJvbnQ/DQoNCmJlc3QgcmVnYXJkcywNCmNoYW8NCg0K
+PiArDQo+ICsJcmV0ID0gbXRrX2lvbW11X3JwbV9nZXQoZGV2KTsNCj4gKwlpZiAocmV0IDwgMCkN
+Cj4gKwkJcmV0dXJuIHJldDsNCj4gKw0KPiAgCXJldCA9IG10a19pb21tdV9od19pbml0KGRhdGEp
+Ow0KPiArCW10a19pb21tdV9ycG1fcHV0KGRldik7DQo+ICAJaWYgKHJldCkNCj4gIAkJcmV0dXJu
+IHJldDsNCj4gIA0KPiBAQCAtODAxLDYgKzgzNywxMCBAQCBzdGF0aWMgaW50IF9fbWF5YmVfdW51
+c2VkIG10a19pb21tdV9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KQ0KPiAgCQlkZXZfZXJyKGRh
+dGEtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgY2xrKCVkKSBpbiByZXN1bWVcbiIsIHJldCk7DQo+
+ICAJCXJldHVybiByZXQ7DQo+ICAJfQ0KPiArDQo+ICsJLyogQXZvaWQgZmlyc3QgcmVzdW1lIHRv
+IGFmZmVjdCB0aGUgZGVmYXVsdCB2YWx1ZSBvZiByZWdpc3RlcnMgYmVsb3cuICovDQo+ICsJaWYg
+KCFtNHVfZG9tKQ0KPiArCQlyZXR1cm4gMDsNCj4gIAl3cml0ZWxfcmVsYXhlZChyZWctPndyX2xl
+bl9jdHJsLCBiYXNlICsgUkVHX01NVV9XUl9MRU5fQ1RSTCk7DQo+ICAJd3JpdGVsX3JlbGF4ZWQo
+cmVnLT5taXNjX2N0cmwsIGJhc2UgKyBSRUdfTU1VX01JU0NfQ1RSTCk7DQo+ICAJd3JpdGVsX3Jl
+bGF4ZWQocmVnLT5kY21fZGlzLCBiYXNlICsgUkVHX01NVV9EQ01fRElTKTsNCj4gQEAgLTgwOSwx
+MyArODQ5LDEzIEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQgbXRrX2lvbW11X3Jlc3VtZShz
+dHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICAJd3JpdGVsX3JlbGF4ZWQocmVnLT5pbnRfbWFpbl9jb250
+cm9sLCBiYXNlICsgUkVHX01NVV9JTlRfTUFJTl9DT05UUk9MKTsNCj4gIAl3cml0ZWxfcmVsYXhl
+ZChyZWctPml2cnBfcGFkZHIsIGJhc2UgKyBSRUdfTU1VX0lWUlBfUEFERFIpOw0KPiAgCXdyaXRl
+bF9yZWxheGVkKHJlZy0+dmxkX3BhX3JuZywgYmFzZSArIFJFR19NTVVfVkxEX1BBX1JORyk7DQo+
+IC0JaWYgKG00dV9kb20pDQo+IC0JCXdyaXRlbChtNHVfZG9tLT5jZmcuYXJtX3Y3c19jZmcudHRi
+ciAmIE1NVV9QVF9BRERSX01BU0ssDQo+IC0JCSAgICAgICBiYXNlICsgUkVHX01NVV9QVF9CQVNF
+X0FERFIpOw0KPiArCXdyaXRlbChtNHVfZG9tLT5jZmcuYXJtX3Y3c19jZmcudHRiciAmIE1NVV9Q
+VF9BRERSX01BU0ssDQo+ICsJICAgICAgIGJhc2UgKyBSRUdfTU1VX1BUX0JBU0VfQUREUik7DQo+
+ICAJcmV0dXJuIDA7DQo+ICB9DQo+ICANCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZGV2X3BtX29w
+cyBtdGtfaW9tbXVfcG1fb3BzID0gew0KPiArCVNFVF9SVU5USU1FX1BNX09QUyhtdGtfaW9tbXVf
+c3VzcGVuZCwgbXRrX2lvbW11X3Jlc3VtZSwgTlVMTCkNCj4gIAlTRVRfTk9JUlFfU1lTVEVNX1NM
+RUVQX1BNX09QUyhtdGtfaW9tbXVfc3VzcGVuZCwgbXRrX2lvbW11X3Jlc3VtZSkNCj4gIH07DQo+
+ICANCg0K
 
-OK, I have to admit I like using such short names when the code allows
-to, for example this code is so simple that it didn't seem to warrant
-using longer names. Will rename on next version.
-
-> >> +{
-> >> +	struct dev_pagemap *pgmap;
-> >> +	void *vaddr;
-> >> +	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
-> >> +	int nid, ret;
-> >> +
-> >> +	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
-> >> +	if (!pgmap)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	pgmap->type = MEMORY_DEVICE_DEVDAX;
-> >> +	pgmap->res.name = "XEN SCRATCH";
-> 
-> 
-> Typically iomem resources only capitalize first letters.
-> 
-> 
-> >> +	pgmap->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
-> >> +
-> >> +	ret = allocate_resource(&iomem_resource, &pgmap->res,
-> >> +				alloc_pages * PAGE_SIZE, 0, -1,
-> >> +				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
-> 
-> 
-> Are we not going to end up with a whole bunch of "Xen scratch" resource
-> ranges for each miss in the page list? Or do we expect them to get merged?
-
-PAGES_PER_SECTION is IMO big enough to prevent ending up with a lot of
-separated ranges. I think the value is 32 or 64MiB on x86, so while we
-are likely to end up with more than one resource added, I don't think
-it's going to be massive.
-
-> 
-> >> +	if (ret < 0) {
-> >> +		pr_err("Cannot allocate new IOMEM resource\n");
-> >> +		kfree(pgmap);
-> >> +		return ret;
-> >> +	}
-> >> +
-> >> +	nid = memory_add_physaddr_to_nid(pgmap->res.start);
-> 
-> 
-> Should we consider page range crossing node boundaries?
-
-I'm not sure whether this is possible (I would think allocate_resource
-should return a range from a single node), but then it would greatly
-complicate the code to perform the memremap_pages, as we would have to
-split the region into multiple dev_pagemap structs.
-
-FWIW the current code in the balloon driver does exactly the same
-(which doesn't mean it's correct, but that's where I got the logic
-from).
-
-> >> +
-> >> +#ifdef CONFIG_XEN_HAVE_PVMMU
-> >> +	/*
-> >> +	 * We don't support PV MMU when Linux and Xen is using
-> >> +	 * different page granularity.
-> >> +	 */
-> >> +	BUILD_BUG_ON(XEN_PAGE_SIZE != PAGE_SIZE);
-> >> +
-> >> +        /*
-> >> +         * memremap will build page tables for the new memory so
-> >> +         * the p2m must contain invalid entries so the correct
-> >> +         * non-present PTEs will be written.
-> >> +         *
-> >> +         * If a failure occurs, the original (identity) p2m entries
-> >> +         * are not restored since this region is now known not to
-> >> +         * conflict with any devices.
-> >> +         */
-> >> +	if (!xen_feature(XENFEAT_auto_translated_physmap)) {
-> >> +		xen_pfn_t pfn = PFN_DOWN(pgmap->res.start);
-> >> +
-> >> +		for (i = 0; i < alloc_pages; i++) {
-> >> +			if (!set_phys_to_machine(pfn + i, INVALID_P2M_ENTRY)) {
-> >> +				pr_warn("set_phys_to_machine() failed, no memory added\n");
-> >> +				release_resource(&pgmap->res);
-> >> +				kfree(pgmap);
-> >> +				return -ENOMEM;
-> >> +			}
-> >> +                }
-> >> +	}
-> >> +#endif
-> >> +
-> >> +	vaddr = memremap_pages(pgmap, nid);
-> >> +	if (IS_ERR(vaddr)) {
-> >> +		pr_err("Cannot remap memory range\n");
-> >> +		release_resource(&pgmap->res);
-> >> +		kfree(pgmap);
-> >> +		return PTR_ERR(vaddr);
-> >> +	}
-> >> +
-> >> +	for (i = 0; i < alloc_pages; i++) {
-> >> +		struct page *pg = virt_to_page(vaddr + PAGE_SIZE * i);
-> >> +
-> >> +		BUG_ON(!virt_addr_valid(vaddr + PAGE_SIZE * i));
-> >> +		list_add(&pg->lru, &list);
-> >> +		count++;
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +/**
-> >> + * xen_alloc_unpopulated_pages - alloc unpopulated pages
-> >> + * @nr_pages: Number of pages
-> >> + * @pages: pages returned
-> >> + * @return 0 on success, error otherwise
-> >> + */
-> >> +int xen_alloc_unpopulated_pages(unsigned int nr_pages, struct page **pages)
-> >> +{
-> >> +	unsigned int i;
-> >> +	int ret = 0;
-> >> +
-> >> +	mutex_lock(&lock);
-> >> +	if (count < nr_pages) {
-> >> +		ret = fill(nr_pages);
-> 
-> 
-> (nr_pages - count) ?
-
-Yup, already fixed as Juergen also pointed it out.
-
-> >> +
-> >> +#ifdef CONFIG_XEN_PV
-> >> +static int __init init(void)
-> >> +{
-> >> +	unsigned int i;
-> >> +
-> >> +	if (!xen_domain())
-> >> +		return -ENODEV;
-> >> +
-> >> +	/*
-> >> +	 * Initialize with pages from the extra memory regions (see
-> >> +	 * arch/x86/xen/setup.c).
-> >> +	 */
-> 
-> 
-> This loop will be executing only for PV guests so we can just bail out
-> for non-PV guests here.
-
-Sure.
-
-Thanks, Roger.
