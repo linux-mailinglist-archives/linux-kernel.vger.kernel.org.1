@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F20D22EEDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CCD22EF95
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730019AbgG0OLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34878 "EHLO mail.kernel.org"
+        id S1731056AbgG0OR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:17:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730000AbgG0OLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:11:20 -0400
+        id S1731019AbgG0ORR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:17:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6683320838;
-        Mon, 27 Jul 2020 14:11:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74FD020825;
+        Mon, 27 Jul 2020 14:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859079;
-        bh=LQsZh6B58xYbN7fyPaEnUzMa5mwNfHfmclnKpLJfYHA=;
+        s=default; t=1595859437;
+        bh=aR6hq68g+JgW0/2Rfx8A0TFHFTFCCggYO2Jse4nyR7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FuAnH93yNM9DktwidoUmLfyOqWb1WKVGUlsaAvnYxN2ZuCm6uyF6QUzBWkz/AuFGT
-         ywYFdOYKtk4ci4sXEZY+rXx1TaloP2G1+iRHLcXtW6pa4uT8RqSHyGceU0Ev4kzOwd
-         uiP0yvL8ZnRdD8tvHk6wueBv4VZhAxRmGaLcoA+Y=
+        b=DDL5ZX2QpjvVsgaOvZmCUxgl9xE6h/EWSqpc33cbv46CZa1TRKCmIWHz5eitM2ubf
+         nGzhhxuP+BrZO8PnJ2gL/MX3pD3ceUExc3EBzW79iKXa0+v+CeXc7FTanzWdNkrON+
+         q4imOx0l72Au1mF5jg03yanntThdp5M+/YRs3vLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        stable@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 58/86] arm64: Use test_tsk_thread_flag() for checking TIF_SINGLESTEP
+Subject: [PATCH 5.4 077/138] ARM: dts: n900: remove mmc1 card detect gpio
 Date:   Mon, 27 Jul 2020 16:04:32 +0200
-Message-Id: <20200727134917.345507336@linuxfoundation.org>
+Message-Id: <20200727134929.235445900@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +47,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Merlijn Wajer <merlijn@wizzup.org>
 
-[ Upstream commit 5afc78551bf5d53279036e0bf63314e35631d79f ]
+[ Upstream commit ed3e98e919aaaa47e9d9f8a40c3f6f4a22577842 ]
 
-Rather than open-code test_tsk_thread_flag() at each callsite, simply
-replace the couple of offenders with calls to test_tsk_thread_flag()
-directly.
+Instead, expose the key via the input framework, as SW_MACHINE_COVER
 
-Signed-off-by: Will Deacon <will@kernel.org>
+The chip-detect GPIO is actually detecting if the cover is closed.
+Technically it's possible to use the SD card with open cover. The
+only downside is risk of battery falling out and user being able
+to physically remove the card.
+
+The behaviour of SD card not being available when the device is
+open is unexpected and creates more problems than it solves. There
+is a high chance, that more people accidentally break their rootfs
+by opening the case without physically removing the card.
+
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Merlijn Wajer <merlijn@wizzup.org>
+Link: https://lore.kernel.org/r/20200612125402.18393-3-merlijn@wizzup.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/debug-monitors.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/omap3-n900.dts | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-index 93ee34dee9f22..501e835c65007 100644
---- a/arch/arm64/kernel/debug-monitors.c
-+++ b/arch/arm64/kernel/debug-monitors.c
-@@ -392,14 +392,14 @@ void user_rewind_single_step(struct task_struct *task)
- 	 * If single step is active for this thread, then set SPSR.SS
- 	 * to 1 to avoid returning to the active-pending state.
- 	 */
--	if (test_ti_thread_flag(task_thread_info(task), TIF_SINGLESTEP))
-+	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
- 		set_regs_spsr_ss(task_pt_regs(task));
- }
- NOKPROBE_SYMBOL(user_rewind_single_step);
+diff --git a/arch/arm/boot/dts/omap3-n900.dts b/arch/arm/boot/dts/omap3-n900.dts
+index 7f2ddb78da5fa..4227da71cc626 100644
+--- a/arch/arm/boot/dts/omap3-n900.dts
++++ b/arch/arm/boot/dts/omap3-n900.dts
+@@ -105,6 +105,14 @@
+ 			linux,code = <SW_FRONT_PROXIMITY>;
+ 			linux,can-disable;
+ 		};
++
++		machine_cover {
++			label = "Machine Cover";
++			gpios = <&gpio6 0 GPIO_ACTIVE_LOW>; /* 160 */
++			linux,input-type = <EV_SW>;
++			linux,code = <SW_MACHINE_COVER>;
++			linux,can-disable;
++		};
+ 	};
  
- void user_fastforward_single_step(struct task_struct *task)
- {
--	if (test_ti_thread_flag(task_thread_info(task), TIF_SINGLESTEP))
-+	if (test_tsk_thread_flag(task, TIF_SINGLESTEP))
- 		clear_regs_spsr_ss(task_pt_regs(task));
- }
+ 	isp1707: isp1707 {
+@@ -814,10 +822,6 @@
+ 	pinctrl-0 = <&mmc1_pins>;
+ 	vmmc-supply = <&vmmc1>;
+ 	bus-width = <4>;
+-	/* For debugging, it is often good idea to remove this GPIO.
+-	   It means you can remove back cover (to reboot by removing
+-	   battery) and still use the MMC card. */
+-	cd-gpios = <&gpio6 0 GPIO_ACTIVE_LOW>; /* 160 */
+ };
  
+ /* most boards use vaux3, only some old versions use vmmc2 instead */
 -- 
 2.25.1
 
