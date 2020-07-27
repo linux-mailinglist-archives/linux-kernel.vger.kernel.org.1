@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BE122F7C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E555522F7E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 20:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730549AbgG0Seu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 14:34:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728313AbgG0Set (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 14:34:49 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1731070AbgG0SlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 14:41:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58137 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728424AbgG0SlJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 14:41:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595875268;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sXW4wIH6TKVJpwsY/Gv5v2EmllUcRHvd/yXgwriXB10=;
+        b=HXwoh2Er7QvidkCkD13MofqQUSVFQM+BP9oV/tBAJBBENknu5ah1veDa9dGVqoC8R/4hvn
+        qf9SY3yf7rUitMN3vDkdRRNkwOgEoWfLay9BV6CNy15EwLjctsGM+m6ipyDJff82V2Gnlb
+        hLwyYWTuz8JHp79EyqAl1ufXRwG6/js=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-teTdsiu6NcCTsZ5b6CfZJA-1; Mon, 27 Jul 2020 14:41:00 -0400
+X-MC-Unique: teTdsiu6NcCTsZ5b6CfZJA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D553C2073E;
-        Mon, 27 Jul 2020 18:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595874889;
-        bh=/6ecmPTwGZh0HJD/tKrVVhgyBKwRvNKRilfFJFLPLRE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Mtb29WVInF00AWMYet9071bMLwMc1bsrSW1JrvwTIsj+RmWjGJl91HIdr22gETFo6
-         s4POcfIJ32hclb45r3qWApFzDHS40NxNG1RuWZr8/3454dwt0cpo7B0BbaUnTp3iR1
-         A0pi0gACHHtUgWLt/ZS7/zi3lnFEH0cr3it5XzNs=
-Date:   Mon, 27 Jul 2020 13:40:42 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Manish Chopra <manishc@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] staging: qlge: Use fallthrough pseudo-keyword
-Message-ID: <20200727184042.GA29074@embeddedor>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB74A1DE2;
+        Mon, 27 Jul 2020 18:40:59 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-13.rdu2.redhat.com [10.10.115.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1AFAD10013C4;
+        Mon, 27 Jul 2020 18:40:54 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id A4750220264; Mon, 27 Jul 2020 14:40:53 -0400 (EDT)
+Date:   Mon, 27 Jul 2020 14:40:53 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com
+Subject: Re: [PATCH v4] kvm,x86: Exit to user space in case page fault error
+Message-ID: <20200727184053.GB39559@redhat.com>
+References: <20200720211359.GF502563@redhat.com>
+ <20200727135603.GA39559@redhat.com>
+ <87ft9dlz2b.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87ft9dlz2b.fsf@vitty.brq.redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1].
+On Mon, Jul 27, 2020 at 06:09:32PM +0200, Vitaly Kuznetsov wrote:
+> Vivek Goyal <vgoyal@redhat.com> writes:
+> 
+> > On Mon, Jul 20, 2020 at 05:13:59PM -0400, Vivek Goyal wrote:
+> >> Page fault error handling behavior in kvm seems little inconsistent when
+> >> page fault reports error. If we are doing fault synchronously
+> >> then we capture error (-EFAULT) returned by __gfn_to_pfn_memslot() and
+> >> exit to user space and qemu reports error, "error: kvm run failed Bad address".
+> >
+> > Hi Vitaly,
+> >
+> > A gentle reminder. How does this patch look now?
+> >
+> 
+> Sorry, I even reviewd it but never replied. It looks good to me!
+> 
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+Thanks Vitaly.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/staging/qlge/qlge_mpi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Paolo, what do you think about this patch. Do you have concerns with
+this. Can this be merged.
 
-diff --git a/drivers/staging/qlge/qlge_mpi.c b/drivers/staging/qlge/qlge_mpi.c
-index 94d504af84ff..e85c6ab538df 100644
---- a/drivers/staging/qlge/qlge_mpi.c
-+++ b/drivers/staging/qlge/qlge_mpi.c
-@@ -1174,7 +1174,7 @@ void ql_mpi_idc_work(struct work_struct *work)
- 	case MB_CMD_PORT_RESET:
- 	case MB_CMD_STOP_FW:
- 		ql_link_off(qdev);
--		/* Fall through */
-+		fallthrough;
- 	case MB_CMD_SET_PORT_CFG:
- 		/* Signal the resulting link up AEN
- 		 * that the frame routing and mac addr
-@@ -1207,7 +1207,7 @@ void ql_mpi_idc_work(struct work_struct *work)
- 		 */
- 		ql_link_off(qdev);
- 		set_bit(QL_CAM_RT_SET, &qdev->flags);
--		/* Fall through. */
-+		fallthrough;
- 	case MB_CMD_IOP_DVR_START:
- 	case MB_CMD_IOP_FLASH_ACC:
- 	case MB_CMD_IOP_CORE_DUMP_MPI:
--- 
-2.27.0
+Thanks
+Vivek
 
