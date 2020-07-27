@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0B822F68C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB8822F695
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730770AbgG0RZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:25:41 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:59595 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgG0RZk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:25:40 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MC2o9-1k5MDf3aZx-00COYp; Mon, 27 Jul 2020 19:25:39 +0200
-Received: by mail-qk1-f170.google.com with SMTP id 2so11868100qkf.10;
-        Mon, 27 Jul 2020 10:25:38 -0700 (PDT)
-X-Gm-Message-State: AOAM53133EXYITZmZGW14vx4amvBuI9bqNv3y8GMdxF943w3XFgZZ4ii
-        QaobYtlLaYT0WJh+8pLguWbn8ZgdeikONE4SRYk=
-X-Google-Smtp-Source: ABdhPJyHnciMJIel1lwAD5bow/zb/QGlp3YciXK2/NVdtnimMUPJo7yU6pZ4mJlHkwU8BKDS8Pa279r2z6tHPp7qb+M=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr23840011qkf.394.1595870737385;
- Mon, 27 Jul 2020 10:25:37 -0700 (PDT)
+        id S1730843AbgG0R0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 13:26:51 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2542 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726617AbgG0R0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:26:50 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 0CDD76F1B6A00EEE974C;
+        Mon, 27 Jul 2020 18:26:49 +0100 (IST)
+Received: from localhost (10.227.96.57) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 18:26:48 +0100
+Date:   Mon, 27 Jul 2020 18:26:47 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To:     Darius Berghe <darius.berghe@analog.com>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <jic23@kernel.org>, <robh@kernel.org>
+Subject: Re: [PATCH v3 2/3] ltc2471: ltc2461/ltc2463 compatible strings
+Message-ID: <20200727182647.00002e3c@huawei.com>
+In-Reply-To: <20200727135834.84093-3-darius.berghe@analog.com>
+References: <20200727135834.84093-1-darius.berghe@analog.com>
+        <20200727135834.84093-3-darius.berghe@analog.com>
+Organization: Huawei tech. R&D (UK)  Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20200727162935.31714-1-rppt@kernel.org> <20200727162935.31714-5-rppt@kernel.org>
-In-Reply-To: <20200727162935.31714-5-rppt@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 27 Jul 2020 19:25:20 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3Lbjdx_43-b0i1FXEfqaNPbaoXLraa2WikfPHrOZ6Kog@mail.gmail.com>
-Message-ID: <CAK8P3a3Lbjdx_43-b0i1FXEfqaNPbaoXLraa2WikfPHrOZ6Kog@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] arch, mm: wire up memfd_secret system call were relevant
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-nvdimm@lists.01.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:EceBZqwyo4B1UVEZn/Xgzc7AE01Hrl25zqNiNRQE1nSOWMZWle+
- g7N+PnXRbCSAMr0XnZ49UfT+iW8IunuS9TPM822G37AEvmA3W7in5ND1Ye/8UnvHrrPI383
- kEGT+CmwlBf7zuvI0Sxkpzl1sWD2ck3PNJ8qOBybMEfmYFG+9s9wlKoe6v/QgUZ1P6d1R0y
- H6Ut5jTjR1+YQzurNJp/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tC2Xp4XT5xY=:L/0NRMbXw9YElq6rjWLtqI
- 0Mr9VzUM7WLH9qn8aC+ng9oz0Sm/BE8sB2tVVg2loLmdQaSofHRMLqW5Y4pNJei7bc/dercWN
- Udlmt5WUOCU5zpzqvUwLUPFT1sF+o2a7pUVSA3ztLs1q3SQSiolebs104pJWejE1eanEdHu7h
- pAhPGDX0lgydu5PmjGhTyfOA8u60UZaG0ikMSmXVINfSK6/dGwD4fVJwwLUcNjdV1HKqQFsAz
- wPopjZsfVAljmtbwysL9ASZIYsxnDh+58NyIrxvgUsBHlBWS/2NqXJ+LFKj42LfOuycfr5IfT
- WxpeZ1lDMmGa+s6smQ5KisI2ySFTw6K5//f55QKlnKOakHMxaur1L1Ef7k+k+GOZPAu3QUwA4
- t8W299OnR0zZuJeJkGlWSA3Y7VfAIAIxe7nVI+nSLk7EakTipPaIfnOAX5/qMZjlyRKhNO4BI
- BH8MJ9WdtDzwQVfPL1vkRZmMy1eOT9G4EdhMn0GUm+fv59547if+HFv0N3b+biOXTql/861pT
- KHIzur9/Hbh+Yh+DJB2cE9PLgDdoAAjMk/cnxGxcvXXBv11dVaHYlwkWpZKM1inB91LtXdLLy
- RcD9NvwaM079xjiYEMzK10x5QNBWQbPw3/BgGFEC3hlmBdpws93U5bYzxakGXe+kPHcUuvRlC
- 8CDFQNf2US/HaGllrd7w+cF30C/4IzgboUYrmJagytrGukMNmGcW4NUyu3nfUkvTn2kDYAEvj
- i56M62rt8WzjSv5WG1rSSs9FrJ46Gh/iFbQQR0NCTmAPCDfvWcWTDQYuBOL4SqCzbNwnXTvJ7
- Kgy40VpSpa6qgmeZpTDKScN3kXt34wbCVeakSB3aZT6XILnzTAKiComYlrxspK0Fo6uZVWuH6
- vkzqNYYGpLawOe0Ip2Ef50B7uOKtHKYGNL/mKbZgdfm/V5w7QJrno9H2Fk4Fe6BqnQudOSvK7
- E3ALx286dghNqXnZ9IkRNbDxpAQ8CTsKB8F0EmYmxlKE74AA0CKlJ
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.227.96.57]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 6:30 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> From: Mike Rapoport <rppt@linux.ibm.com>
->
-> Wire up memfd_secret system call on architectures that define
-> ARCH_HAS_SET_DIRECT_MAP, namely arm64, risc-v and x86.
->
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+On Mon, 27 Jul 2020 16:58:33 +0300
+Darius Berghe <darius.berghe@analog.com> wrote:
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Add compatible strings for these devices in the existing ltc2471
+> driver.
+> 
+> Signed-off-by: Darius Berghe <darius.berghe@analog.com>
+
+Hi Darius,
+
+A few additional minor comments from me.
+
+> ---
+>  drivers/iio/adc/ltc2471.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ltc2471.c b/drivers/iio/adc/ltc2471.c
+> index e1c4e966524d..8c57203b1fe4 100644
+> --- a/drivers/iio/adc/ltc2471.c
+> +++ b/drivers/iio/adc/ltc2471.c
+> @@ -1,5 +1,7 @@
+>  /*
+> - * Driver for Linear Technology LTC2471 and LTC2473 voltage monitors
+> + * Driver for Linear Technology LTC2461, LTC2463, LTC2471 and LTC2473 voltage
+> + * monitors.
+> + * The LTC2463 is identical to the 2461, but reports a differential signal.
+>   * The LTC2473 is identical to the 2471, but reports a differential signal.
+>   *
+>   * Copyright (C) 2017 Topic Embedded Products
+> @@ -17,8 +19,10 @@
+>  #include <linux/mod_devicetable.h>
+>  
+>  enum ltc2471_chips {
+> +	ltc2461,
+> +	ltc2463,
+>  	ltc2471,
+> -	ltc2473,
+> +	ltc2473
+
+Why drop the comma?  We've just added two new devices. Seems possible there
+may be more in the future!
+
+>  };
+>  
+>  struct ltc2471_data {
+> @@ -122,7 +126,7 @@ static int ltc2471_i2c_probe(struct i2c_client *client,
+>  	indio_dev->name = id->name;
+>  	indio_dev->info = &ltc2471_info;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+> -	if (id->driver_data == ltc2473)
+> +	if (id->driver_data == ltc2473 || id->driver_data == ltc2463)
+If the only use of driver_data is going to be this check, then just set it
+to 2473 for the 2463 and 2473.  It's not uncommon to do this when we have
+a bunch of devices that look the same to software.
+
+>  		indio_dev->channels = ltc2473_channel;
+>  	else
+>  		indio_dev->channels = ltc2471_channel;
+> @@ -139,6 +143,8 @@ static int ltc2471_i2c_probe(struct i2c_client *client,
+>  }
+>  
+>  static const struct i2c_device_id ltc2471_i2c_id[] = {
+> +	{ "ltc2461", ltc2461 },
+> +	{ "ltc2463", ltc2463 },
+>  	{ "ltc2471", ltc2471 },
+>  	{ "ltc2473", ltc2473 },
+>  	{}
+> @@ -146,6 +152,8 @@ static const struct i2c_device_id ltc2471_i2c_id[] = {
+>  MODULE_DEVICE_TABLE(i2c, ltc2471_i2c_id);
+>  
+>  static const struct of_device_id ltc2471_of_match[] = {
+> +	{ .compatible = "adi,ltc2461" },
+> +	{ .compatible = "adi,ltc2463" },
+>  	{ .compatible = "adi,ltc2471" },
+>  	{ .compatible = "adi,ltc2473" },
+>  	{}
+> @@ -163,6 +171,6 @@ static struct i2c_driver ltc2471_i2c_driver = {
+>  
+>  module_i2c_driver(ltc2471_i2c_driver);
+>  
+> -MODULE_DESCRIPTION("LTC2471/LTC2473 ADC driver");
+> +MODULE_DESCRIPTION("LTC2461/LTC2463/LTC2471/LTC2473 ADC driver");
+>  MODULE_AUTHOR("Topic Embedded Products");
+>  MODULE_LICENSE("GPL v2");
+
