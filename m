@@ -2,129 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE6B22E5BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D6422E5BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 08:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgG0GIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 02:08:09 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:49077 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726272AbgG0GIJ (ORCPT
+        id S1726211AbgG0GOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 02:14:46 -0400
+Received: from smtprelay0011.hostedemail.com ([216.40.44.11]:36592 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726116AbgG0GOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 02:08:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595830089; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=SdcmaivCbgx/EWFdy+61EjwpmapmcsR2LcYkxL9I74c=; b=UcRTVpSt7wnn4VjhS8zqrxzEuUF5nHAGAs+W0LB2bp+fqUizrP0aHvEd8PqbJGifRwkBjQYR
- 56w8jz0B4fMqJUYLv211RhjOAYPesVfKJIjOnCAQ/PoEBZn5Jgc8ePmCPYZ86TUUpiS5iV2F
- WNyrri66snzG7vx7JUdNB/eruqk=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f1e6f31ca57a65d473553fc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 27 Jul 2020 06:07:45
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DD741C433A0; Mon, 27 Jul 2020 06:07:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8BE03C433CB;
-        Mon, 27 Jul 2020 06:07:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8BE03C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] coresight: etm4x: Fix etm4_count race using atomic variable
-Date:   Mon, 27 Jul 2020 11:37:28 +0530
-Message-Id: <20200727060728.15027-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 27 Jul 2020 02:14:46 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id BE710182CED5B;
+        Mon, 27 Jul 2020 06:14:44 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2902:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4321:4605:5007:7514:8531:10004:10400:10450:10455:11026:11232:11473:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:12986:13069:13255:13311:13357:13439:14093:14097:14181:14659:14721:19904:19999:21080:21433:21451:21627:21660:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: start73_170cec826f5f
+X-Filterd-Recvd-Size: 2345
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 27 Jul 2020 06:14:43 +0000 (UTC)
+Message-ID: <66bbaec73d8f69541535db5390c0f12b304c0467.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: disable commit log length check warning for
+ signature tag
+From:   Joe Perches <joe@perches.com>
+To:     Nachiket Naganure <nachiketun8@gmail.com>, apw@canonical.com,
+        lukas.bulwahn@gmail.com, skhan@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Sun, 26 Jul 2020 23:14:42 -0700
+In-Reply-To: <20200727055458.559558-1-nachiketun8@gmail.com>
+References: <20200727055458.559558-1-nachiketun8@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-etm4_count keeps track of number of ETMv4 registered and on some
-systems, a race is observed on etm4_count variable which can
-lead to multiple calls to cpuhp_setup_state_nocalls_cpuslocked().
-This function internally calls cpuhp_store_callbacks() which
-prevents multiple registrations of callbacks for a given state
-and due to this race, it returns -EBUSY leading to ETM probe
-failures like below.
+On Mon, 2020-07-27 at 11:24 +0530, Nachiket Naganure wrote:
+> Disable commit log length check in case of signature tag. If the commit
+> log line has valid signature tags such as "Reported-and-tested-by" with
+> more than 75 characters, suppress the long length warning.
+> 
+> For instance in commit ac854131d984 ("USB: core: Fix misleading driver bug
+> report"), the corresponding patch contains a "Reported by" tag line which
+> exceeds 75 chars. And there is no valid way to shorten the length.
+> 
+> Signed-off-by: Nachiket Naganure <nachiketun8@gmail.com>
+> ---
+>  scripts/checkpatch.pl | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 197436b20288..46237e9e0550 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -2806,6 +2806,8 @@ sub process {
+>  					# filename then :
+>  		      $line =~ /^\s*(?:Fixes:|Link:)/i ||
+>  					# A Fixes: or Link: line
+> +		      $line =~ /$signature_tags/ ||
+> +					# Check for signature_tags
+>  		      $commit_log_possible_stack_dump)) {
+>  			WARN("COMMIT_LOG_LONG_LINE",
+>  			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
 
- coresight-etm4x: probe of 7040000.etm failed with error -16
+OK, but the test should be:
 
-This race can easily be triggered with async probe by setting
-probe type as PROBE_PREFER_ASYNCHRONOUS and with ETM power
-management property "arm,coresight-loses-context-with-cpu".
+		      $line =~ /^\s*$signature_tags/ ||
 
-Prevent this race by converting etm4_count variable to atomic.
+so the line has to start with a signature and
+it won't match on signature tags in the middle
+of other content on the same line.
 
-Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup in probe() function")
-Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug state machine")
-Suggested-by: Mike Leach <mike.leach@linaro.org>
-(Mike: Rootcause and context for commit message)
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/hwtracing/coresight/coresight-etm4x.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index 6d7d2169bfb2..f256ea744c51 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -49,7 +49,7 @@ MODULE_PARM_DESC(pm_save_enable,
- 	"Save/restore state on power down: 1 = never, 2 = self-hosted");
- 
- /* The number of ETMv4 currently registered */
--static int etm4_count;
-+static atomic_t etm4_count;
- static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
- static void etm4_set_default_config(struct etmv4_config *config);
- static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
-@@ -1403,7 +1403,7 @@ static int etm4_pm_setup_cpuslocked(void)
- {
- 	int ret;
- 
--	if (etm4_count++)
-+	if (atomic_inc_return(&etm4_count))
- 		return 0;
- 
- 	ret = cpu_pm_register_notifier(&etm4_cpu_pm_nb);
-@@ -1434,13 +1434,13 @@ static int etm4_pm_setup_cpuslocked(void)
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
- 
- reduce_count:
--	--etm4_count;
-+	atomic_dec(&etm4_count);
- 	return ret;
- }
- 
- static void etm4_pm_clear(void)
- {
--	if (--etm4_count != 0)
-+	if (atomic_dec_return(&etm4_count) != 0)
- 		return;
- 
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
 
