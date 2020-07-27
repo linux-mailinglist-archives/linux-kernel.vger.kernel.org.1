@@ -2,130 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2206E22F644
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E7722F662
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 19:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgG0RMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 13:12:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728045AbgG0RMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 13:12:37 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B562206E7;
-        Mon, 27 Jul 2020 17:12:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595869956;
-        bh=WogOJT1SpSbDm9BIS5mq+VMEccrmGTd/fbEvNfTWPgM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lQ1Z9K59C8/AlkD1/eM/JwEqvlO7ySlctuRPoQqZ36nRK1Dy7JlBuq/54o4cIjEcD
-         cbn9dbymYVSeLmrss7+oAwKbKw0LEVhdVjYi0OVwO3tnBP+DzAKy8Wn2N0a0srie7z
-         DjhgZiDTdIYE3B13+xlYN3P1+D7OOQalV77YMcwg=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k06fy-00FNOn-Va; Mon, 27 Jul 2020 18:12:35 +0100
+        id S1730645AbgG0RQG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Jul 2020 13:16:06 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2540 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728021AbgG0RQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 13:16:06 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 8D3ED8F437775346153B;
+        Mon, 27 Jul 2020 18:16:04 +0100 (IST)
+Received: from localhost (10.52.121.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 27 Jul
+ 2020 18:16:04 +0100
+Date:   Mon, 27 Jul 2020 18:14:40 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Sean V Kelley <sean.v.kelley@intel.com>
+CC:     <bhelgaas@google.com>, <rjw@rjwysocki.net>, <tony.luck@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Subject: Re: [RFC PATCH 7/9] PCI/AER: Add RCEC AER handling
+Message-ID: <20200727181440.0000614a@Huawei.com>
+In-Reply-To: <6C5C96C5-0365-48A0-B623-1A4C0CE0D13E@intel.com>
+References: <20200724172223.145608-1-sean.v.kelley@intel.com>
+        <20200724172223.145608-8-sean.v.kelley@intel.com>
+        <20200727132252.0000644c@Huawei.com>
+        <6C5C96C5-0365-48A0-B623-1A4C0CE0D13E@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 27 Jul 2020 18:12:34 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Zhenyu Ye <yezhenyu2@huawei.com>
-Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        steven.price@arm.com, mark.rutland@arm.com, ascull@google.com,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org, arm@kernel.org,
-        xiexiangyou@huawei.com
-Subject: Re: [RESEND RFC PATCH v1] arm64: kvm: flush tlbs by range in
- unmap_stage2_range function
-In-Reply-To: <f74277fd-5af2-c46f-169f-c15a321165cd@huawei.com>
-References: <20200724134315.805-1-yezhenyu2@huawei.com>
- <5d54c860b3b4e7a98e4d53397e6424ae@kernel.org>
- <f74277fd-5af2-c46f-169f-c15a321165cd@huawei.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <fb4756b58892fbc2022cf1f5b9320c27@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yezhenyu2@huawei.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, steven.price@arm.com, mark.rutland@arm.com, ascull@google.com, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, arm@kernel.org, xiexiangyou@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.52.121.176]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zhenyu,
+On Mon, 27 Jul 2020 08:19:39 -0700
+Sean V Kelley <sean.v.kelley@intel.com> wrote:
 
-On 2020-07-27 15:51, Zhenyu Ye wrote:
-> Hi Marc,
+> On 27 Jul 2020, at 5:22, Jonathan Cameron wrote:
 > 
-> On 2020/7/26 1:40, Marc Zyngier wrote:
->> On 2020-07-24 14:43, Zhenyu Ye wrote:
->>> Now in unmap_stage2_range(), we flush tlbs one by one just after the
->>> corresponding pages cleared.  However, this may cause some 
->>> performance
->>> problems when the unmap range is very large (such as when the vm
->>> migration rollback, this may cause vm downtime too loog).
->> 
->> You keep resending this patch, but you don't give any numbers
->> that would back your assertion.
+> > On Fri, 24 Jul 2020 10:22:21 -0700
+> > Sean V Kelley <sean.v.kelley@intel.com> wrote:
+> >  
+> >> The Root Complex Event Collectors(RCEC) appear as peers to Root Ports
+> >> and also have the AER capability. So add RCEC support to the current 
+> >> AER
+> >> service driver and attach the AER service driver to the RCEC device.
+> >>
+> >> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+> >> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> >> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>  
+> >
+> > A few questions and comments for this patch.
+> >
+> > See inline.
+> >
+> > Jonathan
+> >
+> >  
+> >> ---
+> >>  drivers/pci/pcie/aer.c | 34 +++++++++++++++++++++++++++-------
+> >>  1 file changed, 27 insertions(+), 7 deletions(-)
+> >>
+> >> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+> >> index f1bf06be449e..7cc430c74c46 100644
+> >> --- a/drivers/pci/pcie/aer.c
+> >> +++ b/drivers/pci/pcie/aer.c
+> >> @@ -303,7 +303,7 @@ int pci_aer_raw_clear_status(struct pci_dev *dev)
+> >>  		return -EIO;
+> >>
+> >>  	port_type = pci_pcie_type(dev);
+> >> -	if (port_type == PCI_EXP_TYPE_ROOT_PORT) {
+> >> +	if (port_type == PCI_EXP_TYPE_ROOT_PORT || port_type == 
+> >> PCI_EXP_TYPE_RC_EC) {
+> >>  		pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &status);
+> >>  		pci_write_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, status);
+> >>  	}
+> >> @@ -389,6 +389,12 @@ void pci_aer_init(struct pci_dev *dev)
+> >>  	pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_ERR, sizeof(u32) * 
+> >> n);
+> >>
+> >>  	pci_aer_clear_status(dev);
+> >> +
+> >> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC) {
+> >> +		if (!pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC))
+> >> +			return;
+> >> +		pci_info(dev, "AER: RCEC CAP FOUND and cap_has_rtctl = %d\n", n);  
+> >
+> > It feels like failing to find an RC_EC extended cap in a RCEC deserved
+> > a nice strong error message.  Perhaps this isn't the right place to do 
+> > it
+> > though.  For that matter, why are we checking for it here?  
 > 
-> I have tested the downtime of vm migration rollback on arm64, and found
-> the downtime could even take up to 7s.  Then I traced the cost of
-> unmap_stage2_range() and found it could take a maximum of 1.2s.  The
-> vm configuration is as follows (with high memory pressure, the dirty
-> rate is about 500MB/s):
+> Sorry, I’ve left an in-development output in the code.  Will replace 
+> with a check with more meaningful output elsewhere.
 > 
->   <memory unit='GiB'>192</memory>
->   <vcpu placement='static'>48</vcpu>
->   <memoryBacking>
->     <hugepages>
->       <page size='1' unit='GiB' nodeset='0'/>
->     </hugepages>
->   </memoryBacking>
+> >  
+> >> +	}
+> >>  }
+> >>
+> >>  void pci_aer_exit(struct pci_dev *dev)
+> >> @@ -577,7 +583,8 @@ static umode_t aer_stats_attrs_are_visible(struct 
+> >> kobject *kobj,
+> >>  	if ((a == &dev_attr_aer_rootport_total_err_cor.attr ||
+> >>  	     a == &dev_attr_aer_rootport_total_err_fatal.attr ||
+> >>  	     a == &dev_attr_aer_rootport_total_err_nonfatal.attr) &&  
+> >
+> > It is a bit ugly to have these called rootport_total_err etc for the 
+> > rcec.
+> > Perhaps we should just add additional attributes to reflect we are 
+> > looking at
+> > an RCEC?  
+> 
+> I was trying to avoid any renaming to reduce churn as I did with my 
+> first patch for ACPI / CLX_OSC support.
+> Will take a look.
+> 
+> >  
+> >> -	    pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT)
+> >> +	    ((pci_pcie_type(pdev) != PCI_EXP_TYPE_ROOT_PORT) &&
+> >> +	    (pci_pcie_type(pdev) != PCI_EXP_TYPE_RC_EC)))
+> >>  		return 0;
+> >>
+> >>  	return a->mode;
+> >> @@ -894,7 +901,10 @@ static bool find_source_device(struct pci_dev 
+> >> *parent,
+> >>  	if (result)
+> >>  		return true;
+> >>
+> >> -	pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+> >> +	if (pci_pcie_type(parent) == PCI_EXP_TYPE_RC_EC)
+> >> +		pcie_walk_rcec(parent, find_device_iter, e_info);
+> >> +	else
+> >> +		pci_walk_bus(parent->subordinate, find_device_iter, e_info);
+> >>
+> >>  	if (!e_info->error_dev_num) {
+> >>  		pci_info(parent, "can't find device of ID%04x\n", e_info->id);
+> >> @@ -1030,6 +1040,7 @@ int aer_get_device_error_info(struct pci_dev 
+> >> *dev, struct aer_err_info *info)
+> >>  		if (!(info->status & ~info->mask))
+> >>  			return 0;
+> >>  	} else if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> >> +		   pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC ||
+> >>  	           pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM ||
+> >>  		   info->severity == AER_NONFATAL) {
+> >>
+> >> @@ -1182,6 +1193,8 @@ static int set_device_error_reporting(struct 
+> >> pci_dev *dev, void *data)
+> >>  	int type = pci_pcie_type(dev);
+> >>
+> >>  	if ((type == PCI_EXP_TYPE_ROOT_PORT) ||
+> >> +	    (type == PCI_EXP_TYPE_RC_EC) ||
+> >> +	    (type == PCI_EXP_TYPE_RC_END) ||  
+> >
+> > Why add RC_END here?  
+> 
+> I’m not clear on your question.  Errors can come from RCEC or RCiEPs.  
+> We still need to enable reporting by the RCiEPs.
 
-This means nothing to me, I'm afraid.
+I was curious to see that we need it in this code path for an RCiEP but
+not for a normal EP.  From a quick glance it looks like that is often
+done in the drivers for the EPs themselves rather than here.
 
 > 
-> After this patch applied, the cost of unmap_stage2_range() can reduce 
-> to
-> 16ms, and VM downtime can be less than 1s.
+> >  
+> >>  	    (type == PCI_EXP_TYPE_UPSTREAM) ||
+> >>  	    (type == PCI_EXP_TYPE_DOWNSTREAM)) {
+> >>  		if (enable)
+> >> @@ -1206,9 +1219,11 @@ static void 
+> >> set_downstream_devices_error_reporting(struct pci_dev *dev,
+> >>  {
+> >>  	set_device_error_reporting(dev, &enable);
+> >>
+> >> -	if (!dev->subordinate)
+> >> -		return;
+> >> -	pci_walk_bus(dev->subordinate, set_device_error_reporting, 
+> >> &enable);
+> >> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
+> >> +		pcie_walk_rcec(dev, set_device_error_reporting, &enable);
+> >> +	else if (dev->subordinate)
+> >> +		pci_walk_bus(dev->subordinate, set_device_error_reporting, 
+> >> &enable);
+> >> +
+> >>  }
+> >>
+> >>  /**
+> >> @@ -1306,6 +1321,11 @@ static int aer_probe(struct pcie_device *dev)
+> >>  	struct device *device = &dev->device;
+> >>  	struct pci_dev *port = dev->port;
+> >>
+> >> +	/* Limit to Root Ports or Root Complex Event Collectors */
+> >> +	if ((pci_pcie_type(port) != PCI_EXP_TYPE_RC_EC) &&
+> >> +	    (pci_pcie_type(port) != PCI_EXP_TYPE_ROOT_PORT))
+> >> +		return -ENODEV;
+> >> +
+> >>  	rpc = devm_kzalloc(device, sizeof(struct aer_rpc), GFP_KERNEL);
+> >>  	if (!rpc)
+> >>  		return -ENOMEM;
+> >> @@ -1362,7 +1382,7 @@ static pci_ers_result_t aer_root_reset(struct 
+> >> pci_dev *dev)
+> >>
+> >>  static struct pcie_port_service_driver aerdriver = {
+> >>  	.name		= "aer",
+> >> -	.port_type	= PCI_EXP_TYPE_ROOT_PORT,
+> >> +	.port_type	= PCIE_ANY_PORT,  
+> >
+> > Why this particular change?  Seems that is a lot wider than simply
+> > adding RCEC.  Obviously we'll then drop out in the aer_probe but it
+> > is still rather inelegant.  
 > 
-> The following figure shows a clear comparison:
+> In order to extend the service drivers to non-root-port devices (i.e., 
+> RCEC), the simple path appeared to only require setting the type to 
+> ANY_PORT and catching the needed types arriving in the probe.  Would you 
+> prefer extending to a type2?  I’m not sure how one is more elegant 
+> than another but open to that approach.  However, this seems to require 
+> less code perhaps and seems consistent with most ‘drop-out’ 
+> conditional patterns in the kernel.  The same applies to pme.
+
+I'd miss understood this bit.  It's fine as you have it here.
+
+Jonathan
+
 > 
-> 	      |	vm downtime  |	cost of unmap_stage2_range()
-> --------------+--------------+----------------------------------
-> before change |		7s   |		1200 ms
-> after  change |		1s   |		  16 ms
-> --------------+--------------+----------------------------------
-
-I don't see how you turn a 1.184s reduction into a 6s gain.
-Surely there is more to it than what you posted.
-
->>> +
->>> +    if ((end - start) >= 512 << (PAGE_SHIFT - 12)) {
->>> +        __tlbi(vmalls12e1is);
->> 
->> And what is this magic value based on? You don't even mention in the
->> commit log that you are taking this shortcut.
->> 
+> Thanks,
+> 
+> Sean
 > 
 > 
-> If the page num is bigger than 512, flush all tlbs of this vm to avoid
-> soft lock-ups on large TLB flushing ranges.  Just like what the
-> flush_tlb_range() does.
+> >  
+> >>  	.service	= PCIE_PORT_SERVICE_AER,
+> >>
+> >>  	.probe		= aer_probe,  
 
-I'm not sure this is applicable here, and it doesn't mean
-this is as good on other systems.
 
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
