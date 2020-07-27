@@ -2,63 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542C022F8EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889F022F8FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 21:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbgG0TVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 15:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        id S1728874AbgG0TZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 15:25:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728358AbgG0TVW (ORCPT
+        with ESMTP id S1727053AbgG0TZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 15:21:22 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF93FC061794;
-        Mon, 27 Jul 2020 12:21:21 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 1A2E512763AE2;
-        Mon, 27 Jul 2020 12:04:36 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 12:21:20 -0700 (PDT)
-Message-Id: <20200727.122120.336438917999066726.davem@davemloft.net>
-To:     m-karicheri2@ti.com
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        nsekhar@ti.com, grygorii.strashko@ti.com, vinicius.gomes@intel.com
-Subject: Re: [net-next v5 PATCH 0/7] Add PRP driver
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200722144022.15746-1-m-karicheri2@ti.com>
-References: <20200722144022.15746-1-m-karicheri2@ti.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Jul 2020 12:04:36 -0700 (PDT)
+        Mon, 27 Jul 2020 15:25:03 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3644FC061794;
+        Mon, 27 Jul 2020 12:25:03 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id l27so6005441oti.3;
+        Mon, 27 Jul 2020 12:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TkkaEaYrW9Ou9eLGe8+HDBCdjCYlztr1vWyVAlzywno=;
+        b=SvGuIUI84PASUgAtr463yZ2TI370rAkkKu4nXEOZa0xnBKuNVIrL/7Pnv+7hIl58eO
+         9zvJ+/ZsaX9Li5bsZFWxrMdB8w+P5tAGQV2eU/rzEzqAO4lqSr6dID2cfZigcaMm+lDZ
+         TW0sVICwCNyQjECeKoETHQoSAss6R600R+2bjrxd64hnO9rsr4f92BE6fZ7ciRHrW9q0
+         EI3jg8Er2NruG7tHUX8BSdqVckgK+fVfzzWumhzdeuJ+zH/a032kErTd98/bIIxg95XY
+         +nYHNUyMac+wDAoCAzZgHEIAVPX9c+WxZJ0zI0AbQi7d4AhdID/ZB+gjlLfWxSIwuSe+
+         H2SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TkkaEaYrW9Ou9eLGe8+HDBCdjCYlztr1vWyVAlzywno=;
+        b=la8ebMbHej02/KiVx7Qa3pUNcDShjUFDn8mPex1hUcDJe6Rfg9y9sLOus8UG9GzdfM
+         55AXtWMN5vdZAwR4ZUQBfdZDBgsTVjy2qA6w03Ilw5/UjrFL2GEdzaM7hED012yYIWXs
+         xlKwHRvzjWJphNSoGAIqI1orqj1JHZ9d2fcwNTlqJvYFzmCvXAsSNpakEhIhl/1N0sUD
+         tWU3NWCNgCa1FlbYtskYioFzKDeiDRxEWQd5RI0YBgB/1e++tl3YNb9pGcNWzUcIzpNn
+         fCRRQl4KmlowWPW6LFpjSdoG1Yf22MYxVfaOADV7aljZJ2pe43lqJywRwCuPJLqVicZQ
+         K1rA==
+X-Gm-Message-State: AOAM531sujewsb0FWcIQaSH01QFi2HgPWBJVmJgi5P/AuYDaZcORTTu/
+        U9PIsjC/CrMVEQrfgs0y/MCwnzAEprrOCyr1KUc=
+X-Google-Smtp-Source: ABdhPJzRZUVzK9YksuDYqiN9J56vcfGtqGCG5Fxl5KpmbaYPXsmczkfESbdsaOjpVHN6OLH4Dw6NEhxh+0pjO+hPDAc=
+X-Received: by 2002:a05:6830:1db5:: with SMTP id z21mr21943641oti.162.1595877902390;
+ Mon, 27 Jul 2020 12:25:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <xmqq5za8hpir.fsf@gitster.c.googlers.com>
+In-Reply-To: <xmqq5za8hpir.fsf@gitster.c.googlers.com>
+From:   Elijah Newren <newren@gmail.com>
+Date:   Mon, 27 Jul 2020 12:24:51 -0700
+Message-ID: <CABPp-BGVFKKm+n8wTN9dqbA6=HJSZ5m3bnG7fLZ5DGevXSXBAA@mail.gmail.com>
+Subject: [ANNOUNCE] git-filter-repo v2.28.0 (Was: Re: [ANNOUNCE] Git v2.28.0)
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     Git Mailing List <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Murali Karicheri <m-karicheri2@ti.com>
-Date: Wed, 22 Jul 2020 10:40:15 -0400
+Hi,
 
-> This series is dependent on the following patches sent out to
-> netdev list. All (1-3) are already merged to net/master as of
-> sending this, but not on the net-next master branch. So need
-> to apply them to net-next before applying this series. v3 of
-> the iproute2 patches can be merged to work with this series
-> as there are no updates since then.
-> 
-> [1] https://marc.info/?l=linux-netdev&m=159526378131542&w=2
-> [2] https://marc.info/?l=linux-netdev&m=159499772225350&w=2
-> [3] https://marc.info/?l=linux-netdev&m=159499772425352&w=2
-> 
-> This series adds support for Parallel Redundancy Protocol (PRP)
-> in the Linux HSR driver as defined in IEC-62439-3. PRP Uses a
-> Redundancy Control Trailer (RCT) the format of which is
-> similar to HSR Tag. This is used for implementing redundancy.
- ...
+On Mon, Jul 27, 2020 at 11:54 AM Junio C Hamano <gitster@pobox.com> wrote:
+>
+> The latest feature release Git v2.28.0 is now available at the
+> usual places.  It is comprised of 317 non-merge commits since
+> v2.27.0, contributed by 58 people, 13 of which are new faces.
 
-Series applied to net-next, thank you.
+The latest release of git-filter-repo, v2.28.0, is also now available.
+It is comprised of 15 non-merge commits since v2.27.1, including two
+changes from new contributors.
+
+The public repo of filter-repo is at
+
+    https://github.com/newren/git-filter-repo
+
+The tarballs can be found at:
+
+    https://github.com/newren/git-filter-repo/releases
+
+git-filter-repo can also be installed via a variety of package managers
+across Windows, Mac OS, or Linux (and maybe others)[1].
+
+New contributors whose contributions weren't in v2.27.1 are as follows.
+Welcome to the git-filter-repo development community!
+
+  * James Ramsay
+  * Jonas Bernoulli
+
+[1] https://github.com/newren/git-filter-repo/blob/master/INSTALL.md
+
+----------------------------------------------------------------
+
+git-filter-repo 2.28 Release Notes
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+(Note: Additional information is available for many release notes at
+    https://github.com/newren/git-filter-repo/issues/<NUMBER>)
+
+* New features:
+  * ignore comment lines in --paths-from-file (#111)
+
+* Fixes:
+  * allow globs to match file or directory names (#114)
+  * use new --date-format=3Draw-permissive fast-import option to avoid
+    fast-import failure on malformed date timezones (#88)
+  * fix undefined variable names reported by flake8 in rare error paths (#1=
+28)
+  * fix crash from assuming parent is an int (#131)
+
+* Documentation:
+  * document mapping output (#117)
+  * ignore the generated documentation (#127)
+  * several miscellaneous doc improvements
+
+* Miscellaneous:
+  * make tests individually re-runnable
+
+
+Changes since v2.27.1 are as follows:
+
+Elijah Newren (13):
+      INSTALL.md: fix missing trailing backquote
+      t9390: make tests individually re-runnable
+      filter-repo: allow globs to match file or directory names
+      filter-repo: ignore comment lines in --paths-from-file
+      git-filter-repo.txt: point people at the generated documentation
+      git-filter-repo.txt: be more forceful on the wording of --force
+      filter-repo: make fresh clone warning scarier
+      INSTALL.md: wording clarification on what repology.org tracks
+      contrib: rename no-op-example to barebones-example
+      filter-repo: use new --date-format=3Draw-permissive fast-import optio=
+n
+      Contributing.md: link to Nicolai H=C3=A4hnle's code review comments
+      Fix undefined variable names
+      filter-repo: fix crash from assuming parent is an int
+
+James Ramsay (1):
+      git-filter-repo.txt: document mapping output
+
+Jonas Bernoulli (1):
+      .gitignore: ignore the generated documentation
