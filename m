@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2541A22F07D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60A822EFAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732350AbgG0OZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:25:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54702 "EHLO mail.kernel.org"
+        id S1731178AbgG0OSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732314AbgG0OY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:24:58 -0400
+        id S1731170AbgG0OSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:18:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC21C2075A;
-        Mon, 27 Jul 2020 14:24:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA4DB2070A;
+        Mon, 27 Jul 2020 14:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859897;
-        bh=5MbtI0ihvkEoxI9SWcTbrLH2vIzaHkcSMuxKD1ckyRM=;
+        s=default; t=1595859486;
+        bh=aH9N2X8cK9yWknxgS/kGhUdLd4Tp5DOTt7iEgW0I6Q0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sWYfBCgVKvvtDKfyvDn3j1yzX539D67dfnoG3QLxHljdl0CFkDn1rrby0VCocJ4GF
-         d6lNBtqGmSUxUelgukc+4aRAeMlJxpvTAESlH+cChXSzd5r/ej9R9gZzEnv+nLD1sm
-         pjEcyR3YZUmqYE4Pz5pmIAHl02TKA8aJlBOk5p/g=
+        b=ktsnJ8EqCkXMVOH7MpGQGjU5iDSvQq/PaKWJM0df9Dtymt4etSHLP4cIs6muT9J50
+         ep9C5IyTYeogaaH5I37deqOftU0CriliBY3XeBwZp8StL/5K7cyi1U62mmUwctjAsF
+         mvHg0oG/7Mz5YUx2M7pxr6HunLcS9Tix9ginayZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Subject: [PATCH 5.7 146/179] staging: wlan-ng: properly check endpoint types
-Date:   Mon, 27 Jul 2020 16:05:21 +0200
-Message-Id: <20200727134939.777363116@linuxfoundation.org>
+        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 127/138] mmc: sdhci-of-aspeed: Fix clock divider calculation
+Date:   Mon, 27 Jul 2020 16:05:22 +0200
+Message-Id: <20200727134931.778827641@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
-References: <20200727134932.659499757@linuxfoundation.org>
+In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
+References: <20200727134925.228313570@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Eddie James <eajames@linux.ibm.com>
 
-commit faaff9765664009c1c7c65551d32e9ed3b1dda8f upstream.
+commit ebd4050c6144b38098d8eed34df461e5e3fa82a9 upstream.
 
-As syzkaller detected, wlan-ng driver does not do sanity check of
-endpoints in prism2sta_probe_usb(), add check for xfer direction and type
+When calculating the clock divider, start dividing at 2 instead of 1.
+The divider is divided by two at the end of the calculation, so starting
+at 1 may result in a divider of 0, which shouldn't happen.
 
-Reported-and-tested-by: syzbot+c2a1fa67c02faa0de723@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=c2a1fa67c02faa0de723
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200722161052.999754-1-rkovhaev@gmail.com
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+Acked-by: Joel Stanley <joel@jms.id.au>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Link: https://lore.kernel.org/r/20200709195706.12741-3-eajames@linux.ibm.com
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/wlan-ng/prism2usb.c |   16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-of-aspeed.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/wlan-ng/prism2usb.c
-+++ b/drivers/staging/wlan-ng/prism2usb.c
-@@ -61,11 +61,25 @@ static int prism2sta_probe_usb(struct us
- 			       const struct usb_device_id *id)
- {
- 	struct usb_device *dev;
--
-+	const struct usb_endpoint_descriptor *epd;
-+	const struct usb_host_interface *iface_desc = interface->cur_altsetting;
- 	struct wlandevice *wlandev = NULL;
- 	struct hfa384x *hw = NULL;
- 	int result = 0;
+--- a/drivers/mmc/host/sdhci-of-aspeed.c
++++ b/drivers/mmc/host/sdhci-of-aspeed.c
+@@ -68,7 +68,7 @@ static void aspeed_sdhci_set_clock(struc
+ 	if (WARN_ON(clock > host->max_clk))
+ 		clock = host->max_clk;
  
-+	if (iface_desc->desc.bNumEndpoints != 2) {
-+		result = -ENODEV;
-+		goto failed;
-+	}
-+
-+	result = -EINVAL;
-+	epd = &iface_desc->endpoint[1].desc;
-+	if (!usb_endpoint_is_bulk_in(epd))
-+		goto failed;
-+	epd = &iface_desc->endpoint[2].desc;
-+	if (!usb_endpoint_is_bulk_out(epd))
-+		goto failed;
-+
- 	dev = interface_to_usbdev(interface);
- 	wlandev = create_wlan();
- 	if (!wlandev) {
+-	for (div = 1; div < 256; div *= 2) {
++	for (div = 2; div < 256; div *= 2) {
+ 		if ((parent / div) <= clock)
+ 			break;
+ 	}
 
 
