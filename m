@@ -2,134 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21D422E403
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 04:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7646622E41C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 04:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgG0Cdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Jul 2020 22:33:53 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:43327 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbgG0Cdx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Jul 2020 22:33:53 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200727023350epoutp014cc2d9d3d694c9bb1c7538d736e5b41d~le1EEYujn0503105031epoutp01Z
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:33:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200727023350epoutp014cc2d9d3d694c9bb1c7538d736e5b41d~le1EEYujn0503105031epoutp01Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1595817230;
-        bh=nyorqQFc3R2/eKKFva9vj1FIOhdGfDZzIo30VBX79mQ=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=OOinQJ+kAOxUy5LeELg8p1HqXPdx+/rfb+vPDsjAjzoSMKPZO3mQUw/jRj+lO2z5+
-         5Yi8bhoItu70OL+on3OJsqqaCM5lePbXk0wl9c+T6QKt1lelgXkCPp1PIZ/IH03Ogs
-         TABb23EkGCgcj4iJKzJ8GDb52CA6X4aHSOMfGyC4=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200727023350epcas1p27d58be94218ef8bc849209971d22faa9~le1DuGReY2987029870epcas1p2S;
-        Mon, 27 Jul 2020 02:33:50 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4BFP4r24PszMqYkY; Mon, 27 Jul
-        2020 02:33:48 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        77.13.28578.60D3E1F5; Mon, 27 Jul 2020 11:33:42 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb~le08BIz681376213762epcas1p3M;
-        Mon, 27 Jul 2020 02:33:42 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200727023342epsmtrp174ada468c5624a2dd72067f77aca882c~le08Afr9V3044430444epsmtrp1V;
-        Mon, 27 Jul 2020 02:33:42 +0000 (GMT)
-X-AuditID: b6c32a39-8c9ff70000006fa2-05-5f1e3d06b6cd
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D6.2B.08303.60D3E1F5; Mon, 27 Jul 2020 11:33:42 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200727023341epsmtip119e8b6fc7db150ce587062ccdaaa31cc~le07ypIK72422024220epsmtip1X;
-        Mon, 27 Jul 2020 02:33:41 +0000 (GMT)
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     cw00.choi@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        stable@vger.kernel.org
-Subject: [PATCH] PM / devfreq: Fix the wrong end with semicolon
-Date:   Mon, 27 Jul 2020 11:45:24 +0900
-Message-Id: <20200727024524.24203-1-cw00.choi@samsung.com>
+        id S1726983AbgG0Cw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Jul 2020 22:52:29 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:60416 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726044AbgG0Cw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Jul 2020 22:52:29 -0400
+Received: from localhost (unknown [159.226.5.99])
+        by APP-03 (Coremail) with SMTP id rQCowAAnL8NZQR5fRJpnAw--.64264S2;
+        Mon, 27 Jul 2020 10:52:09 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     perex@perex.cz, tiwai@suse.com, alexander@tsoy.me,
+        e.burema@gmail.com, vulab@iscas.ac.cn, henryl@nvidia.com,
+        alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: endpoint : remove needless check before usb_free_coherent()
+Date:   Mon, 27 Jul 2020 02:52:08 +0000
+Message-Id: <20200727025208.8739-1-vulab@iscas.ac.cn>
 X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7bCmgS6brVy8wa3XchYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUdk2GamJKalF
-        Cql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUDLlRTKEnNKgUIBicXF
-        Svp2NkX5pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGbd+nmYv2MpR
-        sfNxVgNjG3sXIyeHhICJxJZpW5m7GLk4hAR2MEp82XqJBcL5xCjxbf5RdgjnM6NEz8d7LDAt
-        e94+YoRI7GKUWLTiHlT/F0aJI0f3MIJUsQloSex/cYMNxBYRsJI4/b+DGcRmFqiRmNC4iBXE
-        Fhawl1i3fBfYVBYBVYlL894ygdi8QPU9LzuZIbbJS6zecABsgYTAMnaJ32/uskIkXCRaV2xi
-        hLCFJV4d3wL1kZTEy36Y76olVp48wgbR3MEosWX/BahmY4n9SycDbeMAukhTYv0ufYiwosTO
-        33MZIQ7lk3j3tYcVpERCgFeio00IokRZ4vKDu0wQtqTE4vZONogSD4kpd1xATCGBWInDb/wm
-        MMrOQhi/gJFxFaNYakFxbnpqsWGBKXIcbWIEJyctyx2M099+0DvEyMTBeIhRgoNZSYSXW1Qm
-        Xog3JbGyKrUoP76oNCe1+BCjKTC4JjJLiSbnA9NjXkm8oamRsbGxhYmhmamhoZI477+z7PFC
-        AumJJanZqakFqUUwfUwcnFINTDNjT6/75fVSTNMn4naGoN4na42Cy9MCtup77Hj140Ry663P
-        hsvXRnb2lXD3/Nbff+e+kpFSzgmt/ld9l1tXvbl4KX/3teJsPZXwsBoOcWMHTuY2m59X3LYe
-        /rzFu8Df+ebF+AatG7LXQmf4GVUVfOy+eiKv4/G2jK+czZEz95zsVDYy2NssG2DQe+my4NHM
-        xPyC7i9K3JOlO5N883+Jb+6em3Ugc3OlP+MRMTsHGaX+2xOvb13fniR1TtCV87zYttsp65b0
-        SG34FxboVl5sHNnjJZ06f+bHB3P6r6/vqN/etV6UbaXGoyTJBdd2T1FcO7XJ4oVxXkyaXxmL
-        Ro9qlIm5qeuB9bW1d50fJTxRYinOSDTUYi4qTgQAk9HuL9cDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCJMWRmVeSWpSXmKPExsWy7bCSnC6brVy8wfpHHBYTb1xhsbj+5Tmr
-        xdmmN+wWl3fNYbP43HuE0eJ24wo2iwUbHzE6sHtsWtXJ5tG3ZRWjx+dNcgHMUVw2Kak5mWWp
-        Rfp2CVwZt36eZi/YylGx83FWA2MbexcjJ4eEgInEnrePGLsYuTiEBHYwSqz+PJ8FIiEpMe3i
-        UeYuRg4gW1ji8OFiiJpPjBJNrZvAmtkEtCT2v7jBBmKLCNhI3F18jQWkiFmgiVFi4ryDjCAJ
-        YQF7iXXLd4ENZRFQlbg07y0TiM0rYCXR87KTGWKZvMTqDQeYJzDyLGBkWMUomVpQnJueW2xY
-        YJSXWq5XnJhbXJqXrpecn7uJERwwWlo7GPes+qB3iJGJg/EQowQHs5IIL7eoTLwQb0piZVVq
-        UX58UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRmp6YWpBbBZJk4OKUamKKadRpMV3d55Anr8F1+
-        vytLuNpRYhfzPmO93dd+xZ/2069/VrEkPFqWeTkrd+O1dfPqTt7fmjfbfKLyviWSDsIdx2p1
-        5Zb9dpUXWxOYrjI37qrvKYaMI8nrPmxa8mCKhMrP79vMFnAl7zBafuXhW+5gTeH8FS8y/oVu
-        aTMKOv7qxr/2ZdkfPC4Ia/TnBjStSFH3jvfWfr55QnXjaQ2Gq33XteY+WtS3mWW+44rG7Tn2
-        TAVPQg8tc3Qw+vj+k9iX2VxnrM8sly9QvFMkm2oRsbE0YuXbvNadU18Yzq2Se1lhUnl72r79
-        NRMzXm7+eHPKFjld57pjt0tKTe1vBrDdODt/0kT72oK9+U8c/y8s3KnEUpyRaKjFXFScCABG
-        ZjGvhwIAAA==
-X-CMS-MailID: 20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb
-References: <CGME20200727023342epcas1p3ec7e442440ead0762a67d244f20cf2fb@epcas1p3.samsung.com>
+X-CM-TRANSID: rQCowAAnL8NZQR5fRJpnAw--.64264S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFWrZw4UGr47GFWDWF4UJwb_yoW3WFX_ua
+        y8Gr1DWrWqg3y7K3srCr4FyFW2g39aqF1kWF1SyFZrJF98J3yYy34xJrs8GF1fuanYgFnx
+        Xwn2krZxGryxKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Wrv_ZF1lYx0Ex4A2jsIE14v26r4UJV
+        WxJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8JwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0-dbUUUUUU==
+X-Originating-IP: [159.226.5.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiAgYKA1JhbmICzgACs8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the wrong grammar at the end of code line by using semicolon.
+usb_free_coherent() is safe with NULL addr and this check is
+not required.
 
-Cc: stable@vger.kernel.org
-Fixes: 490a421bc575 ("PM / devfreq: Add debugfs support with devfreq_summary file")
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
-It was my mistake using comma instead of semicolon. But, I don't know
-why the build error was not caught. Anyway, I fix the wrong basic grammar.
+ sound/usb/endpoint.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
- drivers/devfreq/devfreq.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index 9d324ff87ee6..561d91b2d3bf 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -1800,9 +1800,9 @@ static int devfreq_summary_show(struct seq_file *s, void *data)
- #endif
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 88760268fb55..3a2b2a309a71 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -615,9 +615,8 @@ static void release_urbs(struct snd_usb_endpoint *ep, int force)
+ 	for (i = 0; i < ep->nurbs; i++)
+ 		release_urb_ctx(&ep->urb[i]);
  
- 		mutex_lock(&devfreq->lock);
--		cur_freq = devfreq->previous_freq,
-+		cur_freq = devfreq->previous_freq;
- 		get_freq_range(devfreq, &min_freq, &max_freq);
--		polling_ms = devfreq->profile->polling_ms,
-+		polling_ms = devfreq->profile->polling_ms;
- 		mutex_unlock(&devfreq->lock);
+-	if (ep->syncbuf)
+-		usb_free_coherent(ep->chip->dev, SYNC_URBS * 4,
+-				  ep->syncbuf, ep->sync_dma);
++	usb_free_coherent(ep->chip->dev, SYNC_URBS * 4,
++			  ep->syncbuf, ep->sync_dma);
  
- 		seq_printf(s,
+ 	ep->syncbuf = NULL;
+ 	ep->nurbs = 0;
 -- 
 2.17.1
 
