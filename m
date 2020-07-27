@@ -2,74 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2232022EDA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48F722EDCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729151AbgG0NkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:40:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42396 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729117AbgG0Njy (ORCPT
+        id S1728636AbgG0NsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:48:24 -0400
+Received: from m177126.mail.qiye.163.com ([123.58.177.126]:27697 "EHLO
+        m177126.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726797AbgG0NsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:39:54 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k03M7-0007og-DE; Mon, 27 Jul 2020 13:39:51 +0000
-Date:   Mon, 27 Jul 2020 15:39:49 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Yadav Lamichhane <tuxomega1@gmail.com>
-Cc:     serge@hallyn.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] userns: Fix a kernel coding style issue
-Message-ID: <20200727133949.fh6htr4zff3uwm5p@wittgenstein>
-References: <20200727113323.79720-1-tuxomega1@gmail.com>
+        Mon, 27 Jul 2020 09:48:24 -0400
+X-Greylist: delayed 508 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Jul 2020 09:48:22 EDT
+Received: from vivo.com (wm-5 [127.0.0.1])
+        by m177126.mail.qiye.163.com (Hmail) with ESMTP id DF77C1832B7;
+        Mon, 27 Jul 2020 21:39:51 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AAcAXwBTDSpsKN-5iyIOtaqk.1.1595857191899.Hmail.wenhu.wang@vivo.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     mgorman@suse.de, bsegall@google.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        trivial <trivial@kernel.org>
+Subject: =?UTF-8?B?W1BBVENIXSBzY2hlZDogZml4IGEgdHlwbyBmb3Igc2NoZWQuaCBmb3Igc3RydWN0IHNjaGVkX2F2Zw==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200727113323.79720-1-tuxomega1@gmail.com>
+Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 27 Jul 2020 21:39:51 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Mon, 27 Jul 2020 21:39:51 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGEJCTRhDHR0ZQx0ZVkpOQk5DTkxKQkpCSk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo6GDojDDkvPygLCDA1Vk4SAjI0
+        DxoKEFVKVUpOQk5DTkxKQklIQ09VMxYaEhdVDB4VEw5VDBoVHDsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOSlVMT1VJSU1ZV1kIAVlBSU1DTzcG
+X-HM-Tid: 0a73908043f36458kursdf77c1832b7
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 05:18:23PM +0545, Yadav Lamichhane wrote:
-> fix a brace around if-else statement and for loop.
-> 
-> Signed-off-by: Yadav Lamichhane <tuxomega1@gmail.com>
-> ---
->  kernel/user_namespace.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> index 87804e0371fe..7703753cac97 100644
-> --- a/kernel/user_namespace.c
-> +++ b/kernel/user_namespace.c
-> @@ -118,9 +118,8 @@ int create_user_ns(struct cred *new)
->  	ns->owner = owner;
->  	ns->group = group;
->  	INIT_WORK(&ns->work, free_user_ns);
-> -	for (i = 0; i < UCOUNT_COUNTS; i++) {
-> +	for (i = 0; i < UCOUNT_COUNTS; i++)
->  		ns->ucount_max[i] = INT_MAX;
-> -	}
->  	ns->ucounts = ucounts;
-> 
->  	/* Inherit USERNS_SETGROUPS_ALLOWED from our parent */
-> @@ -1156,12 +1155,10 @@ ssize_t proc_setgroups_write(struct file *file, const char __user *buf,
->  	if (strncmp(pos, "allow", 5) == 0) {
->  		pos += 5;
->  		setgroups_allowed = true;
-> -	}
-> -	else if (strncmp(pos, "deny", 4) == 0) {
-> +	} else if (strncmp(pos, "deny", 4) == 0) {
->  		pos += 4;
->  		setgroups_allowed = false;
-> -	}
-> -	else
-> +	} else
->  		goto out;
-
-Kernel coding style would mandate that the else be enclosed in {} as well.
-
-Christian
+Q2hhbmdlIHRoZSBjb21tZW50IHR5cG86ICJkaXJlY2x5IiAtPiAiZGlyZWN0bHkiLgoKU2lnbmVk
+LW9mZi1ieTogV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4KLS0tCiBpbmNsdWRlL2xp
+bnV4L3NjaGVkLmggfCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVs
+ZXRpb24oLSkKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3NjaGVkLmggYi9pbmNsdWRlL2xp
+bnV4L3NjaGVkLmgKaW5kZXggNDQxOGY1Y2I4MzI0Li5hZWM1ZDdmYjE5NTIgMTAwNjQ0Ci0tLSBh
+L2luY2x1ZGUvbGludXgvc2NoZWQuaAorKysgYi9pbmNsdWRlL2xpbnV4L3NjaGVkLmgKQEAgLTM3
+Nyw3ICszNzcsNyBAQCBzdHJ1Y3QgdXRpbF9lc3QgewogICogRm9yIGNmc19ycSwgdGhleSBhcmUg
+dGhlIGFnZ3JlZ2F0ZWQgdmFsdWVzIG9mIGFsbCBydW5uYWJsZSBhbmQgYmxvY2tlZAogICogc2No
+ZWRfZW50aXRpZXMuCiAgKgotICogVGhlIGxvYWQvcnVubmFibGUvdXRpbF9hdmcgZG9lc24ndCBk
+aXJlY2x5IGZhY3RvciBmcmVxdWVuY3kgc2NhbGluZyBhbmQgQ1BVCisgKiBUaGUgbG9hZC9ydW5u
+YWJsZS91dGlsX2F2ZyBkb2Vzbid0IGRpcmVjdGx5IGZhY3RvciBmcmVxdWVuY3kgc2NhbGluZyBh
+bmQgQ1BVCiAgKiBjYXBhY2l0eSBzY2FsaW5nLiBUaGUgc2NhbGluZyBpcyBkb25lIHRocm91Z2gg
+dGhlIHJxX2Nsb2NrX3BlbHQgdGhhdCBpcyB1c2VkCiAgKiBmb3IgY29tcHV0aW5nIHRob3NlIHNp
+Z25hbHMgKHNlZSB1cGRhdGVfcnFfY2xvY2tfcGVsdCgpKQogICoKLS0gCjIuMTcuMQoKDQoNCg==
