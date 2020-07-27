@@ -2,104 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75D722E8EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126E022E8F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728093AbgG0JYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:24:55 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:39673 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726433AbgG0JYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:24:54 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 90AB85C0121;
-        Mon, 27 Jul 2020 05:24:53 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 27 Jul 2020 05:24:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=wONXKD2dA0rgroO9nB09aEG0uwm
-        Yq/40yIZTx+PxQHo=; b=MhdFzXzK8KFfSHqO/iYYWYSVGhtY/GQJxU9LCUd3dcL
-        j55LUk2pDvSGPdJr6cmmwEU0OtOweabsQX8bkm5rZugAn0iH6AJV5sSYdauHdwIl
-        uriafanzX3CPuCX4e2KFAR9dsWdAqez/dooO3+uQ09OWPKSHlq85rKf+LnuQ5+Gs
-        qrti1jeOGNR5kSckCXAZx1ma5y2Pv/Z8B/nKHbFaopFuqhJtfuxwSvunwCf1LHuO
-        Of4nY6JkllrgJvXifN2ZBSorrdu81GXVl5Y67ALv/r7ukmYPymn7joUpiARE6BuA
-        7mGbYUaN38zS71FhPDMURbzNY60PljkICeFx4j2PMIQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=wONXKD
-        2dA0rgroO9nB09aEG0uwmYq/40yIZTx+PxQHo=; b=dwlGuksqt0yC55nV8EffBU
-        TU6v2gSa7r/VzhaGEqbLdnNR6XkGephlmh3HSCQmsLHD0r5QiAG+LRU7vOufF9qW
-        PU1qQoGY+WLIhPsWivfQ8xzk3FtKeDSs6dbb5P8LOpA6CtyXixJoRTydN0V94/vz
-        GrIqrlcWoJEbtJ1OVwp3V5lii521nfAoe2VB00OdRaMYXSSvd/209DuEWYK4xVCA
-        LJYjmVR18qZqWPP5XyMWRpdO+PUJGWoYxbGHx8+pWvRcuYHWPZKprJSJc7S5Yq4N
-        4yxF5eZRGXAJXzyb1uJtOJHrd3Vz37Ux3XTKWQOLVw7wpuR7pyKCnkYGwwuPVBVw
-        ==
-X-ME-Sender: <xms:ZJ0eX_HXTmVCbY5HPRCSaYcgTSvtUG6-bi01tPvZwRQxbWXYsfYe0A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedtgdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeekfedr
-    keeirdekledruddtjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:ZJ0eX8WTtlDmZpmB96c-WEOGCNduKJ7OjsnG1fFZxMzgxERdvegHMQ>
-    <xmx:ZJ0eXxJBfG1CI4zd4VzgknrdfeToxKWPQ-Y_4tbHzN5P2jlKeBSr5g>
-    <xmx:ZJ0eX9FM2R2yl_gQVFWYyjOw2TMlFoRFrLwAtFraOi5oqP8fr9tu6Q>
-    <xmx:ZZ0eXygCC6gOn-7-199r6ZoU5iffUdQzwTR_3MAPQRjPdFn14HbQZA>
+        id S1727823AbgG0J07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:26:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726320AbgG0J07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 05:26:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8B0473280069;
-        Mon, 27 Jul 2020 05:24:52 -0400 (EDT)
-Date:   Mon, 27 Jul 2020 11:24:48 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>
-Subject: Re: linux-next: build failure after merge of the char-misc tree
-Message-ID: <20200727092448.GB1764157@kroah.com>
-References: <20200727180831.6c356fc1@canb.auug.org.au>
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F5492065C;
+        Mon, 27 Jul 2020 09:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595842019;
+        bh=ItUlf5qVHL1sqAOZEj3EJzoG8funbru622hJqMHUqtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YUvN1RdDiPCnKjgYeMF1pXfDv1dEeZsKTf4qrPHN5p0YlQgN4TtJiLjWulQOXNIpR
+         HQ4Rqlvvjqsqt9ILzFh8TAal7F74yd7uAR2UkA3dzgSR8nUFuVnifFU+ti314JjJZ4
+         85eQf9Qz3RVYQUWUuD/1TrnH/9RmDFU3y9W5OzII=
+Date:   Mon, 27 Jul 2020 11:26:54 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Forest Crossman <cyrozap@gmail.com>
+Cc:     linux-usb@vger.kernel.org, mathias.nyman@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: xhci: define IDs for various ASMedia host
+ controllers
+Message-ID: <20200727092654.GD1764157@kroah.com>
+References: <20200727090629.169701-1-cyrozap@gmail.com>
+ <20200727090629.169701-2-cyrozap@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727180831.6c356fc1@canb.auug.org.au>
+In-Reply-To: <20200727090629.169701-2-cyrozap@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 06:08:31PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the char-misc tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
-> 
-> In file included from drivers/misc/habanalabs/goya/goya.c:8:
-> drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: No such file or directory
->    12 | #include "habanalabs.h"
->       |          ^~~~~~~~~~~~~~
-> In file included from drivers/misc/habanalabs/goya/goya_security.c:8:
-> drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: No such file or directory
->    12 | #include "habanalabs.h"
->       |          ^~~~~~~~~~~~~~
-> 
-> Presumably caused by commit
-> 
->   70b2f993ea4a ("habanalabs: create common folder")
-> 
-> I have used the char-misc tree from next-20200724 for today.
+On Mon, Jul 27, 2020 at 04:06:28AM -0500, Forest Crossman wrote:
+> Signed-off-by: Forest Crossman <cyrozap@gmail.com>
 
-Ugh, this is a mess of a merge with this driver.
-
-Oded, I'll take Stephen's merge resolutions here and push out a new
-version, and try to resolve this error, but if you could verify I got it
-correct, that would be great.
-
-thanks,
+I can not take patches without any changelog text, sorry.
 
 greg k-h
