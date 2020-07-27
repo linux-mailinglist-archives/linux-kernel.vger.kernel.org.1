@@ -2,114 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6AF22F4AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC3422F4B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbgG0QQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:16:55 -0400
-Received: from smtprelay0217.hostedemail.com ([216.40.44.217]:47636 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731340AbgG0QQs (ORCPT
+        id S1731557AbgG0QRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:17:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35927 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731542AbgG0QRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:16:48 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 8A1278384373;
-        Mon, 27 Jul 2020 16:16:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:960:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3867:3868:3871:4250:4321:4385:4605:5007:8603:8660:9592:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:12986:13148:13230:13439:14659:14721:21080:21451:21627:21939:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: hour99_2915f0526f62
-X-Filterd-Recvd-Size: 3083
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Jul 2020 16:16:45 +0000 (UTC)
-Message-ID: <30618c986727e5f8a9806f663b4e6f4aa80065ae.camel@perches.com>
-Subject: Re: [PATCH 2/2] media: bt8xx: avoid a useless memset
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        mchehab@kernel.org, akpm@linux-foundation.org, rppt@kernel.org,
-        hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Mon, 27 Jul 2020 09:16:43 -0700
-In-Reply-To: <0897d9bec8865859694c917f3f72ab8fd12321ff.camel@perches.com>
-References: <20200727135151.54757-1-christophe.jaillet@wanadoo.fr>
-         <0897d9bec8865859694c917f3f72ab8fd12321ff.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Mon, 27 Jul 2020 12:17:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595866621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BsUwnhDK87WKgN3gqd90CcbtRyIxe05OQOcWAwl8fSE=;
+        b=IuTQSyB2ZJs58ydl0LAtJwvDyXThs2+AWlGZ+dlNC3u9TG6lex16s+BswLCmvoTG4lsNVy
+        8DUkXHEJgWM2V9b7MLiNa8yTzgEwrGd6brElj6E5dTVxBlHC/R7xeoAbS/4VL4WsSY3Jwq
+        QkO8BOA49hqOYcbmFUfhr9iHBlxMxTM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-67-B5H_vO1jPPqp1TMy90Z1og-1; Mon, 27 Jul 2020 12:17:00 -0400
+X-MC-Unique: B5H_vO1jPPqp1TMy90Z1og-1
+Received: by mail-wr1-f72.google.com with SMTP id w7so1811933wre.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 09:16:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BsUwnhDK87WKgN3gqd90CcbtRyIxe05OQOcWAwl8fSE=;
+        b=WWxUvDxDcMw6CZ35dYqv1pNtLs0SLmlkWj+zKvDV1+F62iidmO/jzYL2w2OzaCclK3
+         740BIsLvfgC1iO342J5MV8MdltRPOIq0UtAP4ETbomR7gnCJZMcrZN17pqpLxtLHrN6f
+         lXahD8m6fTn8Pv47IMVOSI/wJq1p4sNDZRvvJEkiTNRhLnONTpViMcYfzTp6bbCgmRVY
+         If/8qOLcV+8NMlwfD44W1pP0aJO7/Yn7IGNKtHABYkqb8GLVkj5c6AxP4yTjxggWZahJ
+         TtEmtExXweuKLJWSMBBiDPamhkmhWdnGhVGNDqvnSgkSzKu0yL4Nj8dGrhT3HHsh2k5B
+         aS2A==
+X-Gm-Message-State: AOAM533PN830cBWEp7ytZ5Ld/YzE26pRGTyc6/bKgSLI6se1aOxMrV+/
+        ZcjLwTEHIbtwWLXh/SpGb57RDWKyIpU5Ua/+pyodjxRvbzPVwwOiPOnJ3iu9++IYXtJE6oAklqW
+        5uCd5JiLyIlv/jl7a1Q9qWMOF
+X-Received: by 2002:a1c:6408:: with SMTP id y8mr84041wmb.52.1595866618758;
+        Mon, 27 Jul 2020 09:16:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxLKcAmtjP5qdwtcop3VZz69phHqUmhA/GYnUvT8EjsYnFf+2mjdi7w0x6HCc4EEuewJ9M+uA==
+X-Received: by 2002:a1c:6408:: with SMTP id y8mr84025wmb.52.1595866618480;
+        Mon, 27 Jul 2020 09:16:58 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id u66sm76686wmu.37.2020.07.27.09.16.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 09:16:57 -0700 (PDT)
+Subject: Re: [PATCH] KVM: nVMX: properly pad struct kvm_vmx_nested_state_hdr
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+References: <20200713082824.1728868-1-vkuznets@redhat.com>
+ <20200713151750.GA29901@linux.intel.com>
+ <878sfntnoz.fsf@vitty.brq.redhat.com>
+ <85fd54ff-01f5-0f1f-1bb7-922c740a37c1@redhat.com>
+ <20200727154654.GA8675@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <5d50ea1e-f2a2-8aa9-1dd3-4cbca6c6f885@redhat.com>
+Date:   Mon, 27 Jul 2020 18:16:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200727154654.GA8675@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 09:09 -0700, Joe Perches wrote:
-> On Mon, 2020-07-27 at 15:51 +0200, Christophe JAILLET wrote:
-> > Avoid a memset after a call to 'dma_alloc_coherent()'.
-> > This is useless since
-> > commit 518a2f1925c3 ("dma-mapping: zero memory returned from dma_alloc_*")
-> []
-> > diff --git a/drivers/media/pci/bt8xx/btcx-risc.c b/drivers/media/pci/bt8xx/btcx-risc.c
-> []
-> > @@ -73,7 +73,6 @@ int btcx_riscmem_alloc(struct pci_dev *pci,
-> >  		dprintk("btcx: riscmem alloc [%d] dma=%lx cpu=%p size=%d\n",
-> >  			memcnt, (unsigned long)dma, cpu, size);
-> >  	}
-> > -	memset(risc->cpu,0,risc->size);
-> >  	return 0;
-> >  }
+On 27/07/20 17:46, Sean Christopherson wrote:
+>> It might as well send it now if the code didn't attempt to zero the
+>> struct before filling it in (this is another good reason to use a
+>> "flags" field to say what's been filled in).
+> The issue is that flags itself could hold garbage.
 > 
-> Likely NAK.
+> https://lkml.kernel.org/r/20200713151750.GA29901@linux.intel.com
+
+Quoting from there:
+
+> Which means that userspace built for the old kernel will potentially send in
+> garbage for the new 'flags' field due to it being uninitialized stack data,
+> even with the layout after this patch.
+
+Userspace should always zero everything.  I don't think that the padding
+between fields is any different from the other bytes padding the header
+to 128 bytes.
+
+>   struct kvm_vmx_nested_state_hdr hdr = {
+>       .vmxon_pa = root,
+>       .vmcs12_pa = vmcs12,
+>   };
 > 
-> This is not useless as risc->cpu may be reused
-> and the alloc may not have been done.
+> QEMU won't see issues because it zero allocates the entire nested state.
+> 
+> All the above being said, after looking at the whole picture I think padding
+> the header is a moot point.  The header is padded out to 120 bytes[*] when
+> including in the full nested state, and KVM only ever consumes the header in
+> the context of the full nested state.  I.e. if there's garbage at offset 6,
+> odds are there's going to be garbage at offset 18, so internally padding the
+> header does nothing.
 
-Perhaps a little rewrite for clarity:
----
- drivers/media/pci/bt8xx/btcx-risc.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+Yes, that was what I was hinting at with "it might as well send it now"
+(i.e., after the patch).
 
-diff --git a/drivers/media/pci/bt8xx/btcx-risc.c b/drivers/media/pci/bt8xx/btcx-risc.c
-index 51257980f539..311f4ca2a108 100644
---- a/drivers/media/pci/bt8xx/btcx-risc.c
-+++ b/drivers/media/pci/bt8xx/btcx-risc.c
-@@ -56,24 +56,26 @@ int btcx_riscmem_alloc(struct pci_dev *pci,
- 		       struct btcx_riscmem *risc,
- 		       unsigned int size)
- {
--	__le32 *cpu;
--	dma_addr_t dma = 0;
--
--	if (NULL != risc->cpu && risc->size < size)
--		btcx_riscmem_free(pci,risc);
--	if (NULL == risc->cpu) {
--		cpu = pci_alloc_consistent(pci, size, &dma);
--		if (NULL == cpu)
-+	if (risc->cpu && risc->size < size)
-+		btcx_riscmem_free(pci, risc);
-+
-+	if (risc->cpu) {
-+		memset(risc->cpu, 0, risc->size);
-+	} else {
-+		dma_addr_t dma = 0;
-+
-+		risc->cpu = pci_alloc_consistent(pci, size, &dma);
-+		if (!risc->cpu)
- 			return -ENOMEM;
--		risc->cpu  = cpu;
-+
- 		risc->dma  = dma;
- 		risc->size = size;
- 
- 		memcnt++;
- 		dprintk("btcx: riscmem alloc [%d] dma=%lx cpu=%p size=%d\n",
--			memcnt, (unsigned long)dma, cpu, size);
-+			memcnt, (unsigned long)dma, risc->cpu, size);
- 	}
--	memset(risc->cpu,0,risc->size);
-+
- 	return 0;
- }
- 
+(All of this is moot for userspace that just uses KVM_GET_NESTED_STATE
+and passes it back to KVM_SET_NESTED_STATE).
+
+> KVM should be checking that the unused bytes of (sizeof(pad) - sizeof(vmx/svm))
+> is zero if we want to expand into the padding in the future.  Right now we're
+> relying on userspace to zero allocate the struct without enforcing it.
+
+The alternative, which is almost as good, is to only use these extra
+fields which could be garbage if the flags are not set, and check the
+flags (see the patches I have sent earlier today).
+
+The chance of the flags passing the check will decrease over time as
+more flags are added; but the chance of having buggy userspace that
+sends down garbage also will.
+
+> [*] Amusing side note, the comment in the header is wrong.  It states "pad
+>     the header to 128 bytes", but only pads it to 120 bytes, because union.
+> 
+> /* for KVM_CAP_NESTED_STATE */
+> struct kvm_nested_state {
+> 	__u16 flags;
+> 	__u16 format;
+> 	__u32 size;
+> 
+> 	union {
+> 		struct kvm_vmx_nested_state_hdr vmx;
+> 		struct kvm_svm_nested_state_hdr svm;
+> 
+> 		/* Pad the header to 128 bytes.  */
+> 		__u8 pad[120];
+> 	} hdr;
+
+There are 8 bytes before the union, and it's not a coincidence. :)
+"Header" refers to the stuff before the data region.
+
+> Odds are no real VMM will have issue given the dynamic size of struct
+> kvm_nested_state, but 
+
+... *suspence* ...
+
+Paolo
 
