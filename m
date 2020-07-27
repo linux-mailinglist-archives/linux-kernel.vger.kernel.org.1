@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088D122EEB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E53E722EFF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgG0OKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:10:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
+        id S1731574AbgG0OUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:20:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729775AbgG0OKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:10:10 -0400
+        id S1731556AbgG0OUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:20:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4390F20838;
-        Mon, 27 Jul 2020 14:10:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDD6A2070A;
+        Mon, 27 Jul 2020 14:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859009;
-        bh=yOHQNzrKgO5dGVzNFGwRdnu5BdnGHjIkXX7aoTeoJXM=;
+        s=default; t=1595859630;
+        bh=AjMYgoWuwLdnddB2k/SjLHWHh4EXgQvwQv/pxzTpU/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t32iJKlFmO5TvgI8a1wfQ4JEdKHnt2VkL5uPg9pTvfZsCVsY2WlgtI3gAN/LsJz4q
-         8zb7+d9FVAy/qwcl/jwybufWmcyZhTjSRaIUotbQiUu17DRnBz1MCuFzH/OVrqAFfY
-         vkATBqCXGIVH0maaulqDVI9B8kzbN31hTG25fM+4=
+        b=0X2CU7cXDG4GMj/Ggo7QUbUI9Y5TOik/aoMCW7iqgw+6YRu4uHkT4zYuoWf32Pd0i
+         qmzBMG6wGu+Tta+IzsKffaydGpl6SMbq06LBzW55HwURCQV695PHpCN+xvn41CoEbz
+         JX600RXCtTcqorOeHqRJR5voMXws5LuVBLLq6ilc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Theil <markus.theil@tu-ilmenau.de>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 05/86] mac80211: allow rx of mesh eapol frames with default rx key
+Subject: [PATCH 5.7 044/179] bnxt_en: Init ethtool link settings after reading updated PHY configuration.
 Date:   Mon, 27 Jul 2020 16:03:39 +0200
-Message-Id: <20200727134914.615975164@linuxfoundation.org>
+Message-Id: <20200727134934.826510479@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,78 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Theil <markus.theil@tu-ilmenau.de>
+From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 
-[ Upstream commit 0b467b63870d9c05c81456aa9bfee894ab2db3b6 ]
+[ Upstream commit ca0c753815fe4786b79a80abf0412eb5d52090b8 ]
 
-Without this patch, eapol frames cannot be received in mesh
-mode, when 802.1X should be used. Initially only a MGTK is
-defined, which is found and set as rx->key, when there are
-no other keys set. ieee80211_drop_unencrypted would then
-drop these eapol frames, as they are data frames without
-encryption and there exists some rx->key.
+In a shared port PHY configuration, async event is received when any of the
+port modifies the configuration. Ethtool link settings should be
+initialised after updated PHY configuration from firmware.
 
-Fix this by differentiating between mesh eapol frames and
-other data frames with existing rx->key. Allow mesh mesh
-eapol frames only if they are for our vif address.
-
-With this patch in-place, ieee80211_rx_h_mesh_fwding continues
-after the ieee80211_drop_unencrypted check and notices, that
-these eapol frames have to be delivered locally, as they should.
-
-Signed-off-by: Markus Theil <markus.theil@tu-ilmenau.de>
-Link: https://lore.kernel.org/r/20200625104214.50319-1-markus.theil@tu-ilmenau.de
-[small code cleanups]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: b1613e78e98d ("bnxt_en: Add async. event logic for PHY configuration changes.")
+Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/rx.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index c17e148e06e71..5e56719f999c4 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -2230,6 +2230,7 @@ static int ieee80211_802_1x_port_control(struct ieee80211_rx_data *rx)
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index b6fb5a1709c01..198bca9c1e2df 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -10362,15 +10362,15 @@ static void bnxt_sp_task(struct work_struct *work)
+ 				       &bp->sp_event))
+ 			bnxt_hwrm_phy_qcaps(bp);
  
- static int ieee80211_drop_unencrypted(struct ieee80211_rx_data *rx, __le16 fc)
- {
-+	struct ieee80211_hdr *hdr = (void *)rx->skb->data;
- 	struct sk_buff *skb = rx->skb;
- 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
- 
-@@ -2240,6 +2241,31 @@ static int ieee80211_drop_unencrypted(struct ieee80211_rx_data *rx, __le16 fc)
- 	if (status->flag & RX_FLAG_DECRYPTED)
- 		return 0;
- 
-+	/* check mesh EAPOL frames first */
-+	if (unlikely(rx->sta && ieee80211_vif_is_mesh(&rx->sdata->vif) &&
-+		     ieee80211_is_data(fc))) {
-+		struct ieee80211s_hdr *mesh_hdr;
-+		u16 hdr_len = ieee80211_hdrlen(fc);
-+		u16 ethertype_offset;
-+		__be16 ethertype;
+-		if (test_and_clear_bit(BNXT_LINK_CFG_CHANGE_SP_EVENT,
+-				       &bp->sp_event))
+-			bnxt_init_ethtool_link_settings(bp);
+-
+ 		rc = bnxt_update_link(bp, true);
+-		mutex_unlock(&bp->link_lock);
+ 		if (rc)
+ 			netdev_err(bp->dev, "SP task can't update link (rc: %x)\n",
+ 				   rc);
 +
-+		if (!ether_addr_equal(hdr->addr1, rx->sdata->vif.addr))
-+			goto drop_check;
-+
-+		/* make sure fixed part of mesh header is there, also checks skb len */
-+		if (!pskb_may_pull(rx->skb, hdr_len + 6))
-+			goto drop_check;
-+
-+		mesh_hdr = (struct ieee80211s_hdr *)(skb->data + hdr_len);
-+		ethertype_offset = hdr_len + ieee80211_get_mesh_hdrlen(mesh_hdr) +
-+				   sizeof(rfc1042_header);
-+
-+		if (skb_copy_bits(rx->skb, ethertype_offset, &ethertype, 2) == 0 &&
-+		    ethertype == rx->sdata->control_port_protocol)
-+			return 0;
-+	}
-+
-+drop_check:
- 	/* Drop unencrypted frames if key is set. */
- 	if (unlikely(!ieee80211_has_protected(fc) &&
- 		     !ieee80211_is_any_nullfunc(fc) &&
++		if (test_and_clear_bit(BNXT_LINK_CFG_CHANGE_SP_EVENT,
++				       &bp->sp_event))
++			bnxt_init_ethtool_link_settings(bp);
++		mutex_unlock(&bp->link_lock);
+ 	}
+ 	if (test_and_clear_bit(BNXT_UPDATE_PHY_SP_EVENT, &bp->sp_event)) {
+ 		int rc;
 -- 
 2.25.1
 
