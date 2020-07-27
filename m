@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6430F22EED4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BF422EE79
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729969AbgG0OLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34378 "EHLO mail.kernel.org"
+        id S1729370AbgG0OIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:08:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729961AbgG0OLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:11:04 -0400
+        id S1729354AbgG0OID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:08:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F13A02083E;
-        Mon, 27 Jul 2020 14:11:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 891B22073E;
+        Mon, 27 Jul 2020 14:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859063;
-        bh=LBn9Xwobhg/JDOcAvZgo6y0lgAMYmGyI+0wKy31ZQCA=;
+        s=default; t=1595858883;
+        bh=7rd/OGluXtLn4fNF/C5/d8dC2FG2dp25gWQxcM9U4/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fppLgiVe/tWaajErj8TnpdHO9kViBAEtEnTbLrH5xVo2XXmnJAVQdVlpdjnFJuvyL
-         UncJrZ33J9vTVxlQHwD6SYTwbrWP9jNil5oiooQQs4J9zZHNzN93P/tE4CT3Saq1bO
-         oSGUPnRYGJCRUv0vL/s5lzCZzzBQYDdhbkqNwEo0=
+        b=NNm8ab+iS9+8dfjW9iDVwEAWyVh3DKJ7YSD99xkrWoxjw0W2BMK4zL5/jkuiHGurO
+         TuFzEq6sIANgc3JcTSGHupOJYtwFimUemHI4mPqfVCBQAqk1zFmR2HWjiEpbBsNxMh
+         T6cGO/Kc9SllWrx2YFSeJIuLhqsnG8c6DcD5IV2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonid Ravich <Leonid.Ravich@emc.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 52/86] dmaengine: ioat setting ioat timeout as module parameter
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH 4.14 47/64] usb: xhci-mtk: fix the failure of bandwidth allocation
 Date:   Mon, 27 Jul 2020 16:04:26 +0200
-Message-Id: <20200727134917.027996958@linuxfoundation.org>
+Message-Id: <20200727134913.520008557@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
-References: <20200727134914.312934924@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+References: <20200727134911.020675249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonid Ravich <Leonid.Ravich@emc.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-[ Upstream commit 87730ccbddcb48478b1b88e88b14e73424130764 ]
+commit 5ce1a24dd98c00a57a8fa13660648abf7e08e3ef upstream.
 
-DMA transaction time to completion is a function of PCI bandwidth,
-transaction size and a queue depth.  So hard coded value for timeouts
-might be wrong for some scenarios.
+The wMaxPacketSize field of endpoint descriptor may be zero
+as default value in alternate interface, and they are not
+actually selected when start stream, so skip them when try to
+allocate bandwidth.
 
-Signed-off-by: Leonid Ravich <Leonid.Ravich@emc.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Link: https://lore.kernel.org/r/20200701184816.29138-1-leonid.ravich@dell.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Fixes: 0cbd4b34cda9 ("xhci: mediatek: support MTK xHCI host controller")
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Link: https://lore.kernel.org/r/1594360672-2076-1-git-send-email-chunfeng.yun@mediatek.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/dma/ioat/dma.c | 12 ++++++++++++
- drivers/dma/ioat/dma.h |  2 --
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci-mtk-sch.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/dma/ioat/dma.c b/drivers/dma/ioat/dma.c
-index b94cece58b984..890cadf3ec5d8 100644
---- a/drivers/dma/ioat/dma.c
-+++ b/drivers/dma/ioat/dma.c
-@@ -38,6 +38,18 @@
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -284,6 +284,10 @@ static bool need_bw_sch(struct usb_host_
+ 	if (is_fs_or_ls(speed) && !has_tt)
+ 		return false;
  
- #include "../dmaengine.h"
++	/* skip endpoint with zero maxpkt */
++	if (usb_endpoint_maxp(&ep->desc) == 0)
++		return false;
++
+ 	return true;
+ }
  
-+int completion_timeout = 200;
-+module_param(completion_timeout, int, 0644);
-+MODULE_PARM_DESC(completion_timeout,
-+		"set ioat completion timeout [msec] (default 200 [msec])");
-+int idle_timeout = 2000;
-+module_param(idle_timeout, int, 0644);
-+MODULE_PARM_DESC(idle_timeout,
-+		"set ioat idel timeout [msec] (default 2000 [msec])");
-+
-+#define IDLE_TIMEOUT msecs_to_jiffies(idle_timeout)
-+#define COMPLETION_TIMEOUT msecs_to_jiffies(completion_timeout)
-+
- static char *chanerr_str[] = {
- 	"DMA Transfer Source Address Error",
- 	"DMA Transfer Destination Address Error",
-diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
-index 1ab42ec2b7ff1..b061db2013324 100644
---- a/drivers/dma/ioat/dma.h
-+++ b/drivers/dma/ioat/dma.h
-@@ -111,8 +111,6 @@ struct ioatdma_chan {
- 	#define IOAT_RUN 5
- 	#define IOAT_CHAN_ACTIVE 6
- 	struct timer_list timer;
--	#define COMPLETION_TIMEOUT msecs_to_jiffies(100)
--	#define IDLE_TIMEOUT msecs_to_jiffies(2000)
- 	#define RESET_DELAY msecs_to_jiffies(100)
- 	struct ioatdma_device *ioat_dma;
- 	dma_addr_t completion_dma;
--- 
-2.25.1
-
 
 
