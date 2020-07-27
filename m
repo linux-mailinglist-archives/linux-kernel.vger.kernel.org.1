@@ -2,166 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3C322E6BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F4522E6CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 09:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgG0Hjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 03:39:43 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:10339 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726213AbgG0Hjm (ORCPT
+        id S1727015AbgG0Hlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 03:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgG0Hlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 03:39:42 -0400
+        Mon, 27 Jul 2020 03:41:36 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E11C0619D4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:41:35 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t6so7572180plo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 00:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1595835582; x=1627371582;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=FJjAKma81/3e1UdMJPfy23qzvOyOf8SJmgiY8ZS3SwA=;
-  b=ex/jfVq0nddF4SBLvR4zfmrMpPeA+YQSK6183G1WXwd1iCq4cWt3zlWA
-   ka18EbWHvN7kphx3AyKrpQeL2EmUEkFBdrxzD5jdwVQn0lDbkF5mC01dL
-   omxfjMa20CAwJWl9t7kC7sAfdiUDvK9ncZ5rjuhbFGWVdgfcCwG0/En4B
-   4=;
-IronPort-SDR: GtoPqIMqHLbnDdpFfyhmM3oVIKC3Lc1/KnaY7PBDZJxaLojcdz3M1DT24zbnD4ZVtrJfa9LKoq
- neDhI05BVRAA==
-X-IronPort-AV: E=Sophos;i="5.75,401,1589241600"; 
-   d="scan'208";a="54913381"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 27 Jul 2020 07:39:32 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 561E2A2A57;
-        Mon, 27 Jul 2020 07:39:18 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 27 Jul 2020 07:39:17 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.145) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 27 Jul 2020 07:38:59 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Greg Thelen <gthelen@google.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <akpm@linux-foundation.org>,
-        "SeongJae Park" <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <foersleo@amazon.de>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH v18 11/14] Documentation: Add documents for DAMON
-Date:   Mon, 27 Jul 2020 09:38:42 +0200
-Message-ID: <20200727073842.5328-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=02L+nV06/zwmICNroTjg7mYMa/wTXN2VrRKBLAVM2dw=;
+        b=V47joEy77meF+oSYORGjxuLpKGaeEr7xnIXCBWjrzNaPfWMvv2QRB45d0IROIpCTOO
+         80nbmPjwyX5jPTo6BZfOxXcEMWPaVYTXVfJo+azQjZsMxvxNXq3LCe12uRk/2m8Ifli5
+         2PJ9EDDRyYjJ9BIe+vMXLuW3oWZVdsOwml30I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=02L+nV06/zwmICNroTjg7mYMa/wTXN2VrRKBLAVM2dw=;
+        b=nScWjHSEoYKX0P7DAYLBP5//QkY63USOhZJz+OXwm0ydQXix85mioaydNm7FT7Hcj5
+         h017KmrCSJnnN57BfJM/LQvodzLpN5iBoFGmu1sLCuobFXwp1UAOqY4+aCTpc7yITTKJ
+         /+NAyoOE/xpjyWFACRBmO4ZkY9EAQ0C4KnJaPYHq2fW7kBuq6aCcY1RcQyIN0rBso7cN
+         MNTjOhGFZ5q79dr9VMCFLzue1rIiEHVpt5009DiAo044hs/4NqiPq8iQsfx5EUIXKXCK
+         lt/iTC7/zZZnu/7XKMEETm9x90pb+Gca1gtSqI61q3wt+hb/YNmJ8H3abfmffIsCDVgG
+         WtfA==
+X-Gm-Message-State: AOAM533PcLTDN1VVZBdl90rsrpiODqwmCZdHLcn6bx2Mt86aPXpxh7tp
+        uk/tC4+lI8VuTyODFdLHsjv+lA==
+X-Google-Smtp-Source: ABdhPJzuZ7ICmuF4ozEQuv167siP20VYHysSz7yu/BjNoHfuX0QIrN7rkJ7u6etQwGM3gpJ79LyGpA==
+X-Received: by 2002:a17:90a:204:: with SMTP id c4mr16807174pjc.165.1595835695486;
+        Mon, 27 Jul 2020 00:41:35 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
+        by smtp.gmail.com with ESMTPSA id f2sm13966544pfb.184.2020.07.27.00.41.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 00:41:34 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: mt8173: elm: Fix nor_flash node property
+Date:   Mon, 27 Jul 2020 15:41:24 +0800
+Message-Id: <20200727074124.3779237-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
 MIME-Version: 1.0
-In-Reply-To: <xr938sf577dn.fsf@gthelen.svl.corp.google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.161.145]
-X-ClientProxiedBy: EX13D12UWC003.ant.amazon.com (10.43.162.12) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020 00:19:00 -0700 Greg Thelen <gthelen@google.com> wrote:
+bus-width and non-removable is not used by the driver.
+max-frequency should be spi-max-frequency for flash node.
 
-> SeongJae Park <sjpark@amazon.com> wrote:
-> 
-> > From: SeongJae Park <sjpark@amazon.de>
-> >
-> > This commit adds documents for DAMON under
-> > `Documentation/admin-guide/mm/damon/` and `Documentation/vm/damon/`.
-> >
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> >  Documentation/admin-guide/mm/damon/guide.rst | 157 ++++++++++
-> >  Documentation/admin-guide/mm/damon/index.rst |  15 +
-> >  Documentation/admin-guide/mm/damon/plans.rst |  29 ++
-> >  Documentation/admin-guide/mm/damon/start.rst |  98 ++++++
-> >  Documentation/admin-guide/mm/damon/usage.rst | 298 +++++++++++++++++++
-> >  Documentation/admin-guide/mm/index.rst       |   1 +
-> >  Documentation/vm/damon/api.rst               |  20 ++
-> >  Documentation/vm/damon/eval.rst              | 222 ++++++++++++++
-> >  Documentation/vm/damon/faq.rst               |  59 ++++
-> >  Documentation/vm/damon/index.rst             |  32 ++
-> >  Documentation/vm/damon/mechanisms.rst        | 165 ++++++++++
-> >  Documentation/vm/index.rst                   |   1 +
-> >  12 files changed, 1097 insertions(+)
-> >  create mode 100644 Documentation/admin-guide/mm/damon/guide.rst
-> >  create mode 100644 Documentation/admin-guide/mm/damon/index.rst
-> >  create mode 100644 Documentation/admin-guide/mm/damon/plans.rst
-> >  create mode 100644 Documentation/admin-guide/mm/damon/start.rst
-> >  create mode 100644 Documentation/admin-guide/mm/damon/usage.rst
-> >  create mode 100644 Documentation/vm/damon/api.rst
-> >  create mode 100644 Documentation/vm/damon/eval.rst
-> >  create mode 100644 Documentation/vm/damon/faq.rst
-> >  create mode 100644 Documentation/vm/damon/index.rst
-> >  create mode 100644 Documentation/vm/damon/mechanisms.rst
-> >+
-[...]
-> > +===============
-> > +Detailed Usages
-> > +===============
-> > +
-> > +DAMON provides below three interfaces for different users.
-> > +
-> > +- *DAMON user space tool.*
-> > +  This is for privileged people such as system administrators who want a
-> > +  just-working human-friendly interface.  Using this, users can use the DAMON’s
-> > +  major features in a human-friendly way.  It may not be highly tuned for
-> > +  special cases, though.  It supports only virtual address spaces monitoring.
-> > +- *debugfs interface.*
-> > +  This is for privileged user space programmers who want more optimized use of
-> > +  DAMON.  Using this, users can use DAMON’s major features by reading
-> > +  from and writing to special debugfs files.  Therefore, you can write and use
-> > +  your personalized DAMON debugfs wrapper programs that reads/writes the
-> > +  debugfs files instead of you.  The DAMON user space tool is also a reference
-> > +  implementation of such programs.  It supports only virtual address spaces
-> > +  monitoring.
-> > +- *Kernel Space Programming Interface.*
-> > +  This is for kernel space programmers.  Using this, users can utilize every
-> > +  feature of DAMON most flexibly and efficiently by writing kernel space
-> > +  DAMON application programs for you.  You can even extend DAMON for various
-> > +  address spaces.
-> > +
-> > +This document does not describe the kernel space programming interface in
-> > +detail.  For that, please refer to the :doc:`/vm/damon/api`.
-> > +
-> > +
-> > +DAMON User Sapce Tool
-> 
-> Space
+Fixes: 689b937bedde ("arm64: dts: mediatek: add mt8173 elm and hana board")
+Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Right, thanks!
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index a5a12b2599a4..01522dd10603 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -431,12 +431,11 @@ &nor_flash {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&nor_gpio1_pins>;
+-	bus-width = <8>;
+-	max-frequency = <50000000>;
+-	non-removable;
++
+ 	flash@0 {
+ 		compatible = "jedec,spi-nor";
+ 		reg = <0>;
++		spi-max-frequency = <50000000>;
+ 	};
+ };
+ 
+-- 
+2.28.0.rc0.142.g3c755180ce-goog
 
-> 
-[...]
-> > +
-> > +Can 'idle pages tracking' or 'perf mem' substitute DAMON?
-> > +=========================================================
-> > +
-> > +Idle page tracking is a low level primitive for access check of the physical
-> > +address space.  'perf mem' is similar, though it can use sampling to minimize
-> > +the overhead.  On the other hand, DAMON is a higher-level framework for the
-> > +monitoring of various address spaces.  It is focused on memory management
-> > +optimization and provides sophisticated accuracy/overhead handling mechanisms.
-> > +Therefore, 'idle pages tracking' and 'perf mem' could provide a subset of
-> > +DAMON's output, but cannot substitute DAMON.  Rather than that, thouse could be
-> 
-> those?
-
-Good eye!  I will fix both in the next spin.
-
-
-Thanks,
-SeongJae Park
