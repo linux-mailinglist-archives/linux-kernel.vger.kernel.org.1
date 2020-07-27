@@ -2,135 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2843922F4CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C392222F4EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 18:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731761AbgG0QSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 12:18:09 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:38928 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728567AbgG0QSC (ORCPT
+        id S1728496AbgG0QVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 12:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726887AbgG0QVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 12:18:02 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06RG7rcA019008;
-        Mon, 27 Jul 2020 12:18:01 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 32ghn5eyqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 12:18:01 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 06RGI06p050926
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 27 Jul 2020 12:18:00 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Mon, 27 Jul
- 2020 12:17:59 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 27 Jul 2020 12:17:59 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 06RGHjXF009637;
-        Mon, 27 Jul 2020 12:17:57 -0400
-From:   <alexandru.tachici@analog.com>
-To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH v7 9/9] dt-bindings: hwmon: Add bindings for ADM1266
-Date:   Mon, 27 Jul 2020 19:19:28 +0300
-Message-ID: <20200727161928.14122-10-alexandru.tachici@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200727161928.14122-1-alexandru.tachici@analog.com>
-References: <20200727161928.14122-1-alexandru.tachici@analog.com>
+        Mon, 27 Jul 2020 12:21:00 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEBCC061794;
+        Mon, 27 Jul 2020 09:21:00 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l64so8967284qkb.8;
+        Mon, 27 Jul 2020 09:21:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aSoHQvLtd5ehDIvkD8A1Zun/yggItMDxrrpLUadcTAw=;
+        b=juLbmz0+JADoY8hY7mPFfnPgqKsiLXa0/ZgsIsQPxwvBK+1zwoDSgnIwXFJhYAR+gC
+         DJHq2rzYTmyPErBh5QLZHYnbsZpKTjOogHny+MBb3CWI982UcI2cTMaYevepp+WCpbwX
+         bbAzsBezBxuV4ay8eJK8XSkYU8EHHTI4hAdStJF8ke/Zl75p5VXt0/uIfeltJCK+1PvZ
+         f2rv+5YAtO+RdeduZ7zZASG2RVdhv1kO4ZJFOmBQzOinPd15qZz+mW/p/SJjkd1R7cJO
+         buFIg6mybDExlZ2tynfPs7QG33RdRIEFrs3ZQzsV5mOJ8lP4u9OhypU8LVxSduhBipAC
+         YFdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aSoHQvLtd5ehDIvkD8A1Zun/yggItMDxrrpLUadcTAw=;
+        b=EfeeER53SGYmgzVo2juW2p18oYNL7kHTJ2Uj9HTtaZMBX19pfrPTbjgSpSqpvH8nif
+         uXdHtuFMm5Bx65huyRT4vSdsVR/cYC5XnCjbtGPtgsKDlI1GRwsNkQ5949jH8qTVNA3z
+         UbxNI0w1rEuQ/ZfuA3A7G8qgIbQPh97bZGP0YevaNaFIQsCXIBLjevrI4eHYo/ZOHivs
+         OSM5Ylh3bH+5jvEPjTrCyQ20CVBELwdzP+owvkt4hhyvolfem0iGPTv82UABdSXj4fkp
+         vKLcx0Zf/ez0hYxs9CSLBszi+LNCkQrUKU9wwbYRoxq1RYBl6RL3QLY1fFSX1pQoj8g2
+         CyaA==
+X-Gm-Message-State: AOAM5314Wn+dGmfVumzFnoQK7DAwZI6rb+q3+gnyHVYppV0/gEEegIKi
+        Mq7NP9YL1qWBTBnufPuokA==
+X-Google-Smtp-Source: ABdhPJymMFQ2ThC0j3BgCcKt/GLFsB37J7SQMX+TN/oVIkqpTBpZ57IPOEMMqcpXXWsqB/0S9Ax25g==
+X-Received: by 2002:a37:ad0a:: with SMTP id f10mr16945474qkm.154.1595866859791;
+        Mon, 27 Jul 2020 09:20:59 -0700 (PDT)
+Received: from localhost.localdomain ([209.94.141.207])
+        by smtp.gmail.com with ESMTPSA id b186sm19081811qkd.28.2020.07.27.09.20.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 09:20:59 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH] block/scsi-ioctl: Prevent kernel-infoleak in scsi_put_cdrom_generic_arg()
+Date:   Mon, 27 Jul 2020 12:19:32 -0400
+Message-Id: <20200727161932.322955-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_11:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 suspectscore=0 malwarescore=0 phishscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007270111
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+scsi_put_cdrom_generic_arg() is copying uninitialized stack memory to
+userspace due to the compiler not initializing holes in statically
+allocated structures. Fix it by initializing `cgc32` using memset().
 
-Add bindings for the Analog Devices ADM1266 sequencer.
-
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+Cc: stable@vger.kernel.org
+Fixes: f3ee6e63a9df ("compat_ioctl: move CDROM_SEND_PACKET handling into scsi")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
 ---
- .../bindings/hwmon/adi,adm1266.yaml           | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
+ block/scsi_ioctl.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml b/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
-new file mode 100644
-index 000000000000..ad92686e2ee6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/adi,adm1266.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/block/scsi_ioctl.c b/block/scsi_ioctl.c
+index ef722f04f88a..1b7f85634751 100644
+--- a/block/scsi_ioctl.c
++++ b/block/scsi_ioctl.c
+@@ -692,16 +692,19 @@ static int scsi_put_cdrom_generic_arg(const struct cdrom_generic_command *cgc,
+ {
+ #ifdef CONFIG_COMPAT
+ 	if (in_compat_syscall()) {
+-		struct compat_cdrom_generic_command cgc32 = {
+-			.buffer		= (uintptr_t)(cgc->buffer),
+-			.buflen		= cgc->buflen,
+-			.stat		= cgc->stat,
+-			.sense		= (uintptr_t)(cgc->sense),
+-			.data_direction	= cgc->data_direction,
+-			.quiet		= cgc->quiet,
+-			.timeout	= cgc->timeout,
+-			.reserved[0]	= (uintptr_t)(cgc->reserved[0]),
+-		};
++		struct compat_cdrom_generic_command cgc32;
 +
-+title: Analog Devices ADM1266 Cascadable Super Sequencer with Margin
-+  Control and Fault Recording
++		memset(&cgc32, 0, sizeof(cgc32));
 +
-+maintainers:
-+  - Alexandru Tachici <alexandru.tachici@analog.com>
++		cgc32.buffer	= (uintptr_t)(cgc->buffer);
++		cgc32.buflen	= cgc->buflen;
++		cgc32.stat	= cgc->stat;
++		cgc32.sense	= (uintptr_t)(cgc->sense);
++		cgc32.data_direction	= cgc->data_direction;
++		cgc32.quiet	= cgc->quiet;
++		cgc32.timeout	= cgc->timeout;
++		cgc32.reserved[0]	= (uintptr_t)(cgc->reserved[0]);
 +
-+description: |
-+  Analog Devices ADM1266 Cascadable Super Sequencer with Margin
-+  Control and Fault Recording.
-+  https://www.analog.com/media/en/technical-documentation/data-sheets/ADM1266.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,adm1266
-+
-+  reg:
-+    description: |
-+      I2C address of slave device.
-+    items:
-+      minimum: 0x40
-+      maximum: 0x4F
-+
-+  avcc-supply:
-+    description: |
-+      Phandle to the Avcc power supply.
-+
-+  adi,master-adm1266:
-+    description: |
-+      Represents phandle of a master ADM1266 device cascaded through the IDB.
-+    $ref: "/schemas/types.yaml#/definitions/phandle"
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        adm1266@40 {
-+                compatible = "adi,adm1266";
-+                reg = <0x40>;
-+        };
-+    };
-+...
+ 		memcpy(&cgc32.cmd, &cgc->cmd, CDROM_PACKET_SIZE);
+ 
+ 		if (copy_to_user(arg, &cgc32, sizeof(cgc32)))
 -- 
-2.20.1
+2.25.1
 
