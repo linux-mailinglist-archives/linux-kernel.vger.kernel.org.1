@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3760D22EF55
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFCC22EEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730729AbgG0OPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41870 "EHLO mail.kernel.org"
+        id S1729678AbgG0OJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:09:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730120AbgG0OP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:15:28 -0400
+        id S1729666AbgG0OJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:09:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 769772083B;
-        Mon, 27 Jul 2020 14:15:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F185B21744;
+        Mon, 27 Jul 2020 14:09:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595859327;
-        bh=19mQB+PQDrdF584KAX767sTni5YlZ0N4xfTr5X9tToo=;
+        s=default; t=1595858976;
+        bh=Pk+z9rpupFYVwE2POqNImMsgZLo8Bdb0kRcwP4YbdoA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0X4n+gqtoMBm/qbS3hOAweEdrh0VjomCn0UP/U33HD0Y0hUUgrRYyN+a40eKwIYRb
-         xXlwbTOmSdnTl1RquSKttZ4lQlw3L5oth0CfNILgM9NKcwQag2XCBudS1rHqTJdf18
-         CPJc0TdSMX+OoMjFb0+4t+4x0RexphZT+WtSXyHY=
+        b=s808wE+330zgE4QiTy0O5EK+QUbuoRSp2VC18RLmdsBsHfzeiWN7IsU4FwoqbuOXJ
+         PmnkACDNVTiKG9rqHj3BcDSdCrl/HaYqbte5xqJK8ygRwX63JIAJZ3xpbA8tRHh7lw
+         01lJfghXBfjR8KYMDKm24aaZUfvaEJs03t9ibwX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Wu Hao <hao.wu@intel.com>,
-        Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/138] fpga: dfl: pci: reduce the scope of variable ret
+        stable@vger.kernel.org, Aaron Merey <amerey@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Subject: [PATCH 4.19 19/86] uprobes: Change handle_swbp() to send SIGTRAP with si_code=SI_KERNEL, to fix GDB regression
 Date:   Mon, 27 Jul 2020 16:03:53 +0200
-Message-Id: <20200727134927.279295285@linuxfoundation.org>
+Message-Id: <20200727134915.327001635@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727134925.228313570@linuxfoundation.org>
-References: <20200727134925.228313570@linuxfoundation.org>
+In-Reply-To: <20200727134914.312934924@linuxfoundation.org>
+References: <20200727134914.312934924@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +45,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xu Yilun <yilun.xu@intel.com>
+From: Oleg Nesterov <oleg@redhat.com>
 
-[ Upstream commit e19485dc7a0d210b428a249c0595769bd495fb71 ]
+commit fe5ed7ab99c656bd2f5b79b49df0e9ebf2cead8a upstream.
 
-This is to fix lkp cppcheck warnings:
+If a tracee is uprobed and it hits int3 inserted by debugger, handle_swbp()
+does send_sig(SIGTRAP, current, 0) which means si_code == SI_USER. This used
+to work when this code was written, but then GDB started to validate si_code
+and now it simply can't use breakpoints if the tracee has an active uprobe:
 
- drivers/fpga/dfl-pci.c:230:6: warning: The scope of the variable 'ret' can be reduced. [variableScope]
-    int ret = 0;
-        ^
+	# cat test.c
+	void unused_func(void)
+	{
+	}
+	int main(void)
+	{
+		return 0;
+	}
 
- drivers/fpga/dfl-pci.c:230:10: warning: Variable 'ret' is assigned a value that is never used. [unreadVariable]
-    int ret = 0;
-            ^
+	# gcc -g test.c -o test
+	# perf probe -x ./test -a unused_func
+	# perf record -e probe_test:unused_func gdb ./test -ex run
+	GNU gdb (GDB) 10.0.50.20200714-git
+	...
+	Program received signal SIGTRAP, Trace/breakpoint trap.
+	0x00007ffff7ddf909 in dl_main () from /lib64/ld-linux-x86-64.so.2
+	(gdb)
 
-Fixes: 3c2760b78f90 ("fpga: dfl: pci: fix return value of cci_pci_sriov_configure")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Acked-by: Wu Hao <hao.wu@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The tracee hits the internal breakpoint inserted by GDB to monitor shared
+library events but GDB misinterprets this SIGTRAP and reports a signal.
+
+Change handle_swbp() to use force_sig(SIGTRAP), this matches do_int3_user()
+and fixes the problem.
+
+This is the minimal fix for -stable, arch/x86/kernel/uprobes.c is equally
+wrong; it should use send_sigtrap(TRAP_TRACE) instead of send_sig(SIGTRAP),
+but this doesn't confuse GDB and needs another x86-specific patch.
+
+Reported-by: Aaron Merey <amerey@redhat.com>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200723154420.GA32043@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/fpga/dfl-pci.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/events/uprobes.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/fpga/dfl-pci.c b/drivers/fpga/dfl-pci.c
-index 538755062ab7c..a78c409bf2c44 100644
---- a/drivers/fpga/dfl-pci.c
-+++ b/drivers/fpga/dfl-pci.c
-@@ -227,7 +227,6 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
- {
- 	struct cci_drvdata *drvdata = pci_get_drvdata(pcidev);
- 	struct dfl_fpga_cdev *cdev = drvdata->cdev;
--	int ret = 0;
- 
- 	if (!num_vfs) {
- 		/*
-@@ -239,6 +238,8 @@ static int cci_pci_sriov_configure(struct pci_dev *pcidev, int num_vfs)
- 		dfl_fpga_cdev_config_ports_pf(cdev);
- 
- 	} else {
-+		int ret;
-+
- 		/*
- 		 * before enable SRIOV, put released ports into VF access mode
- 		 * first of all.
--- 
-2.25.1
-
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1897,7 +1897,7 @@ static void handle_swbp(struct pt_regs *
+ 	if (!uprobe) {
+ 		if (is_swbp > 0) {
+ 			/* No matching uprobe; signal SIGTRAP. */
+-			send_sig(SIGTRAP, current, 0);
++			force_sig(SIGTRAP, current);
+ 		} else {
+ 			/*
+ 			 * Either we raced with uprobe_unregister() or we can't
 
 
