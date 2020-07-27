@@ -2,259 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CE322ED97
+	by mail.lfdr.de (Postfix) with ESMTP id EDCA722ED98
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 15:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgG0Ni7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 09:38:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729066AbgG0Ni4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 09:38:56 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BB2D2083B;
-        Mon, 27 Jul 2020 13:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595857135;
-        bh=Ch8foSKe0HJ0Blu8CEHeXIcdrEOxplMElgo0OhRZ1ZQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uxjlqctLtriqwSUVt8cH1f/HHrHHc+KbWo5gn1UMpZzNqoCSADAoR/MJRCunWW0UX
-         h1BSVnl2xA9lAjY3nhSz84bONKAReQ1ZAd87HYkd1b64duP2lrWsFtlnKKiZJe/vLs
-         KPDmZTsMR3QZX63LUx8QdkkSEaTwqUW9Nc/foGpg=
-Received: by pali.im (Postfix)
-        id 8A270C89; Mon, 27 Jul 2020 15:38:53 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] mmc: sdio: Export SDIO revision and info strings to userspace
-Date:   Mon, 27 Jul 2020 15:38:37 +0200
-Message-Id: <20200727133837.19086-5-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200727133837.19086-1-pali@kernel.org>
-References: <20200727133837.19086-1-pali@kernel.org>
+        id S1729087AbgG0NjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 09:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729069AbgG0Niz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 09:38:55 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B792DC0619D2;
+        Mon, 27 Jul 2020 06:38:55 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t6so8012917plo.3;
+        Mon, 27 Jul 2020 06:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ocZOH/qAxVzRpNDtMIHAj3P48sK/ccO+2zMNnR18J60=;
+        b=sRkfP9q3WiUQNGxVKytVTA1DxMULQ/VpKMX43DZfHIchAb8n8WZeFwIcz7WFSx0GFt
+         I5pi6jULLnS1k1rcTUtnuCjfKn8GD6VSztgUjZn9iTnNr7DF8cjShczCSXPemWLuhBnD
+         VhJSQPrl6F00RB7O1eum8MXUk4H/LrqTYmyFSz/nF9V50sABvZvWSLb2UQVS6g0itTzs
+         AY2rx0Dt51Q8dTGMOt3kjZ55kmGjxOCkBJo+67SJbdRoWXvmWiAkpXqBYirPmMq+6pGy
+         H/b0GRm473V71yIkzP5jGOgWdLFNP2gAtrlyNVxmhTwKs7lQKXF+ULCG3jdkDviFE2Kr
+         UPRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ocZOH/qAxVzRpNDtMIHAj3P48sK/ccO+2zMNnR18J60=;
+        b=PZCHAFukM3ocBNzung60vQSSkDWhwCLuscQWJIafyJLitRJsC9Bg6b+/irzkVcEuvO
+         no8jNCrv353Q+s535tCO36fuVpJO6gA88JQwNe/0dTj3QPZqpL8bBZCBxYg14lovVI7d
+         sl+XMuyDlSETOIQQfpxYK9o3Q1lT5jB8SO2eIcH/nAxq9KGpD8/SkPLgiQPaRRYxM+YF
+         jDvJRu4HU84/GUk2CVwf6jIS9qK/eXLNdR6tV/1xyglOwcNfjwEhEoa0uDyvF83Vjqyt
+         1QQj14fKtVOHFwdqj11EQDcZu+Z/147O6x9bcv2vY7MdfAkiMT/4lkEl29lgwAMAKPwM
+         jgXw==
+X-Gm-Message-State: AOAM530nLEjArBy0v3gDWeQUcUE0mpKGfKjo+N9BoBepEKMcuuyigVmN
+        qxLduY3Xc0nHR/BZl0cNKBt5P09cyEmVEO3BrywVlyJrgAk=
+X-Google-Smtp-Source: ABdhPJwaumQ02E9kw/pSB9Ks/8s/ndn264SasBMVkqJLVdv2Odq4jIRDRFnIFEdRIJwqqZ6RH6bxyj0fK/UPvLukTjo=
+X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr16574129pjp.228.1595857135248;
+ Mon, 27 Jul 2020 06:38:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <CAHp75Vdo22ofbCktupFYbfYy6PQ609fsk5B6u2b3FpfKxs8OQg@mail.gmail.com>
+ <20200727131742.82289-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <20200727131742.82289-1-vaibhavgupta40@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 27 Jul 2020 16:38:40 +0300
+Message-ID: <CAHp75VfmKvAy6bSk70g3c2qJcUzzo0AUhzxR6dFja+ZppGMLRg@mail.gmail.com>
+Subject: Re: [PATCH v2] spi: spi-topcliff-pch: drop call to wakeup-disable
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For SDIO functions, SDIO cards and SD COMBO cards are exported revision
-number and info strings from CISTPL_VERS_1 structure. Revision number
-should indicate compliance of standard and info strings should contain
-product information in same format as product information for PCMCIA cards.
+On Mon, Jul 27, 2020 at 4:21 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
+>
+> Before generic upgrade, both .suspend() and .resume() were invoking
+> pci_enable_wake(pci_dev, PCI_D3hot, 0). Hence, disabling wakeup in both
+> states. (Normal trend is .suspend() enables and .resume() disables the
+> wakeup.)
+>
+> This was ambiguous and may be buggy. Instead of replicating the legacy
+> behavior, drop the wakeup-disable call.
+>
 
-Product information for PCMCIA cards should contain following strings in
-this order: Manufacturer, Product Name, Lot number, Programming Conditions.
+> Fix: f185bcc77980("spi: spi-topcliff-pch: use generic power management")
 
-Note that not all SDIO cards export all those info strings in that order as
-described in PCMCIA Metaformat Specification.
+Fixes: and missed space.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- drivers/mmc/core/bus.c      | 12 ++++++++++++
- drivers/mmc/core/sd.c       | 36 +++++++++++++++++++++++++++++++++---
- drivers/mmc/core/sdio.c     | 24 ++++++++++++++++++++++++
- drivers/mmc/core/sdio_bus.c | 34 ++++++++++++++++++++++++++++++++++
- 4 files changed, 103 insertions(+), 3 deletions(-)
+Note:
 
-diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-index 70207f11a654..c2e70b757dd1 100644
---- a/drivers/mmc/core/bus.c
-+++ b/drivers/mmc/core/bus.c
-@@ -68,6 +68,7 @@ mmc_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
- {
- 	struct mmc_card *card = mmc_dev_to_card(dev);
- 	const char *type;
-+	unsigned int i;
- 	int retval = 0;
- 
- 	switch (card->type) {
-@@ -98,6 +99,17 @@ mmc_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
- 					card->cis.vendor, card->cis.device);
- 		if (retval)
- 			return retval;
-+
-+		retval = add_uevent_var(env, "SDIO_REVISION=%u.%u",
-+					card->major_rev, card->minor_rev);
-+		if (retval)
-+			return retval;
-+
-+		for (i = 0; i < card->num_info; i++) {
-+			retval = add_uevent_var(env, "SDIO_INFO%u=%s", i+1, card->info[i]);
-+			if (retval)
-+				return retval;
-+		}
- 	}
- 
- 	/*
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 5a2210c25aa7..429ca14fa7e1 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -709,10 +709,34 @@ static DEVICE_ATTR(dsr, S_IRUGO, mmc_dsr_show, NULL);
- 
- MMC_DEV_ATTR(vendor, "0x%04x\n", card->cis.vendor);
- MMC_DEV_ATTR(device, "0x%04x\n", card->cis.device);
-+MMC_DEV_ATTR(revision, "%u.%u\n", card->major_rev, card->minor_rev);
-+
-+#define sdio_info_attr(num)									\
-+static ssize_t info##num##_show(struct device *dev, struct device_attribute *attr, char *buf)	\
-+{												\
-+	struct mmc_card *card = mmc_dev_to_card(dev);						\
-+												\
-+	if (num > card->num_info)								\
-+		return -ENODATA;								\
-+	if (!card->info[num-1][0])								\
-+		return 0;									\
-+	return sprintf(buf, "%s\n", card->info[num-1]);						\
-+}												\
-+static DEVICE_ATTR_RO(info##num)
-+
-+sdio_info_attr(1);
-+sdio_info_attr(2);
-+sdio_info_attr(3);
-+sdio_info_attr(4);
- 
- static struct attribute *sd_std_attrs[] = {
- 	&dev_attr_vendor.attr,
- 	&dev_attr_device.attr,
-+	&dev_attr_revision.attr,
-+	&dev_attr_info1.attr,
-+	&dev_attr_info2.attr,
-+	&dev_attr_info3.attr,
-+	&dev_attr_info4.attr,
- 	&dev_attr_cid.attr,
- 	&dev_attr_csd.attr,
- 	&dev_attr_scr.attr,
-@@ -738,9 +762,15 @@ static umode_t sd_std_is_visible(struct kobject *kobj, struct attribute *attr,
- 	struct device *dev = container_of(kobj, struct device, kobj);
- 	struct mmc_card *card = mmc_dev_to_card(dev);
- 
--	/* CIS vendor and device ids are available only for Combo cards */
--	if ((attr == &dev_attr_vendor.attr || attr == &dev_attr_device.attr) &&
--	    card->type != MMC_TYPE_SD_COMBO)
-+	/* CIS vendor and device ids, revision and info string are available only for Combo cards */
-+	if ((attr == &dev_attr_vendor.attr ||
-+	     attr == &dev_attr_device.attr ||
-+	     attr == &dev_attr_revision.attr ||
-+	     attr == &dev_attr_info1.attr ||
-+	     attr == &dev_attr_info2.attr ||
-+	     attr == &dev_attr_info3.attr ||
-+	     attr == &dev_attr_info4.attr
-+	    ) && card->type != MMC_TYPE_SD_COMBO)
- 		return 0;
- 
- 	return attr->mode;
-diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
-index 61ae909730f3..c4a4e67ef0a6 100644
---- a/drivers/mmc/core/sdio.c
-+++ b/drivers/mmc/core/sdio.c
-@@ -29,12 +29,36 @@
- 
- MMC_DEV_ATTR(vendor, "0x%04x\n", card->cis.vendor);
- MMC_DEV_ATTR(device, "0x%04x\n", card->cis.device);
-+MMC_DEV_ATTR(revision, "%u.%u\n", card->major_rev, card->minor_rev);
- MMC_DEV_ATTR(ocr, "0x%08x\n", card->ocr);
- MMC_DEV_ATTR(rca, "0x%04x\n", card->rca);
- 
-+#define sdio_info_attr(num)									\
-+static ssize_t info##num##_show(struct device *dev, struct device_attribute *attr, char *buf)	\
-+{												\
-+	struct mmc_card *card = mmc_dev_to_card(dev);						\
-+												\
-+	if (num > card->num_info)								\
-+		return -ENODATA;								\
-+	if (!card->info[num-1][0])								\
-+		return 0;									\
-+	return sprintf(buf, "%s\n", card->info[num-1]);						\
-+}												\
-+static DEVICE_ATTR_RO(info##num)
-+
-+sdio_info_attr(1);
-+sdio_info_attr(2);
-+sdio_info_attr(3);
-+sdio_info_attr(4);
-+
- static struct attribute *sdio_std_attrs[] = {
- 	&dev_attr_vendor.attr,
- 	&dev_attr_device.attr,
-+	&dev_attr_revision.attr,
-+	&dev_attr_info1.attr,
-+	&dev_attr_info2.attr,
-+	&dev_attr_info3.attr,
-+	&dev_attr_info4.attr,
- 	&dev_attr_ocr.attr,
- 	&dev_attr_rca.attr,
- 	NULL,
-diff --git a/drivers/mmc/core/sdio_bus.c b/drivers/mmc/core/sdio_bus.c
-index 2384829c8fb2..3d709029e07c 100644
---- a/drivers/mmc/core/sdio_bus.c
-+++ b/drivers/mmc/core/sdio_bus.c
-@@ -42,12 +42,36 @@ static DEVICE_ATTR_RO(field)
- sdio_config_attr(class, "0x%02x\n", func->class);
- sdio_config_attr(vendor, "0x%04x\n", func->vendor);
- sdio_config_attr(device, "0x%04x\n", func->device);
-+sdio_config_attr(revision, "%u.%u\n", func->major_rev, func->minor_rev);
- sdio_config_attr(modalias, "sdio:c%02Xv%04Xd%04X\n", func->class, func->vendor, func->device);
- 
-+#define sdio_info_attr(num)									\
-+static ssize_t info##num##_show(struct device *dev, struct device_attribute *attr, char *buf)	\
-+{												\
-+	struct sdio_func *func = dev_to_sdio_func(dev);						\
-+												\
-+	if (num > func->num_info)								\
-+		return -ENODATA;								\
-+	if (!func->info[num-1][0])								\
-+		return 0;									\
-+	return sprintf(buf, "%s\n", func->info[num-1]);						\
-+}												\
-+static DEVICE_ATTR_RO(info##num)
-+
-+sdio_info_attr(1);
-+sdio_info_attr(2);
-+sdio_info_attr(3);
-+sdio_info_attr(4);
-+
- static struct attribute *sdio_dev_attrs[] = {
- 	&dev_attr_class.attr,
- 	&dev_attr_vendor.attr,
- 	&dev_attr_device.attr,
-+	&dev_attr_revision.attr,
-+	&dev_attr_info1.attr,
-+	&dev_attr_info2.attr,
-+	&dev_attr_info3.attr,
-+	&dev_attr_info4.attr,
- 	&dev_attr_modalias.attr,
- 	NULL,
- };
-@@ -98,6 +122,7 @@ static int
- sdio_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
- {
- 	struct sdio_func *func = dev_to_sdio_func(dev);
-+	unsigned int i;
- 
- 	if (add_uevent_var(env,
- 			"SDIO_CLASS=%02X", func->class))
-@@ -107,6 +132,15 @@ sdio_bus_uevent(struct device *dev, struct kobj_uevent_env *env)
- 			"SDIO_ID=%04X:%04X", func->vendor, func->device))
- 		return -ENOMEM;
- 
-+	if (add_uevent_var(env,
-+			"SDIO_REVISION=%u.%u", func->major_rev, func->minor_rev))
-+		return -ENOMEM;
-+
-+	for (i = 0; i < func->num_info; i++) {
-+		if (add_uevent_var(env, "SDIO_INFO%u=%s", i+1, func->info[i]))
-+			return -ENOMEM;
-+	}
-+
- 	if (add_uevent_var(env,
- 			"MODALIAS=sdio:c%02Xv%04Xd%04X",
- 			func->class, func->vendor, func->device))
+% grep one ~/.gitconfig
+       one = show -s --pretty='format:%h (\"%s\")'
+
+% git one f185bcc77980
+f185bcc77980 ("spi: spi-topcliff-pch: use generic power management")
+
+> Reported by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Missed dash. Does checkpatch complain?
+
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/spi/spi-topcliff-pch.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/spi/spi-topcliff-pch.c b/drivers/spi/spi-topcliff-pch.c
+> index 281a90f1b5d8..c73a03ddf5f3 100644
+> --- a/drivers/spi/spi-topcliff-pch.c
+> +++ b/drivers/spi/spi-topcliff-pch.c
+> @@ -1648,8 +1648,6 @@ static int __maybe_unused pch_spi_resume(struct device *dev)
+>
+>         dev_dbg(dev, "%s ENTRY\n", __func__);
+>
+> -       device_wakeup_disable(dev);
+> -
+>         /* set suspend status to false */
+>         pd_dev_save->board_dat->suspend_sts = false;
+>
+> --
+> 2.27.0
+>
+
+
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
