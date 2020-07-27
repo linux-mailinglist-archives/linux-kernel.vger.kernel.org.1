@@ -2,30 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00DB22FC0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2067522FC10
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 00:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgG0WVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 18:21:49 -0400
-Received: from ms.lwn.net ([45.79.88.28]:57956 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726171AbgG0WVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 18:21:48 -0400
+        id S1727777AbgG0WWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 18:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgG0WWq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 18:22:46 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3744FC061794;
+        Mon, 27 Jul 2020 15:22:46 -0700 (PDT)
 Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6464444A;
-        Mon, 27 Jul 2020 22:21:48 +0000 (UTC)
-Date:   Mon, 27 Jul 2020 16:21:47 -0600
+        by ms.lwn.net (Postfix) with ESMTPSA id A0BCC44A;
+        Mon, 27 Jul 2020 22:22:45 +0000 (UTC)
+Date:   Mon, 27 Jul 2020 16:22:44 -0600
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     davem@davemloft.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Greg KH <greg@kroah.com>,
-        trivial@kernel.org
-Subject: Re: [PATCH] devices.txt: document rfkill allocation
-Message-ID: <20200727162147.1fd9de0f@lwn.net>
-In-Reply-To: <20200726075327.GA25647@duo.ucw.cz>
-References: <20200726075327.GA25647@duo.ucw.cz>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-doc@vger.kernel.org,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: adjust kprobes.rst entry to new location
+Message-ID: <20200727162244.2a2395bf@lwn.net>
+In-Reply-To: <20200726055843.10783-1-lukas.bulwahn@gmail.com>
+References: <20200726055843.10783-1-lukas.bulwahn@gmail.com>
 Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -35,26 +43,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 09:53:27 +0200
-Pavel Machek <pavel@ucw.cz> wrote:
+On Sun, 26 Jul 2020 07:58:43 +0200
+Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
 
-> Document rfkill allocation.
+> Commit 2165b82fde82 ("docs: Move kprobes.rst from staging/ to trace/")
+> moved kprobes.rst, but missed to adjust the MAINTAINERS entry.
 > 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 > 
-> diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
-> index 2a97aaec8b12..763fedd94d7d 100644
-> --- a/Documentation/admin-guide/devices.txt
-> +++ b/Documentation/admin-guide/devices.txt
-> @@ -375,8 +375,9 @@
->  		239 = /dev/uhid		User-space I/O driver support for HID subsystem
->  		240 = /dev/userio	Serio driver testing device
->  		241 = /dev/vhost-vsock	Host kernel driver for virtio vsock
-> +		242 = /dev/rfkill	Turning off radio transmissions (rfkill)
->  
-> -		242-254			Reserved for local use
-> +		243-254			Reserved for local use
->  		255			Reserved for MISC_DYNAMIC_MINOR
+>   warning: no file matches    F:    Documentation/staging/kprobes.rst
+> 
+> Adjust the entry to the new file location.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> Naveen, Masami-san, please ack.
+> Jonathan, please pick this minor non-urgent patch into docs-next.
 
 Applied, thanks.
 
