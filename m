@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D0722EE92
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319B822EE6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 16:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729507AbgG0OIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 10:08:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58510 "EHLO mail.kernel.org"
+        id S1728881AbgG0OHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 10:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729472AbgG0OIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 10:08:50 -0400
+        id S1729240AbgG0OH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 10:07:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95D382073E;
-        Mon, 27 Jul 2020 14:08:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58D1920775;
+        Mon, 27 Jul 2020 14:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595858930;
-        bh=hb73mPjW7aVbKLsg8JZT+XC20KzbazBLqYgGJO10gww=;
+        s=default; t=1595858846;
+        bh=XFO+m3iK7LtY6B1k/pVSY4bt5WEHisSrjpPfU8C8G2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ppjSW5SJ2TGWw00VRZVF1bfv46zDVWjFXNd002lcpuJuLUZ/aO4q4k8PEjgFMf10Y
-         ZgP689s/fo3MRupUIhP1sUyff/PWz18GO2D/q+KD1tnrKtZYYp0CgP7eqIdTv2wNSE
-         al60BKYj8Y5clr21/GmMXoNVhIm5G9hphwITpc6o=
+        b=KRwAdmBMn6PwuizklOyl0rMqaASScfVf0dhcKZdIsz2fpoF85tseWIV6qI8UGVtCk
+         ViEAruzyWYeDyBMKqBJO8PdcItspikjX/gWe8cixoUfr6BlKti3JClcKCtTy88CMi5
+         3YYjWAvJa6sE3iETRyp6cr3RCIP1r/eYKaetf50I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Mans Rullgard <mans@mansr.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 25/64] drm: sun4i: hdmi: Fix inverted HPD result
-Date:   Mon, 27 Jul 2020 16:04:04 +0200
-Message-Id: <20200727134912.397758711@linuxfoundation.org>
+Subject: [PATCH 4.14 26/64] net: smc91x: Fix possible memory leak in smc_drv_probe()
+Date:   Mon, 27 Jul 2020 16:04:05 +0200
+Message-Id: <20200727134912.446316264@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
 References: <20200727134911.020675249@linuxfoundation.org>
@@ -45,38 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit baa1841eb797eadce6c907bdaed7cd6f01815404 ]
+[ Upstream commit bca9749b1aa23d964d3ab930938af66dbf887f15 ]
 
-When the extra HPD polling in sun4i_hdmi was removed, the result of
-HPD was accidentally inverted.
+If try_toggle_control_gpio() failed in smc_drv_probe(), free_netdev(ndev)
+should be called to free the ndev created earlier. Otherwise, a memleak
+will occur.
 
-Fix this by inverting the check.
-
-Fixes: bda8eaa6dee7 ("drm: sun4i: hdmi: Remove extra HPD polling")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Tested-by: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200711011030.21997-1-wens@kernel.org
+Fixes: 7d2911c43815 ("net: smc91x: Fix gpios for device tree based booting")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/smsc/smc91x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-index 82cb939351889..c9f1a8cd5f2ac 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c
-@@ -215,7 +215,7 @@ sun4i_hdmi_connector_detect(struct drm_connector *connector, bool force)
- 	unsigned long reg;
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index 96ac0d3af6f5b..f570a37c68c23 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -2294,7 +2294,7 @@ static int smc_drv_probe(struct platform_device *pdev)
+ 		ret = try_toggle_control_gpio(&pdev->dev, &lp->power_gpio,
+ 					      "power", 0, 0, 100);
+ 		if (ret)
+-			return ret;
++			goto out_free_netdev;
  
- 	reg = readl(hdmi->base + SUN4I_HDMI_HPD_REG);
--	if (reg & SUN4I_HDMI_HPD_HIGH) {
-+	if (!(reg & SUN4I_HDMI_HPD_HIGH)) {
- 		cec_phys_addr_invalidate(hdmi->cec_adap);
- 		return connector_status_disconnected;
- 	}
+ 		/*
+ 		 * Optional reset GPIO configured? Minimum 100 ns reset needed
+@@ -2303,7 +2303,7 @@ static int smc_drv_probe(struct platform_device *pdev)
+ 		ret = try_toggle_control_gpio(&pdev->dev, &lp->reset_gpio,
+ 					      "reset", 0, 0, 100);
+ 		if (ret)
+-			return ret;
++			goto out_free_netdev;
+ 
+ 		/*
+ 		 * Need to wait for optional EEPROM to load, max 750 us according
 -- 
 2.25.1
 
