@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEABB22E922
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F07722E924
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Jul 2020 11:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbgG0Jhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 05:37:41 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41492 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727016AbgG0Jhi (ORCPT
+        id S1728216AbgG0JiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 05:38:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgG0JiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 05:37:38 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06R9Vv0S028187;
-        Mon, 27 Jul 2020 11:37:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=y6Q3xzmtzgK/GB+c33+XKmkK12IGii6dx3KQjUYpn1I=;
- b=gqQ4IG3KwKmqVB4G4SP7n92qV1QJ62/Z9QSHCmtwfW+GnN5jyEkeUp21uyVhn2CUPfOI
- PRcyC0x/uvw0i3JduFz8jHqkTBy46/732LDz2BvD2vi3G5L457JuQ7+fH4MAhovhZOHk
- P7nZpXWHfKlk3fUFB2N7xMUFgve0XQJUFDOuXtbvOXY7/vajgBd64Oez6RtySTV3hEGo
- N87wkYcblGQIPurwAZxgn5VEcvMaLxYjxnpag/Ipye7PwLtSxtONM/8yQC6ZGBDLj63F
- +1Gtr1de2XmWFw5ZQU8skzPUSkraSuqvUFGM35hnxVLQszbKDi5+bHrsm8ZYptQtevpI Gw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 32gbmg08wy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 11:37:26 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4234510002A;
-        Mon, 27 Jul 2020 11:37:25 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2E53B2AE6D4;
-        Mon, 27 Jul 2020 11:37:25 +0200 (CEST)
-Received: from lmecxl0995.lme.st.com (10.75.127.48) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 27 Jul
- 2020 11:37:23 +0200
-Subject: Re: [PATCH v3 0/3] Add USB role switch support to DWC2
-To:     Felipe Balbi <balbi@kernel.org>,
-        Minas Harutyunyan <hminas@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Fabrice GASNIER <fabrice.gasnier@st.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-References: <20200724104711.5474-1-amelie.delaunay@st.com>
- <4c44f596-d2c3-6d2f-bf28-9e3964b6e6f1@st.com> <878sf9owcw.fsf@kernel.org>
- <fcff5f96-8383-fd84-35f1-3eb291cd65df@st.com> <871rl0q46a.fsf@kernel.org>
-From:   Amelie DELAUNAY <amelie.delaunay@st.com>
-Message-ID: <94748764-43b2-f11e-fd12-20ef3970c09a@st.com>
-Date:   Mon, 27 Jul 2020 11:37:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 27 Jul 2020 05:38:15 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00C3C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:14 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id a5so4173817wrm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 02:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qC3CDVB7kR9rDCfdJZLYs8Kg8/UF5PfbuV6G/eCKZfg=;
+        b=lnCjxacwzAHt2R2k9vsjrdHuJnI9NhyZHxDnyjUtKw3U3MmDCQItie9CkfkDYGGHP4
+         XeIJSyMymz5IBuuDlALyaYlWVolg41q8s0BMs5KnJSgEC+z12CqdbFFDfIGpb4Og423o
+         E6nI+IaFvBgExDGodgtOz0Tz29Asee8YhO4Ki2rz96JlHwJq3mpulS+TTbtHes6lz6mm
+         agVrRM7NEvOHEJ3eos3/a8VYbO7GGmY4ORLWoiUOi90zOpNzf0mNcd+YnzCifx4dSJRk
+         NPfTLC1SQmXjvNVyRsoLvKWt987ynlEeq2R9Wvk2HMScrHBtax0Ufx8i0LwyLQ1WH6Sn
+         +Aew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qC3CDVB7kR9rDCfdJZLYs8Kg8/UF5PfbuV6G/eCKZfg=;
+        b=nyc7Pb6BxaIeYYzoPOTPPahQrP76Jv4xC6D8wQeYcCy5BwAAOVE4mD/HWvT1YbwV/B
+         HvJpoRpeoBqJxOwnchVs0JBxQXtuhADw2X4NqDmF60PPNjTovaXDQYoYbq9FXkziazTl
+         lPREe9hSVteMOWaDJ8/5pAx+hN1EPzzX8x/RUtOlrX5+Lfvy8mG6t8vkwrDYfFjDUY/X
+         rmqiVRct7zvshfQooKyw17zTq+izm/j0IvMZ6xzuguHi5Y6jEXdZViSuOdMqH0Vvep2i
+         DGA7Cf4FdRojuO1dt6Z7XuiZKaAgP+jOEIjk3hloKjPYKIHnSxLIIZ5tqS50QxCgSmEH
+         4hZA==
+X-Gm-Message-State: AOAM532JB/VTeiyyRIF2t25wNWPVjmRWrBJxajeGwJKLaQhRfUuInGxw
+        /5iFPrWQw1SWfihrGH661/ZI9A==
+X-Google-Smtp-Source: ABdhPJxkg+f3gXXkXPzVNhCME4nqb/wHXSFJO1dBNFDBKMoDQ8HkFPldWS7rLgHDBWRBxPareMatjg==
+X-Received: by 2002:adf:ded0:: with SMTP id i16mr19318452wrn.389.1595842693413;
+        Mon, 27 Jul 2020 02:38:13 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.gmail.com with ESMTPSA id y189sm20566099wmd.27.2020.07.27.02.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 02:38:12 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     vkoul@kernel.org, perex@perex.cz, tiwai@suse.com,
+        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, ckeepax@opensource.cirrus.com,
+        pierre-louis.bossart@linux.intel.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 00/10] ASoC: qdsp6: add gapless compressed audio support
+Date:   Mon, 27 Jul 2020 10:37:56 +0100
+Message-Id: <20200727093806.17089-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <871rl0q46a.fsf@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG8NODE1.st.com (10.75.127.22) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_06:2020-07-27,2020-07-27 signatures=0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset adds gapless compressed audio support on q6asm.
+Gapless on q6asm is implemented using 2 streams in a single q6asm session.
 
-On 7/24/20 6:16 PM, Felipe Balbi wrote:
-> Amelie DELAUNAY <amelie.delaunay@st.com> writes:
-> 
->> Hi,
->>
->> On 7/24/20 3:50 PM, Felipe Balbi wrote:
->>>
->>> (no top-posting, please)
->>>
->>> Hi,
->>>
->>> Amelie DELAUNAY <amelie.delaunay@st.com> writes:
->>>> Series dropped.
->>>
->>> what do you mean with this? Should I drop all patches related with this series?
->>>
->>
->> As v1 patches were in your next branch, I've prepared a new patchset
->> which contains fixes, on top of you next branch :
->> https://lore.kernel.org/patchwork/project/lkml/list/?series=454959
->>
->>
->> What do you prefer ? Drop all patches related to the v1 "Add USB role
->> switch support to DWC2" series and I send a v4 in replacement or keep
->> all patches and wait for new series review ?
-> 
-> I've dropped those because they caused the build breakage :-) I can take
-> a new series, let's take the opportunity to avoid the build regression.
-> 
+First few patches such as stream id per each command, gapless flags
+and silence meta data are for preparedness for adding gapless support.
+Last patch implements copy callback to allow finer control over buffer offsets,
+specially in partial drain cases.
 
-Sure! I've sent the v4, rebased on your testing/next because your next 
-still contains the v1 patches, with the fix for build issue, and 
-adressing Martin's comments. I drop the fixes series.
+This patchset is tested on RB3 aka DB845c platform.
 
-Regards,
-Amelie
+This patchset as it is will support gapless however QDSP can also
+support switching decoders on a single stream. Patches to support such feature
+are send in different patchset which involves adding generic interfaces.
+
+Thanks,
+srini
+
+
+Changes since v2:(mostly suggested by Pierre)
+- removed unnessary kernel style comments,
+- moved TIMESTAMP flag to respective patch.
+- move preparatory code from gapless support patch to new one.
+- fix subject prefix of one patch.
+- add comments to clarify valid stream_ids
+
+Srinivas Kandagatla (10):
+  ASoC: q6asm: rename misleading session id variable
+  ASoC: q6asm: make commands specific to streams
+  ASoC: q6asm: use flags directly from q6asm-dai
+  ASoC: q6asm: add length to write command token
+  ASoC: q6asm: add support to remove intial and trailing silence
+  ASoC: q6asm: add support to gapless flag in q6asm open
+  ASoC: q6asm-dai: add next track metadata support
+  ASoC: q6asm-dai: prepare set params to accept profile change
+  ASoC: q6asm-dai: add gapless support
+  ASoC: q6asm-dai: add support to copy callback
+
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 414 +++++++++++++++++++++++--------
+ sound/soc/qcom/qdsp6/q6asm.c     | 169 +++++++++----
+ sound/soc/qcom/qdsp6/q6asm.h     |  49 ++--
+ 3 files changed, 469 insertions(+), 163 deletions(-)
+
+-- 
+2.21.0
+
