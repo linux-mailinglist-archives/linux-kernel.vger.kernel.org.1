@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8244230D7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DEF230D80
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgG1PRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:17:05 -0400
-Received: from crapouillou.net ([89.234.176.41]:38796 "EHLO crapouillou.net"
+        id S1730776AbgG1PRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:17:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730586AbgG1PRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730640AbgG1PRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Jul 2020 11:17:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595949410; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mCAL3uifqrwrrscsGck77s7dOI7H4T7L/Psu4vIjeNo=;
-        b=ISeLpAy0gBt9aVtGQ7vMvBc4q0lHCwa/EveW3oxDGe2VLWxcbo1TZtHCNHvgG+m9slP+pt
-        QLRE2x9JexqOaaYyVPYr3sCqNRyz5RizX2/BQ+8GsWcYU+HJkZZGt+lmNeSZFP7YWvtTx4
-        xOVVM7wsGxQiBskNouFyBFcQMP8iNyU=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 2/2] drm/ingenic: Validate mode in a .mode_valid callback
-Date:   Tue, 28 Jul 2020 17:16:41 +0200
-Message-Id: <20200728151641.26124-3-paul@crapouillou.net>
-In-Reply-To: <20200728151641.26124-1-paul@crapouillou.net>
-References: <20200728151641.26124-1-paul@crapouillou.net>
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB27E2065C;
+        Tue, 28 Jul 2020 15:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595949425;
+        bh=iVPJO34OY7XxYoQPxs+Z2edcN9FjEC5up2igQlk6TIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NOxKdbdNitc7pl98MAMaeiLTMttCJXbZp9OwbzyaxJYI3eFKSMuDtZ32BHx+CTFqK
+         1Cm7V3LhiqjwC/mAohk+7QWpCTjjfdMDeCF0PehwKh4RaVYe+DWpAll9nMNtR9IPBr
+         Xvwk3KNu3qPVpPNgFjp6ahyyAD7fkf/Qp2OLzVh8=
+Date:   Tue, 28 Jul 2020 11:17:03 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [External] [PATCH 4.19 76/86] mm: memcg/slab: fix memory leak at
+ non-root kmem_cache destroy
+Message-ID: <20200728151703.GM406581@sasha-vm>
+References: <20200727134914.312934924@linuxfoundation.org>
+ <20200727134918.205538211@linuxfoundation.org>
+ <CAMZfGtWVtGeMfu=04LiNVcLrBpmexUryHjy-dujo77CpJhcwGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWVtGeMfu=04LiNVcLrBpmexUryHjy-dujo77CpJhcwGg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Validate modes in the drm_crtc_helper_funcs.mode_valid() callback, which
-is designed for this purpose, instead of doing it in
-drm_crtc_helper_funcs.atomic_check().
+On Tue, Jul 28, 2020 at 08:56:41PM +0800, Muchun Song wrote:
+>On Mon, Jul 27, 2020 at 10:12 PM Greg Kroah-Hartman
+><gregkh@linuxfoundation.org> wrote:
+>>
+>> From: Muchun Song <songmuchun@bytedance.com>
+>>
+>> commit d38a2b7a9c939e6d7329ab92b96559ccebf7b135 upstream.
+>>
+>> If the kmem_cache refcount is greater than one, we should not mark the
+>> root kmem_cache as dying.  If we mark the root kmem_cache dying
+>> incorrectly, the non-root kmem_cache can never be destroyed.  It
+>> resulted in memory leak when memcg was destroyed.  We can use the
+>> following steps to reproduce.
+>>
+>>   1) Use kmem_cache_create() to create a new kmem_cache named A.
+>>   2) Coincidentally, the kmem_cache A is an alias for kmem_cache B,
+>>      so the refcount of B is just increased.
+>>   3) Use kmem_cache_destroy() to destroy the kmem_cache A, just
+>>      decrease the B's refcount but mark the B as dying.
+>>   4) Create a new memory cgroup and alloc memory from the kmem_cache
+>>      B. It leads to create a non-root kmem_cache for allocating memory.
+>>   5) When destroy the memory cgroup created in the step 4), the
+>>      non-root kmem_cache can never be destroyed.
+>>
+>> If we repeat steps 4) and 5), this will cause a lot of memory leak.  So
+>> only when refcount reach zero, we mark the root kmem_cache as dying.
+>>
+>> Fixes: 92ee383f6daa ("mm: fix race between kmem_cache destroy, create and deactivate")
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>> Acked-by: Roman Gushchin <guro@fb.com>
+>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: Christoph Lameter <cl@linux.com>
+>> Cc: Pekka Enberg <penberg@kernel.org>
+>> Cc: David Rientjes <rientjes@google.com>
+>> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+>> Cc: Shakeel Butt <shakeelb@google.com>
+>> Cc: <stable@vger.kernel.org>
+>> Link: http://lkml.kernel.org/r/20200716165103.83462-1-songmuchun@bytedance.com
+>> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>
+>> ---
+>>  mm/slab_common.c |   35 ++++++++++++++++++++++++++++-------
+>>  1 file changed, 28 insertions(+), 7 deletions(-)
+>>
+>> --- a/mm/slab_common.c
+>> +++ b/mm/slab_common.c
+>> @@ -310,6 +310,14 @@ int slab_unmergeable(struct kmem_cache *
+>>         if (s->refcount < 0)
+>>                 return 1;
+>>
+>> +#ifdef CONFIG_MEMCG_KMEM
+>> +       /*
+>> +        * Skip the dying kmem_cache.
+>> +        */
+>> +       if (s->memcg_params.dying)
+>> +               return 1;
+>> +#endif
+>> +
+>>         return 0;
+>>  }
+>>
+>> @@ -832,12 +840,15 @@ static int shutdown_memcg_caches(struct
+>>         return 0;
+>>  }
+>>
+>> -static void flush_memcg_workqueue(struct kmem_cache *s)
+>> +static void memcg_set_kmem_cache_dying(struct kmem_cache *s)
+>>  {
+>>         mutex_lock(&slab_mutex);
+>>         s->memcg_params.dying = true;
+>>         mutex_unlock(&slab_mutex);
+>
+>We should remove mutex_lock/unlock(&slab_mutex) here, because
+>we already hold the slab_mutex from kmem_cache_destroy().
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 34 +++++++++++++----------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+Good catch! I backported 63b02ef7dc4e ("mm: memcg/slab: synchronize
+access to kmem_cache dying flag using a spinlock") instead of changing
+this patch.
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 64eabab3ef69..5dab9c3d0a52 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -199,21 +199,8 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
- {
- 	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
- 	struct drm_plane_state *f1_state, *f0_state, *ipu_state = NULL;
--	long rate;
--
--	if (!drm_atomic_crtc_needs_modeset(state))
--		return 0;
--
--	if (state->mode.hdisplay > priv->soc_info->max_width ||
--	    state->mode.vdisplay > priv->soc_info->max_height)
--		return -EINVAL;
- 
--	rate = clk_round_rate(priv->pix_clk,
--			      state->adjusted_mode.clock * 1000);
--	if (rate < 0)
--		return rate;
--
--	if (priv->soc_info->has_osd) {
-+	if (drm_atomic_crtc_needs_modeset(state) && priv->soc_info->has_osd) {
- 		f1_state = drm_atomic_get_plane_state(state->state, &priv->f1);
- 		if (IS_ERR(f1_state))
- 			return PTR_ERR(f1_state);
-@@ -242,6 +229,24 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
- 	return 0;
- }
- 
-+static enum drm_mode_status
-+ingenic_drm_crtc_mode_valid(struct drm_crtc *crtc, const struct drm_display_mode *mode)
-+{
-+	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
-+	long rate;
-+
-+	if (mode->hdisplay > priv->soc_info->max_width)
-+		return MODE_BAD_HVALUE;
-+	if (mode->vdisplay > priv->soc_info->max_height)
-+		return MODE_BAD_VVALUE;
-+
-+	rate = clk_round_rate(priv->pix_clk, mode->clock * 1000);
-+	if (rate < 0)
-+		return MODE_CLOCK_RANGE;
-+
-+	return MODE_OK;
-+}
-+
- static void ingenic_drm_crtc_atomic_begin(struct drm_crtc *crtc,
- 					  struct drm_crtc_state *oldstate)
- {
-@@ -655,6 +660,7 @@ static const struct drm_crtc_helper_funcs ingenic_drm_crtc_helper_funcs = {
- 	.atomic_begin		= ingenic_drm_crtc_atomic_begin,
- 	.atomic_flush		= ingenic_drm_crtc_atomic_flush,
- 	.atomic_check		= ingenic_drm_crtc_atomic_check,
-+	.mode_valid		= ingenic_drm_crtc_mode_valid,
- };
- 
- static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs = {
 -- 
-2.27.0
-
+Thanks,
+Sasha
