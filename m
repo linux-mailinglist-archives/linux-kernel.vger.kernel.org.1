@@ -2,566 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2862B230881
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3097230884
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729058AbgG1LTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729069AbgG1LTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:19:36 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:58957 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729051AbgG1LTb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Jul 2020 07:19:31 -0400
-Received: from mout.gmx.net ([212.227.17.20]:40445 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729048AbgG1LTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:19:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595935106;
-        bh=V7oRKHspT8bz+DCILEYZfiQBm7br8j1f9O+VvLDkf7E=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Q52Y0ArufaHdGsvzQc6TVQd17WvUyhEJVwOgPL1IEMRxhdjZ37kcUnVq0NPMBygSG
-         2rVHnJ6uvioXiAthij60xJMezf0kjbiuvCm0SyzQC0KNqU29V7inFkEBX8qYpqqra/
-         6XXno87WG0G9S72b4XENCLSAFXY7pAyNBI2W+qoU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([80.208.215.239]) by mail.gmx.com
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1M6DWi-1k6zKz3r9k-006bqj; Tue, 28 Jul 2020 13:18:26 +0200
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ryder Lee <ryder.lee@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
-        chunhui dai <chunhui.dai@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>
-Subject: [PATCH v2 5/5] arm: dts: mt7623: add display subsystem related device nodes
-Date:   Tue, 28 Jul 2020 13:18:00 +0200
-Message-Id: <20200728111800.77641-6-frank-w@public-files.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200728111800.77641-1-frank-w@public-files.de>
-References: <20200728111800.77641-1-frank-w@public-files.de>
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595935169; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Muazobp+CoNoesOGLA1mVEIXf62DcclBDFYpySE7pm8=;
+ b=EsT3sVwLyhw0+c8mRbAI2JjXK0iui03DyJ5XgEsA72d+A7MX4UGIAs3friaNRUJUOnmfzV0Q
+ mtz0txLM50/QEVtSF+nAbAUhTRno3ql5udHDTW6/CPoszbAG2BkVy8jp3GMJhrbEJidmK5ta
+ bhAZux+Bevoc42W0bLGKDhnghFU=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f2009ab634c4259e399c917 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 11:19:07
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB621C433B1; Tue, 28 Jul 2020 11:19:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 859B0C433CA;
+        Tue, 28 Jul 2020 11:19:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BrlD/lpiH2E3b3b7Becre33Vm8cjszLu/2SD+JYKvyLrs5fZW/h
- kxbCfpXSSlfEGZq5VpCGShfMXv+iVQQrIS+V1wEWHld/I4s8vtt4eOH50aDDgHcCvvIaARD
- zs/xJX53X4i7mv4Z/kKkAHbUeuiuw+y9ghx5nAB+bWxcAhobOFAyeCnYuKlqj9b3XHZz+zR
- /TEOY+Q/bnB/CIVfl1BSA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BVkf93G43zQ=:KlzLPO/jav59S0ROnmbWdv
- qZWHge+631AY1hLkzCEDpyVRaslLskbkWkOFFyJ6JJtit8q28u7snKMzvL03kONKuBWw7Ldpw
- CPbxKc3jNNRDqa0du4cEmhQ+Bhqs9iOx/dx5JZtqqaZZq4zURIEn10wMu1SYExKjHxoNFiVnv
- ARW6WjjuLTLOpMCn/vspTIP/iS8dTFB2HS8fouc9qpaWg/myGF1YmZbTSf1sOqqJ4vYNWSYCW
- 0gKgSrWmRE/MdoAKi9Evix27o4MrlBoYuktf9axtfhY9XGBkpToJKEugrmKMolpZEp4fTy67h
- zTBCaknBukuJsMB8qEbx0pQ8Ev7tAuaTu3GyaniPnKgHVK7mUwi5SkTtRkcemRW6XRKeWhtaV
- QDGOpm3vpYO/z+TNBTdndhnMzt4CpXBvQnYyjkiHnpmxLAalsdPLYkyZj35jZebBOgZmCDtBg
- F8KcXCLa5PFcJ/AXuF0vilcgW5VuIdGHZHNFdz8N9NduHtko28asnIAVlTZ7n5OyiJylQ198T
- +xVfsz+1A01pgsChCnEk7EMcIahM+tIf+kshw5bL67FqWGcZh6367Gu880ZmMC/32OhDB0Ect
- CSs4csPuDua8YARxIgQ08hNPlSbL9x5Gz2ACNGXJJD/iclqEno8jZOCNZJWqc35heCG8w2Gns
- hw5ULkmT/rcDX+yDVCjfyREOMbK1/V+KEnE9JxdByx0i5tth3Trq5r0+Hy6PpVz/o7TFl0USz
- ei6uGXXWfICmt1sUT/sigRuKdHtZaqPQIEp51kcq2KgAaIAk1jiZ/cqCh0ZjfvOLV0jt5d5Nf
- 9pT9SiRuAbjXewY3sC2kMTaz5oxCo67Wb7AW14OskS8hlFiyRiZn6XhzpBOBRzkeVM4sOPblZ
- xlTMTfJUT8xkTVyFUrNT+jZNCoMrcM5b3FNkw5rY6+aMNxuy6QlxqY8gtNLuR/HPqGIqdQmLY
- Goj011R+v4liOhPjjMnIRV7Ba+69qR+WhCbs0FB9vUfbuBPZKkBbXv1o75Ix+mZXVtLHPLVWf
- s4d9C3c8Y1E2G2d+8w1oHdeP+yA57jpSJH2nn2M6Avi3v6vZLnmLp6WdFrSbDD9w4b7jgp4xI
- nsXu9RMTgbxLqA0Scf1FGriQZCkoygGZ33cYK1yHWgR7JPMff/sorpBIag679U760a8zDj8tY
- mLAwBKb3de1DrDbwOucFRTiUmvOyCsepmAjrkpZkOoNplLJd5WV3AcC1oPzvSaJzR0DYqPYJs
- wxgIc/9ZWTEYqoQYD9g9qJRxQygJovuh94LVDYQ==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Jul 2020 16:49:05 +0530
+From:   sbhanu@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, rnayak@codeaurora.org,
+        Pradeep P V K <ppvk@codeaurora.org>,
+        devicetree-owner@vger.kernel.org
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7180: Add bandwidth votes for eMMC
+ and SDcard
+In-Reply-To: <20200727191029.GA3191083@google.com>
+References: <1595328381-29552-1-git-send-email-sbhanu@codeaurora.org>
+ <20200724171018.GZ3191083@google.com>
+ <7ffcb56e9e6723f4bae687e0f491cb93@codeaurora.org>
+ <20200727191029.GA3191083@google.com>
+Message-ID: <e83f559bb8691cd602f35e3bd739e5c4@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryder Lee <ryder.lee@mediatek.com>
+On 2020-07-28 00:40, Matthias Kaehlcke wrote:
+> Hi,
+> 
+> On Mon, Jul 27, 2020 at 12:20:38PM +0530, sbhanu@codeaurora.org wrote:
+>> On 2020-07-24 22:40, Matthias Kaehlcke wrote:
+>> > Hi Shaik,
+>> >
+>> > On Tue, Jul 21, 2020 at 04:16:21PM +0530, Shaik Sajida Bhanu wrote:
+>> > > From: Pradeep P V K <ppvk@codeaurora.org>
+>> > >
+>> > > Add the bandwidth domain supporting performance state and
+>> > > the corresponding OPP tables for the sdhc device on sc7180.
+>> > >
+>> > > Signed-off-by: Pradeep P V K <ppvk@codeaurora.org>
+>> > > Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+>> > > ---
+>> > >
+>> > > Changes since V1:
+>> > > 	- Incorporated review comments by Bjorn Andersson.
+>> > > ---
+>> > >  arch/arm64/boot/dts/qcom/sc7180.dtsi | 15 +++++++++++++++
+>> > >  1 file changed, 15 insertions(+)
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> > > b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> > > index 68f9894..d78a066 100644
+>> > > --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> > > +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+>> > > @@ -684,6 +684,9 @@
+>> > >  			clocks = <&gcc GCC_SDCC1_APPS_CLK>,
+>> > >  					<&gcc GCC_SDCC1_AHB_CLK>;
+>> > >  			clock-names = "core", "iface";
+>> > > +			interconnects = <&aggre1_noc MASTER_EMMC &mc_virt SLAVE_EBI1>,
+>> > > +				<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_EMMC_CFG>;
+>> > > +			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>> > >  			power-domains = <&rpmhpd SC7180_CX>;
+>> > >  			operating-points-v2 = <&sdhc1_opp_table>;
+>> > >
+>> > > @@ -704,11 +707,15 @@
+>> > >  				opp-100000000 {
+>> > >  					opp-hz = /bits/ 64 <100000000>;
+>> > >  					required-opps = <&rpmhpd_opp_low_svs>;
+>> > > +					opp-peak-kBps = <100000 100000>;
+>> > > +					opp-avg-kBps = <100000 50000>;
+>> > >  				};
+>> > >
+>> > >  				opp-384000000 {
+>> > >  					opp-hz = /bits/ 64 <384000000>;
+>> > >  					required-opps = <&rpmhpd_opp_svs_l1>;
+>> > > +					opp-peak-kBps = <600000 900000>;
+>> > > +					opp-avg-kBps = <261438 300000>;
+>> > >  				};
+>> > >  			};
+>> > >  		};
+>> > > @@ -2476,6 +2483,10 @@
+>> > >  			clocks = <&gcc GCC_SDCC2_APPS_CLK>,
+>> > >  					<&gcc GCC_SDCC2_AHB_CLK>;
+>> > >  			clock-names = "core", "iface";
+>> > > +
+>> > > +			interconnects = <&aggre1_noc MASTER_SDCC_2 &mc_virt SLAVE_EBI1>,
+>> > > +				<&gem_noc MASTER_APPSS_PROC &config_noc	SLAVE_SDCC_2>;
+>> > > +			interconnect-names = "sdhc-ddr","cpu-sdhc";
+>> > >  			power-domains = <&rpmhpd SC7180_CX>;
+>> > >  			operating-points-v2 = <&sdhc2_opp_table>;
+>> > >
+>> > > @@ -2489,11 +2500,15 @@
+>> > >  				opp-100000000 {
+>> > >  					opp-hz = /bits/ 64 <100000000>;
+>> > >  					required-opps = <&rpmhpd_opp_low_svs>;
+>> > > +					opp-peak-kBps = <160000 100000>;
+>> > > +					opp-avg-kBps = <80000 50000>;
+>> > >  				};
+>> > >
+>> > >  				opp-202000000 {
+>> > >  					opp-hz = /bits/ 64 <202000000>;
+>> > >  					required-opps = <&rpmhpd_opp_svs_l1>;
+>> > > +					opp-peak-kBps = <200000	120000>;
+>> > > +					opp-avg-kBps = <100000 60000>;
+>> > >  				};
+>> > >  			};
+>> > >  		};
+>> >
+>> > Does the sdhci-msm driver actually have BW scaling support at this
+>> > point?
+>> >
+>> 
+>> yes
+>> 
+>> > There is commit 4ece9795be56 ("mmc: sdhci-msm: Add interconnect
+>> > bandwidth scaling support"), whose commit message says "make sure
+>> > interconnect driver is ready before handling interconnect scaling.".
+>> >
+>> > I haven't seen any patch adding the scaling support (supposedly by
+>> > adding dev_pm_opp_set_bw() calls?). Did I miss it? If not it seems
+>> > it would make sense to post it in a series together with this patch,
+>> > as far as I can tell this patch alone does nothing in practical terms.
+>> >
+>> > grep sdhc /sys/kernel/debug/interconnect/interconnect_summary
+>> >   8804000.sdhci                          0            0            0
+>> >   7c4000.sdhci                           0            0            0
+>> >   7c4000.sdhci                           0            0            0
+>> >   8804000.sdhci                          0            0            0
+>> >   ...
+>> 
+>> "mmc: sdhci-msm: Use OPP API to set clk/perf
+>> state"(https://lkml.org/lkml/2020/4/8/425) and "mmc: sdhci-msm: Add
+>> interconnect bandwidth scaling 
+>> support"(https://lkml.org/lkml/2020/3/12/60)
+>> with these two patches scaling will be supported for sdhci-msm driver.
+> 
+> Are you testing with exactly these patches or with the ones that landed
+> upstream? At least the second one changed substantially
+> 
+>> the values  in  grep sdhc
+>> /sys/kernel/debug/interconnect/interconnect_summary will be zero 
+>> during
+>> device is in suspend state...
+> 
+> Yes, I forgot to mention that I started MMC IO before looking at
+> 'interconnect_summary'.
+> 
+>> and the values in  grep sdhc
+>> /sys/kernel/debug/interconnect/interconnect_summary during device in 
+>> resume
+>> state will be like the following::
+>> 
+>> cicalhost / # cat /sys/kernel/debug/interconnect/interconnect_summary 
+>> | grep
+>> sdh
+>>   8804000.sdhci                          0        60000       120000
+>>   7c4000.sdhci                           0       300000       900000
+>>   7c4000.sdhci                           0       300000       900000
+>>   8804000.sdhci                          0        60000       120000
+>>   8804000.sdhci                          0       100000       200000
+>>   7c4000.sdhci                           0       261438       600000
+>>   8804000.sdhci                          0        60000       120000
+> 
+> On my system the bandwidth is never set:
+> 
+> 3.590152] sdhci_msm 7c4000.sdhci: DBG: old/new frequencies (384000000
+> Hz) are same, nothing to do
+> https://elixir.bootlin.com/linux/v5.7.8/source/drivers/opp/core.c#L847
+> 
+> This happens every time, even after the bandwith is set to 0. The 
+> problem
+> seems to be that opp_table->clk doesn't change for target_freq = 0.
+> 
+> My system is based on v5.4, so it is possible that my kernel is missing 
+> some
+> relevant patch from upstream.
+Hi matthias,
 
-Add display subsystem related device nodes for MT7623.
+In order to aviod confusion this patch is continuation of the below 
+patch::
+"mmc: sdhci-msm: Add interconnect bandwidth scaling support" 
+(https://lkml.org/lkml/2020/6/9/160).
 
-Cc: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
-Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Tested-by: Frank Wunderlich <frank-w@public-files.de>
-=2D--
- arch/arm/boot/dts/mt7623.dtsi                 | 177 ++++++++++++++++++
- arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts |  85 +++++++++
- arch/arm/boot/dts/mt7623n-rfb-emmc.dts        |  85 +++++++++
- 3 files changed, 347 insertions(+)
-
-diff --git a/arch/arm/boot/dts/mt7623.dtsi b/arch/arm/boot/dts/mt7623.dtsi
-index a106c0d90a52..d584a3d678ba 100644
-=2D-- a/arch/arm/boot/dts/mt7623.dtsi
-+++ b/arch/arm/boot/dts/mt7623.dtsi
-@@ -24,6 +24,11 @@ / {
- 	#address-cells =3D <2>;
- 	#size-cells =3D <2>;
-
-+	aliases {
-+		rdma0 =3D &rdma0;
-+		rdma1 =3D &rdma1;
-+	};
-+
- 	cpu_opp_table: opp-table {
- 		compatible =3D "operating-points-v2";
- 		opp-shared;
-@@ -321,6 +326,25 @@ pwrap: pwrap@1000d000 {
- 		clock-names =3D "spi", "wrap";
- 	};
-
-+	mipi_tx0: mipi-dphy@10010000 {
-+		compatible =3D "mediatek,mt7623-mipi-tx",
-+			     "mediatek,mt2701-mipi-tx";
-+		reg =3D <0 0x10010000 0 0x90>;
-+		clocks =3D <&clk26m>;
-+		clock-output-names =3D "mipi_tx0_pll";
-+		#clock-cells =3D <0>;
-+		#phy-cells =3D <0>;
-+	};
-+
-+	cec: cec@10012000 {
-+		compatible =3D "mediatek,mt7623-cec",
-+			     "mediatek,mt8173-cec";
-+		reg =3D <0 0x10012000 0 0xbc>;
-+		interrupts =3D <GIC_SPI 182 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&infracfg CLK_INFRA_CEC>;
-+		status =3D "disabled";
-+	};
-+
- 	cir: cir@10013000 {
- 		compatible =3D "mediatek,mt7623-cir";
- 		reg =3D <0 0x10013000 0 0x1000>;
-@@ -369,6 +393,18 @@ apmixedsys: syscon@10209000 {
- 		#clock-cells =3D <1>;
- 	};
-
-+	hdmi_phy: phy@10209100 {
-+		compatible =3D "mediatek,mt7623-hdmi-phy",
-+			     "mediatek,mt2701-hdmi-phy";
-+		reg =3D <0 0x10209100 0 0x24>;
-+		clocks =3D <&apmixedsys CLK_APMIXED_HDMI_REF>;
-+		clock-names =3D "pll_ref";
-+		clock-output-names =3D "hdmitx_dig_cts";
-+		#clock-cells =3D <0>;
-+		#phy-cells =3D <0>;
-+		status =3D "disabled";
-+	};
-+
- 	rng: rng@1020f000 {
- 		compatible =3D "mediatek,mt7623-rng";
- 		reg =3D <0 0x1020f000 0 0x1000>;
-@@ -568,6 +604,16 @@ bch: ecc@1100e000 {
- 		status =3D "disabled";
- 	};
-
-+	hdmiddc0: i2c@11013000 {
-+		compatible =3D "mediatek,mt7623-hdmi-ddc",
-+			     "mediatek,mt8173-hdmi-ddc";
-+		interrupts =3D <GIC_SPI 81 IRQ_TYPE_LEVEL_LOW>;
-+		reg =3D <0 0x11013000 0 0x1C>;
-+		clocks =3D <&pericfg CLK_PERI_I2C3>;
-+		clock-names =3D "ddc-i2c";
-+		status =3D "disabled";
-+	};
-+
- 	nor_flash: spi@11014000 {
- 		compatible =3D "mediatek,mt7623-nor",
- 			     "mediatek,mt8173-nor";
-@@ -766,6 +812,84 @@ mmsys: syscon@14000000 {
- 		#clock-cells =3D <1>;
- 	};
-
-+	display_components: dispsys@14000000 {
-+		compatible =3D "mediatek,mt7623-mmsys",
-+			     "mediatek,mt2701-mmsys";
-+		reg =3D <0 0x14000000 0 0x1000>;
-+		power-domains =3D <&scpsys MT2701_POWER_DOMAIN_DISP>;
-+	};
-+
-+	ovl@14007000 {
-+		compatible =3D "mediatek,mt7623-disp-ovl",
-+			     "mediatek,mt2701-disp-ovl";
-+		reg =3D <0 0x14007000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 153 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DISP_OVL>;
-+		iommus =3D <&iommu MT2701_M4U_PORT_DISP_OVL_0>;
-+		mediatek,larb =3D <&larb0>;
-+	};
-+
-+	rdma0: rdma@14008000 {
-+		compatible =3D "mediatek,mt7623-disp-rdma",
-+			     "mediatek,mt2701-disp-rdma";
-+		reg =3D <0 0x14008000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 152 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DISP_RDMA>;
-+		iommus =3D <&iommu MT2701_M4U_PORT_DISP_RDMA>;
-+		mediatek,larb =3D <&larb0>;
-+	};
-+
-+	wdma@14009000 {
-+		compatible =3D "mediatek,mt7623-disp-wdma",
-+			     "mediatek,mt2701-disp-wdma";
-+		reg =3D <0 0x14009000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 154 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DISP_WDMA>;
-+		iommus =3D <&iommu MT2701_M4U_PORT_DISP_WDMA>;
-+		mediatek,larb =3D <&larb0>;
-+	};
-+
-+	bls: pwm@1400a000 {
-+		compatible =3D "mediatek,mt7623-disp-pwm",
-+			     "mediatek,mt2701-disp-pwm";
-+		reg =3D <0 0x1400a000 0 0x1000>;
-+		#pwm-cells =3D <2>;
-+		clocks =3D <&mmsys CLK_MM_MDP_BLS_26M>,
-+			 <&mmsys CLK_MM_DISP_BLS>;
-+		clock-names =3D "main", "mm";
-+		status =3D "disabled";
-+	};
-+
-+	color@1400b000 {
-+		compatible =3D "mediatek,mt7623-disp-color",
-+			     "mediatek,mt2701-disp-color";
-+		reg =3D <0 0x1400b000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 156 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DISP_COLOR>;
-+	};
-+
-+	dsi: dsi@1400c000 {
-+		compatible =3D "mediatek,mt7623-dsi",
-+			     "mediatek,mt2701-dsi";
-+		reg =3D <0 0x1400c000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 157 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DSI_ENGINE>,
-+			 <&mmsys CLK_MM_DSI_DIG>,
-+			 <&mipi_tx0>;
-+		clock-names =3D "engine", "digital", "hs";
-+		phys =3D <&mipi_tx0>;
-+		phy-names =3D "dphy";
-+		status =3D "disabled";
-+	};
-+
-+	mutex: mutex@1400e000 {
-+		compatible =3D "mediatek,mt7623-disp-mutex",
-+			     "mediatek,mt2701-disp-mutex";
-+		reg =3D <0 0x1400e000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 161 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_MUTEX_32K>;
-+	};
-+
- 	larb0: larb@14010000 {
- 		compatible =3D "mediatek,mt7623-smi-larb",
- 			     "mediatek,mt2701-smi-larb";
-@@ -778,6 +902,44 @@ larb0: larb@14010000 {
- 		power-domains =3D <&scpsys MT2701_POWER_DOMAIN_DISP>;
- 	};
-
-+	rdma1: rdma@14012000 {
-+		compatible =3D "mediatek,mt7623-disp-rdma",
-+			     "mediatek,mt2701-disp-rdma";
-+		reg =3D <0 0x14012000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 164 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DISP_RDMA1>;
-+		iommus =3D <&iommu MT2701_M4U_PORT_DISP_RDMA1>;
-+		mediatek,larb =3D <&larb0>;
-+	};
-+
-+	dpi0: dpi@14014000 {
-+		compatible =3D "mediatek,mt7623-dpi",
-+			     "mediatek,mt2701-dpi";
-+		reg =3D <0 0x14014000 0 0x1000>;
-+		interrupts =3D <GIC_SPI 194 IRQ_TYPE_LEVEL_LOW>;
-+		clocks =3D <&mmsys CLK_MM_DPI1_DIGL>,
-+			 <&mmsys CLK_MM_DPI1_ENGINE>,
-+			 <&apmixedsys CLK_APMIXED_TVDPLL>;
-+		clock-names =3D "pixel", "engine", "pll";
-+		status =3D "disabled";
-+	};
-+
-+	hdmi0: hdmi@14015000 {
-+		compatible =3D "mediatek,mt7623-hdmi",
-+			     "mediatek,mt8173-hdmi";
-+		reg =3D <0 0x14015000 0 0x400>;
-+		clocks =3D <&mmsys CLK_MM_HDMI_PIXEL>,
-+			 <&mmsys CLK_MM_HDMI_PLL>,
-+			 <&mmsys CLK_MM_HDMI_AUDIO>,
-+			 <&mmsys CLK_MM_HDMI_SPDIF>;
-+		clock-names =3D "pixel", "pll", "bclk", "spdif";
-+		phys =3D <&hdmi_phy>;
-+		phy-names =3D "hdmi";
-+		mediatek,syscon-hdmi =3D <&mmsys 0x900>;
-+		cec =3D <&cec>;
-+		status =3D "disabled";
-+	};
-+
- 	imgsys: syscon@15000000 {
- 		compatible =3D "mediatek,mt7623-imgsys",
- 			     "mediatek,mt2701-imgsys",
-@@ -1102,6 +1264,21 @@ pins-cir {
- 		};
- 	};
-
-+	hdmi_pins_a: hdmi-default {
-+		pins-hdmi {
-+			pinmux =3D <MT7623_PIN_123_HTPLG_FUNC_HTPLG>;
-+			input-enable;
-+			bias-pull-down;
-+		};
-+	};
-+
-+	hdmi_ddc_pins_a: hdmi_ddc-default {
-+		pins-hdmi-ddc {
-+			pinmux =3D <MT7623_PIN_124_GPIO124_FUNC_HDMISCK>,
-+				 <MT7623_PIN_125_GPIO125_FUNC_HDMISD>;
-+		};
-+	};
-+
- 	i2c0_pins_a: i2c0-default {
- 		pins-i2c0 {
- 			pinmux =3D <MT7623_PIN_75_SDA0_FUNC_SDA0>,
-diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot=
-/dts/mt7623n-bananapi-bpi-r2.dts
-index 2b760f90f38c..7a1763472018 100644
-=2D-- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-+++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
-@@ -21,6 +21,19 @@ chosen {
- 		stdout-path =3D "serial2:115200n8";
- 	};
-
-+	connector {
-+		compatible =3D "hdmi-connector";
-+		label =3D "hdmi";
-+		type =3D "d";
-+		ddc-i2c-bus =3D <&hdmiddc0>;
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint =3D <&hdmi0_out>;
-+			};
-+		};
-+	};
-+
- 	cpus {
- 		cpu@0 {
- 			proc-supply =3D <&mt6323_vproc_reg>;
-@@ -114,10 +127,24 @@ memory@80000000 {
- 	};
- };
-
-+&bls {
-+	status =3D "okay";
-+
-+	port {
-+		bls_out: endpoint {
-+			remote-endpoint =3D <&dpi0_in>;
-+		};
-+	};
-+};
-+
- &btif {
- 	status =3D "okay";
- };
-
-+&cec {
-+	status =3D "okay";
-+};
-+
- &cir {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&cir_pins_a>;
-@@ -128,6 +155,28 @@ &crypto {
- 	status =3D "okay";
- };
-
-+&dpi0 {
-+	status =3D "okay";
-+
-+	ports {
-+		#address-cells =3D <1>;
-+		#size-cells =3D <0>;
-+		port@0 {
-+			reg =3D <0>;
-+			dpi0_out: endpoint {
-+				remote-endpoint =3D <&hdmi0_in>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg =3D <1>;
-+			dpi0_in: endpoint {
-+				remote-endpoint =3D <&bls_out>;
-+			};
-+		};
-+	};
-+};
-+
- &eth {
- 	status =3D "okay";
-
-@@ -199,6 +248,42 @@ fixed-link {
- 	};
- };
-
-+&hdmi0 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&hdmi_pins_a>;
-+	status =3D "okay";
-+
-+	ports {
-+		#address-cells =3D <1>;
-+		#size-cells =3D <0>;
-+		port@0 {
-+			reg =3D <0>;
-+			hdmi0_in: endpoint {
-+				remote-endpoint =3D <&dpi0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg =3D <1>;
-+			hdmi0_out: endpoint {
-+				remote-endpoint =3D <&hdmi_connector_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&hdmiddc0 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&hdmi_ddc_pins_a>;
-+	status =3D "okay";
-+};
-+
-+&hdmi_phy {
-+	mediatek,ibias =3D <0xa>;
-+	mediatek,ibias_up =3D <0x1c>;
-+	status =3D "okay";
-+};
-+
- &i2c0 {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&i2c0_pins_a>;
-diff --git a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts b/arch/arm/boot/dts/mt=
-7623n-rfb-emmc.dts
-index 0447748f9fa0..c86807a676fc 100644
-=2D-- a/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-+++ b/arch/arm/boot/dts/mt7623n-rfb-emmc.dts
-@@ -24,6 +24,19 @@ chosen {
- 		stdout-path =3D "serial2:115200n8";
- 	};
-
-+	connector {
-+		compatible =3D "hdmi-connector";
-+		label =3D "hdmi";
-+		type =3D "d";
-+		ddc-i2c-bus =3D <&hdmiddc0>;
-+
-+		port {
-+			hdmi_connector_in: endpoint {
-+				remote-endpoint =3D <&hdmi0_out>;
-+			};
-+		};
-+	};
-+
- 	cpus {
- 		cpu@0 {
- 			proc-supply =3D <&mt6323_vproc_reg>;
-@@ -106,10 +119,24 @@ sound {
- 	};
- };
-
-+&bls {
-+	status =3D "okay";
-+
-+	port {
-+		bls_out: endpoint {
-+			remote-endpoint =3D <&dpi0_in>;
-+		};
-+	};
-+};
-+
- &btif {
- 	status =3D "okay";
- };
-
-+&cec {
-+	status =3D "okay";
-+};
-+
- &cir {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&cir_pins_a>;
-@@ -120,6 +147,28 @@ &crypto {
- 	status =3D "okay";
- };
-
-+&dpi0 {
-+	status =3D "okay";
-+
-+	ports {
-+		#address-cells =3D <1>;
-+		#size-cells =3D <0>;
-+		port@0 {
-+			reg =3D <0>;
-+			dpi0_out: endpoint {
-+				remote-endpoint =3D <&hdmi0_in>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg =3D <1>;
-+			dpi0_in: endpoint {
-+				remote-endpoint =3D <&bls_out>;
-+			};
-+		};
-+	};
-+};
-+
- &eth {
- 	status =3D "okay";
-
-@@ -203,6 +252,42 @@ fixed-link {
- 	};
- };
-
-+&hdmi0 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&hdmi_pins_a>;
-+	status =3D "okay";
-+
-+	ports {
-+		#address-cells =3D <1>;
-+		#size-cells =3D <0>;
-+		port@0 {
-+			reg =3D <0>;
-+			hdmi0_in: endpoint {
-+				remote-endpoint =3D <&dpi0_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg =3D <1>;
-+			hdmi0_out: endpoint {
-+				remote-endpoint =3D <&hdmi_connector_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&hdmiddc0 {
-+	pinctrl-names =3D "default";
-+	pinctrl-0 =3D <&hdmi_ddc_pins_a>;
-+	status =3D "okay";
-+};
-+
-+&hdmi_phy {
-+	mediatek,ibias =3D <0xa>;
-+	mediatek,ibias_up =3D <0x1c>;
-+	status =3D "okay";
-+};
-+
- &i2c0 {
- 	pinctrl-names =3D "default";
- 	pinctrl-0 =3D <&i2c0_pins_a>;
-=2D-
-2.25.1
+Thanks,
+sajida
 
