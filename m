@@ -2,259 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3AF230EB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6280230EB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731267AbgG1QCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:02:24 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26174 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731151AbgG1QCX (ORCPT
+        id S1731264AbgG1QCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731136AbgG1QCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595952141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SFNyFdVtoA6jvFVEx573pwq9MAUjMHekOy6Q4vgiQx8=;
-        b=YMoCwgRDiGGnBIjT2vh4NTjdvx2YPncd0op/pbrbvVO9gimWBhIf59uFBR9JG7RLK7lmj4
-        ysd5OXefBgzQ/cd9cxYg8myPL/ylX2j6a+ud2AsvzWYzYn5MzZrIyysnz0LJFNjrAva7m2
-        cYAWiigFfK2sIebcLmrxSLZ1uxzs3hc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-Gr6INdQuMBmOzpXrDYCGiA-1; Tue, 28 Jul 2020 12:02:16 -0400
-X-MC-Unique: Gr6INdQuMBmOzpXrDYCGiA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 894DE800688;
-        Tue, 28 Jul 2020 16:02:11 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-112-109.ams2.redhat.com [10.36.112.109])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE14B5DA72;
-        Tue, 28 Jul 2020 16:01:45 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aleksa Sarai <asarai@suse.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>
-Subject: [PATCH v3 3/3] io_uring: allow disabling rings during the creation
-Date:   Tue, 28 Jul 2020 18:01:01 +0200
-Message-Id: <20200728160101.48554-4-sgarzare@redhat.com>
-In-Reply-To: <20200728160101.48554-1-sgarzare@redhat.com>
-References: <20200728160101.48554-1-sgarzare@redhat.com>
+        Tue, 28 Jul 2020 12:02:07 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9C0EC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 09:02:06 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q4so21749684lji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 09:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4pYEC9dZ+jd5ZdpQ86R7MRp/YpojCjB5i3kRxOXIqZ4=;
+        b=lFPlDrZAPUQGkmZpmSCIMJDbvQtxgVtpwEqHn/z1SvDBcvz/7LeDdZGg4TSxdYSyqk
+         1AL+peXtrZTzNnqgR0xs7Y7977CKVPUok7j3yTy3fQYqP10ZqxqIy+9zptz2JJbZcWaM
+         1mA94lw8guaLpIHv0MPGhj0YPfLyPVmnef/ODkEwrC00hyOPvUfFWOSFl3+GXoyXNH0M
+         t0Vg8hdOAGTu3wxRXFazn8ao0NP1jTcE4K54hUNsuXJb/t0nZB3hCsK7SHo4Zm2aMn1+
+         wgBJCGNHD1ozmLFA67jDuE7KQ9jNegJ3U2Z89iqfBH4vcO/T/fCQt9+msff18hc1XoOU
+         +gfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4pYEC9dZ+jd5ZdpQ86R7MRp/YpojCjB5i3kRxOXIqZ4=;
+        b=ajqnK72K2hXbq+hfNVnrpUUxAZdlwYfljppNQdKMqiEEPkc9FXoS1lO6/VkZpMkgwH
+         hsEahr0X6bdUgHb59WIOP6cc2V3rxJjdbOc9hAWsz7HphLbpnfag3zFQ3BfJhnUbcle4
+         6y3ooQyRCkzU1laFenEHqE/Q9AbzDGxRiHHNUZP6PnN7OguU7Z5CvOXumtV1oDDKwGa7
+         7DucUY2Px63pZXJeGQDjZ8Rjv6s3WSSmgpMW49f0wKtTBhaCsEQQhT3OD4OAVduX0gRO
+         6D6bZ06iX3yTTRcosSTPZbzQPOqCrTUn4P170w2WwoxZoaZHnVPNvQC955/GsIaLn9r5
+         VwdQ==
+X-Gm-Message-State: AOAM532RHoxlrc3XAiRQ91NwTqFPHWJK9yBg9zr36eNgVUeJgErSjHsa
+        M+kNWmanh3RjO4V7FysXTjAWbBCzBNIkhAdyHloGtw==
+X-Google-Smtp-Source: ABdhPJyNDixSOqhlBwh4RtvxiHRwy6t1BD/alks9BCgw7xmmuH8s5mdvp3+TVPFpJ/ycVp044ugkXyxzh7rvfBAZS+Q=
+X-Received: by 2002:a2e:6c14:: with SMTP id h20mr11602812ljc.176.1595952125171;
+ Tue, 28 Jul 2020 09:02:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200727120424.1627555-1-jannh@google.com> <CAB0TPYHx-SkaWR6i0LwLYRJv13_0V3Ak63H0=parZNvS5XdqgA@mail.gmail.com>
+ <CAG48ez23-oOGjeNhFCzrWxJuuJUsdgbpiSiPvM0ov1n+FcLPhw@mail.gmail.com>
+In-Reply-To: <CAG48ez23-oOGjeNhFCzrWxJuuJUsdgbpiSiPvM0ov1n+FcLPhw@mail.gmail.com>
+From:   Martijn Coenen <maco@android.com>
+Date:   Tue, 28 Jul 2020 18:01:54 +0200
+Message-ID: <CAB0TPYEd-UeEeZbn7iDLwXYLRZfS5vSgY4hJTooYdCs3n6FTqA@mail.gmail.com>
+Subject: Re: [PATCH v2] binder: Prevent context manager from incrementing ref 0
+To:     Jann Horn <jannh@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
+        Mattias Nissler <mnissler@google.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a new IORING_SETUP_R_DISABLED flag to start the
-rings disabled, allowing the user to register restrictions,
-buffers, files, before to start processing SQEs.
+Thanks a lot for the detailed explanation, I understood now.
 
-When IORING_SETUP_R_DISABLED is set, SQE are not processed and
-SQPOLL kthread is not started.
+Martijn
 
-The restrictions registration are allowed only when the rings
-are disable to prevent concurrency issue while processing SQEs.
-
-The rings can be enabled using IORING_REGISTER_ENABLE_RINGS
-opcode with io_uring_register(2).
-
-Suggested-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
-v3:
- - enabled restrictions only when the rings start
-
-RFC v2:
- - removed return value of io_sq_offload_start()
----
- fs/io_uring.c                 | 58 +++++++++++++++++++++++++++++------
- include/uapi/linux/io_uring.h |  2 ++
- 2 files changed, 50 insertions(+), 10 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 518986371aae..49db8899fefb 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -225,6 +225,7 @@ struct io_restriction {
- 	DECLARE_BITMAP(sqe_op, IORING_OP_LAST);
- 	u8 sqe_flags_allowed;
- 	u8 sqe_flags_required;
-+	bool registered;
- };
- 
- struct io_ring_ctx {
-@@ -6991,8 +6992,8 @@ static int io_init_wq_offload(struct io_ring_ctx *ctx,
- 	return ret;
- }
- 
--static int io_sq_offload_start(struct io_ring_ctx *ctx,
--			       struct io_uring_params *p)
-+static int io_sq_offload_create(struct io_ring_ctx *ctx,
-+				struct io_uring_params *p)
- {
- 	int ret;
- 
-@@ -7029,7 +7030,6 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
- 			ctx->sqo_thread = NULL;
- 			goto err;
- 		}
--		wake_up_process(ctx->sqo_thread);
- 	} else if (p->flags & IORING_SETUP_SQ_AFF) {
- 		/* Can't have SQ_AFF without SQPOLL */
- 		ret = -EINVAL;
-@@ -7048,6 +7048,12 @@ static int io_sq_offload_start(struct io_ring_ctx *ctx,
- 	return ret;
- }
- 
-+static void io_sq_offload_start(struct io_ring_ctx *ctx)
-+{
-+	if ((ctx->flags & IORING_SETUP_SQPOLL) && ctx->sqo_thread)
-+		wake_up_process(ctx->sqo_thread);
-+}
-+
- static void io_unaccount_mem(struct user_struct *user, unsigned long nr_pages)
- {
- 	atomic_long_sub(nr_pages, &user->locked_vm);
-@@ -7676,9 +7682,6 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
- 	int submitted = 0;
- 	struct fd f;
- 
--	if (current->task_works)
--		task_work_run();
--
- 	if (flags & ~(IORING_ENTER_GETEVENTS | IORING_ENTER_SQ_WAKEUP))
- 		return -EINVAL;
- 
-@@ -7695,6 +7698,12 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
- 	if (!percpu_ref_tryget(&ctx->refs))
- 		goto out_fput;
- 
-+	if (ctx->flags & IORING_SETUP_R_DISABLED)
-+		return -EBADF;
-+
-+	if (current->task_works)
-+		task_work_run();
-+
- 	/*
- 	 * For SQ polling, the thread will do all submissions and completions.
- 	 * Just return the requested submit count, and wake the thread if
-@@ -8000,10 +8009,13 @@ static int io_uring_create(unsigned entries, struct io_uring_params *p,
- 	if (ret)
- 		goto err;
- 
--	ret = io_sq_offload_start(ctx, p);
-+	ret = io_sq_offload_create(ctx, p);
- 	if (ret)
- 		goto err;
- 
-+	if (!(p->flags & IORING_SETUP_R_DISABLED))
-+		io_sq_offload_start(ctx);
-+
- 	memset(&p->sq_off, 0, sizeof(p->sq_off));
- 	p->sq_off.head = offsetof(struct io_rings, sq.head);
- 	p->sq_off.tail = offsetof(struct io_rings, sq.tail);
-@@ -8064,7 +8076,8 @@ static long io_uring_setup(u32 entries, struct io_uring_params __user *params)
- 
- 	if (p.flags & ~(IORING_SETUP_IOPOLL | IORING_SETUP_SQPOLL |
- 			IORING_SETUP_SQ_AFF | IORING_SETUP_CQSIZE |
--			IORING_SETUP_CLAMP | IORING_SETUP_ATTACH_WQ))
-+			IORING_SETUP_CLAMP | IORING_SETUP_ATTACH_WQ |
-+			IORING_SETUP_R_DISABLED))
- 		return -EINVAL;
- 
- 	return  io_uring_create(entries, &p, params);
-@@ -8147,8 +8160,12 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 	size_t size;
- 	int i, ret;
- 
-+	/* Restrictions allowed only if rings started disabled */
-+	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
-+		return -EINVAL;
-+
- 	/* We allow only a single restrictions registration */
--	if (ctx->restricted)
-+	if (ctx->restrictions.registered)
- 		return -EBUSY;
- 
- 	if (!arg || nr_args > IORING_MAX_RESTRICTIONS)
-@@ -8199,7 +8216,7 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 		}
- 	}
- 
--	ctx->restricted = 1;
-+	ctx->restrictions.registered = true;
- 
- 	ret = 0;
- out:
-@@ -8211,6 +8228,21 @@ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
- 	return ret;
- }
- 
-+static int io_register_enable_rings(struct io_ring_ctx *ctx)
-+{
-+	if (!(ctx->flags & IORING_SETUP_R_DISABLED))
-+		return -EINVAL;
-+
-+	if (ctx->restrictions.registered)
-+		ctx->restricted = 1;
-+
-+	ctx->flags &= ~IORING_SETUP_R_DISABLED;
-+
-+	io_sq_offload_start(ctx);
-+
-+	return 0;
-+}
-+
- static bool io_register_op_must_quiesce(int op)
- {
- 	switch (op) {
-@@ -8332,6 +8364,12 @@ static int __io_uring_register(struct io_ring_ctx *ctx, unsigned opcode,
- 			break;
- 		ret = io_unregister_personality(ctx, nr_args);
- 		break;
-+	case IORING_REGISTER_ENABLE_RINGS:
-+		ret = -EINVAL;
-+		if (arg || nr_args)
-+			break;
-+		ret = io_register_enable_rings(ctx);
-+		break;
- 	case IORING_REGISTER_RESTRICTIONS:
- 		ret = io_register_restrictions(ctx, arg, nr_args);
- 		break;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 7303500fc6d3..7f9c92313795 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -94,6 +94,7 @@ enum {
- #define IORING_SETUP_CQSIZE	(1U << 3)	/* app defines CQ size */
- #define IORING_SETUP_CLAMP	(1U << 4)	/* clamp SQ/CQ ring sizes */
- #define IORING_SETUP_ATTACH_WQ	(1U << 5)	/* attach to existing wq */
-+#define IORING_SETUP_R_DISABLED	(1U << 6)	/* start with ring disabled */
- 
- enum {
- 	IORING_OP_NOP,
-@@ -266,6 +267,7 @@ enum {
- 	IORING_REGISTER_PERSONALITY,
- 	IORING_UNREGISTER_PERSONALITY,
- 	IORING_REGISTER_RESTRICTIONS,
-+	IORING_REGISTER_ENABLE_RINGS,
- 
- 	/* this goes last */
- 	IORING_REGISTER_LAST
--- 
-2.26.2
-
+On Tue, Jul 28, 2020 at 4:50 PM Jann Horn <jannh@google.com> wrote:
+>
+> On Tue, Jul 28, 2020 at 3:50 PM Martijn Coenen <maco@android.com> wrote:
+> > On Mon, Jul 27, 2020 at 2:04 PM Jann Horn <jannh@google.com> wrote:
+> > >  - task B opens /dev/binder once, creating binder_proc instance P3
+> > >  - P3 calls P2 (via magic handle 0) with (void*)1 as argument (two-way
+> > >    transaction)
+> > >  - P2 receives the handle and uses it to call P3 (two-way transaction)
+> > >  - P3 calls P2 (via magic handle 0) (two-way transaction)
+> > >  - P2 calls P2 (via handle 1) (two-way transaction)
+> >
+> > Why do you need P3 involved at all? Could P2 just straight away make a
+> > call on handle 1?
+>
+> Yes, it could, I think. IIRC these steps are necessary if you want to
+> actually get a KASAN splat, instead of just a transaction-to-self with
+> no further consequences. It has been a while since I looked at this,
+> but I'll try to figure out again what was going on...
+>
+>
+> A UAF occurs in the following code due to the transaction-to-self,
+> because the "if (t->to_thread == thread)" is tricked into believing
+> that the transaction has already been accepted.
+>
+> static int binder_thread_release(struct binder_proc *proc,
+>                                  struct binder_thread *thread)
+> {
+>         struct binder_transaction *t;
+>         struct binder_transaction *send_reply = NULL;
+>         [...]
+>         t = thread->transaction_stack;
+>         if (t) {
+>                 [...]
+>                 if (t->to_thread == thread)
+>                         send_reply = t;
+>         } else {
+>                 [...]
+>         }
+>         [...]
+>         //NOTE: transaction is freed here because top-of-stack is
+>         //      wrongly treated as already-accepted incoming transaction)
+>         if (send_reply)
+>                 binder_send_failed_reply(send_reply, BR_DEAD_REPLY);
+>         //NOTE pending transaction work is processed here (transaction has not
+>         //     yet been accepted)
+>         binder_release_work(proc, &thread->todo);
+>         [...]
+> }
+>
+> An unaccepted transaction will only have a non-NULL ->to_thread if the
+> transaction has a specific target thread; for a non-reply transaction,
+> that is only the case if it is a two-way transaction that was sent
+> while the binder call stack already contained the target task (iow,
+> the transaction looks like a synchronous callback invocation).
+>
+> With the steps:
+>
+>  - P3 calls P2 (via magic handle 0) with (void*)1 as argument (two-way
+>    transaction)
+>  - P2 receives the handle and uses it to call P3 (two-way transaction)
+>  - P3 calls P2 (via magic handle 0) (two-way transaction)
+>  - P2 calls P2 (via handle 1) (two-way transaction)
+>
+> the call stack will look like this:
+>
+>     P3 -> P2 -> P3 -> P2 -> P2
+>
+> The initial call from P3 to P2 was IIRC just to give P2 a handle to
+> P3; IIRC the relevant part of the call stack was:
+>
+>     P2 -> P3 -> P2 -> P2
+>
+> Because P2 already occurs down in the call stack, the final
+> transaction "P2 -> P2" is considered to be a callback and is
+> thread-directed.
+>
+>
+> The reason why P3 has to be created from task B is the "if
+> (target_node && target_proc->pid == proc->pid)" check for transactions
+> to reference 0.
