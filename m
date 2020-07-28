@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4829722FEEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6222822FEEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgG1Be2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 21:34:28 -0400
+        id S1726799AbgG1Beh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 21:34:37 -0400
 Received: from mail29.static.mailgun.info ([104.130.122.29]:12371 "EHLO
         mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726196AbgG1Be1 (ORCPT
+        by vger.kernel.org with ESMTP id S1726196AbgG1Beg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 21:34:27 -0400
+        Mon, 27 Jul 2020 21:34:36 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595900067; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=DWvh/xe4da4kqEIchXLMEtV/mjQkWQ1/j/n7f+uAWvc=; b=hbGeJr0T9gpGloVVum/Gyq9vZXGrjcsWaAcak7QSM1fykpxhUePWemqOPqBPRDPGVWAd3pyY
- icax1YIbaIrrJQRaFyD87UiGOpxBbGn6NWuYKp8ZPURPOrJYaB3zH6kYtfFXTqTT/hDPfD9J
- roL5xf9hY9qEgtmZoLbZS2fCix4=
+ s=smtp; t=1595900076; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=CoDSX1WVNXx5nXCgug4IsyfF6ELMQT26b+TEZuwyeg8=; b=UnCA4pxGOyupg2C94QJnF6exsZUsSpR2sLi+1igvMqkfqnB+OSsvfniUNkSm5EzvaXpoOdbX
+ lvc6UomU27bHSuwAdCyGsLpELjeC0xkSOv2edg5dXts5PEYY+kGHINtTZBR3iOaqS8n/WKTC
+ Ix06LTcZNfB2N1fiiKEVvehwOR0=
 X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f1f80997186ea1ee16fcc23 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 01:34:17
+ smtp-out-n18.prod.us-east-1.postgun.com with SMTP id
+ 5f1f80a0ca55a5604c738126 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 01:34:24
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1F800C433C6; Tue, 28 Jul 2020 01:34:17 +0000 (UTC)
+        id E346BC433CA; Tue, 28 Jul 2020 01:34:23 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3F016C433C9;
-        Tue, 28 Jul 2020 01:34:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3F016C433C9
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2E90BC433C6;
+        Tue, 28 Jul 2020 01:34:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2E90BC433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
 From:   Tingwei Zhang <tingwei@codeaurora.org>
@@ -49,10 +49,12 @@ Cc:     Tingwei Zhang <tingwei@codeaurora.org>, tsoni@codeaurora.org,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
         Mao Jinlong <jinlmao@codeaurora.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/6] tracing: export event trace and trace_marker
-Date:   Tue, 28 Jul 2020 09:33:53 +0800
-Message-Id: <20200728013359.2326-1-tingwei@codeaurora.org>
+Subject: [PATCH v3 1/6] stm class: ftrace: change dependency to TRACING
+Date:   Tue, 28 Jul 2020 09:33:54 +0800
+Message-Id: <20200728013359.2326-2-tingwei@codeaurora.org>
 X-Mailer: git-send-email 2.20.0
+In-Reply-To: <20200728013359.2326-1-tingwei@codeaurora.org>
+References: <20200728013359.2326-1-tingwei@codeaurora.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -60,37 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ftrace has ability to export trace packets to other destination.
-Currently, only function trace can be exported. This series extends the
-support to event trace and trace_maker. STM is one possible destination to
-export ftrace. Use separate channel for each CPU to avoid mixing up packets
-from different CPUs together.
+We will support copying event trace to STM. Change
+STM_SOURCE_FTRACE to depend on TRACING since we will
+support multiple tracers.
 
-Change from v2:
-Change flag definition to BIT(). (Steven)
-Add comment in stm_ftrace_write() to clarify it's safe to use 
-smp_processor_id() here since preempt is disabled. (Steven) 
+Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ drivers/hwtracing/stm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Change from v1:
-All changes are suggested by Steven Rostedt.
-User separate flag to control function trace, event trace and trace mark.
-Allocate channels according to num_possible_cpu() dynamically.
-Move ftrace_exports routines up so all ftrace can use them.
-
-Tingwei Zhang (6):
-  stm class: ftrace: change dependency to TRACING
-  tracing: add flag to control different traces
-  tracing: add trace_export support for event trace
-  tracing: add trace_export support for trace_marker
-  stm class: ftrace: enable supported trace export flag
-  stm class: ftrace: use different channel accroding to CPU
-
- drivers/hwtracing/stm/Kconfig  |   2 +-
- drivers/hwtracing/stm/ftrace.c |   7 +-
- include/linux/trace.h          |   7 +
- kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
- 4 files changed, 159 insertions(+), 127 deletions(-)
-
+diff --git a/drivers/hwtracing/stm/Kconfig b/drivers/hwtracing/stm/Kconfig
+index d0e92a8a045c..aad594fe79cc 100644
+--- a/drivers/hwtracing/stm/Kconfig
++++ b/drivers/hwtracing/stm/Kconfig
+@@ -71,7 +71,7 @@ config STM_SOURCE_HEARTBEAT
+ 
+ config STM_SOURCE_FTRACE
+ 	tristate "Copy the output from kernel Ftrace to STM engine"
+-	depends on FUNCTION_TRACER
++	depends on TRACING
+ 	help
+ 	  This option can be used to copy the output from kernel Ftrace
+ 	  to STM engine. Enabling this option will introduce a slight
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
