@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7E0231282
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD00231283
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732795AbgG1TYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:24:41 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:37916 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728334AbgG1TYl (ORCPT
+        id S1732808AbgG1TZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:25:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728896AbgG1TZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:24:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=kVGNoG+MJI4rM6HTew7uFrFowsLOmfKHPl5e6Ri5JTE=; b=myYva4PKGKUvQk6qKd+dUMnhSE
-        PmvXmKB2MXRTY0tN/vTtWsj8wpKCufXXCwCSg6aNU6aczeav8e479QtFx4ZgdYUHomcRY1YmquHe9
-        2m2AG2EmdaZNZGI/LnEE/SucBtATmGadyTEnexTpl9JyZ+vqPTlmSZtr3C/dSJZ/X8JwKepEcCyRF
-        YSJpBGzALtYDxH8agA28KBX44vzL+3QnJ2e4BGgtp69jb6WtptK/WPkPz2xQQHPZ5phe5h4t88h8e
-        Xnw3s/mKympr3iNkqf/iu0DmXwWIPUsT33kA1JLXFH8yJMCBVHyx2dCppPwfYumDlvrfijLFnT2ox
-        8Xs2DTdQ==;
-Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
-        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1k0VDK-00017E-K5; Tue, 28 Jul 2020 13:24:39 -0600
-Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
-        (envelope-from <gunthorp@deltatee.com>)
-        id 1k0VDI-0004x7-UV; Tue, 28 Jul 2020 13:24:36 -0600
-From:   Logan Gunthorpe <logang@deltatee.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Kelvin.Cao@microchip.com, Logan Gunthorpe <logang@deltatee.com>
-Date:   Tue, 28 Jul 2020 13:24:34 -0600
-Message-Id: <20200728192434.18993-2-logang@deltatee.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200728192434.18993-1-logang@deltatee.com>
-References: <20200728192434.18993-1-logang@deltatee.com>
+        Tue, 28 Jul 2020 15:25:09 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06SJ2bqg045957;
+        Tue, 28 Jul 2020 15:24:57 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jh6qtf15-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jul 2020 15:24:57 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06SJ31G8047563;
+        Tue, 28 Jul 2020 15:24:57 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 32jh6qtf0b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jul 2020 15:24:56 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06SJOqEL029015;
+        Tue, 28 Jul 2020 19:24:54 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma02fra.de.ibm.com with ESMTP id 32gcq0thsf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jul 2020 19:24:54 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06SJOpvU29032810
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Jul 2020 19:24:51 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 73BE342042;
+        Tue, 28 Jul 2020 19:24:51 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AE8B42047;
+        Tue, 28 Jul 2020 19:24:48 +0000 (GMT)
+Received: from [9.85.75.143] (unknown [9.85.75.143])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Jul 2020 19:24:48 +0000 (GMT)
+Subject: Re: [RESEND PATCH v5 07/11] ppc64/kexec_file: enable early kernel's
+ OPAL calls
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pingfan Liu <piliu@redhat.com>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Petr Tesarik <ptesarik@suse.cz>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+References: <159579157320.5790.6748078824637688685.stgit@hbathini>
+ <159579233676.5790.10701756666641782647.stgit@hbathini>
+ <87365b7nx4.fsf@mpe.ellerman.id.au>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+Message-ID: <23baef6a-6ddc-572a-82c5-21a7fa441485@linux.ibm.com>
+Date:   Wed, 29 Jul 2020 00:54:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, Kelvin.Cao@microchip.com, logang@deltatee.com
-X-SA-Exim-Mail-From: gunthorp@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,MYRULES_NO_TEXT autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: [PATCH 2/2] PCI/switechtec: Add missing __iomem tag to fix sparse warnings
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+In-Reply-To: <87365b7nx4.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_15:2020-07-28,2020-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 suspectscore=0 spamscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=997 bulkscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007280131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a missing __iomem tag in the init_pfn() function. This fixes a
-sparse warning of the form:
 
-   sparse: sparse: incorrect type assignment(different address spaces)
 
-Fixes: 080b47def5e5 ("MicroSemi Switchtec management interface driver")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
----
- drivers/pci/switch/switchtec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 28/07/20 7:16 pm, Michael Ellerman wrote:
+> Hari Bathini <hbathini@linux.ibm.com> writes:
+>> Kernel built with CONFIG_PPC_EARLY_DEBUG_OPAL enabled expects r8 & r9
+>> to be filled with OPAL base & entry addresses respectively. Setting
+>> these registers allows the kernel to perform OPAL calls before the
+>> device tree is parsed.
+> 
+> I'm not convinced we want to do this.
+> 
+> If we do it becomes part of the kexec ABI and we have to honour it into
+> the future.
+> 
+> And in practice there are no non-development kernels built with OPAL early
+> debugging enabled, so it's not clear it actually helps anyone other than
+> developers.
+> 
 
-diff --git a/drivers/pci/switch/switchtec.c b/drivers/pci/switch/switchtec.c
-index 3d5da7f44378..ba52459928f7 100644
---- a/drivers/pci/switch/switchtec.c
-+++ b/drivers/pci/switch/switchtec.c
-@@ -1484,7 +1484,7 @@ static void init_pff(struct switchtec_dev *stdev)
- {
- 	int i;
- 	u32 reg;
--	struct part_cfg_regs *pcfg = stdev->mmio_part_cfg;
-+	struct part_cfg_regs __iomem *pcfg = stdev->mmio_part_cfg;
- 
- 	for (i = 0; i < SWITCHTEC_MAX_PFF_CSR; i++) {
- 		reg = ioread16(&stdev->mmio_pff_csr[i].vendor_id);
--- 
-2.20.1
+Hmmm.. kexec-tools does it since commit d58ad564852c ("kexec/ppc64
+Enable early kernel's OPAL calls") for kexec_load syscall. So, we would
+be breaking kexec ABI either way, I guess.
 
+Let me put this patch at the end of the series in the respin to let you
+decide whether to have it or not..
+
+Thanks
+Hari
