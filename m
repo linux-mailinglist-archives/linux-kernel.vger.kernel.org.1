@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490C52305F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E50230607
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgG1I6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:58:51 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33276 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728271AbgG1I6v (ORCPT
+        id S1728396AbgG1JAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:00:36 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:56557 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726032AbgG1JAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:58:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06S8vkJl179824;
-        Tue, 28 Jul 2020 08:58:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=g/QnWL633DATk/D0Ttai9VtCMe1kqYKn1pLuJll4508=;
- b=d0fBr9UuvVxFncN5aJdjCaBaS89GIgvBdaE5hsb1ypuLwnzmCnSK+pR1X8L+QYEo/804
- +4DfjeKjL5PB+rsHVQwK91uq91ecGDFVkNUmmyceilsqpb9VD9aFmx3kT0NcEaoQ7RpK
- h1I3k12i2lM8Hi4m2gjIXXbFUXezxlHPqEAp9kW1rBKhAJinL3/4YGOy9kYJk0rr3+kW
- tK7yYSZgk7bi+XXGcdcwnQmlfh5y3GPxpUd0QzSIB9aUuPtMIN/z8JhMgEcYkAxTzock
- C8T8mjglL5AbLl4voYh6/BmNVAVprWc/FJhYHJNpHzY9qXNUtr+YwTmzXQMfd9w5OcZC Pw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 32hu1je97s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 28 Jul 2020 08:58:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06S8rKbJ185931;
-        Tue, 28 Jul 2020 08:58:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 32hu5sb3q7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Jul 2020 08:58:43 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 06S8wcra023819;
-        Tue, 28 Jul 2020 08:58:40 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 28 Jul 2020 01:58:37 -0700
-Date:   Tue, 28 Jul 2020 11:58:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Shreeya Patel <shreeya.patel23498@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH] [v2] Staging: rtl8188eu: rtw_mlme: Fix uninitialized
- variable authmode
-Message-ID: <20200728085830.GH1913@kadam>
-References: <20200728072153.9202-1-dinghao.liu@zju.edu.cn>
+        Tue, 28 Jul 2020 05:00:36 -0400
+Received: from mail-qv1-f42.google.com ([209.85.219.42]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1N7Qp1-1krjrg3oQ1-017nYF; Tue, 28 Jul 2020 11:00:34 +0200
+Received: by mail-qv1-f42.google.com with SMTP id y11so5817012qvl.4;
+        Tue, 28 Jul 2020 02:00:33 -0700 (PDT)
+X-Gm-Message-State: AOAM530VPtxzYmmfQKA5oHkCar+PhTxxZNXrtHW4btTVztmDhQCPB+AJ
+        8Pl1IiHWOgO/Jwpp7HbClrTUgsSSKdOqNnbApYo=
+X-Google-Smtp-Source: ABdhPJyHJknGj8GUNL8xLpz4Ao+RH8HsvsNIXL/Mx8WnbEJnfPHwMfS9/LuIY4gTuNauTXnxx9R4Pbevp0lgD1BJOnI=
+X-Received: by 2002:a0c:a992:: with SMTP id a18mr25130279qvb.211.1595926832698;
+ Tue, 28 Jul 2020 02:00:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728072153.9202-1-dinghao.liu@zju.edu.cn>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=962 mlxscore=0
- suspectscore=18 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007280067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9695 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 mlxlogscore=972
- malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
- suspectscore=18 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2007280068
+References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
+ <20200726222703.102701-1-yepeilin.cs@gmail.com> <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
+ <20200727131608.GD1913@kadam> <20200727220456.GA328887@PWN>
+In-Reply-To: <20200727220456.GA328887@PWN>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 28 Jul 2020 11:00:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0CcmchionPJQr_4Gdevo8r8ixed7WHSu8MyYvffagqdg@mail.gmail.com>
+Message-ID: <CAK8P3a0CcmchionPJQr_4Gdevo8r8ixed7WHSu8MyYvffagqdg@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
+ kernel-infoleak in video_put_user()
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vandana BN <bnvandana@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:CsD6pvTl7tWkdFLkCMHcNsU0Eb4AjJHFhM1opzQVkq9DqNF9F2K
+ 3+hAq11J4C3r1H5dbAf6BIpro/m/Ere+KE6QfRYzrfKDJG5LfMjPVB389+aBmwdejXyYR4e
+ oa85ajNCA5fclBFViosNxoLkGI4deAQMIUmxPNjAdP+cdkj/bmQ13N+ev4s7TQsOqHDpRY/
+ eMe/pNgUcAPttZgLCYATQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:o1YSR9rzFCI=:jgDnK1hBT7TXge87+gIjLY
+ SH1LcwCSrFgyWIZAxDkSR+RvNR3HfX7bZbLWCD9y/An6LOOMFFejr6d10LyZNWVLtvad/25lK
+ 8WQ23F59vklG19FGaI5ZK/SrnLZSVgwRWjEtsXjNMC9YvEp3x7ufXhDP3KgYUZKxXm3FROwvw
+ +B5hAsYJ9l+LQH8DlllJ7cIFBuSyCPeURYModC8Spwq/6EOcKigdTGsfuK3hesWUHv2L2HC6N
+ IKLpS+XMfCCSRd5EEBEhxj+erzZRnJXjOjSy6YCKolTDeJsWO+exlP51HmBxzPa+tym0gbL2F
+ 1rE6LGwH33cOgbR1bkCslsF3Z9diMX1b+4L/9RWTPJQ/H+1wtZScqq+oS2/CFl5UnqQxcn4ns
+ pePjB6Gc/2jXtPoU35bDxLe1d3ihchJERnF8l8G4jjCSaJD2SAv9zzVWFcFQzYkcs3VYx/ha8
+ n2yQKLmR6WhEhDxkVwcFsuin3NYTx6VBu4j0ZH9OM4BTcR8KC8nTqFio6nlUqNl5HrwxPhiu4
+ C9ijZ4hCDjU0qPaLqAzWgLjhAu6GIcFi37ZV0MBxg/CUYIGKxETEH3lAUVmAGaipv6lG7wpuW
+ Kz5r11QZY9rc54qmdrDkLh6SBIkI2C81nT85/fdbVBXSJHI191wtl7i6RIfGMUfuVvs0jJSKD
+ RpRpxAJs+3HkVCwfFBEKz65wl6oon5qT9WYc1yn0xqBqRhEdmy0c6xSLsqaAWdmhv+vYrKHnl
+ JnD8vbeaH7RMGfSOjlDiIl1lVgIer0E/RAcwqWlaBOpWqiXVdCKdU4byhAc0vIy2FE+UupWCN
+ qrfE9fOIvLeOYNHRzFAKPi2JHnLrhoVZcw4mNr5FwdF/Z0blUDr0IiVC9BOfgGoBarxSCIAG9
+ kvzrfCLDBF8rQfDQRCzbFNMd0V7SgNEhz5e1c9wy6+tbVp4lLt6L7BPVa07hthciXQ+iLQynl
+ EkQPp1yu1I7bSX77qamxRxRHY8/HOXQYzPRyaxMAFnp4qC1pn0all
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
+On Tue, Jul 28, 2020 at 12:05 AM Peilin Ye <yepeilin.cs@gmail.com> wrote:
+>
+> On Mon, Jul 27, 2020 at 04:16:08PM +0300, Dan Carpenter wrote:
+> > drivers/char/hpet.c:675 hpet_ioctl() warn: check that 'info' doesn't leak information (struct has a hole after 'hi_timer')
+>
+> This one seems like a false positive.
+>
+> drivers/char/hpet.c:670:
+>
+>         mutex_lock(&hpet_mutex);
+>         err = hpet_ioctl_common(file->private_data, cmd, arg, &info);
+>         mutex_unlock(&hpet_mutex);
+>
+>         if ((cmd == HPET_INFO) && !err &&
+>             (copy_to_user((void __user *)arg, &info, sizeof(info))))
+>                 err = -EFAULT;
+>
+> `info` is only being copied to userspace when `cmd` is `HPET_INFO`.
+> However, hpet_ioctl_common() is already doing memset() on `info` in
+> `case HPET_INFO`:
+>
+> drivers/char/hpet.c:612:
+>
+>         case HPET_INFO:
+>                 {
+>                         memset(info, 0, sizeof(*info));
+>                         ^^^^^^
 
-regards,
-dan carpenter
+Yes, makes sense.
 
+      Arnd
