@@ -2,69 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D3223119F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240462311A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732354AbgG1SZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 14:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728401AbgG1SZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:25:28 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5646220714;
-        Tue, 28 Jul 2020 18:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595960727;
-        bh=qp1ca15nlchOHHWpb0GDZ73wbp+5RJCEQgUj8cnylfQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ff0DX65e31G0m+5Hgz2THK4PAsZcNMAcPSBMJ4drm6k/yNHzucgxwUjxzJ2zUtGfF
-         BRdS7iGEG4jO6FwIPpqa/CSzQJihlZ9IkEtyAr9GwODy4o6JPtkpuVPgQeyaB3eZsd
-         sth0X63UplVmflYZb88E+Ca9IDr+HDobPgpo7qMU=
-Date:   Tue, 28 Jul 2020 20:25:19 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
-Cc:     arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com, devel@driverdev.osuosl.org,
+        id S1732371AbgG1S02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 14:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728401AbgG1S0Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 14:26:25 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FE9C061794;
+        Tue, 28 Jul 2020 11:26:25 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 74so3163538pfx.13;
+        Tue, 28 Jul 2020 11:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=6DV3V+yX4qgHFBt1ioftJ+TEjupDH3OyuvsUob7/Y3g=;
+        b=WcN/VsHOC53DbWa5NRGel2NucDFS+cAcQ87OwXgxKNzF0kTGpqhwJouf7ir+jj1HH2
+         osJetdnSxRwmu9LeVZeKJQVkCSte65Qs+XdScpdhiSlGKJWThg79s3m+8ICr+cD6f3Mw
+         Mf3d4HtqlTdeXz6lLK7pmd0ncaPGMVr7RCL+n8+/8PAFKj1bpta+w0YQbtAelX6aBa0n
+         BMxyUewsBOEjj/syMOiQJhtqsQKxAOx7rZwt6OLFLmsEKeSJQ4AzZSIE5URmeAk867Hn
+         7QsqLCijlP1oUJQYjUTgTdRv3aEblNrEqGzwr1D+EqatjiGN1HyIQiqvVPC/JKPckOKF
+         EAtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6DV3V+yX4qgHFBt1ioftJ+TEjupDH3OyuvsUob7/Y3g=;
+        b=HGbtVnNfoSR/qV2ICa9K8vgPYQE3D1d8nJDczuFHFp4qxPxnVt6JWD5HWXlT5F6dF7
+         n1qY5jZODCLj8GKVmVBl4+ksyx6gbStJwUtX9gR3FKoZ3FC9mq3/wsqeIH8oavEKaq/8
+         wyg+fixD2xlTI1Df9bp1p+r723FOgeQopGn7aDCIvjhXtIpG2m3nNQw1LRjak5VXOCw4
+         SVXUNcjJllg8cXSVVZStq+kEd8zLz4mBuowCNPt0onEdjp6EPxKgj0PTcQe4xNoHtwI8
+         abOewAy9iBCzC9F4WWw5tWhqzz5pZEey8wpjYF4Mh50FW4YDhlsj0CPiCXSksVE5/r1z
+         G8iQ==
+X-Gm-Message-State: AOAM533CSCpJKQWhwquCfADvIdJOAmNFd2gD++zIDabCVjeESorx/U/1
+        YjPi8+ISSKQxUUD52YL1DwI=
+X-Google-Smtp-Source: ABdhPJyeRavnmxgxHczvOxuczSEdzmGjktFz6w3Y0da7zpoupkk9LJF153KOnrxabgGU6VQvuDSlRQ==
+X-Received: by 2002:a63:531e:: with SMTP id h30mr24547863pgb.165.1595960785240;
+        Tue, 28 Jul 2020 11:26:25 -0700 (PDT)
+Received: from localhost.localdomain ([132.154.123.243])
+        by smtp.gmail.com with ESMTPSA id e8sm8580395pfd.34.2020.07.28.11.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 11:26:24 -0700 (PDT)
+From:   Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+To:     manishc@marvell.com, gregkh@linuxfoundation.org
+Cc:     Dhiraj Sharma <dhiraj.sharma0024@gmail.com>,
+        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: android: ashmem: used const keyword
-Message-ID: <20200728182519.GA328787@kroah.com>
-References: <20200728175935.2130-1-dhiraj.sharma0024@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728175935.2130-1-dhiraj.sharma0024@gmail.com>
+Subject: [PATCH] staging: qlge: qlge_dbg: removed comment repition
+Date:   Tue, 28 Jul 2020 23:56:10 +0530
+Message-Id: <20200728182610.2538-1-dhiraj.sharma0024@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 11:29:35PM +0530, Dhiraj Sharma wrote:
-> I ran checkpatch.pl script which reported a warning to use const keyword
-> on line 370.Therefore I made this change.
-> 
-> Signed-off-by: Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
-> ---
->  drivers/staging/android/ashmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
-> index c05a214191da..f9cfa15b785f 100644
-> --- a/drivers/staging/android/ashmem.c
-> +++ b/drivers/staging/android/ashmem.c
-> @@ -367,7 +367,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
-> 
->  static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
->  {
-> -	static struct file_operations vmfile_fops;
-> +	static const struct file_operations vmfile_fops;
+Inside function ql_get_dump comment statement had a repition of word
+"to" which I removed and checkpatch.pl ouputs zero error or warnings
+now.
 
-You have now submitted two patches that you obviously never even built,
-which is the first step in kernel development :(
+Signed-off-by: Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+---
+ drivers/staging/qlge/qlge_dbg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please be more careful next time.
+diff --git a/drivers/staging/qlge/qlge_dbg.c b/drivers/staging/qlge/qlge_dbg.c
+index 985a6c341294..a55bf0b3e9dc 100644
+--- a/drivers/staging/qlge/qlge_dbg.c
++++ b/drivers/staging/qlge/qlge_dbg.c
+@@ -1298,7 +1298,7 @@ void ql_get_dump(struct ql_adapter *qdev, void *buff)
+ 	 * If the dump has already been taken and is stored
+ 	 * in our internal buffer and if force dump is set then
+ 	 * just start the spool to dump it to the log file
+-	 * and also, take a snapshot of the general regs to
++	 * and also, take a snapshot of the general regs
+ 	 * to the user's buffer or else take complete dump
+ 	 * to the user's buffer if force is not set.
+ 	 */
+--
+2.17.1
 
-greg k-h
