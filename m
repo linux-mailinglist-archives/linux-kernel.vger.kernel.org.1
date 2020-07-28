@@ -2,95 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85707230740
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDDE230745
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbgG1KED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        id S1728573AbgG1KGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728655AbgG1KD5 (ORCPT
+        with ESMTP id S1728496AbgG1KF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:03:57 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15424C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:03:57 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a9so11237494pjd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:03:57 -0700 (PDT)
+        Tue, 28 Jul 2020 06:05:59 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA27C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:05:59 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id c80so16739683wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:05:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TqL6Hf6c4QekoFaLOlZu1oX0uTrAmJv+cvAaJuBUQvY=;
-        b=Wv+dkdLgt5GaTHUTC/zxSY0/FqradzfyAopvOn1bQ1JvKPgFGgUAds2ZLqfsUngRTK
-         1MXSX/omDXR6Qeo+mkRGjd3WqRMSDLnwV+r3o/s07aaiTR4sln2PkDtwTYPf3QolzgHS
-         2wb2lh8g3wPmHx57IMN/erWNWw8kt73tMJOvw=
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=acftKy5haTTez29DldMveP4DByaH/OvKD4GTibGUU4c=;
+        b=Rgc3hv+0TiPIPSmJyeuNzphIlAXlhB57Ndn3MyQQjhGIRo7fBOZm0ddElDeMWTuygZ
+         dRjmlW9ouLZrHpVmLNTsw5F8YzqPnchsPuj2Cp2NtvtEiUwEwfBSoH4odVJmHnJnGvNj
+         ZU7+Jlag9E0ffsFq77QUbAE/vznnG4tQCQ1ivZhMFZdROTfoFMcmOO+b7ZaZB5HMpSv3
+         L5dahpKCwrcOQcp5Rq8BJFAWUEBFhMdwLUSSPyF8G+AbkXhzSUhy0ZUZBukxzZr9VFhi
+         a9ZertakXO+gT9GioNeRWN6ytFTIETHAcEJBIvBse019ratABWkASFXNxtE3aSY/GN1/
+         EZ1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TqL6Hf6c4QekoFaLOlZu1oX0uTrAmJv+cvAaJuBUQvY=;
-        b=ibBRgrsgpRe3YlH458IVQTYz0mI0aSxnrpREv3bN31ZtCvuw1zSlf9aXwg4DUE0D7b
-         9TRdTWT/7tckgvZzvED1EaWJg6h9hcBTfBC2p4eE7ybY+EM1Hq7Dw7A1vvhEJEwgtmdr
-         XfkvFU0mAkP9bTrvvVo+64THw1ZeZGoenG0IA5FRiiHVS9tLrlEC0qjwujIsRobXQE50
-         ugFHeOiw3i05dqYfFfmmkPFF3nrhdH8DCTmdC+BofFE455fnfizW2o0Mreh/g/5Pk3I6
-         DzeoAkAlICU1vYQjOcYs9EauxlhTRdTgVyeB2qGrQnJo+f6/xRAM/9qOztqynMkRQPsW
-         w81w==
-X-Gm-Message-State: AOAM532RDNxQq5B25kK5EbCW/dFQqQM3Pb63UYFAZIP6eyy6Oi7VLaPx
-        yN4Miff8N7YgGOMjMB9jAPJcEQ==
-X-Google-Smtp-Source: ABdhPJwIMReWpM39kk9lbKtgYuSrVGQ0fXaPXcyqtWpE61ZnhacKeju0jsGrkiCHXZ05muiy3/Sn4A==
-X-Received: by 2002:a17:90b:f16:: with SMTP id br22mr3914793pjb.170.1595930636601;
-        Tue, 28 Jul 2020 03:03:56 -0700 (PDT)
-Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
-        by smtp.googlemail.com with ESMTPSA id u66sm17779018pfb.191.2020.07.28.03.03.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 03:03:56 -0700 (PDT)
-From:   Daniel Palmer <daniel@0x0f.com>
-To:     soc@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
-        Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2 9/9] ARM: mstar: Add reboot support
-Date:   Tue, 28 Jul 2020 19:03:21 +0900
-Message-Id: <20200728100321.1691745-10-daniel@0x0f.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200728100321.1691745-1-daniel@0x0f.com>
-References: <20200728100321.1691745-1-daniel@0x0f.com>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=acftKy5haTTez29DldMveP4DByaH/OvKD4GTibGUU4c=;
+        b=BsUWydoww/snyHsc7SwswyG1RkaBFbCqRT4g5IBQb6+dvVadoATF0XBQiVhJhSttlR
+         6N4LmuC/7WisbJP/wGgcXqeiOHt/meZTBaimPbqvgZYS72Lm0ncKuVYCdKe72nbJ8RyZ
+         mRQmv+EiVzGVtsgdSvZmrWw2SrJkuTAZV0cb1HXLjDhOnpie6sShZGUb3SWQjKZUN9JW
+         W12HyPhaKYcyoTayDMl7Z6uXde9rEcr+YkbJUppcPGMnNF/1o+ZIXTZxQHamVuvKJwSP
+         JmPzq2TAqdBTgCdaS7Zgm+YwegaoWXgKP5+qpV96vrMFe3pjUUHqeItqYTdPo5QU3l2h
+         sKSA==
+X-Gm-Message-State: AOAM531CJzomtLonFHa8brvm6kZDAoUOJtDX3DhItLIWKThP9kOWq4Kf
+        zPaS8or2QOZPl3VUBv4ypylpCg==
+X-Google-Smtp-Source: ABdhPJwMEO6MXfxPWKVzQyfOwgd+Lnn1mfBFwcsn5n3Aff24Y/ORpbQAQBqKE1qjHnpg35DJaCfWOQ==
+X-Received: by 2002:a1c:1b93:: with SMTP id b141mr3393238wmb.150.1595930757237;
+        Tue, 28 Jul 2020 03:05:57 -0700 (PDT)
+Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id x4sm17668932wru.81.2020.07.28.03.05.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 28 Jul 2020 03:05:56 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Tue, 28 Jul 2020 12:05:55 +0200
+To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+Cc:     Sumit Garg <sumit.garg@linaro.org>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, ricardo@foundries.io,
+        Michael Scott <mike@foundries.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        op-tee@lists.trustedfirmware.org,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv2 2/2] hwrng: optee: fix wait use case
+Message-ID: <20200728100555.GA2074@trex>
+References: <20200723084622.31134-1-jorge@foundries.io>
+ <20200723084622.31134-2-jorge@foundries.io>
+ <CAFA6WYPQ3GGYostoHU=6qg4c_LqoqOZVbZ8gbQbGkNfyGydQjQ@mail.gmail.com>
+ <20200724142305.GA24164@trex>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200724142305.GA24164@trex>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MStar v7 SoCs support reset by writing a magic value to a register
-in the "pmsleep" area.
+On 24/07/20, Jorge Ramirez-Ortiz, Foundries wrote:
+> On 24/07/20, Sumit Garg wrote:
+> > On Thu, 23 Jul 2020 at 14:16, Jorge Ramirez-Ortiz <jorge@foundries.io> wrote:
+> > >
+> > > The current code waits for data to be available before attempting a
+> > > second read. However the second read would not be executed as the
+> > > while loop exits.
+> > >
+> > > This fix does not wait if all data has been read and reads a second
+> > > time if only partial data was retrieved on the first read.
+> > >
+> > > This fix also does not attempt to read if not data is requested.
+> > 
+> > I am not sure how this is possible, can you elaborate?
+> 
+> currently, if the user sets max 0, get_optee_rng_data will regardless
+> issuese a call to the secure world requesting 0 bytes from the RNG
+> 
+> with this patch, this request is avoided.
+> 
+> > 
+> > >
+> > > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> > > ---
+> > >  v2: tidy up the while loop to avoid reading when no data is requested
+> > >
+> > >  drivers/char/hw_random/optee-rng.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/char/hw_random/optee-rng.c b/drivers/char/hw_random/optee-rng.c
+> > > index 5bc4700c4dae..a99d82949981 100644
+> > > --- a/drivers/char/hw_random/optee-rng.c
+> > > +++ b/drivers/char/hw_random/optee-rng.c
+> > > @@ -122,14 +122,14 @@ static int optee_rng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
+> > >         if (max > MAX_ENTROPY_REQ_SZ)
+> > >                 max = MAX_ENTROPY_REQ_SZ;
+> > >
+> > > -       while (read == 0) {
+> > > +       while (read < max) {
+> > >                 rng_size = get_optee_rng_data(pvt_data, data, (max - read));
+> > >
+> > >                 data += rng_size;
+> > >                 read += rng_size;
+> > >
+> > >                 if (wait && pvt_data->data_rate) {
+> > > -                       if (timeout-- == 0)
+> > > +                       if ((timeout-- == 0) || (read == max))
+> > 
+> > If read == max, would there be any sleep?
+> 
+> no but I see no reason why there should be a wait since we already have
+> all the data that we need; the msleep is only required when we need to
+> wait for the RNG to generate entropy for the number of bytes we are
+> requesting. if we are requesting 0 bytes, the entropy is already
+> available. at leat this is what makes sense to me.
+> 
+>
 
-This adds a node for using the syscon reboot driver to trigger a reset.
+any further comments?
 
-Signed-off-by: Daniel Palmer <daniel@0x0f.com>
----
- arch/arm/boot/dts/mstar-v7.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/arm/boot/dts/mstar-v7.dtsi b/arch/arm/boot/dts/mstar-v7.dtsi
-index bb7fb3e689a7..c7458c67c4df 100644
---- a/arch/arm/boot/dts/mstar-v7.dtsi
-+++ b/arch/arm/boot/dts/mstar-v7.dtsi
-@@ -78,6 +78,13 @@ pmsleep: syscon@1c00 {
- 				reg = <0x1c00 0x100>;
- 			};
- 
-+			reboot {
-+				compatible = "syscon-reboot";
-+				regmap = <&pmsleep>;
-+				offset = <0xb8>;
-+				mask = <0x79>;
-+			};
-+
- 			l3bridge: l3bridge@204400 {
- 				compatible = "mstar,l3bridge";
- 				reg = <0x204400 0x200>;
--- 
-2.27.0
-
+> > 
+> > -Sumit
+> > 
+> > >                                 return read;
+> > >                         msleep((1000 * (max - read)) / pvt_data->data_rate);
+> > >                 } else {
+> > > --
+> > > 2.17.1
+> > >
