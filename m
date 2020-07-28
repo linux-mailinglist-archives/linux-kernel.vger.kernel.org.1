@@ -2,130 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A3A230D1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F24A230D71
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730645AbgG1PKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730556AbgG1PKP (ORCPT
+        id S1730900AbgG1POd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:14:33 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:44850 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730887AbgG1POa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:10:15 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80E2C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:10:13 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c80so17646887wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yoaV8EiIxu54dsFIyU0qdvYTV9Nos1kcoN3M/Zvq+Z8=;
-        b=oPm1eOTKzWnAqS5MU6mSlSrX5N1BhOrhoJz8NsUIH4WoueF1QeJdRlXIuDeIbPw/1R
-         V15xq8XH1hmSvtP0/JmCEw5PGrzsLToKzbXYE3dqAOl5/0jb4MRPaAmQ2ORdHUcFbdHe
-         DZX1uNWDKlhEcmvzcQSlxOCnTj8r9QfxvxERm16MIn9heQtAUFMpazXta1UyzxhN3rw4
-         GalYPH8T1XcfqzmBhftP+J0AndZznl0EcTSLLYD4CA7Y3d81IR4gydyEthoR35CLjy7b
-         BGMasywv/e+ePgnSYZRv57hCaFXKWZv94DjQpOPAP68dc2zYGp2aQQBXrhA/Qv3X11qR
-         55Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yoaV8EiIxu54dsFIyU0qdvYTV9Nos1kcoN3M/Zvq+Z8=;
-        b=CQBaN+trp2I2A/LpOQhfhSzAzw/Z5qRZ1NhowU45Zn6fV4ulM9rd2ESpJ11Oa1tsOp
-         SXOVmEDUGl061mCuvW21SEqL2G7TRGLKDcvXQQ2XhH7JC2pV+Umh3o5sDmUGzNEIvz95
-         70F+XihKKvUG/PBExwyxOPOThupgvoJ3BF0lJSnTMOc4/ZqBPkwPXpEWSOs87hagAqhn
-         32kK0WzADojlXO3V1A5/KkIb5Zwrmirvw4Xznfz7j69vSyS7CNktqFc28f+6s5grU7gl
-         rv/IfzhBPPyvSRtyZAUSA6VXQNEezS4ddEsFrLJlQQ5TSWCzj4xdM0ZWSRYW+e/vIagZ
-         JmBg==
-X-Gm-Message-State: AOAM530AfPCqUogaU0yXkoHXdVeWCmN78JhTfIFMbPUXRdvNEMVNduuj
-        RQOqCBVBAIf3+wN1uQTHBmXHqqBApJ+wp7c7LlstfQ==
-X-Google-Smtp-Source: ABdhPJyNYOA6mCmdd4k+gqY/yaotErgNgTwjweShu/vSvjyf4/SAxApHi7n17d+UDmL6h8xlukBGzg/W25y9L1n/yS8=
-X-Received: by 2002:a7b:cf18:: with SMTP id l24mr4420427wmg.116.1595949012379;
- Tue, 28 Jul 2020 08:10:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <c76f3fe7ded07234e711007330ea40d32c461119.1594230107.git-series.maxime@cerno.tech>
-In-Reply-To: <c76f3fe7ded07234e711007330ea40d32c461119.1594230107.git-series.maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 28 Jul 2020 16:09:54 +0100
-Message-ID: <CAPY8ntD+Wz3C8gnTuoZB0SPFhmGD_FqNgEDcxHOWeV5n94UtqQ@mail.gmail.com>
-Subject: Re: [PATCH v4 73/78] drm/vc4: hdmi: Switch to blank pixels when disabled
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
+        Tue, 28 Jul 2020 11:14:30 -0400
+Received: from 89-64-88-69.dynamic.chello.pl (89.64.88.69) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 197c8e6c67be01ba; Tue, 28 Jul 2020 17:14:27 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Doug Smythies <dsmythies@telus.net>,
+        Francisco Jerez <francisco.jerez.plata@intel.com>
+Subject: [PATCH v4 1/2] cpufreq: intel_pstate: Rearrange the storing of new EPP values
+Date:   Tue, 28 Jul 2020 17:11:03 +0200
+Message-ID: <1665283.zxI7kaGBi8@kreacher>
+In-Reply-To: <13207937.r2GEYrEf4f@kreacher>
+References: <4981405.3kqTVLv5tO@kreacher> <1709487.Bxjb1zNRZM@kreacher> <13207937.r2GEYrEf4f@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Wed, 8 Jul 2020 at 18:44, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> In order to avoid pixels getting stuck in an unflushable FIFO, we need when
-> we disable the HDMI controller to switch away from getting our pixels from
-> the pixelvalve and instead use blank pixels, and switch back to the
-> pixelvalve when we enable the HDMI controller.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Move the locking away from intel_pstate_set_energy_pref_index()
+into its only caller and drop the (now redundant) return_pref label
+from it.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Also move the "raw" EPP value check into the caller of that function,
+so as to do it before acquiring the mutex, and reduce code duplication
+related to the "raw" EPP values processing somewhat.
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c |  9 +++++++++
->  drivers/gpu/drm/vc4/vc4_regs.h |  3 +++
->  2 files changed, 12 insertions(+)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index f56a718a3643..37463b016b47 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -325,6 +325,12 @@ static void vc4_hdmi_encoder_post_crtc_disable(struct drm_encoder *encoder)
->         struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
->
->         HDMI_WRITE(HDMI_RAM_PACKET_CONFIG, 0);
-> +
-> +       HDMI_WRITE(HDMI_VID_CTL, HDMI_READ(HDMI_VID_CTL) |
-> +                  VC4_HD_VID_CTL_CLRRGB | VC4_HD_VID_CTL_CLRSYNC);
-> +
-> +       HDMI_WRITE(HDMI_VID_CTL,
-> +                  HDMI_READ(HDMI_VID_CTL) | VC4_HD_VID_CTL_BLANKPIX);
->  }
->
->  static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder)
-> @@ -563,6 +569,9 @@ static void vc4_hdmi_encoder_post_crtc_enable(struct drm_encoder *encoder)
->                    (vsync_pos ? 0 : VC4_HD_VID_CTL_VSYNC_LOW) |
->                    (hsync_pos ? 0 : VC4_HD_VID_CTL_HSYNC_LOW));
->
-> +       HDMI_WRITE(HDMI_VID_CTL,
-> +                  HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_BLANKPIX);
-> +
->         if (vc4_encoder->hdmi_monitor) {
->                 HDMI_WRITE(HDMI_SCHEDULER_CONTROL,
->                            HDMI_READ(HDMI_SCHEDULER_CONTROL) |
-> diff --git a/drivers/gpu/drm/vc4/vc4_regs.h b/drivers/gpu/drm/vc4/vc4_regs.h
-> index d1e8961edaa0..30af52b406f1 100644
-> --- a/drivers/gpu/drm/vc4/vc4_regs.h
-> +++ b/drivers/gpu/drm/vc4/vc4_regs.h
-> @@ -723,6 +723,9 @@
->  # define VC4_HD_VID_CTL_FRAME_COUNTER_RESET    BIT(29)
->  # define VC4_HD_VID_CTL_VSYNC_LOW              BIT(28)
->  # define VC4_HD_VID_CTL_HSYNC_LOW              BIT(27)
-> +# define VC4_HD_VID_CTL_CLRSYNC                        BIT(24)
-> +# define VC4_HD_VID_CTL_CLRRGB                 BIT(23)
-> +# define VC4_HD_VID_CTL_BLANKPIX               BIT(18)
->
->  # define VC4_HD_CSC_CTL_ORDER_MASK             VC4_MASK(7, 5)
->  # define VC4_HD_CSC_CTL_ORDER_SHIFT            5
-> --
-> git-series 0.9.1
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v2 -> v3:
+
+   * Fix error handling in intel_pstate_set_energy_pref_index() and
+     rebase.
+
+v3 -> v4: No changes
+
+---
+ drivers/cpufreq/intel_pstate.c |   35 +++++++++++++++--------------------
+ 1 file changed, 15 insertions(+), 20 deletions(-)
+
+Index: linux-pm/drivers/cpufreq/intel_pstate.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/intel_pstate.c
++++ linux-pm/drivers/cpufreq/intel_pstate.c
+@@ -649,28 +649,18 @@ static int intel_pstate_set_energy_pref_
+ 	if (!pref_index)
+ 		epp = cpu_data->epp_default;
+ 
+-	mutex_lock(&intel_pstate_limits_lock);
+-
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+ 		u64 value;
+ 
+ 		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
+ 		if (ret)
+-			goto return_pref;
++			return ret;
+ 
+ 		value &= ~GENMASK_ULL(31, 24);
+ 
+-		if (use_raw) {
+-			if (raw_epp > 255) {
+-				ret = -EINVAL;
+-				goto return_pref;
+-			}
+-			value |= (u64)raw_epp << 24;
+-			ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
+-			goto return_pref;
+-		}
+-
+-		if (epp == -EINVAL)
++		if (use_raw)
++			epp = raw_epp;
++		else if (epp == -EINVAL)
+ 			epp = epp_values[pref_index - 1];
+ 
+ 		value |= (u64)epp << 24;
+@@ -680,8 +670,6 @@ static int intel_pstate_set_energy_pref_
+ 			epp = (pref_index - 1) << 2;
+ 		ret = intel_pstate_set_epb(cpu_data->cpu, epp);
+ 	}
+-return_pref:
+-	mutex_unlock(&intel_pstate_limits_lock);
+ 
+ 	return ret;
+ }
+@@ -708,8 +696,8 @@ static ssize_t store_energy_performance_
+ 	struct cpudata *cpu_data = all_cpu_data[policy->cpu];
+ 	char str_preference[21];
+ 	bool raw = false;
++	ssize_t ret;
+ 	u32 epp = 0;
+-	int ret;
+ 
+ 	ret = sscanf(buf, "%20s", str_preference);
+ 	if (ret != 1)
+@@ -724,14 +712,21 @@ static ssize_t store_energy_performance_
+ 		if (ret)
+ 			return ret;
+ 
++		if (epp > 255)
++			return -EINVAL;
++
+ 		raw = true;
+ 	}
+ 
++	mutex_lock(&intel_pstate_limits_lock);
++
+ 	ret = intel_pstate_set_energy_pref_index(cpu_data, ret, raw, epp);
+-	if (ret)
+-		return ret;
++	if (!ret)
++		ret = count;
+ 
+-	return count;
++	mutex_unlock(&intel_pstate_limits_lock);
++
++	return ret;
+ }
+ 
+ static ssize_t show_energy_performance_preference(
+
+
+
