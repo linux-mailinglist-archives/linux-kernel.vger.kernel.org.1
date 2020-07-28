@@ -2,93 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005DA230E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13A8230E6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731125AbgG1Px1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:53:27 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:28797 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730977AbgG1Px1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:53:27 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 28 Jul 2020 08:53:26 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 28 Jul 2020 08:53:24 -0700
-Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Jul 2020 21:23:01 +0530
-Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
-        id ECC9621A2A; Tue, 28 Jul 2020 21:23:00 +0530 (IST)
-From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Subject: [PATCH v1] Bluetooth: hci_qca: Stop collecting memdump again for command timeout during SSR
-Date:   Tue, 28 Jul 2020 21:23:00 +0530
-Message-Id: <1595951580-16724-1-git-send-email-gubbaven@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1731113AbgG1PxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:53:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54970 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731004AbgG1PxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:53:18 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82F882065C;
+        Tue, 28 Jul 2020 15:53:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595951598;
+        bh=OuxCoUV/Gm9xGmt005BF7ghh+V5TDaF/FvZpjT7+Pn0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SaWxadHSweB5pY8xDgYABO2l9O5HRBSD+QJqCdZcxCi8HKaoS+5z8El+0pznGlsOL
+         oPYnRsC0p1aJQyCuzQ/C868Y+JrjTyFND5q1SQ0EfJ+kfp0+/t8ddf5PwONqR+s4Jo
+         FRx4UkDHL8TNF4TC0GFFpUZv1eA+KpaESL4W3ZxI=
+Date:   Tue, 28 Jul 2020 17:53:11 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+Cc:     devel@driverdev.osuosl.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        stern@rowland.harvard.edu, jrdr.linux@gmail.com,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: usbvision: fixed coding style
+Message-ID: <20200728155311.GA4178776@kroah.com>
+References: <20200728143004.3228-1-dhiraj.sharma0024@gmail.com>
+ <20200728145419.GA3537020@kroah.com>
+ <CAPRy4h1Xs1JpQinnWm04dOi07Ch0RLL0U4Z5DDCKHmombXE0sA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPRy4h1Xs1JpQinnWm04dOi07Ch0RLL0U4Z5DDCKHmombXE0sA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting memdump state to idle prior to setting of callback function
-pointer for command timeout to NULL,causing the issue.Now moved the
-initialisation of memdump state to qca_setup().
+On Tue, Jul 28, 2020 at 09:14:24PM +0530, Dhiraj Sharma wrote:
+> Sorry, I didn't realize that I committed a mistake by not replying to
+> all. It was an accidental mistake which will not be committed in
+> future now.
+> 
+> >
+> > That is not needed in a changelog text.
+> >
+> 
+> Alright Sir.
+> 
+> > Neither is this, please be specific about what you have fixed.  My bot
+> > should kick in soon with more specifics...
+> 
+> Sir there were checkpatch.pl styling issues and I fixed them all
+> together, so should I write a proper changelog as what all I fixed i.e
+> errors and warnings thrown by checkpatch.pl
 
-Fixes: d841502c79e3 ("Bluetooth: hci_qca: Collect controller memory dump during SSR")
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
----
- drivers/bluetooth/hci_qca.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 3d13002..20e1ded 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1668,6 +1668,8 @@ static int qca_setup(struct hci_uart *hu)
- 	bt_dev_info(hdev, "setting up %s",
- 		qca_is_wcn399x(soc_type) ? "wcn399x" : "ROME/QCA6390");
- 
-+	qca->memdump_state = QCA_MEMDUMP_IDLE;
-+
- retry:
- 	ret = qca_power_on(hdev);
- 	if (ret)
-@@ -1817,9 +1819,6 @@ static void qca_power_shutdown(struct hci_uart *hu)
- 	qca_flush(hu);
- 	spin_unlock_irqrestore(&qca->hci_ibs_lock, flags);
- 
--	hu->hdev->hw_error = NULL;
--	hu->hdev->cmd_timeout = NULL;
--
- 	/* Non-serdev device usually is powered by external power
- 	 * and don't need additional action in driver for power down
- 	 */
-@@ -1841,6 +1840,9 @@ static int qca_power_off(struct hci_dev *hdev)
- 	struct qca_data *qca = hu->priv;
- 	enum qca_btsoc_type soc_type = qca_soc_type(hu);
- 
-+	hu->hdev->hw_error = NULL;
-+	hu->hdev->cmd_timeout = NULL;
-+
- 	/* Stop sending shutdown command if soc crashes. */
- 	if (soc_type != QCA_ROME
- 		&& qca->memdump_state == QCA_MEMDUMP_IDLE) {
-@@ -1848,7 +1850,6 @@ static int qca_power_off(struct hci_dev *hdev)
- 		usleep_range(8000, 10000);
- 	}
- 
--	qca->memdump_state = QCA_MEMDUMP_IDLE;
- 	qca_power_shutdown(hu);
- 	return 0;
- }
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+As the bot said, only do one type of thing per patch, and "fix all
+checkpatch errors/warnings" is not one type of thing.
