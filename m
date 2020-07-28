@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAC323025F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9C9230245
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgG1GIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 02:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726816AbgG1GIG (ORCPT
+        id S1726979AbgG1GFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 02:05:25 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:24158 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726299AbgG1GFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:08:06 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB1CC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:08:06 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id l6so9336438plt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v4H93n5r5JaaHCincZZJ4YGqo0Cw0aIhg3WvTO7qLbA=;
-        b=iEACU+jgodAOUswG7u+iQZCpSK9FvuqqcVb/9Y7eifUCb28xEnCe8L20gK6WLrjGYZ
-         IBjsL/SYk9g3GMnctvQd9SDv957KlTkkNCprZaHmEDGwn2/bKs7mWw1DQFV4FQiG0slJ
-         9RrbO+OyEHu5xLrOAz1QOE2x1CWja4gr+eWtjwgct+w3YMPBtcFfT51Asq9ykEnFLivR
-         U/kXyk787cD4gHygZoUQ4Uj7IXG/dT1SVsNe3AzHhI+jQQQhjgUc0cavjswmfb3bBJYK
-         dxNNVAFs0UljW/pwq2+AJ2hA9HAaAx46YhqoXMmMvOYgmOSVMKlLLoffi3lURdovzoBD
-         Xi2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v4H93n5r5JaaHCincZZJ4YGqo0Cw0aIhg3WvTO7qLbA=;
-        b=QN9GI+PnDBqnfsp+2SiJ6QQmLFvmOzTGoxuth0keaV1zpy2o7v5yRSHlwAHFjShUJq
-         kxbVAwACvLxXHs/DoZqyZgNB/5aBUFSfwGGzvgRsutd40JkIRMkt0F9VsSw+p9H8shem
-         PDORTR3TDG4wM6nLMbwH36Y9q4b9o9Nd6UFCFZoHivZcTiUMbxgSlxmZsoBNvaedTHQs
-         Awf8vIFgkf7tMK94of0VauXwU+ZY5OxKTDZ3oYda5Fa5QDn4y9cgcDoHZuu6KMM7CFmE
-         n98nrCqcyzhWi4M0H/U7QwKchMe+RpUhZt3D9GOjndR+ZpYICQyXYvTW/m/mO9isnZ7V
-         P89A==
-X-Gm-Message-State: AOAM533A6G+ZlSnbFpSK3Uhu6AzXABC8UFPjKA45NOi588NHHaS59OTv
-        k6nbrKXYr/KzujBrDgpjHOFGFQ==
-X-Google-Smtp-Source: ABdhPJyE4pUdK3j4dSXViWaGSXStD7VAB/cLjDC6rNjrup5urqzpMaqeeFgMyWSW2sljZgqjwp310A==
-X-Received: by 2002:a17:90a:f192:: with SMTP id bv18mr2636648pjb.21.1595916485617;
-        Mon, 27 Jul 2020 23:08:05 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id h23sm17187642pfo.166.2020.07.27.23.08.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 23:08:04 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 23:04:33 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        evgreen@chromium.org, ohad@wizery.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] remoteproc: qcom_q6v5_mss: Validate modem blob
- firmware size before load
-Message-ID: <20200728060433.GC349841@builder.lan>
-References: <20200722201047.12975-1-sibis@codeaurora.org>
- <20200722201047.12975-3-sibis@codeaurora.org>
+        Tue, 28 Jul 2020 02:05:25 -0400
+X-UUID: aa1603cb9da14371ba43930da6e229b0-20200728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=AADhamlj39RN1HLMjk0Vd+a3ULVjb3Y/W/BXe2Dhrbo=;
+        b=Jc2W9zzMWeaQDwqgekP8xAWsHw346+dMPO5EUuAicpIAK5m2OclwoooIVzMNy//6JVG/WHbXOxM+8GOOB6dwkqIGoR8+L4YcYjlN9P5cohmsi28maKzqGST1pFiYIjcTnJvU3E0lQ2MIvNMNI6A4y3ZIEdv2EWC6uO+6a4vuHFo=;
+X-UUID: aa1603cb9da14371ba43930da6e229b0-20200728
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLS)
+        with ESMTP id 796666277; Tue, 28 Jul 2020 14:05:12 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N1.mediatek.inc
+ (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 28 Jul
+ 2020 14:05:04 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 28 Jul 2020 14:05:06 +0800
+Message-ID: <1595916283.21478.3.camel@mhfsdcap03>
+Subject: Re: [RESEND PATCH] usb: common: usb-conn-gpio: Register optional
+ charger
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, <od@zcrc.me>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 28 Jul 2020 14:04:43 +0800
+In-Reply-To: <Z4V4EQ.I8UQ5TF3SBJ61@crapouillou.net>
+References: <20200621224807.882184-1-paul@crapouillou.net>
+         <CAHp75VcfhDncqP_hSVvRNc_vY0fOYaoxm-tiCm2G92Xrisb9hA@mail.gmail.com>
+         <FPN2EQ.RC89XKRQDKRN3@crapouillou.net>
+         <1595828558.23885.90.camel@mhfsdcap03>
+         <Z4V4EQ.I8UQ5TF3SBJ61@crapouillou.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722201047.12975-3-sibis@codeaurora.org>
+X-TM-SNTS-SMTP: 6ABC9B290E16A3EF990DFC966CA70D04FD107373D83DCB7A2955348E43ECF2402000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22 Jul 13:10 PDT 2020, Sibi Sankar wrote:
+T24gTW9uLCAyMDIwLTA3LTI3IGF0IDE3OjAyICswMjAwLCBQYXVsIENlcmN1ZWlsIHdyb3RlOg0K
+PiANCj4gTGUgbHVuLiAyNyBqdWlsLiAyMDIwIMOgIDEzOjQyLCBDaHVuZmVuZyBZdW4gDQo+IDxj
+aHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPiBhIMOpY3JpdCA6DQo+ID4gT24gU3VuLCAyMDIwLTA3
+LTI2IGF0IDEyOjI3ICswMjAwLCBQYXVsIENlcmN1ZWlsIHdyb3RlOg0KPiA+PiANCj4gPj4gIExl
+IGRpbS4gMjYganVpbC4gMjAyMCDDoCAxMzoxNCwgQW5keSBTaGV2Y2hlbmtvDQo+ID4+ICA8YW5k
+eS5zaGV2Y2hlbmtvQGdtYWlsLmNvbT4gYSDDqWNyaXQgOg0KPiA+PiAgPiBPbiBNb24sIEp1biAy
+MiwgMjAyMCBhdCAxOjUxIEFNIFBhdWwgQ2VyY3VlaWwgDQo+ID4+IDxwYXVsQGNyYXBvdWlsbG91
+Lm5ldD4NCj4gPj4gID4gd3JvdGU6DQo+ID4+ICA+Pg0KPiA+PiAgPj4gIFJlZ2lzdGVyIGEgcG93
+ZXIgc3VwcGx5IGNoYXJnZXIsIGlmIHRoZSBLY29uZmlnIG9wdGlvbg0KPiA+PiAgPj4gIFVTQl9D
+T05OX0dQSU9fQ0hBUkdFUiBpcyBzZXQsIHdob3NlIG9ubGluZSBzdGF0ZSBkZXBlbmRzIG9uIA0K
+PiA+PiB3aGV0aGVyDQo+ID4+ICA+PiAgdGhlIFVTQiByb2xlIGlzIHNldCB0byBkZXZpY2Ugb3Ig
+bm90Lg0KPiA+PiAgPj4NCj4gPj4gID4+ICBUaGlzIGlzIHVzZWZ1bCB3aGVuIHRoZSBVU0Igcm9s
+ZSBpcyB0aGUgb25seSB3YXkgdG8ga25vdyBpZiB0aGUNCj4gPj4gID4+IGRldmljZQ0KPiA+PiAg
+Pj4gIGlzIGNoYXJnaW5nIGZyb20gVVNCLiBUaGUgQVBJIGlzIHRoZSBzdGFuZGFyZCBwb3dlciBz
+dXBwbHkgDQo+ID4+IGNoYXJnZXINCj4gPj4gID4+IEFQSSwNCj4gPj4gID4+ICB5b3UgZ2V0IGEg
+L3N5cy9jbGFzcy9wb3dlcl9zdXBwbHkveHh4L29ubGluZSBub2RlIHdoaWNoIHRlbGxzIA0KPiA+
+PiB5b3UNCj4gPj4gID4+IHRoZQ0KPiA+PiAgPj4gIHN0YXRlIG9mIHRoZSBjaGFyZ2VyLg0KPiA+
+PiAgPj4NCj4gPj4gID4+ICBUaGUgc29sZSBwdXJwb3NlIG9mIHRoaXMgaXMgdG8gZ2l2ZSB1c2Vy
+c3BhY2UgYXBwbGljYXRpb25zIGEgDQo+ID4+IHdheSB0bw0KPiA+PiAgPj4gIGtub3cgd2hldGhl
+ciBvciBub3QgdGhlIGNoYXJnZXIgaXMgcGx1Z2dlZC4NClsuLi5dDQo+ID4+ICA+PiAgKyAgICAg
+ICBzd2l0Y2ggKHBzcCkgew0KPiA+PiAgPj4gICsgICAgICAgY2FzZSBQT1dFUl9TVVBQTFlfUFJP
+UF9PTkxJTkU6DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIHZhbC0+aW50dmFsID0gaW5mby0+
+bGFzdF9yb2xlID09IA0KPiA+PiBVU0JfUk9MRV9ERVZJQ0U7DQo+ID4gV2hhdCB3aWxsIGhhcHBl
+biBpZiB5b3Ugbm90IGNoYW5nZSBpbmZvLT5sYXN0X3JvbGUgaGVyZT8NCj4gPiBJIHByZWZlciBp
+dCdzIG9ubHkgY2hhbmdlZCBieSB1c2JfY29ubl9pc3IoKSwgaWYgaXQncyBjaGFuZ2VkIGJ5IG90
+aGVyDQo+ID4gZHJpdmVycywgZm9yIGV4YW1wbGUsIHRocm91Z2ggcG93ZXJfc3VwcGx5X2dldF9w
+cm9wZXJ0eSgpLCBtYXkgc2tpcCANCj4gPiByb2xlDQo+ID4gc3dpdGNoLg0KPiANCj4gSWYgeW91
+IHJlYWQgY2FyZWZ1bGx5LCBpbmZvLT5sYXN0X3JvbGUgaXMgbm90IG1vZGlmaWVkIGhlcmUgOikN
+ClNvcnJ5LCBteSBiYWQNCg0KPiANCj4gLVBhdWwNCj4gDQo+ID4gDQo+ID4+ICA+PiAgKyAgICAg
+ICAgICAgICAgIGJyZWFrOw0KPiA+PiAgPj4gICsgICAgICAgZGVmYXVsdDoNCj4gPj4gID4+ICAr
+ICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+ID4+ICA+PiAgKyAgICAgICB9DQo+ID4+
+ICA+PiAgKw0KPiA+PiAgPj4gICsgICAgICAgcmV0dXJuIDA7DQo+ID4+ICA+PiAgK30NCj4gPj4g
+ID4+ICArDQo+ID4+ICA+PiAgIHN0YXRpYyBpbnQgdXNiX2Nvbm5fcHJvYmUoc3RydWN0IHBsYXRm
+b3JtX2RldmljZSAqcGRldikNCj4gPj4gID4+ICAgew0KPiA+PiAgPj4gICAgICAgICAgc3RydWN0
+IGRldmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCj4gPj4gID4+ICArICAgICAgIHN0cnVjdCBwb3dl
+cl9zdXBwbHlfZGVzYyAqZGVzYzsNCj4gPj4gID4+ICAgICAgICAgIHN0cnVjdCB1c2JfY29ubl9p
+bmZvICppbmZvOw0KPiA+PiAgPj4gICsgICAgICAgc3RydWN0IHBvd2VyX3N1cHBseV9jb25maWcg
+Y2ZnID0gew0KPiA+PiAgPj4gICsgICAgICAgICAgICAgICAub2Zfbm9kZSA9IGRldi0+b2Zfbm9k
+ZSwNCj4gPj4gID4+ICArICAgICAgIH07DQo+ID4+ICA+PiAgICAgICAgICBpbnQgcmV0ID0gMDsN
+Cj4gPj4gID4+DQo+ID4+ICA+PiAgICAgICAgICBpbmZvID0gZGV2bV9remFsbG9jKGRldiwgc2l6
+ZW9mKCppbmZvKSwgR0ZQX0tFUk5FTCk7DQo+ID4+ICA+PiAgQEAgLTIwMyw2ICsyMzQsMjIgQEAg
+c3RhdGljIGludCB1c2JfY29ubl9wcm9iZShzdHJ1Y3QNCj4gPj4gID4+IHBsYXRmb3JtX2Rldmlj
+ZSAqcGRldikNCj4gPj4gID4+ICAgICAgICAgICAgICAgICAgfQ0KPiA+PiAgPj4gICAgICAgICAg
+fQ0KPiA+PiAgPj4NCj4gPj4gID4+ICArICAgICAgIGlmIChJU19FTkFCTEVEKENPTkZJR19VU0Jf
+Q09OTl9HUElPX0NIQVJHRVIpKSB7DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIGRlc2MgPSAm
+aW5mby0+ZGVzYzsNCj4gPj4gID4+ICArICAgICAgICAgICAgICAgZGVzYy0+bmFtZSA9ICJ1c2It
+Y2hhcmdlciI7DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIGRlc2MtPnByb3BlcnRpZXMgPSB1
+c2JfY2hhcmdlcl9wcm9wZXJ0aWVzOw0KPiA+PiAgPj4gICsgICAgICAgICAgICAgICBkZXNjLT5u
+dW1fcHJvcGVydGllcyA9DQo+ID4+ICA+PiBBUlJBWV9TSVpFKHVzYl9jaGFyZ2VyX3Byb3BlcnRp
+ZXMpOw0KPiA+PiAgPj4gICsgICAgICAgICAgICAgICBkZXNjLT5nZXRfcHJvcGVydHkgPSB1c2Jf
+Y2hhcmdlcl9nZXRfcHJvcGVydHk7DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIGRlc2MtPnR5
+cGUgPSBQT1dFUl9TVVBQTFlfVFlQRV9VU0I7DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIGNm
+Zy5kcnZfZGF0YSA9IGluZm87DQo+ID4+ICA+PiAgKw0KPiA+PiAgPj4gICsgICAgICAgICAgICAg
+ICBpbmZvLT5jaGFyZ2VyID0gZGV2bV9wb3dlcl9zdXBwbHlfcmVnaXN0ZXIoZGV2LA0KPiA+PiAg
+Pj4gZGVzYywgJmNmZyk7DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIGlmIChJU19FUlIoaW5m
+by0+Y2hhcmdlcikpIHsNCj4gPj4gID4+ICArICAgICAgICAgICAgICAgICAgICAgICBkZXZfZXJy
+KGRldiwgIlVuYWJsZSB0byByZWdpc3Rlcg0KPiA+PiAgPj4gY2hhcmdlclxuIik7DQo+ID4+ICA+
+PiAgKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIFBUUl9FUlIoaW5mby0+Y2hhcmdlcik7
+DQo+ID4+ICA+PiAgKyAgICAgICAgICAgICAgIH0NCj4gPj4gID4+ICArICAgICAgIH0NCj4gPj4g
+ID4+ICArDQo+ID4+ICA+PiAgICAgICAgICBwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBpbmZv
+KTsNCj4gPj4gID4+DQo+ID4+ICA+PiAgICAgICAgICAvKiBQZXJmb3JtIGluaXRpYWwgZGV0ZWN0
+aW9uICovDQo+ID4+ICA+PiAgLS0NCj4gPj4gID4+ICAyLjI3LjANCj4gPj4gID4+DQo+ID4+ICA+
+DQo+ID4+ICA+DQo+ID4+ICA+IC0tDQo+ID4+ICA+IFdpdGggQmVzdCBSZWdhcmRzLA0KPiA+PiAg
+PiBBbmR5IFNoZXZjaGVua28NCj4gPj4gDQo+ID4+IA0KPiA+IA0KPiANCj4gDQoNCg==
 
-> The following mem abort is observed when one of the modem blob firmware
-> size exceeds the allocated mpss region. Fix this by restricting the copy
-> size to segment size using request_firmware_into_buf before load.
-> 
-> Err Logs:
-> Unable to handle kernel paging request at virtual address
-> Mem abort info:
-> ...
-> Call trace:
->   __memcpy+0x110/0x180
->   rproc_start+0xd0/0x190
->   rproc_boot+0x404/0x550
->   state_store+0x54/0xf8
->   dev_attr_store+0x44/0x60
->   sysfs_kf_write+0x58/0x80
->   kernfs_fop_write+0x140/0x230
->   vfs_write+0xc4/0x208
->   ksys_write+0x74/0xf8
-> ...
-> 
-> Fixes: 051fb70fd4ea4 ("remoteproc: qcom: Driver for the self-authenticating Hexagon v5")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> ---
->  drivers/remoteproc/qcom_q6v5_mss.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 4e72c9e30426c..f4aa61ba220dc 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -1174,15 +1174,14 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
->  		} else if (phdr->p_filesz) {
->  			/* Replace "xxx.xxx" with "xxx.bxx" */
->  			sprintf(fw_name + fw_name_len - 3, "b%02d", i);
-> -			ret = request_firmware(&seg_fw, fw_name, qproc->dev);
-> +			ret = request_firmware_into_buf(&seg_fw, fw_name, qproc->dev,
-> +							ptr, phdr->p_filesz);
->  			if (ret) {
->  				dev_err(qproc->dev, "failed to load %s\n", fw_name);
->  				iounmap(ptr);
->  				goto release_firmware;
->  			}
->  
-> -			memcpy(ptr, seg_fw->data, seg_fw->size);
-> -
->  			release_firmware(seg_fw);
->  		}
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
