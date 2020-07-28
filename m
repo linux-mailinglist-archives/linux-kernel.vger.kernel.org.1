@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7562230A04
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0A22309FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgG1M2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:28:50 -0400
-Received: from mout.gmx.net ([212.227.15.19]:33613 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728300AbgG1M2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:28:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595939299;
-        bh=+Xhr2x2VYD1gWTmsb4Uofj+UiBxI7DdvuosyZzVaUM4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=KFWninAwHludxMxZQsuEzqYoXKBYCcGUd+YU82B6QxqADTgG0ZzR3Izd3f5yyROqS
-         DVFscsUdxRXyCcMEnEZhgBs7sekWgeez0btr08FVEVoy9kh3bWZ8Zfqq5HMWWlhX/I
-         9c5R1xKiSUgUrjjDyRr5JtBcQZcodpHMELOchWJo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([80.208.215.239]) by mail.gmx.com
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MmlXA-1kScia3yWE-00jsa8; Tue, 28 Jul 2020 14:28:19 +0200
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Landen Chao <landen.chao@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Subject: [PATCH v3] net: ethernet: mtk_eth_soc: fix mtu warning
-Date:   Tue, 28 Jul 2020 14:27:43 +0200
-Message-Id: <20200728122743.78489-1-frank-w@public-files.de>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S1729550AbgG1M2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:28:07 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:50770 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728300AbgG1M2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:28:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595939286; x=1627475286;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=qjOA8RTZVb+X0iac4xC+obbBOFt0cOWqOhApliMuxMLtsknbcjNlCR8b
+   tM3gpqyVfubqVIPYSiuk5k2iqpnkcGws5rrz4Ek+boDLXCkh8fR26dGSW
+   iaYOkHP8KWMAdT2hbcEEtOQbNdtPXWHYLNoZc0pv8NkPrDnq+xLfk8NdD
+   uyjKCyi4M/1OAiUoT/DtNd1NB8PZwQXUBUO5eNGqjm0E7UNfIqhsenQDO
+   jG0Fyr9LfFgqLHyobT12VgtiGqWCs8Exq531I9VEHYja36l/4b8ClkG1i
+   PldVpFUq64usntm0sgOfuArmOCc8SR2yXXPWpLWfnsvs+iu+61NX8pHaA
+   A==;
+IronPort-SDR: +nBTOLJtWBU5n6TwViwAvwNzOVLXNwy2MA34RkD7Y2ITtU/d9A0Extc0p9j1XNO4qCbki3OZ0U
+ gNS5/m4vj0qVbDLjFtBGF4j02DmK9LwVaGHClCOSpc2AsvtgaP8KH8x9/KOUK2j40XzxiFkoK4
+ jn79ufK3m3FeOtZkpOzLHCbkLARcRbuVz8LY0YipfGQa5cManGvyNYXP38ugP6CTWDV7hN2akP
+ +rIIyIfR/QnHW92eMNuYpyQjOcGlTRAUjwkDzaAiQ2JFBGFU0fKx8qCKkGaca8XAyUUcUiujPF
+ H3o=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589212800"; 
+   d="scan'208";a="147860191"
+Received: from mail-mw2nam12lp2042.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.42])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jul 2020 20:28:05 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BnV9dxhpfpiBsVX6zR3NT9wBxgwhu8h+8Cl3tMzNn+fAj3oAit40Ei3bRTBQyftg+xRoMwyulGcezs6FzDi4t8+bnSFQd5ciksy4U+zqiAs4ijdHii6ssgkSE5VOOR22+f1cBYhpqj3YKofG/W9yMGNNjwHHlKkvFkBHmbJH2vr+Muv2Xem6htZd4qLfkb2SfJuzVaezS3pzv4FQu1IrInLf8FbByjJcLDNqoVxAi8u9OBUlSwhessgxO+I4vZD3WQLjdCTdhRnizAmR+Xgv9yTNErTEuuAFBxLK+KOlAKoEaf39O465IDde37aco2cgl6oW64FTad5yv2x9bTua4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=F3laAf1ClfDzwejH9rEAemLaN1C0owOXMJ7GUVFNDRwfqLlnEX0CZ7yVvtEzPtRke00mimiD8WPUOy8VFxZtw+mF727btXiilTm9jAEhee5Tnuin6NdBjcDx+VrHBHAz8po/PTA6e0WLIxcK7ptWo16icUj6T/8G8sZ+gAIlmPjhsgIV66VggzVZ/a8Gehf0T9gi8rn1HsKJQIL29c+x7HfCUSIrD9zwiXhPryicbZccArwbsgVLkOA+LpEhe8dSJNwisPNaiBkzvTHoaGY+9io+Q7n9ifmVYpmm2TI/1nwjV//TZEWOzVFBhaeHuJW6MdrJgrSP1L95Jxd+OqdiTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=jOtw0/6rR7XvwFQtRyb6KYDcvRrJqYeZdpYuR8pcdLBAjiVLr2+0KVEiyY1+ErHdSKTnOTBHC6SQgUs1vq3X8HUeQfYDCPxDpxnPPMUuo16VHzfwCy5YLuw2tv4rpUEWPzeNdsAoSV2uJVmToVg6jvjejQBQ1Bskux5LqjnCXSM=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM5PR0401MB3590.namprd04.prod.outlook.com (2603:10b6:4:78::34) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Tue, 28 Jul
+ 2020 12:28:03 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::c862:9cd5:689a:8573]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::c862:9cd5:689a:8573%5]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 12:28:03 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
+Thread-Topic: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
+Thread-Index: AQHWYYzqJua2R6QPAEmuD6xjWAKdKQ==
+Date:   Tue, 28 Jul 2020 12:28:03 +0000
+Message-ID: <DM5PR0401MB3591B4A5B0E425635B36F91F9B730@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <20200724073313.138789-1-hch@lst.de>
+ <20200724073313.138789-12-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: ab54e55f-d034-4d54-1c2c-08d832f1ac80
+x-ms-traffictypediagnostic: DM5PR0401MB3590:
+x-microsoft-antispam-prvs: <DM5PR0401MB3590D32DFC3095F420E593869B730@DM5PR0401MB3590.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GCPeAJbDGJbpp0o6wh4I9WwPHEiCWC3V/9/ks7tj3UKIhyHl+C591FUvQtUU2LsiJPtKhCPRAzDcrvP0oeMYlZYcpJf54ZHdSLcu+pgP9aJFAQusoPtKS21bH0GbPDnKfMlVYT70qKACckKH56KJsnGI0k/7GnOYTV0Ve4aXAWzSjzocqitzLHQB90bsgfKzgMhv7dLWQzDVVjlo58f2GZktYDb2BmQYTaNl4j7fBAVdLnGvaVUZFjLNkC1L8MU4WCiIHJJgPElr3oHxRZZSMxiwYeVafmfq+rlg2NpCsThW/BQ0n72glhN5P0Cbx9Mpj4HzR2oUVdBewPsTxLww7A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(366004)(346002)(396003)(39860400002)(110136005)(54906003)(186003)(4270600006)(9686003)(8676002)(8936002)(71200400001)(86362001)(26005)(7416002)(478600001)(2906002)(4326008)(6506007)(33656002)(558084003)(52536014)(91956017)(19618925003)(76116006)(66446008)(316002)(66946007)(5660300002)(66476007)(66556008)(7696005)(64756008)(55016002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: xnX/3axcL9X+Aho4MTXh5QMQ/xTTSQwme2HDik2KRiFgXvR81qlZZbKRbnWnvOIDc14/Pr5Mwz2isfdsgmgC6caN1ihAZrR/i80TvxjmQCO9gmmOhBqHDRIklQ6PL//sKUpK4hzlm6CCuMyZVoz2mhdcKqjtlc4aVcTLPyN+hOMcKOOyNP2afvM6hUi9V/JOW2IwkAm942yKQCvBBY/CFrdrZEkgc7a8wp1GSKfi+VaM+CWy1AJ3/lFL4L8TavM0k8VLviUsWLHdZwGkLyZpcOkhl+DP7c13HFDU33aJxlhkCdM7dQSj2d8rsH2CZIa4gmYGDA/7QRnecx3ahYnS7zOvb+S7s7QlJBN2w2KHwPv/CaFUcO9W9Tf9gN+aWPUvaOc8bqw2HVumqN3n4k7suWsHphCf+5goP0bPVOluAS03CCZsoXD8VqEnnWTqgNeKzGxB2+iEwiOTKHHTDZBFVGFCidOBs3yTmG4CjAEGbS4gDdakq0lepNJ2+cSxlObV
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sc5b1pOFKi3FLEOULKn4OozLSQed687rhOjKqf+XCSsSamY2PgS
- 2JzFzyIi+ztuNLr94TkKDcwv0V8CQVVgeRKACmKp1sOgDjY8lWDHTRhJEMdJ/ZdmLtdPzEY
- cpxqGiswcGavM06bTX+Y0XB7iBhQhFTK5u1HoAKmuv4zSkW3djqLkiVs66c7HgTDaGRA8G4
- K7il9Y7OEKrorNMSU9CNw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6AZmNkrR0vY=:/2GNiK7U0djtOSALtwVhUo
- E4o95iSJIypzT+gKBd6jBwrAaoQaz4NPh+ydoyiRA5XRYp73aNToQ4CTIdCOAZFHPZ84jqiLy
- NJ4uY4TYfoXNU0uze2bhR8446EZ7sX3Mm0hn2MJHSFjS8xKNigGXiB63k8nIOFuT4F3jYtqLt
- kCA02I3FIT0j5RFMn+XCTY9PffplsrQT8yCM5xLQRJUxoo2a5rZIvzYenDz9tjUqejaJSYC8K
- 5LMpCpZmYBsUR8Q0GhE/FM8/UFg+RqGQLWzmrtDBXFpddit4gTISIpZFYlddPeWo7EPXUZHK3
- 41h2XWcEo4u8E9YSCkQQF9/6oeWbUZ/IxMygADgBbDbhaTtnXxcHcT8xf0/fqOHfsgRjtR3yl
- VoFYeMk4zt2IPl59t17+KyBf1b657Ejon1XSadfIcL1Xhe2TJGrymbaw1bYCPRAIdhwI2SE11
- Vj9Z4XkVrec242+SZ1NuiW4eGQjO0Ji2d0stOgqNsYQu5w6V01gmrg7hx2D6k9xN2ooj7aZ2M
- 9+SGQ9x+QXp4cMI52AhkWpDMDOj8i2LVVjyQ8GrArJiSFJJv0702CbOI2rPl/DDrPI+zbiLL/
- FH4zO7I/uX2PGnMVUp6qG9nvd1f9xcddW8NhK8ndEpqkfWPWVyAq6IveDxkDe7G6gMF8LwVqx
- JRP22cnT4V3HI63ZM6f1N5UESv+/ALJV1u2qmZhRv1Zk5HNHzC4ZtKG2zbzRvD2uvMN50MKuh
- bDn84ONkh7kzG8lI7XSvXdVKch0w2iz4D1jjydW4SssG4suLpia2NWLWnQ/VZeIXT07Tw4hqM
- B7QCYyn0v/0bBuWLZJJ/qJR0v+n2hqqTqCBtZV82rwxZbTzFcKQr/0YrAbcnFxA2K6ewIf/FF
- O3McjzbzcLu7tdgUmNdj0DQrygPNbWL0jv/5Nur+z9n9njA1VI7pM6hJgTueVCN4hCP20CzY1
- CioTt5baNqnqbsny4bWUZlJrBFnt2Y62wKQqoitw+JlxkohUNNcIzpVftkaDFy3dsXSnVMek1
- dEc/0Gifpkh+MAm14rhp1jrDdzbd2wr4jMnoE2oRaFifjLzJ+RRL9hgpQ6GwLo7vXHLq2QuvV
- 1pLSuqN1ZZ58QNBRuX5bBlKOQ2WNItFRnayXemW0ol4P+MCBF/xDWRGg85YsF+igQ2mkjwmP8
- WbAmRyqx7VfAqYTKkjjZQjqvaxiEIELx9vb7CjBM2xATxNxqfjUUOkGOfQKk5KVGLTUJgZoL8
- RnRK+yzwbJdlI5wj8ej0nI2mwXOi+wlp6q7pK9Q==
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ab54e55f-d034-4d54-1c2c-08d832f1ac80
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2020 12:28:03.3930
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z5ptb+N7aJZj0iAIVVlxBdInqVVfjZVWdpH8cQ04P+1P+yEc5qDANSutpyX1VP+UCPaMNh3R5xd0PYtdPyD9VGgH4RdTXdk/VKjDaRw0wVw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0401MB3590
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Landen Chao <landen.chao@mediatek.com>
-
-in recent Kernel-Versions there are warnings about incorrect MTU-Size
-like these:
-
-eth0: mtu greater than device maximum
-mtk_soc_eth 1b100000.ethernet eth0: error -22 setting MTU to include DSA o=
-verhead
-
-Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-Fixes: 72579e14a1d3 ("net: dsa: don't fail to probe if we couldn't set the=
- MTU")
-Fixes: 7a4c53bee332 ("net: report invalid mtu value via netlink extack")
-Signed-off-by: Ren=C3=A9 van Dorst <opensource@vdorst.com>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-=2D--
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/eth=
-ernet/mediatek/mtk_eth_soc.c
-index 85735d32ecb0..a1c45b39a230 100644
-=2D-- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -2891,6 +2891,8 @@ static int mtk_add_mac(struct mtk_eth *eth, struct d=
-evice_node *np)
- 	eth->netdev[id]->irq =3D eth->irq[0];
- 	eth->netdev[id]->dev.of_node =3D np;
-
-+	eth->netdev[id]->max_mtu =3D MTK_MAX_RX_LENGTH - MTK_RX_ETH_HLEN;
-+
- 	return 0;
-
- free_netdev:
-=2D-
-2.25.1
-
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
