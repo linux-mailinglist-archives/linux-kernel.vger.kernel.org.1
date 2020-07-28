@@ -2,133 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B202311F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D126D2311FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732509AbgG1Ssk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 14:48:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36088 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729124AbgG1Ssj (ORCPT
+        id S1732512AbgG1St6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 14:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729124AbgG1St5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:48:39 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06SIX7C6151949;
-        Tue, 28 Jul 2020 14:48:34 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32jj2wnc4d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Jul 2020 14:48:34 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06SIkGDU012513;
-        Tue, 28 Jul 2020 18:48:32 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 32gcqgm3ms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Jul 2020 18:48:31 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06SImTHV32178480
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Jul 2020 18:48:29 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7884AE04D;
-        Tue, 28 Jul 2020 18:48:29 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB543AE051;
-        Tue, 28 Jul 2020 18:48:26 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.76.171])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Jul 2020 18:48:26 +0000 (GMT)
-Message-ID: <fa96a33641070b1580f21de86fedd5f8da5eff21.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 00/19] Introduce partial kernel_read_file() support
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 28 Jul 2020 14:48:25 -0400
-In-Reply-To: <1a46db6f-1c8a-3509-6371-7c77999833f2@broadcom.com>
-References: <20200724213640.389191-1-keescook@chromium.org>
-         <1595848589.4841.78.camel@kernel.org>
-         <1a46db6f-1c8a-3509-6371-7c77999833f2@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-28_15:2020-07-28,2020-07-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
- clxscore=1011 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007280131
+        Tue, 28 Jul 2020 14:49:57 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C712C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 11:49:57 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id lw1so369789pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 11:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TaFsAVS0lZBW1E0K1tJXZw+X9y9cUqIZOaViTh1v9Co=;
+        b=MpLAr6SeWtwR4OcpgIILP/A5hI3CfCLGNwNMziorMDAK4dN1Apnl5tsYKGjrPFdGbI
+         1TV987WZwJLg+gnsZBxQ46a8/7uNLnITCm+1xdsYUZ3xkZHZV1c/Wrbz0gXmlCPqQtRd
+         /xn4hPaYnRKvLMF1Pz/NiIay42ZH0xqcJ/kSU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TaFsAVS0lZBW1E0K1tJXZw+X9y9cUqIZOaViTh1v9Co=;
+        b=THsaxRIG1R2y9o5gRnWlG4bpiCe69go99hayC+cqkgl7j9jHO3WYORR2CbAmOiJ5c/
+         LOrbeqW5YQn4jiMA6zivv2wORmxaqihs1mTUaCAUU5032wh4FvOS+SWm+t8cp1jylylA
+         Ur+V2JEYBF0poohXPr3HFPHf/Hgl54VUuHhCHiW9yczcrtetrNnDOaE3Cc1Bh7d1uDlF
+         gP984p8aVA3JnvA3TjFSlJCuazn8t0XwX9VWMTb4QGpIgSNpnBM50rsVf5B2UkuPC5sO
+         rTePqm/yenhwr4HzoeYN0acde4Fhl3l43IWjKhDJOwUTgPfJvmWceCJiPpz9ZXD87TcT
+         0GWQ==
+X-Gm-Message-State: AOAM532A97+Wi3hJ4Um9fwDT/4qeWNboKkzQiRBXTqba7aa/GruCPrxE
+        9nQxogaOGCusrJTfV2picJp2XzbcrTI=
+X-Google-Smtp-Source: ABdhPJzFPzIBq5GyMsMG9TplCJvhPWP413+ahfV1CeFYBM3hnMet6MM2PCqYZO2b+KHfq9C+SbX67Q==
+X-Received: by 2002:a17:90b:138a:: with SMTP id hr10mr5633535pjb.161.1595962197185;
+        Tue, 28 Jul 2020 11:49:57 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a24sm1377812pfg.113.2020.07.28.11.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 11:49:56 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 11:49:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/8] x86/kaslr: Initialize mem_limit to the real
+ maximum address
+Message-ID: <202007281133.739AAFD2AF@keescook>
+References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
+ <20200727230801.3468620-5-nivedita@alum.mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727230801.3468620-5-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 12:18 -0700, Scott Branden wrote:
-> Hi Mimi/Kees,
+On Mon, Jul 27, 2020 at 07:07:57PM -0400, Arvind Sankar wrote:
+> On 64-bit, the kernel must be placed below MAXMEM (64TiB with 4-level
+> paging or 4PiB with 5-level paging). This is currently not enforced by
+> KASLR, which thus implicitly relies on physical memory being limited to
+> less than 64TiB.
 > 
-> On 2020-07-27 4:16 a.m., Mimi Zohar wrote:
-> > On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
-> >> v3:
-> >> - add reviews/acks
-> >> - add "IMA: Add support for file reads without contents" patch
-> >> - trim CC list, in case that's why vger ignored v2
-> >> v2: [missing from lkml archives! (CC list too long?) repeating changes
-> here]
-> >> - fix issues in firmware test suite
-> >> - add firmware partial read patches
-> >> - various bug fixes/cleanups
-> >> v1: 
-> https://lore.kernel.org/lkml/20200717174309.1164575-1-keescook@chromium.org/
-> >>
-> >> Hi,
-> >>
-> >> Here's my tree for adding partial read support in kernel_read_file(),
-> >> which fixes a number of issues along the way. It's got Scott's firmware
-> >> and IMA patches ported and everything tests cleanly for me (even with
-> >> CONFIG_IMA_APPRAISE=y).
-> > Thanks, Kees.  Other than my comments on the new
-> > security_kernel_post_load_data() hook, the patch set is really nice.
-> >
-> > In addition to compiling with CONFIG_IMA_APPRAISE enabled, have you
-> > booted the kernel with the ima_policy=tcb?  The tcb policy will add
-> > measurements to the IMA measurement list and extend the TPM with the
-> > file or buffer data digest.  Are you seeing the firmware measurements,
-> > in particular the partial read measurement?
-> I booted the kernel with ima_policy=tcb.
+> On 32-bit, the limit is KERNEL_IMAGE_SIZE (512MiB). This is enforced by
+> special checks in __process_mem_region.
 > 
-> Unfortunately after enabling the following, fw_run_tests.sh does not run.
+> Initialize mem_limit to the maximum (depending on architecture), instead
+> of ULLONG_MAX, and make sure the command-line arguments can only
+> decrease it. This makes the enforcement explicit on 64-bit, and
+> eliminates the 32-bit specific checks to keep the kernel below 512M.
 > 
-> mkdir /sys/kernel/security
-> mount -t securityfs securityfs /sys/kernel/security
-> echo "measure func=FIRMWARE_CHECK" > /sys/kernel/security/ima/policy
-> echo "appraise func=FIRMWARE_CHECK appraise_type=imasig" >
-> /sys/kernel/security/ima/policy
-> ./fw_run_tests.sh
+> Check upfront to make sure the minimum address is below the limit before
+> doing any work.
 > 
-> [ 1296.258052] test_firmware: loading 'test-firmware.bin'
-> [ 1296.263903] misc test_firmware: loading /lib/firmware/test-firmware.bin
-> failed with error -13
-> [ 1296.263905] audit: type=1800 audit(1595905754.266:9): pid=5696 uid=0
-> auid=4294967295 ses=4294967295 subj=kernel op=appraise_data cause=IMA-
-> signature-required comm="fw_namespace" name="/lib/firmware/test-firmware.bin"
-> dev="tmpfs" ino=4592 res=0
-> [ 1296.297085] misc test_firmware: Direct firmware load for test-firmware.bin
-> failed with error -13
-> [ 1296.305947] test_firmware: load of 'test-firmware.bin' failed: -13
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-The "appraise" rule verifies the IMA signature.  Unless you signed the firmware
-(evmctl) and load the public key on the IMA keyring, that's to be expected.  I
-assume you are seeing firmware measurements in the IMA measuremenet log.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-Mimi
-
+-- 
+Kees Cook
