@@ -2,132 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DAE2310B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F532310BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731924AbgG1RRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:17:15 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:54267 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731673AbgG1RRO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:17:14 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2D2505C0207;
-        Tue, 28 Jul 2020 13:17:13 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Tue, 28 Jul 2020 13:17:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=6r6DbRlrInsg+XtPk2hpOlGwftP
-        Rk+NrHtTLEfhmS2I=; b=cJ5j9xhBjaAoEGITfBkTjgZv8xLbCDdZvHka6OuNlvG
-        eUf8t0OIC9zN1jLbeFcx6CG8b+yz+C3IqkYGyyQg/jF0bQy9uccEvxE2KzMY+NKJ
-        bZXJES2oArPsxcUXyOHfYfHhaiGXZmu91QDGnFpmMCdithpb3wNZDs+2Jtty+bGl
-        KvrlUOtxDynk7MmAUc56Ll2F5JByxzElm2mccifp7ExmeZRAZ70KeJWM5g9GZpns
-        hrlCQTVfh4goluBztYOlyQZ8H7WykKQyMwKin4QjHF0p08uc899iPB/QnOHtLeor
-        A5l/mR4CTdhJu0oSH7FXNnzVFou8MD6hslE9c68w0Cw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=6r6DbR
-        lrInsg+XtPk2hpOlGwftPRk+NrHtTLEfhmS2I=; b=N2WT3N8elPxo8RKsHkz2nE
-        KYRAJ6Lx5HcRAt8UO5IYkfMik6E6rgenC3Ou+mAi8dJb1T1Zq1V5jgIjwb0ZW7Gq
-        enr2HgJsB+71et+Kopng5HANA5LZgVVTBDb+/t9OLEW+PzeD9fh/mHLDWh6NzrYh
-        bYAMh6HT2wjEaMKN6p7pI2X9lZC7vRLWPpCWdIOQoEsAhfslzjK02qaVO9mgli34
-        lOh8qGGuwM4+h3winN2zMls50zIXJYC1mkHNaHAx2azoHJGd3GKtd+pQ2DbrnCKm
-        qRu8jkszoBD6xRvNzcn8Els9rjHKvAed6ySfwSnZGMLk1ax4PB0PKXix12euPZAg
-        ==
-X-ME-Sender: <xms:l10gX-DUAyV0PlG9v9cYBl6YFTZMAtAftNocKlbhOncC5WocLA-riw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedvgddutdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrkeelrddutdejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:l10gX4j_WPpILpWe2XSTQk6ewQaEjbAt1wq6_aJgWTsXbamy0cDegQ>
-    <xmx:l10gXxlVOQbEQ8fJzm6ZjZhSSkCG8t_im7Y1-qABzOzi7F1OKtzz3w>
-    <xmx:l10gX8wdzY7ZrPLHttJ1qXHfB-4Z1r0BwR5QH9jpxdqj9MouWOy4bA>
-    <xmx:mV0gX-ebeQN0iLJ-qRErdbph9ZdLkfoLAIloczN0FPtrGLmZbhfAiw>
+        id S1731933AbgG1RTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:19:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731684AbgG1RTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 13:19:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 852A930600A3;
-        Tue, 28 Jul 2020 13:17:11 -0400 (EDT)
-Date:   Tue, 28 Jul 2020 19:17:05 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 83DAB20809;
+        Tue, 28 Jul 2020 17:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595956744;
+        bh=bM7CttTx2inQru+0qSBCK2LAYwqEhSZiejev6ND6HJA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fI9BBAyD17FvnfxHURgATv47Zvwd2SNMntJ+T+7t6wHM6GeFPe0XZINTSRkZWZ6VW
+         elNlB0mVaC36d+Nh79cZ08lkq4nZImfwGt7yFO8pgd6TdWt4OpatV/AV2aGB+p/KU8
+         beF8hwWYiiJxdpoKyX/uBBviAs67RANCf9QicC2c=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         Oded Gabbay <oded.gabbay@gmail.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>
-Subject: Re: linux-next: build failure after merge of the char-misc tree
-Message-ID: <20200728171705.GD43359@kroah.com>
-References: <20200727180831.6c356fc1@canb.auug.org.au>
- <20200727092448.GB1764157@kroah.com>
- <20200728173331.5bf1f438@canb.auug.org.au>
- <20200728075336.GB351768@kroah.com>
- <20200728182359.2b9b31bf@canb.auug.org.au>
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Moti Haimovski <mhaimovski@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>,
+        Ben Segal <bpsegal20@gmail.com>,
+        Christine Gharzuzi <cgharzuzi@habana.ai>,
+        Pawel Piskorski <ppiskorski@habana.ai>
+Subject: [PATCH] habanalabs: fix up absolute include instructions
+Date:   Tue, 28 Jul 2020 19:18:51 +0200
+Message-Id: <20200728171851.55842-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728182359.2b9b31bf@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 06:23:59PM +1000, Stephen Rothwell wrote:
-> Hi Greg,
-> 
-> On Tue, 28 Jul 2020 09:53:36 +0200 Greg KH <greg@kroah.com> wrote:
-> >
-> > On Tue, Jul 28, 2020 at 05:33:31PM +1000, Stephen Rothwell wrote:
-> > > Hi Greg,
-> > > 
-> > > On Mon, 27 Jul 2020 11:24:48 +0200 Greg KH <greg@kroah.com> wrote:  
-> > > >
-> > > > On Mon, Jul 27, 2020 at 06:08:31PM +1000, Stephen Rothwell wrote:  
-> > > > > Hi all,
-> > > > > 
-> > > > > After merging the char-misc tree, today's linux-next build (x86_64
-> > > > > allmodconfig) failed like this:
-> > > > > 
-> > > > > In file included from drivers/misc/habanalabs/goya/goya.c:8:
-> > > > > drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: No such file or directory
-> > > > >    12 | #include "habanalabs.h"
-> > > > >       |          ^~~~~~~~~~~~~~
-> > > > > In file included from drivers/misc/habanalabs/goya/goya_security.c:8:
-> > > > > drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: No such file or directory
-> > > > >    12 | #include "habanalabs.h"
-> > > > >       |          ^~~~~~~~~~~~~~
-> > > > > 
-> > > > > Presumably caused by commit
-> > > > > 
-> > > > >   70b2f993ea4a ("habanalabs: create common folder")
-> > > > > 
-> > > > > I have used the char-misc tree from next-20200724 for today.    
-> > > > 
-> > > > Ugh, this is a mess of a merge with this driver.
-> > > > 
-> > > > Oded, I'll take Stephen's merge resolutions here and push out a new
-> > > > version, and try to resolve this error, but if you could verify I got it
-> > > > correct, that would be great.  
-> > > 
-> > > The conflicts are gone, but I still get these errors.  
-> > 
-> > Very odd, I can not duplicate this at all here.  I just did a clean
-> > checkout of the char-misc-next branch and a full 'make allmodconfig' for
-> > x86_64, and it worked just fine.
-> > 
-> > Are you sure it's not coming from some other tree?
-> 
-> Do you build with a separate object tree?  I always use make O=...
-> which makes the difference.  I tested with just your tree.
+There's no need to try to be cute with the include file locations in the
+Makefile, so just specify exactly where the files are.
 
-Ah, no, I do not.  Odd, let me see what kind of crazy they are doing
-with include build directives...
+Bonus is this fixes the problem of building with O= as well as trying to
+just build the subdirectory alone.
 
-thanks for the hint.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Oded Gabbay <oded.gabbay@gmail.com>
+Cc: Omer Shpigelman <oshpigelman@habana.ai>
+Cc: Tomer Tayar <ttayar@habana.ai>
+Cc: Moti Haimovski <mhaimovski@habana.ai>
+Cc: Ofir Bitton <obitton@habana.ai>
+Cc: Ben Segal <bpsegal20@gmail.com>
+Cc: Christine Gharzuzi <cgharzuzi@habana.ai>
+Cc: Pawel Piskorski <ppiskorski@habana.ai>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/misc/habanalabs/common/Makefile         |  2 --
+ drivers/misc/habanalabs/common/debugfs.c        |  2 +-
+ drivers/misc/habanalabs/common/firmware_if.c    |  2 +-
+ drivers/misc/habanalabs/common/habanalabs.h     |  4 ++--
+ drivers/misc/habanalabs/common/memory.c         |  2 +-
+ drivers/misc/habanalabs/common/mmu.c            |  2 +-
+ drivers/misc/habanalabs/common/pci.c            |  2 +-
+ drivers/misc/habanalabs/gaudi/Makefile          |  2 --
+ drivers/misc/habanalabs/gaudi/gaudi.c           | 12 ++++++------
+ drivers/misc/habanalabs/gaudi/gaudiP.h          | 10 +++++-----
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c |  6 +++---
+ drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c     |  2 +-
+ drivers/misc/habanalabs/gaudi/gaudi_security.c  |  2 +-
+ drivers/misc/habanalabs/goya/Makefile           |  2 --
+ drivers/misc/habanalabs/goya/goya.c             |  8 ++++----
+ drivers/misc/habanalabs/goya/goyaP.h            | 12 ++++++------
+ drivers/misc/habanalabs/goya/goya_coresight.c   |  6 +++---
+ drivers/misc/habanalabs/goya/goya_security.c    |  2 +-
+ 18 files changed, 37 insertions(+), 43 deletions(-)
 
-greg k-h
+diff --git a/drivers/misc/habanalabs/common/Makefile b/drivers/misc/habanalabs/common/Makefile
+index 97d03b5c8683..b984bfa4face 100644
+--- a/drivers/misc/habanalabs/common/Makefile
++++ b/drivers/misc/habanalabs/common/Makefile
+@@ -1,6 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/common
+-
+ HL_COMMON_FILES := common/habanalabs_drv.o common/device.o common/context.o \
+ 		common/asid.o common/habanalabs_ioctl.o \
+ 		common/command_buffer.o common/hw_queue.o common/irq.o \
+diff --git a/drivers/misc/habanalabs/common/debugfs.c b/drivers/misc/habanalabs/common/debugfs.c
+index 0bc036e01ee8..c50c6fc9e905 100644
+--- a/drivers/misc/habanalabs/common/debugfs.c
++++ b/drivers/misc/habanalabs/common/debugfs.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "habanalabs.h"
+-#include "include/hw_ip/mmu/mmu_general.h"
++#include "../include/hw_ip/mmu/mmu_general.h"
+ 
+ #include <linux/pci.h>
+ #include <linux/debugfs.h>
+diff --git a/drivers/misc/habanalabs/common/firmware_if.c b/drivers/misc/habanalabs/common/firmware_if.c
+index 5981dbd8c6df..f70302cdab1b 100644
+--- a/drivers/misc/habanalabs/common/firmware_if.c
++++ b/drivers/misc/habanalabs/common/firmware_if.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "habanalabs.h"
+-#include "include/common/hl_boot_if.h"
++#include "../include/common/hl_boot_if.h"
+ 
+ #include <linux/firmware.h>
+ #include <linux/genalloc.h>
+diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
+index eb42aa5476a9..018d9d67e8e6 100644
+--- a/drivers/misc/habanalabs/common/habanalabs.h
++++ b/drivers/misc/habanalabs/common/habanalabs.h
+@@ -8,8 +8,8 @@
+ #ifndef HABANALABSP_H_
+ #define HABANALABSP_H_
+ 
+-#include "include/common/armcp_if.h"
+-#include "include/common/qman_if.h"
++#include "../include/common/armcp_if.h"
++#include "../include/common/qman_if.h"
+ #include <uapi/misc/habanalabs.h>
+ 
+ #include <linux/cdev.h>
+diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
+index e4e1693e5c6c..dce9273e557a 100644
+--- a/drivers/misc/habanalabs/common/memory.c
++++ b/drivers/misc/habanalabs/common/memory.c
+@@ -7,7 +7,7 @@
+ 
+ #include <uapi/misc/habanalabs.h>
+ #include "habanalabs.h"
+-#include "include/hw_ip/mmu/mmu_general.h"
++#include "../include/hw_ip/mmu/mmu_general.h"
+ 
+ #include <linux/uaccess.h>
+ #include <linux/slab.h>
+diff --git a/drivers/misc/habanalabs/common/mmu.c b/drivers/misc/habanalabs/common/mmu.c
+index 04303950e630..edcc11d5eaf1 100644
+--- a/drivers/misc/habanalabs/common/mmu.c
++++ b/drivers/misc/habanalabs/common/mmu.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "habanalabs.h"
+-#include "include/hw_ip/mmu/mmu_general.h"
++#include "../include/hw_ip/mmu/mmu_general.h"
+ 
+ #include <linux/genalloc.h>
+ #include <linux/slab.h>
+diff --git a/drivers/misc/habanalabs/common/pci.c b/drivers/misc/habanalabs/common/pci.c
+index 1791f6623c69..7bd3737571f3 100644
+--- a/drivers/misc/habanalabs/common/pci.c
++++ b/drivers/misc/habanalabs/common/pci.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "habanalabs.h"
+-#include "include/hw_ip/pci/pci_general.h"
++#include "../include/hw_ip/pci/pci_general.h"
+ 
+ #include <linux/pci.h>
+ #include <linux/bitfield.h>
+diff --git a/drivers/misc/habanalabs/gaudi/Makefile b/drivers/misc/habanalabs/gaudi/Makefile
+index 75104ae74e2b..c9f4703cff24 100644
+--- a/drivers/misc/habanalabs/gaudi/Makefile
++++ b/drivers/misc/habanalabs/gaudi/Makefile
+@@ -1,5 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)/common
+-
+ HL_GAUDI_FILES := gaudi/gaudi.o gaudi/gaudi_hwmgr.o gaudi/gaudi_security.o \
+ 	gaudi/gaudi_coresight.o
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+index 78fbff646f99..d4b3b995f69d 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+@@ -6,12 +6,12 @@
+  */
+ 
+ #include "gaudiP.h"
+-#include "include/hw_ip/mmu/mmu_general.h"
+-#include "include/hw_ip/mmu/mmu_v1_1.h"
+-#include "include/gaudi/gaudi_masks.h"
+-#include "include/gaudi/gaudi_fw_if.h"
+-#include "include/gaudi/gaudi_reg_map.h"
+-#include "include/gaudi/gaudi_async_ids_map_extended.h"
++#include "../include/hw_ip/mmu/mmu_general.h"
++#include "../include/hw_ip/mmu/mmu_v1_1.h"
++#include "../include/gaudi/gaudi_masks.h"
++#include "../include/gaudi/gaudi_fw_if.h"
++#include "../include/gaudi/gaudi_reg_map.h"
++#include "../include/gaudi/gaudi_async_ids_map_extended.h"
+ 
+ #include <linux/module.h>
+ #include <linux/pci.h>
+diff --git a/drivers/misc/habanalabs/gaudi/gaudiP.h b/drivers/misc/habanalabs/gaudi/gaudiP.h
+index a94ab6a180f0..5dc99f6f0296 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudiP.h
++++ b/drivers/misc/habanalabs/gaudi/gaudiP.h
+@@ -9,11 +9,11 @@
+ #define GAUDIP_H_
+ 
+ #include <uapi/misc/habanalabs.h>
+-#include "habanalabs.h"
+-#include "include/common/hl_boot_if.h"
+-#include "include/gaudi/gaudi_packets.h"
+-#include "include/gaudi/gaudi.h"
+-#include "include/gaudi/gaudi_async_events.h"
++#include "../common/habanalabs.h"
++#include "../include/common/hl_boot_if.h"
++#include "../include/gaudi/gaudi_packets.h"
++#include "../include/gaudi/gaudi.h"
++#include "../include/gaudi/gaudi_async_events.h"
+ 
+ #define NUMBER_OF_EXT_HW_QUEUES		12
+ #define NUMBER_OF_CMPLT_QUEUES		NUMBER_OF_EXT_HW_QUEUES
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_coresight.c b/drivers/misc/habanalabs/gaudi/gaudi_coresight.c
+index c32322cb1728..5673ee49819e 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_coresight.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_coresight.c
+@@ -6,9 +6,9 @@
+  */
+ 
+ #include "gaudiP.h"
+-#include "include/gaudi/gaudi_coresight.h"
+-#include "include/gaudi/asic_reg/gaudi_regs.h"
+-#include "include/gaudi/gaudi_masks.h"
++#include "../include/gaudi/gaudi_coresight.h"
++#include "../include/gaudi/asic_reg/gaudi_regs.h"
++#include "../include/gaudi/gaudi_masks.h"
+ 
+ #include <uapi/misc/habanalabs.h>
+ #include <linux/coresight.h>
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c b/drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c
+index 6dd2c2a1cd70..1076b4932ce2 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_hwmgr.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "gaudiP.h"
+-#include "include/gaudi/gaudi_fw_if.h"
++#include "../include/gaudi/gaudi_fw_if.h"
+ 
+ void gaudi_set_pll_profile(struct hl_device *hdev, enum hl_pll_frequency freq)
+ {
+diff --git a/drivers/misc/habanalabs/gaudi/gaudi_security.c b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+index abdd5ed8f2cf..8d5d6ddee6ed 100644
+--- a/drivers/misc/habanalabs/gaudi/gaudi_security.c
++++ b/drivers/misc/habanalabs/gaudi/gaudi_security.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "gaudiP.h"
+-#include "include/gaudi/asic_reg/gaudi_regs.h"
++#include "../include/gaudi/asic_reg/gaudi_regs.h"
+ 
+ #define GAUDI_NUMBER_OF_RR_REGS		24
+ #define GAUDI_NUMBER_OF_LBW_RANGES	12
+diff --git a/drivers/misc/habanalabs/goya/Makefile b/drivers/misc/habanalabs/goya/Makefile
+index bd769083628e..b3f3b7b96683 100644
+--- a/drivers/misc/habanalabs/goya/Makefile
++++ b/drivers/misc/habanalabs/goya/Makefile
+@@ -1,5 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-subdir-ccflags-y += -I$(src)
+-
+ HL_GOYA_FILES :=  goya/goya.o goya/goya_security.o goya/goya_hwmgr.o \
+ 	goya/goya_coresight.o
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index a4dfea7556da..dedcd2211fb7 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -6,10 +6,10 @@
+  */
+ 
+ #include "goyaP.h"
+-#include "include/hw_ip/mmu/mmu_general.h"
+-#include "include/hw_ip/mmu/mmu_v1_0.h"
+-#include "include/goya/asic_reg/goya_masks.h"
+-#include "include/goya/goya_reg_map.h"
++#include "../include/hw_ip/mmu/mmu_general.h"
++#include "../include/hw_ip/mmu/mmu_v1_0.h"
++#include "../include/goya/asic_reg/goya_masks.h"
++#include "../include/goya/goya_reg_map.h"
+ 
+ #include <linux/pci.h>
+ #include <linux/genalloc.h>
+diff --git a/drivers/misc/habanalabs/goya/goyaP.h b/drivers/misc/habanalabs/goya/goyaP.h
+index 9e674cf39fd9..bb7474ee9784 100644
+--- a/drivers/misc/habanalabs/goya/goyaP.h
++++ b/drivers/misc/habanalabs/goya/goyaP.h
+@@ -9,12 +9,12 @@
+ #define GOYAP_H_
+ 
+ #include <uapi/misc/habanalabs.h>
+-#include "habanalabs.h"
+-#include "include/common/hl_boot_if.h"
+-#include "include/goya/goya_packets.h"
+-#include "include/goya/goya.h"
+-#include "include/goya/goya_async_events.h"
+-#include "include/goya/goya_fw_if.h"
++#include "../common/habanalabs.h"
++#include "../include/common/hl_boot_if.h"
++#include "../include/goya/goya_packets.h"
++#include "../include/goya/goya.h"
++#include "../include/goya/goya_async_events.h"
++#include "../include/goya/goya_fw_if.h"
+ 
+ #define NUMBER_OF_CMPLT_QUEUES		5
+ #define NUMBER_OF_EXT_HW_QUEUES		5
+diff --git a/drivers/misc/habanalabs/goya/goya_coresight.c b/drivers/misc/habanalabs/goya/goya_coresight.c
+index 18e12e9d284b..b03912483de0 100644
+--- a/drivers/misc/habanalabs/goya/goya_coresight.c
++++ b/drivers/misc/habanalabs/goya/goya_coresight.c
+@@ -6,9 +6,9 @@
+  */
+ 
+ #include "goyaP.h"
+-#include "include/goya/goya_coresight.h"
+-#include "include/goya/asic_reg/goya_regs.h"
+-#include "include/goya/asic_reg/goya_masks.h"
++#include "../include/goya/goya_coresight.h"
++#include "../include/goya/asic_reg/goya_regs.h"
++#include "../include/goya/asic_reg/goya_masks.h"
+ 
+ #include <uapi/misc/habanalabs.h>
+ 
+diff --git a/drivers/misc/habanalabs/goya/goya_security.c b/drivers/misc/habanalabs/goya/goya_security.c
+index de8297001fea..14701836f92b 100644
+--- a/drivers/misc/habanalabs/goya/goya_security.c
++++ b/drivers/misc/habanalabs/goya/goya_security.c
+@@ -6,7 +6,7 @@
+  */
+ 
+ #include "goyaP.h"
+-#include "include/goya/asic_reg/goya_regs.h"
++#include "../include/goya/asic_reg/goya_regs.h"
+ 
+ /*
+  * goya_set_block_as_protected - set the given block as protected
+-- 
+2.27.0
+
