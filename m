@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AC1231285
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD40231287
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732812AbgG1TZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53256 "EHLO
+        id S1729527AbgG1T1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728949AbgG1TZT (ORCPT
+        with ESMTP id S1728589AbgG1T1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:25:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDB9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:25:19 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k27so12626822pgm.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:25:19 -0700 (PDT)
+        Tue, 28 Jul 2020 15:27:19 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1DBC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:27:19 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l2so5193045pff.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=jv1dvYdq8eJEzFdUSscz1BOoXXTkZcjav2RFBunoTFM=;
-        b=kq76A0lTi8jchEwvaC48PBEuds1Wn1jiikAVioJ41DM8T8wrDetkd/hnwQQTiuxVKj
-         D8SSmZS7x5ywaIUtbhQ4RrUBD2Ph2CG4jVRveqKOiuQUBROilqRnGWWwhdAgWk0bpGkn
-         RMsbna6SKCbD/ku74N9KZje7ChYEji4gTzTm8=
+        bh=ADR3sxjOiI8EIqhLZSouL3EW3hA1BdmVXcyDJSxtf1g=;
+        b=feIz9NzYxqlqeBvyyAc1jflhjVzz8J4U13VpEpSwtoe0a5xoAHqa5zj9JZPoaGp9OI
+         Gtguyun+XZ7PxMgQn9grw1fuZwRkkSo0A9fVzds0NXyOPE6iFJqPUmLdunNhxWJFIFNX
+         VsHJ+53FL3iwFfhSpElXpHgVF+wVhBTxQxVB8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jv1dvYdq8eJEzFdUSscz1BOoXXTkZcjav2RFBunoTFM=;
-        b=XV/wEl1FlHcWZlg5SNf7RHHbizmQi4c+ehHdEEM7L/UlIgfiRyb2j+OlGivWvu4dqJ
-         UZzc1yqUX4YZRf8ehMu33e936vUYuaempggvj+5MJvgplw74B6wbOOyF3f3hMROPWd5w
-         p+mvx8fr5ZGtfNgrRUXY0gI6Xnty5lBkqs+0m4HTVc2+Jt6LLMD2Z7/u7QCGhjm8rNiz
-         u3lRaH/39L+J/52InuI1F2X/xHll4PBmPtDUr60llau6Sq4Mgtrnx767vrjHRPARjdf8
-         j95EOZ5V/c8VvBm986dgFX2gw2YJ7engmaMV0ojfss0w1FKvLE87Isj5epp9rHg3SdWg
-         xeHg==
-X-Gm-Message-State: AOAM533dcZ4KqXaDwwoAhij5hJgzp61N/hyW2Hr9yNo1na5gQqY5iTJc
-        XGwHz2FiaoCLlGNUnxRNGDu9vmlKcW4=
-X-Google-Smtp-Source: ABdhPJwnNWmKRmXaJycjJGbixKnAzcH0WBAJLNlgax1cXRM4cfbmdEgCqqAjHy2kSpIEdSWNPsk8nA==
-X-Received: by 2002:a65:6384:: with SMTP id h4mr25642129pgv.196.1595964318670;
-        Tue, 28 Jul 2020 12:25:18 -0700 (PDT)
+        bh=ADR3sxjOiI8EIqhLZSouL3EW3hA1BdmVXcyDJSxtf1g=;
+        b=HfrLAXq0AMZIV62KDUY5Bi3y2+LfzYT+9HLQnTGTLeekUNbv9GeNwOwpsnSTomoYE7
+         FT1YH5ju02eTbIIbRG+wGGNRY/2guDTf4XS/7nU2+c3b5SJZZpQJJD58coqbl4+k8gp2
+         UERad92vHr/RoI5vCvjLPP6OiBqc2Mk7DYDpLgldoCOslUqJAUavnSzTFQXMMDpAZc7m
+         cbhR+WoYmo5lSnK/b0hYi29dZBfnDf//C7rMUPLs0JjVYOpNRAM/qdshWsJ7+aZXiGJl
+         d2Z/Xbi4heUCgf+9XlMHIwKTJ84NsUhSIFCVn6gAShPQOBzwbCnJgxNAzeWusmkZ1qvp
+         OrSQ==
+X-Gm-Message-State: AOAM533TIQdWdHB4g9tG+wmS8AJG4zJHYh1K4qcv3WqfZzhdzL7T1yrh
+        eAzWrxNFj+RaN723FL+MqJKZdA==
+X-Google-Smtp-Source: ABdhPJwoP+V2zTNbY5IIvsECqP+Psg0tENJtJc3/AQU1OrFGWLJNdvykxNYrHgKY3PRLF79keD3pLA==
+X-Received: by 2002:aa7:8557:: with SMTP id y23mr25596453pfn.148.1595964438941;
+        Tue, 28 Jul 2020 12:27:18 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d25sm19239139pgn.2.2020.07.28.12.25.17
+        by smtp.gmail.com with ESMTPSA id y8sm3912560pjj.17.2020.07.28.12.27.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 12:25:17 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 12:25:16 -0700
+        Tue, 28 Jul 2020 12:27:18 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 12:27:17 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Arvind Sankar <nivedita@alum.mit.edu>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/8] x86/kaslr: Simplify __process_mem_region
-Message-ID: <202007281152.6B15179@keescook>
+Subject: Re: [PATCH v2 6/8] x86/kaslr: Simplify process_gb_huge_pages
+Message-ID: <202007281225.C24B966D7@keescook>
 References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
- <20200727230801.3468620-6-nivedita@alum.mit.edu>
+ <20200727230801.3468620-7-nivedita@alum.mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200727230801.3468620-6-nivedita@alum.mit.edu>
+In-Reply-To: <20200727230801.3468620-7-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 07:07:58PM -0400, Arvind Sankar wrote:
-> Get rid of unnecessary temporary variables and redundant tests in
-> __process_mem_region.
+On Mon, Jul 27, 2020 at 07:07:59PM -0400, Arvind Sankar wrote:
+> Short-circuit the whole function on 32-bit.
 > 
-> Fix one minor bug: in case of an overlap, the beginning of the region
-> should be used even if it is exactly image_size, not just strictly
-> larger.
+> Replace the loop to determine the number of 1Gb pages with arithmetic.
 > 
-> Change type of minimum/image_size arguments in process_mem_region to
-> unsigned long. These actually can never be above 4G (even on x86_64),
-> and they're unsigned long in every other function except this one.
+> Fix one minor bug: if the end of the region is aligned on a 1Gb
+> boundary, the current code will not use the last available 1Gb page due
+> to an off-by-one error.
 > 
 > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-Please split this up (which I think is already planned):
+Can you add some KUnit tests could be written to do validation of the
+refactorings? Touching this code is so painful. :)
 
-- bug fix (which looks like a correct fix to me)
-- arg type size changes
-- refactoring
+-Kees
 
-I don't currently agree that the refactoring makes things easier to
-read, but let's see v3. :)
+> +++ b/arch/x86/boot/compressed/kaslr.c
+> @@ -546,49 +546,43 @@ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
+>  static void
+>  process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
+>  {
+> -	unsigned long addr, size = 0;
+> +	unsigned long pud_start, pud_end, gb_huge_pages;
+>  	struct mem_vector tmp;
+> -	int i = 0;
+>  
+> -	if (!max_gb_huge_pages) {
+> +	if (IS_ENABLED(CONFIG_X86_32) || !max_gb_huge_pages) {
+>  		store_slot_info(region, image_size);
+>  		return;
+>  	}
+
+Won't max_gb_huge_pages always be false for 32-bit?
 
 -- 
 Kees Cook
