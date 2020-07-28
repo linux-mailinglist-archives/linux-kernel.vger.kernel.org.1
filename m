@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D2A230328
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3435B230337
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgG1GlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 02:41:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50070 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726873AbgG1GlL (ORCPT
+        id S1727113AbgG1Gqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 02:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726874AbgG1Gqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595918469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OBVILI65w6kAlvMCmeO/p3+Mu658pM7kH5zrHcmbav8=;
-        b=NDbeBXKq+ShhY/o6lRXvSECCA55DynQ48HXY3mmn8mgFyZ18tvGu8IfbxuIXiE3KvNvLm0
-        P9jSSQwm/zwczBNm7eAoqayNNyH7a/GJf9WqGO+adYJzm76EWXHqgU0g/7SXo3M7t0Rrbh
-        ZL3Q+SVk5LZDOuCiajubersYEXUz0SQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-X3q0ApOzPtO73Lum7ivpYA-1; Tue, 28 Jul 2020 02:41:04 -0400
-X-MC-Unique: X3q0ApOzPtO73Lum7ivpYA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B32C0106B250;
-        Tue, 28 Jul 2020 06:41:01 +0000 (UTC)
-Received: from [10.72.13.242] (ovpn-13-242.pek2.redhat.com [10.72.13.242])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E17B55D9CD;
-        Tue, 28 Jul 2020 06:40:53 +0000 (UTC)
-Subject: Re: [PATCH V3 vhost next 00/10] VDPA support for Mellanox ConnectX
- devices
-To:     Eli Cohen <eli@mellanox.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
-        saeedm@mellanox.com, parav@mellanox.com
-References: <20200728060539.4163-1-eli@mellanox.com>
- <1dbac14a-5909-ff0a-8e90-534847f93d50@redhat.com>
- <20200728063211.GA229972@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <ef857921-4b9a-8e48-d5cd-5ef585e8f15c@redhat.com>
-Date:   Tue, 28 Jul 2020 14:40:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 02:46:32 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6364DC061794;
+        Mon, 27 Jul 2020 23:46:32 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t6so9392941plo.3;
+        Mon, 27 Jul 2020 23:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1D5NWd41kMndxnWdrdFPOpE+/nIFfGGDshnUmn2lO8g=;
+        b=vXFr13WQkvzQOxy+9Tcf28GOJVQlAX+oDRZF65S5MzfeRbuiCQD06RwgGt2LYV/wrk
+         BLGniXLJj4iooDz/mfXiy08LmqQYi2VU+//FWRFIO1oj/IIwAFveNj1VBf7YsrQBUgDI
+         HQpFYVJKgdX0X1jpysyl73OHGWQq0V9ZdX6pD2sgqdrud5s8c7ax6Wa45rw/yrzUeuxZ
+         XzEDSlwu0EErRhZXd0Qa5+Yx9c5xsYlNESW6/DyNFAF57jSLuTyeB8UyEWiMXCn6QAny
+         mSi55LduDGyDUzLCHvHZo3yIn9HJTbpFYkj91IwxDlPP1+bpJ+nEYIh+gTr8ITnIDTWD
+         QaSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1D5NWd41kMndxnWdrdFPOpE+/nIFfGGDshnUmn2lO8g=;
+        b=SRd52UaAKzlZDXmc0hdzjOGUMCMihMmeOf51KsBi9+W9JSgwYgYbeGUuQb6M/R6OgV
+         cJQIaCzLTSn+NNVEr2wSFkWydk5b6MlaogbSL8eDPklyQ3pX8YNu4PVa5avpVYPZz4Cv
+         Mw5mntCgrEnuAR927lv+tKXgGSMuqGWCzuEWtOhgh+8stIh8eADtxTXY2phQaTyubu2v
+         jaMBbDqIulaJiRUQ2UuQMnk1gr5vOmna2jGzDSfBIdP9N49J+2EVOmT+97LJHyqEKDHF
+         U6rj31/zy1//UauAoV4Caub5Jg/dA2DLzmt72pRnhWU1G6WPqADZET+bOknA+Of6Qp9Y
+         GONg==
+X-Gm-Message-State: AOAM530KRpPhlFCI7RKXj56/5YfUMPV9G2ZAFsBLhsvVZQZyohm1JJxN
+        4+v4uPKA+6ZXuNF0dLF4FuM=
+X-Google-Smtp-Source: ABdhPJzBifg6rr736i3OxlVnn+10Ym7t9h+YYq0pt/1qEMaBewqCMJfSyXgLtMUzvncQK+A5jjzUKw==
+X-Received: by 2002:a17:90b:23c9:: with SMTP id md9mr3038586pjb.173.1595918791808;
+        Mon, 27 Jul 2020 23:46:31 -0700 (PDT)
+Received: from thinkpad.teksavvy.com ([69.172.171.109])
+        by smtp.gmail.com with ESMTPSA id u73sm17524438pfc.113.2020.07.27.23.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 23:46:31 -0700 (PDT)
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     Rustam Kovhaev <rkovhaev@gmail.com>, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: hso: check for return value in hso_serial_common_create()
+Date:   Mon, 27 Jul 2020 23:42:17 -0700
+Message-Id: <20200728064214.572158-1-rkovhaev@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20200728063211.GA229972@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+in case of an error tty_register_device_attr() returns ERR_PTR(),
+add IS_ERR() check
 
-On 2020/7/28 下午2:32, Eli Cohen wrote:
-> On Tue, Jul 28, 2020 at 02:18:16PM +0800, Jason Wang wrote:
->> On 2020/7/28 下午2:05, Eli Cohen wrote:
->>> Hi Michael,
->>> please note that this series depends on mlx5 core device driver patches
->>> in mlx5-next branch in
->>> git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git.
->>>
->>> git pull git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
->>>
->>> They also depend Jason Wang's patches submitted a couple of weeks ago.
->>>
->>> vdpa_sim: use the batching API
->>> vhost-vdpa: support batch updating
->>
->> Just notice that a new version is posted[1] (you were cced). Talked
->> with Michael, and it's better for you to merge the new version in
->> this series.
->>
-> OK, will send again. Just to make sure, I should put your series and my
-> series on Michal's vhost branch, the same tree I have been using so far?
+Reported-and-tested-by: syzbot+67b2bd0e34f952d0321e@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=67b2bd0e34f952d0321e
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+---
+ drivers/net/usb/hso.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-
-Yes. I think so.
-
-Thanks
-
-
->
->> Sorry for not spotting this before.
->>
->> [1] https://lkml.org/lkml/2020/7/1/301
->>
->> Thanks
->>
->>
->>>
->>> The following series of patches provide VDPA support for Mellanox
->>> devices. The supported devices are ConnectX6 DX and newer.
->>>
->>> Currently, only a network driver is implemented; future patches will
->>> introduce a block device driver. iperf performance on a single queue is
->>> around 12 Gbps.  Future patches will introduce multi queue support.
->>>
->>> The files are organized in such a way that code that can be used by
->>> different VDPA implementations will be placed in a common are resides in
->>> drivers/vdpa/mlx5/core.
->>>
->>> Only virtual functions are currently supported. Also, certain firmware
->>> capabilities must be set to enable the driver. Physical functions (PFs)
->>> are skipped by the driver.
->>>
->>> To make use of the VDPA net driver, one must load mlx5_vdpa. In such
->>> case, VFs will be operated by the VDPA driver. Although one can see a
->>> regular instance of a network driver on the VF, the VDPA driver takes
->>> precedence over the NIC driver, steering-wize.
->>>
->>> Currently, the device/interface infrastructure in mlx5_core is used to
->>> probe drivers. Future patches will introduce virtbus as a means to
->>> register devices and drivers and VDPA will be adapted to it.
->>>
->>> The mlx5 mode of operation required to support VDPA is switchdev mode.
->>> Once can use Linux or OVS bridge to take care of layer 2 switching.
->>>
->>> In order to provide virtio networking to a guest, an updated version of
->>> qemu is required. This version has been tested by the following quemu
->>> version:
->>>
->>> url: https://github.com/jasowang/qemu.git
->>> branch: vdpa
->>> Commit ID: 6f4e59b807db
->>>
->>>
->>> V2->V3
->>> Fix makefile to use include path relative to the root of the kernel
->>>
->>> Eli Cohen (7):
->>>    net/vdpa: Use struct for set/get vq state
->>>    vhost: Fix documentation
->>>    vdpa: Modify get_vq_state() to return error code
->>>    vdpa/mlx5: Add hardware descriptive header file
->>>    vdpa/mlx5: Add support library for mlx5 VDPA implementation
->>>    vdpa/mlx5: Add shared memory registration code
->>>    vdpa/mlx5: Add VDPA driver for supported mlx5 devices
->>>
->>> Jason Wang (2):
->>>    vhost-vdpa: support batch updating
->>>    vdpa_sim: use the batching API
->>>
->>> Max Gurtovoy (1):
->>>    vdpa: remove hard coded virtq num
->>>
->>>   drivers/vdpa/Kconfig                   |   18 +
->>>   drivers/vdpa/Makefile                  |    1 +
->>>   drivers/vdpa/ifcvf/ifcvf_base.c        |    4 +-
->>>   drivers/vdpa/ifcvf/ifcvf_base.h        |    4 +-
->>>   drivers/vdpa/ifcvf/ifcvf_main.c        |   13 +-
->>>   drivers/vdpa/mlx5/Makefile             |    4 +
->>>   drivers/vdpa/mlx5/core/mlx5_vdpa.h     |   91 ++
->>>   drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h |  168 ++
->>>   drivers/vdpa/mlx5/core/mr.c            |  473 ++++++
->>>   drivers/vdpa/mlx5/core/resources.c     |  284 ++++
->>>   drivers/vdpa/mlx5/net/main.c           |   76 +
->>>   drivers/vdpa/mlx5/net/mlx5_vnet.c      | 1950 ++++++++++++++++++++++++
->>>   drivers/vdpa/mlx5/net/mlx5_vnet.h      |   24 +
->>>   drivers/vdpa/vdpa.c                    |    3 +
->>>   drivers/vdpa/vdpa_sim/vdpa_sim.c       |   35 +-
->>>   drivers/vhost/iotlb.c                  |    4 +-
->>>   drivers/vhost/vdpa.c                   |   46 +-
->>>   include/linux/vdpa.h                   |   24 +-
->>>   include/uapi/linux/vhost_types.h       |    2 +
->>>   19 files changed, 3165 insertions(+), 59 deletions(-)
->>>   create mode 100644 drivers/vdpa/mlx5/Makefile
->>>   create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa.h
->>>   create mode 100644 drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h
->>>   create mode 100644 drivers/vdpa/mlx5/core/mr.c
->>>   create mode 100644 drivers/vdpa/mlx5/core/resources.c
->>>   create mode 100644 drivers/vdpa/mlx5/net/main.c
->>>   create mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.c
->>>   create mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.h
->>>
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index 5f123a8cf68e..d2fdb5430d27 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2261,12 +2261,14 @@ static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
+ 
+ 	minor = get_free_serial_index();
+ 	if (minor < 0)
+-		goto exit;
++		goto exit2;
+ 
+ 	/* register our minor number */
+ 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
+ 			tty_drv, minor, &serial->parent->interface->dev,
+ 			serial->parent, hso_serial_dev_groups);
++	if (IS_ERR(serial->parent->dev))
++		goto exit2;
+ 
+ 	/* fill in specific data for later use */
+ 	serial->minor = minor;
+@@ -2311,6 +2313,7 @@ static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
+ 	return 0;
+ exit:
+ 	hso_serial_tty_unregister(serial);
++exit2:
+ 	hso_serial_common_free(serial);
+ 	return -1;
+ }
+-- 
+2.27.0
 
