@@ -2,210 +2,400 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8EE231471
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 23:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD2F231474
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 23:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgG1VJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 17:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728728AbgG1VJj (ORCPT
+        id S1729277AbgG1VMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 17:12:25 -0400
+Received: from hera.aquilenet.fr ([185.233.100.1]:44928 "EHLO
+        hera.aquilenet.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728728AbgG1VMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 17:09:39 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DDAC061794;
-        Tue, 28 Jul 2020 14:09:38 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: nicolas)
-        with ESMTPSA id 4C02C295EE6
-Message-ID: <6e2d535b9513bf9fbcf28c0941cb055422aa255e.camel@collabora.com>
-Subject: Re: [PATCH 08/10] media: uapi: h264: Clean slice invariants syntax
- elements
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Reply-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Date:   Tue, 28 Jul 2020 17:09:31 -0400
-In-Reply-To: <20200728124405.ziuwaabp4fnv7lw2@gilmour.lan>
-References: <20200715202233.185680-1-ezequiel@collabora.com>
-         <20200715202233.185680-9-ezequiel@collabora.com>
-         <CAPBb6MVMXeTcUfb-98McYCKjh=eM=BTo2dSY=L1c6dv2jHqXcg@mail.gmail.com>
-         <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
-         <20200728124405.ziuwaabp4fnv7lw2@gilmour.lan>
-Organization: Collabora
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-        boundary="=-E9fThMs1WfTQwtNDnh31"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        Tue, 28 Jul 2020 17:12:24 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by hera.aquilenet.fr (Postfix) with ESMTP id 2DEB5A1FE;
+        Tue, 28 Jul 2020 23:12:19 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
+Received: from hera.aquilenet.fr ([127.0.0.1])
+        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Ogk38lsRAjjo; Tue, 28 Jul 2020 23:12:17 +0200 (CEST)
+Received: from function.home (unknown [IPv6:2a01:cb19:956:1b00:9eb6:d0ff:fe88:c3c7])
+        by hera.aquilenet.fr (Postfix) with ESMTPSA id 2B96CA1EC;
+        Tue, 28 Jul 2020 23:12:17 +0200 (CEST)
+Received: from samy by function.home with local (Exim 4.94)
+        (envelope-from <samuel.thibault@ens-lyon.org>)
+        id 1k0WtT-002tps-Hr; Tue, 28 Jul 2020 23:12:15 +0200
+From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Cc:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        speakup@linux-speakup.org
+Subject: [PATCH] staging/speakup: Move out of staging
+Date:   Tue, 28 Jul 2020 23:12:08 +0200
+Message-Id: <20200728211208.691249-1-samuel.thibault@ens-lyon.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The nasty TODO items are done.
 
---=-E9fThMs1WfTQwtNDnh31
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+---
+ .../ABI/stable}/sysfs-driver-speakup          |  0
+ .../admin-guide}/spkguide.txt                 |  0
+ MAINTAINERS                                   | 19 +++++++++----------
+ drivers/accessibility/Kconfig                 |  2 ++
+ drivers/accessibility/Makefile                |  1 +
+ .../speakup/DefaultKeyAssignments             |  0
+ .../speakup/Kconfig                           |  0
+ .../speakup/Makefile                          |  0
+ .../{staging => accessibility}/speakup/TODO   |  0
+ .../speakup/buffers.c                         |  0
+ .../speakup/devsynth.c                        |  0
+ .../speakup/fakekey.c                         |  0
+ .../{staging => accessibility}/speakup/i18n.c |  0
+ .../{staging => accessibility}/speakup/i18n.h |  0
+ .../speakup/keyhelp.c                         |  0
+ .../speakup/kobjects.c                        |  0
+ .../{staging => accessibility}/speakup/main.c |  0
+ .../speakup/selection.c                       |  0
+ .../speakup/serialio.c                        |  0
+ .../speakup/serialio.h                        |  0
+ .../speakup/speakup.h                         |  0
+ .../speakup/speakup_acnt.h                    |  0
+ .../speakup/speakup_acntpc.c                  |  0
+ .../speakup/speakup_acntsa.c                  |  0
+ .../speakup/speakup_apollo.c                  |  0
+ .../speakup/speakup_audptr.c                  |  0
+ .../speakup/speakup_bns.c                     |  0
+ .../speakup/speakup_decext.c                  |  0
+ .../speakup/speakup_decpc.c                   |  0
+ .../speakup/speakup_dectlk.c                  |  0
+ .../speakup/speakup_dtlk.c                    |  0
+ .../speakup/speakup_dtlk.h                    |  0
+ .../speakup/speakup_dummy.c                   |  0
+ .../speakup/speakup_keypc.c                   |  0
+ .../speakup/speakup_ltlk.c                    |  0
+ .../speakup/speakup_soft.c                    |  0
+ .../speakup/speakup_spkout.c                  |  0
+ .../speakup/speakup_txprt.c                   |  0
+ .../speakup/speakupmap.h                      |  0
+ .../speakup/speakupmap.map                    |  0
+ .../speakup/spk_priv.h                        |  0
+ .../speakup/spk_priv_keyinfo.h                |  0
+ .../speakup/spk_ttyio.c                       |  0
+ .../speakup/spk_types.h                       |  0
+ .../speakup/synth.c                           |  0
+ .../speakup/thread.c                          |  0
+ .../speakup/varhandlers.c                     |  0
+ drivers/staging/Kconfig                       |  2 --
+ drivers/staging/Makefile                      |  1 -
+ 49 files changed, 12 insertions(+), 13 deletions(-)
+ rename {drivers/staging/speakup => Documentation/ABI/stable}/sysfs-driver-speakup (100%)
+ rename {drivers/staging/speakup => Documentation/admin-guide}/spkguide.txt (100%)
+ rename drivers/{staging => accessibility}/speakup/DefaultKeyAssignments (100%)
+ rename drivers/{staging => accessibility}/speakup/Kconfig (100%)
+ rename drivers/{staging => accessibility}/speakup/Makefile (100%)
+ rename drivers/{staging => accessibility}/speakup/TODO (100%)
+ rename drivers/{staging => accessibility}/speakup/buffers.c (100%)
+ rename drivers/{staging => accessibility}/speakup/devsynth.c (100%)
+ rename drivers/{staging => accessibility}/speakup/fakekey.c (100%)
+ rename drivers/{staging => accessibility}/speakup/i18n.c (100%)
+ rename drivers/{staging => accessibility}/speakup/i18n.h (100%)
+ rename drivers/{staging => accessibility}/speakup/keyhelp.c (100%)
+ rename drivers/{staging => accessibility}/speakup/kobjects.c (100%)
+ rename drivers/{staging => accessibility}/speakup/main.c (100%)
+ rename drivers/{staging => accessibility}/speakup/selection.c (100%)
+ rename drivers/{staging => accessibility}/speakup/serialio.c (100%)
+ rename drivers/{staging => accessibility}/speakup/serialio.h (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup.h (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_acnt.h (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_acntpc.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_acntsa.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_apollo.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_audptr.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_bns.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_decext.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_decpc.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_dectlk.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_dtlk.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_dtlk.h (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_dummy.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_keypc.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_ltlk.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_soft.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_spkout.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakup_txprt.c (100%)
+ rename drivers/{staging => accessibility}/speakup/speakupmap.h (100%)
+ rename drivers/{staging => accessibility}/speakup/speakupmap.map (100%)
+ rename drivers/{staging => accessibility}/speakup/spk_priv.h (100%)
+ rename drivers/{staging => accessibility}/speakup/spk_priv_keyinfo.h (100%)
+ rename drivers/{staging => accessibility}/speakup/spk_ttyio.c (100%)
+ rename drivers/{staging => accessibility}/speakup/spk_types.h (100%)
+ rename drivers/{staging => accessibility}/speakup/synth.c (100%)
+ rename drivers/{staging => accessibility}/speakup/thread.c (100%)
+ rename drivers/{staging => accessibility}/speakup/varhandlers.c (100%)
 
-Le mardi 28 juillet 2020 =C3=A0 14:44 +0200, Maxime Ripard a =C3=A9crit :
-> Hi,
->=20
-> On Mon, Jul 27, 2020 at 11:39:12AM -0300, Ezequiel Garcia wrote:
-> > On Sat, 2020-07-25 at 23:34 +0900, Alexandre Courbot wrote:
-> > > On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.c=
-om> wrote:
-> > > > The H.264 specification requires in its "Slice header semantics"
-> > > > section that the following values shall be the same in all slice he=
-aders:
-> > > >=20
-> > > >   pic_parameter_set_id
-> > > >   frame_num
-> > > >   field_pic_flag
-> > > >   bottom_field_flag
-> > > >   idr_pic_id
-> > > >   pic_order_cnt_lsb
-> > > >   delta_pic_order_cnt_bottom
-> > > >   delta_pic_order_cnt[ 0 ]
-> > > >   delta_pic_order_cnt[ 1 ]
-> > > >   sp_for_switch_flag
-> > > >   slice_group_change_cycle
-> > > >=20
-> > > > and can therefore be moved to the per-frame decode parameters contr=
-ol.
-> > >=20
-> > > I am really not a H.264 expert, so this question may not be relevant,
-> >=20
-> > All questions are welcome. I'm more than happy to discuss this patchset=
-.
-> >=20
-> > > but are these values specified for every slice header in the
-> > > bitstream, or are they specified only once per frame?
-> > >=20
-> > > I am asking this because it would certainly make user-space code
-> > > simpler if we could remain as close to the bitstream as possible. If
-> > > these values are specified once per slice, then factorizing them woul=
-d
-> > > leave user-space with the burden of deciding what to do if they chang=
-e
-> > > across slices.
-> > >=20
-> > > Note that this is a double-edged sword, because it is not necessarily
-> > > better to leave the firmware in charge of deciding what to do in such
-> > > a case. :) So hopefully these are only specified once per frame in th=
-e
-> > > bitstream, in which case your proposal makes complete sense.
-> >=20
-> > Frame-based hardwares accelerators such as Hantro and Rockchip VDEC
-> > are doing the slice header parsing themselves. Therefore, the
-> > driver is not really parsing these fields on each slice header.
-> >=20
-> > Currently, we are already using only the first slice in a frame,
-> > as you can see from:
-> >=20
-> >         if (slices[0].flags & V4L2_H264_SLICE_FLAG_FIELD_PIC)
-> >                 reg |=3D G1_REG_DEC_CTRL0_PIC_FIELDMODE_E;
-> >=20
-> > Even if these fields are transported in the slice header,
-> > I think it makes sense for us to split them into the decode params
-> > (per-frame) control.
->=20
-> I don't really get it though. The initial plan that was asked was to
-> mimic as much as possible the bitstream and that's what we did.
->=20
-> But that requirement seems to have changed now?
-
-Indeed, that has changed and has been discussed multiple times already.
-But in general what you need to realize is that the bitstream is made
-of redundancy in order to be robust over data lost. Most importantly,
-it is by design that you can loose a slice, but still the decode the
-other slices.
-
-Carrying this redundancy over the kernel API though didn't make much
-sense. It only made the amount of data we have to pass (and copy) for
-each frames bigger. The goal of this change is to reduce the amount of
-data you actually need to pass, both for frame and slice decoding.
-
-For frame decoding, all the invariants from the slice header (notice
-the spec name here) have been moved from slice_params (not a spec term)
-into the decode_params (also not a spec term). This way, the
-slice_params are no longer needed to be passed at all to driver.
-
-As for the slice decoding, assuming you care making use of the VB2
-control caching, you can pass the decode_params on the first slice
-only, and only pass the slice_params, which is now slimmer, for the
-following slices.
-
-Remember that Paul initially believed that V4L2 stateless decoder was a
-stateless API, while in fact the HW is stateless, but V4L2 API are
-statefull by nature.
-
-p.s. it was also request to use raster scan scaling matrix, which isn't
-the order found in the bitstream. That was also discussed, and the
-reason is that other existing interfaces use raster order, so not using
-that is error prone for both kernel and userspace coders. Cedrus has
-been in raster scan order since the start, ignoring that rule already.
-
->=20
-> Even if it did change though, if this is defined as a slice parameter in
-> the spec, why would we want to move it to some other control entirely if
-> we are to keep the slice parameters control?
-
-You are confusing a term we invented, slice_params, with a specified
-term slice header. The decode_params are as document information per
-frame/picture, while slice_params is information needed per slice,
-nothing more.
-
->=20
-> Especially if the reason is to make the life easier on a couple of
-> drivers, that's really not the point of a userspace API, and we can
-> always add an helper if it really shows up as a pattern.
-
-We have made userspace implementation of this, GStreamer for now, I can
-only disagree with you. This does not make userspace much more complex
-and on top of that, it allow reducing some overhead, as prior to that
-we were computing reference lists for frame base decoder that already
-compute this in HW. I also find that it make debugging easier, as when
-we trace we don't endup looking at identical values over and over.
-
->=20
-> > They are really specified to be the same across all slices,
-> > so even I'd say if a bitstream violates this, it's likely
-> > either a corrupted bitstream or an encoder bug.
->=20
-> That doesn't look like something we should worry about though. Or at
-> least, this is true for pretty much any other field in the bitstream and
-> we won't change those.
-
-Sorry, I'm not clear what you refer to, not worry about the fact they
-are invariant or that the user may pass invalid data ? For the first,
-we believe it matters, that was also motivated by some of Stanimir
-research showing that controls are not as free as we'd like to think.
-Again, all this have been discussed for quite some time now and the
-participants have seen to reach an agreement on this direction.
-
->=20
-> Maxime
-
---=-E9fThMs1WfTQwtNDnh31
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSScpfJiL+hb5vvd45xUwItrAaoHAUCXyCUCwAKCRBxUwItrAao
-HFGqAJkB2CPV4gLP0AauLmctK8/CPZcnNwCdEiXiq2kcUHt8Vo7mtvUmLmWKit4=
-=v2Ht
------END PGP SIGNATURE-----
-
---=-E9fThMs1WfTQwtNDnh31--
+diff --git a/drivers/staging/speakup/sysfs-driver-speakup b/Documentation/ABI/stable/sysfs-driver-speakup
+similarity index 100%
+rename from drivers/staging/speakup/sysfs-driver-speakup
+rename to Documentation/ABI/stable/sysfs-driver-speakup
+diff --git a/drivers/staging/speakup/spkguide.txt b/Documentation/admin-guide/spkguide.txt
+similarity index 100%
+rename from drivers/staging/speakup/spkguide.txt
+rename to Documentation/admin-guide/spkguide.txt
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f0569cf304ca..5161e8e5e277 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16077,6 +16077,15 @@ Q:	https://patchwork.kernel.org/project/linux-sparse/list/
+ B:	https://bugzilla.kernel.org/enter_bug.cgi?component=Sparse&product=Tools
+ F:	include/linux/compiler.h
+ 
++SPEAKUP CONSOLE SPEECH DRIVER
++M:	William Hubbs <w.d.hubbs@gmail.com>
++M:	Chris Brannon <chris@the-brannons.com>
++M:	Kirk Reiser <kirk@reisers.ca>
++M:	Samuel Thibault <samuel.thibault@ens-lyon.org>
++L:	speakup@linux-speakup.org
++W:	http://www.linux-speakup.org/
++F:	drivers/accessibility/speakup/
++
+ SPEAR CLOCK FRAMEWORK SUPPORT
+ M:	Viresh Kumar <vireshk@kernel.org>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+@@ -16264,16 +16273,6 @@ L:	linux-fbdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/staging/sm750fb/
+ 
+-STAGING - SPEAKUP CONSOLE SPEECH DRIVER
+-M:	William Hubbs <w.d.hubbs@gmail.com>
+-M:	Chris Brannon <chris@the-brannons.com>
+-M:	Kirk Reiser <kirk@reisers.ca>
+-M:	Samuel Thibault <samuel.thibault@ens-lyon.org>
+-L:	speakup@linux-speakup.org
+-S:	Odd Fixes
+-W:	http://www.linux-speakup.org/
+-F:	drivers/staging/speakup/
+-
+ STAGING - VIA VT665X DRIVERS
+ M:	Forest Bond <forest@alittletooquiet.net>
+ S:	Odd Fixes
+diff --git a/drivers/accessibility/Kconfig b/drivers/accessibility/Kconfig
+index f10c17dc1dee..6b2f79d1f1b8 100644
+--- a/drivers/accessibility/Kconfig
++++ b/drivers/accessibility/Kconfig
+@@ -31,4 +31,6 @@ config A11Y_BRAILLE_CONSOLE
+ 
+ 	  If unsure, say N.
+ 
++source "drivers/accessibility/speakup/Kconfig"
++
+ endif # ACCESSIBILITY
+diff --git a/drivers/accessibility/Makefile b/drivers/accessibility/Makefile
+index e8c182f82c44..833603086530 100644
+--- a/drivers/accessibility/Makefile
++++ b/drivers/accessibility/Makefile
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-y				+= braille/
++obj-$(CONFIG_SPEAKUP)		+= speakup/
+diff --git a/drivers/staging/speakup/DefaultKeyAssignments b/drivers/accessibility/speakup/DefaultKeyAssignments
+similarity index 100%
+rename from drivers/staging/speakup/DefaultKeyAssignments
+rename to drivers/accessibility/speakup/DefaultKeyAssignments
+diff --git a/drivers/staging/speakup/Kconfig b/drivers/accessibility/speakup/Kconfig
+similarity index 100%
+rename from drivers/staging/speakup/Kconfig
+rename to drivers/accessibility/speakup/Kconfig
+diff --git a/drivers/staging/speakup/Makefile b/drivers/accessibility/speakup/Makefile
+similarity index 100%
+rename from drivers/staging/speakup/Makefile
+rename to drivers/accessibility/speakup/Makefile
+diff --git a/drivers/staging/speakup/TODO b/drivers/accessibility/speakup/TODO
+similarity index 100%
+rename from drivers/staging/speakup/TODO
+rename to drivers/accessibility/speakup/TODO
+diff --git a/drivers/staging/speakup/buffers.c b/drivers/accessibility/speakup/buffers.c
+similarity index 100%
+rename from drivers/staging/speakup/buffers.c
+rename to drivers/accessibility/speakup/buffers.c
+diff --git a/drivers/staging/speakup/devsynth.c b/drivers/accessibility/speakup/devsynth.c
+similarity index 100%
+rename from drivers/staging/speakup/devsynth.c
+rename to drivers/accessibility/speakup/devsynth.c
+diff --git a/drivers/staging/speakup/fakekey.c b/drivers/accessibility/speakup/fakekey.c
+similarity index 100%
+rename from drivers/staging/speakup/fakekey.c
+rename to drivers/accessibility/speakup/fakekey.c
+diff --git a/drivers/staging/speakup/i18n.c b/drivers/accessibility/speakup/i18n.c
+similarity index 100%
+rename from drivers/staging/speakup/i18n.c
+rename to drivers/accessibility/speakup/i18n.c
+diff --git a/drivers/staging/speakup/i18n.h b/drivers/accessibility/speakup/i18n.h
+similarity index 100%
+rename from drivers/staging/speakup/i18n.h
+rename to drivers/accessibility/speakup/i18n.h
+diff --git a/drivers/staging/speakup/keyhelp.c b/drivers/accessibility/speakup/keyhelp.c
+similarity index 100%
+rename from drivers/staging/speakup/keyhelp.c
+rename to drivers/accessibility/speakup/keyhelp.c
+diff --git a/drivers/staging/speakup/kobjects.c b/drivers/accessibility/speakup/kobjects.c
+similarity index 100%
+rename from drivers/staging/speakup/kobjects.c
+rename to drivers/accessibility/speakup/kobjects.c
+diff --git a/drivers/staging/speakup/main.c b/drivers/accessibility/speakup/main.c
+similarity index 100%
+rename from drivers/staging/speakup/main.c
+rename to drivers/accessibility/speakup/main.c
+diff --git a/drivers/staging/speakup/selection.c b/drivers/accessibility/speakup/selection.c
+similarity index 100%
+rename from drivers/staging/speakup/selection.c
+rename to drivers/accessibility/speakup/selection.c
+diff --git a/drivers/staging/speakup/serialio.c b/drivers/accessibility/speakup/serialio.c
+similarity index 100%
+rename from drivers/staging/speakup/serialio.c
+rename to drivers/accessibility/speakup/serialio.c
+diff --git a/drivers/staging/speakup/serialio.h b/drivers/accessibility/speakup/serialio.h
+similarity index 100%
+rename from drivers/staging/speakup/serialio.h
+rename to drivers/accessibility/speakup/serialio.h
+diff --git a/drivers/staging/speakup/speakup.h b/drivers/accessibility/speakup/speakup.h
+similarity index 100%
+rename from drivers/staging/speakup/speakup.h
+rename to drivers/accessibility/speakup/speakup.h
+diff --git a/drivers/staging/speakup/speakup_acnt.h b/drivers/accessibility/speakup/speakup_acnt.h
+similarity index 100%
+rename from drivers/staging/speakup/speakup_acnt.h
+rename to drivers/accessibility/speakup/speakup_acnt.h
+diff --git a/drivers/staging/speakup/speakup_acntpc.c b/drivers/accessibility/speakup/speakup_acntpc.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_acntpc.c
+rename to drivers/accessibility/speakup/speakup_acntpc.c
+diff --git a/drivers/staging/speakup/speakup_acntsa.c b/drivers/accessibility/speakup/speakup_acntsa.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_acntsa.c
+rename to drivers/accessibility/speakup/speakup_acntsa.c
+diff --git a/drivers/staging/speakup/speakup_apollo.c b/drivers/accessibility/speakup/speakup_apollo.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_apollo.c
+rename to drivers/accessibility/speakup/speakup_apollo.c
+diff --git a/drivers/staging/speakup/speakup_audptr.c b/drivers/accessibility/speakup/speakup_audptr.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_audptr.c
+rename to drivers/accessibility/speakup/speakup_audptr.c
+diff --git a/drivers/staging/speakup/speakup_bns.c b/drivers/accessibility/speakup/speakup_bns.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_bns.c
+rename to drivers/accessibility/speakup/speakup_bns.c
+diff --git a/drivers/staging/speakup/speakup_decext.c b/drivers/accessibility/speakup/speakup_decext.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_decext.c
+rename to drivers/accessibility/speakup/speakup_decext.c
+diff --git a/drivers/staging/speakup/speakup_decpc.c b/drivers/accessibility/speakup/speakup_decpc.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_decpc.c
+rename to drivers/accessibility/speakup/speakup_decpc.c
+diff --git a/drivers/staging/speakup/speakup_dectlk.c b/drivers/accessibility/speakup/speakup_dectlk.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_dectlk.c
+rename to drivers/accessibility/speakup/speakup_dectlk.c
+diff --git a/drivers/staging/speakup/speakup_dtlk.c b/drivers/accessibility/speakup/speakup_dtlk.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_dtlk.c
+rename to drivers/accessibility/speakup/speakup_dtlk.c
+diff --git a/drivers/staging/speakup/speakup_dtlk.h b/drivers/accessibility/speakup/speakup_dtlk.h
+similarity index 100%
+rename from drivers/staging/speakup/speakup_dtlk.h
+rename to drivers/accessibility/speakup/speakup_dtlk.h
+diff --git a/drivers/staging/speakup/speakup_dummy.c b/drivers/accessibility/speakup/speakup_dummy.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_dummy.c
+rename to drivers/accessibility/speakup/speakup_dummy.c
+diff --git a/drivers/staging/speakup/speakup_keypc.c b/drivers/accessibility/speakup/speakup_keypc.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_keypc.c
+rename to drivers/accessibility/speakup/speakup_keypc.c
+diff --git a/drivers/staging/speakup/speakup_ltlk.c b/drivers/accessibility/speakup/speakup_ltlk.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_ltlk.c
+rename to drivers/accessibility/speakup/speakup_ltlk.c
+diff --git a/drivers/staging/speakup/speakup_soft.c b/drivers/accessibility/speakup/speakup_soft.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_soft.c
+rename to drivers/accessibility/speakup/speakup_soft.c
+diff --git a/drivers/staging/speakup/speakup_spkout.c b/drivers/accessibility/speakup/speakup_spkout.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_spkout.c
+rename to drivers/accessibility/speakup/speakup_spkout.c
+diff --git a/drivers/staging/speakup/speakup_txprt.c b/drivers/accessibility/speakup/speakup_txprt.c
+similarity index 100%
+rename from drivers/staging/speakup/speakup_txprt.c
+rename to drivers/accessibility/speakup/speakup_txprt.c
+diff --git a/drivers/staging/speakup/speakupmap.h b/drivers/accessibility/speakup/speakupmap.h
+similarity index 100%
+rename from drivers/staging/speakup/speakupmap.h
+rename to drivers/accessibility/speakup/speakupmap.h
+diff --git a/drivers/staging/speakup/speakupmap.map b/drivers/accessibility/speakup/speakupmap.map
+similarity index 100%
+rename from drivers/staging/speakup/speakupmap.map
+rename to drivers/accessibility/speakup/speakupmap.map
+diff --git a/drivers/staging/speakup/spk_priv.h b/drivers/accessibility/speakup/spk_priv.h
+similarity index 100%
+rename from drivers/staging/speakup/spk_priv.h
+rename to drivers/accessibility/speakup/spk_priv.h
+diff --git a/drivers/staging/speakup/spk_priv_keyinfo.h b/drivers/accessibility/speakup/spk_priv_keyinfo.h
+similarity index 100%
+rename from drivers/staging/speakup/spk_priv_keyinfo.h
+rename to drivers/accessibility/speakup/spk_priv_keyinfo.h
+diff --git a/drivers/staging/speakup/spk_ttyio.c b/drivers/accessibility/speakup/spk_ttyio.c
+similarity index 100%
+rename from drivers/staging/speakup/spk_ttyio.c
+rename to drivers/accessibility/speakup/spk_ttyio.c
+diff --git a/drivers/staging/speakup/spk_types.h b/drivers/accessibility/speakup/spk_types.h
+similarity index 100%
+rename from drivers/staging/speakup/spk_types.h
+rename to drivers/accessibility/speakup/spk_types.h
+diff --git a/drivers/staging/speakup/synth.c b/drivers/accessibility/speakup/synth.c
+similarity index 100%
+rename from drivers/staging/speakup/synth.c
+rename to drivers/accessibility/speakup/synth.c
+diff --git a/drivers/staging/speakup/thread.c b/drivers/accessibility/speakup/thread.c
+similarity index 100%
+rename from drivers/staging/speakup/thread.c
+rename to drivers/accessibility/speakup/thread.c
+diff --git a/drivers/staging/speakup/varhandlers.c b/drivers/accessibility/speakup/varhandlers.c
+similarity index 100%
+rename from drivers/staging/speakup/varhandlers.c
+rename to drivers/accessibility/speakup/varhandlers.c
+diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
+index 4ec5528f89fa..29375013be53 100644
+--- a/drivers/staging/Kconfig
++++ b/drivers/staging/Kconfig
+@@ -56,8 +56,6 @@ source "drivers/staging/sm750fb/Kconfig"
+ 
+ source "drivers/staging/emxx_udc/Kconfig"
+ 
+-source "drivers/staging/speakup/Kconfig"
+-
+ source "drivers/staging/nvec/Kconfig"
+ 
+ source "drivers/staging/media/Kconfig"
+diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
+index 4d34198151b3..fe35e283f7be 100644
+--- a/drivers/staging/Makefile
++++ b/drivers/staging/Makefile
+@@ -20,7 +20,6 @@ obj-$(CONFIG_VME_BUS)		+= vme/
+ obj-$(CONFIG_IIO)		+= iio/
+ obj-$(CONFIG_FB_SM750)		+= sm750fb/
+ obj-$(CONFIG_USB_EMXX)		+= emxx_udc/
+-obj-$(CONFIG_SPEAKUP)		+= speakup/
+ obj-$(CONFIG_MFD_NVEC)		+= nvec/
+ obj-$(CONFIG_ANDROID)		+= android/
+ obj-$(CONFIG_STAGING_BOARD)	+= board/
+-- 
+2.27.0
 
