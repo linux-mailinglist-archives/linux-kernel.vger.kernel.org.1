@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E91A4231003
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF00231009
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731448AbgG1Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgG1Qng (ORCPT
+        id S1731528AbgG1Qoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:44:34 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44998 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgG1Qod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:43:36 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED521C061794;
-        Tue, 28 Jul 2020 09:43:35 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id j7so1660685oij.9;
-        Tue, 28 Jul 2020 09:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o9m50VK1lLtc7nqDyGrRl3rlBYyarY0M7UxRlCvTi7I=;
-        b=kasojJKthl+GEvqSoBsCRID44wuGMn+EsMrib6445AcUxFCXTdk+LV+UutBeNLeKMy
-         wQHv2tfVgg5xO85/Sz0BF+RFh6ScEtqDtW5vfEGtUHwCRw7Lt7X+EuZ6tJbeYOObJxNQ
-         aVqyb0tE9vVtp2WJCkZwM05lwmmYciFa20/jjPrao7IfnG/03b/CQUYbJJFnnUuviZmL
-         Zt3OJDLvvKx4yvdDctSfYv8c6BJ4Ms8WrKLtw0SBuBrwPR+MAped04fEvFFqx+Mk9ccQ
-         My2cDrwkdpvLRhZGOAX51mwn2KMe2azsvTahatIf9qxmUVqCg3pRSGkBIr+XjnZVpQzA
-         yTMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o9m50VK1lLtc7nqDyGrRl3rlBYyarY0M7UxRlCvTi7I=;
-        b=P8/8yDmj73oqqcQKiuymZ9Oc0IYmWEQI7CGnPu7LGbNrDrTa812FbxBpaQpHns+enW
-         yLIXIxZcvyYxUXJBj9KrYwV6iditk9WGSfshzVnKGIlJfR5sfriEF8URrJFtRHKtun6v
-         Qp9BgQySG7ypWuDQmliyP9lLHD1vUMmfz2ZyTLpKmv4y77skmqbRwitoORxqPrLnaHUZ
-         XqK22zf092ompzqAhVe10rcg6fuKEbgmqa/x7SKmg2cF6ugP8XFST80JJ92qgaySIW/w
-         yxY5WF6ExB3VoOaJYh0D/uhd8bjqgUMaAdm2i8lHGaQ31iZez+9J52pS8iE9lFxI2W+Z
-         rKrQ==
-X-Gm-Message-State: AOAM531F96Kr5dBz7VqpFPBKXPvIy+gtcaGr01bdKdSrZSDU61Xq3RsL
-        MisuCNpWcOz7nlHva6nGOzfJX3o0LbE+RhpzqLHxuLBIaTg=
-X-Google-Smtp-Source: ABdhPJwU8sW/xnW2NBa1NBhKNrTCmmvZt+59DdL3+fpJrB75Cl9bvxj94xoZl+PaI/NK6YOpUnLYafHbsXqa6ov1Jtc=
-X-Received: by 2002:aca:c5d6:: with SMTP id v205mr4466193oif.143.1595954615271;
- Tue, 28 Jul 2020 09:43:35 -0700 (PDT)
+        Tue, 28 Jul 2020 12:44:33 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SGhjX5011284;
+        Tue, 28 Jul 2020 11:43:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595954625;
+        bh=jdKE6zp5yHn3EXrC6YzjiSN2SMWcYzGzcRo94VExG04=;
+        h=From:To:CC:Subject:Date;
+        b=GsxHbf/Vhiz/kQkg7HJD+yIGBIyujCrnwfv30wckn2JXpWcLvTrhjHlapqqPm0RPV
+         XbtIicT1OO1lDKqVMGwH84aowDsIrfjfSpTsNsVba7iLiJ8HzsB6TyVWDBLJMPPrCl
+         wUfB/8qTLcaDtGKSPnyl/4daiW384d7IMJ1qRaOM=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06SGhjmV065653
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 28 Jul 2020 11:43:45 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Jul 2020 11:43:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Jul 2020 11:43:45 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SGhjQi011670;
+        Tue, 28 Jul 2020 11:43:45 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH] ASoC: tlv320adcx140: Fix various style errors and warnings
+Date:   Tue, 28 Jul 2020 11:43:39 -0500
+Message-ID: <20200728164339.16841-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200728143004.3228-1-dhiraj.sharma0024@gmail.com>
- <20200728145419.GA3537020@kroah.com> <CAPRy4h1Xs1JpQinnWm04dOi07Ch0RLL0U4Z5DDCKHmombXE0sA@mail.gmail.com>
- <20200728155311.GA4178776@kroah.com>
-In-Reply-To: <20200728155311.GA4178776@kroah.com>
-From:   Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
-Date:   Tue, 28 Jul 2020 22:13:22 +0530
-Message-ID: <CAPRy4h2Zbw=QwJ7=0+FzGnK_o1esn2GTRSuv5ZE30Vu=Oj=x=Q@mail.gmail.com>
-Subject: Re: [PATCH] media: usbvision: fixed coding style
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        stern@rowland.harvard.edu, jrdr.linux@gmail.com,
-        linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> As the bot said, only do one type of thing per patch, and "fix all
-> checkpatch errors/warnings" is not one type of thing.
+Fix white space issues and remove else case where it was not needed.
+Convert "static const char *" to "static const char * const"
 
-So should I send a fresh patch with minimal fixes? instead of replying
-to this mail with [PATCH 01]
+Fixes: 689c7655b50 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 49dcdd72e5c6..938c5ef17e61 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -218,8 +218,8 @@ static const struct snd_kcontrol_new in4_resistor_controls[] = {
+ };
+ 
+ /* Analog/Digital Selection */
+-static const char *adcx140_mic_sel_text[] = {"Analog", "Line In", "Digital"};
+-static const char *adcx140_analog_sel_text[] = {"Analog", "Line In"};
++static const char * const adcx140_mic_sel_text[] = {"Analog", "Line In", "Digital"};
++static const char * const adcx140_analog_sel_text[] = {"Analog", "Line In"};
+ 
+ static SOC_ENUM_SINGLE_DECL(adcx140_mic1p_enum,
+ 			    ADCX140_CH1_CFG0, 5,
+@@ -598,7 +598,7 @@ static int adcx140_reset(struct adcx140_priv *adcx140)
+ 		gpiod_direction_output(adcx140->gpio_reset, 1);
+ 	} else {
+ 		ret = regmap_write(adcx140->regmap, ADCX140_SW_RESET,
+-		          ADCX140_RESET);
++				   ADCX140_RESET);
+ 	}
+ 
+ 	/* 8.4.2: wait >= 10 ms after entering sleep mode. */
+@@ -841,7 +841,7 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
+ 	if (ret)
+ 		goto out;
+ 
+-	if(adcx140->supply_areg == NULL)
++	if (adcx140->supply_areg == NULL)
+ 		sleep_cfg_val |= ADCX140_AREG_INTERNAL;
+ 
+ 	ret = regmap_write(adcx140->regmap, ADCX140_SLEEP_CFG, sleep_cfg_val);
+@@ -942,8 +942,8 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 	if (IS_ERR(adcx140->supply_areg)) {
+ 		if (PTR_ERR(adcx140->supply_areg) == -EPROBE_DEFER)
+ 			return -EPROBE_DEFER;
+-		else
+-			adcx140->supply_areg = NULL;
++
++		adcx140->supply_areg = NULL;
+ 	} else {
+ 		ret = regulator_enable(adcx140->supply_areg);
+ 		if (ret) {
+-- 
+2.28.0
+
