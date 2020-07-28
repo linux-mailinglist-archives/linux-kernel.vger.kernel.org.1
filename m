@@ -2,204 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA3E230AC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA3A230ABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729812AbgG1M5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729780AbgG1M5S (ORCPT
+        id S1729722AbgG1M5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:57:00 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:1996 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729622AbgG1M47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:57:18 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EC0C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:57:18 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a9so11533490pjd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:57:18 -0700 (PDT)
+        Tue, 28 Jul 2020 08:56:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1595941019; x=1627477019;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+  b=KTZ/78tTJB4nk4e9h9m+tuccslUbBbtxEa4TrtrOVCmT9kS2Xn22Yebq
+   rgnGpKpvzs4avXCrY4AAPXMOUB/GPu+EjeZALovsY4FLRblAJSck/bUE9
+   cZTyDMwyU7pmU252AA5Vo/Z26rVjuBWB2QutreCkgYJP4MKX8FDLiuqpm
+   EzX+QZ+tvI5YFMmm5X+qHlt9oSWygE3vB12CRr1xs0mX4C1Y2CKVM5l8l
+   UwuqGEkV1vUAaL0Yc/DnyAtn1Mc3ElXAX2wwl69fY/i+heBpoFk34bvhW
+   6oja+7JvjjXubCH91mQZ0UnG1yGliXCw/FNcxVFok/M1TgxMusqc21JQL
+   A==;
+IronPort-SDR: gK9xZCKDX9cSM4byXScDmZ89AIssnpejUaPi+k69xl7uTaGVGRuWtlrRsA2Y58hikBHbXrsagE
+ IplDxS5Gnly9HP56TS1zyI0mH+mqFCUfBS0UoTslii4MvUIQhTAbPYT3yAaQMza431a5zNO0iz
+ t7nvU3tw9PKH0+0kYLhUmPHUHl/FpfHTx9OXryxKLfDPSAo3xgrk/GeQugyWw8iAwPyM5/0H7t
+ aCDfNhNbnuZ7fruSQJd6BIAofyPivRpR81Xv05xAjL1ZR6p8+os7ORNLuE5D33cpBaZgyoCAM/
+ qpc=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589212800"; 
+   d="scan'208";a="143652628"
+Received: from mail-sn1nam02lp2051.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.36.51])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jul 2020 20:56:58 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XNe0uYEAfjZFe8ci/fjjNmgDHjxwzExGY6Me4htTYSDMdY+WZO33qBarvzKgVJ6751Bb+2fsmC0xgmVyouFfTBb/ewE6BwZNnejXC8Cs3ZaCJIlXfq8OVWfqYc7NyIkXSQmC4YIMG5LJVbO4bpk8jWv3UBdj3zxgBidVvXZ63ZwUbXdcElnq5EoNikFv9hgVmTKIRrGwTmNvH2UnrJDZViJbQ4P8xL8vUrzyNvWbvQsCAAtRUO2gOcocCXdAKLVZ3JfEilf5vbLm5eLYoAnTSh7T0kI6DPCyHtwuxlgHvlYshOGtBGaF8Oikq4rJ5CNepiA7z22zIKU36TheJmHojw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=cqh838taFrKnLvOEdJCfld/mUUnaUCjMrdZYX/fyRcL+g6qkuJyNdA+hGN6pGKQhnrCT3qXh9//EOwB9CB7uS3aZoNLvWi+tLZfoar+9IgVk1gpPIJPdCYOT3mZsv3DkU/jtzBbSrxpCPI53foH83mFJb7UVWvAS5wwqQ2U/xmdZi5Gj8mBXnVrXoafehgrPeuveDFoT8dgYuVhYvzbas9ukDaop4LW15zW8RlEqdXPSDHMIIPTOpz1Sdix1wqAGqP9C0tX02HxKgCBaPMa2dhyQ0HbLqU9rJIvf3gOJEQ6YBW8O4Q9LhgwYPJvudF0fYoG+kjIUaGxHM2IoKOYovA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jGv59OL3eBSwcPKc8/h9cDYwkm0Ga9KFVIVK1NEWRJE=;
-        b=SNQADGVnE0GT2O1e70IvNnIdtBVC4WTc8bSWAD5HxNOIq9P1xHSKpegGI6WKHj2wz6
-         1gz19deudrkxNb9cNbrDAXXSOkqEdWfAquJnQu1/sPK7we2vCeOB9tYCa88Czg/oqkd2
-         a2+OCvZ/gy2eUX8qxOx0YGJ9RROfHCz+duDtMWGV3xV9/Wk/rs8iyqBe8irr2jETNMl3
-         K5fNojIW+bkRFjYqCrEUTDq1SHAnJ0ONf972MRoy9gaFBxUcy5pv2sEAp2h6Q82ek7AE
-         Q0B+C2WLgtVFYWLO4+DDDDEqCNpw8XCzvbpDXb5h8d8OVGiB2zQ1yZ0rjpZ1aqeG2+qX
-         Oorw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jGv59OL3eBSwcPKc8/h9cDYwkm0Ga9KFVIVK1NEWRJE=;
-        b=Karz/nIazN31XTQlZ+m0wich4dt82tw8nEo/8o3nH7mQBLiSbrFWX2zSrYFsYrElOv
-         EjANBaqP9JNXLWxF1tbKbeXAV29TBGK326+t884eiTnT2GTqyXH6GUqyMG2Mv5fIdVMJ
-         +PAw5ja1DXqhw3ZROeeX3CVkEXCa0wnI0ICWchtYfatzlZ5LMK/C9WzIOXIx7/FdEmqK
-         xqH6jDFwAEGAJ/MFZUfmJEokRYwjb8zVHadAak9TKW1LD/IZHqv17vxN4j9fE2ANuNJU
-         4bGS+0TahK0QCV6QqAVFNbr5jo9GDk+nig9zHlPaU05Jd+RzvM8SgJ18zFNJqVJIO8IF
-         7QPA==
-X-Gm-Message-State: AOAM530VoNmhpjoRSoZZtv6bt+ph80Ka/gIbOtKt0F6jCuwOcD5YYM+v
-        xmdU5VEjdiTbMPaNPT7xcV1+kReaeR83o1tOflT88w==
-X-Google-Smtp-Source: ABdhPJzkoNBZsvO7dZrfGpe7loV05LDnvZRT8DVZMLBwOq1H+rzaEz8juFb93qjBu8kbRj7UBAau9HT+us4b4tJg66A=
-X-Received: by 2002:a17:902:9b97:: with SMTP id y23mr23964341plp.189.1595941037785;
- Tue, 28 Jul 2020 05:57:17 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
+ b=b29uChG3UOwrtDjEDcjFavxk+dwl8A8gscJ9dPp03CT6NSWQJaVuVi8ZkAaGRxyj6J6xefKnmjxAN3pgPNKqhdrVSFwsckAk6HlKii5XB94StBPUGFIldf6tJAT06Ct5teHgFtT/jXlLeA4ZvYM7kytZCpzqdAi0nfRVvzvJq0s=
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
+ by DM6PR04MB5322.namprd04.prod.outlook.com (2603:10b6:5:106::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.26; Tue, 28 Jul
+ 2020 12:56:57 +0000
+Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::c862:9cd5:689a:8573]) by DM5PR0401MB3591.namprd04.prod.outlook.com
+ ([fe80::c862:9cd5:689a:8573%5]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 12:56:57 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 14/14] bdi: replace BDI_CAP_NO_{WRITEBACK,ACCT_DIRTY} with
+ a single flag
+Thread-Topic: [PATCH 14/14] bdi: replace BDI_CAP_NO_{WRITEBACK,ACCT_DIRTY}
+ with a single flag
+Thread-Index: AQHWYYzlqorm63WWfE+oLNIUKsplxQ==
+Date:   Tue, 28 Jul 2020 12:56:57 +0000
+Message-ID: <DM5PR0401MB3591373D85A471CF9541D1E49B730@DM5PR0401MB3591.namprd04.prod.outlook.com>
+References: <20200724073313.138789-1-hch@lst.de>
+ <20200724073313.138789-15-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [129.253.240.72]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 256ec321-6aa9-4cf0-97c2-08d832f5b5dc
+x-ms-traffictypediagnostic: DM6PR04MB5322:
+x-microsoft-antispam-prvs: <DM6PR04MB5322089578D056EB25991E949B730@DM6PR04MB5322.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FbYENchCtaITF7m6RyQbIeSeYE8S5uRLhSBUwrGKWMDyYndXIa8DkqeTo4ZUphOpX0bWNxjaUcHvsedufES3GUtZjMp/EHQOUgLlT1gGYUv7j6sSa4dngXlVaMOw9vJGPqEFYNUDi2otNQF8Iy1ACe845Wo0c5OEEAU+qtviNJ8sUqEEbXxBRZAnVFYBZCcCFQZ6CuPeavMN7ag3aH930fsmd19aRUMcvMGz4n494U4JKp0hWFANLMkDEX8QUc1gePJgfw41ZBSSx9Hhc1JCXbjvdzgNu/k2fYrH1EeZHqmzXjT41Py6i51XNOqzGxV/feCFoaCVQIFhyBdFrmefCZ0ad43UdNua9m6BSg5OnT2CN+kfkSmWjq1I2Z4LJqWeli1+h3zkVhQlh06rPOAuww==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(136003)(376002)(366004)(39860400002)(5660300002)(8676002)(66556008)(66476007)(66946007)(66446008)(19618925003)(9686003)(7696005)(186003)(26005)(64756008)(86362001)(478600001)(55016002)(6506007)(8936002)(52536014)(7416002)(71200400001)(110136005)(558084003)(4270600006)(33656002)(4326008)(76116006)(91956017)(316002)(2906002)(54906003)(142933001)(14143004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: G4IJjpzbqsijbA6RQMTP9G+lqgirCTZ4/7zN8ekC6hb1LAROoioXlWe2Ml+OzEayAoSW6N9JJBCaGQPnOyWOpT4Q+64JLk+cQo4mIJUgMYm6ucuiiyiHzZl3LlUC57w/qmQdqGaLfaz++dA7DWD2zzlBFKCCbWohZ4SEBqK/NA93P5uosS8Prs3ezBefgffUbovR6Ebzs+qQLctj5hIEJNawz963UPWv4AGqxdASCR89Rl6k9745uo55/BZWGXR3RuEMQrZO4msfd812hPxtEKfCjR3voXB+NcrTyt/aoAL2bp0NJu2lvQozgOJgvcySJw6WLedmyd5w4Fdp+Qel6dsIdXQYyl+5Q9nyf27iq0tpdfzbPFEPXCm077MHG7iVJ2eEK9EYaRwXkLv78uhyyz+vLq7/xqrkxJRf66K4RLceQQJVoq5PhmO8VSNoMmy4tfOwniOy5IKtBV9x9MsnfVL73rvt1ddUSdeDh2iZbZ6QAi0XPePZugix9z8dNB4M
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200727134914.312934924@linuxfoundation.org> <20200727134918.205538211@linuxfoundation.org>
-In-Reply-To: <20200727134918.205538211@linuxfoundation.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 28 Jul 2020 20:56:41 +0800
-Message-ID: <CAMZfGtWVtGeMfu=04LiNVcLrBpmexUryHjy-dujo77CpJhcwGg@mail.gmail.com>
-Subject: Re: [External] [PATCH 4.19 76/86] mm: memcg/slab: fix memory leak at
- non-root kmem_cache destroy
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 256ec321-6aa9-4cf0-97c2-08d832f5b5dc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2020 12:56:57.1354
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /aWssUk/6kJwWtFLU9UAlgqdEYYzTZfaqM083iPKdojGMLd2Tux0XHazJqGzL4eGXFQOIVWtTURDagP+ojdZu/490s1Xsh0HV1OI0y7ac3o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5322
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 10:12 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Muchun Song <songmuchun@bytedance.com>
->
-> commit d38a2b7a9c939e6d7329ab92b96559ccebf7b135 upstream.
->
-> If the kmem_cache refcount is greater than one, we should not mark the
-> root kmem_cache as dying.  If we mark the root kmem_cache dying
-> incorrectly, the non-root kmem_cache can never be destroyed.  It
-> resulted in memory leak when memcg was destroyed.  We can use the
-> following steps to reproduce.
->
->   1) Use kmem_cache_create() to create a new kmem_cache named A.
->   2) Coincidentally, the kmem_cache A is an alias for kmem_cache B,
->      so the refcount of B is just increased.
->   3) Use kmem_cache_destroy() to destroy the kmem_cache A, just
->      decrease the B's refcount but mark the B as dying.
->   4) Create a new memory cgroup and alloc memory from the kmem_cache
->      B. It leads to create a non-root kmem_cache for allocating memory.
->   5) When destroy the memory cgroup created in the step 4), the
->      non-root kmem_cache can never be destroyed.
->
-> If we repeat steps 4) and 5), this will cause a lot of memory leak.  So
-> only when refcount reach zero, we mark the root kmem_cache as dying.
->
-> Fixes: 92ee383f6daa ("mm: fix race between kmem_cache destroy, create and deactivate")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Christoph Lameter <cl@linux.com>
-> Cc: Pekka Enberg <penberg@kernel.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: <stable@vger.kernel.org>
-> Link: http://lkml.kernel.org/r/20200716165103.83462-1-songmuchun@bytedance.com
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> ---
->  mm/slab_common.c |   35 ++++++++++++++++++++++++++++-------
->  1 file changed, 28 insertions(+), 7 deletions(-)
->
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -310,6 +310,14 @@ int slab_unmergeable(struct kmem_cache *
->         if (s->refcount < 0)
->                 return 1;
->
-> +#ifdef CONFIG_MEMCG_KMEM
-> +       /*
-> +        * Skip the dying kmem_cache.
-> +        */
-> +       if (s->memcg_params.dying)
-> +               return 1;
-> +#endif
-> +
->         return 0;
->  }
->
-> @@ -832,12 +840,15 @@ static int shutdown_memcg_caches(struct
->         return 0;
->  }
->
-> -static void flush_memcg_workqueue(struct kmem_cache *s)
-> +static void memcg_set_kmem_cache_dying(struct kmem_cache *s)
->  {
->         mutex_lock(&slab_mutex);
->         s->memcg_params.dying = true;
->         mutex_unlock(&slab_mutex);
-
-We should remove mutex_lock/unlock(&slab_mutex) here, because
-we already hold the slab_mutex from kmem_cache_destroy().
-
-
-> +}
->
-> +static void flush_memcg_workqueue(struct kmem_cache *s)
-> +{
->         /*
->          * SLUB deactivates the kmem_caches through call_rcu_sched. Make
->          * sure all registered rcu callbacks have been invoked.
-> @@ -858,10 +869,6 @@ static inline int shutdown_memcg_caches(
->  {
->         return 0;
->  }
-> -
-> -static inline void flush_memcg_workqueue(struct kmem_cache *s)
-> -{
-> -}
->  #endif /* CONFIG_MEMCG_KMEM */
->
->  void slab_kmem_cache_release(struct kmem_cache *s)
-> @@ -879,8 +886,6 @@ void kmem_cache_destroy(struct kmem_cach
->         if (unlikely(!s))
->                 return;
->
-> -       flush_memcg_workqueue(s);
-> -
->         get_online_cpus();
->         get_online_mems();
->
-> @@ -890,6 +895,22 @@ void kmem_cache_destroy(struct kmem_cach
->         if (s->refcount)
->                 goto out_unlock;
->
-> +#ifdef CONFIG_MEMCG_KMEM
-> +       memcg_set_kmem_cache_dying(s);
-> +
-> +       mutex_unlock(&slab_mutex);
-> +
-> +       put_online_mems();
-> +       put_online_cpus();
-> +
-> +       flush_memcg_workqueue(s);
-> +
-> +       get_online_cpus();
-> +       get_online_mems();
-> +
-> +       mutex_lock(&slab_mutex);
-> +#endif
-> +
->         err = shutdown_memcg_caches(s);
->         if (!err)
->                 err = shutdown_cache(s);
->
->
-
-
---
-Yours,
-Muchun
+Looks good,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
