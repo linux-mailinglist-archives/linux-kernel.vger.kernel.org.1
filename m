@@ -2,197 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F478230B6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3474230B69
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730127AbgG1NZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:25:10 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8845 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729991AbgG1NZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:25:10 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 54E0D1848A8AC4BCBBAC;
-        Tue, 28 Jul 2020 21:24:51 +0800 (CST)
-Received: from [10.174.178.63] (10.174.178.63) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Jul 2020 21:24:43 +0800
-Subject: Re: [PATCH 1/4] drivers/perf: Add support for ARMv8.3-SPE
-To:     Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>
-CC:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <zhangshaokun@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "Ingo Molnar" <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, <guohanjun@huawei.com>
-References: <20200724091607.41903-1-liwei391@huawei.com>
- <20200724091607.41903-2-liwei391@huawei.com>
- <20200728122742.GB4343@leoy-ThinkPad-X240s>
-From:   "liwei (GF)" <liwei391@huawei.com>
-Message-ID: <c2ce17a9-bd3a-e828-fe76-769c9feabece@huawei.com>
-Date:   Tue, 28 Jul 2020 21:24:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0
+        id S1730121AbgG1NZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:25:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50045 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729555AbgG1NZF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 09:25:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595942703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mPe2kBPPIADxPOO35iN4ImqsjTLCSyuLAf8YdcjEsaI=;
+        b=XvIojDIPCmlvzXTkoRRTzDL36UASjINYwQRB1+dGy7d7vcpWCXloZP3o6qe3EXlT+eixOP
+        DR8ArjJl8Xo5xWdxYK8cba2O6WOiF1uKV8hlBTJE0lwIIVur9EShVadDuygCa/L/swSyx0
+        4FF69SHwBGMTSUqfZ3nfQCwPxdJDeaQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-44-gD3mRHsiM5qQNL6HDHZFVQ-1; Tue, 28 Jul 2020 09:25:01 -0400
+X-MC-Unique: gD3mRHsiM5qQNL6HDHZFVQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 312FE1005510;
+        Tue, 28 Jul 2020 13:24:59 +0000 (UTC)
+Received: from localhost (ovpn-12-117.pek2.redhat.com [10.72.12.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 900E27B41F;
+        Tue, 28 Jul 2020 13:24:56 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 21:24:53 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        mhocko@kernel.org, rientjes@google.com, mgorman@suse.de,
+        walken@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Jianchao Guo <guojianchao@bytedance.com>
+Subject: Re: [PATCH v4] mm/hugetlb: add mempolicy check in the reservation
+ routine
+Message-ID: <20200728132453.GB14854@MiWiFi-R3L-srv>
+References: <20200728034938.14993-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20200728122742.GB4343@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.63]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728034938.14993-1-songmuchun@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+Hi Muchun,
 
-On 2020/7/28 20:27, Leo Yan wrote:
-> Hi Wei,
+On 07/28/20 at 11:49am, Muchun Song wrote:
+> In the reservation routine, we only check whether the cpuset meets
+> the memory allocation requirements. But we ignore the mempolicy of
+> MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
+> memory allocation may fail due to mempolicy restrictions and receives
+> the SIGBUS signal. This can be reproduced by the follow steps.
 > 
-> On Fri, Jul 24, 2020 at 05:16:04PM +0800, Wei Li wrote:
->> Armv8.3 extends the SPE by adding:
->> - Alignment field in the Events packet, and filtering on this event
->>   using PMSEVFR_EL1.
->> - Support for the Scalable Vector Extension (SVE).
->>
->> The main additions for SVE are:
->> - Recording the vector length for SVE operations in the Operation Type
->>   packet. It is not possible to filter on vector length.
->> - Incomplete predicate and empty predicate fields in the Events packet,
->>   and filtering on these events using PMSEVFR_EL1.
->>
->> Update the check of pmsevfr for empty/partial predicated SVE and
->> alignment event in kernel driver.
->>
->> Signed-off-by: Wei Li <liwei391@huawei.com>
->> ---
->>  arch/arm64/include/asm/sysreg.h |  4 +++-
->>  drivers/perf/arm_spe_pmu.c      | 18 ++++++++++++++----
->>  2 files changed, 17 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
->> index 463175f80341..be4c44ccdb56 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -281,7 +281,6 @@
->>  #define SYS_PMSFCR_EL1_ST_SHIFT		18
->>  
->>  #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
->> -#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
->>  
->>  #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
->>  #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
->> @@ -769,6 +768,9 @@
->>  #define ID_AA64DFR0_PMUVER_8_5		0x6
->>  #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
->>  
->> +#define ID_AA64DFR0_PMSVER_8_2		0x1
->> +#define ID_AA64DFR0_PMSVER_8_3		0x2
->> +
->>  #define ID_DFR0_PERFMON_SHIFT		24
->>  
->>  #define ID_DFR0_PERFMON_8_1		0x4
->> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
->> index e51ddb6d63ed..5ec7ee0c8fa1 100644
->> --- a/drivers/perf/arm_spe_pmu.c
->> +++ b/drivers/perf/arm_spe_pmu.c
->> @@ -54,7 +54,7 @@ struct arm_spe_pmu {
->>  	struct hlist_node			hotplug_node;
->>  
->>  	int					irq; /* PPI */
->> -
->> +	int					pmuver;
+>  1) Compile the test case.
+>     cd tools/testing/selftests/vm/
+>     gcc map_hugetlb.c -o map_hugetlb
 > 
-> Since the version number is only 4 bits width, 'u16' would be enough
-> to record SPE version number.
+>  2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
+>     system. Each node will pre-allocate one huge page.
+>     echo 2 > /proc/sys/vm/nr_hugepages
+> 
+>  3) Run test case(mmap 4MB). We receive the SIGBUS signal.
+>     numactl --membind=0 ./map_hugetlb 4
 
-Sounds reasonable, i can change it to 'u16' if you insist.
+I think supporting the  mempolicy of MPOL_BIND case is a good idea.
+I am wondering what about the other mempolicy cases, e.g MPOL_INTERLEAVE,
+MPOL_PREFERRED. Asking these because we already have similar handling in
+sysfs, proc nr_hugepages_mempolicy writting. Please see
+__nr_hugepages_store_common() for detail.
 
->>  	u16					min_period;
->>  	u16					counter_sz;
->>  
->> @@ -80,6 +80,15 @@ struct arm_spe_pmu {
->>  /* Keep track of our dynamic hotplug state */
->>  static enum cpuhp_state arm_spe_pmu_online;
->>  
->> +static u64 sys_pmsevfr_el1_mask[] = {
->> +	[ID_AA64DFR0_PMSVER_8_2] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
->> +		GENMASK_ULL(15, 12) | BIT_ULL(7) | BIT_ULL(5) | BIT_ULL(3) |
->> +		BIT_ULL(1),
->> +	[ID_AA64DFR0_PMSVER_8_3] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
->> +		GENMASK_ULL(18, 17) | GENMASK_ULL(15, 11) | BIT_ULL(7) |
->> +		BIT_ULL(5) | BIT_ULL(3) | BIT_ULL(1),
->> +};
-> 
-> Seems to me, the definitions for Aarch64 system registers should be
-> placed into the file 'arch/arm64/include/asm/sysreg.h'.  Like below
-> two macros:
-> 
->   #define SYS_PMSEVFR_EL1_RES0_8_2		0x0000ffff00ff0f55UL
->   #define SYS_PMSEVFR_EL1_RES0_8_3		...
-
-I really think using GENMASK_ULL() to generate the mask is better than a definition
-with magic number. It is beneficial to be reviewed and extended later.
-
-> Let's wait for Will or Mark Rutland's comments for this, in case I
-> mislead for this.
->> +
->>  enum arm_spe_pmu_buf_fault_action {
->>  	SPE_PMU_BUF_FAULT_ACT_SPURIOUS,
->>  	SPE_PMU_BUF_FAULT_ACT_FATAL,
->> @@ -670,7 +679,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
->>  	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
->>  		return -ENOENT;
->>  
->> -	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
->> +	if (arm_spe_event_to_pmsevfr(event) & ~sys_pmsevfr_el1_mask[spe_pmu->pmuver])
->>  		return -EOPNOTSUPP;
->>  
->>  	if (attr->exclude_idle)
->> @@ -937,6 +946,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
->>  			fld, smp_processor_id());
->>  		return;
->>  	}
->> +	spe_pmu->pmuver = fld;
->>  
->>  	/* Read PMBIDR first to determine whether or not we have access */
->>  	reg = read_sysreg_s(SYS_PMBIDR_EL1);
->> @@ -1027,8 +1037,8 @@ static void __arm_spe_pmu_dev_probe(void *info)
->>  	}
->>  
->>  	dev_info(dev,
->> -		 "probed for CPUs %*pbl [max_record_sz %u, align %u, features 0x%llx]\n",
->> -		 cpumask_pr_args(&spe_pmu->supported_cpus),
->> +		 "v%d probed for CPUs %*pbl [max_record_sz %u, align %u, features 0x%llx]\n",
-> 
-> Let's output explict info, like:
-> 
->   "probed for CPUs %*pbl [pmuver %d, max_record_sz %u, align %u, features 0x%llx]\n",
-> 
-
-Agree, and i have a little question here:
-Currently, the of_compatible of SPE PMU is "arm,statistical-profiling-extension-v1", and
-the platform_device name is "arm,spe-v1". So this message looks weird when supporting
-ARMv8.3-SPE because the pmuver is 2.
-
-As the version of SPE can be probed by reading 'ID_AA64DFR0_EL1.PMSVer', can we remove
-the version hint in of_compatible and platform_device name?
+Thanks
+Baoquan
 
 > 
->> +		 spe_pmu->pmuver, cpumask_pr_args(&spe_pmu->supported_cpus),
->>  		 spe_pmu->max_record_sz, spe_pmu->align, spe_pmu->features);
->>  
->>  	spe_pmu->features |= SPE_PMU_FEAT_DEV_PROBED;
->> -- 
->> 2.17.1
->>
+> With this patch applied, the mmap will fail in the step 3) and throw
+> "mmap: Cannot allocate memory".
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reported-by: Jianchao Guo <guojianchao@bytedance.com>
+> Suggested-by: Michal Hocko <mhocko@kernel.org>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+> changelog in v4:
+>  1) Fix compilation errors with !CONFIG_NUMA.
+> 
+> changelog in v3:
+>  1) Do not allocate nodemask on the stack.
+>  2) Update comment.
+> 
+> changelog in v2:
+>  1) Reuse policy_nodemask().
+> 
+>  include/linux/mempolicy.h | 14 ++++++++++++++
+>  mm/hugetlb.c              | 22 ++++++++++++++++++----
+>  mm/mempolicy.c            |  2 +-
+>  3 files changed, 33 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
+> index ea9c15b60a96..0656ece1ccf1 100644
+> --- a/include/linux/mempolicy.h
+> +++ b/include/linux/mempolicy.h
+> @@ -152,6 +152,15 @@ extern int huge_node(struct vm_area_struct *vma,
+>  extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
+>  extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+>  				const nodemask_t *mask);
+> +extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
+> +
+> +static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
+> +{
+> +	struct mempolicy *mpol = get_task_policy(current);
+> +
+> +	return policy_nodemask(gfp, mpol);
+> +}
+> +
+>  extern unsigned int mempolicy_slab_node(void);
+>  
+>  extern enum zone_type policy_zone;
+> @@ -281,5 +290,10 @@ static inline int mpol_misplaced(struct page *page, struct vm_area_struct *vma,
+>  static inline void mpol_put_task_policy(struct task_struct *task)
+>  {
+>  }
+> +
+> +static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
+> +{
+> +	return NULL;
+> +}
+>  #endif /* CONFIG_NUMA */
+>  #endif
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 589c330df4db..a34458f6a475 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3463,13 +3463,21 @@ static int __init default_hugepagesz_setup(char *s)
+>  }
+>  __setup("default_hugepagesz=", default_hugepagesz_setup);
+>  
+> -static unsigned int cpuset_mems_nr(unsigned int *array)
+> +static unsigned int allowed_mems_nr(struct hstate *h)
+>  {
+>  	int node;
+>  	unsigned int nr = 0;
+> +	nodemask_t *mpol_allowed;
+> +	unsigned int *array = h->free_huge_pages_node;
+> +	gfp_t gfp_mask = htlb_alloc_mask(h);
+> +
+> +	mpol_allowed = policy_nodemask_current(gfp_mask);
+>  
+> -	for_each_node_mask(node, cpuset_current_mems_allowed)
+> -		nr += array[node];
+> +	for_each_node_mask(node, cpuset_current_mems_allowed) {
+> +		if (!mpol_allowed ||
+> +		    (mpol_allowed && node_isset(node, *mpol_allowed)))
+> +			nr += array[node];
+> +	}
+>  
+>  	return nr;
+>  }
+> @@ -3648,12 +3656,18 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
+>  	 * we fall back to check against current free page availability as
+>  	 * a best attempt and hopefully to minimize the impact of changing
+>  	 * semantics that cpuset has.
+> +	 *
+> +	 * Apart from cpuset, we also have memory policy mechanism that
+> +	 * also determines from which node the kernel will allocate memory
+> +	 * in a NUMA system. So similar to cpuset, we also should consider
+> +	 * the memory policy of the current task. Similar to the description
+> +	 * above.
+>  	 */
+>  	if (delta > 0) {
+>  		if (gather_surplus_pages(h, delta) < 0)
+>  			goto out;
+>  
+> -		if (delta > cpuset_mems_nr(h->free_huge_pages_node)) {
+> +		if (delta > allowed_mems_nr(h)) {
+>  			return_unused_surplus_pages(h, delta);
+>  			goto out;
+>  		}
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 93fcfc1f2fa2..fce14c3f4f38 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1873,7 +1873,7 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
+>   * Return a nodemask representing a mempolicy for filtering nodes for
+>   * page allocation
+>   */
+> -static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+> +nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
+>  {
+>  	/* Lower zones don't get a nodemask applied for MPOL_BIND */
+>  	if (unlikely(policy->mode == MPOL_BIND) &&
+> -- 
+> 2.11.0
+> 
+> 
 
-Thanks,
-Wei
