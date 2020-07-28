@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EE0230B86
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A72230B8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgG1Nfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:35:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730021AbgG1Nfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:35:51 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D592B20663;
-        Tue, 28 Jul 2020 13:35:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595943350;
-        bh=VhNW/VcN7636dhuyu/1kgMRnPEPrCnyH1NVrMnXimX0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s7xlgTWj26GYXPVmvQPSyemnyiVNpxsfCk0lxaMxcOgC8Rag4Wh65Bi12AUpYMCT+
-         3mSsI1SVIhhAfLNg5QBP+l8gDt2cQVLKYMVg2bFjTADrmQ9spnrc6ckduRG4bnr+tf
-         KCUdnUivnqPoERNrnJrk1jW9WKUSvnlTLjVpPnOY=
-Date:   Tue, 28 Jul 2020 22:35:45 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH v5 5/6] kprobes: Use text_alloc() and text_free()
-Message-Id: <20200728223545.ce4ff78cac73b571a27bb357@kernel.org>
-In-Reply-To: <CAMj1kXGJ_7mUtFHWsLaBj-MSK_VxpBet=wi1Z7frkKRVEgozpQ@mail.gmail.com>
-References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
-        <20200724050553.1724168-6-jarkko.sakkinen@linux.intel.com>
-        <20200724092746.GD517988@gmail.com>
-        <20200725031648.GG17052@linux.intel.com>
-        <20200726081408.GB2927915@kernel.org>
-        <CAMj1kXHDK5RSbTu3SG1AzbLRJD_FsdAmCnjmf31P=Db6J0ktww@mail.gmail.com>
-        <20200728171715.0800093e2226e3d72b04a3ae@kernel.org>
-        <CAMj1kXGJ_7mUtFHWsLaBj-MSK_VxpBet=wi1Z7frkKRVEgozpQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730122AbgG1NiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:38:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:43706 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729950AbgG1NiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 09:38:22 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4F7F7B9C77102E9AEC57;
+        Tue, 28 Jul 2020 21:38:19 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.81) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Jul 2020
+ 21:38:15 +0800
+Subject: Re: [PATCH net-next] liquidio: Remove unneeded cast from memory
+ allocation
+To:     Joe Perches <joe@perches.com>, <dchickles@marvell.com>,
+        <sburla@marvell.com>, <fmanlunas@marvell.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200724130001.71528-1-wanghai38@huawei.com>
+ <2cdef8d442bb5da39aed17bf994a800e768942f7.camel@perches.com>
+ <ac99bed4-dabc-a003-374f-206753f937cb@huawei.com>
+ <bffcc7d513e186734d224bda6afdd55033b451de.camel@perches.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <2996569e-5e1a-db02-2c78-0ee0d572706d@huawei.com>
+Date:   Tue, 28 Jul 2020 21:38:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <bffcc7d513e186734d224bda6afdd55033b451de.camel@perches.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.81]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020 13:56:43 +0300
-Ard Biesheuvel <ardb@kernel.org> wrote:
 
-> On Tue, 28 Jul 2020 at 11:17, Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > Masami or Peter should correct me if I am wrong, but it seems to me
-> > > that the way kprobes uses these pages does not require them to be in
-> > > relative branching range of the core kernel on any architecture, given
-> > > that they are populated with individual instruction opcodes that are
-> > > executed in single step mode, and relative branches are emulated (when
-> > > needed)
-> >
-> > Actually, x86 and arm has the "relative branching range" requirements
-> > for the jump optimized kprobes. For the other architectures, I think
-> > we don't need it. Only executable text buffer is needed.
-> >
-> 
-> Thanks for the explanation. Today, arm64 uses the definition below.
-> 
-> void *alloc_insn_page(void)
-> {
->   return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
->     GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
->     NUMA_NO_NODE, __builtin_return_address(0));
-> }
-> 
-> Do you think we could use that as the generic implementation if we use
-> MODULES_START/_END as the allocation window?
+在 2020/7/28 17:11, Joe Perches 写道:
+> On Tue, 2020-07-28 at 16:42 +0800, wanghai (M) wrote:
+>> 在 2020/7/25 5:29, Joe Perches 写道:
+>>> On Fri, 2020-07-24 at 21:00 +0800, Wang Hai wrote:
+>>>> Remove casting the values returned by memory allocation function.
+>>>>
+>>>> Coccinelle emits WARNING:
+>>>>
+>>>> ./drivers/net/ethernet/cavium/liquidio/octeon_device.c:1155:14-36: WARNING:
+>>>>    casting value returned by memory allocation function to (struct octeon_dispatch *) is useless.
+>>> []
+>>>> diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.c b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
+>>> []
+>>>> @@ -1152,8 +1152,7 @@ octeon_register_dispatch_fn(struct octeon_device *oct,
+>>>>    
+>>>>    		dev_dbg(&oct->pci_dev->dev,
+>>>>    			"Adding opcode to dispatch list linked list\n");
+>>>> -		dispatch = (struct octeon_dispatch *)
+>>>> -			   vmalloc(sizeof(struct octeon_dispatch));
+>>>> +		dispatch = vmalloc(sizeof(struct octeon_dispatch));
+>>> More the question is why this is vmalloc at all
+>>> as the structure size is very small.
+>>>
+>>> Likely this should just be kmalloc.
+>>>
+>>>
+>> Thanks for your advice.  It is indeed best to use kmalloc here.
+>>>>    		if (!dispatch) {
+>>>>    			dev_err(&oct->pci_dev->dev,
+>>>>    				"No memory to add dispatch function\n");
+>>> And this dev_err is unnecessary.
+>>>
+>>>
+>> I don't understand why dev_err is not needed here. We can easily know
+>> that an error has occurred here through dev_err
+> Memory allocation failures without __GFP_NOWARN. already
+> do a dump_stack to show the location of the code that
+> could not successfully allocate memory.
+>
+>
+Thanks for your explanation. I got it.
 
-Yes, but for the generic implementation, we don't need to consider the
-relative branching range since we can override it for x86 and arm.
-(and that will be almost same as module_alloc() default code)
-BTW, is PAGE_KERNEL_ROX flag available generically?
+Can it be modified like this?
 
-Thank you,
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+--- a/drivers/net/ethernet/cavium/liquidio/octeon_device.c
++++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
+@@ -1152,11 +1152,8 @@ octeon_register_dispatch_fn(struct octeon_device 
+*oct,
+
+                 dev_dbg(&oct->pci_dev->dev,
+                         "Adding opcode to dispatch list linked list\n");
+-               dispatch = (struct octeon_dispatch *)
+-                          vmalloc(sizeof(struct octeon_dispatch));
++               dispatch = kmalloc(sizeof(struct octeon_dispatch), 
+GFP_KERNEL);
+                 if (!dispatch) {
+-                       dev_err(&oct->pci_dev->dev,
+-                               "No memory to add dispatch function\n");
+                         return 1;
+                 }
+                 dispatch->opcode = combined_opcode;
+
+> .
+>
+
