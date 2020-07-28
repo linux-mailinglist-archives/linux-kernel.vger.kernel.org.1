@@ -2,380 +2,472 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27363230B1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82C7230B29
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730046AbgG1NLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:11:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37808 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729993AbgG1NLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:11:05 -0400
-Received: from localhost.localdomain (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0DFED20B490D;
-        Tue, 28 Jul 2020 06:11:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0DFED20B490D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595941863;
-        bh=13WUf+vFpSs1y88gZGDgG7+CzTTQoGQm+q9JUkDCSOE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=bbIPUm/uLvpqe3t3Tf9S0PC6sBFZYRseudQhdj0zWfh9UFhjeA3f5v1vtTbJknmnE
-         vC+9xAiSB5k2bQnOl/iHhPvLrBV1I5NyB8fgu21tv1quHoTn+ez0O5xM5W8ZVaa8U6
-         2Bpg2W2/j8pUMh2052OAGTVnCE6cifMP27GIxgaY=
-From:   madvenka@linux.microsoft.com
-To:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, madvenka@linux.microsoft.com
-Subject: [PATCH v1 4/4] [RFC] arm/trampfd: Provide support for the trampoline file descriptor
-Date:   Tue, 28 Jul 2020 08:10:50 -0500
-Message-Id: <20200728131050.24443-5-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200728131050.24443-1-madvenka@linux.microsoft.com>
-References: <aefc85852ea518982e74b233e11e16d2e707bc32>
- <20200728131050.24443-1-madvenka@linux.microsoft.com>
+        id S1730039AbgG1NMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:12:25 -0400
+Received: from mga06.intel.com ([134.134.136.31]:2686 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729993AbgG1NMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 09:12:23 -0400
+IronPort-SDR: ghYQzeSTGlHJZleoc4dJBnggo0nJkJthFscew7kZAogkvCB8HC9epqIWZgx05sDxcGplt6NmW7
+ Tq6RFQ5BVGnw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="212726312"
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="212726312"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 06:11:20 -0700
+IronPort-SDR: XgrPG+rII+L0HXl9+uZbxGcgKQdQWsnh+a0cV6gHoOow/6rXDe1bw1trPsLvmdKsoVUi7MsDt7
+ JABAbLbJ8mtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="394325497"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 28 Jul 2020 06:11:17 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 28 Jul 2020 16:11:17 +0300
+Date:   Tue, 28 Jul 2020 16:11:17 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] usb: typec: tcpm: Migrate workqueue to RT priority
+ for processing events
+Message-ID: <20200728131117.GM883641@kuha.fi.intel.com>
+References: <20200724020551.2737376-1-badhri@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200724020551.2737376-1-badhri@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+On Thu, Jul 23, 2020 at 07:05:51PM -0700, Badhri Jagan Sridharan wrote:
+> "tReceiverResponse 15 ms Section 6.6.2
+> The receiver of a Message requiring a response Shall respond
+> within tReceiverResponse in order to ensure that the
+> sender’s SenderResponseTimer does not expire."
+> 
+> When the cpu complex is busy running other lower priority
+> work items, TCPM's work queue sometimes does not get scheduled
+> on time to meet the above requirement from the spec.
+> Moving to kthread_work apis to run with real time priority.
+> Just lower than the default threaded irq priority,
+> MAX_USER_RT_PRIO/2 + 1. (Higher number implies lower priority).
+> 
+> Further, as observed in 1ff688209e2e, moving to hrtimers to
+> overcome scheduling latency while scheduling the delayed work.
+> 
+> TCPM has three work streams:
+> 1. tcpm_state_machine
+> 2. vdm_state_machine
+> 3. event_work
+> 
+> tcpm_state_machine and vdm_state_machine both schedule work in
+> future i.e. delayed. Hence each of them have a corresponding
+> hrtimer, tcpm_state_machine_timer & vdm_state_machine_timer.
+> 
+> When work is queued right away kthread_queue_work is used.
+> Else, the relevant timer is programmed and made to queue
+> the kthread_work upon timer expiry.
+> 
+> kthread_create_worker only creates one kthread worker thread,
+> hence single threadedness of workqueue is retained.
+> 
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Implement 32-bit ARM support for the trampoline file descriptor.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-	- Define architecture specific register names
-	- Handle the trampoline invocation page fault
-	- Setup the user register context on trampoline invocation
-	- Setup the user stack context on trampoline invocation
+> ---
+> 
+> Changes since v1:(Guenter's suggestions)
+> - Remove redundant call to hrtimer_cancel while calling
+>   hrtimer_start.
+> 
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 140 ++++++++++++++++++++++------------
+>  1 file changed, 92 insertions(+), 48 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index ff1cbd2147ca8a..fa9002944dc766 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -8,8 +8,10 @@
+>  #include <linux/completion.h>
+>  #include <linux/debugfs.h>
+>  #include <linux/device.h>
+> +#include <linux/hrtimer.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/kernel.h>
+> +#include <linux/kthread.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+>  #include <linux/power_supply.h>
+> @@ -28,7 +30,8 @@
+>  #include <linux/usb/role.h>
+>  #include <linux/usb/tcpm.h>
+>  #include <linux/usb/typec_altmode.h>
+> -#include <linux/workqueue.h>
+> +
+> +#include <uapi/linux/sched/types.h>
+>  
+>  #define FOREACH_STATE(S)			\
+>  	S(INVALID_STATE),			\
+> @@ -195,7 +198,7 @@ struct tcpm_port {
+>  	struct device *dev;
+>  
+>  	struct mutex lock;		/* tcpm state machine lock */
+> -	struct workqueue_struct *wq;
+> +	struct kthread_worker *wq;
+>  
+>  	struct typec_capability typec_caps;
+>  	struct typec_port *typec_port;
+> @@ -239,15 +242,17 @@ struct tcpm_port {
+>  	enum tcpm_state prev_state;
+>  	enum tcpm_state state;
+>  	enum tcpm_state delayed_state;
+> -	unsigned long delayed_runtime;
+> +	ktime_t delayed_runtime;
+>  	unsigned long delay_ms;
+>  
+>  	spinlock_t pd_event_lock;
+>  	u32 pd_events;
+>  
+> -	struct work_struct event_work;
+> -	struct delayed_work state_machine;
+> -	struct delayed_work vdm_state_machine;
+> +	struct kthread_work event_work;
+> +	struct hrtimer state_machine_timer;
+> +	struct kthread_work state_machine;
+> +	struct hrtimer vdm_state_machine_timer;
+> +	struct kthread_work vdm_state_machine;
+>  	bool state_machine_running;
+>  
+>  	struct completion tx_complete;
+> @@ -332,7 +337,7 @@ struct tcpm_port {
+>  };
+>  
+>  struct pd_rx_event {
+> -	struct work_struct work;
+> +	struct kthread_work work;
+>  	struct tcpm_port *port;
+>  	struct pd_message msg;
+>  };
+> @@ -906,6 +911,27 @@ static int tcpm_pd_send_sink_caps(struct tcpm_port *port)
+>  	return tcpm_pd_transmit(port, TCPC_TX_SOP, &msg);
+>  }
+>  
+> +static void mod_tcpm_delayed_work(struct tcpm_port *port, unsigned int delay_ms)
+> +{
+> +	if (delay_ms) {
+> +		hrtimer_start(&port->state_machine_timer, ms_to_ktime(delay_ms), HRTIMER_MODE_REL);
+> +	} else {
+> +		hrtimer_cancel(&port->state_machine_timer);
+> +		kthread_queue_work(port->wq, &port->state_machine);
+> +	}
+> +}
+> +
+> +static void mod_vdm_delayed_work(struct tcpm_port *port, unsigned int delay_ms)
+> +{
+> +	if (delay_ms) {
+> +		hrtimer_start(&port->vdm_state_machine_timer, ms_to_ktime(delay_ms),
+> +			      HRTIMER_MODE_REL);
+> +	} else {
+> +		hrtimer_cancel(&port->vdm_state_machine_timer);
+> +		kthread_queue_work(port->wq, &port->vdm_state_machine);
+> +	}
+> +}
+> +
+>  static void tcpm_set_state(struct tcpm_port *port, enum tcpm_state state,
+>  			   unsigned int delay_ms)
+>  {
+> @@ -914,9 +940,8 @@ static void tcpm_set_state(struct tcpm_port *port, enum tcpm_state state,
+>  			 tcpm_states[port->state], tcpm_states[state],
+>  			 delay_ms);
+>  		port->delayed_state = state;
+> -		mod_delayed_work(port->wq, &port->state_machine,
+> -				 msecs_to_jiffies(delay_ms));
+> -		port->delayed_runtime = jiffies + msecs_to_jiffies(delay_ms);
+> +		mod_tcpm_delayed_work(port, delay_ms);
+> +		port->delayed_runtime = ktime_add(ktime_get(), ms_to_ktime(delay_ms));
+>  		port->delay_ms = delay_ms;
+>  	} else {
+>  		tcpm_log(port, "state change %s -> %s",
+> @@ -931,7 +956,7 @@ static void tcpm_set_state(struct tcpm_port *port, enum tcpm_state state,
+>  		 * machine.
+>  		 */
+>  		if (!port->state_machine_running)
+> -			mod_delayed_work(port->wq, &port->state_machine, 0);
+> +			mod_tcpm_delayed_work(port, 0);
+>  	}
+>  }
+>  
+> @@ -952,7 +977,7 @@ static void tcpm_queue_message(struct tcpm_port *port,
+>  			       enum pd_msg_request message)
+>  {
+>  	port->queued_message = message;
+> -	mod_delayed_work(port->wq, &port->state_machine, 0);
+> +	mod_tcpm_delayed_work(port, 0);
+>  }
+>  
+>  /*
+> @@ -1238,8 +1263,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>  			port->vdm_state = VDM_STATE_WAIT_RSP_BUSY;
+>  			port->vdo_retry = (p0 & ~VDO_CMDT_MASK) |
+>  				CMDT_INIT;
+> -			mod_delayed_work(port->wq, &port->vdm_state_machine,
+> -					 msecs_to_jiffies(PD_T_VDM_BUSY));
+> +			mod_vdm_delayed_work(port, PD_T_VDM_BUSY);
+>  			return;
+>  		}
+>  		port->vdm_state = VDM_STATE_DONE;
+> @@ -1250,7 +1274,7 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
+>  
+>  	if (rlen > 0) {
+>  		tcpm_queue_vdm(port, response[0], &response[1], rlen - 1);
+> -		mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> +		mod_vdm_delayed_work(port, 0);
+>  	}
+>  }
+>  
+> @@ -1267,7 +1291,7 @@ static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
+>  			1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION), cmd);
+>  	tcpm_queue_vdm(port, header, data, count);
+>  
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> +	mod_vdm_delayed_work(port, 0);
+>  }
+>  
+>  static unsigned int vdm_ready_timeout(u32 vdm_hdr)
+> @@ -1334,8 +1358,7 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  			port->vdm_retries = 0;
+>  			port->vdm_state = VDM_STATE_BUSY;
+>  			timeout = vdm_ready_timeout(port->vdo_data[0]);
+> -			mod_delayed_work(port->wq, &port->vdm_state_machine,
+> -					 timeout);
+> +			mod_vdm_delayed_work(port, timeout);
+>  		}
+>  		break;
+>  	case VDM_STATE_WAIT_RSP_BUSY:
+> @@ -1364,10 +1387,9 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  	}
+>  }
+>  
+> -static void vdm_state_machine_work(struct work_struct *work)
+> +static void vdm_state_machine_work(struct kthread_work *work)
+>  {
+> -	struct tcpm_port *port = container_of(work, struct tcpm_port,
+> -					      vdm_state_machine.work);
+> +	struct tcpm_port *port = container_of(work, struct tcpm_port, vdm_state_machine);
+>  	enum vdm_states prev_state;
+>  
+>  	mutex_lock(&port->lock);
+> @@ -1515,7 +1537,7 @@ static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+>  	header |= VDO_OPOS(altmode->mode);
+>  
+>  	tcpm_queue_vdm(port, header, vdo, vdo ? 1 : 0);
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> +	mod_vdm_delayed_work(port, 0);
+>  	mutex_unlock(&port->lock);
+>  
+>  	return 0;
+> @@ -1531,7 +1553,7 @@ static int tcpm_altmode_exit(struct typec_altmode *altmode)
+>  	header |= VDO_OPOS(altmode->mode);
+>  
+>  	tcpm_queue_vdm(port, header, NULL, 0);
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> +	mod_vdm_delayed_work(port, 0);
+>  	mutex_unlock(&port->lock);
+>  
+>  	return 0;
+> @@ -1544,7 +1566,7 @@ static int tcpm_altmode_vdm(struct typec_altmode *altmode,
+>  
+>  	mutex_lock(&port->lock);
+>  	tcpm_queue_vdm(port, header, data, count - 1);
+> -	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+> +	mod_vdm_delayed_work(port, 0);
+>  	mutex_unlock(&port->lock);
+>  
+>  	return 0;
+> @@ -1961,7 +1983,7 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
+>  	}
+>  }
+>  
+> -static void tcpm_pd_rx_handler(struct work_struct *work)
+> +static void tcpm_pd_rx_handler(struct kthread_work *work)
+>  {
+>  	struct pd_rx_event *event = container_of(work,
+>  						 struct pd_rx_event, work);
+> @@ -2023,10 +2045,10 @@ void tcpm_pd_receive(struct tcpm_port *port, const struct pd_message *msg)
+>  	if (!event)
+>  		return;
+>  
+> -	INIT_WORK(&event->work, tcpm_pd_rx_handler);
+> +	kthread_init_work(&event->work, tcpm_pd_rx_handler);
+>  	event->port = port;
+>  	memcpy(&event->msg, msg, sizeof(*msg));
+> -	queue_work(port->wq, &event->work);
+> +	kthread_queue_work(port->wq, &event->work);
+>  }
+>  EXPORT_SYMBOL_GPL(tcpm_pd_receive);
+>  
+> @@ -2079,9 +2101,9 @@ static bool tcpm_send_queued_message(struct tcpm_port *port)
+>  	} while (port->queued_message != PD_MSG_NONE);
+>  
+>  	if (port->delayed_state != INVALID_STATE) {
+> -		if (time_is_after_jiffies(port->delayed_runtime)) {
+> -			mod_delayed_work(port->wq, &port->state_machine,
+> -					 port->delayed_runtime - jiffies);
+> +		if (ktime_after(port->delayed_runtime, ktime_get())) {
+> +			mod_tcpm_delayed_work(port, ktime_to_ms(ktime_sub(port->delayed_runtime,
+> +									  ktime_get())));
+>  			return true;
+>  		}
+>  		port->delayed_state = INVALID_STATE;
+> @@ -3214,10 +3236,9 @@ static void run_state_machine(struct tcpm_port *port)
+>  	case SNK_DISCOVERY_DEBOUNCE_DONE:
+>  		if (!tcpm_port_is_disconnected(port) &&
+>  		    tcpm_port_is_sink(port) &&
+> -		    time_is_after_jiffies(port->delayed_runtime)) {
+> +		    ktime_after(port->delayed_runtime, ktime_get())) {
+>  			tcpm_set_state(port, SNK_DISCOVERY,
+> -				       jiffies_to_msecs(port->delayed_runtime -
+> -							jiffies));
+> +				       ktime_to_ms(ktime_sub(port->delayed_runtime, ktime_get())));
+>  			break;
+>  		}
+>  		tcpm_set_state(port, unattached_state(port), 0);
+> @@ -3612,10 +3633,9 @@ static void run_state_machine(struct tcpm_port *port)
+>  	}
+>  }
+>  
+> -static void tcpm_state_machine_work(struct work_struct *work)
+> +static void tcpm_state_machine_work(struct kthread_work *work)
+>  {
+> -	struct tcpm_port *port = container_of(work, struct tcpm_port,
+> -					      state_machine.work);
+> +	struct tcpm_port *port = container_of(work, struct tcpm_port, state_machine);
+>  	enum tcpm_state prev_state;
+>  
+>  	mutex_lock(&port->lock);
+> @@ -3975,7 +3995,7 @@ static void _tcpm_pd_hard_reset(struct tcpm_port *port)
+>  		       0);
+>  }
+>  
+> -static void tcpm_pd_event_handler(struct work_struct *work)
+> +static void tcpm_pd_event_handler(struct kthread_work *work)
+>  {
+>  	struct tcpm_port *port = container_of(work, struct tcpm_port,
+>  					      event_work);
+> @@ -4016,7 +4036,7 @@ void tcpm_cc_change(struct tcpm_port *port)
+>  	spin_lock(&port->pd_event_lock);
+>  	port->pd_events |= TCPM_CC_EVENT;
+>  	spin_unlock(&port->pd_event_lock);
+> -	queue_work(port->wq, &port->event_work);
+> +	kthread_queue_work(port->wq, &port->event_work);
+>  }
+>  EXPORT_SYMBOL_GPL(tcpm_cc_change);
+>  
+> @@ -4025,7 +4045,7 @@ void tcpm_vbus_change(struct tcpm_port *port)
+>  	spin_lock(&port->pd_event_lock);
+>  	port->pd_events |= TCPM_VBUS_EVENT;
+>  	spin_unlock(&port->pd_event_lock);
+> -	queue_work(port->wq, &port->event_work);
+> +	kthread_queue_work(port->wq, &port->event_work);
+>  }
+>  EXPORT_SYMBOL_GPL(tcpm_vbus_change);
+>  
+> @@ -4034,7 +4054,7 @@ void tcpm_pd_hard_reset(struct tcpm_port *port)
+>  	spin_lock(&port->pd_event_lock);
+>  	port->pd_events = TCPM_RESET_EVENT;
+>  	spin_unlock(&port->pd_event_lock);
+> -	queue_work(port->wq, &port->event_work);
+> +	kthread_queue_work(port->wq, &port->event_work);
+>  }
+>  EXPORT_SYMBOL_GPL(tcpm_pd_hard_reset);
+>  
+> @@ -4742,10 +4762,28 @@ static int devm_tcpm_psy_register(struct tcpm_port *port)
+>  	return PTR_ERR_OR_ZERO(port->psy);
+>  }
+>  
+> +static enum hrtimer_restart state_machine_timer_handler(struct hrtimer *timer)
+> +{
+> +	struct tcpm_port *port = container_of(timer, struct tcpm_port, state_machine_timer);
+> +
+> +	kthread_queue_work(port->wq, &port->state_machine);
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+> +static enum hrtimer_restart vdm_state_machine_timer_handler(struct hrtimer *timer)
+> +{
+> +	struct tcpm_port *port = container_of(timer, struct tcpm_port, vdm_state_machine_timer);
+> +
+> +	kthread_queue_work(port->wq, &port->vdm_state_machine);
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+>  struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>  {
+>  	struct tcpm_port *port;
+>  	int err;
+> +	/* Priority just lower than default irq thread priority */
+> +	struct sched_param param = {.sched_priority = (MAX_USER_RT_PRIO / 2) + 1,};
+>  
+>  	if (!dev || !tcpc ||
+>  	    !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc ||
+> @@ -4763,12 +4801,18 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>  	mutex_init(&port->lock);
+>  	mutex_init(&port->swap_lock);
+>  
+> -	port->wq = create_singlethread_workqueue(dev_name(dev));
+> -	if (!port->wq)
+> -		return ERR_PTR(-ENOMEM);
+> -	INIT_DELAYED_WORK(&port->state_machine, tcpm_state_machine_work);
+> -	INIT_DELAYED_WORK(&port->vdm_state_machine, vdm_state_machine_work);
+> -	INIT_WORK(&port->event_work, tcpm_pd_event_handler);
+> +	port->wq = kthread_create_worker(0, dev_name(dev));
+> +	if (IS_ERR(port->wq))
+> +		return (struct tcpm_port *)port->wq;
+> +	sched_setscheduler(port->wq->task, SCHED_FIFO, &param);
+> +
+> +	kthread_init_work(&port->state_machine, tcpm_state_machine_work);
+> +	kthread_init_work(&port->vdm_state_machine, vdm_state_machine_work);
+> +	kthread_init_work(&port->event_work, tcpm_pd_event_handler);
+> +	hrtimer_init(&port->state_machine_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +	port->state_machine_timer.function = state_machine_timer_handler;
+> +	hrtimer_init(&port->vdm_state_machine_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +	port->vdm_state_machine_timer.function = vdm_state_machine_timer_handler;
+>  
+>  	spin_lock_init(&port->pd_event_lock);
+>  
+> @@ -4820,7 +4864,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>  	usb_role_switch_put(port->role_sw);
+>  out_destroy_wq:
+>  	tcpm_debugfs_exit(port);
+> -	destroy_workqueue(port->wq);
+> +	kthread_destroy_worker(port->wq);
+>  	return ERR_PTR(err);
+>  }
+>  EXPORT_SYMBOL_GPL(tcpm_register_port);
+> @@ -4835,7 +4879,7 @@ void tcpm_unregister_port(struct tcpm_port *port)
+>  	typec_unregister_port(port->typec_port);
+>  	usb_role_switch_put(port->role_sw);
+>  	tcpm_debugfs_exit(port);
+> -	destroy_workqueue(port->wq);
+> +	kthread_destroy_worker(port->wq);
+>  }
+>  EXPORT_SYMBOL_GPL(tcpm_unregister_port);
+>  
+> -- 
+> 2.28.0.rc0.142.g3c755180ce-goog
 
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
----
- arch/arm/include/uapi/asm/ptrace.h |  20 +++
- arch/arm/kernel/Makefile           |   1 +
- arch/arm/kernel/trampfd.c          | 214 +++++++++++++++++++++++++++++
- arch/arm/mm/fault.c                |  12 +-
- arch/arm/tools/syscall.tbl         |   1 +
- 5 files changed, 246 insertions(+), 2 deletions(-)
- create mode 100644 arch/arm/kernel/trampfd.c
+thanks,
 
-diff --git a/arch/arm/include/uapi/asm/ptrace.h b/arch/arm/include/uapi/asm/ptrace.h
-index e61c65b4018d..47b1c5e2f32c 100644
---- a/arch/arm/include/uapi/asm/ptrace.h
-+++ b/arch/arm/include/uapi/asm/ptrace.h
-@@ -151,6 +151,26 @@ struct pt_regs {
- #define ARM_r0		uregs[0]
- #define ARM_ORIG_r0	uregs[17]
- 
-+/*
-+ * These register names are to be used by 32-bit applications.
-+ */
-+enum reg_32_name {
-+	arm_r0,
-+	arm_r1,
-+	arm_r2,
-+	arm_r3,
-+	arm_r4,
-+	arm_r5,
-+	arm_r6,
-+	arm_r7,
-+	arm_r8,
-+	arm_r9,
-+	arm_r10,
-+	arm_ip,
-+	arm_pc,
-+	arm_max,
-+};
-+
- /*
-  * The size of the user-visible VFP state as seen by PTRACE_GET/SETVFPREGS
-  * and core dumps.
-diff --git a/arch/arm/kernel/Makefile b/arch/arm/kernel/Makefile
-index 89e5d864e923..652c54c2f19a 100644
---- a/arch/arm/kernel/Makefile
-+++ b/arch/arm/kernel/Makefile
-@@ -105,5 +105,6 @@ obj-$(CONFIG_SMP)		+= psci_smp.o
- endif
- 
- obj-$(CONFIG_HAVE_ARM_SMCCC)	+= smccc-call.o
-+obj-$(CONFIG_TRAMPFD)		+= trampfd.o
- 
- extra-y := $(head-y) vmlinux.lds
-diff --git a/arch/arm/kernel/trampfd.c b/arch/arm/kernel/trampfd.c
-new file mode 100644
-index 000000000000..50fc5706e85b
---- /dev/null
-+++ b/arch/arm/kernel/trampfd.c
-@@ -0,0 +1,214 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Trampoline File Descriptor - ARM support.
-+ *
-+ * Author: Madhavan T. Venkataraman (madvenka@linux.microsoft.com)
-+ *
-+ * Copyright (c) 2020, Microsoft Corporation.
-+ */
-+
-+#include <linux/trampfd.h>
-+#include <linux/mm_types.h>
-+#include <linux/uaccess.h>
-+
-+/* ---------------------------- Register Context ---------------------------- */
-+
-+static void set_reg(long *uregs, u32 name, u64 value)
-+{
-+	switch (name) {
-+	case arm_r0:
-+	case arm_r1:
-+	case arm_r2:
-+	case arm_r3:
-+	case arm_r4:
-+	case arm_r5:
-+	case arm_r6:
-+	case arm_r7:
-+	case arm_r8:
-+	case arm_r9:
-+	case arm_r10:
-+		uregs[name] = (__u64)value;
-+		break;
-+	case arm_ip:
-+		ARM_ip = (__u64)value;
-+		break;
-+	case arm_pc:
-+		ARM_pc = (__u64)value;
-+		break;
-+	default:
-+		WARN(1, "%s: Illegal register name %d\n", __func__, name);
-+		break;
-+	}
-+}
-+
-+static void set_regs(long *uregs, struct trampfd_regs *tregs)
-+{
-+	struct trampfd_reg	*reg = tregs->regs;
-+	struct trampfd_reg	*reg_end = reg + tregs->nregs;
-+
-+	for (; reg < reg_end; reg++)
-+		set_reg(uregs, reg->name, reg->value);
-+}
-+
-+/*
-+ * Check if the register names are valid. Check if the user PC has been set.
-+ */
-+bool trampfd_valid_regs(struct trampfd_regs *tregs)
-+{
-+	struct trampfd_reg	*reg = tregs->regs;
-+	struct trampfd_reg	*reg_end = reg + tregs->nregs;
-+	bool			pc_set = false;
-+
-+	for (; reg < reg_end; reg++) {
-+		if (reg->name >= arm_max || reg->reserved)
-+			return false;
-+		if (reg->name == arm_pc && reg->value)
-+			pc_set = true;
-+	}
-+	return pc_set;
-+}
-+EXPORT_SYMBOL_GPL(trampfd_valid_regs);
-+
-+/*
-+ * Check if the PC specified in a register context is allowed.
-+ */
-+bool trampfd_allowed_pc(struct trampfd *trampfd, struct trampfd_regs *tregs)
-+{
-+	struct trampfd_reg	*reg = tregs->regs;
-+	struct trampfd_reg	*reg_end = reg + tregs->nregs;
-+	struct trampfd_values	*allowed_pcs = trampfd->allowed_pcs;
-+	u64			*allowed_values, pc_value = 0;
-+	u32			nvalues, pc_name;
-+	int			i;
-+
-+	if (!allowed_pcs)
-+		return true;
-+
-+	pc_name = arm_pc;
-+
-+	/*
-+	 * Find the PC register and its value. If the PC register has been
-+	 * specified multiple times, only the last one counts.
-+	 */
-+	for (; reg < reg_end; reg++) {
-+		if (reg->name == pc_name)
-+			pc_value = reg->value;
-+	}
-+
-+	allowed_values = allowed_pcs->values;
-+	nvalues = allowed_pcs->nvalues;
-+
-+	for (i = 0; i < nvalues; i++) {
-+		if (pc_value == allowed_values[i])
-+			return true;
-+	}
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(trampfd_allowed_pc);
-+
-+/* ---------------------------- Stack Context ---------------------------- */
-+
-+static int push_data(long *uregs, struct trampfd_stack *tstack)
-+{
-+	unsigned long	sp;
-+
-+	sp = ARM_sp - tstack->size - tstack->offset;
-+	if (tstack->flags & TRAMPFD_SET_SP)
-+		sp &= ~7;
-+
-+	if (!access_ok(sp, ARM_sp - sp))
-+		return -EFAULT;
-+
-+	if (copy_to_user(USERPTR(sp), tstack->data, tstack->size))
-+		return -EFAULT;
-+
-+	if (tstack->flags & TRAMPFD_SET_SP)
-+		ARM_sp = sp;
-+	return 0;
-+}
-+
-+/* ---------------------------- Fault Handlers ---------------------------- */
-+
-+static int trampfd_user_fault(struct trampfd *trampfd,
-+			      struct vm_area_struct *vma,
-+			      long *uregs)
-+{
-+	char			buf[TRAMPFD_MAX_STACK_SIZE];
-+	struct trampfd_regs	*tregs;
-+	struct trampfd_stack	*tstack = NULL;
-+	unsigned long		addr;
-+	size_t			size;
-+	int			rc;
-+
-+	mutex_lock(&trampfd->lock);
-+
-+	/*
-+	 * Execution of the trampoline must start at the offset specfied by
-+	 * the kernel.
-+	 */
-+	addr = vma->vm_start + trampfd->map.ioffset;
-+	if (addr != ARM_pc) {
-+		rc = -EINVAL;
-+		goto unlock;
-+	}
-+
-+	/*
-+	 * At a minimum, the user PC register must be specified for a
-+	 * user trampoline.
-+	 */
-+	tregs = trampfd->regs;
-+	if (!tregs) {
-+		rc = -EINVAL;
-+		goto unlock;
-+	}
-+
-+	/*
-+	 * Set the register context for the trampoline.
-+	 */
-+	set_regs(uregs, tregs);
-+
-+	if (trampfd->stack) {
-+		/*
-+		 * Copy the stack context into a local buffer and push stack
-+		 * data after dropping the lock.
-+		 */
-+		size = sizeof(*trampfd->stack) + trampfd->stack->size;
-+		tstack = (struct trampfd_stack *) buf;
-+		memcpy(tstack, trampfd->stack, size);
-+	}
-+unlock:
-+	mutex_unlock(&trampfd->lock);
-+
-+	if (!rc && tstack) {
-+		mmap_read_unlock(vma->vm_mm);
-+		rc = push_data(uregs, tstack);
-+		mmap_read_lock(vma->vm_mm);
-+	}
-+	return rc;
-+}
-+
-+/*
-+ * Handle it if it is a trampoline fault.
-+ */
-+bool trampfd_fault(struct vm_area_struct *vma, struct pt_regs *pt_regs)
-+{
-+	struct trampfd		*trampfd;
-+	unsigned long		*uregs = pt_regs->uregs;
-+
-+	if (!is_trampfd_vma(vma))
-+		return false;
-+	trampfd = vma->vm_private_data;
-+
-+	if (trampfd->type == TRAMPFD_USER)
-+		return !trampfd_user_fault(trampfd, vma, uregs);
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(trampfd_fault);
-+
-+/* ---------------------------- Miscellaneous ---------------------------- */
-+
-+int trampfd_check_arch(struct trampfd *trampfd)
-+{
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(trampfd_check_arch);
-diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
-index c6550eddfce1..21a81d19336b 100644
---- a/arch/arm/mm/fault.c
-+++ b/arch/arm/mm/fault.c
-@@ -17,6 +17,7 @@
- #include <linux/sched/debug.h>
- #include <linux/highmem.h>
- #include <linux/perf_event.h>
-+#include <linux/trampfd.h>
- 
- #include <asm/system_misc.h>
- #include <asm/system_info.h>
-@@ -202,7 +203,8 @@ static inline bool access_error(unsigned int fsr, struct vm_area_struct *vma)
- 
- static vm_fault_t __kprobes
- __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
--		unsigned int flags, struct task_struct *tsk)
-+		unsigned int flags, struct task_struct *tsk,
-+		struct pt_regs *regs)
- {
- 	struct vm_area_struct *vma;
- 	vm_fault_t fault;
-@@ -220,6 +222,12 @@ __do_page_fault(struct mm_struct *mm, unsigned long addr, unsigned int fsr,
- 	 */
- good_area:
- 	if (access_error(fsr, vma)) {
-+		/*
-+		 * If it is an execute fault, it could be a trampoline
-+		 * invocation.
-+		 */
-+		if ((fsr & FSR_LNX_PF) && trampfd_fault(vma, regs))
-+			return 0;
- 		fault = VM_FAULT_BADACCESS;
- 		goto out;
- 	}
-@@ -290,7 +298,7 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
- #endif
- 	}
- 
--	fault = __do_page_fault(mm, addr, fsr, flags, tsk);
-+	fault = __do_page_fault(mm, addr, fsr, flags, tsk, regs);
- 
- 	/* If we need to retry but a fatal signal is pending, handle the
- 	 * signal first. We do not need to release the mmap_lock because
-diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
-index d5cae5ffede0..88cf4c45069a 100644
---- a/arch/arm/tools/syscall.tbl
-+++ b/arch/arm/tools/syscall.tbl
-@@ -452,3 +452,4 @@
- 437	common	openat2				sys_openat2
- 438	common	pidfd_getfd			sys_pidfd_getfd
- 439	common	faccessat2			sys_faccessat2
-+440	common	trampfd_create			sys_trampfd_create
 -- 
-2.17.1
-
+heikki
