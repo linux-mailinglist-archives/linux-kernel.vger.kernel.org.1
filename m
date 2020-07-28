@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C4B2306BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62C92306CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgG1Jl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        id S1728563AbgG1JpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbgG1Jl0 (ORCPT
+        with ESMTP id S1728197AbgG1JpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:41:26 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3166AC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:41:26 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4BGBWj2tvzzQlKZ;
-        Tue, 28 Jul 2020 11:41:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id mL45Y320Mr-I; Tue, 28 Jul 2020 11:41:17 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 19:41:09 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-fsdevel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        linux-pm@vger.kernel.org
-Subject: Re: [RFC][PATCH] exec: Freeze the other threads during a
- multi-threaded exec
-Message-ID: <20200728092359.jrv7ygt6dwktwsgp@yavin.dot.cyphar.com>
-References: <87h7tsllgw.fsf@x220.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ifgp4clg667prhsz"
-Content-Disposition: inline
-In-Reply-To: <87h7tsllgw.fsf@x220.int.ebiederm.org>
-X-MBO-SPAM-Probability: 0
-X-Rspamd-Score: -4.89 / 15.00 / 15.00
-X-Rspamd-Queue-Id: E1EE11837
-X-Rspamd-UID: 106a35
+        Tue, 28 Jul 2020 05:45:17 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CD0C061794;
+        Tue, 28 Jul 2020 02:45:16 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id u10so108778plr.7;
+        Tue, 28 Jul 2020 02:45:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=YW61uT4gs7NLfpC0VAfH7u18rjoR4roJ54bakldbt1o=;
+        b=RfYnzTVaaiIcgr+9v6Qpt+9Sn4A6BP7Q9yIcBs4oG6bfhviw+3JSTCk5bxF1v0Q9VP
+         CUq/x8J/Q5xlyidW5jaxO5+QUJ1nIMYZT95rI6r8HwIvVYcixErDeg97g06HHpbEo/7F
+         LwwNFv4NhVm7TKSdT4zHjQsYvZhtIh6u86VYKcMqCJCod6yK6Tl5nqYYVoMm8ubtdCGH
+         quJmKGjBIogttIL6DsrSLmV1jPalEf2Fq+43Dty6I0iwCNBjfVc23hz+lt+1g9YQV+SJ
+         3TP1vfw0eBPVO9iLug6dQSoZVxRimiRsV98IQ6Ahh8vFpJK16eXVvpLLG6ndwl95wNg4
+         mHkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YW61uT4gs7NLfpC0VAfH7u18rjoR4roJ54bakldbt1o=;
+        b=S/277hyXeTjAkmgbQCqdwINDdJJWLN12opdg270kTVxjc18S4U4LlQqtNRp3h6DoqW
+         hmfJBS0E/2aPOY8u+8/FBpk4qCPhilA6K8/8PPfbDTvB6bcbrTgDSwqpgtlFPEWBG7qy
+         BhTPoxjwZO7hFV4s8dIuJweqwNCoyUm6dM+SSC74myDwWkaxja6c7KWPozLWrkSzSneB
+         2VwBSSpbBL6P9S0Q1b1+rt53FtcW1BbtDGRh1knnfbDHtAoIrnagK3F1lOqhOW/TnZcy
+         zCzjj15FAQ+mc7hPYH1bESIMp0kvcH9oSeew5I0/a65t/VTQIaLakn+SXfHAhIY8tF2W
+         +3DA==
+X-Gm-Message-State: AOAM5321UOlqULWQu45mXdZcC5m+wpiwPbc8Zadf7gKr3JvTSPkbg53F
+        EroCfbUVz8I7Xqe4xn3dT4mrm2Nc
+X-Google-Smtp-Source: ABdhPJxD6tzllfcRVDmb1xoKhd2jMzTzXphKdkN4ooTcK2t2IBIzxcYpjGFm4Em3KQhe2BXXOgUfSA==
+X-Received: by 2002:a17:90a:d30c:: with SMTP id p12mr3843893pju.4.1595929515664;
+        Tue, 28 Jul 2020 02:45:15 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id r17sm17969173pfg.62.2020.07.28.02.45.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Jul 2020 02:45:15 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, stable@vger.kernel.org
+Subject: [PATCH v2 1/3] KVM: LAPIC: Prevent setting the tscdeadline timer if the lapic is hw disabled
+Date:   Tue, 28 Jul 2020 17:45:04 +0800
+Message-Id: <1595929506-9203-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Wanpeng Li <wanpengli@tencent.com>
 
---ifgp4clg667prhsz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Prevent setting the tscdeadline timer if the lapic is hw disabled.
 
-On 2020-07-27, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> To the best of my knowledge processes with more than one thread
-> calling exec are not common, and as all of the threads will be killed
-> by exec there does not appear to be any useful work a thread can
-> reliably do during exec.
+Fixes: bce87cce88 (KVM: x86: consolidate different ways to test for in-kernel LAPIC)
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+ arch/x86/kvm/lapic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Every Go program which calls exec (this includes runc, Docker, LXD,
-Kubernetes, et al) fills the niche of "multi-threaded program that calls
-exec" -- all Go programs are multi-threaded and there's no way of
-disabling this. This will most likely cause pretty bad performance
-regression for basically all container workloads.
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 5bf72fc..4ce2ddd 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -2195,7 +2195,7 @@ void kvm_set_lapic_tscdeadline_msr(struct kvm_vcpu *vcpu, u64 data)
+ {
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
+ 
+-	if (!lapic_in_kernel(vcpu) || apic_lvtt_oneshot(apic) ||
++	if (!kvm_apic_present(vcpu) || apic_lvtt_oneshot(apic) ||
+ 			apic_lvtt_period(apic))
+ 		return;
+ 
+-- 
+2.7.4
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---ifgp4clg667prhsz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXx/ysgAKCRCdlLljIbnQ
-EkKKAQDoy8ZD4VcTpwNYsy7hTgaSyJYCrr3BEVWWGgivWDOsTAD/YSG2mqdY6Xxb
-/MSwhLo3kjae0B+Zbr6HVENFaTzZjgc=
-=1hzK
------END PGP SIGNATURE-----
-
---ifgp4clg667prhsz--
