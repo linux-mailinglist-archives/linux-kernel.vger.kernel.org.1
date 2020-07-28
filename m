@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E032230B57
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1EA230B5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730004AbgG1NW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729433AbgG1NWz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:22:55 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8916EC061794;
-        Tue, 28 Jul 2020 06:22:55 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gc9so11579392pjb.2;
-        Tue, 28 Jul 2020 06:22:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nf1O99k+zsvJqjI/za3C3+LNhANhWMX3dBWewicGWoQ=;
-        b=vV/8Y6WpSwU9HTxSD/WJ/EvnS9XpQW0xb0WmXdXvTjR59DT26u+VWyuBNuaIaAeLjr
-         AaNLCzhBn8d81jnuBLGyc+snvUOJghb/k7EcDcrfQfA2sboAIKDqIrXsFNCuG8OdVfkw
-         WkrOXWDMF4bD6LrTz+zbhPB5ZsyN8kYxqvm4Ar7m5yuTLFczPk27/mlyUAVJiI3HRtSe
-         DolevwAoBLh6X4rFwk0Re7o30X3vbGJICz1stm8S11krtGYvLuoaGIm4VSvoRGKcwtk4
-         hTX0tS2XykR3BGO445hOjNkLz1KymFyQMpurS4RSMqPAhujHSIiYUk69nyMRNpSqVRVT
-         CuTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nf1O99k+zsvJqjI/za3C3+LNhANhWMX3dBWewicGWoQ=;
-        b=gEEGbPFeZz2zlwfx0HKW/oGmY+TCU8IETXpsydHKwfbwz17nhuwxSLPorOikSMNVEu
-         x4pkgpDm45R63w3rXrKM8AkS0LgUaj3iBwyVVJB17ezXJz1T2RGTCyoic1iWTNFFvxtg
-         c3DlERueBhFl3qlS/h90xFST6Bb1SF8XSoeGSSv6HuWYQUc6icNHngM4zqpB26UgMjfW
-         nJjMyRLDkXrMqL+jID9/eszfxH9fx7TQqc/NkFCVICr5bTlju3DfNbaNY1kSURJeURsF
-         PkH+1XVuGInOtgY/3n8Ztcob8b42uJBDWrFj7JJwlAXGp4wURUUUayMYXQeSKDOuLFzW
-         rtyQ==
-X-Gm-Message-State: AOAM533JgRT0U8cjiVyH825bq4YNqdZlgCW5UZU+OTirXZgfmlRG4x0b
-        ztNwSTmff3Ht++tVb523pA+NDRXsQJUxUbbkHQU=
-X-Google-Smtp-Source: ABdhPJz9Jk45e1SqiyDKZYa6RYOm/76TyaeUDRNkM5h0Lo0ybef78akWq7E7BAoASP7zeSOXUIr+/b2GIFPWGnB8Bpo=
-X-Received: by 2002:a17:902:4b:: with SMTP id 69mr7486754pla.18.1595942574825;
- Tue, 28 Jul 2020 06:22:54 -0700 (PDT)
+        id S1730075AbgG1NXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:23:31 -0400
+Received: from relay.sw.ru ([185.231.240.75]:37472 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729433AbgG1NXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 09:23:31 -0400
+Received: from [192.168.15.36]
+        by relay3.sw.ru with esmtp (Exim 4.93)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1k0PYr-0004Hm-NN; Tue, 28 Jul 2020 16:22:30 +0300
+Subject: Re: [RFC PATCH 5/5] mm: introduce MADV_DOEXEC
+To:     Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org
+Cc:     mhocko@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org, arnd@arndb.de,
+        ebiederm@xmission.com, keescook@chromium.org, gerg@linux-m68k.org,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        esyr@redhat.com, jgg@ziepe.ca, christian@kellner.me,
+        areber@redhat.com, cyphar@cyphar.com, steven.sistare@oracle.com
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+ <1595869887-23307-6-git-send-email-anthony.yznaga@oracle.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <743a51db-dc27-c49c-9c65-ac164f5283ba@virtuozzo.com>
+Date:   Tue, 28 Jul 2020 16:22:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200723013858.10766-1-Sergey.Semin@baikalelectronics.ru>
- <20200723013858.10766-5-Sergey.Semin@baikalelectronics.ru>
- <20200723100317.GJ3703480@smile.fi.intel.com> <20200724230342.bhdpc32rsjw7rzbl@mobilestation>
- <CAHp75Vdeg6v_yLYjxZPJM7SgDP-fou6SEuaE8+TFCNW4c2r_rA@mail.gmail.com>
- <20200727215010.qzhvavmskfoaapi5@mobilestation> <CACRpkda5Ki+itbvLsxSLj4o1NRKdf9P48kbYXEgArDqcEcWA7w@mail.gmail.com>
-In-Reply-To: <CACRpkda5Ki+itbvLsxSLj4o1NRKdf9P48kbYXEgArDqcEcWA7w@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 28 Jul 2020 16:22:39 +0300
-Message-ID: <CAHp75VeY0HMKXJCP2Ds=BWdWduevXDqUK1pkF1G1fUTQn7uC3Q@mail.gmail.com>
-Subject: Re: [PATCH 4/7] gpio: dwapb: Convert driver to using the
- GPIO-lib-based IRQ-chip
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Hoan Tran <hoan@os.amperecomputing.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1595869887-23307-6-git-send-email-anthony.yznaga@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 11:18 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Mon, Jul 27, 2020 at 11:50 PM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
->
-> > It turns out my "mostly" was wrong in this matter. It's 4 out of 17 patches,
-> > which make the initialization in the same order as mine:
->
-> I'll think about fixing them up to all look the same at some point
-> if noone beats me to it. Sorry for the mess, I was just hacking
-> along to get this work item finalized.
+On 27.07.2020 20:11, Anthony Yznaga wrote:
+> madvise MADV_DOEXEC preserves a memory range across exec.  Initially
+> only supported for non-executable, non-stack, anonymous memory.
+> MADV_DONTEXEC reverts the effect of a previous MADV_DOXEXEC call and
+> undoes the preservation of the range.  After a successful exec call,
+> the behavior of all ranges reverts to MADV_DONTEXEC.
+> 
+> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
+> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
+> ---
+>  include/uapi/asm-generic/mman-common.h |  3 +++
+>  mm/madvise.c                           | 25 +++++++++++++++++++++++++
+>  2 files changed, 28 insertions(+)
+> 
+> diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
+> index f94f65d429be..7c5f616b28f7 100644
+> --- a/include/uapi/asm-generic/mman-common.h
+> +++ b/include/uapi/asm-generic/mman-common.h
+> @@ -72,6 +72,9 @@
+>  #define MADV_COLD	20		/* deactivate these pages */
+>  #define MADV_PAGEOUT	21		/* reclaim these pages */
+>  
+> +#define MADV_DOEXEC	22		/* do inherit across exec */
+> +#define MADV_DONTEXEC	23		/* don't inherit across exec */
+> +
+>  /* compatibility flags */
+>  #define MAP_FILE	0
+>  
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index dd1d43cf026d..b447fa748649 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -103,6 +103,26 @@ static long madvise_behavior(struct vm_area_struct *vma,
+>  	case MADV_KEEPONFORK:
+>  		new_flags &= ~VM_WIPEONFORK;
+>  		break;
+> +	case MADV_DOEXEC:
 
-I have sent three patches (two updates according to above matter and
-one is a fix on top of your template clean up I missed myself).
+For me MADV_KEEPONEXEC sounds better as it's symmetric to MADV_KEEPONFORK.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +		/*
+> +		 * MADV_DOEXEC is only supported on private, non-executable,
+> +		 * non-stack anonymous memory and if the VM_EXEC_KEEP flag
+> +		 * is available.
+> +		 */
+> +		if (!VM_EXEC_KEEP || vma->vm_file || vma->vm_flags & (VM_EXEC|VM_SHARED|VM_STACK)) {
+> +			error = -EINVAL;
+> +			goto out;
+> +		}
+> +		new_flags |= (new_flags & ~VM_MAYEXEC) | VM_EXEC_KEEP;
+> +		break;
+> +	case MADV_DONTEXEC:
+> +		if (!VM_EXEC_KEEP) {
+> +			error = -EINVAL;
+> +			goto out;
+> +		}
+> +		if (new_flags & VM_EXEC_KEEP)
+> +			new_flags |= (new_flags & ~VM_EXEC_KEEP) | VM_MAYEXEC;
+> +		break;
+>  	case MADV_DONTDUMP:
+>  		new_flags |= VM_DONTDUMP;
+>  		break;
+> @@ -983,6 +1003,8 @@ static int madvise_inject_error(int behavior,
+>  	case MADV_SOFT_OFFLINE:
+>  	case MADV_HWPOISON:
+>  #endif
+> +	case MADV_DOEXEC:
+> +	case MADV_DONTEXEC:
+>  		return true;
+>  
+>  	default:
+> @@ -1037,6 +1059,9 @@ static int madvise_inject_error(int behavior,
+>   *  MADV_DONTDUMP - the application wants to prevent pages in the given range
+>   *		from being included in its core dump.
+>   *  MADV_DODUMP - cancel MADV_DONTDUMP: no longer exclude from core dump.
+> + *  MADV_DOEXEC - On exec, preserve and duplicate this area in the new process
+> + *		  if the new process allows it.
+> + *  MADV_DONTEXEC - Undo the effect of MADV_DOEXEC.
+>   *
+>   * return values:
+>   *  zero    - success
+> 
+
