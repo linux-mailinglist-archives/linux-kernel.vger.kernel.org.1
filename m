@@ -2,183 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF0E230A83
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39541230A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729882AbgG1MoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729379AbgG1MoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:44:03 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4902EC0619D2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:44:03 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id 4so1754341uav.8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lamag6Aa8xzEi9MNZwHnYxjBf9+2A6cpklCTrsDoh4A=;
-        b=Gh+RNdjJTAk6ipjYlV7bdCb0w+2JUMWgSRCx5z5IcDAjithhxopl7Z92M6ic/T1YzF
-         CFRypxrbYTuYAO756tYXsKbuPUPT4VSgS6YJSPF6XlC3D3R6xEeJkWroI3DfzZYRM1LL
-         vmO6CnSsssfs+K+zaog/rGp7NTttzSG8kgnYnz7LF5WJGq65zgk1HddQqsK4uVv604h8
-         A0aB6ggLpK3J8cvqPUr+9jgC8ed9isGdtLNr5+SyVYt9zXKFyehHsIE+bmu3wSE76/j5
-         ayEapCBEVj0u7dGIWP/pvewiOUuAbSdxbKkJpds8lwRPNOFwrhgmg2zkPdDAcFV/BRek
-         yFhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lamag6Aa8xzEi9MNZwHnYxjBf9+2A6cpklCTrsDoh4A=;
-        b=F35EMYZNe2fB+udA5EPaup4RdnMVIr3ToAxcauxu7kHY5o3aQwBaGqg3ep5fm3F+aL
-         M88p6SpuPLJjoI0qsVe/b3NLi57qzByVwpMY9CW30/CY9AZSY7hJ3YdI0dyQO8D8qFqX
-         RCAAS+oTJao3tysVdJvpqNzzZjrWZm0vp8mH1XKeTBXNtoYMvKGaXHAEsLOIJq5giq0D
-         VGkIV+ULvn15Ymwm/J/yV1q4RcTXBaW2FNIhKjKuY1rdi09JDIPYxO4KSR208jB5xSc5
-         HZaULw0L4hIIJMHGomZLJsOY5Nz2Obe88q6OmJ6AWjXIlHY5WM7kzCsdJBKETI+U5nlq
-         ME3Q==
-X-Gm-Message-State: AOAM531JGNmZcgzuVIYnylQWzFRzkhZS89CCo9EqQbs8YizIF0AUvoBy
-        ROt/9iBVRY29p4TzPe2c6emLmsnGH+Lb785c7naAfw==
-X-Google-Smtp-Source: ABdhPJz8eUEacBI5xGPA1ODM83K3paHnnu+pjfbLJLVF+MbS+nbHVLCtgJw9MrHvNcK5mlOlZKsZHsEPMhLmkB6dTmg=
-X-Received: by 2002:ab0:5963:: with SMTP id o32mr19678822uad.142.1595940242118;
- Tue, 28 Jul 2020 05:44:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200727134911.020675249@linuxfoundation.org>
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 28 Jul 2020 18:13:50 +0530
-Message-ID: <CA+G9fYs+EJiUDP-nibgM4A+nS5EauvVNuPVafM_iAFPfPD3a3A@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/64] 4.14.190-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1729897AbgG1Mog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:44:36 -0400
+Received: from 107-174-27-60-host.colocrossing.com ([107.174.27.60]:36460 "EHLO
+        ozlabs.ru" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1729379AbgG1Mog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:44:36 -0400
+Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
+        by ozlabs.ru (Postfix) with ESMTP id AE9DDAE80225;
+        Tue, 28 Jul 2020 08:41:25 -0400 (EDT)
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+To:     linux-serial@vger.kernel.org
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH kernel] serial_core: Check for port state when tty is in error state
+Date:   Tue, 28 Jul 2020 22:43:59 +1000
+Message-Id: <20200728124359.980-1-aik@ozlabs.ru>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Jul 2020 at 19:37, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.190 release.
-> There are 64 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 29 Jul 2020 13:48:51 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.190-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+At the moment opening a serial device node (such as /dev/ttyS3)
+succeeds even if there is no actual serial device behind it.
+Reading/writing/ioctls (most) expectantly fail as the uart port is not
+initialized (the type is PORT_UNKNOWN) and the TTY_IO_ERROR error state
+bit is set fot the tty.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+However syzkaller (a syscall fuzzer) found that setting line discipline
+does not have these checks all the way down to io_serial_out() in
+8250_port.c (8250 is the default choice made by univ8250_console_init()).
+As the result of PORT_UNKNOWN, uart_port::iobase is NULL which
+a platform translates onto some address accessing which produces a crash
+like below.
 
-Summary
-------------------------------------------------------------------------
+This adds tty_io_error() to uart_set_ldisc() to prevent the crash.
 
-kernel: 4.14.190-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: f238f865e7549f70e465fb28f92c863900e76455
-git describe: v4.14.189-65-gf238f865e754
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
-ild/v4.14.189-65-gf238f865e754
+The example of crash on PPC64/pseries:
 
-No regressions (compared to build v4.14.189)
+BUG: Unable to handle kernel data access on write at 0xc00a000000000001
+Faulting instruction address: 0xc000000000c9c9cc
+cpu 0x0: Vector: 300 (Data Access) at [c00000000c6d7800]
+    pc: c000000000c9c9cc: io_serial_out+0xcc/0xf0
+    lr: c000000000c9c9b4: io_serial_out+0xb4/0xf0
+    sp: c00000000c6d7a90
+   msr: 8000000000009033
+   dar: c00a000000000001
+ dsisr: 42000000
+  current = 0xc00000000cd22500
+  paca    = 0xc0000000035c0000   irqmask: 0x03   irq_happened: 0x01
+    pid   = 1371, comm = syz-executor.0
+Linux version 5.8.0-rc7-le-guest_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc (Ubunt
+untu) 2.30) #660 SMP Tue Jul 28 22:29:22 AEST 2020
+enter ? for help
+[c00000000c6d7a90] c0000000018a8cc0 _raw_spin_lock_irq+0xb0/0xe0 (unreliable)
+[c00000000c6d7ad0] c000000000c9bdc0 serial8250_do_set_ldisc+0x140/0x180
+[c00000000c6d7b10] c000000000c9bea4 serial8250_set_ldisc+0xa4/0xb0
+[c00000000c6d7b50] c000000000c91138 uart_set_ldisc+0xb8/0x160
+[c00000000c6d7b90] c000000000c5a22c tty_set_ldisc+0x23c/0x330
+[c00000000c6d7c20] c000000000c4c220 tty_ioctl+0x990/0x12f0
+[c00000000c6d7d20] c00000000056357c ksys_ioctl+0x14c/0x180
+[c00000000c6d7d70] c0000000005635f0 sys_ioctl+0x40/0x60
+[c00000000c6d7db0] c00000000003b814 system_call_exception+0x1a4/0x330
+[c00000000c6d7e20] c00000000000d368 system_call_common+0xe8/0x214
 
-No fixes (compared to build v4.14.189)
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+---
 
-Ran 31258 total tests in the following environments and test suites.
+While looking at it, I noticed that a bunch of callbacks are prone to
+this bug and since I wanted to fix them all with minimum effort,
+I tried checking for PORT_UNKNOWN in uart_port_check() but it breaks
+device opening. Another approach could be checking for uart_port::iobase
+in 8250 (and probably uart_port::membase as well) but this will make
+the rest of the code to think the device is ok while there is no device
+at all.
 
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
+What would the correct approach be and what is the expectation?
 
-Test Suites
------------
-* build
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* kselftest/drivers
-* kselftest/filesystems
-* kselftest/net
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-native/drivers
-* kselftest-vsyscall-mode-native/filesystems
-* kselftest-vsyscall-mode-native/net
-* kselftest-vsyscall-mode-none
-* kselftest-vsyscall-mode-none/drivers
-* kselftest-vsyscall-mode-none/filesystems
-* kselftest-vsyscall-mode-none/net
-* ssuite
+The fact that /dev/ttyS3 opened in the first place is confusing already.
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+---
+ drivers/tty/serial/serial_core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index c15e208d9bec..cdece1c8e123 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -1467,6 +1467,9 @@ static void uart_set_ldisc(struct tty_struct *tty)
+ 	struct uart_state *state = tty->driver_data;
+ 	struct uart_port *uport;
+ 
++	if (tty_io_error(tty))
++		return;
++
+ 	mutex_lock(&state->port.mutex);
+ 	uport = uart_port_check(state);
+ 	if (uport && uport->ops && uport->ops->set_ldisc)
+-- 
+2.17.1
+
