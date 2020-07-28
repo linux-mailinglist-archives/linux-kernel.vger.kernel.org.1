@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56A023080A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B83230819
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgG1KqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:46:05 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50252 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728784AbgG1KqE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:46:04 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1k0N7R-0004YP-H8; Tue, 28 Jul 2020 10:46:02 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     bhelgaas@google.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-pci@vger.kernel.org (open list:PCI SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] PCI: Mark AMD Navi10 GPU rev 0x00 ATS as broken
-Date:   Tue, 28 Jul 2020 18:45:53 +0800
-Message-Id: <20200728104554.28927-1-kai.heng.feng@canonical.com>
+        id S1728868AbgG1Kuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:50:44 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:10482 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728509AbgG1Kuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:50:44 -0400
+IronPort-SDR: Z/oTkCVLaoIz2Y2pmYxYobCctdersksapKHKNB4iE9lxLmz8lwD/aeEU3+0P/BWjlg96JbZPph
+ G9oQ/pTTV1n6EvY5wbrZ+oLr6Su7wH2gBvonsDbNyFPgG+Wcl0o3T1U8Av7wksiRYhA1Rlv77v
+ 7WC8MWNT9jnKk8Su6oZrFXvM8Stt/FPta9MdUhUniqFSH07HivqHY9SB9mjvApdnPMaNapwrNP
+ ZZlsAJd3MjC063rpVqDVvykZpwn1+MxgK8O3SurBoKQ0qI8di9uYngvKBxY0+7YYn5jXJXzoFc
+ G3s=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589234400"; 
+   d="scan'208";a="13261595"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 28 Jul 2020 12:50:41 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Tue, 28 Jul 2020 12:50:42 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Tue, 28 Jul 2020 12:50:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1595933442; x=1627469442;
+  h=from:to:cc:subject:date:message-id;
+  bh=KV4iUdx+AdKeIi9RN6z2Ez4NYT+otJS82M/3jFBITAs=;
+  b=chRwB+NRgjkxYOfCaSy1JPZ8tCuAUe0CjTOrLZ4p39YpI19RyCzVLaa9
+   leWmiD27XgSjiSXCupwG3QXDitBraytJFp8rj17iYOB5MEQd6V0OoH799
+   Qj9a5UKLi0hL3t+j8gfKjc/YCpvEfbvD9bjXIXYE/A2HS5iJ8Hy+3ARk3
+   wDT8txQegzTlFCqxk6HRtFET5m8L4dxTKol2Z9ni5wUVrAyMMiU2Ew29k
+   /4guuBnzUWZg0M912DffKmT9x9PVtJtOqXvoY/Mg0Iz3SwasIk5xAS2b/
+   qdRXWTzj5M2DBLv/zTDMmFtqT0iAEphRbHW7yZvuDrwUboNy1kGqpsBgE
+   w==;
+IronPort-SDR: fuD4Pgi7nzd9mPXQj6NDAAXzDzeiVh66FsM7/EdrbC9OMVjR6Ir9BmG88j7aoffE+O+8E7UB9c
+ mBuJVL2zPsK1jPFj+t1BqY5YCyEQ+GnALRxkb9w1S7CNnl1FFg3RQ55UX5ye2asRc3z+k7g9QW
+ nX12LBjhjsPYgF8vmESUz63M/TsPoXRYYvMzO1HHDv+BcsMw6cY0nCBnvV8y6++aghE3LXigmC
+ Lise3R8/wsWJrwf1dGAMasNiNExL2Zk0wvJwuDzJD+XOeetGlPhoB0DzDHqBWyQ85BvqQrR5za
+ OkU=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589234400"; 
+   d="scan'208";a="13261594"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 28 Jul 2020 12:50:41 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id BBAA7280075;
+        Tue, 28 Jul 2020 12:50:41 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH] arm: dts: ls1021a: fix QuadSPI-memory reg range
+Date:   Tue, 28 Jul 2020 12:50:06 +0200
+Message-Id: <20200728105006.7952-1-matthias.schiffer@ew.tq-group.com>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are seeing AMD Radeon Pro W5700 doesn't work when IOMMU is enabled:
-[    3.375841] iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT device=63:00.0 address=0x42b5b01a0]
-[    3.375845] iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT device=63:00.0 address=0x42b5b01c0]
+According to the Reference Manual, the correct size is 512 MiB.
 
-The error also makes graphics driver fail to probe the device.
+Without this fix, probing the QSPI fails:
 
-It appears to be the same issue as commit 5e89cd303e3a ("PCI: Mark AMD
-Navi14 GPU rev 0xc5 ATS as broken") addresses, and indeed the same ATS
-quirk can workaround the issue.
+    fsl-quadspi 1550000.spi: ioremap failed for resource
+        [mem 0x40000000-0x7fffffff]
+    fsl-quadspi 1550000.spi: Freescale QuadSPI probe failed
+    fsl-quadspi: probe of 1550000.spi failed with error -12
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=208725
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Fixes: 85f8ee78ab72 ("ARM: dts: ls1021a: Add support for QSPI with ls1021a SoC")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- drivers/pci/quirks.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/ls1021a.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 812bfc32ecb8..052efeb9f053 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5192,7 +5192,8 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, 0x0422, quirk_no_ext_tags);
-  */
- static void quirk_amd_harvest_no_ats(struct pci_dev *pdev)
- {
--	if (pdev->device == 0x7340 && pdev->revision != 0xc5)
-+	if ((pdev->device == 0x7312 && pdev->revision != 0x00) ||
-+	    (pdev->device == 0x7340 && pdev->revision != 0xc5))
- 		return;
- 
- 	pci_info(pdev, "disabling ATS\n");
-@@ -5203,6 +5204,8 @@ static void quirk_amd_harvest_no_ats(struct pci_dev *pdev)
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x98e4, quirk_amd_harvest_no_ats);
- /* AMD Iceland dGPU */
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x6900, quirk_amd_harvest_no_ats);
-+/* AMD Navi10 dGPU */
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7312, quirk_amd_harvest_no_ats);
- /* AMD Navi14 dGPU */
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7340, quirk_amd_harvest_no_ats);
- #endif /* CONFIG_PCI_ATS */
+diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
+index b2ff27af090e..9435ce527e85 100644
+--- a/arch/arm/boot/dts/ls1021a.dtsi
++++ b/arch/arm/boot/dts/ls1021a.dtsi
+@@ -181,7 +181,7 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			reg = <0x0 0x1550000 0x0 0x10000>,
+-			      <0x0 0x40000000 0x0 0x40000000>;
++			      <0x0 0x40000000 0x0 0x20000000>;
+ 			reg-names = "QuadSPI", "QuadSPI-memory";
+ 			interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
+ 			clock-names = "qspi_en", "qspi";
 -- 
 2.17.1
 
