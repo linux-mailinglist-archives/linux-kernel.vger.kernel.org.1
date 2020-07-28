@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A05230E99
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA22E230E9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731175AbgG1P7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730977AbgG1P7P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:59:15 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732D9C061794;
-        Tue, 28 Jul 2020 08:59:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=sCLxp6AUq1KmYBCwLzSeRjYy8jCk/8A7PYbEtgGG+qY=; b=FBdfJX7RXHbQPC7Lt8l5KLv3H
-        5jw/LPb2H4Mg8qL/wp+zku+Lj2h55sF0Y6agIQNJrTBNjuBM9YOt0dEfgsWwBqWZVZPVj/yy7mrgK
-        xaURIu7OaaysamVAf538TZYDzlKIjek98q5EwLJwpAnb5XnhO0tA+qbCsqBVf2rDg4yGWQPNYc79o
-        8EeRnwjSAsDHAgWqCyMhXAMEBJQ+/QqPObuLXw25uaqcWjM9VtAKN9zl04D1Dp9ltFZNmpAx1Od0x
-        DuDxhjZIZG6j4Ee3Rmiuk9h5s+heolj6SGeBoLaIjNjlSGOngJEv4YF1wECBdZ2vOJZgqM4ysAKd0
-        ZPvrb1+JQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45296)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1k0S0S-0004SE-PO; Tue, 28 Jul 2020 16:59:08 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1k0S0O-0004n3-Kl; Tue, 28 Jul 2020 16:59:04 +0100
-Date:   Tue, 28 Jul 2020 16:59:04 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Landen Chao <landen.chao@mediatek.com>, netdev@vger.kernel.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org, Mark Lee <Mark-MC.Lee@mediatek.com>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        John Crispin <john@phrozen.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org, Felix Fietkau <nbd@nbd.name>
-Subject: Re: [PATCH v3] net: ethernet: mtk_eth_soc: fix mtu warning
-Message-ID: <20200728155904.GT1551@shell.armlinux.org.uk>
-References: <20200728122743.78489-1-frank-w@public-files.de>
+        id S1731194AbgG1P7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:59:23 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30043 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730679AbgG1P7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:59:23 -0400
+IronPort-SDR: hb9ddBj5c99+NOMi7xoavry0r6zdXsv74jEwqQAwAx8TVZqIKDjZD0IwlAvU/d2/1Eg94AOA8S
+ aFHRO70BRCxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="152492565"
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="152492565"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 08:59:22 -0700
+IronPort-SDR: 3+avlv1CfLZM+1dJZ3q9UKyBJRhsBI18RcjkFTL8a/m36xIVEZe9AmnmWnbnm7aeGNQlWYS5cG
+ utYz7RovAyIA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="490410915"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga005.fm.intel.com with ESMTP; 28 Jul 2020 08:59:21 -0700
+Date:   Tue, 28 Jul 2020 08:59:21 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: nVMX: properly pad struct kvm_vmx_nested_state_hdr
+Message-ID: <20200728155921.GC5300@linux.intel.com>
+References: <20200713082824.1728868-1-vkuznets@redhat.com>
+ <20200713151750.GA29901@linux.intel.com>
+ <878sfntnoz.fsf@vitty.brq.redhat.com>
+ <85fd54ff-01f5-0f1f-1bb7-922c740a37c1@redhat.com>
+ <20200727154654.GA8675@linux.intel.com>
+ <5d50ea1e-f2a2-8aa9-1dd3-4cbca6c6f885@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200728122743.78489-1-frank-w@public-files.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5d50ea1e-f2a2-8aa9-1dd3-4cbca6c6f885@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 02:27:43PM +0200, Frank Wunderlich wrote:
-> From: Landen Chao <landen.chao@mediatek.com>
+On Mon, Jul 27, 2020 at 06:16:56PM +0200, Paolo Bonzini wrote:
+> On 27/07/20 17:46, Sean Christopherson wrote:
+> > All the above being said, after looking at the whole picture I think padding
+> > the header is a moot point.  The header is padded out to 120 bytes[*] when
+> > including in the full nested state, and KVM only ever consumes the header in
+> > the context of the full nested state.  I.e. if there's garbage at offset 6,
+> > odds are there's going to be garbage at offset 18, so internally padding the
+> > header does nothing.
 > 
-> in recent Kernel-Versions there are warnings about incorrect MTU-Size
-> like these:
+> Yes, that was what I was hinting at with "it might as well send it now"
+> (i.e., after the patch).
+> 
+> (All of this is moot for userspace that just uses KVM_GET_NESTED_STATE
+> and passes it back to KVM_SET_NESTED_STATE).
+> 
+> > KVM should be checking that the unused bytes of (sizeof(pad) - sizeof(vmx/svm))
+> > is zero if we want to expand into the padding in the future.  Right now we're
+> > relying on userspace to zero allocate the struct without enforcing it.
+> 
+> The alternative, which is almost as good, is to only use these extra
+> fields which could be garbage if the flags are not set, and check the
+> flags (see the patches I have sent earlier today).
+> 
+> The chance of the flags passing the check will decrease over time as
+> more flags are added; but the chance of having buggy userspace that
+> sends down garbage also will.
 
-Can the above also be fixed for incorrect capitalisation and improper
-hyphernation please?
+Ah, I see what you're saying.  Ya, that makes sense.
 
-Thanks.
+> > [*] Amusing side note, the comment in the header is wrong.  It states "pad
+> >     the header to 128 bytes", but only pads it to 120 bytes, because union.
+> > 
+> > /* for KVM_CAP_NESTED_STATE */
+> > struct kvm_nested_state {
+> > 	__u16 flags;
+> > 	__u16 format;
+> > 	__u32 size;
+> > 
+> > 	union {
+> > 		struct kvm_vmx_nested_state_hdr vmx;
+> > 		struct kvm_svm_nested_state_hdr svm;
+> > 
+> > 		/* Pad the header to 128 bytes.  */
+> > 		__u8 pad[120];
+> > 	} hdr;
+> 
+> There are 8 bytes before the union, and it's not a coincidence. :)
+> "Header" refers to the stuff before the data region.
 
-> 
-> eth0: mtu greater than device maximum
-> mtk_soc_eth 1b100000.ethernet eth0: error -22 setting MTU to include DSA overhead
-> 
-> Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-> Fixes: 72579e14a1d3 ("net: dsa: don't fail to probe if we couldn't set the MTU")
-> Fixes: 7a4c53bee332 ("net: report invalid mtu value via netlink extack")
-> Signed-off-by: René van Dorst <opensource@vdorst.com>
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
->  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> index 85735d32ecb0..a1c45b39a230 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> @@ -2891,6 +2891,8 @@ static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
->  	eth->netdev[id]->irq = eth->irq[0];
->  	eth->netdev[id]->dev.of_node = np;
-> 
-> +	eth->netdev[id]->max_mtu = MTK_MAX_RX_LENGTH - MTK_RX_ETH_HLEN;
-> +
->  	return 0;
-> 
->  free_netdev:
-> --
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Ugh, then 'hdr' probably should be named vendor_header or something. 
