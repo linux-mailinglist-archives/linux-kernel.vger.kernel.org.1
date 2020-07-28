@@ -2,64 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DC08230827
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5274D23082B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgG1Kxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:53:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:60856 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728782AbgG1Kxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:53:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A2C11FB;
-        Tue, 28 Jul 2020 03:53:51 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 223213F66E;
-        Tue, 28 Jul 2020 03:53:48 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 11:53:45 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Anson Huang <Anson.Huang@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, robh@kernel.org, bhelgaas@google.com,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, bjorn.andersson@linaro.org, leoyang.li@nxp.com,
-        vkoul@kernel.org, geert+renesas@glider.be, olof@lixom.net,
-        amurray@thegoodpenguin.co.uk, treding@nvidia.com,
-        vidyas@nvidia.com, hayashi.kunihiko@socionext.com,
-        jonnyc@amazon.com, eswara.kota@linux.intel.com, krzk@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, Linux-imx@nxp.com
-Subject: Re: [PATCH V3 1/3] reset: imx7: Support module build
-Message-ID: <20200728105345.GC905@e121166-lin.cambridge.arm.com>
-References: <1595254921-26050-1-git-send-email-Anson.Huang@nxp.com>
- <e89fa4f3ba2b1b6fe94e662c6ab3cfbaa25867fa.camel@pengutronix.de>
+        id S1728937AbgG1Kyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:54:45 -0400
+Received: from www62.your-server.de ([213.133.104.62]:49934 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728876AbgG1Kyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:54:44 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k0NFD-0004CE-Pr; Tue, 28 Jul 2020 12:54:03 +0200
+Received: from [178.196.57.75] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1k0NFD-000VJh-8W; Tue, 28 Jul 2020 12:54:03 +0200
+Subject: Re: [Linux-kernel-mentees] [PATCH net v2] xdp: Prevent
+ kernel-infoleak in xsk_getsockopt()
+To:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Song Liu <songliubraving@fb.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200728022859.381819-1-yepeilin.cs@gmail.com>
+ <20200728053604.404631-1-yepeilin.cs@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <916dbfd3-e601-c4be-41f0-97efc4aaa456@iogearbox.net>
+Date:   Tue, 28 Jul 2020 12:53:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e89fa4f3ba2b1b6fe94e662c6ab3cfbaa25867fa.camel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200728053604.404631-1-yepeilin.cs@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.3/25886/Mon Jul 27 16:48:28 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 24, 2020 at 10:03:11AM +0200, Philipp Zabel wrote:
-> On Mon, 2020-07-20 at 22:21 +0800, Anson Huang wrote:
-> > Use module_platform_driver(), add module device table, author,
-> > description and license to support module build, and
-> > CONFIG_RESET_IMX7 is changed to default 'y' ONLY for i.MX7D,
-> > other platforms need to select it in defconfig.
-> > 
-> > Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> > ---
-> > Changes since V2:
-> > 	- use module_platform_driver() instead of builtin_platform_driver().
+On 7/28/20 7:36 AM, Peilin Ye wrote:
+> xsk_getsockopt() is copying uninitialized stack memory to userspace when
+> `extra_stats` is `false`. Fix it.
 > 
-> Thank you, applied to reset/next.
+> Fixes: 8aa5a33578e9 ("xsk: Add new statistics")
+> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+> ---
+> Doing `= {};` is sufficient since currently `struct xdp_statistics` is
+> defined as follows:
+> 
+> struct xdp_statistics {
+> 	__u64 rx_dropped;
+> 	__u64 rx_invalid_descs;
+> 	__u64 tx_invalid_descs;
+> 	__u64 rx_ring_full;
+> 	__u64 rx_fill_ring_empty_descs;
+> 	__u64 tx_ring_empty_descs;
+> };
+> 
+> When being copied to the userspace, `stats` will not contain any
+> uninitialized "holes" between struct fields.
 
-I think you should pick up patch (3) as well please if PCI_IMX6
-maintainers ACK it - merging just patch(1) will trigger regressions
-AFAICS.
-
-Lorenzo
+I've added above explanation to the commit log since it's useful reasoning for later
+on 'why' something has been done a certain way. Applied, thanks Peilin!
