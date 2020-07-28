@@ -2,118 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457262310D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C842310D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731958AbgG1R00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
+        id S1731991AbgG1R0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731684AbgG1R00 (ORCPT
+        with ESMTP id S1731684AbgG1R0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:26:26 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B332C061794;
-        Tue, 28 Jul 2020 10:26:26 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id u10so739089plr.7;
-        Tue, 28 Jul 2020 10:26:26 -0700 (PDT)
+        Tue, 28 Jul 2020 13:26:33 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E000C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:26:33 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so19067441wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:26:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s8CxIPWlau8UfBUUf1Zit/bYMskp+FR/Gd+ldXuH8Yg=;
-        b=S4wzOSxXwDfGFg2NCSMoo/K0LdSBMO0r4Evck5FCh2ufocaD+t+u1uag149ihpgNNm
-         wI7JAaNIpItm81KSwCxVThGounvWOCAWy1X5HMtDpRuWX9qMFbjYLYvER/frsHix/vSF
-         /Jifal9mnrB2XcWnE1K2A9dQEXyiiQ3lmHpHeGUqHBUapyAalbreS0GuGPqtBvh5QZjX
-         9grcWfEcA9cufRH5GvIU4pdIRfI4PeE0wZprpNarBHVh3ZW7HBY6a7adB9aUdyUfu68R
-         w2QpxR4STpLO4dQP2pH5fohY0+GRCGQmBOz2BL32Il7NzMCf2S0QsUedCPec+ZtPKN9t
-         GdRQ==
+         :cc;
+        bh=s8HmD2+W32Ksd26J0Q9yAAyP6paGN4AidnrWfkdiGWk=;
+        b=nbzh/iVebMLRJd22MAzNuOfOpDFAWNGK8zWhMVfwAPd56jrymzn/jt0y/w7GOr12/j
+         8UIlCUA453dSY1YPMmgQ75xhLGHsY+41Bx728SHa8jSaAf8YrsAJiDyL8laz4Di1BlRG
+         r0mdw0XkApyFun/j+8yU8HfNuXPx9N8HY05HLc2D0NArPxoGVd9gzZzVkKMDMHHY1YdP
+         IaP+kH6zhGWs/gH/uZL6+SWIlatira6mpOw8P+Afx8GLJ8kIUlcUx++lUmEVLB4GvE45
+         isyV0rkkT1uIaBe2nzwTFl3RK0j4H4aomPyrngB/9ndE6euH/6LXv3u+k3UJj0s3+8mH
+         cuiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s8CxIPWlau8UfBUUf1Zit/bYMskp+FR/Gd+ldXuH8Yg=;
-        b=F5VGuK9kP6FydXBNOOYnvl0J89df6aa7xSfETcUPUs4iIU7EB599BO3dTvPC2gvSGo
-         ahOPGxdxVSDQuAG5GaauInrmun6ZcCgGJLVP4hi2YF1z+x3fhJy7jShIqOlQqiEW0iCS
-         AMemHk6Vpgq834I7jatPQV5WJTIaHXQcnc1fgG5NsGepIuRjISl2fB7fPVBPKTK1USuE
-         eTigG5ZgJKBCfHTQOMKolUrjd3OWf66zmVkcT2G/fRH8f4fDLaGpYu1BFsA8mW4+Ciwz
-         HUK/mVH60tHuUvWDt0RH86BKqpkFFsqDKA5VtgWsw7aGdPMkdXawazsLrTrp6K2NIVrU
-         KdIQ==
-X-Gm-Message-State: AOAM531ztbNe5H2JaMyKCIlVyfbE/u6MbQT1Xue3crVix4cbtTU6UGqw
-        RppCohUgULI8/UeIAUWr+e2mtzXTooS2gNDT9Zg=
-X-Google-Smtp-Source: ABdhPJzdfHhS6L4t1jcHgJuUpezx+u/rVpyefG5mBGWG6CWr23hRVPrasPCQ6/5Sxh5clMW6uBMr/Db7MpAi4+2gkUg=
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr5705366pjp.228.1595957185750;
- Tue, 28 Jul 2020 10:26:25 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=s8HmD2+W32Ksd26J0Q9yAAyP6paGN4AidnrWfkdiGWk=;
+        b=KILPeiy7ylMapAV5S/EXsS2mLOOtFRMF6+UpBuvBEuP3IOcV5cHGc3IZ5h7k1jbwlo
+         1O17/qYPQf+KhqX9fWN02eeTJSrB7Uz/1bLT4/ml4wFAi+WBJM9D8k/kDSUeYgysxwJT
+         adbk8cCrgJo49nt//qQu+sAI68d3AXj/azZ1P/ucJ+HTOztWQECZAlr3zsgKA7+K7OlW
+         nlhnSQ1nIeeJEld9vIjrKGHXj+QAhdBzMXjO/8xgX4XpLXlvarBr4ktOUlJfPNjBPZZH
+         a9W8pWhEwDHHO8JzR/6iMiesEI/AtJ7C478Av181dmeA72Hr5xU5LyAufKYv0u46yg/Y
+         /NaA==
+X-Gm-Message-State: AOAM531TDnPRu5Ky9zlnQ0Z/wvZDSBeeW20UrDaky5xDYLp+wCXwIx1m
+        JeyaDF8/ZgyBKg3dM8r2FKffrlkJVcMG6SDFChS1lKHQ
+X-Google-Smtp-Source: ABdhPJz/7AvqFSQzMQ51/J8k71NOIcZ9fjFqwsFpUa/K8MNKKufqoVCPWmquuNkgne2ST9+MkLYfOAiJDq4Mol/4O90=
+X-Received: by 2002:a5d:4bd2:: with SMTP id l18mr24848678wrt.119.1595957192009;
+ Tue, 28 Jul 2020 10:26:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200728170251.112484-1-zhouyanjie@wanyeetech.com> <20200728170251.112484-2-zhouyanjie@wanyeetech.com>
-In-Reply-To: <20200728170251.112484-2-zhouyanjie@wanyeetech.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 28 Jul 2020 20:26:10 +0300
-Message-ID: <CAHp75VevCu2Diojjam1q76nSdOOsfB_3kXCYFLPMfwad8kHv+A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] USB: PHY: JZ4770: Fix static checker warning.
-To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Colin King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        prasannatsmkumar@gmail.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
+References: <20200719181320.785305-1-jolsa@kernel.org> <20200719181320.785305-17-jolsa@kernel.org>
+ <20200728123629.GW40195@kernel.org>
+In-Reply-To: <20200728123629.GW40195@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 28 Jul 2020 10:26:20 -0700
+Message-ID: <CAP-5=fWAC4DkKiPzKvAiVpMDFWvf3HPZ5=tiSUbJ50w+kjXhfg@mail.gmail.com>
+Subject: Re: [PATCH 16/19] perf metric: Make compute_single function more precise
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 8:09 PM =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie)
-<zhouyanjie@wanyeetech.com> wrote:
+On Tue, Jul 28, 2020 at 5:36 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> The commit 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new
-> Ingenic SoCs.") introduced the initialization function for different
-> chips, but left the relevant code involved in the resetting process
-> in the original function, resulting in uninitialized variable calls.
-> This problem can be solved by putting this part of the code into the
-> initialization function for each chip. Although the four processors
-> currently supported have the same reset code, let us can solve this
-
-'can' -> ''
-
-> problem by adding the initialization of the reg variable to the
-> original function, but when other processors with different reset
-> methods (such as X2000) are introduced in the future, it will cause
-> inevitable condition judgments to complicate the function, which
-> violates the original intention of introducing initialization
-> functions for each processor.
+> Em Sun, Jul 19, 2020 at 08:13:17PM +0200, Jiri Olsa escreveu:
+> > So far compute_single function relies on the fact, that
+> > there's only single metric defined within evlist in all
+> > tests. In following patch we will add test for metric
+> > group, so we need to be able to compute metric by given
+> > name.
+> >
+> > Adding the name argument to compute_single and iterating
+> > evlist and evsel's expression to find the given metric.
 >
-> Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new
-> Ingenic SoCs.").
-
-No period at the end
-
+> Applied, thanks.
 >
+> Ian, Kajol, I didn't notice your Acked-by or Reviewed-by, like for the
+> other patches, can you check?
 
-No blank line in the tag block.
 
-> Reported-by: Colin Ian King <colin.king@canonical.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
+Acked-by: Ian Rogers <irogers@google.com>
 
-...
+Thanks,
+Ian
 
-> +       /* Wait for PHY to reset */
-> +       usleep_range(30, 300);
-> +       writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-> +       usleep_range(300, 1000);
-
-Instead of copy'n'paste 4 times, you may provide a helper function.
-
---=20
-With Best Regards,
-Andy Shevchenko
+> - Arnaldo
+>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/tests/parse-metric.c | 22 +++++++++++++---------
+> >  1 file changed, 13 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> > index 01370ccb9ed9..5ac32f80f8ea 100644
+> > --- a/tools/perf/tests/parse-metric.c
+> > +++ b/tools/perf/tests/parse-metric.c
+> > @@ -108,17 +108,21 @@ static void load_runtime_stat(struct runtime_stat *st, struct evlist *evlist,
+> >  }
+> >
+> >  static double compute_single(struct rblist *metric_events, struct evlist *evlist,
+> > -                          struct runtime_stat *st)
+> > +                          struct runtime_stat *st, const char *name)
+> >  {
+> > -     struct evsel *evsel = evlist__first(evlist);
+> > +     struct metric_expr *mexp;
+> >       struct metric_event *me;
+> > +     struct evsel *evsel;
+> >
+> > -     me = metricgroup__lookup(metric_events, evsel, false);
+> > -     if (me != NULL) {
+> > -             struct metric_expr *mexp;
+> > -
+> > -             mexp = list_first_entry(&me->head, struct metric_expr, nd);
+> > -             return test_generic_metric(mexp, 0, st);
+> > +     evlist__for_each_entry(evlist, evsel) {
+> > +             me = metricgroup__lookup(metric_events, evsel, false);
+> > +             if (me != NULL) {
+> > +                     list_for_each_entry (mexp, &me->head, nd) {
+> > +                             if (strcmp(mexp->metric_name, name))
+> > +                                     continue;
+> > +                             return test_generic_metric(mexp, 0, st);
+> > +                     }
+> > +             }
+> >       }
+> >       return 0.;
+> >  }
+> > @@ -162,7 +166,7 @@ static int compute_metric(const char *name, struct value *vals, double *ratio)
+> >       load_runtime_stat(&st, evlist, vals);
+> >
+> >       /* And execute the metric */
+> > -     *ratio = compute_single(&metric_events, evlist, &st);
+> > +     *ratio = compute_single(&metric_events, evlist, &st, name);
+> >
+> >       /* ... clenup. */
+> >       metricgroup__rblist_exit(&metric_events);
+> > --
+> > 2.25.4
+> >
+>
+> --
+>
+> - Arnaldo
