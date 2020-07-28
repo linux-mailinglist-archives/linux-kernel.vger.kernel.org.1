@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F24A230D71
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDC7230D23
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730900AbgG1POd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:14:33 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:44850 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730887AbgG1POa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:14:30 -0400
-Received: from 89-64-88-69.dynamic.chello.pl (89.64.88.69) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 197c8e6c67be01ba; Tue, 28 Jul 2020 17:14:27 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Doug Smythies <dsmythies@telus.net>,
-        Francisco Jerez <francisco.jerez.plata@intel.com>
-Subject: [PATCH v4 1/2] cpufreq: intel_pstate: Rearrange the storing of new EPP values
-Date:   Tue, 28 Jul 2020 17:11:03 +0200
-Message-ID: <1665283.zxI7kaGBi8@kreacher>
-In-Reply-To: <13207937.r2GEYrEf4f@kreacher>
-References: <4981405.3kqTVLv5tO@kreacher> <1709487.Bxjb1zNRZM@kreacher> <13207937.r2GEYrEf4f@kreacher>
+        id S1730693AbgG1PLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:11:31 -0400
+Received: from mail.nic.cz ([217.31.204.67]:46602 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730499AbgG1PLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:11:30 -0400
+Received: from dellmb.labs.office.nic.cz (unknown [IPv6:2001:1488:fffe:6:cac7:3539:7f1f:463])
+        by mail.nic.cz (Postfix) with ESMTPSA id 7261313FCD6;
+        Tue, 28 Jul 2020 17:11:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nic.cz; s=default;
+        t=1595949088; bh=7uovp5tiRjX0Q63trdBfxs/RHAlmPAqgR0xCiyLf3Cc=;
+        h=Date:From:To;
+        b=aX50kRH0WUaobGgSRxE97ikqg3Uj/nhtXx/hA2vDiK97ShqjTmkjcIGtC6L+hXe5o
+         e3CXHVDS2R3QCYRBnnwOWy0juraKeg/k7aEw2wsprXz0pQepIN5pPdj1rUHiQ/R39K
+         1tXQWpeoWvXe1nmXWD8TsdBaW5cB9Ihs4evn2Vdo=
+Date:   Tue, 28 Jul 2020 17:11:28 +0200
+From:   Marek =?ISO-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+To:     netdev@vger.kernel.org
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        jacek.anaszewski@gmail.com, Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?Q?Ond?= =?UTF-8?Q?=C5=99ej?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC leds + net-next v4 1/2] net: phy: add API for LEDs
+ controlled by PHY HW
+Message-ID: <20200728171128.61c7193b@dellmb.labs.office.nic.cz>
+In-Reply-To: <20200728150530.28827-2-marek.behun@nic.cz>
+References: <20200728150530.28827-1-marek.behun@nic.cz>
+        <20200728150530.28827-2-marek.behun@nic.cz>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, 28 Jul 2020 17:05:29 +0200
+Marek Beh=C3=BAn <marek.behun@nic.cz> wrote:
 
-Move the locking away from intel_pstate_set_energy_pref_index()
-into its only caller and drop the (now redundant) return_pref label
-from it.
+> @@ -736,6 +777,16 @@ struct phy_driver {
+>  	int (*set_loopback)(struct phy_device *dev, bool enable);
+>  	int (*get_sqi)(struct phy_device *dev);
+>  	int (*get_sqi_max)(struct phy_device *dev);
+> +
+> +	/* PHY LED support */
+> +	int (*led_init)(struct phy_device *dev, struct
+> phy_device_led *led);
+> +	int (*led_brightness_set)(struct phy_device *dev, struct
+> phy_device_led *led,
+> +				  enum led_brightness brightness);
+> +	const char *(*led_iter_hw_mode)(struct phy_device *dev,
+> struct phy_device_led *led,
+> +					void **	iter);
+> +	int (*led_set_hw_mode)(struct phy_device *dev, struct
+> phy_device_led *led,
+> +			       const char *mode);
+> +	const char *(*led_get_hw_mode)(struct phy_device *dev,
+> struct phy_device_led *led); };
+>  #define to_phy_driver(d)
+> container_of(to_mdio_common_driver(d),		\ struct
+> phy_driver, mdiodrv)
 
-Also move the "raw" EPP value check into the caller of that function,
-so as to do it before acquiring the mutex, and reduce code duplication
-related to the "raw" EPP values processing somewhat.
+The problem here is that the same code will have to be added to DSA
+switch ops structure, which is not OK.
 
-No intentional functional impact.
+I wanted to put this into struct mdio_driver_common, so that all mdio
+drivers would be able to have HW LEDs connected. But then I remembered
+that not all DSA drivers are connected via MDIO, some are via SPI.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+So maybe this could instead become part of LED API, instead of phydev
+API. Structure
+  struct hw_controlled_led
+and
+  struct hw_controlled_led_ops
+could be offered by the LED API, which would also register the needed
+trigger.
 
-v2 -> v3:
+struct phydev, struct dsa_switch and other could then just contain
+pointer to struct hw_controlled_led_ops...
 
-   * Fix error handling in intel_pstate_set_energy_pref_index() and
-     rebase.
-
-v3 -> v4: No changes
-
----
- drivers/cpufreq/intel_pstate.c |   35 +++++++++++++++--------------------
- 1 file changed, 15 insertions(+), 20 deletions(-)
-
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -649,28 +649,18 @@ static int intel_pstate_set_energy_pref_
- 	if (!pref_index)
- 		epp = cpu_data->epp_default;
- 
--	mutex_lock(&intel_pstate_limits_lock);
--
- 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
- 		u64 value;
- 
- 		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
- 		if (ret)
--			goto return_pref;
-+			return ret;
- 
- 		value &= ~GENMASK_ULL(31, 24);
- 
--		if (use_raw) {
--			if (raw_epp > 255) {
--				ret = -EINVAL;
--				goto return_pref;
--			}
--			value |= (u64)raw_epp << 24;
--			ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
--			goto return_pref;
--		}
--
--		if (epp == -EINVAL)
-+		if (use_raw)
-+			epp = raw_epp;
-+		else if (epp == -EINVAL)
- 			epp = epp_values[pref_index - 1];
- 
- 		value |= (u64)epp << 24;
-@@ -680,8 +670,6 @@ static int intel_pstate_set_energy_pref_
- 			epp = (pref_index - 1) << 2;
- 		ret = intel_pstate_set_epb(cpu_data->cpu, epp);
- 	}
--return_pref:
--	mutex_unlock(&intel_pstate_limits_lock);
- 
- 	return ret;
- }
-@@ -708,8 +696,8 @@ static ssize_t store_energy_performance_
- 	struct cpudata *cpu_data = all_cpu_data[policy->cpu];
- 	char str_preference[21];
- 	bool raw = false;
-+	ssize_t ret;
- 	u32 epp = 0;
--	int ret;
- 
- 	ret = sscanf(buf, "%20s", str_preference);
- 	if (ret != 1)
-@@ -724,14 +712,21 @@ static ssize_t store_energy_performance_
- 		if (ret)
- 			return ret;
- 
-+		if (epp > 255)
-+			return -EINVAL;
-+
- 		raw = true;
- 	}
- 
-+	mutex_lock(&intel_pstate_limits_lock);
-+
- 	ret = intel_pstate_set_energy_pref_index(cpu_data, ret, raw, epp);
--	if (ret)
--		return ret;
-+	if (!ret)
-+		ret = count;
- 
--	return count;
-+	mutex_unlock(&intel_pstate_limits_lock);
-+
-+	return ret;
- }
- 
- static ssize_t show_energy_performance_preference(
-
-
-
+Marek
