@@ -2,216 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96591231668
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 01:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDDC231637
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 01:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730204AbgG1XsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 19:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729380AbgG1XsR (ORCPT
+        id S1729983AbgG1XcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 19:32:13 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.38]:33715 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729597AbgG1XcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 19:48:17 -0400
-X-Greylist: delayed 2069 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Jul 2020 16:48:16 PDT
-Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 772A8C061794;
-        Tue, 28 Jul 2020 16:48:16 -0700 (PDT)
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 06SNCXiI022851;
-        Wed, 29 Jul 2020 01:12:33 +0200 (CEST)
-        (envelope-from pisa@cmp.felk.cvut.cz)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 06SNCX2E015946;
-        Wed, 29 Jul 2020 01:12:33 +0200
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 06SNCWBm015943;
-        Wed, 29 Jul 2020 01:12:32 +0200
-X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     Rob Herring <robh@kernel.org>, c.emde@osadl.org
-Subject: Re: [PATCH v3 2/6] dt-bindings: net: can: binding for CTU CAN FD open-source IP core.
-Date:   Wed, 29 Jul 2020 01:12:31 +0200
-User-Agent: KMail/1.9.10
-Cc:     devicetree@vger.kernel.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, socketcan@hartkopp.net,
-        wg@grandegger.com, davem@davemloft.net, mark.rutland@arm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        martin.jerabek01@gmail.com, ondrej.ille@gmail.com,
-        jnovak@fel.cvut.cz, jara.beran@gmail.com, porazil@pikron.com
-References: <cover.1576922226.git.pisa@cmp.felk.cvut.cz> <61533d59378822f8c808abf193b40070810d3d35.1576922226.git.pisa@cmp.felk.cvut.cz> <20200103235359.GA23875@bogus>
-In-Reply-To: <20200103235359.GA23875@bogus>
-X-KMail-QuotePrefix: > 
+        Tue, 28 Jul 2020 19:32:12 -0400
+X-Greylist: delayed 1274 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 19:32:11 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 2BAC846C45
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 18:10:55 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id 0YkJkJxHG4KQc0YkJkQzPj; Tue, 28 Jul 2020 18:10:55 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8xFpoRcRW3dX8FFKyT2jpqXNkGs3k/oRHLR/MOPh1jg=; b=H8CqUUaqu4PuXF/UhO+cy5eM87
+        T5UOGLSKjp+McPSvuDdh9lvqR1g+QXvAkltEwrl/SQq0Smv13CK9T9RykZS7Q0bEvyUNXj2gy5SnM
+        IedQzcL8PNFeiID3aBPpRvcaEPEjwwYKM+t3mhVXF4JZK0huto1esShJdp3icgviJb1yaJjDGSAv6
+        tgLBgVBQQkGQkPp5nwFIQ/fEAb+jZWrjUNc0qbGhzZWpFM4RmvggQ4bpYD8Z8a5KVr/89V7zQxfQq
+        rjhUrYX55KuLB0xoa/EP6xhfeYI7RK39cQ7bw6sxupBtlIF5BRIEdLS+JMPKdZaIGXLT5BWyHipLA
+        mTrCYYiQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:59820 helo=[192.168.15.2])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1k0YkI-001HGT-Qz; Tue, 28 Jul 2020 18:10:54 -0500
+Subject: Re: [char-misc-next] Revert "mei: hdcp: Replace one-element array
+ with flexible-array member"
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Winkler, Tomas" <tomas.winkler@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+References: <20200728214139.3129532-1-tomas.winkler@intel.com>
+ <e80a9e75-4497-1587-deab-b5c6a0fcc48f@embeddedor.com>
+ <8ec7601780b542c2bc0168e03749ec0e@intel.com>
+ <d6ef8ca4-6e11-b758-0e24-75301e1a5303@embeddedor.com>
+ <398e20e8c3f7436bb50d671b9aa9f809@intel.com>
+ <6736aefa05e84b30bcc91003b55c7644@intel.com>
+ <c4a93287-6010-8ea4-cab2-09efa49e3391@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Message-ID: <fe8f4b91-c65e-0664-c5df-52d4a93734b5@embeddedor.com>
+Date:   Tue, 28 Jul 2020 18:16:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+In-Reply-To: <c4a93287-6010-8ea4-cab2-09efa49e3391@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <202007290112.32007.pisa@cmp.felk.cvut.cz>
-X-FELK-MailScanner-Information: 
-X-MailScanner-ID: 06SNCXiI022851
-X-FELK-MailScanner: Found to be clean
-X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
-        score=-1.328, required 6, autolearn=not spam, BAYES_00 -0.50,
-        KHOP_HELO_FCRDNS 0.12, NICE_REPLY_A -0.95, SPF_HELO_NONE 0.00,
-        SPF_NONE 0.00)
-X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
-X-FELK-MailScanner-Watermark: 1596582754.89795@XM9drRIrFDItwaXL8PMKQQ
-X-Spam-Status: No
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1k0YkI-001HGT-Qz
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.2]) [187.162.31.110]:59820
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 4
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
 
-On Saturday 04 of January 2020 00:53:59 Rob Herring wrote:
-> On Sat, Dec 21, 2019 at 03:07:31PM +0100, pisa@cmp.felk.cvut.cz wrote:
-> > From: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> >
-> > Signed-off-by: Pavel Pisa <pisa@cmp.felk.cvut.cz>
-> > ---
-> >  .../devicetree/bindings/net/can/ctu,ctucanfd.txt   | 61
-> > ++++++++++++++++++++++ 1 file changed, 61 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/net/can/ctu,ctucanfd.txt
->
-> Bindings are moving DT schema format now. Not something I'd require on a
-> respin I've already reviewed, but OTOH it's been 10 months to respin
-> from v2. So:
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
->
-> If you have a v4, then please convert to a schema.
 
-The first, thanks much for Device-tree part review, it is only
-one received from relevant person for last six months.
-So I have wait update for v4 patches and focused on teaching
-forced to be distance one
-  https://cw.fel.cvut.cz/wiki/courses/b35apo/lectures/start
-another part of the CTU CAN FD project.
+On 7/28/20 18:04, Gustavo A. R. Silva wrote:
+> Tomas,
+> 
+> Please, see some comments below...
+> 
+> On 7/28/20 17:29, Winkler, Tomas wrote:
+>>>>>>
+>>>>>> Hi Tomas,
+>>>>>>
+>>>>>> On 7/28/20 16:41, Tomas Winkler wrote:
+>>>>>>> Greg please revert, this commit it changes size of struct
+>>>>>>> wired_cmd_repeater_auth_stream_req_in, this is not what firmware
+>>>>>>> is expecting.
+>>>>>>
+>>>>>> Could you elaborate on what's the firmware expecting, exactly?
+>>>>> struct wired_cmd_repeater_auth_stream_req_in {
+>>>>>   -	struct hdcp2_streamid_type	streams[1];
+>>>>>   + 	struct hdcp2_streamid_type	streams[];
+>>>>> }
+>>>>>
+>>>>> But then you have, which you haven't changed to + 1 byte =
+>>>>> mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
+>>>>>                               sizeof(verify_mprime_in));
+>>>>>
+> 
+> I don't think the fix for this is to add 1 byte, if any, it seems
+> to be sizeof(*data->streams), or sizeof(struct hdcp2_streamid_type)
+> what needs to be added.
+> 
+> But it might be better to code something like this, instead:
+> 
+> diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+> index e6c3dc595617..7fe63c915548 100644
+> --- a/drivers/misc/mei/hdcp/mei_hdcp.c
+> +++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+> @@ -572,12 +572,12 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+>                HDCP_2_2_MPRIME_LEN);
+>         drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+>         memcpy(verify_mprime_in.streams, data->streams,
+> -              (data->k * sizeof(struct hdcp2_streamid_type)));
+> +              (data->k * sizeof(*data->streams)));
+> 
+>         verify_mprime_in.k = cpu_to_be16(data->k);
+> 
+>         byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
+> -                             sizeof(verify_mprime_in));
+> +                             struct_size(&verify_mprime_in, streams, data->k));
+>         if (byte < 0) {
+>                 dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
+>                 return byte;
+> 
+> struct_size(&verify_mprime_in, streams, data->k) will give us the size, in bytes,
+> of struct wired_cmd_repeater_auth_stream_req_in plus the size in bytes for
+> the streams[] flexible-array, which is determined by struct hdcp2_streamid_type and
+> data->k.
+> 
+> What do you think?
+> 
 
-QEMU emulation for the CTU CAN FD IP core
-is result of Jan Charvat's bachelor thesis led by me.
-The patches are waiting for QEMU developers review
+This is even better:
 
-  https://lists.nongnu.org/archive/html/qemu-devel/2020-07/msg04653.html
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+index e6c3dc595617..852374565cba 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.c
++++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+@@ -572,12 +572,12 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+               HDCP_2_2_MPRIME_LEN);
+        drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+        memcpy(verify_mprime_in.streams, data->streams,
+-              (data->k * sizeof(struct hdcp2_streamid_type)));
++              flex_array_size(&verify_mprime_in, streams, data->k));
 
-The other people have significant interrest in our project,
-Oliver Hartkopp, CAN in Automation representatives etc.
+        verify_mprime_in.k = cpu_to_be16(data->k);
 
-https://can-newsletter.org/hardware/semiconductors/200609_open-source-ip-core-compliant-with-iso-can-fd_ctu/
+        byte = mei_cldev_send(cldev, (u8 *)&verify_mprime_in,
+-                             sizeof(verify_mprime_in));
++                             struct_size(&verify_mprime_in, streams, data->k));
+        if (byte < 0) {
+                dev_dbg(dev, "mei_cldev_send failed. %zd\n", byte);
+                return byte;
 
-https://can-newsletter.org/hardware/semiconductors/181121_can-fd-core-as-an-open-project_university
+the flex_array_size() is a new helper that was designed for this situations. :)
+It calculates the size of a flexible array member within an enclosing structure,
+which is exactly the case.
 
-Project is integrated into complex CAN LIN etc.. tester build for Skoda Auto based on Intel SoC as well.
+Thanks
+--
+Gustavo
 
-I am trying to resolve that only one review feedback which I have received before v4
-patches sending. I have spent half day to update and integrate self build packages
-to my stable Debian to can run
-
-   make -k dt_binding_check
-
-but unfortunately, I have not achieved promissing result even when tested on Linux kernel
-unpatched sources. I used actual git dt-schema/dt-doc-validate with 5.4 kernel
-build but I get only long series of
-
-pi@baree:/usr/src/linux-5.4-rt/_build/arm/px6$ make dt_binding_check -k
-GNUmakefile:40: *** mixed implicit and normal rules: deprecated syntax
-make -C /usr/src/linux-5.4-rt O=/usr/src/linux-5.4-rt/_build/arm/px6/ ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- QTDIR=/usr/share/qt4 dt_binding_check
-  CHKDT   Documentation/devicetree/bindings/arm/actions.yaml
-/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/arm/actions.yaml:  found incompatible YAML document
-  in "<unicode string>", line 2, column 1
-make[3]: *** [/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/Makefile:12: Documentation/devicetree/bindings/arm/actions.example.dts] Error 1
-  CHKDT   Documentation/devicetree/bindings/arm/al,alpine.yaml
-/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/arm/al,alpine.yaml:  found incompatible YAML document
-  in "<unicode string>", line 2, column 1
-make[3]: *** [/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/Makefile:12: Documentation/devicetree/bindings/arm/al,alpine.example.dts] Error 1
-  CHKDT   Documentation/devicetree/bindings/arm/altera.yaml
-/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/arm/altera.yaml:  found incompatible YAML document
-  in "<unicode string>", line 2, column 1
-make[3]: *** [/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/Makefile:12: Documentation/devicetree/bindings/arm/altera.example.dts] Error 1
-  CHKDT   Documentation/devicetree/bindings/arm/altera/socfpga-clk-manager.yaml
-/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/arm/altera/socfpga-clk-manager.yaml:  found incompatible YAML document
-  in "<unicode string>", line 2, column 1
-make[3]: *** [/usr/src/linux-5.4-rt/Documentation/devicetree/bindings/Makefile:12: Documentation/devicetree/bindings/arm/altera/socfpga-clk-manager.example.dts] Error 1
-  CHKDT   Documentation/devicetree/bindings/arm/amlogic.yaml
-
-The same for ctu,ctucanfd.yam .
-Please, if you have working setup, test if the followup content of
-Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
-is acceptable
-
-Thanks in advance,
-
-Pavel
-
-# SPDX-License-Identifier: GPL-2.0
-%YAML 1.2
----
-$id: http://devicetree.org/schemas/net/can/ctu,ctucanfd.yaml#
-$schema: http://devicetree.org/meta-schemas/core.yaml#
-
-title: CTU CAN FD Open-source IP Core Device Tree Bindings
-
-description: |
-  Open-source CAN FD IP core developed at the Czech Technical University in Prague
-
-  The core sources and documentation on project page
-    [1] sources : https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core
-    [2] datasheet : https://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
-
-  Integration in Xilinx Zynq SoC based system together with
-  OpenCores SJA1000 compatible controllers
-    [3] project : https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top
-  Martin Jerabek dimploma thesis with integration and testing
-  framework description
-    [4] PDF : https://dspace.cvut.cz/bitstream/handle/10467/80366/F3-DP-2019-Jerabek-Martin-Jerabek-thesis-2019-canfd.pdf
-
-maintainers:
-  - Pavel Pisa <pisa@cmp.felk.cvut.cz>
-  - Ondrej Ille <ondrej.ille@gmail.com>
-  - Martin Jerabek <martin.jerabek01@gmail.com>
-
-properties:
-  compatible:
-    oneOf:
-      - items:
-          - const: ctu,ctucanfd
-          - const: ctu,canfd-2
-      - const: ctu,ctucanfd
-
-  reg:
-    description:
-      mapping into bus address space, offset and size
-    maxItems: 1
-
-  interrupts:
-    description: |
-      interrupt source. For Zynq SoC system, format is <(is_spi) (number) (type)>
-      where is_spi defines if it is SPI (shared peripheral) interrupt,
-      the second number is translated to the vector by addition of 32
-      on Zynq-7000 systems and type is IRQ_TYPE_LEVEL_HIGH (4) for Zynq.
-    maxItems: 1
-
-  clocks:
-    description: |
-      phandle of reference clock (100 MHz is appropriate
-      for FPGA implementation on Zynq-7000 system).
-    maxItems: 1
-
-required:
-  - compatible
-  - reg
-  - interrupts
-  - clocks
-
-additionalProperties: false
-
-examples:
-  - |
-    ctu_can_fd_0: can@43c30000 {
-      compatible = "ctu,ctucanfd";
-      interrupts = <0 30 4>;
-      clocks = <&clkc 15>;
-      reg = <0x43c30000 0x10000>;
-    };
+> See more comments below...
+> 
+>>>>
+>>>> I see, this is the kind of feedback I need from people that knows the
+>>>> code better. Thanks!
+>>>>
+>>>>> But that's not the major point. Point is that we should be able to
+>>>>> review and test the code before it is merged.  You haven't run it, right?
+>>>>> There is MAINTAINERS file for a reason.
+>>>>>
+>>>>
+>>>> I'm using this command:
+>>>>
+>>>> $ scripts/get_maintainer.pl --nokeywords --nogit --nogit-fallback
+>>>>
+>>>> and this is the output for both files:
+>>>>
+>>>> $ scripts/get_maintainer.pl --nokeywords --nogit --nogit-fallback
+>>>> drivers/misc/mei/hdcp/mei_hdcp.c Arnd Bergmann <arnd@arndb.de>
+>>>> (supporter:CHAR and MISC DRIVERS) Greg Kroah-Hartman
+>>>> <gregkh@linuxfoundation.org> (supporter:CHAR and MISC DRIVERS) linux-
+>>>> kernel@vger.kernel.org (open list) $ scripts/get_maintainer.pl
+>>>> --nokeywords -- nogit --nogit-fallback
+>>>> drivers/misc/mei/hdcp/mei_hdcp.h Arnd Bergmann <arnd@arndb.de>
+>>>> (supporter:CHAR and MISC DRIVERS) Greg Kroah-Hartman
+>>>> <gregkh@linuxfoundation.org> (supporter:CHAR and MISC DRIVERS) linux-
+>>>> kernel@vger.kernel.org (open list)
+>>>
+>>>
+>>>> For some reason you don't appear on the list above. Do you see
+>>>> anything wrong with the command I'm running to get the maintainers and
+>>> lists?
+>>>
+>>> Not sure, it should be caught by drivers/misc/mei/* ?
+>>> Maybe it is not recursive? Need to check the script, frankly I usually check this
+>>> manually.
+>>>
+>>> INTEL MANAGEMENT ENGINE (mei)
+>>> M:      Tomas Winkler <tomas.winkler@intel.com>
+>>> L:      linux-kernel@vger.kernel.org
+>>> S:      Supported
+>>> F:      Documentation/driver-api/mei/*
+>>> F:      drivers/misc/mei/*
+>>> F:      drivers/watchdog/mei_wdt.c
+>>> F:      include/linux/mei_cl_bus.h
+>>> F:      include/uapi/linux/mei.h
+>>> F:      samples/mei/*
+>>>
+>>
+>> It's not recursive, when I add drivers/misc/mei/hdcp/* . It works correctly 
+>> I will post a patch.
+>>
+> 
+> Great. I'm glad we got to the root cause of this issue. :)
+> 
+> Thanks
+> --
+> Gustavo
+> 
+>> Thanks
+>> Tomas
+>>
+>>
+>>>
+>>>>
+>>>> Thanks
+>>>> --
+>>>> Gustavo
+>>>>
+>>>>>>
+>>>>>>> I really do not appreciate that the code is bypassing driver
+>>>>>>> maintaner review, I think this is a minimum we can ask for, this
+>>>>>>> is not for a first time.
+>>>>>>>
+>>>>>>> This reverts commit c56967d674e361ebe716e66992e3c5332b25ac1f.
+>>>>>>>
+>>>>>>> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>>>>>> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+>>>>>>> ---
+>>>>>>>  drivers/misc/mei/hdcp/mei_hdcp.c | 2 +-
+>>>>>>> drivers/misc/mei/hdcp/mei_hdcp.h | 2 +-
+>>>>>>>  2 files changed, 2 insertions(+), 2 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c
+>>>>>>> b/drivers/misc/mei/hdcp/mei_hdcp.c
+>>>>>>> index d1d3e025ca0e..e6c3dc595617 100644
+>>>>>>> --- a/drivers/misc/mei/hdcp/mei_hdcp.c
+>>>>>>> +++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+>>>>>>> @@ -572,7 +572,7 @@ static int mei_hdcp_verify_mprime(struct
+>>>>>>> device
+>>>>>> *dev,
+>>>>>>>  	       HDCP_2_2_MPRIME_LEN);
+>>>>>>>  	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data-
+>>>> seq_num_m);
+>>>>>>>  	memcpy(verify_mprime_in.streams, data->streams,
+>>>>>>> -	       array_size(data->k, sizeof(*data->streams)));
+>>>>>>> +	       (data->k * sizeof(struct hdcp2_streamid_type)));
+>>>>>>>
+>>>>>>>  	verify_mprime_in.k = cpu_to_be16(data->k);
+>>>>>>>
+>>>>>>> diff --git a/drivers/misc/mei/hdcp/mei_hdcp.h
+>>>>>>> b/drivers/misc/mei/hdcp/mei_hdcp.h
+>>>>>>> index 834757f5e072..18ffc773fa18 100644
+>>>>>>> --- a/drivers/misc/mei/hdcp/mei_hdcp.h
+>>>>>>> +++ b/drivers/misc/mei/hdcp/mei_hdcp.h
+>>>>>>> @@ -358,7 +358,7 @@ struct
+>>> wired_cmd_repeater_auth_stream_req_in
+>>>> {
+>>>>>>>  	u8
+>>>>>> 	seq_num_m[HDCP_2_2_SEQ_NUM_LEN];
+>>>>>>>  	u8				m_prime[HDCP_2_2_MPRIME_LEN];
+>>>>>>>  	__be16				k;
+>>>>>>> -	struct hdcp2_streamid_type	streams[];
+>>>>>>> +	struct hdcp2_streamid_type	streams[1];
+>>>>>>>  } __packed;
+>>>>>>>
+>>>>>>>  struct wired_cmd_repeater_auth_stream_req_out {
+>>>>>>>
