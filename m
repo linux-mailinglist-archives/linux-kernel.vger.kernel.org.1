@@ -2,161 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC6823027D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDF523027A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgG1GSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 02:18:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15186 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726407AbgG1GSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:18:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595917109; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=ptC3NElqN7QOiSiiLpeT0GwFnbmdSfadBu5MLmEGp4U=; b=gMnpbfJoJNcnUMOWHIJCWHHic50OLe++5lAqwRlkpIUM3CpbBIJVSZVn+emHVxvm08YFScEq
- 9nn3VmPC+VvpICKcsuybdHFb5e9XnQxWm9TiBVFgU+vDLIQldPj35CBVkQ3LJVxW8vagPpSj
- vme3eecodGoaOiATYpDiGRWt62k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f1fc3347ab15087eb33de4d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 06:18:28
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A947AC43391; Tue, 28 Jul 2020 06:18:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.8 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.117] (ip70-179-20-127.sd.sd.cox.net [70.179.20.127])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdtipton)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70072C433C6;
-        Tue, 28 Jul 2020 06:18:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 70072C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mdtipton@codeaurora.org
-Subject: Re: [PATCH v2 1/2] interconnect: Add sync state support
-To:     Saravana Kannan <saravanak@google.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>, okukatla@codeaurora.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20200722110139.24778-1-georgi.djakov@linaro.org>
- <20200722110139.24778-2-georgi.djakov@linaro.org>
- <CAGETcx-QM8P2nVxcQJZz+m5Zwi==2qLfinb0FkDXJ7dNVP5bEA@mail.gmail.com>
-From:   Mike Tipton <mdtipton@codeaurora.org>
-Message-ID: <e4f68ae5-5cf7-bac4-e7f2-c074327ea659@codeaurora.org>
-Date:   Mon, 27 Jul 2020 23:18:25 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727801AbgG1GP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 02:15:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8836 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726746AbgG1GPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 02:15:55 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 27F7CD4DF071FA9B929B;
+        Tue, 28 Jul 2020 14:15:47 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 14:15:39 +0800
+From:   Jing Xiangfeng <jingxiangfeng@huawei.com>
+To:     <t-kristo@ti.com>, <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <tony@atomide.com>, <robh@kernel.org>
+CC:     <linux-omap@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jingxiangfeng@huawei.com>
+Subject: [PATCH v2] clk: ti: clkctrl: fix the missed kfree() for _ti_omap4_clkctrl_setup()
+Date:   Tue, 28 Jul 2020 14:18:46 +0800
+Message-ID: <20200728061846.68281-1-jingxiangfeng@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx-QM8P2nVxcQJZz+m5Zwi==2qLfinb0FkDXJ7dNVP5bEA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/2020 10:07 AM, Saravana Kannan wrote:
-> On Wed, Jul 22, 2020 at 4:01 AM Georgi Djakov <georgi.djakov@linaro.org> wrote:
->>
->> The bootloaders often do some initial configuration of the interconnects
->> in the system and we want to keep this configuration until all consumers
->> have probed and expressed their bandwidth needs. This is because we don't
->> want to change the configuration by starting to disable unused paths until
->> every user had a chance to request the amount of bandwidth it needs.
->>
->> To accomplish this we will implement an interconnect specific sync_state
->> callback which will synchronize (aggregate and set) the current bandwidth
->> settings when all consumers have been probed.
->>
->> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
->> ---
->>   drivers/interconnect/core.c           | 61 +++++++++++++++++++++++++++
->>   include/linux/interconnect-provider.h |  5 +++
->>   2 files changed, 66 insertions(+)
->>
->> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
->> index e5f998744501..0c4e38d9f1fa 100644
->> --- a/drivers/interconnect/core.c
->> +++ b/drivers/interconnect/core.c
->> @@ -26,6 +26,8 @@
->>
->>   static DEFINE_IDR(icc_idr);
->>   static LIST_HEAD(icc_providers);
->> +static int providers_count;
->> +static bool synced_state;
->>   static DEFINE_MUTEX(icc_lock);
->>   static struct dentry *icc_debugfs_dir;
->>
->> @@ -255,6 +257,12 @@ static int aggregate_requests(struct icc_node *node)
->>                          continue;
->>                  p->aggregate(node, r->tag, r->avg_bw, r->peak_bw,
->>                               &node->avg_bw, &node->peak_bw);
->> +
->> +               /* during boot use the initial bandwidth as a floor value */
->> +               if (!synced_state) {
->> +                       node->avg_bw = max(node->avg_bw, node->init_avg);
->> +                       node->peak_bw = max(node->peak_bw, node->init_peak);
->> +               }
-> 
-> Sorry I didn't reply earlier.
-> 
-> I liked your previous approach with the get_bw ops. The v2 approach
-> forces every interconnect provider driver to set up these values even
-> if they are okay with just maxing out the bandwidth. Also, if they can
-> actually query their hardware, this adds additional steps for them.
+_ti_omap4_clkctrl_setup() misses to call kfree() in an error path. Jump
+to cleanup to fix it.
 
-The problem with using something like get_bw() is that while we can 
-dynamically query the HW, we have far less granularity in HW than we 
-have nodes in the framework. We vote at BCM-level granularity, but each 
-BCM can have many nodes. For example, the sdm845 CN0 BCM has 47 nodes. 
-If we implement get_bw() generically, then it would return the BW for 
-each node, which would be the queried BCM vote scaled to account for 
-differences in BCM/node widths. While this could be useful in general as 
-an informational callback, we wouldn't want to use this as a proxy for 
-our initial BW vote requirements. For CN0, we wouldn't want or need to 
-vote 47 times for the same CN0 BCM. Each of the 47 node requests would 
-result in the same BCM request.
+Fixes: 6c3090520554 ("clk: ti: clkctrl: Fix hidden dependency to node name")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/clk/ti/clkctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-All we'd really need is a single node per-BCM to serve as the proxy 
-node. We'd query the HW, scale the queried value for the chosen proxy 
-node, and set init_avg/init_peak appropriately. This would save a lot of 
-unnecessary votes. Based on the current implementation, the set() call 
-in icc_node_add() for initial BW wouldn't trigger any actual HW requests 
-since we only queue BCMs that require updating in the aggregate() 
-callback. However, the set() call in icc_sync_state() would, since we 
-re-aggregate each node that has a non-zero init_avg/init_peak.
+diff --git a/drivers/clk/ti/clkctrl.c b/drivers/clk/ti/clkctrl.c
+index 864c484bde1b..a562261eb061 100644
+--- a/drivers/clk/ti/clkctrl.c
++++ b/drivers/clk/ti/clkctrl.c
+@@ -656,7 +656,7 @@ static void __init _ti_omap4_clkctrl_setup(struct device_node *node)
+ 
+ 		hw = kzalloc(sizeof(*hw), GFP_KERNEL);
+ 		if (!hw)
+-			return;
++			goto cleanup;
+ 
+ 		hw->enable_reg.ptr = provider->base + reg_data->offset;
+ 
+-- 
+2.17.1
 
-There's nothing stopping us from implementing get_bw() as if it were 
-get_initial_bw(), but that only works until the framework decides to use 
-get_bw() for more things than just the initial vote. I suppose we could 
-also just have a "get_initial_bw" callback, but it only needs to be 
-called once, so doesn't necessarily need a callback as opposed to 
-additional init_avg/init_peak members in the icc_node struct.
-
-> 
-> I think the default should be:
-> 1. Query the current bandwidth at boot and use that.
-> 2. If that's not available, max out the bandwidth.
-> 
-> The interconnect providers that don't like maxing out and don't have
-> real get_bw() capability can just cache and return the last set_bw()
-> values. And they start off with those cached values matching whatever
-> init_bw they need.
-> 
-> That way, the default case (can get bw or don't care about maxing out)
-> would be easy and the extra work would be limited to drivers that want
-> neither. >
-> -Saravana
-> 
