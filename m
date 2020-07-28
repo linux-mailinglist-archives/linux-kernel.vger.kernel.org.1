@@ -2,183 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D76230CEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C5D230CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730605AbgG1PFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:05:08 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:53395 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730558AbgG1PFI (ORCPT
+        id S1730665AbgG1PFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:05:41 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:34017 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730505AbgG1PFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:05:08 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200728150506euoutp027fff04737d43944d232e78095bb1ebf4~l8uSht_ro0522505225euoutp025
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:05:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200728150506euoutp027fff04737d43944d232e78095bb1ebf4~l8uSht_ro0522505225euoutp025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1595948706;
-        bh=+jPJ4jLPZRlRRWDMyw7UrrbUfNlzvkLzijZOathISTs=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=JoitJ2UPs2jBibLt7w/WwDp6Tbm0ijMBZ6o3rAS12jgldGHIsCQQepamP7CnSSiVj
-         Lw+Sh9Zl1Cr4BfkJrs75jig0VQLV+nBIVmd0TPJPAWpXuDCLMMGkH80nAf9KehJhaN
-         /QH8QNCJpQeHFsr/eEqQ5d51nxRrh/Nrr2xT0iMk=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200728150506eucas1p214e6b64b60b624fef376c8cf9320d31e~l8uSB1xV62602526025eucas1p2U;
-        Tue, 28 Jul 2020 15:05:06 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id B9.EB.06318.2AE302F5; Tue, 28
-        Jul 2020 16:05:06 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200728150505eucas1p28f7907c32b5cdb2259520197e602d9d4~l8uRteI7a2196021960eucas1p2h;
-        Tue, 28 Jul 2020 15:05:05 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200728150505eusmtrp1a911fed0ff536f13ff87e5a554885c6c~l8uRsya7v2594525945eusmtrp1S;
-        Tue, 28 Jul 2020 15:05:05 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-ec-5f203ea2e55d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id E8.53.06314.1AE302F5; Tue, 28
-        Jul 2020 16:05:05 +0100 (BST)
-Received: from [106.210.85.205] (unknown [106.210.85.205]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200728150504eusmtip17a30673d18eef82b371bf0f3e7d88d37~l8uQC7qFf3170531705eusmtip1h;
-        Tue, 28 Jul 2020 15:05:03 +0000 (GMT)
-Subject: Re: [PATCH v9 0/4] driver core: add probe error check helper
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-From:   Andrzej Hajda <a.hajda@samsung.com>
-Message-ID: <e55a23bf-59bb-43c6-f7d7-467c282b8648@samsung.com>
-Date:   Tue, 28 Jul 2020 17:05:03 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.10.0
+        Tue, 28 Jul 2020 11:05:36 -0400
+Received: from ThinkCentre ([81.14.225.83]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MybbH-1kzNwi3tL3-00z1gU; Tue, 28 Jul 2020 17:05:22 +0200
+Message-ID: <c8046227481b367a3a1bbd123234279fcde76f87.camel@richard-neumann.de>
+Subject: Re: [PATCH v5 0/4] SFH: Add Support for AMD Sensor Fusion Hub
+From:   Richard Neumann <mail@richard-neumann.de>
+To:     Marco Felsch <m.felsch@pengutronix.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Sandeep Singh <Sandeep.Singh@amd.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>,
+        Shyam-sundar.S-k@amd.com
+Date:   Tue, 28 Jul 2020 17:05:20 +0200
+In-Reply-To: <20200728145833.xc53dpvwu7deqzjw@pengutronix.de>
+References: <1590759730-32494-1-git-send-email-Sandeep.Singh@amd.com>
+         <CAHp75VeDAc9pP16wf10xvJn6t34cTXkPAXHus1aSL_07HN3EAA@mail.gmail.com>
+         <20200728145833.xc53dpvwu7deqzjw@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 
 MIME-Version: 1.0
-In-Reply-To: <20200713144324.23654-1-a.hajda@samsung.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se0hTYRjG+XbOzo7W5HNZezErG/SHRa2cxRFD7EYn6IagUZE686ClM9u0
-        zAqHN9TKrLByqYkpmVnm3Fpaac3IzEy7iUIxYoVZ2govqWnk8Szyv9/3Ps97eeCjCdl3sSd9
-        ID6R08ar4xSUK3n36VjH8rJA7/CVn4dppi+/GTG1l2vETMHHTxTzdthBMenXaijm3a8+gmnt
-        f0cyOefKJYzR3iVm3jQUUYy14CFibj35IGGseXuZ4qECIsiNfdP1imAd3ZkStt7wQcJeyS4U
-        s8aqHIp9lv9axDYVV0tY26kWEVtXnsrmmaoQ++jMBZIdNC7cOXuP69ooLu7AEU6rDIxwjbn9
-        e1KUMOCePN5ipfTILs1FLjRgPxhsyxLlIldahisRpF3MEguPIQTV3bVOZRBB50iX5F/LkHmQ
-        4FmGryOw9LoJJgeCiZIBES/MwZugymImefbAKjjbbpDwJgKbSDhnKRDzAoV9YLKuh+JZigNB
-        3587zSReAhef1CGe5+IwqOmziASPO7QWfpoaStMu2B+u5u3iywReBJaBIkJgOaQN3ZiOALiQ
-        hka7jRCu3ghF/U9FAs+Bry0mZxovaLtwmhQ4FWyVGYTQnI3AfKfe2RwA71+OU/xiYuromgal
-        UF4HIyW9BF8G7AbdA+7CDW5w/u4lZ1kK2Vkywb0YbO1m50A5VHQOU/lIYZgRzDAjjWFGGsP/
-        vaWIrEJyLkmnieZ0qnju6AqdWqNLio9esf+QxoimfmHbn5bhe6hxItKKMI0Us6WX53qHy8Tq
-        I7pjGisCmlB4SNe3t4XJpFHqYymc9lC4NimO01nRfJpUyKWqsr59MhytTuRiOS6B0/5TRbSL
-        px4RnsXBQT0deduWncjw2asaDTXZvX3O7Av1xiURmuaS3ck/M/UvbPN3dCx4/sX3ODps7t5S
-        WNqQru+sPuj32F/5IOekvf5+fcj2EDbFPkZu2BKlQXKTP3daqQzb+i14W7YjQRGwefXNg7GR
-        PY9l80ZDKtZI9T9MsxzhyNjk26vyUpC6GPWqpYRWp/4LOK3SioEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpileLIzCtJLcpLzFFi42I5/e/4Xd2FdgrxBsd7jSxeTjjMaLFxxnpW
-        i6kPn7BZXPn6ns2iefF6Nour318yW5x8c5XFonPiEnaLTY+vsVpc3jWHzeLQ1L2MFmuP3GW3
-        ONQXbTH3y1RmBz6Py9cuMnu8v9HK7rFz1l12j9kdM1k9Nq3qZPM4MeESk8f+uWvYPe53H2fy
-        2Lyk3qNvyypGjwO9k1k8Pm+SC+CJ0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7Uy
-        MlXSt7NJSc3JLEst0rdL0MtY9/svU8FbwYpfxw+xNTA+5u1i5OSQEDCR+LL1M3MXIxeHkMBS
-        RomVb7pYIBLiErvnv2WGsIUl/lzrYoMoessosWD+cXaQhLCAq8Sq7VvBGkQEjCX6z85iByli
-        FtjFIrF60kNWiI4eRokDbw4yglSxCWhK/N18kw3E5hWwk2h40wVmswioSkw7shmsRlQgTmL5
-        lvnsEDWCEidnPgHawMHBKWApMb8vHCTMLGAmMW/zQ2YIW15i+9s5ULa4RNOXlawTGIVmIeme
-        haRlFpKWWUhaFjCyrGIUSS0tzk3PLTbUK07MLS7NS9dLzs/dxAiM/23Hfm7ewXhpY/AhRgEO
-        RiUe3g/iCvFCrIllxZW5hxglOJiVRHidzp6OE+JNSaysSi3Kjy8qzUktPsRoCvTbRGYp0eR8
-        YGrKK4k3NDU0t7A0NDc2NzazUBLn7RA4GCMkkJ5YkpqdmlqQWgTTx8TBKdXAyGHMY6BoUNj+
-        4+xEozXpdfn7ilfn/7mR/7Q++PC1d6EloY9+CyeJ6t6LKHrFfXvvCYdFedVb2m69cxPwDn08
-        4Vzg0vXrFSJNvlpu+1FROkdFSGCyurxiyu/JFzx28HxxUDpy4aLQLO9YFqXcw8rhHgzJvLf+
-        m3QzJnBL+Av3vTjQ9DmZY46cEktxRqKhFnNRcSIA9crzRBUDAAA=
-X-CMS-MailID: 20200728150505eucas1p28f7907c32b5cdb2259520197e602d9d4
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981
-References: <CGME20200713144331eucas1p25911c4ffa9315f632d8f6dd833588981@eucas1p2.samsung.com>
-        <20200713144324.23654-1-a.hajda@samsung.com>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:NXpkszrA9og9+kV2+FrWLRxHSACXOXAN44gfv0kU+p4LQT/Io5H
+ 2/Hw0JiTYCJFf3aSLCjG8hma09jM0U9LheVGLa33OiBj+wiYNarF6DAVX2hvMnlFi8B4qly
+ GJDxcUvHJfpkPtRSa/KQrIiL7r+twhOjA73G4P+cZswHkMwv4rYuiTtwqgJsC/2ftbQp9HC
+ YWyWuePQq6jBfsIFT6WeA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FUtYt8PjYvQ=:/YEAIYjBV3wjZmEkEK7s6z
+ f1KSafvjIzWum6u2HgtKN8axM3B7EiFgTYc7K2ESamx5lFzWLPXkt2jNc9OjtXd9pkbUVUppT
+ 965u54QtxFRa2vecyyrAFYA8qnuA6OsGO533cTSWheISZthn4wAOcIeh6hRs1vS/pZl/ACRQX
+ +psug9I+XGFz9j7k6is64UrGHXeA000SyK1frmA+6BdDg+on8Ksga2pPMpf8BWOIPHnutELpK
+ ojjhxiY3CLGp79ZJ0JcPbXjyHyTi9qz7baVqO5fy24cD6qY1rQpx8poa/hGqATpfK5SrPKBS3
+ vkSkk61h1gBaEFMOLbGYL3PKG6Q61Az+eZuNdocyHGId/DJV7spr2BR8FSuXKzeFuEnUKejUW
+ 0NOXH0Zwg7KN5rixF843/N/BIRCdx/UFQPfw7ELmWMDd3twidzAKSD0NmSf/ihBVW4EoAKVXB
+ GPGJ1c4Qp03Qf4glC91YL5QMVEBdrMWv0LnhdPK5Gbc1Mp7anRQKoWZ13Ow4DrpbLr49kBfDJ
+ hpa4103NAZpA1lxsDRC0cn9p4UNrDtAB/8ShRiZFFqCK91z+MZXvjvhfQmQ/neNcW0AXA/9mE
+ EuUu3gjIpk3zqoW7HbRO49H8CRN0lWvjiEbMmoQPJ8pL4sd2UGbgWQHjIr0HVfxN/nyiWJI2s
+ ebAB2bpTsf+3TaxjdGL6C4Z/Gir9BjtREJ12+WknhvaJu+wWtjpFwASvV32AvW8+jxEZJkO53
+ 4k0ZEvyL9OGcpqKiagTPvQZcn76WgNGseSpassRETSQylTpBESSSofY4dSsHJK2BUgc2RMIuF
+ gB2YIJnPok/ma5DoBtjSvV5CUJa1hiMScVqzuBniCN4F9wQhwS7vPulj5qLU9FaYs3/cTZY
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi,
 
-Apparently the patchset has no more comments.
+Am Dienstag, den 28.07.2020, 16:58 +0200 schrieb Marco Felsch:
+> Hi,
+> 
+> On 20-05-29 17:21, Andy Shevchenko wrote:
+> > On Fri, May 29, 2020 at 4:42 PM Sandeep Singh <
+> > Sandeep.Singh@amd.com> wrote:
+> > > From: Sandeep Singh <sandeep.singh@amd.com>
+> > > 
+> > > AMD SFH(Sensor Fusion Hub) is HID based driver.SFH FW
+> > > is part of MP2 processor (MP2 which is an ARM® Cortex-M4
+> > > core based co-processor to x86) and it runs on MP2 where
+> > > in driver resides on X86.The driver functionalities are
+> > > divided  into three parts:-
+> > > 
+> > > 1: amd-mp2-pcie:-       This module will communicate with MP2 FW
+> > > and
+> > >                         provide that data into DRAM.
+> > > 2: Client driver :-     This part for driver will use dram data
+> > > and
+> > >                         convert that data into HID format based
+> > > on
+> > >                         HID reports.
+> > > 3: Transport driver :-  This part of driver will communicate with
+> > >                         HID core. Communication between devices
+> > > and
+> > >                         HID core is mostly done via HID reports
+> > > 
+> > > In terms of architecture it is much more reassembles like
+> > > ISH(Intel Integrated Sensor Hub). However the major difference
+> > > is all the hid reports are generated as part of kernel driver.
+> > > AMD SFH driver taken reference from ISH in terms of
+> > > design and functionalities at fewer location.
+> > > 
+> > > AMD sensor fusion Hub is part of a SOC 17h family based
+> > > platforms.
+> > > The solution is working well on several OEM products.
+> > > AMD SFH uses HID over PCIe bus.
+> > > 
+> > 
+> > I can't believe this is fifth version.
+> > Guys, you have to do much more work on these drivers.
+> 
+> Is there any active development addressing Andy's comments? Else can
+> we
+> support you to bring these patches mainline?
+> 
+> Regards,
+>   Marco
 
-Could you take the patches to your tree? At least 1st and 2nd.
+I did some major refactoring¹ on the v4 patch series and am currently
+providing it for Arch Linux as a DKMS package in the AUR².
+A teensy bit of my changes seems to have influenced the v5 version but
+I actually did some major changes, like strictly separating the HID,
+platform and PCI driver parts.
+I did not submit my changes for upstream so far, since I do not want to
+undermine AMD's work on this nor cause competing driver
+implementations.
 
+Sincerely,
 
-Regards
+Richard
 
-Andrzej
+[1] https://github.com/conqp/linux/tree/amd-sfh-hid/drivers/hid/amd-sfh-hid
+[2] https://aur.archlinux.org/packages/amd-sfh-hid-dkms/
 
-
-On 13.07.2020 16:43, Andrzej Hajda wrote:
-> Hi All,
->
-> Thanks for comments.
->
-> Changes since v8:
-> - fixed typo in function name,
-> - removed cocci script (added by mistake)
->
-> Changes since v7:
-> - improved commit message
-> - added R-Bs
->
-> Changes since v6:
-> - removed leftovers from old naming scheme in commit descritions,
-> - added R-Bs.
->
-> Changes since v5:
-> - removed patch adding macro, dev_err_probe(dev, PTR_ERR(ptr), ...) should be used instead,
-> - added dev_dbg logging in case of -EPROBE_DEFER,
-> - renamed functions and vars according to comments,
-> - extended docs,
-> - cosmetics.
->
-> Original message (with small adjustments):
->
-> Recently I took some time to re-check error handling in drivers probe code,
-> and I have noticed that number of incorrect resource acquisition error handling
-> increased and there are no other propositions which can cure the situation.
->
-> So I have decided to resend my old proposition of probe_err helper which should
-> simplify resource acquisition error handling, it also extend it with adding defer
-> probe reason to devices_deferred debugfs property, which should improve debugging
-> experience for developers/testers.
->
-> I have also added two patches showing usage and benefits of the helper.
->
-> My dirty/ad-hoc cocci scripts shows that this helper can be used in at least 2700 places
-> saving about 3500 lines of code.
->
-> Regards
-> Andrzej
->
->
-> Andrzej Hajda (4):
->    driver core: add device probe log helper
->    driver core: add deferring probe reason to devices_deferred property
->    drm/bridge/sii8620: fix resource acquisition error handling
->    drm/bridge: lvds-codec: simplify error handling
->
->   drivers/base/base.h                  |  3 ++
->   drivers/base/core.c                  | 46 ++++++++++++++++++++++++++++
->   drivers/base/dd.c                    | 23 +++++++++++++-
->   drivers/gpu/drm/bridge/lvds-codec.c  | 10 ++----
->   drivers/gpu/drm/bridge/sil-sii8620.c | 21 ++++++-------
->   include/linux/device.h               |  3 ++
->   6 files changed, 86 insertions(+), 20 deletions(-)
->
