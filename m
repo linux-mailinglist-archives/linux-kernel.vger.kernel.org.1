@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F5B230668
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977BC230655
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbgG1JUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44278 "EHLO
+        id S1728175AbgG1JTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728403AbgG1JUC (ORCPT
+        with ESMTP id S1728021AbgG1JTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:20:02 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E0DC0619D2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:20:01 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id i80so10594756lfi.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:20:01 -0700 (PDT)
+        Tue, 28 Jul 2020 05:19:18 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45539C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:19:18 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x9so9581549plr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=nTEYoYUagTTUVqipQAp692MJ5fXnO5ESwesa/LZYugE=;
-        b=MBcDnC8pYd9WqxK8HbtkHiHIfwhUKE/0KC4CsT/0MK7hoVPMZKd25m80MCMNJkywJn
-         hKjsYXdrnTjtX291O1pBvLfC6fnpDQ8p1j50tkC4fZzLh6d+Ex34/AfnM9Fc0YMq5cAD
-         /+yzYRtQwQbhs1kc426jy2vye2e9fdNYiWt2WMK16g8xGlyN1PBji4UjGB86mdz0/co4
-         D8lB6v4ib634Iq3MEDBNvDojiBl9+9srgDRyVZwZS1aWJLTDB5Xnog/lDrzHbfuwqLXe
-         mTiwLQfqhQJxln4x8rvetnKVzUjGSkWjlVpMA7n9hRwxY94bDBb9toviG89HCtb+O5It
-         1OQQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bbjbm60d3lgEusGHdreE/mybmZQ1ctrCeEtW3kkMm5Q=;
+        b=E2IFz/icPPAcKC5tD4Wn/GI4mg4xDiqI6tGO2TqyU+W+AfbBJ8j0N7rCLySY1XNUOj
+         +A6LX/DWyFbhYZabZFV17rTHMO1VliWMyzT0htZNI9JzR+jGelBk3r/tBEaE3RPsa/iJ
+         fPpbdLlbvVwna8Osx8Gv4N70yFOtSRPg+rVvk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=nTEYoYUagTTUVqipQAp692MJ5fXnO5ESwesa/LZYugE=;
-        b=C0MkbninCoTPF6+bBaz66d0xv7UalAtMl2XEHtdlJrFXIeH4jWqJMrO51qkBX5oH+c
-         EL6akjSdONql3Kjm66UTtg3GyoXqv0QjG67v2Xzcvk25ohPhxQ4gYBBb3wL8ar7uHmUK
-         vElA9Tk78SbviC1vzHEd8RJGivcbCrT0RJJGOSPYP5boFyk/QZDkHwtOLyIAxWlVN+HM
-         az4i4MncgB3AnEIzAwvVC1OglIL9yulpjQPTy5o4lcUeEpIdT0kFzE9NVuMfBeI66SEO
-         TF5Vz5nrtEsmydURv4rTa35oVfLagWBSJVUbnxGDDjXzZROJUreG2NPmqiB+tkAsHWik
-         +jgQ==
-X-Gm-Message-State: AOAM530miXWdIC3rLe/rsy5fyOTXzLErCVf4ioo3SIxlNNsHpNGF+L/g
-        Vdvuaijp8jGznKPlXNHTzliGJHg5MujqUA==
-X-Google-Smtp-Source: ABdhPJwH1yrgceQtuctCUZdXGTlEq9oO+R1j+a2uwf4L7+TbtEoo4Hlf9bOLvPV/4jAYSBe66hEOYw==
-X-Received: by 2002:ac2:4c05:: with SMTP id t5mr3851846lfq.89.1595928000352;
-        Tue, 28 Jul 2020 02:20:00 -0700 (PDT)
-Received: from gilgamesh.semihalf.com (193-106-246-138.noc.fibertech.net.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id q22sm3643270lfc.33.2020.07.28.02.19.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Jul 2020 02:19:59 -0700 (PDT)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
-        s-anna@ti.com
-Cc:     grzegorz.jaszczyk@linaro.org, robh+dt@kernel.org,
-        lee.jones@linaro.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, david@lechnology.com,
-        wmills@ti.com, praneeth@ti.com
-Subject: [PATCH v4 5/5] irqchip/irq-pruss-intc: Add support for ICSSG INTC on K3 SoCs
-Date:   Tue, 28 Jul 2020 11:18:38 +0200
-Message-Id: <1595927918-19845-6-git-send-email-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595927918-19845-1-git-send-email-grzegorz.jaszczyk@linaro.org>
-References: <1595927918-19845-1-git-send-email-grzegorz.jaszczyk@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bbjbm60d3lgEusGHdreE/mybmZQ1ctrCeEtW3kkMm5Q=;
+        b=quu8uEdBC1Fh3f94mOGK8kSIi2B1L7rWlnxUMp8OMY/I/EDJZ6CLzKoCjQbbo5pQFo
+         uwwL+HLVnr94vRYQe6HnV30dgfdnYP8fZkHS/Skl2ZwBTEKmL4l08TBVj2gME1Pb+znK
+         +DVKc3m3Qn15mvPtqWRKdZfTCI41HsRHIl/C2XTec/ekN5YEIOZBHNvGs66aF45mqi2j
+         CJZe8HeE1iWPXyEGSnb2M5sQnioECoNNSAb2vjdcB+wh4pN+SCKLS/LX8X7okGbjTHLP
+         3K3kW9RfbotBEkG7EMp7hb8TEJvXIEPgfXK7pdCnCJefuxKY2fR99OZmXefOCrK0IAK7
+         89YQ==
+X-Gm-Message-State: AOAM5312xzyu9ZomHwahfkQibRlVTb5qElGsU0FcWxcdopVgpmZxsFAS
+        JQS+KpMl6z/M1N4fUYY9MAzPtg==
+X-Google-Smtp-Source: ABdhPJwbKmDSwfmq5puJq+56F/f7rteApOYLPBmeFCDgJMzNodihvryKO+ULdoI1pzUJdNcR9KtsvQ==
+X-Received: by 2002:a17:902:a416:: with SMTP id p22mr22040033plq.341.1595927957746;
+        Tue, 28 Jul 2020 02:19:17 -0700 (PDT)
+Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
+        by smtp.googlemail.com with ESMTPSA id q5sm15339258pgv.1.2020.07.28.02.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 02:19:17 -0700 (PDT)
+From:   Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org (open list:VOLTAGE AND CURRENT REGULATOR
+        FRAMEWORK)
+Subject: [PATCH] regulator: cros-ec-regulator: Fix double free of desc->name.
+Date:   Tue, 28 Jul 2020 17:19:09 +0800
+Message-Id: <20200728091909.2009771-1-pihsun@chromium.org>
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suman Anna <s-anna@ti.com>
+The desc->name field is allocated with devm_kstrdup, but is also kfreed
+on the error path, causing it to be double freed. Remove the kfree on
+the error path.
 
-The K3 AM65x and J721E SoCs have the next generation of the PRU-ICSS IP,
-commonly called ICSSG. The PRUSS INTC present within the ICSSG supports
-more System Events (160 vs 64), more Interrupt Channels and Host Interrupts
-(20 vs 10) compared to the previous generation PRUSS INTC instances. The
-first 2 and the last 10 of these host interrupt lines are used by the
-PRU and other auxiliary cores and sub-modules within the ICSSG, with 8
-host interrupts connected to MPU. The host interrupts 5, 6, 7 are also
-connected to the other ICSSG instances within the SoC and can be
-partitioned as per system integration through the board dts files.
-
-Enhance the PRUSS INTC driver to add support for this ICSSG INTC
-instance.
-
-Signed-off-by: Suman Anna <s-anna@ti.com>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Fixes: 8d9f8d57e023 ("regulator: Add driver for cros-ec-regulator")
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
 ---
-v3->v4:
-- Move generic part to "irqchip/irq-pruss-intc: Add a PRUSS irqchip
-  driver for PRUSS interrupts" patch and leave only platform related
-  code.
-v2->v3:
-- Change patch order: use it directly after "irqchip/irq-pruss-intc:
-  Implement irq_{get,set}_irqchip_state ops" and before new
-  "irqchip/irq-pruss-intc: Add event mapping support" in order to reduce
-  diff.
-v1->v2:
-- https://patchwork.kernel.org/patch/11069773/
----
- drivers/irqchip/Kconfig          | 2 +-
- drivers/irqchip/irq-pruss-intc.c | 9 +++++++++
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ drivers/regulator/cros-ec-regulator.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 03e6ac1..d3297b7 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -495,7 +495,7 @@ config TI_SCI_INTA_IRQCHIP
+diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
+index 35f97246bc48..cee259eb0213 100644
+--- a/drivers/regulator/cros-ec-regulator.c
++++ b/drivers/regulator/cros-ec-regulator.c
+@@ -222,18 +222,13 @@ static int cros_ec_regulator_probe(struct platform_device *pdev)
  
- config TI_PRUSS_INTC
- 	tristate "TI PRU-ICSS Interrupt Controller"
--	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE
-+	depends on ARCH_DAVINCI || SOC_AM33XX || SOC_AM43XX || SOC_DRA7XX || ARCH_KEYSTONE || ARCH_K3
- 	select IRQ_DOMAIN
- 	help
- 	   This enables support for the PRU-ICSS Local Interrupt Controller
-diff --git a/drivers/irqchip/irq-pruss-intc.c b/drivers/irqchip/irq-pruss-intc.c
-index c13ba14..a56065b 100644
---- a/drivers/irqchip/irq-pruss-intc.c
-+++ b/drivers/irqchip/irq-pruss-intc.c
-@@ -623,11 +623,20 @@ static const struct pruss_intc_match_data pruss_intc_data = {
- 	.num_host_intrs = 10,
- };
+ 	drvdata->dev = devm_regulator_register(dev, &drvdata->desc, &cfg);
+ 	if (IS_ERR(drvdata->dev)) {
+-		ret = PTR_ERR(drvdata->dev);
+ 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
+-		goto free_name;
++		return PTR_ERR(drvdata->dev);
+ 	}
  
-+static const struct pruss_intc_match_data icssg_intc_data = {
-+	.num_system_events = 160,
-+	.num_host_intrs = 20,
-+};
-+
- static const struct of_device_id pruss_intc_of_match[] = {
- 	{
- 		.compatible = "ti,pruss-intc",
- 		.data = &pruss_intc_data,
- 	},
-+	{
-+		.compatible = "ti,icssg-intc",
-+		.data = &icssg_intc_data,
-+	},
- 	{ /* sentinel */ },
- };
- MODULE_DEVICE_TABLE(of, pruss_intc_of_match);
+ 	platform_set_drvdata(pdev, drvdata);
+ 
+ 	return 0;
+-
+-free_name:
+-	kfree(desc->name);
+-	return ret;
+ }
+ 
+ static const struct of_device_id regulator_cros_ec_of_match[] = {
+
+base-commit: 8d9f8d57e023893bfa708d83e3a787e77766a378
 -- 
-2.7.4
+2.28.0.rc0.142.g3c755180ce-goog
 
