@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339BA230208
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F922301FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgG1Fsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgG1Fsg (ORCPT
+        id S1726802AbgG1Fq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:46:57 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:42314 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgG1Fq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:48:36 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C2FC0619D4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:48:36 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id k71so10905490pje.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:48:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nwCaKQb7A1eifXGGV7a5eCD4TFiRpHJ0WWrvyibHWGo=;
-        b=ThWzK6aItUQJQGmMwE/9XgdMnE3B8hgl9stdZ4ANGGr+GXR4MVlckDEryvdOb2X1g5
-         rL2UJp+8963+tjSiFZq9HYa8ojAwcGwamA3DkAiZ9W/7V+DMV4R7xwxRmKJvs4tuMYCI
-         WPYIW9LGaYCxAGDtPNK7WVsr+SW2pcW1yddoo8tzfOBh3xUA5/gJG/7GFX5vv43Wt1nD
-         BRtQPGuzmen4qMkYU1kaCKyBVW1cy+FgHMrISIsB2NpLAxRJ5iu2T1q+qKwhvD2jsFkP
-         GlE1N03xv0RYfJa3HBjoIysGmu2qHV/x8w2bKOVxTNOyCaTWTZsUsU4UOr+4BSI6Fd3Z
-         4JCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nwCaKQb7A1eifXGGV7a5eCD4TFiRpHJ0WWrvyibHWGo=;
-        b=p98MuXKfd8OCzIrcdjQKywCbQu+I4kNEEiKiFXX5N9FBy5X40h6dhg212UYFTz0oWh
-         8ZP70A5FvRfmnRdaD0P0Hrp41OsvflQddTCm29nNci3wRQSpGfNuLN2pfKTeBptxqZup
-         Ku3xYbiSnU+lGRsDxFwZEUEi+AEPafBfyRcl4unDLwhl88Ag1ViK4TD0BReiDK69h71w
-         hkUwpHobebW/yVCjE/yhAhy0PLTXK0QHeRBXJbtaOUOZaiOLUIRlU0c2jRvDXdK/vXED
-         boBbSMKqsGEHyAcdCgnQeyXV1Rq9OZm/Dq1hTxStd8ldLfzw8THbBlUtaPTAn9C3zRNN
-         h8Vw==
-X-Gm-Message-State: AOAM531wwpDERf48w3xV9i9tXDt5AvisrgPWGg6i0dgqbCtSdzxNpWaY
-        Rl8EXV2RokbNpqd40DEz1bVnAz38C+g=
-X-Google-Smtp-Source: ABdhPJyagl/2lErbHeLHksDS/3HV3/viNDfs3CKy+8bqQ7BW6jnH4d6jKx8IhtFZ7KIx602H7iB0jw==
-X-Received: by 2002:a17:90b:3685:: with SMTP id mj5mr2738571pjb.123.1595915315827;
-        Mon, 27 Jul 2020 22:48:35 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id p127sm16543663pfb.17.2020.07.27.22.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 22:48:35 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 22:45:03 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        evgreen@chromium.org, ohad@wizery.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] remoteproc: qcom_q6v5_mss: Validate MBA firmware
- size before load
-Message-ID: <20200728054503.GA349841@builder.lan>
-References: <20200722201047.12975-1-sibis@codeaurora.org>
- <20200722201047.12975-2-sibis@codeaurora.org>
+        Tue, 28 Jul 2020 01:46:56 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 06S5kR9p9000735, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb06.realtek.com.tw[172.21.6.99])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 06S5kR9p9000735
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 28 Jul 2020 13:46:27 +0800
+Received: from RTEXMB02.realtek.com.tw (172.21.6.95) by
+ RTEXMB06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 28 Jul 2020 13:46:27 +0800
+Received: from RTEXMB01.realtek.com.tw (172.21.6.94) by
+ RTEXMB02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 28 Jul 2020 13:46:27 +0800
+Received: from RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8]) by
+ RTEXMB01.realtek.com.tw ([fe80::d53a:d9a5:318:7cd8%5]) with mapi id
+ 15.01.1779.005; Tue, 28 Jul 2020 13:46:27 +0800
+From:   =?big5?B?p2Sp/rzhIFJpY2t5?= <ricky_wu@realtek.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        James Ettle <james@ettle.org.uk>
+CC:     Rui Feng <rui_feng@realsil.com.cn>, Arnd Bergmann <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Len Brown <lenb@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jacopo De Simoi <wilderkde@gmail.com>
+Subject: RE: rtsx_pci not restoring ASPM state after suspend/resume
+Thread-Topic: rtsx_pci not restoring ASPM state after suspend/resume
+Thread-Index: AQHWZF98DDVxZTXVzky/7XhwfZkLR6kccXXg
+Date:   Tue, 28 Jul 2020 05:46:27 +0000
+Message-ID: <bbbf5619b17e43029a75ef60b6f4fc40@realtek.com>
+References: <f02332767323fc3ecccea13dd47ecfff12526112.camel@ettle.org.uk>
+ <20200727214712.GA1777201@bjorn-Precision-5520>
+In-Reply-To: <20200727214712.GA1777201@bjorn-Precision-5520>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.88.99]
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722201047.12975-2-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22 Jul 13:10 PDT 2020, Sibi Sankar wrote:
-
-> The following mem abort is observed when the mba firmware size exceeds
-> the allocated mba region. MBA firmware size is restricted to a maximum
-> size of 1M and remaining memory region is used by modem debug policy
-> firmware when available. Hence verify whether the MBA firmware size lies
-> within the allocated memory region and is not greater than 1M before
-> loading.
-> 
-> Err Logs:
-> Unable to handle kernel paging request at virtual address
-> Mem abort info:
-> ...
-> Call trace:
->   __memcpy+0x110/0x180
->   rproc_start+0x40/0x218
->   rproc_boot+0x5b4/0x608
->   state_store+0x54/0xf8
->   dev_attr_store+0x44/0x60
->   sysfs_kf_write+0x58/0x80
->   kernfs_fop_write+0x140/0x230
->   vfs_write+0xc4/0x208
->   ksys_write+0x74/0xf8
->   __arm64_sys_write+0x24/0x30
-> ...
-> 
-> Fixes: 051fb70fd4ea4 ("remoteproc: qcom: Driver for the self-authenticating Hexagon v5")
-> Cc: stable@vger.kernel.org
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> ---
->  drivers/remoteproc/qcom_q6v5_mss.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index 718acebae777f..4e72c9e30426c 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -412,6 +412,12 @@ static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct q6v5 *qproc = rproc->priv;
->  
-> +	/* MBA is restricted to a maximum size of 1M */
-> +	if (fw->size > qproc->mba_size || fw->size > SZ_1M) {
-> +		dev_err(qproc->dev, "MBA firmware load failed\n");
-
-I'll change this to "MBA firmware exceeds size limit\n". Please let me
-know if you object.
-
-Regards,
-Bjorn
-
-> +		return -EINVAL;
-> +	}
-> +
->  	memcpy(qproc->mba_region, fw->data, fw->size);
->  
->  	return 0;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+DQo+IE9uIE1vbiwgSnVsIDI3LCAyMDIwIGF0IDA4OjUyOjI1UE0gKzAxMDAsIEphbWVzIEV0dGxl
+IHdyb3RlOg0KPiA+IE9uIE1vbiwgMjAyMC0wNy0yNyBhdCAwOToxNCAtMDUwMCwgQmpvcm4gSGVs
+Z2FhcyB3cm90ZToNCj4gPiA+IEkgZG9uJ3Qga25vdyB0aGUgY29ubmVjdGlvbiBiZXR3ZWVuIEFT
+UE0gYW5kIHBhY2thZ2UgQy1zdGF0ZXMsIHNvIEkNCj4gPiA+IG5lZWQgdG8gc2ltcGxpZnkgdGhp
+cyBldmVuIG1vcmUuICBBbGwgSSB3YW50IHRvIGRvIHJpZ2h0IG5vdyBpcw0KPiA+ID4gdmVyaWZ5
+DQo+ID4gPiB0aGF0IGlmIHdlIGRvbid0IGhhdmUgYW55IG91dHNpZGUgaW5mbHVlbmNlcyBvbiB0
+aGUgQVNQTQ0KPiA+ID4gY29uZmlndXJhdGlvbg0KPiA+ID4gKGVnLCBubyBtYW51YWwgY2hhbmdl
+cyBhbmQgbm8gdWRldiBydWxlcyksIGl0IHN0YXlzIHRoZSBzYW1lIGFjcm9zcw0KPiA+ID4gc3Vz
+cGVuZC9yZXN1bWUuDQo+ID4NCj4gPiBCYXNpY2FsbHkgdGhpcyBzdGFydGVkIGZyb20gbWUgb2Jz
+ZXJ2aW5nIGRlZXAgcGFja2FnZSBDLXN0YXRlcyB3ZXJlbid0DQo+ID4gYmVpbmcgdXNlZCwgdW50
+aWwgSSB3ZW50IGFuZCBmaWRkbGVkIHdpdGggdGhlIEFTUE0gc3RhdGUgb2YgdGhlDQo+ID4gcnRz
+eF9wY2kgY2FyZCByZWFkZXIgdW5kZXIgc3lzZnMgLS0gc28gcGhlbm9tZW5vbG9naWNhbCBwb2tp
+bmcgb24gbXkNCj4gPiBwYXJ0Lg0KPiA+DQo+ID4gPiBTbyBsZXQncyByZWFkIHRoZSBBU1BNIHN0
+YXRlIGRpcmVjdGx5IGZyb20gdGhlDQo+ID4gPiBoYXJkd2FyZSBsaWtlIHRoaXM6DQo+ID4gPg0K
+PiA+ID4gICBzdWRvIGxzcGNpIC12dnMgMDA6MWQuMCB8IGVncmVwICJeMHxMbmt8TDF8TFRSfHNu
+b29wIg0KPiA+ID4gICBzdWRvIGxzcGNpIC12dnMgMDE6MDAgICB8IGVncmVwICJeMHxMbmt8TDF8
+TFRSfHNub29wIg0KPiA+ID4NCj4gPiA+IENhbiB5b3UgdHJ5IHRoYXQgYmVmb3JlIGFuZCBhZnRl
+ciBzdXNwZW5kL3Jlc3VtZT8NCj4gPg0KPiA+IEkndmUgYXR0YWNoZWQgdGhlc2UgdG8gdGhlIGJ1
+Z3ppbGxhIGVudHJ5IGF0Og0KPiA+DQo+ID4gaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3No
+b3dfYnVnLmNnaT9pZD0yMDgxMTcNCj4gPg0KPiA+IFNwb2lsZXI6IFdpdGggbm8gdWRldiBydWxl
+cyBvciBzdXNwZW5kIGhvb2tzLCB0aGluZ3MgYXJlIHRoZSBzYW1lDQo+ID4gYmVmb3JlIGFuZCBh
+ZnRlciBzdXNwZW5kL3Jlc3VtZS4gT25lIHRoaW5nIEkgZG8gc2VlIChib3RoIGJlZm9yZSBhbmQN
+Cj4gPiBhZnRlcikgaXMgdGhhdCBBU1BNIEwwcyBhbmQgTDEgaXMgZW5hYmxlZCBmb3IgdGhlIGNh
+cmQgcmVhZGVyLCBidXQNCj4gPiBkaXNhYmxlZCBmb3IgdGhlIGV0aGVybmV0IGNoaXAgKGRvZXMg
+cjgxNjkgZmlkZGxlIHdpdGggQVNQTSB0b28/KS4NCj4gDQo+IFRoYW5rIHlvdSEgIEl0J3MgZ29v
+ZCB0aGF0IHRoaXMgc3RheXMgdGhlIHNhbWUgYWNyb3NzIHN1c3BlbmQvcmVzdW1lLg0KPiBEbyB5
+b3Ugc2VlIGRpZmZlcmVudCBDLXN0YXRlIGJlaGF2aW9yIGJlZm9yZSB2cyBhZnRlcj8NCj4gDQo+
+IFRoaXMgaXMgdGhlIGNvbmZpZyBJIHNlZToNCj4gDQo+ICAgMDA6MWQuMCBicmlkZ2UgdG8gW2J1
+cyAwMV06IEFTUE0gTDEgc3VwcG9ydGVkOyAgICAgQVNQTSBEaXNhYmxlZA0KPiAgIDAxOjAwLjAg
+Y2FyZCByZWFkZXI6ICAgICAgICBBU1BNIEwwcyBMMSBzdXBwb3J0ZWQ7IEwwcyBMMSBFbmFibGVk
+DQo+ICAgMDE6MDAuMSBHaWdFIE5JQzogICAgICAgICAgIEFTUE0gTDBzIEwxIHN1cHBvcnRlZDsg
+QVNQTSBEaXNhYmxlZA0KPiANCj4gVGhpcyBpcyBhY3R1YWxseSBpbGxlZ2FsIGJlY2F1c2UgUENJ
+ZSByNS4wLCBzZWMgNS40LjEuMywgc2F5cyBzb2Z0d2FyZQ0KPiBtdXN0IG5vdCBlbmFibGUgTDBz
+IGluIGVpdGhlciBkaXJlY3Rpb24gdW5sZXNzIGNvbXBvbmVudHMgb24gYm90aCBlbmRzDQo+IG9m
+IHRoZSBsaW5rIHN1cHBvcnQgTDBzLiAgVGhlIGJyaWRnZSAoMDA6MWQuMCkgZG9lcyBub3Qgc3Vw
+cG9ydCBMMHMsDQo+IHNvIGl0J3MgaWxsZWdhbCB0byBlbmFibGUgTDBzIG9uIDAxOjAwLjAuICBJ
+IGRvbid0IGtub3cgd2hldGhlciB0aGlzDQo+IGNhdXNlcyBwcm9ibGVtcyBpbiBwcmFjdGljZS4N
+Cj4gDQoNCklmIHN5c3RlbSB3YW50IHRvIGVudHJ5IGRlZXAgQy1zdGF0ZSwgc3lzdGVtIGhhdmUg
+dG8gc3VwcG9ydCBMMS4gSG9zdCBicmlkZ2UgaGFuZHNoYWtlIHdpdGggZGV2aWNlIHRvIGRldGVy
+bWluZSB3aGV0aGVyIHRvIGVudGVyIHRoZSBMMSBzdGF0ZS4NCk91ciBjYXJkIHJlYWRlciBkcml2
+ZXIgZGlkIG5vdCBzZXQgTDBzLCBoZXJlIG5lZWQgdG8gY2hlY2sgd2hvIHNldCB0aGlzLCBidXQg
+d2UgdGhvdWdodCB0aGlzIEwwcyBlbmFibGUgc2hvdWxkIG5vdCBjYXVzZSBIb3N0IGJyaWRnZSBB
+U1BNIGRpc2FibGUNCiANCg0KPiBJIGRvbid0IHNlZSBhbnl0aGluZyBpbiBydHN4IHRoYXQgZW5h
+YmxlcyBMMHMuICBDYW4geW91IGNvbGxlY3QgdGhlDQo+IGRtZXNnIGxvZyB3aGVuIGJvb3Rpbmcg
+d2l0aCAicGNpPWVhcmx5ZHVtcCI/ICBUaGF0IHdpbGwgc2hvdyB3aGV0aGVyDQo+IHRoZSBCSU9T
+IGxlZnQgaXQgdGhpcyB3YXkuICBUaGUgUENJIGNvcmUgaXNuJ3Qgc3VwcG9zZWQgdG8gZG8gdGhp
+cywgc28NCj4gaWYgaXQgZGlkLCB3ZSBuZWVkIHRvIGZpeCB0aGF0Lg0KPiANCj4gSSBkb24ndCBr
+bm93IHdoZXRoZXIgcjgxNjkgbXVja3Mgd2l0aCBBU1BNLiAgSXQgaXMgbGVnYWwgdG8gaGF2ZQ0K
+PiBkaWZmZXJlbnQgY29uZmlndXJhdGlvbnMgZm9yIHRoZSB0d28gZnVuY3Rpb25zLCBldmVuIHRo
+b3VnaCB0aGV5IHNoYXJlDQo+IHRoZSBzYW1lIGxpbmsuICBTZWMgNS40LjEgaGFzIHJ1bGVzIGFi
+b3V0IGhvdyBoYXJkd2FyZSByZXNvbHZlcw0KPiBkaWZmZXJlbmNlcy4NCj4gDQo+ID4gW09kZGx5
+IHdoZW4gSSBzZXQgQVNQTSAoZS5nLiB1c2luZyB1ZGV2KSB0aGUgbHNwY2kgdG9vbHMgc2hvdyBB
+U1BNDQo+ID4gZW5hYmxlZCBhZnRlciBhIHN1c3BlbmQvcmVzdW1lLCBidXQgc3RpbGwgbm8gZGVl
+cCBwYWNrYWdlIEMtc3RhdGVzDQo+ID4gdW50aWwgSSBtYW51YWxseSBmaWRkbGUgdmlhIHN5c2Zz
+IG9uIHRoZSBjYXJkIHJlYWRlci4gU29ycnkgaWYgdGhpcw0KPiA+IG9ubHkgbXVkZGllcyB0aGUg
+d2F0ZXIgZnVydGhlciFdDQo+IA0KPiBMZXQncyBkZWZlciB0aGlzIGZvciBub3cuICBJdCBzb3Vu
+ZHMgd29ydGggcHVyc3VpbmcsIGJ1dCBJIGNhbid0IGtlZXANCj4gZXZlcnl0aGluZyBpbiBteSBo
+ZWFkIGF0IG9uY2UuDQo+IA0KPiBCam9ybg0KPiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRo
+ZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
