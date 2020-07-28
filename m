@@ -2,258 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CF2230E22
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF61230E20
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730975AbgG1Pjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:39:55 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:37136 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730679AbgG1Pjw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:39:52 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U44sh65_1595950783;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U44sh65_1595950783)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 28 Jul 2020 23:39:43 +0800
-Subject: Re: [PATCH v17 17/21] mm/lru: replace pgdat lru_lock with lruvec lock
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-18-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UdaW4Rf43yULhQBuP07vQgmoPbaWHGKv1Z7fEPP6jH83w@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <1fd45e69-3a50-aae8-bcc4-47d891a5e263@linux.alibaba.com>
-Date:   Tue, 28 Jul 2020 23:39:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1730947AbgG1Pjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:39:51 -0400
+Received: from mail-dm6nam10on2085.outbound.protection.outlook.com ([40.107.93.85]:50784
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730694AbgG1Pju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:39:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c7zas4DCq/jljCI0dwr3RbPXOmY/qgV8bHU4JJAGf6joiyG0hV9d/CVgoWlmpmBQ2z8V6h2p2jvQlHMpCKCiGHrtJei8+GuAKl3Q61aR5y2AB1A+68hXbKAO5P1eDart6CqWEIylmrvPrIN/kExJRUcYzkdTrOXJoptOCg10IRT4/whJpb77rOGZNB+FoOaE0x57CfTIrLp3rZflJvhEoBTtfvHRRBYHmv78UchQcDaAEqU+VNrzTAVO8GAuJ7xYJZnq/JU9OdhQvIomf7mrw8s/PskoxcT9UGIzzyPcFVh7b0U+Co3EAHvPyTGrdqHSuG/GHCOfZIiOpvqk+BL63w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/GT/E5PNQ9FctFLdB1TZ4waJAZXjj0A7pDyEau7hfn0=;
+ b=QDE99dlkYmVFQrt+Say10Ekg6Nmo8feuXd/59/tnV5bS+NEwfpWJjxmjMfj9ghu2RRsProhWpai5A1SJiMCTmLqIgyatLV6kZtTOaRLV6mSMsm435i1drYEUwd2ZH3kGq1LOIL9PrdHssvF3b+2NrkRN+7TQxUxgEBybmjy9zoDAAYnkLu++TSJUB5k89eSukjc0gAPkFOLY/PtbRIDLQf0AkZa60kAZYl1uuajn3YrP7uJaxRaKDC1KXOk2EOsUtCjZhZZEs+n/zWeLj52NdmUgDIeer//BJYUPlcypp/wbflrl8cuACcx4vV51QlPPxWhHY1YPr6wR3C5gjFYohA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/GT/E5PNQ9FctFLdB1TZ4waJAZXjj0A7pDyEau7hfn0=;
+ b=jLx1yWiJtil/vR/DtP0kA7HQwZCWE+zETUu01UP0QkVbeor6LRozNw9cZqmfyI1Z5+hThZEb5F3xNKIMQ4NlKZ/dTACMTg6tWatHbBer+teegbV1DjS2xZmhT0LcIf6eb1wVrjBMbOQB4bTkltABwpcXNFo9QrgX5QBzo3cx0R8=
+Received: from DM5PR1201MB0139.namprd12.prod.outlook.com (2603:10b6:4:4e::8)
+ by DM5PR12MB1372.namprd12.prod.outlook.com (2603:10b6:3:77::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3216.23; Tue, 28 Jul 2020 15:39:47 +0000
+Received: from DM5PR1201MB0139.namprd12.prod.outlook.com
+ ([fe80::213d:5180:d4b:467b]) by DM5PR1201MB0139.namprd12.prod.outlook.com
+ ([fe80::213d:5180:d4b:467b%10]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 15:39:47 +0000
+From:   "RAVULAPATI, VISHNU VARDHAN RAO" 
+        <Vishnuvardhanrao.Ravulapati@amd.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: RE: [PATCH 3/6] ASoC: amd: SND_SOC_RT5682_I2C does not build rt5682
+Thread-Topic: [PATCH 3/6] ASoC: amd: SND_SOC_RT5682_I2C does not build rt5682
+Thread-Index: AQHWZCbm+DcS7P+G90ayphwZlFTok6kbjasAgAAKsoCAAPTPkIAAWbgAgAADLQCAADOsQIAAA3mAgAAAd6A=
+Date:   Tue, 28 Jul 2020 15:39:47 +0000
+Message-ID: <DM5PR1201MB01391B60AEC0CAE461124DF7E7730@DM5PR1201MB0139.namprd12.prod.outlook.com>
+References: <20200727145840.25142-1-Vishnuvardhanrao.Ravulapati@amd.com>
+ <20200727145840.25142-3-Vishnuvardhanrao.Ravulapati@amd.com>
+ <c467e2ee-727d-4bf5-8ceb-90c784245a43@linux.intel.com>
+ <20200727160941.GE6275@sirena.org.uk>
+ <DM5PR1201MB01393D93D69F1552408BFE79E7730@DM5PR1201MB0139.namprd12.prod.outlook.com>
+ <20200728120700.GA5055@sirena.org.uk>
+ <44e86246-516f-3a32-af66-e1c23f560e77@linux.intel.com>
+ <DM5PR1201MB0139AC067DF7F2E2AB9FCC96E7730@DM5PR1201MB0139.namprd12.prod.outlook.com>
+ <20200728153545.GA24701@sirena.org.uk>
+In-Reply-To: <20200728153545.GA24701@sirena.org.uk>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_ActionId=ffc414ad-8c58-482f-b7a3-ce0ab5202190;MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_ContentBits=0;MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_Enabled=true;MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_Method=Privileged;MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_Name=Non-Business;MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_SetDate=2020-07-28T15:38:53Z;MSIP_Label_f2ed062d-8486-4f50-a4f1-3cce0dd00d64_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [124.123.115.91]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: f8532e40-7397-4360-4f21-08d8330c7556
+x-ms-traffictypediagnostic: DM5PR12MB1372:
+x-microsoft-antispam-prvs: <DM5PR12MB1372ABA7A4E3C2EA85B47820E7730@DM5PR12MB1372.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: YttZ7QRnTIkN8B2vdVulxj2fPUD4FBNvWFHxyyqEMwPS/Avy2xIRqPa6cgUz9FQuudGmiyIZwuRi3mFq5Pai9USSKLKwn3yY7xugD78CozYh+aYBYM194zpxu1Wl+ZOgfGbMwM6cm82V4ZuIdt/143rEnU52f1PL/seNpJ0RJhTw4PpiSuR07LuIhAjX2H9SfwbwBozQKCq9ZQ+zUISfTilocPnakox3btg2PMjIUlfKxqPy2kSvckZqzjENIVp8f45g5H4flNcvnRVdeM1Entef44sjBBYiNJgAkxnIueq3ZlwlK7tj2E0g+l551eTs
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0139.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(376002)(346002)(39860400002)(53546011)(6506007)(55016002)(76116006)(52536014)(66446008)(64756008)(66556008)(316002)(9686003)(4326008)(478600001)(26005)(8936002)(83380400001)(86362001)(33656002)(2906002)(66476007)(8676002)(71200400001)(6916009)(54906003)(5660300002)(186003)(7696005)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ZkUjlMgcnL8ZxJCyBD1UHYb8Gob6asJbErVLoiG2DQY0G49nrPSUCm9Ehs1YjJiHcH4UL9x5DiqeNxiVDkTent+ZMpgSXvMSQtiPzXrkzXycNJAE5bq83cFJWoX3Md2bKkda8miwExsZYoeLD/lCMJyznp+UyUHu7ADaa9MeOiWuCMYqDTM9HKftj/L5MI1OX5UkuizPplg56fm9LXXLJzN568m182iLZCpD68YiiOUHggL8o7I4SnulBKfAaCDmgJxHhh708x+hkfnN4y73ov3Z8vm0UYtwSrVr7X+fB/nG1RPGVihsn3hjm8Bt4YbJfKuvZtDn183IrlRWMlvOpFNsU6t5rhU5XN3avORYCZXgxejYr6s9zTKbNCGCHalJdNrE8KCRIaKzJL2VmeReuWq+L+4ZxgoFH4+KQJ7zDlVv8sox8SBv+R++og098X72OTZ5Ag/OC69le86rO6kw2RsTi25bGHu8Dxs62/XfHJRPe3uQeLcAPk1xyWFZ7QQV
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UdaW4Rf43yULhQBuP07vQgmoPbaWHGKv1Z7fEPP6jH83w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0139.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8532e40-7397-4360-4f21-08d8330c7556
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2020 15:39:47.2750
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: i8t/Tb0S404rzzUrBY/vQbK443bKEvsq4tbpV9abhni1AOVrHhjKNlm71InOL+mKNkP5dyW7qGyUzPOd8EGc/A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1372
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I will drop this patch series and will send new series.
 
+Thanks,
 
-在 2020/7/28 上午7:34, Alexander Duyck 写道:
-> It might make more sense to look at modifying
-> compact_unlock_should_abort and compact_lock_irqsave (which always
-> returns true so should probably be a void) to address the deficiencies
-> they have that make them unusable for you.
+-----Original Message-----
+From: Mark Brown <broonie@kernel.org>=20
+Sent: Tuesday, July 28, 2020 9:06 PM
+To: RAVULAPATI, VISHNU VARDHAN RAO <Vishnuvardhanrao.Ravulapati@amd.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>; moderated =
+list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM... <alsa-devel@alsa-pr=
+oject.org>; Arnd Bergmann <arnd@arndb.de>; Liam Girdwood <lgirdwood@gmail.c=
+om>; open list <linux-kernel@vger.kernel.org>; YueHaibing <yuehaibing@huawe=
+i.com>; Takashi Iwai <tiwai@suse.com>; Deucher, Alexander <Alexander.Deuche=
+r@amd.com>; Mukunda, Vijendar <Vijendar.Mukunda@amd.com>; Enric Balletbo i =
+Serra <enric.balletbo@collabora.com>; Agrawal, Akshu <Akshu.Agrawal@amd.com=
+>
+Subject: Re: [PATCH 3/6] ASoC: amd: SND_SOC_RT5682_I2C does not build rt568=
+2
 
-One of possible reuse for the func compact_unlock_should_abort, could be
-like the following, the locked parameter reused different in 2 places.
-but, it's seems no this style usage in kernel, isn't it?
+On Tue, Jul 28, 2020 at 03:24:42PM +0000, RAVULAPATI, VISHNU VARDHAN RAO wr=
+ote:
+> [AMD Official Use Only - Internal Distribution Only]
+>=20
+> -----Original Message-----
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Sent: Tuesday, July 28, 2020 5:48 PM
 
-Thanks
-Alex
+I'm not seeing any new text in here?
 
-From 41d5ce6562f20f74bc6ac2db83e226ac28d56e90 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Tue, 28 Jul 2020 21:19:32 +0800
-Subject: [PATCH] compaction polishing
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
----
- mm/compaction.c | 71 ++++++++++++++++++++++++---------------------------------
- 1 file changed, 30 insertions(+), 41 deletions(-)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index c28a43481f01..36fce988de3e 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -479,20 +479,20 @@ static bool test_and_set_skip(struct compact_control *cc, struct page *page,
-  *
-  * Always returns true which makes it easier to track lock state in callers.
-  */
--static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
-+static void compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
- 						struct compact_control *cc)
- 	__acquires(lock)
- {
- 	/* Track if the lock is contended in async mode */
- 	if (cc->mode == MIGRATE_ASYNC && !cc->contended) {
- 		if (spin_trylock_irqsave(lock, *flags))
--			return true;
-+			return;
- 
- 		cc->contended = true;
- 	}
- 
- 	spin_lock_irqsave(lock, *flags);
--	return true;
-+	return;
- }
- 
- /*
-@@ -511,11 +511,11 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
-  *		scheduled)
-  */
- static bool compact_unlock_should_abort(spinlock_t *lock,
--		unsigned long flags, bool *locked, struct compact_control *cc)
-+		unsigned long flags, void **locked, struct compact_control *cc)
- {
- 	if (*locked) {
- 		spin_unlock_irqrestore(lock, flags);
--		*locked = false;
-+		*locked = NULL;
- 	}
- 
- 	if (fatal_signal_pending(current)) {
-@@ -543,7 +543,7 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
- 	int nr_scanned = 0, total_isolated = 0;
- 	struct page *cursor;
- 	unsigned long flags = 0;
--	bool locked = false;
-+	struct compact_control *locked = NULL;
- 	unsigned long blockpfn = *start_pfn;
- 	unsigned int order;
- 
-@@ -565,7 +565,7 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
- 		 */
- 		if (!(blockpfn % SWAP_CLUSTER_MAX)
- 		    && compact_unlock_should_abort(&cc->zone->lock, flags,
--								&locked, cc))
-+							(void**)&locked, cc))
- 			break;
- 
- 		nr_scanned++;
-@@ -599,8 +599,8 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
- 		 * recheck as well.
- 		 */
- 		if (!locked) {
--			locked = compact_lock_irqsave(&cc->zone->lock,
--								&flags, cc);
-+			compact_lock_irqsave(&cc->zone->lock, &flags, cc);
-+			locked = cc;
- 
- 			/* Recheck this is a buddy page under lock */
- 			if (!PageBuddy(page))
-@@ -787,7 +787,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 	unsigned long nr_scanned = 0, nr_isolated = 0;
- 	struct lruvec *lruvec;
- 	unsigned long flags = 0;
--	struct lruvec *locked_lruvec = NULL;
-+	struct lruvec *locked = NULL;
- 	struct page *page = NULL, *valid_page = NULL;
- 	unsigned long start_pfn = low_pfn;
- 	bool skip_on_failure = false;
-@@ -847,21 +847,11 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		 * contention, to give chance to IRQs. Abort completely if
- 		 * a fatal signal is pending.
- 		 */
--		if (!(low_pfn % SWAP_CLUSTER_MAX)) {
--			if (locked_lruvec) {
--				unlock_page_lruvec_irqrestore(locked_lruvec,
--									flags);
--				locked_lruvec = NULL;
--			}
--
--			if (fatal_signal_pending(current)) {
--				cc->contended = true;
--
--				low_pfn = 0;
--				goto fatal_pending;
--			}
--
--			cond_resched();
-+		if (!(low_pfn % SWAP_CLUSTER_MAX)
-+		    && compact_unlock_should_abort(&locked->lru_lock, flags,
-+						(void**)&locked, cc)) {
-+			low_pfn = 0;
-+			goto fatal_pending;
- 		}
- 
- 		if (!pfn_valid_within(low_pfn))
-@@ -932,9 +922,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 			 */
- 			if (unlikely(__PageMovable(page)) &&
- 					!PageIsolated(page)) {
--				if (locked_lruvec) {
--					unlock_page_lruvec_irqrestore(locked_lruvec, flags);
--					locked_lruvec = NULL;
-+				if (locked) {
-+					unlock_page_lruvec_irqrestore(locked, flags);
-+					locked = NULL;
- 				}
- 
- 				if (!isolate_movable_page(page, isolate_mode))
-@@ -979,13 +969,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 
- 		/* If we already hold the lock, we can skip some rechecking */
--		if (lruvec != locked_lruvec) {
--			if (locked_lruvec)
--				unlock_page_lruvec_irqrestore(locked_lruvec,
-+		if (lruvec != locked) {
-+			if (locked)
-+				unlock_page_lruvec_irqrestore(locked,
- 									flags);
- 
- 			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
--			locked_lruvec = lruvec;
-+			locked = lruvec;
- 			rcu_read_unlock();
- 
- 			lruvec_memcg_debug(lruvec, page);
-@@ -1041,9 +1031,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 
- isolate_fail_put:
- 		/* Avoid potential deadlock in freeing page under lru_lock */
--		if (locked_lruvec) {
--			unlock_page_lruvec_irqrestore(locked_lruvec, flags);
--			locked_lruvec = NULL;
-+		if (locked) {
-+			unlock_page_lruvec_irqrestore(locked, flags);
-+			locked = NULL;
- 		}
- 		put_page(page);
- 
-@@ -1057,10 +1047,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		 * page anyway.
- 		 */
- 		if (nr_isolated) {
--			if (locked_lruvec) {
--				unlock_page_lruvec_irqrestore(locked_lruvec,
--									flags);
--				locked_lruvec = NULL;
-+			if (locked) {
-+				unlock_page_lruvec_irqrestore(locked, flags);
-+				locked = NULL;
- 			}
- 			putback_movable_pages(&cc->migratepages);
- 			cc->nr_migratepages = 0;
-@@ -1087,8 +1076,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 	page = NULL;
- 
- isolate_abort:
--	if (locked_lruvec)
--		unlock_page_lruvec_irqrestore(locked_lruvec, flags);
-+	if (locked)
-+		unlock_page_lruvec_irqrestore(locked, flags);
- 	if (page) {
- 		SetPageLRU(page);
- 		put_page(page);
--- 
-1.8.3.1
-
+> To: Mark Brown <broonie@kernel.org>; RAVULAPATI, VISHNU VARDHAN RAO=20
+> <Vishnuvardhanrao.Ravulapati@amd.com>
+> Cc: moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...=20
+> <alsa-devel@alsa-project.org>; Arnd Bergmann <arnd@arndb.de>; Liam=20
+> Girdwood <lgirdwood@gmail.com>; open list=20
+> <linux-kernel@vger.kernel.org>; YueHaibing <yuehaibing@huawei.com>;=20
+> Takashi Iwai <tiwai@suse.com>; Deucher, Alexander=20
+> <Alexander.Deucher@amd.com>; Mukunda, Vijendar=20
+> <Vijendar.Mukunda@amd.com>; Enric Balletbo i Serra=20
+> <enric.balletbo@collabora.com>; Agrawal, Akshu <Akshu.Agrawal@amd.com>
+> Subject: Re: [PATCH 3/6] ASoC: amd: SND_SOC_RT5682_I2C does not build=20
+> rt5682
+>=20
+>=20
+>=20
+> On 7/28/20 7:07 AM, Mark Brown wrote:
+> > On Tue, Jul 28, 2020 at 06:59:50AM +0000, RAVULAPATI, VISHNU VARDHAN RA=
+O wrote:
+> >
+> >> So Actually for rt5682 codec Now in 5.8 there are three flags :
+> >> SND_SOC_RT5682
+> >> SND_SOC_RT5682_I2C
+> >> SND_SOC_RT5682_SDW
+> >
+> >> But till 5.7.8 we have
+> >> SND_SOC_RT5682
+> >> SND_SOC_RT5682_SDW
+> >
+> >> So in our design we were using SND_SOC_RT5682 which build=20
+> >> snd_soc_rt5682.ko Creates the respective codec_dais as defined in=20
+> >> that .ko
+> >
+> >> If we use SND_SOC_RT5682_I2C we get snd_soc_rt5682_I2c.ko , it is not =
+creating the expected codec_dai links.
+> >
+> > Could you be more specific about the way in which "it is not=20
+> > creating the expected codec_dai links" please?  What are you=20
+> > expecting to happen and what happens instead?  Do you see any error mes=
+sages for example?
+> >
+> >> As there are three flags defined in codecs, I expect that previous=20
+> >> one which we were using(SND_SOC_RT5682) is not a wrong flag and I=20
+> >> expect to use
+> >> SND_SOC_RT5682 as it is still available.
+> >
+> > Given that the core module does not register with any bus it is=20
+> > difficult to see how that could possibly work - the core module=20
+> > doesn't contain a driver at all.  Have you tested this change?
+>=20
+> I share Mark's point. Have you tested this change on top of Mark's tree, =
+or only on top of the stable kernel?
+> Ok. I will drop that patch and send the other series.
+>=20
+> Thanks,
+>=20
