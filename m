@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE95C231081
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075E6231084
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731869AbgG1RIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:08:51 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41328 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731510AbgG1RIu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:08:50 -0400
-Received: from [192.168.254.32] (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 3CB1720B4908;
-        Tue, 28 Jul 2020 10:08:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3CB1720B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595956129;
-        bh=/7IJcSJkmnGhyvhTN0w/k6D0iSgWl3GbtIXdsg8Fv5A=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ZuOaQbdU5uYtFJaEiOblvnFbeGROFNYKRjF3F43kJ1vUkhEErX0fbDaPkJowjRf06
-         4DasCLQblFzecv0eF8w7mUhf1hXAgudt5JEdU8ofWsRvm0zC9iTlBhH+fSyTWj70K7
-         RgZPV6XJ7g6uzFeyOC7P2FKqWtU5gXy/jZ/r8ZHI=
-Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
-To:     James Morris <jmorris@namei.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org
-References: <aefc85852ea518982e74b233e11e16d2e707bc32>
- <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <3fd22f92-7f45-1b0f-e4fe-857f3bceedd0@schaufler-ca.com>
- <alpine.LRH.2.21.2007290300400.31310@namei.org>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <a909e0b0-0d82-d869-fe49-cc974680ac23@linux.microsoft.com>
-Date:   Tue, 28 Jul 2020 12:08:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.21.2007290300400.31310@namei.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1731876AbgG1RJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731510AbgG1RJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 13:09:07 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D79B220792;
+        Tue, 28 Jul 2020 17:09:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595956147;
+        bh=VAI8WP8+wW4qJ9tQCB41NOf7v1n5wUijWbIgNFmDwXo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BVVHKM1hkuYqzDbdJY7kVXUv0ivAY/LK1Dv96e+cQ+PqTB7JE8fjQP0QgWeTqV8Ye
+         yfUgaaDqu/cJ5WTGUXX9j4p3Ux++RApP4b3XtVy93aOP5Sr6phKNzmJwr1lIhyz1Xw
+         LflB5f5oj03w3YvssSPJ5y1jV1y4FETmM78HYmPA=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/3] iommu: amd: Fix kerneldoc
+Date:   Tue, 28 Jul 2020 19:08:57 +0200
+Message-Id: <20200728170859.28143-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix W=1 compile warnings (invalid kerneldoc):
 
+    drivers/iommu/amd/init.c:1586: warning: Function parameter or member 'ivrs' not described in 'get_highest_supported_ivhd_type'
+    drivers/iommu/amd/init.c:1938: warning: Function parameter or member 'iommu' not described in 'iommu_update_intcapxt'
 
-On 7/28/20 12:05 PM, James Morris wrote:
-> On Tue, 28 Jul 2020, Casey Schaufler wrote:
->
->> You could make a separate LSM to do these checks instead of limiting
->> it to SELinux. Your use case, your call, of course.
-> It's not limited to SELinux. This is hooked via the LSM API and 
-> implementable by any LSM (similar to execmem, execstack etc.)
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/iommu/amd/init.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yes. I have an implementation that I am testing right now that
-defines the hook for exectramp and implements it for
-SELinux. That is why I mentioned SELinux.
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 958050c213f9..4a37169b1b1b 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -1578,7 +1578,7 @@ static int __init init_iommu_one(struct amd_iommu *iommu, struct ivhd_header *h)
+ 
+ /**
+  * get_highest_supported_ivhd_type - Look up the appropriate IVHD type
+- * @ivrs          Pointer to the IVRS header
++ * @ivrs: Pointer to the IVRS header
+  *
+  * This function search through all IVDB of the maximum supported IVHD
+  */
+@@ -1929,7 +1929,7 @@ static int iommu_setup_msi(struct amd_iommu *iommu)
+ #define XT_INT_VEC(x)		(((x) & 0xFFULL) << 32)
+ #define XT_INT_DEST_HI(x)	((((x) >> 24) & 0xFFULL) << 56)
+ 
+-/**
++/*
+  * Setup the IntCapXT registers with interrupt routing information
+  * based on the PCI MSI capability block registers, accessed via
+  * MMIO MSI address low/hi and MSI data registers.
+-- 
+2.17.1
 
-Madhavan
