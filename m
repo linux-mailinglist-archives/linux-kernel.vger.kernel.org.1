@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D60A23096D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5F4230980
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbgG1MBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729375AbgG1MBQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:01:16 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD82BC0619D2;
-        Tue, 28 Jul 2020 05:01:15 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id dk23so8490045ejb.11;
-        Tue, 28 Jul 2020 05:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3xVG670XkylcieeabI4BfFgFxbC/3cUWewC6wtfaP/Y=;
-        b=lsigjsbcLg4U0fz2DXXJx6Dx+9kRltx8Q3OJh91jCAowBbFWJ66z7d6Ix651wJndte
-         phN2g7QbZsy7xyqCeea088Lo5Q3ER78cU0gPdo/FWYfRKKcWSoG8eRjcl3jJZc63OkAv
-         ByonmGBlh1OkelbbArUgZM9YYcCIjlRb0swiaDUG++flRzoUKqVdMSsFBY3Z4S7D+O9R
-         oYde/E3lxnG9o6I2nCli3NP4vAgVbKpvEJKgZ8QnmibB9141v0Gw3UtWV4wI0X1QIPgb
-         3n0NVGj0jlXVLvtyrnWA6p0DlFwmxCOsYfcpy+6yXrlAgedKefXV072QIJjeAk6xu/nP
-         cjoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3xVG670XkylcieeabI4BfFgFxbC/3cUWewC6wtfaP/Y=;
-        b=T6Z/fPPfziYhlNp4MVIY9UWlzUqpwYCm+z03+H3xQKVMkCzXffHR6RZjpl1nEk/frf
-         4IhrVNAXzAo+u4p8fb7LxpmpY8H4A3qFdI2XC8gVtnoWBIx5UR5VP5FeUZkz9W5ST/XB
-         52cAvsDUg8ynvTlz6hibdjWt/6l4GbvvSrcN6GD2fMqaRTtLtHLPWM7pVmjZy5eo+Lqh
-         /P8AM8dKQYh2Dt4HXW2ZQH1ZdkFkRyf7Y7y1Nkv8uQb7xQRW4xfae9dZrHZCCZrINjFM
-         kMIZd3doK27uEaf7IUSYuVGGYuPzkjRC/L7JjqfnX+rRiYS//3tenJEH3MqXfVB7TkQo
-         WjUg==
-X-Gm-Message-State: AOAM5302dZ9Ab+Lk0QcuA2WNyZzZKH0gJegzu4bZYZILIFvH1zg8AQPX
-        FVoLr3d4IiBF+xOk3FLVYERS7ZxOROA=
-X-Google-Smtp-Source: ABdhPJzjg/8EY4mfnf/6DLLQKoIP4Iig8B48JFS1ys9qasBiMgYlTjXxbuVtY01YIiaWgRl/1jOSCA==
-X-Received: by 2002:a17:906:12cd:: with SMTP id l13mr18816915ejb.385.1595937674557;
-        Tue, 28 Jul 2020 05:01:14 -0700 (PDT)
-Received: from localhost.localdomain (abad207.neoplus.adsl.tpnet.pl. [83.6.167.207])
-        by smtp.googlemail.com with ESMTPSA id m20sm9066959ejk.90.2020.07.28.05.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 05:01:14 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-To:     konradybcio@gmail.com
-Cc:     lauren.kelly@msn.com, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH 9/9] arm64: dts: qcom: kitakami: Enable SDHCI2
-Date:   Tue, 28 Jul 2020 14:00:48 +0200
-Message-Id: <20200728120049.90632-10-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200728120049.90632-1-konradybcio@gmail.com>
-References: <20200728120049.90632-1-konradybcio@gmail.com>
+        id S1729472AbgG1MC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728614AbgG1MCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:02:24 -0400
+Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EF98206D7;
+        Tue, 28 Jul 2020 12:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595937743;
+        bh=z7dxA462LUJmKJCg4mlS1dCd4LQHrxLL33U5tk+KTEU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B3phOatux/vKD8LZ21wzdt+/+Cdwsmvxttx0oVHFyBWaC4i8Fr4KK36MWB+avrnEO
+         AJT8DXTu1gCdIQjHXn2C7vmuTpZL3/hvYMP8oirHnV9qx/wYchc4Liq0XOrXwBotuG
+         s1Cixun6RsoAfgZTravgz+2+XWb2P4RLybyMniGI=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0A875404B1; Tue, 28 Jul 2020 09:02:21 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:02:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Wei Li <liwei391@huawei.com>, leo.yan@linaro.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kim Phillips <kim.phillips@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, guohanjun@huawei.com
+Subject: Re: [PATCH v2 2/2] perf tools: ARM SPE code cleanup
+Message-ID: <20200728120220.GA40195@kernel.org>
+References: <20200724071111.35593-1-liwei391@huawei.com>
+ <20200724071111.35593-3-liwei391@huawei.com>
+ <20200727203436.GC2381376@xps15>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727203436.GC2381376@xps15>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the use of uSD cards.
+Em Mon, Jul 27, 2020 at 02:34:36PM -0600, Mathieu Poirier escreveu:
+> On Fri, Jul 24, 2020 at 03:11:11PM +0800, Wei Li wrote:
+> > - Firstly, the function auxtrace_record__init() will be invoked only
+> >   once, the variable "arm_spe_pmus" will not be used afterwards, thus
+> >   we don't need to check "arm_spe_pmus" is NULL or not;
+> > - Another reason is, even though SPE is micro-architecture dependent,
+> >   but so far it only supports "statistical-profiling-extension-v1" and
+> >   we have no chance to use multiple SPE's PMU events in Perf command.
+> 
+> I find the above changelog somewhat out of touch with the patch itself.  The
+> only thing that is happening here is the removal of a useless check and a fix
+> for a memory leak.
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
----
- arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+Humm, I think the original intent of that code was to cache the results
+of find_all_arm_spe_pmus(), as the variable it is assigned to is static.
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-index 696cd39852f4..806e8ee00833 100644
---- a/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8994-sony-xperia-kitakami.dtsi
-@@ -261,6 +261,10 @@ &sdhc1 {
- 	 */
- };
+So not a leak, as there was that static reference to it to reuse it
+later, but that is strange in a function named "__init()" which usually
+is called only once, anyway, so I think that the paragraph with
+"Firstly" is kinda ok, but confusing, I think it should read:
+
+- auxtrace_record__init() is called only once, so there is no point in
+  using a static variable to cache the results of
+  find_all_arm_spe_pmus(), make it local and free the results after use.
+
+The second paragraph is SPE specific, so I'm not qualified to judge on
+it.
+
+I'm replacing the first paragraph with the version I wrote and keep it
+in my local branch, please holler if you think I misunderstood.
+
+- Arnaldo
  
-+&sdhc2 {
-+	status = "okay";
-+};
-+
- &tlmm {
- 	ts_int_active: ts-int-active {
- 		pins = "gpio42";
--- 
-2.27.0
+> Once again whether Arnaldo wants to make the changes by hand or not you may have
+> to resubmit.
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
+> > 
+> > So remove the useless check code to make it clear.
+> > 
+> > Signed-off-by: Wei Li <liwei391@huawei.com>
+> > ---
+> >  tools/perf/arch/arm/util/auxtrace.c | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
+> > index 28a5d0c18b1d..b187bddbd01a 100644
+> > --- a/tools/perf/arch/arm/util/auxtrace.c
+> > +++ b/tools/perf/arch/arm/util/auxtrace.c
+> > @@ -57,17 +57,15 @@ struct auxtrace_record
+> >  	struct evsel *evsel;
+> >  	bool found_etm = false;
+> >  	struct perf_pmu *found_spe = NULL;
+> > -	static struct perf_pmu **arm_spe_pmus = NULL;
+> > -	static int nr_spes = 0;
+> > +	struct perf_pmu **arm_spe_pmus = NULL;
+> > +	int nr_spes = 0;
+> >  	int i = 0;
+> >  
+> >  	if (!evlist)
+> >  		return NULL;
+> >  
+> >  	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
+> > -
+> > -	if (!arm_spe_pmus)
+> > -		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
+> > +	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
+> >  
+> >  	evlist__for_each_entry(evlist, evsel) {
+> >  		if (cs_etm_pmu &&
+> > @@ -84,6 +82,7 @@ struct auxtrace_record
+> >  			}
+> >  		}
+> >  	}
+> > +	free(arm_spe_pmus);
+> >  
+> >  	if (found_etm && found_spe) {
+> >  		pr_err("Concurrent ARM Coresight ETM and SPE operation not currently supported\n");
+> > -- 
+> > 2.17.1
+> > 
 
+-- 
+
+- Arnaldo
