@@ -2,239 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2562303E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 252B82303F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgG1HTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 03:19:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727873AbgG1HTy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:19:54 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77130C0619D2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 00:19:53 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f18so17211153wrs.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 00:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=A6d3Z8kZUGC925O1zWNYM0bo3uk23MCvzFLEsbquiGg=;
-        b=JXEuNNcHl2rzr+ED0k+nl9svIqEnZlG4uG4Ljc30XUWAj7SnsAlzcGFXU0TA0qySQp
-         2hN8vHtrdyO41dqHRHbNgoPQzccQFeCCY6lxquSVVAhovTXq6dPgHYkQUkx8svw4D+R0
-         S4BMdFPVl/rUzIVO23T1URDRTzQGmFn9sx0zrNCH204f4ED8wjuqjvMVBZi6Ppsks+19
-         hQ7s7EkaKV6A5zuNCyrLunYI0x5kEFw4WpSbXhjth3EzCbft0KrRwaTWixEGNYRb6VuB
-         tNNZE8QWXi5j313UCjrpXPViIvmQh52nbvxLtzHyVIeCG53hZNdFNx7NVcKvUdxb0ZLk
-         0Vug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=A6d3Z8kZUGC925O1zWNYM0bo3uk23MCvzFLEsbquiGg=;
-        b=it0mPuK1ku7tI+LTtr+96X5JDE7beTlYi5XJ9LGqYBHpakzf8qXeJlnRfq7zvQri/8
-         fxKul4H2Oihax9rWt43Tw4oF0WfJxMh2nCY28D9VmA1BsoXlUU6ZdnzdHtooGXur0ChH
-         8dfRnO/BY99OUg3BHmtedV8VrpXfQQD8qRyRUZvyyBc85IdbB4gQ3OjIQD2mMAgKjMOv
-         ROvh1WFcnL8Y8BSwThKImggN8rKWMwwnaGFl0Eudgu7ZJVepTAjHKuqXpkUy5kH+hoiY
-         FAchhGKdVN/cpoW0Ds150wxGSDR0bLiB1YjfxZRCRknAzvoI9DGNi4Bxmbloj3ysFYvR
-         oS4g==
-X-Gm-Message-State: AOAM532wB7Z8HlllwWbbRVeBEsU0vQ6KWjkhMNxi7n0wFvcRSgit+jBa
-        B9b/ENrx1+w48G9shZnn9cdT9Q==
-X-Google-Smtp-Source: ABdhPJz+8EDiCF+tZuc+BFokpxg7sLtYNmRW3CW3BfMrYAARno5y9fdOlWpYou7Mu+g++TZQFZ/NPw==
-X-Received: by 2002:adf:f289:: with SMTP id k9mr24097714wro.203.1595920792029;
-        Tue, 28 Jul 2020 00:19:52 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id j11sm15809923wrq.69.2020.07.28.00.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 00:19:51 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 08:19:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v6 01/13] mfd: add simple regmap based I2C driver
-Message-ID: <20200728071949.GE1850026@dell>
-References: <20200725231834.25642-1-michael@walle.cc>
- <20200725231834.25642-2-michael@walle.cc>
+        id S1727987AbgG1HUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 03:20:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38766 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726990AbgG1HUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:20:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595920811; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=kRmZCJyj9I1SnPZs5XwOYPOfxafRktfoOSamzdqNY1M=;
+ b=uX2vLSo6OuTUy0g1fQlQyCuFP0WjWBFx0ChJ8mz301pSiGRqRBwjmW0kd2XeezJ936+PQdEG
+ yESucXmTNYFmD+K+r+b4T8NWAnzhHDRMux6vYgoQgFl+0LMWvOs1PcLPL6OPgLHrI55zZvgB
+ BE1FiEFYVbCju2UtIwst5iYeHXQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5f1fd1a77ab15087eb4700dc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 07:20:07
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B99AFC433AD; Tue, 28 Jul 2020 07:20:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D6338C433C9;
+        Tue, 28 Jul 2020 07:20:05 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200725231834.25642-2-michael@walle.cc>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Jul 2020 12:50:05 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        mike.leach@linaro.org, Jonathan Marek <jonathan@marek.ca>
+Subject: Re: [PATCH 2/4] arm64: dts: qcom: sc7180: Add iommus property to ETR
+In-Reply-To: <20200728062850.GC202429@builder.lan>
+References: <cover.1591708204.git.saiprakash.ranjan@codeaurora.org>
+ <2312c9a10e7251d69e31e4f51c0f1d70e6f2f2f5.1591708204.git.saiprakash.ranjan@codeaurora.org>
+ <20200621072213.GG128451@builder.lan>
+ <f40621b2b01f836a8a97686707599dd0@codeaurora.org>
+ <e270acd3f7db076c043f1b982b1efea0@codeaurora.org>
+ <20200727205834.GA202429@builder.lan>
+ <207e6b6a297d5ce1bdcac204e297389b@codeaurora.org>
+ <20200728062850.GC202429@builder.lan>
+Message-ID: <afd1c140aa9893478cd78620de35f853@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020, Michael Walle wrote:
-
-> There are I2C devices which contain several different functions but
-> doesn't require any special access functions. For these kind of drivers
-> an I2C regmap should be enough.
+On 2020-07-28 11:58, Bjorn Andersson wrote:
+> On Mon 27 Jul 21:40 PDT 2020, Sai Prakash Ranjan wrote:
 > 
-> Create an I2C driver which creates an I2C regmap and enumerates its
-> children. If a device wants to use this as its MFD core driver, it has
-> to add an individual compatible string. It may provide its own regmap
-> configuration.
+>> On 2020-07-28 02:28, Bjorn Andersson wrote:
+>> > On Tue 23 Jun 23:56 PDT 2020, Sai Prakash Ranjan wrote:
+>> >
+>> > > Hi Bjorn,
+>> > >
+>> > > On 2020-06-21 13:39, Sai Prakash Ranjan wrote:
+>> > > > Hi Bjorn,
+>> > > >
+>> > > > On 2020-06-21 12:52, Bjorn Andersson wrote:
+>> > > > > On Tue 09 Jun 06:30 PDT 2020, Sai Prakash Ranjan wrote:
+>> > > > >
+>> > > > > > Define iommus property for Coresight ETR component in
+>> > > > > > SC7180 SoC with the SID and mask to enable SMMU
+>> > > > > > translation for this master.
+>> > > > > >
+>> > > > >
+>> > > > > We don't have &apps_smmu in linux-next, as we've yet to figure out how
+>> > > > > to disable the boot splash or support the stream mapping handover.
+>> > > > >
+>> > > > > So I'm not able to apply this.
+>> > > > >
+>> > > >
+>> > > > This is for SC7180 which has apps_smmu not SM8150.
+>> > > >
+>> > >
+>> > > Please let me know if this needs further explanation.
+>> > >
+>> >
+>> > I must have commented on the wrong patch, sorry about that. The SM8150
+>> > patch in this series does not compile due to the lack of &apps_smmu.
+>> >
+>> > I've picked the other 3 patches.
+>> >
+>> 
+>> Thanks Bjorn, I can resend SM8150 coresight change when SMMU support 
+>> lands
+>> for it
+>> since coresight ETR won't work without it on android bootloaders.
+>> 
+>> As for the other 3 patches, Patch 1 and Patch 2 will apply cleanly to 
+>> the
+>> right coresight
+>> nodes but due to the missing unique context in Patch 3, it could be 
+>> applied
+>> to some other node.
+>> We had to upload this change 3 times in chromium tree to get it 
+>> applied to
+>> the right replicator node :)
+>> and this property in Patch 3 is important to fix a hard lockup. I'm 
+>> not sure
+>> why this patch is missing
+>> the proper context :/
+>> 
+>> I couldn't find the changes yet in qcom/for-next or other branches to 
+>> see if
+>> it is
+>> applied to right replicator node. In case you haven't applied it yet, 
+>> Patch
+>> 3 change
+>> should be applied to "replicator@6b06000" node.
+>> 
 > 
-> Subdevices can use dev_get_regmap() on the parent to get their regmap
-> instance.
+> Thanks for pointing that out, I've fixed up the incorrectly applied
+> change. (Still not published the branch)
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> Changes since v5:
->  - removed "select MFD_CORE" in Kconfig
->  - removed help text in Kconfig, we assume that the users of this
-
-That's the opposite of what I asked for.
-
->    driver will have a "select MFD_SIMPLE_MFD_I2C". Instead added
->    a small description to the driver itself.
->  - removed "struct simple_mfd_i2c_config" and use regmap_config
->    directly
->  - changed builtin_i2c_driver() to module_i2c_driver(), added
->    MODULE_ boilerplate
->  - cleaned up the included files
 > 
-> Changes since v4:
->  - new patch. Lee, please bear with me. I didn't want to delay the
->    new version (where a lot of remarks on the other patches were
->    addressed) even more, just because we haven't figured out how
->    to deal with the MFD part. So for now, I've included this one.
+> For the future I believe you can pass -U <n> to git format-patch to get
+> <n> number of lines of context. Making that bigger than the default 3
+> should help for the coresight patches.
 > 
->  drivers/mfd/Kconfig          |  5 ++++
->  drivers/mfd/Makefile         |  1 +
->  drivers/mfd/simple-mfd-i2c.c | 55 ++++++++++++++++++++++++++++++++++++
->  3 files changed, 61 insertions(+)
->  create mode 100644 drivers/mfd/simple-mfd-i2c.c
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 33df0837ab41..c08539c7a166 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1162,6 +1162,11 @@ config MFD_SI476X_CORE
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called si476x-core.
->  
-> +config MFD_SIMPLE_MFD_I2C
-> +	tristate
-> +	depends on I2C
-> +	select REGMAP_I2C
 
-Please provide a full help.
+Thanks Bjorn, will use this option going forward.
 
->  config MFD_SM501
->  	tristate "Silicon Motion SM501"
->  	depends on HAS_DMA
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index a60e5f835283..78d24a3e7c9e 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -264,3 +264,4 @@ obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
->  obj-$(CONFIG_MFD_KHADAS_MCU) 	+= khadas-mcu.o
->  
->  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
-> +obj-$(CONFIG_MFD_SIMPLE_MFD_I2C)	+= simple-mfd-i2c.o
-> diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
-> new file mode 100644
-> index 000000000000..45090ddad104
-> --- /dev/null
-> +++ b/drivers/mfd/simple-mfd-i2c.c
-> @@ -0,0 +1,55 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * A very simple I2C MFD driver
-
-Simple MFD - I2C
-
-> + * The driver enumerates its children and registers a common regmap. Use
-> + * dev_get_regmap(pdev->dev.parent, NULL) in the child nodes to fetch that
-> + * regmap instance.
-
-This driver creates a single register map with the intention for it to
-be shared by all sub-devices.  Children can use their parent's device
-structure (dev.parent) in order reference it. 
-
-> + * In the future this driver might be extended to support also other interfaces
-> + * like SPI etc.
-
-Remove this please.
-
-> + */
-
-'\n' here.
-
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/regmap.h>
-> +
-> +static const struct regmap_config simple_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +};
-> +
-> +static int simple_mfd_i2c_probe(struct i2c_client *i2c)
-> +{
-> +	const struct regmap_config *config;
-> +	struct regmap *regmap;
-> +
-> +	config = device_get_match_data(&i2c->dev);
-> +	if (!config)
-> +		config = &simple_regmap_config;
-> +
-> +	regmap = devm_regmap_init_i2c(i2c, config);
-> +	if (IS_ERR(regmap))
-> +		return PTR_ERR(regmap);
-> +
-> +	return devm_of_platform_populate(&i2c->dev);
-> +}
-> +
-> +static const struct of_device_id simple_mfd_i2c_of_match[] = {
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
-> +
-> +static struct i2c_driver simple_mfd_i2c_driver = {
-> +	.probe_new = simple_mfd_i2c_probe,
-> +	.driver = {
-> +		.name = "simple-mfd-i2c",
-> +		.of_match_table = simple_mfd_i2c_of_match,
-> +	},
-> +};
-> +module_i2c_driver(simple_mfd_i2c_driver);
-> +
-> +MODULE_AUTHOR("Michael Walle <michael@walle.cc>");
-> +MODULE_DESCRIPTION("Simple I2C MFD driver");
-
-Simple MFD - I2C driver
-
-> +MODULE_LICENSE("GPL v2");
+Thanks,
+Sai
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
