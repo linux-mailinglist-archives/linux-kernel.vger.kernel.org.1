@@ -2,174 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1F1231533
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 23:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8742E23153E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 23:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729623AbgG1Vuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 17:50:52 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.190]:29394 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgG1Vuw (ORCPT
+        id S1729543AbgG1V6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 17:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729469AbgG1V6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 17:50:52 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id AFF1314B1D1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 16:50:50 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id 0XUoknZDkRQIV0XUokIEvk; Tue, 28 Jul 2020 16:50:50 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9mOsq4lMArcAnO6GEiwZWqNVGbub2TPYQ8O+Hat1tZs=; b=GI2RtX4bnNmhVTYqx2Ynb8/Niq
-        IN6AobsUhDmhkUH7gBrmvChkPJR/3euAx5+zRKuXKfh/vnaHYDwojGNk9Sj9JZ2RlWj+O6ZrwwD/r
-        W35ghWaWKroXat2XDNcNJC7GoImwFv5D6+pOC8C7fn2p620i+Fgz4Qdgf9HTJLGDpbyTaYSLlq1rb
-        e8wTP+nXM6w309ESsL894RSinOWh5wkMT4jrEzJnsDgFCGxYGDgAksQZ1hSvKJ64BfPFsIehk9Mw6
-        Rwqz2lt7bLL8JuZpkxbcTmyHWpgaIcU53X1V7RHhF+h8A2eb/xqWS1dn45hBBk4cKeySdAx2XdyhT
-        ykLxv9CQ==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:57850 helo=[192.168.15.2])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1k0XUo-000ZL6-DP; Tue, 28 Jul 2020 16:50:50 -0500
-Subject: Re: [char-misc-next] Revert "mei: hdcp: Replace one-element array
- with flexible-array member"
-To:     Tomas Winkler <tomas.winkler@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-References: <20200728214139.3129532-1-tomas.winkler@intel.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- AP7RWS474w==
-Message-ID: <e80a9e75-4497-1587-deab-b5c6a0fcc48f@embeddedor.com>
-Date:   Tue, 28 Jul 2020 16:56:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 28 Jul 2020 17:58:44 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A92AC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 14:58:44 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id g8so925751wmk.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 14:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vFvBGR63kxi0CavnWAYuf+Wv1PziHL67xBV12ZHbnZk=;
+        b=j0A3V9iymWEPylW+8J5lFEXe46QGmjwmE7cf+StiiX8IaxO4kUSYzrXr5oGDz/HEiD
+         lIamJefth0ln//LmVmIosEEG+QOwM8+h0krzNgqa9EzKpU5ermlNsXIX1EdGqW/TklbR
+         El9XpzPo7lU1fW6KD3oNeqtdp0Mankae2ncmI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=vFvBGR63kxi0CavnWAYuf+Wv1PziHL67xBV12ZHbnZk=;
+        b=Wl8vLtSmufihX4JJpnvs3ZRlz8Zl82VSBUxWoeqbLBTnFv6VN6BGedjgpn1zEUi2fw
+         szQDYOjA2B42YhKxjEL0AxhLzI3l+f9Z3QHqNoEaa22ItgwASL6az0zapwjHSCX1hHEG
+         gpDun8dLwHQmJk0B5/7rBkjN447ZSnuZiS1OwzZJER6tpsRDc9CWBjCble4e2jo1da7x
+         8gjvZyFmsga6sZunO7zxHF96AZRxMCPB5xTfdbWBh2M3ZLRZPtu9z86E52A4A22Wtr2M
+         yRxHhe4by2I3d47QFhqngOn/6W5aIPyVGlwFDJkMqGffQLrFR+wjhgzZDDzAFPRzldfW
+         4Zug==
+X-Gm-Message-State: AOAM531m/yTAcYA4cpEk6rqRkhOYiZjYU8lLBUklVHBKxMB+HU19w5QI
+        2QGP/FSQ5x8wvSbgxh1+UPLF5A==
+X-Google-Smtp-Source: ABdhPJwXjIGrOhB3qqvLPXS5vBOptuyY0SyPTUR6eqSZg6Arf7VTgu4ZzAkz15TWyQ+FgmxXbEU78w==
+X-Received: by 2002:a7b:cc12:: with SMTP id f18mr5459138wmh.129.1595973522904;
+        Tue, 28 Jul 2020 14:58:42 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t202sm355472wmt.20.2020.07.28.14.58.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 14:58:42 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 23:58:40 +0200
+From:   daniel@ffwll.ch
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Mazin Rezk <mnrzk@protonmail.com>,
+        Duncan <1i5t5.duncan@cox.net>, anthony.ruhier@gmail.com,
+        Kees Cook <keescook@chromium.org>, sunpeng.li@amd.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        regressions@leemhuis.info, amd-gfx@lists.freedesktop.org,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        mphantomx@yahoo.com.br,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH] amdgpu_dm: fix nonblocking atomic commit use-after-free
+Message-ID: <20200728215840.GH6419@phenom.ffwll.local>
+Mail-Followup-To: "Kazlauskas, Nicholas" <nicholas.kazlauskas@amd.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Mazin Rezk <mnrzk@protonmail.com>, Duncan <1i5t5.duncan@cox.net>,
+        anthony.ruhier@gmail.com, Kees Cook <keescook@chromium.org>,
+        sunpeng.li@amd.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, regressions@leemhuis.info,
+        amd-gfx@lists.freedesktop.org,
+        Alexander Deucher <Alexander.Deucher@amd.com>,
+        Andrew Morton <akpm@linux-foundation.org>, mphantomx@yahoo.com.br,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+References: <YIGsJ9LlFquvBI2iWPKhJwjKBwDUr_C-38oVpLJJHJ5rDCY_Zrrv392o6UPNxHoeQrcpLYC9U4fZdpD9ilz6Amg2IxkSexGLQMCQIBek8rc=@protonmail.com>
+ <202007231524.A24720C@keescook>
+ <a86cba0b-4513-e7c3-ae75-bb331433f664@molgen.mpg.de>
+ <202007241016.922B094AAA@keescook>
+ <3c92db94-3b62-a70b-8ace-f5e34e8f268f@molgen.mpg.de>
+ <_vGVoFJcOuoIAvGYtkyemUvqEFeZ-AdO4Jk8wsyVv3MwO-6NEVtULxnZzuBJNeHNkCsQ5Kxn5TPQ_VJ6qyj9wXXXX8v-hc3HptnCAu0UYsk=@protonmail.com>
+ <20200724215914.6297cc7e@ws>
+ <c7mHa5xU_kh7K9KM5P1UJoCY00b3Oxj3s_y3vr0LGQzUPtWlhv5JjjhT4CnnbDhuTZhCuHT2uMbjdDCZ-JLmHVlS7B_k-wj1OTmZpMD7cg4=@protonmail.com>
+ <0b0fbe35-75cf-ec90-7c3d-bdcedbe217b7@molgen.mpg.de>
+ <0edb1498-6c43-27cc-b2fb-71ea5ca1a56c@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20200728214139.3129532-1-tomas.winkler@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1k0XUo-000ZL6-DP
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.2]) [187.162.31.110]:57850
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 4
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0edb1498-6c43-27cc-b2fb-71ea5ca1a56c@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomas,
-
-On 7/28/20 16:41, Tomas Winkler wrote:
-> Greg please revert, this commit it changes size of
-> struct wired_cmd_repeater_auth_stream_req_in, this is
-> not what firmware is expecting.
-
-Could you elaborate on what's the firmware expecting, exactly?
-
-Thanks
---
-Gustavo
-
-> I really do not appreciate that the code is bypassing
-> driver maintaner review, I think this is a minimum
-> we can ask for, this is not for a first time.
+On Tue, Jul 28, 2020 at 01:07:13PM -0400, Kazlauskas, Nicholas wrote:
+> On 2020-07-28 5:22 a.m., Paul Menzel wrote:
+> > Dear Linux folks,
+> > 
+> > 
+> > Am 25.07.20 um 07:20 schrieb Mazin Rezk:
+> > > On Saturday, July 25, 2020 12:59 AM, Duncan wrote:
+> > > 
+> > > > On Sat, 25 Jul 2020 03:03:52 +0000 Mazin Rezk wrote:
+> > > > 
+> > > > > > Am 24.07.20 um 19:33 schrieb Kees Cook:
+> > > > > > 
+> > > > > > > There was a fix to disable the async path for this driver that
+> > > > > > > worked around the bug too, yes? That seems like a safer and more
+> > > > > > > focused change that doesn't revert the SLUB defense for all
+> > > > > > > users, and would actually provide a complete, I think, workaround
+> > > > > 
+> > > > > That said, I haven't seen the async disabling patch. If you could
+> > > > > link to it, I'd be glad to test it out and perhaps we can use that
+> > > > > instead.
+> > > > 
+> > > > I'm confused. Not to put words in Kees' mouth; /I/ am confused (which
+> > > > admittedly could well be just because I make no claims to be a
+> > > > coder and am simply reading the bug and thread, but I'd appreciate some
+> > > > "unconfusing" anyway).
+> > > > 
+> > > > My interpretation of the "async disabling" reference was that it was to
+> > > > comment #30 on the bug:
+> > > > 
+> > > > https://bugzilla.kernel.org/show_bug.cgi?id=207383#c30
+> > > > 
+> > > > 
+> > > > ... which (if I'm not confused on this point too) appears to be yours.
+> > > > There it was stated...
+> > > > 
+> > > > I've also found that this bug exclusively occurs when commit_work is on
+> > > > the workqueue. After forcing drm_atomic_helper_commit to run all of the
+> > > > commits without adding to the workqueue and running the OS, the issue
+> > > > seems to have disappeared.
+> > > > <<<<
+> > > > 
+> > > > Would not forcing all commits to run directly, without placing them on
+> > > > the workqueue, be "async disabling"? That's what I /thought/ he was
+> > > > referencing.
+> > > 
+> > > Oh, I thought he was referring to a different patch. Kees, could I get
+> > > your confirmation on this?
+> > > 
+> > > The change I made actually affected all of the DRM code, although
+> > > this could
+> > > easily be changed to be specific to amdgpu. (By forcing blocking on
+> > > amdgpu_dm's non-blocking commit code)
+> > > 
+> > > That said, I'd still need to test further because I only did test it
+> > > for a
+> > > couple of hours then. Although it should work in theory.
+> > > 
+> > > > OTOH your base/context swap idea sounds like a possibly "less
+> > > > disturbance" workaround, if it works, and given the point in the
+> > > > commit cycle... (But if it's out Sunday it's likely too late to test
+> > > > and get it in now anyway; if it's another week, tho...)
+> > > 
+> > > The base/context swap idea should make the use-after-free behave how it
+> > > did in 5.6. Since the bug doesn't cause an issue in 5.6, it's less of a
+> > > "less disturbance" workaround and more of a "no disturbance" workaround.
+> > 
+> > Sorry for bothering, but is there now a solution, besides reverting the
+> > commits, to avoid freezes/crashes *without* performance regressions?
+> > 
+> > 
+> > Kind regards,
+> > 
+> > Paul
 > 
-> This reverts commit c56967d674e361ebe716e66992e3c5332b25ac1f.
-> 
-> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> ---
->  drivers/misc/mei/hdcp/mei_hdcp.c | 2 +-
->  drivers/misc/mei/hdcp/mei_hdcp.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
-> index d1d3e025ca0e..e6c3dc595617 100644
-> --- a/drivers/misc/mei/hdcp/mei_hdcp.c
-> +++ b/drivers/misc/mei/hdcp/mei_hdcp.c
-> @@ -572,7 +572,7 @@ static int mei_hdcp_verify_mprime(struct device *dev,
->  	       HDCP_2_2_MPRIME_LEN);
->  	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
->  	memcpy(verify_mprime_in.streams, data->streams,
-> -	       array_size(data->k, sizeof(*data->streams)));
-> +	       (data->k * sizeof(struct hdcp2_streamid_type)));
->  
->  	verify_mprime_in.k = cpu_to_be16(data->k);
->  
-> diff --git a/drivers/misc/mei/hdcp/mei_hdcp.h b/drivers/misc/mei/hdcp/mei_hdcp.h
-> index 834757f5e072..18ffc773fa18 100644
-> --- a/drivers/misc/mei/hdcp/mei_hdcp.h
-> +++ b/drivers/misc/mei/hdcp/mei_hdcp.h
-> @@ -358,7 +358,7 @@ struct wired_cmd_repeater_auth_stream_req_in {
->  	u8				seq_num_m[HDCP_2_2_SEQ_NUM_LEN];
->  	u8				m_prime[HDCP_2_2_MPRIME_LEN];
->  	__be16				k;
-> -	struct hdcp2_streamid_type	streams[];
-> +	struct hdcp2_streamid_type	streams[1];
->  } __packed;
->  
->  struct wired_cmd_repeater_auth_stream_req_out {
-> 
+> Mazin's "drm/amd/display: Clear dm_state for fast updates" change
+> accomplishes this, at least as a temporary hack.
+
+Yeah I gets it's horrible, but better than nothing. Reverting the old
+amdgpu change to a private state object is probably a lot more invasive.
+
+> I've started work on a more large scale fix that we could get in in after.
+
+Does that include a fix for the "stuff needed by irq handler"? Either way
+pls cc dri-devel, I think this is something worth of a bit wider
+discussion. Feels like unsolved homework from the entire "make DC
+integrate into linux" saga ...
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
