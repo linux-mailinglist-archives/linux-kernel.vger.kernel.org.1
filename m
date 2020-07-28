@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACD5230BF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8339230BF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730289AbgG1OAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:00:52 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53658 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730056AbgG1OAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:00:52 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 2BFF629627B
-Subject: Re: [PATCH v2 0/3] media: vimc: Allow multiple capture devices to use
- the same sensor
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Helen Koike <helen.koike@collabora.com>
-Cc:     kieran.bingham@ideasonboard.com,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>
-References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
- <20200724121521.GA2705690@oden.dyn.berto.se>
- <20200724122104.GA18482@kaaira-HP-Pavilion-Notebook>
- <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
- <2a6cb067-283d-ca65-2698-1fae66a17d02@collabora.com>
- <20200728113959.GA6350@kaaira-HP-Pavilion-Notebook>
- <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
-Message-ID: <b5fd3811-2f0e-7563-13fa-bb1e32189814@collabora.com>
-Date:   Tue, 28 Jul 2020 16:00:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1730295AbgG1OB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:01:29 -0400
+Received: from mga05.intel.com ([192.55.52.43]:4697 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730248AbgG1OB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 10:01:29 -0400
+IronPort-SDR: AdXN3RxOhYXkZI+w16hAX+xx3zJz2eAnjSg4c7UKMJKkF5oIWDj8wkHACL/nccQJWXAIfLZ8Dl
+ 4vREmwOLlfCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="236073205"
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="236073205"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 07:01:28 -0700
+IronPort-SDR: w2etQZcEy/vnSpL4WuObiNTD4tpbcHE+V6FMLmCy8iibX5rsq1MxwmUIov44AtE1MjSSrwZ4tE
+ SkXEbQGQ/Cgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="328348023"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Jul 2020 07:01:28 -0700
+Received: from [10.252.128.28] (kliang2-mobl.ccr.corp.intel.com [10.252.128.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 715F7580295;
+        Tue, 28 Jul 2020 07:01:27 -0700 (PDT)
+Subject: Re: [PATCH V7 08/14] perf/x86/intel: Generic support for hardware
+ TopDown metrics
+To:     peterz@infradead.org
+Cc:     acme@redhat.com, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        jolsa@kernel.org, eranian@google.com,
+        alexander.shishkin@linux.intel.com, ak@linux.intel.com,
+        like.xu@linux.intel.com
+References: <20200723171117.9918-1-kan.liang@linux.intel.com>
+ <20200723171117.9918-9-kan.liang@linux.intel.com>
+ <20200724131906.GW119549@hirez.programming.kicks-ass.net>
+ <20200724152755.GK43129@hirez.programming.kicks-ass.net>
+ <d7ae2272-52ea-c5a9-2937-9a51c544ade8@linux.intel.com>
+ <ddeae082-c38d-a961-4d90-1fbc1c9f2726@linux.intel.com>
+ <20200728130956.GK10769@hirez.programming.kicks-ass.net>
+ <25a630c6-2fa2-5dfd-bcd3-92e809c51d61@linux.intel.com>
+ <20200728134412.GX119549@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <4313ed1f-03b2-48e7-36fe-6a112fa6c70f@linux.intel.com>
+Date:   Tue, 28 Jul 2020 10:01:25 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
+In-Reply-To: <20200728134412.GX119549@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -51,138 +65,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 28.07.20 14:07, Dafna Hirschfeld wrote:
-> Hi
-> 
-> On 28.07.20 13:39, Kaaira Gupta wrote:
->> On Mon, Jul 27, 2020 at 02:54:30PM -0300, Helen Koike wrote:
->>> Hi,
+On 7/28/2020 9:44 AM, peterz@infradead.org wrote:
+> On Tue, Jul 28, 2020 at 09:28:39AM -0400, Liang, Kan wrote:
+>>
+>>
+>> On 7/28/2020 9:09 AM, Peter Zijlstra wrote:
+>>> On Fri, Jul 24, 2020 at 03:10:52PM -0400, Liang, Kan wrote:
 >>>
->>> On 7/27/20 11:31 AM, Kieran Bingham wrote:
->>>> Hi all,
+>>>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>>>> index 6cb079e0c9d9..010ac74afc09 100644
+>>>> --- a/arch/x86/events/intel/core.c
+>>>> +++ b/arch/x86/events/intel/core.c
+>>>> @@ -2405,27 +2405,18 @@ static u64 icl_update_topdown_event(struct
+>>>> perf_event *event)
+>>>>    	return slots;
+>>>>    }
 >>>>
->>>> +Dafna for the thread discussion, as she's missed from the to/cc list.
+>>>> -static void intel_pmu_read_topdown_event(struct perf_event *event)
+>>>> +static void intel_pmu_read_event(struct perf_event *event)
+>>>>    {
+>>>> -	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>>>> -
+>>>> -	/* Only need to call update_topdown_event() once for group read. */
+>>>> -	if ((cpuc->txn_flags & PERF_PMU_TXN_READ) &&
+>>>> -	    !is_slots_event(event))
+>>>>    		return;
 >>>>
->>>>
->>>> On 24/07/2020 13:21, Kaaira Gupta wrote:
->>>>> On Fri, Jul 24, 2020 at 02:15:21PM +0200, Niklas Söderlund wrote:
->>>>> Hi,
->>>>>
->>>>>> Hi Kaaira,
->>>>>>
->>>>>> Thanks for your work.
->>>>>
->>>>> Thanks for yours :D
->>>>>
->>>>>>
->>>>>> On 2020-07-24 17:32:10 +0530, Kaaira Gupta wrote:
->>>>>>> This is version 2 of the patch series posted by Niklas for allowing
->>>>>>> multiple streams in VIMC.
->>>>>>> The original series can be found here:
->>>>>>> https://patchwork.kernel.org/cover/10948831/
->>>>>>>
->>>>>>> This series adds support for two (or more) capture devices to be
->>>>>>> connected to the same sensors and run simultaneously. Each capture device
->>>>>>> can be started and stopped independent of each other.
->>>>>>>
->>>>>>> Patch 1/3 and 2/3 deals with solving the issues that arises once two
->>>>>>> capture devices can be part of the same pipeline. While 3/3 allows for
->>>>>>> two capture devices to be part of the same pipeline and thus allows for
->>>>>>> simultaneously use.
+>>>> -	perf_pmu_disable(event->pmu);
+>>>> -	x86_pmu.update_topdown_event(event);
+>>>> -	perf_pmu_enable(event->pmu);
+>>>> -}
+>>>> -
+>>>> -static void intel_pmu_read_event(struct perf_event *event)
+>>>> -{
+>>>>    	if (event->hw.flags & PERF_X86_EVENT_AUTO_RELOAD)
+>>>>    		intel_pmu_auto_reload_read(event);
+>>>> -	else if (is_topdown_count(event) && x86_pmu.update_topdown_event)
+>>>> -		intel_pmu_read_topdown_event(event);
+>>>> -	else
+>>>> +	else if (is_slots_count(event) && x86_pmu.update_topdown_event) {
+>>>> +		perf_pmu_disable(event->pmu);
+>>>> +		x86_pmu.update_topdown_event(event);
+>>>> +		perf_pmu_enable(event->pmu);
+>>>> +	} else
+>>>>    		x86_perf_event_update(event);
+>>>>    }
+>>>
+>>> I'm a little puzzled by this; what happens if you:
+>>>
+>>> 	fd = sys_perf_event_open(&attr_slots);
+>>> 	fd1 = sys_perf_event_open(&attr_metric, .group_fd=fd);
+>>>
+>>> 	read(fd1);
+>>>
+>>> ?
+>>>
+>>
+>> I did a quick test. It depends on the .read_format of attr_metric.
+>> If PERF_FORMAT_GROUP is applied for attr_metric, perf_read_group() will be
+>> invoked. The value of fd1 is updated correctly.
+>> If the flag is not applied, 0 will be returned.
 > 
-> I wonder if these two patches are enough, since each vimc entity also have
-> a 'process_frame' callback, but only one allocated frame. That means
-> that the 'process_frame' can be called concurrently by two different streams
-> on the same frame and cause corruption.
+> Exactly :-), was that intentional?
+
+Kind of, because a metric event must be in a group with the leader slots 
+event. If a user reads (treats) the metric event as a singleton event, 
+an invalid value should be expected.
+
+> Because prior to this change that
+> would've worked just fine.
 > 
+> Now, I agree it's a daft thing, because that value is pretty useless
+> without also having the slots value, but I feel we should be explicit in
+> our choices here.
+> 
+> If for example, we would've had hardware provide us the raw metric
+> counters, instead of us having to reconstruct them, this would've been a
+> semi useful thing.
+> 
+> So I'm tempted to leave things as it, and keep this 'working'.
 
-I think we should somehow change the vimc-stream.c code so that we have only
-one stream process per pipe. So if one capture is already streaming, then the new
-capture that wants to stream uses the same thread so we don't have two threads
-both calling 'process_frame'.
-
-The second capture that wants to stream should iterate the topology downwards until
-reaching an entity that already belong to the stream path of the other streaming capture
-and tell the streamer it wants to read the frames this entity
-produces.
+I will update the perf tool document to force the PERF_FORMAT_GROUP flag 
+for each metric events.
 
 Thanks,
-Dafna
+Kan
 
-> Thanks,
-> Dafna
-> 
->>>>>>
->>>>>> I'm just curious if you are aware of this series? It would replace the
->>>>>> need for 1/3 and 2/3 of this series right?
->>>>>
->>>>> v3 of this series replaces the need for 1/3, but not the current version
->>>>> (ie v4). v4 of patch 2/5 removes the stream_counter that is needed to
->>>>> keep count of the calls to s_stream. Hence 1/3 becomes relevant again.
->>>>
->>>> So the question really is, how do we best make use of the two current
->>>> series, to achieve our goal of supporting multiple streams.
->>>>
->>>> Having not parsed Dafna's series yet, do we need to combine elements of
->>>> both ? Or should we work towards starting with this series and get
->>>> dafna's patches built on top ?
->>>>
->>>> Or should patch 1/3 and 3/3 of this series be on top of Dafna's v4 ?
->>>>
->>>> (It might be noteworthy to say that Kaaira has reported successful
->>>> multiple stream operation from /this/ series and her development branch
->>>> on libcamera).
->>>
->>> Dafna's patch seems still under discussion, but I don't want to block progress in Vimc either.
->>>
->>> So I was wondering if we can move forward with Vimc support for multistreaming,
->>> without considering Dafna's patchset, and we can do the clean up later once we solve that.
->>>
->>> What do you think?
->>
->> I agree with supporting multiple streams with VIMC with this patchset,
->> and then we can refactor the counters for s_stream in VIMC later (over
->> this series) if dafna includes them in subsequent version of her patchset.
->>
-> 
-> I also think that adding support in the code will take much longer and should not
-> stop us from supporting vimc independently.
-> 
-> Thanks,
-> Dafna
-> 
->>>
->>> Regards,
->>> Helen
->>>
->>>>
->>>>
->>>>>> 1.  https://lore.kernel.org/linux-media/20200522075522.6190-1-dafna.hirschfeld@collabora.com/
->>>>>>
->>>>>>>
->>>>>>> Changes since v1:
->>>>>>>     - All three patches rebased on latest media-tree.
->>>>>>>     Patch 3:
->>>>>>>     - Search for an entity with a non-NULL pipe instead of searching
->>>>>>>       for sensor. This terminates the search at output itself.
->>>>>>>
->>>>>>> Kaaira Gupta (3):
->>>>>>>    media: vimc: Add usage count to subdevices
->>>>>>>    media: vimc: Serialize vimc_streamer_s_stream()
->>>>>>>    media: vimc: Join pipeline if one already exists
->>>>>>>
->>>>>>>   .../media/test-drivers/vimc/vimc-capture.c    | 35 ++++++++++++++++++-
->>>>>>>   .../media/test-drivers/vimc/vimc-debayer.c    |  8 +++++
->>>>>>>   drivers/media/test-drivers/vimc/vimc-scaler.c |  8 +++++
->>>>>>>   drivers/media/test-drivers/vimc/vimc-sensor.c |  9 ++++-
->>>>>>>   .../media/test-drivers/vimc/vimc-streamer.c   | 23 +++++++-----
->>>>>>>   5 files changed, 73 insertions(+), 10 deletions(-)
->>>>>>>
->>>>>>> -- 
->>>>>>> 2.17.1
->>>>>>>
->>>>>>
->>>>>> -- 
->>>>>> Regards,
->>>>>> Niklas Söderlund
->>>>
