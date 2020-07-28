@@ -2,118 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FFE230952
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D009B2309F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgG1MAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:00:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgG1MAb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:00:31 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6452DC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=65mlISD8+bvHJLtdL7W7KVUZ5VfPrEhV6z6gSzVVTg8=; b=aZbV28BZ0X2XqFcpgcOgwDE9V1
-        jnCH26zniMVRZEZPNUoO3YEbDpWTpogbpz4M+nFohIFIdkB6reqoz5dHcf/OI9+HHLI/qRhFmTQzv
-        I5Rl8DwLavwxMQFgQ3/fXfrBL6G4Xq1NJPF4DcgroIk2fE7ihgBX7M3itN2oxgaDfo/02s4za5NI/
-        bg6wdWwNVxdTkCChoq5NtIjhElha1Iq4D+UImYv5kPCUfotj//o7CQbrqmodJg8zrpFf2pMQdQqhZ
-        EADDtHECf/P9N+42U2Xc4DuiTzr5ZlrNdcRgWjA6OZehLJVTnaD1gMJszvZhK2sWSAKcsaHwPAxnz
-        fHbgCz4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0OHU-0000Ru-4I; Tue, 28 Jul 2020 12:00:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36501300238;
-        Tue, 28 Jul 2020 14:00:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1A2502BB5575B; Tue, 28 Jul 2020 14:00:27 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 14:00:27 +0200
-From:   peterz@infradead.org
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
-        lukasz.luba@arm.com, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: provide u64 read for 32-bits arch helper
-Message-ID: <20200728120027.GN43129@hirez.programming.kicks-ass.net>
-References: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
- <20200727123801.GJ119549@hirez.programming.kicks-ass.net>
- <20200727152303.GA301827@e120877-lin.cambridge.arm.com>
- <20200728111302.GV119549@hirez.programming.kicks-ass.net>
+        id S1729445AbgG1M02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:26:28 -0400
+Received: from relay.sw.ru ([185.231.240.75]:51548 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728300AbgG1M02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:26:28 -0400
+X-Greylist: delayed 3052 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 08:26:26 EDT
+Received: from [192.168.15.38]
+        by relay3.sw.ru with esmtp (Exim 4.93)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1k0NsJ-0003Qb-E5; Tue, 28 Jul 2020 14:34:27 +0300
+Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
+To:     Anthony Yznaga <anthony.yznaga@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org
+Cc:     mhocko@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org, arnd@arndb.de,
+        ebiederm@xmission.com, keescook@chromium.org, gerg@linux-m68k.org,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        esyr@redhat.com, jgg@ziepe.ca, christian@kellner.me,
+        areber@redhat.com, cyphar@cyphar.com, steven.sistare@oracle.com
+References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <46891e3b-ca08-197d-935f-fa0a52a60051@virtuozzo.com>
+Date:   Tue, 28 Jul 2020 14:34:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728111302.GV119549@hirez.programming.kicks-ass.net>
+In-Reply-To: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:13:02PM +0200, peterz@infradead.org wrote:
-> On Mon, Jul 27, 2020 at 04:23:03PM +0100, Vincent Donnefort wrote:
-> 
-> > For 32-bit architectures, both min_vruntime and last_update_time are using
-> > similar access. This patch is simply an attempt to unify their usage by
-> > introducing two macros to rely on when accessing those. At the same time, it
-> > brings a comment regarding the barriers usage, as per the kernel policy. So
-> > overall this is just a clean-up without any functional changes.
-> 
-> Ah, I though there was perhaps the idea to make use of armv7-lpae
-> instructions.
-> 
-> Aside of that, I think we need to spend a little time bike-shedding the
-> API/naming here:
-> 
-> > +# define u64_32read(val, copy) (val)
-> > +# define u64_32read_set_copy(val, copy) do { } while (0)
-> 
-> How about something like:
-> 
-> #ifdef CONFIG_64BIT
-> 
-> #define DEFINE_U64_U32(name)	u64 name
-> #define u64_u32_load(name)	name
-> #define u64_u32_store(name, val)name = val
-> 
-> #else
-> 
-> #define DEFINE_U64_U32(name)			\
-> 	struct {				\
-> 		u64 name;			\
-> 		u64 name##_copy;		\
-> 	}
-> 
-> #define u64_u32_load(name)			\
-> 	({					\
-> 		u64 val, copy;			\
-> 		do {				\
-> 			val = name;		\
-> 			smb_rmb();		\
-> 			copy = name##_copy;	\
-> 		} while (val != copy);		\
+On 27.07.2020 20:11, Anthony Yznaga wrote:
+> This patchset adds support for preserving an anonymous memory range across
+> exec(3) using a new madvise MADV_DOEXEC argument.  The primary benefit for
+> sharing memory in this manner, as opposed to re-attaching to a named shared
+> memory segment, is to ensure it is mapped at the same virtual address in
+> the new process as it was in the old one.  An intended use for this is to
+> preserve guest memory for guests using vfio while qemu exec's an updated
+> version of itself.  By ensuring the memory is preserved at a fixed address,
 
-wrong order there; we should first read _copy and then the regular one
-of course.
+So, the goal is an update of QEMU binary without a stopping of virtual machine?
 
-> 		val;
-> 	})
+> vfio mappings and their associated kernel data structures can remain valid.
+> In addition, for the qemu use case, qemu instances that back guest RAM with
+> anonymous memory can be updated.
 > 
-> #define u64_u32_store(name, val)		\
-> 	do {					\
-> 		typeof(val) __val = (val);	\
-> 		name = __val;			\
-> 		smp_wmb();			\
-> 		name##_copy = __val;		\
-> 	} while (0)
+> Patches 1 and 2 ensure that loading of ELF load segments does not silently
+> clobber existing VMAS, and remove assumptions that the stack is the only
+> VMA in the mm when the stack is set up.  Patch 1 re-introduces the use of
+> MAP_FIXED_NOREPLACE to load ELF binaries that addresses the previous issues
+> and could be considered on its own.
 > 
-> #endif
+> Patches 3, 4, and 5 introduce the feature and an opt-in method for its use
+> using an ELF note.
+> 
+> Anthony Yznaga (5):
+>   elf: reintroduce using MAP_FIXED_NOREPLACE for elf executable mappings
+>   mm: do not assume only the stack vma exists in setup_arg_pages()
+>   mm: introduce VM_EXEC_KEEP
+>   exec, elf: require opt-in for accepting preserved mem
+>   mm: introduce MADV_DOEXEC
+> 
+>  arch/x86/Kconfig                       |   1 +
+>  fs/binfmt_elf.c                        | 196 +++++++++++++++++++++++++--------
+>  fs/exec.c                              |  33 +++++-
+>  include/linux/binfmts.h                |   7 +-
+>  include/linux/mm.h                     |   5 +
+>  include/uapi/asm-generic/mman-common.h |   3 +
+>  kernel/fork.c                          |   2 +-
+>  mm/madvise.c                           |  25 +++++
+>  mm/mmap.c                              |  47 ++++++++
+>  9 files changed, 266 insertions(+), 53 deletions(-)
+> 
 
-The other approach is making it a full type and inline functions I
-suppose.
