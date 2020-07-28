@@ -2,47 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B05C2315DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C031C2315E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 01:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730236AbgG1W6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:58:04 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38107 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730102AbgG1W5m (ORCPT
+        id S1730027AbgG1XAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 19:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729913AbgG1XAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:57:42 -0400
-Received: by mail-qt1-f193.google.com with SMTP id e5so2217521qth.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:41 -0700 (PDT)
+        Tue, 28 Jul 2020 19:00:20 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63394C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 16:00:20 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id p3so13130741pgh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 16:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=students-iitmandi-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+AGKaODfQyJlnmbVWmu1S2WmuwIYu+1OBfVfzl9nDbI=;
+        b=wSiJJlaW4Nf3Z4qC1BYYeErvnyAaxGazqwv+5vS8Ohoi9wIoC5ShcWVwNvmUC4fxN9
+         N+kZt5l9fJ7JOsJYXZGVugPArIg8ZmjE2d/llMs/V0sSE0l4mom3QlwPQ/ZbDkGmWydr
+         k0T6JKoYyjCvMkeYYmWzZTg2PX4VYFkTPN4AqpVIzU0JEhpCnzUlhqYMV/ANpxjqESNU
+         kig9iezcgZMt6WtqUq97RLf/AL6UjD8QAfNNDGs9uAv0yB/jpuoQieNXfjTLY5FFKXND
+         VzNrllBYEWkJLjT0Glw4gp2Sd2kye9ezjm3PPrxhoSpHco5rEjFNhcV4IIWn5fNOxpy8
+         f0ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G/0Hv8egtXRA3ZfKQLWZwrjHsDw+rPLpy2TWbxUcFE4=;
-        b=Pb7EJ8/cXrtZICd/7VwSyxSa0mD6ThmcXvrs0BEyWF2DfViXLNYrsByAR3ngYy+qPG
-         D4FYF6oc/F+MRmUdIl5iX3ssfjbtmh1XCMdAgYKG8Pt7ZsqViyNCSq5O9BgwDAUVs8nh
-         WPM4Kx6V2STxSqTXLERz0SztTYhnVxQbomk7zHLvvOtnUs6INN8AYdrf1q+7wGYCftYC
-         uFCkpnN31et535kQXv3yG4OD7iYRGanlUCBPfnomCtFuvcyl5uuu/VEJoEo8Cttr+G8b
-         LV944yBO4jmFa5cVbeaI+0ya0zEK2BpKSXJVh4x0Jix2voab/rXPTQpNx0hsf5DqmVmz
-         FmYA==
-X-Gm-Message-State: AOAM530RHKWwTqJ3xeK6Y+6ok3igoe0UvQSmhN9QYsvmK0+twehGJb7a
-        cNkg1eRzoQobQiaf0HMrCKgQv3jD
-X-Google-Smtp-Source: ABdhPJwXddcqfBErVmabYAWErKRchWfnGb1mA4Hve9Hz0Jby7VczYVKw+drpuBsidyLeY+nQc15bSg==
-X-Received: by 2002:ac8:454f:: with SMTP id z15mr9908929qtn.351.1595977061350;
-        Tue, 28 Jul 2020 15:57:41 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.40
+        bh=+AGKaODfQyJlnmbVWmu1S2WmuwIYu+1OBfVfzl9nDbI=;
+        b=WaQNyGDqyyWL4/sUiDCrhsuNI0U3/6yeONsN8b4m8ye0ZUlZHrZES8L/ivP7bieeOC
+         ui7WuO6ITo9/9irDZXosUdbYPMsC/HhFrD24aIMMtSNQmF+qanRX+VgjRM58t274WkuR
+         Bz5lplXvShNHFe5KEh/HQwHDFQfCH/qvQSB+BSt8wwH4n8c1Rj50tfPn2EAmEqPNnCQk
+         60kglSzIKVnVgzioiLkKYReEBugD1G5bZMhGRag66EZ5XVk1LGq9+s8bH3PDp1+ErUvG
+         LyxdY2Z83zxBXmCm4MQGT96CFu5oei0Hu23ZXEcTt81HbnJbh82unobtJgyF0gSEP9am
+         1Hjg==
+X-Gm-Message-State: AOAM533maHf6lvFosvMWC4f2si6AWsETKwbYFMIdo6aBrq7mgYp4syQj
+        HbNt2BiD1wVvNYPIM/HUVSpGpQ==
+X-Google-Smtp-Source: ABdhPJzGVY0Wek05CSIAilbGSc/iC2BNuIxuZVqGpgfu+wb+W8o+Sa5WL16MSEaBgLGfrxfyolhdAA==
+X-Received: by 2002:a63:444b:: with SMTP id t11mr27226150pgk.134.1595977219750;
+        Tue, 28 Jul 2020 16:00:19 -0700 (PDT)
+Received: from devil-VirtualBox.www.tendawifi.com ([103.198.174.215])
+        by smtp.gmail.com with ESMTPSA id 76sm105516pfu.139.2020.07.28.16.00.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 15:57:40 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 21/21] x86/kaslr: Add a check that the random address is in range
-Date:   Tue, 28 Jul 2020 18:57:22 -0400
-Message-Id: <20200728225722.67457-22-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200727230801.3468620-1-nivedita@alum.mit.edu>
-References: <20200727230801.3468620-1-nivedita@alum.mit.edu>
+        Tue, 28 Jul 2020 16:00:19 -0700 (PDT)
+From:   Ankit <b18007@students.iitmandi.ac.in>
+To:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, b18007@students.iitmandi.ac.in
+Subject: [PATCH v2] Staging : media : atomisp : fixed a brace coding sytle issue
+Date:   Wed, 29 Jul 2020 04:29:35 +0530
+Message-Id: <20200728225935.28880-1-b18007@students.iitmandi.ac.in>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200728084341.GA1795795@kroah.com>
+References: <20200728084341.GA1795795@kroah.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -50,44 +66,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check in find_random_phys_addr that the chosen address is inside the
-range that was required.
+From: Ankit Baluni <b18007@students.iitmandi.ac.in>
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Removed braces for a 'if' condition as it contain only single line & 
+there is no need for braces for such case according to coding style
+rules.
+
+Signed-off-by: Ankit Baluni <b18007@students.iitmandi.ac.in>
+
 ---
- arch/x86/boot/compressed/kaslr.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Changes in v2:
+	-Added more description about the patch.
+	-Added space before the symobol '<' in 'From'
+	 and 'Signed-off-by' line.
 
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 38ecbf2e61c5..903ccdca0551 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -802,6 +802,8 @@ static void process_e820_entries(unsigned long minimum,
- static unsigned long find_random_phys_addr(unsigned long minimum,
- 					   unsigned long image_size)
- {
-+	u64 phys_addr;
-+
- 	/* Bail out early if it's impossible to succeed. */
- 	if (minimum + image_size > mem_limit)
- 		return 0;
-@@ -815,7 +817,15 @@ static unsigned long find_random_phys_addr(unsigned long minimum,
- 	if (!process_efi_entries(minimum, image_size))
- 		process_e820_entries(minimum, image_size);
- 
--	return slots_fetch_random();
-+	phys_addr = slots_fetch_random();
-+
-+	/* Perform a final check to make sure the address is in range. */
-+	if (phys_addr < minimum || phys_addr + image_size > mem_limit) {
-+		warn("Invalid physical address chosen!\n");
-+		return 0;
-+	}
-+
-+	return (unsigned long)phys_addr;
- }
- 
- static unsigned long find_random_virt_addr(unsigned long minimum,
+ drivers/staging/media/atomisp/pci/atomisp_cmd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+index 8ea65bef35d2..28b96b66f4f3 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+@@ -4981,9 +4981,8 @@ enum mipi_port_id __get_mipi_port(struct atomisp_device *isp,
+ 	case ATOMISP_CAMERA_PORT_SECONDARY:
+ 		return MIPI_PORT1_ID;
+ 	case ATOMISP_CAMERA_PORT_TERTIARY:
+-		if (MIPI_PORT1_ID + 1 != N_MIPI_PORT_ID) {
++		if (MIPI_PORT1_ID + 1 != N_MIPI_PORT_ID)
+ 			return MIPI_PORT1_ID + 1;
+-		}
+ 	/* fall through */
+ 	default:
+ 		dev_err(isp->dev, "unsupported port: %d\n", port);
 -- 
-2.26.2
+2.25.1
 
