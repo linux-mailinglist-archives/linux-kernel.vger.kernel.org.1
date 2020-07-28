@@ -2,202 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F309230E96
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A200230F2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731140AbgG1P6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:58:16 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7919 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730679AbgG1P6Q (ORCPT
+        id S1731373AbgG1Q0d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 12:26:33 -0400
+Received: from customer-201-134-139-73.uninet-ide.com.mx ([201.134.139.73]:55570
+        "EHLO correo.tlalpan.gob.mx" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731192AbgG1Q0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:58:16 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f204abc0000>; Tue, 28 Jul 2020 08:56:44 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 28 Jul 2020 08:58:15 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 28 Jul 2020 08:58:15 -0700
-Received: from [10.2.168.236] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
- 2020 15:58:14 +0000
-Subject: Re: [RFC PATCH v5 12/14] gpu: host1x: mipi: Keep MIPI clock enabled
- till calibration is done
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
- <1595883452-17343-13-git-send-email-skomatineni@nvidia.com>
- <b21e3227-d0d8-5b4a-ae69-aa29551a22c3@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <69903c67-8e5f-11c2-45ec-c76b97634aba@nvidia.com>
-Date:   Tue, 28 Jul 2020 09:04:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 12:26:32 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by correo.tlalpan.gob.mx (Postfix) with ESMTP id B82EB57C443;
+        Tue, 28 Jul 2020 06:05:53 -0500 (CDT)
+Received: from correo.tlalpan.gob.mx ([127.0.0.1])
+        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id kPM_SpOZcYAD; Tue, 28 Jul 2020 06:05:53 -0500 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.tlalpan.gob.mx (Postfix) with ESMTP id 20DB8441E5D;
+        Tue, 28 Jul 2020 04:08:12 -0500 (CDT)
+X-Virus-Scanned: amavisd-new at tlalpan.gob.mx
+Received: from correo.tlalpan.gob.mx ([127.0.0.1])
+        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id vlgdE5AYOebY; Tue, 28 Jul 2020 04:08:12 -0500 (CDT)
+Received: from [10.85.108.11] (unknown [105.8.2.12])
+        by correo.tlalpan.gob.mx (Postfix) with ESMTPSA id AE56F441E70;
+        Tue, 28 Jul 2020 03:36:40 -0500 (CDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <b21e3227-d0d8-5b4a-ae69-aa29551a22c3@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595951804; bh=E9qcfOyB0qnDCOefOIeVTiKpwMclMLjRTPcAat91+Sc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=dE7J+3XfJ4cU+YTt6Cn8RnnadhwlC+HXdoGiaiDQbr6vbHSk7yyen9Slpi3VpIBWw
-         4DG/o/HGEmkDEbCikU7kWE9As3Sge+6aCV6tx0mtEFc5hcjPX3m5FdtqXjqq9QzunQ
-         /PZwjV3ZBqVnIYvZy8rfvXbNCAA0dyiUtzwQo6enoA6wJMBvXMzc0c7hQEWD5JR56M
-         oaqxc4TEvWW8lHritYGCk/NZ35HE8twWuTgg1tz6aSwrXU+6FqXkWcgDBlv2i/9N4d
-         zVW0doE8JwFSATCjG9xaA04SGjaTv/R/veXHj/S+/2cPkUsT13/W80JYg4squz/DTJ
-         F8IaQ/nnYzb0Q==
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
+To:     Recipients <aguayenergia@tlalpan.gob.mx>
+From:   ''Tayeb Souami'' <aguayenergia@tlalpan.gob.mx>
+Date:   Tue, 28 Jul 2020 10:40:57 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20200728083641.AE56F441E70@correo.tlalpan.gob.mx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Lieber Freund,
 
-On 7/28/20 4:03 AM, Dmitry Osipenko wrote:
-> 27.07.2020 23:57, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> With the split of MIPI calibration into tegra_mipi_calibrate() and
->> tegra_mipi_wait(), MIPI clock is not kept enabled till the calibration
->> is done.
->>
->> So, this patch skips disabling MIPI clock after triggering start of
->> calibration and disables it only after waiting for done status from
->> the calibration logic.
->>
->> This patch renames tegra_mipi_calibrate() as tegra_mipi_start_calibratio=
-n()
->> and tegra_mipi_wait() as tegra_mipi_finish_calibration() to be inline
->> with their usage.
->>
->> As MIPI clock is left enabled and in case of any failures with CSI input
->> streaming tegra_mipi_finish_calibration() will not get invoked.
->> So added new API tegra_mipi_cancel_calibration() which disables MIPI clo=
-ck
->> and consumer drivers can call this in such cases.
->>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->> ---
->>   drivers/gpu/drm/tegra/dsi.c |  4 ++--
->>   drivers/gpu/host1x/mipi.c   | 19 ++++++++++---------
->>   include/linux/host1x.h      |  5 +++--
->>   3 files changed, 15 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
->> index 3820e8d..a7864e9 100644
->> --- a/drivers/gpu/drm/tegra/dsi.c
->> +++ b/drivers/gpu/drm/tegra/dsi.c
->> @@ -694,11 +694,11 @@ static int tegra_dsi_pad_calibrate(struct tegra_ds=
-i *dsi)
->>   		DSI_PAD_PREEMP_PD(0x03) | DSI_PAD_PREEMP_PU(0x3);
->>   	tegra_dsi_writel(dsi, value, DSI_PAD_CONTROL_3);
->>  =20
->> -	err =3D tegra_mipi_calibrate(dsi->mipi);
->> +	err =3D tegra_mipi_start_calibration(dsi->mipi);
->>   	if (err < 0)
->>   		return err;
->>  =20
->> -	return tegra_mipi_wait(dsi->mipi);
->> +	return tegra_mipi_finish_calibration(dsi->mipi);
->>   }
->>  =20
->>   static void tegra_dsi_set_timeout(struct tegra_dsi *dsi, unsigned long=
- bclk,
->> diff --git a/drivers/gpu/host1x/mipi.c b/drivers/gpu/host1x/mipi.c
->> index e606464..b15ab6e 100644
->> --- a/drivers/gpu/host1x/mipi.c
->> +++ b/drivers/gpu/host1x/mipi.c
->> @@ -293,17 +293,19 @@ int tegra_mipi_disable(struct tegra_mipi_device *d=
-ev)
->>   }
->>   EXPORT_SYMBOL(tegra_mipi_disable);
->>  =20
->> -int tegra_mipi_wait(struct tegra_mipi_device *device)
->> +void tegra_mipi_cancel_calibration(struct tegra_mipi_device *device)
->> +{
-> Doesn't MIPI_CAL need to be reset here?
-No need to reset MIPI CAL
->
->> +	clk_disable(device->mipi->clk);
->> +}
->> +EXPORT_SYMBOL(tegra_mipi_cancel_calibration);
->> +
->> +int tegra_mipi_finish_calibration(struct tegra_mipi_device *device)
->>   {
->>   	struct tegra_mipi *mipi =3D device->mipi;
->>   	void __iomem *status_reg =3D mipi->regs + (MIPI_CAL_STATUS << 2);
->>   	u32 value;
->>   	int err;
->>  =20
->> -	err =3D clk_enable(device->mipi->clk);
->> -	if (err < 0)
->> -		return err;
->> -
->>   	mutex_lock(&device->mipi->lock);
->>  =20
->>   	err =3D readl_relaxed_poll_timeout(status_reg, value,
->> @@ -315,9 +317,9 @@ int tegra_mipi_wait(struct tegra_mipi_device *device=
-)
->>  =20
->>   	return err;
->>   }
->> -EXPORT_SYMBOL(tegra_mipi_wait);
->> +EXPORT_SYMBOL(tegra_mipi_finish_calibration);
->>  =20
->> -int tegra_mipi_calibrate(struct tegra_mipi_device *device)
->> +int tegra_mipi_start_calibration(struct tegra_mipi_device *device)
->>   {
->>   	const struct tegra_mipi_soc *soc =3D device->mipi->soc;
->>   	unsigned int i;
->> @@ -382,11 +384,10 @@ int tegra_mipi_calibrate(struct tegra_mipi_device =
-*device)
->>   	tegra_mipi_writel(device->mipi, value, MIPI_CAL_CTRL);
-> This function sets MIPI_CAL_CLKEN_OVR bit, does it mean that MIPI clock
-> becomes always-ON?
->
-> I don't see where MIPI_CAL_CLKEN_OVR is unset.
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
 
-CLKEN_OVR was always kept enabled in the driver prior to my patch and I=20
-was not touching that.
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
-But as we are turning ON/OFF MIPI clock itself no need to unset CLKEN_OVR
 
->
->>   	mutex_unlock(&device->mipi->lock);
->> -	clk_disable(device->mipi->clk);
->>  =20
->>   	return 0;
->>   }
->> -EXPORT_SYMBOL(tegra_mipi_calibrate);
->> +EXPORT_SYMBOL(tegra_mipi_start_calibration);
->>  =20
->>   static const struct tegra_mipi_pad tegra114_mipi_pads[] =3D {
->>   	{ .data =3D MIPI_CAL_CONFIG_CSIA },
->> diff --git a/include/linux/host1x.h b/include/linux/host1x.h
->> index 20c885d..b490dda 100644
->> --- a/include/linux/host1x.h
->> +++ b/include/linux/host1x.h
->> @@ -333,7 +333,8 @@ struct tegra_mipi_device *tegra_mipi_request(struct =
-device *device,
->>   void tegra_mipi_free(struct tegra_mipi_device *device);
->>   int tegra_mipi_enable(struct tegra_mipi_device *device);
->>   int tegra_mipi_disable(struct tegra_mipi_device *device);
->> -int tegra_mipi_calibrate(struct tegra_mipi_device *device);
->> -int tegra_mipi_wait(struct tegra_mipi_device *device);
->> +int tegra_mipi_start_calibration(struct tegra_mipi_device *device);
->> +int tegra_mipi_finish_calibration(struct tegra_mipi_device *device);
->> +void tegra_mipi_cancel_calibration(struct tegra_mipi_device *device);
->>  =20
->>   #endif
->>
+Das ist dein Spendencode: [TS530342018]
+
+
+Antworten Sie mit dem SPENDE-CODE an diese
+
+E-Mail:Tayebsouam.spende@gmail.com
+
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
