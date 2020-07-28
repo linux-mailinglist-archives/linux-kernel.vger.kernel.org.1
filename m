@@ -2,189 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A888230EC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B683230ED7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731287AbgG1QFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:05:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41200 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731156AbgG1QFL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:05:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5EA08AD1F;
-        Tue, 28 Jul 2020 16:05:20 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] block: Remove callback typedefs for blk_mq_ops
-Date:   Tue, 28 Jul 2020 18:05:06 +0200
-Message-Id: <20200728160506.92926-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.16.4
+        id S1731307AbgG1QHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:07:01 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60317 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731272AbgG1QHA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 12:07:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595952419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z+gquV6V93SZjNhpxmQp1P7xpjOdqg2rKp5124tI0vU=;
+        b=MX+dtKIrzFtokLVKjGpdlnwUVcDHXJkkUrtw6Uw5z07PXTPqVRJJWnZbUu3hE4l+MG4FI2
+        w0gvZRLY8HTIP+m/Sy3IuqIqxVMXe+0iMs/JP36ekNWpeNfP4+TUQ5tdD7vuYC8WXwNs4V
+        WoPMDurhwY2dv+zAXP2lw1vz6zOXbDA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-wqHAHkFqOp6s6jbiuk_hkA-1; Tue, 28 Jul 2020 12:06:55 -0400
+X-MC-Unique: wqHAHkFqOp6s6jbiuk_hkA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FACB801E6A;
+        Tue, 28 Jul 2020 16:06:53 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.181])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 18C4F1001B2C;
+        Tue, 28 Jul 2020 16:06:50 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 28 Jul 2020 18:06:52 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 18:06:49 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v1 1/4] [RFC] fs/trampfd: Implement the trampoline file
+ descriptor API
+Message-ID: <20200728160649.GB9972@redhat.com>
+References: <aefc85852ea518982e74b233e11e16d2e707bc32>
+ <20200728131050.24443-1-madvenka@linux.microsoft.com>
+ <20200728131050.24443-2-madvenka@linux.microsoft.com>
+ <20200728145013.GA9972@redhat.com>
+ <dc41589a-647a-ba59-5376-abbf5d07c6e7@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc41589a-647a-ba59-5376-abbf5d07c6e7@linux.microsoft.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to define typedefs for the callbacks, because there is not a
-single user except blk_mq_ops.
+On 07/28, Madhavan T. Venkataraman wrote:
+>
+> I guess since the symbol is not used by any modules, I don't need to
+> export it.
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- include/linux/blk-mq.h | 56 ++++++++++++++++++++------------------------------
- 1 file changed, 22 insertions(+), 34 deletions(-)
+Yes,
 
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index 23230c1d031e..d558f6104278 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -267,27 +267,9 @@ struct blk_mq_queue_data {
- 	bool last;
- };
- 
--typedef blk_status_t (queue_rq_fn)(struct blk_mq_hw_ctx *,
--		const struct blk_mq_queue_data *);
--typedef void (commit_rqs_fn)(struct blk_mq_hw_ctx *);
--typedef bool (get_budget_fn)(struct request_queue *);
--typedef void (put_budget_fn)(struct request_queue *);
--typedef enum blk_eh_timer_return (timeout_fn)(struct request *, bool);
--typedef int (init_hctx_fn)(struct blk_mq_hw_ctx *, void *, unsigned int);
--typedef void (exit_hctx_fn)(struct blk_mq_hw_ctx *, unsigned int);
--typedef int (init_request_fn)(struct blk_mq_tag_set *set, struct request *,
--		unsigned int, unsigned int);
--typedef void (exit_request_fn)(struct blk_mq_tag_set *set, struct request *,
--		unsigned int);
--
- typedef bool (busy_iter_fn)(struct blk_mq_hw_ctx *, struct request *, void *,
- 		bool);
- typedef bool (busy_tag_iter_fn)(struct request *, void *, bool);
--typedef int (poll_fn)(struct blk_mq_hw_ctx *);
--typedef int (map_queues_fn)(struct blk_mq_tag_set *set);
--typedef bool (busy_fn)(struct request_queue *);
--typedef void (complete_fn)(struct request *);
--typedef void (cleanup_rq_fn)(struct request *);
- 
- /**
-  * struct blk_mq_ops - Callback functions that implements block driver
-@@ -297,7 +279,8 @@ struct blk_mq_ops {
- 	/**
- 	 * @queue_rq: Queue a new request from block IO.
- 	 */
--	queue_rq_fn		*queue_rq;
-+	blk_status_t (*queue_rq)(struct blk_mq_hw_ctx *,
-+				 const struct blk_mq_queue_data *);
- 
- 	/**
- 	 * @commit_rqs: If a driver uses bd->last to judge when to submit
-@@ -306,7 +289,7 @@ struct blk_mq_ops {
- 	 * purpose of kicking the hardware (which the last request otherwise
- 	 * would have done).
- 	 */
--	commit_rqs_fn		*commit_rqs;
-+	void	(*commit_rqs)(struct blk_mq_hw_ctx *);
- 
- 	/**
- 	 * @get_budget: Reserve budget before queue request, once .queue_rq is
-@@ -314,37 +297,39 @@ struct blk_mq_ops {
- 	 * reserved budget. Also we have to handle failure case
- 	 * of .get_budget for avoiding I/O deadlock.
- 	 */
--	get_budget_fn		*get_budget;
-+	bool	(*get_budget)(struct request_queue *);
-+
- 	/**
- 	 * @put_budget: Release the reserved budget.
- 	 */
--	put_budget_fn		*put_budget;
-+	void	(*put_budget)(struct request_queue *);
- 
- 	/**
- 	 * @timeout: Called on request timeout.
- 	 */
--	timeout_fn		*timeout;
-+	enum blk_eh_timer_return (*timeout)(struct request *, bool);
- 
- 	/**
- 	 * @poll: Called to poll for completion of a specific tag.
- 	 */
--	poll_fn			*poll;
-+	int	(*poll)(struct blk_mq_hw_ctx *);
- 
- 	/**
- 	 * @complete: Mark the request as complete.
- 	 */
--	complete_fn		*complete;
-+	void	(*complete)(struct request *);
- 
- 	/**
- 	 * @init_hctx: Called when the block layer side of a hardware queue has
- 	 * been set up, allowing the driver to allocate/init matching
- 	 * structures.
- 	 */
--	init_hctx_fn		*init_hctx;
-+	int	(*init_hctx)(struct blk_mq_hw_ctx *, void *, unsigned int);
-+
- 	/**
- 	 * @exit_hctx: Ditto for exit/teardown.
- 	 */
--	exit_hctx_fn		*exit_hctx;
-+	void	(*exit_hctx)(struct blk_mq_hw_ctx *, unsigned int);
- 
- 	/**
- 	 * @init_request: Called for every command allocated by the block layer
-@@ -353,40 +338,43 @@ struct blk_mq_ops {
- 	 * Tag greater than or equal to queue_depth is for setting up
- 	 * flush request.
- 	 */
--	init_request_fn		*init_request;
-+	int	(*init_request)(struct blk_mq_tag_set *set, struct request *,
-+				unsigned int, unsigned int);
-+
- 	/**
- 	 * @exit_request: Ditto for exit/teardown.
- 	 */
--	exit_request_fn		*exit_request;
-+	void	(*exit_request)(struct blk_mq_tag_set *set, struct request *,
-+				unsigned int);
- 
- 	/**
- 	 * @initialize_rq_fn: Called from inside blk_get_request().
- 	 */
--	void (*initialize_rq_fn)(struct request *rq);
-+	void	(*initialize_rq_fn)(struct request *rq);
- 
- 	/**
- 	 * @cleanup_rq: Called before freeing one request which isn't completed
- 	 * yet, and usually for freeing the driver private data.
- 	 */
--	cleanup_rq_fn		*cleanup_rq;
-+	void	(*cleanup_rq)(struct request *);
- 
- 	/**
- 	 * @busy: If set, returns whether or not this queue currently is busy.
- 	 */
--	busy_fn			*busy;
-+	bool	(*busy)(struct request_queue *);
- 
- 	/**
- 	 * @map_queues: This allows drivers specify their own queue mapping by
- 	 * overriding the setup-time function that builds the mq_map.
- 	 */
--	map_queues_fn		*map_queues;
-+	int	(*map_queues)(struct blk_mq_tag_set *set);
- 
- #ifdef CONFIG_BLK_DEBUG_FS
- 	/**
- 	 * @show_rq: Used by the debugfs implementation to show driver-specific
- 	 * information about a request.
- 	 */
--	void (*show_rq)(struct seq_file *m, struct request *rq);
-+	void	(*show_rq)(struct seq_file *m, struct request *rq);
- #endif
- };
- 
--- 
-2.16.4
+Oleg.
 
