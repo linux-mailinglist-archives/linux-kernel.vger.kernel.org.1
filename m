@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C65230DF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7423C230DF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgG1PfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:35:07 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:55120 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730701AbgG1PfG (ORCPT
+        id S1730893AbgG1Per (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:34:47 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:42312 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730701AbgG1Peq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:35:06 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SFYGl8078735;
-        Tue, 28 Jul 2020 10:34:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595950456;
-        bh=Y3bdMy0j6b+YSB/57qC4aT+9PUXNDrMIyX5k/Gdanh8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=e0cYw271xm0WRqWGklcW02kIWJhdHY3bU5qTLX7OFrf6eOyTH+mM19LVILV7SHm0t
-         Aj9P5gMz4nzyMF+kSPl+S0rAemWwNhdR0RF2el7mJUYxQLr9STVyvm/ISZf90vtey0
-         U6PtHR/PCDo0PIQJd0LlfeS3GFKasATjNye8V4rQ=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SFYGYX015577;
-        Tue, 28 Jul 2020 10:34:16 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
- Jul 2020 10:34:16 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 28 Jul 2020 10:34:16 -0500
-Received: from [10.250.34.248] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SFYFBW097281;
-        Tue, 28 Jul 2020 10:34:15 -0500
-Subject: Re: [RESEND PATCH v2] mfd: syscon: Use a unique name with
- regmap_config
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        David Lechner <david@lechnology.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Roger Quadros <rogerq@ti.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-omap <linux-omap@vger.kernel.org>
-References: <20200727211008.24225-1-s-anna@ti.com>
- <CAK8P3a3_qu_rwWmxMz=H5DLSoZB3Jngjxqq14vir+NudfavmMg@mail.gmail.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <2dc0dd51-2ded-996c-3b93-ad463b52582d@ti.com>
-Date:   Tue, 28 Jul 2020 10:34:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 11:34:46 -0400
+Received: by mail-ej1-f66.google.com with SMTP id g19so7277872ejc.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:34:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6Gt0QHwtzdH4z262wIb70iMKw+A0SGUVc8Tn0FAViKU=;
+        b=JlBcAlfY+3CNhUNtkIasbzWm3KWI9thdJLC4MHEJSLzldjbNm1/2QHXtdyTMFejMN9
+         EVJ6BiPaO/Y0wNMc6GQNZlORX3bo12iVz2mwMshK8zOJdiMqf0h/biX2s2p2EbdlPJyi
+         VDSdGa7hKyuB4PtFmoWAFJkoAChZbFKy4SFNsqghxdxuOlNRkn068jYE1ZohWS+F0ER5
+         UlY3FU++TO75gh7sv+saR2nKd2ujjBVpPKMQvZ4eAumdZq5RhQRomDp9M45wUWnvBuU3
+         kFbc2VpKByqhH+wqrqDq9ObUgUPK9PrrDe82ARF5d33g25Ck9BC3dL5UsQEiRDUmrkwa
+         dIUw==
+X-Gm-Message-State: AOAM532q/9nppWfjOAgk1c9VIjFvPgju/dFREQji8OAjkA09s/TWPwxT
+        KZB6YCliGfABrfVJPDGvkGk=
+X-Google-Smtp-Source: ABdhPJwfnB21m8a4Fuk44HDkuAi2hrixWDa4/7urjvF4eeV0L4xhSM1bpHjKRFF0s/xoDfrFx3fESg==
+X-Received: by 2002:a17:907:41dc:: with SMTP id og20mr27042300ejb.183.1595950484801;
+        Tue, 28 Jul 2020 08:34:44 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.213])
+        by smtp.googlemail.com with ESMTPSA id ck6sm10070701edb.18.2020.07.28.08.34.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 28 Jul 2020 08:34:44 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 17:34:41 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     od@zcrc.me, linux-kernel@vger.kernel.org,
+        "H . Nikolaus Schaller" <hns@goldelico.com>
+Subject: Re: [PATCH v2] memory: jz4780_nemc: Only request IO memory the
+ driver will use
+Message-ID: <20200728153441.GA15034@kozik-lap>
+References: <20200728152629.28878-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3_qu_rwWmxMz=H5DLSoZB3Jngjxqq14vir+NudfavmMg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200728152629.28878-1-paul@crapouillou.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/20 2:44 AM, Arnd Bergmann wrote:
-> On Mon, Jul 27, 2020 at 11:10 PM Suman Anna <s-anna@ti.com> wrote:
->>
->> The DT node full name is currently being used in regmap_config
->> which in turn is used to create the regmap debugfs directories.
->> This name however is not guaranteed to be unique and the regmap
->> debugfs registration can fail in the cases where the syscon nodes
->> have the same unit-address but are present in different DT node
->> hierarchies. Replace this logic using the syscon reg resource
->> address instead (inspired from logic used while creating platform
->> devices) to ensure a unique name is given for each syscon.
->>
->> Signed-off-by: Suman Anna <s-anna@ti.com>
->> ---
->> Hi Arnd,
->> Lee is looking for your review on this patch. Can you please
->> review and provide your comments.
+On Tue, Jul 28, 2020 at 05:26:29PM +0200, Paul Cercueil wrote:
+> The driver only uses the registers up to offset 0x54. Since the EFUSE
+> registers are in the middle of the NEMC registers, we only request
+> the registers we will use for now - that way the EFUSE driver can
+> probe too.
 > 
-> Sorry for missing this earlier. I think this makes sense, and I don't
-> expect the name change to cause problems, so
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
 > 
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-
-Thanks Arnd.
-
+> Notes:
+>     v2: Only ioremap() the registers we will use
 > 
->> --- a/drivers/mfd/syscon.c
->> +++ b/drivers/mfd/syscon.c
->> @@ -101,12 +101,14 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->>                  }
->>          }
->>
->> -       syscon_config.name = of_node_full_name(np);
->> +       syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", np,
->> +                                      (u64)res.start);
-> 
-> Note that you could avoid the cast by using "%pOFn@%pa", and
-> passing res.start by reference. Not important though, the result should
-> be similar, and you might not like the '0x' that this adds.
+>  drivers/memory/jz4780-nemc.c | 17 ++++++++++++++++-
 
-Yeah, preference was not to add the leading 0x or any leading 0s. We did 
-discuss about this on the original v2 submission [1].
+Thanks, applied.
 
-regards
-Suman
+Best regards,
+Krzysztof
 
-[1] https://patchwork.kernel.org/comment/23129393/
