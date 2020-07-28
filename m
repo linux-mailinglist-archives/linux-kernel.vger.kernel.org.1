@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D82D2301F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339BA230208
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgG1Fmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726162AbgG1Fmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:42:46 -0400
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9829D21883;
-        Tue, 28 Jul 2020 05:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595914965;
-        bh=lj3FNQ1UDqad2e0mCQmLxeBO4aVJvqcXp3FfYr1yaKs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hirz63esA2VGBgqPzEHyFgMOc8WlNGlLrR1ie0210JBHeNfO9ib9yDnUl7QnJLKbE
-         VsrFxtJIDPwuaP1BAQ9lRkC6vC2da4X6yGZ6Uftx+uXoQSm+N2yMywFwJ1zuEDDWQy
-         0NmvkeOp2iaY3uzgpPyX0NQtpiO6q+YYqGfgSoq4=
-Received: by mail-lf1-f45.google.com with SMTP id j22so4416877lfm.2;
-        Mon, 27 Jul 2020 22:42:45 -0700 (PDT)
-X-Gm-Message-State: AOAM531bgJIRP56/zQ2xxYkJMb7s/iwYqqLQkDiDQZ5syzWsuL9cJWRg
-        GzgDUb5UZ7NP0FHcSW4TxTx0ZB5LccUJ46El4Rc=
-X-Google-Smtp-Source: ABdhPJwyH+WSjHjYgU1gw0yiKhX4F2dJYfdOacs8MdbY26DOXkMyXb0Jk/TQrnIt3t9PjDKoB60Duy4DkaZsdJuuHGY=
-X-Received: by 2002:a19:be53:: with SMTP id o80mr13458103lff.33.1595914963845;
- Mon, 27 Jul 2020 22:42:43 -0700 (PDT)
+        id S1726984AbgG1Fsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726536AbgG1Fsg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 01:48:36 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C2FC0619D4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:48:36 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id k71so10905490pje.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:48:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nwCaKQb7A1eifXGGV7a5eCD4TFiRpHJ0WWrvyibHWGo=;
+        b=ThWzK6aItUQJQGmMwE/9XgdMnE3B8hgl9stdZ4ANGGr+GXR4MVlckDEryvdOb2X1g5
+         rL2UJp+8963+tjSiFZq9HYa8ojAwcGwamA3DkAiZ9W/7V+DMV4R7xwxRmKJvs4tuMYCI
+         WPYIW9LGaYCxAGDtPNK7WVsr+SW2pcW1yddoo8tzfOBh3xUA5/gJG/7GFX5vv43Wt1nD
+         BRtQPGuzmen4qMkYU1kaCKyBVW1cy+FgHMrISIsB2NpLAxRJ5iu2T1q+qKwhvD2jsFkP
+         GlE1N03xv0RYfJa3HBjoIysGmu2qHV/x8w2bKOVxTNOyCaTWTZsUsU4UOr+4BSI6Fd3Z
+         4JCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nwCaKQb7A1eifXGGV7a5eCD4TFiRpHJ0WWrvyibHWGo=;
+        b=p98MuXKfd8OCzIrcdjQKywCbQu+I4kNEEiKiFXX5N9FBy5X40h6dhg212UYFTz0oWh
+         8ZP70A5FvRfmnRdaD0P0Hrp41OsvflQddTCm29nNci3wRQSpGfNuLN2pfKTeBptxqZup
+         Ku3xYbiSnU+lGRsDxFwZEUEi+AEPafBfyRcl4unDLwhl88Ag1ViK4TD0BReiDK69h71w
+         hkUwpHobebW/yVCjE/yhAhy0PLTXK0QHeRBXJbtaOUOZaiOLUIRlU0c2jRvDXdK/vXED
+         boBbSMKqsGEHyAcdCgnQeyXV1Rq9OZm/Dq1hTxStd8ldLfzw8THbBlUtaPTAn9C3zRNN
+         h8Vw==
+X-Gm-Message-State: AOAM531wwpDERf48w3xV9i9tXDt5AvisrgPWGg6i0dgqbCtSdzxNpWaY
+        Rl8EXV2RokbNpqd40DEz1bVnAz38C+g=
+X-Google-Smtp-Source: ABdhPJyagl/2lErbHeLHksDS/3HV3/viNDfs3CKy+8bqQ7BW6jnH4d6jKx8IhtFZ7KIx602H7iB0jw==
+X-Received: by 2002:a17:90b:3685:: with SMTP id mj5mr2738571pjb.123.1595915315827;
+        Mon, 27 Jul 2020 22:48:35 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id p127sm16543663pfb.17.2020.07.27.22.48.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 22:48:35 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 22:45:03 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, ohad@wizery.com, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] remoteproc: qcom_q6v5_mss: Validate MBA firmware
+ size before load
+Message-ID: <20200728054503.GA349841@builder.lan>
+References: <20200722201047.12975-1-sibis@codeaurora.org>
+ <20200722201047.12975-2-sibis@codeaurora.org>
 MIME-Version: 1.0
-References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-27-guro@fb.com>
-In-Reply-To: <20200727184506.2279656-27-guro@fb.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 27 Jul 2020 22:42:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5cXxf8E-QR4k7tXJXqfgBRapBEvvWMUCLSDrU-0MU5dw@mail.gmail.com>
-Message-ID: <CAPhsuW5cXxf8E-QR4k7tXJXqfgBRapBEvvWMUCLSDrU-0MU5dw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 26/35] bpf: eliminate rlimit-based memory
- accounting for xskmap maps
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722201047.12975-2-sibis@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 12:21 PM Roman Gushchin <guro@fb.com> wrote:
->
-> Do not use rlimit-based memory accounting for xskmap maps.
-> It has been replaced with the memcg-based memory accounting.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
+On Wed 22 Jul 13:10 PDT 2020, Sibi Sankar wrote:
 
-Acked-by: Song Liu <songliubraving@fb.com>
+> The following mem abort is observed when the mba firmware size exceeds
+> the allocated mba region. MBA firmware size is restricted to a maximum
+> size of 1M and remaining memory region is used by modem debug policy
+> firmware when available. Hence verify whether the MBA firmware size lies
+> within the allocated memory region and is not greater than 1M before
+> loading.
+> 
+> Err Logs:
+> Unable to handle kernel paging request at virtual address
+> Mem abort info:
+> ...
+> Call trace:
+>   __memcpy+0x110/0x180
+>   rproc_start+0x40/0x218
+>   rproc_boot+0x5b4/0x608
+>   state_store+0x54/0xf8
+>   dev_attr_store+0x44/0x60
+>   sysfs_kf_write+0x58/0x80
+>   kernfs_fop_write+0x140/0x230
+>   vfs_write+0xc4/0x208
+>   ksys_write+0x74/0xf8
+>   __arm64_sys_write+0x24/0x30
+> ...
+> 
+> Fixes: 051fb70fd4ea4 ("remoteproc: qcom: Driver for the self-authenticating Hexagon v5")
+> Cc: stable@vger.kernel.org
 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
 > ---
->  net/xdp/xskmap.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
->
-> diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-> index e574b22defe5..0366013f13c6 100644
-> --- a/net/xdp/xskmap.c
-> +++ b/net/xdp/xskmap.c
-> @@ -74,7 +74,6 @@ static void xsk_map_sock_delete(struct xdp_sock *xs,
->
->  static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
+>  drivers/remoteproc/qcom_q6v5_mss.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index 718acebae777f..4e72c9e30426c 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -412,6 +412,12 @@ static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
 >  {
-> -       struct bpf_map_memory mem;
->         int err, numa_node;
->         struct xsk_map *m;
->         u64 size;
-> @@ -90,18 +89,11 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *attr)
->         numa_node = bpf_map_attr_numa_node(attr);
->         size = struct_size(m, xsk_map, attr->max_entries);
->
-> -       err = bpf_map_charge_init(&mem, size);
-> -       if (err < 0)
-> -               return ERR_PTR(err);
-> -
->         m = bpf_map_area_alloc(size, numa_node);
-> -       if (!m) {
-> -               bpf_map_charge_finish(&mem);
-> +       if (!m)
->                 return ERR_PTR(-ENOMEM);
-> -       }
->
->         bpf_map_init_from_attr(&m->map, attr);
-> -       bpf_map_charge_move(&m->map.memory, &mem);
->         spin_lock_init(&m->lock);
->
->         return &m->map;
-> --
-> 2.26.2
->
+>  	struct q6v5 *qproc = rproc->priv;
+>  
+> +	/* MBA is restricted to a maximum size of 1M */
+> +	if (fw->size > qproc->mba_size || fw->size > SZ_1M) {
+> +		dev_err(qproc->dev, "MBA firmware load failed\n");
+
+I'll change this to "MBA firmware exceeds size limit\n". Please let me
+know if you object.
+
+Regards,
+Bjorn
+
+> +		return -EINVAL;
+> +	}
+> +
+>  	memcpy(qproc->mba_region, fw->data, fw->size);
+>  
+>  	return 0;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
