@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DC3230885
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B8123087B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgG1LTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:19:37 -0400
-Received: from mout.gmx.net ([212.227.17.21]:47797 "EHLO mout.gmx.net"
+        id S1729027AbgG1LSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:18:47 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34321 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729048AbgG1LTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:19:32 -0400
+        id S1728934AbgG1LSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:18:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595935103;
-        bh=+AN/A7LaJ8QE7aEa8re6PrqGoq/kSyCmQ9u1D7Iy5LI=;
+        s=badeba3b8450; t=1595935104;
+        bh=pm4hEMlP1SzMjKQ+uHyoY76koqrhvWkeRDQON2vGLX0=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=D8wok7VxB0mIvkh48xKtrEvGEbuIEDbNRu2dKCl4Hgek+N85Rue7sHVaXCxm4mVTl
-         MN8dP5oBINRQZLdZpNVChq0a48UnOuDhey02LN/mVAaHVKG61QLc3PfaylK5xsekef
-         DhZJeAxZaq/GxOXTGfB/jWknlu+A4ro/v2EOUftw=
+        b=XFVxZUvse2zObR6M+0xBOiKlRSLE0+v2VIYCl0YJ3kC2tf49GCXNPhqSmqusKTBYF
+         5/nJhprONs3KnUNv0mp0IJFP8DUXWTRH3BuUm0w4Fp9WhaC1+7kj0kpyfJyhjdPOgA
+         KWyDgQ0DJxON7KsfDPirj6/F3kd+B3ImB9v3f89A=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from localhost.localdomain ([80.208.215.239]) by mail.gmx.com
  (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MgNh1-1kiFof40mV-00hsD8; Tue, 28 Jul 2020 13:18:23 +0200
+ 1MWRVb-1kGiTE44Mt-00Xw1i; Tue, 28 Jul 2020 13:18:24 +0200
 From:   Frank Wunderlich <frank-w@public-files.de>
 To:     linux-mediatek@lists.infradead.org
 Cc:     Frank Wunderlich <frank-w@public-files.de>,
@@ -32,104 +32,138 @@ Cc:     Frank Wunderlich <frank-w@public-files.de>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        chunhui dai <chunhui.dai@mediatek.com>
-Subject: [PATCH v2 2/5] drm/mediatek: fix boot up for 720 and 480 but 1080
-Date:   Tue, 28 Jul 2020 13:17:57 +0200
-Message-Id: <20200728111800.77641-3-frank-w@public-files.de>
+        Stu Hsieh <stu.hsieh@mediatek.com>
+Subject: [PATCH v2 3/5] drm: Add get_possible_crtc API for dpi, dsi
+Date:   Tue, 28 Jul 2020 13:17:58 +0200
+Message-Id: <20200728111800.77641-4-frank-w@public-files.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200728111800.77641-1-frank-w@public-files.de>
 References: <20200728111800.77641-1-frank-w@public-files.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ak6ylIwTkGEi+mVAT3DUFYeBflxF5UYrm21Ep/FvtMOgSVvosry
- re5T5r+z1mGqxMwD61JmDn8kXvfaEsk8E5o6GNX/A4yzkKQh5AmNhTlp8O1kK8euvhrXFWp
- NhVShiqVk49RchrRqkTBVvSn/O/dsTnEra+yI4Ykv0nQELNnk7mjirt/GkINhIpGwhrgcNx
- 8Jnt6M95h7lBxQSpTgtWQ==
+X-Provags-ID: V03:K1:hmgR7ODYKvx8oPlcDw8Lc1GdvQDfiX/JgJnDv87nXPtte2migzq
+ ZD98y+zmB/ZdT2oYW7Y7j8ofZCmyvZqa5eJRoXNRmZdV4lhEsqqiCqPF33I3WAZ5nzXzcip
+ 5b5gV7A/c4AzsF40MizKtDOUfJhcDZss5KO+Y5HIkLY1uKWgvNw03Vd+wONHCMSGrAmN1Ya
+ g9M6z+lByXTke2b9AhiEw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dqUcR0KBXak=:aRyR9GOnlN77WX8Zjvk0JI
- YepXy56eg10gErublaOanE/Bmqqf2Baw8del2gqrNPIwfPQ7n+DOiqTR6n6G8yVLuk9IQU5j8
- i76C1QN0Cukxg3eowP4JKteczmd/mfBaqFkGzbegQSZ1AvW/p7+wSx4iQSANEFBwoxEL+6HQU
- kSAhV52L9qNFPJQnreTu0t+PQo14ZzBgt/zzb3hBY4juiWVycCBp2233Zt5rhxcGIaJQ5mehn
- 9GSgv0KeuDWcnZsBWA4x2g4ZOHJVwoppHI11t+qJ0eKkig4wszqDwysr2NaWdljTx339t8LdP
- o2Bbn3eVIJjs4+YVhrTA75XN2ROOPkFRA29cqtSuGBDI4H+QLZHs409UT8nxiDQZaCvI7SyVb
- lt2d/t+XI/fiS4y9loLGGStZU5AnDC+AaEpEESRgIvw6XguLeaOIBgN1qimpZnD8K4+MXnIFV
- tMduf1Q+1ex3VJP05EqAPy0LMY7YX7gRQVGc1wliRDmLLDIPimvlC99teletDY16eJLaFUwG7
- vPmLu7A7mge5kIYBRg3JJb8BFUsKn6dR4Ntf3ytoSYTgJxeg208A6M0bhaVejvTxnk47KMaRh
- HXCf9cRzmw5dFFxk9FYqecrtVWtPHQUUGp/4GH+x4pFdLdkP7QL7R9QoBXLOKnmvvbqeWjhOz
- NM0ZOeLO31h9KE7kwvfs9Oh0PqgehAKps8M7VX3kvRXMxrspyjfqO1pqAksFUiJ6jWk/SShb3
- zw5UPivbUVJ+7V8nXKzRIqJvST8+3Yu4fbaH6I4MGxxoab+SaBY+JzpSxEtMufZA6082YqWN0
- h+lV0rkLojAfHXiCwyEjKxbtvaFuyssixVB+KlIATdhyKSzTiZRMx2hTftW8KYuDU5tQLGFLm
- B/c6wBVT9jP8HUp28skc/8dwf5PoR3y2gFrBh2uSWMna9zNNtpsvMuefi5ZFLFWz2KSCQnjWW
- VGYldNp72+0lLzPx9NJvPMXtSnnx8X8/Kf1jUNOloNw2l1qmD5pnWXLrjkzpZysztBwtyzXsl
- jgAviTDjbGIqbmoC9BfvDQ2igXRdqNbSHAHHAkpx/yH9xZZvgY5RCnNIglWSHVMJaR0Kqbg+i
- SFVn7WIjCSSvW9A7RAW4FZkwEUHEZ/SQJdxZWDGeFaL6dESAL0ggoqMSPbVuSiJFgZqGNT0R7
- kr2Wm9ISh4cnpbqlC8vTyR8x/PV6ZU6OW7OCvie6VtD+kapKXwQbxAgmYcK5mZAuaNUDYpStT
- IiWzYNz6Ir8g5gfRfsq+oEVovZmuInfiANpQfiQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Cj6kSjaFYw8=:ibEsBPbF6stniMnVYTZhpV
+ zDkTCWx13nsNCZy0D5Scrx7JkmlXPW9zL7/aTnkpDis106jtkcOYgFza12v6q47vNqG2godoh
+ gLhY6SVqb6ELX75sq7sW9ju1u74/7nZLjimkkHxejvjvC68ctmMo/7sCG8m2LGloyFKovYFGN
+ c084KbHFzK9BOtz9pW99diRqvqZk9muoO8ZF4eUUMP/5Ua+mXClWA35s+POS6yTJrsFPwrJz+
+ cM7pYI9fulZGb1LVAnxq27bJR3AaLdbEsE4P5haSQNgi0V0Mh28cY/wEacu2MRiG7NvnFxc+x
+ 8TIXF4DBnyNnv8jOmtkGTfOKlCcvQnR4J+oh8Vtp459QvDO3rGcWc1AGR1IPwjyT50XSS3VR2
+ B7/HNGfrnBFeiqEfvmz+e1TwHznJDsTFNa2PTfjh0e3z0wqLAreht+MlcFoISSgKETCNcdJhY
+ 378QtY91hzcKzat+4kHeGsq/dGy8uzjqJTepaKJFyoBkM9ZvLW/bCowAvUYZdl3Hy/VJHONB1
+ 5gZfV8lE5CDynHFSpDYKzbPuQHCc3dZ/Aju0A/Mmuss+HJygnabm37a1Y5joD+/zch5YeehTf
+ k0+7i8ELA8ASlNL9e58PPPos4+lgPi78XRBZbHZ0uwLMS9MJl12Bwq6cJ799NDSoBNXJapmfz
+ 9KPRYgR1OFKg9LSLIz6wLpETayxOFcD0CxlNKVKvaoN6NpjICpTImFwRBsf4COXV8UPWM4R+E
+ SJP6QfiPkjP0JGyFQzVCqiCagV8pdNlwahDp7tODe1KbJFS0goSZBVWs8r0uYnW0DVXaBAGh3
+ EICMUtSprDwHaR+AloPUW8Ra6ngCNhCyu+VcBhBbjjQGxs5CDQksdQUdEYgGdK+wa+7FXxFKk
+ VdOQlWAxgq6NFRas28wxZmZKiJu7cNeqyAzWoufPrLetgvQ3l+zAdxOBumVKoJGEs2wrsTfAx
+ iFZDjKY5bQUk1iAAiVZHYWr0SLM8SlY8u7J18msdM6iRv8Xg+bG5t4a//wlAYrMzs1MS0ALVs
+ Tj3qoYk/KWnHFUVVg3h2U10q76AkiMaBO3OeakA8+WJJpSer5YuLJm5PtUwQkknRxx7XZe99Z
+ x66jqTHfYLKBRUnifsBLBcv8rdDLDDHf2vofJmzUTKUhupHuUuOeWTM8wbq7jw6805Cz9USj+
+ /942CydVIXV2AafeVEPUm1hHx3wbdK2S8htiYNjoRmsJoOFPWZEdsPBD91x8OTDWG7iu9sAm8
+ C2JokM1mtSHkutkn75y22/U+jB5+nK2NzE4tkNg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chunhui dai <chunhui.dai@mediatek.com>
+From: Stu Hsieh <stu.hsieh@mediatek.com>
 
-- disable tmds on phy on mt2701
-- support other resolutions like 1280x1024
+Test: build pass and run ok
 
-without this Patch i see flickering on my TFT (1280x1024),
-so i guess clock is wrong.
-
-Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Tested-by: Frank Wunderlich <frank-w@public-files.de>
+Signed-off-by: Stu Hsieh <stu.hsieh@mediatek.com>
 =2D--
- drivers/gpu/drm/mediatek/mtk_hdmi_phy.c        | 3 +++
- drivers/gpu/drm/mediatek/mtk_hdmi_phy.h        | 1 +
- drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c | 1 +
- 3 files changed, 5 insertions(+)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 42 +++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  2 +
+ 2 files changed, 44 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c b/drivers/gpu/drm/med=
-iatek/mtk_hdmi_phy.c
-index 5223498502c4..edadb7a700f1 100644
-=2D-- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
-@@ -184,6 +184,9 @@ static int mtk_hdmi_phy_probe(struct platform_device *=
-pdev)
- 		return PTR_ERR(phy_provider);
- 	}
-
-+	if (hdmi_phy->conf->pll_default_off)
-+		hdmi_phy->conf->hdmi_phy_disable_tmds(hdmi_phy);
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm=
+/mediatek/mtk_drm_ddp_comp.c
+index 57c88de9a329..a5f2ff6bea93 100644
+=2D-- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -13,6 +13,8 @@
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
+ #include <linux/soc/mediatek/mtk-cmdq.h>
++#include <drm/drm_print.h>
 +
- 	return of_clk_add_provider(dev->of_node, of_clk_src_simple_get,
- 				   hdmi_phy->pll);
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_plane.h"
+ #include "mtk_drm_ddp_comp.h"
+@@ -412,6 +414,22 @@ static const struct mtk_ddp_comp_match mtk_ddp_matche=
+s[DDP_COMPONENT_ID_MAX] =3D {
+ 	[DDP_COMPONENT_WDMA1]	=3D { MTK_DISP_WDMA,	1, NULL },
+ };
+
++static bool mtk_drm_find_comp_in_ddp(struct mtk_ddp_comp ddp_comp,
++					 const enum mtk_ddp_comp_id *path,
++					 unsigned int path_len)
++{
++	unsigned int i;
++
++	if (path =3D=3D NULL)
++		return false;
++
++	for (i =3D 0U; i < path_len; i++)
++		if (ddp_comp.id =3D=3D path[i])
++			return true;
++
++	return false;
++}
++
+ int mtk_ddp_comp_get_id(struct device_node *node,
+ 			enum mtk_ddp_comp_type comp_type)
+ {
+@@ -427,6 +445,30 @@ int mtk_ddp_comp_get_id(struct device_node *node,
+ 	return -EINVAL;
  }
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h b/drivers/gpu/drm/med=
-iatek/mtk_hdmi_phy.h
-index 2d8b3182470d..f472fdeb63dc 100644
-=2D-- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
-@@ -22,6 +22,7 @@ struct mtk_hdmi_phy;
- struct mtk_hdmi_phy_conf {
- 	bool tz_disabled;
- 	unsigned long flags;
-+	bool pll_default_off;
- 	const struct clk_ops *hdmi_phy_clk_ops;
- 	void (*hdmi_phy_enable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
- 	void (*hdmi_phy_disable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
-diff --git a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c b/drivers/gpu/=
-drm/mediatek/mtk_mt2701_hdmi_phy.c
-index d3cc4022e988..6fbedacfc1e8 100644
-=2D-- a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-+++ b/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
-@@ -239,6 +239,7 @@ static void mtk_hdmi_phy_disable_tmds(struct mtk_hdmi_=
-phy *hdmi_phy)
- struct mtk_hdmi_phy_conf mtk_hdmi_phy_2701_conf =3D {
- 	.tz_disabled =3D true,
- 	.flags =3D CLK_SET_RATE_GATE,
-+	.pll_default_off =3D true,
- 	.hdmi_phy_clk_ops =3D &mtk_hdmi_phy_pll_ops,
- 	.hdmi_phy_enable_tmds =3D mtk_hdmi_phy_enable_tmds,
- 	.hdmi_phy_disable_tmds =3D mtk_hdmi_phy_disable_tmds,
+
++unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
++						struct mtk_ddp_comp ddp_comp)
++{
++	struct mtk_drm_private *private =3D drm->dev_private;
++	unsigned int ret;
++
++	if (mtk_drm_find_comp_in_ddp(ddp_comp, private->data->main_path,
++		private->data->main_len) =3D=3D true) {
++		ret =3D BIT(0);
++	} else if (mtk_drm_find_comp_in_ddp(ddp_comp,
++		private->data->ext_path,
++		private->data->ext_len) =3D=3D true) {
++		ret =3D BIT(1);
++	} else if (mtk_drm_find_comp_in_ddp(ddp_comp,
++		private->data->third_path,
++		private->data->third_len) =3D=3D true) {
++		ret =3D BIT(2);
++	} else {
++		DRM_INFO("Failed to find comp in ddp table\n");
++		ret =3D 0;
++	}
++	return ret;
++}
++
+ int mtk_ddp_comp_init(struct device *dev, struct device_node *node,
+ 		      struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
+ 		      const struct mtk_ddp_comp_funcs *funcs)
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm=
+/mediatek/mtk_drm_ddp_comp.h
+index debe36395fe7..1d9e00b69462 100644
+=2D-- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
+@@ -202,6 +202,8 @@ static inline void mtk_ddp_ctm_set(struct mtk_ddp_comp=
+ *comp,
+
+ int mtk_ddp_comp_get_id(struct device_node *node,
+ 			enum mtk_ddp_comp_type comp_type);
++unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
++						struct mtk_ddp_comp ddp_comp);
+ int mtk_ddp_comp_init(struct device *dev, struct device_node *comp_node,
+ 		      struct mtk_ddp_comp *comp, enum mtk_ddp_comp_id comp_id,
+ 		      const struct mtk_ddp_comp_funcs *funcs);
 =2D-
 2.25.1
 
