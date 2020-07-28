@@ -2,156 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4766B230A97
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE68B230A9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729905AbgG1Msn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:48:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60562 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729379AbgG1Msm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:48:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A932DAD18;
-        Tue, 28 Jul 2020 12:48:51 +0000 (UTC)
-Subject: Re: [PATCH v2][next] bcache: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200727230418.GA14028@embeddedor>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Message-ID: <9c8fa79f-a34a-1e3d-10ed-819bb05e8b30@suse.de>
-Date:   Tue, 28 Jul 2020 20:48:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        id S1729916AbgG1Mtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729890AbgG1Mtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:49:42 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27961C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:49:42 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id q85so4527657vke.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZNiMEHuT8+pdMAqptzZeWT7zj1wFIC1aVPAo0nMoMBw=;
+        b=ktZjHIcSKPi6h78SKzXBq/EtIpvMrLjjjqSHlPVylZbx2YJgbjQdUh9vVGIDT2E5MH
+         PJ0WXIaDGYaqe8cuv0Xdp1sABdQwSzrCmhlCj6dnkVflP5kMOXzBRwvwUynSuktljIF5
+         qOwhBHPzf2pEClZygy7VrFZyQYCpjvVjzn60OmSaqPikXjoSloTMe9H9od2/Rjxj5y6J
+         XCovimwj00i5CsKpJONKcvb/4iPAVR45I8fN5IerQWetJs2If1NpqPmCGGJJUZc6Vlmv
+         sGVbMJ52fSNmBfiEf9CrHEQpiaZi/jBeHa8j4Kge+aKBw+p8+mNmJG7HTDtjFl3g49oC
+         foQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZNiMEHuT8+pdMAqptzZeWT7zj1wFIC1aVPAo0nMoMBw=;
+        b=Gp9WemfVIXWoZasTdDs1cUmgtRbIi19eeLQG5PZYjEKZlq3pJ6oTP2vfCJHtesVhcR
+         p7fd9RxHaYTvnh1bxKA2p6ml6qM2jFy2GGQ6sYnWibMsDLci5QTakR2q2iUlTq5GTH9p
+         AgtxZa5O4u4llZpL6GRFfMGg7v7gGIwn/K8RvWbb36333NV7VHwlzRn/930fCi3jL8Lf
+         dxtOVfo5ULU5R5pwIkKBnw5YiHPQgW3ILbfBChS1TtfrPq1oP3FmUhacBGUXd8Eooohr
+         AQLFVskJxD1Nq9oIAQc7tsyCEmvaTlJA9yu6O0ik2KrvzzvxgXWRioWHxIdngyR15FxJ
+         MjEg==
+X-Gm-Message-State: AOAM5312nRdqwQQ91kj8E8+0XP/g1xMGg/xDk4UFFsGnd+9Y4JQXRvgC
+        AHBkkyzRp3Z/XeneIGSbYLLN4svimH3zq4A9Zacadw==
+X-Google-Smtp-Source: ABdhPJzwTW2xZn0tGCPfUw7SANUU1RLHBQG0L0PQcaYpCrQ5D8gDCWNSYISy8i6qPVZ1d532Mpw/maXbJOc/pFNAApo=
+X-Received: by 2002:a1f:a816:: with SMTP id r22mr8678960vke.99.1595940580992;
+ Tue, 28 Jul 2020 05:49:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200727230418.GA14028@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200724091520.880211-1-tweek@google.com> <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
+ <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
+In-Reply-To: <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
+From:   =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
+Date:   Tue, 28 Jul 2020 14:49:24 +0200
+Message-ID: <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com>
+Subject: Re: [PATCH] selinux: add tracepoint on denials
+To:     Paul Moore <paul@paul-moore.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/7/28 07:04, Gustavo A. R. Silva wrote:
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1].
-> 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Thanks for the review! I'll send a new revision of the patch with the
+%x formatter and using the TP_CONDITION macro.
 
-I am OK with it, add it to my second for-next series.
-
-Thanks.
-
-Coly Li
+On adding further information to the trace event, I would prefer
+adding the strict minimum to be able to correlate the event with the
+avc message. The reason is that tracevents have a fixed size (see
+https://www.kernel.org/doc/Documentation/trace/events.txt). For
+instance, we would need to decide on a maximum size for the string
+representation of the list of permissions. This would also duplicate
+the reporting done in the avc audit event. I'll simply add the pid as
+part of the printk, which should be sufficient for the correlation.
 
 
-> ---
-> Changes in v2:
->  - Add missing semicolon.
-> 
->  drivers/md/bcache/journal.c |  2 +-
->  drivers/md/bcache/util.c    | 14 +++++++-------
->  2 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
-> index 77fbfd52edcf..c1227bdb57e7 100644
-> --- a/drivers/md/bcache/journal.c
-> +++ b/drivers/md/bcache/journal.c
-> @@ -608,7 +608,7 @@ static void do_journal_discard(struct cache *ca)
->  			ca->sb.njournal_buckets;
->  
->  		atomic_set(&ja->discard_in_flight, DISCARD_READY);
-> -		/* fallthrough */
-> +		fallthrough;
->  
->  	case DISCARD_READY:
->  		if (ja->discard_idx == ja->last_idx)
-> diff --git a/drivers/md/bcache/util.c b/drivers/md/bcache/util.c
-> index 62fb917f7a4f..ae380bc3992e 100644
-> --- a/drivers/md/bcache/util.c
-> +++ b/drivers/md/bcache/util.c
-> @@ -33,27 +33,27 @@ int bch_ ## name ## _h(const char *cp, type *res)		\
->  	case 'y':						\
->  	case 'z':						\
->  		u++;						\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case 'e':						\
->  		u++;						\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case 'p':						\
->  		u++;						\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case 't':						\
->  		u++;						\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case 'g':						\
->  		u++;						\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case 'm':						\
->  		u++;						\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case 'k':						\
->  		u++;						\
->  		if (e++ == cp)					\
->  			return -EINVAL;				\
-> -		/* fall through */				\
-> +		fallthrough;					\
->  	case '\n':						\
->  	case '\0':						\
->  		if (*e == '\n')					\
-> 
-
+On Fri, Jul 24, 2020 at 3:55 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Fri, Jul 24, 2020 at 9:32 AM Stephen Smalley
+> <stephen.smalley.work@gmail.com> wrote:
+> > On Fri, Jul 24, 2020 at 5:15 AM Thi=C3=A9baud Weksteen <tweek@google.co=
+m> wrote:
+> > > The audit data currently captures which process and which target
+> > > is responsible for a denial. There is no data on where exactly in the
+> > > process that call occurred. Debugging can be made easier by being abl=
+e to
+> > > reconstruct the unified kernel and userland stack traces [1]. Add a
+> > > tracepoint on the SELinux denials which can then be used by userland
+> > > (i.e. perf).
+> > >
+> > > Although this patch could manually be added by each OS developer to
+> > > trouble shoot a denial, adding it to the kernel streamlines the
+> > > developers workflow.
+> > >
+> > > [1] https://source.android.com/devices/tech/debug/native_stack_dump
+> > >
+> > > Signed-off-by: Thi=C3=A9baud Weksteen <tweek@google.com>
+> > > Signed-off-by: Joel Fernandes <joelaf@google.com>
+> > > ---
+> > >  MAINTAINERS                    |  1 +
+> > >  include/trace/events/selinux.h | 35 ++++++++++++++++++++++++++++++++=
+++
+> > >  security/selinux/avc.c         |  6 ++++++
+> > >  3 files changed, 42 insertions(+)
+> > >  create mode 100644 include/trace/events/selinux.h
+> > >
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index e64cdde81851..6b6cd5e13537 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -15358,6 +15358,7 @@ T:      git git://git.kernel.org/pub/scm/linu=
+x/kernel/git/pcmoore/selinux.git
+> > >  F:     Documentation/ABI/obsolete/sysfs-selinux-checkreqprot
+> > >  F:     Documentation/ABI/obsolete/sysfs-selinux-disable
+> > >  F:     Documentation/admin-guide/LSM/SELinux.rst
+> > > +F:     include/trace/events/selinux.h
+> > >  F:     include/uapi/linux/selinux_netlink.h
+> > >  F:     scripts/selinux/
+> > >  F:     security/selinux/
+> > > diff --git a/include/trace/events/selinux.h b/include/trace/events/se=
+linux.h
+> > > new file mode 100644
+> > > index 000000000000..e247187a8135
+> > > --- /dev/null
+> > > +++ b/include/trace/events/selinux.h
+> > > @@ -0,0 +1,35 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +#undef TRACE_SYSTEM
+> > > +#define TRACE_SYSTEM selinux
+> > > +
+> > > +#if !defined(_TRACE_SELINUX_H) || defined(TRACE_HEADER_MULTI_READ)
+> > > +#define _TRACE_SELINUX_H
+> > > +
+> > > +#include <linux/ktime.h>
+> > > +#include <linux/tracepoint.h>
+> > > +
+> > > +TRACE_EVENT(selinux_denied,
+> > > +
+> > > +       TP_PROTO(int cls, int av),
+> > > +
+> > > +       TP_ARGS(cls, av),
+> > > +
+> > > +       TP_STRUCT__entry(
+> > > +               __field(int, cls)
+> > > +               __field(int, av)
+> > > +       ),
+> > > +
+> > > +       TP_fast_assign(
+> > > +               __entry->cls =3D cls;
+> > > +               __entry->av =3D av;
+> > > +       ),
+> > > +
+> > > +       TP_printk("denied %d %d",
+> > > +               __entry->cls,
+> > > +               __entry->av)
+> > > +);
+> >
+> > I would think you would want to log av as %x for easier interpretation
+> > especially when there are multiple permissions being checked at once
+> > (which can happen). Also both cls and av would properly be unsigned
+> > values.  Only other question I have is whether it would be beneficial
+> > to include other information here to help uniquely identify/correlate
+> > the denial with the avc: message and whether any decoding of the
+> > class, av, or other information could/should be done here versus in
+> > some userland helper.
+>
+> It does seem like at the very least it would be nice to see the av as
+> hex values instead of integers, e.g. "%x" in the TP_printk() call.
+> Considering this patch is about making dev's lives easier, I tend to
+> agree with Stephen questioning if you should go a step further and
+> convert both the class and av values into string representations.
+>
+> --
+> paul moore
+> www.paul-moore.com
