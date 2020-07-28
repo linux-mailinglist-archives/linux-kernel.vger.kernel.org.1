@@ -2,212 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A743230101
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5200D2300EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgG1FCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:02:25 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:5509 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726978AbgG1FCW (ORCPT
+        id S1726817AbgG1FBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgG1FBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:02:22 -0400
-IronPort-SDR: U9SixHQH4SO1isVnBYQPSnonE5lYcydiwgjeftP7ZmLx0qfhFk2VSslsxORmqnDqCP2NT4jlQW
- wDvZxK6NLt7fPwS8WjDIaV6D89pqVSWCspmvG4w+PfqQbPFH6Q6FwgwaBAQOz7D1KO5kIy+W1b
- eWd6n5ySskChVLIXDqYMnCNaXPytaGufGOt3mzNU+PYLRxnozcpAZBBkgLhpEJsHipWEAAilsm
- PrH0u1A5KfGssFFVd4nIoDER1i0QDfBRYsKLdiHsnDtwdFfN5COWNtxjFFhhx6w/hYuUXAWJG8
- jK4=
-X-IronPort-AV: E=Sophos;i="5.75,405,1589266800"; 
-   d="scan'208";a="47234207"
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by labrats.qualcomm.com with ESMTP; 27 Jul 2020 22:01:37 -0700
-Received: from pacamara-linux.qualcomm.com ([192.168.140.135])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 27 Jul 2020 22:01:36 -0700
-Received: by pacamara-linux.qualcomm.com (Postfix, from userid 359480)
-        id 9BF3322DA6; Mon, 27 Jul 2020 22:01:36 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        sh425.lee@samsung.com, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v7 8/8] scsi: ufs: Fix a racing problem btw error handler and runtime PM ops
-Date:   Mon, 27 Jul 2020 22:00:59 -0700
-Message-Id: <1595912460-8860-9-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595912460-8860-1-git-send-email-cang@codeaurora.org>
-References: <1595912460-8860-1-git-send-email-cang@codeaurora.org>
+        Tue, 28 Jul 2020 01:01:48 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F495C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:01:47 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k18so3036729pfp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pvK0ev5cxRiAMES2LwocRB0zuTfv4RSfxEp+cEikUek=;
+        b=QLDIFiweKFoEeNtrtNBe8Z0TBBcqdWvmwRC0OtwsgH0XE//RxcPxO1+FWIBAKL+8sH
+         H1q/GUF6ztaNV045qC5aYjMEHpRq5cCdo0rh7LuzJ6Bnn0yjqTEbVdeAuqKcj+2sVjb0
+         IkRwS+zgtBoc84wtK1WEbg6TwcuGvllnZ6mus=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pvK0ev5cxRiAMES2LwocRB0zuTfv4RSfxEp+cEikUek=;
+        b=auNyF04jDy2bICNVEFsPH7ozJcN7ppTqe1sLyi7JT0dw5XgJXaJNr+/C0k9X4kYZCp
+         KaP+bG0X32iywc1D2F5cjVG/ll8rfVoWgc4MPBCFXpeLWB5S310D/GA3L0iVOmPqFmGI
+         qCenXPImkpmLBTj8PKPSXf7FvZT6WOFlHkU0vJHpWRyMYbyYl3ZVqjG4bU5JlCoKCXcX
+         69nFFQTChi5UV3xyU8RFtQFPa9t2lvZS6pPqNa6odEeTG+S8KZq2quvzysb+s/oyF0jh
+         qFf1lMQcWTRsrnVgnqAYGvc+hQfLox6xreQpetcJflgS+SmZadGJWEbFdlPfvD6ahCA9
+         9e0Q==
+X-Gm-Message-State: AOAM533H+y0fCT+D6WCi68ZvudXff/LLeucSRP6UGKiD98VCYAzvbwyI
+        DqdzQ4rdd/XJELF+4+V32dZKQQ==
+X-Google-Smtp-Source: ABdhPJy67ViNBgTVNsG3xR6SCIBkpWpQ424Q+eyNgk/Qkb1lwIhrNajWk8Z3yx2L14WHn2HWf2CHjw==
+X-Received: by 2002:a62:7958:: with SMTP id u85mr113344pfc.248.1595912506759;
+        Mon, 27 Jul 2020 22:01:46 -0700 (PDT)
+Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
+        by smtp.gmail.com with ESMTPSA id mg17sm1278157pjb.55.2020.07.27.22.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 22:01:45 -0700 (PDT)
+From:   Claire Chang <tientzu@chromium.org>
+To:     robh+dt@kernel.org, frowand.list@gmail.com, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com
+Cc:     treding@nvidia.com, gregkh@linuxfoundation.org,
+        saravanak@google.com, suzuki.poulose@arm.com,
+        dan.j.williams@intel.com, heikki.krogerus@linux.intel.com,
+        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        drinkcat@chromium.org, tfiga@chromium.org, tientzu@chromium.org
+Subject: [RFC v2 0/5] Restricted DMA
+Date:   Tue, 28 Jul 2020 13:01:35 +0800
+Message-Id: <20200728050140.996974-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current IRQ handler blocks scsi requests before scheduling eh_work, when
-error handler calls pm_runtime_get_sync, if ufshcd_suspend/resume sends a
-scsi cmd, most likely the SSU cmd, since scsi requests are blocked,
-pm_runtime_get_sync() will never return because ufshcd_suspend/reusme is
-blocked by the scsi cmd. Some changes and code re-arrangement can be made
-to resolve it.
+This series implements mitigations for lack of DMA access control on
+systems without an IOMMU, which could result in the DMA accessing the
+system memory at unexpected times and/or unexpected addresses, possibly
+leading to data leakage or corruption.
 
-o In queuecommand path, hba->ufshcd_state check and ufshcd_send_command
-  should stay into the same spin lock. This is to make sure that no more
-  commands leak into doorbell after hba->ufshcd_state is changed.
-o Don't block scsi requests before scheduling eh_work, let error handler
-  block scsi requests when it is ready to start error recovery.
-o Don't let scsi layer keep requeuing the scsi cmds sent from hba runtime
-  PM ops, let them pass or fail them. Let them pass if eh_work is scheduled
-  due to non-fatal errors. Fail them fail if eh_work is scheduled due to
-  fatal errors, otherwise the cmds may eventually time out since UFS is in
-  bad state, which gets error handler blocked for too long. If we fail the
-  scsi cmds sent from hba runtime PM ops, hba runtime PM ops fails too, but
-  it does not hurt since error handler can recover hba runtime PM error.
+For example, we plan to use the PCI-e bus for Wi-Fi on one MTK platform and
+that PCI-e bus is not behind an IOMMU. As PCI-e, by design, gives the
+device full access to system memory, a vulnerability in the Wi-Fi firmware
+could easily escalate to a full system exploit (remote wifi exploits: [1a],
+[1b] that shows a full chain of exploits; [2], [3]).
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 84 +++++++++++++++++++++++++++--------------------
- 1 file changed, 49 insertions(+), 35 deletions(-)
+To mitigate the security concerns, we introduce restricted DMA. The
+restricted DMA is implemented by per-device swiotlb and coherent memory
+pools. The feature on its own provides a basic level of protection against
+the DMA overwriting buffer contents at unexpected times. However, to
+protect against general data leakage and system memory corruption, the
+system needs to provide a way to restrict the DMA to a predefined memory
+region (this is usually done at firmware level, e.g. in ATF on some ARM
+platforms).
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index b2bafa3..9c8c43f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -126,7 +126,8 @@ enum {
- 	UFSHCD_STATE_RESET,
- 	UFSHCD_STATE_ERROR,
- 	UFSHCD_STATE_OPERATIONAL,
--	UFSHCD_STATE_EH_SCHEDULED,
-+	UFSHCD_STATE_EH_SCHEDULED_FATAL,
-+	UFSHCD_STATE_EH_SCHEDULED_NON_FATAL,
- };
+[1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+[1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+[2] https://blade.tencent.com/en/advisories/qualpwn/
+[3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+
+
+Claire Chang (5):
+  swiotlb: Add io_tlb_mem struct
+  swiotlb: Add device swiotlb pool
+  swiotlb: Use device swiotlb pool if available
+  dt-bindings: of: Add plumbing for restricted DMA pool
+  of: Add plumbing for restricted DMA pool
+
+ .../reserved-memory/reserved-memory.txt       |  35 ++
+ drivers/iommu/intel/iommu.c                   |   8 +-
+ drivers/of/address.c                          |  39 ++
+ drivers/of/device.c                           |   3 +
+ drivers/of/of_private.h                       |   6 +
+ drivers/xen/swiotlb-xen.c                     |   4 +-
+ include/linux/device.h                        |   4 +
+ include/linux/dma-direct.h                    |   8 +-
+ include/linux/swiotlb.h                       |  49 +-
+ kernel/dma/direct.c                           |   8 +-
+ kernel/dma/swiotlb.c                          | 418 +++++++++++-------
+ 11 files changed, 393 insertions(+), 189 deletions(-)
+
+--
+v1: https://lore.kernel.org/patchwork/cover/1271660/
+Changes in v2:
+- build on top of swiotlb
  
- /* UFSHCD error handling flags */
-@@ -2515,34 +2516,6 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 	if (!down_read_trylock(&hba->clk_scaling_lock))
- 		return SCSI_MLQUEUE_HOST_BUSY;
- 
--	spin_lock_irqsave(hba->host->host_lock, flags);
--	switch (hba->ufshcd_state) {
--	case UFSHCD_STATE_OPERATIONAL:
--		break;
--	case UFSHCD_STATE_EH_SCHEDULED:
--	case UFSHCD_STATE_RESET:
--		err = SCSI_MLQUEUE_HOST_BUSY;
--		goto out_unlock;
--	case UFSHCD_STATE_ERROR:
--		set_host_byte(cmd, DID_ERROR);
--		cmd->scsi_done(cmd);
--		goto out_unlock;
--	default:
--		dev_WARN_ONCE(hba->dev, 1, "%s: invalid state %d\n",
--				__func__, hba->ufshcd_state);
--		set_host_byte(cmd, DID_BAD_TARGET);
--		cmd->scsi_done(cmd);
--		goto out_unlock;
--	}
--
--	/* if error handling is in progress, don't issue commands */
--	if (ufshcd_eh_in_progress(hba)) {
--		set_host_byte(cmd, DID_ERROR);
--		cmd->scsi_done(cmd);
--		goto out_unlock;
--	}
--	spin_unlock_irqrestore(hba->host->host_lock, flags);
--
- 	hba->req_abort_count = 0;
- 
- 	err = ufshcd_hold(hba, true);
-@@ -2578,11 +2551,50 @@ static int ufshcd_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 	/* Make sure descriptors are ready before ringing the doorbell */
- 	wmb();
- 
--	/* issue command to the controller */
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-+	switch (hba->ufshcd_state) {
-+	case UFSHCD_STATE_OPERATIONAL:
-+	case UFSHCD_STATE_EH_SCHEDULED_NON_FATAL:
-+		break;
-+	case UFSHCD_STATE_EH_SCHEDULED_FATAL:
-+		/*
-+		 * If we are here, eh_work is either scheduled or running.
-+		 * Before eh_work sets ufshcd_state to STATE_RESET, it flushes
-+		 * runtime PM ops by calling pm_runtime_get_sync(). If a scsi
-+		 * cmd, e.g. the SSU cmd, is sent by PM ops, it can never be
-+		 * finished if we let SCSI layer keep retrying it, which gets
-+		 * eh_work stuck forever. Neither can we let it pass, because
-+		 * ufs now is not in good status, so the SSU cmd may eventually
-+		 * time out, blocking eh_work for too long. So just let it fail.
-+		 */
-+		if (hba->pm_op_in_progress) {
-+			hba->force_reset = true;
-+			set_host_byte(cmd, DID_BAD_TARGET);
-+			goto out_compl_cmd;
-+		}
-+	case UFSHCD_STATE_RESET:
-+		err = SCSI_MLQUEUE_HOST_BUSY;
-+		goto out_compl_cmd;
-+	case UFSHCD_STATE_ERROR:
-+		set_host_byte(cmd, DID_ERROR);
-+		goto out_compl_cmd;
-+	default:
-+		dev_WARN_ONCE(hba->dev, 1, "%s: invalid state %d\n",
-+				__func__, hba->ufshcd_state);
-+		set_host_byte(cmd, DID_BAD_TARGET);
-+		goto out_compl_cmd;
-+	}
- 	ufshcd_send_command(hba, tag);
--out_unlock:
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	goto out;
-+
-+out_compl_cmd:
-+	scsi_dma_unmap(lrbp->cmd);
-+	lrbp->cmd = NULL;
-+	spin_unlock_irqrestore(hba->host->host_lock, flags);
-+	ufshcd_release(hba);
-+	if (!err)
-+		cmd->scsi_done(cmd);
- out:
- 	up_read(&hba->clk_scaling_lock);
- 	return err;
-@@ -5553,7 +5565,11 @@ static inline void ufshcd_schedule_eh_work(struct ufs_hba *hba)
- {
- 	/* handle fatal errors only when link is not in error state */
- 	if (hba->ufshcd_state != UFSHCD_STATE_ERROR) {
--		hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED;
-+		if (hba->force_reset || ufshcd_is_link_broken(hba) ||
-+		    ufshcd_is_saved_err_fatal(hba))
-+			hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED_FATAL;
-+		else
-+			hba->ufshcd_state = UFSHCD_STATE_EH_SCHEDULED_NON_FATAL;
- 		queue_work(hba->eh_wq, &hba->eh_work);
- 	}
- }
-@@ -5659,6 +5675,7 @@ static void ufshcd_err_handler(struct work_struct *work)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 	ufshcd_err_handling_prepare(hba);
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-+	ufshcd_scsi_block_requests(hba);
- 	hba->ufshcd_state = UFSHCD_STATE_RESET;
- 
- 	/* Complete requests that have door-bell cleared by h/w */
-@@ -5912,9 +5929,6 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
- 		 */
- 		hba->saved_err |= hba->errors;
- 		hba->saved_uic_err |= hba->uic_error;
--
--		/* block commands from scsi mid-layer */
--		ufshcd_scsi_block_requests(hba);
- 		ufshcd_schedule_eh_work(hba);
- 		retval |= IRQ_HANDLED;
- 	}
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.28.0.rc0.142.g3c755180ce-goog
 
