@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCFC22FF83
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85B022FF85
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgG1CV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgG1CV4 (ORCPT
+        id S1726909AbgG1CWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:22:22 -0400
+Received: from smtprelay0216.hostedemail.com ([216.40.44.216]:56242 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726269AbgG1CWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:21:56 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A99C061794;
-        Mon, 27 Jul 2020 19:21:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BG0md2Jm1z9sRW;
-        Tue, 28 Jul 2020 12:21:53 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595902914;
-        bh=nfrzytzibpbBRKo0fiL93fU+1sogFMuht34aTf1uoTA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XuOd101QIaTsN7AHtL8ziBfKkk/hShVxOPCQdP5h4ngI91q6io0AdTiC2xaLafKj6
-         5hwbrBVvGs9J6nTAGNm+IkMdfhFoIC7t37m3h2UBokHSlGplOkYtIzBzxLbH5r2jVc
-         jT/+AQD5zM/SxEA1YS4q90w/N/C7mgfHpvJdEdOcUyqvc/E4BrUX8fdoAgwGBrQJ2C
-         eFNGIr2I5SiBvrDGE37UBw/XnRjn/qBWiNwnxzURPRxVhFoFqy8CoTDcCp9YHurv3y
-         uRjHM2aUtP6BsyiICofJeyjqEUc4fXLVD/uHASUBEzd2GtJBPcNIgjhj84Nu2er7at
-         7AzpCk9a0AItg==
-Date:   Tue, 28 Jul 2020 12:21:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: Re: linux-next: build failure after merge of the printk tree
-Message-ID: <20200728122152.384a57d0@canb.auug.org.au>
-In-Reply-To: <20200728015119.GA11428@gondor.apana.org.au>
-References: <20200728114927.4590731f@canb.auug.org.au>
-        <20200728015119.GA11428@gondor.apana.org.au>
+        Mon, 27 Jul 2020 22:22:22 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 4FAB2181D330D;
+        Tue, 28 Jul 2020 02:22:21 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:1801:1963:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:4184:4321:4605:5007:9121:10004:10400:10848:11232:11233:11658:11914:12043:12048:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14180:14581:14659:14721:21060:21080:21451:21627:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: anger93_0e0cfdb26f66
+X-Filterd-Recvd-Size: 2213
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 28 Jul 2020 02:22:19 +0000 (UTC)
+Message-ID: <ae54364041b99b89f818812d957d4a4bb4efdc25.camel@perches.com>
+Subject: Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Moore, Robert" <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 27 Jul 2020 19:22:18 -0700
+In-Reply-To: <b851b2c8-2d7c-939d-507d-b322dd4a0dbf@embeddedor.com>
+References: <20200707200716.GA4920@embeddedor>
+         <CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com>
+         <BYAPR11MB325602EDA2D2ACC2B28EAF4687670@BYAPR11MB3256.namprd11.prod.outlook.com>
+         <b851b2c8-2d7c-939d-507d-b322dd4a0dbf@embeddedor.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.3-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/A2kUx_+7frIlU2WQN2.BnaQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/A2kUx_+7frIlU2WQN2.BnaQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 2020-07-27 at 17:23 -0500, Gustavo A. R. Silva wrote:
+> Hi,
+> 
+> 
+> This is a macro pseudo-keyword, which expands to /* fallthrough */
+> for compilers that don't support the attribute __fallthrough__. See:
 
-Hi Herbert,
+Not really.
 
-On Tue, 28 Jul 2020 11:51:19 +1000 Herbert Xu <herbert@gondor.apana.org.au>=
- wrote:
->
-> This patch depends on two patches in the tips tree.  I presume
-> this build test was done without the tips tree, right?
+It expands to
+	do {} while (0)
+for compilers that do not support the __fallthrough__ attribute.
 
-Of course it was ...
+The /* fallthrough */ after that is for the human reader
+and is stripped before compilation.
 
-Each tree merged into linux-next should really be standalone (in case
-e.g. Linus does not take the other tree).  So to do what you want, you
-need those other 2 commits to be in a separate branch that both the tip
-tree and the printk tree can merge.
---=20
-Cheers,
-Stephen Rothwell
+> include/linux/compiler_attributes.h:213:
+> 213 #if __has_attribute(__fallthrough__)
+> 214 # define fallthrough                    __attribute__((__fallthrough__))
+> 215 #else
+> 216 # define fallthrough                    do {} while (0)  /* fallthrough */
+> 217 #endif
+> 
+> So, any compiler (older or new) will be fine with it.
 
---Sig_/A2kUx_+7frIlU2WQN2.BnaQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+But old compilers should not emit warnings for these uses.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8fi8AACgkQAVBC80lX
-0Gx3Bwf/Rlr96rZSVFUEHoJuMrRV0GaMYS+tpWTx6clXrg5GZ5aq4JLYKDWO/t48
-5AWaxhhTEtRrZQROf3APsjKWVAZ2Y9ov/PB41nRzRiNg0hmCcYt9frqmnGeV1Lf7
-4ojeC20kXfKIZm3MpqJYyBeSRr4T86LAyhONn5Rt56zBVB99td/WjhzD+EDy+BQp
-hrDolR2a5t1ixzfwfTTzndWNdleKAMfPMbOfFIAdj2XQeOHDec+ivvSsoSq+l1lC
-bexGyW1eWHYH2nJqE9qDYtbT7UhbqSnNcOtzybhyru/mV0LL/FjOF2rL7hoCgFIa
-7ANwgsz/xrs80bie5hN7PbTy1hsMjg==
-=hTIn
------END PGP SIGNATURE-----
-
---Sig_/A2kUx_+7frIlU2WQN2.BnaQ--
