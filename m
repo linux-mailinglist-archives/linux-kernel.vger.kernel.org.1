@@ -2,159 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA05230CEA
+	by mail.lfdr.de (Postfix) with ESMTP id 2113F230CE9
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730596AbgG1PD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730518AbgG1PDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:03:25 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E61C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:03:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z18so15066742wrm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DtL8cvtGkTaSwrDEo6k42OsH604F6vO5Vz2A8YHvbY0=;
-        b=hP8vsKKec9YLR2W8CGgLTYGKA8sdZ4RxnBJQkHDsbPl2+gFpJ7h5Xi2unxRqQ8shA3
-         owPmJ/S3v/1TLjQ3qN/DTf27uH3u1CAWl0907z2yfwETuyMlYYNcv2eDKOySGn66zwyQ
-         mX+E2fYeqgs89ToGesm8NC4ntvo9YrhrI5cXmSR3fBL2zq/ez2tay/ByKBEc7Ri74dZc
-         5KDyExhpUPDPdVxhaukoFQ+r0GaDRTi98myBRjPgdsEYeuWZMYKKiYp+Uwpc1EuM5HCD
-         XCMQaOWzub3ePwPr9UA4oBzmZCYovmxd/dIXwRzV+pIptUk/dqv2ubJ8drc4OiA1kN7P
-         Wj3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DtL8cvtGkTaSwrDEo6k42OsH604F6vO5Vz2A8YHvbY0=;
-        b=cs1UBt5BIUC+htQrDXZLC879+amzV24QETnIqT2AGNUkM0oeMEbAzu+4dVsiKzM+aa
-         NCi7SVhqRopyW+TeFjbw+UoH2gxG2rigROnDOWD+ajZvE0bB5srksDsBCKlCjCh3Q2jg
-         cxLnlbGWMsbYM8Jp1nGBoo44vgOSMPrqOfy6tLMXyOaXI9tjoTitOawmuCOfN65J+h60
-         /Gp7PKRaNc1ZMXyujCUX8AQsq65n/rGr/lD4WG7cgcQHtSnYNQBjqaur6g8FY8OV7Ob9
-         gbjSUTT5hrs1SpAgh5J/GOFWNzi0dkaCRgyr7CBethn4xa6wtg6rG+z7qPyKQHFenn5T
-         /JrA==
-X-Gm-Message-State: AOAM530nJ6NNK5znoDduDZqCzfsfD73Gw3OHpaCuPE+YaEz9LM52nYkv
-        b/MicpRcDD5gFpUBsU/cRFr+KON+9Py9Hn9fHCPeHNSouME=
-X-Google-Smtp-Source: ABdhPJwb5RGbkaoI7/zf6RLk+H9Fb3Ean0zD1XK8jF76zOj3GM3Mzq0w6Hd+U4moU85Uefhrh/0o0bNmat6Ci3VhPrk=
-X-Received: by 2002:adf:fe50:: with SMTP id m16mr7990761wrs.27.1595948604162;
- Tue, 28 Jul 2020 08:03:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <12499869afccd632b222eec328a6352111472986.1594230107.git-series.maxime@cerno.tech>
-In-Reply-To: <12499869afccd632b222eec328a6352111472986.1594230107.git-series.maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 28 Jul 2020 16:03:04 +0100
-Message-ID: <CAPY8ntCypUxUzGw0LBDsG8oPZBf5RbF-ia=McBF0gYp9mAtwxQ@mail.gmail.com>
-Subject: Re: [PATCH v4 70/78] drm/vc4: hdmi: Always recenter the HDMI FIFO
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
+        id S1730587AbgG1PDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:03:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:36552 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730518AbgG1PDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:03:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1AA031B;
+        Tue, 28 Jul 2020 08:03:17 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 305F83F718;
+        Tue, 28 Jul 2020 08:03:16 -0700 (PDT)
+References: <20200727053230.19753-1-srikar@linux.vnet.ibm.com> <20200727053230.19753-10-srikar@linux.vnet.ibm.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jordan Niethe <jniethe5@gmail.com>
+Subject: Re: [PATCH v4 09/10] Powerpc/smp: Create coregroup domain
+In-reply-to: <20200727053230.19753-10-srikar@linux.vnet.ibm.com>
+Date:   Tue, 28 Jul 2020 16:03:11 +0100
+Message-ID: <jhjr1sviswg.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
 
-On Wed, 8 Jul 2020 at 18:44, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> In order to avoid a pixel getting stuck in an unflushable FIFO, we need to
-> recenter the FIFO every time we're doing a modeset and not only if we're
-> connected to an HDMI monitor.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Hi,
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+On 27/07/20 06:32, Srikar Dronamraju wrote:
+> Add percpu coregroup maps and masks to create coregroup domain.
+> If a coregroup doesn't exist, the coregroup domain will be degenerated
+> in favour of SMT/CACHE domain.
+>
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 46 +++++++++++++++++++----------------
->  1 file changed, 26 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index 4058985940e6..00592c1ada73 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -425,6 +425,30 @@ static void vc4_hdmi_set_timings(struct vc4_hdmi *vc4_hdmi,
->                    (hsync_pos ? 0 : VC4_HD_VID_CTL_HSYNC_LOW));
->  }
->
-> +static void vc4_hdmi_recenter_fifo(struct vc4_hdmi *vc4_hdmi)
-> +{
-> +       u32 drift;
-> +       int ret;
-> +
-> +       drift = HDMI_READ(HDMI_FIFO_CTL);
-> +       drift &= VC4_HDMI_FIFO_VALID_WRITE_MASK;
-> +
-> +       HDMI_WRITE(HDMI_FIFO_CTL,
-> +                  drift & ~VC4_HDMI_FIFO_CTL_RECENTER);
-> +       HDMI_WRITE(HDMI_FIFO_CTL,
-> +                  drift | VC4_HDMI_FIFO_CTL_RECENTER);
-> +       usleep_range(1000, 1100);
-> +       HDMI_WRITE(HDMI_FIFO_CTL,
-> +                  drift & ~VC4_HDMI_FIFO_CTL_RECENTER);
-> +       HDMI_WRITE(HDMI_FIFO_CTL,
-> +                  drift | VC4_HDMI_FIFO_CTL_RECENTER);
-> +
-> +       ret = wait_for(HDMI_READ(HDMI_FIFO_CTL) &
-> +                      VC4_HDMI_FIFO_CTL_RECENTER_DONE, 1);
-> +       WARN_ONCE(ret, "Timeout waiting for "
-> +                 "VC4_HDMI_FIFO_CTL_RECENTER_DONE");
-> +}
-> +
->  static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
->  {
->         struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
-> @@ -543,8 +567,6 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
->         }
->
->         if (vc4_encoder->hdmi_monitor) {
-> -               u32 drift;
-> -
->                 WARN_ON(!(HDMI_READ(HDMI_SCHEDULER_CONTROL) &
->                           VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE));
->                 HDMI_WRITE(HDMI_SCHEDULER_CONTROL,
-> @@ -555,25 +577,9 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
->                            VC4_HDMI_RAM_PACKET_ENABLE);
->
->                 vc4_hdmi_set_infoframes(encoder);
-> -
-> -               drift = HDMI_READ(HDMI_FIFO_CTL);
-> -               drift &= VC4_HDMI_FIFO_VALID_WRITE_MASK;
-> -
-> -               HDMI_WRITE(HDMI_FIFO_CTL,
-> -                          drift & ~VC4_HDMI_FIFO_CTL_RECENTER);
-> -               HDMI_WRITE(HDMI_FIFO_CTL,
-> -                          drift | VC4_HDMI_FIFO_CTL_RECENTER);
-> -               usleep_range(1000, 1100);
-> -               HDMI_WRITE(HDMI_FIFO_CTL,
-> -                          drift & ~VC4_HDMI_FIFO_CTL_RECENTER);
-> -               HDMI_WRITE(HDMI_FIFO_CTL,
-> -                          drift | VC4_HDMI_FIFO_CTL_RECENTER);
-> -
-> -               ret = wait_for(HDMI_READ(HDMI_FIFO_CTL) &
-> -                              VC4_HDMI_FIFO_CTL_RECENTER_DONE, 1);
-> -               WARN_ONCE(ret, "Timeout waiting for "
-> -                         "VC4_HDMI_FIFO_CTL_RECENTER_DONE");
->         }
-> +
-> +       vc4_hdmi_recenter_fifo(vc4_hdmi);
->  }
->
->  static enum drm_mode_status
-> --
-> git-series 0.9.1
+So there's at least one arm64 platform out there with the same "pairs of
+cores share L2" thing (Ampere eMAG), and that lives quite happily with the
+default scheduler topology (SMT/MC/DIE). Each pair of core gets its MC
+domain, and the whole system is covered by DIE.
+
+Now arguably it's not a perfect representation; DIE doesn't have
+SD_SHARE_PKG_RESOURCES so the highest level sd_llc can point to is MC. That
+will impact all callsites using cpus_share_cache(): in the eMAG case, only
+pairs of cores will be seen as sharing cache, even though *all* cores share
+the same L3.
+
+I'm trying to paint a picture of what the P9 topology looks like (the one
+you showcase in your cover letter) to see if there are any similarities;
+from what I gather in [1], wikichips and your cover letter, with P9 you can
+have something like this in a single DIE (somewhat unsure about L3 setup;
+it looks to be distributed?)
+
+     +---------------------------------------------------------------------+
+     |                                  L3                                 |
+     +---------------+-+---------------+-+---------------+-+---------------+
+     |       L2      | |       L2      | |       L2      | |       L2      |
+     +------+-+------+ +------+-+------+ +------+-+------+ +------+-+------+
+     |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  | |  L1  |
+     +------+ +------+ +------+ +------+ +------+ +------+ +------+ +------+
+     |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs| |4 CPUs|
+     +------+ +------+ +------+ +------+ +------+ +------+ +------+ +------+
+
+Which would lead to (ignoring the whole SMT CPU numbering shenanigans)
+
+NUMA     [                                                   ...
+DIE      [                                             ]
+MC       [         ] [         ] [         ] [         ]
+BIGCORE  [         ] [         ] [         ] [         ]
+SMT      [   ] [   ] [   ] [   ] [   ] [   ] [   ] [   ]
+         00-03 04-07 08-11 12-15 16-19 20-23 24-27 28-31  <other node here>
+
+This however has MC == BIGCORE; what makes it you can have different spans
+for these two domains? If it's not too much to ask, I'd love to have a P9
+topology diagram.
+
+[1]: 20200722081822.GG9290@linux.vnet.ibm.com
