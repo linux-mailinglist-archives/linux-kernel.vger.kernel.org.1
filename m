@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58D6230E87
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F93E230E8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbgG1Py5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:54:57 -0400
-Received: from smtprelay0075.hostedemail.com ([216.40.44.75]:33018 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730679AbgG1Py5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:54:57 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 18151181D396A;
+        id S1731193AbgG1PzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:55:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730679AbgG1Py6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:54:58 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 988B42065C;
         Tue, 28 Jul 2020 15:54:56 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2194:2196:2199:2200:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3872:4321:4385:4605:5007:9010:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12760:12895:13439:13972:14659:14721:21080:21451:21627:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: seed58_631747d26f6b
-X-Filterd-Recvd-Size: 3298
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 28 Jul 2020 15:54:51 +0000 (UTC)
-Message-ID: <4299fe666c93018a9a047575e5d68a0bb4dd269f.camel@perches.com>
-Subject: Re: [PATCH net-next] liquidio: Remove unneeded cast from memory
- allocation
-From:   Joe Perches <joe@perches.com>
-To:     "wanghai (M)" <wanghai38@huawei.com>, dchickles@marvell.com,
-        sburla@marvell.com, fmanlunas@marvell.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 28 Jul 2020 08:54:48 -0700
-In-Reply-To: <2996569e-5e1a-db02-2c78-0ee0d572706d@huawei.com>
-References: <20200724130001.71528-1-wanghai38@huawei.com>
-         <2cdef8d442bb5da39aed17bf994a800e768942f7.camel@perches.com>
-         <ac99bed4-dabc-a003-374f-206753f937cb@huawei.com>
-         <bffcc7d513e186734d224bda6afdd55033b451de.camel@perches.com>
-         <2996569e-5e1a-db02-2c78-0ee0d572706d@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595951697;
+        bh=aVftNjJBgQbHkyV3BbCKhpUmkcMZMJhVZkUAyIMrxes=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PaJDO+2egn0tExAMjFcINRhEZuduM5y5VyMlpw6CyrlqR2wGK6iE1K9DWnECrkpAO
+         EZvKi8Ha4FjIYRWNHpfIXxo1j5YG2O912Tw04ZRJPsJMR2Lbj5fVGiMze3R2cNBF9M
+         8QF+GF2RmceMPUDeCayAi5Bur+3012P35+dp722U=
+Date:   Tue, 28 Jul 2020 17:54:50 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        linux-m68k@lists.linux-m68k.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] m68k/amiga: Add missing platform_device_unregister()
+ call in amiga_init_devices()
+Message-ID: <20200728155450.GC4178776@kroah.com>
+References: <1e12105b-aa72-11a2-74f6-c789f8ceaaa3@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1e12105b-aa72-11a2-74f6-c789f8ceaaa3@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-07-28 at 21:38 +0800, wanghai (M) wrote:
-> Thanks for your explanation. I got it.
+On Tue, Jul 28, 2020 at 04:50:06PM +0200, Markus Elfring wrote:
+> > Add the missing platform_device_unregister() before return
+> > from amiga_init_devices() in the error handling case.
 > 
-> Can it be modified like this?
-[]
-> +++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-> @@ -1152,11 +1152,8 @@ octeon_register_dispatch_fn(struct octeon_device 
-> *oct,
+> Will the tag “Fixes” become helpful for the commit message?
 > 
->                  dev_dbg(&oct->pci_dev->dev,
->                          "Adding opcode to dispatch list linked list\n");
-> -               dispatch = (struct octeon_dispatch *)
-> -                          vmalloc(sizeof(struct octeon_dispatch));
-> +               dispatch = kmalloc(sizeof(struct octeon_dispatch), 
-> GFP_KERNEL);
->                  if (!dispatch) {
-> -                       dev_err(&oct->pci_dev->dev,
-> -                               "No memory to add dispatch function\n");
->                          return 1;
->                  }
->                  dispatch->opcode = combined_opcode;
+> 
+> …
+> > +++ b/arch/m68k/amiga/platform.c
+> > @@ -188,8 +188,10 @@  static int __init amiga_init_devices(void)
+> >  			return PTR_ERR(pdev);
+> >  		error = platform_device_add_data(pdev, &a1200_ide_pdata,
+> >  						 sizeof(a1200_ide_pdata));
+> > -		if (error)
+> > +		if (error) {
+> > +			platform_device_unregister(pdev);
+> >  			return error;
+> > +		}
+> >  	}
+> …
+> 
+> I suggest to add a jump target for the desired exception handling.
+> 
+>  		if (error)
+> +			goto unregister_device;
+> 
+> 
+> Regards,
+> Markus
 
-Yes, but the free also needs to be changed.
+Hi,
 
-I think it's:
----
- drivers/net/ethernet/cavium/liquidio/octeon_device.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/octeon_device.c b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-index 934115d18488..4ee4cb946e1d 100644
---- a/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/octeon_device.c
-@@ -1056,7 +1056,7 @@ void octeon_delete_dispatch_list(struct octeon_device *oct)
- 
- 	list_for_each_safe(temp, tmp2, &freelist) {
- 		list_del(temp);
--		vfree(temp);
-+		kfree(temp);
- 	}
- }
- 
-@@ -1152,13 +1152,10 @@ octeon_register_dispatch_fn(struct octeon_device *oct,
- 
- 		dev_dbg(&oct->pci_dev->dev,
- 			"Adding opcode to dispatch list linked list\n");
--		dispatch = (struct octeon_dispatch *)
--			   vmalloc(sizeof(struct octeon_dispatch));
--		if (!dispatch) {
--			dev_err(&oct->pci_dev->dev,
--				"No memory to add dispatch function\n");
-+		dispatch = kmalloc(sizeof(struct octeon_dispatch), GFP_KERNEL);
-+		if (!dispatch)
- 			return 1;
--		}
-+
- 		dispatch->opcode = combined_opcode;
- 		dispatch->dispatch_fn = fn;
- 		dispatch->arg = fn_arg;
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
 
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
 
+thanks,
+
+greg k-h's patch email bot
