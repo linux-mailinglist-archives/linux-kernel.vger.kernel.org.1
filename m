@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2738B2307D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C8E2307D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgG1Kj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56656 "EHLO
+        id S1728779AbgG1Kk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728417AbgG1Kj7 (ORCPT
+        with ESMTP id S1728638AbgG1Kkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:39:59 -0400
+        Tue, 28 Jul 2020 06:40:55 -0400
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1E9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:39:58 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a15so17777577wrh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:39:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7265BC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:40:55 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id 88so17781236wrh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:40:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=raspberrypi.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+fu6+ncNlNVIIhV52Pfsl1d0V+5R59UwNZjOPfJC9HM=;
-        b=XQQ7EDR7HuZMZJD3WjJJq7nWRd8Z2P7j9S9A0T2jqccFCWRLfpLO9Jz8Hy5yWwQaG8
-         tjE9TaD2veaP8JDdULyGLtJa65N/TH5JH+v2UHtNzpk6ZvuzWfi85HwCnoFbr8LTTWdp
-         tf2cwFRT/pNC2r0cw85SJAeOEhgir+QswQ9ZJO7dWOiwlzzY9IHOwSe1ANodg8laYiGM
-         hCoF8UY+ZieRs6JRtRLKoHMgbYfQTXgpub+Yf2tjFMD7fV9CLAI9qdRfJLCa8b6ELNxK
-         PgqJRuCC2svrJQ6VNuCS9o7I73NPLNOVV66k5Zmc4KkESD8Q0VT/AkuwJTXqr6GlMxm2
-         5UZw==
+        bh=lnyqa9+3UN7p5XZc/yQA8t0Ef1omNto0wwGE8iK64Ps=;
+        b=e3aiC4Ga9fB5qgGr4vSAQOSNMC2YJanljK0xzwO/FP4PPvt4fKWeox5e9QSIaR9h96
+         IbzHkgQBD67HcVVpAT47x4pZJXUzgKMfdJlOxVMfudCxZyMV0H898UN41v99WtdO3FXg
+         5y2BC0wmfHDqg/T0lvaFMrwADmgBol2r9uPe+XHXoBpp5gdJqNKp7s8cDbQv82rk7iBn
+         HO+sWneuhPvWCe9pdI2njLORejD4fY2xkXz8bODjpslSW65Cj22z/lxln2Lg+enHw4Gz
+         fkihrFRGvRXdQDemmYZoELVUnUzb1ZKsGVAZYFfq3lGyEmGQzKxGxzaEfhuZBqlXRq6c
+         8+dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+fu6+ncNlNVIIhV52Pfsl1d0V+5R59UwNZjOPfJC9HM=;
-        b=KZw05sdYzCw/AHzNVwWULd3IYXs9slntr8m0hJ+oURh0ZNOsUqy/0mY6I5pfKvrhxQ
-         sNQA/tcsBRl8vgLDKAjVp0ZqiVv2aiummPrVDR7AqiLV170GRldLrKmQ5QhKr5id0+0T
-         4I6aSCEndnHBzWr3qTlDb9kJV0QI3wLGHnaIrD9pYreGuber1xMEr+ilBIzKQNkyvTAK
-         Ty6yHUgye2L+a9oYVJfK/9ZuiASALIWfaa92G/VowJ9c4xNPfgiA8FA4Gai5mBR/38MN
-         NugOY0V652yCIc3Jye6vt+4yRgEYAoCJO9KYuFIdXUYVEJHSWQTXxv5qA7u57FqfEfhW
-         niJg==
-X-Gm-Message-State: AOAM533Ken8DqT5lgaM+hVY0uuTqOECTJydrhwR559tJJO2BFA01PGjM
-        jLbxVSHLRph4LL9GOzexTvq7Xvn8aMQo1VISSA6Ctw==
-X-Google-Smtp-Source: ABdhPJxqveEDF4fD91lIqGjwCXyF+JMIVkyBTc5jthXBrwneUZa2nBo6cUOArXkF5aA9PkKZHsCP0GVYEkw63kCXusk=
-X-Received: by 2002:adf:fe50:: with SMTP id m16mr6982944wrs.27.1595932797360;
- Tue, 28 Jul 2020 03:39:57 -0700 (PDT)
+        bh=lnyqa9+3UN7p5XZc/yQA8t0Ef1omNto0wwGE8iK64Ps=;
+        b=labc/vy2tU69TYO9Ny93ZoN1dR9W6YnH2zOjheCr/EENC9d6TeYopMv68tQkB/ioAT
+         NmcIv5C06pCks1ydMxJIUqPUlXOJ1tKTv4l2WvGln/dXb9/2TfADMCSPH+KhqIZZcytj
+         xE2jeevlk+BXntW78KPDYgU7Prrr3N4+Ngl7MA+3iWQ1dxvYDRz30mFlX1vz2McpNMhX
+         1XJ0ES0m9oqLzM6e/mMR1LO0gU6pQCMDb3o+tXOWdZA3EaV/X2nUphKYQmW9CUXrMvm6
+         DBY0Wfm4O+shlAnHOBrpwAetGKbfcxLNQBRj+i9V5E35YtDoQuRiMDym9QzLw+dshIGb
+         vBGw==
+X-Gm-Message-State: AOAM530fhch4g5sw76oLW03hFkYqmafMLL7c+aYibcjO+2pczN0//ipl
+        jJYqcyypP7el6oLfu5Oq8xvizX5rjLt6dtKFMgaktw==
+X-Google-Smtp-Source: ABdhPJwkPgquSiZ/upn1u2Q3I/tb+BHEawcLufuM8QtrW8LQqxXEhYjzDPG3DmSmELIhw4QHnc6qRbH4fzIAr0B2i1Q=
+X-Received: by 2002:a5d:6681:: with SMTP id l1mr23292071wru.47.1595932854229;
+ Tue, 28 Jul 2020 03:40:54 -0700 (PDT)
 MIME-Version: 1.0
 References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <35c955e88914f4d22f5bfba5b060489850b764ba.1594230107.git-series.maxime@cerno.tech>
-In-Reply-To: <35c955e88914f4d22f5bfba5b060489850b764ba.1594230107.git-series.maxime@cerno.tech>
+ <03aa26eb5be1c558e3048a3b4ff3214856d5c490.1594230107.git-series.maxime@cerno.tech>
+In-Reply-To: <03aa26eb5be1c558e3048a3b4ff3214856d5c490.1594230107.git-series.maxime@cerno.tech>
 From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 28 Jul 2020 11:39:39 +0100
-Message-ID: <CAPY8ntCgtnSbiaDuY=k+-VXgYb2-A2DeHVN1j=BUw_349MYWbQ@mail.gmail.com>
-Subject: Re: [PATCH v4 26/78] drm/vc4: crtc: Remove redundant pixelvalve reset
+Date:   Tue, 28 Jul 2020 11:40:37 +0100
+Message-ID: <CAPY8ntDeMAuDb1ZWj59+14ZQVqDjM7X+E312Lymm0P8LHFx0Yg@mail.gmail.com>
+Subject: Re: [PATCH v4 27/78] drm/vc4: crtc: Move HVS channel init before the
+ PV initialisation
 To:     Maxime Ripard <maxime@cerno.tech>
 Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Eric Anholt <eric@anholt.net>,
@@ -72,32 +73,43 @@ Hi Maxime
 
 On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> Since we moved the pixelvalve configuration to atomic_enable, we're now
-> first calling the function that resets the pixelvalve and then the one that
-> configures it.
->
-> However, the first thing the latter is doing is calling the reset function,
-> meaning that we reset twice our pixelvalve. Let's remove the first call.
+> In order to avoid stale pixels getting stuck in an intermediate FIFO
+> between the HVS and the pixelvalve on BCM2711, we need to configure the HVS
+> channel before the pixelvalve is reset and configured.
 >
 > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
 Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
 > ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 1 -
->  1 file changed, 1 deletion(-)
+>  drivers/gpu/drm/vc4/vc4_crtc.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
 > diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index 2eda2e6429ec..2c5ff45dc315 100644
+> index 2c5ff45dc315..b7b0e19e2fe1 100644
 > --- a/drivers/gpu/drm/vc4/vc4_crtc.c
 > +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -427,7 +427,6 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
+> @@ -427,10 +427,6 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
 >
 >         require_hvs_enabled(dev);
 >
-> -       vc4_crtc_pixelvalve_reset(crtc);
->         vc4_crtc_config_pv(crtc);
+> -       vc4_crtc_config_pv(crtc);
+> -
+> -       CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) | PV_CONTROL_EN);
+> -
+>         /* Enable vblank irq handling before crtc is started otherwise
+>          * drm_crtc_get_vblank() fails in vc4_crtc_update_dlist().
+>          */
+> @@ -438,6 +434,10 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
 >
->         CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) | PV_CONTROL_EN);
+>         vc4_hvs_atomic_enable(crtc, old_state);
+>
+> +       vc4_crtc_config_pv(crtc);
+> +
+> +       CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) | PV_CONTROL_EN);
+> +
+>         /* When feeding the transposer block the pixelvalve is unneeded and
+>          * should not be enabled.
+>          */
 > --
 > git-series 0.9.1
