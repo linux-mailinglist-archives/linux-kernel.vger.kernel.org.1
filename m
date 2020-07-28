@@ -2,134 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C93230932
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124F323092B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729211AbgG1Lxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729183AbgG1Lxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:53:38 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D06FC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:53:38 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id ed14so8965972qvb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9b0/x+SNOsArF0QozJjz6aJQuh2KJ70gscVHnalujy4=;
-        b=tebaVCGFtEwcxHEM2mSMLHj+/y/YIqY5F9PfjQr+R28mNZgbYk25oEbZZId/XZ0s3P
-         tyGFy7H5tAKQH/KcvFG7RcKLdtt/qqcX2osS0vTQJ/3rUpnTnbtfiDJ18KDKt9nZIzGb
-         jioEWFF54X/RJ4UBRAI9O+jT36f7HD+T/xOTD9lKZ+UDK636bylzcmIRkD7DOA9185ON
-         jJG7VOHFIS3KDo49DOPfTt8B8gh1BvSt7q/oevhavy3mNdL7jkhDMD98eP3cCfzNmA6a
-         4JHhj/cTKGPEzg0ULWSgB+t3qfMc0wvywvSPhcRbk49lv6ar4UEgPv6Ss42pOY9LvMo+
-         N4zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9b0/x+SNOsArF0QozJjz6aJQuh2KJ70gscVHnalujy4=;
-        b=jcQwQih0c/nlc1Kn/kTHL8B+24CKvKi9t6lGyIryHltZTPTPCJ26gEd9LJsPs/gBHv
-         gH4q8sLcN65ncEOVWcf5R5xW8g1CygVGV4iM5AHING1w7HgwLwSk9FDLeJ2oi7NwUdKL
-         jrtgoC36mlp0H9pXRGfqFzKbFAaJEs12psV/ULOs96mDIZt/RJ3BY0p93H0zAkStEojH
-         mXazQOffXKgwZQDFXbOOvQzD5C813Mlo8NZFhEuTKdtItwmBWbaUG15kZ/+PGxmG9jG5
-         HH8ZYEHTIoHuU56Y2zR50n3hJmfR4HqBHrlSuKqX1+7EXz12nrBhumn0rkZEI2aaoqIw
-         HRKA==
-X-Gm-Message-State: AOAM532gjR34hjPLZ86PgvgZCiBqsMGF/rDqfo3CaaVHQl4AonZtDTyb
-        IbnzDkRePVxpg1og5WYJIA==
-X-Google-Smtp-Source: ABdhPJytWHbSuKSgdqrZHnoY6Cfo5vrUorIiwqfDq+wpVnip+5M/a1iy0umq4my1/dRXaNveQev4oQ==
-X-Received: by 2002:ad4:4152:: with SMTP id z18mr154690qvp.42.1595937217951;
-        Tue, 28 Jul 2020 04:53:37 -0700 (PDT)
-Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id t65sm21273750qkf.119.2020.07.28.04.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 04:53:37 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [Linux-kernel-mentees] [PATCH v2] drm/bufs: Prevent kernel-infoleak in copy_one_buf()
-Date:   Tue, 28 Jul 2020 07:52:10 -0400
-Message-Id: <20200728115210.408486-1-yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200728014343.341303-1-yepeilin.cs@gmail.com>
-References: <20200728014343.341303-1-yepeilin.cs@gmail.com>
+        id S1729173AbgG1Lwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:52:37 -0400
+Received: from verein.lst.de ([213.95.11.211]:47964 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728504AbgG1Lwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:52:36 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0344268B05; Tue, 28 Jul 2020 13:52:32 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 13:52:31 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        will@kernel.org, ganapatrao.kulkarni@cavium.com,
+        catalin.marinas@arm.com, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, prime.zeng@hisilicon.com,
+        huangdaode@huawei.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Steve Capper <steve.capper@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Re: [PATCH v4 1/2] dma-direct: provide the ability to reserve
+ per-numa CMA
+Message-ID: <20200728115231.GA793@lst.de>
+References: <20200723131344.41472-1-song.bao.hua@hisilicon.com> <20200723131344.41472-2-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200723131344.41472-2-song.bao.hua@hisilicon.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently `struct drm_buf_desc` is defined as follows:
+On Fri, Jul 24, 2020 at 01:13:43AM +1200, Barry Song wrote:
+> +config CMA_PERNUMA_SIZE_MBYTES
+> +	int "Size in Mega Bytes for per-numa CMA areas"
+> +	depends on NUMA
+> +	default 16 if ARM64
+> +	default 0
+> +	help
+> +	  Defines the size (in MiB) of the per-numa memory area for Contiguous
+> +	  Memory Allocator. Every numa node will get a separate CMA with this
+> +	  size. If the size of 0 is selected, per-numa CMA is disabled.
 
-struct drm_buf_desc {
-	int count;
-	int size;
-	int low_mark;
-	int high_mark;
-	enum {
-		_DRM_PAGE_ALIGN = 0x01,
-		_DRM_AGP_BUFFER = 0x02,
-		_DRM_SG_BUFFER = 0x04,
-		_DRM_FB_BUFFER = 0x08,
-		_DRM_PCI_BUFFER_RO = 0x10
-	} flags;
-	unsigned long agp_start;
-};
+I'm still not a fan of the config option.  You can just hardcode the
+value in CONFIG_CMDLINE based on the kernel parameter.  Also I wonder
+if a way to expose this in the device tree might be useful, but people
+more familiar with the device tree and the arm code will have to chime
+in on that.
 
-copy_one_buf() is potentially copying uninitialized kernel stack memory
-to userspace, since the compiler may leave such "holes" (around `.flags`
-and `.agp_start` fields) in this statically allocated structure. Prevent
-it by initializing `v` with memset().
+>  struct cma *dma_contiguous_default_area;
+> +static struct cma *dma_contiguous_pernuma_area[MAX_NUMNODES];
+>  
+>  /*
+>   * Default global CMA area size can be defined in kernel's .config.
+> @@ -44,6 +51,8 @@ struct cma *dma_contiguous_default_area;
+>   */
+>  static const phys_addr_t size_bytes __initconst =
+>  	(phys_addr_t)CMA_SIZE_MBYTES * SZ_1M;
+> +static phys_addr_t pernuma_size_bytes __initdata =
+> +	(phys_addr_t)CMA_SIZE_PERNUMA_MBYTES * SZ_1M;
+>  static phys_addr_t  size_cmdline __initdata = -1;
+>  static phys_addr_t base_cmdline __initdata;
+>  static phys_addr_t limit_cmdline __initdata;
+> @@ -69,6 +78,13 @@ static int __init early_cma(char *p)
+>  }
+>  early_param("cma", early_cma);
+>  
+> +static int __init early_pernuma_cma(char *p)
+> +{
+> +	pernuma_size_bytes = memparse(p, &p);
+> +	return 0;
+> +}
+> +early_param("pernuma_cma", early_pernuma_cma);
+> +
+>  #ifdef CONFIG_CMA_SIZE_PERCENTAGE
+>  
+>  static phys_addr_t __init __maybe_unused cma_early_percent_memory(void)
+> @@ -96,6 +112,33 @@ static inline __maybe_unused phys_addr_t cma_early_percent_memory(void)
+>  
+>  #endif
+>  
+> +void __init dma_pernuma_cma_reserve(void)
+> +{
+> +	int nid;
+> +
+> +	if (!pernuma_size_bytes)
+> +		return;
+> +
+> +	for_each_node_state(nid, N_MEMORY) {
+> +		int ret;
+> +		char name[20];
+> +
+> +		snprintf(name, sizeof(name), "pernuma%d", nid);
+> +		ret = cma_declare_contiguous_nid(0, pernuma_size_bytes, 0, 0,
+> +						 0, false, name,
+> +						 &dma_contiguous_pernuma_area[nid],
+> +						 nid);
 
-Cc: stable@vger.kernel.org
-Fixes: 5c7640ab6258 ("switch compat_drm_infobufs() to drm_ioctl_kernel()")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
----
-Change in v2:
-    - Improve commit description. (Suggested by Arnd Bergmann
-      <arnd@arndb.de>)
+This adds a > 80 char line.
 
- drivers/gpu/drm/drm_bufs.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+>  struct page *dma_alloc_contiguous(struct device *dev, size_t size, gfp_t gfp)
+>  {
+> +	int nid = dev_to_node(dev);
+> +
+>  	/* CMA can be used only in the context which permits sleeping */
+>  	if (!gfpflags_allow_blocking(gfp))
+>  		return NULL;
+>  	if (dev->cma_area)
+>  		return cma_alloc_aligned(dev->cma_area, size, gfp);
+> -	if (size <= PAGE_SIZE || !dma_contiguous_default_area)
+> +	if (size <= PAGE_SIZE)
+>  		return NULL;
+> +
+> +	if ((nid != NUMA_NO_NODE) && !(gfp & (GFP_DMA | GFP_DMA32))) {
 
-diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
-index a0735fbc144b..f99cd4a3f951 100644
---- a/drivers/gpu/drm/drm_bufs.c
-+++ b/drivers/gpu/drm/drm_bufs.c
-@@ -1349,10 +1349,14 @@ static int copy_one_buf(void *data, int count, struct drm_buf_entry *from)
- {
- 	struct drm_buf_info *request = data;
- 	struct drm_buf_desc __user *to = &request->list[count];
--	struct drm_buf_desc v = {.count = from->buf_count,
--				 .size = from->buf_size,
--				 .low_mark = from->low_mark,
--				 .high_mark = from->high_mark};
-+	struct drm_buf_desc v;
-+
-+	memset(&v, 0, sizeof(v));
-+
-+	v.count = from->buf_count;
-+	v.size = from->buf_size;
-+	v.low_mark = from->low_mark;
-+	v.high_mark = from->high_mark;
- 
- 	if (copy_to_user(to, &v, offsetof(struct drm_buf_desc, flags)))
- 		return -EFAULT;
--- 
-2.25.1
+No need for the braces around the nid check.
 
+> +		struct cma *cma = dma_contiguous_pernuma_area[nid];
+> +		struct page *page;
+> +
+> +		if (cma) {
+> +			page = cma_alloc_aligned(cma, size, gfp);
+> +			if (page)
+> +				return page;
+> +		}
+> +	}
+> +
+>  	return cma_alloc_aligned(dma_contiguous_default_area, size, gfp);
+
+This seems to have lost the dma_contiguous_default_area NULL check.
+
+> +	/* if dev has its own cma, free page from there */
+> +	if (dev->cma_area) {
+> +		if (cma_release(dev->cma_area, page, PAGE_ALIGN(size) >> PAGE_SHIFT))
+> +			return;
+
+Another overly long line.
+
+> +	} else {
+> +		/*
+> +		 * otherwise, page is from either per-numa cma or default cma
+> +		 */
+> +		if (cma_release(dma_contiguous_pernuma_area[page_to_nid(page)],
+> +					page, PAGE_ALIGN(size) >> PAGE_SHIFT))
+> +			return;
+> +
+> +		if (cma_release(dma_contiguous_default_area, page,
+> +					PAGE_ALIGN(size) >> PAGE_SHIFT))
+> +			return;
+> +	}
+
+I'd introduce a count variable for the value of "PAGE_ALIGN(size) >>
+PAGE_SHIFT" to clean al lthis up a bit.
+
+Also please add a CONFIG_PERCPU_DMA_CMA config variable so that we
+don't build this code for the vast majority of users that don't need it.
