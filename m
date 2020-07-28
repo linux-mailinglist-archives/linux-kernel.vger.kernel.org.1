@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E91A22FFFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 05:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C90D22FFFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 05:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727034AbgG1DPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 23:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbgG1DPR (ORCPT
+        id S1726820AbgG1DUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 23:20:08 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:5094 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726620AbgG1DUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 23:15:17 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9FCC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 20:15:17 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id lw1so2077228pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 20:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PD2ZLQCvLaWVcoV1PzZsr55F59ipm51nH9LfNuI1BWE=;
-        b=EjwAA3KCQnsgyym83+P1cOxkyODRcSK9IpoGYOEK8mo9VSqUL4M+G3WzSpNJSRYQA9
-         y586nY0JjXTtfFnWhUCaxaE/0h4A5BMb85AH2INGsMulbg6VPaM/sY6p2gGS3DSzIqlX
-         boAOW4/CtUL/7SK30IKifPmDizDBLglxmwmJh9IqHU/TYIA5Ru0CPlWcQ3nU0eQhDO5T
-         Gtx4lpvl0TnG/jCP92EzfoGeSIQRbklRXSZmbE92OyLda3zwF7BtF6C/OB5EweH1I6e7
-         qKnPgAMoeLt4IVhHIvneIRBJkhNGkLh9ClXVIslrK10smMjWzOTuc4hyJddRtz3Q2vDv
-         XdyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PD2ZLQCvLaWVcoV1PzZsr55F59ipm51nH9LfNuI1BWE=;
-        b=pwgzHGelQqgH/TReSTHMX9ZKFJn9MKdNI88RZAPNLw4JzOEYgbStQcJiX3I0y/C40K
-         8jK3Kjq9D/8GcKKlPu63Zri0Jukh+ofSbEfHNKvWcyMeeGZVpw//SXAC8ItZoHC6tD9j
-         1N9WD/k9gi4j8PfcoIurpajSUsiSQpwhLN4YkBS5mCEqFjDI4zo2JH5rxt22SGJpd/mL
-         vz4faBrV5n9V2lO6HmNQE/zkwUekExCESrWNbrIusKEv9iYZOVo3xUIpq4XkhA6Pl4mw
-         L/UirDAcNe5VqnYpdrXs59rweqdDXeBecA/ZFlp52goYqLWS1aMqX5cF94YzpXlq4xWF
-         tb9Q==
-X-Gm-Message-State: AOAM531NlIrZZ3EpfCGQEbE0Zmp2kXHrTJDAAEhHjSFaOS68nasQZLL4
-        AZdLVusXDW7ysFtt+OOS01u7TBCPDSfL3OnV
-X-Google-Smtp-Source: ABdhPJzhKrz0Xncjr22aQGFtwZngq8XVXIgQIPz03Ds2RskP8S8nIqrepHCZERgvSrGwYwgIXpZ4iA==
-X-Received: by 2002:a17:90a:7805:: with SMTP id w5mr2362904pjk.192.1595906116854;
-        Mon, 27 Jul 2020 20:15:16 -0700 (PDT)
-Received: from debian.flets-east.jp ([2400:2411:502:a100:c84b:19e2:9b53:48bb])
-        by smtp.gmail.com with ESMTPSA id s10sm3895285pjf.3.2020.07.27.20.15.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Jul 2020 20:15:15 -0700 (PDT)
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     masahisa.kojima@linaro.org, jarkko.sakkinen@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, ardb@kernel.org,
-        devicetree@vger.kernel.org, linux-integrity@vger.kernel.org,
-        peterhuewe@gmx.de, jgg@ziepe.ca, Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v5 2/2] dt-bindings: Add SynQucer TPM MMIO as a trivial device
-Date:   Tue, 28 Jul 2020 12:14:32 +0900
-Message-Id: <20200728031433.3370-3-masahisa.kojima@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200728031433.3370-1-masahisa.kojima@linaro.org>
-References: <20200728031433.3370-1-masahisa.kojima@linaro.org>
+        Mon, 27 Jul 2020 23:20:07 -0400
+X-UUID: f8d60d4d80cc4b638e1ddc5c08e7b297-20200728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=GjxkIM1k042UVhE+KHYwiPMh+DeoglMOkaNl5efUmuI=;
+        b=I58nrlo8AS3MmTwFC6QbCDOnllml4oeXTJQnyTnqCIop886oT9/V6PTwkiKWAlwLYNmXu2lPE2W8il8czR6el7LcNpw2hII+sInxP2Sk0E6gwlw6t4CI+5+1vpXNAORUuWPv5KKqd3ypHzV8Nc2MSM2356jkg7a7M7X26xlF91Q=;
+X-UUID: f8d60d4d80cc4b638e1ddc5c08e7b297-20200728
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <frankie.chang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1122908193; Tue, 28 Jul 2020 11:20:06 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 28 Jul 2020 11:20:03 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 28 Jul 2020 11:20:00 +0800
+From:   Frankie Chang <Frankie.Chang@mediatek.com>
+To:     Todd Kjos <tkjos@google.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Martijn Coenen <maco@android.com>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
+        Jian-Min Liu <Jian-Min.Liu@mediatek.com>,
+        Frankie Chang <Frankie.Chang@mediatek.com>
+Subject: [PATCH v6] binder: transaction latency tracking for user build
+Date:   Tue, 28 Jul 2020 11:19:58 +0800
+Message-ID: <1595906401-11985-1-git-send-email-Frankie.Chang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1595252430.5899.6.camel@mtkswgap22>
+References: <1595252430.5899.6.camel@mtkswgap22>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: E6DE5ABF50AF220296EFE4677D610D98FF0928400BA42DD430BEBA16C5A5101E2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a compatible string for the SynQuacer TPM to the binding for a
-TPM exposed via a memory mapped TIS frame. The MMIO window behaves
-slightly differently on this hardware, so it requires its own
-identifier.
-
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 4165352a590a..814148939e5a 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -328,6 +328,8 @@ properties:
-           - silabs,si7020
-             # Skyworks SKY81452: Six-Channel White LED Driver with Touch Panel Bias Supply
-           - skyworks,sky81452
-+            # Socionext SynQuacer TPM MMIO module
-+          - socionext,synquacer-tpm-mmio
-             # i2c serial eeprom  (24cxx)
-           - st,24c256
-             # Ambient Light Sensor with SMBUS/Two Wire Serial Interface
--- 
-2.20.1
+DQpDaGFuZ2UgZnJvbSB2NjoNCiAgLSBjaGFuZ2UgQ09ORklHX0JJTkRFUl9UUkFOU0FDVElPTl9M
+QVRFTkNZX1RSQUNLSU5HIHR5cGUgZnJvbSBib29sIHRvIHRyaXN0YXRlDQogIC0gYWRkIGNvbW1l
+bnRzIHRvIEB0aW1lc3RhbXAgYW5kIEB0diB1bmRlciBzdHJ1Y3QgYmluZGVyX3RyYW5zYWN0aW9u
+DQogIC0gbWFrZSBiaW5kZXJfdHhuX2xhdGVuY3kgdGhyZXNob2xkIGNvbmZpZ3VyYWJsZQ0KICAt
+IGVuaGFuY2UgbG9jayBwcm90ZWN0aW9uDQoNCkNoYW5nZSBmcm9tIHY1Og0KICAtIGNoYW5nZSBj
+b25maWcgbmFtZSB0byB0aGUgcHJvcGVyIG9uZSwgQ09ORklHX0JJTkRFUl9UUkFOU0FDVElPTl9M
+QVRFTkNZX1RSQUNLSU5HLg0KICAtIGNoYW5nZSB0cmFjZXBvaW50IG5hbWUgdG8gbW9yZSBkZXNj
+cmlwdGl2ZSBvbmUsIHRyYWNlX2JpbmRlcl90eG5fbGF0ZW5jeV8oYWxsb2N8aW5mb3xmcmVlKQ0K
+ICAtIGVuaGFuY2Ugc29tZSBsb2NrIHByb3RlY3Rpb24uDQoNCkNoYW5nZSBmcm9tIHY0Og0KICAt
+IHNwbGl0IHVwIGludG8gcGF0Y2ggc2VyaWVzLg0KDQpDaGFuZ2UgZnJvbSB2MzoNCiAgLSB1c2Ug
+dHJhY2Vwb2ludHMgZm9yIGJpbmRlcl91cGRhdGVfaW5mbyBhbmQgcHJpbnRfYmluZGVyX3RyYW5z
+YWN0aW9uX2V4dCwNCiAgICBpbnN0ZWFkIG9mIGN1c3RvbSByZWdpc3RyYXRpb24gZnVuY3Rpb25z
+Lg0KDQpDaGFuZ2UgZnJvbSB2MjoNCiAgLSBjcmVhdGUgdHJhbnNhY3Rpb24gbGF0ZW5jeSBtb2R1
+bGUgdG8gbW9uaXRvciBzbG93IHRyYW5zYWN0aW9uLg0KDQpDaGFuZ2UgZnJvbSB2MToNCiAgLSBm
+aXJzdCBwYXRjaHNldC4NCg==
 
