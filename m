@@ -2,137 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DE123056D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FEA230560
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgG1Iaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:30:30 -0400
-Received: from mail-bn8nam11on2072.outbound.protection.outlook.com ([40.107.236.72]:5217
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727808AbgG1Ia3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:30:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D1A3bT0Qxe4SMl7+erRfAhPKJWNRTxgsjOZMZ1g4jHBLPGhxOdsCt716ano8y62olBrtkq5IPExo3x7ypF/78WgSeq2nCm62Bz2vpcSb5Z6jImW68g97i/4cCTn7i0HTrnaYtC0w2lN4DyAyjz9ZUVhxganVZzWEtQcQ6xaMnSX4u0TGRIWyIcoPO8fnaVkvXpQK1F2gVbR18adZouvo+Kktpaq0Iu/knES0/gSCER1Zfyqhum4FVbdi6ytv/f5+7SXIaB1McTYR+g841aabsTGNCKCNPE2409NZpjISkOIrQfXr3PKCSvroVG1QhjnHOvPqd5G7M306++uHmuRsIA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wfCk201FvWlIusiJ20M931+ZD+2bvTDB4nRyCEUoB8M=;
- b=c1F0OK9VoFlmyh4DIUPx+/7r9yzd0jLw3WB+rCUfllK++QEwwgowh3LXh8CkL9q9LBJKrarUeUOORBnPMAGi55vo/q2MJBrgUOZ0umELoKYPckFQl4pWfPGjtH78DmxYAAMEpM4yk2Xeg7lLQCbqja+YCr4ZfmQ4MM59Sagzba3NuviI7w7u6jL+iLA3QU1iiFONdyVFptCMKYxxaojyCIEOgIKsY8NMN2ESjcQ9/5hceA7EJsy0yfp+Lfkl1zpXKMnA90CBk+NkOoDYlGKZtueK1EmrQ9FBEYvwD3/miRh/QJRMPkh3C8Bf6Zx+slC+KHx2BDAjpcT0oAXwhn/ghA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1728192AbgG1I3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728042AbgG1I3J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:29:09 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BC7C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:29:09 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u185so10537427pfu.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:29:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wfCk201FvWlIusiJ20M931+ZD+2bvTDB4nRyCEUoB8M=;
- b=E87h/vPS43/U5ExNyob5029cIvwhCk5x8H4G6DrwlhNL+7empSLLx0RVKoAU6r6MGr2LEOy27/XwurjI2cKtpSSZGbIzNjrpKLGSviYsyBr1deWwOOdD5TNdUO5ky9Zi190bAWNEU0MVaSnZnvJV77RMrSP6GZYx8hX0dRLZVeo=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR1201MB0188.namprd12.prod.outlook.com (2603:10b6:4:56::12)
- by DM5PR12MB1468.namprd12.prod.outlook.com (2603:10b6:4:10::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.25; Tue, 28 Jul
- 2020 08:30:26 +0000
-Received: from DM5PR1201MB0188.namprd12.prod.outlook.com
- ([fe80::41b7:b11a:c6d8:1e0e]) by DM5PR1201MB0188.namprd12.prod.outlook.com
- ([fe80::41b7:b11a:c6d8:1e0e%10]) with mapi id 15.20.3216.033; Tue, 28 Jul
- 2020 08:30:26 +0000
-From:   Akshu Agrawal <akshu.agrawal@amd.com>
-To:     akshu.agrawal@amd.com
-Cc:     sboyd@kernel.org, rafael@kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org (open list:ACPI),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [3/4] ACPI: APD: Add a fmw property is_raven
-Date:   Tue, 28 Jul 2020 13:58:55 +0530
-Message-Id: <20200728082857.10829-4-akshu.agrawal@amd.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200728082857.10829-1-akshu.agrawal@amd.com>
-References: <20200728082857.10829-1-akshu.agrawal@amd.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MA1PR01CA0160.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:71::30) To DM5PR1201MB0188.namprd12.prod.outlook.com
- (2603:10b6:4:56::12)
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=yZsNfus+6QxB/2Q1/ypFJuiPTGp9cOvML6i0dLAUdac=;
+        b=ejEGGvg9afWN+1y9f+oMsCwu34xhvRkvayj6gOjnrHe4jy2EJmceBZ2vFQgag+khsr
+         7ca5BnlFiO+UHKZ0RNKBKkA1WHQpIHiOKR/m0ToBWXQYAxkklg2OlXj3fMIQVtqKE3lD
+         JI++O+B2lfF/GMviF5c2JM+7LUjRI2SElFT/w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=yZsNfus+6QxB/2Q1/ypFJuiPTGp9cOvML6i0dLAUdac=;
+        b=ZlXWeHA22U6Yq4/h/RuPl7QzZiNlea3+/D2INSfZmBfc2CP6ZXSitaWdvqYBhjUgPg
+         TT3uNfP5CYff1Mz9x6w6jtz7wiLuAGqV9VtGu0LlhKH0CT+M/fD24XynL/GM1ZZH8v1H
+         r6Cel4pMDqj84sx0QTZcjlFuMr/fKVd1CXi438JXrEoksP1m+2P4tlg8QgTY8Ewebm7v
+         Yba/lwk8BokNfkeO+Jtq8Hstx/IVYGeDHxc9gMo13mqxiILEXtxSYGFjF0+X7WYvq9FL
+         xxuWB8FhMGzwZZ1SaVPR38ke5VIrVnIZMUulqKTLU94Ex5Rzx+JNAycezeiPt76e5cDI
+         p8Vg==
+X-Gm-Message-State: AOAM533hB4FPG5M06za3yy28Gewf+Ew4KUJB9IfrE8Km6Ql8/peHm8QT
+        G2kNDvMruKyNkghuxTX8YHf/Ow==
+X-Google-Smtp-Source: ABdhPJyW9jUuaOyVc/e8KZvS6QCn6ltABXxe0vW3hPZVBAQOy7+lfoVizNyt8xrxJoHZ7VqHTpvdsg==
+X-Received: by 2002:aa7:91cd:: with SMTP id z13mr24700924pfa.133.1595924948476;
+        Tue, 28 Jul 2020 01:29:08 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id v28sm18481742pgn.81.2020.07.28.01.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 01:29:07 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from local.mshome.net (122.171.179.172) by MA1PR01CA0160.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:71::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend Transport; Tue, 28 Jul 2020 08:30:24 +0000
-X-Mailer: git-send-email 2.20.1
-X-Originating-IP: [122.171.179.172]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: de8e3716-347e-4a80-44e0-08d832d07a83
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1468:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1468BC785A5998566C4029B7F8730@DM5PR12MB1468.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hpLY7LElQgrriFwY6iC2CzuMrULDTiw1fFanoM7R8PtAosIM8ORV4t9+Ra1TOZXqeoEU1F3zBV7oKJ/CvGNLtWrdDSWXTcP7i2TaYkLA0GM3VBk6e99hanKf/oY9orhLNiICy9eQw9QTVdJnzDlqS0Iq6GoluAj8WdPs+K9g7E8wSqIR6ogXAKvsCuKCN4GS5Q2PIWBpXE/MTK2GEOODo/rMfE97dL6u22o++ChJBZkT/yq7Gjz3Tor30Dr5Wchs52fQumkvUKNj5vLJDYxocH1a3pv9/walJ3EnVC4vBQ69ohdPJ5r6vFPDYNRN+k6PQ2s61YpyWienNWgNuyPWkA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0188.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(956004)(2616005)(8936002)(44832011)(5660300002)(36756003)(316002)(6512007)(54906003)(66476007)(6666004)(478600001)(34206002)(37006003)(6486002)(66946007)(86362001)(66556008)(26005)(186003)(2906002)(8676002)(16526019)(52116002)(4326008)(1076003)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: J4OtI7QqcGf53nQKA0pqEXtQyHg2ib6r3RqchA7YvpBHimF6WuTpkhDzJxou8v11tMyopQrxriki31xZSlxki6tEEh35FiO1jNbn5ZbgfcN9qse4qYMSYihjxz5JxruHhAAX5paSScgLSYjWayhJzEXvA9IqpkUGoK7wNKG/VLBByEvbsQKTDDsGrfmCwuTk8FXZE6vef4iiUVliKBM+F3ytwe+fuhevKq0EeT7VOwxxQZB3UDdtPt5kHPbaT3aXAZN2EN1iTrcZxCIcs3I5J4tQ6Uc/cLpQVYnC17Rxi1N/4bzzJZGKBSfOAh5sSLFvorwUB4pynA3lHVSg/Pd4C+CR6g2XldKqpXnXkgzwlOwNuraPNBKdT6ANGEF/Xf6iimDNxkUf2eIpTO72S7a0qwUfYRtSZPZHVXyCS9GejU1ittCt79l00OLBGWOC3RKkaxMgTD0r2QlpP2j10aGSGT/IU9zIwWME+kjEeUELKKI=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de8e3716-347e-4a80-44e0-08d832d07a83
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0188.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 08:30:26.4913
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4NzjlOfQUM6Lpw134inkRkTmCp0HXW+j0EWnHDGayC+YHyRUXBKDQbuKyXKc6Kp5LXTOQaN0oklQl/nMAf4Pfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1468
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200728075102.30807-1-saiprakash.ranjan@codeaurora.org>
+References: <20200728075102.30807-1-saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCHv2] coresight: etm4x: Fix etm4_count race by moving cpuhp callbacks to init
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Date:   Tue, 28 Jul 2020 01:29:06 -0700
+Message-ID: <159592494608.1360974.13925720722764973592@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since there is slight difference in AMD RV based soc in misc
-clk architecture. The fmw property will help in differentiating
-the SoCs.
+Quoting Sai Prakash Ranjan (2020-07-28 00:51:02)
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtr=
+acing/coresight/coresight-etm4x.c
+> index 6d7d2169bfb2..adb71987a1e3 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
+> @@ -48,8 +48,6 @@ module_param(pm_save_enable, int, 0444);
+>  MODULE_PARM_DESC(pm_save_enable,
+>         "Save/restore state on power down: 1 =3D never, 2 =3D self-hosted=
+");
+> =20
+> -/* The number of ETMv4 currently registered */
+> -static int etm4_count;
+>  static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
+>  static void etm4_set_default_config(struct etmv4_config *config);
+>  static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
+> @@ -1403,12 +1401,9 @@ static int etm4_pm_setup_cpuslocked(void)
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- drivers/acpi/acpi_apd.c               | 4 ++++
- include/linux/platform_data/clk-fch.h | 1 +
- 2 files changed, 5 insertions(+)
+Is this only called from __init now? If so please mark it as __init
+then.
 
-diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
-index 2d99e46add1a..d879ba28826c 100644
---- a/drivers/acpi/acpi_apd.c
-+++ b/drivers/acpi/acpi_apd.c
-@@ -82,6 +82,7 @@ static int misc_check_res(struct acpi_resource *ares, void *data)
- static int fch_misc_setup(struct apd_private_data *pdata)
- {
- 	struct acpi_device *adev = pdata->adev;
-+	const union acpi_object *obj;
- 	struct platform_device *clkdev;
- 	struct fch_clk_data *clk_data;
- 	struct resource_entry *rentry;
-@@ -98,6 +99,9 @@ static int fch_misc_setup(struct apd_private_data *pdata)
- 	if (ret < 0)
- 		return -ENOENT;
- 
-+	acpi_dev_get_property(adev, "is-rv", ACPI_TYPE_INTEGER, &obj);
-+	clk_data->is_rv = obj->integer.value;
-+
- 	list_for_each_entry(rentry, &resource_list, node) {
- 		clk_data->base = devm_ioremap(&adev->dev, rentry->res->start,
- 					      resource_size(rentry->res));
-diff --git a/include/linux/platform_data/clk-fch.h b/include/linux/platform_data/clk-fch.h
-index 850ca776156d..b9f682459f08 100644
---- a/include/linux/platform_data/clk-fch.h
-+++ b/include/linux/platform_data/clk-fch.h
-@@ -12,6 +12,7 @@
- 
- struct fch_clk_data {
- 	void __iomem *base;
-+	u32 is_rv;
- };
- 
- #endif /* __CLK_FCH_H */
--- 
-2.20.1
+>  {
+>         int ret;
+> =20
+> -       if (etm4_count++)
+> -               return 0;
+> -
+>         ret =3D cpu_pm_register_notifier(&etm4_cpu_pm_nb);
+>         if (ret)
+> -               goto reduce_count;
+> +               return ret;
+> =20
+>         ret =3D cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIG=
+HT_STARTING,
+>                                                    "arm/coresight4:starti=
+ng",
+> @@ -1432,17 +1427,11 @@ static int etm4_pm_setup_cpuslocked(void)
+> =20
+>  unregister_notifier:
+>         cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
+> -
+> -reduce_count:
+> -       --etm4_count;
+>         return ret;
+>  }
+> =20
+>  static void etm4_pm_clear(void)
 
+This is __init too?
+
+>  {
+> -       if (--etm4_count !=3D 0)
+> -               return;
+> -
+>         cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
+>         cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
+>         if (hp_online) {
+> @@ -1598,4 +1576,29 @@ static struct amba_driver etm4x_driver =3D {
+>         .probe          =3D etm4_probe,
+>         .id_table       =3D etm4_ids,
+>  };
+> -builtin_amba_driver(etm4x_driver);
+> +
+> +static int __init etm4x_init(void)
+> +{
+> +       int ret;
+> +
+> +       cpus_read_lock();
+> +       ret =3D etm4_pm_setup_cpuslocked();
+> +       cpus_read_unlock();
+> +
+> +       /* etm4_pm_setup_cpuslocked() does its own cleanup - exit on erro=
+r */
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D amba_driver_register(&etm4x_driver);
+> +       if (ret) {
+> +               pr_info("Error registering etm4x driver\n");
+
+Use pr_err() please.
+
+> +               goto err_init;
+> +       }
+> +
+> +       return ret;
+> +
+> +err_init:
+
+Why is this a goto?
+
+> +       etm4_pm_clear();
+> +       return ret;
+
+Instead of just putting this in the if (ret) arm?
+
+> +}
+> +module_init(etm4x_init);
+
+It was device_initcall before with builtin_amba_driver(), best to not
+change that.
