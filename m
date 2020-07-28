@@ -2,174 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8A2230A5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19F7230A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbgG1Miy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S1729818AbgG1MkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728751AbgG1Miy (ORCPT
+        with ESMTP id S1729628AbgG1MkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:38:54 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C745C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:38:54 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id q17so9818692pls.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:38:54 -0700 (PDT)
+        Tue, 28 Jul 2020 08:40:25 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED48C061794;
+        Tue, 28 Jul 2020 05:40:25 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id t15so11577113pjq.5;
+        Tue, 28 Jul 2020 05:40:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4g7iTxi0pQvK+1PDjldeUqyZ+gKf3NktQDHtumchvKQ=;
-        b=VcNG+Fd3VoebKC5oQn3y3iz+BcvT+E2SZOs/g9qfOdqjCaGQTu0lvXrlDi9ibw9rck
-         iKh5+3D05iRYoKukzR7O8KaNFC49Ms+ZEgqfDgBF1KYwvdcK+fZ+m6bnPz9rYtOBECS1
-         XHIwR0omC8k7yjGSKLwn1MjA65gsFM0EAAs2xEyTFLx9Uo2YpyuFowC8QePmvHgqV7Bx
-         5wdFKqJauWyyisfnJdwUBv8GnCBT+spyj3IF0EflkTGBz/2AK+fpxVnuktuZfDpmCEkk
-         +szzDbsb/qgd/y/W0JliNNbOAmnjjD5LLRjXLXmhBtrOp6piLkrpzDwMHxjEfY0OFvDW
-         LTbQ==
+         :content-disposition:in-reply-to;
+        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
+        b=n1A4woKQkiSxjFUkK2MMPTGX0gyTFj/XulU59DI2cWd/Mcq6RKEgRLaDmie8NCO8h9
+         jsPDDRUT3oeNmmNF5siGZwU1IpeJONcINRtQDUF38G+on+DtCrImdXPVJFlJvptSDDkv
+         VEwLMz+8Oqf1P5bu8tDQCeY8n2iViYnIA7QZiG0BRfhpSRfanxyAV27/dWBIOsYGXIqd
+         G/1NZZ6oa7GHULisQkUENnU+3q86anKc3DyZPvHhUHBBF6AW5qZlOTFL1bVG31JKoifM
+         nIgLMXv4ai5zVtC6A24Fk8veg5TwvycMHiO0xixiU+1apvHMT2J5BNNPNHu/TAZ6xng1
+         ODgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4g7iTxi0pQvK+1PDjldeUqyZ+gKf3NktQDHtumchvKQ=;
-        b=oLZclVPavQGqE79L3teZXmBbkukJbNf+dgLHi24mOm2hPz21W+4SXX/+4vDMvEi1Pd
-         Yi3QseO29cZxR5hPUZ2Sl/AjIyr5Esgax5PDgXHs+aWZTbSlmD0Ri+6TwuF5JJzAKQQj
-         dnjBIKfIGVEeicZ2zTgI3xTR1/pMXbXhMllotSKzMARpbbuibHkqLVXThuEcu4DqxWzm
-         ku8RB6qtG8PeRjATNv76BRaYEN+UeaK5vAybMGTUkUbgQ6XR22wGw/i8b8VrXUE/APki
-         WK+pTSgP00n5XhwLuNFl76xv984Rp6PukDx/3HSEgxgnHzl0+sPqBEldtlrvXzkAnKCL
-         iWgQ==
-X-Gm-Message-State: AOAM531AxHy9p2cHePCiWFWVZsgVribmmyXbo3L9NcJcrkFklrc7ISCN
-        Mewt1A81YpWfAAa5wmxfF78R0w==
-X-Google-Smtp-Source: ABdhPJxBZLWz+mrfdp81OQw/iibH/lD1K3X9d0oGtG1OIvJ9Veil+ItGUILGfvZeKbL2PBdWjw3sgg==
-X-Received: by 2002:a17:902:6b45:: with SMTP id g5mr23335947plt.42.1595939933649;
-        Tue, 28 Jul 2020 05:38:53 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id x9sm20731774pfq.216.2020.07.28.05.38.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Jul 2020 05:38:52 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 20:38:46 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Wei Li <liwei391@huawei.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kim Phillips <kim.phillips@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, guohanjun@huawei.com
-Subject: Re: [PATCH v2 2/2] perf tools: ARM SPE code cleanup
-Message-ID: <20200728123846.GC4343@leoy-ThinkPad-X240s>
-References: <20200724071111.35593-1-liwei391@huawei.com>
- <20200724071111.35593-3-liwei391@huawei.com>
- <20200727203436.GC2381376@xps15>
- <20200728120220.GA40195@kernel.org>
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
+        b=XX/PH27dOvtOFw4PYvXJAvev263VA189SmGVhfs+aHf1FY8It48VUUT1L1K6/6G+Kf
+         dGMu597cc4y02CfFXaADRWIngiGjATSNBvYcdFs23l78gB3EZ/b3vwmxDp9RLyEhyE8P
+         vhsd5uxxSMJK00VIloFfPb4dep6OILYEIP8FS+SwSXVg6Pv92N+YskQBJ9MSy3T8l/Y9
+         k30YLuRvPPwmOk3v603yCOeYLp7mI1qy04m38WMrH9B9CA5cgWI+l9DzviWTbZxjJSro
+         o2RGvYSaKzt+GGM5/eOsoUWDRCY7B4aFxAMw1zjyX3Xf8h/lif4Jvs6TOI2ZC0bnx8d0
+         /cYQ==
+X-Gm-Message-State: AOAM5312CqODrI7aqwOwmxaevIT+OSvaM/sp/AHJ3oDHL4ryrGUHfVLL
+        +ZMgzFKkaqOS2yVyJAACCCU=
+X-Google-Smtp-Source: ABdhPJw8aqJ7SAGLcxLIBXeRhtSyQt1UsMeiXdJoz3QIIdThiUkmDWaY2TmIa0NCvzERhDJ3DPwTRQ==
+X-Received: by 2002:a17:902:8204:: with SMTP id x4mr24110574pln.16.1595940024900;
+        Tue, 28 Jul 2020 05:40:24 -0700 (PDT)
+Received: from gmail.com ([2401:4900:2eef:ca92:3545:4a68:f406:d612])
+        by smtp.gmail.com with ESMTPSA id r2sm18220374pfh.106.2020.07.28.05.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 05:40:24 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 18:08:55 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1] [media] bttv: use generic power management
+Message-ID: <20200728123855.GD1331847@gmail.com>
+References: <20200728102418.1069512-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200728120220.GA40195@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200728102418.1069512-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+This patch is compile-tested only.
 
-On Tue, Jul 28, 2020 at 09:02:20AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Jul 27, 2020 at 02:34:36PM -0600, Mathieu Poirier escreveu:
-> > On Fri, Jul 24, 2020 at 03:11:11PM +0800, Wei Li wrote:
-> > > - Firstly, the function auxtrace_record__init() will be invoked only
-> > >   once, the variable "arm_spe_pmus" will not be used afterwards, thus
-> > >   we don't need to check "arm_spe_pmus" is NULL or not;
-> > > - Another reason is, even though SPE is micro-architecture dependent,
-> > >   but so far it only supports "statistical-profiling-extension-v1" and
-> > >   we have no chance to use multiple SPE's PMU events in Perf command.
-> > 
-> > I find the above changelog somewhat out of touch with the patch itself.  The
-> > only thing that is happening here is the removal of a useless check and a fix
-> > for a memory leak.
-> 
-> Humm, I think the original intent of that code was to cache the results
-> of find_all_arm_spe_pmus(), as the variable it is assigned to is static.
-> 
-> So not a leak, as there was that static reference to it to reuse it
-> later, but that is strange in a function named "__init()" which usually
-> is called only once, anyway, so I think that the paragraph with
-> "Firstly" is kinda ok, but confusing, I think it should read:
-> 
-> - auxtrace_record__init() is called only once, so there is no point in
->   using a static variable to cache the results of
->   find_all_arm_spe_pmus(), make it local and free the results after use.
-> 
-> The second paragraph is SPE specific, so I'm not qualified to judge on
-> it.
-> 
-> I'm replacing the first paragraph with the version I wrote and keep it
-> in my local branch, please holler if you think I misunderstood.
-
-Thanks a lot for this.  These two paragraphs were coming from reviewing
-and comments, but I think your rephrasing is very sufficient to describe
-what this patch is doing :)
-
-Thanks,
-Leo
-
-> > Once again whether Arnaldo wants to make the changes by hand or not you may have
-> > to resubmit.
-> > 
-> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > 
-> > > 
-> > > So remove the useless check code to make it clear.
-> > > 
-> > > Signed-off-by: Wei Li <liwei391@huawei.com>
-> > > ---
-> > >  tools/perf/arch/arm/util/auxtrace.c | 9 ++++-----
-> > >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-> > > index 28a5d0c18b1d..b187bddbd01a 100644
-> > > --- a/tools/perf/arch/arm/util/auxtrace.c
-> > > +++ b/tools/perf/arch/arm/util/auxtrace.c
-> > > @@ -57,17 +57,15 @@ struct auxtrace_record
-> > >  	struct evsel *evsel;
-> > >  	bool found_etm = false;
-> > >  	struct perf_pmu *found_spe = NULL;
-> > > -	static struct perf_pmu **arm_spe_pmus = NULL;
-> > > -	static int nr_spes = 0;
-> > > +	struct perf_pmu **arm_spe_pmus = NULL;
-> > > +	int nr_spes = 0;
-> > >  	int i = 0;
-> > >  
-> > >  	if (!evlist)
-> > >  		return NULL;
-> > >  
-> > >  	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
-> > > -
-> > > -	if (!arm_spe_pmus)
-> > > -		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
-> > > +	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
-> > >  
-> > >  	evlist__for_each_entry(evlist, evsel) {
-> > >  		if (cs_etm_pmu &&
-> > > @@ -84,6 +82,7 @@ struct auxtrace_record
-> > >  			}
-> > >  		}
-> > >  	}
-> > > +	free(arm_spe_pmus);
-> > >  
-> > >  	if (found_etm && found_spe) {
-> > >  		pr_err("Concurrent ARM Coresight ETM and SPE operation not currently supported\n");
-> > > -- 
-> > > 2.17.1
-> > > 
-> 
-> -- 
-> 
-> - Arnaldo
+Thanks
+Vaibhav Gupta
