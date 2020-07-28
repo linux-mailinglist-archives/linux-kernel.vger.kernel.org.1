@@ -2,212 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0167123058D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE412305A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgG1IiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727996AbgG1IiM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:38:12 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8125AC061794;
-        Tue, 28 Jul 2020 01:38:11 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 57FFD22F00;
-        Tue, 28 Jul 2020 10:38:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1595925488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CeGX2CeZPQ2jTjYJwriGXoWv4Xxv+ZHe+OXyj9uS1EI=;
-        b=ET/wyIoSCwH1qDZuc5g3ByJZKYXpVMpHKMv+CaktCC7I2C6ReAEtjmtWeETGrhH15FDi+T
-        9wunTehr0h4i5sDuG0VbUwxiFKKhTglu10R8mWkPIvyEjifQs62zYuCnuPnpRU+I6xB+/6
-        PV90+P6U7owpDj4+m/4sg8MwCbpTm34=
+        id S1728251AbgG1Iki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:40:38 -0400
+Received: from mail-mw2nam12on2051.outbound.protection.outlook.com ([40.107.244.51]:24417
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728016AbgG1Iki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:40:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LM5w21v2xul73whf/j3FMEN0bd3AYISelGVMDrYs1I1k+ZOLFo+ILzLf2P/4kf0wkz0AHx/6dDi4NMXz0M43XYL3tAPVNXUed2NOmGsf/v7e0E6uuiA2P0a6iWky1k8sdA2jffbSIUKNb4XkHkqZ0HKVFhvELYtUuVPZHZRQdxykSPC+f6udRqgNOB5wgKucSZpvuwD8VmfxtWKV3p9/hKE7DFoBcoaWjD1lYRdOIsx4oktJVUFTzmmOazeNkBRmAJKFnbDsp0VZdnk79Nq9/OfgnEap6juhNRdi+LgKetT29C72lPrC+McfyZQiXWQvS1u+6UP6iSlNTv9eNnbgTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wfCk201FvWlIusiJ20M931+ZD+2bvTDB4nRyCEUoB8M=;
+ b=gvqcjr5NS9Ut451jDu9noUnyP+ZQPestnEyyhqcTmSp6oiDtf9thotOJ4IVGRsJlx5EelAYJoGA7SPrLNjGxBy8f/xJWM9ijYX7yjeMhOZla0FEb5jvFQf6d9zbI/124uGdm+WP0zItnkM6lh4omfgQQcS8N3DJBV/NwLotnuGIJ9nREdAipK7Ktga+KGQ723GZJ7CQ3/JSepz3x2adPNQ24mLdiVbuvkT6UOtmEVw66bjb5tluGNy3DgRUjllVXqneNvYeWyt8k41vdRwz+8HKw7g+Pmu+LdKyV4fV1n2W4cFA4PJ4IrQpOtBAWOg+DH47o69TBC7NZSgYJp7P3xQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wfCk201FvWlIusiJ20M931+ZD+2bvTDB4nRyCEUoB8M=;
+ b=DW4cQ9aktgKqJwZVsECL8UVq7XTxYSheYiXuzMYoAriSYo4Zppo/CQF4UiN8hWxD8/lb+3LP3pAaJsSEvXg1wiBJhkZe0f0AxwS3NzACBAudOBziSwc/k4cZkh8mC4d9K6deEB7gNzUK6RBw7t7lb01JW/KR3ar/2dEvPUU4XWY=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR1201MB0188.namprd12.prod.outlook.com (2603:10b6:4:56::12)
+ by DM5PR12MB1468.namprd12.prod.outlook.com (2603:10b6:4:10::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.25; Tue, 28 Jul
+ 2020 08:40:35 +0000
+Received: from DM5PR1201MB0188.namprd12.prod.outlook.com
+ ([fe80::41b7:b11a:c6d8:1e0e]) by DM5PR1201MB0188.namprd12.prod.outlook.com
+ ([fe80::41b7:b11a:c6d8:1e0e%10]) with mapi id 15.20.3216.033; Tue, 28 Jul
+ 2020 08:40:35 +0000
+From:   Akshu Agrawal <akshu.agrawal@amd.com>
+To:     akshu.agrawal@amd.com
+Cc:     sboyd@kernel.org, rafael@kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org (open list:ACPI),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [3/4] ACPI: APD: Add a fmw property is_raven
+Date:   Tue, 28 Jul 2020 14:10:06 +0530
+Message-Id: <20200728084011.11002-1-akshu.agrawal@amd.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MA1PR01CA0115.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:1::31) To DM5PR1201MB0188.namprd12.prod.outlook.com
+ (2603:10b6:4:56::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 28 Jul 2020 10:38:08 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 02/13] dt-bindings: mfd: Add bindings for sl28cpld
-In-Reply-To: <20200728082707.GB2419169@dell>
-References: <20200725231834.25642-1-michael@walle.cc>
- <20200725231834.25642-3-michael@walle.cc> <20200728072422.GF1850026@dell>
- <1065b0107ce6fd88b2bdd704bf45346b@walle.cc> <20200728082707.GB2419169@dell>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <a47993ca4c77ab1ee92f6693debb3c87@walle.cc>
-X-Sender: michael@walle.cc
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from local.mshome.net (122.171.179.172) by MA1PR01CA0115.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:1::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21 via Frontend Transport; Tue, 28 Jul 2020 08:40:32 +0000
+X-Mailer: git-send-email 2.20.1
+X-Originating-IP: [122.171.179.172]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 5ee8d40c-0483-45ac-99e5-08d832d1e538
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1468:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB14683227412EE7E5456F2404F8730@DM5PR12MB1468.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0derhuzWPAGtrSKAkuxHU/ytnIcv5ffsZdh3088cE9VrkhaY5tnpxE6QzPYe15JuMzgZEeXe/UtRC6cALHkyokvpoTlbh5uF26kAc1yBhvoYgp2J5o8j07+XlVrNM/tZOWfT36IKASomkerJc0wWFNDLj/HM6w5FYwyrXNwtyxe666QhvAkAg1unpun8p4EfY+A7Th3BayuoXFLGuR05BCQaxWvFvQ+vR/rwelXVlx9ZFfgsADEq4pPsjfcbtKauQOpM07Ff1SQb2mkxdqOAM1hFFqGVqMFkwABUsAMud7frICEoPt8r8gHn+Ob47U/RMSfnzp9z5E5BcM+agxNCDQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0188.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(956004)(2616005)(8936002)(44832011)(5660300002)(36756003)(316002)(6512007)(54906003)(66476007)(6666004)(478600001)(34206002)(37006003)(6486002)(66946007)(86362001)(66556008)(26005)(186003)(2906002)(8676002)(16526019)(52116002)(4326008)(1076003)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 0yfjVKol763U7b9sJkosCmeaV09H0f0677aImHbxXk+GeW4TV2lOnCyMH11JAo4W/4hCuGybs2vhk1HGd8ttsYjVA7oNPwz5H9didRk7D/dlDEmrOqjJeSG6e+rm4djCPBQoqEoHtumWbpjwGNLxOBwfczBgG7RDeYS97LFJ7knSuczg+r3pzTOzSPLVM9pAVndMTONIgeqIVVtU65h8uwwNn+gvTX+pe/WH8lIKJq3OKMq1jxVuRd81UYlrQSgM8N5M3KnfQx71y8wUEamgzOTGRuFz7I3GS+KRmDB7PrUYgfORCBcgUvvbGHHrmz/LP5NRHWqV8CXyoBJEfX67k2iQ9Zm+3zKUMhRyjqqgf0bFuYS9+9oROzq07RXVQUgSkmut6BhLJcGbpmx+i63YTMr+jWSsDqD72heI51cNfKvSkHX4a9WANox2yknYG5xWe1VknfOFkMS3/2BH6oWS/9g4L3uVS8gb6vF2M2Tzy5oaLVABiGLViDmQ4ZGKR5Sl
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ee8d40c-0483-45ac-99e5-08d832d1e538
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0188.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 08:40:35.3598
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bndJV7qF1VGkd8+PSeA70RGh8o3DofXMEg5Ii+LkDkiRxF9DV6yqJGntHgF37eSaM6vxE7x1JAuXRiZ0dOUZug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1468
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-07-28 10:27, schrieb Lee Jones:
-> On Tue, 28 Jul 2020, Michael Walle wrote:
-> 
->> Am 2020-07-28 09:24, schrieb Lee Jones:
->> > On Sun, 26 Jul 2020, Michael Walle wrote:
->> >
->> > > Add a device tree bindings for the board management controller found
->> > > on
->> > > the Kontron SMARC-sAL28 board.
->> > >
->> > > Signed-off-by: Michael Walle <michael@walle.cc>
->> > > Reviewed-by: Rob Herring <robh@kernel.org>
->> > > ---
->> > > Changes since v5:
->> > >  - none
->> > >
->> > > Changes since v4:
->> > >  - fix the regex of the unit-address
->> > >
->> > > Changes since v3:
->> > >  - see cover letter
->> > >
->> > >  .../bindings/gpio/kontron,sl28cpld-gpio.yaml  |  54 +++++++
->> > >  .../hwmon/kontron,sl28cpld-hwmon.yaml         |  27 ++++
->> > >  .../kontron,sl28cpld-intc.yaml                |  54 +++++++
->> > >  .../bindings/mfd/kontron,sl28cpld.yaml        | 153
->> > > ++++++++++++++++++
->> > >  .../bindings/pwm/kontron,sl28cpld-pwm.yaml    |  35 ++++
->> > >  .../watchdog/kontron,sl28cpld-wdt.yaml        |  35 ++++
->> > >  6 files changed, 358 insertions(+)
->> > >  create mode 100644
->> > > Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
->> > >  create mode 100644
->> > > Documentation/devicetree/bindings/hwmon/kontron,sl28cpld-hwmon.yaml
->> > >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/kontron,sl28cpld-intc.yaml
->> > >  create mode 100644
->> > > Documentation/devicetree/bindings/mfd/kontron,sl28cpld.yaml
->> > >  create mode 100644
->> > > Documentation/devicetree/bindings/pwm/kontron,sl28cpld-pwm.yaml
->> > >  create mode 100644
->> > > Documentation/devicetree/bindings/watchdog/kontron,sl28cpld-wdt.yaml
->> > >
->> > > diff --git
->> > > a/Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
->> > > b/Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
->> > > new file mode 100644
->> > > index 000000000000..9a63a158a796
->> > > --- /dev/null
->> > > +++
->> > > b/Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
->> > > @@ -0,0 +1,54 @@
->> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> > > +%YAML 1.2
->> > > +---
->> > > +$id: http://devicetree.org/schemas/gpio/kontron,sl28cpld-gpio.yaml#
->> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> > > +
->> > > +title: GPIO driver for the sl28cpld board management controller
->> > > +
->> > > +maintainers:
->> > > +  - Michael Walle <michael@walle.cc>
->> > > +
->> > > +description: |
->> > > +  This module is part of the sl28cpld multi-function device. For more
->> > > +  details see
->> > > Documentation/devicetree/bindings/mfd/kontron,sl28cpld.yaml.
->> >
->> > Paths are normally relative.
->> 
->> grep Documentation/ Documentation
->> 
->> I know there are a lot false positives (esp in the first one)..
->> 
->> $ grep -r "\.\./" Documentation | wc -l
->> 1826
->> $ grep -r "Documentation/" Documentation|wc -l
->> 2862
-> 
-> I actually meant just for Device Tree bindings, but it does appear
-> that 'Documentation' is used a bunch there too.
-> 
-> My reasons for not liking full paths is that the intention was always
-> to move 'Documentation/devicetree' to a new location outside of the
-> kernel source tree.
+Since there is slight difference in AMD RV based soc in misc
+clk architecture. The fmw property will help in differentiating
+the SoCs.
 
-I see. I'll change that.
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ drivers/acpi/acpi_apd.c               | 4 ++++
+ include/linux/platform_data/clk-fch.h | 1 +
+ 2 files changed, 5 insertions(+)
 
->> > > +%YAML 1.2
->> > > +---
->> > > +$id: http://devicetree.org/schemas/mfd/kontron,sl28cpld.yaml#
->> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> > > +
->> > > +title: Kontron's sl28cpld board management controller
->> >
->> > "S128CPLD" ?
->> 
->> still not, its sl28cpld, think of a project/code name, not the product
->> appended with CPLD.
->> 
->> > "Board Management Controller (BMC)" ?
->> 
->> sounds like IPMI, which I wanted to avoid.
-> 
-> Is there a datasheet?
+diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+index 2d99e46add1a..d879ba28826c 100644
+--- a/drivers/acpi/acpi_apd.c
++++ b/drivers/acpi/acpi_apd.c
+@@ -82,6 +82,7 @@ static int misc_check_res(struct acpi_resource *ares, void *data)
+ static int fch_misc_setup(struct apd_private_data *pdata)
+ {
+ 	struct acpi_device *adev = pdata->adev;
++	const union acpi_object *obj;
+ 	struct platform_device *clkdev;
+ 	struct fch_clk_data *clk_data;
+ 	struct resource_entry *rentry;
+@@ -98,6 +99,9 @@ static int fch_misc_setup(struct apd_private_data *pdata)
+ 	if (ret < 0)
+ 		return -ENOENT;
+ 
++	acpi_dev_get_property(adev, "is-rv", ACPI_TYPE_INTEGER, &obj);
++	clk_data->is_rv = obj->integer.value;
++
+ 	list_for_each_entry(rentry, &resource_list, node) {
+ 		clk_data->base = devm_ioremap(&adev->dev, rentry->res->start,
+ 					      resource_size(rentry->res));
+diff --git a/include/linux/platform_data/clk-fch.h b/include/linux/platform_data/clk-fch.h
+index 850ca776156d..b9f682459f08 100644
+--- a/include/linux/platform_data/clk-fch.h
++++ b/include/linux/platform_data/clk-fch.h
+@@ -12,6 +12,7 @@
+ 
+ struct fch_clk_data {
+ 	void __iomem *base;
++	u32 is_rv;
+ };
+ 
+ #endif /* __CLK_FCH_H */
+-- 
+2.20.1
 
-No there isn't.
-
->> > > +maintainers:
->> > > +  - Michael Walle <michael@walle.cc>
->> > > +
->> > > +description: |
->> > > +  The board management controller may contain different IP blocks
->> > > like
->> > > +  watchdog, fan monitoring, PWM controller, interrupt controller
->> > > and a
->> > > +  GPIO controller.
->> > > +
->> > > +properties:
->> > > +  compatible:
->> > > +    const: kontron,sl28cpld-r1
->> >
->> > We don't usually code revision numbers in compatible strings.
->> >
->> > Is there any way to pull this from the H/W?
->> 
->> No, unfortunately you can't. And I really want to keep that, in case
->> in the future there are some backwards incompatible changes.
-> 
-> Rob,
-> 
-> I know you reviewed this already, but you can give your opinion on
-> this specifically please?  I know that we have pushed back on this in
-> the past.
-
-Oh, come one. That is an arbitrary string. "sl28cpld-r1" is the first
-implementation of this. A future "sl28cpld-r2" might look completely
-different and might not suite the simple MFD at all. "sl28cpld" is
-a made up name - as "sl28cpld-r1" is, too.
-
--michael
