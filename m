@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E290231146
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EFD231142
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732174AbgG1SIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 14:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732157AbgG1SI3 (ORCPT
+        id S1732153AbgG1SHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 14:07:02 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:57466 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728625AbgG1SHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:08:29 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E02C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 11:08:29 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x9so10322064plr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 11:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qYYHTthmGmJmqtQXZTsCmho3z7DfhWTZpaNa8DTuo20=;
-        b=yKLE1prpIEfBrMQizKQZKaVHGb/NsvlAND9f475pZHCYIxnXGjK4ZpqI0nzeTZY0Bc
-         WOgByJKi4xBsbmEWuxYLWvArOUT7a/U05BM2yuPy9z8UWj/Z9vPDIutslcMVXhx+tI/f
-         KOShE7baX4n86nzgIqYYTNLcNzF7fshl6so5oAtBvYC3+CECJDI94GoOWjGc3UIYFgLM
-         lFEWmWOwhGKDEqD5E9FHc+rdTxasMVc2MF8HBGe3YZhp0CV9gbxuZab7kna9wkTyFDXI
-         s7vfF4fTVVb79d7nd3Mrtgom2muNY/iD89j2WwEzi1JKrMdQLc955Qrr19QcYLmz2Gxh
-         6v1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qYYHTthmGmJmqtQXZTsCmho3z7DfhWTZpaNa8DTuo20=;
-        b=Rpdmf6yN5DPcsQ8a/nJXfepL2p4OHM9RwInZ5ICOEXp0xWYqbA4P94VQF6aIoDRbZK
-         pJ1Tn5ZWgAj9HiSluRTEmGcQkn7foJ1WT1tvdWSj8ULTcAYO4jr9D5J5YJlUvSHLbly7
-         nq3e7r0VLsgU2UqwRmDsW8HcbeQiDWVazk3KGCwbNVw9qWvxUI0f+PkdmUgi19490wc/
-         rWxzU58LYsulikH/BK6YN70SlN6Gq54f2wlVH0KmMSAgnLaMnnnXcbR+KJNelZbr9G1E
-         aRa6asj0HZKADlslCmbUXqTAuyUFojVTTw10XaXo/NWPm483WEcgXat9cHK6aabyX6rq
-         zotQ==
-X-Gm-Message-State: AOAM533CV5JiqaHE8mYPIItVWmYh0H7fIOyi0SulHfrGI6fTiDOD3iJE
-        WZfrQ422DE2olzouR0xOSmh3eQ==
-X-Google-Smtp-Source: ABdhPJxee49DFdmLDI4r5lD0bPORKVD8XKosrTFF1Toa5yjTrk10rhlNO0JSR6NFyXNj537V7KMELA==
-X-Received: by 2002:a17:90a:a393:: with SMTP id x19mr5858929pjp.228.1595959709350;
-        Tue, 28 Jul 2020 11:08:29 -0700 (PDT)
-Received: from C02CV1DAMD6P.sso.bytedance.com ([103.136.221.69])
-        by smtp.gmail.com with ESMTPSA id n2sm19539822pfq.140.2020.07.28.11.08.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Jul 2020 11:08:29 -0700 (PDT)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     zhouchengming@bytedance.com, songmuchun@bytedance.com
-Subject: [PATCH 2/2] ftrace: skip special ftrace_ops when enable module
-Date:   Wed, 29 Jul 2020 02:05:54 +0800
-Message-Id: <20200728180554.65203-2-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20200728180554.65203-1-zhouchengming@bytedance.com>
-References: <20200728180554.65203-1-zhouchengming@bytedance.com>
+        Tue, 28 Jul 2020 14:07:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595959621; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=wH1XeUIpKUi87lDduI+MZ/7qwzN50GTis63htVEvvHE=; b=Q8b9c3XZ/D6wgsgUjNzfE0FzS+C8MX7vwHMZFoGQq06LVNCubsnr3aqv1pAJGu4K+0YAKOCB
+ UzigY6sUhcNrEKS3ST7XlzrLVR5bADmzI6bGuaCTAPVNhPzh9vU592cWa/xqbKAFgRrThrcY
+ vpA/B+6D8Kifij3hISY+9YhFYuA=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5f206935c7e7bf09e06380a2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 18:06:45
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 563CAC433A0; Tue, 28 Jul 2020 18:06:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.8 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: asutoshd)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8BA89C433C6;
+        Tue, 28 Jul 2020 18:06:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8BA89C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=asutoshd@codeaurora.org
+Subject: Re: [PATCH v7 7/8] scsi: ufs: Move dumps in IRQ handler to error
+ handler
+To:     Can Guo <cang@codeaurora.org>, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        sh425.lee@samsung.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1595912460-8860-1-git-send-email-cang@codeaurora.org>
+ <1595912460-8860-8-git-send-email-cang@codeaurora.org>
+From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
+Message-ID: <7e5e942d-449b-bd52-32da-7f5beed116b7@codeaurora.org>
+Date:   Tue, 28 Jul 2020 11:06:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1595912460-8860-8-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enable module, we find all ftrace_ops referenced it on the
-ftrace_ops_list. But FTRACE_OPS_FL_DIRECT and FTRACE_OPS_FL_IPMODIFY
-flag are special, and should not be set automatically. So warn and
-skip ftrace_ops that have these two flags.
-Also check if only one ftrace_ops references the module, in which case
-we can use trampoline as an optimization.
+On 7/27/2020 10:00 PM, Can Guo wrote:
+> Sometime dumps in IRQ handler are heavy enough to cause system stability
+> issues, move them to error handler.
+> 
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> ---
+>   drivers/scsi/ufs/ufshcd.c | 31 +++++++++++++++----------------
+>   1 file changed, 15 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index c480823..b2bafa3 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -5682,6 +5682,21 @@ static void ufshcd_err_handler(struct work_struct *work)
+>   				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR))))
+>   		needs_reset = true;
+>   
+> +	if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR |
+> +			      UFSHCD_UIC_HIBERN8_MASK)) {
+> +		bool pr_prdt = !!(hba->saved_err & SYSTEM_BUS_FATAL_ERROR);
+> +
+> +		dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+> +				__func__, hba->saved_err, hba->saved_uic_err);
+> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +		ufshcd_print_host_state(hba);
+> +		ufshcd_print_pwr_info(hba);
+> +		ufshcd_print_host_regs(hba);
+> +		ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+> +		ufshcd_print_trs(hba, hba->outstanding_reqs, pr_prdt);
+> +		spin_lock_irqsave(hba->host->host_lock, flags);
+> +	}
+> +
+>   	/*
+>   	 * if host reset is required then skip clearing the pending
+>   	 * transfers forcefully because they will get cleared during
+> @@ -5900,22 +5915,6 @@ static irqreturn_t ufshcd_check_errors(struct ufs_hba *hba)
+>   
+>   		/* block commands from scsi mid-layer */
+>   		ufshcd_scsi_block_requests(hba);
+> -
+> -		/* dump controller state before resetting */
+> -		if (hba->saved_err & (INT_FATAL_ERRORS | UIC_ERROR)) {
+> -			bool pr_prdt = !!(hba->saved_err &
+> -					SYSTEM_BUS_FATAL_ERROR);
+> -
+> -			dev_err(hba->dev, "%s: saved_err 0x%x saved_uic_err 0x%x\n",
+> -					__func__, hba->saved_err,
+> -					hba->saved_uic_err);
+> -
+> -			ufshcd_print_host_regs(hba);
+> -			ufshcd_print_pwr_info(hba);
+How about keep the above prints and move the tmrs and trs to eh?
+Sometimes in system instability, the eh may not get a chance to run 
+even. Still the above prints would provide some clues.
+> -			ufshcd_print_tmrs(hba, hba->outstanding_tasks);
+> -			ufshcd_print_trs(hba, hba->outstanding_reqs,
+> -					pr_prdt);
+> -		}
+>   		ufshcd_schedule_eh_work(hba);
+>   		retval |= IRQ_HANDLED;
+>   	}
+> 
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- kernel/trace/ftrace.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index a3d141f53c9e..8c1d9e3daa67 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -6191,9 +6191,17 @@ static int referenced_filters(struct dyn_ftrace *rec)
- 
- 	for (ops = ftrace_ops_list; ops != &ftrace_list_end; ops = ops->next) {
- 		if (ops_references_rec(ops, rec)) {
-+			if (WARN_ON_ONCE(ops->flags & FTRACE_OPS_FL_DIRECT))
-+				continue;
-+			if (WARN_ON_ONCE(ops->flags & FTRACE_OPS_FL_IPMODIFY))
-+				continue;
- 			cnt++;
- 			if (ops->flags & FTRACE_OPS_FL_SAVE_REGS)
- 				rec->flags |= FTRACE_FL_REGS;
-+			if (cnt == 1 && ops->trampoline)
-+				rec->flags |= FTRACE_FL_TRAMP;
-+			else
-+				rec->flags &= ~FTRACE_FL_TRAMP;
- 		}
- 	}
- 
 -- 
-2.20.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+Linux Foundation Collaborative Project
