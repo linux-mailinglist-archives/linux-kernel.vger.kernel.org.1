@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEAF52310D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0592310D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731975AbgG1R0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:26:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42694 "EHLO mail.kernel.org"
+        id S1732004AbgG1R1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:27:18 -0400
+Received: from mail.nic.cz ([217.31.204.67]:58738 "EHLO mail.nic.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731684AbgG1R0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:26:32 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5D742078E;
-        Tue, 28 Jul 2020 17:26:31 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 13:26:30 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
-        songmuchun@bytedance.com
-Subject: Re: [External] Re: [PATCH 1/2] ftrace: clear module from hash of
- all ftrace ops
-Message-ID: <20200728132630.678f94f7@oasis.local.home>
-In-Reply-To: <557fa115-1247-e058-4a18-e73f6fb7d636@bytedance.com>
-References: <20200728102720.46837-1-zhouchengming@bytedance.com>
-        <20200728085320.6b04e03f@oasis.local.home>
-        <557fa115-1247-e058-4a18-e73f6fb7d636@bytedance.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731684AbgG1R1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 13:27:17 -0400
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 7519613FCD1;
+        Tue, 28 Jul 2020 19:27:14 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 19:27:13 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, jacek.anaszewski@gmail.com,
+        Dan Murphy <dmurphy@ti.com>,
+        =?UTF-8?B?T25kxZllag==?= Jirman <megous@megous.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC leds + net-next v4 1/2] net: phy: add API for LEDs
+ controlled by PHY HW
+Message-ID: <20200728192713.01153e43@nic.cz>
+In-Reply-To: <20200728162816.GK1705504@lunn.ch>
+References: <20200728150530.28827-1-marek.behun@nic.cz>
+        <20200728150530.28827-2-marek.behun@nic.cz>
+        <20200728171128.61c7193b@dellmb.labs.office.nic.cz>
+        <20200728162816.GK1705504@lunn.ch>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,URIBL_BLOCKED,
+        USER_IN_WHITELIST shortcircuit=ham autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Jul 2020 00:59:33 +0800
-Chengming Zhou <zhouchengming@bytedance.com> wrote:
+On Tue, 28 Jul 2020 18:28:16 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-
-> > i.e.
-> >
-> >   # echo some_module_function > set_ftrace_filter
-> >   # rmmod module_with_that_function
-> >   # insmod module_with_same_address_of_function
-> >   # echo function > current_tracer
-> >
-> > Now the tr->ops->hash would still have the function of the original
-> > module.  
+> > > @@ -736,6 +777,16 @@ struct phy_driver {
+> > >  	int (*set_loopback)(struct phy_device *dev, bool enable);
+> > >  	int (*get_sqi)(struct phy_device *dev);
+> > >  	int (*get_sqi_max)(struct phy_device *dev);
+> > > +
+> > > +	/* PHY LED support */
+> > > +	int (*led_init)(struct phy_device *dev, struct
+> > > phy_device_led *led);
+> > > +	int (*led_brightness_set)(struct phy_device *dev, struct
+> > > phy_device_led *led,
+> > > +				  enum led_brightness brightness);
+> > > +	const char *(*led_iter_hw_mode)(struct phy_device *dev,
+> > > struct phy_device_led *led,
+> > > +					void **	iter);
+> > > +	int (*led_set_hw_mode)(struct phy_device *dev, struct
+> > > phy_device_led *led,
+> > > +			       const char *mode);
+> > > +	const char *(*led_get_hw_mode)(struct phy_device *dev,
+> > > struct phy_device_led *led); };
+> > >  #define to_phy_driver(d)
+> > > container_of(to_mdio_common_driver(d),		\ struct
+> > > phy_driver, mdiodrv)  
+> > 
+> > The problem here is that the same code will have to be added to DSA
+> > switch ops structure, which is not OK.  
 > 
-> I thought all ftrace_ops has non empty func_hash are on the ftrace 
-> global list...
-
-Nope, the two are disjoint.
-
+> Not necessarily. DSA drivers do have access to the phydev structure.
 > 
-> Well, so I just leave this function unmodified.
+> I think putting these members into a structure is a good idea. That
+> structure can be part of phy_driver and initialised just like other
+> members. But on probing the phy, it can be copied over to the
+> phy_device structure. And we can provide an API which DSA drivers can
+> use to register there own structure of ops to be placed into
+> phy_device, which would call into the DSA driver.
 > 
-> Just call that new function register_ftrace_ops_hash() from 
-> ftrace_release_mod.
+>       Andrew
 
-I would say to have anything that uses one of the
-ftrace_set_filter/notrace* functions, to also register itself for
-module removal.
+On Marvell switches there are LEDs that do not necesarrily blink on
+events on a specific port, but instead on the whole switch. Ie a LED
+can be put into a mode "act on any port". Vendors may create devices
+with this as intender mode for a LED, and such a LED may be on the
+other side of the device from where the ports are, or something. Such a
+LED should be described in the device tree not as a child of any PHY or
+port, but instead as a child of the switch itself. And since all the
+LEDs on Marvell switches are technically controlled by the switch, not
+it's internal PHYs, I think all of them should be children of the
+switch node (or a "leds" node which is a child of the switch node),
+instead of being descended from the internal PHYs.
 
-	register_ftrace_mod_removal(struct ftrace_ops *ops);
-
-and then also have a unregister_ftrace_mod_removal() as there needs to
-be a way to remove it from the list before the ops gets freed.
-
-Then these functions would add the ops to a list, and this list is
-traversed to remove modules. The trace_arrays can register their ops
-too, so you can update that function.
-
--- Steve
-
-
-> 
-> Thanks!
-> 
-> >
-> > Either have all owners of ftrace_ops handle this case, or add a helper
-> > function to handle it for them. But using ftarce_ops_list is the wrong
-> > place to do it.
-> >
-> > -- Steve
-> >
-> >  
-> >> +	mutex_lock(&ftrace_lock);
-> >> +
-> >> +	do_for_each_ftrace_op(op, ftrace_ops_list) {
-> >> +		if (!op->func_hash)
-> >>   			continue;
-> >> -		mutex_lock(&tr->ops->func_hash->regex_lock);
-> >> -		clear_mod_from_hash(pg, tr->ops->func_hash->filter_hash);
-> >> -		clear_mod_from_hash(pg, tr->ops->func_hash->notrace_hash);
-> >> -		mutex_unlock(&tr->ops->func_hash->regex_lock);
-> >> -	}
-> >> -	mutex_unlock(&trace_types_lock);
-> >> +		mutex_lock(&op->func_hash->regex_lock);
-> >> +		clear_mod_from_hash(pg, op->func_hash->filter_hash);
-> >> +		clear_mod_from_hash(pg, op->func_hash->notrace_hash);
-> >> +		mutex_unlock(&op->func_hash->regex_lock);
-> >> +	} while_for_each_ftrace_op(op);
-> >> +
-> >> +	mutex_unlock(&ftrace_lock);
-> >>   }
-> >>   
-> >>   static void ftrace_free_mod_map(struct rcu_head *rcu)  
-
+Marek
