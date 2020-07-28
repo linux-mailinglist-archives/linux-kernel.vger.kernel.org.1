@@ -2,98 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB05231451
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAEBF231443
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729242AbgG1U5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 16:57:19 -0400
-Received: from elvis.franken.de ([193.175.24.41]:52456 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728202AbgG1U5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:57:19 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k0Wez-0007gK-01; Tue, 28 Jul 2020 22:57:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7636FC0A9B; Tue, 28 Jul 2020 22:51:55 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 22:51:55 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 2/2] MIPS: ingenic: Enable JZ4780_NEMC manually
-Message-ID: <20200728205155.GB22052@alpha.franken.de>
-References: <20200728104503.23655-1-krzk@kernel.org>
- <20200728104503.23655-2-krzk@kernel.org>
- <B4F6EQ.WB2WZOY40FDR@crapouillou.net>
- <20200728111935.GA26683@kozik-lap>
- <20200728113702.GB13443@alpha.franken.de>
- <20200728120035.GA28766@kozik-lap>
- <NPJ6EQ.I4K2FZ2BHH1E@crapouillou.net>
- <20200728125308.GA344@kozik-lap>
+        id S1729092AbgG1UwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 16:52:02 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:36106 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728202AbgG1UwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 16:52:02 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id CC35920039;
+        Tue, 28 Jul 2020 22:51:58 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 22:51:57 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        robh+dt@kernel.org, mark.rutland@arm.com, orsonzhai@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        zhang.lyra@gmail.com
+Subject: Re: [PATCH RFC v6 3/6] dt-bindings: display: add Unisoc's dpu
+ bindings
+Message-ID: <20200728205157.GD1277651@ravnborg.org>
+References: <1595930879-2478-1-git-send-email-kevin3.tang@gmail.com>
+ <1595930879-2478-4-git-send-email-kevin3.tang@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200728125308.GA344@kozik-lap>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1595930879-2478-4-git-send-email-kevin3.tang@gmail.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=f+hm+t6M c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=icsG72s9AAAA:8 a=pGLkceISAAAA:8 a=gEfo2CItAAAA:8
+        a=7CQSdrXTAAAA:8 a=e5mUnYsNAAAA:8 a=nf-ICS-ZoSeXndDHOMUA:9
+        a=HAnh4mGoJf9lCd-b:21 a=3GzCVPTGihwzIhyW:21 a=CjuIK1q_8ugA:10
+        a=T89tl0cgrjxRNoSN2Dv0:22 a=sptkURWiP4Gy88Gu7hUp:22
+        a=a-qgeE7W1pNrGK8U0ZQC:22 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 02:53:08PM +0200, Krzysztof Kozlowski wrote:
-> On Tue, Jul 28, 2020 at 02:51:23PM +0200, Paul Cercueil wrote:
-> > 
-> > 
-> > Le mar. 28 juil. 2020 à 14:00, Krzysztof Kozlowski <krzk@kernel.org> a écrit
-> > :
-> > > On Tue, Jul 28, 2020 at 01:37:02PM +0200, Thomas Bogendoerfer wrote:
-> > > >  On Tue, Jul 28, 2020 at 01:19:35PM +0200, Krzysztof Kozlowski wrote:
-> > > >  > On Tue, Jul 28, 2020 at 01:12:11PM +0200, Paul Cercueil wrote:
-> > > >  > > Hi Krzysztof,
-> > > >  > >
-> > > >  > > Le mar. 28 juil. 2020 à 12:45, Krzysztof Kozlowski
-> > > > <krzk@kernel.org> a écrit
-> > > >  > > :
-> > > >  > > > The CONFIG_JZ4780_NEMC was previously a default on MIPS but
-> > > > now it has
-> > > >  > > > to be enabled manually.
-> > > >  > > >
-> > > >  > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > >  > >
-> > > >  > > I think you should swap the two so that there are no problems
-> > > > when
-> > > >  > > bisecting.
-> > > >  >
-> > > >  > Good point. I was thinking that it will go via some of MIPS trees
-> > > > and
-> > > >  > the patch #1 will just wait a cycle.  However with acks, I can
-> > > > take it
-> > > >  > through drivers/memory tree.
-> > > > 
-> > > >  I've acked the patch.
-> > > > 
-> > > >  Thomas.
-> > > 
-> > > Thanks but now I noticed that one of changed configs
-> > > (arch/mips/configs/rs90_defconfig) is only in MIPS tree.
-> > > 
-> > > I think it is easier then to take the patch #2 (configs) via MIPS and
-> > > wait with #1 for the next cycle or also take it via MIPS if it applies
-> > > cleanly.
-> > 
-> > Why not take them both in the MIPS tree then? Would that conflict with
-> > changes in your tree?
+Hi Kevin.
+
+On Tue, Jul 28, 2020 at 06:07:56PM +0800, Kevin Tang wrote:
+> From: Kevin Tang <kevin.tang@unisoc.com>
 > 
-> Exactly (last part of my sentence). There should be no conflicts.
+> DPU (Display Processor Unit) is the Display Controller for the Unisoc SoCs
+> which transfers the image data from a video memory buffer to an internal
+> LCD interface.
+> 
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> ---
+>  .../devicetree/bindings/display/sprd/dpu.yaml      | 82 ++++++++++++++++++++++
 
-I've applied both patches to mips-next.
+Could we name it after the compatible "sharkl3-dpu.yaml"?
 
-Thomas.
+>  1 file changed, 82 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/sprd/dpu.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/sprd/dpu.yaml b/Documentation/devicetree/bindings/display/sprd/dpu.yaml
+> new file mode 100644
+> index 0000000..54ba9b6f
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/sprd/dpu.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: GPL-2.0
+Can this be: (GPL-2.0-only OR BSD-2-Clause)
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/sprd/dpu.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Unisoc SoC Display Processor Unit (DPU)
+> +
+> +maintainers:
+> +  - Mark Rutland <mark.rutland@arm.com>
+> +
+> +description: |
+> +  DPU (Display Processor Unit) is the Display Controller for the Unisoc SoCs
+> +  which transfers the image data from a video memory buffer to an internal
+> +  LCD interface.
+> +
+> +properties:
+> +  compatible:
+> +    const: sprd,sharkl3-dpu
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      Physical base address and length of the DPU registers set
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description:
+> +      The interrupt signal from DPU
+> +
+> +  clocks:
+> +    minItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: clk_src_128m
+> +      - const: clk_src_384m
+> +
+> +  power-domains:
+> +    description: A phandle to DPU power domain node.
+maxItems: 1
+
+> +
+> +  iommus:
+> +    description: A phandle to DPU iommu node.
+maxItems: 1
+
+> +
+> +  port:
+> +    type: object
+> +    description:
+> +      A port node with endpoint definitions as defined in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +      That port should be the output endpoint, usually output to
+> +      the associated DSI.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/sprd,sc9860-clk.h>
+> +    dpu: dpu@0x63000000 {
+> +          compatible = "sprd,sharkl3-dpu";
+> +          reg = <0x0 0x63000000 0x0 0x1000>;
+> +          interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+> +          clock-names = "clk_src_128m",
+> +      	        "clk_src_384m";
+> +
+> +          clocks = <&pll CLK_TWPLL_128M>,
+> +                <&pll CLK_TWPLL_384M>;
+> +
+> +          dpu_port: port {
+> +                  dpu_out: endpoint {
+> +                          remote-endpoint = <&dsi_in>;
+> +                  };
+> +          };
+> +    };
+
+Be consistent in indent. Now it is a mix of 6 and 8 spaces.
+(My preference is 4 spaces, but 2,4,6,8 are all OK)
+
+End the file with and end statement like this:
+<empty line>
+...
+
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
