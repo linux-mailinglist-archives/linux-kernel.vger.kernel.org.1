@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF962301A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501D22301AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgG1FS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
+        id S1726800AbgG1FY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbgG1FS5 (ORCPT
+        with ESMTP id S1726245AbgG1FY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:18:57 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08285C0619D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:18:56 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id d17so19723326ljl.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:18:56 -0700 (PDT)
+        Tue, 28 Jul 2020 01:24:58 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B490C061794;
+        Mon, 27 Jul 2020 22:24:57 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id a5so4241746ioa.13;
+        Mon, 27 Jul 2020 22:24:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=d1pd5Ywk2E8HpE6EvWe6h4xJCwbfyBvC8wvu4GCwgTc=;
-        b=vwhLvdoDLId6QUIm/pfUHA8PLqtigEfyJILQw06iOj5ltFtWqjTQf3H0t/V5YIhTB6
-         J+Gz86sheq3Sa0NGSWhimwXJMFB/306yZolRJVFg1ZETtRM3I0Fyhw2FFu1kYGI3dayD
-         VWKrgctr3nesPgqcxAdagIsrPgv+RWAzr5ukajRMI5dNj+xjKSaIZZOvCI2ByARQtAaP
-         MK4FW61s4GZENT8cMWGcTmKB28ouEjc4XJV1bYQ3aEFBU6qPd4zUg65+DLWIFwNuvumP
-         Xbmz0Q9kPrkyU0txfH2BcbHCY4clATw0eewVMPj6yDgDZUarJV2GryQhqTdSsLaPYeFH
-         j4+A==
+        bh=bJEzDOwJp0ny5xLDIyqDpHcyByjEwZuqOl/iPSQ9qGE=;
+        b=klax/3Q/dpB3FmxME9JntHGTjDCGdpH6466ptElrE2PHnQuwZIphwo3vWsib87seqI
+         J0Xe6Jv43A2RhMJ8H/QA/K7fl3gV1UyA/0y4ma9dRoapiDNNyXHS+9gboxs0C5fDt3ld
+         9TB+A+ZD9Ac1eEIkM6oNKUW2FBxdVAPAy+S02+q+S0UYbDJrbq+LUJ5mou4Juztm9fcB
+         qiYdfdkgdprfGPdV2E6HDtHnRqC1fhIArD3Kv9jB91MXbkfS/Y5AmoOT65JoiEbnxUbY
+         t/u5xBMdta70CXFySjlFETkrWJu47J62Vy5uKgApf5qpeTXq7ekjouE3l/b+9Snsa5xT
+         44Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=d1pd5Ywk2E8HpE6EvWe6h4xJCwbfyBvC8wvu4GCwgTc=;
-        b=r80kP2HA5jp7xcpdjioUQ/enQ4Cm0C5XuBPIHtAZM7LKPVjqbrFbFOrizFHe32+zPT
-         p3NhWgJPxau+leevAA43s7cUv292uq8GCzW167mQ6HKkzv+5tJVI1DJIR5HgLuk9EUrW
-         UPcSEPD36UY3k+v0vyN2WHUou+DnPJSuaiV4I4vT/Jk6KwczZnR0+8CBMFu6oM7BuBCP
-         q+OEimNeRDQpoRhVpOYAH8rfaMwbKFL+Z7yc8I5AuIvnw+6ytJ4Oh0eQCym+3WSAw0oF
-         5TrEj8BASI01Ht79j+FO+gSqzr2TV3QlAmMV+ThxJeGd+7//sCyFfLL7/+Ax+o6Grjqd
-         548A==
-X-Gm-Message-State: AOAM530aXzQIQcMcjDcAB4lWpfz7fXtLrGBvp7QFlbbk2y2x8DBh0VCv
-        NE4freVkHVkvf9Eutd1NEu6Sf6t57vlqun4oVLf4cw==
-X-Google-Smtp-Source: ABdhPJzSYrDhaJpzXv16ums83hk6dVdGlg4CP0Gv+W41Qo65lNfEPpZ0kfi4n0+Razbkcf25fTn7mz+8RImZtZjXKxY=
-X-Received: by 2002:a05:651c:1048:: with SMTP id x8mr11224019ljm.346.1595913535104;
- Mon, 27 Jul 2020 22:18:55 -0700 (PDT)
+        bh=bJEzDOwJp0ny5xLDIyqDpHcyByjEwZuqOl/iPSQ9qGE=;
+        b=Hl9qeKSgOcCUDylf2tpdoG2jZDk5FAC+ogfnSyaEGmBfM7CwSgd0p/hrow0MhF+Fbg
+         xxTPXdGIb1QnmYetG6Be+ZMDIiQn1hWJISJIJ8loQbX+7IXNmIEQdBbNv6IJjjp2L/7K
+         7IWaxocC8C30RedbypS7zbssyBBg/qGcg2khNy+3alWx7fat69ytCoPU4oYwx82ilJiY
+         Sv3j0ugeacmT6rxQV0ZPAXGcHESvFSZcW4nDYIY7s6y7dd5RCL5NYpV7Cq5W0PzwkhIz
+         G9O6VYL49lT+OHUkebXNq13rW2jMJUnipvgPPATXpTUR2PAZd5mQjHWypIwI+8aC80zs
+         ztIg==
+X-Gm-Message-State: AOAM532J/Z7JmDl58GHyAGQdnIB+99wC1f1VVoviYVGmQ21T55nGhbHR
+        YV6Ikd9htVjyP5w4u4sNRl4Ymm/Kji7uFdGCyVQ=
+X-Google-Smtp-Source: ABdhPJyEEkHIl0Pl1r1dF9sKbqOyh25bCIDBP8OfLluN+FyqINvOJcN5T+lcFRe+LysiU2u6oKcwEeCBtpBf/mObMl8=
+X-Received: by 2002:a6b:be81:: with SMTP id o123mr13649143iof.64.1595913896799;
+ Mon, 27 Jul 2020 22:24:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200728045850.22661-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20200728045850.22661-1-lukas.bulwahn@gmail.com>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Tue, 28 Jul 2020 10:48:43 +0530
-Message-ID: <CAP245DW1gY8sbFYxmZdAT_zC4GxT8mSmA8Zwpz28KFhe++e_7A@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: update entry to thermal governors file name prefixing
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200726110524.151957-1-xie.he.0141@gmail.com> <CAJht_EOAGFkVXsrJefWNMDn_D5HhH+ODkqE03BULyzb_Ma8A5A@mail.gmail.com>
+In-Reply-To: <CAJht_EOAGFkVXsrJefWNMDn_D5HhH+ODkqE03BULyzb_Ma8A5A@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 27 Jul 2020 22:24:45 -0700
+Message-ID: <CAM_iQpV8GDu2U_+4LwSy=uHc6_0FvCx_7ZPCOQ15=hccpaOCig@mail.gmail.com>
+Subject: Re: [PATCH] drivers/net/wan/lapbether: Use needed_headroom instead of hard_header_len
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:29 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> Commit 0015d9a2a727 ("thermal/governors: Prefix all source files with
-> gov_") renamed power_allocator.c to gov_power_allocator.c in
-> ./drivers/thermal amongst some other file renames, but missed to adjust
-> the MAINTAINERS entry.
->
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
->
->   warning: no file matches    F:    drivers/thermal/power_allocator.c
->
-> Update the file entry in MAINTAINERS to the new file name.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Hello,
 
-Acked-by: Amit Kucheria <amit.kucheria@linaro.org>
+On Mon, Jul 27, 2020 at 12:41 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> Hi Cong Wang,
+>
+> I'm wishing to change a driver from using "hard_header_len" to using
+> "needed_headroom" to declare its needed headroom. I submitted a patch
+> and it is decided it needs to be reviewed. I see you participated in
+> "hard_header_len vs needed_headroom" discussions in the past. Can you
+> help me review this patch? Thanks!
+>
+> The patch is at:
+> http://patchwork.ozlabs.org/project/netdev/patch/20200726110524.151957-1-xie.he.0141@gmail.com/
+>
+> In my understanding, hard_header_len should be the length of the header
+> created by dev_hard_header. Any additional headroom needed should be
+> declared in needed_headroom instead of hard_header_len. I came to this
+> conclusion by examining the logic of net/packet/af_packet.c:packet_snd.
 
-> ---
-> Amit, please ack.
->
-> Daniel, please pick this non-urgent minor patch for your -next tree.
->
-> applies cleanly on next-20200727
->
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index aad65cc8f35d..aa5a11d71f71 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17164,7 +17164,7 @@ M:      Lukasz Luba <lukasz.luba@arm.com>
->  L:     linux-pm@vger.kernel.org
->  S:     Maintained
->  F:     Documentation/driver-api/thermal/power_allocator.rst
-> -F:     drivers/thermal/power_allocator.c
-> +F:     drivers/thermal/gov_power_allocator.c
->  F:     include/trace/events/thermal_power_allocator.h
->
->  THINKPAD ACPI EXTRAS DRIVER
-> --
-> 2.17.1
->
+I am not familiar with this WAN driver, but I suggest you to look at
+the following commit, which provides a lot of useful information:
+
+commit 9454f7a895b822dd8fb4588fc55fda7c96728869
+Author: Brian Norris <briannorris@chromium.org>
+Date:   Wed Feb 26 16:05:11 2020 -0800
+
+    mwifiex: set needed_headroom, not hard_header_len
+
+    hard_header_len provides limitations for things like AF_PACKET, such
+    that we don't allow transmitting packets smaller than this.
+
+    needed_headroom provides a suggested minimum headroom for SKBs, so that
+    we can trivally add our headers to the front.
+
+    The latter is the correct field to use in this case, while the former
+    mostly just prevents sending small AF_PACKET frames.
+
+    In any case, mwifiex already does its own bounce buffering [1] if we
+    don't have enough headroom, so hints (not hard limits) are all that are
+    needed.
+
+    This is the essentially the same bug (and fix) that brcmfmac had, fixed
+    in commit cb39288fd6bb ("brcmfmac: use ndev->needed_headroom to reserve
+    additional header space").
+
+    [1] mwifiex_hard_start_xmit():
+            if (skb_headroom(skb) < MWIFIEX_MIN_DATA_HEADER_LEN) {
+            [...]
+                    /* Insufficient skb headroom - allocate a new skb */
+
+Hope this helps.
+
+Thanks.
