@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B232310A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CD72310A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731976AbgG1RLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731962AbgG1RLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:11:21 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58B29207F5;
-        Tue, 28 Jul 2020 17:11:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595956280;
-        bh=Wtdd2aggXUG2SrwcZacfye57yI4AkP3hAjgBPEBSse4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xnu1j6Gqw6ndNDJkvhznFHT9epfk5i65xB7LnGD8Lf4mZGStFxEIgnCnu/H1n0nGt
-         8LTO4ZU5CG6vltPbiI5QrlJIhEh/KCIjQF7ww16WG1nM3qNn3bPlQHZINPV06xJ7Xm
-         UJQUcrsS6VVxK3TV0xMs320uW7K4fybWda/rYQVU=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 4/4] mm: mmu_notifier: Fix and extend kerneldoc
-Date:   Tue, 28 Jul 2020 19:11:09 +0200
-Message-Id: <20200728171109.28687-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200728171109.28687-1-krzk@kernel.org>
-References: <20200728171109.28687-1-krzk@kernel.org>
+        id S1731881AbgG1RNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:13:02 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:47072 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731684AbgG1RNC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 13:13:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=gAxUDflyYD2Qz0uZDypM7APCGN6LsjUhjSUSWoYLPcY=; b=U8RJ5NSwZQ8iU78q1Zh5y2VxyZ
+        KLqWvDt3ijkmQpa/cyxyk4D4lH1X6HTzXUZ8buyclAQa4oFopGO7GizuG8UlZlYXhKf06aO3+jWxW
+        L5i2sFLebxgLmSaQiTOm/ba8eK8Vj7kcWqyUDl3TI1/IWRsEE2Nm52OaedKFXHgUc09g=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1k0T9m-0005gL-AT; Tue, 28 Jul 2020 17:12:50 +0000
+Received: from 54-240-197-239.amazon.com ([54.240.197.239] helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1k0T9l-0004gC-Us; Tue, 28 Jul 2020 17:12:50 +0000
+Subject: Re: [PATCH v3 4/4] xen: add helpers to allocate unpopulated memory
+To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Daniel Vetter <daniel@ffwll.ch>,
+        xen-devel@lists.xenproject.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20200727091342.52325-1-roger.pau@citrix.com>
+ <20200727091342.52325-5-roger.pau@citrix.com>
+ <b5460659-88a5-c2aa-c339-815d5618bcb5@xen.org>
+ <20200728165919.GA7191@Air-de-Roger>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <b1732413-0bd0-6f58-6324-37497347ce5b@xen.org>
+Date:   Tue, 28 Jul 2020 18:12:46 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200728165919.GA7191@Air-de-Roger>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix W=1 compile warnings (invalid kerneldoc):
+Hi Roger,
 
-    mm/mmu_notifier.c:187: warning: Function parameter or member 'interval_sub' not described in 'mmu_interval_read_bgin'
-    mm/mmu_notifier.c:708: warning: Function parameter or member 'subscription' not described in 'mmu_notifier_registr'
-    mm/mmu_notifier.c:708: warning: Excess function parameter 'mn' description in 'mmu_notifier_register'
-    mm/mmu_notifier.c:880: warning: Function parameter or member 'subscription' not described in 'mmu_notifier_put'
-    mm/mmu_notifier.c:880: warning: Excess function parameter 'mn' description in 'mmu_notifier_put'
-    mm/mmu_notifier.c:982: warning: Function parameter or member 'ops' not described in 'mmu_interval_notifier_insert'
+On 28/07/2020 17:59, Roger Pau Monné wrote:
+> On Tue, Jul 28, 2020 at 05:48:23PM +0100, Julien Grall wrote:
+>> Hi,
+>>
+>> On 27/07/2020 10:13, Roger Pau Monne wrote:
+>>> To be used in order to create foreign mappings. This is based on the
+>>> ZONE_DEVICE facility which is used by persistent memory devices in
+>>> order to create struct pages and kernel virtual mappings for the IOMEM
+>>> areas of such devices. Note that on kernels without support for
+>>> ZONE_DEVICE Xen will fallback to use ballooned pages in order to
+>>> create foreign mappings.
+>>>
+>>> The newly added helpers use the same parameters as the existing
+>>> {alloc/free}_xenballooned_pages functions, which allows for in-place
+>>> replacement of the callers. Once a memory region has been added to be
+>>> used as scratch mapping space it will no longer be released, and pages
+>>> returned are kept in a linked list. This allows to have a buffer of
+>>> pages and prevents resorting to frequent additions and removals of
+>>> regions.
+>>>
+>>> If enabled (because ZONE_DEVICE is supported) the usage of the new
+>>> functionality untangles Xen balloon and RAM hotplug from the usage of
+>>> unpopulated physical memory ranges to map foreign pages, which is the
+>>> correct thing to do in order to avoid mappings of foreign pages depend
+>>> on memory hotplug.
+>> I think this is going to break Dom0 on Arm if the kernel has been built with
+>> hotplug. This is because you may end up to re-use region that will be used
+>> for the 1:1 mapping of a foreign map.
+>>
+>> Note that I don't know whether hotplug has been tested on Xen on Arm yet. So
+>> it might be possible to be already broken.
+>>
+>> Meanwhile, my suggestion would be to make the use of hotplug in the balloon
+>> code conditional (maybe using CONFIG_ARM64 and CONFIG_ARM)?
+> 
+> Right, this feature (allocation of unpopulated memory separated from
+> the balloon driver) is currently gated on CONFIG_ZONE_DEVICE, which I
+> think could be used on Arm.
+> 
+> IMO the right solution seems to be to subtract the physical memory
+> regions that can be used for the identity mappings of foreign pages
+> (all RAM on the system AFAICT) from iomem_resource, as that would make
+> this and the memory hotplug done in the balloon driver safe?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- mm/mmu_notifier.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Dom0 doesn't know the regions used for the identity mappings as this is 
+only managed by Xen. So there is nothing you can really do here.
 
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index 352bb9f3ecc0..4fc918163dd3 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -166,7 +166,7 @@ static void mn_itree_inv_end(struct mmu_notifier_subscriptions *subscriptions)
- /**
-  * mmu_interval_read_begin - Begin a read side critical section against a VA
-  *                           range
-- * interval_sub: The interval subscription
-+ * @interval_sub: The interval subscription
-  *
-  * mmu_iterval_read_begin()/mmu_iterval_read_retry() implement a
-  * collision-retry scheme similar to seqcount for the VA range under
-@@ -686,7 +686,7 @@ EXPORT_SYMBOL_GPL(__mmu_notifier_register);
- 
- /**
-  * mmu_notifier_register - Register a notifier on a mm
-- * @mn: The notifier to attach
-+ * @subscription: The notifier to attach
-  * @mm: The mm to attach the notifier to
-  *
-  * Must not hold mmap_lock nor any other VM related lock when calling
-@@ -856,7 +856,7 @@ static void mmu_notifier_free_rcu(struct rcu_head *rcu)
- 
- /**
-  * mmu_notifier_put - Release the reference on the notifier
-- * @mn: The notifier to act on
-+ * @subscription: The notifier to act on
-  *
-  * This function must be paired with each mmu_notifier_get(), it releases the
-  * reference obtained by the get. If this is the last reference then process
-@@ -965,7 +965,8 @@ static int __mmu_interval_notifier_insert(
-  * @interval_sub: Interval subscription to register
-  * @start: Starting virtual address to monitor
-  * @length: Length of the range to monitor
-- * @mm : mm_struct to attach to
-+ * @mm: mm_struct to attach to
-+ * @ops: Interval notifier operations to be called on matching events
-  *
-  * This function subscribes the interval notifier for notifications from the
-  * mm.  Upon return the ops related to mmu_interval_notifier will be called
+But don't you have the same issue on x86 with "magic pages"?
+
+Cheers,
+
 -- 
-2.17.1
-
+Julien Grall
