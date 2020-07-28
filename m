@@ -2,97 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9C3230BFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB47E230C00
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730304AbgG1OEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:04:15 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:58244 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730211AbgG1OEP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:04:15 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SE4D6C110713;
-        Tue, 28 Jul 2020 09:04:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595945053;
-        bh=XRCyFICfAbzoSRKBaeClzmOc5bpzSUxQPEJq6VvvJi8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=LdI8BzQj93XvNZkZ4d4oESBsQm56cgloU20cB8l7PycNEa3+0aQqKRs0t3l667Hdv
-         OnvPzyHESd0qTXUbz4bDMZFJKl8zP3o2HbwYRvOEPxHN2qGnV5UuopVDlI8HDPchXP
-         QOo5hNE1gGSE2sqqHtxkJaNbzO32ABIypk1bDxfM=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06SE4Dvx057786
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 28 Jul 2020 09:04:13 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
- Jul 2020 09:04:13 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 28 Jul 2020 09:04:13 -0500
-Received: from [10.250.35.192] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SE4D1n101658;
-        Tue, 28 Jul 2020 09:04:13 -0500
-Subject: Re: [PATCH v3 2/4] power: supply: bq27xxx_battery: Add the BQ27561
- Battery monitor
-To:     Sebastian Reichel <sre@kernel.org>
-CC:     <afd@ti.com>, <pali@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <robh@kernel.org>
-References: <20200721163206.25438-1-dmurphy@ti.com>
- <20200721163206.25438-2-dmurphy@ti.com>
- <20200727223646.vjnkyrmipwin3pj6@earth.universe>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <bc31b9d8-d114-e776-84fd-e05a014b74eb@ti.com>
-Date:   Tue, 28 Jul 2020 09:04:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200727223646.vjnkyrmipwin3pj6@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+        id S1730314AbgG1OFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:05:50 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:2343 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730211AbgG1OFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 10:05:49 -0400
+IronPort-SDR: 9rVtzBnD6A5OKhyNl21/X/x5qCc5m8+RXg3wl/dKLgwSuapmG2Fm/gKVgaNfrLMrjMLHR+2wX5
+ dMiDTTW8BuXXcTvCT+cO0cVbtJQ3HrfrjAEE3XdgtwDb4RpzgKe2sQcW7NBw37CY8Mht3mSHVl
+ IfOF/pHHFku+5MIzCokG91VqithBCYagMgdIRDRFfh81u1YnscN3bQPLHl+O1IFDD/fGVsnvFi
+ MfDKte5skXU6zapRsxB59ktCqJPnsuamVDgqEkjzuK7CsIOKDbQi3UbBGwpYnV3oF9CTNZE0eE
+ Tw0=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589234400"; 
+   d="scan'208";a="13265251"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 28 Jul 2020 16:05:47 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Tue, 28 Jul 2020 16:05:47 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Tue, 28 Jul 2020 16:05:47 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1595945147; x=1627481147;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=8xSG/F2gvCwdxzDaRbBlDsjYKXzG6JG+0E3m3q1z7jA=;
+  b=R5hKELujCuAAgDrHfnlh8BwD5YVvYvG+qdxPH+TTAKRL/l6jZi+RqnQ+
+   +s+Hn+iHh9vyzsIFQH8eOsSTIcLv8VzeYjF+GclqEmTQlwakAsOYPEIz3
+   0gXpEAWnTeJaT5dCPR72OJekvthRlrz3W/20hol33dfVZld7vkRnctu9A
+   OWWq3G3r5lJ61vLigQVTbPot4XKs1tZZ0FX3jfu8aQlqcm+daNjYX//3E
+   7TfOXn+s6HDscHFMSfJYRUyjjjW8KuQOiwFkGFqGfevXGqILo0viSeocs
+   PT/TFKo49Ssy+L7b/p6RiIOW2+TuHh2jg5xo/Md8IZTvimhrpaUDPina4
+   A==;
+IronPort-SDR: Qo4GZXqj6aPQr1FabmXcmOi6BmJI01chr0R5EOpeCzHVZISWjmdIdMk3zcf4c3Xw/OJwGHPmLG
+ 0kzG3ci5mb/K2if1KTpVaV0peiEKC80UVL5hy7BHqCq1Urta/ZZI7ZJl0GgzWt2NAu/gL0YT3K
+ ewlShmNXUuJ7YaHWNDWMDz0xbE/5Nk+Ys55EybHlRjzi3ptqryWlzkmUhgfHeTCYKbe1RKbNdL
+ Hy4lLcr5VuTzzUXx+7k7XrzUhSThxo3ekvVcxgn1tMKG1O+TmfX6VqZgWmi6LJNO6q7jsH4f1x
+ fMI=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589234400"; 
+   d="scan'208";a="13265250"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 28 Jul 2020 16:05:47 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 42966280065;
+        Tue, 28 Jul 2020 16:05:47 +0200 (CEST)
+Message-ID: <8ea0b3f655b60be02384f22c0aa4dfee9d788d71.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: [PATCH] arm: dts: imx7: add QSPI
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Date:   Tue, 28 Jul 2020 16:05:47 +0200
+In-Reply-To: <20200728135155.aqz3xkcwpgqmvzro@pengutronix.de>
+References: <20200728112814.14158-1-matthias.schiffer@ew.tq-group.com>
+         <20200728135155.aqz3xkcwpgqmvzro@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian
+On Tue, 2020-07-28 at 15:51 +0200, Marco Felsch wrote:
+> Hi Matthias,
+> 
+> thanks for the patch.
+> 
+> On 20-07-28 13:28, Matthias Schiffer wrote:
+> > In preparation for an update of the TQ-Systems TQMa7x/MBa7x DTS,
+> > add the
+> > QSPI controller to imx7s.dtsi.
+> > 
+> > Based-on-patch-by: Han Xu <han.xu@nxp.com>
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com
+> > >
+> > ---
+> >  arch/arm/boot/dts/imx7s.dtsi | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/imx7s.dtsi
+> > b/arch/arm/boot/dts/imx7s.dtsi
+> > index 1cfaf410aa43..e45683e61593 100644
+> > --- a/arch/arm/boot/dts/imx7s.dtsi
+> > +++ b/arch/arm/boot/dts/imx7s.dtsi
+> > @@ -1162,6 +1162,19 @@
+> >  				status = "disabled";
+> >  			};
+> >  
+> > +			qspi1: spi@30bb0000 {
+> 
+> Are there more controllers and why not using "qspi@30bb0000" as node
+> name?
 
-On 7/27/20 5:36 PM, Sebastian Reichel wrote:
-> Hi,
->
-> On Tue, Jul 21, 2020 at 11:32:04AM -0500, Dan Murphy wrote:
->> Add the Texas Instruments BQ27561 battery monitor.  The register address
->> map is laid out the same as compared to other devices within the file.
->> The battery status register has differing bits to determine if the
->> battery is full, discharging or dead.
->>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
-> Looks mostly good to me, but
->
-> [...]
->
->> @@ -1710,6 +1769,13 @@ static int bq27xxx_battery_capacity_level(struct bq27xxx_device_info *di,
->>   			level = POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
->>   		else
->>   			level = POWER_SUPPLY_CAPACITY_LEVEL_NORMAL;
->> +	} else if (di->opts & BQ27561_O_BITS) {
->> +		if (di->cache.flags & BQ27561_FLAG_FC)
->> +			level = POWER_SUPPLY_CAPACITY_LEVEL_FULL;
->> +		else if (di->cache.flags & BQ27561_FLAG_DIS_CH)
->> +			level = POWER_SUPPLY_CAPACITY_LEVEL_CRITICAL;
-> Shouldn't this be checking for FLAG_FDC instead of FLAG_DIS_CH?
+The vast majority of QSPI controllers use spi@ node names, qspi@ only
+appears in a single example in Documentation/devicetree/bindings/, and
+in no actual DTS(I) files.
 
-Yes.
+There is only one controller. The label "qspi1" is chosen as this has
+been in use in the linux-imx vendor kernels for years; IMHO, switching
+to "qspi" would just cause unnecessary churn for dependent device
+trees. I have no strong opinions on this though.
 
-Dan
+> 
+> > +				#address-cells = <1>;
+> > +				#size-cells = <0>;
+> > +				compatible = "fsl,imx7d-qspi";
+> > +				reg = <0x30bb0000 0x10000>, <0x60000000
+> > 0x10000000>;
+> > +				reg-names = "QuadSPI", "QuadSPI-
+> > memory";
+> 
+> The node should begin with compatible, reg, reg-names properties.
+> Pls check the current .dtsi file for examples.
 
+Thanks, will fix.
 
-> -- Sebastian
+> 
+> > +				interrupts = <GIC_SPI 107
+> > IRQ_TYPE_LEVEL_HIGH>;
+> > +				clocks = <&clks IMX7D_QSPI_ROOT_CLK>,
+> > +					<&clks IMX7D_QSPI_ROOT_CLK>;
+> > +				clock-names = "qspi_en", "qspi";
+> > +				status = "disabled";
+> > +			};
+> > +
+> >  			sdma: sdma@30bd0000 {
+> >  				compatible = "fsl,imx7d-sdma",
+> > "fsl,imx35-sdma";
+> >  				reg = <0x30bd0000 0x10000>;
+> 
+> Regards,
+>   Marco
+
