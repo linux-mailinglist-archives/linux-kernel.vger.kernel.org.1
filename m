@@ -2,118 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE6D230A11
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1DE230A16
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729632AbgG1M3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729614AbgG1M3R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:29:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3395CC061794;
-        Tue, 28 Jul 2020 05:29:17 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 12:29:15 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595939355;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7YdZ/axXCwm5XLxxjQO1zY7IIzjjaE8o/vGu+HswV80=;
-        b=dH8tROJOv5vjYJgzWMafFdY/lsmhhOQ/gZ6CCVcdeS0RXPzVxNBG91+B++8EytuJGlc4fU
-        L3sfQ6mlzzTjW9DHTpo2P2D4IQKYURRK9yjq0FJzUTjBhrN0Nnq9H5FlQXKDeLZhsCHD5E
-        vLTerRL7avkl1b5dX4aXUqYBtc6InfHASl/kcTSHj8SxrkCftIXvhQe9uQ8jAV5HAOAFZj
-        IQjLXNtm/rOENV4ZBBfbYwnt1QUbJ6qseXY2j/VxK7yMTmR3J6IL5K2uCKdb5g/1v+6WGW
-        pUIwWbX5QmQVODFs2IkEva6aIHtyl2J0jV7UcUOEr1wnUo2BkCc4878wpTfeNA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595939355;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7YdZ/axXCwm5XLxxjQO1zY7IIzjjaE8o/vGu+HswV80=;
-        b=ZPl0kblootfNSOyfVkLc775LwHAsmZXdljwDmeWMMQd92NzieEeZC99S/jnXuZpK+BCjKe
-        im+W8hZqG3PVwhCA==
-From:   "tip-bot2 for Arvind Sankar" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/kaslr] x86/kaslr: Remove bogus warning and unnecessary goto
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200727230801.3468620-3-nivedita@alum.mit.edu>
-References: <20200727230801.3468620-3-nivedita@alum.mit.edu>
+        id S1729656AbgG1M3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:29:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729127AbgG1M3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:29:42 -0400
+Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01DA7206D4;
+        Tue, 28 Jul 2020 12:29:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595939382;
+        bh=VB/LWQGIJZs4oQUb9P6Md/HK1rt96WyNZ5+T3ag5OG0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lK9ciowhYnf9gFnbqyXxWqX3cFfbLVxH4hXaJkE5E8aViWMnBbtaW/7imqiDe8/9B
+         qcxQwODFAWnVPOiKRoi3VPXCg+ldAFgmRlKtW5BXBu2GVAEAIUBou6aQpcVIIjeM0a
+         3z4oZXfgh6YKGK0p0/B2GsWcnYTzjr75cufeaMC8=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 22480404B1; Tue, 28 Jul 2020 09:29:40 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:29:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 05/19] perf metric: Add macros for iterating map events
+Message-ID: <20200728122940.GL40195@kernel.org>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <20200719181320.785305-6-jolsa@kernel.org>
+ <CAP-5=fWYOjCSruJ1=c6896zjJe-e-EMKJTrOUcoeo0fED3tk2A@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <159593935504.4006.12364452342763685270.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fWYOjCSruJ1=c6896zjJe-e-EMKJTrOUcoeo0fED3tk2A@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/kaslr branch of tip:
+Em Sun, Jul 19, 2020 at 02:46:12PM -0700, Ian Rogers escreveu:
+> On Sun, Jul 19, 2020 at 11:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding following macros to iterate events and metric:
+> >   map_for_each_event(__pe, __idx, __map)
+> >     - iterates over all pmu_events_map events
+> >   map_for_each_metric(__pe, __idx, __map, __metric)
+> >     - iterates over all metrics that match __metric argument
+> >
+> > and use it in metricgroup__add_metric function. Macros
+> > will be be used from other places in following changes.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
 
-Commit-ID:     237069512d18f0f20b230680f067a2c070a7903a
-Gitweb:        https://git.kernel.org/tip/237069512d18f0f20b230680f067a2c070a7903a
-Author:        Arvind Sankar <nivedita@alum.mit.edu>
-AuthorDate:    Mon, 27 Jul 2020 19:07:55 -04:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 28 Jul 2020 12:54:42 +02:00
+Thanks, applied.
 
-x86/kaslr: Remove bogus warning and unnecessary goto
-
-Drop the warning on seeing "--" in handle_mem_options(). This will trigger
-whenever one of the memory options is present in the command line
-together with "--", but there's no problem if that is the case.
-
-Replace goto with break.
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20200727230801.3468620-3-nivedita@alum.mit.edu
----
- arch/x86/boot/compressed/kaslr.c |  9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index a4af896..21cd9e0 100644
---- a/arch/x86/boot/compressed/kaslr.c
-+++ b/arch/x86/boot/compressed/kaslr.c
-@@ -295,10 +295,8 @@ static void handle_mem_options(void)
- 	while (*args) {
- 		args = next_arg(args, &param, &val);
- 		/* Stop at -- */
--		if (!val && strcmp(param, "--") == 0) {
--			warn("Only '--' specified in cmdline");
--			goto out;
--		}
-+		if (!val && strcmp(param, "--") == 0)
-+			break;
+- Arnaldo
  
- 		if (!strcmp(param, "memmap")) {
- 			mem_avoid_memmap(PARSE_MEMMAP, val);
-@@ -311,7 +309,7 @@ static void handle_mem_options(void)
- 				continue;
- 			mem_size = memparse(p, &p);
- 			if (mem_size == 0)
--				goto out;
-+				break;
- 
- 			mem_limit = mem_size;
- 		} else if (!strcmp(param, "efi_fake_mem")) {
-@@ -319,7 +317,6 @@ static void handle_mem_options(void)
- 		}
- 	}
- 
--out:
- 	free(tmp_cmdline);
- 	return;
- }
+> Thanks!
+> Ian
+> 
+> > ---
+> >  tools/perf/util/metricgroup.c | 77 ++++++++++++++++++-----------------
+> >  1 file changed, 40 insertions(+), 37 deletions(-)
+> >
+> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> > index df0356ec120d..b37008fc253c 100644
+> > --- a/tools/perf/util/metricgroup.c
+> > +++ b/tools/perf/util/metricgroup.c
+> > @@ -614,6 +614,17 @@ static int __metricgroup__add_metric(struct list_head *group_list,
+> >         return 0;
+> >  }
+> >
+> > +#define map_for_each_event(__pe, __idx, __map)                         \
+> > +       for (__idx = 0, __pe = &__map->table[__idx];                    \
+> > +            __pe->name || __pe->metric_group || __pe->metric_name;     \
+> > +            __pe = &__map->table[++__idx])
+> > +
+> > +#define map_for_each_metric(__pe, __idx, __map, __metric)              \
+> > +       map_for_each_event(__pe, __idx, __map)                          \
+> > +               if (__pe->metric_expr &&                                \
+> > +                   (match_metric(__pe->metric_group, __metric) ||      \
+> > +                    match_metric(__pe->metric_name, __metric)))
+> > +
+> >  static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+> >                                    struct strbuf *events,
+> >                                    struct list_head *group_list,
+> > @@ -624,49 +635,41 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+> >         int i, ret;
+> >         bool has_match = false;
+> >
+> > -       for (i = 0; ; i++) {
+> > -               pe = &map->table[i];
+> > -
+> > -               if (!pe->name && !pe->metric_group && !pe->metric_name) {
+> > -                       /* End of pmu events. */
+> > -                       if (!has_match)
+> > -                               return -EINVAL;
+> > -                       break;
+> > -               }
+> > -               if (!pe->metric_expr)
+> > -                       continue;
+> > -               if (match_metric(pe->metric_group, metric) ||
+> > -                   match_metric(pe->metric_name, metric)) {
+> > -                       has_match = true;
+> > -                       pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
+> > -
+> > -                       if (!strstr(pe->metric_expr, "?")) {
+> > -                               ret = __metricgroup__add_metric(group_list,
+> > -                                                               pe,
+> > -                                                               metric_no_group,
+> > -                                                               1);
+> > -                               if (ret)
+> > -                                       return ret;
+> > -                       } else {
+> > -                               int j, count;
+> > +       map_for_each_metric(pe, i, map, metric) {
+> > +               pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
+> > +               has_match = true;
+> > +
+> > +               if (!strstr(pe->metric_expr, "?")) {
+> > +                       ret = __metricgroup__add_metric(group_list,
+> > +                                                       pe,
+> > +                                                       metric_no_group,
+> > +                                                       1);
+> > +                       if (ret)
+> > +                               return ret;
+> > +               } else {
+> > +                       int j, count;
+> >
+> > -                               count = arch_get_runtimeparam();
+> > +                       count = arch_get_runtimeparam();
+> >
+> > -                               /* This loop is added to create multiple
+> > -                                * events depend on count value and add
+> > -                                * those events to group_list.
+> > -                                */
+> > +                       /* This loop is added to create multiple
+> > +                        * events depend on count value and add
+> > +                        * those events to group_list.
+> > +                        */
+> >
+> > -                               for (j = 0; j < count; j++) {
+> > -                                       ret = __metricgroup__add_metric(
+> > -                                               group_list, pe,
+> > -                                               metric_no_group, j);
+> > -                                       if (ret)
+> > -                                               return ret;
+> > -                               }
+> > +                       for (j = 0; j < count; j++) {
+> > +                               ret = __metricgroup__add_metric(
+> > +                                       group_list, pe,
+> > +                                       metric_no_group, j);
+> > +                               if (ret)
+> > +                                       return ret;
+> >                         }
+> >                 }
+> >         }
+> > +
+> > +       /* End of pmu events. */
+> > +       if (!has_match)
+> > +               return -EINVAL;
+> > +
+> >         list_for_each_entry(eg, group_list, nd) {
+> >                 if (events->len > 0)
+> >                         strbuf_addf(events, ",");
+> > --
+> > 2.25.4
+> >
+
+-- 
+
+- Arnaldo
