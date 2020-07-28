@@ -2,249 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D49230A5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8A2230A5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgG1MiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:38:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729133AbgG1MiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:38:21 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBD872074F;
-        Tue, 28 Jul 2020 12:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595939901;
-        bh=yQekcwP+RJYE+KktmGKnwektbXWPsuCnFIsjKA17590=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OAhaFoBen5nh0isQ7YwkPxvwFIf4cdavXozGi3BWliA2Z7kjDKTx5sDHZxY0fzr+y
-         j3wWiM5GscFqePOb4fDkzICbpUcz8lBEcn72Wwv3Wbat/AKOjf5keX1/fnk/g+W+94
-         iwQBTJ5p4mXml3awW38Peu3j3eQ40PALgytt8wmM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6F248404B1; Tue, 28 Jul 2020 09:38:18 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:38:18 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S1729773AbgG1Miy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728751AbgG1Miy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:38:54 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C745C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:38:54 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id q17so9818692pls.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4g7iTxi0pQvK+1PDjldeUqyZ+gKf3NktQDHtumchvKQ=;
+        b=VcNG+Fd3VoebKC5oQn3y3iz+BcvT+E2SZOs/g9qfOdqjCaGQTu0lvXrlDi9ibw9rck
+         iKh5+3D05iRYoKukzR7O8KaNFC49Ms+ZEgqfDgBF1KYwvdcK+fZ+m6bnPz9rYtOBECS1
+         XHIwR0omC8k7yjGSKLwn1MjA65gsFM0EAAs2xEyTFLx9Uo2YpyuFowC8QePmvHgqV7Bx
+         5wdFKqJauWyyisfnJdwUBv8GnCBT+spyj3IF0EflkTGBz/2AK+fpxVnuktuZfDpmCEkk
+         +szzDbsb/qgd/y/W0JliNNbOAmnjjD5LLRjXLXmhBtrOp6piLkrpzDwMHxjEfY0OFvDW
+         LTbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4g7iTxi0pQvK+1PDjldeUqyZ+gKf3NktQDHtumchvKQ=;
+        b=oLZclVPavQGqE79L3teZXmBbkukJbNf+dgLHi24mOm2hPz21W+4SXX/+4vDMvEi1Pd
+         Yi3QseO29cZxR5hPUZ2Sl/AjIyr5Esgax5PDgXHs+aWZTbSlmD0Ri+6TwuF5JJzAKQQj
+         dnjBIKfIGVEeicZ2zTgI3xTR1/pMXbXhMllotSKzMARpbbuibHkqLVXThuEcu4DqxWzm
+         ku8RB6qtG8PeRjATNv76BRaYEN+UeaK5vAybMGTUkUbgQ6XR22wGw/i8b8VrXUE/APki
+         WK+pTSgP00n5XhwLuNFl76xv984Rp6PukDx/3HSEgxgnHzl0+sPqBEldtlrvXzkAnKCL
+         iWgQ==
+X-Gm-Message-State: AOAM531AxHy9p2cHePCiWFWVZsgVribmmyXbo3L9NcJcrkFklrc7ISCN
+        Mewt1A81YpWfAAa5wmxfF78R0w==
+X-Google-Smtp-Source: ABdhPJxBZLWz+mrfdp81OQw/iibH/lD1K3X9d0oGtG1OIvJ9Veil+ItGUILGfvZeKbL2PBdWjw3sgg==
+X-Received: by 2002:a17:902:6b45:: with SMTP id g5mr23335947plt.42.1595939933649;
+        Tue, 28 Jul 2020 05:38:53 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id x9sm20731774pfq.216.2020.07.28.05.38.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 28 Jul 2020 05:38:52 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 20:38:46 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Wei Li <liwei391@huawei.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 19/19] perf metric: Rename group_list to metric_list
-Message-ID: <20200728123818.GY40195@kernel.org>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <20200719181320.785305-20-jolsa@kernel.org>
- <edc5dfc3-1fd3-754d-396b-a02601a1f8bd@linux.ibm.com>
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kim Phillips <kim.phillips@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, guohanjun@huawei.com
+Subject: Re: [PATCH v2 2/2] perf tools: ARM SPE code cleanup
+Message-ID: <20200728123846.GC4343@leoy-ThinkPad-X240s>
+References: <20200724071111.35593-1-liwei391@huawei.com>
+ <20200724071111.35593-3-liwei391@huawei.com>
+ <20200727203436.GC2381376@xps15>
+ <20200728120220.GA40195@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <edc5dfc3-1fd3-754d-396b-a02601a1f8bd@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200728120220.GA40195@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jul 26, 2020 at 02:51:19PM +0530, kajoljain escreveu:
-> 
-> 
-> On 7/19/20 11:43 PM, Jiri Olsa wrote:
-> > Following the previous change that rename egroup
-> > to metric, there's no reason to call the list
-> > 'group_list' anymore, renaming it to metric_list.
+Hi Arnaldo,
+
+On Tue, Jul 28, 2020 at 09:02:20AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Jul 27, 2020 at 02:34:36PM -0600, Mathieu Poirier escreveu:
+> > On Fri, Jul 24, 2020 at 03:11:11PM +0800, Wei Li wrote:
+> > > - Firstly, the function auxtrace_record__init() will be invoked only
+> > >   once, the variable "arm_spe_pmus" will not be used afterwards, thus
+> > >   we don't need to check "arm_spe_pmus" is NULL or not;
+> > > - Another reason is, even though SPE is micro-architecture dependent,
+> > >   but so far it only supports "statistical-profiling-extension-v1" and
+> > >   we have no chance to use multiple SPE's PMU events in Perf command.
 > > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > I find the above changelog somewhat out of touch with the patch itself.  The
+> > only thing that is happening here is the removal of a useless check and a fix
+> > for a memory leak.
 > 
-> Reviewed-By : Kajol Jain<kjain@linux.ibm.com>
+> Humm, I think the original intent of that code was to cache the results
+> of find_all_arm_spe_pmus(), as the variable it is assigned to is static.
+> 
+> So not a leak, as there was that static reference to it to reuse it
+> later, but that is strange in a function named "__init()" which usually
+> is called only once, anyway, so I think that the paragraph with
+> "Firstly" is kinda ok, but confusing, I think it should read:
+> 
+> - auxtrace_record__init() is called only once, so there is no point in
+>   using a static variable to cache the results of
+>   find_all_arm_spe_pmus(), make it local and free the results after use.
+> 
+> The second paragraph is SPE specific, so I'm not qualified to judge on
+> it.
+> 
+> I'm replacing the first paragraph with the version I wrote and keep it
+> in my local branch, please holler if you think I misunderstood.
 
-Thanks, applied.
+Thanks a lot for this.  These two paragraphs were coming from reviewing
+and comments, but I think your rephrasing is very sufficient to describe
+what this patch is doing :)
 
-- Arnaldo
- 
-> Thanks,
-> Kajol Jain
-> > ---
-> >  tools/perf/util/metricgroup.c | 42 +++++++++++++++++------------------
-> >  1 file changed, 21 insertions(+), 21 deletions(-)
+Thanks,
+Leo
+
+> > Once again whether Arnaldo wants to make the changes by hand or not you may have
+> > to resubmit.
 > > 
-> > diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> > index 9d5fff36042d..6f179b9903a0 100644
-> > --- a/tools/perf/util/metricgroup.c
-> > +++ b/tools/perf/util/metricgroup.c
-> > @@ -639,7 +639,7 @@ int __weak arch_get_runtimeparam(void)
-> >  	return 1;
-> >  }
-> >  
-> > -static int __add_metric(struct list_head *group_list,
-> > +static int __add_metric(struct list_head *metric_list,
-> >  			struct pmu_event *pe,
-> >  			bool metric_no_group,
-> >  			int runtime,
-> > @@ -726,13 +726,13 @@ static int __add_metric(struct list_head *group_list,
-> >  	if (m->metric_refs_cnt)
-> >  		return 0;
-> >  
-> > -	if (list_empty(group_list))
-> > -		list_add(&m->nd, group_list);
-> > +	if (list_empty(metric_list))
-> > +		list_add(&m->nd, metric_list);
-> >  	else {
-> >  		struct list_head *pos;
-> >  
-> >  		/* Place the largest groups at the front. */
-> > -		list_for_each_prev(pos, group_list) {
-> > +		list_for_each_prev(pos, metric_list) {
-> >  			struct metric *old = list_entry(pos, struct metric, nd);
-> >  
-> >  			if (hashmap__size(&m->pctx.ids) <=
-> > @@ -813,7 +813,7 @@ static int recursion_check(struct metric *m, const char *id, struct expr_id **pa
-> >  	return p->id ? 0 : -ENOMEM;
-> >  }
-> >  
-> > -static int add_metric(struct list_head *group_list,
-> > +static int add_metric(struct list_head *metric_list,
-> >  		      struct pmu_event *pe,
-> >  		      bool metric_no_group,
-> >  		      struct metric **mp,
-> > @@ -822,7 +822,7 @@ static int add_metric(struct list_head *group_list,
-> >  
-> >  static int resolve_metric(struct metric *m,
-> >  			  bool metric_no_group,
-> > -			  struct list_head *group_list,
-> > +			  struct list_head *metric_list,
-> >  			  struct pmu_events_map *map,
-> >  			  struct expr_ids *ids)
-> >  {
-> > @@ -854,7 +854,7 @@ static int resolve_metric(struct metric *m,
-> >  			expr__del_id(&m->pctx, cur->key);
-> >  
-> >  			/* ... and it gets resolved to the parent context. */
-> > -			ret = add_metric(group_list, pe, metric_no_group, &m, parent, ids);
-> > +			ret = add_metric(metric_list, pe, metric_no_group, &m, parent, ids);
-> >  			if (ret)
-> >  				return ret;
-> >  
-> > @@ -869,7 +869,7 @@ static int resolve_metric(struct metric *m,
-> >  	return 0;
-> >  }
-> >  
-> > -static int add_metric(struct list_head *group_list,
-> > +static int add_metric(struct list_head *metric_list,
-> >  		      struct pmu_event *pe,
-> >  		      bool metric_no_group,
-> >  		      struct metric **m,
-> > @@ -881,7 +881,7 @@ static int add_metric(struct list_head *group_list,
-> >  	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
-> >  
-> >  	if (!strstr(pe->metric_expr, "?")) {
-> > -		ret = __add_metric(group_list, pe, metric_no_group, 1, m, parent, ids);
-> > +		ret = __add_metric(metric_list, pe, metric_no_group, 1, m, parent, ids);
-> >  	} else {
-> >  		int j, count;
-> >  
-> > @@ -889,11 +889,11 @@ static int add_metric(struct list_head *group_list,
-> >  
-> >  		/* This loop is added to create multiple
-> >  		 * events depend on count value and add
-> > -		 * those events to group_list.
-> > +		 * those events to metric_list.
-> >  		 */
-> >  
-> >  		for (j = 0; j < count && !ret; j++) {
-> > -			ret = __add_metric(group_list, pe, metric_no_group, j, m, parent, ids);
-> > +			ret = __add_metric(metric_list, pe, metric_no_group, j, m, parent, ids);
-> >  		}
-> >  	}
-> >  
-> > @@ -902,7 +902,7 @@ static int add_metric(struct list_head *group_list,
-> >  
-> >  static int metricgroup__add_metric(const char *metric, bool metric_no_group,
-> >  				   struct strbuf *events,
-> > -				   struct list_head *group_list,
-> > +				   struct list_head *metric_list,
-> >  				   struct pmu_events_map *map)
-> >  
-> >  {
-> > @@ -948,14 +948,14 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
-> >  		}
-> >  	}
-> >  
-> > -	list_splice(&list, group_list);
-> > +	list_splice(&list, metric_list);
-> >  	expr_ids__exit(&ids);
-> >  	return 0;
-> >  }
-> >  
-> >  static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
-> >  					struct strbuf *events,
-> > -					struct list_head *group_list,
-> > +					struct list_head *metric_list,
-> >  					struct pmu_events_map *map)
-> >  {
-> >  	char *llist, *nlist, *p;
-> > @@ -971,7 +971,7 @@ static int metricgroup__add_metric_list(const char *list, bool metric_no_group,
-> >  
-> >  	while ((p = strsep(&llist, ",")) != NULL) {
-> >  		ret = metricgroup__add_metric(p, metric_no_group, events,
-> > -					      group_list, map);
-> > +					      metric_list, map);
-> >  		if (ret == -EINVAL) {
-> >  			fprintf(stderr, "Cannot find metric or group `%s'\n",
-> >  					p);
-> > @@ -996,11 +996,11 @@ static void metric__free_refs(struct metric *metric)
-> >  	}
-> >  }
-> >  
-> > -static void metricgroup__free_metrics(struct list_head *group_list)
-> > +static void metricgroup__free_metrics(struct list_head *metric_list)
-> >  {
-> >  	struct metric *m, *tmp;
-> >  
-> > -	list_for_each_entry_safe (m, tmp, group_list, nd) {
-> > +	list_for_each_entry_safe (m, tmp, metric_list, nd) {
-> >  		metric__free_refs(m);
-> >  		expr__ctx_clear(&m->pctx);
-> >  		list_del_init(&m->nd);
-> > @@ -1017,13 +1017,13 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
-> >  {
-> >  	struct parse_events_error parse_error;
-> >  	struct strbuf extra_events;
-> > -	LIST_HEAD(group_list);
-> > +	LIST_HEAD(metric_list);
-> >  	int ret;
-> >  
-> >  	if (metric_events->nr_entries == 0)
-> >  		metricgroup__rblist_init(metric_events);
-> >  	ret = metricgroup__add_metric_list(str, metric_no_group,
-> > -					   &extra_events, &group_list, map);
-> > +					   &extra_events, &metric_list, map);
-> >  	if (ret)
-> >  		return ret;
-> >  	pr_debug("adding %s\n", extra_events.buf);
-> > @@ -1034,10 +1034,10 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
-> >  		goto out;
-> >  	}
-> >  	strbuf_release(&extra_events);
-> > -	ret = metricgroup__setup_events(&group_list, metric_no_merge,
-> > +	ret = metricgroup__setup_events(&metric_list, metric_no_merge,
-> >  					perf_evlist, metric_events);
-> >  out:
-> > -	metricgroup__free_metrics(&group_list);
-> > +	metricgroup__free_metrics(&metric_list);
-> >  	return ret;
-> >  }
-> >  
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 > > 
-
--- 
-
-- Arnaldo
+> > > 
+> > > So remove the useless check code to make it clear.
+> > > 
+> > > Signed-off-by: Wei Li <liwei391@huawei.com>
+> > > ---
+> > >  tools/perf/arch/arm/util/auxtrace.c | 9 ++++-----
+> > >  1 file changed, 4 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
+> > > index 28a5d0c18b1d..b187bddbd01a 100644
+> > > --- a/tools/perf/arch/arm/util/auxtrace.c
+> > > +++ b/tools/perf/arch/arm/util/auxtrace.c
+> > > @@ -57,17 +57,15 @@ struct auxtrace_record
+> > >  	struct evsel *evsel;
+> > >  	bool found_etm = false;
+> > >  	struct perf_pmu *found_spe = NULL;
+> > > -	static struct perf_pmu **arm_spe_pmus = NULL;
+> > > -	static int nr_spes = 0;
+> > > +	struct perf_pmu **arm_spe_pmus = NULL;
+> > > +	int nr_spes = 0;
+> > >  	int i = 0;
+> > >  
+> > >  	if (!evlist)
+> > >  		return NULL;
+> > >  
+> > >  	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
+> > > -
+> > > -	if (!arm_spe_pmus)
+> > > -		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
+> > > +	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
+> > >  
+> > >  	evlist__for_each_entry(evlist, evsel) {
+> > >  		if (cs_etm_pmu &&
+> > > @@ -84,6 +82,7 @@ struct auxtrace_record
+> > >  			}
+> > >  		}
+> > >  	}
+> > > +	free(arm_spe_pmus);
+> > >  
+> > >  	if (found_etm && found_spe) {
+> > >  		pr_err("Concurrent ARM Coresight ETM and SPE operation not currently supported\n");
+> > > -- 
+> > > 2.17.1
+> > > 
+> 
+> -- 
+> 
+> - Arnaldo
