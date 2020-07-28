@@ -2,179 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CE62300FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B5923010F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgG1FCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726978AbgG1FCL (ORCPT
+        id S1726724AbgG1FEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:04:21 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:51263 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgG1FEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:02:11 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE9BC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:02:11 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id f9so4669822pju.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+0aK6m9rWhTUh9NQHuLCLcSCwFfKLzAvMTtTISrPDx0=;
-        b=m77qbqdhTD0E1bLRKfPDGv58JgzSBQs2xDbEI08fmn9k+ra7oqpVqLSw11WKfChmS+
-         YbrOYiTSd4Y4hEM0JS20tSnA1FmOw+qA86jaD0pqHvH1N5gLKhGx1Id/4yvYD3DTYMhL
-         ZsGLkejhGYAPRXUzWCBU0hjohFASwu7vVgV2s=
+        Tue, 28 Jul 2020 01:04:21 -0400
+Received: by mail-il1-f200.google.com with SMTP id y8so4709232ilq.18
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:04:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+0aK6m9rWhTUh9NQHuLCLcSCwFfKLzAvMTtTISrPDx0=;
-        b=KqYiaJmR+KfvP0rQdQIx87SctRjurECU/nZPX9PkETYd1R7Wxw1huPoaQSqi1GP9ti
-         UeJADB2Hamy7olY+8Sbsotxbpyd1AxLyL6QuKiOChtTy+mms0EZuTM5hfzqesglKMb8n
-         eF/vGa55lRIs4hsIbg1Bu2EXY6ntPtgFm5Nj17c+XQKfES6qbVK1dkyxkBPDkPOMNCz/
-         x9P12Om+4GJLtavWd7gqoIbEqeZM2PG3WP9mvmrCzLK/Eg/gy+nGIG2cHlziuEnOZQ3s
-         sW2xOFwRa8aCojm9NLSJmkM1yJANoDKYTlEUS5LHda9Vl3NrTGZg71kVsTRNYBHjGlXa
-         bJYQ==
-X-Gm-Message-State: AOAM5332YS9frKaU1pxDe0YZX9RfplA3dRVLVzGxG11+QfdvMjm4QmOK
-        9DRX7qyrHXcExxybFAk0/+XJig==
-X-Google-Smtp-Source: ABdhPJzN1pKQb6oBFHEMYPW//iObjVmACECXo3ugP6g8XF/nmNxnwkwsj1jucGWODCgOBSR0BwtoxA==
-X-Received: by 2002:a17:90a:fc98:: with SMTP id ci24mr2680781pjb.101.1595912530863;
-        Mon, 27 Jul 2020 22:02:10 -0700 (PDT)
-Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
-        by smtp.gmail.com with ESMTPSA id p9sm1414962pja.4.2020.07.27.22.02.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 22:02:10 -0700 (PDT)
-From:   Claire Chang <tientzu@chromium.org>
-To:     robh+dt@kernel.org, frowand.list@gmail.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com
-Cc:     treding@nvidia.com, gregkh@linuxfoundation.org,
-        saravanak@google.com, suzuki.poulose@arm.com,
-        dan.j.williams@intel.com, heikki.krogerus@linux.intel.com,
-        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        drinkcat@chromium.org, tfiga@chromium.org, tientzu@chromium.org
-Subject: [RFC v2 5/5] of: Add plumbing for restricted DMA pool
-Date:   Tue, 28 Jul 2020 13:01:40 +0800
-Message-Id: <20200728050140.996974-6-tientzu@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-In-Reply-To: <20200728050140.996974-1-tientzu@chromium.org>
-References: <20200728050140.996974-1-tientzu@chromium.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=aUaGerJpeJhZut6YlBfD/XVnA8cxyphVdRCWG7jM4E8=;
+        b=pxyYFJJmLeNSy4gtE9OF5ASQ6uKDTmrJ1yNC8xIj7ND09u08PdDLHRQzP39ur5aS2i
+         pjY//7g4H7A40lbod6B8g5FMGds+c/QeENnS+nv0GdDLJxrTjKdtMYyZ2fwZGczSmlJa
+         8V+W4JCC0akrltfnadSTWKCVHLc29ghbC69JoTWfoeunfkj5ShlKujPNe0cZ1P5T1ha3
+         8hH7PAiBBFz+iVlxyt3vR3P0AwQW121+RenCzdT5C47dtvn4P2UZ3BMWqDQawsw7HksA
+         VmfuC4AKXxrHJMbgOvVucC7Su+7d9kIKUBNL9Wx2d0VN0sr6hwdqNmcfnSx5t2ZwMrGt
+         4vdg==
+X-Gm-Message-State: AOAM5322zJEP3nePqVoiQMg3LxmE5H8N//HCvdx96xK/JQaBmF3RBiLd
+        qaZyl5yrCtKNj2py10UM6SoetOFN2MGml9yssa8X7asGt6QG
+X-Google-Smtp-Source: ABdhPJyaKOxvha8atUjGOigRpZGvLVVWsxwJym1stuff/XD9MLbsBi9PW9JuPeBJwpOwZf7nE9UIMx87T2hygmg4pS/l2ShvXFcM
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:8b:: with SMTP id v11mr13478628jao.122.1595912660288;
+ Mon, 27 Jul 2020 22:04:20 -0700 (PDT)
+Date:   Mon, 27 Jul 2020 22:04:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000358a3d05ab795fe1@google.com>
+Subject: BUG: unable to handle kernel paging request in x86_pmu_event_init
+From:   syzbot <syzbot+c01c3ea720877d228202@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com, bp@alien8.de,
+        hpa@zytor.com, jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma property is presented.
-One can specify two reserved-memory nodes in the device tree. One with
-shared-dma-pool to handle the coherent DMA buffer allocation, and
-another one with device-swiotlb-pool for regular DMA to/from system
-memory, which would be subject to bouncing.
+Hello,
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
+syzbot found the following issue on:
+
+HEAD commit:    d15be546 Merge tag 'media/v5.8-3' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16380317100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f3bc31881f1ae8a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=c01c3ea720877d228202
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125be09c900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=115ce01f100000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122b8228900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=112b8228900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=162b8228900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c01c3ea720877d228202@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: ffffffffffffffe8
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 947c067 P4D 947c067 PUD 947e067 PMD 0 
+Oops: 0002 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 3889 Comm: systemd-udevd Not tainted 5.8.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:x86_pmu_initialized arch/x86/events/core.c:297 [inline]
+RIP: 0010:__x86_pmu_event_init arch/x86/events/core.c:594 [inline]
+RIP: 0010:x86_pmu_event_init+0x95/0xac0 arch/x86/events/core.c:2140
+Code: e8 30 5a 73 00 48 83 3d d8 cc 8b 08 00 75 1e e8 21 5a 73 00 bd ed ff ff ff e9 2a 07 00 00 e8 12 5a 73 00 48 83 3d ba cc 8b 08 <00> 74 e2 e8 43 7b ff ff 89 c5 31 ff 89 c6 e8 08 5e 73 00 85 ed 74
+RSP: 0018:ffffc90001577f10 EFLAGS: 00010097
+RAX: 0000000000000286 RBX: 0000000000004100 RCX: 2920ecf39a0bcf00
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: ffffc90001577f58
+RBP: 0000000000000000 R08: ffffffff814dec5e R09: ffffed1012f42c69
+R10: ffffed1012f42c69 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffc90001577f58 R15: ffff8880a1c40080
+FS:  00007f1b1fd358c0(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffe8 CR3: 00000000a26b6000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+Modules linked in:
+CR2: ffffffffffffffe8
+---[ end trace b1f79b2301ebd5ee ]---
+RIP: 0010:x86_pmu_initialized arch/x86/events/core.c:297 [inline]
+RIP: 0010:__x86_pmu_event_init arch/x86/events/core.c:594 [inline]
+RIP: 0010:x86_pmu_event_init+0x95/0xac0 arch/x86/events/core.c:2140
+Code: e8 30 5a 73 00 48 83 3d d8 cc 8b 08 00 75 1e e8 21 5a 73 00 bd ed ff ff ff e9 2a 07 00 00 e8 12 5a 73 00 48 83 3d ba cc 8b 08 <00> 74 e2 e8 43 7b ff ff 89 c5 31 ff 89 c6 e8 08 5e 73 00 85 ed 74
+RSP: 0018:ffffc90001577f10 EFLAGS: 00010097
+RAX: 0000000000000286 RBX: 0000000000004100 RCX: 2920ecf39a0bcf00
+RDX: 0000000000000000 RSI: 0000000000000003 RDI: ffffc90001577f58
+RBP: 0000000000000000 R08: ffffffff814dec5e R09: ffffed1012f42c69
+R10: ffffed1012f42c69 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffc90001577f58 R15: ffff8880a1c40080
+FS:  00007f1b1fd358c0(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffe8 CR3: 00000000a26b6000 CR4: 00000000001406e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- drivers/of/address.c    | 39 +++++++++++++++++++++++++++++++++++++++
- drivers/of/device.c     |  3 +++
- drivers/of/of_private.h |  6 ++++++
- 3 files changed, 48 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 381dc9be7b22..1285f914481f 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1009,6 +1010,44 @@ int of_dma_get_range(struct device_node *np, u64 *dma_addr, u64 *paddr, u64 *siz
- 	return ret;
- }
- 
-+int of_dma_set_restricted_buffer(struct device *dev)
-+{
-+	int length, size, ret, i;
-+	u32 idx[2];
-+
-+	if (!dev || !dev->of_node)
-+		return -EINVAL;
-+
-+	if (!of_get_property(dev->of_node, "restricted-dma", &length))
-+		return 0;
-+
-+	size = length / sizeof(idx[0]);
-+	if (size > ARRAY_SIZE(idx)) {
-+		dev_err(dev,
-+			"restricted-dma expected less than or equal to %d indexs, but got %d\n",
-+			ARRAY_SIZE(idx), size);
-+		return -EINVAL;
-+	}
-+
-+	ret = of_property_read_u32_array(dev->of_node, "restricted-dma", idx,
-+					 size);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < size; i++) {
-+		ret = of_reserved_mem_device_init_by_idx(dev, dev->of_node,
-+							 idx[i]);
-+		if (ret) {
-+			dev_err(dev,
-+				"of_reserved_mem_device_init_by_idx() failed with %d\n",
-+				ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * of_dma_is_coherent - Check if device is coherent
-  * @np:	device node
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 27203bfd0b22..83d6cf8a8256 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -169,6 +169,9 @@ int of_dma_configure(struct device *dev, struct device_node *np, bool force_dma)
- 
- 	arch_setup_dma_ops(dev, dma_addr, size, iommu, coherent);
- 
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index edc682249c00..f2e3adfb7d85 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -160,12 +160,18 @@ extern int of_bus_n_size_cells(struct device_node *np);
- #ifdef CONFIG_OF_ADDRESS
- extern int of_dma_get_range(struct device_node *np, u64 *dma_addr,
- 			    u64 *paddr, u64 *size);
-+extern int of_dma_set_restricted_buffer(struct device *dev);
- #else
- static inline int of_dma_get_range(struct device_node *np, u64 *dma_addr,
- 				   u64 *paddr, u64 *size)
- {
- 	return -ENODEV;
- }
-+
-+static inline int of_dma_get_restricted_buffer(struct device *dev)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* _LINUX_OF_PRIVATE_H */
--- 
-2.28.0.rc0.142.g3c755180ce-goog
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
