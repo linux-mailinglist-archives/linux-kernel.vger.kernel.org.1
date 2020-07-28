@@ -2,167 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B841A230213
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE54223020C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgG1Fvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S1727034AbgG1FtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbgG1Fvm (ORCPT
+        with ESMTP id S1726536AbgG1FtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:51:42 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59A3C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:51:40 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k27so11262617pgm.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 22:51:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SD7cowK7TBSEUtyyJCNTowcFkGoyJguvCPEnc3FJ+lw=;
-        b=BUQ733KDte9V4I1wuEjDmpQAL78CHplNS5xBfdjivfTxgYio/yh9ZahIVVz0tj+944
-         tro8SgS/Y07CZNrQn9ePhojanc/poWSdkQ5HSh087Vk7lPnDlnfuYF1SzZX6l4bICec2
-         9rwI9HY6KeOuJ3/9v8jl9Ui/xy3LvIen/cDgCaEaJg5dRqPxcdQQY+lsiO3zwE3JK1xA
-         ggdfjdT2Y6FED8kx1ukJDTC4DZaoFM8HbEyE8soKg6e4ehsInwcj2vZ95aT63sKUQqmZ
-         0S+ff+0vVT8zM1I3YL8ZAs03R7ionhv8URbzadKFd6Any6F5j13PG9sDcFmywiVyD9FL
-         k32Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SD7cowK7TBSEUtyyJCNTowcFkGoyJguvCPEnc3FJ+lw=;
-        b=VquqlANmHUTHvTjRU3POQtJcS1X9nTvTFulE/CbFAV16k0fRJHORelsINH0y9FTd7R
-         XVujtw/e41f8X+0xeIRkOe8jI9iUu1ZaXVpXhUI76PMIqtvmlfxTGgQJM1FahWKf+pyv
-         X0yHObBKxK+CokvTAmLKg5gsng+p4+Rg2paN80MDY/+8DwEApQgHOdASwBxuhEyhlGHQ
-         7hG75uv8cMMakG8Lw6rfWho8eyRFY928i1xz0GPk3456Ged7QCtwF5b5RvefqFdRdqXO
-         PNbTlJL5IYuaXz+lA6k8HM4XJ5iQ9nCcG6jNRpjzKAj4ZQ9jVqMeN40ICBYOimHLN2n3
-         wnlw==
-X-Gm-Message-State: AOAM530Nr+IKb3XJSg0LNAhYrV9XySzPaKBNncvxpSn8W8o7G9z/ajna
-        CXBw7lK+QcbLi35cXHObU1T9Ng==
-X-Google-Smtp-Source: ABdhPJyfDoCt9GGT45S2vobwjULA9QToD4YzkQHTWN/B1LXTpUKR2LsupxTxxayaY4a+p6d4GN8K9A==
-X-Received: by 2002:a63:4b44:: with SMTP id k4mr17418132pgl.305.1595915500274;
-        Mon, 27 Jul 2020 22:51:40 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 199sm17855934pgc.79.2020.07.27.22.51.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 22:51:39 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 22:48:07 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        evgreen@chromium.org, ohad@wizery.com
-Subject: Re: [PATCH v3 3/3] remoteproc: qcom_q6v5_mss: Add modem debug policy
- support
-Message-ID: <20200728054807.GB349841@builder.lan>
-References: <20200722201047.12975-1-sibis@codeaurora.org>
- <20200722201047.12975-4-sibis@codeaurora.org>
+        Tue, 28 Jul 2020 01:49:09 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677D4C061794;
+        Mon, 27 Jul 2020 22:49:09 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BG5Mj6hMwz9sTm;
+        Tue, 28 Jul 2020 15:49:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1595915346;
+        bh=7pmVD8Xdvv4c9LCnzIqpgqptaxY1J/8r1eRxOVHym24=;
+        h=Date:From:To:Cc:Subject:From;
+        b=iAV/XMBQKiPYSh+PsNrDpamjdpVDsZvLA2MyoC6R6WA+r5wty37lisenAPTpivjQP
+         E3+AW2NzRQW8h3Q67PyhE2DSD6mogXFBZjYOkQgV6rtTx3ksuomA18RXR92P2buCgU
+         dbUuFmnzcpxbeLglppi6RWRXhjybqwzUkdLjhkdO5y26FRTqPxz1SXEkCky3BFNmYB
+         4+DGiQU2GP7GjVwhIGknVfFWmyMjxmNAxc7kPOWwcCk6sHAeSyNeyroY3OSZ6zBhFN
+         HgsNBJHaO9/qs+ncoinq6s2TRewFxaYVGioPRDvnznh6zZKlOCyWZG2z3hrkMjMbiL
+         T9/9q1H2iVBdg==
+Date:   Tue, 28 Jul 2020 15:49:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: linux-next: manual merge of the devicetree tree with the pci tree
+Message-ID: <20200728154903.51a60b8e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200722201047.12975-4-sibis@codeaurora.org>
+Content-Type: multipart/signed; boundary="Sig_/qzxUCl99eEfApvkgx+E75GL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22 Jul 13:10 PDT 2020, Sibi Sankar wrote:
+--Sig_/qzxUCl99eEfApvkgx+E75GL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Add modem debug policy support which will enable coredumps and live
-> debug support when the msadp firmware is present on secure devices.
-> 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Hi all,
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Today's linux-next merge of the devicetree tree got a conflict in:
 
-> ---
-> 
-> v3:
->  * Fix dp_fw leak and create a separate func for dp load [Bjorn]
->  * Reset dp_size on mba_reclaim
-> 
-> v2:
->  * Use request_firmware_direct [Bjorn]
->  * Use Bjorn's template to show if debug policy is present
->  * Add size check to prevent memcpy out of bounds [Bjorn]
-> 
->  drivers/remoteproc/qcom_q6v5_mss.c | 25 ++++++++++++++++++++++++-
->  1 file changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-> index f4aa61ba220dc..da99c8504a346 100644
-> --- a/drivers/remoteproc/qcom_q6v5_mss.c
-> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
-> @@ -191,6 +191,7 @@ struct q6v5 {
->  	phys_addr_t mba_phys;
->  	void *mba_region;
->  	size_t mba_size;
-> +	size_t dp_size;
->  
->  	phys_addr_t mpss_phys;
->  	phys_addr_t mpss_reloc;
-> @@ -408,6 +409,21 @@ static int q6v5_xfer_mem_ownership(struct q6v5 *qproc, int *current_perm,
->  				   current_perm, next, perms);
->  }
->  
-> +static void q6v5_debug_policy_load(struct q6v5 *qproc)
-> +{
-> +	const struct firmware *dp_fw;
-> +
-> +	if (request_firmware_direct(&dp_fw, "msadp", qproc->dev))
-> +		return;
-> +
-> +	if (SZ_1M + dp_fw->size <= qproc->mba_size) {
-> +		memcpy(qproc->mba_region + SZ_1M, dp_fw->data, dp_fw->size);
-> +		qproc->dp_size = dp_fw->size;
-> +	}
-> +
-> +	release_firmware(dp_fw);
-> +}
-> +
->  static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
->  {
->  	struct q6v5 *qproc = rproc->priv;
-> @@ -419,6 +435,7 @@ static int q6v5_load(struct rproc *rproc, const struct firmware *fw)
->  	}
->  
->  	memcpy(qproc->mba_region, fw->data, fw->size);
-> +	q6v5_debug_policy_load(qproc);
->  
->  	return 0;
->  }
-> @@ -928,6 +945,10 @@ static int q6v5_mba_load(struct q6v5 *qproc)
->  	}
->  
->  	writel(qproc->mba_phys, qproc->rmb_base + RMB_MBA_IMAGE_REG);
-> +	if (qproc->dp_size) {
-> +		writel(qproc->mba_phys + SZ_1M, qproc->rmb_base + RMB_PMI_CODE_START_REG);
-> +		writel(qproc->dp_size, qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
-> +	}
->  
->  	ret = q6v5proc_reset(qproc);
->  	if (ret)
-> @@ -996,6 +1017,7 @@ static void q6v5_mba_reclaim(struct q6v5 *qproc)
->  	u32 val;
->  
->  	qproc->dump_mba_loaded = false;
-> +	qproc->dp_size = 0;
->  
->  	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_q6);
->  	q6v5proc_halt_axi_port(qproc, qproc->halt_map, qproc->halt_modem);
-> @@ -1290,7 +1312,8 @@ static int q6v5_start(struct rproc *rproc)
->  	if (ret)
->  		return ret;
->  
-> -	dev_info(qproc->dev, "MBA booted, loading mpss\n");
-> +	dev_info(qproc->dev, "MBA booted with%s debug policy, loading mpss\n",
-> +		 qproc->dp_size ? "" : "out");
->  
->  	ret = q6v5_mpss_load(qproc);
->  	if (ret)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+  Documentation/devicetree/bindings/pci/qcom,pcie.txt
+
+between commits:
+
+  736ae5c91712 ("dt-bindings: PCI: qcom: Add missing clks")
+  b11b8cc161de ("dt-bindings: PCI: qcom: Add ext reset")
+  d511580ea9c2 ("dt-bindings: PCI: qcom: Add ipq8064 rev 2 variant")
+
+from the pci tree and commit:
+
+  70172d196947 ("dt-bindings: pci: convert QCOM pci bindings to YAML")
+
+from the devicetree tree.
+
+I don;t know how to fixed it up so I just left the latter one . This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qzxUCl99eEfApvkgx+E75GL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8fvFAACgkQAVBC80lX
+0GyZGwf/dObb8tS2w5gHpUiENUNXKmqVUovTJzGcrtrG7AO4dwIcSq/DQ9SE773W
+dU7X2BF9Deo5BHNj7x+2o4759mRpYAaBU1q3mdc8te9/1RUgWHmyeyJMVgKF8B7n
+/UhNx68ITaoiFNVU6UFviHNKR5XIWxPCgsXtmeF7NRUYfcuJHa0vOX4SM8Gh6e1q
+AfZRUFr7dJXnWr8X9CeSwxpuDjNv16YOVonLOTSxkmaQETA/Xg2AH38YInjOSKYm
+IC+zQK+i/aCHWm/ck0lCEpeTIgrZnbMVaYhPWGTsi0106fU7a2JbHK6gxJoVTgM0
+CTdRa8gC7OX5E6jV8h4qcU/LhPtDpw==
+=c64L
+-----END PGP SIGNATURE-----
+
+--Sig_/qzxUCl99eEfApvkgx+E75GL--
