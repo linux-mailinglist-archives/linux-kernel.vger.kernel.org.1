@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C8E2307D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED2D2307DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728779AbgG1Kk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728638AbgG1Kkz (ORCPT
+        id S1728789AbgG1KnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:43:23 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:18882 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728686AbgG1KnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:40:55 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7265BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:40:55 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id 88so17781236wrh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:40:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lnyqa9+3UN7p5XZc/yQA8t0Ef1omNto0wwGE8iK64Ps=;
-        b=e3aiC4Ga9fB5qgGr4vSAQOSNMC2YJanljK0xzwO/FP4PPvt4fKWeox5e9QSIaR9h96
-         IbzHkgQBD67HcVVpAT47x4pZJXUzgKMfdJlOxVMfudCxZyMV0H898UN41v99WtdO3FXg
-         5y2BC0wmfHDqg/T0lvaFMrwADmgBol2r9uPe+XHXoBpp5gdJqNKp7s8cDbQv82rk7iBn
-         HO+sWneuhPvWCe9pdI2njLORejD4fY2xkXz8bODjpslSW65Cj22z/lxln2Lg+enHw4Gz
-         fkihrFRGvRXdQDemmYZoELVUnUzb1ZKsGVAZYFfq3lGyEmGQzKxGxzaEfhuZBqlXRq6c
-         8+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lnyqa9+3UN7p5XZc/yQA8t0Ef1omNto0wwGE8iK64Ps=;
-        b=labc/vy2tU69TYO9Ny93ZoN1dR9W6YnH2zOjheCr/EENC9d6TeYopMv68tQkB/ioAT
-         NmcIv5C06pCks1ydMxJIUqPUlXOJ1tKTv4l2WvGln/dXb9/2TfADMCSPH+KhqIZZcytj
-         xE2jeevlk+BXntW78KPDYgU7Prrr3N4+Ngl7MA+3iWQ1dxvYDRz30mFlX1vz2McpNMhX
-         1XJ0ES0m9oqLzM6e/mMR1LO0gU6pQCMDb3o+tXOWdZA3EaV/X2nUphKYQmW9CUXrMvm6
-         DBY0Wfm4O+shlAnHOBrpwAetGKbfcxLNQBRj+i9V5E35YtDoQuRiMDym9QzLw+dshIGb
-         vBGw==
-X-Gm-Message-State: AOAM530fhch4g5sw76oLW03hFkYqmafMLL7c+aYibcjO+2pczN0//ipl
-        jJYqcyypP7el6oLfu5Oq8xvizX5rjLt6dtKFMgaktw==
-X-Google-Smtp-Source: ABdhPJwkPgquSiZ/upn1u2Q3I/tb+BHEawcLufuM8QtrW8LQqxXEhYjzDPG3DmSmELIhw4QHnc6qRbH4fzIAr0B2i1Q=
-X-Received: by 2002:a5d:6681:: with SMTP id l1mr23292071wru.47.1595932854229;
- Tue, 28 Jul 2020 03:40:54 -0700 (PDT)
+        Tue, 28 Jul 2020 06:43:22 -0400
+X-UUID: e08ada8fc8f847769d1a5a75c59385a6-20200728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=fGh635YPSKDx8TpTukFSxvqdKrdqDpycLk2vh1BFhDc=;
+        b=L08uOlwa8o0OzVxkLlQNxVJCWRJ/nuGiMBlG0ISqkQ1S/9aaI3tqoqJdaOtkCQCRHC5/nyY2ay8Oj0ODUVN5D/PT5k/swk659JtO7TY+GYUc5ySgZaRXNrXaVaXFu+Ijr/V3a0+bI7X+LTJ3i7B0WmZVcy87hZbNWEPC1wHn0rI=;
+X-UUID: e08ada8fc8f847769d1a5a75c59385a6-20200728
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2144090476; Tue, 28 Jul 2020 18:43:18 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 28 Jul 2020 18:43:16 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 28 Jul 2020 18:43:14 +0800
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     <linux@roeck-us.net>, <robh+dt@kernel.org>,
+        <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <seiya.wang@mediatek.com>, Crystal Guo <crystal.guo@mediatek.com>
+Subject: [PATCH 1/3] watchdog: mtk_wdt: remove mt8xxx-resets.h
+Date:   Tue, 28 Jul 2020 18:42:27 +0800
+Message-ID: <1595932949-7033-1-git-send-email-crystal.guo@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <03aa26eb5be1c558e3048a3b4ff3214856d5c490.1594230107.git-series.maxime@cerno.tech>
-In-Reply-To: <03aa26eb5be1c558e3048a3b4ff3214856d5c490.1594230107.git-series.maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 28 Jul 2020 11:40:37 +0100
-Message-ID: <CAPY8ntDeMAuDb1ZWj59+14ZQVqDjM7X+E312Lymm0P8LHFx0Yg@mail.gmail.com>
-Subject: Re: [PATCH v4 27/78] drm/vc4: crtc: Move HVS channel init before the
- PV initialisation
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 71B9F2D85162E9CD930E185F74479062C12A56CDD28885323C9E66983C5603302000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+bXQ4eHh4LXJlc2V0cy5oIGFjdHVhbGx5IGp1c3QgdXNlZCB0byBkZWZpbmUgVE9QUkdVX1NXX1JT
+VF9OVU0uDQpJbnN0ZWFkIG9mIHJlc3VibWl0IHRoZSBtdDh4eHgtcmVzZXQuaCBmb3IgYSBuZXcg
+SUMsIGdldCB0aGUgbnVtYmVyDQpvZiByZXNldCBiaXRzIGZyb20gZHRzaSBpcyBtb3JlIGVhc2ll
+ciB0byBtYWludGFpbi4NCg0KU2lnbmVkLW9mZi1ieTogQ3J5c3RhbCBHdW8gPGNyeXN0YWwuZ3Vv
+QG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jIHwgMjYgKysr
+KystLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCsp
+LCAyMSBkZWxldGlvbnMoLSkNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dk
+dC5jIGIvZHJpdmVycy93YXRjaGRvZy9tdGtfd2R0LmMNCmluZGV4IGQ2YTYzOTMuLmFkYzg4YzIg
+MTAwNjQ0DQotLS0gYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYw0KKysrIGIvZHJpdmVycy93
+YXRjaGRvZy9tdGtfd2R0LmMNCkBAIC05LDggKzksNiBAQA0KICAqIEJhc2VkIG9uIHN1bnhpX3dk
+dC5jDQogICovDQogDQotI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3Jlc2V0LWNvbnRyb2xsZXIvbXQy
+NzEyLXJlc2V0cy5oPg0KLSNpbmNsdWRlIDxkdC1iaW5kaW5ncy9yZXNldC1jb250cm9sbGVyL210
+ODE4My1yZXNldHMuaD4NCiAjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4NCiAjaW5jbHVkZSA8bGlu
+dXgvZXJyLmg+DQogI2luY2x1ZGUgPGxpbnV4L2luaXQuaD4NCkBAIC02NCwxOCArNjIsNiBAQCBz
+dHJ1Y3QgbXRrX3dkdF9kZXYgew0KIAlzdHJ1Y3QgcmVzZXRfY29udHJvbGxlcl9kZXYgcmNkZXY7
+DQogfTsNCiANCi1zdHJ1Y3QgbXRrX3dkdF9kYXRhIHsNCi0JaW50IHRvcHJndV9zd19yc3RfbnVt
+Ow0KLX07DQotDQotc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfd2R0X2RhdGEgbXQyNzEyX2RhdGEg
+PSB7DQotCS50b3ByZ3Vfc3dfcnN0X251bSA9IE1UMjcxMl9UT1BSR1VfU1dfUlNUX05VTSwNCi19
+Ow0KLQ0KLXN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX3dkdF9kYXRhIG10ODE4M19kYXRhID0gew0K
+LQkudG9wcmd1X3N3X3JzdF9udW0gPSBNVDgxODNfVE9QUkdVX1NXX1JTVF9OVU0sDQotfTsNCi0N
+CiBzdGF0aWMgaW50IHRvcHJndV9yZXNldF91cGRhdGUoc3RydWN0IHJlc2V0X2NvbnRyb2xsZXJf
+ZGV2ICpyY2RldiwNCiAJCQkgICAgICAgdW5zaWduZWQgbG9uZyBpZCwgYm9vbCBhc3NlcnQpDQog
+ew0KQEAgLTI0OCw3ICsyMzQsNyBAQCBzdGF0aWMgaW50IG10a193ZHRfcHJvYmUoc3RydWN0IHBs
+YXRmb3JtX2RldmljZSAqcGRldikNCiB7DQogCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5k
+ZXY7DQogCXN0cnVjdCBtdGtfd2R0X2RldiAqbXRrX3dkdDsNCi0JY29uc3Qgc3RydWN0IG10a193
+ZHRfZGF0YSAqd2R0X2RhdGE7DQorCXUzMiB0b3ByZ3Vfc3dfcnN0X251bTsNCiAJaW50IGVycjsN
+CiANCiAJbXRrX3dkdCA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqbXRrX3dkdCksIEdGUF9L
+RVJORUwpOw0KQEAgLTI4NCwxMCArMjcwLDEwIEBAIHN0YXRpYyBpbnQgbXRrX3dkdF9wcm9iZShz
+dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KIAlkZXZfaW5mbyhkZXYsICJXYXRjaGRvZyBl
+bmFibGVkICh0aW1lb3V0PSVkIHNlYywgbm93YXlvdXQ9JWQpXG4iLA0KIAkJIG10a193ZHQtPndk
+dF9kZXYudGltZW91dCwgbm93YXlvdXQpOw0KIA0KLQl3ZHRfZGF0YSA9IG9mX2RldmljZV9nZXRf
+bWF0Y2hfZGF0YShkZXYpOw0KLQlpZiAod2R0X2RhdGEpIHsNCi0JCWVyciA9IHRvcHJndV9yZWdp
+c3Rlcl9yZXNldF9jb250cm9sbGVyKHBkZXYsDQotCQkJCQkJICAgICAgIHdkdF9kYXRhLT50b3By
+Z3Vfc3dfcnN0X251bSk7DQorCWVyciA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKHBkZXYtPmRldi5v
+Zl9ub2RlLCAicnN0LW51bSIsDQorCQkJCSZ0b3ByZ3Vfc3dfcnN0X251bSk7DQorCWlmICghZXJy
+KSB7DQorCQllcnIgPSB0b3ByZ3VfcmVnaXN0ZXJfcmVzZXRfY29udHJvbGxlcihwZGV2LCB0b3By
+Z3Vfc3dfcnN0X251bSk7DQogCQlpZiAoZXJyKQ0KIAkJCXJldHVybiBlcnI7DQogCX0NCkBAIC0z
+MTksOSArMzA1LDcgQEAgc3RhdGljIGludCBtdGtfd2R0X3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpk
+ZXYpDQogI2VuZGlmDQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX3dk
+dF9kdF9pZHNbXSA9IHsNCi0JeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3MTItd2R0Iiwg
+LmRhdGEgPSAmbXQyNzEyX2RhdGEgfSwNCiAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY1
+ODktd2R0IiB9LA0KLQl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My13ZHQiLCAuZGF0
+YSA9ICZtdDgxODNfZGF0YSB9LA0KIAl7IC8qIHNlbnRpbmVsICovIH0NCiB9Ow0KIE1PRFVMRV9E
+RVZJQ0VfVEFCTEUob2YsIG10a193ZHRfZHRfaWRzKTsNCi0tIA0KMS44LjEuMS5kaXJ0eQ0K
 
-On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> In order to avoid stale pixels getting stuck in an intermediate FIFO
-> between the HVS and the pixelvalve on BCM2711, we need to configure the HVS
-> channel before the pixelvalve is reset and configured.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-
-> ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index 2c5ff45dc315..b7b0e19e2fe1 100644
-> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
-> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -427,10 +427,6 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
->
->         require_hvs_enabled(dev);
->
-> -       vc4_crtc_config_pv(crtc);
-> -
-> -       CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) | PV_CONTROL_EN);
-> -
->         /* Enable vblank irq handling before crtc is started otherwise
->          * drm_crtc_get_vblank() fails in vc4_crtc_update_dlist().
->          */
-> @@ -438,6 +434,10 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
->
->         vc4_hvs_atomic_enable(crtc, old_state);
->
-> +       vc4_crtc_config_pv(crtc);
-> +
-> +       CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) | PV_CONTROL_EN);
-> +
->         /* When feeding the transposer block the pixelvalve is unneeded and
->          * should not be enabled.
->          */
-> --
-> git-series 0.9.1
