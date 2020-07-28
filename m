@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B683230ED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF989230EE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731307AbgG1QHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:07:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60317 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731272AbgG1QHA (ORCPT
+        id S1731265AbgG1QJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:09:30 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:59516 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731137AbgG1QJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:07:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595952419;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z+gquV6V93SZjNhpxmQp1P7xpjOdqg2rKp5124tI0vU=;
-        b=MX+dtKIrzFtokLVKjGpdlnwUVcDHXJkkUrtw6Uw5z07PXTPqVRJJWnZbUu3hE4l+MG4FI2
-        w0gvZRLY8HTIP+m/Sy3IuqIqxVMXe+0iMs/JP36ekNWpeNfP4+TUQ5tdD7vuYC8WXwNs4V
-        WoPMDurhwY2dv+zAXP2lw1vz6zOXbDA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-214-wqHAHkFqOp6s6jbiuk_hkA-1; Tue, 28 Jul 2020 12:06:55 -0400
-X-MC-Unique: wqHAHkFqOp6s6jbiuk_hkA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4FACB801E6A;
-        Tue, 28 Jul 2020 16:06:53 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.181])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 18C4F1001B2C;
-        Tue, 28 Jul 2020 16:06:50 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue, 28 Jul 2020 18:06:52 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 18:06:49 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v1 1/4] [RFC] fs/trampfd: Implement the trampoline file
- descriptor API
-Message-ID: <20200728160649.GB9972@redhat.com>
-References: <aefc85852ea518982e74b233e11e16d2e707bc32>
- <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <20200728131050.24443-2-madvenka@linux.microsoft.com>
- <20200728145013.GA9972@redhat.com>
- <dc41589a-647a-ba59-5376-abbf5d07c6e7@linux.microsoft.com>
+        Tue, 28 Jul 2020 12:09:30 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8dA1088165;
+        Tue, 28 Jul 2020 11:08:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595952519;
+        bh=jH/FfVEnikUTSnMw2PAY6KDVMFYv6J1+LWUGiztMq0U=;
+        h=From:To:CC:Subject:Date;
+        b=pCBjWdRaFi4WpowH2bq5c1Mr663qG5o4KvQ6J7j5jhNx+SoP1dOFlVwKa8TtJTxwZ
+         nIENgCtzibsL+bx7gEJteOdA5KPKuh8q/MBP7ngwBcIHQ9BhgCMzd5AyW+W04TGy1e
+         ME6rBc3xpRddcKxsD4TK0oJPHfwwJgQvaDDQYTJU=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 06SG8dxK014086
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 28 Jul 2020 11:08:39 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Jul 2020 11:08:39 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Jul 2020 11:08:39 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8dWm080108;
+        Tue, 28 Jul 2020 11:08:39 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH 1/2] dt-bindings: tlv320adcx140: Add GPO config and drive config
+Date:   Tue, 28 Jul 2020 11:08:32 -0500
+Message-ID: <20200728160833.24130-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc41589a-647a-ba59-5376-abbf5d07c6e7@linux.microsoft.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/28, Madhavan T. Venkataraman wrote:
->
-> I guess since the symbol is not used by any modules, I don't need to
-> export it.
+Add properties for configuring the General Purpose Outputs (GPO). The
+GPOs. There are 2 settings for each GPO, configuration and the output drive
+type.
 
-Yes,
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../bindings/sound/tlv320adcx140.yaml         | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-Oleg.
+diff --git a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+index 2e6ac5d2ee96..0950eb69f2b2 100644
+--- a/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++++ b/Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+@@ -108,6 +108,32 @@ properties:
+       maximum: 7
+     default: [0, 0, 0, 0]
+ 
++patternProperties:
++ '^ti,gpo-config-[1-4]$':
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: |
++       Defines the configuration and output driver for the general purpose
++       output pins (GPO).  These values are pairs, the first value is for the
++       configuration type and the second value is for the output drive type.
++       The array is defined as <GPO_CFG GPO_DRV>
++
++       GPO output configuration can be one of the following:
++
++       0 - (default) disabled
++       1 - GPOX is configured as a general-purpose output (GPO)
++       2 - GPOX is configured as a device interrupt output (IRQ)
++       3 - GPOX is configured as a secondary ASI output (SDOUT2)
++       4 - GPOX is configured as a PDM clock output (PDMCLK)
++
++       GPO output drive configuration for the GPO pins can be one of the following:
++
++       0d - (default) Hi-Z output
++       1d - Drive active low and active high
++       2d - Drive active low and weak high
++       3d - Drive active low and Hi-Z
++       4d - Drive weak low and active high
++       5d - Drive Hi-Z and active high
++
+ required:
+   - compatible
+   - reg
+@@ -124,6 +150,8 @@ examples:
+         ti,mic-bias-source = <6>;
+         ti,pdm-edge-select = <0 1 0 1>;
+         ti,gpi-config = <4 5 6 7>;
++        ti,gpo-config-1 = <0 0>;
++        ti,gpo-config-2 = <0 0>;
+         reset-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+       };
+     };
+-- 
+2.28.0
 
