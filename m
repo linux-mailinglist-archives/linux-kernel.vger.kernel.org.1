@@ -2,220 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452CC23020E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650DA230218
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 07:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgG1FuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 01:50:16 -0400
-Received: from mail-bn7nam10on2089.outbound.protection.outlook.com ([40.107.92.89]:14944
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726369AbgG1FuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 01:50:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ldLe8VHuEScYBO1HUU/UrkuMAtxnc75ILxj71OkKnh8C2fz/wDLhNLijR/qnX1fEg1M6J3HtESmNo+sZ1XlgyKZj4oxMfQrJfCFe9m3hcFTMqi4Gv2Ru80zOMx2mSGENw0JCjNLhEpzIjtv3vtjArjrUFNI54XqtWnTTENN4U5GotzVQyRblWDyGydmgUKBvGAZ7vniDh1fhrE6Wya0RzpJHdPqVG5nLivzw0dbBAgM9Ue24UpIMZB2klqsI62dum1UsP1CvYW4pA9/vEbchjpGadGF1lGwXcY1FdcDe8/BAj9yuqCx9SJr74R+JCaZ/OzOSIVpa8rGjcRtnrfJ2fQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ph05vRWDJJAGmWgF0c/SV36MPAaeyE/x282LusFhpvY=;
- b=YczA9Qwt0vigkig45x1XwPHAEnVY/8U1UWsH9K82ooWUGGAEmnP/K7eovLd3Zl1tMyN0h/8EeNgcJ7498AAfWW5X5ef56dI8yLwBV1WJb5HtxLzYAkJ/KYckEX9c3ijYk2X2156iDOhXFxUkywP+M0hMsYC2d6zIB60NqqqXRGtopd1FbChv5GjhMpEN1PdsOhg6lP5Z3pe/KFdkDsDAPUxmvuIQluBXg8kg/RZ0cY4OJ0Njfp5AFFK1RBSKLdVloaLfMfqM+gxt2UTBxdGELrJq8fETK5uyMoeauReRE5WQ02fkju0LqSXU7rtXmeEnJXGebQVy7etTs0cKB5l0uw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ph05vRWDJJAGmWgF0c/SV36MPAaeyE/x282LusFhpvY=;
- b=HQAuzdLiT7DV3MWF96Y5pxDIPLNQGWr5p5Je8LvqbJE7QOrvtEjRGUvVxPWXSRykT7qxKtCvhNu9JjXns0hkmndjx6gRn6xj4kSwM6mNt7w5DBTJDcLSWFPXVHZ9qZGccIHANI6qluRJ2UEqSSqgaR0WqxhqJhWa8bLn8r0i7MY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR1201MB0188.namprd12.prod.outlook.com (2603:10b6:4:56::12)
- by DM5PR1201MB0185.namprd12.prod.outlook.com (2603:10b6:4:55::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Tue, 28 Jul
- 2020 05:50:12 +0000
-Received: from DM5PR1201MB0188.namprd12.prod.outlook.com
- ([fe80::41b7:b11a:c6d8:1e0e]) by DM5PR1201MB0188.namprd12.prod.outlook.com
- ([fe80::41b7:b11a:c6d8:1e0e%10]) with mapi id 15.20.3216.033; Tue, 28 Jul
- 2020 05:50:12 +0000
-Subject: Re: [PATCH 1/4] ACPI: APD: Change name from ST to FCH
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Akshu Agrawal <akshu.agrawal@amd.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200720050500.23357-1-akshu.agrawal@amd.com>
- <20200720050500.23357-2-akshu.agrawal@amd.com>
- <CAJZ5v0j264hcr0AbwXou240K73xfQ5Q0pF4TEP11SAOT2nuOjA@mail.gmail.com>
-From:   "Agrawal, Akshu" <aagrawal2@amd.com>
-Message-ID: <27966cc7-cb5a-fd18-2244-5106d8853ea1@amd.com>
-Date:   Tue, 28 Jul 2020 11:20:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CAJZ5v0j264hcr0AbwXou240K73xfQ5Q0pF4TEP11SAOT2nuOjA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: MAXPR01CA0098.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:5d::16) To DM5PR1201MB0188.namprd12.prod.outlook.com
- (2603:10b6:4:56::12)
+        id S1726929AbgG1Fxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 01:53:45 -0400
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:36589 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726711AbgG1Fxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 01:53:45 -0400
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 28 Jul
+ 2020 13:53:40 +0800
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 28 Jul
+ 2020 13:53:39 +0800
+Received: from zxbjmbx1.zhaoxin.com ([fe80::290a:f538:51e7:1416]) by
+ zxbjmbx1.zhaoxin.com ([fe80::290a:f538:51e7:1416%16]) with mapi id
+ 15.01.1979.003; Tue, 28 Jul 2020 13:53:39 +0800
+From:   WeitaoWang-oc <WeitaoWang-oc@zhaoxin.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Alan Stern <stern@rowland.harvard.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "mathias.nyman@linux.intel.com" <mathias.nyman@linux.intel.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "hslester96@gmail.com" <hslester96@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Carsten_Schmid@mentor.com" <Carsten_Schmid@mentor.com>,
+        "efremov@linux.com" <efremov@linux.com>,
+        "Tony W. Wang(XA-RD)" <TonyWWang@zhaoxin.com>,
+        "Cobe Chen(BJ-RD)" <CobeChen@zhaoxin.com>,
+        "Tim Guo(BJ-RD)" <TimGuo@zhaoxin.com>,
+        "wwt8723@163.com" <wwt8723@163.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBVU0I6Rml4IGtlcm5lbCBOVUxMIHBvaW50ZXIgd2hl?=
+ =?gb2312?Q?n_unbind_UHCI_form_vfio-pci?=
+Thread-Topic: [PATCH] USB:Fix kernel NULL pointer when unbind UHCI form
+ vfio-pci
+Thread-Index: AQHWYB9U257QN8g5QkeL/njIDTUWtqkTBUEAgAAltoCAAMldgIAAFeWAgAC+AoCAAAr2gIAABd6AgAFUpvCAAGn8AIAF7CVQ
+Date:   Tue, 28 Jul 2020 05:53:39 +0000
+Message-ID: <0b5dc3873aca42199f769e82288a2b3b@zhaoxin.com>
+References: <1595419068-4812-1-git-send-email-WeitaoWang-oc@zhaoxin.com>
+        <20200722124414.GA3153105@kroah.com>
+        <20200722145913.GB1310843@rowland.harvard.edu>
+        <1bf449377e3448bc9c8bc7b64d7b7990@zhaoxin.com>
+        <20200722221817.542971a2@x1.home>
+        <20200723153821.GC1352396@rowland.harvard.edu>
+        <20200723101735.3222c289@w520.home>
+        <20200723163835.GA1357775@rowland.harvard.edu>
+        <11a7a3e67d6c40cd9fd06cd4d6300283@zhaoxin.com>
+ <20200724131708.0a0f3358@x1.home>
+In-Reply-To: <20200724131708.0a0f3358@x1.home>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.29.8.32]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.105] (122.171.179.172) by MAXPR01CA0098.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:5d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend Transport; Tue, 28 Jul 2020 05:50:10 +0000
-X-Originating-IP: [122.171.179.172]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1094a65f-d32c-4fee-851a-08d832ba184c
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0185:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB01859265B1CABBD47FE1F5A0F8730@DM5PR1201MB0185.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V57gYslpPtlJAjNmziaAYpVwC49SsZ7aJB0PlzasqcNf+ctEbo2cO+7w11l2Jx8eomf1tphVbKa+8ZxXwm2yUoa+/l06kMDSntm0sod6DQkxspEYalu0W3DLq6NDPmErhs1lVQswCSHUfsv2J0QTQe933bCsYEQc6Hd6t87wRCzWrLUHi9sk6/5e/CSCy+O0q9kRaqsorSxkyfUyaJjLFcBDmPOdq76FaYEwGANm2grHreaOe/sAsrPOfBdu/58l+AB3iHhX3veiSumJcULIjrxb3sd73nww04ZN4pUl+v2rYus0Pj3H9XGL7l4/BI/g6AU0p6/mtsMv32YzAEF7G9ml8EN/RRovMHFgsORJnI0G4siJ3uc/KvLcCD55Cpj1wKMLJV4ei465L9cU9MV6KD7xaSqwQUAWRotK7cqTDVjzOLQE1qRw8C/L28J7JyFtpMTN3q+8zcPtoZ/hQOIKmw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0188.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(966005)(316002)(16576012)(31686004)(6486002)(8936002)(8676002)(83380400001)(6636002)(4326008)(2906002)(186003)(5660300002)(16526019)(6666004)(53546011)(26005)(2616005)(956004)(66556008)(66476007)(66946007)(110136005)(54906003)(478600001)(36756003)(31696002)(52116002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: NQFZXgrL1JJM0EQaLFm4ZuvZnxkeDCbhqkjxq2n1W3xhHPmsJy/avlZmSZx6Io0wUNDANr9sxtKIQ7NsNidcrh1sD7TvhF3acHzomgVXAXbrzypwJ2i4CCdl1FZsGqDDXciv906PQa4NbXoDhFufr+/6QJ+i9tqDwNVNTXhcvQ3EqH0Syp/KYlLCeZTuYuuJAyaFKjUUPWCqB1yNcZpL9dnn3hfYC0F8zSBaYxrDZ/kh3yQyTJEZLZz7flIkMqGIbTV6b9RBxTh2Zux1+7/NdeNuhWC9CB9g8MKFQvH/VwgWSE94MAhRcLkBW/AZthQwz+lwnC10S/WQuWajYUBOkp9PJ2jMIwDxQrGZqW/9qow6A2CIiQLb5Ak28RFN0vx0sDjB5TlwHDgRHj7ZauoMOVh17Et9uqfqIGKSjNxzLurjmomzbRGRLKc5I5LCW1sQOAw/yBk+Ddw6wcsRXYXwvwMLLYgRjzG51y1/zeqxBIvOtdlaEhITRPdyCYZTp0hP
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1094a65f-d32c-4fee-851a-08d832ba184c
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0188.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 05:50:12.8267
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gIkxDNRwuvTyxzT2vnVg3VVYX/vj8MtQyFjkBA+/+je8ZQMUvN0r9YBQBTxjTy3evAI306KrtuVN4LlMArWHvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0185
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/27/2020 6:58 PM, Rafael J. Wysocki wrote:
-> On Mon, Jul 20, 2020 at 7:06 AM Akshu Agrawal <akshu.agrawal@amd.com> wrote:
->> AMD SoC general pupose clk is present in new platforms with
->> same MMIO mappings. We can reuse the same clk handler support
->> for other platforms. Hence, changing name from ST(SoC) to FCH(IP)
->>
->> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> This patch and the [3/4] appear to be part of a larger series which
-> isn't visible to me as a whole.
-
-Link to other patches:
-
-https://patchwork.kernel.org/patch/11672857/
-
-https://patchwork.kernel.org/patch/11672861/
-
->
-> Do you want me to apply them nevertheless?
-
-This patch on its own will cause compilation error as we need the second 
-patch.
-
-Since, there is dependency we need them to be merged together. Can you 
-or Stephen please suggest a way forward.
-
-
-Thanks,
-
-Akshu
-
->> ---
->>   drivers/acpi/acpi_apd.c                            | 14 +++++++-------
->>   .../linux/platform_data/{clk-st.h => clk-fch.h}    | 10 +++++-----
->>   2 files changed, 12 insertions(+), 12 deletions(-)
->>   rename include/linux/platform_data/{clk-st.h => clk-fch.h} (53%)
->>
->> diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
->> index ba2612e9a0eb..2d99e46add1a 100644
->> --- a/drivers/acpi/acpi_apd.c
->> +++ b/drivers/acpi/acpi_apd.c
->> @@ -8,7 +8,7 @@
->>    */
->>
->>   #include <linux/clk-provider.h>
->> -#include <linux/platform_data/clk-st.h>
->> +#include <linux/platform_data/clk-fch.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/pm_domain.h>
->>   #include <linux/clkdev.h>
->> @@ -79,11 +79,11 @@ static int misc_check_res(struct acpi_resource *ares, void *data)
->>          return !acpi_dev_resource_memory(ares, &res);
->>   }
->>
->> -static int st_misc_setup(struct apd_private_data *pdata)
->> +static int fch_misc_setup(struct apd_private_data *pdata)
->>   {
->>          struct acpi_device *adev = pdata->adev;
->>          struct platform_device *clkdev;
->> -       struct st_clk_data *clk_data;
->> +       struct fch_clk_data *clk_data;
->>          struct resource_entry *rentry;
->>          struct list_head resource_list;
->>          int ret;
->> @@ -106,7 +106,7 @@ static int st_misc_setup(struct apd_private_data *pdata)
->>
->>          acpi_dev_free_resource_list(&resource_list);
->>
->> -       clkdev = platform_device_register_data(&adev->dev, "clk-st",
->> +       clkdev = platform_device_register_data(&adev->dev, "clk-fch",
->>                                                 PLATFORM_DEVID_NONE, clk_data,
->>                                                 sizeof(*clk_data));
->>          return PTR_ERR_OR_ZERO(clkdev);
->> @@ -135,8 +135,8 @@ static const struct apd_device_desc cz_uart_desc = {
->>          .properties = uart_properties,
->>   };
->>
->> -static const struct apd_device_desc st_misc_desc = {
->> -       .setup = st_misc_setup,
->> +static const struct apd_device_desc fch_misc_desc = {
->> +       .setup = fch_misc_setup,
->>   };
->>   #endif
->>
->> @@ -239,7 +239,7 @@ static const struct acpi_device_id acpi_apd_device_ids[] = {
->>          { "AMD0020", APD_ADDR(cz_uart_desc) },
->>          { "AMDI0020", APD_ADDR(cz_uart_desc) },
->>          { "AMD0030", },
->> -       { "AMD0040", APD_ADDR(st_misc_desc)},
->> +       { "AMD0040", APD_ADDR(fch_misc_desc)},
->>   #endif
->>   #ifdef CONFIG_ARM64
->>          { "APMC0D0F", APD_ADDR(xgene_i2c_desc) },
->> diff --git a/include/linux/platform_data/clk-st.h b/include/linux/platform_data/clk-fch.h
->> similarity index 53%
->> rename from include/linux/platform_data/clk-st.h
->> rename to include/linux/platform_data/clk-fch.h
->> index 7cdb6a402b35..850ca776156d 100644
->> --- a/include/linux/platform_data/clk-st.h
->> +++ b/include/linux/platform_data/clk-fch.h
->> @@ -1,17 +1,17 @@
->>   /* SPDX-License-Identifier: MIT */
->>   /*
->> - * clock framework for AMD Stoney based clock
->> + * clock framework for AMD misc clocks
->>    *
->>    * Copyright 2018 Advanced Micro Devices, Inc.
->>    */
->>
->> -#ifndef __CLK_ST_H
->> -#define __CLK_ST_H
->> +#ifndef __CLK_FCH_H
->> +#define __CLK_FCH_H
->>
->>   #include <linux/compiler.h>
->>
->> -struct st_clk_data {
->> +struct fch_clk_data {
->>          void __iomem *base;
->>   };
->>
->> -#endif /* __CLK_ST_H */
->> +#endif /* __CLK_FCH_H */
->> --
->> 2.20.1
->>
+DQpPbiBGcmksIDI0IEp1bCAyMDIwIDE5OjE3OjQ5ICswMDAwIEFsZXggd3JvdGU6DQo+IE9uIEZy
+aSwgMjQgSnVsIDIwMjAgMTI6NTc6NDkgKzAwMDANCj4gV2VpdGFvV2FuZy1vYyA8V2VpdGFvV2Fu
+Zy1vY0B6aGFveGluLmNvbT4gd3JvdGU6DQo+IA0KPiA+IE9uIFRodSwgMjMgSnVsIDIwMjAgMTI6
+Mzg6MjEgLTA0MDAsIEFsYW4gd3JvdGU6DQo+ID4gPiBPbiBUaHUsIEp1bCAyMywgMjAyMCBhdCAx
+MDoxNzozNUFNIC0wNjAwLCBBbGV4IFdpbGxpYW1zb24gd3JvdGU6DQo+ID4gPiA+IFRoZSBJT01N
+VSBncm91cGluZyByZXN0cmljdGlvbiBkb2VzIHNvbHZlIHRoZSBoYXJkd2FyZSBpc3N1ZSwgc28g
+bG9uZw0KPiA+ID4gPiBhcyBvbmUgZHJpdmVyIGRvZXNuJ3QgYmxpbmRseSBhc3N1bWUgdGhlIGRy
+aXZlciBwcml2YXRlIGRhdGEgZm9yDQo+ID4gPiA+IGFub3RoZXIgZGV2aWNlIGFuZCBtb2RpZnkg
+aXQuDQo+ID4gPg0KPiA+ID4gQ29ycmVjdGlvbjogVGhlIElPTU1VIGdyb3VwaW5nIHJlc3RyaWN0
+aW9uIHNvbHZlcyB0aGUgaGFyZHdhcmUgaXNzdWUgZm9yDQo+ID4gPiB2ZmlvLXBjaS4gIEl0IHdv
+bid0IG5lY2Vzc2FyaWx5IGhlbHAgaWYgc29tZSBvdGhlciBkcml2ZXIgY29tZXMgYWxvbmcNCj4g
+PiA+IGFuZCB3YW50cyB0byBiaW5kIHRvIHRoaXMgaGFyZHdhcmUuDQo+ID4gPg0KPiA+ID4gPiAg
+IEkgZG8gYWdyZWUgdGhhdCB5b3VyIHNvbHV0aW9uIHdvdWxkDQo+ID4gPiA+IHdvcmssIHJlcXVp
+cmluZyBhbGwgZGV2aWNlcyBhcmUgdW5ib3VuZCBiZWZvcmUgYW55IGNhbiBiZSBib3VuZCwgYnV0
+IGl0DQo+ID4gPiA+IGFsc28gc2VlbXMgZGlmZmljdWx0IHRvIG1hbmFnZS4gIFRoZSBpc3N1ZSBp
+cyBsYXJnZWx5IHVuaXF1ZSB0byBVU0INCj4gPiA+ID4gQUZBSUsuICBPbiB0aGUgb3RoZXIgaGFu
+ZCwgZHJpdmVycyBjb29yZGluYXRpbmcgd2l0aCBlYWNoIG90aGVyIHRvDQo+ID4gPiA+IHJlZ2lz
+dGVyIHRoZWlyIF9wcml2YXRlXyBkYXRhIGFzIHNoYXJlLWFibGUgd2l0aGluIGEgc2V0IG9mIGRy
+aXZlcnMNCj4gPiA+ID4gc2VlbXMgbGlrZSBhIG11Y2ggbW9yZSBkaXJlY3QgYW5kIGV4cGxpY2l0
+IGludGVyYWN0aW9uIGJldHdlZW4gdGhlDQo+ID4gPiA+IGRyaXZlcnMuICBUaGFua3MsDQo+ID4g
+Pg0KPiA+ID4gWWVzLCB0aGF0IG1ha2VzIHNlbnNlLiAgQnV0IGl0IHdvdWxkIGhhdmUgdG8gYmUg
+aW1wbGVtZW50ZWQgaW4gdGhlDQo+ID4gPiBkcml2ZXIgY29yZSwgbm90IGluIHBhcnRpY3VsYXIg
+c3Vic3lzdGVtcyBsaWtlIFVTQiBvciBQQ0kuICBBbmQgaXQgbWlnaHQNCj4gPiA+IGJlIHNlZW4g
+YXMgb3ZlcmtpbGwsIGdpdmVuIHRoYXQgb25seSBVSENJL09IQ0kvRUhDSSBkZXZpY2VzIHJlcXVp
+cmUgdGhpcw0KPiA+ID4gc29ydCBvZiBzaGFyaW5nIEFGQUlLLg0KPiA+ID4NCj4gPiA+IEFsc28s
+IHdoZW4geW91IHRoaW5rIGFib3V0IGl0LCB3aGF0IGZvcm0gd291bGQgc3VjaCBjb29yZGluYXRp
+b24gYW1vbmcNCj4gPiA+IGRyaXZlcnMgdGFrZT8gIEZyb20geW91ciBkZXNjcmlwdGlvbiwgaXQg
+c291bmRzIGxpa2UgdGhlIGRyaXZlcnMgd291bGQNCj4gPiA+IGFncmVlIHRvIGF2b2lkIGFjY2Vz
+c2luZyBlYWNoIG90aGVyJ3MgcHJpdmF0ZSBkYXRhIGlmIHRoZSBwcm9wZXINCj4gPiA+IHJlZ2lz
+dHJhdGlvbiB3YXNuJ3QgaW4gcGxhY2UuDQo+ID4gPg0KPiA+ID4gT24gdGhlIG90aGVyIGhhbmQs
+IGEgc3Ryb25nZXIgYW5kIHBlcmhhcHMgbW9yZSByb2J1c3QgYXBwcm9hY2ggd291bGQgYmUNCj4g
+PiA+IHRvIGVuZm9yY2UgdGhlIGNvbmRpdGlvbiB0aGF0IG5vbi1jb29wZXJhdGluZyBkcml2ZXJz
+IGFyZSBuZXZlciBib3VuZCB0bw0KPiA+ID4gZGV2aWNlcyBpbiB0aGUgc2FtZSBncm91cCBhdCB0
+aGUgc2FtZSB0aW1lLiAgVGhhdCdzIGJhc2ljYWxseSB3aGF0IEknbQ0KPiA+ID4gcHJvcG9zaW5n
+IGhlcmUgLS0gdGhlIHF1ZXN0aW9uIGlzIHdoZXRoZXIgdGhlIGVuZm9yY2VtZW50IHNob3VsZCBi
+ZQ0KPiA+ID4gaW5zdGl0dXRlZCBpbiB0aGUga2VybmVsIG9yIHNob3VsZCBtZXJlbHkgYmUgcGFy
+dCBvZiBhIHN0YW5kYXJkIHByb3RvY29sDQo+ID4gPiBmb2xsb3dlZCBieSB1c2Vyc3BhY2UgZHJp
+dmVycy4NCj4gPiA+DQo+ID4gPiBHaXZlbiB0aGF0IGl0J3MgY3VycmVudGx5IG5lZWRlZCBpbiBv
+bmx5IG9uZSBwbGFjZSwgaXQgc2VlbXMgcmVhc29uYWJsZQ0KPiA+ID4gdG8gbGVhdmUgdGhpcyBh
+cyBhICJnZW50bGVtZW4ncyBhZ3JlZW1lbnQiIGluIHVzZXJzcGFjZSBmb3IgdGhlIHRpbWUNCj4g
+PiA+IGJlaW5nIGluc3RlYWQgb2YgYWRkaW5nIGl0IHRvIHRoZSBrZXJuZWwuDQo+ID4gPg0KPiA+
+DQo+ID4gUHJvdmlkZWQgdGhhdCBFSENJIGFuZCBVSENJIGhvc3QgY29udHJvbGxlciBkZWNsYXJl
+IG5vdCBzdXBwb3J0IFAyUCBhbmQNCj4gPiBBQ1MuIFNvLCB3ZSBjYW4gYXNzaWduIEVIQ0kgYW5k
+IFVIQ0kgaG9zdCBjb250cm9sbGVyIHRvIGRpZmZlcmVudCBJT01NVQ0KPiA+IGdyb3VwIHNlcGFy
+YXRlbHkuIFdlIGFzc2lnbiBFSENJIGhvc3QgY29udHJvbGxlciB0byBob3N0IGFuZCBhc3NpZ24g
+VUhDSQ0KPiA+IGhvc3QgY29udHJvbGxlciB0byBWTS4gVGhlbiwgZWhjaV9oY2QgZHJpdmVyIGxv
+YWQvdW5sb2FkIG9wZXJhdGlvbiBpbiBob3N0DQo+ID4gd2lsbCBjYXVzZSB0aGUgc2FtZSBpc3N1
+ZSBhcyBkaXNjdXNzZWQNCj4gDQo+IEFuZCB5b3UgaGF2ZSBhbiBleGFtcGxlIG9mIHN1Y2ggYSBk
+ZXZpY2U/ICBJIGV4cGVjdCB0aGVzZSBkbyBub3QgZXhpc3QsDQo+IG5vciBzaG91bGQgdGhleS4g
+IEl0IHNlZW1zIGxpa2UgaXQgd291bGQgYmUgYW4gaW1wcm9wZXIgdXNlIG9mIEFDUy4NCj4gVGhh
+bmtzLA0KDQoNCkluIGtlcm5lbCBzb3VyY2UgY29kZSB0cmVlIGRyaXZlcnMvcGNpL3F1aXJrcy5j
+LA0KVGhlcmUgaXMgYSBkZXZpY2UgbGlzdCBkZWNsYXJlZCBieSBwY2lfZGV2X2Fjc19lbmFibGVk
+LiBJbiB3aGljaCBsaXN0LCBzdWNoIGFzIA0KbXVsdGktZnVuY3Rpb24gZGV2aWNlIHdpdGhvdXQg
+YWNzIGNhcGFiaWxpdHkgbm90IGFsbG93IHBlZXItdG8tcGVlciBiZXd0ZWVuIA0KZnVuY3Rpb25z
+LiBUaG9zZSBkZXZpY2UgY2FuIGJlIGFzc2lnbiB0byB0byBkaWZmZXJlbnQgSU9NTVUgZ3JvdXAg
+c2VwYXJhdGVseS4NCg0KVGhuYWtzDQp3ZWl0YW8NCg0K
