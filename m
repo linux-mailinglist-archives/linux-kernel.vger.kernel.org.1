@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AACF230B28
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105D7230B2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgG1NMZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 09:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
+        id S1730061AbgG1NMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:12:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:35863 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729969AbgG1NMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:12:23 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5D2320714;
-        Tue, 28 Jul 2020 13:12:21 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 09:12:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     =?UTF-8?B?VGhpw6liYXVk?= Weksteen <tweek@google.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Nick Kralevich <nnk@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-Subject: Re: [PATCH] selinux: add tracepoint on denials
-Message-ID: <20200728091220.5769b606@oasis.local.home>
-In-Reply-To: <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com>
-References: <20200724091520.880211-1-tweek@google.com>
-        <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
-        <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
-        <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729962AbgG1NMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 09:12:51 -0400
+IronPort-SDR: yOqHqvNYjeHTlk0KNvua2+H8YKT2P7bES5sq/N1wylZC9nnzm5iH2EjpK96IRus493vhgdcmAL
+ NX9UBrycFC+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="130764194"
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="130764194"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 06:12:50 -0700
+IronPort-SDR: yDM40H/wXXLihgs77EcLblOyRGbSBVjgQy5NEM1muqYzjbFb9udez25ARSvoXCGSx7mgbQARNf
+ 4kmPndw71xow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="273564332"
+Received: from lkp-server01.sh.intel.com (HELO d27eb53fc52b) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Jul 2020 06:12:49 -0700
+Received: from kbuild by d27eb53fc52b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k0PPU-0000tW-Jf; Tue, 28 Jul 2020 13:12:48 +0000
+Date:   Tue, 28 Jul 2020 21:12:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ aa251fc5b936d3ddb4b4c4b36427eb9aa3347c82
+Message-ID: <5f20243b.5xgIKcEccwbcoYls%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020 14:49:24 +0200
-Thiébaud Weksteen <tweek@google.com> wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  irq/urgent
+branch HEAD: aa251fc5b936d3ddb4b4c4b36427eb9aa3347c82  genirq/debugfs: Add missing irqchip flags
 
-> Thanks for the review! I'll send a new revision of the patch with the
-> %x formatter and using the TP_CONDITION macro.
-> 
-> On adding further information to the trace event, I would prefer
-> adding the strict minimum to be able to correlate the event with the
-> avc message. The reason is that tracevents have a fixed size (see
-> https://www.kernel.org/doc/Documentation/trace/events.txt). For
+elapsed time: 1285m
 
-Wait! What?
+configs tested: 69
+configs skipped: 2
 
-Where in that document does it say that trace events have a fixed size.
-We have a lot of dynamically sized trace events.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> instance, we would need to decide on a maximum size for the string
-> representation of the list of permissions. This would also duplicate
-> the reporting done in the avc audit event. I'll simply add the pid as
-> part of the printk, which should be sufficient for the correlation.
-> 
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          prima2_defconfig
+arm                      footbridge_defconfig
+mips                        nlm_xlr_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200728
+i386                 randconfig-a004-20200728
+i386                 randconfig-a005-20200728
+i386                 randconfig-a002-20200728
+i386                 randconfig-a006-20200728
+i386                 randconfig-a001-20200728
+x86_64               randconfig-a014-20200728
+x86_64               randconfig-a012-20200728
+x86_64               randconfig-a015-20200728
+x86_64               randconfig-a016-20200728
+x86_64               randconfig-a013-20200728
+x86_64               randconfig-a011-20200728
+i386                 randconfig-a016-20200728
+i386                 randconfig-a012-20200728
+i386                 randconfig-a013-20200728
+i386                 randconfig-a014-20200728
+i386                 randconfig-a011-20200728
+i386                 randconfig-a015-20200728
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Please take a look at samples/trace_events/trace_events_sample.h
-
-and read the example on __print_symbolic().
-
-I think that's what you are looking for.
-
--- Steve
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
