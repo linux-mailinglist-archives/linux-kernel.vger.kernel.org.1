@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C94230D7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8244230D7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730711AbgG1PQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:16:58 -0400
-Received: from crapouillou.net ([89.234.176.41]:38778 "EHLO crapouillou.net"
+        id S1730749AbgG1PRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:17:05 -0400
+Received: from crapouillou.net ([89.234.176.41]:38796 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730586AbgG1PQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:16:57 -0400
+        id S1730586AbgG1PRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:17:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595949409; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1595949410; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5H/q18tgDo28MY8nE273GGLyuFx/gqWCWD9iMf0JujQ=;
-        b=vU0Bk9vUzSHgl2tFFtaYIhbYSIV/kTIRr1bJTo2Ne3WsXSBS6g4T3DB9B584DfEExtwI5F
-        XB0EpveIsi6UycCyqXAMdXvj2gjIj9+OT/LwBLv5nq//997U+SKdGMHrU5MJL9XS9qViM1
-        ETvi54X38bnEI+ZuwGgzHd+tfls8xxc=
+        bh=mCAL3uifqrwrrscsGck77s7dOI7H4T7L/Psu4vIjeNo=;
+        b=ISeLpAy0gBt9aVtGQ7vMvBc4q0lHCwa/EveW3oxDGe2VLWxcbo1TZtHCNHvgG+m9slP+pt
+        QLRE2x9JexqOaaYyVPYr3sCqNRyz5RizX2/BQ+8GsWcYU+HJkZZGt+lmNeSZFP7YWvtTx4
+        xOVVM7wsGxQiBskNouFyBFcQMP8iNyU=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
 Cc:     od@zcrc.me, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 1/2] drm/ingenic: Handle errors of drm_atomic_get_plane_state
-Date:   Tue, 28 Jul 2020 17:16:40 +0200
-Message-Id: <20200728151641.26124-2-paul@crapouillou.net>
+Subject: [PATCH 2/2] drm/ingenic: Validate mode in a .mode_valid callback
+Date:   Tue, 28 Jul 2020 17:16:41 +0200
+Message-Id: <20200728151641.26124-3-paul@crapouillou.net>
 In-Reply-To: <20200728151641.26124-1-paul@crapouillou.net>
 References: <20200728151641.26124-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -36,36 +36,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_atomic_get_plane_state() can return errors, so we need to handle
-these.
+Validate modes in the drm_crtc_helper_funcs.mode_valid() callback, which
+is designed for this purpose, instead of doing it in
+drm_crtc_helper_funcs.atomic_check().
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 34 +++++++++++++----------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index ada990a7f911..64eabab3ef69 100644
+index 64eabab3ef69..5dab9c3d0a52 100644
 --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
 +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -215,10 +215,17 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
+@@ -199,21 +199,8 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
+ {
+ 	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
+ 	struct drm_plane_state *f1_state, *f0_state, *ipu_state = NULL;
+-	long rate;
+-
+-	if (!drm_atomic_crtc_needs_modeset(state))
+-		return 0;
+-
+-	if (state->mode.hdisplay > priv->soc_info->max_width ||
+-	    state->mode.vdisplay > priv->soc_info->max_height)
+-		return -EINVAL;
  
- 	if (priv->soc_info->has_osd) {
+-	rate = clk_round_rate(priv->pix_clk,
+-			      state->adjusted_mode.clock * 1000);
+-	if (rate < 0)
+-		return rate;
+-
+-	if (priv->soc_info->has_osd) {
++	if (drm_atomic_crtc_needs_modeset(state) && priv->soc_info->has_osd) {
  		f1_state = drm_atomic_get_plane_state(state->state, &priv->f1);
-+		if (IS_ERR(f1_state))
-+			return PTR_ERR(f1_state);
+ 		if (IS_ERR(f1_state))
+ 			return PTR_ERR(f1_state);
+@@ -242,6 +229,24 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
+ 	return 0;
+ }
+ 
++static enum drm_mode_status
++ingenic_drm_crtc_mode_valid(struct drm_crtc *crtc, const struct drm_display_mode *mode)
++{
++	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
++	long rate;
 +
- 		f0_state = drm_atomic_get_plane_state(state->state, &priv->f0);
-+		if (IS_ERR(f0_state))
-+			return PTR_ERR(f0_state);
++	if (mode->hdisplay > priv->soc_info->max_width)
++		return MODE_BAD_HVALUE;
++	if (mode->vdisplay > priv->soc_info->max_height)
++		return MODE_BAD_VVALUE;
++
++	rate = clk_round_rate(priv->pix_clk, mode->clock * 1000);
++	if (rate < 0)
++		return MODE_CLOCK_RANGE;
++
++	return MODE_OK;
++}
++
+ static void ingenic_drm_crtc_atomic_begin(struct drm_crtc *crtc,
+ 					  struct drm_crtc_state *oldstate)
+ {
+@@ -655,6 +660,7 @@ static const struct drm_crtc_helper_funcs ingenic_drm_crtc_helper_funcs = {
+ 	.atomic_begin		= ingenic_drm_crtc_atomic_begin,
+ 	.atomic_flush		= ingenic_drm_crtc_atomic_flush,
+ 	.atomic_check		= ingenic_drm_crtc_atomic_check,
++	.mode_valid		= ingenic_drm_crtc_mode_valid,
+ };
  
- 		if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU) && priv->ipu_plane) {
- 			ipu_state = drm_atomic_get_plane_state(state->state, priv->ipu_plane);
-+			if (IS_ERR(ipu_state))
-+				return PTR_ERR(ipu_state);
- 
- 			/* IPU and F1 planes cannot be enabled at the same time. */
- 			if (f1_state->fb && ipu_state->fb) {
+ static const struct drm_encoder_helper_funcs ingenic_drm_encoder_helper_funcs = {
 -- 
 2.27.0
 
