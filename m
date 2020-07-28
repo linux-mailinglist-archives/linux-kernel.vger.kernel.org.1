@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157FE2315D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9F42315E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730197AbgG1W5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:57:54 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:40583 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729978AbgG1W5e (ORCPT
+        id S1730330AbgG1W6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:58:23 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:33769 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729991AbgG1W5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:57:34 -0400
-Received: by mail-qk1-f195.google.com with SMTP id h7so20438007qkk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:33 -0700 (PDT)
+        Tue, 28 Jul 2020 18:57:35 -0400
+Received: by mail-qk1-f196.google.com with SMTP id l23so20499672qkk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZQMmTnajY5eYCOmwZRBHbur3Flx5GWzOMVTRLQeeOzo=;
-        b=nPVBkKWaRy5zDtP8jTcHwn9Fhj/E1MVMuHysbRGrLeeH84WZOIGfSQ8cH6+ZsGaEaK
-         1IH0bGk4oXNvykMcp1O5EoFh6Yrw7u4QEFBLNuxhCoEk+Q9OKdxGEbGrwbsn3KxRWmcE
-         anpD6ryF/XUhEhPwsHgGf8+14IeItP9kQ6uRg2vW6d2H04bzlx04yhGTmFg/f4UTTk8a
-         zvOWgb2dMud/ikH5cdxhIUWIsNapiAXeJwIphub9GSQLNk3+RBICQqe7Ol1gwoax4uvD
-         qSp5dC+s/I2A/Lte+Z74BnWAzUvouu+IRg9/1oZ9yrX5udU6i12SA1aFKK4bR6aYrOiH
-         yJIw==
-X-Gm-Message-State: AOAM530iWDC87qI0goMt59iuiSZyJAdeOJKRpnqMPmAL/UUj94KNAgbt
-        bkm6NSYP0Vp7DFUonKfOGPM=
-X-Google-Smtp-Source: ABdhPJzebBLc4Wyoxwq42CmMf4N0zgikXdd7/8R0a91orXJMWdI6NQLyDpH3qn75Yd0qRooRt2ZBAw==
-X-Received: by 2002:a37:8142:: with SMTP id c63mr28406869qkd.97.1595977053103;
-        Tue, 28 Jul 2020 15:57:33 -0700 (PDT)
+        bh=yOCraVChxa5ukNCcP2KC3ZnWUN5xoWQnnkAwH57jpBo=;
+        b=XOJ83zO01ae8ZPcpJJOpqDOFRGuTsoyEsEl97wMP7PbHdRQGH/xi55U49spYCQ3R3S
+         AbC8eYVCkI9SJkvxMutHyjj/qMFcOM7RMgtWR3emDsJsEeAf2eks1VefmD/eKffRxVGF
+         UvK4Sr2gwX4qMMIY9UUjIfZlafJcV/dFy7CNZzkqmirGjcWKDqNlinWTYH7GS7kGQgJz
+         eqcb/AhUiyI8zfs88ptWMXx+Iv+C2XgS25MbukRrbL3KiVHClkfQ124CM56i7XdipA3+
+         F2OgultR4IWg6mO1QZ+h36DKL8aWk8lNUROdmPEIVvCF6MJZN0T2EuruitCVLC2M3yeH
+         xscw==
+X-Gm-Message-State: AOAM532uoMSWTv4Re4fyjN/TW1PEP2ukbuolEWC2ix88dl1MHf0N+nZC
+        jR553YHx8p6B3K+LIXjKkz03B8l7
+X-Google-Smtp-Source: ABdhPJzloICB6TqnM4qbtkDuhKGptNqzVFXVSRYbi+anqPiFwqZU/A6xL1tRNBdsl11t6J6jqzEQEQ==
+X-Received: by 2002:a37:a6c6:: with SMTP id p189mr20083802qke.386.1595977054058;
+        Tue, 28 Jul 2020 15:57:34 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.32
+        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 15:57:32 -0700 (PDT)
+        Tue, 28 Jul 2020 15:57:33 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 12/21] x86/kaslr: Simplify process_gb_huge_pages
-Date:   Tue, 28 Jul 2020 18:57:13 -0400
-Message-Id: <20200728225722.67457-13-nivedita@alum.mit.edu>
+Subject: [PATCH v3 13/21] x86/kaslr: Drop test for command-line parameters before parsing
+Date:   Tue, 28 Jul 2020 18:57:14 -0400
+Message-Id: <20200728225722.67457-14-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727230801.3468620-1-nivedita@alum.mit.edu>
 References: <20200727230801.3468620-1-nivedita@alum.mit.edu>
@@ -50,87 +50,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the loop to determine the number of 1Gb pages with arithmetic.
+This check doesn't save anything. In the case when none of the
+parameters are present, each strstr will scan args twice (once to find
+the length and then for searching), six scans in total. Just going ahead
+and parsing the arguments only requires three scans: strlen, memcpy, and
+parsing. This will be the first malloc, so free will actually free up
+the memory, so the check doesn't save heap space either.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 46 ++++++++++++++------------------
- 1 file changed, 20 insertions(+), 26 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 3727e9708690..7fb699aae74e 100644
+index 7fb699aae74e..7c69fc10a782 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -547,49 +547,43 @@ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
- static void
- process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
- {
--	unsigned long addr, size = 0;
-+	unsigned long pud_start, pud_end, gb_huge_pages;
- 	struct mem_vector tmp;
--	int i = 0;
- 
- 	if (!IS_ENABLED(CONFIG_X86_64) || !max_gb_huge_pages) {
- 		store_slot_info(region, image_size);
+@@ -279,10 +279,6 @@ static void handle_mem_options(void)
+ 	if (!args)
  		return;
- 	}
  
--	addr = ALIGN(region->start, PUD_SIZE);
--	/* Did we raise the address above the passed in memory entry? */
--	if (addr < region->start + region->size)
--		size = region->size - (addr - region->start);
+-	if (!strstr(args, "memmap=") && !strstr(args, "mem=") &&
+-		!strstr(args, "hugepages"))
+-		return;
 -
--	/* Check how many 1GB huge pages can be filtered out: */
--	while (size >= PUD_SIZE && max_gb_huge_pages) {
--		size -= PUD_SIZE;
--		max_gb_huge_pages--;
--		i++;
--	}
-+	/* Are there any 1GB pages in the region? */
-+	pud_start = ALIGN(region->start, PUD_SIZE);
-+	pud_end = ALIGN_DOWN(region->start + region->size, PUD_SIZE);
- 
- 	/* No good 1GB huge pages found: */
--	if (!i) {
-+	if (pud_start >= pud_end) {
- 		store_slot_info(region, image_size);
- 		return;
- 	}
- 
--	/*
--	 * Skip those 'i'*1GB good huge pages, and continue checking and
--	 * processing the remaining head or tail part of the passed region
--	 * if available.
--	 */
--
--	if (addr >= region->start + image_size) {
-+	/* Check if the head part of the region is usable. */
-+	if (pud_start >= region->start + image_size) {
- 		tmp.start = region->start;
--		tmp.size = addr - region->start;
-+		tmp.size = pud_start - region->start;
- 		store_slot_info(&tmp, image_size);
- 	}
- 
--	size  = region->size - (addr - region->start) - i * PUD_SIZE;
--	if (size >= image_size) {
--		tmp.start = addr + i * PUD_SIZE;
--		tmp.size = size;
-+	/* Skip the good 1GB pages. */
-+	gb_huge_pages = (pud_end - pud_start) >> PUD_SHIFT;
-+	if (gb_huge_pages > max_gb_huge_pages) {
-+		pud_end = pud_start + (max_gb_huge_pages << PUD_SHIFT);
-+		max_gb_huge_pages = 0;
-+	} else
-+		max_gb_huge_pages -= gb_huge_pages;
-+
-+	/* Check if the tail part of the region is usable. */
-+	if (region->start + region->size >= pud_end + image_size) {
-+		tmp.start = pud_end;
-+		tmp.size = region->start + region->size - pud_end;
- 		store_slot_info(&tmp, image_size);
- 	}
- }
+ 	len = strlen(args);
+ 	tmp_cmdline = malloc(len + 1);
+ 	if (!tmp_cmdline)
 -- 
 2.26.2
 
