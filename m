@@ -2,54 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BA5231245
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBED7231248
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732651AbgG1TPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:15:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732631AbgG1TP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:15:28 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EC99C2065C;
-        Tue, 28 Jul 2020 19:15:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595963728;
-        bh=Qd59wd3izmmkxlJvLgZuIyOO6hBZW915rmrytim7/ms=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=dRlhxuGafyckGjq+tLKrbmQN4gTbtBZJygDY4sJJNi8TllUwi1qfodRS5NQ91S1ff
-         8+RF3F9bF8lRvEe7cg5yzijPV9vnW4v73MXEXVKYn+yNivLocm1iFN7F0nObrffWJX
-         kqp+UvTlKoTkHW2+msPAGlLTEVBKUVH91yenF/LY=
-Content-Type: text/plain; charset="utf-8"
+        id S1732657AbgG1TQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:16:24 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:42493 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732601AbgG1TQY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:16:24 -0400
+Received: by mail-il1-f196.google.com with SMTP id i138so11278575ild.9;
+        Tue, 28 Jul 2020 12:16:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0H+b6zQt0ezS7kYwcQh9hJueRgaTbGNjTiuGLpXHZrQ=;
+        b=bGSwrrZ2wfHXtcV6fzWkn7RYngI1vN0SEtzKJEu4E8vaxmNG95wJLuWCWoiSucAAJC
+         vvkCWAu/4847kf4WGWrT5dYB7kTj6nz9nvTrgkM0zDhjLVVhpeZf5Jk0sLoDPHI3xNcX
+         jUUuzoTzxlv0RkQX898UgB/oCrnLa5s7pL5IdYpNTnoo7d4Z+RqVzZ60mnwY0vSP9jD2
+         FBTzX5CCw2ELhOFC2Nk65KDvn8oUg6tpQ+cjxN77wyjfLe2C2+nj1VgZZbKJ3Kgtwbuc
+         V+8DZCNVFX1NdEeIWDZB8Wd+hgFeZa9qk7HccTd+PDk4xu6ThpBDQwbAQlZn0Mjeu/Gm
+         xwfw==
+X-Gm-Message-State: AOAM53334sSnI4qWfmpSbpUATNmlOPY1S7iIwRMfUdulQb/yk7/4B15M
+        BUDKECDg03Ez+wA5VjhGhw==
+X-Google-Smtp-Source: ABdhPJwZSntLXAv+6Q+F7NQjzwUH5eUUeDRgDMukHAUHZqv/Km+dTvTfswJnQ7vDvyJlvzlS43odlA==
+X-Received: by 2002:a92:b6d4:: with SMTP id m81mr24095574ill.72.1595963783056;
+        Tue, 28 Jul 2020 12:16:23 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id t18sm6185560ild.52.2020.07.28.12.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 12:16:22 -0700 (PDT)
+Received: (nullmailer pid 2780627 invoked by uid 1000);
+        Tue, 28 Jul 2020 19:16:20 -0000
+Date:   Tue, 28 Jul 2020 13:16:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org, arnd@arndb.de
+Subject: Re: [PATCH v2 1/9] dt-bindings: arm: mstar: Add binding details for
+ mstar, pmsleep
+Message-ID: <20200728191620.GA2778962@bogus>
+References: <20200728100321.1691745-1-daniel@0x0f.com>
+ <20200728100321.1691745-2-daniel@0x0f.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1595926999-14934-2-git-send-email-peng.fan@nxp.com>
-References: <1595926999-14934-1-git-send-email-peng.fan@nxp.com> <1595926999-14934-2-git-send-email-peng.fan@nxp.com>
-Subject: Re: [PATCH v2 2/2] clk: imx: imx8m: use devm_of_clk_add_hw_provider()
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Anson.Huang@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-To:     abel.vesa@nxp.com, festevam@gmail.com, peng.fan@nxp.com,
-        s.hauer@pengutronix.de, shawnguo@kernel.org
-Date:   Tue, 28 Jul 2020 12:15:26 -0700
-Message-ID: <159596372694.1360974.17715148016737584628@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728100321.1691745-2-daniel@0x0f.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting peng.fan@nxp.com (2020-07-28 02:03:19)
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Use devm_of_clk_add_hw_provider() to simplify code.
-> To i.MX8MP, also add err handling.
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+On Tue, 28 Jul 2020 19:03:13 +0900, Daniel Palmer wrote:
+> This adds a YAML description of the pmsleep node used by
+> MStar/SigmaStar Armv7 SoCs.
+> 
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 > ---
+>  .../bindings/arm/mstar/mstar,pmsleep.yaml     | 43 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.yaml
+> 
 
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+Error: Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.example.dts:21.23-24 syntax error
+FATAL ERROR: Unable to parse input tree
+scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.example.dt.yaml' failed
+make[1]: *** [Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Makefile:1347: recipe for target 'dt_binding_check' failed
+make: *** [dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1337730
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
+
