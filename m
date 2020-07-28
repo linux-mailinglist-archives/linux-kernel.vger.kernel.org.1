@@ -2,107 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977BC230655
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F1423066B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728175AbgG1JTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
+        id S1728492AbgG1JUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728021AbgG1JTS (ORCPT
+        with ESMTP id S1728260AbgG1JUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:19:18 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45539C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:19:18 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x9so9581549plr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:19:18 -0700 (PDT)
+        Tue, 28 Jul 2020 05:20:20 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3F4C0619D4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:20:20 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b6so17546335wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:20:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bbjbm60d3lgEusGHdreE/mybmZQ1ctrCeEtW3kkMm5Q=;
-        b=E2IFz/icPPAcKC5tD4Wn/GI4mg4xDiqI6tGO2TqyU+W+AfbBJ8j0N7rCLySY1XNUOj
-         +A6LX/DWyFbhYZabZFV17rTHMO1VliWMyzT0htZNI9JzR+jGelBk3r/tBEaE3RPsa/iJ
-         fPpbdLlbvVwna8Osx8Gv4N70yFOtSRPg+rVvk=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=beBH51PBvrNiVY21fyB1FDMkBD4/1CfVqZsExUAdGms=;
+        b=AUZBUOCz+C3rUbC09PBQb07wRcuG+Z5atNFGMx6frCJ20iuSZPlI4T6fknCpq3V/8J
+         ojiJjQXoLXIm3nkm0LEBfBv4OXrf6lLG5QUbLRzA1+ixupmRCG4MzcvFiTqizHNPbH0/
+         XzZPxU1YUQ+SgMlRBsA9NL/4k859nPxCoBO9wQkfPvgYBC6dcegsVSQ0fwQnFb4QzrYu
+         42VuVYpxQicy5tc5KWqBaCx7kbfyxq98OarVugo1rGHxL3+GnsB9B7O188y2FlBsK/iu
+         vL/PJFJmQe8WxNKsi7xYRRKw4KqAxMCJXsa9lwAaHXh2uJACBdEFn16gde0U6hWIzf4p
+         1RCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bbjbm60d3lgEusGHdreE/mybmZQ1ctrCeEtW3kkMm5Q=;
-        b=quu8uEdBC1Fh3f94mOGK8kSIi2B1L7rWlnxUMp8OMY/I/EDJZ6CLzKoCjQbbo5pQFo
-         uwwL+HLVnr94vRYQe6HnV30dgfdnYP8fZkHS/Skl2ZwBTEKmL4l08TBVj2gME1Pb+znK
-         +DVKc3m3Qn15mvPtqWRKdZfTCI41HsRHIl/C2XTec/ekN5YEIOZBHNvGs66aF45mqi2j
-         CJZe8HeE1iWPXyEGSnb2M5sQnioECoNNSAb2vjdcB+wh4pN+SCKLS/LX8X7okGbjTHLP
-         3K3kW9RfbotBEkG7EMp7hb8TEJvXIEPgfXK7pdCnCJefuxKY2fR99OZmXefOCrK0IAK7
-         89YQ==
-X-Gm-Message-State: AOAM5312xzyu9ZomHwahfkQibRlVTb5qElGsU0FcWxcdopVgpmZxsFAS
-        JQS+KpMl6z/M1N4fUYY9MAzPtg==
-X-Google-Smtp-Source: ABdhPJwbKmDSwfmq5puJq+56F/f7rteApOYLPBmeFCDgJMzNodihvryKO+ULdoI1pzUJdNcR9KtsvQ==
-X-Received: by 2002:a17:902:a416:: with SMTP id p22mr22040033plq.341.1595927957746;
-        Tue, 28 Jul 2020 02:19:17 -0700 (PDT)
-Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id q5sm15339258pgv.1.2020.07.28.02.19.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=beBH51PBvrNiVY21fyB1FDMkBD4/1CfVqZsExUAdGms=;
+        b=repsiD8kp4u+jrGoDphgj9QM9l9duApXXTwWEugc1h9GU4q1RBdLkT64BdpJ77CoHJ
+         I95Q9pQ4Q42tKi+fXJoabQ0MGyqrDdahCAKGBkXV25GsKOYZb9/1jt/QByzaBYbuyUCZ
+         cTKmHlvzXztU0dbCFWsL0rxpADTFV5A9wUyNjyLSYPTYcOVUCnAMOToPWYJOfCzbxzcu
+         KQgKJcDK6i7Hf2e/MhueIgmDG750LGglzGWU5mumUNrU0CBxYp8hes3UOW42RSB9dnCB
+         OvUhL/pGGLPNytcrkN3UcHFQT4iVuWh6YOnnyYJwbVZlwpDgZBcdpez0FG1vOZuwiUG+
+         ry/w==
+X-Gm-Message-State: AOAM5332UiZSoQzXeUSCO3Byj0MjqexvUhp/Y7DX7LZ/NcpsIGywzZEM
+        520OmeowO7oBBnC00Jh+6Maa0w==
+X-Google-Smtp-Source: ABdhPJwnXEtbFH1jcD4yCv++hVxdGTxMKRMWQHHEoQcyflVcKHgUz+6JPotbQr2eHetriRLig3jKsA==
+X-Received: by 2002:adf:e94a:: with SMTP id m10mr12079678wrn.249.1595928019115;
+        Tue, 28 Jul 2020 02:20:19 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id t141sm3376553wmt.26.2020.07.28.02.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 02:19:17 -0700 (PDT)
-From:   Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org (open list:VOLTAGE AND CURRENT REGULATOR
-        FRAMEWORK)
-Subject: [PATCH] regulator: cros-ec-regulator: Fix double free of desc->name.
-Date:   Tue, 28 Jul 2020 17:19:09 +0800
-Message-Id: <20200728091909.2009771-1-pihsun@chromium.org>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+        Tue, 28 Jul 2020 02:20:18 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 10:20:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 02/13] dt-bindings: mfd: Add bindings for sl28cpld
+Message-ID: <20200728092016.GE2419169@dell>
+References: <20200725231834.25642-1-michael@walle.cc>
+ <20200725231834.25642-3-michael@walle.cc>
+ <20200728072422.GF1850026@dell>
+ <1065b0107ce6fd88b2bdd704bf45346b@walle.cc>
+ <20200728082707.GB2419169@dell>
+ <a47993ca4c77ab1ee92f6693debb3c87@walle.cc>
+ <20200728085616.GD2419169@dell>
+ <2fd3b880e36aa65e880b801092b51945@walle.cc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <2fd3b880e36aa65e880b801092b51945@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The desc->name field is allocated with devm_kstrdup, but is also kfreed
-on the error path, causing it to be double freed. Remove the kfree on
-the error path.
+On Tue, 28 Jul 2020, Michael Walle wrote:
 
-Fixes: 8d9f8d57e023 ("regulator: Add driver for cros-ec-regulator")
-Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
----
- drivers/regulator/cros-ec-regulator.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+> Am 2020-07-28 10:56, schrieb Lee Jones:
+> > > > > > > +$id: http://devicetree.org/schemas/mfd/kontron,sl28cpld.yaml#
+> > > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > > +
+> > > > > > > +title: Kontron's sl28cpld board management controller
+> > > > > >
+> > > > > > "S128CPLD" ?
+> > > > >
+> > > > > still not, its sl28cpld, think of a project/code name, not the product
+> > > > > appended with CPLD.
+> > > > >
+> > > > > > "Board Management Controller (BMC)" ?
+> > > > >
+> > > > > sounds like IPMI, which I wanted to avoid.
+> > > >
+> > > > Is there a datasheet?
+> > > 
+> > > No there isn't.
+> > 
+> > Then what are you working from?
+> 
+> Ok, there is no public datasheet. If that wasn't clear before, I'm working
+> for that company that also implemented that CPLD.
 
-diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
-index 35f97246bc48..cee259eb0213 100644
---- a/drivers/regulator/cros-ec-regulator.c
-+++ b/drivers/regulator/cros-ec-regulator.c
-@@ -222,18 +222,13 @@ static int cros_ec_regulator_probe(struct platform_device *pdev)
- 
- 	drvdata->dev = devm_regulator_register(dev, &drvdata->desc, &cfg);
- 	if (IS_ERR(drvdata->dev)) {
--		ret = PTR_ERR(drvdata->dev);
- 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
--		goto free_name;
-+		return PTR_ERR(drvdata->dev);
- 	}
- 
- 	platform_set_drvdata(pdev, drvdata);
- 
- 	return 0;
--
--free_name:
--	kfree(desc->name);
--	return ret;
- }
- 
- static const struct of_device_id regulator_cros_ec_of_match[] = {
+No, that wasn't clear.  You said there was no datasheet.
 
-base-commit: 8d9f8d57e023893bfa708d83e3a787e77766a378
+> > > > > > > +maintainers:
+> > > > > > > +  - Michael Walle <michael@walle.cc>
+> > > > > > > +
+> > > > > > > +description: |
+> > > > > > > +  The board management controller may contain different IP blocks
+> > > > > > > like
+> > > > > > > +  watchdog, fan monitoring, PWM controller, interrupt controller
+> > > > > > > and a
+> > > > > > > +  GPIO controller.
+> > > > > > > +
+> > > > > > > +properties:
+> > > > > > > +  compatible:
+> > > > > > > +    const: kontron,sl28cpld-r1
+> > > > > >
+> > > > > > We don't usually code revision numbers in compatible strings.
+> > > > > >
+> > > > > > Is there any way to pull this from the H/W?
+> > > > >
+> > > > > No, unfortunately you can't. And I really want to keep that, in case
+> > > > > in the future there are some backwards incompatible changes.
+> > > >
+> > > > Rob,
+> > > >
+> > > > I know you reviewed this already, but you can give your opinion on
+> > > > this specifically please?  I know that we have pushed back on this in
+> > > > the past.
+> > > 
+> > > Oh, come one. That is an arbitrary string. "sl28cpld-r1" is the first
+> > > implementation of this. A future "sl28cpld-r2" might look completely
+> > > different and might not suite the simple MFD at all. "sl28cpld" is
+> > > a made up name - as "sl28cpld-r1" is, too.
+> > 
+> > Well that sounds bogus for a start.  I guess that's one of the
+> > problems with trying to support programmable H/W in S/W.
+> 
+> What sounds bogus? That we name the implementation sl28cpld?
+> How is that different to like adt7411? Its just a name made up by
+> the vendor. So if there is a new version of the adt7411 the vendor 
+> might name it adt7412.
+
+Using an arbitrary string as a compatible would be bogus.
+
+So here 'sl28cpld' is the device name, so it's not actually
+arbitrary.  That's a good start.
+
+> We name it sl28cpld-r2. So what is the problem here?
+
+Do you though?  So 'sl28cpld-r1' is the name of the device?  The name
+that is quoted from the (private) datasheet?  Because looking at the
+implementation and going by the conversation, it sounds as though
+you-re only adding the '-r1' piece to the compatible string for
+revision identification.  Which if true, is not usually allowed and
+warrants intervention by Rob.
+
 -- 
-2.28.0.rc0.142.g3c755180ce-goog
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
