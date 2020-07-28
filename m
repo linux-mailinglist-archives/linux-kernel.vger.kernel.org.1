@@ -2,137 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42964230777
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9035C230756
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728723AbgG1KQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:16:24 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:42811 "EHLO mailout08.rmx.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728463AbgG1KQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:16:23 -0400
-Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4BGCJ33CGdzMp4W;
-        Tue, 28 Jul 2020 12:16:19 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin02.retarus.com (Postfix) with ESMTPS id 4BGCHf5Pxyz2TRjk;
-        Tue, 28 Jul 2020 12:15:58 +0200 (CEST)
-Received: from N95HX1G2.wgnetz.xx (192.168.54.116) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 28 Jul
- 2020 12:08:44 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Mark Brown <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Christian Eggers" <ceggers@arri.de>, <stable@vger.kernel.org>
-Subject: [PATCH] spi: spidev: Align buffers for DMA
-Date:   Tue, 28 Jul 2020 12:08:32 +0200
-Message-ID: <20200728100832.24788-1-ceggers@arri.de>
-X-Mailer: git-send-email 2.26.2
+        id S1728684AbgG1KIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728496AbgG1KIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:08:53 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B654C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:08:53 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id d6so6221029ejr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries-io.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=em1KZWijnQIs6/lYjcU+FHv7CE2sWjgWXPkYXcVOh7I=;
+        b=l4f9ayPrmfdWurLQht4J7s1wrpk6U3aK4h2ISGhyQLofoDzOprfvGnG2D3G9VZ3Hlb
+         LsOnG0uBqq9Uef33oxiFbZxnwoT24Dx84NmtUc6XIePdlPDT+BBUveGE3787uZslk5jN
+         MNo0a3ByPzk2jdEAr8liVKIjS/dH2DLHaFSHnCDAKFCU9gqLSqLz+RoCO+WyLnXXWwwz
+         /405eyZ4TvF7DaskhWjStN8Dbcj4vdW5g0WnSeL3KejjZ1HBm6xZmDM59C+teXuHllL2
+         hvoWfP7PDaIhKW3pgMdrzzS7aMJaOBe9WL/pBwX+6xUowqaDCiD5fdPPO7i3nh0wIrCH
+         xyHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=em1KZWijnQIs6/lYjcU+FHv7CE2sWjgWXPkYXcVOh7I=;
+        b=lAh4/zuHTDg5SZCH5td4RENbIenApnnmJ3fkC5sVBsudcv6kKHztp7cJDHy76ULq4x
+         LMOTO4376eTvlwXc24a1aS48igRmWRsWQyBP7rmBR/zTWVZAgwNjelZRHamCbkga0MAN
+         pT+92kF72P+N/gfWks+FChTZwZ/hnmJvGihgmWsaqI8o2F4H6mKgu5u59+IR8olqnMlY
+         zzwvOPMSgmkGfkjWYLhhDGuLWXLas0xdxFlrkDWHS16Y98hJEWKK8XxC0kYwjP+8wskp
+         W8AuSA6h3/Ae25om/56AVz3epyJA6aDAlxBXaC5JRNveP4YfQamZrSlKmNObQlZCQfNi
+         XcOA==
+X-Gm-Message-State: AOAM530QzeHdDJ4sEW3rkDBR6mXaaWH9Jf7QiN4T1gCjhRpZv5G/kRpI
+        +AsafvZ0VLqWk+2aGefpVWQs0VNSQ5g=
+X-Google-Smtp-Source: ABdhPJxgTk91RIzHh8s7Y3BqeIvXINzjt5kCV+TQocLkXAKBXoQq3hKxexSx4PPQsI37GwhcBitLmg==
+X-Received: by 2002:adf:a19e:: with SMTP id u30mr23917339wru.274.1595930931163;
+        Tue, 28 Jul 2020 03:08:51 -0700 (PDT)
+Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
+        by smtp.gmail.com with ESMTPSA id p15sm15507909wrj.61.2020.07.28.03.08.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 28 Jul 2020 03:08:50 -0700 (PDT)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Tue, 28 Jul 2020 12:08:49 +0200
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     jens.wiklander@linaro.org, sumit.garg@linaro.org,
+        ricardo@foundries.io, mike@foundries.io, tee-dev@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv6] drivers: optee: allow op-tee to access devices on the
+ i2c bus
+Message-ID: <20200728100849.GA2365@trex>
+References: <20200722212105.1798-1-jorge@foundries.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.54.116]
-X-RMX-ID: 20200728-121558-4BGCHf5Pxyz2TRjk-0@kdin02
-X-RMX-SOURCE: 217.111.95.66
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722212105.1798-1-jorge@foundries.io>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simply copying all xfers from userspace into one bounce buffer causes
-alignment problems if the SPI controller uses DMA.
+On 22/07/20, Jorge Ramirez-Ortiz wrote:
+> Some secure elements like NXP's SE050 sit on I2C buses. For OP-TEE to
+> control this type of cryptographic devices it needs coordinated access
+> to the bus, so collisions and RUNTIME_PM dont get in the way.
+> 
+> This trampoline driver allow OP-TEE to access them.
+> Tested on imx8mm LPDDR4
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> ---
+>  v6: compile out if CONFIG_I2C not enabled
+>  v5: alphabetic order of includes
+>  v4: remove unnecessary extra line in optee_msg.h
+>  v3: use from/to msg param to support all types of memory
+>      modify OPTEE_MSG_RPC_CMD_I2C_TRANSFER message id
+>      
+>  drivers/tee/optee/optee_msg.h | 16 +++++++
+>  drivers/tee/optee/rpc.c       | 88 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 104 insertions(+)
+> 
+> diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+> index 795bc19ae17a..14b580f55356 100644
+> --- a/drivers/tee/optee/optee_msg.h
+> +++ b/drivers/tee/optee/optee_msg.h
+> @@ -419,4 +419,20 @@ struct optee_msg_arg {
+>   */
+>  #define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+>  
+> +/*
+> + * Access a device on an i2c bus
+> + *
+> + * [in]  param[0].u.value.a		mode: RD(0), WR(1)
+> + * [in]  param[0].u.value.b		i2c adapter
+> + * [in]  param[0].u.value.c		i2c chip
+> + *
+> + * [in/out] memref[1]			buffer to exchange the transfer data
+> + *					with the secure world
+> + *
+> + * [out]  param[0].u.value.a		bytes transferred by the driver
+> + */
+> +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER 21
+> +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD 0
+> +#define OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR 1
+> +
+>  #endif /* _OPTEE_MSG_H */
+> diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+> index b4ade54d1f28..5fd5c6c93896 100644
+> --- a/drivers/tee/optee/rpc.c
+> +++ b/drivers/tee/optee/rpc.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/delay.h>
+>  #include <linux/device.h>
+> +#include <linux/i2c.h>
+>  #include <linux/slab.h>
+>  #include <linux/tee_drv.h>
+>  #include "optee_private.h"
+> @@ -49,6 +50,90 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
+>  	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_I2C)
+> +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> +					     struct optee_msg_arg *arg)
+> +{
+> +	struct i2c_client client;
+> +	struct tee_param *params;
+> +	uint32_t type;
+> +	int i, ret;
+> +	size_t len;
+> +	char *buf;
+> +	uint32_t attr[] = {
+> +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT,
+> +		TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT,
+> +		TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT,
+> +	};
+> +
+> +	if (arg->num_params != ARRAY_SIZE(attr)) {
+> +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +		return;
+> +	}
+> +
+> +	params = kmalloc_array(arg->num_params, sizeof(struct tee_param),
+> +			       GFP_KERNEL);
+> +	if (!params) {
+> +		arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+> +		return;
+> +	}
+> +
+> +	if (optee_from_msg_param(params, arg->num_params, arg->params))
+> +		goto bad;
+> +
+> +	for (i = 0; i < arg->num_params; i++) {
+> +		type = params[i].attr & TEE_IOCTL_PARAM_ATTR_TYPE_MASK;
+> +		if (type != attr[i])
+> +			goto bad;
+> +	}
+> +
+> +	client.addr = params[0].u.value.c;
+> +	client.adapter = i2c_get_adapter(params[0].u.value.b);
+> +	if (!client.adapter)
+> +		goto bad;
+> +
+> +	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
+> +
+> +	buf = params[1].u.memref.shm->kaddr;
+> +	len = params[1].u.memref.size;
+> +
+> +	switch (params[0].u.value.a) {
+> +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
+> +		ret = i2c_master_recv(&client, buf, len);
+> +		break;
+> +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
+> +		ret = i2c_master_send(&client, buf, len);
+> +		break;
+> +	default:
+> +		i2c_put_adapter(client.adapter);
+> +		goto bad;
+> +	}
+> +
+> +	if (ret >= 0) {
+> +		params[2].u.value.a = ret;
+> +		arg->ret = TEEC_SUCCESS;
+> +	} else {
+> +		arg->ret = TEEC_ERROR_COMMUNICATION;
+> +	}
+> +
+> +	if (optee_to_msg_param(arg->params, arg->num_params, params))
+> +		arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +
+> +	i2c_put_adapter(client.adapter);
+> +	kfree(params);
+> +	return;
+> +bad:
+> +	kfree(params);
+> +	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +}
+> +#else
+> +static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
+> +					     struct optee_msg_arg *arg)
+> +{
+> +	arg->ret = TEEC_ERROR_COMMUNICATION;
+> +}
+> +#endif
+> +
+>  static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
+>  {
+>  	struct wq_entry *w;
+> @@ -382,6 +467,9 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
+>  	case OPTEE_MSG_RPC_CMD_SHM_FREE:
+>  		handle_rpc_func_cmd_shm_free(ctx, arg);
+>  		break;
+> +	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
+> +		handle_rpc_func_cmd_i2c_transfer(ctx, arg);
+> +		break;
+>  	default:
+>  		handle_rpc_supp_cmd(ctx, arg);
+>  	}
 
-Ensure that all transfer data blocks within the rx and tx bounce buffers
-are aligned for DMA (according to ARCH_KMALLOC_MINALIGN).
+any comments to this feature?
 
-Alignment may increase the usage of the bounce buffers. In some cases,
-the buffers may need to be increased using the "bufsiz" module
-parameter.
-
-Signed-off-by: Christian Eggers <ceggers@arri.de>
-Cc: stable@vger.kernel.org
----
- drivers/spi/spidev.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 59e07675ef86..455e99c4958e 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -224,6 +224,11 @@ static int spidev_message(struct spidev_data *spidev,
- 	for (n = n_xfers, k_tmp = k_xfers, u_tmp = u_xfers;
- 			n;
- 			n--, k_tmp++, u_tmp++) {
-+		/* Ensure that also following allocations from rx_buf/tx_buf will meet
-+		 * DMA alignment requirements.
-+		 */
-+		unsigned int len_aligned = ALIGN(u_tmp->len, ARCH_KMALLOC_MINALIGN);
-+
- 		k_tmp->len = u_tmp->len;
- 
- 		total += k_tmp->len;
-@@ -239,17 +244,17 @@ static int spidev_message(struct spidev_data *spidev,
- 
- 		if (u_tmp->rx_buf) {
- 			/* this transfer needs space in RX bounce buffer */
--			rx_total += k_tmp->len;
-+			rx_total += len_aligned;
- 			if (rx_total > bufsiz) {
- 				status = -EMSGSIZE;
- 				goto done;
- 			}
- 			k_tmp->rx_buf = rx_buf;
--			rx_buf += k_tmp->len;
-+			rx_buf += len_aligned;
- 		}
- 		if (u_tmp->tx_buf) {
- 			/* this transfer needs space in TX bounce buffer */
--			tx_total += k_tmp->len;
-+			tx_total += len_aligned;
- 			if (tx_total > bufsiz) {
- 				status = -EMSGSIZE;
- 				goto done;
-@@ -259,7 +264,7 @@ static int spidev_message(struct spidev_data *spidev,
- 						(uintptr_t) u_tmp->tx_buf,
- 					u_tmp->len))
- 				goto done;
--			tx_buf += k_tmp->len;
-+			tx_buf += len_aligned;
- 		}
- 
- 		k_tmp->cs_change = !!u_tmp->cs_change;
-@@ -293,16 +298,16 @@ static int spidev_message(struct spidev_data *spidev,
- 		goto done;
- 
- 	/* copy any rx data out of bounce buffer */
--	rx_buf = spidev->rx_buffer;
--	for (n = n_xfers, u_tmp = u_xfers; n; n--, u_tmp++) {
-+	for (n = n_xfers, k_tmp = k_xfers, u_tmp = u_xfers;
-+			n;
-+			n--, k_tmp++, u_tmp++) {
- 		if (u_tmp->rx_buf) {
- 			if (copy_to_user((u8 __user *)
--					(uintptr_t) u_tmp->rx_buf, rx_buf,
-+					(uintptr_t) u_tmp->rx_buf, k_tmp->rx_buf,
- 					u_tmp->len)) {
- 				status = -EFAULT;
- 				goto done;
- 			}
--			rx_buf += u_tmp->len;
- 		}
- 	}
- 	status = total;
--- 
-Christian Eggers
-Embedded software developer
-
-Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRA 57918
-Persoenlich haftender Gesellschafter: Arnold & Richter Cine Technik GmbH
-Sitz: Muenchen - Registergericht: Amtsgericht Muenchen - Handelsregisternummer: HRB 54477
-Geschaeftsfuehrer: Dr. Michael Neuhaeuser; Stephan Schenk; Walter Trauninger; Markus Zeiler
-
+TIA
