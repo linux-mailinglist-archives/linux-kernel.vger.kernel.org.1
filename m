@@ -2,208 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3474230B69
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDFA230B6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbgG1NZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:25:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:50045 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729555AbgG1NZF (ORCPT
+        id S1730136AbgG1NZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729991AbgG1NZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:25:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595942703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mPe2kBPPIADxPOO35iN4ImqsjTLCSyuLAf8YdcjEsaI=;
-        b=XvIojDIPCmlvzXTkoRRTzDL36UASjINYwQRB1+dGy7d7vcpWCXloZP3o6qe3EXlT+eixOP
-        DR8ArjJl8Xo5xWdxYK8cba2O6WOiF1uKV8hlBTJE0lwIIVur9EShVadDuygCa/L/swSyx0
-        4FF69SHwBGMTSUqfZ3nfQCwPxdJDeaQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-gD3mRHsiM5qQNL6HDHZFVQ-1; Tue, 28 Jul 2020 09:25:01 -0400
-X-MC-Unique: gD3mRHsiM5qQNL6HDHZFVQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 312FE1005510;
-        Tue, 28 Jul 2020 13:24:59 +0000 (UTC)
-Received: from localhost (ovpn-12-117.pek2.redhat.com [10.72.12.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 900E27B41F;
-        Tue, 28 Jul 2020 13:24:56 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 21:24:53 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        mhocko@kernel.org, rientjes@google.com, mgorman@suse.de,
-        walken@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Jianchao Guo <guojianchao@bytedance.com>
-Subject: Re: [PATCH v4] mm/hugetlb: add mempolicy check in the reservation
- routine
-Message-ID: <20200728132453.GB14854@MiWiFi-R3L-srv>
-References: <20200728034938.14993-1-songmuchun@bytedance.com>
+        Tue, 28 Jul 2020 09:25:20 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86F6C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:25:19 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id b6so18281703wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BnkqZuh++8Nyz7qDB61TIgg/e9h5HC3HmU88l0fPREc=;
+        b=IkEQ1WD+oaOYJMt5V3vCBqnKqZKVOHp8IcfCmTzu+QgfrApn64nxDuQpGAigx7KDcM
+         LLcdPwmr1jSXVhKAatNz03GzLs/6Vlh39NC/O6LMa3vzgjAobOFGkZUu6uHjRP7JWYCo
+         MCkZ0nbEhKkbR82cTawPX+gM0Pk10AhqCeaKm/m/KXCgWpZh2h2Kej6t/7FaDi+Cm8q/
+         lPZwDiS7RXO/UymIExdM6ThIecB8y8005n0nmGVDr9uXishRVOb3iTtgJ2AD/nyJL9hy
+         XhKOeGQ71pP32Y5y8Q5rEIQdYxSfzCReD1hBJj+xRGf+EPGkpsaDW52Pnq0Lbfr1sNzl
+         lOdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BnkqZuh++8Nyz7qDB61TIgg/e9h5HC3HmU88l0fPREc=;
+        b=kkWxNOjrwtaoV5q0S9yR/HBvbcOe0/UZt5f6HH2pnTtnlOQ/HN9GuxL+Hxcp3c3MT8
+         1CTNhfVbQ+Wl16HzebK5HX0O9LhxZ6M5fKN2ZFehEvaHRlMPVWcAgz/OtrD2uAnP5WYF
+         AfLnP6y3Uzbd3n3RGt8mtA0kwFKr/jeemECQ5Luh2QCkVNuVVVs21vbVbbPNG0bX9NqH
+         smccxcbJm061SmFGfSBdSK0+k8Je9AHl2I5NfpjaAkJH7oX3w52vnxpE2ufaF9ykL3ss
+         fO/O1dR1yLzUvlTK3RCjWMKhjP+28vi1j/8LwfDYabyf4L0EOEWAQF1KYcjdbOrV0RmO
+         QZcw==
+X-Gm-Message-State: AOAM533Z1ILv9jd63qlEtRgBCdXtRgi/drGjxNqjmnb8Zp2FUs67fadE
+        NtGQPeDIHKCh7W23qnS5LSjqqIxD4Gc0GB7qAc+rUQ==
+X-Google-Smtp-Source: ABdhPJzKZMW4yeHYoMhjbyXIdKK5EP7J/ukIUn/pmswXVcXcrqcKNtmYRDkd8iXjV/fJdX3O+1cYpgFt/HQXuTMKnNc=
+X-Received: by 2002:a5d:6681:: with SMTP id l1mr23866783wru.47.1595942718473;
+ Tue, 28 Jul 2020 06:25:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728034938.14993-1-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+ <73684b1e4872a1113f6c3bb5404bc6b4a20f130d.1594230107.git-series.maxime@cerno.tech>
+In-Reply-To: <73684b1e4872a1113f6c3bb5404bc6b4a20f130d.1594230107.git-series.maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 28 Jul 2020 14:25:02 +0100
+Message-ID: <CAPY8ntAtRJYRi6mG19zQEWLjbnVKaQKvTZcP8EB+-csOeSz6rg@mail.gmail.com>
+Subject: Re: [PATCH v4 59/78] drm/vc4: hdmi: Add CEC support flag
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Muchun,
+Hi Maxime
 
-On 07/28/20 at 11:49am, Muchun Song wrote:
-> In the reservation routine, we only check whether the cpuset meets
-> the memory allocation requirements. But we ignore the mempolicy of
-> MPOL_BIND case. If someone mmap hugetlb succeeds, but the subsequent
-> memory allocation may fail due to mempolicy restrictions and receives
-> the SIGBUS signal. This can be reproduced by the follow steps.
-> 
->  1) Compile the test case.
->     cd tools/testing/selftests/vm/
->     gcc map_hugetlb.c -o map_hugetlb
-> 
->  2) Pre-allocate huge pages. Suppose there are 2 numa nodes in the
->     system. Each node will pre-allocate one huge page.
->     echo 2 > /proc/sys/vm/nr_hugepages
-> 
->  3) Run test case(mmap 4MB). We receive the SIGBUS signal.
->     numactl --membind=0 ./map_hugetlb 4
+On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Similarly to the audio support, CEC support is not there yet for the
+> BCM2711, so let's skip entirely the CEC initialization through a variant
+> flag.
 
-I think supporting the  mempolicy of MPOL_BIND case is a good idea.
-I am wondering what about the other mempolicy cases, e.g MPOL_INTERLEAVE,
-MPOL_PREFERRED. Asking these because we already have similar handling in
-sysfs, proc nr_hugepages_mempolicy writting. Please see
-__nr_hugepages_store_common() for detail.
+CEC is sorted now, but it's easier & cleaner to keep this patch and
+add a new patchset that enables CEC at a later date.
 
-Thanks
-Baoquan
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-> 
-> With this patch applied, the mmap will fail in the step 3) and throw
-> "mmap: Cannot allocate memory".
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reported-by: Jianchao Guo <guojianchao@bytedance.com>
-> Suggested-by: Michal Hocko <mhocko@kernel.org>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+
 > ---
-> changelog in v4:
->  1) Fix compilation errors with !CONFIG_NUMA.
-> 
-> changelog in v3:
->  1) Do not allocate nodemask on the stack.
->  2) Update comment.
-> 
-> changelog in v2:
->  1) Reuse policy_nodemask().
-> 
->  include/linux/mempolicy.h | 14 ++++++++++++++
->  mm/hugetlb.c              | 22 ++++++++++++++++++----
->  mm/mempolicy.c            |  2 +-
->  3 files changed, 33 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-> index ea9c15b60a96..0656ece1ccf1 100644
-> --- a/include/linux/mempolicy.h
-> +++ b/include/linux/mempolicy.h
-> @@ -152,6 +152,15 @@ extern int huge_node(struct vm_area_struct *vma,
->  extern bool init_nodemask_of_mempolicy(nodemask_t *mask);
->  extern bool mempolicy_nodemask_intersects(struct task_struct *tsk,
->  				const nodemask_t *mask);
-> +extern nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy);
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 4 ++++
+>  drivers/gpu/drm/vc4/vc4_hdmi.h | 3 +++
+>  2 files changed, 7 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 8cd08b541c14..86e21de6c578 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1179,6 +1179,9 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+>         u32 value;
+>         int ret;
+>
+> +       if (!vc4_hdmi->variant->cec_available)
+> +               return 0;
 > +
-> +static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
-> +{
-> +	struct mempolicy *mpol = get_task_policy(current);
+>         vc4_hdmi->cec_adap = cec_allocate_adapter(&vc4_hdmi_cec_adap_ops,
+>                                                   vc4_hdmi, "vc4",
+>                                                   CEC_CAP_DEFAULTS |
+> @@ -1477,6 +1480,7 @@ static int vc4_hdmi_dev_remove(struct platform_device *pdev)
+>  static const struct vc4_hdmi_variant bcm2835_variant = {
+>         .encoder_type           = VC4_ENCODER_TYPE_HDMI0,
+>         .debugfs_name           = "hdmi_regs",
+> +       .cec_available          = true,
+>         .registers              = vc4_hdmi_fields,
+>         .num_registers          = ARRAY_SIZE(vc4_hdmi_fields),
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 794216f3228d..3f07aebe89f1 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -33,6 +33,9 @@ struct vc4_hdmi_variant {
+>         /* Filename to expose the registers in debugfs */
+>         const char *debugfs_name;
+>
+> +       /* Set to true when the CEC support is available */
+> +       bool cec_available;
 > +
-> +	return policy_nodemask(gfp, mpol);
-> +}
-> +
->  extern unsigned int mempolicy_slab_node(void);
->  
->  extern enum zone_type policy_zone;
-> @@ -281,5 +290,10 @@ static inline int mpol_misplaced(struct page *page, struct vm_area_struct *vma,
->  static inline void mpol_put_task_policy(struct task_struct *task)
->  {
->  }
-> +
-> +static inline nodemask_t *policy_nodemask_current(gfp_t gfp)
-> +{
-> +	return NULL;
-> +}
->  #endif /* CONFIG_NUMA */
->  #endif
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 589c330df4db..a34458f6a475 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -3463,13 +3463,21 @@ static int __init default_hugepagesz_setup(char *s)
->  }
->  __setup("default_hugepagesz=", default_hugepagesz_setup);
->  
-> -static unsigned int cpuset_mems_nr(unsigned int *array)
-> +static unsigned int allowed_mems_nr(struct hstate *h)
->  {
->  	int node;
->  	unsigned int nr = 0;
-> +	nodemask_t *mpol_allowed;
-> +	unsigned int *array = h->free_huge_pages_node;
-> +	gfp_t gfp_mask = htlb_alloc_mask(h);
-> +
-> +	mpol_allowed = policy_nodemask_current(gfp_mask);
->  
-> -	for_each_node_mask(node, cpuset_current_mems_allowed)
-> -		nr += array[node];
-> +	for_each_node_mask(node, cpuset_current_mems_allowed) {
-> +		if (!mpol_allowed ||
-> +		    (mpol_allowed && node_isset(node, *mpol_allowed)))
-> +			nr += array[node];
-> +	}
->  
->  	return nr;
->  }
-> @@ -3648,12 +3656,18 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
->  	 * we fall back to check against current free page availability as
->  	 * a best attempt and hopefully to minimize the impact of changing
->  	 * semantics that cpuset has.
-> +	 *
-> +	 * Apart from cpuset, we also have memory policy mechanism that
-> +	 * also determines from which node the kernel will allocate memory
-> +	 * in a NUMA system. So similar to cpuset, we also should consider
-> +	 * the memory policy of the current task. Similar to the description
-> +	 * above.
->  	 */
->  	if (delta > 0) {
->  		if (gather_surplus_pages(h, delta) < 0)
->  			goto out;
->  
-> -		if (delta > cpuset_mems_nr(h->free_huge_pages_node)) {
-> +		if (delta > allowed_mems_nr(h)) {
->  			return_unused_surplus_pages(h, delta);
->  			goto out;
->  		}
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 93fcfc1f2fa2..fce14c3f4f38 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -1873,7 +1873,7 @@ static int apply_policy_zone(struct mempolicy *policy, enum zone_type zone)
->   * Return a nodemask representing a mempolicy for filtering nodes for
->   * page allocation
->   */
-> -static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
-> +nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *policy)
->  {
->  	/* Lower zones don't get a nodemask applied for MPOL_BIND */
->  	if (unlikely(policy->mode == MPOL_BIND) &&
-> -- 
-> 2.11.0
-> 
-> 
-
+>         /* List of the registers available on that variant */
+>         const struct vc4_hdmi_register *registers;
+>
+> --
+> git-series 0.9.1
