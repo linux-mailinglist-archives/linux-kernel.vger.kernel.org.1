@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D6C22315D3
+	by mail.lfdr.de (Postfix) with ESMTP id B96822315D4
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbgG1W5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:57:42 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45945 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729944AbgG1W5b (ORCPT
+        id S1730123AbgG1W5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:57:45 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:36443 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729948AbgG1W5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:57:31 -0400
-Received: by mail-qk1-f195.google.com with SMTP id u64so20414227qka.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:30 -0700 (PDT)
+        Tue, 28 Jul 2020 18:57:32 -0400
+Received: by mail-qt1-f195.google.com with SMTP id t23so13116118qto.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WjLPXpYPdYtXDDTE3El4LanUu/hXqncSApiFUMGDGnw=;
-        b=HXzTvstUzRvwe0JH3sO2ZfoIBlIO6XzyGQwXjkgUwCvYtz4l5NGOVMzHKX//m5zh5c
-         X0G5ThFgoanIxwAWEnt+k5e1HsjIOiEMSDp693JjIUliJn9JEdis4xYpIFd7aDkkGE9R
-         124qj2TNB/TWOQj33hh+fvdusga/iq3mWmVyoTwnQSYK5tog6nqfP/9gvVf/EdwJjj4u
-         Fze19gJQjKbDXaTqPQY7VoaGakTqvwt1onUQJR9uHKaHkw5b1QM7sJXcrZYATSklG6xM
-         cUVa70gdq8wibQioV/e4zjwYbZ6mLwJz5JXElHZenfyg/86t77sM7i0g8WjsJqBx+aON
-         NSUA==
-X-Gm-Message-State: AOAM530cVlUzcq/chi4F3XNh75MZQBsxU2DSpR0s9E/JAZDHASxsQD+J
-        bUVn5ERXYSIP3nLrTaAbMM8=
-X-Google-Smtp-Source: ABdhPJwa79pX3uJWhG+NAeME7TFagqmiAu1TAkdmKnHpXWSgrk1KmA1nHEHwaN48BHbaYoKOEqL4wA==
-X-Received: by 2002:ae9:ef01:: with SMTP id d1mr29281552qkg.64.1595977050013;
+        bh=frlZNzKjxBW53TThhYCvkj05m4KvzWU3R8lBzdsAfZs=;
+        b=TTxie5HzLiCVSwzdlb1BVZLO4d0nU3p2lMQjfkqiYqKGTmtPitU/cO7o+LwdyXtuLJ
+         gpiXTdurjzWHtm6oK8o59L2K3K5k8zK5/H3oA68zo0+YCRGlafyZGRIANbSljOVWGeze
+         txXtWFNSxNq2IKOjIFnvtT6FIIdIrOMGUR3+clRB20f1I24XaMpUQZij/P9FLJDFuGSM
+         ijcm9mY1MqbL02kM8RVgd2m04BeWxwL36kmivX8i/abpy4BY4NF65Sp6iJuoLGe7v0Fm
+         DbINY4c1Ox1I7SPu6n3bsoZQHqTk2ihVaYFT6utNj70agpLLoF6+BnkVPdNMXoEnJaoZ
+         d9Dw==
+X-Gm-Message-State: AOAM531pZo8l85hBjG6D5OGK/5RKFl9Xuo3PSltrijIUZ9G1RaLqTLVE
+        Gr64SCJLdNYGtuCNBlJy59ItHDrl
+X-Google-Smtp-Source: ABdhPJyaxXLklXHbqIKj2z3KUNlzIf44oVK2txRvpXscZkYRkuTnzCRh7pna3BlZoVQzPaGk5x7iew==
+X-Received: by 2002:ac8:78d:: with SMTP id l13mr10293908qth.188.1595977050786;
         Tue, 28 Jul 2020 15:57:30 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.29
+        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 15:57:29 -0700 (PDT)
+        Tue, 28 Jul 2020 15:57:30 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 08/21] x86/kaslr: Drop redundant variable in __process_mem_region
-Date:   Tue, 28 Jul 2020 18:57:09 -0400
-Message-Id: <20200728225722.67457-9-nivedita@alum.mit.edu>
+Subject: [PATCH v3 09/21] x86/kaslr: Drop some redundant checks from __process_mem_region
+Date:   Tue, 28 Jul 2020 18:57:10 -0400
+Message-Id: <20200728225722.67457-10-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727230801.3468620-1-nivedita@alum.mit.edu>
 References: <20200727230801.3468620-1-nivedita@alum.mit.edu>
@@ -50,32 +50,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-region.size can be trimmed to store the portion of the region before the
-overlap, instead of a separate mem_vector variable.
+Clip the start and end of the region to minimum and mem_limit prior to
+the loop. region.start can only increase during the loop, so raising it
+to minimum before the loop is enough.
+
+A region that becomes empty due to this will get checked in
+the first iteration of the loop.
+
+Drop the check for overlap extending beyond the end of the region. This
+will get checked in the next loop iteration anyway.
+
+Rename end to region_end for symmetry with region.start.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 27 ++++++---------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index e978c3508814..8cc47faea56d 100644
+index 8cc47faea56d..d074986e8061 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -664,11 +664,8 @@ static void __process_mem_region(struct mem_vector *entry,
+@@ -623,34 +623,23 @@ static void __process_mem_region(struct mem_vector *entry,
+ 				 unsigned long image_size)
+ {
+ 	struct mem_vector region, overlap;
+-	unsigned long end;
++	unsigned long region_end;
  
- 		/* Store beginning of region if holds at least image_size. */
- 		if (overlap.start >= region.start + image_size) {
--			struct mem_vector beginning;
+-	/* Ignore entries entirely below our minimum. */
+-	if (entry->start + entry->size < minimum)
+-		return;
 -
--			beginning.start = region.start;
--			beginning.size = overlap.start - region.start;
--			process_gb_huge_pages(&beginning, image_size);
-+			region.size = overlap.start - region.start;
-+			process_gb_huge_pages(&region, image_size);
+-	/* Ignore entries above memory limit */
+-	end = min(entry->size + entry->start, mem_limit);
+-	if (entry->start >= end)
+-		return;
+-
+-	region.start = entry->start;
++	/* Enforce minimum and memory limit. */
++	region.start = max_t(unsigned long long, entry->start, minimum);
++	region_end = min(entry->start + entry->size, mem_limit);
+ 
+ 	/* Give up if slot area array is full. */
+ 	while (slot_area_index < MAX_SLOT_AREA) {
+-		/* Potentially raise address to minimum location. */
+-		if (region.start < minimum)
+-			region.start = minimum;
+-
+ 		/* Potentially raise address to meet alignment needs. */
+ 		region.start = ALIGN(region.start, CONFIG_PHYSICAL_ALIGN);
+ 
+ 		/* Did we raise the address above the passed in memory entry? */
+-		if (region.start > end)
++		if (region.start > region_end)
+ 			return;
+ 
+ 		/* Reduce size by any delta from the original address. */
+-		region.size = end - region.start;
++		region.size = region_end - region.start;
+ 
+ 		/* Return if region can't contain decompressed kernel */
+ 		if (region.size < image_size)
+@@ -668,10 +657,6 @@ static void __process_mem_region(struct mem_vector *entry,
+ 			process_gb_huge_pages(&region, image_size);
  		}
  
- 		/* Return if overlap extends to or past end of region. */
+-		/* Return if overlap extends to or past end of region. */
+-		if (overlap.start + overlap.size >= region.start + region.size)
+-			return;
+-
+ 		/* Clip off the overlapping region and start over. */
+ 		region.start = overlap.start + overlap.size;
+ 	}
 -- 
 2.26.2
 
