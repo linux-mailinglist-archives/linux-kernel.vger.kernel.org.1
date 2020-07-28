@@ -2,48 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C02B230FEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF231230FF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731593AbgG1Qic convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 12:38:32 -0400
-Received: from customer-201-134-139-73.uninet-ide.com.mx ([201.134.139.73]:36648
-        "EHLO correo.tlalpan.gob.mx" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731443AbgG1Qib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:38:31 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by correo.tlalpan.gob.mx (Postfix) with ESMTP id 8E58C59A0DD;
-        Tue, 28 Jul 2020 06:19:36 -0500 (CDT)
-Received: from correo.tlalpan.gob.mx ([127.0.0.1])
-        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id UTXWu0DnHhsA; Tue, 28 Jul 2020 06:19:36 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.tlalpan.gob.mx (Postfix) with ESMTP id 5F40145F818;
-        Tue, 28 Jul 2020 04:24:50 -0500 (CDT)
-X-Virus-Scanned: amavisd-new at tlalpan.gob.mx
-Received: from correo.tlalpan.gob.mx ([127.0.0.1])
-        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3gydEh4l7zJv; Tue, 28 Jul 2020 04:24:50 -0500 (CDT)
-Received: from [197.175.64.209] (unknown [197.175.64.209])
-        by correo.tlalpan.gob.mx (Postfix) with ESMTPSA id 9E806433EE1;
-        Tue, 28 Jul 2020 03:51:21 -0500 (CDT)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1731749AbgG1QjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:39:13 -0400
+Received: from elvis.franken.de ([193.175.24.41]:52168 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731423AbgG1QjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 12:39:12 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k0SdC-00058I-00; Tue, 28 Jul 2020 18:39:10 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D13B8C0A99; Tue, 28 Jul 2020 14:33:23 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 14:33:23 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 2/2] MIPS: ingenic: Enable JZ4780_NEMC manually
+Message-ID: <20200728123323.GA14660@alpha.franken.de>
+References: <20200728104503.23655-1-krzk@kernel.org>
+ <20200728104503.23655-2-krzk@kernel.org>
+ <B4F6EQ.WB2WZOY40FDR@crapouillou.net>
+ <20200728111935.GA26683@kozik-lap>
+ <20200728113702.GB13443@alpha.franken.de>
+ <20200728120035.GA28766@kozik-lap>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Spende von 2.000.000,00 Euro.
-To:     Recipients <rdelrazom@tlalpan.gob.mx>
-From:   "manuel franco" <rdelrazom@tlalpan.gob.mx>
-Date:   Tue, 28 Jul 2020 10:55:36 +0200
-Reply-To: manuelfrancospende001@gmail.com
-Message-Id: <20200728085121.9E806433EE1@correo.tlalpan.gob.mx>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200728120035.GA28766@kozik-lap>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sie haben eine Spende von 2.000.000,00 Euro.
+On Tue, Jul 28, 2020 at 02:00:35PM +0200, Krzysztof Kozlowski wrote:
+> On Tue, Jul 28, 2020 at 01:37:02PM +0200, Thomas Bogendoerfer wrote:
+> > On Tue, Jul 28, 2020 at 01:19:35PM +0200, Krzysztof Kozlowski wrote:
+> > > On Tue, Jul 28, 2020 at 01:12:11PM +0200, Paul Cercueil wrote:
+> > > > Hi Krzysztof,
+> > > > 
+> > > > Le mar. 28 juil. 2020 à 12:45, Krzysztof Kozlowski <krzk@kernel.org> a écrit
+> > > > :
+> > > > > The CONFIG_JZ4780_NEMC was previously a default on MIPS but now it has
+> > > > > to be enabled manually.
+> > > > > 
+> > > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > > > 
+> > > > I think you should swap the two so that there are no problems when
+> > > > bisecting.
+> > > 
+> > > Good point. I was thinking that it will go via some of MIPS trees and
+> > > the patch #1 will just wait a cycle.  However with acks, I can take it
+> > > through drivers/memory tree.
+> > 
+> > I've acked the patch.
+> > 
+> > Thomas.
+> 
+> Thanks but now I noticed that one of changed configs
+> (arch/mips/configs/rs90_defconfig) is only in MIPS tree.
+> 
+> I think it is easier then to take the patch #2 (configs) via MIPS and
+> wait with #1 for the next cycle or also take it via MIPS if it applies
+> cleanly.
 
-Mein Name ist Manuel Franco aus den USA.
-Ich habe die America-Lotterie im Wert von 768 Millionen US-Dollar gewonnen und spende einen Teil davon an nur 5 glückliche Menschen und einige Waisenhäuser als Wohlwollen für die Menschheit.
+ok, I'll take it.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
