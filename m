@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F967230A03
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A00230A0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729566AbgG1M2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:28:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728300AbgG1M2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:28:35 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B20F5206D4;
-        Tue, 28 Jul 2020 12:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595939315;
-        bh=RlLNX+3G8fgpyvQOngE0tyQZ5bJFF6YCGkdbOlilhMU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y0TctDtjvpZzjLLh6Wi1KtikeLAxpiAdv9gHCqO2T7+D8lmS+fyZoX3LuwImPsTA2
-         Ey81iuokoyxME4uyXpNn4szu73scILCAosEQKt6csKbWVIhc0F0aEuES7OTqpQ9maz
-         E8j5vo50Sk6tow1ggB3VB5qynB7IgToQFcQ+ywJE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BDC5B404B1; Tue, 28 Jul 2020 09:28:32 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:28:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kajoljain <kjain@linux.ibm.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 04/19] perf metric: Add expr__del_id function
-Message-ID: <20200728122832.GK40195@kernel.org>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <20200719181320.785305-5-jolsa@kernel.org>
- <78a80947-fe21-9131-7f1f-07ee752631f9@linux.ibm.com>
+        id S1729590AbgG1M3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:29:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34314 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728300AbgG1M3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:29:08 -0400
+Date:   Tue, 28 Jul 2020 12:29:05 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1595939346;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2dW8clZS1g94ais6wvu0XRIVao5VKKeDyjpkytvs4Dg=;
+        b=OxEfyRKtUS1FC5b88Zrl0qpiezf6Sb/JovXzrPadDt6AsyEcaflX4w5L44Fq+diRiA02fh
+        QVkc27WReGuynkSjHIQZRRqoUslqZTjdmLNZjkvLRAbmz4dzLfT5Gq7xEhh3ZQngdIPN4b
+        s+Kwi3TcTLdJFmIw9ZaK49hC8jxhXIokePHcdPxMOI0EyI3k8lzGVrbEU5QE5xk4hL1f1e
+        52WqRPdAZ37oCQ79OtBXJL1jjsZz3o98G6ydkKqUHoLXkyFxpiStvOvUMGJauCMjRUqWvU
+        gXTnyUZuR43/JdGqzi+XYQIJY6VFuLGlESak+xC9W0pfv1VL6rK9FoHHlnNaSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1595939346;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2dW8clZS1g94ais6wvu0XRIVao5VKKeDyjpkytvs4Dg=;
+        b=7B+2pdI5hveWCFLKxfOWln4BOSIfwBlez5AYD8KD6ByX7vwj/AYgUhMMpudX+rfMd+VH0U
+        s0a/j0qmHPkOtoAw==
+From:   "tip-bot2 for Pu Wen" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/rapl: Add Hygon Fam18h RAPL support
+Cc:     Pu Wen <puwen@hygon.cn>, Ingo Molnar <mingo@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200720082205.1307-1-puwen@hygon.cn>
+References: <20200720082205.1307-1-puwen@hygon.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78a80947-fe21-9131-7f1f-07ee752631f9@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+Message-ID: <159593934554.4006.16034988515761128072.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jul 26, 2020 at 02:47:11PM +0530, kajoljain escreveu:
-> 
-> 
-> On 7/19/20 11:43 PM, Jiri Olsa wrote:
-> > Adding expr__del_id function to remove ID from hashmap.
-> > It will save us few lines in following changes.
-> > 
-> > Acked-by: Ian Rogers <irogers@google.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> 
-> Reviewed-By : Kajol Jain<kjain@linux.ibm.com>
+The following commit has been merged into the perf/core branch of tip:
 
-Thanks, applied.
+Commit-ID:     d903b6d029d66e6478562d75ea18d89098f7b7e8
+Gitweb:        https://git.kernel.org/tip/d903b6d029d66e6478562d75ea18d89098f7b7e8
+Author:        Pu Wen <puwen@hygon.cn>
+AuthorDate:    Mon, 20 Jul 2020 16:22:05 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 28 Jul 2020 13:34:20 +02:00
 
-- Arnaldo
- 
-> Thanks,
-> Kajol Jain
-> 
-> > ---
-> >  tools/perf/util/expr.c | 21 +++++++++++++--------
-> >  tools/perf/util/expr.h |  1 +
-> >  2 files changed, 14 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-> > index 4e5a6533dfce..f726211f49d4 100644
-> > --- a/tools/perf/util/expr.c
-> > +++ b/tools/perf/util/expr.c
-> > @@ -79,6 +79,17 @@ int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
-> >  	return hashmap__find(&ctx->ids, id, (void **)data) ? 0 : -1;
-> >  }
-> >  
-> > +void expr__del_id(struct expr_parse_ctx *ctx, const char *id)
-> > +{
-> > +	struct expr_id_data *old_val = NULL;
-> > +	char *old_key = NULL;
-> > +
-> > +	hashmap__delete(&ctx->ids, id,
-> > +			(const void **)&old_key, (void **)&old_val);
-> > +	free(old_key);
-> > +	free(old_val);
-> > +}
-> > +
-> >  void expr__ctx_init(struct expr_parse_ctx *ctx)
-> >  {
-> >  	hashmap__init(&ctx->ids, key_hash, key_equal, NULL);
-> > @@ -136,16 +147,10 @@ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
-> >  int expr__find_other(const char *expr, const char *one,
-> >  		     struct expr_parse_ctx *ctx, int runtime)
-> >  {
-> > -	struct expr_id_data *old_val = NULL;
-> > -	char *old_key = NULL;
-> >  	int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
-> >  
-> > -	if (one) {
-> > -		hashmap__delete(&ctx->ids, one,
-> > -				(const void **)&old_key, (void **)&old_val);
-> > -		free(old_key);
-> > -		free(old_val);
-> > -	}
-> > +	if (one)
-> > +		expr__del_id(ctx, one);
-> >  
-> >  	return ret;
-> >  }
-> > diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-> > index f38292fdab19..2462abd0ac65 100644
-> > --- a/tools/perf/util/expr.h
-> > +++ b/tools/perf/util/expr.h
-> > @@ -26,6 +26,7 @@ struct expr_scanner_ctx {
-> >  
-> >  void expr__ctx_init(struct expr_parse_ctx *ctx);
-> >  void expr__ctx_clear(struct expr_parse_ctx *ctx);
-> > +void expr__del_id(struct expr_parse_ctx *ctx, const char *id);
-> >  int expr__add_id(struct expr_parse_ctx *ctx, const char *id);
-> >  int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
-> >  int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
-> > 
+perf/x86/rapl: Add Hygon Fam18h RAPL support
 
--- 
+Hygon Family 18h(Dhyana) support RAPL in bit 14 of CPUID 0x80000007 EDX,
+and has MSRs RAPL_PWR_UNIT/CORE_ENERGY_STAT/PKG_ENERGY_STAT. So add Hygon
+Dhyana Family 18h support for RAPL.
 
-- Arnaldo
+The output is available via the energy-pkg pseudo event:
+
+  $ perf stat -a -I 1000 --per-socket -e power/energy-pkg/
+
+[ mingo: Tidied up the initializers. ]
+
+Signed-off-by: Pu Wen <puwen@hygon.cn>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200720082205.1307-1-puwen@hygon.cn
+---
+ arch/x86/events/rapl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index 0f2bf59..68b3882 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -787,7 +787,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
+-	X86_MATCH_VENDOR_FAM(AMD, 0x17, &model_amd_fam17h),
++	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
++	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
