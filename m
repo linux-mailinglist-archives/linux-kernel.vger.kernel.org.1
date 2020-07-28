@@ -2,140 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C78F231124
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4232231129
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732103AbgG1RxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39006 "EHLO
+        id S1728503AbgG1R7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728365AbgG1RxD (ORCPT
+        with ESMTP id S1727884AbgG1R7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:53:03 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A191DC0619D2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:53:03 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id h1so15490504otq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:53:03 -0700 (PDT)
+        Tue, 28 Jul 2020 13:59:52 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 991A6C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:59:52 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l12so1306645pgt.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:59:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oKg/T7h0+IcTaK5sUlD4aWvye+DlJgPV3ZmHWAi13uI=;
-        b=JfCcznYJ81m3a0At/Be2Y2JYfjKwPlt6ZvDDzpat6zy5UirlLyfFw6bwxGRMSxiv45
-         crBwqmJglqNwLoQfJQv+/LKg874OK2/ESad0O1E9lMCHBrW8zGNpzL1vssmEioQjgpqi
-         eO/ohUweePRfsKX+Gl9ov0i94DSrukleVQA33EPxcMA4mCoNb8zVExwu8Trdg9E3zPPS
-         FWOAo1Ac1L5He1cXSbtt0JIgTTi05SMihVLcv4ewsOPcx9c3DPuiASTuAeO5Kun1aqoo
-         S+kiCfXuXe/6AXpm9G7CHHwrSKECYDDkVTZ+BrxW6K3Ee3iTihaAKAw/Zp1HHjnoXSY2
-         kuoA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=1CuR54gMeaVLFpH/ii6AIR06fUc7GcpAwE4BlLar214=;
+        b=ea2mUzTqB0NNb90vADy/ykGFBld0CZrTogIlU/fbQucYUMl6NoCOerMw/VtAhIkLbv
+         dW78rlPhehg0esQzTuOynId+vTaisvn/6y9ldNO6mjnxhegXmyDrWbiAt23bIWFfmWEK
+         Bo2/P1HoRVzMp2w54IbBh3ydHSSzVquK/2ZsXPaSBEdUJmLuruAqBIQ2nYw2iNxWUMK5
+         1iY/c23K18Tsy1U4UlyB17FJlahhjGKM5rGzdAslbIQPNTNQQ1/rryqyVTi4WR4GwlcM
+         S8auaLAVs+Lo77dqe2C3ksBeODWTeaQj48f3n9mNdI33YTgP7RHaDCwkMd6uEiRB36ln
+         Jq8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oKg/T7h0+IcTaK5sUlD4aWvye+DlJgPV3ZmHWAi13uI=;
-        b=YizHy4NGZpM3gpZ+otXzt4iuLIL0z9rElRZ/kUUfNqJG+RFKo+Ln0CeUSMzqSQdzUL
-         zeqnE/EUPA7JXM5wvKiCzl3vC75niB+b9cfSX3fTo/bEDB4EGp2mpWXvZP57NpeerrhS
-         IeaHcs0COagadR6cckCtqF7wPWca6XPzkpmCjyKIVf4qT992nPHnpJBqIw13L4KGhjrZ
-         gmmBPBr+cuFg4Jov4VxZt2x4kJ2xTgM50pzo0LKJ6qwdJmzEABWVHyCweaIJirUVjFS4
-         ULyiRP/Qn9L7gWDVHGdKhgFwHH1ZMeI7uYzQ9ZDcrrhV+MyENFOYn1EIbJykCcjWlXC7
-         Gg2g==
-X-Gm-Message-State: AOAM531t0e0gb1vtCbPWTQvNGYhjnCyDKEoysJObdPQZhbfTxl9v9GFl
-        uRcd4gPewHniKP8KVG6tYRnVgQQIMgliSE2yth5kzA==
-X-Google-Smtp-Source: ABdhPJzmXx1pqXlX+hxB+cERg9Jlz6OfIP6uiv1gDCb0IzhgSzQ22bcKV9NI+dVTtlhbop5X1LpMpzz/rU1r99oj5qg=
-X-Received: by 2002:a05:6830:1093:: with SMTP id y19mr25784978oto.204.1595958782660;
- Tue, 28 Jul 2020 10:53:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200728070131.1629670-1-xii@google.com> <20200728103907.GT119549@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200728103907.GT119549@hirez.programming.kicks-ass.net>
-From:   Xi Wang <xii@google.com>
-Date:   Tue, 28 Jul 2020 10:54:22 -0700
-Message-ID: <CAOBoifg6Cm2P+HUH0mS1tNpVMa1giWDwKbQ6FofWGZoz1tTt5A@mail.gmail.com>
-Subject: Re: [PATCH] sched: Make select_idle_sibling search domain configurable
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, suravee.suthikulpanit@amd.com,
-        thomas.lendacky@amd.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1CuR54gMeaVLFpH/ii6AIR06fUc7GcpAwE4BlLar214=;
+        b=bbXsh/ne1oDacaSeZGsYdF0s8xQ4D2bj6sJyX1Ef2D5seeHHivN5tQwg9OpxLc5xGQ
+         VgHdI8c0BdnWRQdnYf+cl8avMWoEFrnaoWRezrCXxmrCv8zKG6uguGl/suaoz5MGj1eU
+         JwUfiAeW88mekH1YhlXRAqnAIap34x/9cKHG24V7BXvvtGAZue9uCO/3d35mrLxjt0dT
+         YjHktaRmHu4SM2qBGdvOkVYaTrp9+kXTJI9OLs/7T2Oh78prsWfY/tdQ5Gb+ohoN5Pww
+         SG1dQuzXNbtkIWCaYZhakx9DezglcyhRCJ2Fnm0dY1xUxkZGcakK8PgesIyDgRSrUhlC
+         lNqQ==
+X-Gm-Message-State: AOAM530hhw9M+/qDNvHe/AltkO7Wydxi5+cGl+2ceLUdvISlBCEagPxc
+        4cNal0APsOi3B7lHUEzBy9k=
+X-Google-Smtp-Source: ABdhPJxk9Pu/1J38jTEqDbP43EL492G7ozhLG2/AJBBatUyuF/mhrP+oaqvBLLzDl7+C3IW09tHVwA==
+X-Received: by 2002:a63:8b42:: with SMTP id j63mr26038216pge.131.1595959192115;
+        Tue, 28 Jul 2020 10:59:52 -0700 (PDT)
+Received: from localhost.localdomain ([132.154.123.243])
+        by smtp.gmail.com with ESMTPSA id s4sm5519263pfh.128.2020.07.28.10.59.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 10:59:51 -0700 (PDT)
+From:   Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+To:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
+        hridya@google.com, surenb@google.com
+Cc:     Dhiraj Sharma <dhiraj.sharma0024@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: android: ashmem: used const keyword
+Date:   Tue, 28 Jul 2020 23:29:35 +0530
+Message-Id: <20200728175935.2130-1-dhiraj.sharma0024@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 3:39 AM <peterz@infradead.org> wrote:
->
-> On Tue, Jul 28, 2020 at 12:01:31AM -0700, Xi Wang wrote:
-> > The scope of select_idle_sibling idle cpu search is LLC. This
-> > becomes a problem for the AMD CCX architecture, as the sd_llc is only
-> > 4 cores. On a many core machine, the range of search is too small to
-> > reach a satisfactory level of statistical multiplexing / efficient
-> > utilization of short idle time slices.
-> >
-> > With this patch idle sibling search is detached from LLC and it
-> > becomes run time configurable. To reduce search and migration
-> > overheads, a presearch domain is added. The presearch domain will be
-> > searched first before the "main search" domain, e.g.:
-> >
-> > sysctl_sched_wake_idle_domain == 2 ("MC" domain)
-> > sysctl_sched_wake_idle_presearch_domain == 1 ("DIE" domain)
-> >
-> > Presearch will go through 4 cores of a CCX. If no idle cpu is found
-> > during presearch, full search will go through the remaining cores of
-> > a cpu socket.
->
-> *groan*, this is horrific :-(
->
-> It is also in direct conflict with people wanting to make it smaller.
->
-> On top of that, a domain number is a terrible terrible interface. They
-> aren't even available without SCHED_DEBUG on.
->
-> What is the inter-L3 latency? Going by this that had better be awesome.
-> And if this Infinity Fabric stuff if highly effective in effectively
-> merging L3s -- analogous to what Intel does with it's cache slices, then
-> should we not change the AMD topology setup instead of this 'thing'?
->
-> Also, this commit:
->
->   051f3ca02e46 ("sched/topology: Introduce NUMA identity node sched domain")
->
-> seems to suggest L3 is actually bigger. Suravee, can you please comment?
+I ran checkpatch.pl script which reported a warning to use const keyword
+on line 370.Therefore I made this change.
 
-I think 051f3ca02e46 was still saying 4 cores sharing an L3 but there
-is another numa layer which is 8 cores or 2 * 4 core L3 groups. This
-should be the chiplet layer.
+Signed-off-by: Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+---
+ drivers/staging/android/ashmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't have precise data but some anecdotes are: The latency
-difference between inter 4 core group access and inter 8 core group
-access is not huge. Also my experience from Intel machines was that
-accessing L3 data across numa domains (also across cpu socket) was not
-too bad until the link bandwidth was saturated. I am hoping the
-bandwidth situation is better for AMD as L3 groups are smaller.
-Another factor is sometimes the trade off is spending 10s of us of
-sched overhead vs time slicing at ~12.5ms latency.
+diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+index c05a214191da..f9cfa15b785f 100644
+--- a/drivers/staging/android/ashmem.c
++++ b/drivers/staging/android/ashmem.c
+@@ -367,7 +367,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
 
-What makes the decision trickly is the configuration can depend on
-applications and the scale of the system. For a system with 8 cores,
-running it the old way with 2 * 4 core LLCs might be the best
-decision. For a system with a lot more cores, the number of threads on
-the machine would also scale up, which means more potential to create
-a dynamic imbalance. I have another (even more horrific) patch for
-auto configuring the sysctls, which has (nnext is the size of the next
-higher sched domain):
+ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+-	static struct file_operations vmfile_fops;
++	static const struct file_operations vmfile_fops;
+ 	struct ashmem_area *asma = file->private_data;
+ 	int ret = 0;
 
-/*
-* Widen the range of idle core search if llc domain is too small, both in
-* absolute sense and when compared to the next higher level domain.
-*/
-if (nllc < min(24, nnext / 4)) {
-        sysctl_sched_wake_idle_domain = next_level;
-        sysctl_sched_wake_idle_presearch_domain = llc_level;
-        /* Also make new idle search domain params more like default llc */
-        sysctl_sched_wake_idle_domain_tune_flags = 1;
-}
+--
+2.17.1
 
--Xi
