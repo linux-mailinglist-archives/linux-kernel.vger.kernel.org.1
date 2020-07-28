@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F4A230467
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB8323047E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgG1Hor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 03:44:47 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:45165 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726933AbgG1Hoq (ORCPT
+        id S1728031AbgG1Hql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 03:46:41 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:57144 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726933AbgG1Hqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:44:46 -0400
-Received: from mail-qv1-f41.google.com ([209.85.219.41]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MuUrM-1kqMgB0M9y-00rZ2o; Tue, 28 Jul 2020 09:44:45 +0200
-Received: by mail-qv1-f41.google.com with SMTP id u8so8697857qvj.12;
-        Tue, 28 Jul 2020 00:44:44 -0700 (PDT)
-X-Gm-Message-State: AOAM531QMUYksb1Jpms5u1X61SjA+0TtCOc2hSbxyLspoxnjbu1K013s
-        aL6Vn1Sa3WBITYkwsd13aVbfk2ozLJWPHbleig8=
-X-Google-Smtp-Source: ABdhPJyqb+W6D9ojQk9hYiFoWW3udapSQhCnkKk1FdcjaRUGF+JKYubuRCNp33JOmzZiKTpab0xRuEfL2ic4waV8U+8=
-X-Received: by 2002:ad4:4c09:: with SMTP id bz9mr24965836qvb.210.1595922283868;
- Tue, 28 Jul 2020 00:44:43 -0700 (PDT)
+        Tue, 28 Jul 2020 03:46:39 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06S7cKU9018522;
+        Tue, 28 Jul 2020 09:46:22 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=o17UNbxPJi74AdiW/0RqZLQ/kxpo/02/yQhPBM1sn7Y=;
+ b=jngU+4i7hNvuReU4xD6DK0yCeCeVi3BWJH6xvig/UbfF0TilvMUFLDYFTG9EmmBPBUEH
+ qeG0g5s8fGbQ+A7R9NX4pRmBnaIGhzZbhlDkKsrbE+716k8vw1whuFOW2goq5O/rtK95
+ dVLFFjXwqQKIIAsJbOfHwS0pxSHMtTyNd7mSKX6vUhRvNadoZQUme5TN8WCQtaWTTUOb
+ YxPfw1J3h9s4tdiUB+hxgzf0GO5sP9MO5tdZeTQgYPzVhLapp8NZ0Osgrojuza4UAvaa
+ vzFgMt3Uhs/kk5g3+dHDqAPc4P7eYClIaqTbuqdKRFEoxoFQD2FkoFpPRWZgF4a5Bqq4 NA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32ga71w1ce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jul 2020 09:46:22 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 75EF510002A;
+        Tue, 28 Jul 2020 09:46:17 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5CB2E21FE93;
+        Tue, 28 Jul 2020 09:46:17 +0200 (CEST)
+Received: from localhost (10.75.127.44) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul 2020 09:46:17
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v5 0/3] Add USB role switch support to DWC2
+Date:   Tue, 28 Jul 2020 09:45:59 +0200
+Message-ID: <20200728074602.14218-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200727211008.24225-1-s-anna@ti.com>
-In-Reply-To: <20200727211008.24225-1-s-anna@ti.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 28 Jul 2020 09:44:27 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3_qu_rwWmxMz=H5DLSoZB3Jngjxqq14vir+NudfavmMg@mail.gmail.com>
-Message-ID: <CAK8P3a3_qu_rwWmxMz=H5DLSoZB3Jngjxqq14vir+NudfavmMg@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] mfd: syscon: Use a unique name with regmap_config
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        David Lechner <david@lechnology.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Roger Quadros <rogerq@ti.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-omap <linux-omap@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:jAhy5rjRa+cpDY5nTUuyZvjsC7XWem3etQoN+0yCSfQD5koLCli
- A7rYMRYQw75Dnk1lBqny5JZwnfiFzTSpWVTDn2/RipG6hBomhFch8NnINSzAMQycDhO8/tW
- JqU6wpq2YZ1ZqD67BJqYF1Hx24QVkh19LoY47C4MJvktpmrxvZkkdeZtNRFsvlAlizgxsBS
- 1HgNAYe8hrsygjm7UCqgg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Dhh6zboc/HI=:LUJpfqJdFdYHsEDTky7Hah
- 1bp0oDkfRzbxyPENX6CktsoDRowknEQHYztIwDaesr53RcsgEAy4SrBs4TrPM24AbRjlxS/Gw
- PdXT9uK0h+DLNmUu4M/gQihisbj1ogfJYok1aJPHhKURAftO01bSyjy5Uw56OW62tX3Cvrsrn
- 5hB4HF5+s3X5EzR0IJv3t5StgH6R0l5NXRaCOI4gTb5TGklBT3DkPx2czg8H4x2EF4laJnZUF
- qmSOTW/jR3tFAunIBC/7QeLjUnuK5RSQFM8QbcPLOcfu0hqNrwgtZOfq0uu13DaOJTsQmgukb
- r2Ta4Qb6WBNjVoD7s+8NGQiW6Z/CwNyGWkFq0YOR5l344pCRyXX8p06XDq1iz1zfrf5YxQ8fN
- Ll41iSdCyR5NEQUhBhfd6L0ikfCEajM1vvBaTC2NnwSxadYNZ4LOYXtQeYpO9bh/68qEQX7SY
- ETfWMC+CitzABFdyzLibP5hWEeIKSNtM8XJ8+XkhV+r2NuH9Qf+wugmY3xcoSgrM1T+WzUrsm
- wzNIEJIbhaKn8AyBAWEq87yOdgoDfiHL7aPbpiCorIMrg9a5aQbmAo2yVYAD3umcPOKIUyciI
- cOrfj/v2EyM0s7/sVrWQwqPM5ACtOGKgRpTPgeBuBFXOmMT+dl3GnOLMjjcmhqQD2rvv0rTmA
- zYXtcTxiRSMzaPBOxEm/+B5pSv/rZzFGw/n3h1xUri28SAamtU0pYHUvypQUL5wOqOwXqnx3f
- syAspd6+zeRgwodIcAD8oobg8Ht2FA86vneo3uaKFcJilKXlqzxhYJP7V25ZrQug4de7/kNsu
- guxvJBqUoe4KaGa9D0H8dJqQtla/G0eQVE112lVX6Rcv9kY6Fy46m5bXTuuHVNTV386U98ZHr
- ufbHfofxwM20dMUTI9TXx25l+/wqwSEkH+RiRx7mxsAkHOhYovr6o/R0oGRf92QVYXxgrBe/y
- qegkQ1t7jjaVgJsUUb/g0h3zOFcuWzTq+mvwSp6vkEJXpLJUBNLS1
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_01:2020-07-27,2020-07-28 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 11:10 PM Suman Anna <s-anna@ti.com> wrote:
->
-> The DT node full name is currently being used in regmap_config
-> which in turn is used to create the regmap debugfs directories.
-> This name however is not guaranteed to be unique and the regmap
-> debugfs registration can fail in the cases where the syscon nodes
-> have the same unit-address but are present in different DT node
-> hierarchies. Replace this logic using the syscon reg resource
-> address instead (inspired from logic used while creating platform
-> devices) to ensure a unique name is given for each syscon.
->
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
-> Hi Arnd,
-> Lee is looking for your review on this patch. Can you please
-> review and provide your comments.
+When using usb-c connector (but it can also be the case with a micro-b
+connector), iddig, avalid, bvalid, vbusvalid input signals may not be
+connected to the DWC2 OTG controller.
+DWC2 OTG controller features an overriding control of the PHY voltage valid
+and ID input signals.
+So, missing signals can be forced using usb role from usb role switch and
+this override feature.
 
-Sorry for missing this earlier. I think this makes sense, and I don't
-expect the name change to cause problems, so
+This series adds support for usb role switch to dwc2, by using overriding
+control of the PHY voltage valid and ID input signals.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+It has been tested on stm32mp157c-dk2 [1], which has a Type-C connector
+managed by a Type-C port controller, and connected to USB OTG controller.
 
-> --- a/drivers/mfd/syscon.c
-> +++ b/drivers/mfd/syscon.c
-> @@ -101,12 +101,14 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->                 }
->         }
->
-> -       syscon_config.name = of_node_full_name(np);
-> +       syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", np,
-> +                                      (u64)res.start);
+[1] https://www.st.com/en/evaluation-tools/stm32mp157c-dk2.html
 
-Note that you could avoid the cast by using "%pOFn@%pa", and
-passing res.start by reference. Not important though, the result should
-be similar, and you might not like the '0x' that this adds.
+Amelie Delaunay (3):
+  dt-bindings: usb: dwc2: add optional usb-role-switch property
+  usb: dwc2: override PHY input signals with usb role switch support
+  usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15
+    SoCs
+---
+Changes in v5:
+- Use device_property_read_bool instead of of_read_property_bool in params.c
+Changes in v4:
+- Simplify call to dwc2_force_mode in drd.c
+- Add error_drd label in probe error path in platform.c
+Changes in v3:
+- Fix build issue reported by kernel test robot in drd.c
+Changes in v2:
+- Previous DT patch already in stm32-next branch so removed from v2 patchset
+  "ARM: dts: stm32: enable usb-role-switch on USB OTG on stm32mp15xx-dkx"
+- DWC2 DT bindings update added
+- Build issue reported by kernel test robot fixed
+- Martin's comments taken into account
+---
+ .../devicetree/bindings/usb/dwc2.yaml         |   4 +
+ drivers/usb/dwc2/Kconfig                      |   1 +
+ drivers/usb/dwc2/Makefile                     |   2 +-
+ drivers/usb/dwc2/core.h                       |   9 +
+ drivers/usb/dwc2/drd.c                        | 180 ++++++++++++++++++
+ drivers/usb/dwc2/gadget.c                     |   2 +-
+ drivers/usb/dwc2/params.c                     |   2 +-
+ drivers/usb/dwc2/platform.c                   |  20 +-
+ 8 files changed, 215 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/usb/dwc2/drd.c
 
-      Arnd
+-- 
+2.17.1
+
