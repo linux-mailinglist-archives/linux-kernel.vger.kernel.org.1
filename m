@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632F0230779
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494F323077B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgG1KQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:16:26 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:28087 "EHLO
+        id S1728752AbgG1KQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:16:33 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:19703 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728711AbgG1KQY (ORCPT
+        with ESMTP id S1728623AbgG1KQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:16:24 -0400
-X-UUID: 79b8673d867148d9b7fb4e02fdeab622-20200728
+        Tue, 28 Jul 2020 06:16:23 -0400
+X-UUID: 5365a2184f45496fa0f507ed69ced540-20200728
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=k9muKPyZDqBZfxd+zXdTzvxlhvvct36d5hwul+hcVtQ=;
-        b=CJ2E0eL0QJ36mzyFJqKVMMrzmUGjZKenJ7Zd0GJ4c/HJmDv1Gmav9v90hOWSN3S00t/YJWNbwRd19PFOeqn8N/ExF/H8R0k/BuViFpYrM87Qd6ZWfxdrhNjxfizoCPp4zqZlW3LW642uupp4XcD8rKq3Bg1+h/H47HeQexUTLsI=;
-X-UUID: 79b8673d867148d9b7fb4e02fdeab622-20200728
-Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+b+gg37ADEMMgnGEo469POvk0qcXvqRgsDtfenL9vqg=;
+        b=MU8T8AEVLGWGGFNQVgsgDIMZ22GW7lBJ9Gw0E3bObXqBUVKoHyQbH1lroaqhRcTm4MdzOQJOEDcXVoiLD+sXuAfmDB5DziYqWT1je2txDMCrB8hMXykXlZOelT1tIdwEp8pfaH+vpTJuy0j5lLyvtUhpBgml3dX+LU5OD8ZgRJA=;
+X-UUID: 5365a2184f45496fa0f507ed69ced540-20200728
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <freddy.hsin@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 462996204; Tue, 28 Jul 2020 18:16:20 +0800
+        with ESMTP id 568498662; Tue, 28 Jul 2020 18:16:21 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 28 Jul 2020 18:16:17 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 28 Jul 2020 18:16:18 +0800
 Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 28 Jul 2020 18:16:17 +0800
+ Transport; Tue, 28 Jul 2020 18:16:19 +0800
 From:   Freddy Hsin <freddy.hsin@mediatek.com>
 To:     <linux-mediatek@lists.infradead.or>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -40,11 +40,13 @@ CC:     Saravana Kannan <saravanak@google.com>,
         <linux-kernel@vger.kernel.org>, <chang-an.chen@mediatek.com>,
         Baolin Wang <baolin.wang7@gmail.com>,
         <wsd_upstream@mediatek.com>, <kuohong.wang@mediatek.com>,
-        <stanley.chu@mediatek.com>
-Subject: [PATCH v1] Porting Mediatek timer driver to kernel module 
-Date:   Tue, 28 Jul 2020 18:16:15 +0800
-Message-ID: <1595931377-21627-1-git-send-email-freddy.hsin@mediatek.com>
+        <stanley.chu@mediatek.com>, Freddy Hsin <freddy.hsin@mediatek.com>
+Subject: [PATCH v1 1/2] kernel: time: export sched_clock_register function
+Date:   Tue, 28 Jul 2020 18:16:16 +0800
+Message-ID: <1595931377-21627-2-git-send-email-freddy.hsin@mediatek.com>
 X-Mailer: git-send-email 1.7.9.5
+In-Reply-To: <1595931377-21627-1-git-send-email-freddy.hsin@mediatek.com>
+References: <1595931377-21627-1-git-send-email-freddy.hsin@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -54,16 +56,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UG9ydGluZyBNZWRpYXRlayB0aW1lciBkcml2ZXIgdG8ga2VybmVsIG1vZHVsZSBmb3IgR0tJDQoo
-R2VuZXJpYyBLZXJuZWwgSW1hZ2UpLiBDbG9ja3NvdXJjZSBtbWlvIGZ1bmN0aW9ucyBhcmUNCmV4
-cG9ydGVkIGZvciBNZWRpYXRlayB0aW1lciBpbml0IGZ1bmN0aW9uLg0KDQpUaGlzIHBhdGNoIGRl
-cGVuZHMgb24gdGhlIHRpbWVyLW9mIHBhdGNoIHN1Ym1pdHRlZCBieSBCYW9saW4gV2FuZw0KaHR0
-cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvMy8yNC83Mg0KDQoNCkZyZWRkeSBIc2luICgyKToNCiAg
-a2VybmVsOiB0aW1lOiByZW1vdmUgaW5pdCBzZWN0aW9uIGxhYmVsIG9mIHNjaGVkX2Nsb2NrX3Jl
-Z2lzdGVyDQogIHRpbWVyOiBtdDY4NzM6IHBvcnRpbmcgdGltZXIgZHJpdmVyIHRvIGxvYWRhYmxl
-IG1vZHVsZQ0KDQogZHJpdmVycy9jbG9ja3NvdXJjZS9LY29uZmlnICAgICAgICAgIHwgICAgMiAr
-LQ0KIGRyaXZlcnMvY2xvY2tzb3VyY2UvbW1pby5jICAgICAgICAgICB8ICAgIDQgKysrLQ0KIGRy
-aXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYyB8ICAgMzkgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKw0KIGtlcm5lbC90aW1lL3NjaGVkX2Nsb2NrLmMgICAgICAgICAg
-ICB8ICAgIDEgKw==
+ZXhwb3J0IHNjaGVkX2Nsb2NrX3JlZ2lzdGVyIGZ1bmN0aW9uLCBiZWNhdXNlIHRoZSBNZWRpYXRl
+ayB0aW1lcg0KbG9hZGFibGUgbW9kdWxlIGRlcGVuZHMgb24gdGhpcyBmdW5jdGlvbg0KDQpTaWdu
+ZWQtb2ZmLWJ5OiBGcmVkZHkgSHNpbiA8ZnJlZGR5LmhzaW5AbWVkaWF0ZWsuY29tPg0KLS0tDQog
+a2VybmVsL3RpbWUvc2NoZWRfY2xvY2suYyB8ICAgIDEgKw0KIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
+c2VydGlvbigrKQ0KDQpkaWZmIC0tZ2l0IGEva2VybmVsL3RpbWUvc2NoZWRfY2xvY2suYyBiL2tl
+cm5lbC90aW1lL3NjaGVkX2Nsb2NrLmMNCmluZGV4IGZhM2Y4MDAuLmUxZDVhZmUgMTAwNjQ0DQot
+LS0gYS9rZXJuZWwvdGltZS9zY2hlZF9jbG9jay5jDQorKysgYi9rZXJuZWwvdGltZS9zY2hlZF9j
+bG9jay5jDQpAQCAtMjM5LDYgKzIzOSw3IEBAIHN0YXRpYyBlbnVtIGhydGltZXJfcmVzdGFydCBz
+Y2hlZF9jbG9ja19wb2xsKHN0cnVjdCBocnRpbWVyICpocnQpDQogDQogCXByX2RlYnVnKCJSZWdp
+c3RlcmVkICVwUyBhcyBzY2hlZF9jbG9jayBzb3VyY2VcbiIsIHJlYWQpOw0KIH0NCitFWFBPUlRf
+U1lNQk9MKHNjaGVkX2Nsb2NrX3JlZ2lzdGVyKTsNCiANCiB2b2lkIF9faW5pdCBnZW5lcmljX3Nj
+aGVkX2Nsb2NrX2luaXQodm9pZCkNCiB7DQotLSANCjEuNy45LjUNCg==
 
