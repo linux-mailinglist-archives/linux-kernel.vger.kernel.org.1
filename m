@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3B722FF8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAC922FF90
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgG1CYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:24:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8833 "EHLO huawei.com"
+        id S1727041AbgG1CYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:24:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:8287 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726269AbgG1CYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:24:22 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id EB1809F180E2891496F5;
-        Tue, 28 Jul 2020 10:24:20 +0800 (CST)
+        id S1726839AbgG1CYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Jul 2020 22:24:32 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B5932E0E1DDC06082F49;
+        Tue, 28 Jul 2020 10:24:31 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Jul 2020 10:24:15 +0800
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 10:24:28 +0800
 From:   Qinglang Miao <miaoqinglang@huawei.com>
-To:     Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-CC:     Russell King <linux@armlinux.org.uk>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] ARM: zx: remove redundant dev_err call in zx296702_pd_probe()
-Date:   Tue, 28 Jul 2020 10:27:30 +0800
-Message-ID: <20200728022730.87399-1-miaoqinglang@huawei.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-m68k@lists.linux-m68k.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] m68k/amiga: missing platform_device_unregister() on error in amiga_init_devices()
+Date:   Tue, 28 Jul 2020 10:27:46 +0800
+Message-ID: <20200728022746.87612-1-miaoqinglang@huawei.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,26 +36,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Add the missing platform_device_unregister() before return
+from amiga_init_devices() in the error handling case.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 ---
- arch/arm/mach-zx/zx296702-pm-domain.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/m68k/amiga/platform.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-zx/zx296702-pm-domain.c b/arch/arm/mach-zx/zx296702-pm-domain.c
-index 7a08bf9dd..98376d816 100644
---- a/arch/arm/mach-zx/zx296702-pm-domain.c
-+++ b/arch/arm/mach-zx/zx296702-pm-domain.c
-@@ -170,7 +170,6 @@ static int zx296702_pd_probe(struct platform_device *pdev)
- 
- 	pcubase = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(pcubase)) {
--		dev_err(&pdev->dev, "ioremap fail.\n");
- 		return -EIO;
+diff --git a/arch/m68k/amiga/platform.c b/arch/m68k/amiga/platform.c
+index d34029d7b..afa2782c6 100644
+--- a/arch/m68k/amiga/platform.c
++++ b/arch/m68k/amiga/platform.c
+@@ -188,8 +188,10 @@ static int __init amiga_init_devices(void)
+ 			return PTR_ERR(pdev);
+ 		error = platform_device_add_data(pdev, &a1200_ide_pdata,
+ 						 sizeof(a1200_ide_pdata));
+-		if (error)
++		if (error) {
++			platform_device_unregister(pdev);
+ 			return error;
++		}
  	}
+ 
+ 	if (AMIGAHW_PRESENT(A4000_IDE)) {
+@@ -199,8 +201,10 @@ static int __init amiga_init_devices(void)
+ 			return PTR_ERR(pdev);
+ 		error = platform_device_add_data(pdev, &a4000_ide_pdata,
+ 						 sizeof(a4000_ide_pdata));
+-		if (error)
++		if (error) {
++			platform_device_unregister(pdev);
+ 			return error;
++		}
+ 	}
+ 
  
 -- 
 2.25.1
