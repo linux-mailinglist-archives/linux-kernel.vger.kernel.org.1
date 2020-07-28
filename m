@@ -2,198 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7735F230A64
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C9D230A77
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729813AbgG1MkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:40:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728751AbgG1MkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:40:00 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFEA22074F;
-        Tue, 28 Jul 2020 12:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595939999;
-        bh=UvPVHNXFlII1dBoZmadxV6dYDy6mRqwIr4qKgH+fqws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pxhQvv3Iz6dJBHYFxqdoYkaLmr3Ti+YHqNSon8x5BhZSwNO89TLylL1/LH/xDC2Si
-         022fbpPAlSepPsVeTYkS3YD2Ukdf5FwNXqeaFCavP8xyMX/ii2g6jaxHW1Sy58422Z
-         z+qDloUj7Bc0T6DMPlu9kFllp0AMdxZHKawYLdmU=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A02A1404B1; Tue, 28 Jul 2020 09:39:55 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:39:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     kajoljain <kjain@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
-Message-ID: <20200728123955.GZ40195@kernel.org>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
- <20200720072237.GC760733@krava>
- <6cb72b48-5244-9faf-a9e5-67858c732b83@linux.ibm.com>
- <20200720081943.GE760733@krava>
- <dd465647-da63-c473-9944-bdfec2abe484@linux.ibm.com>
- <20200720191625.GL760733@krava>
+        id S1729858AbgG1MmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729379AbgG1MmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:42:17 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408A1C061794;
+        Tue, 28 Jul 2020 05:42:17 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id gc9so11525396pjb.2;
+        Tue, 28 Jul 2020 05:42:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DRtsTZTInfavsTIFBbELheDvvBIHfMEH5f/reZk59Q0=;
+        b=VsACgHGa8pTwFHEe1syWIe4FKAAuDH4vnVoh5IoqbSC5nUwGX+Uwymnu4tHUZQwsrg
+         bAUSnlzdkSW1sWtFnErCgmnmuba31mLHaRENDFAmwESavec5sZ6aXXDiPQtWV0dms3Qw
+         Q6oLjws9DZOg+yJdfUgQ2cjLnRA2j3MlRf2F6b7LkeIT2Q4Cvlul7qzhEQmGittF7b5B
+         dbl8MFRYjimkCmkd/emKJUjTX6NlzCNZvfzCcgWLADP3f75T77L0o7aD8Wn/zj0MIuXv
+         MJiSEJCN/rTE+rQQwOSr7Fls1DQpMboJyFot035vkNVIE7Jm1Eg1ub1D5j0obGepaCW/
+         Fsxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DRtsTZTInfavsTIFBbELheDvvBIHfMEH5f/reZk59Q0=;
+        b=a75HFg5WAnFt5+VczUGM4xhmcdCdvkMC3gkrb+MpjKP11noN0hxir1a5gmjpU18t+3
+         JD3RXOdFzyu8SV+D2OYuPoNVachri7Ttjdv3zAdtRAhZksc6aeBcyZEVmFe6dkdJaBJ0
+         6eayh7vrsYZVwscAcyBJitgNYm0LU1A1YuDFp7TLfxSjXBa9/CukBbi1XwAr7nRcriWb
+         ZQHWq1oVOi4WIIfMqRtzOMxkvg5a4/mram5VRfAZG5y2qfgNUKtGEf1RmUx5g4DRC2GB
+         /B9RdKtwsTaM+q0LoTrlF+8IAeTKz1QGbR9Fhrf7sW89YwyexbDLJ9SAnv5rrmDOuxqW
+         nIjw==
+X-Gm-Message-State: AOAM532Ps1NVa0u2R1Tjo1gI4jnLwNPKZFMOV4b/7ZKcgusMi6+gQL/K
+        4nnsMjb+KZSIT7cKc2cTGpI=
+X-Google-Smtp-Source: ABdhPJxhMEpi6j0i+tSqYk9Nj+n0YJ1omG1107kkNFdUcGdH7M56U3YwSdV3MsWTHnQYdBVVu5JhZw==
+X-Received: by 2002:a17:90a:4f45:: with SMTP id w5mr4365834pjl.11.1595940136736;
+        Tue, 28 Jul 2020 05:42:16 -0700 (PDT)
+Received: from gmail.com ([2401:4900:2eef:ca92:3545:4a68:f406:d612])
+        by smtp.gmail.com with ESMTPSA id h6sm3371551pjt.53.2020.07.28.05.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 05:42:16 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 18:10:31 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-fbdev@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1] staging: sm750fb: use generic power management
+Message-ID: <20200728124031.GF1331847@gmail.com>
+References: <20200728123349.1331679-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200720191625.GL760733@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200728123349.1331679-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jul 20, 2020 at 09:16:25PM +0200, Jiri Olsa escreveu:
-> On Mon, Jul 20, 2020 at 02:32:40PM +0530, kajoljain wrote:
-> > 
-> > 
-> > On 7/20/20 1:49 PM, Jiri Olsa wrote:
-> > > On Mon, Jul 20, 2020 at 01:39:24PM +0530, kajoljain wrote:
-> > > 
-> > > SNIP
-> > > 
-> > >> This is with your perf/metric branch:
-> > >> command# ./perf stat -M PowerBUS_Frequency -C 0 -I 1000
-> > >> assertion failed at util/metricgroup.c:709
-> > >> #           time             counts unit events
-> > >>      1.000054545          7,807,505      hv_24x7/pm_pb_cyc,chip=0/ #      2.0 GHz  PowerBUS_Frequency_0
-> > >>      1.000054545          7,807,485      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > >>      2.000232761          7,807,500      hv_24x7/pm_pb_cyc,chip=0/ #      2.0 GHz  PowerBUS_Frequency_0
-> > >>      2.000232761          7,807,478      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > >>      3.000363762          7,799,665      hv_24x7/pm_pb_cyc,chip=0/ #      1.9 GHz  PowerBUS_Frequency_0
-> > >>      3.000363762          7,807,502      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > >> ^C     3.259418599          2,022,150      hv_24x7/pm_pb_cyc,chip=0/ #      0.5 GHz  PowerBUS_Frequency_0
-> > >>      3.259418599          2,022,164      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > >>
-> > >>  Performance counter stats for 'CPU(s) 0':
-> > >>
-> > >>         25,436,820      hv_24x7/pm_pb_cyc,chip=0/ #      6.4 GHz  PowerBUS_Frequency_0
-> > >>         25,444,629      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > >>
-> > >>        3.259505529 seconds time elapsed
-> > > 
-> > > I found the bug, we are not adding runtime metrics as standalone ones,
-> > > but as referenced metrics.. will fix and try to add test for that
-> > > 
-> > > as for testing.. do I need some special ppc server to have support for this? 
-> > 
-> > Hi jiri,
-> >     We need power9 lpar machine and need to make sure `CONFIG_HV_PERF_CTRS` is
-> > enabled.
-> 
-> could you please try with following patch on top?
+This patch is compile-tested only
 
-So, can you point me to the cset that this should be merged into? Or can
-it come as a separate patch? I'll put what I have in the tmp.perf/core
-branch, and will do testing, please let me know if you want to fold it
-or as a followup patch.
-
-- Arnaldo
- 
-> thanks,
-> jirka
-> 
-> 
-> ---
-> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-> index 6f179b9903a0..03aa4bd4a38b 100644
-> --- a/tools/perf/util/metricgroup.c
-> +++ b/tools/perf/util/metricgroup.c
-> @@ -820,11 +820,11 @@ static int add_metric(struct list_head *metric_list,
->  		      struct expr_id *parent,
->  		      struct expr_ids *ids);
->  
-> -static int resolve_metric(struct metric *m,
-> -			  bool metric_no_group,
-> -			  struct list_head *metric_list,
-> -			  struct pmu_events_map *map,
-> -			  struct expr_ids *ids)
-> +static int __resolve_metric(struct metric *m,
-> +			    bool metric_no_group,
-> +			    struct list_head *metric_list,
-> +			    struct pmu_events_map *map,
-> +			    struct expr_ids *ids)
->  {
->  	struct hashmap_entry *cur;
->  	size_t bkt;
-> @@ -869,6 +869,23 @@ static int resolve_metric(struct metric *m,
->  	return 0;
->  }
->  
-> +static int resolve_metric(bool metric_no_group,
-> +			  struct list_head *metric_list,
-> +			  struct pmu_events_map *map,
-> +			  struct expr_ids *ids)
-> +{
-> +	struct metric *m;
-> +	int err;
-> +
-> +	list_for_each_entry(m, metric_list, nd) {
-> +		err = __resolve_metric(m, metric_no_group, metric_list, map, ids);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int add_metric(struct list_head *metric_list,
->  		      struct pmu_event *pe,
->  		      bool metric_no_group,
-> @@ -876,6 +893,7 @@ static int add_metric(struct list_head *metric_list,
->  		      struct expr_id *parent,
->  		      struct expr_ids *ids)
->  {
-> +	struct metric *orig = *m;
->  	int ret = 0;
->  
->  	pr_debug("metric expr %s for %s\n", pe->metric_expr, pe->metric_name);
-> @@ -892,7 +910,7 @@ static int add_metric(struct list_head *metric_list,
->  		 * those events to metric_list.
->  		 */
->  
-> -		for (j = 0; j < count && !ret; j++) {
-> +		for (j = 0; j < count && !ret; j++, *m = orig) {
->  			ret = __add_metric(metric_list, pe, metric_no_group, j, m, parent, ids);
->  		}
->  	}
-> @@ -907,8 +925,8 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->  
->  {
->  	struct expr_ids ids = { 0 };
-> +	struct metric *m = NULL;
->  	struct pmu_event *pe;
-> -	struct metric *m;
->  	LIST_HEAD(list);
->  	int i, ret;
->  	bool has_match = false;
-> @@ -925,7 +943,7 @@ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
->  		 * Process any possible referenced metrics
->  		 * included in the expression.
->  		 */
-> -		ret = resolve_metric(m, metric_no_group,
-> +		ret = resolve_metric(metric_no_group,
->  				     &list, map, &ids);
->  		if (ret)
->  			return ret;
-> 
-
--- 
-
-- Arnaldo
+Thanks
+Vaibhav Gupta
