@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12707230C5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AA5230C5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730403AbgG1OYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730089AbgG1OYq (ORCPT
+        id S1730410AbgG1OZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:25:11 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48448 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730089AbgG1OZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:24:46 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D194EC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 07:24:45 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id l23so18819686qkk.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 07:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MWRFI7Cr0Uwgm5dsy6ruH9K3Q6HQlGNoCK45U52FYiQ=;
-        b=tCr1heuSvPmt5jXKf8Iu6VNc9z3I5OpkMkWQoiH+XTQmhONE4L+OWhLqwf1tKEPzob
-         Ii1kdw2FWvh4ZgrlKcqogL/4ZVn8E7lARtAFddkrarYxhbaVy+WDrHj8WYDpOCZqpC8W
-         S9M7NcreX/JvIs7sgi8QZ8ArTREwbAkqvPV5Yb9yoPD0UMFOqIBGULopBmcHzjnp3cGC
-         CQSwGKpthOebWo2/+O+x/xPdaOe2iwKoS+xJ6f7B0Fbn1oUPU/+s5dXnZKynr5X7XrkA
-         WiWr6W8FIC4MIwN6bJUxNlbxqAXMD5MtZBXapGzgdF+gRreFfVgXEc929EYlg1kzDpHW
-         8U4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=MWRFI7Cr0Uwgm5dsy6ruH9K3Q6HQlGNoCK45U52FYiQ=;
-        b=ojJCSmJxKY3Wj5bPYOzSO1PFHc9cFRgqjkOc2CToGaOqiFA19GjYsQ+p4TOPxgpPJ5
-         EaA2SPkvdbUFls2JYhALgtaol6fVGdWXzwkovvfdSSPOg1zjQu9Sl4VlvG6GEJBJauHV
-         qV8un5xF+NRuC502D2KXDhMJmnc95CMeeog+yWi8ZCH0oumUwUKOSOTEa7EC/EEr4bfH
-         wjNLo4GiB8Hu494cx0XBt6EN8ds2R9enCi4+JMwQ1iAhMc0Fcf20v+xYbeI/+he4De5l
-         nSWCC30gD4T0vzEfbvd9SER3NPf6ZlZOrL/BtRfGeYJW9+o2ORSOON1KCIBHQs7mg67B
-         huBA==
-X-Gm-Message-State: AOAM532qa3CN+2A4W9rK+Do8BlQ50Hpc++F5806GFygIGMcJEpHqOJBH
-        1WTyjzeln5GD2Vy1Hq1d+NE=
-X-Google-Smtp-Source: ABdhPJwWqhRKg+bpR3CFbMj7+HWQ7169YXRxZ7/bHc+gQQYwrJdRXt1vxGYZ6995WJJCastPluwDkw==
-X-Received: by 2002:a37:34c:: with SMTP id 73mr9668910qkd.262.1595946285034;
-        Tue, 28 Jul 2020 07:24:45 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id e4sm12213878qts.57.2020.07.28.07.24.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 07:24:44 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 28 Jul 2020 10:24:42 -0400
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Kees Cook <keescook@chromium.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] x86/kaslr: Cleanup and small bugfixes
-Message-ID: <20200728142442.GA3869481@rani.riverdale.lan>
-References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
- <20200727230801.3468620-1-nivedita@alum.mit.edu>
- <20200728110617.GF222284@gmail.com>
+        Tue, 28 Jul 2020 10:25:10 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4604D20B4908;
+        Tue, 28 Jul 2020 07:25:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4604D20B4908
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1595946309;
+        bh=kf49Pl4vodwxbcCaCVjPOECW8xxDzk6EtLOs42dKW5M=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=n7hsyuxJEGAN2VcPdsLlUNFVFF4BLQhvYqXnhM4qQ28xeJqT+t+Ob/3mUlk1BrbNt
+         roMUe9lkfvyJe5bANGjyV6/Ckx5lMh94srtffhHtKtkeMIziH9BSweuDN5qKRg0mTw
+         pp2KOkg+YWjy90HyDGx4md5UwnAfAFse6EXXpU0w=
+Subject: Re: [PATCH 1/2] ima: Pre-parse the list of keyrings in a KEY_CHECK
+ rule
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Nayna Jain <nayna@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200727140831.64251-1-tyhicks@linux.microsoft.com>
+ <20200727140831.64251-2-tyhicks@linux.microsoft.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <953d1c54-ac80-3807-1082-e7fd00e386d5@linux.microsoft.com>
+Date:   Tue, 28 Jul 2020 07:25:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200728110617.GF222284@gmail.com>
+In-Reply-To: <20200727140831.64251-2-tyhicks@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:06:17PM +0200, Ingo Molnar wrote:
+On 7/27/20 7:08 AM, Tyler Hicks wrote:
+> The ima_keyrings buffer was used as a work buffer for strsep()-based
+> parsing of the "keyrings=" option of an IMA policy rule. This parsing
+> was re-performed each time an asymmetric key was added to a kernel
+> keyring for each loaded policy rule that contained a "keyrings=" option.
 > 
-> * Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> An example rule specifying this option is:
 > 
-> > The first 7 patches are cleanup and minor bugfixes on the x86 KASLR
-> > code.
-> > 
-> > The last one is a bit of an RFC. The memory regions used for KASLR are
-> > stored as 64-bit even on a 32-bit kernel. However there are still a few
-> > local variables that are 32-bit, but should be ok as far as I can see
-> > because they are assigned values that have been already limited to
-> > 32-bit. It does make it a little harder to verify that the code is
-> > correct. Since KASLR cannot actually use 64-bit regions for the 32-bit
-> > kernel, the patch reduces regions to their below-4G segment when
-> > creating them, making the actual variables 32-bit. Alternatively, the
-> > few local variables could be upgraded to 64-bit.
-> > 
-> > v1->v2:
-> > - Fix a bug in the bugfix 5/8: overlap.start can be smaller than
-> >   region.start, so shouldn't subtract before comparing.
-> > 
-> > Arvind Sankar (8):
-> >   x86/kaslr: Make command line handling safer
-> >   x86/kaslr: Remove bogus warning and unnecessary goto
-> >   x86/kaslr: Fix process_efi_entries comment
-> >   x86/kaslr: Initialize mem_limit to the real maximum address
-> >   x86/kaslr: Simplify __process_mem_region
-> >   x86/kaslr: Simplify process_gb_huge_pages
-> >   x86/kaslr: Clean up slot handling
-> >   x86/kaslr: Don't use 64-bit mem_vector for 32-bit kernel
-> > 
-> >  arch/x86/boot/compressed/acpi.c  |   7 +-
-> >  arch/x86/boot/compressed/kaslr.c | 228 ++++++++++++-------------------
-> >  arch/x86/boot/compressed/misc.h  |  19 ++-
-> >  3 files changed, 111 insertions(+), 143 deletions(-)
+>   measure func=KEY_CHECK keyrings=a|b|c
 > 
-> I've applied patches 1-4 to x86/kaslr and will push them out if they 
-> pass testing - see the review feedback for the others.
+> The rule says to measure asymmetric keys added to any of the kernel
+> keyrings named "a", "b", or "c". The size of the buffer size was
+> equal to the size of the largest "keyrings=" value seen in a previously
+> loaded rule (5 + 1 for the NUL-terminator in the previous example) and
+> the buffer was pre-allocated at the time of policy load.
 > 
-> Thanks,
+> The pre-allocated buffer approach suffered from a couple bugs:
 > 
-> 	Ingo
+> 1) There was no locking around the use of the buffer so concurrent key
+>     add operations, to two different keyrings, would result in the
+>     strsep() loop of ima_match_keyring() to modify the buffer at the same
+>     time. This resulted in unexpected results from ima_match_keyring()
+>     and, therefore, could cause unintended keys to be measured or keys to
+>     not be measured when IMA policy intended for them to be measured.
+> 
+> 2) If the kstrdup() that initialized entry->keyrings in ima_parse_rule()
+>     failed, the ima_keyrings buffer was freed and set to NULL even when a
+>     valid KEY_CHECK rule was previously loaded. The next KEY_CHECK event
+>     would trigger a call to strcpy() with a NULL destination pointer and
+>     crash the kernel.
+> 
+> Remove the need for a pre-allocated global buffer by parsing the list of
+> keyrings in a KEY_CHECK rule at the time of policy load. The
+> ima_rule_entry will contain an array of string pointers which point to
+> the name of each keyring specified in the rule. No string processing
+> needs to happen at the time of asymmetric key add so iterating through
+> the list and doing a string comparison is all that's required at the
+> time of policy check.
+> 
+> In the process of changing how the "keyrings=" policy option is handled,
+> a couple additional bugs were fixed:
+> 
+> 1) The rule parser accepted rules containing invalid "keyrings=" values
+>     such as "a|b||c", "a|b|", or simply "|".
+> 
+> 2) The /sys/kernel/security/ima/policy file did not display the entire
+>     "keyrings=" value if the list of keyrings was longer than what could
+>     fit in the fixed size tbuf buffer in ima_policy_show().
+> 
+> Fixes: 5c7bac9fb2c5 ("IMA: pre-allocate buffer to hold keyrings string")
+> Fixes: 2b60c0ecedf8 ("IMA: Read keyrings= option from the IMA policy")
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>   security/integrity/ima/ima_policy.c | 138 +++++++++++++++++++---------
+>   1 file changed, 93 insertions(+), 45 deletions(-)
 
-Ok, thanks, I will send them split out and replace the last patch.
+Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
