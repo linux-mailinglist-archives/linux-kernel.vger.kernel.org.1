@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CD72310A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BCA2310A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731881AbgG1RNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:13:02 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:47072 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731684AbgG1RNC (ORCPT
+        id S1731905AbgG1RN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731429AbgG1RN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:13:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=gAxUDflyYD2Qz0uZDypM7APCGN6LsjUhjSUSWoYLPcY=; b=U8RJ5NSwZQ8iU78q1Zh5y2VxyZ
-        KLqWvDt3ijkmQpa/cyxyk4D4lH1X6HTzXUZ8buyclAQa4oFopGO7GizuG8UlZlYXhKf06aO3+jWxW
-        L5i2sFLebxgLmSaQiTOm/ba8eK8Vj7kcWqyUDl3TI1/IWRsEE2Nm52OaedKFXHgUc09g=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1k0T9m-0005gL-AT; Tue, 28 Jul 2020 17:12:50 +0000
-Received: from 54-240-197-239.amazon.com ([54.240.197.239] helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1k0T9l-0004gC-Us; Tue, 28 Jul 2020 17:12:50 +0000
-Subject: Re: [PATCH v3 4/4] xen: add helpers to allocate unpopulated memory
-To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc:     linux-kernel@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Wei Liu <wl@xen.org>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        David Airlie <airlied@linux.ie>,
-        Yan Yankovskyi <yyankovskyi@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
-        linux-mm@kvack.org, Daniel Vetter <daniel@ffwll.ch>,
-        xen-devel@lists.xenproject.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20200727091342.52325-1-roger.pau@citrix.com>
- <20200727091342.52325-5-roger.pau@citrix.com>
- <b5460659-88a5-c2aa-c339-815d5618bcb5@xen.org>
- <20200728165919.GA7191@Air-de-Roger>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <b1732413-0bd0-6f58-6324-37497347ce5b@xen.org>
-Date:   Tue, 28 Jul 2020 18:12:46 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        Tue, 28 Jul 2020 13:13:26 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AACC0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:13:25 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id j8so9186560ioe.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 10:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G7RHcaI6/eTe56IzgJ5p2FT6CPrKQOVowAeyYJ5JZY8=;
+        b=hqBFbZ1EIlbZWPYoCsixxDe1MAR9ZiNu7XW7VsFaOGKOrul7BN73reE5RP2wJUhIMi
+         soM8CTX6M0sE6+8mXj356oFq7afSTEN3raZmVx7Iw6ZX1LBvJkmNf8BeFWhXyWgTt5QO
+         sX/uSn8oNMCt4QDEShDFJ7/oldS98rYaGFuedhtSNN+eDif4oEixlTqZPeAbfbXRDt/U
+         cFfLAi/d75TyOrcppGsnsrwsy1s6s4M/K5qeJH4Qg2x2NnVDLWg00bUa+RswtIAz0yV8
+         uZjiyPSCrman08np7drF5ovs+s0yYro3RLrjtBQtnu85Srj/Kdbt8DZ3cLk/3fN4nkny
+         9iqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G7RHcaI6/eTe56IzgJ5p2FT6CPrKQOVowAeyYJ5JZY8=;
+        b=mfv7W5KeIHQttUDkbuJoru19nFXy1ewUReTuFRJDy6no/tavlksBdTALR0Nmw1JGwS
+         Xv2S5Nph+9Zwq8Ut/gDVzS68C2WLVgNMOfucubqAG3wQvBALaFLxuq5/2S1rzYDGvALO
+         ttDfKYAqSbSCk9rJ37EqBvNekFHUe3uJKLDHd/SlVOb1ng7UfBRZ7WB05GPZ7ZDdaAIU
+         c9LsP5IU6irENA2DaOcYgA0+9uusNgxHRV0IyBb/YLVz0j3kFbD7XEPlVM1sZNVp3hcB
+         6pqp93pD5e4kaK3bgSTJsAjXCCj6ZA4oS+KetARdpx2V3qrolAfIHh/AUprNiATx3Nto
+         RIgg==
+X-Gm-Message-State: AOAM531pq/CxpU1NOWxgE2THxGEtSxxy6MoM4fq9KuyIFjR7de67KSO4
+        uxg4oCBBYk4MLtf3XOKvCpbIp4K3LexnBF/pwV0LfA==
+X-Google-Smtp-Source: ABdhPJzma4OqnK14EV4esOOkgwzNHy5xbaUVnJne8BaCRpJN0GzCX3/MLC6Rh5rtpUGBJ1dGDwx7gOeDEISxL4P9YPA=
+X-Received: by 2002:a05:6638:164e:: with SMTP id a14mr9658222jat.18.1595956404815;
+ Tue, 28 Jul 2020 10:13:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200728165919.GA7191@Air-de-Roger>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <20200728004446.932-1-graf@amazon.com> <87d04gm4ws.fsf@vitty.brq.redhat.com>
+ <a1f30fc8-09f5-fe2f-39e2-136b881ed15a@amazon.com>
+In-Reply-To: <a1f30fc8-09f5-fe2f-39e2-136b881ed15a@amazon.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 28 Jul 2020 10:13:13 -0700
+Message-ID: <CALMp9eQ3OxhQZYiHPiebX=KyvjWQgxQEO-owjSoxgPKsOMRvjw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Deflect unknown MSR accesses to user space
+To:     Alexander Graf <graf@amazon.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roger,
+On Tue, Jul 28, 2020 at 5:41 AM Alexander Graf <graf@amazon.com> wrote:
+>
+>
+>
+> On 28.07.20 10:15, Vitaly Kuznetsov wrote:
+> >
+> > Alexander Graf <graf@amazon.com> writes:
+> >
+> >> MSRs are weird. Some of them are normal control registers, such as EFER.
+> >> Some however are registers that really are model specific, not very
+> >> interesting to virtualization workloads, and not performance critical.
+> >> Others again are really just windows into package configuration.
+> >>
+> >> Out of these MSRs, only the first category is necessary to implement in
+> >> kernel space. Rarely accessed MSRs, MSRs that should be fine tunes against
+> >> certain CPU models and MSRs that contain information on the package level
+> >> are much better suited for user space to process. However, over time we have
+> >> accumulated a lot of MSRs that are not the first category, but still handled
+> >> by in-kernel KVM code.
+> >>
+> >> This patch adds a generic interface to handle WRMSR and RDMSR from user
+> >> space. With this, any future MSR that is part of the latter categories can
+> >> be handled in user space.
 
-On 28/07/2020 17:59, Roger Pau Monné wrote:
-> On Tue, Jul 28, 2020 at 05:48:23PM +0100, Julien Grall wrote:
->> Hi,
->>
->> On 27/07/2020 10:13, Roger Pau Monne wrote:
->>> To be used in order to create foreign mappings. This is based on the
->>> ZONE_DEVICE facility which is used by persistent memory devices in
->>> order to create struct pages and kernel virtual mappings for the IOMEM
->>> areas of such devices. Note that on kernels without support for
->>> ZONE_DEVICE Xen will fallback to use ballooned pages in order to
->>> create foreign mappings.
->>>
->>> The newly added helpers use the same parameters as the existing
->>> {alloc/free}_xenballooned_pages functions, which allows for in-place
->>> replacement of the callers. Once a memory region has been added to be
->>> used as scratch mapping space it will no longer be released, and pages
->>> returned are kept in a linked list. This allows to have a buffer of
->>> pages and prevents resorting to frequent additions and removals of
->>> regions.
->>>
->>> If enabled (because ZONE_DEVICE is supported) the usage of the new
->>> functionality untangles Xen balloon and RAM hotplug from the usage of
->>> unpopulated physical memory ranges to map foreign pages, which is the
->>> correct thing to do in order to avoid mappings of foreign pages depend
->>> on memory hotplug.
->> I think this is going to break Dom0 on Arm if the kernel has been built with
->> hotplug. This is because you may end up to re-use region that will be used
->> for the 1:1 mapping of a foreign map.
->>
->> Note that I don't know whether hotplug has been tested on Xen on Arm yet. So
->> it might be possible to be already broken.
->>
->> Meanwhile, my suggestion would be to make the use of hotplug in the balloon
->> code conditional (maybe using CONFIG_ARM64 and CONFIG_ARM)?
-> 
-> Right, this feature (allocation of unpopulated memory separated from
-> the balloon driver) is currently gated on CONFIG_ZONE_DEVICE, which I
-> think could be used on Arm.
-> 
-> IMO the right solution seems to be to subtract the physical memory
-> regions that can be used for the identity mappings of foreign pages
-> (all RAM on the system AFAICT) from iomem_resource, as that would make
-> this and the memory hotplug done in the balloon driver safe?
+This sounds similar to Peter Hornyack's RFC from 5 years ago:
+https://www.mail-archive.com/kvm@vger.kernel.org/msg124448.html.
 
-Dom0 doesn't know the regions used for the identity mappings as this is 
-only managed by Xen. So there is nothing you can really do here.
+> >> Furthermore, it allows us to replace the existing "ignore_msrs" logic with
+> >> something that applies per-VM rather than on the full system. That way you
+> >> can run productive VMs in parallel to experimental ones where you don't care
+> >> about proper MSR handling.
+> >>
+> >
+> > In theory, we can go further: userspace will give KVM the list of MSRs
+> > it is interested in. This list may even contain MSRs which are normally
+> > handled by KVM, in this case userspace gets an option to mangle KVM's
+> > reply (RDMSR) or do something extra (WRMSR). I'm not sure if there is a
+> > real need behind this, just an idea.
+> >
+> > The problem with this approach is: if currently some MSR is not
+> > implemented in KVM you will get an exit. When later someone comes with a
+> > patch to implement this MSR your userspace handling will immediately get
+> > broken so the list of not implemented MSRs effectively becomes an API :-)
 
-But don't you have the same issue on x86 with "magic pages"?
+Indeed. This is a legitimate concern. At Google, we have experienced
+this problem already, using Peter Hornyack's approach. We ended up
+commenting out some MSRs from kvm, which is less than ideal.
 
-Cheers,
+> Yeah, I'm not quite sure how to do this without bloating the kernel's
+> memory footprint too much though.
+>
+> One option would be to create a shared bitmap with user space. But that
+> would need to be sparse and quite big to be able to address all of
+> today's possible MSR indexes. From a quick glimpse at Linux's MSR
+> defines, there are:
+>
+>    0x00000000 - 0x00001000 (Intel)
+>    0x00001000 - 0x00002000 (VIA)
+>    0x40000000 - 0x50000000 (PV)
+>    0xc0000000 - 0xc0003000 (AMD)
+>    0xc0010000 - 0xc0012000 (AMD)
+>    0x80860000 - 0x80870000 (Transmeta)
+>
+> Another idea would be to turn the logic around and implement an
+> allowlist in KVM with all of the MSRs that KVM should handle. In that
+> API we could ask for an array of KVM supported MSRs into user space.
+> User space could then bounce that array back to KVM to have all in-KVM
+> supported MSRs handled. Or it could remove entries that it wants to
+> handle on its own.
+>
+> KVM internally could then save the list as a dense bitmap, translating
+> every list entry into its corresponding bit.
+>
+> While it does feel a bit overengineered, it would solve the problem that
+> we're turning in-KVM handled MSRs into an ABI.
 
--- 
-Julien Grall
+It seems unlikely that userspace is going to know what to do with a
+large number of MSRs. I suspect that a small enumerated list will
+suffice. In fact, +Aaron Lewis is working on upstreaming a local
+Google patch set that does just that.
