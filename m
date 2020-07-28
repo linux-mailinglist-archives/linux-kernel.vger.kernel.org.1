@@ -2,183 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9E6230A53
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83525230A57
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbgG1MhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729334AbgG1MhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:37:07 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B197A20759;
-        Tue, 28 Jul 2020 12:37:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595939827;
-        bh=5TPhzH5vO99n2PNcTutP3rvbIJuX0RRXUhLLe7DOHI0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Notg73rBoii6IUqtxUD5qZwUqggHruDOBYmKXcC/on+ISeZOl7YtjJLOvfNtgqBmb
-         QFq/wiK0T42FzhBP2CIfukU9KkVJCpKBfK87RiqpUpfdU4YQxVfb9bw7Tde/w8ZTN1
-         D6ElooFvYrnZOkusacU+tLoj9/q+8cFECYSb0Vd4=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5B279404B1; Tue, 28 Jul 2020 09:37:04 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:37:04 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 17/19] perf metric: Add metric group test
-Message-ID: <20200728123704.GX40195@kernel.org>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <20200719181320.785305-18-jolsa@kernel.org>
- <CAP-5=fWmm5pvH-hwkaAKV=__7Ocbc-4Qj8OCJWz_xi4pc65A=Q@mail.gmail.com>
+        id S1729714AbgG1Mhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729334AbgG1Mhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:37:38 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2EEC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:37:37 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b6so18128514wrs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/0hxasPjkT/YyjIyd6ev9IMJ4snCTb42IQ0PCBN6d94=;
+        b=iO9VZXjU6hvp1uQ1auh+fWeL1JrNYy54Zd0p/aR+tl4Zw+1vkVUCMGJ2EEt34v4/GK
+         sIkwuGq/jSrCK83Sbv43vRDsgjQ9gEwwgmDRWmipeTCJGP4a3I1qxoG07O2Ocg/arG4e
+         kvHyW09rpYG266Cs/RQCI+4WsO9xRxbtU3iIca1CNvglmjtdxC+rYaDWPjlqty6R/6LC
+         2z6oZ2FcwVozKFXn8wMeekl3xQ6dX71pTKDDoj/DWzvCcEv+7dOkqCcPcpqYLs4ftpAp
+         iFF3P3BvnXcU48OmPgZaIVrjtebfsFh7J8KS1gL9mMLGzaUL0rzfCsfn8yJmnmA9Pyin
+         Qhag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/0hxasPjkT/YyjIyd6ev9IMJ4snCTb42IQ0PCBN6d94=;
+        b=YATltJ8IBcfts5lxlGKIui5YLxJiL987d/IJj9GCqjF31FnjIsam41i3PfRQH0bMxP
+         yWCEuDPXpKMw9eLLX1n5v4czwlagNpv1tK2CBazDRtMGPsX+D/0orGyruk5UgcsuNa6Z
+         iubSZRxOmx9eHZlUDPnJRXr4reR4APzjKn6K5gzICHedYQAeDg9LSq14DtjTt9/Pr+KZ
+         C+XIAmP+Hv+9YuYw+odL3opL/VKjaawtF5mHLfkcY9mBccX1Y36oFt8yRntxmC3yF7EY
+         kN4vnU8Fxj0slHkeFR/hIYq/9wsTEMEyjNU6whfn/evJONLgOe5hOmGyKK9DziRntlX8
+         n+GA==
+X-Gm-Message-State: AOAM530g4g8U2I49AdHW3PHkK+9Ye7LQGdsilClf2RGaMny3Pmnue/uu
+        Hv1pN0xhHGOSIKujjTqsDAcLkigmcXoEb0LcgE72Ow==
+X-Google-Smtp-Source: ABdhPJz5r1LeMnmIuvcgOziDFvfrRYb+Jc5FtZPjzhagrB6X5cXvMh2ad7Kr51ppE5WkzKsKl4nb7vypV+jB19aV45Y=
+X-Received: by 2002:adf:fe50:: with SMTP id m16mr7426770wrs.27.1595939856030;
+ Tue, 28 Jul 2020 05:37:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWmm5pvH-hwkaAKV=__7Ocbc-4Qj8OCJWz_xi4pc65A=Q@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+ <ece0d45f529cce9fb64100ddee726b81f7aa247a.1594230107.git-series.maxime@cerno.tech>
+In-Reply-To: <ece0d45f529cce9fb64100ddee726b81f7aa247a.1594230107.git-series.maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 28 Jul 2020 13:37:20 +0100
+Message-ID: <CAPY8ntDsKQBzqA3HUvn3qva4+zggLaLsmr=DL2FyRrRHAL=T_Q@mail.gmail.com>
+Subject: Re: [PATCH v4 50/78] drm/vc4: hdmi: Introduce resource init and variant
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jul 19, 2020 at 03:41:14PM -0700, Ian Rogers escreveu:
-> On Sun, Jul 19, 2020 at 11:14 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding test for metric group plus compute_metric_group
-> > function to get metrics values within the group.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
+Hi Maxime
 
-Thanks, applied.
+On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> The HDMI controllers found in the BCM2711 has a pretty different clock and
+> registers areas than found in the older BCM283x SoCs.
+>
+> Let's create a variant structure to store the various adjustments we'll
+> need later on, and a function to get the resources needed for one
+> particular version.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-- Arnaldo
- 
-> Thanks,
-> Ian
-> 
-> > ---
-> >  tools/perf/tests/parse-metric.c | 48 +++++++++++++++++++++++++++++++--
-> >  1 file changed, 46 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
-> > index 5ac32f80f8ea..f2ba5b2c5557 100644
-> > --- a/tools/perf/tests/parse-metric.c
-> > +++ b/tools/perf/tests/parse-metric.c
-> > @@ -18,6 +18,7 @@ static struct pmu_event pme_test[] = {
-> >  {
-> >         .metric_expr    = "inst_retired.any / cpu_clk_unhalted.thread",
-> >         .metric_name    = "IPC",
-> > +       .metric_group   = "group1",
-> >  },
-> >  {
-> >         .metric_expr    = "idq_uops_not_delivered.core / (4 * (( ( cpu_clk_unhalted.thread / 2 ) * "
-> > @@ -35,6 +36,7 @@ static struct pmu_event pme_test[] = {
-> >  {
-> >         .metric_expr    = "(dcache_miss_cpi + icache_miss_cycles)",
-> >         .metric_name    = "cache_miss_cycles",
-> > +       .metric_group   = "group1",
-> >  },
-> >  {
-> >         .metric_expr    = "l2_rqsts.demand_data_rd_hit + l2_rqsts.pf_hit + l2_rqsts.rfo_hit",
-> > @@ -127,7 +129,9 @@ static double compute_single(struct rblist *metric_events, struct evlist *evlist
-> >         return 0.;
-> >  }
-> >
-> > -static int compute_metric(const char *name, struct value *vals, double *ratio)
-> > +static int __compute_metric(const char *name, struct value *vals,
-> > +                           const char *name1, double *ratio1,
-> > +                           const char *name2, double *ratio2)
-> >  {
-> >         struct rblist metric_events = {
-> >                 .nr_entries = 0,
-> > @@ -166,7 +170,10 @@ static int compute_metric(const char *name, struct value *vals, double *ratio)
-> >         load_runtime_stat(&st, evlist, vals);
-> >
-> >         /* And execute the metric */
-> > -       *ratio = compute_single(&metric_events, evlist, &st, name);
-> > +       if (name1 && ratio1)
-> > +               *ratio1 = compute_single(&metric_events, evlist, &st, name1);
-> > +       if (name2 && ratio2)
-> > +               *ratio2 = compute_single(&metric_events, evlist, &st, name2);
-> >
-> >         /* ... clenup. */
-> >         metricgroup__rblist_exit(&metric_events);
-> > @@ -177,6 +184,18 @@ static int compute_metric(const char *name, struct value *vals, double *ratio)
-> >         return 0;
-> >  }
-> >
-> > +static int compute_metric(const char *name, struct value *vals, double *ratio)
-> > +{
-> > +       return __compute_metric(name, vals, name, ratio, NULL, NULL);
-> > +}
-> > +
-> > +static int compute_metric_group(const char *name, struct value *vals,
-> > +                               const char *name1, double *ratio1,
-> > +                               const char *name2, double *ratio2)
-> > +{
-> > +       return __compute_metric(name, vals, name1, ratio1, name2, ratio2);
-> > +}
-> > +
-> >  static int test_ipc(void)
-> >  {
-> >         double ratio;
-> > @@ -297,6 +316,30 @@ static int test_recursion_fail(void)
-> >         return 0;
-> >  }
-> >
-> > +static int test_metric_group(void)
-> > +{
-> > +       double ratio1, ratio2;
-> > +       struct value vals[] = {
-> > +               { .event = "cpu_clk_unhalted.thread", .val = 200 },
-> > +               { .event = "l1d-loads-misses",        .val = 300 },
-> > +               { .event = "l1i-loads-misses",        .val = 200 },
-> > +               { .event = "inst_retired.any",        .val = 400 },
-> > +               { 0 },
-> > +       };
-> > +
-> > +       TEST_ASSERT_VAL("failed to find recursion",
-> > +                       compute_metric_group("group1", vals,
-> > +                                            "IPC", &ratio1,
-> > +                                            "cache_miss_cycles", &ratio2) == 0);
-> > +
-> > +       TEST_ASSERT_VAL("group IPC failed, wrong ratio",
-> > +                       ratio1 == 2.0);
-> > +
-> > +       TEST_ASSERT_VAL("group cache_miss_cycles failed, wrong ratio",
-> > +                       ratio2 == 1.25);
-> > +       return 0;
-> > +}
-> > +
-> >  int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unused)
-> >  {
-> >         TEST_ASSERT_VAL("IPC failed", test_ipc() == 0);
-> > @@ -304,5 +347,6 @@ int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unu
-> >         TEST_ASSERT_VAL("cache_miss_cycles failed", test_cache_miss_cycles() == 0);
-> >         TEST_ASSERT_VAL("DCache_L2 failed", test_dcache_l2() == 0);
-> >         TEST_ASSERT_VAL("recursion fail failed", test_recursion_fail() == 0);
-> > +       TEST_ASSERT_VAL("test metric group", test_metric_group() == 0);
-> >         return 0;
-> >  }
-> > --
-> > 2.25.4
-> >
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
--- 
-
-- Arnaldo
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 61 +++++++++++++++++++++++------------
+>  drivers/gpu/drm/vc4/vc4_hdmi.h | 10 ++++++-
+>  2 files changed, 51 insertions(+), 20 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index ec7710dfd04e..ac021e07a8cb 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1179,28 +1179,12 @@ static const struct cec_adap_ops vc4_hdmi_cec_adap_ops = {
+>  };
+>  #endif
+>
+> -static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+> +static int vc4_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
+>  {
+> -#ifdef CONFIG_DRM_VC4_HDMI_CEC
+> -       struct cec_connector_info conn_info;
+> -#endif
+> -       struct platform_device *pdev = to_platform_device(dev);
+> -       struct drm_device *drm = dev_get_drvdata(master);
+> -       struct vc4_hdmi *vc4_hdmi;
+> -       struct drm_encoder *encoder;
+> -       struct device_node *ddc_node;
+> -       u32 value;
+> +       struct platform_device *pdev = vc4_hdmi->pdev;
+> +       struct device *dev = &pdev->dev;
+>         int ret;
+>
+> -       vc4_hdmi = devm_kzalloc(dev, sizeof(*vc4_hdmi), GFP_KERNEL);
+> -       if (!vc4_hdmi)
+> -               return -ENOMEM;
+> -
+> -       dev_set_drvdata(dev, vc4_hdmi);
+> -       encoder = &vc4_hdmi->encoder.base.base;
+> -       vc4_hdmi->encoder.base.type = VC4_ENCODER_TYPE_HDMI0;
+> -       vc4_hdmi->pdev = pdev;
+> -
+>         vc4_hdmi->hdmicore_regs = vc4_ioremap_regs(pdev, 0);
+>         if (IS_ERR(vc4_hdmi->hdmicore_regs))
+>                 return PTR_ERR(vc4_hdmi->hdmicore_regs);
+> @@ -1212,6 +1196,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>         vc4_hdmi->hdmi_regset.base = vc4_hdmi->hdmicore_regs;
+>         vc4_hdmi->hdmi_regset.regs = hdmi_regs;
+>         vc4_hdmi->hdmi_regset.nregs = ARRAY_SIZE(hdmi_regs);
+> +
+>         vc4_hdmi->hd_regset.base = vc4_hdmi->hd_regs;
+>         vc4_hdmi->hd_regset.regs = hd_regs;
+>         vc4_hdmi->hd_regset.nregs = ARRAY_SIZE(hd_regs);
+> @@ -1223,12 +1208,44 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>                         DRM_ERROR("Failed to get pixel clock\n");
+>                 return ret;
+>         }
+> +
+>         vc4_hdmi->hsm_clock = devm_clk_get(dev, "hdmi");
+>         if (IS_ERR(vc4_hdmi->hsm_clock)) {
+>                 DRM_ERROR("Failed to get HDMI state machine clock\n");
+>                 return PTR_ERR(vc4_hdmi->hsm_clock);
+>         }
+>
+> +       return 0;
+> +}
+> +
+> +static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+> +{
+> +#ifdef CONFIG_DRM_VC4_HDMI_CEC
+> +       struct cec_connector_info conn_info;
+> +#endif
+> +       const struct vc4_hdmi_variant *variant = of_device_get_match_data(dev);
+> +       struct platform_device *pdev = to_platform_device(dev);
+> +       struct drm_device *drm = dev_get_drvdata(master);
+> +       struct vc4_hdmi *vc4_hdmi;
+> +       struct drm_encoder *encoder;
+> +       struct device_node *ddc_node;
+> +       u32 value;
+> +       int ret;
+> +
+> +       vc4_hdmi = devm_kzalloc(dev, sizeof(*vc4_hdmi), GFP_KERNEL);
+> +       if (!vc4_hdmi)
+> +               return -ENOMEM;
+> +
+> +       dev_set_drvdata(dev, vc4_hdmi);
+> +       encoder = &vc4_hdmi->encoder.base.base;
+> +       vc4_hdmi->encoder.base.type = VC4_ENCODER_TYPE_HDMI0;
+> +       vc4_hdmi->pdev = pdev;
+> +       vc4_hdmi->variant = variant;
+> +
+> +       ret = variant->init_resources(vc4_hdmi);
+> +       if (ret)
+> +               return ret;
+> +
+>         ddc_node = of_parse_phandle(dev->of_node, "ddc", 0);
+>         if (!ddc_node) {
+>                 DRM_ERROR("Failed to find ddc node in device tree\n");
+> @@ -1404,8 +1421,12 @@ static int vc4_hdmi_dev_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static const struct vc4_hdmi_variant bcm2835_variant = {
+> +       .init_resources         = vc4_hdmi_init_resources,
+> +};
+> +
+>  static const struct of_device_id vc4_hdmi_dt_match[] = {
+> -       { .compatible = "brcm,bcm2835-hdmi" },
+> +       { .compatible = "brcm,bcm2835-hdmi", .data = &bcm2835_variant },
+>         {}
+>  };
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 674541493909..0eaf979fe811 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -21,6 +21,15 @@ to_vc4_hdmi_encoder(struct drm_encoder *encoder)
+>         return container_of(encoder, struct vc4_hdmi_encoder, base.base);
+>  }
+>
+> +struct vc4_hdmi;
+> +
+> +struct vc4_hdmi_variant {
+> +       /* Callback to get the resources (memory region, interrupts,
+> +        * clocks, etc) for that variant.
+> +        */
+> +       int (*init_resources)(struct vc4_hdmi *vc4_hdmi);
+> +};
+> +
+>  /* HDMI audio information */
+>  struct vc4_hdmi_audio {
+>         struct snd_soc_card card;
+> @@ -39,6 +48,7 @@ struct vc4_hdmi {
+>         struct vc4_hdmi_audio audio;
+>
+>         struct platform_device *pdev;
+> +       const struct vc4_hdmi_variant *variant;
+>
+>         struct vc4_hdmi_encoder encoder;
+>         struct drm_connector connector;
+> --
+> git-series 0.9.1
