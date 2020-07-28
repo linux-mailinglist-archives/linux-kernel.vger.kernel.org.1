@@ -2,177 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36192308B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4BE2308BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbgG1Lau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
+        id S1729152AbgG1Lbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729018AbgG1Lat (ORCPT
+        with ESMTP id S1729056AbgG1Lbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:30:49 -0400
+        Tue, 28 Jul 2020 07:31:32 -0400
 Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7852CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:30:48 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id l4so20220801ejd.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:30:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB96C061794;
+        Tue, 28 Jul 2020 04:31:31 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id g11so8513136ejr.0;
+        Tue, 28 Jul 2020 04:31:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=FelnoziPl1weCVcahTpNmRZ5eU0TVIndxX9sUgwgWPQ=;
-        b=Zk9V5lU13GHJCnY6fIAdIDYjzj/Dkfky1wqBahGNEV5DkhDQRAhBxlco0JtCSL5Brx
-         IxHki1LNefunE9+097BBLCDfhIfIRG8ufEhwR7lLJK5NRMlSagtkUCI1L40tzICGdCSk
-         WipS8QBgVBR08Am5RH7YZY8D7Tgj6zmoWF6CMrlBCwVb3rRZSHT7InISyJDE43oLNqJj
-         4uIkTpZy6bvjgqhxHHVLawhMjZrT5TG59ncsZgR+17f8vEcbKurhgZPVF0JKzLNtWcOF
-         tBp6i9td6ljuzA9Q2rp3xYoxsFp9hEdObAJRd4jz6z3NDgXV4JDKNBlNiV2J1vofAP8P
-         G++Q==
+        bh=y5PIG9gv3+Q65q73c5WJL/D8ixTHr55LzcpS0la2b94=;
+        b=P7HSEqdJclVd5Bnzob/XF2RdTn0Nmb3HUJySlROmL68osljlcfCEFlV3HJYGTsfk+b
+         VHrJ1f+xMExFZ+YSvv8Rmeh1N5GaQQ3p6pZuSDQBx0nbSt1s4XPLJfYIDrJpBvMTIQ3T
+         tnPlkWxuMjJu8J60O/OlnbAruEsKB2973ivyYANGexg1cYLi5G1vwz7DY7w0Hk/PvarE
+         qINCzPe5al7+9kODm2QQrbeaDo+Ef9vruELr0bSlzbcnvJrfytMgRRiJ5yKDr3S0B9bh
+         pUq4JqHBAw9f6ZNp7JiPY7EX8klIc+e+asMdZK9Yz7BoN21wjEsZd5KQdrrR+TAABie5
+         JrSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=FelnoziPl1weCVcahTpNmRZ5eU0TVIndxX9sUgwgWPQ=;
-        b=jnXAabp9N4As5NPSX3tsQ+V6WnAmdGbjOXL6D4lnRmpHs1/MbA35q+UDwijqH/NXZ6
-         usF0cQnbrTQAIRNOJJOpqZ03M/0Ro/KrFRKm2d2IRJ8xkeroYynrRT+llZsGSsaGFtbp
-         TefQxAx0IaweCBam0aAZMqLtvfx8ZYKimoeL+c1PtBc7RMtMJsE6lNgiimeygecppJoI
-         B9M70R0BAzZET7qQG8jNEs457dXAs7iCBBhj/ZiRj9yMiZpINs7mroCzKWJ0Xb/2FZ1a
-         hqR6ggjQgpxL9foH2nJqkm/2jovOnT7oYToxBXZpN3RQoRYam1Z5WFVxkv3gUgK/t+tQ
-         aJZQ==
-X-Gm-Message-State: AOAM531ZwQUoK1Bp3rq1bsKVqydL9JF1ry1RmvEyTEsab6Xz3NQZiJA6
-        JW52cpF0dOAvFAejPGWwkoY=
-X-Google-Smtp-Source: ABdhPJzjOMRbmRsPmCMDX4gM+H0rnTPVUoURzGHDT4kh/j2mLjPMsJ/bY0y3kkZuu806GJiW0uSbTg==
-X-Received: by 2002:a17:907:100f:: with SMTP id ox15mr12454058ejb.323.1595935847173;
-        Tue, 28 Jul 2020 04:30:47 -0700 (PDT)
+        bh=y5PIG9gv3+Q65q73c5WJL/D8ixTHr55LzcpS0la2b94=;
+        b=OOzFgRSu/DvjBP+3eKmGLIftrUVRhrB6OCXZ7oI2ZKitEKe/7hOLHMA2fChf3XyTpy
+         C/Th+ceg3zrQt4MJt63pZXHsRvYbvbwIzdi11gA2GVWubw6Bi5U4qLHR1GLlmB5sXo+c
+         Qn9yJjRW/dW3grvrpRiPd+RcAzbbu67hXsAIujKJkQqt3jx32eutYjeHmJYMmO3ktPIH
+         Te1JETAsO1UKem6WhMYMY//je33oKgHo5SFX3uBFNJ9Q5SnWGqnoyn6NGr3PkBy54Due
+         JCanvJO0i8JQollrWJNEvSpGwd1kSRM58A9wC7DP9DKSirPwszFXHRTSqGLAK02rEwn+
+         cnNw==
+X-Gm-Message-State: AOAM533fxYOvBNmJhet9bMjHRrwqic3bShiFK8FVomFCweRS2L2toODh
+        MIrI9LjpDNApb2rNBcUVJ88=
+X-Google-Smtp-Source: ABdhPJyQbAVtd7rvh28AKuUuAlpNq5u8pcARe+eVx7W3hTuAzpqofzarCSjsJ0a8Qe+YPenFOSGRUQ==
+X-Received: by 2002:a17:906:22c1:: with SMTP id q1mr16036266eja.443.1595935889994;
+        Tue, 28 Jul 2020 04:31:29 -0700 (PDT)
 Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id s2sm8792001ejd.17.2020.07.28.04.30.46
+        by smtp.gmail.com with ESMTPSA id qw19sm7634705ejb.46.2020.07.28.04.31.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 04:30:46 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 13:30:44 +0200
+        Tue, 28 Jul 2020 04:31:29 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 13:31:26 +0200
 From:   Ingo Molnar <mingo@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     peterz@infradead.org, bp@alien8.de, tglx@linutronix.de,
-        paulmck@kernel.org, dvyukov@google.com, kasan-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH tip/locking/core] kcsan: Improve IRQ state trace reporting
-Message-ID: <20200728113044.GA233444@gmail.com>
-References: <20200720120348.2406588-1-elver@google.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
+Subject: Re: [PATCH 14/15] x86/numa: remove redundant iteration over
+ memblock.reserved
+Message-ID: <20200728113126.GB233444@gmail.com>
+References: <20200728051153.1590-1-rppt@kernel.org>
+ <20200728051153.1590-15-rppt@kernel.org>
+ <20200728104440.GA222284@gmail.com>
+ <20200728105602.GB3655207@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200720120348.2406588-1-elver@google.com>
+In-Reply-To: <20200728105602.GB3655207@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Marco Elver <elver@google.com> wrote:
+* Mike Rapoport <rppt@kernel.org> wrote:
 
-> To improve the general usefulness of the IRQ state trace information
-> with KCSAN enabled, save and restore the trace information when entering
-> and exiting the KCSAN runtime as well as when generating a KCSAN report.
+> On Tue, Jul 28, 2020 at 12:44:40PM +0200, Ingo Molnar wrote:
+> > 
+> > * Mike Rapoport <rppt@kernel.org> wrote:
+> > 
+> > > From: Mike Rapoport <rppt@linux.ibm.com>
+> > > 
+> > > numa_clear_kernel_node_hotplug() function first traverses numa_meminfo
+> > > regions to set node ID in memblock.reserved and than traverses
+> > > memblock.reserved to update reserved_nodemask to include node IDs that were
+> > > set in the first loop.
+> > > 
+> > > Remove redundant traversal over memblock.reserved and update
+> > > reserved_nodemask while iterating over numa_meminfo.
+> > > 
+> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > > ---
+> > >  arch/x86/mm/numa.c | 26 ++++++++++----------------
+> > >  1 file changed, 10 insertions(+), 16 deletions(-)
+> > 
+> > I suspect you'd like to carry this in the -mm tree?
 > 
-> Without this, reporting the IRQ state trace (whether via a KCSAN report
-> or outside of KCSAN via a lockdep report) is rather useless due to
-> continuously being touched by KCSAN. This is because if KCSAN is
-> enabled, every instrumented memory access causes changes to IRQ state
-> tracking information (either by KCSAN disabling/enabling interrupts or
-> taking report_lock when generating a report).
-> 
-> Before "lockdep: Prepare for NMI IRQ state tracking", KCSAN avoided
-> touching the IRQ state trace via raw_local_irq_save/restore() and
-> lockdep_off/on().
-> 
-> Fixes: 248591f5d257 ("kcsan: Make KCSAN compatible with new IRQ state tracking")
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> 
-> 
-> Hi, Peter,
-> 
-> If this is reasonable, please take it into the branch that currently has
-> the series around "lockdep: Prepare for NMI IRQ state tracking"
-> (tip/locking/core?).
-> 
-> Thanks,
-> -- Marco
-> 
-> 
-> ---
->  include/linux/sched.h | 13 +++++++++++++
->  kernel/kcsan/core.c   | 39 +++++++++++++++++++++++++++++++++++++++
->  kernel/kcsan/kcsan.h  |  7 +++++++
->  kernel/kcsan/report.c |  3 +++
->  4 files changed, 62 insertions(+)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 692e327d7455..ca5324b1657c 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1199,6 +1199,19 @@ struct task_struct {
->  #endif
->  #ifdef CONFIG_KCSAN
->  	struct kcsan_ctx		kcsan_ctx;
-> +#ifdef CONFIG_TRACE_IRQFLAGS
-> +	struct {
-> +		unsigned int		irq_events;
-> +		unsigned long		hardirq_enable_ip;
-> +		unsigned long		hardirq_disable_ip;
-> +		unsigned int		hardirq_enable_event;
-> +		unsigned int		hardirq_disable_event;
-> +		unsigned long		softirq_disable_ip;
-> +		unsigned long		softirq_enable_ip;
-> +		unsigned int		softirq_disable_event;
-> +		unsigned int		softirq_enable_event;
-> +	} kcsan_save_irqtrace;
-> +#endif
->  #endif
+> Yes.
 >  
->  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-> index 732623c30359..7e8347c14530 100644
-> --- a/kernel/kcsan/core.c
-> +++ b/kernel/kcsan/core.c
-> @@ -291,6 +291,36 @@ static inline unsigned int get_delay(void)
->  				0);
->  }
->  
-> +void kcsan_save_irqtrace(struct task_struct *task)
-> +{
-> +#ifdef CONFIG_TRACE_IRQFLAGS
-> +	task->kcsan_save_irqtrace.irq_events = task->irq_events;
-> +	task->kcsan_save_irqtrace.hardirq_enable_ip = task->hardirq_enable_ip;
-> +	task->kcsan_save_irqtrace.hardirq_disable_ip = task->hardirq_disable_ip;
-> +	task->kcsan_save_irqtrace.hardirq_enable_event = task->hardirq_enable_event;
-> +	task->kcsan_save_irqtrace.hardirq_disable_event = task->hardirq_disable_event;
-> +	task->kcsan_save_irqtrace.softirq_disable_ip = task->softirq_disable_ip;
-> +	task->kcsan_save_irqtrace.softirq_enable_ip = task->softirq_enable_ip;
-> +	task->kcsan_save_irqtrace.softirq_disable_event = task->softirq_disable_event;
-> +	task->kcsan_save_irqtrace.softirq_enable_event = task->softirq_enable_event;
-> +#endif
-> +}
-> +
-> +void kcsan_restore_irqtrace(struct task_struct *task)
-> +{
-> +#ifdef CONFIG_TRACE_IRQFLAGS
-> +	task->irq_events = task->kcsan_save_irqtrace.irq_events;
-> +	task->hardirq_enable_ip = task->kcsan_save_irqtrace.hardirq_enable_ip;
-> +	task->hardirq_disable_ip = task->kcsan_save_irqtrace.hardirq_disable_ip;
-> +	task->hardirq_enable_event = task->kcsan_save_irqtrace.hardirq_enable_event;
-> +	task->hardirq_disable_event = task->kcsan_save_irqtrace.hardirq_disable_event;
-> +	task->softirq_disable_ip = task->kcsan_save_irqtrace.softirq_disable_ip;
-> +	task->softirq_enable_ip = task->kcsan_save_irqtrace.softirq_enable_ip;
-> +	task->softirq_disable_event = task->kcsan_save_irqtrace.softirq_disable_event;
-> +	task->softirq_enable_event = task->kcsan_save_irqtrace.softirq_enable_event;
-> +#endif
+> > Acked-by: Ingo Molnar <mingo@kernel.org>
+> 
+> Thanks!
 
-Please, make such type of assignment blocks cleaner by using a local 
-helper variable, and by aligning the right side vertically as well.
-
-Also, would it make sense to unify the layout between the fields in 
-task struct and the new one you introduced? That would allow a simple 
-structure copy.
+Assuming it is correct and works. :-)
 
 Thanks,
 
