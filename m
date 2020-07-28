@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3175A230733
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643B9230737
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgG1KDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S1728491AbgG1KDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:03:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728606AbgG1KDn (ORCPT
+        with ESMTP id S1728606AbgG1KDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:03:43 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A11C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:03:43 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t1so460770plq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:03:43 -0700 (PDT)
+        Tue, 28 Jul 2020 06:03:47 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3829CC0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:03:46 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id b9so9623824plx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:03:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=0x0f.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=S1PScPr62Fyv3G3V3sqS9lJD1oItrdYt39x4/kLlLZg=;
-        b=Ul31r6vzFpqUyBilU7EeOT3mAZRosSmTqaVJ985PdzmOAZtWDkssXn7e4nFkZdB5m9
-         XR6md9kmdPIPjc93Fz2i296TlFqH6ocjojtZjIltEBXzUikdf5DZIDStIMH67MXCyRw9
-         cy6TMPOP/iSKXxdKY+GlZtczBqiAgZdTHAZnI=
+        bh=TXJ1NcT71dEwTgLwEHbAIexF2sZraNkG0dfcffq3WTc=;
+        b=n+zgnpl6izxCdwPColEiF7BthmQSJu0W9qVcaU8w2jpHl4AlhvKMhWHYNQ2KGBDP1f
+         ht0rOB6qFSPnc51Kw+CVijEUlnreN0DWFdA3IBdNYstF1vrupxKFKhxC+jEEhjcIikPx
+         FBhge84POcFmeA3T3N6Cbh6Dg95yj9i/mVmIU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=S1PScPr62Fyv3G3V3sqS9lJD1oItrdYt39x4/kLlLZg=;
-        b=JLRlBFhPNDMVfqWGhKE5y59Rc8oN1MjFqLpyoUkylX0qbbW9R71YFQb3kAKRlZONii
-         fDK6ePZydGd3bpdkNIQE9EvA5/zQXLmCJehmLm3i29rJvAZf48S+0I2AINBSOmtvnCWB
-         lrXEJhjG/V2HrNcdcxE4KxUHpgGMpLSh59WqmanafyDe5y7qBHAE6sJu232GoRBoICDx
-         M7rtG5INEXTmpeHG1vflr/us76ix+nMLFrO/34RrpS7a7B2ixeRF4fcJ9X7OOa+mjR6P
-         gw2wrtxBxks2SkWcG62qlrNK1EG+EfnTZD9QdDRdrTsu3mCclpWSuDYi4nYpHCNvJemn
-         e0sQ==
-X-Gm-Message-State: AOAM531l9e4zVGN7gVu4HZW7w+Xt1u+SURpzuXYfyObmuF44oxoQJQsX
-        b1x4og/iKy/JrA0cxmI/pbwllg==
-X-Google-Smtp-Source: ABdhPJxBj4iAMGZV3EZloiPno+R8OrDHdwl0YojYT+mnKhr8ONEgW8XZTju+MwFCl58YDsJMqdR9Nw==
-X-Received: by 2002:a17:90a:ea83:: with SMTP id h3mr3886308pjz.176.1595930622799;
-        Tue, 28 Jul 2020 03:03:42 -0700 (PDT)
+        bh=TXJ1NcT71dEwTgLwEHbAIexF2sZraNkG0dfcffq3WTc=;
+        b=M1DcflnYrRhiKC1q2H09O3QQCHo68AeILSBmLUuXtTsXRGAVw9vuFT2Ixcj47hrUjK
+         rygMGTbD+9//q+j9jO1PD5Q2dRO7447PY0CQ/ZRylaMuABvBCXSjglNmpQnfzB5M8Z9F
+         A/XgGMtxvj5AkzZ/CFKf8V3Q8OfBJ/JIDItxZp6bF8CseDQWxSAfpLOFTU0f+EpZvlQc
+         z/cOKLEJqIl5SFl/BSdQQWPOAsHcEJrs0bZ0DfA8mHv43gzw/AiuoNqTcEavb6FE7GF+
+         bxThKcB79rMMrWMPOpTjI1i7N5xUOB70B/vZHFnnukvmv3L3bxI8V9qyazbtpeH7mUuq
+         kX1g==
+X-Gm-Message-State: AOAM531fFr4GKoCoXe5YJ2F8rij20q8ET6sNVfu1tacH+8OSil8plGAQ
+        khAfLrmV2gR9FNbtyfgiDGOtFg==
+X-Google-Smtp-Source: ABdhPJymtzzdhRqF/IbX/Qzvm3iVr+Td5JceDYBkjyIaF9cNweNSdmOTtlzXUjz+bkjmqWFrxpjE3A==
+X-Received: by 2002:a17:90a:a68:: with SMTP id o95mr4007863pjo.64.1595930625746;
+        Tue, 28 Jul 2020 03:03:45 -0700 (PDT)
 Received: from shiro.work (p532183-ipngn200506sizuokaden.shizuoka.ocn.ne.jp. [153.199.2.183])
-        by smtp.googlemail.com with ESMTPSA id u66sm17779018pfb.191.2020.07.28.03.03.40
+        by smtp.googlemail.com with ESMTPSA id u66sm17779018pfb.191.2020.07.28.03.03.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 03:03:42 -0700 (PDT)
+        Tue, 28 Jul 2020 03:03:44 -0700 (PDT)
 From:   Daniel Palmer <daniel@0x0f.com>
 To:     soc@kernel.org
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
         Daniel Palmer <daniel@0x0f.com>
-Subject: [PATCH v2 4/9] ARM: mstar: Adjust IMI size of infinity
-Date:   Tue, 28 Jul 2020 19:03:16 +0900
-Message-Id: <20200728100321.1691745-5-daniel@0x0f.com>
+Subject: [PATCH v2 5/9] ARM: mstar: Adjust IMI size for mercury5
+Date:   Tue, 28 Jul 2020 19:03:17 +0900
+Message-Id: <20200728100321.1691745-6-daniel@0x0f.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200728100321.1691745-1-daniel@0x0f.com>
 References: <20200728100321.1691745-1-daniel@0x0f.com>
@@ -63,24 +63,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-infinity has 88KB of SRAM at the IMI region.
+mercury5 family chips have 128KB of SRAM in the IMI region.
 
 Signed-off-by: Daniel Palmer <daniel@0x0f.com>
 ---
- arch/arm/boot/dts/infinity.dtsi | 4 ++++
+ arch/arm/boot/dts/mercury5.dtsi | 4 ++++
  1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm/boot/dts/infinity.dtsi b/arch/arm/boot/dts/infinity.dtsi
-index f68e6d59c328..cd911adef014 100644
---- a/arch/arm/boot/dts/infinity.dtsi
-+++ b/arch/arm/boot/dts/infinity.dtsi
+diff --git a/arch/arm/boot/dts/mercury5.dtsi b/arch/arm/boot/dts/mercury5.dtsi
+index f68e6d59c328..a7d0dd9d6132 100644
+--- a/arch/arm/boot/dts/mercury5.dtsi
++++ b/arch/arm/boot/dts/mercury5.dtsi
 @@ -5,3 +5,7 @@
   */
  
  #include "mstar-v7.dtsi"
 +
 +&imi {
-+	reg = <0xa0000000 0x16000>;
++	reg = <0xa0000000 0x20000>;
 +};
 -- 
 2.27.0
