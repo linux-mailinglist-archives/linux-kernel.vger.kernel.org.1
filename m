@@ -2,89 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B35230A91
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C1A230A95
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgG1MrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:47:15 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:36743 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729576AbgG1MrL (ORCPT
+        id S1729873AbgG1Msi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729379AbgG1Msh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:47:11 -0400
-Received: by mail-ed1-f68.google.com with SMTP id c15so5056458edj.3;
-        Tue, 28 Jul 2020 05:47:09 -0700 (PDT)
+        Tue, 28 Jul 2020 08:48:37 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21271C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:48:37 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b186so616485pfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:48:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=es-iitr-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=5oyTQCyX/ciYl48/sUrXDUPmcBZA+8gagBY19IdeyQw=;
+        b=mJv4cRJaHTSRd26v0XPCC6OuEb27899p3vFDZAeLGdTP7DB4aEi6p5eF4+a8cnzKCw
+         5MwzSIznTSTpJJEC8dSCLzxBxhoW/EEzSkUCb/25q+Kc2Wf+Wj9wbZlM4F9ZaOTtEvk4
+         JL4/iNFN4axOYYA7a4Q+eKkAsBX/zEWROJ1tKgCi1uGgxmSanormQNDOFwJupIAw66YV
+         e6GHp2BKmHKRPLOmx0Eii+TgpPoWFFV81GQjyAAr5WuNE9sFvLEspzkfC1PGo/MgKQmL
+         +Wcb43qgmCJAYtoO7vfJu3RtxoxWmHB/IVQAWVnuyxbHjudvAgEUR3OWIAyOI09otZxe
+         GajA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=T/pqmbhLh7sKGJACzLPiIlQzkqQ8XjFefTZhyBvXBXA=;
-        b=P1tumZy99UaJrzhb/iV9NVe/+Oc6ycDDWE3D04ml/nkJcVroeiQyMJkmp2XKChbqpZ
-         F/KC4mn9Et9TiYX0ld0Hhp0M5ZDmdsge8ux/Ckfni3iDBDYPoSk5RMKp5aOxg/gXNA2D
-         Mu1bTkGy9s/KARPwzmV+8oZ4uOOZtuBTgcos/FShLRjLwRXA2EBES68gvfrefcsmosj7
-         PIIUqnq4q2HUkBRR0XiWoGhJjGkIRCMcgpXmOJQQK1PChwU8QiBK3ij4kOutIUiX52aU
-         57h2FnfopyFaojmjaCWHz2A4zdpSn4KhiDca3UUMTGzV2imdU9FUZXLvV4lN+iOhxi4q
-         R8mA==
-X-Gm-Message-State: AOAM533d7VAwGC2ReB4JLNKvwLV1fWn+Y11nP0avvQXrKoR07+hbwLXW
-        66eD2p8U34Lejr5dOJRk4UY=
-X-Google-Smtp-Source: ABdhPJxqpRPRTtJr4gwvC8HABlrPkJOd0W1I02Qx/TUd4FrazEXvNoO6XEeihc+npOZ43QoBZUN7zw==
-X-Received: by 2002:a05:6402:1a54:: with SMTP id bf20mr14060285edb.217.1595940429122;
-        Tue, 28 Jul 2020 05:47:09 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id c7sm8221178ejr.77.2020.07.28.05.47.07
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=5oyTQCyX/ciYl48/sUrXDUPmcBZA+8gagBY19IdeyQw=;
+        b=sWFsj1Msc14HPBVOBwmMwjZicp8+MWF/GuUSgK2GIsgyF+bwvrWXzosLn6qxb1Bq+X
+         tOEWsGhTp9xXGqopH82kXpCmUXrxos/8vxfQFGeIi92lOmbK0qZXJlUF72hSFYYh/bHt
+         EGaPAAGHlUUi8nzd7vXXBcKQTvn3vgP4ddl3UHAmnU9sh6u6sMRB9pHIRllzWgDqtKq6
+         BtV+GdsAuXhWU8Y71nqXQZxkBT/8twqR912iPlA5CklLUWrYid++0o9L2SbtbKrwQBK0
+         Dzj099CGUgdwYTA9MoobUB6MxohCfA84QEwtIoW3HetPSvnehYuq6Bdm8viCbCvmYMc/
+         cORA==
+X-Gm-Message-State: AOAM532brpV8P1HqQhuWyOGKXPigBjGCEw+U+WhrfRENHSX4i3TT/UqN
+        TAuzIhjc/cWUnkKr+j0bSakdAQ==
+X-Google-Smtp-Source: ABdhPJwrNO3hVD9ncE6nw0POJPiH56DghiizCxZUSEDMPelQ3RnDZcitu5WJ+CzfU0hAcmqtp/xbpw==
+X-Received: by 2002:a63:aa42:: with SMTP id x2mr23554140pgo.361.1595940516634;
+        Tue, 28 Jul 2020 05:48:36 -0700 (PDT)
+Received: from kaaira-HP-Pavilion-Notebook ([103.113.213.178])
+        by smtp.gmail.com with ESMTPSA id w4sm17943294pfd.39.2020.07.28.05.48.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Jul 2020 05:47:08 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 14:47:06 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Kukjin Kim <kgene@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ARM: s3c: fix return value check in
- s3c_usb_otgphy_init()
-Message-ID: <20200728124706.GA32233@kozik-lap>
-References: <20200728022756.87687-1-miaoqinglang@huawei.com>
+        Tue, 28 Jul 2020 05:48:35 -0700 (PDT)
+From:   Kaaira Gupta <kgupta@es.iitr.ac.in>
+X-Google-Original-From: Kaaira Gupta <Kaairakgupta@es.iitr.ac.in>
+Date:   Tue, 28 Jul 2020 18:18:28 +0530
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
+        Helen Koike <helen.koike@collabora.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+Subject: Re: [PATCH v2 3/3] media: vimc: Join pipeline if one already exists
+Message-ID: <20200728124828.GA8928@kaaira-HP-Pavilion-Notebook>
+References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
+ <20200724120213.17119-4-kgupta@es.iitr.ac.in>
+ <e70ecfa2-695f-70ca-eccc-841477700445@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200728022756.87687-1-miaoqinglang@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e70ecfa2-695f-70ca-eccc-841477700445@collabora.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 10:27:56AM +0800, Qinglang Miao wrote:
-> the function clk_get() returns ERR_PTR() in case of error and
-> never returns NULL. So there's no need to test whether xusbxti
-> is NULL, just remove the redundant part in the return value check.
+On Tue, Jul 28, 2020 at 02:24:37PM +0200, Dafna Hirschfeld wrote:
 > 
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  arch/arm/mach-s3c64xx/setup-usb-phy.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Looks good, thanks. I don't plan to take anything before merge window
-(it is quite late in the cycle) so I will apply it after the window.
-
-Best regards,
-Krzysztof
-
-> diff --git a/arch/arm/mach-s3c64xx/setup-usb-phy.c b/arch/arm/mach-s3c64xx/setup-usb-phy.c
-> index d6b0e3b26..99d743884 100644
-> --- a/arch/arm/mach-s3c64xx/setup-usb-phy.c
-> +++ b/arch/arm/mach-s3c64xx/setup-usb-phy.c
-> @@ -31,7 +31,7 @@ static int s3c_usb_otgphy_init(struct platform_device *pdev)
->  	phyclk = readl(S3C_PHYCLK) & ~S3C_PHYCLK_CLKSEL_MASK;
->  
->  	xusbxti = clk_get(&pdev->dev, "xusbxti");
-> -	if (xusbxti && !IS_ERR(xusbxti)) {
-> +	if (!IS_ERR(xusbxti)) {
->  		switch (clk_get_rate(xusbxti)) {
->  		case 12 * MHZ:
->  			phyclk |= S3C_PHYCLK_CLKSEL_12M;
-> -- 
-> 2.25.1
 > 
+> On 24.07.20 14:02, Kaaira Gupta wrote:
+> > An output which is running is already part of a pipeline and trying to
+> > start a new pipeline is not possible. This prevents two capture devices
+> > from streaming at the same time.
+> > 
+> > Instead of failing to start the second capture device allow it to join
+> > the already running pipeline. This allows two (or more) capture devices
+> > to independently be started and stopped.
+> > 
+> > [Kaaira: Changed the search for an existing connected sensor, to search
+> > for a non-NULL pipe instead, this helps to terminate the search at
+> > output itself instead of going till the sensor, changed variable names,
+> > commit message and conditions accordingly]
+> > 
+> > Signed-off-by: Niklas Söderlund <niklas.soderlund@ragnatech.se>
+> > Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
+> > ---
+> >   .../media/test-drivers/vimc/vimc-capture.c    | 35 ++++++++++++++++++-
+> >   1 file changed, 34 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
+> > index c63496b17b9a..423d5e5a508d 100644
+> > --- a/drivers/media/test-drivers/vimc/vimc-capture.c
+> > +++ b/drivers/media/test-drivers/vimc/vimc-capture.c
+> > @@ -237,16 +237,49 @@ static void vimc_cap_return_all_buffers(struct vimc_cap_device *vcap,
+> >   	spin_unlock(&vcap->qlock);
+> >   }
+> > +static struct media_entity *vimc_cap_get_output(struct vimc_cap_device *vcap)
+> > +{
+> > +	struct media_entity *entity = &vcap->vdev.entity;
+> > +	struct media_device *mdev = entity->graph_obj.mdev;
+> > +	struct media_graph graph;
+> > +
+> > +	mutex_lock(&mdev->graph_mutex);
+> > +	if (media_graph_walk_init(&graph, mdev)) {
+> > +		mutex_unlock(&mdev->graph_mutex);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	media_graph_walk_start(&graph, entity);
+> > +
+> > +	while ((entity = media_graph_walk_next(&graph)))
+> > +		if (entity->pipe)
+> > +			break;
+> > +
+> > +	mutex_unlock(&mdev->graph_mutex);
+> > +
+> > +	media_graph_walk_cleanup(&graph);
+> > +
+> > +	return entity;
+> > +}
+> > +
+> >   static int vimc_cap_start_streaming(struct vb2_queue *vq, unsigned int count)
+> >   {
+> >   	struct vimc_cap_device *vcap = vb2_get_drv_priv(vq);
+> >   	struct media_entity *entity = &vcap->vdev.entity;
+> > +	struct media_pipeline *pipe = NULL;
+> > +	struct media_entity *oent;
+> >   	int ret;
+> >   	vcap->sequence = 0;
+> >   	/* Start the media pipeline */
+> > -	ret = media_pipeline_start(entity, &vcap->stream.pipe);
+> > +	oent = vimc_cap_get_output(vcap);
+> > +	if (oent)
+> > +		pipe = oent->pipe;
+> > +	else
+> > +		pipe = &vcap->stream.pipe;
+> > +
+> > +	ret = media_pipeline_start(entity, pipe);
+> >   	if (ret) {
+> >   		vimc_cap_return_all_buffers(vcap, VB2_BUF_STATE_QUEUED);
+> >   		return ret;
+> > 
+> 
+> I think there is actually no need to iterate the graph. If the capture is already connected to another capture
+> that streams, it means that they both have the same pipe in the media core.
+> So actually the code can just be:
+
+Hi,
+iterating the graph takes care of the case when output already exists.
+So in case where an output is needed from both Capture1 and RGB capture,
+don't they represent two different pipes?
+
+> 
+> if (vcap->ved.ent->pipe)
+> 	pipe = vcap->ved.ent->pipe;
+> else
+> 	pipe = &vcap->stream.pipe;
+> 
+> 
+> (and no need the function vimc_cap_get_output)
+> 
+> Thanks,
+> Dafna
