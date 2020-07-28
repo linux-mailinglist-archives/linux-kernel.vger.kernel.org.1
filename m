@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574852306B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C4B2306BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbgG1Jjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
+        id S1728451AbgG1Jl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbgG1Jjc (ORCPT
+        with ESMTP id S1728197AbgG1Jl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:39:32 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6AAC061794;
-        Tue, 28 Jul 2020 02:39:32 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 28 Jul 2020 05:41:26 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3166AC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:41:26 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 54F7722FEB;
-        Tue, 28 Jul 2020 11:39:30 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1595929170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=64gdmRmPNUAWxLuPtaHOnsTHn2FxnHw9JZXkDuXvtZc=;
-        b=o8YM+mX42C2t3je/oH3/fZv44ZYDoiucvXv3qUg5hvBntlN/+8aWdGh0ld+f0XgZcL0dMn
-        HI3VlmaE9HskRrEarnJ18TJsbPuIbhv12jccoIuPt4mtL+9vtkuRSD7nJ0+zSZ8X928a24
-        /nmJJUx4WDgLDFPyJkWZ6i1nNmFYbwY=
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4BGBWj2tvzzQlKZ;
+        Tue, 28 Jul 2020 11:41:21 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
+        with ESMTP id mL45Y320Mr-I; Tue, 28 Jul 2020 11:41:17 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 19:41:09 +1000
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-fsdevel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        linux-pm@vger.kernel.org
+Subject: Re: [RFC][PATCH] exec: Freeze the other threads during a
+ multi-threaded exec
+Message-ID: <20200728092359.jrv7ygt6dwktwsgp@yavin.dot.cyphar.com>
+References: <87h7tsllgw.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 28 Jul 2020 11:39:30 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 02/13] dt-bindings: mfd: Add bindings for sl28cpld
-In-Reply-To: <20200728092016.GE2419169@dell>
-References: <20200725231834.25642-1-michael@walle.cc>
- <20200725231834.25642-3-michael@walle.cc> <20200728072422.GF1850026@dell>
- <1065b0107ce6fd88b2bdd704bf45346b@walle.cc> <20200728082707.GB2419169@dell>
- <a47993ca4c77ab1ee92f6693debb3c87@walle.cc> <20200728085616.GD2419169@dell>
- <2fd3b880e36aa65e880b801092b51945@walle.cc> <20200728092016.GE2419169@dell>
-User-Agent: Roundcube Webmail/1.4.7
-Message-ID: <7aebbd1986d1a0e57fd34c2ccf5e03e3@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ifgp4clg667prhsz"
+Content-Disposition: inline
+In-Reply-To: <87h7tsllgw.fsf@x220.int.ebiederm.org>
+X-MBO-SPAM-Probability: 0
+X-Rspamd-Score: -4.89 / 15.00 / 15.00
+X-Rspamd-Queue-Id: E1EE11837
+X-Rspamd-UID: 106a35
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-07-28 11:20, schrieb Lee Jones:
->> What sounds bogus? That we name the implementation sl28cpld?
->> How is that different to like adt7411? Its just a name made up by
->> the vendor. So if there is a new version of the adt7411 the vendor
->> might name it adt7412.
-> 
-> Using an arbitrary string as a compatible would be bogus.
-> 
-> So here 'sl28cpld' is the device name, so it's not actually
-> arbitrary.  That's a good start.
-> 
->> We name it sl28cpld-r2. So what is the problem here?
-> 
-> Do you though?  So 'sl28cpld-r1' is the name of the device?  The name
-> that is quoted from the (private) datasheet?  Because looking at the
-> implementation and going by the conversation, it sounds as though
-> you-re only adding the '-r1' piece to the compatible string for
-> revision identification.  Which if true, is not usually allowed and
-> warrants intervention by Rob.
 
-Revisions would imply backwards compatibility, correct? I'm not
-aming for that. Yes, I appended that "-r1" (in the lack of any
-better suffix) because I didn't want to tie the base name to the
-simple MFD, just in case. And isn't that the whole purpose of
-the compatible string? To connect a driver to a piece of
-hardware?
+--ifgp4clg667prhsz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But even here, I don't care anymore. I strip it again. So future
-incarnations which aren't compatible with simple mfd will need
-another name. So what.
+On 2020-07-27, Eric W. Biederman <ebiederm@xmission.com> wrote:
+> To the best of my knowledge processes with more than one thread
+> calling exec are not common, and as all of the threads will be killed
+> by exec there does not appear to be any useful work a thread can
+> reliably do during exec.
 
--michael
+Every Go program which calls exec (this includes runc, Docker, LXD,
+Kubernetes, et al) fills the niche of "multi-threaded program that calls
+exec" -- all Go programs are multi-threaded and there's no way of
+disabling this. This will most likely cause pretty bad performance
+regression for basically all container workloads.
+
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--ifgp4clg667prhsz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXx/ysgAKCRCdlLljIbnQ
+EkKKAQDoy8ZD4VcTpwNYsy7hTgaSyJYCrr3BEVWWGgivWDOsTAD/YSG2mqdY6Xxb
+/MSwhLo3kjae0B+Zbr6HVENFaTzZjgc=
+=1hzK
+-----END PGP SIGNATURE-----
+
+--ifgp4clg667prhsz--
