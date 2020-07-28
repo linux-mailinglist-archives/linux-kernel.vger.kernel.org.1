@@ -2,55 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60864231043
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A542B231049
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731732AbgG1Q7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:59:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731523AbgG1Q7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:59:20 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9984220786;
-        Tue, 28 Jul 2020 16:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595955560;
-        bh=ST3jWuFkG0CSvKv9iyNhigR7bR7h19swnEuLsvlSNtQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=feWGph0v83Feyg1UNLeoqkFE8DHV0ZuQPJtqOqQtXfKxlYIfuo/bbvgwjzCogOGef
-         LwOmfDpbimOLkdZBfrljmnaN3lxwK6Q123BKcNcpEd6nF0w67ibb9rHnyJ9eoxK2rG
-         dHozXIwlwuUHq9iKal2iRKjSftyPBZsCW7m7sY0A=
-Date:   Tue, 28 Jul 2020 18:59:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCH 04/23] devtmpfs: refactor devtmpfsd()
-Message-ID: <20200728165913.GB42656@kroah.com>
-References: <20200728163416.556521-1-hch@lst.de>
- <20200728163416.556521-5-hch@lst.de>
+        id S1731761AbgG1Q7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:59:33 -0400
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:49540 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731578AbgG1Q71 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 12:59:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1595955568;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tRrG2kIPRmHZl5KYjBZDnpKOe+a1KAifCS6TcraQCvw=;
+  b=Z+RemIi/6pAEEYTQzK56hTBK9EUNPk1nEZ75Jlzp2fDrA1Uh9N6rix76
+   9q4w1goHGh99cAAC3+5P4ZSwb+XcIq6IiUaiG0//qC5CnDpxXIqQ2Va66
+   Ii6yg6GtaZFEkI8bjVfKyb9oKi/r0vDjEAXo2XuS5VJJ+KmKI5t4lUoYW
+   Q=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: ek+XUNwRJ4Q5p4iyKzYjQH2lwOuZGVQ6Lx+zstg9NwpzzjRk2zB+v1/h9r6kuVVwRRNSCQGoXa
+ D8++MW18YDeKCEmXhrvpH1ZyV0JbQvvIgpmIJERE5rrUKGp9cmDKMmPTr4piKhlvofOfDIfJYe
+ 2rK+680bc67sJoyZee3FTviqXiwfbr0qq0/CqTZ5Z0mVPLSMrngigHlxQVYUtTkhCySNVkupEs
+ zSdbmNe7SgW5IpviGcOeDar3EuhU7jdXOS/8qypW3eFImgTAyx5Vym8iTQCHVMYS3dHYj3I2H8
+ GeI=
+X-SBRS: 2.7
+X-MesageID: 23705708
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.75,406,1589256000"; 
+   d="scan'208";a="23705708"
+Date:   Tue, 28 Jul 2020 18:59:19 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Julien Grall <julien@xen.org>
+CC:     <linux-kernel@vger.kernel.org>, Juergen Gross <jgross@suse.com>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>,
+        "Oleksandr Andrushchenko" <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        <dri-devel@lists.freedesktop.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Dan Carpenter" <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v3 4/4] xen: add helpers to allocate unpopulated memory
+Message-ID: <20200728165919.GA7191@Air-de-Roger>
+References: <20200727091342.52325-1-roger.pau@citrix.com>
+ <20200727091342.52325-5-roger.pau@citrix.com>
+ <b5460659-88a5-c2aa-c339-815d5618bcb5@xen.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200728163416.556521-5-hch@lst.de>
+In-Reply-To: <b5460659-88a5-c2aa-c339-815d5618bcb5@xen.org>
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 06:33:57PM +0200, Christoph Hellwig wrote:
-> Split the main worker loop into a separate function.  This allows
-> devtmpfsd_setup to be marked __init, which will allows us to call
-> __init routines for the setup work.  devtmpfѕ itself needs a __ref
-> marker for that to work, and a comment explaining why it works.
+On Tue, Jul 28, 2020 at 05:48:23PM +0100, Julien Grall wrote:
+> Hi,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> On 27/07/2020 10:13, Roger Pau Monne wrote:
+> > To be used in order to create foreign mappings. This is based on the
+> > ZONE_DEVICE facility which is used by persistent memory devices in
+> > order to create struct pages and kernel virtual mappings for the IOMEM
+> > areas of such devices. Note that on kernels without support for
+> > ZONE_DEVICE Xen will fallback to use ballooned pages in order to
+> > create foreign mappings.
+> > 
+> > The newly added helpers use the same parameters as the existing
+> > {alloc/free}_xenballooned_pages functions, which allows for in-place
+> > replacement of the callers. Once a memory region has been added to be
+> > used as scratch mapping space it will no longer be released, and pages
+> > returned are kept in a linked list. This allows to have a buffer of
+> > pages and prevents resorting to frequent additions and removals of
+> > regions.
+> > 
+> > If enabled (because ZONE_DEVICE is supported) the usage of the new
+> > functionality untangles Xen balloon and RAM hotplug from the usage of
+> > unpopulated physical memory ranges to map foreign pages, which is the
+> > correct thing to do in order to avoid mappings of foreign pages depend
+> > on memory hotplug.
+> I think this is going to break Dom0 on Arm if the kernel has been built with
+> hotplug. This is because you may end up to re-use region that will be used
+> for the 1:1 mapping of a foreign map.
+> 
+> Note that I don't know whether hotplug has been tested on Xen on Arm yet. So
+> it might be possible to be already broken.
+> 
+> Meanwhile, my suggestion would be to make the use of hotplug in the balloon
+> code conditional (maybe using CONFIG_ARM64 and CONFIG_ARM)?
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Right, this feature (allocation of unpopulated memory separated from
+the balloon driver) is currently gated on CONFIG_ZONE_DEVICE, which I
+think could be used on Arm.
+
+IMO the right solution seems to be to subtract the physical memory
+regions that can be used for the identity mappings of foreign pages
+(all RAM on the system AFAICT) from iomem_resource, as that would make
+this and the memory hotplug done in the balloon driver safe?
+
+Thanks, Roger.
