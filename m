@@ -2,77 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9B1230B4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7456230B62
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbgG1NTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729673AbgG1NTj (ORCPT
+        id S1730105AbgG1NXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:23:51 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:32900 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729984AbgG1NXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:19:39 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A826CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:19:39 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id j186so10116047vsd.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xf5P/odmkgL8jAtLIwR4kpxkzfJosOHK2CtNcgZH52U=;
-        b=hh9NGfiDDpUg0lpNIyG0dMEobS9F5dXzIJ5zMChctPBaTnvfcXgTiZfvTdmy7Khko/
-         HpsUregT2Ie0RS3kMd+uPtMx1HmmPl6TScWYp72B3G7NU6kACyRRGcv+r4bZ06I1V7VT
-         JoJLF3xAczhJGwN8xUzkHoX4zi0fcPyDHSqaTk4FZPHvy08E9tmorIay6fdd8QN3mi9W
-         PLZS6PppIJWoDit4YEKDNeo2v/ksdvp+Q68CumQMKKJyTUuVvQcSV+uq2wmmj6lHdNQo
-         qcf8gJilXrPKrpEJhMVhFoDKRx6FCQZpcJKfzsHb4wjtucmCNlQFL0YSlQ64U3av3Cpw
-         NkOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xf5P/odmkgL8jAtLIwR4kpxkzfJosOHK2CtNcgZH52U=;
-        b=Tzh+UVUJVfV0Pcxnb9B1km1y+jSJEZ/iV2Y1pdrq4Z8+XQVkCynvRsFm5OniI/5jgK
-         zlGIcp5wwusbqgqmuxsotElp9/xWAw4l2NmapYLPysMQUBnV29QCSWtxkT+yaqKs5rqc
-         a1LKKTFnDbF/Uic68//p2m38nJvsqGm4+48fECysa+eXjWd+l+rxyX8hbQspk14ebfjV
-         bRiJoVaZOqT5VHpKITRKroofHspa+82t3IWrnh07jnowqZ3aGHll6lpEwTUmvB4EiEhJ
-         QXo4JID/diHnx/BshijM8qDQkjHkLt2sCw37rGAhcylOrmqaM+/iktsusAsSbLvhCqOX
-         qZ/g==
-X-Gm-Message-State: AOAM531n1sDhcUGxtAgRndqXaflE3SdAwoQ/RgMHxgns9VRrMmL1A6Be
-        xWscv13+6/Blh4FrOHzaeherfe7o5GJzUj+7aIZmlQ==
-X-Google-Smtp-Source: ABdhPJyK1/rVSvn5crwvdhr04UOiWloeL7snkGyENYPyomngl8UgqU+FLf91d/V9QIYZmWwQDsa02dxVja/BrxlMyz0=
-X-Received: by 2002:a67:db97:: with SMTP id f23mr20209738vsk.135.1595942378550;
- Tue, 28 Jul 2020 06:19:38 -0700 (PDT)
+        Tue, 28 Jul 2020 09:23:51 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k0Pa8-0008S8-In; Tue, 28 Jul 2020 07:23:48 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1k0Pa7-0004Jh-IY; Tue, 28 Jul 2020 07:23:48 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>
+References: <87h7tsllgw.fsf@x220.int.ebiederm.org>
+        <CAHk-=wj34Pq1oqFVg1iWYAq_YdhCyvhyCYxiy-CG-o76+UXydQ@mail.gmail.com>
+        <87d04fhkyz.fsf@x220.int.ebiederm.org>
+Date:   Tue, 28 Jul 2020 08:20:41 -0500
+In-Reply-To: <87d04fhkyz.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Tue, 28 Jul 2020 07:39:48 -0500")
+Message-ID: <87h7trg4ie.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20200724091520.880211-1-tweek@google.com> <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
- <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
- <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com> <1859cc5b-2fb0-432b-2635-35ce79dbc244@gmail.com>
-In-Reply-To: <1859cc5b-2fb0-432b-2635-35ce79dbc244@gmail.com>
-From:   =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
-Date:   Tue, 28 Jul 2020 15:19:21 +0200
-Message-ID: <CA+zpnLcYbYp3y6RF70mVfAWQj4bL106n-g-EbufUdd-xk3hOng@mail.gmail.com>
-Subject: Re: [PATCH] selinux: add tracepoint on denials
-To:     Stephen Smalley <stephen.smalley.work@gmail.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nick Kralevich <nnk@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1k0Pa7-0004Jh-IY;;;mid=<87h7trg4ie.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/Lsxp9D29SGoF42ZMFfbqoBJ10C5tdn2s=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  1.5 TR_Symld_Words too many words that have symbols inside
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 314 ms - load_scoreonly_sql: 0.14 (0.0%),
+        signal_user_changed: 12 (3.7%), b_tie_ro: 10 (3.2%), parse: 0.96
+        (0.3%), extract_message_metadata: 16 (5.0%), get_uri_detail_list: 1.29
+        (0.4%), tests_pri_-1000: 15 (4.7%), tests_pri_-950: 1.49 (0.5%),
+        tests_pri_-900: 1.27 (0.4%), tests_pri_-90: 57 (18.2%), check_bayes:
+        55 (17.7%), b_tokenize: 6 (2.0%), b_tok_get_all: 7 (2.1%),
+        b_comp_prob: 2.3 (0.7%), b_tok_touch_all: 37 (11.9%), b_finish: 0.88
+        (0.3%), tests_pri_0: 198 (63.2%), check_dkim_signature: 0.59 (0.2%),
+        check_dkim_adsp: 2.4 (0.8%), poll_dns_idle: 0.68 (0.2%), tests_pri_10:
+        2.1 (0.7%), tests_pri_500: 7 (2.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC][PATCH] exec: Freeze the other threads during a multi-threaded exec
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 3:04 PM Stephen Smalley
-<stephen.smalley.work@gmail.com> wrote:
-> Ok, also please use unsigned int for the fields and %u for the cls value.
+ebiederm@xmission.com (Eric W. Biederman) writes:
 
-Will do in v3. Thanks.
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
+>
+>> It also makes for a possible _huge_ latency regression for execve(),
+>> since freezing really has never been a very low-latency operation.
+>>
+>> Other threads doing IO can now basically block execve() for a long
+>> long long time.
+>
+> Hmm.  Potentially.  The synchronization with the other threads must
+> happen in a multi-threaded exec in de_thread.
+>
+> So I need to look at the differences between where de_thread thread
+> can kill a thread and the freezer can not freeze a thread.  I am hoping
+> that the freezer has already instrumented most of those sleeps but I
+> admit I have not looked yet.
+
+Alright I have looked at the freezer a bit more and I now see that the
+point of marking things freezable is for kernel threads rather that user
+space threads.  I think there are 5 maybe 6 places the code sleeps
+reachable by userspace threads that are marked as freezable and most
+of those are callable from get_signal.
+
+For exec all I care about are user space threads.  So it appears the
+freezer infrastructure adds very little.
+
+Now to see if I can find another way to divert a task into a slow path
+as it wakes up, so I don't need to manually wrap all of the sleeping
+calls.  Something that plays nice with the scheduler.
+
+Eric
+
