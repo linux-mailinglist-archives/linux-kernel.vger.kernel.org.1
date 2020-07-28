@@ -2,85 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D17231258
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301B3231256
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732717AbgG1TSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728751AbgG1TSg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:18:36 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A93C061794;
-        Tue, 28 Jul 2020 12:18:36 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id v22so4858250edy.0;
-        Tue, 28 Jul 2020 12:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oa15p4iXa6GJWXcRKbHat247Q7cvm1xa0u7tYmwOk/s=;
-        b=blU+NE79hmQP+AWK2v6QHIjREnaP4/YLScYIEh3rWReHYQ1hpM4CB6natewhEcZJg3
-         At/DtAoJ9fBGj4g3ZnXIMFH10prYf+AFTHKPO+8fGRN1w55P9BQqv5CG5MoRsyeuOUGy
-         POKNlHiYWWDnRAmGiURfH6NrFotdNYkduTjxfX1eU8AGv+UrcTi8XLXCxBpX95UH/nrL
-         VkdM0HjfPkXJVbmw5xo9QFfmCuDC7uGtgEvhLlgy6LaFCwHAms40eJR1/qxhoNZR63Us
-         RkobSo+XmF/XkyPrpesTskiyKBR75/rYao7GhgZ+zXjoQJs1dT76PdO1tV+cozSe21+o
-         52EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oa15p4iXa6GJWXcRKbHat247Q7cvm1xa0u7tYmwOk/s=;
-        b=Uy4PPF4woKMyS4JMu3Q8HWUxMMcMppymWPzWFO6BqnxBP+0fmOjBK6P7V1tSYLiaSJ
-         FSMI7a1eWs4SHcT78TgnltknunaOvUZHJKLWLsb3N/ZNYecj9pq/3+Y6YZc8Xm5ipCtX
-         TkuOU7c5ZwCnkFlajsyRqrIvG7ty6ZQwP3ilZaKMxH+zyw2kfIfnqgucNbU85FP4ZdSX
-         /IMvp3OrwQylnw3FoD3IZer9TR0MIbtrR7YiuwHx1sytaGFVPxwqRx0Lhqmt+TK947BI
-         9hqI8YTgkYn+EwXc29Wx4X77wNJeGhC9hFwm9f1N7j7F1jIwNsirRv7YlDg3sb5qsCgf
-         GsYQ==
-X-Gm-Message-State: AOAM5317sbn/o/tDDTFAyNXOBIcr5GsnBpRQP394iRbL/Fxv1fVIAGR3
-        WsG0EwYB2GkZtLxd8doVuAFQ32wrNjvL85Kq5lA=
-X-Google-Smtp-Source: ABdhPJy5S7ubQoYm3tHb4jW0VlpjbyrDB7KIdVKen1wY3pcq2mMJd8xXnF7ClZtX7lLSpJPEPi2etzzsUrRn6G+1/8E=
-X-Received: by 2002:a05:6402:1d0a:: with SMTP id dg10mr26396667edb.110.1595963915038;
- Tue, 28 Jul 2020 12:18:35 -0700 (PDT)
+        id S1732703AbgG1TSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:18:33 -0400
+Received: from mga09.intel.com ([134.134.136.24]:53302 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728751AbgG1TSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:18:32 -0400
+IronPort-SDR: ZZlEO0E+JxFAqsVlcV+OcvCDJn9KaIxf/RDJkrqca1gNVKzTV3u03BsLcwDUoTr7c7oAq2bRZM
+ MeUAY6HRQMdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="152543409"
+X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
+   d="scan'208";a="152543409"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 12:18:31 -0700
+IronPort-SDR: A/LWYGtLiV2xMqj0KUz5tLFZ4cw8jmEEYYnpArz/u1f3jU63qCmvONl7hgH20Uj7HbCKKG4IEb
+ 8OjH9NNg4MOA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
+   d="scan'208";a="434434628"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.32.199]) ([10.212.32.199])
+  by orsmga004.jf.intel.com with ESMTP; 28 Jul 2020 12:18:30 -0700
+Subject: Re: [PATCH net-next RFC 01/13] devlink: Add reload level option to
+ devlink reload command
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+References: <1595847753-2234-1-git-send-email-moshe@mellanox.com>
+ <1595847753-2234-2-git-send-email-moshe@mellanox.com>
+ <20200727175802.04890dd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200728135808.GC2207@nanopsycho>
+ <464add44-3ab1-21b8-3dba-a88202350bb9@intel.com>
+ <20200728114458.762b5396@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <d6fbfedd-9022-ff67-23ed-418607beecc2@intel.com>
+Date:   Tue, 28 Jul 2020 12:18:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-References: <20200728074602.14218-1-amelie.delaunay@st.com> <20200728074602.14218-4-amelie.delaunay@st.com>
-In-Reply-To: <20200728074602.14218-4-amelie.delaunay@st.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Tue, 28 Jul 2020 21:18:24 +0200
-Message-ID: <CAFBinCDd_9HJA4TT2mS007xFyO4jovt+Xrpejppzzq2Ty-JDmg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] usb: dwc2: don't use ID/Vbus detection if
- usb-role-switch on STM32MP15 SoCs
-To:     Amelie Delaunay <amelie.delaunay@st.com>
-Cc:     Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200728114458.762b5396@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amelie,
-
-On Tue, Jul 28, 2020 at 9:46 AM Amelie Delaunay <amelie.delaunay@st.com> wrote:
->
-> If usb-role-switch is present in the device tree, it means that ID and Vbus
-> signals are not connected to the OTG controller but to an external
-> component (GPIOs, Type-C controller). In this configuration, usb role
-> switch is used to force valid sessions on STM32MP15 SoCs.
->
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-thank you for updating this patch - please add my:
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
 
-Martin
+On 7/28/2020 11:44 AM, Jakub Kicinski wrote:
+> On Tue, 28 Jul 2020 09:47:00 -0700 Jacob Keller wrote:
+>> On 7/28/2020 6:58 AM, Jiri Pirko wrote:
+>>> But this is needed to maintain the existing behaviour which is different
+>>> for different drivers.
+>>
+>> Which drivers behave differently here?
+> 
+> I think Jiri refers to mlxsw vs mlx5.
+> 
+> mlxsw loads firmware on probe, by default at least. So reloading the
+> driver implies a FW reset. NIC drivers OTOH don't generally load FW
+> so they didn't reset FW.
+> 
+
+Ok.
+
+> Now since we're redefining the API from "do a reload so that driverinit
+> params are applied" (or "so that all netdevs get spawned in a new
+> netns") to "do a reset of depth X" we have to change the paradigm.
+> 
+> What I was trying to suggest is that we should not have to re-define
+> the API like this.
+
+Ok.
+
+> 
+> From user perspective what's important is what the reset achieves (and
+> perhaps how destructive it is). We can define the reset levels as:
+> 
+> $ devlink dev reload pci/0000:82:00.0 net-ns-respawn
+> $ devlink dev reload pci/0000:82:00.0 driver-param-init
+> $ devlink dev reload pci/0000:82:00.0 fw-activate
+> 
+> combining should be possible when user wants multiple things to happen:
+> 
+> $ devlink dev reload pci/0000:82:00.0 fw-activate driver-param-init
+> 
+
+Where today "driver-param-init" is the default behavior. But didn't we
+just say that mlxsw also does the equivalent of fw-activate?
+
+> 
+> Then we have the use case of a "live reset" which is slightly
+> under-defined right now IMHO, but we can extend it as:
+> 
+> $ devlink dev reload pci/0000:82:00.0 fw-activate --live
+> 
+
+Yea, I think live fw patching things aren't quite as defined yet.
+
+> 
+> We can also add the "reset level" specifier - for the cases where
+> device is misbehaving:
+> 
+> $ devlink dev reload pci/0000:82:00.0 level [driver|fw|hardware]
+> 
+
+I guess I don't quite see how level fits in? This is orthogonal to the
+other settings?
+
+> 
+> But I don't think that we can go from the current reload command
+> cleanly to just a level reset. The driver-specific default is a bad
+> smell which indicates we're changing semantics from what user wants 
+> to what the reset depth is. Our semantics with the patch as it stands
+> are in fact:
+>  - if you want to load new params or change netns, don't pass the level
+>    - the "driver default" workaround dictates the right reset level for
+>    param init;
+>  - if you want to activate new firmware - select the reset level you'd
+>    like from the reset level options.
+> 
+
+I think I agree, having the "what gets reloaded" as a separate vector
+makes sense and avoids confusion. For example for ice hardware,
+"fw-activate" really does mean "Do an EMP reset" rather than just a
+"device reset" which could be interpreted differently. ice can do
+function level reset, or core device reset also. Neither of those two
+resets activates firmware.
+
+Additionally the current function load process in ice doesn't support
+driver-init at all. That's something I'd like to see happen but is quite
+a significant refactor for how the driver loads. We need to refactor
+everything out so that devlink is created early on and factor out
+load/unload into handlers that can be called by the devlink reload. As I
+have primarily been focused on flash update I sort of left that for the
+future because it was a huge task to solve.
