@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B30D230829
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AECFF230834
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgG1KyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:54:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728782AbgG1KyU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:54:20 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FC4C061794;
-        Tue, 28 Jul 2020 03:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W8EGYrbvZ2JVHYH7/4O92e1pVKCkXBCpOwNppiviJYk=; b=Wtfoox39Dk/76/LPPiZmQbB7Q8
-        ma4Cgj5I6CFvppLLACjfC+ulmhw/ikvx8xKuq4K4ZT/lcPpweCF9s1X/W6nHXPBaW2WzQ1U7i/+x8
-        MeSEecGjjKG7KPW0+GURGhA00crHAaWslebe2FvBrszZJx4y6U9xYk18WCHfspXFwhG/K9iFHT3N7
-        Nez/SMmoBFj36/bAJU87dpZNAOu+QZCZb/vhQFCM13w/RHlej0vCqmtWbLb6CLPvKaZnPT991gkAD
-        zpYh9IaUYHFcPBXQVRfh5qsmqfbSQWA5vBzvfjHcsHlcwRWAVGNZaAqLl6u5+s03PaK01+nhRDZAQ
-        8tu2wF+w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k0NFL-0003No-RN; Tue, 28 Jul 2020 10:54:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1728947AbgG1K4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728763AbgG1K4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 06:56:20 -0400
+Received: from kernel.org (unknown [87.71.40.38])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B0CC300238;
-        Tue, 28 Jul 2020 12:54:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 20B842BE3E477; Tue, 28 Jul 2020 12:54:10 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 12:54:10 +0200
-From:   peterz@infradead.org
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Arnd Bergmann <arnd@arndb.de>,
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F93A204EA;
+        Tue, 28 Jul 2020 10:56:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595933779;
+        bh=rNeOQgk8Ja8EnwwwD3eYzStK24lMrD6z0cTMgy9a9QQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GaqX56Rbj+N1Mz6UyTAyoeiV2UjmyQ1JRRE5tNv2GNU4C8YMxHr+kbNtL4JzJlsAy
+         ScdjYPyI8moETB7oZ34zmIQmli78wpYsgkku4f7CIjv3woY2fEo2HxXSUsaNO4HEay
+         kodVMJnUU7dTJtF+OWGSFGl3TO2fwrpo3QfCz2LQ=
+Date:   Tue, 28 Jul 2020 13:56:02 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Simek <monstr@monstr.eu>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 23/24] x86: use asm-generic/mmu_context.h for no-op
- implementations
-Message-ID: <20200728105410.GU119549@hirez.programming.kicks-ass.net>
-References: <20200728033405.78469-1-npiggin@gmail.com>
- <20200728033405.78469-24-npiggin@gmail.com>
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linuxppc-dev@lists.ozlabs.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        uclinux-h8-devel@lists.sourceforge.jp, x86@kernel.org
+Subject: Re: [PATCH 14/15] x86/numa: remove redundant iteration over
+ memblock.reserved
+Message-ID: <20200728105602.GB3655207@kernel.org>
+References: <20200728051153.1590-1-rppt@kernel.org>
+ <20200728051153.1590-15-rppt@kernel.org>
+ <20200728104440.GA222284@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200728033405.78469-24-npiggin@gmail.com>
+In-Reply-To: <20200728104440.GA222284@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:34:04PM +1000, Nicholas Piggin wrote:
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-> ---
->  arch/x86/include/asm/mmu_context.h | 6 ++++++
->  1 file changed, 6 insertions(+)
+On Tue, Jul 28, 2020 at 12:44:40PM +0200, Ingo Molnar wrote:
 > 
-> diff --git a/arch/x86/include/asm/mmu_context.h b/arch/x86/include/asm/mmu_context.h
-> index 47562147e70b..255750548433 100644
-> --- a/arch/x86/include/asm/mmu_context.h
-> +++ b/arch/x86/include/asm/mmu_context.h
-> @@ -92,12 +92,14 @@ static inline void switch_ldt(struct mm_struct *prev, struct mm_struct *next)
->  }
->  #endif
->  
-> +#define enter_lazy_tlb enter_lazy_tlb
->  extern void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk);
->  
->  /*
->   * Init a new mm.  Used on mm copies, like at fork()
->   * and on mm's that are brand-new, like at execve().
->   */
-> +#define init_new_context init_new_context
->  static inline int init_new_context(struct task_struct *tsk,
->  				   struct mm_struct *mm)
->  {
-> @@ -117,6 +119,8 @@ static inline int init_new_context(struct task_struct *tsk,
->  	init_new_context_ldt(mm);
->  	return 0;
->  }
-> +
-> +#define destroy_context destroy_context
->  static inline void destroy_context(struct mm_struct *mm)
->  {
->  	destroy_context_ldt(mm);
-> @@ -215,4 +219,6 @@ static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
->  
->  unsigned long __get_current_cr3_fast(void);
->  
-> +#include <asm-generic/mmu_context.h>
-> +
->  #endif /* _ASM_X86_MMU_CONTEXT_H */
-> -- 
-> 2.23.0
+> * Mike Rapoport <rppt@kernel.org> wrote:
 > 
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > numa_clear_kernel_node_hotplug() function first traverses numa_meminfo
+> > regions to set node ID in memblock.reserved and than traverses
+> > memblock.reserved to update reserved_nodemask to include node IDs that were
+> > set in the first loop.
+> > 
+> > Remove redundant traversal over memblock.reserved and update
+> > reserved_nodemask while iterating over numa_meminfo.
+> > 
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > ---
+> >  arch/x86/mm/numa.c | 26 ++++++++++----------------
+> >  1 file changed, 10 insertions(+), 16 deletions(-)
+> 
+> I suspect you'd like to carry this in the -mm tree?
+
+Yes.
+ 
+> Acked-by: Ingo Molnar <mingo@kernel.org>
+
+Thanks!
+
+> Thanks,
+> 
+> 	Ingo
+
+-- 
+Sincerely yours,
+Mike.
