@@ -2,144 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB0B23159E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1352315A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgG1WhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
+        id S1729875AbgG1Whu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729223AbgG1WhI (ORCPT
+        with ESMTP id S1729223AbgG1Whu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:37:08 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F81C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:37:08 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id k23so22474132iom.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EReXMTG1Tmh9rCxrfzcdSSmSqczZSw6FsxufeVNcmCk=;
-        b=bho3CI5/KuDuigkKMG34qqAzwgMi8luz6+3vsZ62NeayRJBAxZ6HVuDYac4v5fs6QA
-         LSUt0ZI25na4eiMvDNGdyID1FdA2P+ITGMEI5WOy5v0mDljsHFfxy5PaxteUZZS1QE+d
-         nqDqj/ohZPwpBQE98/QpFWwLVsioKrtGWyFK0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EReXMTG1Tmh9rCxrfzcdSSmSqczZSw6FsxufeVNcmCk=;
-        b=triUySVXKfqWgEyqjNsZ5UXjAiVkEDOL/xhz8hjrw8/g3yc7BCm0lwG9SDoPNOBcPQ
-         O9GKRBGtpZJTByj5ypAOjohBtqZ6V/JXoUkHi9kHnAwliVbnufAnBxp7KOjp32xqObs0
-         nMfpClUa9up/3zTQfw/i09N+OeY6o5wEhKmJqNpsQnBlOGaEudLnynnhOUcTlTnBE+6U
-         mrLMwTF4zf745K/uW4Hi2Dn8li1TP97guUVl1rmSQ4sA+707kH4tFMKSRUVORBGtyeTp
-         ENhMqb9YAJMxKFT6zYq8w39VmViYwpIP/S88u2hduEtwWSuujo7OGZ9skh7HLTxg+0AU
-         Ep+g==
-X-Gm-Message-State: AOAM533Ot5Nf9sZDSyfuo53WuGy6O2lVdWEG3YXEHc0O/eiknxZt5Maz
-        hB7HPExCiiQQbJCdLt4Fjfh37Et1NDA=
-X-Google-Smtp-Source: ABdhPJyzXHG0tAuOusgIOMdvOpWxshaGRK/E/BmEJ3ru0oPTifXmHxcqzffEoT+KHP49oqXHsitCTg==
-X-Received: by 2002:a05:6638:27a:: with SMTP id x26mr4781663jaq.43.1595975827218;
-        Tue, 28 Jul 2020 15:37:07 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id b11sm105864ile.32.2020.07.28.15.37.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 15:37:06 -0700 (PDT)
-Subject: Re: [PATCH][next] greybus: Use fallthrough pseudo-keyword
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20200727183258.GA28571@embeddedor>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <63871608-e076-26b0-85df-cff11699c3a3@ieee.org>
-Date:   Tue, 28 Jul 2020 17:37:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 18:37:50 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD172C061794;
+        Tue, 28 Jul 2020 15:37:49 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1B12A563;
+        Wed, 29 Jul 2020 00:37:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1595975868;
+        bh=87O/ZO51dVt0In3u/HQSQIRpyT0KiserorvlrdcFFps=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dg0KJ5bHUVbTFQ5Zs8EhtcLfr5rW0piy9rJ6XQKjki0ugcYH6HtXeewMl55T8V7xm
+         yQd8CX18Lk+37Ammu1YtOy8nZN6WOZnOGRZA3Bx3cKMnaha+UOo4yU0N7h3QF9L/5H
+         lC8/RB0vvaZOr/Cnb+M5naHmcBSm6v3yoHR2T+iY=
+Date:   Wed, 29 Jul 2020 01:37:39 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Hyun Kwon <hyun.kwon@xilinx.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm: xln: fix spelling mistake "failes" -> "failed"
+Message-ID: <20200728223739.GV13753@pendragon.ideasonboard.com>
+References: <20200724111258.14762-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20200727183258.GA28571@embeddedor>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200724111258.14762-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/20 1:32 PM, Gustavo A. R. Silva wrote:
-> Replace the existing /* fall through */ comments and its variants with
-> the new pseudo-keyword macro fallthrough[1].
+Hi Colin,
+
+Thank you for the patch.
+
+On Fri, Jul 24, 2020 at 12:12:58PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> There is a spelling mistake in a dev_dbg messages. Fix it.
 
-Thanks for the patch.  It looks good, but it raises
-another question I'd like discussion on.
+There is a spelling mistake in the commit message, s/xln/xlnx/ ;-)
 
-It seems that Johan likes default (or final) cases in
-switch statements without a "break" statement.  Viresh
-and Bryan appear to be fond of this too.
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-It's pedantic, but I don't like that.  Am I wrong?
-   --> Johan/Viresh/Bryan would you please comment?
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-If they aren't convincing (or don't care) I think break
-statements should also be added here:
-- In gb_interface_read_and_clear_init_status() for the
-   default case
-- In gb_interface_activate() for the default case.
-- In gb_svc_process_deferred_request() for the default
-   case
-
-But let's wait to see what Johan (et al) says.  If you
-don't want to do that, say so and I'll do it later.
-
-I looked at the code in drivers/staging/greybus/ and saw
-no need to add a "fallthrough" anywhere, but:
-- In fw_mgmt_backend_fw_version_operation() Viresh
-   seems to have skipped the break in the fault statement
-- In gb_uart_request_handler() Bryan did this too.
-
-Depending on discussion, these could be fixed in a
-separate patch as well.
-
-These cases aren't found by "checkpatch.pl" because it only
-looks at case "blocks" that are followed by another case.
-So the last case isn't checked.
-
-					-Alex
-
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->   drivers/greybus/es2.c       | 2 +-
->   drivers/greybus/interface.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/greybus/es2.c b/drivers/greybus/es2.c
-> index 366716f11b1a..1df6ab5d339d 100644
-> --- a/drivers/greybus/es2.c
-> +++ b/drivers/greybus/es2.c
-> @@ -759,7 +759,7 @@ static int check_urb_status(struct urb *urb)
->   	case -EOVERFLOW:
->   		dev_err(dev, "%s: overflow actual length is %d\n",
->   			__func__, urb->actual_length);
-> -		/* fall through */
-> +		fallthrough;
->   	case -ECONNRESET:
->   	case -ENOENT:
->   	case -ESHUTDOWN:
-> diff --git a/drivers/greybus/interface.c b/drivers/greybus/interface.c
-> index 67dbe6fda9a1..58ea374d8aaa 100644
-> --- a/drivers/greybus/interface.c
-> +++ b/drivers/greybus/interface.c
-> @@ -1233,7 +1233,7 @@ int gb_interface_add(struct gb_interface *intf)
->   	case GB_INTERFACE_TYPE_GREYBUS:
->   		dev_info(&intf->dev, "GMP VID=0x%08x, PID=0x%08x\n",
->   			 intf->vendor_id, intf->product_id);
-> -		/* fall-through */
-> +		fallthrough;
->   	case GB_INTERFACE_TYPE_UNIPRO:
->   		dev_info(&intf->dev, "DDBL1 Manufacturer=0x%08x, Product=0x%08x\n",
->   			 intf->ddbl1_manufacturer_id,
-> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 821f7a71e182..0e1c818746eb 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1308,7 +1308,7 @@ zynqmp_dp_connector_detect(struct drm_connector *connector, bool force)
+>  		ret = drm_dp_dpcd_read(&dp->aux, 0x0, dp->dpcd,
+>  				       sizeof(dp->dpcd));
+>  		if (ret < 0) {
+> -			dev_dbg(dp->dev, "DPCD read failes");
+> +			dev_dbg(dp->dev, "DPCD read failed");
+>  			goto disconnected;
+>  		}
+>  
 
+-- 
+Regards,
+
+Laurent Pinchart
