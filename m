@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C3122FFA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E385E22FFAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgG1Ch3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:37:29 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63518 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726340AbgG1Ch2 (ORCPT
+        id S1726988AbgG1Cjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726911AbgG1Cjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:37:28 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06S2WBY0049835;
-        Mon, 27 Jul 2020 22:37:18 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32j2paw380-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 22:37:18 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 06S2Wdbo051238;
-        Mon, 27 Jul 2020 22:37:17 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32j2paw37q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Jul 2020 22:37:17 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06S2VPTa015633;
-        Tue, 28 Jul 2020 02:37:16 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03wdc.us.ibm.com with ESMTP id 32gcy5dvn3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Jul 2020 02:37:16 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06S2bBv663308088
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Jul 2020 02:37:11 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25A59BE054;
-        Tue, 28 Jul 2020 02:37:15 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A2C3FBE05A;
-        Tue, 28 Jul 2020 02:37:11 +0000 (GMT)
-Received: from morokweng.localdomain (unknown [9.211.132.76])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Tue, 28 Jul 2020 02:37:11 +0000 (GMT)
-References: <159579157320.5790.6748078824637688685.stgit@hbathini> <159579235754.5790.5203600072984600891.stgit@hbathini>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Hari Bathini <hbathini@linux.ibm.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Petr Tesarik <ptesarik@suse.cz>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pingfan Liu <piliu@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>
-Subject: Re: [RESEND PATCH v5 08/11] ppc64/kexec_file: setup backup region for kdump kernel
-In-reply-to: <159579235754.5790.5203600072984600891.stgit@hbathini>
-Date:   Mon, 27 Jul 2020 23:37:08 -0300
-Message-ID: <87d04gxt4b.fsf@morokweng.localdomain>
+        Mon, 27 Jul 2020 22:39:44 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AE5C0619D4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:43 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id y11so5541636qvl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JpBwI5rh1VmR9dJCXKb+bJH00mu8Lm9wehnoKvU4jcQ=;
+        b=bqUQy7jhnL0rGAZVXzl2pr3NWaTgdIriU12FTryPEPMVY5wt51fHrXJ0vbVkcfIr4d
+         WAYoI66DcIz8Z2qRIvZ5yKiv5D8YgwxBTnylMztk4s16k5XUIlc/re9PODqvhvkRtB5B
+         TVZSkva+UhquRQULicJzDN9icgzBm2blLaIyZTP9OL8mv9ugJTBJiyDe6iSjRBOZvOBv
+         sA1vH0643u/pUW6E2y/lTzK2XhtF6fnFY5q02YCUSNgODaW+bprgm2eXlDdmxyLptMyH
+         yBoE+/88gElgn3TEvFtyRfqbBLxv6nxBgMXkuxf+SNdXWTYMbOiK7VH6fSm1eh9enAGr
+         DsZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JpBwI5rh1VmR9dJCXKb+bJH00mu8Lm9wehnoKvU4jcQ=;
+        b=Yf0SXdzXhKcDBASfuNVVcCOsv2Ev36b4uV+Zpn5kWL9ViKwsQL0ec+kSFuMDs5ijje
+         L7p1+2S9zyfXbV9MqmequXSK0ajuB6EkRvJ1GYxbXwGvR/5PqNP8I33lmatpdGFy+jtI
+         7tJ684Y8m4jtkN9OEQiRqAWCfxj5/kULCMSoidgoKkIjn5DVkuCoITKCB66wvekjU6cJ
+         MyPBCBqdbkeSWlUkGu+RK42y0gtpqFmuhYqp9YdDRp4XYtXc8sVD9UnKf8D5qdp1Q6s8
+         v7XXvsjGvqAQJomuFzdfrDMp81L28A9UlrywIRy6yKRNU9Mhh/llCZju+sM93LKG/8Ol
+         TdGQ==
+X-Gm-Message-State: AOAM530gjGW/8ejjPca44Csm/5XYm/RZFJjrLpHD9RhjIJl07/foBkzu
+        bHPXE05/u417q2axgHhw9G8gVw==
+X-Google-Smtp-Source: ABdhPJz9E9SJY8pj6+WMHEhK2Nhev880nCCsyeRYYub0FM05PwJIPJreA7LDFUu+Z4vWX3RN2jcOLA==
+X-Received: by 2002:ad4:49a1:: with SMTP id u1mr7434725qvx.245.1595903982912;
+        Mon, 27 Jul 2020 19:39:42 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id z3sm13885548qkc.4.2020.07.27.19.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 19:39:42 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-pm@vger.kernel.org (open list:INTERCONNECT API),
+        Odelu Kukatla <okukatla@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 0/7] Add SM8150 and SM8250 interconnect drivers
+Date:   Mon, 27 Jul 2020 22:37:59 -0400
+Message-Id: <20200728023811.5607-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-27_16:2020-07-27,2020-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 impostorscore=0 mlxlogscore=751 clxscore=1015
- priorityscore=1501 mlxscore=0 suspectscore=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007280012
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Most of this is generated from downstream dts using a script.
 
-Hari Bathini <hbathini@linux.ibm.com> writes:
+v2: single yaml file for RPMh interconnect bindings, drop display RSC
+v3:
+ - removed the sc7180 example from the combined yaml file, two
+   examples with conflicting includes doesn't seem possible
+ - Removed MASTER_ALC and bcm_alc (sm8150 and sm8250)
+ - Set keep alive for SH0, MC0, MM0, SN0 and CN0 (both)
+ - Used Sibi Sankar's suggestions for reg base/size in dts
 
-> Though kdump kernel boots from loaded address, the first 64KB of it is
-> copied down to real 0. So, setup a backup region and let purgatory
-> copy the first 64KB of crashed kernel into this backup region before
-> booting into kdump kernel. Update reserve map with backup region and
-> crashed kernel's memory to avoid kdump kernel from accidentially using
-> that memory.
->
-> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+Jonathan Marek (7):
+  dt-bindings: interconnect: single yaml file for RPMh interconnect
+    drivers
+  dt-bindings: interconnect: Add Qualcomm SM8150 DT bindings
+  dt-bindings: interconnect: Add Qualcomm SM8250 DT bindings
+  interconnect: qcom: Add SM8150 interconnect provider driver
+  interconnect: qcom: Add SM8250 interconnect provider driver
+  arm64: dts: qcom: sm8150: add interconnect nodes
+  arm64: dts: qcom: sm8250: add interconnect nodes
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+ .../{qcom,sdm845.yaml => qcom,rpmh.yaml}      |  42 +-
+ .../bindings/interconnect/qcom,sc7180.yaml    |  85 ---
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          |  82 +++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi          |  82 +++
+ drivers/interconnect/qcom/Kconfig             |  20 +
+ drivers/interconnect/qcom/Makefile            |   4 +
+ drivers/interconnect/qcom/sm8150.c            | 635 +++++++++++++++++
+ drivers/interconnect/qcom/sm8150.h            | 152 ++++
+ drivers/interconnect/qcom/sm8250.c            | 651 ++++++++++++++++++
+ drivers/interconnect/qcom/sm8250.h            | 162 +++++
+ .../dt-bindings/interconnect/qcom,sm8150.h    | 162 +++++
+ .../dt-bindings/interconnect/qcom,sm8250.h    | 172 +++++
+ 12 files changed, 2161 insertions(+), 88 deletions(-)
+ rename Documentation/devicetree/bindings/interconnect/{qcom,sdm845.yaml => qcom,rpmh.yaml} (60%)
+ delete mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sc7180.yaml
+ create mode 100644 drivers/interconnect/qcom/sm8150.c
+ create mode 100644 drivers/interconnect/qcom/sm8150.h
+ create mode 100644 drivers/interconnect/qcom/sm8250.c
+ create mode 100644 drivers/interconnect/qcom/sm8250.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8150.h
+ create mode 100644 include/dt-bindings/interconnect/qcom,sm8250.h
 
 -- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+2.26.1
+
