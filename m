@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBED7231248
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7997123124C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732657AbgG1TQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:16:24 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:42493 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732601AbgG1TQY (ORCPT
+        id S1732676AbgG1TRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729133AbgG1TRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:16:24 -0400
-Received: by mail-il1-f196.google.com with SMTP id i138so11278575ild.9;
-        Tue, 28 Jul 2020 12:16:23 -0700 (PDT)
+        Tue, 28 Jul 2020 15:17:03 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C073C061794;
+        Tue, 28 Jul 2020 12:17:03 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b79so19785279qkg.9;
+        Tue, 28 Jul 2020 12:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gOr8dfaejifYw9jU6Kda38E3nkEbRCrHeHIL/mLht1M=;
+        b=otDe5YRwMr9ZjZkUAfDqHdRBs1piZUTe4CTkYv5N3vMilg+mwSd8u3nh4gsItkTo7x
+         keGv4P2iTlq5DIJzJbBMN4GTDiOMD0OpJh1C2xP3g76mfiKGLMDy95jV6wJvHN/3sJmr
+         mfk8p/IBXfxF+72g5+Qndb/0bmn+YszTDATRnNlgDVDtEaz7a4ax1jGDLrpcj2KFhDlm
+         Q7ydb47hnhDV3tab+g7WDUAhUX+rkiq43CLewaraeGHwV047qEpRBRM8Fy5eKU5uNXeY
+         hK52o5YD5CrotoRkYnlXey5UPBLKr8Mvz0KnkI1keJ43PNod7JGSjVNEwkF+sycxnOUC
+         Udxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0H+b6zQt0ezS7kYwcQh9hJueRgaTbGNjTiuGLpXHZrQ=;
-        b=bGSwrrZ2wfHXtcV6fzWkn7RYngI1vN0SEtzKJEu4E8vaxmNG95wJLuWCWoiSucAAJC
-         vvkCWAu/4847kf4WGWrT5dYB7kTj6nz9nvTrgkM0zDhjLVVhpeZf5Jk0sLoDPHI3xNcX
-         jUUuzoTzxlv0RkQX898UgB/oCrnLa5s7pL5IdYpNTnoo7d4Z+RqVzZ60mnwY0vSP9jD2
-         FBTzX5CCw2ELhOFC2Nk65KDvn8oUg6tpQ+cjxN77wyjfLe2C2+nj1VgZZbKJ3Kgtwbuc
-         V+8DZCNVFX1NdEeIWDZB8Wd+hgFeZa9qk7HccTd+PDk4xu6ThpBDQwbAQlZn0Mjeu/Gm
-         xwfw==
-X-Gm-Message-State: AOAM53334sSnI4qWfmpSbpUATNmlOPY1S7iIwRMfUdulQb/yk7/4B15M
-        BUDKECDg03Ez+wA5VjhGhw==
-X-Google-Smtp-Source: ABdhPJwZSntLXAv+6Q+F7NQjzwUH5eUUeDRgDMukHAUHZqv/Km+dTvTfswJnQ7vDvyJlvzlS43odlA==
-X-Received: by 2002:a92:b6d4:: with SMTP id m81mr24095574ill.72.1595963783056;
-        Tue, 28 Jul 2020 12:16:23 -0700 (PDT)
-Received: from xps15 ([64.188.179.252])
-        by smtp.gmail.com with ESMTPSA id t18sm6185560ild.52.2020.07.28.12.16.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 12:16:22 -0700 (PDT)
-Received: (nullmailer pid 2780627 invoked by uid 1000);
-        Tue, 28 Jul 2020 19:16:20 -0000
-Date:   Tue, 28 Jul 2020 13:16:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, soc@kernel.org, arnd@arndb.de
-Subject: Re: [PATCH v2 1/9] dt-bindings: arm: mstar: Add binding details for
- mstar, pmsleep
-Message-ID: <20200728191620.GA2778962@bogus>
-References: <20200728100321.1691745-1-daniel@0x0f.com>
- <20200728100321.1691745-2-daniel@0x0f.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gOr8dfaejifYw9jU6Kda38E3nkEbRCrHeHIL/mLht1M=;
+        b=WjsS7K/bShsv4h95+KvPV365kVrv7MvjmNC7TbGWF42ZgvKeMrP3G5Y35opFIxzRX3
+         fjijdVG860/kW0ipkK+Pk/WMrpmmrn3yccI33QpMtDtnQ1hR7vz1LLPDBXd6OmTg6EfV
+         6t6AhI1lJrJkJYnuq/ozEVUHp1vRVfgNfd9as2LwTb5YLtZhtEL5nUa+xJ8lqwNdAlHJ
+         CEFyTm6fG9FdcVsSRMs8enoPXRRvIWxDpUqy657hLzyENFU/LHtU9tWZTH6ZkGuhUm65
+         JOhIu3ScmZ9vQE3/zRZQJYVGhcDg/lXAY6fV/O3famQB02NwALF0F15kXtEcQPyfImjl
+         IjTw==
+X-Gm-Message-State: AOAM53175GuBPsR8Yd0FhMvk8AnZWQ4ni7tBpEEqQAE3fbS9GrN4oLex
+        mn6QcbMVsJxQ71tVdkx/H3dp/QzTuNYKmEfOmAw=
+X-Google-Smtp-Source: ABdhPJwbOmokpEJOP1fIf5cZoIesMV+H3fTQ9slHu7TTfq77cCg4b9LhjmIxLd0pBzSqpXX2DL3NsX7P95qN921rMQ0=
+X-Received: by 2002:a05:620a:4c:: with SMTP id t12mr3962581qkt.449.1595963822395;
+ Tue, 28 Jul 2020 12:17:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728100321.1691745-2-daniel@0x0f.com>
+References: <20200727184506.2279656-1-guro@fb.com> <20200727184506.2279656-28-guro@fb.com>
+ <CAPhsuW7jWztOVeeiRNBRK4JC_MS41qUSxzEDMywb-6=Don-ndA@mail.gmail.com>
+ <CAEf4BzaOX_gc8F20xrHxiKFxYbwULK130m1A49rnMoT7T74T3Q@mail.gmail.com>
+ <CAPhsuW5qBxWibkYMAvS0s6yLj-gijHqy9rVxSWCk5Xr+bXqtJg@mail.gmail.com> <20200728190830.GB410810@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20200728190830.GB410810@carbon.DHCP.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 28 Jul 2020 12:16:51 -0700
+Message-ID: <CAEf4BzZuj9d_WT4nJ6c_W4uAnT2_4mBOXCbi1q1w97568rd4eg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 27/35] bpf: eliminate rlimit-based memory
+ accounting infra for bpf maps
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020 19:03:13 +0900, Daniel Palmer wrote:
-> This adds a YAML description of the pmsleep node used by
-> MStar/SigmaStar Armv7 SoCs.
-> 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
-> ---
->  .../bindings/arm/mstar/mstar,pmsleep.yaml     | 43 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 44 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.yaml
-> 
+On Tue, Jul 28, 2020 at 12:09 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Mon, Jul 27, 2020 at 11:06:42PM -0700, Song Liu wrote:
+> > On Mon, Jul 27, 2020 at 10:58 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Jul 27, 2020 at 10:47 PM Song Liu <song@kernel.org> wrote:
+> > > >
+> > > > On Mon, Jul 27, 2020 at 12:26 PM Roman Gushchin <guro@fb.com> wrote:
+> > > > >
+> > > > > Remove rlimit-based accounting infrastructure code, which is not used
+> > > > > anymore.
+> > > > >
+> > > > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > > [...]
+> > > > >
+> > > > >  static void bpf_map_put_uref(struct bpf_map *map)
+> > > > > @@ -541,7 +484,7 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
+> > > > >                    "value_size:\t%u\n"
+> > > > >                    "max_entries:\t%u\n"
+> > > > >                    "map_flags:\t%#x\n"
+> > > > > -                  "memlock:\t%llu\n"
+> > > > > +                  "memlock:\t%llu\n" /* deprecated */
+> > > >
+> > > > I am not sure whether we can deprecate this one.. How difficult is it
+> > > > to keep this statistics?
+> > > >
+> > >
+> > > It's factually correct now, that BPF map doesn't use any memlock memory, no?
+>
+> Right.
+>
+> >
+> > I am not sure whether memlock really means memlock for all users... I bet there
+> > are users who use memlock to check total memory used by the map.
+>
+> But this is just the part of struct bpf_map, so I agree with Andrii,
+> it's a safe check.
+>
+> >
+> > >
+> > > This is actually one way to detect whether RLIMIT_MEMLOCK is necessary
+> > > or not: create a small map, check if it's fdinfo has memlock: 0 or not
+> > > :)
+> >
+> > If we do show memlock=0, this is a good check...
+>
+> The only question I have if it's worth checking at all? Bumping the rlimit
+> is a way cheaper operation than creating a temporarily map and checking its
+> properties.
+>
 
+for perf and libbpf -- I think it's totally worth it. Bumping
+RLIMIT_MEMLOCK automatically means potentially messing up some other
+parts of the system (e.g., BCC just bumps it to INFINITY allowing to
+over-allocate too much memory, potentially, for unrelated applications
+that do rely on RLIMIT_MEMLOCK). It's one of the reasons why libbpf
+doesn't do it automatically, actually. So knowing when this is not
+necessary, will allow to improve diagnostic messages by libbpf, and
+would just avoid potentially risky operation by perf/BCC/etc.
 
-My bot found errors running 'make dt_binding_check' on your patch:
-
-Error: Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.example.dts:21.23-24 syntax error
-FATAL ERROR: Unable to parse input tree
-scripts/Makefile.lib:315: recipe for target 'Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.example.dt.yaml' failed
-make[1]: *** [Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-Makefile:1347: recipe for target 'dt_binding_check' failed
-make: *** [dt_binding_check] Error 2
-
-
-See https://patchwork.ozlabs.org/patch/1337730
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure dt-schema is up to date:
-
-pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
-
-Please check and re-submit.
-
+> So is there any win in comparison to just leaving the userspace code* as it is
+> for now?
+>
+> * except runqslower and samples
