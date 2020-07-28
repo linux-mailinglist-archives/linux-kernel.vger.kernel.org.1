@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC95022FFB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AA322FFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgG1Cj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
+        id S1727826AbgG1CkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbgG1Cjz (ORCPT
+        with ESMTP id S1727794AbgG1Cj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:39:55 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBD7C0619D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:55 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b79so17359615qkg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:55 -0700 (PDT)
+        Mon, 27 Jul 2020 22:39:56 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3DBC0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:56 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id k18so13863490qtm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=marek-ca.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kN6yLyMpOehEyeJ3iaaFNYcw5cQVfv7fXSI67+KIjis=;
-        b=EPsfShj9QdRRc1tvzRdbAXFiYd2JKJXXS/9vY5ucKpThsDSfYIQOfN0h4xILxlqx/h
-         HSekU2l4vEnU5fcL5AD8P3PvMD8N7T3sQ8T512/tIjEJ+E0kMeuXORq9H8hqfBvYox1O
-         gn9NogxnzGdF7a4xnTuZ9M7iQAv0FgrdLZuD64Lxtvg/grsvUZQJFsxUaFhi11uyJwj8
-         YEYGj/zP0E9eE89pXCisqaBjBBonTFNviOFocI/1GFKSGi6d8HMQYN5lMfROmAIK/Dbw
-         NUdzblBIOx1xe1PVK+fTBIkCor++FGVDfCz67I7ArJGABwUJNJsherCIs+yy8G1mdXHC
-         H8rA==
+        bh=yVMPt7oOkfZt8+mUHt1G0xa2MlVS24FjEN8IWHp4iEo=;
+        b=pE2T9gbdYmjqIIlPzOAZd82ha1siBwlQ7+aqGKUBhzB956MvcoSllJKtUgM/vuchFj
+         65XNk38RaKlXMsUVHA2sRcbYfuEWnsz2DuQwDi+9jN0sdyhY8kOEKhTBdJ4+wYI023Xl
+         MFwH5RMrShhwyPE0gf0/v78xNytmH7QkkhaTEPIsWnEL2cLbbGN69zdu32rr77bLOehX
+         KclOQTBEIGUuSXmA9McU/EMfgmovfxTlPHHR1maf9vJU8DcqN8o8RX2IysSmsPT8rRG0
+         w8aC+EQ171zdAiOtG/jSn18vnHo+U3lc1uDMpZ6HgGXzzOYa23M3XKzMFFq/G0J6dXxR
+         KGFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kN6yLyMpOehEyeJ3iaaFNYcw5cQVfv7fXSI67+KIjis=;
-        b=kp+HY0xzeWHo9VomiRzk570K0cf3adV29zUTmlFELt82luzt9AjByJSFQfQA7uTh9G
-         xm6NHkKJ2Lax1d2KrWKc2LVGFjy2Sa36gkPurQDFaonf4c2Sf83GeV1slbl9j+tQps4f
-         Y0wkoXR/hvs7LUedg88tj7yy2GcaceUsu8IeSV8HfM7dxWUr6wjSpQsWJx2bBEO/aAy3
-         WNyr2BbcvV3zbPqlmF7kXUo8smYYz3JfZKEPT4TqtzqTSHi6AgTQHXuiN4UVBiOqt5F1
-         xc13oKaNofwzYyHYfLNSGnSFLIXMWIhddBoKjieWk1WeBoi4jWsNmtC3lHP8VsGfZfhw
-         OI0Q==
-X-Gm-Message-State: AOAM533T8FGWCzPlHEO89hHStcgtOUiw6xWB7DxK0DO5UKfTKSWPtLkm
-        7B9dCXdK3yHmLrPiNkJXRwGHOw==
-X-Google-Smtp-Source: ABdhPJwg68e5KiC5QtsTaPX4HnIMS+cqo+gah4iuIIRk0rJ5ve6QQ/BIYRDgX9V/LFe2AWvonhGyRQ==
-X-Received: by 2002:a37:9682:: with SMTP id y124mr25704979qkd.442.1595903994243;
-        Mon, 27 Jul 2020 19:39:54 -0700 (PDT)
+        bh=yVMPt7oOkfZt8+mUHt1G0xa2MlVS24FjEN8IWHp4iEo=;
+        b=LZUTiyX5VIX1qB6gdmm8QkPo7shqY28wgFbRVH2ProDPy4/8FLqxQwXsI9JpF3taSV
+         2uzy9A3eQBKpt0qV9vOn7Y3Bq9fbwIkAwT3k/9Fzz1kWYoIDkz/wPbRaamtWFi4v7f5l
+         1oi6q1HldOS/Em/+owbYKorrZkP9+OMu2/Xhf4ONrQLKhITCyg3ZCCJQPDzQr5fDw8KT
+         sqhpTBSUXzfAVMGbk8gVNz2f0Mcv8VpLDob+Fyz1iHbnZ25s5CC/aFKK4kMLfqn3+e3e
+         0X0lNQaiLljinrmrMbFYhX5ID/4Rh4t+6AjS5hBqoekxnTH6PASRVo9TFvh6nhm06l8e
+         wzfg==
+X-Gm-Message-State: AOAM531+qtlidiyePmtSJXHOIcQk1vUslIgJs+RKgoMzDuMKc3or+drx
+        Tb2zddx9ToWN/ZA04WYq+O05wg==
+X-Google-Smtp-Source: ABdhPJzQfSmnfR0G1sOyYPd3hsEqIvngYIz1b2nbxP+KHp/4YvgtL1f1Ho3I9NvGxE1etSwgHmI7qQ==
+X-Received: by 2002:aed:2f04:: with SMTP id l4mr25452746qtd.227.1595903995355;
+        Mon, 27 Jul 2020 19:39:55 -0700 (PDT)
 Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id z3sm13885548qkc.4.2020.07.27.19.39.53
+        by smtp.gmail.com with ESMTPSA id z3sm13885548qkc.4.2020.07.27.19.39.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 19:39:53 -0700 (PDT)
+        Mon, 27 Jul 2020 19:39:54 -0700 (PDT)
 From:   Jonathan Marek <jonathan@marek.ca>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     Andy Gross <agross@kernel.org>,
@@ -55,9 +55,9 @@ Cc:     Andy Gross <agross@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
         DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 6/7] arm64: dts: qcom: sm8150: add interconnect nodes
-Date:   Mon, 27 Jul 2020 22:38:05 -0400
-Message-Id: <20200728023811.5607-7-jonathan@marek.ca>
+Subject: [PATCH v3 7/7] arm64: dts: qcom: sm8250: add interconnect nodes
+Date:   Mon, 27 Jul 2020 22:38:06 -0400
+Message-Id: <20200728023811.5607-8-jonathan@marek.ca>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200728023811.5607-1-jonathan@marek.ca>
 References: <20200728023811.5607-1-jonathan@marek.ca>
@@ -68,87 +68,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the interconnect dts nodes for sm8150.
+Add the interconnect dts nodes for sm8250.
 
 Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- arch/arm64/boot/dts/qcom/sm8150.dtsi | 82 ++++++++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 82 ++++++++++++++++++++++++++++
  1 file changed, 82 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index 33ff99132f4f..e4689c27224b 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -11,6 +11,7 @@
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 636e2196138c..945bd4a9d640 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -7,6 +7,7 @@
+ #include <dt-bindings/clock/qcom,gcc-sm8250.h>
+ #include <dt-bindings/clock/qcom,gpucc-sm8250.h>
  #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/clock/qcom,gcc-sm8150.h>
- #include <dt-bindings/clock/qcom,gpucc-sm8150.h>
-+#include <dt-bindings/interconnect/qcom,sm8150.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- / {
-@@ -440,6 +441,55 @@ uart2: serial@a90000 {
++#include <dt-bindings/interconnect/qcom,sm8250.h>
+ #include <dt-bindings/mailbox/qcom-ipcc.h>
+ #include <dt-bindings/power/qcom-aoss-qmp.h>
+ #include <dt-bindings/power/qcom-rpmpd.h>
+@@ -978,6 +979,55 @@ spi13: spi@a94000 {
  			};
  		};
  
 +		config_noc: interconnect@1500000 {
-+			compatible = "qcom,sm8150-config-noc";
-+			reg = <0 0x01500000 0 0x7400>;
++			compatible = "qcom,sm8250-config-noc";
++			reg = <0 0x01500000 0 0xa580>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
 +		system_noc: interconnect@1620000 {
-+			compatible = "qcom,sm8150-system-noc";
-+			reg = <0 0x01620000 0 0x19400>;
++			compatible = "qcom,sm8250-system-noc";
++			reg = <0 0x01620000 0 0x1c200>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
-+		mc_virt: interconnect@163a000 {
-+			compatible = "qcom,sm8150-mc-virt";
-+			reg = <0 0x0163a000 0 0x1000>;
++		mc_virt: interconnect@163d000 {
++			compatible = "qcom,sm8250-mc-virt";
++			reg = <0 0x0163d000 0 0x1000>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
 +		aggre1_noc: interconnect@16e0000 {
-+			compatible = "qcom,sm8150-aggre1-noc";
-+			reg = <0 0x016e0000 0 0xd080>;
++			compatible = "qcom,sm8250-aggre1-noc";
++			reg = <0 0x016e0000 0 0x1f180>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
 +		aggre2_noc: interconnect@1700000 {
-+			compatible = "qcom,sm8150-aggre2-noc";
-+			reg = <0 0x01700000 0 0x20000>;
++			compatible = "qcom,sm8250-aggre2-noc";
++			reg = <0 0x01700000 0 0x33000>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
-+		compute_noc: interconnect@1720000 {
-+			compatible = "qcom,sm8150-compute-noc";
-+			reg = <0 0x01720000 0 0x7000>;
++		compute_noc: interconnect@1733000 {
++			compatible = "qcom,sm8250-compute-noc";
++			reg = <0 0x01733000 0 0xa180>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
 +		mmss_noc: interconnect@1740000 {
-+			compatible = "qcom,sm8150-mmss-noc";
-+			reg = <0 0x01740000 0 0x1c100>;
++			compatible = "qcom,sm8250-mmss-noc";
++			reg = <0 0x01740000 0 0x1f080>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
  		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8150-ufshc", "qcom,ufshc",
+ 			compatible = "qcom,sm8250-ufshc", "qcom,ufshc",
  				     "jedec,ufs-2.0";
-@@ -510,6 +560,13 @@ ufs_mem_phy_lanes: lanes@1d87400 {
+@@ -1050,6 +1100,13 @@ ufs_mem_phy_lanes: lanes@1d87400 {
  			};
  		};
  
 +		ipa_virt: interconnect@1e00000 {
-+			compatible = "qcom,sm8150-ipa-virt";
++			compatible = "qcom,sm8250-ipa-virt";
 +			reg = <0 0x01e00000 0 0x1000>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
@@ -157,42 +157,35 @@ index 33ff99132f4f..e4689c27224b 100644
  		tcsr_mutex_regs: syscon@1f40000 {
  			compatible = "syscon";
  			reg = <0x0 0x01f40000 0x0 0x40000>;
-@@ -860,6 +917,20 @@ usb_2_ssphy: lane@88eb200 {
+@@ -1364,6 +1421,27 @@ usb_2_ssphy: lane@88eb200 {
  			};
  		};
  
-+		dc_noc: interconnect@9160000 {
-+			compatible = "qcom,sm8150-dc-noc";
-+			reg = <0 0x09160000 0 0x3200>;
++		dc_noc: interconnect@90c0000 {
++			compatible = "qcom,sm8250-dc-noc";
++			reg = <0 0x090c0000 0 0x4200>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
-+		gem_noc: interconnect@9680000 {
-+			compatible = "qcom,sm8150-gem-noc";
-+			reg = <0 0x09680000 0 0x3e200>;
++		gem_noc: interconnect@9100000 {
++			compatible = "qcom,sm8250-gem-noc";
++			reg = <0 0x09100000 0 0xb4000>;
++			#interconnect-cells = <1>;
++			qcom,bcm-voters = <&apps_bcm_voter>;
++		};
++
++		npu_noc: interconnect@9990000 {
++			compatible = "qcom,sm8250-npu-noc";
++			reg = <0 0x09990000 0 0x1600>;
 +			#interconnect-cells = <1>;
 +			qcom,bcm-voters = <&apps_bcm_voter>;
 +		};
 +
  		usb_1: usb@a6f8800 {
- 			compatible = "qcom,sm8150-dwc3", "qcom,dwc3";
+ 			compatible = "qcom,sm8250-dwc3", "qcom,dwc3";
  			reg = <0 0x0a6f8800 0 0x400>;
-@@ -950,6 +1021,13 @@ usb_2_dwc3: dwc3@a800000 {
- 			};
- 		};
- 
-+		camnoc_virt: interconnect@ac00000 {
-+			compatible = "qcom,sm8150-camnoc-virt";
-+			reg = <0 0x0ac00000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		aoss_qmp: power-controller@c300000 {
- 			compatible = "qcom,sm8150-aoss-qmp";
- 			reg = <0x0 0x0c300000 0x0 0x100000>;
-@@ -1280,6 +1358,10 @@ rpmhpd_opp_turbo_l1: opp11 {
+@@ -2359,6 +2437,10 @@ rpmhpd_opp_turbo_l1: opp10 {
  					};
  				};
  			};
@@ -201,8 +194,8 @@ index 33ff99132f4f..e4689c27224b 100644
 +				compatible = "qcom,bcm-voter";
 +			};
  		};
+ 	};
  
- 		cpufreq_hw: cpufreq@18323000 {
 -- 
 2.26.1
 
