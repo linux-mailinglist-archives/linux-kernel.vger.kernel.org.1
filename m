@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634BF230F6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B103230FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731534AbgG1Qdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:33:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731191AbgG1Qdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:33:54 -0400
-Received: from localhost (p54b330d0.dip0.t-ipconnect.de [84.179.48.208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 92DA22074F;
-        Tue, 28 Jul 2020 16:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595954034;
-        bh=P3s2vLrUkoPtpWsgHnMNHnfzyTA1ZnLqpfxWfpMaeyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VmVzQijZMe3MQ8CgPNz02MhvuDClbYbJWKDHBgb8RiMP5VQ7zSFhV6prXFGsoXl+l
-         rGdW/hhCRPW5n1MNFjclalgwC1LmlMPxni9n2sdgl9/YEd7x1vWLN06dWI1ERRtvSF
-         j+UeL3T5KdzmPcwoAbFXFSG3ouwh35hy/jGBIrwI=
-Date:   Tue, 28 Jul 2020 18:33:51 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, robh+dt@kernel.org,
-        helen.koike@collabora.com, digetx@gmail.com, sboyd@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [RFC PATCH v5 03/14] i2c: tegra: Fix the error path in
- tegra_i2c_runtime_resume
-Message-ID: <20200728163351.GC3736@ninjato>
-References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
- <1595883452-17343-4-git-send-email-skomatineni@nvidia.com>
+        id S1731906AbgG1Qgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731429AbgG1QeZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 12:34:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D09AC061794;
+        Tue, 28 Jul 2020 09:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=kVQtb0EC5zPxTA2ayYfBJx4HY/CNxKUjYbbIch9w8To=; b=mspBTjUWtgpPb4qLvI5PjYWwOM
+        4xZNHTabFfBvssqH7c/39Sc1ekp+M5+SqBDUYBkt2ucniLwNBWaq94zkkYOoIAPj/UaRMf4mtx3YK
+        W0L5iZg+7xHA9TiFXC8u5fc6fYHDe6CT6b15J8Oesifa05gXH7hnFa0iYkc8g+AcyI/0rNI4O8Ox0
+        obSdlxKChKraUYqMq1yyafpl/in4CI0Hav66IYrJPtqDtGUSPZR2/x9DBfWbuLTlo8NYaOgCPZqJD
+        OvUuAnCvA43Twt/6GA+RD8XxJ33FRrI6T32fxA0LxAHyvgCch5i6HSuh9FxyNeJUH2sjVKeCH7mvP
+        Ev8vTchw==;
+Received: from [2001:4bb8:180:6102:fd04:50d8:4827:5508] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k0SYV-0006wk-6T; Tue, 28 Jul 2020 16:34:19 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: add file system helpers that take kernel pointers for the init code v4
+Date:   Tue, 28 Jul 2020 18:33:53 +0200
+Message-Id: <20200728163416.556521-1-hch@lst.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2/5bycvrmDh4d1IB"
-Content-Disposition: inline
-In-Reply-To: <1595883452-17343-4-git-send-email-skomatineni@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Al and Linus,
 
---2/5bycvrmDh4d1IB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+currently a lot of the file system calls in the early in code (and the
+devtmpfs kthread) rely on the implicit set_fs(KERNEL_DS) during boot.
+This is one of the few last remaining places we need to deal with to kill
+off set_fs entirely, so this series adds new helpers that take kernel
+pointers.  These helpers are in init/ and marked __init and thus will
+be discarded after bootup.  A few also need to be duplicated in devtmpfs,
+though unfortunately.
 
-On Mon, Jul 27, 2020 at 01:57:21PM -0700, Sowjanya Komatineni wrote:
-> tegra_i2c_runtime_resume does not disable prior enabled clocks
-> properly.
->=20
-> This patch fixes it.
->=20
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+The series sits on top of my previous
 
-Applied to for-next, thanks!
+  "decruft the early init / initrd / initramfs code v2"
+
+series.
 
 
---2/5bycvrmDh4d1IB
-Content-Type: application/pgp-signature; name="signature.asc"
+Git tree:
 
------BEGIN PGP SIGNATURE-----
+    git://git.infradead.org/users/hch/misc.git init_path
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl8gU28ACgkQFA3kzBSg
-KbbmDhAAoX1GzWiktnMfjqHwm3rkcqamBWXVqsWEGRjEdMUDfeD6uPttYDx8YGph
-NUaP4CjvNwdoATSH2geHWjJ59/Aj5mzDZfTil2c3uQtfczA+CtMjNX7h9sh1qpY0
-m5kqnnOytv6nn07R6R6htknVhMRLMlAuOqtnyBgd2hSaNo/3i2oe3XldtwFnwVQg
-4b5J8ohKh27fqfYXIqMzTkBOmH7qjNX9flgdik5T4V3Jx3zKGOA2P7Somp8pRwWk
-HwHCUiWEBF6lCKFFvGkSXJEin3lmL5xBk9Mxg1YO8xUlA8L3/6bmIUKXZaDHz2Ez
-8sKfqHx1wy2PqLHMK4RK6pCCRkLmFw+qemZC9QEl2/4BY5MT8ZvGNhjxD5+ThT1u
-T8QZkBDLTjvcKIilQ43mHMplMsHYvdfi6Do4de4TXkif6uDWc+nGbYNJPxxpEoen
-HnZO7jPCTvoG7uPlJGjcIeoIiqlJIDc2LIecBA8V89xX9T5Cw5vpKyFPhZbqyOCC
-o55rDDsnaWZvDFMEzsX4gQIOjXYyE7QjN1W8l4VkYaEEjIkLDclFfv9DGJ46gWPs
-kU+sBU6bpR53Vfpv76ocU7B+yDKR6vTZvYzsAUeZ7R+DgNkMzj2CCa5UQLxbcMHL
-9B4RMSTnGYRe8XEqQ/zCZ+Qq8TZvOnJ/M+VKYPmkgSUw4vryzpE=
-=gkYV
------END PGP SIGNATURE-----
+Gitweb:
 
---2/5bycvrmDh4d1IB--
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/init_path
+
+
+Changes since v3:
+ - rename fs/for_init.c to fs/init.c
+ - document the purpose of the routines in fs/init.c with a comment
+ - don't mark devtmpfs __init as that will cause it to get overwritten
+   by initmem poisoning
+ - add an init_dup helper to make Al more happy than with the version
+   commit to the "decruft the early init / initrd / initramfs code v2"
+   series
+
+Changes since v2:
+ - move to fs/for_init.c
+ - reuse the init routines in devtmpfs after refactoring devtmpfsd
+   (and thus the broken error handling in the previous version)
+ - actually use kern_path in a place where user_path_at sneaked back in
+
+Changes since v1:
+ - avoid most core VFS changes
+ - renamed the functions and move them to init/ and devtmpfs
+ - drop a bunch of cleanups that can be submitted independently now
+
+
+Diffstat:
