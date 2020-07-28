@@ -2,135 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A53230A7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF0E230A83
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729864AbgG1Mma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729379AbgG1Mma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:42:30 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9309620714;
-        Tue, 28 Jul 2020 12:42:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595940149;
-        bh=zLz4M5wkxbZNepiSL3Hcv83ECJB7S4PmkNmrgGvw8bY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YQ4uWy+YTPp2joyDxNRyIK7eKqoco7ViDYdc3Sl7eAZAh57+fi0aMCm+eRIJgtATl
-         ixhfVhGWuPOcrIu+G+KQZQ17PcI/6SMaqDfKrzOJ+xjfjfsvsQGu9+QL5OWMSz/rT/
-         3NetWlyTogegQp9Xdxs+CCadw361OGJfBquQ1em0=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2E4A3404B1; Tue, 28 Jul 2020 09:42:27 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:42:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Paul A. Clarke" <pc@us.ibm.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
-Message-ID: <20200728124227.GA40195@kernel.org>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <20200721143702.GA15990@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
- <20200722181158.GF981884@krava>
- <20200723155958.GA7141@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+        id S1729882AbgG1MoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:44:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729379AbgG1MoD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:44:03 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4902EC0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:44:03 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id 4so1754341uav.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lamag6Aa8xzEi9MNZwHnYxjBf9+2A6cpklCTrsDoh4A=;
+        b=Gh+RNdjJTAk6ipjYlV7bdCb0w+2JUMWgSRCx5z5IcDAjithhxopl7Z92M6ic/T1YzF
+         CFRypxrbYTuYAO756tYXsKbuPUPT4VSgS6YJSPF6XlC3D3R6xEeJkWroI3DfzZYRM1LL
+         vmO6CnSsssfs+K+zaog/rGp7NTttzSG8kgnYnz7LF5WJGq65zgk1HddQqsK4uVv604h8
+         A0aB6ggLpK3J8cvqPUr+9jgC8ed9isGdtLNr5+SyVYt9zXKFyehHsIE+bmu3wSE76/j5
+         ayEapCBEVj0u7dGIWP/pvewiOUuAbSdxbKkJpds8lwRPNOFwrhgmg2zkPdDAcFV/BRek
+         yFhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lamag6Aa8xzEi9MNZwHnYxjBf9+2A6cpklCTrsDoh4A=;
+        b=F35EMYZNe2fB+udA5EPaup4RdnMVIr3ToAxcauxu7kHY5o3aQwBaGqg3ep5fm3F+aL
+         M88p6SpuPLJjoI0qsVe/b3NLi57qzByVwpMY9CW30/CY9AZSY7hJ3YdI0dyQO8D8qFqX
+         RCAAS+oTJao3tysVdJvpqNzzZjrWZm0vp8mH1XKeTBXNtoYMvKGaXHAEsLOIJq5giq0D
+         VGkIV+ULvn15Ymwm/J/yV1q4RcTXBaW2FNIhKjKuY1rdi09JDIPYxO4KSR208jB5xSc5
+         HZaULw0L4hIIJMHGomZLJsOY5Nz2Obe88q6OmJ6AWjXIlHY5WM7kzCsdJBKETI+U5nlq
+         ME3Q==
+X-Gm-Message-State: AOAM531JGNmZcgzuVIYnylQWzFRzkhZS89CCo9EqQbs8YizIF0AUvoBy
+        ROt/9iBVRY29p4TzPe2c6emLmsnGH+Lb785c7naAfw==
+X-Google-Smtp-Source: ABdhPJz8eUEacBI5xGPA1ODM83K3paHnnu+pjfbLJLVF+MbS+nbHVLCtgJw9MrHvNcK5mlOlZKsZHsEPMhLmkB6dTmg=
+X-Received: by 2002:ab0:5963:: with SMTP id o32mr19678822uad.142.1595940242118;
+ Tue, 28 Jul 2020 05:44:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723155958.GA7141@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-X-Url:  http://acmel.wordpress.com
+References: <20200727134911.020675249@linuxfoundation.org>
+In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Jul 2020 18:13:50 +0530
+Message-ID: <CA+G9fYs+EJiUDP-nibgM4A+nS5EauvVNuPVafM_iAFPfPD3a3A@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/64] 4.14.190-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jul 23, 2020 at 10:59:58AM -0500, Paul A. Clarke escreveu:
-> On Wed, Jul 22, 2020 at 08:11:58PM +0200, Jiri Olsa wrote:
-> > On Tue, Jul 21, 2020 at 09:48:48AM -0500, Paul A. Clarke wrote:
-> > > On Sun, Jul 19, 2020 at 08:13:01PM +0200, Jiri Olsa wrote:
-> > > > hi,
-> > > > this patchset is adding the support to reused metric in
-> > > > another metric.
-> > > > 
-> > > > For example, to define IPC by using CPI with change like:
-> > > > 
-> > > >      {
-> > > >          "BriefDescription": "Instructions Per Cycle (per Logical Processor)",
-> > > > -        "MetricExpr": "INST_RETIRED.ANY / CPU_CLK_UNHALTED.THREAD",
-> > > > +        "MetricExpr": "1/CPI",
-> > > >          "MetricGroup": "TopDownL1",
-> > > >          "MetricName": "IPC"
-> > > >      },
-> > > > 
-> > > > I won't be able to find all the possible places we could
-> > > > use this at, so I wonder you guys (who was asking for this)
-> > > > would try it and come up with comments if there's something
-> > > > missing or we could already use it at some places.
-> > > > 
-> > > > It's based on Arnaldo's tmp.perf/core.
-> > > > 
-> > > > v3 changes:
-> > > >   - added some acks
-> > > >   - some patches got merged
-> > > >   - added missing zalloc include [John Garry]
-> > > >   - added ids array outside the egroup object [Ian]
-> > > >   - removed wrong m->has_constraint assignment [Ian]
-> > > >   - renamed 'list' to 'metric_list' [Ian]
-> > > >   - fixed group metric and added test for it [Paul A. Clarke]
-> > > >   - fixed memory leak [Arnaldo]
-> > > >   - using lowercase keys for metrics in hashmap, because jevents
-> > > >     converts metric_expr to lowercase
-> > > > 
-> > > > Also available in here:
-> > > >   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-> > > >   perf/metric
-> > > 
-> > > These changes seem to be mostly working for me.
-> > > 
-> > > I attempted to exploit the new capability in the metrics definitions in
-> > > tools/perf/pmu-events/arch/powerpc/power9/metrics.json.  Those changes
-> > > are included below.
-> > > 
-> > > The one problem I found is with the "cpi_breakdown" metric group, as it
-> > > no longer works:
-> > > ```
-> > > # perf stat --metrics cpi_breakdown ./command
-> > > Cannot find metric or group `cpi_breakdown'
-> > > ```
-> > > 
-> > > "cpi_breakdown" does show up in `perf list --metricgroup`, and all of the
-> > > (95!) metrics listed in that group are usable, so it's not obvious whether
-> > > my changes have a problem, or merely provoke one.
-> > 
-> > I underestimated the recursion depth setup for groups,
-> > your change is working for me with following change:
-> > 
-> > -#define RECURSION_ID_MAX 100
-> > +#define RECURSION_ID_MAX 1000
-> 
-> That indeed addressed the issue.
+On Mon, 27 Jul 2020 at 19:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.190 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 29 Jul 2020 13:48:51 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.190-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Thanks, I made that change on the cset that added this define.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-- Arnaldo
- 
-> Is there a point where that limit was being hit and the code silently fails?
-> If so, should that failure be less silent?
-> 
-> PC
+Summary
+------------------------------------------------------------------------
 
--- 
+kernel: 4.14.190-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: f238f865e7549f70e465fb28f92c863900e76455
+git describe: v4.14.189-65-gf238f865e754
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
+ild/v4.14.189-65-gf238f865e754
 
-- Arnaldo
+No regressions (compared to build v4.14.189)
+
+No fixes (compared to build v4.14.189)
+
+Ran 31258 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* perf
+* v4l2-compliance
+* kvm-unit-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* ssuite
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
