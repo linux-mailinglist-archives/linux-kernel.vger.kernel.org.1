@@ -2,139 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6E3231064
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBAF231062
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731783AbgG1RFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:05:38 -0400
-Received: from out28-197.mail.aliyun.com ([115.124.28.197]:57868 "EHLO
-        out28-197.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731484AbgG1RFh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:05:37 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438316|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0118884-0.000241417-0.98787;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16367;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.I8uonft_1595955914;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.I8uonft_1595955914)
-          by smtp.aliyun-inc.com(10.147.44.145);
-          Wed, 29 Jul 2020 01:05:30 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        colin.king@canonical.com, dan.carpenter@oracle.com,
-        paul@crapouillou.net, prasannatsmkumar@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Subject: [PATCH 1/1] USB: PHY: JZ4770: Fix static checker warning.
-Date:   Wed, 29 Jul 2020 01:02:51 +0800
-Message-Id: <20200728170251.112484-2-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200728170251.112484-1-zhouyanjie@wanyeetech.com>
-References: <20200728170251.112484-1-zhouyanjie@wanyeetech.com>
+        id S1731756AbgG1RFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:05:36 -0400
+Received: from namei.org ([65.99.196.166]:55950 "EHLO namei.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731070AbgG1RFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 13:05:36 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by namei.org (8.14.4/8.14.4) with ESMTP id 06SH58V8001021;
+        Tue, 28 Jul 2020 17:05:08 GMT
+Date:   Wed, 29 Jul 2020 03:05:08 +1000 (AEST)
+From:   James Morris <jmorris@namei.org>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+cc:     madvenka@linux.microsoft.com, kernel-hardening@lists.openwall.com,
+        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org
+Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+In-Reply-To: <3fd22f92-7f45-1b0f-e4fe-857f3bceedd0@schaufler-ca.com>
+Message-ID: <alpine.LRH.2.21.2007290300400.31310@namei.org>
+References: <aefc85852ea518982e74b233e11e16d2e707bc32> <20200728131050.24443-1-madvenka@linux.microsoft.com> <3fd22f92-7f45-1b0f-e4fe-857f3bceedd0@schaufler-ca.com>
+User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new
-Ingenic SoCs.") introduced the initialization function for different
-chips, but left the relevant code involved in the resetting process
-in the original function, resulting in uninitialized variable calls.
-This problem can be solved by putting this part of the code into the
-initialization function for each chip. Although the four processors
-currently supported have the same reset code, let us can solve this
-problem by adding the initialization of the reg variable to the
-original function, but when other processors with different reset
-methods (such as X2000) are introduced in the future, it will cause
-inevitable condition judgments to complicate the function, which
-violates the original intention of introducing initialization
-functions for each processor.
+On Tue, 28 Jul 2020, Casey Schaufler wrote:
 
-Fixes: 2a6c0b82e651 ("USB: PHY: JZ4770: Add support for new
-Ingenic SoCs.").
+> You could make a separate LSM to do these checks instead of limiting
+> it to SELinux. Your use case, your call, of course.
 
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- drivers/usb/phy/phy-jz4770.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+It's not limited to SELinux. This is hooked via the LSM API and 
+implementable by any LSM (similar to execmem, execstack etc.)
 
-diff --git a/drivers/usb/phy/phy-jz4770.c b/drivers/usb/phy/phy-jz4770.c
-index d4ee3cb721ea..23d38cbc150e 100644
---- a/drivers/usb/phy/phy-jz4770.c
-+++ b/drivers/usb/phy/phy-jz4770.c
-@@ -158,7 +158,6 @@ static int ingenic_usb_phy_init(struct usb_phy *phy)
- {
- 	struct jz4770_phy *priv = phy_to_jz4770_phy(phy);
- 	int err;
--	u32 reg;
- 
- 	err = regulator_enable(priv->vcc_supply);
- 	if (err) {
-@@ -174,11 +173,6 @@ static int ingenic_usb_phy_init(struct usb_phy *phy)
- 
- 	priv->soc_info->usb_phy_init(phy);
- 
--	/* Wait for PHY to reset */
--	usleep_range(30, 300);
--	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
--	usleep_range(300, 1000);
--
- 	return 0;
- }
- 
-@@ -205,6 +199,11 @@ static void jz4770_usb_phy_init(struct usb_phy *phy)
- 		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT | USBPCR_TXVREFTUNE_DFT |
- 		USBPCR_POR;
- 	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+	/* Wait for PHY to reset */
-+	usleep_range(30, 300);
-+	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-+	usleep_range(300, 1000);
- }
- 
- static void jz4780_usb_phy_init(struct usb_phy *phy)
-@@ -218,6 +217,11 @@ static void jz4780_usb_phy_init(struct usb_phy *phy)
- 
- 	reg = USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
- 	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+	/* Wait for PHY to reset */
-+	usleep_range(30, 300);
-+	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-+	usleep_range(300, 1000);
- }
- 
- static void x1000_usb_phy_init(struct usb_phy *phy)
-@@ -232,6 +236,11 @@ static void x1000_usb_phy_init(struct usb_phy *phy)
- 		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
- 		USBPCR_COMMONONN | USBPCR_POR;
- 	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+	/* Wait for PHY to reset */
-+	usleep_range(30, 300);
-+	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-+	usleep_range(300, 1000);
- }
- 
- static void x1830_usb_phy_init(struct usb_phy *phy)
-@@ -249,6 +258,11 @@ static void x1830_usb_phy_init(struct usb_phy *phy)
- 	reg = USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT |	USBPCR_TXPREEMPHTUNE |
- 		USBPCR_COMMONONN | USBPCR_POR;
- 	writel(reg, priv->base + REG_USBPCR_OFFSET);
-+
-+	/* Wait for PHY to reset */
-+	usleep_range(30, 300);
-+	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-+	usleep_range(300, 1000);
- }
- 
- static const struct ingenic_soc_info jz4770_soc_info = {
+
 -- 
-2.11.0
+James Morris
+<jmorris@namei.org>
 
