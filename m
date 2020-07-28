@@ -2,103 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C73F23124A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9580F23124E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732661AbgG1TQ7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 15:16:59 -0400
-Received: from mga01.intel.com ([192.55.52.88]:37804 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729133AbgG1TQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:16:58 -0400
-IronPort-SDR: oYMgtKw7WgQxnshU1GNf4kwnMLpNCn0XkXiM6d43LFwgbHwPMIub4xSxvcS0VLgePv2QCz8iIa
- VW3NFTBXQ+/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="169415910"
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="169415910"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 12:16:58 -0700
-IronPort-SDR: GDgLdRPeToXtmqek9PW4+XwtLwt371zb5zT43jdHLEP6G6Lw3Ux25ZWb+bY/66WxbggDbwWWmT
- JfdQ1P5urrlg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="490008716"
-Received: from fmsmsx106.amr.corp.intel.com ([10.18.124.204])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Jul 2020 12:16:58 -0700
-Received: from lcsmsx601.ger.corp.intel.com (10.109.210.10) by
- FMSMSX106.amr.corp.intel.com (10.18.124.204) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 28 Jul 2020 12:16:58 -0700
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- LCSMSX601.ger.corp.intel.com (10.109.210.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 28 Jul 2020 22:16:55 +0300
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.1713.004;
- Tue, 28 Jul 2020 22:16:55 +0300
-From:   "Winkler, Tomas" <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [char-misc-next V2] mei: add device kind to sysfs
-Thread-Topic: [char-misc-next V2] mei: add device kind to sysfs
-Thread-Index: AQHWZQzsP7MTlAgR70GuvAbRthg4rqkdJAuAgAA4N3A=
-Date:   Tue, 28 Jul 2020 19:16:55 +0000
-Message-ID: <8a88b1db0b9447ebaa37636a68e3b018@intel.com>
-References: <20200728182836.3112138-1-tomas.winkler@intel.com>
- <20200728185219.GA332869@kroah.com>
-In-Reply-To: <20200728185219.GA332869@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.2.0.6
-x-originating-ip: [10.184.70.1]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1732684AbgG1TRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:17:09 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34716 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729133AbgG1TRH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:17:07 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SJH0Qn050624;
+        Tue, 28 Jul 2020 14:17:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595963820;
+        bh=0X5/B4tnSjQPL58pYcSzCXVyRs6k1QQQ3t+m1IW2tFY=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QaYU4+isr6MKl4fOzk+0EPc6uGHk2BBnivLHX9bg6Iv61ccXbo2dAhej/wnTrPZtt
+         nohBqCyerQDSPkLvXYSBndU4Lfe5SR1dt+LCd+PkoSADyKd4gZRuvLUYrniqTX3F70
+         T+T3bQBwG2GtlZsjah42ktZGVnHHr2z5s+seXIXk=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SJH01s075942;
+        Tue, 28 Jul 2020 14:17:00 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Jul 2020 14:16:59 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Jul 2020 14:16:59 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SJGvCO018644;
+        Tue, 28 Jul 2020 14:16:57 -0500
+Subject: Re: [PATCH 3/4] arm64: dts: ti: Add support for J7200 SoC
+To:     Lokesh Vutla <lokeshvutla@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Suman Anna <s-anna@ti.com>
+References: <20200723084628.19241-1-lokeshvutla@ti.com>
+ <20200723084628.19241-4-lokeshvutla@ti.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <36788bae-ddcd-a880-ea34-a4919945009c@ti.com>
+Date:   Tue, 28 Jul 2020 22:16:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200723084628.19241-4-lokeshvutla@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> 
-> On Tue, Jul 28, 2020 at 09:28:36PM +0300, Tomas Winkler wrote:
-> > +/**
-> > + * kind_show - display device kind
-> > + *
-> > + * @device: device pointer
-> > + * @attr: attribute pointer
-> > + * @buf: char out buffer
-> > + *
-> > + * Return: number of the bytes printed into buf or error
-> 
-> No need for kernel doc for static sysfs attributes, but ok...
-> 
-> > + */
-> > +static ssize_t kind_show(struct device *device,
-> > +			 struct device_attribute *attr, char *buf) {
-> > +	struct mei_device *dev = dev_get_drvdata(device);
-> > +	ssize_t ret = 0;
-> 
-> No need to initialize this.
-Right, a leftover from an earlier version. 
-> 
-> > +
-> > +	mutex_lock(&dev->device_lock);
-> > +	if (dev->kind)
-> > +		ret = sprintf(buf, "%s\n", dev->kind);
-> > +	else
-> > +		ret = sprintf(buf, "%s\n", "mei");
-> > +	mutex_unlock(&dev->device_lock);
-> 
-> Why do you need a lock?  kind can not change, so what are you trying to
-> protect from?
-There might be firmware initiated reset but in this particular case you are right,  the lock is not needed.
 
-Will resend. 
+On 23/07/2020 11:46, Lokesh Vutla wrote:
+> The J7200 SoC is a part of the K3 Multicore SoC architecture platform.
+> It is targeted for automotive gateway, vehicle compute systems,
+> Vehicle-to-Vehicle (V2V) and Vehicle-to-Everything (V2X) applications.
+> The SoC aims to meet the complex processing needs of modern embedded
+> products.
+> 
+> Some highlights of this SoC are:
+> * Dual Cortex-A72s in a single cluster, two clusters of lockstep
+>    capable dual Cortex-R5F MCUs and a Centralized Device Management and
+>    Security Controller (DMSC).
+> * Configurable L3 Cache and IO-coherent architecture with high data
+>    throughput capable distributed DMA architecture under NAVSS.
+> * Integrated Ethernet switch supporting up to a total of 4 external ports
+>    in addition to legacy Ethernet switch of up to 2 ports.
+> * Upto 1 PCIe-GEN3 controller, 1 USB3.0 Dual-role device subsystems,
+>    20 MCANs, 3 McASP, eMMC and SD, OSPI/HyperBus memory controller, I3C
+>    and I2C, eCAP/eQEP, eHRPWM among other peripherals.
+> * One hardware accelerator block containing AES/DES/SHA/MD5 called SA2UL
+>    management.
+> 
+> See J7200 Technical Reference Manual (SPRUIU1, June 2020)
+> for further details: https://www.ti.com/lit/pdf/spruiu1
+> 
+> Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 199 ++++++++++++++++++
+>   .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      |  84 ++++++++
+>   arch/arm64/boot/dts/ti/k3-j7200.dtsi          | 165 +++++++++++++++
+>   3 files changed, 448 insertions(+)
+>   create mode 100644 arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+>   create mode 100644 arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+>   create mode 100644 arch/arm64/boot/dts/ti/k3-j7200.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> new file mode 100644
+> index 000000000000..70c8f7e941fb
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
+> @@ -0,0 +1,199 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Device Tree Source for J7200 SoC Family Main Domain peripherals
+> + *
+> + * Copyright (C) 2020 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +&cbass_main {
+> +	msmc_ram: sram@70000000 {
+> +		compatible = "mmio-sram";
+> +		reg = <0x0 0x70000000 0x0 0x100000>;
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0x0 0x70000000 0x100000>;
+> +
+> +		atf-sram@0 {
+> +			reg = <0x0 0x20000>;
+> +		};
+> +	};
+> +
+> +	gic500: interrupt-controller@1800000 {
+> +		compatible = "arm,gic-v3";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +		#interrupt-cells = <3>;
+> +		interrupt-controller;
+> +		reg = <0x00 0x01800000 0x00 0x10000>,	/* GICD */
+> +		      <0x00 0x01900000 0x00 0x100000>;	/* GICR */
+> +
+> +		/* vcpumntirq: virtual CPU interface maintenance interrupt */
+> +		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		gic_its: msi-controller@1820000 {
+> +			compatible = "arm,gic-v3-its";
+> +			reg = <0x00 0x01820000 0x00 0x10000>;
+> +			socionext,synquacer-pre-its = <0x1000000 0x400000>;
+> +			msi-controller;
+> +			#msi-cells = <1>;
+> +		};
+> +	};
+> +
+> +	main_navss: navss@30000000 {
+> +		compatible = "simple-mfd";
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges = <0x00 0x30000000 0x00 0x30000000 0x00 0x0c400000>;
 
+Can we return back
+ti,sci-dev-id = <199>;
+
+here? it's needed for DMA PSI-L pairing.
+
+Option: add it as part of dma/net submission.
+
+[...]
+
+-- 
+Best regards,
+grygorii
