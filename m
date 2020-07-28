@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D18F230B98
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204DF230BA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730145AbgG1Nk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:40:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55330 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729044AbgG1Nk2 (ORCPT
+        id S1730185AbgG1NmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:42:16 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:8138 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730069AbgG1NmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:40:28 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1k0Pq5-0004Om-5K; Tue, 28 Jul 2020 13:40:17 +0000
-Date:   Tue, 28 Jul 2020 15:40:15 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Steven Sistare <steven.sistare@oracle.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Anthony Yznaga <anthony.yznaga@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
-        ktkhai@virtuozzo.com, peterz@infradead.org, esyr@redhat.com,
-        jgg@ziepe.ca, christian@kellner.me, areber@redhat.com,
-        cyphar@cyphar.com, linux-api@vger.kernel.org
-Subject: Re: [RFC PATCH 0/5] madvise MADV_DOEXEC
-Message-ID: <20200728134015.tmjy5hy4xden2v5h@wittgenstein>
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
- <87pn8glwd2.fsf@x220.int.ebiederm.org>
- <28125570-4129-bcba-099b-f90481cfbfe8@oracle.com>
+        Tue, 28 Jul 2020 09:42:15 -0400
+X-UUID: ae3bb83e4618489dae9c64226dfb1f47-20200728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=bjEJpsQTJche0VDVAIsDUpUZ2H8kXX1SWDr+bc6c22E=;
+        b=kWMkaN1RdigKxERCuNili1vIlQuxfhJ8R4SdRN1o0ac/Xpv2NEqMiTE8YZCcwyj+ekGlMKXCjXtgkPfGzAexrHm09t5PpHwAg3vUj4Z2hYcEbSW2kmb0VKLtHLgghyfNz+ZBpICONWlTjQS5ha18hfaS8+tweiMTQyLfhDaiGEk=;
+X-UUID: ae3bb83e4618489dae9c64226dfb1f47-20200728
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <seiya.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 42973550; Tue, 28 Jul 2020 21:42:10 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 28 Jul 2020 21:42:06 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 28 Jul 2020 21:42:06 +0800
+From:   Seiya Wang <seiya.wang@mediatek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>
+Subject: [PATCH v2 0/3] Add basic node support for Mediatek MT8192 SoC 
+Date:   Tue, 28 Jul 2020 21:41:46 +0800
+Message-ID: <20200728134149.19758-1-seiya.wang@mediatek.com>
+X-Mailer: git-send-email 2.14.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <28125570-4129-bcba-099b-f90481cfbfe8@oracle.com>
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 02:00:17PM -0400, Steven Sistare wrote:
-> On 7/27/2020 1:07 PM, ebiederm@xmission.com wrote:
-> > Anthony Yznaga <anthony.yznaga@oracle.com> writes:
-> > 
-> >> This patchset adds support for preserving an anonymous memory range across
-> >> exec(3) using a new madvise MADV_DOEXEC argument.  The primary benefit for
-> >> sharing memory in this manner, as opposed to re-attaching to a named shared
-> >> memory segment, is to ensure it is mapped at the same virtual address in
-> >> the new process as it was in the old one.  An intended use for this is to
-> >> preserve guest memory for guests using vfio while qemu exec's an updated
-> >> version of itself.  By ensuring the memory is preserved at a fixed address,
-> >> vfio mappings and their associated kernel data structures can remain valid.
-> >> In addition, for the qemu use case, qemu instances that back guest RAM with
-> >> anonymous memory can be updated.
-> > 
-> > What is wrong with using a file descriptor to a possibly deleted file
-> > and re-mmaping it?
-> > 
-> > There is already MAP_FIXED that allows you to ensure you have the same
-> > address.
-> 
-> MAP_FIXED blows away any existing mapping in that range, which is not the 
-> desired behavior.  We want to preserve the previously created mapping at
+TVQ4MTkyIGlzIGEgU29DIGJhc2VkIG9uIDY0Yml0IEFSTXY4IGFyY2hpdGVjdHVyZS4NCkl0IGNv
+bnRhaW5zIDQgQ0E1NSBhbmQgNCBDQTc2IGNvcmVzLg0KTVQ4MTkyIHNoYXJlIG1hbnkgSFcgSVAg
+d2l0aCBNVDY1eHggc2VyaWVzLg0KVGhpcyBwYXRjaHNldCB3YXMgdGVzdGVkIG9uIE1UODE5MiBl
+dmFsdWF0aW9uIGJvYXJkIGFuZCB1c2UgY29ycmVjdCBjbG9jayB0byBzaGUNCmxsLg0KDQpCYXNl
+ZCBvbiB2NS44LXJjMQ0KDQpDaGFuZ2UgaW4gdjI6DQoxLiBSZW1vdmUgbXQ4MTkyLXBvd2VyLmgg
+ZnJvbSBtdDgxOTIuZHRzaSB3aGljaCBpcyBub3QgdXNlZCB5ZXQNCjIuIEFkZCB0aW1lciBiaW5k
+aW5nIGRvY3VtZW50IGFuZCBkZXZpY2UgdHJlZSBub2RlIGluIG10ODE5Mi5kdHNpDQozLiBSZW1v
+dmUgd2F0Y2hkb2cgZHJpdmVyIG1vZGlmaWNhdGlvbg0KDQpTZWl5YSBXYW5nICgzKToNCiAgYXJt
+NjQ6IGR0czogQWRkIE1lZGlhdGVrIFNvQyBNVDgxOTIgYW5kIGV2YWx1YXRpb24gYm9hcmQgZHRz
+IGFuZA0KICAgIE1ha2VmaWxlDQogIGR0LWJpbmRpbmdzOiBzZXJpYWw6IEFkZCBjb21wYXRpYmxl
+IGZvciBNZWRpYXRlayBNVDgxOTINCiAgZHQtYmluZGluZ3M6IHRpbWVyOiBBZGQgY29tcGF0aWJs
+ZSBmb3IgTWVkaWF0ZWsgTVQ4MTkyDQotLS0NClRoaXMgcGF0Y2ggZGVwZW5kcyBvbg0KW1BBVENI
+IDEvM10gZHQtYmluZGluZ3M6IHBpbmN0cmw6IG10ODE5MjogYWRkIHBpbmN0cmwgZmlsZQ0KW1BB
+VENIIDIvM10gZHQtYmluZGluZ3M6IHBpbmN0cmw6IG10ODE5MjogYWRkIGJpbmRpbmcgZG9jdW1l
+bnQNCltQQVRDSCB2MiAzLzRdIGR0LWJpbmRpbmdzOiBtZWRpYXRlazogYWRkIGNvbXBhdGlibGUg
+Zm9yIE1UNjg3My84MTkyIHB3cmFwDQpbUEFUQ0ggdjIgMS8yXSBkdC1iaW5kaW5nczogc3BpOiB1
+cGRhdGUgYmluZGluZ3MgZm9yIE1UODE5MiBTb0MNCltQQVRDSCAyLzRdIGNsazogbWVkaWF0ZWs6
+IEFkZCBkdC1iaW5kaW5ncyBmb3IgTVQ4MTkyIGNsb2Nrcw0KW1BBVENIIDEvNF0gZHQtYmluZGlu
+Z3M6IEFSTTogTWVkaWF0ZWs6IERvY3VtZW50IGJpbmRpbmdzIGZvciBNVDgxOTINCg0KUGxlYXNl
+IGFsc28gYWNjZXB0IHRoaXMgcGF0Y2ggdG9nZXRoZXIgd2l0aCBbMV1bMl1bM11bNF1bNV1bNl0N
+CnRvIGF2b2lkIGJ1aWxkIGFuZCBkdCBiaW5kaW5nIGNoZWNrIGVycm9yLg0KDQpbMV0gaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW1lZGlhdGVrLzIwMjAtSnVseS8w
+MTQwNDIuaHRtbA0KWzJdIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51
+eC1tZWRpYXRlay8yMDIwLUp1bHkvMDE0MDQzLmh0bWwNClszXSBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9waXBlcm1haWwvbGludXgtbWVkaWF0ZWsvMjAyMC1KdWx5LzAxNDU0Ni5odG1sDQpb
+NF0gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW1lZGlhdGVrLzIw
+MjAtSnVseS8wMTQ0MDYuaHRtbA0KWzVdIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVy
+bWFpbC9saW51eC1tZWRpYXRlay8yMDIwLUp1bHkvMDE0NDUwLmh0bWwNCls2XSBodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbWVkaWF0ZWsvMjAyMC1KdWx5LzAxNDQ1
+MS5odG1sDQotLS0NCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zZXJpYWwvbXRrLXVhcnQudHh0
+ICAgICAgICB8ICAgMSArDQogLi4uL2JpbmRpbmdzL3RpbWVyL21lZGlhdGVrLG10ay10aW1lci50
+eHQgICAgICAgICAgfCAgIDEgKw0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvTWFrZWZp
+bGUgICAgICAgICAgICAgIHwgICAxICsNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
+ODE5Mi1ldmIuZHRzICAgICAgICB8ICAyOSArDQogYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRl
+ay9tdDgxOTIuZHRzaSAgICAgICAgICAgfCA2NzEgKysrKysrKysrKysrKysrKysrKysrDQogNSBm
+aWxlcyBjaGFuZ2VkLCA3MDMgaW5zZXJ0aW9ucygrKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNo
+L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi1ldmIuZHRzDQogY3JlYXRlIG1vZGUgMTAw
+NjQ0IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kNCg0KLS0NCjIuMTQu
+MQ0KDQo=
 
-There's also MAP_FIXED_NOREPLACE since v4.17 in case that helps.
-
-Note that this should really go to linux-api too. I won't argue to
-resend it since that would mean spamming everyone's inbox with the same
-thread again but in case you send a revised version, please ensure to Cc
-linux-api. The glibc folks are listening on there too.
-
-Thanks!
-Christian
