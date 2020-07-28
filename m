@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C51230DD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C65230DF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730938AbgG1Paj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:30:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730637AbgG1Pah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:30:37 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA9CD206D4;
-        Tue, 28 Jul 2020 15:30:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595950237;
-        bh=zemweQXddKbLvL5Mw6dvsBIj/JO81g5ivJX6E4yPUpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DnVfC0myMfSdBeXXDbjcCaDP3MPxQPLx6vreiLqEX55LqEAo4s+RowIkv1f1UgFnO
-         b2w+KMbaMUefDBT0zeahrXDxINTkGktbxbrYtI00pvVQNhnqrbFBNY3Evw88dc8v3/
-         +q9sEXBmwZIevAUfDBhdAbBk/qkOTF97MoHwjXAQ=
-Date:   Tue, 28 Jul 2020 17:30:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Rustam Kovhaev <rkovhaev@gmail.com>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        syzbot+67b2bd0e34f952d0321e@syzkaller.appspotmail.com
-Subject: Re: [PATCH] usb: hso: check for return value in
- hso_serial_common_create()
-Message-ID: <20200728153030.GB3656785@kroah.com>
-References: <a42328b6-6d45-577f-f605-337b91c19f1a@web.de>
+        id S1730939AbgG1PfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:35:07 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:55120 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730701AbgG1PfG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:35:06 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SFYGl8078735;
+        Tue, 28 Jul 2020 10:34:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595950456;
+        bh=Y3bdMy0j6b+YSB/57qC4aT+9PUXNDrMIyX5k/Gdanh8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=e0cYw271xm0WRqWGklcW02kIWJhdHY3bU5qTLX7OFrf6eOyTH+mM19LVILV7SHm0t
+         Aj9P5gMz4nzyMF+kSPl+S0rAemWwNhdR0RF2el7mJUYxQLr9STVyvm/ISZf90vtey0
+         U6PtHR/PCDo0PIQJd0LlfeS3GFKasATjNye8V4rQ=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SFYGYX015577;
+        Tue, 28 Jul 2020 10:34:16 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Jul 2020 10:34:16 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Jul 2020 10:34:16 -0500
+Received: from [10.250.34.248] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SFYFBW097281;
+        Tue, 28 Jul 2020 10:34:15 -0500
+Subject: Re: [RESEND PATCH v2] mfd: syscon: Use a unique name with
+ regmap_config
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        David Lechner <david@lechnology.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Roger Quadros <rogerq@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-omap <linux-omap@vger.kernel.org>
+References: <20200727211008.24225-1-s-anna@ti.com>
+ <CAK8P3a3_qu_rwWmxMz=H5DLSoZB3Jngjxqq14vir+NudfavmMg@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <2dc0dd51-2ded-996c-3b93-ad463b52582d@ti.com>
+Date:   Tue, 28 Jul 2020 10:34:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a42328b6-6d45-577f-f605-337b91c19f1a@web.de>
+In-Reply-To: <CAK8P3a3_qu_rwWmxMz=H5DLSoZB3Jngjxqq14vir+NudfavmMg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 03:19:00PM +0200, Markus Elfring wrote:
-> > in case of an error tty_register_device_attr() returns ERR_PTR(),
-> > add IS_ERR() check
+On 7/28/20 2:44 AM, Arnd Bergmann wrote:
+> On Mon, Jul 27, 2020 at 11:10 PM Suman Anna <s-anna@ti.com> wrote:
+>>
+>> The DT node full name is currently being used in regmap_config
+>> which in turn is used to create the regmap debugfs directories.
+>> This name however is not guaranteed to be unique and the regmap
+>> debugfs registration can fail in the cases where the syscon nodes
+>> have the same unit-address but are present in different DT node
+>> hierarchies. Replace this logic using the syscon reg resource
+>> address instead (inspired from logic used while creating platform
+>> devices) to ensure a unique name is given for each syscon.
+>>
+>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>> ---
+>> Hi Arnd,
+>> Lee is looking for your review on this patch. Can you please
+>> review and provide your comments.
 > 
-> I suggest to improve this change description a bit.
+> Sorry for missing this earlier. I think this makes sense, and I don't
+> expect the name change to cause problems, so
 > 
-> Will the tag “Fixes” become helpful for the commit message?
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+
+Thanks Arnd.
+
 > 
+>> --- a/drivers/mfd/syscon.c
+>> +++ b/drivers/mfd/syscon.c
+>> @@ -101,12 +101,14 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+>>                  }
+>>          }
+>>
+>> -       syscon_config.name = of_node_full_name(np);
+>> +       syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@%llx", np,
+>> +                                      (u64)res.start);
 > 
-> …
-> > +++ b/drivers/net/usb/hso.c
-> …
-> > @@ -2311,6 +2313,7 @@  static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
-> >  	return 0;
-> >  exit:
-> >  	hso_serial_tty_unregister(serial);
-> > +exit2:
-> >  	hso_serial_common_free(serial);
-> >  	return -1;
-> >  }
-> 
-> Can other labels (like “unregister_serial” and “free_serial”) be preferred here?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=92ed301919932f777713b9172e525674157e983d#n485
-> 
-> Regards,
-> Markus
+> Note that you could avoid the cast by using "%pOFn@%pa", and
+> passing res.start by reference. Not important though, the result should
+> be similar, and you might not like the '0x' that this adds.
 
-Hi,
+Yeah, preference was not to add the leading 0x or any leading 0s. We did 
+discuss about this on the original v2 submission [1].
 
-This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+regards
+Suman
 
-Markus, you seem to have sent a nonsensical or otherwise pointless
-review comment to a patch submission on a Linux kernel developer mailing
-list.  I strongly suggest that you not do this anymore.  Please do not
-bother developers who are actively working to produce patches and
-features with comments that, in the end, are a waste of time.
-
-Patch submitter, please ignore Markus's suggestion; you do not need to
-follow it at all.  The person/bot/AI that sent it is being ignored by
-almost all Linux kernel maintainers for having a persistent pattern of
-behavior of producing distracting and pointless commentary, and
-inability to adapt to feedback.  Please feel free to also ignore emails
-from them.
-
-thanks,
-
-greg k-h's patch email bot
+[1] https://patchwork.kernel.org/comment/23129393/
