@@ -2,77 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615AE230F39
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C02B230FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731393AbgG1Q2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:28:23 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:60222 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731118AbgG1Q2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:28:23 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1k0SSe-007J8b-6l; Tue, 28 Jul 2020 18:28:16 +0200
-Date:   Tue, 28 Jul 2020 18:28:16 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
-Cc:     netdev@vger.kernel.org, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, jacek.anaszewski@gmail.com,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC leds + net-next v4 1/2] net: phy: add API for LEDs
- controlled by PHY HW
-Message-ID: <20200728162816.GK1705504@lunn.ch>
-References: <20200728150530.28827-1-marek.behun@nic.cz>
- <20200728150530.28827-2-marek.behun@nic.cz>
- <20200728171128.61c7193b@dellmb.labs.office.nic.cz>
+        id S1731593AbgG1Qic convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 12:38:32 -0400
+Received: from customer-201-134-139-73.uninet-ide.com.mx ([201.134.139.73]:36648
+        "EHLO correo.tlalpan.gob.mx" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731443AbgG1Qib (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 12:38:31 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by correo.tlalpan.gob.mx (Postfix) with ESMTP id 8E58C59A0DD;
+        Tue, 28 Jul 2020 06:19:36 -0500 (CDT)
+Received: from correo.tlalpan.gob.mx ([127.0.0.1])
+        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UTXWu0DnHhsA; Tue, 28 Jul 2020 06:19:36 -0500 (CDT)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.tlalpan.gob.mx (Postfix) with ESMTP id 5F40145F818;
+        Tue, 28 Jul 2020 04:24:50 -0500 (CDT)
+X-Virus-Scanned: amavisd-new at tlalpan.gob.mx
+Received: from correo.tlalpan.gob.mx ([127.0.0.1])
+        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 3gydEh4l7zJv; Tue, 28 Jul 2020 04:24:50 -0500 (CDT)
+Received: from [197.175.64.209] (unknown [197.175.64.209])
+        by correo.tlalpan.gob.mx (Postfix) with ESMTPSA id 9E806433EE1;
+        Tue, 28 Jul 2020 03:51:21 -0500 (CDT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728171128.61c7193b@dellmb.labs.office.nic.cz>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Spende von 2.000.000,00 Euro.
+To:     Recipients <rdelrazom@tlalpan.gob.mx>
+From:   "manuel franco" <rdelrazom@tlalpan.gob.mx>
+Date:   Tue, 28 Jul 2020 10:55:36 +0200
+Reply-To: manuelfrancospende001@gmail.com
+Message-Id: <20200728085121.9E806433EE1@correo.tlalpan.gob.mx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > @@ -736,6 +777,16 @@ struct phy_driver {
-> >  	int (*set_loopback)(struct phy_device *dev, bool enable);
-> >  	int (*get_sqi)(struct phy_device *dev);
-> >  	int (*get_sqi_max)(struct phy_device *dev);
-> > +
-> > +	/* PHY LED support */
-> > +	int (*led_init)(struct phy_device *dev, struct
-> > phy_device_led *led);
-> > +	int (*led_brightness_set)(struct phy_device *dev, struct
-> > phy_device_led *led,
-> > +				  enum led_brightness brightness);
-> > +	const char *(*led_iter_hw_mode)(struct phy_device *dev,
-> > struct phy_device_led *led,
-> > +					void **	iter);
-> > +	int (*led_set_hw_mode)(struct phy_device *dev, struct
-> > phy_device_led *led,
-> > +			       const char *mode);
-> > +	const char *(*led_get_hw_mode)(struct phy_device *dev,
-> > struct phy_device_led *led); };
-> >  #define to_phy_driver(d)
-> > container_of(to_mdio_common_driver(d),		\ struct
-> > phy_driver, mdiodrv)
-> 
-> The problem here is that the same code will have to be added to DSA
-> switch ops structure, which is not OK.
+Sie haben eine Spende von 2.000.000,00 Euro.
 
-Not necessarily. DSA drivers do have access to the phydev structure.
-
-I think putting these members into a structure is a good idea. That
-structure can be part of phy_driver and initialised just like other
-members. But on probing the phy, it can be copied over to the
-phy_device structure. And we can provide an API which DSA drivers can
-use to register there own structure of ops to be placed into
-phy_device, which would call into the DSA driver.
-
-      Andrew
+Mein Name ist Manuel Franco aus den USA.
+Ich habe die America-Lotterie im Wert von 768 Millionen US-Dollar gewonnen und spende einen Teil davon an nur 5 glückliche Menschen und einige Waisenhäuser als Wohlwollen für die Menschheit.
