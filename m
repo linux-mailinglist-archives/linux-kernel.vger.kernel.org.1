@@ -2,119 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E228230D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42938230D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730916AbgG1POk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:14:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730906AbgG1POf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:14:35 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC4AC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:14:35 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id w17so15139269otl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:14:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iJCizSAjAPUE7EUcp95DY3gcG9GO9i7tyIUefzlKX5w=;
-        b=GXFztRqUjiaXnHwPsCQI2viH+duk1rN/9jBepjo358MPV3GNlKgD6ddCAE+dkyQekj
-         px8ofpF3S7TNaawtHfNXokQX+TnhWR/9oIdUHLxq/XHX55y1wEvJ7rrmS94IgqTfULJj
-         NSGxy3sbOGLzvcY/NRMU9AqQDx8fw8eTfw/mcbcshRWg/wwAOXQu4qWi8EwvDZT4o7vK
-         +QXsiuOYeeFncUk5gETEsFlX0X/NEW/Muok1wT9g2oasji0nybDnE727hwQFw3y7pf0M
-         Vx+LL+/7W4QpCRVxwEbOIOPfQtXu6tscE/UpUo/6tUtRHj5gOefxfG9DoglCgQui3x25
-         +8KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iJCizSAjAPUE7EUcp95DY3gcG9GO9i7tyIUefzlKX5w=;
-        b=rHsztA2ObIc+90T/1WFXVTR1IKWdvgsJWSuphAjv9gfEp+J8u+UYBmynQGfY2hn5Fq
-         uLhpFsV1HkpQCPXGtNjDkwyOiVjGukVx8tixDKvCTSB/Ycx1SjW+ObRu3AGBWzD/XZDH
-         EZGqA0qte0p3dHAZm2aECOkxNzno+LLoFpFKcnYGcfs282ZnE4QlNcC1Akl30b+dDPdH
-         854Th/rS8Cgci1ZZjPmhin2XSto6K/M8aoNNbHXwzh45s/zm3aFZ++H5X21IFiqP/sCM
-         sZxAOqIZDW2THGAHN6X7xx3I6NqLW3CY/o/I1LZFtoISNIljxm6RlGo4KOLJhMdeme1J
-         8MPg==
-X-Gm-Message-State: AOAM531zDsZGe+GjIUO7MESI0765B1xiaMSyu6yG4lr9yqsZLLJUfe0F
-        jaBhuxjguFD8Lu37P+7DMd1BFWKo1K282H8NHXVzgg==
-X-Google-Smtp-Source: ABdhPJzxmr90Kgq1zjv5pdVRv33Sz5ginE6Zeeta9lsOyRL3cMcEFRA6JsbwcMELigJ3wydbwrDtAEyO36BrC0CUtjo=
-X-Received: by 2002:a05:6830:1612:: with SMTP id g18mr8986816otr.251.1595949274880;
- Tue, 28 Jul 2020 08:14:34 -0700 (PDT)
+        id S1730681AbgG1PQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:16:51 -0400
+Received: from crapouillou.net ([89.234.176.41]:38744 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730586AbgG1PQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:16:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595949408; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=w4oYRintr6C09zqyRCO+Nd06xt5Y8NV9/ZwsT/feY0w=;
+        b=EW0ScNjIk/KEALxQPnhcecrCSLlEVsahz77Yp+ATZSDpgpqoQ2QXNm39OKSKsSIAV90Qtk
+        mY48JXKZp07qlEYONVhHzLvtdxCuVHbwru1FRbiNHqwkzZMQEtCiHGhydtN7vELiqv2HRp
+        rbxY1NtIDh0/x5iZoGwYfa3FTyQcRJw=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     od@zcrc.me, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 0/2] Small cleanups to ingenic-drm driver
+Date:   Tue, 28 Jul 2020 17:16:39 +0200
+Message-Id: <20200728151641.26124-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20200720120348.2406588-1-elver@google.com> <20200728113044.GA233444@gmail.com>
-In-Reply-To: <20200728113044.GA233444@gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 28 Jul 2020 17:14:21 +0200
-Message-ID: <CANpmjNOMQ09N4+W9Dt53j=GKAuj0Sd__agRtqpDkubZEkULAJg@mail.gmail.com>
-Subject: Re: [PATCH tip/locking/core] kcsan: Improve IRQ state trace reporting
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020 at 13:30, Ingo Molnar <mingo@kernel.org> wrote:
->
->
-> * Marco Elver <elver@google.com> wrote:
->
-> > To improve the general usefulness of the IRQ state trace information
-> > with KCSAN enabled, save and restore the trace information when entering
-> > and exiting the KCSAN runtime as well as when generating a KCSAN report.
-> >
-> > Without this, reporting the IRQ state trace (whether via a KCSAN report
-> > or outside of KCSAN via a lockdep report) is rather useless due to
-> > continuously being touched by KCSAN. This is because if KCSAN is
-> > enabled, every instrumented memory access causes changes to IRQ state
-> > tracking information (either by KCSAN disabling/enabling interrupts or
-> > taking report_lock when generating a report).
-> >
-> > Before "lockdep: Prepare for NMI IRQ state tracking", KCSAN avoided
-> > touching the IRQ state trace via raw_local_irq_save/restore() and
-> > lockdep_off/on().
-> >
-> > Fixes: 248591f5d257 ("kcsan: Make KCSAN compatible with new IRQ state tracking")
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-[...]
-> > +void kcsan_restore_irqtrace(struct task_struct *task)
-> > +{
-> > +#ifdef CONFIG_TRACE_IRQFLAGS
-> > +     task->irq_events = task->kcsan_save_irqtrace.irq_events;
-> > +     task->hardirq_enable_ip = task->kcsan_save_irqtrace.hardirq_enable_ip;
-> > +     task->hardirq_disable_ip = task->kcsan_save_irqtrace.hardirq_disable_ip;
-> > +     task->hardirq_enable_event = task->kcsan_save_irqtrace.hardirq_enable_event;
-> > +     task->hardirq_disable_event = task->kcsan_save_irqtrace.hardirq_disable_event;
-> > +     task->softirq_disable_ip = task->kcsan_save_irqtrace.softirq_disable_ip;
-> > +     task->softirq_enable_ip = task->kcsan_save_irqtrace.softirq_enable_ip;
-> > +     task->softirq_disable_event = task->kcsan_save_irqtrace.softirq_disable_event;
-> > +     task->softirq_enable_event = task->kcsan_save_irqtrace.softirq_enable_event;
-> > +#endif
->
-> Please, make such type of assignment blocks cleaner by using a local
-> helper variable, and by aligning the right side vertically as well.
->
-> Also, would it make sense to unify the layout between the fields in
-> task struct and the new one you introduced? That would allow a simple
-> structure copy.
+Here are a few cleanups to the ingenic-drm driver.
+- some error paths were missing and have been added;
+- the mode validation has been moved to the .mode_valid helper callback.
 
-Makes sense, thanks for the suggestion. I think we could introduce a
-new struct 'irqtrace_events'. I currently have something that adds
-this struct in <linux/irqtrace.h>. AFAIK it also adds readability
-improvements on initialization and use of the fields. I'll send a v2
-with 2 patches.
+Cheers,
+-Paul
 
-Thanks,
--- Marco
+Paul Cercueil (2):
+  drm/ingenic: Handle errors of drm_atomic_get_plane_state
+  drm/ingenic: Validate mode in a .mode_valid callback
+
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 41 +++++++++++++++--------
+ 1 file changed, 27 insertions(+), 14 deletions(-)
+
+-- 
+2.27.0
+
