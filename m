@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7CF9230355
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3185A23035D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbgG1G40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 02:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726885AbgG1G4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:56:25 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342B1C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:56:25 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id p14so15882962wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=EzvrXWpHQNdpSbezzz5RHbcrWIdGyn8mBuYW7/LNbzE=;
-        b=AN/2BJ8ftihaC5U7VYaGUe51vSbgZBy0qgZKto5kdNZYHnMMU0klhv9/thZCz2DkDt
-         dDxR2di/EgMBX5g/fOZXZcBeU6DbcT57YbEGbJG/kTWUuSOzJzV8O4RMU0+EmduM9cMg
-         2YrS+SqmfKDxhdBRo9CudmQrzMu35wRH3I1IJhs5caPwQ/jktBAkwH5iELcp/UkXRYWm
-         S+Nr7PQ10VU16ICkcXkIjg2pYuJo9zNlFLGGib/eOzI2BX80dftzNtJBkpsj+WGeqrUR
-         KHX2zV1SA8I2AjT0Eh4rPiWPbMSSyEu8lfLb+CgqlqnkZpfy93Xsa3lnz7qGBm64apHu
-         76sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=EzvrXWpHQNdpSbezzz5RHbcrWIdGyn8mBuYW7/LNbzE=;
-        b=FXC650nw4a4XwsQDmaHLLVquHnryAwJx+ZbPK1n97yRFEGtlIrhzo7JHG4OtXYq/c3
-         LFCY9u9EcMjApolkLQr82lU/HveDKYCIN80HGnoQ04vPw1mQUqbfhIdIvDN26S4KJkmH
-         PGHKidTQIh2N6agnxVcTHMM7mS8GMuKl8ksOaXHj60Fhz01jxO1cjWkDiGOqb/hgrzDY
-         Cl06zbhNCoz3ojNlOGy62ieCVtVtiByXhYKcBxNGaZIl/KJkgFR8pzE6cYJk7nfHzD1/
-         KbiXOdeqxUtcxWV7bm7DBv3W8Ei3aHVms9joOwOj+xZ2+FgX7v35Vn81k89yzZ4Q5u+j
-         FsMw==
-X-Gm-Message-State: AOAM5311qa4nbXyJ4zflEvQsKXmhWcvJsgXAIN7V+0raoeZ487I0e3nq
-        +2/ziRH+Y7OkS7DrhhxH7xqGSA==
-X-Google-Smtp-Source: ABdhPJz2E995BnQURgOq+VOSHacfZHoxet9ax0lW2Q3YzkefTZM18rSXI9SMEvORfr9BIIubRt2bgA==
-X-Received: by 2002:a1c:2d89:: with SMTP id t131mr2655127wmt.151.1595919383931;
-        Mon, 27 Jul 2020 23:56:23 -0700 (PDT)
-Received: from dell ([2.27.167.73])
-        by smtp.gmail.com with ESMTPSA id 78sm2777722wma.31.2020.07.27.23.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 23:56:23 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 07:56:21 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com
-Subject: Re: [PATCH v2 1/9] mfd: mt6360: Rearrange include file
-Message-ID: <20200728065621.GC1850026@dell>
-References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
- <1594983811-25908-2-git-send-email-gene.chen.richtek@gmail.com>
- <20200727110821.GH1850026@dell>
- <CAE+NS34FexE-LwbzkOLepKytKCbKm3RowPQKqROR_a6wCrVLLA@mail.gmail.com>
-MIME-Version: 1.0
+        id S1727095AbgG1G55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 02:57:57 -0400
+Received: from mail-db8eur05on2054.outbound.protection.outlook.com ([40.107.20.54]:6752
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726967AbgG1G54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 02:57:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wp/QkqoWYP90eJVpgPL7Z2ZMZBaem3XgWXD5Ca271dacs52eTyikJlIXKV01PEf8qEDOWKH2FskwP2KMyim/mGWOze4Xvo0hnqNu3gnDnTeHtEOLnflwlw6QkyKAb2Qbq46nb4ai54RXk9w2sU1BgZdsP/YfDEVTtKr9CRbx/gwiFWh1J6/mMld9DctqIuNC2sDVsCbu/Pzxc1/boWx1SJv/HOuWCfCfYiXzyeat0edaha907PYLMCzYktGjpiplDyompisGFymLkzTTkuI3ojZHRH8/zpK6sn+LAant/p28O8SlT5H31HWj0uCoBG+AUHZh+w3rQMetjNEaXJDasA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2AY12Ct1ru5dz2YMX5IRLKUyzB9Zkt7cjgCUQ4SR+f4=;
+ b=KKA5ZbnBmkAeYC0fntZZcPObZjmQmyVBsJDNFGB/3gdOu3B+p23Jj+0t20vj1ZlGy2n55dWk7+N7Gleic8JqKLnl7jHXcSEU3NpLNM1m9c5kOqANYgwzYnMS3RGBRN6+9XFEUHa+5dSj7uflStIcisIbPsACVfB4DAFv0TwZYCK+nKqg4QivP1hGqhl7I9uFmbw2VoVhhpesf0LMelr4+oXvzvhSuSLZDZS8pTttZnnSpoWLw+VEMeGfD46DzVQHR1GkUyre7gi6o+I1ooAcmWi9pMPJJhoPtxwUV6S8TQaqTAn4mH6ZMNqAO5gHKx3P7uSLovve7TVM+/mvy7Va7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2AY12Ct1ru5dz2YMX5IRLKUyzB9Zkt7cjgCUQ4SR+f4=;
+ b=XiI2d2CFmsumTgBLNvoWBd+Meco6ZDBoE4DmvUJBJudQQFubjwc5Fqfn4qmwCVymWXeAIM39KX7AGLRjqOcglHye6+e39ScBj1z1LqknZBefvgvT/+c+m6wRr4FNZKNGIQAOlhsFy1AR4lhNQnrb5PPI5hmnGcd2MyCWs4MmiPE=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=mellanox.com;
+Received: from AM0PR05MB4786.eurprd05.prod.outlook.com (2603:10a6:208:b3::15)
+ by AM4PR05MB3379.eurprd05.prod.outlook.com (2603:10a6:205:5::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21; Tue, 28 Jul
+ 2020 06:57:53 +0000
+Received: from AM0PR05MB4786.eurprd05.prod.outlook.com
+ ([fe80::9186:8b7:3cf7:7813]) by AM0PR05MB4786.eurprd05.prod.outlook.com
+ ([fe80::9186:8b7:3cf7:7813%7]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 06:57:53 +0000
+Date:   Tue, 28 Jul 2020 09:57:50 +0300
+From:   Eli Cohen <eli@mellanox.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        saeedm@mellanox.com, parav@mellanox.com
+Subject: Re: [PATCH V3 vhost next 00/10] VDPA support for Mellanox ConnectX
+ devices
+Message-ID: <20200728065750.GA233546@mtl-vdi-166.wap.labs.mlnx>
+References: <20200728060539.4163-1-eli@mellanox.com>
+ <1dbac14a-5909-ff0a-8e90-534847f93d50@redhat.com>
+ <20200728063211.GA229972@mtl-vdi-166.wap.labs.mlnx>
+ <ef857921-4b9a-8e48-d5cd-5ef585e8f15c@redhat.com>
+ <83eb3fdc-83d5-7f88-bef4-602e60c19662@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS34FexE-LwbzkOLepKytKCbKm3RowPQKqROR_a6wCrVLLA@mail.gmail.com>
+In-Reply-To: <83eb3fdc-83d5-7f88-bef4-602e60c19662@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-ClientProxiedBy: AM3PR05CA0146.eurprd05.prod.outlook.com
+ (2603:10a6:207:3::24) To AM0PR05MB4786.eurprd05.prod.outlook.com
+ (2603:10a6:208:b3::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mtl-vdi-166.wap.labs.mlnx (94.188.199.18) by AM3PR05CA0146.eurprd05.prod.outlook.com (2603:10a6:207:3::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.21 via Frontend Transport; Tue, 28 Jul 2020 06:57:52 +0000
+X-Originating-IP: [94.188.199.18]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 0cf3efd9-0707-416a-8460-08d832c38cc5
+X-MS-TrafficTypeDiagnostic: AM4PR05MB3379:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM4PR05MB3379E6229557F66B92FF4230C5730@AM4PR05MB3379.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g8sHf3Xi38ho+qUv5QCTq64nASMv+SiJnoOneOawv1RXHD2VDEoCg8mnDDylGkpBKjmlVHIe8R4FjDc8nzdKgN7gGZBFfbqn5UVzvzVWNPDlK/79JC8dFVm63dPjHvfBrZWrFqB5kcMf8r2YZHF47+Tn9CeuFIHYftqncEgqexEnv1xXqdXSKsMTychA+mWWDvRntdHs0NzbiSVqkkXQ3J1OulhUSKwOp99YvGVYo7p8mw7XQKwtPU19mtSc4epy9pkbJ50By0YW4lKVkIjvk4bJxTIOHaQYeZ1eMWbyZYsDN8iJHfv9eLJ9njCa7oH4i0b4nR7SxBdcjJj5EP6BzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB4786.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(39860400002)(396003)(346002)(366004)(1076003)(52116002)(9686003)(7696005)(55016002)(86362001)(16526019)(186003)(33656002)(8676002)(956004)(26005)(6506007)(316002)(5660300002)(2906002)(8936002)(4326008)(6916009)(66946007)(66476007)(478600001)(83380400001)(66556008)(107886003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: rkb6XnRbFQzjVRdl6IBEdstOoaQnIeVlS2JyFL/znweAf2XCu4T8jJhtpneu1OLWVISRxlNYxwuVQmRY+XTAT8sUkg+kem9nugRfgGF11ruDJKkqybB62ijIqQ+pU6mDwYUV7IdgPqjCXMxrSFhaAL8/wMrGtQXloE0xFISAKIm6f1CM1K+iCjAAzPX/GSWWjjDViP7kiGniqaBN7xnUGWkJM7HNtTCrk21zNLj22cGCFOUOCaLScSNGRaFYkzNYz0zUCLVeO621UyWJ+03H5jTxPGsMXT41186I50jW4jbgmHpn7I7Q5bITPuz1eFDd4x1YON+xpz5gCjX1zwa3WYzedEoVDKA20M1VXszuJ6WqvCuH+CG+83eMT9nEWGeMClMQCV8y7GnQ4yx1L/qBH0mv4o1JguvW15FAmRUSd1db78ZXdiHN/g3uJR8xVyfXhQIj8cJsHDnddib7GOaWVeEg+ocGs+Q0YQecdpGEzQ8=
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cf3efd9-0707-416a-8460-08d832c38cc5
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB4786.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 06:57:53.6480
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BKDfNFl3VO9xdb/s0zPxxWA9MyeA3jp7cBjX7aWl1ww8qsfeBMgmg3f+CP+k3vxhg6AC6TtSDxNBnsYgVdP+kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR05MB3379
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020, Gene Chen wrote:
-
-> Lee Jones <lee.jones@linaro.org> 於 2020年7月27日 週一 下午7:08寫道：
-> >
-> > On Fri, 17 Jul 2020, Gene Chen wrote:
-> >
-> > > From: Gene Chen <gene_chen@richtek.com>
-> > >
-> > > Rearrange include file without sorting by alphabet.
-> >
-> > Why are you making this change?
-> >
+On Tue, Jul 28, 2020 at 02:53:34PM +0800, Jason Wang wrote:
 > 
-> Personal coding style references from upstream code.
-> I can discard this change if it doesn't make sense.
-
-That is really wrong.
-
-This is upstream code.  You should abide by the coding style.
-
-Include files should be arranged alphabetically, not arbitrarily.
-
-> > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > ---
-> > >  drivers/mfd/mt6360-core.c | 11 +++++------
-> > >  1 file changed, 5 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > > index e9cacc2..df4506f 100644
-> > > --- a/drivers/mfd/mt6360-core.c
-> > > +++ b/drivers/mfd/mt6360-core.c
-> > > @@ -5,15 +5,14 @@
-> > >   * Author: Gene Chen <gene_chen@richtek.com>
-> > >   */
-> > >
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/module.h>
-> > >  #include <linux/i2c.h>
-> > > -#include <linux/init.h>
-> > > +#include <linux/crc8.h>
-> > > +#include <linux/slab.h>
-> > > +#include <linux/regmap.h>
-> > >  #include <linux/interrupt.h>
-> > > -#include <linux/kernel.h>
-> > >  #include <linux/mfd/core.h>
-> > > -#include <linux/module.h>
-> > > -#include <linux/of_irq.h>
-> > > -#include <linux/of_platform.h>
-> > > -#include <linux/version.h>
-> > >
-> > >  #include <linux/mfd/mt6360.h>
-> > >
+> On 2020/7/28 下午2:40, Jason Wang wrote:
 > >
+> >On 2020/7/28 下午2:32, Eli Cohen wrote:
+> >>On Tue, Jul 28, 2020 at 02:18:16PM +0800, Jason Wang wrote:
+> >>>On 2020/7/28 下午2:05, Eli Cohen wrote:
+> >>>>Hi Michael,
+> >>>>please note that this series depends on mlx5 core device
+> >>>>driver patches
+> >>>>in mlx5-next branch in
+> >>>>git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git.
+> >>>>
+> >>>>git pull
+> >>>>git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git
+> >>>>mlx5-next
+> >>>>
+> >>>>They also depend Jason Wang's patches submitted a couple of weeks ago.
+> >>>>
+> >>>>vdpa_sim: use the batching API
+> >>>>vhost-vdpa: support batch updating
+> >>>
+> >>>Just notice that a new version is posted[1] (you were cced). Talked
+> >>>with Michael, and it's better for you to merge the new version in
+> >>>this series.
+> >>>
+> >>OK, will send again. Just to make sure, I should put your series and my
+> >>series on Michal's vhost branch, the same tree I have been using so far?
+> >
+> >
+> >Yes. I think so.
+> >
+> >Thanks
+> 
+> 
+> Just notice Michael's vhost branch can not compile due to this commit:
+> 
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Yes, I noticed this too.
+
+> commit fee8fe6bd8ccacd27e963b71b4f943be3721779e
+> Author: Michael S. Tsirkin <mst@redhat.com>
+> Date:   Mon Jul 27 10:51:55 2020 -0400
+> 
+>     vdpa: make sure set_features in invoked for legacy
+> 
+> Let's wait for Michael to clarify the correct branch to use then.
+> 
+> Thanks
+> 
