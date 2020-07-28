@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6937230573
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0389423059B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgG1Icc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:32:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47724 "EHLO mx2.suse.de"
+        id S1728209AbgG1IjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:39:10 -0400
+Received: from elvis.franken.de ([193.175.24.41]:51663 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727808AbgG1Icb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:32:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C31BDB1EF;
-        Tue, 28 Jul 2020 08:32:40 +0000 (UTC)
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Subject: [PATCH] /proc/PID/smaps: Consistent whitespace output format
-Date:   Tue, 28 Jul 2020 10:32:07 +0200
-Message-Id: <20200728083207.17531-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728104AbgG1IjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:39:08 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1k0L8B-0000DV-03; Tue, 28 Jul 2020 10:38:39 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9994EC0A94; Tue, 28 Jul 2020 10:33:08 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 10:33:08 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        Huacai Chen <chenhc@lemote.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/5] of_address: Add bus type match for pci ranges
+ parser
+Message-ID: <20200728083308.GD9062@alpha.franken.de>
+References: <20200725014529.1143208-1-jiaxun.yang@flygoat.com>
+ <20200725014529.1143208-2-jiaxun.yang@flygoat.com>
+ <CAL_JsqKePrUW3-HoSnQawqhgg23XJ7MxzawD7TKt-__q3jM55g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKePrUW3-HoSnQawqhgg23XJ7MxzawD7TKt-__q3jM55g@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The keys in smaps output are padded to fixed width with spaces.
-All except for THPeligible that uses tabs (only since
-commit c06306696f83 ("mm: thp: fix false negative of shmem vma's THP
-eligibility")).
-Unify the output formatting to save time debugging some naïve parsers.
-(Part of the unification is also aligning FilePmdMapped with others.)
+On Mon, Jul 27, 2020 at 11:50:14AM -0600, Rob Herring wrote:
+> On Fri, Jul 24, 2020 at 7:45 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+> >
+> > So the parser can be used to parse range property of ISA bus.
+> >
+> > As they're all using PCI-like method of range property, there is no need
+> > start a new parser.
+> >
+> > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> >
+> > --
+> > v2: Drop useless check, fix some na for bus_addr
+> >         add define of of_range_parser_init according to
+> >         Rob's suggestion.
+> > v3: Abstract out has_flags. simplify define.
+> > ---
+> >  drivers/of/address.c       | 29 +++++++++++++++++------------
+> >  include/linux/of_address.h |  4 ++++
+> >  2 files changed, 21 insertions(+), 12 deletions(-)
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- fs/proc/task_mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Rob, are you ok with merging this via the mips-next tree ?
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index dbda4499a859..5066b0251ed8 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -786,7 +786,7 @@ static void __show_smap(struct seq_file *m, const struct mem_size_stats *mss,
- 	SEQ_PUT_DEC(" kB\nLazyFree:       ", mss->lazyfree);
- 	SEQ_PUT_DEC(" kB\nAnonHugePages:  ", mss->anonymous_thp);
- 	SEQ_PUT_DEC(" kB\nShmemPmdMapped: ", mss->shmem_thp);
--	SEQ_PUT_DEC(" kB\nFilePmdMapped: ", mss->file_thp);
-+	SEQ_PUT_DEC(" kB\nFilePmdMapped:  ", mss->file_thp);
- 	SEQ_PUT_DEC(" kB\nShared_Hugetlb: ", mss->shared_hugetlb);
- 	seq_put_decimal_ull_width(m, " kB\nPrivate_Hugetlb: ",
- 				  mss->private_hugetlb >> 10, 7);
-@@ -816,7 +816,7 @@ static int show_smap(struct seq_file *m, void *v)
- 
- 	__show_smap(m, &mss, false);
- 
--	seq_printf(m, "THPeligible:		%d\n",
-+	seq_printf(m, "THPeligible:    %d\n",
- 		   transparent_hugepage_enabled(vma));
- 
- 	if (arch_pkeys_enabled())
+Thomas.
+
 -- 
-2.27.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
