@@ -2,116 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04E2230706
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0888230712
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgG1Jw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49290 "EHLO
+        id S1728454AbgG1JxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728277AbgG1Jw1 (ORCPT
+        with ESMTP id S1728251AbgG1JxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:52:27 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FEFC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:52:27 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mt12so3815390pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:52:27 -0700 (PDT)
+        Tue, 28 Jul 2020 05:53:07 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57889C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:53:07 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id t15so11156882iob.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition;
-        bh=8+yogr7brAWLDJcwCnUoYS1XP1412A3Rr26Pt7QIAnY=;
-        b=fubHBv9mJNeiLXcv+uUMIW8803OIxmpQWNAr/gsDf7OUHKi5xBaxjtNDf/ALWdMj1L
-         vBy24dUxgWAcpVMGLemne8WGuSFQJzKJggJOLoj0j34nfZQ7f1VB0x30sM/U/cRCZEFx
-         O/2la/pJY3DYkx2EgAmt6q6+Pd1u0+a9Grxa7cW3Vel7f4jKY5psn22E42Z7ysLGwWuk
-         5d93fJzYd/d3s4VD+fnH4ndaJT4i+l5TFlC3tbkp1TSs6zgKRT3oAdkbo+ofyKZWLWgJ
-         LCmxLApKpQOebFamu6Jq3ZMlB6h7Z4pMiTS58f+XOer1lbXbWgEjPaUFAGljajAFrZdS
-         F2nw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=F08oeD2vpzf26eJV+e9uuXuUitIIoXTQkLFpWIuJYZY=;
+        b=NDRcWvbPX8+El0Hm8l2zZRi86BlKHdkPPc/1aSj6c5ks7mWo7/RH3hvlqSSRZYF/2v
+         bSD19PJrd/r/ylbeaXvjz3NjXT8iEFAq7I+w20pTCDHWCN8tsLgMlTrA7e26bUnqBlYV
+         Qs5jGM+SRfAMjqBAZjCsSIGFKjoZDBht7XW0DnlRLNwAyOViFaB+iM8x6wF+NGCPHNx7
+         QPtrvdBYm8oR4PzaFDvo/4G2MSglJ4DHJ1+O104X+gpwkdyN71QYWkxIgA81eF4bd0R9
+         TUNipWoQVzCANXLVYnz6L3tZ5El3+8M670KfcFI09N5b04376SLfguKX5zaVABSH3e8Y
+         LEOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition;
-        bh=8+yogr7brAWLDJcwCnUoYS1XP1412A3Rr26Pt7QIAnY=;
-        b=WxzzwGuJY+NHWrYbpcdGnvnReLigoyc4XB9M2psoMsZNxvlK3z51S2Ko0Qac1si+6q
-         XI0uiLCvhEkiMXrIzEEoEhpKbP8h4jGeoY+VSAlKpi+kA60pUdK+5rmw/zAwC2xl//I5
-         6FPm+bZdMrdU5j+OTdwH7BiCdCgV/lNQwYvwBPGqv3OeQFKsia9IB6jT4u/nXLa6ROEp
-         wLCPIQv6EVJdzR/iiF1JfhgO4Cfg+laJfZSZBGPzLZJfiHBHzRc+V+WrW4d+PobH+Fl9
-         ATS4uVv8fxoZd2n9H4X5oypqMReju7f44a0f53zumfSMhUIki+cwJ8321AQ7aqaaj5zE
-         L0nw==
-X-Gm-Message-State: AOAM530aLTA0XTlpvyGOJaR13fZP7W6QHQwRuRXmzAxEv1huyrF2Vqb/
-        EKv8wi4zEzLKcIKOwLhzsHc=
-X-Google-Smtp-Source: ABdhPJzR+AOe/yKHtO/Jg1QAafqG4SZmbHNxngYkXZP4q/2jiKMACf7/psprPrbRiRL63rC/MWU2bw==
-X-Received: by 2002:a17:902:b207:: with SMTP id t7mr22284056plr.135.1595929947023;
-        Tue, 28 Jul 2020 02:52:27 -0700 (PDT)
-Received: from localhost ([203.90.99.222])
-        by smtp.gmail.com with ESMTPSA id b82sm18179014pfb.215.2020.07.28.02.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 02:52:26 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 15:22:20 +0530
-From:   Mrinal Pandey <mrinalmni@gmail.com>
-To:     luto@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mrinalmni@gmail.com
-Subject: [PATCH] x86: entry: Fix a variable declaration coding style issue
-Message-ID: <20200728095220.sik3vkg3mezfacuf@mrinalpandey>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=F08oeD2vpzf26eJV+e9uuXuUitIIoXTQkLFpWIuJYZY=;
+        b=gEz3+slG264M4ahk3RNO+uoVI0jAMw5YTtc9phTK8pwTPUb7YnXrbav3jT3EBil9E2
+         XMn7Z8KZPaQxFWcz+F2p7n4NhIydNhFxXntRgzqCc9sCwQgmIEyNm2U4VpkxmP8OEk/V
+         F3/Q81b1PeIO6ULK7mhn6GVYKcU8oirkYhQYCJJ1Jr8zAapitxV5j9EXvilRD+uLinyA
+         L2btvzBQeWbhY2lHWXXODu3O9wp4acisRLMOi2008svyRiMIbYrymyjvu+D4cAQmbw6U
+         xv02K+Fpg02QD2UEesenVg9zTR6dEo2zUxDBKgAcNpAcBuWGWwdaH+XEd0gbItkHfAzr
+         0gWQ==
+X-Gm-Message-State: AOAM531cotpSXQUtqo7XJKXTCtoxcSF+pxBZclsU/4+U+12eRZZWJOzu
+        6pTN0Mmn74ReSL9SqFzoNu2ncMVw75HIkg0ug+I=
+X-Google-Smtp-Source: ABdhPJzhWJlCvn4qx2MUmVaGupk22vNSFYQeS0FishwxF0sVk8aV8kiI0mWh7AVgUKYHjazJhYb4AqWtoflXBOmkn8w=
+X-Received: by 2002:a6b:e211:: with SMTP id z17mr21271891ioc.82.1595929986745;
+ Tue, 28 Jul 2020 02:53:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aaqgttgog47jc6o2"
-Content-Disposition: inline
+Received: by 2002:ac0:8a88:0:0:0:0:0 with HTTP; Tue, 28 Jul 2020 02:53:06
+ -0700 (PDT)
+Reply-To: mrsjaneyzachary4@gmail.com
+From:   "Mrs.Janey Zachary" <thompsonclark699@gmail.com>
+Date:   Tue, 28 Jul 2020 09:53:06 +0000
+Message-ID: <CAFmscFbBVk+R5CwuGF_1_QbfbY2zUYHz1Bg7ZC+96Ph+i_wbCQ@mail.gmail.com>
+Subject: HI
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---aaqgttgog47jc6o2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Add a line after variable declaration as suggested by checkpatch on
-commit 3c73b81a9164 ("x86/entry, selftests: Further improve user entry
-sanity checks")
-
-Signed-off-by: Mrinal Pandey <mrinalmni@gmail.com>
----
- arch/x86/entry/common.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index f09288431f28..0b094ed0c956 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -55,6 +55,7 @@ static noinstr void check_user_regs(struct pt_regs *regs)
- 		 * state, not the interrupt state as imagined by Xen.
- 		 */
- 		unsigned long flags =3D native_save_fl();
-+
- 		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
- 				      X86_EFLAGS_NT));
-=20
 --=20
-2.25.1
 
+Dear Beloved,
 
---aaqgttgog47jc6o2
-Content-Type: application/pgp-signature; name="signature.asc"
+I=E2=80=99m Mrs.Benson Safia, 69years old affected with breast cancer, the =
+wife of
 
------BEGIN PGP SIGNATURE-----
+late Benson Safia,  the Director of High River Gold Mines Ltd Burkina Faso
 
-iQIzBAEBCgAdFiEE8DwCG1PwaC2uTI99xIwpEWwxhGQFAl8f9U8ACgkQxIwpEWwx
-hGQe4A/8CZld1avA07f4Dx2k40P8xF3gODWKQPA7st6F/Z/GHUs8FkSmarrvdH1b
-9poNzLpNMfhFuBOGyHhW4FL4Vx0WfC2kT4ijyPawnGCMZ4EYwgxP8M5BpdEwkUjp
-xNj/uswnXNTVa8rOzQsrz6AzJrOHZcJZMbXCI6mYcHYL9wVpYgxK/ZEzOUqjgpTy
-2H8NyrrvKJx2EuhzWzjilFkjcnTgJNL2U5Sma3VK2o+cT1HUHhWBqDMW39tjuprO
-s32NKsALqoS62h5iYfbBAZrS34ollfh1tPabWQY0RIa93tal7rYEQzvD8Mnxtplq
-S/K4WyplmOaWhjmsY/H+7uA7UZ46KaZFTXN9HbLdO97qA/uUTv8Lrxg86y3m9Dxu
-GYpB6vgcf/W8PPU8O08M1xrz5HAYzn/q03vKxMwsIHHQrF0Pv3wCFcdVewoxjALF
-ZkHSo0xcysJL+D+OISYGypl5yhGcP0O1McjvtzBkU5R/z9qqSopidOwoQeNP+Cvv
-HnlJyFKOcTPSuOJxyElltaMMGJNQaWNzXMr3aMmi/Zqj1OgN1vgtxnuNghfFzdwj
-rqW1SLInTUFpmLyt8MH431YKECavh2FiysmaB1LeapYvICoXxlt60sf3XokD3Kb1
-bx7VeSRGbAsnHCqkzr1+f3xc+P+DfBwQ9qBJkdv1NbY9R48CEI0=
-=ARve
------END PGP SIGNATURE-----
+West Africa. I am contacting you because of my health condition,i need a
 
---aaqgttgog47jc6o2--
+reliable person, who will handle this project accordingly, accomplish my
+
+heart desire and utilize this fund. I have decided to donate the sum
+
+Twenty-Five Million Two Hundred Thousand United State Dollars Only
+
+($25,200,000.00) to Charity Organizations or to support the Orphans,
+
+Motherless Babies,Less privileged and free Medical & Medicine Poor
+
+People's around the World since I don t have any child and do not want the
+
+bank take over the fund. I don't really know if i am going to survive this
+
+stage, therefore if you ready to handle this project, kindly response so
+
+that i will instruct the bank to transfer the fund to your account.
+
+Contact my private email only if you are interested
+
+(mrs.bensonsafia1@gmail.com)
+
+Remain blessed in the name of the Lord.
+
+Regards
+
+Mrs.Benson Safia,
