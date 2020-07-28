@@ -2,172 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBAD230C8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349AE230C94
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgG1Oho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:37:44 -0400
-Received: from mail-bn7nam10on2087.outbound.protection.outlook.com ([40.107.92.87]:17248
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730391AbgG1Ohn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:37:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F5k2RJY3CYkrzuavObtlSw8FqGOZESNu7xcEABNHUmY2koC3lcWhGrMTwUy9WEU7eK5TokwZ44Tmnqu/jwesZSpHXO1/h/kml/BJ1lVdhMncDJdpZyFSC5m0Cjbn94VZoYANmeND8cIxRG26w75NQ2Ksq9qFMdExUGTDqPjbSgFogPTaZ15KUNp2Is8g+rXZ4JB/Tk9XZPm9Q1sFg6R6oYCVmsUOp0btcthRew46+2CiYeQtsT/XDYxWL1UdAzRdpJaYPRT0tfUPjYZWnbCLauGEilaTetX90pRx8jk8sHDOywERJ9arXkakXfNIqzV6nNgZfImsxNOL7+lGUSQFgA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VhDnT8WLpIfKzWjUoAiLrYhokyNDSLQXniYCvoA0+MM=;
- b=QdLV2XfxHlmJ4+MghPKrTA/UBDic+E5CNNVNHF6jz5ca/Eqg9cUT0i4smZONgk6Tm6/ZV4dqtxLUKDoTasurj5GXYoRVAJQTu7yZX4VlKEu2RQ5ButSaIyLrzhbVDHCA7xLGtlEwqxwW6arJgyHitmc5vrTQrDD5Ut02Xusz7FK+dDnulsO01Ng19ouZbjUao8/bq9H/LYwq7uTQY6ljp8x5SVsbDQG/szYCxB4Y9/joO3Ly50RJGJvr/6UtxgKMqCdck098z6ImVIIO/qCtYlmBLdbEMauxhSmbZnzoZCW3zN/WnCYkKfwKFK9j+PqAndTnsuXJKgC1xCQ5JRnR8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VhDnT8WLpIfKzWjUoAiLrYhokyNDSLQXniYCvoA0+MM=;
- b=qF+dNCiqSLBhEuQIQojA520tdB4TtIlZl3s1u6/9W4uEIFX0GTIbGiyIXsbBgJ6KOYCMZDjpCqK4f11xbaVZzAP9NrEWouMIfYcR4RyvwJivLl/12x0/lPAtbL7V+VQTWohVUZKDGcdHAlZss1ndyDF2Udt4eLPm8q9K4oVIk20=
-Received: from MN2PR12MB4488.namprd12.prod.outlook.com (2603:10b6:208:24e::19)
- by MN2PR12MB4189.namprd12.prod.outlook.com (2603:10b6:208:1d8::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Tue, 28 Jul
- 2020 14:37:40 +0000
-Received: from MN2PR12MB4488.namprd12.prod.outlook.com
- ([fe80::b08f:7a26:ea10:c9d4]) by MN2PR12MB4488.namprd12.prod.outlook.com
- ([fe80::b08f:7a26:ea10:c9d4%8]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
- 14:37:40 +0000
-From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-CC:     "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] PCI: Mark AMD Navi10 GPU rev 0x00 ATS as broken
-Thread-Topic: [PATCH] PCI: Mark AMD Navi10 GPU rev 0x00 ATS as broken
-Thread-Index: AQHWZMxMAafWMs3FREKZkC6ipKIXjKkdDpCg
-Date:   Tue, 28 Jul 2020 14:37:40 +0000
-Message-ID: <MN2PR12MB4488EEF653047300F2D68892F7730@MN2PR12MB4488.namprd12.prod.outlook.com>
-References: <20200728104554.28927-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20200728104554.28927-1-kai.heng.feng@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2020-07-28T14:33:43Z;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=07642590-b2dc-4537-b2f1-0000f2cb59a1;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_enabled: true
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_setdate: 2020-07-28T14:37:36Z
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_method: Privileged
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_name: Public_0
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_actionid: d78dd8dc-a7e1-42b7-8a71-0000c2273f39
-msip_label_0d814d60-469d-470c-8cb0-58434e2bf457_contentbits: 0
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [71.219.66.138]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: bf873e88-cad0-4934-1ed6-08d83303c7db
-x-ms-traffictypediagnostic: MN2PR12MB4189:
-x-microsoft-antispam-prvs: <MN2PR12MB4189565BB553E30F0D8E1AF7F7730@MN2PR12MB4189.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:569;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QAwAqavHjpu2l9Tq68JtdDdHIhzYeQ8T8jpRRh52xt4Jk53S0TYyDHZtGLhO8g0k/l2eHDIigb2TQ5gRlOFpQepLwv82YV8UHcVE7MIX7ClevluFVA5PZOsI8dCL+hzNXzM6rcUGmTHyVloyeeHqU37vajgPb0WGn4SL5ZhGp66H8yh9A2ggq4ixVJrbActpFLg5WW4n94kclW+3GmVx3WRyPk0m0n6onXMJfSjpMrhMxEy3ZBbQy7NZhh/8VsWWsuo0eXM8rVQt2R0Wfkp5WS0zWppv9vm7+pgG+I784Pvu7bjkA1Qn2Qi0qlYz2auckMAjn9/dzBDsdrJb59UTZHi62aqjPopxcOwbEbMclo5kVKFnuCP89RP2VBQwJ3p8UsXoGTO1UU3CAaRdPUhsGQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4488.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(366004)(376002)(136003)(83380400001)(45080400002)(86362001)(83080400001)(316002)(966005)(478600001)(53546011)(6506007)(9686003)(7696005)(8936002)(8676002)(26005)(5660300002)(55016002)(186003)(66946007)(64756008)(2906002)(110136005)(33656002)(71200400001)(4326008)(66446008)(76116006)(54906003)(66476007)(66556008)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: qIrN7hXdOuOqMisbQwd2/yJfmIAOTwcQDdOVsqxLkbK7fQqmBGIBnMOGY+YQQpkKeRTXKjen+EN4yJgo29FZiTEMIb4fwHD7a/H/dT+nggEnB7erRQi6vnc3yYvM96pPBd+3F8dFCrgWHbSf2yFuHz4nNkAPPTiGdBFwmSQBiFfJAOsw7xxRMPO1+azaFCjf0bbflXGT4PpeLmHHKWbWCoxtS4IV8buRKtY5j6kmAh27Q10vdVh8FkB26IQdZX5Wm4puBkLpsgr7k+Cm1y8Mk7PYQ1c3+yXnMXMvqhD3abfrvaLAcehcs6Xa9EoiiUZ0UiMyrl5Dtog1/nna99ZmDhIu1I/Pl9iDcAcNItgBoh+gNF5Y4r3+x0wrcj9dltGPsi2msoXC0TbR6IZ6XtGrcpIX7fAGcOF/14IOOSC7S8V4XFVwWOBgk1q1cNvaz4JqIXmYTbTQ1E7f9z04tXsg30/IHAwMQ52SZTpLzhN4/Een3gz2tp+8SD2m1GX1zTUu
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1730371AbgG1OiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:38:11 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:50318 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730487AbgG1OiI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 10:38:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595947085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pOFRF28EbT8Q3R4fTExC5nvCZHNOSRSF8WWCt3CjB0k=;
+        b=Kj+VaVYdDIV3i4FoK0wXuAJXeNdCjIqekfEvM1i31pDTkavRrVeqgwTZC6d2STUUYiH2aA
+        ZAd7f0Mad5gr8y48q8QPowM5QPaibpbJQLIcvw/6ytvenMOwGOtZgoRcK0I4wViZ+FNOba
+        BNKbzefRpu0B627yyDFI6rikZbVTG6c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-286-FFUuaVVEMy64ZwDDW35S8Q-1; Tue, 28 Jul 2020 10:38:03 -0400
+X-MC-Unique: FFUuaVVEMy64ZwDDW35S8Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D67EF100AA22;
+        Tue, 28 Jul 2020 14:38:01 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2EE147BD60;
+        Tue, 28 Jul 2020 14:37:58 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] KVM: selftests: add KVM_MEM_PCI_HOLE test
+Date:   Tue, 28 Jul 2020 16:37:41 +0200
+Message-Id: <20200728143741.2718593-4-vkuznets@redhat.com>
+In-Reply-To: <20200728143741.2718593-1-vkuznets@redhat.com>
+References: <20200728143741.2718593-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4488.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf873e88-cad0-4934-1ed6-08d83303c7db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2020 14:37:40.2814
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GKPG/bsneCGXua5tlinbvur7yc+gWXdjhe5iPXBN92OKSH3E60r+4sp7lrrLRzyuy8ni4OoD16ensVpjsypxUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4189
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Public Use]
+Test the newly introduced KVM_MEM_PCI_HOLE memslots:
+- Reads from all pages return '0xff'
+- Writes to all pages cause KVM_EXIT_MMIO
 
-> -----Original Message-----
-> From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Sent: Tuesday, July 28, 2020 6:46 AM
-> To: bhelgaas@google.com
-> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>; Deucher, Alexander
-> <Alexander.Deucher@amd.com>; open list:PCI SUBSYSTEM <linux-
-> pci@vger.kernel.org>; open list <linux-kernel@vger.kernel.org>
-> Subject: [PATCH] PCI: Mark AMD Navi10 GPU rev 0x00 ATS as broken
->=20
-> We are seeing AMD Radeon Pro W5700 doesn't work when IOMMU is
-> enabled:
-> [    3.375841] iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT
-> device=3D63:00.0 address=3D0x42b5b01a0]
-> [    3.375845] iommu ivhd0: AMD-Vi: Event logged [IOTLB_INV_TIMEOUT
-> device=3D63:00.0 address=3D0x42b5b01c0]
->=20
-> The error also makes graphics driver fail to probe the device.
->=20
-> It appears to be the same issue as commit 5e89cd303e3a ("PCI: Mark AMD
-> Navi14 GPU rev 0xc5 ATS as broken") addresses, and indeed the same ATS
-> quirk can workaround the issue.
->=20
-> Bugzilla:
-> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fbugz
-> illa.kernel.org%2Fshow_bug.cgi%3Fid%3D208725&amp;data=3D02%7C01%7Cal
-> exander.deucher%40amd.com%7Cbb49d8e71c29459d631a08d832e36d56%7
-> C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637315299664339358&
-> amp;sdata=3DSUAXEIoIJfgTm54FmgwUCMUI%2Bk2qWNcvSpvpU09Ak5k%3D&
-> amp;reserved=3D0
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  81 +++++++------
+ .../kvm/x86_64/memory_slot_pci_hole.c         | 112 ++++++++++++++++++
+ 4 files changed, 162 insertions(+), 33 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/memory_slot_pci_hole.c
 
-This was fixed in the vbios, but apparently that didn't make it out to ever=
-yone.
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index 4a166588d99f..a6fe303fbf6a 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -41,6 +41,7 @@ LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c
+ TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+ TEST_GEN_PROGS_x86_64 += x86_64/evmcs_test
+ TEST_GEN_PROGS_x86_64 += x86_64/hyperv_cpuid
++TEST_GEN_PROGS_x86_64 += x86_64/memory_slot_pci_hole
+ TEST_GEN_PROGS_x86_64 += x86_64/mmio_warning_test
+ TEST_GEN_PROGS_x86_64 += x86_64/platform_info_test
+ TEST_GEN_PROGS_x86_64 += x86_64/set_sregs_test
+diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+index 919e161dd289..8e7bec7bd287 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -59,6 +59,7 @@ enum vm_mem_backing_src_type {
+ 	VM_MEM_SRC_ANONYMOUS,
+ 	VM_MEM_SRC_ANONYMOUS_THP,
+ 	VM_MEM_SRC_ANONYMOUS_HUGETLB,
++	VM_MEM_SRC_NONE,
+ };
+ 
+ int kvm_check_cap(long cap);
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index 74776ee228f2..46bb28ea34ec 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -453,8 +453,11 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+ 		    "rc: %i errno: %i", ret, errno);
+ 
+ 	sparsebit_free(&region->unused_phy_pages);
+-	ret = munmap(region->mmap_start, region->mmap_size);
+-	TEST_ASSERT(ret == 0, "munmap failed, rc: %i errno: %i", ret, errno);
++	if (region->mmap_start) {
++		ret = munmap(region->mmap_start, region->mmap_size);
++		TEST_ASSERT(ret == 0, "munmap failed, rc: %i errno: %i", ret,
++			    errno);
++	}
+ 
+ 	free(region);
+ }
+@@ -643,34 +646,42 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 	alignment = 1;
+ #endif
+ 
+-	if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
+-		alignment = max(huge_page_size, alignment);
+-
+-	/* Add enough memory to align up if necessary */
+-	if (alignment > 1)
+-		region->mmap_size += alignment;
+-
+-	region->mmap_start = mmap(NULL, region->mmap_size,
+-				  PROT_READ | PROT_WRITE,
+-				  MAP_PRIVATE | MAP_ANONYMOUS
+-				  | (src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB ? MAP_HUGETLB : 0),
+-				  -1, 0);
+-	TEST_ASSERT(region->mmap_start != MAP_FAILED,
+-		    "test_malloc failed, mmap_start: %p errno: %i",
+-		    region->mmap_start, errno);
+-
+-	/* Align host address */
+-	region->host_mem = align(region->mmap_start, alignment);
+-
+-	/* As needed perform madvise */
+-	if (src_type == VM_MEM_SRC_ANONYMOUS || src_type == VM_MEM_SRC_ANONYMOUS_THP) {
+-		ret = madvise(region->host_mem, npages * vm->page_size,
+-			     src_type == VM_MEM_SRC_ANONYMOUS ? MADV_NOHUGEPAGE : MADV_HUGEPAGE);
+-		TEST_ASSERT(ret == 0, "madvise failed,\n"
+-			    "  addr: %p\n"
+-			    "  length: 0x%lx\n"
+-			    "  src_type: %x",
+-			    region->host_mem, npages * vm->page_size, src_type);
++	if (src_type != VM_MEM_SRC_NONE) {
++		if (src_type == VM_MEM_SRC_ANONYMOUS_THP)
++			alignment = max(huge_page_size, alignment);
++
++		/* Add enough memory to align up if necessary */
++		if (alignment > 1)
++			region->mmap_size += alignment;
++
++		region->mmap_start = mmap(NULL, region->mmap_size,
++			  PROT_READ | PROT_WRITE,
++			  MAP_PRIVATE | MAP_ANONYMOUS
++			  | (src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB ?
++			     MAP_HUGETLB : 0), -1, 0);
++		TEST_ASSERT(region->mmap_start != MAP_FAILED,
++			    "test_malloc failed, mmap_start: %p errno: %i",
++			    region->mmap_start, errno);
++
++		/* Align host address */
++		region->host_mem = align(region->mmap_start, alignment);
++
++		/* As needed perform madvise */
++		if (src_type == VM_MEM_SRC_ANONYMOUS ||
++		    src_type == VM_MEM_SRC_ANONYMOUS_THP) {
++			ret = madvise(region->host_mem, npages * vm->page_size,
++				      src_type == VM_MEM_SRC_ANONYMOUS ?
++				      MADV_NOHUGEPAGE : MADV_HUGEPAGE);
++			TEST_ASSERT(ret == 0, "madvise failed,\n"
++				    "  addr: %p\n"
++				    "  length: 0x%lx\n"
++				    "  src_type: %x",
++				    region->host_mem, npages * vm->page_size,
++				    src_type);
++		}
++	} else {
++		region->mmap_start = NULL;
++		region->host_mem = NULL;
+ 	}
+ 
+ 	region->unused_phy_pages = sparsebit_alloc();
+@@ -1076,9 +1087,13 @@ void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa)
+ 	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+ 		if ((gpa >= region->region.guest_phys_addr)
+ 			&& (gpa <= (region->region.guest_phys_addr
+-				+ region->region.memory_size - 1)))
+-			return (void *) ((uintptr_t) region->host_mem
+-				+ (gpa - region->region.guest_phys_addr));
++				+ region->region.memory_size - 1))) {
++			if (region->host_mem)
++				return (void *) ((uintptr_t) region->host_mem
++				 + (gpa - region->region.guest_phys_addr));
++			else
++				return NULL;
++		}
+ 	}
+ 
+ 	TEST_FAIL("No vm physical memory at 0x%lx", gpa);
+diff --git a/tools/testing/selftests/kvm/x86_64/memory_slot_pci_hole.c b/tools/testing/selftests/kvm/x86_64/memory_slot_pci_hole.c
+new file mode 100644
+index 000000000000..f5fa80dfcba7
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/memory_slot_pci_hole.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE /* for program_invocation_short_name */
++#include <fcntl.h>
++#include <pthread.h>
++#include <sched.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/ioctl.h>
++
++#include <linux/compiler.h>
++
++#include <test_util.h>
++#include <kvm_util.h>
++#include <processor.h>
++
++#define VCPU_ID 0
++
++#define MEM_REGION_GPA		0xc0000000
++#define MEM_REGION_SIZE		0x4000
++#define MEM_REGION_SLOT		10
++
++static void guest_code(void)
++{
++	uint8_t val;
++
++	/* First byte in the first page */
++	val = READ_ONCE(*((uint8_t *)MEM_REGION_GPA));
++	GUEST_ASSERT(val == 0xff);
++
++	GUEST_SYNC(1);
++
++	/* Random byte in the second page */
++	val = READ_ONCE(*((uint8_t *)MEM_REGION_GPA + 5000));
++	GUEST_ASSERT(val == 0xff);
++
++	GUEST_SYNC(2);
++
++	/* Write to the first page */
++	WRITE_ONCE(*((uint64_t *)MEM_REGION_GPA + 1024/8), 0xdeafbeef);
++
++	GUEST_SYNC(3);
++
++	/* Write to the second page */
++	WRITE_ONCE(*((uint64_t *)MEM_REGION_GPA + 8000/8), 0xdeafbeef);
++
++	GUEST_SYNC(4);
++
++	GUEST_DONE();
++}
++
++int main(int argc, char *argv[])
++{
++	struct kvm_vm *vm;
++	struct kvm_run *run;
++	struct ucall uc;
++	int stage, rv;
++
++	rv = kvm_check_cap(KVM_CAP_PCI_HOLE_MEM);
++	if (!rv) {
++		print_skip("KVM_CAP_PCI_HOLE_MEM not supported");
++		exit(KSFT_SKIP);
++	}
++
++	vm = vm_create_default(VCPU_ID, 0, guest_code);
++
++	run = vcpu_state(vm, VCPU_ID);
++
++	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
++
++	vm_userspace_mem_region_add(vm, VM_MEM_SRC_NONE,
++				    MEM_REGION_GPA, MEM_REGION_SLOT,
++				    MEM_REGION_SIZE / getpagesize(),
++				    KVM_MEM_PCI_HOLE);
++
++	virt_map(vm, MEM_REGION_GPA, MEM_REGION_GPA,
++		 MEM_REGION_SIZE / getpagesize(), 0);
++
++	for (stage = 1;; stage++) {
++		_vcpu_run(vm, VCPU_ID);
++
++		if (stage == 3 || stage == 5) {
++			TEST_ASSERT(run->exit_reason == KVM_EXIT_MMIO,
++			   "Write to PCI_HOLE page should cause KVM_EXIT_MMIO");
++			continue;
++		}
++
++		TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
++			    "Stage %d: unexpected exit reason: %u (%s),\n",
++			    stage, run->exit_reason,
++			    exit_reason_str(run->exit_reason));
++
++		switch (get_ucall(vm, VCPU_ID, &uc)) {
++		case UCALL_ABORT:
++			TEST_FAIL("%s at %s:%ld", (const char *)uc.args[0],
++				  __FILE__, uc.args[1]);
++			/* NOT REACHED */
++		case UCALL_SYNC:
++			break;
++		case UCALL_DONE:
++			goto done;
++		default:
++			TEST_FAIL("Unknown ucall %lu", uc.cmd);
++		}
++	}
++
++done:
++	kvm_vm_free(vm);
++
++	return 0;
++}
+-- 
+2.25.4
 
-> ---
->  drivers/pci/quirks.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c index
-> 812bfc32ecb8..052efeb9f053 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5192,7 +5192,8 @@
-> DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SERVERWORKS, 0x0422,
-> quirk_no_ext_tags);
->   */
->  static void quirk_amd_harvest_no_ats(struct pci_dev *pdev)  {
-> -	if (pdev->device =3D=3D 0x7340 && pdev->revision !=3D 0xc5)
-> +	if ((pdev->device =3D=3D 0x7312 && pdev->revision !=3D 0x00) ||
-> +	    (pdev->device =3D=3D 0x7340 && pdev->revision !=3D 0xc5))
->  		return;
->=20
->  	pci_info(pdev, "disabling ATS\n");
-> @@ -5203,6 +5204,8 @@ static void quirk_amd_harvest_no_ats(struct
-> pci_dev *pdev)  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x98e4,
-> quirk_amd_harvest_no_ats);
->  /* AMD Iceland dGPU */
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x6900,
-> quirk_amd_harvest_no_ats);
-> +/* AMD Navi10 dGPU */
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7312,
-> +quirk_amd_harvest_no_ats);
->  /* AMD Navi14 dGPU */
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7340,
-> quirk_amd_harvest_no_ats);  #endif /* CONFIG_PCI_ATS */
-> --
-> 2.17.1
