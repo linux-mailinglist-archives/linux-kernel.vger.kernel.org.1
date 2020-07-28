@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6512312F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477F52312F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732938AbgG1Tlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S1732945AbgG1TmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732919AbgG1Tlw (ORCPT
+        with ESMTP id S1732919AbgG1TmJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:41:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7D1C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:41:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m22so12649765pgv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:41:52 -0700 (PDT)
+        Tue, 28 Jul 2020 15:42:09 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B1DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:42:09 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id dm12so9689470qvb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:42:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=xAePtirog7IdAkYtDEnGYm+mRDcMeWjIOobv7EO/fls=;
-        b=QA45me19PRN1AgIAcLPLUA2SmlfniO5PQjw90UuxM7WPdwz/L21Dd5QxYOdb2o9lRm
-         FWgB10mj9BiYopMriQGrhFy537beytEtIJV6UReeJZqiMGlrZCZW5xgBeMIJ9wPNDYq+
-         fYlfopXPkdJus7HYEgBDJeELtKrObkFjgL8UI=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Suawz9Cepe9SlpfuSMPAOovHufOGD0v6BIGWG6sQ+tc=;
+        b=ZUOdSiSuKMR6t3+4nhxzrUdcF+Y+05h16qdSGTOpiF7kCyT/WBzJOuTFumOJYK0yDB
+         pXpD2sSvQuL+CgzOVPL4su6YA62k5nom6jpXTNRY0qpvxLGWgUEEzhr14Rj9bl+LXVE3
+         OGPiermHYTYCj6zq71A+Sj53qv5L5uEMT9zgqfNKTFg033xYhesFfzBlHFjx4LbDuCOO
+         //TmWeV+3eKaAeKdLCHMwrUk2YlUfAluoXCeof2d9wWlxH6mGwDsHd7H1Rf4TBeTGDzl
+         dw+Kqv9wV9iAjdUffTnLrYgtzBre/LxHXZGpdi5brAV6w8GNMLXOrupgrkyswb6vSubq
+         PVzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=xAePtirog7IdAkYtDEnGYm+mRDcMeWjIOobv7EO/fls=;
-        b=Y7k8PVAF1hxNX+o0y7KDHBgSRApwOWWg43CjpCLQoI6OQaHj+6YA8SJbTPfmU0TVz5
-         2ekV5gEHgEWgvqufw7Nh78ml8H6voAR/2hbLITL/7W3qnAJedOfIU/YIy5+4pV3tmAV5
-         VDk7r5Zl+69zXm497uJlBZfMTNO2F8ugscrE4S+UDIr8cPmZwI9h1dkT3hF0nRWyMt/V
-         J/xnppHO5mfUSsjADYrHJ1THtVUjlSz9h0W7G+hlIjArizm3mtPHXHG8tDENS4onpCXs
-         64/kqbSVV+VJourdPcCu6WSZ19Hjxdr1aBmxOQ1hU74DdGwEOILR6JXwojwS7DWU87cD
-         4kTQ==
-X-Gm-Message-State: AOAM532ee7I+ERmZ6nEW/tv1gF+f4sjabR+yQyWvmG2awaCHXi63mQdd
-        1jM2LpaeGAijQbXvG9sQBRXyiw==
-X-Google-Smtp-Source: ABdhPJzw51teMkWyg/WSmUU/bmh78ycTkcPSDZmlOnRd5qRngoSAQqxe6niWrK4452ghk+zFg59GqA==
-X-Received: by 2002:a65:6644:: with SMTP id z4mr26754018pgv.391.1595965311946;
-        Tue, 28 Jul 2020 12:41:51 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id q17sm22182504pfk.0.2020.07.28.12.41.51
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Suawz9Cepe9SlpfuSMPAOovHufOGD0v6BIGWG6sQ+tc=;
+        b=elVBgZQlkscdLKUlbNlyYpPxhPZTNgy4Qn8tS7FRm8SWCN/aLPwBTHzDdf88gxjCtv
+         cfKdex3AeafLaYggHUSlGzbFGDdcMqIbYsZo//I43pNnfh//y49vl7mTGRUTe5yQcCG0
+         HirM1UJ6IexkVhyNJ9Zhf52N8NM1pWwQB/TfF/oRqklFwLPuEQG85BkTQ76D3W7OwHk8
+         PRI6hVz6LmXgPWU98sfU0PKW81rF4ZwPRykqMNs6j8Eyxv3FNk6v8TuHb9H8UjWzDjnm
+         LfE/+DH7/cNgGGpUyI0pU009HBE4Y9roOM8PrnLXc1xpdPZXDXUxOS1W1FEftqa1CiDl
+         pYZg==
+X-Gm-Message-State: AOAM533Yw478zGN+4Pz1iINjFebxz4/f2JCsp+o0uvwMDSAZDYfinMjm
+        hRvriP3PEF/Jwdqwki/UdOY=
+X-Google-Smtp-Source: ABdhPJwRZRNqwaIGFtJNpOMCdGLwP+NBDGspR2smvefgS0dBtfuMyR4bH4L11eehxAcvm+JwUX2pyw==
+X-Received: by 2002:ad4:4c0a:: with SMTP id bz10mr7275406qvb.78.1595965328577;
+        Tue, 28 Jul 2020 12:42:08 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id t5sm23541963qkh.46.2020.07.28.12.42.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 12:41:51 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 28 Jul 2020 12:42:08 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 28 Jul 2020 15:42:06 -0400
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/8] x86/kaslr: Simplify __process_mem_region
+Message-ID: <20200728194206.GA4150860@rani.riverdale.lan>
+References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
+ <20200727230801.3468620-6-nivedita@alum.mit.edu>
+ <202007281152.6B15179@keescook>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200728091057.12.Iacab204f4164af12fa47206b98505bfbf8770cf3@changeid>
-References: <20200724183954.1.I2e29ae25368ba8a72a9e44121cfbc36ead8ecc6b@changeid> <20200728151258.1222876-1-campello@chromium.org> <20200728091057.12.Iacab204f4164af12fa47206b98505bfbf8770cf3@changeid>
-Subject: Re: [PATCH 12/15] iio: sx9310: Miscellaneous format fixes
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Daniel Campello <campello@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-To:     Daniel Campello <campello@chromium.org>,
-        LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 28 Jul 2020 12:41:50 -0700
-Message-ID: <159596531010.1360974.12485399142709122883@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202007281152.6B15179@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Campello (2020-07-28 08:12:55)
-> Miscellaneous format fixes throughout the whole file.
->=20
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> ---
+On Tue, Jul 28, 2020 at 12:25:16PM -0700, Kees Cook wrote:
+> On Mon, Jul 27, 2020 at 07:07:58PM -0400, Arvind Sankar wrote:
+> > Get rid of unnecessary temporary variables and redundant tests in
+> > __process_mem_region.
+> > 
+> > Fix one minor bug: in case of an overlap, the beginning of the region
+> > should be used even if it is exactly image_size, not just strictly
+> > larger.
+> > 
+> > Change type of minimum/image_size arguments in process_mem_region to
+> > unsigned long. These actually can never be above 4G (even on x86_64),
+> > and they're unsigned long in every other function except this one.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> 
+> Please split this up (which I think is already planned):
+> 
+> - bug fix (which looks like a correct fix to me)
+> - arg type size changes
+> - refactoring
+> 
+> I don't currently agree that the refactoring makes things easier to
+> read, but let's see v3. :)
+> 
+> -- 
+> Kees Cook
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Yep
