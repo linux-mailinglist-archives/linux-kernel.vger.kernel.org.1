@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11194231012
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EFE23101D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731596AbgG1QtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:49:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38868 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731474AbgG1QtM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:49:12 -0400
-Received: from [192.168.254.32] (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 00A5820B4908;
-        Tue, 28 Jul 2020 09:49:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 00A5820B4908
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1595954951;
-        bh=Wp9lMVW/v/maF95Uhld2YeppHP7BkSsiQSbIpc2iGG8=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=WcBQe+flSDX55q/ewMf9Af18CEdGVpPWvr4lx2WIFz5MF35ysP3AWSLhovuuIPJcA
-         R3zbmGw3qgHmAG6CF4LvqSk2K2IKdZOIS5Qx4ZwAsGDJLulERBJPTE+dh47a06ZwIC
-         G6ZCs/L/b81Zc5VW94CZcASUxH6PlX38Z+nqyTKc=
-Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org
-References: <aefc85852ea518982e74b233e11e16d2e707bc32>
- <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <3fd22f92-7f45-1b0f-e4fe-857f3bceedd0@schaufler-ca.com>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <80dd0421-062b-bfaa-395a-e52b169acea4@linux.microsoft.com>
-Date:   Tue, 28 Jul 2020 11:49:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731550AbgG1Qw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:52:28 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51134 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731484AbgG1Qw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 12:52:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595955146; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=AjBQsr/q2VwWU+HOXBWpjQEU8xvyWcP1N9vbtsdor4E=; b=Wvkukghd1Ov6NFY+oIQO5XRWKMvhB3k3uoRbG0q9a4nMKbxMkfUy9ktHm4ET6vPlscCT/WuW
+ Oubwy7c7zEpI5t78bKdezDHXo2qKpZTLKH2dAcyekwqD2yrisp2S+bVE6VLaPrEkXnMvho8q
+ LBka+Wu5tNXusgLR3gEG+zqUuyM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f2057be35f3e3d316d1697e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 16:52:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 304D2C43391; Tue, 28 Jul 2020 16:52:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from localhost (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: ilina)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61528C433C6;
+        Tue, 28 Jul 2020 16:52:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 61528C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=ilina@codeaurora.org
+Date:   Tue, 28 Jul 2020 10:52:12 -0600
+From:   Lina Iyer <ilina@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        robh+dt@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, Maulik Shah <mkshah@codeaurora.org>
+Subject: Re: [PATCH v4 4/5] arm64: dts: sdm845: Add OPP tables and
+ power-domains for venus
+Message-ID: <20200728165212.GA32586@codeaurora.org>
+References: <1595503612-2901-1-git-send-email-rnayak@codeaurora.org>
+ <1595503612-2901-5-git-send-email-rnayak@codeaurora.org>
+ <e68ff810-362a-5b99-206b-f676b204101d@linaro.org>
+ <654e0fcb-ae4d-c151-fa8a-4d029fc823fb@codeaurora.org>
+ <20200724162825.GH9185@codeaurora.org>
+ <159589714088.1360974.13205114501389777927@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <3fd22f92-7f45-1b0f-e4fe-857f3bceedd0@schaufler-ca.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <159589714088.1360974.13205114501389777927@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks.
-
-On 7/28/20 11:05 AM, Casey Schaufler wrote:
->> In this solution, the kernel recognizes certain sequences of instructions
->> as "well-known" trampolines. When such a trampoline is executed, a page
->> fault happens because the trampoline page does not have execute permission.
->> The kernel recognizes the trampoline and emulates it. Basically, the
->> kernel does the work of the trampoline on behalf of the application.
-> What prevents a malicious process from using the "well-known" trampoline
-> to its own purposes? I expect it is obvious, but I'm not seeing it. Old
-> eyes, I suppose.
-
-You are quite right. As I note below, the attack surface is the
-buffer that contains the trampoline code. Since the kernel does
-check the instruction sequence, the sequence cannot be
-changed by a hacker. But the hacker can presumably change
-the register values and redirect the PC to his desired location.
-
-The assumption with trampoline emulation is that the
-system will have security settings that will prevent pages from
-having both write and execute permissions. So, a hacker
-cannot load his own code in a page and redirect the PC to
-it and execute his own code. But he can probably set the
-PC to point to arbitrary locations. For instance, jump to
-the middle of a C library function.
->
->> Here, the attack surface is the buffer that contains the trampoline.
->> The attack surface is narrower than before. A hacker may still be able to
->> modify what gets loaded in the registers or modify the target PC to point
->> to arbitrary locations.
-...
->> Work that is pending
->> --------------------
+On Mon, Jul 27 2020 at 18:45 -0600, Stephen Boyd wrote:
+>Quoting Lina Iyer (2020-07-24 09:28:25)
+>> On Fri, Jul 24 2020 at 03:03 -0600, Rajendra Nayak wrote:
+>> >Hi Maulik/Lina,
+>> >
+>> >On 7/23/2020 11:36 PM, Stanimir Varbanov wrote:
+>> >>Hi Rajendra,
+>> >>
+>> >>After applying 2,3 and 4/5 patches on linaro-integration v5.8-rc2 I see
+>> >>below messages on db845:
+>> >>
+>> >>qcom-venus aa00000.video-codec: dev_pm_opp_set_rate: failed to find
+>> >>current OPP for freq 533000097 (-34)
+>> >>
+>> >>^^^ This one is new.
+>> >>
+>> >>qcom_rpmh TCS Busy, retrying RPMH message send: addr=0x30000
+>> >>
+>> >>^^^ and this message is annoying, can we make it pr_debug in rpmh?
+>> >
+>> How annoyingly often do you see this message?
+>> Usually, this is an indication of bad system state either on remote
+>> processors in the SoC or in Linux itself. On a smooth sailing build you
+>> should not see this 'warning'.
 >>
->> - I am working on implementing an SELinux setting called "exectramp"
->>   similar to "execmem" to allow the use of trampfd on a per application
->>   basis.
-> You could make a separate LSM to do these checks instead of limiting
-> it to SELinux. Your use case, your call, of course.
+>> >Would you be fine with moving this message to a pr_debug? Its currently
+>> >a pr_info_ratelimited()
+>> I would rather not, moving this out of sight will mask a lot serious
+>> issues that otherwise bring attention to the developers.
+>>
+>
+>I removed this warning message in my patch posted to the list[1]. If
+>it's a serious problem then I suppose a timeout is more appropriate, on
+>the order of several seconds or so and then a pr_warn() and bail out of
+>the async call with an error.
+>
+The warning used to capture issues that happen within a second and it
+helps capture system related issues. Timing out after many seconds
+overlooks the system issues that generally tend to resolve itself, but
+nevertheless need to be investigated.
 
-OK. I will research this.
+--Lina
 
-Madhavan
+>[1] https://lore.kernel.org/r/20200724211711.810009-1-sboyd@kernel.org
