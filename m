@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA688230D45
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B24230D66
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730808AbgG1PNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730784AbgG1PN2 (ORCPT
+        id S1730865AbgG1POP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 11:14:15 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:55563 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730720AbgG1PNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:13:28 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C60CC0619D2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:13:28 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id e64so21074995iof.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:13:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7g2DMS0FPIZ0c5BtsKEx2bDwtPiWXmFL4GsCilJV19I=;
-        b=d8eleb4MBB+74R1FQdN2sLvMwPOupEBPNEhXpr/In2/on2ERcbEHLNR3MN4sMtCY05
-         fIlogS5Gf6IXBuMpceoXrgCKjfhKhFV7MtwSoPBvWnfmg0WeuppStmahExFke5V6klPt
-         aTVh5lRzw6ZPFueGvBUn33rKXHIZZVLLNqaZ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7g2DMS0FPIZ0c5BtsKEx2bDwtPiWXmFL4GsCilJV19I=;
-        b=p2eI+WGlz4gwG3Ep7ir2NFxsdWr+IiylbwOMYbm2FJMeVQG0MZyY2QhDsF5fFo+5ZA
-         bD1wKBGI2XJMFKzqCc9XChBfFTZ45dY0nFTG/9lAD1Plu+YAgAX1DmAikfQZsTlm59rd
-         9IEszWE9SH742Inq7Kdy4ZE92cFN8jOgNgjI4kgT/Ul0f7U9am5/F0754FtKu9ouZJw3
-         2hFsouOFIK350nPwl/xDk2HNwH23CJLfN+Y1ehyTDa3GCagOeOXfPDatSL4GCR406nqI
-         sZfVVQ3IEZgnBvCC5MJutCl3BS0xa6PkpFilz9O85Xj8jXTMULqWIKmfDaCY7Y6hzppY
-         ebGQ==
-X-Gm-Message-State: AOAM533M4X1uXoxY50quifmkOCPz8R5resFj27r5fDJ8AwgBun/tGa/b
-        NAL7TnMlHGI+1i2+V2yaaIF6WA==
-X-Google-Smtp-Source: ABdhPJw0FjZUaCtk3mItpKIJPN0aj5p9Lbxv8Jyx9ib1W0TOGX11VsA9cYlczInqsYM2F9YsK6/rEA==
-X-Received: by 2002:a02:ec4:: with SMTP id 187mr31580705jae.11.1595949207095;
-        Tue, 28 Jul 2020 08:13:27 -0700 (PDT)
-Received: from derch.Home (97-122-92-59.hlrn.qwest.net. [97.122.92.59])
-        by smtp.gmail.com with ESMTPSA id q70sm6399781ili.49.2020.07.28.08.13.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 08:13:26 -0700 (PDT)
-From:   Daniel Campello <campello@chromium.org>
-To:     LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Campello <campello@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH 15/15] iio: sx9310: Enable vdd and svdd regulators at probe
-Date:   Tue, 28 Jul 2020 09:12:58 -0600
-Message-Id: <20200728091057.15.Iaf4d717d1908ef22c88922b556e1eb803ae019c6@changeid>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
-In-Reply-To: <20200728151258.1222876-1-campello@chromium.org>
-References: <20200724183954.1.I2e29ae25368ba8a72a9e44121cfbc36ead8ecc6b@changeid>
- <20200728151258.1222876-1-campello@chromium.org>
+        Tue, 28 Jul 2020 11:13:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-235-JJgRaiMhNeeB2BdH3JMmbA-1; Tue, 28 Jul 2020 16:13:13 +0100
+X-MC-Unique: JJgRaiMhNeeB2BdH3JMmbA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 28 Jul 2020 16:13:12 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 28 Jul 2020 16:13:12 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'madvenka@linux.microsoft.com'" <madvenka@linux.microsoft.com>,
+        "kernel-hardening@lists.openwall.com" 
+        <kernel-hardening@lists.openwall.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+Thread-Topic: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
+Thread-Index: AQHWZOCQT+e4gDrzGEmP/30MMvDTCqkdFOrw
+Date:   Tue, 28 Jul 2020 15:13:12 +0000
+Message-ID: <c23de6ec47614f489943e1a89a21dfa3@AcuMS.aculab.com>
+References: <aefc85852ea518982e74b233e11e16d2e707bc32>
+ <20200728131050.24443-1-madvenka@linux.microsoft.com>
+In-Reply-To: <20200728131050.24443-1-madvenka@linux.microsoft.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From:  madvenka@linux.microsoft.com
+> Sent: 28 July 2020 14:11
+...
+> The kernel creates the trampoline mapping without any permissions. When
+> the trampoline is executed by user code, a page fault happens and the
+> kernel gets control. The kernel recognizes that this is a trampoline
+> invocation. It sets up the user registers based on the specified
+> register context, and/or pushes values on the user stack based on the
+> specified stack context, and sets the user PC to the requested target
+> PC. When the kernel returns, execution continues at the target PC.
+> So, the kernel does the work of the trampoline on behalf of the
+> application.
 
-Enable the main power supply (vdd) and digital IO power supply (svdd)
-during probe so that the i2c communication and device works properly on
-boards that aggressively power gate these supplies.
+Isn't the performance of this going to be horrid?
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Daniel Campello <campello@chromium.org>
----
+If you don't care that much about performance the fixup can
+all be done in userspace within the fault signal handler.
 
- drivers/iio/proximity/sx9310.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Since whatever you do needs the application changed why
+not change the implementation of nested functions to not
+need on-stack executable trampolines.
 
-diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
-index 202018b726e32f..24a2360b6314ef 100644
---- a/drivers/iio/proximity/sx9310.c
-+++ b/drivers/iio/proximity/sx9310.c
-@@ -18,6 +18,7 @@
- #include <linux/module.h>
- #include <linux/pm.h>
- #include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- 
- #include <linux/iio/buffer.h>
-@@ -118,6 +119,7 @@ struct sx9310_data {
- 	struct i2c_client *client;
- 	struct iio_trigger *trig;
- 	struct regmap *regmap;
-+	struct regulator_bulk_data supplies[2];
- 	/*
- 	 * Last reading of the proximity status for each channel.
- 	 * We only send an event to user space when this changes.
-@@ -873,6 +875,13 @@ static int sx9310_set_indio_dev_name(struct device *dev,
- 	return 0;
- }
- 
-+static void sx9310_regulator_disable(void *_data)
-+{
-+	struct sx9310_data *data = _data;
-+
-+	regulator_bulk_disable(ARRAY_SIZE(data->supplies), data->supplies);
-+}
-+
- static int sx9310_probe(struct i2c_client *client)
- {
- 	int ret;
-@@ -886,6 +895,8 @@ static int sx9310_probe(struct i2c_client *client)
- 
- 	data = iio_priv(indio_dev);
- 	data->client = client;
-+	data->supplies[0].supply = "vdd";
-+	data->supplies[1].supply = "svdd";
- 	mutex_init(&data->mutex);
- 	init_completion(&data->completion);
- 
-@@ -893,6 +904,21 @@ static int sx9310_probe(struct i2c_client *client)
- 	if (IS_ERR(data->regmap))
- 		return PTR_ERR(data->regmap);
- 
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
-+				      data->supplies);
-+	if (ret)
-+		return ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(data->supplies), data->supplies);
-+	if (ret)
-+		return ret;
-+	/* Must wait for Tpor time after initial power up */
-+	usleep_range(1000, 1100);
-+
-+	ret = devm_add_action_or_reset(dev, sx9310_regulator_disable, data);
-+	if (ret)
-+		return ret;
-+
- 	ret = regmap_read(data->regmap, SX9310_REG_WHOAMI, &data->whoami);
- 	if (ret) {
- 		dev_err(dev, "error in reading WHOAMI register: %d\n", ret);
--- 
-2.28.0.rc0.142.g3c755180ce-goog
+I can think of other alternatives that don't need much more
+than an array of 'push constant; jump trampoline' instructions
+be created (all jump to the same place).
+
+You might want something to create an executable page of such
+instructions.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
