@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442A72306EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9409623070B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgG1JvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728253AbgG1JvB (ORCPT
+        id S1728547AbgG1Jwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:52:41 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:6031 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728251AbgG1Jwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:51:01 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4DFC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:51:00 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id a14so17658837wra.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:51:00 -0700 (PDT)
+        Tue, 28 Jul 2020 05:52:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Znk80EAJWe03G2pyNc40Xve7p+xFAYQ6xUkMqBZJbRw=;
-        b=i+nhUpib92cG7Dt3A5EEey478owxGiRXhqyIfM1QuUGzZn8TiA+akEqhLAZ5Eqv4zc
-         yyuP77VUnuRGZToDKL7OeD98rTbEXu3aXgJqMH3TgpTxnmzsdtl2yf2ZP2XHwLyYunFt
-         vXjbinN4jflyJbhHH7x5J2skDMDYjbOZ0vKjRkQibcgO0wPORWOBjJbD5hNW+4d85ijz
-         xJSZFIebamoyAvtnJ37gqqZP61bF0wGTplxSyLoHzhFCQGUdTBRrtrZgbBrlkVdr34wC
-         06LY0T6GQaw2cru12tQ43EYL5MN1RkE/jg7eXP/DleD6otrMesDarNDKMLAKsSNrCnVF
-         /N9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Znk80EAJWe03G2pyNc40Xve7p+xFAYQ6xUkMqBZJbRw=;
-        b=SvMJ88Z5/XVZIzmqYVWGaGOCC76ebDF3/gHKE4tiPFYHOBhCHuXGztyL+tidSW2ANJ
-         ZAepZ4Osb00AWkj966WRXTvur6NzfEE4/i/HfI085W5AxBHt62V6qvtYb6zqjmuSicFm
-         vde6K1dq0h3qUHjFj3ZtgAyrhWqKHncUZ4PKgW520G0B4HcqSnC3sy/brQcSSmqcMZtr
-         JTM9jQlAzY0uztzYZMbBTtjrscclUHnXZXY1mQoiMXquP7YQ8wQKJlcJfdejeM6z6WHa
-         dZp2WnIXFFVJ2hQvNx6ePr2NAL6JBsCow/GqdO6AsTGRlyR1HlX2SFE5ta/Fr1ZL80Oc
-         PqDw==
-X-Gm-Message-State: AOAM533SfcglS88dbaE+DE9sHvIsWCd/Tl7JUUCCq0aGclHpbs8Zn8pq
-        WFskib+RGG9MeeArboNTi/IIx26ikBqgfC5mBAWfGg==
-X-Google-Smtp-Source: ABdhPJz3YAjU9S+NHPtVDvPte3f9GOfaHQiDoSCKgiMmkss0RaJxXVQ9k9KgI/GbemDggIXSiz1Z354U4LyqP/tG0yU=
-X-Received: by 2002:adf:fe50:: with SMTP id m16mr6783158wrs.27.1595929859449;
- Tue, 28 Jul 2020 02:50:59 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1595929960; x=1627465960;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=lD6zfUc60R832pir/a+PG9I7SOgBDc1RGjG/M7AaRkg=;
+  b=g/sxF58GpFnk/I1l2QIGeaNQuq0f9BndUQSpwIa7VJa56xc0Po1hAeO8
+   nZDx5ob6S5CNRAldu3QFSdh+yqzmllgtGB7l6+mvis5vxIDWu7d8+Ejzk
+   xeTkbz1yOROhNkRs2bmPgIk9hzlfD3FVtF2bAWOU6ywQRyU4PUrJ6YQcJ
+   8=;
+IronPort-SDR: 7d+qg/gJSzVffrMVHDKuA5jB2YfUmeCbEJh9tMLZJcfKYe9h0BLJiqdCOMUFOammVVv0sPsu/L
+ MMbzpX9vQgzw==
+X-IronPort-AV: E=Sophos;i="5.75,405,1589241600"; 
+   d="scan'208";a="62276090"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 28 Jul 2020 09:52:23 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 559E0A21D1;
+        Tue, 28 Jul 2020 09:52:22 +0000 (UTC)
+Received: from EX13D01EUB001.ant.amazon.com (10.43.166.194) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 28 Jul 2020 09:52:21 +0000
+Received: from uf25486d27d2d5b.ant.amazon.com (10.43.161.71) by
+ EX13D01EUB001.ant.amazon.com (10.43.166.194) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 28 Jul 2020 09:52:12 +0000
+From:   Talel Shenhar <talel@amazon.com>
+To:     <bp@alien8.de>, <mchehab@kernel.org>, <james.morse@arm.com>,
+        <talel@amazon.com>, <davem@davemloft.net>,
+        <gregkh@linuxfoundation.org>, <nicolas.ferre@microchip.com>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linux-edac@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <hhhawa@amazon.com>, <ronenk@amazon.com>, <jonnyc@amazon.com>,
+        <hanochu@amazon.com>, <eitan@amazon.com>
+Subject: [PATCH v9 0/2] Amazon's Annapurna Labs Memory Controller EDAC
+Date:   Tue, 28 Jul 2020 12:51:53 +0300
+Message-ID: <20200728095155.18506-1-talel@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <0f6b7375a07b70353336dd7c9420138186d62936.1594230107.git-series.maxime@cerno.tech>
-In-Reply-To: <0f6b7375a07b70353336dd7c9420138186d62936.1594230107.git-series.maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 28 Jul 2020 10:50:42 +0100
-Message-ID: <CAPY8ntC3Smw+pH6Dbyob_voO_+Huw9Mzpv+F_FHnrOERLfS1hA@mail.gmail.com>
-Subject: Re: [PATCH v4 11/78] drm/vc4: crtc: Use local chan variable
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.71]
+X-ClientProxiedBy: EX13D34UWC002.ant.amazon.com (10.43.162.137) To
+ EX13D01EUB001.ant.amazon.com (10.43.166.194)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+This series introduces support for Amazon's Annapurna Labs Memory
+Controller EDAC driver.
 
-On Wed, 8 Jul 2020 at 18:42, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> The vc4_crtc_handle_page_flip already has a local variable holding the
-> value of vc4_crtc->channel, so let's use it instead.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Changes since v8:
+================
+- added cells address and size description to dt-binding yaml doc
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Changes since v7:
+=================
+- rebased and retested for tag Linux 5.8-rc1
 
-> ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index d3126fe04d9a..cdeaa0cd981f 100644
-> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
-> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -533,7 +533,7 @@ static void vc4_crtc_handle_page_flip(struct vc4_crtc *vc4_crtc)
->                  * the CRTC and encoder already reconfigured, leading to
->                  * underruns. This can be seen when reconfiguring the CRTC.
->                  */
-> -               vc4_hvs_unmask_underrun(dev, vc4_crtc->channel);
-> +               vc4_hvs_unmask_underrun(dev, chan);
->         }
->         spin_unlock_irqrestore(&dev->event_lock, flags);
->  }
-> --
-> git-series 0.9.1
+Changes since v6:
+=================
+- removed unused defines
+- user-visible strings changed to capital
+- removed static function names prefix from internal functions (external
+  used function, such as devm/interrupts-handlers/probe, left with the
+  prefix to allow stack trace visibility)
+- sorted function local variables declaration in a reverse Christmas tree order
+- fixed use of wrong syndrome defines
+- added a comment to interrupts handling (polling mode with interrupt mode)
+- added grain definition
+- appended "or BSD-2-Clause" to dt binding SPDX
+
+Changes since v5:
+=================
+- rebased and retested for tag Linux 5.6-rc2
+- added Reviewed-By for dt-binding (Rob Herring <robh@kernel.org>)
+- added Reviewed-By for driver (James Morse <james.morse@arm.com>)
+
+Changes since v4:
+=================
+- fixed dt-binding interrupt to have min of 1
+- updated dt-binding GPL-2.0 to GPL-2.0-only
+- changed writel to relaxed flavor
+- added managed device driver unwind
+
+Changes since v3:
+=================
+- removed quotation marks and hyphen from compatible dt-binding
+- added interrupts and interrupt-names description to dt-binding
+- added missing include to dt-binding
+
+Changes since v2:
+=================
+- added missing includes
+- aggregated variables to same line
+- removed ranks read
+- added spinlock to mc reporting
+- made irq handler clearer
+- freed irq before freeing device memory
+- changed Kconfig to tristate
+- added COMPILE_TEST to Kconfig
+- converted dt binding to new scheme
+- used devm_platform_ioremap_resource instead of get&ioremap
+
+Changes since v1:
+=================
+- updated dt binding node name and added Rob Reviewed-By
+- removed auto selecting of this driver
+
+
+Talel Shenhar (2):
+  dt-bindings: edac: al-mc-edac: Amazon's Annapurna Labs Memory
+    Controller EDAC
+  EDAC: al-mc-edac: Introduce Amazon's Annapurna Labs Memory Controller
+    EDAC
+
+ .../bindings/edac/amazon,al-mc-edac.yaml      |  67 ++++
+ MAINTAINERS                                   |   7 +
+ drivers/edac/Kconfig                          |   7 +
+ drivers/edac/Makefile                         |   1 +
+ drivers/edac/al_mc_edac.c                     | 354 ++++++++++++++++++
+ 5 files changed, 436 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/edac/amazon,al-mc-edac.yaml
+ create mode 100644 drivers/edac/al_mc_edac.c
+
+-- 
+2.17.1
+
