@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E7D22FEE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB6922FEE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726854AbgG1BZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 21:25:58 -0400
-Received: from smtprelay0220.hostedemail.com ([216.40.44.220]:39316 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726247AbgG1BZ6 (ORCPT
+        id S1726315AbgG1BbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 21:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgG1BbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 21:25:58 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 3208C837F24C;
-        Tue, 28 Jul 2020 01:25:57 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4362:5007:6119:7550:10010:10400:10848:11232:11658:11914:12297:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21627:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: shake93_3a01cf626f65
-X-Filterd-Recvd-Size: 2008
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 28 Jul 2020 01:25:56 +0000 (UTC)
-Message-ID: <51cb45c64431540fa0e98288aba7d7366c41d6e8.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Add test for repeated words
-From:   Joe Perches <joe@perches.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 27 Jul 2020 18:25:54 -0700
-In-Reply-To: <e8cae8c6-84b8-0f1c-d94f-3ef5804a31e0@infradead.org>
-References: <20200726162902.Horde.TCqHYaODbkzEpM-rFzDd8A2@messagerie.si.c-s.fr>
-         <b796e912-e945-3cb1-03f8-0f38009634a4@infradead.org>
-         <add7c13b1ca24c8cb6f243b99d61c19287020efd.camel@perches.com>
-         <4e505c35-8428-89bb-7f9b-bc819382c3cd@infradead.org>
-         <16aa5f86f2f899a9156305ead4b7042449278eea.camel@perches.com>
-         <cda9b566ad67976e1acd62b053de50ee44a57250.camel@perches.com>
-         <e8cae8c6-84b8-0f1c-d94f-3ef5804a31e0@infradead.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+        Mon, 27 Jul 2020 21:31:23 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A82C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 18:31:23 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id w1so3510017ooj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 18:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=85PU/jeMBPu5Upo6UlF9JkPgAyG/TgNDI2puYp9FnuM=;
+        b=RfG/PYmyP3MrH8UgvY59xXT43rK8K6jxBfyj3ny8PFYkBkhY9QibvYkB6zi7MRm88C
+         UvBlHM5OiF9Q1JBxtVpkHFWf01zVjdcZ12B2MNSz9rfP5shebjPn315qhA02U79Hunuv
+         cQeC2p6EwohTKWu+CFLf2+BTz+tPLYjtKgT1M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=85PU/jeMBPu5Upo6UlF9JkPgAyG/TgNDI2puYp9FnuM=;
+        b=ebwn8G1XVbGxtQqajsRthPUdGsJV5WsMWrriprDnA3xVrcYItfVzxpgQAfLrksRIKM
+         Y6PSDTBZo1Lb/3WcgG12+7X7UnfyXa6q2HrsTTF3dyoLEBQo9IQ6bsCWyTXHB4uNxjFI
+         7pSzIl35/Q22Imbk4Eo0VL0fAMhS8IXLOf4XxVODwgXZ1oShRkdKiRGHOi9uII1FToDN
+         E+6UvDrkYpdutNtiYG6Lr0W7OGQ/H7SJtHPbkP3AR8X2SB0vJ12ao2wajzjO2K9Ay4lO
+         Flheh5vhsLE0ioh6QagUPbWTUSXrcmJgzYJKWiGOQ3jl4oQ/NE8AX475hQWMFinNjB8/
+         5SJA==
+X-Gm-Message-State: AOAM530rNXACDCkp8wCH3CWogn4PbFbJ1v3XpfISQo0oRNpYH2dWmvgq
+        yFaMW6Ob9wJjo/YB52FqxNLCEw==
+X-Google-Smtp-Source: ABdhPJyTn7S/tuMTZD6FUbhNh3F/gzDuxavwvcuLVVLhUX0JpFMq8XGVsq71+W60ALcKrnkct9aH0w==
+X-Received: by 2002:a4a:aac8:: with SMTP id e8mr10248748oon.64.1595899882847;
+        Mon, 27 Jul 2020 18:31:22 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id e203sm2102281oia.17.2020.07.27.18.31.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 18:31:22 -0700 (PDT)
+Subject: Re: [PATCH 5.7 000/179] 5.7.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200727134932.659499757@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <63f634e5-e2bb-fea4-90da-774790ced38d@linuxfoundation.org>
+Date:   Mon, 27 Jul 2020 19:31:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200727134932.659499757@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 17:03 -0700, Randy Dunlap wrote:
-> On 7/27/20 12:33 AM, Joe Perches wrote:
-> > Try to avoid adding repeated words either on the
-> > same line or consecutive comment lines in a block
-> > 
-> > e.g.:
-> > 
-> > duplicated word in comment block
-> > 
-> > 	/*
-> > 	 * this is a comment block where the last word of the previous
-> > 	 * previous line is also the first word of the next line
-> > 	 */
-> > 
-> > and simple duplication
-> > 
-> > 	/* test this this again */
-> > 
-> > Inspired-by: Randy Dunlap (rdunlap@infradead.org>
-> > Signed-off-by: Joe Perches <joe@perches.com>
+On 7/27/20 8:02 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.7.11 release.
+> There are 179 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Thanks for adding this check, Joe.
+> Responses should be made by Wed, 29 Jul 2020 13:48:51 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-No charge.
+Compiled and booted on my test system. No dmesg regressions.
 
-It seemed simple enough and you are/were doing
-an awful lot of work to fix these.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Thanks for that too.
-
-Joe
-
-
-
+thanks,
+-- Shuah
