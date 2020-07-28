@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF43723053B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983A7230546
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgG1IWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:22:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35330 "EHLO
+        id S1728155AbgG1IXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727878AbgG1IWe (ORCPT
+        with ESMTP id S1728068AbgG1IXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:22:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792B5C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:22:34 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1595924552;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LT0z1WTFU4u1Ini4PkAGyn1tHLs7qrzEH8lDSSnkO3A=;
-        b=KC9ZnZhxsHIQ29MU+dFo+gVVeCQNIYOODkfr8fe6S5XPydU7fNaQPwiTsyjRfd+OJ7g7KW
-        j/ay6u3V4sFm7nyEv/Be40zRbOAsXutC3Ykc6ik7m/G5ui7EjuPjjV2l1VYAdXuv82WXSn
-        7bqi9brSYIyboxEBNILttxf6X7BCTvVsr28gaIwh7PBBEz4mHOtjZe8zp66BCpVoL+o7ue
-        lQ9aLa0UbyXvqYQYGljWP5U/nHQOcjEfqq2K98L2GsC+Sz8QpNvRhh7RrzSrMvZIX+G2aM
-        GqUHkLw4OcnabojGZ3z8BL9Y63revFUpS0GLFayzL+JMTLM5QAEhCJSI5Irx6w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1595924552;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LT0z1WTFU4u1Ini4PkAGyn1tHLs7qrzEH8lDSSnkO3A=;
-        b=atBLvzYaBAH3dkI+kws/92J2tJBgr5VpSx6CP1YGsc8eb0wopK1XBCTfzFSqD0WNDxmwLP
-        nSGGoc2Tvh2nn1Dg==
-To:     Scott Branden <scott.branden@broadcom.com>, bp@alien8.de,
-        x86@kernel.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Kernel panic - not syncing: IO-APIC + timer doesn't work!
-In-Reply-To: <e0ce41cd-9149-e43e-f4ca-e75503cb82e3@broadcom.com>
-References: <18cb4d48-6571-1fdb-5902-ba64c23eee75@broadcom.com> <87h7tsbs1n.fsf@nanos.tec.linutronix.de> <e0ce41cd-9149-e43e-f4ca-e75503cb82e3@broadcom.com>
-Date:   Tue, 28 Jul 2020 10:22:31 +0200
-Message-ID: <87blk0aw1k.fsf@nanos.tec.linutronix.de>
+        Tue, 28 Jul 2020 04:23:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32282C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:23:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id l63so11441885pge.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:23:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=students-iitmandi-ac-in.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Krf3mHPaRhONZrJUP4kLL+SpT/1O8y5l8m6Ya1wdpkE=;
+        b=nhCjMNdGpcIOWYXchr2X67Jx0xqPObEdVXUjSjcpgdiYIruWbcrLrjOSjJzGqAIjd7
+         vrlt8Jb75Qf+wTP9BNzXwrM0QEtfMyFaj3F8eAHdCZnvakhHkGu3s0VoUuJWRBv8oe9a
+         lyzFkTycR02L1IJfPhmBwvu6/GhoRYxO07BNT8B1jJ8komhzqC80ueEL+jHk8n89+1CU
+         qqil3Ip7r/q+8uL6iFxdTsrIk46pLcuaXVt5C/6ibrhdHcTItJI5CRZOtXL1apqR5xdz
+         J7MSYQgRLxz8hrXMiABWD1IOkuc7T62hWlfuzqn0GiBerGiq4FJOBDuwZ5cGU5J5L38h
+         C0dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Krf3mHPaRhONZrJUP4kLL+SpT/1O8y5l8m6Ya1wdpkE=;
+        b=MTuGqmnv7625V97DAps/Vd2XGxm3ZGg/EVYMYq/6xHmgBUIX7sFeVG/Tsz148+ZqYN
+         KfiBM5mS/fI1bFgloCvbHloZ0j+eLZxgNsey/qIiSB1JK0YTwrnzJGx1LoijqEM92ua4
+         rA2czno2Woo7Q++gTmNiwbioXJAvD4OcmmcF6LRG49c8Nku8RrIvUg3ywkmSqGKTnxtO
+         wbei2nfnKWF/F0ZnoedJu2ZTTdfmW5xHTF6wxurqJeW6rfuNnqwlsdkN2tno7pKwZBu7
+         bCOS3hJ9XJtvOIkj3m7H6oR1kNJveknoT27AxshRX7TG37/3HZWNmF7iT1HiWb2a+EPo
+         cutA==
+X-Gm-Message-State: AOAM5334RFjRjdsyiRS2a43ZbtCQXICWp1ybpfjSN85RRE8sZHGHQo3F
+        4mYHfBbtxlW6CkZDb2n+wkUiiA==
+X-Google-Smtp-Source: ABdhPJwxUnxFK756k0a5/cKYYYuNHSDaVSvQ6w8JriFYCnKNk602Aut098WOzwQLFtdyZlJjBPowUQ==
+X-Received: by 2002:a63:4e51:: with SMTP id o17mr24411320pgl.315.1595924625553;
+        Tue, 28 Jul 2020 01:23:45 -0700 (PDT)
+Received: from devil-VirtualBox.www.tendawifi.com ([103.198.174.215])
+        by smtp.gmail.com with ESMTPSA id o10sm2033014pjo.55.2020.07.28.01.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 01:23:44 -0700 (PDT)
+From:   Ankit <b18007@students.iitmandi.ac.in>
+To:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        sakari.ailus@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, b18007@students.iitmandi.ac.in
+Subject: [PATCH v2] Staging : media : atomisp : fixed a brace coding sytle issue
+Date:   Tue, 28 Jul 2020 13:53:30 +0530
+Message-Id: <20200728082330.24948-1-b18007@students.iitmandi.ac.in>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200728073715.GA351768@kroah.com>
+References: <20200728073715.GA351768@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Scott,
+From: Ankit Baluni <b18007@students.iitmandi.ac.in>
 
-Scott Branden <scott.branden@broadcom.com> writes:
-> Bios now updated to latest.=C2=A0 Same kernel panic issue.=C2=A0 Log belo=
-w.
->
-> I think it is related to power cycling quickly.
-> Should APIC work if PC power cycled in a few seconds or is that the
-> problem?
+Removed braces for a 'if' condition as it contain only single line & 
+there is no need for braces for such case according to coding style
+rules.
 
-Yes, emphasis on should. Just to clarify, if you reboot it works and
-cold start works as well if power was off long enough?
+Signed-off-by: Ankit Baluni <b18007@students.iitmandi.ac.in>
 
-> [=C2=A0=C2=A0=C2=A0 0.000000] Linux version 5.8.0-rc6 (oe-user@oe-host) (=
-x86_64-poky-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34.0.20200220) =
-#1 SMP Sat Jul 25 03:55:25 UTC 2020
-> [=C2=A0=C2=A0=C2=A0 0.000000] Command line: BOOT_IMAGE=3D/bzImage ima_pol=
-icy=3Dtcb
-> apic=3Ddebug ip=3Ddhcp raid=3Dnoautodetect console=3DttyS0,115200
-> root=3D/dev/nfs nfsroot=3D192.168.1.100:/nfs/vxc,hard,tcp,intr,v3 rootwait
-> nfsrootdebug
+---
+ drivers/staging/media/atomisp/pci/atomisp_cmd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-The working dmesg and the failing console log are hard to compare
-because the latter does not contain debug level printks. Please add
-'ignore_loglevel' to the command line parameters.
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_cmd.c b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+index 8ea65bef35d2..28b96b66f4f3 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_cmd.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_cmd.c
+@@ -4981,9 +4981,8 @@ enum mipi_port_id __get_mipi_port(struct atomisp_device *isp,
+ 	case ATOMISP_CAMERA_PORT_SECONDARY:
+ 		return MIPI_PORT1_ID;
+ 	case ATOMISP_CAMERA_PORT_TERTIARY:
+-		if (MIPI_PORT1_ID + 1 != N_MIPI_PORT_ID) {
++		if (MIPI_PORT1_ID + 1 != N_MIPI_PORT_ID)
+ 			return MIPI_PORT1_ID + 1;
+-		}
+ 	/* fall through */
+ 	default:
+ 		dev_err(isp->dev, "unsupported port: %d\n", port);
+-- 
+2.25.1
 
-Thanks,
-
-        tglx
