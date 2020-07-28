@@ -2,242 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B2C230C80
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2420F230C88
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730440AbgG1OeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
+        id S1730458AbgG1Ofa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729410AbgG1OeL (ORCPT
+        with ESMTP id S1730451AbgG1Of3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:34:11 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EBAC061794;
-        Tue, 28 Jul 2020 07:34:10 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k4so9970908pld.12;
-        Tue, 28 Jul 2020 07:34:10 -0700 (PDT)
+        Tue, 28 Jul 2020 10:35:29 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1143DC0619D4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 07:35:29 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id g19so8880175ioh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 07:35:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Gol3YEjZg+DdUDqVA5CTPFx2cwX3l9O5rj/E8q5KIWU=;
-        b=dqIEAHN9Gj6nRHFrLPP3id5phRX61Jo38NkPro7IU3G6ipk9Sno/mdjfeZRB/G8use
-         xqYknq3XvnUqmHaH725q0w8Ef6Rj9rjRJ/N46bnMrTqwKTaJXkHSmOANUVwSnQ+SMwlO
-         t6MixwiEbxRPV4XhwvU3bGwpfpD6PFzHbyH+vi7OBT8OkhnceYKHoAZ8bmQyrcYMJIeA
-         JR97BYgNWgizLXobVkKTh15WnONOInOc2L9zxB7FXr+BGZOm+B4teM6JVkTqiYUYaTh+
-         4fjs1FVCAdau3aR1RDYdC2W//HPl4xjhBaL6hpOTSqc97HHL6KcRCYFmC4REODumSR2x
-         HpDA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wE63hykpdOWCKf+hJ+uo4tJ4NmzeI9PTAqJH7wvSMlc=;
+        b=LhfgIFjPN1Zt6pM27TDwc0D9sQ3LgHFulpPO2SX5S88mG/mDfs8otJIYAkvnkswxld
+         9pGQRB5MX9+c/pNc/D2jvjcUfkcaX+O+bWMi/ZdZWSGCZgEcirUgpaGCBHTTFwLDeXxm
+         blFwenzn7yqD2djWtvbrpRZs6R2NA61KUwTMx0D/r9/j+IuKq9D9CivCPsM5HlRumsun
+         8SeaeatA922UsvA+t5ljvF60Q6rxHuH9aAmjAJ5nqq0yc8rdtO4PxA+a9Y5/pkBdStPf
+         L/JGt34i7DNkTsg+8boIo3khF5Q26aC+wBgUC+PHLlS8m0uSQi46IDgH+/15eUls3L+F
+         tp9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Gol3YEjZg+DdUDqVA5CTPFx2cwX3l9O5rj/E8q5KIWU=;
-        b=sMnhvafK6/tcKtUuXjUveGzO618QcFijWfe7SUM71YZXzzMkD4fZX7RIwjmeXnRGsU
-         N0vQuOEdaU8yxi+Id9/16Rn5UGiNqXk+CbGlrVc+GHarbM6u7vQvR5E66aFmO+v2wx/a
-         AfrZN/ezswvoGgb8KYMWsXdvkHxaZ/Y+5Ot6BgxiR+srCFHK1GJ2+eKaKl4bZ5lxHgLS
-         nuR6bQ7JtTFwbDb7fZ4a9HuwAXizyAWA0SNn7jEyGcl0BUuL9XGtFz9Hmo3/nbxW290o
-         o3csmK8N3J415dpFghbBxRf0eblPk4DBP8xwGfDSo2ZtXN9iIbyFY8inRO0WGE9h4jGq
-         Ne8w==
-X-Gm-Message-State: AOAM532W8c6SJXr0FCe6Wfr4fUoA+bMTCBlrVzYrRPJCl+yrrx3iXg3w
-        pSxelXYsio3j4NmJgmcz86c=
-X-Google-Smtp-Source: ABdhPJy93uhGYKVvztyUXpnZL/qAuBttRC4YS6R4ru0UvimGlBwcTqGIqXqK3s8PoQfypbrdn8yHXg==
-X-Received: by 2002:a17:902:ff16:: with SMTP id f22mr10219128plj.269.1595946850409;
-        Tue, 28 Jul 2020 07:34:10 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d29sm17673991pgb.54.2020.07.28.07.34.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 07:34:09 -0700 (PDT)
-Subject: Re: [PATCH 1/2] watchdog: imx7ulp: Strictly follow the sequence for
- wdog operations
-To:     Anson Huang <Anson.Huang@nxp.com>, wim@linux-watchdog.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-References: <1595918567-2017-1-git-send-email-Anson.Huang@nxp.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <566adde7-c397-72f1-145d-fbca9de77cd7@roeck-us.net>
-Date:   Tue, 28 Jul 2020 07:34:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wE63hykpdOWCKf+hJ+uo4tJ4NmzeI9PTAqJH7wvSMlc=;
+        b=jOZZCOjYAvAGudtQCeqhcerhWg+kBe4b/eNN4qbXFTQcSk6o1nUBfoVUGxtVu1WEmA
+         jxSyY70EvqPnZzLTp9Nss2+y/NBir17laJyLfKwJUwxwi+z59FxAbzeo68+Jmyu4SJ6Z
+         ULIyb9I3u6m2XlBrqiAaUL+hpg7by3siY9aNxcDL8vrEt+jkPCri6GZCqNOSJNCkXzIw
+         xZe2Yu6nolxGRz8bcmWJzlJI9MOEttq9F8k/hvud9r/c7EhzZIpoGMKL0//k0/MdbOf3
+         xv/fXD9+xAenQn5/sS+8RTCAkEKlOGxIijXUk9jM2lV252sUAzhQBnccvBM1efZp+jMI
+         YNMg==
+X-Gm-Message-State: AOAM530yg9UPGTKBiONOnBdlp4eybTRP88Dftw2FEz2sMxxg0qUPqQZY
+        0gddm30S2pT2uj8wvvjvvyUuFwZ9TosLedDdt9fPug==
+X-Google-Smtp-Source: ABdhPJy2WEagQVK01W1PoJL3TtsswctQA4jC85OF1eYxNmME8rZTNY5/2CM7uNz/FDIzfpS1C5VvpAW+f52j5jGXddQ=
+X-Received: by 2002:a05:6638:134a:: with SMTP id u10mr6463616jad.35.1595946928305;
+ Tue, 28 Jul 2020 07:35:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1595918567-2017-1-git-send-email-Anson.Huang@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200727134914.312934924@linuxfoundation.org> <CA+G9fYvBRONMYwX36Hcju4JA5TwstkT2Afyuy2DB1zQcBcc1CA@mail.gmail.com>
+ <CAMZfGtVV-u7K+Z0vFLkoKv1UOTfk=a9+r_6G4PYfGLywwnkm3Q@mail.gmail.com>
+In-Reply-To: <CAMZfGtVV-u7K+Z0vFLkoKv1UOTfk=a9+r_6G4PYfGLywwnkm3Q@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Jul 2020 20:05:16 +0530
+Message-ID: <CA+G9fYs__nNa-090Cm8j_EPYGRfh+y+VTX3ZqR_W1Jcu2suNEQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 4.19 00/86] 4.19.135-rc1 review
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Lameter <cl@linux.com>, Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-mm <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/20 11:42 PM, Anson Huang wrote:
-> According to reference manual, the i.MX7ULP WDOG's operations should
-> follow below sequence:
-> 
-> 1. disable global interrupts;
-> 2. unlock the wdog and wait unlock bit set;
-> 3. reconfigure the wdog and wait for reconfiguration bit set;
-> 4. enabel global interrupts.
-> 
-> Strictly follow the recommended sequence can make it more robust.
-> 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  drivers/watchdog/imx7ulp_wdt.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/drivers/watchdog/imx7ulp_wdt.c b/drivers/watchdog/imx7ulp_wdt.c
-> index 7993c8c..b414ecf 100644
-> --- a/drivers/watchdog/imx7ulp_wdt.c
-> +++ b/drivers/watchdog/imx7ulp_wdt.c
-> @@ -4,6 +4,7 @@
->   */
->  
->  #include <linux/clk.h>
-> +#include <linux/delay.h>
->  #include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> @@ -48,17 +49,32 @@ struct imx7ulp_wdt_device {
->  	struct clk *clk;
->  };
->  
-> +static inline void imx7ulp_wdt_wait(void __iomem *base, u32 mask)
-> +{
-> +	int retries = 100;
-> +
-> +	do {
-> +		if (readl_relaxed(base + WDOG_CS) & mask)
-> +			return;
-> +		usleep_range(200, 1000);
-> +	} while (retries--);
+On Tue, 28 Jul 2020 at 18:33, Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> Thanks for your test. I have reviewed the patch:
+>
+> [PATCH 4.19 76/86] mm: memcg/slab: fix memory leak at non-root
+> kmem_cache destroy
+>
+> There is a backport problem and I have pointed out the problem in that email.
 
-Sleep with interrupts disabled ? I can not imagine that this works well
-in a single CPU system. On top of that, it seems quite pointless.
-Either you don't want to be interrupted or you do, but sleeping
-with interrupts disabled really doesn't make sense. And does it really
-take 200-1000 uS for the watchdog subsystem to react, and sometimes up
-to 200 * 100 = 20 mS ? That seems highly unlikely. If such a delay loop
-is indeed needed, it should be limited by a time, not by number of
-repetitions.
+Thanks for your suggestions on the other email thread.
+I have made changes as you said and boot test pass on x86 now.
 
-Unless there is evidence that there is a problem that needs to be solved,
-I am not going to accept this code.
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 9c5eb4b08fc3..65bc49f19504 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -842,9 +842,7 @@ static int shutdown_memcg_caches(struct kmem_cache *s)
 
-Thanks,
-Guenter
+ static void memcg_set_kmem_cache_dying(struct kmem_cache *s)
+ {
+-       mutex_lock(&slab_mutex);
+        s->memcg_params.dying = true;
+-       mutex_unlock(&slab_mutex);
+ }
 
-> +}
-> +
->  static void imx7ulp_wdt_enable(struct watchdog_device *wdog, bool enable)
->  {
->  	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
->  
->  	u32 val = readl(wdt->base + WDOG_CS);
->  
-> +	local_irq_disable();
->  	writel(UNLOCK, wdt->base + WDOG_CNT);
-> +	imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
->  	if (enable)
->  		writel(val | WDOG_CS_EN, wdt->base + WDOG_CS);
->  	else
->  		writel(val & ~WDOG_CS_EN, wdt->base + WDOG_CS);
-> +	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
-> +	local_irq_enable();
->  }
->  
->  static bool imx7ulp_wdt_is_enabled(void __iomem *base)
-> @@ -72,7 +88,12 @@ static int imx7ulp_wdt_ping(struct watchdog_device *wdog)
->  {
->  	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
->  
-> +	local_irq_disable();
-> +	writel(UNLOCK, wdt->base + WDOG_CNT);
-> +	imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
->  	writel(REFRESH, wdt->base + WDOG_CNT);
-> +	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
-> +	local_irq_enable();
->  
->  	return 0;
->  }
-> @@ -98,8 +119,12 @@ static int imx7ulp_wdt_set_timeout(struct watchdog_device *wdog,
->  	struct imx7ulp_wdt_device *wdt = watchdog_get_drvdata(wdog);
->  	u32 val = WDOG_CLOCK_RATE * timeout;
->  
-> +	local_irq_disable();
->  	writel(UNLOCK, wdt->base + WDOG_CNT);
-> +	imx7ulp_wdt_wait(wdt->base, WDOG_CS_ULK);
->  	writel(val, wdt->base + WDOG_TOVAL);
-> +	imx7ulp_wdt_wait(wdt->base, WDOG_CS_RCS);
-> +	local_irq_enable();
->  
->  	wdog->timeout = timeout;
->  
-> @@ -140,15 +165,19 @@ static void imx7ulp_wdt_init(void __iomem *base, unsigned int timeout)
->  {
->  	u32 val;
->  
-> +	local_irq_disable();
->  	/* unlock the wdog for reconfiguration */
->  	writel_relaxed(UNLOCK_SEQ0, base + WDOG_CNT);
->  	writel_relaxed(UNLOCK_SEQ1, base + WDOG_CNT);
-> +	imx7ulp_wdt_wait(base, WDOG_CS_ULK);
->  
->  	/* set an initial timeout value in TOVAL */
->  	writel(timeout, base + WDOG_TOVAL);
->  	/* enable 32bit command sequence and reconfigure */
->  	val = WDOG_CS_CMD32EN | WDOG_CS_CLK | WDOG_CS_UPDATE;
->  	writel(val, base + WDOG_CS);
-> +	imx7ulp_wdt_wait(base, WDOG_CS_RCS);
-> +	local_irq_enable();
->  }
->  
->  static void imx7ulp_wdt_action(void *data)
-> 
+ static void flush_memcg_workqueue(struct kmem_cache *s)
 
+- Naresh
