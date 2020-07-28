@@ -2,154 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67060231305
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5803D231306
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733010AbgG1TpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        id S1732963AbgG1TpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732976AbgG1Tox (ORCPT
+        with ESMTP id S1730048AbgG1TpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:44:53 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE8E8C0619D6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:44:52 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id k13so2692977plk.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:44:52 -0700 (PDT)
+        Tue, 28 Jul 2020 15:45:14 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93D9C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:45:13 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 2so15796180qkf.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=NjjWAW6FgXIfls/hqkrF/yquAYJxvalgxXMqC5yfkB8=;
-        b=KIalYCFnh0ooJeOFJkJKg6Aj3ezi1dT2pKr43ERudEvFuNaAJ3+4031cCKI/mpqsHN
-         jPODHusawyatNlhEIpveO4bRm2Qv8DouYUrTDu4x7sAqumvD4p0DaIwI9w47ua+Y+Lm8
-         r5WIEN2ftI2xGaXzPY44IJT2WhYYdppfLz2ds=
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GOowIkYgNWQMJY1z2glDszfCPetfRLh+NG8awSyRKwA=;
+        b=cya3xNOkiBwf0XFJOc0t7Hv3b/7hGbd6OyyXU+Ex9UL2sXzVwOffXHiWV/cCrr8mZZ
+         sMUOS8iKAWJYdfwwfbNJ1U1g9laf5eBaF7mHeGHrE3ZAS1De0nRuo0znpyn/ohbBDqaW
+         Cy3yITRvHDPkG3DKQ6R1+8+S0OSWsQspfYHYAmb0ytq0I+ATFoS9XZE7SDXKZr6bNW+K
+         sxu5zQONpBuwA+PM0ArjIG9+Fs12LWZeSW/uGzZE67kbU3D05XnPaTRut9MaixDgEfr7
+         BdV6SNWsyuYbxZFqg9WoK3Vy9rJIliQ50W3Rm/YcgEoNsprzIoNeMvr2PHDyYLCmxmqs
+         QqVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NjjWAW6FgXIfls/hqkrF/yquAYJxvalgxXMqC5yfkB8=;
-        b=o6RMfk4htq/SzxChCkLZPWy8vWB/7EikacOZyqyXgeNF3QjroyzKpC54VoIULM7NcF
-         ClyBHm9S+RcZ/beXcF6hI7YtFVejNG9CYOhsnIc7xq/3KyYz8sQ78e2jeQyyp/a6kTP3
-         dVkdjiBpoDvBcpxsk5SngVXXpoq0fjFmRewFaZr7m1hbvrdgxXB1gpUvuyMvvK7PfeeZ
-         fffUlP0YyayVaUrIlObYdzTJqWed84bTy1jEkXTpXy0o9JSVuhcJ5yK71GFYSH2GfdzH
-         nMSafgEQ2fhGlzG7s4vwURLJ1Rxymns87TUu6FHsNubch63r4UgvtWfmLwTb1vzfLQr1
-         6ISw==
-X-Gm-Message-State: AOAM532cyatWaoftPrq2qce8qqpAdFDPWs4V9mfJKgUHoG0qudh778Rp
-        4a6ptCfuu7YW+xySfIKRADUpjw==
-X-Google-Smtp-Source: ABdhPJzQr9cHayJZPGpWZHni51wQdtSr2aAnxIAMHwScc+g9u8gX4TqJT/xfpoMOHtZMCRUO5O3P+A==
-X-Received: by 2002:a17:902:7446:: with SMTP id e6mr7253416plt.267.1595965492443;
-        Tue, 28 Jul 2020 12:44:52 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m31sm4012561pjb.52.2020.07.28.12.44.51
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=GOowIkYgNWQMJY1z2glDszfCPetfRLh+NG8awSyRKwA=;
+        b=aOtEq8rEGZSTlkpNpkuEIMbGgI/PuK6oqeXSw3M2sPAwnpaqgxxb/JTUCG1OfnHOEA
+         KrQ4FWeJaGklHW2ANEWlQBfBxwHnb0inFaciJFZTMHH8YQqMKcnhyyeqbq6TXhreykv4
+         kCh+XY9tl+wYPXE+Zz3h3SokPi70UFKN6H65jdBqkbJrv3oIzDEWvZqccMfkS+QQHEuG
+         n0Lcr9SZclVHpgHvVnOqs+Pu+CAnGhU/WrNRJHwY4ywPCeZ/x3z5BkfX3abf2Isjh3WB
+         p4HGRn/3wkAF2wiNNbkx1lkcdQFAVedirsS+eHpzj/0eRHnlUHnda4/8H+OTaqRh1Oef
+         ez2A==
+X-Gm-Message-State: AOAM5316kGteHawW4u5uN0w3J4BLOjsk7lDExdKl2DdUhARotsa9w9rv
+        juhx9VSqHgplh1OSQ/uLQIs=
+X-Google-Smtp-Source: ABdhPJwjdx4kArycc1ptj29HcORP2NxKlUVRX9lv8S/77lNZ2zmPt6uzKvGb0QMfleyFWxkyyS0Fnw==
+X-Received: by 2002:a37:80c:: with SMTP id 12mr30581782qki.149.1595965512983;
+        Tue, 28 Jul 2020 12:45:12 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id b22sm21849553qka.43.2020.07.28.12.45.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 12:44:51 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 12:44:50 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Mimi Zohar <zohar@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
-        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 15/19] IMA: Add support for file reads without contents
-Message-ID: <202007281244.2F2681AE9@keescook>
-References: <20200724213640.389191-1-keescook@chromium.org>
- <20200724213640.389191-16-keescook@chromium.org>
- <1595856214.4841.86.camel@kernel.org>
+        Tue, 28 Jul 2020 12:45:12 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Tue, 28 Jul 2020 15:45:11 -0400
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/8] x86/kaslr: Simplify process_gb_huge_pages
+Message-ID: <20200728194511.GB4150860@rani.riverdale.lan>
+References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
+ <20200727230801.3468620-7-nivedita@alum.mit.edu>
+ <202007281225.C24B966D7@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1595856214.4841.86.camel@kernel.org>
+In-Reply-To: <202007281225.C24B966D7@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 09:23:34AM -0400, Mimi Zohar wrote:
-> On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
-> > From: Scott Branden <scott.branden@broadcom.com>
+On Tue, Jul 28, 2020 at 12:27:17PM -0700, Kees Cook wrote:
+> On Mon, Jul 27, 2020 at 07:07:59PM -0400, Arvind Sankar wrote:
+> > Short-circuit the whole function on 32-bit.
 > > 
-> > When the kernel_read_file LSM hook is called with contents=false, IMA
-> > can appraise the file directly, without requiring a filled buffer. When
-> > such a buffer is available, though, IMA can continue to use it instead
-> > of forcing a double read here.
+> > Replace the loop to determine the number of 1Gb pages with arithmetic.
 > > 
-> > Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> > Link: https://lore.kernel.org/lkml/20200706232309.12010-10-scott.branden@broadcom.com/
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Fix one minor bug: if the end of the region is aligned on a 1Gb
+> > boundary, the current code will not use the last available 1Gb page due
+> > to an off-by-one error.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 > 
-> After adjusting the comment below.
+> Can you add some KUnit tests could be written to do validation of the
+> refactorings? Touching this code is so painful. :)
 > 
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> -Kees
 
-Sure!
-
-Greg, shall I send a v4 with added Reviews and the comment change or is
-that minor enough that you're able to do it?
-
-Thanks for the reviews Mimi!
-
--Kees
+Can I try to do that later -- I've never written a KUnit test, though
+it's probably a good opportunity to learn how to do one.
 
 > 
-> > ---
-> >  security/integrity/ima/ima_main.c | 22 ++++++++++++++++------
-> >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> > index dc4f90660aa6..459e50526a12 100644
-> > --- a/security/integrity/ima/ima_main.c
-> > +++ b/security/integrity/ima/ima_main.c
-> > @@ -613,11 +613,8 @@ void ima_post_path_mknod(struct dentry *dentry)
-> >  int ima_read_file(struct file *file, enum kernel_read_file_id read_id,
-> >  		  bool contents)
+> > +++ b/arch/x86/boot/compressed/kaslr.c
+> > @@ -546,49 +546,43 @@ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
+> >  static void
+> >  process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
 > >  {
-> > -	/* Reject all partial reads during appraisal. */
-> > -	if (!contents) {
-> > -		if (ima_appraise & IMA_APPRAISE_ENFORCE)
-> > -			return -EACCES;
-> > -	}
-> > +	enum ima_hooks func;
-> > +	u32 secid;
+> > -	unsigned long addr, size = 0;
+> > +	unsigned long pud_start, pud_end, gb_huge_pages;
+> >  	struct mem_vector tmp;
+> > -	int i = 0;
 > >  
-> >  	/*
-> >  	 * Do devices using pre-allocated memory run the risk of the
-> > @@ -626,7 +623,20 @@ int ima_read_file(struct file *file, enum kernel_read_file_id read_id,
-> >  	 * buffers? It may be desirable to include the buffer address
-> >  	 * in this API and walk all the dma_map_single() mappings to check.
-> >  	 */
-> > -	return 0;
-> > +
-> > +	/*
-> > +	 * There will be a call made to ima_post_read_file() with
-> > +	 * a filled buffer, so we don't need to perform an extra
-> > +	 * read early here.
-> > +	 */
-> > +	if (contents)
-> > +		return 0;
-> > +
-> > +	/* Read entire file for all partial reads during appraisal. */
+> > -	if (!max_gb_huge_pages) {
+> > +	if (IS_ENABLED(CONFIG_X86_32) || !max_gb_huge_pages) {
+> >  		store_slot_info(region, image_size);
+> >  		return;
+> >  	}
 > 
-> In addition to verifying the file signature, the file might be
-> included in the IMA measurement list or the file hash may be used to
-> augment the audit record.  Please remove "during appraisal" from the
-> comment.
+> Won't max_gb_huge_pages always be false for 32-bit?
 > 
-> > +	func = read_idmap[read_id] ?: FILE_CHECK;
-> > +	security_task_getsecid(current, &secid);
-> > +	return process_measurement(file, current_cred(), secid, NULL,
-> > +				   0, MAY_READ, func);
-> >  }
-> >  
-> >  const int read_idmap[READING_MAX_ID] = {
-> 
+> -- 
+> Kees Cook
 
--- 
-Kees Cook
+It will, assuming someone doesn't pass bogus command-line arguments to
+reserve Gb pages on 32-bit.
+
+But the IS_ENABLED check allows the compiler to eliminate the entire
+function at compile time.
