@@ -2,228 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A0523040C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2473E230416
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727922AbgG1H04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 03:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727834AbgG1H0z (ORCPT
+        id S1728017AbgG1H15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 03:27:57 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34080 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726990AbgG1H15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:26:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F365C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 00:26:55 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1k0K0i-0005uh-0v; Tue, 28 Jul 2020 09:26:52 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1k0K0h-000544-3i; Tue, 28 Jul 2020 09:26:51 +0200
-Date:   Tue, 28 Jul 2020 09:26:51 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/10] remoteproc: imx_rproc: support iMX8M and early boot
-Message-ID: <20200728072651.zcflghll4wa7rm55@pengutronix.de>
-References: <20200724080813.24884-1-peng.fan@nxp.com>
- <20200727063839.kfgrtperzkygvjr2@pengutronix.de>
- <DB6PR0402MB2760FBC0109E98A447BB716588720@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20200727075441.lgscydoj3txupeay@pengutronix.de>
- <DB6PR0402MB27605640244CE751317E6DE888720@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        Tue, 28 Jul 2020 03:27:57 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06S7I0mM015172;
+        Tue, 28 Jul 2020 09:27:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=L908e2AdQSAptw2MG0+5KEEyg20P0DnrpSzY3TXAojs=;
+ b=z00tIkugcratI9e5e77HQjJo3ixY/oHxNREc9N4lcN5UzKrNzBPI0m9+aTks0zETaszu
+ ydeTDMAExij1wXWKKUz37quocYSk3p4XsbdmC6mjXqaPmDRf3BLHDlIxBJtXbNb6p3g4
+ MUvyqlAM4iumBCxTPVJCOwPPiE543J63KLul1mzH5kvL2qrE55a1VjH2zUMPiPBbYec3
+ M4AefGRuV4Gfh6JoBihACujluFq8q3hQEWNIUI7CATa5oSytZj/uI5g6yJZ4gJ6NP2P2
+ hwk2d5XcOkLrrtoEzd/qxVLNBz6MGGn3XASQ3e6HcM10B7VT9Q7cSqCthJkSl7SYe3Zr vg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 32gbmg4q00-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Jul 2020 09:27:39 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8562A100034;
+        Tue, 28 Jul 2020 09:27:38 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7063121F0BF;
+        Tue, 28 Jul 2020 09:27:38 +0200 (CEST)
+Received: from lmecxl0995.lme.st.com (10.75.127.45) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
+ 2020 09:27:37 +0200
+Subject: Re: [PATCH v4 3/3] usb: dwc2: don't use ID/Vbus detection if
+ usb-role-switch on STM32MP15 SoCs
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     Minas Harutyunyan <hminas@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        USB <linux-usb@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Fabrice GASNIER <fabrice.gasnier@st.com>
+References: <20200727092346.19780-1-amelie.delaunay@st.com>
+ <20200727092346.19780-4-amelie.delaunay@st.com>
+ <CAFBinCCXuUC4PHgrobYjj=yjA3Tz73Wwx0KWz+B6PfCw_OSi_w@mail.gmail.com>
+ <CAHp75Ve75d+K87cokb4YYgim_wU0gTidGuiPs3BmohRKfTh5gA@mail.gmail.com>
+From:   Amelie DELAUNAY <amelie.delaunay@st.com>
+Message-ID: <19ba2fe3-56d1-32a9-3897-27a36ab58c2c@st.com>
+Date:   Tue, 28 Jul 2020 09:27:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="wxnuv5vf765geiib"
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB27605640244CE751317E6DE888720@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:21:44 up 255 days, 22:40, 251 users,  load average: 0.03, 0.08,
- 0.08
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAHp75Ve75d+K87cokb4YYgim_wU0gTidGuiPs3BmohRKfTh5gA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG4NODE2.st.com (10.75.127.11) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_01:2020-07-27,2020-07-28 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---wxnuv5vf765geiib
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 7/27/20 9:44 PM, Andy Shevchenko wrote:
+> On Mon, Jul 27, 2020 at 10:04 PM Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+>> On Mon, Jul 27, 2020 at 11:23 AM Amelie Delaunay <amelie.delaunay@st.com> wrote:
+> 
+>> > -       p->activate_stm_id_vb_detection = true;
+>> > +       p->activate_stm_id_vb_detection =
+>> > +               !of_property_read_bool(np, "usb-role-switch");
+>> the rest of params.c uses device_property_read_* instead of of_read_property_*
+>> I thought I'd mention it so you can decide yourself whether this is
+>> fine or needs to be changed
+> 
+> Better to change and leave all on one line.
+> 
 
-On Mon, Jul 27, 2020 at 09:18:31AM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH 00/10] remoteproc: imx_rproc: support iMX8M and ear=
-ly
-> > boot
-> >=20
-> > On Mon, Jul 27, 2020 at 06:44:32AM +0000, Peng Fan wrote:
-> > > Hi Oleksij,
-> > >
-> > > > Subject: Re: [PATCH 00/10] remoteproc: imx_rproc: support iMX8M and
-> > > > early boot
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Fri, Jul 24, 2020 at 04:08:03PM +0800, Peng Fan wrote:
-> > > > > This patchset is to support i.MX8MQ/M coproc booted before linux.
-> > > > > Since i.MX8MQ/M was not supported, several patches are needed to
-> > > > > first support the platform, then support early boot case.
-> > > > >
-> > > > > I intended to included i.MX8QM/QXP, but that would introduce a
-> > > > > large patchset, so not included. But the clk/syscon optional patch
-> > > > > for i.MX8QM/QXP was still kept here to avoid rebase error.
-> > > >
-> > > > Thank you for your work.
-> > > >
-> > > > Can you please provide more information about big picture of this w=
-ork.
-> > > >
-> > > > If I see it correctly, we have here support for i.MX8MM, which seems
-> > > > to be able to fully control Cortex M4 (enable CPU core, etc...).
-> > >
-> > > Yes.
-> >=20
-> > In this case, I would recommend to mainline the i.MX8MM part
-> > first/separately.
->=20
-> Only the last patch is to support earlyboot, all others is imx8mm part.
-
-ok
-
-> >=20
-> > > >
-> > > > And other case, where remoteproc is running on application processor
-> > > > and can't or should not touch M4 (i.MX7ULP, i.MX8QM/QXP..). Since M4
-> > > > provides some functionality, you are trying to reuse remoteproc
-> > > > framework to get resource table present in ELF header and to
-> > > > dynamically load things. For some reasons this header provides more
-> > > > information then needed, so you are changing the ELF parser in the =
-kernel
-> > to workaround it.
-> > >
-> > > Not exactly.
-> > >
-> > > For i.MX8MM, we support two cases. M4 kicked by U-Boot, M4 kicked by
-> > Linux remoteproc.
-> > > For i.MX8QM/QXP, the typical usecase is M4 kicked by SCFW, but we will
-> > > also add M4 kicked by Linux remoteproc.
-> > > For i.MX7ULP, I would only support M4 dual boot case, M4 control
-> > everything.
-> >=20
-> > From current state of discussion, i'm not sure what role plays remotepr=
-oc in
-> > the scenario where M4 is started before linux. Especially if we are not=
- using
-> > resource table.
->=20
-> We are using resource table from an address, not in elf file.
-> This is the new feature in Linux-next to support coproc booted early.
->=20
-> >=20
-> > > The reason the change the elf parser is that when M4 elf is loaded by
-> > > Linux remoteproc, It use memset to clear area.
-> >=20
-> > The use of memset, depends on ELF format. Fix/change the linker script =
-on
-> > your firmware and memset will be never called.
-> >=20
-> > > However we use ioremap, memset on ARM64 will report crash to device
-> > > nGnRE memory. And we could not use ioremap_wc to TCM area, since it
-> > > could have data correctly written into TCM.
-> >=20
-> > I have strong feeling, that we are talking about badly or not properly
-> > formatted ELF binary. I would prefer to double check it, before we will=
- apply
-> > fixes on wrong place.
-> >=20
-> > > Maintainer not wanna to drop memset in common code, and TI guys
-> > > suggest add i.MX specific elf stuff. So I add elf handler in i.MX cod=
-e.
-> >=20
-> > I think, removing memset may damage current users of imx_rproc driver.
-> > Since, like I said: the use of memset depends on ELF format.
->=20
-> In my elf file, the last PT_LOAD contains data/bss/heap/stack. I'll check
-> with our MCU guys, we only need the specific data loaded.
->=20
-> Elf file type is EXEC (Executable file)
-> Entry point 0x1ffe0355
-> There are 3 program headers, starting at offset 52
->=20
-> Program Headers:
->   Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
->   LOAD           0x010000 0x1ffe0000 0x1ffe0000 0x00240 0x00240 R   0x100=
-00
->   LOAD           0x010240 0x1ffe0240 0x1ffe0240 0x03e90 0x03e90 RWE 0x100=
-00
->   LOAD           0x020000 0x20000000 0x1ffe40d0 0x00068 0x0ad00 RW  0x100=
-00
->=20
->  Section to Segment mapping:
->   Segment Sections...
->    00     .interrupts
->    01     .resource_table .text .ARM .init_array .fini_array
->    02     .data .bss .heap .stack
-
-Here is an example of formatting ELF for remoteproc:
-https://git.pengutronix.de/cgit/ore/OSELAS.BSP-Pengutronix-DualKit/tree/loc=
-al_src/remoteproc-elf/linker.ld
-https://git.pengutronix.de/cgit/ore/OSELAS.BSP-Pengutronix-DualKit/tree/loc=
-al_src/remoteproc-elf/imx7m4.S
-
-In this example I pack linux in to remoteproc elf image and start linux
-on imx7d-m4 part.
-Will be interesting if you can do the same on imx8* SoCs ;)
+Thank you both for your review. I'll change it in upcoming v5. I'm still 
+not used to exceed the 80 columns :)
 
 Regards,
-Oleksij
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Amelie
 
---wxnuv5vf765geiib
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl8f0zYACgkQ4omh9DUa
-UbOaNg/9GDt95BZraGTVvjG172AgwIpQpn4nLaR1y8fhPcANYIj+wb03/+N2sJMK
-jW2NDTHGovbzjaDpwpnFQCjVWKH2BdsDeuRyZWjVLtM5E038nPu5Jlz8nZLF+p1g
-NFbbze2ugHwfVc72i0wABbdc61vyL753WL2783zY0+6sFohc9pe1fbh+mBwf7/ai
-8gVyDJFlhYorXupOAUqag84H9UG36DoB/7fOm0Nq3y9SUo0c3DU+ryu1jykTZ3IX
-GnFE/0eR1X1B6juRXdBDNHMMwQX2wCQtdPsu+T5trlVc59fzWgm7GTa2o5DVO24r
-y8joWcRIXRCXIFqBNIjBmXLSTG+MKflKLoQij8tqT3BteSqdUpw/IIvsab2oRRpm
-seaQveN8xJZ2k72n3jgLJlyN5w7aylpHkDbqhwUp4Fv6D2n/vZvLBknCanjQ2GKB
-BHbOeIC7eqkkn2Xr2eVk7aLFS1BfCr0CT9iTNlNHJYoNgulRg/ccvL72Y/WLvEaS
-gr9GIe8eLQF7pIsK0LmqJoozUlD6z5sJ1cVbsjsgnZIRagFHHis8aRccxQkPAxHu
-ks5DQntOkVTi7rabBtV78p9EXUJCST4ZEmah4Wsv6tsmQIjgC7qLqojop1pYhbAF
-F1xrVdQDXYH3dhf7eoAOUEqUL2mRzH755Rjn0dIe9tPruF/8hgc=
-=5rSP
------END PGP SIGNATURE-----
-
---wxnuv5vf765geiib--
+> -- 
+> With Best Regards,
+> Andy Shevchenko
