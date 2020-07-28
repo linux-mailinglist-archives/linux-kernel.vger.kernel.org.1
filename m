@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5AA230951
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FFE230952
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgG1L7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:59:51 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:57244 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728433AbgG1L7t (ORCPT
+        id S1729333AbgG1MAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbgG1MAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:59:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U43tT5Y_1595937583;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U43tT5Y_1595937583)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 28 Jul 2020 19:59:44 +0800
-Subject: Re: [PATCH v17 03/21] mm/compaction: correct the comments of
- compact_defer_shift
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-4-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UfmbdhpUdGy+4VircovmJfiJy9m-MN_o0LChNT_kWRUng@mail.gmail.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <3bd60e1b-a74e-050d-ade4-6e8f54e00b92@linux.alibaba.com>
-Date:   Tue, 28 Jul 2020 19:59:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Tue, 28 Jul 2020 08:00:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6452DC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=65mlISD8+bvHJLtdL7W7KVUZ5VfPrEhV6z6gSzVVTg8=; b=aZbV28BZ0X2XqFcpgcOgwDE9V1
+        jnCH26zniMVRZEZPNUoO3YEbDpWTpogbpz4M+nFohIFIdkB6reqoz5dHcf/OI9+HHLI/qRhFmTQzv
+        I5Rl8DwLavwxMQFgQ3/fXfrBL6G4Xq1NJPF4DcgroIk2fE7ihgBX7M3itN2oxgaDfo/02s4za5NI/
+        bg6wdWwNVxdTkCChoq5NtIjhElha1Iq4D+UImYv5kPCUfotj//o7CQbrqmodJg8zrpFf2pMQdQqhZ
+        EADDtHECf/P9N+42U2Xc4DuiTzr5ZlrNdcRgWjA6OZehLJVTnaD1gMJszvZhK2sWSAKcsaHwPAxnz
+        fHbgCz4g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k0OHU-0000Ru-4I; Tue, 28 Jul 2020 12:00:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 36501300238;
+        Tue, 28 Jul 2020 14:00:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1A2502BB5575B; Tue, 28 Jul 2020 14:00:27 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 14:00:27 +0200
+From:   peterz@infradead.org
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     mingo@redhat.com, vincent.guittot@linaro.org,
+        linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        lukasz.luba@arm.com, valentin.schneider@arm.com
+Subject: Re: [PATCH] sched/fair: provide u64 read for 32-bits arch helper
+Message-ID: <20200728120027.GN43129@hirez.programming.kicks-ass.net>
+References: <1595847564-239957-1-git-send-email-vincent.donnefort@arm.com>
+ <20200727123801.GJ119549@hirez.programming.kicks-ass.net>
+ <20200727152303.GA301827@e120877-lin.cambridge.arm.com>
+ <20200728111302.GV119549@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UfmbdhpUdGy+4VircovmJfiJy9m-MN_o0LChNT_kWRUng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728111302.GV119549@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->>   * Compaction is deferred when compaction fails to result in a page
->> - * allocation success. 1 << compact_defer_limit compactions are skipped up
->> + * allocation success. compact_defer_shift++, compactions are skipped up
->>   * to a limit of 1 << COMPACT_MAX_DEFER_SHIFT
->>   */
->>  void defer_compaction(struct zone *zone, int order)
+On Tue, Jul 28, 2020 at 01:13:02PM +0200, peterz@infradead.org wrote:
+> On Mon, Jul 27, 2020 at 04:23:03PM +0100, Vincent Donnefort wrote:
 > 
-> So this doesn't read right. I wouldn't keep the "++," in the
-> explanation, and if we are going to refer to a limit of "1 <<
-> COMPACT_MAX_DEFER_SHIFT" then maybe this should be left as "1 <<
-> compact_defer_shift".
+> > For 32-bit architectures, both min_vruntime and last_update_time are using
+> > similar access. This patch is simply an attempt to unify their usage by
+> > introducing two macros to rely on when accessing those. At the same time, it
+> > brings a comment regarding the barriers usage, as per the kernel policy. So
+> > overall this is just a clean-up without any functional changes.
 > 
+> Ah, I though there was perhaps the idea to make use of armv7-lpae
+> instructions.
+> 
+> Aside of that, I think we need to spend a little time bike-shedding the
+> API/naming here:
+> 
+> > +# define u64_32read(val, copy) (val)
+> > +# define u64_32read_set_copy(val, copy) do { } while (0)
+> 
+> How about something like:
+> 
+> #ifdef CONFIG_64BIT
+> 
+> #define DEFINE_U64_U32(name)	u64 name
+> #define u64_u32_load(name)	name
+> #define u64_u32_store(name, val)name = val
+> 
+> #else
+> 
+> #define DEFINE_U64_U32(name)			\
+> 	struct {				\
+> 		u64 name;			\
+> 		u64 name##_copy;		\
+> 	}
+> 
+> #define u64_u32_load(name)			\
+> 	({					\
+> 		u64 val, copy;			\
+> 		do {				\
+> 			val = name;		\
+> 			smb_rmb();		\
+> 			copy = name##_copy;	\
+> 		} while (val != copy);		\
 
-Thanks for comments! So is the changed patch fine?
---
+wrong order there; we should first read _copy and then the regular one
+of course.
 
-From 80ffde4c8e13ba2ad1ad5175dbaef245c2fe49bc Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Tue, 26 May 2020 09:47:01 +0800
-Subject: [PATCH] mm/compaction: correct the comments of compact_defer_shift
+> 		val;
+> 	})
+> 
+> #define u64_u32_store(name, val)		\
+> 	do {					\
+> 		typeof(val) __val = (val);	\
+> 		name = __val;			\
+> 		smp_wmb();			\
+> 		name##_copy = __val;		\
+> 	} while (0)
+> 
+> #endif
 
-There is no compact_defer_limit. It should be compact_defer_shift in
-use. and add compact_order_failed explanation.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- include/linux/mmzone.h | 1 +
- mm/compaction.c        | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index f6f884970511..14c668b7e793 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -512,6 +512,7 @@ struct zone {
- 	 * On compaction failure, 1<<compact_defer_shift compactions
- 	 * are skipped before trying again. The number attempted since
- 	 * last failure is tracked with compact_considered.
-+	 * compact_order_failed is the minimum compaction failed order.
- 	 */
- 	unsigned int		compact_considered;
- 	unsigned int		compact_defer_shift;
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 86375605faa9..4950240cd455 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -136,7 +136,7 @@ void __ClearPageMovable(struct page *page)
- 
- /*
-  * Compaction is deferred when compaction fails to result in a page
-- * allocation success. 1 << compact_defer_limit compactions are skipped up
-+ * allocation success. 1 << compact_defer_shift, compactions are skipped up
-  * to a limit of 1 << COMPACT_MAX_DEFER_SHIFT
-  */
- void defer_compaction(struct zone *zone, int order)
--- 
-1.8.3.1
-
+The other approach is making it a full type and inline functions I
+suppose.
