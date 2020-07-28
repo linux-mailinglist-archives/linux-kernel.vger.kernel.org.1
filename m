@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C85230E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA67230E4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731071AbgG1Pol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730775AbgG1Poi (ORCPT
+        id S1731079AbgG1PpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:45:15 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43706 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730842AbgG1PpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:44:38 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4504C061794;
-        Tue, 28 Jul 2020 08:44:37 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id t7so1398475otp.0;
-        Tue, 28 Jul 2020 08:44:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X8oqyy89D3G/SsEykgSGLbJc6vMNxyoDi/zTaYVXNlM=;
-        b=MEFDd8Joi2gcNe+Oo274jwfc0jNOGgVZ20XATCHQjHC7h+kZTzaoff5isq0tOFNp/C
-         kFfmxHAbLphiwW45ogcaUqVJ9TNqwTyA0yixFhGmI876F7vL9vmZ/8dJXSqcrSM+fFce
-         abUl80wnq2/leB/gMmD23tokb9EXQPTGOouc1WWQIR+pYmwadZQV9NTdvrtG9Y2y5bPS
-         jQ2TqnJO1hC7J9aU3IXyIxwCx3/AmaRnW8NATXhi2A7fpEw227v7IlsTlbctd1siRolM
-         psEIq2LL+neEmq29/4O1LpNREUcwwjXZFv/J1mLvJIinZEoHkifHvl1knjNruvbI1cUb
-         olhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X8oqyy89D3G/SsEykgSGLbJc6vMNxyoDi/zTaYVXNlM=;
-        b=A77d2LD802wvr6Mq4ChOrkVbPqNShe8+B8hDHCR75envT9SMjdVbFvEOYTOSCX6iqE
-         G1nML925oB/hZDeYNl5xZX5p9V5EjmhfxSiEGTLVJ2QDbDbonsCc8ow4L3ZbY3wtr6ae
-         GWmEE8fhfmdDeIlb6l+9X415kRfOlQjO1G+XOsmjCivfxyuP2q9248ZgaMieLY+1I9op
-         Dh/4402n3mJkP3l/vPHBX31ttvSt7SlT81x452+DfRvs8QngBblNSIH9vGCeNxQAyjAm
-         Z6sIE0tn55/U9XKIgxeP3EgunG1li0gsqqD9d/jhFvRG697G/PjgNsfwLbWBuThSsY0N
-         2Fyg==
-X-Gm-Message-State: AOAM531dSYKlxnCOTbodmfXfLFYY92djBW+wfQWlyCGAupwW0f0ZYCpk
-        qeo4ZI+rVuS3+X2XfX4vTT0OkLZ8fb01xFCwFOzmIokuQDlzGA==
-X-Google-Smtp-Source: ABdhPJywjajz/CBt08LbXIzjYxAfcjOxLdzB1Yi2RSu+QgW6DiQ4dYj/VqieKN+dCykMiGBkOp7Ox75v1v0NTh+ReTQ=
-X-Received: by 2002:a05:6830:18ed:: with SMTP id d13mr25841749otf.196.1595951077208;
- Tue, 28 Jul 2020 08:44:37 -0700 (PDT)
+        Tue, 28 Jul 2020 11:45:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595951113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0umpA98IwRGx6/MPdjALwMgb7oXwSSsk+mQbCZoe0MU=;
+        b=go3OUaBvbCu1xa6uDnHvREtzkmpwv5fUJ9OJboVSeBIq2pNhAR2d0JJlckZeuDBsGEP+8i
+        N55g20350BhlJb8diTHZe39F1Q4yr7lzNVdQ6tIBtgG9aopblFU+QXCx/rb07Qp8lgOMnx
+        uZo2KW52wxkjnQdzca5QLO93AQwbtes=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-nZeArAQfM2eHGtGOwT-JDA-1; Tue, 28 Jul 2020 11:45:10 -0400
+X-MC-Unique: nZeArAQfM2eHGtGOwT-JDA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C96A2106B246;
+        Tue, 28 Jul 2020 15:44:42 +0000 (UTC)
+Received: from localhost (ovpn-115-19.ams2.redhat.com [10.36.115.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2BFD6712E8;
+        Tue, 28 Jul 2020 15:44:41 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 16:44:40 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        "open list:SCSI CDROM DRIVER" <linux-scsi@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Ajay Joshi <ajay.joshi@wdc.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "open list:SONY MEMORYSTICK SUBSYSTEM" <linux-mmc@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Satya Tangirala <satyat@google.com>,
+        "open list:NETWORK BLOCK DEVICE (NBD)" <nbd@other.debian.org>,
+        Hou Tao <houtao1@huawei.com>, Jens Axboe <axboe@fb.com>,
+        "open list:VIRTIO CORE AND NET DRIVERS" 
+        <virtualization@lists.linux-foundation.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Alex Dubov <oakad@yahoo.com>
+Subject: Re: [PATCH 02/10] block: virtio-blk: check logical block size
+Message-ID: <20200728154440.GD21660@stefanha-x1.localdomain>
+References: <20200721105239.8270-1-mlevitsk@redhat.com>
+ <20200721105239.8270-3-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <20200728143004.3228-1-dhiraj.sharma0024@gmail.com> <20200728145419.GA3537020@kroah.com>
-In-Reply-To: <20200728145419.GA3537020@kroah.com>
-From:   Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
-Date:   Tue, 28 Jul 2020 21:14:24 +0530
-Message-ID: <CAPRy4h1Xs1JpQinnWm04dOi07Ch0RLL0U4Z5DDCKHmombXE0sA@mail.gmail.com>
-Subject: Re: [PATCH] media: usbvision: fixed coding style
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, stern@rowland.harvard.edu,
-        arnd@arndb.de, jrdr.linux@gmail.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200721105239.8270-3-mlevitsk@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IMjqdzrDRly81ofr"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, I didn't realize that I committed a mistake by not replying to
-all. It was an accidental mistake which will not be committed in
-future now.
+--IMjqdzrDRly81ofr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> That is not needed in a changelog text.
->
+On Tue, Jul 21, 2020 at 01:52:31PM +0300, Maxim Levitsky wrote:
+> Linux kernel only supports logical block sizes which are power of two,
+> at least 512 bytes and no more that PAGE_SIZE.
+>=20
+> Check this instead of crashing later on.
+>=20
+> Note that there is no need to check physical block size since it is
+> only a hint, and virtio-blk already only supports power of two values.
+>=20
+> Bugzilla link: https://bugzilla.redhat.com/show_bug.cgi?id=3D1664619
+>=20
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  drivers/block/virtio_blk.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 
-Alright Sir.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
-> Neither is this, please be specific about what you have fixed.  My bot
-> should kick in soon with more specifics...
+--IMjqdzrDRly81ofr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Sir there were checkpatch.pl styling issues and I fixed them all
-together, so should I write a proper changelog as what all I fixed i.e
-errors and warnings thrown by checkpatch.pl
+-----BEGIN PGP SIGNATURE-----
 
-On Tue, Jul 28, 2020 at 8:24 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Jul 28, 2020 at 08:00:04PM +0530, Dhiraj Sharma wrote:
-> > As per eudyptula challenge task 10 I had to fix coding styles.
->
-> That is not needed in a changelog text.
->
-> > Thus I
-> > used checkpatch.pl script and fixed a chunk of warnings and few errors.
->
-> Neither is this, please be specific about what you have fixed.  My bot
-> should kick in soon with more specifics...
->
-> thanks,
->
-> greg k-h
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl8gR+gACgkQnKSrs4Gr
+c8jH9gf9EntnBlm/IA+XQjmYVE6AzhflC6xpD5M+QOMtx8Gej8rEDnfv7e+8O5qL
+wr7XyrYfjofwgT61Li9+QV7z8mw4hKwMUGpqUDULEHY/X6u0yegtZJiBgwAViSHw
+shlmEyXroq4nlwvLOveuIj85c/56JUHpAIAUh0zhj9ZYvhyoaf6mWs5C6jz6Pp1z
+wVqPpFhPNq1slTBQM9usXil/ToMZvt5FlHhFeF2KaKruugDnF5NeYg4bvOYZohNp
+1zFxVPsHL2QKJQ5mhGBNoyvu4Z3XxgT093CydyLsxOoS+fgPV9l0p5hsl53VELL0
+wORoNRxEjSgis0Ixkvc7AK42GUfpow==
+=aToL
+-----END PGP SIGNATURE-----
+
+--IMjqdzrDRly81ofr--
+
