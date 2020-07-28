@@ -2,44 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0515E231417
+	by mail.lfdr.de (Postfix) with ESMTP id EA000231419
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgG1Ukl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 16:40:41 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49984 "EHLO
+        id S1729156AbgG1Ukr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 16:40:47 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50042 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgG1Ukl (ORCPT
+        with ESMTP id S1728430AbgG1Ukr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:40:41 -0400
+        Tue, 28 Jul 2020 16:40:47 -0400
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D21D91C0BDF; Tue, 28 Jul 2020 22:40:38 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 22:40:38 +0200
+        id 3489E1C0BED; Tue, 28 Jul 2020 22:40:45 +0200 (CEST)
+Date:   Tue, 28 Jul 2020 22:40:44 +0200
 From:   Pavel Machek <pavel@ucw.cz>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        alex.gaynor@gmail.com, Greg KH <gregkh@linuxfoundation.org>,
-        geofft@ldpreload.com, jbaublitz@redhat.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: Linux kernel in-tree Rust support
-Message-ID: <20200728204037.GC1012@bug>
-References: <CAKwvOdmuYc8rW_H4aQG4DsJzho=F+djd68fp7mzmBp3-wY--Uw@mail.gmail.com>
- <20200710062803.GA1071395@kroah.com>
- <20200710125022.alry7wkymalmv3ge@wittgenstein>
- <20200710225934.GA16881@localhost>
- <CAHk-=wipXqemHbVnK1kQsFzGOOZ8FUXn3PKrZb5WC=KkgAjRRw@mail.gmail.com>
- <20200711210317.GA60425@localhost>
+To:     Stephan M?ller <smueller@chronox.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Willy Tarreau <w@1wt.eu>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Nicolai Stange <nstange@suse.de>,
+        "Peter, Matthias" <matthias.peter@bsi.bund.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        Roman Drahtmueller <draht@schaltsekun.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v31 00/12] /dev/random - a new approach with full
+ SP800-90B
+Message-ID: <20200728204044.GD1012@bug>
+References: <2050754.Mh6RI2rZIc@positron.chronox.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200711210317.GA60425@localhost>
+In-Reply-To: <2050754.Mh6RI2rZIc@positron.chronox.de>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -48,27 +58,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi!
 
-> > No, please make it a "is rust available" automatic config option. The
-> > exact same way we already do the compiler versions and check for
-> > various availability of compiler flags at config time.
-> 
-> That sounds even better, and will definitely allow for more testing.
-> 
-> We just need to make sure that any kernel CI infrastructure tests that
-> right away, then, so that failures don't get introduced by a patch from
-> someone without a Rust toolchain and not noticed until someone with a
-> Rust toolchain tests it.
+> The following patch set provides a different approach to /dev/random which is called 
+> Linux Random Number Generator (LRNG) to collect entropy within the Linux kernel. The 
+> main improvements compared to the existing /dev/random is to provide sufficient entropy 
+> during boot time as well as in virtual environments and when using SSDs. A secondary 
+> design goal is to limit the impact of the entropy collection on massive parallel systems 
+> and also allow the use accelerated cryptographic primitives. Also, all steps of the 
+> entropic data processing are testable.
 
-So... I'm fan of Rust, but while trying to use it one thing was obvious: it
-takes _significantly_ longer than C to compile and needs gigabyte a lot of RAM.
+That sounds good.. maybe too good. Where does LRNG get the entropy? That is the
+part that should be carefully documented..
 
-Kernel is quite big project, can CI infrastructure handle additional load?
-
-Will developers see significantly longer compile times when Rust is widespread?
-
-Best regards,
 									Pavel
-
 -- 
 (english) http://www.livejournal.com/~pavelmachek
 (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
