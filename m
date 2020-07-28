@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C23230EA3
+	by mail.lfdr.de (Postfix) with ESMTP id 8117D230EA4
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731220AbgG1QAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:00:16 -0400
-Received: from mail.efficios.com ([167.114.26.124]:44346 "EHLO
+        id S1731229AbgG1QAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:00:17 -0400
+Received: from mail.efficios.com ([167.114.26.124]:44370 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730963AbgG1QAQ (ORCPT
+        with ESMTP id S1730994AbgG1QAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Jul 2020 12:00:16 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BC8B129A885;
+        by mail.efficios.com (Postfix) with ESMTP id D2CF129A886;
         Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id obXD5Ex2Fd8J; Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
+        with ESMTP id qn_CIEv5heer; Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 68EF029A729;
+        by mail.efficios.com (Postfix) with ESMTP id 936D829A618;
         Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 68EF029A729
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 936D829A618
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
         s=default; t=1595952014;
-        bh=EsIILeHJT4NfTbu7fm/u4BIXkEOajS4ZSBPxyFmkiW0=;
+        bh=2xoJecq6SiKChi0NlXRlWBK3yJHwYnLJVWhwBhqc12g=;
         h=From:To:Date:Message-Id;
-        b=C1MPTM42Z8g6VHgVCF52mmaOC722/ltqP/9Td0PZxGWmxIBqwzPf5rhpWwK+ovU8S
-         RNYUsiIAExsUtnDuRD2kexQx2gsoSdjCoJeGf5+22xrz6IK122fJjhRMKyg26jMIIl
-         +BdBndIZpuZVNE27j6+l9TuZ9F8Wdw2Lw7W5p1bQCLjfFtudEPoQ5DJVFKDM1P+Un+
-         sGSD1Kdfq1tc1MQBmDFETevVpK/EcDh/0EEaViQvOR13mONOw8Wb9MJvuqxkRS6f/J
-         XawgQ6ejD8LLdi2YQ/rgA/zy49gonxTgYtch690QCl3J3FZ9LaJUxQtTTaVq+ck7vA
-         LidJ6g/fIp3Qg==
+        b=ssLyZp/vmIqNOapsb0P3FDyt/rFEI83M16WIMxDldCWZ8zgkrASLmG6qjz2JZLEPQ
+         XaXx2KF1UnI54yKqapwgNQWUyiRS7Z0SDI2kDsQTSUrS+1Igk9iAPRWq4tnAAXP7SW
+         JTmbJD1NlpLih6qZJQqYtFti5TzmchgXPc/Inhp+qajfGyYmeL3UJySlO3fqGF0HV1
+         dplwaPrRV11zR1AiDRQs8e8S72m/jcU+HPdISAHLUug4uOq+ePEcLip9tcUgoaMjc1
+         kXnv3h6crcvgbjUA70jqzvfJ6MEEB+kYx8NwPISPJ70o3RBdKZh4wStZH55hL1mJPR
+         GklCkXhuWN35g==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nWA6AhyGx8a1; Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
+        with ESMTP id LNYLVUcXcOdE; Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
 Received: from thinkos.etherlink (unknown [192.222.236.144])
-        by mail.efficios.com (Postfix) with ESMTPSA id 2F97229A724;
+        by mail.efficios.com (Postfix) with ESMTPSA id 67F2729A728;
         Tue, 28 Jul 2020 12:00:14 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Peter Zijlstra <peterz@infradead.org>
@@ -47,51 +47,31 @@ Cc:     linux-kernel@vger.kernel.org,
         "Paul E . McKenney" <paulmck@kernel.org>,
         Nicholas Piggin <npiggin@gmail.com>,
         Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>, linux-mm@kvack.org
-Subject: [RFC PATCH 1/2] sched: Fix exit_mm vs membarrier
-Date:   Tue, 28 Jul 2020 12:00:09 -0400
-Message-Id: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [RFC PATCH 2/2] sched: membarrier: cover kthread_use_mm
+Date:   Tue, 28 Jul 2020 12:00:10 -0400
+Message-Id: <20200728160010.3314-2-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
+References: <20200728160010.3314-1-mathieu.desnoyers@efficios.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-exit_mm should issue memory barriers after user-space memory accesses,
-before clearing current->mm, to order user-space memory accesses
-performed prior to exit_mm before clearing tsk->mm, which has the
-effect of skipping the membarrier private expedited IPIs.
+Add comments and memory barrier to kthread_use_mm and kthread_unuse_mm
+to allow the effect of membarrier(2) to apply to kthreads accessing
+user-space memory as well.
 
-The membarrier system call can be issued concurrently with do_exit
-if we have thread groups created with CLONE_VM but not CLONE_THREAD.
+Given that no prior kthread use this guarantee and that it only affects
+kthreads, adding this guarantee does not affect user-space ABI.
 
-The following comment in exit_mm() seems rather puzzling though:
+Refine the check in membarrier_global_expedited to exclude runqueues
+running the idle thread rather than all kthreads from the IPI cpumask.
 
-        /* more a memory barrier than a real lock */
-        task_lock(current);
-
-So considering that spinlocks are not full memory barriers nowadays,
-some digging into the origins of this comment led me to 2002, at the
-earliest commit tracked by Thomas Gleixner's bitkeeper era's history
-at https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/
-
-At that point, this comment was followed by:
-
-+               /* more a memory barrier than a real lock */
-+               task_lock(tsk);
-+               tsk->mm = NULL;
-+               task_unlock(tsk);
-
-Which seems to indicate that grabbing the lock is really about acting as
-a memory barrier, but I wonder if it is meant to be a full barrier or
-just an acquire.
-
-If a full memory barrier happens to be needed even without membarrier,
-perhaps this fix also corrects other issues ? It unclear from the
-comment what this memory barrier orders though. Is it the chain
-exit -> waitpid, or is it related to entering lazy TLB ?
+This patch applies on top of this patch from Peter Zijlstra:
+"mm: fix kthread_use_mm() vs TLB invalidate" currently in Andrew
+Morton's tree.
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
@@ -99,33 +79,71 @@ Cc: Will Deacon <will@kernel.org>
 Cc: Paul E. McKenney <paulmck@kernel.org>
 Cc: Nicholas Piggin <npiggin@gmail.com>
 Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
 ---
- kernel/exit.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ kernel/kthread.c          | 19 +++++++++++++++++++
+ kernel/sched/membarrier.c |  8 ++------
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 727150f28103..ce272ec55cdc 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -474,6 +474,14 @@ static void exit_mm(void)
- 	BUG_ON(mm != current->active_mm);
- 	/* more a memory barrier than a real lock */
- 	task_lock(current);
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 48925b17920e..ef2435517f14 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -1258,8 +1258,19 @@ void kthread_use_mm(struct mm_struct *mm)
+ 	finish_arch_post_lock_switch();
+ #endif
+ 
 +	/*
-+	 * When a thread stops operating on an address space, the loop
++	 * When a kthread starts operating on an address space, the loop
++	 * in membarrier_{private,global}_expedited() may not observe
++	 * that tsk->mm, and not issue an IPI. Membarrier requires a
++	 * memory barrier after storing to tsk->mm, before accessing
++	 * user-space memory. A full memory barrier for membarrier
++	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
++	 * mmdrop().
++	 */
+ 	if (active_mm != mm)
+ 		mmdrop(active_mm);
++	else
++		smp_mb();
+ 
+ 	to_kthread(tsk)->oldfs = get_fs();
+ 	set_fs(USER_DS);
+@@ -1280,6 +1291,14 @@ void kthread_unuse_mm(struct mm_struct *mm)
+ 	set_fs(to_kthread(tsk)->oldfs);
+ 
+ 	task_lock(tsk);
++	/*
++	 * When a kthread stops operating on an address space, the loop
 +	 * in membarrier_{private,global}_expedited() may not observe
 +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
 +	 * memory barrier after accessing user-space memory, before
 +	 * clearing tsk->mm.
 +	 */
 +	smp_mb();
- 	current->mm = NULL;
- 	mmap_read_unlock(mm);
- 	enter_lazy_tlb(mm, current);
+ 	sync_mm_rss(mm);
+ 	local_irq_disable();
+ 	tsk->mm = NULL;
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index 168479a7d61b..8a294483074d 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -100,13 +100,9 @@ static int membarrier_global_expedited(void)
+ 		    MEMBARRIER_STATE_GLOBAL_EXPEDITED))
+ 			continue;
+ 
+-		/*
+-		 * Skip the CPU if it runs a kernel thread. The scheduler
+-		 * leaves the prior task mm in place as an optimization when
+-		 * scheduling a kthread.
+-		 */
++		/* Skip the CPU if it runs the idle thread. */
+ 		p = rcu_dereference(cpu_rq(cpu)->curr);
+-		if (p->flags & PF_KTHREAD)
++		if (is_idle_task(p))
+ 			continue;
+ 
+ 		__cpumask_set_cpu(cpu, tmpmask);
 -- 
 2.11.0
 
