@@ -2,101 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAD223155C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1530323155E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgG1WJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729437AbgG1WJn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:09:43 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFECC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:09:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BGW774wLsz9sRN;
-        Wed, 29 Jul 2020 08:09:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595974180;
-        bh=GtQKqS56rbGuEngoZZl9eSmyomkOxGE6oG7NCzMdBqI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qtJfTQPCxoUA7nC6yDpixO62T3rDnRoO/rxAdIOkMdZeu3h5TkBDEh01+uXfuqKlN
-         IWKuTnZwa6gNYwI7Q3qmL7SCfrYZRo93jLKF/tLDQBd0I74//7K1ObsAIclVUispwi
-         WO2B7Q1ZTNXZJrEGrrCM4z9/76i/UIVLHitSLNbS7rNTj83+4ju/kx6zyfHJUlav0k
-         Jx6f4DJRfx+ghJ5DZ1iTdTwi8BjxYxaqxuCObALPqW/whAwgSzwQpohdqbgwIn/8nE
-         U2rR2Df7V9tXtF8QC0aejDcGy9QskjYbsw4GOAOeA7QElFD2Uf2zdw5lmghuWD9+2j
-         XUYhteqcFL2gw==
-Date:   Wed, 29 Jul 2020 08:09:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Oded Gabbay <oded.gabbay@gmail.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Ben Segal <bpsegal20@gmail.com>,
-        Christine Gharzuzi <cgharzuzi@habana.ai>,
-        Pawel Piskorski <ppiskorski@habana.ai>
-Subject: Re: [PATCH] habanalabs: fix up absolute include instructions
-Message-ID: <20200729080938.29fc5ef8@canb.auug.org.au>
-In-Reply-To: <20200728171851.55842-1-gregkh@linuxfoundation.org>
-References: <20200728171851.55842-1-gregkh@linuxfoundation.org>
+        id S1729734AbgG1WMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:12:01 -0400
+Received: from mga05.intel.com ([192.55.52.43]:62583 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729437AbgG1WMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 18:12:01 -0400
+IronPort-SDR: +x3i5Tkqgt/OWLCYzQ58FJ6x15wCOTlqcmmg0U0uMOpwA3kBMgRGYECZcl9Wlpb1D6l5ANeRkS
+ xiJUDaqazJUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="236191119"
+X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
+   d="scan'208";a="236191119"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 15:12:00 -0700
+IronPort-SDR: P91Keq18wtQ4zvKMpEww4qjp9clFCxs8DzUT5AZtRR0g9s5/mYCt+pSIndVJ3GOyylR3VJf0LP
+ dXhGMlrbIXaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
+   d="scan'208";a="394469340"
+Received: from lkp-server01.sh.intel.com (HELO d27eb53fc52b) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Jul 2020 15:11:59 -0700
+Received: from kbuild by d27eb53fc52b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1k0XpG-00015u-Ki; Tue, 28 Jul 2020 22:11:58 +0000
+Date:   Wed, 29 Jul 2020 06:11:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ f69ca629d89d65737537e05308ac531f7bb07d5c
+Message-ID: <5f20a28a.+ctbaXZ6P+SYtaf3%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ugKFdQ_8UHjUMU/F0Ie2JVx";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ugKFdQ_8UHjUMU/F0Ie2JVx
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cpu
+branch HEAD: f69ca629d89d65737537e05308ac531f7bb07d5c  x86/cpu: Refactor sync_core() for readability
 
-Hi Greg,
+elapsed time: 1918m
 
-On Tue, 28 Jul 2020 19:18:51 +0200 Greg Kroah-Hartman <gregkh@linuxfoundati=
-on.org> wrote:
->
-> diff --git a/drivers/misc/habanalabs/common/Makefile b/drivers/misc/haban=
-alabs/common/Makefile
-> index 97d03b5c8683..b984bfa4face 100644
-> --- a/drivers/misc/habanalabs/common/Makefile
-> +++ b/drivers/misc/habanalabs/common/Makefile
-> @@ -1,6 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> -subdir-ccflags-y +=3D -I$(src)/common
+configs tested: 54
+configs skipped: 1
 
-I've seen oter places use
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-subdir-ccflags-y +=3D -I$(srcdir)/$(src)/common
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20200727
+i386                 randconfig-a005-20200727
+i386                 randconfig-a004-20200727
+i386                 randconfig-a006-20200727
+i386                 randconfig-a002-20200727
+i386                 randconfig-a001-20200727
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-which would probably work as well.  i.e. just change this in the
-Makefiles rather than every source file.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/ugKFdQ_8UHjUMU/F0Ie2JVx
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8goiIACgkQAVBC80lX
-0GyaYwgAgAW+KEyAuc28guqGjeCvUyRJVlpD8HWEdlCPWaJQMtJzi4R0+atPiXH8
-njEsTWzUapSOeVZvaFVtSCJLY1UPEkG6fqu2gOvZRgK28dyUAmkc4UkQFMdIG5R1
-RWbBRiVdLGHrPXOQVmEXHiwI7A1msvUTNGI/Od8UI/6GqA/raqkJZzJ+p1JQZYV2
-JXiLUi4cbQTgq8HQ2uRJL2BU5zvh7tRaIY9B9stNUw2RQu+npu/JLSMO5jViI6dv
-6V7bvtwK96jAAXZBUACD462Nw/DDDCdcJbOAjYPMDrh9rigndkNDWJ5765M/IWYw
-wpDsf/UWMFi/vwZuWL17PKSSp9NtTQ==
-=vgr4
------END PGP SIGNATURE-----
-
---Sig_/ugKFdQ_8UHjUMU/F0Ie2JVx--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
