@@ -2,95 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AA9230DB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0A8230DBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730844AbgG1P0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:26:37 -0400
-Received: from crapouillou.net ([89.234.176.41]:46220 "EHLO crapouillou.net"
+        id S1730876AbgG1P1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:27:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730637AbgG1P0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:26:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1595949994; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:references; bh=WZATYdvQioBf66nwEBhd77lthqSIvneIIUEGQ+zn1jg=;
-        b=tSA+//yqbM3nRlSMlqjN+6pw8Hy4iRvX3tN44Z0akzuzR52Zlmr6y0IyF09lpAXsUd/bG1
-        N7I3e34q+REGUQrLy+oFaoGPpOGJVUo8lufGilkY84l923xhrfkZmJLXQoYoQXZml2AJoS
-        IDn7dMM/M7EnQMVvfLdVa2yAUtmkASw=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     od@zcrc.me, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH v2] memory: jz4780_nemc: Only request IO memory the driver will use
-Date:   Tue, 28 Jul 2020 17:26:29 +0200
-Message-Id: <20200728152629.28878-1-paul@crapouillou.net>
+        id S1730637AbgG1P1P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:27:15 -0400
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75C80206D8;
+        Tue, 28 Jul 2020 15:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595950034;
+        bh=FSygYseQrDpyWFyRVEBREvmwpWPpOqKjBJL2fZMrrZk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=B/lYja2Btw1plI2Vz8W7r9HzBv+a8iKi/jMRUREQmZ1NCPExTXPa4fofF9dR/2vO2
+         TVaDTYf+sMg9fvP7MDBHA+ZKecef+axRwkrq96xn02V5oIxToxGIz0vP1pbFT8agiX
+         s/qBnOMNa8VE7uCuSS3A6yNe9SOE7elYw1hjNLQc=
+Received: by mail-ot1-f53.google.com with SMTP id w17so15171269otl.4;
+        Tue, 28 Jul 2020 08:27:14 -0700 (PDT)
+X-Gm-Message-State: AOAM531g5xfL5dzHLgI7bQYUa1SJHw9IdjScqVeOyiJaKYNeXhSjTLHe
+        bl1FGkze6DKxUyqdLTomDxd4ZY1rxIEpeGbnWw==
+X-Google-Smtp-Source: ABdhPJzW+pLIVBpgooW1y4TcjlX6GiauKPjLYWljjA7Cu23WQa6nxbEndsfVE94qkcjq2RVC1WkXCFwftebxQS183J4=
+X-Received: by 2002:a9d:46c:: with SMTP id 99mr25034284otc.192.1595950033837;
+ Tue, 28 Jul 2020 08:27:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1595776013-12877-1-git-send-email-sivaprak@qti.qualcomm.com>
+In-Reply-To: <1595776013-12877-1-git-send-email-sivaprak@qti.qualcomm.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 28 Jul 2020 09:27:01 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+-rwG73mEkYmMQcnxHoBpbFMWHKDvzUK=6-fMAo77-9w@mail.gmail.com>
+Message-ID: <CAL_Jsq+-rwG73mEkYmMQcnxHoBpbFMWHKDvzUK=6-fMAo77-9w@mail.gmail.com>
+Subject: Re: [PATCH V2] dt-bindings: pci: convert QCOM pci bindings to YAML
+To:     Sivaprakash Murugesan <sivaprak@qti.qualcomm.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver only uses the registers up to offset 0x54. Since the EFUSE
-registers are in the middle of the NEMC registers, we only request
-the registers we will use for now - that way the EFUSE driver can
-probe too.
+On Sun, Jul 26, 2020 at 9:07 AM Sivaprakash Murugesan
+<sivaprak@qti.qualcomm.com> wrote:
+>
+> From: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+>
+> Convert QCOM pci bindings to YAML schema
+>
+> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> ---
+> [v2]
+>   - Referenced pci-bus.yaml
+>   - removed duplicate properties already referenced by pci-bus.yaml
+>   - Addressed comments from Rob
+>  .../devicetree/bindings/pci/qcom,pcie.txt          | 330 ---------------
+>  .../devicetree/bindings/pci/qcom,pcie.yaml         | 447 +++++++++++++++++++++
+>  2 files changed, 447 insertions(+), 330 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/qcom,pcie.yaml
 
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
 
-Notes:
-    v2: Only ioremap() the registers we will use
+> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> new file mode 100644
+> index 000000000000..ddb84f49ac1c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> @@ -0,0 +1,447 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/pci/qcom,pcie.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm PCI express root complex
+> +
+> +maintainers:
+> +  - Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> +
+> +description:
+> +  QCOM PCIe controller uses Designware IP with Qualcomm specific hardware
+> +  wrappers.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pcie-apq8064
+> +      - qcom,pcie-apq8084
+> +      - qcom,pcie-ipq4019
+> +      - qcom,pcie-ipq8064
+> +      - qcom,pcie-ipq8074
+> +      - qcom,pcie-msm8996
+> +      - qcom,pcie-qcs404
+> +      - qcom,pcie-sdm845
+> +
+> +  reg:
+> +    description: Register ranges as listed in the reg-names property
 
- drivers/memory/jz4780-nemc.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Can drop this.
 
-diff --git a/drivers/memory/jz4780-nemc.c b/drivers/memory/jz4780-nemc.c
-index b232ed279fc3..3ec5cb0fce1e 100644
---- a/drivers/memory/jz4780-nemc.c
-+++ b/drivers/memory/jz4780-nemc.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/clk.h>
- #include <linux/init.h>
-+#include <linux/io.h>
- #include <linux/math64.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-@@ -22,6 +23,8 @@
- #define NEMC_SMCRn(n)		(0x14 + (((n) - 1) * 4))
- #define NEMC_NFCSR		0x50
- 
-+#define NEMC_REG_LEN		0x54
-+
- #define NEMC_SMCR_SMT		BIT(0)
- #define NEMC_SMCR_BW_SHIFT	6
- #define NEMC_SMCR_BW_MASK	(0x3 << NEMC_SMCR_BW_SHIFT)
-@@ -288,7 +291,19 @@ static int jz4780_nemc_probe(struct platform_device *pdev)
- 	nemc->dev = dev;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	nemc->base = devm_ioremap_resource(dev, res);
-+
-+	/*
-+	 * The driver currently only uses the registers up to offset
-+	 * NEMC_REG_LEN. Since the EFUSE registers are in the middle of the
-+	 * NEMC registers, we only request the registers we will use for now;
-+	 * that way the EFUSE driver can probe too.
-+	 */
-+	if (!devm_request_mem_region(dev, res->start, NEMC_REG_LEN, dev_name(dev))) {
-+		dev_err(dev, "unable to request I/O memory region\n");
-+		return -EBUSY;
-+	}
-+
-+	nemc->base = devm_ioremap(dev, res->start, NEMC_REG_LEN);
- 	if (IS_ERR(nemc->base)) {
- 		dev_err(dev, "failed to get I/O memory\n");
- 		return PTR_ERR(nemc->base);
--- 
-2.27.0
+> +    maxItems: 4
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi
+> +      - const: elbi
+> +      - const: parf
+> +      - const: config
+> +
+> +  ranges:
+> +    maxItems: 2
+> +
+> +  interrupts:
+> +    items:
+> +      - description: MSI interrupts
+> +
+> +  interrupt-names:
+> +    const: msi
+> +
+> +  "#interrupt-cells":
 
+In pci-bus.yaml, so you can drop.
+
+> +    const: 1
+> +
+> +  interrupt-map-mask:
+
+In pci-bus.yaml, so you can drop.
+
+> +    items:
+> +      - description: standard PCI properties to define mapping of PCIe
+> +                     interface to interrupt numbers.
+> +
+> +  interrupt-map:
+> +    maxItems: 4
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 7
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 7
+> +
+> +  resets:
+> +    minItems: 1
+> +    maxItems: 12
+> +
+> +  reset-names:
+> +    minItems: 1
+> +    maxItems: 12
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  vdda-supply:
+> +    description: phandle to power supply
+> +
+> +  vdda_phy-supply:
+> +    description: phandle to the power supply to PHY
+> +
+> +  vdda_refclk-supply:
+> +    description: phandle to power supply for ref clock generator
+> +
+> +  vddpe-3v3-supply:
+> +    description: PCIe endpoint power supply
+> +
+> +  phys:
+> +    maxItems: 1
+> +    items:
+> +      - description: phandle to the PHY block
+
+Can drop 'items'.
+
+With those fixed,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
