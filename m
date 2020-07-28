@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E966230954
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E6F230957
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729344AbgG1MAl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 08:00:41 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:35930 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728433AbgG1MAk (ORCPT
+        id S1729358AbgG1MAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728433AbgG1MAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:00:40 -0400
-Received: by mail-ed1-f66.google.com with SMTP id c15so4949830edj.3;
-        Tue, 28 Jul 2020 05:00:38 -0700 (PDT)
+        Tue, 28 Jul 2020 08:00:55 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D923BC061794;
+        Tue, 28 Jul 2020 05:00:54 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id y10so20395495eje.1;
+        Tue, 28 Jul 2020 05:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U1+l6khR5WEgvOR/QZzKuHUQUvz26GVnRqvOBKPa+Ig=;
+        b=Cb8xHECisgxMI9BTnvqRvZP+7vKvwzS4JS6Rhk2Ik8HhAQQMxqaKo0TJ0nl1uWgIpW
+         VbXK8r2vM3FY9oqWWJ98hhYUg40cszGAuL4D8R1ApJIG+xHEwmhLwEJ+oxjqWDdwQlrp
+         XoBy7SweEFWlzlQtQbsGkMmHYVBRNIVCuSFV7LnlvzaTuanqGZsye1oIWtOB8qT7qDf2
+         RiupBmERD5+dyGR0BiftJ0D1r9F1lTx0YisvWk19oZmUc6XtYNQp79kIx0kvZhsbL7lV
+         ZzKb+VT0vvZSplXrIc1G6yzZ67bolIK4Vm1L7+ct3DeXe+aX9sLHZvPPWeDPQBvU/M/q
+         ruwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=N54ip3P6K7rrAhhQV8AruDSsoW1C0lfDWGh1kvqActM=;
-        b=du4GXW6g/icY1B0qDuoTa53IxfnoJtCXIHSiTovgl3eaOUZUD7LZsC3cK1BV269F2P
-         NXHbpFPV7lrFRxBShAnx0l9PCgE0vV9eTXwJYu15QyhWT8ITDbPcvThejfrslmRlXvWk
-         i2qT68uKpXkMxOQUsHI6RGrDqr1DUmAa4Tt9+NGGbEOVbp6nVmADzwb4gWa8Zc06UsmA
-         TBjI7cAZ+i+/MK4WFE5nYf8Mwoc1JOmuE2hx0n8xWDruG2hPo4Hoxsm8fqgT8gBvncok
-         u3ArVR6EWjIeNCD1ajnjU2Rgjrd1+E2nCtxRtrEtdJB2VPk4kV0gqDkFw02DXrDZaZlx
-         YjZA==
-X-Gm-Message-State: AOAM533H4lj5LDfcUFDrZLHleAL1S2UwZ/EO3YvL7cGNByhy55K1G7ak
-        bQusVvneYzUVhw8Isn28RA+/FwRIX4odyw==
-X-Google-Smtp-Source: ABdhPJxmXR18rWiL8qfwbc+kpXUB9TsopfbbOV//pGexFQGuS8llgQb+3TDaB0n/oJHza763yiIpVQ==
-X-Received: by 2002:aa7:d78b:: with SMTP id s11mr27004038edq.319.1595937637995;
-        Tue, 28 Jul 2020 05:00:37 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id k22sm5572038edo.24.2020.07.28.05.00.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Jul 2020 05:00:37 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 14:00:35 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 2/2] MIPS: ingenic: Enable JZ4780_NEMC manually
-Message-ID: <20200728120035.GA28766@kozik-lap>
-References: <20200728104503.23655-1-krzk@kernel.org>
- <20200728104503.23655-2-krzk@kernel.org>
- <B4F6EQ.WB2WZOY40FDR@crapouillou.net>
- <20200728111935.GA26683@kozik-lap>
- <20200728113702.GB13443@alpha.franken.de>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U1+l6khR5WEgvOR/QZzKuHUQUvz26GVnRqvOBKPa+Ig=;
+        b=gbb0ao97Y3cZ1JdFdOCklWdQZjDdj1pE4Q9ObdU9RWPLa6HhgWynRB9VIhohpZKVrd
+         liJemtRA3qnUFKPErXl4YXR5VLZ+z239CKtvKQANztA9TdDMz8JIQb9zHxB6yghntpmN
+         dnBHWP/324JAiqi8RB8ubqRR0Iykw4HKCR/MPHOrm6zq8HA0xSemnuFin/bxV1bKa/+a
+         AgCNQwE443baxdJIVUgDVl3yYT99ig+61w9/50DgWto19zC7VIY5OKJNvszhf3FEuhLu
+         aueJffTIP5KcnvT6E3kE3Jp5pSiIW26rumW5IpSPEITVC40gi94U2I6F/ollnGZ43c3C
+         Yh0Q==
+X-Gm-Message-State: AOAM530ZZcUqrsDy9x0KUbycJaXLl+bOFSUU0dT+yQOoH4P8LnMrKYZX
+        EeixStkQypIsbrObHQvzAqs=
+X-Google-Smtp-Source: ABdhPJxlN/0QPTsiHNWeYZHn5E08xNHKQc5xzCIEGu0HQEKO2OhckRJZqPbvvALD8H3dobgZtRTPcQ==
+X-Received: by 2002:a17:906:12cd:: with SMTP id l13mr18815289ejb.385.1595937653613;
+        Tue, 28 Jul 2020 05:00:53 -0700 (PDT)
+Received: from localhost.localdomain (abad207.neoplus.adsl.tpnet.pl. [83.6.167.207])
+        by smtp.googlemail.com with ESMTPSA id m20sm9066959ejk.90.2020.07.28.05.00.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 05:00:53 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+To:     konradybcio@gmail.com
+Cc:     lauren.kelly@msn.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH 0/9] msm8992/4 updates
+Date:   Tue, 28 Jul 2020 14:00:39 +0200
+Message-Id: <20200728120049.90632-1-konradybcio@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200728113702.GB13443@alpha.franken.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:37:02PM +0200, Thomas Bogendoerfer wrote:
-> On Tue, Jul 28, 2020 at 01:19:35PM +0200, Krzysztof Kozlowski wrote:
-> > On Tue, Jul 28, 2020 at 01:12:11PM +0200, Paul Cercueil wrote:
-> > > Hi Krzysztof,
-> > > 
-> > > Le mar. 28 juil. 2020 à 12:45, Krzysztof Kozlowski <krzk@kernel.org> a écrit
-> > > :
-> > > > The CONFIG_JZ4780_NEMC was previously a default on MIPS but now it has
-> > > > to be enabled manually.
-> > > > 
-> > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > > 
-> > > I think you should swap the two so that there are no problems when
-> > > bisecting.
-> > 
-> > Good point. I was thinking that it will go via some of MIPS trees and
-> > the patch #1 will just wait a cycle.  However with acks, I can take it
-> > through drivers/memory tree.
-> 
-> I've acked the patch.
-> 
-> Thomas.
+This series brings support for:
 
-Thanks but now I noticed that one of changed configs
-(arch/mips/configs/rs90_defconfig) is only in MIPS tree.
+* sdhci2 on 8992/4
+* BLSP_I2C1 (a seemingly WP-exclusive i2c bus) for 8992
+* Synaptics RMI4 touchscreen for Sony Kitakami and MSFT L950
+* DWC3 USB for msm8992/4 (doesn't work on Lumias, they use custom
+circuitry)
+* Missing clocks for 8994 GCC needed for USB
 
-I think it is easier then to take the patch #2 (configs) via MIPS and
-wait with #1 for the next cycle or also take it via MIPS if it applies
-cleanly.
+Konrad Dybcio (9):
+  arm64: dts: qcom: msm8992: Add support for SDHCI2
+  arm64: dts: qcom: msm8992: Add BLSP_I2C1 support
+  arm64: dts: qcom: talkman: Add Synaptics RMI4 touchscreen
+  arm64: dts: qcom: msm8994: Add USB support
+  arm64: dts: qcom: msm8992: Add USB support
+  clk: qcom: gcc-msm8994: Add missing clocks, resets and GDSCs
+  arm64: dts: qcom: kitakami: Add Synaptics touchscreen
+  arm64: dts: qcom: msm8994: Add SDHCI2 node
+  arm64: dts: qcom: kitakami: Enable SDHCI2
 
-Best regards,
-Krzysztof
+ .../dts/qcom/msm8992-msft-lumia-talkman.dts   |  28 ++
+ arch/arm64/boot/dts/qcom/msm8992.dtsi         | 124 ++++++
+ .../qcom/msm8994-sony-xperia-kitakami.dtsi    |  49 ++-
+ arch/arm64/boot/dts/qcom/msm8994.dtsi         |  89 ++++
+ drivers/clk/qcom/gcc-msm8994.c                | 388 +++++++++++++++++-
+ include/dt-bindings/clock/qcom,gcc-msm8994.h  |  36 ++
+ 6 files changed, 712 insertions(+), 2 deletions(-)
+
+-- 
+2.27.0
 
