@@ -2,199 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D142311A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AFD2311AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 20:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732392AbgG1S1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 14:27:05 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:58250 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728401AbgG1S1E (ORCPT
+        id S1732404AbgG1S1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 14:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728179AbgG1S1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 14:27:04 -0400
-Received: from 89-64-88-69.dynamic.chello.pl (89.64.88.69) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id bb7211caf378c593; Tue, 28 Jul 2020 20:27:01 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Francisco Jerez <currojerez@riseup.net>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Implement passive mode with HWP enabled
-Date:   Tue, 28 Jul 2020 20:27:00 +0200
-Message-ID: <2440238.9qpzlEPeD7@kreacher>
-In-Reply-To: <878sf4gyix.fsf@riseup.net>
-References: <3955470.QvD6XneCf3@kreacher> <1818916.Mrn9nftLre@kreacher> <878sf4gyix.fsf@riseup.net>
+        Tue, 28 Jul 2020 14:27:44 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E08C061794;
+        Tue, 28 Jul 2020 11:27:44 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id p1so10357068pls.4;
+        Tue, 28 Jul 2020 11:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1cAhV+T2vs/+U8dV/Lde+0qKXpHcbVwHA5qtTwaO+qE=;
+        b=Os0L1CDOY6KNC6QU5hdX3+SZ2mDYZ/l1g3X2IFen3J6qllE8qia6IUshH/D0dNtiBb
+         cFIBaFKbAyAL+2ZyB6SwDgMGKVfw4LYmTjgypBVUk+Q8am6flWCO5gnyzcaoPIlveGYc
+         v0kIQi6eDFO8/SLPxdnB1xbxOmOhD+0MSPPnvHteU2+h854NXwVFor6U9bNPBEuJ0tcW
+         zl716jcNFim8Bp35haz4aaUyEvReU1deYUo80Gh9L9lapBrcsgTO1zmsc/Cn495AJfyD
+         XeXqt0xIa+cH9+7ospps9a1UprKH5zshMd/jjv1UBFhoppl/r//7hlJtx5vhA3F6uQkh
+         mrMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1cAhV+T2vs/+U8dV/Lde+0qKXpHcbVwHA5qtTwaO+qE=;
+        b=YvODgMSqgdcypIuDLELCKNvNVeufhCvIr6LdtPy6azM1Tt3+7FHpJP2TOyBxSsyo8+
+         laPG/mdqIIMBs2PG58/okfAj1cIoqixifPFFBpzybOWa8p1Na6yTDA1qy4dqKRj44jg8
+         0jhl6X/yiheq4csbfwE+9UmRJXTFALXsZ7BvewMH7BNMzZKkGhvm9FegwgLn6pLaWwJV
+         4mf26uMeNsImzyN5RNdkKPZb5DyQOflDrS2/JKcAbmAuhAUxM4aKHta0V4JPgYkvXdk5
+         qSK9m3gYvfTOUZX51U7lRMkTty6/BeMBhvTYQ69zLU9ukbrwHBnFR7YXqeCQiXCwNrpN
+         Ep/Q==
+X-Gm-Message-State: AOAM5303z7B6mqoSa2VxHvCDa4E3aAVhb3YscCKoANqxSSG0yV7N8NdS
+        gGoGK/VyW8xbqX6zlhwSbn4PYaGCgCjXKD/ff6k=
+X-Google-Smtp-Source: ABdhPJwq320p5Lo3L6NtVYCg87vSIIhI2nTsTdoJdqF3kWLaPhvIQ021YpSGuUJz0u8dYgmc1U0fD9Tj18gBMPfCTVA=
+X-Received: by 2002:a17:90a:498b:: with SMTP id d11mr5987005pjh.129.1595960864133;
+ Tue, 28 Jul 2020 11:27:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20200728134226.27592-1-trix@redhat.com>
+In-Reply-To: <20200728134226.27592-1-trix@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 28 Jul 2020 21:27:27 +0300
+Message-ID: <CAHp75VfLK=SQm7k=Gfj5pvgV9ncjuJkz2A6hJ4YqE6YDEdyyOQ@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: of: reset name variable in of_gpiochip_add_hog
+To:     trix@redhat.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        frank.rowand@sony.com,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, July 28, 2020 4:32:22 AM CEST Francisco Jerez wrote:
+On Tue, Jul 28, 2020 at 4:44 PM <trix@redhat.com> wrote:
 >
-> "Rafael J. Wysocki" <rjw@rjwysocki.net> writes:
-> 
-> > On Tuesday, July 21, 2020 1:20:14 AM CEST Francisco Jerez wrote:
-> >
-> > [cut]
-> >
-> >> >
-> >> > However, in the active mode the only updater of hwp_req_cached is
-> >> > intel_pstate_hwp_set() and this patch doesn't introduce any
-> >> > differences in behavior in that case.
-> >> >
-> >>=20
-> >> intel_pstate_hwp_set() is the only updater, but there are other
-> >> consumers that can get out of sync with the HWP request value written by
-> >> intel_pstate_set_energy_pref_index().  intel_pstate_hwp_boost_up() seems
-> >> like the most concerning example I named earlier.
-> >>=20
-> >> >> > So there may be a short time window after the
-> >> >> > intel_pstate_set_energy_pref_index() invocation in which the new EPP
-> >> >> > value may not be in effect, but in general there is no guarantee th=
-> at
-> >> >> > the new EPP will take effect immediately after updating the MSR
-> >> >> > anyway, so that race doesn't matter.
-> >> >> >
-> >> >> > That said, that race is avoidable, but I was thinking that trying to
-> >> >> > avoid it might not be worth it.  Now I see a better way to avoid it,
-> >> >> > though, so I'm going to update the patch to that end.
-> >> >> >
-> >> >> >> Seems like a bug to me.
-> >> >> >
-> >> >> > It is racy, but not every race is a bug.
-> >> >> >
-> >> >>
-> >> >> Still seems like there is a bug in intel_pstate_set_energy_pref_index=
-> ()
-> >> >> AFAICT.
-> >> >
-> >> > If there is a bug, then what exactly is it, from the users' perspectiv=
-> e?
-> >> >
-> >>=20
-> >> It can be reproduced easily as follows:
-> >>=20
-> >> | echo 1 > /sys/devices/system/cpu/intel_pstate/hwp_dynamic_boost
-> >> | for p in /sys/devices/system/cpu/cpufreq/policy*/energy_performance_pr=
-> eference; do echo performance > $p; done
-> >
-> > Is this the active mode or the passive mode with the $subject patch appli=
-> ed?
-> >
-> > If the former, the issue is there regardless of the patch, so it needs to=
->  be
-> > fixed.
-> >
-> > If the latter, there should be no effect of hwp_dynamic_boost (which was
-> > overlooked by me).
-> >
-> 
-> This seems to be a problem in active mode only, so yeah the bug exists
-> regardless of your patch, but the fix is likely to allow you to simplify
-> this series slightly if it allows you to take full advantage of
-> hwp_req_cached and drop the additional EPP cache.
+> From: Tom Rix <trix@redhat.com>
+>
+> Clang static analysis reports this error
+>
+> gpiolib-of.c:664:9: warning: 2nd function call argument
+>   is an uninitialized value [core.CallAndMessage]
+>         ret = gpiod_hog(desc, name, lflags, dflags);
+>
 
-The additional EPP cache is there to avoid synchronizing the scheduler
-context directly with a random process running on another CPU and doing
-things that may take time.
+> name is sometimes set by of_parse_own_gpio
+> name is always used by gpiod_hog
 
-The difference between the active mode and the passive mode in this respect
-is that in the latter case hwp_req_cached generally needs to be updated from
-the scheduler context, whereas in the former case it does not.
+It's not clear if it's the output of the analyser.
+If so, try to file a bug and fix there how it prints out functions,
+should be func().
+Otherwise fix in the commit message.
 
-[cut]
+> So it is necessary to reset name so an old value is
 
-> >> No, I explicitly dismissed that in my previous reply.
-> >
-> > But at the same time you seem to agree that without the non-CPU component
-> > (or thermal pressure) the existing CPU performance scaling would be
-> > sufficient.
-> >
-> 
-> Yes, but not necessarily in order to allow the non-CPU component to draw
-> more power as you said above, but also because the existence of a
-> bottleneck in a non-CPU component gives us an opportunity to improve the
-> energy efficiency of the CPU, regardless of whether that allows the
-> workload to run faster.
+the name
 
-But why would the bottleneck be there otherwise?
+> not mistakenly used by gpiod_hog.
 
-> > [cut]
-> >
-> >> > Yes, it is, and so I don't quite see the connection between it and my =
-> question.
-> >> >
-> >> > Apparently, the unmodified performance scaling governors are not
-> >> > sufficient, so there must be something beyond the above which allows
-> >> > you to determine the frequency in question and so I'm asking what that
-> >> > is.
-> >> >
-> >>=20
-> >> The underlying heuristic assumption is the same as I outlined above, but
-> >> in any implementation of such a heuristic there is necessarily a
-> >> trade-off between responsiveness to short-term fluctuations and
-> >> long-term energy usage.  This trade-off is a function of the somewhat
-> >> arbitrary time interval I was referring to as "immediate past" -- A
-> >> longer time parameter allows the controller to consider a greater
-> >> portion of the workload's history while computing the response with
-> >> optimal energy usage, at the cost of increasing its reaction time to
-> >> discontinuous changes in the behavior of the workload (AKA increased
-> >> latency).
-> >
-> > OK
-> >
-> >> One of the key differences between the governor I proposed and the
-> >> pre-existing ones is that it doesn't attempt to come up with a magic
-> >> time parameter that works for everybody, because there isn't such a
-> >> thing, since different devices and applications have latency
-> >> requirements which often differ by orders of magnitude.
-> >
-> > The problem with this approach is that, generally speaking, the kernel
-> > has a definition of "close past" already, which comes from the PELT
-> > signal in the scheduler.
-> >
-> > That signal is used for more than just CPU performance scaling and there
-> > is a reason for that, as the scheduler's decisions generally need to be
-> > aligned with CPU performance scaling decisions.
-> >
-> 
-> Yes, I fully agree that in an ideal world the response latency
-> constraint I was referring to above would be tracked per-scheduling
-> entity and used as definition of "close past" by PELT too -- Actually I
-> think I mentioned I was working on a prototype with scheduler-level
-> tracking of latency constraints, but other folks requested the RFC to be
-> based on a simpler interface not requiring scheduler surgery to
-> implement, which is why I came up with the PM QoS-based interface.  I
-> believe we have discussed exposing this latency constraint as a third
-> clamp similar to utilization clamps -- I would be fine with such an
-> interface if you think it's the way to go.
+gpiod_hog()
 
-I'm not sure yet to be honest.
+> Fixes: bc21077e084b ("gpio: of: Extract of_gpiochip_add_hog()")
+>
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-> That said, in most practical cases it should be possible to take close
-> to full advantage of the response latency information from the schedutil
-> governor, even if it's provided via PM QoS rather than having
-> per-scheduling entity granularity -- The time parameter used to control
-> CPU frequency would just be the most strict among the applications
-> running in the system, which should prevent performance loss in
-> applications with a low latency constraint, but might cause us to miss
-> out some opportunities for energy optimization in a multitasking
-> environment compared to the full scheduling-based solution.  Doesn't
-> seem like a deal-breaker to me though and it makes the code
-> substantially easier to review.
+Should be no blank line in between.
 
-I agree on the simplicity side, but the reason why I think that the scheduler
-needs to be involved ultimately is because it may have a reason to ignore the
-bottleneck and go ahead with its decisions anyway.
+> ---
+>  drivers/gpio/gpiolib-of.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpio/gpiolib-of.c b/drivers/gpio/gpiolib-of.c
+> index bd31dd3b6a75..277ada41d04a 100644
+> --- a/drivers/gpio/gpiolib-of.c
+> +++ b/drivers/gpio/gpiolib-of.c
+> @@ -657,6 +657,7 @@ static int of_gpiochip_add_hog(struct gpio_chip *chip, struct device_node *hog)
+>         int ret;
+>
+>         for (i = 0;; i++) {
+> +               name = NULL;
+>                 desc = of_parse_own_gpio(hog, chip, i, &name, &lflags, &dflags);
+>                 if (IS_ERR(desc))
+>                         break;
+> --
+> 2.18.1
+>
 
 
-
+-- 
+With Best Regards,
+Andy Shevchenko
