@@ -2,203 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D3F2304A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCCD2304A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgG1HvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 03:51:17 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58698 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727798AbgG1HvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:51:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595922675; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=JDnW6dI05vIWs23wbae5CWIRSyAcGFN7fPLyddDzIPY=; b=Yan7HwaTmF8pB0vlB57ojTrQq46TTE/ZiFz1duQ8+YpmKGHPUforF6B4DAmK3oxSJHb1v6mH
- 2TLm48cv1KiZdCQfsTd1eybjqBJ9McVC6rpgZNTZQEnS83AXOXA0TL9+28QAgI0egfGwqu0C
- KyQykOdRURzozalX33x25unbvRU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
- 5f1fd8f27ab15087eb525933 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 07:51:14
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CEFCDC4339C; Tue, 28 Jul 2020 07:51:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5003BC433C9;
-        Tue, 28 Jul 2020 07:51:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5003BC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv2] coresight: etm4x: Fix etm4_count race by moving cpuhp callbacks to init
-Date:   Tue, 28 Jul 2020 13:21:02 +0530
-Message-Id: <20200728075102.30807-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1727797AbgG1HxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 03:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727777AbgG1HxI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:53:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5713C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 00:53:07 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k0KPz-0000Xc-1D; Tue, 28 Jul 2020 09:52:59 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1k0KPx-0005ju-OS; Tue, 28 Jul 2020 09:52:57 +0200
+Date:   Tue, 28 Jul 2020 09:52:57 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Martin Botka <martin.botka1@gmail.com>
+Cc:     Fenglin Wu <fenglinw@codeaurora.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH RCC 1/6] pwm: Add different PWM output types support
+Message-ID: <20200728075257.efhsju2odehpbv6f@pengutronix.de>
+References: <20200724213659.273599-1-martin.botka1@gmail.com>
+ <20200724213659.273599-2-martin.botka1@gmail.com>
+ <20200727201034.dkc6qkkbte6qeiba@pengutronix.de>
+ <CADQ2G_GxpWk1AK4OQPZZuk=vCmostC4vEGSHjj01WMzFxpD7CA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ffexrllbpegueh2g"
+Content-Disposition: inline
+In-Reply-To: <CADQ2G_GxpWk1AK4OQPZZuk=vCmostC4vEGSHjj01WMzFxpD7CA@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-etm4_count keeps track of number of ETMv4 registered and on some systems,
-a race is observed on etm4_count variable which can lead to multiple calls
-to cpuhp_setup_state_nocalls_cpuslocked(). This function internally calls
-cpuhp_store_callbacks() which prevents multiple registrations of callbacks
-for a given state and due to this race, it returns -EBUSY leading to ETM
-probe failures like below.
 
- coresight-etm4x: probe of 7040000.etm failed with error -16
+--ffexrllbpegueh2g
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This race can easily be triggered with async probe by setting probe type
-as PROBE_PREFER_ASYNCHRONOUS and with ETM power management property
-"arm,coresight-loses-context-with-cpu".
+Hello Martin,
 
-Prevent this race by moving cpuhp callbacks to etm driver init since the
-cpuhp callbacks doesn't have to depend on the etm4_count and can be once
-setup during driver init. Similarly we move cpu_pm notifier registration
-to driver init and completely remove etm4_count usage.
+On Mon, Jul 27, 2020 at 10:56:31PM +0200, Martin Botka wrote:
+> Mo 27. 7. 2020 at 22:10 Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.d=
+e> wrote:
+> > On Fri, Jul 24, 2020 at 11:36:51PM +0200, Martin Botka wrote:
+> > > +/*
+> > > + * pwm_output_type_support()
+> > > + * @pwm: PWM device
+> > > + *
+> > > + * Returns:  output types supported by the PWM device
+> > > + */
+> > > +static inline int pwm_get_output_type_supported(struct pwm_device *p=
+wm)
+> > > +{
+> > > +     if (pwm->chip->ops->get_output_type_supported !=3D NULL)
+> > > +             return pwm->chip->ops->get_output_type_supported(pwm->c=
+hip, pwm);
+> > > +     else
+> > > +             return PWM_OUTPUT_FIXED;
+> > > +}
+> >
+> > I don't like this "advertising" for specific functions. I'd prefer to
+> > handle this in .apply(), fix all drivers to return -ESOMETHING when the
+> > request cannot be fulfilled.
+>=20
+> I will have to disagree on this one. As the functions are called in
+> multiple places it would just make mess in the driver.
 
-Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup in probe() function")
-Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug state machine")
-Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
+Note this is something where (I think) I don't agree with Thierry
+either. This popped up just yesterday, see
 
-Changes in v2:
- * Rearrange cpuhp callbacks and move them to driver init (Suzuki K Poulose)
+	https://www.spinics.net/lists/linux-pwm/msg13290.html
 
----
- drivers/hwtracing/coresight/coresight-etm4x.c | 51 ++++++++++---------
- 1 file changed, 27 insertions(+), 24 deletions(-)
+For sure I want at most one such function per driver, so if we really
+want to go this path and introduce a capability indicator, this should
+be named differently and have a different prototype.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index 6d7d2169bfb2..adb71987a1e3 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -48,8 +48,6 @@ module_param(pm_save_enable, int, 0444);
- MODULE_PARM_DESC(pm_save_enable,
- 	"Save/restore state on power down: 1 = never, 2 = self-hosted");
- 
--/* The number of ETMv4 currently registered */
--static int etm4_count;
- static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
- static void etm4_set_default_config(struct etmv4_config *config);
- static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
-@@ -1403,12 +1401,9 @@ static int etm4_pm_setup_cpuslocked(void)
- {
- 	int ret;
- 
--	if (etm4_count++)
--		return 0;
--
- 	ret = cpu_pm_register_notifier(&etm4_cpu_pm_nb);
- 	if (ret)
--		goto reduce_count;
-+		return ret;
- 
- 	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING,
- 						   "arm/coresight4:starting",
-@@ -1432,17 +1427,11 @@ static int etm4_pm_setup_cpuslocked(void)
- 
- unregister_notifier:
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
--
--reduce_count:
--	--etm4_count;
- 	return ret;
- }
- 
- static void etm4_pm_clear(void)
- {
--	if (--etm4_count != 0)
--		return;
--
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
- 	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
- 	if (hp_online) {
-@@ -1498,22 +1487,12 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 	if (!desc.name)
- 		return -ENOMEM;
- 
--	cpus_read_lock();
- 	etmdrvdata[drvdata->cpu] = drvdata;
- 
- 	if (smp_call_function_single(drvdata->cpu,
- 				etm4_init_arch_data,  drvdata, 1))
- 		dev_err(dev, "ETM arch init failed\n");
- 
--	ret = etm4_pm_setup_cpuslocked();
--	cpus_read_unlock();
--
--	/* etm4_pm_setup_cpuslocked() does its own cleanup - exit on error */
--	if (ret) {
--		etmdrvdata[drvdata->cpu] = NULL;
--		return ret;
--	}
--
- 	if (etm4_arch_supported(drvdata->arch) == false) {
- 		ret = -EINVAL;
- 		goto err_arch_supported;
-@@ -1560,7 +1539,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 
- err_arch_supported:
- 	etmdrvdata[drvdata->cpu] = NULL;
--	etm4_pm_clear();
- 	return ret;
- }
- 
-@@ -1598,4 +1576,29 @@ static struct amba_driver etm4x_driver = {
- 	.probe		= etm4_probe,
- 	.id_table	= etm4_ids,
- };
--builtin_amba_driver(etm4x_driver);
-+
-+static int __init etm4x_init(void)
-+{
-+	int ret;
-+
-+	cpus_read_lock();
-+	ret = etm4_pm_setup_cpuslocked();
-+	cpus_read_unlock();
-+
-+	/* etm4_pm_setup_cpuslocked() does its own cleanup - exit on error */
-+	if (ret)
-+		return ret;
-+
-+	ret = amba_driver_register(&etm4x_driver);
-+	if (ret) {
-+		pr_info("Error registering etm4x driver\n");
-+		goto err_init;
-+	}
-+
-+	return ret;
-+
-+err_init:
-+	etm4_pm_clear();
-+	return ret;
-+}
-+module_init(etm4x_init);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+> As the driver is even now not exactly the definition of clean driver i
+> would not like to make it even more messy.
 
+> > Having said that I wonder if this output pattern is a common enough
+> > property to add support for it in the PWM framework.
+> >
+>=20
+> I have gotten an email from Guru Das Srinagesh regarding this exact
+> issue you are pointing to. Yes the output pattern will be dropped in
+> V2.
+
+That's good.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ffexrllbpegueh2g
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl8f2VYACgkQwfwUeK3K
+7Alnywf/SIGQWkLjR0aBwi+oKzPM6FMrSXE1VRXH1Z3ME+VOpYebHm6ovqTZzC7k
+Ipjlp6pBDOdTr9Ul9WM0m/4S0hIyhy5uFoWVz/hyYiWJZI5ap/6uJejptxkhFM5c
+HXtbKDII0lsA7PtRD/eOkxLyyQpsTpCVTcGHfd0JXMMAcSFaKRQNhxzhi+opTU9A
+1MUL2cAqOucGsvi/H6prnAMSK5fE7Q2AW+LFr5o4/csFSETILkghWqnI13jSJde9
+KTDWojmDkOyrZeV7uK0A4QgkJdivbgt1H1mRVPKbjvQkYc771OgGfclOD6b2WG16
+3mFFN+NWq8PKvHunB/GRzRRI5uw8CA==
+=VgSE
+-----END PGP SIGNATURE-----
+
+--ffexrllbpegueh2g--
