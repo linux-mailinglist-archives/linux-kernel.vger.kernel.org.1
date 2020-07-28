@@ -2,159 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E723140A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12127231405
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:35:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729063AbgG1UgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 16:36:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:24425 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728430AbgG1UgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:36:04 -0400
-IronPort-SDR: 12i0FLLbsKJXDPq6vbkAS7xTbuBjU+hWHXoXdX+Ml9zy2suBTL6MOcdWIfCoF0LENPhyS1dhWc
- hVAXG1p8PRKg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="130868896"
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="130868896"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 13:35:56 -0700
-IronPort-SDR: miVU2I0McXErxbxijod2t2SN2xn3F3lgq+8cASjW/oF5LcnlQ0DQUBwiwTOI+FgVowb1QRWzQD
- /vCancc/U8XA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="303987489"
-Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
-  by orsmga002.jf.intel.com with ESMTP; 28 Jul 2020 13:35:56 -0700
-Received: from orsmsx112.amr.corp.intel.com (10.22.240.13) by
- ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 28 Jul 2020 13:35:56 -0700
-Received: from ORSEDG002.ED.cps.intel.com (10.7.248.5) by
- ORSMSX112.amr.corp.intel.com (10.22.240.13) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 28 Jul 2020 13:35:55 -0700
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (104.47.45.52) by
- edgegateway.intel.com (134.134.137.101) with Microsoft SMTP Server (TLS) id
- 14.3.439.0; Tue, 28 Jul 2020 13:35:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SzKUPqFwJ8a8AueIpsUAJzwA9I548Mh/TnbpbhkHuOY9nHE0WJ92i0QVLkUbWgj9toq+lM3ST28r6YqYH/zUbbdU80sqjnnIbz1Gg9ixHKlTa8sd4EscKrlxm/1r43XQKYEAq2CePnT4sMbSSLeat1Mci4PzlDWXmTIjj/EFwur1XKKsBdSix73ROxdhmGYDLf4PObuvBItWYSSCW33q0NQWY2K50KIX9VpnQyhoFjrLlnj/UBD4Yfd+eXXnG/Ierv5bW8FBGg1mdy31W+MlRgzmfWgQZrjTLX7s4/uWl0zooufjk3Fwouy0TFx1mb8OgRtEXHQOuP7YSKcDBlPqNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E/PEPHlRkJL8f9+OL6/7qfINXyFq5hrww+zQ8CmF2J0=;
- b=nESm6AE/76uoYCCXJQrt1xifBKZ9Aq4B8odHKKWA8lY6XPZNm1Lfi1dk85W7K5nPgb+3Qx7ibGU6KKWn0Zlr2Y46KsA0MVdDvFLXkPzDtOJo1FnM3lQpOZ16J9sPLV4ZCVL+bhxDoGCuRNhQg6Lz2GsC3+ZhFZ0itVV0wenx8WIfWDGzH7iNBpnTW04nlcZj26CdzOOI5HZPn44djkB4SzuX9v/0qIgR9GaSKwveR5Oiz+k2NmtP6DLT9+cgWh0YQMO1hch/z7J2erSC1fIa/4tukWWsZHDkYnTjLeoBW3VOtL+31S5+hQ8x6eOtq1HzkhNMYRAKVwf/hCOjUoHj0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E/PEPHlRkJL8f9+OL6/7qfINXyFq5hrww+zQ8CmF2J0=;
- b=iRf8hh9mHstb2r+b52dNec8mR1YL1ZzlvE4ZydWJQCukfBZqtm5YTp2koqMbS6mvlytG1kzO9rhZ/ZyxwKT3EJ9mW929aetB6lFN+rwhaqvP1AJ0O10Z9qAnemSkm8dURnP+jmc4jlXaMwSEknArnuMVUoMANbNSCfoAAAgBQQU=
-Received: from DM6PR11MB2890.namprd11.prod.outlook.com (2603:10b6:5:63::20) by
- DM6PR11MB4377.namprd11.prod.outlook.com (2603:10b6:5:1dc::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3216.23; Tue, 28 Jul 2020 20:34:41 +0000
-Received: from DM6PR11MB2890.namprd11.prod.outlook.com
- ([fe80::65c2:9ac9:2c52:82bd]) by DM6PR11MB2890.namprd11.prod.outlook.com
- ([fe80::65c2:9ac9:2c52:82bd%6]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
- 20:34:41 +0000
-From:   "Brown, Aaron F" <aaron.f.brown@intel.com>
-To:     Aaron Ma <aaron.ma@canonical.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "Kirsher, Jeffrey T" <jeffrey.t.kirsher@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Lifshits, Vitaly" <vitaly.lifshits@intel.com>,
-        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
-        "Neftin, Sasha" <sasha.neftin@intel.com>
-Subject: RE: [Intel-wired-lan] [v4][PATCH] e1000e: continue to init phy even
- when failed to disable ULP
-Thread-Topic: [Intel-wired-lan] [v4][PATCH] e1000e: continue to init phy even
- when failed to disable ULP
-Thread-Index: AQHWQ8XCGt1Zf2BsuE6OIRiqVZ8UlKjd8zCAgD/B2cA=
-Date:   Tue, 28 Jul 2020 20:34:41 +0000
-Message-ID: <DM6PR11MB2890F94DA893CE56A5D8A3EABC730@DM6PR11MB2890.namprd11.prod.outlook.com>
-References: <20200616100512.22512-1-aaron.ma@canonical.com>
- <20200618065453.12140-1-aaron.ma@canonical.com>
-In-Reply-To: <20200618065453.12140-1-aaron.ma@canonical.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [97.120.173.209]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 02e08b5c-3ae4-49cd-4571-08d83335a816
-x-ms-traffictypediagnostic: DM6PR11MB4377:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB4377A25AA28F2F88E56BCC26BC730@DM6PR11MB4377.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1060;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 78Vjw68GzTOx40YipGL5QoSHDmDc4WuxKaWMsMBc987tuW55AOPowIjVgXQRZGUw+rUrpQ+O9r/9+0o1xZpAk3+b0UnLhKf8BpxTdu9OZo/JTdoLfabPVx6LXmWheHc71w43hfHT6shVUkJlixL9hZJb325t+etSnGmkpt0vdhdlx9tzWIT+LFuxXG+HRJfAfR3zHcNLESO08DuMWd6DV84qn9WclGzjcZMVY5TkVL0IMqsHO9qYWUPEept0N+eQQS0Y7YBTFfSSbmX/X+zrgly2vgpKODMFOVgFwEF1TGp3DpOq4V7rPyOsH/VMDHgOcSYXmhbrHU3JlE0NhD9xkyxrDrUW3B1a8yZCEowEvlsKPNfLj07VrOJBuvv9se64
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB2890.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(66556008)(66476007)(66946007)(71200400001)(83380400001)(478600001)(66446008)(26005)(64756008)(186003)(53546011)(5660300002)(33656002)(55016002)(7696005)(76116006)(8936002)(86362001)(6636002)(8676002)(9686003)(316002)(110136005)(6506007)(2906002)(52536014)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: e+ZDUsnjC5LzwXp69n+FBPzEWCreMobQ3OtAVRJoC3GpSzgy1weP36AY+PdzhjvDpiROzWV12ReWGxDwTdCv0qttvCoXuhA91rAqQMLIKSrjMpJN4aFBlWqrjmwwd+evh3y4WDSs/fFbNMfO07c6wjk0zkZEAzUVumLYy9hpTUgjFrJggIyitFncdutTjombrflns50uW9/vxZX6tzHf7AtdYREbUDXWru6QTf+vfyO7CKeehecvHpCDZl5jy98TlxEuV0fRBD4/DAPUVe3As+Lah+y/iAqB1O8yX9v/UwFlVwjjkfLapMrFkWou5t7S8huaOUIzyO7iRoswvmesfB2v23plGn+7nXSGX/CVbEgaPfqAo8C3sOoX5Jy295xLzYoReqDJKe4ea+ld8vafwNt9QLgFNtN9wN8hZAR9Qtscqj3GuF3ggoPhll32bnaIHqWHpgFWtSa7Gk79qdrwG1+mLPLnEhGXF6pLtBUfpmcOX8wi7GnK/yHPJxmFtZOf
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728901AbgG1UfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 16:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728430AbgG1UfU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 16:35:20 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBEC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 13:35:19 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id r11so3749891pfl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 13:35:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OBkwAyTEXypPFrv1L/bcvqGsjN6kL4QWEhz3WakHkuw=;
+        b=u3n1pNJBqmv+wnc325pObRLwelABKFK0TTLaazs9/l3rir9ewi34O5LCVVPgMCtXAp
+         oAa/jHYVa4qB4hNcmIZXKI6sJooGpbWFkaH4ZdH2LlbajzjX2C7vmSxjVQmiD8TitfHh
+         WlZf7MkbgxfqQ1jWo/fS5tkvRgRKTKR4KNPbdfsIaQVaZfv4W0Xap+LMI9nMS28ri5q5
+         O/0k080ddNH4E0QmiYxXooJ4tbtx0Yq2Av/J/MLbTCIwodr56fRgAgrigFTug2W4Xmez
+         3F67G2y5YxnuxqpRjIz/8Dg/81Rkcqk7ockNHRktDoYSCq9UcOZ8ho7Ysp2EeqSjwRgK
+         subQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OBkwAyTEXypPFrv1L/bcvqGsjN6kL4QWEhz3WakHkuw=;
+        b=p/rvlYsqz1XWqASfFyK6ZOo6KectpuYw8+xQgYqVcx2a1QqOmWfT4XZ3/6BH3OjEhd
+         VKaA+659h7XLx/gQP05wLjiqhmnlv7binbBlhWHqgK7Moa0RxeEc5HPJYnM1F4pvBQxX
+         Vy4AVHFOZn7u1lSvLQLYWmdoyr4PIoEDY8Y5T0G3qr+ptbghSrmRfKCAzVtEMcFWvrWI
+         mNNvohH0obOVVOR/V8Zi+/plddeE/MO3zVvpJzmFUfFrVGRPN7B1Sjl4ZkhFDUlpkBSe
+         IDGS/0K3yUwUASPjudquXkwBk62FQcvCJKT4gjFJmbyyZjZ1JRJm5Ia97Ud7HbBkNP83
+         a12w==
+X-Gm-Message-State: AOAM5320jtK5YatMyZhzRVuFM80HXzIN76wLJ7ETIcfFUZDM4FtRFJ5d
+        RK4jbpvJKW6g+kvxRvYSjcWUK7M2BcBcrcf9WzOByA==
+X-Google-Smtp-Source: ABdhPJx8wHjF9qGKptJgatNHt0b1qWH35UqxoZXkEAs5cwCjg6+AuKH85TYZUtDBAiVSRk5ph+7xs65w9V8TuKWNjGU=
+X-Received: by 2002:a62:86cc:: with SMTP id x195mr25927376pfd.39.1595968519048;
+ Tue, 28 Jul 2020 13:35:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB2890.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02e08b5c-3ae4-49cd-4571-08d83335a816
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jul 2020 20:34:41.8440
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: J9RVJEfLV/xiYohTy1pBzxzx+n/6XZw4u7PjwJgsaU0iJIfqbvf784Dy0ionNWL/hW5SWT0uWgKPxu3K2kZYEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4377
-X-OriginatorOrg: intel.com
+References: <CAKwvOdnni_G2tw+0eCLQQvvdcz97Fy1-cBjzPvLwbBNDu1-KqQ@mail.gmail.com>
+ <20200728004736.3590053-1-nhuck@google.com>
+In-Reply-To: <20200728004736.3590053-1-nhuck@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 28 Jul 2020 13:35:08 -0700
+Message-ID: <CAKwvOdnrVP4Ci4MBd2NtW9Jkk60wVrpRwGV_rz1dw5NYVUdaSw@mail.gmail.com>
+Subject: Re: [PATCH v7] Makefile: Add clang-tidy and static analyzer support
+ to makefile
+To:     Nathan Huckleberry <nhuck@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Pirama Arumuga Nainar <pirama@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
-> Aaron Ma
-> Sent: Wednesday, June 17, 2020 11:55 PM
-> To: kuba@kernel.org; Kirsher, Jeffrey T <jeffrey.t.kirsher@intel.com>;
-> davem@davemloft.net; intel-wired-lan@lists.osuosl.org;
-> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Lifshits, Vitaly
-> <vitaly.lifshits@intel.com>; kai.heng.feng@canonical.com; Neftin, Sasha
-> <sasha.neftin@intel.com>
-> Subject: [Intel-wired-lan] [v4][PATCH] e1000e: continue to init phy even =
-when
-> failed to disable ULP
->=20
-> After 'commit e086ba2fccda4 ("e1000e: disable s0ix entry and exit flows
->  for ME systems")',
-> ThinkPad P14s always failed to disable ULP by ME.
-> 'commit 0c80cdbf3320 ("e1000e: Warn if disabling ULP failed")'
-> break out of init phy:
->=20
-> error log:
-> [   42.364753] e1000e 0000:00:1f.6 enp0s31f6: Failed to disable ULP
-> [   42.524626] e1000e 0000:00:1f.6 enp0s31f6: PHY Wakeup cause - Unicast
-> Packet
-> [   42.822476] e1000e 0000:00:1f.6 enp0s31f6: Hardware Error
->=20
-> When disable s0ix, E1000_FWSM_ULP_CFG_DONE will never be 1.
-> If continue to init phy like before, it can work as before.
-> iperf test result good too.
->=20
-> Fixes: 0c80cdbf3320 ("e1000e: Warn if disabling ULP failed")
-> Signed-off-by: Aaron Ma <aaron.ma@canonical.com>
+On Mon, Jul 27, 2020 at 5:47 PM 'Nathan Huckleberry' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> This patch adds clang-tidy and the clang static-analyzer as make
+> targets. The goal of this patch is to make static analysis tools
+> usable and extendable by any developer or researcher who is familiar
+> with basic c++.
+>
+> The current static analysis tools require intimate knowledge of the
+> internal workings of the static analysis. Clang-tidy and the clang
+> static analyzers expose an easy to use api and allow users unfamiliar
+> with clang to write new checks with relative ease.
+>
+> ===Clang-tidy===
+>
+> Clang-tidy is an easily extendable 'linter' that runs on the AST.
+> Clang-tidy checks are easy to write and understand. A check consists of
+> two parts, a matcher and a checker. The matcher is created using a
+> domain specific language that acts on the AST
+> (https://clang.llvm.org/docs/LibASTMatchersReference.html).  When AST
+> nodes are found by the matcher a callback is made to the checker. The
+> checker can then execute additional checks and issue warnings.
+>
+> Here is an example clang-tidy check to report functions that have calls
+> to local_irq_disable without calls to local_irq_enable and vice-versa.
+> Functions flagged with __attribute((annotation("ignore_irq_balancing")))
+> are ignored for analysis. (https://reviews.llvm.org/D65828)
+>
+> ===Clang static analyzer===
+>
+> The clang static analyzer is a more powerful static analysis tool that
+> uses symbolic execution to find bugs. Currently there is a check that
+> looks for potential security bugs from invalid uses of kmalloc and
+> kfree. There are several more general purpose checks that are useful for
+> the kernel.
+>
+> The clang static analyzer is well documented and designed to be
+> extensible.
+> (https://clang-analyzer.llvm.org/checker_dev_manual.html)
+> (https://github.com/haoNoQ/clang-analyzer-guide/releases/download/v0.1/clang-analyzer-guide-v0.1.pdf)
+>
+> The main draw of the clang tools is how accessible they are. The clang
+> documentation is very nice and these tools are built specifically to be
+> easily extendable by any developer. They provide an accessible method of
+> bug-finding and research to people who are not overly familiar with the
+> kernel codebase.
+>
+> Signed-off-by: Nathan Huckleberry <nhuck@google.com>
 > ---
->  drivers/net/ethernet/intel/e1000e/ich8lan.c | 1 -
->  1 file changed, 1 deletion(-)
+> Changes v6->v7
+> * Fix issues with relative paths
+> * Additional style fixes
+>  MAINTAINERS                                   |  1 +
+>  Makefile                                      |  3 +
+>  scripts/clang-tools/Makefile.clang-tools      | 23 ++++++
+>  .../{ => clang-tools}/gen_compile_commands.py |  0
+>  scripts/clang-tools/run-clang-tools.py        | 74 +++++++++++++++++++
+>  5 files changed, 101 insertions(+)
+>  create mode 100644 scripts/clang-tools/Makefile.clang-tools
+>  rename scripts/{ => clang-tools}/gen_compile_commands.py (100%)
+>  create mode 100755 scripts/clang-tools/run-clang-tools.py
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1d4aa7f942de..a444564e5572 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4198,6 +4198,7 @@ W:        https://clangbuiltlinux.github.io/
+>  B:     https://github.com/ClangBuiltLinux/linux/issues
+>  C:     irc://chat.freenode.net/clangbuiltlinux
+>  F:     Documentation/kbuild/llvm.rst
+> +F:     scripts/clang-tools/
+>  K:     \b(?i:clang|llvm)\b
+>
+>  CLEANCACHE API
+> diff --git a/Makefile b/Makefile
+> index fe0164a654c7..3e2df010b342 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -747,6 +747,7 @@ KBUILD_CFLAGS       += $(call cc-option,-fno-allow-store-data-races)
+>
+>  include scripts/Makefile.kcov
+>  include scripts/Makefile.gcc-plugins
+> +include scripts/clang-tools/Makefile.clang-tools
+>
+>  ifdef CONFIG_READABLE_ASM
+>  # Disable optimizations that make assembler listings hard to read.
+> @@ -1543,6 +1544,8 @@ help:
+>         @echo  '  export_report   - List the usages of all exported symbols'
+>         @echo  '  headerdep       - Detect inclusion cycles in headers'
+>         @echo  '  coccicheck      - Check with Coccinelle'
+> +       @echo  '  clang-analyzer  - Check with clang static analyzer'
+> +       @echo  '  clang-tidy      - Check with clang-tidy'
+>         @echo  ''
+>         @echo  'Tools:'
+>         @echo  '  nsdeps          - Generate missing symbol namespace dependencies'
+> diff --git a/scripts/clang-tools/Makefile.clang-tools b/scripts/clang-tools/Makefile.clang-tools
+> new file mode 100644
+> index 000000000000..5c9d76f77595
+> --- /dev/null
+> +++ b/scripts/clang-tools/Makefile.clang-tools
+> @@ -0,0 +1,23 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (C) Google LLC, 2020
+> +#
+> +# Author: Nathan Huckleberry <nhuck@google.com>
+> +#
+> +PHONY += clang-tidy
+> +clang-tidy:
+> +ifdef CONFIG_CC_IS_CLANG
+> +       $(PYTHON3) scripts/clang-tools/gen_compile_commands.py
+> +       $(PYTHON3) scripts/clang-tools/run-clang-tools.py clang-tidy compile_commands.json
+> +else
+> +       $(error clang-tidy requires CC=clang)
+> +endif
+> +
+> +PHONY += clang-analyzer
+> +clang-analyzer:
+> +ifdef CONFIG_CC_IS_CLANG
+> +       $(PYTHON3) scripts/clang-tools/gen_compile_commands.py
+> +       $(PYTHON3) scripts/clang-tools/run-clang-tools.py clang-analyzer compile_commands.json
+> +else
+> +       $(error clang-analyzer requires CC=clang)
+> +endif
+> diff --git a/scripts/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+> similarity index 100%
+> rename from scripts/gen_compile_commands.py
+> rename to scripts/clang-tools/gen_compile_commands.py
+> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
+> new file mode 100755
+> index 000000000000..fa7655c7cec0
+> --- /dev/null
+> +++ b/scripts/clang-tools/run-clang-tools.py
+> @@ -0,0 +1,74 @@
+> +#!/usr/bin/env python
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (C) Google LLC, 2020
+> +#
+> +# Author: Nathan Huckleberry <nhuck@google.com>
+> +#
+> +"""A helper routine run clang-tidy and the clang static-analyzer on
+> +compile_commands.json.
+> +"""
+> +
+> +import argparse
+> +import json
+> +import multiprocessing
+> +import os
 
-I never did find a system that triggered the initial problem, but from a co=
-mpatibility with the set of systems I do have working...
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+^ unused import.  Maybe Masahiro would be so kind as to drop that line
+for you when merging v7?
+
+That said, I hammered on this in testing, and it now LGTM.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+
+For testing, I did `make clean` for x86/arm/arm64/powerpc, then a
+defconfig (pseries_defconfig for ppc) build, then:
+$ make -j71 LLVM=1 clang-tidy 2> log.txt
+$ grep -e linuxkernel- -e clang- log.txt | sort -u | cut -d '[' -f 2 |
+sort | uniq -c
+$ make -j71 LLVM=1 clang-analyzer 2> log.txt
+$ grep -e linuxkernel- -e clang- log.txt | sort -u | cut -d '[' -f 2 |
+sort | uniq -c
+
+Looks like it's already finding a couple bugs.  I'll probably disable
+clang-diagnostic-* in a follow up, as those seem pretty noisy, though
+clang-diagnostic-incompatible-pointer-types will likely be of interest
+for the CFI work.
+
+Thanks for all of the work that went into this, and tolerating my pedantry.
+
+> +import subprocess
+> +import sys
+> +
+> +
+> +def parse_arguments():
+> +    """Set up and parses command-line arguments.
+> +    Returns:
+> +        args: Dict of parsed args
+> +        Has keys: [path, type]
+> +    """
+> +    usage = """Run clang-tidy or the clang static-analyzer on a
+> +        compilation database."""
+> +    parser = argparse.ArgumentParser(description=usage)
+> +
+> +    type_help = "Type of analysis to be performed"
+> +    parser.add_argument("type",
+> +                        choices=["clang-tidy", "clang-analyzer"],
+> +                        help=type_help)
+> +    path_help = "Path to the compilation database to parse"
+> +    parser.add_argument("path", type=str, help=path_help)
+> +
+> +    return parser.parse_args()
+> +
+> +
+> +def init(l, a):
+> +    global lock
+> +    global args
+> +    lock = l
+> +    args = a
+> +
+> +
+> +def run_analysis(entry):
+> +    # Disable all checks, then re-enable the ones we want
+> +    checks = "-checks=-*,"
+> +    if args.type == "clang-tidy":
+> +        checks += "linuxkernel-*"
+> +    else:
+> +        checks += "clang-analyzer-*"
+> +    p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
+> +                       stdout=subprocess.PIPE,
+> +                       stderr=subprocess.STDOUT,
+> +                       cwd=entry["directory"])
+> +    with lock:
+> +        sys.stderr.buffer.write(p.stdout)
+> +
+> +
+> +def main():
+> +    args = parse_arguments()
+> +
+> +    lock = multiprocessing.Lock()
+> +    pool = multiprocessing.Pool(initializer=init, initargs=(lock, args))
+> +    # Read JSON data into the datastore variable
+> +    with open(args.path, "r") as f:
+> +        datastore = json.load(f)
+> +        pool.map(run_analysis, datastore)
+> +
+> +
+> +if __name__ == "__main__":
+> +    main()
+> --
+> 2.28.0.rc0.142.g3c755180ce-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200728004736.3590053-1-nhuck%40google.com.
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
