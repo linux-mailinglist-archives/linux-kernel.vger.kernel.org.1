@@ -2,94 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FF62314FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 23:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A643D231506
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 23:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729987AbgG1Vho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 17:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729372AbgG1Vh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 17:37:29 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881C4C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 14:37:29 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id z17so2446396ill.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 14:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v3rg3y6YkACiXEIoKh+CleYC9RV1B8woYIuu28KMC5U=;
-        b=Au1vYSzjCeHwJX24VbMmrV6FjIv1BFAOR507vujs2WCywQIeFksgxcyy0RGK8PxQrO
-         Dn6c5YRpP8ZPZbSqc0XGjSaUkXxZPTIS6DLELa/60Vs33uYWgWeTTB6dWa6mEikqUI1U
-         9utOWGiUO65V4gy3fX0lsDDYogHc+D7wg7k5I/89LtredY4xtoVqip6kv3lQOtd0PIJ0
-         scyEt1q0UrmwqVjWkRIzhHrFWt39bnxI7hDrPkJd/uvp/UN7/kNmJXHD12yVxcI6buqc
-         VYpIphXovb9bPdhp9X/ju7CIn5XXFhuh84sLJSTHRe66tjqsTVaOVUZAnDU3X4GMMIcA
-         pCvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v3rg3y6YkACiXEIoKh+CleYC9RV1B8woYIuu28KMC5U=;
-        b=YVeHYEdbLnMdHXDO+tfS0LZ2q3ysvcnhRAYWjY5mG57NqzQ4RPiQk3XbypRe9bYux0
-         OIXfTEk0uwKBf5h+VjnvOKxdObJnMa7m3kRWYiujS4peZZpFpMv6Sk1+tPVeAMHRypWw
-         vpX3kpYyOLeJo9JKWy46mE3a9gP5ysshOGurNiuxti4YCNe6ljuNJNlvbNNTzwGrXye9
-         11zQBtiXhBO9MCblR9nSslddjaFlKeu1knkfeGxQuRusSkxm8RgMKB1/NO1Qo6AgBdfs
-         x3EMQRnA0ss0RAW81i5MS6Dm+X+l+VyVAM4D97h7XR3/ZqhMPFHQYVZO/wy/0ceZOE94
-         BnlA==
-X-Gm-Message-State: AOAM531wMmtwFCOWgMDzYurf650fF7Wma+J4FO9zg3IwO9jCn85Ukyng
-        FgzYzX2JYq3k91UUVsdIWIGceMA1pYCOmSCg1F/JzA==
-X-Google-Smtp-Source: ABdhPJxWWdwC/AXVB7Mk2kEB2dtyvEtibgv4DmaY8Kj2O+d++IoXXh/hLyf1BS97mgq+ai+1IHViL6YLTyHk4mFZ1M4=
-X-Received: by 2002:a92:cb07:: with SMTP id s7mr13858295ilo.58.1595972248866;
- Tue, 28 Jul 2020 14:37:28 -0700 (PDT)
+        id S1729535AbgG1Vlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 17:41:44 -0400
+Received: from mga11.intel.com ([192.55.52.93]:14223 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729169AbgG1Vlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 17:41:44 -0400
+IronPort-SDR: UCQwPBO/6AHfF05V73ReJtrDGIb2ZK1asmUr8DmD8/etRg7xNaYQYZzj4K2cYvNUiRxEVdm8LK
+ rOcDStFtbj3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="149171233"
+X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
+   d="scan'208";a="149171233"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 14:41:43 -0700
+IronPort-SDR: Wc1QHnhPXg8oYrSvCwBZZPpcuuYFGs2lNOilOAMyc93z6v5vlP6bP/F5T3f3kSxgTa+SuZ8o6V
+ E1uKEbJ26vbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
+   d="scan'208";a="286301610"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by orsmga003.jf.intel.com with ESMTP; 28 Jul 2020 14:41:41 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Subject: [char-misc-next] Revert "mei: hdcp: Replace one-element array with flexible-array member"
+Date:   Wed, 29 Jul 2020 00:41:39 +0300
+Message-Id: <20200728214139.3129532-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20200727015054.8351-1-vulab@iscas.ac.cn>
-In-Reply-To: <20200727015054.8351-1-vulab@iscas.ac.cn>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 28 Jul 2020 15:37:18 -0600
-Message-ID: <CANLsYkzT0b-zntPm=3Q4dL91oiqfojtaYL+aFNc1Rv__fzkNZQ@mail.gmail.com>
-Subject: Re: [PATCH] coresight: Use devm_kcalloc() in coresight_alloc_conns()
-To:     Xu Wang <vulab@iscas.ac.cn>
-Cc:     "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Jul 2020 at 19:51, Xu Wang <vulab@iscas.ac.cn> wrote:
->
-> A multiplication for the size determination of a memory allocation
-> indicated that an array data structure should be processed.
-> Thus use the corresponding function "devm_kcalloc".
->
-> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
-> ---
->  drivers/hwtracing/coresight/coresight-platform.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
-> index e4912abda3aa..d1460b6e4e07 100644
-> --- a/drivers/hwtracing/coresight/coresight-platform.c
-> +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> @@ -27,7 +27,7 @@ static int coresight_alloc_conns(struct device *dev,
->                                  struct coresight_platform_data *pdata)
->  {
->         if (pdata->nr_outport) {
-> -               pdata->conns = devm_kzalloc(dev, pdata->nr_outport *
-> +               pdata->conns = devm_kcalloc(dev, pdata->nr_outport,
+Greg please revert, this commit it changes size of
+struct wired_cmd_repeater_auth_stream_req_in, this is
+not what firmware is expecting.
+I really do not appreciate that the code is bypassing
+driver maintaner review, I think this is a minimum
+we can ask for, this is not for a first time.
 
-https://lkml.org/lkml/2020/5/27/1098
+This reverts commit c56967d674e361ebe716e66992e3c5332b25ac1f.
 
->                                             sizeof(*pdata->conns),
->                                             GFP_KERNEL);
->                 if (!pdata->conns)
-> --
-> 2.17.1
->
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
+ drivers/misc/mei/hdcp/mei_hdcp.c | 2 +-
+ drivers/misc/mei/hdcp/mei_hdcp.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.c b/drivers/misc/mei/hdcp/mei_hdcp.c
+index d1d3e025ca0e..e6c3dc595617 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.c
++++ b/drivers/misc/mei/hdcp/mei_hdcp.c
+@@ -572,7 +572,7 @@ static int mei_hdcp_verify_mprime(struct device *dev,
+ 	       HDCP_2_2_MPRIME_LEN);
+ 	drm_hdcp_cpu_to_be24(verify_mprime_in.seq_num_m, data->seq_num_m);
+ 	memcpy(verify_mprime_in.streams, data->streams,
+-	       array_size(data->k, sizeof(*data->streams)));
++	       (data->k * sizeof(struct hdcp2_streamid_type)));
+ 
+ 	verify_mprime_in.k = cpu_to_be16(data->k);
+ 
+diff --git a/drivers/misc/mei/hdcp/mei_hdcp.h b/drivers/misc/mei/hdcp/mei_hdcp.h
+index 834757f5e072..18ffc773fa18 100644
+--- a/drivers/misc/mei/hdcp/mei_hdcp.h
++++ b/drivers/misc/mei/hdcp/mei_hdcp.h
+@@ -358,7 +358,7 @@ struct wired_cmd_repeater_auth_stream_req_in {
+ 	u8				seq_num_m[HDCP_2_2_SEQ_NUM_LEN];
+ 	u8				m_prime[HDCP_2_2_MPRIME_LEN];
+ 	__be16				k;
+-	struct hdcp2_streamid_type	streams[];
++	struct hdcp2_streamid_type	streams[1];
+ } __packed;
+ 
+ struct wired_cmd_repeater_auth_stream_req_out {
+-- 
+2.25.4
+
