@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA22E230E9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA597230E9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731194AbgG1P7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:59:23 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30043 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730679AbgG1P7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:59:23 -0400
-IronPort-SDR: hb9ddBj5c99+NOMi7xoavry0r6zdXsv74jEwqQAwAx8TVZqIKDjZD0IwlAvU/d2/1Eg94AOA8S
- aFHRO70BRCxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="152492565"
-X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
-   d="scan'208";a="152492565"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 08:59:22 -0700
-IronPort-SDR: 3+avlv1CfLZM+1dJZ3q9UKyBJRhsBI18RcjkFTL8a/m36xIVEZe9AmnmWnbnm7aeGNQlWYS5cG
- utYz7RovAyIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
-   d="scan'208";a="490410915"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Jul 2020 08:59:21 -0700
-Date:   Tue, 28 Jul 2020 08:59:21 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: properly pad struct kvm_vmx_nested_state_hdr
-Message-ID: <20200728155921.GC5300@linux.intel.com>
-References: <20200713082824.1728868-1-vkuznets@redhat.com>
- <20200713151750.GA29901@linux.intel.com>
- <878sfntnoz.fsf@vitty.brq.redhat.com>
- <85fd54ff-01f5-0f1f-1bb7-922c740a37c1@redhat.com>
- <20200727154654.GA8675@linux.intel.com>
- <5d50ea1e-f2a2-8aa9-1dd3-4cbca6c6f885@redhat.com>
+        id S1731217AbgG1P7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:59:55 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41124 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730963AbgG1P7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 11:59:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595951993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FwMDmCLjPgPyIwCwBV+M7ENrQyFWuABUGAGQkmMVDFE=;
+        b=OwSb4dfvPnjGmUZFK+fkyFeNnasx2geBmE9EAppuoOVMk/G9LFbpRTe4CnudLTI8KzmjAy
+        SdudnO2Hjkq19EB3ku34Onx/P04tXMlHStF0B6jKFN0AMBxOCfbbS6HrlzAucVPuR5i0/k
+        qoJW6+92Y4IKSHHRtafUeOMSuLD2NYg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-454-IIO8mskENACISyAGc0c4zQ-1; Tue, 28 Jul 2020 11:59:49 -0400
+X-MC-Unique: IIO8mskENACISyAGc0c4zQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B55CB19200C5;
+        Tue, 28 Jul 2020 15:59:46 +0000 (UTC)
+Received: from krava (unknown [10.40.192.211])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C526F69324;
+        Tue, 28 Jul 2020 15:59:41 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 17:59:40 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
+ attr->sample_period for libpfm4 events
+Message-ID: <20200728155940.GC1319041@krava>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-3-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5d50ea1e-f2a2-8aa9-1dd3-4cbca6c6f885@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200728085734.609930-3-irogers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 06:16:56PM +0200, Paolo Bonzini wrote:
-> On 27/07/20 17:46, Sean Christopherson wrote:
-> > All the above being said, after looking at the whole picture I think padding
-> > the header is a moot point.  The header is padded out to 120 bytes[*] when
-> > including in the full nested state, and KVM only ever consumes the header in
-> > the context of the full nested state.  I.e. if there's garbage at offset 6,
-> > odds are there's going to be garbage at offset 18, so internally padding the
-> > header does nothing.
+On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
+> From: Stephane Eranian <eranian@google.com>
 > 
-> Yes, that was what I was hinting at with "it might as well send it now"
-> (i.e., after the patch).
+> Before:
+> $ perf record -c 10000 --pfm-events=cycles:period=77777
 > 
-> (All of this is moot for userspace that just uses KVM_GET_NESTED_STATE
-> and passes it back to KVM_SET_NESTED_STATE).
+> Would yield a cycles event with period=10000, instead of 77777.
 > 
-> > KVM should be checking that the unused bytes of (sizeof(pad) - sizeof(vmx/svm))
-> > is zero if we want to expand into the padding in the future.  Right now we're
-> > relying on userspace to zero allocate the struct without enforcing it.
+> This was due to an ordering issue between libpfm4 parsing
+> the event string and perf record initializing the event.
 > 
-> The alternative, which is almost as good, is to only use these extra
-> fields which could be garbage if the flags are not set, and check the
-> flags (see the patches I have sent earlier today).
+> This patch fixes the problem by preventing override for
+> events with attr->sample_period != 0 by the time
+> perf_evsel__config() is invoked. This seems to have been the
+> intent of the author.
 > 
-> The chance of the flags passing the check will decrease over time as
-> more flags are added; but the chance of having buggy userspace that
-> sends down garbage also will.
+> Signed-off-by: Stephane Eranian <eranian@google.com>
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/evsel.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 811f538f7d77..8afc24e2ec52 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -976,8 +976,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+>  	 * We default some events to have a default interval. But keep
+>  	 * it a weak assumption overridable by the user.
+>  	 */
+> -	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+> -				     opts->user_interval != ULLONG_MAX)) {
+> +	if (!attr->sample_period) {
 
-Ah, I see what you're saying.  Ya, that makes sense.
+I was wondering why this wouldn't break record/top
+but we take care of the via record_opts__config
 
-> > [*] Amusing side note, the comment in the header is wrong.  It states "pad
-> >     the header to 128 bytes", but only pads it to 120 bytes, because union.
-> > 
-> > /* for KVM_CAP_NESTED_STATE */
-> > struct kvm_nested_state {
-> > 	__u16 flags;
-> > 	__u16 format;
-> > 	__u32 size;
-> > 
-> > 	union {
-> > 		struct kvm_vmx_nested_state_hdr vmx;
-> > 		struct kvm_svm_nested_state_hdr svm;
-> > 
-> > 		/* Pad the header to 128 bytes.  */
-> > 		__u8 pad[120];
-> > 	} hdr;
-> 
-> There are 8 bytes before the union, and it's not a coincidence. :)
-> "Header" refers to the stuff before the data region.
+as long as 'perf test attr' works it looks ok to me
 
-Ugh, then 'hdr' probably should be named vendor_header or something. 
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
