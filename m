@@ -2,154 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE12D230AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 923F3230AA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729920AbgG1MuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:50:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729562AbgG1MuY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:50:24 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FCAEC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:50:24 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id e5so659064qth.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GgtMyjeO4HLpQBw/exS2AHiDSiKY8Aj2c/cuRUlzRaM=;
-        b=tGdMuCgbBf+xUH44MOqwqObI23V3rvUFzUFZI/QjbU42CBRhT+wgaqwZjd+kldED/Q
-         ki01CNPPE0cfaK1npzMluvdLLHCpwL7fueCxjK8z/Q5T/ADUxgNVkIE4jQGGxlZBkSyC
-         rgNVakvPQRiTg3RM3l2UKUnlO+SZ21CLUor6vXSKVYvp21NE2OFHAhjboShkXKLD/aGH
-         WLz9W94j70D1ynUHaVzpHD9eX2ZrJR2Zx/glrW3ICbYTos8ZHd0nJwTWLiZtOOK0vjGH
-         rVAEGR7jE1neaho/frDgI5cLckZWRrb4jgz28e9aRtTGaSKlPRlz/nleXZGC9cgSpenP
-         Q6ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GgtMyjeO4HLpQBw/exS2AHiDSiKY8Aj2c/cuRUlzRaM=;
-        b=VDGgeXV2rMNktnUKSgTT3Y8kmIilUEW3cIzbFcbciX1L0eE4hSBTlNqmf+4n3+xuRh
-         nqC3r78NfTxjCfz+bjCMkQe50E6CCZp5oD8l4JoO2/kCc1uUuJsEKoAZh09zV/XsSGRg
-         Aym+QctmhxKL5VGSUym4Eu+91UyIW3jleTZCeyRdmEF1ZnKEeDR0LBvRfR0CcNIifk+6
-         TWKpbPdPjrMO472EZmCeK9YaI032EuzPx+qnfGlGwJTGpt2ewcfdtJXvRmurmaZinQWq
-         DDTZsIBB6TBbPOTj7r6xqb+tIm+LetvpDK2zXCqD2CSjZo47xXzvGrOj1Yn7CDZ2PHpV
-         dCSA==
-X-Gm-Message-State: AOAM533Q1DKJxquzTA+x9Oq6Q4ZUJk3riBtCoULNzzRy2VuVC5o2Kfgt
-        l2uWTH5UTF++ShVbXUJqVA==
-X-Google-Smtp-Source: ABdhPJxtmQcEAy5Fs04CmF0q3XaPWDqDwnhC4OEWLtN3cKQJP31ESmu5OAHSU7gHukiYE7G/FcVVeQ==
-X-Received: by 2002:ac8:73d9:: with SMTP id v25mr13958369qtp.82.1595940623774;
-        Tue, 28 Jul 2020 05:50:23 -0700 (PDT)
-Received: from PWN (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
-        by smtp.gmail.com with ESMTPSA id c70sm20373613qke.109.2020.07.28.05.50.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 05:50:23 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 08:50:21 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH v2] drm/bufs: Prevent
- kernel-infoleak in copy_one_buf()
-Message-ID: <20200728125021.GA409978@PWN>
-References: <20200728014343.341303-1-yepeilin.cs@gmail.com>
- <20200728115210.408486-1-yepeilin.cs@gmail.com>
- <3058d741282b463d8aa7c8aff62e4326@AcuMS.aculab.com>
+        id S1729929AbgG1Mve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:51:34 -0400
+Received: from crapouillou.net ([89.234.176.41]:43316 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729334AbgG1Mvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:51:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1595940692; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d6LEaQ5QXtKpB7Ve+o/tB8JqiizNP+42SBXIHX8JWEg=;
+        b=jSac2zYr62B8+eaewzOIX7FUJY6rr3kuCXlOd2qMiqxaPRWa164pnS8bp6AlwajurTWL2b
+        7MSo5mzivOQGsoZW++dN4t9vaVYBUYyO1CKgBLEL1qxbY59HZAvTrWP+Iub5d7ye41cbc+
+        NNJX4eBLSEUlUpKKyVC3KPbNdR6PJls=
+Date:   Tue, 28 Jul 2020 14:51:23 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v4 2/2] MIPS: ingenic: Enable JZ4780_NEMC manually
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Message-Id: <NPJ6EQ.I4K2FZ2BHH1E@crapouillou.net>
+In-Reply-To: <20200728120035.GA28766@kozik-lap>
+References: <20200728104503.23655-1-krzk@kernel.org>
+        <20200728104503.23655-2-krzk@kernel.org>
+        <B4F6EQ.WB2WZOY40FDR@crapouillou.net> <20200728111935.GA26683@kozik-lap>
+        <20200728113702.GB13443@alpha.franken.de> <20200728120035.GA28766@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3058d741282b463d8aa7c8aff62e4326@AcuMS.aculab.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:35:17PM +0000, David Laight wrote:
-> From: Peilin Ye
-> > Sent: 28 July 2020 12:52
-> > Currently `struct drm_buf_desc` is defined as follows:
-> > 
-> > struct drm_buf_desc {
-> > 	int count;
-> > 	int size;
-> > 	int low_mark;
-> > 	int high_mark;
-> > 	enum {
-> > 		_DRM_PAGE_ALIGN = 0x01,
-> > 		_DRM_AGP_BUFFER = 0x02,
-> > 		_DRM_SG_BUFFER = 0x04,
-> > 		_DRM_FB_BUFFER = 0x08,
-> > 		_DRM_PCI_BUFFER_RO = 0x10
-> > 	} flags;
-> > 	unsigned long agp_start;
-> > };
-> > 
-> > copy_one_buf() is potentially copying uninitialized kernel stack memory
-> > to userspace, since the compiler may leave such "holes" (around `.flags`
-> > and `.agp_start` fields) in this statically allocated structure. Prevent
-> > it by initializing `v` with memset().
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 5c7640ab6258 ("switch compat_drm_infobufs() to drm_ioctl_kernel()")
-> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> > ---
-> > Change in v2:
-> >     - Improve commit description. (Suggested by Arnd Bergmann
-> >       <arnd@arndb.de>)
-> > 
-> >  drivers/gpu/drm/drm_bufs.c | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
-> > index a0735fbc144b..f99cd4a3f951 100644
-> > --- a/drivers/gpu/drm/drm_bufs.c
-> > +++ b/drivers/gpu/drm/drm_bufs.c
-> > @@ -1349,10 +1349,14 @@ static int copy_one_buf(void *data, int count, struct drm_buf_entry *from)
-> >  {
-> >  	struct drm_buf_info *request = data;
-> >  	struct drm_buf_desc __user *to = &request->list[count];
-> > -	struct drm_buf_desc v = {.count = from->buf_count,
-> > -				 .size = from->buf_size,
-> > -				 .low_mark = from->low_mark,
-> > -				 .high_mark = from->high_mark};
-> > +	struct drm_buf_desc v;
-> > +
-> > +	memset(&v, 0, sizeof(v));
-> > +
-> > +	v.count = from->buf_count;
-> > +	v.size = from->buf_size;
-> > +	v.low_mark = from->low_mark;
-> > +	v.high_mark = from->high_mark;
-> > 
-> >  	if (copy_to_user(to, &v, offsetof(struct drm_buf_desc, flags)))
-> >  		return -EFAULT;
-> 
-> The memset() isn't needed.
-> The copy_to_user() stops after the 4 'int' values so no 'random'
-> kernel stack can get copied.
 
-You are right, I overlooked that. Thank you for pointing this out!
 
-Peilin Ye
+Le mar. 28 juil. 2020 =E0 14:00, Krzysztof Kozlowski <krzk@kernel.org> a=20
+=E9crit :
+> On Tue, Jul 28, 2020 at 01:37:02PM +0200, Thomas Bogendoerfer wrote:
+>>  On Tue, Jul 28, 2020 at 01:19:35PM +0200, Krzysztof Kozlowski wrote:
+>>  > On Tue, Jul 28, 2020 at 01:12:11PM +0200, Paul Cercueil wrote:
+>>  > > Hi Krzysztof,
+>>  > >
+>>  > > Le mar. 28 juil. 2020 =E0 12:45, Krzysztof Kozlowski=20
+>> <krzk@kernel.org> a =E9crit
+>>  > > :
+>>  > > > The CONFIG_JZ4780_NEMC was previously a default on MIPS but=20
+>> now it has
+>>  > > > to be enabled manually.
+>>  > > >
+>>  > > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>>  > >
+>>  > > I think you should swap the two so that there are no problems=20
+>> when
+>>  > > bisecting.
+>>  >
+>>  > Good point. I was thinking that it will go via some of MIPS trees=20
+>> and
+>>  > the patch #1 will just wait a cycle.  However with acks, I can=20
+>> take it
+>>  > through drivers/memory tree.
+>>=20
+>>  I've acked the patch.
+>>=20
+>>  Thomas.
+>=20
+> Thanks but now I noticed that one of changed configs
+> (arch/mips/configs/rs90_defconfig) is only in MIPS tree.
+>=20
+> I think it is easier then to take the patch #2 (configs) via MIPS and
+> wait with #1 for the next cycle or also take it via MIPS if it applies
+> cleanly.
 
-> Quite why it is 'right' to leave the remaining part of each
-> userspace structure unchanged is another matter.
-> 
-> 	David.
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+Why not take them both in the MIPS tree then? Would that conflict with=20
+changes in your tree?
+
+-Paul
+
+
