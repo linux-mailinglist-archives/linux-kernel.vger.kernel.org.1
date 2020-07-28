@@ -2,100 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109D523090A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7618230912
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgG1Lkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
+        id S1729207AbgG1Lm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729144AbgG1Lkm (ORCPT
+        with ESMTP id S1729036AbgG1Lm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:40:42 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6247FC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:40:42 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id z18so14404553wrm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:40:42 -0700 (PDT)
+        Tue, 28 Jul 2020 07:42:58 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86944C061794;
+        Tue, 28 Jul 2020 04:42:58 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k13so1949243plk.13;
+        Tue, 28 Jul 2020 04:42:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TarT8FJy4xxh1Gu95tM1MOrQBSTLu+L0cNKerMl6tuM=;
-        b=BIlUz2QYxFWzzF/PGXouifAVShEdvViFuBcAvy11rSq1/UB3TPjN7cDoyPiYLXMGbE
-         wMbfEszWmq6MQz43NGegaGCTgKkNGFFlEd8U7O868CP4tprwvtl5q9N3//jweqWAoxxc
-         ViHZhLSVULlg1K/JYXV3GQJnuOpvZ5ihctOpovBbCRV+fC2WP5VRqheKMrgizTs8AaEm
-         TKpDzIjehfn+zwRq/MR79ctzf0Bpb6beoozBqRgNhS1l1GCds1QqS4WVVolNx+gvcyUk
-         p5KoK5+g+A4xIfsgxbPDcFl5QtWVgix3eV/Y5LTJ9A/Od5o+TRrdAyC2L/e9YgXNazw7
-         XlMw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f5JgTl1mn5uTL5N69LqaGIrNSHZWhpmutap+rp0hNP0=;
+        b=qSE8zMPz4HChumx8PDMwOaYF2rRJWxIIMo8kuHhth2sYL9IYEIb3bChYfV3oa/kSKv
+         sZ4OGF199JWu+Hc1qr/mGhMFHaRXzlepCvLSAD9lUJvs4uupqAIcwLgUY1I25tLGKZj/
+         p4gfzXLs41fKxuUPjegTGU1x2WI2i7651GdHCCbLrmmuWrnkrVn+cH5JtI+c9dlREyde
+         qyTVbXjUFVv/onHHSuhncCINST4ERMc1qBndiKDfS+lLzZ3hkItgqgJ1/lOpcyV1c5W3
+         s+TEY/H1QxuhZisKKsCwnGskAYUYlW3CS1tVU9oK2b67eCA8OeJt3E8mSD+ZCDKdT6Qx
+         4ZQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TarT8FJy4xxh1Gu95tM1MOrQBSTLu+L0cNKerMl6tuM=;
-        b=KB3mJ25yVOQjBkLr1pH01KlwiWrKA2U+vwixMWefjgUuJkjr6ssaXgs6g2BW7T5H6D
-         57wHwjdMcbJ03timEvGt0yvQ+rdSrcaAxnOZRCvjgRSlMReYSFzu7HN/Mltu/xMfKqdS
-         KcgVDcVMpqXn3cMgyG57+obd4Mo71z0uqjbKJ9Xqt0GJ8MTIE84Ozs7S1KAb6XWg1bpj
-         y9GepMl/1aE4jAMNlLnq5xf2nbuscvEUMhujjEhzZOCAcHdUk58rIN4kVMeL7MY/BKPM
-         MMVG5uvgYwhQhfTg+TllifPrYFq5OFE54SLij6/auzv5RnZl/ZuyytozgfbDv+I4Ufps
-         9P1g==
-X-Gm-Message-State: AOAM531PcDN3InuiyIFncYF45XarmSS3g2EjcIfYho7O7c6Ks5Z6OURv
-        TvEtBDF679oOz1JMalNIoSfJqgNmD3s5NU1W7bjeyA==
-X-Google-Smtp-Source: ABdhPJyAsLE0Fke7ELR7oeZm8VYO8/GGUEGfQKuUxFj/9hE+upxSUPAEcs2CfEI7Hs0Jh3gu2ANZ6pBVtbr+FcTlaC4=
-X-Received: by 2002:a5d:6681:: with SMTP id l1mr23497356wru.47.1595936441188;
- Tue, 28 Jul 2020 04:40:41 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=f5JgTl1mn5uTL5N69LqaGIrNSHZWhpmutap+rp0hNP0=;
+        b=X5NnrJ+KwvxNjc4mgdJe1LjO0InV61BuZRNH7CV1HgPMePzRQMbBLZ/aXPzCRRMIq4
+         DlS1+BnZy9uS/YXtvp0VH/XLpLMxuaDoq6Z1kdqCCBawFEhC+cOXDToCRqeh4qAWJbIl
+         ymcO/QyVqyHEdzt5agzIB9UAllixYLykz+Z4luEyBPbfYDh6h9FAnIhdR0AFSzp283cv
+         baB8i/BIGUQm5nFVb679PEEaaAvd5eCXHkpkpj7qFiAv591kYdYV6luVtwT7RtNNDX3C
+         /eGBpQbH1z5KjopffsiNACrIB6bjbMnSpuU07LB3mx3HfuK9Hc6vYI9He3UHhJt3baD1
+         sVrA==
+X-Gm-Message-State: AOAM533wnkSPTCqKoYbTQ9NVCMnhWy+HbP35lg99UsVb6VvvlWPLuGXj
+        FpgbQdEhCebfM3zelqbmGxs=
+X-Google-Smtp-Source: ABdhPJyp4u8cmwBfLx7giHjgA2KCYor0/RYxbOjGsQ/FZqFeau9qvpJOeeLDow5oAtz4aszE55hIVg==
+X-Received: by 2002:a17:902:b18b:: with SMTP id s11mr23283675plr.152.1595936577971;
+        Tue, 28 Jul 2020 04:42:57 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id 66sm19157012pfg.63.2020.07.28.04.42.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 04:42:57 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1] wireless: airo: use generic power management
+Date:   Tue, 28 Jul 2020 17:11:28 +0530
+Message-Id: <20200728114128.1218310-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <dd3c4cdda7252e9d40bdbef236d9aaa93af512c5.1594230107.git-series.maxime@cerno.tech>
-In-Reply-To: <dd3c4cdda7252e9d40bdbef236d9aaa93af512c5.1594230107.git-series.maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Tue, 28 Jul 2020 12:40:23 +0100
-Message-ID: <CAPY8ntARSJHkUvkTs19jk2JFf9qpxuGMaSRCtmO-dcphvDeu=A@mail.gmail.com>
-Subject: Re: [PATCH v4 30/78] drm/vc4: crtc: Clear the PixelValve FIFO on disable
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+Drivers using legacy power management .suspen()/.resume() callbacks
+have to manage PCI states and device's PM states themselves. They also
+need to take care of standard configuration registers.
 
-On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> In order to avoid a stale pixel getting stuck on mode change or a disable
-> / enable cycle, we need to make sure to flush the PV FIFO on disable.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Switch to generic power management framework using a single
+"struct dev_pm_ops" variable to take the unnecessary load from the driver.
+This also avoids the need for the driver to directly call most of the PCI
+helper functions and device power state control functions, as through
+the generic framework PCI Core takes care of the necessary operations,
+and drivers are required to do only device-specific jobs.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/net/wireless/cisco/airo.c | 39 +++++++++++++++----------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
-> ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index 7b178d67187f..13fe0e370fb3 100644
-> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
-> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -408,8 +408,7 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
->         if (vc4_encoder->post_crtc_disable)
->                 vc4_encoder->post_crtc_disable(encoder);
->
-> -       CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) & ~PV_CONTROL_EN);
-> -
-> +       vc4_crtc_pixelvalve_reset(crtc);
->         vc4_hvs_atomic_disable(crtc, old_state);
->
->         if (vc4_encoder->post_crtc_powerdown)
-> --
-> git-series 0.9.1
+diff --git a/drivers/net/wireless/cisco/airo.c b/drivers/net/wireless/cisco/airo.c
+index 827bb6d74815..f9627fa360a2 100644
+--- a/drivers/net/wireless/cisco/airo.c
++++ b/drivers/net/wireless/cisco/airo.c
+@@ -74,16 +74,19 @@ MODULE_DEVICE_TABLE(pci, card_ids);
+ 
+ static int airo_pci_probe(struct pci_dev *, const struct pci_device_id *);
+ static void airo_pci_remove(struct pci_dev *);
+-static int airo_pci_suspend(struct pci_dev *pdev, pm_message_t state);
+-static int airo_pci_resume(struct pci_dev *pdev);
++static int __maybe_unused airo_pci_suspend(struct device *dev);
++static int __maybe_unused airo_pci_resume(struct device *dev);
++
++static SIMPLE_DEV_PM_OPS(airo_pci_pm_ops,
++			 airo_pci_suspend,
++			 airo_pci_resume);
+ 
+ static struct pci_driver airo_driver = {
+-	.name     = DRV_NAME,
+-	.id_table = card_ids,
+-	.probe    = airo_pci_probe,
+-	.remove   = airo_pci_remove,
+-	.suspend  = airo_pci_suspend,
+-	.resume   = airo_pci_resume,
++	.name      = DRV_NAME,
++	.id_table  = card_ids,
++	.probe     = airo_pci_probe,
++	.remove    = airo_pci_remove,
++	.driver.pm = &airo_pci_pm_ops,
+ };
+ #endif /* CONFIG_PCI */
+ 
+@@ -5573,9 +5576,9 @@ static void airo_pci_remove(struct pci_dev *pdev)
+ 	pci_disable_device(pdev);
+ }
+ 
+-static int airo_pci_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused airo_pci_suspend(struct device *dev_d)
+ {
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct airo_info *ai = dev->ml_priv;
+ 	Cmd cmd;
+ 	Resp rsp;
+@@ -5591,25 +5594,21 @@ static int airo_pci_suspend(struct pci_dev *pdev, pm_message_t state)
+ 		return -EAGAIN;
+ 	disable_MAC(ai, 0);
+ 	netif_device_detach(dev);
+-	ai->power = state;
++	ai->power = PMSG_SUSPEND;
+ 	cmd.cmd = HOSTSLEEP;
+ 	issuecommand(ai, &cmd, &rsp);
+ 
+-	pci_enable_wake(pdev, pci_choose_state(pdev, state), 1);
+-	pci_save_state(pdev);
+-	pci_set_power_state(pdev, pci_choose_state(pdev, state));
++	device_wakeup_enable(dev_d);
+ 	return 0;
+ }
+ 
+-static int airo_pci_resume(struct pci_dev *pdev)
++static int __maybe_unused airo_pci_resume(struct device *dev_d)
+ {
+-	struct net_device *dev = pci_get_drvdata(pdev);
++	struct net_device *dev = dev_get_drvdata(dev_d);
+ 	struct airo_info *ai = dev->ml_priv;
+-	pci_power_t prev_state = pdev->current_state;
++	pci_power_t prev_state = to_pci_dev(dev_d)->current_state;
+ 
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-	pci_enable_wake(pdev, PCI_D0, 0);
++	device_wakeup_disable(dev_d);
+ 
+ 	if (prev_state != PCI_D1) {
+ 		reset_card(dev, 0);
+-- 
+2.27.0
+
