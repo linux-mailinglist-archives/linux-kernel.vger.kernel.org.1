@@ -2,207 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3318C2309FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7562230A04
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729532AbgG1M1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728300AbgG1M1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:27:51 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DA0C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:27:51 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id lw1so2668234pjb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s+TEGIPXgZrrcbsx1XNFhg6MOu1dRHr4d7tkCewZWDk=;
-        b=rhKz4wKx/8lsr6mEaErf+ONcyzFHjW9RMLVQsP8hyw8vOmj1xKC0rBKIQ6fy5pVmB+
-         JOXdWnSUYy2CyomYUPche2OM09/eH0f/pGn0GpzI1r7KmCxDTz9+3luGIRm8kQSsqSkF
-         MQleJUlHtxhUluC7GAazF3ATEpBgtaF9ubI+EQEAjb3ZIUuAXsLV3Bq1d/67+zt73/s2
-         haVPtF7EF9PbcPzSKDM1b76nRivkoRR++ibLoMtqMhfeV8vHkdAVdi//6PKk7CSvau+A
-         t4UTW7IpLRK2aJE+Flwz2zZ2gEVdSsK73tD2Lo9yy7k+dkEQqAl9gYeZsbBx0Dx0n9gW
-         G80A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s+TEGIPXgZrrcbsx1XNFhg6MOu1dRHr4d7tkCewZWDk=;
-        b=H4hEPaQCRZw23DdnKf/+1GaEerRV7njwm/PA0UNuO5w4Q/itkEVOslYOPhNrUdcLEj
-         tjk1qspanYj5sqQd4K8bYNnjQw7OL/XR0jsrns2fUIZBJK8JGKvyH7wcaS1pCbXZ4DAj
-         CmzXUmGU9j2HjWnnjcyWoUSfJockv0BfI4SLkiordMbQ+AT9eZ+j5Rq5AO7b/intslKQ
-         uPatAfORkaCvWk+gj/v2mzKzFA/azw9NDYCqy3OMXlayKUUxQlDjYQeYE6fR17yd4Ptg
-         uYSKTsp3iLV9fE2G1WnXzrEV3BjzDW0w2ijIC31qSlSDhBe+Im3KBQmN5qoRRLI5tPLA
-         Pb0Q==
-X-Gm-Message-State: AOAM532A0K5kO8yGHMI+Vgn1Hivx0D3WlztUYZjVTkreoX03FxGnrUjn
-        nCW58mi5fnGlRULBmEqhtxYQ4g==
-X-Google-Smtp-Source: ABdhPJyQxAlZ5+xrrP00MP0fRlb7O2Jy/vq7y2qOWfq/8x/bFz65cPxc71oG73GFgBjrIR807pGUyQ==
-X-Received: by 2002:a17:902:b495:: with SMTP id y21mr221618plr.116.1595939270932;
-        Tue, 28 Jul 2020 05:27:50 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id h23sm18602677pfo.166.2020.07.28.05.27.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Jul 2020 05:27:50 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 20:27:42 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Wei Li <liwei391@huawei.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>, zhangshaokun@hisilicon.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, guohanjun@huawei.com
-Subject: Re: [PATCH 1/4] drivers/perf: Add support for ARMv8.3-SPE
-Message-ID: <20200728122742.GB4343@leoy-ThinkPad-X240s>
-References: <20200724091607.41903-1-liwei391@huawei.com>
- <20200724091607.41903-2-liwei391@huawei.com>
+        id S1729579AbgG1M2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:28:50 -0400
+Received: from mout.gmx.net ([212.227.15.19]:33613 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728300AbgG1M2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:28:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1595939299;
+        bh=+Xhr2x2VYD1gWTmsb4Uofj+UiBxI7DdvuosyZzVaUM4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=KFWninAwHludxMxZQsuEzqYoXKBYCcGUd+YU82B6QxqADTgG0ZzR3Izd3f5yyROqS
+         DVFscsUdxRXyCcMEnEZhgBs7sekWgeez0btr08FVEVoy9kh3bWZ8Zfqq5HMWWlhX/I
+         9c5R1xKiSUgUrjjDyRr5JtBcQZcodpHMELOchWJo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([80.208.215.239]) by mail.gmx.com
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MmlXA-1kScia3yWE-00jsa8; Tue, 28 Jul 2020 14:28:19 +0200
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Landen Chao <landen.chao@mediatek.com>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: [PATCH v3] net: ethernet: mtk_eth_soc: fix mtu warning
+Date:   Tue, 28 Jul 2020 14:27:43 +0200
+Message-Id: <20200728122743.78489-1-frank-w@public-files.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724091607.41903-2-liwei391@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sc5b1pOFKi3FLEOULKn4OozLSQed687rhOjKqf+XCSsSamY2PgS
+ 2JzFzyIi+ztuNLr94TkKDcwv0V8CQVVgeRKACmKp1sOgDjY8lWDHTRhJEMdJ/ZdmLtdPzEY
+ cpxqGiswcGavM06bTX+Y0XB7iBhQhFTK5u1HoAKmuv4zSkW3djqLkiVs66c7HgTDaGRA8G4
+ K7il9Y7OEKrorNMSU9CNw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6AZmNkrR0vY=:/2GNiK7U0djtOSALtwVhUo
+ E4o95iSJIypzT+gKBd6jBwrAaoQaz4NPh+ydoyiRA5XRYp73aNToQ4CTIdCOAZFHPZ84jqiLy
+ NJ4uY4TYfoXNU0uze2bhR8446EZ7sX3Mm0hn2MJHSFjS8xKNigGXiB63k8nIOFuT4F3jYtqLt
+ kCA02I3FIT0j5RFMn+XCTY9PffplsrQT8yCM5xLQRJUxoo2a5rZIvzYenDz9tjUqejaJSYC8K
+ 5LMpCpZmYBsUR8Q0GhE/FM8/UFg+RqGQLWzmrtDBXFpddit4gTISIpZFYlddPeWo7EPXUZHK3
+ 41h2XWcEo4u8E9YSCkQQF9/6oeWbUZ/IxMygADgBbDbhaTtnXxcHcT8xf0/fqOHfsgRjtR3yl
+ VoFYeMk4zt2IPl59t17+KyBf1b657Ejon1XSadfIcL1Xhe2TJGrymbaw1bYCPRAIdhwI2SE11
+ Vj9Z4XkVrec242+SZ1NuiW4eGQjO0Ji2d0stOgqNsYQu5w6V01gmrg7hx2D6k9xN2ooj7aZ2M
+ 9+SGQ9x+QXp4cMI52AhkWpDMDOj8i2LVVjyQ8GrArJiSFJJv0702CbOI2rPl/DDrPI+zbiLL/
+ FH4zO7I/uX2PGnMVUp6qG9nvd1f9xcddW8NhK8ndEpqkfWPWVyAq6IveDxkDe7G6gMF8LwVqx
+ JRP22cnT4V3HI63ZM6f1N5UESv+/ALJV1u2qmZhRv1Zk5HNHzC4ZtKG2zbzRvD2uvMN50MKuh
+ bDn84ONkh7kzG8lI7XSvXdVKch0w2iz4D1jjydW4SssG4suLpia2NWLWnQ/VZeIXT07Tw4hqM
+ B7QCYyn0v/0bBuWLZJJ/qJR0v+n2hqqTqCBtZV82rwxZbTzFcKQr/0YrAbcnFxA2K6ewIf/FF
+ O3McjzbzcLu7tdgUmNdj0DQrygPNbWL0jv/5Nur+z9n9njA1VI7pM6hJgTueVCN4hCP20CzY1
+ CioTt5baNqnqbsny4bWUZlJrBFnt2Y62wKQqoitw+JlxkohUNNcIzpVftkaDFy3dsXSnVMek1
+ dEc/0Gifpkh+MAm14rhp1jrDdzbd2wr4jMnoE2oRaFifjLzJ+RRL9hgpQ6GwLo7vXHLq2QuvV
+ 1pLSuqN1ZZ58QNBRuX5bBlKOQ2WNItFRnayXemW0ol4P+MCBF/xDWRGg85YsF+igQ2mkjwmP8
+ WbAmRyqx7VfAqYTKkjjZQjqvaxiEIELx9vb7CjBM2xATxNxqfjUUOkGOfQKk5KVGLTUJgZoL8
+ RnRK+yzwbJdlI5wj8ej0nI2mwXOi+wlp6q7pK9Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wei,
+From: Landen Chao <landen.chao@mediatek.com>
 
-On Fri, Jul 24, 2020 at 05:16:04PM +0800, Wei Li wrote:
-> Armv8.3 extends the SPE by adding:
-> - Alignment field in the Events packet, and filtering on this event
->   using PMSEVFR_EL1.
-> - Support for the Scalable Vector Extension (SVE).
-> 
-> The main additions for SVE are:
-> - Recording the vector length for SVE operations in the Operation Type
->   packet. It is not possible to filter on vector length.
-> - Incomplete predicate and empty predicate fields in the Events packet,
->   and filtering on these events using PMSEVFR_EL1.
-> 
-> Update the check of pmsevfr for empty/partial predicated SVE and
-> alignment event in kernel driver.
-> 
-> Signed-off-by: Wei Li <liwei391@huawei.com>
-> ---
->  arch/arm64/include/asm/sysreg.h |  4 +++-
->  drivers/perf/arm_spe_pmu.c      | 18 ++++++++++++++----
->  2 files changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 463175f80341..be4c44ccdb56 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -281,7 +281,6 @@
->  #define SYS_PMSFCR_EL1_ST_SHIFT		18
->  
->  #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
-> -#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
->  
->  #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
->  #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
-> @@ -769,6 +768,9 @@
->  #define ID_AA64DFR0_PMUVER_8_5		0x6
->  #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
->  
-> +#define ID_AA64DFR0_PMSVER_8_2		0x1
-> +#define ID_AA64DFR0_PMSVER_8_3		0x2
-> +
->  #define ID_DFR0_PERFMON_SHIFT		24
->  
->  #define ID_DFR0_PERFMON_8_1		0x4
-> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
-> index e51ddb6d63ed..5ec7ee0c8fa1 100644
-> --- a/drivers/perf/arm_spe_pmu.c
-> +++ b/drivers/perf/arm_spe_pmu.c
-> @@ -54,7 +54,7 @@ struct arm_spe_pmu {
->  	struct hlist_node			hotplug_node;
->  
->  	int					irq; /* PPI */
-> -
-> +	int					pmuver;
+in recent Kernel-Versions there are warnings about incorrect MTU-Size
+like these:
 
-Since the version number is only 4 bits width, 'u16' would be enough
-to record SPE version number.
+eth0: mtu greater than device maximum
+mtk_soc_eth 1b100000.ethernet eth0: error -22 setting MTU to include DSA o=
+verhead
 
->  	u16					min_period;
->  	u16					counter_sz;
->  
-> @@ -80,6 +80,15 @@ struct arm_spe_pmu {
->  /* Keep track of our dynamic hotplug state */
->  static enum cpuhp_state arm_spe_pmu_online;
->  
-> +static u64 sys_pmsevfr_el1_mask[] = {
-> +	[ID_AA64DFR0_PMSVER_8_2] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
-> +		GENMASK_ULL(15, 12) | BIT_ULL(7) | BIT_ULL(5) | BIT_ULL(3) |
-> +		BIT_ULL(1),
-> +	[ID_AA64DFR0_PMSVER_8_3] = GENMASK_ULL(63, 48) | GENMASK_ULL(31, 24) |
-> +		GENMASK_ULL(18, 17) | GENMASK_ULL(15, 11) | BIT_ULL(7) |
-> +		BIT_ULL(5) | BIT_ULL(3) | BIT_ULL(1),
-> +};
+Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
+Fixes: 72579e14a1d3 ("net: dsa: don't fail to probe if we couldn't set the=
+ MTU")
+Fixes: 7a4c53bee332 ("net: report invalid mtu value via netlink extack")
+Signed-off-by: Ren=C3=A9 van Dorst <opensource@vdorst.com>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+=2D--
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Seems to me, the definitions for Aarch64 system registers should be
-placed into the file 'arch/arm64/include/asm/sysreg.h'.  Like below
-two macros:
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/eth=
+ernet/mediatek/mtk_eth_soc.c
+index 85735d32ecb0..a1c45b39a230 100644
+=2D-- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -2891,6 +2891,8 @@ static int mtk_add_mac(struct mtk_eth *eth, struct d=
+evice_node *np)
+ 	eth->netdev[id]->irq =3D eth->irq[0];
+ 	eth->netdev[id]->dev.of_node =3D np;
 
-  #define SYS_PMSEVFR_EL1_RES0_8_2		0x0000ffff00ff0f55UL
-  #define SYS_PMSEVFR_EL1_RES0_8_3		...
++	eth->netdev[id]->max_mtu =3D MTK_MAX_RX_LENGTH - MTK_RX_ETH_HLEN;
++
+ 	return 0;
 
-Let's wait for Will or Mark Rutland's comments for this, in case I
-mislead for this.
+ free_netdev:
+=2D-
+2.25.1
 
-> +
->  enum arm_spe_pmu_buf_fault_action {
->  	SPE_PMU_BUF_FAULT_ACT_SPURIOUS,
->  	SPE_PMU_BUF_FAULT_ACT_FATAL,
-> @@ -670,7 +679,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
->  	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
->  		return -ENOENT;
->  
-> -	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
-> +	if (arm_spe_event_to_pmsevfr(event) & ~sys_pmsevfr_el1_mask[spe_pmu->pmuver])
->  		return -EOPNOTSUPP;
->  
->  	if (attr->exclude_idle)
-> @@ -937,6 +946,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
->  			fld, smp_processor_id());
->  		return;
->  	}
-> +	spe_pmu->pmuver = fld;
->  
->  	/* Read PMBIDR first to determine whether or not we have access */
->  	reg = read_sysreg_s(SYS_PMBIDR_EL1);
-> @@ -1027,8 +1037,8 @@ static void __arm_spe_pmu_dev_probe(void *info)
->  	}
->  
->  	dev_info(dev,
-> -		 "probed for CPUs %*pbl [max_record_sz %u, align %u, features 0x%llx]\n",
-> -		 cpumask_pr_args(&spe_pmu->supported_cpus),
-> +		 "v%d probed for CPUs %*pbl [max_record_sz %u, align %u, features 0x%llx]\n",
-
-Let's output explict info, like:
-
-  "probed for CPUs %*pbl [pmuver %d, max_record_sz %u, align %u, features 0x%llx]\n",
-
-Thanks,
-Leo
-
-> +		 spe_pmu->pmuver, cpumask_pr_args(&spe_pmu->supported_cpus),
->  		 spe_pmu->max_record_sz, spe_pmu->align, spe_pmu->features);
->  
->  	spe_pmu->features |= SPE_PMU_FEAT_DEV_PROBED;
-> -- 
-> 2.17.1
-> 
