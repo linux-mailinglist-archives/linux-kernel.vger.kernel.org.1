@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0888230712
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97FB2306D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgG1JxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728251AbgG1JxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:53:07 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57889C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:53:07 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id t15so11156882iob.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 02:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=F08oeD2vpzf26eJV+e9uuXuUitIIoXTQkLFpWIuJYZY=;
-        b=NDRcWvbPX8+El0Hm8l2zZRi86BlKHdkPPc/1aSj6c5ks7mWo7/RH3hvlqSSRZYF/2v
-         bSD19PJrd/r/ylbeaXvjz3NjXT8iEFAq7I+w20pTCDHWCN8tsLgMlTrA7e26bUnqBlYV
-         Qs5jGM+SRfAMjqBAZjCsSIGFKjoZDBht7XW0DnlRLNwAyOViFaB+iM8x6wF+NGCPHNx7
-         QPtrvdBYm8oR4PzaFDvo/4G2MSglJ4DHJ1+O104X+gpwkdyN71QYWkxIgA81eF4bd0R9
-         TUNipWoQVzCANXLVYnz6L3tZ5El3+8M670KfcFI09N5b04376SLfguKX5zaVABSH3e8Y
-         LEOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=F08oeD2vpzf26eJV+e9uuXuUitIIoXTQkLFpWIuJYZY=;
-        b=gEz3+slG264M4ahk3RNO+uoVI0jAMw5YTtc9phTK8pwTPUb7YnXrbav3jT3EBil9E2
-         XMn7Z8KZPaQxFWcz+F2p7n4NhIydNhFxXntRgzqCc9sCwQgmIEyNm2U4VpkxmP8OEk/V
-         F3/Q81b1PeIO6ULK7mhn6GVYKcU8oirkYhQYCJJ1Jr8zAapitxV5j9EXvilRD+uLinyA
-         L2btvzBQeWbhY2lHWXXODu3O9wp4acisRLMOi2008svyRiMIbYrymyjvu+D4cAQmbw6U
-         xv02K+Fpg02QD2UEesenVg9zTR6dEo2zUxDBKgAcNpAcBuWGWwdaH+XEd0gbItkHfAzr
-         0gWQ==
-X-Gm-Message-State: AOAM531cotpSXQUtqo7XJKXTCtoxcSF+pxBZclsU/4+U+12eRZZWJOzu
-        6pTN0Mmn74ReSL9SqFzoNu2ncMVw75HIkg0ug+I=
-X-Google-Smtp-Source: ABdhPJzhWJlCvn4qx2MUmVaGupk22vNSFYQeS0FishwxF0sVk8aV8kiI0mWh7AVgUKYHjazJhYb4AqWtoflXBOmkn8w=
-X-Received: by 2002:a6b:e211:: with SMTP id z17mr21271891ioc.82.1595929986745;
- Tue, 28 Jul 2020 02:53:06 -0700 (PDT)
+        id S1728604AbgG1Jq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:46:26 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:58298 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728441AbgG1JqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 05:46:25 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 06S9iHF0005340
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Tue, 28 Jul 2020 02:44:28 -0700
+Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 02:44:07 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm/slab.c: add node spinlock protect in __cache_free_alien
+Date:   Tue, 28 Jul 2020 17:55:51 +0800
+Message-ID: <20200728095551.30634-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Received: by 2002:ac0:8a88:0:0:0:0:0 with HTTP; Tue, 28 Jul 2020 02:53:06
- -0700 (PDT)
-Reply-To: mrsjaneyzachary4@gmail.com
-From:   "Mrs.Janey Zachary" <thompsonclark699@gmail.com>
-Date:   Tue, 28 Jul 2020 09:53:06 +0000
-Message-ID: <CAFmscFbBVk+R5CwuGF_1_QbfbY2zUYHz1Bg7ZC+96Ph+i_wbCQ@mail.gmail.com>
-Subject: HI
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
+From: Zhang Qiang <qiang.zhang@windriver.com>
 
-Dear Beloved,
+We should add node spinlock protect "n->alien" which may be
+assigned to NULL in cpuup_canceled func. cause address access
+exception.
 
-I=E2=80=99m Mrs.Benson Safia, 69years old affected with breast cancer, the =
-wife of
+Fixes: 18bf854117c6 ("slab: use get_node() and kmem_cache_node() functions")
+Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+---
+ mm/slab.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-late Benson Safia,  the Director of High River Gold Mines Ltd Burkina Faso
+diff --git a/mm/slab.c b/mm/slab.c
+index a89633603b2d..290523c90b4e 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -759,8 +759,10 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
+ 
+ 	n = get_node(cachep, node);
+ 	STATS_INC_NODEFREES(cachep);
++	spin_lock(&n->list_lock);
+ 	if (n->alien && n->alien[page_node]) {
+ 		alien = n->alien[page_node];
++		spin_unlock(&n->list_lock);
+ 		ac = &alien->ac;
+ 		spin_lock(&alien->lock);
+ 		if (unlikely(ac->avail == ac->limit)) {
+@@ -769,14 +771,15 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
+ 		}
+ 		ac->entry[ac->avail++] = objp;
+ 		spin_unlock(&alien->lock);
+-		slabs_destroy(cachep, &list);
+ 	} else {
++		spin_unlock(&n->list_lock);
+ 		n = get_node(cachep, page_node);
+ 		spin_lock(&n->list_lock);
+ 		free_block(cachep, &objp, 1, page_node, &list);
+ 		spin_unlock(&n->list_lock);
+-		slabs_destroy(cachep, &list);
+ 	}
++
++	slabs_destroy(cachep, &list);
+ 	return 1;
+ }
+ 
+-- 
+2.26.2
 
-West Africa. I am contacting you because of my health condition,i need a
-
-reliable person, who will handle this project accordingly, accomplish my
-
-heart desire and utilize this fund. I have decided to donate the sum
-
-Twenty-Five Million Two Hundred Thousand United State Dollars Only
-
-($25,200,000.00) to Charity Organizations or to support the Orphans,
-
-Motherless Babies,Less privileged and free Medical & Medicine Poor
-
-People's around the World since I don t have any child and do not want the
-
-bank take over the fund. I don't really know if i am going to survive this
-
-stage, therefore if you ready to handle this project, kindly response so
-
-that i will instruct the bank to transfer the fund to your account.
-
-Contact my private email only if you are interested
-
-(mrs.bensonsafia1@gmail.com)
-
-Remain blessed in the name of the Lord.
-
-Regards
-
-Mrs.Benson Safia,
