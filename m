@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576F22315DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697462315DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730290AbgG1W6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:58:21 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37110 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730048AbgG1W5j (ORCPT
+        id S1730271AbgG1W6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:58:12 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:34563 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730071AbgG1W5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:57:39 -0400
-Received: by mail-qk1-f196.google.com with SMTP id b14so18749954qkn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:38 -0700 (PDT)
+        Tue, 28 Jul 2020 18:57:40 -0400
+Received: by mail-qv1-f65.google.com with SMTP id t6so5058771qvw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=O1hWqNrLHKFZNuDvjce4/jLBMOMAYAvW4jfBzbGx2O8=;
-        b=jo2i2e3nRbsIX3s4gjgCzhrdlJc5SHJKTveVPFvcwFuKsrXPu70g7toarRUvIUir4D
-         P2FaJoYD/3jCDMwBvXw2vYIgieeW0eKnGXVNCQyDsK6bB0nQi0XAfmZiHWXPm48tgMfT
-         8fkRrzNnsLrb+/0ytG+sTKIPi0uUqneH1ujrznxwU6zSoPQF8/1u4GNItvjE7q8ZxRIG
-         cFJdDF1fqlyKflM+aL+jkC7M7TldXprufvUEWHgVrgnoU+JEu1yxTDKeYgDB9LjD70hx
-         RcNg1qB98nEfy705VZMtKcdamWR5EthC6nJOXYJlA44fTslDDmyUJjE8tKY/8t3jGF29
-         U1OQ==
-X-Gm-Message-State: AOAM531+I+o2yCg2Z5qQRtseeHpQDa99xjwFVOIL1clmbQaf4wMo+mk9
-        oQFVNHslui6Q/D8EjnUnkIA=
-X-Google-Smtp-Source: ABdhPJwvpitgXf5RpWXfnkNO4WovC7TF/H8vQieNPQvRHjA0keS7CLU+rpA9xwXy1EMDska8T6SYqA==
-X-Received: by 2002:a05:620a:676:: with SMTP id a22mr10632438qkh.8.1595977058169;
-        Tue, 28 Jul 2020 15:57:38 -0700 (PDT)
+        bh=qgSJi4bkt+A/WrHOOKufXW7aJ0RRAww+tyiz0OA0xks=;
+        b=WXGDA1ECpE32hmiTV5H4qmb7ar0C1FIbst8sX5FHSCtmnDHxY1pPXE4ALkWnZ2l9MG
+         wosDUqUBPhhXRphRlRWxOaMZZmbxYM7bZYhfAmQe+vx3iF5ENI9WXt469u3IjPutMZyH
+         E8oYURAdIHZ6pFFXhO3xH3iFjJnGcUOyXQTBfppba26/Ii2sRniA4pX/wzLHGjdhrXxp
+         OydSla/GyP/Zm6VwhgC1IhMKhK6ETRO/uHj1t87Ai4AR0FQPObm8jL5ioM3VqI37hBB5
+         AVQ+LgsnSmVIgBF2AGoI9qBL/q+8CrcfS8DPM7NyVB2ukMca3rxL8rrN/CnJxfjOYYgx
+         1yew==
+X-Gm-Message-State: AOAM532HC3/+V33Wo6BW+QBxXjmn6jYTb8HoZw9sKmrQPaRv3cAUQVqd
+        Ii9qmDSom1iwIMU62oIV2jHQic+t
+X-Google-Smtp-Source: ABdhPJwcLi7x3UKMPNZhShhjERgnDEPaWUTwoyRwyX7oEj9/EPjn18f5YBo9B05RJ3U8aB7tPAuyTQ==
+X-Received: by 2002:a0c:9b94:: with SMTP id o20mr30579998qve.177.1595977059545;
+        Tue, 28 Jul 2020 15:57:39 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.37
+        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 15:57:37 -0700 (PDT)
+        Tue, 28 Jul 2020 15:57:38 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 18/21] x86/kaslr: Make minimum/image_size unsigned long
-Date:   Tue, 28 Jul 2020 18:57:19 -0400
-Message-Id: <20200728225722.67457-19-nivedita@alum.mit.edu>
+Subject: [PATCH v3 19/21] x86/kaslr: Replace unsigned long long with u64
+Date:   Tue, 28 Jul 2020 18:57:20 -0400
+Message-Id: <20200728225722.67457-20-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727230801.3468620-1-nivedita@alum.mit.edu>
 References: <20200727230801.3468620-1-nivedita@alum.mit.edu>
@@ -50,30 +50,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change type of minimum/image_size arguments in process_mem_region to
-unsigned long. These actually can never be above 4G (even on x86_64),
-and they're unsigned long in every other function except this one.
+No functional change.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 13 ++++++-------
+ arch/x86/boot/compressed/misc.h  |  4 ++--
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index 0e103d4d452e..b6ef77b644bd 100644
+index b6ef77b644bd..c49d479245d0 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -648,8 +648,8 @@ static void __process_mem_region(struct mem_vector *entry,
- }
+@@ -98,7 +98,7 @@ static bool memmap_too_large;
+  * Store memory limit: MAXMEM on 64-bit and KERNEL_IMAGE_SIZE on 32-bit.
+  * It may be reduced by "mem=nn[KMG]" or "memmap=nn[KMG]" command line options.
+  */
+-static unsigned long long mem_limit;
++static u64 mem_limit;
  
- static bool process_mem_region(struct mem_vector *region,
--			       unsigned long long minimum,
--			       unsigned long long image_size)
-+			       unsigned long minimum,
-+			       unsigned long image_size)
+ /* Number of immovable memory regions */
+ static int num_immovable_mem;
+@@ -141,8 +141,7 @@ enum parse_mode {
+ };
+ 
+ static int
+-parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
+-		enum parse_mode mode)
++parse_memmap(char *p, u64 *start, u64 *size, enum parse_mode mode)
  {
- 	int i;
- 	/*
+ 	char *oldp;
+ 
+@@ -172,7 +171,7 @@ parse_memmap(char *p, unsigned long long *start, unsigned long long *size,
+ 			 */
+ 			*size = 0;
+ 		} else {
+-			unsigned long long flags;
++			u64 flags;
+ 
+ 			/*
+ 			 * efi_fake_mem=nn@ss:attr the attr specifies
+@@ -211,7 +210,7 @@ static void mem_avoid_memmap(enum parse_mode mode, char *str)
+ 
+ 	while (str && (i < MAX_MEMMAP_REGIONS)) {
+ 		int rc;
+-		unsigned long long start, size;
++		u64 start, size;
+ 		char *k = strchr(str, ',');
+ 
+ 		if (k)
+@@ -611,7 +610,7 @@ static void __process_mem_region(struct mem_vector *entry,
+ 	unsigned long region_end;
+ 
+ 	/* Enforce minimum and memory limit. */
+-	region.start = max_t(unsigned long long, entry->start, minimum);
++	region.start = max_t(u64, entry->start, minimum);
+ 	region_end = min(entry->start + entry->size, mem_limit);
+ 
+ 	/* Give up if slot area array is full. */
+@@ -672,7 +671,7 @@ static bool process_mem_region(struct mem_vector *region,
+ 	 * immovable memory and @region.
+ 	 */
+ 	for (i = 0; i < num_immovable_mem; i++) {
+-		unsigned long long start, end, entry_end, region_end;
++		u64 start, end, entry_end, region_end;
+ 		struct mem_vector entry;
+ 
+ 		if (!mem_overlaps(region, &immovable_mem[i]))
+diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+index 726e264410ff..3efce27ba35c 100644
+--- a/arch/x86/boot/compressed/misc.h
++++ b/arch/x86/boot/compressed/misc.h
+@@ -70,8 +70,8 @@ int cmdline_find_option(const char *option, char *buffer, int bufsize);
+ int cmdline_find_option_bool(const char *option);
+ 
+ struct mem_vector {
+-	unsigned long long start;
+-	unsigned long long size;
++	u64 start;
++	u64 size;
+ };
+ 
+ #if CONFIG_RANDOMIZE_BASE
 -- 
 2.26.2
 
