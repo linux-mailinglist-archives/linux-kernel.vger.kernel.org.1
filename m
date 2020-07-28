@@ -2,83 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97FB2306D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7BD23071A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgG1Jq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 05:46:26 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:58298 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728441AbgG1JqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 05:46:25 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 06S9iHF0005340
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Tue, 28 Jul 2020 02:44:28 -0700
-Received: from pek-lpg-core1-vm1.wrs.com (128.224.156.106) by
- ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Jul 2020 02:44:07 -0700
-From:   <qiang.zhang@windriver.com>
-To:     <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
-        <iamjoonsoo.kim@lge.com>, <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mm/slab.c: add node spinlock protect in __cache_free_alien
-Date:   Tue, 28 Jul 2020 17:55:51 +0800
-Message-ID: <20200728095551.30634-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728378AbgG1J4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 05:56:04 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:65235 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728050AbgG1J4E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 05:56:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1595930163; x=1627466163;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=KhvNa8E40sXAjwFl0sqFki4lRCuz5/nv22mAe6ewzeA=;
+  b=QuyJxVG4Q2htSdvspev4fqfUJu2O4pFXJ3ONIT//1ZWwStisLFzEk4EJ
+   W01uHfSiQm+my9X/JELRZ1o9mynl1CoLRTTfVsyZENLCMx3GiapqUQG30
+   Q6SgFciMopk6wG/Mri9k7iV93GZvjB7pRbnDQao0uR+WqdC5txNgtoobB
+   ZMjknmVfpsd/i5Lr/0PJTUGr4jhD1WSpl/SvMJPYtHVNV2BLvZhwyoi4+
+   QQBBVroQe+8fOLUVsbeUrnYkNaRLLSpkNMuhRmyR++OlxArD2ts5Srh5d
+   Xy/rWkDD+kXy4n9tc4YzCUNXdRpF9O2unXoyZNM1A44dNWE/heyPcCOEY
+   w==;
+IronPort-SDR: 83JkuCKG7D1qAdNvrKfIem0ne4IQrJruMShDWB8fBEJvwBknXCGwROl1o4Azw/MHix89Y4dCKw
+ xGo3R8g94fH8wga1HArMilEpSf0z8T/u8vvDkHd8yI44yPd//qad/Ku4pM1cCIkLZrCyqdl0cM
+ 3UNDmgFClj7G2oOJYhNjmYtiNDikdKC8j1nmvh6lE70bU9rIfZwb881leNZhWl2WAWM1mQKTi7
+ AQfg/WNtbzcpgVnIOs2N3MJhT0V9FdIvKUInAlt9NGw9ojFu4tkPL8eRAroxs5O5YfM3zCdVbU
+ 3Nk=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="83495961"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2020 02:56:02 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 02:55:15 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 28 Jul 2020 02:55:59 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     Luis Alberto Herrera <luisalberto@google.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        "Miquel Raynal" <miquel.raynal@bootlin.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH] mtd: revert "spi-nor: intel: provide a range for poll_timout"
+Date:   Tue, 28 Jul 2020 12:55:58 +0300
+Message-ID: <159592990737.214287.1329265893720399161.b4-ty@microchip.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200610224652.64336-1-luisalberto@google.com>
+References: <20200610224652.64336-1-luisalberto@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qiang <qiang.zhang@windriver.com>
+On Wed, 10 Jun 2020 22:46:49 +0000, Luis Alberto Herrera wrote:
+> This change reverts aba3a882a178: "mtd: spi-nor: intel: provide a range
+> for poll_timout". That change introduces a performance regression when
+> reading sequentially from flash. Logging calls to intel_spi_read without
+> this change we get:
+> 
+> Start MTD read
+> [   20.045527] intel_spi_read(from=1800000, len=400000)
+> [   20.045527] intel_spi_read(from=1800000, len=400000)
+> [  282.199274] intel_spi_read(from=1c00000, len=400000)
+> [  282.199274] intel_spi_read(from=1c00000, len=400000)
+> [  544.351528] intel_spi_read(from=2000000, len=400000)
+> [  544.351528] intel_spi_read(from=2000000, len=400000)
+> End MTD read
+> 
+> [...]
 
-We should add node spinlock protect "n->alien" which may be
-assigned to NULL in cpuup_canceled func. cause address access
-exception.
+Applied to spi-nor/next, thanks!
 
-Fixes: 18bf854117c6 ("slab: use get_node() and kmem_cache_node() functions")
-Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
----
- mm/slab.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+[1/1] mtd: revert "spi-nor: intel: provide a range for poll_timout"
+      https://git.kernel.org/mtd/c/e93a977367b2
 
-diff --git a/mm/slab.c b/mm/slab.c
-index a89633603b2d..290523c90b4e 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -759,8 +759,10 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 
- 	n = get_node(cachep, node);
- 	STATS_INC_NODEFREES(cachep);
-+	spin_lock(&n->list_lock);
- 	if (n->alien && n->alien[page_node]) {
- 		alien = n->alien[page_node];
-+		spin_unlock(&n->list_lock);
- 		ac = &alien->ac;
- 		spin_lock(&alien->lock);
- 		if (unlikely(ac->avail == ac->limit)) {
-@@ -769,14 +771,15 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
- 		}
- 		ac->entry[ac->avail++] = objp;
- 		spin_unlock(&alien->lock);
--		slabs_destroy(cachep, &list);
- 	} else {
-+		spin_unlock(&n->list_lock);
- 		n = get_node(cachep, page_node);
- 		spin_lock(&n->list_lock);
- 		free_block(cachep, &objp, 1, page_node, &list);
- 		spin_unlock(&n->list_lock);
--		slabs_destroy(cachep, &list);
- 	}
-+
-+	slabs_destroy(cachep, &list);
- 	return 1;
- }
- 
+Best regards,
 -- 
-2.26.2
-
+Tudor Ambarus <tudor.ambarus@microchip.com>
