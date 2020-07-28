@@ -2,166 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F81D230991
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111CC2309A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgG1MHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:07:34 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51848 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728560AbgG1MHe (ORCPT
+        id S1729205AbgG1MLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:11:35 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:44842 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728793AbgG1MLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:07:34 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 54B30297F53
-Subject: Re: [PATCH v2 0/3] media: vimc: Allow multiple capture devices to use
- the same sensor
-To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Helen Koike <helen.koike@collabora.com>
-Cc:     kieran.bingham@ideasonboard.com,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
- <20200724121521.GA2705690@oden.dyn.berto.se>
- <20200724122104.GA18482@kaaira-HP-Pavilion-Notebook>
- <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
- <2a6cb067-283d-ca65-2698-1fae66a17d02@collabora.com>
- <20200728113959.GA6350@kaaira-HP-Pavilion-Notebook>
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Message-ID: <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
-Date:   Tue, 28 Jul 2020 14:07:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 08:11:34 -0400
+Received: by mail-lf1-f68.google.com with SMTP id y18so10849679lfh.11;
+        Tue, 28 Jul 2020 05:11:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YbhY91q5+cbKaui6Xn8c9WzRHG7wbBm55onNv1D4kWQ=;
+        b=RjOGwZQwVsrvThiWuwwScSH4Or5XbbNws9bC8n5EMADORVtlqXyJelBwl0UdXKTCYK
+         j1CLwVGIFn5kJM9VoE7Cui46rx6z7YNAunWkEz9NmNSyPV2tZalddT+/ibjF1AUPorFd
+         75EP6kOc2Ehskw9gz3uLTDsXOhkysFLdt32Kk/cVmBTykM1uG6HdqD6gLgJTy4DkD01f
+         pO60NAgsAnq1/4ppA2YcrCVGgjwyP+7AvohOarZOUi1j5DYhE9VJJ+mNlM6y7eRpZnf6
+         XKi79hPbS4K3jw+Rlj+oPaSTskpLj0p3Vnvr6G8vVXz3pmTdD4IK7oXhqkWI7rf1hYmi
+         ewrw==
+X-Gm-Message-State: AOAM532a2nXz9FtHqzGX4H9apNWgfAIjSIslpZiinER95FnSSRcBmCsA
+        2KkIvHwnoiLzzpTs2zBX1cc=
+X-Google-Smtp-Source: ABdhPJx7cyVpzBP2fpc28JYPbYEZEM83QMxPnmgF4I1a1Ztd2Im61fsqnfcZpSBSEv9aJhby0Mqr8g==
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr14552159lfc.51.1595938291522;
+        Tue, 28 Jul 2020 05:11:31 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id j2sm1751468ljb.98.2020.07.28.05.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 05:11:30 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@xi.terra>)
+        id 1k0OS5-0003Dj-HL; Tue, 28 Jul 2020 14:11:26 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Woojung Huh <woojung.huh@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH net 0/3] net: lan78xx: fix NULL deref and memory leak
+Date:   Tue, 28 Jul 2020 14:10:28 +0200
+Message-Id: <20200728121031.12323-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20200728113959.GA6350@kaaira-HP-Pavilion-Notebook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+The first two patches fix a NULL-pointer dereference at probe that can
+be triggered by a malicious device and a small transfer-buffer memory
+leak, respectively.
 
-On 28.07.20 13:39, Kaaira Gupta wrote:
-> On Mon, Jul 27, 2020 at 02:54:30PM -0300, Helen Koike wrote:
->> Hi,
->>
->> On 7/27/20 11:31 AM, Kieran Bingham wrote:
->>> Hi all,
->>>
->>> +Dafna for the thread discussion, as she's missed from the to/cc list.
->>>
->>>
->>> On 24/07/2020 13:21, Kaaira Gupta wrote:
->>>> On Fri, Jul 24, 2020 at 02:15:21PM +0200, Niklas Söderlund wrote:
->>>> Hi,
->>>>
->>>>> Hi Kaaira,
->>>>>
->>>>> Thanks for your work.
->>>>
->>>> Thanks for yours :D
->>>>
->>>>>
->>>>> On 2020-07-24 17:32:10 +0530, Kaaira Gupta wrote:
->>>>>> This is version 2 of the patch series posted by Niklas for allowing
->>>>>> multiple streams in VIMC.
->>>>>> The original series can be found here:
->>>>>> https://patchwork.kernel.org/cover/10948831/
->>>>>>
->>>>>> This series adds support for two (or more) capture devices to be
->>>>>> connected to the same sensors and run simultaneously. Each capture device
->>>>>> can be started and stopped independent of each other.
->>>>>>
->>>>>> Patch 1/3 and 2/3 deals with solving the issues that arises once two
->>>>>> capture devices can be part of the same pipeline. While 3/3 allows for
->>>>>> two capture devices to be part of the same pipeline and thus allows for
->>>>>> simultaneously use.
+For another subsystem I would have marked them:
 
-I wonder if these two patches are enough, since each vimc entity also have
-a 'process_frame' callback, but only one allocated frame. That means
-that the 'process_frame' can be called concurrently by two different streams
-on the same frame and cause corruption.
+	Cc: stable@vger.kernel.org	# 4.3
 
-Thanks,
-Dafna
+The third one replaces the driver's current broken endpoint lookup
+helper, which could end up accepting incomplete interfaces and whose
+results weren't even useeren
+Johan
 
->>>>>
->>>>> I'm just curious if you are aware of this series? It would replace the
->>>>> need for 1/3 and 2/3 of this series right?
->>>>
->>>> v3 of this series replaces the need for 1/3, but not the current version
->>>> (ie v4). v4 of patch 2/5 removes the stream_counter that is needed to
->>>> keep count of the calls to s_stream. Hence 1/3 becomes relevant again.
->>>
->>> So the question really is, how do we best make use of the two current
->>> series, to achieve our goal of supporting multiple streams.
->>>
->>> Having not parsed Dafna's series yet, do we need to combine elements of
->>> both ? Or should we work towards starting with this series and get
->>> dafna's patches built on top ?
->>>
->>> Or should patch 1/3 and 3/3 of this series be on top of Dafna's v4 ?
->>>
->>> (It might be noteworthy to say that Kaaira has reported successful
->>> multiple stream operation from /this/ series and her development branch
->>> on libcamera).
->>
->> Dafna's patch seems still under discussion, but I don't want to block progress in Vimc either.
->>
->> So I was wondering if we can move forward with Vimc support for multistreaming,
->> without considering Dafna's patchset, and we can do the clean up later once we solve that.
->>
->> What do you think?
-> 
-> I agree with supporting multiple streams with VIMC with this patchset,
-> and then we can refactor the counters for s_stream in VIMC later (over
-> this series) if dafna includes them in subsequent version of her patchset.
-> 
 
-I also think that adding support in the code will take much longer and should not
-stop us from supporting vimc independently.
+Johan Hovold (3):
+  net: lan78xx: add missing endpoint sanity check
+  net: lan78xx: fix transfer-buffer memory leak
+  net: lan78xx: replace bogus endpoint lookup
 
-Thanks,
-Dafna
+ drivers/net/usb/lan78xx.c | 113 +++++++++++---------------------------
+ 1 file changed, 31 insertions(+), 82 deletions(-)
 
->>
->> Regards,
->> Helen
->>
->>>
->>>
->>>>> 1.  https://lore.kernel.org/linux-media/20200522075522.6190-1-dafna.hirschfeld@collabora.com/
->>>>>
->>>>>>
->>>>>> Changes since v1:
->>>>>> 	- All three patches rebased on latest media-tree.
->>>>>> 	Patch 3:
->>>>>> 	- Search for an entity with a non-NULL pipe instead of searching
->>>>>> 	  for sensor. This terminates the search at output itself.
->>>>>>
->>>>>> Kaaira Gupta (3):
->>>>>>    media: vimc: Add usage count to subdevices
->>>>>>    media: vimc: Serialize vimc_streamer_s_stream()
->>>>>>    media: vimc: Join pipeline if one already exists
->>>>>>
->>>>>>   .../media/test-drivers/vimc/vimc-capture.c    | 35 ++++++++++++++++++-
->>>>>>   .../media/test-drivers/vimc/vimc-debayer.c    |  8 +++++
->>>>>>   drivers/media/test-drivers/vimc/vimc-scaler.c |  8 +++++
->>>>>>   drivers/media/test-drivers/vimc/vimc-sensor.c |  9 ++++-
->>>>>>   .../media/test-drivers/vimc/vimc-streamer.c   | 23 +++++++-----
->>>>>>   5 files changed, 73 insertions(+), 10 deletions(-)
->>>>>>
->>>>>> -- 
->>>>>> 2.17.1
->>>>>>
->>>>>
->>>>> -- 
->>>>> Regards,
->>>>> Niklas Söderlund
->>>
+-- 
+2.26.2
+
