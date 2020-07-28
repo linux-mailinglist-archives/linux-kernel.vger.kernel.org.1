@@ -2,54 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCD8230599
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6937230573
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgG1IjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:39:04 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51658 "EHLO elvis.franken.de"
+        id S1728158AbgG1Icc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:32:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47724 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728115AbgG1IjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:39:00 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1k0L8B-0000DV-02; Tue, 28 Jul 2020 10:38:39 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B8779C0A94; Tue, 28 Jul 2020 10:30:51 +0200 (CEST)
-Date:   Tue, 28 Jul 2020 10:30:51 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: qi_lb60: Fix routing to audio amplifier
-Message-ID: <20200728083051.GC9062@alpha.franken.de>
-References: <20200727181128.25756-1-paul@crapouillou.net>
+        id S1727808AbgG1Icb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:32:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C31BDB1EF;
+        Tue, 28 Jul 2020 08:32:40 +0000 (UTC)
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Subject: [PATCH] /proc/PID/smaps: Consistent whitespace output format
+Date:   Tue, 28 Jul 2020 10:32:07 +0200
+Message-Id: <20200728083207.17531-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727181128.25756-1-paul@crapouillou.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 27, 2020 at 08:11:28PM +0200, Paul Cercueil wrote:
-> The ROUT (right channel output of audio codec) was connected to INL
-> (left channel of audio amplifier) instead of INR (right channel of audio
-> amplifier).
-> 
-> Fixes: 8ddebad15e9b ("MIPS: qi_lb60: Migrate to devicetree")
-> Cc: stable@vger.kernel.org # v5.3
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/boot/dts/ingenic/qi_lb60.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+The keys in smaps output are padded to fixed width with spaces.
+All except for THPeligible that uses tabs (only since
+commit c06306696f83 ("mm: thp: fix false negative of shmem vma's THP
+eligibility")).
+Unify the output formatting to save time debugging some naïve parsers.
+(Part of the unification is also aligning FilePmdMapped with others.)
 
-applied to mips-next.
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ fs/proc/task_mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thomas.
-
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index dbda4499a859..5066b0251ed8 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -786,7 +786,7 @@ static void __show_smap(struct seq_file *m, const struct mem_size_stats *mss,
+ 	SEQ_PUT_DEC(" kB\nLazyFree:       ", mss->lazyfree);
+ 	SEQ_PUT_DEC(" kB\nAnonHugePages:  ", mss->anonymous_thp);
+ 	SEQ_PUT_DEC(" kB\nShmemPmdMapped: ", mss->shmem_thp);
+-	SEQ_PUT_DEC(" kB\nFilePmdMapped: ", mss->file_thp);
++	SEQ_PUT_DEC(" kB\nFilePmdMapped:  ", mss->file_thp);
+ 	SEQ_PUT_DEC(" kB\nShared_Hugetlb: ", mss->shared_hugetlb);
+ 	seq_put_decimal_ull_width(m, " kB\nPrivate_Hugetlb: ",
+ 				  mss->private_hugetlb >> 10, 7);
+@@ -816,7 +816,7 @@ static int show_smap(struct seq_file *m, void *v)
+ 
+ 	__show_smap(m, &mss, false);
+ 
+-	seq_printf(m, "THPeligible:		%d\n",
++	seq_printf(m, "THPeligible:    %d\n",
+ 		   transparent_hugepage_enabled(vma));
+ 
+ 	if (arch_pkeys_enabled())
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.27.0
+
