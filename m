@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2420F230C88
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF63230C8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730458AbgG1Ofa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730451AbgG1Of3 (ORCPT
+        id S1730468AbgG1Oh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:37:57 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:22458 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730391AbgG1Oh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:35:29 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1143DC0619D4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 07:35:29 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id g19so8880175ioh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 07:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wE63hykpdOWCKf+hJ+uo4tJ4NmzeI9PTAqJH7wvSMlc=;
-        b=LhfgIFjPN1Zt6pM27TDwc0D9sQ3LgHFulpPO2SX5S88mG/mDfs8otJIYAkvnkswxld
-         9pGQRB5MX9+c/pNc/D2jvjcUfkcaX+O+bWMi/ZdZWSGCZgEcirUgpaGCBHTTFwLDeXxm
-         blFwenzn7yqD2djWtvbrpRZs6R2NA61KUwTMx0D/r9/j+IuKq9D9CivCPsM5HlRumsun
-         8SeaeatA922UsvA+t5ljvF60Q6rxHuH9aAmjAJ5nqq0yc8rdtO4PxA+a9Y5/pkBdStPf
-         L/JGt34i7DNkTsg+8boIo3khF5Q26aC+wBgUC+PHLlS8m0uSQi46IDgH+/15eUls3L+F
-         tp9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wE63hykpdOWCKf+hJ+uo4tJ4NmzeI9PTAqJH7wvSMlc=;
-        b=jOZZCOjYAvAGudtQCeqhcerhWg+kBe4b/eNN4qbXFTQcSk6o1nUBfoVUGxtVu1WEmA
-         jxSyY70EvqPnZzLTp9Nss2+y/NBir17laJyLfKwJUwxwi+z59FxAbzeo68+Jmyu4SJ6Z
-         ULIyb9I3u6m2XlBrqiAaUL+hpg7by3siY9aNxcDL8vrEt+jkPCri6GZCqNOSJNCkXzIw
-         xZe2Yu6nolxGRz8bcmWJzlJI9MOEttq9F8k/hvud9r/c7EhzZIpoGMKL0//k0/MdbOf3
-         xv/fXD9+xAenQn5/sS+8RTCAkEKlOGxIijXUk9jM2lV252sUAzhQBnccvBM1efZp+jMI
-         YNMg==
-X-Gm-Message-State: AOAM530yg9UPGTKBiONOnBdlp4eybTRP88Dftw2FEz2sMxxg0qUPqQZY
-        0gddm30S2pT2uj8wvvjvvyUuFwZ9TosLedDdt9fPug==
-X-Google-Smtp-Source: ABdhPJy2WEagQVK01W1PoJL3TtsswctQA4jC85OF1eYxNmME8rZTNY5/2CM7uNz/FDIzfpS1C5VvpAW+f52j5jGXddQ=
-X-Received: by 2002:a05:6638:134a:: with SMTP id u10mr6463616jad.35.1595946928305;
- Tue, 28 Jul 2020 07:35:28 -0700 (PDT)
+        Tue, 28 Jul 2020 10:37:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595947075;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8QXSO/i3jp95ipr7aX72WVFqXrse1Eq2BTavylZNpEE=;
+        b=S/AS6QzhbunpS8am5UDnjZqHK2Wg4Ha1Gm1LxYfejkn093SoJpg6mxJI702M5ueNNLVRlk
+        +5tevpTQpczZBem2pQ/FHfXJQOPyopnFJAnLoZGG6R0ghCdx+11WW/CtQWyhVnDJkQ5lXG
+        yZeGQhWWwkoywPcJwOT9bnC6FIvlM5o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-349-w2s9GueHMyORLL8X2rDX-Q-1; Tue, 28 Jul 2020 10:37:54 -0400
+X-MC-Unique: w2s9GueHMyORLL8X2rDX-Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0DFC1932480;
+        Tue, 28 Jul 2020 14:37:52 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D47DE90E84;
+        Tue, 28 Jul 2020 14:37:42 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+Date:   Tue, 28 Jul 2020 16:37:38 +0200
+Message-Id: <20200728143741.2718593-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20200727134914.312934924@linuxfoundation.org> <CA+G9fYvBRONMYwX36Hcju4JA5TwstkT2Afyuy2DB1zQcBcc1CA@mail.gmail.com>
- <CAMZfGtVV-u7K+Z0vFLkoKv1UOTfk=a9+r_6G4PYfGLywwnkm3Q@mail.gmail.com>
-In-Reply-To: <CAMZfGtVV-u7K+Z0vFLkoKv1UOTfk=a9+r_6G4PYfGLywwnkm3Q@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 28 Jul 2020 20:05:16 +0530
-Message-ID: <CA+G9fYs__nNa-090Cm8j_EPYGRfh+y+VTX3ZqR_W1Jcu2suNEQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4.19 00/86] 4.19.135-rc1 review
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Lameter <cl@linux.com>, Roman Gushchin <guro@fb.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        linux-mm <linux-mm@kvack.org>, mm-commits@vger.kernel.org,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Arnd Bergmann <arnd@arndb.de>, lkft-triage@lists.linaro.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020 at 18:33, Muchun Song <songmuchun@bytedance.com> wrote:
->
-> Thanks for your test. I have reviewed the patch:
->
-> [PATCH 4.19 76/86] mm: memcg/slab: fix memory leak at non-root
-> kmem_cache destroy
->
-> There is a backport problem and I have pointed out the problem in that email.
+This is a continuation of "[PATCH RFC 0/5] KVM: x86: KVM_MEM_ALLONES
+memory" work: 
+https://lore.kernel.org/kvm/20200514180540.52407-1-vkuznets@redhat.com/
+and pairs with Julia's "x86/PCI: Use MMCONFIG by default for KVM guests":
+https://lore.kernel.org/linux-pci/20200722001513.298315-1-jusual@redhat.com/
 
-Thanks for your suggestions on the other email thread.
-I have made changes as you said and boot test pass on x86 now.
+PCIe config space can (depending on the configuration) be quite big but
+usually is sparsely populated. Guest may scan it by accessing individual
+device's page which, when device is missing, is supposed to have 'pci
+hole' semantics: reads return '0xff' and writes get discarded.
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 9c5eb4b08fc3..65bc49f19504 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -842,9 +842,7 @@ static int shutdown_memcg_caches(struct kmem_cache *s)
+When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
+I observed 8193 accesses to PCI hole memory. When such exit is handled
+in KVM without exiting to userspace, it takes roughly 0.000001 sec.
+Handling the same exit in userspace is six times slower (0.000006 sec) so
+the overal; difference is 0.04 sec. This may be significant for 'microvm'
+ideas.
 
- static void memcg_set_kmem_cache_dying(struct kmem_cache *s)
- {
--       mutex_lock(&slab_mutex);
-        s->memcg_params.dying = true;
--       mutex_unlock(&slab_mutex);
- }
+Note, the same speed can already be achieved by using KVM_MEM_READONLY
+but doing this would require allocating real memory for all missing
+devices and e.g. 8192 pages gives us 32mb. This will have to be allocated
+for each guest separately and for 'microvm' use-cases this is likely
+a no-go.
 
- static void flush_memcg_workqueue(struct kmem_cache *s)
+Introduce special KVM_MEM_PCI_HOLE memory: userspace doesn't need to
+back it with real memory, all reads from it are handled inside KVM and
+return '0xff'. Writes still go to userspace but these should be extremely
+rare.
 
-- Naresh
+The original 'KVM_MEM_ALLONES' idea had additional optimizations: KVM
+was mapping all 'PCI hole' pages to a single read-only page stuffed with
+0xff. This is omitted in this submission as the benefits are unclear:
+KVM will have to allocate SPTEs (either on demand or aggressively) and
+this also consumes time/memory. We can always take a look at possible
+optimizations later.
+
+Vitaly Kuznetsov (3):
+  KVM: x86: move kvm_vcpu_gfn_to_memslot() out of try_async_pf()
+  KVM: x86: introduce KVM_MEM_PCI_HOLE memory
+  KVM: selftests: add KVM_MEM_PCI_HOLE test
+
+ Documentation/virt/kvm/api.rst                |  19 ++-
+ arch/x86/include/uapi/asm/kvm.h               |   1 +
+ arch/x86/kvm/mmu/mmu.c                        |  19 +--
+ arch/x86/kvm/mmu/paging_tmpl.h                |  10 +-
+ arch/x86/kvm/x86.c                            |  10 +-
+ include/linux/kvm_host.h                      |   7 +-
+ include/uapi/linux/kvm.h                      |   3 +-
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  81 +++++++------
+ .../kvm/x86_64/memory_slot_pci_hole.c         | 112 ++++++++++++++++++
+ virt/kvm/kvm_main.c                           |  39 ++++--
+ 12 files changed, 243 insertions(+), 60 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/memory_slot_pci_hole.c
+
+-- 
+2.25.4
+
