@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BC92309B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:13:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C76C2309DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729274AbgG1MNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:13:42 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:8843 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728896AbgG1MNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:13:41 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 5009447AC61F34E300ED;
-        Tue, 28 Jul 2020 20:13:40 +0800 (CST)
-Received: from huawei.com (10.175.104.82) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Jul 2020
- 20:13:34 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <haren@us.ibm.com>, <herbert@gondor.apana.org.au>,
-        <ddstreet@ieee.org>, <linux-crypto@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] lib: Verify array index is correct before using it
-Date:   Tue, 28 Jul 2020 08:21:57 -0400
-Message-ID: <20200728122157.23120-1-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729262AbgG1MWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728300AbgG1MWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:22:43 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5157BC0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:22:42 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id q6so20880554ljp.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 05:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TESeuYU5SfzLxBWMQ4kl8vP13Tpf9d4XmBM8Gp63Ao8=;
+        b=tWs0cbIEtxsoEEWx87oQK2/AgPlRAXgY0LbgzgRA3ewO5DWL6Fyxb8WS3aulE9/J9C
+         X3RsXavLk4qFUAWa4p05w6NqoVN+pucr64IBxtUbfF0Mf29aAXTZyAEJTyX15Z9ovorj
+         wQEi4O2bCR8ckUmBIg6mwgpxBnP5IMhwzOd86n02qGgjjYaAjBM79Rn3x2dlCYpTnBqV
+         I+UTfpEnvgnzhrgm3JZqje3nsXlj8agQslaPouGHWhmpPABmgolCN9NXsxPDZd1PQh+v
+         NGQwfGtgnwr0M3pbpqj4n2+rOU/1w12GWAALbgiFNbUtF3NmRBGZFe+sqUlrg1pbaDHE
+         v+qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TESeuYU5SfzLxBWMQ4kl8vP13Tpf9d4XmBM8Gp63Ao8=;
+        b=UiuOEp1vaHwtFyTJS2xJ27l/PvtzKraOJvTOWCeRtJWEG5ZlyZ/msogjZAlfVZN6y0
+         QvDWFbBWmJ4Z0yJqGptlNfMhPSvjXteMCYdLXc4q7lUfS7zX87ClNxGzgAWkII5jnTAk
+         9o3hhpEugiakKrGsEc6CG78pFRGz7EXZ11IQ0DKqFcZstpaTgAevBxaUcsEi3TRR2qEs
+         LFz6HgRFDcS3nyKA/1446/GeOfgCvpYhSMLVB3obUas4yLhDD89WMC1ZZQFy5Jz1hlRb
+         xDXdaH85ZUfwypckcxkhbGbFCGSH61Yz3U/7ItFurvgto/OxrkJwbKUT7Ap8lRaX7XR9
+         w2zg==
+X-Gm-Message-State: AOAM531X8/2EIPedt6Gm1EoxE0JOz2VVgSqcsBf6xpPLv2Wc5wCPuBGP
+        4jbHCur0oCvHKONuviTqhY4pmEaWYwr4wEd8Rx6ygg==
+X-Google-Smtp-Source: ABdhPJxFKokBgoeIMtwaFCWZjTjcyuOq58U+G8s0TH2HfjNeeOsLST8x9LgKqX+cy/D0oEkPhul5xgMLR5yLY5nKt8c=
+X-Received: by 2002:a2e:90e:: with SMTP id 14mr5500607ljj.293.1595938960755;
+ Tue, 28 Jul 2020 05:22:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.104.82]
-X-CFilter-Loop: Reflected
+References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
+ <20200726222703.102701-1-yepeilin.cs@gmail.com> <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
+ <20200727131608.GD1913@kadam>
+In-Reply-To: <20200727131608.GD1913@kadam>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 28 Jul 2020 14:22:29 +0200
+Message-ID: <CACRpkda7k4L+nqAYE6z2FVZF-WT2Pm3CHH_=fW24xz_u+QCMRQ@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
+ kernel-infoleak in video_put_user()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Peilin Ye <yepeilin.cs@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vandana BN <bnvandana@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This code reads from the array before verifying that "c" is a valid
-index. Move test array offset code before use to fix it.
+On Mon, Jul 27, 2020 at 3:17 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-Fixes: 2da572c959dd ("lib: add software 842 compression/decompression")
-Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
----
- lib/842/842_compress.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+> Here are my latest warnings on linux-next from Friday.
 
-diff --git a/lib/842/842_compress.c b/lib/842/842_compress.c
-index c02baa4168e1..c37bfe0b9346 100644
---- a/lib/842/842_compress.c
-+++ b/lib/842/842_compress.c
-@@ -11,6 +11,7 @@
- #define MODULE_NAME "842_compress"
- 
- #include <linux/hashtable.h>
-+#include <linux/nospec.h>
- 
- #include "842.h"
- #include "842_debugfs.h"
-@@ -222,12 +223,14 @@ static int add_bits(struct sw842_param *p, u64 d, u8 n)
- static int add_template(struct sw842_param *p, u8 c)
- {
- 	int ret, i, b = 0;
--	u8 *t = comp_ops[c];
-+	u8 *t = NULL;
- 	bool inv = false;
- 
- 	if (c >= OPS_MAX)
- 		return -EINVAL;
-+	c = array_index_nospec(c, OPS_MAX);
- 
-+	t = comp_ops[c];
- 	pr_debug("template %x\n", t[4]);
- 
- 	ret = add_bits(p, t[4], OP_BITS);
-@@ -379,12 +382,14 @@ static int add_end_template(struct sw842_param *p)
- 
- static bool check_template(struct sw842_param *p, u8 c)
- {
--	u8 *t = comp_ops[c];
-+	u8 *t = NULL;
- 	int i, match, b = 0;
- 
- 	if (c >= OPS_MAX)
- 		return false;
-+	c = array_index_nospec(c, OPS_MAX);
- 
-+	t = comp_ops[c];
- 	for (i = 0; i < 4; i++) {
- 		if (t[i] & OP_ACTION_INDEX) {
- 			if (t[i] & OP_AMOUNT_2)
--- 
-2.17.1
+Thanks for sharing this Dan, very interesting findings.
 
+> drivers/gpio/gpiolib-cdev.c:473 lineevent_read() warn: check that 'ge' doesn't leak information (struct has a hole after 'id')
+
+We are revamping the ABI for 64bit compatibility so we are now running
+pahole on our stuff. I suppose we need to think about mending this old ABI
+as well.
+
+Yours,
+Linus Walleij
