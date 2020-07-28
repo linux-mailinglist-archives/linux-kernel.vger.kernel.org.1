@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A07623111E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7130523110E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732085AbgG1Rt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:49:58 -0400
-Received: from 5.mo179.mail-out.ovh.net ([46.105.43.140]:47194 "EHLO
-        5.mo179.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728398AbgG1Rt5 (ORCPT
+        id S1732063AbgG1Rmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:42:50 -0400
+Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:57691 "EHLO
+        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732035AbgG1Rmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:49:57 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 13:49:56 EDT
-Received: from player756.ha.ovh.net (unknown [10.108.42.83])
-        by mo179.mail-out.ovh.net (Postfix) with ESMTP id 0489F1734A7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 19:42:46 +0200 (CEST)
-Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
-        (Authenticated sender: groug@kaod.org)
-        by player756.ha.ovh.net (Postfix) with ESMTPSA id 1FCAC13EFFD15;
-        Tue, 28 Jul 2020 17:42:35 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-97G002e93d7dbd-e9bf-43f9-bbae-e865b5c28c99,96196EA346850768E7E70500A314E772A5EF2CEB) smtp.auth=groug@kaod.org
-Date:   Tue, 28 Jul 2020 19:42:35 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     v9fs-developer@lists.sourceforge.net,
-        Latchesar Ionkov <lucho@ionkov.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dominique Martinet <asmadeus@codewreck.org>
-Subject: Re: [V9fs-developer] [PATCH kernel] 9p/trans_fd: Check file mode at
- opening
-Message-ID: <20200728194235.52660c08@bahia.lan>
-In-Reply-To: <20200728124129.130856-1-aik@ozlabs.ru>
-References: <20200728124129.130856-1-aik@ozlabs.ru>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 28 Jul 2020 13:42:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1595958171;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=bm6xpS3UPlSHgrr/AwBHxbllr8iQgva7zYaEqmfywQE=;
+  b=c68YZvbKM6yvoUYtaO8IeJCtT59yKXQfAbftBGBAgv5t8N64G6o8mzin
+   lVSp8DnDsNOj/zhB9GuaLMIwhXuAx28UsPzTr1QyEhGfXWgOTEHvPytbb
+   +ai8cfgaATyb/S1REt4RFvd7Enw9aFAL8gRMWzQFChhpu4bU8WEL+ZGih
+   Q=;
+Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: tqfc4/1PrubWMv5ewSP0LHdTujHFP8U+m86/9kdKUf1uh2GxSqdRLKvvIjL7M7hl/BUVdvDraQ
+ 7xWgR+boyI9h5kdqmKdL4Un2zB12iUpSymGIbUEEQ7O8Hw5Bf2EayFOnHW8bDGV9iixxNVgLOC
+ ohHW/uZUKSlMasSdB5PVjkQ2CjgPz8+aAB4j7j0KQdWkgHS/AF8C2gxIr9YIlD7LejhmX4/3f6
+ NuNWHo6AupAExmeZCKgns9LBWBBDJcckRANyYzThzC0R8PZACty0nlqgJXI7DofDVY/yjkEeEd
+ sT0=
+X-SBRS: 2.7
+X-MesageID: 23367204
+X-Ironport-Server: esa3.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.75,406,1589256000"; 
+   d="scan'208";a="23367204"
+Date:   Tue, 28 Jul 2020 19:42:42 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+CC:     Julien Grall <julien@xen.org>, Juergen Gross <jgross@suse.com>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        Wei Liu <wl@xen.org>,
+        "Oleksandr Andrushchenko" <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <xen-devel@lists.xenproject.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Dan Carpenter" <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v3 4/4] xen: add helpers to allocate unpopulated memory
+Message-ID: <20200728174242.GB7191@Air-de-Roger>
+References: <20200727091342.52325-1-roger.pau@citrix.com>
+ <20200727091342.52325-5-roger.pau@citrix.com>
+ <b5460659-88a5-c2aa-c339-815d5618bcb5@xen.org>
+ <20200728165919.GA7191@Air-de-Roger>
+ <cb1790b3-2ad0-2c1b-a632-e4fea4b6bcfa@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 7175923058598975989
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedriedvgdduudegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepheekhfdtheegheehjeeludefkefhvdelfedvieehhfekhfdufffhueeuvdfftdfhnecukfhppedtrddtrddtrddtpdekvddrvdehfedrvddtkedrvdegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejheeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cb1790b3-2ad0-2c1b-a632-e4fea4b6bcfa@citrix.com>
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexey,
-
-Working on 9p now ?!? ;-)
-
-Cc'ing Dominique Martinet who appears to be the person who takes care of 9p
-these days.
-
-On Tue, 28 Jul 2020 22:41:29 +1000
-Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
-
-> The "fd" transport layer uses 2 file descriptors passed externally
-> and calls kernel_write()/kernel_read() on these. If files were opened
-> without FMODE_WRITE/FMODE_READ, WARN_ON_ONCE() will fire.
+On Tue, Jul 28, 2020 at 06:06:25PM +0100, Andrew Cooper wrote:
+> On 28/07/2020 17:59, Roger Pau Monné wrote:
+> > On Tue, Jul 28, 2020 at 05:48:23PM +0100, Julien Grall wrote:
+> >> Hi,
+> >>
+> >> On 27/07/2020 10:13, Roger Pau Monne wrote:
+> >>> To be used in order to create foreign mappings. This is based on the
+> >>> ZONE_DEVICE facility which is used by persistent memory devices in
+> >>> order to create struct pages and kernel virtual mappings for the IOMEM
+> >>> areas of such devices. Note that on kernels without support for
+> >>> ZONE_DEVICE Xen will fallback to use ballooned pages in order to
+> >>> create foreign mappings.
+> >>>
+> >>> The newly added helpers use the same parameters as the existing
+> >>> {alloc/free}_xenballooned_pages functions, which allows for in-place
+> >>> replacement of the callers. Once a memory region has been added to be
+> >>> used as scratch mapping space it will no longer be released, and pages
+> >>> returned are kept in a linked list. This allows to have a buffer of
+> >>> pages and prevents resorting to frequent additions and removals of
+> >>> regions.
+> >>>
+> >>> If enabled (because ZONE_DEVICE is supported) the usage of the new
+> >>> functionality untangles Xen balloon and RAM hotplug from the usage of
+> >>> unpopulated physical memory ranges to map foreign pages, which is the
+> >>> correct thing to do in order to avoid mappings of foreign pages depend
+> >>> on memory hotplug.
+> >> I think this is going to break Dom0 on Arm if the kernel has been built with
+> >> hotplug. This is because you may end up to re-use region that will be used
+> >> for the 1:1 mapping of a foreign map.
+> >>
+> >> Note that I don't know whether hotplug has been tested on Xen on Arm yet. So
+> >> it might be possible to be already broken.
+> >>
+> >> Meanwhile, my suggestion would be to make the use of hotplug in the balloon
+> >> code conditional (maybe using CONFIG_ARM64 and CONFIG_ARM)?
+> > Right, this feature (allocation of unpopulated memory separated from
+> > the balloon driver) is currently gated on CONFIG_ZONE_DEVICE, which I
+> > think could be used on Arm.
+> >
+> > IMO the right solution seems to be to subtract the physical memory
+> > regions that can be used for the identity mappings of foreign pages
+> > (all RAM on the system AFAICT) from iomem_resource, as that would make
+> > this and the memory hotplug done in the balloon driver safe?
 > 
-> This adds file mode checking in p9_fd_open; this returns -EBADF to
-> preserve the original behavior.
+> The right solution is a mechanism for translated guests to query Xen to
+> find regions of guest physical address space which are unused, and can
+> be safely be used for foreign/grant/other  mappings.
 > 
+> Please don't waste any more time applying more duct tape to a broken
+> system, and instead spend the time organising some proper foundations.
 
-So this would cause open() to fail with EBADF, which might look a bit
-weird to userspace since it didn't pass an fd... Is this to have a
-different error than -EIO that is returned when either rfd or wfd
-doesn't point to an open file descriptor ? If yes, why do we care ?
+The piece added here (using ZONE_DEVICE) will be relevant when Xen can
+provide the space to map foreign pages, it's just that right now it
+relies on iomem_resource instead of a Xen specific resource map that
+should be provided by the hypervisor. It should indeed be fixed, but
+right now this patch should allow a PVH dom0 to work slightly better.
+When Xen provides such areas Linux just needs to populate a custom Xen
+resource with them and use it instead of iomem_resurce.
 
-> Found by syzkaller.
-> 
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-> ---
->  net/9p/trans_fd.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-> index 13cd683a658a..62cdfbd01f0a 100644
-> --- a/net/9p/trans_fd.c
-> +++ b/net/9p/trans_fd.c
-> @@ -797,6 +797,7 @@ static int parse_opts(char *params, struct p9_fd_opts *opts)
->  
->  static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
->  {
-> +	bool perm;
->  	struct p9_trans_fd *ts = kzalloc(sizeof(struct p9_trans_fd),
->  					   GFP_KERNEL);
->  	if (!ts)
-> @@ -804,12 +805,16 @@ static int p9_fd_open(struct p9_client *client, int rfd, int wfd)
->  
->  	ts->rd = fget(rfd);
->  	ts->wr = fget(wfd);
-> -	if (!ts->rd || !ts->wr) {
-> +	perm = ts->rd && (ts->rd->f_mode & FMODE_READ) &&
-> +	       ts->wr && (ts->wr->f_mode & FMODE_WRITE);
-> +	if (!ts->rd || !ts->wr || !perm) {
->  		if (ts->rd)
->  			fput(ts->rd);
->  		if (ts->wr)
->  			fput(ts->wr);
->  		kfree(ts);
-> +		if (!perm)
-> +			return -EBADF;
->  		return -EIO;
->  	}
->  
+The Arm stuff I'm certainly not familiar with, and can't provide much
+insight on that. If it's best to just disable it and continue to rely
+on ballooned out pages that's fine.
 
+Roger.
