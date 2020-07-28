@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD6623009D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 06:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281DE2300CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 06:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgG1EYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 00:24:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
+        id S1726162AbgG1EbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 00:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbgG1EYv (ORCPT
+        with ESMTP id S1726004AbgG1EbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 00:24:51 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3198EC061794;
-        Mon, 27 Jul 2020 21:24:51 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id u63so4589990oie.5;
-        Mon, 27 Jul 2020 21:24:51 -0700 (PDT)
+        Tue, 28 Jul 2020 00:31:21 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD253C061794;
+        Mon, 27 Jul 2020 21:31:21 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k18so3005011pfp.7;
+        Mon, 27 Jul 2020 21:31:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/acPY9VLlTRiHv9DA9lq/Q62CiWAa35NOoQ1vhCiUdY=;
-        b=EbliRl//T33Pg+uxpoypCcicC6qsVqFyCoYU/oNffbr0b8HrhBswtfUgEhtGMYGfwG
-         PVvl3Fm0j6PrcdZkbNkXuNfbwoOKEKjY/7UKGYG5IPny9aZlyGFjJVEw7tAPTOH5/YFS
-         fi6WCaODHgm1fwWKPncG6VL4fqOF6Mf4y/Pb0DkRnOLQmTp5DFpbJ0PUJKQMubSiWCf8
-         bgLCe/PsQCESMO4LfW/Ziv9v8V4aoa7RUzgiTHbSqG4Qu/luzwThXTah7DVJ1Qgb9Dm0
-         E4XQQXP4ubtE1sk3QV92FR2ROrRwZ5NnNQkWkgFPYZqZb51MfDifjDYsH108HH9mVwFh
-         pMfg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v+vZ5D4lzefV/m6Wri5yBEiubcUZ9dLbHVAGhnF8Sco=;
+        b=dHFpNLnBI7i7q/GgeRddp2ijwrw3IwVr0tWLgS+N0fmjwKV853MwLy70ChD1bZFUO1
+         wl5wRHC1MgjqvggoTT3AuZo57TTkAr11qpEHEFbTpsHOUWNb6tfx16bX0tp7sRZ3A0J9
+         66dIYDQ6dWJz2IVqGpRng1iNq7TN36GtwWceIsL70xAvFWh12VyD4QLWPhEiBuD3uhZe
+         c6yN0+iQaREWBLptbBivah1QzKhJniHcb0w42gUgyQwwcM/+GtJ3EkYBy02AEiNT1G5c
+         W5IVhAOqoSOkNPkZm1PVZ9LBCVJnf9SYFbDdviBAMqc6BzE/TFCdytDb5k1QNMu7yZb9
+         XmGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/acPY9VLlTRiHv9DA9lq/Q62CiWAa35NOoQ1vhCiUdY=;
-        b=W3GRPMuVNshXnr5fAAqRmbRpdchvAvTBpGPhF6C5JG0ywy9D7dyaMrLcBou3fgfB4j
-         QTYfldy2H2WFFeBdE/CNBh2dxORh/eYVo24y7lBQWuIVfFOXBgijTsuo+RYu30GvbIKA
-         n/PDDeAL6QUQeTFQt0GwPOw6qog+gqXHnRsXcAkpSuhO+CT0Dh1FRnC570tMWNxpS4Hi
-         N2Y4lKGiAUQn5/XFIZ6YT6cGiObPRGZTjlg3cAP9oIziiUHMuJ4ckp/mRE5PipODCA2Z
-         mWUNkuNeRuKnmw+wXxfsrGHyk2CuNKaUPnpykfpSvQ3Uq9VcZc7UZzVwndHqktTFukbo
-         l8rQ==
-X-Gm-Message-State: AOAM531HnRShmo+St7nYHZkLBfI193Mj2a/nLkPl4x35pRKEiM32+4nU
-        yNrXhYkgB7+q6/1SGEWVgIxcQhP5Eak=
-X-Google-Smtp-Source: ABdhPJwVuI3NZvh8gyh1eGmsE5ugA/FPJKwGgF1lRkYYkYe+k6iXg7q80qsRXfi1ds1YxRQWPiwO9A==
-X-Received: by 2002:aca:1c12:: with SMTP id c18mr1903802oic.151.1595910290267;
-        Mon, 27 Jul 2020 21:24:50 -0700 (PDT)
-Received: from localhost.localdomain ([170.130.31.90])
-        by smtp.gmail.com with ESMTPSA id v3sm765198oiv.45.2020.07.27.21.24.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v+vZ5D4lzefV/m6Wri5yBEiubcUZ9dLbHVAGhnF8Sco=;
+        b=MKovf2/i+BIrGRViI8UPaXxJdZDHT+Lyqun6ScJh58v3BXtIFQSx+H9tBw/PiecfPd
+         DrWlav4a1XIV7FZfQtnavojkpZST8pyl2O8TPOxC8aZgpZp/+h27hvaXCUELEV0uDgdx
+         GxciixBYsMwKthqOqXHESGCrYe3VuwfpkSw49MlrRX+H/UvjjcwLKvT1JmD1VItjzAw7
+         vACvtJTkM12SWtON8HjgMn7xTCtKfR2YBj9N7dlOsMgejNX7+vH3X9Y26ZSCR7jAyVyg
+         BQ0ljZPsC/MNWIu33pZth7h2mYN15amMoHgLaauokJOy646ai7DbTVK45fxTsUNIdG11
+         9LoQ==
+X-Gm-Message-State: AOAM531I8rtIGY/yaFaHsIZNFduOecinRKu1sZ23HpbAxkZdQ9Yy0zYF
+        O8fnlbS7tMRTZEPCmIGwCR0=
+X-Google-Smtp-Source: ABdhPJxNSKY8nqzWNqUmpduCVcvLv5t3RJfq1EJosoCcXwZzA8Tp2Mh5firF6Od4Bd4KmDGn77+BDQ==
+X-Received: by 2002:a62:e202:: with SMTP id a2mr23719262pfi.8.1595910680994;
+        Mon, 27 Jul 2020 21:31:20 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.152.86])
+        by smtp.gmail.com with ESMTPSA id b82sm16914992pfb.215.2020.07.27.21.31.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 21:24:49 -0700 (PDT)
-From:   Forest Crossman <cyrozap@gmail.com>
-To:     linux-usb@vger.kernel.org
-Cc:     Forest Crossman <cyrozap@gmail.com>, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] usb: xhci: Fix ASMedia ASM1142 DMA addressing
-Date:   Mon, 27 Jul 2020 23:24:08 -0500
-Message-Id: <20200728042408.180529-3-cyrozap@gmail.com>
+        Mon, 27 Jul 2020 21:31:20 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kevin Curtis <kevin.curtis@farsite.co.uk>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v1] farsync: use generic power management
+Date:   Tue, 28 Jul 2020 09:58:10 +0530
+Message-Id: <20200728042809.91436-1-vaibhavgupta40@gmail.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200728042408.180529-1-cyrozap@gmail.com>
-References: <20200727090629.169701-1-cyrozap@gmail.com>
- <20200728042408.180529-1-cyrozap@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,39 +71,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've confirmed that the ASMedia ASM1142 has the same problem as the
-ASM2142/ASM3142, in that it too reports that it supports 64-bit DMA
-addresses when in fact it does not. As with the ASM2142/ASM3142, this
-can cause problems on systems where the upper bits matter, and adding
-the XHCI_NO_64BIT_SUPPORT quirk completely fixes the issue.
+The .suspend() and .resume() callbacks are not defined for this driver.
+Still, their power management structure follows the legacy framework. To
+bring it under the generic framework, simply remove the binding of
+callbacks from "struct pci_driver".
 
-Signed-off-by: Forest Crossman <cyrozap@gmail.com>
+Change code indentation from space to tab in "struct pci_driver".
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
 ---
- drivers/usb/host/xhci-pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wan/farsync.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index baa5af88ca67..3feaafebfe58 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -59,6 +59,7 @@
- #define PCI_DEVICE_ID_AMD_PROMONTORYA_1			0x43bc
- #define PCI_DEVICE_ID_ASMEDIA_1042_XHCI			0x1042
- #define PCI_DEVICE_ID_ASMEDIA_1042A_XHCI		0x1142
-+#define PCI_DEVICE_ID_ASMEDIA_1142_XHCI			0x1242
- #define PCI_DEVICE_ID_ASMEDIA_2142_XHCI			0x2142
+diff --git a/drivers/net/wan/farsync.c b/drivers/net/wan/farsync.c
+index 7916efce7188..15dacfde6b83 100644
+--- a/drivers/net/wan/farsync.c
++++ b/drivers/net/wan/farsync.c
+@@ -2636,12 +2636,10 @@ fst_remove_one(struct pci_dev *pdev)
+ }
  
- static const char hcd_name[] = "xhci_hcd";
-@@ -268,7 +269,8 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
- 		pdev->device == PCI_DEVICE_ID_ASMEDIA_1042A_XHCI)
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
--		pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI)
-+	    (pdev->device == PCI_DEVICE_ID_ASMEDIA_1142_XHCI ||
-+	     pdev->device == PCI_DEVICE_ID_ASMEDIA_2142_XHCI))
- 		xhci->quirks |= XHCI_NO_64BIT_SUPPORT;
+ static struct pci_driver fst_driver = {
+-        .name		= FST_NAME,
+-        .id_table	= fst_pci_dev_id,
+-        .probe		= fst_add_one,
+-        .remove	= fst_remove_one,
+-        .suspend	= NULL,
+-        .resume	= NULL,
++	.name		= FST_NAME,
++	.id_table	= fst_pci_dev_id,
++	.probe		= fst_add_one,
++	.remove		= fst_remove_one,
+ };
  
- 	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA &&
+ static int __init
 -- 
-2.20.1
+2.27.0
 
