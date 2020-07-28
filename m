@@ -2,127 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1EA230B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E220230B5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730075AbgG1NXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:23:31 -0400
-Received: from relay.sw.ru ([185.231.240.75]:37472 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729433AbgG1NXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:23:31 -0400
-Received: from [192.168.15.36]
-        by relay3.sw.ru with esmtp (Exim 4.93)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1k0PYr-0004Hm-NN; Tue, 28 Jul 2020 16:22:30 +0300
-Subject: Re: [RFC PATCH 5/5] mm: introduce MADV_DOEXEC
-To:     Anthony Yznaga <anthony.yznaga@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org
-Cc:     mhocko@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org, arnd@arndb.de,
-        ebiederm@xmission.com, keescook@chromium.org, gerg@linux-m68k.org,
-        christian.brauner@ubuntu.com, peterz@infradead.org,
-        esyr@redhat.com, jgg@ziepe.ca, christian@kellner.me,
-        areber@redhat.com, cyphar@cyphar.com, steven.sistare@oracle.com
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
- <1595869887-23307-6-git-send-email-anthony.yznaga@oracle.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <743a51db-dc27-c49c-9c65-ac164f5283ba@virtuozzo.com>
-Date:   Tue, 28 Jul 2020 16:22:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1730094AbgG1NXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730086AbgG1NXi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 09:23:38 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469DCC0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:23:38 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id 1so5486602vsl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QXfi6vnP/umEXJ3y6ImlOcqse9iDrshGxOOYKi2M06w=;
+        b=LheCqbjpyiQxtwihTuUKy4NYEy6OXctJA8A1Y2Sr5BuJnvgKdbi15QewOOWwOTF6LV
+         N2nrvCDnDI6GG/a3Jcr92B0KsFOfnIx3sJxvg47M9j3sObDZC9PWHbGNaB1knVrOKZMt
+         XaQkggAT9CIHSU6HwIIO0Uh6obozcw60whadWtPtoWDktgnp71oS0tVa3zhHJs+7n8+K
+         IAbkNycIfArwi90Sg+Df3RoB6L4iaWjWFKdl2zPrVAgC63StILnwkrJVR/XSS4BQYQAg
+         xqyjw3VvVR1efAQwRhhfVK/v7zHsJwwiKNVVj4dbwhCGVPp4+N3Jt8y8IK2q1SbP04DV
+         +a/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QXfi6vnP/umEXJ3y6ImlOcqse9iDrshGxOOYKi2M06w=;
+        b=IcYgl0x8BkGG6f/039uJgE2o0Chkfwq+jSwLz3pjE6JuDJARGfnRad2PdLZmVSJK/d
+         m0cYyjc46K38W0qctTHGqH9Du1FijZKeH+LvKr6VRl2c3+2LbY/16NtEMTSASISMyvtY
+         gUOxsftMwCFDXvfrGAnoMpXkx9bA3WoDkA3zJtvfuEgDXjUsVagrQb8Jv/6VO7ds77Tz
+         dXkaxXTN3uxMUVbiwWOj9Pp0x9x8pdwouhADDrvPom/W+4nRjGTNcUr9rYcNTkP1YqIG
+         ZsvpYULif6OJIzTKchWUvHDTtQI3XE0MZsp87SFSLZmeKq2U29TFqqAwMNZoOXe6oDjP
+         EcfQ==
+X-Gm-Message-State: AOAM533L+zd+jLRqNlYqnxSUmPlswgq9jONnoKyCUYp7QF+TTZ9KZcuC
+        whLZ3OG2KTZs6SGHvjz1uzsFzRBJIO8SKD2bzyF6ZQ==
+X-Google-Smtp-Source: ABdhPJzBOH10rk3Rdn+jqyz9OJv/90a0M5FuL1RWCmiobUTvZgrGDVcf4sKGcimEjjpR3cDYVpJ4HObqnToKzsJqr9g=
+X-Received: by 2002:a67:f60c:: with SMTP id k12mr19847110vso.8.1595942617191;
+ Tue, 28 Jul 2020 06:23:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1595869887-23307-6-git-send-email-anthony.yznaga@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200724091520.880211-1-tweek@google.com> <CAEjxPJ45ij3obT37ywn_edb9xb89z-SdwzejfN6+jrvAtghXfA@mail.gmail.com>
+ <CAHC9VhS4aXD8kcXnQ2MsYvjc--xXSUpsM1xtgq3X5DBT59ohhw@mail.gmail.com>
+ <CA+zpnLfczC=9HQA8s1oBGKGQO+OkuydF85o89dhSxdOyKBHMgg@mail.gmail.com> <20200728091220.5769b606@oasis.local.home>
+In-Reply-To: <20200728091220.5769b606@oasis.local.home>
+From:   =?UTF-8?Q?Thi=C3=A9baud_Weksteen?= <tweek@google.com>
+Date:   Tue, 28 Jul 2020 15:23:15 +0200
+Message-ID: <CA+zpnLc1i32LZGXU8q3=Ssd7Nhpzis0PFXjs8e+weav6rMpWbQ@mail.gmail.com>
+Subject: Re: [PATCH] selinux: add tracepoint on denials
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Nick Kralevich <nnk@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.2020 20:11, Anthony Yznaga wrote:
-> madvise MADV_DOEXEC preserves a memory range across exec.  Initially
-> only supported for non-executable, non-stack, anonymous memory.
-> MADV_DONTEXEC reverts the effect of a previous MADV_DOXEXEC call and
-> undoes the preservation of the range.  After a successful exec call,
-> the behavior of all ranges reverts to MADV_DONTEXEC.
-> 
-> Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> Signed-off-by: Anthony Yznaga <anthony.yznaga@oracle.com>
-> ---
->  include/uapi/asm-generic/mman-common.h |  3 +++
->  mm/madvise.c                           | 25 +++++++++++++++++++++++++
->  2 files changed, 28 insertions(+)
-> 
-> diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
-> index f94f65d429be..7c5f616b28f7 100644
-> --- a/include/uapi/asm-generic/mman-common.h
-> +++ b/include/uapi/asm-generic/mman-common.h
-> @@ -72,6 +72,9 @@
->  #define MADV_COLD	20		/* deactivate these pages */
->  #define MADV_PAGEOUT	21		/* reclaim these pages */
->  
-> +#define MADV_DOEXEC	22		/* do inherit across exec */
-> +#define MADV_DONTEXEC	23		/* don't inherit across exec */
-> +
->  /* compatibility flags */
->  #define MAP_FILE	0
->  
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index dd1d43cf026d..b447fa748649 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -103,6 +103,26 @@ static long madvise_behavior(struct vm_area_struct *vma,
->  	case MADV_KEEPONFORK:
->  		new_flags &= ~VM_WIPEONFORK;
->  		break;
-> +	case MADV_DOEXEC:
+On Tue, Jul 28, 2020 at 3:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> Where in that document does it say that trace events have a fixed size.
+> We have a lot of dynamically sized trace events.
 
-For me MADV_KEEPONEXEC sounds better as it's symmetric to MADV_KEEPONFORK.
+My mistake. From the "format" pseudo-file, I assumed the offset and
+size were fixed.
 
-> +		/*
-> +		 * MADV_DOEXEC is only supported on private, non-executable,
-> +		 * non-stack anonymous memory and if the VM_EXEC_KEEP flag
-> +		 * is available.
-> +		 */
-> +		if (!VM_EXEC_KEEP || vma->vm_file || vma->vm_flags & (VM_EXEC|VM_SHARED|VM_STACK)) {
-> +			error = -EINVAL;
-> +			goto out;
-> +		}
-> +		new_flags |= (new_flags & ~VM_MAYEXEC) | VM_EXEC_KEEP;
-> +		break;
-> +	case MADV_DONTEXEC:
-> +		if (!VM_EXEC_KEEP) {
-> +			error = -EINVAL;
-> +			goto out;
-> +		}
-> +		if (new_flags & VM_EXEC_KEEP)
-> +			new_flags |= (new_flags & ~VM_EXEC_KEEP) | VM_MAYEXEC;
-> +		break;
->  	case MADV_DONTDUMP:
->  		new_flags |= VM_DONTDUMP;
->  		break;
-> @@ -983,6 +1003,8 @@ static int madvise_inject_error(int behavior,
->  	case MADV_SOFT_OFFLINE:
->  	case MADV_HWPOISON:
->  #endif
-> +	case MADV_DOEXEC:
-> +	case MADV_DONTEXEC:
->  		return true;
->  
->  	default:
-> @@ -1037,6 +1059,9 @@ static int madvise_inject_error(int behavior,
->   *  MADV_DONTDUMP - the application wants to prevent pages in the given range
->   *		from being included in its core dump.
->   *  MADV_DODUMP - cancel MADV_DONTDUMP: no longer exclude from core dump.
-> + *  MADV_DOEXEC - On exec, preserve and duplicate this area in the new process
-> + *		  if the new process allows it.
-> + *  MADV_DONTEXEC - Undo the effect of MADV_DOEXEC.
->   *
->   * return values:
->   *  zero    - success
-> 
+> Please take a look at samples/trace_events/trace_events_sample.h
+> and read the example on __print_symbolic().
+> I think that's what you are looking for.
 
+Ack, thanks for pointing these out. I still think that my other
+argument (i.e. duplication of avc message) holds.
