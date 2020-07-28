@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CEF23145A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043EE231460
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729371AbgG1U5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 16:57:33 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15954 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728993AbgG1U5c (ORCPT
+        id S1729236AbgG1U7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 16:59:50 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:34489 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728728AbgG1U7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:57:32 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f20910e0001>; Tue, 28 Jul 2020 13:56:46 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 28 Jul 2020 13:57:31 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 28 Jul 2020 13:57:31 -0700
-Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
- 2020 20:57:31 +0000
-Subject: Re: [PATCH v4 3/6] mm/notifier: add migration invalidation type
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
-        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jerome Glisse" <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        "Christoph Hellwig" <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
-        Bharata B Rao <bharata@linux.ibm.com>
-References: <20200723223004.9586-1-rcampbell@nvidia.com>
- <20200723223004.9586-4-rcampbell@nvidia.com>
- <20200728191518.GA159104@nvidia.com>
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <08eb43d9-9650-f050-9cfb-d8ba5df6c5dd@nvidia.com>
-Date:   Tue, 28 Jul 2020 13:57:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Tue, 28 Jul 2020 16:59:49 -0400
+Received: from dante.cb.ettle ([143.159.226.70]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.179]) with ESMTPSA (Nemesis) id
+ 1N4Q4m-1kk9592UdC-011ScG; Tue, 28 Jul 2020 22:57:57 +0200
+Message-ID: <e051ac790380f04be4eec6937032b7dcd411ec77.camel@ettle.org.uk>
+Subject: Re: rtsx_pci not restoring ASPM state after suspend/resume
+From:   James Ettle <james@ettle.org.uk>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     =?UTF-8?Q?=E5=90=B3=E6=98=8A=E6=BE=84?= Ricky 
+        <ricky_wu@realtek.com>, Rui Feng <rui_feng@realsil.com.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Len Brown <lenb@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jacopo De Simoi <wilderkde@gmail.com>
+Date:   Tue, 28 Jul 2020 21:57:55 +0100
+In-Reply-To: <20200727214712.GA1777201@bjorn-Precision-5520>
+References: <20200727214712.GA1777201@bjorn-Precision-5520>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4 (3.36.4-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20200728191518.GA159104@nvidia.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595969807; bh=9Nj75AE4ohwwG9J6YbO3veFOmQ4ey7Egk4PXruXSzmU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=A2aVhD+B+AhG2E5d83qfwZzxxNrFv1TRhOrGwvam4fmgELGml0WuPUwQJgwjxZBg4
-         zmSjTa6i2efJWUcN/wUCWgfe8tmF6dTiAtH2AwAUsDkc9AJLoRuVMnCAEP4fGOIj1R
-         G7wqR8mmh+IJPYOolfdXKpBEWdSmQQ4jx4TzXk+AGmM9tzosm7cOWNeRzTOvSfySMg
-         Mc/W5xlkuMEAZfnKrSMtEyBpqbDuT94P/55M3a/7YTmrfnz+XuPxXm/lPQPjsSUFkK
-         zmSmW7uzwoHnXlFMJkolzml+ktsHPbaKP9GwaH6bC5V6O8zhD29UNEWmGCh7CwLjq9
-         sFBK7PeKxByow==
+X-Provags-ID: V03:K1:ngSr6pffow2MrQKByZsOgkOjw+48NYsh/QNN7LLUjsPAUCqjVX8
+ tL1Q5y77Y/Bs2y+PjxM3AhKLg7QCGAYBHkpKPbeoKgVN8NP/QG2k/yRXk5++m3OetQh41Ya
+ DJ9/QeTBamu7kmt8fHgxdHGFq50o1X95ELCiESFFKaeYfotykVdh+uABvrcDJjdSac5fzVX
+ uWHE9VjHfUjE5Zz/8vLvw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I1+llK0lwZA=:1+7ikQm0qnZ3cRtuwgvMtX
+ xVzHZJ6LvJC74PFGUjYCPmw3FKUWyqLBJQMp0zpRCSj43yEiwBsyFbTfNv/B+8Wkoeb2zzpGy
+ GhCVDU1/m5pBYkJzF5gawSoJPIOSgVbY8K4iIJ8e3ByWO/wY1J9sVydnsXDsmzq2o3orfIp+s
+ 50xonzRQw0XJL9rMHfWjydEYRz9FG6NsVB/KHtktEgtGHm+8enL+TvaG0aAbE5brVgZC2DH5z
+ cGXfdFdylZrWxk+mK6tOFGIL00ZAd/mJZXBuh+/yk8SWyDUMT8OXVumjEISQygo28sh5Mdj4g
+ 6q+2OjpjYZrPlpdmN1gug540sln/YMFlpaNsl1ci+K9wFPQ693Lob5A0XUH6IXnyhOGPncsMF
+ mepD7X7E1QWOxMLXlolu1pbD6gsLlvTzysFnnJwx1OzY2y/G/lFbu/kQtLnOHX/iy/SZ0iZFp
+ ag4VHsTYBGUZI37IKeyDAECD86XZXh9VWLQvyUF6V0oWqcq4zcdcnQyiHpHufB9cHzLJGVqcA
+ ZDImJnreNYTTQQwYM7odkgnMyEax4axPqNweoGdeNYPREP4LTFloRFh1cMF6G/8j6jRIIA/S0
+ Cmz91i9mqs40hGtCEieLqMhsU+wMUeJh9F2xtQESk0x9s13MWs1FSEsATuc2f24eyjJrjsK5g
+ fNP9TRaWl6HKmE5bGCZnu57fruv4HdDYBE6bxQhETFzgoydlWx6F//luMGPvEZOJ5R8nyNpI8
+ /Kndv/TTIPcPa7eLH/79LABiQ7hmWKL78/+LDZ4n+myEyIxCUlF7OuwDPad+K+NIMN/6kX4pv
+ +aHhPB53pBMOfBaOpK99C/NMnnrsHscaKPHzeQ9xAqLMczpHuD5o03ee0Gd1y7kt4ZFjDhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/28/20 12:15 PM, Jason Gunthorpe wrote:
-> On Thu, Jul 23, 2020 at 03:30:01PM -0700, Ralph Campbell wrote:
->>   static inline int mm_has_notifiers(struct mm_struct *mm)
->> @@ -513,6 +519,7 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
->>   	range->start = start;
->>   	range->end = end;
->>   	range->flags = flags;
->> +	range->migrate_pgmap_owner = NULL;
->>   }
+On Mon, 2020-07-27 at 16:47 -0500, Bjorn Helgaas wrote:
 > 
-> Since this function is commonly called and nobody should read
-> migrate_pgmap_owner unless MMU_NOTIFY_MIGRATE is set as the event,
-> this assignment can be dropped.
+> I don't see anything in rtsx that enables L0s.  Can you collect the
+> dmesg log when booting with "pci=earlydump"?  That will show whether
+> the BIOS left it this way.  The PCI core isn't supposed to do this,
+> so
+> if it did, we need to fix that.
 > 
-> Jason
 
-I agree.
-Acked-by: Ralph Campbell <rcampbell@nvidia.com>
+dmesg log attached to the bugzilla as:
+
+https://bugzilla.kernel.org/attachment.cgi?id=290655
+
+(to keep everything in one place).
+
+Thanks,
+-James
+
