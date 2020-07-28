@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9442315D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110812315CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730015AbgG1W5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:57:35 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44397 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729908AbgG1W51 (ORCPT
+        id S1729954AbgG1W5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:57:31 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:40780 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729924AbgG1W52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:57:27 -0400
-Received: by mail-qk1-f193.google.com with SMTP id j187so20411594qke.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:26 -0700 (PDT)
+        Tue, 28 Jul 2020 18:57:28 -0400
+Received: by mail-qv1-f65.google.com with SMTP id s15so5535598qvv.7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=oxsgcjV2U6R0bAkATN4y2iNIyTG55u4DxFZJ6Ep0G0I=;
-        b=fiB4F64Vudygx8z9EeDsxZPuyIu4EQcFtnI/7XIABQKOEjeKMUTkGLW4ZUUEt4RSRX
-         +Ww5gsjZ3lR8y07EGs3Y3FsjgQ+UnlBw6zNJlzU9kzgujwuEOqSfn92uotueNNEb3Kce
-         Ifg+PRA1iy5FHuGw/IZocadAdaxsNCjI+RPM6v3UtrgS5MCF5H/2znKwygpJ485e5L8B
-         zSEpOuMsq/qdfR1HesdB+EV1PbKE+Vx52kaNODo8VrQi8tw9k/O9nfepQXPRosh/Nd9t
-         g13wxmpjTQt8P4GXqclHSAgm8Z6gEIpaZIZCuO+yyxt4JUMdc/qx6YHGkaoceTnSC9+O
-         nvGA==
-X-Gm-Message-State: AOAM533onholKI/vMNCRSI5FbThslQLUVKPtpb1UmKcVLgpG0RSLYAlm
-        lzN1/Hx+F4p+GFF+0LndT+M=
-X-Google-Smtp-Source: ABdhPJwZAoG5g63snvvMzoTJt4YRIDqEyjejSSUxUg/5xMDLJe8pjP9sUxfMu2SX+p4aR9+Z2aRl3w==
-X-Received: by 2002:ae9:e506:: with SMTP id w6mr28784037qkf.376.1595977046074;
+        bh=ESKdeH7FWxVxj3d1s0fSjMD7/0xneAXJUAAZXggto0g=;
+        b=SBljUd5GfnK6WXl41UIXWwWnVroHpdYQPfCXulOsjfUcCPo73rAm6yIj521F5IjTAQ
+         mwAkkGRc2D7RYKUCABSfqjCsMTORTRK0bqD0kIUlbQqQGvVxyTA93AAOzZ8kuAMrOPiD
+         xScGvN/iOdLD+vpIRC2IIsJsxlX6v8FHjL/8Z41n75miOMaOMBmx4aa86jndC90E/APW
+         TPM2R7fTL08RpENpmLaoZShxeZzyFU4B5qIXqdR9XPOZRGa9Oev4HUTAnb4P9fbWf1K1
+         J/Ncazwic3EAvjBx5gF70J3gALfHV213OYTnIVuEo2+T9uicDjcsHMzn0sVgfa1MWXp+
+         g7Iw==
+X-Gm-Message-State: AOAM531wSBy/+h/BuQTKAKNTgLI7olE7spz8jHFk1DSnAUjJVOjHE6gX
+        KfsFyw0sC+t42qCMMWwlPEw=
+X-Google-Smtp-Source: ABdhPJzpYEhc40zg/n6qVRbkg4vgsusuzQbtapE7mcJDlR31hWF5El7QLbhEufxmJjBLYwtPuQZOOg==
+X-Received: by 2002:ad4:5148:: with SMTP id g8mr28711861qvq.173.1595977046937;
         Tue, 28 Jul 2020 15:57:26 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.25
+        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 15:57:25 -0700 (PDT)
+        Tue, 28 Jul 2020 15:57:26 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 03/21] x86/kaslr: Fix process_efi_entries comment
-Date:   Tue, 28 Jul 2020 18:57:04 -0400
-Message-Id: <20200728225722.67457-4-nivedita@alum.mit.edu>
+Subject: [PATCH v3 04/21] x86/kaslr: Initialize mem_limit to the real maximum address
+Date:   Tue, 28 Jul 2020 18:57:05 -0400
+Message-Id: <20200728225722.67457-5-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727230801.3468620-1-nivedita@alum.mit.edu>
 References: <20200727230801.3468620-1-nivedita@alum.mit.edu>
@@ -50,31 +50,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit
-  0982adc74673 ("x86/boot/KASLR: Work around firmware bugs by excluding EFI_BOOT_SERVICES_* and EFI_LOADER_* from KASLR's choice")
-process_efi_entries will return true if we have an EFI memmap, not just
-if it contained EFI_MEMORY_MORE_RELIABLE regions.
+On 64-bit, the kernel must be placed below MAXMEM (64TiB with 4-level
+paging or 4PiB with 5-level paging). This is currently not enforced by
+KASLR, which thus implicitly relies on physical memory being limited to
+less than 64TiB.
+
+On 32-bit, the limit is KERNEL_IMAGE_SIZE (512MiB). This is enforced by
+special checks in __process_mem_region.
+
+Initialize mem_limit to the maximum (depending on architecture), instead
+of ULLONG_MAX, and make sure the command-line arguments can only
+decrease it. This makes the enforcement explicit on 64-bit, and
+eliminates the 32-bit specific checks to keep the kernel below 512M.
+
+Check upfront to make sure the minimum address is below the limit before
+doing any work.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/boot/compressed/kaslr.c | 41 +++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 19 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index c31f3a5ab9e4..1ab67a84a781 100644
+index 1ab67a84a781..da45e66cb6e4 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -742,8 +742,8 @@ static bool process_mem_region(struct mem_vector *region,
+@@ -94,8 +94,11 @@ static unsigned long get_boot_seed(void)
+ static bool memmap_too_large;
  
- #ifdef CONFIG_EFI
+ 
+-/* Store memory limit specified by "mem=nn[KMG]" or "memmap=nn[KMG]" */
+-static unsigned long long mem_limit = ULLONG_MAX;
++/*
++ * Store memory limit: MAXMEM on 64-bit and KERNEL_IMAGE_SIZE on 32-bit.
++ * It may be reduced by "mem=nn[KMG]" or "memmap=nn[KMG]" command line options.
++ */
++static unsigned long long mem_limit;
+ 
+ /* Number of immovable memory regions */
+ static int num_immovable_mem;
+@@ -221,7 +224,7 @@ static void mem_avoid_memmap(enum parse_mode mode, char *str)
+ 
+ 		if (start == 0) {
+ 			/* Store the specified memory limit if size > 0 */
+-			if (size > 0)
++			if (size > 0 && size < mem_limit)
+ 				mem_limit = size;
+ 
+ 			continue;
+@@ -311,7 +314,8 @@ static void handle_mem_options(void)
+ 			if (mem_size == 0)
+ 				break;
+ 
+-			mem_limit = mem_size;
++			if (mem_size < mem_limit)
++				mem_limit = mem_size;
+ 		} else if (!strcmp(param, "efi_fake_mem")) {
+ 			mem_avoid_memmap(PARSE_EFI, val);
+ 		}
+@@ -322,7 +326,9 @@ static void handle_mem_options(void)
+ }
+ 
  /*
-- * Returns true if mirror region found (and must have been processed
-- * for slots adding)
-+ * Returns true if we processed the EFI memmap, which we prefer over the E820
-+ * table if it is available.
-  */
- static bool
- process_efi_entries(unsigned long minimum, unsigned long image_size)
+- * In theory, KASLR can put the kernel anywhere in the range of [16M, 64T).
++ * In theory, KASLR can put the kernel anywhere in the range of [16M, MAXMEM)
++ * on 64-bit, and [16M, KERNEL_IMAGE_SIZE) on 32-bit.
++ *
+  * The mem_avoid array is used to store the ranges that need to be avoided
+  * when KASLR searches for an appropriate random address. We must avoid any
+  * regions that are unsafe to overlap with during decompression, and other
+@@ -620,10 +626,6 @@ static void __process_mem_region(struct mem_vector *entry,
+ 	unsigned long start_orig, end;
+ 	struct mem_vector cur_entry;
+ 
+-	/* On 32-bit, ignore entries entirely above our maximum. */
+-	if (IS_ENABLED(CONFIG_X86_32) && entry->start >= KERNEL_IMAGE_SIZE)
+-		return;
+-
+ 	/* Ignore entries entirely below our minimum. */
+ 	if (entry->start + entry->size < minimum)
+ 		return;
+@@ -656,11 +658,6 @@ static void __process_mem_region(struct mem_vector *entry,
+ 		/* Reduce size by any delta from the original address. */
+ 		region.size -= region.start - start_orig;
+ 
+-		/* On 32-bit, reduce region size to fit within max size. */
+-		if (IS_ENABLED(CONFIG_X86_32) &&
+-		    region.start + region.size > KERNEL_IMAGE_SIZE)
+-			region.size = KERNEL_IMAGE_SIZE - region.start;
+-
+ 		/* Return if region can't contain decompressed kernel */
+ 		if (region.size < image_size)
+ 			return;
+@@ -845,15 +842,16 @@ static void process_e820_entries(unsigned long minimum,
+ static unsigned long find_random_phys_addr(unsigned long minimum,
+ 					   unsigned long image_size)
+ {
++	/* Bail out early if it's impossible to succeed. */
++	if (minimum + image_size > mem_limit)
++		return 0;
++
+ 	/* Check if we had too many memmaps. */
+ 	if (memmap_too_large) {
+ 		debug_putstr("Aborted memory entries scan (more than 4 memmap= args)!\n");
+ 		return 0;
+ 	}
+ 
+-	/* Make sure minimum is aligned. */
+-	minimum = ALIGN(minimum, CONFIG_PHYSICAL_ALIGN);
+-
+ 	if (process_efi_entries(minimum, image_size))
+ 		return slots_fetch_random();
+ 
+@@ -866,8 +864,6 @@ static unsigned long find_random_virt_addr(unsigned long minimum,
+ {
+ 	unsigned long slots, random_addr;
+ 
+-	/* Make sure minimum is aligned. */
+-	minimum = ALIGN(minimum, CONFIG_PHYSICAL_ALIGN);
+ 	/* Align image_size for easy slot calculations. */
+ 	image_size = ALIGN(image_size, CONFIG_PHYSICAL_ALIGN);
+ 
+@@ -914,6 +910,11 @@ void choose_random_location(unsigned long input,
+ 	/* Prepare to add new identity pagetables on demand. */
+ 	initialize_identity_maps();
+ 
++	if (IS_ENABLED(CONFIG_X86_32))
++		mem_limit = KERNEL_IMAGE_SIZE;
++	else
++		mem_limit = MAXMEM;
++
+ 	/* Record the various known unsafe memory ranges. */
+ 	mem_avoid_init(input, input_size, *output);
+ 
+@@ -923,6 +924,8 @@ void choose_random_location(unsigned long input,
+ 	 * location:
+ 	 */
+ 	min_addr = min(*output, 512UL << 20);
++	/* Make sure minimum is aligned. */
++	min_addr = ALIGN(min_addr, CONFIG_PHYSICAL_ALIGN);
+ 
+ 	/* Walk available memory entries to find a random address. */
+ 	random_addr = find_random_phys_addr(min_addr, output_size);
 -- 
 2.26.2
 
