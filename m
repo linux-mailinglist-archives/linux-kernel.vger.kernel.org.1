@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFED23026B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5135230263
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727078AbgG1GMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 02:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726880AbgG1GMa (ORCPT
+        id S1726990AbgG1GJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 02:09:41 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:45232 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726407AbgG1GJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:12:30 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECC4C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:12:30 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id lw1so2256052pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FTEn6vC4TzDFRYgBbBTvo3anpjXgbfxoEfVzcA7SkSk=;
-        b=MUg3NliKoM4l5YHCqj5bM6/ricxHDSN+fUGuIqDe/VZsMi11o6T2ZWNrRmiGKK5bXn
-         dLZvVFi/IzR3WXetg3BP7uU3fBwXJssdNdgivnfmBA7cBYg+K5O4ADsLf8uOtjMgwCmW
-         BHVtqNd36wdDmGMHvhmLxiLOiWxKlF+4EXujG3fIufA2TNNIHe5Nz+L91MFOKPFXIVKl
-         SQJdZRQBhdKoCi1prMQzl3mdc4RBqCnSLm8j77reyUikupG/akrM9Siwn4HHjKS03a5W
-         7YnQPphP5IXd+BRNyHBQC9v7DGBNN9AcgsvqcnvlqDDqrmOCT3LpU7oErJhyYlMdKGUO
-         gTgg==
+        Tue, 28 Jul 2020 02:09:40 -0400
+Received: by mail-ej1-f66.google.com with SMTP id g7so11155856ejw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:09:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FTEn6vC4TzDFRYgBbBTvo3anpjXgbfxoEfVzcA7SkSk=;
-        b=JB19ACFx6HF+b6O8EB1gF+SLIhTmxDyI2YyOP6w1ZQkF7lNk4E8zPGFQIsQdF6jJdM
-         FtcYdU/EUpc5OcgUs6KyfxTRcNz5sOizoIK0fjtlsvmzUtRmkyfsrlPrwUEx5P7m5nmK
-         UObL3+z1maSastsi7Z9j3oXrVu6Xbix2TcY/90CPExHxYXfz9Ujmr/8Z7sbo45fkLcT9
-         1raX6sVYwscTySOmZk/9Gnpt4oFaMBZB3wQYNvBDLDKY8RaTeIVMsY53MJ7/3ilrVcvS
-         12Ru4EqTgOuv8GUxRaK16Dyexc+oue+K6NugXbOMTbB8Dqvr7wwnP7Rh7m39+SKosqVe
-         3zRA==
-X-Gm-Message-State: AOAM532xTlTpFSVi8b7DeGoThooJl/4sLBnBpdwjaPjsyaBababLatej
-        I180Xj/CsFdZqeBz5sQcxC6THA==
-X-Google-Smtp-Source: ABdhPJy3fY7LAadwN1KhzxnyyGUckPuRZaBmAV2u3CSU6/2WJqNnkEDPuCSPRvntmZyPct9tGqDxrQ==
-X-Received: by 2002:a17:902:7484:: with SMTP id h4mr7663521pll.139.1595916750072;
-        Mon, 27 Jul 2020 23:12:30 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id b22sm1545548pju.26.2020.07.27.23.12.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 23:12:29 -0700 (PDT)
-Date:   Mon, 27 Jul 2020 23:08:57 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     rishabhb@codeaurora.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, sidgup@codeaurora.org, stable@vger.kernel.org
-Subject: Re: [RESEND v1] soc: qcom: pdr: Reorder the PD state indication ack
-Message-ID: <20200728060857.GB202429@builder.lan>
-References: <20200701195954.9007-1-sibis@codeaurora.org>
+        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ppP5UfQphCez2tdWV8+rtk+knr2xftIobaRmhJBQS/4=;
+        b=C42XtBmGmnihMnE1xnnUHoyBdBct/7WO0EB1dxrx2814S4USoys/JLsgDkrPhh7uUd
+         S+/oNzXBJe7tXC+Pg5lAPXA9Zk+VAwSqcgFGtoFEk9BZ+TRT04TOzNBg8QifAo2axUjf
+         ZBlI81DPZzBz7K/Dlzg9jAvtDFuXQ/AAMBuGlwgD6+SwwDf6RN4HATC/iIe51R/eks2T
+         HyZRrhoxcZyYTwKTu65bXA3hRTiHi5yNU3P8Y9lZOyO/SOMc9uHtm1TlNGNoxxf+g/OP
+         f4NcnFEMJogeRcQRdzEnF04cA1/qvpfPxAN/tlu3P42aFy3cVMq94cTsniYTB2jLpI5d
+         XZYQ==
+X-Gm-Message-State: AOAM533mlX4hsiwH0LgmcwgnK3FF2q1ZCfYqJfAEngEUM4c7CEBrZ1oM
+        fbaGaDXNcPLihhWMEYQZIMfgO7qA
+X-Google-Smtp-Source: ABdhPJyX3klw9O6n49WLiLsfOC2u93YdBMc6bx2bsI+z7nQfj2YPZF9gjx55zyt9vobahCkPvnpSVw==
+X-Received: by 2002:a17:906:3a8c:: with SMTP id y12mr23604986ejd.251.1595916577919;
+        Mon, 27 Jul 2020 23:09:37 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id i14sm5780334edr.15.2020.07.27.23.09.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jul 2020 23:09:37 -0700 (PDT)
+Subject: Re: [PATCH] tty/synclink: remove leftover bits of non-PCI card
+ support
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>, gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200727130501.31005-1-hch@lst.de>
+ <8a015ca4-e837-8fa5-684c-46fca8104ea5@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b286c9f4-f501-96a8-8e2d-52f46b53ab1a@kernel.org>
+Date:   Tue, 28 Jul 2020 08:09:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701195954.9007-1-sibis@codeaurora.org>
+In-Reply-To: <8a015ca4-e837-8fa5-684c-46fca8104ea5@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 01 Jul 12:59 PDT 2020, Sibi Sankar wrote:
+On 28. 07. 20, 8:05, Jiri Slaby wrote:
+> On 27. 07. 20, 15:05, Christoph Hellwig wrote:
+>> Since commit 1355cba9c3ba ("tty/synclink: remove ISA support"), the
+>> synlink driver only supports PCI card.  Remove any leftover dead code
+>> to support other cards.
+> 
+> So now you can remove also the defines and bus_type completely:
+> $ git grep -E 'MGSL_BUS_TYPE_(E?ISA|PCI)'
+> drivers/tty/synclink_gt.c:              info->bus_type = MGSL_BUS_TYPE_PCI;
+> drivers/tty/synclinkmp.c:               info->bus_type = MGSL_BUS_TYPE_PCI;
+> include/uapi/linux/synclink.h:#define MGSL_BUS_TYPE_ISA 1
+> include/uapi/linux/synclink.h:#define MGSL_BUS_TYPE_EISA        2
+> include/uapi/linux/synclink.h:#define MGSL_BUS_TYPE_PCI 5
+> 
+> $ git grep -w bus_type drivers/tty/synclink*
+> drivers/tty/synclink_gt.c:      unsigned int bus_type;
+> drivers/tty/synclink_gt.c:              info->bus_type = MGSL_BUS_TYPE_PCI;
+> drivers/tty/synclinkmp.c:       unsigned int bus_type;
+> /* expansion bus type (ISA,EISA,PCI) */
+> drivers/tty/synclinkmp.c:               info->bus_type = MGSL_BUS_TYPE_PCI;
 
-> The Protection Domains (PD) have a mechanism to keep its resources
-> enabled until the PD down indication is acked. Reorder the PD state
-> indication ack so that clients get to release the relevant resources
-> before the PD goes down.
-> 
-> Fixes: fbe639b44a82 ("soc: qcom: Introduce Protection Domain Restart helpers")
-> Reported-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+And also MAX_ISA_DEVICES and MAX_PCI_DEVICES are (transitively) unused.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> ---
-> 
-> I couldn't find the previous patch on patchworks. Resending the patch
-> since it would need to land on stable trees as well
-> 
->  drivers/soc/qcom/pdr_interface.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_interface.c
-> index a90d707da6894..088dc99f77f3f 100644
-> --- a/drivers/soc/qcom/pdr_interface.c
-> +++ b/drivers/soc/qcom/pdr_interface.c
-> @@ -279,13 +279,15 @@ static void pdr_indack_work(struct work_struct *work)
->  
->  	list_for_each_entry_safe(ind, tmp, &pdr->indack_list, node) {
->  		pds = ind->pds;
-> -		pdr_send_indack_msg(pdr, pds, ind->transaction_id);
->  
->  		mutex_lock(&pdr->status_lock);
->  		pds->state = ind->curr_state;
->  		pdr->status(pds->state, pds->service_path, pdr->priv);
->  		mutex_unlock(&pdr->status_lock);
->  
-> +		/* Ack the indication after clients release the PD resources */
-> +		pdr_send_indack_msg(pdr, pds, ind->transaction_id);
-> +
->  		mutex_lock(&pdr->list_lock);
->  		list_del(&ind->node);
->  		mutex_unlock(&pdr->list_lock);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+-- 
+js
