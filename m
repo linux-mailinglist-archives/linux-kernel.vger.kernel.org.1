@@ -2,186 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FF9230EE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5416C230EED
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731329AbgG1QJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:09:34 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40768 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731137AbgG1QJd (ORCPT
+        id S1731332AbgG1QKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:10:12 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:58137 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730977AbgG1QKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:09:33 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8i4R002212;
-        Tue, 28 Jul 2020 11:08:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1595952524;
-        bh=9tm697YUlZck3EcdIDbHBexEjd7OXPA86pwnJv0PSHI=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=bek0hKiwPysCGrZNtYs6mOaZUUU+SWdPUoFZgBSsES9IbKoJ0fhey4DoN2qTG5HBK
-         suwczytIrg+34TrJdlgd266RBorRlLdapvs21Bqr1ktGsysHJPWvJKcEcFk5RKxYl5
-         P6LNKynsDrV7EQcNLGToNu701zxsKQTduwXRl07A=
-Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8iW3067723;
-        Tue, 28 Jul 2020 11:08:44 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
- Jul 2020 11:08:44 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 28 Jul 2020 11:08:44 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SG8iwO002367;
-        Tue, 28 Jul 2020 11:08:44 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 2/2] ASoC: tlv320adcx140: Add GPO configuration and drive output config
-Date:   Tue, 28 Jul 2020 11:08:33 -0500
-Message-ID: <20200728160833.24130-2-dmurphy@ti.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200728160833.24130-1-dmurphy@ti.com>
-References: <20200728160833.24130-1-dmurphy@ti.com>
+        Tue, 28 Jul 2020 12:10:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595952608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=68skKtohRktSUhcQpYcMA5A6ChuyWmL7uEqYzTC6xtA=;
+        b=b4BG6qoct7s+K+/zGSWEA0yHoBkOMBkTiyXTpRyUIXi+Y6JdBTp9AJssl4394H6I2wtmhk
+        meQRyiS9UHSKu3398nK2YU5xgrq2KsE6XgraishWtVU/4UjMZhi0ucqSiD9QS/pYB8AyYp
+        w51+GImJ+ykeS/FpEghYedo4AvXvH4g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-4ns7HXGvPnuVKPsA6urTIw-1; Tue, 28 Jul 2020 12:10:04 -0400
+X-MC-Unique: 4ns7HXGvPnuVKPsA6urTIw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C443106B247;
+        Tue, 28 Jul 2020 16:10:00 +0000 (UTC)
+Received: from krava (unknown [10.40.192.211])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D295A60CD0;
+        Tue, 28 Jul 2020 16:09:55 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 18:09:54 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
+ attr->sample_period for libpfm4 events
+Message-ID: <20200728160954.GD1319041@krava>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-3-irogers@google.com>
+ <20200728155940.GC1319041@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728155940.GC1319041@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add General Purpose Output (GPO) configuration and driver output
-configuration.  The GPOs can be configured as a GPO, IRQ, SDOUT or a
-PDMCLK output.  In addition the output drive can be configured with
-various configurations.
+On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
+> On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
+> > From: Stephane Eranian <eranian@google.com>
+> > 
+> > Before:
+> > $ perf record -c 10000 --pfm-events=cycles:period=77777
+> > 
+> > Would yield a cycles event with period=10000, instead of 77777.
+> > 
+> > This was due to an ordering issue between libpfm4 parsing
+> > the event string and perf record initializing the event.
+> > 
+> > This patch fixes the problem by preventing override for
+> > events with attr->sample_period != 0 by the time
+> > perf_evsel__config() is invoked. This seems to have been the
+> > intent of the author.
+> > 
+> > Signed-off-by: Stephane Eranian <eranian@google.com>
+> > Reviewed-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/evsel.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > index 811f538f7d77..8afc24e2ec52 100644
+> > --- a/tools/perf/util/evsel.c
+> > +++ b/tools/perf/util/evsel.c
+> > @@ -976,8 +976,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+> >  	 * We default some events to have a default interval. But keep
+> >  	 * it a weak assumption overridable by the user.
+> >  	 */
+> > -	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+> > -				     opts->user_interval != ULLONG_MAX)) {
+> > +	if (!attr->sample_period) {
+> 
+> I was wondering why this wouldn't break record/top
+> but we take care of the via record_opts__config
+> 
+> as long as 'perf test attr' works it looks ok to me
 
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- sound/soc/codecs/tlv320adcx140.c | 50 +++++++++++++++++++++++++++++++-
- sound/soc/codecs/tlv320adcx140.h | 14 ++++++---
- 2 files changed, 59 insertions(+), 5 deletions(-)
+hum ;-)
 
-diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
-index d900af967f8c..d554f091734c 100644
---- a/sound/soc/codecs/tlv320adcx140.c
-+++ b/sound/soc/codecs/tlv320adcx140.c
-@@ -37,6 +37,13 @@ struct adcx140_priv {
- 	unsigned int slot_width;
- };
- 
-+static const char * const gpo_config_names[] = {
-+	"ti,gpo-config-1",
-+	"ti,gpo-config-2",
-+	"ti,gpo-config-3",
-+	"ti,gpo-config-4",
-+};
-+
- static const struct reg_default adcx140_reg_defaults[] = {
- 	{ ADCX140_PAGE_SELECT, 0x00 },
- 	{ ADCX140_SW_RESET, 0x00 },
-@@ -60,10 +67,10 @@ static const struct reg_default adcx140_reg_defaults[] = {
- 	{ ADCX140_PDMCLK_CFG, 0x40 },
- 	{ ADCX140_PDM_CFG, 0x00 },
- 	{ ADCX140_GPIO_CFG0, 0x22 },
-+	{ ADCX140_GPO_CFG0, 0x00 },
- 	{ ADCX140_GPO_CFG1, 0x00 },
- 	{ ADCX140_GPO_CFG2, 0x00 },
- 	{ ADCX140_GPO_CFG3, 0x00 },
--	{ ADCX140_GPO_CFG4, 0x00 },
- 	{ ADCX140_GPO_VAL, 0x00 },
- 	{ ADCX140_GPIO_MON, 0x00 },
- 	{ ADCX140_GPI_CFG0, 0x00 },
-@@ -756,6 +763,43 @@ static const struct snd_soc_dai_ops adcx140_dai_ops = {
- 	.set_tdm_slot	= adcx140_set_dai_tdm_slot,
- };
- 
-+static int adcx140_configure_gpo(struct adcx140_priv *adcx140)
-+{
-+	u32 gpo_outputs[ADCX140_NUM_GPOS];
-+	u32 gpo_output_val = 0;
-+	int ret;
-+	int i;
-+
-+	for (i = 0; i < ADCX140_NUM_GPOS; i++) {
-+		ret = device_property_read_u32_array(adcx140->dev,
-+						     gpo_config_names[i],
-+						     gpo_outputs,
-+						     ADCX140_NUM_GPO_CFGS);
-+		if (ret)
-+			continue;
-+
-+		if (gpo_outputs[0] > ADCX140_GPO_CFG_MAX) {
-+			dev_err(adcx140->dev, "GPO%d config out of range\n", i + 1);
-+			return -EINVAL;
-+		}
-+
-+		if (gpo_outputs[1] > ADCX140_GPO_DRV_MAX) {
-+			dev_err(adcx140->dev, "GPO%d drive out of range\n", i + 1);
-+			return -EINVAL;
-+		}
-+
-+		gpo_output_val = gpo_outputs[0] << ADCX140_GPO_SHIFT |
-+				 gpo_outputs[1];
-+		ret = regmap_write(adcx140->regmap, ADCX140_GPO_CFG1 + i,
-+				   gpo_output_val);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+
-+}
-+
- static int adcx140_codec_probe(struct snd_soc_component *component)
- {
- 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
-@@ -837,6 +881,10 @@ static int adcx140_codec_probe(struct snd_soc_component *component)
- 			return ret;
- 	}
- 
-+	ret = adcx140_configure_gpo(adcx140);
-+	if (ret)
-+		goto out;
-+
- 	ret = adcx140_reset(adcx140);
- 	if (ret)
- 		goto out;
-diff --git a/sound/soc/codecs/tlv320adcx140.h b/sound/soc/codecs/tlv320adcx140.h
-index 39206bf1af12..a8da4a72cd7a 100644
---- a/sound/soc/codecs/tlv320adcx140.h
-+++ b/sound/soc/codecs/tlv320adcx140.h
-@@ -36,10 +36,10 @@
- #define ADCX140_PDMCLK_CFG	0x1f
- #define ADCX140_PDM_CFG		0x20
- #define ADCX140_GPIO_CFG0	0x21
--#define ADCX140_GPO_CFG1	0x22
--#define ADCX140_GPO_CFG2	0x23
--#define ADCX140_GPO_CFG3	0x24
--#define ADCX140_GPO_CFG4	0x25
-+#define ADCX140_GPO_CFG0	0x22
-+#define ADCX140_GPO_CFG1	0x23
-+#define ADCX140_GPO_CFG2	0x24
-+#define ADCX140_GPO_CFG3	0x25
- #define ADCX140_GPO_VAL		0x29
- #define ADCX140_GPIO_MON	0x2a
- #define ADCX140_GPI_CFG0	0x2b
-@@ -139,4 +139,10 @@
- #define ADCX140_GPI3_INDEX		2
- #define ADCX140_GPI4_INDEX		3
- 
-+#define ADCX140_NUM_GPOS		4
-+#define ADCX140_NUM_GPO_CFGS		2
-+#define ADCX140_GPO_SHIFT		4
-+#define ADCX140_GPO_CFG_MAX		4
-+#define ADCX140_GPO_DRV_MAX		5
-+
- #endif /* _TLV320ADCX140_ */
--- 
-2.28.0
+[jolsa@krava perf]$ sudo ./perf test 17 -v
+17: Setup struct perf_event_attr                          :
+...
+running './tests/attr/test-record-C0'
+expected sample_period=4000, got 3000
+FAILED './tests/attr/test-record-C0' - match failure
+
+jirka
+
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> 
+> thanks,
+> jirka
 
