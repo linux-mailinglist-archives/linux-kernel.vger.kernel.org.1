@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF71230911
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504E4230918
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729175AbgG1Lmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:42:46 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:20038 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729159AbgG1Lmq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:42:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1595936565;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=iwLhOsjZtYhl+WFa5BUY/82Z8FbB6FQLSph99aT8EGw=;
-  b=bUXmoniNbcgNLgTZrtsAy8hkZPifzvSJ2ngAdDu8ViXXL+I3ppmCjQnQ
-   ZlNs4DYzOfoPX9hkaEqQ1eAQ/89fQHeAND2lER3/qQQ9fRRkJriKcHvJM
-   YKRWOgmlM+APPf5kAeWvR41GtQP4SJYHDIumsGLdJijWco3FlDscVjqJR
-   A=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: eST4pcblEO9C4zMoJzXs8FUL90X3L5/U0rACoVj/dtaz69BM1mQPX91USa/YLWbf/s5kkvs3z3
- QoxfVkTFF9gEtfVjJ2yybcqAH46FK8ACLdf97hJ6Hifthnze4ZxYG9Nc41FuSq47pXZeBrwobb
- TZ9GbHrh1h//0/sZC1rIdcSLxLAhbUvoZpFO4DAN7DuYKGEmcrKTu+MzROy8YleM2D0DxUYTLp
- s4j/3TQR8RoAyxfz2785glGSM5s8yBtxv6NnlJwLCUT3EhorCmMCbHdUMduNkBYU4PVBX7wQYr
- O9w=
-X-SBRS: 2.7
-X-MesageID: 23666671
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.75,406,1589256000"; 
-   d="scan'208";a="23666671"
-From:   Roger Pau Monne <roger.pau@citrix.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Roger Pau Monne <roger.pau@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        "Stefano Stabellini" <sstabellini@kernel.org>,
-        <xen-devel@lists.xenproject.org>
-Subject: [PATCH] xen/balloon: add header guard
-Date:   Tue, 28 Jul 2020 13:42:35 +0200
-Message-ID: <20200728114235.58619-1-roger.pau@citrix.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200727091342.52325-5-roger.pau@citrix.com>
-References: <20200727091342.52325-5-roger.pau@citrix.com>
+        id S1729218AbgG1LnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:43:19 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51442 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729036AbgG1LnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:43:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1595936596; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: To: From:
+ Subject: Sender; bh=C2g3qCsM1rQjNC6Re9u3OWUPrxkKyricosFKiC3IGhw=; b=HjmRgKoVrPlW+CJAcnT3ZGXJq/h99U0JpbtyAZroojGZICK3QK2mHUEpjmpEzmzLx16UsvQM
+ CGWd/yqm1Z+/1efKTfxgB6Vnqi05YVkIy6VUqb4IH9KlSMLGxTAsuhy6/vOjZEzZiGW/9QdN
+ Zekn+NhrgTm49rOjwDRJ4kijrVA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-east-1.postgun.com with SMTP id
+ 5f200f54a61bb9e3f5cf3e94 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 11:43:16
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 175F4C433AD; Tue, 28 Jul 2020 11:43:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.8 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.129] (unknown [183.83.142.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rohitkr)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A0FBC433C6;
+        Tue, 28 Jul 2020 11:43:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0A0FBC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rohitkr@codeaurora.org
+Subject: Re: [PATCH v4 00/12] ASoC: qcom: Add support for SC7180 lpass variant
+From:   Rohit Kumar <rohitkr@codeaurora.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1595413915-17867-1-git-send-email-rohitkr@codeaurora.org>
+ <d1e6d60b-9f00-266d-74ad-8c18bbf8d142@linaro.org>
+ <cb02a3d7-a947-852d-739f-a5f4b823f06a@codeaurora.org>
+Message-ID: <b5cb020c-4fc8-376f-3308-71bf3a244d26@codeaurora.org>
+Date:   Tue, 28 Jul 2020 17:13:07 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cb02a3d7-a947-852d-739f-a5f4b823f06a@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to protect against the header being included multiple times
-on the same compilation unit.
 
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
----
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: xen-devel@lists.xenproject.org
----
-This is required as a pre-patch to use ZONE_DEVICE, or else the
-fallback of including the balloon header might not work properly.
----
- include/xen/balloon.h | 4 ++++
- 1 file changed, 4 insertions(+)
+On 7/27/2020 3:20 PM, Rohit Kumar wrote:
+>
+> On 7/24/2020 4:52 PM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 22/07/2020 11:31, Rohit kumar wrote:
+>>> This patch chain add audio support for SC7180 soc by doing the required
+>>> modification in existing common lpass-cpu/lpass-platform driver.
+>>> This also fixes some concurrency issue.
+>>>
+>>> Changes since v3:
+>>>     - Fixed yaml documentation comments and make dt_binding_check 
+>>> issues.
+>>>     - Moved general fixes out of sc7180 specific patches as 
+>>> suggested by Srinivas.
+>>>     - Update clock-names to make it same as existing platforms.
+>>>
+>>> Ajit Pandey (4):
+>>>    ASoC: qcom: Add common array to initialize soc based core clocks
+>>>    ASoC: qcom: lpass-platform: Replace card->dev with component->dev
+>>>    include: dt-bindings: sound: Add sc7180-lpass bindings header
+>>>    ASoC: qcom: lpass-sc7180: Add platform driver for lpass audio
+>>>
+>>> Rohit kumar (8):
+>>>    ASoC: qcom: lpass-cpu: Move ahbix clk to platform specific function
+>>>    ASoC: qcom: lpass-platform: fix memory leak
+>>>    ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers
+>>>    ASoC: qcom: lpass-cpu: fix concurrency issue
+>>>    dt-bindings: sound: lpass-cpu: Add sc7180 lpass cpu node
+>>>    ASoC: qcom: lpass-cpu: Use platform_get_resource
+>>>    ASoC: qcom: lpass-platform: Use platform_get_irq
+>>>    dt-bindings: sound: lpass-cpu: Move to yaml format
+>>
+>>
+> Thanks Srini for review and testing.
+>
+> Mark, I am planning to repost patch07 onwards to address comments by 
+> Rob as
+>
+> there are no comments till patch06 and they are just fixes.
 
-diff --git a/include/xen/balloon.h b/include/xen/balloon.h
-index 6fb95aa19405..6dbdb0b3fd03 100644
---- a/include/xen/balloon.h
-+++ b/include/xen/balloon.h
-@@ -2,6 +2,8 @@
- /******************************************************************************
-  * Xen balloon functionality
-  */
-+#ifndef _XEN_BALLOON_H
-+#define _XEN_BALLOON_H
- 
- #define RETRY_UNLIMITED	0
- 
-@@ -34,3 +36,5 @@ static inline void xen_balloon_init(void)
- {
- }
- #endif
-+
-+#endif	/* _XEN_BALLOON_H */
+Hello Mark,
+
+Are you planning to review/merge the changes till patch06. If not, I 
+will resend those
+
+patches along with comments addressed on patch07 onwards.
+
+Thanks,
+
+Rohit
+
+
+>
+>> Tested this on Dragon Board 410c!
+>>
+>> Tested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> --srini
+>>>
+>>>   .../devicetree/bindings/sound/qcom,lpass-cpu.txt   |  79 --------
+>>>   .../devicetree/bindings/sound/qcom,lpass-cpu.yaml  | 185 
+>>> ++++++++++++++++++
+>>>   include/dt-bindings/sound/sc7180-lpass.h           |  10 +
+>>>   sound/soc/qcom/Kconfig                             |   5 +
+>>>   sound/soc/qcom/Makefile                            |   2 +
+>>>   sound/soc/qcom/lpass-apq8016.c                     |  86 ++++++--
+>>>   sound/soc/qcom/lpass-cpu.c                         | 204 
+>>> ++++++++++---------
+>>>   sound/soc/qcom/lpass-ipq806x.c                     |  67 +++++++
+>>>   sound/soc/qcom/lpass-lpaif-reg.h                   | 157 
+>>> ++++++++-------
+>>>   sound/soc/qcom/lpass-platform.c                    | 155 
+>>> +++++++++++----
+>>>   sound/soc/qcom/lpass-sc7180.c                      | 216 
+>>> +++++++++++++++++++++
+>>>   sound/soc/qcom/lpass.h                             |  63 +++++-
+>>>   12 files changed, 930 insertions(+), 299 deletions(-)
+>>>   delete mode 100644 
+>>> Documentation/devicetree/bindings/sound/qcom,lpass-cpu.txt
+>>>   create mode 100644 
+>>> Documentation/devicetree/bindings/sound/qcom,lpass-cpu.yaml
+>>>   create mode 100644 include/dt-bindings/sound/sc7180-lpass.h
+>>>   create mode 100644 sound/soc/qcom/lpass-sc7180.c
+>>>
 -- 
-2.27.0
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the Linux Foundation.
 
