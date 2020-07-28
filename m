@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2201822FF02
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A928722FF0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 03:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgG1BkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 21:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S1726877AbgG1Bpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 21:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbgG1BkM (ORCPT
+        with ESMTP id S1726265AbgG1Bpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 21:40:12 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A38C0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 18:40:11 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id a9so3509706oof.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 18:40:11 -0700 (PDT)
+        Mon, 27 Jul 2020 21:45:32 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04700C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 18:45:32 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l23so17332737qkk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 18:45:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aQppRAauYrBLvA7m04CGM9vhP3Ev72erH3kiJsmnuss=;
-        b=bsz1FOx8N7HHVnQ3ujkWHMirW3LyUGgAIooaRcPKrMeeQdZwX/xargv9RM7DmXlffc
-         KHtDoQ+zmnLCdrUw9do4jJr6N00xOXAMiuS66y0a9Obt3dVSMMz2Fz8VzKRgNrZ4e37w
-         NF5zTPdly/U1KH4GD4agruJscEFBu4x7NpeFQ=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YjnA1D1K7ElpFXMn7MlHX1aExmoTvW00G3z3st5LogM=;
+        b=qPuGtMvXjFKTqPMP4hVzimuIwTZQ1FlTw4vqUKaNSKU99KqaO6Im988hL6y6XkP5V2
+         qVOFVZeATU9MV0hSUENBapGZ7GLtyN/Zblmf/4fCo1UH9ehlDGFpi9aqTjRKGiQ6zRBU
+         ZnBAzkC5VY3aa0sUUqOhdrf+7j42xFbvu//GIiSzF9TiQsOp/yfcYIX1oGvGIKFyxM9S
+         k6HkJu8JFS6URc1k9uYTJoCOa4PJ5UY0inf+26gI6iMl69ihRgNzPEzBeVcRFFJQcV9I
+         jbLBMpuzcqx06gqVV3mMyG3T5p5MGCTM/NG7cd9z8NytqeSC9Ht4zrrYiKX3jZsT64Y/
+         p3Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aQppRAauYrBLvA7m04CGM9vhP3Ev72erH3kiJsmnuss=;
-        b=pKqqeK8jT8wWQdIP9or7QRPnup5cYT95RcfR7kLC0yHXp9DcleSsadfI2a0fjPuoAQ
-         Th0x6xujJloTQwrI6MwViyCcE7Ty4f3rYDeC9J3bmS6MtP2phNHod4HoNwnJhZPRST5I
-         54j2m6rJxCcR/pjoyCFdw0H8V26kg6DsX1NA3SGlUgQOvXfKK7QfFRENiuGtbzVizeeZ
-         WbspaVTige6kg4UI9mBGmtwXaJvILJnFBsnIZKF1fRulhHP6nbPNclQyIF1ARvAtBYtV
-         jyPpE3mYiq7SH3NA3Qeg738FpfJbYpL5BqjTZNZd6/eQL/edLbKW0Cfj2+Jw7am1+1vF
-         Nqvw==
-X-Gm-Message-State: AOAM531djg8u/GHRVs/dGTVlH//jxx8DEOaVxih3VdGRVaQi1Ipp0jAd
-        PIXQ8ENYhUWCmg4/RuEaMKYfCA==
-X-Google-Smtp-Source: ABdhPJwbi5PABQNxjk56EQPLCOqNesaQY9pvlbIi0GZKt2XVc58UO0YX9PNgPk59rAgFi8vbd5QQWA==
-X-Received: by 2002:a4a:3504:: with SMTP id l4mr19839731ooa.90.1595900411295;
-        Mon, 27 Jul 2020 18:40:11 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 7sm2116869otb.66.2020.07.27.18.40.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Jul 2020 18:40:10 -0700 (PDT)
-Subject: Re: [PATCH 4.14 00/64] 4.14.190-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200727134911.020675249@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <f2bac9a5-8a0c-5d2b-b36b-9de086a67611@linuxfoundation.org>
-Date:   Mon, 27 Jul 2020 19:40:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=YjnA1D1K7ElpFXMn7MlHX1aExmoTvW00G3z3st5LogM=;
+        b=C16gzsBZGpXES8XKv/d+b5CcLMNNTq5HjHibJWiE9qKny+TztyWvhtJTnjRxsNbxWJ
+         c/CReLYeow3CHwt506hxamqaLGBnN8w4DD+YvsjUMHII98qFwffjKykMRCGDTnaEHwLO
+         VDOC+6RokWp9R4+FLqYmx6wPfMfUqu9ozHUu3+lFNFL+AxhlPBo8x38R3MmCGrPPbJRR
+         OPSiGVV0sGbOEwTBbVsmTPgCxFovrbY34WWvTE83yVXW/b6UnNOzy4muAbr6frMjrkxa
+         s0oXE2xBDcDZemQiMeOsCtisf9lartHG1BM8MzLa5gipJYep2B1YCKFw0vxYZXJQ+Rct
+         +i2A==
+X-Gm-Message-State: AOAM532BifX0QJlmcuT4JxPeOOab+y6g8n+I38uPUkhk/B65Aur+1LMs
+        sCfEaxqkIDoSH6Esnso4Hg==
+X-Google-Smtp-Source: ABdhPJxbAIs557upvT1yY+aGvvScvjxCli+NZkmPpkJ7H5akQf1y/Q9yw/gGLnLoqu78WGuR11jD5A==
+X-Received: by 2002:a05:620a:553:: with SMTP id o19mr24583291qko.46.1595900731268;
+        Mon, 27 Jul 2020 18:45:31 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id d14sm16585473qti.41.2020.07.27.18.45.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 18:45:30 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH] drm/bufs: Prevent kernel-infoleak in copy_one_buf()
+Date:   Mon, 27 Jul 2020 21:43:43 -0400
+Message-Id: <20200728014343.341303-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200727134911.020675249@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/20 8:03 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.190 release.
-> There are 64 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 29 Jul 2020 13:48:51 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.190-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+copy_one_buf() is copying uninitialized stack memory to userspace due to
+the compiler not initializing holes in statically allocated structures.
+Fix it by initializing `v` with memset().
 
-Compiled and booted on my test system. No dmesg regressions.
+Cc: stable@vger.kernel.org
+Fixes: 5c7640ab6258 ("switch compat_drm_infobufs() to drm_ioctl_kernel()")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+ drivers/gpu/drm/drm_bufs.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
+index a0735fbc144b..f99cd4a3f951 100644
+--- a/drivers/gpu/drm/drm_bufs.c
++++ b/drivers/gpu/drm/drm_bufs.c
+@@ -1349,10 +1349,14 @@ static int copy_one_buf(void *data, int count, struct drm_buf_entry *from)
+ {
+ 	struct drm_buf_info *request = data;
+ 	struct drm_buf_desc __user *to = &request->list[count];
+-	struct drm_buf_desc v = {.count = from->buf_count,
+-				 .size = from->buf_size,
+-				 .low_mark = from->low_mark,
+-				 .high_mark = from->high_mark};
++	struct drm_buf_desc v;
++
++	memset(&v, 0, sizeof(v));
++
++	v.count = from->buf_count;
++	v.size = from->buf_size;
++	v.low_mark = from->low_mark;
++	v.high_mark = from->high_mark;
+ 
+ 	if (copy_to_user(to, &v, offsetof(struct drm_buf_desc, flags)))
+ 		return -EFAULT;
+-- 
+2.25.1
 
