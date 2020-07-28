@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7BF2309F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C522309FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729503AbgG1M1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:27:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40366 "EHLO mail.kernel.org"
+        id S1729516AbgG1M1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:27:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728300AbgG1M1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:27:01 -0400
+        id S1728300AbgG1M1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:27:43 -0400
 Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39C43206D4;
-        Tue, 28 Jul 2020 12:27:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF4C2206D4;
+        Tue, 28 Jul 2020 12:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595939221;
-        bh=N4SOQRKaRTIyJZBjBFixSfY3mkt05IKtAPjTslO6urY=;
+        s=default; t=1595939263;
+        bh=qnRKNV/9tPNIK8cgNXrpAYqVq9OezK6wne8F/ideH70=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pduy+mKNwv04ARmILR0f7B+iaiH+Cq9UdVAP9MmfnNV5iaclkUrnVVeGG78bR2c93
-         gzNDqIQ72bCdIKXPisvjzpkKLfJ/ztFCBZHglkxFSxaY3cYlFTsihWlfqwYuoOG0Lo
-         mtEH35O2CZHi2uPbmsW13gTGtbQinVfwqDvLYMFo=
+        b=18PJFQzKSgEfX6w5l7FD2l/J4i3OJtk2avJI96Hic+PEvKHGS4cULqh6Y2Jsh4YW1
+         ByZgoDwRy8hPnAGUavapobEWY8X/PGL5pPfk+vWlJbjsRlnYzbCf+wUtEBmnWspQzy
+         K3cS2vIX1cJCOGuyx8h6n++4xI+HRFC6KVVbea0g=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 54747404B1; Tue, 28 Jul 2020 09:26:58 -0300 (-03)
-Date:   Tue, 28 Jul 2020 09:26:58 -0300
+        id B27E2404B1; Tue, 28 Jul 2020 09:27:39 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:27:39 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
         lkml <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
@@ -37,37 +36,126 @@ Cc:     Jiri Olsa <jolsa@kernel.org>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Michael Petlan <mpetlan@redhat.com>,
         Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
         John Garry <john.garry@huawei.com>,
         "Paul A. Clarke" <pc@us.ibm.com>,
         Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH 01/19] perf metric: Fix memory leak in expr__add_id
- function
-Message-ID: <20200728122658.GH40195@kernel.org>
+Subject: Re: [PATCH 02/19] perf metric: Add expr__add_id function
+Message-ID: <20200728122739.GI40195@kernel.org>
 References: <20200719181320.785305-1-jolsa@kernel.org>
- <20200719181320.785305-2-jolsa@kernel.org>
- <CAP-5=fWdgFCBj0r4nVgEXnwOpckCXOb-FSTqexuDw=YiNnH+9Q@mail.gmail.com>
+ <20200719181320.785305-3-jolsa@kernel.org>
+ <73111916-408d-d3a1-53d8-050314505535@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fWdgFCBj0r4nVgEXnwOpckCXOb-FSTqexuDw=YiNnH+9Q@mail.gmail.com>
+In-Reply-To: <73111916-408d-d3a1-53d8-050314505535@linux.ibm.com>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, Jul 19, 2020 at 02:41:46PM -0700, Ian Rogers escreveu:
-> On Sun, Jul 19, 2020 at 11:13 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Arnaldo found that we don't release value data in case the
-> > hashmap__set fails. Releasing it in case of an error.
-> >
-> > Reported-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Em Sun, Jul 26, 2020 at 02:46:47PM +0530, kajoljain escreveu:
 > 
-> Acked-by: Ian Rogers <irogers@google.com>
+> 
+> On 7/19/20 11:43 PM, Jiri Olsa wrote:
+> > Adding expr__add_id function to data for ID
+> > with zero value, which is used when scanning
+> > the expression for IDs.
+> > 
+> 
+> Reviewed-By : Kajol Jain<kjain@linux.ibm.com>
 
 Thanks, applied.
+
+- Arnaldo
+ 
+> Thanks,
+> Kajol Jain
+> 
+> > Acked-by: Ian Rogers <irogers@google.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/util/expr.c | 31 +++++++++++++++++++++++++------
+> >  tools/perf/util/expr.h |  1 +
+> >  tools/perf/util/expr.y |  2 +-
+> >  3 files changed, 27 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+> > index 578a173d4873..9228f60e2a20 100644
+> > --- a/tools/perf/util/expr.c
+> > +++ b/tools/perf/util/expr.c
+> > @@ -32,6 +32,26 @@ static bool key_equal(const void *key1, const void *key2,
+> >  	return !strcmp((const char *)key1, (const char *)key2);
+> >  }
+> >  
+> > +/* Caller must make sure id is allocated */
+> > +int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
+> > +{
+> > +	struct expr_id_data *data_ptr = NULL, *old_data = NULL;
+> > +	char *old_key = NULL;
+> > +	int ret;
+> > +
+> > +	data_ptr = malloc(sizeof(*data_ptr));
+> > +	if (!data_ptr)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = hashmap__set(&ctx->ids, id, data_ptr,
+> > +			   (const void **)&old_key, (void **)&old_data);
+> > +	if (ret)
+> > +		free(data_ptr);
+> > +	free(old_key);
+> > +	free(old_data);
+> > +	return ret;
+> > +}
+> > +
+> >  /* Caller must make sure id is allocated */
+> >  int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val)
+> >  {
+> > @@ -39,12 +59,11 @@ int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val)
+> >  	char *old_key = NULL;
+> >  	int ret;
+> >  
+> > -	if (val != 0.0) {
+> > -		data_ptr = malloc(sizeof(*data_ptr));
+> > -		if (!data_ptr)
+> > -			return -ENOMEM;
+> > -		data_ptr->val = val;
+> > -	}
+> > +	data_ptr = malloc(sizeof(*data_ptr));
+> > +	if (!data_ptr)
+> > +		return -ENOMEM;
+> > +	data_ptr->val = val;
+> > +
+> >  	ret = hashmap__set(&ctx->ids, id, data_ptr,
+> >  			   (const void **)&old_key, (void **)&old_data);
+> >  	if (ret)
+> > diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
+> > index 21fe5bd85718..ac32cda42006 100644
+> > --- a/tools/perf/util/expr.h
+> > +++ b/tools/perf/util/expr.h
+> > @@ -26,6 +26,7 @@ struct expr_scanner_ctx {
+> >  
+> >  void expr__ctx_init(struct expr_parse_ctx *ctx);
+> >  void expr__ctx_clear(struct expr_parse_ctx *ctx);
+> > +int expr__add_id(struct expr_parse_ctx *ctx, const char *id);
+> >  int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
+> >  int expr__get_id(struct expr_parse_ctx *ctx, const char *id, double *val_ptr);
+> >  int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
+> > diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+> > index b2b3420ea6ec..8befe4a46f87 100644
+> > --- a/tools/perf/util/expr.y
+> > +++ b/tools/perf/util/expr.y
+> > @@ -69,7 +69,7 @@ all_other: all_other other
+> >  
+> >  other: ID
+> >  {
+> > -	expr__add_id_val(ctx, $1, 0.0);
+> > +	expr__add_id(ctx, $1);
+> >  }
+> >  |
+> >  MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
+> > 
+
+-- 
 
 - Arnaldo
