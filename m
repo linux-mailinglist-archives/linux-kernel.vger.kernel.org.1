@@ -2,150 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33552312D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7B52312F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732880AbgG1Thb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:37:31 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7219 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729846AbgG1Thb (ORCPT
+        id S1732957AbgG1Tn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730016AbgG1Tn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:37:31 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f207e6c0003>; Tue, 28 Jul 2020 12:37:17 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 28 Jul 2020 12:37:30 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 28 Jul 2020 12:37:30 -0700
-Received: from [10.2.168.236] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
- 2020 19:37:29 +0000
-Subject: Re: [RFC PATCH v5 13/14] media: tegra-video: Add CSI MIPI pads
- calibration
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
-        <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
- <1595883452-17343-14-git-send-email-skomatineni@nvidia.com>
- <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
- <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
-Message-ID: <edefa3b1-e0fe-0f34-80b7-8729551ee2ea@nvidia.com>
-Date:   Tue, 28 Jul 2020 12:43:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 15:43:58 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA105C0619D4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:43:58 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id r11so3658470pfl.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=9heSWvK+yRSCWH0FUufTfQBWh+umkfCd2hlFkX04++k=;
+        b=nCLucWk+Dyfu97vMzTeRd0pPVzYtyDNd2u/hsiI1JS+JNzt9OPNMBUUcXoQPSNKzCE
+         sxgq9zXhcvrt/uWcVzsLxXuu99WkVd+E7Uz7NHGi5XPz9/SV0mWz+0D0XANYFXj7lKbh
+         hrtn+MCSjUVEebJjPSWPZJTk2J/1NZ5OuBXbI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=9heSWvK+yRSCWH0FUufTfQBWh+umkfCd2hlFkX04++k=;
+        b=Chdw3CD2lAUreK6noQYV6U0uy5+eV5Wl09TPTO389x4p8PZyIjQmgOuzU2woXsz93W
+         tUX7+AvYoOQWHl47iQ9jRGsTmqM5vR8k8diRk/KSEYGHJGPaAgbCqZHYRrYqm6Y4CvEe
+         B4uRNYNDfZYY9XED580WthpnKxFaQeJBknYh5nmxhAV8VO0DMnpafE4ng6GsjjZeGeA4
+         sOTHVxLJ/XBMP2wvwjCsBeZTyBMw62BirW76fREmXcUkPHsaDsZyI5vIhGHohtla4TSj
+         CmQe6S/9RLdvZS/W2VJGtrOoWpX20hNVN3WenQPl5iMW+Gs09pkjO8pTE+oCrYuifhRB
+         wwZQ==
+X-Gm-Message-State: AOAM5316KXXtARr6Br8qffzfsleOIzKqodejOGDtpH5w3yTJpsDDtFX1
+        K4nQ/eYwzudTwr75G5Hdu8ZD4A==
+X-Google-Smtp-Source: ABdhPJzcVT5J8m7X1MAMeqes9wtnmVepDmaePDEJZQmpUGLbzYqktl5qY3LrodPx5Xw/lg7qISDOhg==
+X-Received: by 2002:aa7:8801:: with SMTP id c1mr25615711pfo.105.1595965438290;
+        Tue, 28 Jul 2020 12:43:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m66sm10017751pfd.90.2020.07.28.12.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 12:43:57 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 12:43:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mimi Zohar <zohar@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, SeongJae Park <sjpark@amazon.de>,
+        KP Singh <kpsingh@chromium.org>, linux-efi@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/19] firmware_loader: Use security_post_load_data()
+Message-ID: <202007281242.B6016AE4B@keescook>
+References: <20200724213640.389191-1-keescook@chromium.org>
+ <20200724213640.389191-13-keescook@chromium.org>
+ <1595847465.4841.63.camel@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1595965037; bh=IGHiL01+pCfxDUBGk+J+sS1IuAeLkaTPJTReY8Unf3o=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=ZaUisKhK7xpa5/nsUXCO6YY8CpuPQooaZftXiY0f5x1hzdGX8Ydeo5+t9p/YDhmx3
-         JBJl8mCZ8+1JWQfHVHNN75IIEt4jT0jwhkymKwxyGKtZKVBRDuHrBI+RuIVPPbDk8r
-         HyiYRQuy1BBGZSJfNFDEpz7IU+IPOP6hCczxh1wvGe9hNqDNhHFWKwMzJ+JG4WcLRg
-         dC3jOKKxGQEzdhiP/e0PCS9JESowb/eYiqiNv1Pgv4OzBHIOGj8FEnDYxT1HAwpux9
-         KECGIYPuccFVjKY5TN367n78kg49ExbTSJbVsQr++FHA1HMZVbsE6i/3RnS95ojadu
-         VepW6NSKlefXA==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1595847465.4841.63.camel@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 27, 2020 at 06:57:45AM -0400, Mimi Zohar wrote:
+> On Fri, 2020-07-24 at 14:36 -0700, Kees Cook wrote:
+> > Now that security_post_load_data() is wired up, use it instead
+> > of the NULL file argument style of security_post_read_file(),
+> > and update the security_kernel_load_data() call to indicate that a
+> > security_kernel_post_load_data() call is expected.
+> > 
+> > Wire up the IMA check to match earlier logic. Perhaps a generalized
+> > change to ima_post_load_data() might look something like this:
+> > 
+> >     return process_buffer_measurement(buf, size,
+> >                                       kernel_load_data_id_str(load_id),
+> >                                       read_idmap[load_id] ?: FILE_CHECK,
+> >                                       0, NULL);
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> process_measurement() measures, verifies a file signature -  both
+> signatures stored as an xattr and as an appended buffer signature -
+> and augments audit records with the file hash. (Support for measuring,
+> augmenting audit records, and/or verifying fs-verity signatures has
+> yet to be added.)
+> 
+> As explained in my response to 11/19, the file descriptor provides the
+> file pathname associated with the buffer data.  In addition, IMA
+> policy rules may be defined in terms of other file descriptor info -
+> uid, euid, uuid, etc.
+> 
+> Recently support was added for measuring the kexec boot command line,
+> certificates being loaded onto a keyring, and blacklisted file hashes
+> (limited to appended signatures).  None of these buffers are signed.
+>  process_buffer_measurement() was added for this reason and as a
+> result is limited to just measuring the buffer data.
+> 
+> Whether process_measurement() or process_buffer_measurement() should
+> be modified, needs to be determined.  In either case to support the
+> init_module syscall, would at minimum require the associated file
+> pathname.
 
-On 7/28/20 8:59 AM, Sowjanya Komatineni wrote:
->
-> On 7/28/20 3:30 AM, Dmitry Osipenko wrote:
->> 27.07.2020 23:57, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> +=C2=A0=C2=A0=C2=A0 /*
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * TRM has incorrectly documented to wait for =
-done status from
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * calibration logic after CSI interface power=
- on.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * As per the design, calibration results are =
-latched and applied
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * to the pads only when the link is in LP11 s=
-tate which will=20
->>> happen
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * during the sensor stream-on.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * CSI subdev stream-on triggers start of MIPI=
- pads calibration.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Wait for calibration to finish here after s=
-ensor subdev=20
->>> stream-on
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 * and in case of sensor stream-on failure, ca=
-ncel the=20
->>> calibration.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subdev =3D on ? src_subdev : csi_subdev;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D v4l2_subdev_call(subdev, video, =
-s_stream, on);
->>> -=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -ENOIOCTLCMD)
->>> +=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -ENOIOCTLCMD) {
->> I assume -ENOIOCTLCMD means that camera wasn't turned ON, so why
->> -ENOIOCTLCMD is special?
-> No -ENOIOCTLCMD mean subdev don't have s_stream ops
->>
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (on && csi_chan->mipi)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 teg=
-ra_mipi_cancel_calibration(csi_chan->mipi);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>> +=C2=A0=C2=A0=C2=A0 }
->>> +
->>> +=C2=A0=C2=A0=C2=A0 if (on && csi_chan->mipi) {
->> Does finish_calibration() really need to be called for ret=3D-ENOIOCTLCM=
-D?
->>
->> Shouldn't it be cancel_calibration( for the -ENOIOCTLCMD?
->
-> start calibration happens during csi sensor streaming which happens=20
-> prior to this point.
->
-> In case if sensor subdev does not have s_stream ops, then either=20
-> finish/cancel calibration should happen to disable the clock.
+Right -- I don't intend to make changes to the init_module() syscall
+since it's deprecated, so this hook is more of a "fuller LSM coverage
+for old syscalls" addition.
 
-For -ENOIOCTLCMD, calling finish calibration as some sensors might keep=20
-pads in LP-11 on power up and for such sensors calibration logic will=20
-apply results to pads and done bit will be set.
+IMA can happily continue to ignore it, which is what I have here, but I
+thought I'd at least show what it *might* look like. Perhaps BPF LSM is
+a better example.
 
-Also avoiding additional check to specifically call cancel calibration=20
-on ENOIOCTLCMD and making it fall into finish calibration as both does=20
-disable clock except finish will wait for done bit to be set.
+Does anything need to change for this patch?
 
-Also, most sensor subdev have s_stream ops implemented.
-
->
->>
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D tegra_mipi_finish_c=
-alibration(csi_chan->mipi);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev=
-_err(csi_chan->csi->dev,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 "MIPI calibration failed: %d\n", ret);
->> Doesn't v4l2_subdev_call(OFF) need to be invoked here on error?
->
-> Not required as on error streaming fails and runtime PM will turn off=20
-> power anyway.
->
-> Also we only did csi subdev s_stream on and during sensor subdev=20
-> s_stream on fail, actual stream dont happen and on tegra side frame=20
-> capture by HW happens only when kthreads run.
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->>> +=C2=A0=C2=A0=C2=A0 }
->>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>> =C2=A0 }
+-- 
+Kees Cook
