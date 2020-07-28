@@ -2,111 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74566230C9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD187230C9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730471AbgG1Olj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 10:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730391AbgG1Olj (ORCPT
+        id S1730515AbgG1OmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:42:13 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:44846 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730391AbgG1OmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 10:41:39 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D14C061794;
-        Tue, 28 Jul 2020 07:41:39 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id o1so10005376plk.1;
-        Tue, 28 Jul 2020 07:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GF8ZjMhiyVomxf9/l0IfId/LIV7LteGzaaDxWYsxaIU=;
-        b=VoQ7Bq3KPeISrwjwSkLoprGtG+k2Fb7MUT7AlyPhSWF0Rj9fuUds8Wcwl/5SeiiSWn
-         j1GKLVuH4umjRwNSVPjCrQ7gcSyeFxRwwhxCIEBtjp90Na3KaTC0rUHYYy8TrOAgcd1V
-         fMwls5Y4GUZdWaYHlgp1mJmXd/61BUCwxu25UjIWqJos1T7HDB83AfVFh861m8KzEEl7
-         99xmGXtYlrHL71aglulvPMt1wMCUNjdDiImW/ioWlxbyh1yUVs5zk9FUWt9ZW0RFvDD1
-         X/XzvbepYJqrCNjASn7nZE+NOG2b2ahTvCe1w41tXu6EQegWQfKnYtSWGfRhLaN2u1K1
-         XBsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GF8ZjMhiyVomxf9/l0IfId/LIV7LteGzaaDxWYsxaIU=;
-        b=Ah3+4XtS2Cm+VVA7edhAGsKPDUfjNOUNDEVTBogGk3GXEPNfaatpLO7hLBt/hK6X5Y
-         QC9jku+XezpLCSTJeaXelJaX0fWmqebJmpTCB85o06of2Arov2RP06OLyfdEPREV8bKS
-         H4mkeci9evuYkRHlamqnqzEiU9zCZlp5CYAOBHzyLCUwpPlmsJaAuyhSXTBCufH644SA
-         BKO4NBo2x00QPvbHGd9gIcmdXdG8FCwsgyELaJtjhg9Rh6EYgeXzouayXKfjifvcceug
-         4AjbwaN+Q2kAVYX5dxdQpzshyAp6/cu/XTuGxS451udfecf3YAzrZHxiAaAHYjG5/T0R
-         +E2A==
-X-Gm-Message-State: AOAM531it19HgdP7zOrQA/acF16MiF7l179LZqDnDF5Y7VtM8sdtOKvU
-        nH0YJVu9rmM7xQeb5Mq/6AUUrLBB
-X-Google-Smtp-Source: ABdhPJxPnbqNFx2R/aZMT//M0oZGvl560sm+VxS32xxVHehpQkXBH7TQA2aiTJIBbOPhRQfIh4eMdw==
-X-Received: by 2002:a17:902:a3c2:: with SMTP id q2mr10268577plb.212.1595947298539;
-        Tue, 28 Jul 2020 07:41:38 -0700 (PDT)
-Received: from [10.1.10.11] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id d65sm18735992pfc.97.2020.07.28.07.41.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 07:41:37 -0700 (PDT)
-Subject: Re: [PATCH] [net/ipv6] ip6_output: Add ipv6_pinfo null check
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Gaurav Singh <gaurav1086@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:NETWORKING [IPv4/IPv6]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200727033810.28883-1-gaurav1086@gmail.com>
- <20200728021348.4116-1-gaurav1086@gmail.com>
- <CAM_iQpWbT18cRfDc2f1wVUrS6QpOmPrZwBqaitD7545-itijfg@mail.gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <4c4d94e2-e2b4-ee77-6942-f5d747a288e4@gmail.com>
-Date:   Tue, 28 Jul 2020 07:41:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 28 Jul 2020 10:42:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595947331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jrn1cXse5+cdwWbo1CALhfkNmTxz9E7sWHguisrKuqA=;
+        b=Meqw1z2j5rS8GaoVwcTeHpsfNak2z8l/Vp7MaUYeTzmxwQoVy6im/JDYAyWx5roT2N3dtF
+        HkrIvB7rKYRbtlTDisk9A+MVwc/B+Zwud9l5E4KORcuPhnzeiGMNHeGDYiixkOx8BXVzb+
+        xerRmt/Hh+RSHZFtbDEIQUa5b6AH3vA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-3j7MhVyBP7KzIBIS2mkozg-1; Tue, 28 Jul 2020 10:42:07 -0400
+X-MC-Unique: 3j7MhVyBP7KzIBIS2mkozg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A55D0100AA23;
+        Tue, 28 Jul 2020 14:42:05 +0000 (UTC)
+Received: from krava (unknown [10.40.192.211])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B0A610013C4;
+        Tue, 28 Jul 2020 14:42:03 +0000 (UTC)
+Date:   Tue, 28 Jul 2020 16:42:02 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Thomas Hebb <tommyhebb@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        David Carrillo-Cisneros <davidcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 1/3] tools build feature: Use CC and CXX from parent
+Message-ID: <20200728144202.GA1319041@krava>
+References: <0a6e69d1736b0fa231a648f50b0cce5d8a6734ef.1595822871.git.tommyhebb@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpWbT18cRfDc2f1wVUrS6QpOmPrZwBqaitD7545-itijfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a6e69d1736b0fa231a648f50b0cce5d8a6734ef.1595822871.git.tommyhebb@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/27/20 8:12 PM, Cong Wang wrote:
-> On Mon, Jul 27, 2020 at 7:14 PM Gaurav Singh <gaurav1086@gmail.com> wrote:
->>
->> Add return to fix build issue. Haven't reproduced this issue at
->> my end.
->>
->> My hypothesis is this: In function: ip6_xmit(), we have
->> const struct ipv6_pinfo *np = inet6_sk(sk); which returns NULL.
->>
->> Further down the function, there's a check:
->> if (np) hlimit = hp->htop_limit
+On Sun, Jul 26, 2020 at 09:08:14PM -0700, Thomas Hebb wrote:
+> commit c8c188679ccf ("tools build: Use the same CC for feature detection
+> and actual build") changed these assignments from unconditional (:=) to
+> conditional (?=) so that they wouldn't clobber values from the
+> environment. However, conditional assignment does not work properly for
+> variables that Make implicitly sets, among which are CC and CXX. To
+> quote tools/scripts/Makefile.include, which handles this properly:
 > 
-> This check exists before git history, at that time 'sk' could be NULL,
-> hence 'np', so it does not mean it is still necessary now.
+>   # Makefiles suck: This macro sets a default value of $(2) for the
+>   # variable named by $(1), unless the variable has been set by
+>   # environment or command line. This is necessary for CC and AR
+>   # because make sets default values, so the simpler ?= approach
+>   # won't work as expected.
 > 
-> I looked at all callers of ip6_xmit(), I don't see how it is called with
-> a non-full socket, neither 'sk' could be NULL after
-> commit b30bd282cbf5c46247a279a2e8d2aae027d9f1bf
-> ("[IPV6]: ip6_xmit: remove unnecessary NULL ptr check").
+> In other words, the conditional assignments will not run even if the
+> variables are not overridden in the environment; Make will set CC to
+> "cc" and CXX to "g++" when it starts[1], meaning the variables are not
+> empty by the time the conditional assignments are evaluated. This breaks
+> cross-compilation when CROSS_COMPILE is set but CC isn't, since "cc"
+> gets used for feature detection instead of the cross compiler (and
+> likewise for CXX).
 > 
-> Thanks.
+> To fix the issue, just pass down the values of CC and CXX computed by
+> the parent Makefile, which gets included by the Makefile that actually
+> builds whatever we're detecting features for and so is guaranteed to
+> have good values. This is a better solution anyway, since it means we
+> aren't trying to replicate the logic of the parent build system and so
+> don't risk it getting out of sync.
+> 
+> Leave PKG_CONFIG alone, since 1) there's no common logic to compute it
+> in Makefile.include, and 2) it's not an implicit variable, so
+> conditional assignment works properly.
+
+looks good, I wonder we might need it also for CLANG in the future
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
+> 
+> [1] https://www.gnu.org/software/make/manual/html_node/Implicit-Variables.html
+> 
+> Fixes: c8c188679ccf ("tools build: Use the same CC for feature detection and actual build")
+> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> ---
+> 
+>  tools/build/Makefile.feature | 2 +-
+>  tools/build/feature/Makefile | 2 --
+>  2 files changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+> index cb152370fdef..774f0b0ca28a 100644
+> --- a/tools/build/Makefile.feature
+> +++ b/tools/build/Makefile.feature
+> @@ -8,7 +8,7 @@ endif
+>  
+>  feature_check = $(eval $(feature_check_code))
+>  define feature_check_code
+> -  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+> +  feature-$(1) := $(shell $(MAKE) OUTPUT=$(OUTPUT_FEATURES) CC=$(CC) CXX=$(CXX) CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))" CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))" LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir) $(OUTPUT_FEATURES)test-$1.bin >/dev/null 2>/dev/null && echo 1 || echo 0)
+>  endef
+>  
+>  feature_set = $(eval $(feature_set_code))
+> diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+> index b1f0321180f5..93b590d81209 100644
+> --- a/tools/build/feature/Makefile
+> +++ b/tools/build/feature/Makefile
+> @@ -74,8 +74,6 @@ FILES=                                          \
+>  
+>  FILES := $(addprefix $(OUTPUT),$(FILES))
+>  
+> -CC ?= $(CROSS_COMPILE)gcc
+> -CXX ?= $(CROSS_COMPILE)g++
+>  PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+>  LLVM_CONFIG ?= llvm-config
+>  CLANG ?= clang
+> -- 
+> 2.27.0
 > 
 
-
-Agreed.
-
-And again, fact that this patch lacks a Fixes:  tag speaks for itself.
-
-This means the author expects all reviewers to make a deep analysis.
-
-Please bear with us, and add a Fixes: tag so that we can fully understand what was
-the bug origin and why a fix is valid.
