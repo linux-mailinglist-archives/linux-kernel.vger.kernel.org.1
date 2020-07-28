@@ -2,258 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB5B230928
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C93230932
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729144AbgG1Lv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:51:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728504AbgG1Lv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:51:56 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0EAF2206D7;
-        Tue, 28 Jul 2020 11:51:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595937115;
-        bh=BWfjFkA309sKXy3KRVke7Jj+TQfo9l786CO6RCGuAFE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QcCR2zDVSfPEguebxMBpOP7nVJGgs9cjAF/Oi6lk7oJcNWF68Zh8DFf5dOPToGruq
-         3TIu7FgfuMd4vg6Hh9F/8GK1DSOE7+dpN6MuQ/LQ2vXumhZhc6XtLCFL4xvgIsl/CX
-         p/AGiQQTelTMl2jBskgA7oNYki8BLzuDRiyojK+Y=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A9617404B1; Tue, 28 Jul 2020 08:51:52 -0300 (-03)
-Date:   Tue, 28 Jul 2020 08:51:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf bench: Add benchmark of find_next_bit
-Message-ID: <20200728115152.GB3328@kernel.org>
-References: <20200724071959.3110510-1-irogers@google.com>
+        id S1729211AbgG1Lxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729183AbgG1Lxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:53:38 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D06FC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:53:38 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id ed14so8965972qvb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9b0/x+SNOsArF0QozJjz6aJQuh2KJ70gscVHnalujy4=;
+        b=tebaVCGFtEwcxHEM2mSMLHj+/y/YIqY5F9PfjQr+R28mNZgbYk25oEbZZId/XZ0s3P
+         tyGFy7H5tAKQH/KcvFG7RcKLdtt/qqcX2osS0vTQJ/3rUpnTnbtfiDJ18KDKt9nZIzGb
+         jioEWFF54X/RJ4UBRAI9O+jT36f7HD+T/xOTD9lKZ+UDK636bylzcmIRkD7DOA9185ON
+         jJG7VOHFIS3KDo49DOPfTt8B8gh1BvSt7q/oevhavy3mNdL7jkhDMD98eP3cCfzNmA6a
+         4JHhj/cTKGPEzg0ULWSgB+t3qfMc0wvywvSPhcRbk49lv6ar4UEgPv6Ss42pOY9LvMo+
+         N4zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9b0/x+SNOsArF0QozJjz6aJQuh2KJ70gscVHnalujy4=;
+        b=jcQwQih0c/nlc1Kn/kTHL8B+24CKvKi9t6lGyIryHltZTPTPCJ26gEd9LJsPs/gBHv
+         gH4q8sLcN65ncEOVWcf5R5xW8g1CygVGV4iM5AHING1w7HgwLwSk9FDLeJ2oi7NwUdKL
+         jrtgoC36mlp0H9pXRGfqFzKbFAaJEs12psV/ULOs96mDIZt/RJ3BY0p93H0zAkStEojH
+         mXazQOffXKgwZQDFXbOOvQzD5C813Mlo8NZFhEuTKdtItwmBWbaUG15kZ/+PGxmG9jG5
+         HH8ZYEHTIoHuU56Y2zR50n3hJmfR4HqBHrlSuKqX1+7EXz12nrBhumn0rkZEI2aaoqIw
+         HRKA==
+X-Gm-Message-State: AOAM532gjR34hjPLZ86PgvgZCiBqsMGF/rDqfo3CaaVHQl4AonZtDTyb
+        IbnzDkRePVxpg1og5WYJIA==
+X-Google-Smtp-Source: ABdhPJytWHbSuKSgdqrZHnoY6Cfo5vrUorIiwqfDq+wpVnip+5M/a1iy0umq4my1/dRXaNveQev4oQ==
+X-Received: by 2002:ad4:4152:: with SMTP id z18mr154690qvp.42.1595937217951;
+        Tue, 28 Jul 2020 04:53:37 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id t65sm21273750qkf.119.2020.07.28.04.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 04:53:37 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH v2] drm/bufs: Prevent kernel-infoleak in copy_one_buf()
+Date:   Tue, 28 Jul 2020 07:52:10 -0400
+Message-Id: <20200728115210.408486-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200728014343.341303-1-yepeilin.cs@gmail.com>
+References: <20200728014343.341303-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200724071959.3110510-1-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 24, 2020 at 12:19:59AM -0700, Ian Rogers escreveu:
-> for_each_set_bit, or similar functions like for_each_cpu, may be hot
-> within the kernel. If many bits were set then one could imagine on
-> Intel a "bt" instruction with every bit may be faster than the function
-> call and word length find_next_bit logic. Add a benchmark to measure
-> this.
+Currently `struct drm_buf_desc` is defined as follows:
 
-Thanks, applied.
+struct drm_buf_desc {
+	int count;
+	int size;
+	int low_mark;
+	int high_mark;
+	enum {
+		_DRM_PAGE_ALIGN = 0x01,
+		_DRM_AGP_BUFFER = 0x02,
+		_DRM_SG_BUFFER = 0x04,
+		_DRM_FB_BUFFER = 0x08,
+		_DRM_PCI_BUFFER_RO = 0x10
+	} flags;
+	unsigned long agp_start;
+};
 
-- Arnaldo
+copy_one_buf() is potentially copying uninitialized kernel stack memory
+to userspace, since the compiler may leave such "holes" (around `.flags`
+and `.agp_start` fields) in this statically allocated structure. Prevent
+it by initializing `v` with memset().
+
+Cc: stable@vger.kernel.org
+Fixes: 5c7640ab6258 ("switch compat_drm_infobufs() to drm_ioctl_kernel()")
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+Change in v2:
+    - Improve commit description. (Suggested by Arnd Bergmann
+      <arnd@arndb.de>)
+
+ drivers/gpu/drm/drm_bufs.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
+index a0735fbc144b..f99cd4a3f951 100644
+--- a/drivers/gpu/drm/drm_bufs.c
++++ b/drivers/gpu/drm/drm_bufs.c
+@@ -1349,10 +1349,14 @@ static int copy_one_buf(void *data, int count, struct drm_buf_entry *from)
+ {
+ 	struct drm_buf_info *request = data;
+ 	struct drm_buf_desc __user *to = &request->list[count];
+-	struct drm_buf_desc v = {.count = from->buf_count,
+-				 .size = from->buf_size,
+-				 .low_mark = from->low_mark,
+-				 .high_mark = from->high_mark};
++	struct drm_buf_desc v;
++
++	memset(&v, 0, sizeof(v));
++
++	v.count = from->buf_count;
++	v.size = from->buf_size;
++	v.low_mark = from->low_mark;
++	v.high_mark = from->high_mark;
  
-> This benchmark on AMD rome and Intel skylakex shows "bt" is not a good
-> option except for very small bitmaps.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/bench/Build            |   1 +
->  tools/perf/bench/bench.h          |   1 +
->  tools/perf/bench/find-bit-bench.c | 135 ++++++++++++++++++++++++++++++
->  tools/perf/builtin-bench.c        |   1 +
->  4 files changed, 138 insertions(+)
->  create mode 100644 tools/perf/bench/find-bit-bench.c
-> 
-> diff --git a/tools/perf/bench/Build b/tools/perf/bench/Build
-> index 768e408757a0..fb114bca3a8d 100644
-> --- a/tools/perf/bench/Build
-> +++ b/tools/perf/bench/Build
-> @@ -10,6 +10,7 @@ perf-y += epoll-wait.o
->  perf-y += epoll-ctl.o
->  perf-y += synthesize.o
->  perf-y += kallsyms-parse.o
-> +perf-y += find-bit-bench.o
->  
->  perf-$(CONFIG_X86_64) += mem-memcpy-x86-64-lib.o
->  perf-$(CONFIG_X86_64) += mem-memcpy-x86-64-asm.o
-> diff --git a/tools/perf/bench/bench.h b/tools/perf/bench/bench.h
-> index 61cae4966cae..3291b0ddddfe 100644
-> --- a/tools/perf/bench/bench.h
-> +++ b/tools/perf/bench/bench.h
-> @@ -35,6 +35,7 @@ int bench_sched_messaging(int argc, const char **argv);
->  int bench_sched_pipe(int argc, const char **argv);
->  int bench_mem_memcpy(int argc, const char **argv);
->  int bench_mem_memset(int argc, const char **argv);
-> +int bench_mem_find_bit(int argc, const char **argv);
->  int bench_futex_hash(int argc, const char **argv);
->  int bench_futex_wake(int argc, const char **argv);
->  int bench_futex_wake_parallel(int argc, const char **argv);
-> diff --git a/tools/perf/bench/find-bit-bench.c b/tools/perf/bench/find-bit-bench.c
-> new file mode 100644
-> index 000000000000..1aadbd9d7e86
-> --- /dev/null
-> +++ b/tools/perf/bench/find-bit-bench.c
-> @@ -0,0 +1,135 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Benchmark find_next_bit and related bit operations.
-> + *
-> + * Copyright 2020 Google LLC.
-> + */
-> +#include <stdlib.h>
-> +#include "bench.h"
-> +#include "../util/stat.h"
-> +#include <linux/bitmap.h>
-> +#include <linux/bitops.h>
-> +#include <linux/time64.h>
-> +#include <subcmd/parse-options.h>
-> +
-> +static unsigned int outer_iterations = 5;
-> +static unsigned int inner_iterations = 100000;
-> +
-> +static const struct option options[] = {
-> +	OPT_UINTEGER('i', "outer-iterations", &outer_iterations,
-> +		"Number of outerer iterations used"),
-> +	OPT_UINTEGER('j', "inner-iterations", &inner_iterations,
-> +		"Number of outerer iterations used"),
-> +	OPT_END()
-> +};
-> +
-> +static const char *const bench_usage[] = {
-> +	"perf bench mem find_bit <options>",
-> +	NULL
-> +};
-> +
-> +static unsigned int accumulator;
-> +static unsigned int use_of_val;
-> +
-> +static noinline void workload(int val)
-> +{
-> +	use_of_val += val;
-> +	accumulator++;
-> +}
-> +
-> +#if defined(__i386__) || defined(__x86_64__)
-> +static bool asm_test_bit(long nr, const unsigned long *addr)
-> +{
-> +	bool oldbit;
-> +
-> +	asm volatile("bt %2,%1"
-> +		     : "=@ccc" (oldbit)
-> +		     : "m" (*(unsigned long *)addr), "Ir" (nr) : "memory");
-> +
-> +	return oldbit;
-> +}
-> +#else
-> +#define asm_test_bit test_bit
-> +#endif
-> +
-> +static int do_for_each_set_bit(unsigned int num_bits)
-> +{
-> +	unsigned long *to_test = bitmap_alloc(num_bits);
-> +	struct timeval start, end, diff;
-> +	u64 runtime_us;
-> +	struct stats fb_time_stats, tb_time_stats;
-> +	double time_average, time_stddev;
-> +	unsigned int bit, i, j;
-> +	unsigned int set_bits, skip;
-> +	unsigned int old;
-> +
-> +	init_stats(&fb_time_stats);
-> +	init_stats(&tb_time_stats);
-> +
-> +	for (set_bits = 1; set_bits <= num_bits; set_bits <<= 1) {
-> +		bitmap_zero(to_test, num_bits);
-> +		skip = num_bits / set_bits;
-> +		for (i = 0; i < num_bits; i += skip)
-> +			set_bit(i, to_test);
-> +
-> +		for (i = 0; i < outer_iterations; i++) {
-> +			old = accumulator;
-> +			gettimeofday(&start, NULL);
-> +			for (j = 0; j < inner_iterations; j++) {
-> +				for_each_set_bit(bit, to_test, num_bits)
-> +					workload(bit);
-> +			}
-> +			gettimeofday(&end, NULL);
-> +			assert(old + (inner_iterations * set_bits) == accumulator);
-> +			timersub(&end, &start, &diff);
-> +			runtime_us = diff.tv_sec * USEC_PER_SEC + diff.tv_usec;
-> +			update_stats(&fb_time_stats, runtime_us);
-> +
-> +			old = accumulator;
-> +			gettimeofday(&start, NULL);
-> +			for (j = 0; j < inner_iterations; j++) {
-> +				for (bit = 0; bit < num_bits; bit++) {
-> +					if (asm_test_bit(bit, to_test))
-> +						workload(bit);
-> +				}
-> +			}
-> +			gettimeofday(&end, NULL);
-> +			assert(old + (inner_iterations * set_bits) == accumulator);
-> +			timersub(&end, &start, &diff);
-> +			runtime_us = diff.tv_sec * USEC_PER_SEC + diff.tv_usec;
-> +			update_stats(&tb_time_stats, runtime_us);
-> +		}
-> +
-> +		printf("%d operations %d bits set of %d bits\n",
-> +			inner_iterations, set_bits, num_bits);
-> +		time_average = avg_stats(&fb_time_stats);
-> +		time_stddev = stddev_stats(&fb_time_stats);
-> +		printf("  Average for_each_set_bit took: %.3f usec (+- %.3f usec)\n",
-> +			time_average, time_stddev);
-> +		time_average = avg_stats(&tb_time_stats);
-> +		time_stddev = stddev_stats(&tb_time_stats);
-> +		printf("  Average test_bit loop took:    %.3f usec (+- %.3f usec)\n",
-> +			time_average, time_stddev);
-> +
-> +		if (use_of_val == accumulator)  /* Try to avoid compiler tricks. */
-> +			printf("\n");
-> +	}
-> +	bitmap_free(to_test);
-> +	return 0;
-> +}
-> +
-> +int bench_mem_find_bit(int argc, const char **argv)
-> +{
-> +	int err = 0, i;
-> +
-> +	argc = parse_options(argc, argv, options, bench_usage, 0);
-> +	if (argc) {
-> +		usage_with_options(bench_usage, options);
-> +		exit(EXIT_FAILURE);
-> +	}
-> +
-> +	for (i = 1; i <= 2048; i <<= 1)
-> +		do_for_each_set_bit(i);
-> +
-> +	return err;
-> +}
-> diff --git a/tools/perf/builtin-bench.c b/tools/perf/builtin-bench.c
-> index cad31b1d3438..690eee1120a7 100644
-> --- a/tools/perf/builtin-bench.c
-> +++ b/tools/perf/builtin-bench.c
-> @@ -52,6 +52,7 @@ static struct bench sched_benchmarks[] = {
->  static struct bench mem_benchmarks[] = {
->  	{ "memcpy",	"Benchmark for memcpy() functions",		bench_mem_memcpy	},
->  	{ "memset",	"Benchmark for memset() functions",		bench_mem_memset	},
-> +	{ "find_bit",	"Benchmark for find_bit() functions",		bench_mem_find_bit	},
->  	{ "all",	"Run all memory access benchmarks",		NULL			},
->  	{ NULL,		NULL,						NULL			}
->  };
-> -- 
-> 2.28.0.rc0.142.g3c755180ce-goog
-> 
-
+ 	if (copy_to_user(to, &v, offsetof(struct drm_buf_desc, flags)))
+ 		return -EFAULT;
 -- 
+2.25.1
 
-- Arnaldo
