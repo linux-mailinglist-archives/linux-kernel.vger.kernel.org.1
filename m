@@ -2,204 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE4C230762
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632F0230779
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgG1KNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728586AbgG1KM7 (ORCPT
+        id S1728730AbgG1KQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:16:26 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:28087 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728711AbgG1KQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:12:59 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933B7C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:12:58 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t7so686574otp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 03:12:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Aof/IkstdyaZKoWfuNk92GZBDQ6ckAiOA/sCuGsGL6I=;
-        b=NbU2aWgthvUPJhAzSvTiPxT0ZOtU5G2eG2AdSnSK87IEZE9sylk5eLW3u2WDqK696N
-         H1yoSq2fFkTuIlergwQ23t0hSiiau8ecXjqCO+U8bWuxEGZJhZORLMV5itNtN7oLxk0C
-         v88fbxM9EAd2WMRfPC1SPS8cFcCm1+KtbaLDA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Aof/IkstdyaZKoWfuNk92GZBDQ6ckAiOA/sCuGsGL6I=;
-        b=LGPmQNr5VMYZZwXK2LoTTNNPtgh6mKXBUFJtJuHYL9rxvv4eAwR9NgLvgAHfxphZHZ
-         CvwTlhmLeRhjf7fj2Jyp+5V8Py8yNoVK8SaAkSqG2wEyUa3o5Rac58hD8WleTe6t4DcE
-         OAde3bIifY19iIE9K2SNsen54wP34CqAA+nbfTNzruLZ+4cK84ZHREwT523PGQK1egjQ
-         6YArSY4k84+JzrgJw0pbfDZmi752TzgrsaDUW7oBNNXNDLI2dBFRvcwZM7lnhypANz82
-         bpIX0GEZpXs4qKrgd39+1UTeCe1+FiFwPa8cZ43Am8UT0uGHkjCG2o0EewK/qCIcRbOX
-         vS2A==
-X-Gm-Message-State: AOAM533K8gYmA4mIghik1ooLRCh10pDCVRLdxYk2vG0Ag93jCB3jandv
-        a08cLCg6H+ngOmzrw4GsjyRbo2StjBqUP2W2A4jwDA==
-X-Google-Smtp-Source: ABdhPJxjWsA5TxdUKIBtwP1CV/sLUp8Xiogs4lFtBgtOp4T0DZIsVMl3W3hfllsLWeGSY9fjOn2BS1PqFgUdigcvARI=
-X-Received: by 2002:a05:6830:1e71:: with SMTP id m17mr10486878otr.188.1595931177953;
- Tue, 28 Jul 2020 03:12:57 -0700 (PDT)
+        Tue, 28 Jul 2020 06:16:24 -0400
+X-UUID: 79b8673d867148d9b7fb4e02fdeab622-20200728
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=k9muKPyZDqBZfxd+zXdTzvxlhvvct36d5hwul+hcVtQ=;
+        b=CJ2E0eL0QJ36mzyFJqKVMMrzmUGjZKenJ7Zd0GJ4c/HJmDv1Gmav9v90hOWSN3S00t/YJWNbwRd19PFOeqn8N/ExF/H8R0k/BuViFpYrM87Qd6ZWfxdrhNjxfizoCPp4zqZlW3LW642uupp4XcD8rKq3Bg1+h/H47HeQexUTLsI=;
+X-UUID: 79b8673d867148d9b7fb4e02fdeab622-20200728
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <freddy.hsin@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 462996204; Tue, 28 Jul 2020 18:16:20 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 28 Jul 2020 18:16:17 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 28 Jul 2020 18:16:17 +0800
+From:   Freddy Hsin <freddy.hsin@mediatek.com>
+To:     <linux-mediatek@lists.infradead.or>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Saravana Kannan <saravanak@google.com>,
+        <linux-kernel@vger.kernel.org>, <chang-an.chen@mediatek.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        <wsd_upstream@mediatek.com>, <kuohong.wang@mediatek.com>,
+        <stanley.chu@mediatek.com>
+Subject: [PATCH v1] Porting Mediatek timer driver to kernel module 
+Date:   Tue, 28 Jul 2020 18:16:15 +0800
+Message-ID: <1595931377-21627-1-git-send-email-freddy.hsin@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-References: <1595930879-2478-1-git-send-email-kevin3.tang@gmail.com>
-In-Reply-To: <1595930879-2478-1-git-send-email-kevin3.tang@gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 28 Jul 2020 12:12:47 +0200
-Message-ID: <CAKMK7uH+=gpJriMct8x_tiexRqf1vBuP9d+7eWsMFWm1ccYjkQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v6 0/6] Add Unisoc's drm kms module
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sean Paul <sean@poorly.run>, Dave Airlie <airlied@linux.ie>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, orsonzhai@gmail.com,
-        zhang.lyra@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:08 PM Kevin Tang <kevin3.tang@gmail.com> wrote:
->
-> From: Kevin Tang <kevin.tang@unisoc.com>
+UG9ydGluZyBNZWRpYXRlayB0aW1lciBkcml2ZXIgdG8ga2VybmVsIG1vZHVsZSBmb3IgR0tJDQoo
+R2VuZXJpYyBLZXJuZWwgSW1hZ2UpLiBDbG9ja3NvdXJjZSBtbWlvIGZ1bmN0aW9ucyBhcmUNCmV4
+cG9ydGVkIGZvciBNZWRpYXRlayB0aW1lciBpbml0IGZ1bmN0aW9uLg0KDQpUaGlzIHBhdGNoIGRl
+cGVuZHMgb24gdGhlIHRpbWVyLW9mIHBhdGNoIHN1Ym1pdHRlZCBieSBCYW9saW4gV2FuZw0KaHR0
+cHM6Ly9sa21sLm9yZy9sa21sLzIwMjAvMy8yNC83Mg0KDQoNCkZyZWRkeSBIc2luICgyKToNCiAg
+a2VybmVsOiB0aW1lOiByZW1vdmUgaW5pdCBzZWN0aW9uIGxhYmVsIG9mIHNjaGVkX2Nsb2NrX3Jl
+Z2lzdGVyDQogIHRpbWVyOiBtdDY4NzM6IHBvcnRpbmcgdGltZXIgZHJpdmVyIHRvIGxvYWRhYmxl
+IG1vZHVsZQ0KDQogZHJpdmVycy9jbG9ja3NvdXJjZS9LY29uZmlnICAgICAgICAgIHwgICAgMiAr
+LQ0KIGRyaXZlcnMvY2xvY2tzb3VyY2UvbW1pby5jICAgICAgICAgICB8ICAgIDQgKysrLQ0KIGRy
+aXZlcnMvY2xvY2tzb3VyY2UvdGltZXItbWVkaWF0ZWsuYyB8ICAgMzkgKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKw0KIGtlcm5lbC90aW1lL3NjaGVkX2Nsb2NrLmMgICAgICAgICAg
+ICB8ICAgIDEgKw==
 
-Hm still no ack for dt bindings? We need that for merging.
-
-Also what's the maintainer plan here? Imo best would be to put this
-into the drm-misc group maintainer model, with commit rights and all:
-
-https://drm.pages.freedesktop.org/maintainer-tools/drm-misc.html
-
-MAINTAINERS patch to do that would be good.
--Daniel
-
->
-> ChangeList:
-> v1:
-> 1. only upstream modeset and atomic at first commit.
-> 2. remove some unused code;
-> 3. use alpha and blend_mode properties;
-> 3. add yaml support;
-> 4. remove auto-adaptive panel driver;
-> 5. bugfix
->
-> v2:
-> 1. add sprd crtc and plane module for KMS, preparing for multi crtc&encoder
-> 2. remove gem drivers, use generic CMA handlers
-> 3. remove redundant "module_init", all the sub modules loading by KMS
->
-> v3:
-> 1. multi crtc&encoder design have problem, so rollback to v1
->
-> v4:
-> 1. update to gcc-linaro-7.5.0
-> 2. update to Linux 5.6-rc3
-> 3. remove pm_runtime support
-> 4. add COMPILE_TEST, remove unused kconfig
-> 5. "drm_dev_put" on drm_unbind
-> 6. fix some naming convention issue
-> 7. remove semaphore lock for crtc flip
-> 8. remove static variables
->
-> v5:
-> 1. optimize encoder and connector code implementation
-> 2. use "platform_get_irq" and "platform_get_resource"
-> 3. drop useless function return type, drop unless debug log
-> 4. custom properties should be separate, so drop it
-> 5. use DRM_XXX replase pr_xxx
-> 6. drop dsi&dphy hal callback ops
-> 7. drop unless callback ops checking
-> 8. add comments for sprd dpu structure
->
-> v6:
-> 1. Access registers via readl/writel
-> 2. Checking for unsupported KMS properties (format, rotation, blend_mode, etc) on plane_check ops
-> 3. Remove always true checks for dpu core ops
->
-> Kevin Tang (6):
->   dt-bindings: display: add Unisoc's drm master bindings
->   drm/sprd: add Unisoc's drm kms master
->   dt-bindings: display: add Unisoc's dpu bindings
->   drm/sprd: add Unisoc's drm display controller driver
->   dt-bindings: display: add Unisoc's mipi dsi&dphy bindings
->   drm/sprd: add Unisoc's drm mipi dsi&dphy driver
->
->  .../devicetree/bindings/display/sprd/dphy.yaml     |   75 +
->  .../devicetree/bindings/display/sprd/dpu.yaml      |   82 ++
->  .../devicetree/bindings/display/sprd/drm.yaml      |   36 +
->  .../devicetree/bindings/display/sprd/dsi.yaml      |   98 ++
->  drivers/gpu/drm/Kconfig                            |    2 +
->  drivers/gpu/drm/Makefile                           |    1 +
->  drivers/gpu/drm/sprd/Kconfig                       |   12 +
->  drivers/gpu/drm/sprd/Makefile                      |   13 +
->  drivers/gpu/drm/sprd/disp_lib.c                    |   57 +
->  drivers/gpu/drm/sprd/disp_lib.h                    |   16 +
->  drivers/gpu/drm/sprd/dphy/Makefile                 |    7 +
->  drivers/gpu/drm/sprd/dphy/pll/Makefile             |    3 +
->  drivers/gpu/drm/sprd/dphy/pll/megacores_sharkle.c  |  473 +++++++
->  drivers/gpu/drm/sprd/dphy/sprd_dphy_api.c          |  201 +++
->  drivers/gpu/drm/sprd/dphy/sprd_dphy_api.h          |   22 +
->  drivers/gpu/drm/sprd/dpu/Makefile                  |    3 +
->  drivers/gpu/drm/sprd/dpu/dpu_r2p0.c                |  503 +++++++
->  drivers/gpu/drm/sprd/dsi/Makefile                  |    8 +
->  drivers/gpu/drm/sprd/dsi/core/Makefile             |    4 +
->  drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0.c      |  964 +++++++++++++
->  drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0.h      | 1477 ++++++++++++++++++++
->  drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0_ppi.c  |  328 +++++
->  drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0_ppi.h  |   32 +
->  drivers/gpu/drm/sprd/dsi/sprd_dsi_api.c            |  590 ++++++++
->  drivers/gpu/drm/sprd/dsi/sprd_dsi_api.h            |   26 +
->  drivers/gpu/drm/sprd/sprd_dphy.c                   |  209 +++
->  drivers/gpu/drm/sprd/sprd_dphy.h                   |   50 +
->  drivers/gpu/drm/sprd/sprd_dpu.c                    |  668 +++++++++
->  drivers/gpu/drm/sprd/sprd_dpu.h                    |  190 +++
->  drivers/gpu/drm/sprd/sprd_drm.c                    |  227 +++
->  drivers/gpu/drm/sprd/sprd_drm.h                    |   18 +
->  drivers/gpu/drm/sprd/sprd_dsi.c                    |  571 ++++++++
->  drivers/gpu/drm/sprd/sprd_dsi.h                    |  108 ++
->  33 files changed, 7074 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/dphy.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/dpu.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/drm.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/sprd/dsi.yaml
->  create mode 100644 drivers/gpu/drm/sprd/Kconfig
->  create mode 100644 drivers/gpu/drm/sprd/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/disp_lib.c
->  create mode 100644 drivers/gpu/drm/sprd/disp_lib.h
->  create mode 100644 drivers/gpu/drm/sprd/dphy/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/dphy/pll/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/dphy/pll/megacores_sharkle.c
->  create mode 100644 drivers/gpu/drm/sprd/dphy/sprd_dphy_api.c
->  create mode 100644 drivers/gpu/drm/sprd/dphy/sprd_dphy_api.h
->  create mode 100644 drivers/gpu/drm/sprd/dpu/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/dpu/dpu_r2p0.c
->  create mode 100644 drivers/gpu/drm/sprd/dsi/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/dsi/core/Makefile
->  create mode 100644 drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0.c
->  create mode 100644 drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0.h
->  create mode 100644 drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0_ppi.c
->  create mode 100644 drivers/gpu/drm/sprd/dsi/core/dsi_ctrl_r1p0_ppi.h
->  create mode 100644 drivers/gpu/drm/sprd/dsi/sprd_dsi_api.c
->  create mode 100644 drivers/gpu/drm/sprd/dsi/sprd_dsi_api.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dphy.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dpu.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_drm.h
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.c
->  create mode 100644 drivers/gpu/drm/sprd/sprd_dsi.h
->
-> --
-> 2.7.4
->
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
