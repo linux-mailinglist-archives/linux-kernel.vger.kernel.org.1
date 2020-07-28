@@ -2,175 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F96823123A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:13:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D74D231242
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732619AbgG1TNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:13:06 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54272 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728561AbgG1TNF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:13:05 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06SJCNnm014113;
-        Tue, 28 Jul 2020 12:12:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=0wWeh7pIvQO+ky2yX5Mczw6ymU7Zw0Vo06E9mbhiBfA=;
- b=kTOeJaysCWHdBVAs7YBQS3rK5/pa4jnlnry5WxPvKRufT0iPx7bA3oGO6XY+fppwxCFN
- FIi4HOHGSPjglpf6tq4KnK1UN8HkWhbEF2kvYXqqveTfASFrxllK2F4jVTpso3C1pj+W
- XWfoLo1VEtjfL/xbvG/AVNfIlouRzLvPfNk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 32h4edb6u1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Jul 2020 12:12:50 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 28 Jul 2020 12:12:49 -0700
+        id S1732642AbgG1TP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:15:28 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:5140 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728561AbgG1TP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:15:27 -0400
+Received: from hkpgpgate101.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f20794b0000>; Wed, 29 Jul 2020 03:15:23 +0800
+Received: from HKMAIL103.nvidia.com ([10.18.16.12])
+  by hkpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 28 Jul 2020 12:15:23 -0700
+X-PGP-Universal: processed;
+        by hkpgpgate101.nvidia.com on Tue, 28 Jul 2020 12:15:23 -0700
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
+ 2020 19:15:22 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 28 Jul 2020 19:15:22 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hfUF9cOi3/AmYROlgJODGf3AFZaDtp4DM9knzMpuw8Tb4OX20GzI5XYL0kdT51q3q6/L4vnNJUm19ymJVnFX1cp4KTrgJOJa66JS0DQ4hes0iRwUD/+1nvAYfE5RRuXehvRhKBF6n9TlN38SvHcFAZ7fAusYabHrPWcSW7tNW2RGQyEj9lzvXZlMrLw2pL5ZdPhGlobau8khqSCYwUzB1wJplnOBT6C5TRJEdsxJWCWpDoHYQ2Fgpr7nOSkY2ZzamUaSHSKpHYM5lxayuowDTqeCZRsaJ3BCvP0IHRmqVnnFwSAb+x9WVuXn1JAbJi0cXx+RlLhoDpJQQkfmtJ3QAQ==
+ b=BRV6Fh7GziUTIDNjoxDzAay+PsG17PL5fliqyyzIdz/bn2zKBBqgegfbHJ0EcCBEAJg3Qq7BThHJ/u5AO8PUqkIzFg2/qNNmbFZ0mB9YWRK7hD1Tue58zcQ6ohmF10UnbH7O6WKNjDPWQcC58yDsC6DuySXgATAVBfj/Pvvx1Oe6DaFfHr0RahitGde8DROltFvA12xMEjjxlNLOJ+JyA/l/ZiE3YC5YZXH3sr9ap9aKZ0Hit67Sr7zVFECSCkUVww+beDMkXD3vXrzUgup/0Zs8duPCJ2LZgnnKB0g8LryAFGBamT8pTXkD7iSvmzH+j/3oQyjqFidqNlagtTS/aA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0wWeh7pIvQO+ky2yX5Mczw6ymU7Zw0Vo06E9mbhiBfA=;
- b=S0ln9tLk/jdA7YhIDHKqZ0stp9D0RNEjbX3aBW/XR4bFcO8aQG75pDMKOQkIn/RjsqbnHbsJGWSy/sSDKhXHnqj1P5e1HGwRhByxCAyZFwYDAUKbdIeL2FTXuntGJ2Ee5ipmJz8VEo+rgy0JW4v6wGmrnPwU+0kPbvNLt8ZUakandq4B/Pfc4GEzci1hl4xQx4kDXbh5+aHmvlDpZ4IfvEpB5H58+UswqYoCOWs1fJlHFx3hZwmRqwtOrlBjazGkv5Ik7bhhFLiNUDHACMJUZgGAzHNlgFslGortnAOXZiGa0OSew4hrN6Ym82WwNPnOJIU20YUBB+VLot2NVsIb/A==
+ bh=oeNoQhlOF2fFxSAftUqt6fC0NQGDE04LF8LzMamEzdc=;
+ b=Yvp5Ims5WVGYu929HEMxOy8m/xLqLKs0H3hasW2cqvjxMILfCRXoZXIOL0iR7CzSvO9RXcasceRnrmkHhUsPOrA7Q3uPalteRJ7twx0gkSz9EG+TUzKYBFTn0SS2kOt8RHH5DY8Sg6KyeZVQTYyNCbiIL7OZ2r5RXTJ3zmR8cDHio2BFRMqdoxiJHOU4+4YSi+eqs1JnKKJ7e9pJ5o8U9qjqqRYDssD6VBUP9GsW6E6PcHsHvXQ56c5TH89GINy+v/LI1hTb1yl3st72gzZ89lgIsrlM3hTUQ5cd0nYuILDEy94IqOmue67qb1y7tfDRjV8OOGLVNNNFZYVGYOJQkQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0wWeh7pIvQO+ky2yX5Mczw6ymU7Zw0Vo06E9mbhiBfA=;
- b=agac0icJhTbOUzTwgzmX21q+6hli+5A+ExXqFppeN/QCBMsJ7HOZlZ2gQ1cySrtzyX631y+UCma0Ee3DtifwIT/DpQE3RciPa3TlQQfb3xVMYc9LmGg/PNvkBUZkwKGyZJV/NE1UXrOzPpT/TmS1E3/RCV9m1owmVEnILt9687o=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3207.namprd15.prod.outlook.com (2603:10b6:a03:101::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.24; Tue, 28 Jul
- 2020 19:12:48 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::56b:2925:8762:2d80%7]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
- 19:12:48 +0000
-Subject: Re: [PATCH][next] bpf: fix swapped arguments in calls to
- check_buffer_access
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Colin King <colin.king@canonical.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200727175411.155179-1-colin.king@canonical.com>
- <c9ea156a-20fa-5415-0d35-0521e8740ddc@fb.com>
- <882cd37d-0af2-3412-6bd7-73aa466df23c@iogearbox.net>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <7a0b563a-9853-9d6f-9d3a-0595e701c1b0@fb.com>
-Date:   Tue, 28 Jul 2020 12:12:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
-In-Reply-To: <882cd37d-0af2-3412-6bd7-73aa466df23c@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR05CA0036.namprd05.prod.outlook.com
- (2603:10b6:a03:c0::49) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1515.namprd12.prod.outlook.com (2603:10b6:4:6::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3216.23; Tue, 28 Jul 2020 19:15:20 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::2d79:7f96:6406:6c76%3]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 19:15:20 +0000
+Date:   Tue, 28 Jul 2020 16:15:18 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nouveau@lists.freedesktop.org>, <kvm-ppc@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        Bharata B Rao <bharata@linux.ibm.com>
+Subject: Re: [PATCH v4 3/6] mm/notifier: add migration invalidation type
+Message-ID: <20200728191518.GA159104@nvidia.com>
+References: <20200723223004.9586-1-rcampbell@nvidia.com>
+ <20200723223004.9586-4-rcampbell@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200723223004.9586-4-rcampbell@nvidia.com>
+X-ClientProxiedBy: MN2PR16CA0031.namprd16.prod.outlook.com
+ (2603:10b6:208:134::44) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1215] (2620:10d:c090:400::5:112f) by BYAPR05CA0036.namprd05.prod.outlook.com (2603:10b6:a03:c0::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.10 via Frontend Transport; Tue, 28 Jul 2020 19:12:48 +0000
-X-Originating-IP: [2620:10d:c090:400::5:112f]
+Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR16CA0031.namprd16.prod.outlook.com (2603:10b6:208:134::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23 via Frontend Transport; Tue, 28 Jul 2020 19:15:20 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1k0V4I-000fXl-Tm; Tue, 28 Jul 2020 16:15:18 -0300
+X-Originating-IP: [156.34.48.30]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9e479f3d-678e-4aae-0169-08d8332a374b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3207:
+X-MS-Office365-Filtering-Correlation-Id: 3cdaeee0-0c4b-40c1-c44f-08d8332a91ca
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1515:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB32078FCFB78008AA05C3D9BFD3730@BYAPR15MB3207.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:175;
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1515E35511089C096E10ACBCC2730@DM5PR12MB1515.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2KFETicV3fDPILiKbdr3b8QSIdilHCCpa7qib1DTW69R0OWJkyiJSWDOtUcEY2Ph9HQJfk1Dg4U+HlQookP3Oii7FJwbdKshFlmjwFE1GC7/OLbn13UyIfr1kj5No2os9X/IaU/Zg1Gau7epPFgFFYXwNDB2R2lwruDyHnarSecD7IAwxJw4P+LgL6sR6s+Z5z5z5qaDXTnIjGw1GnFxyhaHsHns25T4PkxHBJ2+RragoGEAkHyT8Kp/zzXZZJd4f8q89H4vuHZsYNOyrOKSyytsGwH0dF0L6zQIwMVZGKy7laIxWazNvuybCf/LK/73HIUU/jErseZlWP5Y1fIIPEXQJl6h0t2vpl7mLbgu8G8kqbVVDMf6JOTLxrQR0amv/TZmvemA3tmJxaTyF61tlg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(136003)(396003)(366004)(39860400002)(8936002)(53546011)(316002)(478600001)(2906002)(8676002)(52116002)(6486002)(36756003)(31696002)(4326008)(83380400001)(110136005)(31686004)(86362001)(5660300002)(2616005)(66556008)(66476007)(66946007)(16526019)(186003)(921003)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: jPfVfqg41pxnfqwCyZNSdkaTtz8VBcQvE6Sdzy7siW3chZI0y3dCX2ELwfsZJ5xRbWCipuVIVJLUfRnfikF74W9Rn8V2VFBqu6ok00h2Yk0UgOaaE94NzsInoUr2JsPY0o0xgRiqVXr1rOa6+QNAJsX/hn/GioNhquZigxxhGTro7KotvdhGifGvdy6NvpUH/4N/Y4di9Aans9PV8oKEKwb/sTqjuh+vlcR4jxLXEgC1qg1RFOWN4j8YtmA4gHOCaDFPN+9IzKFRVsynGnXji++HUcLZgAHSnKztrqnTR+lf+GewlGUqvNw9ymMaoiZaX0LkuQSvlgVZqW6jTkD7XoBjqWFgM5kXegpU1cMEJ5Tbeepl96WF7U0SielBkt/CxwBRvc09DpBn4ET0cnK/Mf9YGJlzlwwD4KS00oMlNXude/FNi+QyrUjmFivenDCim70An5UrluUFQD1U41GKh/nja0B8LHQbqnvUgTyP7wm3b89Ey83lH3mDQ2c6syS8zmy1RbBTiB5dUR2dq7FHpA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e479f3d-678e-4aae-0169-08d8332a374b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: IVChklyLQAyK48pWtA7+W/aB2dtYvKefZjzBifLv5lptZlBpekJdcCIneoov1izqbZIDNEC8Yw5pihYH/d4G8pXOtO4hDGOkFHyrmPnrrOToOfFBib4meb6gubuZJ+kiCX8yGHjsEBPDEF6vyCsfda/Ozs2hz8uplWnjNGFQA0BbvOoCgtgSFyGS1GDUq//1zMDwUcCvc97lfQ8V+sFqxCR/HJb8kTfaTYqX5/c7tMKI1SXExB+r10nm5RCmA1N6nlsoquICtcprc9ZiGXOgt/g8rdQyTQbeAf5lNUmgzozWmESTCh/bfI9XbEFCvYTON2r4+iQYKA2RwnKW2/sjsA+ZbXdru4Sc5d2aCPgk2e26rRY9825AVNtyJML/KV62
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(396003)(346002)(366004)(39860400002)(4744005)(1076003)(54906003)(37006003)(6636002)(2906002)(316002)(7416002)(8936002)(5660300002)(8676002)(9746002)(9786002)(33656002)(478600001)(66556008)(66476007)(26005)(186003)(66946007)(86362001)(2616005)(6862004)(4326008)(426003)(36756003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: RBJrtRMwBoRVmLRUwWoCl7FTp/VclOwxmFS0uC7wDOidKik0e/ZSXxLb+zo2VtLplcCEqdSg1TFzTJmJZMqlR7UsTpqk/kBlNIyvwVNz/Tz9wCtze06j4rgH3mreyD3zqRucOSyTX91cR3FXCfGzxBvsctzE1js0edgD5Lmin8G397jClog0tMxyPnsj/LC8iVp16ZEocxiWRuKhP1UxWcRMSJd2u43ZlBgucbWorud94NPyYtRN4bTAs5IE6y25r5rJan+zdADXYllzd3+0Nap+qLJwh4Hwi1wlkScNhwEzyKdYEM5WxAw8Arxd3WdfGW6BE2LkbKeipNClhgll4J2StGyG4Uo2gDD8zkhtckEpZKtyS4Ki5tuojOCMmKF4R16O/JR5MoBo1/W1BdRemYkd548q0T7ci7Prg0MAKSw55D8AtH7rQtmhEU65Qc8po36KCWPntrCz5J7fNhc+/fofn8KQ7pODuhIeZOf3Hq4=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3cdaeee0-0c4b-40c1-c44f-08d8332a91ca
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 19:12:48.4479
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 19:15:20.3941
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aob97dLsPqDlzGZQbL3Ngpr2XtOUdMg1zWkoTQSvOuWI3EM3kz0XpTmRD+ykHJAg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3207
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-28_16:2020-07-28,2020-07-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 malwarescore=0 phishscore=0 clxscore=1015
- suspectscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2007280136
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: FUfALy/QnfGcZM+xyqvpwFi8hbl38bfcI6Jr6V91sFxA+dhlfqt5yj/7Mlya7F/0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1515
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595963723; bh=oeNoQhlOF2fFxSAftUqt6fC0NQGDE04LF8LzMamEzdc=;
+        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
+         ARC-Authentication-Results:Authentication-Results:Date:From:To:CC:
+         Subject:Message-ID:References:Content-Type:Content-Disposition:
+         In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Originating-IP:
+         X-MS-PublicTrafficType:X-MS-Office365-Filtering-Correlation-Id:
+         X-MS-TrafficTypeDiagnostic:X-MS-Exchange-Transport-Forked:
+         X-Microsoft-Antispam-PRVS:X-MS-Oob-TLC-OOBClassifiers:
+         X-MS-Exchange-SenderADCheck:X-Microsoft-Antispam:
+         X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
+         X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=DTR5ZyDsmlBfs+dpERGF38p/VUECPe9XoeFd+SmVGKvEJkjLMVZGtXIwyM9lUJefe
+         ZGunyqmQeuBmhcfGVWKkJMI8e96RfHBx1ZTJ49ZMO+B67Uvz4zmpLDwT9W4dlYRyHR
+         lpENFb3/PVtw8FUYf9uNo/cPW7qbMJXw1D6lOdK/mPxuO0VUH8/NTevQTLK5ZPYEYD
+         IWazd1Tk6/0419EnMc2s5l0KvBKeXXFRfWSnMh5e3x0xJ0X95lbjcUD7DaumQYVHiG
+         33sijOyBp/aMz5mfp8IAev+KVvnVd6n9D+2+LnexUWY9tQpe4EEQ2z6spwdGCq+H57
+         Uu1i6RHxia4Lw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 23, 2020 at 03:30:01PM -0700, Ralph Campbell wrote:
+>  static inline int mm_has_notifiers(struct mm_struct *mm)
+> @@ -513,6 +519,7 @@ static inline void mmu_notifier_range_init(struct mmu_notifier_range *range,
+>  	range->start = start;
+>  	range->end = end;
+>  	range->flags = flags;
+> +	range->migrate_pgmap_owner = NULL;
+>  }
 
+Since this function is commonly called and nobody should read
+migrate_pgmap_owner unless MMU_NOTIFY_MIGRATE is set as the event,
+this assignment can be dropped.
 
-On 7/28/20 3:43 AM, Daniel Borkmann wrote:
-> On 7/27/20 11:39 PM, Yonghong Song wrote:
->> On 7/27/20 10:54 AM, Colin King wrote:
->>> From: Colin Ian King <colin.king@canonical.com>
->>>
->>> There are a couple of arguments of the boolean flag zero_size_allowed
->>> and the char pointer buf_info when calling to function 
->>> check_buffer_access
->>> that are swapped by mistake. Fix these by swapping them to correct
->>> the argument ordering.
->>>
->>> Addresses-Coverity: ("Array compared to 0")
->>> Fixes: afbf21dce668 ("bpf: Support readonly/readwrite buffers in 
->>> verifier")
->>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->>
->> Thanks for the fix!
->> Acked-by: Yonghong Song <yhs@fb.com>
-> 
-> Sigh, thanks for the fix Colin, applied! Yonghong, could you follow-up with
-> BPF selftest test cases that exercise these paths? Thx
-
-This will be triggered with a verifier rejection path, e.g., negative 
-offset from the base. I will send a follow-up patch soon.
-
-BTW, using llvm to build the kernel (without this change), the compiler
-actually issues a warning:
-
--bash-4.4$ make -j100 LLVM=1 && make LLVM=1 vmlinux
-   GEN     Makefile
-...
-   CC      kernel/bpf/verifier.o
-/data/users/yhs/work/net-next/kernel/bpf/verifier.c:3481:18: warning: 
-expression which evaluates to zero treate$
-  as a null pointer constant of type 'const char *' 
-[-Wnon-literal-null-conversion]
-                                           "rdonly", false,
-                                                     ^~~~~
-/data/users/yhs/work/net-next/kernel/bpf/verifier.c:3487:16: warning: 
-expression which evaluates to zero treate$
-  as a null pointer constant of type 'const char *' 
-[-Wnon-literal-null-conversion]
-                                           "rdwr", false,
-                                                   ^~~~~
-2 warnings generated.
-   AR      kernel/bpf/built-in.a
-
-Looks like I need to use LLVM compiler more often...
-
+Jason
