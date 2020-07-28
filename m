@@ -2,109 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061CA23042B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3B823042D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 09:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgG1Hdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 03:33:38 -0400
-Received: from ozlabs.org ([203.11.71.1]:54405 "EHLO ozlabs.org"
+        id S1728041AbgG1HeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 03:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727996AbgG1Hdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 03:33:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1727072AbgG1HeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 03:34:07 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BG7hG1nCKz9sTj;
-        Tue, 28 Jul 2020 17:33:33 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1595921614;
-        bh=/7AKHiCbpH7BHVjS0hDfofRHEgga2Dx7rWmwTAvMLhA=;
+        by mail.kernel.org (Postfix) with ESMTPSA id 02F342070B;
+        Tue, 28 Jul 2020 07:34:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595921646;
+        bh=4CctEpqXsw2X+EjiNA/gb/+djSwvwlkPMoJAMblIkKA=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CcKHElp5n01oIJ85ejksPetpMrwz7fg2huNnffVhLixPXoaRjrrOv1STdQeGmkrel
-         oj66Zr6gQVV5Of/FqCUHStmCJlti4pPTZiw9WXmNERkeXUwuvVG84KdcLdnBbjIICT
-         J6nYTxNDr4ohKhvV7khhpF0LIKxtOmKh4gD9XtaB96iPBkWirTMRGxHiiP1FoMd2n3
-         sRJ4fiH5Sie2ZIs/UoCFmu5sEBbD8t5hFBVsIFD3Qu/1fJ8BFgxnWq1VehcvmkdOJA
-         /jILQF7okVFpwggP9PIEMB3+QuCcUnpKhSmHLBB9Dd1kr4sgLhw2ygu5SS+aJy1XkF
-         YaQ2oUW3addcQ==
-Date:   Tue, 28 Jul 2020 17:33:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>
-Subject: Re: linux-next: build failure after merge of the char-misc tree
-Message-ID: <20200728173331.5bf1f438@canb.auug.org.au>
-In-Reply-To: <20200727092448.GB1764157@kroah.com>
-References: <20200727180831.6c356fc1@canb.auug.org.au>
-        <20200727092448.GB1764157@kroah.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/INkSETqbTX5k7nBLuVIGx7u";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        b=Ai+28Ik68vLxiJUscY/lUed8N+B4bpestmgqJb+Y188jeEcl/ULmEZNiUbbLRHcnL
+         FpljcWZVuNziex5ab5DM4RlpXDXdv/GtI/VRstcF2Y6qkkM029uPwxkFnrvf1JBqZA
+         sh3gtZfs7ncSrVqEIBHPyAHtkDoVBw5CtOGSj96w=
+Date:   Tue, 28 Jul 2020 16:34:00 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH v5 1/6] kprobes: Remove dependency to the module_mutex
+Message-Id: <20200728163400.e00b09c594763349f99ce6cb@kernel.org>
+In-Reply-To: <20200725102110.GA757173@gmail.com>
+References: <20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com>
+        <20200724050553.1724168-2-jarkko.sakkinen@linux.intel.com>
+        <20200724091711.GB517988@gmail.com>
+        <20200725030107.GF17052@linux.intel.com>
+        <20200725102110.GA757173@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/INkSETqbTX5k7nBLuVIGx7u
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, 25 Jul 2020 12:21:10 +0200
+Ingo Molnar <mingo@kernel.org> wrote:
 
-Hi Greg,
+> 
+> * Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+> 
+> > On Fri, Jul 24, 2020 at 11:17:11AM +0200, Ingo Molnar wrote:
+> > > 
+> > > * Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
+> > > 
+> > > > --- a/kernel/kprobes.c
+> > > > +++ b/kernel/kprobes.c
+> > > > @@ -564,7 +564,7 @@ static void kprobe_optimizer(struct work_struct *work)
+> > > >  	cpus_read_lock();
+> > > >  	mutex_lock(&text_mutex);
+> > > >  	/* Lock modules while optimizing kprobes */
+> > > > -	mutex_lock(&module_mutex);
+> > > > +	lock_modules();
+> > > >  
+> > > >  	/*
+> > > >  	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
+> > > > @@ -589,7 +589,7 @@ static void kprobe_optimizer(struct work_struct *work)
+> > > >  	/* Step 4: Free cleaned kprobes after quiesence period */
+> > > >  	do_free_cleaned_kprobes();
+> > > >  
+> > > > -	mutex_unlock(&module_mutex);
+> > > > +	unlock_modules();
+> > > >  	mutex_unlock(&text_mutex);
+> > > >  	cpus_read_unlock();
+> > > 
+> > > BTW., it would be nice to expand on the comments above - exactly which 
+> > > parts of the modules code is being serialized against and why?
+> > > 
+> > > We already hold the text_mutex here, which should protect against most 
+> > > kprobes related activities interfering - and it's unclear (to me) 
+> > > which part of the modules code is being serialized with here, and the 
+> > > 'lock modules while optimizing kprobes' comments is unhelpful. :-)
+> > > 
+> > > Thanks,
+> > > 
+> > > 	Ingo
+> > 
+> > AFAIK, only if you need to call find_module(), you ever need to acquire
+> > this mutex. 99% of time it is internally taken care by kernel/module.c.
+> > 
+> > I cannot make up any obvious reason to acquire it here.
+> 
+> If it's unnecessary, then it needs to be removed.
+> 
+> If it's necessary, then it needs to be documented better.
 
-On Mon, 27 Jul 2020 11:24:48 +0200 Greg KH <greg@kroah.com> wrote:
->
-> On Mon, Jul 27, 2020 at 06:08:31PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > After merging the char-misc tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> >=20
-> > In file included from drivers/misc/habanalabs/goya/goya.c:8:
-> > drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: =
-No such file or directory
-> >    12 | #include "habanalabs.h"
-> >       |          ^~~~~~~~~~~~~~
-> > In file included from drivers/misc/habanalabs/goya/goya_security.c:8:
-> > drivers/misc/habanalabs/goya/goyaP.h:12:10: fatal error: habanalabs.h: =
-No such file or directory
-> >    12 | #include "habanalabs.h"
-> >       |          ^~~~~~~~~~~~~~
-> >=20
-> > Presumably caused by commit
-> >=20
-> >   70b2f993ea4a ("habanalabs: create common folder")
-> >=20
-> > I have used the char-misc tree from next-20200724 for today. =20
->=20
-> Ugh, this is a mess of a merge with this driver.
->=20
-> Oded, I'll take Stephen's merge resolutions here and push out a new
-> version, and try to resolve this error, but if you could verify I got it
-> correct, that would be great.
+Good catch! This is not needed anymore.
+It has been introduced to avoid conflict with text modification, at that
+point we didn't get text_mutex. But after commit f1c6ece23729 ("kprobes: Fix 
+potential deadlock in kprobe_optimizer()") moved the text_mutex in the current
+position, we don't need it. (and anyway, keeping kprobe_mutex locked means
+any module unloading will be stopped inside kprobes_module_callback())
 
-The conflicts are gone, but I still get these errors.
+This may help?
 
---=20
-Cheers,
-Stephen Rothwell
+From 2355ecd941c3234b12a6de7443592848ed4e2087 Mon Sep 17 00:00:00 2001
+From: Masami Hiramatsu <mhiramat@kernel.org>
+Date: Tue, 28 Jul 2020 16:32:34 +0900
+Subject: [PATCH] kprobes: Remove unneeded module_mutex lock from the optimizer
 
---Sig_/INkSETqbTX5k7nBLuVIGx7u
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Remove unneeded module_mutex locking from the optimizer. Since
+we already locks both kprobe_mutex and text_mutex in the optimizer,
+text will not be changed and the module unloading will be stopped
+inside kprobes_module_callback().
 
------BEGIN PGP SIGNATURE-----
+Suggested-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ kernel/kprobes.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl8f1MsACgkQAVBC80lX
-0Gzn4ggAlwPeDU1PJawL/3dmABE3hzjj8uoJwMRQRF2Zt9jt3qkNDesiBe8qO1zT
-hcpAwA086TQeF9EyXbJ1e5NYxKJJZczaw/Y92ZETsXS/tQWlxumw1XHbXs4qyXK7
-GzVkXlCT8DSeELXcM50HlSZhkAS8q0fLg3R/fse0N7aJ6Y/mt4/41EZtlB1VuCaX
-EKWbODdLZNPbYBFFREjNp0cNfdjZJxsqvzZkw/1UE00qx4mM4O2QNveg1EnIB9TX
-LY3fVN6K4ou1ZihcOJiC26WbQPNuEIf5nPQmsQn4kt+ymtR2+Lrh+caVXNN7K9hB
-vh5eyxcBYLhCT8DxKLhrLPRkLHfsKw==
-=+zqG
------END PGP SIGNATURE-----
-
---Sig_/INkSETqbTX5k7nBLuVIGx7u--
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 4a904cc56d68..d1b02e890793 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -563,8 +563,6 @@ static void kprobe_optimizer(struct work_struct *work)
+ 	mutex_lock(&kprobe_mutex);
+ 	cpus_read_lock();
+ 	mutex_lock(&text_mutex);
+-	/* Lock modules while optimizing kprobes */
+-	mutex_lock(&module_mutex);
+ 
+ 	/*
+ 	 * Step 1: Unoptimize kprobes and collect cleaned (unused and disarmed)
+@@ -589,7 +587,6 @@ static void kprobe_optimizer(struct work_struct *work)
+ 	/* Step 4: Free cleaned kprobes after quiesence period */
+ 	do_free_cleaned_kprobes();
+ 
+-	mutex_unlock(&module_mutex);
+ 	mutex_unlock(&text_mutex);
+ 	cpus_read_unlock();
+ 
+-- 
+2.25.1
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
