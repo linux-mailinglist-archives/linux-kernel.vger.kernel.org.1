@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA597230E9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0071230E75
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731217AbgG1P7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:59:55 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41124 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730963AbgG1P7z (ORCPT
+        id S1731138AbgG1Pxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:53:31 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8930 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730977AbgG1Pxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:59:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595951993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FwMDmCLjPgPyIwCwBV+M7ENrQyFWuABUGAGQkmMVDFE=;
-        b=OwSb4dfvPnjGmUZFK+fkyFeNnasx2geBmE9EAppuoOVMk/G9LFbpRTe4CnudLTI8KzmjAy
-        SdudnO2Hjkq19EB3ku34Onx/P04tXMlHStF0B6jKFN0AMBxOCfbbS6HrlzAucVPuR5i0/k
-        qoJW6+92Y4IKSHHRtafUeOMSuLD2NYg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-454-IIO8mskENACISyAGc0c4zQ-1; Tue, 28 Jul 2020 11:59:49 -0400
-X-MC-Unique: IIO8mskENACISyAGc0c4zQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B55CB19200C5;
-        Tue, 28 Jul 2020 15:59:46 +0000 (UTC)
-Received: from krava (unknown [10.40.192.211])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C526F69324;
-        Tue, 28 Jul 2020 15:59:41 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 17:59:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
- attr->sample_period for libpfm4 events
-Message-ID: <20200728155940.GC1319041@krava>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-3-irogers@google.com>
+        Tue, 28 Jul 2020 11:53:30 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f2049cc0002>; Tue, 28 Jul 2020 08:52:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 28 Jul 2020 08:53:29 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 28 Jul 2020 08:53:29 -0700
+Received: from [10.2.168.236] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
+ 2020 15:53:28 +0000
+Subject: Re: [RFC PATCH v5 13/14] media: tegra-video: Add CSI MIPI pads
+ calibration
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
+        <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
+ <1595883452-17343-14-git-send-email-skomatineni@nvidia.com>
+ <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
+Date:   Tue, 28 Jul 2020 08:59:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728085734.609930-3-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595951565; bh=dy2t0B7LwKbfdaFYXF9gxiIzVP9k/n0JG2Pdshzxfes=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=eZPa3gzaXoQU4D7PkllVd2p9CmxuA/FKrg1jRf7Knrp7YRV86s5NP0dkkCMJ7C757
+         wZ/OJWjnDR6YGapN9QehD7fdOBHdzS72Ov+r6TgLgNseQiYGeKvAsx0KziEGCuwXry
+         T/k+91RfZod8SF63NW4bYGIDiYf4DxdcxTqjMMhPDZwIi00MveDBSF45RmEZXwrLJX
+         AeoK4SbSjXG4AvTK+xhhxTj+4AnXpDO+QkRukuY6NtnhEuAK1DVnV3ApMWRQ7atiA+
+         Ktc8kLgWZSJJ9cRg5vvSdBBz3D/qlmi2v384yHePcBa47rLbSRsSmCOD/rYRUbDzZc
+         3YEQ566fNk3rw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
-> From: Stephane Eranian <eranian@google.com>
-> 
-> Before:
-> $ perf record -c 10000 --pfm-events=cycles:period=77777
-> 
-> Would yield a cycles event with period=10000, instead of 77777.
-> 
-> This was due to an ordering issue between libpfm4 parsing
-> the event string and perf record initializing the event.
-> 
-> This patch fixes the problem by preventing override for
-> events with attr->sample_period != 0 by the time
-> perf_evsel__config() is invoked. This seems to have been the
-> intent of the author.
-> 
-> Signed-off-by: Stephane Eranian <eranian@google.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/evsel.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index 811f538f7d77..8afc24e2ec52 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -976,8 +976,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->  	 * We default some events to have a default interval. But keep
->  	 * it a weak assumption overridable by the user.
->  	 */
-> -	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
-> -				     opts->user_interval != ULLONG_MAX)) {
-> +	if (!attr->sample_period) {
 
-I was wondering why this wouldn't break record/top
-but we take care of the via record_opts__config
+On 7/28/20 3:30 AM, Dmitry Osipenko wrote:
+> 27.07.2020 23:57, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> +	/*
+>> +	 * TRM has incorrectly documented to wait for done status from
+>> +	 * calibration logic after CSI interface power on.
+>> +	 * As per the design, calibration results are latched and applied
+>> +	 * to the pads only when the link is in LP11 state which will happen
+>> +	 * during the sensor stream-on.
+>> +	 * CSI subdev stream-on triggers start of MIPI pads calibration.
+>> +	 * Wait for calibration to finish here after sensor subdev stream-on
+>> +	 * and in case of sensor stream-on failure, cancel the calibration.
+>> +	 */
+>>   	subdev =3D on ? src_subdev : csi_subdev;
+>>   	ret =3D v4l2_subdev_call(subdev, video, s_stream, on);
+>> -	if (ret < 0 && ret !=3D -ENOIOCTLCMD)
+>> +	if (ret < 0 && ret !=3D -ENOIOCTLCMD) {
+> I assume -ENOIOCTLCMD means that camera wasn't turned ON, so why
+> -ENOIOCTLCMD is special?
+No -ENOIOCTLCMD mean subdev don't have s_stream ops
+>
+>> +		if (on && csi_chan->mipi)
+>> +			tegra_mipi_cancel_calibration(csi_chan->mipi);
+>>   		return ret;
+>> +	}
+>> +
+>> +	if (on && csi_chan->mipi) {
+> Does finish_calibration() really need to be called for ret=3D-ENOIOCTLCMD=
+?
+>
+> Shouldn't it be cancel_calibration( for the -ENOIOCTLCMD?
 
-as long as 'perf test attr' works it looks ok to me
+start calibration happens during csi sensor streaming which happens=20
+prior to this point.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+In case if sensor subdev does not have s_stream ops, then either=20
+finish/cancel calibration should happen to disable the clock.
 
-thanks,
-jirka
+>
+>> +		ret =3D tegra_mipi_finish_calibration(csi_chan->mipi);
+>> +		if (ret < 0)
+>> +			dev_err(csi_chan->csi->dev,
+>> +				"MIPI calibration failed: %d\n", ret);
+> Doesn't v4l2_subdev_call(OFF) need to be invoked here on error?
 
+Not required as on error streaming fails and runtime PM will turn off=20
+power anyway.
+
+Also we only did csi subdev s_stream on and during sensor subdev=20
+s_stream on fail, actual stream dont happen and on tegra side frame=20
+capture by HW happens only when kthreads run.
+>> +		return ret;
+>> +	}
+>>  =20
+>>   	return 0;
+>>   }
