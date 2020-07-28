@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7456230B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C885C230B52
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730105AbgG1NXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:23:51 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:32900 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729984AbgG1NXv (ORCPT
+        id S1730066AbgG1NVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729673AbgG1NVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:23:51 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k0Pa8-0008S8-In; Tue, 28 Jul 2020 07:23:48 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k0Pa7-0004Jh-IY; Tue, 28 Jul 2020 07:23:48 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <87h7tsllgw.fsf@x220.int.ebiederm.org>
-        <CAHk-=wj34Pq1oqFVg1iWYAq_YdhCyvhyCYxiy-CG-o76+UXydQ@mail.gmail.com>
-        <87d04fhkyz.fsf@x220.int.ebiederm.org>
-Date:   Tue, 28 Jul 2020 08:20:41 -0500
-In-Reply-To: <87d04fhkyz.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Tue, 28 Jul 2020 07:39:48 -0500")
-Message-ID: <87h7trg4ie.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 28 Jul 2020 09:21:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC91C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:21:10 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r4so15313175wrx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 06:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6n7DC2RwRJQwcE3VDCvW7mDTNfAGJnE5gpDIWkLHcHw=;
+        b=GsITKGrgFlyLR97hy7qSX3O8Co7FNy9dMUDvmOGSRjPorVty+c45ZRw/XZ0eEDe8C0
+         vWU6JQ7z1Tiym2j3xkg2UynLMNgXv79lJgFwCTrnS6Xy7cA4kXAc3VyBxKOtHioes8m2
+         guw5IbXE5e1Wk/+Wor+TvQQpX6RMldYQ02Xv2Z3emyBRMvhwl1n+id0xBKBk2cW4QLlr
+         BXXI5OsUgnByTZVxDqxmsZ4+qyZ1OTwX2pzEGBrNiFsZBYEe0AQZJGIp08xws/xeKqON
+         pM9sUrXZPm1LmOqaNMEdfyeTz7ghhFpO3Ylzow4BQPRwD8vE9QGYgsGUrca5dBYrpPVT
+         LByg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6n7DC2RwRJQwcE3VDCvW7mDTNfAGJnE5gpDIWkLHcHw=;
+        b=SXSIwl937jJJpuvbzJMra6o5khN64QlrVGsdiVN0fI5naXjmC8gQxuXQfWHqHDP5Vl
+         d7uuMIYQQ0FW6K1H+3cJ553iAtSplpyQsyAYKdgDQycucvwe9whe+jvs2L8ewDHek8Yv
+         uUUROckIdc8WWDoeDnxedmMsMwSz8vCVaYo0sRlBZPj4MmjbuWFNHPZSVAaY171v47Go
+         9pGsDasU1LA00SznT48BYFlywFlj0qzbFRJkt9x6ZpAvKjAY7W5ugambTtsNxVgrj4Rg
+         MIXvyj2iYqRHBM6eMk6zjdpEVBPtNF5KlaQR+tDB/5dHsP1PXyNJFow8nS6YsDEZ5wiq
+         UUTg==
+X-Gm-Message-State: AOAM5317rG/AjdT4sqW2rv6FYj8pONfjG0tUkCSfDBplUZGaWEss0cmf
+        RmqoOgD2C2rerjVmKDA+tCxPEe1PMi81TOSd6KAaYw==
+X-Google-Smtp-Source: ABdhPJyyFkEDXEXxLhznZOoaqtO4ee8p0QDWx6NpzQMmslsbVMu07smR/TO0PQQl4GG+0CnCPXsjcsJapJLgfuC53/g=
+X-Received: by 2002:adf:fdce:: with SMTP id i14mr19660461wrs.273.1595942468291;
+ Tue, 28 Jul 2020 06:21:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k0Pa7-0004Jh-IY;;;mid=<87h7trg4ie.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/Lsxp9D29SGoF42ZMFfbqoBJ10C5tdn2s=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TM2_M_HEADER_IN_MSG,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 314 ms - load_scoreonly_sql: 0.14 (0.0%),
-        signal_user_changed: 12 (3.7%), b_tie_ro: 10 (3.2%), parse: 0.96
-        (0.3%), extract_message_metadata: 16 (5.0%), get_uri_detail_list: 1.29
-        (0.4%), tests_pri_-1000: 15 (4.7%), tests_pri_-950: 1.49 (0.5%),
-        tests_pri_-900: 1.27 (0.4%), tests_pri_-90: 57 (18.2%), check_bayes:
-        55 (17.7%), b_tokenize: 6 (2.0%), b_tok_get_all: 7 (2.1%),
-        b_comp_prob: 2.3 (0.7%), b_tok_touch_all: 37 (11.9%), b_finish: 0.88
-        (0.3%), tests_pri_0: 198 (63.2%), check_dkim_signature: 0.59 (0.2%),
-        check_dkim_adsp: 2.4 (0.8%), poll_dns_idle: 0.68 (0.2%), tests_pri_10:
-        2.1 (0.7%), tests_pri_500: 7 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC][PATCH] exec: Freeze the other threads during a multi-threaded exec
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+ <9085677c3adf4a84c5ba5f8cdf4f3aff34e3e5a3.1594230107.git-series.maxime@cerno.tech>
+In-Reply-To: <9085677c3adf4a84c5ba5f8cdf4f3aff34e3e5a3.1594230107.git-series.maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 28 Jul 2020 14:20:50 +0100
+Message-ID: <CAPY8ntAmDtbofNQ-V-UjWjGupN=MG03tOzVG9F1=hG5T4HTsJg@mail.gmail.com>
+Subject: Re: [PATCH v4 57/78] drm/vc4: hdmi: Deal with multiple debugfs files
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebiederm@xmission.com (Eric W. Biederman) writes:
+Hi Maxime
 
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wrote:
 >
->> It also makes for a possible _huge_ latency regression for execve(),
->> since freezing really has never been a very low-latency operation.
->>
->> Other threads doing IO can now basically block execve() for a long
->> long long time.
+> The HDMI driver was registering a single debugfs file so far with the name
+> hdmi_regs.
 >
-> Hmm.  Potentially.  The synchronization with the other threads must
-> happen in a multi-threaded exec in de_thread.
+> Obviously, this is not going to work anymore when will have multiple HDMI
+> controllers since we will end up trying to register two files with the same
+> name.
 >
-> So I need to look at the differences between where de_thread thread
-> can kill a thread and the freezer can not freeze a thread.  I am hoping
-> that the freezer has already instrumented most of those sleeps but I
-> admit I have not looked yet.
+> Let's use the variant to avoid that name conflict.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 
-Alright I have looked at the freezer a bit more and I now see that the
-point of marking things freezable is for kernel threads rather that user
-space threads.  I think there are 5 maybe 6 places the code sleeps
-reachable by userspace threads that are marked as freezable and most
-of those are callable from get_signal.
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 
-For exec all I care about are user space threads.  So it appears the
-freezer infrastructure adds very little.
-
-Now to see if I can find another way to divert a task into a slow path
-as it wakes up, so I don't need to manually wrap all of the sleeping
-calls.  Something that plays nice with the scheduler.
-
-Eric
-
+> ---
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 5 ++++-
+>  drivers/gpu/drm/vc4/vc4_hdmi.h | 3 +++
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index c50241170d7e..ef51eedaf75a 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -1370,7 +1370,9 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>         if (ret)
+>                 goto err_destroy_encoder;
+>
+> -       vc4_debugfs_add_file(drm, "hdmi_regs", vc4_hdmi_debugfs_regs, vc4_hdmi);
+> +       vc4_debugfs_add_file(drm, variant->debugfs_name,
+> +                            vc4_hdmi_debugfs_regs,
+> +                            vc4_hdmi);
+>
+>         return 0;
+>
+> @@ -1448,6 +1450,7 @@ static int vc4_hdmi_dev_remove(struct platform_device *pdev)
+>
+>  static const struct vc4_hdmi_variant bcm2835_variant = {
+>         .encoder_type           = VC4_ENCODER_TYPE_HDMI0,
+> +       .debugfs_name           = "hdmi_regs",
+>         .registers              = vc4_hdmi_fields,
+>         .num_registers          = ARRAY_SIZE(vc4_hdmi_fields),
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 0d529db4b3ab..794216f3228d 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -30,6 +30,9 @@ struct vc4_hdmi_variant {
+>         /* Encoder Type for that controller */
+>         enum vc4_encoder_type encoder_type;
+>
+> +       /* Filename to expose the registers in debugfs */
+> +       const char *debugfs_name;
+> +
+>         /* List of the registers available on that variant */
+>         const struct vc4_hdmi_register *registers;
+>
+> --
+> git-series 0.9.1
