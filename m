@@ -2,123 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E057230BE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACD5230BF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 16:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730276AbgG1N6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:58:41 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:58177 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730245AbgG1N6k (ORCPT
+        id S1730289AbgG1OAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 10:00:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53658 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730056AbgG1OAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:58:40 -0400
-Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MiJEc-1kfogj00lq-00fQ2X; Tue, 28 Jul 2020 15:58:39 +0200
-Received: by mail-qt1-f170.google.com with SMTP id s16so14852782qtn.7;
-        Tue, 28 Jul 2020 06:58:38 -0700 (PDT)
-X-Gm-Message-State: AOAM532ED7pYfMVpHkIdd70P/m+QDTMTWwMcnZw8ZFg+5ipGq36vYPZJ
-        OPq70pLVcA20jVOvMPJ6hSjYFwS63jQHTYxuzIw=
-X-Google-Smtp-Source: ABdhPJwcnjVzdXtH0ZMmkoqshSACaXjuaYnltOnaP33Va8Er6+9hKFR05vX7mZbNRjlSOGS84rqh1JYn+h/D4FTuw+M=
-X-Received: by 2002:ac8:5195:: with SMTP id c21mr12200851qtn.304.1595944717799;
- Tue, 28 Jul 2020 06:58:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200726220557.102300-1-yepeilin.cs@gmail.com>
- <20200726222703.102701-1-yepeilin.cs@gmail.com> <CAK8P3a3NB2BVo9fH-Wcinrhhs-QJ=9dK59Ds83TvgLmEkRy3qA@mail.gmail.com>
- <20200727131608.GD1913@kadam> <CACRpkda7k4L+nqAYE6z2FVZF-WT2Pm3CHH_=fW24xz_u+QCMRQ@mail.gmail.com>
- <20200728130632.GI1913@kadam>
-In-Reply-To: <20200728130632.GI1913@kadam>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 28 Jul 2020 15:58:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3MEUYH3qG-+dxgH1Omx2gtcqSRXzKLLaAw21Xho6HAeQ@mail.gmail.com>
-Message-ID: <CAK8P3a3MEUYH3qG-+dxgH1Omx2gtcqSRXzKLLaAw21Xho6HAeQ@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] [PATCH v3] media/v4l2-core: Fix
- kernel-infoleak in video_put_user()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
+        Tue, 28 Jul 2020 10:00:52 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dafna)
+        with ESMTPSA id 2BFF629627B
+Subject: Re: [PATCH v2 0/3] media: vimc: Allow multiple capture devices to use
+ the same sensor
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     kieran.bingham@ideasonboard.com,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vandana BN <bnvandana@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:Z5iHW/C9P5Nl85OcBzVakBrqWM4lrfuNf/SQq8hrr0QV3dyVsUu
- IVmBk5jybQpiDhpTJEUEfuql9PZLvDPTMXIkZXu9RUhcIoupMGC5ivPlyaN+ZX+WdJ73xoz
- laBDBwmzOeAtkAg+h8+ZbbAocYSr6uPnlCP2wZNYZ2ufWvtmBrgrdvTo+gJdtou0A/7KSew
- 136lzHuvUO6dyC9MHhR6w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:abpZXgSh0J8=:7Ulpbons82EHMSBOYjqD5X
- mAh0ss9eDi6VPTk4uphhfDi7Hl/Me2mKhGuoWnECtgKohzKalxG+/573kRNI5sfMUDWVA6k44
- OJSnCfLnsbXHlRxs1wALVKcoBADg4PylyIbJiCbZTwzwDxYu5pkEKKT/uT8GQ09tae0kKXiJ1
- Rn/JqHqVarnQKYXiXVvN7qilchteRaSgkfC7gfKqZWdeEIwT0pzgR7O8yzJBrVEmdjLO/LC/G
- V3sCJjKM6SjJ8SJQRg7zPKnBHc3vRohe7CJx8B6kYYkG50mH8d3Wr83VT9aqmVGUNQuJldNLq
- 7CMByJ2MgKaauSMMG7mZ+5ccau9nHGi8OyCACbJGoQOxd8sbBmnH8zUbDaI1LshfFL6Z5TvXL
- taLWy67OUTTXjGPfj+DErwrF/GZTOoYZbHbKL8MzxDrV/kvGY+dR2fgBOF4Qc0lkqzI57SN68
- 1LeIfPIzQRZuVw57+nlrPAfwgvTzuHNje+oIubf3Q7I7GrOcrL0Zam8NEQbOGEDYFm+9VJfay
- SLnFIvdxspRcsN5uoyux3OlUAiwaKrCP7wRuifGmxBdz1rEk7AGz9NE7Ws56US7KfUUcQelaJ
- RQ8hyHcDKYRmrIocqJCLqt8bGZUqVlkzzF9lJOf4ZYLC8H8QYyCHD+WqoYTRGtcjiDlQicpIX
- 8NI0LBGCVEJ4/eb1OQFlE/wlxkRDY2LJ0Y+yw4DRVQlQnJmG7Gxp/z94YeLEaZ5k2q5ivYvyU
- MgPyhs67KLxEsbpoXQPmz35cvAciHCKS9YQjNbXKrThvgPEzxH12n2S/HKowfCACrRuoi5KEB
- AykIp/7b4HOc7IYX3vC1ATba5bA5o38HSVmaWRHB9DlSSI/qoL1Dkw1yniqkuzOqQ8MLNu/
+        Ezequiel Garcia <ezequiel@collabora.com>
+References: <20200724120213.17119-1-kgupta@es.iitr.ac.in>
+ <20200724121521.GA2705690@oden.dyn.berto.se>
+ <20200724122104.GA18482@kaaira-HP-Pavilion-Notebook>
+ <a6f4eabf-6cd5-950b-f2e3-853370c77629@ideasonboard.com>
+ <2a6cb067-283d-ca65-2698-1fae66a17d02@collabora.com>
+ <20200728113959.GA6350@kaaira-HP-Pavilion-Notebook>
+ <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
+Message-ID: <b5fd3811-2f0e-7563-13fa-bb1e32189814@collabora.com>
+Date:   Tue, 28 Jul 2020 16:00:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <3a9ac970-77b8-1bc5-536a-5b4f2bd60745@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 3:06 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Tue, Jul 28, 2020 at 02:22:29PM +0200, Linus Walleij wrote:
-> > On Mon, Jul 27, 2020 at 3:17 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > > Here are my latest warnings on linux-next from Friday.
-> >
-> > Thanks for sharing this Dan, very interesting findings.
-> >
-> > > drivers/gpio/gpiolib-cdev.c:473 lineevent_read() warn: check that 'ge' doesn't leak information (struct has a hole after 'id')
-> >
-> > We are revamping the ABI for 64bit compatibility so we are now running
-> > pahole on our stuff. I suppose we need to think about mending this old ABI
-> > as well.
->
-> Yeah...  But this one is a false positive.  It's not super hard for me
-> to silence it actually.  I'll take care of it.  It could be a while
-> before I push this to the public repository though...
 
-The lineevent_read() function still needs to be fixed to support
-32-bit compat mode on x86, which is independent of the warning.
 
-Something like
+On 28.07.20 14:07, Dafna Hirschfeld wrote:
+> Hi
+> 
+> On 28.07.20 13:39, Kaaira Gupta wrote:
+>> On Mon, Jul 27, 2020 at 02:54:30PM -0300, Helen Koike wrote:
+>>> Hi,
+>>>
+>>> On 7/27/20 11:31 AM, Kieran Bingham wrote:
+>>>> Hi all,
+>>>>
+>>>> +Dafna for the thread discussion, as she's missed from the to/cc list.
+>>>>
+>>>>
+>>>> On 24/07/2020 13:21, Kaaira Gupta wrote:
+>>>>> On Fri, Jul 24, 2020 at 02:15:21PM +0200, Niklas Söderlund wrote:
+>>>>> Hi,
+>>>>>
+>>>>>> Hi Kaaira,
+>>>>>>
+>>>>>> Thanks for your work.
+>>>>>
+>>>>> Thanks for yours :D
+>>>>>
+>>>>>>
+>>>>>> On 2020-07-24 17:32:10 +0530, Kaaira Gupta wrote:
+>>>>>>> This is version 2 of the patch series posted by Niklas for allowing
+>>>>>>> multiple streams in VIMC.
+>>>>>>> The original series can be found here:
+>>>>>>> https://patchwork.kernel.org/cover/10948831/
+>>>>>>>
+>>>>>>> This series adds support for two (or more) capture devices to be
+>>>>>>> connected to the same sensors and run simultaneously. Each capture device
+>>>>>>> can be started and stopped independent of each other.
+>>>>>>>
+>>>>>>> Patch 1/3 and 2/3 deals with solving the issues that arises once two
+>>>>>>> capture devices can be part of the same pipeline. While 3/3 allows for
+>>>>>>> two capture devices to be part of the same pipeline and thus allows for
+>>>>>>> simultaneously use.
+> 
+> I wonder if these two patches are enough, since each vimc entity also have
+> a 'process_frame' callback, but only one allocated frame. That means
+> that the 'process_frame' can be called concurrently by two different streams
+> on the same frame and cause corruption.
+> 
 
-static int lineevent_put_data(void __user *uptr, struct gpioevent_data *ge)
-{
-#ifdef __x86_64__
-        /* i386 has no padding after 'id' */
-        if (in_ia32_syscall()) {
-                struct {
-                        compat_u64      timestamp __packed;
-                        u32             id;
-                } compat_ge = { ge->timestamp, ge->id };
+I think we should somehow change the vimc-stream.c code so that we have only
+one stream process per pipe. So if one capture is already streaming, then the new
+capture that wants to stream uses the same thread so we don't have two threads
+both calling 'process_frame'.
 
-                if (copy_to_user(uptr, &compat_ge, sizeof(compat_ge)))
-                        return -EFAULT;
+The second capture that wants to stream should iterate the topology downwards until
+reaching an entity that already belong to the stream path of the other streaming capture
+and tell the streamer it wants to read the frames this entity
+produces.
 
-                return sizeof(compat_ge);
-        }
-#endif
+Thanks,
+Dafna
 
-        if (copy_to_user(uptr, ge, sizeof(*ge))
-                return -EFAULT;
-
-        return sizeof(*ge);
-}
-
-       Arnd
+> Thanks,
+> Dafna
+> 
+>>>>>>
+>>>>>> I'm just curious if you are aware of this series? It would replace the
+>>>>>> need for 1/3 and 2/3 of this series right?
+>>>>>
+>>>>> v3 of this series replaces the need for 1/3, but not the current version
+>>>>> (ie v4). v4 of patch 2/5 removes the stream_counter that is needed to
+>>>>> keep count of the calls to s_stream. Hence 1/3 becomes relevant again.
+>>>>
+>>>> So the question really is, how do we best make use of the two current
+>>>> series, to achieve our goal of supporting multiple streams.
+>>>>
+>>>> Having not parsed Dafna's series yet, do we need to combine elements of
+>>>> both ? Or should we work towards starting with this series and get
+>>>> dafna's patches built on top ?
+>>>>
+>>>> Or should patch 1/3 and 3/3 of this series be on top of Dafna's v4 ?
+>>>>
+>>>> (It might be noteworthy to say that Kaaira has reported successful
+>>>> multiple stream operation from /this/ series and her development branch
+>>>> on libcamera).
+>>>
+>>> Dafna's patch seems still under discussion, but I don't want to block progress in Vimc either.
+>>>
+>>> So I was wondering if we can move forward with Vimc support for multistreaming,
+>>> without considering Dafna's patchset, and we can do the clean up later once we solve that.
+>>>
+>>> What do you think?
+>>
+>> I agree with supporting multiple streams with VIMC with this patchset,
+>> and then we can refactor the counters for s_stream in VIMC later (over
+>> this series) if dafna includes them in subsequent version of her patchset.
+>>
+> 
+> I also think that adding support in the code will take much longer and should not
+> stop us from supporting vimc independently.
+> 
+> Thanks,
+> Dafna
+> 
+>>>
+>>> Regards,
+>>> Helen
+>>>
+>>>>
+>>>>
+>>>>>> 1.  https://lore.kernel.org/linux-media/20200522075522.6190-1-dafna.hirschfeld@collabora.com/
+>>>>>>
+>>>>>>>
+>>>>>>> Changes since v1:
+>>>>>>>     - All three patches rebased on latest media-tree.
+>>>>>>>     Patch 3:
+>>>>>>>     - Search for an entity with a non-NULL pipe instead of searching
+>>>>>>>       for sensor. This terminates the search at output itself.
+>>>>>>>
+>>>>>>> Kaaira Gupta (3):
+>>>>>>>    media: vimc: Add usage count to subdevices
+>>>>>>>    media: vimc: Serialize vimc_streamer_s_stream()
+>>>>>>>    media: vimc: Join pipeline if one already exists
+>>>>>>>
+>>>>>>>   .../media/test-drivers/vimc/vimc-capture.c    | 35 ++++++++++++++++++-
+>>>>>>>   .../media/test-drivers/vimc/vimc-debayer.c    |  8 +++++
+>>>>>>>   drivers/media/test-drivers/vimc/vimc-scaler.c |  8 +++++
+>>>>>>>   drivers/media/test-drivers/vimc/vimc-sensor.c |  9 ++++-
+>>>>>>>   .../media/test-drivers/vimc/vimc-streamer.c   | 23 +++++++-----
+>>>>>>>   5 files changed, 73 insertions(+), 10 deletions(-)
+>>>>>>>
+>>>>>>> -- 
+>>>>>>> 2.17.1
+>>>>>>>
+>>>>>>
+>>>>>> -- 
+>>>>>> Regards,
+>>>>>> Niklas Söderlund
+>>>>
