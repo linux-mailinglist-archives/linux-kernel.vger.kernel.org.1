@@ -2,81 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766862312F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33552312D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732949AbgG1TnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730016AbgG1TnA (ORCPT
+        id S1732880AbgG1Thb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:37:31 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7219 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729846AbgG1Thb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:43:00 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A27C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:43:00 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id s26so11550183pfm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=vnxwi5iPCJkQKF4flCKDFiMcmGVkTk/FZPhjrVn7vQ8=;
-        b=lGILnOI2EA2ePNYpXzRAJhVcrhFB5Z+3mS7RTR0wzoPvklGepKua58mr9TZ3zuL0VU
-         dYg64ioAyhPP6TnZY+ZxqgWDb5liZYowK2t4+fhaQCN+o5WeoEU0z4A6AXz1+4TQ3fnr
-         Zbge8OACGr5Fj8DXtHimT1BBBOOPSv4jI1IKs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=vnxwi5iPCJkQKF4flCKDFiMcmGVkTk/FZPhjrVn7vQ8=;
-        b=FkjU1jANG+er3qh50O/g6ktNKOqzLIlGXvAA8cQZtsnGxSQnqj1XGU+O6uzMXNMDH6
-         WuJFwTNJwoilMjAKNX9t1jNf21AY7yA6Bub17lW93NrNlDP1GFLx72XMpSl0YNIM2JF1
-         pbhUAnW+/G2qm6hqCt9NUXNXRjhkiltQR9tdccj7Xs7cSrYvUW7+EAl/slHPnm2FPTJ8
-         VpQQpUjoS6TrBmzmUSwOcSrsnGZ0tJEoUjSGzZIrObejJxkaum4LLpBYry9CmefpkRp6
-         Q9hy9G9sV0kN4JG9AHUaB72a8TciPaIcAvpOq3vfjUYYZbmdaaJlnGeQqz66MqQgVktX
-         /Ykg==
-X-Gm-Message-State: AOAM530xX34BVYmM3hyYvqHc1ulMElbWKU75Mf2KtnMBmuyaK9UJRLpF
-        /UKE0iOBqMta4CG3pFu8+iVf9w==
-X-Google-Smtp-Source: ABdhPJx/Gpp+X34yyUGrc2pTEF69GOO3vQr5iwhFpQeyJ7MgTI61ZKxOdL1srQX1mC2VDW9ZhI+mXQ==
-X-Received: by 2002:a62:2e45:: with SMTP id u66mr1993692pfu.121.1595965380254;
-        Tue, 28 Jul 2020 12:43:00 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id o11sm19315046pfp.88.2020.07.28.12.42.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 12:42:59 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 28 Jul 2020 15:37:31 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f207e6c0003>; Tue, 28 Jul 2020 12:37:17 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 28 Jul 2020 12:37:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 28 Jul 2020 12:37:30 -0700
+Received: from [10.2.168.236] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Jul
+ 2020 19:37:29 +0000
+Subject: Re: [RFC PATCH v5 13/14] media: tegra-video: Add CSI MIPI pads
+ calibration
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <robh+dt@kernel.org>,
+        <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <gregkh@linuxfoundation.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>
+References: <1595883452-17343-1-git-send-email-skomatineni@nvidia.com>
+ <1595883452-17343-14-git-send-email-skomatineni@nvidia.com>
+ <c3d40261-9d77-3634-3e04-f20efad9d3d8@gmail.com>
+ <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
+Message-ID: <edefa3b1-e0fe-0f34-80b7-8729551ee2ea@nvidia.com>
+Date:   Tue, 28 Jul 2020 12:43:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <01ee0805-3d57-d857-48e3-5c2245cd4500@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200728091057.2.Idb6af9292f18f54be0b62cede52b481063738707@changeid>
-References: <20200724183954.1.I2e29ae25368ba8a72a9e44121cfbc36ead8ecc6b@changeid> <20200728151258.1222876-1-campello@chromium.org> <20200728091057.2.Idb6af9292f18f54be0b62cede52b481063738707@changeid>
-Subject: Re: [PATCH 02/15] iio: sx9310: Update macros declarations
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Daniel Campello <campello@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-To:     Daniel Campello <campello@chromium.org>,
-        LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 28 Jul 2020 12:42:58 -0700
-Message-ID: <159596537832.1360974.10421899531703700889@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1595965037; bh=IGHiL01+pCfxDUBGk+J+sS1IuAeLkaTPJTReY8Unf3o=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=ZaUisKhK7xpa5/nsUXCO6YY8CpuPQooaZftXiY0f5x1hzdGX8Ydeo5+t9p/YDhmx3
+         JBJl8mCZ8+1JWQfHVHNN75IIEt4jT0jwhkymKwxyGKtZKVBRDuHrBI+RuIVPPbDk8r
+         HyiYRQuy1BBGZSJfNFDEpz7IU+IPOP6hCczxh1wvGe9hNqDNhHFWKwMzJ+JG4WcLRg
+         dC3jOKKxGQEzdhiP/e0PCS9JESowb/eYiqiNv1Pgv4OzBHIOGj8FEnDYxT1HAwpux9
+         KECGIYPuccFVjKY5TN367n78kg49ExbTSJbVsQr++FHA1HMZVbsE6i/3RnS95ojadu
+         VepW6NSKlefXA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Campello (2020-07-28 08:12:45)
-> Follows spec sheet for macro declarations.
->=20
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On 7/28/20 8:59 AM, Sowjanya Komatineni wrote:
+>
+> On 7/28/20 3:30 AM, Dmitry Osipenko wrote:
+>> 27.07.2020 23:57, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>> +=C2=A0=C2=A0=C2=A0 /*
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * TRM has incorrectly documented to wait for =
+done status from
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * calibration logic after CSI interface power=
+ on.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * As per the design, calibration results are =
+latched and applied
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * to the pads only when the link is in LP11 s=
+tate which will=20
+>>> happen
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * during the sensor stream-on.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * CSI subdev stream-on triggers start of MIPI=
+ pads calibration.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Wait for calibration to finish here after s=
+ensor subdev=20
+>>> stream-on
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * and in case of sensor stream-on failure, ca=
+ncel the=20
+>>> calibration.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 subdev =3D on ? src_subdev : csi_subdev;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D v4l2_subdev_call(subdev, video, =
+s_stream, on);
+>>> -=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -ENOIOCTLCMD)
+>>> +=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -ENOIOCTLCMD) {
+>> I assume -ENOIOCTLCMD means that camera wasn't turned ON, so why
+>> -ENOIOCTLCMD is special?
+> No -ENOIOCTLCMD mean subdev don't have s_stream ops
+>>
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (on && csi_chan->mipi)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 teg=
+ra_mipi_cancel_calibration(csi_chan->mipi);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>> +
+>>> +=C2=A0=C2=A0=C2=A0 if (on && csi_chan->mipi) {
+>> Does finish_calibration() really need to be called for ret=3D-ENOIOCTLCM=
+D?
+>>
+>> Shouldn't it be cancel_calibration( for the -ENOIOCTLCMD?
+>
+> start calibration happens during csi sensor streaming which happens=20
+> prior to this point.
+>
+> In case if sensor subdev does not have s_stream ops, then either=20
+> finish/cancel calibration should happen to disable the clock.
+
+For -ENOIOCTLCMD, calling finish calibration as some sensors might keep=20
+pads in LP-11 on power up and for such sensors calibration logic will=20
+apply results to pads and done bit will be set.
+
+Also avoiding additional check to specifically call cancel calibration=20
+on ENOIOCTLCMD and making it fall into finish calibration as both does=20
+disable clock except finish will wait for done bit to be set.
+
+Also, most sensor subdev have s_stream ops implemented.
+
+>
+>>
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D tegra_mipi_finish_c=
+alibration(csi_chan->mipi);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev=
+_err(csi_chan->csi->dev,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 "MIPI calibration failed: %d\n", ret);
+>> Doesn't v4l2_subdev_call(OFF) need to be invoked here on error?
+>
+> Not required as on error streaming fails and runtime PM will turn off=20
+> power anyway.
+>
+> Also we only did csi subdev s_stream on and during sensor subdev=20
+> s_stream on fail, actual stream dont happen and on tegra side frame=20
+> capture by HW happens only when kthreads run.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>> +=C2=A0=C2=A0=C2=A0 }
+>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>> =C2=A0 }
