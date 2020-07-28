@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5803D231306
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AE1231308
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732963AbgG1TpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        id S1732969AbgG1TqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730048AbgG1TpO (ORCPT
+        with ESMTP id S1732958AbgG1TqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:45:14 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93D9C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:45:13 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 2so15796180qkf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:45:13 -0700 (PDT)
+        Tue, 28 Jul 2020 15:46:09 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 466D2C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:46:09 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t15so535674pjq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 12:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GOowIkYgNWQMJY1z2glDszfCPetfRLh+NG8awSyRKwA=;
-        b=cya3xNOkiBwf0XFJOc0t7Hv3b/7hGbd6OyyXU+Ex9UL2sXzVwOffXHiWV/cCrr8mZZ
-         sMUOS8iKAWJYdfwwfbNJ1U1g9laf5eBaF7mHeGHrE3ZAS1De0nRuo0znpyn/ohbBDqaW
-         Cy3yITRvHDPkG3DKQ6R1+8+S0OSWsQspfYHYAmb0ytq0I+ATFoS9XZE7SDXKZr6bNW+K
-         sxu5zQONpBuwA+PM0ArjIG9+Fs12LWZeSW/uGzZE67kbU3D05XnPaTRut9MaixDgEfr7
-         BdV6SNWsyuYbxZFqg9WoK3Vy9rJIliQ50W3Rm/YcgEoNsprzIoNeMvr2PHDyYLCmxmqs
-         QqVQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=CcfvoFL7aJEulqwwTYjAtmM4mTbUznShrvhOhRcbiJ4=;
+        b=g0MbWG+Z2VyMhmBmNaSfj94wMWmzF14QrIOiZbbusdMfkMpd2OYfLufJvgWBm6laan
+         AWvEJUjSK/+ZaYwgkGS69i2l4BsvcmJe6fkS8OzN9v+Csv34WY6lba6pDhFSwOjjqAQm
+         jpAE6od3r/7yj6oPlqsnVvjzqn96hPkJgnLXha614YEX+93fh8uaAHIwuGuQUhkNsZjo
+         yeyAbwSxrvg1nVfQPs6jrTiNVINtSdGVna6TARs2fRt/UoBEGDIUqmz4odIKXVK0FrLq
+         nyriSswCPQumzxAFtokW6BVp8Eu5HH4wzurRuFAyau4bwZBVEbltwHPG/SqNvRMV3yKW
+         en9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=GOowIkYgNWQMJY1z2glDszfCPetfRLh+NG8awSyRKwA=;
-        b=aOtEq8rEGZSTlkpNpkuEIMbGgI/PuK6oqeXSw3M2sPAwnpaqgxxb/JTUCG1OfnHOEA
-         KrQ4FWeJaGklHW2ANEWlQBfBxwHnb0inFaciJFZTMHH8YQqMKcnhyyeqbq6TXhreykv4
-         kCh+XY9tl+wYPXE+Zz3h3SokPi70UFKN6H65jdBqkbJrv3oIzDEWvZqccMfkS+QQHEuG
-         n0Lcr9SZclVHpgHvVnOqs+Pu+CAnGhU/WrNRJHwY4ywPCeZ/x3z5BkfX3abf2Isjh3WB
-         p4HGRn/3wkAF2wiNNbkx1lkcdQFAVedirsS+eHpzj/0eRHnlUHnda4/8H+OTaqRh1Oef
-         ez2A==
-X-Gm-Message-State: AOAM5316kGteHawW4u5uN0w3J4BLOjsk7lDExdKl2DdUhARotsa9w9rv
-        juhx9VSqHgplh1OSQ/uLQIs=
-X-Google-Smtp-Source: ABdhPJwjdx4kArycc1ptj29HcORP2NxKlUVRX9lv8S/77lNZ2zmPt6uzKvGb0QMfleyFWxkyyS0Fnw==
-X-Received: by 2002:a37:80c:: with SMTP id 12mr30581782qki.149.1595965512983;
-        Tue, 28 Jul 2020 12:45:12 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id b22sm21849553qka.43.2020.07.28.12.45.12
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=CcfvoFL7aJEulqwwTYjAtmM4mTbUznShrvhOhRcbiJ4=;
+        b=UvY906XSOkLqjRbxK6VaUd5TfcXZHWXjs2eK440gGewKFPsc4y6EvnZ6oVClqtxfW4
+         g7GnwMRmP94FlLPyPWCqdrYVUr1jPRfY5R+RJuajxjI4sTKEaW9j5X4cFUQ6BdCtEgpl
+         2lync/DUOemFBN59PooVe6Je7rO5pSdLZkOgaRkmXo2R1i2IwLcbwjr73p71ip09IMeJ
+         Hy3vTH6NTe7zxJyZ7bcO12gAMN2NFUD2F4em78kvl0CUkGiuDeN+dxODJeTjP42CxS0w
+         o860LgRP+Pj6Zpg1iCiHgt3B11p44q3gxT5MI0PF2xVOsqYpTRVHnOlHeFOafCmA3Wp8
+         fSWw==
+X-Gm-Message-State: AOAM531L5l1/UIV7oeVIaQdGWVBG70NsVa+yGkDM4QrcqY8/hz359ZsH
+        SGVySGhhi/r3LkqjPUrG9sVXVA==
+X-Google-Smtp-Source: ABdhPJxpt5JQVmgBPnYf4Y4KhQFY8WRyAIyKEPvlPItSlrgq906zB6TAsovA0eaDTxxBPgXCQO5elA==
+X-Received: by 2002:a17:90a:3e02:: with SMTP id j2mr6283098pjc.47.1595965568586;
+        Tue, 28 Jul 2020 12:46:08 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id z9sm9533146pfn.59.2020.07.28.12.46.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 12:45:12 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Tue, 28 Jul 2020 15:45:11 -0400
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>, x86@kernel.org,
+        Tue, 28 Jul 2020 12:46:08 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 12:46:07 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     qiang.zhang@windriver.com
+cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/8] x86/kaslr: Simplify process_gb_huge_pages
-Message-ID: <20200728194511.GB4150860@rani.riverdale.lan>
-References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
- <20200727230801.3468620-7-nivedita@alum.mit.edu>
- <202007281225.C24B966D7@keescook>
+Subject: Re: [PATCH] mm/slab.c: add node spinlock protect in
+ __cache_free_alien
+In-Reply-To: <20200728095551.30634-1-qiang.zhang@windriver.com>
+Message-ID: <alpine.DEB.2.23.453.2007281238580.2664959@chino.kir.corp.google.com>
+References: <20200728095551.30634-1-qiang.zhang@windriver.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202007281225.C24B966D7@keescook>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 12:27:17PM -0700, Kees Cook wrote:
-> On Mon, Jul 27, 2020 at 07:07:59PM -0400, Arvind Sankar wrote:
-> > Short-circuit the whole function on 32-bit.
-> > 
-> > Replace the loop to determine the number of 1Gb pages with arithmetic.
-> > 
-> > Fix one minor bug: if the end of the region is aligned on a 1Gb
-> > boundary, the current code will not use the last available 1Gb page due
-> > to an off-by-one error.
-> > 
-> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-> 
-> Can you add some KUnit tests could be written to do validation of the
-> refactorings? Touching this code is so painful. :)
-> 
-> -Kees
+On Tue, 28 Jul 2020, qiang.zhang@windriver.com wrote:
 
-Can I try to do that later -- I've never written a KUnit test, though
-it's probably a good opportunity to learn how to do one.
+> From: Zhang Qiang <qiang.zhang@windriver.com>
+> 
+> We should add node spinlock protect "n->alien" which may be
+> assigned to NULL in cpuup_canceled func. cause address access
+> exception.
+> 
 
+Hi, do you have an example NULL pointer dereference where you have hit 
+this?
+
+This rather looks like something to fix up in cpuup_canceled() since it's 
+currently manipulating the alien cache for the canceled cpu's node.
+
+> Fixes: 18bf854117c6 ("slab: use get_node() and kmem_cache_node() functions")
+> Signed-off-by: Zhang Qiang <qiang.zhang@windriver.com>
+> ---
+>  mm/slab.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 > 
-> > +++ b/arch/x86/boot/compressed/kaslr.c
-> > @@ -546,49 +546,43 @@ static void store_slot_info(struct mem_vector *region, unsigned long image_size)
-> >  static void
-> >  process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
-> >  {
-> > -	unsigned long addr, size = 0;
-> > +	unsigned long pud_start, pud_end, gb_huge_pages;
-> >  	struct mem_vector tmp;
-> > -	int i = 0;
-> >  
-> > -	if (!max_gb_huge_pages) {
-> > +	if (IS_ENABLED(CONFIG_X86_32) || !max_gb_huge_pages) {
-> >  		store_slot_info(region, image_size);
-> >  		return;
-> >  	}
-> 
-> Won't max_gb_huge_pages always be false for 32-bit?
-> 
+> diff --git a/mm/slab.c b/mm/slab.c
+> index a89633603b2d..290523c90b4e 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -759,8 +759,10 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
+>  
+>  	n = get_node(cachep, node);
+>  	STATS_INC_NODEFREES(cachep);
+> +	spin_lock(&n->list_lock);
+>  	if (n->alien && n->alien[page_node]) {
+>  		alien = n->alien[page_node];
+> +		spin_unlock(&n->list_lock);
+>  		ac = &alien->ac;
+>  		spin_lock(&alien->lock);
+>  		if (unlikely(ac->avail == ac->limit)) {
+> @@ -769,14 +771,15 @@ static int __cache_free_alien(struct kmem_cache *cachep, void *objp,
+>  		}
+>  		ac->entry[ac->avail++] = objp;
+>  		spin_unlock(&alien->lock);
+> -		slabs_destroy(cachep, &list);
+>  	} else {
+> +		spin_unlock(&n->list_lock);
+>  		n = get_node(cachep, page_node);
+>  		spin_lock(&n->list_lock);
+>  		free_block(cachep, &objp, 1, page_node, &list);
+>  		spin_unlock(&n->list_lock);
+> -		slabs_destroy(cachep, &list);
+>  	}
+> +
+> +	slabs_destroy(cachep, &list);
+>  	return 1;
+>  }
+>  
 > -- 
-> Kees Cook
-
-It will, assuming someone doesn't pass bogus command-line arguments to
-reserve Gb pages on 32-bit.
-
-But the IS_ENABLED check allows the compiler to eliminate the entire
-function at compile time.
+> 2.26.2
+> 
+> 
