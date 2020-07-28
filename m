@@ -2,124 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C543B231377
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7413F23138B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 22:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgG1UG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 16:06:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728053AbgG1UG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 16:06:56 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6A7820656;
-        Tue, 28 Jul 2020 20:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595966816;
-        bh=sYKqOmMNs+3IuJX+AIxjd9QENNEFZ6DotksaWOwUFJw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X2yu3iDa12nwXWYvQqNcQCax4XbNVXFFzr803PPOWcQECw2MNU1xec48umfhQEc79
-         r9UK7Ra6T1kkJGTufPFpnLnfoJkosrvgccL2z6taFM5+S9RvLVN0h5CI2RWkEbf8cN
-         l+NFSvzdhCbp0SkpZg5epUKuY5D2kclSVl9tUmCU=
-Date:   Tue, 28 Jul 2020 13:06:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jacob Keller <jacob.e.keller@intel.com>
-Cc:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Subject: Re: [PATCH net-next RFC 01/13] devlink: Add reload level option to
- devlink reload command
-Message-ID: <20200728130653.7ce2f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <d6fbfedd-9022-ff67-23ed-418607beecc2@intel.com>
-References: <1595847753-2234-1-git-send-email-moshe@mellanox.com>
-        <1595847753-2234-2-git-send-email-moshe@mellanox.com>
-        <20200727175802.04890dd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20200728135808.GC2207@nanopsycho>
-        <464add44-3ab1-21b8-3dba-a88202350bb9@intel.com>
-        <20200728114458.762b5396@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <d6fbfedd-9022-ff67-23ed-418607beecc2@intel.com>
+        id S1728886AbgG1UHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 16:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728050AbgG1UHl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 16:07:41 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2C9C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 13:07:40 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id f14so6052123ejb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 13:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qnz0jOHGhQ7071N749Two4h1HroTIuj/RiP18x35OOI=;
+        b=Fw2kRNbpJHyRS+1no8N05uMus3XPhZET++7DGlfe6jJSIZSAzilD13sbJKzlBvIKZU
+         VZxNwziJ0lu/iYgED5pnjaYig4DCwmb0+QuLlzBik3D/tlKW9LuxoTkPxVRciQOOKID1
+         A3x28H2/8Eksk7/cKrMVrDL+p/piLtAk8Szms=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qnz0jOHGhQ7071N749Two4h1HroTIuj/RiP18x35OOI=;
+        b=pzStBK/YduhiNd5PfFjMCnNlPYtIEkHypAfDp3iWMmF0PljDI/DwFsPajnHHcLmNnY
+         Xeb0N5gmlrTYbV4I1bohUE/K4LPw30mOQ7kX/j0uaAI/8yPZ+u96qX7mzYStBPbRKmZM
+         rHvFRAMorl1at9+WQvHlJCVHolHQJW246T4m5dAXnmK5FWn2bVfR1o9Q6f1O/8Tzgbvl
+         r+7ZyLjQtKAC4I9DIN+Z2n0RengMDCSOka/xcUWIa1PE5cd/jfFh6SfeUKwdnh60Q1A8
+         Fv04un8cz0w70VITHZqdvIcMPRUQPuZh5A9V5pfbdLwmQAJpws7SzfEmbpjV4/EV0uMk
+         STRA==
+X-Gm-Message-State: AOAM530ZNaMEZsOxisv7yq5HHNt0HtXl9IoA0++BXx5yEao4rVIRm2Cl
+        GfvQOE9l2HTuEQB/HGSI2dmD9L0ps14=
+X-Google-Smtp-Source: ABdhPJwXbB9bNarPMpyzrSDGvws/F23P4xuPAnG+aj0VDp8/i7O/Q+s6elMsnmCfzg4hzPr1FRiSuA==
+X-Received: by 2002:a17:906:430a:: with SMTP id j10mr26385830ejm.163.1595966859040;
+        Tue, 28 Jul 2020 13:07:39 -0700 (PDT)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
+        by smtp.gmail.com with ESMTPSA id g25sm3985826edp.22.2020.07.28.13.07.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Jul 2020 13:07:37 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id f18so708908wmc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 13:07:37 -0700 (PDT)
+X-Received: by 2002:a7b:c953:: with SMTP id i19mr5308631wml.103.1595966856934;
+ Tue, 28 Jul 2020 13:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200724183954.1.I2e29ae25368ba8a72a9e44121cfbc36ead8ecc6b@changeid>
+ <20200728151258.1222876-1-campello@chromium.org> <20200728091057.3.I2a1314232ace4323af96f9981c1e1a4f31f78049@changeid>
+ <CAHp75VfOhoJrHEnC_Wh2qnOMX0pT1Jx92B0TFQ5=cfZsTSNSOg@mail.gmail.com>
+In-Reply-To: <CAHp75VfOhoJrHEnC_Wh2qnOMX0pT1Jx92B0TFQ5=cfZsTSNSOg@mail.gmail.com>
+From:   Daniel Campello <campello@chromium.org>
+Date:   Tue, 28 Jul 2020 14:07:00 -0600
+X-Gmail-Original-Message-ID: <CAHcu+VaDBj87stJ9JJkuerJkr8=-g68FhUUnKvfpN8uYaMBUhQ@mail.gmail.com>
+Message-ID: <CAHcu+VaDBj87stJ9JJkuerJkr8=-g68FhUUnKvfpN8uYaMBUhQ@mail.gmail.com>
+Subject: Re: [PATCH 03/15] iio: sx9310: Fix irq handling
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     LKML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Jul 2020 12:18:30 -0700 Jacob Keller wrote:
-> On 7/28/2020 11:44 AM, Jakub Kicinski wrote:
-> > From user perspective what's important is what the reset achieves (and
-> > perhaps how destructive it is). We can define the reset levels as:
-> > 
-> > $ devlink dev reload pci/0000:82:00.0 net-ns-respawn
-> > $ devlink dev reload pci/0000:82:00.0 driver-param-init
-> > $ devlink dev reload pci/0000:82:00.0 fw-activate
-> > 
-> > combining should be possible when user wants multiple things to happen:
-> > 
-> > $ devlink dev reload pci/0000:82:00.0 fw-activate driver-param-init
-> 
-> Where today "driver-param-init" is the default behavior. But didn't we
-> just say that mlxsw also does the equivalent of fw-activate?
+On Tue, Jul 28, 2020 at 12:08 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Jul 28, 2020 at 6:14 PM Daniel Campello <campello@chromium.org> wrote:
+> >
+> > Fixes enable/disable irq handling at various points. The driver needs to
+> > only enable/disable irqs if there is an actual irq handler installed.
+>
+> > -       enable_irq(data->client->irq);
+> > +       if (!ret)
+> > +               enable_irq(data->client->irq);
+> >
+> >         return ret;
+> >  }
+>
+> Can it be a usual pattern?
+>
+>   if (ret)
+>     return ret;
+>   ...
+>   return 0;
 
-Actually the default should probably be the combination of
-driver-param-init and net-ns-respawn.
+I think this way is more readable. The alternative would have to be
+something like this:
 
-My expectations would be that the driver must perform the lowest reset 
-level possible that satisfies the requested functional change. 
-IOW driver may do more, in fact it should be acceptable for the driver
-to always for a full HW reset (unless --live or other constraint is
-specified).
+....
+if (ret)
+  goto out;
+mutex_unlock(&data->mutex);
+enable_irq(data->client->irq);
+return 0;
 
-> > We can also add the "reset level" specifier - for the cases where
-> > device is misbehaving:
-> > 
-> > $ devlink dev reload pci/0000:82:00.0 level [driver|fw|hardware]
-> 
-> I guess I don't quite see how level fits in? This is orthogonal to the
-> other settings?
+out:
+mutex_unlock(&data->mutex);
+return ret;
 
-Yup, it is, it's already orthogonal to what reload does today, hence the
-need for the "driver default" hack.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-> > But I don't think that we can go from the current reload command
-> > cleanly to just a level reset. The driver-specific default is a bad
-> > smell which indicates we're changing semantics from what user wants 
-> > to what the reset depth is. Our semantics with the patch as it stands
-> > are in fact:
-> >  - if you want to load new params or change netns, don't pass the level
-> >    - the "driver default" workaround dictates the right reset level for
-> >    param init;
-> >  - if you want to activate new firmware - select the reset level you'd
-> >    like from the reset level options.
-> >   
-> 
-> I think I agree, having the "what gets reloaded" as a separate vector
-> makes sense and avoids confusion. For example for ice hardware,
-> "fw-activate" really does mean "Do an EMP reset" rather than just a
-> "device reset" which could be interpreted differently. ice can do
-> function level reset, or core device reset also. Neither of those two
-> resets activates firmware.
-> 
-> Additionally the current function load process in ice doesn't support
-> driver-init at all. That's something I'd like to see happen but is quite
-> a significant refactor for how the driver loads. We need to refactor
-> everything out so that devlink is created early on and factor out
-> load/unload into handlers that can be called by the devlink reload. As I
-> have primarily been focused on flash update I sort of left that for the
-> future because it was a huge task to solve.
-
-Cool! That was what I was concerned about, but I didn't know any
-existing driver already has the problem. "FW reset" is not nearly
-a clear enough operation. We'd end up with drivers differing and 
-users having to refer to vendor documentation to find out which 
-"reset level" maps to what.
-
-I think the components in ethtool-reset try to address the same
-problem, and they have the notion of per-port, and per-device.
-In the modern world we lack the per-host notion, but that's still 
-strictly clearer than the limited API proposed here.
+Regards,
+Daniel Campello
