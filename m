@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B44230856
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2666123085B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgG1LEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:04:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728806AbgG1LEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:04:38 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A570204EA;
-        Tue, 28 Jul 2020 11:04:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595934277;
-        bh=DgU4yKbmp8OwurHB5DLCGWi9A01qQNe/KIyrPlNU668=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZVv5HUnMOVp2vHnZ9/jtVS2y/XyBACUo9eSxXbsVecuIY/cF0jYniuWzpdyF237jW
-         bM6z0VJwVTsJBMSyi4czmL0gVP2+4XvXlcYnaRF2dC0KH1ocPws2APpXg/68W+2rE9
-         DZ84dmgv9dkZZJLwx+eHIxFkWz332B+nJWqx/PVc=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k0NPQ-00FczY-4W; Tue, 28 Jul 2020 12:04:36 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        James Morse <james.morse@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     android-kvm@google.com, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] Unify non-VHE ASLR features behind CONFIG_RANDOMIZE_BASE
-Date:   Tue, 28 Jul 2020 12:04:31 +0100
-Message-Id: <159593423897.3960510.2442620106516348363.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200721094445.82184-1-dbrazdil@google.com>
-References: <20200721094445.82184-1-dbrazdil@google.com>
+        id S1728970AbgG1LFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728806AbgG1LFP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:05:15 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94EDC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:05:15 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w9so20183764ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 04:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jwBEdPxoQ001eHXgx78M10fO89W+OhULooyuXzafFUs=;
+        b=STzyz2IVap0WAgdFOQ/QDS9eULYeyqq7xl3Lmcxv4waqT60tK60/IVJpvLPlhL0+q7
+         mT58iFlm0dyRPrJYoaKzJ7AUufRa0lmUUrjNDtdXVVCuWJJKhNvS1ztjc9kUZAGRbWJt
+         IDlKmu01jgOx4Ij35miP1BlbyCHXmPzXvKR8zIWpGDQMvXuwNOnn1P1qlMvosXy7CeJ8
+         8dNhOPtSbUNSgpy4BpMoyRrQNHGN+KBAJzAz0m8xUIGiVZn7T1ffq/1w10eWK+bTnJKV
+         a/J2nxJwrd1wEM6JVy45rnqh4o9S6lZKbUfiNMSzfwYuflQZCobCZea4j/7U8MM8/smv
+         +Vfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=jwBEdPxoQ001eHXgx78M10fO89W+OhULooyuXzafFUs=;
+        b=WIanLFBZ5kOL1a3tKCJUl5n2HlkJw3k8a2bq4A9/8SZaYU0ixvJ9Sb5iYo5XiowBt+
+         vqAA+fUl2niB2MEq2ncdA1AFD/2LEU1UB5VWnPtFkrP8PJtKHOOHrbC+r34eCDHcPwo2
+         vQuU2jopW8OyXe8aqNmyNOds1T0oGj1LExuT5aXm3wY1LnJnmnUypjmUk6UUpSu51Mki
+         dEmu4doJgXvYR6b6G9ME6zEn2qIcuhqKdjc6qF7EeJpqcX2bOEIemTKRQKSAm+xgXGAX
+         hincSCJzFJzx9BYUZR6+y2yn2CxjGjd4GQKkZeGgX9v/QmmLYCbVqpGHYKDdtmrcZbbD
+         8iHA==
+X-Gm-Message-State: AOAM532xT8cPumZn/fiGUld1K8qjWKqRePsA3JgFQzyeyo6HseEMYDGx
+        kK55DD25fjgR0inaQpTiZYY=
+X-Google-Smtp-Source: ABdhPJwFivFb8R5I7TIg2LBjCrkXVgkOhlUheK6N8jx/sqYT4hh3eOC28le79daLlnKFTXpV40JBTQ==
+X-Received: by 2002:a17:906:fb99:: with SMTP id lr25mr25039222ejb.49.1595934314437;
+        Tue, 28 Jul 2020 04:05:14 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id rv16sm8863426ejb.60.2020.07.28.04.05.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 04:05:13 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 13:05:12 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Kees Cook <keescook@chromium.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/8] x86/kaslr: Don't use 64-bit mem_vector for 32-bit
+ kernel
+Message-ID: <20200728110512.GE222284@gmail.com>
+References: <20200727215047.3341098-1-nivedita@alum.mit.edu>
+ <20200727215047.3341098-9-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: will@kernel.org, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, james.morse@arm.com, dbrazdil@google.com, catalin.marinas@arm.com, android-kvm@google.com, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, kernel-team@android.com, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200727215047.3341098-9-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Jul 2020 10:44:43 +0100, David Brazdil wrote:
-> There is currently no way to disable nVHE ASLR, e.g. for debugging, so the
-> first patch in this series makes it conditional on RANDOMIZE_BASE, same as
-> KASLR. Note that the 'nokaslr' command line flag has no effect here.
+
+* Arvind Sankar <nivedita@alum.mit.edu> wrote:
+
+> Commit
+>   f28442497b5c ("x86/boot: Fix KASLR and memmap= collision")
+> converted mem_vector type to use 64-bit on the 32-bit kernel as well,
+> based on Thomas's review [0]. However:
+> - the code still doesn't consistently use 64-bit types. For instance,
+>   mem_avoid_overlap uses 32-bit types when checking for overlaps.  This
+>   is actually okay, as the passed in memory range will have been clipped
+>   to below 4G, but it is difficult to reason about the safety of the
+>   code.
+> - KASLR on 32-bit can't use memory above 4G anyway, so it's pointless
+>   to keep track of ranges above 4G.
 > 
-> Second patch unifies the HARDEN_EL2_VECTORS errate for A57 and A72 behind
-> the same Kconfig for simplicity. Happy to make it just depend on
-> RANDOMIZE_BASE if having an option to keep randomization on but hardenning
-> off is preferred.
+> Switch the type back to unsigned long, and use a helper function to clip
+> regions to 4G on 32-bit, when storing mem_avoid, immovable_mem, EFI,
+> E820 and command-line memory regions.
 > 
-> [...]
+> [0] https://lore.kernel.org/linux-nvdimm/alpine.DEB.2.20.1701111246400.3579@nanos/
 
-Applied to kvm-arm64/misc-5.9, thanks!
+So why not just standardize all the calculations around u64, and for 
+32-bit kernels add in a debug check that double checks that it all 
+remained within the first 32 bits?
 
-[1/2] KVM: arm64: Make nVHE ASLR conditional on RANDOMIZE_BASE
-      commit: 24f69c0fa4e252f706884114b7d6353aa07678b5
-[2/2] KVM: arm64: Substitute RANDOMIZE_BASE for HARDEN_EL2_VECTORS
-      commit: a59a2edbbba7397fede86e40a3da17e5beebf98b
+It's much easier to argue about this if we don't have to worry about 
+32-bit overflows and if the types are simple and bitness invariant.
 
-Cheers,
+Yes, technically it's slightly bloated on 32-bit kernels, but 
+maintainability of 32-bit kernels is the primary concern now ...
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+Thanks,
 
-
+	Ingo
