@@ -2,136 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B16230A4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4363230A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729795AbgG1MfW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 08:35:22 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:57397 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729282AbgG1MfV (ORCPT
+        id S1729753AbgG1Mht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729334AbgG1Mht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:35:21 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-138-aKECZJEyMU60G_8cxFq3Wg-1; Tue, 28 Jul 2020 13:35:18 +0100
-X-MC-Unique: aKECZJEyMU60G_8cxFq3Wg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 28 Jul 2020 13:35:17 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 28 Jul 2020 13:35:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peilin Ye' <yepeilin.cs@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        "Dan Carpenter" <dan.carpenter@oracle.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [Linux-kernel-mentees] [PATCH v2] drm/bufs: Prevent
- kernel-infoleak in copy_one_buf()
-Thread-Topic: [Linux-kernel-mentees] [PATCH v2] drm/bufs: Prevent
- kernel-infoleak in copy_one_buf()
-Thread-Index: AQHWZNW9oERUOmwTgUadWvPHDViznqkc48JA
-Date:   Tue, 28 Jul 2020 12:35:17 +0000
-Message-ID: <3058d741282b463d8aa7c8aff62e4326@AcuMS.aculab.com>
-References: <20200728014343.341303-1-yepeilin.cs@gmail.com>
- <20200728115210.408486-1-yepeilin.cs@gmail.com>
-In-Reply-To: <20200728115210.408486-1-yepeilin.cs@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 28 Jul 2020 08:37:49 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175CDC061794;
+        Tue, 28 Jul 2020 05:37:49 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t6so9839619plo.3;
+        Tue, 28 Jul 2020 05:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
+        b=qHe7dAnwegbl8DFADwHo8PEhSZ+7zbY4GEkjbh4YRgoBOr7ttuUIZd3W/lLbgvLXtH
+         Nmw48d7CCQlwK/k1SgCBId7AiMOZT4EXk0h2LojeErsKRtc6QPNKwLxAhFQd6hR5NDyh
+         9oHwM248bQKXcys1dFKO9l1neCAYAMuaCiwJCWlW/ZkIe96vqwtjeAMSYa2tbq9x3o88
+         BGtALXe6t+2pHo3RJtR9tsUzxejGbCniBGGmlSIs46uPSGgc49ttoIf+wh2we7OmML0/
+         E/BVTKjEZGGX3/hQPfkvDwAN/xv8xFQbuW6LGOAazLbs95E03Y8rFQJ+pEPZpx4h4qn+
+         vIVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
+        b=Srm8REEYxDbNUbtn2GW2+NCxmm0I6HMIkk653gBd7B0CkAI5d1ZjgLcQxRTJT6FS6b
+         6UhXcB7vxRYiny1Tb8oqLldRuCCwq2Bd3C8780zkhS2EXt7ppTOFuFr4rPZsy/nRv1Vr
+         ditYw01lLGQ3E1Eyl3AGpFZpzAWS6g50CEDt0WNt3BkvHMr/mFJ2SRrIjf5YgRgv3wwr
+         rkfdT1mi1nHBmxYmZv7K5zyfTVfxscYt9o+jxosWSjBvSZYPE++F+sf8Sb/TpBQxl/qM
+         VS7uGn4JV2MF16KODq9uWFkCMxxzV9S+/OcRoUVddKN3kkXDGBV6yIi1uhxKN1wJCAVt
+         52Ng==
+X-Gm-Message-State: AOAM533rwH4/r90hOa8wVpPp8BWIPpY1UjLV1w3JgL56h8BMfN12slhM
+        6mSZ8wNEJ8Z0Gg0UE5ECvFM=
+X-Google-Smtp-Source: ABdhPJxMwzS10JHnifAZmdNYC8YAZkIcOFzizwBro4Xw8cdcIQLhzKEz7J7HdS2SEjQ2Po+YluXXBg==
+X-Received: by 2002:a17:902:7b90:: with SMTP id w16mr21425536pll.253.1595939868491;
+        Tue, 28 Jul 2020 05:37:48 -0700 (PDT)
+Received: from gmail.com ([2401:4900:2eef:ca92:3545:4a68:f406:d612])
+        by smtp.gmail.com with ESMTPSA id l134sm18030158pga.50.2020.07.28.05.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 05:37:47 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 18:06:19 +0530
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kevin Curtis <kevin.curtis@farsite.co.uk>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH v1] farsync: use generic power management
+Message-ID: <20200728123619.GA1331847@gmail.com>
+References: <20200728042809.91436-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200728042809.91436-1-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye
-> Sent: 28 July 2020 12:52
-> Currently `struct drm_buf_desc` is defined as follows:
-> 
-> struct drm_buf_desc {
-> 	int count;
-> 	int size;
-> 	int low_mark;
-> 	int high_mark;
-> 	enum {
-> 		_DRM_PAGE_ALIGN = 0x01,
-> 		_DRM_AGP_BUFFER = 0x02,
-> 		_DRM_SG_BUFFER = 0x04,
-> 		_DRM_FB_BUFFER = 0x08,
-> 		_DRM_PCI_BUFFER_RO = 0x10
-> 	} flags;
-> 	unsigned long agp_start;
-> };
-> 
-> copy_one_buf() is potentially copying uninitialized kernel stack memory
-> to userspace, since the compiler may leave such "holes" (around `.flags`
-> and `.agp_start` fields) in this statically allocated structure. Prevent
-> it by initializing `v` with memset().
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 5c7640ab6258 ("switch compat_drm_infobufs() to drm_ioctl_kernel()")
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-> ---
-> Change in v2:
->     - Improve commit description. (Suggested by Arnd Bergmann
->       <arnd@arndb.de>)
-> 
->  drivers/gpu/drm/drm_bufs.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_bufs.c b/drivers/gpu/drm/drm_bufs.c
-> index a0735fbc144b..f99cd4a3f951 100644
-> --- a/drivers/gpu/drm/drm_bufs.c
-> +++ b/drivers/gpu/drm/drm_bufs.c
-> @@ -1349,10 +1349,14 @@ static int copy_one_buf(void *data, int count, struct drm_buf_entry *from)
->  {
->  	struct drm_buf_info *request = data;
->  	struct drm_buf_desc __user *to = &request->list[count];
-> -	struct drm_buf_desc v = {.count = from->buf_count,
-> -				 .size = from->buf_size,
-> -				 .low_mark = from->low_mark,
-> -				 .high_mark = from->high_mark};
-> +	struct drm_buf_desc v;
-> +
-> +	memset(&v, 0, sizeof(v));
-> +
-> +	v.count = from->buf_count;
-> +	v.size = from->buf_size;
-> +	v.low_mark = from->low_mark;
-> +	v.high_mark = from->high_mark;
-> 
->  	if (copy_to_user(to, &v, offsetof(struct drm_buf_desc, flags)))
->  		return -EFAULT;
+This patch is compile-tested only.
 
-The memset() isn't needed.
-The copy_to_user() stops after the 4 'int' values so no 'random'
-kernel stack can get copied.
-
-Quite why it is 'right' to leave the remaining part of each
-userspace structure unchanged is another matter.
-
-	David.
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Thanks
+Vaibhav Gupta
