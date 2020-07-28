@@ -2,168 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0426230E11
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9C8230DD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731017AbgG1Phk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        id S1730919AbgG1Paf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730979AbgG1Ph1 (ORCPT
+        with ESMTP id S1730637AbgG1Paf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:37:27 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0841CC0619D4;
-        Tue, 28 Jul 2020 08:37:25 -0700 (PDT)
+        Tue, 28 Jul 2020 11:30:35 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE85C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:30:34 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r2so13638962wrs.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 08:30:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=h+0pP1uEU51MnCBvLri0WdjAedk8MQ25Uk
-        FDBKwheRg=; b=C5d3mtrXz2tvbGAO7LkdNnSNHBmpJYgYB3oRS4wchRG1q/4nEM
-        lYFp4IbNSl8vLylt5ynltQGOqArbeFlNzVya2l/eCV77mLQh6M0Ar61zyEpTS8kr
-        2jB2GO0VGD4UCzW9L0xIkps6gDxUBI1isq4/IhqKbam0Gcq4YtEmbiJIw=
-Received: from xhacker (unknown [101.86.17.135])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj_diRCBfgxI2AA--.17695S6;
-        Tue, 28 Jul 2020 23:29:47 +0800 (CST)
-Date:   Tue, 28 Jul 2020 23:26:10 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Saravanan Sekar <sravanhome@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 4/4] regulator: mp886x: support setting switch freq
-Message-ID: <20200728232610.10197f23@xhacker>
-In-Reply-To: <20200728232327.71ab3729@xhacker>
-References: <20200728232327.71ab3729@xhacker>
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+/MweqE4fo3ies98OuOCD9mQ9+9iVlg+rECmf+irmFA=;
+        b=I5twUgwrgMu2P8NRQJTFMtovKxG8fbPMYuB45pLfXPR7g2n7UiK4QtthPVAUUXZgtT
+         wzn4Cu+VNxVUsHmEFFmnvhwMUkbOkuhJcV5CCdQatVLfpxfrwMYweN6X9bzcTILiBrml
+         qbpHHZAWYMp3qvfAkx+9YIEokB/xeHr8RZYuNpP9VHT1EtNctMi0CToCwKER1KiyjowS
+         BFjUYBfcEZwZW+wG0tQwiDr9dHVdzfoVYGFPyw8iKwee3z5W2/xpSkKZi2OgqVu3+APs
+         lh8Mhiax7CC2akub6VPEWAXc5S2yarchllUfHvyTBswnsW7eD0nozMyGkGqwkwst+Rjh
+         F67w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+/MweqE4fo3ies98OuOCD9mQ9+9iVlg+rECmf+irmFA=;
+        b=UOJZ4f4SgUdBKoVU+d3WuM7jJ7PjXZX6r8fx5kB+6D45qkAjTBKVsS07MGms3pmmke
+         fY4LZsMyZOH2qKW5SAbY5vzFoP2qjur9q2XFglnyvsqpzb9zJB9A7yD3Q51PdDAjvIRg
+         rA7gcioQnfVGDVaxSFPvROUAbITLao/k04W8pjT3X4hTPFGBoLKE7AzGicTeLZcSZZdT
+         cG6YGI7nud42HtmoBL53nWMKobFTbCFtcs321N0NhOX0MBFaIe3Lz14bOPGTX3PS1jgA
+         YsSjW6pCBZe7iyCBEuQ2+9w4AASoPwrbgzmWdgKsBsgF4bI2Kd2G8WPSvbZ30IpIQCq1
+         e4TA==
+X-Gm-Message-State: AOAM531H+tyvQl0uQwnIduCycToMCziL6pGKpr3mCwPrYTOFg/67rfj4
+        Uj93PIYcDWFmqUpncB9mS0PaQCTnM3QpxVUcT51vyA==
+X-Google-Smtp-Source: ABdhPJxvvieBfVuOSjh3FV/8raIvobRVmuPFlSewQwflYLjB304mWmC3gwGeRCiiEq8XJ6CMCONtTG7tM35J4cczRdE=
+X-Received: by 2002:a5d:5383:: with SMTP id d3mr18473386wrv.42.1595950232724;
+ Tue, 28 Jul 2020 08:30:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCHj_diRCBfgxI2AA--.17695S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF1rArW7Ar1xAw43WrW5trb_yoW5XF4kpw
-        45GF4Ykr4kJ3WSgr4fCFn2ka43Kr4kC34fArW2yw4Ska13tFZxJFy8JFy2yF1rGryrJFyY
-        y34093yqgw1UJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU92b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2
-        jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4
-        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvj
-        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-        IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-        MI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-        WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-        6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-        BIdaVFxhVjvjDU0xZFpf9x07j0uWLUUUUU=
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+ <90c53367b289e9c0f9eeb97794a8d3b08d813884.1594230107.git-series.maxime@cerno.tech>
+In-Reply-To: <90c53367b289e9c0f9eeb97794a8d3b08d813884.1594230107.git-series.maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Tue, 28 Jul 2020 16:30:16 +0100
+Message-ID: <CAPY8ntB3eeqqz0hPSfHiJpKs9sJpU5uN5GzLsqmhtxrD0i6TJg@mail.gmail.com>
+Subject: Re: [PATCH v4 77/78] drm/vc4: drv: Support BCM2711
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Hi Maxime
 
-Both MP8867 and MP8869 support different switch frequency.
+On Wed, 8 Jul 2020 at 18:44, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> The BCM2711 has a reworked display pipeline, and the load tracker needs
+> some adjustement to operate properly. Let's add a compatible for BCM2711
 
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/regulator/mp886x.c | 42 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+s/adjustement/adjustment
 
-diff --git a/drivers/regulator/mp886x.c b/drivers/regulator/mp886x.c
-index 3c9a6605b115..e3c7813bed4b 100644
---- a/drivers/regulator/mp886x.c
-+++ b/drivers/regulator/mp886x.c
-@@ -22,10 +22,14 @@
- #define  MP886X_SLEW_MASK	(0x7 << MP886X_SLEW_SHIFT)
- #define  MP886X_GO		(1 << 6)
- #define  MP886X_EN		(1 << 7)
-+#define MP8869_SYSCNTLREG2	0x02
- 
- struct mp886x_cfg_info {
- 	const struct regulator_ops *rops;
- 	const int slew_rates[8];
-+	const int switch_freq[4];
-+	const u8 fs_reg;
-+	const u8 fs_shift;
- };
- 
- struct mp886x_device_info {
-@@ -60,6 +64,24 @@ static int mp886x_set_ramp(struct regulator_dev *rdev, int ramp)
- 				  MP886X_SLEW_MASK, reg << MP886X_SLEW_SHIFT);
- }
- 
-+static void mp886x_set_switch_freq(struct mp886x_device_info *di,
-+				   struct regmap *regmap,
-+				   u32 freq)
-+{
-+	const struct mp886x_cfg_info *ci = di->ci;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(ci->switch_freq); i++) {
-+		if (freq == ci->switch_freq[i]) {
-+			regmap_update_bits(regmap, ci->fs_reg,
-+				  0x3 << ci->fs_shift, i << ci->fs_shift);
-+			return;
-+		}
-+	}
-+
-+	dev_err(di->dev, "invalid frequency %d\n", freq);
-+}
-+
- static int mp886x_set_mode(struct regulator_dev *rdev, unsigned int mode)
- {
- 	switch (mode) {
-@@ -162,6 +184,14 @@ static const struct mp886x_cfg_info mp8869_ci = {
- 		1250,
- 		625,
- 	},
-+	.switch_freq = {
-+		500000,
-+		750000,
-+		1000000,
-+		1250000,
-+	},
-+	.fs_reg = MP8869_SYSCNTLREG2,
-+	.fs_shift = 4,
- };
- 
- static int mp8867_set_voltage_sel(struct regulator_dev *rdev, unsigned int sel)
-@@ -233,6 +263,14 @@ static const struct mp886x_cfg_info mp8867_ci = {
- 		1000,
- 		500,
- 	},
-+	.switch_freq = {
-+		500000,
-+		750000,
-+		1000000,
-+		1500000,
-+	},
-+	.fs_reg = MP886X_SYSCNTLREG1,
-+	.fs_shift = 1,
- };
- 
- static int mp886x_regulator_register(struct mp886x_device_info *di,
-@@ -274,6 +312,7 @@ static int mp886x_i2c_probe(struct i2c_client *client,
- 	struct mp886x_device_info *di;
- 	struct regulator_config config = { };
- 	struct regmap *regmap;
-+	u32 freq;
- 	int ret;
- 
- 	di = devm_kzalloc(dev, sizeof(struct mp886x_device_info), GFP_KERNEL);
-@@ -311,6 +350,9 @@ static int mp886x_i2c_probe(struct i2c_client *client,
- 	config.driver_data = di;
- 	config.of_node = np;
- 
-+	if (!of_property_read_u32(np, "mps,switch-frequency", &freq))
-+		mp886x_set_switch_freq(di, regmap, freq);
-+
- 	ret = mp886x_regulator_register(di, &config);
- 	if (ret < 0)
- 		dev_err(dev, "Failed to register regulator!\n");
--- 
-2.28.0.rc0
+> and disable the load tracker until properly supported.
+>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/gpu/drm/vc4/vc4_drv.c   |  1 +-
+>  drivers/gpu/drm/vc4/vc4_drv.h   |  3 ++-
+>  drivers/gpu/drm/vc4/vc4_kms.c   | 42 +++++++++++++++++++++++-----------
+>  drivers/gpu/drm/vc4/vc4_plane.c |  5 ++++-
+>  4 files changed, 38 insertions(+), 13 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
+> index 9567d1019212..f1a5fd5dab6f 100644
+> --- a/drivers/gpu/drm/vc4/vc4_drv.c
+> +++ b/drivers/gpu/drm/vc4/vc4_drv.c
+> @@ -372,6 +372,7 @@ static int vc4_platform_drm_remove(struct platform_device *pdev)
+>  }
+>
+>  static const struct of_device_id vc4_of_match[] = {
+> +       { .compatible = "brcm,bcm2711-vc5", },
+>         { .compatible = "brcm,bcm2835-vc4", },
+>         { .compatible = "brcm,cygnus-vc4", },
+>         {},
+> diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+> index 501a48a714d3..8c8d96b6289f 100644
+> --- a/drivers/gpu/drm/vc4/vc4_drv.h
+> +++ b/drivers/gpu/drm/vc4/vc4_drv.h
+> @@ -200,6 +200,9 @@ struct vc4_dev {
+>
+>         int power_refcount;
+>
+> +       /* Set to true when the load tracker is supported. */
+> +       bool load_tracker_available;
+> +
+>         /* Set to true when the load tracker is active. */
+>         bool load_tracker_enabled;
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
+> index 7c8a87339959..ae479f988666 100644
+> --- a/drivers/gpu/drm/vc4/vc4_kms.c
+> +++ b/drivers/gpu/drm/vc4/vc4_kms.c
+> @@ -532,6 +532,9 @@ static int vc4_load_tracker_atomic_check(struct drm_atomic_state *state)
+>         struct drm_plane *plane;
+>         int i;
+>
+> +       if (!vc4->load_tracker_available)
+> +               return 0;
+> +
+>         priv_state = drm_atomic_get_private_obj_state(state,
+>                                                       &vc4->load_tracker);
+>         if (IS_ERR(priv_state))
+> @@ -681,10 +684,14 @@ int vc4_kms_load(struct drm_device *dev)
+>         struct vc4_load_tracker_state *load_state;
+>         int ret;
+>
+> -       /* Start with the load tracker enabled. Can be disabled through the
+> -        * debugfs load_tracker file.
+> -        */
+> -       vc4->load_tracker_enabled = true;
+> +       if (!of_device_is_compatible(dev->dev->of_node, "brcm,bcm2711-vc5")) {
 
+Is it better to look up the compatible string, or pass something via
+the .data element of the of_device_id table? Probably down to personal
+preference?
 
+> +               vc4->load_tracker_available = true;
+> +
+> +               /* Start with the load tracker enabled. Can be
+> +                * disabled through the debugfs load_tracker file.
+> +                */
+> +               vc4->load_tracker_enabled = true;
+> +       }
+>
+>         sema_init(&vc4->async_modeset, 1);
+>
+> @@ -698,8 +705,14 @@ int vc4_kms_load(struct drm_device *dev)
+>                 return ret;
+>         }
+>
+> -       dev->mode_config.max_width = 2048;
+> -       dev->mode_config.max_height = 2048;
+> +       if (of_device_is_compatible(dev->dev->of_node, "brcm,bcm2711-vc5")) {
+
+We're making the same of_device_is_compatible call twice within
+vc4_kms_load. Set a flag based on it and check that instead?
+
+  Dave
+
+> +               dev->mode_config.max_width = 7680;
+> +               dev->mode_config.max_height = 7680;
+> +       } else {
+> +               dev->mode_config.max_width = 2048;
+> +               dev->mode_config.max_height = 2048;
+> +       }
+> +
+>         dev->mode_config.funcs = &vc4_mode_funcs;
+>         dev->mode_config.preferred_depth = 24;
+>         dev->mode_config.async_page_flip = true;
+> @@ -714,14 +727,17 @@ int vc4_kms_load(struct drm_device *dev)
+>         drm_atomic_private_obj_init(dev, &vc4->ctm_manager, &ctm_state->base,
+>                                     &vc4_ctm_state_funcs);
+>
+> -       load_state = kzalloc(sizeof(*load_state), GFP_KERNEL);
+> -       if (!load_state) {
+> -               drm_atomic_private_obj_fini(&vc4->ctm_manager);
+> -               return -ENOMEM;
+> -       }
+> +       if (vc4->load_tracker_available) {
+> +               load_state = kzalloc(sizeof(*load_state), GFP_KERNEL);
+> +               if (!load_state) {
+> +                       drm_atomic_private_obj_fini(&vc4->ctm_manager);
+> +                       return -ENOMEM;
+> +               }
+>
+> -       drm_atomic_private_obj_init(dev, &vc4->load_tracker, &load_state->base,
+> -                                   &vc4_load_tracker_state_funcs);
+> +               drm_atomic_private_obj_init(dev, &vc4->load_tracker,
+> +                                           &load_state->base,
+> +                                           &vc4_load_tracker_state_funcs);
+> +       }
+>
+>         drm_mode_config_reset(dev);
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+> index 1e38e603f83b..24d7e6db6fdd 100644
+> --- a/drivers/gpu/drm/vc4/vc4_plane.c
+> +++ b/drivers/gpu/drm/vc4/vc4_plane.c
+> @@ -516,6 +516,11 @@ static void vc4_plane_calc_load(struct drm_plane_state *state)
+>         struct vc4_plane_state *vc4_state;
+>         struct drm_crtc_state *crtc_state;
+>         unsigned int vscale_factor;
+> +       struct vc4_dev *vc4;
+> +
+> +       vc4 = to_vc4_dev(state->plane->dev);
+> +       if (!vc4->load_tracker_available)
+> +               return;
+>
+>         vc4_state = to_vc4_plane_state(state);
+>         crtc_state = drm_atomic_get_existing_crtc_state(state->state,
+> --
+> git-series 0.9.1
