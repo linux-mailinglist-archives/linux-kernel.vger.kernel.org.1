@@ -2,139 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118F7230B9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE4F230B96
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 15:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbgG1NmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 09:42:13 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:48638 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730069AbgG1NmN (ORCPT
+        id S1730137AbgG1Njr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 09:39:47 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46824 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729044AbgG1Njq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 09:42:13 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k0Prq-0006Yc-M5; Tue, 28 Jul 2020 07:42:06 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1k0Prp-0008Po-SX; Tue, 28 Jul 2020 07:42:06 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Anthony Yznaga <anthony.yznaga@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org, mhocko@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        arnd@arndb.de, keescook@chromium.org, gerg@linux-m68k.org,
-        ktkhai@virtuozzo.com, christian.brauner@ubuntu.com,
-        peterz@infradead.org, esyr@redhat.com, jgg@ziepe.ca,
-        christian@kellner.me, areber@redhat.com, cyphar@cyphar.com,
-        steven.sistare@oracle.com
-References: <1595869887-23307-1-git-send-email-anthony.yznaga@oracle.com>
-        <1595869887-23307-4-git-send-email-anthony.yznaga@oracle.com>
-Date:   Tue, 28 Jul 2020 08:38:58 -0500
-In-Reply-To: <1595869887-23307-4-git-send-email-anthony.yznaga@oracle.com>
-        (Anthony Yznaga's message of "Mon, 27 Jul 2020 10:11:25 -0700")
-Message-ID: <87365bg3nx.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 28 Jul 2020 09:39:46 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 06SDdV4h088972;
+        Tue, 28 Jul 2020 08:39:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1595943571;
+        bh=dPv4YxIrwFuV3NudXMrtoCbaLmUQB+hhpnVi9I+m27g=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=DgR3SBvj1LP8atxh++0E+OE2NN4HRh9HizQIQ1C4WKvcmMjhRe9Unc33ehKw3jZMC
+         7LELVTFf2bFjD1ZEwt6J3noouEKTErAmVHFtJAvfLFCtO7hfxnKUy93p/hi8jqnUxS
+         n/RM45oGVtfVIDRk+6qOAxsOZTprq9tat9UBZpl4=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SDdVit100388;
+        Tue, 28 Jul 2020 08:39:31 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Jul 2020 08:39:31 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Jul 2020 08:39:31 -0500
+Received: from [10.250.35.192] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 06SDdTx9116558;
+        Tue, 28 Jul 2020 08:39:30 -0500
+Subject: Re: [PATCH v32 1/6] dt: bindings: lp50xx: Introduce the lp50xx family
+ of RGB drivers
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>,
+        <marek.behun@nic.cz>
+CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200722153146.8767-1-dmurphy@ti.com>
+ <20200722153146.8767-2-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <285e2038-6a90-e59a-d414-19cc0f8789e6@ti.com>
+Date:   Tue, 28 Jul 2020 08:39:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1k0Prp-0008Po-SX;;;mid=<87365bg3nx.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+1Sfes+daOU7hTlu4id0xK0fRE/vl7XQ8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa04 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Anthony Yznaga <anthony.yznaga@oracle.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 418 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 11 (2.6%), b_tie_ro: 9 (2.2%), parse: 1.09 (0.3%),
-         extract_message_metadata: 3.7 (0.9%), get_uri_detail_list: 1.29
-        (0.3%), tests_pri_-1000: 4.4 (1.0%), tests_pri_-950: 1.33 (0.3%),
-        tests_pri_-900: 1.15 (0.3%), tests_pri_-90: 79 (18.8%), check_bayes:
-        76 (18.2%), b_tokenize: 8 (2.0%), b_tok_get_all: 7 (1.6%),
-        b_comp_prob: 2.6 (0.6%), b_tok_touch_all: 54 (12.9%), b_finish: 1.29
-        (0.3%), tests_pri_0: 283 (67.8%), check_dkim_signature: 0.76 (0.2%),
-        check_dkim_adsp: 3.8 (0.9%), poll_dns_idle: 0.52 (0.1%), tests_pri_10:
-        3.7 (0.9%), tests_pri_500: 21 (5.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC PATCH 3/5] mm: introduce VM_EXEC_KEEP
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <20200722153146.8767-2-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Anthony Yznaga <anthony.yznaga@oracle.com> writes:
+Pavel
 
-> A vma with the VM_EXEC_KEEP flag is preserved across exec.  For anonymous
-> vmas only.  For safety, overlap with fixed address VMAs created in the new
-> mm during exec (e.g. the stack and elf load segments) is not permitted and
-> will cause the exec to fail.
-> (We are studying how to guarantee there are no conflicts. Comments welcome.)
+On 7/22/20 10:31 AM, Dan Murphy wrote:
+> Introduce the bindings for the Texas Instruments LP5036, LP5030, LP5024,
+> LP5018, LP5012 and LP5009 RGB LED device driver.  The LP5036/30/24/18/12/9
+> can control RGB LEDs individually or as part of a control bank group.
+> These devices have the ability to adjust the mixing control for the RGB
+> LEDs to obtain different colors independent of the overall brightness of
+> the LED grouping.
+
+Were you going to pull this in as a user of the Multicolor framework?
+
+Dan
+
+
 >
-
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 262112e5f9f8..1de09c4eef00 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1069,6 +1069,20 @@ ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
->  EXPORT_SYMBOL(read_code);
->  #endif
->  
-> +static int vma_dup_some(struct mm_struct *old_mm, struct mm_struct *new_mm)
-> +{
-> +	struct vm_area_struct *vma;
-> +	int ret;
+> Datasheet:
+> http://www.ti.com/lit/ds/symlink/lp5012.pdf
+> http://www.ti.com/lit/ds/symlink/lp5024.pdf
+> http://www.ti.com/lit/ds/symlink/lp5036.pdf
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>   .../devicetree/bindings/leds/leds-lp50xx.yaml | 130 ++++++++++++++++++
+>   1 file changed, 130 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> new file mode 100644
+> index 000000000000..b2dd1672f12a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-lp50xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	for (vma = old_mm->mmap; vma; vma = vma->vm_next)
-> +		if (vma->vm_flags & VM_EXEC_KEEP) {
-> +			ret = vma_dup(vma, new_mm);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	return 0;
-> +}
+> +title: LED driver for LP50XX RGB LED from Texas Instruments.
 > +
->  /*
->   * Maps the mm_struct mm into the current task struct.
->   * On success, this function returns with the mutex
-> @@ -1104,6 +1118,12 @@ static int exec_mmap(struct mm_struct *mm)
->  			mutex_unlock(&tsk->signal->exec_update_mutex);
->  			return -EINTR;
->  		}
-> +		ret = vma_dup_some(old_mm, mm);
-                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Ouch! An unconditional loop through all of the vmas of the execing
-process, just in case there is a VM_EXEC_KEEP vma.
-
-I know we already walk the list in exit_mmap, but I get the feeling this
-will slow exec down when this feature is not enabled, especially when
-a process with a lot of vmas is calling exec.
-
-                
-> +		if (ret) {
-> +			mmap_read_unlock(old_mm);
-> +			mutex_unlock(&tsk->signal->exec_update_mutex);
-> +			return ret;
-> +		}
->  	}
->  
->  	task_lock(tsk);
+> +maintainers:
+> +  - Dan Murphy <dmurphy@ti.com>
+> +
+> +description: |
+> +  The LP50XX is multi-channel, I2C RGB LED Drivers that can group RGB LEDs into
+> +  a LED group or control them individually.
+> +
+> +  The difference in these RGB LED drivers is the number of supported RGB
+> +  modules.
+> +
+> +  For more product information please see the link below:
+> +  https://www.ti.com/lit/ds/symlink/lp5012.pdf
+> +  https://www.ti.com/lit/ds/symlink/lp5024.pdf
+> +  https://www.ti.com/lit/ds/symlink/lp5036.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,lp5009
+> +      - ti,lp5012
+> +      - ti,lp5018
+> +      - ti,lp5024
+> +      - ti,lp5030
+> +      - ti,lp5036
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      I2C slave address
+> +      lp5009/12 - 0x14, 0x15, 0x16, 0x17
+> +      lp5018/24 - 0x28, 0x29, 0x2a, 0x2b
+> +      lp5030/36 - 0x30, 0x31, 0x32, 0x33
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: GPIO pin to enable/disable the device.
+> +
+> +  vled-supply:
+> +    description: LED supply.
+> +
+> +patternProperties:
+> +  '^multi-led@[0-9a-f]$':
+> +    type: object
+> +    allOf:
+> +      - $ref: leds-class-multicolor.yaml#
+> +    properties:
+> +      reg:
+> +        minItems: 1
+> +        maxItems: 12
+> +        description:
+> +          This property denotes the LED module number(s) that is used on the
+> +          for the child node.  The LED modules can either be used stand alone
+> +          or grouped into a module bank.
+> +
+> +    patternProperties:
+> +      "(^led-[0-9a-f]$|led)":
+> +        type: object
+> +        $ref: common.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +   #include <dt-bindings/gpio/gpio.h>
+> +   #include <dt-bindings/leds/common.h>
+> +
+> +   i2c {
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +
+> +       led-controller@14 {
+> +           compatible = "ti,lp5009";
+> +           reg = <0x14>;
+> +           #address-cells = <1>;
+> +           #size-cells = <0>;
+> +           enable-gpios = <&gpio1 16>;
+> +
+> +           multi-led@1 {
+> +               #address-cells = <1>;
+> +               #size-cells = <0>;
+> +               reg = <0x1>;
+> +               color = <LED_COLOR_ID_MULTI>;
+> +               function = LED_FUNCTION_CHARGING;
+> +
+> +               led-0 {
+> +                   color = <LED_COLOR_ID_RED>;
+> +               };
+> +
+> +               led-1 {
+> +                   color = <LED_COLOR_ID_GREEN>;
+> +               };
+> +
+> +               led-2 {
+> +                   color = <LED_COLOR_ID_BLUE>;
+> +               };
+> +          };
+> +
+> +          multi-led@2 {
+> +            #address-cells = <1>;
+> +            #size-cells = <2>;
+> +            reg = <0x2 0x3 0x5>;
+> +            color = <LED_COLOR_ID_MULTI>;
+> +            function = LED_FUNCTION_STANDBY;
+> +
+> +            led-6 {
+> +              color = <LED_COLOR_ID_RED>;
+> +            };
+> +
+> +            led-7 {
+> +              color = <LED_COLOR_ID_GREEN>;
+> +            };
+> +
+> +            led-8 {
+> +              color = <LED_COLOR_ID_BLUE>;
+> +            };
+> +         };
+> +       };
+> +    };
+> +
+> +...
