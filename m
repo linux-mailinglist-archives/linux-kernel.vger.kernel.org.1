@@ -2,120 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27D42305FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 11:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D17E2305DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728496AbgG1I7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:59:31 -0400
-Received: from mail-eopbgr70044.outbound.protection.outlook.com ([40.107.7.44]:52485
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728474AbgG1I73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:59:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oi/UcLlHCXQNN6CBAyrIJl2SkG2utX5gtFVWJQp5hW4vYDjTgjerbo1U6IgnuxvjP9+W5ZfR4m9/46IorNVb+xRvXNkw4dQO6fuaZZ5U1FlxcBdf4AOiqqHYfpiun/JiE3mr3bMk7g6b3Bl3pNS68gfUplIFj0FStDEMlVoJHacX34lLA9Qlw3cEO84tRBskCA93JfHkb3ca5A9mqcrcd5PoqJncBUIFOCEwZe/duHYzZ+7fcX22Rxc6PzO3ZVO4tiWeB/B0YNCPkZM4eTNSLMuVrQhZhw5y8gF6lzcfVTs27PUVxokJ4oamtLI1MmWPAgOOapwAJv7PDOg5wcmmBA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o3q9qceQW+ne+Ts3yq31vqnQ43fTAwd7b9tRBWnyk5M=;
- b=h2BVclNylGvq0xtGp9rSaIuBTM7/CCmJQOKNmfEb6xXwcIflpf05skyIxJnqxzOT2W0hpPu/Y7NmA+SJxZPf0+yUPtfinJkoXfhwev0fMe8nmCPYUO8qEJPF9zh8VVSD4+uoW8GAa0zTRH0mu2uNLzs/eyWmSK+UB3nzIZ/tjLJ0Q8KxxT7Tjkon7fzzaT2Cr3Auk0aevH9MVfenzyKPoyeCn5t0DLb3UD/Bkc1fPM7QaX1NFMrFhFYYkKEE2tdp2qbD2uMnJEtdHcgrlZsfwupxWMSu7QRGPuWjreB0GixP9Su33PGYqxRid0Xi63/aAPxOwIeTCyEMIBysVUZgFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o3q9qceQW+ne+Ts3yq31vqnQ43fTAwd7b9tRBWnyk5M=;
- b=QPVWPwg05637Sl9w/UtAot+zwckcu8TEGWFOdR/0O0Ny/ujhmIyqf9kS5RNMtjHsnI5kZkooEZoIcEYCQCZaSDjkt6g1Nud6EM3XAVPe0vB72BRpd7QYWvwpoSCkGR6/J3HIRvZV4levnbbvV5hHJEyQ66wUGRKjkt48HVytfFY=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0401MB2375.eurprd04.prod.outlook.com (2603:10a6:4:4a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22; Tue, 28 Jul
- 2020 08:59:25 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::2d36:b569:17c:7701]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::2d36:b569:17c:7701%4]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
- 08:59:25 +0000
-From:   peng.fan@nxp.com
-To:     shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     arnd@arndb.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] ARM: imx_v6_v7_defconfig: Support i.MX8MN/P/Q
-Date:   Tue, 28 Jul 2020 16:55:04 +0800
-Message-Id: <1595926504-6121-1-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SGAP274CA0016.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::28)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S1728294AbgG1I4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728253AbgG1I4W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 04:56:22 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF6BC0619D7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:56:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id r2so12393311wrs.8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wxTwrgnq9E/WiNk3kV+5CMVUMO6IYGLUJRsXmpueos0=;
+        b=SgmKbxshWIgy7i/i8vqaI5tcJ2bU9gb64Sjar5YKhBEB9iRFEBzg3k9HrxnHFKOSOs
+         zMcnsMKMr8P3PuxxZvVa0Ir4j3kWZgXjk2nPksQHELB7nSQggAJnMs7JY2nOvsJ+GTyc
+         sIiabW7fz/o12PIx2L6NxjeBcGNbm096zWnTV1cVN3V+7GI56cqEkWoS5K7sGXi1aM9m
+         1knClukA542+MNKmOGARWM3fcYgIfXhxS0F2pay/Q5sEMEVLSN/zk8GkjyMscM7sqgyD
+         YpxFhjMDccQmmVdIisDgzl/kMCQRrp8Zbjd/gxKYKRbEEJIQ6UoCMBONxNgeMkHczaNP
+         XxdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wxTwrgnq9E/WiNk3kV+5CMVUMO6IYGLUJRsXmpueos0=;
+        b=c13rfh4MkwwZTbThy8NsOBdnI2wz+OSlAZH6ggqtZAVXBR1PCr5WHUUJ/SCOUWfdLK
+         iqc6AYFHO3JHAsJ0Xk+P++SvrKfE4NWT15GVMLXPMSI0MN5AMLS8liPzXcdPy04R1I/r
+         oDwSzdC0XKt1Ko7TBP9CXvat3UHi6vl/BvLuv8/BUEKUPDSeWnFuOBEVKze9byT+ywxu
+         F1REznezgxFuSAPHv1sSdouGHpGkmpOhdTugX3FED7Z6naXcl2THVJUiiDaslOtB+rVv
+         HueqFxNrA5DhcVJdT2s/pMzeFZzuWGQlmxuNSVBPRbrkrDriKHx0G03Jk/M7k0rZLz34
+         8xOQ==
+X-Gm-Message-State: AOAM5311YX/gvKMSB9lqY+ezbYCownHVmnU6/DZvzetXyinblCZfNS/Z
+        WgyAbcb87xul1KPdaO2xLSOXag==
+X-Google-Smtp-Source: ABdhPJzyefbTUcC6FA1OtyHG3ZE+ihx1cIgJ8kJah012w56nbIM6+qpRfcUIjerKX0Iu0TxyY/d/Tw==
+X-Received: by 2002:adf:f045:: with SMTP id t5mr25467199wro.288.1595926579385;
+        Tue, 28 Jul 2020 01:56:19 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id a10sm12662484wro.35.2020.07.28.01.56.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 01:56:18 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 09:56:16 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 02/13] dt-bindings: mfd: Add bindings for sl28cpld
+Message-ID: <20200728085616.GD2419169@dell>
+References: <20200725231834.25642-1-michael@walle.cc>
+ <20200725231834.25642-3-michael@walle.cc>
+ <20200728072422.GF1850026@dell>
+ <1065b0107ce6fd88b2bdd704bf45346b@walle.cc>
+ <20200728082707.GB2419169@dell>
+ <a47993ca4c77ab1ee92f6693debb3c87@walle.cc>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.67) by SGAP274CA0016.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3216.22 via Frontend Transport; Tue, 28 Jul 2020 08:59:22 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c1e91424-62fc-4e5a-741e-08d832d486fe
-X-MS-TrafficTypeDiagnostic: DB6PR0401MB2375:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0401MB2375D1EBBAE1658FA9B61E1C88730@DB6PR0401MB2375.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wCvphMMVkZ9hBKBqUkgFHBnioJsEZi7qEvD5bWAsFZd5wQlYC9T+4j1oPpDHMaB3ha0GScDKWKl3/1Y023bRi66qvPrzqH4H2ZhkjFHt9mjeK74J8Nn0ejpI4QmtBYPnHzS4TElBeUtcUZVpcBEWSh7y2Y1U96OPONy5yEn8/JfUAJ/j8qfPM1rynv2W8N3c5+RCqBhjMA/SyVYdjBc04jVZOIuG1zrz0k1IHljVVi2c9eimI9sJKj2ePMDW+Z5zb51Ifw+F6Sg2jlQnEXCIkdfyzQvA4RxCgSzSv7Q52v9APHn4JYgJA77PmxV6dPs3HugHmDoPPEdLtLaXZwN490+CoA3MLTgyfrM8UKliZEcJCNJA0a7mEIhVZMjeEQkm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(376002)(346002)(396003)(136003)(478600001)(36756003)(26005)(5660300002)(4326008)(83380400001)(86362001)(69590400007)(4744005)(8676002)(52116002)(6506007)(8936002)(2906002)(6486002)(186003)(6512007)(9686003)(66476007)(66556008)(6666004)(316002)(66946007)(16526019)(2616005)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: ttWuuu0Wm67xaakwt4+2oT3xPuEiEW4iMKtaFAaWzWAeHmPi3VzwjsZhLSINCS1fsU+48EJq+8rWEMY217S3fxel+NDGaYzuihJeL0QWka3NUqdHUCLTJRlLMBoDphDyZOBVf+BU7r0iIaekh5JcsOOW1yhs6sePVqq0E+n7SfP8tfVDIdVwRBeWNzf3cf69Zq6QHgneH+AsUNMb5BVEmi5jwco6Cy3zQFSwt26fiUr5M9c6YYC84NMN9iQ/ZdnQdESVQodYMMsC8AA0vqGOlUv+q/njtIrNbwEu2R/gQYUcFFoOZiD/ypOGSE0dwPXMZ+1iTnSjqfhMnISEa0N7Hn/rsnY2DFTt2FXq7yZqB/XxM7NxIJXhPqPXZHMEjB4Qze1jkqIf4H2luRk/SuigN0eM5bUY8fCi0uyYOfOTJLVLtZxhUl/oV0Y3vhGBodA3vtXa79xYR/zhg7IxbFUtP1GWIJBg2qAB/SYjP4MdS5lxBWY9jH4pyfGFctLoxaVl
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c1e91424-62fc-4e5a-741e-08d832d486fe
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 08:59:25.5452
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xxZ2xFhP9FINoR3nf8yQ3YkOMAXI58IgOEvlhW0LYDF/f3RgJQhUCW4Zw+SjNGaXQ9U2aOrixUBNZPoIKzxEVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2375
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a47993ca4c77ab1ee92f6693debb3c87@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+> > > > > +$id: http://devicetree.org/schemas/mfd/kontron,sl28cpld.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Kontron's sl28cpld board management controller
+> > > >
+> > > > "S128CPLD" ?
+> > > 
+> > > still not, its sl28cpld, think of a project/code name, not the product
+> > > appended with CPLD.
+> > > 
+> > > > "Board Management Controller (BMC)" ?
+> > > 
+> > > sounds like IPMI, which I wanted to avoid.
+> > 
+> > Is there a datasheet?
+> 
+> No there isn't.
 
-i.MX8MN/P/Q is built with AArch64 hardware, this is to support
-it could run in AArch32 mode with clock and pinctrl driver enabled.
+Then what are you working from?
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- arch/arm/configs/imx_v6_v7_defconfig | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > > > > +maintainers:
+> > > > > +  - Michael Walle <michael@walle.cc>
+> > > > > +
+> > > > > +description: |
+> > > > > +  The board management controller may contain different IP blocks
+> > > > > like
+> > > > > +  watchdog, fan monitoring, PWM controller, interrupt controller
+> > > > > and a
+> > > > > +  GPIO controller.
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    const: kontron,sl28cpld-r1
+> > > >
+> > > > We don't usually code revision numbers in compatible strings.
+> > > >
+> > > > Is there any way to pull this from the H/W?
+> > > 
+> > > No, unfortunately you can't. And I really want to keep that, in case
+> > > in the future there are some backwards incompatible changes.
+> > 
+> > Rob,
+> > 
+> > I know you reviewed this already, but you can give your opinion on
+> > this specifically please?  I know that we have pushed back on this in
+> > the past.
+> 
+> Oh, come one. That is an arbitrary string. "sl28cpld-r1" is the first
+> implementation of this. A future "sl28cpld-r2" might look completely
+> different and might not suite the simple MFD at all. "sl28cpld" is
+> a made up name - as "sl28cpld-r1" is, too.
 
-diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
-index 82d3ffb18e70..fbd02365e3b6 100644
---- a/arch/arm/configs/imx_v6_v7_defconfig
-+++ b/arch/arm/configs/imx_v6_v7_defconfig
-@@ -218,6 +218,9 @@ CONFIG_SPI_GPIO=y
- CONFIG_SPI_IMX=y
- CONFIG_SPI_FSL_DSPI=y
- CONFIG_PINCTRL_IMX8MM=y
-+CONFIG_PINCTRL_IMX8MN=y
-+CONFIG_PINCTRL_IMX8MP=y
-+CONFIG_PINCTRL_IMX8MQ=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_SIOX=m
- CONFIG_GPIO_MAX732X=y
-@@ -407,6 +410,9 @@ CONFIG_STAGING_MEDIA=y
- CONFIG_VIDEO_IMX_MEDIA=y
- CONFIG_COMMON_CLK_PWM=y
- CONFIG_CLK_IMX8MM=y
-+CONFIG_CLK_IMX8MN=y
-+CONFIG_CLK_IMX8MP=y
-+CONFIG_CLK_IMX8MQ=y
- CONFIG_SOC_IMX8M=y
- CONFIG_IIO=y
- CONFIG_MMA8452=y
+Well that sounds bogus for a start.  I guess that's one of the
+problems with trying to support programmable H/W in S/W.
+ 
+If it's okay with Rob, then I'll be okay with it.
+
+Just to note, this has not been okay for others in the past, and this
+use-case is not 'special'.
+
 -- 
-2.16.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
