@@ -2,148 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301B3231256
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE4423125D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 21:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732703AbgG1TSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 15:18:33 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53302 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728751AbgG1TSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 15:18:32 -0400
-IronPort-SDR: ZZlEO0E+JxFAqsVlcV+OcvCDJn9KaIxf/RDJkrqca1gNVKzTV3u03BsLcwDUoTr7c7oAq2bRZM
- MeUAY6HRQMdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="152543409"
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="152543409"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 12:18:31 -0700
-IronPort-SDR: A/LWYGtLiV2xMqj0KUz5tLFZ4cw8jmEEYYnpArz/u1f3jU63qCmvONl7hgH20Uj7HbCKKG4IEb
- 8OjH9NNg4MOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,407,1589266800"; 
-   d="scan'208";a="434434628"
-Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.32.199]) ([10.212.32.199])
-  by orsmga004.jf.intel.com with ESMTP; 28 Jul 2020 12:18:30 -0700
-Subject: Re: [PATCH net-next RFC 01/13] devlink: Add reload level option to
- devlink reload command
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@resnulli.us>, Moshe Shemesh <moshe@mellanox.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-References: <1595847753-2234-1-git-send-email-moshe@mellanox.com>
- <1595847753-2234-2-git-send-email-moshe@mellanox.com>
- <20200727175802.04890dd3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20200728135808.GC2207@nanopsycho>
- <464add44-3ab1-21b8-3dba-a88202350bb9@intel.com>
- <20200728114458.762b5396@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-Organization: Intel Corporation
-Message-ID: <d6fbfedd-9022-ff67-23ed-418607beecc2@intel.com>
-Date:   Tue, 28 Jul 2020 12:18:30 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        id S1732731AbgG1TSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 15:18:45 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:35243 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728751AbgG1TSo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 15:18:44 -0400
+Received: by mail-il1-f193.google.com with SMTP id t18so17241140ilh.2;
+        Tue, 28 Jul 2020 12:18:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9F3cWW09ioux65mfhzYBsZ9niInvkdfVsRaw2chstUk=;
+        b=nxia130sMvtPYh3YfCgg8VsWcTyHNC68ExzHDoOMWnyo6gUNjeOewnOpOlAjKXcmsf
+         Nxe6C8mFLQ0shTeaJ3Pe9I6wmTtj6P9sJzZuX+xDfYhIeHB9yHLpCpWjtDargokHxApm
+         f0Kn+EQFUMnwc6Y9/UG7L/gZHsQqvSQSAxgW3G3AK5FUb6udbbv1BM0td42orvuFvQcj
+         5z29FYcSHR8jbb44IXimwRz0ILBz2Ml8zgPcF5Qp55GA02Sl4x/EYKm5M7HUgptaNMUx
+         aY3YeX81ybRsaVZAGJU/bbvxpgyPemiA8DzAJsM0ZGHnePZLBh14mU9+FqCFqQx9uCzR
+         Vhqw==
+X-Gm-Message-State: AOAM533C7TTX/LMWulsXEgjFeAriLjuWdj3X+jjy/3ZlELqTpZfB3KKn
+        OR9COil5Zepjpc1MXaCeerREjXNtsQ==
+X-Google-Smtp-Source: ABdhPJxgAfsLS4pxpTK+EOfMRrpi8C8DIImjE1iaHAQ8VK6HDfaB0TVolR+ZoRk7j95B/yGu+vrJFA==
+X-Received: by 2002:a05:6e02:1021:: with SMTP id o1mr22675354ilj.182.1595963923249;
+        Tue, 28 Jul 2020 12:18:43 -0700 (PDT)
+Received: from xps15 ([64.188.179.252])
+        by smtp.gmail.com with ESMTPSA id x88sm3755044ilk.81.2020.07.28.12.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 12:18:42 -0700 (PDT)
+Received: (nullmailer pid 2783759 invoked by uid 1000);
+        Tue, 28 Jul 2020 19:18:42 -0000
+Date:   Tue, 28 Jul 2020 13:18:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Palmer <daniel@0x0f.com>
+Cc:     soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de
+Subject: Re: [PATCH v2 1/9] dt-bindings: arm: mstar: Add binding details for
+ mstar,pmsleep
+Message-ID: <20200728191842.GB2778962@bogus>
+References: <20200728100321.1691745-1-daniel@0x0f.com>
+ <20200728100321.1691745-2-daniel@0x0f.com>
 MIME-Version: 1.0
-In-Reply-To: <20200728114458.762b5396@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728100321.1691745-2-daniel@0x0f.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 28, 2020 at 07:03:13PM +0900, Daniel Palmer wrote:
+> This adds a YAML description of the pmsleep node used by
+> MStar/SigmaStar Armv7 SoCs.
+> 
+> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> ---
+>  .../bindings/arm/mstar/mstar,pmsleep.yaml     | 43 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.yaml b/Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.yaml
+> new file mode 100644
+> index 000000000000..ef78097a7087
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/mstar/mstar,pmsleep.yaml
+> @@ -0,0 +1,43 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2020 thingy.jp.
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/arm/mstar/mstar,pmsleep.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: MStar/SigmaStar Armv7 SoC pmsleep register region
+> +
+> +maintainers:
+> +  - Daniel Palmer <daniel@thingy.jp>
+> +
+> +description: |
+> +  MStar/Sigmastar's Armv7 SoCs contain a region of registers that are
+> +  in the always on domain that the vendor code calls the "pmsleep" area.
+> +
+> +  This area contains registers and bits for a broad range of functionality
+> +  ranging from registers that control going into deep sleep to bits that
+> +  turn things like the internal temperature sensor on and off.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +         - enum:
+> +             - mstar,pmsleep
 
+Needs to be SoC specific. Random collections of bits are never 
+'standard' from one SoC to the next.
 
-On 7/28/2020 11:44 AM, Jakub Kicinski wrote:
-> On Tue, 28 Jul 2020 09:47:00 -0700 Jacob Keller wrote:
->> On 7/28/2020 6:58 AM, Jiri Pirko wrote:
->>> But this is needed to maintain the existing behaviour which is different
->>> for different drivers.
->>
->> Which drivers behave differently here?
-> 
-> I think Jiri refers to mlxsw vs mlx5.
-> 
-> mlxsw loads firmware on probe, by default at least. So reloading the
-> driver implies a FW reset. NIC drivers OTOH don't generally load FW
-> so they didn't reset FW.
-> 
+If your never going to have child nodes, then you can just add the 
+compatible to syscon.yaml.
 
-Ok.
-
-> Now since we're redefining the API from "do a reload so that driverinit
-> params are applied" (or "so that all netdevs get spawned in a new
-> netns") to "do a reset of depth X" we have to change the paradigm.
+> +         - const: syscon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pmsleep: pmsleep@1c00 {
+> +        compatible = "mstar,pmsleep", "syscon";
+> +        reg = <0x0x1c00 0x100>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 991814ea6f76..432fcc867ed6 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2140,6 +2140,7 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
+>  W:	http://linux-chenxing.org/
+>  F:	Documentation/devicetree/bindings/arm/mstar.yaml
+> +F:	Documentation/devicetree/bindings/arm/mstar/*
+>  F:	arch/arm/boot/dts/infinity*.dtsi
+>  F:	arch/arm/boot/dts/mercury*.dtsi
+>  F:	arch/arm/boot/dts/mstar-v7.dtsi
+> -- 
+> 2.27.0
 > 
-> What I was trying to suggest is that we should not have to re-define
-> the API like this.
-
-Ok.
-
-> 
-> From user perspective what's important is what the reset achieves (and
-> perhaps how destructive it is). We can define the reset levels as:
-> 
-> $ devlink dev reload pci/0000:82:00.0 net-ns-respawn
-> $ devlink dev reload pci/0000:82:00.0 driver-param-init
-> $ devlink dev reload pci/0000:82:00.0 fw-activate
-> 
-> combining should be possible when user wants multiple things to happen:
-> 
-> $ devlink dev reload pci/0000:82:00.0 fw-activate driver-param-init
-> 
-
-Where today "driver-param-init" is the default behavior. But didn't we
-just say that mlxsw also does the equivalent of fw-activate?
-
-> 
-> Then we have the use case of a "live reset" which is slightly
-> under-defined right now IMHO, but we can extend it as:
-> 
-> $ devlink dev reload pci/0000:82:00.0 fw-activate --live
-> 
-
-Yea, I think live fw patching things aren't quite as defined yet.
-
-> 
-> We can also add the "reset level" specifier - for the cases where
-> device is misbehaving:
-> 
-> $ devlink dev reload pci/0000:82:00.0 level [driver|fw|hardware]
-> 
-
-I guess I don't quite see how level fits in? This is orthogonal to the
-other settings?
-
-> 
-> But I don't think that we can go from the current reload command
-> cleanly to just a level reset. The driver-specific default is a bad
-> smell which indicates we're changing semantics from what user wants 
-> to what the reset depth is. Our semantics with the patch as it stands
-> are in fact:
->  - if you want to load new params or change netns, don't pass the level
->    - the "driver default" workaround dictates the right reset level for
->    param init;
->  - if you want to activate new firmware - select the reset level you'd
->    like from the reset level options.
-> 
-
-I think I agree, having the "what gets reloaded" as a separate vector
-makes sense and avoids confusion. For example for ice hardware,
-"fw-activate" really does mean "Do an EMP reset" rather than just a
-"device reset" which could be interpreted differently. ice can do
-function level reset, or core device reset also. Neither of those two
-resets activates firmware.
-
-Additionally the current function load process in ice doesn't support
-driver-init at all. That's something I'd like to see happen but is quite
-a significant refactor for how the driver loads. We need to refactor
-everything out so that devlink is created early on and factor out
-load/unload into handlers that can be called by the devlink reload. As I
-have primarily been focused on flash update I sort of left that for the
-future because it was a huge task to solve.
