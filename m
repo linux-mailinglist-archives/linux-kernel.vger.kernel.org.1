@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D92823087D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DC3230885
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbgG1LSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:18:55 -0400
-Received: from mout.gmx.net ([212.227.17.22]:41917 "EHLO mout.gmx.net"
+        id S1729078AbgG1LTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:19:37 -0400
+Received: from mout.gmx.net ([212.227.17.21]:47797 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729029AbgG1LSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:18:52 -0400
+        id S1729048AbgG1LTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:19:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1595935101;
-        bh=RjztiQu8bvOyUz2B8+6Y6utG8fBygRMWzsrfRLxaT28=;
+        s=badeba3b8450; t=1595935103;
+        bh=+AN/A7LaJ8QE7aEa8re6PrqGoq/kSyCmQ9u1D7Iy5LI=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=PqTJVT5/1DKAUPspO4Fwvu8KXxLwmZT9gxvwKOC/sayrFfCYOGUrAt1kKuLyuV+/2
-         rmV1oZj9libk8OmI/vr47fgm+vwLQ9bE5YsWg4W6ypd68ap6fz8Ixo+NsECqvMjLde
-         DmhoS6b7PQ36PJy1dHsMVQb+2gyklriznJ4flhAk=
+        b=D8wok7VxB0mIvkh48xKtrEvGEbuIEDbNRu2dKCl4Hgek+N85Rue7sHVaXCxm4mVTl
+         MN8dP5oBINRQZLdZpNVChq0a48UnOuDhey02LN/mVAaHVKG61QLc3PfaylK5xsekef
+         DhZJeAxZaq/GxOXTGfB/jWknlu+A4ro/v2EOUftw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from localhost.localdomain ([80.208.215.239]) by mail.gmx.com
  (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1Mr9Bu-1kX1XH0BMs-00oDrD; Tue, 28 Jul 2020 13:18:21 +0200
+ 1MgNh1-1kiFof40mV-00hsD8; Tue, 28 Jul 2020 13:18:23 +0200
 From:   Frank Wunderlich <frank-w@public-files.de>
 To:     linux-mediatek@lists.infradead.org
 Cc:     Frank Wunderlich <frank-w@public-files.de>,
@@ -32,200 +32,104 @@ Cc:     Frank Wunderlich <frank-w@public-files.de>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>
-Subject: [PATCH v2 1/5] drm/mediatek: config component output by device node port
-Date:   Tue, 28 Jul 2020 13:17:56 +0200
-Message-Id: <20200728111800.77641-2-frank-w@public-files.de>
+        chunhui dai <chunhui.dai@mediatek.com>
+Subject: [PATCH v2 2/5] drm/mediatek: fix boot up for 720 and 480 but 1080
+Date:   Tue, 28 Jul 2020 13:17:57 +0200
+Message-Id: <20200728111800.77641-3-frank-w@public-files.de>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200728111800.77641-1-frank-w@public-files.de>
 References: <20200728111800.77641-1-frank-w@public-files.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YvbDIbRpFNRzU9CUvTdpvNUkk08xUKy8rbwWD1rLNM8UXAoQuK4
- eICt8UcylHTRfOGkjEX9jjTApIMznChQZ6JLB0JrsjiMAAUXmWoZWVa1uKNNAGYRlIyVrTC
- IKSqIDP+H57GVEHxo0RDq9SNxAHZIaXwDCy1xq9aaTm2FrJdcG2UEvxzlv5POKDx0mQCuV4
- VCgz/4H4bnhMAao7exzPA==
+X-Provags-ID: V03:K1:ak6ylIwTkGEi+mVAT3DUFYeBflxF5UYrm21Ep/FvtMOgSVvosry
+ re5T5r+z1mGqxMwD61JmDn8kXvfaEsk8E5o6GNX/A4yzkKQh5AmNhTlp8O1kK8euvhrXFWp
+ NhVShiqVk49RchrRqkTBVvSn/O/dsTnEra+yI4Ykv0nQELNnk7mjirt/GkINhIpGwhrgcNx
+ 8Jnt6M95h7lBxQSpTgtWQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5JI92cNImiA=:IU9/AVKV/YriZTpTu1OE0e
- O8SnTBpFQJaIKnhNf0ENVS71qiHFJW6fi77esT8+iPhPmyguNpqEi200P15DE396vcSD6HaRy
- jkK+um62hHmvGVD413t3Td/MBamGeZ0K/OHMaCWx9ZlhRNV3p5ddO85KGWDGbKGl3mIQy1ZDO
- gYTMhu1k/shkkXPexV8oBEFwrK1sjylI3UcDJhmVj0v7MvmpjrGSfLohzyhggLMiQrWtSXj1s
- F5lH69pJPnG6XDc6RTp9zCPFR+88z8jqreyd0iU6HGsgSLtteanA1+aosO8ehasnE2LmJs3cq
- XCQhAot6d9BA5lrJCOx3xPDXpsXRDODPrBq51F3FjzrYm0r+R+673O9haC0BJ3bgICsF0xtcB
- r68CTlvnknBcp8o/Xlu4r4mQwOP/IXmr3LOV1iBVAy3JR9UVdyiaAwDpLH0ZjmHhNBSf+kYec
- dil9AXhKdCT17ayWhX6puhITR3fzJONhT9CXwjhzytz+YkWf0A1sLUmXZMriF5HnHqmKo2pBz
- aXWk5rIooPqsAiK4rTMuZ09SbaOSfOUswgDpAdQw/UCtzfRf5HPXFDOoXiNqi988wHVgPH39d
- reopSpTbdHOZL5aeLq4WRU2g35bhX4O8jNUsrcK3R8N/USycjc62YiM/EFptwkec+4eMjw9h1
- nbFEDDoYSLOsPoTl9rzfWc1aiIRq0+Bx+rrfaf23uQPdhRmi8/YF0ZAnar8dhSEhz5Jmct+0I
- lzyhaHfFgFGPBm2i2iEsyUqzSTPEy2q1nYqtCAFMSB60D6oBkWAbWgtVo0n8KvX9Q7fRmKWo4
- 9rFBYULsOB0q4GS4C1aZNkk64O39OnVdqHUOOoSVcM7LQU9XVlE35S4gDtIZdqe1EZ8z+smv5
- /+v2VHEZ4IpAf8jQzlxuEyPHyG2CtXV3AMEoA4e+/Xxxq5IL9Ve3rWkrmwxkPm8+/76Zh67e+
- +1ZrOvHoyORJHbaEJSnK3KI6l4bQuCAaMDeqcIp/GX2d8au/zlPDwHGAXlrwwhBBTZIiQ1fht
- 6Hu95C5tCaeveDCNyggV4YE4oP2zSdyO+ItSIBCDFQgWj+QA3SvJGu47HvP2JOIHMXjfwmXXR
- L4G2ac3jJFcKw0n5l7Gfty4KURDLrGVL0M9vLkoIH87wz83fAxHjWg2jzQjo3foq1YKgx+XB7
- bV2ZZh1PhCqVaiMTzK6lP4oD/Okofix7b7Ru49cLd353NNBLHoYRY/S8u6Ae6RmYx+SKuRWv6
- 8/3j9uIxIhbIUCnAws/QvGWYwSOpixhywPWcY6Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:dqUcR0KBXak=:aRyR9GOnlN77WX8Zjvk0JI
+ YepXy56eg10gErublaOanE/Bmqqf2Baw8del2gqrNPIwfPQ7n+DOiqTR6n6G8yVLuk9IQU5j8
+ i76C1QN0Cukxg3eowP4JKteczmd/mfBaqFkGzbegQSZ1AvW/p7+wSx4iQSANEFBwoxEL+6HQU
+ kSAhV52L9qNFPJQnreTu0t+PQo14ZzBgt/zzb3hBY4juiWVycCBp2233Zt5rhxcGIaJQ5mehn
+ 9GSgv0KeuDWcnZsBWA4x2g4ZOHJVwoppHI11t+qJ0eKkig4wszqDwysr2NaWdljTx339t8LdP
+ o2Bbn3eVIJjs4+YVhrTA75XN2ROOPkFRA29cqtSuGBDI4H+QLZHs409UT8nxiDQZaCvI7SyVb
+ lt2d/t+XI/fiS4y9loLGGStZU5AnDC+AaEpEESRgIvw6XguLeaOIBgN1qimpZnD8K4+MXnIFV
+ tMduf1Q+1ex3VJP05EqAPy0LMY7YX7gRQVGc1wliRDmLLDIPimvlC99teletDY16eJLaFUwG7
+ vPmLu7A7mge5kIYBRg3JJb8BFUsKn6dR4Ntf3ytoSYTgJxeg208A6M0bhaVejvTxnk47KMaRh
+ HXCf9cRzmw5dFFxk9FYqecrtVWtPHQUUGp/4GH+x4pFdLdkP7QL7R9QoBXLOKnmvvbqeWjhOz
+ NM0ZOeLO31h9KE7kwvfs9Oh0PqgehAKps8M7VX3kvRXMxrspyjfqO1pqAksFUiJ6jWk/SShb3
+ zw5UPivbUVJ+7V8nXKzRIqJvST8+3Yu4fbaH6I4MGxxoab+SaBY+JzpSxEtMufZA6082YqWN0
+ h+lV0rkLojAfHXiCwyEjKxbtvaFuyssixVB+KlIATdhyKSzTiZRMx2hTftW8KYuDU5tQLGFLm
+ B/c6wBVT9jP8HUp28skc/8dwf5PoR3y2gFrBh2uSWMna9zNNtpsvMuefi5ZFLFWz2KSCQnjWW
+ VGYldNp72+0lLzPx9NJvPMXtSnnx8X8/Kf1jUNOloNw2l1qmD5pnWXLrjkzpZysztBwtyzXsl
+ jgAviTDjbGIqbmoC9BfvDQ2igXRdqNbSHAHHAkpx/yH9xZZvgY5RCnNIglWSHVMJaR0Kqbg+i
+ SFVn7WIjCSSvW9A7RAW4FZkwEUHEZ/SQJdxZWDGeFaL6dESAL0ggoqMSPbVuSiJFgZqGNT0R7
+ kr2Wm9ISh4cnpbqlC8vTyR8x/PV6ZU6OW7OCvie6VtD+kapKXwQbxAgmYcK5mZAuaNUDYpStT
+ IiWzYNz6Ir8g5gfRfsq+oEVovZmuInfiANpQfiQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bibby Hsieh <bibby.hsieh@mediatek.com>
+From: chunhui dai <chunhui.dai@mediatek.com>
 
-We can select output component by decive node port.
-Main path default output component is DSI.
-External path default output component is DPI.
+- disable tmds on phy on mt2701
+- support other resolutions like 1280x1024
 
-without this Patch i get this warning:
+without this Patch i see flickering on my TFT (1280x1024),
+so i guess clock is wrong.
 
-WARNING: CPU: 3 PID: 70 at drivers/gpu/drm/drm_mode_config.c:621 drm_mode_=
-config_validate+0x1d8/0x258
-
-Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
-
-added small fixes for warnings
-
+Signed-off-by: chunhui dai <chunhui.dai@mediatek.com>
 Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 Tested-by: Frank Wunderlich <frank-w@public-files.de>
 =2D--
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 46 ++++++++++++++++++++++----
- drivers/gpu/drm/mediatek/mtk_drm_drv.h |  4 +--
- 2 files changed, 42 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_hdmi_phy.c        | 3 +++
+ drivers/gpu/drm/mediatek/mtk_hdmi_phy.h        | 1 +
+ drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c | 1 +
+ 3 files changed, 5 insertions(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/medi=
-atek/mtk_drm_drv.c
-index 6bd369434d9d..ce7abf2743d9 100644
-=2D-- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -24,6 +24,13 @@
- #include <drm/drm_of.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_vblank.h>
-+#include <linux/component.h>
-+#include <linux/iommu.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_graph.h>
-+#include <linux/of_platform.h>
-+#include <linux/pm_runtime.h>
-
- #include "mtk_drm_crtc.h"
- #include "mtk_drm_ddp.h"
-@@ -61,7 +68,7 @@ static const struct drm_mode_config_funcs mtk_drm_mode_c=
-onfig_funcs =3D {
- 	.atomic_commit =3D drm_atomic_helper_commit,
- };
-
--static const enum mtk_ddp_comp_id mt2701_mtk_ddp_main[] =3D {
-+static enum mtk_ddp_comp_id mt2701_mtk_ddp_main[] =3D {
- 	DDP_COMPONENT_OVL0,
- 	DDP_COMPONENT_RDMA0,
- 	DDP_COMPONENT_COLOR0,
-@@ -69,12 +76,12 @@ static const enum mtk_ddp_comp_id mt2701_mtk_ddp_main[=
-] =3D {
- 	DDP_COMPONENT_DSI0,
- };
-
--static const enum mtk_ddp_comp_id mt2701_mtk_ddp_ext[] =3D {
-+static enum mtk_ddp_comp_id mt2701_mtk_ddp_ext[] =3D {
- 	DDP_COMPONENT_RDMA1,
- 	DDP_COMPONENT_DPI0,
- };
-
--static const enum mtk_ddp_comp_id mt2712_mtk_ddp_main[] =3D {
-+static enum mtk_ddp_comp_id mt2712_mtk_ddp_main[] =3D {
- 	DDP_COMPONENT_OVL0,
- 	DDP_COMPONENT_COLOR0,
- 	DDP_COMPONENT_AAL0,
-@@ -84,7 +91,7 @@ static const enum mtk_ddp_comp_id mt2712_mtk_ddp_main[] =
-=3D {
- 	DDP_COMPONENT_PWM0,
- };
-
--static const enum mtk_ddp_comp_id mt2712_mtk_ddp_ext[] =3D {
-+static enum mtk_ddp_comp_id mt2712_mtk_ddp_ext[] =3D {
- 	DDP_COMPONENT_OVL1,
- 	DDP_COMPONENT_COLOR1,
- 	DDP_COMPONENT_AAL1,
-@@ -100,7 +107,7 @@ static const enum mtk_ddp_comp_id mt2712_mtk_ddp_third=
-[] =3D {
- 	DDP_COMPONENT_PWM2,
- };
-
--static const enum mtk_ddp_comp_id mt8173_mtk_ddp_main[] =3D {
-+static enum mtk_ddp_comp_id mt8173_mtk_ddp_main[] =3D {
- 	DDP_COMPONENT_OVL0,
- 	DDP_COMPONENT_COLOR0,
- 	DDP_COMPONENT_AAL0,
-@@ -111,7 +118,7 @@ static const enum mtk_ddp_comp_id mt8173_mtk_ddp_main[=
-] =3D {
- 	DDP_COMPONENT_PWM0,
- };
-
--static const enum mtk_ddp_comp_id mt8173_mtk_ddp_ext[] =3D {
-+static enum mtk_ddp_comp_id mt8173_mtk_ddp_ext[] =3D {
- 	DDP_COMPONENT_OVL1,
- 	DDP_COMPONENT_COLOR1,
- 	DDP_COMPONENT_GAMMA,
-@@ -459,6 +466,7 @@ static int mtk_drm_probe(struct platform_device *pdev)
-
- 	/* Iterate over sibling DISP function blocks */
- 	for_each_child_of_node(phandle->parent, node) {
-+		struct device_node *port, *ep, *remote;
- 		const struct of_device_id *of_id;
- 		enum mtk_ddp_comp_type comp_type;
- 		int comp_id;
-@@ -522,6 +530,32 @@ static int mtk_drm_probe(struct platform_device *pdev=
-)
-
- 			private->ddp_comp[comp_id] =3D comp;
- 		}
-+
-+		if (comp_type !=3D MTK_DSI && comp_type !=3D MTK_DPI) {
-+			port =3D of_graph_get_port_by_id(node, 0);
-+			if (!port)
-+				continue;
-+			ep =3D of_get_child_by_name(port, "endpoint");
-+			of_node_put(port);
-+			if (!ep)
-+				continue;
-+			remote =3D of_graph_get_remote_port_parent(ep);
-+			of_node_put(ep);
-+			if (!remote)
-+				continue;
-+			of_id =3D of_match_node(mtk_ddp_comp_dt_ids, remote);
-+			if (!of_id)
-+				continue;
-+			comp_type =3D (enum mtk_ddp_comp_type)of_id->data;
-+			for (i =3D 0; i < private->data->main_len - 1; i++)
-+				if (private->data->main_path[i] =3D=3D comp_id)
-+					private->data->main_path[i + 1] =3D
-+					mtk_ddp_comp_get_id(node, comp_type);
-+			for (i =3D 0; i < private->data->ext_len - 1; i++)
-+				if (private->data->ext_path[i] =3D=3D comp_id)
-+					private->data->ext_path[i + 1] =3D
-+					mtk_ddp_comp_get_id(node, comp_type);
-+		}
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c b/drivers/gpu/drm/med=
+iatek/mtk_hdmi_phy.c
+index 5223498502c4..edadb7a700f1 100644
+=2D-- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.c
+@@ -184,6 +184,9 @@ static int mtk_hdmi_phy_probe(struct platform_device *=
+pdev)
+ 		return PTR_ERR(phy_provider);
  	}
 
- 	if (!private->mutex_node) {
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.h b/drivers/gpu/drm/medi=
-atek/mtk_drm_drv.h
-index b5be63e53176..7fcaab648bf1 100644
-=2D-- a/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.h
-@@ -21,9 +21,9 @@ struct drm_property;
- struct regmap;
-
- struct mtk_mmsys_driver_data {
--	const enum mtk_ddp_comp_id *main_path;
-+	enum mtk_ddp_comp_id *main_path;
- 	unsigned int main_len;
--	const enum mtk_ddp_comp_id *ext_path;
-+	enum mtk_ddp_comp_id *ext_path;
- 	unsigned int ext_len;
- 	const enum mtk_ddp_comp_id *third_path;
- 	unsigned int third_len;
++	if (hdmi_phy->conf->pll_default_off)
++		hdmi_phy->conf->hdmi_phy_disable_tmds(hdmi_phy);
++
+ 	return of_clk_add_provider(dev->of_node, of_clk_src_simple_get,
+ 				   hdmi_phy->pll);
+ }
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h b/drivers/gpu/drm/med=
+iatek/mtk_hdmi_phy.h
+index 2d8b3182470d..f472fdeb63dc 100644
+=2D-- a/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi_phy.h
+@@ -22,6 +22,7 @@ struct mtk_hdmi_phy;
+ struct mtk_hdmi_phy_conf {
+ 	bool tz_disabled;
+ 	unsigned long flags;
++	bool pll_default_off;
+ 	const struct clk_ops *hdmi_phy_clk_ops;
+ 	void (*hdmi_phy_enable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
+ 	void (*hdmi_phy_disable_tmds)(struct mtk_hdmi_phy *hdmi_phy);
+diff --git a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c b/drivers/gpu/=
+drm/mediatek/mtk_mt2701_hdmi_phy.c
+index d3cc4022e988..6fbedacfc1e8 100644
+=2D-- a/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
++++ b/drivers/gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c
+@@ -239,6 +239,7 @@ static void mtk_hdmi_phy_disable_tmds(struct mtk_hdmi_=
+phy *hdmi_phy)
+ struct mtk_hdmi_phy_conf mtk_hdmi_phy_2701_conf =3D {
+ 	.tz_disabled =3D true,
+ 	.flags =3D CLK_SET_RATE_GATE,
++	.pll_default_off =3D true,
+ 	.hdmi_phy_clk_ops =3D &mtk_hdmi_phy_pll_ops,
+ 	.hdmi_phy_enable_tmds =3D mtk_hdmi_phy_enable_tmds,
+ 	.hdmi_phy_disable_tmds =3D mtk_hdmi_phy_disable_tmds,
 =2D-
 2.25.1
 
