@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37ED6230910
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF71230911
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 13:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729157AbgG1Lmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 07:42:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729036AbgG1Lmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 07:42:37 -0400
-Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11693206D4;
-        Tue, 28 Jul 2020 11:42:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1595936557;
-        bh=hWJ40JidbmXhL97JcpfTJY7CxeEWoXzgt7+q2CZAG/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zX8tO8sdlGhRmV6aDnpqWVPi+6lz2rG8p3iC3A//htu2cYRdvKWJ8GtU2cnQIw4Ui
-         km8TqpYwIbEnSY0fqJiH+ESQgFLDkv2RpzsIgCOSRzUFJZoGqnyEtNpFQEZKF93DOU
-         Olb/73IPiegu8iawNLx293YjnZPA4EZdzu7uqaSk=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AE929404B1; Tue, 28 Jul 2020 08:42:34 -0300 (-03)
-Date:   Tue, 28 Jul 2020 08:42:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Wei Li <liwei391@huawei.com>, leo.yan@linaro.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kim Phillips <kim.phillips@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, guohanjun@huawei.com
-Subject: Re: [PATCH v2 2/2] perf tools: ARM SPE code cleanup
-Message-ID: <20200728114234.GA3328@kernel.org>
-References: <20200724071111.35593-1-liwei391@huawei.com>
- <20200724071111.35593-3-liwei391@huawei.com>
- <20200727203436.GC2381376@xps15>
+        id S1729175AbgG1Lmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 07:42:46 -0400
+Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:20038 "EHLO
+        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729159AbgG1Lmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 07:42:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1595936565;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=iwLhOsjZtYhl+WFa5BUY/82Z8FbB6FQLSph99aT8EGw=;
+  b=bUXmoniNbcgNLgTZrtsAy8hkZPifzvSJ2ngAdDu8ViXXL+I3ppmCjQnQ
+   ZlNs4DYzOfoPX9hkaEqQ1eAQ/89fQHeAND2lER3/qQQ9fRRkJriKcHvJM
+   YKRWOgmlM+APPf5kAeWvR41GtQP4SJYHDIumsGLdJijWco3FlDscVjqJR
+   A=;
+Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: eST4pcblEO9C4zMoJzXs8FUL90X3L5/U0rACoVj/dtaz69BM1mQPX91USa/YLWbf/s5kkvs3z3
+ QoxfVkTFF9gEtfVjJ2yybcqAH46FK8ACLdf97hJ6Hifthnze4ZxYG9Nc41FuSq47pXZeBrwobb
+ TZ9GbHrh1h//0/sZC1rIdcSLxLAhbUvoZpFO4DAN7DuYKGEmcrKTu+MzROy8YleM2D0DxUYTLp
+ s4j/3TQR8RoAyxfz2785glGSM5s8yBtxv6NnlJwLCUT3EhorCmMCbHdUMduNkBYU4PVBX7wQYr
+ O9w=
+X-SBRS: 2.7
+X-MesageID: 23666671
+X-Ironport-Server: esa6.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.75,406,1589256000"; 
+   d="scan'208";a="23666671"
+From:   Roger Pau Monne <roger.pau@citrix.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Roger Pau Monne <roger.pau@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        <xen-devel@lists.xenproject.org>
+Subject: [PATCH] xen/balloon: add header guard
+Date:   Tue, 28 Jul 2020 13:42:35 +0200
+Message-ID: <20200728114235.58619-1-roger.pau@citrix.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200727091342.52325-5-roger.pau@citrix.com>
+References: <20200727091342.52325-5-roger.pau@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200727203436.GC2381376@xps15>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jul 27, 2020 at 02:34:36PM -0600, Mathieu Poirier escreveu:
-> On Fri, Jul 24, 2020 at 03:11:11PM +0800, Wei Li wrote:
-> > - Firstly, the function auxtrace_record__init() will be invoked only
-> >   once, the variable "arm_spe_pmus" will not be used afterwards, thus
-> >   we don't need to check "arm_spe_pmus" is NULL or not;
-> > - Another reason is, even though SPE is micro-architecture dependent,
-> >   but so far it only supports "statistical-profiling-extension-v1" and
-> >   we have no chance to use multiple SPE's PMU events in Perf command.
-> 
-> I find the above changelog somewhat out of touch with the patch itself.  The
-> only thing that is happening here is the removal of a useless check and a fix
-> for a memory leak.
-> 
-> Once again whether Arnaldo wants to make the changes by hand or not you may have
-> to resubmit.
+In order to protect against the header being included multiple times
+on the same compilation unit.
 
-I'll fix it now, thanks for reviewing.
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+---
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Stefano Stabellini <sstabellini@kernel.org>
+Cc: xen-devel@lists.xenproject.org
+---
+This is required as a pre-patch to use ZONE_DEVICE, or else the
+fallback of including the balloon header might not work properly.
+---
+ include/xen/balloon.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-- Arnaldo
+diff --git a/include/xen/balloon.h b/include/xen/balloon.h
+index 6fb95aa19405..6dbdb0b3fd03 100644
+--- a/include/xen/balloon.h
++++ b/include/xen/balloon.h
+@@ -2,6 +2,8 @@
+ /******************************************************************************
+  * Xen balloon functionality
+  */
++#ifndef _XEN_BALLOON_H
++#define _XEN_BALLOON_H
  
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
-> > 
-> > So remove the useless check code to make it clear.
-> > 
-> > Signed-off-by: Wei Li <liwei391@huawei.com>
-> > ---
-> >  tools/perf/arch/arm/util/auxtrace.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-> > index 28a5d0c18b1d..b187bddbd01a 100644
-> > --- a/tools/perf/arch/arm/util/auxtrace.c
-> > +++ b/tools/perf/arch/arm/util/auxtrace.c
-> > @@ -57,17 +57,15 @@ struct auxtrace_record
-> >  	struct evsel *evsel;
-> >  	bool found_etm = false;
-> >  	struct perf_pmu *found_spe = NULL;
-> > -	static struct perf_pmu **arm_spe_pmus = NULL;
-> > -	static int nr_spes = 0;
-> > +	struct perf_pmu **arm_spe_pmus = NULL;
-> > +	int nr_spes = 0;
-> >  	int i = 0;
-> >  
-> >  	if (!evlist)
-> >  		return NULL;
-> >  
-> >  	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
-> > -
-> > -	if (!arm_spe_pmus)
-> > -		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
-> > +	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
-> >  
-> >  	evlist__for_each_entry(evlist, evsel) {
-> >  		if (cs_etm_pmu &&
-> > @@ -84,6 +82,7 @@ struct auxtrace_record
-> >  			}
-> >  		}
-> >  	}
-> > +	free(arm_spe_pmus);
-> >  
-> >  	if (found_etm && found_spe) {
-> >  		pr_err("Concurrent ARM Coresight ETM and SPE operation not currently supported\n");
-> > -- 
-> > 2.17.1
-> > 
-
+ #define RETRY_UNLIMITED	0
+ 
+@@ -34,3 +36,5 @@ static inline void xen_balloon_init(void)
+ {
+ }
+ #endif
++
++#endif	/* _XEN_BALLOON_H */
 -- 
+2.27.0
 
-- Arnaldo
