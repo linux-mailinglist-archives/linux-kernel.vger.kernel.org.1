@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126122309D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BC92309B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgG1MU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728458AbgG1MU5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:20:57 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E70C061794;
-        Tue, 28 Jul 2020 05:20:54 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id f7so18104990wrw.1;
-        Tue, 28 Jul 2020 05:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tGckZViZqITBAI3FDO/Tnn1YZuHd5jwWQSY9Uj6T4mQ=;
-        b=C+HG3I3feTxibI/VstyFEzM9n687g46g7iSi7eN5cUcuMD+2sBqsTOllUtB7PKngaZ
-         nhFtFyDF6TloVcPFiLFQ8bvSSN1k8p9DrMEnt1oE1lyoKTYrmCVYmtf6HrrtVja5ln0t
-         zzCnh9bzOXP5vv2oj2Y3523FCniSTHhA5S/GxKOETKSmn4sUS3Y3KxO5pMR5Kp/QT9rj
-         +pWXgy35suxKetcSLZyuqLD0z0x5EVHbKYOmwnPzY79HK8blTyU+FQTgDLl1U3tBBzKw
-         RMVBaJu7DF+9tNjAbQZf5NvzOIp7XeT1tGdPYM7art+Re6t1WW1eyb2uVSXtrJ3jIifl
-         ZNvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tGckZViZqITBAI3FDO/Tnn1YZuHd5jwWQSY9Uj6T4mQ=;
-        b=qeKRhqruW3f0v9Z/OxEJHnEFs56ePMPcyBLm+3kkPrJohD38NL/5Hl0tDYhvzJ0xrA
-         edW41Vlb4CIZECJXmfyF5IpUFbqskrH3GMvuNJox2Ml7oMvGrKhpQXvQDApOPDFOr7lj
-         PpxviUayeA32k48Pd1rDJyVTTqHmBPKITOrNcHrAuJazyIKZF05wlR3UByP6GFsp06Xr
-         2v4gyPhb3ZcrNNhejJpFB5bFeDLvEvn1NwnOo484ITdbR+Ofmc7BJ3DdMfE+YR+CRIjj
-         hj+f4DGEUMDaf7psBGer/KFnnn3kRyq321eAvQRB7JmeXv5usB88J8eAEjYIg3CxjKSK
-         M4tA==
-X-Gm-Message-State: AOAM532SaX8HoAVCtOrz+slifuRnusjvTHfSlCYjBoj9TVwyMcTcTnFh
-        8j686SufT4V2gES9ZeRjcsM=
-X-Google-Smtp-Source: ABdhPJxoQOXWN1PiAi1gcZFqlLd3qbBzOJ2zch5QKJat1ZFDxbzmX3puX4rxb/iXc3VnmQn6IHcjkg==
-X-Received: by 2002:a5d:6452:: with SMTP id d18mr24371165wrw.284.1595938853447;
-        Tue, 28 Jul 2020 05:20:53 -0700 (PDT)
-Received: from ubuntu18_1.cisco.com ([173.38.220.51])
-        by smtp.gmail.com with ESMTPSA id 65sm19279463wre.6.2020.07.28.05.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 05:20:52 -0700 (PDT)
-From:   Ahmed Abdelsalam <ahabdels@gmail.com>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        kuba@kernel.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrea.mayer@uniroma2.it, Ahmed Abdelsalam <ahabdels@gmail.com>
-Subject: [net-next] seg6: using DSCP of inner IPv4 packets
-Date:   Tue, 28 Jul 2020 12:20:44 +0000
-Message-Id: <20200728122044.1900-1-ahabdels@gmail.com>
+        id S1729274AbgG1MNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:13:42 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8843 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728896AbgG1MNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:13:41 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5009447AC61F34E300ED;
+        Tue, 28 Jul 2020 20:13:40 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Jul 2020
+ 20:13:34 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <haren@us.ibm.com>, <herbert@gondor.apana.org.au>,
+        <ddstreet@ieee.org>, <linux-crypto@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] lib: Verify array index is correct before using it
+Date:   Tue, 28 Jul 2020 08:21:57 -0400
+Message-ID: <20200728122157.23120-1-huangguobin4@huawei.com>
 X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.104.82]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch allows copying the DSCP from inner IPv4 header to the
-outer IPv6 header, when doing SRv6 Encapsulation.
+This code reads from the array before verifying that "c" is a valid
+index. Move test array offset code before use to fix it.
 
-This allows forwarding packet across the SRv6 fabric based on their
-original traffic class.
-
-Signed-off-by: Ahmed Abdelsalam <ahabdels@gmail.com>
+Fixes: 2da572c959dd ("lib: add software 842 compression/decompression")
+Signed-off-by: Huang Guobin <huangguobin4@huawei.com>
 ---
- net/ipv6/seg6_iptunnel.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ lib/842/842_compress.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv6/seg6_iptunnel.c b/net/ipv6/seg6_iptunnel.c
-index e0e9f48ab14f..9753d10c4a51 100644
---- a/net/ipv6/seg6_iptunnel.c
-+++ b/net/ipv6/seg6_iptunnel.c
-@@ -110,6 +110,7 @@ int seg6_do_srh_encap(struct sk_buff *skb, struct ipv6_sr_hdr *osrh, int proto)
- 	struct dst_entry *dst = skb_dst(skb);
- 	struct net *net = dev_net(dst->dev);
- 	struct ipv6hdr *hdr, *inner_hdr;
-+	struct iphdr *inner_ipv4_hdr;
- 	struct ipv6_sr_hdr *isrh;
- 	int hdrlen, tot_len, err;
- 	__be32 flowlabel;
-@@ -121,7 +122,11 @@ int seg6_do_srh_encap(struct sk_buff *skb, struct ipv6_sr_hdr *osrh, int proto)
- 	if (unlikely(err))
- 		return err;
+diff --git a/lib/842/842_compress.c b/lib/842/842_compress.c
+index c02baa4168e1..c37bfe0b9346 100644
+--- a/lib/842/842_compress.c
++++ b/lib/842/842_compress.c
+@@ -11,6 +11,7 @@
+ #define MODULE_NAME "842_compress"
  
--	inner_hdr = ipv6_hdr(skb);
-+	if (skb->protocol == htons(ETH_P_IPV6))
-+		inner_hdr = ipv6_hdr(skb);
-+	else
-+		inner_ipv4_hdr = ip_hdr(skb);
-+
- 	flowlabel = seg6_make_flowlabel(net, skb, inner_hdr);
+ #include <linux/hashtable.h>
++#include <linux/nospec.h>
  
- 	skb_push(skb, tot_len);
-@@ -138,6 +143,10 @@ int seg6_do_srh_encap(struct sk_buff *skb, struct ipv6_sr_hdr *osrh, int proto)
- 		ip6_flow_hdr(hdr, ip6_tclass(ip6_flowinfo(inner_hdr)),
- 			     flowlabel);
- 		hdr->hop_limit = inner_hdr->hop_limit;
-+	} else if (skb->protocol == htons(ETH_P_IP)) {
-+		ip6_flow_hdr(hdr, inner_ipv4_hdr->tos, flowlabel);
-+		hdr->hop_limit = inner_ipv4_hdr->ttl;
-+		memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
- 	} else {
- 		ip6_flow_hdr(hdr, 0, flowlabel);
- 		hdr->hop_limit = ip6_dst_hoplimit(skb_dst(skb));
+ #include "842.h"
+ #include "842_debugfs.h"
+@@ -222,12 +223,14 @@ static int add_bits(struct sw842_param *p, u64 d, u8 n)
+ static int add_template(struct sw842_param *p, u8 c)
+ {
+ 	int ret, i, b = 0;
+-	u8 *t = comp_ops[c];
++	u8 *t = NULL;
+ 	bool inv = false;
+ 
+ 	if (c >= OPS_MAX)
+ 		return -EINVAL;
++	c = array_index_nospec(c, OPS_MAX);
+ 
++	t = comp_ops[c];
+ 	pr_debug("template %x\n", t[4]);
+ 
+ 	ret = add_bits(p, t[4], OP_BITS);
+@@ -379,12 +382,14 @@ static int add_end_template(struct sw842_param *p)
+ 
+ static bool check_template(struct sw842_param *p, u8 c)
+ {
+-	u8 *t = comp_ops[c];
++	u8 *t = NULL;
+ 	int i, match, b = 0;
+ 
+ 	if (c >= OPS_MAX)
+ 		return false;
++	c = array_index_nospec(c, OPS_MAX);
+ 
++	t = comp_ops[c];
+ 	for (i = 0; i < 4; i++) {
+ 		if (t[i] & OP_ACTION_INDEX) {
+ 			if (t[i] & OP_AMOUNT_2)
 -- 
 2.17.1
 
