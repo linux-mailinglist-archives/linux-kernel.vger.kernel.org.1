@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316002315D5
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5FA2315D6
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 00:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730141AbgG1W5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 18:57:48 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:34081 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729958AbgG1W5c (ORCPT
+        id S1730179AbgG1W5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 18:57:50 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:38388 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729972AbgG1W5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 18:57:32 -0400
-Received: by mail-qt1-f195.google.com with SMTP id x12so7727270qtp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:31 -0700 (PDT)
+        Tue, 28 Jul 2020 18:57:33 -0400
+Received: by mail-qv1-f66.google.com with SMTP id m9so9976402qvx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 15:57:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nW2VBq/cRDmniFEJbcbARyqEcq2nkZVSxT1F5MUGWsA=;
-        b=R/9bXLNFYXSxT49BSLgUDWsBLVVJB2kkTVI9cfXHATBFUYT9HCylPJHakdAoA9332x
-         qK5cGKcpwx0shAnkwy66nLlY2JLWtBentNvAZEk/WzaXOJD1llaQ938PF9CjAeVGuf0i
-         AA92xBAUnvGRi76fnMwwlDzST4GCHZA5KOR1DdCiP97oYPZPcXpKBtA/DDFWq3aHeWf7
-         iXD+iRhH0pRi8fUMAdWFc8rvQw7WpLspTPUjZZqzG3R0cJnAIqwiMMcQ2HrTRFhgR/1X
-         C3TPryEvS9jcDFYXbdL4qzmkuGjHCVeC7LNwM72dmFsvq9cBo1Dieu4EVXuQEX99atzd
-         qZGw==
-X-Gm-Message-State: AOAM533JdOES61gmAL2+76NiKMfSBotO/0102LOlaNSGDyyS0ISYjsZF
-        goOohszWCdXJNvqfukI8D90=
-X-Google-Smtp-Source: ABdhPJzyWa62eFDYsRQXofvnI6i1Rqt77uWsU/ZMOLAWOE1gSkKig2aH4aQ4qI0BN1RYOXqpzwZcpA==
-X-Received: by 2002:ac8:7454:: with SMTP id h20mr28348878qtr.84.1595977051396;
-        Tue, 28 Jul 2020 15:57:31 -0700 (PDT)
+        bh=o6HZ9zvu2ge9bSuVRCDsIjdzt9oaZjNfBsDumZVPTMo=;
+        b=ZNSukRNI7nAREg/cSUgmtXUbGMN0yfqf/effYm8hnTmQI8pQBYStZxltem38EEPxQi
+         l5HNcjcDBb9/om7fJEKk7vcMzDP+W0rkYmG54yjcQ684GBqIoINjeiycO1V/WNNVXYSZ
+         MrMJwDH2hmulxRr5Gzb+ZkkTqcWvaKsSgw8U9j5xksayWd28ZeGKJ2hNTJxwG6mJPhDd
+         ECzy1sxzBoW1fB0YhtDb9u9WD8dSJCQ09R4zZJ6HbsYFBG0lrntFaqCMr0PfjmRNeob1
+         Ws8iQvbQYoOHk8PtMlncfpMqDG9x1oD2gkN59+jcsJBziLaMJ4rZ3zjdH8PJC3HyjfyU
+         Srug==
+X-Gm-Message-State: AOAM5307/Nza8XMT9Ag6wcWsOlj/Ae2WxDOiOnXu9Wu3nRQLXZmZGNku
+        xraK2SZDDZ0O83GhCr6GyY8=
+X-Google-Smtp-Source: ABdhPJy0LrtHXpy9GX+bs3RABWNg2LBvMgJ/JGJDWNAM7SW9ypXzjOqoto2zNFqcBEg3YwoVTOjY2w==
+X-Received: by 2002:a0c:fc07:: with SMTP id z7mr1054532qvo.65.1595977052196;
+        Tue, 28 Jul 2020 15:57:32 -0700 (PDT)
 Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.30
+        by smtp.gmail.com with ESMTPSA id o187sm88118qkd.112.2020.07.28.15.57.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 28 Jul 2020 15:57:31 -0700 (PDT)
 From:   Arvind Sankar <nivedita@alum.mit.edu>
 To:     Kees Cook <keescook@chromium.org>, x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/21] x86/kaslr: Fix off-by-one error in process_gb_huge_pages
-Date:   Tue, 28 Jul 2020 18:57:11 -0400
-Message-Id: <20200728225722.67457-11-nivedita@alum.mit.edu>
+Subject: [PATCH v3 11/21] x86/kaslr: Short-circuit gb_huge_pages on x86-32
+Date:   Tue, 28 Jul 2020 18:57:12 -0400
+Message-Id: <20200728225722.67457-12-nivedita@alum.mit.edu>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200727230801.3468620-1-nivedita@alum.mit.edu>
 References: <20200727230801.3468620-1-nivedita@alum.mit.edu>
@@ -50,27 +50,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the remaining size of the region is exactly 1Gb, there is still one
-hugepage that can be reserved.
+32-bit does not have GB pages, so don't bother checking for them. Using
+the IS_ENABLED allows the compiler to completely remove the
+gb_huge_pages code.
 
 Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 ---
- arch/x86/boot/compressed/kaslr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/boot/compressed/kaslr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-index d074986e8061..0df513e3e2ce 100644
+index 0df513e3e2ce..3727e9708690 100644
 --- a/arch/x86/boot/compressed/kaslr.c
 +++ b/arch/x86/boot/compressed/kaslr.c
-@@ -562,7 +562,7 @@ process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
- 		size = region->size - (addr - region->start);
+@@ -303,7 +303,7 @@ static void handle_mem_options(void)
  
- 	/* Check how many 1GB huge pages can be filtered out: */
--	while (size > PUD_SIZE && max_gb_huge_pages) {
-+	while (size >= PUD_SIZE && max_gb_huge_pages) {
- 		size -= PUD_SIZE;
- 		max_gb_huge_pages--;
- 		i++;
+ 		if (!strcmp(param, "memmap")) {
+ 			mem_avoid_memmap(PARSE_MEMMAP, val);
+-		} else if (strstr(param, "hugepages")) {
++		} else if (IS_ENABLED(CONFIG_X86_64) && strstr(param, "hugepages")) {
+ 			parse_gb_huge_pages(param, val);
+ 		} else if (!strcmp(param, "mem")) {
+ 			char *p = val;
+@@ -551,7 +551,7 @@ process_gb_huge_pages(struct mem_vector *region, unsigned long image_size)
+ 	struct mem_vector tmp;
+ 	int i = 0;
+ 
+-	if (!max_gb_huge_pages) {
++	if (!IS_ENABLED(CONFIG_X86_64) || !max_gb_huge_pages) {
+ 		store_slot_info(region, image_size);
+ 		return;
+ 	}
 -- 
 2.26.2
 
