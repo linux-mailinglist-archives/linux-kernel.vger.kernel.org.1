@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0902309B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08AD923098D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgG1MNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:13:16 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:43547 "EHLO mailout08.rmx.de"
+        id S1728795AbgG1MGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:06:08 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24733 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728896AbgG1MNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:13:16 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4BGFtw4DS3zMvj4;
-        Tue, 28 Jul 2020 14:13:12 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4BGFtM6DLyz2xbN;
-        Tue, 28 Jul 2020 14:12:43 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.29) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Tue, 28 Jul
- 2020 14:03:31 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     David Laight <David.Laight@aculab.com>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1728560AbgG1MGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:06:07 -0400
+IronPort-SDR: X9g2b5GFZoRBVT2lM6KaJlNCsrdP/DyVH89YxkkAzKgtX0HAJhJ6VngovrcJhBiDIKUmRbBg59
+ TFcispr6f+xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9695"; a="131259413"
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="131259413"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 05:06:07 -0700
+IronPort-SDR: eU0e3fnVpj0fmZD1AeZgpCuDK9ik87Y8q3k/d+ZfxYrbUZKdLn3JmnIBl9saLPu/FCNALdACcg
+ UHgOK2zhCVgw==
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="312592771"
+Received: from caradool-mobl.amr.corp.intel.com (HELO [10.251.24.77]) ([10.251.24.77])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 05:06:06 -0700
+Subject: Re: [PATCH] ASoC: Intel: Atom: use hardware counter to update hw_ptr
+To:     "Lu, Brent" <brent.lu@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc:     "Rojewski, Cezary" <cezary.rojewski@intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] eeprom: at25: set minimum read/write access stride to 1
-Date:   Tue, 28 Jul 2020 14:03:30 +0200
-Message-ID: <2379124.UCELOXW4Ax@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <02cb3be60abf4a54affe239009c6e157@AcuMS.aculab.com>
-References: <20200728092959.24600-1-ceggers@arri.de> <2225645.EMaFvj1lSc@n95hx1g2> <02cb3be60abf4a54affe239009c6e157@AcuMS.aculab.com>
+        Jie Yang <yang.jie@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+References: <1595779727-31404-1-git-send-email-brent.lu@intel.com>
+ <7dec7fcd-0381-d279-4dac-77c27ea5f6fe@linux.intel.com>
+ <DM6PR11MB3642BE84A5C91504D6AF4ECB97730@DM6PR11MB3642.namprd11.prod.outlook.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <14fde5e9-a11a-077d-b533-1e6db4b7a262@linux.intel.com>
+Date:   Tue, 28 Jul 2020 07:06:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.29]
-X-RMX-ID: 20200728-141253-4BGFtM6DLyz2xbN-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+In-Reply-To: <DM6PR11MB3642BE84A5C91504D6AF4ECB97730@DM6PR11MB3642.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 28 July 2020, 13:20:15 CEST, David Laight wrote:
-> From: Christian Eggers
+
+
+On 7/27/20 9:28 PM, Lu, Brent wrote:
+>>
+>> All the Atom firmware assumes data chunks in multiples of 1ms (typically 5,
+>> 10 or 20ms). I have never seen anyone use 256 frames, that's asking for
+>> trouble really.
+>>
+>> it's actually the same with Skylake and SOF in most cases.
+>>
+>> Is this a 'real' problem or a problem detected by the Chrome ALSA
+>> compliance tests, in the latter case that would hint at a too generic value of
+>> min_period.
+>>
 > 
-> > &spi {
-> >     ....
-> >     fram: fram@0 {
-> >     ...
-> >         mac_address_fec2: mac-address@126 {
-> >             reg = <0x126 6>;
-> >         };
-> >     ...
-> >     };
-> > };
+> I've told them 240 is more reasonable since the sample rate is 48000 and our
+> android bsp also uses 240 for multimedia use case for many years but they don't
+> want to change the CRAS setting for some reason.
 > 
+> Google says it's a real issue for them: "The driver consumes frames quickly at the
+> beginning will make CRAS underrun because CRAS fills samples in the fixed rate."
 > 
-> Hmmmm.... the 'stride' only constrains the alignment of 'cells'.
-> (ie address ranges from the device tree.)
+> Currently they implement constraint in machine driver of atom machines to force
+> 240 period size so CRAS is using 240 for atom platforms and 256 for other big cores.
 
-My mac-address is not aligned to 4 bytes...
+So if there are already quirks in atom machine drivers to change the 
+period size, why is this patch necessary?
 
-> It looks as though you can open the entire NVMEM device and
-> then do reads from byte offsets.
-> The 'stride' and 'word_size' are then not checked!
+> I'm curious why not just using hardware counter to update hw_ptr and get rid of
+> the period setting in hw_param? It seems to me the ring buffer counter does not
+> reflect the real status.
 
-When I set back the stride to 4, I get the following errors:
-[    6.998788] 000: nvmem spi0.00: cell mac-address unaligned to nvmem stride 4
-[    6.998902] 000: at25: probe of spi0.0 failed with error -22
-...
-[    7.146454] 000: fec 20b4000.ethernet: Invalid MAC address: 00:00:00:00:00:00
-[    7.146480] 000: fec 20b4000.ethernet: Using random MAC address: 6e:9d:37:49:6d:15
+I don't recall precisely what this hardware counter does. I vaguely 
+recall it's tied to the 19.2MHz external timer which is also used to 
+schedule the 1ms SBA mixer and the SSP IOs. And by comparing with the 
+ring buffer pointer you can infer the delay inside the DSP. I think you 
+are also making an assumption that all streams are tied to the output 
+rate, but that's most likely a bad assumption. The hard-coded topology 
+supported media, speech and compressed data and the consumption rate on 
+the DMA side could be faster with some buffering happening in the DSP. 
+It's not a passthrough DMA in all cases.
 
-> Actually it might be that before 01973a01f9ec3 byte aligned
-> 'cells' were allowed.
+This is really legacy code that no one really fully understands nor 
+plans on improving, it'd be a bad idea to change the pcm pointer reports 
+now, 6 years after the initial code release and after all initial 
+contributors moved on. It's what it is.
 
-I use linux-5.4.x (latest), the mentioned patch has been included long time ago.
+>> and that seems also wrong? Why would the delay be zero?
+>>
+> 
+> info->pcm_delay is the difference between ring buffer counter and hardware
+> counter. Because the ring buffer counter (hw_ptr) is running faster then it should,
+> so we add the info->pcm_delay to substream->runtime->delay as compensation.
+> 
+> Therefore, application could use snd_pcm_delay() to get the actual frame number
+> which are still in buffer.
+> 
+> snd_pcm_delay() = buffer_size - snd_pcm_avail() + runtime->delay
+> 
+> We don't need pcm_delay to compensate anything if using hardware counter.
 
-regards
-Christian
+If you force info->pcm_delay to be zero, then runtime->delay is also zero:
 
+see sst_soc_pointer():
+	substream->runtime->delay = str_info->pcm_delay;
 
+>>> -	info->pcm_delay = delay_frames;
 
