@@ -2,163 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B5C230A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A058230A89
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729893AbgG1MoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:44:12 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:53679 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729379AbgG1MoK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:44:10 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1EF895802D6;
-        Tue, 28 Jul 2020 08:44:09 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 28 Jul 2020 08:44:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=3
-        zW4tWcFHAaD/UFG0J62346g4/8MQMozUhPE9nWQcAQ=; b=PDGYSP0OsFCNrzpHC
-        yOtNOXSD+UMusIIf928WPNocPn1Gf1aQKpxo833s+0wj59VasKVroUq8ZNDI+d3F
-        PeSLvqXlDOTjoHukGJHGZ2W71fl5QoMAy0DsdzC8Na3JqOo06NYPnqzURw4ERhXA
-        kmoDudUs9NSKOTuqvVnwdyzL+SuEbUb4HNgS05110bN3jWema8H5dVw9LB+6mNFI
-        t3eb8oQlT/GiOmgtE1ArIWUSVizIn1BzOi3DAh64h1x5Dd661D5bZKpWCepbAATE
-        18avLINXhcBuf7necpwJlRyrUgTRMn2dIYjyHvIF7liXgCtEmL7uXhwdwndKcPqo
-        58mng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=3zW4tWcFHAaD/UFG0J62346g4/8MQMozUhPE9nWQc
-        AQ=; b=fTAbfbFuCXisbkE4lvc9HyOH0IbYLfPbkYxKpMXgj3AN7VFiXABj5+4UU
-        /t3v6ivneh/t0Lp8wZiYpJ8HGlGBKdX9RgFTJxdYyxgJYhHwFWvtKITHxzCzwTQ7
-        z8GKERkJAz2/EaClpCjKzDKvpurfzu1ciWdiH04ZlU6Bhfk26hE7fzLbpeUuCmGo
-        qI72xbQbUEcTKW63j5H/GqW5pJ//mpMhosBL8nma+fTG3FpgJVhVf17MW9fgW/dd
-        yhQLh5fhHO0MN1LhsXb7PaPgQN2M6ORUZRU3pyykxB1orp6zT/uPYG1Az+8bpqlq
-        xhuFLN3aHcORn6h/vJDrQ/KPmg9Sw==
-X-ME-Sender: <xms:mB0gXzBTU3jEYnxQoy13xi3LBgvf4zF50ZL08EEj1HlrgkO_jLmDAQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedriedvgdehfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggugfgjsehtqhertddttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepgfejtedtjefggfffvdetuedthedtheegheeuteekfeeghfdtteejkeeludeg
-    vddunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:mB0gX5inbbCQ8UBq3vsYo32_ONz_dqoMqRhoH8KluLzUfVVGl-qclA>
-    <xmx:mB0gX-lDw-pCTGkuBDz20_uyA5Is-WaSIRsfXwanNh1pqtm94NPOFg>
-    <xmx:mB0gX1ys1lEXKEe06CZVO0-i5ZAZrqgufUgOIblaP8cx7N4TLblJgQ>
-    <xmx:mR0gX7H4Xn8jelQjfYxg84ioU_mybIBccgE9y8IuP8xcUALEduurrg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B531D328005D;
-        Tue, 28 Jul 2020 08:44:07 -0400 (EDT)
-Date:   Tue, 28 Jul 2020 14:44:05 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH 08/10] media: uapi: h264: Clean slice invariants syntax
- elements
-Message-ID: <20200728124405.ziuwaabp4fnv7lw2@gilmour.lan>
-References: <20200715202233.185680-1-ezequiel@collabora.com>
- <20200715202233.185680-9-ezequiel@collabora.com>
- <CAPBb6MVMXeTcUfb-98McYCKjh=eM=BTo2dSY=L1c6dv2jHqXcg@mail.gmail.com>
- <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
+        id S1729900AbgG1Mpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:45:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729618AbgG1Mpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:45:44 -0400
+Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C731D206D7;
+        Tue, 28 Jul 2020 12:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595940344;
+        bh=SjwVcjwzVcHmdTN1Be+lgU7GPgYwsx0Ln8MZ5TrX84U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nimerbmlC9+vIEP0knA5mT6s2fVQUBe/yaUBtK4uDYtxD36l+mOm7D50faPD2b60o
+         mrjH8eGPeney/6BYhThX9fA5+X/3hnik4WzC8SoZPGHZN91n6nQvsEUri71WoG1jFx
+         srRNufOVmXMp0DIsK3nihFBZL8wudynKWIwVldnE=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id F3F86404B1; Tue, 28 Jul 2020 09:45:39 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:45:39 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 3/5] perf test: Ensure sample_period is set libpfm4
+ events
+Message-ID: <20200728124539.GB40195@kernel.org>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-4-irogers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <636aab0a2be83e751a82a84ac3946afec2c87a17.camel@collabora.com>
+In-Reply-To: <20200728085734.609930-4-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Em Tue, Jul 28, 2020 at 01:57:32AM -0700, Ian Rogers escreveu:
+> Test that a command line option doesn't override the period set on a
+> libpfm4 event.
+> Without libpfm4 test passes as unsupported.
 
-On Mon, Jul 27, 2020 at 11:39:12AM -0300, Ezequiel Garcia wrote:
-> On Sat, 2020-07-25 at 23:34 +0900, Alexandre Courbot wrote:
-> > On Thu, Jul 16, 2020 at 5:23 AM Ezequiel Garcia <ezequiel@collabora.com=
-> wrote:
-> > > The H.264 specification requires in its "Slice header semantics"
-> > > section that the following values shall be the same in all slice head=
-ers:
-> > >=20
-> > >   pic_parameter_set_id
-> > >   frame_num
-> > >   field_pic_flag
-> > >   bottom_field_flag
-> > >   idr_pic_id
-> > >   pic_order_cnt_lsb
-> > >   delta_pic_order_cnt_bottom
-> > >   delta_pic_order_cnt[ 0 ]
-> > >   delta_pic_order_cnt[ 1 ]
-> > >   sp_for_switch_flag
-> > >   slice_group_change_cycle
-> > >=20
-> > > and can therefore be moved to the per-frame decode parameters control.
-> >=20
-> > I am really not a H.264 expert, so this question may not be relevant,
->=20
-> All questions are welcome. I'm more than happy to discuss this patchset.
->=20
-> > but are these values specified for every slice header in the
-> > bitstream, or are they specified only once per frame?
-> >=20
-> > I am asking this because it would certainly make user-space code
-> > simpler if we could remain as close to the bitstream as possible. If
-> > these values are specified once per slice, then factorizing them would
-> > leave user-space with the burden of deciding what to do if they change
-> > across slices.
-> >=20
-> > Note that this is a double-edged sword, because it is not necessarily
-> > better to leave the firmware in charge of deciding what to do in such
-> > a case. :) So hopefully these are only specified once per frame in the
-> > bitstream, in which case your proposal makes complete sense.
->=20
-> Frame-based hardwares accelerators such as Hantro and Rockchip VDEC
-> are doing the slice header parsing themselves. Therefore, the
-> driver is not really parsing these fields on each slice header.
->=20
-> Currently, we are already using only the first slice in a frame,
-> as you can see from:
->=20
->         if (slices[0].flags & V4L2_H264_SLICE_FLAG_FIELD_PIC)
->                 reg |=3D G1_REG_DEC_CTRL0_PIC_FIELDMODE_E;
->=20
-> Even if these fields are transported in the slice header,
-> I think it makes sense for us to split them into the decode params
-> (per-frame) control.
+Thanks, applied.
 
-I don't really get it though. The initial plan that was asked was to
-mimic as much as possible the bitstream and that's what we did.
-
-But that requirement seems to have changed now?
-
-Even if it did change though, if this is defined as a slice parameter in
-the spec, why would we want to move it to some other control entirely if
-we are to keep the slice parameters control?
-
-Especially if the reason is to make the life easier on a couple of
-drivers, that's really not the point of a userspace API, and we can
-always add an helper if it really shows up as a pattern.
-
-> They are really specified to be the same across all slices,
-> so even I'd say if a bitstream violates this, it's likely
-> either a corrupted bitstream or an encoder bug.
-
-That doesn't look like something we should worry about though. Or at
-least, this is true for pretty much any other field in the bitstream and
-we won't change those.
-
-Maxime
+- Arnaldo
