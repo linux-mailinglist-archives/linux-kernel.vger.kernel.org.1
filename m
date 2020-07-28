@@ -2,77 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4363230A58
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7357F230A51
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgG1Mht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729334AbgG1Mht (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:37:49 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175CDC061794;
-        Tue, 28 Jul 2020 05:37:49 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t6so9839619plo.3;
-        Tue, 28 Jul 2020 05:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
-        b=qHe7dAnwegbl8DFADwHo8PEhSZ+7zbY4GEkjbh4YRgoBOr7ttuUIZd3W/lLbgvLXtH
-         Nmw48d7CCQlwK/k1SgCBId7AiMOZT4EXk0h2LojeErsKRtc6QPNKwLxAhFQd6hR5NDyh
-         9oHwM248bQKXcys1dFKO9l1neCAYAMuaCiwJCWlW/ZkIe96vqwtjeAMSYa2tbq9x3o88
-         BGtALXe6t+2pHo3RJtR9tsUzxejGbCniBGGmlSIs46uPSGgc49ttoIf+wh2we7OmML0/
-         E/BVTKjEZGGX3/hQPfkvDwAN/xv8xFQbuW6LGOAazLbs95E03Y8rFQJ+pEPZpx4h4qn+
-         vIVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
-        b=Srm8REEYxDbNUbtn2GW2+NCxmm0I6HMIkk653gBd7B0CkAI5d1ZjgLcQxRTJT6FS6b
-         6UhXcB7vxRYiny1Tb8oqLldRuCCwq2Bd3C8780zkhS2EXt7ppTOFuFr4rPZsy/nRv1Vr
-         ditYw01lLGQ3E1Eyl3AGpFZpzAWS6g50CEDt0WNt3BkvHMr/mFJ2SRrIjf5YgRgv3wwr
-         rkfdT1mi1nHBmxYmZv7K5zyfTVfxscYt9o+jxosWSjBvSZYPE++F+sf8Sb/TpBQxl/qM
-         VS7uGn4JV2MF16KODq9uWFkCMxxzV9S+/OcRoUVddKN3kkXDGBV6yIi1uhxKN1wJCAVt
-         52Ng==
-X-Gm-Message-State: AOAM533rwH4/r90hOa8wVpPp8BWIPpY1UjLV1w3JgL56h8BMfN12slhM
-        6mSZ8wNEJ8Z0Gg0UE5ECvFM=
-X-Google-Smtp-Source: ABdhPJxMwzS10JHnifAZmdNYC8YAZkIcOFzizwBro4Xw8cdcIQLhzKEz7J7HdS2SEjQ2Po+YluXXBg==
-X-Received: by 2002:a17:902:7b90:: with SMTP id w16mr21425536pll.253.1595939868491;
-        Tue, 28 Jul 2020 05:37:48 -0700 (PDT)
-Received: from gmail.com ([2401:4900:2eef:ca92:3545:4a68:f406:d612])
-        by smtp.gmail.com with ESMTPSA id l134sm18030158pga.50.2020.07.28.05.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 05:37:47 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 18:06:19 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kevin Curtis <kevin.curtis@farsite.co.uk>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v1] farsync: use generic power management
-Message-ID: <20200728123619.GA1331847@gmail.com>
-References: <20200728042809.91436-1-vaibhavgupta40@gmail.com>
+        id S1729702AbgG1Mgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:36:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729334AbgG1Mgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:36:33 -0400
+Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04B39206D7;
+        Tue, 28 Jul 2020 12:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595939792;
+        bh=Y7EH9B4J3pPvRK+Oiyd+RxJJodgxldJeQhf1yPY4zUA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q3HAtjNPTZx54UAL4NwcFz9jc44zE5TMgc+W6hjdM+eN9pjKEwlz6GUGao9dQntOJ
+         xvB4EpIbzDl2axDAFSsCj0s628tEb04Ia6ktSgzm2BlSY9q2bnXRvzWt6Y5jPh92TS
+         gKDo/Pk4siUYrXu893FDAKQAOZtlXSvXVzjm9vDk=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7A8B8404B1; Tue, 28 Jul 2020 09:36:29 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:36:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 16/19] perf metric: Make compute_single function more
+ precise
+Message-ID: <20200728123629.GW40195@kernel.org>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <20200719181320.785305-17-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200728042809.91436-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <20200719181320.785305-17-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is compile-tested only.
+Em Sun, Jul 19, 2020 at 08:13:17PM +0200, Jiri Olsa escreveu:
+> So far compute_single function relies on the fact, that
+> there's only single metric defined within evlist in all
+> tests. In following patch we will add test for metric
+> group, so we need to be able to compute metric by given
+> name.
+> 
+> Adding the name argument to compute_single and iterating
+> evlist and evsel's expression to find the given metric.
 
-Thanks
-Vaibhav Gupta
+Applied, thanks.
+
+Ian, Kajol, I didn't notice your Acked-by or Reviewed-by, like for the
+other patches, can you check?
+
+- Arnaldo
+ 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/perf/tests/parse-metric.c | 22 +++++++++++++---------
+>  1 file changed, 13 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> index 01370ccb9ed9..5ac32f80f8ea 100644
+> --- a/tools/perf/tests/parse-metric.c
+> +++ b/tools/perf/tests/parse-metric.c
+> @@ -108,17 +108,21 @@ static void load_runtime_stat(struct runtime_stat *st, struct evlist *evlist,
+>  }
+>  
+>  static double compute_single(struct rblist *metric_events, struct evlist *evlist,
+> -			     struct runtime_stat *st)
+> +			     struct runtime_stat *st, const char *name)
+>  {
+> -	struct evsel *evsel = evlist__first(evlist);
+> +	struct metric_expr *mexp;
+>  	struct metric_event *me;
+> +	struct evsel *evsel;
+>  
+> -	me = metricgroup__lookup(metric_events, evsel, false);
+> -	if (me != NULL) {
+> -		struct metric_expr *mexp;
+> -
+> -		mexp = list_first_entry(&me->head, struct metric_expr, nd);
+> -		return test_generic_metric(mexp, 0, st);
+> +	evlist__for_each_entry(evlist, evsel) {
+> +		me = metricgroup__lookup(metric_events, evsel, false);
+> +		if (me != NULL) {
+> +			list_for_each_entry (mexp, &me->head, nd) {
+> +				if (strcmp(mexp->metric_name, name))
+> +					continue;
+> +				return test_generic_metric(mexp, 0, st);
+> +			}
+> +		}
+>  	}
+>  	return 0.;
+>  }
+> @@ -162,7 +166,7 @@ static int compute_metric(const char *name, struct value *vals, double *ratio)
+>  	load_runtime_stat(&st, evlist, vals);
+>  
+>  	/* And execute the metric */
+> -	*ratio = compute_single(&metric_events, evlist, &st);
+> +	*ratio = compute_single(&metric_events, evlist, &st, name);
+>  
+>  	/* ... clenup. */
+>  	metricgroup__rblist_exit(&metric_events);
+> -- 
+> 2.25.4
+> 
+
+-- 
+
+- Arnaldo
