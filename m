@@ -2,103 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADC923055F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1054D230551
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 10:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbgG1I2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 04:28:36 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:46697 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728147AbgG1I2g (ORCPT
+        id S1728057AbgG1I1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 04:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727975AbgG1I1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 04:28:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595924916; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=JsZFMI5l/wCWWGprGiEt11W9Nl9giP5BK5ShNxbLSLs=; b=CPYuQwuYVXQFCgZLssqfYLa1ka9JKjFFr/vVWQ1kHhvW6APKsAqpQYTsBUQo/dnOY18How3R
- Q2TGP3qc664DKnp7HzGlFrMo5OmjEXtM9LiCT2NrIckETLUEeKru2cu46xm9J9cZ84a9Y3RI
- +kUTB9ngrWsaKcOX2M2aP9vF8ig=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 5f1fe134a61bb9e3f57d16bd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 28 Jul 2020 08:26:28
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 76611C433CB; Tue, 28 Jul 2020 08:26:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.8 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.102] (unknown [49.204.127.128])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sivaprak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8D6D3C433C9;
-        Tue, 28 Jul 2020 08:26:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8D6D3C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sivaprak@codeaurora.org
-Subject: Re: linux-next: manual merge of the devicetree tree with the pci tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rob Herring <robherring2@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-References: <20200728154903.51a60b8e@canb.auug.org.au>
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-Message-ID: <c7c752bc-2a06-fc56-6f87-dfdddd8a436e@codeaurora.org>
-Date:   Tue, 28 Jul 2020 13:56:21 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 28 Jul 2020 04:27:12 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3E5C0619D6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:27:11 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id t142so10926195wmt.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 01:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uGdSTLXzLPoQW4Vv8n7QiN3IXRkY2j1N9K5+wvpg67A=;
+        b=Qhg6T58aAmKWjza2llHFtcN/M5ktqlCBTRyY1BmuOUBUdpKwrXhpz5iTJ+7+tiz7Z8
+         V7n08jcrpM9bhjhsNch1R3b8038XgvDYN4L4lofGSiCZro7bCM2IEHqIlGck39tEouUZ
+         A4r3xC4z/eB4g2zUV7A83vu3lTrDaA9wh5L6Z1W2fU8ATi/A5bBKcqTmWGXnlGh0Nf6y
+         GQYntzxG6o4GCGfR+Ozuy99qbQ1co4mdt+HUnTWNGpXgu3F2G7sBHTHUUfYhG4gEfXtG
+         vCSiH0h4kn4XTvDSo8UU0KwWmMz++xzcD+srqkyl4/3SY3U3JJRBkzLPQ5tjvgVw0sIS
+         Dgwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=uGdSTLXzLPoQW4Vv8n7QiN3IXRkY2j1N9K5+wvpg67A=;
+        b=Cv600n64eOO16QxQcDYSP8pVd3Naz8I1rZUYvpml5J9ZGyxpBtr0GM3MX5p8KtrP5h
+         KJRz85TZagZc/4s/xRivwxPk5KU2iAbPzOKIeKSGpdM8xkAEpbj0nB5xHkomZZluxvU3
+         5pydIdo89eOHcU+qsDlXNsfIsj5JG6foKNKQ4wA6+fof5aA6aQmOyoSOkYilurcpnG6e
+         UqJ7ZBf1EXQXBYgaxy/A7sXNAAQhwZSJdFZh3Ux7QIszOxsGrD4FIfu2bxdou89F51dd
+         /VwA5C+BMYXvPvtzQ1qLBghzDPYjAw78uAAQyIog5mGy3swGBtmb4aE3UH3d66SJl1V7
+         0l0w==
+X-Gm-Message-State: AOAM533+cWRsrpzQNYFa+XQXhwGo5K2Tl7SJnfMYufqwqslhguNWdGFf
+        qA1XLP8os2mWVS0CtJic+e3q5A==
+X-Google-Smtp-Source: ABdhPJxOdhDnn+eNqujllDon1GsS0dEIq8GDpDLR1DsQSiCtVl87rdAMEtcC8WUAdFNx/vl1MVi7VA==
+X-Received: by 2002:a1c:b007:: with SMTP id z7mr2792839wme.37.1595924829954;
+        Tue, 28 Jul 2020 01:27:09 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id s205sm3405256wme.7.2020.07.28.01.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 01:27:09 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 09:27:07 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 02/13] dt-bindings: mfd: Add bindings for sl28cpld
+Message-ID: <20200728082707.GB2419169@dell>
+References: <20200725231834.25642-1-michael@walle.cc>
+ <20200725231834.25642-3-michael@walle.cc>
+ <20200728072422.GF1850026@dell>
+ <1065b0107ce6fd88b2bdd704bf45346b@walle.cc>
 MIME-Version: 1.0
-In-Reply-To: <20200728154903.51a60b8e@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1065b0107ce6fd88b2bdd704bf45346b@walle.cc>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/2020 11:19 AM, Stephen Rothwell wrote:
-> Hi all,
->
-> Today's linux-next merge of the devicetree tree got a conflict in:
->
->    Documentation/devicetree/bindings/pci/qcom,pcie.txt
->
-> between commits:
->
->    736ae5c91712 ("dt-bindings: PCI: qcom: Add missing clks")
->    b11b8cc161de ("dt-bindings: PCI: qcom: Add ext reset")
->    d511580ea9c2 ("dt-bindings: PCI: qcom: Add ipq8064 rev 2 variant")
->
-> from the pci tree and commit:
->
->    70172d196947 ("dt-bindings: pci: convert QCOM pci bindings to YAML")
->
-> from the devicetree tree.
->
-> I don;t know how to fixed it up so I just left the latter one . This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+On Tue, 28 Jul 2020, Michael Walle wrote:
 
-Rob/Bjorn,
+> Am 2020-07-28 09:24, schrieb Lee Jones:
+> > On Sun, 26 Jul 2020, Michael Walle wrote:
+> > 
+> > > Add a device tree bindings for the board management controller found
+> > > on
+> > > the Kontron SMARC-sAL28 board.
+> > > 
+> > > Signed-off-by: Michael Walle <michael@walle.cc>
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > ---
+> > > Changes since v5:
+> > >  - none
+> > > 
+> > > Changes since v4:
+> > >  - fix the regex of the unit-address
+> > > 
+> > > Changes since v3:
+> > >  - see cover letter
+> > > 
+> > >  .../bindings/gpio/kontron,sl28cpld-gpio.yaml  |  54 +++++++
+> > >  .../hwmon/kontron,sl28cpld-hwmon.yaml         |  27 ++++
+> > >  .../kontron,sl28cpld-intc.yaml                |  54 +++++++
+> > >  .../bindings/mfd/kontron,sl28cpld.yaml        | 153
+> > > ++++++++++++++++++
+> > >  .../bindings/pwm/kontron,sl28cpld-pwm.yaml    |  35 ++++
+> > >  .../watchdog/kontron,sl28cpld-wdt.yaml        |  35 ++++
+> > >  6 files changed, 358 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/hwmon/kontron,sl28cpld-hwmon.yaml
+> > >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/kontron,sl28cpld-intc.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/mfd/kontron,sl28cpld.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/pwm/kontron,sl28cpld-pwm.yaml
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/watchdog/kontron,sl28cpld-wdt.yaml
+> > > 
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
+> > > b/Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
+> > > new file mode 100644
+> > > index 000000000000..9a63a158a796
+> > > --- /dev/null
+> > > +++
+> > > b/Documentation/devicetree/bindings/gpio/kontron,sl28cpld-gpio.yaml
+> > > @@ -0,0 +1,54 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/gpio/kontron,sl28cpld-gpio.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: GPIO driver for the sl28cpld board management controller
+> > > +
+> > > +maintainers:
+> > > +  - Michael Walle <michael@walle.cc>
+> > > +
+> > > +description: |
+> > > +  This module is part of the sl28cpld multi-function device. For more
+> > > +  details see
+> > > Documentation/devicetree/bindings/mfd/kontron,sl28cpld.yaml.
+> > 
+> > Paths are normally relative.
+> 
+> grep Documentation/ Documentation
+> 
+> I know there are a lot false positives (esp in the first one)..
+> 
+> $ grep -r "\.\./" Documentation | wc -l
+> 1826
+> $ grep -r "Documentation/" Documentation|wc -l
+> 2862
 
-Please let me know if I can provide a patch rebased to linux-next.
+I actually meant just for Device Tree bindings, but it does appear
+that 'Documentation' is used a bunch there too.
 
-Bjorn can pick up the patch after review and Rob can drop the old pci 
-yaml conversion patch.
+My reasons for not liking full paths is that the intention was always
+to move 'Documentation/devicetree' to a new location outside of the
+kernel source tree.
 
-let me know your thoughts.
+[...]
 
->
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/mfd/kontron,sl28cpld.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Kontron's sl28cpld board management controller
+> > 
+> > "S128CPLD" ?
+> 
+> still not, its sl28cpld, think of a project/code name, not the product
+> appended with CPLD.
+> 
+> > "Board Management Controller (BMC)" ?
+> 
+> sounds like IPMI, which I wanted to avoid.
+
+Is there a datasheet?
+
+> > > +maintainers:
+> > > +  - Michael Walle <michael@walle.cc>
+> > > +
+> > > +description: |
+> > > +  The board management controller may contain different IP blocks
+> > > like
+> > > +  watchdog, fan monitoring, PWM controller, interrupt controller
+> > > and a
+> > > +  GPIO controller.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: kontron,sl28cpld-r1
+> > 
+> > We don't usually code revision numbers in compatible strings.
+> > 
+> > Is there any way to pull this from the H/W?
+> 
+> No, unfortunately you can't. And I really want to keep that, in case
+> in the future there are some backwards incompatible changes.
+
+Rob,
+
+I know you reviewed this already, but you can give your opinion on
+this specifically please?  I know that we have pushed back on this in
+the past.
+
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
