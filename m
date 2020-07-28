@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A66230FFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91A4231003
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731539AbgG1QlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:41:11 -0400
-Received: from sonic312-24.consmr.mail.ne1.yahoo.com ([66.163.191.205]:36717
-        "EHLO sonic312-24.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726548AbgG1QlL (ORCPT
+        id S1731448AbgG1Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgG1Qng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1595954470; bh=eVWQE8aO6isO2IoHTAvouja63Qo1x862VnNlRn9e1Ww=; h=Date:From:Reply-To:Subject:References:From:Subject; b=OZn+t2LbyM4B0l3/ATMCPsKWCjBCA1w1ooQvwhWx374whiQJJokLoCY0jILpNuNZR2NkDAXYiN4/6JGt+J1HmqvXJ/JMibxEKOzOSl104kkNC9da1C0itsh7gfVVwi6MvPu/8uVcN5Rwcp6jmYOkjN/VmWHKNv5QdEzkJZNlerD4WTAVv2R747SydNdcCt1OuCFdSd4hDAGsSLLp7dD8wkqoenkr4RT+JZ0IlfoU3dxX54VRAQc1rhV00DSmoK1IESx8ddIVdrEe/uP5MLpeu3ZrDLjijGR0r21x1+Iy+2cOpAWcgOLb3fAI7InPyBE52eC6p7ScgK7pJ8IlLPz60g==
-X-YMail-OSG: TEAAKX0VM1k6R9W15W66b53tvXs5VAgr_xBqI8BooFKTDKsAdIBKcuQScGcyYw_
- Sp.kr1SC5PCIXnF_FdQGuetXPyTq.pDc5oA77wSKaKZpKNZP2nV5gpaKxGAriKfyqJ5AaXVqwNoS
- w3y9iyFBPoviJwc554fDlYIz6q7HOZH8dk57un1nbMfihY9DwK_DmEe7HoIxFfUKJLZawpJFnxxn
- EHt2SNDGnIXyEUijugxfMF.6Z9UanQP1ofOEmQu4qRlmKdafXW3t3rxB5yMiud2Dl5gJrJy.ZJPp
- yr3_fDgtsKMB1Wcqes3mwcdgjrIulo6NeIti2uWji5wabeDndzcx1iT_NVAGQEzGoG6AfUQm91Wk
- vETJc_Vf_7RMnaZLLggVNNHfvNWS99LhGaBnYjeBYSRsCp3igpTUS0NdodprhOkDOKTa1bV6cb4F
- rErZ6sTmy7qOIQm6YTsgvaLet9CmOioiVevqzhWSguf0aw3.X4slNe4bArv79BKbF_WMe49LGsee
- UdrhAReig_sVgV8XWJgagZJLENNVo7vsjQecVEQwbfKfZphldcRvfbseM.NvzOIMG0qhNdrD.liI
- A3WTO872jrlglid9k5zcldMZDqfwzT.mItOuYMnn6jG8UY41Pf5QK8jwdXcDl64N1.vMr5..t7dW
- J7lG3C1lvO6TP3oBJaVCSvkkYBzx90A.XS2DHMJEgHn50ib3VGYC7aRUu3YdPGmyEjgmD8Io5i0w
- EEGkR11RHdCuoH6v9WhpNsahmqQjohNx.L9z3goky6.7KewdDQARh0Nuxbb0nAfjIV9jW.y6xykQ
- CFTUT6iCTy_3kwQ6QJ86nZJML9uum.jvZHABdl7fEKoEm04A4sEkYUkiJ6t5uP.Wa6Z6m0ZSjxQS
- q0BSOmlPNQRPbttuSle7IUHge5RfH6eRP.ScJrJ1lhLIPa0NEptLfT2c49hwlvDv4CqdVQoqVlnG
- RAaPmEbmXiA65R68xNT_XuEN0uPm9Wp.cQXHNtTR3ZvGTaPHU2Nboh7rXbq47uCC7_T3AxuHWNQG
- 7zwUBuIYL5YcEhxA50zYPYJHLnFBAzAa69lyY_5dXS0Wady9vDvFMKimdeOq5of2pxZbiUfZPWe2
- kEdTLUv5zPAyrC76A1GsEWUK6OrZkLT0wyKPXqiR125zq6VhxpGcPEmCha0ZJY04yqkxKmG.AeeD
- khm844Lg1IKh1AX85bvZQ3Xg2mz1RT_d_TSrQhPHSdrs03vIG8nUY_zld6YxY4jEYRHK7eEzooVQ
- CnG7_jgFgtUoqaQwtONPSKxhurT4cm2XuE7IVGWW40oR0qM6pKaAOg5zssKx1SoScjxz_YwEeiJk
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 28 Jul 2020 16:41:10 +0000
-Date:   Tue, 28 Jul 2020 16:41:08 +0000 (UTC)
-From:   BILL Exchange manager & Audit Department 
-        <mrahmadmikhail@gmail.com>
-Reply-To: karimore245@gmail.com
-Message-ID: <910665150.8413934.1595954468931@mail.yahoo.com>
-Subject: URGENT RESPONSE
+        Tue, 28 Jul 2020 12:43:36 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED521C061794;
+        Tue, 28 Jul 2020 09:43:35 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id j7so1660685oij.9;
+        Tue, 28 Jul 2020 09:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o9m50VK1lLtc7nqDyGrRl3rlBYyarY0M7UxRlCvTi7I=;
+        b=kasojJKthl+GEvqSoBsCRID44wuGMn+EsMrib6445AcUxFCXTdk+LV+UutBeNLeKMy
+         wQHv2tfVgg5xO85/Sz0BF+RFh6ScEtqDtW5vfEGtUHwCRw7Lt7X+EuZ6tJbeYOObJxNQ
+         aVqyb0tE9vVtp2WJCkZwM05lwmmYciFa20/jjPrao7IfnG/03b/CQUYbJJFnnUuviZmL
+         Zt3OJDLvvKx4yvdDctSfYv8c6BJ4Ms8WrKLtw0SBuBrwPR+MAped04fEvFFqx+Mk9ccQ
+         My2cDrwkdpvLRhZGOAX51mwn2KMe2azsvTahatIf9qxmUVqCg3pRSGkBIr+XjnZVpQzA
+         yTMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o9m50VK1lLtc7nqDyGrRl3rlBYyarY0M7UxRlCvTi7I=;
+        b=P8/8yDmj73oqqcQKiuymZ9Oc0IYmWEQI7CGnPu7LGbNrDrTa812FbxBpaQpHns+enW
+         yLIXIxZcvyYxUXJBj9KrYwV6iditk9WGSfshzVnKGIlJfR5sfriEF8URrJFtRHKtun6v
+         Qp9BgQySG7ypWuDQmliyP9lLHD1vUMmfz2ZyTLpKmv4y77skmqbRwitoORxqPrLnaHUZ
+         XqK22zf092ompzqAhVe10rcg6fuKEbgmqa/x7SKmg2cF6ugP8XFST80JJ92qgaySIW/w
+         yxY5WF6ExB3VoOaJYh0D/uhd8bjqgUMaAdm2i8lHGaQ31iZez+9J52pS8iE9lFxI2W+Z
+         rKrQ==
+X-Gm-Message-State: AOAM531F96Kr5dBz7VqpFPBKXPvIy+gtcaGr01bdKdSrZSDU61Xq3RsL
+        MisuCNpWcOz7nlHva6nGOzfJX3o0LbE+RhpzqLHxuLBIaTg=
+X-Google-Smtp-Source: ABdhPJwU8sW/xnW2NBa1NBhKNrTCmmvZt+59DdL3+fpJrB75Cl9bvxj94xoZl+PaI/NK6YOpUnLYafHbsXqa6ov1Jtc=
+X-Received: by 2002:aca:c5d6:: with SMTP id v205mr4466193oif.143.1595954615271;
+ Tue, 28 Jul 2020 09:43:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <910665150.8413934.1595954468931.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200728143004.3228-1-dhiraj.sharma0024@gmail.com>
+ <20200728145419.GA3537020@kroah.com> <CAPRy4h1Xs1JpQinnWm04dOi07Ch0RLL0U4Z5DDCKHmombXE0sA@mail.gmail.com>
+ <20200728155311.GA4178776@kroah.com>
+In-Reply-To: <20200728155311.GA4178776@kroah.com>
+From:   Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+Date:   Tue, 28 Jul 2020 22:13:22 +0530
+Message-ID: <CAPRy4h2Zbw=QwJ7=0+FzGnK_o1esn2GTRSuv5ZE30Vu=Oj=x=Q@mail.gmail.com>
+Subject: Re: [PATCH] media: usbvision: fixed coding style
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        stern@rowland.harvard.edu, jrdr.linux@gmail.com,
+        linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> As the bot said, only do one type of thing per patch, and "fix all
+> checkpatch errors/warnings" is not one type of thing.
 
-
-
-Dear Friend,
-
-I am Mr. KARIM TRAORE Working with a reputable bank here in Burkina Faso as the manager in audit department. During our last banking audits we discovered an abandoned account belongs to one of our deceased customer, late Mr. Hamid Amine Razzaq, a billionaire businessman.
-
-Meanwhile, before i contacted you i have done personal investigation in locating any of his relatives who knows about the account, but i came out unsuccessful. I am writing to request your assistance in transferring the sum of 10.500.000.00 (Ten million Five Hundred Thousand Dollars) into your account.
-
-I decided to contact you to act as his foreign business partner so that my bank will accord you the recognition and have the fund transfer into your account. More details information will be forwarded to you.
-
-I am expecting to read from you soon.
-Best Regards
-Mr. KARIM TRAORE.
+So should I send a fresh patch with minimal fixes? instead of replying
+to this mail with [PATCH 01]
