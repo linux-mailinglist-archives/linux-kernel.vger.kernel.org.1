@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF47A230E41
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C85230E48
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731043AbgG1PoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:44:05 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29718 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730872AbgG1PoC (ORCPT
+        id S1731071AbgG1Pol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730775AbgG1Poi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:44:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595951041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FDf5+25lFZcklL9KwYj+G66FeAA38ciNootaoOX+T3U=;
-        b=TFpgL9vrFaOyXOHjYS5+Gmb+nWEo+4LVZZNlm0FBmC/xLDAUNs+JDHViBXkAzYlDKkDKmc
-        +RY8KDNVsIHnH4x78uA1hOKL69CzfDc4DDnt7ew/vwIM8n2hLYAz6ntovuAvuw1h5+zu/6
-        DNALx/6EZVMTni3qKY0cz+V2T2I5/XI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-wdmVKuviMTaLJ2WQ1NolbQ-1; Tue, 28 Jul 2020 11:43:56 -0400
-X-MC-Unique: wdmVKuviMTaLJ2WQ1NolbQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58D89E91C;
-        Tue, 28 Jul 2020 15:43:53 +0000 (UTC)
-Received: from krava (unknown [10.40.192.211])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2FF1287B08;
-        Tue, 28 Jul 2020 15:43:47 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 17:43:47 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>,
-        David Sharp <dhsharp@google.com>
-Subject: Re: [PATCH v2 1/5] perf record: Set PERF_RECORD_PERIOD if attr->freq
- is set.
-Message-ID: <20200728154347.GB1319041@krava>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-2-irogers@google.com>
+        Tue, 28 Jul 2020 11:44:38 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4504C061794;
+        Tue, 28 Jul 2020 08:44:37 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id t7so1398475otp.0;
+        Tue, 28 Jul 2020 08:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X8oqyy89D3G/SsEykgSGLbJc6vMNxyoDi/zTaYVXNlM=;
+        b=MEFDd8Joi2gcNe+Oo274jwfc0jNOGgVZ20XATCHQjHC7h+kZTzaoff5isq0tOFNp/C
+         kFfmxHAbLphiwW45ogcaUqVJ9TNqwTyA0yixFhGmI876F7vL9vmZ/8dJXSqcrSM+fFce
+         abUl80wnq2/leB/gMmD23tokb9EXQPTGOouc1WWQIR+pYmwadZQV9NTdvrtG9Y2y5bPS
+         jQ2TqnJO1hC7J9aU3IXyIxwCx3/AmaRnW8NATXhi2A7fpEw227v7IlsTlbctd1siRolM
+         psEIq2LL+neEmq29/4O1LpNREUcwwjXZFv/J1mLvJIinZEoHkifHvl1knjNruvbI1cUb
+         olhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X8oqyy89D3G/SsEykgSGLbJc6vMNxyoDi/zTaYVXNlM=;
+        b=A77d2LD802wvr6Mq4ChOrkVbPqNShe8+B8hDHCR75envT9SMjdVbFvEOYTOSCX6iqE
+         G1nML925oB/hZDeYNl5xZX5p9V5EjmhfxSiEGTLVJ2QDbDbonsCc8ow4L3ZbY3wtr6ae
+         GWmEE8fhfmdDeIlb6l+9X415kRfOlQjO1G+XOsmjCivfxyuP2q9248ZgaMieLY+1I9op
+         Dh/4402n3mJkP3l/vPHBX31ttvSt7SlT81x452+DfRvs8QngBblNSIH9vGCeNxQAyjAm
+         Z6sIE0tn55/U9XKIgxeP3EgunG1li0gsqqD9d/jhFvRG697G/PjgNsfwLbWBuThSsY0N
+         2Fyg==
+X-Gm-Message-State: AOAM531dSYKlxnCOTbodmfXfLFYY92djBW+wfQWlyCGAupwW0f0ZYCpk
+        qeo4ZI+rVuS3+X2XfX4vTT0OkLZ8fb01xFCwFOzmIokuQDlzGA==
+X-Google-Smtp-Source: ABdhPJywjajz/CBt08LbXIzjYxAfcjOxLdzB1Yi2RSu+QgW6DiQ4dYj/VqieKN+dCykMiGBkOp7Ox75v1v0NTh+ReTQ=
+X-Received: by 2002:a05:6830:18ed:: with SMTP id d13mr25841749otf.196.1595951077208;
+ Tue, 28 Jul 2020 08:44:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728085734.609930-2-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20200728143004.3228-1-dhiraj.sharma0024@gmail.com> <20200728145419.GA3537020@kroah.com>
+In-Reply-To: <20200728145419.GA3537020@kroah.com>
+From:   Dhiraj Sharma <dhiraj.sharma0024@gmail.com>
+Date:   Tue, 28 Jul 2020 21:14:24 +0530
+Message-ID: <CAPRy4h1Xs1JpQinnWm04dOi07Ch0RLL0U4Z5DDCKHmombXE0sA@mail.gmail.com>
+Subject: Re: [PATCH] media: usbvision: fixed coding style
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, stern@rowland.harvard.edu,
+        arnd@arndb.de, jrdr.linux@gmail.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 01:57:30AM -0700, Ian Rogers wrote:
-> From: David Sharp <dhsharp@google.com>
-> 
-> evsel__config() would only set PERF_RECORD_PERIOD if it set attr->freq
-> from perf record options. When it is set by libpfm events, it would not
-> get set. This changes evsel__config to see if attr->freq is set outside of
-> whether or not it changes attr->freq itself.
-> 
-> Signed-off-by: David Sharp <dhsharp@google.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Sorry, I didn't realize that I committed a mistake by not replying to
+all. It was an accidental mistake which will not be committed in
+future now.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+>
+> That is not needed in a changelog text.
+>
 
-thanks,
-jirka
+Alright Sir.
 
-> ---
->  tools/perf/util/evsel.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index ef802f6d40c1..811f538f7d77 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -979,13 +979,18 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
->  	if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
->  				     opts->user_interval != ULLONG_MAX)) {
->  		if (opts->freq) {
-> -			evsel__set_sample_bit(evsel, PERIOD);
->  			attr->freq		= 1;
->  			attr->sample_freq	= opts->freq;
->  		} else {
->  			attr->sample_period = opts->default_interval;
->  		}
->  	}
-> +	/*
-> +	 * If attr->freq was set (here or earlier), ask for period
-> +	 * to be sampled.
-> +	 */
-> +	if (attr->freq)
-> +		evsel__set_sample_bit(evsel, PERIOD);
->  
->  	if (opts->no_samples)
->  		attr->sample_freq = 0;
-> -- 
-> 2.28.0.163.g6104cc2f0b6-goog
-> 
+> Neither is this, please be specific about what you have fixed.  My bot
+> should kick in soon with more specifics...
 
+Sir there were checkpatch.pl styling issues and I fixed them all
+together, so should I write a proper changelog as what all I fixed i.e
+errors and warnings thrown by checkpatch.pl
+
+On Tue, Jul 28, 2020 at 8:24 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Jul 28, 2020 at 08:00:04PM +0530, Dhiraj Sharma wrote:
+> > As per eudyptula challenge task 10 I had to fix coding styles.
+>
+> That is not needed in a changelog text.
+>
+> > Thus I
+> > used checkpatch.pl script and fixed a chunk of warnings and few errors.
+>
+> Neither is this, please be specific about what you have fixed.  My bot
+> should kick in soon with more specifics...
+>
+> thanks,
+>
+> greg k-h
