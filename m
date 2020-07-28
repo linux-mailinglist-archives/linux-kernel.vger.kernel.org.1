@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341D7230E12
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCCF230E05
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 17:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731027AbgG1Phl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 11:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
+        id S1730989AbgG1Ph3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 11:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730812AbgG1Ph0 (ORCPT
+        with ESMTP id S1730980AbgG1Ph2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 11:37:26 -0400
+        Tue, 28 Jul 2020 11:37:28 -0400
 Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DFFC9C0619D2;
-        Tue, 28 Jul 2020 08:37:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3D644C0619D5;
+        Tue, 28 Jul 2020 08:37:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=SP4UMFb1WB1izsQH5BQcEb4/cjOimxk03MhDuSg/fAg=; b=lbWovlqVroe9i
-        iHaB3ynvggOzei7ex54GSZ7SiTHuUUBIudqn5ll964LT+Zpbkgjo4GlB/cPn9ob0
-        qtdpPJ9jWebkEZeh4RKLCz2xB5O9UsfbFaFAInr3xZTMv29yDJpEaDPLMT4Fu5q9
-        5d5x3f+nSQC26pu9j9aVEs3Oic61Fo=
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=8U8d57fTvKbnfQeL2WijppntHp3dgQ6+xk
+        gunHKX9io=; b=ga1ZKfZ7/WYuxWJ/xGTZsLzyDvdKPkp1HmOrS0qSEoh/RQnoH1
+        Bus1AS27HJF3mvw3W+o73c7Z0XzS3JHH/4sgQvuPIlMAhn5XCZeWoVzGSRESMUbA
+        I2rd9ocAw/E/fqENN+2NNuoY3nFZIWtSFx81M4J7wjEDe8s+pIQgswis4=
 Received: from xhacker (unknown [101.86.17.135])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj_diRCBfgxI2AA--.17695S4;
-        Tue, 28 Jul 2020 23:29:43 +0800 (CST)
-Date:   Tue, 28 Jul 2020 23:23:27 +0800
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj_diRCBfgxI2AA--.17695S2;
+        Tue, 28 Jul 2020 23:29:40 +0800 (CST)
+Date:   Tue, 28 Jul 2020 23:24:17 +0800
 From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Saravanan Sekar <sravanhome@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 0/4] regulator: mp886x: two features and dt json convert
-Message-ID: <20200728232327.71ab3729@xhacker>
+Subject: [PATCH 1/4] dt-bindings: regulator: Convert mp886x to json-schema
+Message-ID: <20200728232417.5272843b@xhacker>
+In-Reply-To: <20200728232327.71ab3729@xhacker>
+References: <20200728232327.71ab3729@xhacker>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCHj_diRCBfgxI2AA--.17695S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xryktw13WrWxXryrGryfJFb_yoWfCFcE9r
-        yxAa47Gw4DZF1rCayIyFsrt34YyF4Iqa4kXFy7trZ0yry7Za4UGrZxXr9Fvr4xWayUAFn7
-        Wwn7JrWSyry3WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3xYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
-        IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CE
-        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
-        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY
-        1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4
-        xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCa
-        FVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
-        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-        C2KfnxnUUI43ZEXa7IU01v35UUUUU==
+X-CM-TRANSID: LkAmygCHj_diRCBfgxI2AA--.17695S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw18CF4xXr1kJr15Zr4Dtwb_yoW5ZFyDpF
+        98CFsrCr409F1xGa1xGa4Iya15Xr1kCa4rCw1jyw1rKas8ZFn3tws0vryrZF18CrZ7JF4x
+        JFZrury8tw1Iv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyYb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
+        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
+        JbIYCTnIWIevJa73UjIFyTuYvjxUc_-PUUUUU
 X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -62,24 +63,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-This is to improve the mp886x regulator driver support.
-patch1 converts dt binding to json-schema
-patch2 implments .set_ramp_delay
-patch3 and patch3 support the switch freq setting
+Convert the mp886x binding to DT schema format using json-schema.
 
-Jisheng Zhang (4):
-  dt-bindings: regulator: Convert mp886x to json-schema
-  regulator: mp886x: implement set_ramp_delay
-  dt-bindings: regulator: mp886x: support mps,switch-frequency
-  regulator: mp886x: support setting switch freq
-
- .../devicetree/bindings/regulator/mp886x.txt  |  27 -----
- .../bindings/regulator/mps,mp886x.yaml        |  58 ++++++++++
- drivers/regulator/mp886x.c                    | 109 +++++++++++++++++-
- 3 files changed, 164 insertions(+), 30 deletions(-)
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ .../devicetree/bindings/regulator/mp886x.txt  | 27 ----------
+ .../bindings/regulator/mps,mp886x.yaml        | 53 +++++++++++++++++++
+ 2 files changed, 53 insertions(+), 27 deletions(-)
  delete mode 100644 Documentation/devicetree/bindings/regulator/mp886x.txt
  create mode 100644 Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
 
+diff --git a/Documentation/devicetree/bindings/regulator/mp886x.txt b/Documentation/devicetree/bindings/regulator/mp886x.txt
+deleted file mode 100644
+index 551867829459..000000000000
+--- a/Documentation/devicetree/bindings/regulator/mp886x.txt
++++ /dev/null
+@@ -1,27 +0,0 @@
+-Monolithic Power Systems MP8867/MP8869 voltage regulator
+-
+-Required properties:
+-- compatible: Must be one of the following.
+-	"mps,mp8867"
+-	"mps,mp8869"
+-- reg: I2C slave address.
+-- enable-gpios: enable gpios.
+-- mps,fb-voltage-divider: An array of two integers containing the resistor
+-  values R1 and R2 of the feedback voltage divider in kilo ohms.
+-
+-Any property defined as part of the core regulator binding, defined in
+-./regulator.txt, can also be used.
+-
+-Example:
+-
+-	vcpu: regulator@62 {
+-		compatible = "mps,mp8869";
+-		regulator-name = "vcpu";
+-		regulator-min-microvolt = <700000>;
+-		regulator-max-microvolt = <850000>;
+-		regulator-always-on;
+-		regulator-boot-on;
+-		enable-gpios = <&porta 1 GPIO_ACTIVE_LOW>;
+-		mps,fb-voltage-divider = <80 240>;
+-		reg = <0x62>;
+-	};
+diff --git a/Documentation/devicetree/bindings/regulator/mps,mp886x.yaml b/Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
+new file mode 100644
+index 000000000000..500a7b3a59aa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/mps,mp886x.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/regulator/mps,mp886x.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Monolithic Power Systems MP8867/MP8869 voltage regulator
++
++maintainers:
++  - Jisheng Zhang <jszhang@kernel.org>
++
++properties:
++  compatible:
++    enum:
++      - mps,mp8867
++      - mps,mp8869
++
++  reg:
++    maxItems: 1
++
++  enable-gpios:
++    description: GPIO to enable/disable the regulator.
++    maxItems: 1
++
++  mps,fb-voltage-divider:
++    description: An array of two integers containing the resistor
++      values R1 and R2 of the feedback voltage divider in kilo ohms.
++    $ref: "/schemas/types.yaml#/definitions/uint32-array"
++
++required:
++  - compatible
++  - reg
++  - enable-gpios
++  - mps,fb-voltage-divider
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        regulator@62 {
++          compatible = "mps,mp8869";
++          regulator-name = "vcpu";
++          regulator-min-microvolt = <800000>;
++          regulator-max-microvolt = <1150000>;
++          enable-gpios = <&porta 1 GPIO_ACTIVE_LOW>;
++          mps,fb-voltage-divider = <80 240>;
++          reg = <0x62>;
++        };
++    };
++
++...
 -- 
 2.28.0.rc0
 
