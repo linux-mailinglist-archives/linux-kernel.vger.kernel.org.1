@@ -2,334 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3613023078D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F0D23075F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 12:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728780AbgG1KVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 06:21:40 -0400
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:57746 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728424AbgG1KVj (ORCPT
+        id S1728579AbgG1KMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 06:12:44 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:58054 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728445AbgG1KMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 06:21:39 -0400
-X-Greylist: delayed 902 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 06:21:39 EDT
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 28 Jul
- 2020 18:06:35 +0800
-Received: from localhost.localdomain (114.242.248.89) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 28 Jul
- 2020 18:06:33 +0800
-From:   FelixCuioc <FelixCui-oc@zhaoxin.com>
-To:     Joerg Roedel <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>
-CC:     <CobeChen@zhaoxin.com>, <RaymondPang@zhaoxin.com>
-Subject: [PATCH] iommu/vt-d:Add support for ACPI device in RMRR
-Date:   Tue, 28 Jul 2020 06:06:26 -0400
-Message-ID: <20200728100626.2478-1-FelixCui-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 28 Jul 2020 06:12:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1595931163; x=1627467163;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qWRJyT7ofYqitA7J7pY2TzLOv0iLUhqR8zqJooNWb/Y=;
+  b=tk5NowcrWeAcifg/ynpsUyLC10AUZI3k8yLIZGvGQUvGTVcvtHXzd6OE
+   bSdVf1j/J2zrnYJFHzlmNHiw4VwXrfcIv8JFtLdxFV7sqcG9l5k8ZeYrQ
+   l2CiZrgYdGcj0vcB3PdfGNdN+iesE1EstGfU0J1IiiM6nsAGbvi9n4wwF
+   1R5qDU6H9TtI3sgagLWymT62SHeGgDxr6PcYaGZN43H+J2fsXtLET82NK
+   5H47VuHFGxm3GtaO/FXVaBYF3dBqWyL709uFRd784hdxZlINgWHg/AY1b
+   C3Sge9af6tVO/zxvc2BJH7ueckzBss30VDKkPSZHJ+OCOSHwgo9NKFHSx
+   w==;
+IronPort-SDR: gdPgaWcpufmrKHTg82I5mspqkRip8bEW8aDNhKJEbccH4P1o17eWwqZ3rgBxFEptjbsvhJbRsh
+ UXvbrECR/Li40jtK4QxamVLOoFYeHfR4u/TMu3fmYOQ2OpjKU+QFXNZZspfZlXMByfGdfAdzIb
+ ImCSyAMUO0Fyoni426xHqToRiKkOvN75wShDuuM9bgAcvPPILsJjaWfXSMVDk90ZynqrKba0oz
+ Od6psfDfZiRdhNr1Nknmq/spaeqbLDRR8yrgbnBKmezGbCy+/RbUsJuCI4/ShSEP8bWZH6/BN8
+ L/4=
+X-IronPort-AV: E=Sophos;i="5.75,406,1589266800"; 
+   d="scan'208";a="85607370"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jul 2020 03:12:42 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 03:12:42 -0700
+Received: from rob-ult-m19940.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 28 Jul 2020 03:11:53 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH 1/2] dt-bindings: sound: add DT bindings for Microchip S/PDIF TX Controller
+Date:   Tue, 28 Jul 2020 13:07:43 +0300
+Message-ID: <20200728100744.2820112-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [114.242.248.89]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some ACPI devices require access to the specified reserved memory
-region.BIOS report the specified reserved memory region through
-RMRR structures.Add analysis of ACPI device in RMRR and establish
-identity mapping for ACPI device.
+This patch adds DT bindings for the new Microchip S/PDIF TX Controller
+embedded inside sama7g5 SoCs.
 
-Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
- drivers/iommu/intel/dmar.c  | 74 ++++++++++++++++++++-----------------
- drivers/iommu/intel/iommu.c | 47 ++++++++++++++++++++++-
- drivers/iommu/iommu.c       |  5 +++
- include/linux/dmar.h        | 12 ++++--
- include/linux/iommu.h       |  3 ++
- 5 files changed, 102 insertions(+), 39 deletions(-)
+ .../bindings/sound/mchp,spdiftx.yaml          | 76 +++++++++++++++++++
+ 1 file changed, 76 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
 
-diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-index 93e6345f3414..024ca38dba12 100644
---- a/drivers/iommu/intel/dmar.c
-+++ b/drivers/iommu/intel/dmar.c
-@@ -215,7 +215,7 @@ static bool dmar_match_pci_path(struct dmar_pci_notify_info *info, int bus,
- }
- 
- /* Return: > 0 if match found, 0 if no match found, < 0 if error happens */
--int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
-+int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
- 			  void *start, void*end, u16 segment,
- 			  struct dmar_dev_scope *devices,
- 			  int devices_cnt)
-@@ -304,7 +304,7 @@ static int dmar_pci_bus_add_dev(struct dmar_pci_notify_info *info)
- 
- 		drhd = container_of(dmaru->hdr,
- 				    struct acpi_dmar_hardware_unit, header);
--		ret = dmar_insert_dev_scope(info, (void *)(drhd + 1),
-+		ret = dmar_pci_insert_dev_scope(info, (void *)(drhd + 1),
- 				((void *)drhd) + drhd->header.length,
- 				dmaru->segment,
- 				dmaru->devices, dmaru->devices_cnt);
-@@ -696,48 +696,56 @@ dmar_find_matched_drhd_unit(struct pci_dev *dev)
- 
- 	return dmaru;
- }
--
--static void __init dmar_acpi_insert_dev_scope(u8 device_number,
--					      struct acpi_device *adev)
-+int dmar_acpi_insert_dev_scope(u8 device_number,
-+				struct acpi_device *adev,
-+				void *start, void *end,
-+				struct dmar_dev_scope *devices,
-+				int devices_cnt)
- {
--	struct dmar_drhd_unit *dmaru;
--	struct acpi_dmar_hardware_unit *drhd;
- 	struct acpi_dmar_device_scope *scope;
- 	struct device *tmp;
- 	int i;
- 	struct acpi_dmar_pci_path *path;
- 
-+	for (; start < end; start += scope->length) {
-+		scope = start;
-+		if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
-+			continue;
-+		if (scope->enumeration_id != device_number)
-+			continue;
-+		path = (void *)(scope + 1);
-+		for_each_dev_scope(devices, devices_cnt, i, tmp)
-+			if (tmp == NULL) {
-+				devices[i].bus = scope->bus;
-+				devices[i].devfn = PCI_DEVFN(path->device, path->function);
-+				rcu_assign_pointer(devices[i].dev,
-+						   get_device(&adev->dev));
-+				return 1;
-+			}
-+		WARN_ON(i >= devices_cnt);
-+	}
-+	return 0;
-+}
-+static int dmar_acpi_bus_add_dev(u8 device_number, struct acpi_device *adev)
-+{
-+	struct dmar_drhd_unit *dmaru;
-+	struct acpi_dmar_hardware_unit *drhd;
-+	int ret = 0;
+diff --git a/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml b/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+new file mode 100644
+index 000000000000..8e2acfbbe621
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mchp,spdiftx.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: https://devicetree.org/schemas/sound/mchp,spdiftx.yaml#
++$schema: https://devicetree.org/meta-schemas/core.yaml#
 +
- 	for_each_drhd_unit(dmaru) {
- 		drhd = container_of(dmaru->hdr,
- 				    struct acpi_dmar_hardware_unit,
- 				    header);
-+		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(drhd+1),
-+						((void *)drhd)+drhd->header.length,
-+						dmaru->devices, dmaru->devices_cnt);
-+		if (ret)
-+			break;
-+	}
-+	ret = dmar_rmrr_add_acpi_dev(device_number, adev);
- 
--		for (scope = (void *)(drhd + 1);
--		     (unsigned long)scope < ((unsigned long)drhd) + drhd->header.length;
--		     scope = ((void *)scope) + scope->length) {
--			if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
--				continue;
--			if (scope->enumeration_id != device_number)
--				continue;
-+	return ret;
- 
--			path = (void *)(scope + 1);
--			pr_info("ACPI device \"%s\" under DMAR at %llx as %02x:%02x.%d\n",
--				dev_name(&adev->dev), dmaru->reg_base_addr,
--				scope->bus, path->device, path->function);
--			for_each_dev_scope(dmaru->devices, dmaru->devices_cnt, i, tmp)
--				if (tmp == NULL) {
--					dmaru->devices[i].bus = scope->bus;
--					dmaru->devices[i].devfn = PCI_DEVFN(path->device,
--									    path->function);
--					rcu_assign_pointer(dmaru->devices[i].dev,
--							   get_device(&adev->dev));
--					return;
--				}
--			BUG_ON(i >= dmaru->devices_cnt);
--		}
--	}
--	pr_warn("No IOMMU scope found for ANDD enumeration ID %d (%s)\n",
--		device_number, dev_name(&adev->dev));
- }
- 
- static int __init dmar_acpi_dev_scope_init(void)
-@@ -766,7 +774,7 @@ static int __init dmar_acpi_dev_scope_init(void)
- 				       andd->device_name);
- 				continue;
- 			}
--			dmar_acpi_insert_dev_scope(andd->device_number, adev);
-+			dmar_acpi_bus_add_dev(andd->device_number, adev);
- 		}
- 	}
- 	return 0;
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 0c2d582ff8cd..62cb993e3bbe 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4508,6 +4508,25 @@ int dmar_find_matched_atsr_unit(struct pci_dev *dev)
- 	return ret;
- }
- 
-+int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
-+{
-+	int ret;
-+	struct dmar_rmrr_unit *rmrru;
-+	struct acpi_dmar_reserved_memory *rmrr;
++title: Microchip S/PDIF Tx Controller Device Tree Bindings
 +
-+	list_for_each_entry(rmrru, &dmar_rmrr_units, list) {
-+		rmrr = container_of(rmrru->hdr,
-+				struct acpi_dmar_reserved_memory,
-+				header);
-+		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(rmrr + 1),
-+						((void *)rmrr) + rmrr->header.length,
-+						rmrru->devices, rmrru->devices_cnt);
-+		if (ret)
-+			break;
-+	}
-+	return 0;
-+}
++maintainers:
++  - Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 +
- int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
- {
- 	int ret;
-@@ -4523,7 +4542,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
- 		rmrr = container_of(rmrru->hdr,
- 				    struct acpi_dmar_reserved_memory, header);
- 		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
--			ret = dmar_insert_dev_scope(info, (void *)(rmrr + 1),
-+			ret = dmar_pci_insert_dev_scope(info, (void *)(rmrr + 1),
- 				((void *)rmrr) + rmrr->header.length,
- 				rmrr->segment, rmrru->devices,
- 				rmrru->devices_cnt);
-@@ -4541,7 +4560,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
- 
- 		atsr = container_of(atsru->hdr, struct acpi_dmar_atsr, header);
- 		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
--			ret = dmar_insert_dev_scope(info, (void *)(atsr + 1),
-+			ret = dmar_pci_insert_dev_scope(info, (void *)(atsr + 1),
- 					(void *)atsr + atsr->header.length,
- 					atsr->segment, atsru->devices,
- 					atsru->devices_cnt);
-@@ -4779,6 +4798,26 @@ static int __init platform_optin_force_iommu(void)
- 
- 	return 1;
- }
-+static int acpi_device_create_direct_mappings(struct device *pn_dev, struct device *acpi_device)
-+{
-+	int ret;
-+	struct iommu_group *group;
++description:
++        The Microchip Sony/Philips Digital Interface Transmitter is a
++        serial port compliant with the IEC-60958 standard.
 +
-+	if (pn_dev == NULL) {
-+		acpi_device->bus->iommu_ops = &intel_iommu_ops;
-+		ret = iommu_probe_device(acpi_device);
-+		if (ret) {
-+			pr_err("acpi_device probe fail! ret:%d\n", ret);
-+			return ret;
-+		}
-+		return 0;
-+	}
-+	acpi_device->bus->iommu_ops = &intel_iommu_ops;
-+	group = iommu_group_get(pn_dev);
-+	__acpi_device_create_direct_mappings(group, acpi_device);
++properties:
++  "#sound-dai-cells":
++    const: 0
 +
-+	return 0;
-+}
- 
- static int __init probe_acpi_namespace_devices(void)
- {
-@@ -4794,6 +4833,7 @@ static int __init probe_acpi_namespace_devices(void)
- 			struct acpi_device_physical_node *pn;
- 			struct iommu_group *group;
- 			struct acpi_device *adev;
-+			struct device *pn_dev = NULL;
- 
- 			if (dev->bus != &acpi_bus_type)
- 				continue;
-@@ -4804,6 +4844,7 @@ static int __init probe_acpi_namespace_devices(void)
- 					    &adev->physical_node_list, node) {
- 				group = iommu_group_get(pn->dev);
- 				if (group) {
-+					pn_dev = pn->dev;
- 					iommu_group_put(group);
- 					continue;
- 				}
-@@ -4812,7 +4853,9 @@ static int __init probe_acpi_namespace_devices(void)
- 				ret = iommu_probe_device(pn->dev);
- 				if (ret)
- 					break;
-+				pn_dev = pn->dev;
- 			}
-+			ret = acpi_device_create_direct_mappings(pn_dev, dev);
- 			mutex_unlock(&adev->physical_node_lock);
- 
- 			if (ret)
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index d43120eb1dc5..d504d2ab96e8 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -778,6 +778,11 @@ static bool iommu_is_attach_deferred(struct iommu_domain *domain,
- 
- 	return false;
- }
-+void __acpi_device_create_direct_mappings(struct iommu_group *group, struct device *acpi_device)
-+{
-+	iommu_create_device_direct_mappings(group, acpi_device);
-+}
-+EXPORT_SYMBOL_GPL(__acpi_device_create_direct_mappings);
- 
- /**
-  * iommu_group_add_device - add a device to an iommu group
-diff --git a/include/linux/dmar.h b/include/linux/dmar.h
-index 65565820328a..c3e29e252266 100644
---- a/include/linux/dmar.h
-+++ b/include/linux/dmar.h
-@@ -113,13 +113,17 @@ extern int dmar_parse_dev_scope(void *start, void *end, int *cnt,
- 				struct dmar_dev_scope **devices, u16 segment);
- extern void *dmar_alloc_dev_scope(void *start, void *end, int *cnt);
- extern void dmar_free_dev_scope(struct dmar_dev_scope **devices, int *cnt);
--extern int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
-+extern int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
- 				 void *start, void*end, u16 segment,
- 				 struct dmar_dev_scope *devices,
- 				 int devices_cnt);
--extern int dmar_remove_dev_scope(struct dmar_pci_notify_info *info,
--				 u16 segment, struct dmar_dev_scope *devices,
--				 int count);
-+extern int dmar_acpi_insert_dev_scope(u8 device_number,
-+				struct acpi_device *adev, void *start, void *end,
-+				struct dmar_dev_scope *devices, int devices_cnt);
-+extern int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev);
++  compatible:
++    oneOf:
++      - const: microchip,sama7g5-spdiftx
 +
-+extern int dmar_remove_dev_scope(struct dmar_pci_notify_info *info, u16 segment,
-+				struct dmar_dev_scope *devices, int count);
- /* Intel IOMMU detection */
- extern int detect_intel_iommu(void);
- extern int enable_drhd_fault_handling(void);
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 5f0b7859d2eb..f639bf94b466 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -536,6 +536,9 @@ extern void iommu_domain_window_disable(struct iommu_domain *domain, u32 wnd_nr)
- extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
- 			      unsigned long iova, int flags);
- 
-+extern void __acpi_device_create_direct_mappings(struct iommu_group *group,
-+						struct device *acpi_device);
++  reg:
++    maxItems: 1
 +
- static inline void iommu_flush_tlb_all(struct iommu_domain *domain)
- {
- 	if (domain->ops->flush_iotlb_all)
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Peripheral Bus Clock
++      - description: Generic Clock
++
++  clock-names:
++    items:
++      - const: pclk
++      - const: gclk
++
++  dmas:
++    description: TX DMA Channel
++
++  dma-names:
++    const: tx
++
++  pinctrl-0: true
++
++  pinctrl-names:
++    const: default
++
++required:
++  - "#sound-dai-cells"
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++additionalProperties: false
++
++examples:
++  - |
++    spdiftx@e1618000 {
++        #sound-dai-cells = <0>;
++        compatible = "microchip,sama7g5-spdiftx";
++        reg = <0xe1618000 0x100>;
++        interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
++        dmas = <&dma0 AT91_XDMAC_DT_PERID(50)>;
++        dma-names = "tx";
++        clocks = <&spdiftx_clk>, <&spdiftx_gclk>;
++        clock-names = "pclk", "gclk";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_spdiftx_default>;
++    };
 -- 
-2.17.1
+2.25.1
 
