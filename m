@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A200230F2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEE6230EA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731373AbgG1Q0d convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 12:26:33 -0400
-Received: from customer-201-134-139-73.uninet-ide.com.mx ([201.134.139.73]:55570
-        "EHLO correo.tlalpan.gob.mx" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731192AbgG1Q0c (ORCPT
+        id S1731232AbgG1QB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:01:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60095 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730821AbgG1QBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:26:32 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by correo.tlalpan.gob.mx (Postfix) with ESMTP id B82EB57C443;
-        Tue, 28 Jul 2020 06:05:53 -0500 (CDT)
-Received: from correo.tlalpan.gob.mx ([127.0.0.1])
-        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id kPM_SpOZcYAD; Tue, 28 Jul 2020 06:05:53 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by correo.tlalpan.gob.mx (Postfix) with ESMTP id 20DB8441E5D;
-        Tue, 28 Jul 2020 04:08:12 -0500 (CDT)
-X-Virus-Scanned: amavisd-new at tlalpan.gob.mx
-Received: from correo.tlalpan.gob.mx ([127.0.0.1])
-        by localhost (correo.tlalpan.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id vlgdE5AYOebY; Tue, 28 Jul 2020 04:08:12 -0500 (CDT)
-Received: from [10.85.108.11] (unknown [105.8.2.12])
-        by correo.tlalpan.gob.mx (Postfix) with ESMTPSA id AE56F441E70;
-        Tue, 28 Jul 2020 03:36:40 -0500 (CDT)
+        Tue, 28 Jul 2020 12:01:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1595952084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0fc1uAttsGy8w1em246ZebEdbW8vUt+X7/u6oIFpaS0=;
+        b=MTBCNFvUe4/uZ7qwXhVRKam7rtDay6GM224dcpEZLVunXzTwdum6/JzbJyqnSMT0veqh2y
+        IL6X1W2rkG5QCH7OJeZIo6m2bkCpZZVKlEHvVFtbsMDQ+uk4p608/pSxckv3hy7De4or1Z
+        /X2hK36HTXr4nXBWu86CWOb1O72b85w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-365-JNkooa47PDmLLs1bZyICfw-1; Tue, 28 Jul 2020 12:01:20 -0400
+X-MC-Unique: JNkooa47PDmLLs1bZyICfw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CCA419200D5;
+        Tue, 28 Jul 2020 16:01:18 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-112-109.ams2.redhat.com [10.36.112.109])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C1C475D9CD;
+        Tue, 28 Jul 2020 16:01:02 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Jeff Moyer <jmoyer@redhat.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Aleksa Sarai <asarai@suse.de>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jann Horn <jannh@google.com>
+Subject: [PATCH v3 0/3] io_uring: add restrictions to support untrusted
+ applications and guests
+Date:   Tue, 28 Jul 2020 18:00:58 +0200
+Message-Id: <20200728160101.48554-1-sgarzare@redhat.com>
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?Covid_19_Wohlt=C3=A4tigkeitsfonds?=
-To:     Recipients <aguayenergia@tlalpan.gob.mx>
-From:   ''Tayeb Souami'' <aguayenergia@tlalpan.gob.mx>
-Date:   Tue, 28 Jul 2020 10:40:57 +0200
-Reply-To: Tayebsouam.spende@gmail.com
-Message-Id: <20200728083641.AE56F441E70@correo.tlalpan.gob.mx>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lieber Freund,
+v3:
+ - added IORING_RESTRICTION_SQE_FLAGS_ALLOWED and
+   IORING_RESTRICTION_SQE_FLAGS_REQUIRED
+ - removed IORING_RESTRICTION_FIXED_FILES_ONLY opcode
+ - enabled restrictions only when the rings start
 
-Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
+RFC v2: https://lore.kernel.org/io-uring/20200716124833.93667-1-sgarzare@redhat.com
 
-UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
+RFC v1: https://lore.kernel.org/io-uring/20200710141945.129329-1-sgarzare@redhat.com
 
+Following the proposal that I send about restrictions [1], I wrote this series
+to add restrictions in io_uring.
 
-Das ist dein Spendencode: [TS530342018]
+I also wrote helpers in liburing and a test case (test/register-restrictions.c)
+available in this repository:
+https://github.com/stefano-garzarella/liburing (branch: io_uring_restrictions)
 
+Just to recap the proposal, the idea is to add some restrictions to the
+operations (sqe opcode and flags, register opcode) to safely allow untrusted
+applications or guests to use io_uring queues.
 
-Antworten Sie mit dem SPENDE-CODE an diese
+The first patch changes io_uring_register(2) opcodes into an enumeration to
+keep track of the last opcode available.
 
-E-Mail:Tayebsouam.spende@gmail.com
+The second patch adds IOURING_REGISTER_RESTRICTIONS opcode and the code to
+handle restrictions.
 
+The third patch adds IORING_SETUP_R_DISABLED flag to start the rings disabled,
+allowing the user to register restrictions, buffers, files, before to start
+processing SQEs.
 
-Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+Comments and suggestions are very welcome.
 
-Grüße
-Herr Tayeb Souami
+Thank you in advance,
+Stefano
+
+[1] https://lore.kernel.org/io-uring/20200609142406.upuwpfmgqjeji4lc@steredhat/
+
+Stefano Garzarella (3):
+  io_uring: use an enumeration for io_uring_register(2) opcodes
+  io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
+  io_uring: allow disabling rings during the creation
+
+ fs/io_uring.c                 | 167 ++++++++++++++++++++++++++++++++--
+ include/uapi/linux/io_uring.h |  60 +++++++++---
+ 2 files changed, 207 insertions(+), 20 deletions(-)
+
+-- 
+2.26.2
+
