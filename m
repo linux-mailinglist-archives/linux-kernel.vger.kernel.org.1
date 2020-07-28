@@ -2,80 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85B022FF85
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D5B22FF88
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgG1CWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:22:22 -0400
-Received: from smtprelay0216.hostedemail.com ([216.40.44.216]:56242 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726269AbgG1CWW (ORCPT
+        id S1726817AbgG1CXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgG1CXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:22:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 4FAB2181D330D;
-        Tue, 28 Jul 2020 02:22:21 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:1801:1963:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:4184:4321:4605:5007:9121:10004:10400:10848:11232:11233:11658:11914:12043:12048:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14180:14581:14659:14721:21060:21080:21451:21627:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: anger93_0e0cfdb26f66
-X-Filterd-Recvd-Size: 2213
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 28 Jul 2020 02:22:19 +0000 (UTC)
-Message-ID: <ae54364041b99b89f818812d957d4a4bb4efdc25.camel@perches.com>
-Subject: Re: [PATCH][next] ACPICA: Use fallthrough pseudo-keyword
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Moore, Robert" <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Mon, 27 Jul 2020 22:23:02 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA4FC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:23:02 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id f9so4513624pju.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bmpjZY3DS+knka6HwVXGoRUInVOpnqRy9fgTe+9ox3o=;
+        b=A6Q65jzY2cfoaTXJphioBYwzUZ+be9yKf0+IeSTMnXUN/l1RxIvIRCe9/LQZBBLDdp
+         heAnKx5XcgEA28i6r52O8AXSsofuVQpw0tkEXqfnj4rR34bc0q5NdPDF+0WRhWnYJzLq
+         jsX4NQItW4WQzrUiEiu9TSVbvO3Z5BecCXbA+9klSWOO127jwaJk7DUsKGF5Twi2orVm
+         mJIazyPyfHUS/91rV8QOmESVm4V1ntZ/3fP72BU/bu4ipr1GnBL1fy64uxY+hoBSG9Fg
+         W+Tci1LwLzwf+XBKoHkqfJeEaruOj3mt3ijECXDKTrLKR5+EaXVzRC/w5QCj0BIk8sD6
+         rrmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bmpjZY3DS+knka6HwVXGoRUInVOpnqRy9fgTe+9ox3o=;
+        b=fnfd6jA5tAABsUtaF9ZY9qLXs7phU8bBMzKEXo+FG2cMThjUOJ/rKzdCMpt1lQdprK
+         hzzeLrS1glyquOk96IarHtvwE9PXjITkMYbilCt3XMrAnfJPFUby45szIN9tH9lUvraV
+         DfxtHhOvBPb/Mnvqcp34EAocdJdYimrGtcL4QHXq7tauYJyrfikNuNEgUdY4vrqOQVdq
+         i6Xtg9n4N+EJdboWxGk3NAKARcy6rgCH6Xm16kpM85+ZEB6xSoxMU8jNhWYELcKkcM1b
+         7MjsmOwV4bekBCDCZHRSAB0xwIWyXoMwgwR1MouyzQAstdn2lKHH3+HjB7qB/S4aRnGA
+         2cGw==
+X-Gm-Message-State: AOAM530NMfBbpCaS/wSrM+ObiyOpd6tm4/3JU1sT8mKwDQzIU08I4RyP
+        bAYi95sBoQbtY27U5Oer1dc=
+X-Google-Smtp-Source: ABdhPJzxWDQfGtw5RifGpYsRUAm837l7chrN68fAWAesyFsc00ENC6VjY8ddewTmH4BV8BYzmQdVCw==
+X-Received: by 2002:a17:902:ed14:: with SMTP id b20mr22338790pld.25.1595902981696;
+        Mon, 27 Jul 2020 19:23:01 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id g28sm16076428pfr.70.2020.07.27.19.23.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 19:23:00 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 11:22:59 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 27 Jul 2020 19:22:18 -0700
-In-Reply-To: <b851b2c8-2d7c-939d-507d-b322dd4a0dbf@embeddedor.com>
-References: <20200707200716.GA4920@embeddedor>
-         <CAJZ5v0iDz_EsrpdMQQDfaVC2orMQkEcubmR6-J6mvtrXmKXbRg@mail.gmail.com>
-         <BYAPR11MB325602EDA2D2ACC2B28EAF4687670@BYAPR11MB3256.namprd11.prod.outlook.com>
-         <b851b2c8-2d7c-939d-507d-b322dd4a0dbf@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+Subject: Re: [PATCH 2/4] printk: store instead of processing cont parts
+Message-ID: <20200728022259.GB1286082@jagdpanzerIV.localdomain>
+References: <20200717234818.8622-1-john.ogness@linutronix.de>
+ <20200717234818.8622-3-john.ogness@linutronix.de>
+ <20200719143527.GA566@jagdpanzerIV.localdomain>
+ <CAHk-=wg70es2rSYsHbBcWrBPsoHmbZ8vmeqTS_Kypv6zHAwQjA@mail.gmail.com>
+ <20200720015057.GA463@jagdpanzerIV.localdomain>
+ <CAHk-=whqiemoYRE41+qMuwQ_Qw3pn7gy2-Mso=ZDrwxQCVkncg@mail.gmail.com>
+ <20200721144220.GE44523@jagdpanzerIV.localdomain>
+ <CAHk-=wibPWj9m1jQWeJUq+iPMG9tHaLANY-UaruakHuezFHr4w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wibPWj9m1jQWeJUq+iPMG9tHaLANY-UaruakHuezFHr4w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-07-27 at 17:23 -0500, Gustavo A. R. Silva wrote:
-> Hi,
+On (20/07/21 08:40), Linus Torvalds wrote:
+> On Tue, Jul 21, 2020 at 7:42 AM Sergey Senozhatsky
+> <sergey.senozhatsky@gmail.com> wrote:
+> >
+> > OK, so basically, extending printk_caller_id() so that for IRQ/NMI
+> > we will have more info than just "0x80000000 + raw_smp_processor_id()".
 > 
+> I think it's really preempt_count() that we want to have there.
 > 
-> This is a macro pseudo-keyword, which expands to /* fallthrough */
-> for compilers that don't support the attribute __fallthrough__. See:
-
-Not really.
-
-It expands to
-	do {} while (0)
-for compilers that do not support the __fallthrough__ attribute.
-
-The /* fallthrough */ after that is for the human reader
-and is stripped before compilation.
-
-> include/linux/compiler_attributes.h:213:
-> 213 #if __has_attribute(__fallthrough__)
-> 214 # define fallthrough                    __attribute__((__fallthrough__))
-> 215 #else
-> 216 # define fallthrough                    do {} while (0)  /* fallthrough */
-> 217 #endif
+> That has the softirq/hardirq/NMI information in it.
 > 
-> So, any compiler (older or new) will be fine with it.
+> So the "context" identifier of an incomplete write would be { task,
+> cpu, preempt_count() } of the writer. If a new KERN_CONT writer comes
+> in, it would have to match in that context to actually combine.
+> 
+> You can probably play "hide the bits" tricks to not *ac tually* use
+> three words for it. The task structure in particular tends to be very
+> aligned, you could hide bits in the low bits there. The CPU number
+> would fit in there, for example.
 
-But old compilers should not emit warnings for these uses.
+The purpose of callerid has changed. We used to keep it _only_ in
+struct printk_log and never used it for anything but
 
+	if (cont.owner == current && (lflags & LOG_CONT))
+		...
 
+so it was easy to use task_struct pointers - we only cared if cont.owner
+matches current and never dereferenced the cont.owner pointer.
+
+But we do show caller id to users now (CONFIG_PRINTK_CALLER), so it
+makes sense to keep there something more or less human readable, it
+helps syzkaller/fuzzer people. That's why we keep PID in [30,0] bits
+of callerid if the printk was called in_task(), and CPU_ID otherwise.
+
+Replacing easy to understand PID/CPU_ID with some magic hex, e.g.
+hash(current) >> shift or hash(smp_processor_id()) >> shift, will
+make things less convenient, so I think it is reasonable to preserve
+the existing scheme.
+
+I like what John suggests:
+
+- if printk was called from in_task(), then we keep PID in [30,0] bits
+- otherwise we keep smp_processor_id() in [27,0] bits and in the upper
+  bits we keep the IRQ/NMI/etc flags.
+
+It may make sense to "promote" u32 callerid to u64, just in case if
+someone sometime in the future will have boxes with more than several
+billion PIDs.
+
+	-ss
