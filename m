@@ -2,79 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01351230A5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9E6230A53
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgG1Mif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728751AbgG1Mif (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:38:35 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036B3C061794;
-        Tue, 28 Jul 2020 05:38:35 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id i92so2969272pje.0;
-        Tue, 28 Jul 2020 05:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
-        b=SK9b2UYTW6naBrk+5Nf+HITJ8jpZ5nTD3wTAGxb37B+Ugb0+FU9daPv5RE6+KoAdKb
-         A52m+AH2ReoUyWjImEbPFcuuY2un3gyDWbhZU3Z5HR0JGsEiqA1T1CGa3DXHpqaIo+m5
-         Yp/IiDKSzac3d2CIz1SHRkAOmLKJrf3CMXujw+d8OHQk39gqh5ocYCpYCuQkSEEneHAm
-         ziS1+TJqLiFpxeDVfdOszutkDUaX3v79cXpqfpA0wIdmevzMmXOzLcHJUYj7r6EU+272
-         JN0pGtGHdHUj2KWf+0LVVONbMmeHkrR8KXJzTrvsOILhKNNvPF/rp9yAIBgwpsLanTAP
-         6ywQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fie8IAXWZ8a1f4IBdyXwUsTRAo2+ebUYgUxfo3SFpeA=;
-        b=PpRE7Qh/MGStL/wzh9eW9GRvp03r61bxU/vqgNIoaFgS0L8OmGZvHDI6ZquoWy3yP2
-         W8bABLImOFGPPP493mBxtaDfhA/DKkROyRL+1g22tujAl3J1bZaA/R3M1uEinw0TXHEg
-         EumFdq0x5L8Y8LaEv59ZBk77T+i5WJl9FhYye7aRe12wUCfDZTgQ1IuQ5RxWrwNq1xaX
-         qYqSKSeewlpbnC7rshoVeN90+MUkiGnS0+3Zl1VgwvgpD/x2vRpuMQFL8q76ZIucB0Hl
-         8VuUAO3yuJ7Ux9t3AkqgVumHWQ18wPraNG3yASDRR8sYZRB6YgsXuLuZo0CHhUlkJ9g6
-         puGg==
-X-Gm-Message-State: AOAM533mF+K82X6IOGhR+Z4Pv+TYImhSry56YCLVBPrwtzUzHcrztY0i
-        chp4MlHQ6BuFuPkCRvP3fQMw5kNIoBjg2g==
-X-Google-Smtp-Source: ABdhPJwekYhSoj1idJB4yjdyuS66TSlXyc2WtTJj9+6S091YCsU5daM2krAGtIehCsmH7jRufibfUw==
-X-Received: by 2002:a17:90b:30d0:: with SMTP id hi16mr4452970pjb.65.1595939914561;
-        Tue, 28 Jul 2020 05:38:34 -0700 (PDT)
-Received: from gmail.com ([2401:4900:2eef:ca92:3545:4a68:f406:d612])
-        by smtp.gmail.com with ESMTPSA id t17sm1684380pgu.30.2020.07.28.05.38.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 05:38:33 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 18:07:03 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bjorn Helgaas <bjorn@helgaas.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH v1] pch_can: use generic power management
-Message-ID: <20200728123703.GB1331847@gmail.com>
-References: <20200728085757.888620-1-vaibhavgupta40@gmail.com>
+        id S1729642AbgG1MhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:37:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729334AbgG1MhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:37:07 -0400
+Received: from quaco.ghostprotocols.net (179.176.1.55.dynamic.adsl.gvt.net.br [179.176.1.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B197A20759;
+        Tue, 28 Jul 2020 12:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595939827;
+        bh=5TPhzH5vO99n2PNcTutP3rvbIJuX0RRXUhLLe7DOHI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Notg73rBoii6IUqtxUD5qZwUqggHruDOBYmKXcC/on+ISeZOl7YtjJLOvfNtgqBmb
+         QFq/wiK0T42FzhBP2CIfukU9KkVJCpKBfK87RiqpUpfdU4YQxVfb9bw7Tde/w8ZTN1
+         D6ElooFvYrnZOkusacU+tLoj9/q+8cFECYSb0Vd4=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5B279404B1; Tue, 28 Jul 2020 09:37:04 -0300 (-03)
+Date:   Tue, 28 Jul 2020 09:37:04 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A. Clarke" <pc@us.ibm.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH 17/19] perf metric: Add metric group test
+Message-ID: <20200728123704.GX40195@kernel.org>
+References: <20200719181320.785305-1-jolsa@kernel.org>
+ <20200719181320.785305-18-jolsa@kernel.org>
+ <CAP-5=fWmm5pvH-hwkaAKV=__7Ocbc-4Qj8OCJWz_xi4pc65A=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200728085757.888620-1-vaibhavgupta40@gmail.com>
+In-Reply-To: <CAP-5=fWmm5pvH-hwkaAKV=__7Ocbc-4Qj8OCJWz_xi4pc65A=Q@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is compile-tested only.
+Em Sun, Jul 19, 2020 at 03:41:14PM -0700, Ian Rogers escreveu:
+> On Sun, Jul 19, 2020 at 11:14 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Adding test for metric group plus compute_metric_group
+> > function to get metrics values within the group.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> 
+> Acked-by: Ian Rogers <irogers@google.com>
 
-Thanks
-Vaibhav Gupta
+Thanks, applied.
+
+- Arnaldo
+ 
+> Thanks,
+> Ian
+> 
+> > ---
+> >  tools/perf/tests/parse-metric.c | 48 +++++++++++++++++++++++++++++++--
+> >  1 file changed, 46 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/tests/parse-metric.c b/tools/perf/tests/parse-metric.c
+> > index 5ac32f80f8ea..f2ba5b2c5557 100644
+> > --- a/tools/perf/tests/parse-metric.c
+> > +++ b/tools/perf/tests/parse-metric.c
+> > @@ -18,6 +18,7 @@ static struct pmu_event pme_test[] = {
+> >  {
+> >         .metric_expr    = "inst_retired.any / cpu_clk_unhalted.thread",
+> >         .metric_name    = "IPC",
+> > +       .metric_group   = "group1",
+> >  },
+> >  {
+> >         .metric_expr    = "idq_uops_not_delivered.core / (4 * (( ( cpu_clk_unhalted.thread / 2 ) * "
+> > @@ -35,6 +36,7 @@ static struct pmu_event pme_test[] = {
+> >  {
+> >         .metric_expr    = "(dcache_miss_cpi + icache_miss_cycles)",
+> >         .metric_name    = "cache_miss_cycles",
+> > +       .metric_group   = "group1",
+> >  },
+> >  {
+> >         .metric_expr    = "l2_rqsts.demand_data_rd_hit + l2_rqsts.pf_hit + l2_rqsts.rfo_hit",
+> > @@ -127,7 +129,9 @@ static double compute_single(struct rblist *metric_events, struct evlist *evlist
+> >         return 0.;
+> >  }
+> >
+> > -static int compute_metric(const char *name, struct value *vals, double *ratio)
+> > +static int __compute_metric(const char *name, struct value *vals,
+> > +                           const char *name1, double *ratio1,
+> > +                           const char *name2, double *ratio2)
+> >  {
+> >         struct rblist metric_events = {
+> >                 .nr_entries = 0,
+> > @@ -166,7 +170,10 @@ static int compute_metric(const char *name, struct value *vals, double *ratio)
+> >         load_runtime_stat(&st, evlist, vals);
+> >
+> >         /* And execute the metric */
+> > -       *ratio = compute_single(&metric_events, evlist, &st, name);
+> > +       if (name1 && ratio1)
+> > +               *ratio1 = compute_single(&metric_events, evlist, &st, name1);
+> > +       if (name2 && ratio2)
+> > +               *ratio2 = compute_single(&metric_events, evlist, &st, name2);
+> >
+> >         /* ... clenup. */
+> >         metricgroup__rblist_exit(&metric_events);
+> > @@ -177,6 +184,18 @@ static int compute_metric(const char *name, struct value *vals, double *ratio)
+> >         return 0;
+> >  }
+> >
+> > +static int compute_metric(const char *name, struct value *vals, double *ratio)
+> > +{
+> > +       return __compute_metric(name, vals, name, ratio, NULL, NULL);
+> > +}
+> > +
+> > +static int compute_metric_group(const char *name, struct value *vals,
+> > +                               const char *name1, double *ratio1,
+> > +                               const char *name2, double *ratio2)
+> > +{
+> > +       return __compute_metric(name, vals, name1, ratio1, name2, ratio2);
+> > +}
+> > +
+> >  static int test_ipc(void)
+> >  {
+> >         double ratio;
+> > @@ -297,6 +316,30 @@ static int test_recursion_fail(void)
+> >         return 0;
+> >  }
+> >
+> > +static int test_metric_group(void)
+> > +{
+> > +       double ratio1, ratio2;
+> > +       struct value vals[] = {
+> > +               { .event = "cpu_clk_unhalted.thread", .val = 200 },
+> > +               { .event = "l1d-loads-misses",        .val = 300 },
+> > +               { .event = "l1i-loads-misses",        .val = 200 },
+> > +               { .event = "inst_retired.any",        .val = 400 },
+> > +               { 0 },
+> > +       };
+> > +
+> > +       TEST_ASSERT_VAL("failed to find recursion",
+> > +                       compute_metric_group("group1", vals,
+> > +                                            "IPC", &ratio1,
+> > +                                            "cache_miss_cycles", &ratio2) == 0);
+> > +
+> > +       TEST_ASSERT_VAL("group IPC failed, wrong ratio",
+> > +                       ratio1 == 2.0);
+> > +
+> > +       TEST_ASSERT_VAL("group cache_miss_cycles failed, wrong ratio",
+> > +                       ratio2 == 1.25);
+> > +       return 0;
+> > +}
+> > +
+> >  int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unused)
+> >  {
+> >         TEST_ASSERT_VAL("IPC failed", test_ipc() == 0);
+> > @@ -304,5 +347,6 @@ int test__parse_metric(struct test *test __maybe_unused, int subtest __maybe_unu
+> >         TEST_ASSERT_VAL("cache_miss_cycles failed", test_cache_miss_cycles() == 0);
+> >         TEST_ASSERT_VAL("DCache_L2 failed", test_dcache_l2() == 0);
+> >         TEST_ASSERT_VAL("recursion fail failed", test_recursion_fail() == 0);
+> > +       TEST_ASSERT_VAL("test metric group", test_metric_group() == 0);
+> >         return 0;
+> >  }
+> > --
+> > 2.25.4
+> >
+
+-- 
+
+- Arnaldo
