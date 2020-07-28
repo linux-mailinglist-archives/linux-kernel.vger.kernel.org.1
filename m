@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AA322FFBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4568B22FFAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 04:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgG1CkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Jul 2020 22:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
+        id S1726884AbgG1CjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Jul 2020 22:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727794AbgG1Cj4 (ORCPT
+        with ESMTP id S1726821AbgG1CjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Jul 2020 22:39:56 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3DBC0619D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:56 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id k18so13863490qtm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:56 -0700 (PDT)
+        Mon, 27 Jul 2020 22:39:16 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C54BC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:16 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id n5so11058834pgf.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 19:39:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yVMPt7oOkfZt8+mUHt1G0xa2MlVS24FjEN8IWHp4iEo=;
-        b=pE2T9gbdYmjqIIlPzOAZd82ha1siBwlQ7+aqGKUBhzB956MvcoSllJKtUgM/vuchFj
-         65XNk38RaKlXMsUVHA2sRcbYfuEWnsz2DuQwDi+9jN0sdyhY8kOEKhTBdJ4+wYI023Xl
-         MFwH5RMrShhwyPE0gf0/v78xNytmH7QkkhaTEPIsWnEL2cLbbGN69zdu32rr77bLOehX
-         KclOQTBEIGUuSXmA9McU/EMfgmovfxTlPHHR1maf9vJU8DcqN8o8RX2IysSmsPT8rRG0
-         w8aC+EQ171zdAiOtG/jSn18vnHo+U3lc1uDMpZ6HgGXzzOYa23M3XKzMFFq/G0J6dXxR
-         KGFA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oUYI/adhyPiJsueR+/blXGuxT74bedpBLyWN5AzH71w=;
+        b=CsMPMGwi5qjh99+swfSsReaiMN1qq+LT1t0y0ZOTQIXJLGdNORymR9nu4xE/IM1dER
+         79j83O+lMV2cp1RWIIPguXuX+QHPsKMq63S9aoFkycDHNEdPrriBG2+gJ/6SJrVZkfm4
+         tfYaVpb3mfRA94cNvS8CbW1Irh15z/HBoVXu0AdcMTsh2ADSw+N8Ie9FefhGNSS1BvLg
+         AADSh17QNCD6+1s9Jq/GgXPT8IAaEjbDtCXhxGekzj3TAXbRg5IDlYynSgZU4sGkT2Nq
+         i+uNetnqlvLrGcPY7wg5cGkRgPKJbv8IGpyw0rWoOpDYzODQIdxcKZljBtnCQ5VbBNr4
+         aBwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yVMPt7oOkfZt8+mUHt1G0xa2MlVS24FjEN8IWHp4iEo=;
-        b=LZUTiyX5VIX1qB6gdmm8QkPo7shqY28wgFbRVH2ProDPy4/8FLqxQwXsI9JpF3taSV
-         2uzy9A3eQBKpt0qV9vOn7Y3Bq9fbwIkAwT3k/9Fzz1kWYoIDkz/wPbRaamtWFi4v7f5l
-         1oi6q1HldOS/Em/+owbYKorrZkP9+OMu2/Xhf4ONrQLKhITCyg3ZCCJQPDzQr5fDw8KT
-         sqhpTBSUXzfAVMGbk8gVNz2f0Mcv8VpLDob+Fyz1iHbnZ25s5CC/aFKK4kMLfqn3+e3e
-         0X0lNQaiLljinrmrMbFYhX5ID/4Rh4t+6AjS5hBqoekxnTH6PASRVo9TFvh6nhm06l8e
-         wzfg==
-X-Gm-Message-State: AOAM531+qtlidiyePmtSJXHOIcQk1vUslIgJs+RKgoMzDuMKc3or+drx
-        Tb2zddx9ToWN/ZA04WYq+O05wg==
-X-Google-Smtp-Source: ABdhPJzQfSmnfR0G1sOyYPd3hsEqIvngYIz1b2nbxP+KHp/4YvgtL1f1Ho3I9NvGxE1etSwgHmI7qQ==
-X-Received: by 2002:aed:2f04:: with SMTP id l4mr25452746qtd.227.1595903995355;
-        Mon, 27 Jul 2020 19:39:55 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id z3sm13885548qkc.4.2020.07.27.19.39.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oUYI/adhyPiJsueR+/blXGuxT74bedpBLyWN5AzH71w=;
+        b=psTg+EUqnWjhALykIPO6hiJ4yoUUyrviOWxz1C5QpyEmfaai6oO+1iCQtEvNObJ/6M
+         TEQW9bdTsj4wU9NieYKIcYggKrA3aIkMRiLnFe6/C++ZR4fNtoOLCiwXo/XHPZPJo8DK
+         U22h+ztSnrQ9fMqHghUPErhgP5bfudtCrsbrQTz0+lgWdTv0etugMlpTi4IpsvM8OQos
+         K94kCHLLW/tYm3JUtOLtfQ3SKzESnGND1tBDEcK009KEElTTo7OWJVrTAMowsX92ssqu
+         bsXmfNNB8oEjCyKKisufCleLPKzpE3+jz7GEEIP1uIhSe+Rg9Sz4s4E8/3VaLA2MFuYh
+         AhWQ==
+X-Gm-Message-State: AOAM530IGBqhB6teIsPRbsHfCerzPwGVt+vTKo8TBXJho9rB+zHThhfB
+        rG8dcWjXAU/0x1wdN8o52YQ=
+X-Google-Smtp-Source: ABdhPJwEW/i6cr8yKGUV4iUrV+oc9zuODe5AZFGhlurHT47TWT1ZKuVR/jgiS2zUyWoOzg6xYrAKag==
+X-Received: by 2002:a63:df54:: with SMTP id h20mr21931159pgj.319.1595903956116;
+        Mon, 27 Jul 2020 19:39:16 -0700 (PDT)
+Received: from octofox.cadence.com ([2601:641:400:e00:19b7:f650:7bbe:a7fb])
+        by smtp.gmail.com with ESMTPSA id q66sm16428921pga.29.2020.07.27.19.39.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Jul 2020 19:39:54 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 7/7] arm64: dts: qcom: sm8250: add interconnect nodes
-Date:   Mon, 27 Jul 2020 22:38:06 -0400
-Message-Id: <20200728023811.5607-8-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200728023811.5607-1-jonathan@marek.ca>
-References: <20200728023811.5607-1-jonathan@marek.ca>
+        Mon, 27 Jul 2020 19:39:15 -0700 (PDT)
+From:   Max Filippov <jcmvbkbc@gmail.com>
+To:     linux-xtensa@linux-xtensa.org
+Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: [PATCH] xtensa: fix closing endif comment
+Date:   Mon, 27 Jul 2020 19:38:53 -0700
+Message-Id: <20200721024751.1257-1-jcmvbkbc@gmail.com>
+X-Mailer: git-send-email 2.20.1
+Received: from octofox.cadence.com ([2601:641:400:e00:19b7:f650:7bbe:a7fb])
+ by smtp.gmail.com with ESMTPSA id p9sm14336962pgc.77.2020.07.20.19.48.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 20 Jul 2020 19:48:03 -0700 (PDT)
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,134 +70,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the interconnect dts nodes for sm8250.
+Commit 8f74afa22d9b ("xtensa: switch to generic version of pte
+allocation") introduced the following build warning for xtensa
+  arch/xtensa/include/asm/pgalloc.h:67:8: warning: extra tokens at end of
+  #endif directive [-Wendif-labels]
+Fix #endif comment.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+Fixes: 8f74afa22d9b ("xtensa: switch to generic version of pte allocation")
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 ---
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 82 ++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
+Andrew, could you please take this patch as the change that it fixes is
+currently in the mm tree?
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 636e2196138c..945bd4a9d640 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -7,6 +7,7 @@
- #include <dt-bindings/clock/qcom,gcc-sm8250.h>
- #include <dt-bindings/clock/qcom,gpucc-sm8250.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/interconnect/qcom,sm8250.h>
- #include <dt-bindings/mailbox/qcom-ipcc.h>
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
-@@ -978,6 +979,55 @@ spi13: spi@a94000 {
- 			};
- 		};
+ arch/xtensa/include/asm/pgalloc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/xtensa/include/asm/pgalloc.h b/arch/xtensa/include/asm/pgalloc.h
+index 699a8fdf9005..d3a22da4d2c9 100644
+--- a/arch/xtensa/include/asm/pgalloc.h
++++ b/arch/xtensa/include/asm/pgalloc.h
+@@ -64,6 +64,6 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+ }
  
-+		config_noc: interconnect@1500000 {
-+			compatible = "qcom,sm8250-config-noc";
-+			reg = <0 0x01500000 0 0xa580>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		system_noc: interconnect@1620000 {
-+			compatible = "qcom,sm8250-system-noc";
-+			reg = <0 0x01620000 0 0x1c200>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mc_virt: interconnect@163d000 {
-+			compatible = "qcom,sm8250-mc-virt";
-+			reg = <0 0x0163d000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre1_noc: interconnect@16e0000 {
-+			compatible = "qcom,sm8250-aggre1-noc";
-+			reg = <0 0x016e0000 0 0x1f180>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		aggre2_noc: interconnect@1700000 {
-+			compatible = "qcom,sm8250-aggre2-noc";
-+			reg = <0 0x01700000 0 0x33000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		compute_noc: interconnect@1733000 {
-+			compatible = "qcom,sm8250-compute-noc";
-+			reg = <0 0x01733000 0 0xa180>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		mmss_noc: interconnect@1740000 {
-+			compatible = "qcom,sm8250-mmss-noc";
-+			reg = <0 0x01740000 0 0x1f080>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		ufs_mem_hc: ufshc@1d84000 {
- 			compatible = "qcom,sm8250-ufshc", "qcom,ufshc",
- 				     "jedec,ufs-2.0";
-@@ -1050,6 +1100,13 @@ ufs_mem_phy_lanes: lanes@1d87400 {
- 			};
- 		};
+ #define pmd_pgtable(pmd) pmd_page(pmd)
+-#endif CONFIG_MMU
++#endif /* CONFIG_MMU */
  
-+		ipa_virt: interconnect@1e00000 {
-+			compatible = "qcom,sm8250-ipa-virt";
-+			reg = <0 0x01e00000 0 0x1000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		tcsr_mutex_regs: syscon@1f40000 {
- 			compatible = "syscon";
- 			reg = <0x0 0x01f40000 0x0 0x40000>;
-@@ -1364,6 +1421,27 @@ usb_2_ssphy: lane@88eb200 {
- 			};
- 		};
- 
-+		dc_noc: interconnect@90c0000 {
-+			compatible = "qcom,sm8250-dc-noc";
-+			reg = <0 0x090c0000 0 0x4200>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		gem_noc: interconnect@9100000 {
-+			compatible = "qcom,sm8250-gem-noc";
-+			reg = <0 0x09100000 0 0xb4000>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
-+		npu_noc: interconnect@9990000 {
-+			compatible = "qcom,sm8250-npu-noc";
-+			reg = <0 0x09990000 0 0x1600>;
-+			#interconnect-cells = <1>;
-+			qcom,bcm-voters = <&apps_bcm_voter>;
-+		};
-+
- 		usb_1: usb@a6f8800 {
- 			compatible = "qcom,sm8250-dwc3", "qcom,dwc3";
- 			reg = <0 0x0a6f8800 0 0x400>;
-@@ -2359,6 +2437,10 @@ rpmhpd_opp_turbo_l1: opp10 {
- 					};
- 				};
- 			};
-+
-+			apps_bcm_voter: bcm_voter {
-+				compatible = "qcom,bcm-voter";
-+			};
- 		};
- 	};
- 
+ #endif /* _XTENSA_PGALLOC_H */
 -- 
-2.26.1
+2.20.1
 
