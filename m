@@ -2,74 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF00523033F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF3523032F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 08:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727873AbgG1GrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 02:47:10 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:49264 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726944AbgG1GrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 02:47:06 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3511D200AF9;
-        Tue, 28 Jul 2020 08:47:04 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1E9E6200B56;
-        Tue, 28 Jul 2020 08:47:00 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C66DC4030E;
-        Tue, 28 Jul 2020 08:46:54 +0200 (CEST)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH 2/2] watchdog: imx7ulp: Watchdog should continue running for wait/stop mode
-Date:   Tue, 28 Jul 2020 14:42:47 +0800
-Message-Id: <1595918567-2017-2-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1595918567-2017-1-git-send-email-Anson.Huang@nxp.com>
-References: <1595918567-2017-1-git-send-email-Anson.Huang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726981AbgG1GnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 02:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgG1GnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 02:43:03 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C637C0619D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:43:03 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r4so14139054wrx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Jul 2020 23:43:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PEyyokjjuIzOHJWToJ1uYDFOw2ElGPDs1QjI31k7aZU=;
+        b=aqqVBJtHEPmeTQzyQPzuQVXHHoQ/pNis//A6zal8T2xtUi7xxxqnfU5nNtf4ke4PRi
+         QvDnYrEvKYr2f/Is8c4qbGMPgH1ZrtOQckOLMMq2fhTb49RRkeu7aY0HxKZey/tgJhLC
+         9tVcwNBtxaay1c2W41OeoLzmG8jptIJ8O6IUpg+u54rnVP71N3Tw09pWAxjVJFjefPmW
+         a0LHf22hKKUWn7tRVyZHwwjhNCDL4eAMiHsxO/GF8LY3b06VW28+2Esol7/LmCtJGBrf
+         HIDBN4cMbPgyePRzFdqr4naUQY5mdQrjBXFyzkTQIcTyJlEtZx5J8JRIl81jHCK/nnbI
+         Oi9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PEyyokjjuIzOHJWToJ1uYDFOw2ElGPDs1QjI31k7aZU=;
+        b=fmlvrqDvunCbnh2ZrH+pGPKIFvsSh9BJdyqLoRSj5x4bwFEnWq403wHlDQMb8IDF/E
+         5dpjmzCaJJRTQnZ4w+3Wt8L2kN8ELVreLNFHz6B9JC0sDrG+2WismKbH2m3fAKE6QiX1
+         jP+04IvlYfiwqrTDwc4hPiO5nFeDQqnqb0b9u7X5+b6WjOLfX6JGoOVjb2GKTVm01tiz
+         MTEHNSnuTG4l2WeqSLQtOWKU3LafKe7oObT0aUU/9pRqW+WDpnvZsDofzDPw9Ge9VWT+
+         wlpe50ZwplluFXD9vsfLWFth1r/467ZhRm4SxPHvWYrKtX9Tlw2Onw3Ks607IldustET
+         z1Lg==
+X-Gm-Message-State: AOAM53253Ob3Hspee1EN9+6RJHX15baIOr9MHREdcnZXeHR2k4/PnKoI
+        M2FRwUP1kBvQZhclPi/D0SIiVg==
+X-Google-Smtp-Source: ABdhPJwVXoe0UeXSn+WViV0QpvvtjaE0lw5j1emPz6pC149EibUoc72LkGlOlwSQmhQzUMbw+5N9lQ==
+X-Received: by 2002:a5d:664e:: with SMTP id f14mr23509500wrw.6.1595918582237;
+        Mon, 27 Jul 2020 23:43:02 -0700 (PDT)
+Received: from dell ([2.27.167.73])
+        by smtp.gmail.com with ESMTPSA id g7sm15800842wrv.82.2020.07.27.23.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jul 2020 23:43:01 -0700 (PDT)
+Date:   Tue, 28 Jul 2020 07:42:59 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Josef Friedl <josef.friedl@speed.at>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Subject: Re: [PATCH 4/8] mfd: Add support for the MediaTek MT6359 PMIC
+Message-ID: <20200728064259.GA1850026@dell>
+References: <1595509133-5358-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1595509133-5358-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1595509133-5358-5-git-send-email-hsin-hsiung.wang@mediatek.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel idle, system will enter wait/stop mode, wdog should continue
-running in this scenario, and the refresh thread can wake up system from
-wait/stop mode.
+On Thu, 23 Jul 2020, Hsin-Hsiung Wang wrote:
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- drivers/watchdog/imx7ulp_wdt.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> This adds support for the MediaTek MT6359 PMIC. This is a
+> multifunction device with the following sub modules:
+> 
+> - Regulator
+> - Codec
+> - Interrupt
+> 
+> It is interfaced to the host controller using SPI interface
+> by a proprietary hardware called PMIC wrapper or pwrap.
+> MT6359 MFD is a child device of the pwrap.
+> 
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+> ---
+>  drivers/mfd/mt6358-irq.c             |  24 ++
+>  drivers/mfd/mt6397-core.c            |  23 ++
+>  include/linux/mfd/mt6359/core.h      | 133 +++++++++
+>  include/linux/mfd/mt6359/registers.h | 529 +++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/mt6397/core.h      |   1 +
+>  5 files changed, 710 insertions(+)
+>  create mode 100644 include/linux/mfd/mt6359/core.h
+>  create mode 100644 include/linux/mfd/mt6359/registers.h
 
-diff --git a/drivers/watchdog/imx7ulp_wdt.c b/drivers/watchdog/imx7ulp_wdt.c
-index b414ecf..271a2e4 100644
---- a/drivers/watchdog/imx7ulp_wdt.c
-+++ b/drivers/watchdog/imx7ulp_wdt.c
-@@ -22,6 +22,8 @@
- #define WDOG_CS_CLK		(LPO_CLK << LPO_CLK_SHIFT)
- #define WDOG_CS_EN		BIT(7)
- #define WDOG_CS_UPDATE		BIT(5)
-+#define WDOG_CS_WAIT		BIT(1)
-+#define WDOG_CS_STOP		BIT(0)
- 
- #define WDOG_CNT	0x4
- #define WDOG_TOVAL	0x8
-@@ -174,7 +176,8 @@ static void imx7ulp_wdt_init(void __iomem *base, unsigned int timeout)
- 	/* set an initial timeout value in TOVAL */
- 	writel(timeout, base + WDOG_TOVAL);
- 	/* enable 32bit command sequence and reconfigure */
--	val = WDOG_CS_CMD32EN | WDOG_CS_CLK | WDOG_CS_UPDATE;
-+	val = WDOG_CS_CMD32EN | WDOG_CS_CLK | WDOG_CS_UPDATE |
-+	      WDOG_CS_WAIT | WDOG_CS_STOP;
- 	writel(val, base + WDOG_CS);
- 	imx7ulp_wdt_wait(base, WDOG_CS_RCS);
- 	local_irq_enable();
+Looks okay, in general.
+
+For my own reference (apply this as-is to your sign-off block):
+
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+
 -- 
-2.7.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
