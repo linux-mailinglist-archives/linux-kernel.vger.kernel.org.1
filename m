@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37B4230AB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E82230AC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 14:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729625AbgG1MzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 08:55:09 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:43243 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729556AbgG1MzI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 08:55:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1595940907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1jIaH9mui3VhKIIC+urPLmqB7hNXFRcpyGysV6l0cLE=;
-        b=C76rDEI5NV3uvQPyGJpSmHaUyXRFn4k/iIKSAkys7LBEE352Gv2Ejweb44wxQf6uJYG+Z1
-        6fKqR3HaYq1gXKvYLmg9lE78BJg/75CJPg+v6Q/d9J+DgtQ66xs/IyCH50weJ+7LhGqPeQ
-        H6LpLqT7BhFsfp+vBRcSkuVzX3sNkUw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-mz2Gj0wfPkKqLeSCgzuwHw-1; Tue, 28 Jul 2020 08:55:03 -0400
-X-MC-Unique: mz2Gj0wfPkKqLeSCgzuwHw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05A0B8017FB;
-        Tue, 28 Jul 2020 12:55:01 +0000 (UTC)
-Received: from krava (unknown [10.40.192.211])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9B33671D0E;
-        Tue, 28 Jul 2020 12:54:57 +0000 (UTC)
-Date:   Tue, 28 Jul 2020 14:54:56 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     kajoljain <kjain@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        "Paul A. Clarke" <pc@us.ibm.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCHv3 00/19] perf metric: Add support to reuse metric
-Message-ID: <20200728125456.GD1243191@krava>
-References: <20200719181320.785305-1-jolsa@kernel.org>
- <dbe59791-937d-de95-4ba0-c34e7a1cd273@linux.ibm.com>
- <20200720072237.GC760733@krava>
- <6cb72b48-5244-9faf-a9e5-67858c732b83@linux.ibm.com>
- <20200720081943.GE760733@krava>
- <dd465647-da63-c473-9944-bdfec2abe484@linux.ibm.com>
- <20200720191625.GL760733@krava>
- <20200728123955.GZ40195@kernel.org>
+        id S1729771AbgG1M5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 08:57:08 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:8844 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729622AbgG1M5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 08:57:07 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 84C4B6635318109F9F2B;
+        Tue, 28 Jul 2020 20:57:04 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Jul 2020 20:56:59 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+CC:     <linuxarm@huawei.com>
+Subject: [PATCH v3] drm/hisilicon: Fixed the warning: Assignment of 0/1 to bool variable
+Date:   Tue, 28 Jul 2020 20:55:07 +0800
+Message-ID: <1595940907-17874-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728123955.GZ40195@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 09:39:55AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Mon, Jul 20, 2020 at 09:16:25PM +0200, Jiri Olsa escreveu:
-> > On Mon, Jul 20, 2020 at 02:32:40PM +0530, kajoljain wrote:
-> > > 
-> > > 
-> > > On 7/20/20 1:49 PM, Jiri Olsa wrote:
-> > > > On Mon, Jul 20, 2020 at 01:39:24PM +0530, kajoljain wrote:
-> > > > 
-> > > > SNIP
-> > > > 
-> > > >> This is with your perf/metric branch:
-> > > >> command# ./perf stat -M PowerBUS_Frequency -C 0 -I 1000
-> > > >> assertion failed at util/metricgroup.c:709
-> > > >> #           time             counts unit events
-> > > >>      1.000054545          7,807,505      hv_24x7/pm_pb_cyc,chip=0/ #      2.0 GHz  PowerBUS_Frequency_0
-> > > >>      1.000054545          7,807,485      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > > >>      2.000232761          7,807,500      hv_24x7/pm_pb_cyc,chip=0/ #      2.0 GHz  PowerBUS_Frequency_0
-> > > >>      2.000232761          7,807,478      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > > >>      3.000363762          7,799,665      hv_24x7/pm_pb_cyc,chip=0/ #      1.9 GHz  PowerBUS_Frequency_0
-> > > >>      3.000363762          7,807,502      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > > >> ^C     3.259418599          2,022,150      hv_24x7/pm_pb_cyc,chip=0/ #      0.5 GHz  PowerBUS_Frequency_0
-> > > >>      3.259418599          2,022,164      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > > >>
-> > > >>  Performance counter stats for 'CPU(s) 0':
-> > > >>
-> > > >>         25,436,820      hv_24x7/pm_pb_cyc,chip=0/ #      6.4 GHz  PowerBUS_Frequency_0
-> > > >>         25,444,629      hv_24x7/pm_pb_cyc,chip=1/                                   
-> > > >>
-> > > >>        3.259505529 seconds time elapsed
-> > > > 
-> > > > I found the bug, we are not adding runtime metrics as standalone ones,
-> > > > but as referenced metrics.. will fix and try to add test for that
-> > > > 
-> > > > as for testing.. do I need some special ppc server to have support for this? 
-> > > 
-> > > Hi jiri,
-> > >     We need power9 lpar machine and need to make sure `CONFIG_HV_PERF_CTRS` is
-> > > enabled.
-> > 
-> > could you please try with following patch on top?
-> 
-> So, can you point me to the cset that this should be merged into? Or can
-> it come as a separate patch? I'll put what I have in the tmp.perf/core
-> branch, and will do testing, please let me know if you want to fold it
-> or as a followup patch.
+fixed the following warning:
+hibmc_drm_drv.c:296:1-18:WARNING: Assignment of 0/1 to bool variable.
+hibmc_drm_drv.c:301:2-19: WARNING: Assignment of 0/1 to bool variable.
 
-sorry for delay.. I planned to squash the change in, but if you already
-pushed something out, I'll rebase on top, I will post new version tomorrow
+v2:
+using the pci_dev.msi_enabled instead of priv->msi_enabled.
 
-1st 7 patches are good to go in any case
+v3:
+just call pci_enable_msi() and pci_disable_msi(), it's no need to
+set dev->pdev->msi_enabled again.
 
-thanks,
-jirka
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 5 +----
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 1 -
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index 249c298..b8d839a 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -254,9 +254,8 @@ static int hibmc_unload(struct drm_device *dev)
+ 
+ 	if (dev->irq_enabled)
+ 		drm_irq_uninstall(dev);
+-	if (priv->msi_enabled)
+-		pci_disable_msi(dev->pdev);
+ 
++	pci_disable_msi(dev->pdev);
+ 	hibmc_kms_fini(priv);
+ 	hibmc_mm_fini(priv);
+ 	dev->dev_private = NULL;
+@@ -294,12 +293,10 @@ static int hibmc_load(struct drm_device *dev)
+ 		goto err;
+ 	}
+ 
+-	priv->msi_enabled = 0;
+ 	ret = pci_enable_msi(dev->pdev);
+ 	if (ret) {
+ 		DRM_WARN("enabling MSI failed: %d\n", ret);
+ 	} else {
+-		priv->msi_enabled = 1;
+ 		ret = drm_irq_install(dev, dev->pdev->irq);
+ 		if (ret)
+ 			DRM_WARN("install irq failed: %d\n", ret);
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+index 6097687..a683763 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+@@ -25,7 +25,6 @@ struct hibmc_drm_private {
+ 	void __iomem   *fb_map;
+ 	unsigned long  fb_base;
+ 	unsigned long  fb_size;
+-	bool msi_enabled;
+ 
+ 	/* drm */
+ 	struct drm_device  *dev;
+-- 
+2.7.4
 
