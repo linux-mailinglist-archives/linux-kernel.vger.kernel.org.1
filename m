@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAF7231028
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D86323102D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 18:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbgG1Qz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 12:55:29 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:40496 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731504AbgG1Qz2 (ORCPT
+        id S1731657AbgG1Q4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 12:56:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731540AbgG1Q4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 12:55:28 -0400
-Received: by mail-pl1-f193.google.com with SMTP id u10so680129plr.7;
-        Tue, 28 Jul 2020 09:55:28 -0700 (PDT)
+        Tue, 28 Jul 2020 12:56:45 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA5BC0619D9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 09:56:45 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id l4so21297685ejd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 09:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=YqljJR74+Mn7SppABFl/S/+hKBpdw+21MScTQOdBTOE=;
+        b=lV7+TqzjxoGceDfe6LGN3Ae63gOeC2fiafu3RVtn3n9OvQujyBC7h6Pa35EQrNjIM9
+         SBq6F0KiK0gfUyUMZIg7nzFQt2d3/xeo1cnOYTFRA/yIf+f1wOb5mQfu2fWla2Ova2vv
+         gDVbejsy/SvwzA0CLIMSxnOklpzBvt23FHYAyD0QZxOA/GY/dNh5UbrcP2A5lVqeWNbR
+         /tz9Qziq88HE5hKswpRvbS31xfwMCXRsYIpUODRBB0QPfx0weACZiuLaqlOwQ8ypCeH8
+         PDOuuMCRKyO9CM/FXwoebiuaDH607zJLR7nGSGaWiAQSCp+NGk41FRpGq8sVZ8iLTxlA
+         FAjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=u6+EWe+OefPWlNaewDc8Nty4sIHeAezZ0qkcJ+zPgXY=;
-        b=PoKQs1wvTl7oceqvP68X/d4U9Cf+/KtPjtX9yWhLM477iZZfWwzOUh1lBlsF5GNTAD
-         jWskz3H+CCduW49FGs9/fd+ZPvhTSU4bccLUZo4t6JN6rxn0PmL/XwOs5b5r6lVZRgLq
-         nO/4lL0WHAVI0/5EiBdwFKd0yrHqp4qQbw6OrK5k4tE6yS1gNjFH1xDnmPUi/sshZ+A8
-         3H6/RhpI+sAn+Geec/DGkP7oSKvz/ZQj/sYBE8S4oPT6lBxuAGs4ZOz/yuGtOv5ZvdVk
-         lhDemg9ix9DjjsxklczF5m/4n0n+WOZIb4kYCuyLdgnwJ/9jpf5rADL3GjQfhrlNwa0Q
-         MEJg==
-X-Gm-Message-State: AOAM533vXxU6/XuSUcEw5kVpwGgejrglcolHAI3RjnM0HY08PNvUrxK0
-        0l5xfaVxHt8gZTpFiHVpDZXsl1q2
-X-Google-Smtp-Source: ABdhPJwAUx97vkeQNmMP3hCbadsOeNsDpzlCvcBDYjWdZV/9kElAlEiQcQVF2YqDlAI0NJxBS1nNqA==
-X-Received: by 2002:a17:902:7484:: with SMTP id h4mr9677382pll.139.1595955327430;
-        Tue, 28 Jul 2020 09:55:27 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id fh14sm3489892pjb.38.2020.07.28.09.55.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jul 2020 09:55:26 -0700 (PDT)
-Subject: Re: [PATCH v1] block: Remove callback typedefs for blk_mq_ops
-To:     Daniel Wagner <dwagner@suse.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200728162036.118211-1-dwagner@suse.de>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <ec76f741-2e4b-69bf-dacd-8d917e10533c@acm.org>
-Date:   Tue, 28 Jul 2020 09:55:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=YqljJR74+Mn7SppABFl/S/+hKBpdw+21MScTQOdBTOE=;
+        b=ORMv7K8Q4j+lfqy2NKkKRmiuRdlR4K+z2iutKvF7kAdEjWxWyYfBAC2+Z8aM96c+S2
+         oInxE8D0yDkpMsqr/rKkdeiCrSaXdWl2la878kSsnJ/aqa5eRTrrlWfUHGPim79Uvj6v
+         wri3mHNMxzmLTopga+n835B/Ng0n+wUEXoEpeiZXbUNwD4+X/HAVM3Lo+negfgRGuNR7
+         jlXOkdvTgHqo0T6zedmIQ7aVOc1N81gTNIF4OY6u7pSUxnO3+NMdvCnFXF+mEWXfqSle
+         fSe0f1epo6adfb356DazlzrHlUuQU7fFtavMU+zWdy4pl5gwu6J1bK+Hps/vr96jngYA
+         6CIA==
+X-Gm-Message-State: AOAM5304+SIliq1bsvqf9if3FyINOtcb6i+jR9Wy4VepfIgnvqA2eMXy
+        0yJgGb9wTjFLlTKatlWqB6lDM4YKbSfeSpW6vyI=
+X-Google-Smtp-Source: ABdhPJyD+qobOKVu+X8+1AME7mvZ7Tyyj3L9BOKohhAIRnTEH/cKzWAhjm8THBy3gXtB9glcDk36e2LkhcaTqCtKyq4=
+X-Received: by 2002:a17:906:ca4d:: with SMTP id jx13mr18490835ejb.548.1595955403537;
+ Tue, 28 Jul 2020 09:56:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200728162036.118211-1-dwagner@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a50:8a99:0:0:0:0:0 with HTTP; Tue, 28 Jul 2020 09:56:43
+ -0700 (PDT)
+Reply-To: mrsnicole.france1958@outlook.com
+From:   Mrs Nicole Marois Benoite <mrsnicolefrance1958@gmail.com>
+Date:   Tue, 28 Jul 2020 09:56:43 -0700
+Message-ID: <CAJKBOPmG1o==twVStViQzZEmz2Lyb3D3MsODbQT1nFq_vz0HSg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-28 09:20, Daniel Wagner wrote:
-> No need to define typedefs for the callbacks, because there is not a
-> single user except blk_mq_ops.
+Dear Beloved
 
-Thanks for having done this work.
+I am Mrs Nicole Benoite Marois and i have been suffering from ovarian
+cancer disease and the doctor says that i have just few days to leave.
+I am from (Paris) France but based in Africa Burkina Faso since eight
+years ago as a business woman dealing with gold exportation.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Now that i am about to end the race like this, without any family
+members and no child. I have $3 Million US DOLLARS in Africa
+Development Bank (ADB) Burkina Faso which i instructed the bank to remit and
+give to Orphanage & Teaching Volunteer Work in Burkina Faso.But my
+mind is not at
+rest because i am writing this letter now through the help of my
+computer beside my sick bed.
+
+I also have $4.5 Million US Dollars at Eco-Bank here in Burkina Faso
+and i instructed the bank to transfer the fund to you as foreigner
+that will apply to the bank after i have gone, that they should
+release the fund to him/her,but you will assure me that you will take
+50% of the fund and give 50% to the orphanages home in your country
+for my heart to rest.
+
+Respond to me immediately via my private email address
+(mrsnicole.france1958@outlook.com) for further details since I have just
+few days to end my life due to the ovarian cancer disease, hoping you
+will understand my point
+
+Yours fairly friend,
+
+Mrs Nicole Benoite Marois.
