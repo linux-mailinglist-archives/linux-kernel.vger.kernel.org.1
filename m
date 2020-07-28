@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3390E23108D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB11D23108F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Jul 2020 19:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731909AbgG1RJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 13:09:35 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:51838 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731070AbgG1RJf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 13:09:35 -0400
-Received: from 89-64-88-69.dynamic.chello.pl (89.64.88.69) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id 834f0adb485bc348; Tue, 28 Jul 2020 19:09:33 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Francisco Jerez <currojerez@riseup.net>
-Subject: [PATCH] cpufreq: intel_pstate: Fix EPP setting via sysfs in active mode
-Date:   Tue, 28 Jul 2020 19:09:32 +0200
-Message-ID: <11585512.O9o76ZdvQC@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        id S1731919AbgG1RJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 13:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731070AbgG1RJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 13:09:44 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10DEF20786;
+        Tue, 28 Jul 2020 17:09:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1595956184;
+        bh=Vc2rMDS5cOizIyVH8O3qqpisYycogDLFoYxum968D7o=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qHuYyuwqh5urEGHmKOBY7VYwAq9K+8QG/tt9zPJMFOI3WY0jQsXZv/NPYp4+kuifW
+         NnUvl6v+K9i0gUfTj1rj1N7f0ojQjcvvejl/5QZkke9BlItAy2UxLf47ikL307zwP+
+         9mvsrmrNP0JeIqaIIyo34HMrdEkeSdmIsdeSfgIE=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] dmaengine: ti: omap-dma: Drop of_match_ptr to fix -Wunused-const-variable
+Date:   Tue, 28 Jul 2020 19:09:39 +0200
+Message-Id: <20200728170939.28278-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The of_device_id is included unconditionally by of.h header and used
+in the driver as well.  Remove of_match_ptr to fix W=1 compile test
+warning with !CONFIG_OF:
 
-Because intel_pstate_set_energy_pref_index() reads and writes the
-MSR_HWP_REQUEST register without using the cached value of it used by
-intel_pstate_hwp_boost_up() and intel_pstate_hwp_boost_down(), those
-functions may overwrite the value written by it and so the EPP value
-set via sysfs may be lost.
+    drivers/dma/ti/omap-dma.c:1892:34: warning: 'omap_dma_match' defined but not used [-Wunused-const-variable=]
+     1892 | static const struct of_device_id omap_dma_match[] = {
 
-To avoid that, make intel_pstate_set_energy_pref_index() take the
-cached value of MSR_HWP_REQUEST just like the other two routines
-mentioned above and update it with the new EPP value coming from
-user space in addition to updating the MSR.
-
-Note that the MSR itself still needs to be updated too in case
-hwp_boost is unset or the boosting mechanism is not active at the
-EPP change time.
-
-Fixes: e0efd5be63e8 ("cpufreq: intel_pstate: Add HWP boost utility and sched util hooks")
-Reported-by: Francisco Jerez <currojerez@riseup.net>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
+ drivers/dma/ti/omap-dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This patch is on top of https://patchwork.kernel.org/patch/11689347/
-
----
- drivers/cpufreq/intel_pstate.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -653,11 +653,12 @@ static int intel_pstate_set_energy_pref_
- 		epp = cpu_data->epp_default;
+diff --git a/drivers/dma/ti/omap-dma.c b/drivers/dma/ti/omap-dma.c
+index 918301e17552..c9fe5e3a6b55 100644
+--- a/drivers/dma/ti/omap-dma.c
++++ b/drivers/dma/ti/omap-dma.c
+@@ -1904,7 +1904,7 @@ static struct platform_driver omap_dma_driver = {
+ 	.remove	= omap_dma_remove,
+ 	.driver = {
+ 		.name = "omap-dma-engine",
+-		.of_match_table = of_match_ptr(omap_dma_match),
++		.of_match_table = omap_dma_match,
+ 	},
+ };
  
- 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
--		u64 value;
--
--		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
--		if (ret)
--			return ret;
-+		/*
-+		 * Use the cached HWP Request MSR value, because the register
-+		 * itself may be updated by intel_pstate_hwp_boost_up() or
-+		 * intel_pstate_hwp_boost_down() at any time.
-+		 */
-+		u64 value = READ_ONCE(cpu_data->hwp_req_cached);
- 
- 		value &= ~GENMASK_ULL(31, 24);
- 
-@@ -667,6 +668,12 @@ static int intel_pstate_set_energy_pref_
- 			epp = epp_values[pref_index - 1];
- 
- 		value |= (u64)epp << 24;
-+		/*
-+		 * The only other updater of hwp_req_cached in the active mode,
-+		 * intel_pstate_hwp_set(), is called under the same lock as this
-+		 * function, so it cannot run in parallel with the update below.
-+		 */
-+		WRITE_ONCE(cpu_data->hwp_req_cached, value);
- 		ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
- 	} else {
- 		if (epp == -EINVAL)
-
-
+-- 
+2.17.1
 
