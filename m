@@ -2,117 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CCD2320E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548CA2320E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 16:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgG2Oqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 10:46:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34998 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgG2Oqt (ORCPT
+        id S1726718AbgG2Orl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 10:47:41 -0400
+Received: from sonic316-20.consmr.mail.ne1.yahoo.com ([66.163.187.146]:35486
+        "EHLO sonic316-20.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726353AbgG2Orl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 10:46:49 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06TEk1TK181432;
-        Wed, 29 Jul 2020 10:46:40 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 32jqrt1vxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 10:46:40 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 06TEjMvB017665;
-        Wed, 29 Jul 2020 14:46:39 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03wdc.us.ibm.com with ESMTP id 32gcy5th53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Jul 2020 14:46:39 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 06TEka1720971854
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Jul 2020 14:46:36 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B46707805C;
-        Wed, 29 Jul 2020 14:46:38 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 155B57805E;
-        Wed, 29 Jul 2020 14:46:36 +0000 (GMT)
-Received: from [153.66.254.194] (unknown [9.80.208.235])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Jul 2020 14:46:36 +0000 (GMT)
-Message-ID: <1596033995.4356.15.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Can Guo <cang@codeaurora.org>, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm
-Date:   Wed, 29 Jul 2020 07:46:35 -0700
-In-Reply-To: <20200729143213.GC1530967@rowland.harvard.edu>
-References: <20200706164135.GE704149@rowland.harvard.edu>
-         <d0ed766b-88b0-5ad5-9c10-a4c3b2f994e3@puri.sm>
-         <20200728200243.GA1511887@rowland.harvard.edu>
-         <f3958758-afce-8add-1692-2a3bbcc49f73@puri.sm>
-         <20200729143213.GC1530967@rowland.harvard.edu>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
+        Wed, 29 Jul 2020 10:47:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1596034060; bh=frecwKuhI+/snRdUkLEaZ1uRzOkmNOLXMS41Vwdb/SQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=aamycZoENc0mGZ2jvb2CCHW0Krs3JyR1uBYaJEMC5583uvcn4kaOueFBnjtJhZzFrfikWEqSGrg6J+qvqJ3sgy6ZmUAxUwl3Mo5LX+Ih1+b3Uv1yhPs3ZpiplGKt9TveqkmRxIF348b1VVc0d6th2NBz4zsX4VGWv0CFBINp5ufP0n0nMdeWCyueC3BaVic9zTVKF33kQHw1T+U2Bls2ABIrE3Oz4NRt4vm1/viSjrl/ZE/FAWvuk66YvCYlpRHQHDd4pTGhvZHaZuKsmqqn9YdlcP+A9TVYvibhc+/ppEhEcUkhG7DgeTk5e07QwBWHczsv0tzxoyXObYA+GGBsJw==
+X-YMail-OSG: E2C2.HoVM1k37S7sk.NRakaDgUn202YzRwJ2EqdZ4Xmgx3UqYC4QHizwTFMFHkI
+ G1Q3W25Th2vzgTR3L_4RmD0qMsZn5noRuY2okfC73bFVrBObrTVeJ6_bMoaRV26yO90l2rOMS_ra
+ DMHVjJBXcBec3bSkVB_3FT8XDq8Cdu9dvWmu_jW6vX3J_yoZWbpwks7fFV2bPNcxtWwbErbrYAGp
+ 1AcQAZd_N_JQZtYb8BQVR0tsL7rGOybfH.is93UuQtBu1ipok8fUtmvdf82xTt93b7t.YMEFC8pQ
+ fP3_G2eRaao8ENDbbo73vzxk86cCLXmB68XPZvttzTtrWz280lYkfnzRs3eZsrFN2Ff8TujhukgW
+ hRwnvxbyyURwj8IAjwaPq5ngal3f.I6VfIbEpjnlFTmrDmNOL5fQJ.9WI.rLVRtFu9V7.Nb2cfUv
+ 9KU8tQu81.ouWbjub55Fv2hOZso98RKin2qLiUeaw0HQqk_trJBxvmTMrjy31nHtEkKo3p.jw3xS
+ 2qGvMOkQW3i7yMasaUrqez81h_gdSXiivoqkjWBsw.9gCT4cqfyzROL2xK6bHPZCC77wINfxmsyU
+ 65fxWK96xGz8mzZTY1b9WVWaw6ZeARoXBq.QzcCxYx.mUlsBpwAYaQPzbPxNYzgtjmsHpwvvTYdC
+ vU90kp9pjdVVqN8mlFZwyrZkbQg4noSrNCe0AowiuK1yfie.8gc7qi1n_J4qvxcuXjlMhX0_TXuP
+ 26cEQYUy7UtqkUQ6e4gBjTp4c4WGdHM3BjQ89V.nUbPpe8Q2G0U7pv2yK5sYthywzrAmVtoX3TfA
+ BiUlXrWQjhYDwBgU_pj4ngKk52x._gW3Im79txNI0OX43fIrMJcsZ8Y0QBV2KVZafYjFPkts1nkr
+ k0y01Xt.VwkKMEsIdgSdnEfxaSiqQ_fBg6FkbW9t0p7ZjUdvIy2IyDob6Nn4JpFEF1uCpe_ZOpNJ
+ 5.AJZHY8yfU6QF.cEUru_ehdzRZclC90TtG5LmYEvB1tJbecSXGrinasZW4aoOaKf6lEZBg3jeKv
+ sPPAlnW5StPh8Q0HXZzkLprCsTOYyEbPZ56yjk3zpY0y3wKc3KAlPtVKledc4uzIpAs21FR6ngSU
+ 0tnwBQYEbkSwl5CJbAyUu5YCajdhmok.goAcdNemJV3crvBnvrFWuwUXI7nREOqS87cQIMsrW2NP
+ r90f5XQRE74zGlw3Bv0QBZ_M2g9jp1hvYQXZYYis3x3GIZbOTMEfQyUYLRQZq5STYE6MmrcbXmXc
+ dQBdRwxHrwI7XMO6JREpFW7asDw9i8D.OLI.inQHhnBJuJdSulb.4R7IYhZhjatS42W9pIuoBYOB
+ s
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 29 Jul 2020 14:47:40 +0000
+Date:   Wed, 29 Jul 2020 14:47:38 +0000 (UTC)
+From:   Mr Arthur Weinrach <bchurch72@frontiernet.net>
+Reply-To: arthurhraec@gmail.com
+Message-ID: <948023525.6257485.1596034058123@mail.yahoo.com>
+Subject: Very,
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-29_10:2020-07-29,2020-07-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 clxscore=1011 mlxlogscore=999 bulkscore=0
- spamscore=0 adultscore=0 impostorscore=0 suspectscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2007290095
+References: <948023525.6257485.1596034058123.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16271 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101 Firefox/78.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-07-29 at 10:32 -0400, Alan Stern wrote:
-> On Wed, Jul 29, 2020 at 04:12:22PM +0200, Martin Kepplinger wrote:
-> > On 28.07.20 22:02, Alan Stern wrote:
-> > > On Tue, Jul 28, 2020 at 09:02:44AM +0200, Martin Kepplinger
-> > > wrote:
-> > > > Hi Alan,
-> > > > 
-> > > > Any API cleanup is of course welcome. I just wanted to remind
-> > > > you that the underlying problem: broken block device runtime
-> > > > pm. Your initial proposed fix "almost" did it and mounting
-> > > > works but during file access, it still just looks like a
-> > > > runtime_resume is missing somewhere.
-> > > 
-> > > Well, I have tested that proposed fix several times, and on my
-> > > system it's working perfectly.  When I stop accessing a drive it
-> > > autosuspends, and when I access it again it gets resumed and
-> > > works -- as you would expect.
-> > 
-> > that's weird. when I mount, everything looks good, "sda1". But as
-> > soon as I cd to the mountpoint and do "ls" (on another SD card "ls"
-> > works but actual file reading leads to the exact same errors), I
-> > get:
-> > 
-> > [   77.474632] sd 0:0:0:0: [sda] tag#0 UNKNOWN(0x2003) Result:
-> > hostbyte=0x00 driverbyte=0x08 cmd_age=0s
-> > [   77.474647] sd 0:0:0:0: [sda] tag#0 Sense Key : 0x6 [current]
-> > [   77.474655] sd 0:0:0:0: [sda] tag#0 ASC=0x28 ASCQ=0x0
-> > [   77.474667] sd 0:0:0:0: [sda] tag#0 CDB: opcode=0x28 28 00 00 00
-> > 60 40 00 00 01 00
-> 
-> This error report comes from the SCSI layer, not the block layer.
 
-That sense code means "NOT READY TO READY CHANGE, MEDIUM MAY HAVE
-CHANGED" so it sounds like it something we should be ignoring.  Usually
-this signals a problem, like you changed the medium manually (ejected
-the CD).  But in this case you can tell us to expect this by setting
 
-sdev->expecting_cc_ua
+Hello , Greetings to you!
 
-And we'll retry.  I think you need to set this on all resumed devices.
+ My name is Mr Arthur Weinrach, I am 50 and i work with the ECOWAS bank as the
 
-James
+auditing manager. I have emailed you earlier without a response, in my
 
+first email I mentioned about my client an Engineer ,who share the same
+
+surname with you or he might be your relation and his now dead.
+
+ Please help to receive the deposit of US$15.5Million from a dormant A/c
+
+before it gets confiscated by the bank. Get back to me for more details,
+
+listed below for the security of this transaction.
+
+ 1, Private email address -
+
+2, Full Name -
+
+3, Nationality -
+
+4, Profession -
+
+5, Marital Statue -
+
+6. Date of Birth -
+
+7. Telephone -
+
+ I look forward hearing from you as soon as possible If you are willing to
+
+proceed with me. Please NOTE; if this proposal does not interest you or not
+
+capable of handling it, kindly deletes it and forget about this offer
+
+because it's not a joke neither a child's play. My email:
+
+dh2288133@gmail.com
+
+ I await your prompt reply.
+
+ Yours faithfully,
+
+Mr Arthur Weinrach
