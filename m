@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC33231D6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E4B231D73
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 13:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgG2LgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 07:36:02 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:60417 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbgG2LgB (ORCPT
+        id S1726806AbgG2Li3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 07:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726341AbgG2Li2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 07:36:01 -0400
-Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1Mth79-1kvAid1FJ1-00vAI7; Wed, 29 Jul 2020 13:36:00 +0200
-Received: by mail-qk1-f180.google.com with SMTP id 11so21837735qkn.2;
-        Wed, 29 Jul 2020 04:35:59 -0700 (PDT)
-X-Gm-Message-State: AOAM5301V01koQiw8Zw6Dp5bdFx6mxV7aSAmfU89DR0H+8bEiS9JLDtU
-        sT1tCZYpoEFjft0trMxxHBdMiInA3LLVWs5OJhE=
-X-Google-Smtp-Source: ABdhPJxo5fJ/F5KzuBO5kZ+/n0/36DVRpoaDEQranqdtWjA+xCyBnXOZvsxgXoxLXMaovJ3lcU7ByGMB4VEd0o6ogTw=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr32582255qkf.394.1596022558928;
- Wed, 29 Jul 2020 04:35:58 -0700 (PDT)
+        Wed, 29 Jul 2020 07:38:28 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05ACC061794;
+        Wed, 29 Jul 2020 04:38:27 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id e13so21801825qkg.5;
+        Wed, 29 Jul 2020 04:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Kq86ugZ9Kh4uvA8FGJVxsQ+ntooQ4buHazTmCg4C02E=;
+        b=OugQUVzjgJHFzjAaY04UeeW/f2lFj6q18wj/s6NeyGmXMYVBGC3HBg8OANBrExC4pu
+         mWq6CmVr+2tY6l83HfJlAquylDRJqXkr01Lakt5ttkOPv+Mdbklyze+Rnjzizv2n5eia
+         m1vbgF3jlB/ICPiYPKySvDDOz/sNBONWbBt/gc2rpwKTmudPpoTaZzGmMRhDX0B8/DxY
+         u/cUVpQJv+HdEJFGzwy1A8HPtWVTPNrXGuVebR8iwrcHfjeWw9OsIstqAF0+cC/ExnE2
+         Kyg92WKivbuwrRp+tV+CWLkWbJHWz+TvANJu8/mfMVq3nR9Rc5WoVu9te07DnWGPYuwb
+         Gcow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Kq86ugZ9Kh4uvA8FGJVxsQ+ntooQ4buHazTmCg4C02E=;
+        b=pdjPRwGXDNaWkOWXmxIXq8fuVp+/kaaXs99lM02kNpwcpe9IcETj2DdVs3qWEPUKdR
+         O9Y1iypv6JhMuwol2SBLnG7NddVxaH7Zwk8wyJcCEdmPsKWqjYSRcN9vtAXYX59ATvy5
+         Z/yTp0SWZGlJ+kDzYDlp3/sQzr2HT/aEOgTr8pLP5JVjboKyEsdoZJ/mAIBJx/dYNOs/
+         hLrm21ntr+spWtB3Xp3alxY7XIQAmvNMobLaPeQoWGDUXZKBn70U46iTz8TVs2IaaJnQ
+         7mEjcZIZrBRgk2HhduY+1bw3epn7uB/wuqG60TZSYo0oH67mI+KhtCdMGN4/ySbt6VRh
+         vLoA==
+X-Gm-Message-State: AOAM532fHvF28egRJUKSuJh2pvYF5aSYQ4owcdKPtsgYIgKZmH+XjGpe
+        8RABVMz2ZX0ht3G6dnf2EA==
+X-Google-Smtp-Source: ABdhPJw9BUCTIZt9eRkU3uKUsVVckjWP0KInvHs1YXHSPKjeWDir27IpG2UJ4zddVfZscf1Vj3OQnw==
+X-Received: by 2002:a37:4048:: with SMTP id n69mr30825844qka.421.1596022706871;
+        Wed, 29 Jul 2020 04:38:26 -0700 (PDT)
+Received: from localhost.localdomain (c-76-119-149-155.hsd1.ma.comcast.net. [76.119.149.155])
+        by smtp.gmail.com with ESMTPSA id k134sm1377330qke.60.2020.07.29.04.38.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jul 2020 04:38:26 -0700 (PDT)
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [Linux-kernel-mentees] [PATCH v2 RESEND] usbhid: Fix slab-out-of-bounds write in hiddev_ioctl_usage()
+Date:   Wed, 29 Jul 2020 07:37:12 -0400
+Message-Id: <20200729113712.8097-1-yepeilin.cs@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200718231218.170730-1-yepeilin.cs@gmail.com>
+References: <20200718231218.170730-1-yepeilin.cs@gmail.com>
 MIME-Version: 1.0
-References: <202007291721.W8cazfJX%lkp@intel.com>
-In-Reply-To: <202007291721.W8cazfJX%lkp@intel.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 29 Jul 2020 13:35:42 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1koFEQ6qzok8t+3XKbO5Xi_q29d64Y_QofKXRwL4Dr9g@mail.gmail.com>
-Message-ID: <CAK8P3a1koFEQ6qzok8t+3XKbO5Xi_q29d64Y_QofKXRwL4Dr9g@mail.gmail.com>
-Subject: Re: drivers/clk/mmp/clk-pxa168.c:68:13: warning: no previous
- prototype for 'pxa168_clk_init'
-To:     kernel test robot <lkp@intel.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:PZHV07tB/+bO7U+PL09M5gXjLWJXut9tkC1eAfiRCx5hwYsFP7n
- /TEsCwC8840ezPiY2Sd0A1Y/jDO7fiViC3cxxVYTsHwFw0CXg8GeontfHXn5lVRNGJx/BSH
- Eg4Wf/MjwAsw4gv7dMTwer/CW+zkylvjbsXW74pRxxSeOwsbap5aqpOFbEKPH91rpNtG8vy
- uWOKE5IfBvWETADlYS33A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0shy1hTtKwA=:l+c7txhUebPH1G4Ug3L3jb
- ZvKf1qrTVwqtUCJpCgSovlzsPKKHcje5o3MNOmb2XsTH5LgHqUVyPjKH0MYA+beVfjQLiFLYL
- VvYA+F/08SXpwaM5kmN/s1oXP3uh7y6jl/IZaaPad/JHTPtQhrYD5jvZOeY340BGSSAWVrmlL
- ybQ4HjN3jvhe8S1dCQtKjCuqbtsAlgOxrqGDsalVtPJHJXIgMzSMt69NHxPTL6oKJQd1iS+Kv
- DZ5aOQvYrWo72q/vN4hZKo9bDlimvNm3D9zXPUSYLrQt+NOrORikaCG2tRFWx5fc0eBgMSgzR
- qaNGgCjIx2R/Zdvzo/Wx9y9v5OGuMqHhNv/2Xr+f0Hf38NMHcirylpBhck124dgIWK0/lvDkZ
- clerpevI035mI+jZudtPQOpvp8WhYkA8V+H/heR3mEncB7PbGnAUGg8Nck529JdMnGHeUG2iM
- y9/8KRgj1NIf3PPgZtEGL6S+sB97xT3qUe7gryHBDC3XbT2NAmGFldDw8kQD8x30sDxEBz6wN
- YInWVNEAZjCUo1wbZm2NlETnzfMOMXLw7Nd86xL97FWjJHVgB2ehACv/BKfJXPo/jDYv5Cm7h
- BEmT04TUhRxoHuMRBUUT0z7e59+GHgCHk4QW1zqBTNAXEzIc8qwlVjGSpDe2Js6OhBkfq4W0H
- G9TMz31ieB7GrIh8NoBPFlc6MRbUksXrH0NJ1KwsFq+6cQ09nPp/dvs6K3B/rShlG44dSRkQe
- ti5G+95wswiMTaeKYv/kSyFPHV6uqvXLoGiO7eHqyafp3EWJb1CQcDgajsdcv4oaEAuRK9GYA
- vbI3y40rQhKek5i3iqh7CrLfWdK1Jd4gR4efskRAse94d3QE/bTPmAPRXB4vkb1QmkVT7hM
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 11:23 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Bartosz,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   6ba1b005ffc388c2aeaddae20da29e4810dea298
-> commit: f962396ce29244d9a64f241481fa73fa370404c3 ARM: davinci: support multiplatform build for ARM v5
-> date:   11 months ago
-> config: arm-randconfig-r012-20200729 (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout f962396ce29244d9a64f241481fa73fa370404c3
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm
+`uref->usage_index` is not always being properly checked, causing
+hiddev_ioctl_usage() to go out of bounds under some cases. Fix it.
 
-I don't think this is related to the patch above, but I've sent a fix anyway.
+Reported-by: syzbot+34ee1b45d88571c2fa8b@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=f2aebe90b8c56806b050a20b36f51ed6acabe802
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+---
+Change in v2:
+    - Add the same check for the `HIDIOCGUSAGE` case. (Suggested by
+      Dan Carpenter <dan.carpenter@oracle.com>)
 
-      Arnd
+ drivers/hid/usbhid/hiddev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/hid/usbhid/hiddev.c b/drivers/hid/usbhid/hiddev.c
+index 4140dea693e9..4f97e6c12059 100644
+--- a/drivers/hid/usbhid/hiddev.c
++++ b/drivers/hid/usbhid/hiddev.c
+@@ -519,12 +519,16 @@ static noinline int hiddev_ioctl_usage(struct hiddev *hiddev, unsigned int cmd,
+ 
+ 		switch (cmd) {
+ 		case HIDIOCGUSAGE:
++			if (uref->usage_index >= field->report_count)
++				goto inval;
+ 			uref->value = field->value[uref->usage_index];
+ 			if (copy_to_user(user_arg, uref, sizeof(*uref)))
+ 				goto fault;
+ 			goto goodreturn;
+ 
+ 		case HIDIOCSUSAGE:
++			if (uref->usage_index >= field->report_count)
++				goto inval;
+ 			field->value[uref->usage_index] = uref->value;
+ 			goto goodreturn;
+ 
+-- 
+2.25.1
+
