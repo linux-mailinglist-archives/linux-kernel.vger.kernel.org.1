@@ -2,750 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39510231B96
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B67B231B39
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgG2IwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgG2Iv7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:51:59 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB2BFC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:51:59 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q75so15545543iod.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Rkwm95sYd+5XnqTK7HkYr3icdx1Ra6dp/99+jE8KWMk=;
-        b=mBTxcuEbjNI4COkNBUp+inqfkYdpv+RgNSrFopI4swPy7g9q8CQRwdLLKuRDjkPj3u
-         7F8Y3OMcFtOq+zNxYHGfbHyhzD+8Atz41nGEraEwh7jUNVyIPd0q1QSj/TzYVRrijvXE
-         vKyFtm+Mgq1kLgNx0oYpRGrvCn0Dgg1fgjyTb3Vbe0HZ9Kn6Ps4KD5Hyv1fpalFWMqXC
-         tLJ+3gcO9N1mONZ6ekLGjnJtz8RNv9BvpMTmbfV1dxfmLLhA6D0utez2R42Yt5p5i5xh
-         ml0D03/Sb8T5JOd9p5+3lq+AShXx5z/oYW19vxqjduzfXXjCORoUHBbqW5buKvILS9tI
-         7hWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Rkwm95sYd+5XnqTK7HkYr3icdx1Ra6dp/99+jE8KWMk=;
-        b=cu18FaIO3Dc+va3yma+6jod0Mjmhkok0ln3Wk8tML++mRX3BOv8Xj2KhNV8er2sKch
-         5fYjqiYVjuflsWnJIgXFdQMvYBxtk2oRMiTDCnFsZlgavIHk81jTp/f0Dr2TrlJaK5bu
-         a4VfYGosbSz4nxHaHVehUDdPWiQZZnNRALvABcXUNZJmIgiL8HGhEozkU9RR+qsxUdY1
-         msZq8/xdFOfoAU7Ad1tQAskqCXbYPtFRLnvDG8TM5Im+pXNuFRGc0dgmTC23HnHG2Ngi
-         Sip1PRR28qukiYQ1hUuFHysyEXZDyfplzhmqmD0sGRTkV4muQl1PXt7I64mKTdYOd6TB
-         bLtw==
-X-Gm-Message-State: AOAM530ZfC7mjgGXeeTpalpxQ1hZSQW3VjFRRqF7fmdguf61QjVev7nG
-        LebnBpfZYzlU1UQh0c9WoM9pujUqphI6hf2sa3M=
-X-Google-Smtp-Source: ABdhPJzT1KzVZR67q3Nbsd4tV6uAKNo6WJcV+E64O02bQCG5NpkzFPDeF79iNKMJIKlkSFfuPYUiv0O7aULshebg6hM=
-X-Received: by 2002:a6b:4e0e:: with SMTP id c14mr16681943iob.8.1596012718892;
- Wed, 29 Jul 2020 01:51:58 -0700 (PDT)
+        id S1727858AbgG2IcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:32:02 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2548 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726707AbgG2IcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:32:01 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 2439AD46260FB3D2AD69;
+        Wed, 29 Jul 2020 09:31:58 +0100 (IST)
+Received: from localhost (10.52.120.141) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 29 Jul
+ 2020 09:31:56 +0100
+Date:   Wed, 29 Jul 2020 09:30:31 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mike Rapoport <rppt@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        <linux-sh@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        <linux-mips@vger.kernel.org>, Max Filippov <jcmvbkbc@gmail.com>,
+        "Paul Mackerras" <paulus@samba.org>, <sparclinux@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, Will Deacon <will@kernel.org>,
+        "Stafford Horne" <shorne@gmail.com>, <linux-s390@vger.kernel.org>,
+        <linux-c6x-dev@linux-c6x.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Michael Ellerman <mpe@ellerman.id.au>, <x86@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <uclinux-h8-devel@lists.sourceforge.jp>,
+        <linux-xtensa@linux-xtensa.org>, <openrisc@lists.librecores.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Michal Simek <monstr@monstr.eu>, <linux-mm@kvack.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 04/15] arm64: numa: simplify dummy_numa_init()
+Message-ID: <20200729093031.0000316b@Huawei.com>
+In-Reply-To: <20200728051153.1590-5-rppt@kernel.org>
+References: <20200728051153.1590-1-rppt@kernel.org>
+        <20200728051153.1590-5-rppt@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <1594983811-25908-1-git-send-email-gene.chen.richtek@gmail.com>
- <1594983811-25908-10-git-send-email-gene.chen.richtek@gmail.com> <20200727124306.GP1850026@dell>
-In-Reply-To: <20200727124306.GP1850026@dell>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Wed, 29 Jul 2020 08:51:47 +0800
-Message-ID: <CAE+NS354H-j5UKa+JxHzvwinpPN9QR176ugFVt+UYyJFsOMg0w@mail.gmail.com>
-Subject: Re: [PATCH v2 9/9] mfd: mt6360: Merge different sub-devices i2c read/write
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Gene Chen <gene_chen@richtek.com>, benjamin.chao@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.141]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> =E6=96=BC 2020=E5=B9=B47=E6=9C=8827=E6=97=
-=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=888:43=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, 17 Jul 2020, Gene Chen wrote:
->
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Remove unuse register definition.
->
-> This should not be in here.
->
-> > Merge different sub-devices i2c read/write function into one regmap,
->
-> "I2C", "functions", "Regmap".
->
+On Tue, 28 Jul 2020 08:11:42 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-ACK
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> dummy_numa_init() loops over memblock.memory and passes nid=0 to
+> numa_add_memblk() which essentially wraps memblock_set_node(). However,
+> memblock_set_node() can cope with entire memory span itself, so the loop
+> over memblock.memory regions is redundant.
+> 
+> Replace the loop with a single call to memblock_set_node() to the entire
+> memory.
 
-> > because pmic and ldo part need crc bits for access protection.
->
-> "PMIC", "LDO", "CRC".
->
+Hi Mike,
 
-ACK
+I had a similar patch I was going to post shortly so can add a bit more
+on the advantages of this one.
 
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > ---
-> >  drivers/mfd/Kconfig        |   1 +
-> >  drivers/mfd/mt6360-core.c  | 229 +++++++++++++++++++++++++++++++++++++=
------
-> >  include/linux/mfd/mt6360.h | 240 -------------------------------------=
---------
-> >  3 files changed, 204 insertions(+), 266 deletions(-)
-> >  delete mode 100644 include/linux/mfd/mt6360.h
-> >
-> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > index a37d7d1..0684ddc 100644
-> > --- a/drivers/mfd/Kconfig
-> > +++ b/drivers/mfd/Kconfig
-> > @@ -913,6 +913,7 @@ config MFD_MT6360
-> >       select MFD_CORE
-> >       select REGMAP_I2C
-> >       select REGMAP_IRQ
-> > +     select CRC8
-> >       depends on I2C
-> >       help
-> >         Say Y here to enable MT6360 PMU/PMIC/LDO functional support.
-> > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > index 3186a7c..97ef1ad 100644
-> > --- a/drivers/mfd/mt6360-core.c
-> > +++ b/drivers/mfd/mt6360-core.c
-> > @@ -14,7 +14,46 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/mfd/core.h>
-> >
-> > -#include <linux/mfd/mt6360.h>
-> > +enum {
-> > +     MT6360_SLAVE_TCPC =3D 0,
-> > +     MT6360_SLAVE_PMIC,
-> > +     MT6360_SLAVE_LDO,
-> > +     MT6360_SLAVE_PMU,
-> > +     MT6360_SLAVE_MAX,
-> > +};
-> > +
-> > +struct mt6360_data {
-> > +     struct i2c_client *i2c[MT6360_SLAVE_MAX];
-> > +     struct device *dev;
-> > +     struct regmap *regmap;
-> > +     struct regmap_irq_chip_data *irq_data;
-> > +     unsigned int chip_rev;mt6360_data
-> > +     u8 crc8_tbl[CRC8_TABLE_SIZE];
-> > +};
->
-> Make sure all of these entries are still used.
->
-> > +#define MT6360_PMU_SLAVEID           0x34
-> > +#define MT6360_PMIC_SLAVEID          0x1A
-> > +#define MT6360_LDO_SLAVEID           0x64
-> > +#define MT6360_TCPC_SLAVEID          0x4E
->
-> Can these be placed into ID order?
->
+Beyond cleaning up, it also fixes an issue with a buggy ACPI firmware in which the SRAT
+table covers some but not all of the memory in the EFI memory map.  Stealing bits
+from the draft cover letter I had for that...
 
-ACK
+> This issue can be easily triggered by having an SRAT table which fails
+> to cover all elements of the EFI memory map.
+> 
+> This firmware error is detected and a warning printed. e.g.
+> "NUMA: Warning: invalid memblk node 64 [mem 0x240000000-0x27fffffff]"
+> At that point we fall back to dummy_numa_init().
+> 
+> However, the failed ACPI init has left us with our memblocks all broken
+> up as we split them when trying to assign them to NUMA nodes.
+> 
+> We then iterate over the memblocks and add them to node 0.
+> 
+> for_each_memblock(memory, mblk) {
+> 	ret = numa_add_memblk(0, mblk->base, mblk->base + mblk->size);
+> 	if (!ret)
+> 		continue;
+> 	pr_err("NUMA init failed\n");
+> 	return ret;
+> }
+> 
+> numa_add_memblk() calls memblock_set_node() which merges regions that
+> were previously split up during the earlier attempt to add them to different
+> nodes during parsing of SRAT.
+> 
+> This means elements are moved in the memblock array and we can end up
+> in a different memblock after the call to numa_add_memblk().
+> Result is:
+> 
+> Unable to handle kernel paging request at virtual address 0000000000003a40
+> Mem abort info:
+>   ESR = 0x96000004
+>   EC = 0x25: DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+> Data abort info:
+>   ISV = 0, ISS = 0x00000004
+>   CM = 0, WnR = 0
+> [0000000000003a40] user address but active_mm is swapper
+> Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> 
+> ...
+> 
+> Call trace:
+>   sparse_init_nid+0x5c/0x2b0
+>   sparse_init+0x138/0x170
+>   bootmem_init+0x80/0xe0
+>   setup_arch+0x2a0/0x5fc
+>   start_kernel+0x8c/0x648
+> 
+> As an illustrative example:
+> EFI table has one block of memory.
+> memblks[0] = [0...0x2f]  so we start with a single memblock.
+> 
+> SRAT has
+> [0x00...0x0f] in node 0
+> [0x10...0x1f] in node 1
+> but no entry covering 
+> [0x20...0x2f].
+> 
+> Whilst parsing SRAT the single memblock is broken into 3.
+> memblks[0] = [0x00...0x0f] in node 0
+> memblks[1] = [0x10...0x1f] in node 1
+> memblks[2] = [0x20...0x2f] in node MAX_NUM_NODES (invalid value)
+> 
+> A sanity check parse then detects the invalid section and acpi_numa_init
+> fails.  We then fall back to the dummy path.
+> 
+> That iterates over the memblocks.  We'll use i an index in the array of memblocks
+> 
+> i = 0;
+> memblks[0] = [0x00...0x0f] set to node0.
+>    merge doesn't do anything because the neighbouring memblock is still in node1.
+> 
+> i = 1
+> memblks[1] = [0x10...0x1f] set to node 0.
+>    merge combines memblock 0 and 1 to give a new set of memblocks.
+> 
+> memblks[0] = [0x00..0x1f] in node 0
+> memblks[1] = [0x20..0x2f] in node MAX_NUM_NODES.
+> 
+> i = 2 off the end of the now reduced array of memblocks, so exit the loop.
+> (if we restart the loop here everything will be fine).
+> 
+> Later sparse_init_nid tries to use the node of the second memblock to index
+> somethings and boom.
 
-> > +#define MT6360_REG_TCPCSTART         0x00
-> > +#define MT6360_REG_TCPCEND           0xFF
-> > +#define MT6360_REG_PMICSTART         0x100
-> > +#define MT6360_REG_PMICEND           0x13B
-> > +#define MT6360_REG_LDOSTART          0x200
-> > +#define MT6360_REG_LDOEND            0x21C
-> > +#define MT6360_REG_PMUSTART          0x300
-> > +#define MT6360_PMU_DEV_INFO          0x300
-> > +#define MT6360_PMU_CHG_IRQ1          0x3D0
-> > +#define MT6360_PMU_CHG_MASK1         0x3F0
-> > +#define MT6360_REG_PMUEND            0x3FF
-> > +
-> > +/* from 0x3D0 to 0x3DF */
->
-> We don't need this in here.
->
 
-ACK
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
 
-> > +#define MT6360_PMU_IRQ_REGNUM                16
-> > +
-> > +#define CHIP_VEN_MASK                0xF0
-> > +#define CHIP_VEN_MT6360              0x50
-> > +#define CHIP_REV_MASK                0x0F
-> >
-> >  /* reg 0 -> 0 ~ 7 */
-> >  #define MT6360_CHG_TREG_EVT          4
-> > @@ -220,12 +259,6 @@ static const struct regmap_irq_chip mt6360_irq_chi=
-p =3D {
-> >       .use_ack =3D true,
-> >  };
-> >
-> > -static const struct regmap_config mt6360_pmu_regmap_config =3D {
-> > -     .reg_bits =3D 8,
-> > -     .val_bits =3D 8,
-> > -     .max_register =3D MT6360_PMU_MAXREG,
-> > -};
-> > -
-> >  static const struct resource mt6360_adc_resources[] =3D {
-> >       DEFINE_RES_IRQ_NAMED(MT6360_ADC_DONEI, "adc_donei"),
-> >  };
-> > @@ -310,11 +343,153 @@ static int mt6360_check_vendor_info(struct mt636=
-0_data *data)
-> >       return 0;
-> >  }
-> >
-> > -static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] =3D {
-> > -     MT6360_PMU_SLAVEID,
-> > +static const u16 mt6360_slave_addrs[MT6360_SLAVE_MAX] =3D {
-> > +     MT6360_TCPC_SLAVEID,
-> >       MT6360_PMIC_SLAVEID,
-> >       MT6360_LDO_SLAVEID,
-> > -     MT6360_TCPC_SLAVEID,
-> > +     MT6360_PMU_SLAVEID,
-> > +};
-> > +
-> > +static int mt6360_xlate_pmicldo_addr(u8 *addr, int rw_size)
-> > +{
-> > +     u8 flags[4] =3D { 0x00, 0x40, 0x80, 0xc0 };
-> > +
-> > +     if (rw_size < 1 || rw_size > 4)
-> > +             return -EINVAL;
-> > +
-> > +     *addr &=3D 0x3f;
-> > +     *addr |=3D flags[rw_size - 1];
-> > +
-> > +     return 0;
-> > +}
->
-> You need some comments in here to explain what's going on.
->
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-ACK
+> ---
+>  arch/arm64/mm/numa.c | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/numa.c b/arch/arm64/mm/numa.c
+> index aafcee3e3f7e..0cbdbcc885fb 100644
+> --- a/arch/arm64/mm/numa.c
+> +++ b/arch/arm64/mm/numa.c
+> @@ -423,19 +423,16 @@ static int __init numa_init(int (*init_func)(void))
+>   */
+>  static int __init dummy_numa_init(void)
+>  {
+> +	phys_addr_t start = memblock_start_of_DRAM();
+> +	phys_addr_t end = memblock_end_of_DRAM();
+>  	int ret;
+> -	struct memblock_region *mblk;
+>  
+>  	if (numa_off)
+>  		pr_info("NUMA disabled\n"); /* Forced off on command line. */
+> -	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n",
+> -		memblock_start_of_DRAM(), memblock_end_of_DRAM() - 1);
+> -
+> -	for_each_memblock(memory, mblk) {
+> -		ret = numa_add_memblk(0, mblk->base, mblk->base + mblk->size);
+> -		if (!ret)
+> -			continue;
+> +	pr_info("Faking a node at [mem %#018Lx-%#018Lx]\n", start, end - 1);
+>  
+> +	ret = numa_add_memblk(0, start, end);
+> +	if (ret) {
+>  		pr_err("NUMA init failed\n");
+>  		return ret;
+>  	}
 
-Is this comment readable?
 
-/*
- * When access sud-device PMIC and LDO part which only addressed
-0x00~0x3F, read and write action need crc for protection.
- * Addr[7:6] use to store size, maximum 4 bytes.
- * Addr[5:0] is real access real register address.
- * When received the Addr, ic can interpret real register address and
-size to calculate or check crc
- * /
-
-/*
- * CRC calculation
- * total size is 2 byte and number of access bytes
- * 2 bytes include i2c device address, r/w bit and address which want to ac=
-cess
- * others for read or write data
- * /
-
-> > +static int mt6360_regmap_read(void *context, const void *reg, size_t r=
-eg_size,
-> > +                           void *val, size_t val_size)
-> > +{
-> > +     struct mt6360_data *data =3D context;
-> > +     u8 bank =3D *(u8 *)reg, reg_addr =3D *(u8 *)(reg + 1);
-> > +     struct i2c_client *i2c =3D data->i2c[bank];
-> > +     bool crc_needed =3D false;
-> > +     u8 *buf;
-> > +     /* first two is i2c_addr + reg_addr , last is crc8 */
-> > +     int alloc_size =3D 2 + val_size + 1, read_size =3D val_size;
-> > +     u8 crc;
-> > +     int ret;
-> > +
-> > +     if (bank =3D=3D MT6360_SLAVE_PMIC || bank =3D=3D MT6360_SLAVE_LDO=
-) {
-> > +             crc_needed =3D true;
-> > +             ret =3D mt6360_xlate_pmicldo_addr(&reg_addr, val_size);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +             read_size +=3D 1;
-> > +     }
-> > +
-> > +     buf =3D kzalloc(alloc_size, GFP_KERNEL);
-> > +     if (!buf)
-> > +             return -ENOMEM;
-> > +
-> > +     /* 7 bit slave addr + read bit */
-> > +     buf[0] =3D ((i2c->addr & 0x7f) << 1) + 1;
-> > +     buf[1] =3D reg_addr;
-> > +
-> > +     ret =3D i2c_smbus_read_i2c_block_data(i2c, reg_addr, read_size, b=
-uf + 2);
-> > +
-> > +     if (ret =3D=3D read_size) {
-> > +             memcpy(val, buf + 2, val_size);
-> > +             if (crc_needed) {
-> > +                     crc =3D crc8(data->crc8_tbl, buf, val_size + 2, 0=
-);
-> > +                     if (crc !=3D buf[val_size + 2])
-> > +                             ret =3D -EIO;
-> > +             }
-> > +     }
-> > +
-> > +     kfree(buf);
-> > +
-> > +     if (ret < 0)
-> > +             return ret;
-> > +     else if (ret !=3D read_size)
-> > +             return -EIO;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_regmap_write(void *context, const void *val, size_t =
-val_size)
-> > +{
-> > +     struct mt6360_data *data =3D context;
-> > +     u8 bank =3D *(u8 *)val, reg_addr =3D *(u8 *)(val + 1);
-> > +     struct i2c_client *i2c =3D data->i2c[bank];
-> > +     bool crc_needed =3D false;
-> > +     u8 *buf;
-> > +     /* first two is i2c_addr + reg_addr , last crc8 + dummy */
-> > +     int alloc_size =3D 2 + val_size + 2, write_size =3D val_size - 2;
-> > +     int ret;
-> > +
-> > +     if (bank =3D=3D MT6360_SLAVE_PMIC || bank =3D=3D MT6360_SLAVE_LDO=
-) {
-> > +             crc_needed =3D true;
-> > +             ret =3D mt6360_xlate_pmicldo_addr(&reg_addr, val_size - 2=
-);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +     }
-> > +
-> > +     buf =3D kzalloc(alloc_size, GFP_KERNEL);
-> > +     if (!buf)
-> > +             return -ENOMEM;
-> > +
-> > +     /* 7 bit slave addr + write bit */
-> > +     buf[0] =3D ((i2c->addr & 0x7f) << 1);
-> > +     buf[1] =3D reg_addr;
-> > +     /* val need to minus regaddr 16bit */
-> > +     memcpy(buf + 2, val + 2, write_size);
-> > +
-> > +     if (crc_needed) {
-> > +             buf[val_size] =3D crc8(data->crc8_tbl, buf, val_size, 0);
-> > +             write_size +=3D 2;
-> > +     }
-> > +
-> > +     ret =3D i2c_smbus_write_i2c_block_data(i2c,
-> > +                                          reg_addr, write_size, buf + =
-2);
-> > +
-> > +     kfree(buf);
-> > +
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct regmap_bus mt6360_regmap_bus =3D {
-> > +     .read           =3D mt6360_regmap_read,
-> > +     .write          =3D mt6360_regmap_write,
-> > +
-> > +     /* due to pmic and ldo crc access size limit */
-> > +     .max_raw_read   =3D 4,
-> > +     .max_raw_write  =3D 4,
-> > +};
->
-> Why isn't all of the above in a Regmap driver?
->
-
-Do you means split out like drivers/base/regmap/regmap-ac97.c?
-
-> > +static bool mt6360_is_readwrite_reg(struct device *dev, unsigned int r=
-eg)
-> > +{
-> > +     switch (reg) {
-> > +     case MT6360_REG_TCPCSTART ... MT6360_REG_TCPCEND:
-> > +     case MT6360_REG_PMICSTART ... MT6360_REG_PMICEND:
-> > +     case MT6360_REG_LDOSTART ... MT6360_REG_LDOEND:
-> > +     fallthrough;
->
-> Surely this should be tabbed?
->
-> Why do the entries above not require fallthrough statements?
->
-
-ACK, I used to add fallthrough in last case to represent all case above it
-I will fix it.
-
-> > +     case MT6360_REG_PMUSTART ... MT6360_REG_PMUEND:
-> > +             return true;
-> > +     }
-> > +
-> > +     return false;
-> > +
-> > +
-> > +static const struct regmap_config mt6360_regmap_config =3D {
-> > +     .reg_bits               =3D 16,
-> > +     .val_bits               =3D 8,
-> > +
-> > +     .reg_format_endian      =3D REGMAP_ENDIAN_BIG,
-> > +
-> > +     /* bank1:tcpc, bank2:pmic, bank3:ldo, bank4:pmu */
->
-> Who is this helpful to?
->
-
-developer, we use reg_bits MSB 8 bits to represent bank, indicated
-which i2c device I want access.
-We will delete it.
-
-> > +     .max_register           =3D MT6360_REG_PMUEND,
-> > +     .writeable_reg          =3D mt6360_is_readwrite_reg,
-> > +     .readable_reg           =3D mt6360_is_readwrite_reg,
-> >  };
-> >
-> >  static int mt6360_probe(struct i2c_client *client)
-> > @@ -327,9 +502,23 @@ static int mt6360_probe(struct i2c_client *client)
-> >               return -ENOMEM;
-> >
-> >       data->dev =3D &client->dev;
-> > -     i2c_set_clientdata(client, data);
-> > +     crc8_populate_msb(data->crc8_tbl, 0x7);
->
-> Define the magic number please?
->
-
-ACK
-
-> > +     for (i =3D 0; i < MT6360_SLAVE_PMU; i++) {
->
-> Doesn't this mean that MT6360_SLAVE_PMU won't be processed?
->
-> Shouldn't this be MT6360_SLAVE_MAX?
->
-> > +             data->i2c[i] =3D devm_i2c_new_dummy_device(&client->dev,
-> > +                                                      client->adapter,
-> > +                                                      mt6360_slave_add=
-rs[i]);
-> > +             if (IS_ERR(data->i2c[i])) {
-> > +                     dev_err(&client->dev,
-> > +                             "Failed to get new dummy I2C device for a=
-ddress 0x%x",
-> > +                             mt6360_slave_addrs[i]);
-> > +                     return PTR_ERR(data->i2c[i]);
-> > +             }
-> > +     }
-> > +     data->i2c[MT6360_SLAVE_PMU] =3D client;
->
-> Oh, I see.
->
-> So change MT6360_SLAVE_PMU to (MT6360_SLAVE_MAX - 1) or else it just
-> looks a little bit arbitrary and fragile.
->
-
-ACK
-
-> > -     data->regmap =3D devm_regmap_init_i2c(client, &mt6360_pmu_regmap_=
-config);
-> > +     data->regmap =3D devm_regmap_init(&client->dev, &mt6360_regmap_bu=
-s,
-> > +                                     data, &mt6360_regmap_config);
-> >       if (IS_ERR(data->regmap)) {
-> >               dev_err(&client->dev, "Failed to register regmap\n");
-> >               return PTR_ERR(data->regmap);
-> > @@ -348,20 +537,6 @@ static int mt6360_probe(struct i2c_client *client)
-> >               return ret;
-> >       }
-> >
-> > -     data->i2c[0] =3D client;
-> > -     for (i =3D 1; i < MT6360_SLAVE_MAX; i++) {
-> > -             data->i2c[i] =3D devm_i2c_new_dummy_device(&client->dev,
-> > -                                                     client->adapter,
-> > -                                                     mt6360_slave_addr=
-[i]);
-> > -             if (IS_ERR(data->i2c[i])) {
-> > -                     dev_err(&client->dev,
-> > -                             "Failed to get new dummy I2C device for a=
-ddress 0x%x",
-> > -                             mt6360_slave_addr[i]);
-> > -                     return PTR_ERR(data->i2c[i]);
-> > -             }
-> > -             i2c_set_clientdata(data->i2c[i], data);
-> > -     }
-> > -
-> >       ret =3D devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO,
-> >                                  mt6360_devs, ARRAY_SIZE(mt6360_devs), =
-NULL,
-> >                                  0, regmap_irq_get_domain(data->irq_dat=
-a));
-> > @@ -371,6 +546,8 @@ static int mt6360_probe(struct i2c_client *client)
-> >               return ret;
-> >       }
-> >
-> > +     i2c_set_clientdata(client, data);
->
-> Where is this used?
->
-
-I can use device to get chip_rev from dev_get_drvdata.
-According to different chip_rev, I may need apply different way to do.
-
-> Didn't you just move the definition into this file?
->
-
-ACK, I will seperate move definition into this file to new patch
-
-> >       return 0;
-> >  }
-> >
-> > diff --git a/include/linux/mfd/mt6360.h b/include/linux/mfd/mt6360.h
-> > deleted file mode 100644
-> > index da0fb5c..0000000
-> > --- a/include/linux/mfd/mt6360.h
-> > +++ /dev/null
-> > @@ -1,240 +0,0 @@
-> > -/* SPDX-License-Identifier: GPL-2.0 */
-> > -/*
-> > - * Copyright (c) 2020 MediaTek Inc.
-> > - */
-> > -
-> > -#ifndef __MT6360_H__
-> > -#define __MT6360_H__
-> > -
-> > -#include <linux/regmap.h>
-> > -
-> > -enum {
-> > -     MT6360_SLAVE_PMU =3D 0,
-> > -     MT6360_SLAVE_PMIC,
-> > -     MT6360_SLAVE_LDO,
-> > -     MT6360_SLAVE_TCPC,
-> > -     MT6360_SLAVE_MAX,
-> > -};
-> > -
-> > -#define MT6360_PMU_SLAVEID   0x34
-> > -#define MT6360_PMIC_SLAVEID  0x1A
-> > -#define MT6360_LDO_SLAVEID   0x64
-> > -#define MT6360_TCPC_SLAVEID  0x4E
-> > -
-> > -struct mt6360_data {
-> > -     struct i2c_client *i2c[MT6360_SLAVE_MAX];
-> > -     struct device *dev;
-> > -     struct regmap *regmap;
-> > -     struct regmap_irq_chip_data *irq_data;
-> > -     unsigned int chip_rev;
-> > -};
-> > -
-> > -/* PMU register defininition */
-> > -#define MT6360_PMU_DEV_INFO                  0x00
-> > -#define MT6360_PMU_CORE_CTRL1                        0x01
-> > -#define MT6360_PMU_RST1                              0x02
-> > -#define MT6360_PMU_CRCEN                     0x03
-> > -#define MT6360_PMU_RST_PAS_CODE1             0x04
-> > -#define MT6360_PMU_RST_PAS_CODE2             0x05
-> > -#define MT6360_PMU_CORE_CTRL2                        0x06
-> > -#define MT6360_PMU_TM_PAS_CODE1                      0x07
-> > -#define MT6360_PMU_TM_PAS_CODE2                      0x08
-> > -#define MT6360_PMU_TM_PAS_CODE3                      0x09
-> > -#define MT6360_PMU_TM_PAS_CODE4                      0x0A
-> > -#define MT6360_PMU_IRQ_IND                   0x0B
-> > -#define MT6360_PMU_IRQ_MASK                  0x0C
-> > -#define MT6360_PMU_IRQ_SET                   0x0D
-> > -#define MT6360_PMU_SHDN_CTRL                 0x0E
-> > -#define MT6360_PMU_TM_INF                    0x0F
-> > -#define MT6360_PMU_I2C_CTRL                  0x10
-> > -#define MT6360_PMU_CHG_CTRL1                 0x11
-> > -#define MT6360_PMU_CHG_CTRL2                 0x12
-> > -#define MT6360_PMU_CHG_CTRL3                 0x13
-> > -#define MT6360_PMU_CHG_CTRL4                 0x14
-> > -#define MT6360_PMU_CHG_CTRL5                 0x15
-> > -#define MT6360_PMU_CHG_CTRL6                 0x16
-> > -#define MT6360_PMU_CHG_CTRL7                 0x17
-> > -#define MT6360_PMU_CHG_CTRL8                 0x18
-> > -#define MT6360_PMU_CHG_CTRL9                 0x19
-> > -#define MT6360_PMU_CHG_CTRL10                        0x1A
-> > -#define MT6360_PMU_CHG_CTRL11                        0x1B
-> > -#define MT6360_PMU_CHG_CTRL12                        0x1C
-> > -#define MT6360_PMU_CHG_CTRL13                        0x1D
-> > -#define MT6360_PMU_CHG_CTRL14                        0x1E
-> > -#define MT6360_PMU_CHG_CTRL15                        0x1F
-> > -#define MT6360_PMU_CHG_CTRL16                        0x20
-> > -#define MT6360_PMU_CHG_AICC_RESULT           0x21
-> > -#define MT6360_PMU_DEVICE_TYPE                       0x22
-> > -#define MT6360_PMU_QC_CONTROL1                       0x23
-> > -#define MT6360_PMU_QC_CONTROL2                       0x24
-> > -#define MT6360_PMU_QC30_CONTROL1             0x25
-> > -#define MT6360_PMU_QC30_CONTROL2             0x26
-> > -#define MT6360_PMU_USB_STATUS1                       0x27
-> > -#define MT6360_PMU_QC_STATUS1                        0x28
-> > -#define MT6360_PMU_QC_STATUS2                        0x29
-> > -#define MT6360_PMU_CHG_PUMP                  0x2A
-> > -#define MT6360_PMU_CHG_CTRL17                        0x2B
-> > -#define MT6360_PMU_CHG_CTRL18                        0x2C
-> > -#define MT6360_PMU_CHRDET_CTRL1                      0x2D
-> > -#define MT6360_PMU_CHRDET_CTRL2                      0x2E
-> > -#define MT6360_PMU_DPDN_CTRL                 0x2F
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL1          0x30
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL2          0x31
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL3          0x32
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL4          0x33
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL5          0x34
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL6          0x35
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL7          0x36
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL8          0x37
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL9          0x38
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL10         0x39
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL11         0x3A
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL12         0x3B
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL13         0x3C
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL14         0x3D
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL15         0x3E
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL16         0x3F
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL17         0x40
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL18         0x41
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL19         0x42
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL20         0x43
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL21         0x44
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL22         0x45
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL23         0x46
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL24         0x47
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL25         0x48
-> > -#define MT6360_PMU_BC12_CTRL                 0x49
-> > -#define MT6360_PMU_CHG_STAT                  0x4A
-> > -#define MT6360_PMU_RESV1                     0x4B
-> > -#define MT6360_PMU_TYPEC_OTP_TH_SEL_CODEH    0x4E
-> > -#define MT6360_PMU_TYPEC_OTP_TH_SEL_CODEL    0x4F
-> > -#define MT6360_PMU_TYPEC_OTP_HYST_TH         0x50
-> > -#define MT6360_PMU_TYPEC_OTP_CTRL            0x51
-> > -#define MT6360_PMU_ADC_BAT_DATA_H            0x52
-> > -#define MT6360_PMU_ADC_BAT_DATA_L            0x53
-> > -#define MT6360_PMU_IMID_BACKBST_ON           0x54
-> > -#define MT6360_PMU_IMID_BACKBST_OFF          0x55
-> > -#define MT6360_PMU_ADC_CONFIG                        0x56
-> > -#define MT6360_PMU_ADC_EN2                   0x57
-> > -#define MT6360_PMU_ADC_IDLE_T                        0x58
-> > -#define MT6360_PMU_ADC_RPT_1                 0x5A
-> > -#define MT6360_PMU_ADC_RPT_2                 0x5B
-> > -#define MT6360_PMU_ADC_RPT_3                 0x5C
-> > -#define MT6360_PMU_ADC_RPT_ORG1                      0x5D
-> > -#define MT6360_PMU_ADC_RPT_ORG2                      0x5E
-> > -#define MT6360_PMU_BAT_OVP_TH_SEL_CODEH              0x5F
-> > -#define MT6360_PMU_BAT_OVP_TH_SEL_CODEL              0x60
-> > -#define MT6360_PMU_CHG_CTRL19                        0x61
-> > -#define MT6360_PMU_VDDASUPPLY                        0x62
-> > -#define MT6360_PMU_BC12_MANUAL                       0x63
-> > -#define MT6360_PMU_CHGDET_FUNC                       0x64
-> > -#define MT6360_PMU_FOD_CTRL                  0x65
-> > -#define MT6360_PMU_CHG_CTRL20                        0x66
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL26         0x67
-> > -#define MT6360_PMU_CHG_HIDDEN_CTRL27         0x68
-> > -#define MT6360_PMU_RESV2                     0x69
-> > -#define MT6360_PMU_USBID_CTRL1                       0x6D
-> > -#define MT6360_PMU_USBID_CTRL2                       0x6E
-> > -#define MT6360_PMU_USBID_CTRL3                       0x6F
-> > -#define MT6360_PMU_FLED_CFG                  0x70
-> > -#define MT6360_PMU_RESV3                     0x71
-> > -#define MT6360_PMU_FLED1_CTRL                        0x72
-> > -#define MT6360_PMU_FLED_STRB_CTRL            0x73
-> > -#define MT6360_PMU_FLED1_STRB_CTRL2          0x74
-> > -#define MT6360_PMU_FLED1_TOR_CTRL            0x75
-> > -#define MT6360_PMU_FLED2_CTRL                        0x76
-> > -#define MT6360_PMU_RESV4                     0x77
-> > -#define MT6360_PMU_FLED2_STRB_CTRL2          0x78
-> > -#define MT6360_PMU_FLED2_TOR_CTRL            0x79
-> > -#define MT6360_PMU_FLED_VMIDTRK_CTRL1                0x7A
-> > -#define MT6360_PMU_FLED_VMID_RTM             0x7B
-> > -#define MT6360_PMU_FLED_VMIDTRK_CTRL2                0x7C
-> > -#define MT6360_PMU_FLED_PWSEL                        0x7D
-> > -#define MT6360_PMU_FLED_EN                   0x7E
-> > -#define MT6360_PMU_FLED_Hidden1                      0x7F
-> > -#define MT6360_PMU_RGB_EN                    0x80
-> > -#define MT6360_PMU_RGB1_ISNK                 0x81
-> > -#define MT6360_PMU_RGB2_ISNK                 0x82
-> > -#define MT6360_PMU_RGB3_ISNK                 0x83
-> > -#define MT6360_PMU_RGB_ML_ISNK                       0x84
-> > -#define MT6360_PMU_RGB1_DIM                  0x85
-> > -#define MT6360_PMU_RGB2_DIM                  0x86
-> > -#define MT6360_PMU_RGB3_DIM                  0x87
-> > -#define MT6360_PMU_RESV5                     0x88
-> > -#define MT6360_PMU_RGB12_Freq                        0x89
-> > -#define MT6360_PMU_RGB34_Freq                        0x8A
-> > -#define MT6360_PMU_RGB1_Tr                   0x8B
-> > -#define MT6360_PMU_RGB1_Tf                   0x8C
-> > -#define MT6360_PMU_RGB1_TON_TOFF             0x8D
-> > -#define MT6360_PMU_RGB2_Tr                   0x8E
-> > -#define MT6360_PMU_RGB2_Tf                   0x8F
-> > -#define MT6360_PMU_RGB2_TON_TOFF             0x90
-> > -#define MT6360_PMU_RGB3_Tr                   0x91
-> > -#define MT6360_PMU_RGB3_Tf                   0x92
-> > -#define MT6360_PMU_RGB3_TON_TOFF             0x93
-> > -#define MT6360_PMU_RGB_Hidden_CTRL1          0x94
-> > -#define MT6360_PMU_RGB_Hidden_CTRL2          0x95
-> > -#define MT6360_PMU_RESV6                     0x97
-> > -#define MT6360_PMU_SPARE1                    0x9A
-> > -#define MT6360_PMU_SPARE2                    0xA0
-> > -#define MT6360_PMU_SPARE3                    0xB0
-> > -#define MT6360_PMU_SPARE4                    0xC0
-> > -#define MT6360_PMU_CHG_IRQ1                  0xD0
-> > -#define MT6360_PMU_CHG_IRQ2                  0xD1
-> > -#define MT6360_PMU_CHG_IRQ3                  0xD2
-> > -#define MT6360_PMU_CHG_IRQ4                  0xD3
-> > -#define MT6360_PMU_CHG_IRQ5                  0xD4
-> > -#define MT6360_PMU_CHG_IRQ6                  0xD5
-> > -#define MT6360_PMU_QC_IRQ                    0xD6
-> > -#define MT6360_PMU_FOD_IRQ                   0xD7
-> > -#define MT6360_PMU_BASE_IRQ                  0xD8
-> > -#define MT6360_PMU_FLED_IRQ1                 0xD9
-> > -#define MT6360_PMU_FLED_IRQ2                 0xDA
-> > -#define MT6360_PMU_RGB_IRQ                   0xDB
-> > -#define MT6360_PMU_BUCK1_IRQ                 0xDC
-> > -#define MT6360_PMU_BUCK2_IRQ                 0xDD
-> > -#define MT6360_PMU_LDO_IRQ1                  0xDE
-> > -#define MT6360_PMU_LDO_IRQ2                  0xDF
-> > -#define MT6360_PMU_CHG_STAT1                 0xE0
-> > -#define MT6360_PMU_CHG_STAT2                 0xE1
-> > -#define MT6360_PMU_CHG_STAT3                 0xE2
-> > -#define MT6360_PMU_CHG_STAT4                 0xE3
-> > -#define MT6360_PMU_CHG_STAT5                 0xE4
-> > -#define MT6360_PMU_CHG_STAT6                 0xE5
-> > -#define MT6360_PMU_QC_STAT                   0xE6
-> > -#define MT6360_PMU_FOD_STAT                  0xE7
-> > -#define MT6360_PMU_BASE_STAT                 0xE8
-> > -#define MT6360_PMU_FLED_STAT1                        0xE9
-> > -#define MT6360_PMU_FLED_STAT2                        0xEA
-> > -#define MT6360_PMU_RGB_STAT                  0xEB
-> > -#define MT6360_PMU_BUCK1_STAT                        0xEC
-> > -#define MT6360_PMU_BUCK2_STAT                        0xED
-> > -#define MT6360_PMU_LDO_STAT1                 0xEE
-> > -#define MT6360_PMU_LDO_STAT2                 0xEF
-> > -#define MT6360_PMU_CHG_MASK1                 0xF0
-> > -#define MT6360_PMU_CHG_MASK2                 0xF1
-> > -#define MT6360_PMU_CHG_MASK3                 0xF2
-> > -#define MT6360_PMU_CHG_MASK4                 0xF3
-> > -#define MT6360_PMU_CHG_MASK5                 0xF4
-> > -#define MT6360_PMU_CHG_MASK6                 0xF5
-> > -#define MT6360_PMU_QC_MASK                   0xF6
-> > -#define MT6360_PMU_FOD_MASK                  0xF7
-> > -#define MT6360_PMU_BASE_MASK                 0xF8
-> > -#define MT6360_PMU_FLED_MASK1                        0xF9
-> > -#define MT6360_PMU_FLED_MASK2                        0xFA
-> > -#define MT6360_PMU_FAULTB_MASK                       0xFB
-> > -#define MT6360_PMU_BUCK1_MASK                        0xFC
-> > -#define MT6360_PMU_BUCK2_MASK                        0xFD
-> > -#define MT6360_PMU_LDO_MASK1                 0xFE
-> > -#define MT6360_PMU_LDO_MASK2                 0xFF
-> > -#define MT6360_PMU_MAXREG                    MT6360_PMU_LDO_MASK2
-> > -
-> > -/* MT6360_PMU_IRQ_SET */
-> > -#define MT6360_PMU_IRQ_REGNUM        16
-> > -#define MT6360_IRQ_RETRIG    BIT(2)
-> > -
-> > -#define CHIP_VEN_MASK                                0xF0
-> > -#define CHIP_VEN_MT6360                              0x50
-> > -#define CHIP_REV_MASK                                0x0F
-> > -
-> > -#endif /* __MT6360_H__ */
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
