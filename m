@@ -2,246 +2,593 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEF623180B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F622317ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgG2D0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:26:35 -0400
-Received: from mail-eopbgr70058.outbound.protection.outlook.com ([40.107.7.58]:9203
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726047AbgG2D0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:26:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HJ01NbfJZLkZSL0lcGfc6gWIaKaCfGzuRYPcXci/bUYU0AXSflCMQfqfaTMY5QoLToWiO6pQ/fMgeGuAVgSFk0zecxJ9qPxPwHAp0bge+my4OdzvihspHtwg2Gn5OQIbno9W8CIE6fWxWdlMUWxwfWkBynB+dLZ/qDixsqKzXTeoyFXPgluBtvs+GOCvLpwZiNy4cAw7XivEogLffZi4bAiM1Mhvg5waeWKccZ3S1c0G0qCDNjK+w2FQCj+MRwT9U8NCN13BuW7s2oiI7cH7RFQ0vPUFnvCgS4yqYbb2vsBWuzLD18G1pPNYxmytPwVCeAxXvReAh97PVtqLJbnozw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u6prKVQceWMiMAnsba9s8b2BXjcUiwD8lSsLi4HDrx4=;
- b=l181Ydh20wvL0lcpR/BIV62z5wGhPPgP3qVbJ51K/z8r8gFSkPg4o07fpXBMMLT8Wu7gzTeJr0rr0796jkNDZY6SgnbGXzJA6/cK3zQtmR3nSrg0bH3wVFhaCYEQdS1iG44WMnrWuqSw4U10HdUD7GU1q9BgNbm84W1bOdxq/GpXAMsycd+eCh9NHLRnBrRWZoXt+B6ExPCbcwAv/ZREx2W4WHAQ0CwEikkDXJ13JRen8fp4SIq4TSoTTu+vNSczjXTZzWaYPuwE3TkkYnW8bTCqqlz1qtHRcPX2MpnF4HqiN5NoDc40FYmEAcNVM4gE4gsa/emN9OOxtBdKs1yg/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=neutral (sender ip is
- 193.240.111.57) smtp.rcpttodomain=arm.com smtp.mailfrom=diasemi.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=diasemi.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u6prKVQceWMiMAnsba9s8b2BXjcUiwD8lSsLi4HDrx4=;
- b=RBZe9EIrqzZJS3Y4NzlnZOmT473D6CReYATKE/WhJAZtnii7/ih243lWWWtCOAK2r1pDUMDG9EX9PPJvZBuD81KKr3VCBUf4TIbAwR9UMSjJjh12xKa8PQrPpZSWScRGR0ELs0/0rZYET8RZR91rwhoVq16GfPgsqly9ibJJhUI=
-Received: from AM6PR02CA0020.eurprd02.prod.outlook.com (2603:10a6:20b:6e::33)
- by DB8PR10MB3308.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:113::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.17; Wed, 29 Jul
- 2020 03:26:28 +0000
-Received: from AM5EUR02FT028.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:6e:cafe::2e) by AM6PR02CA0020.outlook.office365.com
- (2603:10a6:20b:6e::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.22 via Frontend
- Transport; Wed, 29 Jul 2020 03:26:28 +0000
-X-MS-Exchange-Authentication-Results: spf=neutral (sender IP is
- 193.240.111.57) smtp.mailfrom=diasemi.com; arm.com; dkim=none (message not
- signed) header.d=none;arm.com; dmarc=fail action=none
- header.from=diasemi.com;
-Received-SPF: Neutral (protection.outlook.com: 193.240.111.57 is neither
- permitted nor denied by domain of diasemi.com)
-Received: from mailrelay1.diasemi.com (193.240.111.57) by
- AM5EUR02FT028.mail.protection.outlook.com (10.152.8.115) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3216.10 via Frontend Transport; Wed, 29 Jul 2020 03:26:28 +0000
-Received: from NB-EX-CASHUB01.diasemi.com (10.1.16.141) by
- DB-EX-CASHUB02.diasemi.com (10.0.16.142) with Microsoft SMTP Server (TLS) id
- 14.3.468.0; Wed, 29 Jul 2020 05:26:28 +0200
-Received: from krsrvapps-03.diasemi.com (10.93.17.2) by
- NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Wed, 29 Jul 2020 05:26:27 +0200
-Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
- B476A13F673; Wed, 29 Jul 2020 12:26:25 +0900 (KST)
-Message-ID: <1ae033bd7906a0076121b41aa5bb67436390c4bf.1595991580.git.Roy.Im@diasemi.com>
-In-Reply-To: <cover.1595991580.git.Roy.Im@diasemi.com>
-References: <cover.1595991580.git.Roy.Im@diasemi.com>
-From:   Roy Im <roy.im.opensource@diasemi.com>
-Date:   Wed, 29 Jul 2020 11:59:40 +0900
-Subject: [PATCH v18 2/3] dt-bindings: input: Add document bindings for DA7280
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Support Opensource <support.opensource@diasemi.com>,
-        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
+        id S1731205AbgG2DCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:02:36 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18920 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728401AbgG2DCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 23:02:35 -0400
+IronPort-SDR: FcnsaFVPk4kzYaLB0DkBg3SozuYCsyh2j5tGL+6955wQBIXv+WeVMQ1JciDfh5mIsF3Ipofcg1
+ 2tY+bBWQikFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9696"; a="169468581"
+X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
+   d="scan'208";a="169468581"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jul 2020 20:02:33 -0700
+IronPort-SDR: d1XWzYmBlujawiw+bZSG0GuCvZH7j6LgHMdcuBWwJ++JKMZIipBhA39hx8IZf/2KW+2fvAxrAe
+ 6vWfJkmyc42g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,408,1589266800"; 
+   d="scan'208";a="330266755"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga007.jf.intel.com with ESMTP; 28 Jul 2020 20:02:32 -0700
+Date:   Tue, 28 Jul 2020 20:02:32 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>, H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>, x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC] x86/bus_lock: Enable bus lock detection
+Message-ID: <20200729030232.GE5583@linux.intel.com>
+References: <1595021700-68460-1-git-send-email-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 257ae90a-4df1-4ddd-3f64-08d8336f2e80
-X-MS-TrafficTypeDiagnostic: DB8PR10MB3308:
-X-Microsoft-Antispam-PRVS: <DB8PR10MB3308F9B8806F68D2067D3A17A2700@DB8PR10MB3308.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 60m72fznwZy3diIfZgPVWT54+ZV6QbXPC7bXtkOMIt4DCQVLdlKuonydG9zLazcf7Og8xMngUW0XeRXmt0F0QhpOX85zERu+jTljOeYA2dUx8cjtG9vWru2Bmzhr5PCTKlPhtOHwxKwfLQEa7o55bfixYIulzzZpMisYON3VjHxn3QKGEtwnvne6q2V3A8Xjw/UI1WadmFtvrzUkfk+g/N+Aok1NDVUd/CNB6noUvWWmHVJ3LJZM/f0x3a1QfOYRvjLtE4OLJePIZ3E3wvsy7yudUjbGegxGt4owFpokPDj6ERzBXsvEB4fsIZMqGhhgNEN42UG9NKV5farCN2RWpWhENtcDbne8aCnfFXIK/AGgRAgtdfJRreMwnQaLfJGyV1xP4y6UEvHUtM7EVEO3sDEt5FyWwPcI/Bup7ErtLLOTXan0RHRQSnlFhCPF9AGn
-X-Forefront-Antispam-Report: CIP:193.240.111.57;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(39850400004)(396003)(376002)(136003)(346002)(46966005)(6666004)(36756003)(54906003)(6266002)(4326008)(316002)(83380400001)(42186006)(110136005)(356005)(82310400002)(33310700002)(82740400003)(47076004)(81166007)(86362001)(70586007)(2906002)(8676002)(478600001)(70206006)(26005)(186003)(5660300002)(2616005)(8936002)(426003)(336012)(36906005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2020 03:26:28.5067
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 257ae90a-4df1-4ddd-3f64-08d8336f2e80
-X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.111.57];Helo=[mailrelay1.diasemi.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM5EUR02FT028.eop-EUR02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3308
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595021700-68460-1-git-send-email-fenghua.yu@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding information for DA7280 haptic driver.
-Example bindings for DA7280 are added.
+On Fri, Jul 17, 2020 at 02:35:00PM -0700, Fenghua Yu wrote:
+> A bus lock [1] is acquired either through split locked access to writeback (WB)
+> memory or by using locks to uncacheable (UC) memory (e.g. direct device
 
-Reviewed-by: Rob Herring <robh@kernel.org>.
+Does SLD not detect the lock to UC memory?
 
-Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
+> assignment). This is typically >1000 cycles slower than an atomic operation
+> within a cache line. It also disrupts performance on other cores.
+> 
+> Although split lock can be detected by #AC trap, the trap is triggered
+> before the instruction acquires bus lock. This makes it difficult to
+> mitigate bus lock (e.g. throttle the user application).
 
----
-v18: No changes.
-v17: No changes.
-v16: No changes.
-v15: No changes.
-v14: No changes.
-v13: No changes.
-v12: No changes.
-v11: No changes.
-v10: No changes.
-v9: No changes.
-v8: Updated descriptions for new properties.
-v7: No changes.
-v6: No changes.
-v5: Updated descriptions and fixed errors.
-v4: Fixed commit message, properties.
-v3: Fixed subject format.
-v2: No changes
+Mitigate _in a non-fatal way_.  The #AC makes it very easy to mitigate split
+locks, it just has the side effect of SIGBUGS or killing the KVM guest.
 
+> Some CPUs have ability to notify the kernel by an #DB trap after the
+> instruction acquires a bus lock and is executed. This allows the kernel
+> to enforce user application throttling or mitigations and also provides
+> a better environment to debug kernel split lock issues since the kernel
+> can continue instead of crashing.
+> 
+> #DB for bus lock detect fixes all issues in #AC for split lock detect:
 
- .../devicetree/bindings/input/dlg,da7280.txt       | 109 +++++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
+Fixes "all" issues... and creates some new ones, e.g. there are use cases
+where preventing the split lock from happening in the first place is
+strongly desired.  It's why that train wreck exists.
 
-diff --git a/Documentation/devicetree/bindings/input/dlg,da7280.txt b/Documentation/devicetree/bindings/input/dlg,da7280.txt
-new file mode 100644
-index 0000000..e6b719d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/dlg,da7280.txt
-@@ -0,0 +1,109 @@
-+Dialog Semiconductor DA7280 Haptics bindings
-+
-+Required properties:
-+- compatible: Should be "dlg,da7280".
-+- reg: Specifies the I2C slave address.
-+
-+- interrupt-parent : Specifies the phandle of the interrupt controller to
-+  which the IRQs from DA7280 are delivered to.
-+
-+- dlg,actuator-type: Set Actuator type. it should be one of:
-+  "LRA" - Linear Resonance Actuator type.
-+  "ERM-bar" - Bar type Eccentric Rotating Mass.
-+  "ERM-coin" - Coin type Eccentric Rotating Mass.
-+
-+- dlg,const-op-mode: Haptic operation mode for FF_CONSTANT.
-+  Possible values:
-+	1 - Direct register override(DRO) mode triggered by i2c(default),
-+	2 - PWM data source mode controlled by PWM duty,
-+- dlg,periodic-op-mode: Haptic operation mode for FF_PERIODIC.
-+  Possible values:
-+	1 - Register triggered waveform memory(RTWM) mode, the pattern
-+	    assigned to the PS_SEQ_ID played as much times as PS_SEQ_LOOP,
-+	2 - Edge triggered waveform memory(ETWM) mode, external GPI(N)
-+	    control are required to enable/disable and it needs to keep
-+	    device enabled by sending magnitude (X > 0),
-+	    the pattern is assigned to the GPI(N)_SEQUENCE_ID below.
-+	The default value is 1 for both of the operation modes.
-+	For more details, please see the datasheet.
-+
-+- dlg,nom-microvolt: Nominal actuator voltage rating.
-+  Valid values: 0 - 6000000.
-+- dlg,abs-max-microvolt: Absolute actuator maximum voltage rating.
-+  Valid values: 0 - 6000000.
-+- dlg,imax-microamp: Actuator max current rating.
-+  Valid values: 0 - 252000.
-+  Default: 130000.
-+- dlg,impd-micro-ohms: the impedance of the actuator in micro ohms.
-+  Valid values: 0 - 1500000000.
-+
-+Optional properties:
-+- pwms : phandle to the physical PWM(Pulse Width Modulation) device.
-+  PWM properties should be named "pwms". And number of cell is different
-+  for each pwm device.
-+  (See Documentation/devicetree/bindings/pwm/pwm.txt
-+   for further information relating to pwm properties)
-+
-+- dlg,ps-seq-id: the PS_SEQ_ID(pattern ID in waveform memory inside chip)
-+  to play back when RTWM-MODE is enabled.
-+  Valid range: 0 - 15.
-+- dlg,ps-seq-loop: the PS_SEQ_LOOP, Number of times the pre-stored sequence
-+  pointed to by PS_SEQ_ID or GPI(N)_SEQUENCE_ID is repeated.
-+  Valid range: 0 - 15.
-+- dlg,gpiN-seq-id: the GPI(N)_SEQUENCE_ID, pattern to play
-+  when gpi0 is triggered, 'N' must be 0 - 2.
-+  Valid range: 0 - 15.
-+- dlg,gpiN-mode: the pattern mode which can select either
-+  "Single-pattern" or "Multi-pattern", 'N' must be 0 - 2.
-+- dlg,gpiN-polarity: gpiN polarity which can be chosen among
-+  "Rising-edge", "Falling-edge" and "Both-edge",
-+  'N' must be 0 - 2
-+  Haptic will work by this edge option in case of ETWM mode.
-+
-+- dlg,resonant-freq-hz: use in case of LRA.
-+  the frequency range: 50 - 300.
-+  Default: 205.
-+
-+- dlg,bemf-sens-enable: Enable for internal loop computations.
-+- dlg,freq-track-enable: Enable for resonant frequency tracking.
-+- dlg,acc-enable: Enable for active acceleration.
-+- dlg,rapid-stop-enable: Enable for rapid stop.
-+- dlg,amp-pid-enable: Enable for the amplitude PID.
-+- dlg,mem-array: Customized waveform memory(patterns) data downloaded to
-+  the device during initialization. This is an array of 100 values(u8).
-+
-+For further information, see device datasheet.
-+
-+======
-+
-+Example:
-+
-+	haptics: da7280-haptics@4a {
-+		compatible = "dlg,da7280";
-+		reg = <0x4a>;
-+		interrupt-parent = <&gpio6>;
-+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
-+		dlg,actuator-type = "LRA";
-+		dlg,dlg,const-op-mode = <1>;
-+		dlg,dlg,periodic-op-mode = <1>;
-+		dlg,nom-microvolt = <2000000>;
-+		dlg,abs-max-microvolt = <2000000>;
-+		dlg,imax-microamp = <170000>;
-+		dlg,resonant-freq-hz = <180>;
-+		dlg,impd-micro-ohms = <10500000>;
-+		dlg,freq-track-enable;
-+		dlg,rapid-stop-enable;
-+		dlg,mem-array = <
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-+		>;
-+
-+	};
--- 
-end-of-patch for PATCH v18
+> 1) It's architectural ... just need to look at one CPUID bit to know it
+>    exists
+> 2) The IA32_DEBUGCTL MSR, which reports bus lock in #DB, is per-thread.
+>    So each process or guest can have different behavior.
+> 3) It has support for VMM/guests (new VMEXIT codes, etc).
+> 
+> Use the existing kernel command line option "split_lock_detect=" to handle
+> #DB for bus lock:
 
+Are SLD and BLD mutually exclusive?  Can we even guarantee that given the
+track record of SLD?  If not, we'll likely want to allow the user to choose
+between SDL and BLD via split_lock_detect.
+
+> split_lock_detect=
+> 		#AC for split lock		#DB for bus lock
+> 
+> off		Do nothing			Do nothing
+> 
+> warn		Kernel OOPs			Kernel warns rate limited
+> 		Warn once per task and		and continues to run.
+> 		disable future checking 	Warn once per task and
+> 						and continue to run.
+> 						When both features are
+> 						supported, warn in #DB
+> 
+> fatal		Kernel OOPs			Kernel warn rate limited
+
+Unless the lock to UC #DB is new behavior, why would we revert to allowing
+split locks in the kernel?
+
+> 		Send SIGBUS to user		Send SIGBUS to user
+> 		When both features are
+> 		supported, fatal in #AC.
+> 
+> ratelimit:N	Do nothing			Kernel warns rate limited
+
+This should be more than "Do nothing" for #AC, e.g. fall back to warn or
+at least print a loud error.
+
+> 						and continue to run.
+> 						Limit bus lock rate to
+> 						N per second in the
+> 						current non root user.
+> 
+> On systems that support #DB for bus lock detection the default is "warn".
+> 
+> [1] Chapter 8 https://software.intel.com/sites/default/files/managed/c5/15/architecture-instruction-set-extensions-programming-reference.pdf
+> 
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  48 +++++-
+>  arch/x86/include/asm/cpu.h                    |  16 +-
+>  arch/x86/include/asm/cpufeatures.h            |   1 +
+>  arch/x86/include/asm/msr-index.h              |   1 +
+>  arch/x86/include/uapi/asm/debugreg.h          |   3 +-
+>  arch/x86/kernel/cpu/common.c                  |   2 +-
+>  arch/x86/kernel/cpu/intel.c                   | 156 +++++++++++++++---
+>  arch/x86/kernel/traps.c                       |  10 ++
+>  include/linux/sched/user.h                    |   4 +-
+>  kernel/user.c                                 |   7 +
+>  10 files changed, 214 insertions(+), 34 deletions(-)
+
+Maybe it's just me, but it'd be nice to break this into multiple patches
+so that the SLD refactoring is separate from the introduction of BLD.  As
+is, I find it hard to review as I can't easily distinguish refactoring from
+new functionality.
+
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index fb95fad81c79..7a1cb6fe8b8e 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4816,27 +4816,59 @@
+>  	spia_peddr=
+>  
+>  	split_lock_detect=
+> -			[X86] Enable split lock detection
+> +			[X86] Enable split lock detection or bus lock detection
+>  
+>  			When enabled (and if hardware support is present), atomic
+>  			instructions that access data across cache line
+> -			boundaries will result in an alignment check exception.
+> +			boundaries will result in an alignment check exception
+> +			for split lock detection or an debug exception for
+> +			bus lock detection.
+>  
+>  			off	- not enabled
+>  
+> -			warn	- the kernel will emit rate limited warnings
+> -				  about applications triggering the #AC
+> -				  exception. This mode is the default on CPUs
+> -				  that supports split lock detection.
+> +			warn	- Default mode.
+>  
+> -			fatal	- the kernel will send SIGBUS to applications
+> -				  that trigger the #AC exception.
+> +				  If split lock detection is enabled in
+> +				  hardware, the kernel will emit rate limited
+> +				  warnings about applications triggering the #AC
+> +				  exception.
+> +
+> +				  If bus lock detection is enabled in hardware,
+> +				  the kernel will emit rate limited warnings
+> +				  about applications triggering the #D
+
+s/#D/#DB
+
+> +				  exception.
+> +
+> +				  Default behavior is from bus lock detection
+> +				  if both features are enabled in hardware.
+> +
+> +			fatal	- If split lock detection is enabled in
+> +				  hardware, the kernel will send SIGBUS to
+> +				  applications that trigger the #AC exception.
+> +
+> +				  If bus lock detection is enabled in hardware,
+> +				  the kernel will send SIGBUS to application
+> +				  that trigger the #DB exception.
+> +
+> +				  Default behavior is from split lock detection
+> +				  if both are enabled in hardware.
+> +
+> +			ratelimit:N
+> +				  Set rate limit to N bus locks per second
+> +				  for bus lock detection. 0 < N <= HZ/2 and
+> +				  N is approximate. Not applied to root user
+> +				  and the kernel. Only applied to non root user.
+> +
+> +				  N/A for split lock detection.
+>  
+>  			If an #AC exception is hit in the kernel or in
+>  			firmware (i.e. not while executing in user mode)
+>  			the kernel will oops in either "warn" or "fatal"
+>  			mode.
+>  
+> +			If an #DB exception is hit in the kernel or in
+> +			firmware, the kernel will warn in either "warn" or
+> +			"fatal" mode.
+> +
+>  	srbds=		[X86,INTEL]
+>  			Control the Special Register Buffer Data Sampling
+>  			(SRBDS) mitigation.
+
+...
+
+> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+> index 0ab48f1cdf84..f498472990af 100644
+> --- a/arch/x86/kernel/cpu/intel.c
+> +++ b/arch/x86/kernel/cpu/intel.c
+> @@ -10,6 +10,9 @@
+>  #include <linux/thread_info.h>
+>  #include <linux/init.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/cred.h>
+> +#include <linux/delay.h>
+> +#include <linux/sched/user.h>
+>  
+>  #include <asm/cpufeature.h>
+>  #include <asm/msr.h>
+> @@ -39,15 +42,20 @@ enum split_lock_detect_state {
+>  	sld_off = 0,
+>  	sld_warn,
+>  	sld_fatal,
+> +	sld_ratelimit,
+>  };
+>  
+>  /*
+>   * Default to sld_off because most systems do not support split lock detection
+> - * split_lock_setup() will switch this to sld_warn on systems that support
+> - * split lock detect, unless there is a command line override.
+> + * sld_state_setup() will switch this to sld_warn on systems that support
+> + * split lock/bus lock detect, unless there is a command line override.
+>   */
+>  static enum split_lock_detect_state sld_state __ro_after_init = sld_off;
+>  static u64 msr_test_ctrl_cache __ro_after_init;
+> +/* Split lock detection is enabled if it's true. */
+> +static bool sld;
+> +/* Bus lock detection is enabled if it's true. */
+> +static bool bld;
+
+Why can't these be tracked/reflected in X86_FEATURE_*?
+
+>  /*
+>   * With a name like MSR_TEST_CTL it should go without saying, but don't touch
+> @@ -601,6 +609,7 @@ static void init_intel_misc_features(struct cpuinfo_x86 *c)
+>  }
+>  
+>  static void split_lock_init(void);
+> +static void bus_lock_init(void);
+>  
+>  static void init_intel(struct cpuinfo_x86 *c)
+>  {
+> @@ -717,6 +726,7 @@ static void init_intel(struct cpuinfo_x86 *c)
+>  	if (tsx_ctrl_state == TSX_CTRL_DISABLE)
+>  		tsx_disable();
+>  
+> +	bus_lock_init();
+>  	split_lock_init();
+>  }
+>  
+> @@ -991,13 +1001,25 @@ static const struct {
+>  	{ "off",	sld_off   },
+>  	{ "warn",	sld_warn  },
+>  	{ "fatal",	sld_fatal },
+> +	{ "ratelimit:", sld_ratelimit },
+>  };
+>  
+>  static inline bool match_option(const char *arg, int arglen, const char *opt)
+>  {
+> -	int len = strlen(opt);
+>  
+> -	return len == arglen && !strncmp(arg, opt, len);
+> +	int len = strlen(opt), ratelimit;
+> +
+> +	if (strncmp(arg, opt, len))
+> +		return false;
+> +
+> +	if (sscanf(arg, "ratelimit:%d", &ratelimit) == 1 && ratelimit > 0 &&
+> +	    ratelimit_bl <= HZ / 2) {
+> +		ratelimit_bl = ratelimit;
+> +
+> +		return true;
+> +	}
+> +
+> +	return len == arglen;
+>  }
+>  
+>  static bool split_lock_verify_msr(bool on)
+> @@ -1016,16 +1038,15 @@ static bool split_lock_verify_msr(bool on)
+>  	return ctrl == tmp;
+>  }
+>  
+> -static void __init split_lock_setup(void)
+> +static void __init sld_state_setup(void)
+>  {
+>  	enum split_lock_detect_state state = sld_warn;
+>  	char arg[20];
+>  	int i, ret;
+>  
+> -	if (!split_lock_verify_msr(false)) {
+> -		pr_info("MSR access failed: Disabled\n");
+> +	if (!static_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) &&
+> +	    !static_cpu_has(X86_FEATURE_BUS_LOCK_DETECT))
+
+Pretty sure static_cpu_has() in an __init function is a waste.
+
+>  		return;
+> -	}
+>  
+>  	ret = cmdline_find_option(boot_command_line, "split_lock_detect",
+>  				  arg, sizeof(arg));
+> @@ -1037,17 +1058,14 @@ static void __init split_lock_setup(void)
+>  			}
+>  		}
+>  	}
+> +	sld_state = state;
+> +}
+>  
+> -	switch (state) {
+> -	case sld_off:
+> -		pr_info("disabled\n");
+> +static void __init _split_lock_setup(void)
+> +{
+> +	if (!split_lock_verify_msr(false)) {
+> +		pr_info("MSR access failed: Disabled\n");
+>  		return;
+> -	case sld_warn:
+> -		pr_info("warning about user-space split_locks\n");
+> -		break;
+> -	case sld_fatal:
+> -		pr_info("sending SIGBUS on user-space split_locks\n");
+> -		break;
+>  	}
+>  
+>  	rdmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
+> @@ -1057,8 +1075,11 @@ static void __init split_lock_setup(void)
+>  		return;
+>  	}
+>  
+> -	sld_state = state;
+> +	/* Restore the MSR to its cached value. */
+> +	wrmsrl(MSR_TEST_CTRL, msr_test_ctrl_cache);
+> +
+>  	setup_force_cpu_cap(X86_FEATURE_SPLIT_LOCK_DETECT);
+> +	sld = true;
+>  }
+>  
+>  /*
+> @@ -1078,6 +1099,10 @@ static void sld_update_msr(bool on)
+>  
+>  static void split_lock_init(void)
+>  {
+> +	/* If supported, #DB for bus lock will handle warn and ratelimit. */
+> +	if (bld && (sld_state == sld_warn || sld_state == sld_ratelimit))
+> +		return;
+> +
+>  	if (cpu_model_supports_sld)
+>  		split_lock_verify_msr(sld_state != sld_off);
+>  }
+> @@ -1114,14 +1139,58 @@ bool handle_guest_split_lock(unsigned long ip)
+>  }
+>  EXPORT_SYMBOL_GPL(handle_guest_split_lock);
+>  
+> +static void bus_lock_init(void)
+> +{
+> +	u64 val;
+> +
+> +	if (!bld)
+> +		return;
+> +
+> +	/* If supported, #AC for split lock will handle fatal. */
+> +	if (sld && sld_state == sld_fatal)
+> +		return;
+> +
+> +	rdmsrl(MSR_IA32_DEBUGCTLMSR, val);
+> +	val |= DEBUGCTLMSR_BUS_LOCK_DETECT;
+
+Uh, doesn't this enable BLD even if sld_state == sld_off?
+
+> +	wrmsrl(MSR_IA32_DEBUGCTLMSR, val);
+> +}
+> +
+>  bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+>  {
+> -	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
+> +	if ((regs->flags & X86_EFLAGS_AC) || !sld || sld_state == sld_fatal ||
+> +	    sld_state == sld_ratelimit)
+>  		return false;
+>  	split_lock_warn(regs->ip);
+>  	return true;
+>  }
+>  
+> +bool handle_user_bus_lock(struct pt_regs *regs)
+> +{
+> +	if (!bld)
+> +		return false;
+> +
+> +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
+> +			    current->comm, current->pid, regs->ip);
+> +
+> +	if (sld_state == sld_ratelimit) {
+> +		while (!__ratelimit(&get_current_user()->ratelimit_bl))
+> +			msleep(1000 / ratelimit_bl);
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +bool handle_kernel_bus_lock(struct pt_regs *regs)
+> +{
+> +	if (!bld)
+> +		return false;
+> +
+> +	pr_warn_ratelimited("#DB: %s/%d took a bus_lock trap at address: 0x%lx\n",
+> +			    current->comm, current->pid, regs->ip);
+> +
+> +	return true;
+> +}
+> +
+>  /*
+>   * This function is called only when switching between tasks with
+>   * different split-lock detection modes. It sets the MSR for the
+> @@ -1159,7 +1228,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
+>  	{}
+>  };
+>  
+> -void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
+> +static void __init split_lock_setup(struct cpuinfo_x86 *c)
+>  {
+>  	const struct x86_cpu_id *m;
+>  	u64 ia32_core_caps;
+> @@ -1186,5 +1255,50 @@ void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c)
+>  	}
+>  
+>  	cpu_model_supports_sld = true;
+> -	split_lock_setup();
+> +	_split_lock_setup();
+> +}
+> +
+> +static void sld_state_show(void)
+> +{
+> +	if (!bld && !sld)
+> +		return;
+> +
+> +	switch (sld_state) {
+> +	case sld_off:
+> +		pr_info("disabled\n");
+> +		break;
+> +
+> +	case sld_warn:
+> +		if (bld)
+> +			pr_info("#DB: warning about kernel and user-space bus_locks\n");
+> +		else
+> +			pr_info("#AC: crashing the kernel about kernel split_locks and warning about user-space split_locks\n");
+> +		break;
+> +
+> +	case sld_fatal:
+> +		if (sld)
+> +			pr_info("#AC: crashing the kernel on kernel split_locks and sending SIGBUS on user-space split_locks\n");
+> +		else
+> +			pr_info("#DB: warning about kernel bus_locks and sending SIGBUS on user-space bus_locks\n");
+> +		break;
+> +
+> +	case sld_ratelimit:
+> +		if (bld)
+> +			pr_info("#DB: warning about kernel bus_locks and setting silent rate limit to %d/sec per user on non root user-space bus_locks\n", ratelimit_bl);
+> +		break;
+> +	}
+> +}
+> +
+> +static void __init bus_lock_setup(void)
+> +{
+> +	if (static_cpu_has(X86_FEATURE_BUS_LOCK_DETECT) && sld_state != sld_off)
+
+More overkill.
+
+> +		bld = true;
+> +}
+> +
+> +void __init sld_setup(struct cpuinfo_x86 *c)
+
+This wrapper probably should call out that it configures both sld and bld.
+
+> +{
+> +	sld_state_setup();
+> +	split_lock_setup(c);
+> +	bus_lock_setup();
+> +	sld_state_show();
+>  }
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index b038695f36c5..58725567da39 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -812,6 +812,16 @@ static void handle_debug(struct pt_regs *regs, unsigned long dr6, bool user)
+>  	if (!user && !dr6)
+>  		return;
+>  
+> +	/* Handle bus lock. */
+> +	if (!(dr6 & DR_BUS_LOCK)) {
+> +		cond_local_irq_enable(regs);
+> +		if (user)
+> +			handle_user_bus_lock(regs);
+> +		else
+> +			handle_kernel_bus_lock(regs);
+> +		goto out;
+> +	}
+> +
+>  	/*
+>  	 * If dr6 has no reason to give us about the origin of this trap,
+>  	 * then it's very likely the result of an icebp/int01 trap.
+> diff --git a/include/linux/sched/user.h b/include/linux/sched/user.h
+> index 917d88edb7b9..fc757ec6c19f 100644
+> --- a/include/linux/sched/user.h
+> +++ b/include/linux/sched/user.h
+> @@ -37,8 +37,9 @@ struct user_struct {
+>  	atomic_long_t locked_vm;
+>  #endif
+>  
+> -	/* Miscellaneous per-user rate limit */
+> +	/* Miscellaneous per-user rate limits */
+>  	struct ratelimit_state ratelimit;
+> +	struct ratelimit_state ratelimit_bl;
+
+Why not spell out ratelimit_bus_lock?  There's no way someone looking at
+this code in isolation is going to have any clue what "bl" means.
+
+>  };
+>  
+>  extern int uids_sysfs_init(void);
+> @@ -48,6 +49,7 @@ extern struct user_struct *find_user(kuid_t);
+>  extern struct user_struct root_user;
+>  #define INIT_USER (&root_user)
+>  
+> +extern int ratelimit_bl;
+>  
+>  /* per-UID process charging. */
+>  extern struct user_struct * alloc_uid(kuid_t);
+> diff --git a/kernel/user.c b/kernel/user.c
+> index b1635d94a1f2..023dad617625 100644
+> --- a/kernel/user.c
+> +++ b/kernel/user.c
+> @@ -103,6 +103,7 @@ struct user_struct root_user = {
+>  	.locked_shm     = 0,
+>  	.uid		= GLOBAL_ROOT_UID,
+>  	.ratelimit	= RATELIMIT_STATE_INIT(root_user.ratelimit, 0, 0),
+> +	.ratelimit_bl	= RATELIMIT_STATE_INIT(root_user.ratelimit_bl, 0, 0),
+>  };
+>  
+>  /*
+> @@ -172,6 +173,9 @@ void free_uid(struct user_struct *up)
+>  		free_user(up, flags);
+>  }
+>  
+> +/* Architectures (e.g. X86) may set this for rate limited bus locks. */
+> +int ratelimit_bl;
+> +
+>  struct user_struct *alloc_uid(kuid_t uid)
+>  {
+>  	struct hlist_head *hashent = uidhashentry(uid);
+> @@ -190,6 +194,9 @@ struct user_struct *alloc_uid(kuid_t uid)
+>  		refcount_set(&new->__count, 1);
+>  		ratelimit_state_init(&new->ratelimit, HZ, 100);
+>  		ratelimit_set_flags(&new->ratelimit, RATELIMIT_MSG_ON_RELEASE);
+> +		ratelimit_state_init(&new->ratelimit_bl, HZ, ratelimit_bl);
+> +		ratelimit_set_flags(&new->ratelimit_bl,
+> +				    RATELIMIT_MSG_ON_RELEASE);
+>  
+>  		/*
+>  		 * Before adding this, check whether we raced
+> -- 
+> 2.19.1
+> 
