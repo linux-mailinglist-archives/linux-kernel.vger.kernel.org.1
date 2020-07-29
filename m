@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080012324F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7919F2324E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 20:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgG2S6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 14:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgG2S6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 14:58:10 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0D402075D;
-        Wed, 29 Jul 2020 18:58:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596049090;
-        bh=Ly9QFQV2PQXXgMS/azzOUT/yG2ADq6EwyCow2scRvBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2U/DqMj/VatFQrcdaquXiqVEVRllaRSKTZIpjooW3Umxtp7mqsk+A9HGFXYpdErtk
-         XWL+HYrRDXtnSfCE+TnbrPfmai0E2jTledFm0efWbJvQYyhAaOY5AJrvppJRJuScwL
-         9WH4VuoPf+9T2emZgSDaGqb4gCP3r2eo1cXwboas=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 049CB40E69; Wed, 29 Jul 2020 15:58:08 -0300 (-03)
-Date:   Wed, 29 Jul 2020 15:58:07 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 4/5] perf record: Don't clear event's period if set by
- a term
-Message-ID: <20200729185807.GD433799@kernel.org>
-References: <20200728085734.609930-1-irogers@google.com>
- <20200728085734.609930-5-irogers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200728085734.609930-5-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+        id S1727806AbgG2Swm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 14:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726365AbgG2Swl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 14:52:41 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BBBDC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 11:52:41 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mt12so2346448pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 11:52:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JKan5hWVyx9npp6/yhxgLJA7QZFKpXwZ3cmeNfakJnw=;
+        b=uNJ3sx5oPSmxdVuR4J+Z4O3oRyDH5k1dzSM5TlRIzxR48j05T7oce55cr1GlEotctq
+         XsuilZWDDtWwUhObPmA2MdLr6QjkZz+vSx3oG4fVFP8eMR0SgRyyX6LJ+2QhF3hTWlHh
+         unukN5f0UmGzImFMhVKs6fU+ul3bPKS+/+lJPXC9Ypwf4X7SXdlArmfJwWZsUmSMyZmn
+         fAXrn6Rh20SdlG9rHVDguqgJ3SDm2GRtb5s7THSwsbB0Ce55uOkqjR0z1eGrs9U8MU8D
+         /gQCpFMFl2PvUhvwdo2h2+jJ1ACK4+mnVE4f1m+F2OqKnwgpU5dfdpTszUMOhNR0xRcd
+         4v9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JKan5hWVyx9npp6/yhxgLJA7QZFKpXwZ3cmeNfakJnw=;
+        b=bMhhvcSgRtArSxN6n28grFnoUvtVqnbkNENptlQBD0purydzF2gkuiS5tVrk0g7EPl
+         tvdy4lBG6+D4wRPaH9p+ZkRvL3nRmKBvKXQe7o443D+thnvjMW7KHg64/zmj81A6m+6q
+         lAtMVhgEN3d/qn9lThXbYXL73xI3sQoodYmMabKPO1jPqAOppis+5KqDZgDT1rfk7O3W
+         j1WJ0Q166jokqmEU5ckAOOEPnBOmbQ1aAx2uxvNCEgsl4K6uij1stWgLAtGE2vZ3WkuH
+         MTVfu15kVxGmQuHJDKCUcZZKjv2T0zoyIX4coYgbxj8BgvpDqFOqy6Jet661cFfVSFWD
+         +7zQ==
+X-Gm-Message-State: AOAM533mryXkrP4m4AmiLC3nzvtvxPedPedSgLPjZW9qQ87zpr1B3ZeC
+        EsUADrRi8GnffnxLg6nR+vY=
+X-Google-Smtp-Source: ABdhPJzz/nH8yWtky4qFCUB7fSvVpdYp4LKXR24ZmuUK7RU0XMJU6h4LNQN7N6xzaNFVMT5CNVg35w==
+X-Received: by 2002:a17:90a:71c1:: with SMTP id m1mr3588850pjs.163.1596048760906;
+        Wed, 29 Jul 2020 11:52:40 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.179.38.221])
+        by smtp.gmail.com with ESMTPSA id v128sm1043784pfc.14.2020.07.29.11.52.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Jul 2020 11:52:40 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     jgg@ziepe.ca, dan.j.williams@intel.com, gregkh@linuxfoundation.org,
+        mchehab+samsung@kernel.org, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com, Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v2] drivers/virt/fsl_hypervisor: Correcting error handling path
+Date:   Thu, 30 Jul 2020 00:31:09 +0530
+Message-Id: <1596049269-14950-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Jul 28, 2020 at 01:57:33AM -0700, Ian Rogers escreveu:
-> If events in a group explicitly set a frequency or period with leader
-> sampling, don't disable the samples on those events.
-> 
-> Prior to 5.8:
-> perf record -e '{cycles/period=12345000/,instructions/period=6789000/}:S'
-> would clear the attributes then apply the config terms. In commit
-> 5f34278867b7 leader sampling configuration was moved to after applying the
-> config terms, in the example, making the instructions' event have its period
-> cleared.
-> This change makes it so that sampling is only disabled if configuration
-> terms aren't present.
+First, when memory allocation for sg_list_unaligned failed, there
+is no point of calling put_pages() as we haven't pinned any pages.
 
-Adrian, can you take a look at this one?
+Second, if get_user_pages_fast() failed we should unpinned num_pinned
+pages, no point of checking till num_pages.
 
-- Arnaldo
+This will address both.
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+---
+v2:
+	Added review tag.
+
+ drivers/virt/fsl_hypervisor.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+index 1b0b11b..ea344d7 100644
+--- a/drivers/virt/fsl_hypervisor.c
++++ b/drivers/virt/fsl_hypervisor.c
+@@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
  
-> Fixes: 5f34278867b7 ("perf evlist: Move leader-sampling configuration")
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/record.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-> index a4cc11592f6b..01d1c6c613f7 100644
-> --- a/tools/perf/util/record.c
-> +++ b/tools/perf/util/record.c
-> @@ -2,6 +2,7 @@
->  #include "debug.h"
->  #include "evlist.h"
->  #include "evsel.h"
-> +#include "evsel_config.h"
->  #include "parse-events.h"
->  #include <errno.h>
->  #include <limits.h>
-> @@ -38,6 +39,9 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
->  	struct perf_event_attr *attr = &evsel->core.attr;
->  	struct evsel *leader = evsel->leader;
->  	struct evsel *read_sampler;
-> +	struct evsel_config_term *term;
-> +	struct list_head *config_terms = &evsel->config_terms;
-> +	int term_types, freq_mask;
->  
->  	if (!leader->sample_read)
->  		return;
-> @@ -47,16 +51,24 @@ static void evsel__config_leader_sampling(struct evsel *evsel, struct evlist *ev
->  	if (evsel == read_sampler)
->  		return;
->  
-> +	/* Determine the evsel's config term types. */
-> +	term_types = 0;
-> +	list_for_each_entry(term, config_terms, list) {
-> +		term_types |= 1 << term->type;
-> +	}
->  	/*
-> -	 * Disable sampling for all group members other than the leader in
-> -	 * case the leader 'leads' the sampling, except when the leader is an
-> -	 * AUX area event, in which case the 2nd event in the group is the one
-> -	 * that 'leads' the sampling.
-> +	 * Disable sampling for all group members except those with explicit
-> +	 * config terms or the leader. In the case of an AUX area event, the 2nd
-> +	 * event in the group is the one that 'leads' the sampling.
->  	 */
-> -	attr->freq           = 0;
-> -	attr->sample_freq    = 0;
-> -	attr->sample_period  = 0;
-> -	attr->write_backward = 0;
-> +	freq_mask = (1 << EVSEL__CONFIG_TERM_FREQ) | (1 << EVSEL__CONFIG_TERM_PERIOD);
-> +	if ((term_types & freq_mask) == 0) {
-> +		attr->freq           = 0;
-> +		attr->sample_freq    = 0;
-> +		attr->sample_period  = 0;
-> +	}
-> +	if ((term_types & (1 << EVSEL__CONFIG_TERM_OVERWRITE)) == 0)
-> +		attr->write_backward = 0;
->  
->  	/*
->  	 * We don't get a sample for slave events, we make them when delivering
-> -- 
-> 2.28.0.163.g6104cc2f0b6-goog
-> 
-
+ 	unsigned int i;
+ 	long ret = 0;
+-	int num_pinned; /* return value from get_user_pages() */
++	int num_pinned = 0; /* return value from get_user_pages() */
+ 	phys_addr_t remote_paddr; /* The next address in the remote buffer */
+ 	uint32_t count; /* The number of bytes left to copy */
+ 
+@@ -293,7 +293,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 
+ exit:
+ 	if (pages) {
+-		for (i = 0; i < num_pages; i++)
++		for (i = 0; i < num_pinned; i++)
+ 			if (pages[i])
+ 				put_page(pages[i]);
+ 	}
 -- 
+1.9.1
 
-- Arnaldo
