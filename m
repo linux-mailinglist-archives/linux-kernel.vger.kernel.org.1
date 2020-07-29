@@ -2,124 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4AA232546
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B84232536
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 21:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbgG2TUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 15:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48312 "EHLO
+        id S1726819AbgG2TRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 15:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726813AbgG2TUI (ORCPT
+        with ESMTP id S1726365AbgG2TRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 15:20:08 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80022C0619D5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:20:08 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id r11so5575648pfl.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 12:20:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HGXcQxniYOJ/L+/BbSJHGqRZ1csrAGecCIYczpmNch4=;
-        b=CWQeakntD3r4UHVDonF0RsCdeZ+R7/FiH6YY8MnpigA19viBWrwaAmlWRUzimnUFkF
-         yyAufnaYCoPsh35cHMstxZE/NVB+enOaPdFZu5HTb8cy1x6VnmFZ/JMOliwgoNmXeZOK
-         L27U5zsKI6cBxWAnJUBYMRFGwRxTh72dDC/z8o0HoIpB1L+7HLPEznLyI9Z7M1QNuUpN
-         QeTsz7Mh4Quj5r+4bE+L81UR0FwjDbKvv6tpA/GGBfMIumWqzvTrEhRlNvGpJ4wwGD7I
-         dbiuC5v1uZBgGdjZMphJmcD7sF4jmo1V5BIxX0JO1OHT9xJ6qWabr3SbuV9eAm/BfDRr
-         nU9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HGXcQxniYOJ/L+/BbSJHGqRZ1csrAGecCIYczpmNch4=;
-        b=uNQJv1Il7enAZr4PU1XhATlYfjWD64c++lOcUZnZlcoaXLF+/r2znpJFVeNnjSRSOi
-         DMbLiWQtHOhG9fXYHKpRgpS3WlXJB4/HJmgZg4vaYFav9DqPBFhzPrRDLYjyb2769JMi
-         2agCeJnY4kCZfiM5iYRuWoWSYR8pAPmjm8qRK0vxwEXQmcjV713w98MQJElEkZfV1htS
-         5Feue/zcvjFe4V5d5o+c7XM6niQJ1twvPrMxtz8pfMZyV1eimZv2JCmkYkl++B7zpK7M
-         zRnzlkSiJz3uvYBQwgCSuwO3M1ZYVea8NVsXOoDkewnKqWsa1yw0oNVQhnYzO6QyaA9s
-         mgOg==
-X-Gm-Message-State: AOAM533bPwjPvnScaRZAAXYTOYbph6+dobzC3queRe5JH3++eZolTzJO
-        Y5C24BhWnUBW9AjlfzbRMkNTkg==
-X-Google-Smtp-Source: ABdhPJwoUuUGN1m8e0bLII+ZzoMSh6x28a7Fj+eVz1nRdWqgeRnvvc9OdaVEmSRBTmlIVHbzgSRN/g==
-X-Received: by 2002:a63:7d16:: with SMTP id y22mr29049887pgc.136.1596050407636;
-        Wed, 29 Jul 2020 12:20:07 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 79sm3207215pfu.86.2020.07.29.12.20.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 12:20:07 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 12:16:38 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     agross@kernel.org, ohad@wizery.com, corbet@lwn.net,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] remoteproc: core: Register the character device
- interface
-Message-ID: <20200729191638.GF229995@builder.lan>
-References: <1596044401-22083-1-git-send-email-sidgup@codeaurora.org>
- <1596044401-22083-3-git-send-email-sidgup@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1596044401-22083-3-git-send-email-sidgup@codeaurora.org>
+        Wed, 29 Jul 2020 15:17:43 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E50AC061794;
+        Wed, 29 Jul 2020 12:17:43 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 90E2D11D53F8B;
+        Wed, 29 Jul 2020 12:00:57 -0700 (PDT)
+Date:   Wed, 29 Jul 2020 12:17:42 -0700 (PDT)
+Message-Id: <20200729.121742.751827330298858293.davem@davemloft.net>
+To:     Jisheng.Zhang@synaptics.com
+Cc:     thomas.petazzoni@bootlin.com, kuba@kernel.org,
+        linux@armlinux.org.uk, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: mvneta: fix comment about
+ phylink_speed_down
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200729174909.276590fb@xhacker.debian>
+References: <20200729174909.276590fb@xhacker.debian>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 29 Jul 2020 12:00:57 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29 Jul 10:40 PDT 2020, Siddharth Gupta wrote:
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Date: Wed, 29 Jul 2020 17:49:09 +0800
 
-> Add the character device during rproc_add. This would create
-> a character device node at /dev/remoteproc<index>. Userspace
-> applications can interact with the remote processor using this
-> interface.
+> mvneta has switched to phylink, so the comment should look
+> like "We may have called phylink_speed_down before".
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 > ---
->  drivers/remoteproc/remoteproc_core.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 277d3bf..7f90eee 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -1986,6 +1986,11 @@ int rproc_add(struct rproc *rproc)
->  	/* create debugfs entries */
->  	rproc_create_debug_dir(rproc);
->  
-> +	/* add char device for this remoteproc */
-> +	ret = rproc_char_device_add(rproc);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	/*
->  	 * Remind ourselves the remote processor has been attached to rather
->  	 * than booted by the remoteproc core.  This is important because the
-> @@ -2262,6 +2267,7 @@ int rproc_del(struct rproc *rproc)
->  	mutex_unlock(&rproc->lock);
->  
->  	rproc_delete_debug_dir(rproc);
-> +	rproc_char_device_remove(rproc);
->  
->  	/* the rproc is downref'ed as soon as it's removed from the klist */
->  	mutex_lock(&rproc_list_mutex);
-> @@ -2430,6 +2436,7 @@ static int __init remoteproc_init(void)
->  {
->  	rproc_init_sysfs();
->  	rproc_init_debugfs();
-> +	rproc_init_cdev();
->  	rproc_init_panic();
->  
->  	return 0;
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> Since v1:
+>   - drop patch2 which tries to avoid link flapping when changing mtu
+>     I need more time on the change mtu refactoring.
+
+Applied, thank you.
