@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C002316ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75302316F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730914AbgG2AsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 20:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730877AbgG2AsM (ORCPT
+        id S1730944AbgG2AsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 20:48:20 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:36814 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730837AbgG2AsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 20:48:12 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC43C0619D5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:48:11 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s15so1767611pgc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:48:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EfvldELvo7FLErlsWiPVmAKuN5/SSFt2LmTOBkch4kw=;
-        b=xHJHTx9HefSaFKWD99K/a9Hxxsg14EZ0R7MjRerhC5HktfBA386qIt0TiPmveUYa8e
-         Xh6QKnGdUkZODk+PZYNKQJ3Wy+8aaXe3dY7LIN9E/E/n74Aj4EKuRZlZqX8vZN6ddulD
-         CjJsEJ65XjyBJK0HKWWo47QTOhKXHazH7/9M2ImseYflwXqDmFMuuzwFX7gy7mXHiADh
-         +sMzlTGEtTqMsgz+/NwVxVEFfl8BVnhTmX8XbR2/CyfDRLLFWQiPo7F6aLNZF08vIYQF
-         /KboZeV5uNNgsWP5UmnxJJaNvzeAwjjShKfH2lLlqzfFWsoQbF6xpIYUumE4rhxPQFDQ
-         61gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EfvldELvo7FLErlsWiPVmAKuN5/SSFt2LmTOBkch4kw=;
-        b=LtugXxzqfp3zSTWoWnvjq/exqjlgXyTOiaB7Bl7peh+eq++K5I0jwf1ZaolRJtycL5
-         Oci07tS+aKi0a++ziiXb0lyXdtAQjlmyDGknVHCLpxGSCoj9HqGbLUu5LUXiG6SnXeSL
-         zPPerbhmElZ9vKS+nx6uYdRFoP8/hJ46/ofrg6QQhQ/lMnCL8s036K5Vg2Fy631pxEcA
-         GUjAHNXGEO3u0KZa5mZES3xJsJbOzYyKjjIILnEgS9KhonJvq3aOX4bQLN3mWHdlPQLF
-         8DQMzMttKGH/urZ8M3jr1RDd9ylJpMeI1JaE+zGynAo+B+Vwsei2AfOAgmV/r5YvMV9i
-         ct2A==
-X-Gm-Message-State: AOAM530Uw1aGpQ9wBdU2/UItWFhNsf/So8JAyKpiWSbq0fMd4aeFm1Ng
-        K1r8X5MFTOKberSvcDE5C5gskw==
-X-Google-Smtp-Source: ABdhPJytjlRHqA72yY0KPiWKOWc6Pn9lDKQnBeGMXjcmSmSP/8NoYvt4Jb6mHcI1wDmaqYEGo6JvaA==
-X-Received: by 2002:aa7:9422:: with SMTP id y2mr27652112pfo.211.1595983691313;
-        Tue, 28 Jul 2020 17:48:11 -0700 (PDT)
-Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id q12sm239414pfg.135.2020.07.28.17.48.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 17:48:10 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: hwlock: qcom: Remove invalid binding
-Date:   Tue, 28 Jul 2020 17:47:57 -0700
-Message-Id: <20200729004757.1901107-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 28 Jul 2020 20:48:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U45v0Du_1595983694;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U45v0Du_1595983694)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 29 Jul 2020 08:48:14 +0800
+Subject: Re: [PATCH v17 17/21] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1595681998-19193-18-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0UdaW4Rf43yULhQBuP07vQgmoPbaWHGKv1Z7fEPP6jH83w@mail.gmail.com>
+ <1fd45e69-3a50-aae8-bcc4-47d891a5e263@linux.alibaba.com>
+ <CAKgT0UfWckn0npij5UhEEmMKuG0bRytN3kPDtvvE3AdJuEZjJg@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <cb49a573-8d24-d289-199d-8058cd79b89b@linux.alibaba.com>
+Date:   Wed, 29 Jul 2020 08:48:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <CAKgT0UfWckn0npij5UhEEmMKuG0bRytN3kPDtvvE3AdJuEZjJg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm hwlock is described in DeviceTree either directly on the
-mmio bus or split between a syscon and a mutex node, but as noted in
-[1] the latter is not valid DT, so remove any traces of this from the
-binding.
 
-[1] https://lore.kernel.org/r/CAL_JsqLa9GBtbgN6aL7AQ=A6V-YRtPgYqh6XgM2kpx532+r4Gg@mail.gmail.com/
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- .../bindings/hwlock/qcom-hwspinlock.yaml      | 25 +------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+在 2020/7/28 下午11:55, Alexander Duyck 写道:
+>>  /*
+>> @@ -511,11 +511,11 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+>>   *             scheduled)
+>>   */
+>>  static bool compact_unlock_should_abort(spinlock_t *lock,
+>> -               unsigned long flags, bool *locked, struct compact_control *cc)
+>> +               unsigned long flags, void **locked, struct compact_control *cc)
+> Instead of passing both a void pointer and the lock why not just pass
+> the pointer to the lock pointer? You could combine lock and locked
+> into a single argument and save yourself some extra effort.
+> 
 
-diff --git a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-index 88f975837588..1c7149f7d171 100644
---- a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-+++ b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-@@ -25,37 +25,14 @@ properties:
-   '#hwlock-cells':
-     const: 1
- 
--  syscon:
--    $ref: "/schemas/types.yaml#/definitions/phandle-array"
--    description:
--      Should be a triple of phandle referencing the TCSR mutex syscon, offset
--      of first mutex within the syscon and stride between each mutex.
--
- required:
-   - compatible
-+  - reg
-   - '#hwlock-cells'
- 
--oneOf:
--  - required:
--    - reg
--  - required:
--    - syscon
--
- additionalProperties: false
- 
- examples:
--  - |
--        tcsr_mutex_block: syscon@fd484000 {
--                compatible = "syscon";
--                reg = <0xfd484000 0x2000>;
--        };
--
--        hwlock {
--                compatible = "qcom,tcsr-mutex";
--                syscon = <&tcsr_mutex_block 0 0x80>;
--
--                #hwlock-cells = <1>;
--        };
-   - |
-         tcsr_mutex: hwlock@1f40000 {
-                 compatible = "qcom,tcsr-mutex";
--- 
-2.26.2
+the passed locked pointer could be rewrite in the func, that is unacceptable if it is a lock which could
+be used other place.
 
+And it is alreay dangerous to NULL a local pointer. In fact, I perfer the orignal verion, not so smart
+but rebust enough for future changes, right?
+
+Thanks
+Alex
+
+
+>>  {
+>>         if (*locked) {
+>>                 spin_unlock_irqrestore(lock, flags);
+>> -               *locked = false;
+>> +               *locked = NULL;
+>>         }
+>>
+>>         if (fatal_signal_pending(current)) {
