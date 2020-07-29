@@ -2,70 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE35E231A71
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAB3231A79
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 09:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgG2Hjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 03:39:52 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37634 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726290AbgG2Hjv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 03:39:51 -0400
-X-UUID: 700611f5285945a7aad4c10411b29e77-20200729
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=BAzzGPnATd/QF6uwaKKNFf1HLANzxr4fsUKdT6hn41E=;
-        b=e/sLIATztxhhbPyi8+pFqwk1LXK4Rn2nYe5w7muboFS6U2rr2wBgDPpK3LR2gFDVY2v2FErS7EoZyVmha3Wt++0t4X2I3gqYmVRpvJdLMa+80jkcciPEg7tSnva3yXu2zx9quUVSQHUb5WV0M92CoO4l9ZZBF8qum4GaLHdRiHI=;
-X-UUID: 700611f5285945a7aad4c10411b29e77-20200729
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <crystal.guo@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1438535055; Wed, 29 Jul 2020 15:39:47 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 29 Jul 2020 15:39:45 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 29 Jul 2020 15:39:46 +0800
-From:   Crystal Guo <crystal.guo@mediatek.com>
-To:     <p.zabel@pengutronix.de>, <robh+dt@kernel.org>,
-        <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
+        id S1726948AbgG2HnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 03:43:02 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59948 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726299AbgG2HnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 03:43:01 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 7C583CB271A10AF009FB;
+        Wed, 29 Jul 2020 15:42:57 +0800 (CST)
+Received: from [10.174.178.63] (10.174.178.63) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Jul 2020 15:42:46 +0800
+Subject: Re: [PATCH 2/4] perf: arm-spe: Add support for ARMv8.3-SPE
+To:     Leo Yan <leo.yan@linaro.org>
+CC:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>, <zhangshaokun@hisilicon.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <seiya.wang@mediatek.com>, Crystal Guo <crystal.guo@mediatek.com>
-Subject: [PATCH 2/2] arm64: dts: mt8192: add infracfg_rst node
-Date:   Wed, 29 Jul 2020 15:39:17 +0800
-Message-ID: <1596008357-11213-3-git-send-email-crystal.guo@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1596008357-11213-1-git-send-email-crystal.guo@mediatek.com>
-References: <1596008357-11213-1-git-send-email-crystal.guo@mediatek.com>
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>, <guohanjun@huawei.com>
+References: <20200724091607.41903-1-liwei391@huawei.com>
+ <20200724091607.41903-3-liwei391@huawei.com>
+ <20200729062951.GE4343@leoy-ThinkPad-X240s>
+ <a8f9df67-adf1-09e7-b117-ff4163cc2a03@huawei.com>
+ <20200729072844.GH4343@leoy-ThinkPad-X240s>
+From:   "liwei (GF)" <liwei391@huawei.com>
+Message-ID: <beabfb2a-e9ec-fe8e-a6ae-a7d4935a421e@huawei.com>
+Date:   Wed, 29 Jul 2020 15:42:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200729072844.GH4343@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.63]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIGluZnJhY2ZnX3JzdCBub2RlIHdoaWNoIGlzIGZvciBNVDgxOTIgcGxhdGZvcm0NCg0KU2ln
-bmVkLW9mZi1ieTogQ3J5c3RhbCBHdW8gPGNyeXN0YWwuZ3VvQG1lZGlhdGVrLmNvbT4NCi0tLQ0K
-IGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgfCAxMCArKysrKysrKyst
-DQogMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZm
-IC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaSBiL2FyY2gv
-YXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kNCmluZGV4IGIxNmRiYmQuLmFkYzYy
-MzkgMTAwNjQ0DQotLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNp
-DQorKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQpAQCAtMjE3
-LDkgKzIxNywxNyBAQA0KIAkJfTsNCiANCiAJCWluZnJhY2ZnOiBpbmZyYWNmZ0AxMDAwMTAwMCB7
-DQotCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItaW5mcmFjZmciLCAic3lzY29uIjsN
-CisJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1pbmZyYWNmZyIsICJzeXNjb24iLCAi
-c2ltcGxlLW1mZCI7DQogCQkJcmVnID0gPDAgMHgxMDAwMTAwMCAwIDB4MTAwMD47DQogCQkJI2Ns
-b2NrLWNlbGxzID0gPDE+Ow0KKw0KKwkJCWluZnJhY2ZnX3JzdDogcmVzZXQtY29udHJvbGxlciB7
-DQorCQkJCWNvbXBhdGlibGUgPSAidGksc3lzY29uLXJlc2V0IjsNCisJCQkJI3Jlc2V0LWNlbGxz
-ID0gPDE+Ow0KKwkJCQl0aSxyZXNldC1iaXRzID0gPA0KKwkJCQkJMHgxNDAgMTUgMHgxNDQgMTUg
-MCAwIChBU1NFUlRfU0VUIHwgREVBU1NFUlRfU0VUIHwgU1RBVFVTX05PTkUpIC8qIDA6IHBjaWUg
-Ki8NCisJCQkJPjsNCisJCQl9Ow0KIAkJfTsNCiANCiAJCXBlcmljZmc6IHBlcmljZmdAMTAwMDMw
-MDAgew0KLS0gDQoxLjguMS4xLmRpcnR5DQo=
+Hi Leo,
 
+On 2020/7/29 15:28, Leo Yan wrote:
+> On Wed, Jul 29, 2020 at 03:21:20PM +0800, liwei (GF) wrote:
+> 
+> [...]
+> 
+>>>> @@ -354,8 +372,38 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>>>>  	}
+>>>>  	case ARM_SPE_OP_TYPE:
+>>>>  		switch (idx) {
+>>>> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+>>>> -					"COND-SELECT" : "INSN-OTHER");
+>>>> +		case 0:	{
+>>>> +			if (payload & 0x8) {
+>>>
+>>> Some nitpicks for packet format checking ...
+>>>
+>>> For SVE operation, the payload partten is: 0b0xxx1xx0.
+>>>
+>>> So it's good to check the partten like:
+>>>
+>>>   /* SVE operation subclass is: 0b0xxx1xx0 */
+>>>   if ((payload & 0x8081) == 0x80) {
+>>>      ....
+>>>   }
+>>>
+>>> If later the packet format is extended, this will not introduce any
+>>> confliction.
+>>
+>> Get it, but i think what you are really meaning is:
+>> if ((payload & 0x89) == 0x80) {
+>> 	...
+>> }
+> 
+> Yes.
+> 
+>>>
+>>>> +				size_t blen = buf_len;
+>>>> +
+>>>> +				ret = snprintf(buf, buf_len, "SVE-OTHER");
+>>>> +				buf += ret;
+>>>> +				blen -= ret;
+>>>> +				if (payload & 0x2) {
+>>>
+>>> Here should express as binary results: " FP" or " INT".
+>>
+>> I think this is a style choice, i add these just like the current code where
+>> processing "AT", "EXCL", "AR", "COND" and so on. So should we modify all the corresponding code together?
+> 
+> Okay, understood.  Let's just follow the existed style and later can
+> enhance the output log with more readable format.
+> 
+> [...]
+> 
+>>>
+>>>> +					ret = snprintf(buf, buf_len, " FP");
+>>>> +					buf += ret;
+>>>> +					blen -= ret;
+>>>> +				}
+>>>> +				if (payload & 0x4) {
+>>>> +					ret = snprintf(buf, buf_len, " PRED");
+>>>
+>>> Here should express as binary results: " PRED" or " NOT-PRED".
+>>
+>> Ditto.
+>>
+>>>
+>>>> +					buf += ret;
+>>>> +					blen -= ret;
+>>>> +				}
+>>>> +				if (payload & 0x70) {
+>>>
+>>> This is incorrect.  If bits[6:4] is zero, it presents vector length is 32 bits.
+>>>
+>>
+>> I am a little confused here.
+>> Refer to the ARM DDI 0487F.b (ID040120), page D10-2830, if bits[6:4] is zero,
+>> it presents vector length is 32 bits indeed.
+> 
+> Yes, if bits[6:4] is zero, your current code will not output any info.
+> 
+
+Yes, thanks for spotting this.
+And thanks for you review.
+
+
+Thanks,
+Wei
