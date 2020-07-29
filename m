@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FC0231EA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0841C231EB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgG2MkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 08:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726385AbgG2MkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:40:00 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694FBC0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 05:39:59 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id b2so165379qvp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 05:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=spmyQP3L/yNiXY42BwMCA8cPT1EWwAdeGPZrcULFkt4=;
-        b=nE2NBVpNVJeONO7+Dlq5cIwm+uHzUci3Za0sSd+X3HYlADyCM+AUV/yTIyl5wQ8OO4
-         X0sOmPVqaxoHwBd1gXMX5hpn8o3zBr96GPYkLA08eFL7rlVemiUKJ4xW+EbZMW+dDJEc
-         pYB97TfCJn5I3ZlPgRyEJTGIk4rnO6W2hkgZE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=spmyQP3L/yNiXY42BwMCA8cPT1EWwAdeGPZrcULFkt4=;
-        b=bRJb7Q9eZJzljCkHV21FiZrQgCJ1UQwEdK8c+MSfspjpVkKAddg4pexbE67KAP8P9T
-         6Z9fynd8lroNoVY1nnNWA1Tqw1tMlWeE8SJ5qy8KbAfs8Fo1RqJmgFfU1JNLr4LqG+sr
-         G0CeUdtiYAq3SJmsdoTVSaLyEtvSNpGu9AVEG1r0wtQ7adR86EPXaqU2QEj2G5gznCCQ
-         jgodyq394+0Ib5CyZFzY+xliVpiiq55XgfbFeiz22F4NUubTFbtu/IC2cvssbRudDz8r
-         P8vp8x6fzVLfhEI7TVh2zEuTHFi5biCaPin3Z5hl5IvaZst3gM4TLrGAy2ZryvOusddV
-         ozZA==
-X-Gm-Message-State: AOAM530/Sb0gewwxYotgQ1kVGvV4BL1tJUdqf0vmRcyrwbB+qRUjkCdp
-        KjVumEqkdVxo2F6QHBjMAvX4gA==
-X-Google-Smtp-Source: ABdhPJyCCHXXwDumfa6ncclTkZxwczJdk2K85nLzunPVAs6lxIo0hcpkWdN/ELYIxGWAjHbT9QJX8w==
-X-Received: by 2002:a0c:8224:: with SMTP id h33mr19165728qva.52.1596026398412;
-        Wed, 29 Jul 2020 05:39:58 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id d198sm1436718qke.129.2020.07.29.05.39.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 05:39:57 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 08:39:57 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Davidlohr Bueso <dave@stgolabs.net>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH RFC] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20200729123957.GC225345@google.com>
-References: <20200719034210.2382053-1-joel@joelfernandes.org>
- <20200720142923.mrudcweyttlmnhqp@linux-p48b>
+        id S1726819AbgG2Mmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 08:42:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726054AbgG2Mmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 08:42:31 -0400
+Received: from [192.168.0.108] (unknown [49.65.247.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D2142083B;
+        Wed, 29 Jul 2020 12:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1596026551;
+        bh=mlZ/EsaMb/ND17rYj369D7zDyCStn7kc/8QnXsr1+ks=;
+        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
+        b=si9k9B1A5fSTY0airfSOHiXA74mNbarCYSzoFBGKhbT3Zt1iYPV0PvKsIYd6nfZja
+         xxoDG+wWK/5289wsgOpBuhPGjKRMeLE95J80+c0eZnBZiRBLB1KqwawcAV+sLtRxb0
+         9gNR61RG39J1bpB63DDA7lPsipwIkQX7qEGXXoAw=
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix deadlock between quota writes and
+ checkpoint
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+References: <20200729070244.584518-1-jaegeuk@kernel.org>
+Cc:     Daeho Jeong <daehojeong@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <054f161c-05db-73b7-3d83-be7addcd6015@kernel.org>
+Date:   Wed, 29 Jul 2020 20:42:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720142923.mrudcweyttlmnhqp@linux-p48b>
+In-Reply-To: <20200729070244.584518-1-jaegeuk@kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 07:29:23AM -0700, Davidlohr Bueso wrote:
-> On Sat, 18 Jul 2020, Joel Fernandes (Google) wrote:
-> 
-> > +/* Move from's segment length to to's segment. */
-> > +static void rcu_segcblist_move_seglen(struct rcu_segcblist *rsclp, int from, int to)
-> > +{
-> > +	long len = rcu_segcblist_get_seglen(rsclp, from);
-> > +
-> > +	if (!len || from == to)
-> > +		return;
-> 
-> Nit: You probably wanna do the parameter sanity checks before the
-> atomic_read.
+On 2020-7-29 15:02, Jaegeuk Kim wrote:
+> f2fs_write_data_pages(quota_mapping)
+>  __f2fs_write_data_pages             f2fs_write_checkpoint
+>   * blk_start_plug(&plug);
+>   * add bio in write_io[DATA]
+>                                       - block_operations
+>                                       - skip syncing quota by
+>                                                 >DEFAULT_RETRY_QUOTA_FLUSH_COUNT
+>                                       - down_write(&sbi->node_write);
+>   - f2fs_write_single_data_page
 
-Ok, I'll do that next revision. Thank you.
+After commit 79963d967b49 ("f2fs: shrink node_write lock coverage"),
+node_write lock was moved to f2fs_write_single_data_page() and
+f2fs_write_compressed_pages().
 
- - Joel
+So it needs to update the callstack.
 
+- down_write(node_write)
+
+Otherwise it looks good to me.
+
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+
+Thanks,
+
+>     - f2fs_do_write_data_page
+>       - f2fs_outplace_write_data
+>         - do_write_page
+>            - f2fs_allocate_data_block
+>             - down_write(node_write)
+>                                       - f2fs_wait_on_all_pages(F2FS_WB_CP_DATA);
+>
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  fs/f2fs/checkpoint.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index 8c782d3f324f0..99c8061da55b9 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -1269,6 +1269,8 @@ void f2fs_wait_on_all_pages(struct f2fs_sb_info *sbi, int type)
+>  		if (type == F2FS_DIRTY_META)
+>  			f2fs_sync_meta_pages(sbi, META, LONG_MAX,
+>  							FS_CP_META_IO);
+> +		else if (type == F2FS_WB_CP_DATA)
+> +			f2fs_submit_merged_write(sbi, DATA);
+>  		io_schedule_timeout(DEFAULT_IO_TIMEOUT);
+>  	}
+>  	finish_wait(&sbi->cp_wait, &wait);
+>
