@@ -2,77 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31ADB231AD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6872231ABA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgG2IH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S1727796AbgG2ICY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Jul 2020 04:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727042AbgG2IH5 (ORCPT
+        with ESMTP id S1726476AbgG2ICX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:07:57 -0400
-X-Greylist: delayed 2395 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Jul 2020 01:07:57 PDT
-Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:0:80:1000:c:0:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D38FC061794;
-        Wed, 29 Jul 2020 01:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codon.org.uk; s=63138784; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=bX2NW+bQ7J25ucCAclCnjJzxJsNBxEwD3yGGaPM+RDc=; b=pO4fGZ+uOiD+9pv9wYjU6Nbun
-        1hDM8MeFTu5kZQECbz20LzYPdhJAx+MLqpvQFeFau7m8FPsz4qKII6STXRCelniQMuQwPkkk6ghh5
-        5cjIRWy7/hZT9xl+lnPfuZV3ryVXP6GLl4ODicC56Tsj3mNqsym1knDX6aQNSxR44cLJ0=;
-Received: from mjg59 by cavan.codon.org.uk with local (Exim 4.89)
-        (envelope-from <mjg59@cavan.codon.org.uk>)
-        id 1k0gVI-0000dh-Tn; Wed, 29 Jul 2020 08:27:56 +0100
-Date:   Wed, 29 Jul 2020 08:27:56 +0100
-From:   Matthew Garrett <mjg59@srcf.ucam.org>
-To:     Perry Yuan <Perry.Yuan@dell.com>
-Cc:     sre@kernel.org, pali@kernel.org, dvhart@infradead.org,
-        andy@infradead.org, mario.limonciello@dell.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH] platform/x86:dell-laptop:Add battery charging thresholds
- and charging mode switch.
-Message-ID: <20200729072756.46skroedpbo3fjyn@srcf.ucam.org>
-References: <20200729065424.12851-1-Perry_Yuan@Dell.com>
+        Wed, 29 Jul 2020 04:02:23 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1596C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:02:22 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k0h2X-00086y-8P; Wed, 29 Jul 2020 10:02:17 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1k0h2W-0001cy-D3; Wed, 29 Jul 2020 10:02:16 +0200
+Message-ID: <d259a74ca9e425f9b39ebbf47b0decb6be0beed5.camel@pengutronix.de>
+Subject: Re: [PATCH 1/2] reset-controller: ti: adjust the reset assert and
+ deassert interface
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Crystal Guo <crystal.guo@mediatek.com>, robh+dt@kernel.org
+Cc:     srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, seiya.wang@mediatek.com
+Date:   Wed, 29 Jul 2020 10:02:16 +0200
+In-Reply-To: <ba0d1e29-3ba3-5379-d03e-1ccec21c2ffa@gmail.com>
+References: <1596008357-11213-1-git-send-email-crystal.guo@mediatek.com>
+         <1596008357-11213-2-git-send-email-crystal.guo@mediatek.com>
+         <ba0d1e29-3ba3-5379-d03e-1ccec21c2ffa@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200729065424.12851-1-Perry_Yuan@Dell.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: mjg59@cavan.codon.org.uk
-X-SA-Exim-Scanned: No (on cavan.codon.org.uk); SAEximRunCond expanded to false
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 11:54:24PM -0700, Perry Yuan wrote:
+Hi Crystal, Matthias,
 
-This seems extremely useful, but:
+On Wed, 2020-07-29 at 09:48 +0200, Matthias Brugger wrote:
+> 
+> On 29/07/2020 09:39, Crystal Guo wrote:
+> > Add ti_syscon_reset() to integrate assert and deassert together,
+> > and change return value of the reset assert and deassert interface
+> > from regmap_update_bits to regmap_write_bits.
+> > 
+> > when clear bit is already 1, regmap_update_bits can not write 1 to it again.
+> > Some IC has the feature that, when set bit is 1, the clear bit change
+> > to 1 together. It will truly clear bit to 0 by write 1 to the clear bit
+> > 
+> > Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
+> > ---
+> >   drivers/reset/reset-ti-syscon.c | 13 +++++++++++--
+> >   1 file changed, 11 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
+> > index a2635c2..5a8ec8f 100644
+> > --- a/drivers/reset/reset-ti-syscon.c
+> > +++ b/drivers/reset/reset-ti-syscon.c
+> > @@ -89,7 +89,7 @@ static int ti_syscon_reset_assert(struct reset_controller_dev *rcdev,
+> >   	mask = BIT(control->assert_bit);
+> >   	value = (control->flags & ASSERT_SET) ? mask : 0x0;
+> >   
+> > -	return regmap_update_bits(data->regmap, control->assert_offset, mask, value);
+> > +	return regmap_write_bits(data->regmap, control->assert_offset, mask, value);
+> 
+> Nack, this will break the driver for the other devices.
 
-> diff --git a/Documentation/ABI/testing/sysfs-class-power b/Documentation/ABI/testing/sysfs-class-power
-> index bf3b48f022dc..a8adc3b0ca4b 100644
-> --- a/Documentation/ABI/testing/sysfs-class-power
-> +++ b/Documentation/ABI/testing/sysfs-class-power
-> @@ -334,6 +334,29 @@ Description:
->  		Access: Read
->  		Valid values: Represented in microvolts
->  
-> +What:		/sys/class/power_supply/<supply_name>/charge_control_charging_mode
-> +Date:		March 2020
-> +Contact:	linux-pm@vger.kernel.org
+I don't think this will break the driver for existing hardware.
+regmap_write_bits() is the same as regmap_update_bits(), it just forces
+the write in case the read already happens to return the correct value.
+Of course it would be good to check that this actually works.
 
-The values here seem very Dell specific, but this is going into a 
-generic sysfs path. Really stuff here should be as vendor independent as 
-possible. If these values don't correspond to a wider industry 
-specification it probably makes sense to make this something Dell 
-specific.
+> The kernel has to work not just for your SoC but for all devices of all 
+> architectures. You can't just hack something up, that will work on your specific 
+> SoC.
+> 
+> Regards,
+> Matthias
+> 
+> >   }
+> >   
+> >   /**
+> > @@ -120,7 +120,7 @@ static int ti_syscon_reset_deassert(struct reset_controller_dev *rcdev,
+> >   	mask = BIT(control->deassert_bit);
+> >   	value = (control->flags & DEASSERT_SET) ? mask : 0x0;
+> >   
+> > -	return regmap_update_bits(data->regmap, control->deassert_offset, mask, value);
+> > +	return regmap_write_bits(data->regmap, control->deassert_offset, mask, value);
+> >   }
+> >   
+> >   /**
+> > @@ -158,10 +158,19 @@ static int ti_syscon_reset_status(struct reset_controller_dev *rcdev,
+> >   		!(control->flags & STATUS_SET);
+> >   }
+> >   
+> > +static int ti_syscon_reset(struct reset_controller_dev *rcdev,
+> > +			   unsigned long id)
+> > +{
+> > +	ti_syscon_reset_assert(rcdev, id);
+> > +
+> > +	return ti_syscon_reset_deassert(rcdev, id);
+> > +}
+> > +
 
--- 
-Matthew Garrett | mjg59@srcf.ucam.org
+I'm unsure about this one, though. This is an incompatible change. At
+the very least this would have to be optional depending on compatible.
+
+regards
+Philipp
