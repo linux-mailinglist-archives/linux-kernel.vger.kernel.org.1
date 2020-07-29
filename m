@@ -2,131 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0AA232305
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 18:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C449F232310
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 19:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbgG2Q7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 12:59:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgG2Q7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 12:59:40 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 530F02075F;
-        Wed, 29 Jul 2020 16:59:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1596041979;
-        bh=crrIbsFPAeg/uDmn1xaqGi5GLnaItxGMCDzVYTWGaOw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TrBKJ+2ct2wSEBci01nnKlcB/LLkbiQMjc75ofEwvttNh5QwB/wRsg3SOiEig226s
-         tAXspfSry7MbMWd5vFFWhReJrNb5rzyLD2G2G3RKcxJnhBcUM8APB4SbvRVMrRImMX
-         RhNs/lqnOTU79s2afAmJohsxXOfcf6/Ynl8j6MSA=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1k0pQX-00Fztd-IY; Wed, 29 Jul 2020 17:59:37 +0100
+        id S1726842AbgG2RC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 13:02:59 -0400
+Received: from conuserg-08.nifty.com ([210.131.2.75]:32314 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgG2RC7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 13:02:59 -0400
+Received: from oscar.flets-west.jp (softbank126025067101.bbtec.net [126.25.67.101]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 06TH2fR6004951;
+        Thu, 30 Jul 2020 02:02:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 06TH2fR6004951
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1596042162;
+        bh=6QjdEYy6WWIjooAZXModdYVR5d49qOQWKM1ithvZq5E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u9xQNPHMThkTKyinWHjUqaJLWZTTXf1trBwE5g+jz+isxupxqVlOtWa2r9yYb30L8
+         6C8S80dKvbgm3+Tch+6Q8pZlL+hOoaREoRBYcC3Fa3ACDvoBCyDycFRW0QlFoJsU45
+         gAZdcfrNodvI823ggoUs5XzLgID1gNtPAptVgRU+8vm1ptij5hY4d2RrQRSi7Rd/zW
+         oos856i7zp2BaZeAAz6B6D0YWZxPujUT7lRn6UtXm5Xty9Qls653xTqeMFIWSlLhHw
+         Np16lC++DGa1qy3Pd/EYMwIrqBndosNrygzKv9Y4brPpkLFQ+DszqOrdml4YiEDeAk
+         fLdTdMcVTntgQ==
+X-Nifty-SrcIP: [126.25.67.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     David Binderman <dcb314@hotmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] kconfig: qconf: use if_changed for qconf.moc rule
+Date:   Thu, 30 Jul 2020 02:02:37 +0900
+Message-Id: <20200729170239.160208-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 29 Jul 2020 17:59:37 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] irqchip/imx-intmux: Fix irqdata regs save in
- imx_intmux_runtime_suspend()
-In-Reply-To: <20200729155849.33919-1-weiyongjun1@huawei.com>
-References: <20200729155849.33919-1-weiyongjun1@huawei.com>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <46666de74c4b03142524f514ea64ddad@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: weiyongjun1@huawei.com, hulkci@huawei.com, tglx@linutronix.de, jason@lakedaemon.net, shawnguo@kernel.org, s.hauer@pengutronix.de, qiangqing.zhang@nxp.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-07-29 16:58, Wei Yongjun wrote:
-> Gcc report warning as follows:
-> 
-> drivers/irqchip/irq-imx-intmux.c:316:29: warning:
->  variable 'irqchip_data' set but not used [-Wunused-but-set-variable]
->   316 |  struct intmux_irqchip_data irqchip_data;
->       |                             ^~~~~~~~~~~~
-> 
-> irqdata regs is stored to this variable on the stack in
-> imx_intmux_runtime_suspend(), which means a nop. this commit
-> fix to save regs to the right place.
-> 
-> Fixes: bb403111e017 ("irqchip/imx-intmux: Implement intmux runtime
-> power management")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  drivers/irqchip/irq-imx-intmux.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-imx-intmux.c 
-> b/drivers/irqchip/irq-imx-intmux.c
-> index 4c9e40d193d6..e35b7b09c3ab 100644
-> --- a/drivers/irqchip/irq-imx-intmux.c
-> +++ b/drivers/irqchip/irq-imx-intmux.c
-> @@ -313,12 +313,12 @@ static int imx_intmux_remove(struct 
-> platform_device *pdev)
->  static int imx_intmux_runtime_suspend(struct device *dev)
->  {
->  	struct intmux_data *data = dev_get_drvdata(dev);
-> -	struct intmux_irqchip_data irqchip_data;
-> +	struct intmux_irqchip_data *irqchip_data;
->  	int i;
-> 
->  	for (i = 0; i < data->channum; i++) {
-> -		irqchip_data = data->irqchip_data[i];
-> -		irqchip_data.saved_reg = readl_relaxed(data->regs + CHANIER(i));
-> +		irqchip_data = &data->irqchip_data[i];
-> +		irqchip_data->saved_reg = readl_relaxed(data->regs + CHANIER(i));
->  	}
-> 
->  	clk_disable_unprepare(data->ipg_clk);
-> @@ -329,7 +329,7 @@ static int imx_intmux_runtime_suspend(struct device 
-> *dev)
->  static int imx_intmux_runtime_resume(struct device *dev)
->  {
->  	struct intmux_data *data = dev_get_drvdata(dev);
-> -	struct intmux_irqchip_data irqchip_data;
-> +	struct intmux_irqchip_data *irqchip_data;
->  	int ret, i;
-> 
->  	ret = clk_prepare_enable(data->ipg_clk);
-> @@ -339,8 +339,8 @@ static int imx_intmux_runtime_resume(struct device 
-> *dev)
->  	}
-> 
->  	for (i = 0; i < data->channum; i++) {
-> -		irqchip_data = data->irqchip_data[i];
-> -		writel_relaxed(irqchip_data.saved_reg, data->regs + CHANIER(i));
-> +		irqchip_data = &data->irqchip_data[i];
-> +		writel_relaxed(irqchip_data->saved_reg, data->regs + CHANIER(i));
->  	}
-> 
->  	return 0;
+Regenerate qconf.moc when the moc command is changed.
 
-Amazing. Thanks for fixing this.
+This also allows 'make mrproper' to clean it up. Previously, it was
+not cleaned up because 'clean-files += qconf.moc' was missing.
+Now 'make mrproper' correctly cleans it up because files listed in
+'targets' are cleaned.
 
-Johakim: I guess this was never tested, was it?
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-         M.
+Changes in v2:
+  - Use 'targets' instead of 'clean-files'
+
+ scripts/kconfig/Makefile | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+index 426881ea954f..a5e770e75653 100644
+--- a/scripts/kconfig/Makefile
++++ b/scripts/kconfig/Makefile
+@@ -192,8 +192,10 @@ $(obj)/qconf.o: $(obj)/qconf-cfg $(obj)/qconf.moc
+ quiet_cmd_moc = MOC     $@
+       cmd_moc = $(shell . $(obj)/qconf-cfg && echo $$moc) -i $< -o $@
+ 
+-$(obj)/%.moc: $(src)/%.h $(obj)/qconf-cfg
+-	$(call cmd,moc)
++$(obj)/%.moc: $(src)/%.h $(obj)/qconf-cfg FORCE
++	$(call if_changed,moc)
++
++targets += qconf.moc
+ 
+ # gconf: Used for the gconfig target based on GTK+
+ hostprogs	+= gconf
 -- 
-Jazz is not dead. It just smells funny...
+2.25.1
+
