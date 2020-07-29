@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E19232605
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC439232610
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgG2UPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:15:37 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:34641 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgG2UPg (ORCPT
+        id S1726899AbgG2URN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726799AbgG2URN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:15:36 -0400
-Received: by mail-ej1-f66.google.com with SMTP id y10so25678785eje.1;
-        Wed, 29 Jul 2020 13:15:34 -0700 (PDT)
+        Wed, 29 Jul 2020 16:17:13 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E90DC0619D2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:17:13 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id 133so13216384ybu.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jsAi/yM0dYoTsEAduerPAEeoeBRABFVM36ZfoeomatY=;
+        b=Sdzx2SqpXH3YztrrLNOADE5QjX5DPMw9qzcr7aHGCh/zp+I48O4kqqRZpqulQK7b2A
+         C0RuSwWADNheZUXSP4rEN1wGIvAHpzoqMuGaY9bfPEyvF7S943eq2s4cUgghOcvSf/gF
+         pgSXR0NUIxtUVLHek5C2iWFuwwFK1cYRX3ViHbez65SiI4fPMcJckFrPEMykGyiQCS78
+         qAbpP8IMzkK2emxhZ0eXkv50SN/md9uBSLITI1PlvPb8m7/drlC3Ebg9l9hlt1cSmd1U
+         zk+/6KjyjmyFpbWHSa1K7nCrIHFc4aSgPROhI0PTheyPL6km/Re6ghueTxNzyrTKrFW1
+         WtBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ouwd0qsnQ1Adj/+zRaVzdVpCm+8h05KMUp30fVnhcA8=;
-        b=WCCGLGBn4hHDnNsd2nRwgnhe8aAXRQj2ynpVy+i38o8UZn2udLkh/grnd0yeaMMFq2
-         hN9//4RPCYOySl5MB0sUD+1zZYq6zoTZgn0oaNitKEt6phlMgE2sSht0YgvuTuN2+0V3
-         iWt4WNRSV2bj38c1BKskGUnocTJFBqAQoPLb9DG9lP3kDeIwWtFtmAj4//bJCHSn0PmC
-         tupufDmoGcV77qM5nmhsr0WSat+Slkq302m3eTt7unuTjqblhHkwVYxBdQwC4IyJFifK
-         ebXPIxDA7lR/QFtHMJUkZU2RL8XcAgm22K2XtYXLfoP6ruarohb07siTIW9f+sabvRIG
-         A9Kg==
-X-Gm-Message-State: AOAM531lUqBVwShDkv/n/9QUfBWr2XpPEVtExrQT4TSTC47TOWioYVGx
-        basX4GuFDommhUxpiM4p7Yo=
-X-Google-Smtp-Source: ABdhPJwzrwf3LW20eQQQ23yUjSgwrzDTiF8v8xCprZhLNGtK2AACk3VnEMiEQ8SoXRyfDGmBo2eFdQ==
-X-Received: by 2002:a17:906:5013:: with SMTP id s19mr96306ejj.26.1596053734270;
-        Wed, 29 Jul 2020 13:15:34 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.213])
-        by smtp.googlemail.com with ESMTPSA id qc23sm2624999ejb.97.2020.07.29.13.15.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Jul 2020 13:15:33 -0700 (PDT)
-Date:   Wed, 29 Jul 2020 22:15:30 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>,
-        Vincent Sanders <vince@simtec.co.uk>,
-        Simtec Linux Team <linux@simtec.co.uk>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        patches@opensource.cirrus.com,
-        linux-clk <linux-clk@vger.kernel.org>,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
-        Sergio Prado <sergio.prado@e-labworks.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Cedric Roux <sed@free.fr>, Lihua Yao <ylhuajnu@outlook.com>
-Subject: Re: [PATCH 0/7] ARM: samsung: Cleanup of various S3C bits
-Message-ID: <20200729201530.GA26917@kozik-lap>
-References: <20200729160942.28867-1-krzk@kernel.org>
- <CAK8P3a38VC5UD+1HHRFWnafM7ZLMc34Ay23FUCjjgiz46SCV=A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jsAi/yM0dYoTsEAduerPAEeoeBRABFVM36ZfoeomatY=;
+        b=ofGV9s/FddqKB32S8n1WDEq4YEXV4NO31f+S2ajKGuutyAAcr2wp1qAgWaUXydjVAJ
+         pk99b0RufFYlTQODyI+0qvr2X6gtpwMG3wVdqTjIvgfutuLVanBcu+PSHW4N/nd+5YnP
+         IH0D1qzx5E1C8en5d473eRpL2oZIqZpGsfASv6Qqtbw8DZW9RQrsGUgqRpA2FRCfVGSY
+         thbt+vdnhEWB7hT3I7z3IAhJ04jI1XUBJ4bS1Hz49CKgtufYiNyHdA8lN0ZMv/aWE+hv
+         m8HzDuYqTC34j6njLRKX8XEZgFsszNcffu4SgojWWbACP4OewbQw4rQh8LMXWIDMLWNX
+         gm7Q==
+X-Gm-Message-State: AOAM532YMrokaO9j7YBlkzVIIiwd4IFn/ZmZM0lPaG1Qi/IwdLIoS8A6
+        POkP0AjwoLDskedPuxfcogwHLcm3uDZm5gYdqCFTXA==
+X-Google-Smtp-Source: ABdhPJyPk3kjiGNYFFk4yzHPEbfFcoZIfz0gAfhNJ3Fsk1YWxiMbGPNT80Yqs2GsCLymQyrnK2dqTUc8spmJdwVOFPE=
+X-Received: by 2002:a25:bb0d:: with SMTP id z13mr229226ybg.488.1596053832271;
+ Wed, 29 Jul 2020 13:17:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a38VC5UD+1HHRFWnafM7ZLMc34Ay23FUCjjgiz46SCV=A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200729191151.476368-1-vitor@massaru.org> <20200729191948.GZ3703480@smile.fi.intel.com>
+In-Reply-To: <20200729191948.GZ3703480@smile.fi.intel.com>
+From:   Vitor Massaru Iha <vitor@massaru.org>
+Date:   Wed, 29 Jul 2020 17:16:29 -0300
+Message-ID: <CADQ6JjU1wg_mrhuGkgiNWmJLCvNcOVwS0Hysda+OXuDcCj8y=Q@mail.gmail.com>
+Subject: Re: [PATCH v2] lib: kunit: Convert test_sort to KUnit test
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        tglx@linutronix.de, fkostenzer@live.at, geert@linux-m68k.org,
+        paul.gortmaker@windriver.com, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 10:01:26PM +0200, Arnd Bergmann wrote:
-> On Wed, Jul 29, 2020 at 6:11 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+On Wed, Jul 29, 2020 at 4:19 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Wed, Jul 29, 2020 at 04:11:51PM -0300, Vitor Massaru Iha wrote:
+> > This adds the conversion of the test_sort.c to KUnit test.
 > >
-> > Hi,
+> > Please apply this commit first (linux-kselftest/kunit-fixes):
+> > 3f37d14b8a3152441f36b6bc74000996679f0998 kunit: kunit_config: Fix parsing of CONFIG options with space
+>
+> Looks like you mixed up commit message and changelog / comments.
+>
+> > Code Style Documentation: [0]
 > >
-> > I tried to cleanup few warnings in S3C machine code which lead to
-> > finding some bigger issues.
+> > Fix these warnings Reported-by lkp@intel.com
 > >
-> > Patches touch mostly the ARM Samsung machine code except patch #1 (clk)
-> > and #5 (watchdog).  They are independent from each other, except
-> > some conflicting lines.
+> > WARNING: modpost: vmlinux.o(.data+0x4fc70): Section mismatch in reference from the variable sort_test_cases to the variable .init.text:sort_test
+> >    The variable sort_test_cases references
+> >    the variable __init sort_test
+> >    If the reference is valid then annotate the
+> >    variable with or __refdata (see linux/init.h) or name the variable
 > >
-> > The last three patches would welcome some testing... as I did not
-> > perform such (lack of S3C hardware).
-> 
-> I have an older series that I mean to repost. Please have a look at
-> the s3c-multiplatform branch of
-> git://git.kernel.org:/pub/scm/linux/kernel/git/arnd/playground.git
-> 
-> The patches in there need to be rebased on a newer kernel, which
-> should be easy, but they will conflict with your work. If there is
-> anything in there you can easily pick up into your series, please
-> do so.
+> > WARNING: modpost: lib/sort_kunit.o(.data+0x11c): Section mismatch in reference from the variable sort_test_cases to the function .init.text:sort_test()
+> >    The variable sort_test_cases references
+> >    the function __init sort_test()
+>
+> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Link: [0] https://lore.kernel.org/linux-kselftest/20200620054944.167330-1-davidgow@google.com/T/#u
+>
+> This should be in different order: Link, Reported-by, SoB.
+> Also [0] is unnecessary
 
-Indeed now I remember you were doing it some time ago but a follow up
-never happened.  I can take a look and either cherry pick or even take
-over the series.
+Sure, thanks!
 
-Best regards,
-Krzysztof
-
+>
+> >  lib/{test_sort.c => sort_kunit.c} | 31 +++++++++++++++----------------
+>
+> Still opened question why kunit is a suffix? Can't we leave same name? Can't we
+> do it rather prefix?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
