@@ -2,57 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663492316F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205972316F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730965AbgG2Asi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 20:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S1730941AbgG2Aui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 20:50:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730837AbgG2Asi (ORCPT
+        with ESMTP id S1730837AbgG2Aui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 20:48:38 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66625C061794;
-        Tue, 28 Jul 2020 17:48:38 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9F6E6128D3F97;
-        Tue, 28 Jul 2020 17:31:52 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 17:48:37 -0700 (PDT)
-Message-Id: <20200728.174837.591128375744536882.davem@davemloft.net>
-To:     Jisheng.Zhang@synaptics.com
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        linux@armlinux.org.uk, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] net: stmmac: improve WOL
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200727190045.36f247cc@xhacker.debian>
-References: <20200727190045.36f247cc@xhacker.debian>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 28 Jul 2020 17:31:53 -0700 (PDT)
+        Tue, 28 Jul 2020 20:50:38 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9D8C0619D4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:50:38 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id y206so1734417pfb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:50:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=yP3nfVyanCA5dqt/CLixTo47F6orsxBXLYUlEUkelJA=;
+        b=dt830+nXvj5ilJbJdyQ1BTwsy9XQ+4iMd9DFoTO9QT4BQ300OFHMOFxrVxHTXZFS6V
+         S0mSc2FW4pXw+dWxaEpFS5dR6VFWEMe7lM1G5PSa0U3HjuO0G1rPqSkMHBEldIUN7wB5
+         clSdKm70RHABLzyFL1EkdHvMTgFx6LY9vvz7E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=yP3nfVyanCA5dqt/CLixTo47F6orsxBXLYUlEUkelJA=;
+        b=ro0wOXhn5mLEY/+S1xgtUMoPed5ipkTrsDwC0lOkIEzudYP473ICRoGmLl8WGczUA5
+         z9aKqw4YFKc9TKGqY5b1kbIYPiTrXsyLf+Fmbb3qLxS8JhE5sHlwtdHJmOlfXpjHcIjy
+         E7wgkf3pbJKAczmLWKrTbtmrqpRFW++sFdXaHZvHhf2bT5Ri7r2OSpsykVhGk3bBzpLR
+         CenQcntFhIseO+oKB4k9C8N09FHAmRC1qXT0xdr4T9ZXNsOFW6DRU1WQD+SUm4iD6ZRK
+         2LWGjqTGfSNGvzKyKShazzyG8iZtPnHCOSvOihnzy2ICGgETvjzJlgwmHHK+2QNZcKbZ
+         xpFQ==
+X-Gm-Message-State: AOAM5305pcpVYRFAqFLeIDzie+zPTqnww6aWeYZYvpO+sV3gpysDChf6
+        6c1ZwLgsLYfcCNV1TaCupzlUTi9rZoM=
+X-Google-Smtp-Source: ABdhPJyjNWFaLKqd0efnvtrCmn2FXiK4y+ugceLM2g1jBpdq3X2Mqltt9G/Pr9PBDjNqT3gGtF+1Lw==
+X-Received: by 2002:a63:308:: with SMTP id 8mr28317182pgd.112.1595983837445;
+        Tue, 28 Jul 2020 17:50:37 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id x23sm230701pfi.60.2020.07.28.17.50.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 17:50:36 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200728230520.2011240-1-campello@chromium.org>
+References: <20200728151258.1222876-1-campello@chromium.org> <20200728230520.2011240-1-campello@chromium.org>
+Subject: Re: [PATCH v2 00/14] sx9310 iio driver updates
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Daniel Campello <campello@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Enrico Granata <egranata@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org
+To:     Daniel Campello <campello@chromium.org>,
+        LKML <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 28 Jul 2020 17:50:34 -0700
+Message-ID: <159598383474.1360974.2464583320357224145@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Date: Mon, 27 Jul 2020 19:01:07 +0800
+Quoting Daniel Campello (2020-07-28 16:05:06)
+> The first patch resends the DT binding for the driver that was merged in
+> v5.8-rc1 with a small change to update for proper regulators. The second
+> through the eleventh patch fixes several issues dropped from v8 to v9
+> when the initial patch was merged. The twelveth patch fixes a few
+> printks that are missing newlines and should be totally non-trivial to
+> apply. The thirteenth patch drops channel_users because it's unused. The
+> final patch adds support to enable the svdd and vdd supplies so that
+> this driver can work on a board where the svdd supply isn't enabled at
+> boot and needs to be turned on before this driver starts to communicate
+> with the chip.
 
-> Currently, stmmac driver relies on the HW PMT to support WOL. We want
-> to support phy based WOL.
-> 
-> patch1 is a small improvement to disable WAKE_MAGIC for PMT case if
-> no pmt_magic_frame.
-> patch2 and patch3 are two prepation patches.
-> patch4 implement the phy based WOL
-> patch5 tries to save a bit energy if WOL is enabled.
-
-Series applied to net-next, thanks.
+Can you please send this as not an in-reply-to the previous series? My
+inbox has a hard time realizing that this is a new patch series.
