@@ -2,60 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63BD231696
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D6223169C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 02:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730593AbgG2AFt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Jul 2020 20:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40280 "EHLO
+        id S1730516AbgG2AJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 20:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728236AbgG2AFt (ORCPT
+        with ESMTP id S1730219AbgG2AJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 20:05:49 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDB0C061794;
-        Tue, 28 Jul 2020 17:05:49 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E07E4128D304D;
-        Tue, 28 Jul 2020 16:49:02 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 17:05:47 -0700 (PDT)
-Message-Id: <20200728.170547.454266815690646224.davem@davemloft.net>
-To:     dwmw2@infradead.org
-Cc:     frank-w@public-files.de, sean.wang@mediatek.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, vivien.didelot@savoirfairelinux.com,
-        Mark-MC.Lee@mediatek.com, john@phrozen.org,
-        Landen.Chao@mediatek.com, steven.liu@mediatek.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        opensource@vdorst.com, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] net: ethernet: mtk_eth_soc: Always call
- mtk_gmac0_rgmii_adjust() for mt7623
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <52f10e30f62b8521fd83525a03ecff94b72d509b.camel@infradead.org>
-References: <trinity-fb0cdf15-dfcf-4d60-9144-87d8fbfad5ba-1586179542451@3c-app-gmx-bap62>
-        <52f10e30f62b8521fd83525a03ecff94b72d509b.camel@infradead.org>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8BIT
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 28 Jul 2020 16:49:03 -0700 (PDT)
+        Tue, 28 Jul 2020 20:09:58 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCB5C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:09:57 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id z3so7612797ilh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 17:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NIt8V+0Ly8zCDHiK1shQ9ILtxkb0CmTmo030ThJYXRc=;
+        b=At1MN+FzIe1tFpSFrYfVBPnrEMgocxF1GxQ6l661JXfQUSL09B22WGVDFknoRIDEIf
+         tRG+xOoU3FZZZMnJGjfuPFPl8E3+qbBa1Vlm4WmIsAbjoTRHML/YfD3T/yXLluhZFamt
+         03u7pLSnNw9w6hrsyoPycGKgrdJ8a0GfGb+EJqEpgT61mXDlTtQoyLi6YAldXQP6hk2d
+         BEHoVxL9MInXNDCyKtRve/qoG6kRFZAXukmBRrpkKEederyrHc1E92VdClFR/zAuOXzL
+         H82qr89vU69GvNOybrP5Hr/3yHj9zyTZjsAPIr9a735oJjC5eCGbhb+/saHV//RnJXPj
+         cvpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NIt8V+0Ly8zCDHiK1shQ9ILtxkb0CmTmo030ThJYXRc=;
+        b=VM+2/ylcbuNiAMXp9hGX3H5Sw5tX5Djo4S5xJaEE71gXxlOX2RdvjUguirvWdgxUFX
+         ZQLR73c1k2AMxQVJMvEK6wRcSDwWXEvLu5J+3d9aEbTZZoVGcw/QBRpEa0zJEZAv56Ns
+         H3a947OeG1lH6tOzrq8bnR4rG6Bj7B7fj2zCbEp2gkgY1Hp0sPHBUBNwV8+Tuh4ZduTO
+         9ZfwLblgO1dMyCbIVSdtLGxJHnmfdfaBnYytbLbVu4nkS7MxsLyyQ+mV+JEdhfMvMU5p
+         L15k2GZbMnDql1h0+82MEcypKt8zGPY4wTMT1JrxFA+N2RLeD4avCSvfck2jwHzeCWp4
+         KV8Q==
+X-Gm-Message-State: AOAM5337+S5sfrAKAW1ETUiqlCkKWV8oSgx2tfjlpAW1CA9DEyr2n6rJ
+        gU1fPa4m1K9/Q/hnFJUjzR15lIx8HLXv5hUPEy4pLg==
+X-Google-Smtp-Source: ABdhPJxyhD76VhGtYfRPQiK8bjnt1QDL1vQFerPzksCcZjDbHKglJfD/550b3SdXVkkWhSkJmPrnLJQ0xSN4XUuyCTk=
+X-Received: by 2002:a92:790d:: with SMTP id u13mr25673361ilc.26.1595981396870;
+ Tue, 28 Jul 2020 17:09:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu>
+In-Reply-To: <159597929496.12744.14654593948763926416.stgit@bmoger-ubuntu>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 28 Jul 2020 17:09:46 -0700
+Message-ID: <CALMp9eTkGtk=baceQs7ATY6FU55+ubSfO9e71fzwiqO8oTH2vA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/11] SVM cleanup and INVPCID support for the AMD guests
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 23 Jul 2020 20:07:10 +0100
+On Tue, Jul 28, 2020 at 4:37 PM Babu Moger <babu.moger@amd.com> wrote:
+>
+> The following series adds the support for PCID/INVPCID on AMD guests.
+> While doing it re-structured the vmcb_control_area data structure to
+> combine all the intercept vectors into one 32 bit array. Makes it easy
+> for future additions.
+>
+> INVPCID interceptions are added only when the guest is running with
+> shadow page table enabled. In this case the hypervisor needs to handle
+> the tlbflush based on the type of invpcid instruction.
+>
+> For the guests with nested page table (NPT) support, the INVPCID feature
+> works as running it natively. KVM does not need to do any special handlin=
+g.
+>
+> AMD documentation for INVPCID feature is available at "AMD64 Architecture
+> Programmer=E2=80=99s Manual Volume 2: System Programming, Pub. 24593 Rev.=
+ 3.34(or later)"
+>
+> The documentation can be obtained at the links below:
+> Link: https://www.amd.com/system/files/TechDocs/24593.pdf
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D206537
 
-> From: René van Dorst <opensource@vdorst.com>
-> 
-> Modify mtk_gmac0_rgmii_adjust() so it can always be called.
-> mtk_gmac0_rgmii_adjust() sets-up the TRGMII clocks.
-> 
-> Signed-off-by: René van Dorst <opensource@vdorst.com>
-> Signed-off-By: David Woodhouse <dwmw2@infradead.org>
-> Tested-by: Frank Wunderlich <frank-w@public-files.de>
-
-Applied.
+Very nice cleanup. Thanks for doing this!
