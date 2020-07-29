@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4345231CEC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 12:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6BF231D06
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 12:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgG2Kv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 06:51:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbgG2Kv5 (ORCPT
+        id S1726509AbgG2K4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 06:56:11 -0400
+Received: from outbound.soverin.net ([116.202.65.218]:56213 "EHLO
+        outbound.soverin.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgG2K4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 06:51:57 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71662C061794;
-        Wed, 29 Jul 2020 03:51:57 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x5so2296446wmi.2;
-        Wed, 29 Jul 2020 03:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MfydqwIyqBHYbsx5YX+ht7t/yzaaahxnXqOFDuf3JO4=;
-        b=d/wwpZmeZ+/LMdotSSAcC7Ni3EYCBWqFxvTfazuOMQ9rwsGTnG8Lz1+adN1ve0+0L2
-         ZCklyYkB5bjphiJLJQW/kOUwBCwCizXZpZtr3DPK1q7u7M1njgB6JKAAXKjsD/vdyvdO
-         ft77u9FQvWvO2bEMvoixTKiVOfK9iPwlr1ItQdDSe1fYnteeY31GmRwRKNScou0WouvB
-         eOBjyin8iwGZfBhdKJEBTLL7yGRfVFh3jL/rsa36h/zPsseiuSphB89h48elDApKQW0g
-         vXXDk/sIBOHxVi/n9re+PswQxEk5AYMsuOlIp5glig8AzQGn5EqmZGivUePVDwGnsy8h
-         mujQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MfydqwIyqBHYbsx5YX+ht7t/yzaaahxnXqOFDuf3JO4=;
-        b=HtJLo/yt0reGT+VOvdsAmPmdBobYhAvZnS3evEXz3ZG1M9i+Qj8STbqulkOOpIUtsM
-         cJ96wLhiYlOpGGId+VgoJuvtjYkT6HGXcLvmA7yI38cqWBTe4UG9qEdqEhLMe3z/OP3r
-         Me8P+QsVwuPMS4xaFLR+2NthMYWmSHCW2hR14feerbgJrBqF0hHj57b1Pjg8R1JuUkZ9
-         /Y0EoOfzVQParbz08KrgXalXb/wkw2uRnHe8FKao9Q229FN1A9Np6jh/SAXAdjnGhb0O
-         pdvCVqSMGtKvqhuN1fS+X6FqG6EVpmh9cDWxjpYt9qGWC4QCo0f/d3WBz1cv2mlHdwwL
-         aUGg==
-X-Gm-Message-State: AOAM531FmMESGGFGFAn7kPm2CTEpaufZxL6XIr72FKiucJT/UYkcEgCz
-        0zFWd9pWVPgXwSFJgrVs+6s=
-X-Google-Smtp-Source: ABdhPJxFD5dqpPgkq3nn8KnWDfcUuF3QzF/XcP2WVwa+ah/rtsjppFnQ0SlZgVGBx/quaeHZekwOpw==
-X-Received: by 2002:a1c:5f41:: with SMTP id t62mr8572734wmb.134.1596019916177;
-        Wed, 29 Jul 2020 03:51:56 -0700 (PDT)
-Received: from stancioi.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id z15sm3955697wrn.89.2020.07.29.03.51.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 03:51:55 -0700 (PDT)
-From:   Ioana-Ruxandra Stancioi <ioanaruxandra.stancioi@gmail.com>
-To:     david.lebrun@uclouvain.be, davem@davemloft.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     elver@google.com, glider@google.com,
-        =?UTF-8?q?Ioana-Ruxandra=20St=C4=83ncioi?= <stancioi@google.com>
-Subject: [PATCH] uapi, seg6_iptunnel: Add missing include in seg6_iptunnel.h
-Date:   Wed, 29 Jul 2020 10:49:03 +0000
-Message-Id: <20200729104903.3586064-1-ioanaruxandra.stancioi@gmail.com>
-X-Mailer: git-send-email 2.28.0.rc0.142.g3c755180ce-goog
+        Wed, 29 Jul 2020 06:56:11 -0400
+X-Greylist: delayed 385 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Jul 2020 06:56:10 EDT
+Received: from smtp.soverin.net (unknown [10.10.3.24])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by outbound.soverin.net (Postfix) with ESMTPS id C67E86017B;
+        Wed, 29 Jul 2020 10:49:44 +0000 (UTC)
+Received: from smtp.soverin.net (smtp.soverin.net [159.69.232.138]) by soverin.net
+From:   Jack Mitchell <ml@embed.me.uk>
+To:     linux-pm@vger.kernel.org
+Cc:     Sebastian Reichel <sre@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-kernel@vger.kernel.org,
+        Quentin Schulz <quentin.schulz@free-electrons.com>,
+        Jack Mitchell <ml@embed.me.uk>
+Subject: [PATCH] drivers: power: axp20x-battery: support setting charge_full_design
+Date:   Wed, 29 Jul 2020 11:49:13 +0100
+Message-Id: <20200729104913.627242-1-ml@embed.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-Virus-Scanned: clamav-milter 0.102.4 at c03mi01
+X-Virus-Status: Clean
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ioana-Ruxandra Stăncioi <stancioi@google.com>
-
-Include <linux/ipv6.h> in uapi/linux/seg6_iptunnel.h to fix the
-following linux/seg6_iptunnel.h compilation error:
-
-   invalid application of 'sizeof' to incomplete type 'struct ipv6hdr'
-       head = sizeof(struct ipv6hdr);
-                     ^~~~~~
-
-This is to allow including this header in places where <linux/ipv6.h>
-has not been included but __KERNEL__ is defined. In the kernel the easy
-workaround is including <linux/ipv6.h>, but the header may also be used
-by code analysis tools.
-
-Signed-off-by: Ioana-Ruxandra Stăncioi <stancioi@google.com>
+Signed-off-by: Jack Mitchell <ml@embed.me.uk>
 ---
- include/uapi/linux/seg6_iptunnel.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/power/supply/axp20x_battery.c | 39 +++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/include/uapi/linux/seg6_iptunnel.h b/include/uapi/linux/seg6_iptunnel.h
-index 09fb608a35ec..b904228f463c 100644
---- a/include/uapi/linux/seg6_iptunnel.h
-+++ b/include/uapi/linux/seg6_iptunnel.h
-@@ -38,6 +38,7 @@ enum {
+diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
+index fe96f77bffa7..8ce4ebe7ccd5 100644
+--- a/drivers/power/supply/axp20x_battery.c
++++ b/drivers/power/supply/axp20x_battery.c
+@@ -60,6 +60,7 @@
+ 
+ #define AXP20X_V_OFF_MASK		GENMASK(2, 0)
+ 
++#define AXP20X_BAT_MAX_CAP_VALID	BIT(7)
+ 
+ struct axp20x_batt_ps;
+ 
+@@ -86,6 +87,7 @@ struct axp20x_batt_ps {
+ 	struct axp20x_thermal_sensor sensor;
+ 	/* Maximum constant charge current */
+ 	unsigned int max_ccc;
++	unsigned int charge_full_design;
+ 	const struct axp_data	*data;
  };
  
- #ifdef __KERNEL__
-+#include <linux/ipv6.h>
+@@ -260,6 +262,10 @@ static int axp20x_battery_get_prop(struct power_supply *psy,
+ 		val->intval = POWER_SUPPLY_HEALTH_GOOD;
+ 		break;
  
- static inline size_t seg6_lwt_headroom(struct seg6_iptunnel_encap *tuninfo)
++	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
++		val->intval = axp20x_batt->charge_full_design;
++		break;
++
+ 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT:
+ 		ret = axp20x_get_constant_charge_current(axp20x_batt,
+ 							 &val->intval);
+@@ -401,6 +407,30 @@ static int axp20x_battery_set_max_voltage(struct axp20x_batt_ps *axp20x_batt,
+ 				  AXP20X_CHRG_CTRL1_TGT_VOLT, val);
+ }
+ 
++static int axp20x_set_charge_full_design(struct axp20x_batt_ps *axp_batt,
++					      int charge_full_uah)
++{
++	/* (Unit: 1.456mAh) */
++	int max_capacity_units = charge_full_uah / 1456;
++	int ret;
++
++	u8 max_capacity_msb = (max_capacity_units & 0x7F00) >> 8;
++	u8 max_capacity_lsb = (max_capacity_units & 0xFF);
++
++	axp_batt->charge_full_design = max_capacity_units * 1456;
++
++	max_capacity_msb |= AXP20X_BAT_MAX_CAP_VALID;
++
++	ret = regmap_write(axp_batt->regmap, AXP288_FG_DES_CAP0_REG,
++			   max_capacity_lsb);
++
++	if (ret)
++		return ret;
++
++	return regmap_write(axp_batt->regmap, AXP288_FG_DES_CAP1_REG,
++			    max_capacity_msb);
++}
++
+ static int axp20x_set_constant_charge_current(struct axp20x_batt_ps *axp_batt,
+ 					      int charge_current)
  {
+@@ -492,6 +522,7 @@ static enum power_supply_property axp20x_battery_props[] = {
+ 	POWER_SUPPLY_PROP_STATUS,
+ 	POWER_SUPPLY_PROP_VOLTAGE_NOW,
+ 	POWER_SUPPLY_PROP_CURRENT_NOW,
++	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+ 	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT,
+ 	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX,
+ 	POWER_SUPPLY_PROP_HEALTH,
+@@ -675,6 +706,7 @@ static int axp20x_power_probe(struct platform_device *pdev)
+ 	if (!power_supply_get_battery_info(axp20x_batt->batt, &info)) {
+ 		int vmin = info.voltage_min_design_uv;
+ 		int ccc = info.constant_charge_current_max_ua;
++		int cfd = info.charge_full_design_uah;
+ 
+ 		if (vmin > 0 && axp20x_set_voltage_min_design(axp20x_batt,
+ 							      vmin))
+@@ -692,6 +724,13 @@ static int axp20x_power_probe(struct platform_device *pdev)
+ 			axp20x_batt->max_ccc = ccc;
+ 			axp20x_set_constant_charge_current(axp20x_batt, ccc);
+ 		}
++
++		if (cfd > 0 && axp20x_set_charge_full_design(axp20x_batt,
++							       cfd)) {
++			dev_err(&pdev->dev,
++				"couldn't set charge_full_design\n");
++			axp20x_batt->charge_full_design = 0;
++		}
+ 	}
+ 
+ 	error = axp20x_thermal_register_sensor(pdev, axp20x_batt);
 -- 
-2.28.0.rc0.142.g3c755180ce-goog
+2.28.0
 
