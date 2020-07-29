@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE171232638
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C301223263C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 22:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgG2UhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 16:37:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45589 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726365AbgG2UhH (ORCPT
+        id S1726891AbgG2Uhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 16:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726581AbgG2Uhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 16:37:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1596055026;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JKV4hl15ZgHUpqQ9Lksec6wqiZBzDGUrjHq91E2NpOk=;
-        b=Bn3B9Gqg41Mcfiek5DIVDT7/IKBhOjQiC9Zx+EYLZWyeCiVrFrqA1VyMxFLJJYd12nh3hs
-        I9yMxkIxVFIE6tDDgxrZKTFSAqjq2xMewCM/+hrD2buy36dhTspQI4g5WAOplvwkAybf81
-        PjGaYtI3G2A/N9gViBa3QbeQ3WbwNsw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-307-Jb_l5AyvN1uvbQWUg6XcCA-1; Wed, 29 Jul 2020 16:37:04 -0400
-X-MC-Unique: Jb_l5AyvN1uvbQWUg6XcCA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F19C8005B0;
-        Wed, 29 Jul 2020 20:37:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-32.rdu2.redhat.com [10.10.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B8CDA5F7D8;
-        Wed, 29 Jul 2020 20:36:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <0b154b9b-728f-7d57-d4c5-ec25fc9dfdf3@toxicpanda.com>
-References: <0b154b9b-728f-7d57-d4c5-ec25fc9dfdf3@toxicpanda.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     dhowells@redhat.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: Inverted mount options completely broken (iversion,relatime)
+        Wed, 29 Jul 2020 16:37:36 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37386C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:37:36 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id a5so10718974ioa.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 13:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=feuGkbN2E+CY4DYEzbMyw1G53COndnQfGzu4PNYGrlE=;
+        b=IOAAJ9NsSUh5yPDkFHrM/yn3ArdUgh3ru5J4RxxujQQYlhEtwasJPcFfg1ZH9GjWCC
+         akWYg59be45KQkJHM5B0zSMQR7QpIGxQVNncfQurnOShEO9Kb4ZivhYBsLqBAyUapySW
+         v5lblsElXPV/9TvCxpQBLNIREiWtyULDcKxU7cshmtZKAaTwriPNj3GdOFEfFzlcQ3NR
+         GEJQa3d7nGpTv+76mckr7sfY6gircJtEylXlfquXn4VRA8QeBDtqVbGnxkKxOtJxt90b
+         byAThQy067Cg8IjzQw8D2as8g1XRE3oMeC4gSaFhDXo18AyV7G0RPYTN+/wG4RBLAcWm
+         RXnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=feuGkbN2E+CY4DYEzbMyw1G53COndnQfGzu4PNYGrlE=;
+        b=p68CAuNcTEdgTlSIwmJ/Rpuy/XssSqgivqRP988dlRwcdcInxtERQBPWd5AKidJNWG
+         E5Ke1bF6tIMp7EF9eiyMt0Qs7heyNITP4Gwt2yHRrzJ3fX7m0EFiMmk/qPsKSgpyMAMN
+         D7JfFOlAb3ndmA+N9tJ/+wDwY33C0ECWspuPo61RFiPlSX1vGIdWM4SH8Mh42T0gLb4h
+         f5i1i9ipoawYp2eGu6h7KPrS+iccgUSWFg0YHOui7z6IeoxbE3ZHweMQFkr7rV2x9H+g
+         gzjAqX8Sak9hZpS4j2bhUKqhzVOa6v3yiQZkExSHo5rhwcfKNYlew6uriS5UVRzDUk58
+         liLA==
+X-Gm-Message-State: AOAM5300Rc5toCnWq0ZcWnB2kYqdAvR+otUOu18+QwnNAh7eQKX5JC5s
+        iDA6kj+ophOzRk8H36BZWPAuiHEtbY71+NmoTGOHfQ==
+X-Google-Smtp-Source: ABdhPJzJnBn4g3Z3/OC6fL9PkJmR/5alLnXd4E6YmWDnugeSVP+FbZ742waST/DjPHmcFtTyupDePhDtpQu8+Chiwbw=
+X-Received: by 2002:a05:6638:1685:: with SMTP id f5mr17236458jat.48.1596055055453;
+ Wed, 29 Jul 2020 13:37:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4007795.1596055016.1@warthog.procyon.org.uk>
-Date:   Wed, 29 Jul 2020 21:36:56 +0100
-Message-ID: <4007797.1596055016@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200728004446.932-1-graf@amazon.com> <87d04gm4ws.fsf@vitty.brq.redhat.com>
+ <a1f30fc8-09f5-fe2f-39e2-136b881ed15a@amazon.com> <CALMp9eQ3OxhQZYiHPiebX=KyvjWQgxQEO-owjSoxgPKsOMRvjw@mail.gmail.com>
+ <14035057-ea80-603b-0466-bb50767f9f7e@amazon.com> <CALMp9eSxWDPcu2=K4NHbx_ZcYjA_jmnoD7gXbUp=cnEbiU0jLA@mail.gmail.com>
+ <69d8c4cd-0d36-0135-d1fc-0af7d81ce062@amazon.com>
+In-Reply-To: <69d8c4cd-0d36-0135-d1fc-0af7d81ce062@amazon.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 29 Jul 2020 13:37:24 -0700
+Message-ID: <CALMp9eSD=_soihVJD_8QVKkgGAieeaBcRcNf2gKBzKE7gU1Tjg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Deflect unknown MSR accesses to user space
+To:     Alexander Graf <graf@amazon.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Josef Bacik <josef@toxicpanda.com> wrote:
+On Wed, Jul 29, 2020 at 1:29 PM Alexander Graf <graf@amazon.com> wrote:
 
-> So my question is, what do we do here?
+> Meanwhile, I have cleaned up Karim's old patch to add allow listing to
+> KVM and would post it if Aaron doesn't beat me to it :).
 
-Hmmm...  As the code stands, MS_RDONLY, MS_SYNCHRONOUS, MS_MANDLOCK,
-MS_I_VERSION and MS_LAZYTIME should all be masked off before the new flags are
-set if called from mount(2) rather than fsconfig(2).
-
-do_remount() gives MS_RMT_MASK to fs_context_for_reconfigure() to load into
-fc->sb_flags_mask, which should achieve the desired effect in
-reconfigure_super() on this line:
-
-	WRITE_ONCE(sb->s_flags, ((sb->s_flags & ~fc->sb_flags_mask) |
-				 (fc->sb_flags & fc->sb_flags_mask)));
-
-David
-
+Ideally, this becomes a collaboration rather than a race to the
+finish. I'd like to see both proposals, so that we can take the best
+parts of each!
