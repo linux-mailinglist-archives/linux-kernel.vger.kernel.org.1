@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37096231B57
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B32E231B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgG2Ii6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34018 "EHLO
+        id S1727951AbgG2Ijl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726737AbgG2Ii6 (ORCPT
+        with ESMTP id S1726710AbgG2Ijk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:38:58 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33AEC0619D2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:38:56 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id t6so11505459plo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:38:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=HbtJE63+eO8A7hJIYpadhjS7rkPV5HGagSVTfU+DbFQ=;
-        b=W/NNhbO1UHWwgBubTrG+vvCvJWc3ROwi3sun459A2CESXYwYFM9TussMxojmXwp6RP
-         BddeN0djhDJlRYMsXk1FpzwXIOSFQCST/Jxp3NfHEmSuliDqGq+RO62ZgCjv/I4kZDTy
-         LiJV6QOGKrhLhxhlJCSEdzatM2lEg2G4SJ0fk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=HbtJE63+eO8A7hJIYpadhjS7rkPV5HGagSVTfU+DbFQ=;
-        b=J6JDaAYOi7rPF9qW/96RuDQthCg/a4YWZO7ey6xYc3TR8kEkela1NSjthaOgGInMyJ
-         3ni/8M2fcTKFm0FF5V3BEGsOE97oP9J0w4V2CJHqC76hTPfXVm6+xM5zASS3dN+2jIzs
-         PJf0nQ1az5/qyDsk5XN7Ki8a9iNgJXIzjCbIIzlsml6gCCIb/MpzWxKe6cTISa6Ipz5N
-         weNI59bjxkEEaRAoVxbEd7rcqaLPTKQI0xzVwbQTswxDQnOwlbCHioPbCvJnAvGOX9tp
-         2mrmq8Mf5980GP5Vg1EwnKO8OZpu/WiF8rZUT4HypbFFRVGPTkgOA48K1jajCCxjkTuj
-         YuXw==
-X-Gm-Message-State: AOAM530Y5JjXA8Yi0FaQAUpbxKU74qZd+AnPznw+IdA4A7xZ3uCN5NUE
-        E/H2FwJ2SVVbXOdTdGX0quGIxQ==
-X-Google-Smtp-Source: ABdhPJydymo0wEUaSrTPX7MFw0FkDuVjogsdoOwK7zJwZa3jI6qPQwQePOSbT+8zQ7E9z43dmd+qvg==
-X-Received: by 2002:a17:90a:1f81:: with SMTP id x1mr7911944pja.115.1596011935538;
-        Wed, 29 Jul 2020 01:38:55 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id c9sm1394247pjr.35.2020.07.29.01.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 01:38:54 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 29 Jul 2020 04:39:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966DCC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:39:40 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1k0hcg-0004vI-85; Wed, 29 Jul 2020 10:39:38 +0200
+Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1k0hce-0006kb-TI; Wed, 29 Jul 2020 10:39:36 +0200
+Date:   Wed, 29 Jul 2020 10:39:36 +0200
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     robh+dt@kernel.org, frowand.list@gmail.com
+Cc:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] arm: dts: imx7: add QSPI
+Message-ID: <20200729083936.p5t66bf5envimgur@pengutronix.de>
+References: <20200729071106.8213-1-matthias.schiffer@ew.tq-group.com>
+ <33fbac338c9d9accda37837eb1338003b28cafee.camel@ew.tq-group.com>
+ <20200729075841.2fiudq2ypcbvlymx@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200728170317.v2.4.I9bf713a86d6076b44441ef5f534f9c240271699a@changeid>
-References: <20200728151258.1222876-1-campello@chromium.org> <20200728230520.2011240-1-campello@chromium.org> <20200728170317.v2.4.I9bf713a86d6076b44441ef5f534f9c240271699a@changeid>
-Subject: Re: [PATCH v2 04/14] iio: sx9310: Remove acpi and of table macros
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Daniel Campello <campello@chromium.org>,
-        kbuild test robot <lkp@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org
-To:     Daniel Campello <campello@chromium.org>,
-        LKML <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 29 Jul 2020 01:38:52 -0700
-Message-ID: <159601193272.1360974.2787015814101675037@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200729075841.2fiudq2ypcbvlymx@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:37:01 up 256 days, 23:55, 239 users,  load average: 0.07, 0.09,
+ 0.09
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Daniel Campello (2020-07-28 16:05:10)
-> Avoids unused warnings due to acpi/of table macros.
->=20
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Daniel Campello <campello@chromium.org>
-> ---
+Added Rob and Frank.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Maybe they can explain us this behaviour.
+
+On 20-07-29 09:58, Marco Felsch wrote:
+> Hi Matthias,
+> 
+> On 20-07-29 09:14, Matthias Schiffer wrote:
+> > On Wed, 2020-07-29 at 09:11 +0200, Matthias Schiffer wrote:
+> > > In preparation for an update of the TQ-Systems TQMa7x/MBa7x DTS, add
+> > > the
+> > > QSPI controller to imx7s.dtsi.
+> > > 
+> > > Based-on-patch-by: Han Xu <han.xu@nxp.com>
+> > > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > > ---
+> > > 
+> > > v2:
+> > > - renamed node and label
+> > > - reordered properties
+> > > (as suggested by Marco Felsch)
+> > 
+> > Ugh, I neglected to check for compile warnings after adjusting the node
+> > name. This now gives the following warning:
+> > 
+> > arch/arm/boot/dts/imx7s.dtsi:1165.24-1176.6: Warning (spi_bus_bridge): 
+> > /soc/bus@30800000/qspi@30bb0000: node name for SPI buses should be
+> > 'spi'
+> > 
+> > So I guess this should be called spi@ after all?
+> 
+> Unfortunately yes, this would cause a longer discussion but it still
+> seems wrong to me.
+> 
+> Regards,
+>   Marco
+> 
+> > > 
+> > > 
+> > >  arch/arm/boot/dts/imx7s.dtsi | 13 +++++++++++++
+> > >  1 file changed, 13 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/imx7s.dtsi
+> > > b/arch/arm/boot/dts/imx7s.dtsi
+> > > index 1cfaf410aa43..22e4c38223bd 100644
+> > > --- a/arch/arm/boot/dts/imx7s.dtsi
+> > > +++ b/arch/arm/boot/dts/imx7s.dtsi
+> > > @@ -1162,6 +1162,19 @@
+> > >  				status = "disabled";
+> > >  			};
+> > >  
+> > > +			qspi: qspi@30bb0000 {
+> > > +				compatible = "fsl,imx7d-qspi";
+> > > +				reg = <0x30bb0000 0x10000>, <0x60000000
+> > > 0x10000000>;
+> > > +				reg-names = "QuadSPI", "QuadSPI-
+> > > memory";
+> > > +				#address-cells = <1>;
+> > > +				#size-cells = <0>;
+> > > +				interrupts = <GIC_SPI 107
+> > > IRQ_TYPE_LEVEL_HIGH>;
+> > > +				clocks = <&clks IMX7D_QSPI_ROOT_CLK>,
+> > > +					<&clks IMX7D_QSPI_ROOT_CLK>;
+> > > +				clock-names = "qspi_en", "qspi";
+> > > +				status = "disabled";
+> > > +			};
+> > > +
+> > >  			sdma: sdma@30bd0000 {
+> > >  				compatible = "fsl,imx7d-sdma",
+> > > "fsl,imx35-sdma";
+> > >  				reg = <0x30bd0000 0x10000>;
+> > 
+> > 
+> 
+> -- 
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> 
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
