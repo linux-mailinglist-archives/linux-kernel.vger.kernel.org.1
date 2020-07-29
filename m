@@ -2,232 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B072318EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 07:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FF92318FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 07:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgG2FNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 01:13:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54977 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbgG2FNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 01:13:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1595999602; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=gLvzUmKqa6vpHgv/HtG/L/kfLngxdkrX1U5fAVcPL7Q=; b=vTKy6WPiNmU0/X1LZ4I11OA8FaQLVSit3jHIuK/vPhbmlUyp/se5dwdDxvBwmFLzcNCKCcsu
- 8RMilUpuW26hXx1RWbbLYjetgWxUO2KPi1y9LrUY9GRKER0sFC3QOyNBEgE5nmRv5qnqLiRj
- aY9xTij2/G1+TONFSCAjS8pHkJc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f21057249176bd382237bcc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 29 Jul 2020 05:13:22
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E1E45C43395; Wed, 29 Jul 2020 05:13:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 26F36C433C6;
-        Wed, 29 Jul 2020 05:13:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 26F36C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>
-Cc:     coresight@lists.linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv3] coresight: etm4x: Fix etm4_count race by moving cpuhp callbacks to init
-Date:   Wed, 29 Jul 2020 10:43:10 +0530
-Message-Id: <20200729051310.18436-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726806AbgG2FQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 01:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgG2FQg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 01:16:36 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB81C0619D2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 22:16:36 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id l63so13629409pge.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Jul 2020 22:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=My6wF6wOxqWj2vALiGYVdW12dpuklXn0QP6e45LDC3s=;
+        b=GOVvyPJrrzTENjpKfVrZdIbthAOLEx6ZdUkeA8AsNXmYcZSCezeV/a7NZph8KJg9lV
+         KLp/96aECmBQWbGb8QkDg5Dgs8G3J5GU1aMyKkD6lsebcCL60fVBIt5k1jsv0jKfwY6x
+         pGJc1byXU2528vl1cc8a6Xdwh1vfkSlqrrrH7Nv4IOFITe1mqLQZJsatxv+rDG5ql2gH
+         lWRZiydsRYcB8xIFbxcGKrYL3Wjckwzhy3G5myt0C5oPNJ78lOHLUR3t0o4yK9s02NLG
+         huThtxkDGcCHQVDat0vPT5xmLzEqFaZwU/qbCfgdlFg9JgXL4h3bDHHJnza+jypHRzCm
+         IySA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=My6wF6wOxqWj2vALiGYVdW12dpuklXn0QP6e45LDC3s=;
+        b=aG8DQ1Rb9NPTN18UtCVNHjgxbN0AEvpwcs7j5svRxOI+zn4JGPdT4MHilQrOJkpg5I
+         IYT7mCqT8dMuaJ1lVuAinWRjDuPgRKX+PWAe471r+aWLT8weXrXxcPx1+FHcKdrL/azR
+         DzJpPBNxB4rAns4qvHGcPNjcCf2smcz/cXH05SDLv6hZ+6zNWD0z9Vk6ZAuGBll5Brnp
+         Twn/DEpeuEmSDSOm57Q9zSKqrs7bDuq710W2SEnSTYunRBWOxgozz5bX6rB6BwVGPI+g
+         wb0rPWXaw1KY7taNMAinIO0vPApRUvmiIqpGUj8nA11zwcueen6+cmhFxmENSypd2XTU
+         ls8w==
+X-Gm-Message-State: AOAM533DK+242yb78OtLASsva90PeWaYoEtCziUp2Plhi4Jx9st+UIlK
+        /RtxKKK/Rw+pVro04fX/dhWIW0if9Vo=
+X-Google-Smtp-Source: ABdhPJzjtXLQSVD/yUHzhnR26tU6d+mXoVKd/tt4jhYhnke8xXlPicXlGuSoe1HGuATXGGRwJwcK4A==
+X-Received: by 2002:a62:7c87:: with SMTP id x129mr9289795pfc.165.1595999795532;
+        Tue, 28 Jul 2020 22:16:35 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id q5sm762750pgv.1.2020.07.28.22.16.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jul 2020 22:16:35 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Andrew F . Davis" <afd@ti.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [RFC][PATCH 1/2] dma-heap: Keep track of the heap device struct
+Date:   Wed, 29 Jul 2020 05:16:31 +0000
+Message-Id: <20200729051632.66040-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-etm4_count keeps track of number of ETMv4 registered and on some systems,
-a race is observed on etm4_count variable which can lead to multiple calls
-to cpuhp_setup_state_nocalls_cpuslocked(). This function internally calls
-cpuhp_store_callbacks() which prevents multiple registrations of callbacks
-for a given state and due to this race, it returns -EBUSY leading to ETM
-probe failures like below.
+Keep track of the heap device struct.
 
- coresight-etm4x: probe of 7040000.etm failed with error -16
+This will be useful for special DMA allocations
+and actions.
 
-This race can easily be triggered with async probe by setting probe type
-as PROBE_PREFER_ASYNCHRONOUS and with ETM power management property
-"arm,coresight-loses-context-with-cpu".
-
-Prevent this race by moving cpuhp callbacks to etm driver init since the
-cpuhp callbacks doesn't have to depend on the etm4_count and can be once
-setup during driver init. Similarly we move cpu_pm notifier registration
-to driver init and completely remove etm4_count usage. Also now we can
-use non cpuslocked version of cpuhp callbacks with this movement.
-
-Fixes: 9b6a3f3633a5 ("coresight: etmv4: Fix CPU power management setup in probe() function")
-Fixes: 58eb457be028 ("hwtracing/coresight-etm4x: Convert to hotplug state machine")
-Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Andrew F. Davis <afd@ti.com>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
+ drivers/dma-buf/dma-heap.c | 33 +++++++++++++++++++++++++--------
+ include/linux/dma-heap.h   |  9 +++++++++
+ 2 files changed, 34 insertions(+), 8 deletions(-)
 
-Changes in v3:
- * Minor cleanups from v2 and change to device_initcall (Stephen Boyd)
- * Move to non cpuslocked cpuhp callbacks and rename to etm_pm_setup() (Mike Leach) 
-
-Changes in v2:
- * Rearrange cpuhp callbacks and move them to driver init (Suzuki K Poulose)
-
----
- drivers/hwtracing/coresight/coresight-etm4x.c | 65 +++++++++----------
- 1 file changed, 31 insertions(+), 34 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index 6d7d2169bfb2..fddfd93b9a7b 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -48,8 +48,6 @@ module_param(pm_save_enable, int, 0444);
- MODULE_PARM_DESC(pm_save_enable,
- 	"Save/restore state on power down: 1 = never, 2 = self-hosted");
- 
--/* The number of ETMv4 currently registered */
--static int etm4_count;
- static struct etmv4_drvdata *etmdrvdata[NR_CPUS];
- static void etm4_set_default_config(struct etmv4_config *config);
- static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
-@@ -1398,28 +1396,25 @@ static struct notifier_block etm4_cpu_pm_nb = {
- 	.notifier_call = etm4_cpu_pm_notify,
+diff --git a/drivers/dma-buf/dma-heap.c b/drivers/dma-buf/dma-heap.c
+index afd22c9dbdcf..72c746755d89 100644
+--- a/drivers/dma-buf/dma-heap.c
++++ b/drivers/dma-buf/dma-heap.c
+@@ -30,6 +30,7 @@
+  * @heap_devt		heap device node
+  * @list		list head connecting to list of heaps
+  * @heap_cdev		heap char device
++ * @heap_dev		heap device struct
+  *
+  * Represents a heap of memory from which buffers can be made.
+  */
+@@ -40,6 +41,7 @@ struct dma_heap {
+ 	dev_t heap_devt;
+ 	struct list_head list;
+ 	struct cdev heap_cdev;
++	struct device *heap_dev;
  };
  
--/* Setup PM. Called with cpus locked. Deals with error conditions and counts */
--static int etm4_pm_setup_cpuslocked(void)
-+/* Setup PM. Deals with error conditions and counts */
-+static int __init etm4_pm_setup(void)
+ static LIST_HEAD(heap_list);
+@@ -190,10 +192,21 @@ void *dma_heap_get_drvdata(struct dma_heap *heap)
+ 	return heap->priv;
+ }
+ 
++/**
++ * dma_heap_get_dev() - get device struct for the heap
++ * @heap: DMA-Heap to retrieve device struct from
++ *
++ * Returns:
++ * The device struct for the heap.
++ */
++struct device *dma_heap_get_dev(struct dma_heap *heap)
++{
++	return heap->heap_dev;
++}
++
+ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
  {
+ 	struct dma_heap *heap, *h, *err_ret;
+-	struct device *dev_ret;
+ 	unsigned int minor;
  	int ret;
  
--	if (etm4_count++)
--		return 0;
--
- 	ret = cpu_pm_register_notifier(&etm4_cpu_pm_nb);
- 	if (ret)
--		goto reduce_count;
-+		return ret;
- 
--	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING,
--						   "arm/coresight4:starting",
--						   etm4_starting_cpu, etm4_dying_cpu);
-+	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING,
-+					"arm/coresight4:starting",
-+					etm4_starting_cpu, etm4_dying_cpu);
- 
- 	if (ret)
- 		goto unregister_notifier;
- 
--	ret = cpuhp_setup_state_nocalls_cpuslocked(CPUHP_AP_ONLINE_DYN,
--						   "arm/coresight4:online",
--						   etm4_online_cpu, NULL);
-+	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
-+					"arm/coresight4:online",
-+					etm4_online_cpu, NULL);
- 
- 	/* HP dyn state ID returned in ret on success */
- 	if (ret > 0) {
-@@ -1428,21 +1423,15 @@ static int etm4_pm_setup_cpuslocked(void)
+@@ -247,16 +260,20 @@ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info)
+ 		goto err1;
  	}
  
- 	/* failed dyn state - remove others */
--	cpuhp_remove_state_nocalls_cpuslocked(CPUHP_AP_ARM_CORESIGHT_STARTING);
-+	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
- 
- unregister_notifier:
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
--
--reduce_count:
--	--etm4_count;
- 	return ret;
- }
- 
--static void etm4_pm_clear(void)
-+static void __init etm4_pm_clear(void)
- {
--	if (--etm4_count != 0)
--		return;
--
- 	cpu_pm_unregister_notifier(&etm4_cpu_pm_nb);
- 	cpuhp_remove_state_nocalls(CPUHP_AP_ARM_CORESIGHT_STARTING);
- 	if (hp_online) {
-@@ -1498,22 +1487,12 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 	if (!desc.name)
- 		return -ENOMEM;
- 
--	cpus_read_lock();
- 	etmdrvdata[drvdata->cpu] = drvdata;
- 
- 	if (smp_call_function_single(drvdata->cpu,
- 				etm4_init_arch_data,  drvdata, 1))
- 		dev_err(dev, "ETM arch init failed\n");
- 
--	ret = etm4_pm_setup_cpuslocked();
--	cpus_read_unlock();
--
--	/* etm4_pm_setup_cpuslocked() does its own cleanup - exit on error */
--	if (ret) {
--		etmdrvdata[drvdata->cpu] = NULL;
--		return ret;
--	}
--
- 	if (etm4_arch_supported(drvdata->arch) == false) {
- 		ret = -EINVAL;
- 		goto err_arch_supported;
-@@ -1560,7 +1539,6 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
- 
- err_arch_supported:
- 	etmdrvdata[drvdata->cpu] = NULL;
--	etm4_pm_clear();
- 	return ret;
- }
- 
-@@ -1598,4 +1576,23 @@ static struct amba_driver etm4x_driver = {
- 	.probe		= etm4_probe,
- 	.id_table	= etm4_ids,
- };
--builtin_amba_driver(etm4x_driver);
+-	dev_ret = device_create(dma_heap_class,
+-				NULL,
+-				heap->heap_devt,
+-				NULL,
+-				heap->name);
+-	if (IS_ERR(dev_ret)) {
++	heap->heap_dev = device_create(dma_heap_class,
++				       NULL,
++				       heap->heap_devt,
++				       NULL,
++				       heap->name);
++	if (IS_ERR(heap->heap_dev)) {
+ 		pr_err("dma_heap: Unable to create device\n");
+-		err_ret = ERR_CAST(dev_ret);
++		err_ret = ERR_CAST(heap->heap_dev);
+ 		goto err2;
+ 	}
 +
-+static int __init etm4x_init(void)
-+{
-+	int ret;
++	/* Make sure it doesn't disappear on us */
++	heap->heap_dev = get_device(heap->heap_dev);
 +
-+	ret = etm4_pm_setup();
+ 	/* Add heap to the list */
+ 	mutex_lock(&heap_list_lock);
+ 	list_add(&heap->list, &heap_list);
+diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+index 454e354d1ffb..82857e096910 100644
+--- a/include/linux/dma-heap.h
++++ b/include/linux/dma-heap.h
+@@ -50,6 +50,15 @@ struct dma_heap_export_info {
+  */
+ void *dma_heap_get_drvdata(struct dma_heap *heap);
+ 
++/**
++ * dma_heap_get_dev() - get device struct for the heap
++ * @heap: DMA-Heap to retrieve device struct from
++ *
++ * Returns:
++ * The device struct for the heap.
++ */
++struct device *dma_heap_get_dev(struct dma_heap *heap);
 +
-+	/* etm4_pm_setup() does its own cleanup - exit on error */
-+	if (ret)
-+		return ret;
-+
-+	ret = amba_driver_register(&etm4x_driver);
-+	if (ret) {
-+		pr_err("Error registering etm4x driver\n");
-+		etm4_pm_clear();
-+	}
-+
-+	return ret;
-+}
-+device_initcall(etm4x_init);
+ /**
+  * dma_heap_add - adds a heap to dmabuf heaps
+  * @exp_info:		information needed to register this heap
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
 
