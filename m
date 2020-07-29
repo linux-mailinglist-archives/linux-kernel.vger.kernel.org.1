@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91856231E45
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318F2231E23
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 14:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgG2MJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 08:09:22 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:47934 "EHLO inva020.nxp.com"
+        id S1726958AbgG2MI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 08:08:28 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:37790 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726628AbgG2MIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 08:08:22 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B4CE61A1111;
-        Wed, 29 Jul 2020 14:08:20 +0200 (CEST)
+        id S1726341AbgG2MIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 08:08:23 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 66F55200FF6;
+        Wed, 29 Jul 2020 14:08:21 +0200 (CEST)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A47941A01D1;
-        Wed, 29 Jul 2020 14:08:20 +0200 (CEST)
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5A3CA200FBB;
+        Wed, 29 Jul 2020 14:08:21 +0200 (CEST)
 Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id F3CF82032B;
-        Wed, 29 Jul 2020 14:08:19 +0200 (CEST)
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id B3CF22032B;
+        Wed, 29 Jul 2020 14:08:20 +0200 (CEST)
 From:   Abel Vesa <abel.vesa@nxp.com>
 To:     Mike Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     NXP Linux Team <linux-imx@nxp.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         Abel Vesa <abel.vesa@nxp.com>
-Subject: [PATCH 03/17] dt-bindings: clock: imx8mp: Add ids for the audio shared gate
-Date:   Wed, 29 Jul 2020 15:07:49 +0300
-Message-Id: <1596024483-21482-4-git-send-email-abel.vesa@nxp.com>
+Subject: [PATCH 04/17] dt-bindings: clock: imx8mp: Add media blk_ctrl clock IDs
+Date:   Wed, 29 Jul 2020 15:07:50 +0300
+Message-Id: <1596024483-21482-5-git-send-email-abel.vesa@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1596024483-21482-1-git-send-email-abel.vesa@nxp.com>
 References: <1596024483-21482-1-git-send-email-abel.vesa@nxp.com>
@@ -47,37 +47,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All these IDs are for one single HW gate (CCGR101) that is shared
-between these root clocks.
+These will be used by the imx8mp for blk-ctrl driver.
 
 Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
 ---
- include/dt-bindings/clock/imx8mp-clock.h | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/dt-bindings/clock/imx8mp-clock.h | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
 diff --git a/include/dt-bindings/clock/imx8mp-clock.h b/include/dt-bindings/clock/imx8mp-clock.h
-index 6008f32..78ebe8e 100644
+index 78ebe8e..bb465a7 100644
 --- a/include/dt-bindings/clock/imx8mp-clock.h
 +++ b/include/dt-bindings/clock/imx8mp-clock.h
-@@ -322,7 +322,17 @@
- #define IMX8MP_CLK_HSIO_AXI			311
- #define IMX8MP_CLK_MEDIA_ISP			312
+@@ -396,4 +396,32 @@
  
--#define IMX8MP_CLK_END				313
-+#define IMX8MP_CLK_AUDIO_AHB_ROOT		313
-+#define IMX8MP_CLK_AUDIO_AXI_ROOT		314
-+#define IMX8MP_CLK_SAI1_ROOT			315
-+#define IMX8MP_CLK_SAI2_ROOT			316
-+#define IMX8MP_CLK_SAI3_ROOT			317
-+#define IMX8MP_CLK_SAI5_ROOT			318
-+#define IMX8MP_CLK_SAI6_ROOT			319
-+#define IMX8MP_CLK_SAI7_ROOT			320
-+#define IMX8MP_CLK_PDM_ROOT			321
+ #define IMX8MP_CLK_AUDIO_BLK_CTRL_END			59
+ 
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_DSI_PCLK		0
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_DSI_CLKREF	1
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_CSI_PCLK		2
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_CSI_ACLK		3
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_LCDIF_PIXEL		4
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_LCDIF_APB		5
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISI_PROC		6
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISI_APB		7
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_BUS_BLK		8
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_CSI2_PCLK	9
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_CSI2_ACLK	10
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_LCDIF2_PIXEL		11
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_LCDIF2_APB		12
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISP1_COR		13
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISP1_AXI		14
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISP1_AHB		15
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISP0_COR		16
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISP0_AXI		17
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_ISP0_AHB		18
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_DWE_COR		19
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_DWE_AXI		20
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_DWE_AHB		21
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_MIPI_DSI2		22
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_LCDIF_AXI		23
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_LCDIF2_AXI		24
 +
-+#define IMX8MP_CLK_END				322
- 
- #define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_IPG		0
- #define IMX8MP_CLK_AUDIO_BLK_CTRL_SAI1_MCLK1		1
++#define IMX8MP_CLK_MEDIA_BLK_CTRL_END			25
++
+ #endif
 -- 
 2.7.4
 
