@@ -2,428 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354F2231815
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7694B2317F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgG2D1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:27:00 -0400
-Received: from smtpout.cincibell.syn-alias.com ([64.8.71.14]:29708 "EHLO
-        smtp.fuse.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgG2D07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:26:59 -0400
-X-Greylist: delayed 1201 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Jul 2020 23:26:58 EDT
-X_CMAE_Category: , ,
-X-CNFS-Analysis: v=2.3 cv=auTM9hRV c=1 sm=1 tr=0 a=DpjRPou7YFguvYe1QozIfA==:117 a=DpjRPou7YFguvYe1QozIfA==:17 a=KGjhK52YXX0A:10 a=_RQrkK6FrEwA:10 a=bLztB8koN2gA:10 a=D8kloWStAAAA:8 a=JpqZlOa9nmrr5y5q09YA:9 a=lToRegeunbQ_6iXc:21 a=GPCyfixGGpL8Pf8g:21 a=o-EAUcH4Qu12IBblF9Ex:22
-X-CM-Score: 0
-X-Scanned-by: Cloudmark Authority Engine
-X-Authed-Username: Y2thbmVAY29sZW1hbmthbmUub3Jn
-X_CMAE_Category: , ,
-X-CNFS-Analysis: 
-X-CM-Score: 
-X-Scanned-by: Cloudmark Authority Engine
-Received: from [216.196.174.247] ([216.196.174.247:18901] helo=mail.colemankane.org)
-        by smtpout.cincibell.syn-alias.com (envelope-from <ckane@colemankane.org>)
-        (ecelerity 3.6.25.56547 r(Core:3.6.25.0)) with ESMTP
-        id 52/25-30032-0D7E02F5; Tue, 28 Jul 2020 23:06:57 -0400
-Received: by mail.colemankane.org (Postfix, from userid 58)
-        id B0A2C135; Tue, 28 Jul 2020 23:06:56 -0400 (EDT)
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on vine.colemankane.org
-X-Spam-Level: *
-X-Spam-Status: No, score=1.8 required=10.1 tests=ALL_TRUSTED,BAYES_50,
-        IMPRONONCABLE_2,NO_RDNS autolearn=no autolearn_force=no version=3.4.4
-Received: from localhost (unknown [172.20.1.71])
+        id S1730742AbgG2DL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:11:29 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:54148 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728401AbgG2DL2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 23:11:28 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.colemankane.org (Postfix) with ESMTPSA id 65704133;
-        Tue, 28 Jul 2020 23:06:53 -0400 (EDT)
-From:   Coleman Kane <ckane@colemankane.org>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc:     linux-kernel@vger.kernel.org, Coleman Kane <ckane@colemankane.org>
-Subject: [PATCH] fat: Add newline after declarations
-Date:   Tue, 28 Jul 2020 23:05:14 -0400
-Message-Id: <20200729030514.269070-1-ckane@colemankane.org>
-X-Mailer: git-send-email 2.27.0
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 04AEA8066C;
+        Wed, 29 Jul 2020 15:11:23 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1595992283;
+        bh=sM+KrmY3WOU8L/ZS1k+NWdBz7cBUxHr8G+rFhcVUeqU=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=sGPJgNzYhAEtiofKoz6NPlXjzQGLBSqGgbnSo32KIo+ovZBA/CcZ8sPkxj7WeeA0V
+         t581nWWfrlHWohZhXbXeZAelhaHCdAvGRQDG+z7T4xONNfN4wOfYRri+NujoJeUtVg
+         KHn4P9v5PYSappS3XKXelNLK92+C5m6xAd06NNBaWeeKTOYQpe5XdkO1bDqsFG+PQV
+         wQb1C+UeFYgpZfj8Fw1JIXXUxEiTSQ3Etwz1IJovppkYxRSZtYn5MXdmtuDvbfVYU1
+         AjYFDgVVS2k9P0zprKm0CqqIFbKUZq/8JmRpqp7AyQbTNcbpBH9x0D8YvUJ122JtEb
+         xb7bDjWS2fLyg==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f20e8db0001>; Wed, 29 Jul 2020 15:11:23 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 29 Jul 2020 15:11:22 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Wed, 29 Jul 2020 15:11:22 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     Mark Tomlinson <Mark.Tomlinson@alliedtelesis.co.nz>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>
+CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: mv64xxx: Add bus error recovery
+Thread-Topic: [PATCH] i2c: mv64xxx: Add bus error recovery
+Thread-Index: AQHWZVXvhTA0ImruIUmTOKEyZ1Tv4Q==
+Date:   Wed, 29 Jul 2020 03:11:21 +0000
+Message-ID: <e7004338-20ba-8c1d-aa75-2bd5e997da3f@alliedtelesis.co.nz>
+References: <20200707211036.12896-1-mark.tomlinson@alliedtelesis.co.nz>
+In-Reply-To: <20200707211036.12896-1-mark.tomlinson@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E264F0330C37744F80EC1C16EDF50AEE@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a newline after declarations in muliple places within the fat driver
-where checkpatch.pl identified this problem.
-
-Signed-off-by: Coleman Kane <ckane@colemankane.org>
----
- fs/fat/cache.c       |  1 +
- fs/fat/dir.c         |  6 ++++++
- fs/fat/fatent.c      |  8 ++++++++
- fs/fat/file.c        |  2 ++
- fs/fat/inode.c       | 14 ++++++++++++++
- fs/fat/misc.c        |  2 ++
- fs/fat/namei_msdos.c |  1 +
- fs/fat/namei_vfat.c  |  4 ++++
- fs/fat/nfs.c         |  3 +++
- 9 files changed, 41 insertions(+)
-
-diff --git a/fs/fat/cache.c b/fs/fat/cache.c
-index 738e427e2d21..8031e5ca15d1 100644
---- a/fs/fat/cache.c
-+++ b/fs/fat/cache.c
-@@ -167,6 +167,7 @@ static void fat_cache_add(struct inode *inode, struct fat_cache_id *new)
- 			cache = tmp;
- 		} else {
- 			struct list_head *p = MSDOS_I(inode)->cache_lru.prev;
-+
- 			cache = list_entry(p, struct fat_cache, cache_list);
- 		}
- 		cache->fcluster = new->fcluster;
-diff --git a/fs/fat/dir.c b/fs/fat/dir.c
-index b4ddf48fa444..50b8b88d68c7 100644
---- a/fs/fat/dir.c
-+++ b/fs/fat/dir.c
-@@ -182,6 +182,7 @@ static inline int fat_uni_to_x8(struct super_block *sb, const wchar_t *uni,
- 				unsigned char *buf, int size)
- {
- 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
-+
- 	if (sbi->options.utf8)
- 		return utf16s_to_utf8s(uni, FAT_MAX_UNI_CHARS,
- 				UTF16_HOST_ENDIAN, buf, size);
-@@ -431,6 +432,7 @@ static int fat_parse_short(struct super_block *sb,
- 			uni_len = j;
- 			if (isvfat) {
- 				int offset = min(chl, MSDOS_NAME-k);
-+
- 				k += offset;
- 				i += offset;
- 			} else {
-@@ -669,6 +671,7 @@ static int __fat_readdir(struct inode *inode, struct file *file,
- 		unsigned long inum;
- 		loff_t i_pos = fat_make_i_pos(sb, bh, de);
- 		struct inode *tmp = fat_iget(sb, i_pos);
-+
- 		if (tmp) {
- 			inum = tmp->i_ino;
- 			iput(tmp);
-@@ -1343,6 +1346,7 @@ int fat_add_entries(struct inode *dir, void *slots, int nr_slots,
- 		/* Fill the long name slots. */
- 		for (i = 0; i < long_bhs; i++) {
- 			int copy = min_t(int, sb->s_blocksize - offset, size);
-+
- 			memcpy(bhs[i]->b_data + offset, slots, copy);
- 			mark_buffer_dirty_inode(bhs[i], dir);
- 			offset = 0;
-@@ -1353,7 +1357,9 @@ int fat_add_entries(struct inode *dir, void *slots, int nr_slots,
- 			err = fat_sync_bhs(bhs, long_bhs);
- 		if (!err && i < nr_bhs) {
- 			/* Fill the short name slot. */
-+
- 			int copy = min_t(int, sb->s_blocksize - offset, size);
-+
- 			memcpy(bhs[i]->b_data + offset, slots, copy);
- 			mark_buffer_dirty_inode(bhs[i], dir);
- 			if (IS_DIRSYNC(dir))
-diff --git a/fs/fat/fatent.c b/fs/fat/fatent.c
-index bbfe18c07417..872550ffbc9b 100644
---- a/fs/fat/fatent.c
-+++ b/fs/fat/fatent.c
-@@ -24,6 +24,7 @@ static void fat12_ent_blocknr(struct super_block *sb, int entry,
- {
- 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
- 	int bytes = entry + (entry >> 1);
-+
- 	WARN_ON(!fat_valid_entry(sbi, entry));
- 	*offset = bytes & (sb->s_blocksize - 1);
- 	*blocknr = sbi->fat_start + (bytes >> sb->s_blocksize_bits);
-@@ -34,6 +35,7 @@ static void fat_ent_blocknr(struct super_block *sb, int entry,
- {
- 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
- 	int bytes = (entry << sbi->fatent_shift);
-+
- 	WARN_ON(!fat_valid_entry(sbi, entry));
- 	*offset = bytes & (sb->s_blocksize - 1);
- 	*blocknr = sbi->fat_start + (bytes >> sb->s_blocksize_bits);
-@@ -42,6 +44,7 @@ static void fat_ent_blocknr(struct super_block *sb, int entry,
- static void fat12_ent_set_ptr(struct fat_entry *fatent, int offset)
- {
- 	struct buffer_head **bhs = fatent->bhs;
-+
- 	if (fatent->nr_bhs == 1) {
- 		WARN_ON(offset >= (bhs[0]->b_size - 1));
- 		fatent->u.ent12_p[0] = bhs[0]->b_data + offset;
-@@ -136,6 +139,7 @@ static int fat12_ent_get(struct fat_entry *fatent)
- static int fat16_ent_get(struct fat_entry *fatent)
- {
- 	int next = le16_to_cpu(*fatent->u.ent16_p);
-+
- 	WARN_ON((unsigned long)fatent->u.ent16_p & (2 - 1));
- 	if (next >= BAD_FAT16)
- 		next = FAT_ENT_EOF;
-@@ -145,6 +149,7 @@ static int fat16_ent_get(struct fat_entry *fatent)
- static int fat32_ent_get(struct fat_entry *fatent)
- {
- 	int next = le32_to_cpu(*fatent->u.ent32_p) & 0x0fffffff;
-+
- 	WARN_ON((unsigned long)fatent->u.ent32_p & (4 - 1));
- 	if (next >= BAD_FAT32)
- 		next = FAT_ENT_EOF;
-@@ -226,6 +231,7 @@ static int fat12_ent_next(struct fat_entry *fatent)
- static int fat16_ent_next(struct fat_entry *fatent)
- {
- 	const struct buffer_head *bh = fatent->bhs[0];
-+
- 	fatent->entry++;
- 	if (fatent->u.ent16_p < (__le16 *)(bh->b_data + (bh->b_size - 2))) {
- 		fatent->u.ent16_p++;
-@@ -238,6 +244,7 @@ static int fat16_ent_next(struct fat_entry *fatent)
- static int fat32_ent_next(struct fat_entry *fatent)
- {
- 	const struct buffer_head *bh = fatent->bhs[0];
-+
- 	fatent->entry++;
- 	if (fatent->u.ent32_p < (__le32 *)(bh->b_data + (bh->b_size - 4))) {
- 		fatent->u.ent32_p++;
-@@ -750,6 +757,7 @@ int fat_count_free_clusters(struct super_block *sb)
- static int fat_trim_clusters(struct super_block *sb, u32 clus, u32 nr_clus)
- {
- 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
-+
- 	return sb_issue_discard(sb, fat_clus_to_blknr(sbi, clus),
- 				nr_clus * sbi->sec_per_clus, GFP_NOFS, 0);
- }
-diff --git a/fs/fat/file.c b/fs/fat/file.c
-index 42134c58c87e..a78da5fa5732 100644
---- a/fs/fat/file.c
-+++ b/fs/fat/file.c
-@@ -119,6 +119,7 @@ static int fat_ioctl_set_attributes(struct file *file, u32 __user *user_attr)
- static int fat_ioctl_get_volume_id(struct inode *inode, u32 __user *user_attr)
- {
- 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
-+
- 	return put_user(sbi->vol_id, user_attr);
- }
- 
-@@ -398,6 +399,7 @@ int fat_getattr(const struct path *path, struct kstat *stat,
- 		u32 request_mask, unsigned int flags)
- {
- 	struct inode *inode = d_inode(path->dentry);
-+
- 	generic_fillattr(inode, stat);
- 	stat->blksize = MSDOS_SB(inode->i_sb)->cluster_size;
- 
-diff --git a/fs/fat/inode.c b/fs/fat/inode.c
-index a0cf99debb1e..4202944a1bc0 100644
---- a/fs/fat/inode.c
-+++ b/fs/fat/inode.c
-@@ -246,6 +246,7 @@ static int fat_write_end(struct file *file, struct address_space *mapping,
- {
- 	struct inode *inode = mapping->host;
- 	int err;
-+
- 	err = generic_write_end(file, mapping, pos, len, copied, pagep, fsdata);
- 	if (err < len)
- 		fat_write_failed(mapping, pos + len);
-@@ -277,6 +278,7 @@ static ssize_t fat_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 		 * Return 0, and fallback to normal buffered write.
- 		 */
- 		loff_t size = offset + count;
-+
- 		if (MSDOS_I(inode)->mmu_private < size)
- 			return 0;
- 	}
-@@ -421,6 +423,7 @@ void fat_attach(struct inode *inode, loff_t i_pos)
- 	 */
- 	if (S_ISDIR(inode->i_mode) && sbi->options.nfs) {
- 		struct hlist_head *d_head = sbi->dir_hashtable;
-+
- 		d_head += fat_dir_hash(MSDOS_I(inode)->i_logstart);
- 
- 		spin_lock(&sbi->dir_hash_lock);
-@@ -433,6 +436,7 @@ EXPORT_SYMBOL_GPL(fat_attach);
- void fat_detach(struct inode *inode)
- {
- 	struct msdos_sb_info *sbi = MSDOS_SB(inode->i_sb);
-+
- 	spin_lock(&sbi->inode_hash_lock);
- 	MSDOS_I(inode)->i_pos = 0;
- 	hlist_del_init(&MSDOS_I(inode)->i_fat_hash);
-@@ -721,6 +725,7 @@ static void fat_reset_iocharset(struct fat_mount_options *opts)
- static void delayed_free(struct rcu_head *p)
- {
- 	struct msdos_sb_info *sbi = container_of(p, struct msdos_sb_info, rcu);
-+
- 	unload_nls(sbi->nls_disk);
- 	unload_nls(sbi->nls_io);
- 	fat_reset_iocharset(&sbi->options);
-@@ -744,6 +749,7 @@ static struct kmem_cache *fat_inode_cachep;
- static struct inode *fat_alloc_inode(struct super_block *sb)
- {
- 	struct msdos_inode_info *ei;
-+
- 	ei = kmem_cache_alloc(fat_inode_cachep, GFP_NOFS);
- 	if (!ei)
- 		return NULL;
-@@ -803,6 +809,7 @@ static int fat_remount(struct super_block *sb, int *flags, char *data)
- {
- 	bool new_rdonly;
- 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
-+
- 	*flags |= SB_NODIRATIME | (sbi->options.isvfat ? 0 : SB_NOATIME);
- 
- 	sync_filesystem(sb);
-@@ -827,6 +834,7 @@ static int fat_statfs(struct dentry *dentry, struct kstatfs *buf)
- 	/* If the count of free cluster is still unknown, counts it here. */
- 	if (sbi->free_clusters == -1 || !sbi->free_clus_valid) {
- 		int err = fat_count_free_clusters(dentry->d_sb);
-+
- 		if (err)
- 			return err;
- 	}
-@@ -887,6 +895,7 @@ static int __fat_write_inode(struct inode *inode, int wait)
- 			  &raw_entry->date, NULL);
- 	if (sbi->options.isvfat) {
- 		__le16 atime;
-+
- 		fat_time_unix2fat(sbi, &inode->i_ctime, &raw_entry->ctime,
- 				  &raw_entry->cdate, &raw_entry->ctime_cs);
- 		fat_time_unix2fat(sbi, &inode->i_atime, &atime,
-@@ -1164,6 +1173,7 @@ static int parse_options(struct super_block *sb, char *options, int is_vfat,
- 
- 	while ((p = strsep(&options, ",")) != NULL) {
- 		int token;
-+
- 		if (!*p)
- 			continue;
- 
-@@ -1422,6 +1432,7 @@ static unsigned long calc_fat_clusters(struct super_block *sb)
- 	/* Divide first to avoid overflow */
- 	if (!is_fat12(sbi)) {
- 		unsigned long ent_per_sec = sb->s_blocksize * 8 / sbi->fat_bits;
-+
- 		return ent_per_sec * sbi->fat_length;
- 	}
- 
-@@ -1876,6 +1887,7 @@ int fat_fill_super(struct super_block *sb, void *data, int silent, int isvfat,
- 
- 	if (sbi->options.discard) {
- 		struct request_queue *q = bdev_get_queue(sb->s_bdev);
-+
- 		if (!blk_queue_discard(q))
- 			fat_msg(sb, KERN_WARNING,
- 					"mounting with \"discard\" option, but "
-@@ -1937,6 +1949,7 @@ static int writeback_inode(struct inode *inode)
- int fat_flush_inodes(struct super_block *sb, struct inode *i1, struct inode *i2)
- {
- 	int ret = 0;
-+
- 	if (!MSDOS_SB(sb)->options.flush)
- 		return 0;
- 	if (i1)
-@@ -1945,6 +1958,7 @@ int fat_flush_inodes(struct super_block *sb, struct inode *i1, struct inode *i2)
- 		ret = writeback_inode(i2);
- 	if (!ret) {
- 		struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
-+
- 		ret = filemap_flush(mapping);
- 	}
- 	return ret;
-diff --git a/fs/fat/misc.c b/fs/fat/misc.c
-index f1b2a1fc2a6a..8fa964bcca55 100644
---- a/fs/fat/misc.c
-+++ b/fs/fat/misc.c
-@@ -127,6 +127,7 @@ int fat_chain_add(struct inode *inode, int new_dclus, int nr_cluster)
- 		ret = fat_ent_read(inode, &fatent, last);
- 		if (ret >= 0) {
- 			int wait = inode_needs_sync(inode);
-+
- 			ret = fat_ent_write(inode, &fatent, new_dclus, wait);
- 			fatent_brelse(&fatent);
- 		}
-@@ -235,6 +236,7 @@ void fat_time_unix2fat(struct msdos_sb_info *sbi, struct timespec64 *ts,
- 		       __le16 *time, __le16 *date, u8 *time_cs)
- {
- 	struct tm tm;
-+
- 	time64_to_tm(ts->tv_sec, -fat_tz_offset(sbi), &tm);
- 
- 	/*  FAT can only support year between 1980 to 2107 */
-diff --git a/fs/fat/namei_msdos.c b/fs/fat/namei_msdos.c
-index 9d062886fbc1..90c1d4fbe57c 100644
---- a/fs/fat/namei_msdos.c
-+++ b/fs/fat/namei_msdos.c
-@@ -580,6 +580,7 @@ static int do_msdos_rename(struct inode *old_dir, unsigned char *old_name,
- 		 * shouldn't be serious corruption.
- 		 */
- 		int err2 = fat_remove_entries(new_dir, &sinfo);
-+
- 		if (corrupt)
- 			corrupt |= err2;
- 		sinfo.bh = NULL;
-diff --git a/fs/fat/namei_vfat.c b/fs/fat/namei_vfat.c
-index 0cdd0fb9f742..9c315b3acff7 100644
---- a/fs/fat/namei_vfat.c
-+++ b/fs/fat/namei_vfat.c
-@@ -46,6 +46,7 @@ static inline void vfat_d_version_set(struct dentry *dentry,
- static int vfat_revalidate_shortname(struct dentry *dentry)
- {
- 	int ret = 1;
-+
- 	spin_lock(&dentry->d_lock);
- 	if (!inode_eq_iversion(d_inode(dentry->d_parent), vfat_d_version(dentry)))
- 		ret = 0;
-@@ -237,6 +238,7 @@ static int vfat_find_form(struct inode *dir, unsigned char *name)
- {
- 	struct fat_slot_info sinfo;
- 	int err = fat_scan(dir, name, &sinfo);
-+
- 	if (err)
- 		return -ENOENT;
- 	brelse(sinfo.bh);
-@@ -693,6 +695,7 @@ static int vfat_find(struct inode *dir, const struct qstr *qname,
- 		     struct fat_slot_info *sinfo)
- {
- 	unsigned int len = vfat_striptail_len(qname);
-+
- 	if (len == 0)
- 		return -ENOENT;
- 	return fat_search_long(dir, qname->name, len, sinfo);
-@@ -1012,6 +1015,7 @@ static int vfat_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		 * shouldn't be serious corruption.
- 		 */
- 		int err2 = fat_remove_entries(new_dir, &sinfo);
-+
- 		if (corrupt)
- 			corrupt |= err2;
- 		sinfo.bh = NULL;
-diff --git a/fs/fat/nfs.c b/fs/fat/nfs.c
-index af191371c352..ed1288849dc8 100644
---- a/fs/fat/nfs.c
-+++ b/fs/fat/nfs.c
-@@ -67,6 +67,7 @@ static struct inode *__fat_nfs_get_inode(struct super_block *sb,
- 		struct msdos_dir_entry *de ;
- 		sector_t blocknr;
- 		int offset;
-+
- 		fat_get_blknr_offset(MSDOS_SB(sb), i_pos, &blocknr, &offset);
- 		bh = sb_bread(sb, blocknr);
- 		if (!bh) {
-@@ -221,6 +222,7 @@ struct inode *fat_rebuild_parent(struct super_block *sb, int parent_logstart)
- 	struct msdos_sb_info *sbi = MSDOS_SB(sb);
- 	sector_t blknr = fat_clus_to_blknr(sbi, parent_logstart);
- 	struct buffer_head *parent_bh = sb_bread(sb, blknr);
-+
- 	if (!parent_bh) {
- 		fat_msg(sb, KERN_ERR,
- 			"unable to read cluster of parent directory");
-@@ -269,6 +271,7 @@ static struct dentry *fat_get_parent(struct dentry *child_dir)
- 
- 	if (!fat_get_dotdot_entry(d_inode(child_dir), &bh, &de)) {
- 		int parent_logstart = fat_get_start(sbi, de);
-+
- 		parent_inode = fat_dget(sb, parent_logstart);
- 		if (!parent_inode && sbi->options.nfs == FAT_NFS_NOSTALE_RO)
- 			parent_inode = fat_rebuild_parent(sb, parent_logstart);
--- 
-2.27.0
-
+SGkgTWFyaywNCg0KT24gOC8wNy8yMCA5OjEwIGFtLCBNYXJrIFRvbWxpbnNvbiB3cm90ZToNCj4g
+VGhpcyBhZGRzIGkyYyBidXMgcmVjb3ZlcnkgdG8gdGhlIG12NjR4eHggZHJpdmVyLg0KPg0KPiBJ
+bXBsZW1lbnQgYnVzIHJlY292ZXJ5IHRvIHJlY292ZXIgZnJvbSBTQ0wvU0RBIHN0dWNrIGxvdy4N
+Cj4NCj4gVGhpcyB1c2VzIHRoZSBnZW5lcmljIHJlY292ZXJ5IGZ1bmN0aW9uLCBzZXR0aW5nIHRo
+ZSBjbG9jay9kYXRhIGxpbmVzIGFzDQo+IEdQSU8gcGlucywgYW5kIHNlbmRpbmcgOSBjbG9ja3Mg
+dG8gdHJ5IGFuZCByZWNvdmVyIHRoZSBidXMuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IE1hcmsgVG9t
+bGluc29uIDxtYXJrLnRvbWxpbnNvbkBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KDQpSZXZpZXdlZC1i
+eTogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KDQpP
+bmUgYWRkaXRpb25hbCBjb21tZW50IGJlbG93DQoNCj4gLS0tDQo+ICAgZHJpdmVycy9pMmMvYnVz
+c2VzL2kyYy1tdjY0eHh4LmMgfCA3NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQ0K
+PiAgIDEgZmlsZSBjaGFuZ2VkLCA3NiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+DQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW12NjR4eHguYyBiL2RyaXZlcnMv
+aTJjL2J1c3Nlcy9pMmMtbXY2NHh4eC5jDQo+IGluZGV4IDgyOWI4Yzk4YWU1MS4uZTU4ODUzYmEz
+ZWYwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW12NjR4eHguYw0KPiAr
+KysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW12NjR4eHguYw0KPiBAQCAtMjEsNiArMjEsNyBA
+QA0KPiAgICNpbmNsdWRlIDxsaW51eC9pby5oPg0KPiAgICNpbmNsdWRlIDxsaW51eC9vZi5oPg0K
+PiAgICNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9vZl9n
+cGlvLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L29mX2lycS5oPg0KPiAgICNpbmNsdWRlIDxsaW51
+eC9jbGsuaD4NCj4gICAjaW5jbHVkZSA8bGludXgvZXJyLmg+DQo+IEBAIC0xNDcsNiArMTQ4LDEw
+IEBAIHN0cnVjdCBtdjY0eHh4X2kyY19kYXRhIHsNCj4gICAJYm9vbAkJCWlycV9jbGVhcl9pbnZl
+cnRlZDsNCj4gICAJLyogQ2xrIGRpdiBpcyAyIHRvIHRoZSBwb3dlciBuLCBub3QgMiB0byB0aGUg
+cG93ZXIgbiArIDEgKi8NCj4gICAJYm9vbAkJCWNsa19uX2Jhc2VfMDsNCj4gKwlzdHJ1Y3QgcGlu
+Y3RybAkJKnBpbmN0cmw7DQo+ICsJc3RydWN0IGkyY19idXNfcmVjb3ZlcnlfaW5mbwlyaW5mbzsN
+Cj4gKwlzdHJ1Y3QgcGluY3RybF9zdGF0ZQkqcGluX2RlZmF1bHRfc3RhdGU7DQo+ICsJc3RydWN0
+IHBpbmN0cmxfc3RhdGUJKnBpbl9ncGlvX3N0YXRlOw0KPiAgIH07DQo+ICAgDQo+ICAgc3RhdGlj
+IHN0cnVjdCBtdjY0eHh4X2kyY19yZWdzIG12NjR4eHhfaTJjX3JlZ3NfbXY2NHh4eCA9IHsNCj4g
+QEAgLTMyNSw3ICszMzAsOCBAQCBtdjY0eHh4X2kyY19mc20oc3RydWN0IG12NjR4eHhfaTJjX2Rh
+dGEgKmRydl9kYXRhLCB1MzIgc3RhdHVzKQ0KPiAgIAkJCSBkcnZfZGF0YS0+bXNnLT5mbGFncyk7
+DQo+ICAgCQlkcnZfZGF0YS0+YWN0aW9uID0gTVY2NFhYWF9JMkNfQUNUSU9OX1NFTkRfU1RPUDsN
+Cj4gICAJCW12NjR4eHhfaTJjX2h3X2luaXQoZHJ2X2RhdGEpOw0KPiAtCQlkcnZfZGF0YS0+cmMg
+PSAtRUlPOw0KPiArCQlpMmNfcmVjb3Zlcl9idXMoJmRydl9kYXRhLT5hZGFwdGVyKTsNCj4gKwkJ
+ZHJ2X2RhdGEtPnJjID0gLUVBR0FJTjsNCj4gICAJfQ0KPiAgIH0NCj4gICANCj4gQEAgLTU2Myw2
+ICs1NjksNyBAQCBtdjY0eHh4X2kyY193YWl0X2Zvcl9jb21wbGV0aW9uKHN0cnVjdCBtdjY0eHh4
+X2kyY19kYXRhICpkcnZfZGF0YSkNCj4gICAJCQkJInRpbWVfbGVmdDogJWRcbiIsIGRydl9kYXRh
+LT5ibG9jaywNCj4gICAJCQkJKGludCl0aW1lX2xlZnQpOw0KPiAgIAkJCW12NjR4eHhfaTJjX2h3
+X2luaXQoZHJ2X2RhdGEpOw0KPiArCQkJaTJjX3JlY292ZXJfYnVzKCZkcnZfZGF0YS0+YWRhcHRl
+cik7DQo+ICAgCQl9DQo+ICAgCX0gZWxzZQ0KPiAgIAkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgm
+ZHJ2X2RhdGEtPmxvY2ssIGZsYWdzKTsNCj4gQEAgLTg3Miw2ICs4NzksNjkgQEAgbXY2NHh4eF9v
+Zl9jb25maWcoc3RydWN0IG12NjR4eHhfaTJjX2RhdGEgKmRydl9kYXRhLA0KPiAgIH0NCj4gICAj
+ZW5kaWYgLyogQ09ORklHX09GICovDQo+ICAgDQo+ICsvKg0KPiArICogU3dpdGNoIHRvIGJpdCBi
+YW5nIG1vZGUgdG8gcHJlcGFyZSBmb3IgaTJjIGdlbmVyaWMgcmVjb3ZlcnkuDQo+ICsgKi8NCj4g
+K3N0YXRpYyB2b2lkIG12NjR4eHhfaTJjX3ByZXBhcmVfcmVjb3Zlcnkoc3RydWN0IGkyY19hZGFw
+dGVyICphZGFwKQ0KPiArew0KPiArCXN0cnVjdCBtdjY0eHh4X2kyY19kYXRhICpkcnZfZGF0YSA9
+IGkyY19nZXRfYWRhcGRhdGEoYWRhcCk7DQo+ICsNCj4gKwlwaW5jdHJsX3NlbGVjdF9zdGF0ZShk
+cnZfZGF0YS0+cGluY3RybCwgZHJ2X2RhdGEtPnBpbl9ncGlvX3N0YXRlKTsNCj4gK30NCj4gKw0K
+PiArLyoNCj4gKyAqIFJldHVybiB0byBub3JtYWwgaTJjIG9wZXJhdGlvbiBmb2xsb3dpbmcgcmVj
+b3ZlcnkuDQo+ICsgKi8NCj4gK3N0YXRpYyB2b2lkIG12NjR4eHhfaTJjX3VucHJlcGFyZV9yZWNv
+dmVyeShzdHJ1Y3QgaTJjX2FkYXB0ZXIgKmFkYXApDQo+ICt7DQo+ICsJc3RydWN0IG12NjR4eHhf
+aTJjX2RhdGEgKmRydl9kYXRhID0gaTJjX2dldF9hZGFwZGF0YShhZGFwKTsNCj4gKw0KPiArCXBp
+bmN0cmxfc2VsZWN0X3N0YXRlKGRydl9kYXRhLT5waW5jdHJsLCBkcnZfZGF0YS0+cGluX2RlZmF1
+bHRfc3RhdGUpOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IG12NjR4eHhfaTJjX2luaXRfcmVj
+b3ZlcnlfaW5mbyhzdHJ1Y3QgbXY2NHh4eF9pMmNfZGF0YSAqZHJ2X2RhdGEsDQo+ICsJCQkJCSAg
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGQpDQo+ICt7DQo+ICsJc3RydWN0IGkyY19idXNfcmVj
+b3ZlcnlfaW5mbyAqcmluZm8gPSAmZHJ2X2RhdGEtPnJpbmZvOw0KPiArCXN0cnVjdCBkZXZpY2Ug
+KmRldiA9ICZwZC0+ZGV2Ow0KPiArDQo+ICsJZHJ2X2RhdGEtPnBpbmN0cmwgPSBkZXZtX3BpbmN0
+cmxfZ2V0KGRldik7DQo+ICsJaWYgKCFkcnZfZGF0YS0+cGluY3RybCB8fCBJU19FUlIoZHJ2X2Rh
+dGEtPnBpbmN0cmwpKSB7DQo+ICsJCWRldl9lcnIoZGV2LCAiY2FuJ3QgZ2V0IHBpbmN0cmwsIGJ1
+cyByZWNvdmVyeSBub3Qgc3VwcG9ydGVkXG4iKTsNCj4gKwkJcmV0dXJuIFBUUl9FUlIoZHJ2X2Rh
+dGEtPnBpbmN0cmwpOw0KPiArCX0NCj4gKw0KPiArCWRydl9kYXRhLT5waW5fZGVmYXVsdF9zdGF0
+ZSA9IHBpbmN0cmxfbG9va3VwX3N0YXRlKGRydl9kYXRhLT5waW5jdHJsLA0KPiArCQkJUElOQ1RS
+TF9TVEFURV9ERUZBVUxUKTsNCj4gKwlkcnZfZGF0YS0+cGluX2dwaW9fc3RhdGUgPSBwaW5jdHJs
+X2xvb2t1cF9zdGF0ZShkcnZfZGF0YS0+cGluY3RybCwNCj4gKwkJCSJncGlvIik7DQo+ICsJcmlu
+Zm8tPnNjbF9ncGlvZCA9IGRldm1fZ3Bpb2RfZ2V0KGRldiwgInNjbCIsDQo+ICsJCQkJCSAgR1BJ
+T0RfT1VUX0hJR0hfT1BFTl9EUkFJTik7DQo+ICsJcmluZm8tPnNkYV9ncGlvZCA9IGRldm1fZ3Bp
+b2RfZ2V0KGRldiwgInNkYSIsIEdQSU9EX0lOKTsNCg0KU2hvdWxkIHRoZXNlIGJlIG1lbnRpb25l
+ZCBpbiANCkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvbWFydmVsbCxtdjY0
+eHh4LWkyYy55YW1sPw0KDQo+ICsJaWYgKFBUUl9FUlIocmluZm8tPnNjbF9ncGlvZCkgPT0gLUVQ
+Uk9CRV9ERUZFUiB8fA0KPiArCSAgICBQVFJfRVJSKHJpbmZvLT5zZGFfZ3Bpb2QpID09IC1FUFJP
+QkVfREVGRVIpDQo+ICsJCXJldHVybiAtRVBST0JFX0RFRkVSOw0KPiArDQo+ICsJaWYgKElTX0VS
+UihyaW5mby0+c2RhX2dwaW9kKSB8fA0KPiArCSAgICBJU19FUlIocmluZm8tPnNjbF9ncGlvZCkg
+fHwNCj4gKwkgICAgSVNfRVJSKGRydl9kYXRhLT5waW5fZGVmYXVsdF9zdGF0ZSkgfHwNCj4gKwkg
+ICAgSVNfRVJSKGRydl9kYXRhLT5waW5fZ3Bpb19zdGF0ZSkpIHsNCj4gKwkJZGV2X2RiZyhkZXYs
+ICJyZWNvdmVyeSBpbmZvcm1hdGlvbiBpbmNvbXBsZXRlXG4iKTsNCj4gKwkJcmV0dXJuIDA7DQo+
+ICsJfQ0KPiArDQo+ICsJZGV2X2RiZyhkZXYsICJ1c2luZyBzY2wtZ3BpbyAlZCBhbmQgc2RhLWdw
+aW8gJWQgZm9yIHJlY292ZXJ5XG4iLA0KPiArCQlyaW5mby0+c2NsX2dwaW9kID8gZGVzY190b19n
+cGlvKHJpbmZvLT5zY2xfZ3Bpb2QpIDogLTEsDQo+ICsJCXJpbmZvLT5zZGFfZ3Bpb2QgPyBkZXNj
+X3RvX2dwaW8ocmluZm8tPnNkYV9ncGlvZCkgOiAtMSk7DQo+ICsNCj4gKwlyaW5mby0+cHJlcGFy
+ZV9yZWNvdmVyeSA9IG12NjR4eHhfaTJjX3ByZXBhcmVfcmVjb3Zlcnk7DQo+ICsJcmluZm8tPnVu
+cHJlcGFyZV9yZWNvdmVyeSA9IG12NjR4eHhfaTJjX3VucHJlcGFyZV9yZWNvdmVyeTsNCj4gKwly
+aW5mby0+cmVjb3Zlcl9idXMgPSBpMmNfZ2VuZXJpY19zY2xfcmVjb3Zlcnk7DQo+ICsJZHJ2X2Rh
+dGEtPmFkYXB0ZXIuYnVzX3JlY292ZXJ5X2luZm8gPSByaW5mbzsNCj4gKw0KPiArCXJldHVybiAw
+Ow0KPiArfQ0KPiArDQo+ICAgc3RhdGljIGludA0KPiAgIG12NjR4eHhfaTJjX3Byb2JlKHN0cnVj
+dCBwbGF0Zm9ybV9kZXZpY2UgKnBkKQ0KPiAgIHsNCj4gQEAgLTkzOSw2ICsxMDA5LDEwIEBAIG12
+NjR4eHhfaTJjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkKQ0KPiAgIA0KPiAgIAlt
+djY0eHh4X2kyY19od19pbml0KGRydl9kYXRhKTsNCj4gICANCj4gKwlyYyA9IG12NjR4eHhfaTJj
+X2luaXRfcmVjb3ZlcnlfaW5mbyhkcnZfZGF0YSwgcGQpOw0KPiArCWlmIChyYyA9PSAtRVBST0JF
+X0RFRkVSKQ0KPiArCQlnb3RvIGV4aXRfcmVzZXQ7DQo+ICsNCj4gICAJcmMgPSByZXF1ZXN0X2ly
+cShkcnZfZGF0YS0+aXJxLCBtdjY0eHh4X2kyY19pbnRyLCAwLA0KPiAgIAkJCSBNVjY0WFhYX0ky
+Q19DVExSX05BTUUsIGRydl9kYXRhKTsNCj4gICAJaWYgKHJjKSB7DQo+IEBAIC05NTEsNiArMTAy
+NSw3IEBAIG12NjR4eHhfaTJjX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkKQ0KPiAg
+IAkJCSJtdjY0eHh4OiBDYW4ndCBhZGQgaTJjIGFkYXB0ZXIsIHJjOiAlZFxuIiwgLXJjKTsNCj4g
+ICAJCWdvdG8gZXhpdF9mcmVlX2lycTsNCj4gICAJfQ0KPiArCWkyY19yZWNvdmVyX2J1cygmZHJ2
+X2RhdGEtPmFkYXB0ZXIpOw0KPiAgIA0KPiAgIAlyZXR1cm4gMDsNCj4gICA=
