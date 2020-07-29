@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928EF2321D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF952321DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 17:48:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgG2PpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 11:45:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        id S1726779AbgG2PsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 11:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726987AbgG2PpT (ORCPT
+        with ESMTP id S1726476AbgG2PsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 11:45:19 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EA6C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:45:19 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q76so2230116wme.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:45:19 -0700 (PDT)
+        Wed, 29 Jul 2020 11:48:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B9AC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:48:06 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b6so22099634wrs.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:48:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FWqyEKTC/HJjMKifmyPTB4RZCmPL+DNrii7Si5MfMvM=;
-        b=R6e6hElLlc+cKRmwfD9negfPjHCnH1BoA3KEGyKUVu+4cXtnt3BZD57hM2PlEEHmI/
-         sqd2gXZg6qgdERDcATkW1xvA2BW9ApWfymSmV2YB6nEbHiIMBJJDmrsI+BaHWWeG/Us5
-         U5Sm96lEvo7l/QRv4D6UEIgelIEez1Ks7QNRWZ1C/D8Cu5whCC7FoPyMb2z3BhRG2qgy
-         FnBLSmNJOF1c50vViNF9o6VQ7a4k8Cx1fyQCIiNcYpM1c9YgLxXz7T+LYBgIxVV/A6Rw
-         KkgIGG2I94TbAxr15mGQj9KGOCXZ8j9Xy0OLXIE2Z7A/ceEyEaCYB0q9i2y1J9ZGF17h
-         1iRA==
+        bh=36JMClzoi7h93LvxaQw3joeoIat/KioNOebe1PCxRfY=;
+        b=n+OxTPRilig3haxEVJ5AhEQGmEPmRUF1YiywGsBdl5Z+XrM+gmIBqBlJw6szHy+r2A
+         wuuM3o0C5jxjVER9hXK/E9j+AWnICQXWRAVe3M0VfvHE45ZgFE8ixPDfuLGsZgmaQziM
+         Sqir7xV7BPs1bG13tLiBw1wwQOG8oGgoP7IejuwPWVa2zKp7+qgGxcYFzmDHye5Obg/K
+         Bgsq6xYOiRMDuPU5bBPYXtaUpByB0ilY0FtTffIUubB7vuRRwNe5jFtEwjt8691LkdEz
+         bfkADdUcJyZ24AizWb9313N2o3wNGuuLzOnY4T2WdPx3Dd23zfy4uxlH7EvBNYvL/lqB
+         znTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FWqyEKTC/HJjMKifmyPTB4RZCmPL+DNrii7Si5MfMvM=;
-        b=RcfenMIAl/GysT7m/VpoE9DowZwTck/DkvG7f7qwFouGwfEwWxmyp72tGvGCMmzvvR
-         zAaLAqH1pHjkb6kqOM2MV3bTB6TiCC6JHOFBdG0S/JINW9a8YBa8+oEcsxJxMf1byUtf
-         bhjSQep+0UufMgXHT7L5yf2HebV5yNiWTOGSek3KDn1qfZFLV7OoMWIx9LXxYEd49ZMs
-         E1Inwq3Ronju+M1aRe0RtL9cZpXlVoYMsYkNeF4Y9kHPo4ZXckL1DuN7KtT/EBX7i+3h
-         6JGK2fyqPKM2HmIMD9/DKaRBQhRyDFJ0QIANl5dVR5Q8USELUvgEIlbyZf4og85FmldE
-         VWFQ==
-X-Gm-Message-State: AOAM532nL0Wr4QJ34+CcWJvfflXSzVsQOWPwdgE6CLIN0ECRYJEUbbMD
-        ew82A9ZZPFzUi9ebMaBMG7V81/SLHp/bUA==
-X-Google-Smtp-Source: ABdhPJxgGC9nboToZyRcUcXbiOSxER7K3hBnDiXzlzkgzlpkoRrJEvHRzVMhiuKp6ZHByGydbFxnFg==
-X-Received: by 2002:a1c:2109:: with SMTP id h9mr9082184wmh.174.1596037517108;
-        Wed, 29 Jul 2020 08:45:17 -0700 (PDT)
+        bh=36JMClzoi7h93LvxaQw3joeoIat/KioNOebe1PCxRfY=;
+        b=hfuNS3f8oG6Bs+rVLu+D9L7iJdbR1JHU3v+8oRtEGonsx2+jKi2RPmR8jD39l5SmcP
+         fvNR0SY5pjA+YA4ZV09/5oO7ZTuXwGkGlyPJ/i8dlT+I1r27Zgl9sl5w2m8jp9WPVMLl
+         2+GEPNV0Ks9c1iEbFE1wXp1ZrZvyTlK97kGB2RJFxXB+dmco7IvMcTTfYQ5YoKc8WzPl
+         L6lxZ/Kn04eV7AEVbc04gXF6sn+eX3XYpk3nJkChOAr+we8Dp69f2Ie2V/0JABYYkrqR
+         si55h82SBQogMWI12LPhuKSIGXAOEn4/0YD3414gYby7NL+RM6JJ5M9vbG7BenZjxidV
+         MgmQ==
+X-Gm-Message-State: AOAM5327zydfVSbFENVGrEYEdl9Ng9OlqJSPYQf4e8whtTlcd1XObRkc
+        dxOjvCBjrdJnFZpWBBYV0Fz9VOAakcpLrw==
+X-Google-Smtp-Source: ABdhPJyrcNry8P8JgzRYvpG5FsopA4iFS5SUa/WXhOO/PIw8l2gzCtCcunQ+sUCAiMde/GxaIvpDdg==
+X-Received: by 2002:a5d:5486:: with SMTP id h6mr28823589wrv.136.1596037684667;
+        Wed, 29 Jul 2020 08:48:04 -0700 (PDT)
 Received: from starbuck.baylibre.local (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id k10sm5950967wrm.74.2020.07.29.08.45.16
+        by smtp.googlemail.com with ESMTPSA id t2sm6224808wmb.28.2020.07.29.08.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Jul 2020 08:45:16 -0700 (PDT)
+        Wed, 29 Jul 2020 08:48:04 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: [PATCH 4/4] ASoC: meson: cards: remove DT_PREFIX for standard daifmt properties
-Date:   Wed, 29 Jul 2020 17:44:56 +0200
-Message-Id: <20200729154456.1983396-5-jbrunet@baylibre.com>
+        Kevin Hilman <khilman@baylibre.com>, zhangn1985@outlook.com,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: core: restore dpcm flags semantics
+Date:   Wed, 29 Jul 2020 17:46:39 +0200
+Message-Id: <20200729154639.1983854-1-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200729154456.1983396-1-jbrunet@baylibre.com>
-References: <20200729154456.1983396-1-jbrunet@baylibre.com>
+In-Reply-To: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
+References: <20200723180533.220312-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
@@ -68,28 +70,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Standard dai format property don't need the "amlogic," prefix.
-There nothing amlogic specific about them. Just remove it.
+commit b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
+changed dpcm_playback and dpcm_capture semantic by throwing an error if
+these flags are not aligned with DAIs capabilities on the link.
 
-Fixes: 435857e015dc ("ASoC: meson: align axg card driver with DT bindings documentation")
+The former semantic did not force the flags and DAI caps to be aligned.
+The flag previously allowed card drivers to disable a stream direction on
+a link (whether or not such feature is deemed useful).
+
+With change ('ASoC: core: use less strict tests for dailink capabilities')
+an error is thrown if the flags and and the DAI caps are not aligned. Those
+parameters were not meant to aligned initially. No technical reason was
+given about why cards should now be considered "broken" in such condition
+is not met, or why it should be considered to be an improvement to enforce
+that.
+
+Forcing the flags to be aligned with DAI caps just make the information
+the flag carry redundant with DAI caps, breaking a few cards along the way.
+
+This change drops the added error conditions and restore the initial flag
+semantics.
+
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/meson-card-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/meson-card-utils.c b/sound/soc/meson/meson-card-utils.c
-index 29b601a0e274..f9ce03f3921f 100644
---- a/sound/soc/meson/meson-card-utils.c
-+++ b/sound/soc/meson/meson-card-utils.c
-@@ -119,7 +119,7 @@ unsigned int meson_card_parse_daifmt(struct device_node *node,
- 	struct device_node *framemaster = NULL;
- 	unsigned int daifmt;
- 
--	daifmt = snd_soc_of_parse_daifmt(node, DT_PREFIX,
-+	daifmt = snd_soc_of_parse_daifmt(node, "",
- 					 &bitclkmaster, &framemaster);
- 	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
- 
+ Hi Mark,
+
+ Because b73287f0b0745 ('ASoC: soc-pcm: dpcm: fix playback/capture checks')
+ introduced more than one problem, the change
+ "ASoC: core: use less strict tests for dailink capabilities" [0] is still
+ necessary but the change of semantic remains a problem with it.
+
+ This patch applies on top of it.
+
+ sound/soc/soc-pcm.c | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 00ac1cbf6f88..2e205b738eae 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2749,13 +2749,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 					break;
+ 				}
+ 			}
+-
+-			if (!playback) {
+-				dev_err(rtd->card->dev,
+-					"No CPU DAIs support playback for stream %s\n",
+-					rtd->dai_link->stream_name);
+-				return -EINVAL;
+-			}
+ 		}
+ 		if (rtd->dai_link->dpcm_capture) {
+ 			stream = SNDRV_PCM_STREAM_CAPTURE;
+@@ -2766,13 +2759,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 					break;
+ 				}
+ 			}
+-
+-			if (!capture) {
+-				dev_err(rtd->card->dev,
+-					"No CPU DAIs support capture for stream %s\n",
+-					rtd->dai_link->stream_name);
+-				return -EINVAL;
+-			}
+ 		}
+ 	} else {
+ 		/* Adapt stream for codec2codec links */
 -- 
 2.25.4
 
