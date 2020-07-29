@@ -2,64 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925DB231841
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA1A231837
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 05:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgG2Dq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Jul 2020 23:46:26 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:36562 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726245AbgG2Dq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Jul 2020 23:46:26 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1183A200E2A;
-        Wed, 29 Jul 2020 05:46:25 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F1494200E1C;
-        Wed, 29 Jul 2020 05:46:20 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 014644031D;
-        Wed, 29 Jul 2020 05:46:14 +0200 (CEST)
-From:   Alison Wang <alison.wang@nxp.com>
-To:     catalin.marinas@arm.com, will@kernel.org,
-        kurt.kanzenbach@linutronix.de, paulmck@kernel.org, mw@semihalf.com,
-        leoyang.li@nxp.com, vladimir.oltean@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     alison.wang@nxp.com
-Subject: [RFC PATCH] arm64: defconfig: Disable fine-grained task level IRQ time accounting
-Date:   Wed, 29 Jul 2020 11:39:34 +0800
-Message-Id: <20200729033934.22349-1-alison.wang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726449AbgG2DkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Jul 2020 23:40:23 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35776 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726245AbgG2DkX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Jul 2020 23:40:23 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06T3VrQH132304;
+        Wed, 29 Jul 2020 03:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=1eFxcB4ZGcIFpWJLUCrzXySlH1jF2pFkipIl2FijrQs=;
+ b=WftVZ1kTVXs6juAmcsdZCggnWTB0ajiLGTj3gWZNy4laxBs+zk32anr3FGaOjcWGJH51
+ ax89hwglHe5z0dAmZ5X5Wj7GBYNL+ienNIEkOHDGJkZGGolUrOeqFuT2JagN9BoxZsCe
+ JV/pIga/x7ycQD5a5LmvB0RzyudfJXPJyn41QWAU3z5QQjUh0Vmsn9lNuWYJWtueCsBk
+ gsMzPn5Dykvnp6/20vSFCUhvyAJ4LPhAySlceMgEuBruPb1hRaRI9TeXq7dL9x3f4jHj
+ G8QVMhqGO0gbZ9vSAOocD/Rfgtyw0HAgAWnewxSEQuB/5PBgQpLRC07pEPRjFjjHNSHP Eg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 32hu1jk3qt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 29 Jul 2020 03:40:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 06T3WgSH003067;
+        Wed, 29 Jul 2020 03:40:17 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 32hu5vpunv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Jul 2020 03:40:16 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 06T3eFuC012160;
+        Wed, 29 Jul 2020 03:40:15 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 28 Jul 2020 20:40:14 -0700
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        megaraidlinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND 1/2] scsi: megaraid: Remove pci-dma-compat
+ wrapper APIs.
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1h7tr80ij.fsf@ca-mkp.ca.oracle.com>
+References: <20200727140826.GE14759@blackclown>
+Date:   Tue, 28 Jul 2020 23:40:12 -0400
+In-Reply-To: <20200727140826.GE14759@blackclown> (Suraj Upadhyay's message of
+        "Mon, 27 Jul 2020 19:38:26 +0530")
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9696 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 adultscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007290025
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9696 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 mlxlogscore=999
+ malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ suspectscore=1 bulkscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2007290025
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current arm64 defconfig, CONFIG_IRQ_TIME_ACCOUNTING is enabled as
-default. According to my tests on NXP's LayerScape and i.MX platforms,
-the system hangs when running the command "stress-ng --hrtimers 1" with
-CONFIG_IRQ_TIME_ACCOUNTING enabled. Disabling this option, the issue
-disappears. CONFIG_IRQ_TIME_ACCOUNTING causes serious performance impact
-when running hrtimer stress test at the same time.
 
-Signed-off-by: Alison Wang <alison.wang@nxp.com>
----
- arch/arm64/configs/defconfig | 1 -
- 1 file changed, 1 deletion(-)
+Hello Suraj!
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index e0f33826819f..ff1c11d8b10b 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -4,7 +4,6 @@ CONFIG_AUDIT=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_HIGH_RES_TIMERS=y
- CONFIG_PREEMPT=y
--CONFIG_IRQ_TIME_ACCOUNTING=y
- CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_TASK_XACCT=y
+> The legacy API wrappers in include/linux/pci-dma-compat.h
+> should go away as it creates unnecessary midlayering
+> for include/linux/dma-mapping.h APIs, instead use dma-mapping.h
+> APIs directly.
+
+Instead of all these individual patches, please submit a combined patch
+series for the changes under SCSI.
+
+Each patch should fix a single driver. Please don't mix changes to
+completely different drivers such as hpsa and dc395x in a single
+commit. And please don't split semantically identical changes to the
+same driver into multiple commits (megaraid [2/2]).
+
+Thank you!
+
 -- 
-2.17.1
-
+Martin K. Petersen	Oracle Linux Engineering
