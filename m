@@ -2,168 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8332319A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E982319D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 08:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbgG2Ggp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 02:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgG2Ggo (ORCPT
+        id S1727088AbgG2Gz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 02:55:27 -0400
+Received: from 4.mo179.mail-out.ovh.net ([46.105.36.149]:42408 "EHLO
+        4.mo179.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgG2Gz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 02:36:44 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39780C061794;
-        Tue, 28 Jul 2020 23:36:43 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p3so13727425pgh.3;
-        Tue, 28 Jul 2020 23:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IsasfM56692RUOErbgn2ABZzJ6c631XfiLeQVHWEUsI=;
-        b=eFhHBUQj6ipfDY5v+hKk8aL0YcnAalVllbCOZzgH++rlzaJSlNhw7c4eAcRiAVPB5i
-         iNYjMfATnkf88ldCnPAx+oG14Jl86MX6aZB07gcYeDON1lhf0bHbgYUcoNtfheqk5Aqv
-         AyA9x8JmA04+sJL6ChCmRJb4j0d7YgmUV5eqG4JgpbmvLeU3bdpe3+IQUvCqMwMwYtLR
-         h6evFRiHi1yCCMkp1+SJbOl8nC2OOQPgiRds9csNGeXqwdeV0pGPeYB1FpXk6+g6InuN
-         HS6xzNni5MbR7u/TS5YRQLYH2Ab8VfxaUbZlU6xF5c9iSdws7+EPPpQExE9u6tBWqfRN
-         tplA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IsasfM56692RUOErbgn2ABZzJ6c631XfiLeQVHWEUsI=;
-        b=IC8veYICTIQMD3GBEjrybjV/rRq/6e+ErTTkjECHs33zBQsCgDNohTcP8FWyDtmA7W
-         +Cr0tZJNdMOR9AjEsZjdSk1eTa3FYz1jP6lSuUHdRxyFeI0kMaODTkGL5D+WRE5pObU4
-         hdzGrvGdmaawjmH/553fJPnWSM3oMWk8fEANLoAQslyVa2O5V6OfMUA3xygNwWPRmUhr
-         /La4GftOmACizbsVIpQ4j6Adr+PWYfWKWQ2XwvVA8gloTx5D46mPyayX2dMd4wt/a7jl
-         oDKUHp3/D14Dx+5OqFzPHyeSdlnnyv5v38Feifi9RPPOrocGwpJBnfUHHFNsLL8enLqf
-         Br4g==
-X-Gm-Message-State: AOAM530WNv0KfxHSzSkQUUgxQcype39ukBZgSpnVBDqgip+S84low030
-        mwL9/VxNS9LSRcMcwK3wnf8=
-X-Google-Smtp-Source: ABdhPJzDxjQQTnVon7UXunhTQddxypSgdNT5v7VIizUudg7wcWuNzDnq1EeBjQdkGAoL/GmxLh1RgQ==
-X-Received: by 2002:a63:5b55:: with SMTP id l21mr28743015pgm.348.1596004602248;
-        Tue, 28 Jul 2020 23:36:42 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id y6sm1053424pfr.61.2020.07.28.23.36.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jul 2020 23:36:41 -0700 (PDT)
-Date:   Tue, 28 Jul 2020 23:36:38 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Roy Im <roy.im.opensource@diasemi.com>
-Cc:     Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Brian Masney <masneyb@onstation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Pascal PAILLET-LME <p.paillet@st.com>,
-        Rob Herring <robh@kernel.org>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Support Opensource <support.opensource@diasemi.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v18 3/3] Input: new da7280 haptic driver
-Message-ID: <20200729063638.GY1665100@dtor-ws>
-References: <cover.1595991580.git.Roy.Im@diasemi.com>
- <23b3470401ec5cf525add8e1227cb67586b9f294.1595991580.git.Roy.Im@diasemi.com>
+        Wed, 29 Jul 2020 02:55:26 -0400
+Received: from player711.ha.ovh.net (unknown [10.108.42.75])
+        by mo179.mail-out.ovh.net (Postfix) with ESMTP id 694B4173B78
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 08:38:32 +0200 (CEST)
+Received: from kaod.org (lns-bzn-46-82-253-208-248.adsl.proxad.net [82.253.208.248])
+        (Authenticated sender: groug@kaod.org)
+        by player711.ha.ovh.net (Postfix) with ESMTPSA id AB08514A1AD8F;
+        Wed, 29 Jul 2020 06:38:23 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-105G006896df29f-f4f3-493b-ab9a-d0c6f23d8bcf,
+                    A40F6FE0CFFE28C23AB4AFBB3D5D665E11D39731) smtp.auth=groug@kaod.org
+Date:   Wed, 29 Jul 2020 08:38:22 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        v9fs-developer@lists.sourceforge.net,
+        Latchesar Ionkov <lucho@ionkov.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Eric Van Hensbergen <ericvh@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [V9fs-developer] [PATCH kernel] 9p/trans_fd: Check file mode at
+ opening
+Message-ID: <20200729083822.66e165ed@bahia.lan>
+In-Reply-To: <20200729061449.GA19682@nautica>
+References: <20200728124129.130856-1-aik@ozlabs.ru>
+        <20200728194235.52660c08@bahia.lan>
+        <20200729061449.GA19682@nautica>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23b3470401ec5cf525add8e1227cb67586b9f294.1595991580.git.Roy.Im@diasemi.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 1830713248816142592
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrieefgddutdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfesthejredtredtvdenucfhrhhomhepifhrvghgucfmuhhriicuoehgrhhouhhgsehkrghougdrohhrgheqnecuggftrfgrthhtvghrnhepveehieetvdettdfhiefhueetheekheejgfdtvddthfffuefgueduvefgveeijeegnecuffhomhgrihhnpehophgvnhhgrhhouhhprdhorhhgnecukfhppedtrddtrddtrddtpdekvddrvdehfedrvddtkedrvdegkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejuddurdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roy,
+On Wed, 29 Jul 2020 08:14:49 +0200
+Dominique Martinet <asmadeus@codewreck.org> wrote:
 
-On Wed, Jul 29, 2020 at 11:59:40AM +0900, Roy Im wrote:
-> Adds support for the Dialog DA7280 LRA/ERM Haptic Driver with
-> multiple mode and integrated waveform memory and wideband support.
-> It communicates via an I2C bus to the device.
-
-A few questions/suggestions...
-
+> Greg Kurz wrote on Tue, Jul 28, 2020:
+> > > The "fd" transport layer uses 2 file descriptors passed externally
+> > > and calls kernel_write()/kernel_read() on these. If files were opened
+> > > without FMODE_WRITE/FMODE_READ, WARN_ON_ONCE() will fire.
 > 
-> Reviewed-by: Jes Sorensen <Jes.Sorensen@gmail.com>.
+> There already is a fix in linux-next as a39c46067c84 ("net/9p: validate
+> fds in p9_fd_open")
 > 
-> Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
+> > > This adds file mode checking in p9_fd_open; this returns -EBADF to
+> > > preserve the original behavior.
+> > 
+> > So this would cause open() to fail with EBADF, which might look a bit
+
+Oops... this seems to rather end up in mount(). :)
+
+> > weird to userspace since it didn't pass an fd... Is this to have a
+> > different error than -EIO that is returned when either rfd or wfd
+> > doesn't point to an open file descriptor ? If yes, why do we care ?
 > 
-> ---
-> v18:
-> 	- Corrected comments in Kconfig
-> 	- Updated to preferred style for multi line comments in c file.
-> v17:
-> 	- fixed an issue.
-> v16:
-> 	- Corrected some code and updated description in Kconfig.
-> v15:
-> 	- Removed some defines and updated some comments.
-> v14:
-> 	- Updated pwm related code, alignments and comments.
-> v13:
-> 	- Updated some conditions in pwm function and alignments.
-> v12: No changes.
-> v11: 
-> 	- Updated the pwm related code, comments and typo.
-> v10: 
-> 	- Updated the pwm related function and added some comments.
-> v9: 
-> 	- Removed the header file and put the definitions into the c file.
-> 	- Updated the pwm code and error logs with %pE
+> FWIW the solution taken just returns EIO as it would if an invalid fd
+> was given, but since it did pass an fd EBADF actually makes sense to me?
+> 
 
-I believe the %pE is to format an escaped buffer, you probably want to
-%pe (lowercase) to print errors. I am also not quite sure if we want to
-use it in cases when we have non-pointer error, or we should stick with
-%d as most of the kernel does.
+POSIX says:
 
-...
-> +
-> +/* DA7280_ACTUATOR3 (Address 0x0e) */
-> +#define DA7280_IMAX_MASK			(31 << 0)
+https://pubs.opengroup.org/onlinepubs/9699919799/functions/V2_chap02.html
 
-We have GENMASK(h,l) macro in include/linux/bits.h that could be used
-here and in other mask definitions.
+[EBADF]
+Bad file descriptor. A file descriptor argument is out of range, refers to
+no open file, or a read (write) request is made to a file that is only open
+for writing (reading).
 
-> +
-> +	bool legacy;
-> +	struct delayed_work work_duration;
-> +	struct work_struct work_playback;
-> +	struct work_struct work_setgain;
+It seems that EBADF would be appropriate for both the existing and the
+new error path.
 
-How do we ensure that all these works do not clash with each other?
-As far as I can see we could have the "duration" work executing
-simultaneously with playback...
+> However to the second question I'm not sure I care :)
+> 
+> > > Found by syzkaller.
+> 
+> I'm starting to understand where David comment came from the other day,
+> I guess it's still time to change my mind and submit to linus now I've
+> had time to test it...
+> 
 
-> +static int da7280_haptics_playback(struct input_dev *dev,
-> +				   int effect_id, int val)
-> +{
-> +	struct da7280_haptic *haptics = input_get_drvdata(dev);
-> +
-> +	if (!haptics->op_mode) {
-> +		dev_warn(haptics->dev,
-> +			 "Any effects are not uploaded yet\n");
-
-"No effects have been uploaded"?
-
-> +		return -EPERM;
-
-I'd say EINVAL.
-
-> +static DEVICE_ATTR_RW(ps_seq_id);
-> +static DEVICE_ATTR_RW(ps_seq_loop);
-> +static DEVICE_ATTR_RW(gpi_seq_id0);
-> +static DEVICE_ATTR_RW(gpi_seq_id1);
-> +static DEVICE_ATTR_RW(gpi_seq_id2);
-> +static DEVICE_ATTR_WO(patterns);
-
-Should this be a binary attribute instead of having string parsing in
-the kernel?
-
-Thanks.
-
--- 
-Dmitry
