@@ -2,221 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8B9231C24
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB5DB231C26
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 11:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgG2Jcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 05:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgG2Jcw (ORCPT
+        id S1728091AbgG2Jdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 05:33:54 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([63.128.21.74]:51771 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726536AbgG2Jdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 05:32:52 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D04C061794;
-        Wed, 29 Jul 2020 02:32:52 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id a65so7861337otc.8;
-        Wed, 29 Jul 2020 02:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHhG5jxleK/NwjMdPfb9zjsQp7xv4ruX3ZHlREQ/R1E=;
-        b=nmLSAop2RYQFa35KUVOM2bkx8RGjiDGd+1v/AENuODxfInSpb26mCs/SjVwJQQnVtY
-         cGS0UE214SE4mLBt9tMzHb2FEFQwScLPSAcXRouJVT4b3rUIoHlitRpT/+zPgcefAsIU
-         NLsQpITaLj1WmaSSiktae8CjQe8qbIslEZrWgHQT+TQhoPACSUqggoUNl52EsQJM3jRR
-         25nN4oHhDF7Uy1DGDfb7oQuYgTkdgsC/+bq7rYrPvt5mQFGv96hOYlsvihO5+52XPQgU
-         FMxm+RswV/flgIa1qSVhUB8oTYgJXCH/8CIr9ppYcf0zor0kfHvsJluCoPmkdMZpdWAU
-         +qHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHhG5jxleK/NwjMdPfb9zjsQp7xv4ruX3ZHlREQ/R1E=;
-        b=dHfRfeBSo2uZaW3xAuZhcdgYdQNIrwNVty+j9YUkC7GP2ErbbvjQlhm/pI5U6HTwJr
-         1RogRAzdAH04Q8nSbvDIPIO3WOL0BAecAlcmhVXToFaD3S4Bp2+QC/h6tOCU/jsGPrSR
-         lyRYmQrAJWyKOvnYn/yHEUqUJMMXdgVqM1XR2MWhNxk7YFDbHnQic8lRPDHvVku5Zl/X
-         dTS8kzhM4D7J6Rr5LKBKshbC383mLyyVMQIJMgwyJQaU+N/fTCZ293hBAgoC5CMjyEer
-         /GA152UFGz7a8pnOwQNEB65TfDvL4US+CqXwEzFzEFMaH9gxLu4pMYXyzHBULiwvSOfB
-         ivMA==
-X-Gm-Message-State: AOAM531qvLSk6ApE2lI+YrQ/6uo0+OPSoearVKiO2zC+z9NZI3J8kxCL
-        LGyB7Bj6j5p3Q4dyVtJeYG7GwkU984yWr//Ledw=
-X-Google-Smtp-Source: ABdhPJz+lDYyzS5yNdRSnrCl60tunB7jRkBS4DJ55b3j6mWjIyEdpCm8HqT7jQEXlNi/0E21pKrDEHxYKk+ZQhV6CEY=
-X-Received: by 2002:a9d:d57:: with SMTP id 81mr26959371oti.184.1596015171996;
- Wed, 29 Jul 2020 02:32:51 -0700 (PDT)
+        Wed, 29 Jul 2020 05:33:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1596015232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NcytAw49Ogv+T6nX8O+DUO/ud353HRXDgEw6dxPF2is=;
+        b=F4+6Si+XQDWskJTMdGhm3TRK8ydUqS0364w9mXolDuM6CVG/8CP+et2QEZqQ0lq/BgsI0E
+        fMpvC0MueoZdryp3edvaOjA9x/yPeO0RSOOJybdheVpPbOGz4/i584QQBh59rBBXl8VYsu
+        sgYk8m1xbAiPSTc3PkvuPyU6cE2kVvU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-474-IqC2wmCtN_6Xj1-G6eL3FQ-1; Wed, 29 Jul 2020 05:33:33 -0400
+X-MC-Unique: IqC2wmCtN_6Xj1-G6eL3FQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5207980183C;
+        Wed, 29 Jul 2020 09:33:32 +0000 (UTC)
+Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9F0F6512FE;
+        Wed, 29 Jul 2020 09:33:05 +0000 (UTC)
+Subject: Re: [PATCH] virtio_balloon: fix up endian-ness for free cmd id
+To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
+        Liang Li <liang.z.li@intel.com>,
+        Wei Wang <wei.w.wang@intel.com>,
+        virtualization@lists.linux-foundation.org,
+        Alexander Duyck <alexander.duyck@gmail.com>
+References: <20200727160310.102494-1-mst@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0dceaf8c-de35-93d6-f81b-67c2fdebf5ef@redhat.com>
+Date:   Wed, 29 Jul 2020 17:33:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1596012277-8448-1-git-send-email-weiyi.lu@mediatek.com> <1596012277-8448-6-git-send-email-weiyi.lu@mediatek.com>
-In-Reply-To: <1596012277-8448-6-git-send-email-weiyi.lu@mediatek.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Wed, 29 Jul 2020 11:32:40 +0200
-Message-ID: <CAFqH_50_xi5WkokS3WmV2Z-yAK06bpXBMgTQomwmJHcQmfX9yw@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] clk: mediatek: Add MT8192 clock support
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Wendell Lin <wendell.lin@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200727160310.102494-1-mst@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Weiyi,
 
-Thank you for your patch. Some few comment below, I'll focus on
-clk-mt8192-mm file, but I think can apply to other files too.
+On 2020/7/28 上午12:03, Michael S. Tsirkin wrote:
+> free cmd id is read using virtio endian, spec says all fields
+> in balloon are LE. Fix it up.
+>
+> Fixes: 86a559787e6f ("virtio-balloon: VIRTIO_BALLOON_F_FREE_PAGE_HINT")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>   drivers/virtio/virtio_balloon.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 774deb65a9bb..798ec304fe3e 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -578,10 +578,14 @@ static int init_vqs(struct virtio_balloon *vb)
+>   static u32 virtio_balloon_cmd_id_received(struct virtio_balloon *vb)
+>   {
+>   	if (test_and_clear_bit(VIRTIO_BALLOON_CONFIG_READ_CMD_ID,
+> -			       &vb->config_read_bitmap))
+> +			       &vb->config_read_bitmap)) {
+>   		virtio_cread(vb->vdev, struct virtio_balloon_config,
+>   			     free_page_hint_cmd_id,
+>   			     &vb->cmd_id_received_cache);
+> +		/* Legacy balloon config space is LE, unlike all other devices. */
+> +		if (!virtio_has_feature(vb->vdev, VIRTIO_F_VERSION_1))
+> +			vb->cmd_id_received_cache = le32_to_cpu((__force __le32)vb->cmd_id_received_cache);
+> +	}
+>   
+>   	return vb->cmd_id_received_cache;
+>   }
 
-[snip]
 
-> diff --git a/drivers/clk/mediatek/clk-mt8192-mm.c b/drivers/clk/mediatek/clk-mt8192-mm.c
-> new file mode 100644
-> index 0000000..02eef24
-> --- /dev/null
-> +++ b/drivers/clk/mediatek/clk-mt8192-mm.c
-> @@ -0,0 +1,108 @@
-> +// SPDX-License-Identifier: GPL-2.0
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-nit: Although is a valid license identifier for the kernel would be
-better to use the non-deprecated form by SPDX, GPL-2.0-only
 
-> +//
-> +// Copyright (c) 2020 MediaTek Inc.
-> +// Author: Weiyi Lu <weiyi.lu@mediatek.com>
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "clk-mtk.h"
-> +#include "clk-gate.h"
-> +
-> +#include <dt-bindings/clock/mt8192-clk.h>
-> +
-> +static const struct mtk_gate_regs mm0_cg_regs = {
-> +       .set_ofs = 0x104,
-> +       .clr_ofs = 0x108,
-> +       .sta_ofs = 0x100,
-> +};
-> +
-> +static const struct mtk_gate_regs mm1_cg_regs = {
-> +       .set_ofs = 0x114,
-> +       .clr_ofs = 0x118,
-> +       .sta_ofs = 0x110,
-> +};
-> +
-> +static const struct mtk_gate_regs mm2_cg_regs = {
-> +       .set_ofs = 0x1a4,
-> +       .clr_ofs = 0x1a8,
-> +       .sta_ofs = 0x1a0,
-> +};
-> +
-> +#define GATE_MM0(_id, _name, _parent, _shift)                  \
-> +       GATE_MTK(_id, _name, _parent, &mm0_cg_regs, _shift,     \
-> +               &mtk_clk_gate_ops_setclr)
-
-nit: You can take advantage of the new line length limit, which is now
-100 characters.
-
-> +
-> +#define GATE_MM1(_id, _name, _parent, _shift)                  \
-> +       GATE_MTK(_id, _name, _parent, &mm1_cg_regs, _shift,     \
-> +               &mtk_clk_gate_ops_setclr)
-> +
-
-ditto
-
-> +#define GATE_MM2(_id, _name, _parent, _shift)                  \
-> +       GATE_MTK(_id, _name, _parent, &mm2_cg_regs, _shift,     \
-> +               &mtk_clk_gate_ops_setclr)
-> +
-
-ditto
-
-> +static const struct mtk_gate mm_clks[] = {
-> +       /* MM0 */
-> +       GATE_MM0(CLK_MM_DISP_MUTEX0, "mm_disp_mutex0", "disp_sel", 0),
-> +       GATE_MM0(CLK_MM_DISP_CONFIG, "mm_disp_config", "disp_sel", 1),
-> +       GATE_MM0(CLK_MM_DISP_OVL0, "mm_disp_ovl0", "disp_sel", 2),
-> +       GATE_MM0(CLK_MM_DISP_RDMA0, "mm_disp_rdma0", "disp_sel", 3),
-> +       GATE_MM0(CLK_MM_DISP_OVL0_2L, "mm_disp_ovl0_2l", "disp_sel", 4),
-> +       GATE_MM0(CLK_MM_DISP_WDMA0, "mm_disp_wdma0", "disp_sel", 5),
-> +       GATE_MM0(CLK_MM_DISP_UFBC_WDMA0, "mm_disp_ufbc_wdma0", "disp_sel", 6),
-> +       GATE_MM0(CLK_MM_DISP_RSZ0, "mm_disp_rsz0", "disp_sel", 7),
-> +       GATE_MM0(CLK_MM_DISP_AAL0, "mm_disp_aal0", "disp_sel", 8),
-> +       GATE_MM0(CLK_MM_DISP_CCORR0, "mm_disp_ccorr0", "disp_sel", 9),
-> +       GATE_MM0(CLK_MM_DISP_DITHER0, "mm_disp_dither0", "disp_sel", 10),
-> +       GATE_MM0(CLK_MM_SMI_INFRA, "mm_smi_infra", "disp_sel", 11),
-> +       GATE_MM0(CLK_MM_DISP_GAMMA0, "mm_disp_gamma0", "disp_sel", 12),
-> +       GATE_MM0(CLK_MM_DISP_POSTMASK0, "mm_disp_postmask0", "disp_sel", 13),
-> +       GATE_MM0(CLK_MM_DISP_DSC_WRAP0, "mm_disp_dsc_wrap0", "disp_sel", 14),
-> +       GATE_MM0(CLK_MM_DSI0, "mm_dsi0", "disp_sel", 15),
-> +       GATE_MM0(CLK_MM_DISP_COLOR0, "mm_disp_color0", "disp_sel", 16),
-> +       GATE_MM0(CLK_MM_SMI_COMMON, "mm_smi_common", "disp_sel", 17),
-> +       GATE_MM0(CLK_MM_DISP_FAKE_ENG0, "mm_disp_fake_eng0", "disp_sel", 18),
-> +       GATE_MM0(CLK_MM_DISP_FAKE_ENG1, "mm_disp_fake_eng1", "disp_sel", 19),
-> +       GATE_MM0(CLK_MM_MDP_TDSHP4, "mm_mdp_tdshp4", "disp_sel", 20),
-> +       GATE_MM0(CLK_MM_MDP_RSZ4, "mm_mdp_rsz4", "disp_sel", 21),
-> +       GATE_MM0(CLK_MM_MDP_AAL4, "mm_mdp_aal4", "disp_sel", 22),
-> +       GATE_MM0(CLK_MM_MDP_HDR4, "mm_mdp_hdr4", "disp_sel", 23),
-> +       GATE_MM0(CLK_MM_MDP_RDMA4, "mm_mdp_rdma4", "disp_sel", 24),
-> +       GATE_MM0(CLK_MM_MDP_COLOR4, "mm_mdp_color4", "disp_sel", 25),
-> +       GATE_MM0(CLK_MM_DISP_Y2R0, "mm_disp_y2r0", "disp_sel", 26),
-> +       GATE_MM0(CLK_MM_SMI_GALS, "mm_smi_gals", "disp_sel", 27),
-> +       GATE_MM0(CLK_MM_DISP_OVL2_2L, "mm_disp_ovl2_2l", "disp_sel", 28),
-> +       GATE_MM0(CLK_MM_DISP_RDMA4, "mm_disp_rdma4", "disp_sel", 29),
-> +       GATE_MM0(CLK_MM_DISP_DPI0, "mm_disp_dpi0", "disp_sel", 30),
-> +       /* MM1 */
-> +       GATE_MM1(CLK_MM_SMI_IOMMU, "mm_smi_iommu", "disp_sel", 0),
-> +       /* MM2 */
-> +       GATE_MM2(CLK_MM_DSI_DSI0, "mm_dsi_dsi0", "disp_sel", 0),
-> +       GATE_MM2(CLK_MM_DPI_DPI0, "mm_dpi_dpi0", "dpi_sel", 8),
-> +       GATE_MM2(CLK_MM_26MHZ, "mm_26mhz", "clk26m", 24),
-> +       GATE_MM2(CLK_MM_32KHZ, "mm_32khz", "clk32k", 25),
-> +};
-> +
-> +static int clk_mt8192_mm_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       struct device_node *node = dev->parent->of_node;
-> +       struct clk_onecell_data *clk_data;
-> +
-> +       clk_data = mtk_alloc_clk_data(CLK_MM_NR_CLK);
-
-mtk_alloc_clk_data can return NULL
-
-           if (!clk_data)
-              return -ENOMEM;
-
-> +
-> +       mtk_clk_register_gates(node, mm_clks, ARRAY_SIZE(mm_clks),
-> +                       clk_data);
-> +
-
-The above function can fail, better check for error
-
-         if (ret)
-             return ret;
-
-> +       return of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
-> +}
-> +
-> +
-
-No need for double line spacing.
-
-> +static struct platform_driver clk_mt8192_mm_drv = {
-> +       .probe = clk_mt8192_mm_probe,
-> +       .driver = {
-> +               .name = "clk-mt8192-mm",
-> +       },
-> +};
-> +
-> +builtin_platform_driver(clk_mt8192_mm_drv);
-
-[snip]
