@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3968231AD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305D3231ADD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgG2IHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:07:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:47184 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727985AbgG2IHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:07:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 383B631B;
-        Wed, 29 Jul 2020 01:07:33 -0700 (PDT)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BD393F71F;
-        Wed, 29 Jul 2020 01:07:24 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] sched: Cleanup SCHED_THERMAL_PRESSURE kconfig
- entry
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Qian Cai <cai@lca.pw>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-References: <20200712165917.9168-1-valentin.schneider@arm.com>
- <20200712165917.9168-3-valentin.schneider@arm.com>
- <20200727141825.GA4174@lca.pw> <16f8c1d4-778b-3ab8-f328-bae80f3973b4@arm.com>
- <jhjpn8fiphi.mognet@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <a8f6ebb5-0a49-a806-be6d-8d68cb99b75f@arm.com>
-Date:   Wed, 29 Jul 2020 10:07:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727082AbgG2IK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:10:28 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:39155 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726476AbgG2IK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Jul 2020 04:10:27 -0400
+X-UUID: 80cd8d0062d14291b6ab20d84c6dcfff-20200729
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=bR10KbXtzajag+49gYfd5nFZ5Eo9nw+6eYZQAA/1I/c=;
+        b=loBW/c/M6WOL8dxdgrA+B6w/h6kUziukhtD7os2FiGPEF1Q8jDK8lCQJ/osHxilBSnBrD7Fv79D2v7i5OBT196lRTBlyL/tQwKC1FQzcfgURyuaCM5GqFOBYbowixpNySzFmqkPMXRqAOCRQvC35mlA5NykEpLF+YCaFPuoUVBo=;
+X-UUID: 80cd8d0062d14291b6ab20d84c6dcfff-20200729
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1580035275; Wed, 29 Jul 2020 16:10:22 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 29 Jul 2020 16:10:20 +0800
+Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 29 Jul 2020 16:10:20 +0800
+Message-ID: <1596010221.23124.2.camel@mtksdaap41>
+Subject: Re: [PATCH v3 1/3] arm64: dts: Add Mediatek SoC MT8192 and
+ evaluation board dts and Makefile
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Seiya Wang <seiya.wang@mediatek.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-serial@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 29 Jul 2020 16:10:21 +0800
+In-Reply-To: <1596009775.12468.6.camel@mtksdaap41>
+References: <20200729013100.19539-1-seiya.wang@mediatek.com>
+         <20200729013100.19539-2-seiya.wang@mediatek.com>
+         <1596009775.12468.6.camel@mtksdaap41>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <jhjpn8fiphi.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2020 18:16, Valentin Schneider wrote:
-> 
-> Hi,
-> 
-> On 27/07/20 18:45, Dietmar Eggemann wrote:
->> On 27/07/2020 16:18, Qian Cai wrote:
->>> On Sun, Jul 12, 2020 at 05:59:16PM +0100, Valentin Schneider wrote:
+SGksIFNlaXlhOg0KDQpPbiBXZWQsIDIwMjAtMDctMjkgYXQgMTY6MDIgKzA4MDAsIENLIEh1IHdy
+b3RlOg0KPiBIaSwgU2VpeWE6DQo+IA0KPiBPbiBXZWQsIDIwMjAtMDctMjkgYXQgMDk6MzAgKzA4
+MDAsIFNlaXlhIFdhbmcgd3JvdGU6DQo+ID4gQWRkIGJhc2ljIGNoaXAgc3VwcG9ydCBmb3IgTWVk
+aWF0ZWsgTVQ4MTkyDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogU2VpeWEgV2FuZyA8c2VpeWEu
+d2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
+aWF0ZWsvTWFrZWZpbGUgICAgICAgfCAgIDEgKw0KPiA+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL21l
+ZGlhdGVrL210ODE5Mi1ldmIuZHRzIHwgIDI5ICsrDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMv
+bWVkaWF0ZWsvbXQ4MTkyLmR0c2kgICAgfCA2NzEgKysrKysrKysrKysrKysrKysrKysrKysrKysr
+Kw0KPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDcwMSBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi1ldmIuZHRzDQo+
+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5
+Mi5kdHNpDQo+ID4gDQo+IA0KPiBbc25pcF0NCj4gDQo+ID4gKw0KPiA+ICsJCXdhdGNoZG9nOiB3
+YXRjaGRvZ0AxMDAwNzAwMCB7DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2NTg5
+LXdkdCI7DQo+IA0KPiBBY2NvcmRpbmcgdG8gWzFdIGFuZCBbMl0sIGNvbXBhdGlibGUgc3RyaW5n
+IGZvciBtdDgxOTIgd2F0Y2ggZG9nIHNob3VsZA0KPiBiZSAibWVkaWF0ZWssbXQ2ODczLXdkdCIs
+Im1lZGlhdGVrLG10ODE5Mi13ZHQiLg0KPiANCj4gDQo+IFsxXQ0KPiBodHRwczovL2Nocm9taXVt
+LXJldmlldy5nb29nbGVzb3VyY2UuY29tL2MvY2hyb21pdW1vcy90aGlyZF9wYXJ0eS9rZXJuZWwv
+Ky8yMjg3MDkwLzEyDQo+IFsyXQ0KPiBodHRwczovL2Nocm9taXVtLXJldmlldy5nb29nbGVzb3Vy
+Y2UuY29tL2MvY2hyb21pdW1vcy90aGlyZF9wYXJ0eS9rZXJuZWwvKy8yMTMxNTk4LzE4DQo+IA0K
+PiA+ICsJCQlyZWcgPSA8MCAweDEwMDA3MDAwIDAgMHgxMDA+Ow0KPiA+ICsJCQkjcmVzZXQtY2Vs
+bHMgPSA8MT47DQo+ID4gKwkJfTsNCj4gPiArDQo+IA0KPiBbc25pcF0NCj4gDQo+ID4gKw0KPiA+
+ICsJCW1tc3lzOiBtbXN5c0AxNDAwMDAwMCB7DQo+ID4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0
+ZWssbXQ4MTkyLW1tc3lzIiwgInN5c2NvbiI7DQo+IA0KPiBZb3Ugc2hvdWxkIGRlZmluZSAibWVk
+aWF0ZWssbXQ4MTkyLW1tc3lzIiBmaXJzdCwgdGhlbiB5b3UgY291bGQgdXNlIGl0DQo+IGluIHRo
+aXMgcGF0Y2gNCg0KU29ycnksIHRoaXMgc2VyaWVzIGRlcGVuZCBvbiBbMV0sIGJ1dCBtbXN5cyBp
+cyBhIHN5c2Nvbiwgc28gdGhpcyBzaG91bGQNCmJlDQoNCm1tc3lzOiBzeXNjb25AMTQwMDAwMDAg
+ew0KDQpbMV0NCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tZWRp
+YXRlay8yMDIwLUp1bHkvMDE0NDUxLmh0bWwNCg0KUmVnYXJkcywNCkNLDQo+IC4NCj4gDQo+IFJl
+Z2FyZHMsDQo+IENLDQo+IA0KPiA+ICsJCQlyZWcgPSA8MCAweDE0MDAwMDAwIDAgMHgxMDAwPjsN
+Cj4gPiArCQkJI2Nsb2NrLWNlbGxzID0gPDE+Ow0KPiA+ICsJCX07DQo+ID4gKw0KPiANCg0K
 
-[...]
-
-> I went for having SCHED_THERMAL_PRESSURE in arm64/Kconfig because of where
-> the discussion went in the original thread ([1] in the changelog).
-> 
-> One point is that selecting this option requires having the right
-> infrastructure in place (arch_{set, scale}_thermal_pressure() must be
-> redefined by the architecture), which cannot be easily expressed in Kconfig
-> terms. Russell's point was that this is difficult for a lambda user to make
-> sense of, and Vincent argued that this option should simply be selected at
-> architecture level, which, given the context, makes sense IMO.
-> 
-> We could change the arch Kconfig into
-> 
->   select SCHED_THERMAL_PRESSURE if CPU_FREQ_THERMAL
-> 
-> but that seems redundant; this dependency is already expressed in
-> SCHED_THERMAL_PRESSURE's definition. Is there a proper pattern to select
-> some Kconfig option only if all of its dependencies are met?
-
-The warning when disabling CPU_FREQ_THERMAL after make defconfig disappears, so
-this should be OK.
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 939c4d6bbc2e..a677e71b3d5f 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -46,7 +46,7 @@ config ARM
-        select EDAC_ATOMIC_SCRUB
-        select GENERIC_ALLOCATOR
-        select GENERIC_ARCH_TOPOLOGY if ARM_CPU_TOPOLOGY
--       select SCHED_THERMAL_PRESSURE if ARM_CPU_TOPOLOGY
-+       select SCHED_THERMAL_PRESSURE if ARM_CPU_TOPOLOGY && CPU_FREQ_THERMAL
-        select GENERIC_ATOMIC64 if CPU_V7M || CPU_V6 || !CPU_32v6K || !AEABI
-        select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-        select GENERIC_CPU_AUTOPROBE
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index c403e6f5db86..59ae16f8b941 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -192,7 +192,7 @@ config ARM64
-        select PCI_SYSCALL if PCI
-        select POWER_RESET
-        select POWER_SUPPLY
--       select SCHED_THERMAL_PRESSURE
-+       select SCHED_THERMAL_PRESSURE if CPU_FREQ_THERMAL
-        select SPARSE_IRQ
-        select SWIOTLB
-        select SYSCTL_EXCEPTION_TRAC
