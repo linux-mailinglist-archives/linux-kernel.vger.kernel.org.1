@@ -2,176 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01C6231B07
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F18E231B0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Jul 2020 10:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgG2ISZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Jul 2020 04:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgG2ISZ (ORCPT
+        id S1728071AbgG2ITP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Jul 2020 04:19:15 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:20847 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727044AbgG2ITO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Jul 2020 04:18:25 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8049C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:18:24 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id o72so11326597ota.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Jul 2020 01:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uGI4csuNiLS6fTAVR1vQNcVBEWSJTSk1oAgwrrB5NsI=;
-        b=e+s6DHmgRnUm69dvY6m2+wPD1X7mXvPZP0fswGknSPRvoHeYYGhzmpEn1hRP36juI+
-         V7TLksSzFpiPGZ8iBtvuXY677+7945nVOo6cGw3h1DxW9Egpg1lITwCjHofkkZSgWJco
-         0eO2GF3rPRG9tVA7CqAt0TGLANGNbH2HvhkYU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uGI4csuNiLS6fTAVR1vQNcVBEWSJTSk1oAgwrrB5NsI=;
-        b=lkJ4ux5ngcP5UAn2FZe/5dCytRArPO9o5S2UatQPomxmgOhxxMVpzg/lDeD/M9Q+mo
-         3dO6rEW1nJ31w8Wmu4po5Vn01cpOGc8vOgwswFi205C/mMYF8pxCwywXC/pmBN7JiicY
-         5faM0hXuyzpVbb8L1UQ6grAPnkfk/Sju9eZaQS0IKWE9kC4qctRX9KFiLgZqBaSWwOdQ
-         wwKB+Hbe/PvB6dIROvGYWcTqPsEEmJEpF/sOJWU2DjZto2p73aXKjGp/lk/5OysCaBA7
-         JAfkTQyLrbdpHWuZnAXuae1Gwc2pz0s/CIEVOU/YuEg5wceAAJfuHyzazeJywaRQrbbV
-         zFnA==
-X-Gm-Message-State: AOAM530RFX6gU9gZb4c7wZ/dTifLD8JqsQxFXjV+tya2pii56KQpmyhc
-        u8RTR1hGQ4cAQn3y0sKr09J8gWM//423Siuo9yoZIA==
-X-Google-Smtp-Source: ABdhPJzBH+27x3ZujuEpHEVy6Gcb6DYFt6r/ynfQcsmDo5vW4q292PZiJ8/qFIUa5jgMuBmctGSCddAR2m3AVK8RCQA=
-X-Received: by 2002:a9d:6052:: with SMTP id v18mr2509589otj.303.1596010704124;
- Wed, 29 Jul 2020 01:18:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <1596000620-4075-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <1596000620-4075-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 29 Jul 2020 10:18:12 +0200
-Message-ID: <CAKMK7uHeteS2+rKrZKrAM+zQO==hAX0XaVc9JfHPsdLTCtzKOw@mail.gmail.com>
-Subject: Re: [PATCH] vt: Handle recursion in vc_do_resize().
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        syzbot <syzbot+c37a14770d51a085a520@syzkaller.appspotmail.com>
+        Wed, 29 Jul 2020 04:19:14 -0400
+X-UUID: 927e91cfe5d544b59e07ef633784d0fd-20200729
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=UNLqnEsdKNmSGXuBOvN1uBWFDDUciwsnHV7r4PQfRiM=;
+        b=YOHx7014d6+Zce3cWaK/zSTv5Kyqu1y0/pVmyCGKwWmVm331EC+tqZusLxn8AcHOB+SQu2v1ip+cRnzf5oJvCkGPSg/YFk+9aS7BQ+hmh6eAJJTkJeXcvW5fzaeLMgp6Aj5MCAmnqNsdlxbshDJJRgf79azNozhivxSAQXcOR1A=;
+X-UUID: 927e91cfe5d544b59e07ef633784d0fd-20200729
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 2009448367; Wed, 29 Jul 2020 16:19:10 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs07n1.mediatek.inc
+ (172.21.101.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 29 Jul
+ 2020 16:19:08 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 29 Jul 2020 16:19:07 +0800
+Message-ID: <1596010724.11360.6.camel@mhfsdcap03>
+Subject: Re: [PATCH 2/2] arm64: dts: mt8192: add infracfg_rst node
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+CC:     "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
+        <seiya.wang@mediatek.com>
+Date:   Wed, 29 Jul 2020 16:18:44 +0800
+In-Reply-To: <b81f1936-caf0-e843-9556-14e3024d6d6f@gmail.com>
+References: <1596008357-11213-1-git-send-email-crystal.guo@mediatek.com>
+         <1596008357-11213-3-git-send-email-crystal.guo@mediatek.com>
+         <b81f1936-caf0-e843-9556-14e3024d6d6f@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 29, 2020 at 8:58 AM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> syzbot is reporting OOB read bug in vc_do_resize() [1] caused by memcpy()
-> based on outdated old_{rows,row_size} values, for resize_screen() can
-> recurse into vc_do_resize() which changes vc->vc_{cols,rows} that outdates
-> old_{rows,row_size} values which were read before calling resize_screen().
->
-> Minimal fix might be to read vc->vc_{rows,size_row} after resize_screen().
-> A different fix might be to forbid recursive vc_do_resize() request.
-> I can't tell which fix is the better.
->
-> But since I guess that new_cols == vc->vc_cols && new_rows == vc->vc_rows
-> check could become true after returning from resize_screen(), and I assume
-> that not calling clear_selection() when resize_screen() will return error
-> is harmless, let's redo the check by moving resize_screen() earlier.
->
-> [1] https://syzkaller.appspot.com/bug?id=c70c88cfd16dcf6e1d3c7f0ab8648b3144b5b25e
->
-> Reported-by: syzbot <syzbot+c37a14770d51a085a520@syzkaller.appspotmail.com>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+T24gV2VkLCAyMDIwLTA3LTI5IGF0IDE1OjQ1ICswODAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
+Og0KPiANCj4gT24gMjkvMDcvMjAyMCAwOTozOSwgQ3J5c3RhbCBHdW8gd3JvdGU6DQo+ID4gYWRk
+IGluZnJhY2ZnX3JzdCBub2RlIHdoaWNoIGlzIGZvciBNVDgxOTIgcGxhdGZvcm0NCj4gPiANCj4g
+PiBTaWduZWQtb2ZmLWJ5OiBDcnlzdGFsIEd1byA8Y3J5c3RhbC5ndW9AbWVkaWF0ZWsuY29tPg0K
+PiA+IC0tLQ0KPiA+ICAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaSB8
+IDEwICsrKysrKysrKy0NCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEg
+ZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9t
+ZWRpYXRlay9tdDgxOTIuZHRzaSBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTky
+LmR0c2kNCj4gPiBpbmRleCBiMTZkYmJkLi5hZGM2MjM5IDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gv
+YXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0
+L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQo+ID4gQEAgLTIxNyw5ICsyMTcsMTcgQEAN
+Cj4gPiAgIAkJfTsNCj4gPiAgIA0KPiA+ICAgCQlpbmZyYWNmZzogaW5mcmFjZmdAMTAwMDEwMDAg
+ew0KPiA+IC0JCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1pbmZyYWNmZyIsICJzeXNj
+b24iOw0KPiA+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1pbmZyYWNmZyIsICJz
+eXNjb24iLCAic2ltcGxlLW1mZCI7DQo+ID4gICAJCQlyZWcgPSA8MCAweDEwMDAxMDAwIDAgMHgx
+MDAwPjsNCj4gPiAgIAkJCSNjbG9jay1jZWxscyA9IDwxPjsNCj4gPiArDQo+ID4gKwkJCWluZnJh
+Y2ZnX3JzdDogcmVzZXQtY29udHJvbGxlciB7DQo+ID4gKwkJCQljb21wYXRpYmxlID0gInRpLHN5
+c2Nvbi1yZXNldCI7DQo+ID4gKwkJCQkjcmVzZXQtY2VsbHMgPSA8MT47DQo+ID4gKwkJCQl0aSxy
+ZXNldC1iaXRzID0gPA0KPiA+ICsJCQkJCTB4MTQwIDE1IDB4MTQ0IDE1IDAgMCAoQVNTRVJUX1NF
+VCB8IERFQVNTRVJUX1NFVCB8IFNUQVRVU19OT05FKSAvKiAwOiBwY2llICovDQo+IA0KPiBZb3Ug
+aGF2ZSBUZXhhcyBJbnN0cnVtZW50cyBoYXJkd2FyZSBpbnNpZGUgaW5mcmFjZmc/IEFyZSB5b3Ug
+c3VyZT8NCj4gDQpUSSByZXNldC1jb250cm9sbGVyIGRyaXZlciBpcyBhIGNvbW1vbiBkcml2ZXIs
+IE1USyBTT0MgaGFzIHRoZSBzaW1pbGFyDQpjb250cm9sIGZsb3csIHRodXMgY2FuIHJldXNlIGl0
+Lg0KDQo+ID4gKwkJCQk+Ow0KPiA+ICsJCQl9Ow0KPiA+ICAgCQl9Ow0KPiA+ICAgDQo+ID4gICAJ
+CXBlcmljZmc6IHBlcmljZmdAMTAwMDMwMDAgew0KPiA+IA0KDQo=
 
-Ok, I have actual insight on this one here, and I'm pretty sure this
-isn't the fix. Looking at the syzkaller splat we have a recursion of
-the form
-
-fb_ioctl -> fb_set_var -> fbcon_update_vcs -> fbcon_resize -> fb_set_var
-
-Which isn't supposed to be happening. I've dug around recently in
-fbcon code, and this is a fairly common issue: You can update fbcon
-state both from fb_ioctl, but also from the vc side. To avoid the
-above recursion problems the code is using FBINFO_MISC_USEREVENT, and
-should only set that from fb_ioctl entry points. That's all fairly
-fragile, so I've done a bit of reworking, e.g.
-
-commit de29ae5c092bd9a5360cfabf174b0f783248d278
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue May 28 11:02:56 2019 +0200
-
-    fbmem: pull fbcon_fb_blanked out of fb_blank
-
-as an example.
-
-I think doing the same for fb_set_var, i.e. only calling
-fbcon_update_vcs for the 3 callers that want it, should fix this
-recursion. I think that's the much more robust fix instead of trying
-to paper over the fallout of this recursion here and everywhere else.
-
-Can you look into reworking your patch like that?
-
-Cheers, Daniel
-
-> ---
->  drivers/tty/vt/vt.c | 24 +++++++++++++++++-------
->  1 file changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-> index 42d8c67..952a067 100644
-> --- a/drivers/tty/vt/vt.c
-> +++ b/drivers/tty/vt/vt.c
-> @@ -1217,7 +1217,24 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
->
->         if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
->                 return 0;
-> +       if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
-> +               return -EINVAL;
->
-> +       /*
-> +        * Since fbcon_resize() from resize_screen() can recurse into
-> +        * this function via fb_set_var(), handle recursion now.
-> +        */
-> +       err = resize_screen(vc, new_cols, new_rows, user);
-> +       if (err)
-> +               return err;
-> +       /* Reload values in case recursion changed vc->vc_{cols,rows}. */
-> +       new_cols = (cols ? cols : vc->vc_cols);
-> +       new_rows = (lines ? lines : vc->vc_rows);
-> +       new_row_size = new_cols << 1;
-> +       new_screen_size = new_row_size * new_rows;
-> +
-> +       if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
-> +               return 0;
->         if (new_screen_size > KMALLOC_MAX_SIZE || !new_screen_size)
->                 return -EINVAL;
->         newscreen = kzalloc(new_screen_size, GFP_USER);
-> @@ -1238,13 +1255,6 @@ static int vc_do_resize(struct tty_struct *tty, struct vc_data *vc,
->         old_rows = vc->vc_rows;
->         old_row_size = vc->vc_size_row;
->
-> -       err = resize_screen(vc, new_cols, new_rows, user);
-> -       if (err) {
-> -               kfree(newscreen);
-> -               vc_uniscr_free(new_uniscr);
-> -               return err;
-> -       }
-> -
->         vc->vc_rows = new_rows;
->         vc->vc_cols = new_cols;
->         vc->vc_size_row = new_row_size;
-> --
-> 1.8.3.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
